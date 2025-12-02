@@ -1435,6 +1435,83 @@ RSpec.describe Article do
     end
   end
 
+  describe "#get_youtube_embed_url" do
+    let(:user) { create(:user) }
+    let(:article) { build(:article, user: user) }
+
+    context "with YouTube URL" do
+      it "parses YouTube URL and sets video embed URL" do
+        article.video_source_url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+        article.valid?
+        expect(article.video).to eq("https://www.youtube.com/embed/dQw4w9WgXcQ")
+      end
+    end
+
+    context "with Mux URL" do
+      it "parses Mux URL and sets video embed URL" do
+        article.video_source_url = "https://player.mux.com/nw5QrgIQS02FEx5BJEQH8CdcLmXXRvCNACZKQ01kLoKEI"
+        article.valid?
+        expect(article.video).to eq("https://player.mux.com/nw5QrgIQS02FEx5BJEQH8CdcLmXXRvCNACZKQ01kLoKEI")
+      end
+
+      it "sets video_thumbnail_url for Mux videos" do
+        article.video_source_url = "https://player.mux.com/nw5QrgIQS02FEx5BJEQH8CdcLmXXRvCNACZKQ01kLoKEI"
+        article.valid?
+        expect(article.video_thumbnail_url).to eq("https://image.mux.com/nw5QrgIQS02FEx5BJEQH8CdcLmXXRvCNACZKQ01kLoKEI/thumbnail.webp")
+      end
+
+      it "handles Mux URL with query parameters" do
+        article.video_source_url = "https://player.mux.com/nw5QrgIQS02FEx5BJEQH8CdcLmXXRvCNACZKQ01kLoKEI?autoplay=true"
+        article.valid?
+        expect(article.video).to eq("https://player.mux.com/nw5QrgIQS02FEx5BJEQH8CdcLmXXRvCNACZKQ01kLoKEI")
+      end
+    end
+
+    context "with invalid URL" do
+      it "does not set video for non-YouTube, non-Mux URLs" do
+        article.video_source_url = "https://example.com/video"
+        article.valid?
+        expect(article.video).to be_nil
+      end
+    end
+  end
+
+  describe "#fetch_video_duration" do
+    let(:user) { create(:user) }
+    let(:article) { build(:article, user: user) }
+
+    it "returns early for YouTube videos without fetching duration" do
+      article.video_source_url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+      article.video_duration_in_seconds = 0
+      article.fetch_video_duration
+      # Should not have changed duration (still 0) because it returns early
+      expect(article.video_duration_in_seconds).to eq(0)
+    end
+
+    it "returns early for Mux videos without fetching duration" do
+      article.video_source_url = "https://player.mux.com/nw5QrgIQS02FEx5BJEQH8CdcLmXXRvCNACZKQ01kLoKEI"
+      article.video_duration_in_seconds = 0
+      article.fetch_video_duration
+      # Should not have changed duration (still 0) because it returns early
+      expect(article.video_duration_in_seconds).to eq(0)
+    end
+  end
+
+  describe "#mux_thumbnail_url" do
+    let(:user) { create(:user) }
+    let(:article) { build(:article, user: user) }
+
+    it "generates correct Mux thumbnail URL" do
+      video_id = "nw5QrgIQS02FEx5BJEQH8CdcLmXXRvCNACZKQ01kLoKEI"
+      expect(article.mux_thumbnail_url(video_id)).to eq("https://image.mux.com/#{video_id}/thumbnail.webp")
+    end
+
+    it "returns nil for blank video_id" do
+      expect(article.mux_thumbnail_url(nil)).to be_nil
+      expect(article.mux_thumbnail_url("")).to be_nil
+    end
+  end
+
   describe "#main_image_from_frontmatter" do
     let(:article) { create(:article, user: user, main_image_from_frontmatter: false) }
 

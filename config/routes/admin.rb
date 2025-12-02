@@ -95,6 +95,7 @@ namespace :admin do
     resources :organizations, only: %i[index show destroy] do
       member do
         patch "update_org_credits"
+        patch "update_fully_trusted"
       end
     end
     resources :emails
@@ -132,6 +133,7 @@ namespace :admin do
     resources :html_variants, only: %i[index edit update new create show destroy]
     resources :navigation_links, only: %i[index update create destroy]
     resources :pages, only: %i[index new create edit update destroy]
+    resources :page_templates, only: %i[index show new create edit update destroy]
     resources :profile_field_groups, only: %i[update create destroy]
     resources :profile_fields, only: %i[index update create destroy]
     resources :subforems, only: %i[index new create edit update show] do

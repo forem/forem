@@ -118,7 +118,7 @@
             }
           </script>
           <header class="crayons-article__header" id="main-title">
-            <% if @article.video&.include?("youtube.com") %>
+            <% if @article.video&.include?("youtube.com") || @article.video&.include?("player.mux.com") %>
               <div class="crayons-article__cover" style="width:100%; aspect-ratio:16/9; position:relative;">
                 <iframe
                   src="<%= @article.video %>"

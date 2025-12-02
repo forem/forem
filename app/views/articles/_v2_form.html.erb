@@ -52,7 +52,7 @@
   data-site-logo='<%= render "layouts/logo" %>'
   data-cover-image-height="<%= Settings::UserExperience.cover_image_height %>"
   data-cover-image-crop="<%= Settings::UserExperience.cover_image_fit %>"
-  data-scheduling-enabled="<%= FeatureFlag.enabled?(:schedule_articles) %>"
+  data-scheduling-enabled="true"
   data-ai-available="<%= ::AI_AVAILABLE %>">
   <form class="crayons-article-form crayons-article-form--<%= version %>">
 

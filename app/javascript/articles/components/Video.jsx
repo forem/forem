@@ -11,9 +11,18 @@ const isYouTubeEmbed = (url) => {
   }
 };
 
+const isMuxEmbed = (url) => {
+  try {
+    const parsed = new URL(url);
+    return parsed.host === "player.mux.com";
+  } catch {
+    return false;
+  }
+};
+
 export const Video = ({ article }) => {
-  if (isYouTubeEmbed(article.video)) {
-    // Force 16:9 aspect ratio for YouTube videos
+  if (isYouTubeEmbed(article.video) || isMuxEmbed(article.video)) {
+    // Force 16:9 aspect ratio for YouTube and Mux videos
     return (
       <div
         className="crayons-article__cover crayons-article__cover__image__feed"

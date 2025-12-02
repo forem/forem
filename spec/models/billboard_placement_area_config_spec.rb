@@ -57,6 +57,23 @@ RSpec.describe BillboardPlacementAreaConfig, type: :model do
       config = described_class.new(placement_area: "sidebar_left", signed_in_rate: 50, signed_out_rate: 75)
       expect(config).to be_valid
     end
+
+    it "validates cache_expiry_seconds is a non-negative integer" do
+      config = described_class.new(placement_area: "sidebar_left", signed_in_rate: 50, signed_out_rate: 50, cache_expiry_seconds: -10)
+      expect(config).not_to be_valid
+      expect(config.errors[:cache_expiry_seconds]).to include("must be greater than or equal to 0")
+    end
+
+    it "validates cache_expiry_seconds is at most 24 hours" do
+      config = described_class.new(placement_area: "sidebar_left", signed_in_rate: 50, signed_out_rate: 50, cache_expiry_seconds: 100_000)
+      expect(config).not_to be_valid
+      expect(config.errors[:cache_expiry_seconds]).to include("must be less than or equal to 86400")
+    end
+
+    it "is valid with cache_expiry_seconds within range" do
+      config = described_class.new(placement_area: "sidebar_left", signed_in_rate: 50, signed_out_rate: 75, cache_expiry_seconds: 300)
+      expect(config).to be_valid
+    end
   end
 
   describe ".delivery_rate_for" do
@@ -170,6 +187,31 @@ RSpec.describe BillboardPlacementAreaConfig, type: :model do
     it "returns nil for non-existent placement area" do
       result = described_class.config_for_placement_area("nonexistent_area")
       expect(result).to be_nil
+    end
+  end
+
+  describe ".cache_expiry_seconds_for" do
+    it "returns the configured cache_expiry_seconds for a placement area" do
+      described_class.create!(placement_area: "sidebar_left", signed_in_rate: 50, signed_out_rate: 50, cache_expiry_seconds: 600)
+      expect(described_class.cache_expiry_seconds_for("sidebar_left")).to eq(600)
+    end
+
+    it "returns the default when cache_expiry_seconds is not set" do
+      described_class.create!(placement_area: "sidebar_left", signed_in_rate: 50, signed_out_rate: 50)
+      expect(described_class.cache_expiry_seconds_for("sidebar_left")).to eq(described_class::DEFAULT_BILLBOARD_CACHE_EXPIRY_SECONDS)
+    end
+
+    it "returns the default for non-existent placement area" do
+      expect(described_class.cache_expiry_seconds_for("nonexistent_area")).to eq(described_class::DEFAULT_BILLBOARD_CACHE_EXPIRY_SECONDS)
+    end
+
+    it "returns the default for nil placement area" do
+      expect(described_class.cache_expiry_seconds_for(nil)).to eq(described_class::DEFAULT_BILLBOARD_CACHE_EXPIRY_SECONDS)
+    end
+
+    it "returns 0 when cache_expiry_seconds is explicitly set to 0" do
+      described_class.create!(placement_area: "sidebar_left", signed_in_rate: 50, signed_out_rate: 50, cache_expiry_seconds: 0)
+      expect(described_class.cache_expiry_seconds_for("sidebar_left")).to eq(0)
     end
   end
 

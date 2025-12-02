@@ -45,11 +45,13 @@ module Admin
       permitted = params.require(:billboard_placement_area_config).permit(
         :signed_in_rate,
         :signed_out_rate,
+        :cache_expiry_seconds,
         selection_weights: [
           :random_selection,
           :new_and_priority,
           :new_only,
-          :weighted_performance
+          :weighted_performance,
+          :evenly_distributed
         ]
       )
       

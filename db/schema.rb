@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_11_18_173354) do
+ActiveRecord::Schema[7.0].define(version: 2025_11_25_161333) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -254,6 +254,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_18_173354) do
   end
 
   create_table "billboard_placement_area_configs", force: :cascade do |t|
+    t.integer "cache_expiry_seconds", default: 180, null: false
     t.datetime "created_at", null: false
     t.string "placement_area", null: false
     t.jsonb "selection_weights", default: {}, null: false
@@ -389,7 +390,8 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_18_173354) do
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
     t.index ["organization_id"], name: "index_collections_on_organization_id"
-    t.index ["slug", "user_id", "organization_id"], name: "index_collections_on_slug_and_user_id_and_organization_id", unique: true
+    t.index ["slug", "organization_id"], name: "index_collections_on_slug_and_organization_id", unique: true, where: "(organization_id IS NOT NULL)"
+    t.index ["slug", "user_id"], name: "index_collections_on_slug_and_user_id", unique: true, where: "(organization_id IS NULL)"
     t.index ["user_id"], name: "index_collections_on_user_id"
   end
 
@@ -567,6 +569,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_18_173354) do
     t.index ["exclude_survey_completions"], name: "idx_display_ads_survey_completions"
     t.index ["exclude_survey_ids"], name: "idx_display_ads_survey_ids", using: :gin
     t.index ["include_subforem_ids"], name: "index_display_ads_on_include_subforem_ids", using: :gin
+    t.index ["organization_id"], name: "index_display_ads_on_organization_id"
     t.index ["page_id"], name: "index_display_ads_on_page_id"
     t.index ["placement_area"], name: "index_display_ads_on_placement_area"
     t.index ["prefer_paired_with_billboard_id"], name: "index_display_ads_on_prefer_paired_with_billboard_id"
@@ -884,10 +887,12 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_18_173354) do
 
   create_table "organization_memberships", force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
+    t.string "invitation_token"
     t.bigint "organization_id", null: false
     t.string "type_of_user", null: false
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id", null: false
+    t.index ["invitation_token"], name: "index_organization_memberships_on_invitation_token", unique: true
     t.index ["user_id", "organization_id"], name: "index_organization_memberships_on_user_id_and_organization_id", unique: true
   end
 
@@ -901,14 +906,18 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_18_173354) do
     t.string "cta_button_text"
     t.string "cta_button_url"
     t.text "cta_processed_html"
+    t.boolean "currently_paused_promotional_billboards", default: false, null: false
     t.string "email"
+    t.boolean "fully_trusted", default: false, null: false
     t.string "github_username"
+    t.integer "ideal_daily_promoted_billboard_impressions", default: 0, null: false
     t.datetime "last_article_at", precision: nil, default: "2017-01-01 05:00:00"
     t.datetime "latest_article_updated_at", precision: nil
     t.string "location"
     t.string "name"
     t.string "old_old_slug"
     t.string "old_slug"
+    t.integer "past_24_hours_promoted_billboard_impressions", default: 0, null: false
     t.string "profile_image"
     t.datetime "profile_updated_at", precision: nil, default: "2017-01-01 05:00:00"
     t.text "proof"
@@ -924,8 +933,24 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_18_173354) do
     t.integer "unspent_credits_count", default: 0, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.string "url"
+    t.index ["currently_paused_promotional_billboards"], name: "idx_orgs_on_currently_paused_promo_billboards"
+    t.index ["ideal_daily_promoted_billboard_impressions"], name: "idx_orgs_on_ideal_daily_promoted_bb_impressions"
     t.index ["secret"], name: "index_organizations_on_secret", unique: true
     t.index ["slug"], name: "index_organizations_on_slug", unique: true
+  end
+
+  create_table "page_templates", force: :cascade do |t|
+    t.text "body_html"
+    t.text "body_markdown"
+    t.datetime "created_at", null: false
+    t.jsonb "data_schema", default: {}, null: false
+    t.text "description"
+    t.bigint "forked_from_id"
+    t.string "name", null: false
+    t.string "template_type", default: "contained"
+    t.datetime "updated_at", null: false
+    t.index ["forked_from_id"], name: "index_page_templates_on_forked_from_id"
+    t.index ["name"], name: "index_page_templates_on_name", unique: true
   end
 
   create_table "page_views", force: :cascade do |t|
@@ -953,13 +978,16 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_18_173354) do
     t.string "description"
     t.boolean "is_top_level_path", default: false
     t.boolean "landing_page", default: false, null: false
+    t.bigint "page_template_id"
     t.text "processed_html"
     t.string "slug"
     t.string "social_image"
     t.bigint "subforem_id"
     t.string "template"
+    t.jsonb "template_data", default: {}
     t.string "title"
     t.datetime "updated_at", precision: nil, null: false
+    t.index ["page_template_id"], name: "index_pages_on_page_template_id"
     t.index ["slug", "subforem_id"], name: "index_pages_on_slug_and_subforem_id", unique: true
     t.index ["subforem_id"], name: "index_pages_on_subforem_id"
   end
