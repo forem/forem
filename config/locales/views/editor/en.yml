@@ -13,6 +13,9 @@ en:
       cover_image:
         add: Upload Cover Image
         change: Change
+      cover_video_link:
+        add: Cover Video Link
+        change: Change Video Link
       edit: Edit
       modes: View post modes
       new_title: New post title here...

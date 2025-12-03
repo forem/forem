@@ -1435,7 +1435,7 @@ RSpec.describe Article do
     end
   end
 
-  describe "#get_youtube_embed_url" do
+  describe "#generate_video_embed_url" do
     let(:user) { create(:user) }
     let(:article) { build(:article, user: user) }
 
@@ -1467,8 +1467,17 @@ RSpec.describe Article do
       end
     end
 
+    context "with Twitch URL" do
+      it "parses Twitch URL and sets video embed URL" do
+        article.video_source_url = "https://www.twitch.tv/videos/1234567890"
+        article.valid?
+        expect(article.video).to match(/https:\/\/player\.twitch\.tv\/\?video=1234567890/)
+        expect(article.video).to include("autoplay=false")
+      end
+    end
+
     context "with invalid URL" do
-      it "does not set video for non-YouTube, non-Mux URLs" do
+      it "does not set video for unsupported URLs" do
         article.video_source_url = "https://example.com/video"
         article.valid?
         expect(article.video).to be_nil

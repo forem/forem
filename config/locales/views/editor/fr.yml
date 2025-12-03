@@ -13,6 +13,9 @@ fr:
       cover_image:
         add: Ajouter une image de couverture
         change: Changer
+      cover_video_link:
+        add: Lien de vidéo de couverture
+        change: Changer le lien de vidéo
       edit: Éditer
       modes: Voir les modes de publication
       new_title: Nouveau titre de publication ici...
