@@ -195,10 +195,8 @@ class Billboard < ApplicationRecord
       # "first ranked" ad will show up in all 15 sets, where as 15 will only show in 1 of the 15.
       billboards_for_display.limit(rand(1..15)).sample
     when "evenly_distributed"
-      # Select from billboards with the minimum impressions to distribute impressions evenly.
-      # This finds the minimum impression count and then samples from all billboards at that level.
-      min_impressions = billboards_for_display.minimum(:impressions_count)
-      billboards_for_display.where(impressions_count: min_impressions).sample
+      # Randomly distribute billboards effectively evenly over time.
+      billboards_for_display.sample
     else
       # Fallback to random if strategy is unknown
       billboards_for_display.sample
