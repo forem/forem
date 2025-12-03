@@ -20,8 +20,17 @@ const isMuxEmbed = (url) => {
   }
 };
 
+const isTwitchEmbed = (url) => {
+  try {
+    const parsed = new URL(url);
+    return parsed.host === "player.twitch.tv";
+  } catch {
+    return false;
+  }
+};
+
 export const Video = ({ article }) => {
-  if (isYouTubeEmbed(article.video) || isMuxEmbed(article.video)) {
+  if (isYouTubeEmbed(article.video) || isMuxEmbed(article.video) || isTwitchEmbed(article.video)) {
     // Force 16:9 aspect ratio for YouTube and Mux videos
     return (
       <div
