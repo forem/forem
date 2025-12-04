@@ -45,10 +45,9 @@ module UnifiedEmbed
       # Prevent SSRF attacks on internal networks
       raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url") if private_ip?(uri.host)
 
-  # Build HTTP client with correct port and TLS based on scheme
-  port = uri.port || (uri.scheme == "https" ? 443 : 80)
-  http = Net::HTTP.new(uri.host, port)
-  http.use_ssl = (uri.scheme == "https")
+      # Build HTTP client with correct port and TLS based on scheme
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true if uri.scheme == "https"
       
       # Set security timeouts to prevent hanging requests
       http.open_timeout = 10
@@ -91,7 +90,7 @@ module UnifiedEmbed
       else
         raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
       end
-    rescue SocketError
+    rescue SocketError, Timeout::Error, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, OpenSSL::SSL::SSLError
       raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
     end
 
