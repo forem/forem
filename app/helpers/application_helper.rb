@@ -462,4 +462,12 @@ module ApplicationHelper
 
     content_tag(name, class: dom_class, **kwargs, &block)
   end
+
+  # Detects if the request is coming from the Forem mobile app (ForemWebView).
+  #
+  # @return [TrueClass] true when the request is from ForemWebView
+  # @return [FalseClass] false when the request is from a browser
+  def forem_webview?
+    request.user_agent.to_s.include?("ForemWebView")
+  end
 end
