@@ -1,3 +1,4 @@
+import { showSnackbar } from '../utilities/showSnackbar';
 import {
   closeWindowModal,
   showWindowModal,
@@ -22,27 +23,15 @@ async function flagUser({ reactableType, category, reactableId, username }) {
     const outcome = await response.json();
 
     if (outcome.result === 'create') {
-      top.addSnackbarItem({
-        message: 'All posts by this author will be less visible.',
-        addCloseButton: true,
-      });
+      showSnackbar('All posts by this author will be less visible.');
     } else if (outcome.result === 'destroy') {
-      top.addSnackbarItem({
-        message: 'You have unflagged this author successfully.',
-        addCloseButton: true,
-      });
+      showSnackbar('You have unflagged this author successfully.');
     } else {
-      top.addSnackbarItem({
-        message: `Response from server: ${JSON.stringify(outcome)}`,
-        addCloseButton: true,
-      });
+      showSnackbar(`Response from server: ${JSON.stringify(outcome)}`);
     }
     toggleFlagBtnContent(outcome.result, username);
   } catch (error) {
-    top.addSnackbarItem({
-      message: error,
-      addCloseButton: true,
-    });
+    showSnackbar(error);
   }
 
   closeModal();
@@ -138,10 +127,13 @@ const getModalContents = (modalContentSelector) => {
     const articleInIframe = documentModal.querySelector('.article-iframe');
 
     if (articleInIframe) {
-      documentModal = articleInIframe.contentDocument || articleInIframe.contentWindow.document 
+      documentModal =
+        articleInIframe.contentDocument ||
+        articleInIframe.contentWindow.document;
     }
-    
-    const modalContentElement = documentModal.querySelector(modalContentSelector);
+
+    const modalContentElement =
+      documentModal.querySelector(modalContentSelector);
     const modalContent = modalContentElement.innerHTML;
 
     modalContentElement.remove();
