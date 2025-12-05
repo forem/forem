@@ -32,6 +32,8 @@
   }
 
   body[data-left-nav-state='open'] & {
+    // When open, lift above page-level overlays (e.g., advertise modal overlays)
+    z-index: calc(var(--z-modal) + 1);
     display: block;
     @media (min-width: $breakpoint-m) {
       display: none;
