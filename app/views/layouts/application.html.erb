@@ -155,6 +155,72 @@
     <%= render "shared/subforem_selection_modal" %>
   <% end %>
   
+  <button
+    id="back-to-top-btn"
+    data-controller="scroll-to-top"
+    data-action="click->scroll-to-top#scrollToTop window@scroll->scroll-to-top#toggle"
+    class="hidden"
+    style="position: fixed; 
+           bottom: 20px; 
+           right: 20px; 
+           z-index: 9999; 
+           width: 48px; 
+           height: 48px; 
+           border-radius: 50%; 
+           background-color: rgba(0, 0, 0, 0.7); 
+           color: white; 
+           border: none; 
+           cursor: pointer; 
+           box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); 
+           display: flex; 
+           align-items: center; 
+           justify-content: center; 
+           transition: opacity 0.3s ease, background-color 0.3s ease;"
+    onmouseover="this.style.backgroundColor='rgba(0, 0, 0, 0.9)'"
+    onmouseout="this.style.backgroundColor='rgba(0, 0, 0, 0.7)'"
+    aria-label="Back to top">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="18 15 12 9 6 15"></polyline>
+    </svg>
+  </button>
+
+  <script>
+    (function() {
+      const backToTopBtn = document.getElementById('back-to-top-btn');
+      
+      if (!backToTopBtn) return;
+
+      function toggleButton() {
+        const scrollPosition = window.scrollY || window.pageYOffset;
+        
+        if (scrollPosition > 300) {
+          backToTopBtn.classList.remove('hidden');
+          backToTopBtn.style.opacity = '1';
+          backToTopBtn.style.visibility = 'visible';
+        } else {
+          backToTopBtn.style.opacity = '0';
+          backToTopBtn.style.visibility = 'hidden';
+          setTimeout(() => {
+            if (window.scrollY <= 300) {
+              backToTopBtn.classList.add('hidden');
+            }
+          }, 300);
+        }
+      }
+
+      window.addEventListener('scroll', toggleButton);
+
+      backToTopBtn.addEventListener('click', function() {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+
+      toggleButton();
+    })();
+  </script>
+
   </body>
   </html>
 <% end %>
