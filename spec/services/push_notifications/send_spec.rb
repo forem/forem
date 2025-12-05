@@ -1,6 +1,11 @@
 require "rails_helper"
 
 RSpec.describe PushNotifications::Send, type: :service do
+  before do
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with('PUSH_NOTIFICATIONS_ENABLED').and_return('true')
+  end
+
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:params) do
