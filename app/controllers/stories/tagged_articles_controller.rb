@@ -7,7 +7,7 @@ module Stories
     rescue_from ArgumentError, with: :bad_request
 
     def index
-      @tag = Tag.find_by(name: params[:tag].downcase) || not_found
+      @tag = Tag.includes(:subforem_relationships).find_by(name: params[:tag].downcase) || not_found
 
       if @tag.alias_for.present?
         redirect_permanently_to("/t/#{@tag.alias_for}")
