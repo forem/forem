@@ -1,0 +1,4 @@
+// Keep the advertise page form overlay below the global header/side nav while still above page content.
+#formOverlay.form-overlay {
+  z-index: calc(var(--z-sticky) - 1);
+}
