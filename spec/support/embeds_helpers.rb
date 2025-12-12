@@ -1,10 +1,12 @@
 module EmbedsHelpers
   def stub_network_request(url:, method: :head, status_code: 200)
+    # Use the same User-Agent format as UnifiedEmbed::Tag.validate_link
+    safe_agent = Settings::Community.community_name.gsub(/[^-_.()a-zA-Z0-9 ]+/, "-")
     stub_request(method, url)
       .with(
         headers: {
           Accept: "*/*",
-          "User-Agent": "#{Settings::Community.community_name} (#{URL.url})"
+          "User-Agent": "ForemLinkValidator/1.0 (+#{URL.url}; #{safe_agent})"
         },
       ).to_return(status: status_code, body: "", headers: {})
   end
