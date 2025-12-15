@@ -13,6 +13,9 @@ pt:
       cover_image:
         add: Adicionar uma imagem de capa
         change: Alterar
+      cover_video_link:
+        add: Link de vídeo de capa
+        change: Alterar o link de vídeo
       edit: Editar
       modes: Visualizar modos de post
       new_title: Novo título de post aqui...

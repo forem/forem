@@ -320,6 +320,15 @@ class ArticlesController < ApplicationController
                        ]
                      end
 
+    # Allow video_source_url if it's a valid YouTube, Mux, or Twitch URL
+    video_url = params.dig("article", "video_source_url")
+    if video_url.present?
+      youtube_pattern = /\Ahttps?:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)/
+      mux_pattern = /\Ahttps?:\/\/player\.mux\.com\//
+      twitch_pattern = /\Ahttps?:\/\/(www\.)?twitch\.tv\/videos\//
+      allowed_params << :video_source_url if video_url.match?(youtube_pattern) || video_url.match?(mux_pattern) || video_url.match?(twitch_pattern)
+    end
+
     # NOTE: the organization logic is still a little counter intuitive but this should
     # fix the bug <https://github.com/forem/forem/issues/2871>
     if org_admin_user_change_privilege
