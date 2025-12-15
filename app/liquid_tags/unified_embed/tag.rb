@@ -18,24 +18,29 @@ module UnifiedEmbed
 
       handler_before_validation = UnifiedEmbed::Registry.find_handler_for(link: url)
 
-      validated_link = if handler_before_validation&.dig(:skip_validation)
-                         url
-                       else
-                         validate_link(input: url)
-                       end
+      begin
+        validated_link = if handler_before_validation&.dig(:skip_validation)
+                           url
+                         else
+                           validate_link(input: url)
+                         end
 
-      # In minimal mode, only use allow-listed embeds, otherwise fall back to OpenGraphTag
-      klass = if minimal_mode
-                if handler_before_validation && MINIMAL_ALLOWLIST.include?(handler_before_validation[:klass])
-                  handler_before_validation[:klass]
+        # In minimal mode, only use allow-listed embeds, otherwise fall back to OpenGraphTag
+        klass = if minimal_mode
+                  if handler_before_validation && MINIMAL_ALLOWLIST.include?(handler_before_validation[:klass])
+                    handler_before_validation[:klass]
+                  else
+                    OpenGraphTag
+                  end
                 else
-                  OpenGraphTag
+                  UnifiedEmbed::Registry.find_liquid_tag_for(link: validated_link)
                 end
-              else
-                UnifiedEmbed::Registry.find_liquid_tag_for(link: validated_link)
-              end
 
-      klass.__send__(:new, tag_name, validated_link, parse_context)
+        klass.__send__(:new, tag_name, validated_link, parse_context)
+      rescue SocketError, Timeout::Error, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, OpenSSL::SSL::SSLError => e
+        Rails.logger.warn("[UnifiedEmbed::Tag] Network/SSL error during validation for '#{url}': #{e.class} - #{e.message}")
+        FallbackTag.__send__(:new, tag_name, url, parse_context)
+      end
     end
 
     def self.validate_link(input:, retries: MAX_REDIRECTION_COUNT, method: Net::HTTP::Head)
@@ -90,8 +95,6 @@ module UnifiedEmbed
       else
         raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
       end
-    rescue SocketError, Timeout::Error, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, OpenSSL::SSL::SSLError
-      raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
     end
 
     def self.safe_user_agent(agent = Settings::Community.community_name)
@@ -121,6 +124,34 @@ module UnifiedEmbed
         # If hostname resolution fails, allow it (will fail during HTTP request anyway)
         false
       end
+    end
+  end
+
+  class FallbackTag < LiquidTagBase
+    def initialize(_tag_name, url, _parse_context)
+      super
+      @url = url
+    end
+
+    def render(_context)
+      parsed = URI.parse(@url) rescue nil
+      display_text =
+        if parsed&.host
+          host = parsed.host.delete_prefix("www.")
+          path = parsed.path.to_s.sub(%r{\A/}, "")
+          [host, path.presence].compact.join(" / ")
+        else
+          @url.sub(%r{\Ahttps?://}i, "")
+        end
+
+      ApplicationController.render(
+        partial: "liquids/open_graph",
+        locals: {
+          page: OpenStruct.new(main_properties_present?: false),
+          url: @url,
+          url_domain: display_text,
+        },
+      )
     end
   end
 end

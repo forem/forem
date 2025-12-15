@@ -147,6 +147,25 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
     expect(OpenGraphTag).to have_received(:new)
   end
 
+  it "falls back to a simple link card when validation raises a network/SSL error" do
+    link = "https://example.com/some/path"
+
+    allow(described_class).to receive(:validate_link).with(input: link).and_raise(OpenSSL::SSL::SSLError.new("certificate verify failed"))
+
+    liquid = Liquid::Template.parse("{% embed #{link} %}")
+
+    expect { liquid.render }.to_not raise_error
+    rendered = liquid.render
+
+    # Uses the OpenGraph fallback card with no metadata
+    expect(rendered).to include("crayons-card")
+    expect(rendered).to include("c-embed")
+    # Displays a cleaned-up, human-friendly version of the URL
+    expect(rendered).to include("example.com / some/path")
+    # Includes a visual link-out icon (inline SVG with external-link.svg)
+    expect(rendered).to include("external-link.svg")
+  end
+
   it "sanitizes community_name into safe user-agent string" do
     unsafe = "Some of this.is_not_safe (but that's okay?) 🌱"
     result = described_class.safe_user_agent(unsafe)

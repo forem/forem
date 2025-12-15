@@ -32,8 +32,13 @@
       </div>
     </div>
   <% else %>
-    <a href="<%= url %>" target="_blank" rel="noopener noreferrer">
-      <%= url_domain %>
-    </a>
+    <div class="c-embed__content">
+      <div class="c-embed__body flex items-center justify-between">
+        <a href="<%= url %>" target="_blank" rel="noopener noreferrer" class="c-link fw-bold flex items-center">
+          <span class="mr-2"><%= url_domain %></span>
+          <%= crayons_icon_tag("external-link", class: "crayons-icon--l", aria_hidden: true, height: 40, width: 40) %>
+        </a>
+      </div>
+    </div>
   <% end %>
 </div>
