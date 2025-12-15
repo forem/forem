@@ -163,7 +163,7 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
     # Displays a cleaned-up, human-friendly version of the URL
     expect(rendered).to include("example.com / some/path")
     # Includes a visual link-out icon (inline SVG with external-link.svg)
-    expect(rendered).to include("external-link.svg")
+    expect(rendered).to include('<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"')
   end
 
   it "sanitizes community_name into safe user-agent string" do
