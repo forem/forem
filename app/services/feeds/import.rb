@@ -12,13 +12,16 @@ module Feeds
     #        filter the user's who's articles we'll fetch.  That is to say, we won't fetch anyone's
     #        feeds who's last fetch time was after our earlier_than parameter.
     #
+    # @param subforem_id [Integer, NilClass] the subforem where imported articles should be published.
+    #
     # @return [Integer] count of total articles fetched.
-    def self.call(users_scope: User, earlier_than: nil)
-      new(users_scope: users_scope, earlier_than: earlier_than).call
+    def self.call(users_scope: User, earlier_than: nil, subforem_id: nil)
+      new(users_scope: users_scope, earlier_than: earlier_than, subforem_id: subforem_id).call
     end
 
-    def initialize(users_scope: User, earlier_than: nil)
+    def initialize(users_scope: User, earlier_than: nil, subforem_id: nil)
       @earlier_than = earlier_than
+      @subforem_id = subforem_id
       @users = filter_users_from(users_scope: users_scope, earlier_than: earlier_than)
 
       # NOTE: should these be configurable? Currently they are the result of empiric
@@ -43,7 +46,7 @@ module Feeds
           # only actually uses feed.url
           user = batch_of_users.detect { |u| u.id == user_id }
 
-          create_articles_from_user_feed(user, feed)
+          create_articles_from_user_feed(user, feed, subforem_id)
         end
 
         total_articles_count += articles.length
@@ -57,13 +60,13 @@ module Feeds
 
     private
 
-    attr_reader :earlier_than, :users_batch_size, :num_fetchers, :num_parsers, :users
+    attr_reader :earlier_than, :users_batch_size, :num_fetchers, :num_parsers, :users, :subforem_id
 
     # @return [ActiveRecord::Relation<User>] you'll likely want to set @users from this, but
     #         [@jeremyf]'s choosing not to do that as it makes the implementation just a bit
     #         cleaner.
     def filter_users_from(users_scope:, earlier_than:)
-      users_scope = ArticlePolicy.scope_users_authorized_to_action(users_scope: users_scope, action: :create)
+      users_scope = users_scope.without_role(:suspended)
       users_scope = users_scope.where(id: Users::Setting.with_feed.select(:user_id))
 
       return users_scope unless earlier_than
@@ -134,13 +137,15 @@ module Feeds
     # => synchronization on write (table/row locking)
     # => what happens if 2 jobs are in the queue for the same article?
     # => what happens if they stay in the queue for long and the next iteration of the feeds importer starts?
-    def create_articles_from_user_feed(user, feed)
+    def create_articles_from_user_feed(user, feed, subforem_id = nil)
       articles = []
 
       feed.entries.reverse_each do |item|
         next if Feeds::CheckItemMediumReply.call(item) || Feeds::CheckItemPreviouslyImported.call(item, user)
 
         feed_source_url = item.url.strip.split("?source=")[0]
+        # subforem_id is set when user saves RSS settings at a specific domain
+        # (e.g., music.forem.com/settings/extensions sets music.forem.com's subforem_id)
         article = Article.create!(
           feed_source_url: feed_source_url,
           user_id: user.id,
@@ -148,6 +153,7 @@ module Feeds
           show_comments: true,
           body_markdown: Feeds::AssembleArticleMarkdown.call(item, user, feed, feed_source_url),
           organization_id: nil,
+          subforem_id: subforem_id,
         )
 
         subscribe_author_to_comments(user, article)
