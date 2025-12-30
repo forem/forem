@@ -87,8 +87,13 @@ pt:
           subforem_reassignment: Realocação de Conteúdo
           subforem_reassignment_desc: Quando seu conteúdo é marcado como fora de tópico para seu subfórum atual, ele pode ser automaticamente movido para um subfórum mais apropriado. Você pode desativar essa realocação automática se preferir manter seu conteúdo em sua localização original.
           subforem_reassignment_field: Desativar a realocação automática do meu conteúdo para outros subfóruns
+        free_billing_info: Você possui uma assinatura gratuita. Não há cobrança ativa associada à sua conta, portanto, não é necessário gerenciar pagamentos.
         billing:
           title: Cobrança
+          current_status: Status atual da assinatura
+          free_subscription: Você possui uma assinatura gratuita e não está sendo cobrado em nenhuma capacidade.
+          trial_subscription: Você está atualmente em um período de teste.
+          paying_subscription: Você possui uma assinatura paga recorrente.
           subscription: Assinatura
           current_plan: Plano atual
           upgrade_plan: Atualizar plano
