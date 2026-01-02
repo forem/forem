@@ -185,7 +185,7 @@ class UsersController < ApplicationController
   def leave_org
     org = Organization.find_by(id: params[:organization_id])
     authorize org
-    OrganizationMembership.find_by(organization_id: org.id, user_id: current_user.id)&.delete
+    OrganizationMembership.find_by(organization_id: org.id, user_id: current_user.id)&.destroy
     flash[:settings_notice] = I18n.t("users_controller.left_org")
     redirect_to "/settings/organization/new"
   end
