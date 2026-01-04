@@ -46,6 +46,9 @@ yarn-debug.log*
 .env.development*
 .env
 
+# Kamal deployment secrets
+.kamal/secrets
+
 # Ignore storybook static site generation
 app/javascript/storybook-static/
 yarn-error.log
