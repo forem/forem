@@ -101,6 +101,19 @@ class Tag < ActsAsTaggableOn::Tag
 
   scope :suggested_for_onboarding, -> { where(suggested: true) }
 
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[
+      id name bg_color_hex text_color_hex supported alias_for badge_id
+      requires_approval pretty_name short_summary rules_markdown wiki_body_markdown
+      submission_template social_preview_template taggings_count hotness_score
+      category suggested created_at updated_at
+    ]
+  end
+
+  def self.ransackable_associations(_auth_object = nil)
+    %w[badge articles billboards subforem_relationships]
+  end
+
   def self.valid_categories
     ALLOWED_CATEGORIES
   end

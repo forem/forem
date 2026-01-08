@@ -16,6 +16,18 @@ class BadgeAchievement < ApplicationRecord
 
   validates :badge_id, uniqueness: { scope: :user_id, if: :single_award_badge? }
 
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[
+      id user_id badge_id rewarder_id
+      rewarding_context_message_markdown rewarding_context_message
+      created_at updated_at
+    ]
+  end
+
+  def self.ransackable_associations(_auth_object = nil)
+    %w[user badge rewarder]
+  end
+
   before_validation :render_rewarding_context_message_html
   after_create :award_credits
   after_create :apply_top_seven_reputation_modifier_changes

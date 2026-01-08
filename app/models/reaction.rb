@@ -50,6 +50,17 @@ class Reaction < ApplicationRecord
         ")
   }
 
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[
+      id user_id reactable_id reactable_type category status
+      created_at updated_at points
+    ]
+  end
+
+  def self.ransackable_associations(_auth_object = nil)
+    %w[user reactable]
+  end
+
   validates :category, inclusion: { in: ReactionCategory.all_slugs.map(&:to_s) }
   validates :reactable_type, inclusion: { in: REACTABLE_TYPES }
   validates :status, inclusion: { in: STATUSES }
