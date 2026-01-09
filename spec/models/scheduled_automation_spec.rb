@@ -16,7 +16,7 @@ RSpec.describe ScheduledAutomation, type: :model do
     it { is_expected.to validate_presence_of(:state) }
 
     it { is_expected.to validate_inclusion_of(:frequency).in_array(%w[daily weekly hourly custom_interval]) }
-    it { is_expected.to validate_inclusion_of(:action).in_array(%w[create_draft publish_article]) }
+    it { is_expected.to validate_inclusion_of(:action).in_array(%w[create_draft publish_article award_first_org_post_badge]) }
     it { is_expected.to validate_inclusion_of(:state).in_array(%w[active running completed failed]) }
 
     context "when user is not a community bot" do

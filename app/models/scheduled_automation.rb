@@ -7,7 +7,7 @@ class ScheduledAutomation < ApplicationRecord
 
   # Validations
   validates :frequency, presence: true, inclusion: { in: %w[daily weekly hourly custom_interval] }
-  validates :action, presence: true, inclusion: { in: %w[create_draft publish_article] }
+  validates :action, presence: true, inclusion: { in: %w[create_draft publish_article award_first_org_post_badge] }
   validates :service_name, presence: true
   validates :state, presence: true, inclusion: { in: %w[active running completed failed] }
   validate :validate_frequency_config
