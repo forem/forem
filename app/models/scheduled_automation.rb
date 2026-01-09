@@ -11,7 +11,7 @@ class ScheduledAutomation < ApplicationRecord
   validates :service_name, presence: true
   validates :state, presence: true, inclusion: { in: %w[active running completed failed] }
   validate :validate_frequency_config
-  validate :validate_user_is_community_bot
+  validate :validate_user_is_community_bot_or_admin
 
   # Scopes
   scope :enabled, -> { where(enabled: true) }
@@ -194,11 +194,11 @@ class ScheduledAutomation < ApplicationRecord
     end
   end
 
-  def validate_user_is_community_bot
+  def validate_user_is_community_bot_or_admin
     return unless user
 
-    unless user.community_bot?
-      errors.add(:user, "must be a community bot")
+    unless user.community_bot? || user.any_admin?
+      errors.add(:user, "must be a community bot or an admin")
     end
   end
 
