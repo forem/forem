@@ -32,6 +32,11 @@ FactoryBot.define do
       action { "publish_article" }
     end
 
+    trait :award_first_org_post_badge do
+      action { "award_first_org_post_badge" }
+      service_name { "first_org_post_badge" }
+    end
+
     trait :disabled do
       enabled { false }
     end

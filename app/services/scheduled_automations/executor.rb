@@ -39,6 +39,11 @@ module ScheduledAutomations
       @automation.mark_as_running!
 
       begin
+        # Handle badge awarding actions separately (they don't use AI services)
+        if @automation.action == "award_first_org_post_badge"
+          return handle_badge_awarding_action
+        end
+
         # Call the appropriate AI service
         service_result = call_ai_service
 
@@ -130,6 +135,29 @@ module ScheduledAutomations
         **Additional Context:**
         #{instructions}
       AUGMENTED
+    end
+
+    def handle_badge_awarding_action
+      # Call the badge awarding service
+      badge_result = FirstPostBadgeAwarder.call(@automation)
+
+      # Mark automation as completed and schedule next run
+      next_run_time = @automation.calculate_next_run_time
+      @automation.mark_as_completed!(next_run_time)
+
+      if badge_result.success?
+        Result.new(
+          success?: true,
+          article: nil,
+          error_message: nil
+        )
+      else
+        Result.new(
+          success?: false,
+          article: nil,
+          error_message: badge_result.error_message
+        )
+      end
     end
 
     def perform_action(service_result)

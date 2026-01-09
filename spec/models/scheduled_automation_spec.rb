@@ -16,16 +16,25 @@ RSpec.describe ScheduledAutomation, type: :model do
     it { is_expected.to validate_presence_of(:state) }
 
     it { is_expected.to validate_inclusion_of(:frequency).in_array(%w[daily weekly hourly custom_interval]) }
-    it { is_expected.to validate_inclusion_of(:action).in_array(%w[create_draft publish_article]) }
+    it { is_expected.to validate_inclusion_of(:action).in_array(%w[create_draft publish_article award_first_org_post_badge]) }
     it { is_expected.to validate_inclusion_of(:state).in_array(%w[active running completed failed]) }
 
-    context "when user is not a community bot" do
+    context "when user is not a community bot or admin" do
       let(:regular_user) { create(:user, type_of: :member) }
       
       it "is invalid" do
         automation = build(:scheduled_automation, user: regular_user)
         expect(automation).not_to be_valid
-        expect(automation.errors[:user]).to include("must be a community bot")
+        expect(automation.errors[:user]).to include("must be a community bot or an admin")
+      end
+    end
+
+    context "when user is an admin" do
+      let(:admin_user) { create(:user, :super_admin) }
+      
+      it "is valid" do
+        automation = build(:scheduled_automation, user: admin_user)
+        expect(automation).to be_valid
       end
     end
 
