@@ -238,6 +238,86 @@ RSpec.describe ScheduledAutomations::Executor, type: :service do
         expect(result.error_message).to include("repo_name is required")
       end
     end
+
+    context "when action is award_first_org_post_badge" do
+      let(:organization) { create(:organization) }
+      let(:badge) { create(:badge, slug: "first-org-post", title: "First Org Post") }
+      let(:badge_automation) do
+        create(:scheduled_automation,
+               user: bot,
+               service_name: "first_org_post_badge",
+               action: "award_first_org_post_badge",
+               action_config: {
+                 "organization_id" => organization.id,
+                 "badge_slug" => badge.slug
+               },
+               frequency: "daily",
+               frequency_config: { "hour" => 9, "minute" => 0 })
+      end
+      let(:badge_executor) { described_class.new(badge_automation) }
+
+      it "calls FirstPostBadgeAwarder service" do
+        expect(ScheduledAutomations::FirstPostBadgeAwarder).to receive(:call).with(badge_automation).and_return(
+          ScheduledAutomations::FirstPostBadgeAwarder::Result.new(
+            success?: true,
+            users_awarded: 2,
+            error_message: nil
+          )
+        )
+
+        result = badge_executor.call
+        expect(result.success?).to be(true)
+      end
+
+      it "does not call AI service for badge awarding action" do
+        expect(Ai::GithubRepoRecap).not_to receive(:new)
+        badge_executor.call
+      end
+
+      it "marks automation as completed after badge awarding" do
+        allow(ScheduledAutomations::FirstPostBadgeAwarder).to receive(:call).and_return(
+          ScheduledAutomations::FirstPostBadgeAwarder::Result.new(
+            success?: true,
+            users_awarded: 1,
+            error_message: nil
+          )
+        )
+
+        expect { badge_executor.call }.to change { badge_automation.reload.last_run_at }.from(nil)
+        expect(badge_automation.reload.state).to eq("active")
+      end
+
+      it "handles badge awarding failures" do
+        allow(ScheduledAutomations::FirstPostBadgeAwarder).to receive(:call).and_return(
+          ScheduledAutomations::FirstPostBadgeAwarder::Result.new(
+            success?: false,
+            users_awarded: 0,
+            error_message: "Badge not found"
+          )
+        )
+
+        result = badge_executor.call
+        expect(result.success?).to be(false)
+        expect(result.error_message).to eq("Badge not found")
+      end
+
+      context "with actual badge awarding" do
+        let(:user) { create(:user) }
+
+        it "awards badges to eligible users" do
+          create(:article, :past,
+                 user: user,
+                 organization: organization,
+                 published: true,
+                 past_published_at: 1.day.ago)
+
+          result = badge_executor.call
+
+          expect(result.success?).to be(true)
+          expect(user.badge_achievements.where(badge: badge).count).to eq(1)
+        end
+      end
+    end
   end
 end
 
