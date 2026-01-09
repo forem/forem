@@ -4,7 +4,11 @@ class RegistrationsController < Devise::RegistrationsController
   def new
     return redirect_to root_path(signin: "true") if user_signed_in?
 
-    if URI(request.referer || "").host == URI(request.base_url).host
+    # Handle explicit redirect_to parameter (e.g., from article login link)
+    if params[:redirect_to].present? && valid_redirect_url?(params[:redirect_to])
+      store_location_for(:user, params[:redirect_to])
+    # Fallback to referer if it's from the same host
+    elsif URI(request.referer || "").host == URI(request.base_url).host
       store_location_for(:user, request.referer)
     end
 
@@ -88,5 +92,19 @@ class RegistrationsController < Devise::RegistrationsController
     check_allowed_email(resource) if resource.email.present?
     resource.onboarding_subforem_id = RequestStore.store[:subforem_id] if RequestStore.store[:subforem_id].present?
     resource.save if resource.email.present?
+  end
+
+  private
+
+  # Validates that the redirect URL is from the same host (prevents open redirect)
+  def valid_redirect_url?(url)
+    return false if url.blank?
+
+    begin
+      uri = URI.parse(url)
+      uri.host == URI(request.base_url).host
+    rescue URI::InvalidURIError
+      false
+    end
   end
 end
