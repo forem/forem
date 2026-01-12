@@ -144,31 +144,33 @@ RSpec.describe Article do
       context "when user is new (less than 2 weeks old)" do
         it "does not allow direct uploads (video present but no allowed source url)" do
           # Simulating a direct upload where video is set but source URL isn't a whitelisted one
-          article = build(:article, user: new_user, video: "some_video_code", video_source_url: "https://unknown-source.com/video.mp4")
+          # We use a valid URL for 'video' to pass the format validation, focusing on the permission check
+          article = build(:article, user: new_user, video: "https://example.com/video.mp4", video_source_url: "https://unknown-source.com/video.mp4")
 
           expect(article).not_to be_valid
           expect(article.errors[:video]).to include(I18n.t("models.article.video_unpermitted"))
         end
 
         it "allows YouTube videos" do
-          article = build(:article, user: new_user, video: "youtube_id", video_source_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+          article = build(:article, user: new_user, video: "https://youtube.com/video", video_source_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
           expect(article).to be_valid
         end
 
         it "allows Mux videos" do
-          article = build(:article, user: new_user, video: "mux_id", video_source_url: "https://stream.mux.com/123.m3u8")
+          # Use player.mux.com to match the whitelist logic
+          article = build(:article, user: new_user, video: "https://player.mux.com/video", video_source_url: "https://player.mux.com/123.m3u8")
           expect(article).to be_valid
         end
 
         it "allows Twitch videos" do
-          article = build(:article, user: new_user, video: "twitch_id", video_source_url: "https://www.twitch.tv/videos/123")
+          article = build(:article, user: new_user, video: "https://twitch.tv/video", video_source_url: "https://www.twitch.tv/videos/123")
           expect(article).to be_valid
         end
       end
 
       context "when user is old (more than 2 weeks old)" do
         it "allows direct uploads" do
-          article = build(:article, user: old_user, video: "some_video_code", video_source_url: "https://unknown-source.com/video.mp4")
+          article = build(:article, user: old_user, video: "https://example.com/video.mp4", video_source_url: "https://unknown-source.com/video.mp4")
           expect(article).to be_valid
         end
       end

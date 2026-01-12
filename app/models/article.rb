@@ -1337,6 +1337,7 @@ class Article < ApplicationRecord
                         I18n.t("models.article.video_processing"))
     end
 
+    return unless user
     return if user.created_at <= 2.weeks.ago
 
     return unless video.present?
