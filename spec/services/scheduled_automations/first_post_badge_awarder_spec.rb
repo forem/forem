@@ -98,18 +98,18 @@ RSpec.describe ScheduledAutomations::FirstPostBadgeAwarder, type: :service do
 
         it "awards badges to users who posted their first post under the organization" do
           # User1: First post under org (should get badge)
-          article1 = create(:article, :past,
-                            user: user1,
-                            organization: organization,
-                            published: true,
-                            past_published_at: 2.days.ago)
+          create(:article, :past,
+                 user: user1,
+                 organization: organization,
+                 published: true,
+                 past_published_at: 2.days.ago)
 
           # User2: First post under org (should get badge)
-          article2 = create(:article, :past,
-                            user: user2,
-                            organization: organization,
-                            published: true,
-                            past_published_at: 1.day.ago)
+          create(:article, :past,
+                 user: user2,
+                 organization: organization,
+                 published: true,
+                 past_published_at: 1.day.ago)
 
           # User3: Has earlier post under org from before the automation window (should NOT get badge)
           # Create an article that's older than the recent window
@@ -121,16 +121,16 @@ RSpec.describe ScheduledAutomations::FirstPostBadgeAwarder, type: :service do
           # and then a later post. Since we check all articles when last_run_at is nil,
           # user3's earliest article (3 days ago) is their first, so they get a badge.
           # To properly test, user3 should have their first post be the earliest of all
-          earlier_article = create(:article, :past,
-                                   user: user3,
-                                   organization: organization,
-                                   published: true,
-                                   past_published_at: 4.days.ago)
-          later_article = create(:article, :past,
-                                 user: user3,
-                                 organization: organization,
-                                 published: true,
-                                 past_published_at: 1.day.ago)
+          create(:article, :past,
+                 user: user3,
+                 organization: organization,
+                 published: true,
+                 past_published_at: 4.days.ago)
+          create(:article, :past,
+                 user: user3,
+                 organization: organization,
+                 published: true,
+                 past_published_at: 1.day.ago)
 
           result = awarder.call
 
@@ -148,11 +148,11 @@ RSpec.describe ScheduledAutomations::FirstPostBadgeAwarder, type: :service do
 
         it "does not award badges to users who already have the badge" do
           user = create(:user)
-          article = create(:article, :past,
-                           user: user,
-                           organization: organization,
-                           published: true,
-                           past_published_at: 1.day.ago)
+          create(:article, :past,
+                 user: user,
+                 organization: organization,
+                 published: true,
+                 past_published_at: 1.day.ago)
 
           # User already has the badge
           create(:badge_achievement, user: user, badge: badge)
@@ -235,20 +235,21 @@ RSpec.describe ScheduledAutomations::FirstPostBadgeAwarder, type: :service do
           automation.update!(last_run_at: 3.days.ago)
         end
 
-        it "only awards badges for posts published since last_run_at" do
-          # Article published before last_run_at (should be ignored)
-          old_article = create(:article, :past,
-                               user: user1,
-                               organization: organization,
-                               published: true,
-                               past_published_at: 5.days.ago)
+        it "only awards badges for posts published since last_run_at (minus 15 minutes)" do
+          # Article published way before last_run_at (should be ignored)
+          create(:article, :past,
+                 user: user1,
+                 organization: organization,
+                 published: true,
+                 past_published_at: 5.days.ago)
 
-          # Article published after last_run_at (should get badge)
-          new_article = create(:article, :past,
-                               user: user2,
-                               organization: organization,
-                               published: true,
-                               past_published_at: 1.day.ago)
+          # Article published just before last_run_at (within 15 mins window)
+          # Should be picked up due to lookback
+          create(:article, :past,
+                 user: user2,
+                 organization: organization,
+                 published: true,
+                 past_published_at: 3.days.ago - 10.minutes)
 
           result = awarder.call
 
@@ -261,22 +262,16 @@ RSpec.describe ScheduledAutomations::FirstPostBadgeAwarder, type: :service do
 
         it "handles users with multiple posts since last_run_at correctly" do
           # User posts multiple times, but first one should count
-          first_article = create(:article, :past,
-                                user: user1,
-                                organization: organization,
-                                published: true,
-                                past_published_at: 2.days.ago)
-          second_article = create(:article, :past,
-                                  user: user1,
-                                  organization: organization,
-                                  published: true,
-                                  past_published_at: 1.day.ago)
-
-          # Check that user has no earlier posts
-          expect(Article.published
-                        .where(organization: organization, user: user1)
-                        .where("published_at < ?", first_article.published_at)
-                        .count).to eq(0)
+          create(:article, :past,
+                 user: user1,
+                 organization: organization,
+                 published: true,
+                 past_published_at: 3.days.ago + 1.hour)
+          create(:article, :past,
+                 user: user1,
+                 organization: organization,
+                 published: true,
+                 past_published_at: 3.days.ago + 2.hours)
 
           result = awarder.call
 
@@ -295,7 +290,7 @@ RSpec.describe ScheduledAutomations::FirstPostBadgeAwarder, type: :service do
           automation.save!
         end
 
-        it "allows awarding the same badge multiple times" do
+        it "does NOT award the same badge multiple times even if badge allows it (idempotency)" do
           # User already has the badge
           create(:badge_achievement, user: user, badge: multi_badge)
 
@@ -309,8 +304,9 @@ RSpec.describe ScheduledAutomations::FirstPostBadgeAwarder, type: :service do
           result = awarder.call
 
           expect(result.success?).to be(true)
-          expect(result.users_awarded).to eq(1)
-          expect(user.badge_achievements.where(badge: multi_badge).count).to eq(2)
+          expect(result.users_awarded).to eq(0)
+          # Still only 1 badge
+          expect(user.badge_achievements.where(badge: multi_badge).count).to eq(1)
         end
       end
 
@@ -365,4 +361,3 @@ RSpec.describe ScheduledAutomations::FirstPostBadgeAwarder, type: :service do
     end
   end
 end
-
