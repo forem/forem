@@ -23,7 +23,10 @@ module ScheduledAutomations
       @automation = automation
       @organization_id = automation.action_config["organization_id"]&.to_i
       @badge_slug = automation.action_config["badge_slug"]
-      @since_time = automation.last_run_at || Time.at(0) # Use epoch if first run
+
+      # Look back 15 minutes to overlapping intervals to prevent misses
+      last_run = automation.last_run_at || Time.at(0)
+      @since_time = last_run == Time.at(0) ? last_run : last_run - 15.minutes
     end
 
     def call
@@ -34,7 +37,7 @@ module ScheduledAutomations
         return Result.new(
           success?: false,
           users_awarded: 0,
-          error_message: "Badge with slug '#{@badge_slug}' not found"
+          error_message: "Badge with slug '#{@badge_slug}' not found",
         )
       end
 
@@ -43,7 +46,7 @@ module ScheduledAutomations
         return Result.new(
           success?: false,
           users_awarded: 0,
-          error_message: "Organization with id '#{@organization_id}' not found"
+          error_message: "Organization with id '#{@organization_id}' not found",
         )
       end
 
@@ -52,13 +55,13 @@ module ScheduledAutomations
       Result.new(
         success?: true,
         users_awarded: users_awarded,
-        error_message: nil
+        error_message: nil,
       )
     rescue StandardError => e
       Result.new(
         success?: false,
         users_awarded: 0,
-        error_message: "#{e.class}: #{e.message}"
+        error_message: "#{e.class}: #{e.message}",
       )
     end
 
@@ -69,26 +72,22 @@ module ScheduledAutomations
         raise ArgumentError, "organization_id is required in action_config"
       end
 
-      if @badge_slug.blank?
-        raise ArgumentError, "badge_slug is required in action_config"
-      end
+      return if @badge_slug.present?
+
+      raise ArgumentError, "badge_slug is required in action_config"
     end
 
     def award_badges_to_first_post_authors(organization, badge_id)
       # Find all published articles under this organization since last run
       recent_articles = Article.published
-                                .where(organization_id: organization.id)
-                                .where("published_at > ?", @since_time)
-                                .includes(:user)
-                                .order(published_at: :asc)
+        .where(organization_id: organization.id)
+        .where("published_at > ?", @since_time)
+        .includes(:user)
+        .order(published_at: :asc)
 
       return 0 if recent_articles.empty?
 
       users_awarded = 0
-
-      # Look up badge once to check allow_multiple_awards
-      badge = Badge.find_by(id: badge_id)
-      allow_multiple = badge&.allow_multiple_awards || false
 
       # Group articles by user to find their first post under this org
       recent_articles.group_by(&:user_id).each do |user_id, articles|
@@ -100,29 +99,29 @@ module ScheduledAutomations
 
         # Check if this is the user's first published article under this organization
         # by checking if they have any earlier published articles under this org (ever)
+        # Note: We check < earliest_recent_article.published_at, so if they have an earlier one that was
+        # picked up in a previous run (or missed), this will return true and we skip.
         has_earlier_post = Article.published
-                                  .where(organization_id: organization.id, user_id: user_id)
-                                  .where("published_at < ?", earliest_recent_article.published_at)
-                                  .exists?
+          .where(organization_id: organization.id, user_id: user_id)
+          .where("published_at < ?", earliest_recent_article.published_at)
+          .exists?
 
         # Only award badge if this is their first post under this org AND it's in the recent set
         next if has_earlier_post
 
         # Check if user already has this badge (to avoid duplicates)
-        # Only check if badge doesn't allow multiple awards
-        unless allow_multiple
-          existing_achievement = BadgeAchievement.find_by(
-            user_id: user_id,
-            badge_id: badge_id
-          )
-          next if existing_achievement
-        end
+        # We always check this regardless of badge settings to ensure idempotency of this automation
+        existing_achievement = BadgeAchievement.find_by(
+          user_id: user_id,
+          badge_id: badge_id,
+        )
+        next if existing_achievement
 
         # Award the badge
         achievement = BadgeAchievement.create(
           user_id: user_id,
           badge_id: badge_id,
-          rewarding_context_message_markdown: generate_message(organization, earliest_recent_article)
+          rewarding_context_message_markdown: generate_message(organization, earliest_recent_article),
         )
 
         if achievement.persisted?
@@ -137,10 +136,9 @@ module ScheduledAutomations
     def generate_message(organization, article)
       org_url = URL.organization(organization)
       article_url = URL.article(article)
-      
+
       "Congratulations on posting your first article under [#{organization.name}](#{org_url})! " \
-      "Your post was [#{article.title}](#{article_url})."
+        "Your post was [#{article.title}](#{article_url})."
     end
   end
 end
-
