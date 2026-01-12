@@ -1338,7 +1338,7 @@ class Article < ApplicationRecord
     end
 
     return unless user
-    return if user.created_at <= 2.weeks.ago
+    return if user.created_at && user.created_at <= 2.weeks.ago
 
     return unless video.present?
 
