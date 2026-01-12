@@ -90,14 +90,16 @@ RSpec.describe Article do
         end
 
         it "prevents org member from adding article to org collection when not publishing under org" do
-          article = build(:article, user: org_member, organization: nil, body_markdown: "---\npublished: true\ntags: test\n---\nContent")
+          article = build(:article, user: org_member, organization: nil,
+                                    body_markdown: "---\npublished: true\ntags: test\n---\nContent")
           article.collection_id = org_collection.id
           expect(article).not_to be_valid
           expect(article.errors[:collection_id]).to include(I18n.t("models.article.series_unpermitted"))
         end
 
         it "prevents non-org member from adding article to org collection" do
-          article = build(:article, user: user, organization: organization, body_markdown: "---\npublished: true\ntags: test\n---\nContent")
+          article = build(:article, user: user, organization: organization,
+                                    body_markdown: "---\npublished: true\ntags: test\n---\nContent")
           article.collection_id = org_collection.id
           expect(article).not_to be_valid
           expect(article.errors[:collection_id]).to include(I18n.t("models.article.series_unpermitted"))
@@ -116,7 +118,8 @@ RSpec.describe Article do
 
         it "prevents org member from adding article to org collection with different org_id" do
           other_org = create(:organization)
-          article = build(:article, user: org_member, organization: other_org, body_markdown: "---\npublished: true\ntags: test\n---\nContent")
+          article = build(:article, user: org_member, organization: other_org,
+                                    body_markdown: "---\npublished: true\ntags: test\n---\nContent")
           article.collection_id = org_collection.id
           expect(article).not_to be_valid
           expect(article.errors[:collection_id]).to include(I18n.t("models.article.series_unpermitted"))
@@ -125,10 +128,48 @@ RSpec.describe Article do
         it "prevents org member from adding article to org collection when org_id doesn't match" do
           other_org = create(:organization)
           create(:organization_membership, user: org_member, organization: other_org, type_of_user: "member")
-          article = build(:article, user: org_member, organization: other_org, body_markdown: "---\npublished: true\ntags: test\n---\nContent")
+          article = build(:article, user: org_member, organization: other_org,
+                                    body_markdown: "---\npublished: true\ntags: test\n---\nContent")
           article.collection_id = org_collection.id
           expect(article).not_to be_valid
           expect(article.errors[:collection_id]).to include(I18n.t("models.article.series_unpermitted"))
+        end
+      end
+    end
+
+    describe "#validate_video" do
+      let(:new_user) { create(:user, created_at: 1.week.ago) }
+      let(:old_user) { create(:user, created_at: 3.weeks.ago) }
+
+      context "when user is new (less than 2 weeks old)" do
+        it "does not allow direct uploads (video present but no allowed source url)" do
+          # Simulating a direct upload where video is set but source URL isn't a whitelisted one
+          article = build(:article, user: new_user, video: "some_video_code", video_source_url: "https://unknown-source.com/video.mp4")
+
+          expect(article).not_to be_valid
+          expect(article.errors[:video]).to include(I18n.t("models.article.video_unpermitted"))
+        end
+
+        it "allows YouTube videos" do
+          article = build(:article, user: new_user, video: "youtube_id", video_source_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+          expect(article).to be_valid
+        end
+
+        it "allows Mux videos" do
+          article = build(:article, user: new_user, video: "mux_id", video_source_url: "https://stream.mux.com/123.m3u8")
+          expect(article).to be_valid
+        end
+
+        it "allows Twitch videos" do
+          article = build(:article, user: new_user, video: "twitch_id", video_source_url: "https://www.twitch.tv/videos/123")
+          expect(article).to be_valid
+        end
+      end
+
+      context "when user is old (more than 2 weeks old)" do
+        it "allows direct uploads" do
+          article = build(:article, user: old_user, video: "some_video_code", video_source_url: "https://unknown-source.com/video.mp4")
+          expect(article).to be_valid
         end
       end
     end
@@ -154,7 +195,8 @@ RSpec.describe Article do
         org_collection = create(:collection, user: org_member, organization: organization, slug: "org-series")
         article = build(:article, user: org_member)
         series = article.all_series
-        expect(series).to include(hash_including(slug: "org-series", organization_id: organization.id, is_personal: false))
+        expect(series).to include(hash_including(slug: "org-series", organization_id: organization.id,
+                                                 is_personal: false))
       end
 
       it "does not return collections from orgs the user is not a member of" do
@@ -1471,7 +1513,7 @@ RSpec.describe Article do
       it "parses Twitch URL and sets video embed URL" do
         article.video_source_url = "https://www.twitch.tv/videos/1234567890"
         article.valid?
-        expect(article.video).to match(/https:\/\/player\.twitch\.tv\/\?video=1234567890/)
+        expect(article.video).to match(%r{https://player\.twitch\.tv/\?video=1234567890})
         expect(article.video).to include("autoplay=false")
       end
     end
@@ -2583,20 +2625,20 @@ RSpec.describe Article do
 
     it "uses the correct cache key for reaction counts" do
       cache_key = "reaction_counts_for_reactable-Article-#{article.id}"
-      
+
       # Clear any existing cache
       Rails.cache.delete(cache_key)
-      
+
       # Ensure we have reactions (from before block)
       expect(article.reactions.count).to be > 0
-      
+
       # Call the method to populate cache
       result = article.public_reaction_categories
-      
+
       # Verify we got results
       expect(result).to be_present
       expect(result).to be_an(Array)
-      
+
       # The cache should be populated after calling the method
       # Note: The cache might not be populated if there are no reactions or if the cache is disabled
       if Rails.cache.exist?(cache_key)
@@ -2937,7 +2979,7 @@ RSpec.describe Article do
         stub_request(:head, %r{https?://first\.com}).to_return(status: 200)
         stub_request(:head, %r{https?://second\.org}).to_return(status: 200)
         stub_request(:head, %r{https?://third\.net}).to_return(status: 200)
-        
+
         # Stub GET requests for metadata fetching (used by OpenGraph)
         stub_request(:get, %r{https?://example\.com}).to_return(status: 200, body: "<html></html>")
         stub_request(:get, %r{https?://another-example\.org}).to_return(status: 200, body: "<html></html>")

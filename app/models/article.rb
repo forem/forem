@@ -743,7 +743,6 @@ class Article < ApplicationRecord
     processed_html_final
   end
 
-
   def readable_publish_date
     relevant_date = displayable_published_at
     return unless relevant_date
@@ -1338,7 +1337,17 @@ class Article < ApplicationRecord
                         I18n.t("models.article.video_processing"))
     end
 
-    return unless video.present? && user.created_at > 2.weeks.ago
+    return if user.created_at <= 2.weeks.ago
+
+    return unless video.present?
+
+    # Allow linked videos (YouTube, Mux, Twitch) even for new users
+    return if video_source_url.present? && (
+      video_source_url.include?("youtube.com") ||
+      video_source_url.include?("youtu.be") ||
+      video_source_url.include?("player.mux.com") ||
+      video_source_url.include?("twitch.tv")
+    )
 
     errors.add(:video, I18n.t("models.article.video_unpermitted"))
   end
