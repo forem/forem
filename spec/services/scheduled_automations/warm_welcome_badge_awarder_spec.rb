@@ -5,11 +5,12 @@ RSpec.describe ScheduledAutomations::WarmWelcomeBadgeAwarder, type: :service do
   let(:admin_user) { create(:user, :super_admin) }
   let(:badge) { create(:badge, slug: "warm-welcome", title: "Warm Welcome", allow_multiple_awards: true) }
   let(:welcome_thread) do
-    create(:article,
+    create(:article, :past,
            user: admin_user,
            published: true,
-           published_at: 2.weeks.ago,
-           tag_list: "welcome")
+           past_published_at: 2.weeks.ago,
+           tag_list: "welcome",
+           title: "Welcome Thread")
   end
   let(:automation) do
     create(:scheduled_automation,
@@ -403,7 +404,10 @@ RSpec.describe ScheduledAutomations::WarmWelcomeBadgeAwarder, type: :service do
 
       context "when an error occurs" do
         before do
-          allow(Article).to receive(:admin_published_with).and_raise(StandardError, "Database error")
+          # Ensure badge exists so we get past the badge check
+          badge
+          # Then raise error when finding welcome thread
+          allow_any_instance_of(described_class).to receive(:find_current_welcome_thread).and_raise(StandardError, "Database error")
         end
 
         it "returns a failure result with error message" do

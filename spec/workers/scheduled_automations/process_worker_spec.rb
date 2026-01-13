@@ -8,6 +8,7 @@ RSpec.describe ScheduledAutomations::ProcessWorker, type: :worker do
     context "when warm welcome badge exists" do
       before do
         badge # Create the badge
+        bot # Ensure bot exists before perform is called
       end
 
       context "when automation does not exist" do
@@ -30,9 +31,12 @@ RSpec.describe ScheduledAutomations::ProcessWorker, type: :worker do
         end
 
         it "schedules next run for Friday at 9 AM" do
+          expect(ScheduledAutomation.where(action: "award_warm_welcome_badge").count).to eq(0)
+
           described_class.new.perform
 
           automation = ScheduledAutomation.find_by(action: "award_warm_welcome_badge")
+          expect(automation).to be_present
           expect(automation.next_run_at).to be_present
           expect(automation.next_run_at.wday).to eq(5) # Friday
           expect(automation.next_run_at.hour).to eq(9)
@@ -95,7 +99,7 @@ RSpec.describe ScheduledAutomations::ProcessWorker, type: :worker do
                action: "create_draft",
                frequency: "daily",
                frequency_config: { "hour" => 9, "minute" => 0 },
-               next_run_at: 1.hour.ago,
+               next_run_at: 5.minutes.ago, # Within the 10 minute window
                enabled: true,
                state: "active")
       end

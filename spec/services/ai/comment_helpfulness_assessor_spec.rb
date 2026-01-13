@@ -3,11 +3,12 @@ require "rails_helper"
 RSpec.describe Ai::CommentHelpfulnessAssessor, type: :service do
   let(:admin_user) { create(:user, :super_admin) }
   let(:welcome_thread) do
-    create(:article,
+    create(:article, :past,
            user: admin_user,
            published: true,
-           published_at: 2.weeks.ago,
+           past_published_at: 2.weeks.ago,
            tag_list: "welcome",
+           title: "Welcome Thread",
            body_markdown: "Welcome to our community! Introduce yourself below.")
   end
   let(:comment) do
