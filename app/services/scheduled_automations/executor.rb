@@ -41,7 +41,11 @@ module ScheduledAutomations
       begin
         # Handle badge awarding actions separately (they don't use AI services)
         if @automation.action == "award_first_org_post_badge"
-          return handle_badge_awarding_action
+          return handle_first_org_post_badge_action
+        end
+
+        if @automation.action == "award_warm_welcome_badge"
+          return handle_warm_welcome_badge_action
         end
 
         # Call the appropriate AI service
@@ -137,9 +141,32 @@ module ScheduledAutomations
       AUGMENTED
     end
 
-    def handle_badge_awarding_action
+    def handle_first_org_post_badge_action
       # Call the badge awarding service
       badge_result = FirstPostBadgeAwarder.call(@automation)
+
+      # Mark automation as completed and schedule next run
+      next_run_time = @automation.calculate_next_run_time
+      @automation.mark_as_completed!(next_run_time)
+
+      if badge_result.success?
+        Result.new(
+          success?: true,
+          article: nil,
+          error_message: nil
+        )
+      else
+        Result.new(
+          success?: false,
+          article: nil,
+          error_message: badge_result.error_message
+        )
+      end
+    end
+
+    def handle_warm_welcome_badge_action
+      # Call the warm welcome badge awarding service
+      badge_result = WarmWelcomeBadgeAwarder.call(@automation)
 
       # Mark automation as completed and schedule next run
       next_run_time = @automation.calculate_next_run_time
