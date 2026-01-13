@@ -9,7 +9,7 @@ RSpec.describe Ai::CommentHelpfulnessAssessor, type: :service do
            past_published_at: 2.weeks.ago,
            tag_list: "welcome",
            title: "Welcome Thread",
-           body_markdown: "Welcome to our community! Introduce yourself below.")
+           body_markdown: "---\ntitle: Welcome Thread\npublished: true\ntags: welcome\n---\n\nWelcome to our community! Introduce yourself below.")
   end
   let(:comment) do
     create(:comment,

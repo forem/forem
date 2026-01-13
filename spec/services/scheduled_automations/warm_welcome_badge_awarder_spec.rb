@@ -10,7 +10,8 @@ RSpec.describe ScheduledAutomations::WarmWelcomeBadgeAwarder, type: :service do
            published: true,
            past_published_at: 2.weeks.ago,
            tag_list: "welcome",
-           title: "Welcome Thread")
+           title: "Welcome Thread",
+           body_markdown: "---\ntitle: Welcome Thread\npublished: true\ntags: welcome\n---\n\nWelcome to our community!")
   end
   let(:automation) do
     create(:scheduled_automation,
@@ -33,6 +34,11 @@ RSpec.describe ScheduledAutomations::WarmWelcomeBadgeAwarder, type: :service do
   describe "#call" do
     subject(:awarder) { described_class.new(automation) }
 
+    before do
+      # Ensure badge exists for tests
+      badge
+    end
+
     context "when badge does not exist" do
       before do
         badge.destroy
@@ -48,6 +54,7 @@ RSpec.describe ScheduledAutomations::WarmWelcomeBadgeAwarder, type: :service do
 
     context "when welcome thread does not exist" do
       before do
+        badge # Ensure badge exists
         welcome_thread.destroy
       end
 
@@ -64,6 +71,8 @@ RSpec.describe ScheduledAutomations::WarmWelcomeBadgeAwarder, type: :service do
       let(:user3) { create(:user) }
 
       before do
+        badge # Ensure badge exists
+        welcome_thread # Ensure welcome thread exists
         automation.update!(last_run_at: nil)
       end
 
@@ -376,7 +385,8 @@ RSpec.describe ScheduledAutomations::WarmWelcomeBadgeAwarder, type: :service do
                  user: user2,
                  commentable: welcome_thread,
                  body_markdown: "I'm new here!",
-                 created_at: 5.days.ago)
+                 created_at: 5.days.ago,
+                 score: -100) # Make parent comment low quality so it doesn't get a badge
         end
         let!(:helpful_reply) do
           create(:comment,
@@ -390,7 +400,10 @@ RSpec.describe ScheduledAutomations::WarmWelcomeBadgeAwarder, type: :service do
 
         before do
           allow_any_instance_of(Ai::CommentCheck).to receive(:spam?).and_return(false)
-          allow_any_instance_of(Ai::CommentHelpfulnessAssessor).to receive(:helpful?).and_return(true)
+          # Only the reply should be helpful, not the parent
+          allow_any_instance_of(Ai::CommentHelpfulnessAssessor).to receive(:helpful?) do |assessor|
+            assessor.instance_variable_get(:@comment) == helpful_reply
+          end
         end
 
         it "awards badges for helpful reply comments" do
