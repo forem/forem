@@ -189,7 +189,7 @@ fr:
           howto:
             subtitle: How to restore a social account
             first_html: "Check their social account's UID via these third party tools: %{twitter_uid} and %{github_uid}"
-            twitter_uid: Twitter UID
+            twitter_uid: X UID
             github_uid: GitHub UID
             second: Check whether or not it matches the corresponding UID below.
             third: Remove the respective account if it doesn't match.
@@ -342,7 +342,7 @@ fr:
           not_member: User has not accepted their invitation yet.
           email: Email
           github: GitHub
-          twitter: Twitter
+          twitter: X
           visit: Visit profile
           options:
             icon: Options
@@ -439,14 +439,14 @@ fr:
         identities:
           facebook: Facebook
           github: GitHub
-          twitter: Twitter
+          twitter: X
       organizations:
         profile:
           id: ID %{organizationid}
           since_html: Organization since %{time}
           email: Email
           github: GitHub
-          twitter: Twitter
+          twitter: X
           visit: Visit organization
           total_members: "%{count} members"
         delete:
