@@ -10,7 +10,7 @@ RSpec.describe ScheduledAutomations::ArticleContentBadgeAwarder, type: :service 
            action: "award_article_content_badge",
            action_config: {
              "badge_slug" => "quality-article",
-             "keywords" => ["ruby", "rails"],
+             "keywords" => %w[ruby rails],
              "criteria" => "well-researched technical content",
              "lookback_hours" => 2
            },
@@ -33,7 +33,7 @@ RSpec.describe ScheduledAutomations::ArticleContentBadgeAwarder, type: :service 
       badge # Ensure badge exists
       allow(Settings::UserExperience).to receive_messages(
         index_minimum_score: 0,
-        index_minimum_date: 1.year.ago.to_i
+        index_minimum_date: 1.year.ago.to_i,
       )
     end
 
@@ -107,7 +107,7 @@ RSpec.describe ScheduledAutomations::ArticleContentBadgeAwarder, type: :service 
         end
 
         before do
-          allow_any_instance_of(Ai::ArticleQualityAssessor).to receive(:qualifies?).and_return(true)
+          allow_any_instance_of(Ai::BadgeCriteriaAssessor).to receive(:qualifies?).and_return(true)
         end
 
         it "awards badges to users with qualifying articles" do
@@ -143,7 +143,7 @@ RSpec.describe ScheduledAutomations::ArticleContentBadgeAwarder, type: :service 
         end
 
         before do
-          allow_any_instance_of(Ai::ArticleQualityAssessor).to receive(:qualifies?).and_return(true)
+          allow_any_instance_of(Ai::BadgeCriteriaAssessor).to receive(:qualifies?).and_return(true)
         end
 
         it "does not award badges for articles that don't match keywords" do
@@ -168,7 +168,7 @@ RSpec.describe ScheduledAutomations::ArticleContentBadgeAwarder, type: :service 
         end
 
         before do
-          allow_any_instance_of(Ai::ArticleQualityAssessor).to receive(:qualifies?).and_return(true)
+          allow_any_instance_of(Ai::BadgeCriteriaAssessor).to receive(:qualifies?).and_return(true)
         end
 
         it "does not award badges for articles below minimum threshold" do
@@ -193,7 +193,7 @@ RSpec.describe ScheduledAutomations::ArticleContentBadgeAwarder, type: :service 
         end
 
         before do
-          allow_any_instance_of(Ai::ArticleQualityAssessor).to receive(:qualifies?).and_return(false)
+          allow_any_instance_of(Ai::BadgeCriteriaAssessor).to receive(:qualifies?).and_return(false)
         end
 
         it "does not award badges for articles that don't qualify" do
@@ -218,7 +218,7 @@ RSpec.describe ScheduledAutomations::ArticleContentBadgeAwarder, type: :service 
         end
 
         before do
-          allow_any_instance_of(Ai::ArticleQualityAssessor).to receive(:qualifies?).and_return(true)
+          allow_any_instance_of(Ai::BadgeCriteriaAssessor).to receive(:qualifies?).and_return(true)
         end
 
         it "does not award badges for articles outside lookback window" do
@@ -248,7 +248,7 @@ RSpec.describe ScheduledAutomations::ArticleContentBadgeAwarder, type: :service 
                  user: user1,
                  badge: badge,
                  created_at: 3.days.ago)
-          allow_any_instance_of(Ai::ArticleQualityAssessor).to receive(:qualifies?).and_return(true)
+          allow_any_instance_of(Ai::BadgeCriteriaAssessor).to receive(:qualifies?).and_return(true)
         end
 
         it "does not award badges to users who received it within the last week" do
@@ -278,7 +278,7 @@ RSpec.describe ScheduledAutomations::ArticleContentBadgeAwarder, type: :service 
                  user: user1,
                  badge: badge,
                  created_at: 8.days.ago)
-          allow_any_instance_of(Ai::ArticleQualityAssessor).to receive(:qualifies?).and_return(true)
+          allow_any_instance_of(Ai::BadgeCriteriaAssessor).to receive(:qualifies?).and_return(true)
         end
 
         it "allows awarding badge again after a week" do
@@ -291,7 +291,9 @@ RSpec.describe ScheduledAutomations::ArticleContentBadgeAwarder, type: :service 
       end
 
       context "with single award badge" do
-        let(:single_award_badge) { create(:badge, slug: "single-award", title: "Single Award", allow_multiple_awards: false) }
+        let(:single_award_badge) do
+          create(:badge, slug: "single-award", title: "Single Award", allow_multiple_awards: false)
+        end
         let(:automation) do
           create(:scheduled_automation,
                  user: bot,
@@ -320,7 +322,7 @@ RSpec.describe ScheduledAutomations::ArticleContentBadgeAwarder, type: :service 
 
         before do
           single_award_badge
-          allow_any_instance_of(Ai::ArticleQualityAssessor).to receive(:qualifies?).and_return(true)
+          allow_any_instance_of(Ai::BadgeCriteriaAssessor).to receive(:qualifies?).and_return(true)
         end
 
         context "when user already has the badge" do
@@ -365,7 +367,7 @@ RSpec.describe ScheduledAutomations::ArticleContentBadgeAwarder, type: :service 
         end
 
         before do
-          allow_any_instance_of(Ai::ArticleQualityAssessor).to receive(:qualifies?).and_return(true)
+          allow_any_instance_of(Ai::BadgeCriteriaAssessor).to receive(:qualifies?).and_return(true)
         end
 
         it "does not award badges to banished users" do
@@ -391,7 +393,7 @@ RSpec.describe ScheduledAutomations::ArticleContentBadgeAwarder, type: :service 
 
         before do
           allow(Settings::UserExperience).to receive(:index_minimum_score).and_return(10)
-          allow_any_instance_of(Ai::ArticleQualityAssessor).to receive(:qualifies?).and_return(true)
+          allow_any_instance_of(Ai::BadgeCriteriaAssessor).to receive(:qualifies?).and_return(true)
         end
 
         it "awards badges for featured articles even if below minimum score" do
@@ -433,7 +435,7 @@ RSpec.describe ScheduledAutomations::ArticleContentBadgeAwarder, type: :service 
 
         before do
           badge
-          allow_any_instance_of(Ai::ArticleQualityAssessor).to receive(:qualifies?).and_return(true)
+          allow_any_instance_of(Ai::BadgeCriteriaAssessor).to receive(:qualifies?).and_return(true)
         end
 
         it "uses custom lookback hours" do
@@ -458,7 +460,7 @@ RSpec.describe ScheduledAutomations::ArticleContentBadgeAwarder, type: :service 
 
         before do
           automation.update!(last_run_at: 30.minutes.ago)
-          allow_any_instance_of(Ai::ArticleQualityAssessor).to receive(:qualifies?).and_return(true)
+          allow_any_instance_of(Ai::BadgeCriteriaAssessor).to receive(:qualifies?).and_return(true)
         end
 
         it "looks back from last_run_at with buffer" do
@@ -501,7 +503,7 @@ RSpec.describe ScheduledAutomations::ArticleContentBadgeAwarder, type: :service 
 
         before do
           badge
-          allow_any_instance_of(Ai::ArticleQualityAssessor).to receive(:qualifies?).and_return(true)
+          allow_any_instance_of(Ai::BadgeCriteriaAssessor).to receive(:qualifies?).and_return(true)
         end
 
         it "processes all articles when no keywords provided" do
@@ -515,7 +517,8 @@ RSpec.describe ScheduledAutomations::ArticleContentBadgeAwarder, type: :service 
       context "when an error occurs" do
         before do
           badge
-          allow_any_instance_of(described_class).to receive(:find_candidate_articles).and_raise(StandardError, "Database error")
+          allow_any_instance_of(described_class).to receive(:find_candidate_articles).and_raise(StandardError,
+                                                                                                "Database error")
         end
 
         it "returns a failure result with error message" do
@@ -549,7 +552,7 @@ RSpec.describe ScheduledAutomations::ArticleContentBadgeAwarder, type: :service 
         end
 
         before do
-          allow_any_instance_of(Ai::ArticleQualityAssessor).to receive(:qualifies?).and_return(true)
+          allow_any_instance_of(Ai::BadgeCriteriaAssessor).to receive(:qualifies?).and_return(true)
         end
 
         it "awards badge only once per user" do
@@ -563,4 +566,3 @@ RSpec.describe ScheduledAutomations::ArticleContentBadgeAwarder, type: :service 
     end
   end
 end
-
