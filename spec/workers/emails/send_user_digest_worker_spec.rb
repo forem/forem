@@ -164,6 +164,28 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
           expect(DigestMailer).to have_received(:with).with(hash_including(smart_summary: nil))
         end
       end
+
+      context "with force_send: true" do
+        it "sends email even if user has email_digest_periodic disabled" do
+          create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
+          user.notification_setting.update_column(:email_digest_periodic, false)
+
+          worker.perform(user.id, true)
+
+          expect(DigestMailer).to have_received(:with).with(hash_including(user: user))
+          expect(mailer).to have_received(:digest_email)
+          expect(message_delivery).to have_received(:deliver_now)
+        end
+
+        it "still does not send email if user is not registered" do
+          create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
+          user.update_column(:registered, false)
+
+          worker.perform(user.id, true)
+
+          expect(DigestMailer).not_to have_received(:with)
+        end
+      end
     end
   end
 end

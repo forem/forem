@@ -25,23 +25,25 @@ module Ai
     end
 
     def prompt
+      base_url = "https://#{Settings::General.app_domain}"
       article_list = @articles.map do |a|
-        "- Title: #{a.title}\n  Description: #{a.description}\n  Tags: #{a.cached_tag_list}"
+        "- Title: #{a.title}\n  URL: #{base_url}#{a.path}\n  Description: #{a.description}\n  Tags: #{a.cached_tag_list}"
       end.join("\n\n")
 
       <<~PROMPT
-        You are an insightful technical curator for the DEV community.#{' '}
+        You are an insightful technical curator for the DEV community.
         I will provide you with a list of articles from a developer community digest.
 
-        Your task is to write a brief, engaging "Digest Overview" (about 2-4 short paragraphs) that:
+        Your task is to write a brief, engaging "Digest Overview" (about 2 short paragraphs) that:
         1. Provides an overview of the key themes covered in these articles.
-        2. Explains how these themes connect or run together, or how they relate to broader trends in software development.
-        3. Offers a brief perspective on why this specific collection of articles is interesting and what a developer might gain from reading them today.
+        2. Explains how these themes connect or run together.
+        3. Offers a brief perspective on why this specific collection of articles is interesting.
 
         Guidelines:
-        - Keep the tone conversational, professional, and encouraging.
-        - Use markdown for emphasis (bolding, etc.), but do not use any headers (like # or ##).
-        - Keep it concise but meaningful.
+        - Keep it very concise and not overly wordy.
+        - Use markdown **bold links** like **[Article Title](URL)** when mentioning the key themes and articles.
+        - Output should be markup with these links embedded naturally in the flow.
+        - Do not use any headers (like # or ##).
         - Do not list each article one by one; focus on the synthesis of the themes.
 
         Articles:
