@@ -27,7 +27,17 @@ module Emails
                                                                    user_signed_in: true)
 
       begin
-        DigestMailer.with(user: user, articles: articles.to_a, billboards: [first_billboard, second_billboard])
+        user_ids_for_ai = ENV["AI_DIGEST_SUMMARY_USER_IDS"]&.split(",")&.map(&:to_i) || []
+        smart_summary = if user_ids_for_ai.include?(user.id)
+                          Ai::EmailDigestSummary.new(articles.to_a).generate
+                        end
+
+        DigestMailer.with(
+          user: user,
+          articles: articles.to_a,
+          billboards: [first_billboard, second_billboard],
+          smart_summary: smart_summary,
+        )
           .digest_email.deliver_now
 
         event_params = { user_id: user.id, context_type: "email", category: "impression" }
