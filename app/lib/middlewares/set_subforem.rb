@@ -25,27 +25,9 @@ module Middlewares
 
       # POST-PROCESS HEADERS HERE
       begin
-        # Example logic: if a subforem is found, we do custom cookie manipulation
-        if RequestStore.store[:subforem_id].present?
-          parsed = PublicSuffix.parse(request.host, default_rule: nil)
-          subdomain_regexp = /^([^.]+)\.#{parsed.sld}\.#{parsed.tld}$/
-
-          if request.host =~ subdomain_regexp
-            # Remove your session cookie (or any other cookie) from subdomain
-            Rack::Utils.delete_cookie_header!(
-              headers,
-              ApplicationConfig["SESSION_KEY"],
-              domain: request.host
-            )
-
-            # Also remove 'remember_user_token' or other cookies if needed
-            Rack::Utils.delete_cookie_header!(
-              headers,
-              "remember_user_token",
-              domain: request.host
-            )
-          end
-        end
+        # All shared domain cookies should use Settings::General.app_domain
+        # No need for subdomain-specific cookie manipulation anymore
+        # The Devise monkeypatch now handles all cookies with the shared domain
 
         # Set Content-Security-Policy header to allow embedding in iframes for all subforems
         headers.delete("X-Frame-Options")

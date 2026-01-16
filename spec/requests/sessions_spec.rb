@@ -86,8 +86,10 @@ RSpec.describe "Sessions", type: :request do
         user.reload
         expect(user.current_sign_in_at).to be_nil
         expect(user.current_sign_in_ip).to be_nil
-        # Check that the cookie is deleted.
-        expect(cookies["forem_user_signed_in"]).to be_blank
+        
+        # Check that the cookie deletion is set in response headers
+        set_cookie_headers = response.headers['Set-Cookie']
+        expect(set_cookie_headers).to include("forem_user_signed_in=")
       end
     end
 

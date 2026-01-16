@@ -12,16 +12,21 @@ class AuthPassController < ApplicationController
       return
     end
 
+    Rails.logger.info "[IFRAME] Request from #{request.host}, user_signed_in?=#{user_signed_in?}"
+
     if user_signed_in? && user_not_signed_out?(current_user)
       # User is authenticated on the main domain
+      Rails.logger.info "[IFRAME] User #{current_user.id} authenticated, current_sign_in_at=#{current_user.current_sign_in_at}, generating token"
       session[:user_id] = current_user.id
       @token = generate_auth_token(current_user)
     elsif session[:user_id]
       # User is authenticated via the iframe session cookie
       user = User.find_by(id: session[:user_id])
       if user
+        Rails.logger.info "[IFRAME] User #{user.id} from iframe session, current_sign_in_at=#{user.current_sign_in_at}, last_sign_in_at=#{user.last_sign_in_at}, generating token"
         @token = generate_auth_token(user)
       else
+        Rails.logger.info "[IFRAME] No user found for session[:user_id], returning empty"
         session.delete(:user_id)
         render html: "<html><body></body></html>".html_safe, status: :ok, layout: false
         return
@@ -31,13 +36,16 @@ class AuthPassController < ApplicationController
       if main_session_user_id = request.cookie_jar.signed[:user_id]
         user = User.find_by(id: main_session_user_id)
         if user
+          Rails.logger.info "[IFRAME] User #{user.id} from main session cookie WITHOUT user_not_signed_out? check! current_sign_in_at=#{user.current_sign_in_at}, last_sign_in_at=#{user.last_sign_in_at}, generating token"
           session[:user_id] = user.id
           @token = generate_auth_token(user)
         else
+          Rails.logger.info "[IFRAME] No user found for main session cookie, returning empty"
           render html: "<html><body></body></html>".html_safe, status: :ok, layout: false
           return
         end
       else
+        Rails.logger.info "[IFRAME] No session data found, returning empty"
         render html: "<html><body></body></html>".html_safe, status: :ok, layout: false
         return
       end
@@ -53,30 +61,25 @@ class AuthPassController < ApplicationController
     token = params[:token]
     payload = decode_auth_token(token)
 
+    Rails.logger.info "[TOKEN_LOGIN] Request from #{request.host}, payload present: #{payload.present?}"
+
     if payload && payload["user_id"]
       user = User.find_by(id: payload["user_id"])
-      if user && user_not_signed_out?(user)
+      Rails.logger.info "[TOKEN_LOGIN] User #{user&.id} found, current_sign_in_at=#{user&.current_sign_in_at}, last_sign_in_at=#{user&.last_sign_in_at}"
+      user_not_signed_out = user && user_not_signed_out?(user)
+      Rails.logger.info "[TOKEN_LOGIN] user_not_signed_out? check result: #{user_not_signed_out}"
+      if user_not_signed_out
         # Sign the user in
+        Rails.logger.info "[TOKEN_LOGIN] Accepting token, setting session and remember cookies for user #{user.id}"
         session[:user_id] = user.id
     
         # Set remember_created_at and remember_token
         user.remember_me!
-        # Get Devise’s default cookie values
-        base_values = Devise::Controllers::Rememberable.cookie_values
-        # Dynamically adjust the domain to match the request domain
-        custom_domain = root_domain(request.host)
-        adjusted_values = base_values.merge!(domain: custom_domain)
-        # Set the actual remember cookie values as Devise does
-        cookie_values = adjusted_values.merge!(
-          value: user.class.serialize_into_cookie(user),
-          expires: user.remember_expires_at
-        )
-        # Set the cookie with the dynamically adjusted domain
-        cookies.signed["remember_user_token"] = cookie_values
-
+        remember_me(user)
+        
         cookies[:forem_user_signed_in] = {
           value: "true",
-          domain: ".#{custom_domain}",
+          domain: ".#{Settings::General.app_domain}",
           httponly: true,
           secure: ApplicationConfig["FORCE_SSL_IN_RAILS"] == "true",
           expires: 2.year.from_now
@@ -84,9 +87,11 @@ class AuthPassController < ApplicationController
 
         render json: { success: true, user: { id: user.id, email: user.email } }
       else
+        Rails.logger.info "[TOKEN_LOGIN] REJECTED - User #{user&.id || 'not found'} failed user_not_signed_out? check"
         render json: { success: false, error: "User not found" }, status: :unauthorized
       end
     else
+      Rails.logger.info "[TOKEN_LOGIN] REJECTED - Invalid or expired token payload"
       render json: { success: false, error: "Invalid or expired token" }, status: :unauthorized
     end
   end
