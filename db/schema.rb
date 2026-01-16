@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_11_25_161333) do
+ActiveRecord::Schema[7.0].define(version: 2025_12_30_120202) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1594,6 +1594,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_25_161333) do
     t.integer "credits_count", default: 0, null: false
     t.datetime "current_sign_in_at", precision: nil
     t.inet "current_sign_in_ip"
+    t.integer "current_subscriber_status", default: 0, null: false
     t.string "email"
     t.string "encrypted_password", default: "", null: false
     t.boolean "export_requested", default: false
@@ -1669,6 +1670,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_25_161333) do
     t.index ["apple_username"], name: "index_users_on_apple_username"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["created_at"], name: "index_users_on_created_at"
+    t.index ["current_subscriber_status"], name: "index_users_on_current_subscriber_status"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["facebook_username"], name: "index_users_on_facebook_username"
     t.index ["feed_fetched_at"], name: "index_users_on_feed_fetched_at"

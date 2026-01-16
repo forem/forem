@@ -36,6 +36,7 @@ class User < ApplicationRecord
 
   # User types enum
   enum type_of: { member: 0, community_bot: 1, member_bot: 2 }
+  enum current_subscriber_status: { not_subscribed: 0, free_subscription: 1, trial_subscription: 2, paying_subscription: 3 }
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,

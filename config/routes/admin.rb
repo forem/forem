@@ -87,7 +87,13 @@ namespace :admin do
       end
     end
 
-    resources :badges, only: %i[index edit update new create]
+    resources :badges, only: %i[index edit update new create] do
+      resources :badge_automations, only: %i[index new create edit update destroy], controller: "badge_automations" do
+        member do
+          patch :toggle_enabled
+        end
+      end
+    end
     resources :badge_achievements, only: %i[index destroy]
     get "/badge_achievements/award_badges", to: "badge_achievements#award"
     post "/badge_achievements/award_badges", to: "badge_achievements#award_badges"

@@ -40,8 +40,13 @@ en:
           confirm: Are you absolutely sure you want to remove your %{provider} account?
           submit: Remove %{provider}
           unable_to_remove: You are unable to remove one of your authentication methods as you need a remaining method to authenticate you. Please add another authentication method above before continuing.
+        free_billing_info: You are on a free subscription. There is no active billing associated with your account, so no payment management is required.
       billing:
         heading: Billing
+        current_status: Current Subscription Status
+        free_subscription: You are on a free subscription and are not being billed in any capacity.
+        trial_subscription: You are currently on a trial subscription.
+        paying_subscription: You are on a recurring paying subscription.
         add: Add Credit Card
         another: "+ Add Another Credit Card"
         cards: Your Credit Cards
