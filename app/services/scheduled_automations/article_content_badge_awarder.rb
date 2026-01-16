@@ -47,8 +47,8 @@ module ScheduledAutomations
     def call
       validate_config!
 
-      badge_id = Badge.id_for_slug(@badge_slug)
-      unless badge_id
+      badge = Badge.find_by(slug: @badge_slug)
+      unless badge
         return Result.new(
           success?: false,
           users_awarded: 0,
@@ -56,14 +56,7 @@ module ScheduledAutomations
         )
       end
 
-      badge = Badge.find_by(id: badge_id)
-      unless badge
-        return Result.new(
-          success?: false,
-          users_awarded: 0,
-          error_message: "Badge with id '#{badge_id}' not found",
-        )
-      end
+      badge_id = badge.id
 
       users_awarded = award_badges_to_qualifying_users(badge_id, badge)
 
@@ -96,7 +89,7 @@ module ScheduledAutomations
       users_awarded = 0
       assessed_user_ids = []
 
-      candidate_articles.find_each do |article|
+      candidate_articles.each do |article|
         next if article.user.nil? || article.user.banished?
         next if assessed_user_ids.include?(article.user_id)
 
@@ -114,19 +107,19 @@ module ScheduledAutomations
         end
 
         # Assess if the article qualifies using AI
-        if qualifies_for_badge?(article)
-          achievement = BadgeAchievement.create(
-            user_id: article.user_id,
-            badge_id: badge_id,
-            rewarding_context_message_markdown: generate_message(article),
-          )
+        next unless qualifies_for_badge?(article)
 
-          if achievement.persisted?
-            article.user.touch
-            users_awarded += 1
-            assessed_user_ids << article.user_id
-          end
-        end
+        achievement = BadgeAchievement.create(
+          user_id: article.user_id,
+          badge_id: badge_id,
+          rewarding_context_message_markdown: generate_message(article),
+        )
+
+        next unless achievement.persisted?
+
+        article.user.touch
+        users_awarded += 1
+        assessed_user_ids << article.user_id
       end
 
       users_awarded
@@ -135,7 +128,7 @@ module ScheduledAutomations
     def find_candidate_articles
       # Start with published articles in the time window
       articles = Article.published
-        .where("published_at > ?", @since_time)
+        .where(articles: { published_at: @since_time..Time.current })
         .includes(:user)
 
       # If keywords are provided, search for articles matching them
@@ -147,8 +140,6 @@ module ScheduledAutomations
       end
 
       # Filter by minimum indexable threshold using SQL conditions
-      # Articles must meet: score >= -1, (score >= index_minimum_score OR featured = true),
-      # and published_at >= index_minimum_date
       min_score = Settings::UserExperience.index_minimum_score
       min_date = Time.at(Settings::UserExperience.index_minimum_date)
 

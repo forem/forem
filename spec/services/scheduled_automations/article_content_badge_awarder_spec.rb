@@ -35,6 +35,11 @@ RSpec.describe ScheduledAutomations::ArticleContentBadgeAwarder, type: :service 
         index_minimum_score: 0,
         index_minimum_date: 1.year.ago.to_i,
       )
+      Timecop.freeze(Time.zone.parse("2026-01-16 12:00:00 UTC"))
+    end
+
+    after do
+      Timecop.return
     end
 
     context "when badge does not exist" do
@@ -91,7 +96,7 @@ RSpec.describe ScheduledAutomations::ArticleContentBadgeAwarder, type: :service 
                  title: "Ruby on Rails Tutorial",
                  body_markdown: "Ruby on Rails is a powerful framework...",
                  tag_list: "ruby, rails",
-                 past_published_at: 1.hour.ago,
+                 published_at: 1.hour.ago,
                  score: 10,
                  featured: false)
         end
@@ -101,7 +106,7 @@ RSpec.describe ScheduledAutomations::ArticleContentBadgeAwarder, type: :service 
                  title: "Advanced Rails Patterns",
                  body_markdown: "Rails has many advanced patterns...",
                  tag_list: "rails, ruby",
-                 past_published_at: 30.minutes.ago,
+                 published_at: 30.minutes.ago,
                  score: 15,
                  featured: false)
         end
