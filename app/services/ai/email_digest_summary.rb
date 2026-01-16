@@ -19,9 +19,9 @@ module Ai
     private
 
     def cache_key
-      # Sort IDs to ensure order-independence
-      sorted_ids = @articles.map(&:id).sort.join("-")
-      "ai_digest_summary_v1_#{Digest::MD5.hexdigest(sorted_ids)}"
+      # Sort paths to ensure order-independence
+      sorted_paths = @articles.map(&:path).sort.join("-")
+      "ai_digest_summary_v1_#{Digest::MD5.hexdigest(sorted_paths)}"
     end
 
     def prompt

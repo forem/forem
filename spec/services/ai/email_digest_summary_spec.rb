@@ -42,6 +42,22 @@ RSpec.describe Ai::EmailDigestSummary, type: :service do
       expect(ai_client).to have_received(:call).once
     end
 
+    it "depends on article paths for caching" do
+      service.generate
+
+      # Same ID, different path
+      modified_articles = [
+        instance_double(Article, id: 1, path: "/different_path", title: "Title 1", description: "Desc 1",
+                                 cached_tag_list: "ruby"),
+        instance_double(Article, id: 2, path: "/path2", title: "Title 2", description: "Desc 2",
+                                 cached_tag_list: "rails"),
+      ]
+      new_service = described_class.new(modified_articles, ai_client: ai_client)
+      new_service.generate
+
+      expect(ai_client).to have_received(:call).twice
+    end
+
     it "returns nil if articles are empty" do
       empty_service = described_class.new([])
       expect(empty_service.generate).to be_nil
