@@ -4,11 +4,15 @@ module Emails
 
     sidekiq_options queue: :low_priority, retry: 15, lock: :until_executing
 
-    def perform(user_id)
+    def perform(user_id, force_send = false)
       user = User.find_by(id: user_id)
-      return unless user&.notification_setting&.email_digest_periodic? && user&.registered?
+      return unless user&.registered?
 
-      articles = EmailDigestArticleCollector.new(user).articles_to_send
+      if !force_send && !user.notification_setting&.email_digest_periodic?
+        return
+      end
+
+      articles = EmailDigestArticleCollector.new(user, force_send: force_send).articles_to_send
       return unless articles.any?
 
       tags = user.cached_followed_tag_names&.first(12)
