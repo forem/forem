@@ -24,6 +24,19 @@
           </td>
         </tr>
 
+        <% if @smart_summary.present? %>
+          <tr>
+            <td bgcolor="#FFFFFF" style="padding: 24px 0 10px; text-align: left;">
+              <div style="background-color: #f0f7ff; border: 2px solid #3b49df; border-radius: 12px; padding: 16px; color: #0a0a0a;">
+                <h3 style="margin-top: 0; margin-bottom: 12px; font-size: 18px; color: #3b49df;">✨ Weekly Overview</h3>
+                <div style="font-size: 15px; line-height: 1.5;">
+                  <%= ContentRenderer.new(@smart_summary).process.processed_html.html_safe %>
+                </div>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+
         <% if @billboards&.first&.present? %>
           <tr>
             <td bgcolor="#FFFFFF" style="padding: 16px 0 4px;">
