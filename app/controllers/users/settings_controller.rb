@@ -47,7 +47,8 @@ module Users
     def import_articles_from_feed(users_setting)
       return if users_setting.feed_url.blank?
 
-      Feeds::ImportArticlesWorker.perform_async(users_setting.user_id)
+      subforem_id = RequestStore.store[:subforem_id]
+      Feeds::ImportArticlesWorker.perform_async([users_setting.user_id], nil, subforem_id)
     end
 
     def users_setting_params
