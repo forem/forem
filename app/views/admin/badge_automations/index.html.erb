@@ -1,7 +1,7 @@
 <header class="flex items-center mb-6">
   <div>
     <h1 class="crayons-title">Badge Automations for <%= @badge.title %></h1>
-    <p class="color-secondary">Manage automated badge awarding for first posts under organizations</p>
+    <p class="color-secondary">Manage automated badge awarding based on various criteria</p>
   </div>
   <div class="ml-auto flex gap-2">
     <%= link_to "New Automation", new_admin_badge_badge_automation_path(@badge), class: "crayons-btn crayons-btn--s" %>
@@ -23,7 +23,11 @@
             <div class="flex-1">
               <div class="flex items-center gap-2 mb-2">
                 <h3 class="font-semibold text-lg">
-                  First Post Under Organization Badge Automation
+                  <% if automation.action == "award_article_content_badge" %>
+                    Article Content Quality Badge Automation
+                  <% else %>
+                    First Post Under Organization Badge Automation
+                  <% end %>
                 </h3>
                 <% unless automation.enabled? %>
                   <span class="crayons-tag crayons-tag--outlined">Disabled</span>
@@ -37,14 +41,22 @@
               
               <div class="text-sm color-secondary space-y-1">
                 <div><strong>Created By:</strong> <%= automation.user.name %> (@<%= automation.user.username %>)</div>
-                <div><strong>Organization:</strong> 
-                  <% if automation.action_config&.dig("organization_id") %>
-                    <% org = Organization.find_by(id: automation.action_config["organization_id"]) %>
-                    <%= org ? org.name : "Unknown (ID: #{automation.action_config['organization_id']})" %>
-                  <% else %>
-                    Not set
+                <% if automation.action == "award_first_org_post_badge" %>
+                  <div><strong>Organization:</strong> 
+                    <% if automation.action_config&.dig("organization_id") %>
+                      <% org = Organization.find_by(id: automation.action_config["organization_id"]) %>
+                      <%= org ? org.name : "Unknown (ID: #{automation.action_config['organization_id']})" %>
+                    <% else %>
+                      Not set
+                    <% end %>
+                  </div>
+                <% else %>
+                  <div><strong>Quality Criteria:</strong> <%= truncate(automation.action_config&.dig("criteria") || "Not set", length: 100) %></div>
+                  <% if automation.action_config&.dig("keywords").present? %>
+                    <div><strong>Keywords:</strong> <%= Array(automation.action_config["keywords"]).join(", ") %></div>
                   <% end %>
-                </div>
+                  <div><strong>Lookback Hours:</strong> <%= automation.action_config&.dig("lookback_hours") || 2 %></div>
+                <% end %>
                 <div><strong>Frequency:</strong> <%= format_frequency(automation) rescue "Unknown" %></div>
                 <% if automation.next_run_at %>
                   <div><strong>Next Run:</strong> <%= automation.next_run_at.strftime("%b %d, %Y at %I:%M %p %Z") %></div>
