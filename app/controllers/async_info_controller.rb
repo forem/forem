@@ -85,6 +85,9 @@ class AsyncInfoController < ApplicationController
   end
 
   def verify_state_of_user_session?
+    # Skip verification during logout to allow Devise redirect to complete
+    return true if @skip_session_verification
+    
     if current_user.last_sign_in_at.present? && current_user.current_sign_in_at.blank?
       Rails.logger.info "[VERIFY_SESSION] User #{current_user.id} found logged out (last_sign_in_at present, current_sign_in_at nil)"
       

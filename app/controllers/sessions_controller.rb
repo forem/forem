@@ -1,4 +1,6 @@
 class SessionsController < Devise::SessionsController
+  before_action :skip_session_verification, only: [:destroy]
+  
   def destroy
     if user_signed_in?
       user_id = current_user.id
@@ -7,9 +9,6 @@ class SessionsController < Devise::SessionsController
       # Mark user as globally logged out in database
       current_user.update_columns(current_sign_in_at: nil, current_sign_in_ip: nil)
       
-      # Clear session to prevent re-authentication
-      reset_session
-      
       # Delete remember token cookies on shared domain
       root_domain = Settings::General.app_domain
       cookies.delete(:remember_user_token, domain: ".#{root_domain}")
@@ -17,10 +16,16 @@ class SessionsController < Devise::SessionsController
       cookies.delete(:remember_user_token)
       cookies.delete(:forem_user_signed_in)
       
-      # Call Devise's sign_out to clean up Warden
-      super
-      
-      Rails.logger.info "[LOGOUT] User #{user_id} fully logged out"
+      Rails.logger.info "[LOGOUT] User #{user_id} cookies deleted, calling Devise sign_out"
     end
+    
+    # Devise handles session clearing and redirect
+    super
+  end
+
+  private
+
+  def skip_session_verification
+    @skip_session_verification = true
   end
 end
