@@ -96,7 +96,7 @@ RSpec.describe ScheduledAutomations::ArticleContentBadgeAwarder, type: :service 
                  title: "Ruby on Rails Tutorial",
                  body_markdown: "Ruby on Rails is a powerful framework...",
                  tag_list: "ruby, rails",
-                 published_at: 1.hour.ago,
+                 past_published_at: 1.hour.ago,
                  score: 10,
                  featured: false)
         end
@@ -106,7 +106,7 @@ RSpec.describe ScheduledAutomations::ArticleContentBadgeAwarder, type: :service 
                  title: "Advanced Rails Patterns",
                  body_markdown: "Rails has many advanced patterns...",
                  tag_list: "rails, ruby",
-                 published_at: 30.minutes.ago,
+                 past_published_at: 30.minutes.ago,
                  score: 15,
                  featured: false)
         end

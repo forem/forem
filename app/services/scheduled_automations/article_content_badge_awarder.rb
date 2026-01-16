@@ -128,14 +128,13 @@ module ScheduledAutomations
     def find_candidate_articles
       # Start with published articles in the time window
       articles = Article.published
-        .where(articles: { published_at: @since_time..Time.current })
+        .where("articles.published_at > ?", @since_time)
         .includes(:user)
 
       # If keywords are provided, search for articles matching them
       if @keywords.present?
         # Use search_articles for efficient keyword matching (case-insensitive)
-        # PostgreSQL full-text search supports OR operator for multiple keywords
-        search_term = @keywords.join(" OR ")
+        search_term = @keywords.join(" ")
         articles = articles.search_articles(search_term)
       end
 
