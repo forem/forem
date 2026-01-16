@@ -3,8 +3,9 @@ require "rails_helper"
 RSpec.describe Ai::EmailDigestSummary, type: :service do
   let(:articles) do
     [
-      instance_double(Article, id: 1, title: "Title 1", description: "Desc 1", cached_tag_list: "ruby"),
-      instance_double(Article, id: 2, title: "Title 2", description: "Desc 2", cached_tag_list: "rails"),
+      instance_double(Article, id: 1, title: "Title 1", path: "/path1", description: "Desc 1", cached_tag_list: "ruby"),
+      instance_double(Article, id: 2, title: "Title 2", path: "/path2", description: "Desc 2",
+                               cached_tag_list: "rails"),
     ]
   end
   let(:ai_client) { instance_double(Ai::Base) }
