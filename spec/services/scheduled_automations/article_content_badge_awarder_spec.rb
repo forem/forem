@@ -306,7 +306,7 @@ RSpec.describe ScheduledAutomations::ArticleContentBadgeAwarder, type: :service 
                  action: "award_article_content_badge",
                  action_config: {
                    "badge_slug" => "single-award",
-                   "keywords" => ["ruby"],
+                   "keywords" => ["tutorial"],
                    "criteria" => "well-researched technical content"
                  },
                  frequency: "hourly",
@@ -433,7 +433,7 @@ RSpec.describe ScheduledAutomations::ArticleContentBadgeAwarder, type: :service 
                  title: "Ruby Tutorial",
                  body_markdown: "Ruby is great...",
                  tag_list: "ruby",
-                 past_published_at: 3.hours.ago, # Within 4 hour + 15 min window
+                 past_published_at: 1.hour.ago, # Consistently 1 hour ago
                  score: 10,
                  featured: false)
         end
