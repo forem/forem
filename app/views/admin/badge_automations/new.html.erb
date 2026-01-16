@@ -1,7 +1,6 @@
 <header class="mb-6">
-  <h1 class="crayons-title">New First Org Post Badge Automation for <%= @badge.title %></h1>
-  <p class="color-secondary">Create an automation to award this badge to users who post their <strong>first article under an organization</strong>. This automation will run on a schedule and check for new first posts since the last run.</p>
-  <p class="color-secondary mt-2"><strong>Note:</strong> This is specifically for first posts under organizations. Other badge automation types may be added in the future.</p>
+  <h1 class="crayons-title">New Badge Automation for <%= @badge.title %></h1>
+  <p class="color-secondary">Create an automation to award this badge based on specific criteria. Choose the automation type below.</p>
 </header>
 
 <div class="crayons-card p-6">
@@ -18,16 +17,50 @@
     <% end %>
 
     <div class="mb-4">
-      <label class="crayons-field__label" for="organization_id">Organization *</label>
-      <select name="organization_id" id="organization_id" class="crayons-select" required>
-        <option value="">Select an organization</option>
-        <% @organizations.each do |org| %>
-          <option value="<%= org.id %>" <%= 'selected' if @automation.action_config&.dig("organization_id")&.to_s == org.id.to_s %>>
-            <%= org.name %>
-          </option>
-        <% end %>
+      <label class="crayons-field__label" for="automation_type">Automation Type *</label>
+      <select name="automation_type" id="automation_type" class="crayons-select" required onchange="updateAutomationTypeFields()">
+        <option value="">Select automation type</option>
+        <option value="first_org_post" <%= 'selected' if @automation_type == 'first_org_post' %>>First Post Under Organization</option>
+        <option value="article_content" <%= 'selected' if @automation_type == 'article_content' %>>Article Content Quality</option>
       </select>
-      <p class="crayons-field__description">The organization to check for first posts</p>
+      <p class="crayons-field__description">Choose the type of badge automation to create</p>
+    </div>
+
+    <!-- First Org Post Fields -->
+    <div id="first-org-post-fields" style="display: <%= @automation_type == 'first_org_post' ? 'block' : 'none' %>;">
+      <div class="mb-4">
+        <label class="crayons-field__label" for="organization_id">Organization *</label>
+        <select name="organization_id" id="organization_id" class="crayons-select" <%= 'required' if @automation_type == 'first_org_post' %>>
+          <option value="">Select an organization</option>
+          <% @organizations.each do |org| %>
+            <option value="<%= org.id %>" <%= 'selected' if @automation.action_config&.dig("organization_id")&.to_s == org.id.to_s %>>
+              <%= org.name %>
+            </option>
+          <% end %>
+        </select>
+        <p class="crayons-field__description">The organization to check for first posts</p>
+      </div>
+    </div>
+
+    <!-- Article Content Fields -->
+    <div id="article-content-fields" style="display: <%= @automation_type == 'article_content' ? 'block' : 'none' %>;">
+      <div class="mb-4">
+        <label class="crayons-field__label" for="criteria">Quality Criteria *</label>
+        <textarea name="scheduled_automation[action_config][criteria]" id="criteria" class="crayons-textfield" rows="4" <%= 'required' if @automation_type == 'article_content' %> placeholder="e.g., well-researched technical content about web development"><%= @automation.action_config&.dig("criteria") %></textarea>
+        <p class="crayons-field__description">Describe the quality criteria that articles must meet to qualify for this badge. This will be used by AI to assess articles.</p>
+      </div>
+
+      <div class="mb-4">
+        <label class="crayons-field__label" for="keywords">Keywords (Optional)</label>
+        <input type="text" name="scheduled_automation[action_config][keywords]" id="keywords" class="crayons-textfield" value="<%= Array(@automation.action_config&.dig("keywords")).join(', ') %>" placeholder="ruby, rails, javascript">
+        <p class="crayons-field__description">Comma-separated keywords to search for articles. Articles must match at least one keyword (case-insensitive). Leave empty to check all articles.</p>
+      </div>
+
+      <div class="mb-4">
+        <label class="crayons-field__label" for="lookback_hours">Lookback Hours</label>
+        <input type="number" name="scheduled_automation[action_config][lookback_hours]" id="lookback_hours" class="crayons-textfield" min="1" value="<%= @automation.action_config&.dig("lookback_hours") || 2 %>">
+        <p class="crayons-field__description">How many hours back to look for articles (default: 2). The automation will add 15 minutes buffer to prevent missing articles.</p>
+      </div>
     </div>
 
     <div class="mb-4">
@@ -165,12 +198,38 @@ function updateFrequencyFields() {
   container.innerHTML = html;
 }
 
+function updateAutomationTypeFields() {
+  const automationType = document.getElementById('automation_type').value;
+  const firstOrgPostFields = document.getElementById('first-org-post-fields');
+  const articleContentFields = document.getElementById('article-content-fields');
+  const organizationField = document.getElementById('organization_id');
+  const criteriaField = document.getElementById('criteria');
+  
+  if (automationType === 'first_org_post') {
+    firstOrgPostFields.style.display = 'block';
+    articleContentFields.style.display = 'none';
+    if (organizationField) organizationField.required = true;
+    if (criteriaField) criteriaField.required = false;
+  } else if (automationType === 'article_content') {
+    firstOrgPostFields.style.display = 'none';
+    articleContentFields.style.display = 'block';
+    if (organizationField) organizationField.required = false;
+    if (criteriaField) criteriaField.required = true;
+  } else {
+    firstOrgPostFields.style.display = 'none';
+    articleContentFields.style.display = 'none';
+    if (organizationField) organizationField.required = false;
+    if (criteriaField) criteriaField.required = false;
+  }
+}
+
 // Initialize frequency fields on page load
 document.addEventListener('DOMContentLoaded', function() {
   const frequency = document.getElementById('frequency').value;
   if (frequency) {
     updateFrequencyFields();
   }
+  updateAutomationTypeFields();
 });
 </script>
 

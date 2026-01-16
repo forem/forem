@@ -9,16 +9,17 @@ module Admin
 
     def index
       @automations = ScheduledAutomation
-                      .where(action: "award_first_org_post_badge")
+                      .where(action: ["award_first_org_post_badge", "award_article_content_badge"])
                       .where("action_config->>'badge_slug' = ?", @badge.slug)
                       .includes(:user)
                       .order(created_at: :desc)
     end
 
     def new
+      @automation_type = params[:automation_type] || "first_org_post"
       @automation = ScheduledAutomation.new(
-        action: "award_first_org_post_badge",
-        service_name: "first_org_post_badge",
+        action: @automation_type == "article_content" ? "award_article_content_badge" : "award_first_org_post_badge",
+        service_name: @automation_type == "article_content" ? "article_content_badge" : "first_org_post_badge",
         action_config: {
           "badge_slug" => @badge.slug
         },
@@ -29,19 +30,34 @@ module Admin
     end
 
     def create
+      @automation_type = params[:automation_type] || automation_params[:action_config]&.dig("automation_type") || "first_org_post"
       @automation = ScheduledAutomation.new(automation_params)
-      @automation.action = "award_first_org_post_badge"
-      @automation.service_name = "first_org_post_badge"
-      @automation.user = current_user # Automatically assign to current admin user
-      @automation.action_config ||= {}
-      @automation.action_config["badge_slug"] = @badge.slug
       
-      # Ensure organization_id is set from params
-      if params[:organization_id].present?
-        @automation.action_config["organization_id"] = params[:organization_id]
+      if @automation_type == "article_content"
+        @automation.action = "award_article_content_badge"
+        @automation.service_name = "article_content_badge"
+        @automation.action_config ||= {}
+        @automation.action_config["badge_slug"] = @badge.slug
+        
+        # Validate required fields for article content badge
+        unless @automation.action_config["criteria"].present?
+          @automation.errors.add(:base, "Quality criteria is required")
+        end
       else
-        @automation.errors.add(:base, "Organization is required")
+        @automation.action = "award_first_org_post_badge"
+        @automation.service_name = "first_org_post_badge"
+        @automation.action_config ||= {}
+        @automation.action_config["badge_slug"] = @badge.slug
+        
+        # Ensure organization_id is set from params
+        if params[:organization_id].present?
+          @automation.action_config["organization_id"] = params[:organization_id]
+        else
+          @automation.errors.add(:base, "Organization is required")
+        end
       end
+      
+      @automation.user = current_user # Automatically assign to current admin user
 
       if @automation.errors.empty? && @automation.valid?
         @automation.set_next_run_time!
@@ -70,8 +86,8 @@ module Admin
         @automation.action_config ||= {}
         @automation.action_config["badge_slug"] = @badge.slug
         
-        # Update organization_id if provided
-        if params[:organization_id].present?
+        # Update organization_id if provided (for first_org_post_badge)
+        if @automation.action == "award_first_org_post_badge" && params[:organization_id].present?
           @automation.action_config["organization_id"] = params[:organization_id]
         end
         
@@ -121,6 +137,9 @@ module Admin
       unless @automation.action_config&.dig("badge_slug") == @badge.slug
         raise ActiveRecord::RecordNotFound
       end
+      
+      # Set automation type for edit view
+      @automation_type = @automation.action == "award_article_content_badge" ? "article_content" : "first_org_post"
     end
 
     def set_organizations
@@ -149,6 +168,18 @@ module Admin
       if params[:organization_id].present?
         result[:action_config] ||= {}
         result[:action_config]["organization_id"] = params[:organization_id]
+      end
+      
+      # Handle keywords - convert comma-separated string to array
+      if result[:action_config] && result[:action_config]["keywords"].present?
+        keywords_str = result[:action_config]["keywords"]
+        if keywords_str.is_a?(String)
+          keywords_array = keywords_str.split(",").map(&:strip).reject(&:blank?)
+          result[:action_config]["keywords"] = keywords_array.any? ? keywords_array : []
+        end
+      elsif result[:action_config] && result[:action_config].key?("keywords")
+        # If keywords field exists but is empty, set to empty array
+        result[:action_config]["keywords"] = []
       end
       
       result

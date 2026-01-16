@@ -1,6 +1,12 @@
 <header class="mb-6">
-  <h1 class="crayons-title">Edit First Org Post Badge Automation for <%= @badge.title %></h1>
-  <p class="color-secondary">Update the automation settings for awarding this badge to users who post their <strong>first article under an organization</strong>.</p>
+  <h1 class="crayons-title">Edit Badge Automation for <%= @badge.title %></h1>
+  <p class="color-secondary">
+    <% if @automation.action == "award_article_content_badge" %>
+      Update the automation settings for awarding this badge based on <strong>article content quality</strong>.
+    <% else %>
+      Update the automation settings for awarding this badge to users who post their <strong>first article under an organization</strong>.
+    <% end %>
+  </p>
 </header>
 
 <div class="crayons-card p-6">
@@ -22,18 +28,38 @@
       </p>
     </div>
 
-    <div class="mb-4">
-      <label class="crayons-field__label" for="organization_id">Organization *</label>
-      <select name="organization_id" id="organization_id" class="crayons-select" required>
-        <option value="">Select an organization</option>
-        <% @organizations.each do |org| %>
-          <option value="<%= org.id %>" <%= 'selected' if @automation.action_config&.dig("organization_id")&.to_s == org.id.to_s %>>
-            <%= org.name %>
-          </option>
-        <% end %>
-      </select>
-      <p class="crayons-field__description">The organization to check for first posts</p>
-    </div>
+    <% if @automation.action == "award_first_org_post_badge" %>
+      <div class="mb-4">
+        <label class="crayons-field__label" for="organization_id">Organization *</label>
+        <select name="organization_id" id="organization_id" class="crayons-select" required>
+          <option value="">Select an organization</option>
+          <% @organizations.each do |org| %>
+            <option value="<%= org.id %>" <%= 'selected' if @automation.action_config&.dig("organization_id")&.to_s == org.id.to_s %>>
+              <%= org.name %>
+            </option>
+          <% end %>
+        </select>
+        <p class="crayons-field__description">The organization to check for first posts</p>
+      </div>
+    <% else %>
+      <div class="mb-4">
+        <label class="crayons-field__label" for="criteria">Quality Criteria *</label>
+        <textarea name="scheduled_automation[action_config][criteria]" id="criteria" class="crayons-textfield" rows="4" required><%= @automation.action_config&.dig("criteria") %></textarea>
+        <p class="crayons-field__description">Describe the quality criteria that articles must meet to qualify for this badge. This will be used by AI to assess articles.</p>
+      </div>
+
+      <div class="mb-4">
+        <label class="crayons-field__label" for="keywords">Keywords (Optional)</label>
+        <input type="text" name="scheduled_automation[action_config][keywords]" id="keywords" class="crayons-textfield" value="<%= Array(@automation.action_config&.dig("keywords")).join(', ') %>" placeholder="ruby, rails, javascript">
+        <p class="crayons-field__description">Comma-separated keywords to search for articles. Articles must match at least one keyword (case-insensitive). Leave empty to check all articles.</p>
+      </div>
+
+      <div class="mb-4">
+        <label class="crayons-field__label" for="lookback_hours">Lookback Hours</label>
+        <input type="number" name="scheduled_automation[action_config][lookback_hours]" id="lookback_hours" class="crayons-textfield" min="1" value="<%= @automation.action_config&.dig("lookback_hours") || 2 %>">
+        <p class="crayons-field__description">How many hours back to look for articles (default: 2). The automation will add 15 minutes buffer to prevent missing articles.</p>
+      </div>
+    <% end %>
 
     <div class="mb-4">
       <label class="crayons-field__label" for="frequency">Frequency *</label>
