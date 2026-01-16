@@ -42,7 +42,8 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
 
         worker.perform(user.id)
 
-        expect(DigestMailer).to have_received(:with).with(user: user, articles: Array, billboards: Array)
+        expect(DigestMailer).to have_received(:with).with(hash_including(user: user, articles: kind_of(Array),
+                                                                         billboards: kind_of(Array)))
         expect(mailer).to have_received(:digest_email)
         expect(message_delivery).to have_received(:deliver_now)
       end

@@ -11,7 +11,10 @@ RSpec.describe Ai::EmailDigestSummary, type: :service do
   let(:service) { described_class.new(articles, ai_client: ai_client) }
 
   describe "#generate" do
+    let(:memory_store) { ActiveSupport::Cache::MemoryStore.new }
+
     before do
+      allow(Rails).to receive(:cache).and_return(memory_store)
       allow(ai_client).to receive(:call).and_return("AI generated summary")
       Rails.cache.clear
     end
@@ -40,14 +43,14 @@ RSpec.describe Ai::EmailDigestSummary, type: :service do
 
     it "returns nil if articles are empty" do
       empty_service = described_class.new([])
-      expect(empty_service.generate).to nil
+      expect(empty_service.generate).to be_nil
     end
 
     it "returns nil and logs error if AI client fails" do
       allow(ai_client).to receive(:call).and_raise(StandardError, "AI Error")
       expect(Rails.logger).to receive(:error).with(/AI Digest Summary generation failed/)
 
-      expect(service.generate).to nil
+      expect(service.generate).to be_nil
     end
   end
 end
