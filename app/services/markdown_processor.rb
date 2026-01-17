@@ -65,17 +65,17 @@ module MarkdownProcessor
   # contexts.
   module AllowedAttributes
     FEED = %w[alt class colspan data-conversation data-lang em height href id ref rel
-              rowspan size span src start strong title value width].freeze
+              rowspan size span src start strong title value width style].freeze
 
     PODCAST_SHOW = %w[alt class colspan data-conversation data-lang em height href id ref
-                      rel rowspan size span src start strong title value width].freeze
+                      rel rowspan size span src start strong title value width style].freeze
 
     BILLBOARD = %w[alt class height href src width].freeze
 
     RENDERED_MARKDOWN_SCRUBBER = %w[alt autoplay colspan controls data-conversation data-lang
                                     data-gif-video data-no-instant data-url href id loop muted name
                                     playsinline preload poster ref rel rowspan span src start title
-                                    type value].freeze
+                                    type value style].freeze
 
     MARKDOWN_PROCESSOR = %w[alt href src].freeze
 
