@@ -79,10 +79,19 @@ transitioning to a [Preact](https://preactjs.com/)-first frontend.
 A more complete overview of our stack is available in
 [our docs](https://developers.forem.com/technical-overview/stack).
 
-To **launch Forem in Gitpod**, navigate to
-[https://gitpod.io/#https://github.com/{your_github_username}/forem](https://gitpod.io/#https://github.com/{your_github_username}/forem).
+### Quick Start with Cloud Development Environments
 
-To **launch Forem in Ona** (formerly Gitpod), the project is fully configured for Ona development environments. Simply open the project in Ona and the environment will be automatically configured with all necessary services and dependencies.
+**Option 1: Launch in Gitpod**
+
+Navigate to [https://gitpod.io/#https://github.com/{your_github_username}/forem](https://gitpod.io/#https://github.com/{your_github_username}/forem)
+
+**Option 2: Launch in Ona** (formerly Gitpod)
+
+Navigate to [https://ona.dev/#https://github.com/{your_github_username}/forem](https://ona.dev/#https://github.com/{your_github_username}/forem)
+
+Both options provide fully configured development environments with all necessary services and dependencies pre-installed.
+
+**🚀 PR Preview Environments**: When you open a pull request, an Ona preview environment is automatically prepared! Look for the preview link in the PR comments to test changes without local setup. See [Ona Preview Environments Guide](docs/ona_preview_environments.md) for details.
 
 ### Installation Documentation
 
