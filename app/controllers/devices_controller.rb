@@ -3,7 +3,9 @@ class DevicesController < ApplicationController
   # users are able to register devices. This replaces the Authenticated Users
   # Pusher Beams solution.
   # See: https://github.com/forem/forem/pull/12419/files#r563906038
-  skip_before_action :verify_authenticity_token, only: [:destroy]
+  before_action :current_user_by_token
+  before_action :check_push_notifications_enabled
+  skip_before_action :verify_authenticity_token
 
   rescue_from ActiveRecord::ActiveRecordError, ArgumentError do |exc|
     render json: { error: exc.message, status: 422 }, status: :unprocessable_entity
@@ -63,5 +65,11 @@ class DevicesController < ApplicationController
 
   def consumer_app
     ConsumerApp.find_by(app_bundle: params[:app_bundle], platform: params[:platform])
+  end
+
+  def check_push_notifications_enabled
+    return if ENV['PUSH_NOTIFICATIONS_ENABLED'] == 'true'
+
+    render json: { error: 'Push notifications are currently disabled' }, status: :service_unavailable
   end
 end
