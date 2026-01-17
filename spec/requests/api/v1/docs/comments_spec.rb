@@ -11,7 +11,7 @@ RSpec.describe "Api::V1::Docs::Comments" do
   let(:Accept) { "application/vnd.forem.api-v1+json" }
 
   describe "GET /comments" do
-    path "/api/comments" do
+    path "/comments" do
       get "Comments" do
         security []
         tags "comments"
@@ -60,7 +60,7 @@ If the page parameter is not passed, all comments of an article or podcast will 
   end
 
   describe "GET /comments/{id}" do
-    path "/api/comments/{id}" do
+    path "/comments/{id}" do
       get "Comment by id" do
         security []
         tags "comments"

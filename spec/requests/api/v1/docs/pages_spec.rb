@@ -15,7 +15,7 @@ RSpec.describe "api/v1/pages" do
     user.add_role(:admin)
   end
 
-  path "/api/pages" do
+  path "/pages" do
     describe "get to view all pages" do
       get("show details for all pages") do
         security []
@@ -98,7 +98,7 @@ RSpec.describe "api/v1/pages" do
     end
   end
 
-  path "/api/pages/{id}" do
+  path "/pages/{id}" do
     describe "get to view a page" do
       get("show details for a page") do
         security []

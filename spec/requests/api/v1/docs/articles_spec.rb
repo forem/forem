@@ -22,7 +22,7 @@ RSpec.describe "Api::V1::Docs::Articles" do
       published_article.update_columns(organization_id: organization.id)
     end
 
-    path "/api/articles" do
+    path "/articles" do
       post "Publish article" do
         tags "articles"
         description "This endpoint allows the client to create a new article.
@@ -161,7 +161,7 @@ belonging to the requested collection, ordered by ascending publication date.",
   describe "/api/articles/latest" do
     before { create_list(:article, 3) }
 
-    path "/api/articles/latest" do
+    path "/articles/latest" do
       get "Published articles sorted by published date" do
         security []
         tags "articles"
@@ -186,7 +186,7 @@ It supports pagination, each page will contain 30 articles by default."
   end
 
   describe "/api/articles/{id}" do
-    path "/api/articles/{id}" do
+    path "/articles/{id}" do
       get "Published article by id" do
         security []
         tags "articles"
@@ -274,7 +274,7 @@ It supports pagination, each page will contain 30 articles by default."
     end
   end
 
-  path "/api/articles/{username}/{slug}" do
+  path "/articles/{username}/{slug}" do
     get "Published article by path" do
       security []
       tags "articles"
@@ -305,7 +305,7 @@ It supports pagination, each page will contain 30 articles by default."
   end
 
   describe "GET /articles/me" do
-    path "/api/articles/me" do
+    path "/articles/me" do
       get "User's articles" do
         tags "articles", "users"
         description "This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.
@@ -338,7 +338,7 @@ It will return published articles with pagination. By default a page will contai
       end
     end
 
-    path "/api/articles/me/published" do
+    path "/articles/me/published" do
       get "User's published articles" do
         tags "articles", "users"
         description "This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.
@@ -371,7 +371,7 @@ It will return published articles with pagination. By default a page will contai
       end
     end
 
-    path "/api/articles/me/unpublished" do
+    path "/articles/me/unpublished" do
       get "User's unpublished articles" do
         tags "articles", "users"
         description "This endpoint allows the client to retrieve a list of unpublished articles on behalf of an authenticated user.
@@ -404,7 +404,7 @@ It will return unpublished articles with pagination. By default a page will cont
       end
     end
 
-    path "/api/articles/me/all" do
+    path "/articles/me/all" do
       get "User's all articles" do
         tags "articles", "users"
         description "This endpoint allows the client to retrieve a list of all articles on behalf of an authenticated user.
@@ -445,7 +445,7 @@ By default a page will contain 30 articles."
       user.add_role(:admin)
     end
 
-    path "/api/articles/{id}/unpublish" do
+    path "/articles/{id}/unpublish" do
       put "Unpublish an article" do
         tags "articles"
         description "This endpoint allows the client to unpublish an article.

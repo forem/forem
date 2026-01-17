@@ -6,7 +6,7 @@ require "swagger_helper"
 describe "GET /tags" do
   before { create_list(:tag, 3) }
 
-  path "/api/tags" do
+  path "/tags" do
     get "Tags" do
       tags "tags"
       security []
