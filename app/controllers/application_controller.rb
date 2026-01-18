@@ -329,12 +329,25 @@ class ApplicationController < ActionController::Base
   end
 
   def remember_cookie_sync
+    # Skip if user has been globally logged out (current_sign_in_at=nil)
+    if user_signed_in? && current_user.current_sign_in_at.blank?
+      Rails.logger.info "[REMEMBER_SYNC] SKIP - User #{current_user.id} globally logged out (current_sign_in_at=nil)"
+      return
+    end
+    
     # Set remember cookie token in case not properly set.
+    Rails.logger.info "[REMEMBER_SYNC] Called - user_signed_in?=#{user_signed_in?}, remember_cookie_present?=#{cookies[:remember_user_token].present?}"
+    if user_signed_in?
+      Rails.logger.info "[REMEMBER_SYNC] User #{current_user.id} signed in - remember_token_in_db?=#{current_user.remember_token.present?}, remember_created_at=#{current_user.remember_created_at}, current_sign_in_at=#{current_user.current_sign_in_at.present?}"
+    end
     if user_signed_in? &&
-        cookies[:remember_user_token].blank?
+        cookies[:remember_user_token].blank? &&
+        current_user.current_sign_in_at.present?
+      Rails.logger.info "[REMEMBER_SYNC] Creating NEW remember token for user #{current_user.id}"
       current_user.remember_me = true
       current_user.remember_me!
       remember_me(current_user)
+      Rails.logger.info "[REMEMBER_SYNC] After creating - remember_token_in_db?=#{current_user.remember_token.present?}"
     end
   end
 
