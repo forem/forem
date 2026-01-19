@@ -235,6 +235,22 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
       end
     end
 
+    context "when articles have comment scores" do
+      it "factors in comment_score to the ordering" do
+        # Article 1: score 20, comment_score 0 -> total 20
+        # Article 2: score 15, comment_score 10 -> total 25
+        # Article 2 should come first despite lower base score
+        a1 = create(:article, public_reactions_count: 20, score: 20, comment_score: 0, featured: true,
+                              subforem: default_subforem, title: "A1")
+        a2 = create(:article, public_reactions_count: 15, score: 15, comment_score: 10, featured: true,
+                              subforem: default_subforem, title: "A2")
+
+        result = described_class.new(user).articles_to_send
+        expect(result.first.title).to eq("A2")
+        expect(result.second.title).to eq("A1")
+      end
+    end
+
     context "when the last email included the title of the first article" do
       it "bumps the second article to the front" do
         articles = create_list(:article, 5, public_reactions_count: 40, featured: true, score: 40,

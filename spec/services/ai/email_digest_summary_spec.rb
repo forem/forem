@@ -3,9 +3,10 @@ require "rails_helper"
 RSpec.describe Ai::EmailDigestSummary, type: :service do
   let(:articles) do
     [
-      instance_double(Article, id: 1, title: "Title 1", path: "/path1", description: "Desc 1", cached_tag_list: "ruby"),
+      instance_double(Article, id: 1, title: "Title 1", path: "/path1", description: "Desc 1", cached_tag_list: "ruby",
+                               comments_count: 0),
       instance_double(Article, id: 2, title: "Title 2", path: "/path2", description: "Desc 2",
-                               cached_tag_list: "rails"),
+                               cached_tag_list: "rails", comments_count: 0),
     ]
   end
   let(:ai_client) { instance_double(Ai::Base) }
@@ -48,9 +49,9 @@ RSpec.describe Ai::EmailDigestSummary, type: :service do
       # Same ID, different path
       modified_articles = [
         instance_double(Article, id: 1, path: "/different_path", title: "Title 1", description: "Desc 1",
-                                 cached_tag_list: "ruby"),
+                                 cached_tag_list: "ruby", comments_count: 0),
         instance_double(Article, id: 2, path: "/path2", title: "Title 2", description: "Desc 2",
-                                 cached_tag_list: "rails"),
+                                 cached_tag_list: "rails", comments_count: 0),
       ]
       new_service = described_class.new(modified_articles, ai_client: ai_client)
       new_service.generate
@@ -68,6 +69,25 @@ RSpec.describe Ai::EmailDigestSummary, type: :service do
       expect(Rails.logger).to receive(:error).with(/AI Digest Summary generation failed/)
 
       expect(service.generate).to be_nil
+    end
+
+    context "when an article has many comments" do
+      let(:article_with_comments) do
+        instance_double(Article, id: 3, title: "Highly Discussed", path: "/path3", description: "Desc 3",
+                                 cached_tag_list: "discuss", comments_count: 20)
+      end
+      let(:articles) { [article_with_comments] }
+
+      it "includes top comments in the prompt" do
+        allow(Comment).to receive_message_chain(:where, :where, :order, :limit, :pluck)
+          .and_return(["Comment 1", "Comment 2"])
+
+        service.generate
+
+        expect(ai_client).to have_received(:call).with(/Top Comments \(use for extra context if relevant\):/)
+        expect(ai_client).to have_received(:call).with(/Comment 1/)
+        expect(ai_client).to have_received(:call).with(/Comment 2/)
+      end
     end
   end
 end
