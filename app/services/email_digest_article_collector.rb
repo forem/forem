@@ -13,7 +13,7 @@ class EmailDigestArticleCollector
 
   def articles_to_send
     # rubocop:disable Metrics/BlockLength
-    order = Arel.sql("((score * ((feed_success_score * 12) + 0.1)) - (clickbait_score * 2)) DESC")
+    order = Arel.sql("(((score + comment_score) * ((feed_success_score * 12) + 0.1)) - (clickbait_score * 2)) DESC")
     instrument ARTICLES_TO_SEND, tags: { user_id: @user.id } do
       return [] unless @force_send || should_receive_email?
 
@@ -22,7 +22,7 @@ class EmailDigestArticleCollector
                    set_subforem_context
 
                    articles_query = @user.followed_articles
-                     .select(:title, :description, :path, :cached_user, :cached_tag_list, :subforem_id)
+                     .select(:title, :description, :path, :cached_user, :cached_tag_list, :subforem_id, :comment_score, :comments_count)
                      .published
                      .full_posts
                      .where("published_at > ?", cutoff_date)
@@ -42,7 +42,7 @@ class EmailDigestArticleCollector
                    articles_query = if @skip_subforem_filtering
                                       # If skipping subforem filtering, get articles from anywhere
                                       Article.select(
-                                        :title, :description, :path, :cached_user, :cached_tag_list, :subforem_id
+                                        :title, :description, :path, :cached_user, :cached_tag_list, :subforem_id, :comment_score, :comments_count
                                       )
                                         .published
                                         .full_posts
@@ -56,7 +56,7 @@ class EmailDigestArticleCollector
                                     else
                                       # Normal logic with subforem filtering and tags
                                       Article.select(
-                                        :title, :description, :path, :cached_user, :cached_tag_list, :subforem_id
+                                        :title, :description, :path, :cached_user, :cached_tag_list, :subforem_id, :comment_score, :comments_count
                                       )
                                         .published
                                         .full_posts
@@ -75,7 +75,7 @@ class EmailDigestArticleCollector
       if articles.length < 3
         if @skip_subforem_filtering
           # If we're skipping subforem filtering, get articles from anywhere
-          articles_query = Article.select(:title, :description, :path, :cached_user, :cached_tag_list, :subforem_id)
+          articles_query = Article.select(:title, :description, :path, :cached_user, :cached_tag_list, :subforem_id, :comment_score, :comments_count)
             .published
             .full_posts
             .where("published_at > ?", cutoff_date)
@@ -89,7 +89,7 @@ class EmailDigestArticleCollector
             fallback_subforem_ids << default_subforem_id
           end
 
-          articles_query = Article.select(:title, :description, :path, :cached_user, :cached_tag_list, :subforem_id)
+          articles_query = Article.select(:title, :description, :path, :cached_user, :cached_tag_list, :subforem_id, :comment_score, :comments_count)
             .published
             .full_posts
             .where("published_at > ?", cutoff_date)
