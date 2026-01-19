@@ -240,10 +240,12 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
         # Article 1: score 20, comment_score 0 -> total 20
         # Article 2: score 15, comment_score 10 -> total 25
         # Article 2 should come first despite lower base score
-        a1 = create(:article, public_reactions_count: 20, score: 20, comment_score: 0, featured: true,
-                              subforem: default_subforem, title: "A1")
-        a2 = create(:article, public_reactions_count: 15, score: 15, comment_score: 10, featured: true,
-                              subforem: default_subforem, title: "A2")
+        create(:article, public_reactions_count: 20, score: 20, comment_score: 0, featured: true,
+                         subforem: default_subforem, title: "A1")
+        create(:article, public_reactions_count: 15, score: 15, comment_score: 10, featured: true,
+                         subforem: default_subforem, title: "A2")
+        create(:article, public_reactions_count: 10, score: 15, comment_score: 0, featured: true,
+                         subforem: default_subforem, title: "A3")
 
         result = described_class.new(user).articles_to_send
         expect(result.first.title).to eq("A2")
