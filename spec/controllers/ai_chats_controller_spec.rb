@@ -1,16 +1,14 @@
 require "rails_helper"
 
 RSpec.describe AiChatsController, type: :controller do
-  let(:user) { create(:user) }
-
-  before do
-    sign_in user
-  end
+  include Devise::Test::ControllerHelpers
 
   describe "GET #index" do
     context "when user is an admin" do
+      let(:admin) { create(:user, :super_admin) }
+
       before do
-        allow(user).to receive(:any_admin?).and_return(true)
+        sign_in admin
       end
 
       it "returns a success response" do
@@ -20,13 +18,22 @@ RSpec.describe AiChatsController, type: :controller do
     end
 
     context "when user is not an admin" do
+      let(:user) { create(:user) }
+
       before do
-        allow(user).to receive(:any_admin?).and_return(false)
+        sign_in user
       end
 
       it "redirects to root path" do
         get :index
         expect(response).to redirect_to(root_path)
+      end
+    end
+
+    context "when user is not logged in" do
+      it "redirects to sign in" do
+        get :index
+        expect(response).to have_http_status(:found) # Redirect to auth
       end
     end
   end
@@ -39,8 +46,10 @@ RSpec.describe AiChatsController, type: :controller do
     end
 
     context "when user is an admin" do
+      let(:admin) { create(:user, :super_admin) }
+
       before do
-        allow(user).to receive(:any_admin?).and_return(true)
+        sign_in admin
       end
 
       it "returns success with AI message" do
@@ -66,8 +75,10 @@ RSpec.describe AiChatsController, type: :controller do
     end
 
     context "when user is not an admin" do
+      let(:user) { create(:user) }
+
       before do
-        allow(user).to receive(:any_admin?).and_return(false)
+        sign_in user
       end
 
       it "returns unauthorized for JSON requests" do
