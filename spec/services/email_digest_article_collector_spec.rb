@@ -255,12 +255,16 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
 
     context "when the last email included the title of the first article" do
       it "bumps the second article to the front" do
-        articles = create_list(:article, 5, public_reactions_count: 40, featured: true, score: 40,
-                                            subforem: default_subforem)
+        articles = (1..5).map do |i|
+          create(:article, public_reactions_count: 40, featured: true, score: 100 - i,
+                           subforem: default_subforem)
+        end
+
         Ahoy::Message.create(mailer: "DigestMailer#digest_email",
                              user_id: user.id, sent_at: 25.hours.ago,
                              clicked_at: 20.hours.ago,
                              subject: articles.first.title)
+
         result = described_class.new(user).articles_to_send
 
         expect(result.first.title).to eq articles.second.title
@@ -270,8 +274,11 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
 
     context "when the last email does not include the title of any articles" do
       it "makes first article come first" do
-        articles = create_list(:article, 5, public_reactions_count: 40, featured: true, score: 40,
-                                            subforem: default_subforem)
+        articles = (1..5).map do |i|
+          create(:article, public_reactions_count: 40, featured: true, score: 100 - i,
+                           subforem: default_subforem)
+        end
+
         Ahoy::Message.create(mailer: "DigestMailer#digest_email",
                              user_id: user.id, sent_at: 25.hours.ago,
                              clicked_at: 20.hours.ago,
