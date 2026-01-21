@@ -18,14 +18,17 @@ module Ai
     private
 
     def prompt
-      written_articles = @user.articles.published.order(created_at: :desc).limit(10)
-      viewed_articles = Article.where(id: @user.page_views.order(created_at: :desc).limit(20).pluck(:article_id))
+      written_data = @user.articles.published.order(created_at: :desc).limit(10).pluck(:title, :description, :path)
 
-      reading_list_articles = Article.where(id: Reaction.readinglist_for_user(@user).order(created_at: :desc).limit(10).pluck(:reactable_id))
+      viewed_ids = @user.page_views.order(created_at: :desc).limit(20).pluck(:article_id)
+      viewed_data = Article.where(id: viewed_ids).pluck(:title, :description, :path)
 
-      written_context = written_articles.map { |a| "- #{a.title}: #{a.description}" }.join("\n")
-      viewed_context = viewed_articles.map { |a| "- #{a.title}: #{a.description}" }.join("\n")
-      reading_list_context = reading_list_articles.map { |a| "- #{a.title}: #{a.description}" }.join("\n")
+      reading_list_ids = Reaction.readinglist_for_user(@user).order(created_at: :desc).limit(10).pluck(:reactable_id)
+      reading_list_data = Article.where(id: reading_list_ids).pluck(:title, :description, :path)
+
+      written_context = format_context(written_data)
+      viewed_context = format_context(viewed_data)
+      reading_list_context = format_context(reading_list_data)
 
       <<~PROMPT
         You are an insightful technical curator and community guide for the DEV community.
@@ -48,7 +51,17 @@ module Ai
         - Reference their recent interests (viewed, written, or saved) if it helps provide a more personalized answer.
         - Keep responses concise and engaging.
         - Use markdown for formatting.
+        - Add links to any content that is mentioned using the URLs provided in the context.
       PROMPT
+    end
+
+    def format_context(data)
+      return if data.blank?
+
+      data.map do |title, description, path|
+        url = ::URL.url(path)
+        "- #{title}: #{description} (Link: #{url})"
+      end.join("\n")
     end
   end
 end
