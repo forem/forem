@@ -17,9 +17,12 @@ class AiChatsController < ApplicationController
 
     chat_service = Ai::ChatService.new(current_user, history: history)
     result = chat_service.generate_response(user_message)
+    response_markdown = result[:response]
+
+    rendered_html = MarkdownProcessor::Parser.new(response_markdown, user: current_user).evaluate_markdown
 
     render json: {
-      message: result[:response],
+      message: rendered_html,
       history: result[:history]
     }
   rescue StandardError => e

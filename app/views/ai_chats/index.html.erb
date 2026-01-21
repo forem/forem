@@ -27,11 +27,16 @@
     
     let chatHistory = [];
 
-    function appendMessage(role, text) {
+    function appendMessage(role, content) {
       const msgDiv = document.createElement('div');
       msgDiv.className = `message ${role}`;
-      msgDiv.innerText = text; // Use innerText for safety, but AI might return markdown
-      // For real markdown, we'd need a parser, but let's keep it simple or use a safe helper
+      
+      if (role === 'ai') {
+        msgDiv.innerHTML = content;
+      } else {
+        msgDiv.innerText = content;
+      }
+      
       messagesContainer.appendChild(msgDiv);
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
       return msgDiv;
