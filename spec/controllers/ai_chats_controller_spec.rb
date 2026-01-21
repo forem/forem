@@ -64,7 +64,7 @@ RSpec.describe AiChatsController, type: :controller do
 
         expect(response).to be_successful
         json = JSON.parse(response.body)
-        expect(json["message"]).to eq("AI Reply")
+        expect(json["message"]).to eq("<p>AI Reply</p>\n")
         expect(json["history"]).to be_an(Array)
       end
 
