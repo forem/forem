@@ -13,12 +13,14 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
   end
 
   describe ".call" do
-    it "ensures that we only fetch users who can create articles", vcr: { cassette_name: "feeds_import" } do
-      allow(ArticlePolicy).to receive(:scope_users_authorized_to_action).and_call_original
+    it "fetches RSS feeds for non-suspended users with feed_url configured", vcr: { cassette_name: "feeds_import" } do
+      # RSS imports should work regardless of subforem type
+      user = User.joins(:setting).where.not(users_settings: { feed_url: [nil, ""] }).first
+      expect(user).to be_present
 
-      described_class.call
+      num_articles = described_class.call
 
-      expect(ArticlePolicy).to have_received(:scope_users_authorized_to_action).with(users_scope: User, action: :create)
+      expect(num_articles).to be > 0
     end
 
     # TODO: We could probably improve these tests by parsing against the items in the feed rather than hardcoding

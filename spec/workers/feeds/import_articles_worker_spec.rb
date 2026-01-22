@@ -20,10 +20,10 @@ RSpec.describe Feeds::ImportArticlesWorker, sidekiq: :inline, type: :worker do
 
         expect(Feeds::Import)
           .to have_received(:call)
-          .with(users_scope: User.where(id: [bob.id]), earlier_than: 4.hours.ago.iso8601)
+          .with(users_scope: User.where(id: [bob.id]), earlier_than: 4.hours.ago.iso8601, subforem_id: nil)
         expect(Feeds::Import)
           .not_to have_received(:call)
-          .with(users_scope: User.where(id: [alice.id]), earlier_than: 4.hours.ago.iso8601)
+          .with(users_scope: User.where(id: [alice.id]), earlier_than: 4.hours.ago.iso8601, subforem_id: nil)
       end
     end
 
@@ -38,6 +38,7 @@ RSpec.describe Feeds::ImportArticlesWorker, sidekiq: :inline, type: :worker do
       expect(Feeds::Import).to have_received(:call).with(
         users_scope: User.where(id: user.id),
         earlier_than: earlier_than.iso8601,
+        subforem_id: nil,
       )
     end
 
@@ -48,7 +49,7 @@ RSpec.describe Feeds::ImportArticlesWorker, sidekiq: :inline, type: :worker do
 
       worker.perform([user.id])
 
-      expect(Feeds::Import).to have_received(:call).with(users_scope: User.where(id: [user.id]), earlier_than: nil)
+      expect(Feeds::Import).to have_received(:call).with(users_scope: User.where(id: [user.id]), earlier_than: nil, subforem_id: nil)
     end
   end
 end
