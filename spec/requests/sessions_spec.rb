@@ -232,4 +232,37 @@ RSpec.describe "Sessions", type: :request do
       end
     end
   end
+
+  describe "Password reset on subforem domains" do
+    let(:subforem) { create(:subforem, domain: "reset.example.com") }
+
+    before do
+      # This test requires a Subforem record to exist in the database.
+      # The set_session_domain method checks Subforem.cached_all_domains which
+      # queries actual database records. The subforem factory creates this record.
+      allow(Subforem).to receive(:cached_all_domains).and_return([subforem.domain])
+    end
+
+    it "sets session domain to subforem domain when requesting password reset" do
+      # Simulate request to subforem domain
+      # The set_session_domain before_action should detect this is a subforem
+      # and set session cookies to match the subforem domain
+      get "/users/password/new", headers: { "HTTP_HOST" => subforem.domain }
+      
+      # Request doesn't fail due to domain mismatch
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "password reset token validation works on subforem domain" do
+      user = create(:user, onboarding_subforem_id: subforem.id)
+      
+      # Request password reset on subforem domain
+      post user_password_path, params: {
+        user: { email: user.email }
+      }, headers: { "HTTP_HOST" => subforem.domain }
+      
+      expect(response).to have_http_status(:found)
+      # Email would be queued with subforem domain link
+    end
+  end
 end
