@@ -38,6 +38,13 @@ RSpec.describe "AsyncInfo" do
         get "/async_info/base_data"
         expect(response.parsed_body["default_email_optin_allowed"]).to be(true)
       end
+
+      it "updates the user's presence" do
+        user = create(:user, last_presence_at: 2.hours.ago)
+        sign_in user
+
+        expect { get "/async_info/base_data" }.to change { user.reload.last_presence_at }
+      end
     end
   end
 
