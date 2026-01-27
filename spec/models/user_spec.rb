@@ -804,6 +804,29 @@ RSpec.describe User do
     end
   end
 
+  describe "#update_presence!" do
+    context "when last_presence_at is nil" do
+      it "updates last_presence_at to current time" do
+        user.update_column(:last_presence_at, nil)
+        expect { user.update_presence! }.to change(user, :last_presence_at)
+      end
+    end
+
+    context "when last_presence_at is more than 1 hour ago" do
+      it "updates last_presence_at to current time" do
+        user.update_column(:last_presence_at, 2.hours.ago)
+        expect { user.update_presence! }.to change(user, :last_presence_at)
+      end
+    end
+
+    context "when last_presence_at is less than 1 hour ago" do
+      it "does not update last_presence_at" do
+        user.update_column(:last_presence_at, 30.minutes.ago)
+        expect { user.update_presence! }.not_to change(user, :last_presence_at)
+      end
+    end
+  end
+
   describe "#receives_follower_email_notifications?" do
     it "returns false if user has no email" do
       user.assign_attributes(email: nil)
