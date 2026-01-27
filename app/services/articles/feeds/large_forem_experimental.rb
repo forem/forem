@@ -86,7 +86,7 @@ module Articles
           hot_stories = hot_stories.to_a + new_stories.to_a
         else
           hot_stories = Article.published.from_subforem.limited_column_select
-            .includes(:distinct_reaction_categories, :subforem)
+            .includes(:distinct_reaction_categories, :subforem, top_comments: :user)
             .page(@page).per(@number_of_articles)
             .with_at_least_home_feed_minimum_score
             .order(hotness_score: :desc)
