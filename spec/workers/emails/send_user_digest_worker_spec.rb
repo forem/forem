@@ -144,9 +144,8 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
           allow(smart_summary_service).to receive(:generate).and_return("Smart AI Summary")
         end
 
-        it "generates and includes smart summary if user is in experiment list" do
-          allow(ENV).to receive(:[]).and_call_original
-          allow(ENV).to receive(:[]).with("AI_DIGEST_SUMMARY_USER_IDS").and_return(user.id.to_s)
+        it "generates and includes smart summary if user has recent presence" do
+          user.update_column(:last_presence_at, 1.day.ago)
           create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
 
           worker.perform(user.id)
@@ -154,9 +153,17 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
           expect(DigestMailer).to have_received(:with).with(hash_including(smart_summary: "Smart AI Summary"))
         end
 
-        it "does not include smart summary if user is not in experiment list" do
-          allow(ENV).to receive(:[]).and_call_original
-          allow(ENV).to receive(:[]).with("AI_DIGEST_SUMMARY_USER_IDS").and_return("99999")
+        it "does not include smart summary if user has no recent presence" do
+          user.update_column(:last_presence_at, 4.days.ago)
+          create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
+
+          worker.perform(user.id)
+
+          expect(DigestMailer).to have_received(:with).with(hash_including(smart_summary: nil))
+        end
+
+        it "does not include smart summary if user presence is nil" do
+          user.update_column(:last_presence_at, nil)
           create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
 
           worker.perform(user.id)

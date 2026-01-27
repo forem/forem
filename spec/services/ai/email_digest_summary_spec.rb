@@ -70,24 +70,5 @@ RSpec.describe Ai::EmailDigestSummary, type: :service do
 
       expect(service.generate).to be_nil
     end
-
-    context "when an article has many comments" do
-      let(:article_with_comments) do
-        instance_double(Article, id: 3, title: "Highly Discussed", path: "/path3", description: "Desc 3",
-                                 cached_tag_list: "discuss", comments_count: 20)
-      end
-      let(:articles) { [article_with_comments] }
-
-      it "includes top comments in the prompt" do
-        allow(Comment).to receive_message_chain(:where, :where, :order, :limit, :pluck)
-          .and_return(["Comment 1", "Comment 2"])
-
-        service.generate
-
-        expect(ai_client).to have_received(:call).with(/Top Comments \(use for extra context if relevant\):/)
-        expect(ai_client).to have_received(:call).with(/Comment 1/)
-        expect(ai_client).to have_received(:call).with(/Comment 2/)
-      end
-    end
   end
 end

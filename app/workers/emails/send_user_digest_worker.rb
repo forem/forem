@@ -31,8 +31,7 @@ module Emails
                                                                    user_signed_in: true)
 
       begin
-        user_ids_for_ai = ENV["AI_DIGEST_SUMMARY_USER_IDS"]&.split(",")&.map(&:to_i) || []
-        smart_summary = if user_ids_for_ai.include?(user.id)
+        smart_summary = if user.last_presence_at.present? && user.last_presence_at >= 3.days.ago
                           Ai::EmailDigestSummary.new(articles.to_a).generate
                         end
 
