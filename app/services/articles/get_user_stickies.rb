@@ -8,7 +8,7 @@ module Articles
         .published.from_subforem
         .cached_tagged_with_any(article_tags)
         .unscope(:select)
-        .limited_column_select
+        .minimal_feed_column_select
         .where.not(id: article.id)
         .order(published_at: :desc)
         .limit(3)
