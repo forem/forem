@@ -58,7 +58,7 @@ module Stories
 
       # Now, apply the filter.
       stories = stories_by_timeframe(stories: stories)
-      stories = stories.full_posts.from_subforem.limited_column_select
+      stories = stories.full_posts.from_subforem
       @stories = stories.decorate
     end
 
