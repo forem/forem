@@ -57,6 +57,14 @@ RSpec.describe "AhoyEmailClicks" do
                 hash_including(token: token, campaign: campaign, url: url, controller: controller))
         expect(FeedEvent.where(article_id: article.id, category: "click", context_type: "email").size).to be(1)
       end
+
+      it "updates the user's presence" do
+        user = create(:user, last_presence_at: 2.hours.ago)
+        create(:email_message, user: user, token: token)
+
+        expect { post ahoy_email_clicks_path, params: { t: token, c: campaign, u: url, s: signature } }
+          .to change { user.reload.last_presence_at }
+      end
     end
 
     context "with an invalid signature" do

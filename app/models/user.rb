@@ -699,6 +699,12 @@ class User < ApplicationRecord
   def bot?
     community_bot? || member_bot?
   end
+  
+  def update_presence!
+    return if last_presence_at.present? && last_presence_at > 1.hour.ago
+
+    update_column(:last_presence_at, Time.current)
+  end
 
   protected
 
