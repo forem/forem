@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_01_27_141307) do
+ActiveRecord::Schema[7.0].define(version: 2026_01_27_193756) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -234,6 +234,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_01_27_141307) do
   create_table "badges", force: :cascade do |t|
     t.boolean "allow_multiple_awards", default: false, null: false
     t.string "badge_image"
+    t.integer "bonus_weight", default: 0
     t.datetime "created_at", precision: nil, null: false
     t.integer "credits_awarded", default: 0, null: false
     t.string "description", null: false

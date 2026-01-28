@@ -22,6 +22,12 @@
       <%= form.text_field :credits_awarded, class: "crayons-textfield" %>
     </div>
 
+    <div class="crayons-field">
+      <%= form.label :bonus_weight, "Bonus weight", class: "crayons-field__label" %>
+      <p class="crayons-field__description">Integer point value for user reputational bonus. Default is 0. 10 is for major hand-picked badges, 1 for small badges, 0 for gamable or badges not indicative of quality/expertise.</p>
+      <%= form.number_field :bonus_weight, class: "crayons-textfield" %>
+    </div>
+
     <div class="crayons-field crayons-field--checkbox ">
       <%= form.check_box :allow_multiple_awards, class: "crayons-checkbox" %>
       <%= form.label :allow_multiple_awards, class: "crayons-field__label" do %>
