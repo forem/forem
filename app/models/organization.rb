@@ -62,6 +62,7 @@ class Organization < ApplicationRecord
   validates :twitter_username, length: { maximum: 15 }
   validates :unspent_credits_count, presence: true
   validates :url, length: { maximum: 200 }, url: { allow_blank: true, no_local: true }
+  validates :baseline_score, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   unique_across_models :slug, length: { in: 2..30 }
 

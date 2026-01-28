@@ -102,6 +102,7 @@ namespace :admin do
       member do
         patch "update_org_credits"
         patch "update_fully_trusted"
+        patch "update_baseline_score"
       end
     end
     resources :emails

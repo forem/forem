@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_01_27_193756) do
+ActiveRecord::Schema[7.0].define(version: 2026_01_28_210141) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -902,6 +902,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_01_27_193756) do
 
   create_table "organizations", force: :cascade do |t|
     t.integer "articles_count", default: 0, null: false
+    t.integer "baseline_score", default: 0
     t.string "bg_color_hex"
     t.string "company_size"
     t.datetime "created_at", precision: nil, null: false
