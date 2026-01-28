@@ -15,7 +15,7 @@ module Articles
 
         articles
           .published
-          .minimal_feed_column_select
+          .limited_column_select
           .includes(:distinct_reaction_categories, :context_notes)
           .page(page)
           .per(number_of_articles)
