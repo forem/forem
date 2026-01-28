@@ -41,7 +41,7 @@ module Admin
     private
 
     def badge_params
-      params.require(:badge).permit(:title, :description, :badge_image, :credits_awarded, :allow_multiple_awards)
+      params.require(:badge).permit(:title, :description, :badge_image, :credits_awarded, :allow_multiple_awards, :bonus_weight)
     end
   end
 end
