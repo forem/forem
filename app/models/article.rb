@@ -917,7 +917,9 @@ class Article < ApplicationRecord
     badge_bonus_weight_sum = user.badges.sum(:bonus_weight)
     badge_reputation_bonus = Math.sqrt(badge_bonus_weight_sum).to_i
 
-    self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment + user_featured_count_adjustment + user_negative_count_adjustment + context_note_adjustment + automod_label_adjustment + badge_reputation_bonus
+    organization_baseline_score = organization&.baseline_score || 0
+
+    self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment + user_featured_count_adjustment + user_negative_count_adjustment + context_note_adjustment + automod_label_adjustment + badge_reputation_bonus + organization_baseline_score
     accepted_max = [max_score, user&.max_score.to_i].min
     accepted_max = [max_score, user&.max_score.to_i].max if accepted_max.zero?
     self.score = accepted_max if accepted_max.positive? && accepted_max < score
