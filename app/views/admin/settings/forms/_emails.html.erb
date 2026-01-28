@@ -18,6 +18,27 @@
         </div>
 
         <div class="crayons-field">
+          <%= admin_config_label :custom_email_footer %>
+          <p class="crayons-field__description">
+            <strong>Custom HTML footer for all emails.</strong> This will appear above the sign-in reminder in user emails.
+            <br><br>
+            <strong>Email-safe HTML guidelines:</strong>
+            <ul style="margin-top: 8px;">
+              <li>✅ Use <strong>inline styles only</strong> (e.g., <code>style="color: #333;"</code>)</li>
+              <li>✅ Allowed tags: p, br, a, strong, em, span, div, table, tr, td, h1-h6, ul, ol, li, img</li>
+              <li>❌ No external CSS (<code>&lt;link&gt;</code> or <code>&lt;style&gt;</code> tags)</li>
+              <li>❌ No JavaScript or event handlers</li>
+              <li>💡 Keep it simple for best email client compatibility</li>
+            </ul>
+          </p>
+          <%= f.text_area :custom_email_footer,
+                           class: "crayons-textfield",
+                           value: Settings::General.custom_email_footer,
+                           rows: 6,
+                           placeholder: '<p style="text-align: center; color: #666;">Custom footer text here</p>' %>
+        </div>
+
+        <div class="crayons-field">
           <%= admin_config_label :periodic_email_digest %>
           <%= admin_config_description Constants::Settings::General.details[:periodic_email_digest][:description] %>
           <%= f.number_field :periodic_email_digest,
