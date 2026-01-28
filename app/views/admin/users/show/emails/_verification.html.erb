@@ -5,7 +5,10 @@
         <h2 class="crayons-subtitle-1"><%= t("views.admin.users.emails.not_confirmed.subtitle") %></h2>
         <p class="color-secondary"><%= t("views.admin.users.emails.not_confirmed.desc", user: @user.name) %></p>
       </div>
-      <%= f.button t("views.admin.users.emails.confirm"), class: "c-btn c-btn--secondary whitespace-nowrap" %>
+      <div class="flex gap-2">
+        <%= f.button t("views.admin.users.emails.confirm"), class: "c-btn c-btn--secondary whitespace-nowrap" %>
+        <%= button_to "Mark as Confirmed", confirm_email_admin_user_path(@user), method: :post, class: "c-btn c-btn--primary whitespace-nowrap", form: { data: { confirm: "Are you sure you want to manually confirm this user's email?" } } %>
+      </div>
     <% end %>
   <% else %>
     <%= form_with url: verify_email_ownership_admin_user_path(@user), local: true, class: "flex flex-col s:flex-row justify-between gap-4 s:items-center" do |f| %>

@@ -160,6 +160,8 @@ pt:
       credits_added: Créditos foram adicionados!
       credits_removed: Créditos foram removidos.
       manual_verification_sent: E-mail verificado manualmente!
+      email_confirmed: E-mail confirmado!
+      email_confirm_fail: A confirmação do e-mail falhou.
     welcome_controller:
       thread_content: |
         ---

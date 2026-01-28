@@ -199,6 +199,8 @@ en:
       credits_added: Credits have been added!
       credits_removed: Credits have been removed.
       tag_not_found: 'Tag "%{tag_name}" was not found'
+      email_confirmed: Email confirmed!
+      email_confirm_fail: Email confirmation failed.
     welcome_controller:
       thread_content: |
         ---
