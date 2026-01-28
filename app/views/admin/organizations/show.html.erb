@@ -118,6 +118,18 @@
   <% end %>
 </div>
 
+<div class="crayons-card p-6 mb-6">
+  <h3 class="crayons-subtitle-2 mb-4">Baseline Score</h3>
+  <p class="fs-s color-base-60 mb-4">
+    This score is added to every article published under this organization. 
+    Use this to give a visibility boost to trusted partners or official organizations.
+  </p>
+  <%= form_tag update_baseline_score_admin_organization_path(@organization), method: :patch, class: "flex items-center gap-2" do %>
+    <%= number_field_tag :baseline_score, @organization.baseline_score, class: "crayons-textfield w-25", min: 0 %>
+    <%= submit_tag "Update Score", class: "crayons-btn" %>
+  <% end %>
+</div>
+
 <%= render "activity" %>
 
 <% error_message = deletion_modal_error_message(@organization) %>
