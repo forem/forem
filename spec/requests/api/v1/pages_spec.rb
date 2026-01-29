@@ -216,7 +216,8 @@ RSpec.describe "Api::V1::Pages" do
     expect(response.parsed_body.first.keys).to \
       match_array(%w[id title slug description is_top_level_path
                      landing_page body_html body_json body_markdown
-                     processed_html social_image template subforem_id])
+                     processed_html social_image template subforem_id
+                     page_template_id template_data])
   end
 
   it "retrieves a page and renders it as json" do
@@ -225,6 +226,7 @@ RSpec.describe "Api::V1::Pages" do
     expect(response.parsed_body.keys).to \
       match_array(%w[id title slug description is_top_level_path
                      landing_page body_html body_json body_markdown
-                     processed_html social_image template subforem_id])
+                     processed_html social_image template subforem_id
+                     page_template_id template_data])
   end
 end

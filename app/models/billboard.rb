@@ -194,6 +194,9 @@ class Billboard < ApplicationRecord
       # that". So basically the "limit" logic will result in 15 sets, and then we sample randomly from there. The
       # "first ranked" ad will show up in all 15 sets, where as 15 will only show in 1 of the 15.
       billboards_for_display.limit(rand(1..15)).sample
+    when "evenly_distributed"
+      # Randomly distribute billboards effectively evenly over time.
+      billboards_for_display.sample
     else
       # Fallback to random if strategy is unknown
       billboards_for_display.sample

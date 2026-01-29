@@ -20,6 +20,8 @@ export const Form = ({
   coverImageCrop,
   coverImageHeight,
   aiAvailable,
+  videoSourceUrl,
+  onVideoUrlChange,
 }) => {
   return (
     <div className="crayons-article-form__content crayons-card">
@@ -37,6 +39,8 @@ export const Form = ({
           coverImageCrop={coverImageCrop}
           coverImageHeight={coverImageHeight}
           aiAvailable={aiAvailable}
+          videoSourceUrl={videoSourceUrl}
+          onVideoUrlChange={onVideoUrlChange}
         />
       )}
 
@@ -67,6 +71,8 @@ Form.propTypes = {
   coverImageHeight: PropTypes.string.isRequired,
   coverImageCrop: PropTypes.string.isRequired,
   aiAvailable: PropTypes.bool.isRequired,
+  videoSourceUrl: PropTypes.string,
+  onVideoUrlChange: PropTypes.func,
 };
 
 Form.displayName = 'Form';

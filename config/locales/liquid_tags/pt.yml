@@ -55,6 +55,8 @@ pt:
       invalid_loom_url: URL do Loom inválida.
     medium_tag:
       invalid_link_url: URL do link inválida ou URL do link não existe
+    mux_tag:
+      invalid_mux_url: URL do Mux inválida.
     next_tech_tag:
       invalid_url: URL de compartilhamento do Next Tech inválida
     null_tag:
