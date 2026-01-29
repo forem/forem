@@ -472,3 +472,9 @@ en:
         options:
           delete: Delete organization
           icon: Options
+        fully_trusted:
+          label: Fully Trusted Organization
+          description: When enabled, this organization can add members directly without requiring confirmation. Members will receive a notification email instead of an invitation.
+          enable: Enable Fully Trusted
+          disable: Disable Fully Trusted
+          enabled_notice: This organization is fully trusted. Members can be added directly without confirmation.

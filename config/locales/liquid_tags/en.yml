@@ -55,6 +55,8 @@ en:
       invalid_loom_url: Invalid Loom URL.
     medium_tag:
       invalid_link_url: Invalid link URL or link URL does not exist
+    mux_tag:
+      invalid_mux_url: Invalid Mux URL.
     next_tech_tag:
       invalid_url: Invalid Next Tech share URL
     null_tag:

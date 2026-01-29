@@ -1,10 +1,13 @@
 import { h, Fragment } from 'preact';
-import { useState } from 'preact/hooks';
+import { useState, useMemo } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { addSnackbarItem } from '../../Snackbar';
 import { generateMainImage, generateAiImage } from '../actions';
 import { validateFileInputs } from '../../packs/validateFileInputs';
+import { parseVideoUrl, getVideoThumbnail } from '../utilities/videoParser';
 import { onDragOver, onDragExit } from './dragAndDropHelpers';
+import { CoverVideoLink } from './CoverVideoLink';
+import { useMediaQuery } from '@components/useMediaQuery';
 import { Button } from '@crayons';
 import { Spinner } from '@crayons/Spinner/Spinner';
 import { DragAndDropZone } from '@utilities/dragAndDrop';
@@ -29,6 +32,68 @@ const NativeIosImageUpload = ({
   </Fragment>
 );
 
+const ImageOptionsModal = ({ onClose, onUpload, onGenerate, aiAvailable }) => {
+  return (
+    <div className="crayons-modal crayons-modal--m" data-testid="image-options-modal">
+      <div 
+        className="crayons-modal__box" 
+        role="dialog" 
+        aria-labelledby="image-options-modal-title"
+      >
+        <div className="crayons-modal__box__header">
+          <h2 id="image-options-modal-title" className="crayons-subtitle-2">Add Cover Image</h2>
+          <button 
+            onClick={onClose} 
+            className="crayons-btn crayons-btn--ghost crayons-btn--icon" 
+            aria-label="Close"
+            style={{maxWidth: '60px'}}
+            type="button"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" class="crayons-icon" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"/>
+            </svg>
+          </button>
+        </div>
+        <div className="crayons-modal__box__body">
+          <div className="flex flex-col gap-2">
+            <Button 
+              variant="outlined" 
+              onClick={() => {
+                onUpload();
+                onClose();
+              }}
+              className="w-100"
+              style={{minHeight: '2.5rem'}}
+            >
+              Upload Image
+            </Button>
+            {aiAvailable && (
+              <Button 
+                variant="outlined" 
+                onClick={() => {
+                  onGenerate();
+                  onClose();
+                }}
+                className="w-100"
+                style={{minHeight: '2.5rem'}}
+              >
+                🍌 Generate Image
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+ImageOptionsModal.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  onUpload: PropTypes.func.isRequired,
+  onGenerate: PropTypes.func.isRequired,
+  aiAvailable: PropTypes.bool.isRequired,
+};
+
 const StandardImageUpload = ({
   uploadLabel,
   handleImageUpload,
@@ -37,10 +102,78 @@ const StandardImageUpload = ({
   coverImageCrop,
   onGenerateClick,
   aiAvailable,
+  videoSourceUrl,
+  onVideoUrlChange,
+  isMobile,
+  onImageButtonClick,
+  showImageOptionsModal,
+  onCloseImageOptionsModal,
 }) => {
   const showAiButton = aiAvailable;
   
-  return isUploadingImage ? null : (
+  if (isUploadingImage) return null;
+
+  // Mobile layout: 2 buttons (Image and Video)
+  // Hide image button if video is selected
+  if (isMobile) {
+    return (
+      <Fragment>
+        {!videoSourceUrl && (
+          <Button
+            variant="outlined"
+            onClick={onImageButtonClick}
+            className="mr-2 whitespace-nowrap"
+            style={{minHeight: '2.5rem', display: 'inline-flex', alignItems: 'center'}}
+            data-testid="mobile-cover-image-btn"
+          >
+            Add Cover Image
+          </Button>
+        )}
+        <CoverVideoLink
+          videoSourceUrl={videoSourceUrl}
+          onVideoUrlChange={onVideoUrlChange}
+        />
+        {showImageOptionsModal && (
+          <ImageOptionsModal
+            onClose={onCloseImageOptionsModal}
+            onUpload={() => {
+              // Trigger file input click
+              const fileInput = document.getElementById('cover-image-input');
+              if (fileInput) {
+                fileInput.click();
+              }
+            }}
+            onGenerate={onGenerateClick}
+            aiAvailable={aiAvailable}
+          />
+        )}
+        <input
+          data-testid="cover-image-input"
+          id="cover-image-input"
+          type="file"
+          onChange={handleImageUpload}
+          accept="image/*"
+          className="screen-reader-only"
+          data-max-file-size-mb="25"
+        />
+      </Fragment>
+    );
+  }
+  
+  // Desktop layout: 3 buttons (Upload, Generate, Video)
+  // Hide image buttons if video is selected
+  if (videoSourceUrl) {
+    return (
+      <Fragment>
+        <CoverVideoLink
+          videoSourceUrl={videoSourceUrl}
+          onVideoUrlChange={onVideoUrlChange}
+        />
+      </Fragment>
+    );
+  }
+
+  return (
     <Fragment>
       <label className="cursor-pointer crayons-btn crayons-btn--outlined crayons-tooltip__activator mr-2 whitespace-nowrap" style={{minHeight: '2.5rem', display: 'inline-flex', alignItems: 'center'}}>
         {uploadLabel}
@@ -69,6 +202,10 @@ const StandardImageUpload = ({
           🍌 Generate Image
         </Button>
       )}
+      <CoverVideoLink
+        videoSourceUrl={videoSourceUrl}
+        onVideoUrlChange={onVideoUrlChange}
+      />
     </Fragment>
   );
 };
@@ -167,12 +304,27 @@ const AiImagePromptModal = ({ onClose, onGenerate, isGenerating }) => {
   );
 };
 
-export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage, coverImageHeight, coverImageCrop, aiAvailable }) => {
+export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage, coverImageHeight, coverImageCrop, aiAvailable, videoSourceUrl, onVideoUrlChange }) => {
   const [uploadError, setUploadError] = useState(false);
   const [uploadErrorMessage, setUploadErrorMessage] = useState(null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [showAiPrompt, setShowAiPrompt] = useState(false);
   const [generatingAiImage, setGeneratingAiImage] = useState(false);
+  const [showImageOptionsModal, setShowImageOptionsModal] = useState(false);
+
+  // Check if we're on mobile (below 768px)
+  const isMobile = useMediaQuery('(max-width: 767px)');
+
+  // Parse video URL to get embed URL and thumbnail
+  const videoInfo = useMemo(() => {
+    if (!videoSourceUrl) return null;
+    return parseVideoUrl(videoSourceUrl);
+  }, [videoSourceUrl]);
+
+  const videoThumbnail = useMemo(() => {
+    if (!videoInfo) return null;
+    return getVideoThumbnail(videoInfo);
+  }, [videoInfo]);
 
   const onImageUploadSuccess = (...args) => {
     onMainImageUrlChange(...args);
@@ -293,6 +445,13 @@ export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage, coverImageH
     });
   };
 
+  const triggerVideoRemoval = (e) => {
+    e.preventDefault();
+    if (onVideoUrlChange) {
+      onVideoUrlChange(null);
+    }
+  };
+
   const onDropImage = (event) => {
     onDragExit(event);
 
@@ -340,6 +499,27 @@ export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage, coverImageH
               alt="Post cover"
             />
           )}
+          {!uploadingImage && videoInfo && !mainImage && (
+            <div className="crayons-article-form__cover__video" style={{ width: '225px', height: '95px', position: 'relative', overflow: 'hidden', borderRadius: 'var(--radius)', marginRight: '10px' }}>
+              {videoThumbnail ? (
+                <img
+                  src={videoThumbnail}
+                  alt="Video thumbnail"
+                  style={{ 
+                    width: '100%', 
+                    height: '100%', 
+                    objectFit: 'cover',
+                    objectPosition: 'center',
+                    marginRight: '10px',
+                  }}
+                />
+              ) : (
+                <div style={{ width: '100%', height: '100%', backgroundColor: 'var(--base-20)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <span style={{ color: 'var(--base-60)' }}>▶ Video</span>
+                </div>
+              )}
+            </div>
+          )}
           <div className="flex items-center">
             {uploadingImage && (
               <span class="lh-base pl-1 border-0 py-2 inline-block">
@@ -363,6 +543,15 @@ export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage, coverImageH
                   handleImageUpload={handleMainImageUpload}
                   onGenerateClick={handleGenerateClick}
                   aiAvailable={aiAvailable}
+                  videoSourceUrl={videoSourceUrl}
+                  onVideoUrlChange={onVideoUrlChange}
+                  isMobile={isMobile}
+                  onImageButtonClick={(e) => {
+                    e.preventDefault();
+                    setShowImageOptionsModal(true);
+                  }}
+                  showImageOptionsModal={showImageOptionsModal}
+                  onCloseImageOptionsModal={() => setShowImageOptionsModal(false)}
                 />
               )}
 
@@ -372,6 +561,17 @@ export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage, coverImageH
                   onClick={triggerMainImageRemoval}
                   className="whitespace-nowrap"
                   style={{minHeight: '2.5rem', display: 'inline-flex', alignItems: 'center'}}
+                >
+                  Remove
+                </Button>
+              )}
+              {videoSourceUrl && !uploadingImage && !mainImage && (
+                <Button 
+                  variant="ghost-danger" 
+                  onClick={triggerVideoRemoval}
+                  className="whitespace-nowrap"
+                  style={{minHeight: '2.5rem', display: 'inline-flex', alignItems: 'center'}}
+                  data-testid="remove-video-cover-btn"
                 >
                   Remove
                 </Button>
@@ -401,6 +601,8 @@ ArticleCoverImage.propTypes = {
   coverImageHeight: PropTypes.string.isRequired,
   coverImageCrop: PropTypes.string.isRequired,
   aiAvailable: PropTypes.bool.isRequired,
+  videoSourceUrl: PropTypes.string,
+  onVideoUrlChange: PropTypes.func,
 };
 
 ArticleCoverImage.displayName = 'ArticleCoverImage';

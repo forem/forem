@@ -22,6 +22,21 @@
         </p>
       </div>
 
+      <div class="crayons-field">
+        <%= f.label :cache_expiry_seconds, "Cache Expiry (seconds)", class: "crayons-field__label" %>
+        <%= f.number_field :cache_expiry_seconds, 
+            min: 0, 
+            max: 86400, 
+            class: "crayons-textfield", 
+            value: @config.cache_expiry_seconds || BillboardPlacementAreaConfig::DEFAULT_BILLBOARD_CACHE_EXPIRY_SECONDS,
+            placeholder: BillboardPlacementAreaConfig::DEFAULT_BILLBOARD_CACHE_EXPIRY_SECONDS %>
+        <p class="crayons-field__description">
+          How long billboard responses should be cached for signed-out users (0-86400 seconds).
+          Default is <%= BillboardPlacementAreaConfig::DEFAULT_BILLBOARD_CACHE_EXPIRY_SECONDS %> seconds (3 minutes).
+          Set to 0 to disable caching for this placement area.
+        </p>
+      </div>
+
       <hr class="my-4">
 
       <h2 class="crayons-subtitle-2">Selection Strategy Weights</h2>
@@ -34,46 +49,72 @@
       <%= f.fields_for :selection_weights, OpenStruct.new(@config.selection_weights || {}) do |weights_form| %>
         <div class="grid gap-4">
           <div class="crayons-field">
-            <%= weights_form.label :random_selection, "Random Selection Weight", class: "crayons-field__label" %>
-            <%= weights_form.number_field :random_selection, 
+            <%= weights_form.label :random_selection, class: "crayons-field__label" do %>
+              Random Selection Weight: <output id="random_selection_output"><%= @config.selection_weights["random_selection"] || BillboardPlacementAreaConfig::DEFAULT_SELECTION_WEIGHTS["random_selection"] %></output>
+            <% end %>
+            <%= weights_form.range_field :random_selection, 
                 value: @config.selection_weights["random_selection"] || BillboardPlacementAreaConfig::DEFAULT_SELECTION_WEIGHTS["random_selection"],
-                min: 0, 
-                class: "crayons-textfield" %>
+                min: 0, max: 100, step: 1,
+                class: "w-100",
+                oninput: "document.getElementById('random_selection_output').textContent = this.value" %>
             <p class="crayons-field__description">
               Completely random selection. Gives all billboards equal chance regardless of performance.
             </p>
           </div>
 
           <div class="crayons-field">
-            <%= weights_form.label :new_and_priority, "New and Priority Weight", class: "crayons-field__label" %>
-            <%= weights_form.number_field :new_and_priority, 
+            <%= weights_form.label :new_and_priority, class: "crayons-field__label" do %>
+              New and Priority Weight: <output id="new_and_priority_output"><%= @config.selection_weights["new_and_priority"] || BillboardPlacementAreaConfig::DEFAULT_SELECTION_WEIGHTS["new_and_priority"] %></output>
+            <% end %>
+            <%= weights_form.range_field :new_and_priority, 
                 value: @config.selection_weights["new_and_priority"] || BillboardPlacementAreaConfig::DEFAULT_SELECTION_WEIGHTS["new_and_priority"],
-                min: 0, 
-                class: "crayons-textfield" %>
+                min: 0, max: 100, step: 1,
+                class: "w-100",
+                oninput: "document.getElementById('new_and_priority_output').textContent = this.value" %>
             <p class="crayons-field__description">
               Weighted selection for billboards with fewer impressions or marked as priority.
             </p>
           </div>
 
           <div class="crayons-field">
-            <%= weights_form.label :new_only, "New Only Weight", class: "crayons-field__label" %>
-            <%= weights_form.number_field :new_only, 
+            <%= weights_form.label :new_only, class: "crayons-field__label" do %>
+              New Only Weight: <output id="new_only_output"><%= @config.selection_weights["new_only"] || BillboardPlacementAreaConfig::DEFAULT_SELECTION_WEIGHTS["new_only"] %></output>
+            <% end %>
+            <%= weights_form.range_field :new_only, 
                 value: @config.selection_weights["new_only"] || BillboardPlacementAreaConfig::DEFAULT_SELECTION_WEIGHTS["new_only"],
-                min: 0, 
-                class: "crayons-textfield" %>
+                min: 0, max: 100, step: 1,
+                class: "w-100",
+                oninput: "document.getElementById('new_only_output').textContent = this.value" %>
             <p class="crayons-field__description">
               Only shows billboards with fewer than <%= @config.low_impression_count %> impressions.
             </p>
           </div>
 
           <div class="crayons-field">
-            <%= weights_form.label :weighted_performance, "Weighted Performance Weight", class: "crayons-field__label" %>
-            <%= weights_form.number_field :weighted_performance, 
+            <%= weights_form.label :weighted_performance, class: "crayons-field__label" do %>
+              Weighted Performance Weight: <output id="weighted_performance_output"><%= @config.selection_weights["weighted_performance"] || BillboardPlacementAreaConfig::DEFAULT_SELECTION_WEIGHTS["weighted_performance"] %></output>
+            <% end %>
+            <%= weights_form.range_field :weighted_performance, 
                 value: @config.selection_weights["weighted_performance"] || BillboardPlacementAreaConfig::DEFAULT_SELECTION_WEIGHTS["weighted_performance"],
-                min: 0, 
-                class: "crayons-textfield" %>
+                min: 0, max: 100, step: 1,
+                class: "w-100",
+                oninput: "document.getElementById('weighted_performance_output').textContent = this.value" %>
             <p class="crayons-field__description">
               Favors billboards with better engagement and success rates.
+            </p>
+          </div>
+
+          <div class="crayons-field">
+            <%= weights_form.label :evenly_distributed, class: "crayons-field__label" do %>
+              Evenly Distributed Weight: <output id="evenly_distributed_output"><%= @config.selection_weights["evenly_distributed"] || BillboardPlacementAreaConfig::DEFAULT_SELECTION_WEIGHTS["evenly_distributed"] %></output>
+            <% end %>
+            <%= weights_form.range_field :evenly_distributed, 
+                value: @config.selection_weights["evenly_distributed"] || BillboardPlacementAreaConfig::DEFAULT_SELECTION_WEIGHTS["evenly_distributed"],
+                min: 0, max: 100, step: 1,
+                class: "w-100",
+                oninput: "document.getElementById('evenly_distributed_output').textContent = this.value" %>
+            <p class="crayons-field__description">
+              Distributes impressions evenly across all eligible billboards by always selecting those with the fewest impressions.
             </p>
           </div>
         </div>

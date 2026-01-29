@@ -9,16 +9,19 @@ class Page < ApplicationRecord
 
   has_many :billboards, dependent: :nullify
   belongs_to :subforem, optional: true
+  belongs_to :page_template, optional: true
 
   validates :title, presence: true
   validates :description, presence: true
   validates :template, inclusion: { in: TEMPLATE_OPTIONS }
   validate :body_present
+  validate :validate_template_data
 
   validate :validate_slug_uniqueness
 
   before_validation :set_default_template
   before_save :evaluate_markdown
+  before_save :render_from_page_template, if: :uses_page_template?
 
   after_commit :ensure_uniqueness_of_landinge_page
   after_commit :bust_cache
@@ -70,7 +73,19 @@ class Page < ApplicationRecord
   def as_json(...)
     super(...).slice(*%w[id title slug description is_top_level_path landing_page
                          body_html body_json body_markdown processed_html
-                         social_image template subforem_id])
+                         social_image template subforem_id page_template_id template_data])
+  end
+
+  def uses_page_template?
+    page_template_id.present?
+  end
+
+  # Re-render the page from its template (called when template changes)
+  def re_render_from_template!
+    return unless uses_page_template?
+
+    render_from_page_template
+    save!
   end
 
   private
@@ -89,9 +104,28 @@ class Page < ApplicationRecord
   end
 
   def body_present
+    # Skip body validation if using a page template
+    return if uses_page_template?
     return unless body_markdown.blank? && body_html.blank? && body_json.blank? && body_css.blank?
 
     errors.add(:body_markdown, I18n.t("models.page.body_must_exist"))
+  end
+
+  def validate_template_data
+    return unless uses_page_template? && page_template.present?
+
+    validation_errors = page_template.validate_data(template_data || {})
+    validation_errors.each do |error|
+      errors.add(:template_data, error)
+    end
+  end
+
+  def render_from_page_template
+    return unless page_template.present?
+
+    rendered_html = page_template.render_with_data(template_data || {})
+    self.processed_html = rendered_html
+    self.template = page_template.template_type
   end
 
   # As there can only be one global landing page, we want to ensure that

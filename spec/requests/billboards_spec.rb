@@ -248,6 +248,65 @@ RSpec.describe "Billboards" do
       end
     end
 
+    context "when signed out with custom cache expiry config" do
+      let(:custom_cache_expiry) { 600 } # 10 minutes
+
+      before do
+        BillboardPlacementAreaConfig.create!(
+          placement_area: "post_comments",
+          signed_in_rate: 100,
+          signed_out_rate: 100,
+          cache_expiry_seconds: custom_cache_expiry,
+        )
+      end
+
+      it "uses the configured cache expiry in x-accel-expires header" do
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+
+        expect(response.headers["X-Accel-Expires"]).to eq(custom_cache_expiry.to_s)
+      end
+
+      it "uses the configured cache expiry in surrogate control header" do
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+
+        expect(response.headers["Surrogate-Control"]).to eq("max-age=#{custom_cache_expiry}, stale-if-error=#{stale_if_error}")
+      end
+
+      it "uses different cache expiry for different placement areas" do
+        sidebar_billboard = create_billboard(placement_area: "sidebar_left")
+        BillboardPlacementAreaConfig.create!(
+          placement_area: "sidebar_left",
+          signed_in_rate: 100,
+          signed_out_rate: 100,
+          cache_expiry_seconds: 120, # 2 minutes
+        )
+
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "sidebar_left")
+
+        expect(response.headers["X-Accel-Expires"]).to eq("120")
+        expect(response.headers["Surrogate-Control"]).to eq("max-age=120, stale-if-error=#{stale_if_error}")
+      end
+
+      it "uses zero cache expiry when configured" do
+        BillboardPlacementAreaConfig.find_by(placement_area: "post_comments").update!(cache_expiry_seconds: 0)
+
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+
+        expect(response.headers["X-Accel-Expires"]).to eq("0")
+        expect(response.headers["Surrogate-Control"]).to eq("max-age=0, stale-if-error=#{stale_if_error}")
+      end
+
+      it "uses default cache expiry for placement areas without config" do
+        unconfigured_billboard = create_billboard(placement_area: "post_sidebar")
+
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_sidebar")
+
+        default_expiry = BillboardPlacementAreaConfig::DEFAULT_BILLBOARD_CACHE_EXPIRY_SECONDS
+        expect(response.headers["X-Accel-Expires"]).to eq(default_expiry.to_s)
+        expect(response.headers["Surrogate-Control"]).to eq("max-age=#{default_expiry}, stale-if-error=#{stale_if_error}")
+      end
+    end
+
     context "when billboard template is authorship_box" do
       before do
         billboard.update_column(:template, "authorship_box")

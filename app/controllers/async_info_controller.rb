@@ -28,6 +28,7 @@ class AsyncInfoController < ApplicationController
       Rails.logger.info "[BASE_DATA] verify_state_of_user_session? returned: #{session_valid}"
     end
     if user_signed_in? && verify_state_of_user_session?
+      current_user.update_presence!
       @user = current_user.decorate
       respond_to do |format|
         format.json do

@@ -31,7 +31,7 @@ module ScheduledAutomations
         return Result.new(
           success?: false,
           article: nil,
-          error_message: "Automation is already running"
+          error_message: "Automation is already running",
         )
       end
 
@@ -39,6 +39,19 @@ module ScheduledAutomations
       @automation.mark_as_running!
 
       begin
+        # Handle badge awarding actions separately (they don't use AI services)
+        if @automation.action == "award_first_org_post_badge"
+          return handle_first_org_post_badge_action
+        end
+
+        if @automation.action == "award_warm_welcome_badge"
+          return handle_warm_welcome_badge_action
+        end
+
+        if @automation.action == "award_article_content_badge"
+          return handle_article_content_badge_action
+        end
+
         # Call the appropriate AI service
         service_result = call_ai_service
 
@@ -46,11 +59,11 @@ module ScheduledAutomations
         if service_result.nil?
           next_run_time = @automation.calculate_next_run_time
           @automation.mark_as_completed!(next_run_time)
-          
+
           return Result.new(
             success?: true,
             article: nil,
-            error_message: "No content generated (service returned nil)"
+            error_message: "No content generated (service returned nil)",
           )
         end
 
@@ -71,7 +84,7 @@ module ScheduledAutomations
         Result.new(
           success?: false,
           article: nil,
-          error_message: "#{e.class}: #{e.message}"
+          error_message: "#{e.class}: #{e.message}",
         )
       end
     end
@@ -104,7 +117,7 @@ module ScheduledAutomations
       service = Ai::GithubRepoRecap.new(
         repo_name,
         days_ago: days_ago,
-        github_client: github_client
+        github_client: github_client,
       )
 
       # Generate the recap (this will return nil if no activity)
@@ -120,7 +133,7 @@ module ScheduledAutomations
 
     def augment_with_instructions(body)
       instructions = @automation.additional_instructions.strip
-      
+
       # Add instructions as a footer section
       <<~AUGMENTED
         #{body}
@@ -130,6 +143,75 @@ module ScheduledAutomations
         **Additional Context:**
         #{instructions}
       AUGMENTED
+    end
+
+    def handle_first_org_post_badge_action
+      # Call the badge awarding service
+      badge_result = FirstPostBadgeAwarder.call(@automation)
+
+      # Mark automation as completed and schedule next run
+      next_run_time = @automation.calculate_next_run_time
+      @automation.mark_as_completed!(next_run_time)
+
+      if badge_result.success?
+        Result.new(
+          success?: true,
+          article: nil,
+          error_message: nil,
+        )
+      else
+        Result.new(
+          success?: false,
+          article: nil,
+          error_message: badge_result.error_message,
+        )
+      end
+    end
+
+    def handle_warm_welcome_badge_action
+      # Call the warm welcome badge awarding service
+      badge_result = WarmWelcomeBadgeAwarder.call(@automation)
+
+      # Mark automation as completed and schedule next run
+      next_run_time = @automation.calculate_next_run_time
+      @automation.mark_as_completed!(next_run_time)
+
+      if badge_result.success?
+        Result.new(
+          success?: true,
+          article: nil,
+          error_message: nil,
+        )
+      else
+        Result.new(
+          success?: false,
+          article: nil,
+          error_message: badge_result.error_message,
+        )
+      end
+    end
+
+    def handle_article_content_badge_action
+      # Call the article content badge awarding service
+      badge_result = ArticleContentBadgeAwarder.call(@automation)
+
+      # Mark automation as completed and schedule next run
+      next_run_time = @automation.calculate_next_run_time
+      @automation.mark_as_completed!(next_run_time)
+
+      if badge_result.success?
+        Result.new(
+          success?: true,
+          article: nil,
+          error_message: nil,
+        )
+      else
+        Result.new(
+          success?: false,
+          article: nil,
+          error_message: badge_result.error_message,
+        )
+      end
     end
 
     def perform_action(service_result)
@@ -148,7 +230,7 @@ module ScheduledAutomations
         user: @user,
         title: service_result.title,
         body_markdown: service_result.body,
-        published: published
+        published: published,
       )
 
       # Set published_at if publishing
@@ -177,10 +259,9 @@ module ScheduledAutomations
       end
 
       # Set subforem if specified
-      if config["subforem_id"].present?
-        article.subforem_id = config["subforem_id"].to_i
-      end
+      return unless config["subforem_id"].present?
+
+      article.subforem_id = config["subforem_id"].to_i
     end
   end
 end
-

@@ -68,7 +68,7 @@ module Articles
       scope.published.from_subforem
         .cached_tagged_with_any(tags)
         .unscope(:select)
-        .limited_column_select
+        .minimal_feed_column_select
         .where.not(id: article.id)
         .not_authored_by(article.user_id)
         .where("published_at > ?", 5.days.ago)
