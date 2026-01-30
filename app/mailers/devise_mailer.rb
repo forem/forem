@@ -9,6 +9,9 @@ class DeviseMailer < Devise::Mailer
   before_action :use_settings_general_values
   before_action :setup_subforem_context
 
+  # Prevent Ahoy from adding click tracking to security emails (causes spam filtering)
+  def save_ahoy_options; end
+
   def use_settings_general_values
     Devise.mailer_sender =
       "#{Settings::Community.community_name} <#{ForemInstance.from_email_address}>"

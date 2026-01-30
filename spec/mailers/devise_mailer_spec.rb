@@ -34,6 +34,11 @@ RSpec.describe DeviseMailer, type: :mailer do
     it "renders proper URL" do
       expect(email.to_s).to include(Settings::General.app_domain)
     end
+
+    it "does not include Ahoy click tracking parameters" do
+      expect(email.to_s).not_to include("ahoy_click=true")
+      expect(email.to_s).not_to include("/ahoy/click")
+    end
   end
 
   describe "#confirmation_instructions" do
@@ -64,7 +69,8 @@ RSpec.describe DeviseMailer, type: :mailer do
 
       it "includes name in welcome email" do
         email = described_class.confirmation_instructions(user, "faketoken")
-        expect(email.body.to_s).to include("Welcome #{user.name}")
+        body_html = CGI.unescapeHTML(email.body.to_s)
+        expect(body_html).to include("Welcome #{user.name}")
       end
         
 
