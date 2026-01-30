@@ -291,7 +291,8 @@ RSpec.describe "Articles" do
   describe "GET /:path/edit" do
     before { sign_in user }
 
-    it "shows v1 if article has frontmatter" do
+    it "shows v1 if user preference is v1" do
+      user.setting.update!(editor_version: "v1")
       article = create(:article, user_id: user.id)
       get "#{article.path}/edit"
       expect(response.body).to include("crayons-article-form--v1")
