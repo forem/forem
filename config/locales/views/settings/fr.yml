@@ -40,8 +40,13 @@ fr:
           confirm: Are you absolutely sure you want to remove your %{provider} account?
           submit: Remove %{provider}
           unable_to_remove: Vous ne pouvez pas supprimer l'une de vos méthodes d'authentification car vous avez besoin d'une méthode restante pour vous authentifier. Veuillez ajouter une autre méthode d'authentification ci-dessus avant de continuer.
+        free_billing_info: Vous bénéficiez d'un abonnement gratuit. Aucune facturation active n'est associée à votre compte, aucune gestion des paiements n'est donc requise.
       billing:
         heading: Billing
+        current_status: Statut d'abonnement actuel
+        free_subscription: Vous bénéficiez d'un abonnement gratuit et n'êtes facturé en aucune capacité.
+        trial_subscription: Vous êtes actuellement en période d'essai.
+        paying_subscription: Vous avez un abonnement payant récurrent.
         add: Add Credit Card
         another: "+ Add Another Credit Card"
         cards: Your Credit Cards

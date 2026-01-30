@@ -116,6 +116,7 @@ en:
       error: 'Your organization, %{organization_name}, could not be deleted: %{error}.'
       fully_trusted_enabled: Fully trusted status has been enabled for this organization.
       fully_trusted_disabled: Fully trusted status has been disabled for this organization.
+      baseline_score_updated: Baseline score updated!
     pages_controller:
       updated: Page has been successfully updated.
       created: Page has been successfully created.
@@ -199,6 +200,8 @@ en:
       credits_added: Credits have been added!
       credits_removed: Credits have been removed.
       tag_not_found: 'Tag "%{tag_name}" was not found'
+      email_confirmed: Email confirmed!
+      email_confirm_fail: Email confirmation failed.
     welcome_controller:
       thread_content: |
         ---

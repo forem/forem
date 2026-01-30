@@ -61,6 +61,7 @@ namespace :admin do
         post "send_email"
         post "verify_email_ownership"
         post "send_email_confirmation"
+        post "confirm_email"
         patch "unlock_access"
         post "unpublish_all_articles"
       end
@@ -87,7 +88,13 @@ namespace :admin do
       end
     end
 
-    resources :badges, only: %i[index edit update new create]
+    resources :badges, only: %i[index edit update new create] do
+      resources :badge_automations, only: %i[index new create edit update destroy], controller: "badge_automations" do
+        member do
+          patch :toggle_enabled
+        end
+      end
+    end
     resources :badge_achievements, only: %i[index destroy]
     get "/badge_achievements/award_badges", to: "badge_achievements#award"
     post "/badge_achievements/award_badges", to: "badge_achievements#award_badges"
@@ -96,6 +103,7 @@ namespace :admin do
       member do
         patch "update_org_credits"
         patch "update_fully_trusted"
+        patch "update_baseline_score"
       end
     end
     resources :emails

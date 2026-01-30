@@ -116,6 +116,7 @@ fr:
       error: 'Your organization, %{organization_name}, could not be deleted: %{error}.'
       fully_trusted_enabled: Le statut de confiance totale a été activé pour cette organisation.
       fully_trusted_disabled: Le statut de confiance totale a été désactivé pour cette organisation.
+      baseline_score_updated: Le score de base a été mis à jour !
     pages_controller:
       updated: La page a été mise à jour avec succès.
       created: La page a été créée avec succès.
@@ -199,6 +200,8 @@ fr:
       credits_added: Les crédits ont été ajoutés !
       credits_removed: Les crédits ont été supprimés.
       tag_not_found: 'Tag "%{tag_name}" non trouvée'
+      email_confirmed: E-mail confirmé !
+      email_confirm_fail: La confirmation de l'e-mail a échoué.
     welcome_controller:
       thread_content: |
         ---

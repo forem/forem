@@ -25,6 +25,7 @@ module Settings
 
     # Emails
     setting :contact_email, type: :string, default: ApplicationConfig["DEFAULT_EMAIL"]
+    setting :custom_email_footer, type: :string, validates: { email_safe_html: true }
     setting :periodic_email_digest, type: :integer, default: 2
 
     # Analytics and tracking

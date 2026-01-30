@@ -81,6 +81,7 @@ pt:
       error: 'Sua organização, %{organization_name}, não pôde ser excluída: %{error}.'
       fully_trusted_enabled: O status totalmente confiável foi habilitado para esta organização.
       fully_trusted_disabled: O status totalmente confiável foi desabilitado para esta organização.
+      baseline_score_updated: A pontuação base foi atualizada!
     pages_controller:
       updated: Página foi atualizada com sucesso.
       created: Página foi criada com sucesso.
@@ -160,6 +161,8 @@ pt:
       credits_added: Créditos foram adicionados!
       credits_removed: Créditos foram removidos.
       manual_verification_sent: E-mail verificado manualmente!
+      email_confirmed: E-mail confirmado!
+      email_confirm_fail: A confirmação do e-mail falhou.
     welcome_controller:
       thread_content: |
         ---
