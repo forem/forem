@@ -89,8 +89,8 @@ class ArticlesController < ApplicationController
   def edit
     authorize @article
 
-    @version = @article.has_frontmatter? ? "v1" : "v2"
     @user = @article.user
+    @version = @user.setting.editor_version if @user
     @organizations = @user&.organizations
     @user_approved_liquid_tags = Users::ApprovedLiquidTags.call(@user)
   end
