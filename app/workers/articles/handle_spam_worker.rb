@@ -34,6 +34,9 @@ module Articles
         suggested_tags = enhancer.generate_tags
         apply_tags_to_article(article, suggested_tags) if suggested_tags.any?
       end
+
+      # Trigger semantic embedding generation for verified safe/quality content
+      Articles::EmbedWorker.perform_async(article.id)
     rescue StandardError => e
       Rails.logger.error("Article enhancement failed for article #{article.id}: #{e}")
     end

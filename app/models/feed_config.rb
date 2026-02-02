@@ -12,6 +12,10 @@ class FeedConfig < ApplicationRecord
     all_time_tags_count = rand(all_time_tag_count_min..all_time_tag_count_max) if all_time_tag_count_min.positive? && all_time_tag_count_max.positive?
     tag_names = activity_store&.relevant_tags(recent_tags_count || 5, all_time_tags_count || 5) || user.cached_followed_tag_names
     label_names = activity_store&.recent_labels || []
+    
+    # Semantic Profile
+    semantic_profile = activity_store&.semantic_interest_profile || {}
+    target_interests = semantic_profile.sort_by { |_, v| -v }.first(15)
 
     activity_tracked_pageview_time = activity_store&.recently_viewed_articles&.second
     time_of_second_latest_page_view = activity_tracked_pageview_time ? activity_tracked_pageview_time[1].to_datetime : 4.days.ago
@@ -127,6 +131,19 @@ class FeedConfig < ApplicationRecord
     terms << "(CASE WHEN articles.language IN ('#{languages.join("','")}') THEN #{language_match_weight} ELSE 0 END)" if language_match_weight.positive? && score_weight.positive?
     terms << "(RANDOM() * #{randomness_weight})" if randomness_weight.positive?
 
+    if semantic_match_weight.positive? && 
+       target_interests.present? && 
+       Article.columns_hash.key?("semantic_interests")
+      semantic_terms = target_interests.map do |interest, score|
+        interest_key = ActiveRecord::Base.connection.quote(interest)
+        "COALESCE((articles.semantic_interests->>#{interest_key})::float, 0) * #{score}"
+      end
+      
+      if semantic_terms.any?
+        terms << "((#{semantic_terms.join(' + ')}) * #{semantic_match_weight})"
+      end
+    end
+
     total_expression = terms.any? ? terms.join(" + ") : "0"
 
     <<~SQL.squish
@@ -160,6 +177,7 @@ class FeedConfig < ApplicationRecord
     clone.recent_subforem_weight = recent_subforem_weight * rand(0.9..1.1)
     clone.subforem_follow_weight = subforem_follow_weight * rand(0.9..1.1)
     clone.recent_page_views_shuffle_weight = recent_page_views_shuffle_weight * rand(0.9..1.1)
+    clone.semantic_match_weight = semantic_match_weight * rand(0.9..1.1)
     clone.recent_tag_count_min = [recent_tag_count_min + rand(-1..1), 0].max if recent_tag_count_min.positive?
     clone.recent_tag_count_max = [recent_tag_count_max + rand(-1..1), 12].min if recent_tag_count_max.positive?
     clone.recent_tag_count_max = clone.recent_tag_count_min if clone.recent_tag_count_max < clone.recent_tag_count_min

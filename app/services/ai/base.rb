@@ -35,6 +35,31 @@ module Ai
       handle_response(@last_response)
     end
 
+    def embed(text)
+      # Use the specific embedding model for Gemini
+      embedding_model = "text-embedding-004"
+      api_url = "/models/#{embedding_model}:embedContent?key=#{@api_key}"
+      
+      body = {
+        model: "models/#{embedding_model}",
+        content: {
+          parts: [{
+            text: text
+          }]
+        }
+      }
+
+      @options[:body] = body.to_json
+      response = self.class.post(api_url, @options)
+
+      unless response.success?
+        error_info = response.parsed_response["error"] || { "message" => "Unknown API Error" }
+        raise "API Error: #{response.code} - #{error_info['message']}"
+      end
+
+      response.parsed_response.dig("embedding", "values")
+    end
+
     private
 
     def handle_response(response)

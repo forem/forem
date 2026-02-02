@@ -149,10 +149,30 @@ RSpec.describe UserActivity, type: :model do
         )
       end
 
-      it "captures recent_subforems from those same articles" do
+      it "captures recent_subforem from those same articles" do
         expect(activity.recent_subforems).to match_array(
           [article1.subforem_id, article2.subforem_id]
         )
+      end
+
+      it "calculates semantic_interest_profile from recent articles with embeddings" do
+        # Setup mock embeddings
+        # article1: { backend: 0.8, cloud: 0.6 }
+        # article2: { backend: 0.2, frontend: 0.9 }
+        article1.update_column(:semantic_interests, { "backend_engineering" => 0.8, "cloud_infrastructure" => 0.6 })
+        article2.update_column(:semantic_interests, { "backend_engineering" => 0.2, "frontend_engineering" => 0.9 })
+        
+        # page views: 3 for article1, 2 for article2
+        # backend: (0.8*3 + 0.2*2)/5 = 2.8/5 = 0.56
+        # cloud: (0.6*3)/5 = 1.8/5 = 0.36
+        # frontend: (0.9*2)/5 = 1.8/5 = 0.36
+        
+        activity.set_activity!
+        
+        profile = activity.semantic_interest_profile
+        expect(profile["backend_engineering"]).to be_within(0.01).of(0.56)
+        expect(profile["cloud_infrastructure"]).to be_within(0.01).of(0.36)
+        expect(profile["frontend_engineering"]).to be_within(0.01).of(0.36)
       end
 
       it "populates alltime_tags from the user's cached_followed_tag_names" do
