@@ -94,11 +94,11 @@ fr:
     tag_tag:
       invalid_tag_name: nom d'étiquette invalide
     tweet_tag:
-      invalid_twitter_id: ID ou URL Twitter non valide
+      invalid_twitter_id: ID ou URL X non valide
     twitch_tag:
       invalid_twitch_id: ID Twitch, Slug ou URL invalide
     twitter_timeline_tag:
-      invalid_url: URL de la timeline de Twitter non valide.
+      invalid_url: URL de la timeline de X non valide.
     unified_embed:
       tag:
         invalid_url: L'URL fournie peut contenir une faute de frappe ou une erreur ; veuillez vérifier et réessayer
