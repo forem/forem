@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  before_action :redirect_www_to_root
+  before_action :redirect_www_and_unregistred_subforems_to_root
   before_action :configure_permitted_parameters, if: :devise_controller?
   skip_before_action :track_ahoy_visit
   before_action :set_session_domain
@@ -19,11 +19,9 @@ class ApplicationController < ActionController::Base
   include DevelopmentDependencyChecks if Rails.env.development?
   include Devise::Controllers::Rememberable
 
-
   # We are not currently using this, as we're going to prefer manual review in prod.
   # This was removed due to flakiness.
   # include EdgeCacheSafetyCheck unless Rails.env.production?
-
 
   rescue_from ActionView::MissingTemplate, with: :routing_error
 
@@ -39,6 +37,8 @@ class ApplicationController < ActionController::Base
   end
 
   rescue_from ApplicationPolicy::UserSuspendedError, with: :respond_with_user_suspended
+
+  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
   PUBLIC_CONTROLLERS = %w[async_info
                           confirmations
@@ -119,6 +119,10 @@ class ApplicationController < ActionController::Base
     raise Pundit::NotAuthorizedError, "Unauthorized"
   end
 
+  def user_not_authorized
+    raise Pundit::NotAuthorizedError, "You are not authorized to perform this action."
+  end
+
   def bad_request
     respond_to do |format|
       format.html do
@@ -171,12 +175,12 @@ class ApplicationController < ActionController::Base
     allowed_origins = Subforem.cached_domains.map { |domain| "https://#{domain}" }
 
     if allowed_origins.include?(request.origin)
-      response.set_header('Access-Control-Allow-Origin', request.origin)
+      response.set_header("Access-Control-Allow-Origin", request.origin)
     end
 
-    response.set_header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD')
-    response.set_header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Authorization, X-Requested-With')
-    response.set_header('Access-Control-Allow-Credentials', 'true') # If credentials (cookies) are needed
+    response.set_header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD")
+    response.set_header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept, Authorization, X-Requested-With")
+    response.set_header("Access-Control-Allow-Credentials", "true") # If credentials (cookies) are needed
   end
 
   def should_redirect_to_subforem?(article)
@@ -191,13 +195,13 @@ class ApplicationController < ActionController::Base
     return unless @page.subforem_id.present? &&
       RequestStore.store[:subforem_id].present? &&
       @page.subforem_id != RequestStore.store[:subforem_id]
-  
+
     redirect_to URL.page(@page), allow_other_host: true, status: :moved_permanently
   end
 
   def respond_with_request_for_authentication
     respond_to do |format|
-      format.html { redirect_to sign_up_path }
+      format.html { redirect_to new_magic_link_path }
       format.json { render json: { error: I18n.t("application_controller.please_sign_in") }, status: :unauthorized }
     end
   end
@@ -219,6 +223,11 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(resource)
     if current_user.saw_onboarding
       path = request.env["omniauth.origin"] || stored_location_for(resource) || root_path(signin: "true")
+
+      if URI.parse(path).path == "/signout_confirm"
+        path = root_path(signin: "true")
+      end
+
       signin_param = { "signin" => "true" } # the "signin" param is used by the service worker
 
       uri = Addressable::URI.parse(path)
@@ -289,7 +298,7 @@ class ApplicationController < ActionController::Base
   end
 
   def determine_locale
-    I18n.locale = if %w[en fr].include?(params[:locale])
+    I18n.locale = if %w[en fr pt].include?(params[:locale])
                     params[:locale]
                   else
                     Settings::UserExperience.default_locale
@@ -302,8 +311,8 @@ class ApplicationController < ActionController::Base
                # List of your secondary domains
                secondary_domains = ApplicationConfig["SECONDARY_APP_DOMAINS"].to_s.split(",").map(&:strip)
                if secondary_domains.include?(request.host)
-                request.session_options[:domain] = root_domain(request.host)
-              else
+                 request.session_options[:domain] = root_domain(request.host)
+               else
                  Settings::General.app_domain.present? ? root_domain(Settings::General.app_domain) : ApplicationConfig["APP_DOMAIN"]
                end
              else
@@ -312,7 +321,7 @@ class ApplicationController < ActionController::Base
              end
 
     # Set the rememberable options for Devise
-    request.env['devise.rememberable_options'] = {
+    request.env["devise.rememberable_options"] = {
       domain: domain,
       secure: ApplicationConfig["FORCE_SSL_IN_RAILS"] == "true",
       httponly: true
@@ -336,17 +345,16 @@ class ApplicationController < ActionController::Base
   def current_user_by_token
     auth_header = request.headers["Authorization"]
     return unless auth_header.present? && auth_header.start_with?("Bearer ")
-    
+
     token = auth_header.split(" ").last
     payload = decode_auth_token(token)
     return unless payload && payload["user_id"]
 
-    
     user = User.find_by(id: payload["user_id"])
-    if user
-      @current_user = user
-      @token_authenticated = true
-    end
+    return unless user
+
+    @current_user = user
+    @token_authenticated = true
   end
 
   def token_authenticated?
@@ -357,7 +365,7 @@ class ApplicationController < ActionController::Base
     JWT.decode(token, Rails.application.secret_key_base, true, algorithm: "HS256")[0]
   rescue JWT::ExpiredSignature
     nil
-  rescue
+  rescue StandardError
     nil
   end
 
@@ -380,6 +388,9 @@ class ApplicationController < ActionController::Base
   helper_method :default_email_optin_allowed?
 
   def forward_to_app_config_domain
+    # Do not redirect if we are intentionally passing a domain for context.
+    return if params[:passed_domain].present?
+
     # Let's only redirect get requests for this purpose.
     return unless request.get? &&
       # If the request equals the original set domain, e.g. forem-x.forem.cloud.
@@ -403,13 +414,18 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def redirect_www_to_root
+  def redirect_www_and_unregistred_subforems_to_root
     # This redirect should ideally be done at the edge, but if that is not possible, we can do it here.
     return unless ApplicationConfig["REDIRECT_WWW_TO_ROOT"] == "true"
 
     if request.host.start_with?("www.")
       new_host = request.host.sub(/^www\./i, "")
-      redirect_to("#{request.protocol}#{new_host}#{request.fullpath}", allow_other_host: true, status: :moved_permanently)
+      redirect_to("#{request.protocol}#{new_host}#{request.fullpath}", allow_other_host: true,
+                                                                       status: :moved_permanently)
+    elsif request.host.end_with?(".#{RequestStore.store[:root_subforem_domain]}") && RequestStore.store[:subforem_id].blank?
+      new_host = RequestStore.store[:root_subforem_domain]
+      redirect_to("#{request.protocol}#{new_host}#{request.fullpath}", allow_other_host: true,
+                                                                       status: :moved_permanently)
     end
   end
 
@@ -426,7 +442,8 @@ class ApplicationController < ActionController::Base
         request.session_options[:domain] = root_domain(request.host)
       else
         # For main domain, set to ApplicationConfig["APP_DOMAIN"]
-        request.session_options[:domain] = Settings::General.app_domain.present? ? root_domain(Settings::General.app_domain) : ApplicationConfig["APP_DOMAIN"]
+        request.session_options[:domain] =
+          Settings::General.app_domain.present? ? root_domain(Settings::General.app_domain) : ApplicationConfig["APP_DOMAIN"]
       end
     else
       # In non-production environments, don't set the domain
@@ -437,7 +454,7 @@ class ApplicationController < ActionController::Base
   def root_domain(host)
     # The `default_rule: nil` option ensures it raises an error if the domain is invalid
     parsed = PublicSuffix.parse(host, default_rule: nil)
-    parsed.domain  # Returns the domain with TLD, e.g. "example.com"
+    parsed.domain # Returns the domain with TLD, e.g. "example.com"
   rescue PublicSuffix::DomainInvalid
     host
   end
@@ -449,7 +466,7 @@ class ApplicationController < ActionController::Base
   end
 
   def clear_request_store
-    # Clear RequestStore in development/test to avoid lingering. Not important in prod. 
+    # Clear RequestStore in development/test to avoid lingering. Not important in prod.
     RequestStore.clear! unless Rails.env.production?
   end
 end

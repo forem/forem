@@ -145,14 +145,26 @@ module Api
     end
 
     def article_params
+      convert_labels_param
       allowed_params = [
         :title, :body_markdown, :published, :series,
         :main_image, :canonical_url, :description, { tags: [] },
         :published_at, :subforem_id, :language
       ]
       allowed_params << :organization_id if params.dig("article", "organization_id") && allowed_to_change_org_id?
-      allowed_params << :clickbait_score if @user.super_admin?
-      allowed_params << :compellingness_score if @user.super_admin?
+      # allow if a youtube.com, mux.com, or twitch.tv URL
+      video_url = params.dig("article", "video_source_url")
+      if video_url.present?
+        youtube_pattern = /\Ahttps?:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)/
+        mux_pattern = /\Ahttps?:\/\/player\.mux\.com\//
+        twitch_pattern = /\Ahttps?:\/\/(www\.)?twitch\.tv\/videos\//
+        allowed_params << :video_source_url if video_url.match?(youtube_pattern) || video_url.match?(mux_pattern) || video_url.match?(twitch_pattern)
+      end
+      if @user.super_admin?
+        allowed_params << :clickbait_score
+        allowed_params << :compellingness_score
+        allowed_params << { labels: [] }
+      end
       params.require(:article).permit(allowed_params)
     end
 
@@ -173,6 +185,14 @@ module Api
 
       message = I18n.t("api.v0.articles_controller.must_be_json", type: params[:article].class.name)
       render json: { error: message, status: 422 }, status: :unprocessable_entity
+    end
+
+    def convert_labels_param
+      labels = params.dig("article", "labels")
+      if labels.present?
+        labels = labels.is_a?(String) ? labels.gsub(" ", "").split(",") : labels
+        params[:article][:labels] = labels
+      end
     end
   end
 end

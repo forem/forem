@@ -141,6 +141,10 @@ module Authorizer
       has_role?(:base_subscriber)
     end
 
+    def impending_base_subscriber_cancellation?
+      has_role?(:impending_base_subscriber_cancellation)
+    end
+
     def spam_or_suspended?
       has_any_role?(:spam, :suspended)
     end
@@ -151,6 +155,14 @@ module Authorizer
       return user.roles.exists?(name: "tag_moderator") unless tag
 
       has_role?(:tag_moderator, tag)
+    end
+
+    def subforem_moderator?(subforem: nil)
+      # Note a fan of "peeking" into the roles table, which in a way
+      # circumvents the rolify gem.  But this was the past implementation.
+      return user.roles.exists?(name: "subforem_moderator") unless subforem
+
+      has_role?(:subforem_moderator, subforem)
     end
 
     def tech_admin?

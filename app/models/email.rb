@@ -1,5 +1,6 @@
 class Email < ApplicationRecord
   belongs_to :audience_segment, optional: true
+  belongs_to :user_query, optional: true
   has_many :email_messages
 
   after_save :deliver_to_users
@@ -14,14 +15,14 @@ class Email < ApplicationRecord
 
   def self.replace_merge_tags(content, user)
     return content unless user
-  
+
     # Define the mapping of merge tags to user attributes
     merge_tags = {
       "name" => user.name,
       "username" => user.username,
       "email" => user.email
     }
-  
+
     # Replace merge tags in the content
     content.gsub(/\*\|(\w+)\|\*/) do |match|
       tag = Regexp.last_match(1).downcase
@@ -43,9 +44,27 @@ class Email < ApplicationRecord
     end
   end
 
-  def targeted_tags=(input)
-    adjusted_input = input.is_a?(String) ? input.gsub(" ", "").split(",") : input
-    write_attribute(:targeted_tags, adjusted_input)
+  def variables=(input)
+    if input.is_a?(String) && input.present?
+      begin
+        parsed = JSON.parse(input)
+        write_attribute(:variables, parsed.to_json)
+      rescue JSON::ParserError
+        write_attribute(:variables, input)
+      end
+    else
+      write_attribute(:variables, input)
+    end
+  end
+
+  def parsed_variables
+    return {} if variables.blank?
+
+    begin
+      JSON.parse(variables)
+    rescue JSON::ParserError
+      {}
+    end
   end
 
   def default_from_name_based_on_type
@@ -74,7 +93,7 @@ class Email < ApplicationRecord
     return if type_of == "onboarding_drip"
     return if status != "active"
 
-    Emails::EnqueueCustomBatchSendWorker.perform_async(self.id)
-    self.update_columns(status: "delivered")
+    Emails::EnqueueCustomBatchSendWorker.perform_async(id)
+    update_columns(status: "delivered")
   end
 end

@@ -132,28 +132,31 @@ RSpec.describe ApplicationHelper do
   describe "#navigation_link_is_for_an_enabled_feature?" do
     subject(:method_call) { helper.navigation_link_is_for_an_enabled_feature?(link: link) }
 
-    let(:url) { URL.url("/somehwere") }
-    let(:link) { build(:navigation_link, url: url) }
+    context "when the link does NOT point to /listings" do
+      let(:link) { build(:navigation_link, url: URL.url("/some-other-path")) }
 
-    context "when Listing feature is enabled" do
-      before { allow(Listing).to receive(:feature_enabled?).and_return(true) }
-
+      # The method should now always return true for non-listing paths
       it { is_expected.to be_truthy }
     end
 
-    context "when Listing feature is disabled and link not for listing" do
-      before { allow(Listing).to receive(:feature_enabled?).and_return(false) }
+    context "when the link DOES point to /listings" do
+      let(:link) { build(:navigation_link, url: URL.url("/listings")) }
 
-      it { is_expected.to be_truthy }
-    end
-
-    context "when Listing feature is disabled and link is for /listings" do
-      let(:url) { URL.url("/listings") }
-
-      before { allow(Listing).to receive(:feature_enabled?).and_return(false) }
-
+      # The method should now always return false for the /listings path
       it { is_expected.to be_falsey }
     end
+
+    # Optional: Add a test case if listings_path helper exists vs direct URL
+    # context "when the link uses listings_path helper" do
+    #   before do
+    #     # Stub listings_path if it still exists and you want to test it,
+    #     # otherwise this context isn't strictly needed if /listings URL covers it.
+    #     allow(helper).to receive(:try).with(:listings_path).and_return("/listings")
+    #   end
+    #   let(:link) { build(:navigation_link, url: URL.url("/listings")) }
+    #
+    #   it { is_expected.to be_falsey }
+    # end
   end
 
   describe "#beautified_url" do
@@ -250,6 +253,42 @@ RSpec.describe ApplicationHelper do
     it "works when called with an URI object" do
       uri = URI::Generic.build(path: "resource_admin", fragment: "test").to_s
       expect(app_url(uri)).to eq("https://dev.to/resource_admin#test")
+    end
+
+    context "when subforem domain is in RequestStore" do
+      before do
+        RequestStore.store[:subforem_domain] = "community.example.com"
+      end
+
+      after do
+        RequestStore.clear!
+      end
+
+      it "creates the correct base URL with subforem domain" do
+        expect(app_url).to eq("https://community.example.com")
+      end
+
+      it "creates a URL with a path using subforem domain" do
+        expect(app_url("/feed")).to eq("https://community.example.com/feed")
+      end
+
+      it "creates the correct URL for RSS feed with subforem domain" do
+        expect(app_url("feed")).to eq("https://community.example.com/feed")
+      end
+    end
+
+    context "when no subforem domain is in RequestStore" do
+      before do
+        RequestStore.store[:subforem_domain] = nil
+      end
+
+      after do
+        RequestStore.clear!
+      end
+
+      it "falls back to default domain" do
+        expect(app_url("/feed")).to eq("https://dev.to/feed")
+      end
     end
   end
 

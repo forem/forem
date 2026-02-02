@@ -1,13 +1,11 @@
 #!/usr/bin/env bash
 
-if [ -n "$CODESPACE_NAME" ]; then
+if [ -n "$CODESPACE_NAME" ] || [ -n "$ONA_ENVIRONMENT_NAME" ]; then
     echo "Running updates"
 
-    # Github Codespace prebuild caches the codebase.
-    # This means depending on the time the Codespace is created,
+    # Github Codespace/Ona prebuild caches the codebase.
+    # This means depending on the time the environment is created,
     # it may not be on latest commit with latest dependency changes
-    #
-    # See https://github.com/orgs/community/discussions/58172
 
     if git fetch origin "$(git rev-parse --abbrev-ref HEAD)" && git diff --quiet "HEAD..origin/$(git rev-parse --abbrev-ref HEAD)" ;then
         echo "Branch is already up to date"

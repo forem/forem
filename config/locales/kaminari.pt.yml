@@ -1,0 +1,16 @@
+---
+pt:
+  views:
+    pagination:
+      first: "&laquo; Primeiro"
+      last: "Último &raquo;"
+      previous: "&lsaquo; Anterior"
+      next: "Próximo &rsaquo;"
+      truncate: "&hellip;"
+    page_entries_info:
+      more_pages:
+        display_entries: "Mostrando %{entry_name} %{from}-%{to} de %{count} no total"
+  helpers:
+    page_entries_info:
+      more_pages:
+        display_entries: "%{first}&nbsp;-&nbsp;%{last} de %{total}"

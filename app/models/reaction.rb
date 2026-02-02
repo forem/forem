@@ -59,10 +59,12 @@ class Reaction < ApplicationRecord
   before_save :assign_points
   after_create :notify_slack_channel_about_vomit_reaction, if: -> { category == "vomit" }
   before_destroy :bust_reactable_cache_without_delay
+  before_destroy :bust_reaction_counts_cache
   before_destroy :update_reactable, unless: :destroyed_by_association
   after_commit :async_bust
-  after_commit :bust_reactable_cache, :update_reactable, on: %i[create update]
+  after_commit :bust_reactable_cache, :update_reactable, :bust_reaction_counts_cache, on: %i[create update]
   after_commit :record_field_test_event, on: %i[create]
+  after_commit :check_for_reaction_ring, on: :create
 
   class << self
     def count_for_article(id)
@@ -107,7 +109,7 @@ class Reaction < ApplicationRecord
     # @return [FalseClass] they're not (yet) spamming the system
     def user_has_been_given_too_many_spammy_article_reactions?(user:, threshold: 2, include_user_profile: false)
       threshold -= 1 if include_user_profile && user_has_spammy_profile_reaction?(user: user)
-      article_vomits.where(reactable_id: user.articles.ids).size > threshold
+      article_vomits.where(status: "confirmed").where(reactable_id: user.articles.where("published_at > ?", 1.month.ago).ids).size > threshold
     end
 
     # @param user [User] the user who might be spamming the system
@@ -119,7 +121,7 @@ class Reaction < ApplicationRecord
     # @return [FalseClass] they're not (yet) spamming the system
     def user_has_been_given_too_many_spammy_comment_reactions?(user:, threshold: 2, include_user_profile: false)
       threshold -= 1 if include_user_profile && user_has_spammy_profile_reaction?(user: user)
-      comment_vomits.where(reactable_id: user.comments.ids).size > threshold
+      comment_vomits.where(status: "confirmed").where(reactable_id: user.comments.where("created_at > ?", 1.month.ago).ids).size > threshold
     end
 
     # @param user [User] the user who might be spamming the system
@@ -202,6 +204,10 @@ class Reaction < ApplicationRecord
     Reactions::BustReactableCacheWorker.new.perform(id)
   end
 
+  def bust_reaction_counts_cache
+    Rails.cache.delete "reaction_counts_for_reactable-#{reactable_type}-#{reactable_id}"
+  end
+
   def assign_points
     self.points = CalculateReactionPoints.call(self)
   end
@@ -239,5 +245,16 @@ class Reaction < ApplicationRecord
 
   def should_notify?
     ReactionCategory.notifiable.include?(category.to_sym)
+  end
+
+  def check_for_reaction_ring
+    # Only check for public reactions on articles
+    return unless visible_to_public? && reactable_type == "Article"
+    
+    # Only check if user has enough reactions to potentially be in a ring
+    return unless user.reactions.public_category.only_articles.where(created_at: 3.months.ago..).count >= 50
+    
+    # Schedule ring detection asynchronously
+    Spam::ReactionRingDetectionWorker.perform_async(user_id)
   end
 end

@@ -17,6 +17,7 @@ module Settings
     setting :feed_style, type: :string, default: "basic", validates: {
       inclusion: { in: FEED_STYLES }
     }
+    setting :feed_lookback_days, type: :integer, default: 10
     setting :home_feed_minimum_score, type: :integer, default: 0
     setting :index_minimum_score, type: :integer, default: 0
     setting :index_minimum_date, type: :integer, default: 1_500_000_000
@@ -40,6 +41,7 @@ module Settings
     setting :cover_image_fit, type: :string, default: "crop", validates: {
       inclusion: { in: COVER_IMAGE_FITS }
     }
+    setting :cover_image_aesthetic_instructions, type: :string, default: ""
 
     # a non-public forem will redirect all unauthenticated pages to the registration page.
     # a public forem could have more fine-grained authentication (listings ar private etc.) in future

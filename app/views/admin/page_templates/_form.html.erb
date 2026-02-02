@@ -1,0 +1,190 @@
+<div class="crayons-card p-6">
+  <%= form_for [:admin, @page_template] do |form| %>
+    <div class="flex flex-col gap-6">
+      <div class="crayons-field">
+        <%= form.label :name, class: "crayons-field__label" %>
+        <%= form.text_field :name, class: "crayons-textfield", required: true, placeholder: "e.g., Team Member Profile" %>
+      </div>
+      
+      <div class="crayons-field">
+        <%= form.label :description, class: "crayons-field__label" do %>
+          Description
+          <p class="crayons-field__description">Optional description to help identify this template</p>
+        <% end %>
+        <%= form.text_area :description, rows: 2, class: "crayons-textfield" %>
+      </div>
+      
+      <div class="crayons-field">
+        <%= form.label :template_type, class: "crayons-field__label" do %>
+          Template Type
+          <p class="crayons-field__description">Determines how the page content will be rendered</p>
+        <% end %>
+        <%= form.select :template_type, PageTemplate::TEMPLATE_TYPE_OPTIONS, {}, class: "crayons-select" %>
+      </div>
+      
+      <hr class="my-2">
+      
+      <div>
+        <h3 class="crayons-subtitle-2 mb-2">Data Schema</h3>
+        <p class="color-base-70 fs-s mb-4">
+          Define the fields that will be filled out when creating a page from this template.
+          Use <code>{{field_name}}</code> in the template body to insert field values.
+          <% if @page_template.persisted? && @page_template.pages.any? %>
+            <br><strong class="color-accent-danger">Schema cannot be modified because pages exist.</strong>
+          <% end %>
+        </p>
+        
+        <div id="schema-fields-container">
+          <% fields = @page_template.schema_fields.presence || [{ "name" => "", "type" => "text", "label" => "", "required" => false }] %>
+          <% fields.each_with_index do |field, index| %>
+            <div class="schema-field-row flex gap-3 mb-3 items-end" data-index="<%= index %>">
+              <div class="crayons-field flex-1">
+                <% if index == 0 %><label class="crayons-field__label fs-s">Field Name</label><% end %>
+                <input type="text" 
+                       name="page_template[field_names][]" 
+                       value="<%= field['name'] %>" 
+                       class="crayons-textfield" 
+                       placeholder="field_name"
+                       pattern="[a-z_][a-z0-9_]*"
+                       <%= "readonly" if @page_template.persisted? && @page_template.pages.any? %>>
+              </div>
+              <div class="crayons-field flex-1">
+                <% if index == 0 %><label class="crayons-field__label fs-s">Label</label><% end %>
+                <input type="text" 
+                       name="page_template[field_labels][]" 
+                       value="<%= field['label'] %>" 
+                       class="crayons-textfield" 
+                       placeholder="Display Label"
+                       <%= "readonly" if @page_template.persisted? && @page_template.pages.any? %>>
+              </div>
+              <div class="crayons-field" style="width: 120px;">
+                <% if index == 0 %><label class="crayons-field__label fs-s">Type</label><% end %>
+                <select name="page_template[field_types][]" 
+                        class="crayons-select"
+                        <%= "disabled" if @page_template.persisted? && @page_template.pages.any? %>>
+                  <% %w[text textarea number url email select].each do |type| %>
+                    <option value="<%= type %>" <%= "selected" if field['type'] == type %>><%= type.titleize %></option>
+                  <% end %>
+                </select>
+              </div>
+              <div class="crayons-field" style="min-width: 70px;">
+                <% if index == 0 %><label class="crayons-field__label fs-s" style="padding-bottom: 10px;">Required</label><% end %>
+                <input type="hidden" name="page_template[field_required][]" value="0">
+                <input type="checkbox" 
+                       name="page_template[field_required][]" 
+                       value="1"
+                       style="height: 30px;width: 30px;" 
+                       class="crayons-checkbox"
+                       <%= "checked" if field['required'] %>
+                       <%= "disabled" if @page_template.persisted? && @page_template.pages.any? %>>
+              </div>
+              <% unless @page_template.persisted? && @page_template.pages.any? %>
+                <button type="button" class="remove-field-btn crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon" onclick="removeSchemaField(this)" title="Remove field">
+                  <%= crayons_icon_tag(:x) %>
+                </button>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+        
+        <% unless @page_template.persisted? && @page_template.pages.any? %>
+          <button type="button" id="add-field-btn" class="crayons-btn crayons-btn--s crayons-btn--secondary mt-2" onclick="addSchemaField()">
+            + Add Field
+          </button>
+        <% end %>
+      </div>
+      
+      <hr class="my-2">
+      
+      <div class="crayons-field">
+        <%= form.label :body_markdown, class: "crayons-field__label" do %>
+          Template Body (Markdown)
+          <p class="crayons-field__description">Use <code>{{field_name}}</code> to insert dynamic content</p>
+        <% end %>
+        <%= form.text_area :body_markdown, rows: 12, class: "crayons-textfield font-monospace" %>
+      </div>
+      
+      <div class="crayons-field">
+        <%= form.label :body_html, class: "crayons-field__label" do %>
+          Template Body (HTML)
+          <p class="crayons-field__description">Only use if not using markdown. HTML is dangerous ⚠️</p>
+        <% end %>
+        <%= form.text_area :body_html, rows: 8, class: "crayons-textfield font-monospace" %>
+      </div>
+      
+      <div class="flex gap-3">
+        <%= form.submit class: "crayons-btn" %>
+        <%= link_to "Cancel", admin_page_templates_path, class: "crayons-btn crayons-btn--secondary" %>
+      </div>
+    </div>
+  <% end %>
+  
+  <% if @page_template.persisted? && @page_template.pages.none? %>
+    <%= form_with model: [:admin, @page_template], local: true, method: :delete, class: "mt-6 pt-6 border-t border-solid border-base-20" do |f| %>
+      <p class="color-base-60 mb-3">Delete this template permanently.</p>
+      <%= f.submit "Delete Template", class: "crayons-btn crayons-btn--danger", data: { confirm: "Are you sure you want to delete this template?" } %>
+    <% end %>
+  <% end %>
+</div>
+
+<script>
+  function addSchemaField() {
+    const container = document.getElementById('schema-fields-container');
+    const rows = container.querySelectorAll('.schema-field-row');
+    const newIndex = rows.length;
+    
+    const newRow = document.createElement('div');
+    newRow.className = 'schema-field-row flex gap-3 mb-3 items-end';
+    newRow.dataset.index = newIndex;
+    // Only show labels if this is the first row (no other rows exist)
+    const showLabels = rows.length === 0;
+    const labelHtml = (text) => showLabels ? `<label class="crayons-field__label fs-s">${text}</label>` : '';
+    
+    newRow.innerHTML = `
+      <div class="crayons-field flex-1">
+        ${labelHtml('Field Name')}
+        <input type="text" name="page_template[field_names][]" class="crayons-textfield" placeholder="field_name" pattern="[a-z_][a-z0-9_]*">
+      </div>
+      <div class="crayons-field flex-1">
+        ${labelHtml('Label')}
+        <input type="text" name="page_template[field_labels][]" class="crayons-textfield" placeholder="Display Label">
+      </div>
+      <div class="crayons-field" style="width: 120px;">
+        ${labelHtml('Type')}
+        <select name="page_template[field_types][]" class="crayons-select">
+          <option value="text">Text</option>
+          <option value="textarea">Textarea</option>
+          <option value="number">Number</option>
+          <option value="url">URL</option>
+          <option value="email">Email</option>
+          <option value="select">Select</option>
+        </select>
+      </div>
+      <div class="crayons-field" style="min-width: 70px;">
+        ${labelHtml('Required')}
+        <input type="hidden" name="page_template[field_required][]" value="0">
+        <input type="checkbox" name="page_template[field_required][]" value="1" style="height: 30px;width: 30px;"  class="crayons-checkbox">
+      </div>
+      <button type="button" class="remove-field-btn crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon" onclick="removeSchemaField(this)" title="Remove field">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    `;
+    
+    container.appendChild(newRow);
+  }
+  
+  function removeSchemaField(button) {
+    const row = button.closest('.schema-field-row');
+    const container = document.getElementById('schema-fields-container');
+    
+    if (container.querySelectorAll('.schema-field-row').length > 1) {
+      row.remove();
+    } else {
+      // Clear the fields instead of removing the last row
+      row.querySelectorAll('input[type="text"]').forEach(input => input.value = '');
+      row.querySelectorAll('input[type="checkbox"]').forEach(input => input.checked = false);
+      row.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
+    }
+  }
+</script>
+

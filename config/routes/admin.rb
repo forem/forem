@@ -1,6 +1,7 @@
 # rubocop:disable Metrics/BlockLength
 namespace :admin do
   get "/", to: "overview#index"
+  get "/stats", to: "overview#stats"
 
   authenticate :user, ->(user) { user.tech_admin? } do
     mount Blazer::Engine, at: "blazer"
@@ -60,6 +61,7 @@ namespace :admin do
         post "send_email"
         post "verify_email_ownership"
         post "send_email_confirmation"
+        post "confirm_email"
         patch "unlock_access"
         post "unpublish_all_articles"
       end
@@ -86,7 +88,13 @@ namespace :admin do
       end
     end
 
-    resources :badges, only: %i[index edit update new create]
+    resources :badges, only: %i[index edit update new create] do
+      resources :badge_automations, only: %i[index new create edit update destroy], controller: "badge_automations" do
+        member do
+          patch :toggle_enabled
+        end
+      end
+    end
     resources :badge_achievements, only: %i[index destroy]
     get "/badge_achievements/award_badges", to: "badge_achievements#award"
     post "/badge_achievements/award_badges", to: "badge_achievements#award_badges"
@@ -94,9 +102,26 @@ namespace :admin do
     resources :organizations, only: %i[index show destroy] do
       member do
         patch "update_org_credits"
+        patch "update_fully_trusted"
+        patch "update_baseline_score"
       end
     end
     resources :emails
+    resources :user_queries do
+      member do
+        post :test_execute
+        patch :toggle_active
+      end
+      collection do
+        post :validate
+      end
+    end
+    resources :read_only_database, only: [:show] do
+      collection do
+        post :test_connection
+        post :reset_pool
+      end
+    end
     resources :podcasts, only: %i[index edit update destroy] do
       member do
         post :fetch
@@ -112,12 +137,23 @@ namespace :admin do
     # We renamed the controller but don't want to change the route (yet)
     resource :config, controller: "settings"
     resources :billboards
+    resources :billboard_placement_area_configs, only: %i[index edit update]
     resources :html_variants, only: %i[index edit update new create show destroy]
     resources :navigation_links, only: %i[index update create destroy]
     resources :pages, only: %i[index new create edit update destroy]
+    resources :page_templates, only: %i[index show new create edit update destroy]
     resources :profile_field_groups, only: %i[update create destroy]
     resources :profile_fields, only: %i[index update create destroy]
-    resources :subforems, only: %i[index new create edit update]
+    resources :subforems, only: %i[index new create edit update show] do
+      resource :moderator, only: %i[create destroy], module: "subforem_moderators"
+      resources :community_bots, only: %i[index new create show destroy] do
+        resources :scheduled_automations, only: %i[index show new create edit update destroy] do
+          member do
+            patch :toggle_enabled
+          end
+        end
+      end
+    end
   end
 
   scope :moderation do
@@ -132,6 +168,7 @@ namespace :admin do
     resources :mods, only: %i[index update]
     resources :moderator_actions, only: %i[index]
     resources :privileged_reactions, only: %i[index]
+    resources :blocked_email_domains, only: %i[index new create destroy]
   end
 
   scope :advanced do

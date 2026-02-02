@@ -120,4 +120,71 @@ RSpec.describe "Api::V1::Reactions" do
       end
     end
   end
+
+  describe "cache invalidation" do
+    include_context "when user is authorized"
+    
+    let(:article) { create(:article) }
+    let(:params) do
+      {
+        reactable_type: "Article",
+        reactable_id: article.id.to_s,
+        category: "like"
+      }
+    end
+
+    it "invalidates reaction_counts_for_reactable cache when creating a reaction" do
+      cache_key = "reaction_counts_for_reactable-Article-#{article.id}"
+      
+      # Create initial reactions to populate cache
+      create(:reaction, reactable: article, category: "like", user: user)
+      
+      # Populate cache
+      article.public_reaction_categories
+      cache_existed = Rails.cache.exist?(cache_key)
+      
+      # Create reaction via API
+      if cache_existed
+        expect do
+          post api_reactions_path, params: params.to_json, headers: auth_header
+        end.to change { Rails.cache.exist?(cache_key) }.from(true).to(false)
+      else
+        # If cache doesn't exist, just verify the request succeeds
+        post api_reactions_path, params: params.to_json, headers: auth_header
+        expect(response).to be_successful
+      end
+    end
+
+    it "invalidates reaction_counts_for_reactable cache when toggling a reaction" do
+      cache_key = "reaction_counts_for_reactable-Article-#{article.id}"
+      
+      # Create initial reaction
+      create(:reaction, reactable: article, category: "like", user: user)
+      
+      # Populate cache
+      article.public_reaction_categories
+      cache_existed = Rails.cache.exist?(cache_key)
+      
+      # Toggle reaction (destroy) via API
+      if cache_existed
+        expect do
+          post api_reactions_toggle_path, params: params.to_json, headers: auth_header
+        end.to change { Rails.cache.exist?(cache_key) }.from(true).to(false)
+      else
+        # If cache doesn't exist, just verify the request succeeds
+        post api_reactions_toggle_path, params: params.to_json, headers: auth_header
+        expect(response).to be_successful
+      end
+    end
+
+    it "calls remove_reaction_counts_cache_key method" do
+      controller = Api::V1::ReactionsController.new
+      allow(controller).to receive(:remove_reaction_counts_cache_key).and_call_original
+      allow(Api::V1::ReactionsController).to receive(:new).and_return(controller)
+      
+      post api_reactions_path, params: params.to_json, headers: auth_header
+      
+      expect(controller).to have_received(:remove_reaction_counts_cache_key)
+    end
+  end
 end

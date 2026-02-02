@@ -1,8 +1,10 @@
 import { h } from 'preact';
+import { useState } from 'preact/hooks';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { Options } from './Options';
 import { ButtonNew as Button } from '@crayons';
+import { locale } from '@utilities/locale';
 
 export const EditorActions = ({
   onSaveDraft,
@@ -34,7 +36,7 @@ export const EditorActions = ({
         >
           {published && isVersion2
             ? 'Publishing...'
-            : `Saving ${isVersion2 ? 'draft' : ''}...`}
+            : `Saving ${isVersion2 ? 'post' : ''}...`}
         </Button>
       </div>
     );
@@ -47,17 +49,26 @@ export const EditorActions = ({
   const schedule = publishedAtObj > now;
   const wasScheduled = passedData.publishedAtWas > now;
 
+  // Extract advanced options for footer display
+  const { canonicalUrl = '', series = '', publishedAtDate: scheduleDate = '', publishedAtTime: scheduleTime = '' } = passedData;
+  const hasAdvancedOptions = canonicalUrl || series || (scheduleDate && scheduleTime && schedule);
+  const [optionsModalSignal, setOptionsModalSignal] = useState(0);
+
+  const reopenOptionsModal = () => {
+    setOptionsModalSignal((prev) => prev + 1);
+  };
+
   let saveButtonText;
   if (isVersion1) {
-    saveButtonText = 'Save changes';
+    saveButtonText = locale('core.article_form_save_changes');
   } else if (schedule) {
-    saveButtonText = 'Schedule';
+    saveButtonText = locale('core.article_form_schedule');
   } else if (wasScheduled || !published) {
     // if the article was saved as scheduled, and the user clears publishedAt in the post options, the save button text is changed to "Publish"
     // to make it clear that the article is going to be published right away
-    saveButtonText = 'Publish';
+    saveButtonText = locale('core.article_form_publish');
   } else {
-    saveButtonText = 'Save changes';
+    saveButtonText = locale('core.article_form_save_changes');
   }
 
   return (
@@ -94,8 +105,44 @@ export const EditorActions = ({
           onConfigChange={onConfigChange}
           onSaveDraft={onSaveDraft}
           previewLoading={previewLoading}
+          externalOpenSignal={optionsModalSignal}
           onFocus={(event) => switchHelpContext(event, 'editor-actions')}
         />
+      )}
+
+      {hasAdvancedOptions && isVersion2 && (
+        <div className="article-form-footer-pills hidden m:flex items-center gap-2">
+          {scheduleDate && scheduleTime && schedule && (
+            <button
+              type="button"
+              className="article-form-footer-pill"
+              title={publishedAtObj.format('MMMM D, YYYY [at] h:mm A')}
+              onClick={reopenOptionsModal}
+            >
+              ⏰ Scheduled
+            </button>
+          )}
+          {canonicalUrl && (
+            <button
+              type="button"
+              className="article-form-footer-pill"
+              title={canonicalUrl}
+              onClick={reopenOptionsModal}
+            >
+              🔗 Canonical
+            </button>
+          )}
+          {series && (
+            <button
+              type="button"
+              className="article-form-footer-pill"
+              title={`Series: ${series}`}
+              onClick={reopenOptionsModal}
+            >
+              📚 {series}
+            </button>
+          )}
+        </div>
       )}
 
       {edited && (
@@ -118,7 +165,7 @@ EditorActions.propTypes = {
   published: PropTypes.bool.isRequired,
   publishedAtTime: PropTypes.string.isRequired,
   publishedAtDate: PropTypes.string.isRequired,
-  schedulingEnabled: PropTypes.bool.isRequired,
+  schedulingEnabled: PropTypes.bool, // Kept for backward compatibility but always true now
   edited: PropTypes.bool.isRequired,
   version: PropTypes.string.isRequired,
   onClearChanges: PropTypes.func.isRequired,

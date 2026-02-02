@@ -30,19 +30,6 @@ RSpec.describe "Credits" do
     context "when the user has made purchases that will appear in the ledger" do
       let(:params) { { spent: true, spent_at: Time.current } }
 
-      it "shows listing purchases" do
-        listing = create(:listing, user: user, title: "Awesome opportunity")
-        purchase_params = { user: user, purchase_type: listing.class.name, purchase_id: listing.id }
-        create(:credit, params.merge(purchase_params))
-
-        sign_in user
-        get credits_path
-
-        expect(response.body).to include("Purchase history")
-        expect(response.body).to include("Listing")
-        expect(response.body).to include(listing.title)
-      end
-
       it "shows unattributed purchases" do
         purchase_params = { user: user }
         create(:credit, params.merge(purchase_params))

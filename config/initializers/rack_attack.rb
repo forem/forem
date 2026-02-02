@@ -67,12 +67,17 @@ module Rack
       end
     end
 
-    throttle("site_hits", limit: 40, period: 2, &:track_and_return_ip)
+    # Removed user_signed_in? helper method - no longer needed
+    # since we removed authentication-based throttling rules
 
-    throttle("tag_throttle", limit: 2, period: 1) do |request|
-      if request.path.include?("/t/")
-        request.track_and_return_ip
-      end
-    end
+    # Removed edge-cached page throttling rules to reduce Redis overhead
+    # These pages are edge-cached globally (signed-in vs signed-out only)
+    # so Rack Attack rarely applies and wastes Redis resources:
+    # - Homepage (/)
+    # - Latest (/latest) 
+    # - Article pages (/:username/:slug)
+    # - Tag pages (/t/:tag)
+    # 
+    # Focus Rack Attack on dynamic, non-cached content only
   end
 end

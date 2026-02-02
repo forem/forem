@@ -1,0 +1,58 @@
+<% title t("views.subforems.pages.new.title", subforem: @subforem.domain) %>
+
+<main id="main-content">
+  <header class="crayons-page-header crayons-layout crayons-layout--full">
+    <h1 class="crayons-title"><%= t("views.subforems.pages.new.heading", subforem: @subforem.domain) %></h1>
+    <div class="flex gap-2">
+      <%= link_to t("views.subforems.pages.back"), manage_subforem_path, class: "crayons-btn crayons-btn--ghost" %>
+    </div>
+  </header>
+
+  <div class="crayons-layout crayons-layout--full mb-4">
+    <div class="crayons-card p-4 m:p-6">
+      <div class="crayons-notice crayons-notice--info mb-4">
+        <%= t("views.subforems.pages.new.markdown_only_notice_html") %>
+      </div>
+
+      <%= form_for @page, url: create_page_subforem_path(@subforem), html: { class: "flex flex-col gap-4" } do |form| %>
+        <div class="crayons-field">
+          <%= form.label :title, t("views.subforems.pages.form.title.label"), class: "crayons-field__label" %>
+          <%= form.text_field :title, class: "crayons-textfield", placeholder: t("views.subforems.pages.form.title.placeholder"), required: true %>
+        </div>
+
+        <div class="crayons-field">
+          <%= form.label :slug, t("views.subforems.pages.form.slug.label"), class: "crayons-field__label" %>
+          <div class="flex items-center">
+            <span class="crayons-field__addon">/page/</span>
+            <%= form.text_field :slug, class: "crayons-textfield flex-1", style: "border-top-left-radius: 0; border-bottom-left-radius: 0;", placeholder: t("views.subforems.pages.form.slug.placeholder"), required: true, pattern: "[a-z0-9-]+" %>
+          </div>
+          <p class="crayons-field__description"><%= t("views.subforems.pages.form.slug.description_with_prefix_html") %></p>
+        </div>
+
+        <div class="crayons-field">
+          <%= form.label :description, t("views.subforems.pages.form.description.label"), class: "crayons-field__label" %>
+          <%= form.text_area :description, class: "crayons-textfield", rows: 2, placeholder: t("views.subforems.pages.form.description.placeholder"), required: true %>
+          <p class="crayons-field__description"><%= t("views.subforems.pages.form.description.description") %></p>
+        </div>
+
+        <div class="crayons-field">
+          <%= form.label :body_markdown, t("views.subforems.pages.form.body_markdown.label"), class: "crayons-field__label" %>
+          <%= form.text_area :body_markdown, class: "crayons-textfield", rows: 20, placeholder: t("views.subforems.pages.form.body_markdown.placeholder"), required: true %>
+          <p class="crayons-field__description"><%= t("views.subforems.pages.form.body_markdown.description") %></p>
+        </div>
+
+        <div class="crayons-field">
+          <%= form.label :social_image, t("views.subforems.pages.form.social_image.label"), class: "crayons-field__label" %>
+          <%= form.file_field :social_image, accept: "image/png,image/jpg,image/jpeg,.png,.jpg,.jpeg" %>
+          <p class="crayons-field__description"><%= t("views.subforems.pages.form.social_image.description") %></p>
+        </div>
+
+        <div class="flex gap-2 mt-4">
+          <%= form.submit t("views.subforems.pages.form.create_button"), class: "crayons-btn crayons-btn--primary" %>
+          <%= link_to t("views.subforems.pages.form.cancel_button"), manage_subforem_path, class: "crayons-btn crayons-btn--ghost" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</main>
+

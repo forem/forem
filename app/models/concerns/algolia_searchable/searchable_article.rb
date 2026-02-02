@@ -18,7 +18,7 @@ module AlgoliaSearchable
 
         attribute :title, :tag_list, :reading_time, :score, :featured, :comments_count,
                   :positive_reactions_count, :path, :main_image, :user_id, :public_reactions_count,
-                  :public_reaction_categories
+                  :public_reaction_categories, :subforem_id
 
         add_attribute(:published_at) { published_at.to_i }
         add_attribute(:readable_publish_date) { readable_publish_date }
@@ -26,6 +26,10 @@ module AlgoliaSearchable
         add_attribute(:timestamp) { published_at.to_i }
         add_replica("Article_timestamp_desc", per_environment: true) { customRanking ["desc(timestamp)"] }
         add_replica("Article_timestamp_asc", per_environment: true) { customRanking ["asc(timestamp)"] }
+
+        attributesForFaceting [
+          "filterOnly(subforem_id)"
+        ]
       end
     end
 
@@ -36,7 +40,7 @@ module AlgoliaSearchable
     end
 
     def indexable
-      published && score.positive?
+      published && score.positive? && published_at < Time.current
     end
 
     def indexable_changed?

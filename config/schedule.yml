@@ -106,10 +106,6 @@ resave_supported_tags:
   description: "Resaves supported tags to recalculate scores (runs daily at 00:25 UTC)"
   cron: "25 0 * * *"
   class: "Tags::ResaveSupportedTagsWorker"
-expire_old_listings:
-  description: "Expires old listings (runs daily at 00:30 UTC)"
-  cron: "30 0 * * *"
-  class: "Listings::ExpireOldListingsWorker"
 send_welcome_notifications:
   description: "Sends welcome notifications to new users (runs daily at 16:30 UTC)"
   cron: "0 16 * * *"
@@ -135,8 +131,8 @@ remove_old_notifications:
   cron: "0 5 * * *"
   class: "Notifications::RemoveOldNotificationsWorker"
 remove_old_emails:
-  description: "Deletes old emails we don't need to retain from the database (runs daily at 06:00 UTC)"
-  cron: "0 6 * * *"
+  description: "Deletes old emails we don't need to retain from the database (runs hourly at the 18th minute after the hour)"
+  cron: "18 * * * *"
   class: "Emails::RemoveOldEmailsWorker"
 sync_credits_counter_cache:
   description: "Synchronizes counter caches for credits (runs daily at 16:00 UTC)"
@@ -174,3 +170,19 @@ drip_email_worker:
   description: "Send drip emails to users based on their registration date"
   cron: "37 * * * *" # Every hour on the 37 minute
   class: "Emails::DripEmailWorker"
+article_quality_reactions:
+  description: "Assess article quality and issue thumbs up/down reactions using mascot account (Once per hour on the 8 minute)"
+  cron: "8 * * * *"
+  class: "Articles::QualityReactionWorker"
+article_label_cleanup:
+  description: "Processes articles with no_moderation_label that may have been missed (runs hourly on the 35th minute after the hour)"
+  cron: "35 * * * *"
+  class: "Articles::LabelCleanupWorker"
+scheduled_automations_process:
+  description: "Processes scheduled automations that are due for execution (runs every 10 minutes)"
+  cron: "*/10 * * * *"
+  class: "ScheduledAutomations::ProcessWorker"
+track_promotional_billboard_impressions:
+  description: "Tracks and updates promotional billboard impressions for organizations (runs every 30 minutes)"
+  cron: "*/30 * * * *"
+  class: "Organizations::TrackPromotionalBillboardImpressionsWorker"

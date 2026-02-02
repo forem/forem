@@ -2,6 +2,13 @@ require "rails_helper"
 
 RSpec.describe "Api::V0::Tags" do
   describe "GET /api/tags" do
+    before do
+      # Clear RequestStore to ensure clean state
+      RequestStore.store[:subforem_id] = nil
+      RequestStore.store[:default_subforem_id] = nil
+      RequestStore.store[:root_subforem_id] = nil
+    end
+
     it "returns tags" do
       create(:tag, taggings_count: 10)
 
@@ -67,7 +74,7 @@ RSpec.describe "Api::V0::Tags" do
   private
 
   def expect_valid_json_body(body, tag)
-    expect(body.keys).to match_array(%w[id name bg_color_hex text_color_hex])
+    expect(body.keys).to match_array(%w[id name bg_color_hex text_color_hex short_summary])
     expect(body["id"]).to eq(tag.id)
     expect(body["name"]).to eq(tag.name)
     expect(body["bg_color_hex"]).to eq(tag.bg_color_hex)

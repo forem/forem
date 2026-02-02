@@ -818,3 +818,12 @@
     height: 100%;
   }
 }
+
+// Hide moderate link for non-trusted users
+.only-mobile-menu-item.trusted-visible-block {
+  display: none !important;
+}
+
+body.trusted-status-true .only-mobile-menu-item.trusted-visible-block {
+  display: block !important;
+}

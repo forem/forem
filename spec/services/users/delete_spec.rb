@@ -116,6 +116,13 @@ RSpec.describe Users::Delete, type: :service do
           singular_name = ActiveSupport::Inflector.singularize(association.name)
           class_name = association.options[:class_name] || singular_name
           possible_factory_name = class_name.underscore.tr("/", "_")
+
+          # Skip trying to create listings as the factory is removed
+          next if possible_factory_name == "listing"
+          
+          # Skip scheduled_automations as they require a community bot user
+          next if possible_factory_name == "scheduled_automation"
+
           inverse_of = association.options[:inverse_of] || association.options[:as] || :user
 
           # as we can't be automatically sure that the other side of the relation

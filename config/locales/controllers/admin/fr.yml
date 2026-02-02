@@ -1,5 +1,40 @@
 ---
 fr:
+  admin_controller:
+    dashboard:
+      title: Tableau de bord d'administration
+      welcome: Bienvenue au tableau de bord d'administration
+    users:
+      title: Gérer les utilisateurs
+      suspend: Suspendre
+      unsuspend: Désuspendre
+      ban: Bannir
+      unban: Débannir
+      delete: Supprimer
+      edit: Modifier
+      view: Voir
+    articles:
+      title: Gérer les articles
+      delete: Supprimer
+      edit: Modifier
+      view: Voir
+      publish: Publier
+      unpublish: Dépublier
+    comments:
+      title: Gérer les commentaires
+      delete: Supprimer
+      edit: Modifier
+      view: Voir
+      moderate: Modérer
+    reports:
+      title: Gérer les signalements
+      view: Voir
+      resolve: Résoudre
+      dismiss: Rejeter
+    settings:
+      title: Gérer les paramètres
+      save: Sauvegarder
+      cancel: Annuler
   admin:
     articles_controller:
       saved: Article sauvegardé !
@@ -79,6 +114,9 @@ fr:
       credit_updated: Crédits actualisés avec succès
       deletion_scheduled: 'Organization, "%{organization_name}", deletion is scheduled.'
       error: 'Your organization, %{organization_name}, could not be deleted: %{error}.'
+      fully_trusted_enabled: Le statut de confiance totale a été activé pour cette organisation.
+      fully_trusted_disabled: Le statut de confiance totale a été désactivé pour cette organisation.
+      baseline_score_updated: Le score de base a été mis à jour !
     pages_controller:
       updated: La page a été mise à jour avec succès.
       created: La page a été créée avec succès.
@@ -92,6 +130,11 @@ fr:
       terms_of_use:
         title: Conditions d'utilisation
         description: Une page qui décrit les conditions d'utilisation de l'application.
+    page_templates_controller:
+      created: Le modèle de page a été créé avec succès !
+      updated: Le modèle de page a été mis à jour avec succès !
+      deleted: Le modèle de page a été supprimé avec succès !
+      cannot_delete_with_pages: Impossible de supprimer ce modèle tant qu'il possède des pages associées. Veuillez supprimer ou réassigner ces pages d'abord.
     podcasts_controller:
       new_owner_added: Nouveau propriétaire ajouté !
       no_such_user: Aucun utilisateur n'existe
@@ -119,6 +162,7 @@ fr:
       update_success: L'espace a été mis à jour.
     subforems_controller:
       created: Le sous-forum a été créé !
+      created_with_ai: Le sous-forum a été créé ! Les détails sont en cours de génération en arrière-plan.
       updated: Le sous-forum a été mis à jour !
       deleted: Le sous-forum a été supprimé !
     tags:
@@ -156,6 +200,8 @@ fr:
       credits_added: Les crédits ont été ajoutés !
       credits_removed: Les crédits ont été supprimés.
       tag_not_found: 'Tag "%{tag_name}" non trouvée'
+      email_confirmed: E-mail confirmé !
+      email_confirm_fail: La confirmation de l'e-mail a échoué.
     welcome_controller:
       thread_content: |
         ---

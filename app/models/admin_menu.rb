@@ -31,6 +31,7 @@ class AdminMenu
       item(name: "navigation links"),
       item(name: "pages"),
       item(name: "profile fields"),
+      item(name: "subforems"),
     ]
 
     scope :admin_team, "user-line", [
@@ -42,6 +43,7 @@ class AdminMenu
       item(name: "mods"),
       item(name: "moderator actions", controller: "moderator_actions"),
       item(name: "privileged reactions"),
+      item(name: "blocked email domains", controller: "blocked_email_domains"),
     ]
 
     scope :advanced, "flashlight-line", [
@@ -56,7 +58,6 @@ class AdminMenu
 
     scope :apps, "palette-line", [
       item(name: "consumer apps", controller: "consumer_apps"),
-      item(name: "listings", visible: -> { Listing.feature_enabled? }),
       item(name: "welcome"),
     ]
   end.freeze

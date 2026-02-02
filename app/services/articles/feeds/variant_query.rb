@@ -137,8 +137,8 @@ module Articles
         # goodness of scopes (e.g., limited_column_select) and eager includes.
         scope = Article.joins(join_fragment)
           .from_subforem
-          .limited_column_select
-          .includes(:distinct_reaction_categories)
+          .minimal_feed_column_select
+          .includes(:distinct_reaction_categories, :context_notes)
           .includes(:subforem)
           .order(config.order_by.to_sql)
 

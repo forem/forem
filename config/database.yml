@@ -20,8 +20,10 @@ default: &default
   # For details on connection pooling, see Rails configuration guide
   # http://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("DATABASE_POOL_SIZE") { ENV.fetch("RAILS_MAX_THREADS", 5).to_i } %>
-  connect_timeout: 2
-  checkout_timeout: 2
+  connect_timeout: 6
+  checkout_timeout: 10
+  idle_timeout: 60
+  reaping_frequency: 40
   variables:
       statement_timeout: <%= ENV.fetch("STATEMENT_TIMEOUT", 2500).to_i %>
 
@@ -90,5 +92,7 @@ test:
 #
 production:
   <<: *default
-  url: <%= ENV["DATABASE_URL"] %>
-  database: <%= ENV["DATABASE_NAME"] %>
+  url: <%= ENV.fetch("NEW_DATABASE_URL", ENV["DATABASE_URL"]) %>
+  schema_search_path: "\"$user\",public,heroku_ext"
+  prepared_statements: false
+  advisory_locks: <%= ENV.fetch("RAILS_ADVISORY_LOCKS", "true") == "true" %>

@@ -59,15 +59,9 @@ class SearchController < ApplicationController
   end
 
   def listings
-    result = Search::Listing.search_documents(
-      category: listing_params[:category],
-      page: listing_params[:page],
-      per_page: listing_params[:per_page],
-      term: listing_params[:listing_search],
-    )
-
-    render json: { result: result }
+    render json: { result: [] }
   end
+  
 
   def usernames
     context = commentable_context(params[:context_type])&.find(params[:context_id])
@@ -85,6 +79,20 @@ class SearchController < ApplicationController
       feed_params[:search_fields].blank? &&
       feed_params[:sort_by].present?
     )
+
+    # If Algolia is configured and it's not a homepage search, return blank response
+    algolia_configured = (ApplicationConfig["ALGOLIA_APPLICATION_ID"].present? &&
+                          ApplicationConfig["ALGOLIA_API_KEY"].present?) ||
+                         (Settings::General.algolia_application_id.present? &&
+                          Settings::General.algolia_api_key.present?)
+    
+    if algolia_configured && !is_homepage_search
+      render json: { result: [] }
+      return
+    end
+
+    # Add surrogate/edge caching headers for homepage searches (10 minutes)
+    set_cache_control_headers(600) if is_homepage_search
 
     result =
       if class_name.blank?
@@ -168,6 +176,7 @@ class SearchController < ApplicationController
       statuses: reaction_params[:status],
       tags: reaction_params[:tag_names],
       term: reaction_params[:search_fields],
+      subforem_id: RequestStore.store[:subforem_id],
     )
 
     render json: { result: result[:items], total: result[:total] }

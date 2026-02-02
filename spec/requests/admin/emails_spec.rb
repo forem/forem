@@ -23,7 +23,7 @@ RSpec.describe "/admin/emails" do
   describe "GET /admin/emails/new" do
     it "renders the new template with a form" do
       get new_admin_email_path
-      expect(response.body).to include('name="email[subject]"', 'name="email[body]"', 'name="email[audience_segment_id]"')
+      expect(response.body).to include('name="email[subject]"', 'name="email[body]"', 'name="email[user_query_id]"')
     end
   end
 
@@ -37,9 +37,9 @@ RSpec.describe "/admin/emails" do
             audience_segment_id: audience_segment.id
           }
         }
-        expect {
+        expect do
           post admin_emails_path, params: valid_attributes
-        }.to change(Email, :count).by(1)
+        end.to change(Email, :count).by(1)
         expect(response).to redirect_to(admin_email_path(Email.last))
         follow_redirect!
         expect(flash[:success]).to eq(I18n.t("admin.emails_controller.drafted"))
@@ -55,9 +55,9 @@ RSpec.describe "/admin/emails" do
             audience_segment_id: nil
           }
         }
-        expect {
+        expect do
           post admin_emails_path, params: invalid_attributes
-        }.not_to change(Email, :count)
+        end.not_to change(Email, :count)
         expect(response.body).to include(">Subject can&#39;t be blank")
         expect(flash[:danger]).to be_present
       end
@@ -70,7 +70,7 @@ RSpec.describe "/admin/emails" do
       email = create(
         :email,
         subject: "Hello *|name|*",
-        body: "<p>Dear *|name|*, welcome to our service.</p>"
+        body: "<p>Dear *|name|*, welcome to our service.</p>",
       )
 
       get admin_email_path(email)

@@ -16,7 +16,7 @@ RSpec.describe Comment do
       it { is_expected.to belong_to(:user) }
       # it { is_expected.to belong_to(:commentable).optional }
       it { is_expected.to have_many(:reactions).dependent(:destroy) }
-      it { is_expected.to have_many(:mentions).dependent(:destroy) }
+      it { is_expected.to have_many(:mentions).dependent(:delete_all) }
       it { is_expected.to have_many(:notifications).dependent(:delete_all) }
       it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
 
@@ -67,32 +67,77 @@ RSpec.describe Comment do
 
         expect(subject).not_to be_valid
       end
+    end
 
-      it "checks for commentable_type inclusion only if commentable_id is present" do
-        subject.commentable = nil
-        subject.commentable_id = article.id
-
+    describe "#body_has_content" do
+      it "is invalid when body_markdown contains only bold formatting (****)" do
+        subject.body_markdown = "****"
         expect(subject).not_to be_valid
-        expect(subject.errors.messages[:commentable_type].first).to match(/not included in the list/)
+        expect(subject.errors[:body_markdown]).to include(I18n.t("models.comment.cannot_be_empty"))
       end
 
-      it "is valid with Article commentable type" do
-        subject.commentable_type = "Article"
+      it "is invalid when body_markdown contains only bold with spaces (** **)" do
+        subject.body_markdown = "** **"
+        expect(subject).not_to be_valid
+        expect(subject.errors[:body_markdown]).to include(I18n.t("models.comment.cannot_be_empty"))
+      end
 
+      it "is invalid when body_markdown contains only horizontal rule (---)" do
+        subject.body_markdown = "---"
+        expect(subject).not_to be_valid
+        expect(subject.errors[:body_markdown]).to include(I18n.t("models.comment.cannot_be_empty"))
+      end
+
+      it "is valid when body_markdown contains text with bold formatting" do
+        subject.body_markdown = "**This is a valid comment**"
         expect(subject).to be_valid
       end
 
-      it "is valid with PodcastEpisode commentable type" do
-        subject.commentable_type = "PodcastEpisode"
-
+      it "is valid when body_markdown contains text with italic formatting" do
+        subject.body_markdown = "_This is italic_"
         expect(subject).to be_valid
       end
 
-      it "is not valid with Podcast commentable type" do
-        subject.commentable_type = "Podcast"
-
-        expect(subject).not_to be_valid
+      it "is valid when body_markdown contains text with mixed formatting" do
+        subject.body_markdown = "**Bold text** and _italic text_"
+        expect(subject).to be_valid
       end
+
+      it "is valid when body_markdown contains only plain text" do
+        subject.body_markdown = "This is a plain text comment"
+        expect(subject).to be_valid
+      end
+
+      it "is valid when body_markdown contains only an image" do
+        subject.body_markdown = "![image](https://example.com/image.png)"
+        expect(subject).to be_valid
+      end
+    end
+
+    it "checks for commentable_type inclusion only if commentable_id is present" do
+      subject.commentable = nil
+      subject.commentable_id = article.id
+
+      expect(subject).not_to be_valid
+      expect(subject.errors.messages[:commentable_type].first).to match(/not included in the list/)
+    end
+
+    it "is valid with Article commentable type" do
+      subject.commentable_type = "Article"
+
+      expect(subject).to be_valid
+    end
+
+    it "is valid with PodcastEpisode commentable type" do
+      subject.commentable_type = "PodcastEpisode"
+
+      expect(subject).to be_valid
+    end
+
+    it "is not valid with Podcast commentable type" do
+      subject.commentable_type = "Podcast"
+
+      expect(subject).not_to be_valid
     end
 
     describe "#user_mentions_in_markdown" do
@@ -444,10 +489,10 @@ RSpec.describe Comment do
   end
 
   describe "spam" do
-    it "delegates spam handling to Spam::Handler.handle_comment!" do
-      allow(Spam::Handler).to receive(:handle_comment!).with(comment: comment).and_call_original
+    it "delegates spam handling to HandleSpamWorker" do
+      allow(Comments::HandleSpamWorker).to receive(:perform_async)
       comment.save
-      expect(Spam::Handler).to have_received(:handle_comment!).with(comment: comment)
+      expect(Comments::HandleSpamWorker).to have_received(:perform_async).with(comment.id).twice
     end
 
     it "marks score as negative 3 if new user and comment includes htttp" do
@@ -617,7 +662,7 @@ RSpec.describe Comment do
     it "indexes on create" do
       allow(AlgoliaSearch::SearchIndexWorker).to receive(:perform_async)
       create(:comment)
-      expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("Comment", kind_of(Integer), 
+      expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("Comment", kind_of(Integer),
 false).once
     end
   end

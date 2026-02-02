@@ -59,7 +59,10 @@ module IncomingWebhooks
       unless user.base_subscriber? # Don't add role if user is already a subscriber
         user.add_role("base_subscriber")
         user.stripe_id_code = extract_customer(invoice)
-        user.touch
+        # We assume checkout completion for a subscription starts it as paying for now
+        # unless it was a trial.
+        user.current_subscriber_status = invoice["subscription_data"]&.[]("trial_period_days") ? :trial_subscription : :paying_subscription
+        user.save
         user.profile&.touch
         NotifyMailer.with(user: user).base_subscriber_role_email.deliver_now
       end
@@ -88,6 +91,7 @@ module IncomingWebhooks
       return unless user
 
       user.add_role("base_subscriber") unless user.base_subscriber?
+      user.update(current_subscriber_status: determine_subscriber_status(subscription))
     end
 
     def handle_subscription_updated(subscription)
@@ -98,7 +102,12 @@ module IncomingWebhooks
       user = User.find_by(id: user_id)
       return unless user
 
-      user.add_role("base_subscriber") unless user.base_subscriber?
+      if metadata["cancel_at_period_end"] == true
+        user.add_role("impending_base_subscriber_cancellation") unless user.impending_base_subscriber_cancellation?
+      else
+        user.add_role("base_subscriber") unless user.base_subscriber?
+      end
+      user.update(current_subscriber_status: determine_subscriber_status(subscription))
     end
 
     def handle_subscription_deleted(subscription)
@@ -109,9 +118,8 @@ module IncomingWebhooks
       user = User.find_by(id: user_id)
       return unless user
 
-      user.remove_role("base_subscriber")
-      user.touch
-      user.profile&.touch
+      user.add_role("impending_base_subscriber_cancellation") unless user.impending_base_subscriber_cancellation?
+      user.update(current_subscriber_status: :not_subscribed)
     end
 
     def extract_metadata(obj)
@@ -123,8 +131,24 @@ module IncomingWebhooks
 
     def extract_customer(obj)
       obj.customer if obj.respond_to?(:customer)
-    rescue StandardError
+      obj["customer"] if obj.is_a?(Hash) && obj.key?("customer")
+    rescue StandardError => e
+      Honeybadger.notify(e, context: { object: obj })
       nil
+    end
+    
+    def determine_subscriber_status(subscription)
+      case subscription["status"]
+      when "trialing"
+        :trial_subscription
+      when "active"
+        # If price is 0, it's free. Stripe subscription items have prices.
+        # This is a bit deep, so we'll look for 0 price in the first item.
+        price = subscription["items"]["data"][0]["price"] if subscription["items"] && subscription["items"]["data"]
+        (price && price["unit_amount"].zero?) ? :free_subscription : :paying_subscription
+      else
+        :not_subscribed
+      end
     end
   end
 end

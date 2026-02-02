@@ -27,7 +27,23 @@
   <% end %>
 </div>
 
-  <% if @user.base_subscriber? %>
+  <% if @user.base_subscriber? && @user.stripe_id_code.present? %>
+    <div class="crayons-card crayons-card--content-rows">
+      <h3 class="crayons-subtitle-2">
+        DEV++ Subscription
+      </h3>
+      <% if @user.free_subscription? %>
+        <p class="crayons-notice crayons-notice--info mb-4" role="alert">
+          <%= t("views.settings.account.free_billing_info") %>
+        </p>
+      <% end %>
+      <div>
+        <a href="<%= edit_stripe_subscription_path("me") %>" class="crayons-btn crayon-btn--secondary" data-no-instant>
+          Manage Subscription and Billing
+        </a>
+      </div>
+    </div>
+  <% elsif @user.base_subscriber? %>
     <div class="crayons-card crayons-card--content-rows">
       <h3 class="crayons-subtitle-2">
         Cancel DEV++ Subscription
