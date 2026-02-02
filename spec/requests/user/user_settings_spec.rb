@@ -374,11 +374,11 @@ RSpec.describe "UserSettings" do
       end
 
       it "invokes Feeds::ImportArticlesWorker" do
-        allow(Feeds::ImportArticlesWorker).to receive(:perform_async).with(user.id)
+        allow(Feeds::ImportArticlesWorker).to receive(:perform_async)
 
         put users_settings_path(user.setting.id), params: { users_setting: { feed_url: feed_url } }
 
-        expect(Feeds::ImportArticlesWorker).to have_received(:perform_async).with(user.id)
+        expect(Feeds::ImportArticlesWorker).to have_received(:perform_async).with([user.id], nil, anything)
       end
     end
   end
