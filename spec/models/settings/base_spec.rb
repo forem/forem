@@ -268,5 +268,41 @@ RSpec.describe Settings::Base do
         expect(TestSetting.host).to eq("http://global.example.com")
       end
     end
+
+    context "when testing cache invalidation for subforem-specific settings" do
+      it "clears RequestStore cache for subforem-specific keys on update" do
+        subforem = create(:subforem)
+        
+        # Set a subforem-specific setting
+        TestSetting.set_host("http://subforem-initial.example.com", subforem_id: subforem.id)
+        
+        # Read it to populate the cache (simulating first request)
+        expect(TestSetting.host(subforem_id: subforem.id)).to eq("http://subforem-initial.example.com")
+        
+        # Update the setting (simulating an admin change)
+        TestSetting.set_host("http://subforem-updated.example.com", subforem_id: subforem.id)
+        
+        # Verify that reading it again returns the updated value (not cached old value)
+        expect(TestSetting.host(subforem_id: subforem.id)).to eq("http://subforem-updated.example.com")
+      end
+
+      it "clears RequestStore for subforem-specific keys when clear_cache is called" do
+        subforem = create(:subforem)
+        cache_key = "test_setting-#{subforem.id}"
+        
+        # Set initial value and populate cache
+        TestSetting.set_host("http://initial.example.com", subforem_id: subforem.id)
+        TestSetting.host(subforem_id: subforem.id) # This populates RequestStore cache
+        
+        # Verify cache is populated
+        expect(RequestStore[cache_key]).to be_present
+        
+        # Update the value - this should clear the cache
+        TestSetting.set_host("http://updated.example.com", subforem_id: subforem.id)
+        
+        # Verify cache was cleared
+        expect(RequestStore[cache_key]).to be_nil
+      end
+    end
   end
 end

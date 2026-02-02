@@ -1108,4 +1108,138 @@ RSpec.describe Billboard do
       end
     end
   end
+
+  describe ".select_billboard_by_weighted_strategy edge cases" do
+    let(:billboards) { create_list(:billboard, 3, approved: true, published: true, placement_area: "sidebar_left") }
+    let(:area) { "sidebar_left" }
+
+    before do
+      # Create a config for the placement area
+      BillboardPlacementAreaConfig.create!(
+        placement_area: area,
+        signed_in_rate: 100,
+        signed_out_rate: 100,
+        selection_weights: {
+          "random_selection" => 10,
+          "new_and_priority" => 20,
+          "new_only" => 5,
+          "weighted_performance" => 65
+        }
+      )
+    end
+
+    it "returns nil when billboards_for_display is nil" do
+      result = described_class.select_billboard_by_weighted_strategy(nil, area)
+      expect(result).to be_nil
+    end
+
+    it "returns nil when billboards_for_display is empty array" do
+      result = described_class.select_billboard_by_weighted_strategy([], area)
+      expect(result).to be_nil
+    end
+
+    it "returns nil when billboards_for_display is empty relation" do
+      empty_relation = described_class.none
+      result = described_class.select_billboard_by_weighted_strategy(empty_relation, area)
+      expect(result).to be_nil
+    end
+
+    it "returns a billboard when billboards_for_display has items" do
+      relation = described_class.where(id: billboards.map(&:id))
+      result = described_class.select_billboard_by_weighted_strategy(relation, area)
+      expect(result).to be_a(described_class)
+      expect(billboards.map(&:id)).to include(result.id)
+    end
+
+    it "handles all zero weights by falling back to random selection" do
+      BillboardPlacementAreaConfig.find_by(placement_area: area).update!(
+        selection_weights: {
+          "random_selection" => 0,
+          "new_and_priority" => 0,
+          "new_only" => 0,
+          "weighted_performance" => 0
+        }
+      )
+
+      relation = described_class.where(id: billboards.map(&:id))
+      result = described_class.select_billboard_by_weighted_strategy(relation, area)
+      expect(result).to be_a(described_class)
+    end
+
+    it "handles negative weights by treating them as zero" do
+      config = BillboardPlacementAreaConfig.find_by(placement_area: area)
+      # Bypass validation to set negative values for testing
+      config.update_column(:selection_weights, {
+        "random_selection" => -10,
+        "new_and_priority" => 20,
+        "new_only" => 5,
+        "weighted_performance" => 65
+      })
+
+      relation = described_class.where(id: billboards.map(&:id))
+      # Should not raise an error and should select a billboard
+      result = described_class.select_billboard_by_weighted_strategy(relation, area)
+      expect(result).to be_a(described_class)
+    end
+
+    it "handles nil weights in selection_weights" do
+      config = BillboardPlacementAreaConfig.find_by(placement_area: area)
+      # Bypass validation to set nil values for testing
+      config.update_column(:selection_weights, {
+        "random_selection" => 10,
+        "new_and_priority" => nil,
+        "new_only" => 5,
+        "weighted_performance" => 65
+      })
+
+      relation = described_class.where(id: billboards.map(&:id))
+      # Should not raise an error and should select a billboard
+      result = described_class.select_billboard_by_weighted_strategy(relation, area)
+      expect(result).to be_a(described_class)
+    end
+
+    it "handles non-existent placement area by using defaults" do
+      relation = described_class.where(id: billboards.map(&:id))
+      result = described_class.select_billboard_by_weighted_strategy(relation, "nonexistent_area")
+      expect(result).to be_a(described_class)
+    end
+
+    it "handles empty selection_weights by using defaults" do
+      BillboardPlacementAreaConfig.find_by(placement_area: area).update!(
+        selection_weights: {}
+      )
+
+      relation = described_class.where(id: billboards.map(&:id))
+      result = described_class.select_billboard_by_weighted_strategy(relation, area)
+      expect(result).to be_a(described_class)
+    end
+
+    it "selects from all strategies over multiple calls" do
+      relation = described_class.where(id: billboards.map(&:id))
+      
+      # Run multiple times to ensure randomness works
+      results = 10.times.map do
+        described_class.select_billboard_by_weighted_strategy(relation, area)
+      end
+
+      # All results should be valid billboards
+      expect(results).to all(be_a(described_class))
+      expect(results.map(&:id)).to all(be_in(billboards.map(&:id)))
+    end
+
+    it "handles single weight being non-zero" do
+      BillboardPlacementAreaConfig.find_by(placement_area: area).update!(
+        selection_weights: {
+          "random_selection" => 0,
+          "new_and_priority" => 0,
+          "new_only" => 0,
+          "weighted_performance" => 100
+        }
+      )
+
+      relation = described_class.where(id: billboards.map(&:id))
+      result = described_class.select_billboard_by_weighted_strategy(relation, area)
+      expect(result).to be_a(described_class)
+    end
+  end
 end

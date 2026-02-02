@@ -112,6 +112,25 @@ RSpec.describe GithubTag::GithubReadmeTag, type: :liquid_tag, vcr: true do
           expect(html).to include("sirix")
         end
       end
+
+      it "correctly handles different types of relative paths in README" do
+        tag = described_class.new("https://github.com/owner/repo")
+        readme_html = <<~HTML
+          <a href="#license">Anchor</a>
+          <a href="blob/main/file.png">Relative</a>
+          <a href="/owner/repo/blob/main/file.png">Absolute</a>
+          <img src="image.png">
+          <a href="https://external.com">External</a>
+        HTML
+
+        result = tag.send(:clean_relative_path!, readme_html, "https://github.com/owner/repo")
+
+        expect(result).to include('href="https://github.com/owner/repo#license"')
+        expect(result).to include('href="https://github.com/owner/repo/blob/main/file.png"')
+        expect(result).not_to include("/owner/repo/owner/repo/") # Should not duplicate path
+        expect(result).to include('src="https://github.com/owner/repo/image.png"')
+        expect(result).to include('href="https://external.com"')
+      end
     end
   end
 end

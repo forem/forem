@@ -6,8 +6,8 @@
         <tr>
           <td align="left" bgcolor="#FFFFFF" style="padding: 25px 2px 35px; width: 50%">
             <a href="<%= URL.url("/") %>">
-              <% if Settings::General.resized_logo.present? %>
-                <img width="50px" src="<%= optimized_image_url(URL.local_image(Settings::General.resized_logo), width: 50, fetch_format: "png")%>" alt="<%= community_name %>">
+              <% if Settings::General.resized_logo(subforem_id: subforem_id).present? %>
+                <img width="50px" src="<%= optimized_image_url(URL.local_image(Settings::General.resized_logo(subforem_id: subforem_id)), width: 50, fetch_format: "png")%>" alt="<%= community_name %>">
               <% else %>
                 <span>
                   <%= community_name %>

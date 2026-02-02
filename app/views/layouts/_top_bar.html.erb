@@ -63,6 +63,19 @@
               <%= crayons_icon_tag(:mod, title: t("views.main.header.moderation.icon")) %>
             </a>
           </span>
+          <style>
+            .subforem-moderator-visible-block {
+                display: none !important;
+            }
+            body.subforem-moderator-status-true .subforem-moderator-visible-block {
+              display: block !important;
+            }
+          </style>
+          <span class="subforem-moderator-visible-block">
+            <a id="manage-subforem-link" class="c-link c-link--icon-alone c-link--block mx-1" aria-label="<%= t("views.main.header.manage.aria_label") %>" href="<%= manage_subforem_path %>">
+              <%= crayons_icon_tag(:"tools-line", title: t("views.main.header.manage.icon")) %>
+            </a>
+          </span>
         </span>
 
         <a href="<%= notifications_path %>" id="notifications-link" class="c-link c-link--icon-alone c-link--block mx-1" aria-label="<%= t("views.main.header.notifications.aria_label") %>">
@@ -79,12 +92,12 @@
       <% else %>
         <div class="flex" id="authentication-top-nav-actions">
           <span class="hidden m:block">
-            <a href="<%= URL.url(sign_up_path(signup_subforem: RequestStore.store[:subforem_id]), root_unless_default_subforem) %>" class="c-link c-link--block mr-2 whitespace-nowrap ml-auto" data-no-instant>
+            <a href="<%= subforem_aware_sign_up_url(sign_up_path(signup_subforem: RequestStore.store[:subforem_id])) %>" class="c-link c-link--block mr-2 whitespace-nowrap ml-auto" data-no-instant>
               <%= t("views.main.header.login") %>
             </a>
           </span>
 
-          <a href="<%= URL.url(sign_up_path(state: "new-user", signup_subforem: RequestStore.store[:subforem_id]), root_unless_default_subforem) %>" data-tracking-id="ca_top_nav" data-tracking-source="top_navbar" class="c-cta c-cta--branded whitespace-nowrap mr-2" data-no-instant>
+          <a href="<%= subforem_aware_sign_up_url(sign_up_path(state: "new-user", signup_subforem: RequestStore.store[:subforem_id])) %>" data-tracking-id="ca_top_nav" data-tracking-source="top_navbar" class="c-cta c-cta--branded whitespace-nowrap mr-2" data-no-instant>
             <%= t("views.main.header.create_account") %>
           </a>
         </div>

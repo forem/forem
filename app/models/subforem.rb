@@ -53,17 +53,21 @@ class Subforem < ApplicationRecord
   end
 
   def self.cached_domains
-    MemoryFirstCache.fetch("subforem_domains", redis_expires_in: 12.hours) do
+    result = MemoryFirstCache.fetch("subforem_domains", redis_expires_in: 12.hours) do
       Subforem.pluck(:domain)
     end
+    # Ensure we always return an array (cache may serialize to string in some environments)
+    result.is_a?(Array) ? result : []
   end
 
   def self.cached_id_to_domain_hash
-    MemoryFirstCache.fetch("subforem_id_to_domain_hash", redis_expires_in: 12.hours) do
+    result = MemoryFirstCache.fetch("subforem_id_to_domain_hash", redis_expires_in: 12.hours) do
       Subforem.all.each_with_object({}) do |subforem, hash|
         hash[subforem.id] = subforem.domain
       end
     end
+    # Ensure we always return a hash (cache may serialize to string in some environments)
+    result.is_a?(Hash) ? result : {}
   end
 
   def self.cached_default_domain
@@ -83,23 +87,29 @@ class Subforem < ApplicationRecord
   end
 
   def self.cached_all_domains
-    MemoryFirstCache.fetch("subforem_all_domains", redis_expires_in: 12.hours) do
+    result = MemoryFirstCache.fetch("subforem_all_domains", redis_expires_in: 12.hours) do
       Subforem.pluck(:domain)
     end
+    # Ensure we always return an array (cache may serialize to string in some environments)
+    result.is_a?(Array) ? result : []
   end
 
   def self.cached_discoverable_ids
-    MemoryFirstCache.fetch("subforem_discoverable_ids", redis_expires_in: 12.hours) do
+    result = MemoryFirstCache.fetch("subforem_discoverable_ids", redis_expires_in: 12.hours) do
       Subforem.where(discoverable: true).order("hotness_score desc").pluck(:id)
     end
+    # Ensure we always return an array (cache may serialize to string in some environments)
+    result.is_a?(Array) ? result : []
   end
 
   def self.cached_postable_array
-    MemoryFirstCache.fetch("subforem_postable_array", redis_expires_in: 12.hours) do
+    result = MemoryFirstCache.fetch("subforem_postable_array", redis_expires_in: 12.hours) do
       Subforem.where(discoverable: true).order("hotness_score desc").pluck(:id).map do |id|
         [id, Settings::Community.community_name(subforem_id: id)]
       end
     end
+    # Ensure we always return an array (cache may serialize to string in some environments)
+    result.is_a?(Array) ? result : []
   end
 
   def self.cached_misc_subforem_id

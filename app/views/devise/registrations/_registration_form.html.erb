@@ -48,7 +48,7 @@
         <hr class="registration__hr" />
 
         <div class="crayons-subtitle-3 color-grey-700 fw-normal align-center">
-          <%= t("devise.registrations.already_have_an_account_html", sign_up_path: sign_up_path) %>
+          <%= t("devise.registrations.already_have_an_account_html", sign_up_path: subforem_aware_sign_up_url(sign_up_path(signup_subforem: RequestStore.store[:subforem_id]))) %>
         </div>
         <div id="mobile-version" class="crayons-subtitle-3 color-grey-700 fw-normal align-center"></div>
 
@@ -75,7 +75,7 @@
               </p>
             <% else %>
               <div class="crayons-subtitle-3 color-grey-700 fw-normal align-center pb-6">
-                <%= t("devise.registrations.create_account_html", community_name: community_name, sign_up_path: sign_up_path(state: "new-user")) %>
+                <%= t("devise.registrations.create_account_html", community_name: community_name, sign_up_path: subforem_aware_sign_up_url(sign_up_path(state: "new-user", signup_subforem: RequestStore.store[:subforem_id]))) %>
               </div>
             <% end %>
           <% end %>

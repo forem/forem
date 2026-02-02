@@ -114,6 +114,9 @@ en:
       credit_updated: Successfully updated credits
       deletion_scheduled: 'Organization, "%{organization_name}", deletion is scheduled.'
       error: 'Your organization, %{organization_name}, could not be deleted: %{error}.'
+      fully_trusted_enabled: Fully trusted status has been enabled for this organization.
+      fully_trusted_disabled: Fully trusted status has been disabled for this organization.
+      baseline_score_updated: Baseline score updated!
     pages_controller:
       updated: Page has been successfully updated.
       created: Page has been successfully created.
@@ -127,6 +130,11 @@ en:
       terms_of_use:
         title: Terms of Use
         description: A page that describes the terms of use for the application
+    page_templates_controller:
+      created: Page template has been successfully created!
+      updated: Page template has been successfully updated!
+      deleted: Page template has been successfully deleted!
+      cannot_delete_with_pages: Cannot delete template while it has associated pages. Please remove or reassign pages first.
     podcasts_controller:
       new_owner_added: New owner added!
       no_such_user: No such user
@@ -192,6 +200,8 @@ en:
       credits_added: Credits have been added!
       credits_removed: Credits have been removed.
       tag_not_found: 'Tag "%{tag_name}" was not found'
+      email_confirmed: Email confirmed!
+      email_confirm_fail: Email confirmation failed.
     welcome_controller:
       thread_content: |
         ---

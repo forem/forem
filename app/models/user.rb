@@ -36,6 +36,7 @@ class User < ApplicationRecord
 
   # User types enum
   enum type_of: { member: 0, community_bot: 1, member_bot: 2 }
+  enum current_subscriber_status: { not_subscribed: 0, free_subscription: 1, trial_subscription: 2, paying_subscription: 3 }
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
@@ -50,6 +51,7 @@ class User < ApplicationRecord
   has_many :affected_feedback_messages, class_name: "FeedbackMessage",
                                         inverse_of: :affected, foreign_key: :affected_id, dependent: :nullify
   has_many :ahoy_events, class_name: "Ahoy::Event", dependent: :delete_all
+  has_many :scheduled_automations, dependent: :destroy
   has_many :ahoy_visits, class_name: "Ahoy::Visit", dependent: :delete_all
   has_many :api_secrets, dependent: :delete_all
   has_many :articles, dependent: :destroy
@@ -697,6 +699,12 @@ class User < ApplicationRecord
   def bot?
     community_bot? || member_bot?
   end
+  
+  def update_presence!
+    return if last_presence_at.present? && last_presence_at > 1.hour.ago
+
+    update_column(:last_presence_at, Time.current)
+  end
 
   protected
 
@@ -793,6 +801,8 @@ class User < ApplicationRecord
     authorizer.clear_cache
     Rails.cache.delete("user-#{id}/has_trusted_role")
     Rails.cache.delete("user-#{id}/role_names")
+    Rails.cache.delete("user-#{id}/moderator_for_tags")
+    Rails.cache.delete("user-#{id}/moderator_for_subforems")
     refresh_auto_audience_segments
     trusted?
     

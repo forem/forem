@@ -155,6 +155,8 @@ Rails.application.routes.draw do
       end
     end
     resources :image_uploads, only: [:create]
+    resources :ai_image_generations, only: [:create]
+    resources :ai_chats, only: %i[index create]
     resources :notifications, only: [:index]
     resources :tags, only: [:index] do
       collection do
@@ -173,6 +175,16 @@ Rails.application.routes.draw do
     resources :subforems, only: %i[index new edit update] do
       member do
         post :add_tag
+        delete :remove_tag
+        post :create_navigation_link
+        patch "update_navigation_link/:navigation_link_id", to: "subforems#update_navigation_link",
+                                                            as: :update_navigation_link
+        delete :destroy_navigation_link
+        get :new_page
+        post :create_page
+        get "edit_page/:page_id", to: "subforems#edit_page", as: :edit_page
+        patch "update_page/:page_id", to: "subforems#update_page", as: :update_page
+        delete "destroy_page/:page_id", to: "subforems#destroy_page", as: :destroy_page
       end
     end
     get "/manage", to: "subforems#edit", as: :manage_subforem
@@ -289,6 +301,10 @@ Rails.application.routes.draw do
     get "users/confirm_destroy/:token", to: "users#confirm_destroy", as: :user_confirm_destroy
     delete "users/full_delete", to: "users#full_delete", as: :user_full_delete
     post "organizations/generate_new_secret", to: "organizations#generate_new_secret"
+    post "organizations/:id/invite", to: "organizations#invite", as: :organization_invite
+    get "organizations/confirm_invitation/:token", to: "organizations#confirm_invitation",
+                                                   as: :organization_confirm_invitation
+    post "organizations/confirm_invitation/:token", to: "organizations#confirm_invitation"
     post "users/api_secrets", to: "api_secrets#create", as: :users_api_secrets
     delete "users/api_secrets/:id", to: "api_secrets#destroy", as: :users_api_secret
     post "users/update_password", to: "users#update_password", as: :user_update_password
@@ -314,6 +330,7 @@ Rails.application.routes.draw do
     get "/💸", to: redirect("t/hiring")
     get "/survey", to: redirect("https://dev.to/ben/final-thoughts-on-the-state-of-the-web-survey-44nn")
     get "/search", to: "stories/articles_search#index"
+    get "/community", to: "community#index", as: :community
     get "/:slug/members", to: "organizations#members", as: :organization_members
     post "articles/preview", to: "articles#preview"
     post "comments/preview", to: "comments#preview"

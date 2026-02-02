@@ -48,7 +48,7 @@
     <div class="js-video-collection grid gap-2 m:gap-4 s:grid-cols-2 m:grid-cols-3 mb-6">
       <% @video_articles.each do |video_article| %>
         <a href="<%= video_article.path %>" id="video-article-<%= video_article.id %>" class="crayons-card media-card">
-          <% if video_article.video&.include?("youtube.com") %>
+          <% if video_article.video&.include?("youtube.com") || video_article.video&.include?("player.mux.com") %>
             <div class="crayons-article__cover" style="width:100%; aspect-ratio:16/9; position:relative;">
               <iframe
                 src="<%= video_article.video %>"

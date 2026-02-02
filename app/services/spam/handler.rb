@@ -225,6 +225,7 @@ module Spam
     # NEW/private: Check if article should be reassigned to a different subforem
     def self.check_subforem_reassignment(article)
       return unless Ai::Base::DEFAULT_KEY.present?
+      return if ENV["SKIP_SUBFOREM_REASSIGNMENT"] == "yes"
 
       begin
         reassignment_service = SubforemReassignmentService.new(article)

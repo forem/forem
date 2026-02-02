@@ -13,6 +13,9 @@ module Ahoy
       AhoyEmail::Utils.publish(:click, data)
       track_billboard if params[:bb].present?
       record_feed_event if @url.present?
+      
+      EmailMessage.find_by(token: @token)&.user&.update_presence!
+
       head :ok # Renders a blank response with a 200 OK status
     end
 

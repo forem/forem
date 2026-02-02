@@ -4,23 +4,39 @@ module Admin
 
     PAGE_ALLOWED_PARAMS = %i[
       title slug body_markdown body_html body_json body_css description template
-      is_top_level_path social_image landing_page
+      is_top_level_path social_image landing_page page_template_id
     ].freeze
 
     def index
-      @pages = Page.from_subforem.order(created_at: :desc)
+      @pages = Page.from_subforem.includes(:page_template).order(created_at: :desc)
       @code_of_conduct = Page.find_by(slug: Page::CODE_OF_CONDUCT_SLUG)
       @privacy = Page.find_by(slug: Page::PRIVACY_SLUG)
       @terms = Page.find_by(slug: Page::TERMS_SLUG)
+      @page_templates = PageTemplate.order(:name)
     end
 
     def new
       @landing_page = Page.landing_page
+      @page_templates = PageTemplate.order(:name)
 
-      if (slug = params[:slug])
+      if (page_template_id = params[:page_template_id])
+        @page_template = PageTemplate.find_by(id: page_template_id)
+        @page = Page.new(page_template: @page_template)
+      elsif (slug = params[:slug])
         prepopulate_new_form(slug)
-      elsif (params[:page])
-        @page = Page.find_by(id: params[:page])&.dup || Page.new
+      elsif params[:page]
+        original_page = Page.find_by(id: params[:page])
+        if original_page
+          @page = original_page.dup
+          # If forking a template-based page, preserve the template relationship
+          if original_page.page_template.present?
+            @page_template = original_page.page_template
+            @page.page_template = @page_template
+            @page.template_data = original_page.template_data&.dup || {}
+          end
+        else
+          @page = Page.new
+        end
       else
         @page = Page.new
       end
@@ -29,14 +45,20 @@ module Admin
     def edit
       @page = Page.find(params[:id])
       @landing_page = Page.landing_page
+      @page_templates = PageTemplate.order(:name)
+      @page_template = @page.page_template
     end
 
     def create
       @page = Page.new(page_params)
+      @page.template_data = parse_template_data if @page.page_template_id.present?
+
       if @page.save
         flash[:success] = I18n.t("admin.pages_controller.created")
         redirect_to admin_pages_path
       else
+        @page_templates = PageTemplate.order(:name)
+        @page_template = @page.page_template
         flash.now[:error] = @page.errors_as_sentence
         render :new
       end
@@ -44,10 +66,15 @@ module Admin
 
     def update
       @page = Page.find(params[:id])
-      if @page.update(page_params)
+      @page.assign_attributes(page_params)
+      @page.template_data = parse_template_data if @page.page_template_id.present?
+
+      if @page.save
         flash[:success] = I18n.t("admin.pages_controller.updated")
         redirect_to admin_pages_path
       else
+        @page_templates = PageTemplate.order(:name)
+        @page_template = @page.page_template
         flash.now[:error] = @page.errors_as_sentence
         render :edit
       end
@@ -64,6 +91,13 @@ module Admin
 
     def page_params
       params.require(:page).permit(PAGE_ALLOWED_PARAMS)
+    end
+
+    def parse_template_data
+      template_data = params.dig(:page, :template_data)
+      return {} if template_data.blank?
+
+      template_data.permit!.to_h
     end
 
     def prepopulate_new_form(slug)

@@ -2,17 +2,47 @@ class NavigationLink < ApplicationRecord
   SVG_REGEXP = /\A<svg .*>[\s]*\z/im
 
   belongs_to :subforem, optional: true
+  mount_uploader :image, NavigationLinkImageUploader
 
   before_validation :allow_relative_url, if: :url?
+  before_validation :set_default_icon_if_blank
   before_save :strip_local_hostname, if: :url?
 
   enum section: { default: 0, other: 1 }, _suffix: true
   enum display_to: { all: 0, logged_in: 1, logged_out: 2 }, _prefix: true
 
-  validates :name, :url, :icon, presence: true
+  validates :name, :url, presence: true
   validates :url, url: { schemes: %w[https http] }, uniqueness: { scope: :name }
-  validates :icon, format: SVG_REGEXP
+  validates :icon, format: SVG_REGEXP, if: :icon?
   validates :display_only_when_signed_in, inclusion: { in: [true, false] }
+
+  def icon_url
+    # Return optimized image URL if available, otherwise return nil
+    return nil if image.blank?
+    
+    Images::Optimizer.call(image.url, width: 24, height: 24, crop: "fill")
+  end
+
+  def icon_display
+    # Return image URL if available (to be optimized client-side), otherwise return the SVG icon
+    if image.present?
+      image.url
+    else
+      icon
+    end
+  end
+
+  def self.default_icon_svg
+    @default_icon_svg ||= Rails.root.join("app/assets/images/link.svg").read.strip
+  end
+
+  private
+
+  def set_default_icon_if_blank
+    if icon.blank? && image.blank?
+      self.icon = self.class.default_icon_svg
+    end
+  end
 
   scope :ordered, -> { order(position: :asc, name: :asc) }
 
@@ -56,8 +86,6 @@ class NavigationLink < ApplicationRecord
 
     parsed_url.path
   end
-
-  private
 
   # We want to allow relative URLs (e.g. /contact) for navigation links while
   # still going through the normal validation process.

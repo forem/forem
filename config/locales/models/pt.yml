@@ -45,6 +45,7 @@ pt:
     broadcast:
       single_active: Você só pode ter uma transmissão de anúncio ativa
     comment:
+      cannot_be_empty: não pode estar vazio. Por favor, insira algum texto antes de enviar.
       deleted: '[excluído]'
       has_been_deleted: '%{type} foi excluído.'
       hidden: '[oculto pelo autor do post]'

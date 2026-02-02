@@ -1,65 +1,250 @@
 ---
-en:
+fr:
   views:
     subforems:
       meta:
         title: Subforems
-        description: Subforems to follow on %{community}
+        description: Subforems à suivre sur %{community}
         og:
-          description: "%{community} is great!"
+          description: "%{community} est génial!"
       heading:
         default: Subforems
-        search_results: Search results for %{q}
+        search_results: Résultats de recherche pour %{q}
       search:
         aria_labels:
-          search_input: Tag search term
-          submit: Search subforems
-        placeholder: Search for subforem
+          search_input: Terme de recherche de tag
+          submit: Rechercher des subforems
+        placeholder: Rechercher un subforem
       edit:
         meta:
-          title: Edit %{subforem}
+          title: Modifier %{subforem}
+        heading: Gérer %{subforem}
+        beta_badge: BETA
+        back_link: Retour aux Subforems
         admin: "Admin"
-        help: "Help"
-        view: "View"
+        help: "Aide"
+        view: "Voir"
+        messages:
+          updated: Subforem mis à jour avec succès !
+        sections:
+          basic_information: Informations de Base
+          discoverability: Découvrabilité
+          community_settings: Paramètres de la Communauté
+          feed_settings: Paramètres de Fil et Contenu
+          branding: Image de Marque
         form:
+          community_name:
+            label: Nom de la Communauté
+            placeholder: Entrez le nom de la communauté
+            description: Le nom de votre communauté tel qu'il apparaît sur tout le site.
+          discoverable:
+            label: Découvrable dans l'Annuaire
+            description: Permettre à cette communauté d'apparaître dans l'annuaire des subforems.
+          community_description:
+            label: Description de la Communauté
+            placeholder: Décrivez votre communauté...
+            description: Une brève description de ce qu'est votre communauté.
+          tagline:
+            label: Slogan
+            placeholder: Un court slogan pour votre communauté...
+            description: Une phrase accrocheuse qui résume votre communauté.
+          member_label:
+            label: Étiquette de Membre
+            placeholder: utilisateur
+            description: Comment vous appelez les membres de votre communauté (par exemple, "utilisateur", "membre", "développeur").
+          feed_style:
+            label: Style de Fil
+            description: Choisissez comment les articles apparaissent dans le fil.
+            options:
+              basic: Basique
+              rich: Riche (avec images de couverture)
+              compact: Compact
+          feed_lookback_days:
+            label: Jours de Rétroaction du Fil
+            placeholder: "10"
+            description: Nombre de jours à rechercher lors de la récupération du contenu du fil (1-365).
+          internal_content_spec:
+            label: Spécification de Description de Contenu Interne
+            placeholder: Décrivez la spécification de description de contenu interne...
+            description: Décrivez le type de contenu qui doit être affiché ou priorisé dans le fil. Cela aide l'IA à déterminer ce qui devrait et ne devrait pas apparaître dans ce fil pour aider à gérer le spam.
+          sidebar_tags:
+            label: Tags de la Barre Latérale
+            placeholder: "help,discuss,explainlikeimfive,meta"
+            description: Liste de tags séparés par des virgules à afficher dans la barre latérale de la page d'accueil (minuscules, sans espaces).
+          primary_color:
+            label: Couleur Principale de la Marque
+            placeholder: "#3b49df"
+            description: La couleur principale pour l'image de marque de votre communauté (format hexadécimal).
+          cover_image_aesthetic:
+            label: Instructions Esthétiques pour l'Image de Couverture
+            placeholder: "par exemple, vibrant et moderne, minimaliste et épuré, chaleureux et accueillant..."
+            description: Instructions optionnelles pour les images de couverture générées par l'IA. Cela sera ajouté aux invites des utilisateurs pour maintenir une esthétique cohérente pour votre communauté.
+          main_logo:
+            label: Logo Principal Carré
+            description: Téléchargez un logo carré (128x128px) pour l'image de marque principale. PNG ou JPEG, max 8 Mo.
+          nav_logo:
+            label: Logo de Barre de Navigation
+            description: Téléchargez un logo plus petit (80x80px) pour les barres de navigation. PNG ou JPEG, max 8 Mo.
+          social_card:
+            label: Image de Carte Sociale
+            description: Téléchargez une image de carte de médias sociaux (1200x630px) pour le partage. PNG ou JPEG, max 8 Mo.
+          submit_button: Mettre à Jour le Subforem
           pretty_name:
-            label: Pretty name
-            placeholder: This is the name at the top of the show page.
+            label: Joli nom
+            placeholder: C'est le nom en haut de la page d'affichage.
           bg_color_hex:
-            label: Tag color
+            label: Couleur du tag
           short_summary:
-            label: Short summary
-            placeholder: Brief overview of what this subforem is all about.
+            label: Résumé court
+            placeholder: Aperçu de ce qu'est ce subforem.
           wiki_body_markdown:
-            label: Wiki body markdown
-            placeholder: This is an 'about' section. Feel free to add an FAQ, additional resources, etc.
+            label: Markdown du corps wiki
+            placeholder: Ceci est une section 'à propos'. N'hésitez pas à ajouter une FAQ, des ressources supplémentaires, etc.
           rules_markdown:
-            label: Rules markdown
-            placeholder: Optional - Can be used for challenges, i.e. submission guidelines.
-          submit: Save
-      follow: Follow
-      hide: Hide
+            label: Markdown des règles
+            placeholder: Facultatif - Peut être utilisé pour les défis, c'est-à-dire les directives de soumission.
+          submit: Enregistrer
+        tags:
+          supported_heading: Tags Supportés
+          unsupported_heading: Principaux Tags Non Supportés
+          posts_count:
+            one: "%{count} post"
+            other: "%{count} posts"
+          remove_button: Supprimer
+          add_button: Ajouter
+          no_tags: Aucun tag supporté pour le moment.
+          no_unsupported_tags: Aucun tag non supporté trouvé.
+        pages:
+          heading: Pages Dédiées
+          subheading_html: "Vous pouvez créer des pages markdown de base pour ce subforem. <strong>Note :</strong> Des fonctionnalités de page avancées (HTML, modèles personnalisés) peuvent être ajoutées à l'avenir."
+          create_button: Créer une Page
+          view_button: Voir
+          edit_button: Modifier
+          delete_button: Supprimer
+          delete_confirm: Êtes-vous sûr de vouloir supprimer cette page ?
+          top_level_badge: Niveau Supérieur
+          slug_label: Slug
+          path_label: Chemin
+          no_pages: Aucune page dédiée trouvée pour ce subforem.
+        navigation_links:
+          heading: Liens de Navigation
+          add_button: Ajouter un Lien de Navigation
+          section_label: Section
+          display_label: Afficher
+          position_label: Position
+          edit_button: Modifier
+          delete_button: Supprimer
+          delete_confirm: Êtes-vous sûr de vouloir supprimer ce lien de navigation ?
+          no_links: Aucun lien de navigation trouvé pour ce subforem. Cliquez sur "Ajouter un Lien de Navigation" pour en créer un.
+          messages:
+            created: Lien de navigation créé avec succès !
+            updated: Lien de navigation mis à jour avec succès !
+            deleted: Lien de navigation supprimé avec succès !
+            not_found: Lien de navigation non trouvé
+          form:
+            name:
+              label: Nom
+              placeholder: Liste de Lecture
+            url:
+              label: URL
+              placeholder: /readinglist
+            image:
+              label: Image d'Icône (PNG, JPG, JPEG)
+              description: Téléchargez un fichier image pour l'icône du lien de navigation. L'image sera automatiquement optimisée pour l'affichage.
+              description_edit: Téléchargez une nouvelle image pour remplacer l'icône actuelle.
+              current: Image actuelle
+            icon:
+              label: Icône SVG
+              placeholder: '<svg ...>'
+              description: Collez le code SVG complet de l'icône.
+              alternative: Utiliser une icône SVG au lieu d'une image
+            section:
+              label: Section
+              options:
+                default: Par Défaut
+                other: Autre
+            display_to:
+              label: Afficher À
+              options:
+                all: Tous
+                logged_in: Connectés
+                logged_out: Déconnectés
+            position:
+              label: Position
+            create_button: Créer un Lien
+            update_button: Mettre à Jour le Lien
+            cancel_button: Annuler
+        community_bots:
+          heading: Bots de la Communauté
+          manage_button: Gérer les Bots
+          moderator_notice_html: "<strong>Note :</strong> La gestion des bots communautaires est actuellement disponible uniquement pour les administrateurs du site. Cette fonctionnalité sera bientôt disponible pour les leaders de communauté."
+          created_label: Créé
+          api_secrets_label: Secrets API
+          view_button: Voir
+          no_bots: Aucun bot de communauté trouvé pour ce subforem.
+      pages:
+        created: Page créée avec succès !
+        updated: Page mise à jour avec succès !
+        deleted: Page supprimée avec succès !
+        not_found: Page non trouvée
+        cannot_delete: Impossible de supprimer cette page
+        back: Retour aux Paramètres du Subforem
+        new:
+          title: Nouvelle Page - %{subforem}
+          heading: Créer une Nouvelle Page pour %{subforem}
+          markdown_only_notice_html: "<strong>Note :</strong> Vous ne pouvez créer que des pages markdown. HTML et autres formats avancés ne sont pas disponibles pour les modérateurs de subforem."
+        edit:
+          title: Modifier %{page_title}
+          heading: Modifier %{page_title}
+          top_level_notice_html: "<strong>Note :</strong> Ceci est une page de niveau supérieur. Vous ne pouvez modifier que le titre, la description et l'image sociale."
+          markdown_only_notice_html: "<strong>Note :</strong> Vous ne pouvez modifier que le contenu markdown. HTML et autres formats avancés ne sont pas disponibles pour les modérateurs de subforem."
+        form:
+          title:
+            label: Titre
+            placeholder: À Propos de Nous
+          slug:
+            label: Slug
+            placeholder: a-propos-de-nous
+            description: Identifiant sécurisé pour l'URL (lettres minuscules, chiffres et tirets uniquement).
+            description_with_prefix_html: "Identifiant sécurisé pour l'URL (lettres minuscules, chiffres et tirets uniquement). Votre page sera accessible à <code>/page/votre-slug</code> (la possibilité de créer des pages de niveau supérieur arrive dans le futur)."
+          description:
+            label: Description
+            placeholder: Une brève description de cette page...
+            description: Pour usage interne et fins SEO.
+          body_markdown:
+            label: Contenu (Markdown)
+            placeholder: "# Bienvenue\n\nÉcrivez votre contenu ici en utilisant Markdown..."
+            description: Utilisez la syntaxe Markdown pour formater votre contenu.
+          social_image:
+            label: Image Sociale
+            description: "Image optionnelle pour le partage sur les réseaux sociaux (recommandé : 1200x630px)."
+            current_image: Image sociale actuelle
+          create_button: Créer une Page
+          update_button: Mettre à Jour la Page
+          cancel_button: Annuler
+      follow: Suivre
+      hide: Masquer
       aria_labels:
-        follow: "Follow subforem: %{subforem_name}"
-        hide: "Hide subforem: %{subforem_name}"
-      following_subforems: Following subforems
-      hidden_subforems: Hidden subforems
+        follow: "Suivre le subforem : %{subforem_name}"
+        hide: "Masquer le subforem : %{subforem_name}"
+      following_subforems: Suivre les subforems
+      hidden_subforems: Subforems masqués
       moderator:
-        text_html: "comma separated, space is optional. Example: %{code}"
+        text_html: "séparé par des virgules, l'espace est facultatif. Exemple : %{code}"
         code: 123
-        placeholder: "comma separated, space is optional. Example: 1,2,3"
+        placeholder: "séparé par des virgules, l'espace est facultatif. Exemple : 1,2,3"
       published:
         one: 1 post
         other: "%{count} posts"
       sidebar:
-        about: 'about #%{subforem}'
+        about: 'à propos de #%{subforem}'
         admin: Admin
-        edit: Edit
-        guidelines: submission guidelines
-        moderate: Moderate
-        mods: subforem moderators
-        new: Create Post
-        older: 'Older #%{subforem} posts'
+        edit: Modifier
+        guidelines: directives de soumission
+        moderate: Modérer
+        mods: modérateurs du subforem
+        new: Créer un Post
+        older: 'Posts plus anciens de #%{subforem}'
         published:
-          one: 1 Post Published
-          other: "%{count} Posts Published"
+          one: 1 Post Publié
+          other: "%{count} Posts Publiés"

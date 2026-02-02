@@ -18,10 +18,77 @@ en:
       edit:
         meta:
           title: Edit %{subforem}
+        heading: Manage %{subforem}
+        beta_badge: BETA
+        back_link: Back to Subforems
         admin: "Admin"
         help: "Help"
         view: "View"
+        messages:
+          updated: Subforem updated successfully!
+        sections:
+          basic_information: Basic Information
+          discoverability: Discoverability
+          community_settings: Community Settings
+          feed_settings: Feed & Content Settings
+          branding: Branding
         form:
+          community_name:
+            label: Community Name
+            placeholder: Enter the community name
+            description: The name of your community as it appears throughout the site.
+          discoverable:
+            label: Discoverable in Directory
+            description: Allow this community to appear in the subforems directory.
+          community_description:
+            label: Community Description
+            placeholder: Describe your community...
+            description: A brief description of what your community is about.
+          tagline:
+            label: Tagline
+            placeholder: A short tagline for your community...
+            description: A catchy one-liner that summarizes your community.
+          member_label:
+            label: Member Label
+            placeholder: user
+            description: What you call your community members (e.g., "user", "member", "developer").
+          feed_style:
+            label: Feed Style
+            description: Choose how articles appear in the feed.
+            options:
+              basic: Basic
+              rich: Rich (with cover images)
+              compact: Compact
+          feed_lookback_days:
+            label: Feed Lookback Days
+            placeholder: "10"
+            description: Number of days to look back when fetching feed content (1-365).
+          internal_content_spec:
+            label: Internal Content Description Spec
+            placeholder: Describe the internal content description specification...
+            description: Describe the type of content that should be displayed or prioritized in the feed. This helps AI sort out what should and shouldn't show up in this feed to help deal with spam.
+          sidebar_tags:
+            label: Sidebar Tags
+            placeholder: "help,discuss,explainlikeimfive,meta"
+            description: Comma-separated list of tags to display in the homepage sidebar (lowercase, no spaces).
+          primary_color:
+            label: Primary Brand Color
+            placeholder: "#3b49df"
+            description: The main color for your community's branding (hex format).
+          cover_image_aesthetic:
+            label: Cover Image Aesthetic Instructions
+            placeholder: "e.g., vibrant and modern, minimalist and clean, warm and welcoming..."
+            description: Optional instructions for AI-generated cover images. This will be added to user prompts to maintain a consistent aesthetic for your community.
+          main_logo:
+            label: Main Square Logo
+            description: Upload a square logo (128x128px) for main branding. PNG or JPEG, max 8MB.
+          nav_logo:
+            label: Navigation Bar Logo
+            description: Upload a smaller logo (80x80px) for navigation bars. PNG or JPEG, max 8MB.
+          social_card:
+            label: Social Card Image
+            description: Upload a social media card image (1200x630px) for sharing. PNG or JPEG, max 8MB.
+          submit_button: Update Subforem
           pretty_name:
             label: Pretty name
             placeholder: This is the name at the top of the show page.
@@ -37,6 +104,124 @@ en:
             label: Rules markdown
             placeholder: Optional - Can be used for challenges, i.e. submission guidelines.
           submit: Save
+        tags:
+          supported_heading: Supported Tags
+          unsupported_heading: Top Unsupported Tags
+          posts_count:
+            one: "%{count} post"
+            other: "%{count} posts"
+          remove_button: Remove
+          add_button: Add
+          no_tags: No tags supported yet.
+          no_unsupported_tags: No unsupported tags found.
+        pages:
+          heading: Dedicated Pages
+          subheading_html: "You can create basic markdown pages for this subforem. <strong>Note:</strong> Advanced page features (HTML, custom templates) may be added in the future."
+          create_button: Create Page
+          view_button: View
+          edit_button: Edit
+          delete_button: Delete
+          delete_confirm: Are you sure you want to delete this page?
+          top_level_badge: Top-Level
+          slug_label: Slug
+          path_label: Path
+          no_pages: No dedicated pages found for this subforem.
+        navigation_links:
+          heading: Navigation Links
+          add_button: Add Navigation Link
+          section_label: Section
+          display_label: Display
+          position_label: Position
+          edit_button: Edit
+          delete_button: Delete
+          delete_confirm: Are you sure you want to delete this navigation link?
+          no_links: No navigation links found for this subforem. Click "Add Navigation Link" to create one.
+          messages:
+            created: Navigation link created successfully!
+            updated: Navigation link updated successfully!
+            deleted: Navigation link deleted successfully!
+            not_found: Navigation link not found
+          form:
+            name:
+              label: Name
+              placeholder: Reading List
+            url:
+              label: URL
+              placeholder: /readinglist
+            image:
+              label: Icon Image (PNG, JPG, JPEG)
+              description: Upload an image file for the navigation link icon. Image will be automatically optimized for display.
+              description_edit: Upload a new image to replace the current icon.
+              current: Current image
+            icon:
+              label: Icon SVG
+              placeholder: '<svg ...>'
+              description: Paste the full SVG code for the icon.
+              alternative: Use SVG icon instead of image
+            section:
+              label: Section
+              options:
+                default: Default
+                other: Other
+            display_to:
+              label: Display To
+              options:
+                all: All
+                logged_in: Logged In
+                logged_out: Logged Out
+            position:
+              label: Position
+            create_button: Create Link
+            update_button: Update Link
+            cancel_button: Cancel
+        community_bots:
+          heading: Community Bots
+          manage_button: Manage Bots
+          moderator_notice_html: "<strong>Note:</strong> Community bot management is currently only available to site admins. This feature will be coming to community leaders soon."
+          created_label: Created
+          api_secrets_label: API Secrets
+          view_button: View
+          no_bots: No community bots found for this subforem.
+      pages:
+        created: Page created successfully!
+        updated: Page updated successfully!
+        deleted: Page deleted successfully!
+        not_found: Page not found
+        cannot_delete: Cannot delete this page
+        back: Back to Subforem Settings
+        new:
+          title: New Page - %{subforem}
+          heading: Create New Page for %{subforem}
+          markdown_only_notice_html: "<strong>Note:</strong> You can only create markdown pages. HTML and other advanced formats are not available to subforem moderators."
+        edit:
+          title: Edit %{page_title}
+          heading: Edit %{page_title}
+          top_level_notice_html: "<strong>Note:</strong> This is a top-level page. You can only edit the title, description, and social image."
+          markdown_only_notice_html: "<strong>Note:</strong> You can only edit markdown content. HTML and other advanced formats are not available to subforem moderators."
+        form:
+          title:
+            label: Title
+            placeholder: About Us
+          slug:
+            label: Slug
+            placeholder: about-us
+            description: URL-safe identifier (lowercase letters, numbers, and hyphens only).
+            description_with_prefix_html: "URL-safe identifier (lowercase letters, numbers, and hyphens only). Your page will be accessible at <code>/page/your-slug</code> (ability to create top-level pages coming in future)."
+          description:
+            label: Description
+            placeholder: A brief description of this page...
+            description: For internal use and SEO purposes.
+          body_markdown:
+            label: Content (Markdown)
+            placeholder: "# Welcome\n\nWrite your content here using Markdown..."
+            description: Use Markdown syntax to format your content.
+          social_image:
+            label: Social Image
+            description: "Optional image for social media sharing (recommended: 1200x630px)."
+            current_image: Current social image
+          create_button: Create Page
+          update_button: Update Page
+          cancel_button: Cancel
       follow: Follow
       hide: Hide
       aria_labels:

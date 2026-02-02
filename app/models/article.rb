@@ -11,7 +11,7 @@ class Article < ApplicationRecord
   resourcify
 
   include StringAttributeCleaner.nullify_blanks_for(:canonical_url, on: :before_save)
-  DEFAULT_FEED_PAGINATION_WINDOW_SIZE = 25
+  DEFAULT_FEED_PAGINATION_WINDOW_SIZE = 18
 
   # When we cache an entity, either {User} or {Organization}, these are the names of the attributes
   # we cache.
@@ -278,6 +278,7 @@ class Article < ApplicationRecord
   validate :validate_co_authors_must_not_be_the_same, unless: -> { co_author_ids.blank? }
   validate :validate_co_authors_exist, unless: -> { co_author_ids.blank? }
 
+  before_validation :extract_url_from_status_title, if: :status?
   before_validation :set_markdown_from_body_url, if: :body_url?
   before_validation :add_urls_from_title_to_body, if: :should_add_urls_from_title?
   before_validation :evaluate_markdown, :create_slug, :set_published_date
@@ -285,7 +286,7 @@ class Article < ApplicationRecord
   before_validation :replace_blank_title_for_status
   before_validation :remove_prohibited_unicode_characters
   before_validation :remove_invalid_published_at
-  before_validation :get_youtube_embed_url
+  before_validation :generate_video_embed_url
   before_validation :set_default_subforem_id
   before_save :set_cached_entities
   before_save :set_all_dates
@@ -439,6 +440,17 @@ class Article < ApplicationRecord
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
            :published_at, :crossposted_at, :description, :reading_time, :video_duration_in_seconds, :score,
            :last_comment_at, :main_image_height, :type_of, :edited_at, :processed_html, :subforem_id)
+  }
+
+  scope :minimal_feed_column_select, lambda {
+    select(:path, :title, :id, :published,
+           :comments_count, :public_reactions_count, :cached_tag_list,
+           :main_image, :main_image_background_hex_color, :updated_at, :slug,
+           :video, :user_id, :organization_id, :video_source_url, :video_code,
+           :video_thumbnail_url, :video_closed_caption_track_url,
+           :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
+           :published_at, :crossposted_at, :description, :reading_time, :video_duration_in_seconds, :score,
+           :last_comment_at, :main_image_height, :type_of, :edited_at, :subforem_id)
   }
 
   scope :limited_columns_internal_select, lambda {
@@ -742,7 +754,6 @@ class Article < ApplicationRecord
     processed_html_final
   end
 
-
   def readable_publish_date
     relevant_date = displayable_published_at
     return unless relevant_date
@@ -849,8 +860,38 @@ class Article < ApplicationRecord
   end
 
   def all_series
-    # all series names
-    user&.collections&.pluck(:slug)
+    # all series names - includes user's personal collections and organization collections
+    # Returns array of hashes with slug and organization info for UI display
+    return [] unless user
+
+    series_list = []
+
+    # Get user's personal collections (no organization)
+    user.collections.where(organization_id: nil).each do |collection|
+      series_list << {
+        slug: collection.slug,
+        organization_id: nil,
+        organization_name: nil,
+        is_personal: true
+      }
+    end
+
+    # Get collections from organizations the user is a member of
+    Collection.joins(organization: :organization_memberships)
+      .where(organization_memberships: { user_id: user.id })
+      .includes(:organization)
+      .each do |collection|
+        series_list << {
+          slug: collection.slug,
+          organization_id: collection.organization_id,
+          organization_name: collection.organization.name,
+          is_personal: false
+        }
+      end
+
+    # For backward compatibility, also support returning just slugs when called as array
+    # But when serialized to JSON, it will return the full hash
+    series_list
   end
 
   def update_score
@@ -873,13 +914,19 @@ class Article < ApplicationRecord
     # Content moderation label adjustments
     automod_label_adjustment = AUTOMOD_SCORE_ADJUSTMENTS[automod_label.to_sym] || 0
 
-    self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment + user_featured_count_adjustment + user_negative_count_adjustment + context_note_adjustment + automod_label_adjustment
+    badge_bonus_weight_sum = user.badges.sum(:bonus_weight)
+    badge_reputation_bonus = Math.sqrt(badge_bonus_weight_sum).to_i
+
+    organization_baseline_score = organization&.baseline_score || 0
+
+    self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment + user_featured_count_adjustment + user_negative_count_adjustment + context_note_adjustment + automod_label_adjustment + badge_reputation_bonus + organization_baseline_score
     accepted_max = [max_score, user&.max_score.to_i].min
     accepted_max = [max_score, user&.max_score.to_i].max if accepted_max.zero?
     self.score = accepted_max if accepted_max.positive? && accepted_max < score
 
     # Calculate comment_score and apply max_score limits
-    calculated_comment_score = comments.sum(:score)
+    # Each comment can contribute a minimum of -1 to the total score
+    calculated_comment_score = comments.sum { |comment| [comment.score, -1].max }
     comment_score = if accepted_max.positive? && accepted_max < calculated_comment_score
                       accepted_max
                     else
@@ -968,21 +1015,72 @@ class Article < ApplicationRecord
     self.subforem_id = RequestStore.store[:default_subforem_id]
   end
 
-  def get_youtube_embed_url
-    return unless video_source_url.present? && video_source_url.include?("youtube.com")
+  def generate_video_embed_url
+    return if video_source_url.blank?
 
-    begin
-      self.video = YoutubeParser.new(video_source_url).call
-      p "Parsed YouTube video URL: #{video}" if Rails.env.development?
-    rescue StandardError => e
-      Rails.logger.error("Error parsing YouTube video URL: #{e.message}")
+    if video_source_url.include?("youtube.com") || video_source_url.include?("youtu.be")
+      begin
+        self.video = YoutubeParser.new(video_source_url).call
+        p "Parsed YouTube video URL: #{video}" if Rails.env.development?
+      rescue StandardError => e
+        Rails.logger.error("Error parsing YouTube video URL: #{e.message}")
+      end
+    elsif video_source_url.include?("player.mux.com")
+      begin
+        parser = MuxParser.new(video_source_url)
+        self.video = parser.call
+        self.video_thumbnail_url = mux_thumbnail_url(parser.video_id) if parser.video_id
+        p "Parsed Mux video URL: #{video}" if Rails.env.development?
+      rescue StandardError => e
+        Rails.logger.error("Error parsing Mux video URL: #{e.message}")
+      end
+    elsif video_source_url.include?("twitch.tv")
+      begin
+        parser = TwitchParser.new(video_source_url)
+        self.video = parser.call
+        p "Parsed Twitch video URL: #{video}" if Rails.env.development?
+      rescue StandardError => e
+        Rails.logger.error("Error parsing Twitch video URL: #{e.message}")
+      end
     end
+  end
+
+  def extract_url_from_status_title
+    return unless status? && title.present? && body_url.blank?
+
+    # Skip this if we're using the new add_urls_from_title_to_body path
+    return if should_add_urls_from_title?
+
+    url_pattern = %r{https?://[^\s]+}
+    url_match = title.match(url_pattern)
+    return unless url_match
+
+    extracted_url = url_match[0]
+    # Remove trailing punctuation that might not be part of the URL
+    extracted_url = extracted_url.sub(/[.,;:!?)]+$/, "")
+
+    # Set the extracted URL as body_url so it gets processed by set_markdown_from_body_url
+    self.body_url = extracted_url
+  end
+
+  def mux_thumbnail_url(video_id)
+    return unless video_id.present?
+
+    "https://image.mux.com/#{video_id}/thumbnail.webp"
   end
 
   def set_markdown_from_body_url
     return unless body_url.present?
 
-    self.body_markdown = "{% embed #{body_url} minimal %}"
+    # Don't run this for persisted articles - body_markdown should be immutable for status posts once created
+    return if persisted?
+
+    # Don't overwrite if body_markdown already contains this URL's embed tag
+    # This prevents duplicating embed tags that were added by add_urls_from_title_to_body
+    embed_tag = "{% embed #{body_url} minimal %}"
+    return if body_markdown.to_s.include?(embed_tag)
+
+    self.body_markdown = embed_tag
   end
 
   def collection_cleanup
@@ -1068,16 +1166,27 @@ class Article < ApplicationRecord
   end
 
   def restrict_attributes_with_status_types
-    # Return early if this is already saved and the body_markdown hasn't changed
-    return if persisted? && !body_markdown_changed?
+    return unless type_of == "status"
 
-    # For status types, allow body_markdown only if it contains embed tags from URLs in title
-    if type_of == "status" && body_url.blank? && body_markdown.present?
+    # If the article is already persisted and body_markdown is being changed,
+    # show a different error about edit restrictions
+    # Check if the value actually changed, not just if Rails marked it as changed
+    if persisted? && body_markdown_changed? && body_markdown_was != body_markdown
+      errors.add(:body_markdown,
+                 "cannot be modified for status type posts. Consider unpublishing if you need to make changes.")
+      return
+    end
+
+    # Return early if this is already saved and the body_markdown hasn't changed
+    return if persisted?
+
+    # For new status types, allow body_markdown only if it contains embed tags from URLs in title
+    if body_url.blank? && body_markdown.present?
       # Allow body_markdown if it only contains embed tags that were added from URLs in title
       unless body_markdown_only_contains_embed_tags_from_title?
         errors.add(:body_markdown, "is not allowed for status types")
       end
-    elsif type_of == "status" && body_url.blank? && (main_image.present? || collection_id.present?)
+    elsif body_url.blank? && (main_image.present? || collection_id.present?)
       errors.add(:body_markdown, "is not allowed for status types")
     end
   end
@@ -1130,7 +1239,7 @@ class Article < ApplicationRecord
   end
 
   def fetch_video_duration
-    return if video_source_url&.include?("youtube.com")
+    return if video_source_url&.include?("youtube.com") || video_source_url&.include?("player.mux.com")
 
     if video.present? && video_duration_in_seconds.zero?
       url = video_source_url.gsub(".m3u8", "1351620000001-200015_hls_v4.m3u8")
@@ -1182,7 +1291,10 @@ class Article < ApplicationRecord
     self.description = hash["description"] if update_description
 
     self.collection_id = nil if hash["title"].present?
-    self.collection_id = Collection.find_series(hash["series"], user).id if hash["series"].present?
+    return unless hash["series"].present?
+
+    collection = Collection.find_series(hash["series"], user, organization: organization)
+    self.collection_id = collection.id
   end
 
   def set_main_image(hash)
@@ -1241,13 +1353,32 @@ class Article < ApplicationRecord
                         I18n.t("models.article.video_processing"))
     end
 
-    return unless video.present? && user.created_at > 2.weeks.ago
+    return unless user
+    return if user.created_at && user.created_at <= 2.weeks.ago
+
+    return unless video.present?
+
+    # Allow linked videos (YouTube, Mux, Twitch) even for new users
+    return if video_source_url.present? && (
+      video_source_url.include?("youtube.com") ||
+      video_source_url.include?("youtu.be") ||
+      video_source_url.include?("player.mux.com") ||
+      video_source_url.include?("twitch.tv")
+    )
 
     errors.add(:video, I18n.t("models.article.video_unpermitted"))
   end
 
   def validate_collection_permission
     return unless collection && collection.user_id != user_id
+
+    # Allow org members to add articles to org collections
+    if collection.organization_id.present?
+      org = collection.organization
+      # Check if user is a member/admin of the collection's organization
+      # and if the article is being published under that organization
+      return if user.org_member?(org) && organization_id == collection.organization_id
+    end
 
     errors.add(:collection_id, I18n.t("models.article.series_unpermitted"))
   end
@@ -1447,7 +1578,8 @@ class Article < ApplicationRecord
 
   def should_add_urls_from_title?
     # Only add URLs from title for quickie posts (status type) that have a title with URLs
-    type_of == "status" && title.present? && extract_urls_from_title.any?
+    # Only run this when the title has changed or it's a new record to avoid duplicating embed tags
+    type_of == "status" && title.present? && extract_urls_from_title.any? && (new_record? || title_changed?)
   end
 
   def add_urls_from_title_to_body
@@ -1472,7 +1604,9 @@ class Article < ApplicationRecord
     # This regex matches http/https URLs, including those with query parameters and fragments
     url_regex = %r{https?://[^\s<>"{}|\\^`\[\]]+}
 
-    title.scan(url_regex).uniq
+    urls = title.scan(url_regex).uniq
+    # Remove trailing punctuation that might not be part of the URL
+    urls.map { |url| url.sub(/[.,;:!?)]+$/, "") }
   end
 
   def body_markdown_only_contains_embed_tags_from_title?

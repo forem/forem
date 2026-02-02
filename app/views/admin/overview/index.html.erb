@@ -8,7 +8,22 @@
 <div class="flex flex-col gap-4">
   <div class="flex flex-col l:flex-row gap-4">
     <%= render "analytics" %>
-    <%= render "health_check" %>
+    
+    <section class="crayons-card p-7 m:basis-1-3">
+      <h2 class="crayons-subtitle-1 mb-6">Deployment</h2>
+
+      <div class="flex flex-col gap-4">
+        <div>
+          <strong class="color-secondary mr-2">Last deploy</strong>
+          <%= ForemInstance.deployed_at %>
+        </div>
+
+        <div>
+          <strong class="color-secondary mr-2">Latest Commit ID</strong>
+          <%= ForemInstance.latest_commit_id || "Not Available" %>
+        </div>
+      </div>
+    </section>
   </div>
 
   <section class="crayons-card p-7 grid grid-cols-2 gap-7">
@@ -55,22 +70,6 @@
         <h2 class="crayons-subtitle-1">core.forem.com</h2>
         <p class="color-secondary mb-4">Meet other creators using Forem so that you can share tips with each other.</p>
         <a href="https://core.forem.com" target="_blank" class="c-cta">Join core.forem.com Community &raquo;</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="crayons-card p-7">
-    <h2 class="crayons-subtitle-1 mb-6">Deployment</h2>
-
-    <div class="grid grid-cols-2 gap-7">
-      <div>
-        <strong class="color-secondary mr-2">Last deploy</strong>
-        <%= ForemInstance.deployed_at %>
-      </div>
-
-      <div>
-        <strong class="color-secondary mr-2">Latest Commit ID</strong>
-        <%= ForemInstance.latest_commit_id || "Not Available" %>
       </div>
     </div>
   </section>

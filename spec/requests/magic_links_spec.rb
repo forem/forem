@@ -80,6 +80,20 @@ RSpec.describe "MagicLinks", type: :request do
         end
       end
 
+      it "enqueues AI profile image generation for new magic link registrations" do
+        freeze_time do
+          allow(ForemInstance).to receive(:invitation_only?).and_return(false)
+          allow(Settings::Authentication).to receive(:acceptable_domain?).with(domain: "example.com").and_return(true)
+          allow(Users::GenerateAiProfileImageWorker).to receive(:perform_async)
+
+          post "/magic_links", params: { email: email }, headers: { "Host" => subforem.domain }
+
+          new_user = User.order(:created_at).last
+
+          expect(Users::GenerateAiProfileImageWorker).to have_received(:perform_async).with(new_user.id)
+        end
+      end
+
       it "assigns onboarding_subforem_id based on the referer header" do
         freeze_time do
           allow(ForemInstance).to receive(:invitation_only?).and_return(false)

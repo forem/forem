@@ -36,6 +36,8 @@ class Organization < ApplicationRecord
   has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :destroy
   has_many :unspent_credits, -> { where spent: false }, class_name: "Credit", inverse_of: :organization
   has_many :users, through: :organization_memberships
+  has_many :active_memberships, -> { where.not(type_of_user: "pending") }, class_name: "OrganizationMembership"
+  has_many :active_users, through: :active_memberships, source: :user
 
   validates :articles_count, presence: true
   validates :bg_color_hex, format: COLOR_HEX_REGEXP, allow_blank: true
@@ -60,6 +62,7 @@ class Organization < ApplicationRecord
   validates :twitter_username, length: { maximum: 15 }
   validates :unspent_credits_count, presence: true
   validates :url, length: { maximum: 200 }, url: { allow_blank: true, no_local: true }
+  validates :baseline_score, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   unique_across_models :slug, length: { in: 2..30 }
 
@@ -134,6 +137,10 @@ class Organization < ApplicationRecord
 
   def cached_base_subscriber?
     false
+  end
+
+  def fully_trusted?
+    fully_trusted == true
   end
 
   private

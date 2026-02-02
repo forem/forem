@@ -118,7 +118,7 @@
             }
           </script>
           <header class="crayons-article__header" id="main-title">
-            <% if @article.video&.include?("youtube.com") %>
+            <% if @article.video&.include?("youtube.com") || @article.video&.include?("player.mux.com") || @article.video&.include?("player.twitch.tv") %>
               <div class="crayons-article__cover" style="width:100%; aspect-ratio:16/9; position:relative;">
                 <iframe
                   src="<%= @article.video %>"
@@ -249,7 +249,7 @@
                         articles: @collection_articles %>
             <% end %>
             <% if @article.long_markdown? %>
-              <div class="js-billboard-container body-billboard-container" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_body_bottom) %>"></div>
+              <div class="below-post-bb body-billboard-container" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_body_bottom) %>"></div>
             <% end %>
           </div>
           <%= render "articles/full_comment_area" %>
@@ -257,7 +257,7 @@
         </article>
 
         <div class="pb-4 crayons-layout__comments-billboard">
-          <div class="js-billboard-container pb-4 crayons-layout__comments-billboard" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_comments) %>"></div>
+          <div class="new-bb-container pb-4 crayons-layout__comments-billboard" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_comments) %>"></div>
         </div>
 
         <% if ApplicationConfig["SKIP_BOTTOM_CONTENT"] == "yes" %>
