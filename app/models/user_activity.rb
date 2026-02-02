@@ -23,7 +23,7 @@ class UserActivity < ApplicationRecord
     self.alltime_organizations = Follow.follower_organization(user_id).pluck(:followable_id)
     self.alltime_subforems = Follow.follower_subforem(user_id).pluck(:followable_id)
 
-    # Calculate semantic interest profile based on recent articles
+    # Calculate semantic interest profile based on recent articles.
     # We weight the interests by how much we trust the signal (e.g. time spent could be a factor, 
     # but for now we'll just average the profile of articles they read > 29s)
     if recent_articles.any?
