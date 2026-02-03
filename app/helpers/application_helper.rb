@@ -85,6 +85,8 @@ module ApplicationHelper
   end
 
   def page_view_classes
+    return "" unless @page.slug.present?
+    
     " pageslug-#{@page.slug.gsub('/', '__SLASH__')}"
   end
 
@@ -158,8 +160,9 @@ module ApplicationHelper
     image_tag(updated_image_url, image_options)
   end
 
-  def cloud_cover_url(url)
-    CloudCoverUrl.new(url).call
+  def cloud_cover_url(url, subforem_id = nil)
+    subforem_id ||= RequestStore.store[:subforem_id]
+    CloudCoverUrl.new(url, subforem_id).call
   end
 
   def tag_colors(tag)
@@ -288,6 +291,15 @@ module ApplicationHelper
     end
   end
 
+  def subforem_aware_sign_up_url(path_with_params)
+    subforem = root_unless_default_subforem
+    if subforem
+      URL.url(path_with_params, subforem)
+    else
+      path_with_params
+    end
+  end
+
   def is_root_subforem?
     return false unless RequestStore.store[:subforem_id].present?
     return true if RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
@@ -355,7 +367,7 @@ module ApplicationHelper
   end
 
   def app_url(uri = nil)
-    URL.url(uri)
+    URL.url(uri, RequestStore.store[:subforem_domain])
   end
 
   def article_url(article)

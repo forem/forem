@@ -11,50 +11,121 @@
 
   <%= form_for [:admin, @page] do |form| %>
     <div class="flex flex-col gap-4">
+      <% if @page_template.present? %>
+        <%= form.hidden_field :page_template_id, value: @page_template.id %>
+        
+        <div class="crayons-notice crayons-notice--info mb-2" aria-live="polite">
+          <strong>Using template:</strong> <%= @page_template.name %>
+          <% if @page_template.description.present? %>
+            — <%= @page_template.description %>
+          <% end %>
+          <br>
+          <span class="fs-s">Fill in the template fields below. The page content will be generated automatically.</span>
+        </div>
+      <% end %>
+      
       <div class="crayons-field">
         <%= form.label :title, class: "crayons-field__label" %>
         <%= form.text_field :title, class: "crayons-textfield", required: true %>
       </div>
       <div class="crayons-field">
         <%= form.label :slug, class: "crayons-field__label" %>
-        <%= form.text_field :slug, class: "crayons-textfield", pattern: "^[0-9a-z-_]*$", required: true %>
+        <%= form.text_field :slug, class: "crayons-textfield", pattern: "^[0-9a-z-_/]*$", required: true %>
       </div>
       <div class="crayons-field">
         <%= form.label :description, class: "crayons-field__label" %>
         <%= form.text_field :description, class: "crayons-textfield", required: true %>
       </div>
-      <div class="crayons-field">
-        <%= form.label :template, class: "crayons-field__label" do %>
-          Template
-          <p class="crayons-field__description">Determines the way page's body will be embedded in the layout</p>
+      
+      <% if @page_template.present? && @page_template.schema_fields.any? %>
+        <hr class="my-2">
+        <h3 class="crayons-subtitle-2">Template Fields</h3>
+        <p class="color-base-70 fs-s mb-2">Fill in the following fields to generate the page content:</p>
+        
+        <% template_data = @page.template_data || {} %>
+        <% @page_template.schema_fields.each do |field| %>
+          <div class="crayons-field">
+            <label for="page_template_data_<%= field['name'] %>" class="crayons-field__label<%= ' required' if field['required'] %>">
+              <%= field['label'] || field['name'].titleize %>
+            </label>
+            
+            <% case field['type'] %>
+            <% when 'textarea' %>
+              <textarea name="page[template_data][<%= field['name'] %>]" 
+                        id="page_template_data_<%= field['name'] %>"
+                        class="crayons-textfield"
+                        rows="4"
+                        <%= 'required' if field['required'] %>><%= template_data[field['name']] %></textarea>
+            <% when 'number' %>
+              <input type="number" 
+                     name="page[template_data][<%= field['name'] %>]" 
+                     id="page_template_data_<%= field['name'] %>"
+                     value="<%= template_data[field['name']] %>"
+                     class="crayons-textfield"
+                     <%= 'required' if field['required'] %>>
+            <% when 'url' %>
+              <input type="url" 
+                     name="page[template_data][<%= field['name'] %>]" 
+                     id="page_template_data_<%= field['name'] %>"
+                     value="<%= template_data[field['name']] %>"
+                     class="crayons-textfield"
+                     placeholder="https://..."
+                     <%= 'required' if field['required'] %>>
+            <% when 'email' %>
+              <input type="email" 
+                     name="page[template_data][<%= field['name'] %>]" 
+                     id="page_template_data_<%= field['name'] %>"
+                     value="<%= template_data[field['name']] %>"
+                     class="crayons-textfield"
+                     <%= 'required' if field['required'] %>>
+            <% else %>
+              <input type="text" 
+                     name="page[template_data][<%= field['name'] %>]" 
+                     id="page_template_data_<%= field['name'] %>"
+                     value="<%= template_data[field['name']] %>"
+                     class="crayons-textfield"
+                     <%= 'required' if field['required'] %>>
+            <% end %>
+          </div>
         <% end %>
-        <%= form.select :template, Page::TEMPLATE_OPTIONS, required: true %>
-      </div>
-      <div class="crayons-field optional html">
-        <%= form.label :body_markdown, class: "crayons-field__label" %>
-        <%= form.text_area :body_markdown, rows: 10, class: "crayons-textfield" %>
-      </div>
-      <div class="crayons-field optional html">
-        <%= form.label :body_html, class: "crayons-field__label" do %>
-          Body HTML
-          <p class="crayons-field__description">Only if not using markdown. HTML is dangerous ⚠️</p>
-        <% end %>
-        <%= form.text_area :body_html, rows: 10, class: "crayons-textfield" %>
-      </div>
-      <div class="crayons-field optional json">
-        <%= form.label :body_json, class: "crayons-field__label" do %>
-          Body JSON
-          <p class="crayons-field__description">For use with template type <code>json</code></p>
-        <% end %>
-        <%= form.text_area :body_json, rows: 10, class: "crayons-textfield" %>
-      </div>
-            <div class="crayons-field optional css">
-        <%= form.label :body_css, class: "crayons-field__label" do %>
-          Body CSS
-          <p class="crayons-field__description">For use with template type <code>css</code></p>
-        <% end %>
-        <%= form.text_area :body_css, rows: 10, class: "crayons-textfield" %>
-      </div>
+        <hr class="my-2">
+      <% end %>
+      
+      <% unless @page_template.present? %>
+        <div class="crayons-field">
+          <%= form.label :template, class: "crayons-field__label" do %>
+            Template
+            <p class="crayons-field__description">Determines the way page's body will be embedded in the layout</p>
+          <% end %>
+          <%= form.select :template, Page::TEMPLATE_OPTIONS, required: true %>
+        </div>
+        <div class="crayons-field optional html">
+          <%= form.label :body_markdown, class: "crayons-field__label" %>
+          <%= form.text_area :body_markdown, rows: 10, class: "crayons-textfield" %>
+        </div>
+        <div class="crayons-field optional html">
+          <%= form.label :body_html, class: "crayons-field__label" do %>
+            Body HTML
+            <p class="crayons-field__description">Only if not using markdown. HTML is dangerous ⚠️</p>
+          <% end %>
+          <%= form.text_area :body_html, rows: 10, class: "crayons-textfield" %>
+        </div>
+        <div class="crayons-field optional json">
+          <%= form.label :body_json, class: "crayons-field__label" do %>
+            Body JSON
+            <p class="crayons-field__description">For use with template type <code>json</code></p>
+          <% end %>
+          <%= form.text_area :body_json, rows: 10, class: "crayons-textfield" %>
+        </div>
+        <div class="crayons-field optional css">
+          <%= form.label :body_css, class: "crayons-field__label" do %>
+            Body CSS
+            <p class="crayons-field__description">For use with template type <code>css</code></p>
+          <% end %>
+          <%= form.text_area :body_css, rows: 10, class: "crayons-textfield" %>
+        </div>
+      <% end %>
+      
       <div class="crayons-field">
         <% if @page.social_image_url %>
           <img src="<%= @page.social_image_url %>" style="max-width:500px;display:block" />
@@ -127,6 +198,7 @@
   <% end %>
 </div>
 
+<% unless @page_template.present? %>
 <script>
 function showBodyFields() {
     // hide all optional elements
@@ -144,10 +216,13 @@ function showBodyFields() {
   };
 
 window.addEventListener('load', function() {
-  document.getElementById("page_template").onchange = function() {
+  var templateSelect = document.getElementById("page_template");
+  if (templateSelect) {
+    templateSelect.onchange = function() {
+      showBodyFields();
+    };
     showBodyFields();
-  };
-
-  showBodyFields();
+  }
 });
 </script>
+<% end %>

@@ -53,6 +53,7 @@ class Comment < ApplicationRecord
   validate :discussion_not_locked, if: :commentable, on: :create
   validate :published_article, if: :commentable
   validate :user_mentions_in_markdown
+  validate :body_has_content
   validates :body_markdown, presence: true, length: { in: BODY_MARKDOWN_SIZE_RANGE }
   validates :body_markdown, uniqueness: { scope: %i[user_id ancestry commentable_id commentable_type] }
   validates :commentable_id, presence: true, if: :commentable_type
@@ -372,6 +373,25 @@ class Comment < ApplicationRecord
     errors.add(:base,
                I18n.t("models.comment.mention_too_many",
                       count: Settings::RateLimit.mention_creation))
+  end
+
+  def body_has_content
+    return if body_markdown.blank?
+    return if processed_html.blank?
+
+    # Allow comments with media content (images, videos, iframes, etc.)
+    # Note: hr (horizontal rule) is not included as it's not meaningful content
+    media_tags = %w[img iframe video audio object embed script]
+
+    return if processed_html.match?(/<(#{media_tags.join('|')})(>|\s)/i)
+
+    # Strip HTML tags and unescape HTML entities to check for actual text content
+    text_content = ActionController::Base.helpers.strip_tags(processed_html)
+    text_content = CGI.unescapeHTML(text_content).strip
+
+    if text_content.blank?
+      errors.add(:body_markdown, I18n.t("models.comment.cannot_be_empty"))
+    end
   end
 
   def record_field_test_event

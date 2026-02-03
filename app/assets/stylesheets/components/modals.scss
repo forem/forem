@@ -185,3 +185,403 @@
     margin: var(--su-2);
   }
 }
+
+// Subforem Selection Modal
+.subforem-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.hidden {
+    display: none;
+  }
+
+  &__backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+  }
+
+  &__container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 0.5rem;
+  }
+
+  &__box {
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--card-border);
+    overflow: hidden;
+    animation: subforem-modal-slide-in 0.15s ease-out;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 1.5rem 1rem;
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  &__title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--card-color);
+    margin: 0;
+  }
+
+  &__close {
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--base-60);
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: var(--base-10);
+      color: var(--base-80);
+    }
+  }
+
+  &__body {
+    padding: 1rem 1.5rem 1.5rem;
+  }
+
+  &__description {
+    color: var(--base-70);
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  &__options {
+    max-height: 400px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  &__option {
+    background: none;
+    border: 1px solid var(--base-20);
+    border-radius: 8px;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.1s ease;
+    text-align: left;
+    width: 100%;
+    text-decoration: none;
+    display: block;
+
+    &:hover {
+      border-color: var(--base-30);
+      background-color: var(--base-5);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      text-decoration: none;
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  &__option-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+  }
+
+  &__option-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+  }
+
+  &__option-logo {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 6px;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  &__option-text {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__option-name {
+    font-weight: 500;
+    color: var(--card-color);
+    margin-bottom: 0.25rem;
+    font-size: 0.95rem;
+  }
+
+  &__option-description {
+    color: var(--base-60);
+    font-size: 0.85rem;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__option-arrow {
+    color: var(--base-60);
+    flex-shrink: 0;
+    margin-left: 0.5rem;
+  }
+
+  // Responsive adjustments
+  @media (max-width: 640px) {
+    &__container {
+      margin: 0 0.5rem;
+    }
+    
+    &__header {
+      padding: 1rem 1rem 0.75rem;
+    }
+    
+    &__body {
+      padding: 0.75rem 1rem 1rem;
+    }
+    
+    &__option-content {
+      padding: 0.75rem;
+    }
+    
+    &__option-left {
+      gap: 0.5rem;
+    }
+    
+    &__option-logo {
+      width: 1.75rem;
+      height: 1.75rem;
+    }
+  }
+}
+
+@keyframes subforem-modal-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+// Post Options Modal - specific styling only for this modal
+.post-options-modal {
+  .crayons-modal__box__header {
+    padding-left: var(--su-3);
+
+    @media (min-width: $breakpoint-s) {
+      padding-left: var(--su-4);
+    }
+  }
+  // Reduce padding on modal body for this specific modal
+  .crayons-modal__box__body {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  &__wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: 85vh;
+    overflow: hidden;
+  }
+
+  &__content {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--su-3);
+    padding-bottom: var(--su-6);
+
+    @media (min-width: $breakpoint-s) {
+      padding: var(--su-4);
+      padding-bottom: var(--su-6);
+    }
+  }
+
+  &__footer {
+    flex-shrink: 0;
+    padding: var(--su-3);
+    padding-top: var(--su-3);
+    border-top: 1px solid var(--divider);
+    display: flex;
+    justify-content: flex-end;
+    background: var(--modal-bg);
+    
+    @media (min-width: $breakpoint-s) {
+      padding: var(--su-4);
+      padding-top: var(--su-4);
+    }
+  }
+
+  .crayons-field__label--small {
+    font-size: var(--fs-s);
+    font-weight: 500;
+    margin-bottom: var(--su-1);
+  }
+
+  // Scheduling section with accent border when active
+  .post-options-scheduling--active {
+    padding: var(--su-4);
+    border: 2px solid var(--accent-brand);
+    border-radius: var(--radius);
+    background: var(--accent-brand-bg);
+  }
+
+  // Series section with accent border when active
+  .post-options-series--active {
+    padding: var(--su-4);
+    border: 2px solid var(--accent-brand);
+    border-radius: var(--radius);
+    background: var(--accent-brand-bg);
+  }
+}
+
+// Series Selector (embedded component, not a modal)
+.series-selector {
+  &__existing {
+    margin-bottom: var(--su-6);
+  }
+
+  &__series-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--su-3);
+    margin-bottom: var(--su-4);
+
+    @media (max-width: $breakpoint-s) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__series-card {
+    background: var(--card-bg);
+    border: 2px solid var(--base-20);
+    border-radius: var(--radius);
+    padding: var(--su-4);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    min-height: 100px;
+    position: relative;
+
+    &:hover {
+      border-color: var(--accent-brand);
+      background: var(--base-5);
+      box-shadow: var(--shadow-1);
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    &--selected {
+      border-color: var(--accent-brand);
+      background: var(--accent-brand-bg);
+      box-shadow: 0 0 0 3px var(--accent-brand-a10);
+
+      &:hover {
+        border-color: var(--accent-brand-darker);
+      }
+    }
+  }
+
+  &__series-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--su-2);
+    flex: 1;
+  }
+
+  &__series-name {
+    font-weight: 600;
+    color: var(--card-color);
+    font-size: var(--fs-base);
+    word-break: break-word;
+  }
+
+  &__series-badge {
+    display: inline-block;
+    padding: var(--su-1) var(--su-2);
+    border-radius: var(--radius);
+    font-size: var(--fs-s);
+    font-weight: 500;
+    background: var(--base-10);
+    color: var(--base-70);
+    align-self: flex-start;
+
+    &--personal {
+      background: var(--accent-brand-bg);
+      color: var(--accent-brand);
+    }
+  }
+
+  &__create-section {
+    padding: var(--su-4);
+    background: var(--base-5);
+    border-radius: var(--radius);
+    border: 2px dashed var(--base-30);
+    text-align: center;
+    margin-bottom: var(--su-4);
+  }
+
+  &__create-btn {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  &__create-form {
+    padding: var(--su-2) 0;
+  }
+
+  &__current {
+    border-top: 1px solid var(--divider);
+    padding-top: var(--su-4);
+    margin-top: var(--su-4);
+  }
+}
+
+// Series Selector Modal (for backward compatibility if still used elsewhere)
+.series-selector-modal {
+  &__content {
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+
+  .series-selector {
+    // Reuse series-selector styles when embedded in modal
+  }
+}

@@ -8,7 +8,14 @@ RSpec.describe "Admin visits overview page", js: true do
     visit admin_path
   end
 
-  it "has analytics" do
-    expect(page.body).to include "Analytics and trends"
+  it "has activity statistics" do
+    expect(page.body).to include "Activity Statistics"
+  end
+
+  it "displays stats cards" do
+    expect(page.body).to include "Published Posts"
+    expect(page.body).to include "Comments"
+    expect(page.body).to include "Public Reactions"
+    expect(page.body).to include "New Users"
   end
 end

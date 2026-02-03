@@ -2,7 +2,11 @@
   <li>
     <a href="<%= link.url %>" class="sidebar-navigation-link c-link c-link--block c-link--icon-left">
       <span class="c-link__icon">
-        <%= link.icon.html_safe %>
+        <% if link.respond_to?(:image) && link.image.present? %>
+          <%= optimized_image_tag(link.image.url, optimizer_options: { width: 24, height: 24, crop: "fill" }, image_options: { alt: "#{link.name} icon", style: "width: 24px; height: 24px;" }) %>
+        <% else %>
+          <%= link.icon.html_safe %>
+        <% end %>
       </span>
       <%= t("views.main.nav_name.#{link.name}", default: link.name) %>
       <% if link.url.include?("readinglist") %>

@@ -74,6 +74,28 @@
 </header>
 
 <div class="crayons-card p-6 mb-6">
+  <h3 class="crayons-subtitle-2 mb-4">Organization Settings</h3>
+  <div class="mb-6">
+    <div class="flex items-center justify-between mb-2">
+      <div>
+        <h4 class="fw-bold mb-1"><%= t("views.admin.organizations.fully_trusted.label") %></h4>
+        <p class="fs-s color-base-60"><%= t("views.admin.organizations.fully_trusted.description") %></p>
+      </div>
+      <%= form_tag update_fully_trusted_admin_organization_path(@organization), method: :patch, class: "flex items-center gap-2" do %>
+        <%= hidden_field_tag :fully_trusted, !@organization.fully_trusted? %>
+        <%= submit_tag @organization.fully_trusted? ? t("views.admin.organizations.fully_trusted.disable") : t("views.admin.organizations.fully_trusted.enable"),
+                       class: "crayons-btn #{@organization.fully_trusted? ? 'crayons-btn--danger' : 'crayons-btn--success'}" %>
+      <% end %>
+    </div>
+    <% if @organization.fully_trusted? %>
+      <div class="crayons-notice crayons-notice--success">
+        <%= t("views.admin.organizations.fully_trusted.enabled_notice") %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="crayons-card p-6 mb-6">
   <% current_credits = @organization.unspent_credits_count %>
   <h3 class="crayons-subtitle-2 mb-4">Credits (current: <%= current_credits %>)</h3>
   <%= form_tag update_org_credits_admin_organization_path(@organization), method: :patch, class: "flex justify-between mb-2" do %>
@@ -93,6 +115,18 @@
       </div>
       <%= submit_tag "Remove Org Credits", class: "crayons-btn crayons-btn--danger" %>
     <% end %>
+  <% end %>
+</div>
+
+<div class="crayons-card p-6 mb-6">
+  <h3 class="crayons-subtitle-2 mb-4">Baseline Score</h3>
+  <p class="fs-s color-base-60 mb-4">
+    This score is added to every article published under this organization. 
+    Use this to give a visibility boost to trusted partners or official organizations.
+  </p>
+  <%= form_tag update_baseline_score_admin_organization_path(@organization), method: :patch, class: "flex items-center gap-2" do %>
+    <%= number_field_tag :baseline_score, @organization.baseline_score, class: "crayons-textfield w-25", min: 0 %>
+    <%= submit_tag "Update Score", class: "crayons-btn" %>
   <% end %>
 </div>
 

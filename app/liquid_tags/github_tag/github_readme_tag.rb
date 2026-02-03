@@ -78,6 +78,8 @@ class GithubTag
 
     def clean_relative_path!(readme_html, url)
       readme = Nokogiri::HTML(readme_html)
+      uri = URI.parse(url)
+      base_github_url = "#{uri.scheme}://#{uri.host}"
 
       readme.css("img, a").each do |element|
         attribute = element.name == "img" ? "src" : "href"
@@ -86,7 +88,19 @@ class GithubTag
         element["src"] = "" if attribute == "src" && element.attributes[attribute].blank?
 
         path = element.attributes[attribute].value
-        element.attributes[attribute].value = "#{url}#{path}" if path[0, 4] != "http"
+        next if path[0, 4] == "http" # Skip absolute URLs
+
+        # Handle different types of relative paths
+        if path.start_with?("/")
+          # Absolute path from GitHub root (e.g., /owner/repo/blob/main/file.png)
+          element.attributes[attribute].value = "#{base_github_url}#{path}"
+        elsif path.start_with?("#")
+          # Anchor link (e.g., #license)
+          element.attributes[attribute].value = "#{url}#{path}"
+        else
+          # Relative path (e.g., blob/main/file.png)
+          element.attributes[attribute].value = "#{url}/#{path}"
+        end
       end
 
       readme.to_html

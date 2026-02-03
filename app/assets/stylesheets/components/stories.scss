@@ -41,6 +41,8 @@
 #article_title {
   height: auto;
   resize: none;
+  transition: height 0.15s ease-out;
+  min-height: 40px;
 }
 
 .crayons-story {
@@ -242,6 +244,21 @@
         display: inline-block;
       }
     }
+    // Add spacing between paragraphs in quickie titles
+    .quickie-paragraph {
+      margin-bottom: var(--su-2);
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+    
+    // Style for "read more" indicator in truncated quickies
+    .quickie-read-more {
+      color: var(--color-secondary);
+      font-style: italic;
+      font-size: 0.9em;
+      margin-left: var(--su-1);
+    }
   }
 
   &__flare-tag {
@@ -269,6 +286,18 @@
     }
     .ltag__link .ltag__link__content .ltag__link__tag {
       font-size: 0.75em;
+    }
+    br {
+      display: none;
+    }
+    .c-embed {
+      padding: 9px 16px !important;
+      margin: 0 !important;
+      font-size: 14px !important;
+    }
+    // Hide all crayons-cards after the first two
+    .c-embed:nth-child(n+3) {
+      display: none;
     }
   }
 

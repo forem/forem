@@ -11,7 +11,7 @@ class Article < ApplicationRecord
   resourcify
 
   include StringAttributeCleaner.nullify_blanks_for(:canonical_url, on: :before_save)
-  DEFAULT_FEED_PAGINATION_WINDOW_SIZE = 25
+  DEFAULT_FEED_PAGINATION_WINDOW_SIZE = 18
 
   # When we cache an entity, either {User} or {Organization}, these are the names of the attributes
   # we cache.
@@ -31,9 +31,8 @@ class Article < ApplicationRecord
   # TODO: [@lightalloy] remove published_at validation from the model and
   # move it to the services where the create/update takes place to avoid using hacks
   attr_accessor :publish_under_org, :admin_update
-  attr_writer :series
+  attr_writer :series, :labels
   attr_accessor :body_url
-  attr_writer :labels
 
   delegate :name, to: :user, prefix: true
   delegate :username, to: :user, prefix: true
@@ -125,8 +124,44 @@ class Article < ApplicationRecord
   enum type_of: {
     full_post: 0,
     status: 1,
-    fullscreen_embed: 2,
-}
+    fullscreen_embed: 2
+  }
+
+  enum automod_label: {
+    no_moderation_label: 0,
+    clear_and_obvious_spam: 1,
+    likely_spam: 2,
+    clear_and_obvious_low_quality: 3,
+    likely_low_quality: 4,
+    clear_and_obvious_harmful: 5,
+    likely_harmful: 6,
+    clear_and_obvious_inciting: 7,
+    likely_inciting: 8,
+    ok_but_offtopic_for_subforem: 9,
+    okay_and_on_topic: 10,
+    very_good_but_offtopic_for_subforem: 11,
+    very_good_and_on_topic: 12,
+    great_and_on_topic: 13,
+    great_but_off_topic_for_subforem: 14
+  }
+
+  AUTOMOD_SCORE_ADJUSTMENTS = {
+    no_moderation_label: 0,
+    clear_and_obvious_spam: -10,
+    likely_spam: -5,
+    clear_and_obvious_low_quality: -5,
+    likely_low_quality: -2,
+    clear_and_obvious_harmful: -10,
+    likely_harmful: -10,
+    clear_and_obvious_inciting: -10,
+    likely_inciting: -10,
+    ok_but_offtopic_for_subforem: 0,
+    okay_and_on_topic: 3,
+    very_good_but_offtopic_for_subforem: 3,
+    very_good_and_on_topic: 15,
+    great_and_on_topic: 20,
+    great_but_off_topic_for_subforem: 5
+  }
 
   has_one :discussion_lock, dependent: :delete
 
@@ -243,13 +278,16 @@ class Article < ApplicationRecord
   validate :validate_co_authors_must_not_be_the_same, unless: -> { co_author_ids.blank? }
   validate :validate_co_authors_exist, unless: -> { co_author_ids.blank? }
 
+  before_validation :extract_url_from_status_title, if: :status?
   before_validation :set_markdown_from_body_url, if: :body_url?
+  before_validation :add_urls_from_title_to_body, if: :should_add_urls_from_title?
   before_validation :evaluate_markdown, :create_slug, :set_published_date
   before_validation :normalize_title
   before_validation :replace_blank_title_for_status
   before_validation :remove_prohibited_unicode_characters
   before_validation :remove_invalid_published_at
-  before_validation :get_youtube_embed_url
+  before_validation :generate_video_embed_url
+  before_validation :set_default_subforem_id
   before_save :set_cached_entities
   before_save :set_all_dates
 
@@ -388,8 +426,9 @@ class Article < ApplicationRecord
 
   scope :active_help, lambda {
     stories = published.cached_tagged_with("help").order(created_at: :desc)
+    minimum_score = Settings::UserExperience.home_feed_minimum_score
 
-    stories.where(published_at: 12.hours.ago.., comments_count: ..5, score: -3..).presence || stories
+    stories.where(published_at: 12.hours.ago.., comments_count: ..5, score: minimum_score..).presence || stories
   }
 
   scope :limited_column_select, lambda {
@@ -401,6 +440,17 @@ class Article < ApplicationRecord
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
            :published_at, :crossposted_at, :description, :reading_time, :video_duration_in_seconds, :score,
            :last_comment_at, :main_image_height, :type_of, :edited_at, :processed_html, :subforem_id)
+  }
+
+  scope :minimal_feed_column_select, lambda {
+    select(:path, :title, :id, :published,
+           :comments_count, :public_reactions_count, :cached_tag_list,
+           :main_image, :main_image_background_hex_color, :updated_at, :slug,
+           :video, :user_id, :organization_id, :video_source_url, :video_code,
+           :video_thumbnail_url, :video_closed_caption_track_url,
+           :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
+           :published_at, :crossposted_at, :description, :reading_time, :video_duration_in_seconds, :score,
+           :last_comment_at, :main_image_height, :type_of, :edited_at, :subforem_id)
   }
 
   scope :limited_columns_internal_select, lambda {
@@ -467,7 +517,7 @@ class Article < ApplicationRecord
     order(:score).where("score >= ?", average_score)
   }
 
-  scope :followed_by, ->(user) do
+  scope :followed_by, lambda { |user|
     where(<<~SQL.squish, user_id: user.id)
       EXISTS (
         SELECT 1
@@ -481,7 +531,7 @@ class Article < ApplicationRecord
           )
       )
     SQL
-  end
+  }
 
   def self.average_score
     Rails.cache.fetch("article_average_score", expires_in: 1.day) do
@@ -532,7 +582,8 @@ class Article < ApplicationRecord
     # In the future this could be made more customizable. For now it's just this one thing.
     return processed_html if ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"].blank? || ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"].blank?
 
-    processed_html.gsub(ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"], ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
+    processed_html.gsub(ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"],
+                        ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
   end
 
   def scheduled?
@@ -552,6 +603,178 @@ class Article < ApplicationRecord
     else
       I18n.t("models.article.a_post_by", user_name: user.name)
     end
+  end
+
+  def title_finalized
+    return title unless title.present?
+
+    # First handle line breaks and paragraphs
+    processed_title = title.dup
+
+    # Convert double line breaks to paragraph breaks (with optional whitespace)
+    processed_title.gsub!(/\n\s*\n/, "</p><p class=\"quickie-paragraph\">")
+
+    # Convert single line breaks to <br> tags
+    processed_title.gsub!("\n", "<br>")
+
+    # Wrap the entire content in paragraph tags if we have any breaks
+    if processed_title.include?("<br>") || processed_title.include?("</p><p")
+      processed_title = "<p class=\"quickie-paragraph\">#{processed_title}</p>"
+      # Clean up any empty paragraphs that might have been created
+      processed_title.gsub!("<p class=\"quickie-paragraph\"></p>", "")
+      processed_title.gsub!(%r{<p class="quickie-paragraph">\s*</p>}, "")
+      # Strip leading/trailing whitespace from paragraph content
+      processed_title.gsub!(/<p class="quickie-paragraph">\s+/, "<p class=\"quickie-paragraph\">")
+      processed_title.gsub!(%r{\s+</p>}, "</p>")
+    end
+
+    # Regex to match URLs in the title
+    url_regex = %r{https?://[^\s<>"{}|\\^`\[\]]+}
+
+    # Replace each URL with a truncated, styled version
+    processed_title.gsub(url_regex) do |url|
+      # Strip protocol and www
+      clean_url = url.gsub(%r{^https?://}, "").gsub(/^www\./, "")
+
+      # Remove trailing slash
+      clean_url = clean_url.chomp("/")
+
+      # Truncate if longer than 25 chars
+      display_url = if clean_url.length > 25
+                      "#{clean_url[0..21]}..."
+                    else
+                      clean_url
+                    end
+
+      # Return HTML with styled span
+      "<span style=\"text-decoration: underline;\">#{display_url}</span>"
+    end.html_safe
+  end
+
+  def title_finalized_for_feed
+    return title_finalized unless type_of == "status" && title.present?
+
+    # Count total line breaks and paragraphs in the original title
+    line_break_count = title.count("\n")
+
+    # If we have 8 or more line breaks, truncate the title_finalized output
+    if line_break_count >= 8
+      truncate_title_for_feed
+    else
+      title_finalized
+    end
+  end
+
+  def truncate_title_for_feed
+    return title_finalized unless title.present?
+
+    # Split the title into lines to find a good truncation point
+    lines = title.split("\n")
+
+    # Take first 6 lines (leaving room for "read more" indicator)
+    truncated_lines = lines.first(6)
+
+    # Reconstruct the truncated title
+    truncated_title = truncated_lines.join("\n")
+
+    # Process the truncated title through the same logic as title_finalized
+    processed_title = truncated_title.dup
+
+    # Convert double line breaks to paragraph breaks (with optional whitespace)
+    processed_title.gsub!(/\n\s*\n/, "</p><p class=\"quickie-paragraph\">")
+
+    # Convert single line breaks to <br> tags
+    processed_title.gsub!("\n", "<br>")
+
+    # Wrap the entire content in paragraph tags if we have any breaks
+    if processed_title.include?("<br>") || processed_title.include?("</p><p")
+      processed_title = "<p class=\"quickie-paragraph\">#{processed_title}</p>"
+      # Clean up any empty paragraphs that might have been created
+      processed_title.gsub!("<p class=\"quickie-paragraph\"></p>", "")
+      processed_title.gsub!(%r{<p class="quickie-paragraph">\s*</p>}, "")
+      # Strip leading/trailing whitespace from paragraph content
+      processed_title.gsub!(/<p class="quickie-paragraph">\s+/, "<p class=\"quickie-paragraph\">")
+      processed_title.gsub!(%r{\s+</p>}, "</p>")
+    end
+
+    # Add "read more" indicator
+    processed_title += '<span class="quickie-read-more">...read more</span>'
+
+    # Handle URLs in the truncated content
+    url_regex = %r{https?://[^\s<>"{}|\\^`\[\]]+}
+
+    processed_title.gsub(url_regex) do |url|
+      # Strip protocol and www
+      clean_url = url.gsub(%r{^https?://}, "").gsub(/^www\./, "")
+
+      # Remove trailing slash
+      clean_url = clean_url.chomp("/")
+
+      # Truncate if longer than 25 chars
+      display_url = if clean_url.length > 25
+                      "#{clean_url[0..21]}..."
+                    else
+                      clean_url
+                    end
+
+      # Return HTML with styled span
+      "<span style=\"text-decoration: underline;\">#{display_url}</span>"
+    end.html_safe
+  end
+
+  def flare_tag
+    @flare_tag ||= FlareTag.new(self).tag_hash
+  end
+
+  def class_name
+    self.class.name
+  end
+
+  def cloudinary_video_url
+    return if video_thumbnail_url.blank?
+
+    Images::Optimizer.call(video_thumbnail_url, width: 880, quality: 80)
+  end
+
+  def published_timestamp
+    return "" unless published
+    return "" unless crossposted_at || published_at
+
+    displayable_published_at.utc.iso8601
+  end
+
+  def main_image_background_hex_color
+    self[:main_image_background_hex_color]
+  end
+
+  def body_preview
+    return unless type_of == "status"
+    return if processed_html.blank?
+
+    processed_html_final
+  end
+
+  def readable_publish_date
+    relevant_date = displayable_published_at
+    return unless relevant_date
+
+    if relevant_date.year == Time.current.year
+      I18n.l(relevant_date, format: :short)
+    elsif relevant_date
+      I18n.l(relevant_date, format: :short_with_yy)
+    end
+  end
+
+  def video_duration_in_minutes
+    duration = ActiveSupport::Duration.build(video_duration_in_seconds.to_i).parts
+
+    # add default hours and minutes for the substitutions below
+    duration = duration.reverse_merge(seconds: 0, minutes: 0, hours: 0)
+
+    minutes_and_seconds = format("%<minutes>02d:%<seconds>02d", duration)
+    return minutes_and_seconds if duration[:hours] < 1
+
+    "#{duration[:hours]}:#{minutes_and_seconds}"
   end
 
   def body_text
@@ -586,14 +809,6 @@ class Article < ApplicationRecord
     processed_content.has_front_matter?
   end
 
-  def class_name
-    self.class.name
-  end
-
-  def flare_tag
-    @flare_tag ||= FlareTag.new(self).tag_hash
-  end
-
   def edited?
     edited_at.present?
   end
@@ -608,26 +823,35 @@ class Article < ApplicationRecord
     end
   end
 
-  def readable_publish_date
-    relevant_date = displayable_published_at
-    return unless relevant_date
-
-    if relevant_date.year == Time.current.year
-      I18n.l(relevant_date, format: :short)
-    elsif relevant_date
-      I18n.l(relevant_date, format: :short_with_yy)
-    end
+  def skip_indexing?
+    # should the article be skipped indexed by crawlers?
+    # true if unpublished, or spammy,
+    # or low score, and not featured
+    !published ||
+      (score < Settings::UserExperience.index_minimum_score && !featured) ||
+      published_at.to_i < Settings::UserExperience.index_minimum_date.to_i ||
+      score < -1
   end
 
-  def published_timestamp
-    return "" unless published
-    return "" unless crossposted_at || published_at
+  def skip_indexing_reason
+    return "unpublished" unless published
+    return "negative_score" if score < -1
+    return "below_minimum_score" if score < Settings::UserExperience.index_minimum_score && !featured
+    return "below_minimum_date" if published_at.to_i < Settings::UserExperience.index_minimum_date.to_i
 
-    displayable_published_at.utc.iso8601
+    "indexed"
   end
 
   def displayable_published_at
     crossposted_at.presence || published_at
+  end
+
+  def title_for_metadata
+    return title unless type_of == "status" && title.present?
+
+    # For quickies, return a clean single-line version of the title
+    # Replace line breaks with spaces and normalize whitespace
+    title.gsub(/\s*\n\s*/, " ").gsub(/\s+/, " ").strip
   end
 
   def series
@@ -636,26 +860,38 @@ class Article < ApplicationRecord
   end
 
   def all_series
-    # all series names
-    user&.collections&.pluck(:slug)
-  end
+    # all series names - includes user's personal collections and organization collections
+    # Returns array of hashes with slug and organization info for UI display
+    return [] unless user
 
-  def cloudinary_video_url
-    return if video_thumbnail_url.blank?
+    series_list = []
 
-    Images::Optimizer.call(video_thumbnail_url, width: 880, quality: 80)
-  end
+    # Get user's personal collections (no organization)
+    user.collections.where(organization_id: nil).each do |collection|
+      series_list << {
+        slug: collection.slug,
+        organization_id: nil,
+        organization_name: nil,
+        is_personal: true
+      }
+    end
 
-  def video_duration_in_minutes
-    duration = ActiveSupport::Duration.build(video_duration_in_seconds.to_i).parts
+    # Get collections from organizations the user is a member of
+    Collection.joins(organization: :organization_memberships)
+      .where(organization_memberships: { user_id: user.id })
+      .includes(:organization)
+      .each do |collection|
+        series_list << {
+          slug: collection.slug,
+          organization_id: collection.organization_id,
+          organization_name: collection.organization.name,
+          is_personal: false
+        }
+      end
 
-    # add default hours and minutes for the substitutions below
-    duration = duration.reverse_merge(seconds: 0, minutes: 0, hours: 0)
-
-    minutes_and_seconds = format("%<minutes>02d:%<seconds>02d", duration)
-    return minutes_and_seconds if duration[:hours] < 1
-
-    "#{duration[:hours]}:#{minutes_and_seconds}"
+    # For backward compatibility, also support returning just slugs when called as array
+    # But when serialized to JSON, it will return the full hash
+    series_list
   end
 
   def update_score
@@ -668,16 +904,38 @@ class Article < ApplicationRecord
     user_featured_count_adjustment = ([featured_count, 10].min + Math.log(featured_count + 1)).to_i
     user_negative_count_adjustment = 0
     negative_count = user.articles.where("score < -10").count
-    user_negative_count_adjustment = -([negative_count, 3].min + Math.log(negative_count + 1)).to_i if negative_count.positive?
+    if negative_count.positive?
+      user_negative_count_adjustment = -([negative_count,
+                                          3].min + Math.log(negative_count + 1)).to_i
+    end
+    # Context notes are currently only a positive indicator. In the future, they could be negative and this should be changed.
+    context_note_adjustment = context_notes.size
 
-    self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment + user_featured_count_adjustment + user_negative_count_adjustment
+    # Content moderation label adjustments
+    automod_label_adjustment = AUTOMOD_SCORE_ADJUSTMENTS[automod_label.to_sym] || 0
+
+    badge_bonus_weight_sum = user.badges.sum(:bonus_weight)
+    badge_reputation_bonus = Math.sqrt(badge_bonus_weight_sum).to_i
+
+    organization_baseline_score = organization&.baseline_score || 0
+
+    self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment + user_featured_count_adjustment + user_negative_count_adjustment + context_note_adjustment + automod_label_adjustment + badge_reputation_bonus + organization_baseline_score
     accepted_max = [max_score, user&.max_score.to_i].min
     accepted_max = [max_score, user&.max_score.to_i].max if accepted_max.zero?
     self.score = accepted_max if accepted_max.positive? && accepted_max < score
 
+    # Calculate comment_score and apply max_score limits
+    # Each comment can contribute a minimum of -1 to the total score
+    calculated_comment_score = comments.sum { |comment| [comment.score, -1].max }
+    comment_score = if accepted_max.positive? && accepted_max < calculated_comment_score
+                      accepted_max
+                    else
+                      calculated_comment_score
+                    end
+
     update_columns(score: score,
                    privileged_users_reaction_points_sum: reactions.privileged_category.sum(:points),
-                   comment_score: comments.sum(:score),
+                   comment_score: comment_score,
                    hotness_score: BlackBox.article_hotness_score(self))
   end
 
@@ -709,26 +967,7 @@ class Article < ApplicationRecord
   end
 
   def body_url?
-    body_url.present?  # Returns true if body_url is not nil or an empty string
-  end  
-
-  def skip_indexing?
-    # should the article be skipped indexed by crawlers?
-    # true if unpublished, or spammy,
-    # or low score, and not featured
-    !published ||
-      (score < Settings::UserExperience.index_minimum_score && !featured) ||
-      published_at.to_i < Settings::UserExperience.index_minimum_date.to_i ||
-      score < -1
-  end
-
-  def skip_indexing_reason
-    return "unpublished" unless published
-    return "negative_score" if score < -1
-    return "below_minimum_score" if score < Settings::UserExperience.index_minimum_score && !featured
-    return "below_minimum_date" if published_at.to_i < Settings::UserExperience.index_minimum_date.to_i
-
-    "unknown"
+    body_url.present? # Returns true if body_url is not nil or an empty string
   end
 
   def privileged_reaction_counts
@@ -750,23 +989,17 @@ class Article < ApplicationRecord
     return unless content_renderer
 
     result = content_renderer.process_article
-    self.update_column(:processed_html, result.processed_html)
-  end
-  
-  def body_preview
-    return unless type_of == "status"
-
-    processed_html_final
+    update_column(:processed_html, result.processed_html)
   end
 
   def labels=(input)
-    adjusted_input = input.is_a?(String) ? input.gsub(" ", "").split(",") : input
-    write_attribute :cached_label_list, (adjusted_input || [])
+    adjusted_input = input.is_a?(String) ? input.delete(" ").split(",") : input
+    self[:cached_label_list] = (adjusted_input || [])
   end
 
   def generate_context_notes
     tags.each do |tag|
-      next if !tag.respond_to?(:context_note_instructions) 
+      next unless tag.respond_to?(:context_note_instructions)
       next if tag.context_note_instructions.blank?
       next if context_notes.where(tag_id: tag.id).exists?
 
@@ -774,23 +1007,80 @@ class Article < ApplicationRecord
     end
   end
 
-  private
+  def set_default_subforem_id
+    # Set subforem_id to default subforem ID if not already set and a default subforem exists
+    return if subforem_id.present?
+    return unless RequestStore.store[:default_subforem_id].present?
 
-  def get_youtube_embed_url
-    return unless video_source_url.present? && video_source_url.include?("youtube.com")
+    self.subforem_id = RequestStore.store[:default_subforem_id]
+  end
 
-    begin
-      self.video = YoutubeParser.new(video_source_url).call
-      p "Parsed YouTube video URL: #{video}" if Rails.env.development?
-    rescue StandardError => e
-      Rails.logger.error("Error parsing YouTube video URL: #{e.message}")
+  def generate_video_embed_url
+    return if video_source_url.blank?
+
+    if video_source_url.include?("youtube.com") || video_source_url.include?("youtu.be")
+      begin
+        self.video = YoutubeParser.new(video_source_url).call
+        p "Parsed YouTube video URL: #{video}" if Rails.env.development?
+      rescue StandardError => e
+        Rails.logger.error("Error parsing YouTube video URL: #{e.message}")
+      end
+    elsif video_source_url.include?("player.mux.com")
+      begin
+        parser = MuxParser.new(video_source_url)
+        self.video = parser.call
+        self.video_thumbnail_url = mux_thumbnail_url(parser.video_id) if parser.video_id
+        p "Parsed Mux video URL: #{video}" if Rails.env.development?
+      rescue StandardError => e
+        Rails.logger.error("Error parsing Mux video URL: #{e.message}")
+      end
+    elsif video_source_url.include?("twitch.tv")
+      begin
+        parser = TwitchParser.new(video_source_url)
+        self.video = parser.call
+        p "Parsed Twitch video URL: #{video}" if Rails.env.development?
+      rescue StandardError => e
+        Rails.logger.error("Error parsing Twitch video URL: #{e.message}")
+      end
     end
+  end
+
+  def extract_url_from_status_title
+    return unless status? && title.present? && body_url.blank?
+
+    # Skip this if we're using the new add_urls_from_title_to_body path
+    return if should_add_urls_from_title?
+
+    url_pattern = %r{https?://[^\s]+}
+    url_match = title.match(url_pattern)
+    return unless url_match
+
+    extracted_url = url_match[0]
+    # Remove trailing punctuation that might not be part of the URL
+    extracted_url = extracted_url.sub(/[.,;:!?)]+$/, "")
+
+    # Set the extracted URL as body_url so it gets processed by set_markdown_from_body_url
+    self.body_url = extracted_url
+  end
+
+  def mux_thumbnail_url(video_id)
+    return unless video_id.present?
+
+    "https://image.mux.com/#{video_id}/thumbnail.webp"
   end
 
   def set_markdown_from_body_url
     return unless body_url.present?
 
-    self.body_markdown = "{% embed #{body_url} %}"
+    # Don't run this for persisted articles - body_markdown should be immutable for status posts once created
+    return if persisted?
+
+    # Don't overwrite if body_markdown already contains this URL's embed tag
+    # This prevents duplicating embed tags that were added by add_urls_from_title_to_body
+    embed_tag = "{% embed #{body_url} minimal %}"
+    return if body_markdown.to_s.include?(embed_tag)
+
+    self.body_markdown = embed_tag
   end
 
   def collection_cleanup
@@ -842,8 +1132,8 @@ class Article < ApplicationRecord
 
     self.title = title
       .gsub(TITLE_CHARACTERS_ALLOWED, " ")
-      # Coalesce runs of whitespace into a single space character
-      .gsub(/\s+/, " ")
+      # For status posts, preserve line breaks; for other posts, coalesce whitespace
+      .gsub(type_of == "status" ? /[ \t]+/ : /\s+/, " ")
       .strip
   end
 
@@ -876,11 +1166,27 @@ class Article < ApplicationRecord
   end
 
   def restrict_attributes_with_status_types
-    # Return early if this is already saved and the body_markdown hasn't changed
-    return if persisted? && !body_markdown_changed?
+    return unless type_of == "status"
 
-    # For now, there is no body allowed for status types
-    if type_of == "status" && body_url.blank? && (body_markdown.present? || main_image.present? || collection_id.present?)
+    # If the article is already persisted and body_markdown is being changed,
+    # show a different error about edit restrictions
+    # Check if the value actually changed, not just if Rails marked it as changed
+    if persisted? && body_markdown_changed? && body_markdown_was != body_markdown
+      errors.add(:body_markdown,
+                 "cannot be modified for status type posts. Consider unpublishing if you need to make changes.")
+      return
+    end
+
+    # Return early if this is already saved and the body_markdown hasn't changed
+    return if persisted?
+
+    # For new status types, allow body_markdown only if it contains embed tags from URLs in title
+    if body_url.blank? && body_markdown.present?
+      # Allow body_markdown if it only contains embed tags that were added from URLs in title
+      unless body_markdown_only_contains_embed_tags_from_title?
+        errors.add(:body_markdown, "is not allowed for status types")
+      end
+    elsif body_url.blank? && (main_image.present? || collection_id.present?)
       errors.add(:body_markdown, "is not allowed for status types")
     end
   end
@@ -889,9 +1195,9 @@ class Article < ApplicationRecord
     return if %w[full_post status].include?(type_of)
 
     # Only allow fullscreen_embed for super admins and admins
-    if type_of == "fullscreen_embed" && !user.any_admin?
-      errors.add(:type_of, "fullscreen_embed is only allowed for super admins and admins")
-    end
+    return unless type_of == "fullscreen_embed" && !user.any_admin?
+
+    errors.add(:type_of, "fullscreen_embed is only allowed for super admins and admins")
   end
 
   def title_unique_for_user_past_five_minutes
@@ -899,11 +1205,10 @@ class Article < ApplicationRecord
     return unless user_id && title
     return unless new_record?
 
-    if Article.where(user_id: user_id, title: title).where("created_at > ?", 5.minutes.ago).exists?
-      errors.add(:title, "has already been used in the last five minutes")
-    end
-  end
+    return unless Article.where(user_id: user_id, title: title).where("created_at > ?", 5.minutes.ago).exists?
 
+    errors.add(:title, "has already been used in the last five minutes")
+  end
 
   def evaluate_markdown
     content_renderer = processed_content
@@ -934,7 +1239,7 @@ class Article < ApplicationRecord
   end
 
   def fetch_video_duration
-    return if video_source_url&.include?("youtube.com")
+    return if video_source_url&.include?("youtube.com") || video_source_url&.include?("player.mux.com")
 
     if video.present? && video_duration_in_seconds.zero?
       url = video_source_url.gsub(".m3u8", "1351620000001-200015_hls_v4.m3u8")
@@ -986,7 +1291,10 @@ class Article < ApplicationRecord
     self.description = hash["description"] if update_description
 
     self.collection_id = nil if hash["title"].present?
-    self.collection_id = Collection.find_series(hash["series"], user).id if hash["series"].present?
+    return unless hash["series"].present?
+
+    collection = Collection.find_series(hash["series"], user, organization: organization)
+    self.collection_id = collection.id
   end
 
   def set_main_image(hash)
@@ -1045,13 +1353,32 @@ class Article < ApplicationRecord
                         I18n.t("models.article.video_processing"))
     end
 
-    return unless video.present? && user.created_at > 2.weeks.ago
+    return unless user
+    return if user.created_at && user.created_at <= 2.weeks.ago
+
+    return unless video.present?
+
+    # Allow linked videos (YouTube, Mux, Twitch) even for new users
+    return if video_source_url.present? && (
+      video_source_url.include?("youtube.com") ||
+      video_source_url.include?("youtu.be") ||
+      video_source_url.include?("player.mux.com") ||
+      video_source_url.include?("twitch.tv")
+    )
 
     errors.add(:video, I18n.t("models.article.video_unpermitted"))
   end
 
   def validate_collection_permission
     return unless collection && collection.user_id != user_id
+
+    # Allow org members to add articles to org collections
+    if collection.organization_id.present?
+      org = collection.organization
+      # Check if user is a member/admin of the collection's organization
+      # and if the article is being published under that organization
+      return if user.org_member?(org) && organization_id == collection.organization_id
+    end
 
     errors.add(:collection_id, I18n.t("models.article.series_unpermitted"))
   end
@@ -1206,7 +1533,7 @@ class Article < ApplicationRecord
   def create_conditional_autovomits
     return unless published
     return unless saved_change_to_body_markdown? || published_at > 1.minute.ago
-  
+
     Articles::HandleSpamWorker.perform_async(id)
   end
 
@@ -1245,5 +1572,65 @@ class Article < ApplicationRecord
 
     Users::RecordFieldTestEventWorker
       .perform_async(user_id, AbExperiment::GoalConversionHandler::USER_PUBLISHES_POST_GOAL)
+  end
+
+  private
+
+  def should_add_urls_from_title?
+    # Only add URLs from title for quickie posts (status type) that have a title with URLs
+    # Only run this when the title has changed or it's a new record to avoid duplicating embed tags
+    type_of == "status" && title.present? && extract_urls_from_title.any? && (new_record? || title_changed?)
+  end
+
+  def add_urls_from_title_to_body
+    urls = extract_urls_from_title
+    return if urls.empty?
+
+    # Create embed tags for each URL found in the title
+    embed_tags = urls.map { |url| "{% embed #{url} minimal %}" }.join("\n")
+
+    # Add the embed tags to the body_markdown
+    self.body_markdown = if body_markdown.present?
+                           "#{body_markdown}\n\n#{embed_tags}"
+                         else
+                           embed_tags
+                         end
+  end
+
+  def extract_urls_from_title
+    return [] unless title.present?
+
+    # Regex to match URLs in the title
+    # This regex matches http/https URLs, including those with query parameters and fragments
+    url_regex = %r{https?://[^\s<>"{}|\\^`\[\]]+}
+
+    urls = title.scan(url_regex).uniq
+    # Remove trailing punctuation that might not be part of the URL
+    urls.map { |url| url.sub(/[.,;:!?)]+$/, "") }
+  end
+
+  def body_markdown_only_contains_embed_tags_from_title?
+    return false unless body_markdown.present?
+    return false unless title.present?
+
+    # Get URLs from title
+    urls_from_title = extract_urls_from_title
+    return false if urls_from_title.empty?
+
+    # Create the expected embed tags
+    expected_embed_tags = urls_from_title.map { |url| "{% embed #{url} minimal %}" }
+
+    # Clean the body_markdown (remove extra whitespace and newlines)
+    cleaned_body = body_markdown.strip.squeeze("\n")
+
+    # Check if the body_markdown contains only the expected embed tags
+    # Allow for some whitespace variations
+    expected_content = expected_embed_tags.join("\n")
+
+    # Normalize both strings for comparison
+    normalized_body = cleaned_body.gsub(/\s+/, " ").strip
+    normalized_expected = expected_content.gsub(/\s+/, " ").strip
+
+    normalized_body == normalized_expected
   end
 end

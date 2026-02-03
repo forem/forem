@@ -33,6 +33,47 @@ module Admin
       redirect_to admin_organization_path(org)
     end
 
+    def update_fully_trusted
+      org = Organization.find(params[:id])
+      old_status = org.fully_trusted?
+      org.update!(fully_trusted: params[:fully_trusted] == "true")
+      
+      if old_status != org.fully_trusted?
+        Note.create(
+          author_id: current_user.id,
+          noteable_id: org.id,
+          noteable_type: "Organization",
+          reason: "misc_note",
+          content: "Fully trusted status #{org.fully_trusted? ? 'enabled' : 'disabled'}",
+        )
+      end
+
+      status = org.fully_trusted? ? "enabled" : "disabled"
+      flash[:notice] = I18n.t("admin.organizations_controller.fully_trusted_#{status}")
+      redirect_to admin_organization_path(org)
+    end
+
+    def update_baseline_score
+      org = Organization.find(params[:id])
+      old_score = org.baseline_score
+      new_score = params[:baseline_score].to_i
+      
+      org.update!(baseline_score: new_score)
+
+      if old_score != org.baseline_score
+        Note.create(
+          author_id: current_user.id,
+          noteable_id: org.id,
+          noteable_type: "Organization",
+          reason: "misc_note",
+          content: "Baseline score changed from #{old_score} to #{new_score}",
+        )
+      end
+
+      flash[:notice] = I18n.t("admin.organizations_controller.baseline_score_updated")
+      redirect_to admin_organization_path(org)
+    end
+
     def destroy
       organization = Organization.find_by(id: params[:id])
       Organizations::DeleteWorker.perform_async(organization.id, current_user.id, false)

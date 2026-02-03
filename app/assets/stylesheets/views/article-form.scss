@@ -116,6 +116,25 @@
   }
 }
 
+.article-form-footer-pills {
+  margin-left: var(--su-2);
+}
+
+.article-form-footer-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--su-1) var(--su-2);
+  background: var(--base-5);
+  border: 1px solid var(--base-20);
+  border-radius: var(--radius);
+  font-size: var(--fs-s);
+  color: var(--base-90);
+  white-space: nowrap;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .crayons-article-form {
   &__logo {
     margin-right: var(--su-1);
@@ -211,6 +230,13 @@
       }
       .crayons-btn {
         width: 100%;
+        font-size: var(--fs-s);
+      }
+    }
+    
+    @media (max-width: $breakpoint-xs) {
+      .crayons-btn {
+        font-size: var(--fs-xs);
       }
     }
   }

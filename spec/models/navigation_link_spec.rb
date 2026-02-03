@@ -75,10 +75,29 @@ RSpec.describe NavigationLink do
     describe "presence validations" do
       it { is_expected.to validate_presence_of(:name) }
       it { is_expected.to validate_presence_of(:url) }
-      it { is_expected.to validate_presence_of(:icon) }
     end
 
-    it "validates the icon" do
+    describe "icon or image validation" do
+      it "is valid without either icon or image (falls back to default)" do
+        link = build(:navigation_link, icon: nil, image: nil)
+        expect(link).to be_valid
+      end
+
+      it "is valid with an icon and no image" do
+        link = build(:navigation_link, icon: "<svg xmlns='http://www.w3.org/2000/svg'></svg>", image: nil)
+        expect(link).to be_valid
+      end
+
+      it "is valid with an image and no icon" do
+        allow_any_instance_of(NavigationLinkImageUploader).to receive(:validate_frame_count)
+        allow_any_instance_of(NavigationLinkImageUploader).to receive(:strip_exif)
+        link = build(:navigation_link, icon: nil)
+        link.image = fixture_file_upload("800x600.png", "image/png")
+        expect(link).to be_valid
+      end
+    end
+
+    it "validates the icon format" do
       navigation_link.icon = "test.png"
       expect(navigation_link).not_to be_valid
 
@@ -136,6 +155,73 @@ RSpec.describe NavigationLink do
       navigation_link.url = url
       navigation_link.save
       expect(navigation_link.url).to eq url
+    end
+  end
+
+  describe "default icon fallback" do
+    it "sets default icon when both icon and image are blank" do
+      link = build(:navigation_link, icon: nil, image: nil)
+      link.validate
+      expect(link.icon).to eq(described_class.default_icon_svg)
+    end
+
+    it "does not override provided icon" do
+      custom_icon = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'><circle cx='5' cy='5' r='4'/></svg>"
+      link = build(:navigation_link, icon: custom_icon, image: nil)
+      link.validate
+      expect(link.icon).to eq(custom_icon)
+    end
+
+    it "does not set icon when image is provided" do
+      allow_any_instance_of(NavigationLinkImageUploader).to receive(:validate_frame_count)
+      allow_any_instance_of(NavigationLinkImageUploader).to receive(:strip_exif)
+      link = build(:navigation_link, icon: nil)
+      link.image = fixture_file_upload("800x600.png", "image/png")
+      link.validate
+      expect(link.icon).to be_nil
+    end
+
+    it "persists the default icon when saved without icon or image" do
+      link = create(:navigation_link, icon: nil, image: nil)
+      expect(link.reload.icon).to eq(described_class.default_icon_svg)
+    end
+
+    it "loads default icon from link.svg file" do
+      expected_svg = Rails.root.join("app/assets/images/link.svg").read.strip
+      expect(described_class.default_icon_svg).to eq(expected_svg)
+    end
+
+    it "caches the default icon SVG content" do
+      # First call loads from file
+      first_call = described_class.default_icon_svg
+      
+      # Second call should return the same object (cached)
+      second_call = described_class.default_icon_svg
+      
+      expect(first_call).to eq(second_call)
+      expect(first_call.object_id).to eq(second_call.object_id)
+    end
+  end
+
+  describe "#icon_display" do
+    it "returns image URL when image is present" do
+      allow_any_instance_of(NavigationLinkImageUploader).to receive(:validate_frame_count)
+      allow_any_instance_of(NavigationLinkImageUploader).to receive(:strip_exif)
+      link = build(:navigation_link, icon: nil)
+      link.image = fixture_file_upload("800x600.png", "image/png")
+      link.save
+      expect(link.icon_display).to eq(link.image.url)
+    end
+
+    it "returns custom icon when provided and no image" do
+      custom_icon = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'><circle cx='5' cy='5' r='4'/></svg>"
+      link = create(:navigation_link, icon: custom_icon, image: nil)
+      expect(link.icon_display).to eq(custom_icon)
+    end
+
+    it "returns default icon when neither icon nor image was provided" do
+      link = create(:navigation_link, icon: nil, image: nil)
+      expect(link.icon_display).to eq(described_class.default_icon_svg)
     end
   end
 end

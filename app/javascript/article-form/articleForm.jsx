@@ -8,6 +8,7 @@ import { embedGists } from '../utilities/gist';
 import { submitArticle, previewArticle } from './actions';
 import { EditorActions, Form, Header, Help, Preview } from './components';
 import { Button, Modal } from '@crayons';
+import { locale } from '@utilities/locale';
 import {
   noDefaultAltTextRule,
   noEmptyAltTextRule,
@@ -64,9 +65,10 @@ export class ArticleForm extends Component {
     article: PropTypes.string.isRequired,
     organizations: PropTypes.string,
     siteLogo: PropTypes.string.isRequired,
-    schedulingEnabled: PropTypes.bool.isRequired,
+    schedulingEnabled: PropTypes.bool, // Kept for backward compatibility but always true now
     coverImageHeight: PropTypes.string.isRequired,
     coverImageCrop: PropTypes.string.isRequired,
+    aiAvailable: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -82,6 +84,7 @@ export class ArticleForm extends Component {
       schedulingEnabled,
       coverImageHeight,
       coverImageCrop,
+      aiAvailable,
     } = this.props;
     let { organizations } = this.props;
     this.article = JSON.parse(article);
@@ -102,6 +105,7 @@ export class ArticleForm extends Component {
             tagList: previousContent.tagList || '',
             mainImage: previousContent.mainImage || null,
             bodyMarkdown: previousContent.bodyMarkdown || '',
+            videoSourceUrl: previousContent.videoSourceUrl || null,
             edited: true,
           }
         : {};
@@ -138,6 +142,7 @@ export class ArticleForm extends Component {
       submitting: false,
       editing: this.article.id !== null, // eslint-disable-line react/no-unused-state
       mainImage: this.article.main_image || null,
+      videoSourceUrl: this.article.video_source_url || null,
       organizations,
       organizationId: this.article.organization_id,
       errors: null,
@@ -147,6 +152,7 @@ export class ArticleForm extends Component {
       siteLogo,
       coverImageHeight,
       coverImageCrop,
+      aiAvailable,
       helpFor: null,
       helpPosition: null,
       isModalOpen: false,
@@ -179,7 +185,7 @@ export class ArticleForm extends Component {
       return;
     }
 
-    const { version, title, tagList, mainImage, bodyMarkdown } = this.state;
+    const { version, title, tagList, mainImage, bodyMarkdown, videoSourceUrl } = this.state;
     const updatedAt = new Date();
     localStorage.setItem(
       `editor-${version}-${this.url}`,
@@ -188,6 +194,7 @@ export class ArticleForm extends Component {
         tagList,
         mainImage,
         bodyMarkdown,
+        videoSourceUrl,
         updatedAt,
       }),
     );
@@ -300,8 +307,19 @@ export class ArticleForm extends Component {
   };
 
   handleMainImageUrlChange = (payload) => {
+    const newImage = payload.links[0];
     this.setState({
-      mainImage: payload.links[0],
+      mainImage: newImage,
+      // Clear video when image is set
+      videoSourceUrl: newImage ? null : this.state.videoSourceUrl,
+    });
+  };
+
+  handleVideoUrlChange = (url) => {
+    this.setState({
+      videoSourceUrl: url,
+      // Clear image when video is set
+      mainImage: url ? null : this.state.mainImage,
     });
   };
 
@@ -452,6 +470,7 @@ export class ArticleForm extends Component {
       formKey,
       coverImageHeight,
       coverImageCrop,
+      aiAvailable,
     } = this.state;
 
     return (
@@ -479,8 +498,8 @@ export class ArticleForm extends Component {
         />
 
         <span aria-live="polite" className="screen-reader-only">
-          {previewLoading ? 'Loading preview' : null}
-          {previewShowing && !previewLoading ? 'Preview loaded' : null}
+          {previewLoading ? locale('core.article_form_loading_preview') : null}
+          {previewShowing && !previewLoading ? locale('core.article_form_preview_loaded') : null}
         </span>
 
         {previewShowing || previewLoading ? (
@@ -508,6 +527,9 @@ export class ArticleForm extends Component {
             switchHelpContext={this.switchHelpContext}
             coverImageHeight={coverImageHeight}
             coverImageCrop={coverImageCrop}
+            aiAvailable={aiAvailable}
+            videoSourceUrl={this.state.videoSourceUrl}
+            onVideoUrlChange={this.handleVideoUrlChange}
           />
         )}
 

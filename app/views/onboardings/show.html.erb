@@ -12,6 +12,7 @@
 </style>
 
 <div id="onboarding-container"
+  data-include-custom-cta-slide="<%= FeatureFlag.enabled?(:onboarding_custom_cta_slide) %>"
   data-community-name="<%= j(community_name) %>"
   data-community-description="<%= j(Settings::Community.community_description) %>"
   data-community-logo="<%= optimized_image_url(Settings::General.logo_png) %>"

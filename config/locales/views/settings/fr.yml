@@ -40,8 +40,13 @@ fr:
           confirm: Are you absolutely sure you want to remove your %{provider} account?
           submit: Remove %{provider}
           unable_to_remove: Vous ne pouvez pas supprimer l'une de vos méthodes d'authentification car vous avez besoin d'une méthode restante pour vous authentifier. Veuillez ajouter une autre méthode d'authentification ci-dessus avant de continuer.
+        free_billing_info: Vous bénéficiez d'un abonnement gratuit. Aucune facturation active n'est associée à votre compte, aucune gestion des paiements n'est donc requise.
       billing:
         heading: Billing
+        current_status: Statut d'abonnement actuel
+        free_subscription: Vous bénéficiez d'un abonnement gratuit et n'êtes facturé en aucune capacité.
+        trial_subscription: Vous êtes actuellement en période d'essai.
+        paying_subscription: Vous avez un abonnement payant récurrent.
         add: Add Credit Card
         another: "+ Add Another Credit Card"
         cards: Your Credit Cards
@@ -77,6 +82,9 @@ fr:
         sponsor_desc_html: You have the option to disable billboards from external sponsors. Our wonderful partners help sustain the platform, and we strive to ensure that their presence is constructive and valuable to the community, but you are welcome to make use of this setting if you wish. More details in our <a href="/billboards">billboards FAQ</a>.
         sponsor_field: Display External Sponsors (When browsing)
         static: Static top of page
+        subforem_reassignment: Relocalisation du contenu
+        subforem_reassignment_desc: Lorsque votre contenu est marqué comme hors-sujet pour son sous-forum actuel, il peut être automatiquement déplacé vers un sous-forum plus approprié. Vous pouvez désactiver cette relocalisation automatique si vous préférez garder votre contenu dans son emplacement d'origine.
+        subforem_reassignment_field: Désactiver la relocalisation automatique de mon contenu vers d'autres sous-forums
         theme: Site Theme
         writing: Writing
       danger: Danger Zone
@@ -175,6 +183,7 @@ fr:
           copy:
             button:
               aria_label: Copy organization secret code to clipboard
+              text: Copier
             icon: Copy to clipboard
             input:
               aria_label: Organization secret (to be rotated regularly)
@@ -213,15 +222,48 @@ fr:
             text: You should rotate this regularly!
             submit: Generate new secret
           grow: Grow the team
+          grow_description: Invitez de nouveaux membres à votre organisation en utilisant l'une des méthodes ci-dessous.
           invite: 'Invite teammates by sending them the secret and the following instructions:'
           inst1_html: Sign up at %{url}
           inst2_html: Navigate to %{url}
           inst3_html: Paste the secret code below and click <b>Join Organization</b>
+          secret_instructions: "Partagez ces instructions avec vos coéquipiers :"
+          invite_methods:
+            username:
+              title: Inviter par nom d'utilisateur
+              description: Invitez un utilisateur spécifique par son nom d'utilisateur. Il recevra un e-mail d'invitation pour rejoindre.
+              icon: Icône utilisateur
+              fully_trusted:
+                title: Ajouter par nom d'utilisateur
+                description: Ajoutez un utilisateur spécifique par son nom d'utilisateur. Il recevra un e-mail de notification l'informant qu'il a été ajouté à l'organisation. Comme cette organisation est de confiance totale, la vérification est ignorée et il sera ajouté immédiatement.
+                icon: Icône utilisateur
+            secret:
+              title: Partager le code secret
+              description: Partagez le code secret de votre organisation. Toute personne ayant le code peut rejoindre votre organisation.
+              icon: Icône clé
+          fully_trusted_warning:
+            title: Organisation de confiance totale
+            description: Votre organisation dispose de privilèges élevés. Lors de l'ajout par nom d'utilisateur, les membres sont ajoutés immédiatement sans confirmation. Ils recevront un e-mail de notification les informant qu'ils ont été ajoutés. Comme votre organisation est de confiance totale, la vérification est ignorée de leur côté. Veuillez vérifier que le nom d'utilisateur est 100% correct avant d'envoyer.
+            icon: Icône d'avertissement
           make:
             confirm: Are you sure you want to give %{user} admin status?
             title: Make admin
             text: Make admin
           members: Organization Members
+          active_members: Membres actifs
+          pending_members: Invitations en attente
+          pending: En attente
+          invite_member: Inviter un membre
+          invite_member_description: Invitez un utilisateur à rejoindre votre organisation par son nom d'utilisateur. Il recevra un e-mail d'invitation.
+          username_label: Nom d'utilisateur
+          username_placeholder: "Entrez le nom d'utilisateur (ex: johndoe)"
+          username_description: Entrez le nom d'utilisateur de l'utilisateur que vous souhaitez inviter (sans le symbole @).
+          username_description_fully_trusted: Entrez le nom d'utilisateur de l'utilisateur que vous souhaitez ajouter (sans le symbole @). Il recevra un e-mail de notification et sera ajouté immédiatement sans vérification.
+          invite_button: Envoyer l'invitation
+          add_button: Ajouter un membre
+          cancel_invite:
+            title: Annuler l'invitation
+            text: Annuler l'invitation
           remove:
             confirm: Are you sure you want remove %{user} from the organization?
             title: Remove from org

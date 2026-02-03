@@ -13,6 +13,7 @@ module Users
       delete_articles
       delete_podcasts
       delete_user_activity
+      cancel_stripe_subscriptions
       user.remove_from_mailchimp_newsletters
       EdgeCache::Bust.call("/#{user.username}")
       Users::SuspendedUsername.create_from_user(user) if user.spam_or_suspended?
@@ -38,6 +39,10 @@ module Users
 
     def delete_podcasts
       DeletePodcasts.call(user)
+    end
+
+    def cancel_stripe_subscriptions
+      CancelStripeSubscriptions.call(user)
     end
   end
 end

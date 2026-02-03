@@ -94,3 +94,10 @@ en:
         reason: 'Reason for action:'
         remove_html: Moderators removed the <strong>%{tag}</strong> tag from your post %{title}. Certain tags have special submission guidelines, and mods need to adjust tags to best fit the community.
         support_html: "Thanks for being part of %{community}! %{email} 🤗"
+      subforem:
+        heading: "Your post was moved 👋"
+        change_html: Your post %{title} was automatically moved from %{old_community_link} to %{new_community_link}.
+        reason: 'Reason for move:'
+        misc_explanation: This is our open discussion space where all types of content are welcome for general conversation and community interaction that may not fit into our other communities.
+        explanation_html: This helps ensure your content reaches the most appropriate audience within our network and maintains the quality of each community.
+        support_html: "Thanks for being part of %{community}! %{email} 🤗"

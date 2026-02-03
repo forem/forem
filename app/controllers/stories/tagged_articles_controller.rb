@@ -39,7 +39,7 @@ module Stories
                                   tag.articles.published.from_subforem.approved.count
                                 else
                                   Rails.cache.fetch("#{tag.cache_key}/article-cached-tagged-count",
-                                                    expires_in: 2.hours) do
+                                                    expires_in: 72.hours) do
                                     tagged_count(tag: tag)
                                   end
                                 end
@@ -58,7 +58,7 @@ module Stories
 
       # Now, apply the filter.
       stories = stories_by_timeframe(stories: stories)
-      stories = stories.full_posts.includes(:subforem).from_subforem.limited_column_select
+      stories = stories.full_posts.from_subforem
       @stories = stories.decorate
     end
 
@@ -83,7 +83,7 @@ module Stories
       if Timeframe::FILTER_TIMEFRAMES.include?(params[:timeframe])
         stories.where("published_at > ?", Timeframe.datetime(params[:timeframe]))
           .where(score: -20..)
-          .order(public_reactions_count: :desc)
+          .order(score: :desc)
       elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
         stories.where(score: -20..).order(published_at: :desc)
       else

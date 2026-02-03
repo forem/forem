@@ -459,3 +459,9 @@ fr:
         options:
           delete: Delete organization
           icon: Options
+        fully_trusted:
+          label: Organisation de confiance totale
+          description: Lorsqu'elle est activée, cette organisation peut ajouter des membres directement sans nécessiter de confirmation. Les membres recevront un e-mail de notification au lieu d'une invitation.
+          enable: Activer la confiance totale
+          disable: Désactiver la confiance totale
+          enabled_notice: Cette organisation est de confiance totale. Les membres peuvent être ajoutés directement sans confirmation.

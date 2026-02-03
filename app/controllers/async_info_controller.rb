@@ -6,6 +6,7 @@ class AsyncInfoController < ApplicationController
   def base_data
     flash.discard(:notice)
     if user_signed_in? && verify_state_of_user_session?
+      current_user.update_presence!
       @user = current_user.decorate
       respond_to do |format|
         format.json do
@@ -30,6 +31,8 @@ class AsyncInfoController < ApplicationController
   end
 
   def broadcast_data
+    return if ApplicationConfig["DISABLE_BROADCASTS"] == "yes"
+
     broadcast = Broadcast.announcement.active.first.presence
     return unless broadcast
 

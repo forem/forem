@@ -3,25 +3,26 @@
   <head>
     <% if user_signed_in? && current_page?(root_path) %>
       <% if params[:feed_type] == "discover" || params[:feed_type].blank? %>
-        <link rel="prefetch" href="/stories/feed/?page=1&type_of=discover">
+        <link rel="preload" href="/stories/feed/?page=1&type_of=discover" as="fetch" crossorigin="same-origin">
       <% elsif params[:feed_type] == "following" %>
-        <link rel="prefetch" href="/stories/feed/?page=1&type_of=following">
+        <link rel="preload" href="/stories/feed/?page=1&type_of=following" as="fetch" crossorigin="same-origin">
       <% end %>
-      <link rel="prefetch" href="/<%= ENV.fetch("BILLBOARD_URL_COMPONENT", "bb") %>/feed_first">
-      <link rel="prefetch" href="/<%= ENV.fetch("BILLBOARD_URL_COMPONENT", "bb") %>/feed_second">
-      <link rel="prefetch" href="/<%= ENV.fetch("BILLBOARD_URL_COMPONENT", "bb") %>/feed_third">
-      <link rel="prefetch" href="/sidebars/home">
+      <link rel="preload" href="/<%= ENV.fetch("BILLBOARD_URL_COMPONENT", "bb") %>/feed_first" as="fetch" crossorigin="same-origin">
+      <link rel="preload" href="/<%= ENV.fetch("BILLBOARD_URL_COMPONENT", "bb") %>/feed_second" as="fetch" crossorigin="same-origin">
+      <link rel="preload" href="/<%= ENV.fetch("BILLBOARD_URL_COMPONENT", "bb") %>/feed_third" as="fetch" crossorigin="same-origin">
+      <link rel="preload" href="/sidebars/home" as="fetch" crossorigin="same-origin">
     <% end %>
     <meta charset="utf-8">
     <% title = yield(:title) %>
     <title><%= title || community_name.to_s %></title>
+    <%= yield(:page_meta) %>
     <% unless internal_navigation? %>
       <meta name="last-updated" content="<%= Time.current %>">
       <meta name="user-signed-in" content="<%= user_signed_in? %>">
       <meta name="head-cached-at" content="<%= Time.current.to_i %>">
       <meta name="environment" content="<%= Rails.env %>">
       <%= render "layouts/styles", qualifier: "main" %>
-      <%= javascript_include_tag "base", "application", "baseInitializers", "baseTracking", defer: true %>
+      <%= javascript_include_tag "base", "application", "baseInitializers", "baseTracking", "followButtons", defer: true %>
 
       <%# This Rails.env.test? introduces some test-specific behavior, but that is much easier to verify without the specific loading code. We should ensure search still works as expected manually as well. %>
       <% if controller_name == "articles_search" || Rails.env.test? %>
@@ -35,7 +36,6 @@
       <% if user_signed_in? %>
         <%= javascript_include_tag "onboardingRedirectCheck", "contentDisplayPolicy", defer: true %>
       <% end %>
-      <%= yield(:page_meta) %>
       <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
       <%= favicon_link_tag Images::Optimizer.call(Settings::General.favicon_url, width: 32) %>
       <link rel="apple-touch-icon" href="<%= optimized_image_url(Settings::General.logo_png, width: 180, fetch_format: "png") %>">
@@ -57,7 +57,7 @@
     <%= Settings::UserExperience.head_content.html_safe %>
   </head>
   <% unless internal_navigation? %>
-    <% cache(release_adjusted_cache_key("top-html-and-config--#{user_signed_in?}--#{@article.present?}-#{request.host}")) do %>
+    <% cache(release_adjusted_cache_key("top-html-and-config--#{user_signed_in?}--#{@article.present?}-#{request.host}-#{I18n.locale}-#{@article&.subforem_id}")) do %>
       <body
         class="<%= Settings::UserExperience.default_font.tr("_", "-") %>-article-body default-header"
         data-user-status="<%= j(user_logged_in_status) %>"
@@ -65,6 +65,7 @@
         <% if RequestStore.store[:subforem_id].present? %>
           data-subforem-id="<%= j(RequestStore.store[:subforem_id]) %>"
         <% end %>
+        data-side-nav-visible="<%= Subforem.cached_discoverable_ids.size > 1 %>"
         data-community-name="<%= j(community_name) %>"
         data-subscription-icon="<%= asset_path("subscription-icon.png") %>"
         data-locale="<%= j(I18n.locale) %>"
@@ -86,6 +87,18 @@
           if (navigator.userAgent === 'ForemWebView/1' || window.frameElement) {
             document.body.classList.add("hidden-shell");
           }
+          <%# This is for rolling out or rolling back the app sidebar. %>
+          <%# Use this format to make JS compatible: YYYY-MM-DDTHH:MM:SS (e.g. 2023-12-31T23:59:59) %>
+          <% if ENV["MAKE_SIDEBAR_INVISIBLE_DATE"].present? %>
+            if (new Date() > new Date("<%= ENV["MAKE_SIDEBAR_INVISIBLE_DATE"] %>")) {
+              document.body.dataset.sideNavVisible = "false";
+            } 
+          <% end %>
+          <% if ENV["MAKE_SIDEBAR_VISIBLE_DATE"].present? %>
+            if (new Date() > new Date("<%= ENV["MAKE_SIDEBAR_VISIBLE_DATE"] %>")) {
+              document.body.dataset.sideNavVisible = "true";
+            } 
+          <% end %>
         </script>
 
         <%= render "layouts/styles", qualifier: "secondary" %>
@@ -104,6 +117,11 @@
         <div id="audiocontent" data-podcast="">
           <%= yield(:audio) %>
         </div>
+        <% cache("main-side-bar-#{user_signed_in?}", expires_in: 10.minutes) do %>
+          <% if Subforem.cached_discoverable_ids.any? %>
+            <%= render "layouts/main_side_bar" %>
+          <% end %>
+        <% end %>
         <%= render "layouts/top_bar" %>
         <div id="active-broadcast" class="broadcast-wrapper"></div>
     <% end %>
@@ -130,6 +148,7 @@
     <% end %>
     <%= yield %>
     <div id="runtime-banner-container"></div>
+    <div id="i18n-translations" data-translations="<%= i18n_translations_for_javascript.to_json %>"></div>
   </div>
 </div>
 <% unless internal_navigation? %>
@@ -138,12 +157,16 @@
     <%= render "layouts/signup_modal" unless user_signed_in? %>
     <div id="cookie-consent"></div>
   <% end %>
-  <div id="i18n-translations" data-translations="<%= { I18n.locale.to_sym => { core: I18n::JS.translations[I18n.locale.to_sym][:core] } }.to_json %>"></div>
   <%= render "articles/reaction_category_resources" %>
   <% if RequestStore.store[:subforem_id].present? %>
     <%= render "layouts/bottom_scripts"  %>
   <% end %>
   <%= Settings::UserExperience.bottom_of_body_content.html_safe %>
+  
+  <% if user_signed_in? && ArticlePolicy.is_root_subforem? %>
+    <%= render "shared/subforem_selection_modal" %>
+  <% end %>
+  
   </body>
   </html>
 <% end %>

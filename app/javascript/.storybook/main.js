@@ -8,11 +8,13 @@ module.exports = {
   core: {
     builder: 'webpack5',
   },
-  // https://github.com/storybookjs/storybook/blob/next/MIGRATION.md#correct-globs-in-mainjs
+  framework: {
+    name: '@storybook/preact-webpack5',
+    options: {},
+  },
   stories: ['../**/__stories__/*.stories.@(mdx|jsx)'],
   addons: [
     '@storybook/addon-controls',
-    '@storybook/addon-knobs',
     '@storybook/addon-actions',
     '@storybook/addon-a11y',
     '@storybook/addon-backgrounds',
@@ -21,8 +23,10 @@ module.exports = {
     '@whitespace/storybook-addon-html',
     {
       name: '@storybook/addon-storysource',
-      loaderOptions: {
-        prettierConfig,
+      options: {
+        loaderOptions: {
+          prettierConfig,
+        },
       },
     },
     {
@@ -30,7 +34,6 @@ module.exports = {
       options: {
         configureJSX: true,
         babelOptions: {},
-        sourceLoaderOptions: null,
       },
     },
   ],
