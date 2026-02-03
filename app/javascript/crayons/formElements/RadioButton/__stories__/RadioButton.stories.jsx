@@ -1,30 +1,41 @@
 import { h } from 'preact';
-import { withKnobs, text, boolean } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import notes from '../../form-elements.mdx';
 import { RadioButton } from '@crayons';
 
 export default {
   title: 'Components/Form Elements/Radio Button',
-  decorators: [withKnobs],
+  component: RadioButton,
   parameters: { notes },
+  argTypes: {
+    checked: {
+      control: { type: 'boolean' },
+    },
+    className: {
+      control: { type: 'text' },
+    },
+  },
+  args: {
+    checked: false,
+    className: '',
+  },
 };
 
-export const Default = () => (
+export const Default = (args) => (
   <RadioButton
     name="some-radio-button"
-    checked={boolean('checked', false)}
+    checked={args.checked}
     onClick={action('clicked')}
   />
 );
 
 Default.storyName = 'default';
 
-export const AdditionalCssClassName = () => (
+export const AdditionalCssClassName = (args) => (
   <RadioButton
     name="some-radio-button"
-    checked={boolean('checked', false)}
-    className={text('className', 'mr-10')}
+    checked={args.checked}
+    className="mr-10"
     onClick={action('clicked')}
   />
 );
