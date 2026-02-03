@@ -1,5 +1,4 @@
 import { h } from 'preact';
-import { withKnobs, object, text, boolean } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import { Article } from '..';
 import {
@@ -20,93 +19,112 @@ const commonProps = {
 export default {
   title: 'App Components/Article/Standard',
   component: Article,
-  decorators: [withKnobs],
+  argTypes: {
+    isBookmarked: {
+      control: { type: 'boolean' },
+    },
+    isFeatured: {
+      control: { type: 'boolean' },
+    },
+    currentTag: {
+      control: { type: 'text' },
+    },
+    article: {
+      control: { type: 'object' },
+    },
+  },
+  args: {
+    isBookmarked: false,
+    isFeatured: false,
+    currentTag: 'javascript',
+    article: article,
+  },
 };
 
-export const DefaultArticle = () => (
+export const DefaultArticle = (args) => (
   <Article
     {...commonProps}
-    isBookmarked={boolean('isBookmarked', false)}
-    article={object('article', article)}
-    currentTag={text('currentTag', 'javascript')}
+    isBookmarked={args.isBookmarked}
+    article={args.article}
+    currentTag={args.currentTag}
   />
 );
 
 DefaultArticle.storyName = 'default';
 
-export const IsFeatured = () => (
+export const IsFeatured = (args) => (
   <Article
     {...commonProps}
-    isBookmarked={boolean('isBookmarked', false)}
-    isFeatured={boolean('isFeatured', true)}
-    article={object('article', featuredArticle)}
-    currentTag={text('currentTag', 'javascript')}
+    isBookmarked={args.isBookmarked}
+    isFeatured={true}
+    article={featuredArticle}
+    currentTag={args.currentTag}
   />
 );
 
 IsFeatured.storyName = 'is featured';
 
-export const WithOrganization = () => (
+export const WithOrganization = (args) => (
   <Article
     {...commonProps}
-    isBookmarked={boolean('isBookmarked', false)}
-    article={object('article', articleWithOrganization)}
-    currentTag={text('currentTag', 'javascript')}
+    isBookmarked={args.isBookmarked}
+    article={articleWithOrganization}
+    currentTag={args.currentTag}
   />
 );
 
 WithOrganization.storyName = 'with organization';
 
-export const WithFlareTag = () => (
+export const WithFlareTag = (args) => (
   <Article
     {...commonProps}
-    isBookmarked={boolean('isBookmarked', false)}
-    article={object('article', article)}
-    currentTag={text('currentTag')}
+    isBookmarked={args.isBookmarked}
+    article={args.article}
+    currentTag={args.currentTag}
   />
 );
 
 WithFlareTag.storyName = 'with flare tag';
 
-export const WithSnippetResult = () => (
+export const WithSnippetResult = (args) => (
   <Article
     {...commonProps}
-    isBookmarked={boolean('isBookmarked', false)}
-    article={object('article', articleWithSnippetResult)}
-    currentTag={text('currentTag')}
+    isBookmarked={args.isBookmarked}
+    article={articleWithSnippetResult}
+    currentTag={args.currentTag}
   />
 );
 
 WithSnippetResult.storyName = 'with snippet result';
 
-export const WithReactions = () => (
+export const WithReactions = (args) => (
   <Article
     {...commonProps}
-    isBookmarked={boolean('isBookmarked', false)}
-    article={object('article', articleWithReactions)}
-    currentTag={text('currentTag')}
+    isBookmarked={args.isBookmarked}
+    article={articleWithReactions}
+    currentTag={args.currentTag}
   />
 );
 
 WithReactions.storyName = 'with reactions';
 
-export const WithComments = () => (
+export const WithComments = (args) => (
   <Article
     {...commonProps}
-    isBookmarked={boolean('isBookmarked', false)}
-    article={object('article', articleWithComments)}
-    currentTag={text('currentTag')}
+    isBookmarked={args.isBookmarked}
+    article={articleWithComments}
+    currentTag={args.currentTag}
   />
 );
 
 WithComments.storyName = 'with comments';
 
-export const OnReadingList = () => (
+export const OnReadingList = (args) => (
   <Article
     {...commonProps}
-    isBookmarked={boolean('isBookmarked', true)}
-    article={object('article', article)}
-    currentTag={text('currentTag')}
+    isBookmarked={true}
+    article={args.article}
+    currentTag={args.currentTag}
   />
 );
 

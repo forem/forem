@@ -1,6 +1,5 @@
 import { h } from 'preact';
 import { action } from '@storybook/addon-actions';
-import { withKnobs, object, text } from '@storybook/addon-knobs';
 import { Article } from '..';
 import {
   assetPath,
@@ -20,15 +19,31 @@ const commonProps = {
 
 export default {
   title: 'App Components/Article/User',
-  decorators: [withKnobs],
+  component: Article,
+  argTypes: {
+    commentsIcon: {
+      control: { type: 'text' },
+    },
+    videoIcon: {
+      control: { type: 'text' },
+    },
+    article: {
+      control: { type: 'object' },
+    },
+  },
+  args: {
+    commentsIcon: ICONS.COMMENTS_ICON,
+    videoIcon: ICONS.VIDEO_ICON,
+    article: userArticle,
+  },
 };
 
-export const UserArticle = () => (
+export const UserArticle = (args) => (
   <Article
     {...commonProps}
-    commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-    videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
-    article={object('article', userArticle)}
+    commentsIcon={args.commentsIcon}
+    videoIcon={args.videoIcon}
+    article={args.article}
   />
 );
 
