@@ -1,110 +1,198 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <title>The page you were looking for doesn't exist (404)</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <style>
-    .not-found-page {
-      height: 100vh;
-      min-height: 500px;
-    }
-    .tv__outer {
-      display: table;
-      position: absolute;
-      height: 98%;
-      width: 98%;
-    }
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>404: Page Not Found</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #0f172a;
+        --ink-soft: #334155;
+        --accent: #4f46e5;
+        --accent-2: #22c55e;
+        --accent-3: #f97316;
+        --paper: #f8fafc;
+        --card: #ffffff;
+        --shadow: 0 20px 50px rgba(15, 23, 42, 0.15);
+      }
 
-    .tv__middle {
-      display: table-cell;
-      vertical-align: middle;
-      position: relative;
-    }
+      * {
+        box-sizing: border-box;
+      }
 
-    .tv__inner {
-      margin-left: auto;
-      margin-right: auto;
-      display: table;
-    }
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+          Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(1200px 600px at 10% 10%, rgba(79, 70, 229, 0.15), transparent 60%),
+          radial-gradient(900px 500px at 90% 20%, rgba(34, 197, 94, 0.12), transparent 55%),
+          radial-gradient(700px 400px at 50% 90%, rgba(249, 115, 22, 0.12), transparent 60%),
+          var(--paper);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
 
-    .tv__inner--special {
-      position: absolute;
-      left: 0;
-      right: 0;
-      margin: auto;
-      -webkit-animation-name: fade;
-      -webkit-animation-iteration-count: infinite;
-      -webkit-animation-duration: 2s;
-      animation-name: fade;
-      animation-iteration-count: infinite;
-      animation-duration: 2s;
-    }
+      .card {
+        background: var(--card);
+        border-radius: 24px;
+        box-shadow: var(--shadow);
+        padding: 32px;
+        max-width: 720px;
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+      }
 
-    .tv__inner--text {
-      margin-left: auto;
-      margin-right: auto;
-      display: table;
-      font-size: 22px;
-      font-weight: 500;
-    }
+      .card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(120deg, rgba(79, 70, 229, 0.08), transparent 40%);
+        pointer-events: none;
+      }
 
-    .tv__inner--special, .tv__inner {
-      max-width: 85%;
-      width: 300px;
-      border: 25px solid rgb(54, 55, 124);
-      border-radius: 36px;
-    }
-    .tv__inner--text {
-      text-align: center;
-      max-width: 90%;
-    }
-    .tv__inner--text::before {
-      content: "";
-      display: block;
-      height: 18px;
-    }
-    .tv__inner--text a::before {
-      content: "";
-      display: block;
-      height: 26px;
-    }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #eef2ff;
+        color: #3730a3;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
 
-    @-webkit-keyframes fade {
-      0% {opacity: 1;}
-      10% {opacity: 1;}
-      20% {opacity: 0;}
-      25% {opacity: 0;}
-      28% {opacity: 0;}
-      30% {opacity: 0;}
-      33% {opacity: 1;}
-      45% {opacity: 1;}
-      53% {opacity: 0;}
-      100% {opacity: 0;}
-    }
+      .headline {
+        font-size: clamp(32px, 5vw, 44px);
+        margin: 18px 0 8px;
+      }
 
-    @keyframes fade {
-      0% {opacity: 1;}
-      10% {opacity: 1;}
-      20% {opacity: 0;}
-      25% {opacity: 0;}
-      28% {opacity: 0;}
-      30% {opacity: 0;}
-      33% {opacity: 1;}
-      45% {opacity: 1;}
-      53% {opacity: 0;}
-      100% {opacity: 0;}
-    }
-  </style>
-</head>
+      .subhead {
+        color: var(--ink-soft);
+        font-size: 18px;
+        line-height: 1.6;
+        margin: 0 0 24px;
+      }
 
-<body>
-  <div class="not-found-page base-background-color">
-    <div class="tv__outer">
-        <div class="tv__middle">
-          <img class="tv__inner" src="https://i.imgur.com/AdvTDlI.jpg" alt="404 not found">
-          <p class="tv__inner--text">This page does not exist<a href="/">Return to Home Page</a></p>
-        </div>
+      .terminal {
+        background: #0f172a;
+        color: #e2e8f0;
+        border-radius: 16px;
+        padding: 18px 20px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+        font-size: 14px;
+        line-height: 1.6;
+        margin-bottom: 24px;
+        position: relative;
+      }
+
+      .terminal::before {
+        content: "● ● ●";
+        color: #64748b;
+        position: absolute;
+        top: 8px;
+        right: 16px;
+        font-size: 12px;
+        letter-spacing: 2px;
+      }
+
+      .terminal strong {
+        color: #f8fafc;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .btn {
+        appearance: none;
+        border: 0;
+        padding: 12px 18px;
+        border-radius: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: transform 120ms ease, box-shadow 120ms ease;
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: white;
+        box-shadow: 0 12px 25px rgba(79, 70, 229, 0.25);
+      }
+
+      .btn-secondary {
+        background: #e2e8f0;
+        color: #1e293b;
+      }
+
+      .btn:hover {
+        transform: translateY(-1px);
+      }
+
+      .text-link {
+        color: var(--accent);
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 20px;
+      }
+
+      .chip {
+        background: #f1f5f9;
+        color: #475569;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+      }
+
+      .footer {
+        margin-top: 26px;
+        font-size: 13px;
+        color: #64748b;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main class="card" role="main">
+      <span class="badge">404 / page not found</span>
+      <h1 class="headline">Looks like this page doesn't exist or may not be published.</h1>
+      <p class="subhead">
+        We searched the feed, checked the tags, even refreshed the cache. This page is still missing.
+        If you were aiming for some sweet community content, you might be one URL away.
+      </p>
+
+      <div class="terminal" aria-hidden="true">
+        <strong>$</strong> find /pages/your-requested-page<br>
+        <strong>→</strong> 0 results found<br>
+        <strong>Hint:</strong> Try the homepage or explore trending tags.
       </div>
-  </div>
-</body>
+
+      <div class="actions">
+        <a class="btn btn-primary" href="/">Back to Home</a>
+        <a class="btn btn-secondary" href="/tags">Browse Tags</a>
+      </div>
+
+      <div class="footer">
+        If you think this is a bug, <a class="text-link" href="/contact">tell us what you were looking for</a> and we'll investigate.
+      </div>
+    </main>
+  </body>
 </html>
