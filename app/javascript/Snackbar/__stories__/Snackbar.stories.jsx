@@ -1,14 +1,28 @@
 import { h } from 'preact';
 import { action } from '@storybook/addon-actions';
 import faker from '@faker-js/faker';
-import { number } from '@storybook/addon-knobs';
 import { Snackbar, addSnackbarItem } from '..';
 
 export default {
   title: 'App Components/Snackbar/Snackbar',
+  component: Snackbar,
+  argTypes: {
+    lifespan: {
+      control: { type: 'number' },
+      description: 'Lifespan of snackbar items in seconds',
+    },
+    pollingTime: {
+      control: { type: 'number' },
+      description: 'Polling time in milliseconds',
+    },
+  },
+  args: {
+    lifespan: 5,
+    pollingTime: 300,
+  },
 };
 
-export const SimulateAddingSnackbarItems = () => {
+export const SimulateAddingSnackbarItems = (args) => {
   addSnackbarItem({
     message: faker.hacker.phrase(),
     actions: [
@@ -39,8 +53,8 @@ export const SimulateAddingSnackbarItems = () => {
 
   return (
     <Snackbar
-      lifespan={number('lifespan', 5)}
-      pollingTime={number('pollingTime', 300)}
+      lifespan={args.lifespan}
+      pollingTime={args.pollingTime}
     />
   );
 };
