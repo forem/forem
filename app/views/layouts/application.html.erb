@@ -87,6 +87,18 @@
           if (navigator.userAgent === 'ForemWebView/1' || window.frameElement) {
             document.body.classList.add("hidden-shell");
           }
+          <%# This is for rolling out or rolling back the app sidebar. %>
+          <%# Use this format to make JS compatible: YYYY-MM-DDTHH:MM:SS (e.g. 2023-12-31T23:59:59) %>
+          <% if ENV["MAKE_SIDEBAR_INVISIBLE_DATE"].present? %>
+            if (new Date() > new Date("<%= ENV["MAKE_SIDEBAR_INVISIBLE_DATE"] %>")) {
+              document.body.dataset.sideNavVisible = "false";
+            } 
+          <% end %>
+          <% if ENV["MAKE_SIDEBAR_VISIBLE_DATE"].present? %>
+            if (new Date() > new Date("<%= ENV["MAKE_SIDEBAR_VISIBLE_DATE"] %>")) {
+              document.body.dataset.sideNavVisible = "true";
+            } 
+          <% end %>
         </script>
 
         <%= render "layouts/styles", qualifier: "secondary" %>
