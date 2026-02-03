@@ -6599,15 +6599,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress-multi-reporters@npm:^1.6.4":
-  version: 1.6.4
-  resolution: "cypress-multi-reporters@npm:1.6.4"
+"cypress-multi-reporters@npm:^2.0.5":
+  version: 2.0.5
+  resolution: "cypress-multi-reporters@npm:2.0.5"
   dependencies:
-    debug: "npm:^4.3.4"
+    debug: "npm:^4.4.0"
     lodash: "npm:^4.17.21"
+    semver: "npm:^7.6.3"
   peerDependencies:
     mocha: ">=3.1.2"
-  checksum: 10c0/5872176582068d15273412090afc0a504920c34aadb5f0d2b9afcbbdc6c94cd16f97661751c1f7d177b915ccafc13fdc691908ebfc1c058e09728dceea9e8599
+  checksum: 10c0/92512daee7f552562854be98d59fbad7eeaf4b3770d4ddeed0e31250df5bd35f7c7a8d720634428e3ea23de73015943bb7862dba0e9bafe43c3185497f0d331c
   languageName: node
   linkType: hard
 
@@ -6795,6 +6796,18 @@ __metadata:
   dependencies:
     ms: "npm:^2.1.1"
   checksum: 10c0/37d96ae42cbc71c14844d2ae3ba55adf462ec89fd3a999459dec3833944cd999af6007ff29c780f1c61153bcaaf2c842d1e4ce1ec621e4fc4923244942e4a02a
+  languageName: node
+  linkType: hard
+
+"debug@npm:^4.4.0":
+  version: 4.4.3
+  resolution: "debug@npm:4.4.3"
+  dependencies:
+    ms: "npm:^2.1.3"
+  peerDependenciesMeta:
+    supports-color:
+      optional: true
+  checksum: 10c0/d79136ec6c83ecbefd0f6a5593da6a9c91ec4d7ddc4b54c883d6e71ec9accb5f67a1a5e96d00a328196b5b5c86d365e98d8a3a70856aaf16b4e7b1985e67f5a6
   languageName: node
   linkType: hard
 
@@ -7023,7 +7036,7 @@ __metadata:
     cypress: "npm:^13.7.2"
     cypress-failed-log: "npm:^2.10.0"
     cypress-file-upload: "npm:^5.0.8"
-    cypress-multi-reporters: "npm:^1.6.4"
+    cypress-multi-reporters: "npm:^2.0.5"
     cypress-pipe: "npm:^2.0.0"
     esbuild: "npm:^0.19.12"
     esbuild-plugin-stimulus: "npm:^0.1.5"
@@ -12317,7 +12330,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ms@npm:^2.1.1":
+"ms@npm:^2.1.1, ms@npm:^2.1.3":
   version: 2.1.3
   resolution: "ms@npm:2.1.3"
   checksum: 10c0/d924b57e7312b3b63ad21fc5b3dc0af5e78d61a1fc7cfb5457edaf26326bf62be5307cc87ffb6862ef1c2b33b0233cdb5d4f01c4c958cc0d660948b65a287a48
@@ -14927,7 +14940,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.5.4, semver@npm:^7.6.2":
+"semver@npm:^7.5.4, semver@npm:^7.6.2, semver@npm:^7.6.3":
   version: 7.7.3
   resolution: "semver@npm:7.7.3"
   bin:

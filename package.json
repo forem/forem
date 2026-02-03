@@ -71,7 +71,7 @@
     "cypress": "^13.7.2",
     "cypress-failed-log": "^2.10.0",
     "cypress-file-upload": "^5.0.8",
-    "cypress-multi-reporters": "^1.6.4",
+    "cypress-multi-reporters": "^2.0.5",
     "cypress-pipe": "^2.0.0",
     "eslint": "^8.57.0",
     "eslint-config-preact": "^2.0.0",
