@@ -176,5 +176,13 @@ RSpec.describe Users::Setting do
       expect(SegmentedUserRefreshWorker).not_to have_received(:perform_async)
     end
   end
+
+  describe "cache busting" do
+    it "enqueues a profile details cache bust when email visibility changes" do
+      sidekiq_assert_enqueued_with(job: Users::BustProfileDetailsCacheWorker, args: [user.id]) do
+        setting.update!(display_email_on_profile: !setting.display_email_on_profile)
+      end
+    end
+  end
 end
 # rubocop:enable Layout/LineLength

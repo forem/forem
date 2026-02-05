@@ -17,6 +17,7 @@ module Api
                 relation.find(params[:id])
               end
       not_found unless @user.registered
+      set_surrogate_key_header(*@user.profile_cache_keys)
     end
 
     def me; end

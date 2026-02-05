@@ -35,6 +35,7 @@ module Users
 
     before_update :update_content_preferences_updated_at_if_changed
     after_update :refresh_auto_audience_segments
+    after_commit :bust_user_profile_details_cache, on: :update, if: :display_email_setting_changed_for_cache?
 
     def resolved_font_name
       config_font.gsub("default", Settings::UserExperience.default_font)
@@ -60,6 +61,14 @@ module Users
       return unless content_preferences_input.present? && content_preferences_input_changed?
 
       self.content_preferences_updated_at = Time.current
+    end
+
+    def bust_user_profile_details_cache
+      Users::BustProfileDetailsCacheWorker.perform_async(user_id)
+    end
+
+    def display_email_setting_changed_for_cache?
+      saved_change_to_display_email_on_profile?
     end
   end
 end

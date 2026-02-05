@@ -4,6 +4,8 @@
 class Profile < ApplicationRecord
   belongs_to :user
 
+  after_commit :bust_user_profile_details_cache, on: :update, if: :profile_details_changed_for_cache?
+
   validates :user_id, uniqueness: true
   validates :location, :website_url, length: { maximum: 100 }
   validates :website_url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
@@ -58,5 +60,19 @@ class Profile < ApplicationRecord
     return true if match && match[:attribute_name].in?(self.class.attributes)
 
     super
+  end
+
+  private
+
+  def bust_user_profile_details_cache
+    Users::BustProfileDetailsCacheWorker.perform_async(user_id)
+  end
+
+  def profile_details_changed_for_cache?
+    saved_change_to_summary? ||
+      saved_change_to_location? ||
+      saved_change_to_website_url? ||
+      saved_change_to_social_image? ||
+      saved_change_to_data?
   end
 end

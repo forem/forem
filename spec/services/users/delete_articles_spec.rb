@@ -37,7 +37,7 @@ RSpec.describe Users::DeleteArticles, type: :service do
 
     it "busts cache" do
       described_class.call(user)
-      expect(EdgeCache::BustComment).to have_received(:call).with(article).twice
+      expect(EdgeCache::BustComment).to have_received(:call).with(instance_of(Comment)).twice
       expect(EdgeCache::BustUser).to have_received(:call).with(user2).at_least(:once)
       expect(EdgeCache::BustArticle).to have_received(:call).with(article)
     end

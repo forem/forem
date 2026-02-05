@@ -7,7 +7,7 @@ module Users
 
       user.comments.find_each do |comment|
         comment.reactions.delete_all
-        EdgeCache::BustComment.call(comment.commentable)
+        EdgeCache::BustComment.call(comment)
         comment.remove_notifications
         comment.delete
       end

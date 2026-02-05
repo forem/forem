@@ -246,7 +246,7 @@ class StoriesController < ApplicationController
     @profile = @user&.profile&.decorate || Profile.create(user: @user)&.decorate
     @is_user_flagged = Reaction.where(user_id: session_current_user_id, reactable: @user).any?
 
-    set_surrogate_key_header @user.record_key
+    set_surrogate_key_header(*@user.profile_cache_keys)
     set_user_json_ld
 
     render template: "users/show"
@@ -293,7 +293,8 @@ class StoriesController < ApplicationController
 
   def handle_article_show
     assign_article_show_variables
-    set_surrogate_key_header @article.record_key
+    user_keys = @article.user&.profile_identity_cache_keys
+    set_surrogate_key_header(*[@article.record_key, *user_keys].compact)
     redirect_if_appropriate
     return if performed?
 
