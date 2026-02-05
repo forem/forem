@@ -13,6 +13,7 @@
         <% if @user.access_locked? %>
           <li><%= link_to t("views.admin.users.profile.locked.unlock"), unlock_access_admin_user_path(@user), method: :patch, class: "c-link c-link--block" %></li>
         <% end %>
+        <li><button type="button" class="c-btn w-100 align-left" data-modal-title="<%= t("views.admin.users.edit_profile.heading", user: @user.name) %>" data-modal-size="medium" data-modal-content-selector="#edit-profile"><%= t("views.admin.users.profile.options.edit_profile") %></button></li>
         <li><button type="button" class="c-btn w-100 align-left" data-modal-title="<%= t("views.admin.users.update_email.heading", user: @user.name) %>" data-modal-size="medium" data-modal-content-selector="#update-email"><%= t("views.admin.users.profile.options.update_email") %></button></li>
         <li><button type="button" class="c-btn w-100 align-left" data-modal-title="<%= t("views.admin.users.export.heading", user: @user.name) %>" data-modal-size="small" data-modal-content-selector="#export-data"><%= t("views.admin.users.profile.options.export") %></button></li>
         <li><button type="button" class="c-btn w-100 align-left" data-modal-title="<%= t("views.admin.users.merge.heading") %>" data-modal-size="small" data-modal-content-selector="#merge-accounts"><%= t("views.admin.users.profile.options.merge") %></button></li>
@@ -51,6 +52,7 @@
 <%# These are contents for modals %>
 <div class="hidden">
   <%= render "admin/users/show/profile/actions/export" %>
+  <%= render "admin/users/show/profile/actions/edit_profile" %>
   <%= render "admin/users/show/profile/actions/update_email" %>
   <%= render "admin/users/show/profile/actions/merge" %>
   <%= render "admin/users/modals/unpublish_modal" %>
