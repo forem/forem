@@ -122,5 +122,11 @@ text of the printing and typesetting industry\r\nLorem Ipsum is simply dummy tex
         profile.update!(summary: "Updated bio")
       end
     end
+
+    it "enqueues a profile details cache bust when social image changes" do
+      sidekiq_assert_enqueued_with(job: Users::BustProfileDetailsCacheWorker, args: [user.id]) do
+        profile.update!(social_image: "https://example.com/social.png")
+      end
+    end
   end
 end
