@@ -176,7 +176,7 @@ RSpec.describe "Admin::Users" do
     end
 
     it "updates profile fields and records a note" do
-      user.create_profile!(
+      user.profile.update!(
         summary: "Old summary",
         location: "Old location",
         website_url: "https://old.example.com",
