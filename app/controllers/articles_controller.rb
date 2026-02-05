@@ -51,7 +51,11 @@ class ArticlesController < ApplicationController
 
     not_found unless @articles&.any?
 
-    user_keys = @user&.profile_identity_cache_keys
+    user_keys = if @user&.respond_to?(:profile_identity_cache_keys)
+                  @user.profile_identity_cache_keys
+                else
+                  Array.wrap(@user&.record_key)
+                end
     set_surrogate_key_header(*[user_keys, @articles.map(&:record_key)].flatten.compact)
     set_cache_control_headers(10.minutes.to_i, stale_while_revalidate: 30, stale_if_error: 1.day.to_i)
 
