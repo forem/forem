@@ -574,7 +574,7 @@ function checkIfNearBottomOfPage() {
 function initScrolling() {
   var elCheck = document.getElementById('index-container');
 
-  if (elCheck) {
+  if (elCheck && elCheck.dataset.disableInfiniteScroll !== 'true') {
     initScrolling.called = true;
     checkIfNearBottomOfPage();
   }

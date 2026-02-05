@@ -539,7 +539,7 @@ class Article < ApplicationRecord
     end
   end
 
-  def self.seo_boostable(tag = nil, time_ago = 18.days.ago)
+  def self.seo_boostable(tag = nil, time_ago = 18.days.ago, limit: 20)
     # Time ago sometimes returns this phrase instead of a date
     time_ago = 5.days.ago if time_ago == "latest"
 
@@ -550,7 +550,7 @@ class Article < ApplicationRecord
       .order(organic_page_views_past_month_count: :desc)
       .where("score > ?", 8)
       .where("published_at > ?", time_ago)
-      .limit(20)
+      .limit(limit)
 
     fields = %i[path title comments_count created_at]
     if tag

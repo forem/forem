@@ -50,6 +50,7 @@
     data-params="<%= params.merge(sort_by: "hotness_score", sort_direction: "desc").to_json(only: %i[tag username sort_by sort_direction]) %>" data-which=""
     data-tag="<%= @tag.name %>"
     data-feed="<%= params[:timeframe] || "base-feed" %>"
+    data-disable-infinite-scroll="<%= (!user_signed_in?).to_s %>"
     data-requires-approval="<%= @tag.requires_approval %>"
     data-articles-since="<%= Timeframe.datetime_iso8601(params[:timeframe]) %>">
   <%= render "stories/tagged_articles/sidebar" %>
@@ -128,9 +129,16 @@
         <%= render "stories/tagged_articles/main_feed" %>
       <% end %>
     </div>
+    <% if !user_signed_in? && @stories.present? %>
+      <div class="crayons-notice mt-4" aria-live="polite">
+        <%= t("views.stories.sort.signin_html", path: subforem_aware_sign_up_url(sign_up_path(signup_subforem: RequestStore.store[:subforem_id]))) %>
+      </div>
+    <% end %>
+    <% if user_signed_in? %>
     <div class="loading-articles" id="loading-articles">
       <%= t("core.loading") %>
     </div>
+    <% end %>
   </main>
   <%= render "stories/tagged_articles/sidebar_additional" %>
 </div>
