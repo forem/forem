@@ -13,7 +13,7 @@ module EdgeCache
       ## Legacy commentable busting — can be removed after Feb 7
       if commentable.is_a?(Article)
         cache_bust = EdgeCache::Bust.new
-        cache_bust.call("/#{commentable.slug}")
+        cache_bust.call(commentable.path.to_s) if commentable&.path.present?
       end
     end
 
