@@ -129,4 +129,24 @@ text of the printing and typesetting industry\r\nLorem Ipsum is simply dummy tex
       end
     end
   end
+
+  describe "profile spam checks" do
+    it "enqueues a profile spam check when website_url changes" do
+      sidekiq_assert_enqueued_with(job: Users::HandleProfileSpamWorker, args: [user.id]) do
+        profile.update!(website_url: "https://example.com")
+      end
+    end
+
+    it "enqueues a profile spam check when summary contains trigger terms" do
+      sidekiq_assert_enqueued_with(job: Users::HandleProfileSpamWorker, args: [user.id]) do
+        profile.update!(summary: "We can BUY LINKS for you")
+      end
+    end
+
+    it "does not enqueue a profile spam check when summary changes without trigger terms" do
+      sidekiq_assert_no_enqueued_jobs(only: Users::HandleProfileSpamWorker) do
+        profile.update!(summary: "Totally normal profile bio")
+      end
+    end
+  end
 end
