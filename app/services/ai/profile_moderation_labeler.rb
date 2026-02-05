@@ -43,8 +43,9 @@ module Ai
 
     def build_prompt
       # Use default subforem instructions/community description for context
-      community_description = Settings::RateLimit.internal_content_description_spec ||
-        Settings::Community.community_description
+      default_subforem_id = Subforem.cached_default_id
+      community_description = Settings::RateLimit.internal_content_description_spec(subforem_id: default_subforem_id) ||
+        Settings::Community.community_description(subforem_id: default_subforem_id)
 
       recent_articles = @user.articles.published.order(published_at: :desc).limit(2)
       articles_context = if recent_articles.any?
