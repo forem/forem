@@ -448,17 +448,6 @@ class Article < ApplicationRecord
       .cached_tagged_with(tag_name)
   }
 
-  private
-
-  def bust_cached_admin_welcome_thread
-    return unless published?
-    return unless cached_tag_list.to_s.match?(/(?:^|,)\s*welcome(?:\s*,|$)/)
-    return unless user&.admin?
-
-    self.class.bust_cached_admin_published_with("welcome", subforem_id: subforem_id)
-    self.class.bust_cached_admin_published_with("welcome")
-  end
-
   scope :active_help, lambda {
     stories = published.cached_tagged_with("help").order(created_at: :desc)
     minimum_score = Settings::UserExperience.home_feed_minimum_score
@@ -1610,6 +1599,15 @@ class Article < ApplicationRecord
   end
 
   private
+
+  def bust_cached_admin_welcome_thread
+    return unless published?
+    return unless cached_tag_list.to_s.match?(/(?:^|,)\s*welcome(?:\s*,|$)/)
+    return unless user&.admin?
+
+    self.class.bust_cached_admin_published_with("welcome", subforem_id: subforem_id)
+    self.class.bust_cached_admin_published_with("welcome")
+  end
 
   def should_add_urls_from_title?
     # Only add URLs from title for quickie posts (status type) that have a title with URLs
