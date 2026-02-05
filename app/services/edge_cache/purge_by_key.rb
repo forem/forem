@@ -16,13 +16,15 @@ module EdgeCache
           )
         end
       elsif fallback_paths.present?
-        EdgeCache::Bust.call(fallback_paths)
-      rescue StandardError => e
-        Honeybadger.notify(e)
-        ForemStatsClient.increment(
-          "edgecache_purge_by_key.service_error",
-          tags: ["error_class:#{e.class}"],
-        )
+        begin
+          EdgeCache::Bust.call(fallback_paths)
+        rescue StandardError => e
+          Honeybadger.notify(e)
+          ForemStatsClient.increment(
+            "edgecache_purge_by_key.service_error",
+            tags: ["error_class:#{e.class}"],
+          )
+        end
       end
     end
 
