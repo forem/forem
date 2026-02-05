@@ -1634,6 +1634,95 @@ RSpec.describe Article do
     end
   end
 
+  describe ".cached_admin_published_with" do
+    let(:admin) { create(:user, :admin) }
+    let(:cache_store) { ActiveSupport::Cache::MemoryStore.new }
+
+    around do |example|
+      original_cache = Rails.cache
+      Rails.cache = cache_store
+      example.run
+    ensure
+      Rails.cache = original_cache
+    end
+
+    it "caches the admin published article by tag" do
+      article = create(:article, user: admin, tags: "welcome")
+
+      cached = described_class.cached_admin_published_with("welcome")
+
+      expect(cached).to eq(article)
+      expect(Rails.cache.read("admin-published-with:welcome:all").id).to eq(article.id)
+    end
+
+    it "caches the admin published article by tag and subforem" do
+      subforem = create(:subforem)
+      article = create(:article, user: admin, tags: "welcome", subforem_id: subforem.id)
+
+      cached = described_class.cached_admin_published_with("welcome", subforem_id: subforem.id)
+
+      expect(cached).to eq(article)
+      expect(Rails.cache.read("admin-published-with:welcome:#{subforem.id}").id).to eq(article.id)
+    end
+  end
+
+  describe "admin welcome cache busting" do
+    let(:admin) { create(:user, :admin) }
+    let(:cache_store) { ActiveSupport::Cache::MemoryStore.new }
+
+    around do |example|
+      original_cache = Rails.cache
+      Rails.cache = cache_store
+      example.run
+    ensure
+      Rails.cache = original_cache
+    end
+
+    it "busts cached welcome keys when an admin publishes a welcome article" do
+      subforem = create(:subforem)
+      article = create(:article, user: admin, tags: "welcome", subforem_id: subforem.id)
+
+      Rails.cache.write("admin-published-with:welcome:all", "cached")
+      Rails.cache.write("admin-published-with:welcome:#{subforem.id}", "cached")
+
+      article.update!(title: "Updated title")
+
+      expect(Rails.cache.read("admin-published-with:welcome:all")).to be_nil
+      expect(Rails.cache.read("admin-published-with:welcome:#{subforem.id}")).to be_nil
+    end
+
+    it "does not bust cached welcome keys for non-admin authors" do
+      user = create(:user)
+      article = create(:article, user: user, tags: "welcome")
+
+      Rails.cache.write("admin-published-with:welcome:all", "cached")
+
+      article.update!(title: "Updated title")
+
+      expect(Rails.cache.read("admin-published-with:welcome:all")).to eq("cached")
+    end
+
+    it "busts the cache when welcome is in a comma-separated tag list" do
+      article = create(:article, user: admin, tags: "ruby, welcome, rails")
+
+      Rails.cache.write("admin-published-with:welcome:all", "cached")
+
+      article.update!(title: "Updated title")
+
+      expect(Rails.cache.read("admin-published-with:welcome:all")).to be_nil
+    end
+
+    it "does not bust the cache for tags that only contain welcome as a substring" do
+      article = create(:article, user: admin, tags: "welcome2, ruby")
+
+      Rails.cache.write("admin-published-with:welcome:all", "cached")
+
+      article.update!(title: "Updated title")
+
+      expect(Rails.cache.read("admin-published-with:welcome:all")).to eq("cached")
+    end
+  end
+
   describe ".seo_boostable" do
     let!(:top_article) do
       create(:article, organic_page_views_past_month_count: 20, score: 30, tags: "good, greatalicious", user: user)

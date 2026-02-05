@@ -414,14 +414,38 @@ class Article < ApplicationRecord
                           .union(User.with_role(:admin))
                           .union(id: [Settings::Community.staff_user_id,
                                       Settings::General.mascot_user_id].compact)
-                          .select(:id)).order(published_at: :desc).tagged_with(tag_name)
+                          .select(:id)).order(published_at: :desc).cached_tagged_with(tag_name)
   }
+
+  def self.cached_admin_published_with(tag_name, subforem_id: nil, expires_in: 6.hours)
+    cache_key = [
+      "admin-published-with",
+      tag_name,
+      (subforem_id || "all"),
+    ].join(":")
+
+    Rails.cache.fetch(cache_key, expires_in: expires_in) do
+      scope = subforem_id ? from_subforem(subforem_id) : all
+      scope.admin_published_with(tag_name).first
+    end
+  end
+
+  def self.bust_cached_admin_published_with(tag_name, subforem_id: nil)
+    cache_key = [
+      "admin-published-with",
+      tag_name,
+      (subforem_id || "all"),
+    ].join(":")
+    Rails.cache.delete(cache_key)
+  end
+
+  after_commit :bust_cached_admin_welcome_thread, on: %i[create update]
 
   scope :user_published_with, lambda { |user_id, tag_name|
     published
       .where(user_id: user_id)
       .order(published_at: :desc)
-      .tagged_with(tag_name)
+      .cached_tagged_with(tag_name)
   }
 
   scope :active_help, lambda {
@@ -1575,6 +1599,15 @@ class Article < ApplicationRecord
   end
 
   private
+
+  def bust_cached_admin_welcome_thread
+    return unless published?
+    return unless cached_tag_list.to_s.match?(/(?:^|,)\s*welcome(?:\s*,|$)/)
+    return unless user&.admin?
+
+    self.class.bust_cached_admin_published_with("welcome", subforem_id: subforem_id)
+    self.class.bust_cached_admin_published_with("welcome")
+  end
 
   def should_add_urls_from_title?
     # Only add URLs from title for quickie posts (status type) that have a title with URLs
