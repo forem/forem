@@ -72,7 +72,7 @@ class Profile < ApplicationRecord
     saved_change_to_summary? ||
       saved_change_to_location? ||
       saved_change_to_website_url? ||
-      saved_change_to_social_image? ||
+      saved_change_to_attribute?(:social_image) ||
       saved_change_to_data?
   end
 end
