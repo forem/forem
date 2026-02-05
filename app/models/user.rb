@@ -257,7 +257,9 @@ class User < ApplicationRecord
   after_save :create_conditional_autovomits
   after_save :generate_social_images
   after_commit :subscribe_to_mailchimp_newsletter
-  after_commit :bust_cache
+  after_commit :bust_profile_identity_cache, on: :update, if: :profile_identity_changed_for_cache?
+  after_commit :bust_profile_details_cache, on: :update, if: :profile_details_changed_for_cache?
+  after_commit :bust_profile_image_cache, on: :update, if: :profile_image_changed_for_cache?
 
   def self.average_articles_count
     Rails.cache.fetch("established_user_article_count", expires_in: 1.day) do
@@ -619,6 +621,30 @@ class User < ApplicationRecord
     profile_image_url_for(length: 90)
   end
 
+  def profile_identity_record_key
+    "#{record_key}/profile_identity"
+  end
+
+  def profile_details_record_key
+    "#{record_key}/profile_details"
+  end
+
+  def profile_image_record_key
+    "#{record_key}/profile_image"
+  end
+
+  def profile_cache_keys
+    [profile_identity_record_key, profile_details_record_key, profile_image_record_key]
+  end
+
+  def profile_identity_cache_keys
+    [profile_identity_record_key, profile_image_record_key]
+  end
+
+  def profile_cache_bust_paths
+    [path, "/profile_preview_cards/#{id}", "/api/users/#{id}"]
+  end
+
   def remove_from_mailchimp_newsletters
     return if email.blank?
     return if Settings::General.mailchimp_api_key.blank?
@@ -757,6 +783,34 @@ class User < ApplicationRecord
 
   def bust_cache
     Users::BustCacheWorker.perform_async(id)
+  end
+
+  def bust_profile_identity_cache
+    Users::BustProfileIdentityCacheWorker.perform_async(id)
+  end
+
+  def bust_profile_details_cache
+    Users::BustProfileDetailsCacheWorker.perform_async(id)
+  end
+
+  def bust_profile_image_cache
+    Users::BustProfileImageCacheWorker.perform_async(id)
+  end
+
+  def profile_identity_changed_for_cache?
+    saved_change_to_name? || saved_change_to_username?
+  end
+
+  def profile_details_changed_for_cache?
+    saved_change_to_email? ||
+      saved_change_to_twitter_username? ||
+      saved_change_to_github_username? ||
+      saved_change_to_facebook_username?
+  end
+
+  def profile_image_changed_for_cache?
+    saved_change_to_profile_image? ||
+      (respond_to?(:saved_change_to_profile_image_url?) && saved_change_to_profile_image_url?)
   end
 
   def create_conditional_autovomits

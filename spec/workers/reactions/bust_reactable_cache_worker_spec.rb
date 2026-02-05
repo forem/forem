@@ -8,18 +8,22 @@ RSpec.describe Reactions::BustReactableCacheWorker, type: :worker do
     let(:comment) { create(:comment, commentable: article) }
     let(:comment_reaction) { create(:reaction, reactable: comment, user: user) }
     let(:worker) { subject }
-    let(:cache_bust) { instance_double(EdgeCache::Bust) }
 
     before do
       allow(EdgeCache::BustArticle).to receive(:call)
-      allow(EdgeCache::Bust).to receive(:new).and_return(cache_bust)
-      allow(cache_bust).to receive(:call)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
     end
 
     it "busts the reactable article cache" do
       worker.perform(reaction.id)
-      expect(cache_bust).to have_received(:call).with(user.path).once
-      expect(cache_bust).to have_received(:call).with("/reactions?article_id=#{article.id}").once
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with(
+        user.profile_identity_record_key,
+        fallback_paths: [user.path],
+      )
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with(
+        Reaction.surrogate_key_for_article(article.id),
+        fallback_paths: "/reactions?article_id=#{article.id}",
+      )
     end
 
     it "busts the article if there were previously no reactions" do
@@ -35,9 +39,14 @@ RSpec.describe Reactions::BustReactableCacheWorker, type: :worker do
 
     it "busts the reactable comment cache" do
       worker.perform(comment_reaction.id)
-      expect(cache_bust).to have_received(:call).with(user.path).once
-      param = "/reactions?commentable_id=#{article.id}&commentable_type=Article"
-      expect(cache_bust).to have_received(:call).with(param).once
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with(
+        user.profile_identity_record_key,
+        fallback_paths: [user.path],
+      )
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with(
+        Reaction.surrogate_key_for_commentable(article),
+        fallback_paths: "/reactions?commentable_id=#{article.id}&commentable_type=Article",
+      )
     end
 
     it "doesn't fail if a reaction doesn't exist" do
