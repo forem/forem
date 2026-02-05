@@ -175,6 +175,34 @@ RSpec.describe "Admin::Users" do
       expect(Note.last.content).to eq("general note about whatever")
     end
 
+    it "updates profile fields and records a note" do
+      user.profile.update!(
+        summary: "Old summary",
+        location: "Old location",
+        website_url: "https://old.example.com",
+      )
+
+      patch update_profile_admin_user_path(user.id), params: {
+        user: { name: "New Name", username: "newuserhandle" },
+        profile: { summary: "New summary", location: "New location", website_url: "https://new.example.com" }
+      }
+
+      user.reload
+
+      expect(user.name).to eq("New Name")
+      expect(user.username).to eq("newuserhandle")
+      expect(user.profile.summary).to eq("New summary")
+      expect(user.profile.location).to eq("New location")
+      expect(user.profile.website_url).to eq("https://new.example.com")
+      expect(Note.last.reason).to eq("admin_profile_update")
+      expect(Note.last.content).to include("Admin #{super_admin.username} updated profile fields")
+      expect(Note.last.content).to include("name:")
+      expect(Note.last.content).to include("username:")
+      expect(Note.last.content).to include("summary:")
+      expect(Note.last.content).to include("location:")
+      expect(Note.last.content).to include("website_url:")
+    end
+
     it "remove credits from account" do
       create_list(:credit, 5, user: user)
       put admin_user_path(user.id), params: { user: { remove_credits: "3" } }

@@ -1,0 +1,34 @@
+<div id="edit-profile">
+  <%= form_for(@user, url: update_profile_admin_user_path(@user),
+                      html: { class: "flex flex-col gap-4", method: :patch }) do |f| %>
+    <div class="crayons-notice crayons-notice--warning">
+      <p><%= t("views.admin.users.edit_profile.notice") %></p>
+    </div>
+    <p><%= t("views.admin.users.edit_profile.desc_html", user: @user.name) %></p>
+    <div class="crayons-field">
+      <%= f.label :name, t("views.admin.users.edit_profile.name"), class: "crayons-field__label" %>
+      <%= f.text_field :name, class: "crayons-textfield", required: true %>
+    </div>
+    <div class="crayons-field">
+      <%= f.label :username, t("views.admin.users.edit_profile.username"), class: "crayons-field__label" %>
+      <%= f.text_field :username, class: "crayons-textfield", required: true %>
+    </div>
+    <%= fields_for :profile, (@user.profile || @user.build_profile) do |pf| %>
+      <div class="crayons-field">
+        <%= pf.label :summary, t("views.admin.users.edit_profile.summary"), class: "crayons-field__label" %>
+        <%= pf.text_area :summary, class: "crayons-textfield", rows: 4 %>
+      </div>
+      <div class="crayons-field">
+        <%= pf.label :location, t("views.admin.users.edit_profile.location"), class: "crayons-field__label" %>
+        <%= pf.text_field :location, class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= pf.label :website_url, t("views.admin.users.edit_profile.website_url"), class: "crayons-field__label" %>
+        <%= pf.url_field :website_url, class: "crayons-textfield" %>
+      </div>
+    <% end %>
+    <div>
+      <%= f.button t("views.admin.users.edit_profile.submit"), class: "c-btn c-btn--primary", type: "submit" %>
+    </div>
+  <% end %>
+</div>
