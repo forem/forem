@@ -1636,9 +1636,14 @@ RSpec.describe Article do
 
   describe ".cached_admin_published_with" do
     let(:admin) { create(:user, :admin) }
+    let(:cache_store) { ActiveSupport::Cache::MemoryStore.new }
 
-    before do
-      Rails.cache.clear
+    around do |example|
+      original_cache = Rails.cache
+      Rails.cache = cache_store
+      example.run
+    ensure
+      Rails.cache = original_cache
     end
 
     it "caches the admin published article by tag" do
@@ -1663,9 +1668,14 @@ RSpec.describe Article do
 
   describe "admin welcome cache busting" do
     let(:admin) { create(:user, :admin) }
+    let(:cache_store) { ActiveSupport::Cache::MemoryStore.new }
 
-    before do
-      Rails.cache.clear
+    around do |example|
+      original_cache = Rails.cache
+      Rails.cache = cache_store
+      example.run
+    ensure
+      Rails.cache = original_cache
     end
 
     it "busts cached welcome keys when an admin publishes a welcome article" do
