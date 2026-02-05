@@ -5,6 +5,7 @@ class Profile < ApplicationRecord
   belongs_to :user
 
   after_commit :bust_user_profile_details_cache, on: :update, if: :profile_details_changed_for_cache?
+  after_commit :enqueue_profile_spam_check, on: :update, if: :profile_spam_check_triggered?
 
   validates :user_id, uniqueness: true
   validates :location, :website_url, length: { maximum: 100 }
@@ -74,5 +75,19 @@ class Profile < ApplicationRecord
       saved_change_to_website_url? ||
       saved_change_to_attribute?(:social_image) ||
       saved_change_to_data?
+  end
+
+  def profile_spam_check_triggered?
+    saved_change_to_website_url? || summary_contains_spam_trigger_terms?
+  end
+
+  def summary_contains_spam_trigger_terms?
+    return false unless saved_change_to_summary?
+
+    Spam::Handler.profile_spam_trigger_term_match?(summary)
+  end
+
+  def enqueue_profile_spam_check
+    Users::HandleProfileSpamWorker.perform_async(user_id)
   end
 end

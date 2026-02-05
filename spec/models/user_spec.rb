@@ -1060,6 +1060,20 @@ RSpec.describe User do
     end
   end
 
+  describe "profile spam checks" do
+    it "enqueues a profile spam check when name contains trigger terms" do
+      sidekiq_assert_enqueued_with(job: Users::HandleProfileSpamWorker, args: [user.id]) do
+        user.update!(name: "Best Casino Deals")
+      end
+    end
+
+    it "does not enqueue a profile spam check when name changes without trigger terms" do
+      sidekiq_assert_no_enqueued_jobs(only: Users::HandleProfileSpamWorker) do
+        user.update!(name: "Helpful Developer")
+      end
+    end
+  end
+
   context "when indexing with Algolia", :algolia do
     it "indexes the user on create" do
       allow(AlgoliaSearch::SearchIndexWorker).to receive(:perform_async)
