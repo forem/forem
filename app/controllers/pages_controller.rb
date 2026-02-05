@@ -107,15 +107,15 @@ class PagesController < ApplicationController
   end
 
   def welcome
-    article = Article.from_subforem.admin_published_with("welcome").first
-    article = Article.admin_published_with("welcome").first unless article
+    article = Article.cached_admin_published_with("welcome", subforem_id: RequestStore.store[:subforem_id])
+    article ||= Article.cached_admin_published_with("welcome")
     redirect_daily_thread_request(article)
   end
 
   def challenge
-    article = Article.from_subforem.admin_published_with("welcome").first
-    article = Article.admin_published_with("welcome").first unless article
-    redirect_daily_thread_request(Article.admin_published_with("challenge").first)
+    article = Article.cached_admin_published_with("welcome", subforem_id: RequestStore.store[:subforem_id])
+    article ||= Article.cached_admin_published_with("welcome")
+    redirect_daily_thread_request(Article.cached_admin_published_with("challenge"))
   end
 
   def checkin
