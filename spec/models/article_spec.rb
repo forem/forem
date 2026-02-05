@@ -1691,6 +1691,26 @@ RSpec.describe Article do
 
       expect(Rails.cache.read("admin-published-with:welcome:all")).to eq("cached")
     end
+
+    it "busts the cache when welcome is in a comma-separated tag list" do
+      article = create(:article, user: admin, tags: "ruby, welcome, rails")
+
+      Rails.cache.write("admin-published-with:welcome:all", "cached")
+
+      article.update!(title: "Updated title")
+
+      expect(Rails.cache.read("admin-published-with:welcome:all")).to be_nil
+    end
+
+    it "does not bust the cache for tags that only contain welcome as a substring" do
+      article = create(:article, user: admin, tags: "welcome2, ruby")
+
+      Rails.cache.write("admin-published-with:welcome:all", "cached")
+
+      article.update!(title: "Updated title")
+
+      expect(Rails.cache.read("admin-published-with:welcome:all")).to eq("cached")
+    end
   end
 
   describe ".seo_boostable" do

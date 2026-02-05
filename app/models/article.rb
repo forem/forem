@@ -452,7 +452,7 @@ class Article < ApplicationRecord
 
   def bust_cached_admin_welcome_thread
     return unless published?
-    return unless cached_tag_list.to_s.match?(/[[:<:]]welcome[[:>:]]/)
+    return unless cached_tag_list.to_s.match?(/(?:^|,)\s*welcome(?:\s*,|$)/)
     return unless user&.admin?
 
     self.class.bust_cached_admin_published_with("welcome", subforem_id: subforem_id)
