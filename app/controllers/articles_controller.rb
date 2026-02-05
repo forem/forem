@@ -51,7 +51,8 @@ class ArticlesController < ApplicationController
 
     not_found unless @articles&.any?
 
-    set_surrogate_key_header @user&.record_key, @articles.map(&:record_key)
+    user_keys = @user&.profile_identity_cache_keys
+    set_surrogate_key_header(*[user_keys, @articles.map(&:record_key)].flatten.compact)
     set_cache_control_headers(10.minutes.to_i, stale_while_revalidate: 30, stale_if_error: 1.day.to_i)
 
     render layout: false, content_type: "application/xml", locals: {

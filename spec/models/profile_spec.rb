@@ -115,4 +115,12 @@ text of the printing and typesetting industry\r\nLorem Ipsum is simply dummy tex
       expect(profile).to respond_to(test2)
     end
   end
+
+  describe "cache busting" do
+    it "enqueues a profile details cache bust when summary changes" do
+      sidekiq_assert_enqueued_with(job: Users::BustProfileDetailsCacheWorker, args: [user.id]) do
+        profile.update!(summary: "Updated bio")
+      end
+    end
+  end
 end

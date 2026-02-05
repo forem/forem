@@ -15,7 +15,7 @@ module Users
       delete_user_activity
       cancel_stripe_subscriptions
       user.remove_from_mailchimp_newsletters
-      EdgeCache::Bust.call("/#{user.username}")
+      EdgeCache::BustUser.call(user)
       Users::SuspendedUsername.create_from_user(user) if user.spam_or_suspended?
       user.destroy
       Rails.cache.delete("user-destroy-token-#{user.id}")
