@@ -48,8 +48,8 @@ class CommunityController < ApplicationController
     @key_pages = Page.where(subforem_id: RequestStore.store[:subforem_id]).where(is_top_level_path: true).limit(6)
     
     # Get welcome article if it exists
-    @welcome_article = Article.from_subforem.admin_published_with("welcome").first ||
-                       Article.admin_published_with("welcome").first
+    @welcome_article = Article.cached_admin_published_with("welcome", subforem_id: RequestStore.store[:subforem_id]) ||
+                       Article.cached_admin_published_with("welcome")
     
     set_surrogate_key_header "community_hub"
   end
