@@ -74,7 +74,7 @@
               <%= t("views.tags.sidebar.moderate") %>
             </a>
           </div>
-        <% elsif @tag.supported? && @number_of_articles > 15 %>
+        <% elsif @tag.supported? %>
           <% number_of_pages = [(@num_published_articles.to_f / @number_of_articles).ceil, 1].max %>
           <% range = number_of_pages < 10 || @page < 4 ? 1..[number_of_pages, 9].min : [@page - 3, 1].max..[@page + 5, number_of_pages].min %>
           <hr />
