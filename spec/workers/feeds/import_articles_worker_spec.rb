@@ -9,8 +9,8 @@ RSpec.describe Feeds::ImportArticlesWorker, sidekiq: :inline, type: :worker do
   describe "#perform" do
     it "processes jobs for users with feeds" do
       allow(Feeds::Import).to receive(:call)
-      alice = create(:user)
-      bob = create(:user)
+      alice = create(:user, last_article_at: 1.week.ago)
+      bob = create(:user, last_article_at: 1.week.ago)
       bob.setting.update_columns(feed_url: feed_url)
 
       # bob has a feed, and alice doesn't, so we only enqueued for bob
@@ -29,7 +29,7 @@ RSpec.describe Feeds::ImportArticlesWorker, sidekiq: :inline, type: :worker do
 
     it "enqueues job for user with the given time" do
       allow(Feeds::Import).to receive(:call)
-      user = create(:user)
+      user = create(:user, last_article_at: 1.week.ago)
       user.setting.update_columns(feed_url: feed_url)
 
       earlier_than = 1.minute.ago
