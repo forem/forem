@@ -10,11 +10,6 @@ module EdgeCache
       EdgeCache::PurgeByKey.call(keys, fallback_paths: fallback_paths)
       bust_article_comment(commentable) if commentable.is_a?(Article)
       commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
-      ## Legacy commentable busting — can be removed after Feb 7
-      if commentable.is_a?(Article)
-        cache_bust = EdgeCache::Bust.new
-        cache_bust.call(commentable.path.to_s) if commentable&.path.present?
-      end
     end
 
     # bust commentable if it's an article
