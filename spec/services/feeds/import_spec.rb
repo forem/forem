@@ -16,9 +16,9 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
     it "filters to users with recent article or presence activity" do
       recent_article_user = create(:user, last_article_at: 1.month.ago)
       recent_article_user.setting.update(feed_url: link)
-      recent_present_user = create(:user, last_present_at: 2.weeks.ago)
+      recent_present_user = create(:user, last_presence_at: 2.weeks.ago)
       recent_present_user.setting.update(feed_url: link)
-      stale_user = create(:user, last_article_at: 6.months.ago, last_present_at: 6.months.ago)
+      stale_user = create(:user, last_article_at: 6.months.ago, last_presence_at: 6.months.ago)
       stale_user.setting.update(feed_url: link)
       no_feed_user = create(:user, last_article_at: 1.month.ago)
       no_feed_user.setting.update(feed_url: nil)
