@@ -17,6 +17,13 @@ module Feeds
         earlier_than = nil
       else
         users_scope = users_scope.where(id: Users::Setting.with_feed.select(:user_id))
+
+        # Only batch users who have been active recently — avoids dispatching
+        # Sidekiq jobs for users that will just be filtered out downstream.
+        recent_activity_since = 3.months.ago
+        users_scope = users_scope.where("last_article_at >= ? OR last_presence_at >= ?",
+                                        recent_activity_since, recent_activity_since)
+
         earlier_than ||= 4.hours.ago
       end
 
