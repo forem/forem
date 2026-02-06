@@ -65,6 +65,9 @@ module Feeds
     def filter_users_from(users_scope:, earlier_than:)
       users_scope = ArticlePolicy.scope_users_authorized_to_action(users_scope: users_scope, action: :create)
       users_scope = users_scope.where(id: Users::Setting.with_feed.select(:user_id))
+      recent_activity_since = 3.months.ago
+      users_scope = users_scope.where("last_article_at >= ? OR last_presence_at >= ?", recent_activity_since,
+                                      recent_activity_since)
 
       return users_scope unless earlier_than
 
