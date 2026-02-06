@@ -4,7 +4,7 @@ module Articles
       def self.call(tag = nil, number_of_articles: Article::DEFAULT_FEED_PAGINATION_WINDOW_SIZE, page: 1)
         articles =
           if tag.present?
-            Article.cached_tagged_with_any(tag)
+            ::Tag.find_by(name: tag).articles
           else
             Article.all
           end
