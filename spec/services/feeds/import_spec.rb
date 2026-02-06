@@ -13,6 +13,21 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
   end
 
   describe ".call" do
+    it "filters to users with recent article or presence activity" do
+      recent_article_user = create(:user, last_article_at: 1.month.ago)
+      recent_article_user.setting.update(feed_url: link)
+      recent_present_user = create(:user, last_present_at: 2.weeks.ago)
+      recent_present_user.setting.update(feed_url: link)
+      stale_user = create(:user, last_article_at: 6.months.ago, last_present_at: 6.months.ago)
+      stale_user.setting.update(feed_url: link)
+      no_feed_user = create(:user, last_article_at: 1.month.ago)
+      no_feed_user.setting.update(feed_url: nil)
+
+      importer = described_class.new(users_scope: User)
+      filtered = importer.send(:filter_users_from, users_scope: User, earlier_than: nil)
+
+      expect(filtered.pluck(:id)).to contain_exactly(recent_article_user.id, recent_present_user.id)
+    end
     it "ensures that we only fetch users who can create articles", vcr: { cassette_name: "feeds_import" } do
       allow(ArticlePolicy).to receive(:scope_users_authorized_to_action).and_call_original
 
