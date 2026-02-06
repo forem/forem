@@ -4,11 +4,7 @@ module Articles
       def self.call(tag = nil, number_of_articles: Article::DEFAULT_FEED_PAGINATION_WINDOW_SIZE, page: 1)
         articles =
           if tag.present?
-            if FeatureFlag.enabled?(:optimize_article_tag_query)
-              Article.cached_tagged_with_any(tag)
-            else
-              ::Tag.find_by(name: tag).articles
-            end
+            Article.cached_tagged_with_any(tag)
           else
             Article.all
           end
