@@ -176,7 +176,7 @@ class StoriesController < ApplicationController
     @user = @organization
     @stories = ArticleDecorator.decorate_collection(@organization.articles.published.from_subforem
       .includes(:distinct_reaction_categories, :subforem)
-      .select(:id, :path, :title, :published_at, :public_reactions_count, :comments_count, :cached_tag_list, :user_id, :organization_id, :slug)
+      .limited_column_select
       .order(published_at: :desc).page(@page).per(8))
     @organization_article_index = true
     # Get active users ordered by badge achievements
@@ -345,7 +345,7 @@ class StoriesController < ApplicationController
       # considering non cross posted articles with a more recent publication date
       @collection_articles = @article.collection.articles
         .published.from_subforem
-        .select(:id, :path, :title, :slug, :published_at, :crossposted_at, :user_id, :organization_id, :cached_tag_list)
+        .select(:id, :path, :title, :slug, :published_at, :crossposted_at, :user_id, :organization_id, :cached_tag_list, :subforem_id, :main_image)
         .order(Arel.sql("COALESCE(articles.crossposted_at, articles.published_at) ASC"))
     end
 
@@ -382,11 +382,11 @@ class StoriesController < ApplicationController
 
   def assign_user_stories
     @pinned_stories = Article.published.from_subforem.full_posts.where(id: @user.profile_pins.select(:pinnable_id))
-      .select(:id, :path, :title, :published_at, :public_reactions_count, :comments_count, :cached_tag_list, :organization_id, :user_id, :slug)
+      .limited_column_select
       .order(published_at: :desc).decorate
     @stories = ArticleDecorator.decorate_collection(@user.articles.published.from_subforem.full_posts
       .includes(:distinct_reaction_categories, :subforem)
-      .select(:id, :path, :title, :published_at, :public_reactions_count, :comments_count, :cached_tag_list, :organization_id, :user_id, :slug)
+      .limited_column_select
       .where.not(id: @pinned_stories.map(&:id))
       .order(published_at: :desc).page(@page).per(user_signed_in? ? 2 : SIGNED_OUT_RECORD_COUNT))
   end

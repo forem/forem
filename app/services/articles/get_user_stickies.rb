@@ -8,7 +8,7 @@ module Articles
         .published.from_subforem
         .cached_tagged_with_any(article_tags)
         .unscope(:select)
-        .select(:id, :path, :title, :cached_tag_list, :organization_id, :user_id) # Columns needed for _sticky_nav and path generation
+        .select(:id, :path, :title, :cached_tag_list, :organization_id, :user_id, :subforem_id) # Columns needed for _sticky_nav and path generation
         .where.not(id: article.id)
         .order(published_at: :desc)
         .limit(3)
