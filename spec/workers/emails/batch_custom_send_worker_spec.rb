@@ -32,6 +32,11 @@ RSpec.describe Emails::BatchCustomSendWorker, type: :worker do
         expect(CustomMailer).to have_received(:with).twice
       end
 
+      it "does not wrap email delivery in a synchronous_commit_off transaction" do
+        expect(ApplicationRecord).not_to receive(:with_synchronous_commit_off)
+        worker.perform(user_ids, subject_line, content, type_of, email_id)
+      end
+
       it "logs an error and continues if one user raises an exception" do
         allow(User).to receive(:find_by).with(id: user.id).and_return(user)
         allow(User).to receive(:find_by).with(id: user2.id).and_raise(StandardError.new("Boom!"))

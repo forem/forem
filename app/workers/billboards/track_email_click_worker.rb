@@ -13,11 +13,13 @@ module Billboards
     private
 
     def track_billboard
-      BillboardEvent.create(billboard_id: @bb.to_i,
-                            category: "click",
-                            user_id: @user&.id,
-                            context_type: "email")
-      update_billboard_counts
+      ApplicationRecord.with_synchronous_commit_off do
+        BillboardEvent.create(billboard_id: @bb.to_i,
+                              category: "click",
+                              user_id: @user&.id,
+                              context_type: "email")
+        update_billboard_counts
+      end
     rescue StandardError => e
       Rails.logger.error "Error processing billboard click: #{e.message}"
     end

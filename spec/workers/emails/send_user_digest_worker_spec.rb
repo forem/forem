@@ -87,6 +87,31 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
         expect(BillboardEvent.where(billboard_id: bb_2.id, category: "impression").size).to be(1)
       end
 
+      it "still delivers email even if billboard event creation raises" do
+        create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
+        create(:billboard, placement_area: "digest_first", published: true, approved: true)
+
+        allow(BillboardEvent).to receive(:create).and_raise(StandardError.new("DB error"))
+        allow(Honeybadger).to receive(:context)
+        allow(Honeybadger).to receive(:notify)
+
+        worker.perform(user.id)
+
+        # Email was already delivered before billboard tracking was attempted
+        expect(message_delivery).to have_received(:deliver_now)
+        expect(Honeybadger).to have_received(:notify).with(instance_of(StandardError))
+      end
+
+      it "does not open a transaction when no billboards are present" do
+        create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
+
+        expect(ApplicationRecord).not_to receive(:with_synchronous_commit_off)
+
+        worker.perform(user.id)
+
+        expect(message_delivery).to have_received(:deliver_now)
+      end
+
       context "when there's a preferred paired billboard" do
         let!(:bb_1) do
           create(
