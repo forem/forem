@@ -62,6 +62,7 @@ class ApplicationRecord < ActiveRecord::Base
     connection.execute "SET statement_timeout = #{milliseconds}"
   end
 
+  # Used for high-volume inserts to prevent unnecessary locking and blocking of other operations
   def self.with_synchronous_commit_off
     transaction do
       connection.execute("SET LOCAL synchronous_commit TO OFF")
