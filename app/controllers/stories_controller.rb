@@ -345,7 +345,8 @@ class StoriesController < ApplicationController
       # considering non cross posted articles with a more recent publication date
       @collection_articles = @article.collection.articles
         .published.from_subforem
-        .order(Arel.sql("COALESCE(crossposted_at, published_at) ASC"))
+        .select(:id, :path, :title, :slug, :published_at, :crossposted_at, :user_id, :organization_id, :cached_tag_list, :subforem_id, :main_image)
+        .order(Arel.sql("COALESCE(articles.crossposted_at, articles.published_at) ASC"))
     end
 
     @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 50 : 30
