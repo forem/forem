@@ -54,6 +54,46 @@
   flex-direction: column;
   gap: 8px;
 
+  &.survey-poll-answers-grid {
+    display: grid;
+    grid-template-rows: repeat(2, auto);
+    grid-auto-flow: column;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+
+    /* Custom scrollbar for horizontal grid */
+    &::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 4px;
+    }
+
+    .survey-poll-option {
+      padding: 8px 12px;
+      font-size: 0.9em;
+      min-width: max-content;
+
+      .option-text {
+        white-space: nowrap;
+      }
+    }
+
+    @media (max-width: $breakpoint-m) {
+      grid-template-rows: none;
+      grid-auto-flow: row;
+      grid-template-columns: 1fr;
+      overflow-x: visible;
+    }
+  }
+
   .survey-poll-option {
     border: 1px solid var(--form-border);
     border-radius: var(--radius-md, 5px);
@@ -153,10 +193,10 @@
 .scale-supplementary-text-horizontal {
   // Show horizontal version by default
   display: flex;
-  
+
   // Hide for scale-many-options on smaller screens (vertical layout)
   .survey-poll.scale-many-options & {
-    @media (max-width: $breakpoint-xl - 1px) {
+    @media (max-width: ($breakpoint-xl - 1px)) {
       display: none;
     }
   }
@@ -170,10 +210,10 @@
   font-weight: var(--fw-normal, 400);
   margin-top: 2px;
   line-height: 1.1;
-  
+
   // Show for scale-many-options on smaller screens (vertical layout)
   .survey-poll.scale-many-options & {
-    @media (max-width: $breakpoint-xl - 1px) {
+    @media (max-width: ($breakpoint-xl - 1px)) {
       display: block;
     }
   }
@@ -182,6 +222,7 @@
 // Scale poll specific styles for surveys
 .survey-poll[data-poll-type="scale"] {
   .survey-poll-answers {
+
     // Default vertical layout for more than 10 options
     .survey-poll-option {
       justify-content: space-between;
@@ -323,6 +364,7 @@
     font-size: 0.9em;
     color: var(--card-color-tertiary, $medium-gray);
     display: none;
+
     @media (min-width: $breakpoint-m) {
       display: block;
     }
@@ -338,6 +380,7 @@
     cursor: pointer;
     font-weight: var(--fw-medium, 500);
     min-width: 44%;
+
     @media (min-width: $breakpoint-m) {
       min-width: 25%;
     }
