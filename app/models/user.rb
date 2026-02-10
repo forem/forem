@@ -260,6 +260,7 @@ class User < ApplicationRecord
   after_commit :bust_profile_identity_cache, on: :update, if: :profile_identity_changed_for_cache?
   after_commit :bust_profile_details_cache, on: :update, if: :profile_details_changed_for_cache?
   after_commit :bust_profile_image_cache, on: :update, if: :profile_image_changed_for_cache?
+  after_commit :enqueue_profile_spam_check, on: :update, if: :name_contains_spam_trigger_terms?
 
   def self.average_articles_count
     Rails.cache.fetch("established_user_article_count", expires_in: 1.day) do
@@ -811,6 +812,16 @@ class User < ApplicationRecord
   def profile_image_changed_for_cache?
     saved_change_to_profile_image? ||
       (respond_to?(:saved_change_to_profile_image_url?) && saved_change_to_profile_image_url?)
+  end
+
+  def enqueue_profile_spam_check
+    Users::HandleProfileSpamWorker.perform_async(id)
+  end
+
+  def name_contains_spam_trigger_terms?
+    return false unless saved_change_to_name?
+
+    Spam::Handler.profile_spam_trigger_term_match?(name)
   end
 
   def create_conditional_autovomits

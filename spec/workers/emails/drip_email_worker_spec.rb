@@ -111,6 +111,11 @@ RSpec.describe Emails::DripEmailWorker, type: :worker do
       ).once
     end
 
+    it "does not wrap email delivery in a synchronous_commit_off transaction" do
+      expect(ApplicationRecord).not_to receive(:with_synchronous_commit_off)
+      worker.perform
+    end
+
     it "sends custom template to users with their own onboarding_subforem_id" do
       worker.perform
       expect(CustomMailer).to have_received(:with).with(

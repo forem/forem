@@ -3,6 +3,29 @@ module Spam
   #
   # @note We may not immediately block spam but instead slowly escalate our response.
   module Handler
+    # These are purely words that can help trigger an investigation.
+    # They are never to be used to directly take any action.
+    # They can absolutely be used out of context and only exist to trigger investigation.
+    # Depending on the forem, they are hypothetically not even abuse in any way.
+    PROFILE_SPAM_TRIGGER_TERMS = [
+      "buy links",
+      "buying links",
+      "backlinks",
+      "link building",
+      "seo services",
+      "casino",
+      "gambling",
+      "betting",
+      "escort",
+      "prostitut",
+      "adult",
+      "girls",
+      "porn",
+      "onlyfans",
+      "crypto pump",
+      "forex signals",
+      "loan shark",
+    ].freeze
     # @return [TrueClass] if we are going to try to use more rigorous spam handling
     # @return [FalseClass] if we are using less rigorous spam handling
     def self.more_rigorous_user_profile_spam_checking?
@@ -123,6 +146,28 @@ module Spam
       issue_spam_reaction_for!(reactable: user)
     end
 
+    # Test a user profile update for clear and obvious spam or abuse.
+    #
+    # @param user [User] the user to check for spamminess
+    def self.handle_profile_update!(user:)
+      return :skipped if user.spam_or_suspended?
+      return :skipped unless eligible_for_profile_spam_check?(user: user)
+      return :skipped unless Ai::Base::DEFAULT_KEY.present?
+
+      label = Ai::ProfileModerationLabeler.new(user).label
+      return :not_spam unless clear_profile_violation_label?(label)
+
+      issue_spam_reaction_for!(reactable: user)
+
+      if label == "clear_and_obvious_spam"
+        user.add_role(:spam)
+      else
+        suspend!(user: user)
+      end
+
+      :spam
+    end
+
     # Suspend the given user because of too many spammy actions.
     #
     # @param user [User]
@@ -235,9 +280,40 @@ module Spam
       end
     end
 
+    # NEW/private: Determine if a profile label is a clear violation.
+    def self.clear_profile_violation_label?(label)
+      %w[clear_and_obvious_spam clear_and_obvious_harmful clear_and_obvious_inciting].include?(label)
+    end
+
+    # NEW/private: Skip profile checks for established accounts.
+    def self.eligible_for_profile_spam_check?(user:)
+      return false if published_articles_over_limit?(user: user)
+      return false if published_comments_over_limit?(user: user)
+
+      true
+    end
+
+    def self.published_articles_over_limit?(user:, limit: 3)
+      user.articles.published.limit(limit + 1).count > limit
+    end
+
+    def self.published_comments_over_limit?(user:, limit: 3)
+      user.comments.where(deleted: false).limit(limit + 1).count > limit
+    end
+
+    # NEW/private: Detects trigger terms in profile text.
+    def self.profile_spam_trigger_term_match?(text)
+      normalized = text.to_s.downcase
+      return false if normalized.blank?
+
+      PROFILE_SPAM_TRIGGER_TERMS.any? { |term| normalized.include?(term) }
+    end
+
     private_class_method :suspend!, :issue_spam_reaction_for!,
                          :extensive_domain_spam?, :extract_first_domain_from,
                          :suspend_if_user_is_repeat_offender, :label_article_content!,
-                         :offtopic_label?, :check_subforem_reassignment
+                         :offtopic_label?, :check_subforem_reassignment,
+                         :clear_profile_violation_label?, :eligible_for_profile_spam_check?,
+                         :published_articles_over_limit?, :published_comments_over_limit?
   end
 end

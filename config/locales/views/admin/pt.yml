@@ -37,6 +37,20 @@ pt:
         email: E-mail
         username: Nome de usuário
         name: Nome
+        profile:
+          options:
+            edit_profile: Editar perfil
+          edit_profile:
+            heading: Editar perfil de %{user}
+            desc_html: As mudanças feitas aqui ficam imediatamente públicas no perfil do usuário.
+            notice: Tenha cuidado. Essas atualizações são públicas e afetam a conta do usuário.
+            name: Nome
+            username: Nome de usuário
+            summary: Resumo
+            location: Localização
+            website_url: URL do site
+            submit: Salvar alterações do perfil
+            success: Perfil atualizado com sucesso.
         bio: Biografia
         location: Localização
         website: Site

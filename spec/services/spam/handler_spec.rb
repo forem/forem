@@ -496,4 +496,83 @@ RSpec.describe Spam::Handler, type: :service do
       end
     end
   end
+
+  describe ".handle_profile_update!" do
+    subject(:handler) { described_class.handle_profile_update!(user: user) }
+
+    let!(:user) { create(:user) }
+    let(:mascot_user) { create(:user) }
+
+    before do
+      allow(Settings::General).to receive(:mascot_user_id).and_return(mascot_user.id)
+      stub_const("Ai::Base::DEFAULT_KEY", "present")
+    end
+
+    context "when user is already spam or suspended" do
+      before do
+        user.add_role(:spam)
+      end
+
+      it "skips without reactions" do
+        expect(handler).to eq(:skipped)
+        expect { handler }.not_to(change { Reaction.count })
+      end
+    end
+
+    context "when user has more than 3 published articles" do
+      before do
+        create_list(:article, 4, user: user)
+      end
+
+      it "skips and does not label" do
+        expect(Ai::ProfileModerationLabeler).not_to receive(:new)
+        expect(handler).to eq(:skipped)
+      end
+    end
+
+    context "when user has more than 3 published comments" do
+      before do
+        create_list(:comment, 4, user: user)
+      end
+
+      it "skips without reactions" do
+        expect(handler).to eq(:skipped)
+        expect { handler }.not_to(change { Reaction.count })
+      end
+    end
+
+    context "when label is clear_and_obvious_spam" do
+      before do
+        allow(Ai::ProfileModerationLabeler).to receive_message_chain(:new, :label).and_return("clear_and_obvious_spam")
+      end
+
+      it "adds spam role and reaction" do
+        expect { handler }.to change { Reaction.where(reactable: user, category: "vomit").count }.by(1)
+        expect(user.reload).to be_spam
+      end
+    end
+
+    context "when label is clear_and_obvious_harmful" do
+      before do
+        allow(Ai::ProfileModerationLabeler).to receive_message_chain(:new, :label).and_return("clear_and_obvious_harmful")
+      end
+
+      it "suspends and reacts with a note" do
+        expect { handler }.to change { Reaction.where(reactable: user, category: "vomit").count }.by(1)
+        expect(user.reload).to be_suspended
+        expect(Note.where(noteable: user, reason: "automatic_suspend").count).to eq(1)
+      end
+    end
+
+    context "when label is not a clear violation" do
+      before do
+        allow(Ai::ProfileModerationLabeler).to receive_message_chain(:new, :label).and_return("no_moderation_label")
+      end
+
+      it "returns :not_spam without reactions" do
+        expect(handler).to eq(:not_spam)
+        expect { handler }.not_to(change { Reaction.count })
+      end
+    end
+  end
 end
