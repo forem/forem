@@ -6612,10 +6612,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress-pipe@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "cypress-pipe@npm:2.0.0"
-  checksum: 10c0/ecac0bfa6d370e77d035309ba4e8e9b1500cfce402d7cb29c4473b06b4c53d895c91b1fa6b5314a8df6978bfab8c59f04349db672119650ffc9e2f4cbf7eeba9
+"cypress-pipe@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "cypress-pipe@npm:2.0.1"
+  checksum: 10c0/63cb9087dcb54d488c2c7ca42e9c1b605f68765ae1520a8749e89b77730d36dde569954aa6c8af2bb1937689388b3dc676f72f357f477c29aed5facc977874c8
   languageName: node
   linkType: hard
 
@@ -7037,7 +7037,7 @@ __metadata:
     cypress-failed-log: "npm:^2.10.0"
     cypress-file-upload: "npm:^5.0.8"
     cypress-multi-reporters: "npm:^2.0.5"
-    cypress-pipe: "npm:^2.0.0"
+    cypress-pipe: "npm:^2.0.1"
     esbuild: "npm:^0.19.12"
     esbuild-plugin-stimulus: "npm:^0.1.5"
     esbuild-plugin-svgr: "npm:^2.1.0"
