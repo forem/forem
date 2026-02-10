@@ -68,7 +68,7 @@ module Articles
       scope.published.from_subforem
         .cached_tagged_with_any(tags)
         .unscope(:select)
-        .select(:id, :path, :title, :cached_tag_list, :cached_user, :organization_id, :user_id) # Columns needed for _sticky_nav (includes cached_user for avatar)
+        .select(:id, :path, :title, :cached_tag_list, :cached_user, :organization_id, :user_id, :subforem_id) # Columns needed for _sticky_nav (includes cached_user for avatar)
         .where.not(id: article.id)
         .not_authored_by(article.user_id)
         .where("published_at > ?", 5.days.ago)
