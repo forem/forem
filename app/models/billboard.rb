@@ -391,7 +391,7 @@ class Billboard < ApplicationRecord
     return "" if color.blank?
 
     if placement_area.include?("fixed_")
-      "border-top: calc(9px + 0.5vw) solid #{color}"
+      "border: 5px solid #{color};border-bottom: none"
     else
       "border: 5px solid #{color}"
     end

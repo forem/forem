@@ -22,8 +22,7 @@ export const ColorPicker = ({
   onChange,
   onBlur,
 }) => {
-  // Ternary has been used here to guard against an empty string being passed as default value
-  const [color, setColor] = useState(defaultValue ? defaultValue : '#000');
+  const [color, setColor] = useState(defaultValue || '');
 
   const buttonId = `color-popover-btn-${id}`;
   const popoverId = `color-popover-${id}`;
@@ -47,26 +46,42 @@ export const ColorPicker = ({
     }
   };
 
+  const handleClear = () => {
+    setColor('');
+    onChange?.('');
+  };
+
+  const hasColor = color && color.length > 0;
+
+  // Separate the name from inputProps so the HexColorInput doesn't submit directly.
+  // Instead, a hidden input with the name is used for form submission.
+  const { name: inputName, ...displayInputProps } = inputProps || {};
+
   return (
     <Fragment>
       <div className="c-color-picker relative w-100">
+        {/* Hidden input carries the actual form value */}
+        <input type="hidden" name={inputName} value={hasColor ? color : ''} />
         <Button
           id={buttonId}
           className="c-btn c-color-picker__swatch absolute"
-          style={{ backgroundColor: color }}
+          style={{
+            backgroundColor: hasColor ? color : 'transparent',
+            border: hasColor ? 'none' : '1px dashed var(--base-60, #ccc)',
+          }}
           aria-label={buttonLabelText}
         />
         <HexColorInput
-          {...inputProps}
+          {...displayInputProps}
           id={id}
           className={classNames(
             'c-color-picker__input crayons-textfield',
-            inputProps?.class,
+            displayInputProps?.class,
           )}
-          color={color}
-          onChange={(color) => {
-            onChange?.(color);
-            setColor(color);
+          color={hasColor ? color : ''}
+          onChange={(newColor) => {
+            onChange?.(newColor);
+            setColor(newColor);
           }}
           onBlur={(e) => {
             onBlur?.(e);
@@ -74,15 +89,26 @@ export const ColorPicker = ({
           }}
           prefixed
         />
+        {hasColor && (
+          <button
+            type="button"
+            className="c-color-picker__clear absolute"
+            onClick={handleClear}
+            aria-label="Clear color"
+            title="Clear color"
+          >
+            ✕
+          </button>
+        )}
         <div
           id={popoverId}
           className="c-color-picker__popover crayons-dropdown absolute p-0"
         >
           <HexColorPicker
-            color={color}
-            onChange={(color) => {
-              onChange?.(color);
-              setColor(color);
+            color={hasColor ? color : '#000000'}
+            onChange={(newColor) => {
+              onChange?.(newColor);
+              setColor(newColor);
             }}
           />
         </div>

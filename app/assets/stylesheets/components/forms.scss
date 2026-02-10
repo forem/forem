@@ -309,6 +309,23 @@ textarea.crayons-textfield.crayons-textfield--ghost {
     z-index: var(--z-elevate);
   }
 
+  &__clear {
+    right: var(--su-1);
+    bottom: var(--su-2);
+    z-index: var(--z-elevate);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: var(--fs-s);
+    color: var(--base-70);
+    padding: var(--su-1) var(--su-2);
+    line-height: 1;
+
+    &:hover {
+      color: var(--base-90);
+    }
+  }
+
   &__popover {
     min-width: min-content;
 

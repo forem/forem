@@ -377,10 +377,11 @@
 
   &__title {
     color: var(--label-secondary);
-    font-size: var(--fs-s);
+    font-size: var(--fs-base);
     line-height: var(--lh-base);
     margin-left: var(--su-1);
     align-self: center;
+    font-weight: var(--fw-bold);
   }
 
   &__dropdown {
