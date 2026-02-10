@@ -1242,4 +1242,71 @@ RSpec.describe Billboard do
       expect(result).to be_a(described_class)
     end
   end
+
+  describe "#bust_billboard_cache (when being taken down)" do
+    let(:billboard) { create(:billboard, approved: true, published: true) }
+
+    it "purges the billboard surrogate key when approved is set to false" do
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(approved: false)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with(billboard.record_key)
+    end
+
+    it "purges the billboard surrogate key when published is set to false" do
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(published: false)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with(billboard.record_key)
+    end
+
+    it "does not purge the billboard surrogate key when billboard is not being taken down" do
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(name: "Updated name")
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call).with(billboard.record_key)
+    end
+  end
+
+  describe "#home_feed_first_being_activated?" do
+    let(:billboard) { create(:billboard, placement_area: "feed_first", approved: false, published: false) }
+
+    it "busts home page cache when feed_first billboard is approved from unapproved state" do
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(approved: true, published: true)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "busts home page cache when feed_first billboard is published from unpublished state while already approved" do
+      billboard.update!(approved: true, published: false)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(published: true)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "busts home page cache when feed_first billboard is approved from unapproved state while already published" do
+      billboard.update!(approved: false, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(approved: true)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "does not bust cache when billboard is not feed_first" do
+      sidebar_billboard = create(:billboard, placement_area: "sidebar_left", approved: false, published: false)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      sidebar_billboard.update!(approved: true, published: true)
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "does not bust cache when billboard is already approved and published and saved again" do
+      billboard.update!(approved: true, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(name: "Updated name")
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "does not bust cache when billboard is being taken down (approved set to false)" do
+      billboard.update!(approved: true, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(approved: false)
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+  end
 end
