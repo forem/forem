@@ -355,21 +355,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/eslint-parser@npm:^7.22.15":
-  version: 7.22.15
-  resolution: "@babel/eslint-parser@npm:7.22.15"
-  dependencies:
-    "@nicolo-ribaudo/eslint-scope-5-internals": "npm:5.1.1-v1"
-    eslint-visitor-keys: "npm:^2.1.0"
-    semver: "npm:^6.3.1"
-  peerDependencies:
-    "@babel/core": ^7.11.0
-    eslint: ^7.5.0 || ^8.0.0
-  checksum: 10c0/309052677a8d0b01b6633e656ded931646f6e63e6afb44d6739f347bbf5015da0a16390e0126473bd7b5dd23c9d81f83eda266d1af5bf5e1b606795d6bcc8c0b
-  languageName: node
-  linkType: hard
-
-"@babel/eslint-parser@npm:^7.27.5":
+"@babel/eslint-parser@npm:^7.27.5, @babel/eslint-parser@npm:^7.28.6":
   version: 7.28.6
   resolution: "@babel/eslint-parser@npm:7.28.6"
   dependencies:
@@ -6988,7 +6974,7 @@ __metadata:
   dependencies:
     "@algolia/recommend": "npm:4.24.0"
     "@babel/core": "npm:^7.23.3"
-    "@babel/eslint-parser": "npm:^7.22.15"
+    "@babel/eslint-parser": "npm:^7.28.6"
     "@babel/plugin-proposal-class-properties": "npm:^7.16.0"
     "@babel/plugin-proposal-decorators": "npm:^7.23.3"
     "@babel/plugin-proposal-export-default-from": "npm:^7.23.3"
