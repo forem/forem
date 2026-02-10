@@ -1,0 +1,92 @@
+<div class="crayons-card p-6 max-w-3xl mx-auto my-8 shadow-sm ltag-survey">
+  <div class="mb-8 border-b pb-4">
+    <h1 class="fs-4xl fw-bold mb-2 survey-title"><%= @survey.title %></h1>
+    <% if @survey.display_title? %>
+      <p class="color-base-70">Please complete the following polls. Your feedback is valuable!</p>
+    <% end %>
+  </div>
+
+  <div class="survey-polls-container">
+    <% @polls.each_with_index do |poll, index| %>
+      <div class="survey-poll mb-10 p-6 border rounded-lg bg-base-0 shadow-sm" style="display: block;">
+        <h2 class="fs-2xl fw-bold mb-6 color-base-90">
+          <span class="color-base-40 mr-2"><%= index + 1 %>.</span> 
+          <%= poll.prompt_markdown %>
+        </h2>
+
+        <% if poll.text_input? %>
+          <%= form_with url: poll_poll_text_responses_path(poll), local: true do |f| %>
+            <div class="crayons-field">
+              <%= f.text_area :response_text, rows: 3, class: "crayons-textfield w-full", placeholder: "Type your response here..." %>
+            </div>
+            <%= f.submit "Submit Response", class: "crayons-btn crayons-btn--branded mt-4" %>
+          <% end %>
+        <% elsif poll.scale? %>
+          <div class="scale-options-container flex flex-wrap gap-3 survey-poll-answers <%= 'survey-poll-answers-grid' if poll.poll_options.count > 6 %>">
+            <% (poll.scale_min..poll.scale_max).each do |value| %>
+              <%= button_to value.to_s, poll_votes_path(poll_id: poll.id, value: value), 
+                  class: "crayons-btn crayons-btn--secondary min-w-[3rem] justify-center survey-poll-option" %>
+            <% end %>
+          </div>
+        <% else %>
+          <%# Single or Multiple Choice %>
+          <% options_count = poll.poll_options.size %>
+          <ul class="survey-poll-answers <%= 'survey-poll-answers-grid' if options_count > 6 %>">
+            <% poll.poll_options.each do |option| %>
+              <li class="survey-poll-option">
+                <%= button_to poll_votes_path(poll_id: poll.id, option_id: option.id), 
+                    class: "crayons-btn crayons-btn--secondary w-full text-left justify-start py-3" do %>
+                  <span class="option-text"><%= option.markdown %></span>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<style>
+  /* Sharing styles with SurveyTag.scss aesthetic but adapted for standalone view */
+  .survey-poll-answers-grid {
+    display: grid !important;
+    grid-template-rows: repeat(2, auto) !important;
+    grid-auto-flow: column !important;
+    gap: 10px !important;
+    overflow-x: auto !important;
+    padding-bottom: 8px !important;
+    flex-direction: row !important; /* Override column for flex containers */
+  }
+
+  .survey-poll-answers-grid::-webkit-scrollbar {
+    height: 4px;
+  }
+  .survey-poll-answers-grid::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+  }
+  .survey-poll-answers-grid::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+  }
+
+  .survey-poll-answers-grid .survey-poll-option {
+    padding: 8px 12px !important;
+    min-width: max-content !important;
+  }
+
+  .survey-poll-answers-grid .option-text,
+  .survey-poll-answers-grid button {
+    font-size: 0.9em !important;
+    white-space: nowrap !important;
+  }
+
+  @media (max-width: 640px) {
+    .survey-poll-answers-grid {
+      grid-template-rows: none !important;
+      grid-auto-flow: row !important;
+      grid-template-columns: 1fr !important;
+      overflow-x: visible !important;
+    }
+  }
+</style>
