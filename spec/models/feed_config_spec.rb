@@ -15,7 +15,8 @@ RSpec.describe FeedConfig, type: :model do
       recent_subforems: [1],
       alltime_users: [10, 20],
       alltime_organizations: [100, 200],
-      alltime_subforems: [30, 40] # Added for subforem follow testing
+      alltime_subforems: [30, 40], # Added for subforem follow testing
+      semantic_interest_profile: {} 
     )
   end
 
@@ -188,7 +189,8 @@ RSpec.describe FeedConfig, type: :model do
           recent_subforems: [1],
           alltime_users: [10, 20],
           alltime_organizations: [100, 200],
-          alltime_subforems: [30, 40]
+          alltime_subforems: [30, 40],
+          semantic_interest_profile: {}
         )
       end
 
@@ -238,6 +240,17 @@ RSpec.describe FeedConfig, type: :model do
       it "includes the featured weight" do
         sql = feed_config.score_sql(user)
         expect(sql).to include("CASE WHEN articles.featured = TRUE THEN 4.0")
+      end
+
+      it "includes the semantic match score if weight is positive and user has interests" do
+        feed_config.semantic_match_weight = 2.5
+        allow(activity_store).to receive(:semantic_interest_profile).and_return({ "ruby" => 0.8, "backend" => 0.5 })
+        
+        sql = feed_config.score_sql(user)
+        # Check for COALESCE pattern with quoted keys and weights
+        expect(sql).to include("COALESCE((articles.semantic_interests->>'ruby')::float, 0) * 0.8")
+        expect(sql).to include("COALESCE((articles.semantic_interests->>'backend')::float, 0) * 0.5")
+        expect(sql).to include(" * 2.5") # The overall weight
       end
 
       it "includes the status weight" do
@@ -296,7 +309,8 @@ RSpec.describe FeedConfig, type: :model do
       let(:activity_store) do
         double("ActivityStore", recently_viewed_articles: [], recent_users: [], recent_organizations: [],
                                 relevant_tags: [], recent_labels: [], recent_subforems: [],
-                                alltime_users: [], alltime_organizations: [], alltime_subforems: [])
+                                alltime_users: [], alltime_organizations: [], alltime_subforems: [],
+                                semantic_interest_profile: {})
       end
 
       before do
@@ -337,6 +351,7 @@ RSpec.describe FeedConfig, type: :model do
       feed_config.general_past_day_bonus_weight = 19.0
       feed_config.recently_active_past_day_bonus_weight = 20.0
       feed_config.subforem_follow_weight        = 21.0 # Added new weight
+      feed_config.semantic_match_weight         = 23.0
       feed_config.recent_page_views_shuffle_weight = 22.0
       feed_config.recent_tag_count_min           = 2
       feed_config.recent_tag_count_max           = 5
@@ -376,6 +391,7 @@ RSpec.describe FeedConfig, type: :model do
       expect(clone.general_past_day_bonus_weight).to eq(19.0 * 1.1)
       expect(clone.recently_active_past_day_bonus_weight).to eq(20.0 * 1.1)
       expect(clone.subforem_follow_weight).to eq(21.0 * 1.1) # Added expectation
+      expect(clone.semantic_match_weight).to eq(23.0 * 1.1)
       expect(clone.recent_page_views_shuffle_weight).to eq(22.0 * 1.1)
     end
 

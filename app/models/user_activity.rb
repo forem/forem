@@ -22,6 +22,38 @@ class UserActivity < ApplicationRecord
     self.alltime_users = Follow.follower_user(user_id).pluck(:followable_id)
     self.alltime_organizations = Follow.follower_organization(user_id).pluck(:followable_id)
     self.alltime_subforems = Follow.follower_subforem(user_id).pluck(:followable_id)
+
+    # Calculate semantic interest profile based on recent articles.
+    # We weight the interests by how much we trust the signal (e.g. time spent could be a factor, 
+    # but for now we'll just average the profile of articles they read > 29s)
+    if recent_articles.any?
+      aggregated_interests = Hash.new(0.0)
+      count = 0
+      
+      # Create a lookup for efficient access
+      articles_by_id = recent_articles.index_by(&:id)
+      
+      recently_viewed_store.each do |article_id, created_at, time_tracked_in_seconds|
+        next unless time_tracked_in_seconds > 29 # Ensure we respect the threshold
+        
+        article = articles_by_id[article_id]
+        next unless article && article.respond_to?(:semantic_interests) && article.semantic_interests.present?
+        
+        article.semantic_interests.each do |interest, score|
+          aggregated_interests[interest] += score.to_f
+        end
+        count += 1
+      end
+      
+      if count > 0
+        # Normalize by count to get the average interest matching the range 0..1 roughly
+        aggregated_interests.transform_values! { |v| (v / count).round(4) }
+        
+        # Keep only top interests to keep the profile lean and query efficient
+        # Top 15 should be enough to capture main interests
+        self.semantic_interest_profile = aggregated_interests.sort_by { |_, v| -v }.first(15).to_h
+      end
+    end
   end
 
   def relevant_tags(recent_tag_count = 5, all_time_tag_count = 5)

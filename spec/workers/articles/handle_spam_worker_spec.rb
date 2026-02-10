@@ -106,6 +106,22 @@ RSpec.describe Articles::HandleSpamWorker, type: :worker do
         expect(article.reload.cached_tag_list).to include("javascript")
         expect(article.reload.cached_tag_list).to include("webdev")
       end
+
+      it "triggers Articles::EmbedWorker when article is safe" do
+        allow(Articles::EmbedWorker).to receive(:perform_async)
+        
+        # Ensure conditions are met (score >= 0, clickbait < 0.6)
+        article.update_columns(score: 5, clickbait_score: 0)
+        
+        allow(Spam::Handler).to receive(:handle_article!)
+        ai_client = instance_double(Ai::Base)
+        allow(Ai::Base).to receive(:new).and_return(ai_client)
+        allow(ai_client).to receive(:call).and_return("0.1") # Low clickbait
+        
+        worker.perform(article.id)
+        
+        expect(Articles::EmbedWorker).to have_received(:perform_async).with(article.id)
+      end
     end
 
     context "when article does not exist" do
