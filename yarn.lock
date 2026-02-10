@@ -4969,19 +4969,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"array.prototype.find@npm:^2.2.2":
-  version: 2.2.3
-  resolution: "array.prototype.find@npm:2.2.3"
-  dependencies:
-    call-bind: "npm:^1.0.7"
-    define-properties: "npm:^1.2.1"
-    es-abstract: "npm:^1.23.2"
-    es-object-atoms: "npm:^1.0.0"
-    es-shim-unscopables: "npm:^1.0.2"
-  checksum: 10c0/8b727f344feb5e5eeac8eb808db1678f41f3baa9fe5c711d8d620443af398353ecfe3e229d36e167860e659ccc383ffc3cda36d76a68f0b2b95404607f498f88
-  languageName: node
-  linkType: hard
-
 "array.prototype.findlast@npm:^1.2.5":
   version: 1.2.5
   resolution: "array.prototype.findlast@npm:1.2.5"
@@ -7044,7 +7031,7 @@ __metadata:
     eslint: "npm:^8.57.0"
     eslint-config-preact: "npm:^2.0.0"
     eslint-config-prettier: "npm:^10.1.8"
-    eslint-import-resolver-webpack: "npm:^0.13.8"
+    eslint-import-resolver-webpack: "npm:^0.13.10"
     eslint-plugin-babel: "npm:^5.3.1"
     eslint-plugin-cypress: "npm:^2.15.2"
     eslint-plugin-ignore-erb: "npm:^0.1.1"
@@ -8001,25 +7988,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-import-resolver-webpack@npm:^0.13.8":
-  version: 0.13.8
-  resolution: "eslint-import-resolver-webpack@npm:0.13.8"
+"eslint-import-resolver-webpack@npm:^0.13.10":
+  version: 0.13.10
+  resolution: "eslint-import-resolver-webpack@npm:0.13.10"
   dependencies:
-    array.prototype.find: "npm:^2.2.2"
     debug: "npm:^3.2.7"
     enhanced-resolve: "npm:^0.9.1"
     find-root: "npm:^1.1.0"
-    hasown: "npm:^2.0.0"
+    hasown: "npm:^2.0.2"
     interpret: "npm:^1.4.0"
-    is-core-module: "npm:^2.13.1"
-    is-regex: "npm:^1.1.4"
+    is-core-module: "npm:^2.15.1"
+    is-regex: "npm:^1.2.0"
     lodash: "npm:^4.17.21"
     resolve: "npm:^2.0.0-next.5"
     semver: "npm:^5.7.2"
   peerDependencies:
     eslint-plugin-import: ">=1.4.0"
     webpack: ">=1.11.0"
-  checksum: 10c0/b1f07ab1d46f9de66a106c77f9d32fc4b3261a9ba4079a4c0a2c3e49ab6745f452abb97d343cc82e67812b29f5688859e66617405fd8c402562e51f7eb09af07
+  checksum: 10c0/781cc6934771e6ba73e8ed29098d07b52d26e1de3aabfe13b44f658360e951bd451b6bd40f8c9a1567b471d6f80ae944948411b4358de975eb60611dc31babf4
   languageName: node
   linkType: hard
 
@@ -10059,6 +10045,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"is-core-module@npm:^2.15.1":
+  version: 2.16.1
+  resolution: "is-core-module@npm:2.16.1"
+  dependencies:
+    hasown: "npm:^2.0.2"
+  checksum: 10c0/898443c14780a577e807618aaae2b6f745c8538eca5c7bc11388a3f2dc6de82b9902bcc7eb74f07be672b11bbe82dd6a6edded44a00cb3d8f933d0459905eedd
+  languageName: node
+  linkType: hard
+
 "is-data-view@npm:^1.0.1":
   version: 1.0.1
   resolution: "is-data-view@npm:1.0.1"
@@ -10277,7 +10272,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-regex@npm:^1.2.1":
+"is-regex@npm:^1.2.0, is-regex@npm:^1.2.1":
   version: 1.2.1
   resolution: "is-regex@npm:1.2.1"
   dependencies:
