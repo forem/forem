@@ -23,6 +23,7 @@ class AdminMenu
       item(name: "podcasts"),
       item(name: "tags"),
       item(name: "emails"),
+      item(name: "surveys"),
     ]
 
     scope :customization, "tools-line", [

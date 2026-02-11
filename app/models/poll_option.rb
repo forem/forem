@@ -2,11 +2,11 @@
 #       :delete for the relationship.  That means no before/after
 #       destroy callbacks will be called on this object.
 class PollOption < ApplicationRecord
-  belongs_to :poll
+  belongs_to :poll, inverse_of: :poll_options
   has_many :poll_votes, dependent: :destroy
 
   validates :markdown, presence: true, length: { maximum: 256 }
-  validates :poll_votes_count, presence: true
+  validates :poll_votes_count, numericality: { greater_than_or_equal_to: 0 }
   validates :supplementary_text, length: { maximum: 500 }
 
   before_save :evaluate_markdown
