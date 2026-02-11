@@ -19,7 +19,6 @@ class PollVote < ApplicationRecord
   after_destroy :touch_poll_votes_count
   after_save :touch_poll_votes_count
 
-  delegate :poll, to: :poll_option, allow_nil: true
 
   private
 

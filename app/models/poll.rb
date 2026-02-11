@@ -148,7 +148,8 @@ class Poll < ApplicationRecord
     self.scale_min ||= 1
     self.scale_max ||= 5
 
-    # Only generate if they changed or if options are empty
+    # Only generate if they changed or if options are empty AND no manual input array provided
+    return if poll_options_input_array.present?
     return unless scale_min_changed? || scale_max_changed? || poll_options.empty?
 
     # Clear existing options if we are regenerating
