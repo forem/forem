@@ -51,42 +51,19 @@
   /* Sharing styles with SurveyTag.scss aesthetic but adapted for standalone view */
   .survey-poll-answers-grid {
     display: grid !important;
-    grid-template-rows: repeat(2, auto) !important;
-    grid-auto-flow: column !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    grid-auto-flow: row !important;
     gap: 10px !important;
-    overflow-x: auto !important;
-    padding-bottom: 8px !important;
     flex-direction: row !important; /* Override column for flex containers */
   }
 
-  .survey-poll-answers-grid::-webkit-scrollbar {
-    height: 4px;
-  }
-  .survey-poll-answers-grid::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.05);
-  }
-  .survey-poll-answers-grid::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
-  }
-
   .survey-poll-answers-grid .survey-poll-option {
-    padding: 8px 12px !important;
-    min-width: max-content !important;
+    padding: 10px 15px !important;
   }
 
   .survey-poll-answers-grid .option-text,
   .survey-poll-answers-grid button {
-    font-size: 0.9em !important;
-    white-space: nowrap !important;
-  }
-
-  @media (max-width: 640px) {
-    .survey-poll-answers-grid {
-      grid-template-rows: none !important;
-      grid-auto-flow: row !important;
-      grid-template-columns: 1fr !important;
-      overflow-x: visible !important;
-    }
+    font-size: 0.95em !important;
+    white-space: normal !important;
   }
 </style>
