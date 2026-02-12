@@ -22,11 +22,11 @@ class Poll < ApplicationRecord
   accepts_nested_attributes_for :poll_options, allow_destroy: true
   validates_associated :poll_options
 
-  validates :poll_options_count, numericality: { greater_than_or_equal_to: 0 }
+  validates :poll_options_count, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :poll_options_input_array, presence: true, length: { minimum: 2, maximum: 15 },
                                        unless: -> { text_input? || scale? || poll_options.any? }
-  validates :poll_skips_count, numericality: { greater_than_or_equal_to: 0 }
-  validates :poll_votes_count, numericality: { greater_than_or_equal_to: 0 }
+  validates :poll_skips_count, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :poll_votes_count, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :prompt_markdown, presence: true, length: { maximum: 500 }
   validates :type_of, presence: true
   validates :scale_min, numericality: { only_integer: true }, if: :scale?
@@ -131,6 +131,9 @@ class Poll < ApplicationRecord
         supplementary_text: supplementary_text,
       )
     end
+    
+    # Reload association so that in-memory usage (e.g. factories, tests) sees the new options immediately
+    poll_options.reload
   end
 
   def set_default_position
