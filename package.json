@@ -53,7 +53,7 @@
     "@storybook/addon-actions": "^8.6.15",
     "@storybook/addon-backgrounds": "^8.6.15",
     "@storybook/addon-controls": "^8.6.15",
-    "@storybook/addon-docs": "^8.6.15",
+    "@storybook/addon-docs": "^10.2.8",
     "@storybook/addon-storysource": "^8.6.15",
     "@storybook/preact": "^8.6.15",
     "@storybook/preact-webpack5": "^8.6.15",
