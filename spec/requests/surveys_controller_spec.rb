@@ -49,14 +49,14 @@ RSpec.describe "SurveysController", type: :request do
     end
   end
 
-  describe "GET /survey/:slug/votes" do
+  describe "GET /surveys/:id/votes" do
     context "when user has not completed the survey" do
       it "returns empty votes and allows submission" do
         # Ensure polls are created
         expect(poll1).to be_persisted
         expect(poll2).to be_persisted
 
-        get "/survey/#{survey.slug}/votes"
+        get "/surveys/#{survey.id}/votes"
 
         expect(response).to have_http_status(:ok)
         json_response = JSON.parse(response.body)
@@ -76,7 +76,7 @@ RSpec.describe "SurveysController", type: :request do
       end
 
       it "returns empty votes for new session and allows resubmission" do
-        get "/survey/#{survey.slug}/votes"
+        get "/surveys/#{survey.id}/votes"
 
         expect(response).to have_http_status(:ok)
         json_response = JSON.parse(response.body)
@@ -99,7 +99,7 @@ RSpec.describe "SurveysController", type: :request do
       end
 
       it "returns existing votes and prevents resubmission" do
-        get "/survey/#{survey.slug}/votes"
+        get "/surveys/#{survey.id}/votes"
 
         expect(response).to have_http_status(:ok)
         json_response = JSON.parse(response.body)
