@@ -12,14 +12,51 @@ RSpec.describe "SurveysController", type: :request do
     sign_in user
   end
 
-  describe "GET /surveys/:id/votes" do
+  describe "GET /survey/:slug" do
+    it "renders the show page for an active survey" do
+      get "/survey/#{survey.slug}"
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "redirects when using an old slug" do
+      old_slug = survey.slug
+      survey.update(slug: "new-slug")
+      
+      get "/survey/#{old_slug}"
+      expect(response).to redirect_to("/survey/new-slug")
+      expect(response.status).to eq(301)
+    end
+
+    it "redirects when using an old old slug" do
+      slug1 = survey.slug
+      survey.update(slug: "slug-2")
+      survey.update(slug: "slug-3")
+      
+      get "/survey/#{slug1}"
+      expect(response).to redirect_to("/survey/slug-3")
+      expect(response.status).to eq(301)
+    end
+
+    it "returns 404 for non-existent survey" do
+      get "/survey/non-existent-slug"
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "returns 404 for inactive survey" do
+      survey.update(active: false)
+      get "/survey/#{survey.slug}"
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
+  describe "GET /survey/:slug/votes" do
     context "when user has not completed the survey" do
       it "returns empty votes and allows submission" do
         # Ensure polls are created
         expect(poll1).to be_persisted
         expect(poll2).to be_persisted
 
-        get "/surveys/#{survey.id}/votes"
+        get "/survey/#{survey.slug}/votes"
 
         expect(response).to have_http_status(:ok)
         json_response = JSON.parse(response.body)
@@ -39,7 +76,7 @@ RSpec.describe "SurveysController", type: :request do
       end
 
       it "returns empty votes for new session and allows resubmission" do
-        get "/surveys/#{survey.id}/votes"
+        get "/survey/#{survey.slug}/votes"
 
         expect(response).to have_http_status(:ok)
         json_response = JSON.parse(response.body)
@@ -62,7 +99,7 @@ RSpec.describe "SurveysController", type: :request do
       end
 
       it "returns existing votes and prevents resubmission" do
-        get "/surveys/#{survey.id}/votes"
+        get "/survey/#{survey.slug}/votes"
 
         expect(response).to have_http_status(:ok)
         json_response = JSON.parse(response.body)

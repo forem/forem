@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Surveys", type: :request do
-  describe "GET /surveys/:id/votes" do
+  describe "GET /survey/:slug/votes" do
     let(:user) { create(:user) }
     let(:survey) { create(:survey) }
     let!(:poll_1) { create(:poll, survey_id: survey.id) }
@@ -10,7 +10,7 @@ RSpec.describe "Surveys", type: :request do
 
     context "when user is not signed in" do
       it "returns an unauthorized status" do
-        get "/surveys/#{survey.id}/votes"
+        get "/survey/#{survey.slug}/votes"
         # The status might be 401 Unauthorized or 302 Found for a redirect,
         # depending on your authentication setup (e.g., Devise).
         expect(response).not_to have_http_status(:ok)
@@ -21,7 +21,7 @@ RSpec.describe "Surveys", type: :request do
       before { sign_in user }
 
       it "returns an empty votes object if the user has not voted on any poll" do
-        get "/surveys/#{survey.id}/votes"
+        get "/survey/#{survey.slug}/votes"
 
         expect(response).to have_http_status(:ok)
         expect(response.parsed_body["votes"]).to be_empty
@@ -31,7 +31,7 @@ RSpec.describe "Surveys", type: :request do
         option_for_poll_1 = poll_1.poll_options.first
         create(:poll_vote, user: user, poll: poll_1, poll_option: option_for_poll_1)
 
-        get "/surveys/#{survey.id}/votes"
+        get "/survey/#{survey.slug}/votes"
 
         expect(response).to have_http_status(:ok)
         votes = response.parsed_body["votes"]
@@ -50,7 +50,7 @@ RSpec.describe "Surveys", type: :request do
         option_for_other_poll = other_poll.poll_options.first
         create(:poll_vote, user: user, poll: other_poll, poll_option: option_for_other_poll)
 
-        get "/surveys/#{survey.id}/votes"
+        get "/survey/#{survey.slug}/votes"
 
         expect(response).to have_http_status(:ok)
         votes = response.parsed_body["votes"]

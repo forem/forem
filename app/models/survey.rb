@@ -1,5 +1,9 @@
 class Survey < ApplicationRecord
   validates :title, presence: true
+  validates :slug, uniqueness: true, allow_nil: true
+
+  before_validation :generate_slug, on: :create
+  before_save :check_for_slug_change
   has_many :polls, -> { order(:position) }, dependent: :nullify, inverse_of: :survey
   has_many :poll_votes, through: :polls
   has_many :survey_completions, dependent: :destroy
@@ -67,5 +71,21 @@ class Survey < ApplicationRecord
     return false unless user
 
     survey_completions.exists?(user: user)
+  end
+
+  private
+
+  def generate_slug
+    return if title.blank?
+    return if slug.present?
+
+    self.slug = "#{title.parameterize}-#{SecureRandom.hex(4)}"
+  end
+
+  def check_for_slug_change
+    return unless slug_changed?
+
+    self.old_old_slug = old_slug
+    self.old_slug = slug_was
   end
 end
