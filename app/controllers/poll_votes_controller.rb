@@ -20,7 +20,10 @@ class PollVotesController < ApplicationController
 
     # Check if this poll belongs to a survey and if resubmission is allowed
     if poll.survey.present? && !poll.survey.can_user_submit?(current_user)
-      render json: { error: "Survey does not allow resubmission" }, status: :forbidden
+      render json: { voting_data: poll.voting_data,
+                     poll_id: poll.id,
+                     user_vote_poll_option_id: poll_vote_params[:poll_option_id].to_i,
+                     voted: true }
       return
     end
 
@@ -50,6 +53,16 @@ class PollVotesController < ApplicationController
 
     render json: { voting_data: poll.voting_data,
                    poll_id: poll.id,
+                   user_vote_poll_option_id: poll_vote_params[:poll_option_id].to_i,
+                   voted: true }
+  rescue StandardError => e
+    Honeybadger.notify(e, context: {
+                         user_id: current_user&.id,
+                         poll_option_id: poll_vote_params[:poll_option_id],
+                         action: "poll_vote_create",
+                       })
+    render json: { voting_data: { votes_count: 0, votes_distribution: [] },
+                   poll_id: poll_vote_params[:poll_option_id],
                    user_vote_poll_option_id: poll_vote_params[:poll_option_id].to_i,
                    voted: true }
   end

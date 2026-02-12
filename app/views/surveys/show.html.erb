@@ -2,10 +2,7 @@
   <%= render partial: 'liquids/survey', locals: { survey: @survey } %>
 </div>
 
-<% content_for :javascript do %>
-  <script>
-    (function() {
-      <%= SurveyTag.script.html_safe %>
-    })();
-  </script>
-<% end %>
+<script>
+  <%= SurveyTag.script.html_safe %>
+</script>
+

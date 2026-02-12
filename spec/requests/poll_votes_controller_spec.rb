@@ -78,7 +78,7 @@ RSpec.describe "PollVotesController", type: :request do
         create(:poll_vote, user: user, poll: poll, poll_option: option1, session_start: 1)
       end
 
-      it "prevents creating new votes when survey is completed" do
+      it "returns success but does not create a vote when survey is completed (silent failure)" do
         expect do
           post "/poll_votes", params: {
             poll_vote: {
@@ -88,9 +88,9 @@ RSpec.describe "PollVotesController", type: :request do
           }
         end.not_to change { PollVote.count }
 
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to have_http_status(:ok)
         json_response = JSON.parse(response.body)
-        expect(json_response["error"]).to eq("Survey does not allow resubmission")
+        expect(json_response["voted"]).to be true
       end
     end
 
