@@ -175,6 +175,11 @@ fr:
       created: '%{tag_name} a été créé !'
       updated: '%{tag_name} tag mis à jour avec succès !'
       update_fail: 'La mise à jour de la balise a échoué : %{errors}'
+    surveys_controller:
+      created: Le sondage a été créé !
+      updated: Le sondage a été mis à jour !
+      deleted: Le sondage a été supprimé !
+      wrong: Quelque chose s'est mal passé avec l'opération de sondage.
     tools_controller:
       article_busted: "L'article #%{article} a été bloqué avec succès."
       user_busted: "L'utilisateur #%{user} a été arrêté avec succès."

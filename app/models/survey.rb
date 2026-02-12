@@ -1,7 +1,11 @@
 class Survey < ApplicationRecord
-  has_many :polls, -> { order(:position) }, dependent: :nullify
+  validates :title, presence: true
+  has_many :polls, -> { order(:position) }, dependent: :nullify, inverse_of: :survey
   has_many :poll_votes, through: :polls
   has_many :survey_completions, dependent: :destroy
+
+  accepts_nested_attributes_for :polls, allow_destroy: true
+  validates_associated :polls
 
   # Check if a user has completed all polls in this survey in their latest session
   def completed_by_user?(user)

@@ -1,0 +1,19 @@
+pt:
+  admin:
+    surveys:
+      index:
+        title: Gerenciar Pesquisas
+        create: Criar Nova Pesquisa
+        empty: Nenhuma pesquisa encontrada.
+        table:
+          title: Título
+          active: Ativa
+          polls_count: Enquetes
+          created_at: Criado em
+          actions: Ações
+      new:
+        title: Nova Pesquisa
+      edit:
+        title: Editar Pesquisa
+      show:
+        title: Detalhes da Pesquisa

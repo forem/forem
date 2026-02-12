@@ -1,0 +1,55 @@
+<div data-controller="admin-surveys">
+  <%= form_for [:admin, @survey], html: { class: "flex flex-col gap-6" } do |f| %>
+    <div class="crayons-field">
+      <%= f.label :title, class: "crayons-field__label" %>
+      <%= f.text_field :title, class: "crayons-textfield", required: true, placeholder: "Survey Title" %>
+    </div>
+
+    <div class="grid s:grid-cols-3 gap-4">
+      <label class="crayons-field crayons-field--checkbox">
+        <%= f.check_box :active, class: "crayons-checkbox" %>
+        <div class="crayons-field__label pl-2">Active</div>
+      </label>
+
+      <label class="crayons-field crayons-field--checkbox">
+        <%= f.check_box :display_title, class: "crayons-checkbox" %>
+        <div class="crayons-field__label pl-2">Display Title</div>
+      </label>
+
+      <label class="crayons-field crayons-field--checkbox">
+        <%= f.check_box :allow_resubmission, class: "crayons-checkbox" %>
+        <div class="crayons-field__label pl-2">Allow Resubmission</div>
+      </label>
+    </div>
+
+    <hr class="my-4">
+
+    <div>
+      <h2 class="fs-base fw-bold mb-4">Polls</h2>
+      <div id="polls-container" data-admin-surveys-target="pollContainer">
+        <%= f.fields_for :polls do |poll_form| %>
+          <%= render "poll_fields", f: poll_form %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <button type="button" class="crayons-btn crayons-btn--secondary" data-action="click->admin-surveys#addPoll">
+        + Add Poll
+      </button>
+    </div>
+
+    <hr class="my-6">
+
+    <div class="flex gap-3">
+      <%= f.submit class: "crayons-btn crayons-btn--branded" %>
+      <%= link_to "Cancel", admin_surveys_path, class: "crayons-btn crayons-btn--ghost" %>
+    </div>
+
+    <template data-admin-surveys-target="pollTemplate">
+      <%= f.fields_for :polls, Poll.new, child_index: "NEW_RECORD" do |poll_form| %>
+        <%= render "poll_fields", f: poll_form %>
+      <% end %>
+    </template>
+  <% end %>
+</div>

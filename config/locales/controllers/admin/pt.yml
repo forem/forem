@@ -136,6 +136,11 @@ pt:
       created: '%{tag_name} foi criada!'
       updated: 'Tag %{tag_name} atualizada com sucesso!'
       update_fail: 'A atualização da tag falhou: %{errors}'
+    surveys_controller:
+      created: A pesquisa foi criada!
+      updated: A pesquisa foi atualizada!
+      deleted: A pesquisa foi excluída!
+      wrong: Algo deu errado com a operação da pesquisa.
     tools_controller:
       link_busted: '%{link} foi quebrado com sucesso'
       user_busted: 'Usuário #%{user} foi quebrado com sucesso'
