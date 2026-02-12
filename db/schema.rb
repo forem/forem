@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_01_28_210141) do
+ActiveRecord::Schema[7.0].define(version: 2026_02_10_203807) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1145,6 +1145,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_01_28_210141) do
     t.integer "position", default: 0, null: false
     t.string "prompt_html"
     t.string "prompt_markdown"
+    t.integer "scale_max"
+    t.integer "scale_min"
     t.bigint "survey_id"
     t.integer "type_of", default: 0, null: false
     t.datetime "updated_at", precision: nil, null: false

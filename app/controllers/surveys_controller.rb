@@ -1,5 +1,10 @@
 class SurveysController < ApplicationController
-  before_action :authenticate_user!, only: [:votes] # Ensure only signed-in users can get votes
+  before_action :authenticate_user!, only: [:votes]
+
+  def show
+    @survey = Survey.find(params[:id])
+    @polls = @survey.polls.includes(:poll_options).order(:position)
+  end
 
   def show
     @survey = Survey.find(params[:id])
