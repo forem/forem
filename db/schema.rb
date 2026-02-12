@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_02_10_203807) do
+ActiveRecord::Schema[7.0].define(version: 2026_02_12_183058) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -448,11 +448,9 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_10_203807) do
     t.datetime "created_at", null: false
     t.text "processed_html", null: false
     t.bigint "tag_id"
-    t.bigint "trend_id"
     t.datetime "updated_at", null: false
     t.index ["article_id"], name: "index_context_notes_on_article_id"
     t.index ["tag_id"], name: "index_context_notes_on_tag_id"
-    t.index ["trend_id"], name: "index_context_notes_on_trend_id"
   end
 
   create_table "context_notifications", force: :cascade do |t|
@@ -802,13 +800,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_10_203807) do
     t.index ["slug"], name: "index_labels_on_slug", unique: true
   end
 
-  create_table "media_sources", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.string "display_url", null: false
-    t.string "input_url", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "media_stores", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "media_type", default: 0, null: false
@@ -829,7 +820,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_10_203807) do
 
   create_table "navigation_links", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.text "description"
     t.boolean "display_only_when_signed_in", default: false
     t.integer "display_to", default: 0, null: false
     t.string "icon"
@@ -1193,7 +1183,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_10_203807) do
     t.datetime "created_at", null: false
     t.jsonb "data", default: {}, null: false
     t.string "location"
-    t.string "social_image"
     t.text "summary"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
@@ -1304,6 +1293,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_10_203807) do
     t.datetime "updated_at", null: false
     t.text "value"
     t.string "var", null: false
+    t.index ["subforem_id"], name: "index_settings_authentications_on_subforem_id"
     t.index ["var", "subforem_id"], name: "index_settings_authentications_on_var_and_subforem_id", unique: true
   end
 
@@ -1313,6 +1303,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_10_203807) do
     t.datetime "updated_at", null: false
     t.text "value"
     t.string "var", null: false
+    t.index ["subforem_id"], name: "index_settings_campaigns_on_subforem_id"
     t.index ["var", "subforem_id"], name: "index_settings_campaigns_on_var_and_subforem_id", unique: true
   end
 
@@ -1322,6 +1313,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_10_203807) do
     t.datetime "updated_at", null: false
     t.text "value"
     t.string "var", null: false
+    t.index ["subforem_id"], name: "index_settings_communities_on_subforem_id"
     t.index ["var", "subforem_id"], name: "index_settings_communities_on_var_and_subforem_id", unique: true
   end
 
@@ -1331,6 +1323,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_10_203807) do
     t.datetime "updated_at", null: false
     t.text "value"
     t.string "var", null: false
+    t.index ["subforem_id"], name: "index_settings_rate_limits_on_subforem_id"
     t.index ["var", "subforem_id"], name: "index_settings_rate_limits_on_var_and_subforem_id", unique: true
   end
 
@@ -1340,6 +1333,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_10_203807) do
     t.datetime "updated_at", null: false
     t.text "value"
     t.string "var", null: false
+    t.index ["subforem_id"], name: "index_settings_smtp_on_subforem_id"
     t.index ["var", "subforem_id"], name: "index_settings_smtp_on_var_and_subforem_id", unique: true
   end
 
@@ -1349,15 +1343,17 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_10_203807) do
     t.datetime "updated_at", null: false
     t.text "value"
     t.string "var", null: false
+    t.index ["subforem_id"], name: "index_settings_user_experiences_on_subforem_id"
     t.index ["var", "subforem_id"], name: "index_settings_user_experiences_on_var_and_subforem_id", unique: true
   end
 
   create_table "site_configs", force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
-    t.integer "subforem_id"
+    t.bigint "subforem_id"
     t.datetime "updated_at", precision: nil, null: false
     t.text "value"
     t.string "var", null: false
+    t.index ["subforem_id"], name: "index_site_configs_on_subforem_id"
     t.index ["var", "subforem_id"], name: "index_site_configs_on_var_and_subforem_id", unique: true
   end
 
@@ -1394,8 +1390,14 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_10_203807) do
     t.boolean "allow_resubmission", default: false, null: false
     t.datetime "created_at", null: false
     t.boolean "display_title", default: true
+    t.string "old_old_slug"
+    t.string "old_slug"
+    t.string "slug"
     t.string "title", null: false
     t.datetime "updated_at", null: false
+    t.index ["old_old_slug"], name: "index_surveys_on_old_old_slug"
+    t.index ["old_slug"], name: "index_surveys_on_old_slug"
+    t.index ["slug"], name: "index_surveys_on_slug", unique: true
   end
 
   create_table "tag_adjustments", force: :cascade do |t|
@@ -1411,14 +1413,10 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_10_203807) do
   end
 
   create_table "tag_subforem_relationships", force: :cascade do |t|
-    t.string "bg_color_hex"
     t.datetime "created_at", null: false
-    t.string "pretty_name"
-    t.text "short_summary"
     t.bigint "subforem_id", null: false
     t.boolean "supported", default: true
     t.bigint "tag_id", null: false
-    t.string "text_color_hex"
     t.datetime "updated_at", null: false
     t.index ["subforem_id"], name: "index_tag_subforem_relationships_on_subforem_id"
     t.index ["tag_id"], name: "index_tag_subforem_relationships_on_tag_id"
@@ -1474,18 +1472,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_10_203807) do
     t.index ["social_preview_template"], name: "index_tags_on_social_preview_template"
     t.index ["supported"], name: "index_tags_on_supported"
     t.index ["taggings_count"], name: "index_tags_on_taggings_count"
-  end
-
-  create_table "trends", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "expiry_date", null: false
-    t.text "full_content_description", null: false
-    t.text "public_description", null: false
-    t.string "short_title", null: false
-    t.bigint "subforem_id", null: false
-    t.datetime "updated_at", null: false
-    t.index ["expiry_date"], name: "index_trends_on_expiry_date"
-    t.index ["subforem_id"], name: "index_trends_on_subforem_id"
   end
 
   create_table "tweets", force: :cascade do |t|
@@ -1644,7 +1630,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_10_203807) do
     t.datetime "last_article_at", precision: nil, default: "2017-01-01 05:00:00"
     t.datetime "last_comment_at", precision: nil, default: "2017-01-01 05:00:00"
     t.datetime "last_followed_at", precision: nil
-    t.datetime "last_moderation_notification", precision: nil, default: "2017-01-01 05:00:00"
+    t.datetime "last_moderation_notification", precision: nil, default: "2017-01-01 00:00:00"
     t.datetime "last_notification_activity", precision: nil
     t.string "last_onboarding_page"
     t.datetime "last_presence_at"
@@ -1754,7 +1740,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_10_203807) do
   end
 
   create_table "users_settings", force: :cascade do |t|
-    t.boolean "auto_relocation_enabled", default: true, null: false
     t.string "brand_color1", default: "#000000"
     t.integer "config_font", default: 0, null: false
     t.integer "config_homepage_feed", default: 0, null: false
@@ -1877,7 +1862,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_10_203807) do
   add_foreign_key "tag_subforem_relationships", "tags"
   add_foreign_key "taggings", "tags", on_delete: :cascade
   add_foreign_key "tags", "badges", on_delete: :nullify
-  add_foreign_key "trends", "subforems"
   add_foreign_key "tweets", "users", on_delete: :nullify
   add_foreign_key "user_activities", "users"
   add_foreign_key "user_blocks", "users", column: "blocked_id"

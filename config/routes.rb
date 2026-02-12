@@ -205,8 +205,13 @@ Rails.application.routes.draw do
     end
     resources :poll_skips, only: [:create]
 
-    resources :surveys, only: [:show] do # Or however you have it configured
-      get :votes, on: :member # This creates the route GET /surveys/:id/votes
+    resources :poll_skips, only: [:create]
+
+    get "/survey/:slug", to: "surveys#show", as: :survey
+    resources :surveys, only: [] do
+      member do
+        get :votes
+      end
     end
 
     resources :profile_pins, only: %i[create update]
