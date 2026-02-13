@@ -5,6 +5,8 @@ RSpec.describe "Devices" do
   let(:consumer_app) { create(:consumer_app) }
 
   before do
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with('PUSH_NOTIFICATIONS_ENABLED').and_return('true')
     sign_in user
   end
 
