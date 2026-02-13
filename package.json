@@ -43,7 +43,7 @@
   },
   "homepage": "https://github.com/forem/forem#readme",
   "devDependencies": {
-    "@babel/eslint-parser": "^7.22.15",
+    "@babel/eslint-parser": "^7.28.6",
     "@babel/plugin-proposal-decorators": "^7.23.3",
     "@cypress/code-coverage": "^3.12.36",
     "@etchteam/storybook-addon-css-variables-theme": "^1.6.0",
@@ -72,7 +72,7 @@
     "cypress-failed-log": "^2.10.0",
     "cypress-file-upload": "^5.0.8",
     "cypress-multi-reporters": "^2.0.5",
-    "cypress-pipe": "^2.0.0",
+    "cypress-pipe": "^2.0.1",
     "eslint": "^8.57.0",
     "eslint-config-preact": "^2.0.0",
     "eslint-config-prettier": "^10.1.8",

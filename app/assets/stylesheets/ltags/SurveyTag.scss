@@ -12,7 +12,7 @@
   background-color: var(--theme-container-background, white);
   border-radius: var(--radius-lg, 5px);
   box-sizing: border-box;
-  padding: 15px 25px 25px;
+  padding: calc(4px + 0.6vw) calc(7px + 0.6vw) calc(7px + 0.6vw);
   font-family: var(--ff-sans-serif);
 
   .survey-title {
@@ -30,13 +30,15 @@
   margin-bottom: 1em;
 
   h3 {
-    margin: 15px 0px 20px !important;
+    margin: 15px 0px 16px !important;
     font-size: 1.05em !important;
     font-weight: 500 !important;
     color: var(--body-color);
-    padding: 28px 0;
-    border-bottom: 1px solid var(--form-border, #eee);
-    border-top: 1px solid var(--form-border, #eee);
+    padding: var(--su-2) var(--su-2) !important;
+    border: 1px solid var(--form-border, #eee);
+    border-radius: var(--radius-md, 5px);
+    background-color: rgba(0, 0, 0, 0.05);
+
   }
 
   &.survey-poll-long-question {
@@ -53,6 +55,23 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+
+  &.survey-poll-answers-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-flow: row;
+    gap: 10px;
+
+    .survey-poll-option {
+      padding: 3px 8px;
+      font-size: calc(0.8em + 0.1vw);
+
+      .option-text {
+        white-space: normal;
+      }
+    }
+
+  }
 
   .survey-poll-option {
     border: 1px solid var(--form-border);
@@ -153,10 +172,10 @@
 .scale-supplementary-text-horizontal {
   // Show horizontal version by default
   display: flex;
-  
+
   // Hide for scale-many-options on smaller screens (vertical layout)
   .survey-poll.scale-many-options & {
-    @media (max-width: $breakpoint-xl - 1px) {
+    @media (max-width: ($breakpoint-xl - 1px)) {
       display: none;
     }
   }
@@ -170,10 +189,10 @@
   font-weight: var(--fw-normal, 400);
   margin-top: 2px;
   line-height: 1.1;
-  
+
   // Show for scale-many-options on smaller screens (vertical layout)
   .survey-poll.scale-many-options & {
-    @media (max-width: $breakpoint-xl - 1px) {
+    @media (max-width: ($breakpoint-xl - 1px)) {
       display: block;
     }
   }
@@ -182,6 +201,7 @@
 // Scale poll specific styles for surveys
 .survey-poll[data-poll-type="scale"] {
   .survey-poll-answers {
+
     // Default vertical layout for more than 10 options
     .survey-poll-option {
       justify-content: space-between;
@@ -323,6 +343,7 @@
     font-size: 0.9em;
     color: var(--card-color-tertiary, $medium-gray);
     display: none;
+
     @media (min-width: $breakpoint-m) {
       display: block;
     }
@@ -338,6 +359,7 @@
     cursor: pointer;
     font-weight: var(--fw-medium, 500);
     min-width: 44%;
+
     @media (min-width: $breakpoint-m) {
       min-width: 25%;
     }

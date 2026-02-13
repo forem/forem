@@ -17,7 +17,7 @@ RSpec.describe Poll, type: :model do
   describe "associations" do
     it { is_expected.to belong_to(:article).optional }
     it { is_expected.to belong_to(:survey).optional }
-    it { is_expected.to have_many(:poll_options).dependent(:delete_all) }
+    it { is_expected.to have_many(:poll_options).dependent(:destroy) }
     it { is_expected.to have_many(:poll_skips).dependent(:delete_all) }
     it { is_expected.to have_many(:poll_votes).dependent(:delete_all) }
   end
