@@ -16,8 +16,7 @@ jobs:
         with:
           path-to-signatures: 'signatures/version1/cla.json'
           path-to-document: 'https://github.com/forem/forem/blob/main/CLA.md'
-          # FIXED: Explicitly tell it to use 'main', or it defaults to 'master' and fails
           branch: 'main'
-          allowlist: ${{ secrets.CLA_ALLOWLIST }}
           remote-repository-name: 'forem/CLA-signatures'
+          allowlist: ${{ secrets.CLA_ALLOWLIST }}
           lock-pullrequest-aftermerge: false
