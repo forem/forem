@@ -1,46 +1,24 @@
-name: "CLA Debugger"
+name: "CLA Assistant"
 on:
+  # Keep using pull_request until this is fixed and merged
   pull_request:
     types: [opened, synchronize, closed]
 
 jobs:
-  Debug-Write-Access:
+  CLAAssistant:
     runs-on: ubuntu-latest
     steps:
-      - name: "Test Write Permissions"
+      - name: "CLA Assistant"
+        if: (github.event.comment.body == 'recheck' || github.event.comment.body == 'I have read the CLA Document and I hereby sign the CLA') || github.event_name == 'pull_request'
+        uses: contributor-assistant/github-action@v2.6.1
         env:
-          TEST_TOKEN: ${{ secrets.CLA_PERSONAL_ACCESS_TOKEN }}
-        run: |
-          echo "=== DEBUG START ==="
-          
-          # 1. READ TEST (We know this passes, but good baseline)
-          echo "Attempting to READ 'forem/CLA-signatures'..."
-          READ_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            -H "Authorization: token $TEST_TOKEN" \
-            https://api.github.com/repos/forem/CLA-signatures/contents/signatures/version1/cla.json)
-          echo "READ Status: $READ_STATUS (Expected: 200)"
-
-          # 2. WRITE TEST (The moment of truth)
-          # We try to create a dummy file 'debug-test.txt'
-          echo "Attempting to WRITE to 'forem/CLA-signatures'..."
-          
-          WRITE_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            -X PUT \
-            -H "Authorization: token $TEST_TOKEN" \
-            -H "Accept: application/vnd.github.v3+json" \
-            -d '{"message":"debug write test","content":"Ym9w"}' \
-            https://api.github.com/repos/forem/CLA-signatures/contents/debug-test.txt)
-
-          echo "WRITE Status: $WRITE_STATUS"
-
-          if [ "$WRITE_STATUS" == "201" ] || [ "$WRITE_STATUS" == "200" ]; then
-            echo "✅ SUCCESS: Token has WRITE access! The issue is the Action config."
-          elif [ "$WRITE_STATUS" == "404" ]; then
-            echo "❌ FAILED (404): Token is READ-ONLY. It cannot write to this repo."
-            echo "   Cause: Token Missing 'repo' scope OR Organization requires strict write-access approval."
-          elif [ "$WRITE_STATUS" == "422" ]; then
-             echo "⚠️ FAILED (422): Token works, but file already exists or validation failed."
-          else
-            echo "❌ FAILED with Status: $WRITE_STATUS"
-          fi
-          echo "=== DEBUG END ==="
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.CLA_PERSONAL_ACCESS_TOKEN }}
+        with:
+          # Pointing back to the REAL file
+          path-to-signatures: 'signatures/version1/cla.json'
+          path-to-document: 'https://github.com/forem/forem/blob/main/CLA.md'
+          # REMOVED: branch: 'main' (Let the Action auto-detect the default branch)
+          allowlist: ${{ secrets.CLA_ALLOWLIST }}
+          remote-repository-name: 'forem/CLA-signatures'
+          lock-pullrequest-aftermerge: false
