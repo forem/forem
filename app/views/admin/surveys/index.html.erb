@@ -1,0 +1,51 @@
+<header class="admin__header mb-4 flex items-center justify-between">
+  <div>
+    <h1 class="fs-4xl fw-bold"><%= t("admin.surveys.index.title") %></h1>
+  </div>
+  <div>
+    <%= link_to t("admin.surveys.index.create"), new_admin_survey_path, class: "crayons-btn crayons-btn--branded" %>
+  </div>
+</header>
+
+<div class="crayons-card p-4">
+  <% if @surveys.any? %>
+    <table class="crayons-table w-100">
+      <thead>
+        <tr>
+          <th><%= t("admin.surveys.index.table.title") %></th>
+          <th><%= t("admin.surveys.index.table.active") %></th>
+          <th><%= t("admin.surveys.index.table.polls_count") %></th>
+          <th><%= t("admin.surveys.index.table.created_at") %></th>
+          <th class="text-right"><%= t("admin.surveys.index.table.actions") %></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @surveys.each do |survey| %>
+          <tr>
+            <td>
+              <%= link_to survey.title, admin_survey_path(survey), class: "fw-medium" %>
+            </td>
+            <td>
+              <span class="crayons-badge crayons-badge--<%= survey.active? ? "success" : "danger" %>">
+                <%= survey.active? ? "Active" : "Inactive" %>
+              </span>
+            </td>
+            <td><%= survey.polls.count %></td>
+            <td><%= survey.created_at.strftime("%B %d, %Y") %></td>
+            <td class="text-right">
+              <div class="flex items-center justify-end">
+                <%= link_to "Edit", edit_admin_survey_path(survey), class: "crayons-btn crayons-btn--ghost mr-2" %>
+                <%= link_to "Delete", admin_survey_path(survey), method: :delete, data: { confirm: "Are you sure?" }, class: "crayons-btn crayons-btn--danger" %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <div class="mt-4">
+      <%= paginate @surveys %>
+    </div>
+  <% else %>
+    <p class="text-center py-6 color-base-60"><%= t("admin.surveys.index.empty") %></p>
+  <% end %>
+</div>

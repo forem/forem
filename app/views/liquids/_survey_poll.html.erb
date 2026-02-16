@@ -45,7 +45,7 @@
         </div>
       <% end %>
       
-      <ul class="survey-poll-answers <%= 'survey-poll-answers-grid' if poll.poll_options.count > 6 %>">
+      <ul class="survey-poll-answers">
         <% options.each do |option| %>
           <li class="survey-poll-option" id="survey_poll_option_list_item_<%= option.id %>" data-option-id="<%= option.id %>">
             <input type="radio" id="survey_poll_option_<%= option.id %>" name="survey_poll_<%= poll.id %>" value="<%= option.id %>">
@@ -62,7 +62,7 @@
       </ul>
     <% else %>
       <% options = poll.poll_options %>
-      <ul class="survey-poll-answers <%= 'survey-poll-answers-grid' if poll.poll_options.count > 6 %>">
+      <ul class="survey-poll-answers <%= 'survey-poll-answers-grid' if poll.poll_options.size > 6 %>">
         <% options.each do |option| %>
           <li class="survey-poll-option" id="survey_poll_option_list_item_<%= option.id %>" data-option-id="<%= option.id %>">
             <% if poll.single_choice? %>

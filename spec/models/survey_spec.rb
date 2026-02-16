@@ -7,6 +7,61 @@ RSpec.describe Survey, type: :model do
   let(:poll2) { create(:poll, survey: survey, type_of: :text_input) }
   let(:option1) { create(:poll_option, poll: poll1, markdown: "Option 1") }
 
+  describe "#slug" do
+    it "is generated from title on create" do
+      survey = create(:survey, title: "My Great Survey")
+      expect(survey.slug).to be_present
+      expect(survey.slug).to start_with("my-great-survey-")
+    end
+
+    it "is not regenerated on update" do
+      survey = create(:survey, title: "My Great Survey")
+      original_slug = survey.slug
+      survey.update(title: "New Title")
+      expect(survey.slug).to eq(original_slug)
+    end
+
+    it "can be updated manually" do
+      survey = create(:survey, title: "My Great Survey")
+      survey.update(slug: "custom-slug")
+      expect(survey.slug).to eq("custom-slug")
+    end
+
+    it "rotates old slugs on update" do
+      survey = create(:survey, title: "Original Title")
+      slug1 = survey.slug
+
+      survey.update(slug: "slug-2")
+      expect(survey.slug).to eq("slug-2")
+      expect(survey.old_slug).to eq(slug1)
+      expect(survey.old_old_slug).to be_nil
+
+      survey.update(slug: "slug-3")
+      expect(survey.slug).to eq("slug-3")
+      expect(survey.old_slug).to eq("slug-2")
+      expect(survey.old_old_slug).to eq(slug1)
+    end
+
+    it "validates uniqueness" do
+      create(:survey, slug: "taken-slug")
+      survey = build(:survey, slug: "taken-slug")
+      expect(survey).not_to be_valid
+      expect(survey.errors[:slug]).to include("has already been taken")
+    end
+
+    it "allows nil slug" do
+      survey = build(:survey, slug: nil)
+      expect(survey).to be_valid
+    end
+  end
+
+  describe "#to_param" do
+    it "returns id" do
+      survey = create(:survey)
+      expect(survey.to_param).to eq(survey.id.to_s)
+    end
+  end
+
   describe "#completed_by_user?" do
     context "when user has not responded to any polls" do
       it "returns false" do
