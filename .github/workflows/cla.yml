@@ -1,6 +1,5 @@
 name: "CLA Assistant"
 on:
-  # Keep using pull_request until this is fixed and merged
   pull_request:
     types: [opened, synchronize, closed]
 
@@ -15,10 +14,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PERSONAL_ACCESS_TOKEN: ${{ secrets.CLA_PERSONAL_ACCESS_TOKEN }}
         with:
-          # Pointing back to the REAL file
           path-to-signatures: 'signatures/version1/cla.json'
           path-to-document: 'https://github.com/forem/forem/blob/main/CLA.md'
-          # REMOVED: branch: 'main' (Let the Action auto-detect the default branch)
+          # FIXED: Explicitly tell it to use 'main', or it defaults to 'master' and fails
+          branch: 'main'
           allowlist: ${{ secrets.CLA_ALLOWLIST }}
           remote-repository-name: 'forem/CLA-signatures'
           lock-pullrequest-aftermerge: false
