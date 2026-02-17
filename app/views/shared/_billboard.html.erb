@@ -90,14 +90,14 @@
       data-page-id="<%= billboard.page_id %>"
     <% end %>
     data-type-of="<%= billboard.type_of_display %>">
-    <div class="flex">
+    <div class="popover-billboard__header flex">
       <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>
       <button id="sponsorship-close-trigger-<%= billboard.id %>" aria-controls="sponsorship-close-<%= billboard.id %>"
-        class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon">
+        class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon popover-billboard__close">
           <%= crayons_icon_tag("x", class: "pointer-events-none", title: "x") %>
       </button>
     </div>
-    <div class="p-1 text-styles text-styles--billboard">
+    <div class="popover-billboard__content text-styles text-styles--billboard">
       <%= billboard.processed_html_final.html_safe %>
     </div>
   </div>
