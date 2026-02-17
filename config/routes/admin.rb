@@ -132,6 +132,7 @@ namespace :admin do
     resources :tags, only: %i[index new create update edit] do
       resource :moderator, only: %i[create destroy], module: "tags"
     end
+    resources :surveys
   end
 
   scope :customization do

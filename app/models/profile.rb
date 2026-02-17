@@ -4,6 +4,8 @@
 class Profile < ApplicationRecord
   belongs_to :user
 
+  store_accessor :data, :social_image
+
   after_commit :bust_user_profile_details_cache, on: :update, if: :profile_details_changed_for_cache?
   after_commit :enqueue_profile_spam_check, on: :update, if: :profile_spam_check_triggered?
 

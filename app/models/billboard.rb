@@ -88,6 +88,8 @@ class Billboard < ApplicationRecord
   after_save :refresh_audience_segment, if: :should_refresh_audience_segment?
   after_save :update_links_with_bb_param
   after_save :update_event_counts_when_taking_down, if: -> { being_taken_down? }
+  after_save :bust_billboard_cache, if: -> { being_taken_down? }
+  after_save :bust_home_page_cache, if: -> { home_feed_first_being_activated? }
 
   scope :approved_and_published, lambda {
                                    where(approved: true, published: true).where("expires_at IS NULL OR expires_at > ?", Time.current)
@@ -389,7 +391,7 @@ class Billboard < ApplicationRecord
     return "" if color.blank?
 
     if placement_area.include?("fixed_")
-      "border-top: calc(9px + 0.5vw) solid #{color}"
+      "border: 5px solid #{color};border-bottom: none"
     else
       "border: 5px solid #{color}"
     end
@@ -469,6 +471,23 @@ class Billboard < ApplicationRecord
 
     # Check if approved changed from true to false or published changed from true to false.
     (saved_change_to_approved? && !approved) || (saved_change_to_published? && !published)
+  end
+
+  def home_feed_first_being_activated?
+    return false unless placement_area == "feed_first"
+    return false unless approved && published
+
+    # Trigger if either approved or published just changed to true (from a prior different state)
+    (saved_change_to_approved? && !approved_before_last_save) ||
+      (saved_change_to_published? && !published_before_last_save)
+  end
+
+  def bust_billboard_cache
+    EdgeCache::PurgeByKey.call(record_key)
+  end
+
+  def bust_home_page_cache
+    EdgeCache::PurgeByKey.call("main_app_home_page", fallback_paths: "/")
   end
 
   def generate_billboard_name

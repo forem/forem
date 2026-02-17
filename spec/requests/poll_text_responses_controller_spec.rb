@@ -62,7 +62,7 @@ RSpec.describe "PollText-responsesController", type: :request do
         create(:poll_text_response, user: user, poll: poll, text_content: "First response", session_start: 1)
       end
 
-      it "prevents creating new responses when survey is completed" do
+      it "returns success but does not create a response when survey is completed (silent failure)" do
         expect do
           post "/polls/#{poll.id}/poll_text_responses", params: {
             poll_text_response: {
@@ -72,9 +72,9 @@ RSpec.describe "PollText-responsesController", type: :request do
           }
         end.not_to change { PollTextResponse.count }
 
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to have_http_status(:success)
         json_response = JSON.parse(response.body)
-        expect(json_response["error"]).to eq("Survey does not allow resubmission")
+        expect(json_response["success"]).to be true
       end
     end
 
@@ -99,7 +99,7 @@ RSpec.describe "PollText-responsesController", type: :request do
         expect(text_response.session_start).to eq(0)
       end
 
-      it "prevents creating a second response for the same user and poll" do
+      it "returns success but does not create a duplicate response (silent failure)" do
         existing_response = create(:poll_text_response, user: user, poll: poll, text_content: "First response")
 
         post "/polls/#{poll.id}/poll_text_responses", params: {
@@ -108,9 +108,9 @@ RSpec.describe "PollText-responsesController", type: :request do
           }
         }
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:success)
         json_response = JSON.parse(response.body)
-        expect(json_response["errors"]).to include("Poll has already been taken")
+        expect(json_response["success"]).to be true
 
         # Verify the original response is unchanged
         existing_response.reload

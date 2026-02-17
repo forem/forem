@@ -1,0 +1,69 @@
+<div class="poll-fields border rounded p-4 mb-4 bg-white shadow-sm" 
+     data-admin-surveys-target="poll" 
+     data-index="<%= f.index %>">
+  
+  <div class="flex justify-between items-center mb-4">
+    <h3 class="fs-xl fw-bold">Poll</h3>
+    <button type="button" class="crayons-btn crayons-btn--danger crayons-btn--s" data-action="click->admin-surveys#removePoll">
+      Remove Poll
+    </button>
+    <%= f.hidden_field :_destroy, class: "destroy-poll-field" %>
+  </div>
+
+  <div class="crayons-field">
+    <%= f.label :prompt_markdown, "Question (Markdown)", class: "crayons-field__label" %>
+    <%= f.text_area :prompt_markdown, rows: 2, class: "crayons-textfield", required: true %>
+  </div>
+
+  <div class="grid s:grid-cols-2 gap-4 mb-4">
+    <div class="crayons-field">
+      <%= f.label :type_of, class: "crayons-field__label" %>
+      <%= f.select :type_of, Poll.type_ofs.keys.map { |k| [k.humanize, k] }, {}, 
+                   class: "crayons-select poll-type-select", 
+                   data: { action: "change->admin-surveys#handleTypeChange" } %>
+    </div>
+    <div class="crayons-field">
+      <%= f.label :position, class: "crayons-field__label" %>
+      <%= f.number_field :position, class: "crayons-textfield poll-position-field" %>
+    </div>
+  </div>
+
+  <div class="scale-section mb-4" style="display: <%= f.object.scale? ? 'block' : 'none' %>">
+    <h4 class="fs-base fw-bold mb-2">Scale Configuration</h4>
+    <div class="grid grid-cols-2 gap-4">
+      <div class="crayons-field">
+        <%= f.label :scale_min, "Minimum", class: "crayons-field__label" %>
+        <%= f.number_field :scale_min, class: "crayons-textfield scale-min" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :scale_max, "Maximum", class: "crayons-field__label" %>
+        <%= f.number_field :scale_max, class: "crayons-textfield scale-max" %>
+      </div>
+    </div>
+    <p class="fs-xs color-base-60 mt-2 italic">Scale options will be automatically generated upon saving.</p>
+  </div>
+
+  <%# Options Section %>
+  <div class="options-section" style="display: <%= (f.object.new_record? || f.object.single_choice? || f.object.multiple_choice?) ? 'block' : 'none' %>">
+    <h4 class="fs-base fw-bold mb-2">Options</h4>
+    <div class="options-container" data-admin-surveys-target="optionsContainer">
+      <%= f.fields_for :poll_options do |option_form| %>
+        <div class="option-fields flex gap-2 mb-2 items-start" data-admin-surveys-target="optionField">
+          <div class="flex-1">
+            <%= option_form.text_field :markdown, class: "crayons-textfield", placeholder: "Option text", required: true %>
+          </div>
+          <div class="flex-1">
+            <%= option_form.text_field :supplementary_text, class: "crayons-textfield", placeholder: "Supplementary text (optional)" %>
+          </div>
+          <%= option_form.hidden_field :_destroy %>
+          <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon" data-action="click->admin-surveys#removeOption">
+            <%= crayons_icon_tag(:x) %>
+          </button>
+        </div>
+      <% end %>
+    </div>
+    <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--s mt-2" data-action="click->admin-surveys#addOption">
+      + Add Option
+    </button>
+  </div>
+</div>

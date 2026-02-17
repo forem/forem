@@ -1,0 +1,104 @@
+<header class="admin__header mb-4 flex items-center justify-between">
+  <div>
+    <h1 class="fs-4xl fw-bold"><%= @survey.title %></h1>
+    <div class="mt-2 flex items-center gap-2">
+      <span class="crayons-badge crayons-badge--<%= @survey.active? ? "success" : "danger" %>">
+        <%= @survey.active? ? "Active" : "Inactive" %>
+      </span>
+      <% if @survey.display_title? %>
+        <span class="crayons-badge crayons-badge--ghost">Title Displayed</span>
+      <% end %>
+      <% if @survey.allow_resubmission? %>
+        <span class="crayons-badge crayons-badge--ghost">Allows Resubmission</span>
+      <% end %>
+    </div>
+  </div>
+  <div>
+    <%= link_to "Edit", edit_admin_survey_path(@survey), class: "crayons-btn crayons-btn--branded mr-2" %>
+    <%= link_to "Back", admin_surveys_path, class: "crayons-btn crayons-btn--ghost" %>
+  </div>
+</header>
+
+<div class="grid gap-6">
+  <section class="crayons-card p-4">
+    <h2 class="fs-2xl fw-bold mb-4">Survey Overview</h2>
+
+    <div class="grid gap-4 md:grid-cols-3">
+      <div>
+        <p class="fs-xs fw-medium color-base-60 text-uppercase">Total completions</p>
+        <p class="fs-2xl fw-bold"><%= @survey_stats[:completions_count] %></p>
+      </div>
+
+      <div>
+        <p class="fs-xs fw-medium color-base-60 text-uppercase">Unique respondents</p>
+        <p class="fs-2xl fw-bold"><%= @survey_stats[:unique_respondents_count] %></p>
+      </div>
+
+      <div>
+        <p class="fs-xs fw-medium color-base-60 text-uppercase">Polls</p>
+        <p class="fs-2xl fw-bold"><%= @survey_stats[:polls_count] %></p>
+      </div>
+
+      <div>
+        <p class="fs-xs fw-medium color-base-60 text-uppercase">Poll votes</p>
+        <p class="fs-2xl fw-bold"><%= @survey_stats[:poll_votes_count] %></p>
+      </div>
+
+      <div>
+        <p class="fs-xs fw-medium color-base-60 text-uppercase">Poll skips</p>
+        <p class="fs-2xl fw-bold"><%= @survey_stats[:poll_skips_count] %></p>
+      </div>
+
+      <div>
+        <p class="fs-xs fw-medium color-base-60 text-uppercase">Text responses</p>
+        <p class="fs-2xl fw-bold"><%= @survey_stats[:poll_text_responses_count] %></p>
+      </div>
+    </div>
+
+    <div class="mt-4 fs-s color-base-60">
+      <p>Created at: <%= @survey.created_at.strftime("%B %d, %Y %H:%M") %></p>
+      <p>Last updated: <%= @survey.updated_at.strftime("%B %d, %Y %H:%M") %></p>
+
+      <% if @survey_stats[:last_completed_at].present? %>
+        <p>Last completed at: <%= @survey_stats[:last_completed_at].strftime("%B %d, %Y %H:%M") %></p>
+      <% else %>
+        <p>Last completed at: Never</p>
+      <% end %>
+    </div>
+  </section>
+
+  <section class="crayons-card p-4">
+    <h2 class="fs-2xl fw-bold mb-4">Polls (<%= @survey.polls.count %>)</h2>
+    
+    <% if @survey.polls.any? %>
+      <div class="flex flex-col gap-4">
+        <% @survey.polls.each do |poll| %>
+          <div class="border rounded p-4 bg-light">
+            <div class="flex items-center justify-between mb-2">
+              <span class="fw-bold"><%= poll.type_of.humanize %> Poll</span>
+              <span class="color-base-60">Position: <%= poll.position %></span>
+            </div>
+            <div class="mb-4">
+              <%= poll.prompt_html.html_safe %>
+            </div>
+            
+            <% if poll.poll_options.any? %>
+              <ul class="list-disc pl-5">
+                <% poll.poll_options.each do |option| %>
+                  <li class="mb-2">
+                    <span class="fw-medium"><%= option.markdown %></span>
+                    <% if option.supplementary_text.present? %>
+                      <p class="fs-sm color-base-60"><%= option.supplementary_text %></p>
+                    <% end %>
+                  </li>
+                <% end %>
+              </ul>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="color-base-60 italic">No polls added yet.</p>
+    <% end %>
+  </section>
+</div>
