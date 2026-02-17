@@ -56,10 +56,10 @@ var instantClick
   }
 
   function calculateOffsetTop(element) {
-    var offset = element.offsetTop;
+    var offset = 0;
     while (element.offsetParent) {
-      element = element.offsetParent;
       offset += element.offsetTop;
+      element = element.offsetParent;
     }
     return offset;
   }
@@ -71,14 +71,15 @@ var instantClick
       return elem;
     }
     // Try to find element by name attribute with .anchor class
-    // Escape special characters for CSS selector
     try {
-      // Use CSS.escape if available (modern browsers), otherwise fall back to manual escaping
+      // Use CSS.escape for proper escaping in modern browsers (supported in Chrome 46+, Firefox 31+, Safari 10+)
+      // Fallback provides basic escaping for older browsers, though not comprehensive for all CSS special characters
       var escapedHash = typeof CSS !== 'undefined' && CSS.escape 
         ? CSS.escape(hash) 
         : hash.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
       return document.querySelector('[name="' + escapedHash + '"].anchor');
     } catch(e) {
+      // Handle any selector parsing errors gracefully
       return null;
     }
   }
