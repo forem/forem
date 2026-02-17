@@ -16,6 +16,8 @@ RSpec.describe Follows::UpdatePointsWorker, type: :worker do
     let(:page_view) { create(:page_view, user: user, article: article, time_tracked_in_seconds: 100) }
 
     before do
+      Rails.cache.clear
+      allow(worker).to receive(:cached_app_wide_top_tag_names).and_return([tag.name, second_tag.name, third_tag.name])
       page_view
 
       user.follow(second_tag)
@@ -69,14 +71,16 @@ RSpec.describe Follows::UpdatePointsWorker, type: :worker do
     end
 
     it "applies inverse bonus to slightly penalize more popular tags" do
+      allow(worker).to receive(:cached_app_wide_top_tag_names).and_call_original
       follow = Follow.last
       tag.update_column(:hotness_score, 1000)
       second_tag.update_column(:hotness_score, 100)
+      Rails.cache.clear
       worker.perform(reaction.reactable_id, reaction.user_id)
       follow.reload
       original_points = follow.points
       tag.update_column(:hotness_score, 50)
-      tag.reload
+      Rails.cache.clear
       worker.perform(reaction.reactable_id, reaction.user_id)
 
       expect(follow.reload.points).to be > original_points # should be higher because tag is now less popular
