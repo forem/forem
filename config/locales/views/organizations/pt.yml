@@ -1,0 +1,57 @@
+---
+pt:
+  views:
+    organizations:
+      dropdown: Organization actions
+      empty: 404 bio not found
+      external:
+        icon: External link icon
+      follow: Follow
+      github:
+        icon: GitHub logo
+      joined:
+        icon: Joined
+        text_html: "Joined on\_%{date}"
+      location:
+        icon: Location
+      logo: "%{org} profile picture"
+      size: Employees
+      sponsor:
+        text: "%{level} Community Sponsor ❤️"
+        level:
+          gold: Gold
+          silver: Silver
+          bronze: Bronze
+          tag: Tag
+          media: Media
+          devrel: Devrel
+      stack: Our stack
+      story: Our story
+      side:
+        post:
+            icon: Post
+            text:
+              one: 1 post published
+              other: "%{count} posts published"
+        member:
+          icon: Member
+          text:
+            one: 1 member
+            other: "%{count} members"
+      support: Support email
+      team: Meet the team
+      all_members: See All Members
+      twitter:
+        icon: Twitter logo
+      confirm_invitation:
+        title: Confirmar Convite da Organização
+        greeting: "Olá %{name}!"
+        invited_by_html: "<strong>%{inviter_name}</strong> convidou você para se juntar a <strong>%{organization_name}</strong> como membro."
+        invited_html: "Você foi convidado para se juntar a <strong>%{organization_name}</strong> como membro."
+        what_is_organization: "O que é uma organização?"
+        organization_explanation: "Organizações no %{community} permitem que equipes e grupos colaborem, compartilhem conteúdo e construam uma presença coletiva. Como membro, você poderá publicar artigos em nome da organização e colaborar com sua equipe."
+        confirm_button: "Aceitar Convite"
+        wrong_user: "Você deve estar conectado como o usuário convidado para confirmar este convite."
+        sign_in_required: "Por favor, faça login para confirmar sua associação à organização."
+        sign_in_button: "Entrar"
+        invalid_token: "Token de convite inválido ou expirado."

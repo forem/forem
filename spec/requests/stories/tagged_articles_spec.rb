@@ -86,7 +86,7 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
 
           get "/t/#{tag.name}"
           expect(response.body).to include(tag.name)
-          expected_args = ["#{tag.cache_key}/article-cached-tagged-count", { expires_in: 2.hours }]
+          expected_args = ["#{tag.cache_key}/article-cached-tagged-count", { expires_in: 72.hours }]
           expect(Rails.cache).to have_received(:fetch).with(*expected_args).once
         end
 
@@ -231,10 +231,10 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
             expect(response.body).to include('<span class="olderposts-pagenumber">')
           end
 
-          it "renders tag index without pagination when not needed" do
+          it "renders tag index with pagination for supported tags" do
             get "/t/#{tag.name}"
 
-            expect(response.body).not_to include('<span class="olderposts-pagenumber">')
+            expect(response.body).to include('<span class="olderposts-pagenumber">')
           end
 
           it "does not include sidebar for page tag" do

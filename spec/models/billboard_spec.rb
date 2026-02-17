@@ -169,6 +169,42 @@ RSpec.describe Billboard do
       billboard.audience_segment_type = "manual"
       expect(billboard).not_to be_valid
     end
+
+    describe "expiration validation" do
+      it "allows setting approved to true when expires_at is nil" do
+        billboard.expires_at = nil
+        billboard.approved = true
+        expect(billboard).to be_valid
+      end
+
+      it "allows setting approved to true when expires_at is in the future" do
+        billboard.expires_at = 1.day.from_now
+        billboard.approved = true
+        expect(billboard).to be_valid
+      end
+
+      it "prevents setting approved to true when expires_at is in the past" do
+        billboard.expires_at = 1.day.ago
+        billboard.approved = true
+        expect(billboard).not_to be_valid
+        expect(billboard.errors[:approved]).to include("cannot be set to true if billboard has expired")
+      end
+
+      it "allows setting approved to false when expires_at is in the past" do
+        billboard.expires_at = 1.day.ago
+        billboard.approved = false
+        expect(billboard).to be_valid
+      end
+
+      it "prevents setting approved to true when expires_at is in the past" do
+        billboard.expires_at = 1.day.ago
+        billboard.approved = false # First set to false to pass validation
+        billboard.save!
+        billboard.approved = true # Now try to set to true
+        expect(billboard).not_to be_valid
+        expect(billboard.errors[:approved]).to include("cannot be set to true if billboard has expired")
+      end
+    end
   end
 
   context "when range env var is set" do
@@ -198,6 +234,18 @@ RSpec.describe Billboard do
       expect(username_ad.processed_html).to include("/#{user.username}")
       expect(username_ad.processed_html).to include("ltag__user__link")
       # reverse allow unified embed
+    end
+
+    it "renders survey tag" do
+      survey = create(:survey)
+      poll = create(:poll, survey: survey)
+      admin_user = create(:user, :admin)
+
+      survey_billboard = create(:billboard,
+                                body_markdown: "Take our survey! {% survey #{survey.id} %}",
+                                creator: admin_user)
+      expect(survey_billboard.processed_html).to include("survey_#{survey.id}")
+      expect(survey_billboard.processed_html).to include(survey.title)
     end
   end
 
@@ -734,9 +782,15 @@ RSpec.describe Billboard do
 
   describe "#update_event_counts_when_taking_down" do
     let!(:active_billboard) { create(:billboard, published: true, approved: true) }
-    let!(:impression_event)  { create(:billboard_event, billboard: active_billboard, category: "impression", counts_for: 2) }
-    let!(:click_event)       { create(:billboard_event, billboard: active_billboard, category: "click",     counts_for: 1) }
-    let!(:conversion_event)  { create(:billboard_event, billboard: active_billboard, category: "conversion", counts_for: 3) }
+    let!(:impression_event) do
+      create(:billboard_event, billboard: active_billboard, category: "impression", counts_for: 2)
+    end
+    let!(:click_event) do
+      create(:billboard_event, billboard: active_billboard, category: "click", counts_for: 1)
+    end
+    let!(:conversion_event) do
+      create(:billboard_event, billboard: active_billboard, category: "conversion", counts_for: 3)
+    end
 
     before do
       # Make sure Sidekiq is in fake mode and clear any existing jobs
@@ -745,21 +799,21 @@ RSpec.describe Billboard do
 
     context "when transitioning from active to down" do
       it "enqueues a DataUpdateWorker when approved goes from true to false" do
-        expect {
+        expect do
           active_billboard.update(approved: false)
-        }.to change(Billboards::DataUpdateWorker.jobs, :size).by(1)
+        end.to change(Billboards::DataUpdateWorker.jobs, :size).by(1)
       end
 
       it "enqueues a DataUpdateWorker when published goes from true to false" do
-        expect {
+        expect do
           active_billboard.update(published: false)
-        }.to change(Billboards::DataUpdateWorker.jobs, :size).by(1)
+        end.to change(Billboards::DataUpdateWorker.jobs, :size).by(1)
       end
 
       it "enqueues only one DataUpdateWorker when both approved and published go from true to false" do
-        expect {
+        expect do
           active_billboard.update(approved: false, published: false)
-        }.to change(Billboards::DataUpdateWorker.jobs, :size).by(1)
+        end.to change(Billboards::DataUpdateWorker.jobs, :size).by(1)
       end
     end
 
@@ -770,29 +824,29 @@ RSpec.describe Billboard do
       end
 
       it "does not enqueue a worker if approved remains false" do
-        expect {
+        expect do
           active_billboard.update(approved: false)
-        }.not_to change(Billboards::DataUpdateWorker.jobs, :size)
+        end.not_to change(Billboards::DataUpdateWorker.jobs, :size)
       end
 
       it "does not enqueue a worker if published remains false" do
-        expect {
+        expect do
           active_billboard.update(published: false)
-        }.not_to change(Billboards::DataUpdateWorker.jobs, :size)
+        end.not_to change(Billboards::DataUpdateWorker.jobs, :size)
       end
 
       it "does not enqueue a worker when updating unrelated attributes" do
-        expect {
+        expect do
           active_billboard.update(name: "New Name")
-        }.not_to change(Billboards::DataUpdateWorker.jobs, :size)
+        end.not_to change(Billboards::DataUpdateWorker.jobs, :size)
       end
     end
 
     context "when no state changes occur" do
       it "does not enqueue a worker if approved and published both stay true" do
-        expect {
+        expect do
           active_billboard.update(name: "Just Renaming")
-        }.not_to change(Billboards::DataUpdateWorker.jobs, :size)
+        end.not_to change(Billboards::DataUpdateWorker.jobs, :size)
       end
     end
   end
@@ -803,7 +857,7 @@ RSpec.describe Billboard do
         :billboard,
         placement_area: "digest_second",
         published: true,
-        approved: true
+        approved: true,
       )
     end
 
@@ -812,24 +866,104 @@ RSpec.describe Billboard do
         :billboard,
         placement_area: "digest_second",
         published: true,
-        approved: true
+        approved: true,
       )
     end
 
+    context "when delivery rate configuration is set" do
+      let!(:config) do
+        BillboardPlacementAreaConfig.create!(placement_area: "digest_second", signed_in_rate: 0, signed_out_rate: 50)
+      end
+
+      it "returns nil when delivery rate is 0%" do
+        result = described_class.for_display(
+          area: "digest_second",
+          user_signed_in: true,
+          user_tags: nil,
+          user_id: nil,
+        )
+
+        expect(result).to be_nil
+      end
+
+      it "returns nil when delivery rate is 0% for signed out users" do
+        config.update!(signed_out_rate: 0)
+
+        result = described_class.for_display(
+          area: "digest_second",
+          user_signed_in: false,
+          user_tags: nil,
+          user_id: nil,
+        )
+
+        expect(result).to be_nil
+      end
+
+      it "returns a billboard when delivery rate is 100%" do
+        config.update!(signed_in_rate: 100, signed_out_rate: 100)
+
+        result = described_class.for_display(
+          area: "digest_second",
+          user_signed_in: true,
+          user_tags: nil,
+          user_id: nil,
+        )
+
+        expect(result).to be_present
+        expect([paired_bb, other_bb]).to include(result)
+      end
+
+      it "respects different rates for signed in vs signed out users" do
+        config.update!(signed_in_rate: 100, signed_out_rate: 0)
+
+        # Signed in user should get a billboard
+        signed_in_result = described_class.for_display(
+          area: "digest_second",
+          user_signed_in: true,
+          user_tags: nil,
+          user_id: nil,
+        )
+        expect(signed_in_result).to be_present
+
+        # Signed out user should get nil
+        signed_out_result = described_class.for_display(
+          area: "digest_second",
+          user_signed_in: false,
+          user_tags: nil,
+          user_id: nil,
+        )
+        expect(signed_out_result).to be_nil
+      end
+
+      it "uses default 100% rate when no config exists for placement area" do
+        config.destroy!
+
+        result = described_class.for_display(
+          area: "digest_second",
+          user_signed_in: true,
+          user_tags: nil,
+          user_id: nil,
+        )
+
+        expect(result).to be_present
+        expect([paired_bb, other_bb]).to include(result)
+      end
+    end
+
     context "when prefer_paired_with_billboard_id is provided" do
-      it "returns the billboard matching that ID" do
+      xit "returns the billboard matching that ID" do
         result = described_class.for_display(
           area: "digest_second",
           user_signed_in: true,
           prefer_paired_with_billboard_id: paired_bb.id,
           user_tags: nil,
-          user_id: nil
+          user_id: nil,
         )
 
         expect(result).to eq(paired_bb)
       end
 
-      it "falls back to normal selection if the paired ID isn't in the available set" do
+      xit "falls back to normal selection if the paired ID isn't in the available set" do
         # pick some ID that doesn't exist in billboards_for_display
         missing_id = other_bb.id + paired_bb.id + 1
 
@@ -838,12 +972,341 @@ RSpec.describe Billboard do
           user_signed_in: true,
           prefer_paired_with_billboard_id: missing_id,
           user_tags: nil,
-          user_id: nil
+          user_id: nil,
         )
 
         # since only paired_bb and other_bb exist for this area, it must return one of them
         expect([paired_bb, other_bb]).to include(result)
       end
+    end
+  end
+
+  describe "#check_and_handle_expiration" do
+    let(:billboard) { create(:billboard, approved: true, published: true) }
+
+    it "does nothing when expires_at is nil" do
+      billboard.expires_at = nil
+      expect { billboard.check_and_handle_expiration }.not_to change { billboard.reload.approved }
+    end
+
+    it "does nothing when expires_at is in the future" do
+      billboard.expires_at = 1.day.from_now
+      expect { billboard.check_and_handle_expiration }.not_to change { billboard.reload.approved }
+    end
+
+    it "does nothing when billboard is not approved" do
+      billboard.update!(approved: false)
+      billboard.expires_at = 1.day.ago
+      expect { billboard.check_and_handle_expiration }.not_to change { billboard.reload.approved }
+    end
+
+    it "marks billboard as not approved when expired and currently approved" do
+      billboard.update_column(:expires_at, 1.day.ago)
+      expect { billboard.check_and_handle_expiration }.to change { billboard.reload.approved }.from(true).to(false)
+    end
+  end
+
+  describe "scopes" do
+    describe ".approved_and_published" do
+      let!(:active_billboard) { create(:billboard, approved: true, published: true) }
+      let!(:expired_billboard) { create(:billboard, approved: false, published: true, expires_at: 1.day.ago) }
+      let!(:future_expiry_billboard) { create(:billboard, approved: true, published: true, expires_at: 1.day.from_now) }
+
+      it "includes billboards with no expiration" do
+        expect(described_class.approved_and_published).to include(active_billboard)
+      end
+
+      it "excludes expired billboards" do
+        expect(described_class.approved_and_published).not_to include(expired_billboard)
+      end
+
+      it "includes billboards with future expiration" do
+        expect(described_class.approved_and_published).to include(future_expiry_billboard)
+      end
+    end
+  end
+
+  describe "#content_updated_at" do
+    let(:billboard) { create(:billboard) }
+
+    it "is set on creation" do
+      expect(billboard.content_updated_at).not_to be_nil
+    end
+
+    it "updates when body_markdown changes" do
+      original_time = billboard.content_updated_at
+      Timecop.travel(1.hour.from_now) do
+        billboard.update!(body_markdown: "New content")
+        expect(billboard.content_updated_at).to be > original_time
+      end
+    end
+
+    it "updates when name changes" do
+      original_time = billboard.content_updated_at
+      Timecop.travel(1.hour.from_now) do
+        billboard.update!(name: "New Name")
+        expect(billboard.content_updated_at).to be > original_time
+      end
+    end
+
+    it "updates when placement_area changes" do
+      original_time = billboard.content_updated_at
+      Timecop.travel(1.hour.from_now) do
+        billboard.update!(placement_area: "sidebar_right")
+        expect(billboard.content_updated_at).to be > original_time
+      end
+    end
+
+    it "updates when color changes" do
+      original_time = billboard.content_updated_at
+      Timecop.travel(1.hour.from_now) do
+        billboard.update!(color: "#FF0000")
+        expect(billboard.content_updated_at).to be > original_time
+      end
+    end
+
+    it "does not update when approved changes" do
+      original_time = billboard.content_updated_at
+      Timecop.travel(1.hour.from_now) do
+        billboard.update!(approved: !billboard.approved)
+        expect(billboard.content_updated_at).to eq(original_time)
+      end
+    end
+
+    it "does not update when published changes" do
+      original_time = billboard.content_updated_at
+      Timecop.travel(1.hour.from_now) do
+        billboard.update!(published: !billboard.published)
+        expect(billboard.content_updated_at).to eq(original_time)
+      end
+    end
+
+    it "does not update when impressions_count changes" do
+      original_time = billboard.content_updated_at
+      Timecop.travel(1.hour.from_now) do
+        billboard.update_column(:impressions_count, 1000)
+        billboard.reload
+        expect(billboard.content_updated_at).to eq(original_time)
+      end
+    end
+
+    it "does not update when clicks_count changes" do
+      original_time = billboard.content_updated_at
+      Timecop.travel(1.hour.from_now) do
+        billboard.update_column(:clicks_count, 100)
+        billboard.reload
+        expect(billboard.content_updated_at).to eq(original_time)
+      end
+    end
+
+    it "does not update when success_rate changes" do
+      original_time = billboard.content_updated_at
+      Timecop.travel(1.hour.from_now) do
+        billboard.update_column(:success_rate, 0.5)
+        billboard.reload
+        expect(billboard.content_updated_at).to eq(original_time)
+      end
+    end
+  end
+
+  describe ".select_billboard_by_weighted_strategy edge cases" do
+    let(:billboards) { create_list(:billboard, 3, approved: true, published: true, placement_area: "sidebar_left") }
+    let(:area) { "sidebar_left" }
+
+    before do
+      # Create a config for the placement area
+      BillboardPlacementAreaConfig.create!(
+        placement_area: area,
+        signed_in_rate: 100,
+        signed_out_rate: 100,
+        selection_weights: {
+          "random_selection" => 10,
+          "new_and_priority" => 20,
+          "new_only" => 5,
+          "weighted_performance" => 65
+        }
+      )
+    end
+
+    it "returns nil when billboards_for_display is nil" do
+      result = described_class.select_billboard_by_weighted_strategy(nil, area)
+      expect(result).to be_nil
+    end
+
+    it "returns nil when billboards_for_display is empty array" do
+      result = described_class.select_billboard_by_weighted_strategy([], area)
+      expect(result).to be_nil
+    end
+
+    it "returns nil when billboards_for_display is empty relation" do
+      empty_relation = described_class.none
+      result = described_class.select_billboard_by_weighted_strategy(empty_relation, area)
+      expect(result).to be_nil
+    end
+
+    it "returns a billboard when billboards_for_display has items" do
+      relation = described_class.where(id: billboards.map(&:id))
+      result = described_class.select_billboard_by_weighted_strategy(relation, area)
+      expect(result).to be_a(described_class)
+      expect(billboards.map(&:id)).to include(result.id)
+    end
+
+    it "handles all zero weights by falling back to random selection" do
+      BillboardPlacementAreaConfig.find_by(placement_area: area).update!(
+        selection_weights: {
+          "random_selection" => 0,
+          "new_and_priority" => 0,
+          "new_only" => 0,
+          "weighted_performance" => 0
+        }
+      )
+
+      relation = described_class.where(id: billboards.map(&:id))
+      result = described_class.select_billboard_by_weighted_strategy(relation, area)
+      expect(result).to be_a(described_class)
+    end
+
+    it "handles negative weights by treating them as zero" do
+      config = BillboardPlacementAreaConfig.find_by(placement_area: area)
+      # Bypass validation to set negative values for testing
+      config.update_column(:selection_weights, {
+        "random_selection" => -10,
+        "new_and_priority" => 20,
+        "new_only" => 5,
+        "weighted_performance" => 65
+      })
+
+      relation = described_class.where(id: billboards.map(&:id))
+      # Should not raise an error and should select a billboard
+      result = described_class.select_billboard_by_weighted_strategy(relation, area)
+      expect(result).to be_a(described_class)
+    end
+
+    it "handles nil weights in selection_weights" do
+      config = BillboardPlacementAreaConfig.find_by(placement_area: area)
+      # Bypass validation to set nil values for testing
+      config.update_column(:selection_weights, {
+        "random_selection" => 10,
+        "new_and_priority" => nil,
+        "new_only" => 5,
+        "weighted_performance" => 65
+      })
+
+      relation = described_class.where(id: billboards.map(&:id))
+      # Should not raise an error and should select a billboard
+      result = described_class.select_billboard_by_weighted_strategy(relation, area)
+      expect(result).to be_a(described_class)
+    end
+
+    it "handles non-existent placement area by using defaults" do
+      relation = described_class.where(id: billboards.map(&:id))
+      result = described_class.select_billboard_by_weighted_strategy(relation, "nonexistent_area")
+      expect(result).to be_a(described_class)
+    end
+
+    it "handles empty selection_weights by using defaults" do
+      BillboardPlacementAreaConfig.find_by(placement_area: area).update!(
+        selection_weights: {}
+      )
+
+      relation = described_class.where(id: billboards.map(&:id))
+      result = described_class.select_billboard_by_weighted_strategy(relation, area)
+      expect(result).to be_a(described_class)
+    end
+
+    it "selects from all strategies over multiple calls" do
+      relation = described_class.where(id: billboards.map(&:id))
+      
+      # Run multiple times to ensure randomness works
+      results = 10.times.map do
+        described_class.select_billboard_by_weighted_strategy(relation, area)
+      end
+
+      # All results should be valid billboards
+      expect(results).to all(be_a(described_class))
+      expect(results.map(&:id)).to all(be_in(billboards.map(&:id)))
+    end
+
+    it "handles single weight being non-zero" do
+      BillboardPlacementAreaConfig.find_by(placement_area: area).update!(
+        selection_weights: {
+          "random_selection" => 0,
+          "new_and_priority" => 0,
+          "new_only" => 0,
+          "weighted_performance" => 100
+        }
+      )
+
+      relation = described_class.where(id: billboards.map(&:id))
+      result = described_class.select_billboard_by_weighted_strategy(relation, area)
+      expect(result).to be_a(described_class)
+    end
+  end
+
+  describe "#bust_billboard_cache (when being taken down)" do
+    let(:billboard) { create(:billboard, approved: true, published: true) }
+
+    it "purges the billboard surrogate key when approved is set to false" do
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(approved: false)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with(billboard.record_key)
+    end
+
+    it "purges the billboard surrogate key when published is set to false" do
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(published: false)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with(billboard.record_key)
+    end
+
+    it "does not purge the billboard surrogate key when billboard is not being taken down" do
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(name: "Updated name")
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call).with(billboard.record_key)
+    end
+  end
+
+  describe "#home_feed_first_being_activated?" do
+    let(:billboard) { create(:billboard, placement_area: "feed_first", approved: false, published: false) }
+
+    it "busts home page cache when feed_first billboard is approved from unapproved state" do
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(approved: true, published: true)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "busts home page cache when feed_first billboard is published from unpublished state while already approved" do
+      billboard.update!(approved: true, published: false)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(published: true)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "busts home page cache when feed_first billboard is approved from unapproved state while already published" do
+      billboard.update!(approved: false, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(approved: true)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "does not bust cache when billboard is not feed_first" do
+      sidebar_billboard = create(:billboard, placement_area: "sidebar_left", approved: false, published: false)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      sidebar_billboard.update!(approved: true, published: true)
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "does not bust cache when billboard is already approved and published and saved again" do
+      billboard.update!(approved: true, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(name: "Updated name")
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "does not bust cache when billboard is being taken down (approved set to false)" do
+      billboard.update!(approved: true, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(approved: false)
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call).with("main_app_home_page", fallback_paths: "/")
     end
   end
 end

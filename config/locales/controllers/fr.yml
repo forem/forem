@@ -52,6 +52,11 @@ fr:
   github_repos_controller:
     repo_not_found: Dépôt GitHub non trouvé
     github_unauthorized: 'GitHub non autorisé : %{e_message}'
+  ai_image_generations_controller:
+    prompt_required: Le prompt d'image est requis
+    generation_failed: Échec de la génération de l'image. Veuillez réessayer.
+    timeout: La génération de l'image a expiré. Veuillez réessayer.
+    unexpected_error: Une erreur inattendue s'est produite lors de la génération de l'image.
   image_uploads_controller:
     server_error: Une erreur de serveur s'est produite !
   listings_controller:
@@ -66,6 +71,20 @@ fr:
     not_deleted: Votre organisation n'a pas été supprimée ; vous devez être un administrateur, le seul membre de l'organisation, et n'avoir aucun article connecté à l'organisation.
     created: Votre organisation a été créée avec succès et vous êtes un administrateur.
     updated: Votre organisation a été mise à jour avec succès.
+    invite:
+      user_not_found: Utilisateur avec le nom d'utilisateur "%{username}" introuvable.
+      already_member: Cet utilisateur est déjà membre de l'organisation.
+      already_pending: Cet utilisateur a déjà une invitation en attente.
+      success: "%{username} a été invité avec succès à rejoindre l'organisation."
+      added_success: "%{username} a été ajouté avec succès à l'organisation."
+      rate_limit_exceeded: Vous avez atteint la limite quotidienne de %{limit} invitations par jour. Veuillez réessayer demain.
+      max_outstanding_exceeded: Vous avez atteint la limite maximale de invitations en attente de %{limit}. Veuillez attendre que certaines invitations soient acceptées ou annulées avant d'en envoyer d'autres.
+    confirm_invitation:
+      invalid_token: Jeton d'invitation invalide ou expiré.
+      already_confirmed: Cette invitation a déjà été confirmée.
+      wrong_user: Vous devez être connecté en tant que l'utilisateur invité pour confirmer cette invitation.
+      sign_in_required: Veuillez vous connecter pour confirmer votre adhésion à l'organisation.
+      success: "Vous avez rejoint %{organization_name} avec succès !"
   podcasts_controller:
     podcast_suggested: Podcast proposé
   profiles_controller:

@@ -5,6 +5,8 @@ fr:
       invalid_asciinema_id: "ID d'Asciinema non valide : %{id}"
     blogcast_tag:
       invalid_blogcast_id: ID de blogcast non valide
+    cloud_run_tag:
+      invalid_cloud_run_url: URL Cloud Run non valide
     codepen_tag:
       invalid_codepen_url: URL du CodePen non valide
       invalid_options: Options non valides
@@ -53,6 +55,8 @@ fr:
       invalid_loom_url: URL Invalide du Loom.
     medium_tag:
       invalid_link_url: Lien URL invalide ou lien URL inexistant
+    mux_tag:
+      invalid_mux_url: URL Mux invalide.
     next_tech_tag:
       invalid_url: URL du partage Next Tech non valide
     null_tag:

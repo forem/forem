@@ -40,13 +40,16 @@ class ReactionsController < ApplicationController
       reactions: reactions
     }.merge(result).to_json
 
-    set_surrogate_key_header params.to_s unless session_current_user_id
-    set_cache_control_headers(2.weeks.to_i, stale_if_error: 1.day.to_i) unless session_current_user_id
+    if !session_current_user_id
+      set_surrogate_key_header(reactions_surrogate_key) if reactions_surrogate_key
+      set_cache_control_headers(2.weeks.to_i, stale_if_error: 1.day.to_i)
+    end
   end
 
   # @todo Extract this method into a service class (or classes)
   def create
     remove_count_cache_key
+    remove_reaction_counts_cache_key
 
     result = ReactionHandler.toggle(params, current_user: current_user)
 
@@ -69,6 +72,23 @@ class ReactionsController < ApplicationController
   end
 
   private
+
+  def reactions_surrogate_key
+    if params[:article_id]
+      article = Article.find_by(id: params[:article_id])
+      return Reaction.surrogate_key_for_article(article.id) if article
+    else
+      commentable = commentable_for_reactions
+      return Reaction.surrogate_key_for_commentable(commentable) if commentable
+    end
+  end
+
+  def commentable_for_reactions
+    return unless params[:commentable_id] && params[:commentable_type]
+    return unless params[:commentable_type].in?(Comment::COMMENTABLE_TYPES)
+
+    params[:commentable_type].constantize.find_by(id: params[:commentable_id])
+  end
 
   def check_limit
     rate_limit!(:reaction_creation)
@@ -103,6 +123,13 @@ class ReactionsController < ApplicationController
     return unless params[:reactable_type] == "Article"
 
     Rails.cache.delete "count_for_reactable-Article-#{params[:reactable_id]}"
+    Rails.cache.delete "reaction_counts_for_reactable-Article-#{params[:reactable_id]}"
+  end
+
+  def remove_reaction_counts_cache_key
+    return unless params[:reactable_type] && params[:reactable_id]
+
+    Rails.cache.delete "reaction_counts_for_reactable-#{params[:reactable_type]}-#{params[:reactable_id]}"
   end
 
   def send_algolia_insight

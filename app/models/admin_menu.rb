@@ -23,6 +23,7 @@ class AdminMenu
       item(name: "podcasts"),
       item(name: "tags"),
       item(name: "emails"),
+      item(name: "surveys"),
     ]
 
     scope :customization, "tools-line", [
@@ -31,6 +32,7 @@ class AdminMenu
       item(name: "navigation links"),
       item(name: "pages"),
       item(name: "profile fields"),
+      item(name: "subforems"),
     ]
 
     scope :admin_team, "user-line", [
@@ -42,6 +44,7 @@ class AdminMenu
       item(name: "mods"),
       item(name: "moderator actions", controller: "moderator_actions"),
       item(name: "privileged reactions"),
+      item(name: "blocked email domains", controller: "blocked_email_domains"),
     ]
 
     scope :advanced, "flashlight-line", [
@@ -78,7 +81,7 @@ class AdminMenu
   # @todo This method returns the nav_item, but we really only operate on that item's children.
   #       Consider replacing with a method that is "children of nav_item within scope".
   #
-  # @see AdminMenu.nested_menu_items_from_request 
+  # @see AdminMenu.nested_menu_items_from_request
   # @see AdminMenu::ITEMS
   def self.nested_menu_items(scope_name, nav_item)
     children = navigation_items[scope_name.to_sym]&.children

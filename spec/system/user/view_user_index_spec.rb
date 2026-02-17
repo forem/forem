@@ -138,7 +138,7 @@ RSpec.describe "User index" do
       stub_const("CommentsHelper::MAX_COMMENTS_TO_RENDER", 1)
       visit "/#{user.username}"
       within("#substories .profile-comment-card .pt-3 .fs-base") do
-        expect(page).to have_content("View last 1 Comment")
+        expect(page).to have_content("View recent comments")
       end
     end
   end

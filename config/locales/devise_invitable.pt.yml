@@ -1,0 +1,22 @@
+---
+pt:
+  devise:
+    invitations:
+      send_instructions: "Um convite foi enviado para %{email}."
+      invitation_token_invalid: "O token de convite fornecido não é válido!"
+      updated: "Sua senha foi definida com sucesso. Você está logado agora."
+      updated_not_active: "Sua senha foi definida com sucesso."
+      no_invitations_remaining: "Não há convites restantes"
+      invitation_removed: "Seu convite foi removido."
+      new:
+        header: "Enviar convite"
+        submit_button: "Enviar convite"
+      edit:
+        header: "Definir sua senha"
+        submit_button: "Definir senha"
+    failure:
+      invited: "Você tem um convite pendente, aceite-o para finalizar a criação da sua conta."
+    mailer:
+      invitation_instructions:
+        subject: "Instruções de convite"
+        accept_until_format: "%Y-%m-%d %H:%M"

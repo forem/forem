@@ -79,15 +79,21 @@ class Billboard < ApplicationRecord
            :validate_in_house_hero_ads,
            :valid_manual_audience_segment,
            :validate_tag,
-           :validate_geolocations
+           :validate_geolocations,
+           :validate_expiration_approval
 
   before_save :process_markdown
+  before_save :update_content_updated_at_if_needed
   after_save :generate_billboard_name
   after_save :refresh_audience_segment, if: :should_refresh_audience_segment?
   after_save :update_links_with_bb_param
   after_save :update_event_counts_when_taking_down, if: -> { being_taken_down? }
+  after_save :bust_billboard_cache, if: -> { being_taken_down? }
+  after_save :bust_home_page_cache, if: -> { home_feed_first_being_activated? }
 
-  scope :approved_and_published, -> { where(approved: true, published: true) }
+  scope :approved_and_published, lambda {
+                                   where(approved: true, published: true).where("expires_at IS NULL OR expires_at > ?", Time.current)
+                                 }
 
   scope :search_ads, lambda { |term|
                        where "name ILIKE :search OR processed_html ILIKE :search OR placement_area ILIKE :search",
@@ -102,6 +108,12 @@ class Billboard < ApplicationRecord
   def self.for_display(area:, user_signed_in:, user_id: nil, article: nil, user_tags: nil,
                        location: nil, cookies_allowed: false, page_id: nil, user_agent: nil,
                        role_names: nil, prefer_paired_with_billboard_id: nil)
+    # Check delivery rate configuration first - return nil early if rate check fails
+    return unless BillboardPlacementAreaConfig.should_fetch_billboard?(
+      placement_area: area,
+      user_signed_in: user_signed_in,
+    )
+
     permit_adjacent = article ? article.permit_adjacent_sponsors? : true
 
     billboards_for_display = Billboards::FilteredAdsQuery.call(
@@ -121,29 +133,62 @@ class Billboard < ApplicationRecord
       role_names: role_names,
     )
 
-    # if prefer_paired_with_billboard_id then return 
+    # if prefer_paired_with_billboard_id then return
     if prefer_paired_with_billboard_id.present?
-      best_paired_billboard = billboards_for_display.find { |bb| bb.prefer_paired_with_billboard_id == prefer_paired_with_billboard_id }
+      best_paired_billboard = billboards_for_display.find do |bb|
+        bb.prefer_paired_with_billboard_id == prefer_paired_with_billboard_id
+      end
       return best_paired_billboard if best_paired_billboard.present?
     end
 
-    case rand(99) # output integer from 0-99
-    when (0..random_range_max(area)) # smallest range, 5%
+    # Select billboard using weighted random selection based on placement area config
+    select_billboard_by_weighted_strategy(billboards_for_display, area, article&.id)
+  end
+
+  def self.select_billboard_by_weighted_strategy(billboards_for_display, area, article_id = nil)
+    # Return nil if no billboards available
+    return nil if billboards_for_display.blank? || billboards_for_display.empty?
+    
+    # Get weights from placement area config
+    weights = BillboardPlacementAreaConfig.selection_weights_for(area)
+    
+    # Calculate total weight, filtering out any nil or negative values
+    total_weight = weights.values.compact.map { |v| [v.to_i, 0].max }.sum
+    return billboards_for_display.sample if total_weight.zero?
+
+    # Generate random number and select strategy based on weight
+    random_value = rand(total_weight)
+    cumulative_weight = 0
+    selected_strategy = nil
+
+    weights.each do |strategy, weight|
+      # Skip strategies with zero or negative weight
+      weight_value = [weight.to_i, 0].max
+      next if weight_value.zero?
+      
+      cumulative_weight += weight_value
+      if random_value < cumulative_weight
+        selected_strategy = strategy
+        break
+      end
+    end
+
+    # Execute the selected strategy
+    case selected_strategy
+    when "random_selection"
       # We are always showing more of the good stuff — but we are also always testing the system to give any a chance to
-      # rise to the top. 5 out of every 100 times we show an ad (5%), it is totally random. This gives "not yet
-      # evaluated" stuff a chance to get some engagement and start showing up more. If it doesn't get engagement, it
-      # stays in this area.
+      # rise to the top. This gives "not yet evaluated" stuff a chance to get some engagement and start showing up more.
+      # If it doesn't get engagement, it stays in this area.
       billboards_for_display.sample
-    when (random_range_max(area)..new_and_priority_range_max(area)) # medium range, 30%
-      # Here we sample from only billboards with fewer than 1000 impressions (with a fallback
+    when "new_and_priority"
+      # Here we sample from only billboards with fewer impressions or priority billboards (with a fallback
       # if there are none of those, causing an extra query, but that shouldn't happen very often).
       relation = billboards_for_display.seldom_seen(area)
-      weighted_random_selection(relation, article&.id) || billboards_for_display.sample
-    when (new_and_priority_range_max(area)..new_only_range_max(area)) # 5% by default
-      # Here we sample from only billboards with fewer than 1000 impressions (with a fallback
+      weighted_random_selection(relation, article_id) || billboards_for_display.sample
+    when "new_only"
+      # Here we sample from only billboards with fewer impressions (with a fallback)
       billboards_for_display.new_only(area).sample || billboards_for_display.limit(rand(1..15)).sample
-    else # large range, 65%
-
+    when "weighted_performance"
       # Ads that get engagement have a higher "success rate", and among this category, we sample from the top 15 that
       # meet that criteria. Within those 15 top "success rates" likely to be clicked, there is a weighting towards the
       # top ranked outcome as well, and a steady decline over the next 15 — that's because it's not "Here are the top 15
@@ -151,8 +196,15 @@ class Billboard < ApplicationRecord
       # that". So basically the "limit" logic will result in 15 sets, and then we sample randomly from there. The
       # "first ranked" ad will show up in all 15 sets, where as 15 will only show in 1 of the 15.
       billboards_for_display.limit(rand(1..15)).sample
+    when "evenly_distributed"
+      # Randomly distribute billboards effectively evenly over time.
+      billboards_for_display.sample
+    else
+      # Fallback to random if strategy is unknown
+      billboards_for_display.sample
     end
   end
+
   def self.weighted_random_selection(relation, target_article_id = nil)
     base_query = relation.to_sql
     random_val = rand.to_f
@@ -237,7 +289,8 @@ class Billboard < ApplicationRecord
     # In the future this could be made more customizable. For now it's just this one thing.
     return processed_html if ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"].blank? || ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"].blank?
 
-    processed_html.gsub(ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"], ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
+    processed_html.gsub(ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"],
+                        ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
   end
 
   def type_of_display
@@ -269,6 +322,12 @@ class Billboard < ApplicationRecord
     errors.add(:type_of, "must be in_house if billboard is a Home Hero")
   end
 
+  def validate_expiration_approval
+    return unless expires_at.present? && expires_at < Time.current && approved?
+
+    errors.add(:approved, "cannot be set to true if billboard has expired")
+  end
+
   def audience_segment_type
     @audience_segment_type ||= audience_segment&.type_of
   end
@@ -285,6 +344,7 @@ class Billboard < ApplicationRecord
       "audience_segment_type" => audience_segment_type,
       "tag_list" => cached_tag_list,
       "exclude_article_ids" => exclude_article_ids.join(","),
+      "exclude_survey_ids" => exclude_survey_ids.join(","),
       "target_geolocations" => target_geolocations.map(&:to_iso3166)
     }
     super(options.merge(except: %i[tags tag_list target_geolocations])).merge(overrides)
@@ -321,11 +381,17 @@ class Billboard < ApplicationRecord
     write_attribute :include_subforem_ids, (adjusted_input || [])
   end
 
+  def exclude_survey_ids=(input)
+    adjusted_input = input.is_a?(String) ? input.split(",") : input
+    adjusted_input = adjusted_input&.filter_map { |value| value.presence&.to_i }
+    write_attribute :exclude_survey_ids, (adjusted_input || [])
+  end
+
   def style_string
     return "" if color.blank?
 
     if placement_area.include?("fixed_")
-      "border-top: calc(9px + 0.5vw) solid #{color}"
+      "border: 5px solid #{color};border-bottom: none"
     else
       "border: 5px solid #{color}"
     end
@@ -369,7 +435,31 @@ class Billboard < ApplicationRecord
     0 # Just to allow this to repond to .score for abuse reports
   end
 
+  def check_and_handle_expiration
+    return unless expires_at.present? && expires_at < Time.current && approved?
+
+    update_column(:approved, false)
+  end
+
+  # Check if a user should be excluded from seeing this billboard based on survey completion
+  def exclude_user_due_to_survey_completion?(user)
+    return false unless exclude_survey_completions?
+    return false if user.blank?
+    return false if exclude_survey_ids.blank?
+
+    SurveyCompletion.user_completed_any?(user: user, survey_ids: exclude_survey_ids)
+  end
+
   private
+
+  def update_content_updated_at_if_needed
+    # Only update content_updated_at when content-related fields change
+    content_fields = %w[body_markdown name placement_area color template render_mode]
+    
+    return unless content_fields.any? { |field| will_save_change_to_attribute?(field) }
+    
+    self.content_updated_at = Time.current
+  end
 
   def update_event_counts_when_taking_down
     Billboards::DataUpdateWorker.perform_async(id)
@@ -378,11 +468,27 @@ class Billboard < ApplicationRecord
   def being_taken_down?
     # Only trigger if both approved and published were true before this save.
     return false unless approved_before_last_save && published_before_last_save
-  
+
     # Check if approved changed from true to false or published changed from true to false.
     (saved_change_to_approved? && !approved) || (saved_change_to_published? && !published)
   end
-  
+
+  def home_feed_first_being_activated?
+    return false unless placement_area == "feed_first"
+    return false unless approved && published
+
+    # Trigger if either approved or published just changed to true (from a prior different state)
+    (saved_change_to_approved? && !approved_before_last_save) ||
+      (saved_change_to_published? && !published_before_last_save)
+  end
+
+  def bust_billboard_cache
+    EdgeCache::PurgeByKey.call(record_key)
+  end
+
+  def bust_home_page_cache
+    EdgeCache::PurgeByKey.call("main_app_home_page", fallback_paths: "/")
+  end
 
   def generate_billboard_name
     return unless name.nil?
@@ -403,7 +509,7 @@ class Billboard < ApplicationRecord
   end
 
   def extracted_process_markdown
-    renderer = ContentRenderer.new(body_markdown || "", source: self)
+    renderer = ContentRenderer.new(body_markdown || "", source: self, user: creator)
     self.processed_html = renderer.process(prefix_images_options: { width: prefix_width,
                                                                     quality: 100,
                                                                     synchronous_detail_detection: true }).processed_html

@@ -1,0 +1,225 @@
+.ai-chat-container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 120px);
+    max-width: 900px;
+    margin: 20px auto;
+    border-radius: var(--radius-large, 12px);
+    background: var(--body-bg);
+    border: 1px solid var(--card-border);
+    box-shadow: var(--shadow-2);
+    overflow: hidden;
+}
+
+.ai-chat-header {
+    padding: 1rem 1.5rem;
+    background: var(--card-secondary-bg);
+    border-bottom: 1px solid var(--card-border);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.ai-chat-header h1 {
+    font-size: 1.25rem;
+    margin: 0;
+    color: var(--body-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+}
+
+.beta-badge {
+    font-size: 0.65rem;
+    background: var(--accent-danger, #dc1818);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.ai-chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    background: var(--body-bg);
+}
+
+.message {
+    max-width: 85%;
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius-medium, 8px);
+    line-height: 1.6;
+    font-size: 1rem;
+    animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.message.user {
+    align-self: flex-end;
+    background: var(--accent-brand);
+    color: var(--base-0);
+    border-bottom-right-radius: 2px;
+}
+
+.message.ai {
+    align-self: flex-start;
+    background: var(--card-bg);
+    color: var(--body-color);
+    border-bottom-left-radius: 2px;
+    box-shadow: var(--shadow-1);
+    border: 1px solid var(--card-border);
+}
+
+/* Markdown Styles for AI Responses */
+.message.ai p {
+    margin: 0.75rem 0;
+}
+
+.message.ai p:first-child {
+    margin-top: 0;
+}
+
+.message.ai p:last-child {
+    margin-bottom: 0;
+}
+
+.message.ai ul,
+.message.ai ol {
+    margin: 0.75rem 0;
+    padding-left: 1.5rem;
+}
+
+.message.ai li {
+    margin-bottom: 0.4rem;
+}
+
+.message.ai code {
+    background: var(--card-secondary-bg);
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-family: var(--ff-mono, monospace);
+    font-size: 0.9em;
+}
+
+.message.ai pre {
+    background: var(--base-100);
+    color: var(--base-0);
+    padding: 1rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+.message.ai pre code {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+    font-size: 0.9rem;
+}
+
+.message.ai strong {
+    font-weight: 700;
+}
+
+.message.ai blockquote {
+    border-left: 4px solid var(--accent-brand);
+    margin: 1rem 0;
+    padding-left: 1rem;
+    color: var(--card-color-secondary);
+    font-style: italic;
+}
+
+.ai-chat-input-area {
+    padding: 1.25rem 1.5rem;
+    background: var(--card-secondary-bg);
+    border-top: 1px solid var(--card-border);
+    display: flex;
+    gap: 0.75rem;
+}
+
+.ai-chat-input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--form-border);
+    border-radius: var(--radius-medium, 8px);
+    background: var(--form-bg);
+    color: var(--body-color);
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.ai-chat-input:focus {
+    border-color: var(--accent-brand);
+    box-shadow: 0 0 0 2px rgba(var(--accent-brand-rgb), 0.2);
+}
+
+.ai-chat-send {
+    padding: 0.75rem 1.5rem;
+    background: var(--accent-brand);
+    color: var(--base-0);
+    border: none;
+    border-radius: var(--radius-medium, 8px);
+    font-weight: 700;
+    cursor: pointer;
+    transition: filter 0.2s;
+}
+
+.ai-chat-send:hover {
+    filter: brightness(1.1);
+}
+
+.ai-chat-send:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.typing-indicator {
+    display: flex;
+    gap: 4px;
+    padding: 4px 0;
+}
+
+.typing-indicator span {
+    width: 6px;
+    height: 6px;
+    background: var(--card-color-tertiary);
+    border-radius: 50%;
+    animation: bounce 1s infinite alternate;
+}
+
+.typing-indicator span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes bounce {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(-4px);
+    }
+}

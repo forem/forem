@@ -1,14 +1,12 @@
 require "rails_helper"
 
 RSpec.describe Users::Delete, type: :service do
-  let(:cache_bust) { instance_double(EdgeCache::Bust) }
   let(:user) { create(:user, :trusted, :with_identity, identities: ["github"]) }
 
   before do
     omniauth_mock_github_payload
     allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
-    allow(EdgeCache::Bust).to receive(:new).and_return(cache_bust)
-    allow(cache_bust).to receive(:call)
+    allow(EdgeCache::BustUser).to receive(:call)
   end
 
   it "deletes user" do
@@ -18,7 +16,7 @@ RSpec.describe Users::Delete, type: :service do
 
   it "busts user profile page" do
     described_class.new(user).call
-    expect(cache_bust).to have_received(:call).with("/#{user.username}")
+    expect(EdgeCache::BustUser).to have_received(:call).with(user)
   end
 
   it "deletes user's follows" do
@@ -119,6 +117,9 @@ RSpec.describe Users::Delete, type: :service do
 
           # Skip trying to create listings as the factory is removed
           next if possible_factory_name == "listing"
+          
+          # Skip scheduled_automations as they require a community bot user
+          next if possible_factory_name == "scheduled_automation"
 
           inverse_of = association.options[:inverse_of] || association.options[:as] || :user
 

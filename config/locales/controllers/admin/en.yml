@@ -1,5 +1,40 @@
 ---
 en:
+  admin_controller:
+    dashboard:
+      title: Admin Dashboard
+      welcome: Welcome to the admin dashboard
+    users:
+      title: Manage Users
+      suspend: Suspend
+      unsuspend: Unsuspend
+      ban: Ban
+      unban: Unban
+      delete: Delete
+      edit: Edit
+      view: View
+    articles:
+      title: Manage Articles
+      delete: Delete
+      edit: Edit
+      view: View
+      publish: Publish
+      unpublish: Unpublish
+    comments:
+      title: Manage Comments
+      delete: Delete
+      edit: Edit
+      view: View
+      moderate: Moderate
+    reports:
+      title: Manage Reports
+      view: View
+      resolve: Resolve
+      dismiss: Dismiss
+    settings:
+      title: Manage Settings
+      save: Save
+      cancel: Cancel
   admin:
     articles_controller:
       saved: Article saved!
@@ -79,6 +114,9 @@ en:
       credit_updated: Successfully updated credits
       deletion_scheduled: 'Organization, "%{organization_name}", deletion is scheduled.'
       error: 'Your organization, %{organization_name}, could not be deleted: %{error}.'
+      fully_trusted_enabled: Fully trusted status has been enabled for this organization.
+      fully_trusted_disabled: Fully trusted status has been disabled for this organization.
+      baseline_score_updated: Baseline score updated!
     pages_controller:
       updated: Page has been successfully updated.
       created: Page has been successfully created.
@@ -92,6 +130,11 @@ en:
       terms_of_use:
         title: Terms of Use
         description: A page that describes the terms of use for the application
+    page_templates_controller:
+      created: Page template has been successfully created!
+      updated: Page template has been successfully updated!
+      deleted: Page template has been successfully deleted!
+      cannot_delete_with_pages: Cannot delete template while it has associated pages. Please remove or reassign pages first.
     podcasts_controller:
       new_owner_added: New owner added!
       no_such_user: No such user
@@ -119,6 +162,7 @@ en:
       update_success: Space has been updated.
     subforems_controller:
       created: Subforum has been created!
+      created_with_ai: Subforem has been created! Details are being generated in the background.
       updated: Subforum has been updated!
       deleted: Subforum has been deleted!
     tags:
@@ -131,6 +175,11 @@ en:
       created: '%{tag_name} has been created!'
       updated: '%{tag_name} tag successfully updated!'
       update_fail: 'The tag update failed: %{errors}'
+    surveys_controller:
+      created: Survey has been created!
+      updated: Survey has been updated!
+      deleted: Survey has been deleted!
+      wrong: Something went wrong with the survey operation.
     tools_controller:
       article_busted: 'Article #%{article} was successfully busted'
       user_busted: 'User #%{user} was successfully busted'
@@ -156,6 +205,8 @@ en:
       credits_added: Credits have been added!
       credits_removed: Credits have been removed.
       tag_not_found: 'Tag "%{tag_name}" was not found'
+      email_confirmed: Email confirmed!
+      email_confirm_fail: Email confirmation failed.
     welcome_controller:
       thread_content: |
         ---

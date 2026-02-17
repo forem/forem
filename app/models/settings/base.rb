@@ -25,7 +25,9 @@ module Settings
 
         # Clear any subforem-specific caches
         Subforem.find_each do |subforem|
-          Rails.cache.delete("#{cache_key}-#{subforem.id}")
+          subforem_cache_key = "#{cache_key}-#{subforem.id}"
+          RequestStore.delete(subforem_cache_key)
+          Rails.cache.delete(subforem_cache_key)
         end
       end
 

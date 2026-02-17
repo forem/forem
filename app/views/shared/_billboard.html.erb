@@ -41,7 +41,7 @@
         <% if billboard.dismissal_sku.present? %>
           <button id="sponsorship-close-trigger-<%= billboard.id %>" aria-controls="sponsorship-close-<%= billboard.id %>"
             class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon">
-              <%= crayons_icon_tag("x", class: "pointer-events-none", title: t("billboard.menu.close")) %>
+              <%= crayons_icon_tag("x", class: "pointer-events-none", title: "x") %>
           </button>
         <% end %>
       </div>
@@ -67,7 +67,7 @@
       <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>
       <button id="sponsorship-close-trigger-<%= billboard.id %>" aria-controls="sponsorship-close-<%= billboard.id %>"
         class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon">
-          <%= crayons_icon_tag("x", class: "pointer-events-none", title: t("billboard.menu.close")) %>
+          <%= crayons_icon_tag("x", class: "pointer-events-none", title: "x") %>
       </button>
     </div>
     <div class="p-1 text-styles text-styles--billboard">
@@ -90,19 +90,19 @@
       data-page-id="<%= billboard.page_id %>"
     <% end %>
     data-type-of="<%= billboard.type_of_display %>">
-    <div class="flex">
+    <div class="popover-billboard__header flex">
       <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>
       <button id="sponsorship-close-trigger-<%= billboard.id %>" aria-controls="sponsorship-close-<%= billboard.id %>"
-        class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon">
-          <%= crayons_icon_tag("x", class: "pointer-events-none", title: t("billboard.menu.close")) %>
+        class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon popover-billboard__close">
+          <%= crayons_icon_tag("x", class: "pointer-events-none", title: "x") %>
       </button>
     </div>
-    <div class="p-1 text-styles text-styles--billboard">
+    <div class="popover-billboard__content text-styles text-styles--billboard">
       <%= billboard.processed_html_final.html_safe %>
     </div>
   </div>
 <% elsif billboard.placement_area == "post_body_bottom" %>
-  <% long_bb = billboard.processed_html_final.size > 750 %>
+  <% long_bb = billboard.processed_html_final.size > 750 && billboard.processed_html_final.exclude?("ltag-survey") %>
   <div class="crayons-card crayons-card--secondary crayons-bb js-billboard body-billboard mb-2 mt-6"
     style="<%= billboard.style_string %>"
     data-display-unit data-id="<%= billboard.id %>"
@@ -118,7 +118,7 @@
       <% if billboard.dismissal_sku.present? %>
         <button id="sponsorship-close-trigger-<%= billboard.id %>" aria-controls="sponsorship-close-<%= billboard.id %>"
           class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon">
-            <%= crayons_icon_tag("x", class: "pointer-events-none", title: t("billboard.menu.close")) %>
+            <%= crayons_icon_tag("x", class: "pointer-events-none", title: "x") %>
         </button>
       <% end %>
     </div>
@@ -149,4 +149,7 @@
       <%= billboard.processed_html_final.html_safe %>
     </div>
   </div>
+<% end %>
+<% if billboard.processed_html_final.include?("ltag-survey") %>
+  <script><%= raw SurveyTag.script %></script>
 <% end %>

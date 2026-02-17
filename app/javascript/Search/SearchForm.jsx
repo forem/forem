@@ -249,8 +249,8 @@ export const SearchForm = forwardRef(
               name="q"
               placeholder={
                 articleContainer?.dataset?.articleId
-                  ? 'Find related posts...'
-                  : `${locale('core.search')}...`
+                  ? locale('core.search_find_related_posts')
+                  : locale('core.search_placeholder')
               }
               autoComplete="off"
               aria-label="Search term"
@@ -308,15 +308,15 @@ export const SearchForm = forwardRef(
                   <div className="crayons-header--search-typeahead-footer">
                     <span>
                       {inputValue.length > 0
-                        ? 'Submit search for advanced filtering.'
-                        : 'Displaying Algolia Recommendations — Start typing to search'}
+                        ? locale('core.search_submit_search')
+                        : locale('core.search_displaying_recommendations')}
                     </span>
                     <a
                       href="https://www.algolia.com/developers/?utm_source=devto&utm_medium=referral"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      Powered by Algolia
+                      {locale('core.search_powered_by')}
                     </a>
                   </div>
                 </ul>
@@ -334,7 +334,7 @@ export const SearchForm = forwardRef(
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Powered by <AlgoliaIcon /> Algolia
+                {locale('core.search_powered_by')} <AlgoliaIcon />
               </a>
             ) : (
               ''

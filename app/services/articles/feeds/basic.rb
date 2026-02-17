@@ -15,9 +15,8 @@ module Articles
           .with_at_least_home_feed_minimum_score
           .limit(@number_of_articles)
           .offset((@page - 1) * @number_of_articles)
-          .limited_column_select.includes(top_comments: :user)
-          .includes(:distinct_reaction_categories)
-          .includes(:context_notes)
+          .limited_column_select
+          .includes(:distinct_reaction_categories, :context_notes, top_comments: :user)
           .from_subforem
 
         return articles unless @user
@@ -37,6 +36,8 @@ module Articles
           tag_score + org_score + user_score - index
         end.reverse!
       end
+
+      private
 
       # Alias :feed to preserve past implementations, but favoring a
       # convergence of interface implementations.

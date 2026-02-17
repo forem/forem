@@ -34,6 +34,10 @@ class User < ApplicationRecord
 
   RECENTLY_ACTIVE_LIMIT = 10_000
 
+  # User types enum
+  enum type_of: { member: 0, community_bot: 1, member_bot: 2 }
+  enum current_subscriber_status: { not_subscribed: 0, free_subscription: 1, trial_subscription: 2, paying_subscription: 3 }
+
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
                 :current_password, :custom_invite_subject, :custom_invite_message, :custom_invite_footnote
@@ -47,6 +51,7 @@ class User < ApplicationRecord
   has_many :affected_feedback_messages, class_name: "FeedbackMessage",
                                         inverse_of: :affected, foreign_key: :affected_id, dependent: :nullify
   has_many :ahoy_events, class_name: "Ahoy::Event", dependent: :delete_all
+  has_many :scheduled_automations, dependent: :destroy
   has_many :ahoy_visits, class_name: "Ahoy::Visit", dependent: :delete_all
   has_many :api_secrets, dependent: :delete_all
   has_many :articles, dependent: :destroy
@@ -94,6 +99,8 @@ class User < ApplicationRecord
   has_many :podcasts_owned, through: :podcast_ownerships, source: :podcast
   has_many :poll_skips, dependent: :delete_all
   has_many :poll_votes, dependent: :delete_all
+  has_many :poll_text_responses, dependent: :delete_all
+  has_many :survey_completions, dependent: :destroy
   has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :delete_all
   has_many :segmented_users, dependent: :destroy
   has_many :audience_segments, through: :segmented_users
@@ -219,11 +226,15 @@ class User < ApplicationRecord
   }
 
   scope :following_tags, lambda { |tags|
-    tags = tags.gsub(" ", "").split(",") if tags.is_a?(String)
+    tags = tags.delete(" ").split(",") if tags.is_a?(String)
     joins("INNER JOIN follows ON follows.follower_id = users.id AND follows.follower_type = 'User'")
       .joins("INNER JOIN tags ON tags.id = follows.followable_id AND follows.followable_type = 'ActsAsTaggableOn::Tag'")
       .where(tags: { name: tags })
       .distinct
+  }
+
+  scope :community_bots_for_subforem, lambda { |subforem_id|
+    where(type_of: :community_bot, onboarding_subforem_id: subforem_id)
   }
   scope :above_average, lambda {
     where(
@@ -246,7 +257,10 @@ class User < ApplicationRecord
   after_save :create_conditional_autovomits
   after_save :generate_social_images
   after_commit :subscribe_to_mailchimp_newsletter
-  after_commit :bust_cache
+  after_commit :bust_profile_identity_cache, on: :update, if: :profile_identity_changed_for_cache?
+  after_commit :bust_profile_details_cache, on: :update, if: :profile_details_changed_for_cache?
+  after_commit :bust_profile_image_cache, on: :update, if: :profile_image_changed_for_cache?
+  after_commit :enqueue_profile_spam_check, on: :update, if: :name_contains_spam_trigger_terms?
 
   def self.average_articles_count
     Rails.cache.fetch("established_user_article_count", expires_in: 1.day) do
@@ -367,7 +381,7 @@ class User < ApplicationRecord
       []
     end
   end
-  
+
   def cached_following_organizations_ids
     cache_key = "user-#{id}-#{last_followed_at}-#{following_orgs_count}/following_organizations_ids"
     begin
@@ -493,6 +507,7 @@ class User < ApplicationRecord
     :podcast_admin_for?,
     :restricted_liquid_tag_for?,
     :single_resource_admin_for?,
+    :subforem_moderator?,
     :super_admin?,
     :support_admin?,
     :suspended?,
@@ -524,22 +539,38 @@ class User < ApplicationRecord
   #
   # @see #moderator_for_tags_not_cached
   def moderator_for_tags
-    Rails.cache.fetch("user-#{id}/tag_moderators_list", expires_in: 200.hours) do
+    Rails.cache.fetch("user-#{id}/moderator_for_tags", expires_in: 200.hours) do
       moderator_for_tags_not_cached
     end
   end
 
-  # When you need the "up to the moment" names of the tags moderated
-  # by this user.
+  # The name of the subforems moderated by the user.
   #
-  # @note Favor #moderator_for_tags
+  # @note This caches a relatively expensive query
+  #
+  # @return [Array<String>] an array of subforem domains
+  #
+  # @see #moderator_for_subforems_not_cached
+  def moderator_for_subforems
+    Rails.cache.fetch("user-#{id}/moderator_for_subforems", expires_in: 200.hours) do
+      moderator_for_subforems_not_cached
+    end
+  end
+
+  # When you need the "up to the moment" names of the tags moderated
+  # by the user, use this method.
   #
   # @return [Array<String>] an array of tag names
-  #
-  # @see #moderator_for_tags
   def moderator_for_tags_not_cached
-    tag_ids = roles.where(name: "tag_moderator").pluck(:resource_id)
-    Tag.where(id: tag_ids).pluck(:name)
+    Tag.with_role(:tag_moderator, self).pluck(:name)
+  end
+
+  # When you need the "up to the moment" names of the subforems moderated
+  # by the user, use this method.
+  #
+  # @return [Array<String>] an array of subforem domains
+  def moderator_for_subforems_not_cached
+    Subforem.with_role(:subforem_moderator, self).pluck(:domain)
   end
 
   def admin_organizations
@@ -589,6 +620,30 @@ class User < ApplicationRecord
 
   def profile_image_90
     profile_image_url_for(length: 90)
+  end
+
+  def profile_identity_record_key
+    "#{record_key}/profile_identity"
+  end
+
+  def profile_details_record_key
+    "#{record_key}/profile_details"
+  end
+
+  def profile_image_record_key
+    "#{record_key}/profile_image"
+  end
+
+  def profile_cache_keys
+    [profile_identity_record_key, profile_details_record_key, profile_image_record_key]
+  end
+
+  def profile_identity_cache_keys
+    [profile_identity_record_key, profile_image_record_key]
+  end
+
+  def profile_cache_bust_paths
+    [path, "/profile_preview_cards/#{id}", "/api/users/#{id}"]
   end
 
   def remove_from_mailchimp_newsletters
@@ -652,12 +707,30 @@ class User < ApplicationRecord
     number = rand(10**8)
     self.sign_in_token = number.to_s.rjust(8, "0")
     self.sign_in_token_sent_at = Time.now.utc
-    if self.save
+    if save
       VerificationMailer.with(user_id: id).magic_link.deliver_now
     else
       errors.add(:email, "Error sending magic link")
       Rails.logger.error("Error sending magic link for user #{id}")
     end
+  end
+
+  def community_bot?
+    type_of == "community_bot"
+  end
+
+  def member_bot?
+    type_of == "member_bot"
+  end
+
+  def bot?
+    community_bot? || member_bot?
+  end
+  
+  def update_presence!
+    return if last_presence_at.present? && last_presence_at > 1.hour.ago
+
+    update_column(:last_presence_at, Time.current)
   end
 
   protected
@@ -713,6 +786,44 @@ class User < ApplicationRecord
     Users::BustCacheWorker.perform_async(id)
   end
 
+  def bust_profile_identity_cache
+    Users::BustProfileIdentityCacheWorker.perform_async(id)
+  end
+
+  def bust_profile_details_cache
+    Users::BustProfileDetailsCacheWorker.perform_async(id)
+  end
+
+  def bust_profile_image_cache
+    Users::BustProfileImageCacheWorker.perform_async(id)
+  end
+
+  def profile_identity_changed_for_cache?
+    saved_change_to_name? || saved_change_to_username?
+  end
+
+  def profile_details_changed_for_cache?
+    saved_change_to_email? ||
+      saved_change_to_twitter_username? ||
+      saved_change_to_github_username? ||
+      saved_change_to_facebook_username?
+  end
+
+  def profile_image_changed_for_cache?
+    saved_change_to_profile_image? ||
+      (respond_to?(:saved_change_to_profile_image_url?) && saved_change_to_profile_image_url?)
+  end
+
+  def enqueue_profile_spam_check
+    Users::HandleProfileSpamWorker.perform_async(id)
+  end
+
+  def name_contains_spam_trigger_terms?
+    return false unless saved_change_to_name?
+
+    Spam::Handler.profile_spam_trigger_term_match?(name)
+  end
+
   def create_conditional_autovomits
     Spam::Handler.handle_user!(user: self)
   end
@@ -751,11 +862,18 @@ class User < ApplicationRecord
     ForemInstance.smtp_enabled?
   end
 
-  def update_user_roles_cache(...)
+  def update_user_roles_cache(role)
     authorizer.clear_cache
     Rails.cache.delete("user-#{id}/has_trusted_role")
     Rails.cache.delete("user-#{id}/role_names")
+    Rails.cache.delete("user-#{id}/moderator_for_tags")
+    Rails.cache.delete("user-#{id}/moderator_for_subforems")
     refresh_auto_audience_segments
     trusted?
+    
+    # Check for spam patterns when user gets spam or suspended role
+    if role.name.in?(%w[spam suspended])
+      Spam::DomainDetector.new(self).check_and_block_domain!
+    end
   end
 end

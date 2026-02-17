@@ -2,7 +2,7 @@ module Stories
   class TaggedArticlesController < ApplicationController
     before_action :set_cache_control_headers, only: :index
 
-    SIGNED_OUT_RECORD_COUNT = 25
+    SIGNED_OUT_RECORD_COUNT = 15
 
     rescue_from ArgumentError, with: :bad_request
 
@@ -39,7 +39,7 @@ module Stories
                                   tag.articles.published.from_subforem.approved.count
                                 else
                                   Rails.cache.fetch("#{tag.cache_key}/article-cached-tagged-count",
-                                                    expires_in: 2.hours) do
+                                                    expires_in: 72.hours) do
                                     tagged_count(tag: tag)
                                   end
                                 end
@@ -58,7 +58,7 @@ module Stories
 
       # Now, apply the filter.
       stories = stories_by_timeframe(stories: stories)
-      stories = stories.full_posts.includes(:subforem).from_subforem.limited_column_select
+      stories = stories.full_posts.from_subforem
       @stories = stories.decorate
     end
 
@@ -83,10 +83,17 @@ module Stories
       if Timeframe::FILTER_TIMEFRAMES.include?(params[:timeframe])
         stories.where("published_at > ?", Timeframe.datetime(params[:timeframe]))
           .where(score: -20..)
-          .order(public_reactions_count: :desc)
+          .order(score: :desc)
       elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
         stories.where(score: -20..).order(published_at: :desc)
       else
+        # For tags on page 1, constrain to the last 4 months so Postgres
+        # can narrow the scan before sorting by hotness_score. Supported tags always
+        # have plenty of recent content, so this is safe and avoids scanning the
+        # full history of a high-volume tag.
+        if @page == 1 && !user_signed_in?
+          stories = stories.where("published_at > ?", 3.months.ago)
+        end
         stories.order(hotness_score: :desc).with_at_least_home_feed_minimum_score
       end
     end

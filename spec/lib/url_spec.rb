@@ -18,6 +18,20 @@ RSpec.describe URL, type: :lib do
     it "returns the value of Settings::General" do
       expect(described_class.domain).to eq(Settings::General.app_domain)
     end
+
+    context "when passed a domain string" do
+      it "returns the domain string" do
+        expect(described_class.domain("subdomain.example.com")).to eq("subdomain.example.com")
+      end
+    end
+
+    context "when passed a Subforem object" do
+      let(:subforem) { build(:subforem, domain: "community.example.com") }
+
+      it "returns the subforem's domain" do
+        expect(described_class.domain(subforem)).to eq("community.example.com")
+      end
+    end
   end
 
   describe ".url" do
@@ -36,6 +50,28 @@ RSpec.describe URL, type: :lib do
     it "works when called with an URI object" do
       uri = URI::Generic.build(path: "admin", fragment: "test").to_s
       expect(described_class.url(uri)).to eq("https://dev.to/admin#test")
+    end
+
+    context "when passed a domain string" do
+      it "creates a URL with the specified domain" do
+        expect(described_class.url("/feed", "subdomain.example.com")).to eq("https://subdomain.example.com/feed")
+      end
+
+      it "creates a base URL with the specified domain" do
+        expect(described_class.url(nil, "community.example.com")).to eq("https://community.example.com")
+      end
+    end
+
+    context "when passed a Subforem object" do
+      let(:subforem) { build(:subforem, domain: "community.example.com") }
+
+      it "creates a URL with the subforem's domain" do
+        expect(described_class.url("/articles", subforem)).to eq("https://community.example.com/articles")
+      end
+
+      it "creates a base URL with the subforem's domain" do
+        expect(described_class.url(nil, subforem)).to eq("https://community.example.com")
+      end
     end
   end
 
@@ -74,6 +110,23 @@ RSpec.describe URL, type: :lib do
 
     it "returns the correct URL for a user" do
       expect(described_class.user(user)).to eq("https://dev.to/#{user.username}")
+    end
+
+    context "when a subforem context is set" do
+      let(:subforem) { create(:subforem, domain: "community.example.com") }
+
+      before do
+        RequestStore.store[:subforem_id] = subforem.id
+        allow(Subforem).to receive(:cached_id_to_domain_hash).and_return({ subforem.id => subforem.domain })
+      end
+
+      after do
+        RequestStore.store[:subforem_id] = nil
+      end
+
+      it "returns the correct URL for a user with the subforem domain" do
+        expect(described_class.user(user)).to eq("https://community.example.com/#{user.username}")
+      end
     end
   end
 

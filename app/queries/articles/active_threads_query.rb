@@ -32,15 +32,13 @@ module Articles
 
       relation = relation.limit(count)
       relation = relation.cached_tagged_with(tags)
+      relation = relation.where(score: minimum_score..)
       relation = if time_ago == "latest"
-                   relation = relation.where(score: minimum_score..).presence || relation
                    relation.order(published_at: :desc)
                  elsif time_ago
-                   relation = relation.where(published_at: time_ago.., score: minimum_score..).presence || relation
-                   relation.order(comments_count: :desc)
+                   relation.where(published_at: time_ago..).order(comments_count: :desc)
                  else
-                   relation = relation.where(published_at: 3.days.ago.., score: minimum_score..).presence || relation
-                   relation.order("last_comment_at DESC NULLS LAST")
+                   relation.where(published_at: 3.days.ago..).order("last_comment_at DESC NULLS LAST")
                  end
       relation.pluck(:path, :title, :comments_count, :created_at, :subforem_id)
     end

@@ -1,7 +1,7 @@
-<% cache "tag-sidebar-#{@tag.name}-#{@tag&.updated_at}-#{@tag&.taggings_count}-#{user_signed_in?}-#{@page}", expires_in: 5.hours do %>
+<% cache "tag-sidebar-#{@tag.name}-#{@tag&.updated_at}-#{user_signed_in?}-#{@page}", expires_in: 72.hours do %>
   <div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
     <div class="sidebar-bg" id="sidebar-bg-left"></div>
-    <aside class="side-bar">
+    <aside class="side-bar fs-s">
       <% if @tag %>
         <%= application_policy_content_tag("div", record: Article, query: :create?, class: "widget") do %>
           <a class="crayons-btn crayons-btn--s" href="/new/<%= @tag.name %>">
@@ -11,9 +11,9 @@
         <% if @tag.rules_html.present? %>
           <div class="widget">
             <header>
-              <h4><%= t("views.tags.sidebar.guidelines") %></h4>
+              <h4 class="fs-base fw-medium"><%= t("views.tags.sidebar.guidelines") %></h4>
             </header>
-            <div class="widget-body">
+            <div class="widget-body fs-s">
               <%= sanitize @tag.rules_html %>
             </div>
           </div>
@@ -21,9 +21,9 @@
         <% if @tag.wiki_body_html.present? %>
           <div class="widget">
             <header>
-              <h4><%= t("views.tags.sidebar.about", tag: @tag.name) %></h4>
+              <h4 class="fs-base fw-medium"><%= t("views.tags.sidebar.about", tag: @tag.name) %></h4>
             </header>
-            <div class="widget-body">
+            <div class="widget-body fs-s">
               <%= sanitize @tag.wiki_body_html %>
             </div>
           </div>
@@ -32,9 +32,9 @@
       <% if user_signed_in? && @moderators.present? %>
         <div class="widget">
           <header>
-            <h4><%= t("views.tags.sidebar.mods") %></h4>
+            <h4 class="fs-base fw-medium"><%= t("views.tags.sidebar.mods") %></h4>
           </header>
-          <div class="widget-body">
+          <div class="widget-body fs-s">
             <% @moderators.each do |user| %>
               <div class="widget-user-pic">
                 <a href="/<%= user.username %>" title="<%= user.username %>">
@@ -46,9 +46,6 @@
         </div>
       <% end %>
       <div class="sidebar-data">
-        <div>
-          <%= t("views.tags.sidebar.published", count: @num_published_articles) %>
-        </div>
         <% if user_signed_in? %>
           <div class="crayons-btn-group mt-3">
             <a style="display:none;"
@@ -77,28 +74,26 @@
               <%= t("views.tags.sidebar.moderate") %>
             </a>
           </div>
-        <% else %>
-          <% number_of_pages = @num_published_articles / @number_of_articles %>
+        <% elsif @tag.supported? %>
+          <% number_of_pages = [(@num_published_articles.to_f / @number_of_articles).ceil, 1].max %>
           <% range = number_of_pages < 10 || @page < 4 ? 1..[number_of_pages, 9].min : [@page - 3, 1].max..[@page + 5, number_of_pages].min %>
-          <% if number_of_pages > 1 %>
-            <hr />
-            <div class="olderposts-header"><%= t("views.tags.sidebar.older", tag: @tag.name) %></div>
-            <div class="olderposts-links">
-              <% range.each do |n| %>
-                <% if @page == n %>
-                    <span class="olderposts-pagenumber"><%= n %></span>
-                <% else %>
-                    <a href="<%= tag_url(@tag, n) %>" class="olderposts-pagenumber"><%= n %></a>
-                <% end %>
+          <hr />
+          <div class="olderposts-header fs-base fw-medium"><%= t("views.tags.sidebar.older", tag: @tag.name) %></div>
+          <div class="olderposts-links">
+            <% range.each do |n| %>
+              <% if @page == n %>
+                  <span class="olderposts-pagenumber"><%= n %></span>
+              <% else %>
+                  <a href="<%= tag_url(@tag, n) %>" class="olderposts-pagenumber"><%= n %></a>
               <% end %>
-              <% if @page == 1 && number_of_pages > 100 %>
-                <div>
-                  …<a href="<%= tag_url(@tag, 75) %>" class="olderposts-pagenumber">75</a>
-                  …<a href="<%= tag_url(@tag, number_of_pages) %>" class="olderposts-pagenumber"><%= number_of_pages %></a>
-                </div>
-              <% end %>
-            </div>
-          <% end %>
+            <% end %>
+            <% if @page == 1 && number_of_pages > 100 %>
+              <div>
+                …<a href="<%= tag_url(@tag, 75) %>" class="olderposts-pagenumber">75</a>
+                …<a href="<%= tag_url(@tag, number_of_pages) %>" class="olderposts-pagenumber"><%= number_of_pages %></a>
+              </div>
+            <% end %>
+          </div>
         <% end %>
       </div>
     </aside>

@@ -16,6 +16,9 @@ RSpec.describe Spam::Handler, type: :service do
       before do
         allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
         allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(false)
+        # Mock content moderation labeling
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("no_moderation_label")
       end
 
       it { is_expected.to eq(:not_spam) }
@@ -59,6 +62,9 @@ RSpec.describe Spam::Handler, type: :service do
       before do
         allow(Settings::RateLimit).to receive(:trigger_spam_for?).with(text: text_to_check).and_return(true)
         allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(false)
+        # Mock content moderation labeling
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("no_moderation_label")
       end
 
       context "for a first-time offender" do
@@ -77,6 +83,8 @@ RSpec.describe Spam::Handler, type: :service do
         article.user.update!(badge_achievements_count: 3)
         allow(article).to receive(:processed_html).and_return("<p>contains a <a href='spam.com'>link</a></p>")
         allow(Ai::ArticleCheck).to receive(:new).with(article).and_return(double(spam?: true))
+        # Mock content moderation labeling
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("no_moderation_label")
       end
 
       context "for a first-time offender" do
@@ -85,6 +93,184 @@ RSpec.describe Spam::Handler, type: :service do
 
       context "for a multiple offender" do
         it_behaves_like "multiple spam offender"
+      end
+    end
+
+    context "when content moderation labeler identifies spam" do
+      before do
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
+        allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(false)
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("clear_and_obvious_spam")
+        allow(article).to receive(:automod_label).and_return("clear_and_obvious_spam")
+        allow(article).to receive(:update_column)
+      end
+
+      context "for a first-time offender" do
+        before do
+          allow(Reaction).to receive(:user_has_been_given_too_many_spammy_article_reactions?)
+            .with(user: article.user, include_user_profile: false).and_return(false)
+        end
+
+        it "creates a reaction but does not suspend the user" do
+          expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
+          expect(article.user.reload).not_to be_suspended
+        end
+
+        it "returns :spam" do
+          expect(handler).to eq(:spam)
+        end
+      end
+
+      context "for a multiple offender" do
+        before do
+          allow(Reaction).to receive(:user_has_been_given_too_many_spammy_article_reactions?)
+            .with(user: article.user, include_user_profile: false).and_return(true)
+        end
+
+        it "creates a reaction, suspends the user, and returns :spam" do
+          expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
+          expect(article.user.reload).to be_suspended
+          expect(handler).to eq(:spam)
+        end
+      end
+    end
+
+    context "when content moderation labeler identifies clear and obvious harmful content" do
+      before do
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
+        allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(false)
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("clear_and_obvious_harmful")
+        allow(article).to receive(:automod_label).and_return("clear_and_obvious_harmful")
+        allow(article).to receive(:update_column)
+      end
+
+      context "for a first-time offender" do
+        before do
+          allow(Reaction).to receive(:user_has_been_given_too_many_spammy_article_reactions?)
+            .with(user: article.user, include_user_profile: false).and_return(false)
+        end
+
+        it "creates a reaction but does not suspend the user" do
+          expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
+          expect(article.user.reload).not_to be_suspended
+        end
+
+        it "returns :spam" do
+          expect(handler).to eq(:spam)
+        end
+      end
+    end
+
+    context "when content moderation labeler identifies likely harmful content" do
+      before do
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
+        allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(false)
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("likely_harmful")
+        allow(article).to receive(:automod_label).and_return("likely_harmful")
+        allow(article).to receive(:update_column)
+      end
+
+      it "bypasses badge count restrictions but still runs checks" do
+        article.user.update!(badge_achievements_count: 10) # High badge count
+        allow(Ai::ArticleCheck).to receive(:new).with(article).and_return(double(spam?: false))
+        
+        expect(handler).to eq(:not_spam)
+      end
+    end
+
+    context "when content moderation labeler identifies clear and obvious inciting content" do
+      before do
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
+        allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(false)
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("clear_and_obvious_inciting")
+        allow(article).to receive(:automod_label).and_return("clear_and_obvious_inciting")
+        allow(article).to receive(:update_column)
+      end
+
+      context "for a first-time offender" do
+        before do
+          allow(Reaction).to receive(:user_has_been_given_too_many_spammy_article_reactions?)
+            .with(user: article.user, include_user_profile: false).and_return(false)
+        end
+
+        it "creates a reaction but does not suspend the user" do
+          expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
+          expect(article.user.reload).not_to be_suspended
+        end
+
+        it "returns :spam" do
+          expect(handler).to eq(:spam)
+        end
+      end
+    end
+
+    context "when content moderation labeler identifies likely inciting content" do
+      before do
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
+        allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(false)
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("likely_inciting")
+        allow(article).to receive(:automod_label).and_return("likely_inciting")
+        allow(article).to receive(:update_column)
+      end
+
+      it "bypasses badge count restrictions but still runs checks" do
+        article.user.update!(badge_achievements_count: 10) # High badge count
+        allow(Ai::ArticleCheck).to receive(:new).with(article).and_return(double(spam?: false))
+        
+        expect(handler).to eq(:not_spam)
+      end
+    end
+
+    context "when content moderation labeler identifies likely spam" do
+      before do
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
+        allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(false)
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("likely_spam")
+        allow(article).to receive(:automod_label).and_return("likely_spam")
+        allow(article).to receive(:update_column)
+      end
+
+      it "bypasses badge count restrictions but still runs checks" do
+        article.user.update!(badge_achievements_count: 10) # High badge count
+        allow(Ai::ArticleCheck).to receive(:new).with(article).and_return(double(spam?: false))
+        
+        expect(handler).to eq(:not_spam)
+      end
+    end
+
+    context "when content moderation labeler identifies high quality content" do
+      before do
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(true) # Would normally trigger spam
+        allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(true) # Would normally trigger spam
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("very_good_and_on_topic")
+        allow(article).to receive(:automod_label).and_return("very_good_and_on_topic")
+        allow(article).to receive(:update_column)
+      end
+
+      it "bypasses all spam checks" do
+        expect(handler).to eq(:not_spam)
+      end
+    end
+
+    context "when content moderation labeler identifies great content" do
+      before do
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(true) # Would normally trigger spam
+        allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(true) # Would normally trigger spam
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("great_and_on_topic")
+        allow(article).to receive(:automod_label).and_return("great_and_on_topic")
+        allow(article).to receive(:update_column)
+      end
+
+      it "bypasses all spam checks" do
+        expect(handler).to eq(:not_spam)
       end
     end
   end
@@ -307,6 +493,85 @@ RSpec.describe Spam::Handler, type: :service do
 
       it "creates a reaction but does not suspend the user" do
         expect { handler }.to change { Reaction.where(reactable: user, category: "vomit").count }.by(1)
+      end
+    end
+  end
+
+  describe ".handle_profile_update!" do
+    subject(:handler) { described_class.handle_profile_update!(user: user) }
+
+    let!(:user) { create(:user) }
+    let(:mascot_user) { create(:user) }
+
+    before do
+      allow(Settings::General).to receive(:mascot_user_id).and_return(mascot_user.id)
+      stub_const("Ai::Base::DEFAULT_KEY", "present")
+    end
+
+    context "when user is already spam or suspended" do
+      before do
+        user.add_role(:spam)
+      end
+
+      it "skips without reactions" do
+        expect(handler).to eq(:skipped)
+        expect { handler }.not_to(change { Reaction.count })
+      end
+    end
+
+    context "when user has more than 3 published articles" do
+      before do
+        create_list(:article, 4, user: user)
+      end
+
+      it "skips and does not label" do
+        expect(Ai::ProfileModerationLabeler).not_to receive(:new)
+        expect(handler).to eq(:skipped)
+      end
+    end
+
+    context "when user has more than 3 published comments" do
+      before do
+        create_list(:comment, 4, user: user)
+      end
+
+      it "skips without reactions" do
+        expect(handler).to eq(:skipped)
+        expect { handler }.not_to(change { Reaction.count })
+      end
+    end
+
+    context "when label is clear_and_obvious_spam" do
+      before do
+        allow(Ai::ProfileModerationLabeler).to receive_message_chain(:new, :label).and_return("clear_and_obvious_spam")
+      end
+
+      it "adds spam role and reaction" do
+        expect { handler }.to change { Reaction.where(reactable: user, category: "vomit").count }.by(1)
+        expect(user.reload).to be_spam
+      end
+    end
+
+    context "when label is clear_and_obvious_harmful" do
+      before do
+        allow(Ai::ProfileModerationLabeler).to receive_message_chain(:new, :label).and_return("clear_and_obvious_harmful")
+      end
+
+      it "suspends and reacts with a note" do
+        expect { handler }.to change { Reaction.where(reactable: user, category: "vomit").count }.by(1)
+        expect(user.reload).to be_suspended
+        expect(Note.where(noteable: user, reason: "automatic_suspend").count).to eq(1)
+      end
+    end
+
+    context "when label is not a clear violation" do
+      before do
+        allow(Ai::ProfileModerationLabeler).to receive_message_chain(:new, :label).and_return("no_moderation_label")
+      end
+
+      it "returns :not_spam without reactions" do
+        expect(handler).to eq(:not_spam)
+        expect { handler }.not_to(change { Reaction.count })
       end
     end
   end

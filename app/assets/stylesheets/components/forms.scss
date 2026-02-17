@@ -195,6 +195,22 @@
     margin: 0; //todo remove
   }
 
+  &__addon {
+    display: flex;
+    align-items: center;
+    padding: calc(0.5em - var(--border-width)) 0.5em;
+    background-color: var(--body-bg);
+    border: var(--border-width) solid var(--form-border);
+    border-radius: var(--radius);
+    border-right: none;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    color: var(--label-secondary);
+    font-family: var(--ff-monospace);
+    font-size: var(--fs-s);
+    white-space: nowrap;
+  }
+
   > * + * {
     margin-top: var(--su-2);
   }
@@ -291,6 +307,23 @@ textarea.crayons-textfield.crayons-textfield--ghost {
     top: var(--su-1);
     left: var(--su-1);
     z-index: var(--z-elevate);
+  }
+
+  &__clear {
+    right: var(--su-1);
+    bottom: var(--su-2);
+    z-index: var(--z-elevate);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: var(--fs-s);
+    color: var(--base-70);
+    padding: var(--su-1) var(--su-2);
+    line-height: 1;
+
+    &:hover {
+      color: var(--base-90);
+    }
   }
 
   &__popover {

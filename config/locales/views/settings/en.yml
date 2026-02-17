@@ -40,8 +40,13 @@ en:
           confirm: Are you absolutely sure you want to remove your %{provider} account?
           submit: Remove %{provider}
           unable_to_remove: You are unable to remove one of your authentication methods as you need a remaining method to authenticate you. Please add another authentication method above before continuing.
+        free_billing_info: You are on a free subscription. There is no active billing associated with your account, so no payment management is required.
       billing:
         heading: Billing
+        current_status: Current Subscription Status
+        free_subscription: You are on a free subscription and are not being billed in any capacity.
+        trial_subscription: You are currently on a trial subscription.
+        paying_subscription: You are on a recurring paying subscription.
         add: Add Credit Card
         another: "+ Add Another Credit Card"
         cards: Your Credit Cards
@@ -77,6 +82,9 @@ en:
         sponsor_desc_html: You have the option to disable billboards from external sponsors. Our wonderful partners help sustain the platform, and we strive to ensure that their presence is constructive and valuable to the community, but you are welcome to make use of this setting if you wish. More details in our <a href="/billboards">billboards FAQ</a>.
         sponsor_field: Display External Sponsors (When browsing)
         static: Static top of page
+        subforem_reassignment: Content Relocation
+        subforem_reassignment_desc: When your content is marked as off-topic for its current subforem, it may be automatically moved to a more appropriate subforem. You can disable this automatic relocation if you prefer to keep your content in its original location.
+        subforem_reassignment_field: Disable automatic relocation of my content to other subforems
         theme: Site Theme
         writing: Writing
       danger: Danger Zone
@@ -175,6 +183,7 @@ en:
           copy:
             button:
               aria_label: Copy organization secret code to clipboard
+              text: Copy
             icon: Copy to clipboard
             input:
               aria_label: Organization secret (to be rotated regularly)
@@ -213,15 +222,48 @@ en:
             text: You should rotate this regularly!
             submit: Generate new secret
           grow: Grow the team
+          grow_description: Invite new members to your organization using one of the methods below.
           invite: 'Invite teammates by sending them the secret and the following instructions:'
           inst1_html: Sign up at %{url}
           inst2_html: Navigate to %{url}
           inst3_html: Paste the secret code below and click <b>Join Organization</b>
+          secret_instructions: "Share these instructions with your teammates:"
+          invite_methods:
+            username:
+              title: Invite by Username
+              description: Invite a specific user by their username. They'll receive an email invitation to join.
+              icon: User icon
+              fully_trusted:
+                title: Add by Username
+                description: Add a specific user by their username. They will receive an email notification that they've been added to the organization. Since this organization is fully trusted, verification is skipped and they'll be added immediately.
+                icon: User icon
+            secret:
+              title: Share Secret Code
+              description: Share your organization's secret code. Anyone with the code can join your organization.
+              icon: Key icon
+          fully_trusted_warning:
+            title: Fully Trusted Organization
+            description: Your organization has elevated privileges. When adding by username, members are added immediately without confirmation. They will receive an email notification that they've been added. Since your organization is fully trusted, verification is skipped on their end. Please verify the username is 100% correct before sending.
+            icon: Warning icon
           make:
             confirm: Are you sure you want to give %{user} admin status?
             title: Make admin
             text: Make admin
           members: Organization Members
+          active_members: Active Members
+          pending_members: Pending Invitations
+          pending: Pending
+          invite_member: Invite a Member
+          invite_member_description: Invite a user to join your organization by their username. They will receive an email invitation.
+          username_label: Username
+          username_placeholder: "Enter username (e.g., johndoe)"
+          username_description: Enter the username of the user you want to invite (without the @ symbol).
+          username_description_fully_trusted: Enter the username of the user you want to add (without the @ symbol). They will receive an email notification and be added immediately without verification.
+          invite_button: Send Invitation
+          add_button: Add Member
+          cancel_invite:
+            title: Cancel invitation
+            text: Cancel Invitation
           remove:
             confirm: Are you sure you want remove %{user} from the organization?
             title: Remove from org

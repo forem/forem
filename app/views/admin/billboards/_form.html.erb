@@ -44,7 +44,7 @@
         <style>
           #color-popover-btn-color { top: 36px; }
         </style>
-        <%= text_field_tag :color, @billboard.color, class: "crayons-textfield", placeholder: "#000000", data: { color_picker: true, label_text: "Border color" } %>
+        <%= text_field_tag :color, @billboard.color.presence, class: "crayons-textfield", placeholder: "No color (leave empty)", data: { color_picker: true, label_text: "Border color" } %>
       </div>
     </div>
 
@@ -155,6 +155,12 @@
     <div class="crayons-field">
       <%= label_tag :approved, "Approved:", class: "crayons-field__label" %>
       <%= select_tag :approved, options_for_select([false, true], selected: @billboard.approved), class: "crayons-select" %>
+    </div>
+
+    <div class="crayons-field">
+      <%= label_tag :expires_at, "Expires at:", class: "crayons-field__label" %>
+      <%= datetime_local_field_tag :expires_at, @billboard.expires_at&.strftime("%Y-%m-%dT%H:%M"), class: "crayons-textfield", placeholder: "Leave blank for no expiration" %>
+      <p class="crayons-field__description">Billboard will automatically be marked as not approved after this time</p>
     </div>
 
     <div class="crayons-field">

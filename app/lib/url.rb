@@ -16,9 +16,10 @@ module URL
 
   private_class_method :has_site_configs?
 
-  def self.domain(subforem = nil)
-    if subforem
-      subforem.domain
+  def self.domain(domain_or_subforem = nil)
+    if domain_or_subforem
+      # Accept either a Subforem object or a domain string
+      domain_or_subforem.is_a?(String) ? domain_or_subforem : domain_or_subforem.domain
     elsif database_available?
       Settings::General.app_domain
     else
@@ -26,8 +27,8 @@ module URL
     end
   end
 
-  def self.url(uri = nil, subforem = nil)
-    base_url = "#{protocol}#{domain(subforem)}"
+  def self.url(uri = nil, domain_or_subforem = nil)
+    base_url = "#{protocol}#{domain(domain_or_subforem)}"
     base_url += ":3000" if Rails.env.development? && !base_url.include?(":3000")
     return base_url unless uri
     Addressable::URI.parse(base_url).join(uri).normalize.to_s
@@ -37,25 +38,41 @@ module URL
   #
   # @param article [Article] the article to create the URL for
   def self.article(article)
-    subforem = article.subforem || Subforem.find_by(id: RequestStore.store[:default_subforem_id]) if article.respond_to?(:subforem_id)
-    url(article.path, subforem)
+    return url(article.path) unless article.respond_to?(:subforem_id)
+    
+    # Use cached lookup to avoid N+1 queries
+    subforem_id = article.subforem_id || RequestStore.store[:default_subforem_id]
+    return url(article.path) unless subforem_id
+    
+    domain = Subforem.cached_id_to_domain_hash[subforem_id]
+    url(article.path, domain)
   end
 
   def self.page(page)
-    subforem = page.subforem || Subforem.find_by(id: RequestStore.store[:subforem_id])
-    url(page.path, subforem)
+    return url(page.path) unless page.respond_to?(:subforem_id)
+    
+    # Use cached lookup to avoid N+1 queries
+    subforem_id = page.subforem_id || RequestStore.store[:subforem_id]
+    return url(page.path) unless subforem_id
+    
+    domain = Subforem.cached_id_to_domain_hash[subforem_id]
+    url(page.path, domain)
   end
 
   # Creates a comment URL
   #
   # @param comment [Comment] the comment to create the URL for
   def self.comment(comment)
-    subforem =  if comment.commentable.class.name == "Article" && comment.commentable.respond_to?(:subforem_id)
-                  comment.commentable.subforem || Subforem.find_by(id: RequestStore.store[:default_subforem_id])
-                else
-                  Subforem.find_by(id: RequestStore.store[:subforem_id])
-                end
-    url(comment.path, subforem)
+    # Use cached lookup to avoid N+1 queries
+    subforem_id = if comment.commentable.class.name == "Article" && comment.commentable.respond_to?(:subforem_id)
+                    comment.commentable.subforem_id || RequestStore.store[:default_subforem_id]
+                  else
+                    RequestStore.store[:subforem_id]
+                  end
+    return url(comment.path) unless subforem_id
+    
+    domain = Subforem.cached_id_to_domain_hash[subforem_id]
+    url(comment.path, domain)
   end
 
   # Creates a fragment URL for a comment on an article page
@@ -96,7 +113,15 @@ module URL
   #
   # @param user [User] the user to create the URL for
   def self.user(user)
-    url(user.username)
+    # Use cached lookup to avoid N+1 queries
+    subforem_id = RequestStore.store[:subforem_id]
+    
+    if subforem_id
+      domain = Subforem.cached_id_to_domain_hash[subforem_id]
+      url(user.username, domain)
+    else
+      url(user.username)
+    end
   rescue URI::InvalidURIError # invalid username containing spaces will result in an error
     nil
   end

@@ -1,4 +1,5 @@
 json.array! @subforems do |subforem|
+  json.id               subforem.id
   json.domain           subforem.domain
   json.root             subforem.root
   json.name             Settings::Community.community_name(subforem_id: subforem.id)

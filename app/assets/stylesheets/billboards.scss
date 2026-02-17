@@ -3,8 +3,12 @@
 @import '_mixins';
 
 .crayons-layout__comments-billboard {
-  .crayons-bb, .crayons-unit {
-    .c-indicator.crayons-bb__indicator, .c-indicator.crayons-unit__indicator {
+
+  .crayons-bb,
+  .crayons-unit {
+
+    .c-indicator.crayons-bb__indicator,
+    .c-indicator.crayons-unit__indicator {
       line-height: 15px;
     }
 
@@ -19,7 +23,9 @@
   }
 }
 
-.billboard .crayons-dropdown.sponsorship-dropdown, .bb-placement .crayons-dropdown.sponsorship-dropdown, .bb-placement .crayons-dropdown.bb-dropdown {
+.billboard .crayons-dropdown.sponsorship-dropdown,
+.bb-placement .crayons-dropdown.sponsorship-dropdown,
+.bb-placement .crayons-dropdown.bb-dropdown {
   @media (min-width: $breakpoint-m) {
     max-width: 200px;
     min-width: auto;
@@ -35,7 +41,8 @@
   }
 }
 
-.billboard .ltag_cta, .bb-placement .ltag_cta {
+.billboard .ltag_cta,
+.bb-placement .ltag_cta {
   padding-top: var(--su-2);
   padding-bottom: var(--su-2);
 
@@ -45,7 +52,8 @@
 }
 
 // refers to the sidebar billboards where we use cards
-.crayons-card.billboard .ltag_cta, .crayons-card.bb-placement .ltag_cta {
+.crayons-card.billboard .ltag_cta,
+.crayons-card.bb-placement .ltag_cta {
   display: block;
 }
 
@@ -57,41 +65,91 @@
   max-height: calc(100vh - 200px);
   overflow: hidden;
 }
+
 .long-bb-bottom {
   height: 180px;
   background: linear-gradient(to top, var(--card-bg), transparent);
   margin-top: -180px;
-  position:relative;
+  position: relative;
   z-index: 5;
 }
 
 .popover-billboard {
   z-index: var(--z-popover);
-  animation: popoverEnter 0.5s;
-  box-shadow: 0 0 100px 60px rgba(0, 0, 0, 0.2) !important;
+  animation: popoverEnter 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 -6px 34px rgba(0, 0, 0, 0.14),
+              0 -16px 84px rgba(0, 0, 0, 0.18),
+              0 -2px 12px rgba(0, 0, 0, 0.08) !important;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0 !important;
   max-height: calc(100vh - var(--header-height));
-  .text-styles {
-    padding-top: var(--su-4);
-    padding-bottom: var(--su-4);
+  max-width: calc(var(--site-width) + 100px);
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 !important;
+
+  // Header row with label and close button
+  &__header {
+    padding: var(--su-2) var(--su-4) 0;
+    align-items: center;
+  }
+
+  // Close button
+  &__close {
+    flex-shrink: 0;
+    opacity: 0.7;
+    transition: opacity 0.15s ease;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  // Main content area
+  &__content {
+    padding: var(--su-3) var(--su-5) var(--su-5);
     font-size: calc(0.8em + 0.58vw);
     max-width: calc(var(--site-width) - var(--su-8));
     overflow-y: auto;
     max-height: calc(100vh - var(--header-height) - var(--su-8));
   }
+
   @media (min-width: $breakpoint-xl) {
+    border-radius: var(--radius-2xl) var(--radius-2xl) 0 0 !important;
+
     .crayons-bb__header,
     .crayons-unit__header,
-    .text-styles {
+    .popover-billboard__content {
       margin-left: calc(54% - (var(--site-width) / 2));
     }
-    .text-styles {
+
+    .popover-billboard__content {
       font-size: 1.22em;
+    }
+    .crayons-bb__header {
+      padding-left: var(--su-4);
+    }
+  }
+}
+
+// Adjust popover-billboard position when main sidebar is visible
+body[data-side-nav-visible='true']:not(.hidden-shell) {
+  .popover-billboard {
+    @media (min-width: $breakpoint-m) {
+      left: 50px;
+      width: calc(100% - 50px);
+    }
+
+    @media (min-width: $breakpoint-2xl) {
+      left: 0;
+      width: 100%;
     }
   }
 }
 
 .popover-billboard--menuopenupwards {
-  .sponsorship-dropdown, .bb-dropdown {
+
+  .sponsorship-dropdown,
+  .bb-dropdown {
     top: auto;
     bottom: var(--su-8);
   }
@@ -106,6 +164,7 @@
     margin: 0 -4px 0;
     padding: 7px 6px !important;
   }
+
   @media (min-width: $breakpoint-m) {
     margin: 0 -14px 0;
   }
@@ -114,6 +173,7 @@
 
 .hero-billboard {
   margin: var(--su-2) 0 0;
+
   h1,
   h2,
   h3,
@@ -154,18 +214,20 @@
 //refers to the below the comments billboard on the article page
 //refers to the feed/stories where we use story
 .crayons-layout__comments-billboard .crayons-card.billboard .ltag_cta,
-.crayons-story.billboard .ltag_cta, .crayons-layout__comments-billboard .crayons-card.bb-placement .ltag_cta,
+.crayons-story.billboard .ltag_cta,
+.crayons-layout__comments-billboard .crayons-card.bb-placement .ltag_cta,
 .crayons-story.bb-placement .ltag_cta {
   padding-right: var(--su-7);
   padding-left: var(--su-7);
 }
 
-// fadeIn
+// iOS-style slide up
 @keyframes popoverEnter {
   from {
     opacity: 0;
-    transform: translateY(50px);
+    transform: translateY(100%);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

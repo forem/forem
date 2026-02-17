@@ -1,10 +1,3 @@
-#  @note When we destroy the related user, it's using dependent:
-#        :delete for the relationship.  That means no before/after
-#        destroy callbacks will be called on this object.
-#
-# @note When we destroy the related poll, it's using dependent:
-#       :delete for the relationship.  That means no before/after
-#       destroy callbacks will be called on this object.
 class PollVote < ApplicationRecord
   belongs_to :user
   belongs_to :poll_option
@@ -13,24 +6,40 @@ class PollVote < ApplicationRecord
   counter_culture :poll_option
   counter_culture :poll
 
-  # In the future we'll remove this constraint if/when we allow multi-answer polls
-  validates :poll_id, uniqueness: { scope: :user_id }
+  # For single choice polls, ensure only one vote per user per poll per session (for survey polls)
+  # For multiple choice and scale polls, allow multiple votes but ensure uniqueness per option per session (for survey polls)
+  # For regular polls (non-survey), use the old behavior
+  validates :poll_id, uniqueness: { scope: %i[user_id session_start] }, if: :single_choice_survey_poll?
+  validates :poll_option_id, uniqueness: { scope: %i[user_id session_start] }, if: :survey_poll?
 
-  validates :poll_option_id, uniqueness: { scope: :user_id }
-  validate :one_vote_per_poll_per_user
+  # For regular polls, use the old uniqueness constraints
+  validates :poll_id, uniqueness: { scope: :user_id }, if: :single_choice_regular_poll?
+  validates :poll_option_id, uniqueness: { scope: :user_id }, if: :regular_poll?
 
   after_destroy :touch_poll_votes_count
   after_save :touch_poll_votes_count
 
-  delegate :poll, to: :poll_option, allow_nil: true
 
   private
 
-  def one_vote_per_poll_per_user
-    return false unless poll
-    return false unless poll.vote_previously_recorded_for?(user_id: user_id)
+  def single_choice_poll?
+    poll&.single_choice?
+  end
 
-    errors.add(:base, I18n.t("models.poll_vote.cannot_vote_more_than_once"))
+  def survey_poll?
+    poll&.survey.present?
+  end
+
+  def regular_poll?
+    !survey_poll?
+  end
+
+  def single_choice_survey_poll?
+    single_choice_poll? && survey_poll?
+  end
+
+  def single_choice_regular_poll?
+    single_choice_poll? && regular_poll?
   end
 
   def touch_poll_votes_count

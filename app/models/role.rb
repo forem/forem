@@ -12,6 +12,7 @@ class Role < ApplicationRecord
     support_admin
     suspended
     spam
+    subforem_moderator
     tag_moderator
     tech_admin
     trusted

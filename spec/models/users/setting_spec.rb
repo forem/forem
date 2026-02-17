@@ -13,6 +13,7 @@ RSpec.describe Users::Setting do
 
     it { is_expected.to validate_length_of(:inbox_guidelines).is_at_most(250).allow_nil }
     it { is_expected.to validate_numericality_of(:experience_level).is_in(1..10) }
+    it { is_expected.to validate_inclusion_of(:disallow_subforem_reassignment).in_array([true, false]) }
     it { is_expected.to define_enum_for(:inbox_type).with_values(private: 0, open: 1).with_suffix(:inbox) }
     it { is_expected.to define_enum_for(:config_font).with_values(default: 0, comic_sans: 1, monospace: 2, open_dyslexic: 3, sans_serif: 4, serif: 5).with_suffix(:font) }
     it { is_expected.to define_enum_for(:config_navbar).with_values(default: 0, static: 1).with_suffix(:navbar) }
@@ -173,6 +174,14 @@ RSpec.describe Users::Setting do
     it "does not refresh user segment" do
       create(:user).setting
       expect(SegmentedUserRefreshWorker).not_to have_received(:perform_async)
+    end
+  end
+
+  describe "cache busting" do
+    it "enqueues a profile details cache bust when email visibility changes" do
+      sidekiq_assert_enqueued_with(job: Users::BustProfileDetailsCacheWorker, args: [user.id]) do
+        setting.update!(display_email_on_profile: !setting.display_email_on_profile)
+      end
     end
   end
 end
