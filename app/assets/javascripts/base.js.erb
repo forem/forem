@@ -56,10 +56,10 @@ var instantClick
   }
 
   function calculateOffsetTop(element) {
-    var offset = 0;
+    var offset = element.offsetTop;
     while (element.offsetParent) {
-      offset += element.offsetTop;
       element = element.offsetParent;
+      offset += element.offsetTop;
     }
     return offset;
   }
@@ -73,7 +73,10 @@ var instantClick
     // Try to find element by name attribute with .anchor class
     // Escape special characters for CSS selector
     try {
-      var escapedHash = hash.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+      // Use CSS.escape if available (modern browsers), otherwise fall back to manual escaping
+      var escapedHash = typeof CSS !== 'undefined' && CSS.escape 
+        ? CSS.escape(hash) 
+        : hash.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
       return document.querySelector('[name="' + escapedHash + '"].anchor');
     } catch(e) {
       return null;
