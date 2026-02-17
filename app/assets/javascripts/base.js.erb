@@ -71,9 +71,10 @@ var instantClick
       return elem;
     }
     // Try to find element by name attribute with .anchor class
-    // Use attribute selector with quotes to handle special characters
+    // Escape special characters for CSS selector
     try {
-      return document.querySelector('[name="' + hash.replace(/"/g, '\\"') + '"].anchor');
+      var escapedHash = hash.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+      return document.querySelector('[name="' + escapedHash + '"].anchor');
     } catch(e) {
       return null;
     }
@@ -214,12 +215,15 @@ var instantClick
       triggerPageEvent('change', false)
       // Re-scroll to hash after change event handlers have completed
       // This ensures the DOM is fully updated before calculating scroll position
+      // Using double requestAnimationFrame to ensure layout is complete
       if (hashToScroll) {
         requestAnimationFrame(function() {
-          var hashElem = findHashElement(hashToScroll);
-          if (hashElem) {
-            scrollTo(0, calculateOffsetTop(hashElem));
-          }
+          requestAnimationFrame(function() {
+            var hashElem = findHashElement(hashToScroll);
+            if (hashElem) {
+              scrollTo(0, calculateOffsetTop(hashElem));
+            }
+          });
         });
       }
     }
