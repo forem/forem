@@ -15,6 +15,8 @@ export const Meta = ({
   coverImageCrop,
   coverImageHeight,
   aiAvailable,
+  videoSourceUrl,
+  onVideoUrlChange,
 }) => {
   return (
     <div className="crayons-article-form__top text-padding drop-area">
@@ -24,6 +26,8 @@ export const Meta = ({
         coverImageCrop={coverImageCrop}
         coverImageHeight={coverImageHeight}
         aiAvailable={aiAvailable}
+        videoSourceUrl={videoSourceUrl}
+        onVideoUrlChange={onVideoUrlChange}
       />
       <Title
         defaultValue={titleDefaultValue}
@@ -50,6 +54,8 @@ Meta.propTypes = {
   coverImageHeight: PropTypes.string.isRequired,
   coverImageCrop: PropTypes.string.isRequired,
   aiAvailable: PropTypes.bool.isRequired,
+  videoSourceUrl: PropTypes.string,
+  onVideoUrlChange: PropTypes.func,
 };
 
 Meta.displayName = 'Meta';

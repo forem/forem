@@ -156,6 +156,7 @@ Rails.application.routes.draw do
     end
     resources :image_uploads, only: [:create]
     resources :ai_image_generations, only: [:create]
+    resources :ai_chats, only: %i[index create]
     resources :notifications, only: [:index]
     resources :tags, only: [:index] do
       collection do
@@ -176,13 +177,14 @@ Rails.application.routes.draw do
         post :add_tag
         delete :remove_tag
         post :create_navigation_link
-        patch 'update_navigation_link/:navigation_link_id', to: 'subforems#update_navigation_link', as: :update_navigation_link
+        patch "update_navigation_link/:navigation_link_id", to: "subforems#update_navigation_link",
+                                                            as: :update_navigation_link
         delete :destroy_navigation_link
         get :new_page
         post :create_page
-        get 'edit_page/:page_id', to: 'subforems#edit_page', as: :edit_page
-        patch 'update_page/:page_id', to: 'subforems#update_page', as: :update_page
-        delete 'destroy_page/:page_id', to: 'subforems#destroy_page', as: :destroy_page
+        get "edit_page/:page_id", to: "subforems#edit_page", as: :edit_page
+        patch "update_page/:page_id", to: "subforems#update_page", as: :update_page
+        delete "destroy_page/:page_id", to: "subforems#destroy_page", as: :destroy_page
       end
     end
     get "/manage", to: "subforems#edit", as: :manage_subforem
@@ -203,8 +205,13 @@ Rails.application.routes.draw do
     end
     resources :poll_skips, only: [:create]
 
-    resources :surveys, only: [:show] do # Or however you have it configured
-      get :votes, on: :member # This creates the route GET /surveys/:id/votes
+    resources :poll_skips, only: [:create]
+
+    get "/survey/:slug", to: "surveys#show", as: :survey
+    resources :surveys, only: [] do
+      member do
+        get :votes
+      end
     end
 
     resources :profile_pins, only: %i[create update]
@@ -300,7 +307,8 @@ Rails.application.routes.draw do
     delete "users/full_delete", to: "users#full_delete", as: :user_full_delete
     post "organizations/generate_new_secret", to: "organizations#generate_new_secret"
     post "organizations/:id/invite", to: "organizations#invite", as: :organization_invite
-    get "organizations/confirm_invitation/:token", to: "organizations#confirm_invitation", as: :organization_confirm_invitation
+    get "organizations/confirm_invitation/:token", to: "organizations#confirm_invitation",
+                                                   as: :organization_confirm_invitation
     post "organizations/confirm_invitation/:token", to: "organizations#confirm_invitation"
     post "users/api_secrets", to: "api_secrets#create", as: :users_api_secrets
     delete "users/api_secrets/:id", to: "api_secrets#destroy", as: :users_api_secret

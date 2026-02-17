@@ -90,14 +90,16 @@ RSpec.describe Article do
         end
 
         it "prevents org member from adding article to org collection when not publishing under org" do
-          article = build(:article, user: org_member, organization: nil, body_markdown: "---\npublished: true\ntags: test\n---\nContent")
+          article = build(:article, user: org_member, organization: nil,
+                                    body_markdown: "---\npublished: true\ntags: test\n---\nContent")
           article.collection_id = org_collection.id
           expect(article).not_to be_valid
           expect(article.errors[:collection_id]).to include(I18n.t("models.article.series_unpermitted"))
         end
 
         it "prevents non-org member from adding article to org collection" do
-          article = build(:article, user: user, organization: organization, body_markdown: "---\npublished: true\ntags: test\n---\nContent")
+          article = build(:article, user: user, organization: organization,
+                                    body_markdown: "---\npublished: true\ntags: test\n---\nContent")
           article.collection_id = org_collection.id
           expect(article).not_to be_valid
           expect(article.errors[:collection_id]).to include(I18n.t("models.article.series_unpermitted"))
@@ -116,7 +118,8 @@ RSpec.describe Article do
 
         it "prevents org member from adding article to org collection with different org_id" do
           other_org = create(:organization)
-          article = build(:article, user: org_member, organization: other_org, body_markdown: "---\npublished: true\ntags: test\n---\nContent")
+          article = build(:article, user: org_member, organization: other_org,
+                                    body_markdown: "---\npublished: true\ntags: test\n---\nContent")
           article.collection_id = org_collection.id
           expect(article).not_to be_valid
           expect(article.errors[:collection_id]).to include(I18n.t("models.article.series_unpermitted"))
@@ -125,10 +128,50 @@ RSpec.describe Article do
         it "prevents org member from adding article to org collection when org_id doesn't match" do
           other_org = create(:organization)
           create(:organization_membership, user: org_member, organization: other_org, type_of_user: "member")
-          article = build(:article, user: org_member, organization: other_org, body_markdown: "---\npublished: true\ntags: test\n---\nContent")
+          article = build(:article, user: org_member, organization: other_org,
+                                    body_markdown: "---\npublished: true\ntags: test\n---\nContent")
           article.collection_id = org_collection.id
           expect(article).not_to be_valid
           expect(article.errors[:collection_id]).to include(I18n.t("models.article.series_unpermitted"))
+        end
+      end
+    end
+
+    describe "#validate_video" do
+      let(:new_user) { create(:user, created_at: 1.week.ago) }
+      let(:old_user) { create(:user, created_at: 3.weeks.ago) }
+
+      context "when user is new (less than 2 weeks old)" do
+        it "does not allow direct uploads (video present but no allowed source url)" do
+          # Simulating a direct upload where video is set but source URL isn't a whitelisted one
+          # We use a valid URL for 'video' to pass the format validation, focusing on the permission check
+          article = build(:article, user: new_user, video: "https://example.com/video.mp4", video_source_url: "https://unknown-source.com/video.mp4")
+
+          expect(article).not_to be_valid
+          expect(article.errors[:video]).to include(I18n.t("models.article.video_unpermitted"))
+        end
+
+        it "allows YouTube videos" do
+          article = build(:article, user: new_user, video: "https://youtube.com/video", video_source_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+          expect(article).to be_valid
+        end
+
+        it "allows Mux videos" do
+          # Use player.mux.com to match the whitelist logic
+          article = build(:article, user: new_user, video: "https://player.mux.com/video", video_source_url: "https://player.mux.com/123.m3u8")
+          expect(article).to be_valid
+        end
+
+        it "allows Twitch videos" do
+          article = build(:article, user: new_user, video: "https://twitch.tv/video", video_source_url: "https://www.twitch.tv/videos/123")
+          expect(article).to be_valid
+        end
+      end
+
+      context "when user is old (more than 2 weeks old)" do
+        it "allows direct uploads" do
+          article = build(:article, user: old_user, video: "https://example.com/video.mp4", video_source_url: "https://unknown-source.com/video.mp4")
+          expect(article).to be_valid
         end
       end
     end
@@ -154,7 +197,8 @@ RSpec.describe Article do
         org_collection = create(:collection, user: org_member, organization: organization, slug: "org-series")
         article = build(:article, user: org_member)
         series = article.all_series
-        expect(series).to include(hash_including(slug: "org-series", organization_id: organization.id, is_personal: false))
+        expect(series).to include(hash_including(slug: "org-series", organization_id: organization.id,
+                                                 is_personal: false))
       end
 
       it "does not return collections from orgs the user is not a member of" do
@@ -1435,6 +1479,92 @@ RSpec.describe Article do
     end
   end
 
+  describe "#generate_video_embed_url" do
+    let(:user) { create(:user) }
+    let(:article) { build(:article, user: user) }
+
+    context "with YouTube URL" do
+      it "parses YouTube URL and sets video embed URL" do
+        article.video_source_url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+        article.valid?
+        expect(article.video).to eq("https://www.youtube.com/embed/dQw4w9WgXcQ")
+      end
+    end
+
+    context "with Mux URL" do
+      it "parses Mux URL and sets video embed URL" do
+        article.video_source_url = "https://player.mux.com/nw5QrgIQS02FEx5BJEQH8CdcLmXXRvCNACZKQ01kLoKEI"
+        article.valid?
+        expect(article.video).to eq("https://player.mux.com/nw5QrgIQS02FEx5BJEQH8CdcLmXXRvCNACZKQ01kLoKEI")
+      end
+
+      it "sets video_thumbnail_url for Mux videos" do
+        article.video_source_url = "https://player.mux.com/nw5QrgIQS02FEx5BJEQH8CdcLmXXRvCNACZKQ01kLoKEI"
+        article.valid?
+        expect(article.video_thumbnail_url).to eq("https://image.mux.com/nw5QrgIQS02FEx5BJEQH8CdcLmXXRvCNACZKQ01kLoKEI/thumbnail.webp")
+      end
+
+      it "handles Mux URL with query parameters" do
+        article.video_source_url = "https://player.mux.com/nw5QrgIQS02FEx5BJEQH8CdcLmXXRvCNACZKQ01kLoKEI?autoplay=true"
+        article.valid?
+        expect(article.video).to eq("https://player.mux.com/nw5QrgIQS02FEx5BJEQH8CdcLmXXRvCNACZKQ01kLoKEI")
+      end
+    end
+
+    context "with Twitch URL" do
+      it "parses Twitch URL and sets video embed URL" do
+        article.video_source_url = "https://www.twitch.tv/videos/1234567890"
+        article.valid?
+        expect(article.video).to match(%r{https://player\.twitch\.tv/\?video=1234567890})
+        expect(article.video).to include("autoplay=false")
+      end
+    end
+
+    context "with invalid URL" do
+      it "does not set video for unsupported URLs" do
+        article.video_source_url = "https://example.com/video"
+        article.valid?
+        expect(article.video).to be_nil
+      end
+    end
+  end
+
+  describe "#fetch_video_duration" do
+    let(:user) { create(:user) }
+    let(:article) { build(:article, user: user) }
+
+    it "returns early for YouTube videos without fetching duration" do
+      article.video_source_url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+      article.video_duration_in_seconds = 0
+      article.fetch_video_duration
+      # Should not have changed duration (still 0) because it returns early
+      expect(article.video_duration_in_seconds).to eq(0)
+    end
+
+    it "returns early for Mux videos without fetching duration" do
+      article.video_source_url = "https://player.mux.com/nw5QrgIQS02FEx5BJEQH8CdcLmXXRvCNACZKQ01kLoKEI"
+      article.video_duration_in_seconds = 0
+      article.fetch_video_duration
+      # Should not have changed duration (still 0) because it returns early
+      expect(article.video_duration_in_seconds).to eq(0)
+    end
+  end
+
+  describe "#mux_thumbnail_url" do
+    let(:user) { create(:user) }
+    let(:article) { build(:article, user: user) }
+
+    it "generates correct Mux thumbnail URL" do
+      video_id = "nw5QrgIQS02FEx5BJEQH8CdcLmXXRvCNACZKQ01kLoKEI"
+      expect(article.mux_thumbnail_url(video_id)).to eq("https://image.mux.com/#{video_id}/thumbnail.webp")
+    end
+
+    it "returns nil for blank video_id" do
+      expect(article.mux_thumbnail_url(nil)).to be_nil
+      expect(article.mux_thumbnail_url("")).to be_nil
+    end
+  end
+
   describe "#main_image_from_frontmatter" do
     let(:article) { create(:article, user: user, main_image_from_frontmatter: false) }
 
@@ -1501,6 +1631,95 @@ RSpec.describe Article do
       articles = described_class.active_help
       expect(articles).to include(high_score_article)
       expect(articles).not_to include(low_score_article)
+    end
+  end
+
+  describe ".cached_admin_published_with" do
+    let(:admin) { create(:user, :admin) }
+    let(:cache_store) { ActiveSupport::Cache::MemoryStore.new }
+
+    around do |example|
+      original_cache = Rails.cache
+      Rails.cache = cache_store
+      example.run
+    ensure
+      Rails.cache = original_cache
+    end
+
+    it "caches the admin published article by tag" do
+      article = create(:article, user: admin, tags: "welcome")
+
+      cached = described_class.cached_admin_published_with("welcome")
+
+      expect(cached).to eq(article)
+      expect(Rails.cache.read("admin-published-with:welcome:all").id).to eq(article.id)
+    end
+
+    it "caches the admin published article by tag and subforem" do
+      subforem = create(:subforem)
+      article = create(:article, user: admin, tags: "welcome", subforem_id: subforem.id)
+
+      cached = described_class.cached_admin_published_with("welcome", subforem_id: subforem.id)
+
+      expect(cached).to eq(article)
+      expect(Rails.cache.read("admin-published-with:welcome:#{subforem.id}").id).to eq(article.id)
+    end
+  end
+
+  describe "admin welcome cache busting" do
+    let(:admin) { create(:user, :admin) }
+    let(:cache_store) { ActiveSupport::Cache::MemoryStore.new }
+
+    around do |example|
+      original_cache = Rails.cache
+      Rails.cache = cache_store
+      example.run
+    ensure
+      Rails.cache = original_cache
+    end
+
+    it "busts cached welcome keys when an admin publishes a welcome article" do
+      subforem = create(:subforem)
+      article = create(:article, user: admin, tags: "welcome", subforem_id: subforem.id)
+
+      Rails.cache.write("admin-published-with:welcome:all", "cached")
+      Rails.cache.write("admin-published-with:welcome:#{subforem.id}", "cached")
+
+      article.update!(title: "Updated title")
+
+      expect(Rails.cache.read("admin-published-with:welcome:all")).to be_nil
+      expect(Rails.cache.read("admin-published-with:welcome:#{subforem.id}")).to be_nil
+    end
+
+    it "does not bust cached welcome keys for non-admin authors" do
+      user = create(:user)
+      article = create(:article, user: user, tags: "welcome")
+
+      Rails.cache.write("admin-published-with:welcome:all", "cached")
+
+      article.update!(title: "Updated title")
+
+      expect(Rails.cache.read("admin-published-with:welcome:all")).to eq("cached")
+    end
+
+    it "busts the cache when welcome is in a comma-separated tag list" do
+      article = create(:article, user: admin, tags: "ruby, welcome, rails")
+
+      Rails.cache.write("admin-published-with:welcome:all", "cached")
+
+      article.update!(title: "Updated title")
+
+      expect(Rails.cache.read("admin-published-with:welcome:all")).to be_nil
+    end
+
+    it "does not bust the cache for tags that only contain welcome as a substring" do
+      article = create(:article, user: admin, tags: "welcome2, ruby")
+
+      Rails.cache.write("admin-published-with:welcome:all", "cached")
+
+      article.update!(title: "Updated title")
+
+      expect(Rails.cache.read("admin-published-with:welcome:all")).to eq("cached")
     end
   end
 
@@ -2497,20 +2716,20 @@ RSpec.describe Article do
 
     it "uses the correct cache key for reaction counts" do
       cache_key = "reaction_counts_for_reactable-Article-#{article.id}"
-      
+
       # Clear any existing cache
       Rails.cache.delete(cache_key)
-      
+
       # Ensure we have reactions (from before block)
       expect(article.reactions.count).to be > 0
-      
+
       # Call the method to populate cache
       result = article.public_reaction_categories
-      
+
       # Verify we got results
       expect(result).to be_present
       expect(result).to be_an(Array)
-      
+
       # The cache should be populated after calling the method
       # Note: The cache might not be populated if there are no reactions or if the cache is disabled
       if Rails.cache.exist?(cache_key)
@@ -2844,6 +3063,22 @@ RSpec.describe Article do
     end
 
     context "when creating a status post with URLs in title" do
+      before do
+        # Stub network requests for URL validation (HEAD requests)
+        stub_request(:head, %r{https?://example\.com}).to_return(status: 200)
+        stub_request(:head, %r{https?://another-example\.org}).to_return(status: 200)
+        stub_request(:head, %r{https?://first\.com}).to_return(status: 200)
+        stub_request(:head, %r{https?://second\.org}).to_return(status: 200)
+        stub_request(:head, %r{https?://third\.net}).to_return(status: 200)
+
+        # Stub GET requests for metadata fetching (used by OpenGraph)
+        stub_request(:get, %r{https?://example\.com}).to_return(status: 200, body: "<html></html>")
+        stub_request(:get, %r{https?://another-example\.org}).to_return(status: 200, body: "<html></html>")
+        stub_request(:get, %r{https?://first\.com}).to_return(status: 200, body: "<html></html>")
+        stub_request(:get, %r{https?://second\.org}).to_return(status: 200, body: "<html></html>")
+        stub_request(:get, %r{https?://third\.net}).to_return(status: 200, body: "<html></html>")
+      end
+
       it "adds embed tags to body_markdown for URLs found in title" do
         article = build(:published_article,
                         user: user,
@@ -2918,6 +3153,55 @@ RSpec.describe Article do
         article.valid?
 
         expect(article.body_markdown).to eq("{% embed https://example.com/path?param=value#fragment minimal %}")
+      end
+
+      it "handles URLs with trailing punctuation" do
+        article = build(:published_article,
+                        user: user,
+                        type_of: "status",
+                        title: "Check out this site: https://example.com! Amazing stuff.",
+                        body_markdown: "")
+
+        article.valid?
+
+        expect(article.body_markdown).to eq("{% embed https://example.com minimal %}")
+      end
+
+      it "handles URLs with multiple trailing punctuation" do
+        article = build(:published_article,
+                        user: user,
+                        type_of: "status",
+                        title: "Wow... https://example.com!!!",
+                        body_markdown: "")
+
+        article.valid?
+
+        expect(article.body_markdown).to eq("{% embed https://example.com minimal %}")
+      end
+
+      it "preserves URLs that don't have trailing punctuation" do
+        article = build(:published_article,
+                        user: user,
+                        type_of: "status",
+                        title: "Check this https://example.com/path endpoint",
+                        body_markdown: "")
+
+        article.valid?
+
+        expect(article.body_markdown).to eq("{% embed https://example.com/path minimal %}")
+      end
+
+      it "handles mixed URLs with and without trailing punctuation" do
+        article = build(:published_article,
+                        user: user,
+                        type_of: "status",
+                        title: "Sites: https://first.com, and https://second.org! Plus https://third.net here",
+                        body_markdown: "")
+
+        article.valid?
+
+        expected = "{% embed https://first.com minimal %}\n{% embed https://second.org minimal %}\n{% embed https://third.net minimal %}"
+        expect(article.body_markdown).to eq(expected)
       end
 
       it "does not re-add embed tags when updating other attributes" do
@@ -3055,6 +3339,73 @@ RSpec.describe Article do
     it "handles whitespace around line breaks" do
       article.title = "Line one\n  \n  Line two"
       expect(article.title_finalized).to eq("<p class=\"quickie-paragraph\">Line one</p><p class=\"quickie-paragraph\">Line two</p>")
+    end
+  end
+
+  describe "#extract_url_from_status_title" do
+    let(:article) { build(:article, type_of: "status", body_url: nil) }
+
+    before do
+      # Stub to prevent the new path from running so we can test the old path in isolation
+      allow(article).to receive(:should_add_urls_from_title?).and_return(false)
+    end
+
+    it "extracts first URL from title and sets body_url" do
+      article.title = "Check this out: https://example.com"
+      article.extract_url_from_status_title
+      expect(article.body_url).to eq("https://example.com")
+    end
+
+    it "extracts only first URL when multiple URLs present" do
+      article.title = "Sites: https://first.com and https://second.org"
+      article.extract_url_from_status_title
+      expect(article.body_url).to eq("https://first.com")
+    end
+
+    it "removes trailing punctuation from URLs" do
+      article.title = "Amazing site: https://example.com!"
+      article.extract_url_from_status_title
+      expect(article.body_url).to eq("https://example.com")
+    end
+
+    it "handles URLs with multiple trailing punctuation" do
+      article.title = "Wow... https://example.com!!!"
+      article.extract_url_from_status_title
+      expect(article.body_url).to eq("https://example.com")
+    end
+
+    it "preserves URLs without trailing punctuation" do
+      article.title = "Check https://example.com/path endpoint"
+      article.extract_url_from_status_title
+      expect(article.body_url).to eq("https://example.com/path")
+    end
+
+    it "handles URLs with query parameters and fragments" do
+      article.title = "Complex: https://example.com/path?param=value#fragment"
+      article.extract_url_from_status_title
+      expect(article.body_url).to eq("https://example.com/path?param=value#fragment")
+    end
+
+    it "does not change body_url when no URLs found" do
+      article.title = "Just a regular title with no URLs"
+      original_body_url = article.body_url
+      article.extract_url_from_status_title
+      expect(article.body_url).to eq(original_body_url)
+    end
+
+    it "does not extract URLs when body_url is already set" do
+      article.title = "Check this: https://example.com"
+      article.body_url = "https://existing.com"
+      article.extract_url_from_status_title
+      expect(article.body_url).to eq("https://existing.com")
+    end
+
+    it "does not extract URLs for non-status type articles" do
+      regular_article = build(:article, type_of: "full_post")
+      regular_article.title = "Check this: https://example.com"
+      original_body_url = regular_article.body_url
+      regular_article.extract_url_from_status_title
+      expect(regular_article.body_url).to eq(original_body_url)
     end
   end
 

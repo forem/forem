@@ -1,29 +1,26 @@
 module EdgeCache
   class BustComment
-    def self.call(commentable)
+    def self.call(comment_or_commentable)
+      comment = comment_or_commentable.is_a?(Comment) ? comment_or_commentable : nil
+      commentable = comment&.commentable || comment_or_commentable
       return unless commentable
 
-      cache_bust = EdgeCache::Bust.new
-      bust_article_comment(cache_bust, commentable) if commentable.is_a?(Article)
+      keys = [commentable.record_key, comment&.record_key].compact
+      fallback_paths = [commentable.path, comment&.path].compact
+      EdgeCache::PurgeByKey.call(keys, fallback_paths: fallback_paths)
+      bust_article_comment(commentable) if commentable.is_a?(Article)
       commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
-
-      cache_bust.call("#{commentable.path}/comments/")
-      cache_bust.call(commentable.path.to_s)
-
-      commentable.comments.includes(:user).find_each do |comment|
-        cache_bust.call(comment.path)
-      end
-
-      cache_bust.call("#{commentable.path}/comments/*")
     end
 
     # bust commentable if it's an article
-    def self.bust_article_comment(cache_bust, article)
-      cache_bust.call("/") if Article.published.order(hotness_score: :desc).limit(3).ids.include?(article.id)
+    def self.bust_article_comment(article)
+      if Article.published.order(hotness_score: :desc).limit(3).ids.include?(article.id)
+        EdgeCache::PurgeByKey.call("main_app_home_page", fallback_paths: "/")
+      end
 
       return unless article.decorate.discussion?
 
-      cache_bust.call("/")
+      EdgeCache::PurgeByKey.call("main_app_home_page", fallback_paths: "/")
     end
 
     private_class_method :bust_article_comment

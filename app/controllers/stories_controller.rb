@@ -246,7 +246,7 @@ class StoriesController < ApplicationController
     @profile = @user&.profile&.decorate || Profile.create(user: @user)&.decorate
     @is_user_flagged = Reaction.where(user_id: session_current_user_id, reactable: @user).any?
 
-    set_surrogate_key_header @user.record_key
+    set_surrogate_key_header(*@user.profile_cache_keys)
     set_user_json_ld
 
     render template: "users/show"
@@ -293,7 +293,8 @@ class StoriesController < ApplicationController
 
   def handle_article_show
     assign_article_show_variables
-    set_surrogate_key_header @article.record_key
+    user_keys = @article.user&.profile_identity_cache_keys
+    set_surrogate_key_header(*[@article.record_key, *user_keys].compact)
     redirect_if_appropriate
     return if performed?
 
@@ -344,7 +345,8 @@ class StoriesController < ApplicationController
       # considering non cross posted articles with a more recent publication date
       @collection_articles = @article.collection.articles
         .published.from_subforem
-        .order(Arel.sql("COALESCE(crossposted_at, published_at) ASC"))
+        .select(:id, :path, :title, :slug, :published_at, :crossposted_at, :user_id, :organization_id, :cached_tag_list, :subforem_id, :main_image)
+        .order(Arel.sql("COALESCE(articles.crossposted_at, articles.published_at) ASC"))
     end
 
     @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 50 : 30

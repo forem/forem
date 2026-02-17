@@ -7,7 +7,7 @@ class PollTextResponsesController < ApplicationController
 
     # Check if this poll belongs to a survey and if resubmission is allowed
     if @poll.survey.present? && !@poll.survey.can_user_submit?(current_user)
-      render json: { error: "Survey does not allow resubmission" }, status: :forbidden
+      render json: { success: true, message: "Text response submitted successfully" }
       return
     end
 
@@ -21,11 +21,23 @@ class PollTextResponsesController < ApplicationController
     if @text_response.save
       # Check if this response completes a survey
       SurveyCompletionService.check_and_mark_completion(user: current_user, poll: @poll)
-
-      render json: { success: true, message: "Text response submitted successfully" }
     else
-      render json: { success: false, errors: @text_response.errors.full_messages }, status: :unprocessable_entity
+      Honeybadger.notify("PollTextResponse save failed", context: {
+                           user_id: current_user&.id,
+                           poll_id: @poll&.id,
+                           errors: @text_response.errors.full_messages,
+                           action: "poll_text_response_create",
+                         })
     end
+
+    render json: { success: true, message: "Text response submitted successfully" }
+  rescue StandardError => e
+    Honeybadger.notify(e, context: {
+                         user_id: current_user&.id,
+                         poll_id: params[:poll_id],
+                         action: "poll_text_response_create",
+                       })
+    render json: { success: true, message: "Text response submitted successfully" }
   end
 
   private

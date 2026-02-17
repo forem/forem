@@ -131,11 +131,11 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
       it "does not filter articles by subforem when user has custom onboarding subforem" do
         other_user = create(:user)
         # Create articles in different subforems
-        create_list(:article, 3, public_reactions_count: 40, score: 40, subforem: custom_onboarding_subforem, 
+        create_list(:article, 3, public_reactions_count: 40, score: 40, subforem: custom_onboarding_subforem,
                                  tag_list: "career", user: other_user, featured: true)
-        create_list(:article, 3, public_reactions_count: 40, score: 40, subforem: default_subforem, 
+        create_list(:article, 3, public_reactions_count: 40, score: 40, subforem: default_subforem,
                                  tag_list: "productivity", user: other_user, featured: true)
-        create_list(:article, 2, public_reactions_count: 40, score: 40, subforem: create(:subforem, domain: "other.test"), 
+        create_list(:article, 2, public_reactions_count: 40, score: 40, subforem: create(:subforem, domain: "other.test"),
                                  tag_list: "ruby", user: other_user, featured: true)
 
         articles = described_class.new(user).articles_to_send
@@ -143,23 +143,25 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
         expect(articles.length).to eq(7)
         expect(articles.any? { |a| a.subforem_id == custom_onboarding_subforem.id }).to be true
         expect(articles.any? { |a| a.subforem_id == default_subforem.id }).to be true
-        expect(articles.any? { |a| a.subforem_id != custom_onboarding_subforem.id && a.subforem_id != default_subforem.id }).to be true
+        expect(articles.any? do |a|
+                 a.subforem_id != custom_onboarding_subforem.id && a.subforem_id != default_subforem.id
+               end).to be true
       end
 
       it "still filters by subforem if user also follows subforems" do
         other_user = create(:user)
         followed_subforem = create(:subforem, domain: "followed.test")
-        
+
         # Create user activity with followed subforems
         user_activity = create(:user_activity, user: user)
         user_activity.update!(alltime_subforems: [followed_subforem.id])
 
         # Create articles in different subforems
-        create_list(:article, 3, public_reactions_count: 40, score: 40, subforem: followed_subforem, 
+        create_list(:article, 3, public_reactions_count: 40, score: 40, subforem: followed_subforem,
                                  tag_list: "career", user: other_user, featured: true)
-        create_list(:article, 3, public_reactions_count: 40, score: 40, subforem: custom_onboarding_subforem, 
+        create_list(:article, 3, public_reactions_count: 40, score: 40, subforem: custom_onboarding_subforem,
                                  tag_list: "productivity", user: other_user, featured: true)
-        create_list(:article, 2, public_reactions_count: 40, score: 40, subforem: default_subforem, 
+        create_list(:article, 2, public_reactions_count: 40, score: 40, subforem: default_subforem,
                                  tag_list: "ruby", user: other_user, featured: true)
 
         articles = described_class.new(user).articles_to_send
@@ -185,6 +187,14 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
         Timecop.freeze(Settings::General.periodic_email_digest.days.from_now - 1) do
           articles = described_class.new(user).articles_to_send
           expect(articles).to be_empty
+        end
+      end
+
+      it "returns articles even when last email was sent recently if force_send is true" do
+        Timecop.freeze(Settings::General.periodic_email_digest.days.from_now - 1) do
+          articles = described_class.new(user, force_send: true).articles_to_send
+          expect(articles).not_to be_empty
+          expect(articles.length).to eq(3)
         end
       end
     end
@@ -225,14 +235,36 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
       end
     end
 
+    context "when articles have comment scores" do
+      it "factors in comment_score to the ordering" do
+        # Article 1: score 20, comment_score 0 -> total 20
+        # Article 2: score 15, comment_score 10 -> total 25
+        # Article 2 should come first despite lower base score
+        create(:article, public_reactions_count: 20, score: 20, comment_score: 0, featured: true,
+                         subforem: default_subforem, title: "A1")
+        create(:article, public_reactions_count: 15, score: 15, comment_score: 10, featured: true,
+                         subforem: default_subforem, title: "A2")
+        create(:article, public_reactions_count: 10, score: 15, comment_score: 0, featured: true,
+                         subforem: default_subforem, title: "A3")
+
+        result = described_class.new(user).articles_to_send
+        expect(result.first.title).to eq("A2")
+        expect(result.second.title).to eq("A1")
+      end
+    end
+
     context "when the last email included the title of the first article" do
       it "bumps the second article to the front" do
-        articles = create_list(:article, 5, public_reactions_count: 40, featured: true, score: 40,
-                                            subforem: default_subforem)
+        articles = (1..5).map do |i|
+          create(:article, public_reactions_count: 40, featured: true, score: 100 - i,
+                           subforem: default_subforem)
+        end
+
         Ahoy::Message.create(mailer: "DigestMailer#digest_email",
                              user_id: user.id, sent_at: 25.hours.ago,
                              clicked_at: 20.hours.ago,
                              subject: articles.first.title)
+
         result = described_class.new(user).articles_to_send
 
         expect(result.first.title).to eq articles.second.title
@@ -242,8 +274,11 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
 
     context "when the last email does not include the title of any articles" do
       it "makes first article come first" do
-        articles = create_list(:article, 5, public_reactions_count: 40, featured: true, score: 40,
-                                            subforem: default_subforem)
+        articles = (1..5).map do |i|
+          create(:article, public_reactions_count: 40, featured: true, score: 100 - i,
+                           subforem: default_subforem)
+        end
+
         Ahoy::Message.create(mailer: "DigestMailer#digest_email",
                              user_id: user.id, sent_at: 25.hours.ago,
                              clicked_at: 20.hours.ago,

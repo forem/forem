@@ -116,6 +116,7 @@ fr:
       error: 'Your organization, %{organization_name}, could not be deleted: %{error}.'
       fully_trusted_enabled: Le statut de confiance totale a été activé pour cette organisation.
       fully_trusted_disabled: Le statut de confiance totale a été désactivé pour cette organisation.
+      baseline_score_updated: Le score de base a été mis à jour !
     pages_controller:
       updated: La page a été mise à jour avec succès.
       created: La page a été créée avec succès.
@@ -129,6 +130,11 @@ fr:
       terms_of_use:
         title: Conditions d'utilisation
         description: Une page qui décrit les conditions d'utilisation de l'application.
+    page_templates_controller:
+      created: Le modèle de page a été créé avec succès !
+      updated: Le modèle de page a été mis à jour avec succès !
+      deleted: Le modèle de page a été supprimé avec succès !
+      cannot_delete_with_pages: Impossible de supprimer ce modèle tant qu'il possède des pages associées. Veuillez supprimer ou réassigner ces pages d'abord.
     podcasts_controller:
       new_owner_added: Nouveau propriétaire ajouté !
       no_such_user: Aucun utilisateur n'existe
@@ -169,6 +175,11 @@ fr:
       created: '%{tag_name} a été créé !'
       updated: '%{tag_name} tag mis à jour avec succès !'
       update_fail: 'La mise à jour de la balise a échoué : %{errors}'
+    surveys_controller:
+      created: Le sondage a été créé !
+      updated: Le sondage a été mis à jour !
+      deleted: Le sondage a été supprimé !
+      wrong: Quelque chose s'est mal passé avec l'opération de sondage.
     tools_controller:
       article_busted: "L'article #%{article} a été bloqué avec succès."
       user_busted: "L'utilisateur #%{user} a été arrêté avec succès."
@@ -194,6 +205,8 @@ fr:
       credits_added: Les crédits ont été ajoutés !
       credits_removed: Les crédits ont été supprimés.
       tag_not_found: 'Tag "%{tag_name}" non trouvée'
+      email_confirmed: E-mail confirmé !
+      email_confirm_fail: La confirmation de l'e-mail a échoué.
     welcome_controller:
       thread_content: |
         ---

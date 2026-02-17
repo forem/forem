@@ -42,7 +42,8 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
 
         worker.perform(user.id)
 
-        expect(DigestMailer).to have_received(:with).with(user: user, articles: Array, billboards: Array)
+        expect(DigestMailer).to have_received(:with).with(hash_including(user: user, articles: kind_of(Array),
+                                                                         billboards: kind_of(Array)))
         expect(mailer).to have_received(:digest_email)
         expect(message_delivery).to have_received(:deliver_now)
       end
@@ -84,6 +85,31 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
 
         expect(BillboardEvent.where(billboard_id: bb_1.id, category: "impression").size).to be(1)
         expect(BillboardEvent.where(billboard_id: bb_2.id, category: "impression").size).to be(1)
+      end
+
+      it "still delivers email even if billboard event creation raises" do
+        create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
+        create(:billboard, placement_area: "digest_first", published: true, approved: true)
+
+        allow(BillboardEvent).to receive(:create).and_raise(StandardError.new("DB error"))
+        allow(Honeybadger).to receive(:context)
+        allow(Honeybadger).to receive(:notify)
+
+        worker.perform(user.id)
+
+        # Email was already delivered before billboard tracking was attempted
+        expect(message_delivery).to have_received(:deliver_now)
+        expect(Honeybadger).to have_received(:notify).with(instance_of(StandardError))
+      end
+
+      it "does not open a transaction when no billboards are present" do
+        create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
+
+        expect(ApplicationRecord).not_to receive(:with_synchronous_commit_off)
+
+        worker.perform(user.id)
+
+        expect(message_delivery).to have_received(:deliver_now)
       end
 
       context "when there's a preferred paired billboard" do
@@ -132,6 +158,64 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
           expect(BillboardEvent.where(billboard_id: paired_bb.id, category: "impression").count).to eq(1)
           # and it should *not* fire for the other_bb
           expect(BillboardEvent.where(billboard_id: other_bb.id).count).to eq(0)
+        end
+      end
+
+      context "with AI summary experiment" do
+        let(:smart_summary_service) { instance_double(Ai::EmailDigestSummary) }
+
+        before do
+          allow(Ai::EmailDigestSummary).to receive(:new).and_return(smart_summary_service)
+          allow(smart_summary_service).to receive(:generate).and_return("Smart AI Summary")
+        end
+
+        it "generates and includes smart summary if user has recent presence" do
+          user.update_column(:last_presence_at, 1.day.ago)
+          create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
+
+          worker.perform(user.id)
+
+          expect(DigestMailer).to have_received(:with).with(hash_including(smart_summary: "Smart AI Summary"))
+        end
+
+        it "does not include smart summary if user has no recent presence" do
+          user.update_column(:last_presence_at, 4.days.ago)
+          create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
+
+          worker.perform(user.id)
+
+          expect(DigestMailer).to have_received(:with).with(hash_including(smart_summary: nil))
+        end
+
+        it "does not include smart summary if user presence is nil" do
+          user.update_column(:last_presence_at, nil)
+          create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
+
+          worker.perform(user.id)
+
+          expect(DigestMailer).to have_received(:with).with(hash_including(smart_summary: nil))
+        end
+      end
+
+      context "with force_send: true" do
+        it "sends email even if user has email_digest_periodic disabled" do
+          create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
+          user.notification_setting.update_column(:email_digest_periodic, false)
+
+          worker.perform(user.id, true)
+
+          expect(DigestMailer).to have_received(:with).with(hash_including(user: user))
+          expect(mailer).to have_received(:digest_email)
+          expect(message_delivery).to have_received(:deliver_now)
+        end
+
+        it "still does not send email if user is not registered" do
+          create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
+          user.update_column(:registered, false)
+
+          worker.perform(user.id, true)
+
+          expect(DigestMailer).not_to have_received(:with)
         end
       end
     end

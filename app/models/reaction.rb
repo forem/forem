@@ -94,6 +94,14 @@ class Reaction < ApplicationRecord
       @public_reaction_types ||= ReactionCategory.public.map(&:to_s) - ["readinglist"]
     end
 
+    def surrogate_key_for_article(article_id)
+      "reactions/article/#{article_id}"
+    end
+
+    def surrogate_key_for_commentable(commentable)
+      "reactions/commentable/#{commentable.table_key}/#{commentable.id}"
+    end
+
     def for_analytics
       reaction_types = public_reaction_types
       reaction_types << "readinglist" unless public_reaction_types.include?("readinglist")

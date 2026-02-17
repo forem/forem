@@ -36,6 +36,7 @@ class User < ApplicationRecord
 
   # User types enum
   enum type_of: { member: 0, community_bot: 1, member_bot: 2 }
+  enum current_subscriber_status: { not_subscribed: 0, free_subscription: 1, trial_subscription: 2, paying_subscription: 3 }
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
@@ -256,7 +257,10 @@ class User < ApplicationRecord
   after_save :create_conditional_autovomits
   after_save :generate_social_images
   after_commit :subscribe_to_mailchimp_newsletter
-  after_commit :bust_cache
+  after_commit :bust_profile_identity_cache, on: :update, if: :profile_identity_changed_for_cache?
+  after_commit :bust_profile_details_cache, on: :update, if: :profile_details_changed_for_cache?
+  after_commit :bust_profile_image_cache, on: :update, if: :profile_image_changed_for_cache?
+  after_commit :enqueue_profile_spam_check, on: :update, if: :name_contains_spam_trigger_terms?
 
   def self.average_articles_count
     Rails.cache.fetch("established_user_article_count", expires_in: 1.day) do
@@ -618,6 +622,30 @@ class User < ApplicationRecord
     profile_image_url_for(length: 90)
   end
 
+  def profile_identity_record_key
+    "#{record_key}/profile_identity"
+  end
+
+  def profile_details_record_key
+    "#{record_key}/profile_details"
+  end
+
+  def profile_image_record_key
+    "#{record_key}/profile_image"
+  end
+
+  def profile_cache_keys
+    [profile_identity_record_key, profile_details_record_key, profile_image_record_key]
+  end
+
+  def profile_identity_cache_keys
+    [profile_identity_record_key, profile_image_record_key]
+  end
+
+  def profile_cache_bust_paths
+    [path, "/profile_preview_cards/#{id}", "/api/users/#{id}"]
+  end
+
   def remove_from_mailchimp_newsletters
     return if email.blank?
     return if Settings::General.mailchimp_api_key.blank?
@@ -698,6 +726,12 @@ class User < ApplicationRecord
   def bot?
     community_bot? || member_bot?
   end
+  
+  def update_presence!
+    return if last_presence_at.present? && last_presence_at > 1.hour.ago
+
+    update_column(:last_presence_at, Time.current)
+  end
 
   protected
 
@@ -750,6 +784,44 @@ class User < ApplicationRecord
 
   def bust_cache
     Users::BustCacheWorker.perform_async(id)
+  end
+
+  def bust_profile_identity_cache
+    Users::BustProfileIdentityCacheWorker.perform_async(id)
+  end
+
+  def bust_profile_details_cache
+    Users::BustProfileDetailsCacheWorker.perform_async(id)
+  end
+
+  def bust_profile_image_cache
+    Users::BustProfileImageCacheWorker.perform_async(id)
+  end
+
+  def profile_identity_changed_for_cache?
+    saved_change_to_name? || saved_change_to_username?
+  end
+
+  def profile_details_changed_for_cache?
+    saved_change_to_email? ||
+      saved_change_to_twitter_username? ||
+      saved_change_to_github_username? ||
+      saved_change_to_facebook_username?
+  end
+
+  def profile_image_changed_for_cache?
+    saved_change_to_profile_image? ||
+      (respond_to?(:saved_change_to_profile_image_url?) && saved_change_to_profile_image_url?)
+  end
+
+  def enqueue_profile_spam_check
+    Users::HandleProfileSpamWorker.perform_async(id)
+  end
+
+  def name_contains_spam_trigger_terms?
+    return false unless saved_change_to_name?
+
+    Spam::Handler.profile_spam_trigger_term_match?(name)
   end
 
   def create_conditional_autovomits

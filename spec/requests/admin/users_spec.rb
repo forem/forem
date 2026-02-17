@@ -500,6 +500,75 @@ RSpec.describe "/admin/member_manager/users" do
     end
   end
 
+  describe "POST /admin/member_manager/users/:id/confirm_email" do
+    let(:unconfirmed_user) { create(:user, confirmed_at: nil) }
+
+    context "when interacting via a browser" do
+      it "returns not found for non-existing users" do
+        expect do
+          post confirm_email_admin_user_path(9999)
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "confirms the user successfully" do
+        expect(unconfirmed_user.confirmed?).to be(false)
+
+        post confirm_email_admin_user_path(unconfirmed_user)
+
+        expect(unconfirmed_user.reload.confirmed?).to be(true)
+        expect(response).to redirect_to(admin_user_path(unconfirmed_user))
+        expect(flash[:success]).to be_present
+      end
+
+      it "creates an audit note when confirming" do
+        expect do
+          post confirm_email_admin_user_path(unconfirmed_user)
+        end.to change(Note, :count).by(1)
+
+        note = unconfirmed_user.notes.last
+        expect(note.reason).to eq("email_confirmed")
+        expect(note.content).to include("manually confirmed by #{admin.username}")
+        expect(note.author_id).to eq(admin.id)
+      end
+
+      it "handles already confirmed users gracefully" do
+        confirmed_user = create(:user, confirmed_at: Time.current)
+
+        post confirm_email_admin_user_path(confirmed_user)
+
+        expect(response).to redirect_to(admin_user_path(confirmed_user))
+      end
+    end
+
+    context "when interacting via AJAX" do
+      it "returns not found for non-existing users" do
+        expect do
+          post confirm_email_admin_user_path(9999), xhr: true
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "confirms the user successfully" do
+        expect(unconfirmed_user.confirmed?).to be(false)
+
+        post confirm_email_admin_user_path(unconfirmed_user), xhr: true
+
+        expect(unconfirmed_user.reload.confirmed?).to be(true)
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body["result"]).to be_present
+      end
+
+      it "creates an audit note when confirming via AJAX" do
+        expect do
+          post confirm_email_admin_user_path(unconfirmed_user), xhr: true
+        end.to change(Note, :count).by(1)
+
+        note = unconfirmed_user.notes.last
+        expect(note.reason).to eq("email_confirmed")
+        expect(note.content).to include("manually confirmed by #{admin.username}")
+      end
+    end
+  end
+
   describe "PATCH admin/users/:id/unlock_access" do
     it "unlocks a locked user account" do
       user.lock_access!
