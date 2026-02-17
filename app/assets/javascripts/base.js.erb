@@ -55,6 +55,30 @@ var instantClick
     return url.substr(0, index)
   }
 
+  function calculateOffsetTop(element) {
+    var offset = 0;
+    while (element.offsetParent) {
+      offset += element.offsetTop;
+      element = element.offsetParent;
+    }
+    return offset;
+  }
+
+  function findHashElement(hash) {
+    // Try to find element by ID first
+    var elem = document.getElementById(hash);
+    if (elem) {
+      return elem;
+    }
+    // Try to find element by name attribute with .anchor class
+    // Use attribute selector with quotes to handle special characters
+    try {
+      return document.querySelector('[name="' + hash.replace(/"/g, '\\"') + '"].anchor');
+    } catch(e) {
+      return null;
+    }
+  }
+
   function getLinkTarget(target) {
     while (target && target.nodeName != 'A') {
       target = target.parentNode
@@ -146,19 +170,12 @@ var instantClick
       history.pushState(null, null, newUrl.replace("?samepage=true","").replace("&samepage=true",""))
 
       var hashIndex = newUrl.indexOf('#'),
-          hashElem = hashIndex > -1 && (
-            document.getElementById(newUrl.substr(hashIndex + 1)) ||
-            document.querySelector(`[name=${newUrl.substr(hashIndex + 1)}].anchor`)
-          ),
+          hashElem = hashIndex > -1 && findHashElement(newUrl.substr(hashIndex + 1)),
           offset = 0,
           samePage = newUrl.indexOf("samepage=true") > -1;
 
       if (hashElem) {
-        while (hashElem.offsetParent) {
-          offset += hashElem.offsetTop
-
-          hashElem = hashElem.offsetParent
-        }
+        offset = calculateOffsetTop(hashElem);
       }
       if (!samePage){
         scrollTo(0, offset)
@@ -199,15 +216,9 @@ var instantClick
       // This ensures the DOM is fully updated before calculating scroll position
       if (hashToScroll) {
         requestAnimationFrame(function() {
-          var hashElem = document.getElementById(hashToScroll) ||
-                         document.querySelector(`[name=${hashToScroll}].anchor`);
+          var hashElem = findHashElement(hashToScroll);
           if (hashElem) {
-            var offset = 0;
-            while (hashElem.offsetParent) {
-              offset += hashElem.offsetTop;
-              hashElem = hashElem.offsetParent;
-            }
-            scrollTo(0, offset);
+            scrollTo(0, calculateOffsetTop(hashElem));
           }
         });
       }
