@@ -7,7 +7,20 @@ module Admin
     end
 
     def show
-      @survey = Survey.find(params[:id])
+      @survey = Survey.includes(polls: :poll_options).find(params[:id])
+
+      polls = @survey.polls
+      poll_ids_relation = polls.select(:id)
+
+      @survey_stats = {
+        polls_count: polls.size,
+        completions_count: @survey.survey_completions.count,
+        unique_respondents_count: @survey.survey_completions.select(:user_id).distinct.count,
+        poll_votes_count: polls.sum(:poll_votes_count),
+        poll_skips_count: polls.sum(:poll_skips_count),
+        poll_text_responses_count: PollTextResponse.where(poll_id: poll_ids_relation).count,
+        last_completed_at: @survey.survey_completions.maximum(:completed_at)
+      }
     end
 
     def new
