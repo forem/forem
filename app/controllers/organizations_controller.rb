@@ -97,6 +97,13 @@ class OrganizationsController < ApplicationController
 
   def members
     @organization = Organization.find_by(slug: params[:slug])
+    unless @organization
+      respond_to do |format|
+        format.html { render file: Rails.root.join("public/404.html"), layout: false, status: :not_found }
+        format.json { render json: { error: "not found", status: 404 }, status: :not_found }
+      end
+      return
+    end
     @members = @organization.active_users
 
     respond_to do |format|
