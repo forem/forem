@@ -29,8 +29,9 @@ jobs:
         with:
           path-to-signatures: 'signatures/version1/cla.json'
           path-to-document: 'https://github.com/${{ github.repository }}/blob/main/CLA.md'
-          # FIXED: Explicitly use 'main'. Ensure remote repo uses this branch for signatures.
+          # Branch in the remote signatures repo
           branch: 'main'
-          remote-repository-name: 'forem/CLA-signatures'
+          remote-organization-name: 'forem'
+          remote-repository-name: 'CLA-signatures'
           allowlist: ${{ secrets.CLA_ALLOWLIST }}
           lock-pullrequest-aftermerge: false
