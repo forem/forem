@@ -1,0 +1,36 @@
+# Forem GitHub Copilot Instructions
+
+You are an AI coding assistant working on the Forem codebase (the platform that powers dev.to).
+Follow these rules and patterns to ensure high-quality contributions.
+
+## General Philosophy
+- **Follow Patterns**: Application consistency is key. Mimic existing patterns for controllers, services, and specs.
+- **Smaller is Better**: Prefer atomic, focused modifications over sprawling refactors.
+- **Re-usability**: Changes should strengthen Forem as a platform, avoiding DEV-specific hardcoding unless absolutely necessary.
+
+## Testing Standards
+- **Regression Tests are Mandatory**: specific regression tests to verify your code works are required for almost all PRs.
+- **Follow Test Patterns**: Use `create(:factory)` syntax (FactoryBot) and standard RSpec expectations.
+- **Frontend vs Backend**: We are currently focused on robust backend regression tests. Frontend changes require more manual user review, so clear descriptions of UI changes are vital.
+
+## Internationalization (i18n)
+- **Update All Locales**: If your change involves new or modified text, you MUST update the corresponding i18n files for ALL supported languages found in `config/locales`.
+- **Supported Languages**:
+  - `en` (English)
+  - `fr` (French)
+  - `pt` (Portuguese)
+  - And any others present in `config/locales`.
+
+## Performance & Caching
+- **Avoid `current_user` in Cache**: Never use `current_user` objects in cached pages or partials to prevent cache leaks and private data exposure.
+- **Database Indexes**:
+  - Add indexes concurrently using `algorithm: :concurrently`.
+  - Use `disable_ddl_transaction!` in the migration class.
+  - Ideally, place index additions in their own separate migration files.
+
+## Frontend
+- We are transitioning to a Preact-first frontend.
+- Use `app/javascript` and `app/assets` patterns as established.
+
+## Documentation
+- If you find documentation that contradicts the codebase, trust the codebase patterns but note the discrepancy.
