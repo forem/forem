@@ -3,6 +3,8 @@ class OrganizationsController < ApplicationController
   after_action :verify_authorized
   skip_after_action :verify_authorized, only: [:members, :confirm_invitation]
 
+  rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
+
   ORGANIZATIONS_PERMITTED_PARAMS = %i[
     id
     name
@@ -283,5 +285,9 @@ class OrganizationsController < ApplicationController
     @organization.errors.add(:profile_image, filename_too_long_message)
 
     false
+  end
+
+  def render_not_found
+    render file: Rails.root.join("public/404.html"), layout: false, status: :not_found
   end
 end
