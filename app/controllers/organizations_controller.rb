@@ -3,8 +3,6 @@ class OrganizationsController < ApplicationController
   after_action :verify_authorized
   skip_after_action :verify_authorized, only: [:members, :confirm_invitation]
 
-  rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
-
   ORGANIZATIONS_PERMITTED_PARAMS = %i[
     id
     name
@@ -99,7 +97,13 @@ class OrganizationsController < ApplicationController
 
   def members
     @organization = Organization.find_by(slug: params[:slug])
-    not_found unless @organization
+    unless @organization
+      respond_to do |format|
+        format.html { render file: Rails.root.join("public/404.html"), layout: false, status: :not_found }
+        format.json { render json: { error: "not found", status: 404 }, status: :not_found }
+      end
+      return
+    end
     @members = @organization.active_users
 
     respond_to do |format|
@@ -285,12 +289,5 @@ class OrganizationsController < ApplicationController
     @organization.errors.add(:profile_image, filename_too_long_message)
 
     false
-  end
-
-  def render_not_found
-    respond_to do |format|
-      format.html { render file: Rails.root.join("public/404.html"), layout: false, status: :not_found }
-      format.json { render json: { error: "not found", status: 404 }, status: :not_found }
-    end
   end
 end
