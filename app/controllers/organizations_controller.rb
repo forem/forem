@@ -97,6 +97,7 @@ class OrganizationsController < ApplicationController
 
   def members
     @organization = Organization.find_by(slug: params[:slug])
+    not_found unless @organization
     @members = @organization.active_users
 
     respond_to do |format|
