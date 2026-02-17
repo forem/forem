@@ -288,6 +288,9 @@ class OrganizationsController < ApplicationController
   end
 
   def render_not_found
-    render file: Rails.root.join("public/404.html"), layout: false, status: :not_found
+    respond_to do |format|
+      format.html { render file: Rails.root.join("public/404.html"), layout: false, status: :not_found }
+      format.json { render json: { error: "not found", status: 404 }, status: :not_found }
+    end
   end
 end
