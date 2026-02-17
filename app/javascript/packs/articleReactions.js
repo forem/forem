@@ -1,5 +1,6 @@
 /* global sendHapticMessage, showLoginModal, isTouchDevice, watchForLongTouch */
 import { showModalAfterError } from '../utilities/showUserAlertModal';
+import { smoothScrollTo } from '../utilities/smoothScroll';
 
 // Set reaction count to correct number
 const setReactionCount = (reactionName, newCount) => {
@@ -27,6 +28,7 @@ const setReactionCount = (reactionName, newCount) => {
     }
   }
 };
+
 
 const setSumReactionCount = (counts) => {
   const totalCountObj = document.getElementById('reaction_total_count');
@@ -306,20 +308,20 @@ const initializeArticleReactions = () => {
       jumpToCommentsButt
     ) {
       jumpToCommentsButt.onclick = function jumpToComments(_event) {
-        commentsSection.scrollIntoView({ behavior: 'smooth' });
+        smoothScrollTo(commentsSection, 320, 64);
       };
     }
 
     const boostButt = document.getElementById('reaction-butt-boost');
     if (boostButt) {
-      boostButt.onclick = function() {
+      boostButt.onclick = function () {
         if (document.body.getAttribute('data-user-status') === 'logged-out') {
           showLoginModal({
             referring_source: 'reactions_toolbar',
             trigger: 'boost',
           });
           return;
-        }      
+        }
         document.getElementById('quickie-wrapper').classList.remove('hidden');
         document.getElementById('article_title').focus();
       }
