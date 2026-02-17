@@ -21,6 +21,53 @@
 
 <div class="grid gap-6">
   <section class="crayons-card p-4">
+    <h2 class="fs-2xl fw-bold mb-4">Survey Overview</h2>
+
+    <div class="grid gap-4 md:grid-cols-3">
+      <div>
+        <p class="fs-xs fw-medium color-base-60 text-uppercase">Total completions</p>
+        <p class="fs-2xl fw-bold"><%= @survey_stats[:completions_count] %></p>
+      </div>
+
+      <div>
+        <p class="fs-xs fw-medium color-base-60 text-uppercase">Unique respondents</p>
+        <p class="fs-2xl fw-bold"><%= @survey_stats[:unique_respondents_count] %></p>
+      </div>
+
+      <div>
+        <p class="fs-xs fw-medium color-base-60 text-uppercase">Polls</p>
+        <p class="fs-2xl fw-bold"><%= @survey_stats[:polls_count] %></p>
+      </div>
+
+      <div>
+        <p class="fs-xs fw-medium color-base-60 text-uppercase">Poll votes</p>
+        <p class="fs-2xl fw-bold"><%= @survey_stats[:poll_votes_count] %></p>
+      </div>
+
+      <div>
+        <p class="fs-xs fw-medium color-base-60 text-uppercase">Poll skips</p>
+        <p class="fs-2xl fw-bold"><%= @survey_stats[:poll_skips_count] %></p>
+      </div>
+
+      <div>
+        <p class="fs-xs fw-medium color-base-60 text-uppercase">Text responses</p>
+        <p class="fs-2xl fw-bold"><%= @survey_stats[:poll_text_responses_count] %></p>
+      </div>
+    </div>
+
+    <div class="mt-4 fs-s color-base-60">
+      <p>Created at: <%= @survey.created_at.strftime("%B %d, %Y %H:%M") %></p>
+      <p>Last updated: <%= @survey.updated_at.strftime("%B %d, %Y %H:%M") %></p>
+
+      <% if @survey_stats[:last_completed_at].present? %>
+        <p>Last completed at: <%= @survey_stats[:last_completed_at].strftime("%B %d, %Y %H:%M") %></p>
+      <% else %>
+        <p>Last completed at: Never</p>
+      <% end %>
+    </div>
+  </section>
+
+  <section class="crayons-card p-4">
     <h2 class="fs-2xl fw-bold mb-4">Polls (<%= @survey.polls.count %>)</h2>
     
     <% if @survey.polls.any? %>
