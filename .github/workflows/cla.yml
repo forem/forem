@@ -7,6 +7,7 @@ on:
   merge_group:
     branches:
       - main
+  workflow_dispatch:
   workflow_call:
 
 permissions:
@@ -20,7 +21,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "CLA Assistant"
-        # Using pull_request_target for production, but ensuring it runs on forem repo
         if: (github.event.comment.body == 'recheck' || github.event.comment.body == 'I have read the CLA Document and I hereby sign the CLA') || github.event_name == 'pull_request_target'
         uses: contributor-assistant/github-action@v2.6.1
         env:
@@ -28,10 +28,9 @@ jobs:
           PERSONAL_ACCESS_TOKEN: ${{ secrets.CLA_PERSONAL_ACCESS_TOKEN }}
         with:
           path-to-signatures: 'signatures/version1/cla.json'
-          path-to-document: 'https://github.com/forem/forem/blob/main/CLA.md'
+          path-to-document: 'https://github.com/${{ github.repository }}/blob/main/CLA.md'
+          # FIXED: Explicitly use 'main'. Ensure remote repo uses this branch for signatures.
           branch: 'main'
-          # We are using the full name here since 'CLA-signatures' alone might fail 
-          # if the PAT belongs to a user with many orgs.
           remote-repository-name: 'forem/CLA-signatures'
           allowlist: ${{ secrets.CLA_ALLOWLIST }}
           lock-pullrequest-aftermerge: false
