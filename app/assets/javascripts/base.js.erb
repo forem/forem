@@ -136,6 +136,7 @@ var instantClick
     var prog = document.getElementById("navigation-progress");
     prog.classList.remove("showing");
 
+    var hashToScroll = null;
     if (newUrl) {
       const routeChangeTarget = document.getElementById('route-change-target');
       if(routeChangeTarget) {
@@ -161,6 +162,10 @@ var instantClick
       }
       if (!samePage){
         scrollTo(0, offset)
+        // Store hash for re-scroll after change event handlers complete
+        if (hashIndex > -1) {
+          hashToScroll = newUrl.substr(hashIndex + 1);
+        }
       }
 
 
@@ -190,6 +195,22 @@ var instantClick
     }
     else {
       triggerPageEvent('change', false)
+      // Re-scroll to hash after change event handlers have completed
+      // This ensures the DOM is fully updated before calculating scroll position
+      if (hashToScroll) {
+        requestAnimationFrame(function() {
+          var hashElem = document.getElementById(hashToScroll) ||
+                         document.querySelector(`[name=${hashToScroll}].anchor`);
+          if (hashElem) {
+            var offset = 0;
+            while (hashElem.offsetParent) {
+              offset += hashElem.offsetTop;
+              hashElem = hashElem.offsetParent;
+            }
+            scrollTo(0, offset);
+          }
+        });
+      }
     }
   }
 
