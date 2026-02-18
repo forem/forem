@@ -5,6 +5,8 @@ module Emails
     sidekiq_options queue: :low_priority
 
     def perform(user_ids, subject, content, type_of, email_id)
+      user_ids = user_ids.map(&:to_i)
+
       # Optimized: Load all users in one query instead of N queries (avoids N+1)
       # Only select the columns the mailer actually uses (id, email, name, username)
       # to reduce memory and transfer overhead for large batches.
