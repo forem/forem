@@ -44,6 +44,12 @@ APPLE_OMNIAUTH_SETUP = lambda do |env|
 end
 
 MLH_OMNIAUTH_SETUP = lambda do |env|
+  # Prepend the callback URL override module to ensure redirect_uri never includes query parameters
+  # This must be done here because the omniauth-mlh gem loads the strategy class at this point
+  unless env["omniauth.strategy"].class.included_modules.include?(OmniAuth::Strategies::MlhCallbackUrlOverride)
+    env["omniauth.strategy"].class.prepend(OmniAuth::Strategies::MlhCallbackUrlOverride)
+  end
+
   env["omniauth.strategy"].options[:scope] = "user:read:email user:read:phone user:read:profile user:read:demographics public offline_access mlh:read:user"
   env["omniauth.strategy"].options[:client_id] = Settings::Authentication.mlh_key
   env["omniauth.strategy"].options[:client_secret] = Settings::Authentication.mlh_secret
