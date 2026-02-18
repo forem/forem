@@ -76,8 +76,6 @@ Sidekiq.configure_server do |config|
   end
 end
 
-Sidekiq::Throttled.setup!
-
 Sidekiq.configure_client do |config|
   config.client_middleware do |chain|
     chain.add SidekiqUniqueJobs::Middleware::Client
