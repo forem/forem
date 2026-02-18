@@ -1139,7 +1139,7 @@ DEPENDENCIES
   shoulda-matchers (~> 5.3)
   sidekiq (~> 6.5.3)
   sidekiq-cron (~> 1.7)
-  sidekiq-throttled (~> 2.1)
+  sidekiq-throttled (~> 1.5)
   sidekiq-unique-jobs (~> 7.1.27)
   simplecov (~> 0.21.2)
   slack-notifier (~> 2.4)
