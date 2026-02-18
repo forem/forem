@@ -51,4 +51,11 @@ RSpec.describe Feeds::ImportArticlesWorker, sidekiq: :inline, type: :worker do
       expect(Feeds::Import).to have_received(:call).with(users_scope: User.where(id: [user.id]), earlier_than: nil)
     end
   end
+
+  describe "ForUser" do
+    it "has the correct sidekiq options" do
+      expect(Feeds::ImportArticlesWorker::ForUser.sidekiq_options["queue"]).to eq :low_priority
+      expect(Feeds::ImportArticlesWorker::ForUser.sidekiq_options["lock"]).to eq :until_and_while_executing
+    end
+  end
 end
