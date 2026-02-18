@@ -46,6 +46,7 @@ Sidekiq.configure_server do |config|
   config.redis = { url: sidekiq_url }
 
   config.server_middleware do |chain|
+    chain.add Sidekiq::Throttled::Middleware
     chain.add Sidekiq::TransactionSafeRescue
     chain.add Sidekiq::HoneycombMiddleware
     chain.add SidekiqUniqueJobs::Middleware::Client
@@ -75,6 +76,8 @@ Sidekiq.configure_server do |config|
       Rails.logger.warn("[dev] Failed to clear Sidekiq queues: #{e.message}")
     end
   end
+
+  Sidekiq::Throttled.setup!
 end
 
 Sidekiq.configure_client do |config|

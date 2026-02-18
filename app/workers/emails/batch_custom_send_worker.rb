@@ -1,8 +1,10 @@
 module Emails
   class BatchCustomSendWorker
     include Sidekiq::Job
+    include Sidekiq::Throttled::Job
 
     sidekiq_options queue: :low_priority
+    sidekiq_throttle(concurrency: { limit: 14 })
 
     def perform(user_ids, subject, content, type_of, email_id)
       user_ids = user_ids.map(&:to_i)
