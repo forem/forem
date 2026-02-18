@@ -29,6 +29,7 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
           email.body,
           email.type_of,
           email.id,
+          email.default_from_name_based_on_type,
         )
         expect(Emails::BatchCustomSendWorker).not_to have_received(:perform_async).with(
           [user_outside_segment.id],
@@ -53,6 +54,7 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
           email.body,
           email.type_of,
           email.id,
+          email.default_from_name_based_on_type,
         )
         # user_without_notifications.id should not be in the arguments
       end
@@ -139,6 +141,7 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
           email.body,
           email.type_of,
           email.id,
+          email.default_from_name_based_on_type,
         )
 
         # Check that suspended or spam users were not passed

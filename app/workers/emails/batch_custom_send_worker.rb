@@ -6,7 +6,7 @@ module Emails
     sidekiq_options queue: :low_priority, lock: :until_and_while_executing
     sidekiq_throttle(concurrency: { limit: 14 })
 
-    def perform(user_ids, subject, content, type_of, email_id)
+    def perform(user_ids, subject, content, type_of, email_id, from_name = nil)
       user_ids = user_ids.map(&:to_i)
 
       # Optimized: Load all users in one query instead of N queries (avoids N+1)
@@ -45,7 +45,8 @@ module Emails
             subject: subject,
             content: content,
             type_of: type_of,
-            email_id: email_id
+            email_id: email_id,
+            from_name: from_name
           )
           .custom_email
           .deliver_now
