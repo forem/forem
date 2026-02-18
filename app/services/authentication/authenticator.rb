@@ -189,7 +189,13 @@ module Authentication
     end
 
     def extract_created_at_from_payload(logged_in_identity)
-      raw_info = logged_in_identity.auth_data_dump.extra.raw_info
+      # Safely extract raw_info, handling cases where auth_data_dump, extra, or raw_info may be nil
+      # This can happen with some OAuth providers like MLH that may not provide raw_info
+      auth_data = logged_in_identity.auth_data_dump
+      return Time.current if auth_data.nil? || auth_data.extra.nil?
+
+      raw_info = auth_data.extra.raw_info
+      return Time.current if raw_info.nil?
 
       if raw_info.created_at.present?
         Time.zone.parse(raw_info.created_at)
