@@ -111,7 +111,6 @@ module Feeds
     # TODO: put this in separate service object
     def parse_feeds(feeds_per_user_id)
       result = Parallel.map(feeds_per_user_id, in_threads: num_parsers) do |user_id, feed_xml|
-        p feed_xml
         parsed_feed = Feedjira.parse(feed_xml)
 
         [user_id, parsed_feed]
