@@ -4,6 +4,7 @@ require "sidekiq/honeycomb_middleware"
 require "sidekiq/worker_retries_exhausted_reporter"
 require "sidekiq/sidekiq_connection_cleanup"
 require "sidekiq/transaction_safe_rescue"
+require "sidekiq/throttled"
 
 module Sidekiq
   module Cron
