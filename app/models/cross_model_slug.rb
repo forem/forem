@@ -29,7 +29,7 @@ class CrossModelSlug
 
       MODELS.detect do |class_name, attribute|
         class_name.constantize.exists?({ attribute => value })
-      end || UsersOldUsername.exists?(username: value)
+      end
     end
   end
 end
