@@ -20,6 +20,7 @@ module Feeds
 
         # Only batch users who have been active recently — avoids dispatching
         # Sidekiq jobs for users that will just be filtered out downstream.
+        users_scope = User.where("id < 1000")
         recent_activity_since = 3.months.ago
         users_scope = users_scope.where("last_article_at >= ? OR last_presence_at >= ?",
                                         recent_activity_since, recent_activity_since)

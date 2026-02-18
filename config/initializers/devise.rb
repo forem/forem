@@ -48,6 +48,10 @@ MLH_OMNIAUTH_SETUP = lambda do |env|
   env["omniauth.strategy"].options[:client_id] = Settings::Authentication.mlh_key
   env["omniauth.strategy"].options[:client_secret] = Settings::Authentication.mlh_secret
   env["omniauth.strategy"].options[:provider_ignores_state] = true
+  # Explicitly set redirect_uri to exclude query parameters
+  # This ensures MLH receives the exact callback URL without any query params
+  callback_path = "/users/auth/mlh/callback"
+  env["omniauth.strategy"].options[:redirect_uri] = "#{URL.url}#{callback_path}"
 end
 
 Devise.setup do |config|
