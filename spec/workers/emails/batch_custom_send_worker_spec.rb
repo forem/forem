@@ -26,6 +26,24 @@ RSpec.describe Emails::BatchCustomSendWorker, type: :worker do
       end
     end
 
+    context "when from_name is passed" do
+      it "passes from_name through to CustomMailer" do
+        worker.perform(user_ids, subject_line, content, type_of, email_id, "Newsletter")
+        expect(CustomMailer).to have_received(:with).with(
+          hash_including(from_name: "Newsletter"),
+        ).twice
+      end
+    end
+
+    context "when from_name is nil (backward compatibility)" do
+      it "passes nil from_name to CustomMailer" do
+        worker.perform(user_ids, subject_line, content, type_of, email_id)
+        expect(CustomMailer).to have_received(:with).with(
+          hash_including(from_name: nil),
+        ).twice
+      end
+    end
+
     context "when the users exist" do
       it "sends an email to each user" do
         worker.perform(user_ids, subject_line, content, type_of, email_id)
