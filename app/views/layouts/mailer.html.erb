@@ -22,13 +22,13 @@
         <% end %>
         <% if @user && Settings::General.custom_email_footer.present? %>
           <tr>
-            <td style="padding:3% 12% 2% 4%;font-size:18px;line-height:22px;color:#202121">
+            <td style="padding:2%;font-size:18px;line-height:22px;color:#202121">
               <%= Settings::General.custom_email_footer.html_safe %>
             </td>
           </tr>
         <% end %>
         <tr>
-          <td style="padding:3% 12% 2% 4%;font-size:18px;line-height:22px;color:#202121">
+          <td style="padding:6%;font-size:17px;line-height:22px;color:#202121">
             <%= signed_up_with(@user).html_safe %>
             <br /><br />
             <div style="font-size:0.78em">
