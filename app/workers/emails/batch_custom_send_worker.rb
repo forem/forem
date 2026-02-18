@@ -6,8 +6,11 @@ module Emails
 
     def perform(user_ids, subject, content, type_of, email_id)
       # Optimized: Load all users in one query instead of N queries (avoids N+1)
-      # Create a hash for O(1) lookup while maintaining processing order
-      users_by_id = User.where(id: user_ids).index_by(&:id)
+      # Only select the columns the mailer actually uses (id, email, name, username)
+      # to reduce memory and transfer overhead for large batches.
+      users_by_id = User.where(id: user_ids)
+                        .select(:id, :email, :name, :username)
+                        .index_by(&:id)
 
       # Bulk check: skip users who already received a non-test email for this email_id.
       # Uses a subquery with DISTINCT ON to get the most recent message per user,
