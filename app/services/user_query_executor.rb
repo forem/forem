@@ -49,6 +49,41 @@ class UserQueryExecutor
     execute_safe_query
   end
 
+  def each_id_batch(batch_size: 1000)
+    return unless block_given?
+    return [] unless valid?
+
+    ReadOnlyDatabaseService.with_connection do |conn|
+      setup_execution_environment(conn)
+      final_query = user_query.substitute_variables(variables)
+      safe_query = build_safe_query(final_query)
+
+      begin
+        result = execute_with_timeout(conn, safe_query)
+        return unless result.is_a?(PG::Result)
+
+        current_batch = []
+        result.each do |row|
+          user_id = row["id"] || row["user_id"] || row["users.id"]
+          next unless user_id
+
+          current_batch << user_id.to_i
+
+          if current_batch.size >= batch_size
+            yield current_batch
+            current_batch = []
+          end
+        end
+
+        yield current_batch if current_batch.any?
+
+        update_execution_tracking
+      rescue StandardError => e
+        handle_execution_error(e)
+      end
+    end
+  end
+
   def test_execute(limit: MAX_TEST_USER_LIMIT)
     @limit = limit
     execute
