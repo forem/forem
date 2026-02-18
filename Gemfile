@@ -179,3 +179,5 @@ group :test do
   gem "with_model", "~> 2.1.7" # Dynamically build a model within an RSpec context
   gem "zonebie", "~> 0.6.1" # Runs your tests in a random timezone
 end
+
+gem "omniauth-mlh", "~> 4.1"

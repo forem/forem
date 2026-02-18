@@ -43,6 +43,13 @@ APPLE_OMNIAUTH_SETUP = lambda do |env|
   env["omniauth.strategy"].options[:team_id] = Settings::Authentication.apple_team_id
 end
 
+MLH_OMNIAUTH_SETUP = lambda do |env|
+  env["omniauth.strategy"].options[:scope] = "user:read:email user:read:phone user:read:profile user:read:demographics public offline_access mlh:read:user"
+  env["omniauth.strategy"].options[:client_id] = Settings::Authentication.mlh_key
+  env["omniauth.strategy"].options[:client_secret] = Settings::Authentication.mlh_secret
+  env["omniauth.strategy"].options[:provider_ignores_state] = true
+end
+
 Devise.setup do |config|
   # The secret key used by Devise. Devise uses this key to generate
   # random tokens. Changing this key will render invalid all existing
@@ -335,6 +342,7 @@ Devise.setup do |config|
   config.omniauth :apple, setup: APPLE_OMNIAUTH_SETUP
   config.omniauth :forem, setup: FOREM_OMNIAUTH_SETUP, strategy_class: OmniAuth::Strategies::Forem
   config.omniauth :twitter, setup: TWITTER_OMNIAUTH_SETUP
+  config.omniauth :mlh, setup: MLH_OMNIAUTH_SETUP
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or

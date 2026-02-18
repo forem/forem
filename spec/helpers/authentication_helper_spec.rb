@@ -30,7 +30,7 @@ RSpec.describe AuthenticationHelper do
 
   describe "#signed_up_with" do
     it "returns an authentication reminder when a user auths with a provider" do
-      providers = Authentication::Providers.available.last(2)
+      providers = %i[google_oauth2 twitter]
       allow(Authentication::Providers).to receive(:enabled).and_return(providers)
       allow(user).to receive(:identities).and_return(user.identities.where(provider: providers))
 

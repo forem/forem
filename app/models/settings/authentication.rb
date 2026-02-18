@@ -25,6 +25,8 @@ module Settings
     setting :github_secret, type: :string, default: ApplicationConfig["GITHUB_SECRET"]
     setting :google_oauth2_key, type: :string
     setting :google_oauth2_secret, type: :string
+    setting :mlh_key, type: :string
+    setting :mlh_secret, type: :string
     setting :invite_only_mode, type: :boolean, default: false
     setting :new_user_status, type: :string, default: "good_standing", validates: {
       inclusion: { in: NEW_USER_STATUSES }
