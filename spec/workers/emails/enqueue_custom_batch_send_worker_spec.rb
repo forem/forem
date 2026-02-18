@@ -146,10 +146,10 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
 
         # Check that suspended or spam users were not passed
         expect(Emails::BatchCustomSendWorker).not_to have_received(:perform_async).with(
-          include(user_suspended.id), anything, anything, anything, anything
+          include(user_suspended.id), anything, anything, anything, anything, anything
         )
         expect(Emails::BatchCustomSendWorker).not_to have_received(:perform_async).with(
-          include(user_spam.id), anything, anything, anything, anything
+          include(user_spam.id), anything, anything, anything, anything, anything
         )
       end
     end
@@ -167,10 +167,10 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
           
           expect(Emails::BatchCustomSendWorker).to have_received(:perform_async).with(
             array_including(user_ids[2], user_ids[3], user_ids[4]),
-            anything, anything, anything, anything
+            anything, anything, anything, anything, anything
           )
           expect(Emails::BatchCustomSendWorker).not_to have_received(:perform_async).with(
-            include(user_ids[0]), anything, anything, anything, anything
+            include(user_ids[0]), anything, anything, anything, anything, anything
           )
         end
 
@@ -179,7 +179,7 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
           
           expect(Emails::BatchCustomSendWorker).to have_received(:perform_async).with(
             array_including(user_ids[0], user_ids[1], user_ids[2]),
-            anything, anything, anything, anything
+            anything, anything, anything, anything, anything
           )
         end
 
@@ -189,7 +189,7 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
           # Should only include middle users
           expect(Emails::BatchCustomSendWorker).to have_received(:perform_async).with(
             [user_ids[1], user_ids[2], user_ids[3]].sort,
-            anything, anything, anything, anything
+            anything, anything, anything, anything, anything
           )
         end
       end
@@ -211,7 +211,7 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
           
           expect(Emails::BatchCustomSendWorker).to have_received(:perform_async).with(
             [user_ids[2], user_ids[3]],
-            anything, anything, anything, anything
+            anything, anything, anything, anything, anything
           )
         end
       end

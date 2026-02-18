@@ -90,11 +90,12 @@ RSpec.describe Email, type: :model do
       it "enqueues a job with the matching users" do
         addresses_string = "test1@example.com, test2@example.com"
         expect(Emails::BatchCustomSendWorker).to receive(:perform_async).with(
-          match_array([user_1.id, user_2.id]), # <--- FIX APPLIED HERE
+          match_array([user_1.id, user_2.id]),
           "[TEST] #{email.subject}",
           email.body,
           email.type_of,
-          email.id
+          email.id,
+          email.default_from_name_based_on_type
         )
         email.deliver_to_test_emails(addresses_string)
       end
@@ -112,7 +113,8 @@ RSpec.describe Email, type: :model do
           "[TEST] #{email.subject}",
           email.body,
           email.type_of,
-          email.id
+          email.id,
+          email.default_from_name_based_on_type
         )
         email.deliver_to_test_emails(nil)
       end
