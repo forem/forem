@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_11_07_175200) do
+ActiveRecord::Schema[7.0].define(version: 2026_02_18_115626) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1691,6 +1691,15 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_07_175200) do
     t.index ["user_id"], name: "index_users_notification_settings_on_user_id", unique: true
   end
 
+  create_table "users_old_usernames", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "username", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_users_old_usernames_on_user_id"
+    t.index ["username"], name: "index_users_old_usernames_on_username", unique: true
+  end
+
   create_table "users_roles", id: false, force: :cascade do |t|
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.bigint "role_id"
@@ -1833,6 +1842,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_07_175200) do
   add_foreign_key "user_subscriptions", "users", column: "subscriber_id"
   add_foreign_key "user_visit_contexts", "users"
   add_foreign_key "users_notification_settings", "users"
+  add_foreign_key "users_old_usernames", "users"
   add_foreign_key "users_roles", "roles", on_delete: :cascade
   add_foreign_key "users_roles", "users", on_delete: :cascade
   add_foreign_key "users_settings", "users"
