@@ -46,14 +46,12 @@ Sidekiq.configure_server do |config|
   config.redis = { url: sidekiq_url }
 
   config.server_middleware do |chain|
+    chain.add Sidekiq::Throttled::Middleware
     chain.add Sidekiq::TransactionSafeRescue
     chain.add Sidekiq::HoneycombMiddleware
     chain.add SidekiqUniqueJobs::Middleware::Client
-    chain.add Sidekiq::SidekiqConnectionCleanup
-  end
-
-  config.server_middleware do |chain|
     chain.add SidekiqUniqueJobs::Middleware::Server
+    chain.add Sidekiq::SidekiqConnectionCleanup
   end
 
   SidekiqUniqueJobs::Server.configure(config)
@@ -76,6 +74,8 @@ Sidekiq.configure_server do |config|
     end
   end
 end
+
+Sidekiq::Throttled.setup!
 
 Sidekiq.configure_client do |config|
   config.client_middleware do |chain|
