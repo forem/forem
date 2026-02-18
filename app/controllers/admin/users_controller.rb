@@ -15,6 +15,9 @@ module Admin
       email
     ].freeze
 
+    ADMIN_PROFILE_USER_PARAMS = %i[name username].freeze
+    ADMIN_PROFILE_PROFILE_PARAMS = %i[summary location website_url].freeze
+
     EMAIL_ALLOWED_PARAMS = %i[
       email_subject
       email_body
@@ -125,6 +128,31 @@ module Admin
       else
         flash[:error] = I18n.t("views.admin.users.update_email.error")
       end
+      redirect_to admin_user_path(@user)
+    end
+
+    def update_profile
+      @user = User.find(params[:id])
+      previous_user_values = @user.slice(*ADMIN_PROFILE_USER_PARAMS)
+      previous_profile_values = (@user.profile || @user.build_profile).slice(*ADMIN_PROFILE_PROFILE_PARAMS)
+
+      update_result = Users::Update.call(@user,
+                                         user: admin_profile_user_params,
+                                         profile: admin_profile_params)
+
+      if update_result.success?
+        Note.create(
+          author_id: current_user.id,
+          noteable_id: @user.id,
+          noteable_type: "User",
+          reason: "admin_profile_update",
+          content: profile_update_note(previous_user_values, previous_profile_values),
+        )
+        flash[:success] = I18n.t("views.admin.users.edit_profile.success")
+      else
+        flash[:error] = update_result.errors_as_sentence
+      end
+
       redirect_to admin_user_path(@user)
     end
 
@@ -436,6 +464,41 @@ module Admin
       end
     end
 
+    def confirm_email
+      @user = User.find(params[:id])
+      if @user.confirm
+        Note.create(
+          author_id: current_user.id,
+          noteable_id: @user.id,
+          noteable_type: "User",
+          reason: "email_confirmed",
+          content: "Email manually confirmed by #{current_user.username}",
+        )
+        
+        respond_to do |format|
+          message = I18n.t("admin.users_controller.email_confirmed")
+
+          format.html do
+            flash[:success] = message
+            redirect_back(fallback_location: admin_user_path(params[:id]))
+          end
+
+          format.js { render json: { result: message }, content_type: "application/json" }
+        end
+      else
+        message = I18n.t("admin.users_controller.email_confirm_fail")
+
+        respond_to do |format|
+          format.html do
+            flash[:danger] = message
+            redirect_back(fallback_location: admin_user_path(params[:id]))
+          end
+
+          format.js { render json: { error: message }, content_type: "application/json", status: :service_unavailable }
+        end
+      end
+    end
+
     def unlock_access
       @user = User.find(params[:id])
       @user.unlock_access!
@@ -543,6 +606,42 @@ module Admin
         return user_params
       end
       credit_params
+    end
+
+    def admin_profile_user_params
+      params.require(:user).permit(ADMIN_PROFILE_USER_PARAMS)
+    end
+
+    def admin_profile_params
+      params.fetch(:profile, {}).permit(ADMIN_PROFILE_PROFILE_PARAMS)
+    end
+
+    def profile_update_note(previous_user_values, previous_profile_values)
+      changes = []
+      updated_user_values = @user.slice(*ADMIN_PROFILE_USER_PARAMS)
+      updated_profile_values = (@user.profile || @user.build_profile).slice(*ADMIN_PROFILE_PROFILE_PARAMS)
+
+      append_profile_change(changes, "name", previous_user_values["name"], updated_user_values["name"])
+      append_profile_change(changes, "username", previous_user_values["username"], updated_user_values["username"])
+      append_profile_change(changes, "summary", previous_profile_values["summary"], updated_profile_values["summary"])
+      append_profile_change(changes, "location", previous_profile_values["location"], updated_profile_values["location"])
+      append_profile_change(changes, "website_url", previous_profile_values["website_url"], updated_profile_values["website_url"])
+
+      if changes.empty?
+        "Admin #{current_user.username} submitted a profile update with no changes detected."
+      else
+        "Admin #{current_user.username} updated profile fields: #{changes.join('; ')}"
+      end
+    end
+
+    def append_profile_change(changes, label, previous_value, updated_value)
+      return if previous_value == updated_value
+
+      changes << "#{label}: #{format_profile_value(previous_value)} -> #{format_profile_value(updated_value)}"
+    end
+
+    def format_profile_value(value)
+      value.present? ? "'#{value}'" : "(blank)"
     end
 
     def set_current_tab(current_tab = "overview")

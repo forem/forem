@@ -346,12 +346,24 @@ fr:
           visit: Visit profile
           options:
             icon: Options
+            edit_profile: Modifier le profil
             export: Export data
             merge: Merge users
             unpublish: Unpublished all posts
             remove_social: Remove social accounts
             banish: Banish user
             delete: Delete user
+        edit_profile:
+          heading: Modifier le profil de %{user}
+          desc_html: Les changements faits ici sont immédiatement publics sur le profil de l'utilisateur.
+          notice: Soyez prudent. Ces mises à jour sont visibles publiquement et affectent le compte de l'utilisateur.
+          name: Nom
+          username: Nom d'utilisateur
+          summary: Résumé
+          location: Localisation
+          website_url: URL du site
+          submit: Enregistrer les modifications du profil
+          success: Profil mis à jour avec succès.
         reports:
           subtitle: Reports submitted by %{user} (%{num})
           for_html: For %{url}
@@ -459,3 +471,9 @@ fr:
         options:
           delete: Delete organization
           icon: Options
+        fully_trusted:
+          label: Organisation de confiance totale
+          description: Lorsqu'elle est activée, cette organisation peut ajouter des membres directement sans nécessiter de confirmation. Les membres recevront un e-mail de notification au lieu d'une invitation.
+          enable: Activer la confiance totale
+          disable: Désactiver la confiance totale
+          enabled_notice: Cette organisation est de confiance totale. Les membres peuvent être ajoutés directement sans confirmation.

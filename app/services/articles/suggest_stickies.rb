@@ -40,7 +40,7 @@ module Articles
     attr_accessor :article, :reaction_count_num, :comment_count_num
 
     def tag_articles
-      article_tags = article.cached_tag_list_array - ["discuss"]
+      article_tags = article.cached_tag_list.to_s.split(", ") - ["discuss"]
 
       scope = Article
         .where("public_reactions_count > ? OR comments_count > ?", reaction_count_num, comment_count_num)
@@ -68,7 +68,7 @@ module Articles
       scope.published.from_subforem
         .cached_tagged_with_any(tags)
         .unscope(:select)
-        .limited_column_select
+        .select(:id, :path, :title, :cached_tag_list, :cached_user, :organization_id, :user_id, :subforem_id) # Columns needed for _sticky_nav (includes cached_user for avatar)
         .where.not(id: article.id)
         .not_authored_by(article.user_id)
         .where("published_at > ?", 5.days.ago)

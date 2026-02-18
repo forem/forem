@@ -804,6 +804,29 @@ RSpec.describe User do
     end
   end
 
+  describe "#update_presence!" do
+    context "when last_presence_at is nil" do
+      it "updates last_presence_at to current time" do
+        user.update_column(:last_presence_at, nil)
+        expect { user.update_presence! }.to change(user, :last_presence_at)
+      end
+    end
+
+    context "when last_presence_at is more than 1 hour ago" do
+      it "updates last_presence_at to current time" do
+        user.update_column(:last_presence_at, 2.hours.ago)
+        expect { user.update_presence! }.to change(user, :last_presence_at)
+      end
+    end
+
+    context "when last_presence_at is less than 1 hour ago" do
+      it "does not update last_presence_at" do
+        user.update_column(:last_presence_at, 30.minutes.ago)
+        expect { user.update_presence! }.not_to change(user, :last_presence_at)
+      end
+    end
+  end
+
   describe "#receives_follower_email_notifications?" do
     it "returns false if user has no email" do
       user.assign_attributes(email: nil)
@@ -1013,6 +1036,40 @@ RSpec.describe User do
       it "does not call SocialImageWorker.perform_async" do
         user.save
         expect(Images::SocialImageWorker).not_to have_received(:perform_async)
+      end
+    end
+  end
+
+  describe "profile cache busting" do
+    it "enqueues a profile identity cache bust when name changes" do
+      sidekiq_assert_enqueued_with(job: Users::BustProfileIdentityCacheWorker, args: [user.id]) do
+        user.update!(name: "New Name")
+      end
+    end
+
+    it "enqueues a profile details cache bust when social handle changes" do
+      sidekiq_assert_enqueued_with(job: Users::BustProfileDetailsCacheWorker, args: [user.id]) do
+        user.update!(twitter_username: "new_twitter")
+      end
+    end
+
+    it "does not enqueue identity cache bust for unrelated changes" do
+      sidekiq_assert_no_enqueued_jobs(only: Users::BustProfileIdentityCacheWorker) do
+        user.update!(last_comment_at: Time.current)
+      end
+    end
+  end
+
+  describe "profile spam checks" do
+    it "enqueues a profile spam check when name contains trigger terms" do
+      sidekiq_assert_enqueued_with(job: Users::HandleProfileSpamWorker, args: [user.id]) do
+        user.update!(name: "Best Casino Deals")
+      end
+    end
+
+    it "does not enqueue a profile spam check when name changes without trigger terms" do
+      sidekiq_assert_no_enqueued_jobs(only: Users::HandleProfileSpamWorker) do
+        user.update!(name: "Helpful Developer")
       end
     end
   end

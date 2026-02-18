@@ -356,6 +356,7 @@ en:
           visit: Visit profile
           options:
             icon: Options
+            edit_profile: Edit profile
             update_email: Update User Email
             export: Export data
             merge: Merge users
@@ -363,6 +364,17 @@ en:
             remove_social: Remove social accounts
             banish: Banish user
             delete: Delete user
+        edit_profile:
+          heading: Edit %{user}'s profile
+          desc_html: Changes you make here are immediately public on the user's profile.
+          notice: Be careful. These updates are public-facing and affect the user's account.
+          name: Name
+          username: Username
+          summary: Summary
+          location: Location
+          website_url: Website URL
+          submit: Save profile changes
+          success: Profile updated successfully.
         reports:
           subtitle: Reports submitted by %{user} (%{num})
           for_html: For %{url}
@@ -472,3 +484,9 @@ en:
         options:
           delete: Delete organization
           icon: Options
+        fully_trusted:
+          label: Fully Trusted Organization
+          description: When enabled, this organization can add members directly without requiring confirmation. Members will receive a notification email instead of an invitation.
+          enable: Enable Fully Trusted
+          disable: Disable Fully Trusted
+          enabled_notice: This organization is fully trusted. Members can be added directly without confirmation.

@@ -430,4 +430,97 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
       expect(filtered).not_to include(subforem_first)
     end
   end
+
+  context "when considering paused promotional billboards" do
+    let(:paused_organization) { create(:organization) }
+    let(:active_organization) { create(:organization) }
+    # Use let! to ensure billboards are created before filter_billboards is called
+    # This prevents issues with ActiveRecord::Relation caching results
+    let!(:no_org_billboard) { create_billboard organization: nil }
+    let!(:paused_org_billboard) { create_billboard organization: paused_organization }
+    let!(:active_org_billboard) { create_billboard organization: active_organization }
+
+    let(:memory_store) { ActiveSupport::Cache::MemoryStore.new }
+
+    before do
+      # Use memory store for tests to ensure cache operations work
+      # Store in a variable so the same instance is returned for all calls
+      allow(Rails).to receive(:cache).and_return(memory_store)
+      memory_store.clear
+    end
+
+    context "when no organizations are paused" do
+      before do
+        # Ensure cache is empty or has no paused orgs
+        Rails.cache.write(
+          Organizations::TrackPromotionalBillboardImpressionsWorker::CACHE_KEY,
+          [],
+          expires_in: 15.minutes
+        )
+      end
+
+      it "includes all billboards regardless of organization" do
+        filtered = filter_billboards
+        expect(filtered).to include(no_org_billboard, paused_org_billboard, active_org_billboard)
+      end
+    end
+
+    context "when an organization is paused" do
+      before do
+        # Set paused organization in cache
+        Rails.cache.write(
+          Organizations::TrackPromotionalBillboardImpressionsWorker::CACHE_KEY,
+          [paused_organization.id],
+          expires_in: 15.minutes
+        )
+      end
+
+      it "excludes billboards from paused organizations" do
+        filtered = filter_billboards
+        expect(filtered).not_to include(paused_org_billboard)
+        expect(filtered).to include(no_org_billboard, active_org_billboard)
+      end
+
+      it "includes billboards from non-paused organizations" do
+        filtered = filter_billboards
+        expect(filtered).to include(active_org_billboard)
+      end
+
+      it "includes billboards with no organization" do
+        filtered = filter_billboards
+        expect(filtered).to include(no_org_billboard)
+      end
+    end
+
+    context "when multiple organizations are paused" do
+      let(:another_paused_organization) { create(:organization) }
+      let(:another_paused_billboard) { create_billboard organization: another_paused_organization }
+
+      before do
+        # Set multiple paused organizations in cache
+        Rails.cache.write(
+          Organizations::TrackPromotionalBillboardImpressionsWorker::CACHE_KEY,
+          [paused_organization.id, another_paused_organization.id],
+          expires_in: 15.minutes
+        )
+      end
+
+      it "excludes billboards from all paused organizations" do
+        filtered = filter_billboards
+        expect(filtered).not_to include(paused_org_billboard, another_paused_billboard)
+        expect(filtered).to include(no_org_billboard, active_org_billboard)
+      end
+    end
+
+    context "when cache is empty or nil" do
+      before do
+        Rails.cache.delete(Organizations::TrackPromotionalBillboardImpressionsWorker::CACHE_KEY)
+      end
+
+      it "includes all billboards" do
+        filtered = filter_billboards
+        expect(filtered).to include(no_org_billboard, paused_org_billboard, active_org_billboard)
+      end
+    end
+  end
 end

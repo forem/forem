@@ -37,6 +37,20 @@ pt:
         email: E-mail
         username: Nome de usuário
         name: Nome
+        profile:
+          options:
+            edit_profile: Editar perfil
+          edit_profile:
+            heading: Editar perfil de %{user}
+            desc_html: As mudanças feitas aqui ficam imediatamente públicas no perfil do usuário.
+            notice: Tenha cuidado. Essas atualizações são públicas e afetam a conta do usuário.
+            name: Nome
+            username: Nome de usuário
+            summary: Resumo
+            location: Localização
+            website_url: URL do site
+            submit: Salvar alterações do perfil
+            success: Perfil atualizado com sucesso.
         bio: Biografia
         location: Localização
         website: Site
@@ -329,3 +343,28 @@ pt:
         host: Host
         custom_element: Elemento personalizado
         unknown: Desconhecido
+      organizations:
+        profile:
+          id: ID %{organizationid}
+          since_html: Organização desde %{time}
+          email: E-mail
+          github: GitHub
+          twitter: Twitter
+          visit: Visitar organização
+          total_members: "%{count} membros"
+        delete:
+          heading: Excluir %{organization}
+          onsubmit: Tem certeza? Esta ação é irreversível.
+          desc2: "Nota: Excluir a organização, %{organization}, dissociará os membros e artigos existentes da organização, mas não os excluirá."
+          role_notice: Apenas Super Admins podem excluir organizações.
+          credits_notice: Você não pode excluir uma organização que tenha créditos associados.
+          submit: Excluir organização agora
+        options:
+          delete: Excluir organização
+          icon: Opções
+        fully_trusted:
+          label: Organização Totalmente Confiável
+          description: Quando habilitado, esta organização pode adicionar membros diretamente sem exigir confirmação. Os membros receberão um e-mail de notificação em vez de um convite.
+          enable: Habilitar Totalmente Confiável
+          disable: Desabilitar Totalmente Confiável
+          enabled_notice: Esta organização é totalmente confiável. Os membros podem ser adicionados diretamente sem confirmação.

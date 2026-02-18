@@ -7,11 +7,11 @@ class ScheduledAutomation < ApplicationRecord
 
   # Validations
   validates :frequency, presence: true, inclusion: { in: %w[daily weekly hourly custom_interval] }
-  validates :action, presence: true, inclusion: { in: %w[create_draft publish_article] }
+  validates :action, presence: true, inclusion: { in: %w[create_draft publish_article award_first_org_post_badge award_warm_welcome_badge award_article_content_badge] }
   validates :service_name, presence: true
   validates :state, presence: true, inclusion: { in: %w[active running completed failed] }
   validate :validate_frequency_config
-  validate :validate_user_is_community_bot
+  validate :validate_user_is_community_bot_or_admin
 
   # Scopes
   scope :enabled, -> { where(enabled: true) }
@@ -194,11 +194,11 @@ class ScheduledAutomation < ApplicationRecord
     end
   end
 
-  def validate_user_is_community_bot
+  def validate_user_is_community_bot_or_admin
     return unless user
 
-    unless user.community_bot?
-      errors.add(:user, "must be a community bot")
+    unless user.community_bot? || user.any_admin?
+      errors.add(:user, "must be a community bot or an admin")
     end
   end
 

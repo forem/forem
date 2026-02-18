@@ -6,8 +6,8 @@ import {
 } from './billboardAfterRenderActions';
 
 export async function getBillboard() {
-  const placeholderElements = document.getElementsByClassName(
-    'js-billboard-container',
+  const placeholderElements = document.querySelectorAll(
+    '.js-bb-c, .js-billboard-container, .new-bb-container, .sidebar-bb, .below-post-bb, .feed-bb-c'
   );
 
   const promises = [...placeholderElements].map(generateBillboard);
@@ -40,7 +40,7 @@ async function generateBillboard(element) {
       }
     });
   }
-  
+
   // Attach a MutationObserver to a specific billboard element
   function observeThisBillboard(element) {
     // Avoid attaching multiple observers to the same element
@@ -74,7 +74,7 @@ async function generateBillboard(element) {
       if (
         asyncUrl?.includes('post_fixed_bottom') &&
         (currentParams?.includes('context=digest') || isInternalNav || isNativeUserAgent)
-      ) {     
+      ) {
         return;
       }
 
@@ -84,7 +84,7 @@ async function generateBillboard(element) {
       generatedElement.innerHTML = htmlContent;
       element.innerHTML = '';
       element.appendChild(generatedElement);
-      
+
       // Set article ID from article container if present
       const articleContainer = document.getElementById('article-show-container');
       if (articleContainer && articleContainer.dataset.articleId) {
@@ -93,7 +93,7 @@ async function generateBillboard(element) {
           billboardElement.dataset.articleId = articleContainer.dataset.articleId;
         }
       }
-      
+
       element.querySelectorAll('img').forEach((img) => {
         img.onerror = function () {
           this.style.display = 'none';
@@ -137,7 +137,7 @@ async function generateBillboard(element) {
       // *** Beginning of where we guard against disallowed attributes
       // Initially attach observers to all existing billboard elements
       document.querySelectorAll('.js-billboard').forEach(observeThisBillboard);
-      
+
       // To handle new billboard elements that are added dynamically,
       // observe the document body for added nodes.
       const bodyObserver = new MutationObserver(mutations => {
@@ -156,7 +156,7 @@ async function generateBillboard(element) {
           }
         });
       });
-      
+
       bodyObserver.observe(document.body, { childList: true, subtree: true });
 
       // *** End of guarding against disallowed attributes

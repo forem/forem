@@ -79,6 +79,9 @@ pt:
       credit_updated: Créditos atualizados com sucesso
       deletion_scheduled: 'Exclusão da organização "%{organization_name}" está agendada.'
       error: 'Sua organização, %{organization_name}, não pôde ser excluída: %{error}.'
+      fully_trusted_enabled: O status totalmente confiável foi habilitado para esta organização.
+      fully_trusted_disabled: O status totalmente confiável foi desabilitado para esta organização.
+      baseline_score_updated: A pontuação base foi atualizada!
     pages_controller:
       updated: Página foi atualizada com sucesso.
       created: Página foi criada com sucesso.
@@ -92,6 +95,11 @@ pt:
       terms_of_use:
         title: Termos de Uso
         description: Uma página que descreve os termos de uso para a aplicação
+    page_templates_controller:
+      created: Modelo de página criado com sucesso!
+      updated: Modelo de página atualizado com sucesso!
+      deleted: Modelo de página excluído com sucesso!
+      cannot_delete_with_pages: Não é possível excluir o modelo enquanto ele tiver páginas associadas. Remova ou reatribua essas páginas primeiro.
     podcasts_controller:
       new_owner_added: Novo proprietário adicionado!
       no_such_user: Usuário não encontrado
@@ -128,6 +136,11 @@ pt:
       created: '%{tag_name} foi criada!'
       updated: 'Tag %{tag_name} atualizada com sucesso!'
       update_fail: 'A atualização da tag falhou: %{errors}'
+    surveys_controller:
+      created: A pesquisa foi criada!
+      updated: A pesquisa foi atualizada!
+      deleted: A pesquisa foi excluída!
+      wrong: Algo deu errado com a operação da pesquisa.
     tools_controller:
       link_busted: '%{link} foi quebrado com sucesso'
       user_busted: 'Usuário #%{user} foi quebrado com sucesso'
@@ -153,6 +166,8 @@ pt:
       credits_added: Créditos foram adicionados!
       credits_removed: Créditos foram removidos.
       manual_verification_sent: E-mail verificado manualmente!
+      email_confirmed: E-mail confirmado!
+      email_confirm_fail: A confirmação do e-mail falhou.
     welcome_controller:
       thread_content: |
         ---

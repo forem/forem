@@ -11,6 +11,46 @@ RSpec.describe SurveysController, type: :controller do
     create(:poll_option, poll: poll)
   end
 
+  describe "GET #show" do
+    render_views
+
+    it "finds survey by slug" do
+      get :show, params: { slug: survey.slug }
+      expect(response).to have_http_status(:ok)
+      expect(assigns(:survey)).to eq(survey)
+    end
+
+    it "redirects when finding by old_slug" do
+      old_slug = survey.slug
+      survey.update(slug: "new-slug")
+
+      get :show, params: { slug: old_slug }
+      expect(response).to have_http_status(:moved_permanently)
+      expect(response).to redirect_to(survey_path(slug: "new-slug"))
+    end
+
+    it "redirects when finding by old_old_slug" do
+      old_old_slug = survey.slug
+      survey.update(slug: "old-slug")
+      survey.update(slug: "new-slug")
+
+      get :show, params: { slug: old_old_slug }
+      expect(response).to have_http_status(:moved_permanently)
+      expect(response).to redirect_to(survey_path(slug: "new-slug"))
+    end
+
+    it "returns 404 for inactive survey" do
+      survey.update(active: false)
+      get :show, params: { slug: survey.slug }
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "returns 404 for unknown slug" do
+      get :show, params: { slug: "unknown" }
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
   describe "GET #votes" do
     context "when user is not authenticated" do
       it "redirects to sign in" do

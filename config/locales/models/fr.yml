@@ -45,6 +45,7 @@ fr:
     broadcast:
       single_active: Vous ne pouvez avoir qu'une seule diffusion d'annonce active
     comment:
+      cannot_be_empty: ne peut pas être vide. Veuillez saisir du texte avant de soumettre.
       deleted: '[supprimé]'
       has_been_deleted: '%{type} a été supprimé'
       hidden: "[caché par l'auteur du message]"

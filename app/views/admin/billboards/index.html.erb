@@ -10,10 +10,9 @@
     <%= form_tag(admin_billboards_path, method: "get") do %>
      <%= text_field_tag(:search, params[:search], aria: { label: "Search" }, class: "crayons-header--search-input crayons-textfield", placeholder: "Search", autocomplete: "off") %>
     <% end %>
-    <div class="ml-auto">
-      <div class="justify-end">
-        <%= link_to "Make A New Billboard", new_admin_billboard_path, class: "crayons-btn" %>
-      </div>
+    <div class="ml-auto flex gap-2">
+      <%= link_to "Placement Area Configs", admin_billboard_placement_area_configs_path, class: "crayons-btn crayons-btn--secondary" %>
+      <%= link_to "Make A New Billboard", new_admin_billboard_path, class: "crayons-btn" %>
     </div>
   </nav>
 
