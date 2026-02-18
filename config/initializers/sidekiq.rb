@@ -47,7 +47,9 @@ Sidekiq.configure_server do |config|
   config.redis = { url: sidekiq_url }
 
   config.server_middleware do |chain|
-    chain.add Sidekiq::Throttled::Middleware
+    # sidekiq-throttled wires itself up when `require "sidekiq/throttled"` is loaded:
+    # it registers `Sidekiq::Throttled::Middlewares::Server` via its own
+    # `Sidekiq.configure_server` block (see the gem's `lib/sidekiq/throttled.rb`).
     chain.add Sidekiq::TransactionSafeRescue
     chain.add Sidekiq::HoneycombMiddleware
     chain.add SidekiqUniqueJobs::Middleware::Client
@@ -75,7 +77,8 @@ Sidekiq.configure_server do |config|
     end
   end
 
-  Sidekiq::Throttled.setup!
+  # NOTE: sidekiq-throttled 1.5.x does not have `Sidekiq::Throttled.setup!`.
+  # Requiring it is enough for middleware + patches to be installed.
 end
 
 Sidekiq.configure_client do |config|
