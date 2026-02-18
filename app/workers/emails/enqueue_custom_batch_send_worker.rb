@@ -5,124 +5,111 @@ module Emails
 
     sidekiq_options queue: :medium_priority, retry: 15
 
-    BATCH_SIZE = Rails.env.production? ? 500 : 10
+    BATCH_SIZE = Rails.env.production? ? 1000 : 10 # Increased batch size is safe with pluck
 
-    def perform(email_id)
-      # 1) Remember the old ENV timeout (milliseconds)
-      original_timeout = ENV.fetch("STATEMENT_TIMEOUT", 10_000).to_i
+    def perform(email_id, min_id = nil, max_id = nil)
+      # 1) Define timeout locally (do not touch ENV)
+      custom_timeout = 10_000 
 
-      # 2) Check out exactly one connection for the entire block
-      # Use read-only database if available, otherwise fall back to main database
+      # 2) Open the connection block
       ReadOnlyDatabaseService.with_connection do |conn|
-        # 3) Ensure subsequent PG SETs inherit that same original timeout
-        #    (in case some middleware or initializer reads ENV["STATEMENT_TIMEOUT"])
-        ENV["STATEMENT_TIMEOUT"] = original_timeout.to_s
-        conn.execute("SET statement_timeout TO #{original_timeout}")
+        
+        # SAFE: Set timeout only on this current connection thread
+        conn.execute("SET statement_timeout TO #{custom_timeout}")
 
         email = Email.find_by(id: email_id)
         return unless email
 
-        user_scope = if email.user_query.present?
-                       # Use custom user query for targeting
-                       begin
-                         # Extract variables from email if available
-                         variables = extract_email_variables(email)
-                         executor = UserQueryExecutor.new(email.user_query, variables: variables)
-                         # Apply the same filtering as other paths to ensure proper notification settings and roles
-                         executor.execute
-                           .registered
-                           .joins(:notification_setting)
-                           .without_role(:suspended)
-                           .without_role(:spam)
-                           .where(notification_setting: { email_newsletter: true })
-                           .where.not(email: "")
-                       rescue StandardError => e
-                         Rails.logger.error("UserQuery execution failed for email #{email.id}: #{e.message}")
-                         User.none
-                       end
-                     elsif email.audience_segment
-                       email.audience_segment.users
-                         .registered
-                         .joins(:notification_setting)
-                         .without_role(:suspended)
-                         .without_role(:spam)
-                         .where(notification_setting: { email_newsletter: true })
-                         .where.not(email: "")
-                     else
-                       User.registered
-                         .joins(:notification_setting)
-                         .without_role(:suspended)
-                         .without_role(:spam)
-                         .where(notification_setting: { email_newsletter: true })
-                         .where.not(email: "")
-                     end
-
-        # 4) Now open a transaction. Everything inside here uses "SET LOCAL statement_timeout = 0"
-        conn.transaction do
-          # This sets statement_timeout=0 for *this* transaction only.
-          # No matter how many queries ActiveRecord fires inside this block,
-          # they all see infinite timeout.
-          conn.execute("SET LOCAL statement_timeout TO 0")
-
-          # 5) Run your batches inside the same transaction, so every SELECT is "no timeout"
-          batch_count = 0
-          total_users = 0
-
-          user_scope.find_in_batches(batch_size: BATCH_SIZE) do |users_batch|
-            batch_count += 1
-
-            # Skip empty batches
-            next if users_batch.empty?
-
-            # Validate we have valid user IDs
-            user_ids = users_batch.map(&:id).compact
-            next if user_ids.empty?
-
-            total_users += user_ids.size
-
-            Rails.logger.info("Processing email batch #{batch_count} for email #{email.id}: #{user_ids.size} users (first ID: #{user_ids.first})")
-
-            begin
-              Emails::BatchCustomSendWorker.perform_async(
-                user_ids,
-                email.subject,
-                email.body,
-                email.type_of,
-                email.id,
-              )
-            rescue StandardError => e
-              Rails.logger.error("Failed to enqueue batch #{batch_count} for email #{email.id}: #{e.message}")
-              # Continue processing other batches even if one fails
-              next
-            end
-          end
-
-          Rails.logger.info("Completed email processing for email #{email.id}: #{batch_count} batches, #{total_users} total users")
+        if email.user_query.present?
+          process_custom_query(email, min_id, max_id)
+        else
+          process_standard_scope(email, min_id, max_id)
         end
-      # As soon as this transaction block ends, Postgres automatically reverts
-      # statement_timeout back to the previous session value (original_timeout).
-      ensure
-        # 6) Just to be safe, set ENV back and explicitly restore on the connection
-        ENV["STATEMENT_TIMEOUT"] = original_timeout.to_s
-        conn.execute("SET statement_timeout TO #{ENV.fetch('STATEMENT_TIMEOUT', 10_000)}")
-      end
-    end
-  end
-
-  private
-
-  def extract_email_variables(email)
-    variables = {}
-
-    # Extract variables from email's variables field if it exists
-    if email.respond_to?(:variables) && email.variables.present?
-      begin
-        variables.merge!(JSON.parse(email.variables))
-      rescue JSON::ParserError
-        Rails.logger.warn("Invalid variables JSON in email #{email.id}")
+        
+        # Connection is returned to pool automatically; 
+        # Ideally, the pool creates new connections or resets them, 
+        # but resetting the timeout here is good practice if connections are reused immediately.
+        conn.execute("RESET statement_timeout") 
       end
     end
 
-    variables
+    private
+
+    def process_custom_query(email, min_id = nil, max_id = nil)
+      variables = extract_email_variables(email)
+      executor = UserQueryExecutor.new(email.user_query, variables: variables)
+      
+      executor.each_id_batch(batch_size: 1000) do |id_batch|
+        # Optional: Apply ID range filtering in Ruby for custom query results
+        filtered_ids = id_batch
+        filtered_ids = filtered_ids.select { |id| id >= min_id.to_i } if min_id
+        filtered_ids = filtered_ids.select { |id| id <= max_id.to_i } if max_id
+
+        next if filtered_ids.empty?
+
+        # Load ONLY ids, don't instantiate User objects if possible
+        filtered_user_ids = User.where(id: filtered_ids)
+                                .registered
+                                .joins(:notification_setting)
+                                .without_role(:suspended)
+                                .without_role(:spam)
+                                .where(notification_setting: { email_newsletter: true })
+                                .where.not(email: "")
+                                .pluck(:id)
+
+        enqueue_batch(email, filtered_user_ids, "Custom Query")
+      end
+    end
+
+    def process_standard_scope(email, min_id = nil, max_id = nil)
+      # Build the relation
+      base_scope = User.registered
+                       .joins(:notification_setting)
+                       .without_role(:suspended)
+                       .without_role(:spam)
+                       .where(notification_setting: { email_newsletter: true })
+                       .where.not(email: "")
+
+      # Apply ID range filtering at the DB level for standard scopes
+      base_scope = base_scope.where("users.id >= ?", min_id) if min_id
+      base_scope = base_scope.where("users.id <= ?", max_id) if max_id
+
+      user_scope = if email.audience_segment
+                     base_scope.merge(email.audience_segment.users)
+                   else
+                     base_scope
+                   end
+
+      # OPTIMIZED: Use in_batches + pluck to avoid loading User models
+      user_scope.in_batches(of: BATCH_SIZE) do |relation|
+        # relation is an ActiveRecord::Relation for the batch (e.g. "WHERE id BETWEEN 1 and 1000")
+        # .pluck(:id) executes "SELECT id FROM ..." directly
+        user_ids = relation.pluck(:id)
+        
+        enqueue_batch(email, user_ids, "Segment/Default")
+      end
+    end
+
+    def enqueue_batch(email, user_ids, source_label)
+      return if user_ids.empty?
+
+      Rails.logger.info("Processing #{source_label} batch for email #{email.id}: #{user_ids.size} users")
+
+      Emails::BatchCustomSendWorker.perform_async(
+        user_ids,
+        email.subject,
+        email.body,
+        email.type_of,
+        email.id,
+      )
+    end
+
+    def extract_email_variables(email)
+      return {} unless email.respond_to?(:variables) && email.variables.present?
+      JSON.parse(email.variables)
+    rescue JSON::ParserError
+      Rails.logger.warn("Invalid variables JSON in email #{email.id}")
+      {}
+    end
   end
 end
