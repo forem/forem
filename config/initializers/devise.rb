@@ -44,7 +44,7 @@ APPLE_OMNIAUTH_SETUP = lambda do |env|
 end
 
 MLH_OMNIAUTH_SETUP = lambda do |env|
-  env["omniauth.strategy"].options[:scope] = "email"
+  env["omniauth.strategy"].options[:scope] = "user:read:email user:read:phone user:read:profile user:read:demographics public offline_access mlh:read:user"
   env["omniauth.strategy"].options[:client_id] = Settings::Authentication.mlh_key
   env["omniauth.strategy"].options[:client_secret] = Settings::Authentication.mlh_secret
   env["omniauth.strategy"].options[:provider_ignores_state] = true
