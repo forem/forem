@@ -42,6 +42,9 @@ module Feeds
 
     class ForUser
       include Sidekiq::Job
+      include Sidekiq::Throttled::Job
+      sidekiq_throttle(concurrency: { limit: 8 })
+      sidekiq_options queue: :low_priority, lock: :until_and_while_executing
 
       def perform(user_ids, earlier_than)
         users_scope = User.where(id: user_ids)
