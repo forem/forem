@@ -469,4 +469,5 @@ class ApplicationController < ActionController::Base
     # Clear RequestStore in development/test to avoid lingering. Not important in prod.
     RequestStore.clear! unless Rails.env.production?
   end
+
 end

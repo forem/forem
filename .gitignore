@@ -128,3 +128,7 @@ doc/
 /app/assets/builds/*
 !/app/assets/builds/.keep
 .qodo
+
+# Do not commit local database config or service account secrets
+config/database.yml
+firebase-service-account.json*
