@@ -74,6 +74,8 @@ Sidekiq.configure_server do |config|
       Rails.logger.warn("[dev] Failed to clear Sidekiq queues: #{e.message}")
     end
   end
+
+  Sidekiq::Throttled.setup!
 end
 
 Sidekiq.configure_client do |config|

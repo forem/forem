@@ -182,3 +182,5 @@ group :test do
 end
 
 gem "omniauth-mlh", "~> 4.1"
+
+gem "sidekiq-throttled", "~> 1.5"
