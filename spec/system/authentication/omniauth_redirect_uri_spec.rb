@@ -16,13 +16,28 @@ RSpec.describe "Omniauth redirect_uri" do
     }x
   end
 
+  def mlh_redirect_regex
+    # MLH does not include callback_url parameter - it uses the base auth path
+    # The URL may have other query params like state, but not callback_url
+    %r{
+      /users/auth/mlh
+      (?!.*callback_url)
+    }x
+  end
+
   it "relies on Settings::General.app_domain to generate correct callbacks_url" do
     allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
     visit sign_up_path
     Authentication::Providers.available.each do |provider_name|
       provider_auth_button = find("button.brand-#{provider_name}")
       provider_auth_url = provider_auth_button.find(:xpath, "..")["action"]
-      expect(provider_auth_url).to match(provider_redirect_regex(provider_name))
+      
+      if provider_name == :mlh
+        # MLH does not include callback_url parameter
+        expect(provider_auth_url).to match(mlh_redirect_regex)
+      else
+        expect(provider_auth_url).to match(provider_redirect_regex(provider_name))
+      end
     end
 
     Settings::General.app_domain = "test.forem.com"
@@ -32,7 +47,13 @@ RSpec.describe "Omniauth redirect_uri" do
     Authentication::Providers.available.each do |provider_name|
       provider_auth_button = find("button.brand-#{provider_name}")
       provider_auth_url = provider_auth_button.find(:xpath, "..")["action"]
-      expect(provider_auth_url).to match(provider_redirect_regex(provider_name))
+      
+      if provider_name == :mlh
+        # MLH does not include callback_url parameter
+        expect(provider_auth_url).to match(mlh_redirect_regex)
+      else
+        expect(provider_auth_url).to match(provider_redirect_regex(provider_name))
+      end
     end
   end
 end
