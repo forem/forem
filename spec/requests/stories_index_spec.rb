@@ -428,8 +428,9 @@ RSpec.describe "StoriesIndex" do
     end
 
     it "returns 404 for a username that was never used" do
-      get "/nonexistent_user_#{rand(100_000)}"
-      expect(response).to have_http_status(:not_found)
+      expect do
+        get "/nonexistent_user_#{rand(100_000)}"
+      end.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 end
