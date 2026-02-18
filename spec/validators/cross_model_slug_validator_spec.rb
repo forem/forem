@@ -113,4 +113,13 @@ RSpec.describe CrossModelSlugValidator do
       expect(page).to be_valid
     end
   end
+
+  context "when name exists in UsersOldUsername table" do
+    let(:user) { create(:user) }
+    let(:name) { "previously_used_name" }
+
+    before { create(:users_old_username, user: user, username: "previously_used_name") }
+
+    it { is_expected.not_to be_valid }
+  end
 end

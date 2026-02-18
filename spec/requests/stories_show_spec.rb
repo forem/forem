@@ -174,6 +174,21 @@ RSpec.describe "StoriesShow" do
       expect(response).to have_http_status(:moved_permanently)
     end
 
+    it "redirects article via users_old_usernames table when old_username columns are exhausted" do
+      first_username = user.username
+      # Record the first username in the history table
+      create(:users_old_username, user: user, username: first_username)
+      # Simulate three username changes (old_username/old_old_username no longer hold first_username)
+      user.update_columns(
+        username: "final_name_#{rand(10_000)}",
+        old_username: "middle_name_#{rand(10_000)}",
+        old_old_username: "second_name_#{rand(10_000)}",
+      )
+      get "/#{first_username}/#{article.slug}"
+      expect(response.body).to redirect_to("/#{user.reload.username}/#{article.slug}")
+      expect(response).to have_http_status(:moved_permanently)
+    end
+
     it "renders canonical url when exists" do
       article = create(:article, with_canonical_url: true)
       get article.path

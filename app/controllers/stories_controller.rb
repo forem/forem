@@ -81,13 +81,18 @@ class StoriesController < ApplicationController
 
   def redirect_to_changed_username_profile
     potential_username = params[:username].tr("@", "")
-    user_or_org = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username) ||
+    user_or_org = find_user_by_old_username(potential_username) ||
       Organization.find_by("old_slug = ? OR old_old_slug = ?", potential_username, potential_username)
     if user_or_org.present? && !user_or_org.decorate.fully_banished?
       redirect_permanently_to(user_or_org.path)
     else
       not_found
     end
+  end
+
+  def find_user_by_old_username(username)
+    UsersOldUsername.find_by(username: username)&.user ||
+      User.find_by("old_username = ? OR old_old_username = ?", username, username)
   end
 
   def handle_possible_redirect
@@ -97,7 +102,7 @@ class StoriesController < ApplicationController
     end
 
     potential_username = params[:username].tr("@", "").downcase
-    @user = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username)
+    @user = find_user_by_old_username(potential_username)
     if @user&.articles&.find_by(slug: params[:slug])
       redirect_permanently_to(Addressable::URI.parse("/#{@user.username}/#{params[:slug]}").path)
       return
