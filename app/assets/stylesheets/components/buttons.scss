@@ -28,6 +28,10 @@
   --brand-google_oauth2-bg: #1da1f2;
   --brand-google_oauth2-color: #fff;
   --brand-google_oauth2-bg-hover: #0096f2;
+
+  --brand-mlh-bg: #F04037;
+  --brand-mlh-color: #fff;
+  --brand-mlh-bg-hover: #D01007;
 }
 
 // Basic styling
@@ -43,8 +47,7 @@
 
   position: relative;
   display: inline-block;
-  padding: calc(var(--vertical-padding) - var(--border-width))
-    calc(var(--horizontal-padding) - var(--border-width));
+  padding: calc(var(--vertical-padding) - var(--border-width)) calc(var(--horizontal-padding) - var(--border-width));
   border-radius: var(--radius);
   font-family: inherit;
   font-size: var(--font-size);
@@ -140,9 +143,10 @@
 
   // This makes sure icons inside buttons don't cause problems with click handlers
   // See: https://css-tricks.com/slightly-careful-sub-elements-clickable-things/
-  & > * {
+  &>* {
     pointer-events: none;
-    + input {
+
+    +input {
       pointer-events: revert;
     }
   }
@@ -329,12 +333,24 @@
   --color-inverted-hover: var(--brand-google_oauth2-color);
 }
 
+.crayons-btn--brand-mlh {
+  --bg: var(--brand-mlh-bg);
+  --bg-hover: var(--brand-mlh-bg-hover);
+  --color: var(--brand-mlh-color);
+  --color-hover: var(--brand-mlh-color);
+  --bg-inverted: var(--brand-mlh-bg);
+  --bg-inverted-hover: var(--brand-mlh-bg-hover);
+  --color-inverted: var(--brand-mlh-color);
+  --color-inverted-hover: var(--brand-mlh-color);
+}
+
 // Icon alone
 .crayons-btn--icon,
 .crayons-btn--icon-rounded {
   --horizontal-padding: var(--su-2);
   padding-left: calc(var(--horizontal-padding) - var(--border-width));
   padding-right: calc(var(--horizontal-padding) - var(--border-width));
+
   &.crayons-btn--s {
     --horizontal-padding: var(--su-1);
   }
@@ -392,7 +408,7 @@
   .crayons-btn {
     border-radius: 0;
 
-    + .crayons-btn:not(.crayons-btn--outlined) {
+    +.crayons-btn:not(.crayons-btn--outlined) {
       box-shadow: var(--shadow), inset 1px 0 0 rgba(0, 0, 0, 0.1);
       margin-left: -1px;
 
@@ -401,7 +417,7 @@
       }
     }
 
-    + .crayons-btn--outlined {
+    +.crayons-btn--outlined {
       margin-left: calc(-1 * var(--border-width));
     }
 
@@ -464,9 +480,10 @@
 
   // This makes sure icons inside buttons don't cause problems with click handlers
   // See: https://css-tricks.com/slightly-careful-sub-elements-clickable-things/
-  & > * {
+  &>* {
     pointer-events: none;
-    + input {
+
+    +input {
       pointer-events: revert;
     }
   }

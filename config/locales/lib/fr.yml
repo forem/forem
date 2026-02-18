@@ -40,6 +40,10 @@ fr:
           new_user_status:
             description: What status do you want to apply to new users?
             placeholder: Good standing
+          mlh_key:
+            description: The "Application ID" portion of the MyMLH applications portal
+          mlh_secret:
+            description: The "Secret" portion of the MyMLH applications portal
           providers:
             description: How can users sign in?
           recaptcha_secret:

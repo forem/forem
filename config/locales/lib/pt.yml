@@ -40,6 +40,10 @@ pt:
           new_user_status:
             description: Que status você quer aplicar aos novos usuários?
             placeholder: Boa reputação
+          mlh_key:
+            description: The "Application ID" portion of the MyMLH applications portal
+          mlh_secret:
+            description: The "Secret" portion of the MyMLH applications portal
           providers:
             description: Como os usuários podem fazer login?
           recaptcha_secret:

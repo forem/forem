@@ -184,6 +184,32 @@ module OmniauthHelpers
     },
   ).freeze
 
+  OMNIAUTH_PAYLOAD_MLH = OmniAuth::AuthHash::InfoHash.new(
+    {
+      provider: "mlh",
+      uid: SecureRandom.hex,
+      info: {
+        email: "mlh@example.com",
+        name: "MLH User",
+        nickname: "mlhuser",
+        image: "https://dummyimage.com/400x400.jpg",
+      },
+      credentials: {
+        token: SecureRandom.hex,
+        refresh_token: SecureRandom.hex,
+        expires_at: 1_589_475_606,
+        expires: true
+      },
+      extra: {
+        raw_info: {
+          email: "mlh@example.com",
+          id: "12345",
+          name: "MLH User"
+        }
+      }
+    },
+  ).freeze
+
   def omniauth_setup_invalid_credentials(provider)
     OmniAuth.config.mock_auth[provider] = :invalid_credentials
   end
@@ -282,5 +308,9 @@ module OmniauthHelpers
         extra: extra,
       ),
     )
+  end
+
+  def omniauth_mock_mlh_payload
+    OmniAuth.config.mock_auth[:mlh] = OMNIAUTH_PAYLOAD_MLH.dup
   end
 end
