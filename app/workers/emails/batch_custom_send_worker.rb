@@ -3,7 +3,7 @@ module Emails
     include Sidekiq::Job
     include Sidekiq::Throttled::Job
 
-    sidekiq_options queue: :low_priority
+    sidekiq_options queue: :low_priority, lock: :until_and_while_executing
     sidekiq_throttle(concurrency: { limit: 14 })
 
     def perform(user_ids, subject, content, type_of, email_id)

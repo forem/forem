@@ -3,7 +3,7 @@ module Emails
   class EnqueueCustomBatchSendWorker
     include Sidekiq::Job
 
-    sidekiq_options queue: :medium_priority, retry: 15
+    sidekiq_options queue: :medium_priority, retry: 15, lock: :until_and_while_executing
 
     BATCH_SIZE = Rails.env.production? ? 1000 : 10 # Increased batch size is safe with pluck
 
