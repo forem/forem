@@ -43,21 +43,45 @@ APPLE_OMNIAUTH_SETUP = lambda do |env|
   env["omniauth.strategy"].options[:team_id] = Settings::Authentication.apple_team_id
 end
 
+# Module to override callback_url and authorize_params for MLH strategy
+# This ensures redirect_uri never includes query parameters, which MLH requires
+module OmniAuth
+  module Strategies
+    module MlhCallbackUrlOverride
+      # Override callback_url to ensure it never includes query parameters
+      # MLH requires the redirect_uri to match exactly what's registered
+      def callback_url
+        # Return the base callback URL without any query parameters
+        callback_path = "/users/auth/mlh/callback"
+        "#{full_host}#{script_name}#{callback_path}"
+      end
+
+      # Override authorize_params to ensure redirect_uri is set correctly
+      # This prevents OmniAuth from appending query parameters to redirect_uri
+      def authorize_params
+        params = super
+        # Force redirect_uri to be the base callback URL without any query parameters
+        params[:redirect_uri] = callback_url
+        params
+      end
+    end
+  end
+end
+
 MLH_OMNIAUTH_SETUP = lambda do |env|
   # Prepend the callback URL override module to ensure redirect_uri never includes query parameters
   # This must be done here because the omniauth-mlh gem loads the strategy class at this point
-  unless env["omniauth.strategy"].class.included_modules.include?(OmniAuth::Strategies::MlhCallbackUrlOverride)
-    env["omniauth.strategy"].class.prepend(OmniAuth::Strategies::MlhCallbackUrlOverride)
+  strategy_class = env["omniauth.strategy"].class
+  unless strategy_class.included_modules.include?(OmniAuth::Strategies::MlhCallbackUrlOverride)
+    strategy_class.prepend(OmniAuth::Strategies::MlhCallbackUrlOverride)
   end
 
   env["omniauth.strategy"].options[:scope] = "user:read:email user:read:phone user:read:profile user:read:demographics public offline_access mlh:read:user"
   env["omniauth.strategy"].options[:client_id] = Settings::Authentication.mlh_key
   env["omniauth.strategy"].options[:client_secret] = Settings::Authentication.mlh_secret
   env["omniauth.strategy"].options[:provider_ignores_state] = true
-  # Explicitly set redirect_uri to exclude query parameters
-  # This ensures MLH receives the exact callback URL without any query params
-  callback_path = "/users/auth/mlh/callback"
-  env["omniauth.strategy"].options[:redirect_uri] = "#{URL.url}#{callback_path}"
+  # Note: redirect_uri is handled by the prepended MlhCallbackUrlOverride module
+  # which overrides both callback_url and authorize_params to ensure no query parameters
 end
 
 Devise.setup do |config|
