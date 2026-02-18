@@ -8,14 +8,14 @@ module Emails
     BATCH_SIZE = Rails.env.production? ? 1000 : 10 # Increased batch size is safe with pluck
 
     def perform(email_id, min_id = nil, max_id = nil)
-      # 1) Define timeout locally (do not touch ENV)
-      custom_timeout = 10_000 
+      # Use a longer timeout for batch operations to avoid query cancellations.
+      # Batch processing can take time, especially with large datasets and complex queries.
+      # Default read-only DB timeout is 30s, but we use 60s for batch operations.
+      batch_timeout_ms = ENV.fetch("EMAIL_BATCH_STATEMENT_TIMEOUT", 60_000).to_i
 
-      # 2) Open the connection block
       ReadOnlyDatabaseService.with_connection do |conn|
-        
-        # SAFE: Set timeout only on this current connection thread
-        conn.execute("SET statement_timeout TO #{custom_timeout}")
+        # Set timeout for this connection session to handle long-running batch queries
+        conn.execute("SET statement_timeout TO #{batch_timeout_ms}")
 
         email = Email.find_by(id: email_id)
         return unless email
@@ -26,10 +26,8 @@ module Emails
           process_standard_scope(email, min_id, max_id)
         end
         
-        # Connection is returned to pool automatically; 
-        # Ideally, the pool creates new connections or resets them, 
-        # but resetting the timeout here is good practice if connections are reused immediately.
-        conn.execute("RESET statement_timeout") 
+        # Reset timeout to default when done (good practice for connection reuse)
+        conn.execute("RESET statement_timeout")
       end
     end
 
