@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_02_17_233302) do
+ActiveRecord::Schema[7.0].define(version: 2026_02_19_182404) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1396,7 +1396,9 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_17_233302) do
     t.boolean "active", default: true
     t.boolean "allow_resubmission", default: false, null: false
     t.datetime "created_at", null: false
+    t.integer "daily_email_distributions", default: 0
     t.boolean "display_title", default: true
+    t.text "extra_email_context_paragraph"
     t.string "old_old_slug"
     t.string "old_slug"
     t.string "slug"

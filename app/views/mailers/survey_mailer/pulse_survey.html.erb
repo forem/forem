@@ -1,0 +1,19 @@
+<p>Hi <%= @user.name %>,</p>
+
+<p>You have been randomly selected to participate in a <%= @community_name %> Pulse Survey.</p>
+
+<% if @survey.extra_email_context_paragraph.present? %>
+  <p><%= @survey.extra_email_context_paragraph %></p>
+<% end %>
+
+<p>Please take a few minutes to complete the survey here:</p>
+
+<p>
+  <%= link_to "Take the #{@community_name} Pulse Survey", survey_url(@survey.slug), class: "button" %>
+</p>
+
+<p>Your responses are completely anonymous and your info will never be shared.</p>
+
+<p>Thank you for taking part!</p>
+
+<p>Best,<br>The <%= @community_name %> Team</p>
