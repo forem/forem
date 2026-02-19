@@ -15,12 +15,7 @@ module Emails
     def send_daily_emails(survey)
       return unless survey.daily_email_distributions.to_i > 0
 
-      eligible_users = User.registered
-                           .joins(:notification_setting)
-                           .without_role(:suspended)
-                           .without_role(:spam)
-                           .where(notification_setting: { email_newsletter: true })
-                           .where.not(email: ["", nil])
+      eligible_users = User.email_eligible
                            .where("last_presence_at >= ?", 3.months.ago)
 
       # Determine if we should filter out users who have completed this survey
