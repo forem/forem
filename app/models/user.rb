@@ -122,6 +122,7 @@ class User < ApplicationRecord
   has_many :devices, dependent: :delete_all
   # languages that user undestands
   has_many :languages, class_name: "UserLanguage", inverse_of: :user, dependent: :delete_all
+  has_many :old_usernames, class_name: "UsersOldUsername", dependent: :delete_all
   has_many :user_visit_contexts, dependent: :delete_all
   has_one :user_activity, dependent: :delete
 
@@ -247,6 +248,7 @@ class User < ApplicationRecord
 
   # make sure usernames are not empty, to be able to use the database unique index
   before_validation :set_username
+  after_save :clear_stale_username_history, if: :saved_change_to_username?
   before_create :create_users_settings_and_notification_settings_records
   after_update :refresh_auto_audience_segments
   before_destroy :remove_from_mailchimp_newsletters, prepend: true
@@ -764,6 +766,10 @@ class User < ApplicationRecord
 
   def set_username
     self.username = username&.downcase.presence || generate_username
+  end
+
+  def clear_stale_username_history
+    UsersOldUsername.where(username: username).where.not(user_id: id).delete_all
   end
 
   def auth_provider_usernames

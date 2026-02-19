@@ -400,4 +400,37 @@ RSpec.describe "StoriesIndex" do
       end
     end
   end
+
+  describe "GET /:username (profile redirect via old usernames)" do
+    let(:user) { create(:user) }
+
+    it "redirects to the new username via users_old_usernames table" do
+      old_username = user.username
+      create(:users_old_username, user: user, username: old_username)
+      user.update_columns(username: "brand_new_name")
+      get "/#{old_username}"
+      expect(response).to have_http_status(:moved_permanently)
+      expect(response).to redirect_to("/brand_new_name")
+    end
+
+    it "redirects even when old_username/old_old_username columns no longer hold the value" do
+      first_username = user.username
+      create(:users_old_username, user: user, username: first_username)
+      # Simulate 3+ username changes so old columns don't hold first_username anymore
+      user.update_columns(
+        username: "latest_name",
+        old_username: "middle_name",
+        old_old_username: "second_name",
+      )
+      get "/#{first_username}"
+      expect(response).to have_http_status(:moved_permanently)
+      expect(response).to redirect_to("/latest_name")
+    end
+
+    it "returns 404 for a username that was never used" do
+      expect do
+        get "/nonexistent_user_#{rand(100_000)}"
+      end.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
 end

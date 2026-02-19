@@ -65,8 +65,15 @@ module Users
       if attrs[:username] != user.username
         attrs[:old_username] = user.username
         attrs[:old_old_username] = user.old_username
+        record_username_history(user)
       end
       attrs
+    end
+
+    def record_username_history(user)
+      UsersOldUsername.create(user: user, username: user.username)
+    rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid
+      # Username already recorded in history, skip
     end
 
     def update_successful?
