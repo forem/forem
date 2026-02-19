@@ -2,7 +2,7 @@ module Users
   class UpdateUserActivitiesWorker
     include Sidekiq::Job
 
-    sidekiq_options queue: :low_priority, retry: 10, lock: :until_executing
+    sidekiq_options queue: :low_priority, retry: 10, lock: :until_and_while_executing
 
     def perform(user_id)
       user = User.find_by(id: user_id)
