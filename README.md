@@ -88,7 +88,7 @@ To **launch Forem in Ona** (formerly Gitpod), the project is fully configured fo
 
 Please see our installation guides:
 
-- [MacOS, without containers](https://developers.forem.com/getting-started/installation/mac)
+- [macOS, without containers](https://developers.forem.com/getting-started/installation/mac)
 - [Linux, without containers](https://developers.forem.com/getting-started/installation/linux)
 
 ## Developer Documentation
