@@ -179,6 +179,18 @@ class User < ApplicationRecord
 
   scope :eager_load_serialized_data, -> { includes(:roles) }
   scope :registered, -> { where(registered: true) }
+  scope :email_eligible, -> {
+    if ENV["USE_BASE_EMAIL_ELIGIBLE_COLUMN"] == "true"
+      where(base_email_eligible: true)
+    else
+      registered
+        .joins(:notification_setting)
+        .without_role(:suspended)
+        .without_role(:spam)
+        .where(notification_setting: { email_newsletter: true })
+        .where.not(email: ["", nil])
+    end
+  }
   scope :invited, -> { where(registered: false) }
   # Unfortunately pg_search's default SQL query is not performant enough in this
   # particular case (~ 500ms). There are multiple reasons:
@@ -254,6 +266,7 @@ class User < ApplicationRecord
 
   after_create_commit :send_welcome_notification
 
+  after_save :sync_base_email_eligible!, if: -> { saved_changes.key?(:email) || saved_changes.key?(:registered) }
   after_save :create_conditional_autovomits
   after_save :generate_social_images
   after_commit :subscribe_to_mailchimp_newsletter
@@ -733,6 +746,20 @@ class User < ApplicationRecord
     update_column(:last_presence_at, Time.current)
   end
 
+  def sync_base_email_eligible!
+    # User is eligible if they are registered, have an email, are not suspended,
+    # not marked as spam, and have email_newsletter set to true.
+    is_eligible = registered? &&
+                  email.present? &&
+                  !has_role?(:suspended) &&
+                  !has_role?(:spam) &&
+                  notification_setting&.email_newsletter?
+                  
+    if has_attribute?(:base_email_eligible) && self[:base_email_eligible] != is_eligible
+      update_column(:base_email_eligible, is_eligible)
+    end
+  end
+
   protected
 
   # Send emails asynchronously
@@ -875,5 +902,7 @@ class User < ApplicationRecord
     if role.name.in?(%w[spam suspended])
       Spam::DomainDetector.new(self).check_and_block_domain!
     end
+
+    sync_base_email_eligible! if role.name == "suspended" || role.name == "spam"
   end
 end
