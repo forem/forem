@@ -48,5 +48,6 @@ class OrganizationMembership < ApplicationRecord
 
   def bust_cache
     BustCachePathWorker.perform_async(organization.path.to_s)
+    organization.purge
   end
 end
