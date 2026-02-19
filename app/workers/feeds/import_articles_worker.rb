@@ -1,6 +1,9 @@
 module Feeds
   class ImportArticlesWorker
     include Sidekiq::Job
+    include Sidekiq::Throttled::Job
+
+    sidekiq_throttle(concurrency: { limit: 1 })
 
     sidekiq_options queue: :medium_priority, retry: 10, lock: :until_and_while_executing
 
@@ -42,6 +45,9 @@ module Feeds
 
     class ForUser
       include Sidekiq::Job
+      include Sidekiq::Throttled::Job
+
+      sidekiq_throttle(concurrency: { limit: 5 })
 
       def perform(user_ids, earlier_than)
         users_scope = User.where(id: user_ids)

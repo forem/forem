@@ -2,6 +2,9 @@
 module Emails
   class EnqueueCustomBatchSendWorker
     include Sidekiq::Job
+    include Sidekiq::Throttled::Job
+
+    sidekiq_throttle(concurrency: { limit: 1 })
 
     sidekiq_options queue: :medium_priority, retry: 15, lock: :until_and_while_executing
 

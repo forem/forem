@@ -1,6 +1,9 @@
 module Articles
   class BustMultipleCachesWorker
     include Sidekiq::Job
+    include Sidekiq::Throttled::Job
+
+    sidekiq_throttle(concurrency: { limit: 1 })
     sidekiq_options queue: :low_priority, retry: 10
 
     def perform(article_ids)
