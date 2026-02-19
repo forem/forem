@@ -7,9 +7,9 @@ module Users
 
       virtual_articles = user.articles.map { |article| Article.new(article.attributes) }
       user.articles.find_each do |article|
-        article.reactions.delete_all
+        article.reactions.destroy_all
         article.comments.includes(:user).find_each do |comment|
-          comment.reactions.delete_all
+          comment.reactions.destroy_all
           EdgeCache::BustComment.call(comment)
           EdgeCache::BustUser.call(comment.user)
           comment.delete
