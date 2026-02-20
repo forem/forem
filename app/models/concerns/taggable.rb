@@ -43,6 +43,8 @@ module Taggable
     scope :not_cached_tagged_with_any, lambda { |tags|
       where(cached_tagged_with_any(tags).arel.constraints.reduce(:or).not)
     }
+
+    before_save :sync_tags_array
   end
   # rubocop:enable Metrics/BlockLength(RuboCop)
 
@@ -53,5 +55,11 @@ module Taggable
       new_tag.validate_name
       new_tag.errors.messages[:name].each { |message| errors.add(:tag, "\"#{tag}\" #{message}") }
     end
+  end
+
+  def sync_tags_array
+    return unless has_attribute?(:tags_array) && has_attribute?(:cached_tag_list)
+
+    self.tags_array = cached_tag_list.to_s.split(',').map(&:strip).reject(&:empty?)
   end
 end
