@@ -39,6 +39,18 @@ RSpec.describe "User email eligibility", type: :model do
       expect(user.base_email_eligible).to eq(false)
     end
 
+    it "sets to false when score is below zero" do
+      user.update!(score: -1)
+      expect(user.base_email_eligible).to eq(false)
+    end
+
+    it "sets to true when score is directly set to zero or above" do
+      user.update!(score: 0)
+      expect(user.base_email_eligible).to eq(true)
+      user.update!(score: 1)
+      expect(user.base_email_eligible).to eq(true)
+    end
+
     it "syncs correctly when role is removed" do
       user.add_role(:suspended)
       expect(user.base_email_eligible).to eq(false)
@@ -102,6 +114,14 @@ RSpec.describe "User email eligibility", type: :model do
       user.notification_setting.update!(email_newsletter: true)
       expect(user.reload.base_email_eligible).to eq(true)
     end
+
+    it "syncs when score is updated" do
+      user.update!(score: -10)
+      expect(user.reload.base_email_eligible).to eq(false)
+
+      user.update!(score: 10)
+      expect(user.reload.base_email_eligible).to eq(true)
+    end
   end
 
   describe ".email_eligible scope" do
@@ -117,6 +137,12 @@ RSpec.describe "User email eligibility", type: :model do
       end
     end
 
+    let!(:negative_score_user) do
+      create(:user, registered: true, email: "negative@example.com", score: -10).tap do |u|
+        u.notification_setting.update!(email_newsletter: true)
+      end
+    end
+
     context "when USE_BASE_EMAIL_ELIGIBLE_COLUMN is true" do
       before do
         stub_const("ENV", ENV.to_hash.merge("USE_BASE_EMAIL_ELIGIBLE_COLUMN" => "true"))
@@ -126,9 +152,11 @@ RSpec.describe "User email eligibility", type: :model do
         # We manually update one parameter without firing callbacks to truly test the column itself
         eligible_user.update_column(:base_email_eligible, true)
         ineligible_user.update_column(:base_email_eligible, false)
+        negative_score_user.update_column(:base_email_eligible, false)
 
         expect(User.email_eligible).to include(eligible_user)
         expect(User.email_eligible).not_to include(ineligible_user)
+        expect(User.email_eligible).not_to include(negative_score_user)
       end
     end
 
@@ -140,6 +168,7 @@ RSpec.describe "User email eligibility", type: :model do
       it "uses the legacy associations" do
         expect(User.email_eligible).to include(eligible_user)
         expect(User.email_eligible).not_to include(ineligible_user)
+        expect(User.email_eligible).not_to include(negative_score_user)
       end
     end
   end

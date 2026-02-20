@@ -736,6 +736,17 @@ RSpec.describe User do
       user.calculate_score
       expect(user.score).to eq(-470)
     end
+
+    it "syncs base_email_eligible! after calculating score" do
+      user.update!(email: "test@example.com", registered: true)
+      user.notification_setting.update!(email_newsletter: true)
+      expect(user.base_email_eligible).to eq(true)
+
+      user.add_role(:spam)
+      user.calculate_score
+      
+      expect(user.base_email_eligible).to eq(false)
+    end
   end
 
   describe "cache counts" do
