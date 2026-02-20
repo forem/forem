@@ -1,0 +1,56 @@
+module DataUpdateScripts
+  class VerifyTaggingCounts
+    def up
+      puts "=== Verifying taggings_count accuracy ==="
+
+      # Get all tags with their stored vs actual taggings
+      mismatched_tags = []
+      
+      Tag.find_each do |tag|
+        actual_count = ActsAsTaggableOn::Tagging.where(tag_id: tag.id).count
+        if tag.taggings_count != actual_count
+          mismatched_tags << {
+            tag: tag,
+            stored: tag.taggings_count,
+            actual: actual_count,
+            diff: actual_count - tag.taggings_count
+          }
+        end
+      end
+
+      puts "\nTotal tags in database: #{Tag.count}"
+      puts "Tags with mismatched counts: #{mismatched_tags.length}"
+
+      if mismatched_tags.any?
+        puts "\n" + "=" * 100
+        puts "Tags with mismatched counts:"
+        puts "=" * 100
+        puts format("%-5s %-30s %-15s %-15s %-10s", "ID", "Name", "Stored Count", "Actual Count", "Difference")
+        puts "-" * 100
+
+        mismatched_tags.each do |item|
+          diff_str = item[:diff] > 0 ? "+#{item[:diff]}" : "#{item[:diff]}"
+          puts format("%-5d %-30s %-15d %-15d %-10s", 
+                     item[:tag].id,
+                     item[:tag].name.truncate(28),
+                     item[:stored],
+                     item[:actual],
+                     diff_str)
+        end
+        puts "=" * 100
+
+        puts "\n✗ Issue CONFIRMED: #{mismatched_tags.length} tags have incorrect counts"
+        puts "\nTo fix, run: rails runner lib/data_update_scripts/20260220_recount_taggings.rb"
+      else
+        puts "\n✓ All tag counts are accurate - no mismatches found"
+      end
+    end
+
+    def down
+      # Verification script has no down action
+      puts "This is a verification script with no reversible action."
+    end
+  end
+end
+
+DataUpdateScripts::VerifyTaggingCounts.new.up
