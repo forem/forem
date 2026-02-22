@@ -30,19 +30,19 @@ module Middlewares
           parsed = PublicSuffix.parse(request.host, default_rule: nil)
           subdomain_regexp = /^([^.]+)\.#{parsed.sld}\.#{parsed.tld}$/
 
-          if request.host =~ subdomain_regexp
+          if request.host&.match?(subdomain_regexp)
             # Remove your session cookie (or any other cookie) from subdomain
             Rack::Utils.delete_cookie_header!(
               headers,
               ApplicationConfig["SESSION_KEY"],
-              domain: request.host
+              domain: request.host,
             )
 
             # Also remove 'remember_user_token' or other cookies if needed
             Rack::Utils.delete_cookie_header!(
               headers,
               "remember_user_token",
-              domain: request.host
+              domain: request.host,
             )
           end
         end
@@ -52,7 +52,6 @@ module Middlewares
         allowed_domains = Subforem.cached_all_domains + [Settings::General.app_domain]
         csp_value = "frame-ancestors " + allowed_domains.map { |d| "https://#{d}" }.join(" ")
         headers["Content-Security-Policy"] = csp_value
-
       rescue PublicSuffix::DomainInvalid
         Rails.logger.error("Invalid domain: #{request.host}")
       end
