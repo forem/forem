@@ -6,6 +6,7 @@ RSpec.describe "Rack::Attack AI Chats Throttling", type: :request do
   before do
     # Enable Rack::Attack for this spec
     Rack::Attack.enabled = true
+    Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
     Rack::Attack.reset!
     Rails.cache.clear
   end
