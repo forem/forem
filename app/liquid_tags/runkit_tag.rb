@@ -77,7 +77,8 @@ class RunkitTag < Liquid::Block
 
   def render(context)
     content = Nokogiri::HTML.parse(super)
-    parsed_content = content.xpath("//html/body").text
+    # Get the inner HTML instead of just text to preserve HTML tags
+    parsed_content = content.xpath("//html/body").inner_html
     ApplicationController.render(
       partial: PARTIAL,
       locals: {
