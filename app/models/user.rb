@@ -189,6 +189,7 @@ class User < ApplicationRecord
         .without_role(:spam)
         .where(notification_setting: { email_newsletter: true })
         .where.not(email: ["", nil])
+        .where("users.score >= 0")
     end
   }
   scope :invited, -> { where(registered: false) }
@@ -266,7 +267,7 @@ class User < ApplicationRecord
 
   after_create_commit :send_welcome_notification
 
-  after_save :sync_base_email_eligible!, if: -> { saved_changes.key?(:email) || saved_changes.key?(:registered) }
+  after_save :sync_base_email_eligible!, if: -> { saved_changes.key?(:email) || saved_changes.key?(:registered) || saved_changes.key?(:score) }
   after_save :create_conditional_autovomits
   after_save :generate_social_images
   after_commit :subscribe_to_mailchimp_newsletter
@@ -346,6 +347,7 @@ class User < ApplicationRecord
     calculated_score = (badge_achievements_count * 10) + user_reaction_points
     calculated_score -= 500 if spam?
     update_column(:score, calculated_score)
+    sync_base_email_eligible!
     AlgoliaSearch::SearchIndexWorker.perform_async(self.class.name, id, false)
   end
 
@@ -748,12 +750,13 @@ class User < ApplicationRecord
 
   def sync_base_email_eligible!
     # User is eligible if they are registered, have an email, are not suspended,
-    # not marked as spam, and have email_newsletter set to true.
+    # not marked as spam, have email_newsletter set to true, and their score is not below zero.
     is_eligible = registered? &&
                   email.present? &&
                   !has_role?(:suspended) &&
                   !has_role?(:spam) &&
-                  notification_setting&.email_newsletter?
+                  notification_setting&.email_newsletter? &&
+                  score.to_i >= 0
                   
     if has_attribute?(:base_email_eligible) && self[:base_email_eligible] != is_eligible
       update_column(:base_email_eligible, is_eligible)

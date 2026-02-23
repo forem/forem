@@ -5,6 +5,9 @@ module ScheduledAutomations
   # that have a next_run_at time in the past 10 minutes.
   class ProcessWorker
     include Sidekiq::Job
+    include Sidekiq::Throttled::Job
+
+    sidekiq_throttle(concurrency: { limit: 1 })
 
     sidekiq_options queue: :default, retry: 3
 
