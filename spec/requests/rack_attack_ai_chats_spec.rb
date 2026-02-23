@@ -23,14 +23,14 @@ RSpec.describe "Rack::Attack AI Chats Throttling", type: :request do
       stub_const("AI_AVAILABLE", true)
     end
 
-    it "throttles POST requests to /ai_chats to 5 per minute per IP" do
-      # Make 5 successful requests
-      5.times do
+    it "throttles POST requests to /ai_chats to 10 per minute per IP" do
+      # Make 10 successful requests
+      10.times do
         post "/ai_chats", params: { message: "hello", chat_context: "editor" }, headers: headers
         expect(response).not_to have_http_status(:too_many_requests)
       end
 
-      # The 6th request should be throttled
+      # The 11th request should be throttled
       post "/ai_chats", params: { message: "hello", chat_context: "editor" }, headers: headers
       expect(response).to have_http_status(:too_many_requests)
       expect(response.body).to include("Retry later")
