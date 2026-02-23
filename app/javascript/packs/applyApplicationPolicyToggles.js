@@ -1,4 +1,4 @@
-import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
+import { getUserDataAndCsrfTokenSafely } from '@utilities/getUserDataAndCsrfToken';
 /**
  * Responsible for hiding or showing elements that match each of the given user
  * policies.  While this function is "oblivious" to what it's hiding, it
@@ -10,8 +10,8 @@ import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
  * obscurity".  That is to say, if we accidentally show the link, the server
  * will enforce the correct policy.
  */
-getUserDataAndCsrfToken().then(({ currentUser }) => {
-  if (currentUser.policies) {
+getUserDataAndCsrfTokenSafely().then(({ currentUser }) => {
+  if (currentUser && currentUser.policies) {
     currentUser.policies.forEach((policy) => {
       const elements = document.getElementsByClassName(policy.dom_class);
       for (const element of elements) {
