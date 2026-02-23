@@ -61,7 +61,7 @@ fr:
         heading: Confirm your email to complete your profile.
         desc: While you're at it, go ahead and fill everything out.
         github: Connect your github account as well to complete your identity.
-        twitter: Connect your twitter account as well to complete your identity.
+        twitter: Connect your X account as well to complete your identity.
       custom:
         adjacent: Permit Nearby External Sponsors (When publishing)
         announce: Announcements
@@ -91,7 +91,7 @@ fr:
       destroy:
         heading: Destroy your account
         desc: 'Deleting your account will:'
-        desc_1_html: delete your profile, along with your Twitter and/or GitHub associations. This does not include app permissions. You will have to remove them yourself on %{twitter} and %{github}.
+        desc_1_html: delete your profile, along with your X and/or GitHub associations. This does not include app permissions. You will have to remove them yourself on %{twitter} and %{github}.
         desc_2: delete any and all content you have, such as articles, comments, or your reading list.
         desc_3: allow your username to become available to anyone.
         click: click here
@@ -100,7 +100,7 @@ fr:
         github: GitHub profile settings
         submit: Delete account
         to_delete: 'To delete your account:'
-        twitter: Twitter profile settings
+        twitter: X profile settings
         type: Type in your username
         username: username
         word: delete my account

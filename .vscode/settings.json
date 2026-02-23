@@ -14,5 +14,8 @@
     "**/log/**": true,
     "**/node_modules/**": true,
     "**/public/packs/**": true
-  }
+  },
+  "zencoder.repoInfo.lastCheckTime": 1752050841541,
+  "zencoder.repoInfo.currentWarningState": true,
+  "zencoder.enableRepoIndexing": true
 }

@@ -94,11 +94,11 @@ en:
     tag_tag:
       invalid_tag_name: invalid tag name
     tweet_tag:
-      invalid_twitter_id: Invalid Twitter ID or URL
+      invalid_twitter_id: Invalid X ID or URL
     twitch_tag:
       invalid_twitch_id: Invalid Twitch ID, Slug or URL
     twitter_timeline_tag:
-      invalid_url: Invalid Twitter Timeline URL
+      invalid_url: Invalid X Timeline URL
     unified_embed:
       tag:
         invalid_url: URL provided may have a typo or error; please check and try again
