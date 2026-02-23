@@ -128,5 +128,3 @@ doc/
 /app/assets/builds/*
 !/app/assets/builds/.keep
 .qodo
-*.tmp
-*.bak
