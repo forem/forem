@@ -1,13 +1,14 @@
 module DataUpdateScripts
   class VerifyTaggingCounts
-    def up
+    def run
       puts "=== Verifying taggings_count accuracy ==="
 
-      # Get all tags with their stored vs actual taggings
+      # Preload actual tagging counts in a single query to avoid N+1
+      taggings_counts = ActsAsTaggableOn::Tagging.group(:tag_id).count
       mismatched_tags = []
       
       Tag.find_each do |tag|
-        actual_count = ActsAsTaggableOn::Tagging.where(tag_id: tag.id).count
+        actual_count = taggings_counts[tag.id] || 0
         if tag.taggings_count != actual_count
           mismatched_tags << {
             tag: tag,
@@ -45,12 +46,5 @@ module DataUpdateScripts
         puts "\n✓ All tag counts are accurate - no mismatches found"
       end
     end
-
-    def down
-      # Verification script has no down action
-      puts "This is a verification script with no reversible action."
-    end
   end
 end
-
-DataUpdateScripts::VerifyTaggingCounts.new.up
