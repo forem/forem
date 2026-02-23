@@ -3,8 +3,7 @@
     flex-direction: column;
     height: calc(100vh - 120px);
     max-width: 900px;
-    margin: 20px auto;
-    border-radius: var(--radius-large, 12px);
+    margin: auto;
     background: var(--body-bg);
     border: 1px solid var(--card-border);
     box-shadow: var(--shadow-2);
@@ -56,8 +55,12 @@
     padding: 1rem 1.25rem;
     border-radius: var(--radius-medium, 8px);
     line-height: 1.6;
-    font-size: 1rem;
+    font-size: 0.9rem;
     animation: fadeIn 0.4s ease-out;
+
+    pre {
+        font-size: 0.9rem;
+    }
 }
 
 @keyframes fadeIn {
@@ -116,7 +119,7 @@
     padding: 2px 4px;
     border-radius: 4px;
     font-family: var(--ff-mono, monospace);
-    font-size: 0.9em;
+    font-size: 0.77rem;
 }
 
 .message.ai pre {
@@ -132,7 +135,7 @@
     background: transparent;
     padding: 0;
     color: inherit;
-    font-size: 0.9rem;
+    font-size: 0.77rem;
 }
 
 .message.ai strong {
