@@ -26,7 +26,9 @@ class BadgeAchievement < ApplicationRecord
   private
 
   def bust_user_cache
-    user&.send(:bust_cache)
+    return unless user_id
+
+    Users::BustCacheWorker.perform_async(user_id)
   end
 
   def render_rewarding_context_message_html
