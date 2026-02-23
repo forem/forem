@@ -1,4 +1,4 @@
-import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
+import { getUserDataAndCsrfTokenSafely } from '@utilities/getUserDataAndCsrfToken';
 
 HTMLDocument.prototype.ready = new Promise((resolve) => {
   if (document.readyState !== 'loading') {
@@ -39,8 +39,10 @@ function onboardCreator(currentUser) {
 }
 
 document.ready.then(
-  getUserDataAndCsrfToken()
+  getUserDataAndCsrfTokenSafely()
     .then(({ currentUser, csrfToken }) => {
+      if (!currentUser) return;
+
       window.currentUser = currentUser;
       window.csrfToken = csrfToken;
 
@@ -67,8 +69,10 @@ function shouldRedirectToOnboarding() {
 }
 
 window.InstantClick.on('change', () => {
-  getUserDataAndCsrfToken()
+  getUserDataAndCsrfTokenSafely()
     .then(({ currentUser }) => {
+      if (!currentUser) return;
+
       if (
         redirectableCreatorOnboardingLocation() &&
         shouldRedirectToOnboarding() &&
