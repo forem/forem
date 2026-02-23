@@ -48,6 +48,8 @@ class OrganizationMembership < ApplicationRecord
 
   def bust_cache
     BustCachePathWorker.perform_async(organization.path.to_s)
-    organization.purge
+    EdgeCache::PurgeByKey.call(organization.path.to_s)
+  rescue StandardError => e
+    Rails.logger.error("Failed to purge organization cache for #{organization.id}: #{e.class} - #{e.message}")
   end
 end
