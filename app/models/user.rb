@@ -56,7 +56,7 @@ class User < ApplicationRecord
   has_many :ahoy_visits, class_name: "Ahoy::Visit", dependent: :delete_all
   has_many :api_secrets, dependent: :delete_all
   has_many :articles, dependent: :destroy
-  has_many :ai_audits, foreign_key: :affected_user_id, dependent: :nullify
+  has_many :ai_audits, foreign_key: :affected_user_id, inverse_of: :affected_user, dependent: :nullify
   has_many :audit_logs, dependent: :nullify
   has_many :authored_notes, inverse_of: :author, class_name: "Note", foreign_key: :author_id, dependent: :delete_all
   has_many :badge_achievements, dependent: :delete_all

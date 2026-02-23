@@ -338,6 +338,7 @@ module Ai
 
       url
     rescue StandardError => e
+      puts "===> UPLOAD ERROR: #{e.class}: #{e.message}"
       Rails.logger.error "Failed to upload image: #{e.message}"
       Rails.logger.error e.backtrace.first(5).join("\n")
       nil
@@ -346,8 +347,9 @@ module Ai
       if tempfile
         begin
           tempfile.close unless tempfile.closed?
-          tempfile.unlink if File.exist?(tempfile.path)
-          Rails.logger.debug { "Cleaned up temporary image file: #{tempfile.path}" }
+          path = tempfile.path
+          tempfile.unlink if path && File.exist?(path)
+          Rails.logger.debug { "Cleaned up temporary image file: #{path}" }
         rescue StandardError => e
           Rails.logger.warn "Failed to cleanup temp file: #{e.message}"
         end
