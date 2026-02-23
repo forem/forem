@@ -15,9 +15,10 @@
 </style>
 
 <main class="container article" id="editor-help-guide">
-  <article id="main-content" class="body">
-    <h1 style="font-size: 57px; font-weight: 700; line-height: 73px;">Editor Guide 🤓</h1>
-
+  <article id="main-content" class="body <%= local_assigns[:is_sidecar] ? 'p-4' : '' %>">
+    <% unless local_assigns[:is_sidecar] %>
+      <h1 class="fs-4xl fw-heavy mb-6">Editor Guide 🤓</h1>
+    <% end %>
     <% if version == "1" %>
       <%= render "pages/v1_editor_guide_preamble" %>
     <% else %>
@@ -29,27 +30,27 @@
         </em>
       </p>
 
-      <h2 style="font-size:2.8em" id="#things-to-know" class="permalink-heading">
-        <strong>Things to Know</strong>
-        <a href="#things-to-know" aria-label="permalink for Things to know">
-          <%= crayons_icon_tag("small-link", aria_hidden: true) %>
-        </a>
-      </h2>
-      <ul>
-        <li>Use <a href="#markdown"><strong>markdown</strong></a> to write and format <a href="<%= root_path %>"><%= community_name %></a> posts.</li>
-        <li>Most of the time, you can write inline HTML directly into your posts.</li>
-        <li>You can use <strong><a href="#liquidtags">Liquid tags</a></strong> to make add rich content such as tweets and videos.</li>
-        <li>Links to unpublished posts are shareable for feedback/review.</li>
-        <li>The best size for your <b>cover image</b> is 1000 X 420.</li>
-      </ul>
+      <details class="crayons-details p-3 mb-2 bg-base-inverted border border-base-20 radius-auto">
+        <summary class="fs-xl fw-bold cursor-pointer" id="things-to-know">
+          Things to Know
+        </summary>
+        <div class="mt-3">
+        <ul>
+          <li>Use <a href="#markdown"><strong>markdown</strong></a> to write and format <a href="<%= root_path %>"><%= community_name %></a> posts.</li>
+          <li>Most of the time, you can write inline HTML directly into your posts.</li>
+          <li>You can use <strong><a href="#liquidtags">Liquid tags</a></strong> to make add rich content such as tweets and videos.</li>
+          <li>Links to unpublished posts are shareable for feedback/review.</li>
+          <li>The best size for your <b>cover image</b> is 1000 X 420.</li>
+        </ul>
+        </div>
+      </details>
     <% end %>
 
-    <h2 style="font-size:2.8em" id="markdown" class="permalink-heading">
-      <strong>✍ Markdown Basics</strong>
-      <a href="#markdown" aria-label="permalink for Markdown">
-        <%= crayons_icon_tag("small-link", aria_hidden: true) %>
-      </a>
-    </h2>
+    <details class="crayons-details p-3 mb-2 bg-base-inverted border border-base-20 radius-auto">
+      <summary class="fs-xl fw-bold cursor-pointer" id="markdown">
+        ✍ Markdown Basics
+      </summary>
+      <div class="mt-3">
     <p>Below are some examples of commonly used markdown syntax. If you want to dive deeper, check out
       <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Here-Cheatsheet" target="_blank" rel="noopener">this cheat sheet.</a>
     </p>
@@ -87,11 +88,14 @@
     <%= render partial: "editor_guide_h3", locals: { id: "author-notes", title: "Author Notes/Comments" } %>
     <p>Add some hidden notes/comments to your article with this syntax:</p>
     <pre>&lt;!-- This won't show up in the content! --&gt;</pre>
+      </div>
+    </details>
 
-    <h2 style="font-size:2.8em" id="accessibility" class="permalink-heading">
-      <strong>Accessibility</strong>
-      <a href="#accessibility" aria-label="permalink for Accessibility"><%= crayons_icon_tag("small-link", aria_hidden: true) %></a>
-    </h2>
+    <details class="crayons-details p-3 mb-2 bg-base-inverted border border-base-20 radius-auto">
+      <summary class="fs-xl fw-bold cursor-pointer" id="accessibility">
+        Accessibility
+      </summary>
+      <div class="mt-3">
     <p>People access online content in all kinds of different ways, and there are a few things you can do to make your posts more easily understood by a broad range of users. You can find out more about web accessibility at <a href="https://www.w3.org/WAI/fundamentals/accessibility-intro/">W3C's Introduction to Web Accessibility</a>, but there are two main ways you can make your posts more accessible: providing alternative descriptions of any images you use, and adding appropriate headings.</p>
 
     <%= render partial: "editor_guide_h3", locals: { id: "alt-text-for-images", title: "Providing alternative descriptions for images" } %>
@@ -107,8 +111,15 @@
     <p><a href="#markdown-headers">Headings can be added in levels 1 - 6</a>. Avoid using a level one heading (i.e., '# Heading text'). When you create a post, your post title automatically becomes a level one heading and serves a special role on the page, much like the headline of a newspaper article. Similar to how a newspaper article only has one headline, it can be confusing if multiple level one headings exist on a page.</p>
     <p>In your post content, start with level two headings for each section (e.g. '## Section heading text'), and increase the heading level by one when you'd like to add a sub-section, for example:</p>
     <pre>## Fun facts about sloths</br></br>### Speed</br></br>Sloths move at a maximum speed of 0.27 km/h!</pre>
+      </div>
+    </details>
 
-    <%= render partial: "liquid_tag_section_intro", locals: { styles: "font-size:2.8em;" } %>
+    <details class="crayons-details p-3 mb-2 bg-base-inverted border border-base-20 radius-auto">
+      <summary class="fs-xl fw-bold cursor-pointer" id="liquid-tags">
+        Liquid Tags & Embeds
+      </summary>
+      <div class="mt-3">
+        <%= render partial: "liquid_tag_section_intro", locals: { styles: "font-size:1.5em; font-weight:bold;" } %>
 
     <%= render partial: "editor_guide_h3", locals: { id: "supported-url-embeds-list", title: "Supported URL Embeds" } %>
 
@@ -124,25 +135,33 @@
     <p>One specific edge case is with using the <code>raw</code> tag. To properly escape it, use this format:
     </p>
     <pre>`{% raw %}{{site.SOMETHING }} {% ``endraw`` %}`</pre>
+      </div>
+    </details>
 
-    <%= render partial: "editor_guide_h3", locals: { id: "common-gotchas", title: "Common Gotchas" } %>
-    <p>
-      Lists are written just like any other Markdown editor.
-      If you're adding an image in between numbered list, though, be sure to tab the image,
-      otherwise it'll restart the number of the list.
-      Here's an example of what to do:
-      <img
-        src="https://res.cloudinary.com/practicaldev/image/fetch/s--HjVUshkb--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://thepracticaldev.s3.amazonaws.com/i/8l29vxiir8k5d097o9o8.png"
-        alt="example image of writing lists with images in Markdown"
-        loading="lazy" />
-    </p>
+    <details class="crayons-details p-3 mb-2 bg-base-inverted border border-base-20 radius-auto">
+      <summary class="fs-xl fw-bold cursor-pointer" id="common-gotchas">
+        Common Gotchas
+      </summary>
+      <div class="mt-3">
+        <p>
+          Lists are written just like any other Markdown editor.
+          If you're adding an image in between numbered list, though, be sure to tab the image,
+          otherwise it'll restart the number of the list.
+          Here's an example of what to do:
+          <img
+            src="https://res.cloudinary.com/practicaldev/image/fetch/s--HjVUshkb--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://thepracticaldev.s3.amazonaws.com/i/8l29vxiir8k5d097o9o8.png"
+            alt="example image of writing lists with images in Markdown"
+            loading="lazy" />
+        </p>
 
-    <p>
-      <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Here-Cheatsheet" target="_blank" rel="noopener">
-        <strong>Here's the Markdown cheatsheet again for reference.</strong>
-      </a>
-    </p>
+        <p>
+          <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Here-Cheatsheet" target="_blank" rel="noopener">
+            <strong>Here's the Markdown cheatsheet again for reference.</strong>
+          </a>
+        </p>
 
-    <p>Happy posting! 📝</p>
+        <p>Happy posting! 📝</p>
+      </div>
+    </details>
   </article>
 </main>
