@@ -67,6 +67,12 @@ module Rack
       end
     end
 
+    throttle("ai_chats_throttle", limit: 10, period: 1.minute) do |request|
+      if request.path.starts_with?("/ai_chats") && request.post?
+        request.track_and_return_ip
+      end
+    end
+
     # Removed user_signed_in? helper method - no longer needed
     # since we removed authentication-based throttling rules
 

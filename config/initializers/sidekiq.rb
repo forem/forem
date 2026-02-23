@@ -4,6 +4,7 @@ require "sidekiq/honeycomb_middleware"
 require "sidekiq/worker_retries_exhausted_reporter"
 require "sidekiq/sidekiq_connection_cleanup"
 require "sidekiq/transaction_safe_rescue"
+require "sidekiq/throttled"
 
 module Sidekiq
   module Cron
@@ -46,14 +47,14 @@ Sidekiq.configure_server do |config|
   config.redis = { url: sidekiq_url }
 
   config.server_middleware do |chain|
+    # sidekiq-throttled wires itself up when `require "sidekiq/throttled"` is loaded:
+    # it registers `Sidekiq::Throttled::Middlewares::Server` via its own
+    # `Sidekiq.configure_server` block (see the gem's `lib/sidekiq/throttled.rb`).
     chain.add Sidekiq::TransactionSafeRescue
     chain.add Sidekiq::HoneycombMiddleware
     chain.add SidekiqUniqueJobs::Middleware::Client
-    chain.add Sidekiq::SidekiqConnectionCleanup
-  end
-
-  config.server_middleware do |chain|
     chain.add SidekiqUniqueJobs::Middleware::Server
+    chain.add Sidekiq::SidekiqConnectionCleanup
   end
 
   SidekiqUniqueJobs::Server.configure(config)
@@ -75,6 +76,9 @@ Sidekiq.configure_server do |config|
       Rails.logger.warn("[dev] Failed to clear Sidekiq queues: #{e.message}")
     end
   end
+
+  # NOTE: sidekiq-throttled 1.5.x does not have `Sidekiq::Throttled.setup!`.
+  # Requiring it is enough for middleware + patches to be installed.
 end
 
 Sidekiq.configure_client do |config|

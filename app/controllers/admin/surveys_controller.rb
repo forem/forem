@@ -71,7 +71,7 @@ module Admin
 
     def survey_params
       params.require(:survey).permit(
-        :title, :active, :display_title, :allow_resubmission,
+        :title, :active, :display_title, :allow_resubmission, :daily_email_distributions, :extra_email_context_paragraph,
         polls_attributes: [
           :id, :prompt_markdown, :type_of, :position, :scale_min, :scale_max, :_destroy,
           poll_options_attributes: %i[id markdown supplementary_text position _destroy]
