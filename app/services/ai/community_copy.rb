@@ -1,8 +1,9 @@
 module Ai
   class CommunityCopy
+    VERSION = "1.0"
     MAX_RETRIES = 3
 
-    def initialize(subforem_id, brain_dump, locale = 'en')
+    def initialize(subforem_id, brain_dump, locale = "en")
       @subforem_id = subforem_id
       @brain_dump = brain_dump
       @locale = locale
@@ -121,7 +122,7 @@ module Ai
       end.compact
 
       prompt = build_description_prompt(comparable_descriptions)
-      response = Ai::Base.new.call(prompt)
+      response = Ai::Base.new(wrapper: self).call(prompt)
       parse_description_response(response)
     end
 
@@ -131,19 +132,19 @@ module Ai
       end.compact
 
       prompt = build_tagline_prompt(comparable_taglines)
-      response = Ai::Base.new.call(prompt)
+      response = Ai::Base.new(wrapper: self).call(prompt)
       parse_tagline_response(response)
     end
 
     def generate_internal_content_description
       prompt = build_content_description_prompt
-      response = Ai::Base.new.call(prompt)
+      response = Ai::Base.new(wrapper: self).call(prompt)
       parse_content_description_response(response)
     end
 
     def build_description_prompt(comparable_descriptions)
       locale_instruction = get_locale_instruction
-      
+
       <<~PROMPT
         Generate a community description for the subforem with domain #{@subforem.domain} based on the following brain dump: #{@brain_dump}
 
@@ -166,7 +167,7 @@ module Ai
 
     def build_tagline_prompt(comparable_taglines)
       locale_instruction = get_locale_instruction
-      
+
       <<~PROMPT
         Generate a tagline for the subforem with domain #{@subforem.domain} based on the following brain dump: #{@brain_dump}
 
@@ -189,7 +190,7 @@ module Ai
 
     def build_content_description_prompt
       locale_instruction = get_locale_instruction
-      
+
       <<~PROMPT
         Generate an internal content specification for the purpose of moderation for the subforem with domain #{@subforem.domain}
 
@@ -248,9 +249,9 @@ module Ai
 
     def get_locale_instruction
       case @locale
-      when 'pt'
+      when "pt"
         "LANGUAGE REQUIREMENT: Generate ALL content in Brazilian Portuguese. Use proper Portuguese grammar, vocabulary, and cultural context. Avoid special characters in tags and technical terms - use ASCII characters only for tags and URLs."
-      when 'fr'
+      when "fr"
         "LANGUAGE REQUIREMENT: Generate ALL content in French. Use proper French grammar, vocabulary, and cultural context. Avoid special characters in tags and technical terms - use ASCII characters only for tags and URLs."
       else
         "LANGUAGE REQUIREMENT: Generate ALL content in English. Use proper English grammar, vocabulary, and cultural context. Avoid special characters in tags and technical terms - use ASCII characters only for tags and URLs."

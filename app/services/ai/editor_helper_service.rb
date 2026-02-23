@@ -1,10 +1,12 @@
 module Ai
   class EditorHelperService
+    VERSION = "1.0"
+
     def initialize(user, history: [], article_state: nil)
       @user = user
       @history = history
       @article_state = article_state
-      @ai_client = Ai::Base.new
+      @ai_client = Ai::Base.new(wrapper: self, affected_user: user)
     end
 
     def generate_response(user_message)
@@ -19,11 +21,11 @@ module Ai
     private
 
     def prompt
-      file_path = Rails.root.join("app", "views", "pages", "_editor_guide_text.en.html.erb")
+      file_path = Rails.root.join("app/views/pages/_editor_guide_text.en.html.erb")
       raw_content = File.read(file_path)
       # Strip out ERB tags
-      content_without_erb = raw_content.gsub(/<%=.*?%>/, '').gsub(/<%.*?%>/, '')
-      clean_guide = ActionView::Base.full_sanitizer.sanitize(content_without_erb).gsub(/\s+/, ' ').strip
+      content_without_erb = raw_content.gsub(/<%=.*?%>/, "").gsub(/<%.*?%>/, "")
+      clean_guide = ActionView::Base.full_sanitizer.sanitize(content_without_erb).gsub(/\s+/, " ").strip
 
       article_context = ""
       if @article_state.present?
@@ -32,7 +34,7 @@ module Ai
           Title: #{@article_state[:title]}
           Body:
           #{@article_state[:body]}
-          
+
         CONTEXT
       end
 

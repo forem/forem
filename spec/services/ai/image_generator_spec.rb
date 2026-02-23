@@ -55,10 +55,10 @@ RSpec.describe Ai::ImageGenerator do
             "content" => {
               "parts" => [
                 { "text" => mock_text_response },
-                { "inlineData" => { "data" => mock_image_data, "mimeType" => "image/png" } }
+                { "inlineData" => { "data" => mock_image_data, "mimeType" => "image/png" } },
               ]
             }
-          }
+          },
         ]
       }
     end
@@ -115,10 +115,10 @@ RSpec.describe Ai::ImageGenerator do
             {
               "content" => {
                 "parts" => [
-                  { "inlineData" => { "data" => mock_image_data, "mimeType" => "image/png" } }
+                  { "inlineData" => { "data" => mock_image_data, "mimeType" => "image/png" } },
                 ]
               }
-            }
+            },
           ]
         }
       end
@@ -203,10 +203,10 @@ RSpec.describe Ai::ImageGenerator do
             {
               "content" => {
                 "parts" => [
-                  { "text" => "I couldn't generate an image." }
+                  { "text" => "I couldn't generate an image." },
                 ]
               }
-            }
+            },
           ]
         }
       end
@@ -238,10 +238,10 @@ RSpec.describe Ai::ImageGenerator do
           {
             "content" => {
               "parts" => [
-                { "inlineData" => { "data" => mock_image_data, "mimeType" => "image/png" } }
+                { "inlineData" => { "data" => mock_image_data, "mimeType" => "image/png" } },
               ]
             }
-          }
+          },
         ]
       }
     end
@@ -268,7 +268,7 @@ RSpec.describe Ai::ImageGenerator do
       generator.generate
 
       # Verify the request was made
-      expect(WebMock).to have_requested(:post, %r{gemini-2\.5-flash-image:generateContent})
+      expect(WebMock).to have_requested(:post, /gemini-2\.5-flash-image:generateContent/)
     end
 
     it "logs the number of input images" do
@@ -286,10 +286,10 @@ RSpec.describe Ai::ImageGenerator do
           {
             "content" => {
               "parts" => [
-                { "inlineData" => { "data" => mock_image_data, "mimeType" => "image/png" } }
+                { "inlineData" => { "data" => mock_image_data, "mimeType" => "image/png" } },
               ]
             }
-          }
+          },
         ]
       }
     end
@@ -310,7 +310,7 @@ RSpec.describe Ai::ImageGenerator do
       generator.generate
 
       # Verify the request was made with aspect ratio config
-      expect(WebMock).to have_requested(:post, %r{gemini-2\.5-flash-image:generateContent})
+      expect(WebMock).to have_requested(:post, /gemini-2\.5-flash-image:generateContent/)
     end
 
     it "logs the aspect ratio" do
@@ -328,10 +328,10 @@ RSpec.describe Ai::ImageGenerator do
           {
             "content" => {
               "parts" => [
-                { "inlineData" => { "data" => mock_image_data, "mimeType" => "image/png" } }
+                { "inlineData" => { "data" => mock_image_data, "mimeType" => "image/png" } },
               ]
             }
-          }
+          },
         ]
       }
     end
@@ -391,10 +391,10 @@ RSpec.describe Ai::ImageGenerator do
           {
             "content" => {
               "parts" => [
-                { "inlineData" => { "data" => mock_image_data, "mimeType" => "image/png" } }
+                { "inlineData" => { "data" => mock_image_data, "mimeType" => "image/png" } },
               ]
             }
-          }
+          },
         ]
       }
     end
@@ -434,8 +434,12 @@ RSpec.describe Ai::ImageGenerator do
       end
 
       it "logs cleanup confirmation" do
+        debug_messages = []
+        allow(Rails.logger).to receive(:debug) do |&block|
+          debug_messages << block.call if block
+        end
         generator.generate
-        expect(Rails.logger).to have_received(:debug).with(/Cleaned up temporary image file/)
+        expect(debug_messages).to include(match(/Cleaned up temporary image file/))
       end
     end
 
@@ -469,4 +473,3 @@ RSpec.describe Ai::ImageGenerator do
     end
   end
 end
-

@@ -34,6 +34,7 @@ class Comment < ApplicationRecord
 
   has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :delete_all
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
+  has_many :ai_audits, as: :affected_content, dependent: :nullify
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
   before_validation :evaluate_markdown, if: -> { body_markdown }
   before_save :set_markdown_character_count, if: :body_markdown
@@ -200,7 +201,8 @@ class Comment < ApplicationRecord
     # In the future this could be made more customizable. For now it's just this one thing.
     return processed_html if ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"].blank? || ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"].blank?
 
-    processed_html.gsub(ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"], ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
+    processed_html.gsub(ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"],
+                        ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
   end
 
   def subforem_id
@@ -389,9 +391,9 @@ class Comment < ApplicationRecord
     text_content = ActionController::Base.helpers.strip_tags(processed_html)
     text_content = CGI.unescapeHTML(text_content).strip
 
-    if text_content.blank?
-      errors.add(:body_markdown, I18n.t("models.comment.cannot_be_empty"))
-    end
+    return if text_content.present?
+
+    errors.add(:body_markdown, I18n.t("models.comment.cannot_be_empty"))
   end
 
   def record_field_test_event

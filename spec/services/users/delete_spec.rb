@@ -80,6 +80,7 @@ RSpec.describe Users::Delete, type: :service do
     let(:kept_association_names) do
       %i[
         affected_feedback_messages
+        ai_audits
         audit_logs
         banished_users
         billboard_events
@@ -117,7 +118,7 @@ RSpec.describe Users::Delete, type: :service do
 
           # Skip trying to create listings as the factory is removed
           next if possible_factory_name == "listing"
-          
+
           # Skip scheduled_automations as they require a community bot user
           next if possible_factory_name == "scheduled_automation"
 

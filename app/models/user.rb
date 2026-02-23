@@ -36,7 +36,8 @@ class User < ApplicationRecord
 
   # User types enum
   enum type_of: { member: 0, community_bot: 1, member_bot: 2 }
-  enum current_subscriber_status: { not_subscribed: 0, free_subscription: 1, trial_subscription: 2, paying_subscription: 3 }
+  enum current_subscriber_status: { not_subscribed: 0, free_subscription: 1, trial_subscription: 2,
+                                    paying_subscription: 3 }
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
@@ -55,6 +56,7 @@ class User < ApplicationRecord
   has_many :ahoy_visits, class_name: "Ahoy::Visit", dependent: :delete_all
   has_many :api_secrets, dependent: :delete_all
   has_many :articles, dependent: :destroy
+  has_many :ai_audits, foreign_key: :affected_user_id, inverse_of: :affected_user, dependent: :nullify
   has_many :audit_logs, dependent: :nullify
   has_many :authored_notes, inverse_of: :author, class_name: "Note", foreign_key: :author_id, dependent: :delete_all
   has_many :badge_achievements, dependent: :delete_all
@@ -179,7 +181,7 @@ class User < ApplicationRecord
 
   scope :eager_load_serialized_data, -> { includes(:roles) }
   scope :registered, -> { where(registered: true) }
-  scope :email_eligible, -> {
+  scope :email_eligible, lambda {
     if ENV["USE_BASE_EMAIL_ELIGIBLE_COLUMN"] == "true"
       where(base_email_eligible: true)
     else
@@ -267,7 +269,9 @@ class User < ApplicationRecord
 
   after_create_commit :send_welcome_notification
 
-  after_save :sync_base_email_eligible!, if: -> { saved_changes.key?(:email) || saved_changes.key?(:registered) || saved_changes.key?(:score) }
+  after_save :sync_base_email_eligible!, if: lambda {
+                                               saved_changes.key?(:email) || saved_changes.key?(:registered) || saved_changes.key?(:score)
+                                             }
   after_save :create_conditional_autovomits
   after_save :generate_social_images
   after_commit :subscribe_to_mailchimp_newsletter
@@ -741,7 +745,7 @@ class User < ApplicationRecord
   def bot?
     community_bot? || member_bot?
   end
-  
+
   def update_presence!
     return if last_presence_at.present? && last_presence_at > 1.hour.ago
 
@@ -752,15 +756,15 @@ class User < ApplicationRecord
     # User is eligible if they are registered, have an email, are not suspended,
     # not marked as spam, have email_newsletter set to true, and their score is not below zero.
     is_eligible = registered? &&
-                  email.present? &&
-                  !has_role?(:suspended) &&
-                  !has_role?(:spam) &&
-                  notification_setting&.email_newsletter? &&
-                  score.to_i >= 0
-                  
-    if has_attribute?(:base_email_eligible) && self[:base_email_eligible] != is_eligible
-      update_column(:base_email_eligible, is_eligible)
-    end
+      email.present? &&
+      !has_role?(:suspended) &&
+      !has_role?(:spam) &&
+      notification_setting&.email_newsletter? &&
+      score.to_i >= 0
+
+    return unless has_attribute?(:base_email_eligible) && self[:base_email_eligible] != is_eligible
+
+    update_column(:base_email_eligible, is_eligible)
   end
 
   protected
@@ -900,7 +904,7 @@ class User < ApplicationRecord
     Rails.cache.delete("user-#{id}/moderator_for_subforems")
     refresh_auto_audience_segments
     trusted?
-    
+
     # Check for spam patterns when user gets spam or suspended role
     if role.name.in?(%w[spam suspended])
       Spam::DomainDetector.new(self).check_and_block_domain!
