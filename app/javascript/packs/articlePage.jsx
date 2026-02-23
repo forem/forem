@@ -15,7 +15,7 @@ function backfillLinkTarget() {
 
     if (href && (href.startsWith('http://') || href.startsWith('https://')) && !href.includes(appDomain)) {
       link.setAttribute('target', '_blank');
-      
+
       const existingRel = link.getAttribute('rel');
       const newRelValues = ["noopener", "noreferrer"];
 
@@ -117,6 +117,10 @@ function renderBottomContent() {
         window.fetch(`/bottom_items?article_id=${articleContainer.dataset.articleId}`).then((response) => {
           response.text().then((html) => {
             bottomContent.innerHTML = html;
+            // Format dates in bottom content using user's local timezone
+            if (typeof formatAllTimeElements === 'function') {
+              formatAllTimeElements(bottomContent);
+            }
           });
         });
         observer.unobserve(commentsElement);
