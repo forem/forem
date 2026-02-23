@@ -92,12 +92,12 @@
       <% else %>
         <div class="flex" id="authentication-top-nav-actions">
           <span class="hidden m:block">
-            <a href="<%= subforem_aware_sign_up_url(sign_up_path(signup_subforem: RequestStore.store[:subforem_id])) %>" class="c-link c-link--block mr-2 whitespace-nowrap ml-auto" data-no-instant>
+            <a href="<%= sign_up_path(signup_subforum: RequestStore.store[:subforum_id], redirect_to: request.url) %>" class="c-link c-link--block mr-2 whitespace-nowrap ml-auto" data-no-instant>
               <%= t("views.main.header.login") %>
             </a>
           </span>
 
-          <a href="<%= subforem_aware_sign_up_url(sign_up_path(state: "new-user", signup_subforem: RequestStore.store[:subforem_id])) %>" data-tracking-id="ca_top_nav" data-tracking-source="top_navbar" class="c-cta c-cta--branded whitespace-nowrap mr-2" data-no-instant>
+          <a href="<%= sign_up_path(state: "new-user", signup_subforum: RequestStore.store[:subforum_id], redirect_to: request.url) %>" data-tracking-id="ca_top_nav" data-tracking-source="top_navbar" class="c-cta c-cta--branded whitespace-nowrap mr-2" data-no-instant>
             <%= t("views.main.header.create_account") %>
           </a>
         </div>
