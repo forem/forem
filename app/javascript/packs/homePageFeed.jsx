@@ -5,7 +5,7 @@ import { Feed } from '../articles/Feed';
 import { TodaysPodcasts, PodcastEpisode } from '../podcasts';
 import { articlePropTypes } from '../common-prop-types';
 import { createRootFragment } from '../shared/preact/preact-root-fragment';
-import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
+import { getUserDataAndCsrfTokenSafely } from '@utilities/getUserDataAndCsrfToken';
 import { NoResults } from '../shared/components/NoResults';
 
 /**
@@ -95,8 +95,8 @@ function feedConstruct(
           feedStyle={feedStyle}
           isBookmarked={bookmarkedFeedItems.has(item.id)}
           saveable={item.user_id != currentUserId}
-          // For "saveable" props, "!=" is used instead of "!==" to compare user_id
-          // and currentUserId because currentUserId is a String while user_id is an Integer
+        // For "saveable" props, "!=" is used instead of "!==" to compare user_id
+        // and currentUserId because currentUserId is a String while user_id is an Integer
         />
       );
     }
@@ -137,7 +137,7 @@ PodcastEpisodes.propTypes = {
 export const renderFeed = async (timeFrame, afterRender) => {
   const feedContainer = document.getElementById('homepage-feed');
 
-  const { currentUser } = await getUserDataAndCsrfToken();
+  const { currentUser } = await getUserDataAndCsrfTokenSafely();
   const currentUserId = currentUser && currentUser.id;
 
   const callback = ({
@@ -154,7 +154,7 @@ export const renderFeed = async (timeFrame, afterRender) => {
     }
 
     // Check if we have actual content (not just billboards)
-    const hasActualContent = feedItems.some(item => 
+    const hasActualContent = feedItems.some(item =>
       typeof item === 'object' && item.id && item.id !== 'dummy-story'
     );
 
@@ -162,9 +162,9 @@ export const renderFeed = async (timeFrame, afterRender) => {
       // Determine feed type from localStorage or URL
       const feedTypeOf = localStorage?.getItem('current_feed') || 'discover';
       const feedType = feedTypeOf === 'following' ? 'following' : 'discover';
-      
+
       return (
-        <NoResults 
+        <NoResults
           feedType={feedType}
         />
       );

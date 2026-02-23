@@ -4,10 +4,12 @@ module Ai
   # This assesses articles based on quality, relevance, and spam indicators
   # to provide appropriate moderation labels for automated handling.
   class ContentModerationLabeler
+    VERSION = "1.0"
+
     # @param article [Article] The article to be labeled.
     def initialize(article)
-      @ai_client = Ai::Base.new
       @article = article
+      @ai_client = Ai::Base.new(wrapper: self, affected_content: article, affected_user: article.user)
     end
 
     ##
@@ -26,7 +28,7 @@ module Ai
         parse_response(response)
       rescue StandardError => e
         Rails.logger.error("Content Moderation Labeling failed (attempt #{attempt}/#{max_retries + 1}): #{e}")
-        
+
         if attempt <= max_retries
           Rails.logger.info("Retrying content moderation labeling (attempt #{attempt + 1}/#{max_retries + 1})")
           retry
@@ -172,7 +174,7 @@ module Ai
       return "no_moderation_label" unless response
 
       # Clean and normalize the response
-      label = response.strip.downcase.gsub(/[^a-z_]/, '')
+      label = response.strip.downcase.gsub(/[^a-z_]/, "")
 
       # Validate the label is one of the expected values
       valid_labels = %w[
