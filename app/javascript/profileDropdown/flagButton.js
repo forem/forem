@@ -1,7 +1,7 @@
 /* global userData */
 /* eslint-disable no-alert, import/order */
 import { request } from '@utilities/http';
-import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
+import { getUserDataAndCsrfTokenSafely } from '@utilities/getUserDataAndCsrfToken';
 
 function addFlagUserBehavior(flagButton) {
   const { profileUserId, profileUserName } = flagButton.dataset;
@@ -63,17 +63,16 @@ export function initFlag() {
     return;
   }
 
-  getUserDataAndCsrfToken().then(() => {
-    const user = userData();
-    if (!user) {
+  getUserDataAndCsrfTokenSafely().then(({ currentUser }) => {
+    if (!currentUser) {
       flagButton.remove();
       return;
     }
 
-    const trustedOrAdmin = user.trusted || user.admin;
+    const trustedOrAdmin = currentUser.trusted || currentUser.admin;
     const { profileUserId } = flagButton.dataset;
 
-    if (!trustedOrAdmin || user.id === parseInt(profileUserId, 10)) {
+    if (!trustedOrAdmin || currentUser.id === parseInt(profileUserId, 10)) {
       flagButton.remove();
     }
     addFlagUserBehavior(flagButton);
