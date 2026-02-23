@@ -1,6 +1,6 @@
 class AiChatsController < ApplicationController
   before_action :authenticate_user!
-  before_action :ensure_admin!
+  before_action :ensure_ai_available!
 
   def index
     # Render the initial chat interface
@@ -9,13 +9,19 @@ class AiChatsController < ApplicationController
   def create
     user_message = params[:message]
     history = params[:history] || []
+    context = params[:chat_context]
 
     if user_message.blank?
       render json: { error: "Message cannot be blank" }, status: :unprocessable_entity
       return
     end
 
-    chat_service = Ai::ChatService.new(current_user, history: history)
+    chat_service = if context == "editor"
+                     Ai::EditorHelperService.new(current_user, history: history, article_state: params[:article_state])
+                   else
+                     Ai::ChatService.new(current_user, history: history)
+                   end
+
     result = chat_service.generate_response(user_message)
     response_markdown = result[:response]
 
@@ -32,12 +38,12 @@ class AiChatsController < ApplicationController
 
   private
 
-  def ensure_admin!
-    return if current_user.any_admin?
+  def ensure_ai_available!
+    return if ::AI_AVAILABLE
 
     respond_to do |format|
-      format.html { redirect_to root_path, alert: "You are not authorized to access this page." }
-      format.json { render json: { error: "Unauthorized" }, status: :unauthorized }
+      format.html { redirect_to root_path, alert: "AI Chat is not available." }
+      format.json { render json: { error: "AI Chat feature not enabled." }, status: :forbidden }
     end
   end
 end
