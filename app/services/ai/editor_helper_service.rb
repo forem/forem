@@ -1,10 +1,12 @@
 module Ai
   class EditorHelperService
+    VERSION = "1.0"
+
     def initialize(user, history: [], article_state: nil)
       @user = user
       @history = history
       @article_state = article_state
-      @ai_client = Ai::Base.new
+      @ai_client = Ai::Base.new(wrapper: self, affected_user: user)
     end
 
     def generate_response(user_message)
