@@ -311,7 +311,7 @@ class Article < ApplicationRecord
     article.saved_change_to_user_id?
   }
 
-  after_commit :async_score_calc, :touch_collection, :enrich_image_attributes, :record_field_test_event,
+  after_commit :async_score_calc, :touch_collection, :enrich_image_attributes,
                on: %i[create update]
 
   # The trigger `update_reading_list_document` is used to keep the `articles.reading_list_document` column updated.
@@ -1590,13 +1590,6 @@ class Article < ApplicationRecord
     self.published_at = nil if published_at > 5.years.from_now
   end
 
-  def record_field_test_event
-    return unless published?
-    return if FieldTest.config["experiments"].nil?
-
-    Users::RecordFieldTestEventWorker
-      .perform_async(user_id, AbExperiment::GoalConversionHandler::USER_PUBLISHES_POST_GOAL)
-  end
 
   private
 

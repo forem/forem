@@ -7,9 +7,6 @@ class AbExperiment
   class GoalConversionHandler
     include FieldTest::Helpers
 
-    # The constant says "publishes post"; we're not actually concerned with the state change (from
-    # unpublished to published) but instead counting the number of published articles.
-    USER_PUBLISHES_POST_GOAL = "user_publishes_post".freeze
     USER_CREATES_PAGEVIEW_GOAL = "user_creates_pageview".freeze
     USER_CREATES_COMMENT_GOAL = "user_creates_comment".freeze
     USER_CREATES_ARTICLE_REACTION_GOAL = "user_creates_article_reaction".freeze
@@ -52,8 +49,6 @@ class AbExperiment
         convert_pageview_goal(experiment: experiment, experiment_start_date: experiment_start_date)
       when USER_CREATES_COMMENT_GOAL # comments goal. Only page views and comments are currently active.
         convert_comment_goal(experiment: experiment, experiment_start_date: experiment_start_date)
-      when USER_PUBLISHES_POST_GOAL
-        convert_post_goal(experiment: experiment, experiment_start_date: experiment_start_date)
       when USER_CREATES_ARTICLE_REACTION_GOAL
         convert_reaction_goal(experiment: experiment, experiment_start_date: experiment_start_date)
       else
@@ -108,22 +103,6 @@ class AbExperiment
                    "user_creates_comment_on_at_least_four_different_days_within_a_week")
     end
 
-    def convert_post_goal(experiment:, experiment_start_date:)
-      field_test_converted(experiment, participant: user, goal: goal) # base is we created a post
-      post_goal_with_group(experiment,
-                           [7.days.ago, experiment_start_date].max,
-                           "DATE(published_at)",
-                           4,
-                           "user_publishes_post_on_four_different_days_within_a_week")
-      post_goal(experiment,
-                [7.days.ago, experiment_start_date].max,
-                2,
-                "user_publishes_post_at_least_two_times_within_week")
-      post_goal(experiment,
-                [14.days.ago, experiment_start_date].max,
-                2,
-                "user_publishes_post_at_least_two_times_within_two_weeks")
-    end
 
     def convert_reaction_goal(experiment:, experiment_start_date:)
       field_test_converted(experiment, participant: user, goal: goal) # base is we created a post
@@ -143,19 +122,6 @@ class AbExperiment
       field_test_converted(experiment, participant: user, goal: goal)
     end
 
-    def post_goal(experiment, time_start, min_count, goal)
-      return unless user.articles.published.from_subforem.where("published_at > ?", time_start).count >= min_count
-
-      field_test_converted(experiment, participant: user, goal: goal)
-    end
-
-    def post_goal_with_group(experiment, time_start, group_value, min_count, goal)
-      post_publication_counts = user.articles.published.from_subforem.where("published_at > ?", time_start)
-        .group(group_value).count.values
-      return unless post_publication_counts.size >= min_count
-
-      field_test_converted(experiment, participant: user, goal: goal)
-    end
 
     def comment_goal(experiment, time_start, group_value, min_count, goal)
       comment_counts = user.comments.where("created_at > ?", time_start)
