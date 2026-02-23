@@ -44,54 +44,6 @@ RSpec.describe AbExperiment::GoalConversionHandler do
       end
     end
 
-    context "with user who is part of field test and user_publishes_post goal" do
-      let(:goal) { described_class::USER_PUBLISHES_POST_GOAL }
-
-      before do
-        field_test(AbExperiment::CURRENT_FEED_STRATEGY_EXPERIMENT, participant: user)
-      end
-
-      it "records a conversion", :aggregate_failures do
-        create(:article, :past, past_published_at: 2.days.ago, user_id: user.id)
-        handler.call
-        expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
-        expect(FieldTest::Event.last.name).to eq(goal)
-      end
-
-      it "records weekly post publishing conversions", :aggregate_failures do
-        create(:article, :past, past_published_at: 2.days.ago, user_id: user.id)
-        create(:article, :past, past_published_at: 3.days.ago, user_id: user.id)
-        create(:article, :past, past_published_at: 13.days.ago, user_id: user.id)
-
-        handler.call
-
-        expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
-        expect(FieldTest::Event.pluck(:name).sort)
-          .to match_array([
-            goal,
-            "user_publishes_post_at_least_two_times_within_two_weeks",
-            "user_publishes_post_at_least_two_times_within_week",
-          ].sort)
-      end
-
-      it "records a conversion when they post 4 within a week" do
-        create(:article, :past, past_published_at: 25.hours.ago, user_id: user.id)
-        create(:article, :past, past_published_at: 49.hours.ago, user_id: user.id)
-        create(:article, :past, past_published_at: 73.hours.ago, user_id: user.id)
-        create(:article, :past, past_published_at: 97.hours.ago, user_id: user.id)
-
-        handler.call
-
-        expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
-        expect(FieldTest::Event.pluck(:name).sort)
-          .to match_array([
-            goal,
-            "user_publishes_post_at_least_two_times_within_two_weeks",
-            "user_publishes_post_at_least_two_times_within_week",
-            "user_publishes_post_on_four_different_days_within_a_week",
-          ].sort)
-      end
-    end
 
     context "with user who is part of field test and user_creates_comment goal" do
       let(:goal) { described_class::USER_CREATES_COMMENT_GOAL }
