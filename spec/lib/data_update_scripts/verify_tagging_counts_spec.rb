@@ -1,6 +1,6 @@
 require "rails_helper"
 require Rails.root.join(
-  "lib/data_update_scripts/20260220_verify_tagging_counts.rb",
+  "lib/data_update_scripts/20260223130700_verify_tagging_counts.rb",
 )
 
 RSpec.describe DataUpdateScripts::VerifyTaggingCounts do

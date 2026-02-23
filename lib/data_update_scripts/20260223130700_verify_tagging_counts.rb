@@ -41,7 +41,7 @@ module DataUpdateScripts
         puts "=" * 100
 
         puts "\n✗ Issue CONFIRMED: #{mismatched_tags.length} tags have incorrect counts"
-        puts "\nTo fix, run: rails runner lib/data_update_scripts/20260220_recount_taggings.rb"
+      puts "\nTo fix, run: rails runner 'DataUpdateScripts::RecountTaggings.new.run'"
       else
         puts "\n✓ All tag counts are accurate - no mismatches found"
       end

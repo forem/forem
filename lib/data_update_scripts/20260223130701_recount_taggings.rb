@@ -8,8 +8,8 @@ module DataUpdateScripts
       start_time = Time.current
 
       begin
-        ActsAsTaggableOn::Tag.find_each do |tag|
-          ActsAsTaggableOn::Tag.reset_counters(tag.id, :taggings)
+        Tag.find_each do |tag|
+          Tag.reset_counters(tag.id, :taggings)
         end
         duration = (Time.current - start_time).round(2)
         puts "✓ Successfully recounted all taggings in #{duration}s"
