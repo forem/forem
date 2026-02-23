@@ -32,6 +32,7 @@ RSpec.describe "Rack::Attack AI Chats Throttling", type: :request do
 
       # The 11th request should be throttled
       post "/ai_chats", params: { message: "hello", chat_context: "editor" }, headers: headers
+      puts "RESPONSE BODY: #{response.body}" if response.status == 500
       expect(response).to have_http_status(:too_many_requests)
       expect(response.body).to include("Retry later")
 
