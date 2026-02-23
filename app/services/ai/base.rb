@@ -7,11 +7,14 @@ module Ai
     DEFAULT_KEY = ENV["GEMINI_API_KEY"].freeze
     attr_reader :model, :last_response
 
-    def initialize(api_key: DEFAULT_KEY, model: DEFAULT_MODEL)
+    def initialize(api_key: DEFAULT_KEY, model: DEFAULT_MODEL, wrapper: nil, affected_user: nil, affected_content: nil)
       raise ArgumentError, "API key cannot be nil" if api_key.nil? && !Rails.env.test?
 
       @api_key = api_key
       @model = model
+      @wrapper = wrapper
+      @affected_user = affected_user
+      @affected_content = affected_content
       @options = {
         headers: {
           "Content-Type" => "application/json"
@@ -19,7 +22,7 @@ module Ai
       }
     end
 
-    def call(prompt)
+    def call(prompt, retry_count: 0)
       api_url = "/models/#{@model}:generateContent?key=#{@api_key}"
       body = {
         contents: [{
@@ -30,12 +33,56 @@ module Ai
       }
 
       @options[:body] = body.to_json
-      @last_response = self.class.post(api_url, @options)
 
-      handle_response(@last_response)
+      start_time = Time.now.to_f
+      begin
+        @last_response = self.class.post(api_url, @options)
+        latency_ms = ((Time.now.to_f - start_time) * 1000).to_i
+
+        status_code = @last_response.code
+
+        unless @last_response.success?
+          error_info = @last_response.parsed_response["error"] || { "message" => "Unknown API Error" }
+          error_message = "API Error: #{status_code} - #{error_info['message']}"
+        end
+
+        log_audit(retry_count: retry_count, latency_ms: latency_ms, status_code: status_code,
+                  error_message: error_message)
+
+        handle_response(@last_response)
+      rescue StandardError => e
+        latency_ms ||= ((Time.now.to_f - start_time) * 1000).to_i
+        log_audit(retry_count: retry_count, latency_ms: latency_ms, error_message: e.message)
+        raise e
+      end
     end
 
     private
+
+    def log_audit(retry_count: 0, latency_ms: nil, status_code: nil, error_message: nil)
+      prompt_tokens = @last_response&.parsed_response&.dig("usageMetadata", "promptTokenCount")
+      candidates_tokens = @last_response&.parsed_response&.dig("usageMetadata", "candidatesTokenCount")
+      total_tokens = @last_response&.parsed_response&.dig("usageMetadata", "totalTokenCount")
+
+      AiAudit.create!(
+        ai_model: @model,
+        wrapper_object_class: @wrapper&.class&.name,
+        wrapper_object_version: @wrapper&.class&.const_defined?(:VERSION) ? @wrapper.class::VERSION : nil,
+        request_body: @options[:body],
+        response_body: @last_response&.parsed_response,
+        retry_count: retry_count,
+        affected_user: @affected_user,
+        affected_content: @affected_content,
+        prompt_token_count: prompt_tokens,
+        candidates_token_count: candidates_tokens,
+        total_token_count: total_tokens,
+        latency_ms: latency_ms,
+        status_code: status_code,
+        error_message: error_message,
+      )
+    rescue StandardError => e
+      Rails.logger.error("Failed to log AiAudit: #{e}")
+    end
 
     def handle_response(response)
       unless response.success?

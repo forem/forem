@@ -1,9 +1,11 @@
 module Ai
   class ChatService
+    VERSION = "1.0"
+
     def initialize(user, history: [])
       @user = user
       @history = history
-      @ai_client = Ai::Base.new
+      @ai_client = Ai::Base.new(wrapper: self, affected_user: user)
     end
 
     def generate_response(user_message)
