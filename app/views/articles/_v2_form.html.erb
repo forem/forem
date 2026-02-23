@@ -125,6 +125,38 @@
   <%= render "pages/editor_frontmatter_help" %>
 </div>
 
+<div id="editor-guide-sidecar" class="editor-ai-sidecar hidden">
+  <div class="editor-ai-sidecar__header">
+    <h3 class="fs-base fw-bold m-0">Editor Guide</h3>
+    <button id="editor-guide-close-btn" class="crayons-btn crayons-btn--icon crayons-btn--ghost" aria-label="Close Editor Guide" title="Close Editor Guide">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="crayons-icon"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+  </div>
+  <div class="editor-ai-sidecar__content" style="flex: 1; overflow-y: auto;">
+    <%= render "pages/editor_guide_text", version: version, is_sidecar: true %>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const guideSidecar = document.getElementById('editor-guide-sidecar');
+    const guideCloseBtn = document.getElementById('editor-guide-close-btn');
+
+    if (guideSidecar && guideCloseBtn) {
+      document.addEventListener('toggle-editor-guide', function() {
+        guideSidecar.classList.toggle('hidden');
+        guideSidecar.classList.toggle('editor-ai-sidecar--open');
+      });
+
+      guideCloseBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        guideSidecar.classList.add('hidden');
+        guideSidecar.classList.remove('editor-ai-sidecar--open');
+      });
+    }
+  });
+</script>
+
 <% if ::AI_AVAILABLE %>
   <button id="editor-ai-toggle-btn" class="crayons-btn crayons-btn--fab editor-ai-fab" aria-label="Toggle AI Editor Helper" title="Toggle AI Editor Helper">
     <span class="bot-icon" style="font-size: 1.5rem; line-height: 1;">🤖</span>

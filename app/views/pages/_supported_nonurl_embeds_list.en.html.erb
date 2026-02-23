@@ -1,35 +1,39 @@
 <% @user_approved_liquid_tags = Users::ApprovedLiquidTags.call(@user) %>
 
-<h4>Call To Action (CTA)</h4>
-<p><pre>{% cta link %} description {% endcta %}</pre></p>
-<p>Provide a <em>link</em> that a user will be redirected to. The <em>description</em> will contain the label/description for the call to action.</p>
+<div class="bg-base-inverted border border-base-20 radius-auto p-4 mb-4">
+<h4>Card</h4>
+<p>You can create a standalone highlight card to emphasize important content. The content inside the card can use Markdown.</p>
+<pre><code>{% card %}<br>This is some **important** content inside a card!<br>{% endcard %}</code></pre>
 
-<h4>Details</h4>
-<p>You can embed a <code>details</code> HTML element by using details, spoiler, or collapsible. The <em>summary</em> will be what the dropdown title displays. The <em>content</em> will be the text hidden behind the dropdown. This is great for when you want to hide text (i.e. answers to questions) behind a user action/intent (i.e. a click).</p>
+<h4 class="mt-4">Call To Action (CTA)</h4>
+<p>Provide a <em>link</em> that a user will be redirected to when clicked. The <em>description</em> will contain the label/description for the call to action button.</p>
+<pre><code>{% cta link %}<br> description <br>{% endcta %}</code></pre>
+
+<h4 class="mt-4">Details / Spoiler / Collapsible</h4>
+<p>You can embed an interactive HTML element to hide content behind a summary. This is great for hiding text (i.e. answers to questions) behind a click.</p>
 <pre>
   <code>{% details summary %} content {% enddetails %}</code>
   <code>{% spoiler summary %} content {% endspoiler %}</code>
   <code>{% collapsible summary %} content {% endcollapsible %}</code>
 </pre>
 
-<h4>KaTex</h4>
+<h4 class="mt-4">KaTex</h4>
 <p>Place your mathematical expression within a KaTeX liquid block, as follows:</p>
-<pre>{% katex %}<br> c = \pm\sqrt{a^2 + b^2}<br>{% endkatex %}<br></pre>
+<pre><code>{% katex %}<br> c = \pm\sqrt{a^2 + b^2}<br>{% endkatex %}</code></pre>
 <p>To render KaTeX inline add the "inline" option:</p>
-<pre>{% katex inline %}<br> c = \pm\sqrt{a^2 + b^2}<br>{% endkatex %}<br></pre>
+<pre><code>{% katex inline %} c = \pm\sqrt{a^2 + b^2} {% endkatex %}</code></pre>
 
-<h4>RunKit</h4>
+<h4 class="mt-4">RunKit</h4>
 <p>Put executable code within a runkit liquid block, as follows:</p>
-<pre>{% runkit<br>// hidden setup JavaScript code goes in this preamble area<br>const hiddenVar = 42<br>%}<br>// visible, reader-editable JavaScript code goes here<br>console.log(hiddenVar)<br>{% endrunkit %}<br></pre>
+<pre><code>{% runkit<br>// hidden setup JavaScript code goes in this preamble area<br>const hiddenVar = 42<br>%}<br>// visible, reader-editable JavaScript code goes here<br>console.log(hiddenVar)<br>{% endrunkit %}</code></pre>
 
 <% if @user_approved_liquid_tags.include? UserSubscriptionTag %>
-  <h4><%= community_name %> User Subscriptions</h4>
+  <h4 class="mt-4"><%= community_name %> User Subscriptions</h4>
   <p class="fs-s fw-bold">This embed can only be created within posts by Admins.</p>
   <p>You can add call-to-action text that will show above the subscribe button:</p>
   <code>{% user_subscription If you'd like to receive future updates, subscribe below! %}</code>
-  <p class="fs-s">
-    If a reader is signed out, the button will prompt them to sign in first
-    to subscribe. If the reader is signed in, the button will prompt them
-    to subscribe.
+  <p class="fs-s mb-0 mt-2">
+    If a reader is signed out, the button will prompt them to sign in first to subscribe. If the reader is signed in, the button will prompt them to subscribe.
   </p>
 <% end %>
+</div>
