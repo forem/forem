@@ -9,8 +9,8 @@ fr:
       invalid_url: URL Bolt non valide
     cloud_run_tag:
       invalid_cloud_run_url: URL Cloud Run non valide
-    claude_artifact_tag:
-      invalid_url: URL d'Artifact Claude non valide
+    claudebin_tag:
+      invalid_url: URL de Claudebin non valide
     codepen_tag:
       invalid_codepen_url: URL du CodePen non valide
       invalid_options: Options non valides

@@ -4,7 +4,7 @@ RSpec.describe "AI embed liquid tags integration", type: :liquid_tag do
   describe "Liquid::Template registration" do
     it "registers all AI embed tags" do
       tags = Liquid::Template.tags
-      expect(tags["claudeartifact"]).to eq(ClaudeArtifactTag)
+      expect(tags["claudebin"]).to eq(ClaudebinTag)
       expect(tags["huggingface"]).to eq(HuggingfaceTag)
       expect(tags["streamlit"]).to eq(StreamlitTag)
       expect(tags["bolt"]).to eq(BoltTag)
@@ -16,7 +16,7 @@ RSpec.describe "AI embed liquid tags integration", type: :liquid_tag do
 
   describe "UnifiedEmbed registry" do
     [
-      ["https://claude.site/artifacts/192abf2c-315d-4938-ae6c-6125157e44f0", ClaudeArtifactTag],
+      ["https://claudebin.com/threads/nmjOkHsi9G", ClaudebinTag],
       ["https://my-space.hf.space", HuggingfaceTag],
       ["https://huggingface.co/spaces/user/space", HuggingfaceTag],
       ["https://my-app.streamlit.app", StreamlitTag],
