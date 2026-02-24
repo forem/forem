@@ -7,6 +7,8 @@ pt:
       invalid_blogcast_id: ID do Blogcast inválido
     cloud_run_tag:
       invalid_cloud_run_url: URL do Cloud Run inválida
+    claude_artifact_tag:
+      invalid_url: URL do Claude Artifact inválida
     codepen_tag:
       invalid_codepen_url: URL do CodePen inválida
       invalid_options: Opções inválidas
