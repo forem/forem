@@ -48,9 +48,8 @@ RSpec.describe Ai::Base do
       let(:article) { create(:article, user: user) }
 
       before do
-        stub_const("DummyAiWrapper", Class.new do
-          VERSION = "1.0"
-        end)
+        stub_const("DummyAiWrapper", Class.new)
+        DummyAiWrapper.const_set(:VERSION, "1.0")
       end
 
       it "logs AiAudit with provided context" do

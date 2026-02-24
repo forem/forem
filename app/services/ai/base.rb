@@ -37,22 +37,20 @@ module Ai
       start_time = Time.now.to_f
       begin
         @last_response = self.class.post(api_url, @options)
-        latency_ms = ((Time.now.to_f - start_time) * 1000).to_i
 
+        # handle_response will raise if the response is not success? or is malformed
+        result = handle_response(@last_response)
+
+        latency_ms = ((Time.now.to_f - start_time) * 1000).to_i
         status_code = @last_response.code
 
-        unless @last_response.success?
-          error_info = @last_response.parsed_response["error"] || { "message" => "Unknown API Error" }
-          error_message = "API Error: #{status_code} - #{error_info['message']}"
-        end
+        log_audit(retry_count: retry_count, latency_ms: latency_ms, status_code: status_code)
 
-        log_audit(retry_count: retry_count, latency_ms: latency_ms, status_code: status_code,
-                  error_message: error_message)
-
-        handle_response(@last_response)
+        result
       rescue StandardError => e
-        latency_ms ||= ((Time.now.to_f - start_time) * 1000).to_i
-        log_audit(retry_count: retry_count, latency_ms: latency_ms, error_message: e.message)
+        latency_ms = ((Time.now.to_f - start_time) * 1000).to_i
+        status_code = @last_response&.code
+        log_audit(retry_count: retry_count, latency_ms: latency_ms, status_code: status_code, error_message: e.message)
         raise e
       end
     end
@@ -67,7 +65,12 @@ module Ai
       AiAudit.create!(
         ai_model: @model,
         wrapper_object_class: @wrapper&.class&.name,
-        wrapper_object_version: @wrapper&.class&.const_defined?(:VERSION) ? @wrapper.class::VERSION : nil,
+        wrapper_object_version: if @wrapper&.class&.const_defined?(:VERSION, false)
+                                  @wrapper.class.const_get(:VERSION,
+                                                           false)
+                                else
+                                  nil
+                                end,
         request_body: @options[:body],
         response_body: @last_response&.parsed_response,
         retry_count: retry_count,
