@@ -233,10 +233,10 @@ RSpec.describe MemoryFirstCache do
       expect(described_class.fetch(redis_key)).to eq(computed_value)
       
       # Wait for expiration
-      sleep(1.1)
-      
-      # Should fall back to Redis
-      expect(described_class.fetch(redis_key)).to eq(computed_value)
+      travel 1.1.seconds do
+        # Should fall back to Redis
+        expect(described_class.fetch(redis_key)).to eq(computed_value)
+      end
     end
 
     it "handles concurrent access correctly" do
