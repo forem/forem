@@ -36,6 +36,8 @@ fr:
     glitch_tag:
       invalid_glitch_id: ID de problème invalide
       invalid_options: Options non valides
+    huggingface_tag:
+      invalid_url: URL de l'espace Hugging Face non valide
     instagram_tag:
       invalid_instagram_id: ID Instagram non valide
     js_fiddle_tag:

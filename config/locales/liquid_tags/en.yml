@@ -36,6 +36,8 @@ en:
     glitch_tag:
       invalid_glitch_id: Invalid Glitch ID
       invalid_options: Invalid Options
+    huggingface_tag:
+      invalid_url: Invalid Hugging Face Space URL
     instagram_tag:
       invalid_instagram_id: Invalid Instagram ID
     js_fiddle_tag:
