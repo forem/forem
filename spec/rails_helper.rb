@@ -144,6 +144,12 @@ RSpec.configure do |config|
     end
   end
 
+  config.before do
+    ActiveRecord::Base.connection.verify!
+  rescue ActiveRecord::StatementInvalid, PG::ConnectionBad
+    ActiveRecord::Base.establish_connection
+  end
+
   config.before(:suite) do
     # Set the TZ ENV variable with the current random timezone from zonebie
     # which we can then use to properly set the browser time for Capybara specs
@@ -181,10 +187,15 @@ RSpec.configure do |config|
 
   # Only turn on VCR if :vcr is included metadata keys
   config.around do |ex|
-    if ex.metadata.key?(:vcr)
-      ex.run
-    else
-      VCR.turned_off { ex.run }
+    run_example = -> { ex.metadata.key?(:vcr) ? ex.run : VCR.turned_off { ex.run } }
+
+    begin
+      run_example.call
+    rescue ActiveRecord::StatementInvalid, PG::ConnectionBad => e
+      raise e unless e.message.include?("PQsocket")
+
+      ActiveRecord::Base.establish_connection
+      run_example.call
     end
   end
 
