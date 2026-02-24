@@ -182,25 +182,38 @@
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const toggleBtn = document.getElementById('editor-ai-toggle-btn');
-    const closeBtn = document.getElementById('editor-ai-close-btn');
-    const sidecar = document.getElementById('editor-sidecar');
+  (function() {
+    function initializeAiChatLauncher() {
+      const toggleBtn = document.getElementById('editor-ai-toggle-btn');
+      const closeBtn = document.getElementById('editor-ai-close-btn');
+      const sidecar = document.getElementById('editor-sidecar');
 
-    if (toggleBtn && closeBtn && sidecar) {
-      toggleBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        sidecar.classList.toggle('hidden');
-        sidecar.classList.toggle('editor-sidecar--open');
-      });
+      if (toggleBtn && closeBtn && sidecar && !toggleBtn.dataset.aiChatInitialized) {
+        toggleBtn.dataset.aiChatInitialized = 'true';
+        toggleBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          sidecar.classList.toggle('hidden');
+          sidecar.classList.toggle('editor-sidecar--open');
+        });
 
-      closeBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        sidecar.classList.add('hidden');
-        sidecar.classList.remove('editor-sidecar--open');
-      });
+        closeBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          sidecar.classList.add('hidden');
+          sidecar.classList.remove('editor-sidecar--open');
+        });
+      }
     }
-  });
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeAiChatLauncher);
+    } else {
+      initializeAiChatLauncher();
+    }
+
+    if (typeof InstantClick !== 'undefined') {
+      InstantClick.on('change', initializeAiChatLauncher);
+    }
+  })();
 </script>
 <% end %>
 
