@@ -79,6 +79,8 @@ module Ai
         error_message: error_message,
       )
     rescue StandardError => e
+      raise e if Rails.env.test?
+
       Rails.logger.error("Failed to log AiAudit: #{e}")
     end
 
