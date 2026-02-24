@@ -5,6 +5,8 @@ pt:
       invalid_asciinema_id: 'ID do Asciinema inválido: %{id}'
     blogcast_tag:
       invalid_blogcast_id: ID do Blogcast inválido
+    bolt_tag:
+      invalid_url: URL do Bolt inválida
     cloud_run_tag:
       invalid_cloud_run_url: URL do Cloud Run inválida
     claude_artifact_tag:
@@ -55,6 +57,8 @@ pt:
       no_source_found: Nenhuma fonte encontrada
     listing_tag:
       invalid_url_or_slug: URL ou slug inválido. Anúncio não encontrado.
+    lovable_tag:
+      invalid_url: URL do Lovable inválida
     loom_tag:
       invalid_loom_url: URL do Loom inválida.
     medium_tag:
@@ -91,6 +95,8 @@ pt:
       invalid_stackblitz_id: ID do Stackblitz inválido
     stackery_tag:
       missing_argument: Stackery - Argumentos de nome do proprietário e/ou repositório ausentes
+    streamlit_tag:
+      invalid_url: URL do Streamlit inválida
     stackexchange_tag:
       post_not_found: "Não foi possível encontrar um post com esse ID: {% %{tag} %{input} %}"
       invalid_id: 'ID do Stack Exchange inválido: {% %{tag} %{input} %}'
@@ -103,12 +109,16 @@ pt:
       invalid_twitch_id: ID, Slug ou URL do Twitch inválido
     twitter_timeline_tag:
       invalid_url: URL da Timeline do Twitter inválida
+    v0_tag:
+      invalid_url: URL do v0 inválida
     unified_embed:
       tag:
         invalid_url: URL fornecida pode ter um erro de digitação ou erro; por favor, verifique e tente novamente
         too_many_redirects: Muitos redirecionamentos
         not_found: Não encontrado
         listings_disabled: Anúncios desabilitados
+    warp_tag:
+      invalid_url: URL do Warp inválida
     wikipedia_tag:
       invalid_wikipedia_url: URL da Wikipedia inválida
       article_not_found: "Não foi possível encontrar o artigo da Wikipedia - %{input}: %{response_detail}"
