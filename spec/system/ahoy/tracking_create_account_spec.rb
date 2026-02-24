@@ -2,8 +2,13 @@ require "rails_helper"
 
 RSpec.describe "Tracking 'Clicked on Create Account'", :js do
   def wait_for_async_events_listener
-    # temp fix for flaky specs
-    sleep 5
+    # wait for ahoy to be available globally
+    Timeout.timeout(Capybara.default_max_wait_time) do
+      loop until page.evaluate_script("typeof window.ahoy === 'object'")
+      sleep 0.1 # Small buffer for subsequent event listener attachment
+    end
+  rescue Timeout::Error => e
+    raise "window.ahoy was not loaded: #{e.message}"
   end
 
   context "when on the homepage" do
