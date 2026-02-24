@@ -4,6 +4,7 @@ RSpec.describe V0Tag, type: :liquid_tag do
   describe "#render" do
     let(:valid_vusercontent_url) { "https://abc123def.vusercontent.net" }
     let(:valid_vusercontent_lite) { "https://abc123def.lite.vusercontent.net" }
+    let(:valid_vusercontent_path) { "https://generated.vusercontent.net/p/dh2l48aqQPN" }
     let(:valid_v0_chat_url) { "https://v0.dev/chat/my-project-abc123" }
     let(:invalid_url) { "https://example.com/v0" }
     let(:invalid_v0_url) { "https://v0.dev/pricing" }
@@ -24,6 +25,12 @@ RSpec.describe V0Tag, type: :liquid_tag do
       liquid = generate_new_liquid(valid_vusercontent_lite)
       rendered = liquid.render
       expect(rendered).to include('src="https://abc123def.lite.vusercontent.net"')
+    end
+
+    it "accepts valid vusercontent.net URL with path" do
+      liquid = generate_new_liquid(valid_vusercontent_path)
+      rendered = liquid.render
+      expect(rendered).to include('src="https://generated.vusercontent.net/p/dh2l48aqQPN"')
     end
 
     it "accepts valid v0.dev/chat URL" do

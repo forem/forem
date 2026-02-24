@@ -1,6 +1,6 @@
 class V0Tag < LiquidTagBase
   PARTIAL = "liquids/v0".freeze
-  VUSERCONTENT_REGEXP = %r{\Ahttps://[\w-]+(?:\.lite)?\.vusercontent\.net/?\z}
+  VUSERCONTENT_REGEXP = %r{\Ahttps://[\w-]+(?:\.lite)?\.vusercontent\.net(?:/[\w.-]*)*/?\z}
   V0_CHAT_REGEXP = %r{\Ahttps://v0\.dev/chat/[\w-]+/?\z}
   REGISTRY_REGEXP = %r{https://(?:[\w-]+(?:\.lite)?\.vusercontent\.net|v0\.dev/chat/[\w-]+)}
 
