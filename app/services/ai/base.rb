@@ -65,7 +65,12 @@ module Ai
       AiAudit.create!(
         ai_model: @model,
         wrapper_object_class: @wrapper&.class&.name,
-        wrapper_object_version: @wrapper&.class&.const_defined?(:VERSION) ? @wrapper.class::VERSION : nil,
+        wrapper_object_version: if @wrapper&.class&.const_defined?(:VERSION, false)
+                                  @wrapper.class.const_get(:VERSION,
+                                                           false)
+                                else
+                                  nil
+                                end,
         request_body: @options[:body],
         response_body: @last_response&.parsed_response,
         retry_count: retry_count,
@@ -79,8 +84,6 @@ module Ai
         error_message: error_message,
       )
     rescue StandardError => e
-      raise e if Rails.env.test?
-
       Rails.logger.error("Failed to log AiAudit: #{e}")
     end
 
