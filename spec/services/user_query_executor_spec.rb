@@ -3,7 +3,6 @@ require "rails_helper"
 RSpec.describe UserQueryExecutor do
   let(:user) { create(:user) }
   let(:user_query) { create(:user_query, query: "SELECT id FROM users LIMIT 5", created_by: user) }
-  let!(:test_users) { create_list(:user, 10) }
 
   describe "#initialize" do
     it "sets up the executor with valid parameters" do
@@ -47,6 +46,8 @@ RSpec.describe UserQueryExecutor do
   end
 
   describe "#execute" do
+    let!(:test_users) { create_list(:user, 10) }
+
     it "executes the query and returns users" do
       executor = UserQueryExecutor.new(user_query)
       result = executor.execute
@@ -93,6 +94,8 @@ RSpec.describe UserQueryExecutor do
   end
 
   describe "#test_execute" do
+    let!(:test_users) { create_list(:user, 10) }
+
     it "executes with limited number of users" do
       executor = UserQueryExecutor.new(user_query)
       result = executor.test_execute(limit: 3)
