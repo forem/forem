@@ -95,7 +95,7 @@
     "lint-staged": "^13.3.0",
     "markdown-loader": "^7.0.0",
     "mocha-junit-reporter": "^2.2.1",
-    "prettier": "^2.8.8",
+    "prettier": "^3.8.1",
     "sass": "1.54.0",
     "sass-loader": "^13.3.3",
     "storybook-addon-jsx": "^7.3.14",
