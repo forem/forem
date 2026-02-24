@@ -9,12 +9,14 @@ module Ai
   # - Is contextual and not spam (for replies)
   # - Contributes meaningfully to the welcome thread
   class CommentHelpfulnessAssessor
+    VERSION = "1.0"
+
     # @param comment [Comment] The comment object to be assessed.
     # @param welcome_thread [Article] The welcome thread article for context.
     def initialize(comment, welcome_thread)
-      @ai_client = Ai::Base.new
       @comment = comment
       @welcome_thread = welcome_thread
+      @ai_client = Ai::Base.new(wrapper: self, affected_content: comment, affected_user: comment.user)
     end
 
     ##
@@ -45,9 +47,9 @@ module Ai
                                else
                                  parent = @comment.parent
                                  "This is a reply to the following comment:\n" \
-                                 "---\n" \
-                                 "#{parent.body_markdown.first(500)}\n" \
-                                 "---"
+                                   "---\n" \
+                                   "#{parent.body_markdown.first(500)}\n" \
+                                   "---"
                                end
 
       <<~PROMPT
@@ -113,4 +115,3 @@ module Ai
     end
   end
 end
-
