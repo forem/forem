@@ -737,6 +737,14 @@ RSpec.describe User do
       expect(user.score).to eq(-470)
     end
 
+    it "calculates a score of -500 if suspended" do
+      user.add_role(:suspended)
+      user.update_column(:badge_achievements_count, 3)
+
+      user.calculate_score
+      expect(user.score).to eq(-470)
+    end
+
     it "syncs base_email_eligible! after calculating score" do
       user.update!(email: "test@example.com", registered: true)
       user.notification_setting.update!(email_newsletter: true)
@@ -744,7 +752,7 @@ RSpec.describe User do
 
       user.add_role(:spam)
       user.calculate_score
-      
+
       expect(user.base_email_eligible).to eq(false)
     end
   end
@@ -1089,8 +1097,8 @@ RSpec.describe User do
     it "indexes the user on create" do
       allow(AlgoliaSearch::SearchIndexWorker).to receive(:perform_async)
       create(:user)
-      expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("User", kind_of(Integer), 
-false).once
+      expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("User", kind_of(Integer),
+                                                                                     false).once
     end
 
     it "updates user index if user's name has changed" do
@@ -1139,10 +1147,10 @@ false).once
   describe "type_of enum" do
     it "has the correct enum values" do
       expect(User.type_ofs).to eq({
-        "member" => 0,
-        "community_bot" => 1,
-        "member_bot" => 2
-      })
+                                    "member" => 0,
+                                    "community_bot" => 1,
+                                    "member_bot" => 2
+                                  })
     end
 
     it "defaults to member" do
@@ -1214,7 +1222,9 @@ false).once
     let!(:community_bot) { create(:user, type_of: :community_bot, onboarding_subforem_id: subforem.id) }
     let!(:member_bot) { create(:user, type_of: :member_bot, onboarding_subforem_id: subforem.id) }
     let!(:regular_user) { create(:user, type_of: :member, onboarding_subforem_id: subforem.id) }
-    let!(:other_subforem_bot) { create(:user, type_of: :community_bot, onboarding_subforem_id: create(:subforem, domain: "other.com").id) }
+    let!(:other_subforem_bot) do
+      create(:user, type_of: :community_bot, onboarding_subforem_id: create(:subforem, domain: "other.com").id)
+    end
 
     it "returns only community bots for the specified subforem" do
       result = User.community_bots_for_subforem(subforem.id)
