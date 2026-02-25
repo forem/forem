@@ -349,7 +349,7 @@ class User < ApplicationRecord
     # mass re-calculation is needed.
     user_reaction_points = Reaction.user_vomits.where(reactable_id: id).sum(:points)
     calculated_score = (badge_achievements_count * 10) + user_reaction_points
-    calculated_score -= 500 if spam?
+    calculated_score -= 500 if spam? || suspended?
     update_column(:score, calculated_score)
     sync_base_email_eligible!
     AlgoliaSearch::SearchIndexWorker.perform_async(self.class.name, id, false)
@@ -908,6 +908,7 @@ class User < ApplicationRecord
     # Check for spam patterns when user gets spam or suspended role
     if role.name.in?(%w[spam suspended])
       Spam::DomainDetector.new(self).check_and_block_domain!
+      calculate_score
     end
 
     sync_base_email_eligible! if role.name == "suspended" || role.name == "spam"
