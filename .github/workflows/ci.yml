@@ -148,7 +148,7 @@ jobs:
           name: rspec-artifacts-${{ matrix.ci_node_index }}
           path: tmp/capybara
       - name: Rename folder
-        run: mv coverage/simplecov coverage/simplecov-${{ matrix.ci_node_index }}
+        run: if [ -d "coverage/simplecov" ]; then mv coverage/simplecov coverage/simplecov-${{ matrix.ci_node_index }}; fi
       - name: Upload test coverage result
         uses: actions/upload-artifact@v4
         with:
