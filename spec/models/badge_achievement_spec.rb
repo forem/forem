@@ -36,6 +36,23 @@ RSpec.describe BadgeAchievement do
     expect(Notification).to have_received(:send_new_badge_achievement_notification).with(achievement)
   end
 
+  describe "cache busting" do
+    let(:user) { create(:user) }
+
+    it "enqueues Users::BustCacheWorker on create" do
+      sidekiq_assert_enqueued_with(job: Users::BustCacheWorker, args: [user.id]) do
+        create(:badge_achievement, user: user, badge: badge)
+      end
+    end
+
+    it "enqueues Users::BustCacheWorker on destroy" do
+      badge_achievement = create(:badge_achievement, user: user, badge: badge)
+      sidekiq_assert_enqueued_with(job: Users::BustCacheWorker, args: [user.id]) do
+        badge_achievement.destroy
+      end
+    end
+  end
+
   describe "Top 7 badge reputation modifier callback" do
     let(:top_seven_badge) { create(:badge, title: "Top 7") }
     let(:other_badge) { create(:badge, title: "Other Badge") }
