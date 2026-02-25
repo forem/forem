@@ -5,12 +5,10 @@ RSpec.describe WarpTag, type: :liquid_tag do
     let(:block_id) { "qn0g1CqQnkYjEafPH5HCVT" }
     let(:valid_block_url) { "https://app.warp.dev/block/#{block_id}" }
     let(:valid_embed_url) { "https://app.warp.dev/block/embed/#{block_id}" }
-    let(:invalid_url) { "https://example.com/warp" }
-    let(:invalid_warp_url) { "https://app.warp.dev/settings" }
 
     def generate_new_liquid(url)
-      Liquid::Template.register_tag("warp", described_class)
-      Liquid::Template.parse("{% warp #{url} %}")
+      stub_request(:head, url).to_return(status: 200, body: "", headers: {})
+      Liquid::Template.parse("{% embed #{url} %}")
     end
 
     it "accepts valid block URL and rewrites to embed URL" do
@@ -34,29 +32,12 @@ RSpec.describe WarpTag, type: :liquid_tag do
       expect(rendered).to include('allow="clipboard-read; clipboard-write"')
       expect(rendered).to include('loading="lazy"')
     end
-
-    it "raises an error for invalid URL" do
-      expect { generate_new_liquid(invalid_url).render }
-        .to raise_error("Invalid Warp URL")
-    end
-
-    it "raises an error for non-block Warp URL" do
-      expect { generate_new_liquid(invalid_warp_url).render }
-        .to raise_error("Invalid Warp URL")
-    end
   end
 
-  describe "embed tag integration" do
-    let(:url) { "https://app.warp.dev/block/qn0g1CqQnkYjEafPH5HCVT" }
-
-    def generate_embed_liquid(url)
-      stub_request(:head, url).to_return(status: 200, body: "", headers: {})
-      Liquid::Template.parse("{% embed #{url} %}")
-    end
-
-    it "works with embed tag" do
-      liquid = generate_embed_liquid(url)
-      expect(liquid.render).to include('<div class="ltag__warp">')
+  describe "UnifiedEmbed registry" do
+    it "routes warp.dev block URLs to WarpTag" do
+      handler = UnifiedEmbed::Registry.find_liquid_tag_for(link: "https://app.warp.dev/block/abc123")
+      expect(handler).to eq(described_class)
     end
   end
 end

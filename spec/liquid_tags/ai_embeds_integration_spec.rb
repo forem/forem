@@ -1,25 +1,12 @@
 require "rails_helper"
 
 RSpec.describe "AI embed liquid tags integration", type: :liquid_tag do
-  describe "Liquid::Template registration" do
-    it "registers all AI embed tags" do
-      tags = Liquid::Template.tags
-      expect(tags["claudebin"]).to eq(ClaudebinTag)
-      expect(tags["huggingface"]).to eq(HuggingfaceTag)
-      expect(tags["streamlit"]).to eq(StreamlitTag)
-      expect(tags["bolt"]).to eq(BoltTag)
-      expect(tags["lovable"]).to eq(LovableTag)
-      expect(tags["v0"]).to eq(V0Tag)
-      expect(tags["warp"]).to eq(WarpTag)
-    end
-  end
-
   describe "UnifiedEmbed registry" do
     [
-      ["https://claudebin.com/threads/nmjOkHsi9G", ClaudebinTag],
       ["https://my-space.hf.space", HuggingfaceTag],
       ["https://huggingface.co/spaces/user/space", HuggingfaceTag],
-      ["https://my-app.streamlit.app", StreamlitTag],
+      ["https://huggingface.co/datasets/fka/awesome-chatgpt-prompts", HuggingfaceTag],
+
       ["https://project.bolt.host", BoltTag],
       ["https://bolt.new/~/my-project", BoltTag],
       ["https://my-app.lovable.app", LovableTag],
@@ -30,6 +17,23 @@ RSpec.describe "AI embed liquid tags integration", type: :liquid_tag do
       it "routes #{url} to #{expected_klass}" do
         handler = UnifiedEmbed::Registry.find_liquid_tag_for(link: url)
         expect(handler).to eq(expected_klass)
+      end
+    end
+  end
+
+  describe "rendering through {% embed %} tag" do
+    [
+      ["https://my-space.hf.space", "ltag__huggingface"],
+
+      ["https://my-project.bolt.host", "ltag__bolt"],
+      ["https://my-app.lovable.app", "ltag__lovable"],
+      ["https://abc123def.vusercontent.net", "ltag__v0"],
+      ["https://app.warp.dev/block/abc123", "ltag__warp"],
+    ].each do |url, expected_class|
+      it "renders #{expected_class} for #{url}" do
+        stub_request(:head, url).to_return(status: 200, body: "", headers: {})
+        liquid = Liquid::Template.parse("{% embed #{url} %}")
+        expect(liquid.render).to include(expected_class)
       end
     end
   end

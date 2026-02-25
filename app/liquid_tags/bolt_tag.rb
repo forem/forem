@@ -30,5 +30,4 @@ class BoltTag < LiquidTagBase
   end
 end
 
-Liquid::Template.register_tag("bolt", BoltTag)
 UnifiedEmbed.register(BoltTag, regexp: BoltTag::REGISTRY_REGEXP)

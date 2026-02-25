@@ -9,8 +9,7 @@ pt:
       invalid_url: URL do Bolt inválida
     cloud_run_tag:
       invalid_cloud_run_url: URL do Cloud Run inválida
-    claudebin_tag:
-      invalid_url: URL do Claudebin inválida
+
     codepen_tag:
       invalid_codepen_url: URL do CodePen inválida
       invalid_options: Opções inválidas
@@ -95,8 +94,7 @@ pt:
       invalid_stackblitz_id: ID do Stackblitz inválido
     stackery_tag:
       missing_argument: Stackery - Argumentos de nome do proprietário e/ou repositório ausentes
-    streamlit_tag:
-      invalid_url: URL do Streamlit inválida
+
     stackexchange_tag:
       post_not_found: "Não foi possível encontrar um post com esse ID: {% %{tag} %{input} %}"
       invalid_id: 'ID do Stack Exchange inválido: {% %{tag} %{input} %}'

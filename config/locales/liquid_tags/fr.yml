@@ -9,8 +9,7 @@ fr:
       invalid_url: URL Bolt non valide
     cloud_run_tag:
       invalid_cloud_run_url: URL Cloud Run non valide
-    claudebin_tag:
-      invalid_url: URL de Claudebin non valide
+
     codepen_tag:
       invalid_codepen_url: URL du CodePen non valide
       invalid_options: Options non valides
@@ -95,8 +94,7 @@ fr:
       invalid_stackblitz_id: ID Stackblitz non valide
     stackery_tag:
       missing_argument: Stackery - Arguments manquants pour le nom du propriétaire et/ou du référentiel
-    streamlit_tag:
-      invalid_url: URL Streamlit non valide
+
     stackexchange_tag:
       post_not_found: "Impossible de trouver le message avec cet identifiant : {% %{tag} %{input} %}"
       invalid_id: 'ID de Stack Exchange non valide : {% %{tag} %{input} %}'

@@ -27,5 +27,4 @@ class WarpTag < LiquidTagBase
   end
 end
 
-Liquid::Template.register_tag("warp", WarpTag)
 UnifiedEmbed.register(WarpTag, regexp: WarpTag::REGISTRY_REGEXP)

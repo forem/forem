@@ -28,5 +28,4 @@ class V0Tag < LiquidTagBase
   end
 end
 
-Liquid::Template.register_tag("v0", V0Tag)
 UnifiedEmbed.register(V0Tag, regexp: V0Tag::REGISTRY_REGEXP)

@@ -26,5 +26,4 @@ class LovableTag < LiquidTagBase
   end
 end
 
-Liquid::Template.register_tag("lovable", LovableTag)
 UnifiedEmbed.register(LovableTag, regexp: LovableTag::REGISTRY_REGEXP)
