@@ -89,7 +89,29 @@ Rack::Attack.enabled = false
 # see https://github.com/fnando/browser/blob/master/CHANGELOG.md#300
 Browser::Bot.matchers.delete(Browser::Bot::EmptyUserAgentMatcher)
 
+module PGConnectionBadMatcher
+  def self.===(exception)
+    # Match specifically the statement invalid OR PG::ConnectionBad
+    (exception.is_a?(ActiveRecord::StatementInvalid) && exception.message.include?("PG::ConnectionBad")) ||
+      (defined?(PG::ConnectionBad) && exception.is_a?(PG::ConnectionBad)) ||
+      (exception.class.name == "PG::ConnectionBad")
+  end
+end
+
 RSpec.configure do |config|
+  # Retries spec up to 3 times if there is a PG::ConnectionBad error.
+  config.default_retry_count = 3
+  config.exceptions_to_retry = [PGConnectionBadMatcher]
+
+  # To solve cascading failures across the whole file after a DB connection drop, 
+  # we force a reconnection on exception.
+  config.retry_callback = proc do |ex|
+    if ex.exception && PGConnectionBadMatcher === ex.exception
+      puts "Retrying due to PG::ConnectionBad. Reconnecting to the database."
+      ActiveRecord::Base.connection_pool.disconnect!
+    end
+  end
+
   config.use_transactional_fixtures = true
   config.fixture_path = Rails.root.join("spec/fixtures")
 
