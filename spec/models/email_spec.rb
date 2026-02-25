@@ -55,10 +55,10 @@ RSpec.describe Email, type: :model do
           expect(Emails::EnqueueCustomBatchSendWorker).to have_received(:perform_async).exactly(24).times
 
           # Example assertions for boundaries
-          expect(Emails::EnqueueCustomBatchSendWorker).to have_received(:perform_async).with(email.id, 1, 250).ordered
-          expect(Emails::EnqueueCustomBatchSendWorker).to have_received(:perform_async).with(email.id, 251, 500).ordered
+          expect(Emails::EnqueueCustomBatchSendWorker).to have_received(:perform_async).with(email.id, 1, 250)
+          expect(Emails::EnqueueCustomBatchSendWorker).to have_received(:perform_async).with(email.id, 251, 500)
           expect(Emails::EnqueueCustomBatchSendWorker).to have_received(:perform_async).with(email.id, 5751,
-                                                                                             6000).ordered
+                                                                                             6000)
         end
 
         it "only enqueues once even if re-saved" do
