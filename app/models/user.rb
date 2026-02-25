@@ -347,12 +347,17 @@ class User < ApplicationRecord
     # It can be changed as frequently as needed to do a better job reflecting its purpose
     # Changes should generally keep the score within the same order of magnitude so that
     # mass re-calculation is needed.
-    user_reaction_points = Reaction.user_vomits.where(reactable_id: id).sum(:points)
+    user_reaction_points = new_record? ? 0 : Reaction.user_vomits.where(reactable_id: id).sum(:points)
     calculated_score = (badge_achievements_count * 10) + user_reaction_points
     calculated_score -= 500 if spam? || suspended?
-    update_column(:score, calculated_score)
-    sync_base_email_eligible!
-    AlgoliaSearch::SearchIndexWorker.perform_async(self.class.name, id, false)
+
+    if new_record?
+      self.score = calculated_score
+    else
+      update_column(:score, calculated_score)
+      sync_base_email_eligible!
+      AlgoliaSearch::SearchIndexWorker.perform_async(self.class.name, id, false)
+    end
   end
 
   def path
@@ -764,7 +769,11 @@ class User < ApplicationRecord
 
     return unless has_attribute?(:base_email_eligible) && self[:base_email_eligible] != is_eligible
 
-    update_column(:base_email_eligible, is_eligible)
+    if new_record?
+      self.base_email_eligible = is_eligible
+    else
+      update_column(:base_email_eligible, is_eligible)
+    end
   end
 
   protected
