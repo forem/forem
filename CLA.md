@@ -2,7 +2,7 @@ Contribution License Agreement
 
 This Contribution License Agreement (“Agreement”) is agreed to by the party
 signing below (“You”), and conveys certain license rights to Major League Hacking PBC, Inc.
-and its affiliates (“DEV” or "MLH") for Your contributions to DEV open source projects.
+and its affiliates (“DEV” or “MLH”) for Your contributions to DEV open source projects.
 This Agreement is effective upon Your acknowledgment via the CLA Assistant tool.
 All prospective contributors to DEV open source projects must sign this
 Agreement (digitally or otherwise) before any changes will be merged.
