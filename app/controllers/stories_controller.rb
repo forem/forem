@@ -270,7 +270,7 @@ class StoriesController < ApplicationController
   end
 
   def redirect_if_organization_view_param
-    redirect_to admin_organization_path(@organization.id) if params[:view] == "moderate"
+    redirect_to admin_organization_path(@organization.id) if REDIRECT_VIEW_PARAMS.include?(params[:view])
   end
 
   def redirect_if_inactive_in_subforem_for_user
