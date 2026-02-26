@@ -37,6 +37,12 @@ export function handleURLPasted(textAreaRef) {
     setTimeout(() => {
       removePopover();
 
+      // Skip if the pasted URL is already inside a liquid tag (e.g. {% embed ... %})
+      const currentValue = textarea.value;
+      const before = currentValue.substring(0, insertPos);
+      const after = currentValue.substring(insertPos + pastedText.length);
+      if (before.match(/\{%\s*embed\s+$/) && after.match(/^\s*%\}/)) return;
+
       // Calculate position at the end of the pasted URL
       const cursorPos = insertPos + pastedText.length;
       let x = 0;

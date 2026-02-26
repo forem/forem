@@ -123,6 +123,19 @@ describe('pasteURLHelpers', () => {
     expect(document.getElementById('embed-url-popover')).toBeNull();
   });
 
+  it('does not show popover when URL is pasted inside an existing liquid tag', () => {
+    const url = 'https://my-app.lovable.app';
+    // Simulate pasting a URL to replace one already inside {% embed ... %}
+    textAreaRef.current.value = `{% embed ${url} %}`;
+    textAreaRef.current.selectionStart = 9; // right after "{% embed "
+
+    handler(createPasteEvent(url));
+    jest.advanceTimersByTime(10);
+
+    const popover = document.getElementById('embed-url-popover');
+    expect(popover).toBeNull();
+  });
+
   it('uses fallback replacement when URL position has shifted', () => {
     const url = 'https://my-app.lovable.app';
     textAreaRef.current.selectionStart = 19;
