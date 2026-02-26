@@ -1,0 +1,388 @@
+<div class="agent-session-upload-page">
+  <header class="agent-session-page-header">
+    <div class="agent-session-header-row">
+      <h1>Upload Agent Session</h1>
+      <div class="agent-session-header-actions">
+        <%= link_to "← All Sessions", agent_sessions_path, class: "crayons-btn crayons-btn--ghost crayons-btn--s" %>
+      </div>
+    </div>
+    <p>Upload a coding agent session from Claude Code, Codex, Gemini CLI, Pi, or other tools.
+       You'll be able to curate which parts to include in your post.</p>
+  </header>
+
+  <div class="agent-session-upload-form" id="upload-form">
+    <div class="agent-session-form-group">
+      <label for="session-title" class="agent-session-label">Session Title</label>
+      <input type="text" id="session-title" placeholder="e.g. Building a REST API with Claude Code" class="agent-session-input" required />
+    </div>
+
+    <div class="agent-session-form-group">
+      <label for="session-tool" class="agent-session-label">Agent Tool</label>
+      <select id="session-tool" class="agent-session-select">
+        <option value="auto">Auto-detect</option>
+        <option value="claude_code">Claude Code</option>
+        <option value="codex">Codex (OpenAI)</option>
+        <option value="gemini_cli">Gemini CLI</option>
+        <option value="pi">Pi</option>
+        <option value="opencode">OpenCode</option>
+        <option value="cursor">Cursor</option>
+        <option value="github_copilot">GitHub Copilot</option>
+      </select>
+    </div>
+
+    <div class="agent-session-form-group">
+      <label class="agent-session-label">Session File</label>
+      <div class="agent-session-file-drop" id="agent-session-dropzone">
+        <input type="file" accept=".jsonl,.json,.md,.txt,.log" class="agent-session-file-input" id="agent-session-file-input" />
+        <div class="agent-session-drop-text" id="drop-text">
+          <p><strong>Drop your session file here</strong> or click to browse</p>
+          <p class="agent-session-drop-hint">Supports .jsonl, .json, .md, .log files (max 10MB)</p>
+        </div>
+      </div>
+
+      <div class="agent-session-file-preview" id="file-preview" style="display:none">
+        <div class="file-preview-icon">&#128196;</div>
+        <div class="file-preview-details">
+          <div class="file-preview-name" id="preview-filename"></div>
+          <div class="file-preview-meta">
+            <span id="preview-filesize"></span>
+            <span id="preview-lines"></span>
+            <span id="preview-detected-tool" style="display:none"></span>
+          </div>
+        </div>
+        <button type="button" class="file-preview-remove" id="remove-file-btn" title="Remove file">&times;</button>
+      </div>
+    </div>
+
+    <div class="agent-session-help">
+      <details>
+        <summary>Where to find your session files</summary>
+        <dl class="agent-session-paths">
+          <dt>Claude Code</dt>
+          <dd><code>~/.claude/projects/&lt;project&gt;/*.jsonl</code></dd>
+          <dt>Codex (OpenAI)</dt>
+          <dd><code>~/.codex/sessions/YYYY/MM/DD/*.jsonl</code></dd>
+          <dt>Gemini CLI</dt>
+          <dd><code>~/.gemini/tmp/session-*.json</code></dd>
+          <dt>Pi</dt>
+          <dd><code>~/.pi/agent/sessions/&lt;project&gt;/*.jsonl</code></dd>
+          <dt>GitHub Copilot</dt>
+          <dd><code>~/.copilot/session-state/&lt;session-id&gt;/events.jsonl</code></dd>
+        </dl>
+      </details>
+    </div>
+
+    <div class="agent-session-form-actions">
+      <button type="button" class="crayons-btn" id="upload-btn" disabled>Upload & Parse</button>
+    </div>
+
+    <!-- Progress UI -->
+    <div class="agent-session-progress" id="upload-progress" style="display:none">
+      <div class="progress-steps">
+        <div class="progress-step" id="step-upload">
+          <div class="progress-step-indicator"></div>
+          <div class="progress-step-label">Uploading file</div>
+          <div class="progress-step-detail" id="step-upload-detail"></div>
+        </div>
+        <div class="progress-step" id="step-parse">
+          <div class="progress-step-indicator"></div>
+          <div class="progress-step-label">Parsing session</div>
+          <div class="progress-step-detail" id="step-parse-detail"></div>
+        </div>
+        <div class="progress-step" id="step-done">
+          <div class="progress-step-indicator"></div>
+          <div class="progress-step-label">Ready to curate</div>
+          <div class="progress-step-detail" id="step-done-detail"></div>
+        </div>
+      </div>
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+    </div>
+
+    <div class="agent-session-error" id="upload-error" style="display:none">
+      <p id="error-message"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var dropzone = document.getElementById('agent-session-dropzone');
+  var fileInput = document.getElementById('agent-session-file-input');
+  var dropText = document.getElementById('drop-text');
+  var filePreview = document.getElementById('file-preview');
+  var previewFilename = document.getElementById('preview-filename');
+  var previewFilesize = document.getElementById('preview-filesize');
+  var previewLines = document.getElementById('preview-lines');
+  var previewDetected = document.getElementById('preview-detected-tool');
+  var removeBtn = document.getElementById('remove-file-btn');
+  var uploadBtn = document.getElementById('upload-btn');
+  var progressUI = document.getElementById('upload-progress');
+  var progressBar = document.getElementById('progress-bar');
+  var errorUI = document.getElementById('upload-error');
+  var errorMsg = document.getElementById('error-message');
+  var titleInput = document.getElementById('session-title');
+  var toolSelect = document.getElementById('session-tool');
+
+  var selectedFile = null;
+
+  // Drag and drop
+  dropzone.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    dropzone.classList.add('drag-over');
+  });
+  dropzone.addEventListener('dragleave', function() {
+    dropzone.classList.remove('drag-over');
+  });
+  dropzone.addEventListener('drop', function(e) {
+    e.preventDefault();
+    dropzone.classList.remove('drag-over');
+    if (e.dataTransfer.files.length) {
+      handleFileSelected(e.dataTransfer.files[0]);
+    }
+  });
+  fileInput.addEventListener('change', function() {
+    if (fileInput.files.length) {
+      handleFileSelected(fileInput.files[0]);
+    }
+  });
+
+  removeBtn.addEventListener('click', function() {
+    clearFile();
+  });
+
+  function handleFileSelected(file) {
+    // Validate size
+    if (file.size > 10 * 1024 * 1024) {
+      showError('File is too large. Maximum size is 10MB.');
+      return;
+    }
+
+    // Validate extension
+    var ext = file.name.split('.').pop().toLowerCase();
+    if (!['jsonl', 'json', 'md', 'txt', 'log'].includes(ext)) {
+      showError('Unsupported file type. Please use .jsonl, .json, .md, .txt, or .log files.');
+      return;
+    }
+
+    selectedFile = file;
+    hideError();
+
+    // Show file preview
+    previewFilename.textContent = file.name;
+    previewFilesize.textContent = formatBytes(file.size);
+    dropText.style.display = 'none';
+    filePreview.style.display = 'flex';
+    uploadBtn.disabled = false;
+
+    // Read file to count lines and auto-detect tool
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var content = e.target.result;
+      var lines = content.split('\n').filter(function(l) { return l.trim(); }).length;
+      previewLines.textContent = lines.toLocaleString() + ' lines';
+
+      // Client-side tool detection hint
+      var detected = detectTool(content, file.name);
+      if (detected && toolSelect.value === 'auto') {
+        previewDetected.textContent = 'Detected: ' + formatToolName(detected);
+        previewDetected.style.display = 'inline';
+      }
+
+      // Auto-fill title from session if empty
+      if (!titleInput.value && detected) {
+        titleInput.value = formatToolName(detected) + ' Session';
+      }
+    };
+    reader.readAsText(file.slice(0, 100000)); // Read first 100KB for preview
+  }
+
+  function clearFile() {
+    selectedFile = null;
+    fileInput.value = '';
+    dropText.style.display = 'block';
+    filePreview.style.display = 'none';
+    previewDetected.style.display = 'none';
+    uploadBtn.disabled = true;
+    hideError();
+  }
+
+  function detectTool(content, filename) {
+    try {
+      var firstLine = content.split('\n')[0].trim();
+      if (firstLine.startsWith('{')) {
+        var obj = JSON.parse(firstLine);
+        if (obj.type === 'session.start') return 'github_copilot';
+        if (obj.type === 'session' && obj.version) return 'pi';
+        if (obj.parentId !== undefined || obj.parentSession) return 'pi';
+        if (obj.sessionId || obj.parentUuid) return 'claude_code';
+        if (obj.type && obj.type.match(/^(thread|turn|item|event_msg)\./)) return 'codex';
+        if (obj.type === 'session_meta') return 'codex';
+        if (obj.type === 'session_metadata') return 'gemini_cli';
+      }
+    } catch(e) {
+      // Pretty-printed JSON (first line is just "{") — match on key strings
+      if (content.match(/"sessionId"\s*:/) && content.match(/"messages"\s*:/)) {
+        if (content.match(/"type"\s*:\s*"gemini"/)) return 'gemini_cli';
+        if (content.match(/"parentUuid"/)) return 'claude_code';
+      }
+    }
+    // Also check for Gemini single-object JSON by key presence
+    if (content.match(/^[\s]*\{/)) {
+      try {
+        var full = JSON.parse(content);
+        if (full.sessionId && full.messages) return 'gemini_cli';
+      } catch(e) {}
+    }
+    return null;
+  }
+
+  function formatToolName(tool) {
+    var names = {
+      claude_code: 'Claude Code', codex: 'Codex', gemini_cli: 'Gemini CLI',
+      pi: 'Pi', opencode: 'OpenCode', cursor: 'Cursor',
+      github_copilot: 'GitHub Copilot'
+    };
+    return names[tool] || tool;
+  }
+
+  // Upload
+  uploadBtn.addEventListener('click', function() {
+    if (!selectedFile || !titleInput.value.trim()) {
+      if (!titleInput.value.trim()) {
+        titleInput.focus();
+        showError('Please enter a session title.');
+        return;
+      }
+      return;
+    }
+
+    startUpload();
+  });
+
+  function startUpload() {
+    hideError();
+    uploadBtn.disabled = true;
+    uploadBtn.textContent = 'Uploading...';
+    progressUI.style.display = 'block';
+
+    setStep('upload', 'active', 'Sending ' + formatBytes(selectedFile.size) + '...');
+    setStep('parse', 'pending', '');
+    setStep('done', 'pending', '');
+    setProgress(0);
+
+    var formData = new FormData();
+    formData.append('agent_session[title]', titleInput.value.trim());
+    formData.append('agent_session[tool_name]', toolSelect.value);
+    formData.append('agent_session[session_file]', selectedFile);
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/agent_sessions', true);
+
+    var csrfToken = document.querySelector("meta[name='csrf-token']");
+    if (csrfToken) {
+      xhr.setRequestHeader('X-CSRF-Token', csrfToken.getAttribute('content'));
+    }
+
+    xhr.upload.addEventListener('progress', function(e) {
+      if (e.lengthComputable) {
+        var pct = Math.round((e.loaded / e.total) * 100);
+        setProgress(pct * 0.6); // Upload is 60% of total progress
+        setStep('upload', 'active', pct + '% uploaded');
+      }
+    });
+
+    xhr.upload.addEventListener('load', function() {
+      setStep('upload', 'done', formatBytes(selectedFile.size) + ' uploaded');
+      setStep('parse', 'active', 'Detecting format and parsing messages...');
+      setProgress(65);
+    });
+
+    xhr.addEventListener('load', function() {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        // Server responded with redirect (HTML) or JSON
+        setProgress(90);
+        setStep('parse', 'done', 'Session parsed successfully');
+        setStep('done', 'active', 'Redirecting to curator...');
+        setProgress(100);
+
+        // Follow the redirect
+        setTimeout(function() {
+          setStep('done', 'done', 'Done!');
+          // The server sends a redirect, but since we're using XHR we handle it
+          if (xhr.responseURL && xhr.responseURL !== window.location.href) {
+            window.location.href = xhr.responseURL;
+          } else {
+            // Try to parse JSON response
+            try {
+              var data = JSON.parse(xhr.responseText);
+              if (data.redirect_to) {
+                window.location.href = data.redirect_to;
+              }
+            } catch(e) {
+              // HTML redirect response - extract from response
+              window.location.href = xhr.responseURL || '/agent_sessions';
+            }
+          }
+        }, 400);
+      } else {
+        setStep('parse', 'error', '');
+        try {
+          var err = JSON.parse(xhr.responseText);
+          showError(err.error || 'Upload failed. Please try again.');
+        } catch(e) {
+          showError('Upload failed (status ' + xhr.status + '). Please try again.');
+        }
+        resetUploadBtn();
+      }
+    });
+
+    xhr.addEventListener('error', function() {
+      setStep('upload', 'error', 'Network error');
+      showError('Network error. Please check your connection and try again.');
+      resetUploadBtn();
+    });
+
+    xhr.addEventListener('timeout', function() {
+      setStep('upload', 'error', 'Timed out');
+      showError('Upload timed out. The file may be too large. Please try again.');
+      resetUploadBtn();
+    });
+
+    xhr.timeout = 120000; // 2 minute timeout
+    xhr.send(formData);
+  }
+
+  function setStep(step, state, detail) {
+    var el = document.getElementById('step-' + step);
+    el.className = 'progress-step step-' + state;
+    var detailEl = document.getElementById('step-' + step + '-detail');
+    if (detailEl && detail !== undefined) detailEl.textContent = detail;
+  }
+
+  function setProgress(pct) {
+    progressBar.style.width = Math.min(pct, 100) + '%';
+  }
+
+  function resetUploadBtn() {
+    uploadBtn.disabled = false;
+    uploadBtn.textContent = 'Upload & Parse';
+  }
+
+  function showError(msg) {
+    errorMsg.textContent = msg;
+    errorUI.style.display = 'block';
+  }
+
+  function hideError() {
+    errorUI.style.display = 'none';
+  }
+
+  function formatBytes(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / 1048576).toFixed(1) + ' MB';
+  }
+})();
+</script>

@@ -1,0 +1,42 @@
+<div class="agent-session-index-page">
+  <header class="agent-session-page-header">
+    <div class="agent-session-index-header">
+      <h1>Agent Sessions</h1>
+      <%= link_to "Upload New Session", new_agent_session_path, class: "crayons-btn" %>
+    </div>
+  </header>
+
+  <% if @agent_sessions.any? %>
+    <div class="agent-session-list">
+      <% @agent_sessions.each do |session| %>
+        <div class="agent-session-list-item">
+          <div class="agent-session-list-item-main">
+            <div class="agent-session-list-item-header">
+              <%= agent_session_tool_icon(session.tool_name, show_label: false) %>
+              <%= link_to session.title, edit_agent_session_path(session), class: "agent-session-list-item-title" %>
+            </div>
+            <div class="agent-session-list-item-meta">
+              <span><%= session.curated_count %> / <%= session.total_messages %> messages included</span>
+              <% if session.slices.any? %>
+                <span><%= session.slices.size %> <%= "slice".pluralize(session.slices.size) %></span>
+              <% end %>
+              <span>Updated <%= time_ago_in_words(session.updated_at) %> ago</span>
+            </div>
+          </div>
+          <div class="agent-session-list-item-actions">
+            <code class="agent-session-embed-snippet"><%= "{" + "% agent_session #{session.id} %" + "}" %></code>
+            <%= link_to "Curate", edit_agent_session_path(session), class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
+            <%= link_to "View", agent_session_path(session), class: "crayons-btn crayons-btn--s crayons-btn--ghost" %>
+            <%= button_to "Delete", agent_session_path(session), method: :delete, class: "crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--danger", data: { confirm: "Delete this session?" } %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="agent-session-empty-state">
+      <p>No agent sessions yet.</p>
+      <p>Upload a coding agent session to embed it in your posts.</p>
+      <%= link_to "Upload Your First Session", new_agent_session_path, class: "crayons-btn" %>
+    </div>
+  <% end %>
+</div>
