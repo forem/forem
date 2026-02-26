@@ -99,24 +99,59 @@ RSpec.describe ScheduledAutomations::ProcessWorker, type: :worker do
                action: "create_draft",
                frequency: "daily",
                frequency_config: { "hour" => 9, "minute" => 0 },
-               next_run_at: 5.minutes.ago, # Within the 10 minute window
+               next_run_at: 1.hour.ago, # Any time in the past is due
                enabled: true,
                state: "active")
       end
 
       before do
-        automation
         allow(ScheduledAutomations::Executor).to receive(:call).and_return(
-          double(success?: true, article: nil, error_message: nil)
+          double(success?: true, article: nil, error_message: nil),
         )
       end
 
       it "executes automations that are due" do
+        automation
         expect(ScheduledAutomations::Executor).to receive(:call).with(automation)
+
+        described_class.new.perform
+      end
+
+      it "does not execute automations that are scheduled for the future" do
+        automation # due automation
+        future_automation = create(:scheduled_automation,
+                                   user: bot,
+                                   service_name: "future_service",
+                                   action: "create_draft",
+                                   frequency: "daily",
+                                   frequency_config: { "hour" => 9, "minute" => 0 },
+                                   next_run_at: 1.hour.from_now,
+                                   enabled: true,
+                                   state: "active")
+
+        # Due automation should be called
+        expect(ScheduledAutomations::Executor).to receive(:call).with(automation)
+        # Future automation should NOT be called
+        expect(ScheduledAutomations::Executor).not_to receive(:call).with(future_automation)
+
+        described_class.new.perform
+      end
+
+      it "executes automations even if they are very past due" do
+        very_past_due_automation = create(:scheduled_automation,
+                                          user: bot,
+                                          service_name: "past_due_service",
+                                          action: "create_draft",
+                                          frequency: "daily",
+                                          frequency_config: { "hour" => 9, "minute" => 0 },
+                                          next_run_at: 1.month.ago,
+                                          enabled: true,
+                                          state: "active")
+
+        expect(ScheduledAutomations::Executor).to receive(:call).with(very_past_due_automation)
 
         described_class.new.perform
       end
     end
   end
 end
-

@@ -2,6 +2,9 @@
 module Emails
   class EnqueueCustomBatchSendWorker
     include Sidekiq::Job
+    include Sidekiq::Throttled::Job
+
+    sidekiq_throttle(concurrency: { limit: 1 })
 
     sidekiq_options queue: :medium_priority, retry: 15, lock: :until_and_while_executing
 
@@ -44,13 +47,8 @@ module Emails
         next if filtered_ids.empty?
 
         # This query will now safely inherit the transaction's 60s timeout
-        filtered_user_ids = User.where(id: filtered_ids)
-                                .registered
-                                .joins(:notification_setting)
-                                .without_role(:suspended)
-                                .without_role(:spam)
-                                .where(notification_setting: { email_newsletter: true })
-                                .where.not(email: "")
+        filtered_user_ids = User.email_eligible
+                                .where(id: filtered_ids)
                                 .pluck(:id)
 
         enqueue_batch(email, filtered_user_ids, "Custom Query")
@@ -58,12 +56,7 @@ module Emails
     end
 
     def process_standard_scope(email, min_id = nil, max_id = nil)
-      base_scope = User.registered
-                       .joins(:notification_setting)
-                       .without_role(:suspended)
-                       .without_role(:spam)
-                       .where(notification_setting: { email_newsletter: true })
-                       .where.not(email: "")
+      base_scope = User.email_eligible
 
       base_scope = base_scope.where("users.id >= ?", min_id) if min_id
       base_scope = base_scope.where("users.id <= ?", max_id) if max_id

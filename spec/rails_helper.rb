@@ -89,7 +89,29 @@ Rack::Attack.enabled = false
 # see https://github.com/fnando/browser/blob/master/CHANGELOG.md#300
 Browser::Bot.matchers.delete(Browser::Bot::EmptyUserAgentMatcher)
 
+module PGConnectionBadMatcher
+  def self.===(exception)
+    # Match specifically the statement invalid OR PG::ConnectionBad
+    (exception.is_a?(ActiveRecord::StatementInvalid) && exception.message.include?("PG::ConnectionBad")) ||
+      (defined?(PG::ConnectionBad) && exception.is_a?(PG::ConnectionBad)) ||
+      (exception.class.name == "PG::ConnectionBad")
+  end
+end
+
 RSpec.configure do |config|
+  # Retries spec up to 3 times if there is a PG::ConnectionBad error.
+  config.default_retry_count = 3
+  config.exceptions_to_retry = [PGConnectionBadMatcher]
+
+  # To solve cascading failures across the whole file after a DB connection drop, 
+  # we force a reconnection on exception.
+  config.retry_callback = proc do |ex|
+    if ex.exception && PGConnectionBadMatcher === ex.exception
+      puts "Retrying due to PG::ConnectionBad. Reconnecting to the database."
+      ActiveRecord::Base.connection_pool.disconnect!
+    end
+  end
+
   config.use_transactional_fixtures = true
   config.fixture_path = Rails.root.join("spec/fixtures")
 
@@ -263,10 +285,7 @@ RSpec.configure do |config|
                                  user_views_article_four_days_in_week
                                  user_views_article_four_hours_in_day
                                  user_views_article_nine_days_in_two_week
-                                 user_views_article_twelve_hours_in_five_days
-                                 user_publishes_post
-                                 user_publishes_post_at_least_two_times_within_week
-                                 user_publishes_post_at_least_two_times_within_two_weeks] } },
+                                 user_views_article_twelve_hours_in_five_days] } },
                  "exclude" => { "bots" => true },
                  "cache" => true,
                  "cookies" => false }
