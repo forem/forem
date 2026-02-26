@@ -27,10 +27,9 @@ export const Toolbar = ({ version, textAreaId }) => {
       ) : (
         <MarkdownToolbar
           textAreaId={textAreaId}
-          additionalSecondaryToolbarElements={[
+          additionalPrimaryToolbarElements={[
             <Link
               key="agent-session-link"
-              block
               href="/agent_sessions/new"
               target="_blank"
               rel="noopener noreferrer"
@@ -38,6 +37,8 @@ export const Toolbar = ({ version, textAreaId }) => {
               aria-label="Upload Agent Session"
               title="Upload Agent Session"
             />,
+          ]}
+          additionalSecondaryToolbarElements={[
             <Link
               key="help-link"
               block
