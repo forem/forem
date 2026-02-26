@@ -8,7 +8,7 @@ RSpec.describe AgentSessionTag, type: :liquid_tag do
         { "index" => 0, "role" => "user", "content" => [{ "type" => "text", "text" => "Fix the bug" }] },
         { "index" => 1, "role" => "assistant", "content" => [{ "type" => "text", "text" => "Done!" }] },
       ],
-      "metadata" => { "tool_name" => "claude_code" },
+      "metadata" => { "tool_name" => "claude_code" }
     }
   end
   let(:agent_session) do
@@ -102,10 +102,10 @@ RSpec.describe AgentSessionTag, type: :liquid_tag do
             "index" => 0, "role" => "assistant",
             "content" => [
               { "type" => "tool_call", "name" => "Read", "input" => "/src/app.js", "output" => "code" },
-            ],
+            ]
           },
         ],
-        "metadata" => {},
+        "metadata" => {}
       },
     )
 

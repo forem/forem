@@ -70,7 +70,7 @@ class RateLimitChecker
   private
 
   ACTION_LIMITERS.each_key do |action|
-    define_method("check_#{action}_limit") do
+    define_method(:"check_#{action}_limit") do
       Rails.cache.read(limit_cache_key(action), raw: true).to_i > action_rate_limit(action)
     end
   end

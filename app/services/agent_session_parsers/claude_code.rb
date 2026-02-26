@@ -78,7 +78,7 @@ module AgentSessionParsers
           case block["type"]
           when "text"
             blocks << text_block(block["text"])
-          # Skip tool_result blocks — they're merged into assistant messages
+            # Skip tool_result blocks — they're merged into assistant messages
           end
         end
         blocks
@@ -103,14 +103,14 @@ module AgentSessionParsers
             input: input_summary,
             output: result,
           )
-        # Skip "thinking" blocks by default
+          # Skip "thinking" blocks by default
         end
       end
       blocks
     end
 
     def summarize_tool_input(name, input)
-      return nil unless input.is_a?(Hash)
+      return unless input.is_a?(Hash)
 
       case name
       when "Read"
@@ -133,8 +133,8 @@ module AgentSessionParsers
     end
 
     def extract_metadata(records, messages)
-      first_record = records.find { |r| r["type"].in?(%w[user assistant]) }
-      last_record = records.reverse.find { |r| r["type"].in?(%w[user assistant]) }
+      first_record = records.detect { |r| r["type"].in?(%w[user assistant]) }
+      last_record = records.reverse.detect { |r| r["type"].in?(%w[user assistant]) }
 
       {
         "tool_name" => "claude_code",
@@ -144,7 +144,7 @@ module AgentSessionParsers
         "total_messages" => messages.size,
         "working_directory" => first_record&.dig("cwd"),
         "git_branch" => first_record&.dig("gitBranch"),
-        "model" => records.find { |r| r.dig("message", "model") }&.dig("message", "model"),
+        "model" => records.detect { |r| r.dig("message", "model") }&.dig("message", "model")
       }.compact
     end
   end

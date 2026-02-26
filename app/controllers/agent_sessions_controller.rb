@@ -11,8 +11,17 @@ class AgentSessionsController < ApplicationController
     @agent_sessions = current_user.agent_sessions.order(updated_at: :desc)
   end
 
+  def show
+    authorize @agent_session
+    @slice_name = params[:slice]
+  end
+
   def new
     @agent_session = AgentSession.new
+    authorize @agent_session
+  end
+
+  def edit
     authorize @agent_session
   end
 
@@ -23,7 +32,7 @@ class AgentSessionsController < ApplicationController
     file = create_params[:session_file]
     tool_name = create_params[:tool_name]
 
-    unless file&.respond_to?(:original_filename)
+    unless file.respond_to?(:original_filename)
       render json: { error: "No file uploaded" }, status: :unprocessable_entity
       return
     end
@@ -60,12 +69,15 @@ class AgentSessionsController < ApplicationController
     if @agent_session.save
       rate_limiter.track_limit_by_action(:agent_session_creation)
       respond_to do |format|
-        format.html { redirect_to edit_agent_session_path(@agent_session), notice: "Session uploaded! Now curate which parts to include." }
+        format.html do
+          redirect_to edit_agent_session_path(@agent_session),
+                      notice: "Session uploaded! Now curate which parts to include." # rubocop:disable Rails/I18nLocaleTexts
+        end
         format.json do
           render json: {
             success: true,
             redirect_to: edit_agent_session_path(@agent_session),
-            agent_session: session_json(@agent_session),
+            agent_session: session_json(@agent_session)
           }
         end
         format.any { redirect_to edit_agent_session_path(@agent_session) }
@@ -73,22 +85,16 @@ class AgentSessionsController < ApplicationController
     else
       respond_to do |format|
         format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: { error: @agent_session.errors.full_messages.join(", ") }, status: :unprocessable_entity }
+        format.json do
+          render json: { error: @agent_session.errors.full_messages.join(", ") }, status: :unprocessable_entity
+        end
         format.any { render :new, status: :unprocessable_entity }
       end
     end
   rescue StandardError => e
     Rails.logger.error("Agent session parse error: #{e.class}: #{e.message}")
-    render json: { error: "Failed to parse session file. Please check the file format and try again." }, status: :unprocessable_entity
-  end
-
-  def show
-    authorize @agent_session
-    @slice_name = params[:slice]
-  end
-
-  def edit
-    authorize @agent_session
+    render json: { error: "Failed to parse session file. Please check the file format and try again." },
+           status: :unprocessable_entity
   end
 
   def update
@@ -112,7 +118,7 @@ class AgentSessionsController < ApplicationController
 
     if @agent_session.save
       respond_to do |format|
-        format.html { redirect_to edit_agent_session_path(@agent_session), notice: "Session updated." }
+        format.html { redirect_to edit_agent_session_path(@agent_session), notice: "Session updated." } # rubocop:disable Rails/I18nLocaleTexts
         format.json { render json: { success: true, agent_session: session_json(@agent_session) } }
       end
     else
@@ -126,7 +132,7 @@ class AgentSessionsController < ApplicationController
   def destroy
     authorize @agent_session
     @agent_session.destroy
-    redirect_to agent_sessions_path, notice: "Agent session deleted."
+    redirect_to agent_sessions_path, notice: "Agent session deleted." # rubocop:disable Rails/I18nLocaleTexts
   end
 
   private
@@ -164,7 +170,7 @@ class AgentSessionsController < ApplicationController
     slices.map do |s|
       {
         "name" => s["name"].to_s.strip.first(50),
-        "indices" => Array(s["indices"]).map(&:to_i),
+        "indices" => Array(s["indices"]).map(&:to_i)
       }
     end
   rescue JSON::ParserError
@@ -184,7 +190,7 @@ class AgentSessionsController < ApplicationController
       metadata: session.metadata,
       redactions: session.redactions,
       total_redactions: session.total_redactions,
-      slices: session.slices,
+      slices: session.slices
     }
   end
 end

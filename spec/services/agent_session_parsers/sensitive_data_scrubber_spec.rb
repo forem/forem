@@ -29,7 +29,7 @@ RSpec.describe AgentSessionParsers::SensitiveDataScrubber do
 
     it "redacts Stripe secret keys" do
       # Build key via interpolation so the literal doesn't trigger GitHub push protection
-      stripe_key = "sk_live_#{"a1b2c3d4e5" * 3}"
+      stripe_key = "sk_live_#{'a1b2c3d4e5' * 3}"
       data = build_normalized("STRIPE_KEY=#{stripe_key}")
       result = described_class.scrub(data)
       text = result.scrubbed_data["messages"][0]["content"][0]["text"]
@@ -108,8 +108,8 @@ RSpec.describe AgentSessionParsers::SensitiveDataScrubber do
     it "counts redactions correctly across multiple occurrences" do
       data = build_normalized("AKIAIOSFODNN7EXAMPLE and AKIAIOSFODNN7EXAMPL2")
       result = described_class.scrub(data)
-      aws_redaction = result.redactions.find { |r| r.pattern_name == "AWS Access Key" }
-      expect(aws_redaction.count).to eq(2)
+      aws_redaction = result.redactions.detect { |r| r.pattern_name == "AWS Access Key" }
+      expect(aws_redaction.match_count).to eq(2)
     end
 
     it "does not mutate the original data" do

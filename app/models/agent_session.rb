@@ -23,7 +23,7 @@ class AgentSession < ApplicationRecord
   def curated_messages
     return messages if curated_selections.blank?
 
-    selected = curated_selections.map(&:to_i).to_set
+    selected = curated_selections.to_set(&:to_i)
     messages.select { |m| selected.include?(m["index"]) }
   end
 
@@ -32,14 +32,14 @@ class AgentSession < ApplicationRecord
   end
 
   def find_slice(name)
-    slices.find { |s| s["name"].to_s.downcase == name.to_s.downcase }
+    slices.detect { |s| s["name"].to_s.downcase == name.to_s.downcase }
   end
 
   def messages_for_slice(name)
     slice = find_slice(name)
     return [] unless slice
 
-    indices = (slice["indices"] || []).map(&:to_i).to_set
+    indices = (slice["indices"] || []).to_set(&:to_i)
     messages.select { |m| indices.include?(m["index"].to_i) }
   end
 
@@ -76,7 +76,7 @@ class AgentSession < ApplicationRecord
     result = AgentSessionParsers::SensitiveDataScrubber.scrub(parsed)
     self.normalized_data = result.scrubbed_data
     self.session_metadata = normalized_data.fetch("metadata", {}).merge(
-      "redactions" => result.redactions.map { |r| { "name" => r.pattern_name, "count" => r.count } },
+      "redactions" => result.redactions.map { |r| { "name" => r.pattern_name, "count" => r.match_count } },
     )
 
     # Also scrub raw data — keep it for context but with secrets replaced
@@ -87,7 +87,7 @@ class AgentSession < ApplicationRecord
 
   def generate_slug
     return if slug.present?
-    return unless title.present?
+    return if title.blank?
 
     truncated = title.length > 100 ? title[0..100].split[0...-1].join(" ") : title
     base = Sterile.sluggerize(truncated)
@@ -106,8 +106,8 @@ class AgentSession < ApplicationRecord
   def normalized_data_not_too_large
     return if normalized_data.blank?
 
-    if normalized_data.to_json.bytesize > MAX_RAW_DATA_SIZE
-      errors.add(:normalized_data, "is too large (max #{MAX_RAW_DATA_SIZE / 1.megabyte}MB)")
-    end
+    return unless normalized_data.to_json.bytesize > MAX_RAW_DATA_SIZE
+
+    errors.add(:normalized_data, "is too large (max #{MAX_RAW_DATA_SIZE / 1.megabyte}MB)")
   end
 end

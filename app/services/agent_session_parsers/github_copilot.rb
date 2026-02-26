@@ -8,7 +8,10 @@ module AgentSessionParsers
         case record["type"]
         when "user.message"
           text = record.dig("data", "content")
-          messages << build_message(role: "user", content_blocks: [text_block(text)], timestamp: record["timestamp"]) if text.present?
+          if text.present?
+            messages << build_message(role: "user", content_blocks: [text_block(text)],
+                                      timestamp: record["timestamp"])
+          end
         when "assistant.message"
           emit_assistant_message(record, messages)
         when "tool.execution_complete"
@@ -81,26 +84,26 @@ module AgentSessionParsers
         next unless m["role"] == "assistant"
 
         m["content"]&.each do |b|
-          if b["type"] == "tool_call" && b["tool_call_id"] == tool_call_id && b["output"].nil?
-            b["output"] = output
-            return
-          end
+          next unless b["type"] == "tool_call" && b["tool_call_id"] == tool_call_id && b["output"].nil?
+
+          b["output"] = output
+          return # rubocop:disable Lint/NonLocalExitFromIterator
         end
       end
     end
 
     def extract_metadata(records, messages)
-      session_start = records.find { |r| r["type"] == "session.start" }
+      session_start = records.detect { |r| r["type"] == "session.start" }
       data = session_start&.dig("data") || {}
 
       {
         "tool_name" => "github_copilot",
         "session_id" => data["sessionId"],
         "start_time" => data["startTime"] || session_start&.dig("timestamp"),
-        "model" => records.find { |r| r["type"] == "tool.execution_complete" }&.dig("data", "model"),
+        "model" => records.detect { |r| r["type"] == "tool.execution_complete" }&.dig("data", "model"),
         "cli_version" => data["copilotVersion"],
         "total_messages" => messages.size,
-        "working_directory" => data.dig("context", "cwd"),
+        "working_directory" => data.dig("context", "cwd")
       }.compact
     end
   end

@@ -7,8 +7,9 @@ module AgentSessionParsers
     # with patterns for home directories, connection strings, and generic secrets.
     PATTERNS = [
       # === Cloud provider keys ===
-      { name: "AWS Access Key", regex: /(?<![A-Z0-9])(A3T[A-Z0-9]|AKIA|AGPA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}(?![A-Z0-9])/ },
-      { name: "AWS Secret Key", regex: /(?<=[\s:='""])[A-Za-z0-9\/+=]{40}(?=[\s'""&])/, context: /aws[_\s]?secret/i },
+      { name: "AWS Access Key",
+        regex: /(?<![A-Z0-9])(A3T[A-Z0-9]|AKIA|AGPA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}(?![A-Z0-9])/ },
+      { name: "AWS Secret Key", regex: %r{(?<=[\s:='"])[A-Za-z0-9/+=]{40}(?=[\s'"&])}, context: /aws[_\s]?secret/i },
       { name: "AWS MWS Key", regex: /amzn\.mws\.[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/ },
       { name: "AWS AppSync Key", regex: /da2-[a-z0-9]{26}/ },
       { name: "Google API Key", regex: /AIza[0-9A-Za-z\-_]{35}/ },
@@ -22,7 +23,8 @@ module AgentSessionParsers
       { name: "Bitbucket Token", regex: /ATBB[A-Za-z0-9]{32,}/ },
       { name: "CircleCI Token", regex: /circle-token\s*[=:]\s*[A-Za-z0-9]{40}/ },
       { name: "Travis CI Token", regex: /travis-token\s*[=:]\s*[A-Za-z0-9]{22}/ },
-      { name: "Heroku API Key", regex: /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/, context: /heroku/i },
+      { name: "Heroku API Key", regex: /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
+        context: /heroku/i },
       { name: "Vercel Token", regex: /vercel_[A-Za-z0-9]{24}/ },
       { name: "Netlify Token", regex: /netlify_[A-Za-z0-9]{40,}/ },
 
@@ -66,8 +68,10 @@ module AgentSessionParsers
       { name: "Bearer Token", regex: /Bearer\s+[A-Za-z0-9\-_\.]{20,}/ },
       { name: "Basic Auth Header", regex: %r{Basic\s+[A-Za-z0-9+/=]{20,}} },
       { name: "JWT Token", regex: /eyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}/ },
-      { name: "Hex Secret (32+)", regex: /(?:secret|token|key|password|passwd|pwd|api_key|apikey|auth)\s*[=:]\s*["']?[A-Fa-f0-9]{32,}["']?/i },
-      { name: "Base64 Secret", regex: /(?:secret|token|key|password|passwd|pwd|api_key|apikey|auth)\s*[=:]\s*["']?[A-Za-z0-9+\/]{40,}={0,2}["']?/i },
+      { name: "Hex Secret (32+)",
+        regex: /(?:secret|token|key|password|passwd|pwd|api_key|apikey|auth)\s*[=:]\s*["']?[A-Fa-f0-9]{32,}["']?/i },
+      { name: "Base64 Secret",
+        regex: %r{(?:secret|token|key|password|passwd|pwd|api_key|apikey|auth)\s*[=:]\s*["']?[A-Za-z0-9+/]{40,}={0,2}["']?}i }, # rubocop:disable Layout/LineLength
 
       # === PII & paths ===
       { name: "Home Directory", regex: %r{(?:/Users/|/home/|C:\\Users\\)[A-Za-z0-9._-]+}i },
@@ -82,7 +86,7 @@ module AgentSessionParsers
     SKIP_IN_TOOL_OUTPUT = Set.new(["Home Directory", "IPv4 Address", "Email Address"]).freeze
 
     Result = Struct.new(:scrubbed_data, :redactions, keyword_init: true)
-    Redaction = Struct.new(:pattern_name, :count, keyword_init: true)
+    Redaction = Struct.new(:pattern_name, :match_count, keyword_init: true)
 
     def self.scrub(normalized_data)
       new(normalized_data).scrub
@@ -91,9 +95,10 @@ module AgentSessionParsers
     # Scrub a plain text string (used for raw_data)
     def self.scrub_text(text)
       PATTERNS.each do |pattern|
-        if pattern[:context]
-          next unless text.match?(pattern[:context])
+        if pattern[:context] && !text.match?(pattern[:context])
+          next
         end
+
         text = text.gsub(pattern[:regex], REDACTED_LABEL)
       end
       text
@@ -110,7 +115,7 @@ module AgentSessionParsers
 
       redactions = @redaction_counts
         .sort_by { |_, count| -count }
-        .map { |name, count| Redaction.new(pattern_name: name, count: count) }
+        .map { |name, count| Redaction.new(pattern_name: name, match_count: count) }
 
       Result.new(scrubbed_data: @data, redactions: redactions)
     end
@@ -140,13 +145,13 @@ module AgentSessionParsers
         next if tool_output && SKIP_IN_TOOL_OUTPUT.include?(pattern[:name])
 
         # If pattern has a context requirement, skip unless context matches
-        if pattern[:context]
-          next unless text.match?(pattern[:context])
+        if pattern[:context] && !text.match?(pattern[:context])
+          next
         end
 
-        text = text.gsub(pattern[:regex]) do |match|
+        text = text.gsub(pattern[:regex]) do |_match|
           @redaction_counts[pattern[:name]] += 1
-          "#{REDACTED_LABEL}"
+          REDACTED_LABEL.to_s
         end
       end
 

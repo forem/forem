@@ -15,7 +15,10 @@ module AgentSessionParsers
         case role
         when "user"
           text = extract_text_content(msg["content"])
-          messages << build_message(role: "user", content_blocks: [text_block(text)], timestamp: timestamp) if text.present?
+          if text.present?
+            messages << build_message(role: "user", content_blocks: [text_block(text)],
+                                      timestamp: timestamp)
+          end
         when "assistant"
           emit_assistant_messages(msg["content"], messages, timestamp)
         when "toolResult"
@@ -30,7 +33,7 @@ module AgentSessionParsers
 
     private
 
-    def emit_assistant_messages(content_blocks, messages, timestamp)
+    def emit_assistant_messages(content_blocks, messages, timestamp) # rubocop:disable Metrics/CyclomaticComplexity
       return unless content_blocks.is_a?(Array)
 
       text_parts = []
@@ -45,7 +48,8 @@ module AgentSessionParsers
         when "toolCall"
           # Flush any pending text as its own message
           if text_parts.any?
-            messages << build_message(role: "assistant", content_blocks: [text_block(text_parts.join("\n\n"))], timestamp: timestamp)
+            messages << build_message(role: "assistant", content_blocks: [text_block(text_parts.join("\n\n"))],
+                                      timestamp: timestamp)
             text_parts.clear
           end
 
@@ -61,9 +65,10 @@ module AgentSessionParsers
       end
 
       # Flush remaining text
-      if text_parts.any?
-        messages << build_message(role: "assistant", content_blocks: [text_block(text_parts.join("\n\n"))], timestamp: timestamp)
-      end
+      return unless text_parts.any?
+
+      messages << build_message(role: "assistant", content_blocks: [text_block(text_parts.join("\n\n"))],
+                                timestamp: timestamp)
     end
 
     def extract_text_content(content)
@@ -81,17 +86,17 @@ module AgentSessionParsers
         next unless m["role"] == "assistant"
 
         m["content"]&.each do |b|
-          if b["type"] == "tool_call" && b["output"].nil?
-            b["output"] = output
-            return
-          end
+          next unless b["type"] == "tool_call" && b["output"].nil?
+
+          b["output"] = output
+          return # rubocop:disable Lint/NonLocalExitFromIterator
         end
       end
     end
 
     def extract_metadata(records, messages)
-      session = records.find { |r| r["type"] == "session" } || records.first
-      model_change = records.find { |r| r["type"] == "model_change" }
+      session = records.detect { |r| r["type"] == "session" } || records.first
+      model_change = records.detect { |r| r["type"] == "model_change" }
 
       {
         "tool_name" => "pi",
@@ -99,7 +104,7 @@ module AgentSessionParsers
         "start_time" => session&.dig("timestamp"),
         "model" => model_change&.dig("modelId"),
         "total_messages" => messages.size,
-        "working_directory" => session&.dig("cwd"),
+        "working_directory" => session&.dig("cwd")
       }.compact
     end
   end

@@ -2,13 +2,13 @@ require "rails_helper"
 
 RSpec.describe AgentSessionParsers::ClaudeCode do
   describe ".parse" do
-    it "parses a basic conversation" do
+    it "parses a basic conversation" do # rubocop:disable RSpec/MultipleExpectations
       jsonl = [
         {
           type: "user",
           message: { role: "user", content: "Fix the bug" },
           uuid: "u1", parentUuid: nil, timestamp: "2025-01-01T10:00:00Z",
-          sessionId: "sess-1", cwd: "/home/user/project", gitBranch: "main",
+          sessionId: "sess-1", cwd: "/home/user/project", gitBranch: "main"
         }.to_json,
         {
           type: "assistant",
@@ -18,10 +18,10 @@ RSpec.describe AgentSessionParsers::ClaudeCode do
             content: [
               { type: "text", text: "I'll look into that." },
               { type: "tool_use", id: "tool1", name: "Read", input: { file_path: "/src/app.js" } },
-            ],
+            ]
           },
           uuid: "a1", parentUuid: "u1", timestamp: "2025-01-01T10:00:05Z",
-          sessionId: "sess-1",
+          sessionId: "sess-1"
         }.to_json,
         {
           type: "user",
@@ -29,17 +29,17 @@ RSpec.describe AgentSessionParsers::ClaudeCode do
             role: "user",
             content: [
               { type: "tool_result", tool_use_id: "tool1", content: "const app = express();" },
-            ],
+            ]
           },
-          uuid: "u2", timestamp: "2025-01-01T10:00:06Z", sessionId: "sess-1",
+          uuid: "u2", timestamp: "2025-01-01T10:00:06Z", sessionId: "sess-1"
         }.to_json,
         {
           type: "assistant",
           message: {
             role: "assistant",
-            content: [{ type: "text", text: "Found the issue." }],
+            content: [{ type: "text", text: "Found the issue." }]
           },
-          uuid: "a2", timestamp: "2025-01-01T10:00:10Z", sessionId: "sess-1",
+          uuid: "a2", timestamp: "2025-01-01T10:00:10Z", sessionId: "sess-1"
         }.to_json,
       ].join("\n")
 
@@ -55,9 +55,9 @@ RSpec.describe AgentSessionParsers::ClaudeCode do
       # Second message: assistant with tool call (result merged)
       second = result["messages"][1]
       expect(second["role"]).to eq("assistant")
-      text_block = second["content"].find { |b| b["type"] == "text" }
+      text_block = second["content"].detect { |b| b["type"] == "text" }
       expect(text_block["text"]).to eq("I'll look into that.")
-      tool_block = second["content"].find { |b| b["type"] == "tool_call" }
+      tool_block = second["content"].detect { |b| b["type"] == "tool_call" }
       expect(tool_block["name"]).to eq("Read")
       expect(tool_block["input"]).to eq("/src/app.js")
       expect(tool_block["output"]).to include("const app")
@@ -77,7 +77,8 @@ RSpec.describe AgentSessionParsers::ClaudeCode do
       jsonl = [
         { type: "system", message: { role: "system", content: "You are helpful" } }.to_json,
         { type: "progress", content: "thinking..." }.to_json,
-        { type: "user", message: { role: "user", content: "Hello" }, uuid: "u1", timestamp: "2025-01-01T10:00:00Z" }.to_json,
+        { type: "user", message: { role: "user", content: "Hello" }, uuid: "u1",
+          timestamp: "2025-01-01T10:00:00Z" }.to_json,
         { type: "file-history-snapshot", snapshot: {} }.to_json,
       ].join("\n")
 
@@ -95,9 +96,9 @@ RSpec.describe AgentSessionParsers::ClaudeCode do
             content: [
               { type: "thinking", thinking: "Let me consider..." },
               { type: "text", text: "Here's my answer." },
-            ],
+            ]
           },
-          uuid: "a1", timestamp: "2025-01-01T10:00:00Z",
+          uuid: "a1", timestamp: "2025-01-01T10:00:00Z"
         }.to_json,
       ].join("\n")
 

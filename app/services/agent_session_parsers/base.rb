@@ -23,7 +23,7 @@ module AgentSessionParsers
 
       {
         "messages" => indexed,
-        "metadata" => metadata,
+        "metadata" => metadata
       }
     end
 
