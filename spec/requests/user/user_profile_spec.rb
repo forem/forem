@@ -420,5 +420,11 @@ RSpec.describe "UserProfiles" do
       get "/#{user.username}/moderate"
       expect(response.body).to redirect_to admin_user_path(user.id)
     end
+
+    it "redirects organization moderate to admin organization page" do
+      organization = create(:organization)
+      get "/#{organization.slug}/moderate"
+      expect(response.body).to redirect_to admin_organization_path(organization.id)
+    end
   end
 end
