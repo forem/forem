@@ -55,5 +55,36 @@ RSpec.describe V0Tag, type: :liquid_tag do
       handler = UnifiedEmbed::Registry.find_liquid_tag_for(link: "https://v0.dev/chat/my-project-abc")
       expect(handler).to eq(described_class)
     end
+
+    it "routes generated vusercontent.net path URLs to V0Tag" do
+      handler = UnifiedEmbed::Registry.find_liquid_tag_for(link: "https://generated.vusercontent.net/p/dh2l48aqQPN")
+      expect(handler).to eq(described_class)
+    end
+  end
+
+  describe "REGISTRY_REGEXP" do
+    it "matches and captures the full vusercontent API path" do
+      match = "https://generated.vusercontent.net/p/dh2l48aqQPN".match(V0Tag::REGISTRY_REGEXP)
+      expect(match[0]).to eq("https://generated.vusercontent.net/p/dh2l48aqQPN")
+    end
+
+    it "matches and captures the base vusercontent URL" do
+      match = "https://abc123def.vusercontent.net".match(V0Tag::REGISTRY_REGEXP)
+      expect(match[0]).to eq("https://abc123def.vusercontent.net")
+    end
+
+    it "matches and captures lite.vusercontent.net URLs" do
+      match = "https://abc123def.lite.vusercontent.net".match(V0Tag::REGISTRY_REGEXP)
+      expect(match[0]).to eq("https://abc123def.lite.vusercontent.net")
+    end
+
+    it "matches and captures v0.dev/chat URLs" do
+      match = "https://v0.dev/chat/my-project-abc123".match(V0Tag::REGISTRY_REGEXP)
+      expect(match[0]).to eq("https://v0.dev/chat/my-project-abc123")
+    end
+
+    it "does not match invalid domains" do
+      expect("https://generated.vusercontent.com/p/dh2l48aqQPN").not_to match(V0Tag::REGISTRY_REGEXP)
+    end
   end
 end

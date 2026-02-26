@@ -30,7 +30,7 @@ RSpec.describe "Tracking 'Clicked on Create Account'", :js do
       wait_for_async_events_listener
       find('[data-tracking-id="ca_top_nav"]').click
 
-      expect(Ahoy::Event.last.name).to eq("Clicked on Create Account")
+      wait_until { Ahoy::Event.last&.name == "Clicked on Create Account" }
       expect(Ahoy::Event.last.properties).to include("source", "page", "version", "source" => "top_navbar")
     end
   end
@@ -44,8 +44,9 @@ RSpec.describe "Tracking 'Clicked on Create Account'", :js do
       find(".follow-action-button").click
       find(".js-global-signup-modal__create-account").click
 
+      wait_until { Ahoy::Event.last&.name == "Clicked on Create Account" }
       expect(page).to have_current_path("/enter?state=new-user")
-      expect(Ahoy::Event.last.name).to eq("Clicked on Create Account")
+
       expect(Ahoy::Event.last.properties).to include("source", "page", "referring_source", "trigger", "version")
     end
   end
