@@ -168,6 +168,7 @@ class Article < ApplicationRecord
   has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :delete_all
   has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
   has_many :context_notifications, as: :context, inverse_of: :context, dependent: :delete_all
+  has_many :ai_audits, as: :affected_content, dependent: :nullify
   has_many :context_notifications_published, -> { where(context_notifications_published: { action: "Published" }) },
            as: :context, inverse_of: :context, class_name: "ContextNotification"
   has_many :feed_events, dependent: :delete_all
@@ -311,7 +312,7 @@ class Article < ApplicationRecord
     article.saved_change_to_user_id?
   }
 
-  after_commit :async_score_calc, :touch_collection, :enrich_image_attributes, :record_field_test_event,
+  after_commit :async_score_calc, :touch_collection, :enrich_image_attributes,
                on: %i[create update]
 
   # The trigger `update_reading_list_document` is used to keep the `articles.reading_list_document` column updated.
@@ -421,7 +422,7 @@ class Article < ApplicationRecord
     cache_key = [
       "admin-published-with",
       tag_name,
-      (subforem_id || "all"),
+      subforem_id || "all",
     ].join(":")
 
     Rails.cache.fetch(cache_key, expires_in: expires_in) do
@@ -434,7 +435,7 @@ class Article < ApplicationRecord
     cache_key = [
       "admin-published-with",
       tag_name,
-      (subforem_id || "all"),
+      subforem_id || "all",
     ].join(":")
     Rails.cache.delete(cache_key)
   end
@@ -1588,14 +1589,6 @@ class Article < ApplicationRecord
     return if published_at.blank?
 
     self.published_at = nil if published_at > 5.years.from_now
-  end
-
-  def record_field_test_event
-    return unless published?
-    return if FieldTest.config["experiments"].nil?
-
-    Users::RecordFieldTestEventWorker
-      .perform_async(user_id, AbExperiment::GoalConversionHandler::USER_PUBLISHES_POST_GOAL)
   end
 
   private

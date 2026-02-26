@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_02_17_233302) do
+ActiveRecord::Schema[7.0].define(version: 2026_02_23_212134) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -66,6 +66,28 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_17_233302) do
     t.index ["user_visit_context_id"], name: "index_ahoy_visits_on_user_visit_context_id"
     t.index ["visit_token"], name: "index_ahoy_visits_on_visit_token", unique: true
     t.index ["visitor_token", "started_at"], name: "index_ahoy_visits_on_visitor_token_and_started_at"
+  end
+
+  create_table "ai_audits", force: :cascade do |t|
+    t.bigint "affected_content_id"
+    t.string "affected_content_type"
+    t.bigint "affected_user_id"
+    t.string "ai_model"
+    t.integer "candidates_token_count"
+    t.datetime "created_at", null: false
+    t.text "error_message"
+    t.integer "latency_ms"
+    t.integer "prompt_token_count"
+    t.jsonb "request_body"
+    t.jsonb "response_body"
+    t.integer "retry_count"
+    t.integer "status_code"
+    t.integer "total_token_count"
+    t.datetime "updated_at", null: false
+    t.string "wrapper_object_class"
+    t.string "wrapper_object_version"
+    t.index ["affected_content_type", "affected_content_id"], name: "index_ai_audits_on_affected_content"
+    t.index ["affected_user_id"], name: "index_ai_audits_on_affected_user_id"
   end
 
   create_table "announcements", force: :cascade do |t|
@@ -1396,7 +1418,9 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_17_233302) do
     t.boolean "active", default: true
     t.boolean "allow_resubmission", default: false, null: false
     t.datetime "created_at", null: false
+    t.integer "daily_email_distributions", default: 0
     t.boolean "display_title", default: true
+    t.text "extra_email_context_paragraph"
     t.string "old_old_slug"
     t.string "old_slug"
     t.string "slug"
@@ -1616,6 +1640,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_17_233302) do
     t.string "apple_username"
     t.integer "articles_count", default: 0, null: false
     t.integer "badge_achievements_count", default: 0, null: false
+    t.boolean "base_email_eligible", default: false, null: false
     t.bigint "blocked_by_count", default: 0, null: false
     t.bigint "blocking_others_count", default: 0, null: false
     t.boolean "checked_code_of_conduct", default: false
@@ -1704,6 +1729,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_17_233302) do
     t.index "to_tsvector('simple'::regconfig, COALESCE((name)::text, ''::text))", name: "index_users_on_name_as_tsvector", using: :gin
     t.index "to_tsvector('simple'::regconfig, COALESCE((username)::text, ''::text))", name: "index_users_on_username_as_tsvector", using: :gin
     t.index ["apple_username"], name: "index_users_on_apple_username"
+    t.index ["base_email_eligible"], name: "index_users_on_base_email_eligible", where: "(base_email_eligible = true)"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["created_at"], name: "index_users_on_created_at"
     t.index ["current_subscriber_status"], name: "index_users_on_current_subscriber_status"
@@ -1810,6 +1836,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_17_233302) do
   add_foreign_key "ahoy_messages", "feedback_messages", on_delete: :nullify
   add_foreign_key "ahoy_messages", "users", on_delete: :cascade
   add_foreign_key "ahoy_visits", "users", on_delete: :cascade
+  add_foreign_key "ai_audits", "users", column: "affected_user_id"
   add_foreign_key "api_secrets", "users", on_delete: :cascade
   add_foreign_key "articles", "collections", on_delete: :nullify
   add_foreign_key "articles", "organizations", on_delete: :nullify

@@ -17,15 +17,14 @@
     border-bottom-right-radius: 0;
     max-height: calc(88vh - var(--header-height) - 2 * var(--layout-padding));
     overflow: hidden;
+
     &__image {
       display: block;
       margin: auto;
       max-width: 100%;
       height: auto;
       object-fit: contain;
-      max-height: calc(
-        100vh - var(--header-height) - 2 * var(--layout-padding)
-      );
+      max-height: calc(100vh - var(--header-height) - 2 * var(--layout-padding));
 
       &__feed {
         padding-top: 0;
@@ -58,11 +57,12 @@
     word-break: break-word;
 
     &__meta {
-      padding: var(--content-padding-y) var(--content-padding-x) 0
-        var(--content-padding-x);
+      padding: var(--content-padding-y) var(--content-padding-x) 0 var(--content-padding-x);
     }
+
     .quickie-paragraph {
       margin-bottom: var(--su-3);
+
       &:last-child {
         margin-bottom: 0;
       }
@@ -73,6 +73,7 @@
     &:empty {
       display: none;
     }
+
     background: var(--accent-warning-a10);
     border: 1px solid var(--accent-warning-a10);
     border-radius: var(--radius);
@@ -111,6 +112,7 @@
     line-height: 1.5;
     display: inline-block;
   }
+
   &__context-note__feed {
     margin-bottom: var(--su-3);
     padding: var(--su-1) var(--su-3);
@@ -188,6 +190,7 @@
 
   .crayons-tooltip {
     &__content {
+
       // display tooltip on top of the icon
       @media (max-width: $breakpoint-m) {
         top: -100%;
@@ -213,6 +216,7 @@
     &--active {
       display: none;
     }
+
     // This overrides some of the styles for the temporarily feature-flaged
     &--borderless {
       padding: var(--su-2);
@@ -228,7 +232,8 @@
     color: var(--base-70);
     font-size: var(--fs-s);
     display: inline-flex;
-    margin-left: var(--su-1);
+    margin-left: 0px;
+    padding-right: var(--su-1);
     min-width: var(--su-6);
 
     @media (min-width: $breakpoint-m) {
@@ -240,15 +245,18 @@
 
   &.user-activated {
     --reaction-border: inset 0 0 0 2px var(--reaction-color);
+
     .crayons-reaction__icon--inactive {
       display: none;
     }
+
     .crayons-reaction__icon--active {
       display: block;
     }
   }
 
   &--like {
+
     &:hover,
     &.user-activated {
       --reaction-color: var(--reaction-like-color);
@@ -257,6 +265,7 @@
   }
 
   &--unicorn {
+
     &:hover,
     &.user-activated {
       --reaction-color: var(--reaction-custom-color);
@@ -265,6 +274,7 @@
   }
 
   &--readinglist {
+
     &:hover,
     &.user-activated {
       --reaction-color: var(--reaction-save-color);
@@ -273,6 +283,7 @@
   }
 
   &--comment {
+
     &:hover,
     &.user-activated {
       --reaction-color: var(--reaction-comment-color);
@@ -283,6 +294,7 @@
 
 .only-sidebar-menu-item {
   display: none !important;
+
   @media (min-width: $breakpoint-s) {
     display: block !important;
   }
@@ -290,6 +302,7 @@
 
 .only-mobile-menu-item {
   display: block !important;
+
   @media (min-width: $breakpoint-s) {
     display: none !important;
   }
@@ -327,6 +340,7 @@
 .user-animated {
   .crayons-reaction__icon {
     position: relative;
+
     &:before {
       content: '';
       position: absolute;
@@ -410,6 +424,7 @@
   position: -webkit-sticky;
   position: sticky;
   top: calc(var(--header-height) + var(--layout-padding));
+
   .static-header & {
     top: var(--layout-padding);
   }
@@ -422,9 +437,10 @@
 }
 
 .user-metadata-details {
-  li + li {
+  li+li {
     margin-top: var(--su-3);
   }
+
   .key {
     font-size: var(--fs-xs);
     font-weight: var(--fw-bold);
@@ -516,9 +532,9 @@
   padding: 0.5em 0;
   cursor: default;
   display: flex;
-  column-gap: 1.2em;
+  column-gap: calc(0.1em + 0.1vw);
   flex-wrap: wrap;
-  min-height: 40px;
+  min-height: 54px;
 
   @media (min-width: $breakpoint-xs) {
     column-gap: 1.7em;
@@ -528,13 +544,23 @@
     column-gap: 2.2em;
   }
 
-  & > span {
+  &>button,
+  &>span {
     &.hidden {
       display: none;
     }
+
     display: flex;
+    flex-direction: row !important;
     column-gap: 0.3em;
     align-items: center;
+    cursor: pointer;
+    font: inherit;
+    padding: 0;
+
+    .crayons-reaction__icon {
+      border-radius: var(--radius) !important;
+    }
   }
 }
 
@@ -565,5 +591,85 @@
 
   .aggregate_reactions_counter {
     margin-left: 1em;
+  }
+}
+
+.editor-ai-fab {
+  position: fixed !important;
+  bottom: 20px;
+  right: 20px;
+  left: auto;
+  z-index: 400; // Above sidebar, below modals
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: var(--base-inverted);
+  color: var(--base);
+  transition: transform 0.2s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  // small screen hide
+  @media (max-width: $breakpoint-m) {
+    display: none !important;
+  }
+}
+
+.editor-sidecar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: calc(350px + 6vw);
+  max-width: 100vw;
+  background: var(--body-bg);
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
+  z-index: 401;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex !important;
+  flex-direction: column;
+
+  &.hidden {
+    display: none !important;
+  }
+
+  &--open {
+    transform: translateX(0);
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--su-3) var(--su-4);
+    border-bottom: 1px solid var(--base-20);
+  }
+
+  &__iframe {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: transparent;
+  }
+
+  .ai-chat-container {
+    height: calc(100vh - var(--header-height) - 10px);
+  }
+
+  .ai-chat-messages {
+    padding: var(--su-2);
+  }
+
+  .ai-chat-input-area {
+    padding: var(--su-4) var(--su-2);
   }
 }

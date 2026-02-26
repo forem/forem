@@ -186,3 +186,7 @@ track_promotional_billboard_impressions:
   description: "Tracks and updates promotional billboard impressions for organizations (runs every 30 minutes)"
   cron: "*/30 * * * *"
   class: "Organizations::TrackPromotionalBillboardImpressionsWorker"
+survey_daily_email:
+  description: "Send DEV Pulse Survey emails to eligible users for active surveys (runs daily at 18:15 UTC)"
+  cron: "15 18 * * *"
+  class: "Emails::SurveyDailyEmailWorker"

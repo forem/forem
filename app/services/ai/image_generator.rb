@@ -25,6 +25,7 @@ module Ai
   #   )
   #   result = generator.generate
   class ImageGenerator
+    VERSION = "1.0"
     GenerationResult = Struct.new(:url, :text_response, keyword_init: true)
 
     GEMINI_IMAGE_MODEL = "gemini-2.5-flash-image".freeze
@@ -52,7 +53,8 @@ module Ai
     # @param aspect_ratio [String, nil] Optional aspect ratio (e.g., "16:9", "1:1")
     # @param response_modalities [Array<String>] Output types - ['Image', 'Text'] or ['Image']
     # @param api_key [String] Gemini API key (defaults to ENV['GEMINI_API_KEY'])
-    def initialize(prompt, input_images: nil, aspect_ratio: nil, response_modalities: ["Image", "Text"], api_key: DEFAULT_API_KEY)
+    def initialize(prompt, input_images: nil, aspect_ratio: nil, response_modalities: %w[Image Text],
+                   api_key: DEFAULT_API_KEY)
       raise ArgumentError, "Prompt cannot be blank" if prompt.blank?
       raise ArgumentError, "API key cannot be nil" if api_key.nil? && !Rails.env.test?
 
@@ -94,7 +96,7 @@ module Ai
 
       unless image_data
         Rails.logger.warn "No image data in response"
-        return nil
+        return
       end
 
       Rails.logger.info "[4/4] Uploading image to storage..."
@@ -102,7 +104,7 @@ module Ai
 
       unless image_url
         Rails.logger.error "Failed to upload image"
-        return nil
+        return
       end
 
       Rails.logger.info "✓ Image generated successfully: #{image_url}"
@@ -129,7 +131,7 @@ module Ai
       }
 
       # Add generation config if we have aspect ratio or response modality settings
-      if aspect_ratio || response_modalities != ["Image", "Text"]
+      if aspect_ratio || response_modalities != %w[Image Text]
         body[:generationConfig] = build_generation_config
       end
 
@@ -170,7 +172,7 @@ module Ai
     def build_generation_config
       config = {}
 
-      if response_modalities != ["Image", "Text"]
+      if response_modalities != %w[Image Text]
         config[:responseModalities] = response_modalities
       end
 
@@ -222,14 +224,50 @@ module Ai
       api_url = "/models/#{GEMINI_IMAGE_MODEL}:generateContent?key=#{api_key}"
       options[:body] = request_body.to_json
 
-      response = self.class.post(api_url, options)
+      start_time = Time.now.to_f
+      begin
+        response = self.class.post(api_url, options)
+        latency_ms = ((Time.now.to_f - start_time) * 1000).to_i
+        status_code = response.code
 
-      unless response.success?
-        error_info = response.parsed_response["error"] || { "message" => "Unknown API Error" }
-        raise "API Error: #{response.code} - #{error_info['message']}"
+        unless response.success?
+          error_info = response.parsed_response["error"] || { "message" => "Unknown API Error" }
+          error_message = "API Error: #{status_code} - #{error_info['message']}"
+        end
+
+        log_audit(response, latency_ms: latency_ms, status_code: status_code, error_message: error_message)
+
+        raise error_message if error_message
+
+        response.parsed_response
+      rescue StandardError => e
+        latency_ms ||= ((Time.now.to_f - start_time) * 1000).to_i
+        log_audit(nil, latency_ms: latency_ms, error_message: e.message)
+        raise e
       end
+    end
 
-      response.parsed_response
+    def log_audit(response, latency_ms: nil, status_code: nil, error_message: nil)
+      prompt_tokens = response&.parsed_response&.dig("usageMetadata", "promptTokenCount")
+      candidates_tokens = response&.parsed_response&.dig("usageMetadata", "candidatesTokenCount")
+      total_tokens = response&.parsed_response&.dig("usageMetadata", "totalTokenCount")
+
+      AiAudit.create!(
+        ai_model: GEMINI_IMAGE_MODEL,
+        wrapper_object_class: self.class.name,
+        wrapper_object_version: self.class.const_defined?(:VERSION) ? self.class::VERSION : nil,
+        request_body: options[:body],
+        response_body: response&.parsed_response,
+        retry_count: 0,
+        prompt_token_count: prompt_tokens,
+        candidates_token_count: candidates_tokens,
+        total_token_count: total_tokens,
+        latency_ms: latency_ms,
+        status_code: status_code,
+        error_message: error_message,
+      )
+    rescue StandardError => e
+      Rails.logger.error("Failed to log AiAudit: #{e}")
     end
 
     ##
@@ -300,6 +338,7 @@ module Ai
 
       url
     rescue StandardError => e
+      puts "===> UPLOAD ERROR: #{e.class}: #{e.message}"
       Rails.logger.error "Failed to upload image: #{e.message}"
       Rails.logger.error e.backtrace.first(5).join("\n")
       nil
@@ -308,13 +347,13 @@ module Ai
       if tempfile
         begin
           tempfile.close unless tempfile.closed?
-          tempfile.unlink if File.exist?(tempfile.path)
-          Rails.logger.debug "Cleaned up temporary image file: #{tempfile.path}"
-        rescue StandardError => cleanup_error
-          Rails.logger.warn "Failed to cleanup temp file: #{cleanup_error.message}"
+          path = tempfile.path
+          tempfile.unlink if path && File.exist?(path)
+          Rails.logger.debug { "Cleaned up temporary image file: #{path}" }
+        rescue StandardError => e
+          Rails.logger.warn "Failed to cleanup temp file: #{e.message}"
         end
       end
     end
   end
 end
-

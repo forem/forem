@@ -22,6 +22,8 @@ RSpec.describe "Admin::Surveys", type: :request do
           survey: {
             title: "Test Survey",
             active: true,
+            daily_email_distributions: 50,
+            extra_email_context_paragraph: "Please tell us what you think!",
             polls_attributes: [
               {
                 prompt_markdown: "What is your favorite color?",
@@ -42,6 +44,10 @@ RSpec.describe "Admin::Surveys", type: :request do
           post admin_surveys_path, params: survey_params
         }.to change(Survey, :count).by(1).and change(Poll, :count).by(1).and change(PollOption, :count).by(2)
         
+        survey = Survey.last
+        expect(survey.daily_email_distributions).to eq(50)
+        expect(survey.extra_email_context_paragraph).to eq("Please tell us what you think!")
+
         expect(response).to redirect_to(admin_surveys_path)
         follow_redirect!
         expect(response.body).to include("Survey has been created!")

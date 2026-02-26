@@ -22,6 +22,22 @@
       </label>
     </div>
 
+    <div class="crayons-field mb-4 mt-4">
+      <%= f.label :daily_email_distributions, "Daily Email Distributions", class: "crayons-field__label" %>
+      <%= f.number_field :daily_email_distributions, class: "crayons-textfield w-100", min: 0, placeholder: "0" %>
+      <div class="color-base-60 fs-s mt-1">
+        Number of Pulse Survey emails to send daily to eligible users while the survey is active. Set to 0 to disable.
+      </div>
+    </div>
+
+    <div class="crayons-field mb-4 mt-2">
+      <%= f.label :extra_email_context_paragraph, "Extra Email Context (Optional)", class: "crayons-field__label" %>
+      <%= f.text_area :extra_email_context_paragraph, class: "crayons-textfield w-100", rows: 3, placeholder: "e.g. This is a survey to find out which editor tools the community is using..." %>
+      <div class="color-base-60 fs-s mt-1">
+        This extra paragraph will appear immediately after "You have been randomly selected to participate in a [Community Name] Pulse Survey" and before the link to the survey. Use this to give a general sense of the survey's purpose (i.e. to improve the platform vs industry tooling preferences vs partner feedback etc.).
+      </div>
+    </div>
+
     <hr class="my-4">
 
     <div>
