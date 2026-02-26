@@ -186,7 +186,7 @@ module AgentSessionsHelper
 
     # Try Rouge lexer lookup
     lexer = Rouge::Lexer.find_fancy(ext) || Rouge::Lexer.find(ext)
-    lexer ? ext : nil
+    lexer ? lexer.tag : nil
   rescue StandardError
     nil
   end

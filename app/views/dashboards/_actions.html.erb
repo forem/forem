@@ -22,8 +22,8 @@
     <li>
       <a class="crayons-link crayons-link--block"
         href="<%= agent_sessions_path %>">
-        Agent Sessions
-        <span class="c-indicator"><%= current_user.agent_sessions.count %></span>
+        <%= t("views.dashboard.actions.agent_sessions") %>
+        <span class="c-indicator"><%= @agent_sessions_count %></span>
       </a>
     </li>
 

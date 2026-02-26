@@ -7,7 +7,7 @@ class AgentSession < ApplicationRecord
   validates :title, presence: true, length: { maximum: 200 }
   validates :tool_name, presence: true, inclusion: { in: TOOL_NAMES }
   validates :raw_data, length: { maximum: MAX_RAW_DATA_SIZE }, allow_nil: true
-  validates :slug, uniqueness: { scope: :user_id }, format: { with: /\A[0-9a-z\-_]+\z/ }, allow_nil: true
+  validates :slug, uniqueness: true, format: { with: /\A[0-9a-z\-_]+\z/ }, allow_nil: true
 
   validate :normalized_data_has_messages
   validate :normalized_data_not_too_large

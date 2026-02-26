@@ -4,8 +4,9 @@
     <div class="agent-session-show-meta">
       <%= agent_session_tool_icon(@agent_session.tool_name) %>
       <span><%= @agent_session.total_messages %> messages</span>
-      <% if @agent_session.metadata["start_time"] %>
-        <span><%= Time.zone.parse(@agent_session.metadata["start_time"]).strftime("%B %d, %Y") rescue nil %></span>
+      <% start_time = @agent_session.metadata["start_time"] %>
+      <% if start_time.present? %>
+        <span><%= Time.zone.parse(start_time).strftime("%B %d, %Y") %></span>
       <% end %>
     </div>
     <div class="agent-session-show-actions">

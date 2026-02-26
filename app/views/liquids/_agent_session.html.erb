@@ -119,8 +119,11 @@
           var wrap = expand.closest('[data-collapsible]');
           if (wrap) {
             var text = wrap.querySelector('.agent-session-text-collapse');
-            if (text) { text.classList.toggle('agent-session-text-expanded'); }
-            expand.textContent = expand.textContent === 'Show more' ? 'Show less' : 'Show more';
+            if (text) {
+              text.classList.toggle('expanded');
+              var isExpanded = text.classList.contains('expanded');
+              expand.textContent = isExpanded ? 'Show less' : 'Show more';
+            }
           }
         }
         return;

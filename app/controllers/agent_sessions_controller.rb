@@ -63,6 +63,7 @@ class AgentSessionsController < ApplicationController
       detected_tool = AgentSessionParsers::AutoDetect.detect_tool(content, filename: file.original_filename)
       @agent_session.parse_and_normalize!(content, detected_tool: detected_tool)
     else
+      @agent_session.tool_name = tool_name
       @agent_session.parse_and_normalize!(content)
     end
 
@@ -93,8 +94,15 @@ class AgentSessionsController < ApplicationController
     end
   rescue StandardError => e
     Rails.logger.error("Agent session parse error: #{e.class}: #{e.message}")
-    render json: { error: "Failed to parse session file. Please check the file format and try again." },
-           status: :unprocessable_entity
+    error_message = "Failed to parse session file. Please check the file format and try again."
+    respond_to do |format|
+      format.html do
+        flash.now[:alert] = error_message
+        render :new, status: :unprocessable_entity
+      end
+      format.json { render json: { error: error_message }, status: :unprocessable_entity }
+      format.any { render :new, status: :unprocessable_entity }
+    end
   end
 
   def update
