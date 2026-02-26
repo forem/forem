@@ -55,6 +55,7 @@ class User < ApplicationRecord
   has_many :scheduled_automations, dependent: :destroy
   has_many :ahoy_visits, class_name: "Ahoy::Visit", dependent: :delete_all
   has_many :api_secrets, dependent: :delete_all
+  has_many :agent_sessions, dependent: :destroy
   has_many :articles, dependent: :destroy
   has_many :ai_audits, foreign_key: :affected_user_id, inverse_of: :affected_user, dependent: :nullify
   has_many :audit_logs, dependent: :nullify
