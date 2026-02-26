@@ -51,7 +51,7 @@ module AgentSessionParsers
 
     # Gemini CLI JSON: each assistant entry can have content (text), thoughts, and toolCalls.
     # We split these into separate messages: one text message, then one message per tool call.
-    def emit_assistant_messages(entry, messages)
+    def emit_assistant_messages(entry, messages) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
       text_blocks = []
 
       # Extract thoughts as text (bold subject lines)
@@ -94,31 +94,31 @@ module AgentSessionParsers
       end
 
       # Also handle inline functionCall/functionResponse in content arrays (Gemini API format)
-      if content_blocks.any? { |b| b["type"] == "tool_call" }
-        content_blocks.select { |b| b["type"] == "tool_call" }.each do |tc_block|
-          messages << build_message(
-            role: "assistant",
-            content_blocks: [tc_block],
-            timestamp: entry["timestamp"],
-          )
-        end
+      return unless content_blocks.any? { |b| b["type"] == "tool_call" }
+
+      content_blocks.select { |b| b["type"] == "tool_call" }.each do |tc_block|
+        messages << build_message(
+          role: "assistant",
+          content_blocks: [tc_block],
+          timestamp: entry["timestamp"],
+        )
       end
     end
 
-    def extract_tool_output(tc)
+    def extract_tool_output(tool_call)
       # Gemini CLI format: result is an array of {functionResponse: {response: {output: "..."}}}
-      result = tc["result"]
-      return nil unless result.is_a?(Array)
+      result = tool_call["result"]
+      return unless result.is_a?(Array)
 
       outputs = result.filter_map do |r|
         r.dig("functionResponse", "response", "output")
       end
-      return nil if outputs.empty?
+      return if outputs.empty?
 
       truncate_output(outputs.join("\n"))
     end
 
-    def extract_content_blocks(entry)
+    def extract_content_blocks(entry) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
       blocks = []
       content = entry["content"] || entry["parts"] || entry["text"]
 
@@ -167,7 +167,7 @@ module AgentSessionParsers
         "session_id" => session_id,
         "start_time" => start_time,
         "model" => model,
-        "total_messages" => messages.size,
+        "total_messages" => messages.size
       }.compact
     end
   end

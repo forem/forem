@@ -57,8 +57,11 @@ class AgentSessionTag < LiquidTagBase
       @slice_name = nil
       @range = range_match[2] && range_match[3] ? (range_match[2].to_i..range_match[3].to_i) : nil
     else
-      raise StandardError, I18n.t("liquid_tags.agent_session_tag.invalid",
-                                   default: "Invalid agent_session syntax. Use: {% agent_session ID %}, {% agent_session ID start..end %}, or {% agent_session ID slice_name %}")
+      raise StandardError,
+            I18n.t("liquid_tags.agent_session_tag.invalid",
+                   default: "Invalid agent_session syntax. " \
+                            "Use: {% agent_session ID %}, {% agent_session ID start..end %}, " \
+                            "or {% agent_session ID slice_name %}")
     end
   end
 
@@ -77,7 +80,10 @@ class AgentSessionTag < LiquidTagBase
               else
                 AgentSession.find_by(slug: id_or_slug)
               end
-    raise StandardError, I18n.t("liquid_tags.agent_session_tag.not_found", default: "Agent session not found") unless session
+    unless session
+      raise StandardError,
+            I18n.t("liquid_tags.agent_session_tag.not_found", default: "Agent session not found")
+    end
     raise StandardError, "This agent session is not published" unless session.published?
 
     session

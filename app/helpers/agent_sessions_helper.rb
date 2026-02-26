@@ -1,4 +1,6 @@
 module AgentSessionsHelper
+  # rubocop:disable Layout/LineLength
+
   # Claude AI symbol path (from the official logo)
   CLAUDE_SYMBOL_PATH = "M 233.96 800.21 L 468.64 668.54 L 472.59 657.10 L 468.64 650.74 L 457.21 650.74 L 418 648.32 L 283.89 644.70 L 167.60 639.87 L 54.93 633.83 L 26.58 627.79 L 0 592.75 L 2.74 575.28 L 26.58 559.25 L 60.72 562.23 L 136.19 567.38 L 249.42 575.19 L 331.57 580.03 L 453.26 592.67 L 472.59 592.67 L 475.33 584.86 L 468.72 580.03 L 463.57 575.19 L 346.39 495.79 L 219.54 411.87 L 153.10 363.54 L 117.18 339.06 L 99.06 316.11 L 91.25 266.01 L 123.87 230.09 L 167.68 233.07 L 178.87 236.05 L 223.25 270.20 L 318.04 343.57 L 441.83 434.74 L 459.95 449.80 L 467.19 444.64 L 468.08 441.02 L 459.95 427.41 L 392.62 305.72 L 320.78 181.93 L 288.81 130.63 L 280.35 99.87 C 277.37 87.22 275.19 76.59 275.19 63.62 L 312.32 13.21 L 332.86 6.60 L 382.39 13.21 L 403.25 31.33 L 434.01 101.72 L 483.87 212.54 L 561.18 363.22 L 583.81 407.92 L 595.89 449.32 L 600.40 461.96 L 608.21 461.96 L 608.21 454.71 L 614.58 369.83 L 626.34 265.61 L 637.77 131.52 L 641.72 93.75 L 660.40 48.48 L 697.53 24 L 726.52 37.85 L 750.36 72 L 747.06 94.07 L 732.89 186.20 L 705.10 330.52 L 686.98 427.17 L 697.53 427.17 L 709.61 415.09 L 758.50 350.17 L 840.64 247.49 L 876.89 206.74 L 919.17 161.72 L 946.31 140.30 L 997.61 140.30 L 1035.38 196.43 L 1018.47 254.42 L 965.64 321.42 L 921.83 378.20 L 859.01 462.77 L 819.79 530.42 L 823.41 535.81 L 832.75 534.93 L 974.66 504.72 L 1051.33 490.87 L 1142.82 475.17 L 1184.21 494.50 L 1188.72 514.15 L 1172.46 554.34 L 1074.60 578.50 L 959.84 601.45 L 788.94 641.88 L 786.85 643.41 L 789.26 646.39 L 866.26 653.64 L 899.19 655.41 L 979.81 655.41 L 1129.93 666.60 L 1169.15 692.54 L 1192.67 724.27 L 1188.72 748.43 L 1128.32 779.19 L 1046.82 759.87 L 856.59 714.60 L 791.36 698.34 L 782.34 698.34 L 782.34 703.73 L 836.70 756.89 L 936.32 846.85 L 1061.07 962.82 L 1067.44 991.49 L 1051.41 1014.12 L 1034.50 1011.70 L 924.89 929.23 L 882.60 892.11 L 786.85 811.49 L 780.48 811.49 L 780.48 819.95 L 802.55 852.24 L 919.09 1027.41 L 925.13 1081.13 L 916.67 1098.60 L 886.47 1109.15 L 853.29 1103.11 L 785.07 1007.36 L 714.68 899.52 L 657.91 802.87 L 650.98 806.82 L 617.48 1167.70 L 601.77 1186.15 L 565.53 1200 L 535.33 1177.05 L 519.30 1139.92 L 535.33 1066.55 L 554.66 970.79 L 570.36 894.68 L 584.54 800.13 L 593 768.72 L 592.43 766.63 L 585.50 767.52 L 514.23 865.37 L 405.83 1011.87 L 320.05 1103.68 L 299.52 1111.81 L 263.92 1093.37 L 267.22 1060.43 L 287.11 1031.11 L 405.83 880.11 L 477.42 786.52 L 523.65 732.48 L 523.33 724.67 L 520.59 724.67 L 205.29 929.40 L 149.15 936.64 L 124.99 914.01 L 127.97 876.89 L 139.41 864.81 L 234.20 799.57 Z".freeze
 
@@ -16,6 +18,8 @@ module AgentSessionsHelper
 
   GEMINI_SYMBOL_PATH = "M32.447 0c.68 0 1.273.465 1.439 1.125a38.904 38.904 0 001.999 5.905c2.152 5 5.105 9.376 8.854 13.125 3.751 3.75 8.126 6.703 13.125 8.855a38.98 38.98 0 005.906 1.999c.66.166 1.124.758 1.124 1.438 0 .68-.464 1.273-1.125 1.439a38.902 38.902 0 00-5.905 1.999c-5 2.152-9.375 5.105-13.125 8.854-3.749 3.751-6.702 8.126-8.854 13.125a38.973 38.973 0 00-2 5.906 1.485 1.485 0 01-1.438 1.124c-.68 0-1.272-.464-1.438-1.125a38.913 38.913 0 00-2-5.905c-2.151-5-5.103-9.375-8.854-13.125-3.75-3.749-8.125-6.702-13.125-8.854a38.973 38.973 0 00-5.905-2A1.485 1.485 0 010 32.448c0-.68.465-1.272 1.125-1.438a38.903 38.903 0 005.905-2c5-2.151 9.376-5.104 13.125-8.854 3.75-3.749 6.703-8.125 8.855-13.125a38.972 38.972 0 001.999-5.905A1.485 1.485 0 0132.447 0z".freeze
 
+  # rubocop:enable Layout/LineLength
+
   TOOL_INFO = {
     "claude_code" => { bg: "#D97706", label: "Claude Code" },
     "codex" => { bg: "#10A37F", label: "Codex" },
@@ -23,46 +27,56 @@ module AgentSessionsHelper
     "github_copilot" => { bg: "#333", label: "GitHub Copilot" },
     "opencode" => { bg: "#F97316", label: "OpenCode" },
     "cursor" => { bg: "#000", label: "Cursor" },
-    "pi" => { bg: "#EF4444", label: "Pi" },
+    "pi" => { bg: "#EF4444", label: "Pi" }
   }.freeze
 
   def agent_session_tool_icon(tool_name, show_label: true)
     info = TOOL_INFO[tool_name] || TOOL_INFO["claude_code"]
-    bg = info[:bg]
+    background = info[:bg]
     label = info[:label]
 
-    # Tools with actual SVG logos
-    if tool_name == "claude_code"
-      svg = %(<svg width="20" height="20" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><path d="#{CLAUDE_SYMBOL_PATH}" fill="#D97757"/></svg>)
-    elsif tool_name == "codex"
-      svg = %(<svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><path d="#{OPENAI_SYMBOL_PATH}" fill="#10A37F"/></svg>)
-    elsif tool_name == "gemini_cli"
-      svg = %(<svg width="20" height="20" viewBox="0 0 65 65" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><defs><linearGradient id="gemini-g" x1="18" y1="43" x2="52" y2="15" gradientUnits="userSpaceOnUse"><stop stop-color="#4893FC"/><stop offset=".27" stop-color="#4893FC"/><stop offset=".777" stop-color="#969DFF"/><stop offset="1" stop-color="#BD99FE"/></linearGradient></defs><path d="#{GEMINI_SYMBOL_PATH}" fill="url(#gemini-g)"/></svg>)
-    elsif tool_name == "pi"
-      svg = %(<svg width="20" height="20" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><rect width="800" height="800" rx="80" fill="#000"/><path fill="#fff" fill-rule="evenodd" d="#{PI_P_PATH}"/><path fill="#fff" d="#{PI_DOT_PATH}"/></svg>)
-    elsif tool_name == "github_copilot"
-      svg = %(<svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><path d="#{COPILOT_PATH_1}" fill="#333"/><path d="#{COPILOT_PATH_2}" fill="#333"/></svg>)
-    else
-      # Other tools: colored rounded square with initials
-      abbr = case tool_name
-             when "gemini_cli" then "G"
-             when "github_copilot" then "GH"
-             when "opencode" then "OC"
-             when "cursor" then "Cu"
-             when "pi" then "Pi"
-             else tool_name[0..1].upcase
-             end
-      svg = %(<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><rect width="20" height="20" rx="4" fill="#{bg}"/><text x="10" y="14" text-anchor="middle" fill="#fff" font-size="10" font-weight="700" font-family="system-ui,sans-serif">#{abbr}</text></svg>)
-    end
+    svg = build_tool_svg(tool_name, background)
 
     content_tag(:span, class: "agent-session-tool-icon-badge", title: label) do
-      result = svg.html_safe
+      result = svg.html_safe # rubocop:disable Rails/OutputSafety
       result += content_tag(:span, label, class: "agent-session-tool-icon-label") if show_label
       result
     end
   end
 
+  # rubocop:disable Layout/LineLength
+  def build_tool_svg(tool_name, background)
+    case tool_name
+    when "claude_code"
+      %(<svg width="20" height="20" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><path d="#{CLAUDE_SYMBOL_PATH}" fill="#D97757"/></svg>)
+    when "codex"
+      %(<svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><path d="#{OPENAI_SYMBOL_PATH}" fill="#10A37F"/></svg>)
+    when "gemini_cli"
+      %(<svg width="20" height="20" viewBox="0 0 65 65" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><defs><linearGradient id="gemini-g" x1="18" y1="43" x2="52" y2="15" gradientUnits="userSpaceOnUse"><stop stop-color="#4893FC"/><stop offset=".27" stop-color="#4893FC"/><stop offset=".777" stop-color="#969DFF"/><stop offset="1" stop-color="#BD99FE"/></linearGradient></defs><path d="#{GEMINI_SYMBOL_PATH}" fill="url(#gemini-g)"/></svg>)
+    when "pi"
+      %(<svg width="20" height="20" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><rect width="800" height="800" rx="80" fill="#000"/><path fill="#fff" fill-rule="evenodd" d="#{PI_P_PATH}"/><path fill="#fff" d="#{PI_DOT_PATH}"/></svg>)
+    when "github_copilot"
+      %(<svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><path d="#{COPILOT_PATH_1}" fill="#333"/><path d="#{COPILOT_PATH_2}" fill="#333"/></svg>)
+    else
+      abbr = tool_name_abbreviation(tool_name)
+      %(<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><rect width="20" height="20" rx="4" fill="#{background}"/><text x="10" y="14" text-anchor="middle" fill="#fff" font-size="10" font-weight="700" font-family="system-ui,sans-serif">#{abbr}</text></svg>)
+    end
+  end
+  # rubocop:enable Layout/LineLength
+
+  def tool_name_abbreviation(tool_name)
+    case tool_name
+    when "gemini_cli" then "G"
+    when "github_copilot" then "GH"
+    when "opencode" then "OC"
+    when "cursor" then "Cu"
+    when "pi" then "Pi"
+    else tool_name[0..1].upcase
+    end
+  end
+
   # Render a tool call input as a syntax-highlighted <pre> block.
+  # rubocop:disable Rails/OutputSafety
   def render_tool_input(tool_name, input_text)
     return "".html_safe if input_text.blank?
 
@@ -98,23 +112,28 @@ module AgentSessionsHelper
   rescue StandardError
     content_tag(:pre, class: "agent-session-pre") { content_tag(:code, h(output_text)) }
   end
+  # rubocop:enable Rails/OutputSafety
 
   private
 
-  FILE_TOOL_NAMES = Set.new(%w[
-    Read Write Edit read_file write_file edit_file
-    ReadFile WriteFile EditFile readFile writeFile editFile
-    ReadFolder read write edit view_file view cat
-  ]).freeze
+  FILE_TOOL_NAMES = Set.new(
+    %w[
+      Read Write Edit read_file write_file edit_file
+      ReadFile WriteFile EditFile readFile writeFile editFile
+      ReadFolder read write edit view_file view cat
+    ],
+  ).freeze
 
-  SHELL_TOOL_NAMES = Set.new(%w[
-    Bash bash execute_command exec_command shell run_command
-    run_terminal_command execute terminal
-  ]).freeze
+  SHELL_TOOL_NAMES = Set.new(
+    %w[
+      Bash bash execute_command exec_command shell run_command
+      run_terminal_command execute terminal
+    ],
+  ).freeze
 
-  PATCH_TOOL_NAMES = Set.new(%w[
-    apply_patch apply_diff patch
-  ]).freeze
+  PATCH_TOOL_NAMES = Set.new(
+    %w[apply_patch apply_diff patch],
+  ).freeze
 
   def detect_tool_language(tool_name, input_text, content)
     name = tool_name.to_s
@@ -158,12 +177,12 @@ module AgentSessionsHelper
   end
 
   def language_from_path(path)
-    return nil if path.blank?
+    return if path.blank?
 
     # Input might contain extra text; grab the first path-like token
     token = path.to_s.strip.split(/\s/).first
     ext = File.extname(token.to_s).delete_prefix(".")
-    return nil if ext.blank?
+    return if ext.blank?
 
     # Try Rouge lexer lookup
     lexer = Rouge::Lexer.find_fancy(ext) || Rouge::Lexer.find(ext)
@@ -173,13 +192,13 @@ module AgentSessionsHelper
   end
 
   def detect_language_from_content(content)
-    return nil if content.blank?
+    return if content.blank?
 
     stripped = content.strip
 
     # Diff detection
     return "diff" if stripped.match?(/\A(---|\+\+\+|diff --git)\s/) ||
-                      stripped.match?(/^@@\s.*@@/m)
+      stripped.match?(/^@@\s.*@@/m)
 
     # JSON detection
     if stripped.start_with?("{", "[")

@@ -7,7 +7,7 @@ module AgentSessionParsers
       "pi" => Pi,
       "opencode" => GeminiCli,        # Fallback: OpenCode JSON export uses similar structure
       "cursor" => GeminiCli,          # Fallback: Cursor JSON export uses similar structure
-      "github_copilot" => GithubCopilot,
+      "github_copilot" => GithubCopilot
     }.freeze
 
     def self.parser_for(tool_name)
@@ -23,7 +23,7 @@ module AgentSessionParsers
       [tool_name, result]
     end
 
-    def self.detect_tool(content, filename: nil)
+    def self.detect_tool(content, filename: nil) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity,Lint/UnusedMethodArgument
       # Try parsing first line as JSON
       first_line = content.lines.first&.strip
       if first_line&.start_with?("{")

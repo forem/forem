@@ -1,5 +1,6 @@
 module AgentSessionParsers
   class Codex < Base
+    TEXT_CONTENT_TYPES = %w[output_text input_text text].freeze
     def parse
       records = parse_jsonl_lines
       messages = []
@@ -38,26 +39,23 @@ module AgentSessionParsers
     end
 
     # New Codex format (0.105+): response_item records
-    def handle_response_item(record, messages, current_assistant_blocks)
+    def handle_response_item(record, messages, current_assistant_blocks) # rubocop:disable Metrics/CyclomaticComplexity
       payload = record["payload"] || {}
       role = payload["role"]
       item_type = payload["type"]
 
       case item_type
       when "message"
-        if role == "user"
-          # In new Codex format, user messages come from event_msg (user_message payload).
-          # response_item role=user contains duplicates plus system instructions — skip them.
-          return
-        elsif role == "assistant"
+        # In new Codex format, user messages come from event_msg (user_message payload).
+        # response_item role=user contains duplicates plus system instructions — skip them.
+        # Skip developer role (system instructions) too.
+        if role == "assistant"
           text = extract_response_item_text(payload)
           if text.present?
-            # Flush any pending tool calls before starting text
-            flush_assistant_blocks(messages, current_assistant_blocks) if current_assistant_blocks.any? { |b| b["type"] == "tool_call" }
+            flush_tool_call_blocks(messages, current_assistant_blocks)
             current_assistant_blocks << text_block(text)
           end
         end
-        # Skip developer role (system instructions)
       when "function_call", "custom_tool_call"
         # Flush any pending text blocks as their own message
         flush_assistant_blocks(messages, current_assistant_blocks)
@@ -79,14 +77,14 @@ module AgentSessionParsers
       when "reasoning"
         summary = payload.dig("summary", 0, "text")
         if summary.present?
-          flush_assistant_blocks(messages, current_assistant_blocks) if current_assistant_blocks.any? { |b| b["type"] == "tool_call" }
+          flush_tool_call_blocks(messages, current_assistant_blocks)
           current_assistant_blocks << text_block(summary)
         end
       end
     end
 
     # Old Codex format: item.completed records
-    def handle_item_completed(record, messages, current_assistant_blocks)
+    def handle_item_completed(record, messages, current_assistant_blocks) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
       item = record["item"] || {}
       item_type = item["type"]
 
@@ -94,14 +92,14 @@ module AgentSessionParsers
       when "message"
         text = extract_message_text(item)
         if text.present?
-          flush_assistant_blocks(messages, current_assistant_blocks) if current_assistant_blocks.any? { |b| b["type"] == "tool_call" }
+          flush_tool_call_blocks(messages, current_assistant_blocks)
           current_assistant_blocks << text_block(text)
         end
       when "function_call", "command"
-        flush_assistant_blocks(messages, current_assistant_blocks) if current_assistant_blocks.any? { |b| b["type"] == "text" }
+        flush_text_blocks(messages, current_assistant_blocks)
         name = item["name"] || item["command"] || "command"
-        input = item.dig("arguments") || item.dig("input") || item.dig("command")
-        raw_output = item.dig("output") || item.dig("result")
+        input = item["arguments"] || item["input"] || item["command"]
+        raw_output = item["output"] || item["result"]
         output_text = unwrap_json_output(raw_output)
         current_assistant_blocks << tool_call_block(
           name: name,
@@ -110,7 +108,7 @@ module AgentSessionParsers
         )
         flush_assistant_blocks(messages, current_assistant_blocks)
       when "file_change"
-        flush_assistant_blocks(messages, current_assistant_blocks) if current_assistant_blocks.any? { |b| b["type"] == "text" }
+        flush_text_blocks(messages, current_assistant_blocks)
         path = item["file_path"] || item["path"]
         current_assistant_blocks << tool_call_block(
           name: "FileChange",
@@ -126,9 +124,9 @@ module AgentSessionParsers
       case content
       when String then content
       when Array
-        content.filter_map { |c|
-          c["text"] if %w[output_text input_text text].include?(c["type"])
-        }.join("\n")
+        content.filter_map do |c|
+          c["text"] if TEXT_CONTENT_TYPES.include?(c["type"])
+        end.join("\n")
       else
         payload["text"]
       end
@@ -177,10 +175,10 @@ module AgentSessionParsers
         next unless m["role"] == "assistant"
 
         m["content"]&.each do |b|
-          if b["type"] == "tool_call" && b["output"].nil?
-            b["output"] = output
-            return
-          end
+          next unless b["type"] == "tool_call" && b["output"].nil?
+
+          b["output"] = output
+          return # rubocop:disable Lint/NonLocalExitFromIterator
         end
       end
     end
@@ -192,20 +190,28 @@ module AgentSessionParsers
       blocks.clear
     end
 
+    def flush_tool_call_blocks(messages, blocks)
+      flush_assistant_blocks(messages, blocks) if blocks.any? { |b| b["type"] == "tool_call" }
+    end
+
+    def flush_text_blocks(messages, blocks)
+      flush_assistant_blocks(messages, blocks) if blocks.any? { |b| b["type"] == "text" }
+    end
+
     def extract_metadata(records, messages)
       # New format: session_meta
-      session_meta = records.find { |r| r["type"] == "session_meta" }
+      session_meta = records.detect { |r| r["type"] == "session_meta" }
       # Old format: thread.started
-      started = records.find { |r| r["type"] == "thread.started" }
+      started = records.detect { |r| r["type"] == "thread.started" }
 
       meta_payload = session_meta&.dig("payload") || {}
       {
         "tool_name" => "codex",
         "session_id" => meta_payload["id"] || started&.dig("thread_id"),
         "start_time" => meta_payload["timestamp"] || session_meta&.dig("timestamp") || started&.dig("timestamp"),
-        "model" => meta_payload.dig("model_provider"),
+        "model" => meta_payload["model_provider"],
         "cli_version" => meta_payload["cli_version"],
-        "total_messages" => messages.size,
+        "total_messages" => messages.size
       }.compact
     end
   end
