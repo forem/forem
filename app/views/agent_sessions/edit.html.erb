@@ -1,0 +1,682 @@
+<div class="agent-session-curator-page">
+  <header class="agent-session-page-header">
+    <div class="agent-session-header-row">
+      <h1>Curate Session: <%= @agent_session.title %></h1>
+      <div class="agent-session-header-actions">
+        <%= link_to "All Sessions", agent_sessions_path, class: "crayons-btn crayons-btn--ghost crayons-btn--s" %>
+        <%= link_to "Upload New", new_agent_session_path, class: "crayons-btn crayons-btn--s" %>
+      </div>
+    </div>
+    <p>Embed this session in your post with <code><%= "{" + "% agent_session #{@agent_session.slug} %" + "}" %></code></p>
+  </header>
+
+  <div class="agent-session-instructions">
+    <p class="instructions-text">All messages are <strong>included in your embed by default</strong>. Use the filters above the cards to narrow your view, and click individual cards (or drag across multiple) to exclude them. Use "Deselect all" to start from scratch and selectively include only what you want.</p>
+    <div class="instructions-warning">
+      <p>We automatically scan for and redact common secrets like API keys, tokens, and credentials, but <strong>we cannot guarantee all sensitive information has been caught</strong>. Please review your session carefully before publishing to ensure you are not sharing anything you shouldn't.</p>
+      <% if @agent_session.total_redactions > 0 %>
+        <p class="instructions-redaction-summary">
+          <strong><%= @agent_session.total_redactions %> <%= "item".pluralize(@agent_session.total_redactions) %> automatically redacted</strong>
+          &mdash; <%= @agent_session.redactions.map { |r| "#{r['count']} #{r['name']}" }.join(", ") %>
+        </p>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="agent-session-curator" id="agent-session-curator"
+       data-session-id="<%= @agent_session.id %>"
+       data-session-slug="<%= @agent_session.slug %>"
+       data-messages="<%= @agent_session.messages.to_json %>"
+       data-curated="<%= @agent_session.curated_selections.to_json %>"
+       data-slices="<%= @agent_session.slices.to_json %>"
+       data-tool-name="<%= @agent_session.tool_name %>"
+       data-title="<%= @agent_session.title %>">
+
+    <!-- Mode banner (shown when in slice mode) -->
+    <div class="curator-slice-banner" id="slice-banner" style="display:none">
+      <div class="slice-banner-content">
+        <span class="slice-banner-icon">&#9733;</span>
+        <span>Creating slice: <strong id="slice-banner-name"></strong></span>
+        <span class="slice-banner-count" id="slice-banner-count">0 selected</span>
+      </div>
+      <div class="slice-banner-actions">
+        <button type="button" class="crayons-btn crayons-btn--s" id="save-slice-btn">Save slice</button>
+        <button type="button" class="crayons-btn crayons-btn--s crayons-btn--ghost" id="cancel-slice-btn">Cancel</button>
+      </div>
+    </div>
+
+    <div class="curator-layout">
+      <!-- Main column: toolbar + messages -->
+      <div class="curator-main">
+        <div class="agent-session-curator-toolbar">
+          <div class="curator-toolbar-row">
+            <div class="curator-filter-group">
+              <button type="button" class="curator-filter active" data-filter="all" id="filter-all">All</button>
+              <button type="button" class="curator-filter" data-filter="conversation" id="filter-conversation">Conversation</button>
+              <button type="button" class="curator-filter" data-filter="user" id="filter-user">Prompts</button>
+              <button type="button" class="curator-filter" data-filter="tools" id="filter-tools">Tool calls</button>
+              <button type="button" class="curator-filter" data-filter="redacted" id="filter-redacted">Redacted</button>
+            </div>
+            <div class="curator-toolbar-actions">
+              <button type="button" class="curator-bulk-btn" id="select-all-btn">Select all</button>
+              <button type="button" class="curator-bulk-btn" id="select-none-btn">Deselect all</button>
+              <button type="button" class="crayons-btn crayons-btn--s" id="save-curation-btn">Save</button>
+            </div>
+          </div>
+          <div class="curator-toolbar-meta">
+            <span class="agent-session-curator-count" id="selection-count"></span>
+            <span class="curator-hint" id="curator-hint">Click to toggle &middot; Shift+click for range &middot; Drag across cards</span>
+          </div>
+        </div>
+
+        <div class="agent-session-curator-messages" id="curator-messages">
+          <!-- Rendered by JavaScript -->
+        </div>
+
+      </div>
+
+      <!-- Sidebar: embed code + slices -->
+      <aside class="curator-sidebar" id="slices-panel">
+        <div class="sidebar-embed-section">
+          <label class="sidebar-section-label">Embed code</label>
+          <div class="sidebar-embed-row">
+            <code id="embed-code" class="sidebar-embed-code"><%= "{" + "% agent_session #{@agent_session.slug} %" + "}" %></code>
+            <button type="button" class="slice-action-btn" id="copy-embed-btn" title="Copy">Copy</button>
+          </div>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <div class="slices-panel-header">
+          <h3>Slices</h3>
+          <p class="slices-panel-hint">Embed different parts of your session throughout a post.</p>
+          <button type="button" class="crayons-btn crayons-btn--s crayons-btn--outlined" id="new-slice-btn">+ New slice</button>
+        </div>
+
+        <div class="slices-name-input" id="slice-name-input" style="display:none">
+          <input type="text" class="agent-session-input" id="slice-name-field" placeholder="e.g. planning, debugging" maxlength="50" />
+          <div class="slices-name-actions">
+            <button type="button" class="crayons-btn crayons-btn--s" id="start-slice-btn">Start</button>
+            <button type="button" class="crayons-btn crayons-btn--s crayons-btn--ghost" id="cancel-name-btn">Cancel</button>
+          </div>
+        </div>
+
+        <div class="slices-list" id="slices-list">
+          <!-- Rendered by JavaScript -->
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var curator = document.getElementById('agent-session-curator');
+  var messages = JSON.parse(curator.dataset.messages);
+  var curated = new Set(JSON.parse(curator.dataset.curated).map(Number));
+  var slices = JSON.parse(curator.dataset.slices || '[]');
+  var container = document.getElementById('curator-messages');
+  var countEl = document.getElementById('selection-count');
+  var activeFilter = 'all';
+  var sessionId = curator.dataset.sessionId;
+  var sessionSlug = curator.dataset.sessionSlug;
+
+  if (curated.size === 0) {
+    messages.forEach(function(m) { curated.add(m.index); });
+  }
+
+  // === Slice mode state ===
+  var sliceMode = false;
+  var sliceSelection = new Set();
+  var editingSliceIndex = -1;
+
+  // === Selection state ===
+  var isDragging = false;
+  var dragAction = null;
+  var dragStartIndex = null;
+  var dragCurrentIndex = null;
+  var lastClickedIndex = -1; // For shift+click range
+
+  // === Helpers ===
+  function escapeHtml(text) {
+    var d = document.createElement('div');
+    d.textContent = text;
+    return d.innerHTML;
+  }
+
+  function msgHasToolCalls(msg) {
+    return (msg.content || []).some(function(b) { return b.type === 'tool_call'; });
+  }
+
+  function msgHasOnlyToolCalls(msg) {
+    var blocks = msg.content || [];
+    return blocks.length > 0 && blocks.every(function(b) { return b.type === 'tool_call'; });
+  }
+
+  function msgHasRedactions(msg) {
+    return (msg.content || []).some(function(b) {
+      var text = (b.text || '') + (b.input || '') + (b.output || '');
+      return text.indexOf('[REDACTED]') !== -1;
+    });
+  }
+
+  function isVisible(msg) {
+    if (activeFilter === 'all') return true;
+    if (activeFilter === 'conversation') return !msgHasOnlyToolCalls(msg);
+    if (activeFilter === 'user') return msg.role === 'user';
+    if (activeFilter === 'tools') return msgHasToolCalls(msg);
+    if (activeFilter === 'redacted') return msgHasRedactions(msg);
+    return true;
+  }
+
+  function getActiveSet() {
+    return sliceMode ? sliceSelection : curated;
+  }
+
+  function csrfToken() {
+    return document.querySelector("meta[name='csrf-token']").getAttribute('content');
+  }
+
+  // === Rendering ===
+  function renderMessages() {
+    container.innerHTML = '';
+    var activeSet = getActiveSet();
+
+    messages.forEach(function(msg) {
+      var div = document.createElement('div');
+      var isSelected = activeSet.has(msg.index);
+      var visible = isVisible(msg);
+
+      div.className = 'curator-card' +
+        (isSelected ? ' selected' : ' deselected') +
+        (!visible ? ' filtered-out' : '') +
+        (sliceMode ? ' slice-mode' : '');
+      div.dataset.index = msg.index;
+
+      var roleBar = document.createElement('div');
+      roleBar.className = 'curator-card-bar curator-card-bar-' + msg.role;
+      div.appendChild(roleBar);
+
+      var body = document.createElement('div');
+      body.className = 'curator-card-body';
+
+      var header = document.createElement('div');
+      header.className = 'curator-card-header';
+
+      var roleLabel = document.createElement('span');
+      roleLabel.className = 'curator-role curator-role-' + msg.role;
+      roleLabel.textContent = msg.role === 'user' ? 'You' : 'Agent';
+      header.appendChild(roleLabel);
+
+      var indexLabel = document.createElement('span');
+      indexLabel.className = 'curator-index-label';
+      indexLabel.textContent = '#' + msg.index;
+      header.appendChild(indexLabel);
+
+      if (msg.timestamp) {
+        var ts = document.createElement('span');
+        ts.className = 'curator-timestamp';
+        ts.textContent = new Date(msg.timestamp).toLocaleTimeString();
+        header.appendChild(ts);
+      }
+
+      var indicator = document.createElement('span');
+      indicator.className = 'curator-selected-indicator';
+      indicator.textContent = isSelected ? (sliceMode ? 'in slice' : 'included') : (sliceMode ? '' : 'excluded');
+      header.appendChild(indicator);
+
+      body.appendChild(header);
+
+      var content = document.createElement('div');
+      content.className = 'curator-card-content';
+
+      (msg.content || []).forEach(function(block) {
+        if (block.type === 'text') {
+          var text = block.text || '';
+          if (text.length > 300) {
+            var wrapper = document.createElement('div');
+            wrapper.className = 'curator-text-expandable';
+
+            var truncated = document.createElement('div');
+            truncated.className = 'curator-text';
+            truncated.textContent = text.substring(0, 300) + '...';
+            wrapper.appendChild(truncated);
+
+            var full = document.createElement('div');
+            full.className = 'curator-text curator-text-full';
+            full.style.display = 'none';
+            full.textContent = text;
+            wrapper.appendChild(full);
+
+            var toggle = document.createElement('button');
+            toggle.className = 'curator-expand-btn';
+            toggle.textContent = '+ Show more';
+            toggle.type = 'button';
+            toggle.addEventListener('click', function(e) {
+              e.stopPropagation();
+              var showing = full.style.display !== 'none';
+              full.style.display = showing ? 'none' : 'block';
+              truncated.style.display = showing ? 'block' : 'none';
+              toggle.textContent = showing ? '+ Show more' : '- Show less';
+            });
+            wrapper.appendChild(toggle);
+
+            content.appendChild(wrapper);
+          } else {
+            var p = document.createElement('div');
+            p.className = 'curator-text';
+            p.textContent = text;
+            content.appendChild(p);
+          }
+        } else if (block.type === 'tool_call') {
+          var tool = document.createElement('div');
+          tool.className = 'curator-tool-pill';
+          tool.innerHTML = '<span class="curator-tool-name">' + escapeHtml(block.name) + '</span>' +
+            (block.input ? '<span class="curator-tool-input">' + escapeHtml(String(block.input).substring(0, 50)) + '</span>' : '');
+          content.appendChild(tool);
+        }
+      });
+
+      body.appendChild(content);
+
+      // Slice membership badges
+      if (!sliceMode) {
+        var sliceBadges = getSlicesForMessage(msg.index);
+        if (sliceBadges.length > 0) {
+          var badgeRow = document.createElement('div');
+          badgeRow.className = 'curator-slice-badges';
+          sliceBadges.forEach(function(s) {
+            var badge = document.createElement('span');
+            badge.className = 'curator-slice-badge';
+            badge.textContent = s.name;
+            badgeRow.appendChild(badge);
+          });
+          body.appendChild(badgeRow);
+        }
+      }
+
+      div.appendChild(body);
+
+      div.addEventListener('mousedown', function(e) {
+        if (e.button !== 0) return;
+        if (e.target.closest('.curator-expand-btn')) return; // Don't interfere with expand buttons
+        e.preventDefault();
+
+        // Shift+click: range select from last clicked
+        if (e.shiftKey && lastClickedIndex >= 0) {
+          var lo = Math.min(lastClickedIndex, msg.index);
+          var hi = Math.max(lastClickedIndex, msg.index);
+          var action = activeSet.has(lastClickedIndex) ? 'select' : 'deselect';
+          for (var i = lo; i <= hi; i++) {
+            var m = messages.find(function(x) { return x.index === i; });
+            if (m && isVisible(m)) {
+              if (action === 'select') activeSet.add(i); else activeSet.delete(i);
+            }
+          }
+          lastClickedIndex = msg.index;
+          renderMessages();
+          return;
+        }
+
+        // Normal click: toggle single card + start drag
+        isDragging = true;
+        dragStartIndex = msg.index;
+        dragCurrentIndex = msg.index;
+        dragAction = activeSet.has(msg.index) ? 'deselect' : 'select';
+        applyAction(msg.index, dragAction);
+        lastClickedIndex = msg.index;
+      });
+
+      div.addEventListener('mouseenter', function() {
+        if (!isDragging) return;
+        if (!isVisible(msg)) return;
+        var oldCurrent = dragCurrentIndex;
+        dragCurrentIndex = msg.index;
+        // Apply action to all cards in range between dragStart and current
+        updateDragRange();
+      });
+
+      container.appendChild(div);
+    });
+
+    updateCount();
+  }
+
+  function getSlicesForMessage(index) {
+    return slices.filter(function(s) {
+      return (s.indices || []).indexOf(index) !== -1;
+    });
+  }
+
+  // Get visible message indices in order
+  function getVisibleIndices() {
+    return messages.filter(isVisible).map(function(m) { return m.index; });
+  }
+
+  function applyAction(index, action) {
+    var activeSet = getActiveSet();
+    if (action === 'select') activeSet.add(index); else activeSet.delete(index);
+    updateCardVisual(index);
+    updateCount();
+  }
+
+  function updateDragRange() {
+    var activeSet = getActiveSet();
+    var lo = Math.min(dragStartIndex, dragCurrentIndex);
+    var hi = Math.max(dragStartIndex, dragCurrentIndex);
+
+    // Apply drag action to everything in range, revert things outside range
+    messages.forEach(function(m) {
+      if (!isVisible(m)) return;
+      var inRange = m.index >= lo && m.index <= hi;
+      var card = container.querySelector('[data-index="' + m.index + '"]');
+
+      if (inRange) {
+        if (dragAction === 'select') activeSet.add(m.index); else activeSet.delete(m.index);
+        if (card) card.classList.add('drag-highlight');
+      } else {
+        if (card) card.classList.remove('drag-highlight');
+      }
+      updateCardVisual(m.index);
+    });
+    updateCount();
+  }
+
+  function updateCardVisual(index) {
+    var activeSet = getActiveSet();
+    var card = container.querySelector('[data-index="' + index + '"]');
+    if (!card) return;
+    var isSelected = activeSet.has(index);
+    card.classList.toggle('selected', isSelected);
+    card.classList.toggle('deselected', !isSelected);
+    var indicator = card.querySelector('.curator-selected-indicator');
+    if (indicator) indicator.textContent = isSelected ? (sliceMode ? 'in slice' : 'included') : (sliceMode ? '' : 'excluded');
+  }
+
+  document.addEventListener('mouseup', function() {
+    if (isDragging) {
+      isDragging = false;
+      dragAction = null;
+      dragStartIndex = null;
+      dragCurrentIndex = null;
+      // Remove drag highlights
+      container.querySelectorAll('.drag-highlight').forEach(function(el) {
+        el.classList.remove('drag-highlight');
+      });
+    }
+  });
+
+  container.addEventListener('selectstart', function(e) {
+    if (isDragging) e.preventDefault();
+  });
+
+  function updateCount() {
+    var activeSet = getActiveSet();
+    if (sliceMode) {
+      var ct = activeSet.size;
+      countEl.textContent = ct + ' message' + (ct !== 1 ? 's' : '') + ' in slice';
+      document.getElementById('slice-banner-count').textContent = ct + ' selected';
+    } else {
+      countEl.textContent = curated.size + ' of ' + messages.length + ' included';
+    }
+  }
+
+  // === Filters ===
+  var filterBtns = document.querySelectorAll('.curator-filter');
+  filterBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      filterBtns.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      renderMessages();
+    });
+  });
+
+  // === Bulk actions ===
+  document.getElementById('select-all-btn').addEventListener('click', function() {
+    var activeSet = getActiveSet();
+    messages.forEach(function(m) {
+      if (isVisible(m)) activeSet.add(m.index);
+    });
+    renderMessages();
+  });
+
+  document.getElementById('select-none-btn').addEventListener('click', function() {
+    var activeSet = getActiveSet();
+    messages.forEach(function(m) {
+      if (isVisible(m)) activeSet.delete(m.index);
+    });
+    renderMessages();
+  });
+
+  // === Save curation ===
+  document.getElementById('save-curation-btn').addEventListener('click', function() {
+    if (sliceMode) return;
+    var btn = this;
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+
+    var selections = Array.from(curated).sort(function(a,b){ return a-b; });
+
+    fetch('/agent_sessions/' + sessionId, {
+      method: 'PATCH',
+      headers: { 'X-CSRF-Token': csrfToken(), 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ agent_session: { curated_selections: selections } }),
+      credentials: 'same-origin',
+    }).then(function(response) {
+      return response.json();
+    }).then(function(data) {
+      btn.disabled = false;
+      if (data.success) {
+        btn.textContent = 'Saved!';
+        setTimeout(function() { btn.textContent = 'Save'; }, 2000);
+      } else {
+        btn.textContent = 'Save';
+        alert('Error: ' + (data.error || 'Unknown error'));
+      }
+    }).catch(function() {
+      btn.disabled = false;
+      btn.textContent = 'Save';
+      alert('Error saving curation');
+    });
+  });
+
+  // ===========================================================================
+  // SLICES
+  // ===========================================================================
+
+  function enterSliceMode(name, existingIndices) {
+    sliceMode = true;
+    sliceSelection = new Set(existingIndices || []);
+    document.getElementById('slice-banner').style.display = 'flex';
+    document.getElementById('slice-banner-name').textContent = name;
+    document.getElementById('slice-name-input').style.display = 'none';
+    container.classList.add('slice-mode-active');
+    document.getElementById('save-curation-btn').style.display = 'none';
+    renderMessages();
+  }
+
+  function exitSliceMode() {
+    sliceMode = false;
+    editingSliceIndex = -1;
+    sliceSelection = new Set();
+    document.getElementById('slice-banner').style.display = 'none';
+    document.getElementById('slice-name-input').style.display = 'none';
+    container.classList.remove('slice-mode-active');
+    document.getElementById('save-curation-btn').style.display = '';
+    renderMessages();
+  }
+
+  document.getElementById('new-slice-btn').addEventListener('click', function() {
+    editingSliceIndex = -1;
+    document.getElementById('slice-name-input').style.display = 'block';
+    document.getElementById('slice-name-field').value = '';
+    document.getElementById('slice-name-field').focus();
+  });
+
+  document.getElementById('cancel-name-btn').addEventListener('click', function() {
+    document.getElementById('slice-name-input').style.display = 'none';
+  });
+
+  document.getElementById('start-slice-btn').addEventListener('click', function() {
+    var name = document.getElementById('slice-name-field').value.trim();
+    if (!name) {
+      document.getElementById('slice-name-field').focus();
+      return;
+    }
+    if (editingSliceIndex === -1) {
+      var exists = slices.some(function(s) { return s.name.toLowerCase() === name.toLowerCase(); });
+      if (exists) {
+        alert('A slice with this name already exists. Please choose a different name.');
+        return;
+      }
+    }
+    enterSliceMode(name, []);
+  });
+
+  document.getElementById('slice-name-field').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      document.getElementById('start-slice-btn').click();
+    }
+  });
+
+  document.getElementById('cancel-slice-btn').addEventListener('click', function() {
+    exitSliceMode();
+  });
+
+  document.getElementById('save-slice-btn').addEventListener('click', function() {
+    var name = document.getElementById('slice-banner-name').textContent;
+    var indices = Array.from(sliceSelection).sort(function(a,b){ return a-b; });
+
+    if (indices.length === 0) {
+      alert('Please select at least one message for this slice.');
+      return;
+    }
+
+    if (editingSliceIndex >= 0) {
+      slices[editingSliceIndex] = { name: name, indices: indices };
+    } else {
+      slices.push({ name: name, indices: indices });
+    }
+
+    saveSlices(function() {
+      exitSliceMode();
+      renderSlicesList();
+    });
+  });
+
+  function saveSlices(callback) {
+    fetch('/agent_sessions/' + sessionId, {
+      method: 'PATCH',
+      headers: { 'X-CSRF-Token': csrfToken(), 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ agent_session: { slices: slices } }),
+      credentials: 'same-origin',
+    }).then(function(response) {
+      return response.json();
+    }).then(function(data) {
+      if (data.success) {
+        if (data.agent_session && data.agent_session.slices) {
+          slices = data.agent_session.slices;
+        }
+        if (callback) callback();
+      } else {
+        alert('Error saving slices: ' + (data.error || 'Unknown error'));
+      }
+    }).catch(function() {
+      alert('Error saving slices');
+    });
+  }
+
+  function renderSlicesList() {
+    var list = document.getElementById('slices-list');
+    list.innerHTML = '';
+
+    if (slices.length === 0) {
+      list.innerHTML = '<p class="slices-empty">No slices yet.</p>';
+      return;
+    }
+
+    slices.forEach(function(slice, index) {
+      var card = document.createElement('div');
+      card.className = 'slice-card';
+
+      var header = document.createElement('div');
+      header.className = 'slice-card-header';
+
+      var nameEl = document.createElement('span');
+      nameEl.className = 'slice-card-name';
+      nameEl.textContent = slice.name;
+      header.appendChild(nameEl);
+
+      var countBadge = document.createElement('span');
+      countBadge.className = 'slice-card-count';
+      countBadge.textContent = (slice.indices || []).length;
+      header.appendChild(countBadge);
+
+      card.appendChild(header);
+
+      var embedCode = document.createElement('code');
+      embedCode.className = 'slice-card-embed';
+      embedCode.textContent = '{% agent_session ' + sessionSlug + ' ' + slice.name + ' %}';
+      card.appendChild(embedCode);
+
+      var actions = document.createElement('div');
+      actions.className = 'slice-card-actions';
+
+      var copyBtn = document.createElement('button');
+      copyBtn.type = 'button';
+      copyBtn.className = 'slice-action-btn';
+      copyBtn.textContent = 'Copy';
+      copyBtn.title = 'Copy embed code';
+      copyBtn.addEventListener('click', function() {
+        navigator.clipboard.writeText(embedCode.textContent).then(function() {
+          copyBtn.textContent = 'Copied!';
+          setTimeout(function() { copyBtn.textContent = 'Copy'; }, 2000);
+        });
+      });
+      actions.appendChild(copyBtn);
+
+      var editBtn = document.createElement('button');
+      editBtn.type = 'button';
+      editBtn.className = 'slice-action-btn';
+      editBtn.textContent = 'Edit';
+      editBtn.addEventListener('click', function() {
+        editingSliceIndex = index;
+        enterSliceMode(slice.name, slice.indices || []);
+      });
+      actions.appendChild(editBtn);
+
+      var deleteBtn = document.createElement('button');
+      deleteBtn.type = 'button';
+      deleteBtn.className = 'slice-action-btn slice-action-btn--danger';
+      deleteBtn.textContent = 'Delete';
+      deleteBtn.addEventListener('click', function() {
+        if (!confirm('Delete slice "' + slice.name + '"?')) return;
+        slices.splice(index, 1);
+        saveSlices(function() {
+          renderSlicesList();
+          renderMessages();
+        });
+      });
+      actions.appendChild(deleteBtn);
+
+      card.appendChild(actions);
+      list.appendChild(card);
+    });
+  }
+
+  // === Copy embed ===
+  document.getElementById('copy-embed-btn').addEventListener('click', function() {
+    var code = document.getElementById('embed-code').textContent;
+    navigator.clipboard.writeText(code).then(function() {
+      var btn = document.getElementById('copy-embed-btn');
+      btn.textContent = 'Copied!';
+      setTimeout(function() { btn.textContent = 'Copy'; }, 2000);
+    });
+  });
+
+  renderMessages();
+  renderSlicesList();
+})();
+</script>
