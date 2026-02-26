@@ -33,6 +33,13 @@ export function handleURLPasted(textAreaRef) {
     if (!textarea) return;
     const insertPos = textarea.selectionStart;
 
+    // Only offer embed when pasting on its own line — embeds are block-level content.
+    // If pasting mid-paragraph, the user likely wants an inline link, not an embed.
+    const textBefore = textarea.value.substring(0, insertPos);
+    const lineStart = textBefore.lastIndexOf('\n') + 1;
+    const textOnLineBefore = textBefore.substring(lineStart).trim();
+    if (textOnLineBefore.length > 0) return;
+
     // Let the URL paste normally, then show the popover
     setTimeout(() => {
       removePopover();

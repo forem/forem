@@ -123,6 +123,29 @@ describe('pasteURLHelpers', () => {
     expect(document.getElementById('embed-url-popover')).toBeNull();
   });
 
+  it('does not show popover when URL is pasted mid-paragraph', () => {
+    // Cursor is in the middle of existing text on the same line
+    textAreaRef.current.value = 'Check out this link: ';
+    textAreaRef.current.selectionStart = 21; // after "Check out this link: "
+
+    handler(createPasteEvent('https://example.com'));
+    jest.advanceTimersByTime(10);
+
+    const popover = document.getElementById('embed-url-popover');
+    expect(popover).toBeNull();
+  });
+
+  it('shows popover when URL is pasted on an empty first line', () => {
+    textAreaRef.current.value = '';
+    textAreaRef.current.selectionStart = 0;
+
+    handler(createPasteEvent('https://example.com'));
+    jest.advanceTimersByTime(10);
+
+    const popover = document.getElementById('embed-url-popover');
+    expect(popover).not.toBeNull();
+  });
+
   it('does not show popover when URL is pasted inside an existing liquid tag', () => {
     const url = 'https://my-app.lovable.app';
     // Simulate pasting a URL to replace one already inside {% embed ... %}
