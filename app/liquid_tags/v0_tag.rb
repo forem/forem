@@ -20,11 +20,11 @@ class V0Tag < LiquidTagBase
 
   def parse_input(input)
     stripped = input.strip
-    if stripped.match?(VUSERCONTENT_REGEXP) || stripped.match?(V0_CHAT_REGEXP)
-      stripped.chomp("/")
-    else
+    unless stripped.match?(VUSERCONTENT_REGEXP) || stripped.match?(V0_CHAT_REGEXP)
       raise StandardError, I18n.t("liquid_tags.v0_tag.invalid_url", default: "Invalid v0 URL")
     end
+
+    stripped.chomp("/")
   end
 end
 

@@ -1,5 +1,6 @@
 require "rails_helper"
 
+# rubocop:disable RSpec/DescribeClass
 RSpec.describe "AI embed liquid tags integration", type: :liquid_tag do
   describe "UnifiedEmbed registry" do
     [
@@ -38,3 +39,4 @@ RSpec.describe "AI embed liquid tags integration", type: :liquid_tag do
     end
   end
 end
+# rubocop:enable RSpec/DescribeClass

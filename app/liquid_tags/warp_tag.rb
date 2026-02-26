@@ -1,6 +1,6 @@
 class WarpTag < LiquidTagBase
   PARTIAL = "liquids/warp".freeze
-  BLOCK_ID_PATTERN = "[a-zA-Z0-9]+"
+  BLOCK_ID_PATTERN = "[a-zA-Z0-9]+".freeze
   REGISTRY_REGEXP = %r{\Ahttps://app\.warp\.dev/block/(?:embed/)?#{BLOCK_ID_PATTERN}/?\z}
   VALID_URL_REGEXP = %r{\Ahttps://app\.warp\.dev/block/(?:embed/)?(#{BLOCK_ID_PATTERN})/?\z}
 
