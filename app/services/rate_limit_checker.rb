@@ -3,6 +3,7 @@ class RateLimitChecker
 
   # retry_after values are the seconds until a user can retry an action
   ACTION_LIMITERS = {
+    agent_session_creation: { retry_after: 60 },
     ai_image_generation: { retry_after: 60 },
     article_update: { retry_after: 30 },
     feedback_message_creation: { retry_after: 300 },

@@ -184,7 +184,7 @@ module AgentSessionsHelper
     # JSON detection
     if stripped.start_with?("{", "[")
       begin
-        JSON.parse(stripped)
+        JSON.parse(stripped, max_nesting: 50)
         return "json"
       rescue JSON::ParserError
         # not valid JSON
@@ -195,7 +195,7 @@ module AgentSessionsHelper
   end
 
   def pretty_print_json(content)
-    parsed = JSON.parse(content.strip)
+    parsed = JSON.parse(content.strip, max_nesting: 50)
     JSON.pretty_generate(parsed)
   rescue JSON::ParserError
     content
