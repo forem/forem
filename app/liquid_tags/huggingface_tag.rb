@@ -29,7 +29,7 @@ class HuggingfaceTag < LiquidTagBase
     datasets_match = stripped.match(HF_CO_DATASETS_REGEXP)
     return "https://huggingface.co/datasets/#{datasets_match[1]}/#{datasets_match[2]}/embed/viewer" if datasets_match
 
-    raise StandardError, I18n.t("liquid_tags.huggingface_tag.invalid_url")
+    raise StandardError, I18n.t("liquid_tags.huggingface_tag.invalid_url", default: "Invalid Hugging Face URL")
   end
 end
 

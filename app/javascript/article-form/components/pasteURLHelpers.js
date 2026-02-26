@@ -7,9 +7,16 @@ const POPOVER_TIMEOUT_MS = 5000;
 /**
  * Remove any existing embed popover from the DOM.
  */
+/** @type {Function|null} */
+let activeKeyDownCleanup = null;
+
 function removePopover() {
   const existing = document.getElementById(POPOVER_ID);
   if (existing) existing.remove();
+  if (activeKeyDownCleanup) {
+    activeKeyDownCleanup();
+    activeKeyDownCleanup = null;
+  }
 }
 
 /**
@@ -139,9 +146,10 @@ export function handleURLPasted(textAreaRef) {
       const onKeyDown = () => {
         clearTimeout(timeoutId);
         removePopover();
-        textarea.removeEventListener('keydown', onKeyDown);
       };
       textarea.addEventListener('keydown', onKeyDown);
+      activeKeyDownCleanup = () =>
+        textarea.removeEventListener('keydown', onKeyDown);
     }, 0);
   };
 }
