@@ -5,8 +5,6 @@ module AgentSessionParsers
       "codex" => Codex,
       "gemini_cli" => GeminiCli,
       "pi" => Pi,
-      "opencode" => GeminiCli,        # Fallback: OpenCode JSON export uses similar structure
-      "cursor" => GeminiCli,          # Fallback: Cursor JSON export uses similar structure
       "github_copilot" => GithubCopilot
     }.freeze
 

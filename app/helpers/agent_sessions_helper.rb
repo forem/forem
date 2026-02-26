@@ -25,8 +25,6 @@ module AgentSessionsHelper
     "codex" => { bg: "#10A37F", label: "Codex" },
     "gemini_cli" => { bg: "#4285F4", label: "Gemini CLI" },
     "github_copilot" => { bg: "#333", label: "GitHub Copilot" },
-    "opencode" => { bg: "#F97316", label: "OpenCode" },
-    "cursor" => { bg: "#000", label: "Cursor" },
     "pi" => { bg: "#EF4444", label: "Pi" }
   }.freeze
 
@@ -68,8 +66,6 @@ module AgentSessionsHelper
     case tool_name
     when "gemini_cli" then "G"
     when "github_copilot" then "GH"
-    when "opencode" then "OC"
-    when "cursor" then "Cu"
     when "pi" then "Pi"
     else tool_name[0..1].upcase
     end

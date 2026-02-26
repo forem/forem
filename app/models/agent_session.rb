@@ -1,5 +1,5 @@
 class AgentSession < ApplicationRecord
-  TOOL_NAMES = %w[claude_code codex gemini_cli github_copilot pi opencode cursor].freeze
+  TOOL_NAMES = %w[claude_code codex gemini_cli github_copilot pi].freeze
   MAX_RAW_DATA_SIZE = 10.megabytes
 
   belongs_to :user

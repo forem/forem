@@ -24,8 +24,6 @@
         <option value="codex">Codex (OpenAI)</option>
         <option value="gemini_cli">Gemini CLI</option>
         <option value="pi">Pi</option>
-        <option value="opencode">OpenCode</option>
-        <option value="cursor">Cursor</option>
         <option value="github_copilot">GitHub Copilot</option>
       </select>
     </div>
@@ -241,8 +239,7 @@
   function formatToolName(tool) {
     var names = {
       claude_code: 'Claude Code', codex: 'Codex', gemini_cli: 'Gemini CLI',
-      pi: 'Pi', opencode: 'OpenCode', cursor: 'Cursor',
-      github_copilot: 'GitHub Copilot'
+      pi: 'Pi', github_copilot: 'GitHub Copilot'
     };
     return names[tool] || tool;
   }
