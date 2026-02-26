@@ -10,6 +10,7 @@ class AgentSession < ApplicationRecord
   validates :slug, uniqueness: { scope: :user_id }, format: { with: /\A[0-9a-z\-_]+\z/ }, allow_nil: true
 
   validate :normalized_data_has_messages
+  validate :normalized_data_not_too_large
 
   before_validation :generate_slug
 
@@ -100,5 +101,13 @@ class AgentSession < ApplicationRecord
     return if messages_data.is_a?(Array)
 
     errors.add(:normalized_data, "must contain a messages array")
+  end
+
+  def normalized_data_not_too_large
+    return if normalized_data.blank?
+
+    if normalized_data.to_json.bytesize > MAX_RAW_DATA_SIZE
+      errors.add(:normalized_data, "is too large (max #{MAX_RAW_DATA_SIZE / 1.megabyte}MB)")
+    end
   end
 end
