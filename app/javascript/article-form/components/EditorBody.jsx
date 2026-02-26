@@ -1,9 +1,10 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { useLayoutEffect, useRef } from 'preact/hooks';
+import { useEffect, useLayoutEffect, useRef } from 'preact/hooks';
 import { locale } from '@utilities/locale';
 import { Toolbar } from './Toolbar';
 import { handleImagePasted } from './pasteImageHelpers';
+import { handleURLPasted } from './pasteURLHelpers';
 import {
   handleImageUploadSuccess,
   handleImageUploading,
@@ -47,6 +48,16 @@ export const EditorBody = ({
       setPasteElement(textAreaRef.current);
     }
   });
+
+  // Attach URL paste handler for embed prompt
+  useEffect(() => {
+    const textarea = textAreaRef.current;
+    if (!textarea) return;
+
+    const handler = handleURLPasted(textAreaRef);
+    textarea.addEventListener('paste', handler);
+    return () => textarea.removeEventListener('paste', handler);
+  }, [textAreaRef.current]);
 
   return (
     <div

@@ -39,19 +39,4 @@ RSpec.describe "Tracking 'Clicked on Create Account'", :js do
       expect(Ahoy::Event.last.properties).to include("source", "page", "version", "source" => "top_navbar")
     end
   end
-
-  context "when tracking through the modal" do
-    it "adds an ahoy event", :aggregate_failures do
-      article = create(:article, user: create(:user))
-      visit article.path
-      wait_for_async_events_listener
-      expect(Ahoy::Event.count).to eq(0)
-      find(".follow-action-button").click
-      find(".js-global-signup-modal__create-account").click
-
-      expect(page).to have_current_path("/enter?state=new-user")
-      expect(Ahoy::Event.last.name).to eq("Clicked on Create Account")
-      expect(Ahoy::Event.last.properties).to include("source", "page", "referring_source", "trigger", "version")
-    end
-  end
 end

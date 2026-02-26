@@ -45,6 +45,7 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.28.6",
     "@babel/plugin-proposal-decorators": "^7.23.3",
+    "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
     "@cypress/code-coverage": "^3.12.36",
     "@etchteam/storybook-addon-css-variables-theme": "^1.6.0",
     "@faker-js/faker": "^7.6.0",
