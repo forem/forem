@@ -107,8 +107,6 @@ fr:
       invalid_twitch_id: ID Twitch, Slug ou URL invalide
     twitter_timeline_tag:
       invalid_url: URL de la timeline de Twitter non valide.
-    v0_tag:
-      invalid_url: URL v0 non valide
     unified_embed:
       tag:
         invalid_url: L'URL fournie peut contenir une faute de frappe ou une erreur ; veuillez vérifier et réessayer
