@@ -40,11 +40,19 @@ function initDropdown() {
   );
   reportAbuseLink.innerHTML = `<a href="${reportAbuseLink.dataset.path}" class="crayons-link crayons-link--block">Report Abuse</a>`;
   const adminLink = profileDropdownDiv.querySelector('.admin-link-wrapper');
-  getUserDataAndCsrfTokenSafely().then(({ currentUser }) => {
-    if (currentUser?.admin) {
-      adminLink.innerHTML = `<a href="${adminLink.dataset.path}" class="crayons-link crayons-link--block">${adminLink.dataset.text}</a>`;
-    }
-  });
+  if (adminLink) {
+    getUserDataAndCsrfTokenSafely().then(({ currentUser }) => {
+      if (currentUser?.admin) {
+        const adminLinkAnchor = document.createElement('a');
+        adminLinkAnchor.href = adminLink.dataset.path;
+        adminLinkAnchor.className = 'crayons-link crayons-link--block';
+        adminLinkAnchor.textContent = adminLink.dataset.text;
+        adminLink.replaceChildren(adminLinkAnchor);
+      }
+    }).catch(() => {
+      // Admin link is best-effort only on cached pages.
+    });
+  }
 
   initButtons();
   profileDropdownDiv.dataset.dropdownInitialized = true;

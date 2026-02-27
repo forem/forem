@@ -49,6 +49,10 @@ describe('profile admin links', () => {
     await Promise.resolve();
 
     expect(document.querySelector('.admin-link-wrapper')).toHaveTextContent('Admin');
+    expect(document.querySelector('.admin-link-wrapper a')).toHaveAttribute(
+      'href',
+      '/admin/users/1',
+    );
 
     document.body.innerHTML = `
       <div class="profile-dropdown" data-username="target-user">
@@ -93,6 +97,10 @@ describe('profile admin links', () => {
     await Promise.resolve();
 
     expect(document.querySelector('.admin-link-wrapper')).toHaveTextContent('Admin');
+    expect(document.querySelector('.admin-link-wrapper a')).toHaveAttribute(
+      'href',
+      '/admin/organizations/1',
+    );
 
     document.body.innerHTML = `
       <div class="profile-dropdown">
