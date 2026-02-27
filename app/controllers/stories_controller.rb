@@ -174,6 +174,9 @@ class StoriesController < ApplicationController
 
   def handle_organization_index
     @user = @organization
+    redirect_if_organization_view_param
+    return if performed?
+
     @stories = ArticleDecorator.decorate_collection(@organization.articles.published.from_subforem
       .includes(:distinct_reaction_categories, :subforem)
       .limited_column_select
@@ -264,6 +267,10 @@ class StoriesController < ApplicationController
 
   def redirect_if_view_param
     redirect_to admin_user_path(@user.id) if REDIRECT_VIEW_PARAMS.include?(params[:view])
+  end
+
+  def redirect_if_organization_view_param
+    redirect_to admin_organization_path(@organization.id) if REDIRECT_VIEW_PARAMS.include?(params[:view])
   end
 
   def redirect_if_inactive_in_subforem_for_user
