@@ -326,5 +326,54 @@ RSpec.describe ReactionHandler, type: :service do
         expect(Reaction.ids).not_to include(contradictory_mod.id)
       end
     end
+
+    # Regression test for https://github.com/forem/forem/issues/22803
+    context "when repeatedly toggling reactions on own post" do
+      let(:author) { create(:user) }
+      let(:own_article) { create(:article, user: author) }
+      let(:params) do
+        {
+          reactable_id: own_article.id,
+          reactable_type: "Article",
+          category: "like"
+        }
+      end
+
+      it "never results in negative public_reactions_count" do
+        # Simulate rapid like/unlike cycles (10 times)
+        10.times do
+          described_class.new(params, current_user: author).toggle # like
+          own_article.reload
+          expect(own_article.public_reactions_count).to be >= 0, 
+            "public_reactions_count should never be negative, got #{own_article.public_reactions_count}"
+
+          described_class.new(params, current_user: author).toggle # unlike
+          own_article.reload
+          expect(own_article.public_reactions_count).to be >= 0,
+            "public_reactions_count should never be negative after unlike, got #{own_article.public_reactions_count}"
+        end
+
+        # Final state should be 0 (ended with unlike)
+        own_article.reload
+        expect(own_article.public_reactions_count).to eq(0)
+      end
+
+      it "maintains accurate counter after multiple toggles" do
+        # Add and remove reaction 5 times
+        5.times do
+          described_class.new(params, current_user: author).toggle # create
+          described_class.new(params, current_user: author).toggle # destroy
+        end
+
+        # Add one final reaction
+        described_class.new(params, current_user: author).toggle
+
+        own_article.reload
+        actual_count = own_article.reactions.public_category.count
+
+        expect(own_article.public_reactions_count).to eq(actual_count)
+        expect(own_article.public_reactions_count).to eq(1)
+      end
+    end
   end
 end

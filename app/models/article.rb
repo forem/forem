@@ -247,8 +247,8 @@ class Article < ApplicationRecord
   validates :main_image, url: { allow_blank: true, schemes: %w[https http] }
   validates :main_image_background_hex_color, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
   validates :positive_reactions_count, presence: true
-  validates :previous_public_reactions_count, presence: true
-  validates :public_reactions_count, presence: true
+  validates :previous_public_reactions_count, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :public_reactions_count, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :rating_votes_count, presence: true
   validates :reactions_count, presence: true
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z\-_]*\z/
