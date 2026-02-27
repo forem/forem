@@ -529,7 +529,7 @@ fr:
       reminder: You used %{method} to authenticate your account originally, so you
         can use %{dem} — or send yourself a <a href="%{link}" style="color:black">magic
         link</a>.
-      that: that
+      that: that to sign back into DEV
       invite_only: You cannot do this until you disable Invite Only Mode
     comments_helper:
       ama: ama
