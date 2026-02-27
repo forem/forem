@@ -72,5 +72,12 @@ RSpec.describe Articles::Attributes, type: :service do
       attrs = described_class.new({ title: "title", published_at: "2022-04-25" }, user).for_update
       expect(attrs[:published_at]).to eq(DateTime.new(2022, 4, 25))
     end
+
+    it "does not include tag_list when tags are not passed (prevents tag loss)" do
+      # Regression test for issue #15364: ensure tags aren't lost when publishing via API
+      # without explicitly passing tags in the request
+      attrs = described_class.new({ title: "new title", published: true }, user).for_update
+      expect(attrs.key?(:tag_list)).to be false
+    end
   end
 end
