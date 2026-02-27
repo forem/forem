@@ -50,7 +50,7 @@ module Api
         end
 
         if @agent_session.save
-          render json: session_show_json(@agent_session), status: :created
+          render json: session_create_json(@agent_session), status: :created
         else
           render json: { error: @agent_session.errors.full_messages.join(", "), status: 422 },
                  status: :unprocessable_entity
@@ -91,6 +91,19 @@ module Api
           published: session.published,
           created_at: session.created_at.iso8601,
           updated_at: session.updated_at.iso8601,
+          url: URL.url(agent_session_path(session))
+        }
+      end
+
+      def session_create_json(session)
+        {
+          id: session.id,
+          slug: session.slug,
+          title: session.title,
+          tool_name: session.tool_name,
+          total_messages: session.total_messages,
+          published: session.published,
+          created_at: session.created_at.iso8601,
           url: URL.url(agent_session_path(session))
         }
       end

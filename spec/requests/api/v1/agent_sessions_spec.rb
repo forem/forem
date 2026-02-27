@@ -45,6 +45,10 @@ RSpec.describe "Api::V1::AgentSessions" do
       expect(json["total_messages"]).to be >= 1
       expect(json["slug"]).to be_present
       expect(json["url"]).to include("/agent_sessions/")
+      # Create response should be slim — no messages/curated_selections/slices
+      expect(json).not_to have_key("messages")
+      expect(json).not_to have_key("curated_selections")
+      expect(json).not_to have_key("slices")
     end
 
     it "creates a session with explicit tool_name" do
