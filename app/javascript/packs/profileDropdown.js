@@ -2,6 +2,7 @@ import { initBlock } from '../profileDropdown/blockButton';
 import { initFlag } from '../profileDropdown/flagButton';
 import { initSpam } from '../profileDropdown/spamButton';
 import { initializeDropdown } from '@utilities/dropdownUtils';
+import { getUserDataAndCsrfTokenSafely } from '@utilities/getUserDataAndCsrfToken';
 
 /* global userData */
 
@@ -38,6 +39,12 @@ function initDropdown() {
     '.report-abuse-link-wrapper',
   );
   reportAbuseLink.innerHTML = `<a href="${reportAbuseLink.dataset.path}" class="crayons-link crayons-link--block">Report Abuse</a>`;
+  const adminLink = profileDropdownDiv.querySelector('.admin-link-wrapper');
+  getUserDataAndCsrfTokenSafely().then(({ currentUser }) => {
+    if (currentUser?.admin) {
+      adminLink.innerHTML = `<a href="${adminLink.dataset.path}" class="crayons-link crayons-link--block">${adminLink.dataset.text}</a>`;
+    }
+  });
 
   initButtons();
   profileDropdownDiv.dataset.dropdownInitialized = true;
