@@ -14,6 +14,8 @@ en:
           following_orgs: Following organizations (%{num})
           following_pods: Following podcasts (%{num})
           hidden_tags: Hidden tags (%{num})
+          agent_sessions: Agent Sessions (%{num})
+        agent_sessions: Agent Sessions
         posts: Posts
         series: Series
         followers: Followers

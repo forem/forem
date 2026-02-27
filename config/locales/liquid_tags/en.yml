@@ -125,5 +125,9 @@ en:
       section_not_found: Couldn't find the section of the Wikipedia article - %{input}
       article_not_found: "Couldn't find the Wikipedia article - %{input}: %{response_detail}"
       invalid_wikipedia_url: Invalid Wikipedia URL
+    agent_session_tag:
+      invalid: "Invalid agent_session syntax. Use: {% agent_session ID %}, {% agent_session ID start..end %}, or {% agent_session ID slice_name %}"
+      not_found: Agent session not found
+      unpublished: This agent session is not published
     youtube_tag:
       invalid_youtube_id: Invalid YouTube ID or URL

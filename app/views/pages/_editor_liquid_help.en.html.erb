@@ -51,6 +51,15 @@
 
     <h3>Supported Non-URL Embeds</h3>
 
+    <h4>Agent Session</h4>
+    <p>Embed a curated coding agent session (from Claude Code, Codex, Gemini CLI, Aider, etc.):</p>
+    <pre>{% agent_session ID %}</pre>
+    <p>Embed a named slice (created in the curation tool) to narrate different parts throughout your post:</p>
+    <pre>{% agent_session ID planning %}</pre>
+    <p>Or embed a specific range of messages by index:</p>
+    <pre>{% agent_session ID 0..10 %}</pre>
+    <p class="fs-s"><a href="/agent_sessions/new">Upload and curate a session</a> to get the ID.</p>
+
     <h4>Call To Action (CTA)</h4>
     <p><pre>{% cta link %} description {% endcta %}</pre></p>
     <p>Provide a <em>link</em> that a user will be redirected to. The <em>description</em> will contain the label/description for the call to action.</p>

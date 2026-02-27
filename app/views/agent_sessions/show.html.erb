@@ -1,0 +1,78 @@
+<div class="agent-session-show-page">
+  <header class="agent-session-page-header">
+    <h1><%= @agent_session.title %></h1>
+    <div class="agent-session-show-meta">
+      <%= agent_session_tool_icon(@agent_session.tool_name) %>
+      <span><%= @agent_session.total_messages %> messages</span>
+      <% start_time = @agent_session.metadata["start_time"] %>
+      <% if start_time.present? %>
+        <span><%= Time.zone.parse(start_time).strftime("%B %d, %Y") %></span>
+      <% end %>
+    </div>
+
+    <% if user_signed_in? && policy(@agent_session).edit? %>
+      <div class="agent-session-show-actions">
+        <%= link_to "&larr; All Sessions".html_safe, agent_sessions_path, class: "crayons-btn crayons-btn--ghost" %>
+        <%= link_to "Curate", edit_agent_session_path(@agent_session), class: "crayons-btn" %>
+        <div class="agent-session-embed-copy">
+          <code class="agent-session-embed-snippet"><%= "{" + "% agent_session #{@agent_session.slug} %" + "}" %></code>
+          <button class="crayons-btn crayons-btn--s crayons-btn--ghost" type="button" onclick="navigator.clipboard.writeText(this.previousElementSibling.textContent.trim()); this.textContent='Copied!'; setTimeout(function(){this.textContent='Copy';}.bind(this), 1500);">Copy</button>
+        </div>
+      </div>
+      <% if @agent_session.published? %>
+        <div class="agent-session-share-row">
+          <label class="agent-session-share-label"><%= t("views.agent_sessions.share_link") %></label>
+          <div class="agent-session-share-link">
+            <input type="text" readonly autocomplete="off" class="agent-session-share-input"
+                   value="<%= URL.url(agent_session_path(@agent_session)) %>" onclick="this.select();" />
+            <button class="crayons-btn crayons-btn--s crayons-btn--ghost" type="button"
+                    onclick="navigator.clipboard.writeText(this.previousElementSibling.value);
+                             this.textContent='Copied!';
+                             setTimeout(function(){this.textContent='<%= t("views.agent_sessions.copy_link") %>';}.bind(this), 1500);">
+              <%= t("views.agent_sessions.copy_link") %>
+            </button>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="agent-session-author">
+        <%= t("views.agent_sessions.by_author", name: @agent_session.user.username) %>
+      </div>
+    <% end %>
+
+    <% if @agent_session.slices.any? %>
+      <div class="agent-session-show-slices">
+        <h3>Slices</h3>
+        <div class="agent-session-show-slices-list">
+          <% @agent_session.slices.each do |slice| %>
+            <div class="agent-session-show-slice-card">
+              <span class="agent-session-show-slice-name"><%= slice["name"] %></span>
+              <span class="agent-session-show-slice-count"><%= slice["indices"]&.size || 0 %> messages</span>
+              <%= link_to "View", agent_session_path(@agent_session, slice: slice["name"]), class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
+              <% if user_signed_in? && policy(@agent_session).edit? %>
+                <div class="agent-session-embed-copy">
+                  <code class="agent-session-embed-snippet"><%= "{" + "% agent_session #{@agent_session.slug} #{slice['name']} %" + "}" %></code>
+                  <button class="crayons-btn crayons-btn--s crayons-btn--ghost" type="button" onclick="navigator.clipboard.writeText(this.previousElementSibling.textContent.trim()); this.textContent='Copied!'; setTimeout(function(){this.textContent='Copy';}.bind(this), 1500);">Copy</button>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </header>
+
+  <% if @slice_name.present? %>
+    <% active_slice = @agent_session.find_slice(@slice_name) %>
+    <% if active_slice %>
+      <div class="agent-session-slice-viewing">
+        Viewing slice: <strong><%= active_slice["name"] %></strong>
+        (<%= @agent_session.messages_for_slice(@slice_name).size %> of <%= @agent_session.total_messages %> messages)
+        &middot; <%= link_to "View full session", agent_session_path(@agent_session) %>
+      </div>
+    <% end %>
+  <% end %>
+
+  <%= render partial: "liquids/agent_session",
+             locals: { agent_session: @agent_session, message_range: nil, slice_name: @slice_name } %>
+</div>

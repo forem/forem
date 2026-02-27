@@ -1,0 +1,107 @@
+<% if defined?(slice_name) && slice_name.present?
+     messages_to_show = agent_session.messages_for_slice(slice_name)
+     active_slice = agent_session.find_slice(slice_name)
+   elsif defined?(message_range) && message_range
+     messages_to_show = agent_session.curated_messages_in_range(message_range)
+     active_slice = nil
+   else
+     messages_to_show = agent_session.curated_messages
+     active_slice = nil
+   end %>
+<div class="ltag-agent-session" data-session-id="<%= agent_session.id %>">
+  <div class="agent-session-header">
+    <svg class="agent-session-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 17H20V5H4V17ZM2 4.007C2 3.45 2.455 3 2.992 3H21.008C21.556 3 22 3.449 22 4.007V17.993C22 18.55 21.545 19 21.008 19H14L10 22V19H2.992C2.444 19 2 18.551 2 17.993V4.007Z" fill="currentColor"/>
+      <path d="M7.5 9L10 12L7.5 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M12 15H16.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <%= agent_session_tool_icon(agent_session.tool_name, show_label: false) %>
+    <span class="agent-session-title"><%= agent_session.title %></span>
+    <% if active_slice %>
+      <span class="agent-session-slice-label"><%= active_slice["name"] %></span>
+    <% end %>
+  </div>
+
+  <div class="agent-session-scroll">
+    <% prev_index = nil %>
+    <% messages_to_show.each do |message| %>
+      <% current_index = message['index'].to_i %>
+      <% if prev_index && current_index > prev_index + 1 %>
+        <% skipped = current_index - prev_index - 1 %>
+        <div class="agent-session-gap">
+          <span class="agent-session-gap-line"></span>
+          <span class="agent-session-gap-label"><%= skipped %> <%= "message".pluralize(skipped) %> not shown</span>
+          <span class="agent-session-gap-line"></span>
+        </div>
+      <% end %>
+      <% prev_index = current_index %>
+      <% is_user = message['role'] == 'user' %>
+
+      <div class="agent-session-message agent-session-<%= message['role'] %>">
+        <div class="agent-session-role-badge agent-session-role-<%= message['role'] %>">
+          <%= is_user ? 'You' : 'Agent' %>
+        </div>
+        <div class="agent-session-content">
+          <% (message['content'] || []).each do |block| %>
+            <% case block['type'] %>
+            <% when 'text' %>
+              <% text = block['text'] || '' %>
+              <% if text.length > 600 %>
+                <div data-collapsible>
+                  <div class="agent-session-text agent-session-text-collapse">
+                    <%= AgentSessionRenderers::MarkdownRenderer.render(text) %>
+                  </div>
+                  <button class="agent-session-expand-btn" type="button">Show more</button>
+                </div>
+              <% else %>
+                <div class="agent-session-text">
+                  <%= AgentSessionRenderers::MarkdownRenderer.render(text) %>
+                </div>
+              <% end %>
+            <% when 'tool_call' %>
+              <% tool_name = block['name'] || 'Tool' %>
+              <div class="agent-session-tool-call">
+                <button class="agent-session-tool-toggle" aria-expanded="false" type="button">
+                  <span class="agent-session-chevron">&#x25B8;</span>
+                  <span class="tool-name tool-name-<%= tool_name.downcase.gsub(/[^a-z0-9]/, '') %>"><%= tool_name %></span>
+                  <% if block['input'] %>
+                    <span class="tool-input-preview"><%= truncate(block['input'].to_s, length: 80) %></span>
+                  <% end %>
+                </button>
+                <div class="agent-session-tool-detail" style="display:none">
+                  <% if block['input'] %>
+                    <div class="tool-section">
+                      <div class="tool-section-label">Input</div>
+                      <%= render_tool_input(tool_name, block['input']) %>
+                    </div>
+                  <% end %>
+                  <% if block['output'] %>
+                    <div class="tool-section">
+                      <div class="tool-section-label">Output</div>
+                      <%= render_tool_output(tool_name, block['input'], block['output']) %>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="agent-session-footer">
+    <span class="agent-session-meta">
+      <% if active_slice %>
+        Slice: <em><%= active_slice["name"] %></em> &middot; <%= messages_to_show.size %> of <%= agent_session.total_messages %> messages
+      <% elsif defined?(message_range) && message_range %>
+        <%= messages_to_show.size %> messages (range <%= message_range.first %>-<%= message_range.last %>) of <%= agent_session.total_messages %> total
+      <% else %>
+        <%= agent_session.curated_count %> of <%= agent_session.total_messages %> messages
+        <% if agent_session.curated_count < agent_session.total_messages %>
+          &middot; some content was hidden by the author
+        <% end %>
+      <% end %>
+    </span>
+  </div>
+</div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_02_23_212134) do
+ActiveRecord::Schema[7.0].define(version: 2026_02_26_192014) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -18,6 +18,25 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_23_212134) do
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
   enable_extension "unaccent"
+
+  create_table "agent_sessions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.jsonb "curated_selections", default: [], null: false
+    t.jsonb "normalized_data", default: {}, null: false
+    t.boolean "published", default: false, null: false
+    t.text "raw_data"
+    t.jsonb "session_metadata", default: {}, null: false
+    t.jsonb "slices", default: [], null: false
+    t.string "slug"
+    t.string "title", null: false
+    t.string "tool_name", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["tool_name"], name: "index_agent_sessions_on_tool_name"
+    t.index ["user_id", "published"], name: "index_agent_sessions_on_user_id_and_published"
+    t.index ["user_id", "slug"], name: "index_agent_sessions_on_user_id_and_slug", unique: true
+    t.index ["user_id"], name: "index_agent_sessions_on_user_id"
+  end
 
   create_table "ahoy_events", force: :cascade do |t|
     t.string "name"
@@ -1831,6 +1850,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_23_212134) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "agent_sessions", "users", on_delete: :cascade
   add_foreign_key "ahoy_events", "ahoy_visits", column: "visit_id", on_delete: :cascade
   add_foreign_key "ahoy_events", "users", on_delete: :cascade
   add_foreign_key "ahoy_messages", "feedback_messages", on_delete: :nullify

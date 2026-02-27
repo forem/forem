@@ -125,5 +125,9 @@ pt:
       submit: Enviar
       submitting: Enviando...
       subscribed: Inscrito
+    agent_session_tag:
+      invalid: "Sintaxe agent_session inválida. Use: {% agent_session ID %}, {% agent_session ID inicio..fim %}, ou {% agent_session ID nome_fatia %}"
+      not_found: Sessão de agente não encontrada
+      unpublished: Esta sessão de agente não está publicada
     youtube_tag:
       invalid_youtube_id: ID do YouTube inválido

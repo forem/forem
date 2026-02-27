@@ -1,0 +1,7 @@
+---
+en:
+  views:
+    agent_sessions:
+      share_link: Share link
+      copy_link: Copy
+      by_author: "by %{name}"
