@@ -16,7 +16,9 @@ module Articles
       hash = attributes.slice(*ATTRIBUTES)
       # don't reset the collection when no series was passed
       hash[:collection] = collection if attributes.key?(:series)
-      hash[:tag_list] = tag_list if !attributes[:tag_list].nil? || !attributes[:tags].nil?
+      # Only include tag_list if tags are explicitly provided in the request.
+      # This prevents losing existing tags when updating an article without specifying tags.
+      hash[:tag_list] = tag_list if attributes.key?(:tag_list) || attributes.key?(:tags)
       hash[:edited_at] = Time.current if update_edited_at
       hash[:published_at] = hash[:published_at].to_datetime if hash[:published_at]
       hash
