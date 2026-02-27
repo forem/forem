@@ -143,7 +143,7 @@
     "postcss-cli": "^11.0.0",
     "postcss-flexbugs-fixes": "^5.0.2",
     "postcss-import": "^16.1.1",
-    "postcss-preset-env": "^7.8.2",
+    "postcss-preset-env": "^11.2.0",
     "postscribe": "^2.0.8",
     "preact": "^10.20.2",
     "prop-types": "^15.8.1",
