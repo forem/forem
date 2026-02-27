@@ -184,6 +184,9 @@ en:
       article_busted: 'Article #%{article} was successfully busted'
       user_busted: 'User #%{user} was successfully busted'
       link_busted: '%{link} was successfully busted'
+      data_fix_enqueued: 'Enqueued data fix: %{fix_name}'
+      data_fix_missing_param: Data fix name is required.
+      data_fix_unknown: 'Unknown data fix: %{fix_name}'
     users_controller:
       exported: Data exported to the %{receiver}. The job will complete momentarily.
       email_fail: Email failed to send!

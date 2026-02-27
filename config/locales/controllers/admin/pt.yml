@@ -145,6 +145,9 @@ pt:
       link_busted: '%{link} foi quebrado com sucesso'
       user_busted: 'Usuário #%{user} foi quebrado com sucesso'
       article_busted: 'Artigo #%{article} foi quebrado com sucesso'
+      data_fix_enqueued: 'Correção de dados enfileirada: %{fix_name}'
+      data_fix_missing_param: O nome da correção de dados é obrigatório.
+      data_fix_unknown: 'Correção de dados desconhecida: %{fix_name}'
     users_controller:
       role_removed: 'Função: %{role} foi removida com sucesso do usuário!'
       updated: Usuário foi atualizado

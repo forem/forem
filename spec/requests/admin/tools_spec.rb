@@ -26,6 +26,27 @@ RSpec.describe "/admin/advanced/tools" do
     it "allows the request" do
       expect(response).to have_http_status(:ok)
     end
+
+    describe "POST /admin/advanced/tools/run_data_fix" do
+      before do
+        allow(DataFixes::RunWorker).to receive(:perform_async)
+      end
+
+      it "enqueues the selected data fix" do
+        post run_data_fix_admin_tools_path, params: { fix_name: DataFixes::FixTagCounts::KEY }
+
+        expect(response).to redirect_to(admin_tools_path)
+        expect(DataFixes::RunWorker).to have_received(:perform_async).with(DataFixes::FixTagCounts::KEY,
+                                                                           super_admin.id)
+      end
+
+      it "does not enqueue unknown data fixes" do
+        post run_data_fix_admin_tools_path, params: { fix_name: "unknown_fix" }
+
+        expect(response).to redirect_to(admin_tools_path)
+        expect(DataFixes::RunWorker).not_to have_received(:perform_async)
+      end
+    end
   end
 
   context "when the user is a single resource admin" do
