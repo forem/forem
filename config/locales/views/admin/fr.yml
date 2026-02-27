@@ -18,6 +18,13 @@ fr:
             below_minimum_date: Publié avant la date d'indexation minimale
             negative_score: Note négative
             unknown: Inconnue
+      tools:
+        data_fix_jobs:
+          heading: Correctifs de données
+          section_description: Exécutez des correctifs de maintenance de longue durée.
+          fix_tag_counts:
+            description: Recalcule les décomptes d'occurrences de tags à partir des marquages réels.
+            button: Corriger les compteurs de tags
       comments:
         flags:
           score: Score affecté par un drapeau particulier
