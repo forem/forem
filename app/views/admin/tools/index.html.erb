@@ -30,4 +30,13 @@
   <% end %>
 </div>
 
+<div class="crayons-card p-6 mb-6">
+  <h2 class="crayons-subtitle-1 mb-4">Data Fix Jobs</h2>
+  <p class="mb-6">Run long-running maintenance fixes from the admin without needing one-off deploy scripts.</p>
+  <%= form_tag run_data_fix_admin_tools_path do %>
+    <%= hidden_field_tag :fix_name, DataFixes::FixTagCounts::KEY %>
+    <%= submit_tag "Fix tag counts", class: "crayons-btn mr-auto" %>
+  <% end %>
+</div>
+
 <%= render "admin/shared/image_uploader" %>

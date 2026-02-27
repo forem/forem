@@ -43,6 +43,19 @@ module Admin
       end
     end
 
+    def run_data_fix
+      fix_name = params.require(:fix_name)
+      DataFixes::Registry.fetch!(fix_name)
+
+      DataFixes::RunWorker.perform_async(fix_name, current_user.id)
+
+      flash[:success] = "Enqueued data fix: #{fix_name}"
+      redirect_to admin_tools_path
+    rescue ActionController::ParameterMissing, ArgumentError => e
+      flash[:danger] = e.message
+      redirect_to admin_tools_path
+    end
+
     private
 
     def handle_dead_path
