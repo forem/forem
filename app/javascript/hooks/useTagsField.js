@@ -15,14 +15,8 @@ export const useTagsField = ({ defaultValue, onInput }) => {
   const useFetchSearch = document.body.dataset.algoliaId?.length === 0;
   const { defaultSelections, fetchSuggestions } = 
     useFetchSearch ? 
-      useTagsFieldWithFetchSearch({ 
-        defaultValue, 
-        useFetchSearch 
-      }) :
-      useTagsFieldWithAlgoliaSearch({ 
-        defaultValue, 
-        useFetchSearch 
-      });
+      useTagsFieldWithFetchSearch({ defaultValue }) :
+      useTagsFieldWithAlgoliaSearch({ defaultValue });
   const syncSelections = (selections = []) => {
     const selectionsString = selections
       .map((selection) => selection.name)
@@ -47,10 +41,10 @@ export const useTagsField = ({ defaultValue, onInput }) => {
   };
 };
 
-const useTagsFieldWithFetchSearch = ({ useFetchSearch }) => {
-  const { defaultSelections } = __useTagsField({
-    useFetchSearch,
-    searchTags__: (someTagName) => 
+const useTagsFieldWithFetchSearch = ({ defaultValue }) => {
+  const { defaultSelections } = useTagsFieldBase({
+    defaultValue,
+    searchTagsCallback: (someTagName) => 
       fetchSearch('tags', { name: someTagName }).then(({ result = [] }) => {
         const [potentialMatch = {}] = result;
         return potentialMatch.name === someTagName
@@ -69,14 +63,14 @@ const useTagsFieldWithFetchSearch = ({ useFetchSearch }) => {
   };
 };
 
-const useTagsFieldWithAlgoliaSearch = ({ useFetchSearch }) => {
+const useTagsFieldWithAlgoliaSearch = ({ defaultValue }) => {
   const env = document.querySelector('meta[name="environment"]')?.content;
   const {algoliaId, algoliaSearchKey} = document.body.dataset;
   const algoliaClient = algoliasearch(algoliaId, algoliaSearchKey);
   const algoliaIndex = algoliaClient.initIndex(`Tag_${env}`);
-  const { defaultSelections } = __useTagsField({
-    useFetchSearch,
-    searchTags__: (someTagName) =>
+  const { defaultSelections } = useTagsFieldBase({
+    defaultValue,
+    searchTagsCallback: (someTagName) =>
       algoliaIndex.search(someTagName).then(({ hits }) => {
         const [potentialMatch = {}] = hits;
         return potentialMatch.name === someTagName
@@ -84,10 +78,9 @@ const useTagsFieldWithAlgoliaSearch = ({ useFetchSearch }) => {
           : { name: someTagName };
       })
   });
-  const subforemId = document.body.dataset.subforemId;
   const fetchSuggestions = (searchTerm) => (
     algoliaIndex.search(searchTerm, {
-      facetFilters: subforemId ? [`subforem_ids:${subforemId}`] : ['supported:true'],
+      facetFilters: subforemId ? [`subforem_ids:${document.body.dataset.subforemId}`] : ['supported:true'],
     }).then(
       (response) => response.hits
     )
@@ -98,7 +91,7 @@ const useTagsFieldWithAlgoliaSearch = ({ useFetchSearch }) => {
   };
 };
 
-const __useTagsField = ({ useFetchSearch, searchTags__ }) => {
+const useTagsFieldBase = ({ defaultValue, searchTagsCallback }) => {
   const [defaultSelections, setDefaultSelections] = useState([]);
   const [defaultsLoaded, setDefaultsLoaded] = useState(false);
   useEffect(() => {
@@ -107,13 +100,13 @@ const __useTagsField = ({ useFetchSearch, searchTags__ }) => {
     // This fetch only happens once on first component load
     if (defaultValue && defaultValue !== '' && !defaultsLoaded) {
       const tagNames = defaultValue.split(', ');
-      const tagRequests = tagNames.map((someTagName) => searchTags__(someTagName));
+      const tagRequests = tagNames.map((someTagName) => searchTagsCallback(someTagName));
       Promise.all(tagRequests).then((data) => {
         setDefaultSelections(data);
       });
     }
     setDefaultsLoaded(true);
-  }, [defaultValue, defaultsLoaded, useFetchSearch]);
+  }, [defaultValue, defaultsLoaded, searchTagsCallback]);
   return {
     defaultSelections
   };
