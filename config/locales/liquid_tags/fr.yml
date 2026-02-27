@@ -19,6 +19,8 @@ fr:
       invalid_comment: ID ou URL du commentaire non valide
     dotnet_fiddle_tag:
       invalid_dotnetfiddle_url: URL non valide de DotnetFiddle
+    descript_tag:
+      invalid_descript_url: URL Descript non valide.
     gist_tag:
       invalid_filename: Nom de fichier non valide
       invalid_format: 'Lien Gist non valide : %{link} Les liens doivent respecter ce format : https://gist.github.com/username/gist_id'
