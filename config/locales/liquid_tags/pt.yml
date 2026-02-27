@@ -19,6 +19,8 @@ pt:
       invalid_comment: ID ou URL do comentário inválido
     dotnet_fiddle_tag:
       invalid_dotnetfiddle_url: URL do DotnetFiddle inválida
+    descript_tag:
+      invalid_descript_url: URL do Descript inválida.
     gist_tag:
       invalid_filename: Nome do arquivo inválido
       invalid_format: 'Link do Gist inválido: %{link} Links devem seguir este formato: https://gist.github.com/username/gist_id'
@@ -107,8 +109,6 @@ pt:
       invalid_twitch_id: ID, Slug ou URL do Twitch inválido
     twitter_timeline_tag:
       invalid_url: URL da Timeline do Twitter inválida
-    v0_tag:
-      invalid_url: URL do v0 inválida
     unified_embed:
       tag:
         invalid_url: URL fornecida pode ter um erro de digitação ou erro; por favor, verifique e tente novamente
