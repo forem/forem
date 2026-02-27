@@ -2,6 +2,13 @@
 en:
   views:
     admin:
+      tools:
+        data_fix_jobs:
+          heading: Data Fix Jobs
+          section_description: Run long-running maintenance fixes.
+          fix_tag_counts:
+            description: Recalculates tag occurrence counts from actual taggings.
+            button: Fix tag counts
       articles:
         flags:
           score: Score affected by a particular flag
