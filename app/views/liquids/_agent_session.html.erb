@@ -105,37 +105,3 @@
     </span>
   </div>
 </div>
-
-<script>
-(function() {
-  document.querySelectorAll('.ltag-agent-session').forEach(function(root) {
-    if (root.dataset.agentSessionBound) return;
-    root.dataset.agentSessionBound = '1';
-    root.addEventListener('click', function(e) {
-      var toggle = e.target.closest('.agent-session-tool-toggle');
-      if (!toggle) {
-        var expand = e.target.closest('.agent-session-expand-btn');
-        if (expand) {
-          var wrap = expand.closest('[data-collapsible]');
-          if (wrap) {
-            var text = wrap.querySelector('.agent-session-text-collapse');
-            if (text) {
-              text.classList.toggle('expanded');
-              var isExpanded = text.classList.contains('expanded');
-              expand.textContent = isExpanded ? 'Show less' : 'Show more';
-            }
-          }
-        }
-        return;
-      }
-      var detail = toggle.nextElementSibling;
-      if (!detail) return;
-      var expanded = toggle.getAttribute('aria-expanded') === 'true';
-      toggle.setAttribute('aria-expanded', String(!expanded));
-      detail.style.display = expanded ? 'none' : 'block';
-      var chevron = toggle.querySelector('.agent-session-chevron');
-      if (chevron) { chevron.textContent = expanded ? '\u25B8' : '\u25BE'; }
-    });
-  });
-})();
-</script>

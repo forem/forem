@@ -84,7 +84,10 @@ class AgentSessionTag < LiquidTagBase
       raise StandardError,
             I18n.t("liquid_tags.agent_session_tag.not_found", default: "Agent session not found")
     end
-    raise StandardError, "This agent session is not published" unless session.published?
+    unless session.published?
+      raise StandardError,
+            I18n.t("liquid_tags.agent_session_tag.unpublished", default: "This agent session is not published")
+    end
 
     session
   end
