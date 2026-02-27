@@ -92,7 +92,7 @@ module Admin
         .where(category: "vomit", status: status)
         .live_reactable
         .select(:id, :user_id, :reactable_type, :reactable_id)
-        .where("reactions.created_at > ?", 2.week.ago)
+        .where("reactions.created_at > ?", 2.weeks.ago)
         .order(Arel.sql("
           CASE reactable_type
             WHEN 'User' THEN 0

@@ -14,6 +14,13 @@ RSpec.describe "StoriesShow" do
       expect(response.body).to include CGI.escapeHTML(article.title)
     end
 
+    it "renders the Mastodon share link via Share2Fedi" do
+      get article.path
+
+      share_url = "https://s2f.kytta.dev/?text=#{CGI.escape(URL.article(article))}"
+      expect(response.body).to include(share_url)
+    end
+
     it "redirects to appropriate if article belongs to org and user visits user version" do
       old_path = article.path
       article.update(organization: org)
