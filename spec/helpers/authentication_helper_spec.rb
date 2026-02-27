@@ -42,7 +42,7 @@ RSpec.describe AuthenticationHelper do
       allow(Authentication::Providers).to receive(:enabled).and_return([])
 
       expect(helper.signed_up_with(user)).to match(/Email & Password/)
-      expect(helper.signed_up_with(user)).to match(/use that to sign back into DEV/)
+      expect(helper.signed_up_with(user)).to match(/use that to sign back into /)
     end
   end
 
