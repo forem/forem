@@ -85,6 +85,28 @@
           </div>
         </div>
 
+        <% if @agent_session.published? %>
+          <div class="sidebar-divider"></div>
+          <div class="sidebar-embed-section">
+            <label class="sidebar-section-label"><%= t("views.agent_sessions.share_link") %></label>
+            <div class="sidebar-embed-row">
+              <input type="text" readonly autocomplete="off" class="sidebar-share-input"
+                     value="<%= URL.url(agent_session_path(@agent_session)) %>" onclick="this.select();" />
+              <button type="button" class="slice-action-btn" id="copy-share-btn" title="<%= t("views.agent_sessions.copy_link") %>"><%= t("views.agent_sessions.copy_link") %></button>
+            </div>
+          </div>
+          <script>
+            document.getElementById('copy-share-btn').addEventListener('click', function() {
+              var input = this.previousElementSibling;
+              navigator.clipboard.writeText(input.value).then(function() {
+                var btn = document.getElementById('copy-share-btn');
+                btn.textContent = 'Copied!';
+                setTimeout(function() { btn.textContent = '<%= t("views.agent_sessions.copy_link") %>'; }, 2000);
+              });
+            });
+          </script>
+        <% end %>
+
         <div class="sidebar-divider"></div>
 
         <div class="slices-panel-header">

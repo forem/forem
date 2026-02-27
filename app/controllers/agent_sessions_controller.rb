@@ -1,7 +1,7 @@
 class AgentSessionsController < ApplicationController
   ALLOWED_EXTENSIONS = %w[.jsonl .json .txt .log .md].freeze
 
-  before_action :authenticate_user!
+  before_action :authenticate_user!, except: %i[show]
   before_action :set_agent_session, only: %i[show edit update destroy]
   before_action :limit_uploads, only: [:create]
   after_action :verify_authorized
@@ -12,6 +12,10 @@ class AgentSessionsController < ApplicationController
   end
 
   def show
+    if !@agent_session.published? && !current_user
+      raise ActiveRecord::RecordNotFound
+    end
+
     authorize @agent_session
     @slice_name = params[:slice]
   end
