@@ -75,7 +75,7 @@
     "cypress-multi-reporters": "^2.0.5",
     "cypress-pipe": "^2.0.1",
     "eslint": "^8.57.0",
-    "eslint-config-preact": "^2.0.0",
+    "eslint-config-preact": "^1.5.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-webpack": "^0.13.10",
     "eslint-plugin-babel": "^5.3.1",
