@@ -34,7 +34,6 @@ namespace :followers do
   get :organizations
 end
 resources :readinglist, only: [:index]
-resources :agent_sessions, only: %i[index show create]
 
 get "/analytics/totals", to: "analytics#totals"
 get "/analytics/historical", to: "analytics#historical"

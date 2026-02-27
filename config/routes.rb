@@ -79,6 +79,8 @@ Rails.application.routes.draw do
 
         resources :pages, only: %i[index show create update destroy]
 
+        resources :agent_sessions, only: %i[index show create]
+
         resources :feedback_messages, only: :update
 
         resources :organizations, only: %i[index create update destroy]
