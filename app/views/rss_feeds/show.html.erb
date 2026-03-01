@@ -5,61 +5,114 @@
     </div>
 
     <div class="crayons-card p-6 mb-6">
-      <h1 class="crayons-title"><%= @rss_feed.url %></h1>
-      <p class="text-base-50 mt-2">Status: <strong><%= @rss_feed.status %></strong></p>
-      <p class="text-base-50">Last Fetched: <%= @rss_feed.last_fetched_at ? @rss_feed.last_fetched_at.to_fs(:long) : "Never" %></p>
+      <div class="flex justify-between items-start">
+        <div class="grid gap-2">
+          <h1 class="crayons-title"><%= @rss_feed.url %></h1>
+          <div class="flex items-center gap-3">
+            <span class="crayons-indicator crayons-indicator--<%= @rss_feed.active? ? 'success' : 'warning' %>">
+              <%= @rss_feed.status.capitalize %>
+            </span>
+            <span class="text-base-50">Last Fetched: <%= @rss_feed.last_fetched_at ? @rss_feed.last_fetched_at.to_fs(:long) : "Never" %></span>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <%= button_to "Fetch Now", fetch_rss_feed_path(@rss_feed), method: :post, class: "crayons-btn crayons-btn--primary" %>
+          <%= link_to "Edit Feed", edit_rss_feed_path(@rss_feed), class: "crayons-btn crayons-btn--secondary" %>
+        </div>
+      </div>
 
-      <div class="mt-4">
-        <%= link_to "Edit Feed", edit_rss_feed_path(@rss_feed), class: "crayons-btn crayons-btn--secondary" %>
+      <div class="grid grid-cols-1 m:grid-cols-3 gap-4 mt-8 pt-6 border-t border-base-20">
+        <div class="text-center">
+          <p class="text-sm text-base-50 uppercase tracking-wide font-bold">Total Runs</p>
+          <p class="text-2xl font-bold"><%= @rss_feed.rss_feed_imports.count %></p>
+        </div>
+        <div class="text-center">
+          <p class="text-sm text-base-50 uppercase tracking-wide font-bold">Articles Found</p>
+          <p class="text-2xl font-bold"><%= @rss_feed.rss_feed_imports.sum(:articles_found) %></p>
+        </div>
+        <div class="text-center">
+          <p class="text-sm text-base-50 uppercase tracking-wide font-bold">Articles Imported</p>
+          <p class="text-2xl font-bold"><%= @rss_feed.rss_feed_imports.sum(:articles_imported) %></p>
+        </div>
       </div>
     </div>
 
-    <h2 class="crayons-subtitle-2 mb-4">Recent Imports</h2>
+    <h2 class="crayons-subtitle-2 mb-4">Import History (Last 20 runs)</h2>
     <% if @imports.any? %>
-      <div class="grid gap-4">
+      <div class="grid gap-6">
         <% @imports.each do |import| %>
-          <div class="crayons-card p-4">
-            <div class="flex justify-between items-center mb-4">
-              <h3 class="font-bold">Import at <%= import.created_at.to_fs(:short) %></h3>
-              <span class="crayons-indicator"><%= import.status %></span>
+          <div class="crayons-card overflow-hidden">
+            <div class="p-4 bg-base-5 flex justify-between items-center border-b border-base-20">
+              <div class="flex items-center gap-3">
+                <span class="font-bold">Run on <%= import.created_at.to_fs(:short) %></span>
+                <span class="text-sm px-2 py-0.5 rounded-full bg-base-20 text-base-80 uppercase font-bold tracking-tight" style="font-size: 10px;">
+                  <%= import.status %>
+                </span>
+              </div>
+              <p class="text-sm font-medium">
+                Found: <span class="text-base-100"><%= import.articles_found %></span> | 
+                Imported: <span class="text-success"><%= import.articles_imported %></span>
+              </p>
             </div>
 
-            <p class="text-sm mb-2">Articles found: <%= import.articles_found %> | Imported: <%= import.articles_imported %></p>
-
             <% if import.error_message.present? %>
-              <div class="crayons-notice crayons-notice--danger mb-4">
-                <%= import.error_message %>
+              <div class="p-4 bg-danger-10 text-danger-90 text-sm">
+                <strong>Error:</strong> <%= import.error_message %>
               </div>
             <% end %>
 
-            <% if import.rss_feed_imported_articles.any? %>
-              <table class="w-100 text-sm">
-                <thead>
-                  <tr class="text-left border-b border-base-20">
-                    <th class="py-2">Article Title</th>
-                    <th class="py-2">Status</th>
-                    <th class="py-2">Details</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <% import.rss_feed_imported_articles.each do |article_log| %>
-                    <tr class="border-b border-base-20 last:border-0">
-                      <td class="py-2"><%= article_log.title || "Unknown" %></td>
-                      <td class="py-2"><%= article_log.status %></td>
-                      <td class="py-2 text-base-50"><%= article_log.error_message || "Success" %></td>
-                    </tr>
-                  <% end %>
-                </tbody>
-              </table>
-            <% else %>
-              <p class="text-sm text-base-50">No articles processed during this import.</p>
-            <% end %>
+            <div class="p-0">
+              <% articles = import.rss_feed_imported_articles %>
+              <% if articles.any? %>
+                <details class="crayons-details">
+                  <summary class="p-3 text-sm text-base-60 cursor-pointer hover:bg-base-5 select-none">
+                    View individual article status (<%= articles.count %> items)
+                  </summary>
+                  <div class="border-t border-base-20">
+                    <table class="w-100 text-sm">
+                      <thead>
+                        <tr class="text-left bg-base-5">
+                          <th class="p-3 font-bold text-base-50 uppercase" style="font-size: 11px;">Article Title</th>
+                          <th class="p-3 font-bold text-base-50 uppercase" style="font-size: 11px;">Status</th>
+                          <th class="p-3 font-bold text-base-50 uppercase" style="font-size: 11px;">Details</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% articles.each do |article_log| %>
+                          <tr class="border-b border-base-10 last:border-0 hover:bg-base-5">
+                            <td class="p-3">
+                              <div class="font-medium text-base-90"><%= article_log.title || "Unknown Title" %></div>
+                              <div class="text-xs text-base-50 truncate max-w-md"><%= article_log.source_url %></div>
+                            </td>
+                            <td class="p-3">
+                              <span class="text-xs font-bold uppercase px-2 py-0.5 rounded-sm 
+                                <%= case article_log.status
+                                    when 'imported' then 'bg-success-10 text-success'
+                                    when 'skipped' then 'bg-base-20 text-base-60'
+                                    else 'bg-danger-10 text-danger'
+                                    end %>">
+                                <%= article_log.status %>
+                              </span>
+                            </td>
+                            <td class="p-3 text-xs text-base-60">
+                              <%= article_log.error_message || "-" %>
+                            </td>
+                          </tr>
+                        <% end %>
+                      </tbody>
+                    </table>
+                  </div>
+                </details>
+              <% else %>
+                <p class="p-4 text-sm text-base-50 italic">No items were processed during this run.</p>
+              <% end %>
+            </div>
           </div>
         <% end %>
       </div>
     <% else %>
-      <div class="crayons-card p-6 text-center text-base-50">
-        No import jobs have run for this feed yet.
+      <div class="crayons-card p-10 text-center text-base-50">
+        No import jobs have run for this feed yet. Click <strong>Fetch Now</strong> to start an import.
       </div>
     <% end %>
   </div>

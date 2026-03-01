@@ -370,7 +370,9 @@ Rails.application.routes.draw do
     get "/settings/publishing-from-rss", to: redirect("/rss_feeds")
     get "/settings/ux", to: redirect("/settings/customization")
 
-    resources :rss_feeds
+    resources :rss_feeds do
+      post :fetch, on: :member
+    end
 
     get "/settings/(:tab)", to: "users#edit", as: :user_settings
     get "/settings/:tab/:org_id", to: "users#edit", constraints: { tab: /organization/ }

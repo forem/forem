@@ -5,17 +5,36 @@
       <%= link_to "Add RSS Feed", new_rss_feed_path, class: "crayons-btn crayons-btn--primary" %>
     </div>
 
+    <div class="crayons-notice crayons-notice--info mb-6">
+      <p>Configure and monitor your RSS feed imports. Articles from active feeds are automatically imported as drafts every 4 hours.</p>
+    </div>
+
     <% if @rss_feeds.any? %>
-      <div class="crayons-card crayons-card--content-rows">
+      <div class="grid gap-4">
         <% @rss_feeds.each do |feed| %>
-          <div class="p-4 border-b border-base-20 last:border-0 flex justify-between items-center">
-            <div>
-              <h2 class="font-bold"><%= link_to feed.url, feed.url %></h2>
-              <p class="text-sm text-base-50">Status: <%= feed.status %></p>
-              <p class="text-sm text-base-50">Last Fetched: <%= feed.last_fetched_at ? time_ago_in_words(feed.last_fetched_at) + " ago" : "Never" %></p>
+          <div class="crayons-card p-4 flex justify-between items-start">
+            <div class="grid gap-1">
+              <h2 class="font-bold text-lg"><%= link_to feed.url, rss_feed_path(feed) %></h2>
+              <div class="flex items-center gap-2 text-sm">
+                <span class="crayons-indicator crayons-indicator--<%= feed.active? ? 'success' : 'warning' %>">
+                  <%= feed.status.capitalize %>
+                </span>
+                <span class="text-base-50">
+                  Last fetched: <%= feed.last_fetched_at ? time_ago_in_words(feed.last_fetched_at) + " ago" : "Never" %>
+                </span>
+              </div>
+              <div class="text-sm text-base-60 mt-2">
+                <% last_import = feed.rss_feed_imports.order(created_at: :desc).first %>
+                <% if last_import %>
+                  Latest run: <span class="font-medium"><%= last_import.articles_imported %> imported</span> 
+                  out of <%= last_import.articles_found %> articles found.
+                <% else %>
+                  No imports recorded yet.
+                <% end %>
+              </div>
             </div>
             <div class="flex gap-2">
-              <%= link_to "View Details", rss_feed_path(feed), class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
+              <%= button_to "Fetch Now", fetch_rss_feed_path(feed), method: :post, class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
               <%= link_to "Edit", edit_rss_feed_path(feed), class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
               <%= button_to "Delete", rss_feed_path(feed), method: :delete, data: { confirm: "Are you sure?" }, class: "crayons-btn crayons-btn--s crayons-btn--danger" %>
             </div>
@@ -23,8 +42,9 @@
         <% end %>
       </div>
     <% else %>
-      <div class="crayons-card p-6 text-center">
-        <p>You have no RSS feeds configured.</p>
+      <div class="crayons-card p-10 text-center">
+        <p class="text-base-60 mb-4">You have no RSS feeds configured.</p>
+        <%= link_to "Get started by adding your first feed", new_rss_feed_path, class: "crayons-btn crayons-btn--secondary" %>
       </div>
     <% end %>
   </div>

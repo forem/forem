@@ -1,6 +1,6 @@
 class RssFeedsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_rss_feed, only: %i[show edit update destroy]
+  before_action :set_rss_feed, only: %i[show edit update destroy fetch]
 
   def index
     @rss_feeds = current_user.rss_feeds.order(created_at: :desc)
@@ -8,6 +8,11 @@ class RssFeedsController < ApplicationController
 
   def show
     @imports = @rss_feed.rss_feed_imports.order(created_at: :desc).limit(20)
+  end
+
+  def fetch
+    Feeds::ImportArticlesWorker.new.perform([@rss_feed.id])
+    redirect_to rss_feed_path(@rss_feed), notice: "Import job has been queued and will start shortly."
   end
 
   def new
@@ -47,8 +52,7 @@ class RssFeedsController < ApplicationController
   end
 
   def rss_feed_params
-    permitted = [:url, :mark_canonical, :referential_link, :status, :fallback_user_id]
-    permitted << :fallback_organization_id if current_user.any_admin?
+    permitted = [:url, :mark_canonical, :referential_link, :status, :fallback_user_id, :fallback_organization_id]
     params.require(:rss_feed).permit(permitted)
   end
 end
