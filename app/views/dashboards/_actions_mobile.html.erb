@@ -8,6 +8,7 @@
     <option value="/dashboard/following_podcasts" <%= "selected" if @action == "following_podcasts" %>><%= t("views.dashboard.actions.mobile.following_pods", num: @user.following_podcasts_count) %></option>
 
     <option value="<%= dashboard_analytics_path %>"><%= t("views.dashboard.actions.analytics") %></option>
+    <option value="<%= rss_feeds_path %>" <%= "selected" if controller_name == "rss_feeds" %>>RSS Feeds</option>
 
     <option value="/dashboard/hidden_tags" <%= "selected" if @action == "hidden_tags" %>><%= t("views.dashboard.actions.mobile.hidden_tags", num: @user.cached_antifollowed_tag_names.size) %></option>
 

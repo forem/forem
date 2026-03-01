@@ -71,6 +71,14 @@
         <%= t("views.dashboard.actions.analytics") %>
       </a>
     </li>
+
+    <li>
+      <a class="crayons-link crayons-link--block <%= "crayons-link--current" if controller_name == "rss_feeds" %>"
+        href="<%= rss_feeds_path %>"
+        <%= controller_name == "rss_feeds" ? ' aria-current="page"'.html_safe : "" %>>
+        RSS Feeds
+      </a>
+    </li>
     <%- end %>
 
     <li>

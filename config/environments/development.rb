@@ -104,6 +104,7 @@ Rails.application.configure do
   end
 
   config.hosts << "www.example.com"
+  config.hosts << "gemini-forem-test.exe.xyz"
   config.hosts << /[a-zA-Z0-9\-]+\.preview\.app\.github\.dev\z/
 
   config.hosts << /.+\.lvh\.me/
