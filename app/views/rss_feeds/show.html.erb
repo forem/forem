@@ -75,6 +75,7 @@
                           <th class="p-3 font-bold text-base-50 uppercase" style="font-size: 11px;">Article Title</th>
                           <th class="p-3 font-bold text-base-50 uppercase" style="font-size: 11px;">Status</th>
                           <th class="p-3 font-bold text-base-50 uppercase" style="font-size: 11px;">Details</th>
+                          <th class="p-3 font-bold text-base-50 uppercase" style="font-size: 11px;">Actions</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -96,6 +97,16 @@
                             </td>
                             <td class="p-3 text-xs text-base-60">
                               <%= article_log.error_message || "-" %>
+                            </td>
+                            <td class="p-3 text-xs">
+                              <% if article_log.article %>
+                                <div class="flex gap-2">
+                                  <%= link_to "View", article_log.article.path, class: "crayons-btn crayons-btn--s crayons-btn--ghost", target: "_blank" %>
+                                  <%= link_to "Edit", "/#{article_log.article.user.username}/#{article_log.article.slug}/edit", class: "crayons-btn crayons-btn--s crayons-btn--ghost" %>
+                                </div>
+                              <% else %>
+                                <span class="text-base-40">N/A</span>
+                              <% end %>
                             </td>
                           </tr>
                         <% end %>

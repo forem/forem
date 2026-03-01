@@ -87,7 +87,13 @@ module Feeds
         organization = feed.fallback_organization
 
         if Feeds::CheckItemMediumReply.call(item) || Feeds::CheckItemPreviouslyImported.call(item, author)
-          import_job.rss_feed_imported_articles.create!(source_url: feed_source_url, title: item.title, status: :skipped)
+          existing_article = Article.find_by(feed_source_url: feed_source_url)
+          import_job.rss_feed_imported_articles.create!(
+            source_url: feed_source_url, 
+            title: item.title, 
+            status: :skipped, 
+            article_id: existing_article&.id
+          )
           next
         end
 
