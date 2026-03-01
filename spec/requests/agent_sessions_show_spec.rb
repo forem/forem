@@ -59,13 +59,17 @@ RSpec.describe "AgentSessions#show" do
     end
 
     context "when unpublished" do
-      it "returns 404 for unauthenticated users" do
-        expect { get agent_session_path(agent_session) }.to raise_error(ActiveRecord::RecordNotFound)
+      it "returns 404 page for unauthenticated users" do
+        get agent_session_path(agent_session)
+        expect(response).to have_http_status(:not_found)
+        expect(response.body).to include("not available")
       end
 
-      it "returns 404 for non-owner users" do
+      it "returns 404 page for non-owner users" do
         sign_in other_user
-        expect { get agent_session_path(agent_session) }.to raise_error(Pundit::NotAuthorizedError)
+        get agent_session_path(agent_session)
+        expect(response).to have_http_status(:not_found)
+        expect(response.body).to include("not available")
       end
 
       it "is accessible by owner" do
@@ -78,6 +82,14 @@ RSpec.describe "AgentSessions#show" do
         sign_in admin
         get agent_session_path(agent_session)
         expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "when session does not exist" do
+      it "returns 404 page for non-existent slug" do
+        get "/agent_sessions/totally-fake-slug"
+        expect(response).to have_http_status(:not_found)
+        expect(response.body).to include("not available")
       end
     end
   end

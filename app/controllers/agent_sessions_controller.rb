@@ -12,12 +12,12 @@ class AgentSessionsController < ApplicationController
   end
 
   def show
-    if !@agent_session.published? && !current_user
-      raise ActiveRecord::RecordNotFound
-    end
+    return if performed? # already rendered by set_agent_session rescue
 
     authorize @agent_session
     @slice_name = params[:slice]
+  rescue Pundit::NotAuthorizedError
+    render_session_not_available
   end
 
   def new
@@ -166,6 +166,8 @@ class AgentSessionsController < ApplicationController
                      else
                        AgentSession.find_by!(slug: params[:id])
                      end
+  rescue ActiveRecord::RecordNotFound
+    render_session_not_available
   end
 
   def create_params
@@ -187,6 +189,11 @@ class AgentSessionsController < ApplicationController
     end
   rescue JSON::ParserError
     []
+  end
+
+  def render_session_not_available
+    skip_authorization
+    render "not_available", status: :not_found
   end
 
   def session_json(session)

@@ -621,6 +621,38 @@
   }
 }
 
+// === Not Available Page ===
+.agent-session-not-available {
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--card-color-secondary, #6b7280);
+
+  svg {
+    margin-bottom: 16px;
+    color: var(--card-color-secondary, #9ca3af);
+  }
+
+  h1 {
+    font-size: 1.4em;
+    color: var(--card-color, #1f2937);
+    margin-bottom: 8px;
+  }
+
+  p {
+    font-size: 0.95em;
+    margin-bottom: 6px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .agent-session-not-available-hint {
+    font-size: 0.85em;
+    color: var(--accent-brand, #3b82f6);
+    margin-top: 16px;
+  }
+}
+
 // === Upload Page ===
 .agent-session-upload-page,
 .agent-session-show-page {

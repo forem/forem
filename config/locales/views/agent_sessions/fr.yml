@@ -13,3 +13,6 @@ fr:
       private_description: Vous seul pouvez intégrer cette session dans vos publications
       security_warning: Veuillez vérifier votre session attentivement avant de la rendre publique pour vous assurer de ne pas partager d'informations sensibles.
       switched_to_model: "Basculé vers %{model}"
+      not_available_title: Session non disponible
+      not_available_description: Cette session d'agent n'existe pas ou n'est pas accessible publiquement.
+      not_available_sign_in_hint: Si c'est votre session, essayez de vous connecter pour la consulter.
