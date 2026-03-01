@@ -210,6 +210,9 @@ en:
             skipped_duplicate: Skipped (duplicate)
             skipped_medium_reply: Skipped (Medium reply)
             failed: Failed
+          show_duplicates:
+            one: "Show %{count} skipped duplicate"
+            other: "Show %{count} skipped duplicates"
         sources:
           your_sources: Your Feed Sources
           add_heading: Add a Feed Source

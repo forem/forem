@@ -154,6 +154,9 @@ pt:
             skipped_duplicate: Ignorado (duplicado)
             skipped_medium_reply: Ignorado (resposta Medium)
             failed: Falhou
+          show_duplicates:
+            one: "Mostrar %{count} duplicado ignorado"
+            other: "Mostrar %{count} duplicados ignorados"
         sources:
           your_sources: Suas fontes de feed
           add_heading: Adicionar fonte de feed

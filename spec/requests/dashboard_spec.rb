@@ -468,6 +468,20 @@ RSpec.describe "Dashboards" do
         get "/dashboard/feed_imports"
         expect(response.body).to include("No import history yet")
       end
+
+      it "hides skipped duplicate items behind a collapsible section" do
+        allow(Feeds::ValidateUrl).to receive(:call).and_return(true)
+        source = create(:feed_source, user: user, feed_url: "https://example.com/feed.xml")
+        log = create(:feed_import_log, user: user, feed_source: source,
+                                       items_imported: 1, items_skipped: 3)
+        create(:feed_import_item, :imported, import_log: log, feed_item_title: "My New Article")
+        create_list(:feed_import_item, 3, :skipped, import_log: log)
+
+        get "/dashboard/feed_imports"
+
+        expect(response.body).to include("My New Article")
+        expect(response.body).to include("Show 3 skipped duplicates")
+      end
     end
   end
 

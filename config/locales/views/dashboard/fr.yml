@@ -207,6 +207,9 @@ fr:
             skipped_duplicate: Ignoré (doublon)
             skipped_medium_reply: Ignoré (réponse Medium)
             failed: Échoué
+          show_duplicates:
+            one: "Afficher %{count} doublon ignoré"
+            other: "Afficher %{count} doublons ignorés"
         sources:
           your_sources: Vos sources de flux
           add_heading: Ajouter une source de flux
