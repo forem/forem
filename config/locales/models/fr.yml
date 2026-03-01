@@ -139,3 +139,7 @@ fr:
       setting:
         invalid_hex: n'est pas une couleur hexagonale valide
         invalid_rss: n'est pas un flux RSS/Atom valide
+    rss_feed:
+      invalid_rss: n'est pas un flux RSS/Atom valide
+      not_org_admin: vous devez être administrateur de cette organisation
+      duplicate_url: a déjà été ajouté

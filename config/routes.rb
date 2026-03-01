@@ -146,6 +146,12 @@ Rails.application.routes.draw do
     resources :users, only: %i[update]
     resources :reactions, only: %i[index create]
     resources :response_templates, only: %i[index create edit update destroy]
+    resources :rss_feeds, only: %i[create update destroy] do
+      member do
+        post :fetch
+      end
+    end
+    resource :rss_feed_imports, only: [:show]
     resources :feedback_messages, only: %i[index create]
     resources :organizations, only: %i[update create destroy]
     resources :follows, only: %i[show create] do

@@ -240,6 +240,8 @@ class UsersController < ApplicationController
     when "extensions"
       handle_integrations_tab
       handle_response_templates_tab
+      @rss_feeds = current_user.rss_feeds.order(:created_at)
+      @admin_organizations = current_user.admin_organizations
     else
       not_found unless @tab.in?(Constants::Settings::TAB_LIST.map { |t| t.downcase.tr(" ", "-") })
     end
@@ -350,9 +352,12 @@ class UsersController < ApplicationController
   end
 
   def import_articles_from_feed(user)
-    return if user.setting.feed_url.blank?
+    has_legacy_feed = user.setting&.feed_url.present?
+    has_rss_feeds = user.rss_feeds.active.exists?
 
-    Feeds::ImportArticlesWorker.perform_async(user.id)
+    return unless has_legacy_feed || has_rss_feeds
+
+    Feeds::ImportArticlesWorker.perform_async([user.id])
   end
 
   def password_params

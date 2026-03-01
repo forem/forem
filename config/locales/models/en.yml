@@ -140,3 +140,7 @@ en:
       setting:
         invalid_hex: is not a valid hex color
         invalid_rss: is not a valid RSS/Atom feed
+    rss_feed:
+      invalid_rss: is not a valid RSS/Atom feed
+      not_org_admin: you must be an admin of this organization
+      duplicate_url: has already been added

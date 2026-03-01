@@ -4,16 +4,6 @@
     <h2 class="crayons-subtitle-1">
       <%= t("views.settings.extensions.rss.heading", community: community_name) %>
     </h2>
-    <% if @users_setting.feed_url.present? %>
-      <%= form_for @users_setting, url: users_settings_path do |f| %>
-        <%= f.hidden_field :feed_url, value: @users_setting.feed_url %>
-        <%= f.hidden_field :tab, value: @tab %>
-        <div class="flex items-center">
-          <button type="submit" class="crayons-btn crayons-btn--secondary"><%= t("views.settings.extensions.rss.fetch") %></button>
-          <p class="pl-2"><%= t("views.settings.extensions.rss.last_html", time: tag.time(id: "rss-fetch-time", datetime: @users_setting.user.feed_fetched_at.iso8601)) %></p>
-        </div>
-      <% end %>
-    <% end %>
     <p>
       <%= t("views.settings.extensions.rss.desc1_html", dashboard: link_to(t("views.settings.extensions.rss.dashboard"), "/dashboard")) %>
     </p>
@@ -29,25 +19,65 @@
     <p><em><%= t("views.settings.extensions.rss.desc6") %></em></p>
   </div>
 
-  <%= form_for @users_setting, url: users_settings_path, html: { class: "grid gap-6" } do |f| %>
-    <div class="crayons-field">
-      <%= f.label :feed_url, "RSS Feed URL", class: "crayons-field__label" %>
-      <%= f.url_field :feed_url, placeholder: "https://yoursite.com/feed", class: "crayons-textfield" %>
-    </div>
+  <% if @rss_feeds.present? %>
+    <div class="grid gap-4 mt-4">
+      <h3 class="crayons-subtitle-2"><%= t("views.settings.extensions.rss.your_feeds") %></h3>
 
-    <div class="crayons-field crayons-field--checkbox">
-      <%= f.check_box :feed_mark_canonical, class: "crayons-checkbox" %>
-      <%= f.label :feed_mark_canonical, t("views.settings.extensions.rss.mark_canonical_html"), class: "crayons-field__label" %>
-    </div>
+      <% @rss_feeds.each do |feed| %>
+        <div class="crayons-card p-4 grid gap-2" id="rss-feed-<%= feed.id %>">
+          <div class="flex items-center justify-between">
+            <div>
+              <strong><%= feed.name.presence || feed.feed_url %></strong>
+              <% if feed.name.present? %>
+                <span class="fs-s color-base-60 ml-2"><%= feed.feed_url.truncate(60) %></span>
+              <% end %>
+            </div>
+            <span class="crayons-tag"><%= feed.status %></span>
+          </div>
 
-    <div class="crayons-field crayons-field--checkbox">
-      <%= f.check_box :feed_referential_link, class: "crayons-checkbox" %>
-      <%= f.label :feed_referential_link, t("views.settings.extensions.rss.referential_html", community: community_name), class: "crayons-field__label" %>
-    </div>
+          <% if feed.last_fetched_at.present? %>
+            <p class="fs-s color-base-60">
+              <%= t("views.settings.extensions.rss.last_html", time: tag.time(datetime: feed.last_fetched_at.iso8601)) %>
+            </p>
+          <% end %>
 
-    <%= f.hidden_field :tab, value: @tab, id: nil %>
-    <% button_text = @users_setting.feed_url.present? ? t("views.settings.extensions.rss.save") : t("views.settings.extensions.rss.submit") %>
-    <button class="crayons-btn w-max" type="submit"><%= button_text %></button>
+          <% if feed.last_error_message.present? %>
+            <p class="fs-s color-accent-danger"><%= feed.last_error_message %></p>
+          <% end %>
+
+          <div class="flex gap-2">
+            <%= button_to t("views.settings.extensions.rss.fetch"),
+                          fetch_rss_feed_path(feed),
+                          method: :post,
+                          class: "crayons-btn crayons-btn--secondary crayons-btn--s" %>
+            <button type="button" class="crayons-btn crayons-btn--secondary crayons-btn--s"
+                    onclick="document.getElementById('edit-rss-feed-<%= feed.id %>').classList.toggle('hidden')">
+              <%= t("views.settings.extensions.rss.edit_feed") %>
+            </button>
+            <%= button_to t("views.settings.extensions.rss.delete_feed"),
+                          rss_feed_path(feed),
+                          method: :delete,
+                          data: { confirm: t("views.settings.extensions.rss.confirm_delete") },
+                          class: "crayons-btn crayons-btn--danger crayons-btn--s" %>
+          </div>
+
+          <div id="edit-rss-feed-<%= feed.id %>" class="hidden mt-2">
+            <%= render partial: "users/rss_feed_form", locals: { rss_feed: feed, form_url: rss_feed_path(feed), method: :patch } %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="mt-4">
+    <h3 class="crayons-subtitle-2 mb-4"><%= t("views.settings.extensions.rss.add_feed") %></h3>
+    <%= render partial: "users/rss_feed_form", locals: { rss_feed: RssFeed.new, form_url: rss_feeds_path, method: :post } %>
+  </div>
+
+  <% if @rss_feeds.present? %>
+    <div class="mt-4">
+      <%= link_to t("views.settings.extensions.rss.view_import_dashboard"), rss_feed_imports_path, class: "crayons-btn crayons-btn--secondary" %>
+    </div>
   <% end %>
 </div>
 <% end %>

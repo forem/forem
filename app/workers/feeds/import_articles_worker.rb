@@ -11,21 +11,21 @@ module Feeds
     # by using YAML to define jobs arguments does not support datetimes evaluated
     # at runtime
     def perform(user_ids = [], earlier_than = nil)
-      users_scope = User
+      rss_feeds_scope = RssFeed.fetchable
 
       if user_ids.present?
-        users_scope = users_scope.where(id: user_ids)
+        rss_feeds_scope = rss_feeds_scope.where(user_id: user_ids)
         # we assume that forcing a single import should not take into account
         # the last time a feed was fetched at
         earlier_than = nil
       else
-        users_scope = users_scope.where(id: Users::Setting.with_feed.select(:user_id))
-
-        # Only batch users who have been active recently — avoids dispatching
-        # Sidekiq jobs for users that will just be filtered out downstream.
+        # Only batch feeds for users who have been active recently
         recent_activity_since = 3.months.ago
-        users_scope = users_scope.where("last_article_at >= ? OR last_presence_at >= ?",
-                                        recent_activity_since, recent_activity_since)
+        active_user_ids = User.where(
+          "last_article_at >= ? OR last_presence_at >= ?",
+          recent_activity_since, recent_activity_since
+        ).select(:id)
+        rss_feeds_scope = rss_feeds_scope.where(user_id: active_user_ids)
 
         earlier_than ||= 4.hours.ago
       end
@@ -36,13 +36,27 @@ module Feeds
         earlier_than = earlier_than.iso8601
       end
 
-      users_scope.select(:id).find_in_batches do |batch|
-        arg_lists = batch.map { |user| [user.id, earlier_than] }
+      rss_feeds_scope.select(:id).find_in_batches do |batch|
+        arg_lists = batch.map { |feed| [[feed.id], earlier_than] }
 
-        ForUser.perform_bulk(arg_lists)
+        ForFeed.perform_bulk(arg_lists)
       end
     end
 
+    class ForFeed
+      include Sidekiq::Job
+      include Sidekiq::Throttled::Job
+
+      sidekiq_throttle(concurrency: { limit: 5 })
+
+      def perform(rss_feed_ids, earlier_than)
+        rss_feeds_scope = RssFeed.fetchable.where(id: rss_feed_ids)
+
+        ::Feeds::Import.call(rss_feeds_scope: rss_feeds_scope, earlier_than: earlier_than)
+      end
+    end
+
+    # Kept for backward compatibility with in-flight Sidekiq jobs
     class ForUser
       include Sidekiq::Job
       include Sidekiq::Throttled::Job
@@ -50,9 +64,9 @@ module Feeds
       sidekiq_throttle(concurrency: { limit: 5 })
 
       def perform(user_ids, earlier_than)
-        users_scope = User.where(id: user_ids)
+        rss_feeds_scope = RssFeed.fetchable.where(user_id: user_ids)
 
-        ::Feeds::Import.call(users_scope: users_scope, earlier_than: earlier_than)
+        ::Feeds::Import.call(rss_feeds_scope: rss_feeds_scope, earlier_than: earlier_than)
       end
     end
   end

@@ -95,6 +95,11 @@ en:
     error:
       recaptcha: You must complete the recaptcha ✅
       domain: is not included in allowed domains.
+  rss_feeds:
+    created: Your RSS feed was added successfully.
+    updated: Your RSS feed was updated successfully.
+    deleted: Your RSS feed was deleted successfully.
+    fetch_queued: Feed import has been queued.
   response_templates_controller:
     response_template_error: 'Response template error: %{errors}'
     created: Your response template "%{title}" was created.

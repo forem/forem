@@ -160,6 +160,17 @@ fr:
           referential_html: Replace self-referential links with %{community}-specific links <p class='crayons-field__description'>If you check this box, the post will automatically change any URLs included in the post to refer to the version of that article on %{community} if available. This is primarily meant for folks migrating their entire blog onto %{community}.</p>
           save: Save Feed Settings
           submit: Submit Feed Settings
+          your_feeds: Vos flux
+          add_feed: Ajouter un nouveau flux
+          feed_url_label: URL du flux RSS
+          feed_name_label: Nom du flux (optionnel)
+          fallback_org_label: Publier sous l'organisation
+          fallback_author_label: Auteur par défaut
+          none: "(aucun)"
+          edit_feed: Modifier
+          delete_feed: Supprimer
+          confirm_delete: Êtes-vous sûr de vouloir supprimer ce flux ?
+          view_import_dashboard: Voir le tableau de bord des importations
       finalize_html: You have requested a change to %{email}. Check your inbox for the verification link to finalize the change.
       for_html: Settings for %{name}
       group:
@@ -314,3 +325,15 @@ fr:
         Organization: Organisation
         Extensions: Extensions
       save_profile: Save Profile Information
+    rss_imports:
+      heading: Tableau de bord des importations RSS
+      no_feeds: Vous n'avez pas encore configuré de flux RSS.
+      last_fetched: Dernière récupération
+      imported: Importés
+      errors: Erreurs
+      pending: En attente
+      skipped_count: Ignorés
+      recent_items: Éléments récents
+      show_skipped: Afficher les éléments ignorés
+      view_article: Voir l'article
+      back_to_settings: Retour aux paramètres

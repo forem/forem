@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_02_23_212134) do
+ActiveRecord::Schema[7.0].define(version: 2026_03_01_221127) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -18,6 +18,25 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_23_212134) do
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
   enable_extension "unaccent"
+
+  create_table "agent_sessions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.jsonb "curated_selections", default: [], null: false
+    t.jsonb "normalized_data", default: {}, null: false
+    t.boolean "published", default: false, null: false
+    t.text "raw_data"
+    t.jsonb "session_metadata", default: {}, null: false
+    t.jsonb "slices", default: [], null: false
+    t.string "slug"
+    t.string "title", null: false
+    t.string "tool_name", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["tool_name"], name: "index_agent_sessions_on_tool_name"
+    t.index ["user_id", "published"], name: "index_agent_sessions_on_user_id_and_published"
+    t.index ["user_id", "slug"], name: "index_agent_sessions_on_user_id_and_slug", unique: true
+    t.index ["user_id"], name: "index_agent_sessions_on_user_id"
+  end
 
   create_table "ahoy_events", force: :cascade do |t|
     t.string "name"
@@ -172,6 +191,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_23_212134) do
     t.tsvector "reading_list_document"
     t.integer "reading_time", default: 0
     t.boolean "receive_notifications", default: true
+    t.bigint "rss_feed_id"
     t.integer "score", default: 0
     t.string "search_optimized_description_replacement"
     t.string "search_optimized_title_preamble"
@@ -214,6 +234,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_23_212134) do
     t.index ["published"], name: "index_articles_on_published"
     t.index ["published_at"], name: "index_articles_on_published_at"
     t.index ["reading_list_document"], name: "index_articles_on_reading_list_document", using: :gin
+    t.index ["rss_feed_id"], name: "index_articles_on_rss_feed_id"
     t.index ["semantic_interests"], name: "index_articles_on_semantic_interests", using: :gin
     t.index ["slug", "user_id"], name: "index_articles_on_slug_and_user_id", unique: true
     t.index ["subforem_id", "published", "score", "published_at"], name: "index_articles_on_subforem_published_score_published_at"
@@ -1293,6 +1314,46 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_23_212134) do
     t.index ["name"], name: "index_roles_on_name"
   end
 
+  create_table "rss_feed_items", force: :cascade do |t|
+    t.bigint "article_id"
+    t.datetime "created_at", null: false
+    t.datetime "detected_at"
+    t.string "error_message"
+    t.string "item_url", limit: 1000, null: false
+    t.datetime "processed_at"
+    t.bigint "rss_feed_id", null: false
+    t.string "skip_reason"
+    t.integer "status", default: 0, null: false
+    t.string "title", limit: 512
+    t.datetime "updated_at", null: false
+    t.index ["article_id"], name: "index_rss_feed_items_on_article_id"
+    t.index ["rss_feed_id", "item_url"], name: "index_rss_feed_items_on_rss_feed_id_and_item_url", unique: true
+    t.index ["rss_feed_id", "status"], name: "index_rss_feed_items_on_rss_feed_id_and_status"
+    t.index ["rss_feed_id"], name: "index_rss_feed_items_on_rss_feed_id"
+    t.index ["status"], name: "index_rss_feed_items_on_status"
+  end
+
+  create_table "rss_feeds", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "fallback_author_id"
+    t.bigint "fallback_organization_id"
+    t.string "feed_url", limit: 500, null: false
+    t.string "last_error_message"
+    t.datetime "last_fetched_at"
+    t.boolean "mark_canonical", default: false, null: false
+    t.string "name", limit: 100
+    t.boolean "referential_link", default: true, null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["fallback_author_id"], name: "index_rss_feeds_on_fallback_author_id"
+    t.index ["fallback_organization_id"], name: "index_rss_feeds_on_fallback_organization_id"
+    t.index ["last_fetched_at"], name: "index_rss_feeds_on_last_fetched_at"
+    t.index ["status"], name: "index_rss_feeds_on_status"
+    t.index ["user_id", "feed_url"], name: "index_rss_feeds_on_user_id_and_feed_url", unique: true
+    t.index ["user_id"], name: "index_rss_feeds_on_user_id"
+  end
+
   create_table "scheduled_automations", force: :cascade do |t|
     t.string "action", null: false
     t.jsonb "action_config", default: {}
@@ -1831,6 +1892,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_23_212134) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "agent_sessions", "users", on_delete: :cascade
   add_foreign_key "ahoy_events", "ahoy_visits", column: "visit_id", on_delete: :cascade
   add_foreign_key "ahoy_events", "users", on_delete: :cascade
   add_foreign_key "ahoy_messages", "feedback_messages", on_delete: :nullify
@@ -1840,6 +1902,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_23_212134) do
   add_foreign_key "api_secrets", "users", on_delete: :cascade
   add_foreign_key "articles", "collections", on_delete: :nullify
   add_foreign_key "articles", "organizations", on_delete: :nullify
+  add_foreign_key "articles", "rss_feeds", on_delete: :nullify
   add_foreign_key "articles", "users", on_delete: :cascade
   add_foreign_key "audit_logs", "users"
   add_foreign_key "badge_achievements", "badges"
@@ -1905,6 +1968,11 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_23_212134) do
   add_foreign_key "reactions", "users", on_delete: :cascade
   add_foreign_key "recommended_articles_lists", "users"
   add_foreign_key "response_templates", "users"
+  add_foreign_key "rss_feed_items", "articles", on_delete: :nullify
+  add_foreign_key "rss_feed_items", "rss_feeds", on_delete: :cascade
+  add_foreign_key "rss_feeds", "organizations", column: "fallback_organization_id", on_delete: :nullify
+  add_foreign_key "rss_feeds", "users", column: "fallback_author_id", on_delete: :nullify
+  add_foreign_key "rss_feeds", "users", on_delete: :cascade
   add_foreign_key "scheduled_automations", "users"
   add_foreign_key "segmented_users", "audience_segments"
   add_foreign_key "segmented_users", "users"

@@ -115,6 +115,7 @@ class User < ApplicationRecord
   has_many :reporter_feedback_messages, class_name: "FeedbackMessage",
                                         inverse_of: :reporter, foreign_key: :reporter_id, dependent: :nullify
   has_many :response_templates, inverse_of: :user, dependent: :delete_all
+  has_many :rss_feeds, dependent: :destroy
   has_many :source_authored_user_subscriptions, class_name: "UserSubscription",
                                                 foreign_key: :author_id, inverse_of: :author, dependent: :destroy
   has_many :subscribed_to_user_subscriptions, class_name: "UserSubscription",

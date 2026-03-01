@@ -139,3 +139,7 @@ pt:
       setting:
         invalid_hex: não é uma cor hex válida
         invalid_rss: não é um feed RSS/Atom válido
+    rss_feed:
+      invalid_rss: não é um feed RSS/Atom válido
+      not_org_admin: você deve ser administrador desta organização
+      duplicate_url: já foi adicionado

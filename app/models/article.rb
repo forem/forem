@@ -42,6 +42,7 @@ class Article < ApplicationRecord
   belongs_to :collection, optional: true
 
   belongs_to :organization, optional: true
+  belongs_to :rss_feed, optional: true
   belongs_to :user
   belongs_to :subforem, optional: true
 

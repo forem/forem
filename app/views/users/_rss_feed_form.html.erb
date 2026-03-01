@@ -1,0 +1,34 @@
+<%= form_for rss_feed, url: form_url, method: method, html: { class: "grid gap-4" } do |f| %>
+  <div class="crayons-field">
+    <%= f.label :feed_url, t("views.settings.extensions.rss.feed_url_label"), class: "crayons-field__label" %>
+    <%= f.url_field :feed_url, placeholder: "https://yoursite.com/feed", class: "crayons-textfield" %>
+  </div>
+
+  <div class="crayons-field">
+    <%= f.label :name, t("views.settings.extensions.rss.feed_name_label"), class: "crayons-field__label" %>
+    <%= f.text_field :name, placeholder: "My Blog", class: "crayons-textfield" %>
+  </div>
+
+  <div class="crayons-field crayons-field--checkbox">
+    <%= f.check_box :mark_canonical, class: "crayons-checkbox" %>
+    <%= f.label :mark_canonical, t("views.settings.extensions.rss.mark_canonical_html"), class: "crayons-field__label" %>
+  </div>
+
+  <div class="crayons-field crayons-field--checkbox">
+    <%= f.check_box :referential_link, class: "crayons-checkbox" %>
+    <%= f.label :referential_link, t("views.settings.extensions.rss.referential_html", community: community_name), class: "crayons-field__label" %>
+  </div>
+
+  <% if @admin_organizations.present? %>
+    <div class="crayons-field">
+      <%= f.label :fallback_organization_id, t("views.settings.extensions.rss.fallback_org_label"), class: "crayons-field__label" %>
+      <%= f.collection_select :fallback_organization_id, @admin_organizations, :id, :name,
+                              { include_blank: t("views.settings.extensions.rss.none") },
+                              class: "crayons-select" %>
+    </div>
+  <% end %>
+
+  <button class="crayons-btn w-max" type="submit">
+    <%= rss_feed.persisted? ? t("views.settings.extensions.rss.save") : t("views.settings.extensions.rss.submit") %>
+  </button>
+<% end %>

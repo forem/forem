@@ -1,0 +1,76 @@
+<div class="crayons-layout crayons-layout--limited-l">
+  <h1 class="crayons-title mb-6"><%= t("views.rss_imports.heading") %></h1>
+
+  <% if @rss_feeds.empty? %>
+    <p><%= t("views.rss_imports.no_feeds") %></p>
+  <% else %>
+    <% @rss_feeds.each do |feed| %>
+      <% items = feed.rss_feed_items %>
+      <% imported_count = items.imported.count %>
+      <% error_count = items.error.count %>
+      <% pending_count = items.pending.count %>
+      <% skipped_count = items.skipped.count %>
+
+      <div class="crayons-card crayons-card--content-rows mb-4 p-4">
+        <div class="flex items-center justify-between">
+          <h2 class="crayons-subtitle-2"><%= feed.name.presence || feed.feed_url %></h2>
+          <span class="crayons-tag"><%= feed.status %></span>
+        </div>
+
+        <% if feed.last_fetched_at.present? %>
+          <p class="fs-s color-base-60">
+            <%= t("views.rss_imports.last_fetched") %>: <time datetime="<%= feed.last_fetched_at.iso8601 %>"><%= feed.last_fetched_at.strftime("%B %d, %Y %H:%M %Z") %></time>
+          </p>
+        <% end %>
+
+        <div class="flex gap-4 fs-s">
+          <span><%= t("views.rss_imports.imported") %>: <strong><%= imported_count %></strong></span>
+          <span><%= t("views.rss_imports.errors") %>: <strong><%= error_count %></strong></span>
+          <span><%= t("views.rss_imports.pending") %>: <strong><%= pending_count %></strong></span>
+          <span><%= t("views.rss_imports.skipped_count") %>: <strong><%= skipped_count %></strong></span>
+        </div>
+
+        <% recent_items = items.where.not(status: :skipped).recent.limit(10) %>
+        <% if recent_items.any? %>
+          <h3 class="crayons-subtitle-3 mt-2"><%= t("views.rss_imports.recent_items") %></h3>
+          <ul class="list-none pl-0">
+            <% recent_items.each do |item| %>
+              <li class="py-1 flex items-center gap-2">
+                <span class="crayons-tag crayons-tag--s"><%= item.status %></span>
+                <span><%= item.title.presence || item.item_url.truncate(60) %></span>
+                <% if item.article.present? %>
+                  <%= link_to t("views.rss_imports.view_article"), item.article.path, class: "fs-s" %>
+                <% end %>
+                <% if item.error? && item.error_message.present? %>
+                  <span class="fs-s color-accent-danger"><%= item.error_message.truncate(100) %></span>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        <% end %>
+
+        <% skipped_items = items.skipped.recent.limit(20) %>
+        <% if skipped_items.any? %>
+          <details class="mt-2">
+            <summary class="cursor-pointer crayons-subtitle-3"><%= t("views.rss_imports.show_skipped") %> (<%= skipped_count %>)</summary>
+            <ul class="list-none pl-0 mt-2">
+              <% skipped_items.each do |item| %>
+                <li class="py-1 flex items-center gap-2">
+                  <span class="crayons-tag crayons-tag--s">skipped</span>
+                  <span><%= item.title.presence || item.item_url.truncate(60) %></span>
+                  <% if item.skip_reason.present? %>
+                    <span class="fs-s color-base-60"><%= item.skip_reason %></span>
+                  <% end %>
+                </li>
+              <% end %>
+            </ul>
+          </details>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+
+  <div class="mt-4">
+    <%= link_to t("views.rss_imports.back_to_settings"), user_settings_path("extensions"), class: "crayons-btn crayons-btn--secondary" %>
+  </div>
+</div>

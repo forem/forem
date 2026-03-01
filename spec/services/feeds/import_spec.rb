@@ -8,28 +8,28 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
   before do
     [link, nonmedium_link, nonpermanent_link].each do |feed_url|
       user = create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago)
-      user.setting.update(feed_url: feed_url)
+      create(:rss_feed, user: user, feed_url: feed_url, status: :active)
     end
   end
 
   describe ".call" do
-    it "filters to users with recent article or presence activity" do
+    it "filters to feeds for users with recent article or presence activity" do
       recent_article_user = create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago)
-      recent_article_user.setting.update(feed_url: link)
+      create(:rss_feed, user: recent_article_user, feed_url: "#{link}?u=1", status: :active)
       recent_present_user = create(:user, last_presence_at: 2.weeks.ago)
-      recent_present_user.setting.update(feed_url: link)
+      create(:rss_feed, user: recent_present_user, feed_url: "#{link}?u=2", status: :active)
       stale_user = create(:user, last_article_at: 6.months.ago, last_presence_at: 6.months.ago)
-      stale_user.setting.update(feed_url: link)
-      no_feed_user = create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago)
-      no_feed_user.setting.update(feed_url: nil)
+      create(:rss_feed, user: stale_user, feed_url: "#{link}?u=3", status: :active)
 
-      scoped_users = User.where(id: [recent_article_user.id, recent_present_user.id, stale_user.id, no_feed_user.id])
-      importer = described_class.new(users_scope: scoped_users)
-      filtered = importer.send(:filter_users_from, users_scope: scoped_users, earlier_than: nil)
+      scoped_feeds = RssFeed.where(user_id: [recent_article_user.id, recent_present_user.id, stale_user.id])
+      importer = described_class.new(rss_feeds_scope: scoped_feeds)
+      filtered = importer.__send__(:filter_feeds, rss_feeds_scope: scoped_feeds, earlier_than: nil)
 
-      expect(filtered.pluck(:id)).to contain_exactly(recent_article_user.id, recent_present_user.id)
+      filtered_user_ids = filtered.pluck(:user_id)
+      expect(filtered_user_ids).to contain_exactly(recent_article_user.id, recent_present_user.id)
     end
-    it "ensures that we only fetch users who can create articles", vcr: { cassette_name: "feeds_import" } do
+
+    it "ensures that we only fetch feeds for users who can create articles", vcr: { cassette_name: "feeds_import" } do
       allow(ArticlePolicy).to receive(:scope_users_authorized_to_action).and_call_original
 
       described_class.call
@@ -59,17 +59,22 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
     it "parses correctly", vcr: { cassette_name: "feeds_import" } do
       expect do
         described_class.call
-      end.to change(Users::Setting.find_by(feed_url: nonpermanent_link).user.articles, :count).by(1)
+      end.to change(RssFeed.find_by(feed_url: nonpermanent_link).user.articles, :count).by(1)
     end
 
-    it "sets feed_fetched_at to the current time", vcr: { cassette_name: "feeds_import" } do
+    it "sets last_fetched_at to the current time", vcr: { cassette_name: "feeds_import" } do
       Timecop.freeze(Time.current) do
         described_class.call
 
-        user = Users::Setting.find_by(feed_url: nonpermanent_link).user
-        feed_fetched_at = user.feed_fetched_at
-        expect(feed_fetched_at.to_i).to eq(Time.current.to_i)
+        rss_feed = RssFeed.find_by(feed_url: nonpermanent_link)
+        expect(rss_feed.last_fetched_at.to_i).to eq(Time.current.to_i)
       end
+    end
+
+    it "creates RssFeedItem records for imported articles", vcr: { cassette_name: "feeds_import" } do
+      expect { described_class.call }.to change(RssFeedItem, :count)
+
+      expect(RssFeedItem.imported.count).to be_positive
     end
 
     it "queues as many slack messages as there are articles", vcr: { cassette_name: "feeds_import" } do
@@ -125,35 +130,26 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
       end
     end
 
-    context "with an explicit set of users", vcr: { cassette_name: "feeds_import" } do
+    context "with an explicit set of feeds", vcr: { cassette_name: "feeds_import" } do
       # TODO: We could probably improve these tests by parsing against the items in the feed rather than hardcoding
-      it "accepts a subset of users" do
+      it "accepts a subset of feeds" do
         num_articles = described_class.call(
-          users_scope: User.where(id: Users::Setting.with_feed.select(:user_id)).limit(1),
+          rss_feeds_scope: RssFeed.fetchable.limit(1),
         )
 
         expect(num_articles).to eq(10)
-      end
-
-      it "imports no articles if given users are without feed" do
-        user = create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago)
-        user.setting.update(feed_url: nil)
-
-        # rubocop:disable Layout/LineLength
-        expect(described_class.call(users_scope: User.where(id: Users::Setting.where(feed_url: nil).select(:user_id)))).to eq(0)
-        # rubocop:enable Layout/LineLength
       end
     end
   end
 
   context "when refetching" do
-    it "does refetch same user over and over by default", vcr: { cassette_name: "feeds_import_multiple_times" } do
-      user = Users::Setting.find_by(feed_url: nonpermanent_link).user
+    it "does refetch same feed over and over by default", vcr: { cassette_name: "feeds_import_multiple_times" } do
+      rss_feed = RssFeed.find_by(feed_url: nonpermanent_link)
 
       Timecop.freeze(Time.current) do
-        user.update_columns(feed_fetched_at: Time.current)
+        rss_feed.update_columns(last_fetched_at: Time.current)
 
-        fetched_at_time = user.reload.feed_fetched_at
+        fetched_at_time = rss_feed.reload.last_fetched_at
 
         # travel a few seconds in the future to simulate a new time
         3.times do |i|
@@ -162,11 +158,11 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
           end
         end
 
-        expect(user.reload.feed_fetched_at > fetched_at_time).to be(true)
+        expect(rss_feed.reload.last_fetched_at > fetched_at_time).to be(true)
       end
     end
 
-    it "does not refetch recently fetched users if earlier_than is given", vcr: { cassette_name: "feeds_import" } do
+    it "does not refetch recently fetched feeds if earlier_than is given", vcr: { cassette_name: "feeds_import" } do
       time = 30.minutes.ago
 
       Timecop.freeze(time) do
@@ -179,7 +175,7 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
       expect { described_class.call(earlier_than: 1.hour.ago) }.not_to change(Article, :count)
     end
 
-    it "refetches recently fetched users if earlier_than is now", vcr: { cassette_name: "feeds_import_twice" } do
+    it "refetches recently fetched feeds if earlier_than is now", vcr: { cassette_name: "feeds_import_twice" } do
       time = 30.minutes.ago
 
       Timecop.freeze(time) do
@@ -199,8 +195,8 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
       # checking its invocation is a shortcut to testing the functionality.
       allow(Article).to receive(:find_by).and_call_original
 
-        user = create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago)
-      user.setting.update(feed_url: nonpermanent_link, feed_referential_link: false)
+      user = create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago)
+      create(:rss_feed, user: user, feed_url: nonpermanent_link, referential_link: false, status: :active)
 
       described_class.call
 
@@ -211,19 +207,19 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
   describe "feeds parsing and regressions" do
     it "parses https://medium.com/feed/@dvirsegal correctly", vcr: { cassette_name: "rss_reader_dvirsegal" } do
       user = create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago)
-      user.setting.update(feed_url: "https://medium.com/feed/@dvirsegal")
+      create(:rss_feed, user: user, feed_url: "https://medium.com/feed/@dvirsegal", status: :active)
 
       expect do
-        described_class.call(users_scope: User.where(id: user.id))
+        described_class.call(rss_feeds_scope: RssFeed.where(user_id: user.id))
       end.to change(user.articles, :count).by(10)
     end
 
     it "converts/replaces <picture> tags to <img>", vcr: { cassette_name: "rss_reader_swimburger" } do
       user = create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago)
-      user.setting.update(feed_url: "https://swimburger.net/atom.xml")
+      create(:rss_feed, user: user, feed_url: "https://swimburger.net/atom.xml", status: :active)
 
       expect do
-        described_class.call(users_scope: User.where(id: user.id))
+        described_class.call(rss_feeds_scope: RssFeed.where(user_id: user.id))
       end.to change(user.articles, :count).by(10)
 
       body_markdown = user.articles.last.body_markdown
@@ -237,24 +233,13 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
   end
 
   context "when multiple users fetch from the same feed_url", vcr: { cassette_name: "feeds_import_two_users" } do
-    it "fetches the articles in both accounts (if feed_mark_canonical = false)" do
-      rss_feed_user1 = Users::Setting.find_by(feed_url: link).user
+    it "fetches the articles in both accounts (if mark_canonical = false)" do
+      rss_feed_user1 = RssFeed.find_by(feed_url: link).user
       rss_feed_user2 = create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago)
-      rss_feed_user2.setting.update!(feed_url: link)
-      expect do
-        described_class.call(users_scope: User.where(id: Users::Setting.where(feed_url: link).select(:user_id)))
-      end
-        .to change(rss_feed_user1.articles, :count).by(10)
-        .and change(rss_feed_user2.articles, :count).by(10)
-    end
+      create(:rss_feed, user: rss_feed_user2, feed_url: "#{link}?dup", status: :active)
 
-    it "fetches the articles in both accounts (if feed_mark_canonical = true)" do
-      rss_feed_user1 = Users::Setting.find_by(feed_url: link).user
-      rss_feed_user1.setting.update!(feed_mark_canonical: true)
-      rss_feed_user2 = create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago)
-      rss_feed_user2.setting.update!(feed_url: link, feed_mark_canonical: true)
       expect do
-        described_class.call(users_scope: User.where(id: Users::Setting.where(feed_url: link).select(:user_id)))
+        described_class.call(rss_feeds_scope: RssFeed.where(feed_url: [link, "#{link}?dup"]))
       end
         .to change(rss_feed_user1.articles, :count).by(10)
         .and change(rss_feed_user2.articles, :count).by(10)

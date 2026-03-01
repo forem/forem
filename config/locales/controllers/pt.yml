@@ -95,6 +95,11 @@ pt:
     error:
       recaptcha: Você deve completar o recaptcha ✅
       domain: não está incluído nos domínios permitidos.
+  rss_feeds:
+    created: Seu feed RSS foi adicionado com sucesso.
+    updated: Seu feed RSS foi atualizado com sucesso.
+    deleted: Seu feed RSS foi excluído com sucesso.
+    fetch_queued: A importação do feed foi enfileirada.
   response_templates_controller:
     response_template_error: 'Erro no modelo de resposta: %{errors}'
     created: Seu modelo de resposta "%{title}" foi criado.

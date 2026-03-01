@@ -160,6 +160,17 @@ en:
           referential_html: Replace self-referential links with %{community}-specific links <p class='crayons-field__description'>If you check this box, the post will automatically change any URLs included in the post to refer to the version of that article on %{community} if available. This is primarily meant for folks migrating their entire blog onto %{community}.</p>
           save: Save Feed Settings
           submit: Submit Feed Settings
+          your_feeds: Your Feeds
+          add_feed: Add New Feed
+          feed_url_label: RSS Feed URL
+          feed_name_label: Feed Name (optional)
+          fallback_org_label: Publish under organization
+          fallback_author_label: Fallback author
+          none: "(none)"
+          edit_feed: Edit
+          delete_feed: Delete
+          confirm_delete: Are you sure you want to delete this feed?
+          view_import_dashboard: View Import Dashboard
       finalize_html: You have requested a change to %{email}. Check your inbox for the verification link to finalize the change.
       for_html: Settings for %{name}
       group:
@@ -314,3 +325,15 @@ en:
         Organization: Organization
         Extensions: Extensions
       save_profile: Save Profile Information
+    rss_imports:
+      heading: RSS Feed Import Dashboard
+      no_feeds: You have no RSS feeds configured yet.
+      last_fetched: Last Fetched
+      imported: Imported
+      errors: Errors
+      pending: Pending
+      skipped_count: Skipped
+      recent_items: Recent Items
+      show_skipped: Show Skipped Items
+      view_article: View article
+      back_to_settings: Back to Settings

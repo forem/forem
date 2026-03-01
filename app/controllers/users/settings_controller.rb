@@ -45,9 +45,12 @@ module Users
     private
 
     def import_articles_from_feed(users_setting)
-      return if users_setting.feed_url.blank?
+      has_legacy_feed = users_setting.feed_url.present?
+      has_rss_feeds = current_user.rss_feeds.active.exists?
 
-      Feeds::ImportArticlesWorker.perform_async(users_setting.user_id)
+      return unless has_legacy_feed || has_rss_feeds
+
+      Feeds::ImportArticlesWorker.perform_async([current_user.id])
     end
 
     def users_setting_params

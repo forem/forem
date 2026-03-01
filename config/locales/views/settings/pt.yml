@@ -170,3 +170,35 @@ pt:
             confirm: Tem certeza de que deseja gerar um novo segredo? Todos os segredos pendentes serão inválidos.
             text: Você deve rotacionar isso regularmente!
             submit: Gerar novo segredo
+      extensions:
+        rss:
+          heading: Publicando no %{community} a partir de RSS
+          your_feeds: Seus Feeds
+          add_feed: Adicionar Novo Feed
+          feed_url_label: URL do Feed RSS
+          feed_name_label: Nome do Feed (opcional)
+          fallback_org_label: Publicar sob organização
+          fallback_author_label: Autor padrão
+          none: "(nenhum)"
+          edit_feed: Editar
+          delete_feed: Excluir
+          confirm_delete: Tem certeza de que deseja excluir este feed?
+          view_import_dashboard: Ver Painel de Importações
+          fetch: Buscar feed agora
+          last_html: 'Última Busca: %{time}'
+          mark_canonical_html: Marcar a fonte RSS como URL canônica por padrão <p class='crayons-field__description'>Se marcar esta opção, a publicação marcará automaticamente a fonte do feed como URL canônica.</p>
+          referential_html: Substituir links autorreferentes por links específicos do %{community} <p class='crayons-field__description'>Se marcar esta opção, a publicação mudará automaticamente quaisquer URLs incluídas para referir à versão do artigo no %{community}, se disponível.</p>
+          save: Salvar Configurações do Feed
+          submit: Enviar Configurações do Feed
+    rss_imports:
+      heading: Painel de Importação de Feeds RSS
+      no_feeds: Você ainda não configurou nenhum feed RSS.
+      last_fetched: Última Busca
+      imported: Importados
+      errors: Erros
+      pending: Pendente
+      skipped_count: Ignorados
+      recent_items: Itens Recentes
+      show_skipped: Mostrar Itens Ignorados
+      view_article: Ver artigo
+      back_to_settings: Voltar para Configurações
