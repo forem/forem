@@ -12,7 +12,7 @@ jobs:
       pull-requests: write
 
     steps:
-      - uses: actions/stale@v9
+      - uses: actions/stale@v10
         with:
           # The number of days of inactivity before a pull request is marked as stale.
           days-before-pr-stale: 365
