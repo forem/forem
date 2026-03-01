@@ -12,3 +12,4 @@ en:
       public_description: Anyone can view via direct link and embed in their posts
       private_description: Only you can embed this session in your posts
       security_warning: Please review your session carefully before making it public to ensure you are not sharing anything you shouldn't.
+      switched_to_model: "Switched to %{model}"

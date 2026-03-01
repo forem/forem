@@ -3,27 +3,30 @@ module AgentSessionParsers
     def parse
       records = parse_jsonl_lines
       messages = []
+      current_model = nil
 
-      # Separate message records from metadata records
-      msg_records = records.select { |r| r["type"] == "message" }
+      records.each do |record|
+        case record["type"]
+        when "model_change"
+          current_model = record["modelId"]
+        when "message"
+          msg = record["message"] || {}
+          role = msg["role"]
+          timestamp = record["timestamp"]
 
-      msg_records.each do |record|
-        msg = record["message"] || {}
-        role = msg["role"]
-        timestamp = record["timestamp"]
-
-        case role
-        when "user"
-          text = extract_text_content(msg["content"])
-          if text.present?
-            messages << build_message(role: "user", content_blocks: [text_block(text)],
-                                      timestamp: timestamp)
+          case role
+          when "user"
+            text = extract_text_content(msg["content"])
+            if text.present?
+              messages << build_message(role: "user", content_blocks: [text_block(text)],
+                                        timestamp: timestamp, model: current_model)
+            end
+          when "assistant"
+            emit_assistant_messages(msg["content"], messages, timestamp, current_model)
+          when "toolResult"
+            output = extract_text_content(msg["content"])
+            attach_output_to_first_unmatched(messages, truncate_output(output)) if output.present?
           end
-        when "assistant"
-          emit_assistant_messages(msg["content"], messages, timestamp)
-        when "toolResult"
-          output = extract_text_content(msg["content"])
-          attach_output_to_first_unmatched(messages, truncate_output(output)) if output.present?
         end
       end
 
@@ -33,7 +36,7 @@ module AgentSessionParsers
 
     private
 
-    def emit_assistant_messages(content_blocks, messages, timestamp) # rubocop:disable Metrics/CyclomaticComplexity
+    def emit_assistant_messages(content_blocks, messages, timestamp, model) # rubocop:disable Metrics/CyclomaticComplexity
       return unless content_blocks.is_a?(Array)
 
       text_parts = []
@@ -49,7 +52,7 @@ module AgentSessionParsers
           # Flush any pending text as its own message
           if text_parts.any?
             messages << build_message(role: "assistant", content_blocks: [text_block(text_parts.join("\n\n"))],
-                                      timestamp: timestamp)
+                                      timestamp: timestamp, model: model)
             text_parts.clear
           end
 
@@ -60,6 +63,7 @@ module AgentSessionParsers
             role: "assistant",
             content_blocks: [tool_call_block(name: name, input: input_str, output: nil)],
             timestamp: timestamp,
+            model: model,
           )
         end
       end
@@ -68,7 +72,7 @@ module AgentSessionParsers
       return unless text_parts.any?
 
       messages << build_message(role: "assistant", content_blocks: [text_block(text_parts.join("\n\n"))],
-                                timestamp: timestamp)
+                                timestamp: timestamp, model: model)
     end
 
     def extract_text_content(content)

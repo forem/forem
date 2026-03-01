@@ -4,6 +4,7 @@ module AgentSessionParsers
       data = parse_data
       messages = []
 
+      session_model = data.is_a?(Hash) ? data.dig("messages", 0, "model") : nil
       entries = extract_entries(data)
       entries.each do |entry|
         role = normalize_role(entry["type"] || entry["role"])
@@ -11,9 +12,12 @@ module AgentSessionParsers
 
         if role == "user"
           blocks = extract_content_blocks(entry)
-          messages << build_message(role: "user", content_blocks: blocks, timestamp: entry["timestamp"]) if blocks.any?
+          if blocks.any?
+            messages << build_message(role: "user", content_blocks: blocks,
+                                      timestamp: entry["timestamp"], model: session_model)
+          end
         else
-          emit_assistant_messages(entry, messages)
+          emit_assistant_messages(entry, messages, session_model)
         end
       end
 
@@ -51,7 +55,7 @@ module AgentSessionParsers
 
     # Gemini CLI JSON: each assistant entry can have content (text), thoughts, and toolCalls.
     # We split these into separate messages: one text message, then one message per tool call.
-    def emit_assistant_messages(entry, messages) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+    def emit_assistant_messages(entry, messages, session_model) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
       text_blocks = []
 
       # Extract thoughts as text (bold subject lines)
@@ -71,6 +75,7 @@ module AgentSessionParsers
           role: "assistant",
           content_blocks: text_blocks,
           timestamp: entry["timestamp"],
+          model: session_model,
         )
       end
 
@@ -89,6 +94,7 @@ module AgentSessionParsers
             role: "assistant",
             content_blocks: [tool_call_block(name: name, input: input_str, output: output)],
             timestamp: tc["timestamp"] || entry["timestamp"],
+            model: session_model,
           )
         end
       end
@@ -101,6 +107,7 @@ module AgentSessionParsers
           role: "assistant",
           content_blocks: [tc_block],
           timestamp: entry["timestamp"],
+          model: session_model,
         )
       end
     end

@@ -67,10 +67,42 @@ RSpec.describe AgentSessionParsers::ClaudeCode do
       expect(third["role"]).to eq("assistant")
       expect(third["content"].first["text"]).to eq("Found the issue.")
 
+      # Per-message model
+      expect(second["model"]).to eq("claude-opus-4-6")
+
       # Metadata
       expect(result["metadata"]["tool_name"]).to eq("claude_code")
       expect(result["metadata"]["session_id"]).to eq("sess-1")
       expect(result["metadata"]["model"]).to eq("claude-opus-4-6")
+    end
+
+    it "tracks model changes across messages" do
+      jsonl = [
+        {
+          type: "user",
+          message: { role: "user", content: "Hello" },
+          uuid: "u1", timestamp: "2025-01-01T10:00:00Z", sessionId: "sess-1"
+        }.to_json,
+        {
+          type: "assistant",
+          message: { role: "assistant", model: "claude-sonnet-4-5-20250514", content: [{ type: "text", text: "Hi!" }] },
+          uuid: "a1", timestamp: "2025-01-01T10:00:01Z", sessionId: "sess-1"
+        }.to_json,
+        {
+          type: "user",
+          message: { role: "user", content: "Switch model" },
+          uuid: "u2", timestamp: "2025-01-01T10:00:02Z", sessionId: "sess-1"
+        }.to_json,
+        {
+          type: "assistant",
+          message: { role: "assistant", model: "claude-opus-4-6", content: [{ type: "text", text: "Done." }] },
+          uuid: "a2", timestamp: "2025-01-01T10:00:03Z", sessionId: "sess-1"
+        }.to_json,
+      ].join("\n")
+
+      result = described_class.parse(jsonl)
+      models = result["messages"].pluck("model")
+      expect(models).to eq([nil, "claude-sonnet-4-5-20250514", nil, "claude-opus-4-6"])
     end
 
     it "skips progress and system records" do

@@ -117,6 +117,72 @@ RSpec.describe AgentSessionTag, type: :liquid_tag do
     expect(html).not_to include("Done!")
   end
 
+  it "renders model-change indicator when model changes between messages" do
+    session_with_models = AgentSession.create!(
+      user: user,
+      title: "Model Change Session",
+      tool_name: "claude_code",
+      published: true,
+      normalized_data: {
+        "messages" => [
+          { "index" => 0, "role" => "user", "model" => "claude-sonnet-4-5-20250514",
+            "content" => [{ "type" => "text", "text" => "Hello" }] },
+          { "index" => 1, "role" => "assistant", "model" => "claude-sonnet-4-5-20250514",
+            "content" => [{ "type" => "text", "text" => "Hi there!" }] },
+          { "index" => 2, "role" => "user", "model" => "claude-opus-4-6",
+            "content" => [{ "type" => "text", "text" => "Switch" }] },
+          { "index" => 3, "role" => "assistant", "model" => "claude-opus-4-6",
+            "content" => [{ "type" => "text", "text" => "Switched!" }] },
+        ],
+        "metadata" => { "tool_name" => "claude_code", "model" => "claude-sonnet-4-5-20250514" }
+      },
+    )
+
+    html = generate_tag(session_with_models.id).render
+    expect(html).to include("agent-session-model-change")
+    expect(html).to include("claude-opus-4-6")
+  end
+
+  it "does not render model-change indicator when model stays the same" do
+    session_same_model = AgentSession.create!(
+      user: user,
+      title: "Same Model Session",
+      tool_name: "claude_code",
+      published: true,
+      normalized_data: {
+        "messages" => [
+          { "index" => 0, "role" => "user", "model" => "claude-sonnet-4-5-20250514",
+            "content" => [{ "type" => "text", "text" => "Hello" }] },
+          { "index" => 1, "role" => "assistant", "model" => "claude-sonnet-4-5-20250514",
+            "content" => [{ "type" => "text", "text" => "Hi!" }] },
+        ],
+        "metadata" => { "tool_name" => "claude_code", "model" => "claude-sonnet-4-5-20250514" }
+      },
+    )
+
+    html = generate_tag(session_same_model.id).render
+    expect(html).not_to include("agent-session-model-change")
+  end
+
+  it "renders model badge in header when metadata has model" do
+    session_with_meta_model = AgentSession.create!(
+      user: user,
+      title: "Model Badge Session",
+      tool_name: "claude_code",
+      published: true,
+      normalized_data: {
+        "messages" => [
+          { "index" => 0, "role" => "user", "content" => [{ "type" => "text", "text" => "Hi" }] },
+        ],
+        "metadata" => { "tool_name" => "claude_code", "model" => "claude-opus-4-6" }
+      },
+    )
+
+    html = generate_tag(session_with_meta_model.id).render
+    expect(html).to include("agent-session-model-badge")
+    expect(html).to include("claude-opus-4-6")
+  end
+
   it "renders tool calls with toggle" do
     session_with_tools = AgentSession.create!(
       user: user,

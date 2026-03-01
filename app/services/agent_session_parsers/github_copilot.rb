@@ -4,16 +4,18 @@ module AgentSessionParsers
       records = parse_jsonl_lines
       messages = []
 
+      session_model = records.detect { |r| r["type"] == "tool.execution_complete" }&.dig("data", "model")
+
       records.each do |record|
         case record["type"]
         when "user.message"
           text = record.dig("data", "content")
           if text.present?
             messages << build_message(role: "user", content_blocks: [text_block(text)],
-                                      timestamp: record["timestamp"])
+                                      timestamp: record["timestamp"], model: session_model)
           end
         when "assistant.message"
-          emit_assistant_message(record, messages)
+          emit_assistant_message(record, messages, session_model)
         when "tool.execution_complete"
           data = record["data"] || {}
           output = extract_result_content(data["result"])
@@ -28,7 +30,7 @@ module AgentSessionParsers
 
     private
 
-    def emit_assistant_message(record, messages)
+    def emit_assistant_message(record, messages, session_model)
       data = record["data"] || {}
       content = data["content"]
       tool_requests = data["toolRequests"] || []
@@ -39,6 +41,7 @@ module AgentSessionParsers
           role: "assistant",
           content_blocks: [text_block(content)],
           timestamp: record["timestamp"],
+          model: session_model,
         )
       end
 
@@ -54,6 +57,7 @@ module AgentSessionParsers
           role: "assistant",
           content_blocks: [tool_call_block(name: name, input: input_str, output: nil, tool_call_id: tr["toolCallId"])],
           timestamp: record["timestamp"],
+          model: session_model,
         )
       end
     end

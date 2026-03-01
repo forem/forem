@@ -424,6 +424,36 @@
     font-style: italic;
   }
 
+  // === Model change indicators ===
+  .agent-session-model-change {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 16px;
+  }
+
+  .agent-session-model-change-label {
+    font-size: 0.72em;
+    color: #7c3aed;
+    white-space: nowrap;
+    font-style: italic;
+    font-weight: 500;
+  }
+
+  // === Model badge in header ===
+  .agent-session-model-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.65em;
+    font-weight: 500;
+    background: var(--card-secondary-bg, #f3f4f6);
+    color: var(--card-color-secondary, #6b7280);
+    border: 1px solid var(--card-border, #{$light-medium-gray});
+    flex-shrink: 0;
+    margin-left: auto;
+  }
+
   // === Footer ===
   .agent-session-footer {
     padding: 8px 16px;

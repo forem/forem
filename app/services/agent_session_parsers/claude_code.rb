@@ -13,6 +13,7 @@ module AgentSessionParsers
 
         role = msg["role"]
         timestamp = record["timestamp"]
+        model = msg["model"]
         raw_content_blocks = msg["content"]
 
         case role
@@ -20,12 +21,13 @@ module AgentSessionParsers
           content_blocks = parse_user_content(raw_content_blocks)
           next if content_blocks.empty? # Skip tool-result-only messages
 
-          messages << build_message(role: "user", content_blocks: content_blocks, timestamp: timestamp)
+          messages << build_message(role: "user", content_blocks: content_blocks, timestamp: timestamp, model: model)
         when "assistant"
           content_blocks = parse_assistant_content(raw_content_blocks, tool_results_map)
           next if content_blocks.empty?
 
-          messages << build_message(role: "assistant", content_blocks: content_blocks, timestamp: timestamp)
+          messages << build_message(role: "assistant", content_blocks: content_blocks,
+                                    timestamp: timestamp, model: model)
         end
       end
 

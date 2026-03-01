@@ -12,3 +12,4 @@ pt:
       public_description: Qualquer pessoa pode ver via link direto e incorporar em suas publicações
       private_description: Apenas você pode incorporar esta sessão em suas publicações
       security_warning: Por favor, revise sua sessão cuidadosamente antes de torná-la pública para garantir que você não está compartilhando algo que não deveria.
+      switched_to_model: "Alternado para %{model}"

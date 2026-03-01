@@ -12,3 +12,4 @@ fr:
       public_description: Tout le monde peut voir via un lien direct et intégrer dans ses publications
       private_description: Vous seul pouvez intégrer cette session dans vos publications
       security_warning: Veuillez vérifier votre session attentivement avant de la rendre publique pour vous assurer de ne pas partager d'informations sensibles.
+      switched_to_model: "Basculé vers %{model}"

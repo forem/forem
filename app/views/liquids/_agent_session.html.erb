@@ -17,6 +17,9 @@
     </svg>
     <%= agent_session_tool_icon(agent_session.tool_name, show_label: false) %>
     <span class="agent-session-title"><%= agent_session.title %></span>
+    <% if agent_session.normalized_data.dig("metadata", "model").present? %>
+      <span class="agent-session-model-badge"><%= agent_session.normalized_data.dig("metadata", "model") %></span>
+    <% end %>
     <% if active_slice %>
       <span class="agent-session-slice-label"><%= active_slice["name"] %></span>
     <% end %>
@@ -24,6 +27,7 @@
 
   <div class="agent-session-scroll">
     <% prev_index = nil %>
+    <% prev_model = nil %>
     <% messages_to_show.each do |message| %>
       <% current_index = message['index'].to_i %>
       <% if prev_index && current_index > prev_index + 1 %>
@@ -34,6 +38,15 @@
           <span class="agent-session-gap-line"></span>
         </div>
       <% end %>
+      <% current_model = message['model'] %>
+      <% if current_model.present? && prev_model.present? && current_model != prev_model %>
+        <div class="agent-session-model-change">
+          <span class="agent-session-gap-line"></span>
+          <span class="agent-session-model-change-label"><%= t("views.agent_sessions.switched_to_model", model: current_model) %></span>
+          <span class="agent-session-gap-line"></span>
+        </div>
+      <% end %>
+      <% prev_model = current_model if current_model.present? %>
       <% prev_index = current_index %>
       <% is_user = message['role'] == 'user' %>
 

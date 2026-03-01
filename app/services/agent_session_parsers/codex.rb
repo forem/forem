@@ -6,20 +6,22 @@ module AgentSessionParsers
       messages = []
       current_assistant_blocks = []
 
+      session_model = extract_session_model(records)
+
       records.each do |record|
         case record["type"]
         when "event_msg"
-          handle_event_msg(record, messages, current_assistant_blocks)
+          handle_event_msg(record, messages, current_assistant_blocks, session_model)
         when "response_item"
-          handle_response_item(record, messages, current_assistant_blocks)
+          handle_response_item(record, messages, current_assistant_blocks, session_model)
         when "item.completed"
-          handle_item_completed(record, messages, current_assistant_blocks)
+          handle_item_completed(record, messages, current_assistant_blocks, session_model)
         when "turn.completed", "turn_context"
-          flush_assistant_blocks(messages, current_assistant_blocks)
+          flush_assistant_blocks(messages, current_assistant_blocks, session_model)
         end
       end
 
-      flush_assistant_blocks(messages, current_assistant_blocks)
+      flush_assistant_blocks(messages, current_assistant_blocks, session_model)
 
       metadata = extract_metadata(records, messages)
       build_result(messages: messages, metadata: metadata)
@@ -27,19 +29,19 @@ module AgentSessionParsers
 
     private
 
-    def handle_event_msg(record, messages, current_assistant_blocks)
+    def handle_event_msg(record, messages, current_assistant_blocks, session_model)
       payload = record["payload"] || {}
       return unless payload["type"] == "user_message"
 
-      flush_assistant_blocks(messages, current_assistant_blocks)
+      flush_assistant_blocks(messages, current_assistant_blocks, session_model)
       text = payload["message"] || payload["text"] || payload.dig("content", 0, "text") || ""
       return if text.blank?
 
-      messages << build_message(role: "user", content_blocks: [text_block(text)])
+      messages << build_message(role: "user", content_blocks: [text_block(text)], model: session_model)
     end
 
     # New Codex format (0.105+): response_item records
-    def handle_response_item(record, messages, current_assistant_blocks) # rubocop:disable Metrics/CyclomaticComplexity
+    def handle_response_item(record, messages, current_assistant_blocks, session_model) # rubocop:disable Metrics/CyclomaticComplexity
       payload = record["payload"] || {}
       role = payload["role"]
       item_type = payload["type"]
@@ -52,13 +54,13 @@ module AgentSessionParsers
         if role == "assistant"
           text = extract_response_item_text(payload)
           if text.present?
-            flush_tool_call_blocks(messages, current_assistant_blocks)
+            flush_tool_call_blocks(messages, current_assistant_blocks, session_model)
             current_assistant_blocks << text_block(text)
           end
         end
       when "function_call", "custom_tool_call"
         # Flush any pending text blocks as their own message
-        flush_assistant_blocks(messages, current_assistant_blocks)
+        flush_assistant_blocks(messages, current_assistant_blocks, session_model)
 
         name = payload["name"] || payload["call_id"] || "tool_call"
         input = payload["arguments"] || payload["input"]
@@ -68,7 +70,7 @@ module AgentSessionParsers
           input: input.is_a?(String) ? input.truncate(200) : input&.to_json&.truncate(200),
           output: nil,
         )
-        flush_assistant_blocks(messages, current_assistant_blocks)
+        flush_assistant_blocks(messages, current_assistant_blocks, session_model)
       when "function_call_output", "custom_tool_call_output"
         output = extract_output_content(payload)
         formatted = truncate_output(output)
@@ -77,14 +79,14 @@ module AgentSessionParsers
       when "reasoning"
         summary = payload.dig("summary", 0, "text")
         if summary.present?
-          flush_tool_call_blocks(messages, current_assistant_blocks)
+          flush_tool_call_blocks(messages, current_assistant_blocks, session_model)
           current_assistant_blocks << text_block(summary)
         end
       end
     end
 
     # Old Codex format: item.completed records
-    def handle_item_completed(record, messages, current_assistant_blocks) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+    def handle_item_completed(record, messages, current_assistant_blocks, session_model) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
       item = record["item"] || {}
       item_type = item["type"]
 
@@ -92,11 +94,11 @@ module AgentSessionParsers
       when "message"
         text = extract_message_text(item)
         if text.present?
-          flush_tool_call_blocks(messages, current_assistant_blocks)
+          flush_tool_call_blocks(messages, current_assistant_blocks, session_model)
           current_assistant_blocks << text_block(text)
         end
       when "function_call", "command"
-        flush_text_blocks(messages, current_assistant_blocks)
+        flush_text_blocks(messages, current_assistant_blocks, session_model)
         name = item["name"] || item["command"] || "command"
         input = item["arguments"] || item["input"] || item["command"]
         raw_output = item["output"] || item["result"]
@@ -106,16 +108,16 @@ module AgentSessionParsers
           input: input.is_a?(String) ? input : input&.to_json&.truncate(200),
           output: truncate_output(output_text.is_a?(String) ? output_text : output_text&.to_json),
         )
-        flush_assistant_blocks(messages, current_assistant_blocks)
+        flush_assistant_blocks(messages, current_assistant_blocks, session_model)
       when "file_change"
-        flush_text_blocks(messages, current_assistant_blocks)
+        flush_text_blocks(messages, current_assistant_blocks, session_model)
         path = item["file_path"] || item["path"]
         current_assistant_blocks << tool_call_block(
           name: "FileChange",
           input: path,
           output: truncate_output(item["diff"] || item["content"]),
         )
-        flush_assistant_blocks(messages, current_assistant_blocks)
+        flush_assistant_blocks(messages, current_assistant_blocks, session_model)
       end
     end
 
@@ -183,19 +185,24 @@ module AgentSessionParsers
       end
     end
 
-    def flush_assistant_blocks(messages, blocks)
+    def extract_session_model(records)
+      session_meta = records.detect { |r| r["type"] == "session_meta" }
+      session_meta&.dig("payload", "model_provider")
+    end
+
+    def flush_assistant_blocks(messages, blocks, session_model = nil)
       return if blocks.empty?
 
-      messages << build_message(role: "assistant", content_blocks: blocks.dup)
+      messages << build_message(role: "assistant", content_blocks: blocks.dup, model: session_model)
       blocks.clear
     end
 
-    def flush_tool_call_blocks(messages, blocks)
-      flush_assistant_blocks(messages, blocks) if blocks.any? { |b| b["type"] == "tool_call" }
+    def flush_tool_call_blocks(messages, blocks, session_model = nil)
+      flush_assistant_blocks(messages, blocks, session_model) if blocks.any? { |b| b["type"] == "tool_call" }
     end
 
-    def flush_text_blocks(messages, blocks)
-      flush_assistant_blocks(messages, blocks) if blocks.any? { |b| b["type"] == "text" }
+    def flush_text_blocks(messages, blocks, session_model = nil)
+      flush_assistant_blocks(messages, blocks, session_model) if blocks.any? { |b| b["type"] == "text" }
     end
 
     def extract_metadata(records, messages)

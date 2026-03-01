@@ -27,9 +27,10 @@ module AgentSessionParsers
       }
     end
 
-    def build_message(role:, content_blocks:, timestamp: nil)
+    def build_message(role:, content_blocks:, timestamp: nil, model: nil)
       msg = { "role" => role, "content" => content_blocks }
       msg["timestamp"] = timestamp if timestamp
+      msg["model"] = model if model
       msg
     end
 
