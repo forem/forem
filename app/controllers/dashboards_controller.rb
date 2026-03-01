@@ -116,6 +116,53 @@ class DashboardsController < ApplicationController
     @collections_count = collections_count(@user)
   end
 
+  def feed_imports
+    fetch_and_authorize_user
+    @feed_sources = @user.feed_sources.includes(:organization, :author).order(:created_at)
+    @user_organizations = @user.organizations
+    @org_members_by_org = @user_organizations.each_with_object({}) do |org, hash|
+      hash[org.id] = org.organization_memberships.includes(:user)
+        .where.not(type_of_user: "pending").map(&:user)
+    end
+    @selected_source = @feed_sources.find_by(id: params[:feed_source_id]) if params[:feed_source_id].present?
+
+    # Determine overall feed status from sources
+    if @selected_source
+      @feed_status = @selected_source.status
+      @feed_url = @selected_source.feed_url
+    elsif @feed_sources.any?
+      worst = @feed_sources.order(status: :desc).first
+      @feed_status = worst.status
+      @feed_url = @feed_sources.first.feed_url
+    else
+      @feed_status = @user.setting&.feed_status
+      @feed_url = @user.setting&.feed_url
+    end
+
+    logs = @user.feed_import_logs
+    logs = logs.for_feed_source(@selected_source.id) if @selected_source
+
+    @feed_import_logs = logs
+      .notable
+      .recent
+      .includes(:feed_source, import_items: :article)
+      .page(params[:page])
+      .per(ARTICLES_PER_PAGE)
+
+    @routine_logs = logs.routine.recent.includes(:feed_source).limit(20)
+    @routine_logs_count = logs.routine.count
+
+    @total_imported = logs.sum(:items_imported)
+    skip_statuses = Feeds::ImportItem.statuses.keys.select { |s| s.start_with?("skipped_") } - ["skipped_duplicate"]
+    @total_skipped = Feeds::ImportItem
+      .where(feed_import_log_id: logs.select(:id), status: skip_statuses)
+      .count
+    @total_failed = logs.sum(:items_failed)
+    @last_successful_import = logs.completed.maximum(:created_at)
+
+    @collections_count = collections_count(@user)
+  end
+
   private
 
   def set_agent_sessions_count

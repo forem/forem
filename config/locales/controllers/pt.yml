@@ -40,6 +40,11 @@ pt:
     this_list: esta lista
     unread_notifications: notificações não lidas
     newsletter: newsletter
+  feeds:
+    sources:
+      created: Sua fonte de feed foi adicionada e uma importação foi iniciada.
+      updated: Sua fonte de feed foi atualizada.
+      deleted: Sua fonte de feed foi removida.
   feedback_messages_controller:
     error_fill: "Certifique-se de que os formulários estão preenchidos. 🤖 Outros erros possíveis: %{errors}"
     n_a: N/A

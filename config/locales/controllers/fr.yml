@@ -40,6 +40,11 @@ fr:
     this_list: cette liste
     unread_notifications: notifications non lues
     newsletter: bulletin d'information
+  feeds:
+    sources:
+      created: Votre source de flux a été ajoutée et un import a été déclenché.
+      updated: Votre source de flux a été mise à jour.
+      deleted: Votre source de flux a été supprimée.
   feedback_messages_controller:
     error_fill: "Assurez-vous que les formulaires sont remplis. 🤖 Autres erreurs possibles : %{errors}"
     n_a: NON DISPONIBLE

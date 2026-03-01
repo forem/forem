@@ -402,6 +402,75 @@ RSpec.describe "Dashboards" do
     end
   end
 
+  describe "GET /dashboard/feed_imports" do
+    context "when not logged in" do
+      it "redirects to /enter" do
+        get "/dashboard/feed_imports"
+        expect(response).to redirect_to("/magic_links/new")
+      end
+    end
+
+    context "when logged in" do
+      before do
+        sign_in user
+      end
+
+      it "renders successfully" do
+        get "/dashboard/feed_imports"
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "renders add source form when no sources exist" do
+        get "/dashboard/feed_imports"
+        expect(response.body).to include("Add a Feed Source")
+        expect(response.body).to include("Publishing from RSS")
+      end
+
+      it "renders existing feed sources with edit controls" do
+        allow(Feeds::ValidateUrl).to receive(:call).and_return(true)
+        source = create(:feed_source, user: user, name: "My Blog", feed_url: "https://example.com/feed.xml")
+
+        get "/dashboard/feed_imports"
+        expect(response.body).to include("My Blog")
+        expect(response.body).to include("Your Feed Sources")
+        expect(response.body).to include("Edit")
+      end
+
+      it "shows import history when feed source exists" do
+        allow(Feeds::ValidateUrl).to receive(:call).and_return(true)
+        source = create(:feed_source, user: user, feed_url: "https://example.com/feed.xml")
+        create(:feed_import_log, user: user, feed_source: source)
+
+        get "/dashboard/feed_imports"
+        expect(response.body).to include("Completed")
+      end
+
+      it "shows health warning when feed is degraded" do
+        allow(Feeds::ValidateUrl).to receive(:call).and_return(true)
+        create(:feed_source, user: user, feed_url: "https://example.com/feed.xml", status: :degraded)
+
+        get "/dashboard/feed_imports"
+        expect(response.body).to include("recent failures")
+      end
+
+      it "shows health warning when feed is failing" do
+        allow(Feeds::ValidateUrl).to receive(:call).and_return(true)
+        create(:feed_source, user: user, feed_url: "https://example.com/feed.xml", status: :failing)
+
+        get "/dashboard/feed_imports"
+        expect(response.body).to include("failing consistently")
+      end
+
+      it "shows empty import state when source exists but no imports" do
+        allow(Feeds::ValidateUrl).to receive(:call).and_return(true)
+        create(:feed_source, user: user, feed_url: "https://example.com/feed.xml")
+
+        get "/dashboard/feed_imports"
+        expect(response.body).to include("No import history yet")
+      end
+    end
+  end
+
   describe "GET /dashboard/subscriptions" do
     let(:author) { create(:user) }
     let(:article_with_user_subscription_tag) { create(:article, user: author, with_user_subscription_tag: true) }

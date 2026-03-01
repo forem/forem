@@ -144,22 +144,6 @@ en:
           heading: GitHub
           desc1: Pin your GitHub repositories to your profile.
           desc2: Repositories will disappear from your profile if you remove the OAuth association with GitHub.
-        rss:
-          heading: Publishing to %{community} from RSS
-          desc1_html: Posts will land in your %{dashboard} <strong>as drafts</strong>, and then you can publish from there.
-          desc2: Formatting will typically look good, but you may have to make manual fixes. In the case of Medium, you may have to manually fix embeds.
-          desc3_html: To find out more about how drafts are created from your feed, read this %{guide}.
-          desc4: Your feed will be fetched every time you submit this form and updates will be automatically fetched periodically thereafter.
-          desc5_html: 'FYI: Medium RSS feed URLs are <em>https://medium.com/feed/@your_username</em>'
-          desc6: By submitting your RSS Feed URL, you agree that you own and/or have permission to syndicate the associated content.
-          dashboard: dashboard
-          fetch: Fetch feed now
-          guide: guide
-          last_html: 'Last Fetched: %{time}'
-          mark_canonical_html: Mark the RSS source as canonical URL by default <p class='crayons-field__description'>If you check this box, the post will automatically mark the feed source as the canonical URL.</p>
-          referential_html: Replace self-referential links with %{community}-specific links <p class='crayons-field__description'>If you check this box, the post will automatically change any URLs included in the post to refer to the version of that article on %{community} if available. This is primarily meant for folks migrating their entire blog onto %{community}.</p>
-          save: Save Feed Settings
-          submit: Submit Feed Settings
       finalize_html: You have requested a change to %{email}. Check your inbox for the verification link to finalize the change.
       for_html: Settings for %{name}
       group:

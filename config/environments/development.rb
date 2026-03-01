@@ -148,8 +148,13 @@ Rails.application.configure do
     # See <https://github.com/flyerhzm/bullet#configuration> for other Bullet config options
     Bullet.enable = true
 
-    Bullet.add_footer = true
-    Bullet.console = true
+    # NOTE: Bullet.add_footer and Bullet.console are intentionally disabled.
+    # They inject HTML/JS into the response body, but Rack::Deflater (positioned
+    # later in the middleware stack) compresses the body first. Bullet then corrupts
+    # the gzip stream by injecting into already-compressed data, producing blank pages.
+    # Use `tail -f log/development.log | grep Bullet` to see N+1 warnings instead.
+    Bullet.add_footer = false
+    Bullet.console = false
     Bullet.rails_logger = true
 
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "ApiSecret", association: :user)

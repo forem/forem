@@ -1,0 +1,252 @@
+<% title t("views.dashboard.meta.title", site: community_name) %>
+
+<div id="index-container" data-which="feed_imports">
+  <main id="main-content" class="crayons-layout crayons-layout--header-inside crayons-layout--2-cols">
+    <%= render("header_and_action", page_title: t("views.dashboard.feed_imports.heading")) %>
+    <div class="crayons-layout__content mb-5" id="user-dashboard">
+
+      <% if flash[:notice].present? %>
+        <div class="crayons-notice crayons-notice--success mb-4"><%= flash[:notice] %></div>
+      <% end %>
+      <% if flash[:error].present? %>
+        <div class="crayons-notice crayons-notice--danger mb-4"><%= flash[:error] %></div>
+      <% end %>
+
+      <% if @feed_sources.any? %>
+        <%# --- Existing Feed Sources --- %>
+        <h2 class="crayons-subtitle-2 mb-3"><%= t("views.dashboard.feed_imports.sources.your_sources") %></h2>
+        <div class="flex flex-col gap-3 mb-4">
+          <% @feed_sources.each do |source| %>
+            <div class="crayons-card p-4">
+              <div class="flex items-center justify-between mb-2">
+                <div>
+                  <span class="fw-bold"><%= source.name || source.feed_url %></span>
+                  <% if source.name %>
+                    <span class="fs-s color-base-60 ml-2"><%= source.feed_url.truncate(60) %></span>
+                  <% end %>
+                </div>
+                <div class="flex items-center gap-2">
+                  <% status_color = case source.status
+                    when "failing" then "color-accent-danger"
+                    when "degraded" then "color-accent-warning"
+                    else "color-accent-success"
+                  end %>
+                  <span class="fs-s fw-medium <%= status_color %>">
+                    <%= t("views.dashboard.feed_imports.sources.status.#{source.status}") %>
+                  </span>
+                </div>
+              </div>
+
+              <div class="fs-s color-base-60 mb-3">
+                <% if source.last_fetched_at %>
+                  <%= t("views.dashboard.feed_imports.sources.last_fetched", time: time_ago_in_words(source.last_fetched_at)) %>
+                <% else %>
+                  <%= t("views.dashboard.feed_imports.sources.never_fetched") %>
+                <% end %>
+                <% if source.organization %>
+                  &middot; <%= source.organization.name %>
+                <% end %>
+                <% if source.author.present? && source.author_user_id != source.user_id %>
+                  &middot; <%= t("views.dashboard.feed_imports.sources.author_label") %>: @<%= source.author.username %>
+                <% end %>
+              </div>
+
+              <details>
+                <summary class="crayons-link cursor-pointer fs-s">
+                  <%= t("views.dashboard.feed_imports.sources.edit") %>
+                </summary>
+                <div class="mt-4">
+                  <%= render "feed_source_form", source: source %>
+                </div>
+              </details>
+            </div>
+          <% end %>
+        </div>
+
+        <%# --- Add New Source (collapsed) --- %>
+        <details class="mb-4">
+          <summary class="crayons-btn crayons-btn--secondary cursor-pointer">
+            + <%= t("views.dashboard.feed_imports.sources.add_heading") %>
+          </summary>
+          <div class="crayons-card p-4 mt-3">
+            <%= render "feed_source_form", source: Feeds::Source.new %>
+          </div>
+        </details>
+
+        <%# --- Health Warning --- %>
+        <% if @feed_status.present? && @feed_status != "healthy" %>
+          <div class="crayons-notice crayons-notice--<%= @feed_status == 'failing' ? 'danger' : 'warning' %> mb-4">
+            <%= t("views.dashboard.feed_imports.health.#{@feed_status}") %>
+          </div>
+        <% end %>
+
+        <%# --- Summary Stats --- %>
+        <div class="grid grid-cols-2 m:grid-cols-3 gap-2 m:gap-4 mb-4">
+          <div class="crayons-card crayons-card--secondary p-3 m:p-6">
+            <strong class="fs-2xl m:fs-3xl lh-tight color-base-90"><%= number_with_delimiter(@total_imported, delimiter: ",") %></strong>
+            <span class="color-base-60 block fs-base"><%= t("views.dashboard.feed_imports.summary.total_imported") %></span>
+          </div>
+          <div class="crayons-card crayons-card--secondary p-3 m:p-6">
+            <strong class="fs-2xl m:fs-3xl lh-tight color-base-90"><%= number_with_delimiter(@total_skipped, delimiter: ",") %></strong>
+            <span class="color-base-60 block fs-base"><%= t("views.dashboard.feed_imports.summary.total_skipped") %></span>
+          </div>
+          <div class="crayons-card crayons-card--secondary p-3 m:p-6">
+            <strong class="fs-2xl m:fs-3xl lh-tight <%= @total_failed.positive? ? 'color-accent-danger' : 'color-base-90' %>"><%= number_with_delimiter(@total_failed, delimiter: ",") %></strong>
+            <span class="color-base-60 block fs-base"><%= t("views.dashboard.feed_imports.summary.total_failed") %></span>
+          </div>
+        </div>
+
+        <%# --- Source Filter --- %>
+        <% if @feed_sources.size > 1 %>
+          <div class="crayons-card p-3 mb-4 flex items-center gap-3">
+            <label class="fw-medium fs-s" for="feed-source-filter"><%= t("views.dashboard.feed_imports.source_filter") %></label>
+            <select id="feed-source-filter" class="crayons-select w-auto" onchange="window.location.href = this.value">
+              <option value="/dashboard/feed_imports" <%= "selected" unless @selected_source %>><%= t("views.dashboard.feed_imports.all_sources") %></option>
+              <% @feed_sources.each do |source| %>
+                <option value="/dashboard/feed_imports?feed_source_id=<%= source.id %>" <%= "selected" if @selected_source&.id == source.id %>>
+                  <%= source.name || source.feed_url.truncate(50) %>
+                </option>
+              <% end %>
+            </select>
+          </div>
+        <% end %>
+
+        <%# --- Import History --- %>
+        <% if @feed_import_logs.empty? && @routine_logs.empty? %>
+          <div class="p-9 crayons-card crayons-card--secondary align-center fs-l h-100 flex items-center justify-center">
+            <p><%= t("views.dashboard.feed_imports.no_history") %></p>
+          </div>
+        <% else %>
+          <h2 class="crayons-subtitle-2 mb-3"><%= t("views.dashboard.feed_imports.history_heading") %></h2>
+
+          <% if @feed_import_logs.any? %>
+            <div class="flex flex-col gap-3 mb-4">
+              <% @feed_import_logs.each do |log| %>
+                <details class="crayons-card p-4">
+                  <summary class="cursor-pointer flex items-center justify-between flex-wrap gap-2" style="list-style-position: inside;">
+                    <div class="flex items-center gap-3">
+                      <span class="fw-medium <%= log.completed? ? 'color-accent-success' : 'color-accent-danger' %>">
+                        <%= t("views.dashboard.feed_imports.status.#{log.status}") %>
+                      </span>
+                      <time class="fs-s color-base-60" datetime="<%= log.created_at.iso8601 %>"><%= time_ago_in_words(log.created_at) %> ago</time>
+                      <% if @feed_sources.size > 1 && !@selected_source && log.feed_source.present? %>
+                        <span class="fs-xs color-base-50"><%= t("views.dashboard.feed_imports.source_label") %> <%= log.feed_source_name.truncate(30) %></span>
+                      <% end %>
+                      <% if log.duration_seconds.present? %>
+                        <span class="fs-xs color-base-50"><%= t("views.dashboard.feed_imports.counts.duration", seconds: log.duration_seconds.round(1)) %></span>
+                      <% end %>
+                    </div>
+                    <% if log.completed? %>
+                      <div class="flex gap-4 fs-s">
+                        <span class="color-base-70"><%= log.items_imported %> <%= t("views.dashboard.feed_imports.counts.imported").downcase %></span>
+                        <span class="color-base-50"><%= log.items_skipped %> <%= t("views.dashboard.feed_imports.counts.skipped").downcase %></span>
+                        <% if log.items_failed.positive? %>
+                          <span class="color-accent-danger"><%= log.items_failed %> <%= t("views.dashboard.feed_imports.counts.failed").downcase %></span>
+                        <% end %>
+                      </div>
+                    <% end %>
+                  </summary>
+
+                  <div class="mt-4 pt-4 border-t-1 border-solid border-base-10">
+                    <% if log.error_message.present? %>
+                      <div class="crayons-notice crayons-notice--danger p-3 mb-3"><%= log.error_message %></div>
+                    <% end %>
+
+                    <% if log.import_items.any? %>
+                      <table class="crayons-table w-100">
+                        <thead>
+                          <tr>
+                            <th><%= t("views.dashboard.feed_imports.items.title") %></th>
+                            <th><%= t("views.dashboard.feed_imports.items.status") %></th>
+                            <th><%= t("views.dashboard.feed_imports.items.article") %></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <% log.import_items.each do |item| %>
+                            <tr>
+                              <td class="truncate" style="max-width: 300px;" title="<%= item.feed_item_title %>"><%= item.feed_item_title %></td>
+                              <td>
+                                <% item_color = if item.imported?
+                                  "color-accent-success"
+                                elsif item.failed?
+                                  "color-accent-danger"
+                                else
+                                  "color-base-60"
+                                end %>
+                                <span class="fw-medium <%= item_color %>">
+                                  <%= t("views.dashboard.feed_imports.items.statuses.#{item.status}") %>
+                                </span>
+                                <% if item.error_message.present? %>
+                                  <span class="fs-xs color-accent-danger ml-1" title="<%= item.error_message %>"><%= item.error_message.truncate(60) %></span>
+                                <% end %>
+                              </td>
+                              <td>
+                                <% if item.article.present? %>
+                                  <% if item.article.published? %>
+                                    <%= link_to "View", item.article.path, class: "crayons-link" %>
+                                  <% else %>
+                                    <%= link_to "Edit draft", "#{item.article.path}/edit", class: "crayons-link" %>
+                                  <% end %>
+                                <% end %>
+                              </td>
+                            </tr>
+                          <% end %>
+                        </tbody>
+                      </table>
+                    <% end %>
+                  </div>
+                </details>
+              <% end %>
+            </div>
+
+            <%= paginate @feed_import_logs %>
+          <% elsif @routine_logs.any? %>
+            <p class="color-base-60 fs-s mb-4"><%= t("views.dashboard.feed_imports.no_notable_history") %></p>
+          <% end %>
+
+          <%# --- Routine Checks (no new posts) --- %>
+          <% if @routine_logs.any? %>
+            <details class="mt-4">
+              <summary class="crayons-link cursor-pointer fs-s color-base-60">
+                <%= t("views.dashboard.feed_imports.routine_checks", count: @routine_logs_count) %>
+              </summary>
+              <div class="flex flex-col gap-2 mt-3">
+                <% @routine_logs.each do |log| %>
+                  <div class="crayons-card crayons-card--secondary p-3 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                      <span class="fw-medium fs-s color-base-50"><%= t("views.dashboard.feed_imports.status.no_new_posts") %></span>
+                      <time class="fs-s color-base-60" datetime="<%= log.created_at.iso8601 %>"><%= time_ago_in_words(log.created_at) %> ago</time>
+                      <% if @feed_sources.size > 1 && !@selected_source && log.feed_source.present? %>
+                        <span class="fs-xs color-base-50"><%= log.feed_source_name.truncate(30) %></span>
+                      <% end %>
+                    </div>
+                    <span class="fs-s color-base-50"><%= log.items_skipped %> <%= t("views.dashboard.feed_imports.counts.skipped").downcase %></span>
+                  </div>
+                <% end %>
+              </div>
+            </details>
+          <% end %>
+        <% end %>
+
+      <% else %>
+        <%# --- Welcome / Empty State --- %>
+        <div class="crayons-card p-6 mb-4">
+          <h2 class="crayons-subtitle-1 mb-4"><%= t("views.dashboard.feed_imports.sources.welcome_heading") %></h2>
+          <div class="grid gap-3 mb-6">
+            <p><%= t("views.dashboard.feed_imports.sources.welcome_desc1_html") %></p>
+            <p><%= t("views.dashboard.feed_imports.sources.welcome_desc2") %></p>
+            <p><%= t("views.dashboard.feed_imports.sources.welcome_desc3_html", guide: link_to(t("views.dashboard.feed_imports.sources.guide"), publishing_from_rss_guide_path)) %></p>
+            <p><%= t("views.dashboard.feed_imports.sources.welcome_desc4") %></p>
+            <p><%= t("views.dashboard.feed_imports.sources.welcome_desc5_html") %></p>
+            <p><em><%= t("views.dashboard.feed_imports.sources.welcome_desc6") %></em></p>
+          </div>
+
+          <h3 class="crayons-subtitle-2 mb-4"><%= t("views.dashboard.feed_imports.sources.add_heading") %></h3>
+          <%= render "feed_source_form", source: Feeds::Source.new %>
+        </div>
+      <% end %>
+
+      <%= render "sublist" %>
+    </div>
+  </main>
+</div>
