@@ -1494,6 +1494,51 @@
   }
 }
 
+// === Sidebar visibility toggle ===
+.sidebar-visibility-section {
+  margin-bottom: 0;
+}
+
+.visibility-status {
+  margin-bottom: 8px;
+}
+
+.visibility-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 0.72em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  &--public {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  &--private {
+    background: #f3f4f6;
+    color: #6b7280;
+  }
+}
+
+.visibility-description {
+  font-size: 0.78em;
+  line-height: 1.4;
+  color: var(--card-color-secondary, #6b7280);
+  margin: 6px 0 0;
+}
+
+.visibility-share-row {
+  margin-bottom: 8px;
+}
+
+.visibility-toggle-btn {
+  width: 100%;
+  margin-top: 6px;
+}
+
 // === Sidebar embed section ===
 .sidebar-embed-section {
   margin-bottom: 0;

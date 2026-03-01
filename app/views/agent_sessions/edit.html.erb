@@ -13,7 +13,7 @@
   <div class="agent-session-instructions">
     <p class="instructions-text">All messages are <strong>included in your embed by default</strong>. Use the filters above the cards to narrow your view, and click individual cards (or drag across multiple) to exclude them. Use "Deselect all" to start from scratch and selectively include only what you want.</p>
     <div class="instructions-warning">
-      <p>We automatically scan for and redact common secrets like API keys, tokens, and credentials, but <strong>we cannot guarantee all sensitive information has been caught</strong>. Please review your session carefully before publishing to ensure you are not sharing anything you shouldn't.</p>
+      <p>We automatically scan for and redact common secrets like API keys, tokens, and credentials, but <strong>we cannot guarantee all sensitive information has been caught</strong>. <%= t("views.agent_sessions.security_warning") %></p>
       <% if @agent_session.total_redactions > 0 %>
         <p class="instructions-redaction-summary">
           <strong><%= @agent_session.total_redactions %> <%= "item".pluralize(@agent_session.total_redactions) %> automatically redacted</strong>
@@ -75,8 +75,38 @@
 
       </div>
 
-      <!-- Sidebar: embed code + slices -->
+      <!-- Sidebar: visibility + embed code + slices -->
       <aside class="curator-sidebar" id="slices-panel">
+        <div class="sidebar-visibility-section" id="visibility-section"
+             data-published="<%= @agent_session.published? %>"
+             data-share-url="<%= URL.url(agent_session_path(@agent_session)) %>">
+          <label class="sidebar-section-label"><%= t("views.agent_sessions.share_link") %></label>
+          <% if @agent_session.published? %>
+            <div class="visibility-status visibility-status--public">
+              <span class="visibility-badge visibility-badge--public"><%= t("views.agent_sessions.public_label") %></span>
+              <p class="visibility-description"><%= t("views.agent_sessions.public_description") %></p>
+            </div>
+            <div class="sidebar-embed-row visibility-share-row">
+              <input type="text" readonly autocomplete="off" class="sidebar-share-input"
+                     value="<%= URL.url(agent_session_path(@agent_session)) %>" onclick="this.select();" />
+              <button type="button" class="slice-action-btn" id="copy-share-btn" title="<%= t("views.agent_sessions.copy_link") %>"><%= t("views.agent_sessions.copy_link") %></button>
+            </div>
+            <button type="button" class="crayons-btn crayons-btn--s crayons-btn--ghost visibility-toggle-btn" id="toggle-visibility-btn">
+              <%= t("views.agent_sessions.make_private") %>
+            </button>
+          <% else %>
+            <div class="visibility-status visibility-status--private">
+              <span class="visibility-badge visibility-badge--private"><%= t("views.agent_sessions.private_label") %></span>
+              <p class="visibility-description"><%= t("views.agent_sessions.private_description") %></p>
+            </div>
+            <button type="button" class="crayons-btn crayons-btn--s visibility-toggle-btn" id="toggle-visibility-btn">
+              <%= t("views.agent_sessions.make_public") %>
+            </button>
+          <% end %>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
         <div class="sidebar-embed-section">
           <label class="sidebar-section-label">Embed code</label>
           <div class="sidebar-embed-row">
@@ -84,28 +114,6 @@
             <button type="button" class="slice-action-btn" id="copy-embed-btn" title="Copy">Copy</button>
           </div>
         </div>
-
-        <% if @agent_session.published? %>
-          <div class="sidebar-divider"></div>
-          <div class="sidebar-embed-section">
-            <label class="sidebar-section-label"><%= t("views.agent_sessions.share_link") %></label>
-            <div class="sidebar-embed-row">
-              <input type="text" readonly autocomplete="off" class="sidebar-share-input"
-                     value="<%= URL.url(agent_session_path(@agent_session)) %>" onclick="this.select();" />
-              <button type="button" class="slice-action-btn" id="copy-share-btn" title="<%= t("views.agent_sessions.copy_link") %>"><%= t("views.agent_sessions.copy_link") %></button>
-            </div>
-          </div>
-          <script>
-            document.getElementById('copy-share-btn').addEventListener('click', function() {
-              var input = this.previousElementSibling;
-              navigator.clipboard.writeText(input.value).then(function() {
-                var btn = document.getElementById('copy-share-btn');
-                btn.textContent = 'Copied!';
-                setTimeout(function() { btn.textContent = '<%= t("views.agent_sessions.copy_link") %>'; }, 2000);
-              });
-            });
-          </script>
-        <% end %>
 
         <div class="sidebar-divider"></div>
 
@@ -695,6 +703,50 @@
       var btn = document.getElementById('copy-embed-btn');
       btn.textContent = 'Copied!';
       setTimeout(function() { btn.textContent = 'Copy'; }, 2000);
+    });
+  });
+
+  // === Copy share link ===
+  var copyShareBtn = document.getElementById('copy-share-btn');
+  if (copyShareBtn) {
+    copyShareBtn.addEventListener('click', function() {
+      var input = this.previousElementSibling;
+      navigator.clipboard.writeText(input.value).then(function() {
+        copyShareBtn.textContent = 'Copied!';
+        setTimeout(function() { copyShareBtn.textContent = '<%= t("views.agent_sessions.copy_link") %>'; }, 2000);
+      });
+    });
+  }
+
+  // === Visibility toggle ===
+  document.getElementById('toggle-visibility-btn').addEventListener('click', function() {
+    var btn = this;
+    var section = document.getElementById('visibility-section');
+    var isPublished = section.dataset.published === 'true';
+    var newPublished = !isPublished;
+
+    btn.disabled = true;
+    btn.textContent = newPublished ? '<%= t("views.agent_sessions.make_public") %>...' : '<%= t("views.agent_sessions.make_private") %>...';
+
+    fetch('/agent_sessions/' + sessionId, {
+      method: 'PATCH',
+      headers: { 'X-CSRF-Token': csrfToken(), 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ agent_session: { published: newPublished } }),
+      credentials: 'same-origin',
+    }).then(function(response) {
+      return response.json();
+    }).then(function(data) {
+      if (data.success) {
+        window.location.reload();
+      } else {
+        btn.disabled = false;
+        btn.textContent = isPublished ? '<%= t("views.agent_sessions.make_private") %>' : '<%= t("views.agent_sessions.make_public") %>';
+        alert('Error: ' + (data.error || 'Unknown error'));
+      }
+    }).catch(function() {
+      btn.disabled = false;
+      btn.textContent = isPublished ? '<%= t("views.agent_sessions.make_private") %>' : '<%= t("views.agent_sessions.make_public") %>';
+      alert('Error updating visibility');
     });
   });
 

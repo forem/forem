@@ -43,8 +43,9 @@ class AgentSessionTag < LiquidTagBase
     SCRIPT
   end
 
-  def initialize(_tag_name, markup, _parse_context)
+  def initialize(_tag_name, markup, parse_context)
     super
+    @embedding_user = parse_context.partial_options[:user]
     slice_match = markup.match(SLICE_SYNTAX)
     range_match = markup.match(VALID_SYNTAX)
 
@@ -84,9 +85,10 @@ class AgentSessionTag < LiquidTagBase
       raise StandardError,
             I18n.t("liquid_tags.agent_session_tag.not_found", default: "Agent session not found")
     end
-    unless session.published?
+    unless session.published? || (@embedding_user && @embedding_user.id == session.user_id)
       raise StandardError,
-            I18n.t("liquid_tags.agent_session_tag.unpublished", default: "This agent session is not published")
+            I18n.t("liquid_tags.agent_session_tag.unpublished",
+                   default: "Only the session owner can embed this session")
     end
 
     session

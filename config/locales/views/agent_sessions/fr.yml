@@ -5,3 +5,10 @@ fr:
       share_link: Lien de partage
       copy_link: Copier
       by_author: "par %{name}"
+      make_public: Rendre public
+      make_private: Rendre privé
+      public_label: Public
+      private_label: Privé
+      public_description: Tout le monde peut voir via un lien direct et intégrer dans ses publications
+      private_description: Vous seul pouvez intégrer cette session dans vos publications
+      security_warning: Veuillez vérifier votre session attentivement avant de la rendre publique pour vous assurer de ne pas partager d'informations sensibles.

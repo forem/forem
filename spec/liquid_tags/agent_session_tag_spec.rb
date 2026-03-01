@@ -21,10 +21,10 @@ RSpec.describe AgentSessionTag, type: :liquid_tag do
     )
   end
 
-  def generate_tag(id)
+  def generate_tag(id, embedding_user: user)
     Liquid::Template.parse(
       "{% agent_session #{id} %}",
-      partial_options: { user: user },
+      { user: embedding_user },
     )
   end
 
@@ -66,15 +66,42 @@ RSpec.describe AgentSessionTag, type: :liquid_tag do
     expect { Liquid::Template.parse("{% agent_session %}") }.to raise_error(StandardError, /Invalid/)
   end
 
-  it "raises for unpublished session" do
-    unpublished = AgentSession.create!(
-      user: user,
-      title: "Draft Session",
-      tool_name: "claude_code",
-      normalized_data: normalized_data,
-      published: false,
-    )
-    expect { generate_tag(unpublished.id) }.to raise_error(StandardError, /not published/)
+  context "when session is unpublished" do
+    let(:unpublished_session) do
+      AgentSession.create!(
+        user: user,
+        title: "Draft Session",
+        tool_name: "claude_code",
+        normalized_data: normalized_data,
+        published: false,
+      )
+    end
+
+    it "allows the owner to embed their own unpublished session" do
+      html = generate_tag(unpublished_session.id, embedding_user: user).render
+      expect(html).to include("ltag-agent-session")
+      expect(html).to include("Draft Session")
+    end
+
+    it "raises when a non-owner tries to embed an unpublished session" do
+      other_user = create(:user)
+      expect do
+        generate_tag(unpublished_session.id, embedding_user: other_user)
+      end.to raise_error(StandardError, /owner/)
+    end
+
+    it "raises when no user context is provided for an unpublished session" do
+      expect do
+        Liquid::Template.parse("{% agent_session #{unpublished_session.id} %}")
+      end.to raise_error(StandardError, /owner/)
+    end
+  end
+
+  it "allows any user to embed a published session" do
+    other_user = create(:user)
+    html = generate_tag(agent_session.id, embedding_user: other_user).render
+    expect(html).to include("ltag-agent-session")
+    expect(html).to include("Test Session")
   end
 
   it "renders when referenced by slug" do

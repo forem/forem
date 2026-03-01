@@ -128,6 +128,6 @@ en:
     agent_session_tag:
       invalid: "Invalid agent_session syntax. Use: {% agent_session ID %}, {% agent_session ID start..end %}, or {% agent_session ID slice_name %}"
       not_found: Agent session not found
-      unpublished: This agent session is not published
+      unpublished: Only the session owner can embed this session
     youtube_tag:
       invalid_youtube_id: Invalid YouTube ID or URL
