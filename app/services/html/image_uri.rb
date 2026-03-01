@@ -25,7 +25,7 @@ module Html
     end
 
     def first_party_asset?
-      return true if host.nil?
+      return true if host.nil? && path.to_s.start_with?("/")
 
       app_domain = Settings::General.app_domain
       return true if app_domain.present? && host == URI("https://#{app_domain}").host
