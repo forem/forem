@@ -7,52 +7,35 @@ module Feeds
 
     sidekiq_options queue: :medium_priority, retry: 10, lock: :until_and_while_executing
 
-    # NOTE: [@rhymes] we need to default earlier_than to `nil` because sidekiq-cron,
-    # by using YAML to define jobs arguments does not support datetimes evaluated
-    # at runtime
-    def perform(user_ids = [], earlier_than = nil)
-      users_scope = User
+    def perform(rss_feed_ids = [], earlier_than = nil)
+      feeds_scope = RssFeed.active
 
-      if user_ids.present?
-        users_scope = users_scope.where(id: user_ids)
-        # we assume that forcing a single import should not take into account
-        # the last time a feed was fetched at
+      if rss_feed_ids.present?
+        feeds_scope = feeds_scope.where(id: rss_feed_ids)
         earlier_than = nil
       else
-        users_scope = users_scope.where(id: Users::Setting.with_feed.select(:user_id))
-
-        # Only batch users who have been active recently — avoids dispatching
-        # Sidekiq jobs for users that will just be filtered out downstream.
-        recent_activity_since = 3.months.ago
-        users_scope = users_scope.where("last_article_at >= ? OR last_presence_at >= ?",
-                                        recent_activity_since, recent_activity_since)
-
         earlier_than ||= 4.hours.ago
       end
 
-      # For some reason `ActiveSupport::TimeWithZone#is_a?(Time)` evaluates to
-      # `true` so this works with any sort of time object
       if earlier_than.is_a?(Time)
         earlier_than = earlier_than.iso8601
       end
 
-      users_scope.select(:id).find_in_batches do |batch|
-        arg_lists = batch.map { |user| [user.id, earlier_than] }
-
-        ForUser.perform_bulk(arg_lists)
+      feeds_scope.select(:id).find_in_batches do |batch|
+        arg_lists = batch.map { |feed| [feed.id, earlier_than] }
+        ForFeed.perform_bulk(arg_lists)
       end
     end
 
-    class ForUser
+    class ForFeed
       include Sidekiq::Job
       include Sidekiq::Throttled::Job
 
       sidekiq_throttle(concurrency: { limit: 5 })
 
-      def perform(user_ids, earlier_than)
-        users_scope = User.where(id: user_ids)
-
-        ::Feeds::Import.call(users_scope: users_scope, earlier_than: earlier_than)
+      def perform(rss_feed_ids, earlier_than)
+        feeds_scope = RssFeed.where(id: rss_feed_ids)
+        ::Feeds::Import.call(feeds_scope: feeds_scope, earlier_than: earlier_than)
       end
     end
   end

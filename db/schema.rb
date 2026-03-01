@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_02_23_212134) do
+ActiveRecord::Schema[7.0].define(version: 2026_03_01_222918) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -18,6 +18,25 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_23_212134) do
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
   enable_extension "unaccent"
+
+  create_table "agent_sessions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.jsonb "curated_selections", default: [], null: false
+    t.jsonb "normalized_data", default: {}, null: false
+    t.boolean "published", default: false, null: false
+    t.text "raw_data"
+    t.jsonb "session_metadata", default: {}, null: false
+    t.jsonb "slices", default: [], null: false
+    t.string "slug"
+    t.string "title", null: false
+    t.string "tool_name", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["tool_name"], name: "index_agent_sessions_on_tool_name"
+    t.index ["user_id", "published"], name: "index_agent_sessions_on_user_id_and_published"
+    t.index ["user_id", "slug"], name: "index_agent_sessions_on_user_id_and_slug", unique: true
+    t.index ["user_id"], name: "index_agent_sessions_on_user_id"
+  end
 
   create_table "ahoy_events", force: :cascade do |t|
     t.string "name"
@@ -1293,6 +1312,48 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_23_212134) do
     t.index ["name"], name: "index_roles_on_name"
   end
 
+  create_table "rss_feed_imported_articles", force: :cascade do |t|
+    t.bigint "article_id"
+    t.datetime "created_at", null: false
+    t.text "error_message"
+    t.bigint "rss_feed_import_id", null: false
+    t.string "source_url", null: false
+    t.integer "status", default: 0, null: false
+    t.string "title"
+    t.datetime "updated_at", null: false
+    t.index ["article_id"], name: "index_rss_feed_imported_articles_on_article_id"
+    t.index ["rss_feed_import_id"], name: "index_rss_feed_imported_articles_on_rss_feed_import_id"
+    t.index ["source_url"], name: "index_rss_feed_imported_articles_on_source_url"
+  end
+
+  create_table "rss_feed_imports", force: :cascade do |t|
+    t.integer "articles_found", default: 0, null: false
+    t.integer "articles_imported", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.text "error_message"
+    t.bigint "rss_feed_id", null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["rss_feed_id"], name: "index_rss_feed_imports_on_rss_feed_id"
+  end
+
+  create_table "rss_feeds", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "fallback_organization_id"
+    t.bigint "fallback_user_id"
+    t.datetime "last_fetched_at"
+    t.boolean "mark_canonical", default: false, null: false
+    t.boolean "referential_link", default: true, null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.string "url", null: false
+    t.bigint "user_id", null: false
+    t.index ["fallback_organization_id"], name: "index_rss_feeds_on_fallback_organization_id"
+    t.index ["fallback_user_id"], name: "index_rss_feeds_on_fallback_user_id"
+    t.index ["url"], name: "index_rss_feeds_on_url"
+    t.index ["user_id"], name: "index_rss_feeds_on_user_id"
+  end
+
   create_table "scheduled_automations", force: :cascade do |t|
     t.string "action", null: false
     t.jsonb "action_config", default: {}
@@ -1660,7 +1721,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_23_212134) do
     t.datetime "exported_at", precision: nil
     t.string "facebook_username"
     t.integer "failed_attempts", default: 0
-    t.datetime "feed_fetched_at", precision: nil, default: "2017-01-01 05:00:00"
     t.integer "following_orgs_count", default: 0, null: false
     t.integer "following_tags_count", default: 0, null: false
     t.integer "following_users_count", default: 0, null: false
@@ -1735,7 +1795,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_23_212134) do
     t.index ["current_subscriber_status"], name: "index_users_on_current_subscriber_status"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["facebook_username"], name: "index_users_on_facebook_username"
-    t.index ["feed_fetched_at"], name: "index_users_on_feed_fetched_at"
     t.index ["github_username"], name: "index_users_on_github_username", unique: true
     t.index ["google_oauth2_username"], name: "index_users_on_google_oauth2_username"
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
@@ -1808,16 +1867,12 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_23_212134) do
     t.boolean "display_sponsors", default: true, null: false
     t.integer "editor_version", default: 0, null: false
     t.integer "experience_level"
-    t.boolean "feed_mark_canonical", default: false, null: false
-    t.boolean "feed_referential_link", default: true, null: false
-    t.string "feed_url"
     t.string "inbox_guidelines"
     t.integer "inbox_type", default: 0, null: false
     t.boolean "permit_adjacent_sponsors", default: true
     t.boolean "prefer_os_color_scheme", default: true
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.index ["feed_url"], name: "index_users_settings_on_feed_url", where: "((COALESCE(feed_url, ''::character varying))::text <> ''::text)"
     t.index ["user_id"], name: "index_users_settings_on_user_id", unique: true
   end
 
@@ -1831,6 +1886,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_23_212134) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "agent_sessions", "users", on_delete: :cascade
   add_foreign_key "ahoy_events", "ahoy_visits", column: "visit_id", on_delete: :cascade
   add_foreign_key "ahoy_events", "users", on_delete: :cascade
   add_foreign_key "ahoy_messages", "feedback_messages", on_delete: :nullify
@@ -1905,6 +1961,12 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_23_212134) do
   add_foreign_key "reactions", "users", on_delete: :cascade
   add_foreign_key "recommended_articles_lists", "users"
   add_foreign_key "response_templates", "users"
+  add_foreign_key "rss_feed_imported_articles", "articles", on_delete: :nullify
+  add_foreign_key "rss_feed_imported_articles", "rss_feed_imports", on_delete: :cascade
+  add_foreign_key "rss_feed_imports", "rss_feeds", on_delete: :cascade
+  add_foreign_key "rss_feeds", "organizations", column: "fallback_organization_id", on_delete: :nullify
+  add_foreign_key "rss_feeds", "users", column: "fallback_user_id", on_delete: :nullify
+  add_foreign_key "rss_feeds", "users", on_delete: :cascade
   add_foreign_key "scheduled_automations", "users"
   add_foreign_key "segmented_users", "audience_segments"
   add_foreign_key "segmented_users", "users"

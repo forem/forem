@@ -1,29 +1,13 @@
 module Feeds
-  # Responsible for fetching RSS feeds for multiple users.
-  #
-  # @see Feeds::Import.call
   class Import
-    # Fetch the feeds for the given users (with some filtering based on internal business logic).
-    #
-    # @param users_scope [ActiveRecord::Relation<User>] the initial scope for determining the users
-    #        whose feeds we'll be fetching.
-    #
-    # @param earlier_than [NilClass, ActiveSupport::TimeWithZone] when given, use this to further
-    #        filter the user's who's articles we'll fetch.  That is to say, we won't fetch anyone's
-    #        feeds who's last fetch time was after our earlier_than parameter.
-    #
-    # @return [Integer] count of total articles fetched.
-    def self.call(users_scope: User, earlier_than: nil)
-      new(users_scope: users_scope, earlier_than: earlier_than).call
+    def self.call(feeds_scope: RssFeed.active, earlier_than: nil)
+      new(feeds_scope: feeds_scope, earlier_than: earlier_than).call
     end
 
-    def initialize(users_scope: User, earlier_than: nil)
+    def initialize(feeds_scope: RssFeed.active, earlier_than: nil)
       @earlier_than = earlier_than
-      @users = filter_users_from(users_scope: users_scope, earlier_than: earlier_than)
-
-      # NOTE: should these be configurable? Currently they are the result of empiric
-      # tests trying to find a balance between memory occupation and speed
-      @users_batch_size = 50
+      @feeds = filter_feeds_from(feeds_scope: feeds_scope, earlier_than: earlier_than)
+      @feeds_batch_size = 50
       @num_fetchers = 8
       @num_parsers = 4
     end
@@ -31,25 +15,17 @@ module Feeds
     def call
       total_articles_count = 0
 
-      users.in_batches(of: users_batch_size) do |batch_of_users|
-        feeds_per_user_id = fetch_feeds(batch_of_users)
+      feeds.in_batches(of: feeds_batch_size) do |batch_of_feeds|
+        feeds_per_feed_id = fetch_feeds(batch_of_feeds)
+        feedjira_objects = parse_feeds(feeds_per_feed_id)
 
-        feedjira_objects = parse_feeds(feeds_per_user_id)
-
-        # NOTE: doing this sequentially to avoid locking problems with the DB
-        # and unnecessary conflicts
-        articles = feedjira_objects.flat_map do |user_id, feed|
-          # TODO: replace `feed` with `feed.url` as `Feeds::AssembleArticleMarkdown`
-          # only actually uses feed.url
-          user = batch_of_users.detect { |u| u.id == user_id }
-
-          create_articles_from_user_feed(user, feed)
+        articles = feedjira_objects.flat_map do |feed_id, parsed_feed|
+          feed = batch_of_feeds.detect { |f| f.id == feed_id }
+          create_articles_from_feed(feed, parsed_feed)
         end
 
         total_articles_count += articles.length
-
-        # we use `feed_fetched_at` to mark the last time a particular user's feed has been fetched, parsed and imported
-        batch_of_users.update_all(feed_fetched_at: Time.current)
+        batch_of_feeds.update_all(last_fetched_at: Time.current)
       end
 
       total_articles_count
@@ -57,30 +33,18 @@ module Feeds
 
     private
 
-    attr_reader :earlier_than, :users_batch_size, :num_fetchers, :num_parsers, :users
+    attr_reader :earlier_than, :feeds_batch_size, :num_fetchers, :num_parsers, :feeds
 
-    # @return [ActiveRecord::Relation<User>] you'll likely want to set @users from this, but
-    #         [@jeremyf]'s choosing not to do that as it makes the implementation just a bit
-    #         cleaner.
-    def filter_users_from(users_scope:, earlier_than:)
-      users_scope = ArticlePolicy.scope_users_authorized_to_action(users_scope: users_scope, action: :create)
-      users_scope = users_scope.where(id: Users::Setting.with_feed.select(:user_id))
-      recent_activity_since = 3.months.ago
-      users_scope = users_scope.where("last_article_at >= ? OR last_presence_at >= ?", recent_activity_since,
-                                      recent_activity_since)
+    def filter_feeds_from(feeds_scope:, earlier_than:)
+      return feeds_scope unless earlier_than
 
-      return users_scope unless earlier_than
-
-      # Filtering users whose feed hasn't been processed in the last `earlier_than` time span.
-      # New users + any user whose feed was processed earlier than the given time
-      users_scope.where(feed_fetched_at: nil).or(users_scope.where(feed_fetched_at: ..earlier_than))
+      feeds_scope.where(last_fetched_at: nil).or(feeds_scope.where(last_fetched_at: ..earlier_than))
     end
 
-    # TODO: put this in separate service object
-    def fetch_feeds(batch_of_users)
-      data = batch_of_users.joins(:setting).pluck(:id, "users_settings.feed_url")
+    def fetch_feeds(batch_of_feeds)
+      data = batch_of_feeds.pluck(:id, :url)
 
-      result = Parallel.map(data, in_threads: num_fetchers) do |user_id, url|
+      result = Parallel.map(data, in_threads: num_fetchers) do |feed_id, url|
         cleaned_url = url.to_s.strip
         next if cleaned_url.blank?
 
@@ -88,105 +52,77 @@ module Feeds
                                 timeout: 10,
                                 headers: { "User-Agent" => "Forem Feeds Importer" })
 
-        [user_id, response.body]
+        [feed_id, response.body]
       rescue StandardError => e
-        # TODO: add better exception handling
-        # For example, we should stop pulling feeds that return 404 and disable them?
-
-        report_error(
-          e,
-          feeds_import_info: {
-            user_id: user_id,
-            url: url,
-            error: "Feeds::Import::FetchFeedError"
-          },
-        )
-
+        report_error(e, feeds_import_info: { feed_id: feed_id, url: url, error: "Feeds::Import::FetchFeedError" })
         next
       end
 
       result.compact.to_h
     end
 
-    # TODO: put this in separate service object
-    def parse_feeds(feeds_per_user_id)
-      result = Parallel.map(feeds_per_user_id, in_threads: num_parsers) do |user_id, feed_xml|
+    def parse_feeds(feeds_per_feed_id)
+      result = Parallel.map(feeds_per_feed_id, in_threads: num_parsers) do |feed_id, feed_xml|
         parsed_feed = Feedjira.parse(feed_xml)
-
-        [user_id, parsed_feed]
+        [feed_id, parsed_feed]
       rescue StandardError => e
-        # TODO: add better exception handling (eg. rescuing Feedjira::NoParserAvailable separately)
-        report_error(
-          e,
-          feeds_import_info: {
-            user_id: user_id,
-            error: "Feeds::Import::ParseFeedError"
-          },
-        )
-
+        report_error(e, feeds_import_info: { feed_id: feed_id, error: "Feeds::Import::ParseFeedError" })
         next
       end
 
       result.compact.to_h
     end
 
-    # TODO: currently this is exactly as it was in the RssReader, but we might find
-    # avenues for optimization, like:
-    # 1. why are we sending N exists query to the DB, one per each item, can we fetch them all?
-    # 2. should we queue a batch of workers to create articles, but then, following issues ensue:
-    # => synchronization on write (table/row locking)
-    # => what happens if 2 jobs are in the queue for the same article?
-    # => what happens if they stay in the queue for long and the next iteration of the feeds importer starts?
-    def create_articles_from_user_feed(user, feed)
+    def create_articles_from_feed(feed, parsed_feed)
       articles = []
+      
+      import_job = feed.rss_feed_imports.create!(status: :running)
+      articles_found = parsed_feed.entries&.length || 0
+      import_job.update(articles_found: articles_found)
 
-      feed.entries.reverse_each do |item|
-        next if Feeds::CheckItemMediumReply.call(item) || Feeds::CheckItemPreviouslyImported.call(item, user)
-
+      parsed_feed.entries.reverse_each do |item|
         feed_source_url = item.url.strip.split("?source=")[0]
+        
+        author = feed.fallback_user || feed.user
+        organization = feed.fallback_organization
+
+        if Feeds::CheckItemMediumReply.call(item) || Feeds::CheckItemPreviouslyImported.call(item, author)
+          import_job.rss_feed_imported_articles.create!(source_url: feed_source_url, title: item.title, status: :skipped)
+          next
+        end
+
         article = Article.create!(
           feed_source_url: feed_source_url,
-          user_id: user.id,
+          user_id: author.id,
           published_from_feed: true,
           show_comments: true,
-          body_markdown: Feeds::AssembleArticleMarkdown.call(item, user, feed, feed_source_url),
-          organization_id: nil,
+          body_markdown: Feeds::AssembleArticleMarkdown.call(item, author, feed, feed_source_url),
+          organization_id: organization&.id,
         )
 
-        subscribe_author_to_comments(user, article)
+        subscribe_author_to_comments(author, article)
         articles.append(article)
+        import_job.rss_feed_imported_articles.create!(source_url: feed_source_url, title: item.title, status: :imported, article_id: article.id)
       rescue StandardError => e
-        # TODO: add better exception handling
-        report_error(
-          e,
-          feeds_import_info: {
-            username: user.username,
-            feed_url: user.setting&.feed_url,
-            item_count: item_count_error(feed),
-            error: "Feeds::Import::CreateArticleError:#{item.url}"
-          },
-        )
-
+        import_job.rss_feed_imported_articles.create!(source_url: feed_source_url, title: item.title, status: :failed, error_message: e.message)
+        report_error(e, feeds_import_info: { feed_url: feed.url, error: "Feeds::Import::CreateArticleError:#{item.url}" })
         next
       end
 
+      import_job.update(status: :completed, articles_imported: articles.length)
+
       if articles.length.positive?
-        Slack::WorkflowWebhookWorker.perform_async("Imported #{articles.length} articles for #{user.username}")
+        Slack::WorkflowWebhookWorker.perform_async("Imported #{articles.length} articles from feed #{feed.url}")
       end
 
+      articles
+    rescue StandardError => e
+      import_job&.update(status: :failed, error_message: e.message)
       articles
     end
 
     def report_error(error, metadata)
-      Rails.logger.error(
-        "feeds::import::error::#{error.class}::#{metadata.merge(error_message: error.message)}",
-      )
-    end
-
-    def item_count_error(feed)
-      return "NIL FEED, INVALID URL" unless feed
-
-      feed.entries ? feed.entries.length : "no count"
+      Rails.logger.error("feeds::import::error::#{error.class}::#{metadata.merge(error_message: error.message)}")
     end
 
     def subscribe_author_to_comments(user, article)

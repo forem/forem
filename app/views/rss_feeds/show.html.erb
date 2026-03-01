@@ -1,0 +1,66 @@
+<div class="crayons-layout">
+  <div class="crayons-layout__content">
+    <div class="mb-4">
+      <%= link_to "&larr; Back to Dashboard".html_safe, rss_feeds_path, class: "crayons-btn crayons-btn--ghost" %>
+    </div>
+
+    <div class="crayons-card p-6 mb-6">
+      <h1 class="crayons-title"><%= @rss_feed.url %></h1>
+      <p class="text-base-50 mt-2">Status: <strong><%= @rss_feed.status %></strong></p>
+      <p class="text-base-50">Last Fetched: <%= @rss_feed.last_fetched_at ? @rss_feed.last_fetched_at.to_fs(:long) : "Never" %></p>
+
+      <div class="mt-4">
+        <%= link_to "Edit Feed", edit_rss_feed_path(@rss_feed), class: "crayons-btn crayons-btn--secondary" %>
+      </div>
+    </div>
+
+    <h2 class="crayons-subtitle-2 mb-4">Recent Imports</h2>
+    <% if @imports.any? %>
+      <div class="grid gap-4">
+        <% @imports.each do |import| %>
+          <div class="crayons-card p-4">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="font-bold">Import at <%= import.created_at.to_fs(:short) %></h3>
+              <span class="crayons-indicator"><%= import.status %></span>
+            </div>
+
+            <p class="text-sm mb-2">Articles found: <%= import.articles_found %> | Imported: <%= import.articles_imported %></p>
+
+            <% if import.error_message.present? %>
+              <div class="crayons-notice crayons-notice--danger mb-4">
+                <%= import.error_message %>
+              </div>
+            <% end %>
+
+            <% if import.rss_feed_imported_articles.any? %>
+              <table class="w-100 text-sm">
+                <thead>
+                  <tr class="text-left border-b border-base-20">
+                    <th class="py-2">Article Title</th>
+                    <th class="py-2">Status</th>
+                    <th class="py-2">Details</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% import.rss_feed_imported_articles.each do |article_log| %>
+                    <tr class="border-b border-base-20 last:border-0">
+                      <td class="py-2"><%= article_log.title || "Unknown" %></td>
+                      <td class="py-2"><%= article_log.status %></td>
+                      <td class="py-2 text-base-50"><%= article_log.error_message || "Success" %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            <% else %>
+              <p class="text-sm text-base-50">No articles processed during this import.</p>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="crayons-card p-6 text-center text-base-50">
+        No import jobs have run for this feed yet.
+      </div>
+    <% end %>
+  </div>
+</div>

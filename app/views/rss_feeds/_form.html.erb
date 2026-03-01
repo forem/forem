@@ -1,0 +1,45 @@
+<%= form_with(model: rss_feed, class: "grid gap-4") do |form| %>
+  <% if rss_feed.errors.any? %>
+    <div class="crayons-notice crayons-notice--danger">
+      <ul>
+        <% rss_feed.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="crayons-field">
+    <%= form.label :url, "RSS Feed URL", class: "crayons-field__label" %>
+    <%= form.text_field :url, class: "crayons-textfield" %>
+  </div>
+
+  <div class="crayons-field crayons-field--checkbox">
+    <%= form.check_box :mark_canonical, class: "crayons-checkbox" %>
+    <%= form.label :mark_canonical, "Mark as canonical", class: "crayons-field__label" %>
+  </div>
+
+  <div class="crayons-field crayons-field--checkbox">
+    <%= form.check_box :referential_link, class: "crayons-checkbox" %>
+    <%= form.label :referential_link, "Add referral link", class: "crayons-field__label" %>
+  </div>
+
+  <div class="crayons-field">
+    <%= form.label :fallback_user_id, "Fallback Author ID", class: "crayons-field__label" %>
+    <%= form.number_field :fallback_user_id, class: "crayons-textfield" %>
+    <span class="text-sm text-base-50">If we can't find the author on DEV, the article will be published under this user ID.</span>
+  </div>
+
+  <% if current_user.any_admin? %>
+    <div class="crayons-field">
+      <%= form.label :fallback_organization_id, "Fallback Organization ID", class: "crayons-field__label" %>
+      <%= form.number_field :fallback_organization_id, class: "crayons-textfield" %>
+      <span class="text-sm text-base-50">Admin only: The article will be published under this organization ID.</span>
+    </div>
+  <% end %>
+
+  <div class="flex gap-2 mt-4">
+    <%= form.submit "Save", class: "crayons-btn crayons-btn--primary" %>
+    <%= link_to "Cancel", rss_feeds_path, class: "crayons-btn crayons-btn--secondary" %>
+  </div>
+<% end %>

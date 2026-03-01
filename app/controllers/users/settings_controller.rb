@@ -13,10 +13,6 @@ module Users
                         display_sponsors
                         editor_version
                         experience_level
-                        feed_fetched_at
-                        feed_mark_canonical
-                        feed_referential_link
-                        feed_url
                         inbox_guidelines
                         inbox_type
                         permit_adjacent_sponsors].freeze
@@ -27,8 +23,6 @@ module Users
       tab = params["users_setting"]["tab"] || "profile"
 
       if users_setting.update(users_setting_params)
-        import_articles_from_feed(users_setting)
-
         if users_setting.experience_level.present?
           cookies.permanent[:user_experience_level] = users_setting.experience_level.to_s
         end
@@ -43,12 +37,6 @@ module Users
     end
 
     private
-
-    def import_articles_from_feed(users_setting)
-      return if users_setting.feed_url.blank?
-
-      Feeds::ImportArticlesWorker.perform_async(users_setting.user_id)
-    end
 
     def users_setting_params
       params.require(:users_setting).permit(ALLOWED_PARAMS)

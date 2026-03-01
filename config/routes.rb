@@ -367,8 +367,10 @@ Rails.application.routes.draw do
     # Redirect previous settings changed after https://github.com/forem/forem/pull/11347
     get "/settings/integrations", to: redirect("/settings/extensions")
     get "/settings/misc", to: redirect("/settings")
-    get "/settings/publishing-from-rss", to: redirect("/settings/extensions")
+    get "/settings/publishing-from-rss", to: redirect("/rss_feeds")
     get "/settings/ux", to: redirect("/settings/customization")
+
+    resources :rss_feeds
 
     get "/settings/(:tab)", to: "users#edit", as: :user_settings
     get "/settings/:tab/:org_id", to: "users#edit", constraints: { tab: /organization/ }

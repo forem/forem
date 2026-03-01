@@ -1,0 +1,31 @@
+<div class="crayons-layout">
+  <div class="crayons-layout__content">
+    <div class="flex justify-between items-center mb-4">
+      <h1 class="crayons-title">RSS Feed Dashboard</h1>
+      <%= link_to "Add RSS Feed", new_rss_feed_path, class: "crayons-btn crayons-btn--primary" %>
+    </div>
+
+    <% if @rss_feeds.any? %>
+      <div class="crayons-card crayons-card--content-rows">
+        <% @rss_feeds.each do |feed| %>
+          <div class="p-4 border-b border-base-20 last:border-0 flex justify-between items-center">
+            <div>
+              <h2 class="font-bold"><%= link_to feed.url, feed.url %></h2>
+              <p class="text-sm text-base-50">Status: <%= feed.status %></p>
+              <p class="text-sm text-base-50">Last Fetched: <%= feed.last_fetched_at ? time_ago_in_words(feed.last_fetched_at) + " ago" : "Never" %></p>
+            </div>
+            <div class="flex gap-2">
+              <%= link_to "View Details", rss_feed_path(feed), class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
+              <%= link_to "Edit", edit_rss_feed_path(feed), class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
+              <%= button_to "Delete", rss_feed_path(feed), method: :delete, data: { confirm: "Are you sure?" }, class: "crayons-btn crayons-btn--s crayons-btn--danger" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="crayons-card p-6 text-center">
+        <p>You have no RSS feeds configured.</p>
+      </div>
+    <% end %>
+  </div>
+</div>

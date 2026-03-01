@@ -8,7 +8,6 @@ module Users
     HEX_COLOR_REGEXP = /\A#?(?:\h{6}|\h{3})\z/
 
     belongs_to :user, touch: true
-    scope :with_feed, -> { where.not(feed_url: [nil, ""]) }
 
     enum editor_version: { v2: 0, v1: 1 }, _suffix: :editor
     enum config_font: { default: 0, comic_sans: 1, monospace: 2, open_dyslexic: 3, sans_serif: 4, serif: 5 },
@@ -25,13 +24,9 @@ module Users
                         message: I18n.t("models.users.setting.invalid_hex") },
               allow_nil: true
     validates :experience_level, numericality: { in: 1..10 }, allow_blank: true
-    validates :feed_referential_link, inclusion: { in: [true, false] }
     validates :disallow_subforem_reassignment, inclusion: { in: [true, false] }
-    validates :feed_url, length: { maximum: 500 }, allow_nil: true
     validates :inbox_guidelines, length: { maximum: 250 }, allow_nil: true
     validates :content_preferences_input, length: { maximum: 1250 }, allow_nil: true
-
-    validate :validate_feed_url, if: :feed_url_changed?
 
     before_update :update_content_preferences_updated_at_if_changed
     after_update :refresh_auto_audience_segments
@@ -45,16 +40,6 @@ module Users
 
     def refresh_auto_audience_segments
       user.refresh_auto_audience_segments
-    end
-
-    def validate_feed_url
-      return if feed_url.blank?
-
-      valid = Feeds::ValidateUrl.call(feed_url)
-
-      errors.add(:feed_url, I18n.t("models.users.setting.invalid_rss")) unless valid
-    rescue StandardError => e
-      errors.add(:feed_url, e.message)
     end
 
     def update_content_preferences_updated_at_if_changed

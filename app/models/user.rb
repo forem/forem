@@ -112,6 +112,7 @@ class User < ApplicationRecord
   has_many :rating_votes, dependent: :nullify
 
   has_many :reactions, dependent: :destroy
+  has_many :rss_feeds, dependent: :destroy
   has_many :reporter_feedback_messages, class_name: "FeedbackMessage",
                                         inverse_of: :reporter, foreign_key: :reporter_id, dependent: :nullify
   has_many :response_templates, inverse_of: :user, dependent: :delete_all
