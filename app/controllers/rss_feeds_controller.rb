@@ -8,7 +8,7 @@ class RssFeedsController < ApplicationController
 
   def show
     @imports = @rss_feed.rss_feed_imports
-                        .includes(rss_feed_imported_articles: { article: :user })
+                        .includes(rss_feed_imported_articles: { article: [:user, :organization] })
                         .order(created_at: :desc)
                         .limit(20)
   end

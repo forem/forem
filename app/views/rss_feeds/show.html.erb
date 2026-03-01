@@ -101,8 +101,8 @@
                             <td class="p-3 text-xs">
                               <% if article_log.article %>
                                 <div class="flex gap-2">
-                                  <%= link_to "View", article_log.article.path, class: "crayons-btn crayons-btn--s crayons-btn--ghost", target: "_blank" %>
-                                  <%= link_to "Edit", "/#{article_log.article.user.username}/#{article_log.article.slug}/edit", class: "crayons-btn crayons-btn--s crayons-btn--ghost" %>
+                                  <%= link_to "View", article_log.article.current_state_path, class: "crayons-btn crayons-btn--s crayons-btn--ghost", target: "_blank" %>
+                                  <%= link_to "Edit", "/#{article_log.article.username}/#{article_log.article.slug}/edit", class: "crayons-btn crayons-btn--s crayons-btn--ghost" %>
                                 </div>
                               <% else %>
                                 <span class="text-base-40">N/A</span>
