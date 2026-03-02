@@ -184,6 +184,9 @@ fr:
       article_busted: "L'article #%{article} a été bloqué avec succès."
       user_busted: "L'utilisateur #%{user} a été arrêté avec succès."
       link_busted: "%{link} a été cassé avec succès"
+      data_fix_enqueued: 'Correctif de données mis en file d''attente : %{fix_name}'
+      data_fix_missing_param: Le nom du correctif de données est requis.
+      data_fix_unknown: 'Correctif de données inconnu : %{fix_name}'
     users_controller:
       exported: Données exportées vers le %{receiver}. Le travail sera terminé dans un instant.
       email_fail: L'envoi de l'e-mail a échoué !

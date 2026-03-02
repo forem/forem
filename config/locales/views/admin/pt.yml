@@ -2,6 +2,13 @@
 pt:
   views:
     admin:
+      tools:
+        data_fix_jobs:
+          heading: Correções de dados
+          section_description: Execute correções de manutenção de longa duração.
+          fix_tag_counts:
+            description: Recalcula as contagens de ocorrência de tags a partir de marcações reais.
+            button: Corrigir contagens de tags
       dashboard:
         title: Painel de Administração
         welcome: Bem-vindo ao painel de administração
