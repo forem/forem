@@ -170,3 +170,5 @@ pt:
             confirm: Tem certeza de que deseja gerar um novo segredo? Todos os segredos pendentes serão inválidos.
             text: Você deve rotacionar isso regularmente!
             submit: Gerar novo segredo
+      extensions:
+        rss_moved_html: 'As configurações de feed RSS foram movidas! Gerencie seus feeds no <a href="%{link}" class="crayons-link">painel de importações</a>.'

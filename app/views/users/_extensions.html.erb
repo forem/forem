@@ -1,3 +1,7 @@
+<div class="crayons-notice crayons-notice--info mb-6">
+  <%= t("views.settings.extensions.rss_moved_html", link: "/dashboard/feed_imports") %>
+</div>
+
 <%= render partial: "content_preferences" if current_user.base_subscriber? %>
 
 <%= render partial: "response_templates" %>

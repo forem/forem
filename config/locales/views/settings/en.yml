@@ -113,6 +113,7 @@ en:
           one: '1 error prohibited your profile from being saved:'
           other: "%{count} errors prohibited your profile from being saved:"
       extensions:
+        rss_moved_html: 'RSS feed settings have moved! Manage your feeds on the <a href="%{link}" class="crayons-link">Feed Imports dashboard</a>.'
         api:
           heading: "%{community} API Keys"
           desc_html: You can generate personal API keys to use for authentication with the %{community} API.  The API is still in its beta stage. The %{doc} contains further information.
