@@ -27,8 +27,8 @@ module AuthenticationHelper
     # If the user did not authenticate with any provider, they signed up with an email.
     # rubocop:disable Layout/LineLength
     auth_method = providers.any? ? providers.map(&:official_name).to_sentence : I18n.t("helpers.authentication_helper.email_password")
-    sid = try(:subforem_id)
-    community_name = Settings::Community.community_name(subforem_id: sid.presence)
+    subforem_id = try(:subforem_id)
+    community_name = Settings::Community.community_name(subforem_id: subforem_id.presence)
     demonstrative = providers.size > 1 ? I18n.t("helpers.authentication_helper.any_of_those") : I18n.t("helpers.authentication_helper.that", community: community_name)
     link = new_magic_link_url(email: user.email)
     # rubocop:enable Layout/LineLength
