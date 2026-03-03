@@ -52,7 +52,7 @@ class AgentSession < ApplicationRecord
   end
 
   def redactions
-    session_metadata&.fetch("redactions", nil) || []
+    session_metadata&.dig("redactions") || []
   end
 
   def total_redactions
@@ -69,8 +69,12 @@ class AgentSession < ApplicationRecord
 
   def parse_and_normalize!(file_content, detected_tool: nil)
     self.tool_name = detected_tool if detected_tool
-    parser = AgentSessionParsers::AutoDetect.parser_for(tool_name)
-    parsed = parser.parse(file_content)
+    begin
+      parser = AgentSessionParsers::AutoDetect.parser_for(tool_name)
+      parsed = parser.parse(file_content)
+    rescue ArgumentError, JSON::ParserError, EncodingError => e
+      raise AgentSessionParsers::ParseError, e.message
+    end
 
     # Scrub secrets from normalized data before persisting
     result = AgentSessionParsers::SensitiveDataScrubber.scrub(parsed)
@@ -91,7 +95,7 @@ class AgentSession < ApplicationRecord
 
     truncated = title.length > 100 ? title[0..100].split[0...-1].join(" ") : title
     base = Sterile.sluggerize(truncated)
-    self.slug = "#{base}-#{rand(100_000).to_s(26)}"
+    self.slug = "#{base}-#{SecureRandom.alphanumeric(6).downcase}"
   end
 
   def normalized_data_has_messages

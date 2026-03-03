@@ -26,7 +26,7 @@ module AgentSessionParsers
       first_line = content.lines.first&.strip
       if first_line&.start_with?("{")
         begin
-          first_record = JSON.parse(first_line, max_nesting: 50)
+          first_record = JSON.parse(first_line, max_nesting: Base::MAX_JSON_NESTING)
 
           # GitHub Copilot: session.start with copilot producer
           return "github_copilot" if first_record["type"] == "session.start"
@@ -54,7 +54,7 @@ module AgentSessionParsers
 
       # Try full JSON parse (Gemini CLI uses single JSON object)
       begin
-        data = JSON.parse(content, max_nesting: 50)
+        data = JSON.parse(content, max_nesting: Base::MAX_JSON_NESTING)
         return "gemini_cli" if data.is_a?(Hash) && !data.key?("parentId")
       rescue JSON::ParserError
         # Not JSON

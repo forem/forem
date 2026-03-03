@@ -1,8 +1,10 @@
 module AgentSessionParsers
   class ClaudeCode < Base
+    CONVERSATION_TYPES = %w[user assistant].freeze
+
     def parse
       records = parse_jsonl_lines
-      conversation_records = records.select { |r| r["type"].in?(%w[user assistant]) }
+      conversation_records = records.select { |r| CONVERSATION_TYPES.include?(r["type"]) }
 
       messages = []
       tool_results_map = build_tool_results_map(conversation_records)
@@ -115,11 +117,7 @@ module AgentSessionParsers
       return unless input.is_a?(Hash)
 
       case name
-      when "Read"
-        input["file_path"]
-      when "Write"
-        input["file_path"]
-      when "Edit"
+      when "Read", "Write", "Edit"
         input["file_path"]
       when "Bash"
         input["command"]
@@ -135,8 +133,9 @@ module AgentSessionParsers
     end
 
     def extract_metadata(records, messages)
-      first_record = records.detect { |r| r["type"].in?(%w[user assistant]) }
-      last_record = records.reverse.detect { |r| r["type"].in?(%w[user assistant]) }
+      conversation_types = %w[user assistant]
+      first_record = records.detect { |r| conversation_types.include?(r["type"]) }
+      last_record = records.reverse_each.detect { |r| conversation_types.include?(r["type"]) }
 
       {
         "tool_name" => "claude_code",

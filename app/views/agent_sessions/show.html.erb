@@ -6,7 +6,10 @@
       <span><%= @agent_session.total_messages %> messages</span>
       <% start_time = @agent_session.metadata["start_time"] %>
       <% if start_time.present? %>
-        <span><%= Time.zone.parse(start_time).strftime("%B %d, %Y") %></span>
+        <% parsed_time = begin; Time.zone.parse(start_time); rescue ArgumentError; nil; end %>
+        <% if parsed_time %>
+          <span><%= parsed_time.strftime("%B %d, %Y") %></span>
+        <% end %>
       <% end %>
     </div>
 

@@ -96,7 +96,7 @@ class AgentSessionsController < ApplicationController
         format.any { render :new, status: :unprocessable_entity }
       end
     end
-  rescue StandardError => e
+  rescue AgentSessionParsers::ParseError => e
     Rails.logger.error("Agent session parse error: #{e.class}: #{e.message}")
     error_message = "Failed to parse session file. Please check the file format and try again."
     respond_to do |format|

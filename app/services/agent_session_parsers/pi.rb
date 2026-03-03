@@ -25,7 +25,7 @@ module AgentSessionParsers
             emit_assistant_messages(msg["content"], messages, timestamp, current_model)
           when "toolResult"
             output = extract_text_content(msg["content"])
-            attach_output_to_first_unmatched(messages, truncate_output(output)) if output.present?
+            attach_output_to_tool_call(messages, truncate_output(output)) if output.present?
           end
         end
       end
@@ -82,19 +82,6 @@ module AgentSessionParsers
         content.filter_map { |c| c["text"] if c["type"] == "text" }.join("\n")
       else
         ""
-      end
-    end
-
-    def attach_output_to_first_unmatched(messages, output)
-      messages.each do |m|
-        next unless m["role"] == "assistant"
-
-        m["content"]&.each do |b|
-          next unless b["type"] == "tool_call" && b["output"].nil?
-
-          b["output"] = output
-          return # rubocop:disable Lint/NonLocalExitFromIterator
-        end
       end
     end
 

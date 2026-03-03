@@ -20,7 +20,8 @@ module AgentSessionParsers
           data = record["data"] || {}
           output = extract_result_content(data["result"])
           formatted = truncate_output(output)
-          attach_output_to_matching(messages, data["toolCallId"], formatted) if formatted.present?
+          tool_id = data["toolCallId"]
+          attach_output_to_tool_call(messages, formatted) { |b| b["tool_call_id"] == tool_id } if formatted.present?
         end
       end
 
@@ -78,21 +79,6 @@ module AgentSessionParsers
         result
       else
         result&.to_json
-      end
-    end
-
-    def attach_output_to_matching(messages, tool_call_id, output)
-      return unless tool_call_id
-
-      messages.each do |m|
-        next unless m["role"] == "assistant"
-
-        m["content"]&.each do |b|
-          next unless b["type"] == "tool_call" && b["tool_call_id"] == tool_call_id && b["output"].nil?
-
-          b["output"] = output
-          return # rubocop:disable Lint/NonLocalExitFromIterator
-        end
       end
     end
 

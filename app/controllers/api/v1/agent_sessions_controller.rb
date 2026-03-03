@@ -3,6 +3,7 @@ module Api
     class AgentSessionsController < ApiController
       before_action :authenticate_with_api_key!
       before_action :set_agent_session, only: [:show]
+      after_action :verify_authorized, only: %i[create]
 
       def index
         @agent_sessions = @user.agent_sessions.order(updated_at: :desc)
@@ -18,6 +19,7 @@ module Api
         rate_limiter.check_limit!(:agent_session_creation)
 
         @agent_session = @user.agent_sessions.new(title: create_title)
+        authorize @agent_session
 
         content = extract_content
         unless content
@@ -59,9 +61,7 @@ module Api
           render json: { error: @agent_session.errors.full_messages.join(", "), status: 422 },
                  status: :unprocessable_entity
         end
-      rescue RateLimitChecker::LimitReached
-        raise
-      rescue StandardError => e
+      rescue AgentSessionParsers::ParseError => e
         Rails.logger.error("Agent session API parse error: #{e.class}: #{e.message}")
         render json: { error: "Failed to parse session content. Please check the format and try again.", status: 422 },
                status: :unprocessable_entity
@@ -70,9 +70,11 @@ module Api
       private
 
       def set_agent_session
-        @agent_session = @user.agent_sessions.find_by!(slug: params[:id])
-      rescue ActiveRecord::RecordNotFound
-        @agent_session = @user.agent_sessions.find(params[:id])
+        @agent_session = if params[:id]&.match?(/\A\d+\z/)
+                           @user.agent_sessions.find(params[:id])
+                         else
+                           @user.agent_sessions.find_by!(slug: params[:id])
+                         end
       end
 
       def create_title

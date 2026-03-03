@@ -75,7 +75,7 @@ module AgentSessionParsers
         output = extract_output_content(payload)
         formatted = truncate_output(output)
         # Find the first tool_call in already-flushed messages that has no output yet
-        attach_output_to_first_unmatched(messages, formatted)
+        attach_output_to_tool_call(messages, formatted)
       when "reasoning"
         summary = payload.dig("summary", 0, "text")
         if summary.present?
@@ -169,19 +169,6 @@ module AgentSessionParsers
         raw
       else
         raw&.to_json
-      end
-    end
-
-    def attach_output_to_first_unmatched(messages, output)
-      messages.each do |m|
-        next unless m["role"] == "assistant"
-
-        m["content"]&.each do |b|
-          next unless b["type"] == "tool_call" && b["output"].nil?
-
-          b["output"] = output
-          return # rubocop:disable Lint/NonLocalExitFromIterator
-        end
       end
     end
 

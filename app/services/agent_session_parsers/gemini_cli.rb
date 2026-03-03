@@ -29,7 +29,7 @@ module AgentSessionParsers
 
     def parse_data
       # Try JSON first, then JSONL
-      JSON.parse(raw_content, max_nesting: 50)
+      JSON.parse(raw_content, max_nesting: MAX_JSON_NESTING)
     rescue JSON::ParserError
       # JSONL format
       parse_jsonl_lines
