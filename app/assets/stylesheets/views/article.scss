@@ -164,6 +164,16 @@
   }
 }
 
+html.is-twitter-in-app {
+  .crayons-article-actions {
+    display: none !important;
+
+    @media (min-width: $breakpoint-m) {
+      display: grid !important; // Restore desktop layout if Twitter UA is faked/used on tablet
+    }
+  }
+}
+
 .crayons-reaction {
   --reaction-color: var(--button-ghost-color);
   --reaction-border: inset 0 0 0 0 transparent;
