@@ -1004,6 +1004,24 @@ RSpec.describe Billboard do
       billboard.update_column(:expires_at, 1.day.ago)
       expect { billboard.check_and_handle_expiration }.to change { billboard.reload.approved }.from(true).to(false)
     end
+
+    it "busts caches if the billboard was published and on home page" do
+      billboard.update!(placement_area: "feed_first")
+      billboard.update_column(:expires_at, 1.day.ago)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.check_and_handle_expiration
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with(billboard.record_key)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "busts only billboard cache if the billboard was published but not on home page" do
+      billboard.update!(placement_area: "sidebar_left")
+      billboard.update_column(:expires_at, 1.day.ago)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.check_and_handle_expiration
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with(billboard.record_key)
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
   end
 
   describe "scopes" do
@@ -1265,7 +1283,7 @@ RSpec.describe Billboard do
     end
   end
 
-  describe "#home_feed_first_being_activated?" do
+  describe "#should_bust_home_page_cache?" do
     let(:billboard) { create(:billboard, placement_area: "feed_first", approved: false, published: false) }
 
     it "busts home page cache when feed_first billboard is approved from unapproved state" do
@@ -1288,25 +1306,78 @@ RSpec.describe Billboard do
       expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
     end
 
-    it "does not bust cache when billboard is not feed_first" do
+    it "busts cache when billboard is being taken down (approved set to false)" do
+      billboard.update!(approved: true, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(approved: false)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "busts cache when billboard is being taken down (published set to false)" do
+      billboard.update!(approved: true, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(published: false)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "busts cache when active billboard content is updated" do
+      billboard.update!(approved: true, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(name: "Updated name")
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "does not bust cache when active billboard unrelated attributes are updated" do
+      billboard.update!(approved: true, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(weight: 100)
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "busts cache when placement_area is changed away from home page for an active billboard" do
+      billboard.update!(approved: true, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(placement_area: "post_sidebar")
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "does not bust cache when billboard is not a home page placement and is activated" do
       sidebar_billboard = create(:billboard, placement_area: "sidebar_left", approved: false, published: false)
       allow(EdgeCache::PurgeByKey).to receive(:call)
       sidebar_billboard.update!(approved: true, published: true)
       expect(EdgeCache::PurgeByKey).not_to have_received(:call).with("main_app_home_page", fallback_paths: "/")
     end
 
-    it "does not bust cache when billboard is already approved and published and saved again" do
-      billboard.update!(approved: true, published: true)
+    it "does not bust cache when billboard is not a home page placement and content is updated" do
+      sidebar_billboard = create(:billboard, placement_area: "sidebar_left", approved: true, published: true)
       allow(EdgeCache::PurgeByKey).to receive(:call)
-      billboard.update!(name: "Updated name")
+      sidebar_billboard.update!(name: "Updated name")
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+  end
+
+  describe "after_destroy cache busting" do
+    it "busts billboard and home page cache for active home page billboard" do
+      billboard = create(:billboard, placement_area: "feed_first", approved: true, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.destroy
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with(billboard.record_key)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "busts billboard cache but not home page for active non-home page billboard" do
+      billboard = create(:billboard, placement_area: "sidebar_left", approved: true, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.destroy
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with(billboard.record_key)
       expect(EdgeCache::PurgeByKey).not_to have_received(:call).with("main_app_home_page", fallback_paths: "/")
     end
 
-    it "does not bust cache when billboard is being taken down (approved set to false)" do
-      billboard.update!(approved: true, published: true)
+    it "does not bust cache for inactive billboard" do
+      billboard = create(:billboard, placement_area: "feed_first", approved: false, published: true)
       allow(EdgeCache::PurgeByKey).to receive(:call)
-      billboard.update!(approved: false)
-      expect(EdgeCache::PurgeByKey).not_to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+      billboard.destroy
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call)
     end
   end
 end
