@@ -34,7 +34,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_26_192014) do
     t.bigint "user_id", null: false
     t.index ["tool_name"], name: "index_agent_sessions_on_tool_name"
     t.index ["user_id", "published"], name: "index_agent_sessions_on_user_id_and_published"
-    t.index ["user_id", "slug"], name: "index_agent_sessions_on_user_id_and_slug", unique: true
+    t.index ["slug"], name: "index_agent_sessions_on_slug", unique: true
     t.index ["user_id"], name: "index_agent_sessions_on_user_id"
   end
 

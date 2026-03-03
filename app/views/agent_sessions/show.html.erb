@@ -28,7 +28,7 @@
             <button class="crayons-btn crayons-btn--s crayons-btn--ghost" type="button"
                     onclick="navigator.clipboard.writeText(this.previousElementSibling.value);
                              this.textContent='Copied!';
-                             setTimeout(function(){this.textContent='<%= t("views.agent_sessions.copy_link") %>';}.bind(this), 1500);">
+                             setTimeout(function(){this.textContent='<%= j(t("views.agent_sessions.copy_link")) %>';}.bind(this), 1500);">
               <%= t("views.agent_sessions.copy_link") %>
             </button>
           </div>

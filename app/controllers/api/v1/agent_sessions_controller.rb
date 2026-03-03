@@ -14,6 +14,9 @@ module Api
       end
 
       def create
+        rate_limiter = @user.rate_limiter
+        rate_limiter.check_limit!(:agent_session_creation)
+
         @agent_session = @user.agent_sessions.new(title: create_title)
 
         content = extract_content
@@ -50,11 +53,14 @@ module Api
         end
 
         if @agent_session.save
+          @user.rate_limiter.track_limit_by_action(:agent_session_creation)
           render json: session_create_json(@agent_session), status: :created
         else
           render json: { error: @agent_session.errors.full_messages.join(", "), status: 422 },
                  status: :unprocessable_entity
         end
+      rescue RateLimitChecker::LimitReached
+        raise
       rescue StandardError => e
         Rails.logger.error("Agent session API parse error: #{e.class}: #{e.message}")
         render json: { error: "Failed to parse session content. Please check the format and try again.", status: 422 },
