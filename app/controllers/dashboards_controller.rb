@@ -14,6 +14,7 @@
 class DashboardsController < ApplicationController
   before_action :set_no_cache_header
   before_action :authenticate_user!
+  before_action :set_agent_sessions_count
 
   layout false, only: :sidebar
 
@@ -116,6 +117,10 @@ class DashboardsController < ApplicationController
   end
 
   private
+
+  def set_agent_sessions_count
+    @agent_sessions_count = current_user.agent_sessions.count
+  end
 
   def follows_for(user:, type:, order_by: :created_at)
     user.follows_by_type(type).order(order_by => :desc).includes(:followable).limit(follows_limit)

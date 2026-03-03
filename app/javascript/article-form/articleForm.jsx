@@ -60,6 +60,40 @@ export class ArticleForm extends Component {
     }
   }
 
+  static handleAgentSessionPreview() {
+    document.querySelectorAll('.ltag-agent-session').forEach(function(embed) {
+      if (embed.dataset.bound) return;
+      embed.dataset.bound = '1';
+
+      // Tool call expand/collapse
+      embed.querySelectorAll('.agent-session-tool-toggle').forEach(function(toggle) {
+        toggle.addEventListener('click', function() {
+          var detail = this.nextElementSibling;
+          var isExpanded = this.getAttribute('aria-expanded') === 'true';
+          detail.style.display = isExpanded ? 'none' : 'block';
+          this.setAttribute('aria-expanded', !isExpanded);
+          this.querySelector('.agent-session-chevron').textContent = isExpanded ? '\u25B8' : '\u25BE';
+        });
+      });
+
+      // Collapsible long text
+      embed.querySelectorAll('[data-collapsible]').forEach(function(wrapper) {
+        var textEl = wrapper.querySelector('.agent-session-text-collapse');
+        var btn = wrapper.querySelector('.agent-session-expand-btn');
+        if (!textEl || !btn) return;
+        if (textEl.scrollHeight <= textEl.clientHeight + 2) {
+          btn.style.display = 'none';
+          textEl.classList.remove('agent-session-text-collapse');
+          return;
+        }
+        btn.addEventListener('click', function() {
+          var expanded = textEl.classList.toggle('expanded');
+          btn.textContent = expanded ? 'Show less' : 'Show more';
+        });
+      });
+    });
+  }
+
   static propTypes = {
     version: PropTypes.string.isRequired,
     article: PropTypes.string.isRequired,
@@ -176,6 +210,7 @@ export class ArticleForm extends Component {
       embedGists(this.formElement);
       this.constructor.handleRunkitPreview();
       this.constructor.handleAsciinemaPreview();
+      this.constructor.handleAgentSessionPreview();
     }
   }
 

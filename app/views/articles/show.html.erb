@@ -315,6 +315,9 @@
     <% if @article.processed_html.include?("tweet-embed") %>
       <%== TweetTag.script %>
     <% end %>
+    <% if @article.processed_html.include?("ltag-agent-session") %>
+      <%== AgentSessionTag.script %>
+    <% end %>
     <%# We should be able to make this conditional in future, but defines a global variable for now %>
     <%== RunkitTag.script %>
   </script>

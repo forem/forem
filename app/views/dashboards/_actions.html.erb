@@ -20,6 +20,14 @@
     </li>
 
     <li>
+      <a class="crayons-link crayons-link--block"
+        href="<%= agent_sessions_path %>">
+        <%= t("views.dashboard.actions.agent_sessions") %>
+        <span class="c-indicator"><%= @agent_sessions_count %></span>
+      </a>
+    </li>
+
+    <li>
       <a class="crayons-link crayons-link--block <%= "crayons-link--current" if @action == "followers" %>"
         href="/dashboard/user_followers"
         <%= @action == "followers" ? ' aria-current="page"'.html_safe : "" %>>

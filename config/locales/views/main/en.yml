@@ -28,6 +28,7 @@ en:
       nav:
         admin: Admin
         manage_subforem: Manage Subforem
+        agent_sessions: Agent Sessions
         dashboard: Dashboard
         placeholder: "..."
         list: Reading list
