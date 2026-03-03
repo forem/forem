@@ -9,8 +9,6 @@ module Feeds
     has_many :import_logs, class_name: "Feeds::ImportLog", foreign_key: :feed_source_id,
                            inverse_of: :feed_source, dependent: :nullify
 
-    after_initialize :set_defaults, if: :new_record?
-
     enum status: { healthy: 0, degraded: 1, failing: 2, inactive: 3 }, _prefix: :feed
 
     validates :feed_url, presence: true, length: { maximum: 500 }
@@ -39,11 +37,6 @@ module Feeds
     end
 
     private
-
-    def set_defaults
-      self.mark_canonical = true
-      self.referential_link = false
-    end
 
     def validate_feed_url
       return if feed_url.blank?

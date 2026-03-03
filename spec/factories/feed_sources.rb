@@ -3,8 +3,6 @@ FactoryBot.define do
     user
     sequence(:feed_url) { |n| "https://example.com/feed#{n}.xml" }
     status { :healthy }
-    mark_canonical { false }
-    referential_link { true }
 
     trait :with_organization do
       organization
