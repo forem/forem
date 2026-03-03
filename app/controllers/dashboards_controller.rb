@@ -120,10 +120,12 @@ class DashboardsController < ApplicationController
     fetch_and_authorize_user
     @feed_sources = @user.feed_sources.includes(:organization, :author).order(:created_at)
     @user_organizations = @user.organizations
-    @org_members_by_org = @user_organizations.each_with_object({}) do |org, hash|
-      hash[org.id] = org.organization_memberships.includes(:user)
-        .where.not(type_of_user: "pending").map(&:user)
-    end
+    @org_members_by_org = OrganizationMembership
+      .where(organization_id: @user_organizations.select(:id))
+      .where.not(type_of_user: "pending")
+      .includes(:user)
+      .group_by(&:organization_id)
+      .transform_values { |memberships| memberships.map(&:user) }
     @selected_source = @feed_sources.find_by(id: params[:feed_source_id]) if params[:feed_source_id].present?
 
     # Determine overall feed status from sources

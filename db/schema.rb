@@ -745,10 +745,10 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_05_140853) do
     t.datetime "created_at", null: false
     t.string "feed_url", limit: 500, null: false
     t.datetime "last_fetched_at"
-    t.boolean "mark_canonical", default: false, null: false
+    t.boolean "mark_canonical", default: true, null: false
     t.string "name", limit: 100
     t.bigint "organization_id"
-    t.boolean "referential_link", default: true, null: false
+    t.boolean "referential_link", default: false, null: false
     t.integer "status", default: 0, null: false
     t.string "status_message"
     t.datetime "updated_at", null: false
@@ -1903,7 +1903,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_05_140853) do
     t.datetime "updated_at", null: false
   end
 
-  add_foreign_key "agent_sessions", "users", on_delete: :cascade
   add_foreign_key "ahoy_events", "ahoy_visits", column: "visit_id", on_delete: :cascade
   add_foreign_key "ahoy_events", "users", on_delete: :cascade
   add_foreign_key "ahoy_messages", "feedback_messages", on_delete: :nullify

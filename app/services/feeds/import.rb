@@ -32,21 +32,22 @@ module Feeds
 
       feed_sources.in_batches(of: sources_batch_size) do |batch_of_sources|
         sources = batch_of_sources.includes(:user, :organization, :author).to_a
+        sources_by_id = sources.index_by(&:id)
 
-        fetch_results = fetch_feeds(sources)
+        fetch_results = fetch_feeds(sources, sources_by_id)
         feeds_per_source_id = fetch_results[:feeds]
 
         feedjira_objects, parse_failures = parse_feeds(feeds_per_source_id)
 
         # Record fetch failures
-        record_fetch_failures(fetch_results[:failures], sources)
+        record_fetch_failures(fetch_results[:failures], sources_by_id)
 
         # Record parse failures
-        record_parse_failures(parse_failures, sources)
+        record_parse_failures(parse_failures, sources_by_id)
 
         # NOTE: doing this sequentially to avoid locking problems with the DB
         articles = feedjira_objects.flat_map do |source_id, feed|
-          source = sources.detect { |s| s.id == source_id }
+          source = sources_by_id[source_id]
           create_articles_from_feed_source(source, feed)
         end
 
@@ -85,7 +86,7 @@ module Feeds
       sources.where(last_fetched_at: nil).or(sources.where(last_fetched_at: ..earlier_than))
     end
 
-    def fetch_feeds(sources)
+    def fetch_feeds(sources, sources_by_id)
       data = sources.map { |s| [s.id, s.feed_url] }
       failures = []
 
@@ -99,7 +100,7 @@ module Feeds
 
         [source_id, response.body]
       rescue StandardError => e
-        source = sources.detect { |s| s.id == source_id }
+        source = sources_by_id[source_id]
         report_error(
           e,
           feeds_import_info: {
@@ -232,9 +233,9 @@ module Feeds
       Rails.logger.error("feeds::import::tracking_error::#{e.class}::#{e.message}")
     end
 
-    def record_fetch_failures(failures, sources)
+    def record_fetch_failures(failures, sources_by_id)
       failures.each do |failure|
-        source = sources.detect { |s| s.id == failure[:source_id] }
+        source = sources_by_id[failure[:source_id]]
         next unless source
 
         Feeds::ImportLog.create!(
@@ -250,9 +251,9 @@ module Feeds
       end
     end
 
-    def record_parse_failures(failures, sources)
+    def record_parse_failures(failures, sources_by_id)
       failures.each do |failure|
-        source = sources.detect { |s| s.id == failure[:source_id] }
+        source = sources_by_id[failure[:source_id]]
         next unless source
 
         Feeds::ImportLog.create!(

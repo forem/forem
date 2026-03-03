@@ -6,8 +6,8 @@ class CreateFeedSources < ActiveRecord::Migration[7.0]
       t.string :name, limit: 100
       t.references :organization, null: true, foreign_key: { on_delete: :nullify }
       t.bigint :author_user_id
-      t.boolean :mark_canonical, default: false, null: false
-      t.boolean :referential_link, default: true, null: false
+      t.boolean :mark_canonical, default: true, null: false
+      t.boolean :referential_link, default: false, null: false
       t.integer :status, default: 0, null: false
       t.string :status_message
       t.integer :consecutive_failures, default: 0, null: false
