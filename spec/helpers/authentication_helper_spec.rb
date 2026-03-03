@@ -45,6 +45,14 @@ RSpec.describe AuthenticationHelper do
       expect(helper.signed_up_with(user)).to match(/Email & Password/)
       expect(helper.signed_up_with(user)).to match(/use that to sign back into TestCommunity/)
     end
+
+    it "uses subforem community name when subforem_id is available" do
+      allow(Authentication::Providers).to receive(:enabled).and_return([])
+      allow(helper).to receive(:subforem_id).and_return(42)
+      allow(Settings::Community).to receive(:community_name).with(subforem_id: 42).and_return("SubCommunity")
+
+      expect(helper.signed_up_with(user)).to match(/use that to sign back into SubCommunity/)
+    end
   end
 
   describe "#available_providers_array" do
