@@ -23,11 +23,19 @@ RSpec.describe Articles::Attributes, type: :service do
       it "doesn't have attributes that were not passed" do
         expect(attrs_for_update.key?(:title)).to be false
         expect(attrs_for_update.key?(:video_thumbnail_url)).to be false
+        expect(attrs_for_update.key?(:video_source_url)).to be false
       end
 
       it "has passed attributes" do
         expect(attrs_for_update[:body_markdown]).to include("Hey this is the article")
         expect(attrs_for_update[:organization_id]).to eq(2)
+      end
+
+      it "allows video_source_url" do
+        video_attrs = few_attributes.merge(video_source_url: "https://youtube.com/watch?v=123")
+        attrs = described_class.new(video_attrs, user).for_update
+        expect(attrs.key?(:video_source_url)).to be true
+        expect(attrs[:video_source_url]).to eq("https://youtube.com/watch?v=123")
       end
     end
 
