@@ -120,8 +120,11 @@ class DashboardsController < ApplicationController
     fetch_and_authorize_user
     @feed_sources = @user.feed_sources.includes(:organization, :author).order(:created_at)
     @user_organizations = @user.organizations
+    admin_org_ids = OrganizationMembership
+      .where(user_id: @user.id, type_of_user: "admin")
+      .pluck(:organization_id)
     @org_members_by_org = OrganizationMembership
-      .where(organization_id: @user_organizations.select(:id))
+      .where(organization_id: admin_org_ids)
       .where.not(type_of_user: "pending")
       .includes(:user)
       .group_by(&:organization_id)

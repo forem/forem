@@ -37,7 +37,14 @@ class MigrateFeedUrlsToFeedSources < ActiveRecord::Migration[7.0]
   def down
     safety_assured do
       execute "UPDATE feed_import_logs SET feed_source_id = NULL"
-      execute "DELETE FROM feed_sources"
+      # Only delete sources that were migrated from users_settings, not ones created via the UI
+      execute <<~SQL.squish
+        DELETE FROM feed_sources
+        WHERE (user_id, feed_url) IN (
+          SELECT user_id, feed_url FROM users_settings
+          WHERE COALESCE(feed_url, '') <> ''
+        )
+      SQL
     end
   end
 end

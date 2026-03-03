@@ -29,6 +29,7 @@
                   <% status_color = case source.status
                     when "failing" then "color-accent-danger"
                     when "degraded" then "color-accent-warning"
+                    when "inactive" then "color-base-60"
                     else "color-accent-success"
                   end %>
                   <span class="fs-s fw-medium <%= status_color %>">
@@ -74,7 +75,7 @@
         </details>
 
         <%# --- Health Warning --- %>
-        <% if @feed_status.present? && @feed_status != "healthy" %>
+        <% if @feed_status.in?(%w[degraded failing]) %>
           <div class="crayons-notice crayons-notice--<%= @feed_status == 'failing' ? 'danger' : 'warning' %> mb-4">
             <%= t("views.dashboard.feed_imports.health.#{@feed_status}") %>
           </div>
@@ -98,17 +99,17 @@
 
         <%# --- Source Filter --- %>
         <% if @feed_sources.size > 1 %>
-          <div class="crayons-card p-3 mb-4 flex items-center gap-3">
-            <label class="fw-medium fs-s" for="feed-source-filter"><%= t("views.dashboard.feed_imports.source_filter") %></label>
-            <select id="feed-source-filter" class="crayons-select w-auto" onchange="window.location.href = this.value">
-              <option value="/dashboard/feed_imports" <%= "selected" unless @selected_source %>><%= t("views.dashboard.feed_imports.all_sources") %></option>
+          <%= form_with url: "/dashboard/feed_imports", method: :get, class: "crayons-card p-3 mb-4 flex items-center gap-3" do %>
+            <label class="fw-medium fs-s" for="feed_source_id"><%= t("views.dashboard.feed_imports.source_filter") %></label>
+            <select id="feed_source_id" name="feed_source_id" class="crayons-select w-auto" onchange="this.form.submit()">
+              <option value="" <%= "selected" unless @selected_source %>><%= t("views.dashboard.feed_imports.all_sources") %></option>
               <% @feed_sources.each do |source| %>
-                <option value="/dashboard/feed_imports?feed_source_id=<%= source.id %>" <%= "selected" if @selected_source&.id == source.id %>>
+                <option value="<%= source.id %>" <%= "selected" if @selected_source&.id == source.id %>>
                   <%= source.name || source.feed_url.truncate(50) %>
                 </option>
               <% end %>
             </select>
-          </div>
+          <% end %>
         <% end %>
 
         <%# --- Import History --- %>
