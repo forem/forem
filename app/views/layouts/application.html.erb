@@ -57,7 +57,7 @@
     <%= Settings::UserExperience.head_content.html_safe %>
   </head>
   <% unless internal_navigation? %>
-    <% cache(release_adjusted_cache_key("top-html-and-config--#{user_signed_in?}--#{@article.present?}-#{request.host}-#{I18n.locale}-#{@article&.subforem_id}")) do %>
+    <% cache(release_adjusted_cache_key("top-html-and-config--#{user_signed_in?}--#{@article.present?}-#{request.host}-#{I18n.locale}-#{RequestStore.store[:subforem_id] || @article&.subforem_id}")) do %>
       <body
         class="<%= Settings::UserExperience.default_font.tr("_", "-") %>-article-body default-header"
         data-user-status="<%= j(user_logged_in_status) %>"
@@ -118,7 +118,7 @@
           <%= yield(:audio) %>
         </div>
         <% unless ENV["DISABLE_MAIN_SIDE_BAR"] == "yes" %>
-          <% cache("main-side-bar-#{user_signed_in?}", expires_in: 10.minutes) do %>
+          <% cache("main-side-bar-#{user_signed_in?}-#{RequestStore.store[:subforem_id]}", expires_in: 10.minutes) do %>
             <% if Subforem.cached_discoverable_ids.any? %>
               <%= render "layouts/main_side_bar" %>
             <% end %>
@@ -154,7 +154,7 @@
   </div>
 </div>
 <% unless internal_navigation? %>
-  <% cache("footer-and-signup-modal-#{user_signed_in?}-#{ForemInstance.deployed_at}-#{Settings::General.admin_action_taken_at&.rfc3339}-#{request.host}", expires_in: 24.hours) do %>
+  <% cache("footer-and-signup-modal-#{user_signed_in?}-#{ForemInstance.deployed_at}-#{Settings::General.admin_action_taken_at&.rfc3339}-#{request.host}-#{RequestStore.store[:subforem_id]}", expires_in: 24.hours) do %>
     <%= render "layouts/footer" %>
     <%= render "layouts/signup_modal" unless user_signed_in? %>
     <div id="cookie-consent"></div>
