@@ -499,6 +499,43 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
                 maxItems: 10_000
               }
             }
+          },
+          AgentSessionIndex: {
+            description: "Representation of an agent session returned in a list or after creation",
+            type: :object,
+            properties: {
+              id: { type: :integer, format: :int64 },
+              slug: { type: :string },
+              title: { type: :string },
+              tool_name: { type: :string, description: "Tool that produced the session (e.g. claude_code, codex)" },
+              total_messages: { type: :integer, format: :int32 },
+              published: { type: :boolean },
+              created_at: { type: :string, format: "date-time" },
+              updated_at: { type: :string, format: "date-time" },
+              url: { type: :string, format: :url }
+            },
+            required: %w[id slug title tool_name total_messages published created_at url]
+          },
+          AgentSessionShow: {
+            description: "Full representation of an agent session including messages and curation data",
+            type: :object,
+            properties: {
+              id: { type: :integer, format: :int64 },
+              slug: { type: :string },
+              title: { type: :string },
+              tool_name: { type: :string, description: "Tool that produced the session (e.g. claude_code, codex)" },
+              total_messages: { type: :integer, format: :int32 },
+              curated_count: { type: :integer, format: :int32, description: "Number of curated messages selected for display" },
+              published: { type: :boolean },
+              metadata: { type: :object, nullable: true, description: "Session metadata (tool-specific)" },
+              messages: { type: :array, items: { type: :object }, description: "All normalized messages in the session" },
+              curated_selections: { type: :array, items: { type: :object }, description: "Ranges of curated message selections" },
+              slices: { type: :array, items: { type: :object }, description: "Named slices grouping message ranges" },
+              created_at: { type: :string, format: "date-time" },
+              updated_at: { type: :string, format: "date-time" },
+              url: { type: :string, format: :url }
+            },
+            required: %w[id slug title tool_name total_messages curated_count published messages curated_selections slices created_at updated_at url]
           }
         }
       }
