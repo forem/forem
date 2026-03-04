@@ -30,7 +30,7 @@ RSpec.describe Badges::AwardContributorFromGithub, type: :service do
     end
 
     context "when some commits have nil authors" do
-      let!(:dev_contributor_badge) { create(:badge, slug: "dev-contributor") }
+      let!(:dev_contributor_badge) { create(:badge, title: "dev-contributor") }
 
       it "safely ignores commits with nil authors without raising NoMethodError" do
         expect {
@@ -40,8 +40,8 @@ RSpec.describe Badges::AwardContributorFromGithub, type: :service do
     end
 
     context "when badges exist in the database" do
-      let!(:dev_contributor_badge) { create(:badge, slug: "dev-contributor") }
-      let!(:four_x_commit_badge) { create(:badge, slug: "4x-commit-club") }
+      let!(:dev_contributor_badge) { create(:badge, title: "dev-contributor") }
+      let!(:four_x_commit_badge) { create(:badge, title: "4x-commit-club") }
 
       it "awards the expected badges" do
         described_class.call
