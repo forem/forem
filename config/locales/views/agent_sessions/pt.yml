@@ -1,0 +1,18 @@
+---
+pt:
+  views:
+    agent_sessions:
+      share_link: Link de compartilhamento
+      copy_link: Copiar
+      by_author: "por %{name}"
+      make_public: Tornar público
+      make_private: Tornar privado
+      public_label: Público
+      private_label: Privado
+      public_description: Qualquer pessoa pode ver via link direto e incorporar em suas publicações
+      private_description: Apenas você pode incorporar esta sessão em suas publicações
+      security_warning: Por favor, revise sua sessão cuidadosamente antes de torná-la pública para garantir que você não está compartilhando algo que não deveria.
+      switched_to_model: "Alternado para %{model}"
+      not_available_title: Sessão não disponível
+      not_available_description: Esta sessão de agente não existe ou não está disponível publicamente.
+      not_available_sign_in_hint: Se esta é a sua sessão, tente fazer login para visualizá-la.

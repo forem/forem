@@ -19,6 +19,9 @@
       <a href="<%= dashboard_path %>" class="c-link c-link--block"><%= t("views.main.nav.dashboard") %></a>
     </li>
     <li>
+      <a href="<%= agent_sessions_path %>" class="c-link c-link--block"><%= t("views.main.nav.agent_sessions") %></a>
+    </li>
+    <li>
       <a href="<%= mod_path %>" class="c-link c-link--block trusted-visible-block"><%= t("views.main.nav.moderator_center") %></a>
     </li>
     <% if ArticlePolicy.is_root_subforem? %>
