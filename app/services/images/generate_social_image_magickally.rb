@@ -57,6 +57,7 @@ module Images
     private
 
     def generate_magickally(title: nil, date: nil, author_name: nil, color: nil)
+      @background_image.resize "1200x627!"
       result = draw_stripe(color)
       result = add_logo(result)
       result = add_text(result, title, date, author_name)
@@ -68,7 +69,7 @@ module Images
       color = "#111212" if color == "#000000" # pure black has minimagick side effects
       @background_image.combine_options do |c|
         c.fill color
-        c.draw "rectangle 0,0 1000,24" # adjust width according to your image width
+        c.draw "rectangle 0,0 1200,30" # adjust width according to your image width
       end
     end
 
@@ -79,15 +80,15 @@ module Images
           c.stroke "white"
           c.strokewidth "4"
           c.fill "none"
-          c.draw "rectangle 0,0 1000,1000" # adjust as needed based on image size
+          c.draw "rectangle 0,0 1200,1200" # adjust as needed based on image size
         end
 
         # Resize the overlay image
-        @logo_image.resize "64x64"
+        @logo_image.resize "77x77"
 
         result = @background_image.composite(@logo_image) do |c|
           c.compose "Over" # OverCompositeOp
-          c.geometry "+850+372" # move the overlay to the top left
+          c.geometry "+1020+466" # move the overlay to the top left
         end
       end
       result
@@ -102,7 +103,7 @@ module Images
         escaped_title = title.gsub('"', '\\"')
         c.gravity "West" # Set the origin for the text at the top left corner
         c.pointsize font_size.to_s
-        c.draw "text 80,-39 \"#{escaped_title}\"" # Start drawing text 90 from the left and slightly north, with double quotes around the title
+        c.draw "text 96,-49 \"#{escaped_title}\"" # Start drawing text 90 from the left and slightly north, with double quotes around the title
         c.fill "black"
         c.font BOLD_FONT_PATH.to_s
       end
@@ -110,23 +111,23 @@ module Images
       result.combine_options do |c|
         escaped_name = author_name.gsub('"', '\\"')
         c.gravity "Southwest"
-        c.pointsize "32"
-        c.draw "text 156,88 \"#{escaped_name}\"" # adjust coordinates as needed
+        c.pointsize "40"
+        c.draw "text 187,110 \"#{escaped_name}\"" # adjust coordinates as needed
         c.fill "black"
         c.font MEDIUM_FONT_PATH.to_s
       end
 
       result.combine_options do |c|
         c.gravity "Southwest"
-        c.pointsize "26"
-        c.draw "text 156,60 \"#{date}\"" # adjust coordinates as needed
+        c.pointsize "32"
+        c.draw "text 187,75 \"#{date}\"" # adjust coordinates as needed
         c.fill "#525252"
       end
     end
 
     def add_profile_image(result)
-      profile_image_size = "64x64"
-      profile_image_location = "+80+63"
+      profile_image_size = "77x77"
+      profile_image_location = "+96+79"
       # Add subtext and author image
       @author_image.resize profile_image_size
       result = result.composite(@author_image) do |c|
@@ -164,15 +165,15 @@ module Images
       text_length = text.length
 
       if text_length < 18
-        88
+        110
       elsif text_length < 40
-        77
+        96
       elsif text_length < 55
-        65
+        81
       elsif text_length < 70
-        60
+        75
       else
-        50
+        62
       end
     end
 
