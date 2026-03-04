@@ -9,10 +9,7 @@ module Badges
     }.freeze
 
     REPOSITORIES = [
-      "forem/forem",
-      "forem/forem-browser-extension",
-      "forem/DEV-Android",
-      "forem/DEV-ios",
+      "forem/forem"
     ].freeze
 
     def self.call(msg = I18n.t("services.badges.thank_you"))
