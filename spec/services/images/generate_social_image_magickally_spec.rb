@@ -265,28 +265,28 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
       let(:generator) { described_class.new(article) }
 
       it "returns the correct font size for short text" do
-        expect(generator.send(:calculate_font_size, "short text")).to eq(88)
+        expect(generator.send(:calculate_font_size, "short text")).to eq(110)
       end
 
       it "returns the correct font size for medium text" do
         medium_text = "This is a slightly longer text."
-        expect(generator.send(:calculate_font_size, medium_text)).to eq(77)
+        expect(generator.send(:calculate_font_size, medium_text)).to eq(96)
       end
 
       it "returns the correct font size for medium-to-long text" do
         medium_long_text = "This is a slightly longer text. Slightly longer."
-        expect(generator.send(:calculate_font_size, medium_long_text)).to eq(65)
+        expect(generator.send(:calculate_font_size, medium_long_text)).to eq(81)
       end
 
       it "returns the correct font size for medium-to-long text" do
         almost_long_text = "This is a slightly longer text. Slightly longer than the last."
-        expect(generator.send(:calculate_font_size, almost_long_text)).to eq(60)
+        expect(generator.send(:calculate_font_size, almost_long_text)).to eq(75)
       end
 
       it "returns the correct font size for long text" do
         long_text = "This is a very long text that is definitely more than 70 characters long
           and should return a smaller font size"
-        expect(generator.send(:calculate_font_size, long_text)).to eq(50)
+        expect(generator.send(:calculate_font_size, long_text)).to eq(62)
       end
     end
 
@@ -360,8 +360,8 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
 
       it "adds the profile image and rounded mask to the image" do
         generator.send(:add_profile_image, result_image)
-        expect(author_image).to have_received(:resize).with("64x64")
-        expect(rounded_mask).to have_received(:resize).with("64x64")
+        expect(author_image).to have_received(:resize).with("77x77")
+        expect(rounded_mask).to have_received(:resize).with("77x77")
         expect(result_image).to have_received(:composite).twice
       end
     end
@@ -394,8 +394,8 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
           expect(logo_image).to have_received(:stroke).with("white")
           expect(logo_image).to have_received(:strokewidth).with("4")
           expect(logo_image).to have_received(:fill).with("none")
-          expect(logo_image).to have_received(:draw).with("rectangle 0,0 1000,1000")
-          expect(logo_image).to have_received(:resize).with("64x64")
+          expect(logo_image).to have_received(:draw).with("rectangle 0,0 1200,1200")
+          expect(logo_image).to have_received(:resize).with("77x77")
           expect(result_image).to have_received(:composite).with(logo_image)
         end
       end
