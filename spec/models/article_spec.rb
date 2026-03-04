@@ -1669,7 +1669,7 @@ RSpec.describe Article do
   describe "admin welcome cache busting" do
     let(:admin) { create(:user, :admin) }
     let(:super_admin) { create(:user, :super_admin) }
-    let(:mascot) { User.find_by(id: Settings::General.mascot_user_id) || create(:user, id: Settings::General.mascot_user_id) }
+    let(:mascot) { create(:user) }
     let(:cache_store) { ActiveSupport::Cache::MemoryStore.new }
 
     around do |example|
@@ -1701,6 +1701,7 @@ RSpec.describe Article do
     end
 
     it "busts cached welcome keys when a mascot publishes a welcome article" do
+      allow(Settings::General).to receive(:mascot_user_id).and_return(mascot.id)
       article = create(:article, user: mascot, tags: "welcome")
       Rails.cache.write("admin-published-with:welcome:all", "cached")
       article.update!(title: "Updated title")
