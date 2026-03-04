@@ -530,9 +530,11 @@
 
 .agent-session-list-item-meta {
   display: flex;
-  gap: 16px;
+  flex-wrap: wrap;
+  gap: 4px 16px;
   font-size: 0.8em;
   color: var(--card-color-secondary, #6b7280);
+  overflow: hidden;
 
   span {
     white-space: nowrap;
