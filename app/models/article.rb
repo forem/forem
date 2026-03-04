@@ -418,7 +418,7 @@ class Article < ApplicationRecord
                           .select(:id)).order(published_at: :desc).cached_tagged_with(tag_name)
   }
 
-  def self.cached_admin_published_with(tag_name, subforem_id: nil, expires_in: 6.hours)
+  def self.cached_admin_published_with(tag_name, subforem_id: nil, expires_in: 1.hour)
     cache_key = [
       "admin-published-with",
       tag_name,
@@ -1593,10 +1593,18 @@ class Article < ApplicationRecord
 
   private
 
+  def admin_published_user?
+    return false unless user
+
+    user.any_admin? ||
+      user.id == Settings::General.mascot_user_id ||
+      user.id == Settings::Community.staff_user_id
+  end
+
   def bust_cached_admin_welcome_thread
     return unless published?
     return unless cached_tag_list.to_s.match?(/(?:^|,)\s*welcome(?:\s*,|$)/)
-    return unless user&.admin?
+    return unless admin_published_user?
 
     self.class.bust_cached_admin_published_with("welcome", subforem_id: subforem_id)
     self.class.bust_cached_admin_published_with("welcome")
