@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Badges::AwardContributorFromGithub do
+RSpec.describe Badges::AwardContributorFromGithub, type: :service do
   let(:user) { create(:user) }
   let(:identity) { create(:identity, user: user, provider: "github", uid: "123456") }
 
@@ -8,10 +8,10 @@ RSpec.describe Badges::AwardContributorFromGithub do
     allow(Settings::Authentication).to receive(:providers).and_return([:github])
   end
 
-  describe "#call" do
+  describe ".call" do
     let(:commits) { [double(author: double(id: "123456")), double(author: nil)] }
     let(:contributors) { [double(id: "123456", contributions: 50)] }
-    let(:github_client) { instance_double(Github::OauthClient) }
+    let(:github_client) { double("Github::OauthClient") }
 
     before do
       identity
@@ -29,6 +29,8 @@ RSpec.describe Badges::AwardContributorFromGithub do
     end
 
     context "when some commits have nil authors" do
+      let!(:dev_contributor_badge) { create(:badge, slug: "dev-contributor") }
+
       it "safely ignores commits with nil authors without raising NoMethodError" do
         expect {
           described_class.call
