@@ -2,10 +2,17 @@ module Articles
   class SocialImage
     include Rails.application.routes.url_helpers
 
-    def initialize(article, height: 500, width: 1000)
+    def initialize(article, height: nil, width: nil)
       @article = article
-      @height = height
-      @width = width
+
+      default_width, default_height = if article.published_at.present? && article.published_at > Time.zone.local(2026, 3, 1)
+                                        [1200, 627]
+                                      else
+                                        [1000, 500]
+                                      end
+
+      @height = height || default_height
+      @width = width || default_width
     end
 
     def url
