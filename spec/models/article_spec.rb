@@ -1668,6 +1668,8 @@ RSpec.describe Article do
 
   describe "admin welcome cache busting" do
     let(:admin) { create(:user, :admin) }
+    let(:super_admin) { create(:user, :super_admin) }
+    let(:mascot) { User.find_by(id: Settings::General.mascot_user_id) || create(:user, id: Settings::General.mascot_user_id) }
     let(:cache_store) { ActiveSupport::Cache::MemoryStore.new }
 
     around do |example|
@@ -1689,6 +1691,20 @@ RSpec.describe Article do
 
       expect(Rails.cache.read("admin-published-with:welcome:all")).to be_nil
       expect(Rails.cache.read("admin-published-with:welcome:#{subforem.id}")).to be_nil
+    end
+
+    it "busts cached welcome keys when a super_admin publishes a welcome article" do
+      article = create(:article, user: super_admin, tags: "welcome")
+      Rails.cache.write("admin-published-with:welcome:all", "cached")
+      article.update!(title: "Updated title")
+      expect(Rails.cache.read("admin-published-with:welcome:all")).to be_nil
+    end
+
+    it "busts cached welcome keys when a mascot publishes a welcome article" do
+      article = create(:article, user: mascot, tags: "welcome")
+      Rails.cache.write("admin-published-with:welcome:all", "cached")
+      article.update!(title: "Updated title")
+      expect(Rails.cache.read("admin-published-with:welcome:all")).to be_nil
     end
 
     it "does not bust cached welcome keys for non-admin authors" do
