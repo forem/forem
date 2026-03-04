@@ -182,42 +182,53 @@ class StoriesController < ApplicationController
       .limited_column_select
       .order(published_at: :desc).page(@page).per(8))
     @organization_article_index = true
-    # Get active users ordered by badge achievements
-    # For find_each_respecting_scope compatibility, we get ordered IDs first (with order column in select)
-    # then create a relation that preserves that order when .ids is called
-    # This avoids the DISTINCT/ORDER BY conflict when find_each_respecting_scope calls .ids
-    ordered_user_data = @organization.active_users
-                                     .select("users.id, users.badge_achievements_count")
-                                     .order(Arel.sql("users.badge_achievements_count DESC NULLS LAST, users.id ASC"))
-                                     .pluck(:id, :badge_achievements_count)
-    ordered_user_ids = ordered_user_data.map(&:first)
-    
-    # Create a relation that preserves the order when .ids is called by find_each_respecting_scope
-    # The limit applied in the view will be respected by checking the relation's limit_value
-    @organization_users = User.where(id: ordered_user_ids).extending(Module.new do
-      ids_array = ordered_user_ids.dup # Capture in closure
-      define_method :ids do
-        # Return IDs in the order they were provided, preserving the badge_achievements_count ordering
-        # This is called by in_batches_respecting_scope to get all IDs before batching
-        # Check if a limit was applied to this relation and respect it
-        # limit_value is available on ActiveRecord::Relation
-        limit = limit_value
-        if limit
-          ids_array.take(limit)
-        else
-          ids_array
+
+    unless @organization.readme_page?
+      # Get active users ordered by badge achievements
+      # For find_each_respecting_scope compatibility, we get ordered IDs first (with order column in select)
+      # then create a relation that preserves that order when .ids is called
+      # This avoids the DISTINCT/ORDER BY conflict when find_each_respecting_scope calls .ids
+      ordered_user_data = @organization.active_users
+                                       .select("users.id, users.badge_achievements_count")
+                                       .order(Arel.sql("users.badge_achievements_count DESC NULLS LAST, users.id ASC"))
+                                       .pluck(:id, :badge_achievements_count)
+      ordered_user_ids = ordered_user_data.map(&:first)
+
+      # Create a relation that preserves the order when .ids is called by find_each_respecting_scope
+      # The limit applied in the view will be respected by checking the relation's limit_value
+      @organization_users = User.where(id: ordered_user_ids).extending(Module.new do
+        ids_array = ordered_user_ids.dup # Capture in closure
+        define_method :ids do
+          # Return IDs in the order they were provided, preserving the badge_achievements_count ordering
+          # This is called by in_batches_respecting_scope to get all IDs before batching
+          # Check if a limit was applied to this relation and respect it
+          # limit_value is available on ActiveRecord::Relation
+          limit = limit_value
+          if limit
+            ids_array.take(limit)
+          else
+            ids_array
+          end
         end
+      end)
+      if !user_signed_in? && @organization_users.sum(:score).negative? && @stories.sum(&:score) <= 0
+        not_found
       end
-    end)
-    if !user_signed_in? && @organization_users.sum(:score).negative? && @stories.sum(&:score) <= 0
-      not_found
     end
+
     redirect_if_inactive_in_subforem_for_organization
     return if performed?
 
     set_organization_json_ld
     set_surrogate_key_header @organization.record_key
-    render template: "organizations/show"
+
+    if @organization.readme_page?
+      @readme_html = @organization.processed_page_html
+      @cover_image_url = @organization.cover_image_url if @organization.cover_image.present?
+      render template: "organizations/show_readme"
+    else
+      render template: "organizations/show"
+    end
   end
 
   def handle_user_index

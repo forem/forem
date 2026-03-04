@@ -58,6 +58,7 @@ class Organization < ApplicationRecord
   validates :summary, length: { maximum: 250 }
   validates :tag_line, length: { maximum: 60 }
   validates :tech_stack, :story, length: { maximum: 640 }
+  validates :page_markdown, length: { maximum: 20_000 }
   validates :text_color_hex, format: COLOR_HEX_REGEXP, allow_blank: true
   validates :twitter_username, length: { maximum: 15 }
   validates :unspent_credits_count, presence: true
@@ -67,6 +68,7 @@ class Organization < ApplicationRecord
   unique_across_models :slug, length: { in: 2..30 }
 
   mount_uploader :profile_image, ProfileImageUploader
+  mount_uploader :cover_image, CoverImageUploader
 
   alias_attribute :username, :slug
   alias_attribute :old_username, :old_slug
@@ -143,6 +145,10 @@ class Organization < ApplicationRecord
     fully_trusted == true
   end
 
+  def readme_page?
+    page_markdown.present?
+  end
+
   private
 
   def generate_social_images
@@ -154,6 +160,20 @@ class Organization < ApplicationRecord
 
   def evaluate_markdown
     self.cta_processed_html = MarkdownProcessor::Parser.new(cta_body_markdown).evaluate_limited_markdown
+    evaluate_page_markdown if has_attribute?(:page_markdown) && will_save_change_to_attribute?(:page_markdown)
+  end
+
+  def evaluate_page_markdown
+    if page_markdown.blank?
+      self.processed_page_html = nil
+      return
+    end
+
+    renderer = ContentRenderer.new(page_markdown, source: self, user: nil)
+    result = renderer.process
+    self.processed_page_html = result.processed_html
+  rescue ContentRenderer::ContentParsingError => e
+    errors.add(:page_markdown, e.message)
   end
 
   def remove_at_from_usernames

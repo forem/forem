@@ -129,5 +129,9 @@ en:
       invalid: "Invalid agent_session syntax. Use: {% agent_session ID %}, {% agent_session ID start..end %}, or {% agent_session ID slice_name %}"
       not_found: Agent session not found
       unpublished: Only the session owner can embed this session
+    org_posts_tag:
+      invalid_slug: Invalid organization slug
+    org_team_tag:
+      invalid_slug: Invalid organization slug
     youtube_tag:
       invalid_youtube_id: Invalid YouTube ID or URL

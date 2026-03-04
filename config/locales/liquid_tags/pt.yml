@@ -129,5 +129,9 @@ pt:
       invalid: "Sintaxe agent_session inválida. Use: {% agent_session ID %}, {% agent_session ID inicio..fim %}, ou {% agent_session ID nome_fatia %}"
       not_found: Sessão de agente não encontrada
       unpublished: Apenas o proprietário da sessão pode incorporar esta sessão
+    org_posts_tag:
+      invalid_slug: Slug da organização inválido
+    org_team_tag:
+      invalid_slug: Slug da organização inválido
     youtube_tag:
       invalid_youtube_id: ID do YouTube inválido

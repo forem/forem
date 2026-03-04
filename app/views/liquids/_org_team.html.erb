@@ -1,0 +1,19 @@
+<div class="ltag-org-team crayons-card crayons-card--secondary org-sidebar-widget">
+  <header class="crayons-card__header">
+    <h3 class="crayons-subtitle-3"><%= I18n.t("views.organizations.team") %></h3>
+  </header>
+  <div class="org-sidebar-widget-body">
+    <% users.each do |user| %>
+      <div class="org-sidebar-widget-user-pic">
+        <a href="/<%= user.username %>">
+          <img src="<%= user.profile_image_url_for(length: 90) %>" alt="<%= user.username %> profile image" loading="lazy" />
+        </a>
+      </div>
+    <% end %>
+  </div>
+  <% if users.size >= 50 %>
+    <a class="c-cta ml-5 mt-1 mr-5 mb-5" href="/<%= organization.slug %>/members">
+      <%= I18n.t("views.organizations.all_members") %>
+    </a>
+  <% end %>
+</div>

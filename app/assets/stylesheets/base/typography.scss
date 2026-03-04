@@ -110,10 +110,21 @@ body {
   // Liquid tags styling is still pretty random and overwriting what's been
   // implemented there makes some things look worse. We should circle back
   // when/if we "redesign" liquid tags.
-  [class*='ltag'] a {
-    text-decoration: none;
-    &:hover {
-      color: var(--color-hover);
+  [class*='ltag'] {
+    font-size: initial;
+    font-family: var(--ff-sans-serif);
+
+    a {
+      text-decoration: none;
+      color: inherit;
+      &:hover {
+        color: var(--color-hover);
+      }
+    }
+
+    img {
+      max-width: none;
+      margin: 0;
     }
   }
 
