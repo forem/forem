@@ -129,5 +129,9 @@ fr:
       invalid: "Syntaxe agent_session non valide. Utilisez : {% agent_session ID %}, {% agent_session ID debut..fin %}, ou {% agent_session ID nom_tranche %}"
       not_found: Session d'agent non trouvée
       unpublished: Seul le propriétaire de la session peut intégrer cette session
+    org_posts_tag:
+      invalid_slug: Slug de l'organisation non valide
+    org_team_tag:
+      invalid_slug: Slug de l'organisation non valide
     youtube_tag:
       invalid_youtube_id: ID ou URL YouTube non valide

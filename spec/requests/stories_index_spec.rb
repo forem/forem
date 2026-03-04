@@ -400,4 +400,35 @@ RSpec.describe "StoriesIndex" do
       end
     end
   end
+
+  describe "GET /:slug (organization page)" do
+    let(:organization) { create(:organization) }
+    let(:user) { create(:user) }
+
+    before do
+      create(:organization_membership, organization: organization, user: user, type_of_user: "member")
+      create(:article, organization: organization, user: user, published: true)
+    end
+
+    context "when organization has no readme page" do
+      it "renders the classic show template" do
+        get "/#{organization.slug}"
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("sidebar-left")
+      end
+    end
+
+    context "when organization has a readme page" do
+      before do
+        organization.update!(page_markdown: "**Welcome to our org!**")
+      end
+
+      it "renders the readme show template" do
+        get "/#{organization.slug}"
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("<strong>Welcome to our org!</strong>")
+        expect(response.body).not_to include("sidebar-left")
+      end
+    end
+  end
 end

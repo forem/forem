@@ -199,7 +199,7 @@ class UsersController < ApplicationController
 
     OrganizationMembership.find_by(user_id: adminable.id, organization_id: org.id).update(type_of_user: "admin")
     flash[:settings_notice] = I18n.t("users_controller.added_admin", name: adminable.name)
-    redirect_to "/settings/organization/#{org.id}"
+    redirect_to organization_settings_path(org.slug)
   end
 
   def remove_org_admin
@@ -210,7 +210,7 @@ class UsersController < ApplicationController
 
     OrganizationMembership.find_by(user_id: unadminable.id, organization_id: org.id).update(type_of_user: "member")
     flash[:settings_notice] = I18n.t("users_controller.removed_admin", name: unadminable.name)
-    redirect_to "/settings/organization/#{org.id}"
+    redirect_to organization_settings_path(org.slug)
   end
 
   def remove_from_org
@@ -222,7 +222,7 @@ class UsersController < ApplicationController
 
     removable_org_membership.delete
     flash[:settings_notice] = I18n.t("users_controller.removed_member", name: removable.name)
-    redirect_to "/settings/organization/#{org.id}"
+    redirect_to organization_settings_path(org.slug)
   end
 
   def signout_confirm; end
@@ -303,6 +303,11 @@ class UsersController < ApplicationController
     elsif params[:org_id].blank? || params[:org_id].match?(/\d/)
       @organization = Organization.find_by(id: params[:org_id]) || @organizations.first
       authorize @organization, :part_of_org?
+
+      # Redirect admins to the consolidated settings page
+      if current_user.org_admin?(@organization)
+        redirect_to organization_settings_path(@organization.slug) and return
+      end
 
       @org_organization_memberships = @organization.organization_memberships.includes(:user)
       @organization_membership = OrganizationMembership.find_by(user_id: current_user.id,

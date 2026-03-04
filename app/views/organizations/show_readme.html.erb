@@ -1,0 +1,17 @@
+<% title sanitize(@organization.name) %>
+
+<%= content_for :page_meta do %>
+  <%= render "users/meta" %>
+  <% unless @stories.sum(&:score).positive? %>
+      <meta name="robots" content="noindex">
+      <meta name="robots" content="nofollow">
+  <% end %>
+<% end %>
+<%= render "organizations/header" %>
+<div class="crayons-layout crayons-layout--limited-l pt-4 m:pt-0" id="index-container">
+  <main class="crayons-layout__content">
+    <div class="crayons-article__body text-styles">
+      <%= @readme_html.html_safe %>
+    </div>
+  </main>
+</div>

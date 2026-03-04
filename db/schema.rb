@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_02_26_192014) do
+ActiveRecord::Schema[7.0].define(version: 2026_03_03_230426) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -34,7 +34,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_26_192014) do
     t.bigint "user_id", null: false
     t.index ["tool_name"], name: "index_agent_sessions_on_tool_name"
     t.index ["user_id", "published"], name: "index_agent_sessions_on_user_id_and_published"
-    t.index ["slug"], name: "index_agent_sessions_on_slug", unique: true
+    t.index ["user_id", "slug"], name: "index_agent_sessions_on_user_id_and_slug", unique: true
     t.index ["user_id"], name: "index_agent_sessions_on_user_id"
   end
 
@@ -949,6 +949,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_26_192014) do
     t.integer "baseline_score", default: 0
     t.string "bg_color_hex"
     t.string "company_size"
+    t.string "cover_image"
     t.datetime "created_at", precision: nil, null: false
     t.integer "credits_count", default: 0, null: false
     t.text "cta_body_markdown"
@@ -966,7 +967,9 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_26_192014) do
     t.string "name"
     t.string "old_old_slug"
     t.string "old_slug"
+    t.text "page_markdown"
     t.integer "past_24_hours_promoted_billboard_impressions", default: 0, null: false
+    t.text "processed_page_html"
     t.string "profile_image"
     t.datetime "profile_updated_at", precision: nil, default: "2017-01-01 05:00:00"
     t.text "proof"

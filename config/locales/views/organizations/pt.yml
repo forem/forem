@@ -1,6 +1,14 @@
 ---
 pt:
   views:
+    organization_settings:
+      page:
+        heading: Página
+        cover_image: Imagem de capa
+        readme: Conteúdo da página (Markdown)
+        readme_placeholder: "Use Markdown e tags Liquid para personalizar a página da sua organização.\n\nExemplo:\n{% org_team slug-da-org %}\n{% org_posts slug-da-org %}"
+        readme_description: "Suporta Markdown e tags Liquid como {% org_team slug %} e {% org_posts slug %}."
+        save: Salvar página
     organizations:
       dropdown: Organization actions
       empty: 404 bio not found
@@ -43,6 +51,8 @@ pt:
       all_members: See All Members
       twitter:
         icon: Twitter logo
+      cover_image_alt: "Imagem de capa de %{org}"
+      settings_link: Configurações da Organização
       confirm_invitation:
         title: Confirmar Convite da Organização
         greeting: "Olá %{name}!"

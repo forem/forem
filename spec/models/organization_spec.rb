@@ -449,6 +449,56 @@ RSpec.describe Organization do
     end
   end
 
+  describe "#page_markdown" do
+    it "validates max length of 20_000" do
+      organization.page_markdown = "x" * 20_001
+      expect(organization).not_to be_valid
+      expect(organization.errors[:page_markdown]).to be_present
+    end
+
+    it "accepts page_markdown with 20_000 or less characters" do
+      organization.page_markdown = "x" * 20_000
+      expect(organization).to be_valid
+    end
+  end
+
+  describe "#readme_page?" do
+    it "returns true when page_markdown is present" do
+      organization.page_markdown = "# Hello World"
+      expect(organization.readme_page?).to be(true)
+    end
+
+    it "returns false when page_markdown is blank" do
+      organization.page_markdown = nil
+      expect(organization.readme_page?).to be(false)
+    end
+
+    it "returns false when page_markdown is empty string" do
+      organization.page_markdown = ""
+      expect(organization.readme_page?).to be(false)
+    end
+  end
+
+  describe "#evaluate_markdown (page_markdown)" do
+    it "processes page_markdown into processed_page_html on save" do
+      organization.page_markdown = "**bold text**"
+      organization.save!
+      expect(organization.processed_page_html).to include("<strong>bold text</strong>")
+    end
+
+    it "clears processed_page_html when page_markdown is blanked" do
+      organization.update!(page_markdown: "**bold**")
+      organization.update!(page_markdown: nil)
+      expect(organization.processed_page_html).to be_nil
+    end
+
+    it "adds error on invalid liquid tag content" do
+      organization.page_markdown = "{% gist invalid_format %}"
+      expect(organization.save).to be(false)
+      expect(organization.errors[:page_markdown]).to be_present
+    end
+  end
+
   describe "#fully_trusted?" do
     it "returns true when fully_trusted is true" do
       organization.update(fully_trusted: true)
