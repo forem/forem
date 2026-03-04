@@ -6,6 +6,7 @@ RSpec.describe Badges::AwardContributorFromGithub, type: :service do
 
   before do
     allow(Settings::Authentication).to receive(:providers).and_return([:github])
+    OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new({ provider: "github", uid: "123456" })
   end
 
   describe ".call" do
