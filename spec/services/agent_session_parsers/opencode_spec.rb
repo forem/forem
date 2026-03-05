@@ -59,7 +59,8 @@ RSpec.describe AgentSessionParsers::Opencode do
 
       assistant = result["messages"].second
       expect(assistant["model"]).to eq("openai/gpt-4o")
-      expect(assistant["timestamp"]).to eq("2025-03-05T12:00:02Z")
+      expected_timestamp = Time.zone.at(1_741_176_002_000 / 1000).iso8601
+      expect(assistant["timestamp"]).to eq(expected_timestamp)
 
       reasoning = assistant["content"].detect { |b| b["type"] == "text" && b["text"].start_with?("**Reasoning:**") }
       expect(reasoning).to be_present
