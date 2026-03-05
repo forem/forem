@@ -14,6 +14,7 @@ RSpec.describe "Badges" do
         expect(response.body).to include "Badges"
         badges.each do |badge|
           expect(response.body).to include CGI.escapeHTML(badge.badge_image_url)
+          expect(response.body).to include(%(template id="badge-#{badge.id}"))
         end
       end
     end
@@ -24,6 +25,7 @@ RSpec.describe "Badges" do
         expect(response.body).to include "Badges"
         badges.each do |badge|
           expect(response.body).to include CGI.escapeHTML(badge.badge_image_url)
+          expect(response.body).to include(%(template id="badge-#{badge.id}"))
         end
       end
     end
