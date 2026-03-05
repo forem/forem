@@ -495,9 +495,7 @@ class Billboard < ApplicationRecord
       end
     end
 
-    if article_ids_to_exclude.any?
-      self.exclude_article_ids = (exclude_article_ids + article_ids_to_exclude).uniq
-    end
+    self.exclude_article_ids = article_ids_to_exclude.uniq
   end
 
   def update_content_updated_at_if_needed
