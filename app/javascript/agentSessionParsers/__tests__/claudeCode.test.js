@@ -90,7 +90,7 @@ describe('claudeCode parser', () => {
     expect(result.metadata.total_messages).toBe(1);
   });
 
-  it('truncates long tool output', () => {
+  it('preserves full tool output (no truncation)', () => {
     const longOutput = 'x'.repeat(3000);
     const input = [
       makeRecord('assistant', 'assistant', [
@@ -103,8 +103,7 @@ describe('claudeCode parser', () => {
 
     const result = parse(input);
     const output = result.messages[0].content[0].output;
-    expect(output.length).toBeLessThan(longOutput.length);
-    expect(output).toContain('truncated');
+    expect(output).toBe(longOutput);
   });
 
   it('skips non-conversation record types', () => {
