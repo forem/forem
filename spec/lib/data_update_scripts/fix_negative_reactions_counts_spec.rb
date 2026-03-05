@@ -4,46 +4,46 @@ require Rails.root.join(
 )
 
 RSpec.describe DataUpdateScripts::FixNegativeReactionCounters do
-  def stub_negative_articles_scope(articles)
-    relation = instance_double(ActiveRecord::Relation)
-    allow(relation).to receive(:find_in_batches).with(batch_size: 100).and_yield(articles)
-    allow(relation).to receive(:count).and_return(articles.size)
-    allow(Article).to receive(:where).with("public_reactions_count < 0").and_return(relation)
-  end
-
-  def stub_negative_comments_scope(comments)
-    relation = instance_double(ActiveRecord::Relation)
-    allow(relation).to receive(:find_in_batches).with(batch_size: 100).and_yield(comments)
-    allow(relation).to receive(:count).and_return(comments.size)
-    allow(Comment).to receive(:where).with("public_reactions_count < 0").and_return(relation)
+  # Helper to bypass check constraints for testing purposes
+  def set_counter_value(record, value)
+    record.class.where(id: record.id).update_all(public_reactions_count: value)
+    record.reload
   end
 
   it "fixes negative public_reactions_count on articles" do
     article = create(:article)
     create(:reaction, reactable: article, category: "like")
-    article.update_column(:public_reactions_count, 0)
+    # Temporarily disable constraint
+    ActiveRecord::Base.connection.execute("ALTER TABLE articles DROP CONSTRAINT IF EXISTS check_articles_public_reactions_count_non_negative")
+    set_counter_value(article, -5)
+    ActiveRecord::Base.connection.execute("ALTER TABLE articles ADD CONSTRAINT check_articles_public_reactions_count_non_negative CHECK (public_reactions_count >= 0) NOT VALID")
 
-    stub_negative_articles_scope([article])
-
-    described_class.new.run
+   described_class.new.run
 
     article.reload
     expect(article.public_reactions_count).to be >= 0
     expect(article.public_reactions_count).to eq(article.reactions.public_category.count)
+  ensure
+    ActiveRecord::Base.connection.execute("ALTER TABLE articles DROP CONSTRAINT IF EXISTS check_articles_public_reactions_count_non_negative")
+    ActiveRecord::Base.connection.execute("ALTER TABLE articles ADD CONSTRAINT check_articles_public_reactions_count_non_negative CHECK (public_reactions_count >= 0)")
   end
 
   it "fixes negative public_reactions_count on comments" do
     comment = create(:comment)
     create(:reaction, reactable: comment, category: "like")
-    comment.update_column(:public_reactions_count, 0)
-
-    stub_negative_comments_scope([comment])
+    # Temporarily disable constraint
+    ActiveRecord::Base.connection.execute("ALTER TABLE comments DROP CONSTRAINT IF EXISTS check_comments_public_reactions_count_non_negative")
+    set_counter_value(comment, -3)
+    ActiveRecord::Base.connection.execute("ALTER TABLE comments ADD CONSTRAINT check_comments_public_reactions_count_non_negative CHECK (public_reactions_count >= 0) NOT VALID")
 
     described_class.new.run
 
     comment.reload
     expect(comment.public_reactions_count).to be >= 0
     expect(comment.public_reactions_count).to eq(comment.reactions.public_category.count)
+  ensure
+    ActiveRecord::Base.connection.execute("ALTER TABLE comments DROP CONSTRAINT IF EXISTS check_comments_public_reactions_count_non_negative")
+    ActiveRecord::Base.connection.execute("ALTER TABLE comments ADD CONSTRAINT check_comments_public_reactions_count_non_negative CHECK (public_reactions_count >= 0)")
   end
 
   it "does not modify articles with correct positive counts" do
@@ -60,35 +60,44 @@ RSpec.describe DataUpdateScripts::FixNegativeReactionCounters do
 
   it "handles articles with zero reactions correctly" do
     article = create(:article)
-    article.update_column(:public_reactions_count, 0)
-
-    stub_negative_articles_scope([article])
+    # Temporarily disable constraint
+    ActiveRecord::Base.connection.execute("ALTER TABLE articles DROP CONSTRAINT IF EXISTS check_articles_public_reactions_count_non_negative")
+    set_counter_value(article, -1)
+    ActiveRecord::Base.connection.execute("ALTER TABLE articles ADD CONSTRAINT check_articles_public_reactions_count_non_negative CHECK (public_reactions_count >= 0) NOT VALID")
 
     described_class.new.run
 
     article.reload
     expect(article.public_reactions_count).to eq(0)
+  ensure
+    ActiveRecord::Base.connection.execute("ALTER TABLE articles DROP CONSTRAINT IF EXISTS check_articles_public_reactions_count_non_negative")
+    ActiveRecord::Base.connection.execute("ALTER TABLE articles ADD CONSTRAINT check_articles_public_reactions_count_non_negative CHECK (public_reactions_count >= 0)")
   end
 
   it "handles comments with zero reactions correctly" do
     comment = create(:comment)
-    comment.update_column(:public_reactions_count, 0)
-
-    stub_negative_comments_scope([comment])
+    # Temporarily disable constraint
+    ActiveRecord::Base.connection.execute("ALTER TABLE comments DROP CONSTRAINT IF EXISTS check_comments_public_reactions_count_non_negative")
+    set_counter_value(comment, -2)
+    ActiveRecord::Base.connection.execute("ALTER TABLE comments ADD CONSTRAINT check_comments_public_reactions_count_non_negative CHECK (public_reactions_count >= 0) NOT VALID")
 
     described_class.new.run
 
     comment.reload
     expect(comment.public_reactions_count).to eq(0)
+  ensure
+    ActiveRecord::Base.connection.execute("ALTER TABLE comments DROP CONSTRAINT IF EXISTS check_comments_public_reactions_count_non_negative")
+    ActiveRecord::Base.connection.execute("ALTER TABLE comments ADD CONSTRAINT check_comments_public_reactions_count_non_negative CHECK (public_reactions_count >= 0)")
   end
 
   it "processes multiple affected records in batches" do
     articles = create_list(:article, 5)
+    # Temporarily disable constraint
+    ActiveRecord::Base.connection.execute("ALTER TABLE articles DROP CONSTRAINT IF EXISTS check_articles_public_reactions_count_non_negative")
     articles.each do |article|
-      article.update_column(:public_reactions_count, 0)
+      set_counter_value(article, -1)
     end
-
-    stub_negative_articles_scope(articles)
+    ActiveRecord::Base.connection.execute("ALTER TABLE articles ADD CONSTRAINT check_articles_public_reactions_count_non_negative CHECK (public_reactions_count >= 0) NOT VALID")
 
     described_class.new.run
 
@@ -96,5 +105,8 @@ RSpec.describe DataUpdateScripts::FixNegativeReactionCounters do
       article.reload
       expect(article.public_reactions_count).to be >= 0
     end
+  ensure
+    ActiveRecord::Base.connection.execute("ALTER TABLE articles DROP CONSTRAINT IF EXISTS check_articles_public_reactions_count_non_negative")
+    ActiveRecord::Base.connection.execute("ALTER TABLE articles ADD CONSTRAINT check_articles_public_reactions_count_non_negative CHECK (public_reactions_count >= 0)")
   end
 end

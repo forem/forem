@@ -11,7 +11,9 @@ module Reactable
   end
 
   def sync_reactions_count
-    update_column(:public_reactions_count, reactions.public_category.size)
+    # Use direct SQL update to avoid race conditions and callbacks
+    correct_count = reactions.public_category.count
+    self.class.where(id: id).update_all(public_reactions_count: correct_count)
   end
 
   def public_reaction_categories
