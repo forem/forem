@@ -245,8 +245,7 @@
 
   function isOpenCodeExport(data) {
     if (!data || typeof data !== 'object') return false;
-    if (!data.info || !Array.isArray(data.messages)) return false;
-    if (data.messages.length === 0) return true;
+    if (!data.info || !Array.isArray(data.messages) || data.messages.length === 0) return false;
     var firstMessage = data.messages[0];
     return !!(firstMessage && firstMessage.info && Array.isArray(firstMessage.parts));
   }
