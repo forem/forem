@@ -1,22 +1,44 @@
+<%# 1. Define the reaction buttons to avoid repeating HTML %>
+<% 
+  secondary_buttons = [
+    { 
+      id: "reaction-butt-comment", 
+      category: "comment", 
+      icon: "comment.svg", 
+      count: @comments_count, 
+      tooltip: t("views.articles.jump_to_comments.label") 
+    },
+    { 
+      category: "readinglist", 
+      icon: "save.svg", 
+      active_icon: "save-filled.svg", 
+      tooltip: t("views.reactions.readingList.title") 
+    },
+    { 
+      id: "reaction-butt-boost", 
+      category: "boost", 
+      icon: "boost.svg", 
+      tooltip: t("views.articles.boost.label") 
+    }
+  ] 
+%>
 
-<div class="reaction-drawer__outer hoverdown" style="">
-  <button
-    id="reaction-drawer-trigger"
-    aria-label="reaction-drawer-trigger"
-    aria-pressed="false"
-    class="hoverdown-trigger crayons-reaction pseudo-reaction crayons-tooltip__activator relative">
-      <span class="crayons-reaction__icon crayons-reaction__icon--borderless crayons-reaction--like crayons-reaction__icon--inactive" style="width: 40px; height: 40px">
-        <%= crayons_icon_tag("heart-plus.svg", aria_hidden: true, height: 24, width: 24) %>
-      </span>
-      <span class="crayons-reaction__icon crayons-reaction__icon--borderless crayons-reaction__icon--active" style="width: 40px; height: 40px">
-        <%= image_tag "heart-plus-active.svg", aria_hidden: true, height: 24, width: 24 %>
-      </span>
-      <span class="crayons-reaction__count" id="reaction_total_count">
-        <span class="bg-base-40 opacity-25 p-2 inline-block radius-default"></span>
-      </span>
-      <span class="crayons-tooltip__content">
-        <%= t("views.reactions.drawer_button") %>
-      </span>
+<%# 2. Main Reaction Drawer Trigger %>
+<div class="reaction-drawer__outer hoverdown">
+  <button id="reaction-drawer-trigger"
+          aria-label="<%= t("views.reactions.drawer_button") %>"
+          aria-pressed="false"
+          class="hoverdown-trigger crayons-reaction pseudo-reaction crayons-tooltip__activator relative">
+    <span class="crayons-reaction__icon crayons-reaction__icon--borderless crayons-reaction--like crayons-reaction__icon--inactive">
+      <%= crayons_icon_tag("heart-plus.svg", aria_hidden: true, height: 24, width: 24) %>
+    </span>
+    <span class="crayons-reaction__icon crayons-reaction__icon--borderless crayons-reaction__icon--active">
+      <%= image_tag "heart-plus-active.svg", aria_hidden: true, height: 24, width: 24 %>
+    </span>
+    <span class="crayons-reaction__count" id="reaction_total_count">
+      <span class="bg-base-40 opacity-25 p-2 inline-block radius-default"></span>
+    </span>
+    <span class="crayons-tooltip__content"><%= t("views.reactions.drawer_button") %></span>
   </button>
 
   <div class="reaction-drawer" aria-expanded="false">
@@ -35,42 +57,34 @@
   </div>
 </div>
 
-<button
-  id="reaction-butt-comment"
-  aria-label="<%= t("views.articles.jump_to_comments.aria_label") %>"
-  aria-pressed="false"
-  class="crayons-reaction crayons-reaction--comment crayons-tooltip__activator relative"
-  data-category="comment">
-    <span class="crayons-reaction__icon crayons-reaction__icon--borderless crayons-reaction__icon--inactive">
-      <%= crayons_icon_tag("comment.svg", aria_hidden: true) %>
-    </span>
-    <span class="crayons-reaction__count" id="reaction-number-comment" data-count="<%= @comments_count %>">
-      <span class="bg-base-40 opacity-25 p-2 inline-block radius-default"></span>
+<%# 3. Loop through secondary buttons %>
+<% secondary_buttons.each do |btn| %>
+  <button id="<%= btn[:id] %>"
+          aria-label="<%= btn[:tooltip] %>"
+          aria-pressed="false"
+          class="crayons-reaction crayons-reaction--<%= btn[:category] %> crayons-tooltip__activator relative"
+          data-category="<%= btn[:category] %>">
+    
+    <span class="crayons-reaction__icon crayons-reaction__icon--borderless">
+      <%= crayons_icon_tag(btn[:icon], aria_hidden: true) %>
     </span>
 
-    <span data-testid="tooltip" class="crayons-tooltip__content">
-      <%= t("views.articles.jump_to_comments.label") %>
-    </span>
-</button>
+    <% if btn[:active_icon] %>
+      <span class="crayons-reaction__icon crayons-reaction__icon--borderless crayons-reaction__icon--active">
+        <%= image_tag btn[:active_icon], aria_hidden: true %>
+      </span>
+    <% end %>
 
-<%= render partial: "articles/reaction_button",
-           locals: {
-             category: :readinglist,
-             description: t("views.reactions.readingList.title"),
-             image_path: "save.svg",
-             image_active_path: "save-filled.svg",
-             aria_label: t("views.reactions.readingList.aria_label")
-           } %>
+    <% if btn.key?(:count) %>
+      <span class="crayons-reaction__count" id="reaction-number-<%= btn[:category] %>" data-count="<%= btn[:count] %>">
+        <% if btn[:count].present? %>
+          <%= btn[:count] %>
+        <% else %>
+          <span class="bg-base-40 opacity-25 p-2 inline-block radius-default"></span>
+        <% end %>
+      </span>
+    <% end %>
 
-<button
-  id="reaction-butt-boost"
-  aria-label="<%= t("views.articles.boost.label") %>"
-  aria-pressed="false"
-  class="crayons-reaction crayons-reaction--boost crayons-tooltip__activator relative">
-    <span class="crayons-reaction__icon crayons-reaction__icon--borderless crayons-reaction__icon--inactive">
-      <%= crayons_icon_tag("boost.svg", aria_hidden: true) %>
-    </span>
-    <span data-testid="tooltip" class="crayons-tooltip__content">
-      <%= t("views.articles.boost.label") %>
-    </span>
-</button>
+    <span class="crayons-tooltip__content"><%= btn[:tooltip] %></span>
+  </button>
+<% end %>
