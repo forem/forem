@@ -133,7 +133,7 @@
   background: var(--body-color-inverted);
   padding: var(--su-2);
   box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.2);
-  z-index: var(--z-sticky);
+  // z-index: var(--z-sticky);
 
   @media (min-width: $breakpoint-m) {
     border-radius: var(--radius-large);
@@ -147,7 +147,7 @@
     box-shadow: none;
     justify-content: stretch;
     top: calc(var(--header-height) + var(--layout-padding) + 6vh);
-    z-index: var(--z-elevate);
+    // z-index: var(--z-elevate);
   }
 
   &__inner {
