@@ -5,7 +5,7 @@ module AgentSessions
     CONTENT_TYPE = "application/x-jsonlines".freeze
 
     class << self
-      ALLOWED_EXTENSIONS = %w[.jsonl .json .md .txt .log].freeze
+      ALLOWED_EXTENSIONS = %w[.jsonl .json].freeze
 
       def generate_key(user_id, filename = nil)
         ext = if filename

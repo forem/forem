@@ -34,10 +34,10 @@
     <div class="agent-session-form-group">
       <label class="agent-session-label">Session File</label>
       <div class="agent-session-file-drop" id="agent-session-dropzone">
-        <input type="file" accept=".jsonl,.json,.md,.txt,.log" class="agent-session-file-input" id="agent-session-file-input" data-max-file-size-mb="200" data-permitted-file-types='["application","text"]' />
+        <input type="file" accept=".jsonl,.json" class="agent-session-file-input" id="agent-session-file-input" data-max-file-size-mb="200" data-permitted-file-types='["application","text"]' />
         <div class="agent-session-drop-text" id="drop-text">
           <p><strong>Drop your session file here</strong> or click to browse</p>
-          <p class="agent-session-drop-hint">Supports .jsonl, .json, .md, .log files</p>
+          <p class="agent-session-drop-hint">Supports .jsonl and .json files</p>
         </div>
       </div>
 
@@ -193,8 +193,8 @@
   function handleFileSelected(file) {
     // Validate extension
     var ext = file.name.split('.').pop().toLowerCase();
-    if (!['jsonl', 'json', 'md', 'txt', 'log'].includes(ext)) {
-      showError('<%= j t("views.agent_sessions.unsupported_file_type", default: "Unsupported file type. Please use .jsonl, .json, .md, .txt, or .log files.") %>');
+    if (!['jsonl', 'json'].includes(ext)) {
+      showError('<%= j t("views.agent_sessions.unsupported_file_type", default: "Unsupported file type. Please use .jsonl or .json files.") %>');
       return;
     }
 

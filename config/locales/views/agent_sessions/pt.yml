@@ -27,7 +27,7 @@ pt:
       curate_before_upload: Envie um arquivo de sessão de agente. Ele será analisado e limpo localmente no seu navegador — depois você pode selecionar quais partes incluir antes de salvar.
       client_parse_error: Falha ao analisar o arquivo de sessão.
       curated_data_too_large: Os dados selecionados são muito grandes. Por favor, desmarque mais mensagens para reduzir o tamanho.
-      unsupported_file_type: Tipo de arquivo não suportado. Por favor, use arquivos .jsonl, .json, .md, .txt ou .log.
+      unsupported_file_type: Tipo de arquivo não suportado. Por favor, use arquivos .jsonl ou .json.
       uploading_to_storage: Enviando arquivo...
       upload_complete: Envio concluído
       loading_for_curation: Carregando sessão para curadoria...
