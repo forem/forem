@@ -622,14 +622,13 @@ RSpec.describe Billboard do
       expect { billboard.save! }.not_to raise_error
     end
 
-    it "does not parse HTML if it has not changed" do
+    it "does not reprocess exclude_article_ids if HTML has not changed" do
       billboard.body_markdown = "Check out [this link](/testuser/first-article)."
       billboard.save!
+      original_exclude_ids = billboard.exclude_article_ids.dup
 
-      expect(Nokogiri).not_to receive(:HTML)
-      
       billboard.name = "Updated name"
-      billboard.save!
+      expect { billboard.save! }.not_to change { billboard.reload.exclude_article_ids }.from(original_exclude_ids)
     end
   end
 
