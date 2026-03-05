@@ -21,9 +21,57 @@ module Api
         @agent_session = @user.agent_sessions.new(title: create_title)
         authorize @agent_session
 
+        if params[:normalized_data].present?
+          create_from_normalized_data
+        else
+          create_from_content
+        end
+      end
+
+      private
+
+      def set_agent_session
+        @agent_session = if params[:id]&.match?(/\A\d+\z/)
+                           @user.agent_sessions.find(params[:id])
+                         else
+                           @user.agent_sessions.find_by!(slug: params[:id])
+                         end
+      end
+
+      def create_from_normalized_data
+        normalized = params[:normalized_data]
+        normalized = JSON.parse(normalized, max_nesting: 50) if normalized.is_a?(String)
+        normalized = normalized.to_unsafe_h if normalized.respond_to?(:to_unsafe_h)
+
+        validation_errors = AgentSessionParsers::NormalizedDataValidator.validate(normalized)
+        if validation_errors.any?
+          render json: { error: validation_errors.map(&:message).join(", "), status: 422 },
+                 status: :unprocessable_entity
+          return
+        end
+
+        result = AgentSessionParsers::SensitiveDataScrubber.scrub(normalized)
+        @agent_session.tool_name = params[:tool_name].presence || normalized.dig("metadata", "tool_name") || "claude_code"
+        @agent_session.normalized_data = result.scrubbed_data
+        @agent_session.session_metadata = result.scrubbed_data.fetch("metadata", {}).merge(
+          "redactions" => result.redactions.map { |r| { "name" => r.pattern_name, "count" => r.match_count } },
+        )
+
+        if @agent_session.save
+          @user.rate_limiter.track_limit_by_action(:agent_session_creation)
+          render json: session_create_json(@agent_session), status: :created
+        else
+          render json: { error: @agent_session.errors.full_messages.join(", "), status: 422 },
+                 status: :unprocessable_entity
+        end
+      rescue JSON::ParserError
+        render json: { error: "Invalid JSON in normalized_data", status: 422 }, status: :unprocessable_entity
+      end
+
+      def create_from_content
         content = extract_content
         unless content
-          render json: { error: "Missing session content. Provide 'body' or 'session_file'.",
+          render json: { error: "Missing session content. Provide 'body', 'session_file', or 'normalized_data'.",
                          status: 422 }, status: :unprocessable_entity
           return
         end
@@ -65,16 +113,6 @@ module Api
         Rails.logger.error("Agent session API parse error: #{e.class}: #{e.message}")
         render json: { error: "Failed to parse session content. Please check the format and try again.", status: 422 },
                status: :unprocessable_entity
-      end
-
-      private
-
-      def set_agent_session
-        @agent_session = if params[:id]&.match?(/\A\d+\z/)
-                           @user.agent_sessions.find(params[:id])
-                         else
-                           @user.agent_sessions.find_by!(slug: params[:id])
-                         end
       end
 
       def create_title

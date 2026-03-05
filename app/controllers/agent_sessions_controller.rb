@@ -33,79 +33,10 @@ class AgentSessionsController < ApplicationController
     @agent_session = current_user.agent_sessions.new(title: create_params[:title])
     authorize @agent_session
 
-    file = create_params[:session_file]
-    tool_name = create_params[:tool_name]
-
-    unless file.respond_to?(:original_filename)
-      render json: { error: "No file uploaded" }, status: :unprocessable_entity
-      return
-    end
-
-    error = validate_upload(file)
-    if error
-      render json: { error: error }, status: :unprocessable_entity
-      return
-    end
-
-    content = file.read.force_encoding("UTF-8")
-    unless content.valid_encoding?
-      render json: { error: "File must be valid UTF-8 text" }, status: :unprocessable_entity
-      return
-    end
-
-    if content.include?("\x00")
-      render json: { error: "Binary files are not supported" }, status: :unprocessable_entity
-      return
-    end
-
-    if content.bytesize > AgentSession::MAX_RAW_DATA_SIZE
-      render json: { error: "File too large (max 10MB)" }, status: :unprocessable_entity
-      return
-    end
-
-    if tool_name == "auto"
-      detected_tool = AgentSessionParsers::AutoDetect.detect_tool(content, filename: file.original_filename)
-      @agent_session.parse_and_normalize!(content, detected_tool: detected_tool)
+    if create_params[:normalized_data].present?
+      create_from_normalized_data
     else
-      @agent_session.tool_name = tool_name
-      @agent_session.parse_and_normalize!(content)
-    end
-
-    if @agent_session.save
-      rate_limiter.track_limit_by_action(:agent_session_creation)
-      respond_to do |format|
-        format.html do
-          redirect_to edit_agent_session_path(@agent_session),
-                      notice: "Session uploaded! Now curate which parts to include." # rubocop:disable Rails/I18nLocaleTexts
-        end
-        format.json do
-          render json: {
-            success: true,
-            redirect_to: edit_agent_session_path(@agent_session),
-            agent_session: session_json(@agent_session)
-          }
-        end
-        format.any { redirect_to edit_agent_session_path(@agent_session) }
-      end
-    else
-      respond_to do |format|
-        format.html { render :new, status: :unprocessable_entity }
-        format.json do
-          render json: { error: @agent_session.errors.full_messages.join(", ") }, status: :unprocessable_entity
-        end
-        format.any { render :new, status: :unprocessable_entity }
-      end
-    end
-  rescue AgentSessionParsers::ParseError => e
-    Rails.logger.error("Agent session parse error: #{e.class}: #{e.message}")
-    error_message = "Failed to parse session file. Please check the file format and try again."
-    respond_to do |format|
-      format.html do
-        flash.now[:alert] = error_message
-        render :new, status: :unprocessable_entity
-      end
-      format.json { render json: { error: error_message }, status: :unprocessable_entity }
-      format.any { render :new, status: :unprocessable_entity }
+      create_from_file_upload
     end
   end
 
@@ -170,8 +101,139 @@ class AgentSessionsController < ApplicationController
     render_session_not_available
   end
 
+  def create_from_normalized_data
+    normalized = parse_normalized_data_param
+    tool_name = create_params[:tool_name]
+
+    validation_errors = AgentSessionParsers::NormalizedDataValidator.validate(normalized)
+    if validation_errors.any?
+      render json: { error: validation_errors.map(&:message).join(", ") }, status: :unprocessable_entity
+      return
+    end
+
+    # Server-side secret scrubbing (defense in depth)
+    result = AgentSessionParsers::SensitiveDataScrubber.scrub(normalized)
+    @agent_session.tool_name = tool_name.presence || normalized.dig("metadata", "tool_name") || "claude_code"
+    @agent_session.normalized_data = result.scrubbed_data
+    @agent_session.session_metadata = result.scrubbed_data.fetch("metadata", {}).merge(
+      "redactions" => result.redactions.map { |r| { "name" => r.pattern_name, "count" => r.match_count } },
+    )
+
+    if create_params[:curated_selections].present?
+      @agent_session.curated_selections = create_params[:curated_selections].map(&:to_i)
+    end
+
+    if params[:agent_session]&.key?(:slices)
+      @agent_session.slices = parse_create_slices_param
+    end
+
+    save_and_respond_create
+  end
+
+  def create_from_file_upload
+    file = create_params[:session_file]
+    tool_name = create_params[:tool_name]
+
+    unless file.respond_to?(:original_filename)
+      render json: { error: "No file uploaded" }, status: :unprocessable_entity
+      return
+    end
+
+    error = validate_upload(file)
+    if error
+      render json: { error: error }, status: :unprocessable_entity
+      return
+    end
+
+    content = file.read.force_encoding("UTF-8")
+    unless content.valid_encoding?
+      render json: { error: "File must be valid UTF-8 text" }, status: :unprocessable_entity
+      return
+    end
+
+    if content.include?("\x00")
+      render json: { error: "Binary files are not supported" }, status: :unprocessable_entity
+      return
+    end
+
+    if content.bytesize > AgentSession::MAX_RAW_DATA_SIZE
+      render json: { error: "File too large (max 10MB)" }, status: :unprocessable_entity
+      return
+    end
+
+    if tool_name == "auto"
+      detected_tool = AgentSessionParsers::AutoDetect.detect_tool(content, filename: file.original_filename)
+      @agent_session.parse_and_normalize!(content, detected_tool: detected_tool)
+    else
+      @agent_session.tool_name = tool_name
+      @agent_session.parse_and_normalize!(content)
+    end
+
+    save_and_respond_create
+  rescue AgentSessionParsers::ParseError => e
+    Rails.logger.error("Agent session parse error: #{e.class}: #{e.message}")
+    error_message = "Failed to parse session file. Please check the file format and try again."
+    respond_to do |format|
+      format.html do
+        flash.now[:alert] = error_message
+        render :new, status: :unprocessable_entity
+      end
+      format.json { render json: { error: error_message }, status: :unprocessable_entity }
+      format.any { render :new, status: :unprocessable_entity }
+    end
+  end
+
+  def save_and_respond_create
+    if @agent_session.save
+      rate_limiter.track_limit_by_action(:agent_session_creation)
+      respond_to do |format|
+        format.html do
+          redirect_to edit_agent_session_path(@agent_session),
+                      notice: "Session uploaded! Now curate which parts to include." # rubocop:disable Rails/I18nLocaleTexts
+        end
+        format.json do
+          render json: {
+            success: true,
+            redirect_to: edit_agent_session_path(@agent_session),
+            agent_session: session_json(@agent_session)
+          }
+        end
+        format.any { redirect_to edit_agent_session_path(@agent_session) }
+      end
+    else
+      respond_to do |format|
+        format.html { render :new, status: :unprocessable_entity }
+        format.json do
+          render json: { error: @agent_session.errors.full_messages.join(", ") }, status: :unprocessable_entity
+        end
+        format.any { render :new, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def parse_normalized_data_param
+    raw = create_params[:normalized_data]
+    raw.is_a?(String) ? JSON.parse(raw, max_nesting: 50) : raw.to_unsafe_h
+  rescue JSON::ParserError
+    {}
+  end
+
+  def parse_create_slices_param
+    raw = params[:agent_session][:slices]
+    slices_data = raw.is_a?(String) ? JSON.parse(raw, max_nesting: 50) : raw.as_json
+    slices_data.map do |s|
+      {
+        "name" => s["name"].to_s.strip.first(50),
+        "indices" => Array(s["indices"]).map(&:to_i)
+      }
+    end
+  rescue JSON::ParserError
+    []
+  end
+
   def create_params
-    params.require(:agent_session).permit(:title, :tool_name, :session_file)
+    params.require(:agent_session).permit(:title, :tool_name, :session_file, :normalized_data,
+                                          curated_selections: [])
   end
 
   def update_params

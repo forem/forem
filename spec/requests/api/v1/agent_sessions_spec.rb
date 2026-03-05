@@ -107,6 +107,67 @@ RSpec.describe "Api::V1::AgentSessions" do
       session = AgentSession.last
       expect(session.user_id).to eq(user.id)
     end
+
+    context "with normalized_data (client-parsed mode)" do
+      let(:client_normalized_data) do
+        {
+          "messages" => [
+            { "index" => 0, "role" => "user", "content" => [{ "type" => "text", "text" => "Hello" }] },
+            { "index" => 1, "role" => "assistant", "content" => [{ "type" => "text", "text" => "Hi" }] },
+          ],
+          "metadata" => { "tool_name" => "claude_code", "total_messages" => 2 }
+        }
+      end
+
+      it "creates a session from pre-parsed normalized_data" do
+        post api_agent_sessions_path,
+             params: { title: "Client Parsed", tool_name: "claude_code",
+                        normalized_data: client_normalized_data.to_json }.to_json,
+             headers: auth_headers
+
+        expect(response).to have_http_status(:created)
+        json = response.parsed_body
+        expect(json["title"]).to eq("Client Parsed")
+        expect(json["tool_name"]).to eq("claude_code")
+
+        session = AgentSession.last
+        expect(session.messages.size).to eq(2)
+        expect(session.raw_data).to be_nil
+      end
+
+      it "runs server-side scrubbing on normalized_data" do
+        data_with_secret = client_normalized_data.deep_dup
+        data_with_secret["messages"][0]["content"][0]["text"] = "Token: ghp_abcdefghijklmnopqrstuvwxyz1234567890"
+
+        post api_agent_sessions_path,
+             params: { title: "Scrubbed", tool_name: "claude_code",
+                        normalized_data: data_with_secret.to_json }.to_json,
+             headers: auth_headers
+
+        expect(response).to have_http_status(:created)
+        session = AgentSession.last
+        text = session.messages.first["content"].first["text"]
+        expect(text).to include("[REDACTED]")
+      end
+
+      it "infers tool_name from metadata" do
+        post api_agent_sessions_path,
+             params: { title: "Auto Tool", normalized_data: client_normalized_data.to_json }.to_json,
+             headers: auth_headers
+
+        expect(response).to have_http_status(:created)
+        expect(response.parsed_body["tool_name"]).to eq("claude_code")
+      end
+
+      it "rejects invalid normalized_data" do
+        post api_agent_sessions_path,
+             params: { title: "Bad", normalized_data: { "bad" => true }.to_json }.to_json,
+             headers: auth_headers
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to include("Missing required key: messages")
+      end
+    end
   end
 
   describe "GET /api/agent_sessions" do
