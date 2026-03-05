@@ -22,7 +22,7 @@ fr:
       step_parsing: Analyse des messages
       scrubbing_secrets: Nettoyage des secrets
       ready_to_curate: Prêt à organiser
-      save_to_forem: Enregistrer sur Forem
+      save_and_upload: "Enregistrer & Télécharger"
       saving: Enregistrement...
       curate_before_upload: Téléchargez un fichier de session d'agent. Il sera analysé et nettoyé localement dans votre navigateur — puis vous pourrez sélectionner les parties à inclure avant d'enregistrer.
       client_parse_error: Échec de l'analyse du fichier de session.

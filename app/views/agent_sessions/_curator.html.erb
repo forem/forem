@@ -23,98 +23,81 @@
     </div>
   </div>
 
-  <div class="curator-layout">
-    <!-- Main column: toolbar + messages -->
-    <div class="curator-main">
-      <div class="agent-session-curator-toolbar">
-        <div class="curator-toolbar-row">
-          <div class="curator-filter-group">
-            <button type="button" class="curator-filter active" data-filter="all" id="filter-all">All</button>
-            <button type="button" class="curator-filter" data-filter="conversation" id="filter-conversation">Conversation</button>
-            <button type="button" class="curator-filter" data-filter="user" id="filter-user">Prompts</button>
-            <button type="button" class="curator-filter" data-filter="tools" id="filter-tools">Tool calls</button>
-            <button type="button" class="curator-filter" data-filter="redacted" id="filter-redacted">Redacted</button>
-          </div>
-          <div class="curator-toolbar-actions">
-            <button type="button" class="curator-bulk-btn" id="select-all-btn">Select all</button>
-            <button type="button" class="curator-bulk-btn" id="select-none-btn">Deselect all</button>
-            <button type="button" class="crayons-btn crayons-btn--s" id="save-curation-btn">
-              <%= local_assigns[:curator_mode] == 'upload' ? t("views.agent_sessions.save_to_forem") : 'Save' %>
-            </button>
-          </div>
-        </div>
-        <div class="curator-toolbar-meta">
-          <span class="agent-session-curator-count" id="selection-count"></span>
-          <span class="curator-hint" id="curator-hint">Click to toggle &middot; Shift+click for range &middot; Drag across cards</span>
-        </div>
+  <div class="agent-session-curator-toolbar">
+    <div class="curator-toolbar-top">
+      <div class="curator-filter-group">
+        <button type="button" class="curator-filter active" data-filter="all" id="filter-all">All</button>
+        <button type="button" class="curator-filter" data-filter="conversation" id="filter-conversation">Conversation</button>
+        <button type="button" class="curator-filter" data-filter="user" id="filter-user">Prompts</button>
+        <button type="button" class="curator-filter" data-filter="tools" id="filter-tools">Tool calls</button>
+        <button type="button" class="curator-filter" data-filter="redacted" id="filter-redacted">Redacted</button>
       </div>
+      <input type="search" class="curator-search" id="curator-search" placeholder="Search messages..." />
+    </div>
+    <div class="curator-toolbar-bottom">
+      <span class="agent-session-curator-count" id="selection-count"></span>
+      <div class="curator-toolbar-actions">
+        <button type="button" class="curator-bulk-btn" id="select-all-btn">Select all</button>
+        <button type="button" class="curator-bulk-btn" id="select-none-btn">Deselect all</button>
+        <button type="button" class="crayons-btn crayons-btn--s" id="save-curation-btn">
+          <%= local_assigns[:curator_mode] == 'upload' ? t("views.agent_sessions.save_and_upload") : 'Save' %>
+        </button>
+      </div>
+    </div>
+  </div>
 
-      <div class="agent-session-curator-messages" id="curator-messages">
-        <!-- Rendered by JavaScript -->
+  <% if local_assigns[:curator_mode] == 'edit' && local_assigns[:agent_session] %>
+    <div class="curator-meta-bar">
+      <div class="curator-meta-bar-section" id="visibility-section"
+           data-published="<%= agent_session.published? %>"
+           data-share-url="<%= URL.url(agent_session_path(agent_session)) %>">
+        <% if agent_session.published? %>
+          <span class="visibility-badge visibility-badge--public"><%= t("views.agent_sessions.public_label") %></span>
+          <div class="curator-meta-bar-share">
+            <input type="text" readonly autocomplete="off" class="curator-meta-share-input"
+                   value="<%= URL.url(agent_session_path(agent_session)) %>" onclick="this.select();" />
+            <button type="button" class="slice-action-btn" id="copy-share-btn" title="<%= t("views.agent_sessions.copy_link") %>"><%= t("views.agent_sessions.copy_link") %></button>
+          </div>
+          <button type="button" class="crayons-btn crayons-btn--s crayons-btn--ghost" id="toggle-visibility-btn">
+            <%= t("views.agent_sessions.make_private") %>
+          </button>
+        <% else %>
+          <span class="visibility-badge visibility-badge--private"><%= t("views.agent_sessions.private_label") %></span>
+          <button type="button" class="crayons-btn crayons-btn--s" id="toggle-visibility-btn">
+            <%= t("views.agent_sessions.make_public") %>
+          </button>
+        <% end %>
+      </div>
+      <div class="curator-meta-bar-section">
+        <label class="curator-meta-bar-label">Embed</label>
+        <code id="embed-code" class="curator-meta-embed-code"><%= "{" + "% agent_session #{agent_session.slug} %" + "}" %></code>
+        <button type="button" class="slice-action-btn" id="copy-embed-btn" title="Copy">Copy</button>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Slices bar -->
+  <div class="curator-slices-bar" id="slices-panel">
+    <div class="curator-slices-bar-header">
+      <span class="curator-slices-bar-title">Slices</span>
+      <span class="curator-slices-bar-hint">Embed different parts of your session separately</span>
+      <button type="button" class="crayons-btn crayons-btn--s crayons-btn--outlined" id="new-slice-btn">+ New slice</button>
+    </div>
+
+    <div class="slices-name-input" id="slice-name-input" style="display:none">
+      <input type="text" class="agent-session-input" id="slice-name-field" placeholder="e.g. planning, debugging" maxlength="50" />
+      <div class="slices-name-actions">
+        <button type="button" class="crayons-btn crayons-btn--s" id="start-slice-btn">Start</button>
+        <button type="button" class="crayons-btn crayons-btn--s crayons-btn--ghost" id="cancel-name-btn">Cancel</button>
       </div>
     </div>
 
-    <!-- Sidebar: slices (and visibility/embed for edit mode) -->
-    <aside class="curator-sidebar" id="slices-panel">
-      <% if local_assigns[:curator_mode] == 'edit' && local_assigns[:agent_session] %>
-        <div class="sidebar-visibility-section" id="visibility-section"
-             data-published="<%= agent_session.published? %>"
-             data-share-url="<%= URL.url(agent_session_path(agent_session)) %>">
-          <label class="sidebar-section-label"><%= t("views.agent_sessions.share_link") %></label>
-          <% if agent_session.published? %>
-            <div class="visibility-status visibility-status--public">
-              <span class="visibility-badge visibility-badge--public"><%= t("views.agent_sessions.public_label") %></span>
-              <p class="visibility-description"><%= t("views.agent_sessions.public_description") %></p>
-            </div>
-            <div class="sidebar-embed-row visibility-share-row">
-              <input type="text" readonly autocomplete="off" class="sidebar-share-input"
-                     value="<%= URL.url(agent_session_path(agent_session)) %>" onclick="this.select();" />
-              <button type="button" class="slice-action-btn" id="copy-share-btn" title="<%= t("views.agent_sessions.copy_link") %>"><%= t("views.agent_sessions.copy_link") %></button>
-            </div>
-            <button type="button" class="crayons-btn crayons-btn--s crayons-btn--ghost visibility-toggle-btn" id="toggle-visibility-btn">
-              <%= t("views.agent_sessions.make_private") %>
-            </button>
-          <% else %>
-            <div class="visibility-status visibility-status--private">
-              <span class="visibility-badge visibility-badge--private"><%= t("views.agent_sessions.private_label") %></span>
-              <p class="visibility-description"><%= t("views.agent_sessions.private_description") %></p>
-            </div>
-            <button type="button" class="crayons-btn crayons-btn--s visibility-toggle-btn" id="toggle-visibility-btn">
-              <%= t("views.agent_sessions.make_public") %>
-            </button>
-          <% end %>
-        </div>
+    <div class="slices-list slices-list--horizontal" id="slices-list">
+      <!-- Rendered by JavaScript -->
+    </div>
+  </div>
 
-        <div class="sidebar-divider"></div>
-
-        <div class="sidebar-embed-section">
-          <label class="sidebar-section-label">Embed code</label>
-          <div class="sidebar-embed-row">
-            <code id="embed-code" class="sidebar-embed-code"><%= "{" + "% agent_session #{agent_session.slug} %" + "}" %></code>
-            <button type="button" class="slice-action-btn" id="copy-embed-btn" title="Copy">Copy</button>
-          </div>
-        </div>
-
-        <div class="sidebar-divider"></div>
-      <% end %>
-
-      <div class="slices-panel-header">
-        <h3>Slices</h3>
-        <p class="slices-panel-hint">Create different selections of messages that can be embedded separately.</p>
-        <button type="button" class="crayons-btn crayons-btn--s crayons-btn--outlined" id="new-slice-btn">+ New slice</button>
-      </div>
-
-      <div class="slices-name-input" id="slice-name-input" style="display:none">
-        <input type="text" class="agent-session-input" id="slice-name-field" placeholder="e.g. planning, debugging" maxlength="50" />
-        <div class="slices-name-actions">
-          <button type="button" class="crayons-btn crayons-btn--s" id="start-slice-btn">Start</button>
-          <button type="button" class="crayons-btn crayons-btn--s crayons-btn--ghost" id="cancel-name-btn">Cancel</button>
-        </div>
-      </div>
-
-      <div class="slices-list" id="slices-list">
-        <!-- Rendered by JavaScript -->
-      </div>
-    </aside>
+  <div class="agent-session-curator-messages" id="curator-messages">
+    <!-- Rendered by JavaScript -->
   </div>
 </div>

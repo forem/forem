@@ -30,6 +30,7 @@
     var container = curator.querySelector('.curator-messages') || curator.querySelector('#curator-messages');
     var countEl = curator.querySelector('.agent-session-curator-count') || curator.querySelector('#selection-count');
     var activeFilter = 'all';
+    var searchQuery = '';
     var sessionId = config.sessionId;
     var sessionSlug = config.sessionSlug;
     var mode = config.mode || 'edit';
@@ -74,12 +75,20 @@
       });
     }
 
+    function msgSearchText(msg) {
+      return (msg.content || []).map(function(b) {
+        return (b.text || '') + ' ' + (b.name || '') + ' ' + (b.input || '') + ' ' + (b.output || '');
+      }).join(' ').toLowerCase();
+    }
+
     function isVisible(msg) {
-      if (activeFilter === 'all') return true;
-      if (activeFilter === 'conversation') return !msgHasOnlyToolCalls(msg);
-      if (activeFilter === 'user') return msg.role === 'user';
-      if (activeFilter === 'tools') return msgHasToolCalls(msg);
-      if (activeFilter === 'redacted') return msgHasRedactions(msg);
+      var passesFilter = true;
+      if (activeFilter === 'conversation') passesFilter = !msgHasOnlyToolCalls(msg);
+      else if (activeFilter === 'user') passesFilter = msg.role === 'user';
+      else if (activeFilter === 'tools') passesFilter = msgHasToolCalls(msg);
+      else if (activeFilter === 'redacted') passesFilter = msgHasRedactions(msg);
+      if (!passesFilter) return false;
+      if (searchQuery) return msgSearchText(msg).indexOf(searchQuery) !== -1;
       return true;
     }
 
@@ -93,16 +102,32 @@
     }
 
     // === Rendering ===
+    var totalMessages = (config.messages && config.messages.length > 0 && config.messages[0].index !== undefined)
+      ? Math.max.apply(null, config.messages.map(function(m) { return m.index; })) + 1
+      : config.messages ? config.messages.length : 0;
+
     function renderMessages() {
       container.innerHTML = '';
       var activeSet = getActiveSet();
+      var prevIndex = null;
 
       messages.forEach(function(msg) {
+        // Show gap indicator when indices are not consecutive
+        if (prevIndex !== null && msg.index > prevIndex + 1) {
+          var skipped = msg.index - prevIndex - 1;
+          var gap = document.createElement('div');
+          gap.className = 'curator-gap';
+          gap.innerHTML = '<span class="curator-gap-line"></span>' +
+            '<span class="curator-gap-label">' + skipped + ' message' + (skipped !== 1 ? 's' : '') + ' not included</span>' +
+            '<span class="curator-gap-line"></span>';
+          container.appendChild(gap);
+        }
+        prevIndex = msg.index;
         var div = document.createElement('div');
         var isSelected = activeSet.has(msg.index);
         var visible = isVisible(msg);
 
-        div.className = 'curator-card' +
+        div.className = 'curator-card curator-card--' + msg.role +
           (isSelected ? ' selected' : ' deselected') +
           (!visible ? ' filtered-out' : '') +
           (sliceMode ? ' slice-mode' : '');
@@ -362,6 +387,19 @@
       });
     });
 
+    // === Search ===
+    var searchInput = curator.querySelector('#curator-search');
+    if (searchInput) {
+      var searchTimeout;
+      searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(function() {
+          searchQuery = searchInput.value.trim().toLowerCase();
+          renderMessages();
+        }, 150);
+      });
+    }
+
     // === Bulk actions ===
     var selectAllBtn = curator.querySelector('#select-all-btn');
     if (selectAllBtn) {
@@ -406,11 +444,18 @@
         btn.disabled = true;
         btn.textContent = 'Saving...';
 
+        // Include slice-referenced messages in the curated set
         var curatedIndices = new Set(Array.from(curated));
+        slices.forEach(function(s) {
+          (s.indices || []).forEach(function(idx) { curatedIndices.add(idx); });
+        });
+        // Keep original indices (no reindexing) so gap detection works in embeds
         var curatedMsgs = messages.filter(function(m) { return curatedIndices.has(m.index); });
-        var reindexed = curatedMsgs.map(function(m, i) { return Object.assign({}, m, { index: i }); });
-        var curatedDataObj = { messages: reindexed, metadata: {} };
-        var payload = { agent_session: { curated_data: JSON.stringify(curatedDataObj) } };
+        var curatedDataObj = {
+          messages: curatedMsgs,
+          metadata: { total_messages: messages.length, curated_indices: Array.from(curated).sort(function(a,b){ return a-b; }) }
+        };
+        var payload = { agent_session: { curated_data: JSON.stringify(curatedDataObj), slices: slices } };
 
         fetch('/agent_sessions/' + sessionId, {
           method: 'PATCH',
@@ -616,6 +661,13 @@
         actions.className = 'slice-card-actions';
 
         if (sessionSlug) {
+          var viewLink = document.createElement('a');
+          viewLink.className = 'slice-action-btn';
+          viewLink.textContent = 'View';
+          viewLink.href = '/agent_sessions/' + sessionSlug + '?slice=' + encodeURIComponent(slice.name);
+          viewLink.target = '_blank';
+          actions.appendChild(viewLink);
+
           var copyBtn = document.createElement('button');
           copyBtn.type = 'button';
           copyBtn.className = 'slice-action-btn';

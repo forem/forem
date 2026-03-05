@@ -34,7 +34,7 @@
     <div class="agent-session-form-group">
       <label class="agent-session-label">Session File</label>
       <div class="agent-session-file-drop" id="agent-session-dropzone">
-        <input type="file" accept=".jsonl,.json,.md,.txt,.log" class="agent-session-file-input" id="agent-session-file-input" data-max-file-mb="200" data-permitted-file-types='["application","text"]' />
+        <input type="file" accept=".jsonl,.json,.md,.txt,.log" class="agent-session-file-input" id="agent-session-file-input" data-max-file-size-mb="200" data-permitted-file-types='["application","text"]' />
         <div class="agent-session-drop-text" id="drop-text">
           <p><strong>Drop your session file here</strong> or click to browse</p>
           <p class="agent-session-drop-hint">Supports .jsonl, .json, .md, .log files</p>
@@ -119,7 +119,7 @@
   <!-- Curation UI (shown after parsing) -->
   <div id="curation-section" style="display:none">
     <div class="agent-session-instructions">
-      <p class="instructions-text">Curate which messages to include. Click cards to toggle, shift+click for range, or drag across multiple. Create slices to embed different parts of your session separately.</p>
+      <p class="instructions-text">Choose which messages to save. Click cards to toggle, shift+click for range, or drag across multiple. Only selected messages will be stored. Create slices to embed different parts of your session separately.</p>
       <div class="instructions-warning">
         <p>We automatically scan for and redact common secrets like API keys, tokens, and credentials, but <strong>we cannot guarantee all sensitive information has been caught</strong>. <%= t("views.agent_sessions.security_warning") %></p>
         <p class="instructions-redaction-summary" id="redaction-summary" style="display:none"></p>
@@ -191,17 +191,13 @@
   });
 
   function handleFileSelected(file) {
-    console.log('[AgentSession] File selected:', file.name, 'size:', file.size, 'type:', file.type);
-
     // Validate extension
     var ext = file.name.split('.').pop().toLowerCase();
     if (!['jsonl', 'json', 'md', 'txt', 'log'].includes(ext)) {
-      console.log('[AgentSession] Rejected: unsupported extension:', ext);
       showError('<%= j t("views.agent_sessions.unsupported_file_type", default: "Unsupported file type. Please use .jsonl, .json, .md, .txt, or .log files.") %>');
       return;
     }
 
-    console.log('[AgentSession] Extension OK, proceeding with file');
     selectedFile = file;
     hideError();
 
@@ -270,7 +266,6 @@
   });
 
   function startParsing() {
-    console.log('[AgentSession] startParsing called, file size:', selectedFile.size);
     hideError();
     parseBtn.disabled = true;
     parseBtn.textContent = '<%= j t("views.agent_sessions.parsing_progress", default: "Parsing...") %>';
@@ -419,11 +414,15 @@
       saveBtn.textContent = '<%= j t("views.agent_sessions.saving", default: "Saving...") %>';
     }
 
-    // Filter messages to only curated indices and reindex
+    // Build the curated index set, auto-including any slice-referenced messages
     var curatedIndices = new Set(curationData.curated);
+    (curationData.slices || []).forEach(function(s) {
+      (s.indices || []).forEach(function(idx) { curatedIndices.add(idx); });
+    });
+
+    // Filter to curated messages but keep original indices (for gap detection in embeds)
     var curatedMessages;
     if (curatedIndices.size === 0 || curatedIndices.size === parsedResult.messages.length) {
-      // All selected — send all messages
       curatedMessages = parsedResult.messages;
     } else {
       curatedMessages = parsedResult.messages.filter(function(m) {
@@ -431,27 +430,17 @@
       });
     }
 
-    // Reindex messages 0..N
-    var reindexedMessages = curatedMessages.map(function(m, i) {
-      return Object.assign({}, m, { index: i });
+    // Slices already use original indices — no remapping needed
+    var savedSlices = (curationData.slices || []).filter(function(s) {
+      return (s.indices || []).length > 0;
     });
-
-    // Remap slice indices to new message indices
-    var oldToNew = {};
-    curatedMessages.forEach(function(m, i) {
-      oldToNew[m.index] = i;
-    });
-    var remappedSlices = (curationData.slices || []).map(function(s) {
-      return {
-        name: s.name,
-        indices: (s.indices || []).filter(function(idx) { return oldToNew[idx] !== undefined; })
-                                  .map(function(idx) { return oldToNew[idx]; })
-      };
-    }).filter(function(s) { return s.indices.length > 0; });
 
     var curatedDataObj = {
-      messages: reindexedMessages,
-      metadata: parsedResult.metadata || {}
+      messages: curatedMessages,
+      metadata: Object.assign({}, parsedResult.metadata || {}, {
+        total_messages: parsedResult.messages.length,
+        curated_indices: curationData.curated
+      })
     };
 
     // Check size (10MB server limit)
@@ -459,7 +448,7 @@
     if (jsonStr.length > 10 * 1024 * 1024) {
       if (saveBtn) {
         saveBtn.disabled = false;
-        saveBtn.textContent = '<%= j t("views.agent_sessions.save_to_forem", default: "Save to Forem") %>';
+        saveBtn.textContent = '<%= j t("views.agent_sessions.save_and_upload", default: "Save & Upload") %>';
       }
       alert('Curated data is ' + (jsonStr.length / 1048576).toFixed(1) + ' MB, which exceeds the 10 MB limit. Please deselect some messages to reduce the size.');
       return;
@@ -472,7 +461,7 @@
         tool_name: parsedResult.toolName || toolSelect.value,
         curated_data: jsonStr,
         s3_key: s3Key || '',
-        slices: remappedSlices
+        slices: savedSlices
       }
     };
 
@@ -493,14 +482,14 @@
       } else if (data.error) {
         if (saveBtn) {
           saveBtn.disabled = false;
-          saveBtn.textContent = '<%= j t("views.agent_sessions.save_to_forem", default: "Save to Forem") %>';
+          saveBtn.textContent = '<%= j t("views.agent_sessions.save_and_upload", default: "Save & Upload") %>';
         }
         alert('Error: ' + data.error);
       }
     }).catch(function(err) {
       if (saveBtn) {
         saveBtn.disabled = false;
-        saveBtn.textContent = '<%= j t("views.agent_sessions.save_to_forem", default: "Save to Forem") %>';
+        saveBtn.textContent = '<%= j t("views.agent_sessions.save_and_upload", default: "Save & Upload") %>';
       }
       alert('Error saving session: ' + (err.message || 'Network error'));
     });
@@ -523,8 +512,6 @@
   }
 
   function showError(msg) {
-    console.error('[AgentSession] Error:', msg);
-    console.trace('[AgentSession] Error stack trace');
     errorMsg.textContent = msg;
     errorUI.style.display = 'block';
   }

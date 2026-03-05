@@ -22,7 +22,7 @@ pt:
       step_parsing: Analisando mensagens
       scrubbing_secrets: Limpando segredos
       ready_to_curate: Pronto para curar
-      save_to_forem: Salvar no Forem
+      save_and_upload: "Salvar & Enviar"
       saving: Salvando...
       curate_before_upload: Envie um arquivo de sessão de agente. Ele será analisado e limpo localmente no seu navegador — depois você pode selecionar quais partes incluir antes de salvar.
       client_parse_error: Falha ao analisar o arquivo de sessão.

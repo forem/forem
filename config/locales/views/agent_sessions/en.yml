@@ -22,7 +22,7 @@ en:
       step_parsing: Parsing messages
       scrubbing_secrets: Scrubbing secrets
       ready_to_curate: Ready to curate
-      save_to_forem: Save to Forem
+      save_and_upload: "Save & Upload"
       saving: Saving...
       curate_before_upload: Upload a coding agent session file. It will be parsed and scrubbed locally in your browser — then you can curate which parts to include before saving.
       client_parse_error: Failed to parse session file.

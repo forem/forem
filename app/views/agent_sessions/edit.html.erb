@@ -13,7 +13,7 @@
   </header>
 
   <div class="agent-session-instructions">
-    <p class="instructions-text">All messages are <strong>included in your embed by default</strong>. Use the filters above the cards to narrow your view, and click individual cards (or drag across multiple) to exclude them. Use "Deselect all" to start from scratch and selectively include only what you want.</p>
+    <p class="instructions-text">Control what appears in your <strong>public embed and share link</strong>. Included messages are visible to anyone who views your session. Click cards to toggle, shift+click for range, or drag across multiple. Gaps between included messages will show as "messages not shown" in the embed.</p>
     <div class="instructions-warning">
       <p>We automatically scan for and redact common secrets like API keys, tokens, and credentials, but <strong>we cannot guarantee all sensitive information has been caught</strong>. <%= t("views.agent_sessions.security_warning") %></p>
       <% if @agent_session.total_redactions > 0 %>
@@ -48,7 +48,7 @@
 <%= javascript_include_tag "agentSessionUpload", defer: true %>
 
 <script>
-(function() {
+function initEditCurator() {
   var curator = document.getElementById('agent-session-curator');
   if (!curator || !window.AgentSessionCurator) return;
 
@@ -63,7 +63,6 @@
     sessionId: sessionId,
     sessionSlug: sessionSlug,
     mode: 'edit',
-    useCuratedData: true,
   });
 
   // Re-curation from S3
@@ -170,5 +169,17 @@
       });
     });
   }
-})();
+}
+
+// Deferred scripts may not have run yet; wait for AgentSessionCurator to be available
+function waitForCurator() {
+  if (window.AgentSessionCurator) {
+    initEditCurator();
+  } else if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initEditCurator);
+  } else {
+    setTimeout(waitForCurator, 50);
+  }
+}
+waitForCurator();
 </script>

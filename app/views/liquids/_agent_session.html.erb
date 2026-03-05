@@ -7,7 +7,8 @@
    else
      messages_to_show = agent_session.curated_messages
      active_slice = nil
-   end %>
+   end
+   total_count = agent_session.total_messages %>
 <div class="ltag-agent-session" data-session-id="<%= agent_session.id %>">
   <div class="agent-session-header">
     <svg class="agent-session-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -106,12 +107,12 @@
   <div class="agent-session-footer">
     <span class="agent-session-meta">
       <% if active_slice %>
-        Slice: <em><%= active_slice["name"] %></em> &middot; <%= messages_to_show.size %> of <%= agent_session.total_messages %> messages
+        Slice: <em><%= active_slice["name"] %></em> &middot; <%= messages_to_show.size %> of <%= total_count %> messages
       <% elsif defined?(message_range) && message_range %>
-        <%= messages_to_show.size %> messages (range <%= message_range.first %>-<%= message_range.last %>) of <%= agent_session.total_messages %> total
+        <%= messages_to_show.size %> messages (range <%= message_range.first %>-<%= message_range.last %>) of <%= total_count %> total
       <% else %>
-        <%= agent_session.curated_count %> of <%= agent_session.total_messages %> messages
-        <% if agent_session.curated_count < agent_session.total_messages %>
+        <%= messages_to_show.size %> of <%= total_count %> messages
+        <% if messages_to_show.size < total_count %>
           &middot; some content was hidden by the author
         <% end %>
       <% end %>

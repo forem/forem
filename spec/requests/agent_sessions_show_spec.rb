@@ -48,7 +48,8 @@ RSpec.describe "AgentSessions#show" do
       it "shows share link to owner" do
         sign_in owner
         get agent_session_path(agent_session)
-        expect(response.body).to include("Share link")
+        expect(response.body).to include("curator-meta-share-input")
+        expect(response.body).to include("Copy link")
       end
 
       it "does not show embed copy snippets to non-owners" do

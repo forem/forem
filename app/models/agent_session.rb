@@ -21,7 +21,11 @@ class AgentSession < ApplicationRecord
   end
 
   def curated_messages
-    messages
+    ci = curated_data.dig("metadata", "curated_indices")
+    return messages unless ci.is_a?(Array) && ci.any?
+
+    curated_set = ci.to_set(&:to_i)
+    messages.select { |m| curated_set.include?(m["index"].to_i) }
   end
 
   def curated_messages_in_range(range)
@@ -45,7 +49,7 @@ class AgentSession < ApplicationRecord
   end
 
   def total_messages
-    messages.size
+    curated_data.dig("metadata", "total_messages") || messages.size
   end
 
   def redactions
@@ -57,7 +61,7 @@ class AgentSession < ApplicationRecord
   end
 
   def curated_count
-    messages.size
+    curated_messages.size
   end
 
   def to_param
