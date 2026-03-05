@@ -246,6 +246,38 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       expect(test).to eq("<p><a href=\"mailto:test@example.com\">Contact us</a></p>\n\n")
     end
 
+
+    it "preserves hyperlinks and structure in five-level nested lists" do
+      nested_list = <<~MARKDOWN
+        - The [first](https://dev.to/) list:
+            - The [second](https://dev.to/) list:
+                - The [third](https://dev.to/) list:
+                    - The [fourth](https://dev.to/) list:
+                        - The [fifth](https://dev.to/) list:
+      MARKDOWN
+
+      test = generate_and_parse_markdown(nested_list)
+      doc = Nokogiri::HTML.fragment(test)
+
+      links = doc.css('a[href="https://dev.to/"]')
+      expect(links.size).to eq(5)
+
+      links.each do |link|
+        expect(link["target"]).to eq("_blank")
+        rel_values = link["rel"].to_s.split
+        expect(rel_values).to include("noopener", "noreferrer")
+      end
+
+      expect(links.map(&:text)).to match_array(%w[first second third fourth fifth])
+
+      expect(doc.css("ul").size).to eq(5)
+
+      # Ensure at least one link is nested within five levels of <ul>
+      expect(
+        links.any? { |link| link.ancestors("ul").size == 5 }
+      ).to be(true)
+    end
+
     it "renders tel links correctly" do
       code_span = "[Call us](tel:+1234567890)"
       test = generate_and_parse_markdown(code_span)
