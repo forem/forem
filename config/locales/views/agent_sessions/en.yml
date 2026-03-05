@@ -1,0 +1,18 @@
+---
+en:
+  views:
+    agent_sessions:
+      share_link: Share link
+      copy_link: Copy
+      by_author: "by %{name}"
+      make_public: Make public
+      make_private: Make private
+      public_label: Public
+      private_label: Private
+      public_description: Anyone can view via direct link and embed in their posts
+      private_description: Only you can embed this session in your posts
+      security_warning: Please review your session carefully before making it public to ensure you are not sharing anything you shouldn't.
+      switched_to_model: "Switched to %{model}"
+      not_available_title: Session not available
+      not_available_description: This agent session doesn't exist or is not publicly available.
+      not_available_sign_in_hint: If this is your session, try signing in to view it.

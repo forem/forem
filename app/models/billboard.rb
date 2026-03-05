@@ -44,6 +44,13 @@ class Billboard < ApplicationRecord
                                             "Digest Email Second"].freeze
 
   HOME_FEED_PLACEMENTS = %w[feed_first feed_second feed_third].freeze
+  HOME_PAGE_PLACEMENTS = %w[feed_first
+                            feed_second
+                            feed_third
+                            home_hero
+                            sidebar_right
+                            sidebar_right_second
+                            sidebar_right_third].freeze
 
   COLOR_HEX_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
 
@@ -89,7 +96,9 @@ class Billboard < ApplicationRecord
   after_save :update_links_with_bb_param
   after_save :update_event_counts_when_taking_down, if: -> { being_taken_down? }
   after_save :bust_billboard_cache, if: -> { being_taken_down? }
-  after_save :bust_home_page_cache, if: -> { home_feed_first_being_activated? }
+  after_save :bust_home_page_cache, if: -> { should_bust_home_page_cache? }
+  after_destroy :bust_billboard_cache, if: -> { approved && published }
+  after_destroy :bust_home_page_cache, if: -> { approved && published && HOME_PAGE_PLACEMENTS.include?(placement_area) }
 
   scope :approved_and_published, lambda {
                                    where(approved: true, published: true).where("expires_at IS NULL OR expires_at > ?", Time.current)
@@ -439,6 +448,8 @@ class Billboard < ApplicationRecord
     return unless expires_at.present? && expires_at < Time.current && approved?
 
     update_column(:approved, false)
+    bust_billboard_cache if published
+    bust_home_page_cache if published && HOME_PAGE_PLACEMENTS.include?(placement_area)
   end
 
   # Check if a user should be excluded from seeing this billboard based on survey completion
@@ -473,13 +484,21 @@ class Billboard < ApplicationRecord
     (saved_change_to_approved? && !approved) || (saved_change_to_published? && !published)
   end
 
-  def home_feed_first_being_activated?
-    return false unless placement_area == "feed_first"
-    return false unless approved && published
+  def should_bust_home_page_cache?
+    return false unless HOME_PAGE_PLACEMENTS.include?(placement_area) || HOME_PAGE_PLACEMENTS.include?(placement_area_before_last_save)
 
-    # Trigger if either approved or published just changed to true (from a prior different state)
-    (saved_change_to_approved? && !approved_before_last_save) ||
-      (saved_change_to_published? && !published_before_last_save)
+    content_fields = %w[body_markdown name placement_area color template render_mode]
+
+    was_active = approved_before_last_save && published_before_last_save
+    is_active = approved && published
+
+    # Bust if it is transitioning to active or inactive
+    return true if was_active != is_active
+
+    # Bust if it's currently active and content was updated
+    return true if is_active && content_fields.any? { |field| saved_change_to_attribute?(field) }
+
+    false
   end
 
   def bust_billboard_cache
