@@ -1,13 +1,3 @@
-import { MAX_JSON_NESTING } from './base.js';
-
-const PARSERS = {
-  claude_code: () => import('./claudeCode.js'),
-  codex: () => import('./codex.js'),
-  gemini_cli: () => import('./geminiCli.js'),
-  pi: () => import('./pi.js'),
-  github_copilot: () => import('./githubCopilot.js'),
-};
-
 // Synchronous imports for direct use
 import * as claudeCode from './claudeCode.js';
 import * as codex from './codex.js';

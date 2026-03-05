@@ -125,7 +125,12 @@ class AgentSessionsController < ApplicationController
   end
 
   def create_from_curated_data
-    curated = parse_curated_data_param
+    begin
+      curated = parse_curated_data_param
+    rescue JSON::ParserError => e
+      render json: { error: "Invalid JSON in curated_data: #{e.message}" }, status: :unprocessable_entity
+      return
+    end
     tool_name = create_params[:tool_name]
 
     validation_errors = AgentSessionParsers::NormalizedDataValidator.validate(curated)
@@ -193,8 +198,6 @@ class AgentSessionsController < ApplicationController
   def parse_curated_data_param
     raw = create_params[:curated_data]
     raw.is_a?(String) ? JSON.parse(raw, max_nesting: 50) : raw.to_unsafe_h
-  rescue JSON::ParserError
-    {}
   end
 
   def parse_create_slices_param
