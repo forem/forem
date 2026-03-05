@@ -133,7 +133,7 @@
   background: var(--body-color-inverted);
   padding: var(--su-2);
   box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.2);
-  // z-index: var(--z-sticky);
+  z-index: 9999; //Ensure this is the top most layer. This will fix the issue where if there is a lot of comments
 
   @media (min-width: $breakpoint-m) {
     border-radius: var(--radius-large);
