@@ -1159,6 +1159,11 @@
   font-size: 0.82em;
   font-weight: 500;
   color: var(--card-color-secondary, #6b7280);
+
+  &.over-limit {
+    color: var(--accent-danger, #dc2626);
+    font-weight: 600;
+  }
 }
 
 .curator-hint {

@@ -449,14 +449,14 @@
       metadata: parsedResult.metadata || {}
     };
 
-    // Check size
+    // Check size (10MB server limit)
     var jsonStr = JSON.stringify(curatedDataObj);
-    if (jsonStr.length > 50 * 1024 * 1024) {
+    if (jsonStr.length > 10 * 1024 * 1024) {
       if (saveBtn) {
         saveBtn.disabled = false;
         saveBtn.textContent = '<%= j t("views.agent_sessions.save_to_forem", default: "Save to Forem") %>';
       }
-      alert('<%= j t("views.agent_sessions.curated_data_too_large", default: "Curated data is too large. Please deselect more messages to reduce the size.") %>');
+      alert('Curated data is ' + (jsonStr.length / 1048576).toFixed(1) + ' MB, which exceeds the 10 MB limit. Please deselect some messages to reduce the size.');
       return;
     }
 

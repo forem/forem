@@ -313,6 +313,20 @@
       if (isDragging) e.preventDefault();
     });
 
+    var MAX_CURATED_SIZE = 10 * 1024 * 1024; // 10MB — must match server-side NormalizedDataValidator::MAX_JSON_SIZE
+
+    function estimateCuratedSize() {
+      var curatedMsgs = messages.filter(function(m) { return curated.has(m.index); });
+      var estimate = JSON.stringify({ messages: curatedMsgs, metadata: {} }).length;
+      return estimate;
+    }
+
+    function formatSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / 1048576).toFixed(1) + ' MB';
+    }
+
     function updateCount() {
       var activeSet = getActiveSet();
       if (sliceMode) {
@@ -321,7 +335,16 @@
         var bannerCount = curator.querySelector('#slice-banner-count');
         if (bannerCount) bannerCount.textContent = ct + ' selected';
       } else {
-        if (countEl) countEl.textContent = curated.size + ' of ' + messages.length + ' included';
+        var size = estimateCuratedSize();
+        var sizeStr = formatSize(size);
+        var overLimit = size > MAX_CURATED_SIZE;
+        var text = curated.size + ' of ' + messages.length + ' included (' + sizeStr + ')';
+        if (overLimit) text += ' — over 10 MB limit, deselect some messages';
+        if (countEl) {
+          countEl.textContent = text;
+          countEl.classList.toggle('over-limit', overLimit);
+        }
+        if (saveCurationBtn) saveCurationBtn.disabled = overLimit;
       }
       if (config.onCurationChange) {
         config.onCurationChange({ curated: Array.from(curated).sort(function(a,b){ return a-b; }), slices: slices });

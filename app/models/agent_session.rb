@@ -1,6 +1,6 @@
 class AgentSession < ApplicationRecord
   TOOL_NAMES = %w[claude_code codex gemini_cli github_copilot pi].freeze
-  MAX_CURATED_DATA_SIZE = 50.megabytes
+  MAX_CURATED_DATA_SIZE = 10.megabytes
 
   belongs_to :user
 
