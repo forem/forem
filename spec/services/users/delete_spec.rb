@@ -74,6 +74,26 @@ RSpec.describe Users::Delete, type: :service do
     end.to change(Reaction, :count).by(-1)
   end
 
+  it "soft-deletes user's comments" do
+    article = create(:article)
+    comment = create(:comment, user: user, commentable: article)
+    described_class.call(user)
+    expect(comment.reload.deleted).to be true
+  end
+
+  it "preserves comment tree structure by soft-deleting instead of destroying" do
+    article = create(:article)
+    parent_comment = create(:comment, user: user, commentable: article)
+    child_comment = create(:comment, user: create(:user), commentable: article, parent_id: parent_comment.id)
+
+    expect do
+      described_class.call(user)
+    end.not_to change(Comment, :count)
+
+    expect(parent_comment.reload.deleted).to be true
+    expect(child_comment.reload.deleted).to be false
+  end
+
   # check that all the associated records are being destroyed,
   # except for those that are kept explicitly (kept_associations)
   describe "deleting associations" do
@@ -84,6 +104,7 @@ RSpec.describe Users::Delete, type: :service do
         audit_logs
         banished_users
         billboard_events
+        comments
         created_podcasts
         feed_events
         offender_feedback_messages
