@@ -34,12 +34,12 @@ class ValidateNonNegativeReactionCountConstraints < ActiveRecord::Migration[7.0]
 
     raise StandardError, <<~ERROR
       Cannot validate constraints: negative reaction counts still exist!
-      
+
       Found #{negative_articles} articles and #{negative_comments} comments with negative counts.
-      
+
       Please run the FixNegativeReactionCounters data script first:
         rails runner "DataUpdateScripts::FixNegativeReactionCounters.new.run"
-      
+
       Then retry this migration.
     ERROR
   end

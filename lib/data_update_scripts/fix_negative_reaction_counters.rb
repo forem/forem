@@ -70,7 +70,7 @@ module DataUpdateScripts
       if articles_remaining.positive? || comments_remaining.positive?
         Rails.logger.warn(
           "[FixNegativeReactionCounters] WARNING: #{articles_remaining} articles and " \
-          "#{comments_remaining} comments still have negative counts!"
+          "#{comments_remaining} comments still have negative counts!",
         )
       else
         Rails.logger.info("[FixNegativeReactionCounters] Verified: no negative values remain")

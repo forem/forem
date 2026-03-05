@@ -34,8 +34,12 @@ class AddNonNegativeConstraintsToReactionsCounts < ActiveRecord::Migration[7.0]
   end
 
   def down
-    remove_check_constraint :articles, name: "check_articles_public_reactions_count_non_negative"
-    remove_check_constraint :articles, name: "check_articles_previous_public_reactions_count_non_negative"
-    remove_check_constraint :comments, name: "check_comments_public_reactions_count_non_negative"
+    safety_assured do
+      execute <<-SQL
+        ALTER TABLE articles DROP CONSTRAINT IF EXISTS check_articles_public_reactions_count_non_negative;
+        ALTER TABLE articles DROP CONSTRAINT IF EXISTS check_articles_previous_public_reactions_count_non_negative;
+        ALTER TABLE comments DROP CONSTRAINT IF EXISTS check_comments_public_reactions_count_non_negative;
+      SQL
+    end
   end
 end

@@ -109,4 +109,28 @@ RSpec.describe DataUpdateScripts::FixNegativeReactionCounters do
     ActiveRecord::Base.connection.execute("ALTER TABLE articles DROP CONSTRAINT IF EXISTS check_articles_public_reactions_count_non_negative")
     ActiveRecord::Base.connection.execute("ALTER TABLE articles ADD CONSTRAINT check_articles_public_reactions_count_non_negative CHECK (public_reactions_count >= 0)")
   end
+
+  it "fixes negative previous_public_reactions_count on articles" do
+    article = create(:article)
+    # Temporarily disable constraint
+    ActiveRecord::Base.connection.execute(
+      "ALTER TABLE articles DROP CONSTRAINT IF EXISTS check_articles_previous_public_reactions_count_non_negative"
+    )
+    article.class.where(id: article.id).update_all(previous_public_reactions_count: -10)
+    article.reload
+    expect(article.previous_public_reactions_count).to eq(-10)
+
+    described_class.new.run
+
+    article.reload
+    expect(article.previous_public_reactions_count).to eq(0)
+  ensure
+    ActiveRecord::Base.connection.execute(
+      "ALTER TABLE articles DROP CONSTRAINT IF EXISTS check_articles_previous_public_reactions_count_non_negative"
+    )
+    ActiveRecord::Base.connection.execute(
+      "ALTER TABLE articles ADD CONSTRAINT check_articles_previous_public_reactions_count_non_negative " \
+      "CHECK (previous_public_reactions_count >= 0)"
+    )
+  end
 end

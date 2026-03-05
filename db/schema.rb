@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_02_27_184505) do
+ActiveRecord::Schema[7.0].define(version: 2026_03_05_105811) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -32,9 +32,9 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_27_184505) do
     t.string "tool_name", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["slug"], name: "index_agent_sessions_on_slug", unique: true
     t.index ["tool_name"], name: "index_agent_sessions_on_tool_name"
     t.index ["user_id", "published"], name: "index_agent_sessions_on_user_id_and_published"
-    t.index ["slug"], name: "index_agent_sessions_on_slug", unique: true
     t.index ["user_id"], name: "index_agent_sessions_on_user_id"
   end
 
@@ -239,6 +239,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_27_184505) do
     t.index ["type_of"], name: "index_articles_on_type_of"
     t.index ["user_id", "published", "score", "published_at"], name: "index_articles_on_user_id_published_score_published_at", order: { published_at: :desc }, where: "(published = true)"
     t.index ["user_id"], name: "index_articles_on_user_id"
+    t.check_constraint "previous_public_reactions_count >= 0", name: "check_articles_previous_public_reactions_count_non_negative"
     t.check_constraint "public_reactions_count >= 0", name: "check_articles_public_reactions_count_non_negative"
   end
 
