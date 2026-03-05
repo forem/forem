@@ -34,7 +34,7 @@
     <div class="agent-session-form-group">
       <label class="agent-session-label">Session File</label>
       <div class="agent-session-file-drop" id="agent-session-dropzone">
-        <input type="file" accept=".jsonl,.json,.md,.txt,.log" class="agent-session-file-input" id="agent-session-file-input" />
+        <input type="file" accept=".jsonl,.json,.md,.txt,.log" class="agent-session-file-input" id="agent-session-file-input" data-max-file-mb="200" data-permitted-file-types='["application","text"]' />
         <div class="agent-session-drop-text" id="drop-text">
           <p><strong>Drop your session file here</strong> or click to browse</p>
           <p class="agent-session-drop-hint">Supports .jsonl, .json, .md, .log files</p>
@@ -191,13 +191,17 @@
   });
 
   function handleFileSelected(file) {
+    console.log('[AgentSession] File selected:', file.name, 'size:', file.size, 'type:', file.type);
+
     // Validate extension
     var ext = file.name.split('.').pop().toLowerCase();
     if (!['jsonl', 'json', 'md', 'txt', 'log'].includes(ext)) {
+      console.log('[AgentSession] Rejected: unsupported extension:', ext);
       showError('<%= j t("views.agent_sessions.unsupported_file_type", default: "Unsupported file type. Please use .jsonl, .json, .md, .txt, or .log files.") %>');
       return;
     }
 
+    console.log('[AgentSession] Extension OK, proceeding with file');
     selectedFile = file;
     hideError();
 
@@ -266,6 +270,7 @@
   });
 
   function startParsing() {
+    console.log('[AgentSession] startParsing called, file size:', selectedFile.size);
     hideError();
     parseBtn.disabled = true;
     parseBtn.textContent = '<%= j t("views.agent_sessions.parsing_progress", default: "Parsing...") %>';
@@ -518,6 +523,8 @@
   }
 
   function showError(msg) {
+    console.error('[AgentSession] Error:', msg);
+    console.trace('[AgentSession] Error stack trace');
     errorMsg.textContent = msg;
     errorUI.style.display = 'block';
   }
