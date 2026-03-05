@@ -60,7 +60,14 @@ module AgentSessionParsers
         # OpenCode export format has top-level info + messages[].info/parts
         if data.is_a?(Hash) && data["info"].is_a?(Hash) && data["messages"].is_a?(Array)
           first = data["messages"].first
-          return "opencode" if first.is_a?(Hash) && first["info"].is_a?(Hash) && first["parts"].is_a?(Array)
+          if first.is_a?(Hash) && first["info"].is_a?(Hash) && first["parts"].is_a?(Array)
+            return "opencode"
+          end
+
+          # Treat valid-but-empty exports as OpenCode as well, keyed on info metadata.
+          if data["messages"].empty? && (data["info"].key?("id") || data["info"].key?("time"))
+            return "opencode"
+          end
         end
 
         return "gemini_cli" if data.is_a?(Hash) && !data.key?("parentId")
