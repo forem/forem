@@ -339,40 +339,113 @@ RSpec.describe ReactionHandler, type: :service do
         }
       end
 
-      it "never results in negative public_reactions_count" do
-        # Simulate rapid like/unlike cycles (10 times)
-        10.times do
-          described_class.new(params, current_user: author).toggle # like
-          own_article.reload
-          expect(own_article.public_reactions_count).to be >= 0, 
-            "public_reactions_count should never be negative, got #{own_article.public_reactions_count}"
-
-          described_class.new(params, current_user: author).toggle # unlike
-          own_article.reload
-          expect(own_article.public_reactions_count).to be >= 0,
-            "public_reactions_count should never be negative after unlike, got #{own_article.public_reactions_count}"
-        end
-
-        # Final state should be 0 (ended with unlike)
+      # rubocop:disable RSpec/MultipleExpectations
+      it "never allows public_reactions_count to become negative during rapid toggles" do
+        # Verify initial state
         own_article.reload
         expect(own_article.public_reactions_count).to eq(0)
-      end
 
-      it "maintains accurate counter after multiple toggles" do
-        # Add and remove reaction 5 times
+        # Simulate rapid like/unlike cycles (10 times)
+        10.times do |iteration|
+          # Add reaction
+          result = described_class.new(params, current_user: author).toggle
+          expect(result).to be_success
+          expect(result.action).to eq("create")
+
+          own_article.reload
+          expect(own_article.public_reactions_count).to be >= 0
+          expect(own_article.public_reactions_count).to eq(1),
+                                                        "After like #{iteration + 1}: count should be 1, " \
+                                                        "got #{own_article.public_reactions_count}"
+
+          # Remove reaction
+          result = described_class.new(params, current_user: author).toggle
+          expect(result).to be_success
+          expect(result.action).to eq("destroy")
+
+          own_article.reload
+          expect(own_article.public_reactions_count).to be >= 0
+          expect(own_article.public_reactions_count).to eq(0),
+                                                        "After unlike #{iteration + 1}: count should be 0, " \
+                                                        "got #{own_article.public_reactions_count}"
+        end
+
+        # Verify final state consistency
+        own_article.reload
+        actual_db_count = own_article.reactions.public_category.count
+        expect(own_article.public_reactions_count).to eq(0)
+        expect(actual_db_count).to eq(0)
+      end
+      # rubocop:enable RSpec/MultipleExpectations
+
+      it "maintains accurate counter matching actual reaction count" do
+        # Execute multiple toggle cycles
         5.times do
           described_class.new(params, current_user: author).toggle # create
           described_class.new(params, current_user: author).toggle # destroy
         end
 
         # Add one final reaction
-        described_class.new(params, current_user: author).toggle
+        result = described_class.new(params, current_user: author).toggle
+        expect(result).to be_success
+        expect(result.action).to eq("create")
 
+        # Verify counter matches actual database count
         own_article.reload
-        actual_count = own_article.reactions.public_category.count
+        actual_db_count = own_article.reactions.public_category.count
 
-        expect(own_article.public_reactions_count).to eq(actual_count)
+        expect(own_article.public_reactions_count).to eq(actual_db_count)
         expect(own_article.public_reactions_count).to eq(1)
+      end
+
+      it "prevents negative counters with validation constraints" do
+        # Verify validation prevents negative values at the model level
+        own_article.public_reactions_count = -1
+        expect(own_article).not_to be_valid
+        expect(own_article.errors[:public_reactions_count]).to be_present
+
+        # Verify database check constraint exists
+        check_constraints = ActiveRecord::Base.connection.check_constraints(:articles)
+        constraint = check_constraints.detect do |c|
+          c.name == "check_articles_public_reactions_count_non_negative"
+        end
+        expect(constraint).to be_present
+        expect(constraint.expression).to include("public_reactions_count >= 0")
+      end
+
+      it "handles concurrent toggle attempts gracefully" do
+        # Simulate concurrent toggles from same user
+        results = Array.new(3) do
+          described_class.new(params, current_user: author).toggle
+        end
+
+        # All should succeed
+        expect(results).to all(be_success)
+
+        # Final count should be deterministic (odd number of toggles = 1)
+        own_article.reload
+        expect(own_article.public_reactions_count).to be >= 0
+        expect(own_article.public_reactions_count).to eq(1)
+
+        # Verify database consistency
+        actual_db_count = own_article.reactions.public_category.count
+        expect(own_article.public_reactions_count).to eq(actual_db_count)
+      end
+
+      it "recalculates correct count when out of sync" do
+        # Create reactions directly (bypassing counter_culture)
+        2.times { create(:reaction, reactable: own_article, category: "like") }
+
+        # Manually set incorrect counter value
+        own_article.update_column(:public_reactions_count, 0)
+
+        # Sync should fix the counter
+        own_article.sync_reactions_count
+        own_article.reload
+
+        actual_db_count = own_article.reactions.public_category.count
+        expect(own_article.public_reactions_count).to eq(2)
+        expect(own_article.public_reactions_count).to eq(actual_db_count)
       end
     end
   end
