@@ -247,7 +247,7 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     end
 
 
-    it "preserves hyperlinks in deeply nested lists" do
+    it "preserves hyperlinks and structure in five-level nested lists" do
       nested_list = <<~MARKDOWN
         - The [first](https://dev.to/) list:
             - The [second](https://dev.to/) list:
@@ -257,7 +257,11 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       MARKDOWN
 
       test = generate_and_parse_markdown(nested_list)
-      expect(test).to include('<a href="https://dev.to/" target="_blank" rel="noopener noreferrer">fifth</a>')
+      expect(test.scan('<a href="https://dev.to/" target="_blank" rel="noopener noreferrer">').size).to eq(5)
+      expect(test.scan("<ul>").size).to eq(5)
+      %w[first second third fourth fifth].each do |level|
+        expect(test).to include(%(<a href="https://dev.to/" target="_blank" rel="noopener noreferrer">#{level}</a>))
+      end
     end
 
     it "renders tel links correctly" do
