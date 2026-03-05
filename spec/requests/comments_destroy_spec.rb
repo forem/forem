@@ -46,9 +46,22 @@ RSpec.describe "CommentsDestroy" do
         expect(Comment.first.deleted).to be(true)
       end
 
+      it "preserves both comments in the database" do
+        expect(Comment.count).to eq(2)
+      end
+
+      it "does not delete the child comment" do
+        expect(child_comment.reload.deleted).to be(false)
+      end
+
       it "renders [deleted]" do
         get parent_comment.path
         expect(response.body).to include "[deleted]"
+      end
+
+      it "renders the child comment in the thread" do
+        get parent_comment.path
+        expect(response.body).to include(child_comment.processed_html)
       end
     end
   end
