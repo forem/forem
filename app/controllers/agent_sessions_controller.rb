@@ -1,6 +1,4 @@
 class AgentSessionsController < ApplicationController
-  ALLOWED_EXTENSIONS = %w[.jsonl .json .txt .log .md].freeze
-
   before_action :require_agent_sessions_enabled!
   before_action :authenticate_user!, except: %i[show]
   before_action :set_agent_session, only: %i[show edit update destroy raw_url]
@@ -34,13 +32,7 @@ class AgentSessionsController < ApplicationController
     @agent_session = current_user.agent_sessions.new(title: create_params[:title])
     authorize @agent_session
 
-    if create_params[:curated_data].present?
-      create_from_curated_data
-    elsif create_params[:normalized_data].present?
-      create_from_normalized_data
-    else
-      create_from_file_upload
-    end
+    create_from_curated_data
   end
 
   def update
@@ -48,8 +40,6 @@ class AgentSessionsController < ApplicationController
 
     if update_params.key?(:curated_data)
       update_curated_data
-    elsif update_params.key?(:curated_selections)
-      @agent_session.curated_selections = update_params[:curated_selections]
     end
 
     if update_params.key?(:title)
@@ -124,13 +114,6 @@ class AgentSessionsController < ApplicationController
     rate_limit!(:agent_session_creation)
   end
 
-  def validate_upload(file)
-    ext = File.extname(file.original_filename.to_s).downcase
-    return "Unsupported file type. Allowed: #{ALLOWED_EXTENSIONS.join(', ')}" unless ALLOWED_EXTENSIONS.include?(ext)
-
-    nil
-  end
-
   def set_agent_session
     @agent_session = if params[:id]&.match?(/\A\d+\z/)
                        AgentSession.find(params[:id])
@@ -165,88 +148,6 @@ class AgentSessionsController < ApplicationController
     end
 
     save_and_respond_create
-  end
-
-  def create_from_normalized_data
-    normalized = parse_normalized_data_param
-    tool_name = create_params[:tool_name]
-
-    validation_errors = AgentSessionParsers::NormalizedDataValidator.validate(normalized)
-    if validation_errors.any?
-      render json: { error: validation_errors.map(&:message).join(", ") }, status: :unprocessable_entity
-      return
-    end
-
-    # Server-side secret scrubbing (defense in depth)
-    result = AgentSessionParsers::SensitiveDataScrubber.scrub(normalized)
-    @agent_session.tool_name = tool_name.presence || normalized.dig("metadata", "tool_name") || "claude_code"
-    @agent_session.normalized_data = result.scrubbed_data
-    @agent_session.session_metadata = result.scrubbed_data.fetch("metadata", {}).merge(
-      "redactions" => result.redactions.map { |r| { "name" => r.pattern_name, "count" => r.match_count } },
-    )
-
-    if create_params[:curated_selections].present?
-      @agent_session.curated_selections = create_params[:curated_selections].map(&:to_i)
-    end
-
-    if params[:agent_session]&.key?(:slices)
-      @agent_session.slices = parse_create_slices_param
-    end
-
-    save_and_respond_create
-  end
-
-  def create_from_file_upload
-    file = create_params[:session_file]
-    tool_name = create_params[:tool_name]
-
-    unless file.respond_to?(:original_filename)
-      render json: { error: "No file uploaded" }, status: :unprocessable_entity
-      return
-    end
-
-    error = validate_upload(file)
-    if error
-      render json: { error: error }, status: :unprocessable_entity
-      return
-    end
-
-    content = file.read.force_encoding("UTF-8")
-    unless content.valid_encoding?
-      render json: { error: "File must be valid UTF-8 text" }, status: :unprocessable_entity
-      return
-    end
-
-    if content.include?("\x00")
-      render json: { error: "Binary files are not supported" }, status: :unprocessable_entity
-      return
-    end
-
-    if content.bytesize > AgentSession::MAX_RAW_DATA_SIZE
-      render json: { error: "File too large (max 10MB)" }, status: :unprocessable_entity
-      return
-    end
-
-    if tool_name == "auto"
-      detected_tool = AgentSessionParsers::AutoDetect.detect_tool(content, filename: file.original_filename)
-      @agent_session.parse_and_normalize!(content, detected_tool: detected_tool)
-    else
-      @agent_session.tool_name = tool_name
-      @agent_session.parse_and_normalize!(content)
-    end
-
-    save_and_respond_create
-  rescue AgentSessionParsers::ParseError => e
-    Rails.logger.error("Agent session parse error: #{e.class}: #{e.message}")
-    error_message = "Failed to parse session file. Please check the file format and try again."
-    respond_to do |format|
-      format.html do
-        flash.now[:alert] = error_message
-        render :new, status: :unprocessable_entity
-      end
-      format.json { render json: { error: error_message }, status: :unprocessable_entity }
-      format.any { render :new, status: :unprocessable_entity }
-    end
   end
 
   def save_and_respond_create
@@ -296,13 +197,6 @@ class AgentSessionsController < ApplicationController
     {}
   end
 
-  def parse_normalized_data_param
-    raw = create_params[:normalized_data]
-    raw.is_a?(String) ? JSON.parse(raw, max_nesting: 50) : raw.to_unsafe_h
-  rescue JSON::ParserError
-    {}
-  end
-
   def parse_create_slices_param
     raw = params[:agent_session][:slices]
     slices_data = raw.is_a?(String) ? JSON.parse(raw, max_nesting: 50) : raw.as_json
@@ -317,13 +211,11 @@ class AgentSessionsController < ApplicationController
   end
 
   def create_params
-    params.require(:agent_session).permit(:title, :tool_name, :session_file, :normalized_data,
-                                          :curated_data, :s3_key,
-                                          curated_selections: [])
+    params.require(:agent_session).permit(:title, :tool_name, :curated_data, :s3_key)
   end
 
   def update_params
-    params.require(:agent_session).permit(:title, :published, :curated_data, curated_selections: [])
+    params.require(:agent_session).permit(:title, :published, :curated_data)
   end
 
   def parse_slices_param
@@ -351,7 +243,6 @@ class AgentSessionsController < ApplicationController
       title: session.title,
       tool_name: session.tool_name,
       messages: session.messages,
-      curated_selections: session.curated_selections,
       total_messages: session.total_messages,
       curated_count: session.curated_count,
       metadata: session.metadata,

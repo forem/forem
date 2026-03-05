@@ -4,7 +4,7 @@ RSpec.describe "AgentSessions#show" do
   let(:owner) { create(:user) }
   let(:other_user) { create(:user) }
   let(:admin) { create(:user, :super_admin) }
-  let(:normalized_data) do
+  let(:curated_data) do
     {
       "messages" => [
         { "index" => 0, "role" => "user", "content" => [{ "type" => "text", "text" => "Hello" }] },
@@ -14,7 +14,7 @@ RSpec.describe "AgentSessions#show" do
     }
   end
   let(:agent_session) do
-    AgentSession.create!(user: owner, title: "My Session", tool_name: "claude_code", normalized_data: normalized_data)
+    AgentSession.create!(user: owner, title: "My Session", tool_name: "claude_code", curated_data: curated_data)
   end
 
   describe "GET /agent_sessions/:slug" do

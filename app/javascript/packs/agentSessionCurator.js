@@ -33,7 +33,7 @@
     var sessionId = config.sessionId;
     var sessionSlug = config.sessionSlug;
     var mode = config.mode || 'edit';
-    var useCuratedData = config.useCuratedData || false;
+    // useCuratedData is always true now — curated_data is the only storage format
 
     if (curated.size === 0) {
       messages.forEach(function(m) { curated.add(m.index); });
@@ -383,18 +383,11 @@
         btn.disabled = true;
         btn.textContent = 'Saving...';
 
-        var payload;
-        if (useCuratedData) {
-          // New flow: send curated messages as curated_data
-          var curatedIndices = new Set(Array.from(curated));
-          var curatedMsgs = messages.filter(function(m) { return curatedIndices.has(m.index); });
-          var reindexed = curatedMsgs.map(function(m, i) { return Object.assign({}, m, { index: i }); });
-          var curatedDataObj = { messages: reindexed, metadata: {} };
-          payload = { agent_session: { curated_data: JSON.stringify(curatedDataObj) } };
-        } else {
-          var selections = Array.from(curated).sort(function(a,b){ return a-b; });
-          payload = { agent_session: { curated_selections: selections } };
-        }
+        var curatedIndices = new Set(Array.from(curated));
+        var curatedMsgs = messages.filter(function(m) { return curatedIndices.has(m.index); });
+        var reindexed = curatedMsgs.map(function(m, i) { return Object.assign({}, m, { index: i }); });
+        var curatedDataObj = { messages: reindexed, metadata: {} };
+        var payload = { agent_session: { curated_data: JSON.stringify(curatedDataObj) } };
 
         fetch('/agent_sessions/' + sessionId, {
           method: 'PATCH',

@@ -31,7 +31,7 @@
              session_id: @agent_session.id,
              session_slug: @agent_session.slug,
              messages_json: @agent_session.messages.to_json,
-             curated_json: (@agent_session.curated_data.present? ? "[]" : @agent_session.curated_selections.to_json),
+             curated_json: "[]",
              slices_json: @agent_session.slices.to_json,
              tool_name: @agent_session.tool_name,
              title: @agent_session.title %>
@@ -63,7 +63,7 @@
     sessionId: sessionId,
     sessionSlug: sessionSlug,
     mode: 'edit',
-    useCuratedData: <%= @agent_session.curated_data.present? %>,
+    useCuratedData: true,
   });
 
   // Re-curation from S3

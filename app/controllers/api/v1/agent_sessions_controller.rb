@@ -24,10 +24,11 @@ module Api
 
         if params[:curated_data].present?
           create_from_curated_data
-        elsif params[:normalized_data].present?
-          create_from_normalized_data
+        elsif params[:s3_key].present?
+          create_draft
         else
-          create_from_content
+          render json: { error: "Missing session content. Provide 'curated_data' or 's3_key'.", status: 422 },
+                 status: :unprocessable_entity
         end
       end
 
@@ -94,75 +95,10 @@ module Api
         render json: { error: "Invalid JSON in curated_data", status: 422 }, status: :unprocessable_entity
       end
 
-      def create_from_normalized_data
-        normalized = parse_json_param(:normalized_data)
-
-        validation_errors = AgentSessionParsers::NormalizedDataValidator.validate(normalized)
-        if validation_errors.any?
-          render json: { error: validation_errors.map(&:message).join(", "), status: 422 },
-                 status: :unprocessable_entity
-          return
-        end
-
-        result = AgentSessionParsers::SensitiveDataScrubber.scrub(normalized)
-        @agent_session.tool_name = params[:tool_name].presence || normalized.dig("metadata", "tool_name") || "claude_code"
-        @agent_session.normalized_data = result.scrubbed_data
-        @agent_session.session_metadata = result.scrubbed_data.fetch("metadata", {}).merge(
-          "redactions" => result.redactions.map { |r| { "name" => r.pattern_name, "count" => r.match_count } },
-        )
-
+      def create_draft
+        @agent_session.tool_name = params[:tool_name].presence || "claude_code"
+        @agent_session.s3_key = params[:s3_key]
         save_and_respond
-      rescue JSON::ParserError
-        render json: { error: "Invalid JSON in normalized_data", status: 422 }, status: :unprocessable_entity
-      end
-
-      def create_from_content
-        content = extract_content
-        unless content
-          # If only s3_key is provided (CLI flow: upload to S3, create draft, curate in browser)
-          if params[:s3_key].present?
-            @agent_session.tool_name = params[:tool_name].presence || "claude_code"
-            @agent_session.s3_key = params[:s3_key]
-            save_and_respond
-            return
-          end
-
-          render json: { error: "Missing session content. Provide 'curated_data', 'normalized_data', 'body', 's3_key', or 'session_file'.",
-                         status: 422 }, status: :unprocessable_entity
-          return
-        end
-
-        unless content.valid_encoding?
-          render json: { error: "File must be valid UTF-8 text", status: 422 }, status: :unprocessable_entity
-          return
-        end
-
-        if content.include?("\x00")
-          render json: { error: "Binary files are not supported", status: 422 }, status: :unprocessable_entity
-          return
-        end
-
-        if content.bytesize > AgentSession::MAX_RAW_DATA_SIZE
-          render json: { error: "Content too large (max 10MB)", status: 422 }, status: :unprocessable_entity
-          return
-        end
-
-        tool_name = params[:tool_name].presence
-        if tool_name.blank? || tool_name == "auto"
-          file = params[:session_file]
-          filename = file.respond_to?(:original_filename) ? file.original_filename : nil
-          detected_tool = AgentSessionParsers::AutoDetect.detect_tool(content, filename: filename)
-          @agent_session.parse_and_normalize!(content, detected_tool: detected_tool)
-        else
-          @agent_session.tool_name = tool_name
-          @agent_session.parse_and_normalize!(content)
-        end
-
-        save_and_respond
-      rescue AgentSessionParsers::ParseError => e
-        Rails.logger.error("Agent session API parse error: #{e.class}: #{e.message}")
-        render json: { error: "Failed to parse session content. Please check the format and try again.", status: 422 },
-               status: :unprocessable_entity
       end
 
       def save_and_respond
@@ -177,14 +113,6 @@ module Api
 
       def create_title
         params[:title].presence || "Session #{Time.current.strftime('%Y-%m-%d %H:%M')}"
-      end
-
-      def extract_content
-        if params[:session_file].respond_to?(:read)
-          params[:session_file].read.force_encoding("UTF-8")
-        elsif params[:body].present?
-          params[:body].to_s.force_encoding("UTF-8")
-        end
       end
 
       def parse_json_param(key)
@@ -232,7 +160,6 @@ module Api
           published: session.published,
           metadata: session.metadata,
           messages: session.messages,
-          curated_selections: session.curated_selections,
           slices: session.slices,
           created_at: session.created_at.iso8601,
           updated_at: session.updated_at.iso8601,
