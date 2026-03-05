@@ -48,7 +48,9 @@ RSpec.describe AgentSessions::S3Storage do
       stub_aws_config
 
       expect(fog_storage).to receive(:put_object_url)
-        .with("test-bucket", "agent_sessions/1/test.jsonl", 900, "Content-Type" => "application/x-jsonlines")
+        .with("test-bucket", "agent_sessions/1/test.jsonl",
+              a_value_between(Time.now.to_i + 895, Time.now.to_i + 905),
+              "Content-Type" => "application/x-jsonlines")
         .and_return("https://s3.example.com/presigned-put")
 
       reset_storage
@@ -67,7 +69,8 @@ RSpec.describe AgentSessions::S3Storage do
       stub_aws_config
 
       expect(fog_storage).to receive(:get_object_url)
-        .with("test-bucket", "agent_sessions/1/test.jsonl", 900)
+        .with("test-bucket", "agent_sessions/1/test.jsonl",
+              a_value_between(Time.now.to_i + 895, Time.now.to_i + 905))
         .and_return("https://s3.example.com/presigned-get")
 
       reset_storage

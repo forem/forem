@@ -665,7 +665,6 @@
           viewLink.className = 'slice-action-btn';
           viewLink.textContent = 'View';
           viewLink.href = '/agent_sessions/' + sessionSlug + '?slice=' + encodeURIComponent(slice.name);
-          viewLink.target = '_blank';
           actions.appendChild(viewLink);
 
           var copyBtn = document.createElement('button');

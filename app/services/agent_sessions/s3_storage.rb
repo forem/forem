@@ -11,11 +11,11 @@ module AgentSessions
       end
 
       def presigned_put_url(s3_key, content_type: CONTENT_TYPE, expires_in: DEFAULT_TTL)
-        storage.put_object_url(bucket, s3_key, expires_in, "Content-Type" => content_type)
+        storage.put_object_url(bucket, s3_key, Time.now.to_i + expires_in, "Content-Type" => content_type)
       end
 
       def presigned_get_url(s3_key, expires_in: DEFAULT_TTL)
-        storage.get_object_url(bucket, s3_key, expires_in)
+        storage.get_object_url(bucket, s3_key, Time.now.to_i + expires_in)
       end
 
       def delete(s3_key)
