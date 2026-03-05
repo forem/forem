@@ -4,7 +4,7 @@ module Api
       before_action :require_agent_sessions_enabled!
       before_action :authenticate_with_api_key!
       before_action :set_agent_session, only: %i[show raw_url]
-      after_action :verify_authorized, only: %i[create presign]
+      after_action :verify_authorized, only: %i[create presign raw_url]
 
       def index
         @agent_sessions = @user.agent_sessions.order(updated_at: :desc)
@@ -50,6 +50,8 @@ module Api
       end
 
       def raw_url
+        authorize @agent_session, :edit?
+
         unless @agent_session.raw_file_available? && AgentSessions::S3Storage.enabled?
           render json: { error: "No raw file available", status: 404 }, status: :not_found
           return

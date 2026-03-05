@@ -128,7 +128,7 @@ class AgentSessionsController < ApplicationController
     begin
       curated = parse_curated_data_param
     rescue JSON::ParserError => e
-      render json: { error: "Invalid JSON in curated_data: #{e.message}" }, status: :unprocessable_entity
+      render json: { error: "Invalid JSON in curated_data" }, status: :unprocessable_entity
       return
     end
     tool_name = create_params[:tool_name]
