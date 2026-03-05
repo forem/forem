@@ -25,6 +25,23 @@ RSpec.describe "Api::V1::AgentSessions" do
     }
   end
 
+  let(:opencode_export_json) do
+    {
+      info: {
+        id: "session_xyz",
+        title: "OpenCode Session",
+        directory: "/home/user/project",
+        time: { created: 1_741_176_000_000, updated: 1_741_176_100_000 }
+      },
+      messages: [
+        {
+          info: { id: "msg_1", role: "user", time: { created: 1_741_176_001_000 } },
+          parts: [{ type: "text", text: "Ship the feature" }]
+        },
+      ]
+    }.to_json
+  end
+
   describe "POST /api/agent_sessions" do
     it "returns 401 without authentication" do
       post api_agent_sessions_path,
@@ -49,6 +66,17 @@ RSpec.describe "Api::V1::AgentSessions" do
       expect(json).not_to have_key("messages")
       expect(json).not_to have_key("curated_selections")
       expect(json).not_to have_key("slices")
+    end
+
+    it "creates an OpenCode session from export JSON with auto-detection" do
+      post api_agent_sessions_path,
+           params: { title: "My OpenCode Session", body: opencode_export_json }.to_json,
+           headers: auth_headers
+
+      expect(response).to have_http_status(:created)
+      json = response.parsed_body
+      expect(json["tool_name"]).to eq("opencode")
+      expect(json["total_messages"]).to eq(1)
     end
 
     it "creates a session with explicit tool_name" do

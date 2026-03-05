@@ -8,7 +8,7 @@
         <%= link_to "← All Sessions", agent_sessions_path, class: "crayons-btn crayons-btn--ghost crayons-btn--s" %>
       </div>
     </div>
-    <p>Upload a coding agent session from Claude Code, Codex, Gemini CLI, Pi, or other tools.
+    <p>Upload a coding agent session from Claude Code, Codex, Gemini CLI, OpenCode, Pi, or other tools.
        You'll be able to curate which parts to include in your post.</p>
   </header>
 
@@ -25,6 +25,7 @@
         <option value="claude_code">Claude Code</option>
         <option value="codex">Codex (OpenAI)</option>
         <option value="gemini_cli">Gemini CLI</option>
+        <option value="opencode">OpenCode</option>
         <option value="pi">Pi</option>
         <option value="github_copilot">GitHub Copilot</option>
       </select>
@@ -66,6 +67,8 @@
           <dd><code>~/.gemini/tmp/session-*.json</code></dd>
           <dt>Pi</dt>
           <dd><code>~/.pi/agent/sessions/&lt;project&gt;/*.jsonl</code></dd>
+          <dt>OpenCode</dt>
+          <dd><code>opencode export &lt;session-id&gt; &gt; session.json</code></dd>
           <dt>GitHub Copilot</dt>
           <dd><code>~/.copilot/session-state/&lt;session-id&gt;/events.jsonl</code></dd>
         </dl>
@@ -213,6 +216,7 @@
       var firstLine = content.split('\n')[0].trim();
       if (firstLine.startsWith('{')) {
         var obj = JSON.parse(firstLine);
+        if (isOpenCodeExport(obj)) return 'opencode';
         if (obj.type === 'session.start') return 'github_copilot';
         if (obj.type === 'session' && obj.version) return 'pi';
         if (obj.parentId !== undefined || obj.parentSession) return 'pi';
@@ -232,16 +236,25 @@
     if (content.match(/^[\s]*\{/)) {
       try {
         var full = JSON.parse(content);
+        if (isOpenCodeExport(full)) return 'opencode';
         if (full.sessionId && full.messages) return 'gemini_cli';
       } catch(e) {}
     }
     return null;
   }
 
+  function isOpenCodeExport(data) {
+    if (!data || typeof data !== 'object') return false;
+    if (!data.info || !Array.isArray(data.messages)) return false;
+    if (data.messages.length === 0) return true;
+    var firstMessage = data.messages[0];
+    return !!(firstMessage && firstMessage.info && Array.isArray(firstMessage.parts));
+  }
+
   function formatToolName(tool) {
     var names = {
       claude_code: 'Claude Code', codex: 'Codex', gemini_cli: 'Gemini CLI',
-      pi: 'Pi', github_copilot: 'GitHub Copilot'
+      opencode: 'OpenCode', pi: 'Pi', github_copilot: 'GitHub Copilot'
     };
     return names[tool] || tool;
   }

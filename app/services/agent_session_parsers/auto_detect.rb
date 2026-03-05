@@ -4,6 +4,7 @@ module AgentSessionParsers
       "claude_code" => ClaudeCode,
       "codex" => Codex,
       "gemini_cli" => GeminiCli,
+      "opencode" => Opencode,
       "pi" => Pi,
       "github_copilot" => GithubCopilot
     }.freeze
@@ -55,6 +56,13 @@ module AgentSessionParsers
       # Try full JSON parse (Gemini CLI uses single JSON object)
       begin
         data = JSON.parse(content, max_nesting: Base::MAX_JSON_NESTING)
+
+        # OpenCode export format has top-level info + messages[].info/parts
+        if data.is_a?(Hash) && data["info"].is_a?(Hash) && data["messages"].is_a?(Array)
+          first = data["messages"].first
+          return "opencode" if first.is_a?(Hash) && first["info"].is_a?(Hash) && first["parts"].is_a?(Array)
+        end
+
         return "gemini_cli" if data.is_a?(Hash) && !data.key?("parentId")
       rescue JSON::ParserError
         # Not JSON

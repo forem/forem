@@ -89,8 +89,8 @@ RSpec.describe "api/v1/agent_sessions" do
           properties: {
             title: { type: :string, description: "Title for the session (auto-generated if omitted)" },
             body: { type: :string, description: "Raw session content (JSONL or JSON). Provide this or session_file." },
-            tool_name: { type: :string, description: "Tool that produced the session (e.g. claude_code, codex). Defaults to auto-detect.",
-                         enum: %w[claude_code codex gemini_cli github_copilot pi auto] }
+            tool_name: { type: :string, description: "Tool that produced the session (e.g. claude_code, codex, opencode). Defaults to auto-detect.",
+                         enum: %w[claude_code codex gemini_cli github_copilot opencode pi auto] }
           },
           required: %w[body]
         }

@@ -26,6 +26,19 @@ RSpec.describe AgentSessionParsers::AutoDetect do
       content = { type: "session", version: 3, id: "abc" }.to_json
       expect(described_class.detect_tool(content)).to eq("pi")
     end
+
+    it "detects OpenCode export JSON" do
+      content = {
+        info: { id: "sess-1", title: "Test" },
+        messages: [
+          {
+            info: { id: "m1", role: "user", time: { created: 1_741_176_001_000 } },
+            parts: [{ type: "text", text: "Hello" }],
+          },
+        ]
+      }.to_json
+      expect(described_class.detect_tool(content)).to eq("opencode")
+    end
   end
 
   describe ".parser_for" do
@@ -33,6 +46,7 @@ RSpec.describe AgentSessionParsers::AutoDetect do
       expect(described_class.parser_for("claude_code")).to eq(AgentSessionParsers::ClaudeCode)
       expect(described_class.parser_for("codex")).to eq(AgentSessionParsers::Codex)
       expect(described_class.parser_for("gemini_cli")).to eq(AgentSessionParsers::GeminiCli)
+      expect(described_class.parser_for("opencode")).to eq(AgentSessionParsers::Opencode)
       expect(described_class.parser_for("pi")).to eq(AgentSessionParsers::Pi)
     end
 
