@@ -589,6 +589,50 @@ RSpec.describe Billboard do
     end
   end
 
+  describe "exclude_linked_articles (before_save)" do
+    let!(:user) { create(:user, username: "testuser") }
+    let!(:organization) { create(:organization, slug: "testorg") }
+    let!(:article1) { create(:article, user: user, slug: "first-article") }
+    let!(:article2) { create(:article, user: user, organization: organization, slug: "second-article") }
+
+    let(:billboard) { build(:billboard, placement_area: "sidebar_left") }
+
+    it "adds linked articles to exclude_article_ids" do
+      billboard.body_markdown = "Check out [this link](/testuser/first-article) and [this one](https://dev.to/testorg/second-article)!"
+      billboard.save!
+      expect(billboard.exclude_article_ids).to include(article1.id, article2.id)
+    end
+
+    it "does not duplicate ids if already excluded" do
+      billboard.exclude_article_ids = [article1.id]
+      billboard.body_markdown = "Check out [this link](/testuser/first-article)."
+      billboard.save!
+      expect(billboard.exclude_article_ids).to contain_exactly(article1.id)
+    end
+
+    it "ignores links that do not match an article" do
+      billboard.exclude_article_ids = []
+      billboard.body_markdown = "Check out [this link](/unknownuser/unknown-slug) and [this one](/testorg/nonexistent)."
+      billboard.save!
+      expect(billboard.exclude_article_ids).to eq([])
+    end
+
+    it "ignores invalid URLs gracefully" do
+      billboard.body_markdown = "Check out [this link](http://[::1]:err/foo/bar) and [this one](http:://invalid)."
+      expect { billboard.save! }.not_to raise_error
+    end
+
+    it "does not parse HTML if it has not changed" do
+      billboard.body_markdown = "Check out [this link](/testuser/first-article)."
+      billboard.save!
+
+      expect(Nokogiri).not_to receive(:HTML)
+      
+      billboard.name = "Updated name"
+      billboard.save!
+    end
+  end
+
   describe "when a stale audience segment is associated" do
     let(:audience_segment) do
       Timecop.travel(5.days.ago) do
