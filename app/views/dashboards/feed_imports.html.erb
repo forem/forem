@@ -154,7 +154,7 @@
                     <% end %>
 
                     <% if log.import_items.any? %>
-                      <% notable_items, duplicate_items = log.import_items.partition { |item| !item.skipped_duplicate? } %>
+                      <% notable_items, skipped_items = log.import_items.partition { |item| item.imported? || item.failed? } %>
 
                       <% if notable_items.any? %>
                         <table class="crayons-table w-100">
@@ -170,13 +170,7 @@
                               <tr>
                                 <td class="truncate" style="max-width: 300px;" title="<%= item.feed_item_title %>"><%= item.feed_item_title %></td>
                                 <td>
-                                  <% item_color = if item.imported?
-                                    "color-accent-success"
-                                  elsif item.failed?
-                                    "color-accent-danger"
-                                  else
-                                    "color-base-60"
-                                  end %>
+                                  <% item_color = item.imported? ? "color-accent-success" : "color-accent-danger" %>
                                   <span class="fw-medium <%= item_color %>">
                                     <%= t("views.dashboard.feed_imports.items.statuses.#{item.status}") %>
                                   </span>
@@ -199,17 +193,17 @@
                         </table>
                       <% end %>
 
-                      <% if duplicate_items.any? %>
+                      <% if skipped_items.any? %>
                         <details class="mt-3">
                           <summary class="crayons-link cursor-pointer fs-s color-base-60">
-                            <%= t("views.dashboard.feed_imports.items.show_duplicates", count: duplicate_items.size) %>
+                            <%= t("views.dashboard.feed_imports.items.show_duplicates", count: skipped_items.size) %>
                           </summary>
                           <table class="crayons-table w-100 mt-2">
                             <tbody>
-                              <% duplicate_items.each do |item| %>
+                              <% skipped_items.each do |item| %>
                                 <tr>
                                   <td class="truncate color-base-50 fs-s" style="max-width: 400px;" title="<%= item.feed_item_title %>"><%= item.feed_item_title %></td>
-                                  <td class="color-base-50 fs-s"><%= t("views.dashboard.feed_imports.items.statuses.skipped_duplicate") %></td>
+                                  <td class="color-base-50 fs-s"><%= t("views.dashboard.feed_imports.items.statuses.#{item.status}") %></td>
                                 </tr>
                               <% end %>
                             </tbody>

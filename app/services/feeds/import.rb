@@ -157,10 +157,19 @@ module Feeds
       items_skipped = 0
       items_failed = 0
 
+      # Pre-load URLs already tracked as skipped for this source to avoid re-recording them
+      previously_skipped_urls = Feeds::ImportItem
+        .joins(:import_log)
+        .where(feed_import_logs: { feed_source_id: feed_source.id })
+        .where(status: %i[skipped_duplicate skipped_medium_reply])
+        .pluck(:feed_item_url)
+        .to_set
+
       feed.entries.reverse_each do |item|
         if Feeds::CheckItemMediumReply.call(item)
           items_skipped += 1
-          record_import_item(import_log, item, :skipped_medium_reply)
+          item_url = item.url.to_s.strip.truncate(500)
+          record_import_item(import_log, item, :skipped_medium_reply) unless previously_skipped_urls.include?(item_url)
           next
         end
 
@@ -168,7 +177,8 @@ module Feeds
 
         if Feeds::CheckItemPreviouslyImported.call(item, author)
           items_skipped += 1
-          record_import_item(import_log, item, :skipped_duplicate)
+          item_url = item.url.to_s.strip.truncate(500)
+          record_import_item(import_log, item, :skipped_duplicate) unless previously_skipped_urls.include?(item_url)
           next
         end
 

@@ -158,10 +158,7 @@ class DashboardsController < ApplicationController
     @routine_logs_count = logs.routine.count
 
     @total_imported = logs.sum(:items_imported)
-    skip_statuses = Feeds::ImportItem.statuses.keys.select { |s| s.start_with?("skipped_") } - ["skipped_duplicate"]
-    @total_skipped = Feeds::ImportItem
-      .where(feed_import_log_id: logs.select(:id), status: skip_statuses)
-      .count
+    @total_skipped = logs.sum(:items_skipped)
     @total_failed = logs.sum(:items_failed)
     @last_successful_import = logs.completed.maximum(:created_at)
 
