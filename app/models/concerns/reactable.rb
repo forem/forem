@@ -12,6 +12,7 @@ module Reactable
 
   class_methods do
     # Batch sync reaction counts for multiple records efficiently
+    # Uses transaction + row locking to prevent race conditions
     # Eliminates N+1 queries by using a single grouped query + batch update
     #
     # @param records [Array<ActiveRecord::Base>] records to sync
@@ -21,37 +22,48 @@ module Reactable
 
       ids = records.map(&:id)
 
-      # Single grouped query to get correct counts for all records
-      correct_counts = Reaction
-        .where(reactable_type: name, reactable_id: ids)
-        .public_category
-        .group(:reactable_id)
-        .count
+      transaction do
+        # Lock the rows to prevent concurrent updates (SKIP LOCKED for non-blocking)
+        where(id: ids).lock("FOR UPDATE SKIP LOCKED").load
 
-      # Build SQL CASE statement for efficient batch update
-      sanitized_ids = ids.map { |id| ActiveRecord::Base.connection.quote(id) }
-      when_clauses = ids.map do |id|
-        count = correct_counts[id] || 0
-        "WHEN #{ActiveRecord::Base.connection.quote(id)} THEN #{count}"
-      end.join(" ")
+        # Single grouped query to get correct counts for all records
+        correct_counts = Reaction
+          .where(reactable_type: name, reactable_id: ids)
+          .public_category
+          .group(:reactable_id)
+          .count
 
-      sql = <<~SQL.squish
-        UPDATE #{table_name}
-        SET public_reactions_count = CASE id
-          #{when_clauses}
-        END
-        WHERE id IN (#{sanitized_ids.join(',')})
-      SQL
+        # Use Arel for safe SQL generation instead of string interpolation
+        update_cases = ids.map do |record_id|
+          count = correct_counts[record_id] || 0
+          Arel.sql("WHEN #{connection.quote(record_id)} THEN #{count.to_i}")
+        end
 
-      ActiveRecord::Base.connection.execute(sql)
+        # Perform batch update using ActiveRecord with sanitized Arel
+        where(id: ids).update_all(
+          Arel.sql(
+            "public_reactions_count = CASE id #{update_cases.join(' ')} END",
+          ),
+        )
+      end
+
       ids.size
     end
   end
 
   def sync_reactions_count
-    # Use direct SQL update to avoid race conditions and callbacks
-    correct_count = reactions.public_category.count
-    self.class.where(id: id).update_all(public_reactions_count: correct_count)
+    # Use transaction + row locking to prevent race conditions
+    self.class.transaction do
+      self.class.where(id: id).lock("FOR UPDATE").load
+      correct_count = reactions.public_category.count
+      self.class.where(id: id).update_all(public_reactions_count: correct_count)
+    end
+  end
+
+  # Thread-safe sync that can be called from background jobs
+  def sync_reactions_count!
+    sync_reactions_count
+    reload
   end
 
   def public_reaction_categories

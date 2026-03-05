@@ -150,4 +150,107 @@ RSpec.describe DataUpdateScripts::FixNegativeReactionCounters do
       expect(article.previous_public_reactions_count).to eq(0)
     end
   end
+
+  it "handles mixed negative values correctly in same batch" do
+    with_disabled_articles_constraint do
+      articles = create_list(:article, 3)
+
+      # Create different reaction states
+      create_list(:reaction, 2, reactable: articles[0], category: "like")
+      create(:reaction, reactable: articles[1], category: "like")
+      # articles[2] has no reactions
+
+      # Set different negative values
+      set_counter_value(articles[0], -100)
+      set_counter_value(articles[1], -1)
+      set_counter_value(articles[2], -50)
+      add_constraint_not_valid(:articles, articles_constraint, "public_reactions_count >= 0")
+
+      described_class.new.run
+
+      # Verify each article has correct count matching actual reactions
+      articles.each do |article|
+        article.reload
+        expect(article.public_reactions_count).to eq(article.reactions.public_category.count)
+        expect(article.public_reactions_count).to be >= 0
+      end
+
+      # Verify specific expected values
+      expect(articles[0].reload.public_reactions_count).to eq(2)
+      expect(articles[1].reload.public_reactions_count).to eq(1)
+      expect(articles[2].reload.public_reactions_count).to eq(0)
+    end
+  end
+
+  describe "database constraint enforcement", :aggregate_failures do
+    # These tests verify CHECK constraints work at the database level.
+    # We use a separate connection to avoid transaction issues when
+    # the constraint violation aborts the current transaction.
+
+    def execute_in_separate_connection(sql)
+      # Use a separate connection pool checkout to isolate transaction state
+      connection_config = ActiveRecord::Base.connection_db_config
+      ActiveRecord::Base.connection_pool.with_connection do |conn|
+        conn.execute(sql)
+      end
+    end
+
+    it "prevents inserting negative values via raw SQL after constraint is validated" do
+      article = create(:article)
+
+      error_raised = false
+      begin
+        # Use raw connection to test constraint outside RSpec transaction
+        ActiveRecord::Base.connection.execute("SAVEPOINT constraint_test")
+        ActiveRecord::Base.connection.execute(
+          "UPDATE articles SET public_reactions_count = -1 WHERE id = #{article.id}",
+        )
+      rescue ActiveRecord::StatementInvalid => e
+        error_raised = true
+        expect(e.message).to match(/check_articles_public_reactions_count_non_negative/)
+      ensure
+        ActiveRecord::Base.connection.execute("ROLLBACK TO SAVEPOINT constraint_test")
+      end
+
+      expect(error_raised).to be(true), "Expected constraint violation error"
+    end
+
+    it "prevents negative previous_public_reactions_count via raw SQL" do
+      article = create(:article)
+
+      error_raised = false
+      begin
+        ActiveRecord::Base.connection.execute("SAVEPOINT constraint_test")
+        ActiveRecord::Base.connection.execute(
+          "UPDATE articles SET previous_public_reactions_count = -1 WHERE id = #{article.id}",
+        )
+      rescue ActiveRecord::StatementInvalid => e
+        error_raised = true
+        expect(e.message).to match(/check_articles_previous_public_reactions/)
+      ensure
+        ActiveRecord::Base.connection.execute("ROLLBACK TO SAVEPOINT constraint_test")
+      end
+
+      expect(error_raised).to be(true), "Expected constraint violation error"
+    end
+
+    it "prevents negative public_reactions_count on comments via raw SQL" do
+      comment = create(:comment)
+
+      error_raised = false
+      begin
+        ActiveRecord::Base.connection.execute("SAVEPOINT constraint_test")
+        ActiveRecord::Base.connection.execute(
+          "UPDATE comments SET public_reactions_count = -1 WHERE id = #{comment.id}",
+        )
+      rescue ActiveRecord::StatementInvalid => e
+        error_raised = true
+        expect(e.message).to match(/check_comments_public_reactions_count_non_negative/)
+      ensure
+        ActiveRecord::Base.connection.execute("ROLLBACK TO SAVEPOINT constraint_test")
+      end
+
+      expect(error_raised).to be(true), "Expected constraint violation error"
+    end
+  end
 end

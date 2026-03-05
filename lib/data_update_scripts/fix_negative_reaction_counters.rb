@@ -52,15 +52,18 @@ module DataUpdateScripts
 
       # Fix previous_public_reactions_count by setting to 0 if negative
       # (this is a snapshot value, not a live counter, so 0 is safe)
-      count = Article.where("previous_public_reactions_count < 0").count
+      # Use update_all return value to avoid duplicate count query
+      updated_count = Article
+        .where("previous_public_reactions_count < 0")
+        .update_all(previous_public_reactions_count: 0)
 
-      if count.zero?
+      if updated_count.zero?
         Rails.logger.info("[FixNegativeReactionCounters] No articles with negative previous_public_reactions_count")
-        return
+      else
+        Rails.logger.info(
+          "[FixNegativeReactionCounters] Reset #{updated_count} articles previous_public_reactions_count to 0",
+        )
       end
-
-      Article.where("previous_public_reactions_count < 0").update_all(previous_public_reactions_count: 0)
-      Rails.logger.info("[FixNegativeReactionCounters] Reset #{count} articles previous_public_reactions_count to 0")
     end
 
     def verify_no_negative_values_remain
