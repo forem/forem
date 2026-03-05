@@ -38,6 +38,7 @@ module EdgeCache
 
       if article.published && article.published_at > 1.hour.ago
         cache_bust.call("/latest")
+        cache_bust.call("/api/articles/latest")
       end
 
       cache_bust.call("/") if Article.published.order(hotness_score: :desc).limit(4).ids.include?(article.id)
