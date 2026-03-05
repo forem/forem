@@ -476,6 +476,12 @@ class Billboard < ApplicationRecord
 
       begin
         uri = URI.parse(href)
+
+        host = uri.host
+        if host.present?
+          allowed_domains = [Settings::General.app_domain] + Subforem.cached_domains
+          next unless allowed_domains.include?(host)
+        end
         path = uri.path
         next if path.blank?
 
