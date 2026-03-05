@@ -257,11 +257,25 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       MARKDOWN
 
       test = generate_and_parse_markdown(nested_list)
-      expect(test.scan('<a href="https://dev.to/" target="_blank" rel="noopener noreferrer">').size).to eq(5)
-      expect(test.scan("<ul>").size).to eq(5)
-      %w[first second third fourth fifth].each do |level|
-        expect(test).to include(%(<a href="https://dev.to/" target="_blank" rel="noopener noreferrer">#{level}</a>))
+      doc = Nokogiri::HTML.fragment(test)
+
+      links = doc.css('a[href="https://dev.to/"]')
+      expect(links.size).to eq(5)
+
+      links.each do |link|
+        expect(link["target"]).to eq("_blank")
+        rel_values = link["rel"].to_s.split
+        expect(rel_values).to include("noopener", "noreferrer")
       end
+
+      expect(links.map(&:text)).to match_array(%w[first second third fourth fifth])
+
+      expect(doc.css("ul").size).to eq(5)
+
+      # Ensure at least one link is nested within five levels of <ul>
+      expect(
+        links.any? { |link| link.ancestors("ul").size == 5 }
+      ).to be(true)
     end
 
     it "renders tel links correctly" do
