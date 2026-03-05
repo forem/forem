@@ -25,22 +25,16 @@ module DataUpdateScripts
       Rails.logger.info("[FixNegativeReactionCounters] Found #{total_count} #{model_name} with negative counts")
       fixed_count = 0
 
+      # Process in batches to avoid N+1 queries
+      # Uses Reactable.sync_reactions_count_for_batch for efficient batch updates
       scope.find_in_batches(batch_size: BATCH_SIZE) do |batch|
-        batch.each do |record|
-          update_counter_efficiently(record)
-          fixed_count += 1
-        end
+        model.sync_reactions_count_for_batch(batch)
+        fixed_count += batch.size
 
         Rails.logger.info("[FixNegativeReactionCounters] Progress: #{fixed_count}/#{total_count} #{model_name}")
       end
 
       Rails.logger.info("[FixNegativeReactionCounters] Fixed #{fixed_count} #{model_name}")
-    end
-
-    def update_counter_efficiently(record)
-      # Use SQL to avoid race conditions and unnecessary object reloading
-      correct_count = record.reactions.public_category.count
-      record.class.where(id: record.id).update_all(public_reactions_count: correct_count)
     end
   end
 end

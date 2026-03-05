@@ -10,6 +10,44 @@ module Reactable
              class_name: "Reaction"
   end
 
+  class_methods do
+    # Batch sync reaction counts for multiple records efficiently
+    # Eliminates N+1 queries by using a single grouped query + batch update
+    #
+    # @param records [Array<ActiveRecord::Base>] records to sync
+    # @return [Integer] number of records updated
+    def sync_reactions_count_for_batch(records)
+      return 0 if records.empty?
+
+      ids = records.map(&:id)
+
+      # Single grouped query to get correct counts for all records
+      correct_counts = Reaction
+        .where(reactable_type: name, reactable_id: ids)
+        .public_category
+        .group(:reactable_id)
+        .count
+
+      # Build SQL CASE statement for efficient batch update
+      sanitized_ids = ids.map { |id| ActiveRecord::Base.connection.quote(id) }
+      when_clauses = ids.map do |id|
+        count = correct_counts[id] || 0
+        "WHEN #{ActiveRecord::Base.connection.quote(id)} THEN #{count}"
+      end.join(" ")
+
+      sql = <<~SQL.squish
+        UPDATE #{table_name}
+        SET public_reactions_count = CASE id
+          #{when_clauses}
+        END
+        WHERE id IN (#{sanitized_ids.join(',')})
+      SQL
+
+      ActiveRecord::Base.connection.execute(sql)
+      ids.size
+    end
+  end
+
   def sync_reactions_count
     # Use direct SQL update to avoid race conditions and callbacks
     correct_count = reactions.public_category.count
