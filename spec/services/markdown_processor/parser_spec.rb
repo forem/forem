@@ -246,6 +246,20 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       expect(test).to eq("<p><a href=\"mailto:test@example.com\">Contact us</a></p>\n\n")
     end
 
+
+    it "preserves hyperlinks in deeply nested lists" do
+      nested_list = <<~MARKDOWN
+        - The [first](https://dev.to/) list:
+            - The [second](https://dev.to/) list:
+                - The [third](https://dev.to/) list:
+                    - The [fourth](https://dev.to/) list:
+                        - The [fifth](https://dev.to/) list:
+      MARKDOWN
+
+      test = generate_and_parse_markdown(nested_list)
+      expect(test).to include('<a href="https://dev.to/" target="_blank" rel="noopener noreferrer">fifth</a>')
+    end
+
     it "renders tel links correctly" do
       code_span = "[Call us](tel:+1234567890)"
       test = generate_and_parse_markdown(code_span)

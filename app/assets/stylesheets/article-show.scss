@@ -318,6 +318,14 @@ article {
       ul {
         margin: 0 0.7em 0 1.9em;
         list-style-type: circle;
+
+        ul {
+          list-style-type: square;
+
+          ul {
+            list-style-type: circle;
+          }
+        }
       }
     }
 
