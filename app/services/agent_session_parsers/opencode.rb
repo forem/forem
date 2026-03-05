@@ -168,7 +168,7 @@ module AgentSessionParsers
     def format_time(value)
       return if value.blank?
 
-      Time.zone.at(value.to_f / 1000).iso8601
+      Time.at(value.to_f / 1000).utc.iso8601
     rescue StandardError
       value.to_s
     end
