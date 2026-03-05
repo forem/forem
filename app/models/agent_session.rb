@@ -1,6 +1,7 @@
 class AgentSession < ApplicationRecord
   TOOL_NAMES = %w[claude_code codex gemini_cli github_copilot pi].freeze
   MAX_RAW_DATA_SIZE = 10.megabytes
+  MAX_CURATED_DATA_SIZE = 50.megabytes
 
   belongs_to :user
 
@@ -9,22 +10,31 @@ class AgentSession < ApplicationRecord
   validates :raw_data, length: { maximum: MAX_RAW_DATA_SIZE }, allow_nil: true
   validates :slug, uniqueness: true, format: { with: /\A[0-9a-z\-_]+\z/ }, allow_nil: true
 
-  validate :normalized_data_has_messages
-  validate :normalized_data_not_too_large
+  validate :data_has_messages
+  validate :data_not_too_large
 
   before_validation :generate_slug
+  after_destroy :delete_s3_object
 
   scope :published, -> { where(published: true) }
 
   def messages
-    normalized_data.fetch("messages", [])
+    if curated_data.present? && curated_data["messages"].present?
+      curated_data["messages"]
+    else
+      normalized_data.fetch("messages", [])
+    end
   end
 
   def curated_messages
-    return messages if curated_selections.blank?
-
-    selected = curated_selections.to_set(&:to_i)
-    messages.select { |m| selected.include?(m["index"]) }
+    if curated_data.present? && curated_data["messages"].present?
+      curated_data["messages"]
+    elsif curated_selections.present?
+      selected = curated_selections.to_set(&:to_i)
+      normalized_data.fetch("messages", []).select { |m| selected.include?(m["index"]) }
+    else
+      normalized_data.fetch("messages", [])
+    end
   end
 
   def curated_messages_in_range(range)
@@ -44,7 +54,11 @@ class AgentSession < ApplicationRecord
   end
 
   def metadata
-    normalized_data.fetch("metadata", {})
+    if curated_data.present? && curated_data["metadata"].present?
+      curated_data["metadata"]
+    else
+      normalized_data.fetch("metadata", {})
+    end
   end
 
   def total_messages
@@ -60,11 +74,21 @@ class AgentSession < ApplicationRecord
   end
 
   def curated_count
-    curated_selections.present? ? curated_selections.size : total_messages
+    if curated_data.present? && curated_data["messages"].present?
+      curated_data["messages"].size
+    elsif curated_selections.present?
+      curated_selections.size
+    else
+      total_messages
+    end
   end
 
   def to_param
     slug || id.to_s
+  end
+
+  def s3_session?
+    s3_key.present?
   end
 
   def parse_and_normalize!(file_content, detected_tool: nil)
@@ -98,20 +122,36 @@ class AgentSession < ApplicationRecord
     self.slug = "#{base}-#{SecureRandom.alphanumeric(6).downcase}"
   end
 
-  def normalized_data_has_messages
-    return if normalized_data.blank?
-
-    messages_data = normalized_data["messages"]
-    return if messages_data.is_a?(Array)
-
-    errors.add(:normalized_data, "must contain a messages array")
+  def data_has_messages
+    if curated_data.present? && curated_data != {}
+      messages_data = curated_data["messages"]
+      unless messages_data.is_a?(Array)
+        errors.add(:curated_data, "must contain a messages array")
+      end
+    elsif normalized_data.present? && normalized_data != {}
+      messages_data = normalized_data["messages"]
+      unless messages_data.is_a?(Array)
+        errors.add(:normalized_data, "must contain a messages array")
+      end
+    end
+    # Allow saving with just s3_key and no curated_data yet (draft state)
   end
 
-  def normalized_data_not_too_large
-    return if normalized_data.blank?
+  def data_not_too_large
+    if curated_data.present? && curated_data != {}
+      if curated_data.to_json.bytesize > MAX_CURATED_DATA_SIZE
+        errors.add(:curated_data, "is too large (max #{MAX_CURATED_DATA_SIZE / 1.megabyte}MB)")
+      end
+    elsif normalized_data.present? && normalized_data != {}
+      if normalized_data.to_json.bytesize > MAX_RAW_DATA_SIZE
+        errors.add(:normalized_data, "is too large (max #{MAX_RAW_DATA_SIZE / 1.megabyte}MB)")
+      end
+    end
+  end
 
-    return unless normalized_data.to_json.bytesize > MAX_RAW_DATA_SIZE
+  def delete_s3_object
+    return unless s3_key.present? && AgentSessions::S3Storage.enabled?
 
-    errors.add(:normalized_data, "is too large (max #{MAX_RAW_DATA_SIZE / 1.megabyte}MB)")
+    AgentSessions::S3Storage.delete(s3_key)
   end
 end

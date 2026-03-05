@@ -17,8 +17,8 @@
     </svg>
     <%= agent_session_tool_icon(agent_session.tool_name, show_label: false) %>
     <span class="agent-session-title"><%= agent_session.title %></span>
-    <% if agent_session.normalized_data.dig("metadata", "model").present? %>
-      <span class="agent-session-model-badge"><%= agent_session.normalized_data.dig("metadata", "model") %></span>
+    <% if agent_session.metadata.dig("model").present? %>
+      <span class="agent-session-model-badge"><%= agent_session.metadata.dig("model") %></span>
     <% end %>
     <% if active_slice %>
       <span class="agent-session-slice-label"><%= active_slice["name"] %></span>

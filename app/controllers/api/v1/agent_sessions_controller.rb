@@ -1,9 +1,10 @@
 module Api
   module V1
     class AgentSessionsController < ApiController
+      before_action :require_agent_sessions_enabled!
       before_action :authenticate_with_api_key!
-      before_action :set_agent_session, only: [:show]
-      after_action :verify_authorized, only: %i[create]
+      before_action :set_agent_session, only: %i[show raw_url]
+      after_action :verify_authorized, only: %i[create presign]
 
       def index
         @agent_sessions = @user.agent_sessions.order(updated_at: :desc)
@@ -21,14 +22,46 @@ module Api
         @agent_session = @user.agent_sessions.new(title: create_title)
         authorize @agent_session
 
-        if params[:normalized_data].present?
+        if params[:curated_data].present?
+          create_from_curated_data
+        elsif params[:normalized_data].present?
           create_from_normalized_data
         else
           create_from_content
         end
       end
 
+      def presign
+        authorize AgentSession, :create?
+
+        unless AgentSessions::S3Storage.enabled?
+          render json: { error: "S3 storage is not configured", status: 503 }, status: :service_unavailable
+          return
+        end
+
+        s3_key = AgentSessions::S3Storage.generate_key(@user.id)
+        presigned_url = AgentSessions::S3Storage.presigned_put_url(s3_key)
+
+        render json: { s3_key: s3_key, presigned_url: presigned_url }
+      end
+
+      def raw_url
+        unless @agent_session.s3_key.present? && AgentSessions::S3Storage.enabled?
+          render json: { error: "No raw file available", status: 404 }, status: :not_found
+          return
+        end
+
+        url = AgentSessions::S3Storage.presigned_get_url(@agent_session.s3_key)
+        render json: { raw_url: url }
+      end
+
       private
+
+      def require_agent_sessions_enabled!
+        return if Settings::General.enable_agent_sessions
+
+        render json: { error: "Agent Sessions are not enabled", status: 404 }, status: :not_found
+      end
 
       def set_agent_session
         @agent_session = if params[:id]&.match?(/\A\d+\z/)
@@ -38,10 +71,31 @@ module Api
                          end
       end
 
+      def create_from_curated_data
+        curated = parse_json_param(:curated_data)
+
+        validation_errors = AgentSessionParsers::NormalizedDataValidator.validate(curated)
+        if validation_errors.any?
+          render json: { error: validation_errors.map(&:message).join(", "), status: 422 },
+                 status: :unprocessable_entity
+          return
+        end
+
+        result = AgentSessionParsers::SensitiveDataScrubber.scrub(curated)
+        @agent_session.tool_name = params[:tool_name].presence || curated.dig("metadata", "tool_name") || "claude_code"
+        @agent_session.curated_data = result.scrubbed_data
+        @agent_session.s3_key = params[:s3_key] if params[:s3_key].present?
+        @agent_session.session_metadata = result.scrubbed_data.fetch("metadata", {}).merge(
+          "redactions" => result.redactions.map { |r| { "name" => r.pattern_name, "count" => r.match_count } },
+        )
+
+        save_and_respond
+      rescue JSON::ParserError
+        render json: { error: "Invalid JSON in curated_data", status: 422 }, status: :unprocessable_entity
+      end
+
       def create_from_normalized_data
-        normalized = params[:normalized_data]
-        normalized = JSON.parse(normalized, max_nesting: 50) if normalized.is_a?(String)
-        normalized = normalized.to_unsafe_h if normalized.respond_to?(:to_unsafe_h)
+        normalized = parse_json_param(:normalized_data)
 
         validation_errors = AgentSessionParsers::NormalizedDataValidator.validate(normalized)
         if validation_errors.any?
@@ -57,13 +111,7 @@ module Api
           "redactions" => result.redactions.map { |r| { "name" => r.pattern_name, "count" => r.match_count } },
         )
 
-        if @agent_session.save
-          @user.rate_limiter.track_limit_by_action(:agent_session_creation)
-          render json: session_create_json(@agent_session), status: :created
-        else
-          render json: { error: @agent_session.errors.full_messages.join(", "), status: 422 },
-                 status: :unprocessable_entity
-        end
+        save_and_respond
       rescue JSON::ParserError
         render json: { error: "Invalid JSON in normalized_data", status: 422 }, status: :unprocessable_entity
       end
@@ -71,7 +119,15 @@ module Api
       def create_from_content
         content = extract_content
         unless content
-          render json: { error: "Missing session content. Provide 'body', 'session_file', or 'normalized_data'.",
+          # If only s3_key is provided (CLI flow: upload to S3, create draft, curate in browser)
+          if params[:s3_key].present?
+            @agent_session.tool_name = params[:tool_name].presence || "claude_code"
+            @agent_session.s3_key = params[:s3_key]
+            save_and_respond
+            return
+          end
+
+          render json: { error: "Missing session content. Provide 'curated_data', 'normalized_data', 'body', 's3_key', or 'session_file'.",
                          status: 422 }, status: :unprocessable_entity
           return
         end
@@ -102,6 +158,14 @@ module Api
           @agent_session.parse_and_normalize!(content)
         end
 
+        save_and_respond
+      rescue AgentSessionParsers::ParseError => e
+        Rails.logger.error("Agent session API parse error: #{e.class}: #{e.message}")
+        render json: { error: "Failed to parse session content. Please check the format and try again.", status: 422 },
+               status: :unprocessable_entity
+      end
+
+      def save_and_respond
         if @agent_session.save
           @user.rate_limiter.track_limit_by_action(:agent_session_creation)
           render json: session_create_json(@agent_session), status: :created
@@ -109,10 +173,6 @@ module Api
           render json: { error: @agent_session.errors.full_messages.join(", "), status: 422 },
                  status: :unprocessable_entity
         end
-      rescue AgentSessionParsers::ParseError => e
-        Rails.logger.error("Agent session API parse error: #{e.class}: #{e.message}")
-        render json: { error: "Failed to parse session content. Please check the format and try again.", status: 422 },
-               status: :unprocessable_entity
       end
 
       def create_title
@@ -125,6 +185,13 @@ module Api
         elsif params[:body].present?
           params[:body].to_s.force_encoding("UTF-8")
         end
+      end
+
+      def parse_json_param(key)
+        raw = params[key]
+        raw = JSON.parse(raw, max_nesting: 50) if raw.is_a?(String)
+        raw = raw.to_unsafe_h if raw.respond_to?(:to_unsafe_h)
+        raw
       end
 
       def session_index_json(session)

@@ -31,11 +31,21 @@
              session_id: @agent_session.id,
              session_slug: @agent_session.slug,
              messages_json: @agent_session.messages.to_json,
-             curated_json: @agent_session.curated_selections.to_json,
+             curated_json: (@agent_session.curated_data.present? ? "[]" : @agent_session.curated_selections.to_json),
              slices_json: @agent_session.slices.to_json,
              tool_name: @agent_session.tool_name,
              title: @agent_session.title %>
+
+  <% if @agent_session.s3_session? %>
+    <div class="agent-session-recurate" style="margin-top: 1rem; text-align: center;">
+      <button type="button" class="crayons-btn crayons-btn--s crayons-btn--ghost" id="recurate-btn">
+        <%= t("views.agent_sessions.re_curate") %>
+      </button>
+    </div>
+  <% end %>
 </div>
+
+<%= javascript_include_tag "agentSessionUpload", defer: true %>
 
 <script>
 (function() {
@@ -53,7 +63,53 @@
     sessionId: sessionId,
     sessionSlug: sessionSlug,
     mode: 'edit',
+    useCuratedData: <%= @agent_session.curated_data.present? %>,
   });
+
+  // Re-curation from S3
+  var recurateBtn = document.getElementById('recurate-btn');
+  if (recurateBtn) {
+    recurateBtn.addEventListener('click', function() {
+      recurateBtn.disabled = true;
+      recurateBtn.textContent = '<%= j t("views.agent_sessions.loading_for_curation") %>';
+
+      var csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute('content');
+      fetch('/agent_sessions/' + sessionId + '/raw_url', {
+        headers: { 'X-CSRF-Token': csrfToken, 'Accept': 'application/json' },
+        credentials: 'same-origin',
+      }).then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (!data.raw_url) throw new Error(data.error || 'No raw URL');
+          return fetch(data.raw_url);
+        })
+        .then(function(r) { return r.text(); })
+        .then(function(content) {
+          if (!window.AgentSessionUpload) throw new Error('Parser not loaded');
+          var toolName = curator.dataset.toolName || null;
+          var result = window.AgentSessionUpload.parseSessionFile(content, toolName);
+
+          // Re-init curator with full message set
+          window.AgentSessionCurator.init({
+            container: curator,
+            messages: result.messages,
+            curatedSelections: [],
+            slices: JSON.parse(curator.dataset.slices || '[]'),
+            sessionId: sessionId,
+            sessionSlug: sessionSlug,
+            mode: 'edit',
+            useCuratedData: true,
+          });
+
+          recurateBtn.textContent = '<%= j t("views.agent_sessions.re_curate") %>';
+          recurateBtn.disabled = false;
+        })
+        .catch(function(err) {
+          alert('Failed to load raw session: ' + (err.message || 'Unknown error'));
+          recurateBtn.textContent = '<%= j t("views.agent_sessions.re_curate") %>';
+          recurateBtn.disabled = false;
+        });
+    });
+  }
 
   // === Copy embed ===
   var copyEmbedBtn = document.getElementById('copy-embed-btn');

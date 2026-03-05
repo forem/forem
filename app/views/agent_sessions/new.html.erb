@@ -85,6 +85,11 @@
           <div class="progress-step-label"><%= t("views.agent_sessions.step_reading") %></div>
           <div class="progress-step-detail" id="step-read-detail"></div>
         </div>
+        <div class="progress-step" id="step-upload">
+          <div class="progress-step-indicator"></div>
+          <div class="progress-step-label"><%= t("views.agent_sessions.uploading_to_storage") %></div>
+          <div class="progress-step-detail" id="step-upload-detail"></div>
+        </div>
         <div class="progress-step" id="step-parse">
           <div class="progress-step-indicator"></div>
           <div class="progress-step-label"><%= t("views.agent_sessions.step_parsing") %></div>
@@ -155,8 +160,10 @@
   var uploadForm = document.getElementById('upload-form');
 
   var selectedFile = null;
+  var rawFileContent = null;
   var parsedResult = null;
   var curatorInstance = null;
+  var s3Key = null;
 
   // Drag and drop
   dropzone.addEventListener('dragover', function(e) {
@@ -265,6 +272,7 @@
     progressUI.style.display = 'block';
 
     setStep('read', 'active', 'Reading ' + formatBytes(selectedFile.size) + '...');
+    setStep('upload', 'pending', '');
     setStep('parse', 'pending', '');
     setStep('scrub', 'pending', '');
     setStep('done', 'pending', '');
@@ -274,45 +282,25 @@
     reader.onprogress = function(e) {
       if (e.lengthComputable) {
         var pct = Math.round((e.loaded / e.total) * 100);
-        setProgress(pct * 0.3);
+        setProgress(pct * 0.2);
         setStep('read', 'active', pct + '% read');
       }
     };
     reader.onload = function(e) {
+      var content = e.target.result;
+      rawFileContent = content;
       setStep('read', 'done', formatBytes(selectedFile.size) + ' read');
-      setProgress(30);
+      setProgress(20);
 
-      setStep('parse', 'active', '<%= j t("views.agent_sessions.step_parsing", default: "Parsing messages") %>...');
-
-      // Use setTimeout to let the UI update before blocking parse
-      setTimeout(function() {
-        try {
-          var content = e.target.result;
-          var toolName = toolSelect.value === 'auto' ? null : toolSelect.value;
-
-          setProgress(50);
-          setStep('scrub', 'active', '<%= j t("views.agent_sessions.scrubbing_secrets", default: "Scrubbing secrets") %>...');
-
-          var result = window.AgentSessionUpload.parseSessionFile(content, toolName);
-
-          setProgress(90);
-          setStep('parse', 'done', result.messages.length + ' messages found');
-          setStep('scrub', 'done', result.redactions.length > 0
-            ? result.redactions.reduce(function(sum, r) { return sum + r.match_count; }, 0) + ' items redacted'
-            : 'No secrets found');
-
-          parsedResult = result;
-          setStep('done', 'done', '<%= j t("views.agent_sessions.ready_to_curate", default: "Ready to curate") %>');
-          setProgress(100);
-
-          // Show curation UI
-          showCurationUI(result);
-        } catch (err) {
-          setStep('parse', 'error', '');
-          showError('<%= j t("views.agent_sessions.client_parse_error", default: "Failed to parse session file.") %> ' + (err.message || ''));
-          resetParseBtn();
-        }
-      }, 50);
+      // Upload raw file to S3 via presigned URL
+      uploadToS3(content).then(function() {
+        parseAndCurate(content);
+      }).catch(function(err) {
+        // S3 upload failed — fall back to no-S3 mode (still parse and curate)
+        console.warn('S3 upload failed, continuing without raw backup:', err.message);
+        setStep('upload', 'done', 'Skipped (local only)');
+        parseAndCurate(content);
+      });
     };
     reader.onerror = function() {
       setStep('read', 'error', 'Read error');
@@ -320,6 +308,69 @@
       resetParseBtn();
     };
     reader.readAsText(selectedFile);
+  }
+
+  function uploadToS3(content) {
+    setStep('upload', 'active', '<%= j t("views.agent_sessions.uploading_to_storage", default: "Uploading file...") %>');
+    var csrfToken = document.querySelector("meta[name='csrf-token']");
+
+    return fetch('/agent_sessions/presign', {
+      method: 'POST',
+      headers: {
+        'X-CSRF-Token': csrfToken ? csrfToken.getAttribute('content') : '',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      credentials: 'same-origin',
+    }).then(function(response) {
+      if (!response.ok) throw new Error('Presign request failed');
+      return response.json();
+    }).then(function(data) {
+      s3Key = data.s3_key;
+      setProgress(25);
+      return fetch(data.presigned_url, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/x-jsonlines' },
+        body: content,
+      });
+    }).then(function(response) {
+      if (!response.ok) throw new Error('S3 upload failed');
+      setStep('upload', 'done', '<%= j t("views.agent_sessions.upload_complete", default: "Upload complete") %>');
+      setProgress(35);
+    });
+  }
+
+  function parseAndCurate(content) {
+    setStep('parse', 'active', '<%= j t("views.agent_sessions.step_parsing", default: "Parsing messages") %>...');
+
+    // Use setTimeout to let the UI update before blocking parse
+    setTimeout(function() {
+      try {
+        var toolName = toolSelect.value === 'auto' ? null : toolSelect.value;
+
+        setProgress(50);
+        setStep('scrub', 'active', '<%= j t("views.agent_sessions.scrubbing_secrets", default: "Scrubbing secrets") %>...');
+
+        var result = window.AgentSessionUpload.parseSessionFile(content, toolName);
+
+        setProgress(90);
+        setStep('parse', 'done', result.messages.length + ' messages found');
+        setStep('scrub', 'done', result.redactions.length > 0
+          ? result.redactions.reduce(function(sum, r) { return sum + r.match_count; }, 0) + ' items redacted'
+          : 'No secrets found');
+
+        parsedResult = result;
+        setStep('done', 'done', '<%= j t("views.agent_sessions.ready_to_curate", default: "Ready to curate") %>');
+        setProgress(100);
+
+        // Show curation UI
+        showCurationUI(result);
+      } catch (err) {
+        setStep('parse', 'error', '');
+        showError('<%= j t("views.agent_sessions.client_parse_error", default: "Failed to parse session file.") %> ' + (err.message || ''));
+        resetParseBtn();
+      }
+    }, 50);
   }
 
   function showCurationUI(result) {
@@ -393,14 +444,14 @@
       };
     }).filter(function(s) { return s.indices.length > 0; });
 
-    var normalizedData = {
+    var curatedDataObj = {
       messages: reindexedMessages,
       metadata: parsedResult.metadata || {}
     };
 
     // Check size
-    var jsonStr = JSON.stringify(normalizedData);
-    if (jsonStr.length > 10 * 1024 * 1024) {
+    var jsonStr = JSON.stringify(curatedDataObj);
+    if (jsonStr.length > 50 * 1024 * 1024) {
       if (saveBtn) {
         saveBtn.disabled = false;
         saveBtn.textContent = '<%= j t("views.agent_sessions.save_to_forem", default: "Save to Forem") %>';
@@ -414,8 +465,8 @@
       agent_session: {
         title: titleInput.value.trim(),
         tool_name: parsedResult.toolName || toolSelect.value,
-        normalized_data: jsonStr,
-        curated_selections: [],
+        curated_data: jsonStr,
+        s3_key: s3Key || '',
         slices: remappedSlices
       }
     };

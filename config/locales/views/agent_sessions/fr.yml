@@ -28,3 +28,7 @@ fr:
       client_parse_error: Échec de l'analyse du fichier de session.
       curated_data_too_large: Les données sélectionnées sont trop volumineuses. Veuillez désélectionner plus de messages pour réduire la taille.
       unsupported_file_type: Type de fichier non pris en charge. Veuillez utiliser des fichiers .jsonl, .json, .md, .txt ou .log.
+      uploading_to_storage: Téléchargement du fichier...
+      upload_complete: Téléchargement terminé
+      loading_for_curation: Chargement de la session pour curation...
+      re_curate: Re-organiser depuis le fichier original

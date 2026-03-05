@@ -108,6 +108,60 @@ RSpec.describe "Api::V1::AgentSessions" do
       expect(session.user_id).to eq(user.id)
     end
 
+    context "with curated_data (new S3 flow)" do
+      it "creates a session from curated_data with s3_key" do
+        post api_agent_sessions_path,
+             params: { title: "S3 Session", tool_name: "claude_code",
+                        curated_data: normalized_data.to_json,
+                        s3_key: "agent_sessions/#{user.id}/test.jsonl" }.to_json,
+             headers: auth_headers
+
+        expect(response).to have_http_status(:created)
+        session = AgentSession.last
+        expect(session.curated_data["messages"].size).to eq(2)
+        expect(session.s3_key).to eq("agent_sessions/#{user.id}/test.jsonl")
+      end
+
+      it "scrubs secrets in curated_data" do
+        data_with_secret = normalized_data.deep_dup
+        data_with_secret["messages"][0]["content"][0]["text"] = "Token: ghp_abcdefghijklmnopqrstuvwxyz1234567890"
+
+        post api_agent_sessions_path,
+             params: { title: "Scrubbed", tool_name: "claude_code",
+                        curated_data: data_with_secret.to_json }.to_json,
+             headers: auth_headers
+
+        expect(response).to have_http_status(:created)
+        session = AgentSession.last
+        text = session.curated_data["messages"].first["content"].first["text"]
+        expect(text).to include("[REDACTED]")
+      end
+
+      it "rejects invalid curated_data" do
+        post api_agent_sessions_path,
+             params: { title: "Bad", curated_data: { "bad" => true }.to_json }.to_json,
+             headers: auth_headers
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to include("Missing required key: messages")
+      end
+    end
+
+    context "with s3_key only (CLI draft flow)" do
+      it "creates a draft session with just s3_key" do
+        post api_agent_sessions_path,
+             params: { title: "CLI Draft", tool_name: "claude_code",
+                        s3_key: "agent_sessions/#{user.id}/test.jsonl" }.to_json,
+             headers: auth_headers
+
+        expect(response).to have_http_status(:created)
+        session = AgentSession.last
+        expect(session.s3_key).to eq("agent_sessions/#{user.id}/test.jsonl")
+        expect(session.curated_data).to eq({})
+        expect(session.normalized_data).to eq({})
+      end
+    end
+
     context "with normalized_data (client-parsed mode)" do
       let(:client_normalized_data) do
         {
@@ -167,6 +221,81 @@ RSpec.describe "Api::V1::AgentSessions" do
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.parsed_body["error"]).to include("Missing required key: messages")
       end
+    end
+  end
+
+  describe "POST /api/agent_sessions/presign" do
+    context "when S3 is enabled" do
+      before do
+        allow(AgentSessions::S3Storage).to receive(:enabled?).and_return(true)
+        allow(AgentSessions::S3Storage).to receive(:generate_key).and_return("agent_sessions/1/test.jsonl")
+        allow(AgentSessions::S3Storage).to receive(:presigned_put_url).and_return("https://s3.example.com/presigned")
+      end
+
+      it "returns presigned URL and s3_key" do
+        post presign_api_agent_sessions_path,
+             params: {}.to_json,
+             headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+        json = response.parsed_body
+        expect(json["s3_key"]).to eq("agent_sessions/1/test.jsonl")
+        expect(json["presigned_url"]).to eq("https://s3.example.com/presigned")
+      end
+    end
+
+    context "when S3 is not enabled" do
+      before do
+        allow(AgentSessions::S3Storage).to receive(:enabled?).and_return(false)
+      end
+
+      it "returns 503" do
+        post presign_api_agent_sessions_path,
+             params: {}.to_json,
+             headers: auth_headers
+        expect(response).to have_http_status(:service_unavailable)
+      end
+    end
+
+    it "returns 401 without authentication" do
+      post presign_api_agent_sessions_path,
+           params: {}.to_json,
+           headers: headers
+      expect(response).to have_http_status(:unauthorized)
+    end
+  end
+
+  describe "GET /api/agent_sessions/:id/raw_url" do
+    let!(:agent_session) do
+      AgentSession.create!(
+        user: user, title: "Test", tool_name: "claude_code",
+        normalized_data: normalized_data,
+        s3_key: "agent_sessions/#{user.id}/test.jsonl",
+      )
+    end
+
+    context "when S3 is enabled" do
+      before do
+        allow(AgentSessions::S3Storage).to receive(:enabled?).and_return(true)
+        allow(AgentSessions::S3Storage).to receive(:presigned_get_url).and_return("https://s3.example.com/get")
+      end
+
+      it "returns a presigned GET URL" do
+        get raw_url_api_agent_session_path(agent_session), headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+        json = response.parsed_body
+        expect(json["raw_url"]).to eq("https://s3.example.com/get")
+      end
+    end
+
+    it "returns 404 when session has no s3_key" do
+      session_without_s3 = AgentSession.create!(
+        user: user, title: "No S3", tool_name: "claude_code",
+        normalized_data: normalized_data,
+      )
+      get raw_url_api_agent_session_path(session_without_s3), headers: auth_headers
+      expect(response).to have_http_status(:not_found)
     end
   end
 

@@ -1,8 +1,9 @@
 class AgentSessionsController < ApplicationController
   ALLOWED_EXTENSIONS = %w[.jsonl .json .txt .log .md].freeze
 
+  before_action :require_agent_sessions_enabled!
   before_action :authenticate_user!, except: %i[show]
-  before_action :set_agent_session, only: %i[show edit update destroy]
+  before_action :set_agent_session, only: %i[show edit update destroy raw_url]
   before_action :limit_uploads, only: [:create]
   after_action :verify_authorized
 
@@ -33,7 +34,9 @@ class AgentSessionsController < ApplicationController
     @agent_session = current_user.agent_sessions.new(title: create_params[:title])
     authorize @agent_session
 
-    if create_params[:normalized_data].present?
+    if create_params[:curated_data].present?
+      create_from_curated_data
+    elsif create_params[:normalized_data].present?
       create_from_normalized_data
     else
       create_from_file_upload
@@ -43,7 +46,9 @@ class AgentSessionsController < ApplicationController
   def update
     authorize @agent_session
 
-    if update_params.key?(:curated_selections)
+    if update_params.key?(:curated_data)
+      update_curated_data
+    elsif update_params.key?(:curated_selections)
       @agent_session.curated_selections = update_params[:curated_selections]
     end
 
@@ -78,7 +83,42 @@ class AgentSessionsController < ApplicationController
     redirect_to agent_sessions_path, notice: "Agent session deleted." # rubocop:disable Rails/I18nLocaleTexts
   end
 
+  def presign
+    authorize AgentSession, :create?
+
+    unless AgentSessions::S3Storage.enabled?
+      render json: { error: "S3 storage is not configured" }, status: :service_unavailable
+      return
+    end
+
+    s3_key = AgentSessions::S3Storage.generate_key(current_user.id)
+    presigned_url = AgentSessions::S3Storage.presigned_put_url(s3_key)
+
+    render json: { s3_key: s3_key, presigned_url: presigned_url }
+  end
+
+  def raw_url
+    authorize @agent_session, :edit?
+
+    unless @agent_session.s3_key.present? && AgentSessions::S3Storage.enabled?
+      render json: { error: "No raw file available" }, status: :not_found
+      return
+    end
+
+    url = AgentSessions::S3Storage.presigned_get_url(@agent_session.s3_key)
+    render json: { raw_url: url }
+  end
+
   private
+
+  def require_agent_sessions_enabled!
+    return if Settings::General.enable_agent_sessions
+
+    respond_to do |format|
+      format.html { render plain: "Agent Sessions are not enabled", status: :not_found }
+      format.json { render json: { error: "Agent Sessions are not enabled" }, status: :not_found }
+    end
+  end
 
   def limit_uploads
     rate_limit!(:agent_session_creation)
@@ -99,6 +139,32 @@ class AgentSessionsController < ApplicationController
                      end
   rescue ActiveRecord::RecordNotFound
     render_session_not_available
+  end
+
+  def create_from_curated_data
+    curated = parse_curated_data_param
+    tool_name = create_params[:tool_name]
+
+    validation_errors = AgentSessionParsers::NormalizedDataValidator.validate(curated)
+    if validation_errors.any?
+      render json: { error: validation_errors.map(&:message).join(", ") }, status: :unprocessable_entity
+      return
+    end
+
+    # Server-side secret scrubbing (defense in depth)
+    result = AgentSessionParsers::SensitiveDataScrubber.scrub(curated)
+    @agent_session.tool_name = tool_name.presence || curated.dig("metadata", "tool_name") || "claude_code"
+    @agent_session.curated_data = result.scrubbed_data
+    @agent_session.s3_key = create_params[:s3_key] if create_params[:s3_key].present?
+    @agent_session.session_metadata = result.scrubbed_data.fetch("metadata", {}).merge(
+      "redactions" => result.redactions.map { |r| { "name" => r.pattern_name, "count" => r.match_count } },
+    )
+
+    if params[:agent_session]&.key?(:slices)
+      @agent_session.slices = parse_create_slices_param
+    end
+
+    save_and_respond_create
   end
 
   def create_from_normalized_data
@@ -211,6 +277,25 @@ class AgentSessionsController < ApplicationController
     end
   end
 
+  def update_curated_data
+    raw = update_params[:curated_data]
+    curated = raw.is_a?(String) ? JSON.parse(raw, max_nesting: 50) : raw.to_unsafe_h
+    result = AgentSessionParsers::SensitiveDataScrubber.scrub(curated)
+    @agent_session.curated_data = result.scrubbed_data
+    @agent_session.session_metadata = result.scrubbed_data.fetch("metadata", {}).merge(
+      "redactions" => result.redactions.map { |r| { "name" => r.pattern_name, "count" => r.match_count } },
+    )
+  rescue JSON::ParserError
+    # Ignore invalid JSON — validation will catch it
+  end
+
+  def parse_curated_data_param
+    raw = create_params[:curated_data]
+    raw.is_a?(String) ? JSON.parse(raw, max_nesting: 50) : raw.to_unsafe_h
+  rescue JSON::ParserError
+    {}
+  end
+
   def parse_normalized_data_param
     raw = create_params[:normalized_data]
     raw.is_a?(String) ? JSON.parse(raw, max_nesting: 50) : raw.to_unsafe_h
@@ -233,11 +318,12 @@ class AgentSessionsController < ApplicationController
 
   def create_params
     params.require(:agent_session).permit(:title, :tool_name, :session_file, :normalized_data,
+                                          :curated_data, :s3_key,
                                           curated_selections: [])
   end
 
   def update_params
-    params.require(:agent_session).permit(:title, :published, curated_selections: [])
+    params.require(:agent_session).permit(:title, :published, :curated_data, curated_selections: [])
   end
 
   def parse_slices_param

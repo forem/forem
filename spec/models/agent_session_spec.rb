@@ -17,6 +17,16 @@ RSpec.describe AgentSession do
     }
   end
 
+  let(:curated_data) do
+    {
+      "messages" => [
+        { "index" => 0, "role" => "user", "content" => [{ "type" => "text", "text" => "Hello" }] },
+        { "index" => 1, "role" => "assistant", "content" => [{ "type" => "text", "text" => "Hi there" }] },
+      ],
+      "metadata" => { "tool_name" => "claude_code", "model" => "claude-opus-4-6" }
+    }
+  end
+
   let(:agent_session) do
     described_class.create!(
       user: user,
@@ -43,6 +53,19 @@ RSpec.describe AgentSession do
         expect(session).to be_valid, "Expected #{tool} to be valid"
       end
     end
+
+    it "validates curated_data has messages when present" do
+      session = described_class.new(user: user, title: "Test", tool_name: "claude_code",
+                                    curated_data: { "not_messages" => [] })
+      expect(session).not_to be_valid
+      expect(session.errors[:curated_data]).to be_present
+    end
+
+    it "allows saving with just s3_key and no data (draft state)" do
+      session = described_class.new(user: user, title: "Draft", tool_name: "claude_code",
+                                    s3_key: "agent_sessions/1/test.jsonl")
+      expect(session).to be_valid
+    end
   end
 
   describe "associations" do
@@ -59,6 +82,12 @@ RSpec.describe AgentSession do
       session = described_class.new(normalized_data: {})
       expect(session.messages).to eq([])
     end
+
+    it "prefers curated_data over normalized_data" do
+      agent_session.update!(curated_data: curated_data)
+      expect(agent_session.messages.size).to eq(2)
+      expect(agent_session.messages.first["role"]).to eq("user")
+    end
   end
 
   describe "#curated_messages" do
@@ -71,6 +100,23 @@ RSpec.describe AgentSession do
       curated = agent_session.curated_messages
       expect(curated.size).to eq(2)
       expect(curated.pluck("index")).to eq([0, 3])
+    end
+
+    it "returns curated_data messages when curated_data is present" do
+      agent_session.update!(curated_data: curated_data)
+      curated = agent_session.curated_messages
+      expect(curated.size).to eq(2)
+    end
+  end
+
+  describe "#metadata" do
+    it "returns metadata from normalized_data" do
+      expect(agent_session.metadata["tool_name"]).to eq("claude_code")
+    end
+
+    it "prefers curated_data metadata" do
+      agent_session.update!(curated_data: curated_data)
+      expect(agent_session.metadata["model"]).to eq("claude-opus-4-6")
     end
   end
 
@@ -89,6 +135,22 @@ RSpec.describe AgentSession do
       agent_session.update!(curated_selections: [0, 1])
       expect(agent_session.curated_count).to eq(2)
     end
+
+    it "returns curated_data messages count when present" do
+      agent_session.update!(curated_data: curated_data)
+      expect(agent_session.curated_count).to eq(2)
+    end
+  end
+
+  describe "#s3_session?" do
+    it "returns false when no s3_key" do
+      expect(agent_session.s3_session?).to be false
+    end
+
+    it "returns true when s3_key is present" do
+      agent_session.update!(s3_key: "agent_sessions/1/test.jsonl")
+      expect(agent_session.s3_session?).to be true
+    end
   end
 
   describe "#parse_and_normalize!" do
@@ -106,6 +168,29 @@ RSpec.describe AgentSession do
       expect(session.tool_name).to eq("claude_code")
       expect(session.messages.size).to eq(2)
       expect(session.messages.first["role"]).to eq("user")
+    end
+  end
+
+  describe "S3 cleanup on destroy" do
+    it "deletes S3 object when session is destroyed" do
+      agent_session.update!(s3_key: "agent_sessions/1/test.jsonl")
+      allow(AgentSessions::S3Storage).to receive(:enabled?).and_return(true)
+      expect(AgentSessions::S3Storage).to receive(:delete).with("agent_sessions/1/test.jsonl")
+
+      agent_session.destroy
+    end
+
+    it "does not attempt S3 delete when no s3_key" do
+      expect(AgentSessions::S3Storage).not_to receive(:delete)
+      agent_session.destroy
+    end
+
+    it "does not attempt S3 delete when S3 is not enabled" do
+      agent_session.update!(s3_key: "agent_sessions/1/test.jsonl")
+      allow(AgentSessions::S3Storage).to receive(:enabled?).and_return(false)
+      expect(AgentSessions::S3Storage).not_to receive(:delete)
+
+      agent_session.destroy
     end
   end
 

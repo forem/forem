@@ -1,6 +1,5 @@
 export const MAX_JSON_NESTING = 50;
 export const MAX_RECORDS = 50000;
-export const MAX_OUTPUT_LENGTH = 2000;
 
 export function buildResult(messages, metadata = {}) {
   const indexed = messages.map((msg, i) => ({ ...msg, index: i }));
@@ -26,9 +25,8 @@ export function toolCallBlock({ name, input, output, toolCallId }) {
   return block;
 }
 
-export function truncateOutput(text, maxLength = MAX_OUTPUT_LENGTH) {
-  if (text == null || text.length <= maxLength) return text;
-  return text.substring(0, maxLength) + '\n... (truncated)';
+export function truncateOutput(text) {
+  return text;
 }
 
 export function truncateStr(str, maxLen) {

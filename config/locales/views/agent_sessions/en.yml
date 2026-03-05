@@ -28,3 +28,7 @@ en:
       client_parse_error: Failed to parse session file.
       curated_data_too_large: Curated data is too large. Please deselect more messages to reduce the size.
       unsupported_file_type: Unsupported file type. Please use .jsonl, .json, .md, .txt, or .log files.
+      uploading_to_storage: Uploading file...
+      upload_complete: Upload complete
+      loading_for_curation: Loading session for curation...
+      re_curate: Re-curate from original file
