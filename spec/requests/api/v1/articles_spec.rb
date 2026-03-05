@@ -1567,13 +1567,11 @@ RSpec.describe "Api::V1::Articles" do
 
       it "maintains correct surrogate key for API cache invalidation" do
         # Use a fresh context to avoid interference from other tests
-        fresh_article = create(:article, published: true)
+        create(:article, published: true)
 
         get latest_api_articles_path, headers: headers
 
         # Verify the surrogate key includes the table key for proper cache invalidation
-        expected_key = ["articles"].to_set
-        # The surrogate key should at least contain the articles table key
         surrogate_key = response.headers["surrogate-key"].split.to_set
         expect(surrogate_key).to include("articles"),
           "Surrogate key should include 'articles' table key for cache invalidation"
