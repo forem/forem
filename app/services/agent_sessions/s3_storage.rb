@@ -5,8 +5,15 @@ module AgentSessions
     CONTENT_TYPE = "application/x-jsonlines".freeze
 
     class << self
+      ALLOWED_EXTENSIONS = %w[.jsonl .json .md .txt .log].freeze
+
       def generate_key(user_id, filename = nil)
-        ext = filename ? File.extname(filename) : ".jsonl"
+        ext = if filename
+                candidate = File.extname(filename).downcase
+                ALLOWED_EXTENSIONS.include?(candidate) ? candidate : ".jsonl"
+              else
+                ".jsonl"
+              end
         "#{BUCKET_PREFIX}/#{user_id}/#{SecureRandom.uuid}#{ext}"
       end
 

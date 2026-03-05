@@ -1,6 +1,7 @@
 class AgentSession < ApplicationRecord
   TOOL_NAMES = %w[claude_code codex gemini_cli github_copilot pi].freeze
   MAX_CURATED_DATA_SIZE = 10.megabytes
+  RAW_FILE_RETENTION_DAYS = 90
 
   belongs_to :user
 
@@ -70,6 +71,10 @@ class AgentSession < ApplicationRecord
 
   def s3_session?
     s3_key.present?
+  end
+
+  def raw_file_available?
+    s3_key.present? && created_at > RAW_FILE_RETENTION_DAYS.days.ago
   end
 
   private

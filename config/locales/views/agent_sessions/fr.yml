@@ -32,3 +32,5 @@ fr:
       upload_complete: Téléchargement terminé
       loading_for_curation: Chargement de la session pour curation...
       re_curate: Re-organiser depuis le fichier original
+      raw_file_retention_notice: "Fichier original disponible pendant encore %{days} jours"
+      raw_file_expired: Le fichier original n'est plus disponible (expiré après 90 jours)

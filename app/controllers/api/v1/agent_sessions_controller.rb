@@ -35,6 +35,9 @@ module Api
       def presign
         authorize AgentSession, :create?
 
+        rate_limiter = @user.rate_limiter
+        rate_limiter.check_limit!(:agent_session_creation)
+
         unless AgentSessions::S3Storage.enabled?
           render json: { error: "S3 storage is not configured", status: 503 }, status: :service_unavailable
           return
@@ -47,7 +50,7 @@ module Api
       end
 
       def raw_url
-        unless @agent_session.s3_key.present? && AgentSessions::S3Storage.enabled?
+        unless @agent_session.raw_file_available? && AgentSessions::S3Storage.enabled?
           render json: { error: "No raw file available", status: 404 }, status: :not_found
           return
         end

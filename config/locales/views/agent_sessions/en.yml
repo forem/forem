@@ -32,3 +32,5 @@ en:
       upload_complete: Upload complete
       loading_for_curation: Loading session for curation...
       re_curate: Re-curate from original file
+      raw_file_retention_notice: "Original file available for %{days} more days"
+      raw_file_expired: Original file is no longer available (expired after 90 days)

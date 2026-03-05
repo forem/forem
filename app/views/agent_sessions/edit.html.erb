@@ -38,9 +38,17 @@
 
   <% if @agent_session.s3_session? %>
     <div class="agent-session-recurate" style="margin-top: 1rem; text-align: center;">
-      <button type="button" class="crayons-btn crayons-btn--s crayons-btn--ghost" id="recurate-btn">
-        <%= t("views.agent_sessions.re_curate") %>
-      </button>
+      <% if @agent_session.raw_file_available? %>
+        <button type="button" class="crayons-btn crayons-btn--s crayons-btn--ghost" id="recurate-btn">
+          <%= t("views.agent_sessions.re_curate") %>
+        </button>
+        <p class="fs-xs color-secondary" style="margin-top: 0.25rem;">
+          <%= t("views.agent_sessions.raw_file_retention_notice",
+                days: (((@agent_session.created_at + AgentSession::RAW_FILE_RETENTION_DAYS.days) - Time.current) / 1.day).ceil) %>
+        </p>
+      <% else %>
+        <p class="fs-xs color-secondary"><%= t("views.agent_sessions.raw_file_expired") %></p>
+      <% end %>
     </div>
   <% end %>
 </div>

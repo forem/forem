@@ -2,7 +2,7 @@ class AgentSessionsController < ApplicationController
   before_action :require_agent_sessions_enabled!
   before_action :authenticate_user!, except: %i[show]
   before_action :set_agent_session, only: %i[show edit update destroy raw_url]
-  before_action :limit_uploads, only: [:create]
+  before_action :limit_uploads, only: %i[create presign]
   after_action :verify_authorized
 
   def index
@@ -90,7 +90,7 @@ class AgentSessionsController < ApplicationController
   def raw_url
     authorize @agent_session, :edit?
 
-    unless @agent_session.s3_key.present? && AgentSessions::S3Storage.enabled?
+    unless @agent_session.raw_file_available? && AgentSessions::S3Storage.enabled?
       render json: { error: "No raw file available" }, status: :not_found
       return
     end

@@ -32,3 +32,5 @@ pt:
       upload_complete: Envio concluído
       loading_for_curation: Carregando sessão para curadoria...
       re_curate: Re-curar a partir do arquivo original
+      raw_file_retention_notice: "Arquivo original disponível por mais %{days} dias"
+      raw_file_expired: O arquivo original não está mais disponível (expirou após 90 dias)

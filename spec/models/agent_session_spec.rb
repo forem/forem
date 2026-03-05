@@ -109,6 +109,22 @@ RSpec.describe AgentSession do
     end
   end
 
+  describe "#raw_file_available?" do
+    it "returns false when no s3_key" do
+      expect(agent_session.raw_file_available?).to be false
+    end
+
+    it "returns true when s3_key is present and within retention window" do
+      agent_session.update!(s3_key: "agent_sessions/1/test.jsonl")
+      expect(agent_session.raw_file_available?).to be true
+    end
+
+    it "returns false when s3_key is present but beyond retention window" do
+      agent_session.update!(s3_key: "agent_sessions/1/test.jsonl", created_at: 91.days.ago)
+      expect(agent_session.raw_file_available?).to be false
+    end
+  end
+
   describe "S3 cleanup on destroy" do
     it "deletes S3 object when session is destroyed" do
       agent_session.update!(s3_key: "agent_sessions/1/test.jsonl")

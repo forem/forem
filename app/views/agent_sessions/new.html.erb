@@ -379,10 +379,16 @@
     // Show redaction summary
     if (result.redactions.length > 0) {
       var totalRedactions = result.redactions.reduce(function(sum, r) { return sum + r.match_count; }, 0);
-      var summary = '<strong>' + totalRedactions + ' item' + (totalRedactions !== 1 ? 's' : '') + ' automatically redacted</strong> &mdash; ';
-      summary += result.redactions.map(function(r) { return r.match_count + ' ' + r.pattern_name; }).join(', ');
       var summaryEl = document.getElementById('redaction-summary');
-      summaryEl.innerHTML = summary;
+      summaryEl.textContent = '';
+
+      var strong = document.createElement('strong');
+      strong.textContent = totalRedactions + ' item' + (totalRedactions !== 1 ? 's' : '') + ' automatically redacted';
+      summaryEl.appendChild(strong);
+      summaryEl.appendChild(document.createTextNode(' \u2014 '));
+      summaryEl.appendChild(document.createTextNode(
+        result.redactions.map(function(r) { return r.match_count + ' ' + r.pattern_name; }).join(', ')
+      ));
       summaryEl.style.display = 'block';
     }
 

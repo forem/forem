@@ -12,6 +12,16 @@ RSpec.describe AgentSessions::S3Storage do
       expect(key).to match(%r{\Aagent_sessions/42/[0-9a-f-]+\.json\z})
     end
 
+    it "falls back to .jsonl for disallowed extensions" do
+      key = described_class.generate_key(42, "evil.exe")
+      expect(key).to match(%r{\Aagent_sessions/42/[0-9a-f-]+\.jsonl\z})
+    end
+
+    it "falls back to .jsonl for path traversal attempts" do
+      key = described_class.generate_key(42, "../../etc/passwd")
+      expect(key).to match(%r{\Aagent_sessions/42/[0-9a-f-]+\.jsonl\z})
+    end
+
     it "generates unique keys" do
       keys = Array.new(10) { described_class.generate_key(1) }
       expect(keys.uniq.size).to eq(10)

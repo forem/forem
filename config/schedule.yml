@@ -190,3 +190,7 @@ survey_daily_email:
   description: "Send DEV Pulse Survey emails to eligible users for active surveys (runs daily at 18:15 UTC)"
   cron: "15 18 * * *"
   class: "Emails::SurveyDailyEmailWorker"
+agent_session_raw_file_cleanup:
+  description: "Deletes expired raw agent session files from S3 (runs daily at 04:15 UTC)"
+  cron: "15 4 * * *"
+  class: "AgentSessions::CleanupExpiredRawFilesWorker"
