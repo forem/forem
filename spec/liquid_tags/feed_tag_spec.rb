@@ -159,16 +159,20 @@ RSpec.describe FeedTag, type: :liquid_tag do
       end.to raise_error(StandardError, /not found/)
     end
 
-    it "raises an error for unknown tag" do
-      expect do
-        parse_tag("tag=nonexistent")
-      end.to raise_error(StandardError, /not found/)
+    it "renders empty for a non-existent tag" do
+      liquid = parse_tag("tag=nonexistent")
+      rendered = liquid.render
+      expect(rendered).to include("ltag-feed")
+      expect(rendered_article_count(rendered)).to eq(0)
     end
 
-    it "raises an error for unknown tag in tags list" do
-      expect do
-        parse_tag("tags=#{tag1.name},nonexistent")
-      end.to raise_error(StandardError, /not found/)
+    it "renders only matching articles when some tags do not exist" do
+      article = create(:article, published: true)
+      article.update_columns(cached_tag_list: tag1.name)
+
+      liquid = parse_tag("tags=#{tag1.name},nonexistent")
+      rendered = liquid.render
+      expect(rendered).to include(article.title)
     end
 
     it "raises an error for invalid option key" do

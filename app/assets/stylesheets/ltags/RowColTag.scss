@@ -3,6 +3,11 @@
   gap: var(--su-4);
   margin-bottom: var(--su-4);
 
+  > * {
+    flex: 1;
+    min-width: 0;
+  }
+
   @media (max-width: 640px) {
     flex-direction: column;
   }

@@ -57,20 +57,12 @@ class FeedTag < LiquidTagBase
   end
 
   def parse_tag(value)
-    tag = Tag.find_by(name: value)
-    raise StandardError, I18n.t("liquid_tags.feed_tag.invalid_tag", name: value) unless tag
-
     @tag_names = [value]
   end
 
   def parse_tags(value)
     names = value.split(",").map(&:strip).reject(&:empty?)
     raise StandardError, I18n.t("liquid_tags.feed_tag.invalid_tags") if names.empty?
-
-    names.each do |name|
-      tag = Tag.find_by(name: name)
-      raise StandardError, I18n.t("liquid_tags.feed_tag.invalid_tag", name: name) unless tag
-    end
 
     @tag_names = names
   end
