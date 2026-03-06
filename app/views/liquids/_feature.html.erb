@@ -1,0 +1,7 @@
+<div class="ltag-feature">
+  <% if icon.present? %>
+    <div class="ltag-feature__icon"><i class="ri-<%= icon %>"></i></div>
+  <% end %>
+  <h3 class="ltag-feature__title"><%= title %></h3>
+  <div class="ltag-feature__body"><%= content.html_safe %></div>
+</div>

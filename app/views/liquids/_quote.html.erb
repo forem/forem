@@ -1,0 +1,30 @@
+<blockquote class="ltag-quote">
+  <div class="ltag-quote__body"><%= content.html_safe %></div>
+  <footer class="ltag-quote__footer">
+    <% if image.present? %>
+      <img class="ltag-quote__avatar" src="<%= image %>" alt="<%= author %>" loading="lazy" />
+    <% end %>
+    <div class="ltag-quote__meta">
+      <% if rating %>
+        <div class="ltag-quote__rating" aria-label="<%= rating %> out of 5 stars">
+          <% 5.times do |i| %>
+            <span class="ltag-quote__star<%= ' ltag-quote__star--filled' if i < rating %>">★</span>
+          <% end %>
+        </div>
+      <% end %>
+      <cite class="ltag-quote__author">
+        <% if link.present? %>
+          <a href="<%= link %>"><%= author %></a>
+        <% else %>
+          <%= author %>
+        <% end %>
+      </cite>
+      <% if role.present? %>
+        <span class="ltag-quote__role"><%= role %></span>
+      <% end %>
+      <% if source.present? %>
+        <span class="ltag-quote__source"><%= source %></span>
+      <% end %>
+    </div>
+  </footer>
+</blockquote>

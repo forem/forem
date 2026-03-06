@@ -1,0 +1,33 @@
+.ltag-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--su-4);
+  margin-bottom: var(--su-4);
+}
+
+.ltag-feature {
+  padding: var(--su-4);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  background: var(--card-bg);
+}
+
+.ltag-feature__icon {
+  font-size: var(--fs-2xl);
+  margin-bottom: var(--su-2);
+  color: var(--accent-brand);
+}
+
+.ltag-feature__title {
+  font-size: var(--fs-l);
+  font-weight: var(--fw-bold);
+  margin: 0 0 var(--su-2) 0;
+}
+
+.ltag-feature__body {
+  font-size: var(--fs-base);
+  color: var(--card-color-secondary);
+
+  > :first-child { margin-top: 0; }
+  > :last-child { margin-bottom: 0; }
+}

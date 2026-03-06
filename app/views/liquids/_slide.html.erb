@@ -1,0 +1,10 @@
+<div class="ltag-slide<%= ' ltag-slide--video' if video.present? %>">
+  <% if video.present? %>
+    <a href="<%= video %>" class="ltag-slide__link" target="_blank" rel="noopener noreferrer">
+      <img class="ltag-slide__image" src="<%= image %>" alt="<%= alt %>" loading="lazy" />
+      <span class="ltag-slide__play" aria-label="Play video">▶</span>
+    </a>
+  <% else %>
+    <img class="ltag-slide__image" src="<%= image %>" alt="<%= alt %>" loading="lazy" />
+  <% end %>
+</div>

@@ -1,0 +1,21 @@
+.ltag-offer {
+  padding: var(--su-5);
+  border-radius: var(--radius);
+  background: var(--accent-brand-lighter);
+  border: 1px solid var(--accent-brand);
+  text-align: center;
+  margin-bottom: var(--su-4);
+}
+
+.ltag-offer__body {
+  font-size: var(--fs-l);
+  margin-bottom: var(--su-4);
+
+  > :first-child { margin-top: 0; }
+  > :last-child { margin-bottom: 0; }
+}
+
+.ltag-offer__button {
+  display: inline-flex;
+  text-decoration: none;
+}
