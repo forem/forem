@@ -90,6 +90,7 @@ class Billboard < ApplicationRecord
            :validate_expiration_approval
 
   before_save :process_markdown
+  before_save :exclude_linked_articles
   before_save :update_content_updated_at_if_needed
   after_save :generate_billboard_name
   after_save :refresh_audience_segment, if: :should_refresh_audience_segment?
@@ -462,6 +463,46 @@ class Billboard < ApplicationRecord
   end
 
   private
+
+  def exclude_linked_articles
+    return if processed_html.blank? || !processed_html_changed?
+
+    doc = Nokogiri::HTML(processed_html)
+    article_ids_to_exclude = []
+
+    doc.css("a").each do |link|
+      href = link["href"]
+      next if href.blank?
+
+      begin
+        uri = URI.parse(href)
+
+        host = uri.host
+        if host.present?
+          allowed_domains = [Settings::General.app_domain] + Subforem.cached_domains
+          next unless allowed_domains.include?(host)
+        end
+        path = uri.path
+        next if path.blank?
+
+        parts = path.split("/").reject(&:blank?)
+        next unless parts.size == 2
+
+        username, slug = parts
+
+        owner = User.find_by(username: username) || Organization.find_by(slug: username)
+        next unless owner
+
+        if (article = owner.articles.find_by(slug: slug))
+          article_ids_to_exclude << article.id
+        end
+      rescue URI::InvalidURIError
+        next
+      end
+    end
+
+    self.exclude_article_ids = article_ids_to_exclude.uniq
+  end
 
   def update_content_updated_at_if_needed
     # Only update content_updated_at when content-related fields change
