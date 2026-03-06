@@ -129,6 +129,15 @@ fr:
       invalid: "Syntaxe agent_session non valide. Utilisez : {% agent_session ID %}, {% agent_session ID debut..fin %}, ou {% agent_session ID nom_tranche %}"
       not_found: Session d'agent non trouvée
       unpublished: Seul le propriétaire de la session peut intégrer cette session
+    feed_tag:
+      missing_source: "La balise feed nécessite au moins une source : org, tag ou tags"
+      invalid_option: "Option '%{option}' non valide pour la balise feed"
+      invalid_org: "Organisation '%{slug}' non trouvée"
+      invalid_tag: "Tag '%{name}' non trouvé"
+      invalid_tags: "L'option tags nécessite au moins un nom de tag"
+      invalid_limit: "La limite doit être comprise entre 1 et 30"
+      invalid_sort: "Le tri doit être l'un des suivants : recent, reactions, comments, score"
+      invalid_since: "Since doit être une durée relative (ex. 30d) ou une date (AAAA-MM-JJ)"
     row_tag:
       no_args: "La balise row n'accepte aucun argument"
     col_tag:

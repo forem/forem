@@ -129,6 +129,15 @@ pt:
       invalid: "Sintaxe agent_session inválida. Use: {% agent_session ID %}, {% agent_session ID inicio..fim %}, ou {% agent_session ID nome_fatia %}"
       not_found: Sessão de agente não encontrada
       unpublished: Apenas o proprietário da sessão pode incorporar esta sessão
+    feed_tag:
+      missing_source: "A tag feed requer pelo menos uma fonte: org, tag ou tags"
+      invalid_option: "Opção '%{option}' inválida para a tag feed"
+      invalid_org: "Organização '%{slug}' não encontrada"
+      invalid_tag: "Tag '%{name}' não encontrada"
+      invalid_tags: "A opção tags requer pelo menos um nome de tag"
+      invalid_limit: "O limite deve estar entre 1 e 30"
+      invalid_sort: "A ordenação deve ser uma das seguintes: recent, reactions, comments, score"
+      invalid_since: "Since deve ser uma duração relativa (ex. 30d) ou uma data (AAAA-MM-DD)"
     row_tag:
       no_args: "A tag row não aceita argumentos"
     col_tag:
