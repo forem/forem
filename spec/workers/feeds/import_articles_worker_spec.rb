@@ -6,12 +6,16 @@ RSpec.describe Feeds::ImportArticlesWorker, sidekiq: :inline, type: :worker do
 
   include_examples "#enqueues_on_correct_queue", "medium_priority"
 
+  before do
+    allow(Feeds::ValidateUrl).to receive(:call).and_return(true)
+  end
+
   describe "#perform" do
     it "processes jobs for users with feeds" do
       allow(Feeds::Import).to receive(:call)
       alice = create(:user, last_article_at: 1.week.ago)
       bob = create(:user, last_article_at: 1.week.ago)
-      bob.setting.update_columns(feed_url: feed_url)
+      create(:feed_source, user: bob, feed_url: feed_url)
 
       # bob has a feed, and alice doesn't, so we only enqueued for bob
 
@@ -30,7 +34,7 @@ RSpec.describe Feeds::ImportArticlesWorker, sidekiq: :inline, type: :worker do
     it "enqueues job for user with the given time" do
       allow(Feeds::Import).to receive(:call)
       user = create(:user, last_article_at: 1.week.ago)
-      user.setting.update_columns(feed_url: feed_url)
+      create(:feed_source, user: user, feed_url: feed_url)
 
       earlier_than = 1.minute.ago
       worker.perform([], earlier_than)

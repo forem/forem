@@ -116,6 +116,55 @@ class DashboardsController < ApplicationController
     @collections_count = collections_count(@user)
   end
 
+  def feed_imports
+    fetch_and_authorize_user
+    @feed_sources = @user.feed_sources.includes(:organization, :author).order(:created_at)
+    @user_organizations = @user.organizations
+    admin_org_ids = OrganizationMembership
+      .where(user_id: @user.id, type_of_user: "admin")
+      .pluck(:organization_id)
+    @org_members_by_org = OrganizationMembership
+      .where(organization_id: admin_org_ids)
+      .where.not(type_of_user: "pending")
+      .includes(:user)
+      .group_by(&:organization_id)
+      .transform_values { |memberships| memberships.map(&:user) }
+    @selected_source = @feed_sources.find_by(id: params[:feed_source_id]) if params[:feed_source_id].present?
+
+    # Determine overall feed status from sources
+    if @selected_source
+      @feed_status = @selected_source.status
+      @feed_url = @selected_source.feed_url
+    elsif @feed_sources.any?
+      worst = @feed_sources.order(status: :desc).first
+      @feed_status = worst.status
+      @feed_url = @feed_sources.first.feed_url
+    else
+      @feed_status = @user.setting&.feed_status
+      @feed_url = @user.setting&.feed_url
+    end
+
+    logs = @user.feed_import_logs
+    logs = logs.for_feed_source(@selected_source.id) if @selected_source
+
+    @feed_import_logs = logs
+      .notable
+      .recent
+      .includes(:feed_source, import_items: :article)
+      .page(params[:page])
+      .per(ARTICLES_PER_PAGE)
+
+    @routine_logs = logs.routine.recent.includes(:feed_source).limit(20)
+    @routine_logs_count = logs.routine.count
+
+    @total_imported = logs.sum(:items_imported)
+    @total_skipped = logs.sum(:items_skipped)
+    @total_failed = logs.sum(:items_failed)
+    @last_successful_import = logs.completed.maximum(:created_at)
+
+    @collections_count = collections_count(@user)
+  end
+
   private
 
   def set_agent_sessions_count

@@ -19,6 +19,7 @@ RSpec.describe Users::Setting do
     it { is_expected.to define_enum_for(:config_navbar).with_values(default: 0, static: 1).with_suffix(:navbar) }
     it { is_expected.to define_enum_for(:config_theme).with_values(light_theme: 0, dark_theme: 2) }
     it { is_expected.to define_enum_for(:config_homepage_feed).with_values(default: 0, latest: 1, top_week: 2, top_month: 3, top_year: 4, top_infinity: 5).with_suffix(:feed) }
+    it { is_expected.to define_enum_for(:feed_status).with_values(healthy: 0, degraded: 1, failing: 2, inactive: 3).with_prefix(:feed) }
 
     describe "validating color fields" do
       it "is valid if the field is a correct hex color with leading #" do
@@ -174,6 +175,51 @@ RSpec.describe Users::Setting do
     it "does not refresh user segment" do
       create(:user).setting
       expect(SegmentedUserRefreshWorker).not_to have_received(:perform_async)
+    end
+  end
+
+  describe "#update_feed_health!" do
+    it "resets to healthy on success" do
+      setting.update!(feed_status: :degraded, consecutive_feed_failures: 2)
+
+      setting.update_feed_health!(success: true)
+
+      expect(setting.reload).to be_feed_healthy
+      expect(setting.consecutive_feed_failures).to eq(0)
+    end
+
+    it "sets degraded on first failure" do
+      setting.update_feed_health!(success: false)
+
+      expect(setting.reload).to be_feed_degraded
+      expect(setting.consecutive_feed_failures).to eq(1)
+    end
+
+    it "sets degraded on second failure" do
+      setting.update!(consecutive_feed_failures: 1)
+
+      setting.update_feed_health!(success: false)
+
+      expect(setting.reload).to be_feed_degraded
+      expect(setting.consecutive_feed_failures).to eq(2)
+    end
+
+    it "sets failing after 3 consecutive failures" do
+      setting.update!(consecutive_feed_failures: 2)
+
+      setting.update_feed_health!(success: false)
+
+      expect(setting.reload).to be_feed_failing
+      expect(setting.consecutive_feed_failures).to eq(3)
+    end
+
+    it "transitions from failing back to healthy on success" do
+      setting.update!(feed_status: :failing, consecutive_feed_failures: 5)
+
+      setting.update_feed_health!(success: true)
+
+      expect(setting.reload).to be_feed_healthy
+      expect(setting.consecutive_feed_failures).to eq(0)
     end
   end
 
