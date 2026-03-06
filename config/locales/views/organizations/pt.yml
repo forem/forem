@@ -6,8 +6,8 @@ pt:
         heading: Página
         cover_image: Imagem de capa
         readme: Conteúdo da página (Markdown)
-        readme_placeholder: "Use Markdown e tags Liquid para personalizar a página da sua organização.\n\nExemplo:\n{% org_team slug-da-org %}\n{% org_posts slug-da-org %}"
-        readme_description: "Suporta Markdown e tags Liquid como {% org_team slug %} e {% org_posts slug %}."
+        readme_placeholder: "Use Markdown e tags Liquid para personalizar a página da sua organização.\n\nExemplo:\n{% org_team slug-da-org %}\n{% org_team slug-da-org role=admins limit=5 %}\n{% org_posts slug-da-org %}\n{% org_posts slug-da-org limit=5 sort=reactions min_reactions=10 since=30d %}"
+        readme_description: "Suporta Markdown e tags Liquid como {% org_team slug %} e {% org_posts slug %}. Opções org_team: limit (1-50), role (all/admins/members). Opções org_posts: limit (1-30), sort (recent/reactions/comments/score), min_reactions, min_comments, since (ex. 30d ou 2025-01-01)."
         save: Salvar página
     organizations:
       dropdown: Organization actions

@@ -129,9 +129,20 @@ fr:
       invalid: "Syntaxe agent_session non valide. Utilisez : {% agent_session ID %}, {% agent_session ID debut..fin %}, ou {% agent_session ID nom_tranche %}"
       not_found: Session d'agent non trouvée
       unpublished: Seul le propriétaire de la session peut intégrer cette session
+    row_tag:
+      no_args: "La balise row n'accepte aucun argument"
+    col_tag:
+      invalid_span: "Le span doit être compris entre 1 et 4"
     org_posts_tag:
       invalid_slug: Slug de l'organisation non valide
+      invalid_option: "Option '%{option}' non valide pour la balise org_posts"
+      invalid_limit: "La limite doit être comprise entre 1 et 30"
+      invalid_sort: "Le tri doit être l'un des suivants : recent, reactions, comments, score"
+      invalid_since: "Since doit être une durée relative (ex. 30d) ou une date (AAAA-MM-JJ)"
     org_team_tag:
       invalid_slug: Slug de l'organisation non valide
+      invalid_option: "Option '%{option}' non valide pour la balise org_team"
+      invalid_limit: "La limite doit être comprise entre 1 et 50"
+      invalid_role: "Le rôle doit être l'un des suivants : all, admins, members"
     youtube_tag:
       invalid_youtube_id: ID ou URL YouTube non valide

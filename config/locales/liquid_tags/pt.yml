@@ -129,9 +129,20 @@ pt:
       invalid: "Sintaxe agent_session inválida. Use: {% agent_session ID %}, {% agent_session ID inicio..fim %}, ou {% agent_session ID nome_fatia %}"
       not_found: Sessão de agente não encontrada
       unpublished: Apenas o proprietário da sessão pode incorporar esta sessão
+    row_tag:
+      no_args: "A tag row não aceita argumentos"
+    col_tag:
+      invalid_span: "O span deve estar entre 1 e 4"
     org_posts_tag:
       invalid_slug: Slug da organização inválido
+      invalid_option: "Opção '%{option}' inválida para a tag org_posts"
+      invalid_limit: "O limite deve estar entre 1 e 30"
+      invalid_sort: "A ordenação deve ser uma das seguintes: recent, reactions, comments, score"
+      invalid_since: "Since deve ser uma duração relativa (ex. 30d) ou uma data (AAAA-MM-DD)"
     org_team_tag:
       invalid_slug: Slug da organização inválido
+      invalid_option: "Opção '%{option}' inválida para a tag org_team"
+      invalid_limit: "O limite deve estar entre 1 e 50"
+      invalid_role: "O papel deve ser um dos seguintes: all, admins, members"
     youtube_tag:
       invalid_youtube_id: ID do YouTube inválido

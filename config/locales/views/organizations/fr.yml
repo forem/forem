@@ -6,8 +6,8 @@ fr:
         heading: Page
         cover_image: Image de couverture
         readme: Contenu de la page (Markdown)
-        readme_placeholder: "Utilisez Markdown et les balises Liquid pour personnaliser votre page d'organisation.\n\nExemple :\n{% org_team votre-slug-org %}\n{% org_posts votre-slug-org %}"
-        readme_description: "Supporte Markdown et les balises Liquid comme {% org_team slug %} et {% org_posts slug %}."
+        readme_placeholder: "Utilisez Markdown et les balises Liquid pour personnaliser votre page d'organisation.\n\nExemple :\n{% org_team votre-slug-org %}\n{% org_team votre-slug-org role=admins limit=5 %}\n{% org_posts votre-slug-org %}\n{% org_posts votre-slug-org limit=5 sort=reactions min_reactions=10 since=30d %}"
+        readme_description: "Supporte Markdown et les balises Liquid comme {% org_team slug %} et {% org_posts slug %}. Options org_team : limit (1-50), role (all/admins/members). Options org_posts : limit (1-30), sort (recent/reactions/comments/score), min_reactions, min_comments, since (ex. 30d ou 2025-01-01)."
         save: Enregistrer la page
     organizations:
       empty: 404 bio not found

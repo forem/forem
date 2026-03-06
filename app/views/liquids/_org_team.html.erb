@@ -11,7 +11,7 @@
       </div>
     <% end %>
   </div>
-  <% if users.size >= 50 %>
+  <% if users.size >= limit %>
     <a class="c-cta ml-5 mt-1 mr-5 mb-5" href="/<%= organization.slug %>/members">
       <%= I18n.t("views.organizations.all_members") %>
     </a>
