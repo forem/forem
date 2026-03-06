@@ -59,6 +59,7 @@ module Settings
     setting :resized_logo_aspect_ratio, type: :string
 
     setting :enable_video_upload, type: :boolean, default: false
+    setting :enable_agent_sessions, type: :boolean, default: true
 
     # Mascot
     setting :mascot_user_id, type: :integer, default: nil

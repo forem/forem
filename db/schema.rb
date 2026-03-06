@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_02_26_192014) do
+ActiveRecord::Schema[7.0].define(version: 2026_03_05_140853) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -21,10 +21,9 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_26_192014) do
 
   create_table "agent_sessions", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.jsonb "curated_selections", default: [], null: false
-    t.jsonb "normalized_data", default: {}, null: false
+    t.jsonb "curated_data", default: {}, null: false
     t.boolean "published", default: false, null: false
-    t.text "raw_data"
+    t.string "s3_key"
     t.jsonb "session_metadata", default: {}, null: false
     t.jsonb "slices", default: [], null: false
     t.string "slug"
@@ -32,9 +31,9 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_26_192014) do
     t.string "tool_name", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["slug"], name: "index_agent_sessions_on_slug", unique: true
     t.index ["tool_name"], name: "index_agent_sessions_on_tool_name"
     t.index ["user_id", "published"], name: "index_agent_sessions_on_user_id_and_published"
-    t.index ["slug"], name: "index_agent_sessions_on_slug", unique: true
     t.index ["user_id"], name: "index_agent_sessions_on_user_id"
   end
 
