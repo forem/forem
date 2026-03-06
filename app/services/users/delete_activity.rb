@@ -33,10 +33,10 @@ module Users
 
     def delete_profile_info(user)
       user.notifications.delete_all
-      user.reactions.delete_all
-      user.reactions_to.delete_all
-      user.follows.delete_all
-      Follow.followable_user(user.id).delete_all
+      user.reactions.destroy_all
+      user.reactions_to.destroy_all
+      user.follows.destroy_all
+      Follow.followable_user(user.id).destroy_all
       user.mentions.delete_all
       user.badge_achievements.delete_all
       user.collections.delete_all
