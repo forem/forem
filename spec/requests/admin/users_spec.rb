@@ -39,12 +39,27 @@ RSpec.describe "/admin/member_manager/users" do
       expect(response.body).to include(user.username)
     end
 
-    it "displays email link without leading whitespace" do
-      get admin_user_path(user)
+it "displays profile contact links without leading whitespace" do
+  get admin_user_path(user)
 
-      email_link = Nokogiri::HTML(response.body).at_css("a[href='mailto:#{user.email}']")
-      expect(email_link.text).to eq(user.email)
-    end
+  doc = Nokogiri::HTML(response.body)
+
+  email_link = doc.at_css("a.c-link--icon-left.inline-block[href='mailto:#{user.email}']")
+  expect(email_link).to be_present
+  expect(email_link.xpath("./text()[last()]").text.lstrip).to eq(user.email)
+
+  if user.github_username.present?
+    github_link = doc.at_css("a.c-link--icon-left.inline-block[href='https://github.com/#{user.github_username}']")
+    expect(github_link).to be_present
+    expect(github_link.xpath("./text()[last()]").text.lstrip).to eq(user.github_username)
+  end
+
+  if user.twitter_username.present?
+    twitter_link = doc.at_css("a.c-link--icon-left.inline-block[href='https://twitter.com/#{user.twitter_username}']")
+    expect(twitter_link).to be_present
+    expect(twitter_link.xpath("./text()[last()]").text.lstrip).to eq(user.twitter_username)
+  end
+end
 
     it "redirects from /username/moderate" do
       get "/#{user.username}/moderate"
