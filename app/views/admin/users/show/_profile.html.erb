@@ -33,25 +33,16 @@
     <div>
       <ul class="flex flex-col s:flex-row gap-3 s:gap-6 flex-wrap">
         <li>
-          <a href="mailto:<%= @user.email %>" class="c-link c-link--icon-left inline-block" target="_blank">
-            <%= crayons_icon_tag(:email, title: t("views.admin.users.profile.email"), class: "c-link__icon") %>
-            <%= @user.email %>
-          </a>
+          <a href="mailto:<%= @user.email %>" class="c-link c-link--icon-left inline-block" target="_blank"><%= crayons_icon_tag(:email, title: t("views.admin.users.profile.email"), class: "c-link__icon") %><%= @user.email %></a>
         </li>
         <% if @user.github_username %>
           <li>
-            <a href="https://github.com/<%= @user.github_username %>" class="c-link c-link--icon-left inline-block" target="_blank">
-              <%= crayons_icon_tag(:github, title: t("views.admin.users.profile.github")) %>
-              <%= @user.github_username %>
-            </a>
+            <a href="https://github.com/<%= @user.github_username %>" class="c-link c-link--icon-left inline-block" target="_blank"><%= crayons_icon_tag(:github, title: t("views.admin.users.profile.github")) %><%= @user.github_username %></a>
           </li>
         <% end %>
         <% if @user.twitter_username %>
           <li>
-            <a href="https://twitter.com/<%= @user.twitter_username %>" class="c-link c-link--icon-left inline-block" target="_blank">
-              <%= crayons_icon_tag(:twitter, title: t("views.admin.users.profile.twitter")) %>
-              <%= @user.twitter_username %>
-            </a>
+           <a href="https://twitter.com/<%= @user.twitter_username %>" class="c-link c-link--icon-left inline-block" target="_blank"><%= crayons_icon_tag(:twitter, title: t("views.admin.users.profile.twitter")) %><%= @user.twitter_username %></a>
           </li>
         <% end %>
       </ul>
