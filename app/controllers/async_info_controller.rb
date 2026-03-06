@@ -3,8 +3,30 @@ class AsyncInfoController < ApplicationController
   NUMBER_OF_MINUTES_FOR_CACHE_EXPIRY = 15
   before_action :set_cache_control_headers, only: %i[navigation_links]
 
+  # Debug endpoint to check user session state
+  def debug_session_state
+    if user_signed_in?
+      render json: {
+        user_id: current_user.id,
+        current_sign_in_at: current_user.current_sign_in_at,
+        last_sign_in_at: current_user.last_sign_in_at,
+        remember_created_at: current_user.remember_created_at,
+        remember_token_present: current_user.remember_token.present?,
+        sign_in_count: current_user.sign_in_count
+      }
+    else
+      render json: { error: "Not signed in" }, status: :unauthorized
+    end
+  end
+
   def base_data
     flash.discard(:notice)
+    Rails.logger.info "[BASE_DATA] Request from #{request.host}, user_signed_in?=#{user_signed_in?}, request_id=#{request.request_id}"
+    if user_signed_in?
+      Rails.logger.info "[BASE_DATA] User #{current_user.id} DB STATE: current_sign_in_at=#{current_user.current_sign_in_at.inspect}, last_sign_in_at=#{current_user.last_sign_in_at.inspect}, remember_created_at=#{current_user.remember_created_at.inspect}, remember_token_present?=#{current_user.remember_token.present?}"
+      session_valid = verify_state_of_user_session?
+      Rails.logger.info "[BASE_DATA] verify_state_of_user_session? returned: #{session_valid}"
+    end
     if user_signed_in? && verify_state_of_user_session?
       current_user.update_presence!
       @user = current_user.decorate
@@ -64,8 +86,22 @@ class AsyncInfoController < ApplicationController
   end
 
   def verify_state_of_user_session?
-    return true unless current_user.last_sign_in_at.present? && current_user.current_sign_in_at.blank?
-    sign_out(current_user)
-    false
+    # Skip verification during logout to allow Devise redirect to complete
+    return true if @skip_session_verification
+    
+    if current_user.last_sign_in_at.present? && current_user.current_sign_in_at.blank?
+      Rails.logger.info "[VERIFY_SESSION] User #{current_user.id} found logged out (last_sign_in_at present, current_sign_in_at nil)"
+      
+      # Delete remember token cookie
+      root_domain = Settings::General.app_domain
+      cookies.delete(:remember_user_token, domain: ".#{root_domain}")
+      cookies.delete(:remember_user_token)
+      
+      # Clear this domain's session completely
+      reset_session
+      
+      return false
+    end
+    true
   end
 end
