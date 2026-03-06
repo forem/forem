@@ -1,16 +1,17 @@
 module Feeds
   class AssembleArticleMarkdown
-    def self.call(item, user, feed, feed_source_url)
-      new(item, user, feed, feed_source_url).call
+    def self.call(item, user, feed, feed_source_url, feed_source: nil)
+      new(item, user, feed, feed_source_url, feed_source: feed_source).call
     end
 
-    def initialize(item, user, feed, feed_source_url)
+    def initialize(item, user, feed, feed_source_url, feed_source: nil)
       @item = item
       @title = item.title.strip
       @categories = item.categories || []
       @user = user
       @feed = feed
       @feed_source_url = feed_source_url
+      @feed_source = feed_source
     end
 
     def call
@@ -20,7 +21,7 @@ module Feeds
         published: false
         date: #{@item.published}
         tags: #{get_tags}
-        canonical_url: #{@user.setting.feed_mark_canonical ? @feed_source_url : ''}
+        canonical_url: #{mark_canonical? ? @feed_source_url : ''}
         ---
 
         #{assemble_body_markdown}
@@ -71,7 +72,7 @@ module Feeds
     def thorough_parsing(content, feed_url)
       html_doc = Nokogiri::HTML(content)
 
-      find_and_replace_possible_links!(html_doc) if @user.setting.feed_referential_link
+      find_and_replace_possible_links!(html_doc) if referential_link?
       find_and_replace_picture_tags_with_img!(html_doc)
 
       if feed_url&.include?("medium.com")
@@ -150,6 +151,18 @@ module Feeds
           img_tag.attributes["src"].value = URI.join(resource, path).to_s
         end
       end
+    end
+
+    def mark_canonical?
+      return @feed_source.mark_canonical if @feed_source
+
+      @user.setting&.feed_mark_canonical
+    end
+
+    def referential_link?
+      return @feed_source.referential_link if @feed_source
+
+      @user.setting&.feed_referential_link
     end
 
     def find_and_replace_possible_links!(html_doc)

@@ -82,6 +82,14 @@
     <%- end %>
 
     <li>
+      <a class="crayons-link crayons-link--block <%= "crayons-link--current" if @action == "feed_imports" %>"
+        href="/dashboard/feed_imports"
+        <%= @action == "feed_imports" ? ' aria-current="page"'.html_safe : "" %>>
+        <%= t("views.dashboard.actions.feed_imports") %>
+      </a>
+    </li>
+
+    <li>
       <a class="crayons-link crayons-link--block js-hidden-tags-link <%= "crayons-link--current" if @action == "hidden_tags" %>"
         href="<%= dashboard_hidden_tags_path %>"
         <%= @action == "hidden_tags" ? ' aria-current="page"'.html_safe : "" %>>
