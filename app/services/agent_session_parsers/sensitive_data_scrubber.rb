@@ -92,18 +92,6 @@ module AgentSessionParsers
       new(normalized_data).scrub
     end
 
-    # Scrub a plain text string (used for raw_data)
-    def self.scrub_text(text)
-      PATTERNS.each do |pattern|
-        if pattern[:context] && !text.match?(pattern[:context])
-          next
-        end
-
-        text = text.gsub(pattern[:regex], REDACTED_LABEL)
-      end
-      text
-    end
-
     def initialize(normalized_data)
       @data = deep_dup(normalized_data)
       @redaction_counts = Hash.new(0)
