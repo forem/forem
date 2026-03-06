@@ -1,0 +1,65 @@
+.ltag-quote {
+  padding: var(--su-4);
+  border-left: 4px solid var(--accent-brand);
+  background: var(--card-bg);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  margin: 0 0 var(--su-4) 0;
+}
+
+.ltag-quote__body {
+  font-size: var(--fs-l);
+  font-style: italic;
+  margin-bottom: var(--su-3);
+
+  > :first-child { margin-top: 0; }
+  > :last-child { margin-bottom: 0; }
+}
+
+.ltag-quote__footer {
+  display: flex;
+  align-items: center;
+  gap: var(--su-3);
+}
+
+.ltag-quote__avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.ltag-quote__meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.ltag-quote__author {
+  font-style: normal;
+  font-weight: var(--fw-bold);
+
+  a {
+    color: var(--link-color);
+    text-decoration: none;
+    &:hover { text-decoration: underline; }
+  }
+}
+
+.ltag-quote__role,
+.ltag-quote__source {
+  font-size: var(--fs-s);
+  color: var(--card-color-tertiary);
+}
+
+.ltag-quote__rating {
+  margin-bottom: var(--su-1);
+}
+
+.ltag-quote__star {
+  color: var(--card-color-tertiary);
+  font-size: var(--fs-l);
+}
+
+.ltag-quote__star--filled {
+  color: #f5a623;
+}

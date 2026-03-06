@@ -133,7 +133,6 @@ pt:
       missing_source: "A tag feed requer pelo menos uma fonte: org, tag ou tags"
       invalid_option: "Opção '%{option}' inválida para a tag feed"
       invalid_org: "Organização '%{slug}' não encontrada"
-      invalid_tag: "Tag '%{name}' não encontrada"
       invalid_tags: "A opção tags requer pelo menos um nome de tag"
       invalid_limit: "O limite deve estar entre 1 e 30"
       invalid_sort: "A ordenação deve ser uma das seguintes: recent, reactions, comments, score"
@@ -153,5 +152,14 @@ pt:
       invalid_option: "Opção '%{option}' inválida para a tag org_team"
       invalid_limit: "O limite deve estar entre 1 e 50"
       invalid_role: "O papel deve ser um dos seguintes: all, admins, members"
+    features_tag:
+      no_args: "A tag features não aceita argumentos"
+    feature_tag:
+      missing_title: "A tag feature requer uma opção title"
+    quote_tag:
+      missing_author: "A tag quote requer uma opção author"
+      invalid_rating: "A avaliação deve estar entre 1 e 5"
+    slide_tag:
+      missing_image: "A tag slide requer uma opção image"
     youtube_tag:
       invalid_youtube_id: ID do YouTube inválido

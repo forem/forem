@@ -133,7 +133,6 @@ en:
       missing_source: "Feed tag requires at least one source: org, tag, or tags"
       invalid_option: "Invalid option '%{option}' for feed tag"
       invalid_org: "Organization '%{slug}' not found"
-      invalid_tag: "Tag '%{name}' not found"
       invalid_tags: "Tags option requires at least one tag name"
       invalid_limit: "Limit must be between 1 and 30"
       invalid_sort: "Sort must be one of: recent, reactions, comments, score"
@@ -153,5 +152,14 @@ en:
       invalid_option: "Invalid option '%{option}' for org_team tag"
       invalid_limit: "Limit must be between 1 and 50"
       invalid_role: "Role must be one of: all, admins, members"
+    features_tag:
+      no_args: "The features tag does not accept any arguments"
+    feature_tag:
+      missing_title: "Feature tag requires a title option"
+    quote_tag:
+      missing_author: "Quote tag requires an author option"
+      invalid_rating: "Rating must be between 1 and 5"
+    slide_tag:
+      missing_image: "Slide tag requires an image option"
     youtube_tag:
       invalid_youtube_id: Invalid YouTube ID or URL

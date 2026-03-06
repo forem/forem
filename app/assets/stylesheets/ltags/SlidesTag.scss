@@ -1,0 +1,59 @@
+.ltag-slides {
+  margin-bottom: var(--su-4);
+  overflow: hidden;
+}
+
+.ltag-slides__track {
+  display: flex;
+  gap: var(--su-3);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: var(--su-2);
+
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--card-color-tertiary);
+    border-radius: 3px;
+  }
+}
+
+.ltag-slide {
+  flex: 0 0 auto;
+  width: 280px;
+  scroll-snap-align: start;
+  border-radius: var(--radius);
+  overflow: hidden;
+  position: relative;
+
+  @media (max-width: 640px) {
+    width: 240px;
+  }
+}
+
+.ltag-slide__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  aspect-ratio: 16 / 9;
+}
+
+.ltag-slide__link {
+  display: block;
+  position: relative;
+}
+
+.ltag-slide__play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3rem;
+  color: white;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
