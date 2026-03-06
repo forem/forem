@@ -4,8 +4,8 @@ RSpec.describe Feeds::ImportLogCleanupWorker, type: :worker do
   let(:user) { create(:user) }
 
   describe "#perform" do
-    it "deletes logs older than 90 days" do
-      old_log = create(:feed_import_log, user: user, created_at: 91.days.ago)
+    it "deletes logs older than 30 days" do
+      old_log = create(:feed_import_log, user: user, created_at: 31.days.ago)
       recent_log = create(:feed_import_log, user: user, created_at: 10.days.ago)
 
       described_class.new.perform
@@ -15,7 +15,7 @@ RSpec.describe Feeds::ImportLogCleanupWorker, type: :worker do
     end
 
     it "cascade deletes associated import items" do
-      old_log = create(:feed_import_log, user: user, created_at: 91.days.ago)
+      old_log = create(:feed_import_log, user: user, created_at: 31.days.ago)
       item = create(:feed_import_item, import_log: old_log)
 
       described_class.new.perform

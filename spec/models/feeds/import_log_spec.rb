@@ -42,9 +42,9 @@ RSpec.describe Feeds::ImportLog do
     end
 
     describe ".for_cleanup" do
-      it "returns logs older than 90 days" do
-        old_log = create(:feed_import_log, user: user, created_at: 91.days.ago)
-        recent_log = create(:feed_import_log, user: user, created_at: 89.days.ago)
+      it "returns logs older than 30 days" do
+        old_log = create(:feed_import_log, user: user, created_at: 31.days.ago)
+        recent_log = create(:feed_import_log, user: user, created_at: 29.days.ago)
 
         expect(described_class.for_cleanup).to include(old_log)
         expect(described_class.for_cleanup).not_to include(recent_log)

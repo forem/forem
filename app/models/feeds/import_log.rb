@@ -12,7 +12,7 @@ module Feeds
     enum status: { pending: 0, fetching: 1, parsing: 2, importing: 3, completed: 4, failed: 5 }
 
     scope :recent, -> { order(created_at: :desc) }
-    scope :for_cleanup, -> { where(created_at: ...90.days.ago) }
+    scope :for_cleanup, -> { where(created_at: ...30.days.ago) }
     scope :for_feed_source, ->(feed_source_id) { where(feed_source_id: feed_source_id) }
     scope :notable, -> { where("items_imported > 0 OR items_failed > 0 OR status = ?", statuses[:failed]) }
     scope :routine, -> { where(status: :completed).where(items_imported: 0, items_failed: 0) }
