@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_03_06_200919) do
+ActiveRecord::Schema[7.0].define(version: 2026_03_07_140000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -210,6 +210,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_06_200919) do
     t.string "video_source_url"
     t.string "video_state"
     t.string "video_thumbnail_url"
+    t.check_constraint "public_reactions_count >= 0", name: "check_articles_public_reactions_count_non_negative"
+    t.check_constraint "previous_public_reactions_count >= 0", name: "check_articles_previous_public_reactions_count_non_negative"
     t.index ["cached_label_list"], name: "index_articles_on_cached_label_list", using: :gin
     t.index ["cached_tag_list"], name: "index_articles_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
     t.index ["canonical_url"], name: "index_articles_on_canonical_url", unique: true, where: "(published IS TRUE)"
@@ -460,6 +462,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_06_200919) do
     t.integer "spaminess_rating", default: 0
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
+    t.check_constraint "public_reactions_count >= 0", name: "check_comments_public_reactions_count_non_negative"
     t.index "digest(body_markdown, 'sha512'::text), user_id, ancestry, commentable_id, commentable_type", name: "index_comments_on_body_markdown_user_ancestry_commentable", unique: true
     t.index "to_tsvector('simple'::regconfig, COALESCE(body_markdown, ''::text))", name: "index_comments_on_body_markdown_as_tsvector", using: :gin
     t.index ["ancestry"], name: "index_comments_on_ancestry"
