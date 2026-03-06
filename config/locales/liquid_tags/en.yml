@@ -129,9 +129,20 @@ en:
       invalid: "Invalid agent_session syntax. Use: {% agent_session ID %}, {% agent_session ID start..end %}, or {% agent_session ID slice_name %}"
       not_found: Agent session not found
       unpublished: Only the session owner can embed this session
+    row_tag:
+      no_args: "The row tag does not accept any arguments"
+    col_tag:
+      invalid_span: "Span must be between 1 and 4"
     org_posts_tag:
       invalid_slug: Invalid organization slug
+      invalid_option: "Invalid option '%{option}' for org_posts tag"
+      invalid_limit: "Limit must be between 1 and 30"
+      invalid_sort: "Sort must be one of: recent, reactions, comments, score"
+      invalid_since: "Since must be a relative duration (e.g. 30d) or date (YYYY-MM-DD)"
     org_team_tag:
       invalid_slug: Invalid organization slug
+      invalid_option: "Invalid option '%{option}' for org_team tag"
+      invalid_limit: "Limit must be between 1 and 50"
+      invalid_role: "Role must be one of: all, admins, members"
     youtube_tag:
       invalid_youtube_id: Invalid YouTube ID or URL

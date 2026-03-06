@@ -1,0 +1,34 @@
+.ltag-row {
+  display: flex;
+  gap: var(--su-4);
+  margin-bottom: var(--su-4);
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+  }
+}
+
+.ltag-col {
+  flex: 1;
+  min-width: 0;
+
+  > :first-child {
+    margin-top: 0;
+  }
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+}
+
+.ltag-col-span-2 {
+  flex: 2;
+}
+
+.ltag-col-span-3 {
+  flex: 3;
+}
+
+.ltag-col-span-4 {
+  flex: 4;
+}

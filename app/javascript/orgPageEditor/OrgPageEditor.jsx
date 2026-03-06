@@ -63,7 +63,7 @@ export const OrgPageEditor = ({ defaultValue, textAreaName }) => {
         name={textAreaName}
         id={TEXTAREA_ID}
         defaultValue={defaultValue}
-        placeholder="Use Markdown and Liquid tags to customize your org page.&#10;&#10;Example:&#10;{% org_team your-org-slug %}&#10;{% org_posts your-org-slug %}"
+        placeholder="Use Markdown and Liquid tags to customize your org page.&#10;&#10;Example:&#10;{% org_team your-org-slug %}&#10;{% org_team your-org-slug role=admins limit=5 %}&#10;{% org_posts your-org-slug %}&#10;{% org_posts your-org-slug limit=5 sort=reactions min_reactions=10 since=30d %}"
         className="crayons-textfield crayons-textfield--ghost ff-monospace fs-l"
         style={{ minHeight: '400px' }}
       />
