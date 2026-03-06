@@ -10,6 +10,8 @@
 
     <option value="<%= dashboard_analytics_path %>"><%= t("views.dashboard.actions.analytics") %></option>
 
+    <option value="/dashboard/feed_imports" <%= "selected" if @action == "feed_imports" %>><%= t("views.dashboard.actions.mobile.feed_imports") %></option>
+
     <option value="/dashboard/hidden_tags" <%= "selected" if @action == "hidden_tags" %>><%= t("views.dashboard.actions.mobile.hidden_tags", num: @user.cached_antifollowed_tag_names.size) %></option>
 
     <% if @organizations && (params[:which].blank? || params[:which] == "organization") %>

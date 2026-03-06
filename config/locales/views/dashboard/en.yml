@@ -15,6 +15,7 @@ en:
           following_pods: Following podcasts (%{num})
           hidden_tags: Hidden tags (%{num})
           agent_sessions: Agent Sessions (%{num})
+          feed_imports: Feed Imports
         agent_sessions: Agent Sessions
         posts: Posts
         series: Series
@@ -26,6 +27,7 @@ en:
         hidden_tags: Hidden tags
         listings: Listings
         analytics: Analytics
+        feed_imports: Feed Imports
         for_org: Analytics for %{org}
         upload: Upload a video
       analytics:
@@ -157,6 +159,96 @@ en:
           text_html: "%{for} %{source}"
           for: for
         empty: You don't have any subscribers for this %{kind} yet...
+      feed_imports:
+        heading: Dashboard » Feed Imports
+        empty: Add an RSS feed source below to start importing posts as drafts.
+        no_history: No import history yet. Your feed will be checked automatically.
+        no_notable_history: All recent checks found no new posts.
+        history_heading: Import History
+        routine_checks:
+          one: "Show %{count} routine check (no new posts)"
+          other: "Show %{count} routine checks (no new posts)"
+        source_filter: Filter by source
+        all_sources: All Sources
+        source_label: "Source:"
+        overview:
+          status:
+            healthy: Healthy
+            degraded: Degraded
+            failing: Failing
+            inactive: Inactive
+          last_success: "Last successful import %{time} ago"
+        summary:
+          total_imported: Articles imported
+          total_skipped: Other items skipped
+          total_failed: Items failed
+        health:
+          healthy: Your feed is working correctly.
+          degraded: Your feed has experienced recent failures. Some imports may have been missed.
+          failing: Your feed has been failing consistently. Please check your feed URL above.
+        status:
+          pending: Pending
+          fetching: Fetching
+          parsing: Parsing
+          importing: Importing
+          completed: Completed
+          no_new_posts: No new posts
+          failed: Failed
+        counts:
+          items_in_feed: Items in feed
+          imported: Imported
+          skipped: Skipped
+          failed: Failed
+          duration: "Duration: %{seconds}s"
+        items:
+          heading: Import Details
+          title: Title
+          status: Status
+          article: Article
+          statuses:
+            imported: Imported
+            skipped_duplicate: Skipped (duplicate)
+            skipped_medium_reply: Skipped (Medium reply)
+            failed: Failed
+          show_duplicates:
+            one: "Show %{count} skipped duplicate"
+            other: "Show %{count} skipped duplicates"
+        sources:
+          your_sources: Your Feed Sources
+          add_heading: Add a Feed Source
+          welcome_heading: Publishing from RSS
+          welcome_desc1_html: Posts will land in your dashboard <strong>as drafts</strong>, and then you can publish from there.
+          welcome_desc2: Formatting will typically look good, but you may have to make manual fixes. In the case of Medium, you may have to manually fix embeds.
+          welcome_desc3_html: To find out more about how drafts are created from your feed, read this %{guide}.
+          welcome_desc4: Your feed will be fetched every time you add a source and updates will be automatically fetched periodically thereafter.
+          welcome_desc5_html: 'FYI: Medium RSS feed URLs are <em>https://medium.com/feed/@your_username</em>'
+          welcome_desc6: By submitting your RSS Feed URL, you agree that you own and/or have permission to syndicate the associated content.
+          guide: guide
+          url_label: RSS Feed URL
+          url_placeholder: "https://example.com/feed.xml"
+          name_label: Name (optional)
+          name_placeholder: My Blog
+          org_label: Organization (optional)
+          org_description: Imported articles will be published under this organization.
+          org_none: None (personal)
+          org_no_orgs: You are not a member of any organizations. Articles will be published under your personal account.
+          author_label: Default Author
+          author_description: When an RSS item's author doesn't match an existing account, the imported article will be attributed to this user. To assign another member, select an organization and ensure you have org admin privileges.
+          author_self: Myself (default)
+          submit: Add Feed Source
+          edit: Edit
+          save: Save Changes
+          delete: Remove
+          delete_confirm: Are you sure you want to remove this feed source?
+          mark_canonical_html: Mark the RSS source as canonical URL by default <p class='crayons-field__description'>If you check this box, the post will automatically mark the feed source as the canonical URL.</p>
+          referential_html: Replace self-referential links with %{community}-specific links <p class='crayons-field__description'>If you check this box, the post will automatically change any URLs included in the post to refer to the version of that article on %{community} if available. This is primarily meant for folks migrating their entire blog onto %{community}.</p>
+          status:
+            healthy: Healthy
+            degraded: Degraded
+            failing: Failing
+            inactive: Inactive
+          last_fetched: "Last fetched: %{time}"
+          never_fetched: Never fetched
       summary:
         reactions: Total post reactions
         views: Total post views
