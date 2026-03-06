@@ -168,7 +168,7 @@ class DashboardsController < ApplicationController
   private
 
   def set_agent_sessions_count
-    @agent_sessions_count = current_user.agent_sessions.count
+    @agent_sessions_count = current_user.agent_sessions_count
   end
 
   def follows_for(user:, type:, order_by: :created_at)

@@ -618,6 +618,23 @@ RSpec.describe User do
     end
   end
 
+  describe "#good_standing_followers_count" do
+    let!(:good_user) { create(:user) }
+    let!(:suspended_user) { create(:user, :suspended) }
+    let!(:spam_user) { create(:user, :spam) }
+
+    before do
+      good_user.follow(user)
+      suspended_user.follow(user)
+      spam_user.follow(user)
+    end
+
+    it "returns the count of non-suspended and non-spam followers using the rails cache" do
+      expect(Rails.cache).to receive(:fetch).with("#{user.cache_key_with_version}/good_standing_followers_count", expires_in: 24.hours).and_call_original
+      expect(user.good_standing_followers_count).to eq(1)
+    end
+  end
+
   describe "theming properties" do
     before do
       allow(Settings::UserExperience).to receive(:default_font).and_return("sans-serif")
@@ -786,6 +803,16 @@ RSpec.describe User do
       Articles::Unpublish.call(article2.user, article2)
 
       expect(user.cached_reading_list_article_ids).to eq([article3.id, article.id])
+    end
+
+    it "has an accurate agent_sessions_count using counter cache" do
+      expect(user.agent_sessions_count).to eq(0)
+      create(:agent_session, user: user)
+      expect(user.reload.agent_sessions_count).to eq(1)
+      create(:agent_session, user: user)
+      expect(user.reload.agent_sessions_count).to eq(2)
+      user.agent_sessions.last.destroy
+      expect(user.reload.agent_sessions_count).to eq(1)
     end
   end
 

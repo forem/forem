@@ -3,7 +3,7 @@ class AgentSession < ApplicationRecord
   MAX_CURATED_DATA_SIZE = 10.megabytes
   RAW_FILE_RETENTION_DAYS = 90
 
-  belongs_to :user
+  belongs_to :user, counter_cache: true
 
   validates :title, presence: true, length: { maximum: 200 }
   validates :tool_name, presence: true, inclusion: { in: TOOL_NAMES }

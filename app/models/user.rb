@@ -304,7 +304,10 @@ class User < ApplicationRecord
   end
 
   def good_standing_followers_count
-    Follow.non_suspended("User", id).count
+    cache_key = "#{cache_key_with_version}/good_standing_followers_count"
+    Rails.cache.fetch(cache_key, expires_in: 24.hours) do
+      Follow.non_suspended("User", id).count
+    end
   end
 
   def tag_line
