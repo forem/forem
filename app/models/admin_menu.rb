@@ -58,6 +58,7 @@ class AdminMenu
     ]
 
     scope :apps, "palette-line", [
+      item(name: "keyword trends", controller: "keyword-trends"),
       item(name: "consumer apps", controller: "consumer_apps"),
       item(name: "welcome"),
     ]
