@@ -11,7 +11,7 @@
 # It's strongly recommended that you check this file into your version control system.
 
 <<<<<<< fix-negative-reaction-counter-22803
-ActiveRecord::Schema.define(version: 2026_03_07_140000) do
+ActiveRecord::Schema[7.0].define(version: 2026_03_07_140000) do
 =======
 ActiveRecord::Schema[7.0].define(version: 2026_03_06_200919) do
 >>>>>>> main
