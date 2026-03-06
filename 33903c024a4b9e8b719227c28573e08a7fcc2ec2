@@ -1,0 +1,34 @@
+config/locales/liquid_tags/fr.yml
+  589592171ada3650 132-140
+config/locales/liquid_tags/pt.yml
+  589592171ada3650 132-140
+spec/liquid_tags/feed_tag_spec.rb
+  589592171ada3650 1-192
+config/locales/liquid_tags/en.yml
+  589592171ada3650 132-140
+app/views/liquids/_feed.html.erb
+  589592171ada3650 1-5
+app/liquid_tags/feed_tag.rb
+  589592171ada3650 1-154
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.8",
+  "base_commit_sha": "33903c024a4b9e8b719227c28573e08a7fcc2ec2",
+  "prompts": {
+    "589592171ada3650": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "598eacfd-fbaa-4c95-8016-1d4fa7a1051b",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Jon Gottfried <jonmarkgo@gmail.com>",
+      "messages": [],
+      "total_additions": 381,
+      "total_deletions": 3,
+      "accepted_lines": 378,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/ace56ccdc8abfaea08851630370c6abb6f54cf3c93a11871c0acb271531d29ff"
+    }
+  }
+}
