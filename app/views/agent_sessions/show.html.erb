@@ -1,0 +1,109 @@
+<% content_for :title, @agent_session.title %>
+
+<div class="agent-session-show-page">
+  <header class="agent-session-page-header">
+    <h1><%= @agent_session.title %></h1>
+    <div class="agent-session-show-meta">
+      <%= agent_session_tool_icon(@agent_session.tool_name) %>
+      <span><%= @agent_session.total_messages %> messages</span>
+      <% start_time = @agent_session.metadata["start_time"] %>
+      <% if start_time.present? %>
+        <% parsed_time = begin; Time.zone.parse(start_time); rescue ArgumentError; nil; end %>
+        <% if parsed_time %>
+          <span><%= parsed_time.strftime("%B %d, %Y") %></span>
+        <% end %>
+      <% end %>
+    </div>
+
+    <% if user_signed_in? && policy(@agent_session).edit? %>
+      <div class="agent-session-show-actions">
+        <%= link_to "&larr; All Sessions".html_safe, agent_sessions_path, class: "crayons-btn crayons-btn--ghost" %>
+        <%= link_to "Curate", edit_agent_session_path(@agent_session), class: "crayons-btn" %>
+      </div>
+
+      <div class="curator-meta-bar">
+        <div class="curator-meta-bar-section">
+          <% if @agent_session.published? %>
+            <span class="visibility-badge visibility-badge--public"><%= t("views.agent_sessions.public_label") %></span>
+          <% else %>
+            <span class="visibility-badge visibility-badge--private"><%= t("views.agent_sessions.private_label") %></span>
+          <% end %>
+        </div>
+        <% if @agent_session.published? %>
+          <div class="curator-meta-bar-section">
+            <div class="curator-meta-bar-share">
+              <input type="text" readonly autocomplete="off" class="curator-meta-share-input"
+                     value="<%= URL.url(agent_session_path(@agent_session)) %>" onclick="this.select();" />
+              <button type="button" class="slice-action-btn"
+                      onclick="navigator.clipboard.writeText(this.previousElementSibling.value);
+                               this.textContent='Copied!';
+                               setTimeout(function(){this.textContent='<%= j(t("views.agent_sessions.copy_link")) %>';}.bind(this), 1500);">
+                <%= t("views.agent_sessions.copy_link") %>
+              </button>
+            </div>
+          </div>
+        <% end %>
+        <div class="curator-meta-bar-section">
+          <label class="curator-meta-bar-label">Embed</label>
+          <code class="curator-meta-embed-code"><%= "{" + "% agent_session #{@agent_session.slug} %" + "}" %></code>
+          <button type="button" class="slice-action-btn"
+                  onclick="navigator.clipboard.writeText(this.previousElementSibling.textContent.trim());
+                           this.textContent='Copied!';
+                           setTimeout(function(){this.textContent='Copy';}.bind(this), 1500);">
+            Copy
+          </button>
+        </div>
+      </div>
+    <% else %>
+      <div class="agent-session-author">
+        <%= t("views.agent_sessions.by_author", name: @agent_session.user.username) %>
+      </div>
+    <% end %>
+
+    <% if @agent_session.slices.any? %>
+      <div class="curator-slices-bar">
+        <div class="curator-slices-bar-header">
+          <span class="curator-slices-bar-title">Slices</span>
+        </div>
+        <div class="slices-list slices-list--horizontal">
+          <% @agent_session.slices.each do |slice| %>
+            <div class="slice-card">
+              <div class="slice-card-header">
+                <span class="slice-card-name"><%= slice["name"] %></span>
+                <span class="slice-card-count"><%= slice["indices"]&.size || 0 %> msgs</span>
+              </div>
+              <% if user_signed_in? && policy(@agent_session).edit? %>
+                <code class="slice-card-embed"><%= "{" + "% agent_session #{@agent_session.slug} #{slice['name']} %" + "}" %></code>
+              <% end %>
+              <div class="slice-card-actions">
+                <%= link_to "View", agent_session_path(@agent_session, slice: slice["name"]), class: "slice-action-btn" %>
+                <% if user_signed_in? && policy(@agent_session).edit? %>
+                  <button type="button" class="slice-action-btn"
+                          onclick="navigator.clipboard.writeText(this.closest('.slice-card').querySelector('.slice-card-embed').textContent.trim());
+                                   this.textContent='Copied!';
+                                   setTimeout(function(){this.textContent='Copy embed';}.bind(this), 1500);">
+                    Copy embed
+                  </button>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </header>
+
+  <% if @slice_name.present? %>
+    <% active_slice = @agent_session.find_slice(@slice_name) %>
+    <% if active_slice %>
+      <div class="agent-session-slice-viewing">
+        Viewing slice: <strong><%= active_slice["name"] %></strong>
+        (<%= @agent_session.messages_for_slice(@slice_name).size %> of <%= @agent_session.total_messages %> messages)
+        &middot; <%= link_to "View full session", agent_session_path(@agent_session) %>
+      </div>
+    <% end %>
+  <% end %>
+
+  <%= render partial: "liquids/agent_session",
+             locals: { agent_session: @agent_session, message_range: nil, slice_name: @slice_name } %>
+</div>

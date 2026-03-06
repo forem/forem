@@ -9,10 +9,7 @@ module Badges
     }.freeze
 
     REPOSITORIES = [
-      "forem/forem",
-      "forem/forem-browser-extension",
-      "forem/DEV-Android",
-      "forem/DEV-ios",
+      "forem/forem"
     ].freeze
 
     def self.call(msg = I18n.t("services.badges.thank_you"))
@@ -25,7 +22,7 @@ module Badges
     end
 
     def call
-      return unless Settings::Authentication.providers.include?(:github)
+      return unless Settings::Authentication.providers.map(&:to_s).include?("github")
 
       REPOSITORIES.each do |repo|
         award_single_commit_contributors(repo)
@@ -38,12 +35,15 @@ module Badges
     attr_reader :msg, :badge_slugs_with_id
 
     def award_single_commit_contributors(repo)
+      dev_contributor_badge_id = badge_slugs_with_id[:"dev-contributor"]
+      return unless dev_contributor_badge_id
+
       yesterday = 1.day.ago.utc.iso8601
       commits = Github::OauthClient.new.commits(repo, since: yesterday)
-      authors_uids = commits.map { |commit| commit.author.id }
+      authors_uids = commits.filter_map { |commit| commit.author&.id }
       Identity.github.where(uid: authors_uids).find_each do |i|
         BadgeAchievement
-          .where(user_id: i.user_id, badge_id: badge_slugs_with_id[:"dev-contributor"])
+          .where(user_id: i.user_id, badge_id: dev_contributor_badge_id)
           .first_or_create(rewarding_context_message_markdown: msg)
       end
     end
@@ -62,6 +62,7 @@ module Badges
 
     def create_badges_for_user(user_id, commits_count)
       badge_slugs_with_id.each do |slug, slug_id|
+        next if slug_id.nil?
         next if commits_count < BADGE_SLUGS[slug]
 
         BadgeAchievement.create(user_id: user_id, badge_id: slug_id)

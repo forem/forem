@@ -1,0 +1,36 @@
+---
+en:
+  views:
+    agent_sessions:
+      share_link: Share link
+      copy_link: Copy
+      by_author: "by %{name}"
+      make_public: Make public
+      make_private: Make private
+      public_label: Public
+      private_label: Private
+      public_description: Anyone can view via direct link and embed in their posts
+      private_description: Only you can embed this session in your posts
+      security_warning: Please review your session carefully before making it public to ensure you are not sharing anything you shouldn't.
+      switched_to_model: "Switched to %{model}"
+      not_available_title: Session not available
+      not_available_description: This agent session doesn't exist or is not publicly available.
+      not_available_sign_in_hint: If this is your session, try signing in to view it.
+      parse_file: Parse File
+      parsing_progress: Parsing...
+      step_reading: Reading file
+      step_parsing: Parsing messages
+      scrubbing_secrets: Scrubbing secrets
+      ready_to_curate: Ready to curate
+      save_and_upload: "Save & Upload"
+      saving: Saving...
+      curate_before_upload: Upload a coding agent session file. It will be parsed and scrubbed locally in your browser — then you can curate which parts to include before saving.
+      client_parse_error: Failed to parse session file.
+      curated_data_too_large: Curated data is too large. Please deselect more messages to reduce the size.
+      unsupported_file_type: Unsupported file type. Please use .jsonl or .json files.
+      uploading_to_storage: Uploading file...
+      upload_complete: Upload complete
+      loading_for_curation: Loading session for curation...
+      re_curate: Re-curate from original file
+      raw_file_retention_notice: "Original file available for %{days} more days"
+      raw_file_expired: Original file is no longer available (expired after 90 days)

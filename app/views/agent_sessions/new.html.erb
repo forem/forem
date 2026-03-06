@@ -1,0 +1,535 @@
+<% content_for :title, "Upload Agent Session" %>
+
+<%= javascript_include_tag "agentSessionUpload", defer: true %>
+
+<div class="agent-session-upload-page">
+  <header class="agent-session-page-header">
+    <div class="agent-session-header-row">
+      <h1>Upload Agent Session</h1>
+      <div class="agent-session-header-actions">
+        <%= link_to "← All Sessions", agent_sessions_path, class: "crayons-btn crayons-btn--ghost crayons-btn--s" %>
+      </div>
+    </div>
+    <p><%= t("views.agent_sessions.curate_before_upload") %></p>
+  </header>
+
+  <div class="agent-session-upload-form" id="upload-form">
+    <div class="agent-session-form-group">
+      <label for="session-title" class="agent-session-label">Session Title</label>
+      <input type="text" id="session-title" placeholder="e.g. Building a REST API with Claude Code" class="agent-session-input" required />
+    </div>
+
+    <div class="agent-session-form-group">
+      <label for="session-tool" class="agent-session-label">Agent Tool</label>
+      <select id="session-tool" class="agent-session-select">
+        <option value="auto">Auto-detect</option>
+        <option value="claude_code">Claude Code</option>
+        <option value="codex">Codex (OpenAI)</option>
+        <option value="gemini_cli">Gemini CLI</option>
+        <option value="pi">Pi</option>
+        <option value="github_copilot">GitHub Copilot</option>
+      </select>
+    </div>
+
+    <div class="agent-session-form-group">
+      <label class="agent-session-label">Session File</label>
+      <div class="agent-session-file-drop" id="agent-session-dropzone">
+        <input type="file" accept=".jsonl,.json" class="agent-session-file-input" id="agent-session-file-input" data-max-file-size-mb="200" data-permitted-file-types='["application","text"]' />
+        <div class="agent-session-drop-text" id="drop-text">
+          <p><strong>Drop your session file here</strong> or click to browse</p>
+          <p class="agent-session-drop-hint">Supports .jsonl and .json files</p>
+        </div>
+      </div>
+
+      <div class="agent-session-file-preview" id="file-preview" style="display:none">
+        <div class="file-preview-icon">&#128196;</div>
+        <div class="file-preview-details">
+          <div class="file-preview-name" id="preview-filename"></div>
+          <div class="file-preview-meta">
+            <span id="preview-filesize"></span>
+            <span id="preview-lines"></span>
+            <span id="preview-detected-tool" style="display:none"></span>
+          </div>
+        </div>
+        <button type="button" class="file-preview-remove" id="remove-file-btn" title="Remove file">&times;</button>
+      </div>
+    </div>
+
+    <div class="agent-session-help">
+      <details>
+        <summary>Where to find your session files</summary>
+        <dl class="agent-session-paths">
+          <dt>Claude Code</dt>
+          <dd><code>~/.claude/projects/&lt;project&gt;/*.jsonl</code></dd>
+          <dt>Codex (OpenAI)</dt>
+          <dd><code>~/.codex/sessions/YYYY/MM/DD/*.jsonl</code></dd>
+          <dt>Gemini CLI</dt>
+          <dd><code>~/.gemini/tmp/session-*.json</code></dd>
+          <dt>Pi</dt>
+          <dd><code>~/.pi/agent/sessions/&lt;project&gt;/*.jsonl</code></dd>
+          <dt>GitHub Copilot</dt>
+          <dd><code>~/.copilot/session-state/&lt;session-id&gt;/events.jsonl</code></dd>
+        </dl>
+      </details>
+    </div>
+
+    <div class="agent-session-form-actions">
+      <button type="button" class="crayons-btn" id="parse-btn" disabled><%= t("views.agent_sessions.parse_file") %></button>
+    </div>
+
+    <!-- Progress UI -->
+    <div class="agent-session-progress" id="parse-progress" style="display:none">
+      <div class="progress-steps">
+        <div class="progress-step" id="step-read">
+          <div class="progress-step-indicator"></div>
+          <div class="progress-step-label"><%= t("views.agent_sessions.step_reading") %></div>
+          <div class="progress-step-detail" id="step-read-detail"></div>
+        </div>
+        <div class="progress-step" id="step-upload">
+          <div class="progress-step-indicator"></div>
+          <div class="progress-step-label"><%= t("views.agent_sessions.uploading_to_storage") %></div>
+          <div class="progress-step-detail" id="step-upload-detail"></div>
+        </div>
+        <div class="progress-step" id="step-parse">
+          <div class="progress-step-indicator"></div>
+          <div class="progress-step-label"><%= t("views.agent_sessions.step_parsing") %></div>
+          <div class="progress-step-detail" id="step-parse-detail"></div>
+        </div>
+        <div class="progress-step" id="step-scrub">
+          <div class="progress-step-indicator"></div>
+          <div class="progress-step-label"><%= t("views.agent_sessions.scrubbing_secrets") %></div>
+          <div class="progress-step-detail" id="step-scrub-detail"></div>
+        </div>
+        <div class="progress-step" id="step-done">
+          <div class="progress-step-indicator"></div>
+          <div class="progress-step-label"><%= t("views.agent_sessions.ready_to_curate") %></div>
+          <div class="progress-step-detail" id="step-done-detail"></div>
+        </div>
+      </div>
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+    </div>
+
+    <div class="agent-session-error" id="parse-error" style="display:none">
+      <p id="error-message"></p>
+    </div>
+  </div>
+
+  <!-- Curation UI (shown after parsing) -->
+  <div id="curation-section" style="display:none">
+    <div class="agent-session-instructions">
+      <p class="instructions-text">Choose which messages to save. Click cards to toggle, shift+click for range, or drag across multiple. Only selected messages will be stored. Create slices to embed different parts of your session separately.</p>
+      <div class="instructions-warning">
+        <p>We automatically scan for and redact common secrets like API keys, tokens, and credentials, but <strong>we cannot guarantee all sensitive information has been caught</strong>. <%= t("views.agent_sessions.security_warning") %></p>
+        <p class="instructions-redaction-summary" id="redaction-summary" style="display:none"></p>
+      </div>
+    </div>
+
+    <%= render "agent_sessions/curator",
+               curator_mode: "upload",
+               session_id: nil,
+               session_slug: nil,
+               messages_json: "[]",
+               curated_json: "[]",
+               slices_json: "[]",
+               tool_name: "",
+               title: "" %>
+  </div>
+</div>
+
+<script>
+(function() {
+  var dropzone = document.getElementById('agent-session-dropzone');
+  var fileInput = document.getElementById('agent-session-file-input');
+  var dropText = document.getElementById('drop-text');
+  var filePreview = document.getElementById('file-preview');
+  var previewFilename = document.getElementById('preview-filename');
+  var previewFilesize = document.getElementById('preview-filesize');
+  var previewLines = document.getElementById('preview-lines');
+  var previewDetected = document.getElementById('preview-detected-tool');
+  var removeBtn = document.getElementById('remove-file-btn');
+  var parseBtn = document.getElementById('parse-btn');
+  var progressUI = document.getElementById('parse-progress');
+  var progressBar = document.getElementById('progress-bar');
+  var errorUI = document.getElementById('parse-error');
+  var errorMsg = document.getElementById('error-message');
+  var titleInput = document.getElementById('session-title');
+  var toolSelect = document.getElementById('session-tool');
+  var curationSection = document.getElementById('curation-section');
+  var uploadForm = document.getElementById('upload-form');
+
+  var selectedFile = null;
+  var rawFileContent = null;
+  var parsedResult = null;
+  var curatorInstance = null;
+  var s3Key = null;
+
+  // Drag and drop
+  dropzone.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    dropzone.classList.add('drag-over');
+  });
+  dropzone.addEventListener('dragleave', function() {
+    dropzone.classList.remove('drag-over');
+  });
+  dropzone.addEventListener('drop', function(e) {
+    e.preventDefault();
+    dropzone.classList.remove('drag-over');
+    if (e.dataTransfer.files.length) {
+      handleFileSelected(e.dataTransfer.files[0]);
+    }
+  });
+  fileInput.addEventListener('change', function() {
+    if (fileInput.files.length) {
+      handleFileSelected(fileInput.files[0]);
+    }
+  });
+
+  removeBtn.addEventListener('click', function() {
+    clearFile();
+  });
+
+  function handleFileSelected(file) {
+    // Validate extension
+    var ext = file.name.split('.').pop().toLowerCase();
+    if (!['jsonl', 'json'].includes(ext)) {
+      showError('<%= j t("views.agent_sessions.unsupported_file_type", default: "Unsupported file type. Please use .jsonl or .json files.") %>');
+      return;
+    }
+
+    selectedFile = file;
+    hideError();
+
+    // Show file preview
+    previewFilename.textContent = file.name;
+    previewFilesize.textContent = formatBytes(file.size);
+    dropText.style.display = 'none';
+    filePreview.style.display = 'flex';
+    parseBtn.disabled = false;
+
+    // Read first 100KB for preview
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var content = e.target.result;
+      var lines = content.split('\n').filter(function(l) { return l.trim(); }).length;
+      previewLines.textContent = lines.toLocaleString() + ' lines';
+
+      // Client-side tool detection hint
+      var detected = null;
+      if (window.AgentSessionUpload) {
+        detected = window.AgentSessionUpload.detectTool(content);
+      }
+      if (detected && toolSelect.value === 'auto') {
+        previewDetected.textContent = 'Detected: ' + formatToolName(detected);
+        previewDetected.style.display = 'inline';
+      }
+
+      if (!titleInput.value && detected) {
+        titleInput.value = formatToolName(detected) + ' Session';
+      }
+    };
+    reader.readAsText(file.slice(0, 100000));
+  }
+
+  function clearFile() {
+    selectedFile = null;
+    parsedResult = null;
+    fileInput.value = '';
+    dropText.style.display = 'block';
+    filePreview.style.display = 'none';
+    previewDetected.style.display = 'none';
+    parseBtn.disabled = true;
+    curationSection.style.display = 'none';
+    hideError();
+  }
+
+  function formatToolName(tool) {
+    var names = {
+      claude_code: 'Claude Code', codex: 'Codex', gemini_cli: 'Gemini CLI',
+      pi: 'Pi', github_copilot: 'GitHub Copilot'
+    };
+    return names[tool] || tool;
+  }
+
+  // Parse button
+  parseBtn.addEventListener('click', function() {
+    if (!selectedFile || !titleInput.value.trim()) {
+      if (!titleInput.value.trim()) {
+        titleInput.focus();
+        showError('Please enter a session title.');
+        return;
+      }
+      return;
+    }
+    startParsing();
+  });
+
+  function startParsing() {
+    hideError();
+    parseBtn.disabled = true;
+    parseBtn.textContent = '<%= j t("views.agent_sessions.parsing_progress", default: "Parsing...") %>';
+    progressUI.style.display = 'block';
+
+    setStep('read', 'active', 'Reading ' + formatBytes(selectedFile.size) + '...');
+    setStep('upload', 'pending', '');
+    setStep('parse', 'pending', '');
+    setStep('scrub', 'pending', '');
+    setStep('done', 'pending', '');
+    setProgress(0);
+
+    var reader = new FileReader();
+    reader.onprogress = function(e) {
+      if (e.lengthComputable) {
+        var pct = Math.round((e.loaded / e.total) * 100);
+        setProgress(pct * 0.2);
+        setStep('read', 'active', pct + '% read');
+      }
+    };
+    reader.onload = function(e) {
+      var content = e.target.result;
+      rawFileContent = content;
+      setStep('read', 'done', formatBytes(selectedFile.size) + ' read');
+      setProgress(20);
+
+      // Upload raw file to S3 via presigned URL
+      uploadToS3(content).then(function() {
+        parseAndCurate(content);
+      }).catch(function(err) {
+        // S3 upload failed — fall back to no-S3 mode (still parse and curate)
+        console.warn('S3 upload failed, continuing without raw backup:', err.message);
+        setStep('upload', 'done', 'Skipped (local only)');
+        parseAndCurate(content);
+      });
+    };
+    reader.onerror = function() {
+      setStep('read', 'error', 'Read error');
+      showError('Error reading file. Please try again.');
+      resetParseBtn();
+    };
+    reader.readAsText(selectedFile);
+  }
+
+  function uploadToS3(content) {
+    setStep('upload', 'active', '<%= j t("views.agent_sessions.uploading_to_storage", default: "Uploading file...") %>');
+    var csrfToken = document.querySelector("meta[name='csrf-token']");
+
+    return fetch('/agent_sessions/presign', {
+      method: 'POST',
+      headers: {
+        'X-CSRF-Token': csrfToken ? csrfToken.getAttribute('content') : '',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      credentials: 'same-origin',
+    }).then(function(response) {
+      if (!response.ok) throw new Error('Presign request failed');
+      return response.json();
+    }).then(function(data) {
+      s3Key = data.s3_key;
+      setProgress(25);
+      return fetch(data.presigned_url, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/x-jsonlines' },
+        body: content,
+      });
+    }).then(function(response) {
+      if (!response.ok) throw new Error('S3 upload failed');
+      setStep('upload', 'done', '<%= j t("views.agent_sessions.upload_complete", default: "Upload complete") %>');
+      setProgress(35);
+    });
+  }
+
+  function parseAndCurate(content) {
+    setStep('parse', 'active', '<%= j t("views.agent_sessions.step_parsing", default: "Parsing messages") %>...');
+
+    // Use setTimeout to let the UI update before blocking parse
+    setTimeout(function() {
+      try {
+        var toolName = toolSelect.value === 'auto' ? null : toolSelect.value;
+
+        setProgress(50);
+        setStep('scrub', 'active', '<%= j t("views.agent_sessions.scrubbing_secrets", default: "Scrubbing secrets") %>...');
+
+        var result = window.AgentSessionUpload.parseSessionFile(content, toolName);
+
+        setProgress(90);
+        setStep('parse', 'done', result.messages.length + ' messages found');
+        setStep('scrub', 'done', result.redactions.length > 0
+          ? result.redactions.reduce(function(sum, r) { return sum + r.match_count; }, 0) + ' items redacted'
+          : 'No secrets found');
+
+        parsedResult = result;
+        setStep('done', 'done', '<%= j t("views.agent_sessions.ready_to_curate", default: "Ready to curate") %>');
+        setProgress(100);
+
+        // Show curation UI
+        showCurationUI(result);
+      } catch (err) {
+        setStep('parse', 'error', '');
+        showError('<%= j t("views.agent_sessions.client_parse_error", default: "Failed to parse session file.") %> ' + (err.message || ''));
+        resetParseBtn();
+      }
+    }, 50);
+  }
+
+  function showCurationUI(result) {
+    curationSection.style.display = 'block';
+
+    // Show redaction summary
+    if (result.redactions.length > 0) {
+      var totalRedactions = result.redactions.reduce(function(sum, r) { return sum + r.match_count; }, 0);
+      var summaryEl = document.getElementById('redaction-summary');
+      summaryEl.textContent = '';
+
+      var strong = document.createElement('strong');
+      strong.textContent = totalRedactions + ' item' + (totalRedactions !== 1 ? 's' : '') + ' automatically redacted';
+      summaryEl.appendChild(strong);
+      summaryEl.appendChild(document.createTextNode(' \u2014 '));
+      summaryEl.appendChild(document.createTextNode(
+        result.redactions.map(function(r) { return r.match_count + ' ' + r.pattern_name; }).join(', ')
+      ));
+      summaryEl.style.display = 'block';
+    }
+
+    // Initialize curator
+    var curator = document.getElementById('agent-session-curator');
+    if (curator && window.AgentSessionCurator) {
+      curatorInstance = window.AgentSessionCurator.init({
+        container: curator,
+        messages: result.messages,
+        curatedSelections: [],
+        slices: [],
+        sessionId: null,
+        sessionSlug: null,
+        mode: 'upload',
+        onSave: function(data) {
+          saveToForem(data);
+        },
+      });
+    }
+
+    // Scroll to curation section
+    curationSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function saveToForem(curationData) {
+    var saveBtn = document.getElementById('save-curation-btn');
+    if (saveBtn) {
+      saveBtn.disabled = true;
+      saveBtn.textContent = '<%= j t("views.agent_sessions.saving", default: "Saving...") %>';
+    }
+
+    // Build the curated index set, auto-including any slice-referenced messages
+    var curatedIndices = new Set(curationData.curated);
+    (curationData.slices || []).forEach(function(s) {
+      (s.indices || []).forEach(function(idx) { curatedIndices.add(idx); });
+    });
+
+    // Filter to curated messages but keep original indices (for gap detection in embeds)
+    var curatedMessages;
+    if (curatedIndices.size === 0 || curatedIndices.size === parsedResult.messages.length) {
+      curatedMessages = parsedResult.messages;
+    } else {
+      curatedMessages = parsedResult.messages.filter(function(m) {
+        return curatedIndices.has(m.index);
+      });
+    }
+
+    // Slices already use original indices — no remapping needed
+    var savedSlices = (curationData.slices || []).filter(function(s) {
+      return (s.indices || []).length > 0;
+    });
+
+    var curatedDataObj = {
+      messages: curatedMessages,
+      metadata: Object.assign({}, parsedResult.metadata || {}, {
+        total_messages: parsedResult.messages.length,
+        curated_indices: curationData.curated
+      })
+    };
+
+    // Check size (10MB server limit)
+    var jsonStr = JSON.stringify(curatedDataObj);
+    if (jsonStr.length > 10 * 1024 * 1024) {
+      if (saveBtn) {
+        saveBtn.disabled = false;
+        saveBtn.textContent = '<%= j t("views.agent_sessions.save_and_upload", default: "Save & Upload") %>';
+      }
+      alert('Curated data is ' + (jsonStr.length / 1048576).toFixed(1) + ' MB, which exceeds the 10 MB limit. Please deselect some messages to reduce the size.');
+      return;
+    }
+
+    var csrfToken = document.querySelector("meta[name='csrf-token']");
+    var payload = {
+      agent_session: {
+        title: titleInput.value.trim(),
+        tool_name: parsedResult.toolName || toolSelect.value,
+        curated_data: jsonStr,
+        s3_key: s3Key || '',
+        slices: savedSlices
+      }
+    };
+
+    fetch('/agent_sessions', {
+      method: 'POST',
+      headers: {
+        'X-CSRF-Token': csrfToken ? csrfToken.getAttribute('content') : '',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(payload),
+      credentials: 'same-origin',
+    }).then(function(response) {
+      return response.json();
+    }).then(function(data) {
+      if (data.success && data.redirect_to) {
+        window.location.href = data.redirect_to;
+      } else if (data.error) {
+        if (saveBtn) {
+          saveBtn.disabled = false;
+          saveBtn.textContent = '<%= j t("views.agent_sessions.save_and_upload", default: "Save & Upload") %>';
+        }
+        alert('Error: ' + data.error);
+      }
+    }).catch(function(err) {
+      if (saveBtn) {
+        saveBtn.disabled = false;
+        saveBtn.textContent = '<%= j t("views.agent_sessions.save_and_upload", default: "Save & Upload") %>';
+      }
+      alert('Error saving session: ' + (err.message || 'Network error'));
+    });
+  }
+
+  function setStep(step, state, detail) {
+    var el = document.getElementById('step-' + step);
+    if (el) el.className = 'progress-step step-' + state;
+    var detailEl = document.getElementById('step-' + step + '-detail');
+    if (detailEl && detail !== undefined) detailEl.textContent = detail;
+  }
+
+  function setProgress(pct) {
+    progressBar.style.width = Math.min(pct, 100) + '%';
+  }
+
+  function resetParseBtn() {
+    parseBtn.disabled = false;
+    parseBtn.textContent = '<%= j t("views.agent_sessions.parse_file", default: "Parse File") %>';
+  }
+
+  function showError(msg) {
+    errorMsg.textContent = msg;
+    errorUI.style.display = 'block';
+  }
+
+  function hideError() {
+    errorUI.style.display = 'none';
+  }
+
+  function formatBytes(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / 1048576).toFixed(1) + ' MB';
+  }
+})();
+</script>

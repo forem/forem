@@ -39,7 +39,7 @@ module Admin
 
     def update
       if @podcast.update(podcast_params)
-        redirect_to admin_podcasts_path, notice: I18n.t("admin.podcasts_controller.updated")
+        redirect_to edit_admin_podcast_path(@podcast), notice: I18n.t("admin.podcasts_controller.updated")
       else
         render :edit
       end

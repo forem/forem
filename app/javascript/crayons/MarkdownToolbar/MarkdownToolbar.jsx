@@ -77,6 +77,7 @@ const getPreviousMatchingSibling = (element, selector) => {
  */
 export const MarkdownToolbar = ({
   textAreaId,
+  additionalPrimaryToolbarElements = [],
   additionalSecondaryToolbarElements = [],
 }) => {
   const textAreaRef = useRef(null);
@@ -91,6 +92,16 @@ export const MarkdownToolbar = ({
   );
 
   const overflowMenuRows = smallScreen ? 2 : 1;
+
+  // Enhance any additional primary toolbar elements with appropriate roles & listeners
+  const additionalPrimaryItems = additionalPrimaryToolbarElements.map(
+    (PrimaryItem) =>
+      cloneElement(PrimaryItem, {
+        className: 'toolbar-btn mr-1',
+        tabindex: '-1',
+        onKeyUp: (e) => handleToolbarButtonKeyPress(e, 'toolbar-btn'),
+      }),
+  );
 
   // Enhance any additional toolbar elements with the appropriate roles & listeners
   const additionalSecondaryItems = additionalSecondaryToolbarElements.map(
@@ -418,6 +429,8 @@ export const MarkdownToolbar = ({
           tabindex: '-1',
         }}
       />
+
+      {additionalPrimaryItems}
 
       <Button
         id="overflow-menu-button"

@@ -55,6 +55,7 @@ class User < ApplicationRecord
   has_many :scheduled_automations, dependent: :destroy
   has_many :ahoy_visits, class_name: "Ahoy::Visit", dependent: :delete_all
   has_many :api_secrets, dependent: :delete_all
+  has_many :agent_sessions, dependent: :destroy
   has_many :articles, dependent: :destroy
   has_many :ai_audits, foreign_key: :affected_user_id, inverse_of: :affected_user, dependent: :nullify
   has_many :audit_logs, dependent: :nullify
@@ -78,6 +79,8 @@ class User < ApplicationRecord
   has_many :email_authorizations, dependent: :delete_all
   has_many :email_messages, class_name: "Ahoy::Message", dependent: :destroy
   has_many :feed_events, dependent: :nullify
+  has_many :feed_import_logs, class_name: "Feeds::ImportLog", dependent: :delete_all
+  has_many :feed_sources, class_name: "Feeds::Source", dependent: :delete_all
   has_many :field_test_memberships, class_name: "FieldTest::Membership", as: :participant, dependent: :destroy
   # Consider that we might be able to use dependent: :delete_all as the GithubRepo busts the user cache
   has_many :github_repos, dependent: :destroy

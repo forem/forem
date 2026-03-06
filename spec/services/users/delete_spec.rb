@@ -122,6 +122,9 @@ RSpec.describe Users::Delete, type: :service do
           # Skip scheduled_automations as they require a community bot user
           next if possible_factory_name == "scheduled_automation"
 
+          # Skip feeds models — factory names don't match auto-generated names
+          next if possible_factory_name.start_with?("feeds_")
+
           inverse_of = association.options[:inverse_of] || association.options[:as] || :user
 
           # as we can't be automatically sure that the other side of the relation

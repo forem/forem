@@ -51,6 +51,15 @@
 
     <h3>Supported Non-URL Embeds</h3>
 
+    <h4>Agent Session</h4>
+    <p>Intégrez une session d'agent de codage curatée :</p>
+    <pre>{% agent_session ID %}</pre>
+    <p>Intégrez une tranche nommée :</p>
+    <pre>{% agent_session ID planning %}</pre>
+    <p>Ou intégrez une plage de messages par index :</p>
+    <pre>{% agent_session ID 0..10 %}</pre>
+    <p class="fs-s"><a href="/agent_sessions/new">Téléchargez et curatez une session</a> pour obtenir l'ID.</p>
+
     <h4>Call To Action (CTA)</h4>
     <p><pre>{% cta link %} description {% endcta %}</pre></p>
     <p>Provide a <em>link</em> that a user will be redirected to. The <em>description</em> will contain the label/description for the call to action.</p>

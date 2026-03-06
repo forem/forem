@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_02_23_212134) do
+ActiveRecord::Schema[7.0].define(version: 2026_03_05_140853) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -18,6 +18,24 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_23_212134) do
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
   enable_extension "unaccent"
+
+  create_table "agent_sessions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.jsonb "curated_data", default: {}, null: false
+    t.boolean "published", default: false, null: false
+    t.string "s3_key"
+    t.jsonb "session_metadata", default: {}, null: false
+    t.jsonb "slices", default: [], null: false
+    t.string "slug"
+    t.string "title", null: false
+    t.string "tool_name", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["slug"], name: "index_agent_sessions_on_slug", unique: true
+    t.index ["tool_name"], name: "index_agent_sessions_on_tool_name"
+    t.index ["user_id", "published"], name: "index_agent_sessions_on_user_id_and_published"
+    t.index ["user_id"], name: "index_agent_sessions_on_user_id"
+  end
 
   create_table "ahoy_events", force: :cascade do |t|
     t.string "name"
@@ -687,6 +705,58 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_23_212134) do
     t.index ["created_at"], name: "index_feed_events_on_created_at"
     t.index ["feed_config_id"], name: "index_feed_events_on_feed_config_id"
     t.index ["user_id"], name: "index_feed_events_on_user_id"
+  end
+
+  create_table "feed_import_items", force: :cascade do |t|
+    t.bigint "article_id"
+    t.datetime "created_at", null: false
+    t.string "error_message"
+    t.bigint "feed_import_log_id", null: false
+    t.string "feed_item_title"
+    t.string "feed_item_url", null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["article_id"], name: "index_feed_import_items_on_article_id"
+    t.index ["feed_import_log_id"], name: "index_feed_import_items_on_feed_import_log_id"
+  end
+
+  create_table "feed_import_logs", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.float "duration_seconds"
+    t.string "error_message"
+    t.bigint "feed_source_id"
+    t.string "feed_url"
+    t.integer "http_status_code"
+    t.integer "items_failed", default: 0
+    t.integer "items_imported", default: 0
+    t.integer "items_in_feed", default: 0
+    t.integer "items_skipped", default: 0
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["created_at"], name: "index_feed_import_logs_on_created_at"
+    t.index ["feed_source_id"], name: "index_feed_import_logs_on_feed_source_id"
+    t.index ["user_id", "created_at"], name: "index_feed_import_logs_on_user_id_and_created_at"
+    t.index ["user_id"], name: "index_feed_import_logs_on_user_id"
+  end
+
+  create_table "feed_sources", force: :cascade do |t|
+    t.bigint "author_user_id"
+    t.integer "consecutive_failures", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.string "feed_url", limit: 500, null: false
+    t.datetime "last_fetched_at"
+    t.boolean "mark_canonical", default: true, null: false
+    t.string "name", limit: 100
+    t.bigint "organization_id"
+    t.boolean "referential_link", default: false, null: false
+    t.integer "status", default: 0, null: false
+    t.string "status_message"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["organization_id"], name: "index_feed_sources_on_organization_id"
+    t.index ["user_id", "feed_url"], name: "index_feed_sources_on_user_id_and_feed_url", unique: true
+    t.index ["user_id"], name: "index_feed_sources_on_user_id"
   end
 
   create_table "feedback_messages", force: :cascade do |t|
@@ -1799,6 +1869,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_23_212134) do
     t.integer "config_homepage_feed", default: 0, null: false
     t.integer "config_navbar", default: 0, null: false
     t.integer "config_theme", default: 0, null: false
+    t.integer "consecutive_feed_failures", default: 0, null: false
     t.text "content_preferences_input"
     t.datetime "content_preferences_updated_at"
     t.datetime "created_at", null: false
@@ -1810,6 +1881,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_23_212134) do
     t.integer "experience_level"
     t.boolean "feed_mark_canonical", default: false, null: false
     t.boolean "feed_referential_link", default: true, null: false
+    t.integer "feed_status", default: 0, null: false
+    t.string "feed_status_message"
     t.string "feed_url"
     t.string "inbox_guidelines"
     t.integer "inbox_type", default: 0, null: false
@@ -1831,6 +1904,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_23_212134) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "agent_sessions", "users", on_delete: :cascade
   add_foreign_key "ahoy_events", "ahoy_visits", column: "visit_id", on_delete: :cascade
   add_foreign_key "ahoy_events", "users", on_delete: :cascade
   add_foreign_key "ahoy_messages", "feedback_messages", on_delete: :nullify
@@ -1868,6 +1942,13 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_23_212134) do
   add_foreign_key "emails", "user_queries"
   add_foreign_key "feed_events", "articles", on_delete: :cascade
   add_foreign_key "feed_events", "users", on_delete: :nullify
+  add_foreign_key "feed_import_items", "articles", on_delete: :nullify
+  add_foreign_key "feed_import_items", "feed_import_logs", on_delete: :cascade
+  add_foreign_key "feed_import_logs", "feed_sources"
+  add_foreign_key "feed_import_logs", "users", on_delete: :cascade
+  add_foreign_key "feed_sources", "organizations", on_delete: :nullify
+  add_foreign_key "feed_sources", "users", column: "author_user_id", on_delete: :nullify
+  add_foreign_key "feed_sources", "users", on_delete: :cascade
   add_foreign_key "feedback_messages", "users", column: "affected_id", on_delete: :nullify
   add_foreign_key "feedback_messages", "users", column: "offender_id", on_delete: :nullify
   add_foreign_key "feedback_messages", "users", column: "reporter_id", on_delete: :nullify
