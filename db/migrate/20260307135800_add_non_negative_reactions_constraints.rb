@@ -1,4 +1,4 @@
-class AddNonNegativeConstraintsToReactionsCounts < ActiveRecord::Migration[7.0]
+class AddNonNegativeReactionsConstraints < ActiveRecord::Migration[7.0]
   disable_ddl_transaction!
 
   # SAFE MIGRATION STRATEGY:
