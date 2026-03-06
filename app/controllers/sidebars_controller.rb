@@ -34,7 +34,8 @@ class SidebarsController < ApplicationController
       .or(Article.published.from_subforem
         .where("published_at > ?", 1.week.ago)
         .where("comments_count >= ?", 15)
-        .where("comment_score >= ?", 25))
+        .where("comment_score >= ?", 25)
+        .with_at_least_home_feed_minimum_score)
       .order(order)
       .limit(ACTIVE_DISCUSSION_LIMIT)
       .pluck(:path, :title, :comments_count, :created_at, :subforem_id)
