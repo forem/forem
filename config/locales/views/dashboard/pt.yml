@@ -14,6 +14,7 @@ pt:
           following_orgs: Organizações seguidas (%{num})
           following_pods: Podcasts seguidos (%{num})
           hidden_tags: Tags ocultas (%{num})
+          feed_imports: Importações de Feeds RSS
         posts: Posts
         series: Séries
         followers: Seguidores
@@ -24,6 +25,7 @@ pt:
         hidden_tags: Tags ocultas
         listings: Anúncios
         analytics: Analytics
+        feed_imports: Importações de Feeds RSS
         for_org: Analytics para %{org}
         upload: Fazer upload de um vídeo
       analytics:
@@ -101,3 +103,93 @@ pt:
         icon: Detalhes
         author_is: 'AUTOR: '
         save: Salvar
+      feed_imports:
+        heading: Painel » Importações de Feeds RSS
+        empty: Adicione uma fonte de feed RSS abaixo para começar a importar posts como rascunhos.
+        no_history: Nenhum histórico de importação ainda. Seu feed será verificado automaticamente.
+        no_notable_history: Todas as verificações recentes não encontraram novos posts.
+        history_heading: Histórico de Importações
+        routine_checks:
+          one: "Mostrar %{count} verificação de rotina (sem novos posts)"
+          other: "Mostrar %{count} verificações de rotina (sem novos posts)"
+        source_filter: Filtrar por fonte
+        all_sources: Todas as fontes
+        source_label: "Fonte:"
+        overview:
+          status:
+            healthy: Saudável
+            degraded: Degradado
+            failing: Falhando
+            inactive: Inativo
+          last_success: "Última importação bem-sucedida há %{time}"
+        summary:
+          total_imported: Artigos importados
+          total_skipped: Outros itens ignorados
+          total_failed: Itens falharam
+        health:
+          healthy: Seu feed está funcionando corretamente.
+          degraded: Seu feed teve falhas recentes. Algumas importações podem ter sido perdidas.
+          failing: Seu feed tem falhado consistentemente. Verifique a URL do seu feed acima.
+        status:
+          pending: Pendente
+          fetching: Buscando
+          parsing: Analisando
+          importing: Importando
+          completed: Concluído
+          no_new_posts: Sem novos posts
+          failed: Falhou
+        counts:
+          items_in_feed: Itens no feed
+          imported: Importados
+          skipped: Ignorados
+          failed: Falharam
+          duration: "Duração: %{seconds}s"
+        items:
+          heading: Detalhes da Importação
+          title: Título
+          status: Status
+          article: Artigo
+          statuses:
+            imported: Importado
+            skipped_duplicate: Ignorado (duplicado)
+            skipped_medium_reply: Ignorado (resposta Medium)
+            failed: Falhou
+          show_duplicates:
+            one: "Mostrar %{count} duplicado ignorado"
+            other: "Mostrar %{count} duplicados ignorados"
+        sources:
+          your_sources: Suas fontes de feed
+          add_heading: Adicionar fonte de feed
+          welcome_heading: Publicando a partir do RSS
+          welcome_desc1_html: Os posts chegarão ao seu painel <strong>como rascunhos</strong>, e então você pode publicá-los.
+          welcome_desc2: A formatação geralmente ficará boa, mas pode ser necessário fazer correções manuais. No caso do Medium, pode ser necessário corrigir manualmente as incorporações.
+          welcome_desc3_html: Para saber mais sobre como os rascunhos são criados a partir do seu feed, leia este %{guide}.
+          welcome_desc4: Seu feed será buscado cada vez que você adicionar uma fonte e as atualizações serão automaticamente buscadas periodicamente.
+          welcome_desc5_html: 'FYI: URLs de feed RSS do Medium são <em>https://medium.com/feed/@your_username</em>'
+          welcome_desc6: Ao enviar a URL do seu feed RSS, você concorda que possui e/ou tem permissão para distribuir o conteúdo associado.
+          guide: guia
+          url_label: URL do feed RSS
+          url_placeholder: "https://example.com/feed.xml"
+          name_label: Nome (opcional)
+          name_placeholder: Meu Blog
+          org_label: Organização (opcional)
+          org_description: Artigos importados serão publicados sob esta organização.
+          org_none: Nenhuma (pessoal)
+          org_no_orgs: Você não é membro de nenhuma organização. Os artigos serão publicados sob sua conta pessoal.
+          author_label: Autor padrão
+          author_description: Quando o autor de um item RSS não corresponde a uma conta existente, o artigo importado será atribuído a este usuário. Para atribuir outro membro, selecione uma organização e certifique-se de ter privilégios de administrador.
+          author_self: Eu mesmo (padrão)
+          submit: Adicionar fonte
+          edit: Editar
+          save: Salvar
+          delete: Remover
+          delete_confirm: Tem certeza de que deseja remover esta fonte de feed?
+          mark_canonical_html: Marcar a fonte RSS como URL canônica por padrão <p class='crayons-field__description'>Se você marcar esta caixa, o post marcará automaticamente a fonte do feed como URL canônica.</p>
+          referential_html: Substituir links auto-referenciais por links específicos do %{community} <p class='crayons-field__description'>Se você marcar esta caixa, o post mudará automaticamente quaisquer URLs para referir à versão do artigo no %{community} se disponível.</p>
+          status:
+            healthy: Saudável
+            degraded: Degradado
+            failing: Falhando
+            inactive: Inativo
+          last_fetched: "Última busca: %{time}"
+          never_fetched: Nunca buscado

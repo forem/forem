@@ -79,7 +79,14 @@ Rails.application.routes.draw do
 
         resources :pages, only: %i[index show create update destroy]
 
-        resources :agent_sessions, only: %i[index show create]
+        resources :agent_sessions, only: %i[index show create] do
+          collection do
+            post :presign
+          end
+          member do
+            get :raw_url
+          end
+        end
 
         resources :feedback_messages, only: :update
 
@@ -145,6 +152,9 @@ Rails.application.routes.draw do
       resource :settings, only: %i[update]
       resource :notification_settings, only: %i[update]
     end
+    namespace :feeds do
+      resources :sources, only: %i[create update destroy]
+    end
     resources :users, only: %i[update]
     resources :reactions, only: %i[index create]
     resources :response_templates, only: %i[index create edit update destroy]
@@ -157,7 +167,14 @@ Rails.application.routes.draw do
       end
     end
     resources :image_uploads, only: [:create]
-    resources :agent_sessions, only: %i[index new create show edit update destroy]
+    resources :agent_sessions, only: %i[index new create show edit update destroy] do
+      collection do
+        post :presign
+      end
+      member do
+        get :raw_url
+      end
+    end
     resources :ai_image_generations, only: [:create]
     resources :ai_chats, only: %i[index create]
     resources :notifications, only: [:index]
@@ -388,6 +405,7 @@ Rails.application.routes.draw do
     get "dashboard/following_organizations", to: "dashboards#following_organizations"
     get "dashboard/following_podcasts", to: "dashboards#following_podcasts"
     get "dashboard/hidden_tags", to: "dashboards#hidden_tags"
+    get "dashboard/feed_imports", to: "dashboards#feed_imports"
     get "/dashboard/subscriptions", to: "dashboards#subscriptions"
     get "/dashboard/:which", to: "dashboards#followers", constraints: { which: /user_followers/ }
     get "/dashboard/:which/:org_id", to: "dashboards#show",

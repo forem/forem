@@ -529,13 +529,12 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               published: { type: :boolean },
               metadata: { type: :object, nullable: true, description: "Session metadata (tool-specific)" },
               messages: { type: :array, items: { type: :object }, description: "All normalized messages in the session" },
-              curated_selections: { type: :array, items: { type: :object }, description: "Ranges of curated message selections" },
               slices: { type: :array, items: { type: :object }, description: "Named slices grouping message ranges" },
               created_at: { type: :string, format: "date-time" },
               updated_at: { type: :string, format: "date-time" },
               url: { type: :string, format: :url }
             },
-            required: %w[id slug title tool_name total_messages curated_count published messages curated_selections slices created_at updated_at url]
+            required: %w[id slug title tool_name total_messages curated_count published messages slices created_at updated_at url]
           }
         }
       }
