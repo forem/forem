@@ -1,7 +1,7 @@
 <header class="mb-6">
   <h1 class="crayons-title">Keyword Trends</h1>
   <p class="color-secondary">
-    Search published articles by keyword and see monthly match counts from <code>reading_list_document</code>.
+    Search published article titles and content by keyword and see monthly match counts.
   </p>
 </header>
 
@@ -10,7 +10,7 @@
     <div class="grid gap-4 m:grid-cols-3">
       <div class="crayons-field m:col-span-3">
         <%= label_tag :term, "Keyword or phrase", class: "crayons-field__label" %>
-        <%= text_field_tag :term, @term, required: true, class: "crayons-textfield", placeholder: "terraform" %>
+        <%= text_field_tag :term, @term, class: "crayons-textfield", placeholder: "terraform" %>
       </div>
       <div class="crayons-field">
         <%= label_tag :start_month, "Start month", class: "crayons-field__label" %>
@@ -27,7 +27,7 @@
   <% end %>
 </div>
 
-<% if @term.present? %>
+<% if @show_results %>
   <div class="crayons-card p-6 mb-6">
     <h2 class="crayons-subtitle-1 mb-2">Results for "<%= @term %>"</h2>
     <p class="mb-4">Total matches: <strong><%= @total_matches %></strong></p>
@@ -36,7 +36,10 @@
       <% @period_counts.each do |period, matches| %>
         <% height = @max_matches.positive? ? ((matches.to_f / @max_matches) * 100).round(2) : 0 %>
         <div class="flex-1 min-w-0 flex flex-col justify-end" title="<%= period.strftime("%b %Y") %>: <%= matches %>">
-          <div style="height: <%= height %>%; background: rgb(var(--accent-brand-rgb)); border-radius: 0.25rem 0.25rem 0 0;"></div>
+          <div
+            role="img"
+            aria-label="<%= "#{period.strftime("%B %Y")}: #{matches} matches" %>"
+            style="height: <%= height %>%; background: rgb(var(--accent-brand-rgb)); border-radius: 0.25rem 0.25rem 0 0;"></div>
           <div class="fs-xs color-secondary mt-1 truncate text-center"><%= period.strftime("%b %y") %></div>
         </div>
       <% end %>

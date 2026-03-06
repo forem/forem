@@ -33,9 +33,10 @@ RSpec.describe "/admin/apps/keyword-trends" do
     end
 
     it "shows totals and monthly raw data for matching published articles" do
-      expect(response.body).to include("Total matches: <strong>1</strong>")
-      expect(response.body).to include(month.strftime("%Y-%m"))
-      expect(response.body).to include("<td>1</td>")
+      page = Capybara.string(response.body)
+
+      expect(page).to have_text("Total matches: 1")
+      expect(page).to have_table(with_rows: [[month.strftime("%Y-%m"), "1"]])
     end
   end
 
@@ -49,6 +50,20 @@ RSpec.describe "/admin/apps/keyword-trends" do
 
     it "allows the request" do
       expect(response).to have_http_status(:ok)
+    end
+  end
+
+  context "when the term exceeds the allowed length" do
+    let(:super_admin) { create(:user, :super_admin) }
+
+    before do
+      sign_in super_admin
+      get admin_keyword_trends_path, params: { term: "a" * 101 }
+    end
+
+    it "does not run the query output rendering" do
+      expect(response).to have_http_status(:ok)
+      expect(response.body).not_to include("Raw data")
     end
   end
 

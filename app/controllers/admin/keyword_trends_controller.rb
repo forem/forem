@@ -4,15 +4,18 @@ module Admin
 
     DEFAULT_MONTH_RANGE = 12
     MAX_MONTH_RANGE = 36
+    MAX_TERM_LENGTH = 100
 
     def index
+      @show_results = false
       @term = params[:term].to_s.strip
       @start_month, @end_month = selected_months
-      return if @term.blank?
+      return if @term.blank? || @term.length > MAX_TERM_LENGTH
 
       @period_counts = period_counts
       @total_matches = @period_counts.values.sum
       @max_matches = @period_counts.values.max.to_i
+      @show_results = true
     end
 
     private
@@ -39,7 +42,7 @@ module Admin
     def period_counts
       counts_by_month = Article.published
         .where.not(published_at: nil)
-        .where(published_at: @start_month.beginning_of_day..@end_month.end_of_month.end_of_day)
+        .where(published_at: @start_month..@end_month.end_of_month)
         .where("reading_list_document @@ plainto_tsquery('english', ?)", @term)
         .group(Arel.sql("date_trunc('month', published_at)"))
         .order(Arel.sql("date_trunc('month', published_at)"))
