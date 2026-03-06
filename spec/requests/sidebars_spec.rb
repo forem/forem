@@ -69,6 +69,13 @@ RSpec.describe "Sidebars" do
         get "/sidebars/home"
         expect(response.body).not_to include(CGI.escapeHTML(second_article.title))
       end
+
+      it "includes article with >= 15 comments and >= 25 comment score regardless of other factors" do
+        second_article = create(:article, language: "en", comments_count: 15, comment_score: 25)
+        sign_in user
+        get "/sidebars/home"
+        expect(response.body).to include(CGI.escapeHTML(second_article.title))
+      end
     end
   end
 end
