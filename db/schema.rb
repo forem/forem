@@ -10,7 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< fix-negative-reaction-counter-22803
 ActiveRecord::Schema.define(version: 2026_03_07_140000) do
+=======
+ActiveRecord::Schema[7.0].define(version: 2026_03_06_200919) do
+>>>>>>> main
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1688,6 +1692,7 @@ ActiveRecord::Schema.define(version: 2026_03_07_140000) do
   end
 
   create_table "users", force: :cascade do |t|
+    t.integer "agent_sessions_count", default: 0, null: false
     t.string "apple_username"
     t.integer "articles_count", default: 0, null: false
     t.integer "badge_achievements_count", default: 0, null: false
