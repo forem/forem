@@ -178,6 +178,8 @@ en:
           tags:
             description: Determines which tags are suggested to new users during onboarding (comma separated, letters only)
             placeholder: 'List of valid tags: comma separated, letters only e.g. beginners,javascript,ruby,swift,kotlin'
+          enable_agent_sessions:
+            description: Enable the Agent Sessions feature for uploading and embedding coding agent session transcripts.
           video:
             description: Secret key used to allow AWS video encoding through the VideoStatesController
         rate_limit:

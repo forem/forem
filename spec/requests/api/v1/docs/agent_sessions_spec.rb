@@ -10,7 +10,7 @@ RSpec.describe "api/v1/agent_sessions" do
   let(:api_secret) { create(:api_secret) }
   let(:user) { api_secret.user }
 
-  let(:normalized_data) do
+  let(:curated_data) do
     {
       "messages" => [
         { "index" => 0, "role" => "user", "content" => [{ "type" => "text", "text" => "Hello" }] },
@@ -18,15 +18,6 @@ RSpec.describe "api/v1/agent_sessions" do
       ],
       "metadata" => { "tool_name" => "claude_code", "total_messages" => 2 }
     }
-  end
-
-  let(:claude_code_jsonl) do
-    [
-      { type: "user", message: { role: "user", content: "Hello" }, uuid: "1",
-        timestamp: "2025-01-01T00:00:00Z", sessionId: "s1" }.to_json,
-      { type: "assistant", message: { role: "assistant", content: [{ type: "text", text: "Hi there" }] },
-        uuid: "2", timestamp: "2025-01-01T00:00:01Z", sessionId: "s1" }.to_json,
-    ].join("\n")
   end
 
   path "/api/agent_sessions" do
@@ -48,7 +39,7 @@ RSpec.describe "api/v1/agent_sessions" do
           let(:"api-key") { api_secret.secret }
 
           before do
-            AgentSession.create!(user: user, title: "Session A", tool_name: "claude_code", normalized_data: normalized_data)
+            AgentSession.create!(user: user, title: "Session A", tool_name: "claude_code", curated_data: curated_data)
           end
 
           schema type: :array,
@@ -71,11 +62,11 @@ RSpec.describe "api/v1/agent_sessions" do
       post("upload a new agent session") do
         tags "agent_sessions"
         description(<<~DESCRIBE.strip)
-          This endpoint allows the client to upload a new agent session transcript.
+          This endpoint allows the client to create a new agent session.
 
-          Accepts raw session content (JSONL from Claude Code, JSON from other tools) via
-          the `body` parameter or as a `session_file` upload. The tool format is auto-detected
-          unless `tool_name` is explicitly provided.
+          Sessions are created from pre-parsed and curated data (`curated_data` JSON) and
+          optionally linked to an S3-stored raw file via `s3_key`. Use the presign endpoint
+          to get an upload URL for the raw file first.
 
           Use the [Forem CLI plugin](https://github.com/forem/forem-cli-plugin) to upload
           sessions directly from the command line.
@@ -88,15 +79,16 @@ RSpec.describe "api/v1/agent_sessions" do
           type: :object,
           properties: {
             title: { type: :string, description: "Title for the session (auto-generated if omitted)" },
-            body: { type: :string, description: "Raw session content (JSONL or JSON). Provide this or session_file." },
-            tool_name: { type: :string, description: "Tool that produced the session (e.g. claude_code, codex). Defaults to auto-detect.",
-                         enum: %w[claude_code codex gemini_cli github_copilot pi auto] }
+            curated_data: { type: :string, description: "JSON string of curated session data with messages array and metadata." },
+            s3_key: { type: :string, description: "S3 object key from presign endpoint (optional)." },
+            tool_name: { type: :string, description: "Tool that produced the session (e.g. claude_code, codex).",
+                         enum: AgentSession::TOOL_NAMES }
           },
-          required: %w[body]
+          required: %w[curated_data]
         }
 
         let(:agent_session) do
-          { title: "My Claude Session", body: claude_code_jsonl }
+          { title: "My Claude Session", curated_data: curated_data.to_json }
         end
 
         response(201, "created") do
@@ -142,7 +134,7 @@ RSpec.describe "api/v1/agent_sessions" do
                   example: "my-session-abc123"
 
         let!(:agent_session) do
-          AgentSession.create!(user: user, title: "My Session", tool_name: "claude_code", normalized_data: normalized_data)
+          AgentSession.create!(user: user, title: "My Session", tool_name: "claude_code", curated_data: curated_data)
         end
         let(:id) { agent_session.slug }
 

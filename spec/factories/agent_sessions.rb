@@ -3,7 +3,7 @@ FactoryBot.define do
     user
     title { "Test Session" }
     tool_name { "claude_code" }
-    normalized_data do
+    curated_data do
       {
         "messages" => [
           { "index" => 0, "role" => "user", "content" => [{ "type" => "text", "text" => "Hello" }] },

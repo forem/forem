@@ -176,6 +176,8 @@ pt:
           hashtag:
             description: Default hashtag for the community
             placeholder: Default hashtag for the community
+          enable_agent_sessions:
+            description: Enable the Agent Sessions feature for uploading and embedding coding agent session transcripts.
           video:
             description: Video settings
           payment:

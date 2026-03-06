@@ -16,3 +16,21 @@ pt:
       not_available_title: Sessão não disponível
       not_available_description: Esta sessão de agente não existe ou não está disponível publicamente.
       not_available_sign_in_hint: Se esta é a sua sessão, tente fazer login para visualizá-la.
+      parse_file: Analisar arquivo
+      parsing_progress: Analisando...
+      step_reading: Lendo arquivo
+      step_parsing: Analisando mensagens
+      scrubbing_secrets: Limpando segredos
+      ready_to_curate: Pronto para curar
+      save_and_upload: "Salvar & Enviar"
+      saving: Salvando...
+      curate_before_upload: Envie um arquivo de sessão de agente. Ele será analisado e limpo localmente no seu navegador — depois você pode selecionar quais partes incluir antes de salvar.
+      client_parse_error: Falha ao analisar o arquivo de sessão.
+      curated_data_too_large: Os dados selecionados são muito grandes. Por favor, desmarque mais mensagens para reduzir o tamanho.
+      unsupported_file_type: Tipo de arquivo não suportado. Por favor, use arquivos .jsonl ou .json.
+      uploading_to_storage: Enviando arquivo...
+      upload_complete: Envio concluído
+      loading_for_curation: Carregando sessão para curadoria...
+      re_curate: Re-curar a partir do arquivo original
+      raw_file_retention_notice: "Arquivo original disponível por mais %{days} dias"
+      raw_file_expired: O arquivo original não está mais disponível (expirou após 90 dias)

@@ -1,5 +1,7 @@
 <% content_for :title, "Upload Agent Session" %>
 
+<%= javascript_include_tag "agentSessionUpload", defer: true %>
+
 <div class="agent-session-upload-page">
   <header class="agent-session-page-header">
     <div class="agent-session-header-row">
@@ -8,8 +10,7 @@
         <%= link_to "← All Sessions", agent_sessions_path, class: "crayons-btn crayons-btn--ghost crayons-btn--s" %>
       </div>
     </div>
-    <p>Upload a coding agent session from Claude Code, Codex, Gemini CLI, Pi, or other tools.
-       You'll be able to curate which parts to include in your post.</p>
+    <p><%= t("views.agent_sessions.curate_before_upload") %></p>
   </header>
 
   <div class="agent-session-upload-form" id="upload-form">
@@ -33,10 +34,10 @@
     <div class="agent-session-form-group">
       <label class="agent-session-label">Session File</label>
       <div class="agent-session-file-drop" id="agent-session-dropzone">
-        <input type="file" accept=".jsonl,.json,.md,.txt,.log" class="agent-session-file-input" id="agent-session-file-input" />
+        <input type="file" accept=".jsonl,.json" class="agent-session-file-input" id="agent-session-file-input" data-max-file-size-mb="200" data-permitted-file-types='["application","text"]' />
         <div class="agent-session-drop-text" id="drop-text">
           <p><strong>Drop your session file here</strong> or click to browse</p>
-          <p class="agent-session-drop-hint">Supports .jsonl, .json, .md, .log files (max 10MB)</p>
+          <p class="agent-session-drop-hint">Supports .jsonl and .json files</p>
         </div>
       </div>
 
@@ -73,25 +74,35 @@
     </div>
 
     <div class="agent-session-form-actions">
-      <button type="button" class="crayons-btn" id="upload-btn" disabled>Upload & Parse</button>
+      <button type="button" class="crayons-btn" id="parse-btn" disabled><%= t("views.agent_sessions.parse_file") %></button>
     </div>
 
     <!-- Progress UI -->
-    <div class="agent-session-progress" id="upload-progress" style="display:none">
+    <div class="agent-session-progress" id="parse-progress" style="display:none">
       <div class="progress-steps">
+        <div class="progress-step" id="step-read">
+          <div class="progress-step-indicator"></div>
+          <div class="progress-step-label"><%= t("views.agent_sessions.step_reading") %></div>
+          <div class="progress-step-detail" id="step-read-detail"></div>
+        </div>
         <div class="progress-step" id="step-upload">
           <div class="progress-step-indicator"></div>
-          <div class="progress-step-label">Uploading file</div>
+          <div class="progress-step-label"><%= t("views.agent_sessions.uploading_to_storage") %></div>
           <div class="progress-step-detail" id="step-upload-detail"></div>
         </div>
         <div class="progress-step" id="step-parse">
           <div class="progress-step-indicator"></div>
-          <div class="progress-step-label">Parsing session</div>
+          <div class="progress-step-label"><%= t("views.agent_sessions.step_parsing") %></div>
           <div class="progress-step-detail" id="step-parse-detail"></div>
+        </div>
+        <div class="progress-step" id="step-scrub">
+          <div class="progress-step-indicator"></div>
+          <div class="progress-step-label"><%= t("views.agent_sessions.scrubbing_secrets") %></div>
+          <div class="progress-step-detail" id="step-scrub-detail"></div>
         </div>
         <div class="progress-step" id="step-done">
           <div class="progress-step-indicator"></div>
-          <div class="progress-step-label">Ready to curate</div>
+          <div class="progress-step-label"><%= t("views.agent_sessions.ready_to_curate") %></div>
           <div class="progress-step-detail" id="step-done-detail"></div>
         </div>
       </div>
@@ -100,9 +111,30 @@
       </div>
     </div>
 
-    <div class="agent-session-error" id="upload-error" style="display:none">
+    <div class="agent-session-error" id="parse-error" style="display:none">
       <p id="error-message"></p>
     </div>
+  </div>
+
+  <!-- Curation UI (shown after parsing) -->
+  <div id="curation-section" style="display:none">
+    <div class="agent-session-instructions">
+      <p class="instructions-text">Choose which messages to save. Click cards to toggle, shift+click for range, or drag across multiple. Only selected messages will be stored. Create slices to embed different parts of your session separately.</p>
+      <div class="instructions-warning">
+        <p>We automatically scan for and redact common secrets like API keys, tokens, and credentials, but <strong>we cannot guarantee all sensitive information has been caught</strong>. <%= t("views.agent_sessions.security_warning") %></p>
+        <p class="instructions-redaction-summary" id="redaction-summary" style="display:none"></p>
+      </div>
+    </div>
+
+    <%= render "agent_sessions/curator",
+               curator_mode: "upload",
+               session_id: nil,
+               session_slug: nil,
+               messages_json: "[]",
+               curated_json: "[]",
+               slices_json: "[]",
+               tool_name: "",
+               title: "" %>
   </div>
 </div>
 
@@ -117,15 +149,21 @@
   var previewLines = document.getElementById('preview-lines');
   var previewDetected = document.getElementById('preview-detected-tool');
   var removeBtn = document.getElementById('remove-file-btn');
-  var uploadBtn = document.getElementById('upload-btn');
-  var progressUI = document.getElementById('upload-progress');
+  var parseBtn = document.getElementById('parse-btn');
+  var progressUI = document.getElementById('parse-progress');
   var progressBar = document.getElementById('progress-bar');
-  var errorUI = document.getElementById('upload-error');
+  var errorUI = document.getElementById('parse-error');
   var errorMsg = document.getElementById('error-message');
   var titleInput = document.getElementById('session-title');
   var toolSelect = document.getElementById('session-tool');
+  var curationSection = document.getElementById('curation-section');
+  var uploadForm = document.getElementById('upload-form');
 
   var selectedFile = null;
+  var rawFileContent = null;
+  var parsedResult = null;
+  var curatorInstance = null;
+  var s3Key = null;
 
   // Drag and drop
   dropzone.addEventListener('dragover', function(e) {
@@ -153,16 +191,10 @@
   });
 
   function handleFileSelected(file) {
-    // Validate size
-    if (file.size > 10 * 1024 * 1024) {
-      showError('File is too large. Maximum size is 10MB.');
-      return;
-    }
-
     // Validate extension
     var ext = file.name.split('.').pop().toLowerCase();
-    if (!['jsonl', 'json', 'md', 'txt', 'log'].includes(ext)) {
-      showError('Unsupported file type. Please use .jsonl, .json, .md, .txt, or .log files.');
+    if (!['jsonl', 'json'].includes(ext)) {
+      showError('<%= j t("views.agent_sessions.unsupported_file_type", default: "Unsupported file type. Please use .jsonl or .json files.") %>');
       return;
     }
 
@@ -174,9 +206,9 @@
     previewFilesize.textContent = formatBytes(file.size);
     dropText.style.display = 'none';
     filePreview.style.display = 'flex';
-    uploadBtn.disabled = false;
+    parseBtn.disabled = false;
 
-    // Read file to count lines and auto-detect tool
+    // Read first 100KB for preview
     var reader = new FileReader();
     reader.onload = function(e) {
       var content = e.target.result;
@@ -184,58 +216,32 @@
       previewLines.textContent = lines.toLocaleString() + ' lines';
 
       // Client-side tool detection hint
-      var detected = detectTool(content, file.name);
+      var detected = null;
+      if (window.AgentSessionUpload) {
+        detected = window.AgentSessionUpload.detectTool(content);
+      }
       if (detected && toolSelect.value === 'auto') {
         previewDetected.textContent = 'Detected: ' + formatToolName(detected);
         previewDetected.style.display = 'inline';
       }
 
-      // Auto-fill title from session if empty
       if (!titleInput.value && detected) {
         titleInput.value = formatToolName(detected) + ' Session';
       }
     };
-    reader.readAsText(file.slice(0, 100000)); // Read first 100KB for preview
+    reader.readAsText(file.slice(0, 100000));
   }
 
   function clearFile() {
     selectedFile = null;
+    parsedResult = null;
     fileInput.value = '';
     dropText.style.display = 'block';
     filePreview.style.display = 'none';
     previewDetected.style.display = 'none';
-    uploadBtn.disabled = true;
+    parseBtn.disabled = true;
+    curationSection.style.display = 'none';
     hideError();
-  }
-
-  function detectTool(content, filename) {
-    try {
-      var firstLine = content.split('\n')[0].trim();
-      if (firstLine.startsWith('{')) {
-        var obj = JSON.parse(firstLine);
-        if (obj.type === 'session.start') return 'github_copilot';
-        if (obj.type === 'session' && obj.version) return 'pi';
-        if (obj.parentId !== undefined || obj.parentSession) return 'pi';
-        if (obj.sessionId || obj.parentUuid) return 'claude_code';
-        if (obj.type && obj.type.match(/^(thread|turn|item|event_msg)\./)) return 'codex';
-        if (obj.type === 'session_meta') return 'codex';
-        if (obj.type === 'session_metadata') return 'gemini_cli';
-      }
-    } catch(e) {
-      // Pretty-printed JSON (first line is just "{") — match on key strings
-      if (content.match(/"sessionId"\s*:/) && content.match(/"messages"\s*:/)) {
-        if (content.match(/"type"\s*:\s*"gemini"/)) return 'gemini_cli';
-        if (content.match(/"parentUuid"/)) return 'claude_code';
-      }
-    }
-    // Also check for Gemini single-object JSON by key presence
-    if (content.match(/^[\s]*\{/)) {
-      try {
-        var full = JSON.parse(content);
-        if (full.sessionId && full.messages) return 'gemini_cli';
-      } catch(e) {}
-    }
-    return null;
   }
 
   function formatToolName(tool) {
@@ -246,8 +252,8 @@
     return names[tool] || tool;
   }
 
-  // Upload
-  uploadBtn.addEventListener('click', function() {
+  // Parse button
+  parseBtn.addEventListener('click', function() {
     if (!selectedFile || !titleInput.value.trim()) {
       if (!titleInput.value.trim()) {
         titleInput.focus();
@@ -256,106 +262,248 @@
       }
       return;
     }
-
-    startUpload();
+    startParsing();
   });
 
-  function startUpload() {
+  function startParsing() {
     hideError();
-    uploadBtn.disabled = true;
-    uploadBtn.textContent = 'Uploading...';
+    parseBtn.disabled = true;
+    parseBtn.textContent = '<%= j t("views.agent_sessions.parsing_progress", default: "Parsing...") %>';
     progressUI.style.display = 'block';
 
-    setStep('upload', 'active', 'Sending ' + formatBytes(selectedFile.size) + '...');
+    setStep('read', 'active', 'Reading ' + formatBytes(selectedFile.size) + '...');
+    setStep('upload', 'pending', '');
     setStep('parse', 'pending', '');
+    setStep('scrub', 'pending', '');
     setStep('done', 'pending', '');
     setProgress(0);
 
-    var formData = new FormData();
-    formData.append('agent_session[title]', titleInput.value.trim());
-    formData.append('agent_session[tool_name]', toolSelect.value);
-    formData.append('agent_session[session_file]', selectedFile);
-
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/agent_sessions', true);
-
-    var csrfToken = document.querySelector("meta[name='csrf-token']");
-    if (csrfToken) {
-      xhr.setRequestHeader('X-CSRF-Token', csrfToken.getAttribute('content'));
-    }
-
-    xhr.upload.addEventListener('progress', function(e) {
+    var reader = new FileReader();
+    reader.onprogress = function(e) {
       if (e.lengthComputable) {
         var pct = Math.round((e.loaded / e.total) * 100);
-        setProgress(pct * 0.6); // Upload is 60% of total progress
-        setStep('upload', 'active', pct + '% uploaded');
+        setProgress(pct * 0.2);
+        setStep('read', 'active', pct + '% read');
       }
-    });
+    };
+    reader.onload = function(e) {
+      var content = e.target.result;
+      rawFileContent = content;
+      setStep('read', 'done', formatBytes(selectedFile.size) + ' read');
+      setProgress(20);
 
-    xhr.upload.addEventListener('load', function() {
-      setStep('upload', 'done', formatBytes(selectedFile.size) + ' uploaded');
-      setStep('parse', 'active', 'Detecting format and parsing messages...');
-      setProgress(65);
-    });
+      // Upload raw file to S3 via presigned URL
+      uploadToS3(content).then(function() {
+        parseAndCurate(content);
+      }).catch(function(err) {
+        // S3 upload failed — fall back to no-S3 mode (still parse and curate)
+        console.warn('S3 upload failed, continuing without raw backup:', err.message);
+        setStep('upload', 'done', 'Skipped (local only)');
+        parseAndCurate(content);
+      });
+    };
+    reader.onerror = function() {
+      setStep('read', 'error', 'Read error');
+      showError('Error reading file. Please try again.');
+      resetParseBtn();
+    };
+    reader.readAsText(selectedFile);
+  }
 
-    xhr.addEventListener('load', function() {
-      if (xhr.status >= 200 && xhr.status < 300) {
-        // Server responded with redirect (HTML) or JSON
+  function uploadToS3(content) {
+    setStep('upload', 'active', '<%= j t("views.agent_sessions.uploading_to_storage", default: "Uploading file...") %>');
+    var csrfToken = document.querySelector("meta[name='csrf-token']");
+
+    return fetch('/agent_sessions/presign', {
+      method: 'POST',
+      headers: {
+        'X-CSRF-Token': csrfToken ? csrfToken.getAttribute('content') : '',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      credentials: 'same-origin',
+    }).then(function(response) {
+      if (!response.ok) throw new Error('Presign request failed');
+      return response.json();
+    }).then(function(data) {
+      s3Key = data.s3_key;
+      setProgress(25);
+      return fetch(data.presigned_url, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/x-jsonlines' },
+        body: content,
+      });
+    }).then(function(response) {
+      if (!response.ok) throw new Error('S3 upload failed');
+      setStep('upload', 'done', '<%= j t("views.agent_sessions.upload_complete", default: "Upload complete") %>');
+      setProgress(35);
+    });
+  }
+
+  function parseAndCurate(content) {
+    setStep('parse', 'active', '<%= j t("views.agent_sessions.step_parsing", default: "Parsing messages") %>...');
+
+    // Use setTimeout to let the UI update before blocking parse
+    setTimeout(function() {
+      try {
+        var toolName = toolSelect.value === 'auto' ? null : toolSelect.value;
+
+        setProgress(50);
+        setStep('scrub', 'active', '<%= j t("views.agent_sessions.scrubbing_secrets", default: "Scrubbing secrets") %>...');
+
+        var result = window.AgentSessionUpload.parseSessionFile(content, toolName);
+
         setProgress(90);
-        setStep('parse', 'done', 'Session parsed successfully');
-        setStep('done', 'active', 'Redirecting to curator...');
+        setStep('parse', 'done', result.messages.length + ' messages found');
+        setStep('scrub', 'done', result.redactions.length > 0
+          ? result.redactions.reduce(function(sum, r) { return sum + r.match_count; }, 0) + ' items redacted'
+          : 'No secrets found');
+
+        parsedResult = result;
+        setStep('done', 'done', '<%= j t("views.agent_sessions.ready_to_curate", default: "Ready to curate") %>');
         setProgress(100);
 
-        // Follow the redirect
-        setTimeout(function() {
-          setStep('done', 'done', 'Done!');
-          // The server sends a redirect, but since we're using XHR we handle it
-          if (xhr.responseURL && xhr.responseURL !== window.location.href) {
-            window.location.href = xhr.responseURL;
-          } else {
-            // Try to parse JSON response
-            try {
-              var data = JSON.parse(xhr.responseText);
-              if (data.redirect_to) {
-                window.location.href = data.redirect_to;
-              }
-            } catch(e) {
-              // HTML redirect response - extract from response
-              window.location.href = xhr.responseURL || '/agent_sessions';
-            }
-          }
-        }, 400);
-      } else {
+        // Show curation UI
+        showCurationUI(result);
+      } catch (err) {
         setStep('parse', 'error', '');
-        try {
-          var err = JSON.parse(xhr.responseText);
-          showError(err.error || 'Upload failed. Please try again.');
-        } catch(e) {
-          showError('Upload failed (status ' + xhr.status + '). Please try again.');
-        }
-        resetUploadBtn();
+        showError('<%= j t("views.agent_sessions.client_parse_error", default: "Failed to parse session file.") %> ' + (err.message || ''));
+        resetParseBtn();
       }
+    }, 50);
+  }
+
+  function showCurationUI(result) {
+    curationSection.style.display = 'block';
+
+    // Show redaction summary
+    if (result.redactions.length > 0) {
+      var totalRedactions = result.redactions.reduce(function(sum, r) { return sum + r.match_count; }, 0);
+      var summaryEl = document.getElementById('redaction-summary');
+      summaryEl.textContent = '';
+
+      var strong = document.createElement('strong');
+      strong.textContent = totalRedactions + ' item' + (totalRedactions !== 1 ? 's' : '') + ' automatically redacted';
+      summaryEl.appendChild(strong);
+      summaryEl.appendChild(document.createTextNode(' \u2014 '));
+      summaryEl.appendChild(document.createTextNode(
+        result.redactions.map(function(r) { return r.match_count + ' ' + r.pattern_name; }).join(', ')
+      ));
+      summaryEl.style.display = 'block';
+    }
+
+    // Initialize curator
+    var curator = document.getElementById('agent-session-curator');
+    if (curator && window.AgentSessionCurator) {
+      curatorInstance = window.AgentSessionCurator.init({
+        container: curator,
+        messages: result.messages,
+        curatedSelections: [],
+        slices: [],
+        sessionId: null,
+        sessionSlug: null,
+        mode: 'upload',
+        onSave: function(data) {
+          saveToForem(data);
+        },
+      });
+    }
+
+    // Scroll to curation section
+    curationSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function saveToForem(curationData) {
+    var saveBtn = document.getElementById('save-curation-btn');
+    if (saveBtn) {
+      saveBtn.disabled = true;
+      saveBtn.textContent = '<%= j t("views.agent_sessions.saving", default: "Saving...") %>';
+    }
+
+    // Build the curated index set, auto-including any slice-referenced messages
+    var curatedIndices = new Set(curationData.curated);
+    (curationData.slices || []).forEach(function(s) {
+      (s.indices || []).forEach(function(idx) { curatedIndices.add(idx); });
     });
 
-    xhr.addEventListener('error', function() {
-      setStep('upload', 'error', 'Network error');
-      showError('Network error. Please check your connection and try again.');
-      resetUploadBtn();
+    // Filter to curated messages but keep original indices (for gap detection in embeds)
+    var curatedMessages;
+    if (curatedIndices.size === 0 || curatedIndices.size === parsedResult.messages.length) {
+      curatedMessages = parsedResult.messages;
+    } else {
+      curatedMessages = parsedResult.messages.filter(function(m) {
+        return curatedIndices.has(m.index);
+      });
+    }
+
+    // Slices already use original indices — no remapping needed
+    var savedSlices = (curationData.slices || []).filter(function(s) {
+      return (s.indices || []).length > 0;
     });
 
-    xhr.addEventListener('timeout', function() {
-      setStep('upload', 'error', 'Timed out');
-      showError('Upload timed out. The file may be too large. Please try again.');
-      resetUploadBtn();
-    });
+    var curatedDataObj = {
+      messages: curatedMessages,
+      metadata: Object.assign({}, parsedResult.metadata || {}, {
+        total_messages: parsedResult.messages.length,
+        curated_indices: curationData.curated
+      })
+    };
 
-    xhr.timeout = 120000; // 2 minute timeout
-    xhr.send(formData);
+    // Check size (10MB server limit)
+    var jsonStr = JSON.stringify(curatedDataObj);
+    if (jsonStr.length > 10 * 1024 * 1024) {
+      if (saveBtn) {
+        saveBtn.disabled = false;
+        saveBtn.textContent = '<%= j t("views.agent_sessions.save_and_upload", default: "Save & Upload") %>';
+      }
+      alert('Curated data is ' + (jsonStr.length / 1048576).toFixed(1) + ' MB, which exceeds the 10 MB limit. Please deselect some messages to reduce the size.');
+      return;
+    }
+
+    var csrfToken = document.querySelector("meta[name='csrf-token']");
+    var payload = {
+      agent_session: {
+        title: titleInput.value.trim(),
+        tool_name: parsedResult.toolName || toolSelect.value,
+        curated_data: jsonStr,
+        s3_key: s3Key || '',
+        slices: savedSlices
+      }
+    };
+
+    fetch('/agent_sessions', {
+      method: 'POST',
+      headers: {
+        'X-CSRF-Token': csrfToken ? csrfToken.getAttribute('content') : '',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(payload),
+      credentials: 'same-origin',
+    }).then(function(response) {
+      return response.json();
+    }).then(function(data) {
+      if (data.success && data.redirect_to) {
+        window.location.href = data.redirect_to;
+      } else if (data.error) {
+        if (saveBtn) {
+          saveBtn.disabled = false;
+          saveBtn.textContent = '<%= j t("views.agent_sessions.save_and_upload", default: "Save & Upload") %>';
+        }
+        alert('Error: ' + data.error);
+      }
+    }).catch(function(err) {
+      if (saveBtn) {
+        saveBtn.disabled = false;
+        saveBtn.textContent = '<%= j t("views.agent_sessions.save_and_upload", default: "Save & Upload") %>';
+      }
+      alert('Error saving session: ' + (err.message || 'Network error'));
+    });
   }
 
   function setStep(step, state, detail) {
     var el = document.getElementById('step-' + step);
-    el.className = 'progress-step step-' + state;
+    if (el) el.className = 'progress-step step-' + state;
     var detailEl = document.getElementById('step-' + step + '-detail');
     if (detailEl && detail !== undefined) detailEl.textContent = detail;
   }
@@ -364,9 +512,9 @@
     progressBar.style.width = Math.min(pct, 100) + '%';
   }
 
-  function resetUploadBtn() {
-    uploadBtn.disabled = false;
-    uploadBtn.textContent = 'Upload & Parse';
+  function resetParseBtn() {
+    parseBtn.disabled = false;
+    parseBtn.textContent = '<%= j t("views.agent_sessions.parse_file", default: "Parse File") %>';
   }
 
   function showError(msg) {

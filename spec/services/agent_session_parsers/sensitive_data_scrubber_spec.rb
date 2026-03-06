@@ -121,12 +121,4 @@ RSpec.describe AgentSessionParsers::SensitiveDataScrubber do
     end
   end
 
-  describe ".scrub_text" do
-    it "scrubs secrets from plain text" do
-      text = "export AWS_KEY=AKIAIOSFODNN7EXAMPLE\nexport OTHER=safe"
-      result = described_class.scrub_text(text)
-      expect(result).not_to include("AKIAIOSFODNN7EXAMPLE")
-      expect(result).to include("safe")
-    end
-  end
 end
