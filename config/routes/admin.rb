@@ -201,6 +201,7 @@ namespace :admin do
   end
 
   scope :apps do
+    resources :keyword_trends, path: "keyword-trends", only: %i[index]
     resources :consumer_apps, only: %i[index new create edit update destroy]
     resources :welcome, only: %i[index create]
   end

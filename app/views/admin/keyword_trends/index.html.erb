@@ -1,0 +1,65 @@
+<header class="mb-6">
+  <h1 class="crayons-title">Keyword Trends</h1>
+  <p class="color-secondary">
+    Search published articles by keyword and see monthly match counts from <code>reading_list_document</code>.
+  </p>
+</header>
+
+<div class="crayons-card p-6 mb-6">
+  <%= form_tag admin_keyword_trends_path, method: :get do %>
+    <div class="grid gap-4 m:grid-cols-3">
+      <div class="crayons-field m:col-span-3">
+        <%= label_tag :term, "Keyword or phrase", class: "crayons-field__label" %>
+        <%= text_field_tag :term, @term, required: true, class: "crayons-textfield", placeholder: "terraform" %>
+      </div>
+      <div class="crayons-field">
+        <%= label_tag :start_month, "Start month", class: "crayons-field__label" %>
+        <%= month_field_tag :start_month, @start_month.strftime("%Y-%m"), class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= label_tag :end_month, "End month", class: "crayons-field__label" %>
+        <%= month_field_tag :end_month, @end_month.strftime("%Y-%m"), class: "crayons-textfield" %>
+      </div>
+      <div class="flex items-end">
+        <%= submit_tag "Run trend query", class: "crayons-btn" %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<% if @term.present? %>
+  <div class="crayons-card p-6 mb-6">
+    <h2 class="crayons-subtitle-1 mb-2">Results for "<%= @term %>"</h2>
+    <p class="mb-4">Total matches: <strong><%= @total_matches %></strong></p>
+
+    <div class="flex items-end gap-1 p-2" style="height: 260px; border: 1px solid var(--card-border); border-radius: 0.5rem;">
+      <% @period_counts.each do |period, matches| %>
+        <% height = @max_matches.positive? ? ((matches.to_f / @max_matches) * 100).round(2) : 0 %>
+        <div class="flex-1 min-w-0 flex flex-col justify-end" title="<%= period.strftime("%b %Y") %>: <%= matches %>">
+          <div style="height: <%= height %>%; background: rgb(var(--accent-brand-rgb)); border-radius: 0.25rem 0.25rem 0 0;"></div>
+          <div class="fs-xs color-secondary mt-1 truncate text-center"><%= period.strftime("%b %y") %></div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="crayons-card p-6">
+    <h2 class="crayons-subtitle-1 mb-4">Raw data</h2>
+    <table class="crayons-table" width="100%">
+      <thead>
+        <tr>
+          <th scope="col">Period</th>
+          <th scope="col">Matches</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @period_counts.each do |period, matches| %>
+          <tr>
+            <td><%= period.strftime("%Y-%m") %></td>
+            <td><%= matches %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>
