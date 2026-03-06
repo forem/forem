@@ -15,7 +15,7 @@ en:
           following_pods: Following podcasts (%{num})
           hidden_tags: Hidden tags (%{num})
           agent_sessions: Agent Sessions (%{num})
-          feed_imports: Feed Imports
+          feed_imports: RSS Import Feeds
         agent_sessions: Agent Sessions
         posts: Posts
         series: Series
@@ -27,7 +27,7 @@ en:
         hidden_tags: Hidden tags
         listings: Listings
         analytics: Analytics
-        feed_imports: Feed Imports
+        feed_imports: RSS Import Feeds
         for_org: Analytics for %{org}
         upload: Upload a video
       analytics:
@@ -160,7 +160,7 @@ en:
           for: for
         empty: You don't have any subscribers for this %{kind} yet...
       feed_imports:
-        heading: Dashboard » Feed Imports
+        heading: Dashboard » RSS Import Feeds
         empty: Add an RSS feed source below to start importing posts as drafts.
         no_history: No import history yet. Your feed will be checked automatically.
         no_notable_history: All recent checks found no new posts.

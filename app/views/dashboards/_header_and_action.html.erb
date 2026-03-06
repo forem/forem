@@ -60,8 +60,20 @@
           </li>
       
           <li>
+            <a class="crayons-link crayons-link--block " href="/dashboard/feed_imports">
+              <%= t("views.dashboard.actions.feed_imports") %>
+            </a>
+          </li>
+
+          <li>
             <a class="crayons-link crayons-link--block js-hidden-tags-link " href="/dashboard/hidden_tags">
               <%= t("views.dashboard.actions.hidden_tags") %>
+            </a>
+          </li>
+
+          <li>
+            <a class="crayons-link crayons-link--block" href="<%= agent_sessions_path %>">
+              <%= t("views.dashboard.actions.agent_sessions") %>
             </a>
           </li>
         </ul>

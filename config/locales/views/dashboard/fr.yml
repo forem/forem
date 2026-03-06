@@ -14,7 +14,7 @@ fr:
           following_orgs: Following organizations (%{num})
           following_pods: Following podcasts (%{num})
           hidden_tags: Hidden tags (%{num})
-          feed_imports: Importations RSS
+          feed_imports: Importations de flux RSS
         posts: Publications
         series: Séries
         followers: Suiveurs
@@ -25,7 +25,7 @@ fr:
         hidden_tags: Hidden tags
         listings: Annonces
         analytics: Analytique
-        feed_imports: Importations RSS
+        feed_imports: Importations de flux RSS
         for_org: Analytics for %{org}
         upload: Charger une vidéo
       analytics:
@@ -157,7 +157,7 @@ fr:
           for: for
         empty: You don't have any subscribers for this %{kind} yet...
       feed_imports:
-        heading: Tableau de bord » Importations RSS
+        heading: Tableau de bord » Importations de flux RSS
         empty: Ajoutez une source de flux RSS ci-dessous pour commencer à importer des articles comme brouillons.
         no_history: Pas encore d'historique d'importation. Votre flux sera vérifié automatiquement.
         no_notable_history: Toutes les vérifications récentes n'ont trouvé aucun nouveau post.
