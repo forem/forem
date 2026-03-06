@@ -39,9 +39,26 @@ RSpec.describe Badges::AwardContributorFromGithub, type: :service do
       end
     end
 
-    context "when badges exist in the database" do
+    context "when badges exist in the database, and github provider is a symbol" do
       let!(:dev_contributor_badge) { create(:badge, title: "dev-contributor") }
       let!(:four_x_commit_badge) { create(:badge, title: "4x-commit-club") }
+
+      it "awards the expected badges" do
+        described_class.call
+
+        badge_ids = user.badge_achievements.pluck(:badge_id)
+        expect(badge_ids).to include(dev_contributor_badge.id)
+        expect(badge_ids).to include(four_x_commit_badge.id)
+      end
+    end
+
+    context "when badges exist in the database, and github provider is a string" do
+      let!(:dev_contributor_badge) { create(:badge, title: "dev-contributor") }
+      let!(:four_x_commit_badge) { create(:badge, title: "4x-commit-club") }
+
+      before do
+        allow(Settings::Authentication).to receive(:providers).and_return(["github"])
+      end
 
       it "awards the expected badges" do
         described_class.call
