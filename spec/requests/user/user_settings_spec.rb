@@ -84,7 +84,7 @@ RSpec.describe "UserSettings" do
 
         titles = ["Comment templates", "API Keys"]
         expect(response.body).to include(*titles)
-        expect(response.body).to include("Feed Imports dashboard")
+        expect(response.body).to include("Manage my RSS feeds")
       end
 
       it "renders heads up dupe account message with proper param" do
