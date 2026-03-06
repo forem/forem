@@ -14,7 +14,7 @@ pt:
           following_orgs: Organizações seguidas (%{num})
           following_pods: Podcasts seguidos (%{num})
           hidden_tags: Tags ocultas (%{num})
-          feed_imports: Importações RSS
+          feed_imports: Importações de Feeds RSS
         posts: Posts
         series: Séries
         followers: Seguidores
@@ -25,7 +25,7 @@ pt:
         hidden_tags: Tags ocultas
         listings: Anúncios
         analytics: Analytics
-        feed_imports: Importações RSS
+        feed_imports: Importações de Feeds RSS
         for_org: Analytics para %{org}
         upload: Fazer upload de um vídeo
       analytics:
@@ -104,7 +104,7 @@ pt:
         author_is: 'AUTOR: '
         save: Salvar
       feed_imports:
-        heading: Painel » Importações RSS
+        heading: Painel » Importações de Feeds RSS
         empty: Adicione uma fonte de feed RSS abaixo para começar a importar posts como rascunhos.
         no_history: Nenhum histórico de importação ainda. Seu feed será verificado automaticamente.
         no_notable_history: Todas as verificações recentes não encontraram novos posts.
