@@ -39,6 +39,13 @@ RSpec.describe "/admin/member_manager/users" do
       expect(response.body).to include(user.username)
     end
 
+    it "displays email link without leading whitespace" do
+      get admin_user_path(user)
+
+      email_link = Nokogiri::HTML(response.body).at_css("a[href='mailto:#{user.email}']")
+      expect(email_link.text).to eq(user.email)
+    end
+
     it "redirects from /username/moderate" do
       get "/#{user.username}/moderate"
       expect(response).to redirect_to(admin_user_path(user.id))

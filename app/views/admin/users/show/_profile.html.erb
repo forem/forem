@@ -33,10 +33,7 @@
     <div>
       <ul class="flex flex-col s:flex-row gap-3 s:gap-6 flex-wrap">
         <li>
-          <a href="mailto:<%= @user.email %>" class="c-link c-link--icon-left inline-block" target="_blank">
-            <%= crayons_icon_tag(:email, title: t("views.admin.users.profile.email"), class: "c-link__icon") %>
-            <%= @user.email %>
-          </a>
+          <a href="mailto:<%= @user.email %>" class="c-link c-link--icon-left inline-block" target="_blank"><%= crayons_icon_tag(:email, title: t("views.admin.users.profile.email"), class: "c-link__icon") %><%= @user.email %></a>
         </li>
         <% if @user.github_username %>
           <li>
