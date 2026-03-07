@@ -7,6 +7,8 @@
   display: flex;
   gap: var(--su-3);
   overflow-x: auto;
+
+  > br { display: none; }
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   padding-bottom: var(--su-2);

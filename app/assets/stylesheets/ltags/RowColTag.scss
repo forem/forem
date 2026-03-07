@@ -3,6 +3,8 @@
   gap: var(--su-4);
   margin-bottom: var(--su-4);
 
+  > br { display: none; }
+
   > * {
     flex: 1;
     min-width: 0;
