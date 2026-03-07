@@ -1522,5 +1522,60 @@ RSpec.describe "Api::V1::Articles" do
         expect(response.parsed_body.count).to eq(2)
       end
     end
+
+    # Regression test for GitHub issue #13613
+    # https://github.com/forem/forem/issues/13613
+    context "regression: newly published articles in /api/articles/latest" do
+      it "includes newly published articles in the /api/articles/latest response (#13613)" do
+        # Create and publish initial articles
+        # Use update_columns to bypass published_at validation for past dates
+        old_article = create(:article, published: true)
+        old_article.update_columns(published_at: 2.days.ago)
+
+        # Get the initial latest articles response
+        get latest_api_articles_path, headers: headers
+        expect(response).to have_http_status(:ok)
+
+        # Verify initial response includes the old article
+        initial_response = response.parsed_body
+        initial_article_ids = initial_response.map { |a| a["id"] }
+        expect(initial_article_ids).to include(old_article.id)
+
+        # Create and publish a NEW article just now
+        new_article = create(:article, published_at: Time.current, published: true)
+
+        # Immediately fetch the latest articles again
+        get latest_api_articles_path, headers: headers
+
+        # Verify the new article appears in the response
+        updated_response = response.parsed_body
+        updated_article_ids = updated_response.map { |a| a["id"] }
+
+        # The new article should appear in the results
+        # It should be near the top since it was just published
+        expect(updated_article_ids).to include(new_article.id),
+          "Newly published article should appear in /api/articles/latest endpoint"
+
+        # Verify proper ordering - newer article should come before older one
+        if updated_article_ids.include?(old_article.id)
+          new_article_index = updated_article_ids.find_index(new_article.id)
+          old_article_index = updated_article_ids.find_index(old_article.id)
+          expect(new_article_index).to be < old_article_index,
+            "Newly published article should appear before older articles in the latest endpoint"
+        end
+      end
+
+      it "maintains correct surrogate key for API cache invalidation" do
+        # Use a fresh context to avoid interference from other tests
+        create(:article, published: true)
+
+        get latest_api_articles_path, headers: headers
+
+        # Verify the surrogate key includes the table key for proper cache invalidation
+        surrogate_key = response.headers["surrogate-key"].split.to_set
+        expect(surrogate_key).to include("articles"),
+          "Surrogate key should include 'articles' table key for cache invalidation"
+      end
+    end
   end
 end
