@@ -28,8 +28,15 @@ module UnifiedEmbed
 
     def find_handler_for(link:)
       possible_domains = Subforem.cached_domains + [Settings::General.app_domain]
+      domain_pattern = possible_domains.map { |domain| Regexp.escape(domain) }.join("|")
       link_path = Addressable::URI.parse(link).path
-      if link.match?(%r{https?://(#{possible_domains.map { |domain| Regexp.escape(domain) }.join("|")})/(?<username>[^/]+)/(?<slug>[^/]+)}) && Article.find_by(path: link_path)
+
+      # Check for comment URLs first (before article check)
+      if link.match?(%r{https?://(#{domain_pattern})/[^/]+/comment/\w+})
+        return { klass: CommentTag, skip_validation: true }
+      end
+
+      if link.match?(%r{https?://(#{domain_pattern})/(?<username>[^/]+)/(?<slug>[^/]+)}) && Article.find_by(path: link_path)
         return { klass: LinkTag, skip_validation: false }
       end
 
