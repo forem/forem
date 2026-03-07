@@ -3,6 +3,8 @@
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: var(--su-4);
   margin-bottom: var(--su-4);
+
+  > br { display: none; }
 }
 
 .ltag-feature {

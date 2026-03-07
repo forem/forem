@@ -26,9 +26,10 @@ class OfferTag < Liquid::Block
   private
 
   def parse_options(markup)
+    cleaned = strip_tags(markup)
     options = {}
-    markup.scan(OPTION_REGEXP) do |key, quoted_val, plain_val|
-      options[key] = quoted_val || plain_val
+    cleaned.scan(OPTION_REGEXP) do |key, quoted_val, plain_val|
+      options[key] = (quoted_val || plain_val).strip
     end
     options
   end

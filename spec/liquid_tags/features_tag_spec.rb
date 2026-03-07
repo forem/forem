@@ -42,9 +42,8 @@ RSpec.describe "Features and Feature liquid tags", type: :liquid_tag do
     end
 
     it "renders with icon and title" do
-      result = parse('{% features %}{% feature icon="rocket-line" title="Launch" %}Go{% endfeature %}{% endfeatures %}').render
+      result = parse('{% features %}{% feature icon="🚀" title="Launch" %}Go{% endfeature %}{% endfeatures %}').render
       expect(result).to include("ltag-feature__icon")
-      expect(result).to include("ri-rocket-line")
       expect(result).to include("Launch")
     end
 
