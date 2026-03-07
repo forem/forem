@@ -1,6 +1,6 @@
 class CommentTag < LiquidTagBase
   PARTIAL = "comments/liquid".freeze
-  VALID_LINK_REGEXP = %r{#{URL.url}/\w+/comment/(?<comment_id>\w+)}
+  VALID_LINK_REGEXP = %r{https?://[^/]+/\w+/comment/(?<comment_id>\w+)}
   VALID_ID_REGEXP = /\A(?<comment_id>\w+)\Z/
   REGEXP_OPTIONS = [VALID_LINK_REGEXP, VALID_ID_REGEXP].freeze
 
