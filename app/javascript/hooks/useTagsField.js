@@ -13,83 +13,101 @@ import { fetchSearch } from '@utilities/search';
  */
 export const useTagsField = ({ defaultValue, onInput }) => {
   const useFetchSearch = document.body.dataset.algoliaId?.length === 0;
-  const subforemId = document.body.dataset.subforemId;
-  let algoliaIndex;
-  if (!useFetchSearch) {
-    const env = document.querySelector('meta[name="environment"]')?.content;
-    const {algoliaId, algoliaSearchKey} = document.body.dataset;
-    const algoliaClient = algoliasearch(algoliaId, algoliaSearchKey);
-    algoliaIndex = algoliaClient.initIndex(`Tag_${env}`);
-  }
-
-  const [defaultSelections, setDefaultSelections] = useState([]);
-  const [defaultsLoaded, setDefaultsLoaded] = useState(false);
-
-  useEffect(() => {
-    // Previously selected tags are passed as a plain comma separated string
-    // Fetching further tag data allows us to display a richer UI
-    // This fetch only happens once on first component load
-    if (defaultValue && defaultValue !== '' && !defaultsLoaded) {
-      const tagNames = defaultValue.split(', ');
-
-      const tagRequests = tagNames.map((tagName) => 
-        // Let's also use current subforem here
-        (useFetchSearch ? 
-          fetchSearch('tags', { name: tagName }).then(({ result = [] }) => {
-            const [potentialMatch = {}] = result;
-            return potentialMatch.name === tagName
-              ? potentialMatch
-              : { name: tagName };
-          }) :
-          algoliaIndex.search(tagName).then(({ hits }) => {
-            const [potentialMatch = {}] = hits;
-            return potentialMatch.name === tagName
-              ? potentialMatch
-              : { name: tagName };
-          })
-        )
-      );
-
-      Promise.all(tagRequests).then((data) => {
-        setDefaultSelections(data);
-      });
-    }
-    setDefaultsLoaded(true);
-  }, [defaultValue, defaultsLoaded, useFetchSearch]);
-
-  /**
-   * Converts the array of selected items into a plain string,
-   * and ensures the `onInput` callback is triggered with the new tags list
-   * @param {Array} selections
-   */
+  const { defaultSelections, fetchSuggestions } = 
+    useFetchSearch ? 
+      useTagsFieldWithFetchSearch({ defaultValue }) :
+      useTagsFieldWithAlgoliaSearch({ defaultValue });
   const syncSelections = (selections = []) => {
     const selectionsString = selections
       .map((selection) => selection.name)
       .join(', ');
     onInput(selectionsString);
   };
-
-  /**
-   * Fetches tags for a given search term
-   *
-   * @param {string} searchTerm The text to search for
-   * @returns {Promise} Promise which resolves to the tag search results
-   */
-  const fetchSuggestions = (searchTerm) => 
-    (useFetchSearch ? 
-      fetchSearch('tags', { name: searchTerm }).then(
-        (response) => response.result,
-      ) : 
-      algoliaIndex.search(searchTerm, {
-        facetFilters: subforemId ? [`subforem_ids:${subforemId}`] : ['supported:true'],
-      }).then(
-        (response) => response.hits,
-      )
-    );
-
   return {
     defaultSelections,
+    /**
+    * Fetches tags for a given search term
+    *
+    * @param {string} searchTerm The text to search for
+    * @returns {Promise} Promise which resolves to the tag search results
+    */
     fetchSuggestions,
+    /**
+    * Converts the array of selected items into a plain string,
+    * and ensures the `onInput` callback is triggered with the new tags list
+    * @param {Array} selections
+    */
     syncSelections,
+  };
+};
+
+const useTagsFieldWithFetchSearch = ({ defaultValue }) => {
+  const { defaultSelections } = useTagsFieldBase({
+    defaultValue,
+    searchTagsCallback: (someTagName) => 
+      fetchSearch('tags', { name: someTagName }).then(({ result = [] }) => {
+        const [potentialMatch = {}] = result;
+        return potentialMatch.name === someTagName
+          ? potentialMatch
+          : { name: someTagName };
+      })
+  });
+  const fetchSuggestions = (searchTerm) => (
+    fetchSearch('tags', { name: searchTerm }).then(
+      (response) => response.result
+    )
+  );
+  return {
+    defaultSelections,
+    fetchSuggestions
+  };
+};
+
+const useTagsFieldWithAlgoliaSearch = ({ defaultValue }) => {
+  const env = document.querySelector('meta[name="environment"]')?.content;
+  const {algoliaId, algoliaSearchKey} = document.body.dataset;
+  const algoliaClient = algoliasearch(algoliaId, algoliaSearchKey);
+  const algoliaIndex = algoliaClient.initIndex(`Tag_${env}`);
+  const { defaultSelections } = useTagsFieldBase({
+    defaultValue,
+    searchTagsCallback: (someTagName) =>
+      algoliaIndex.search(someTagName).then(({ hits }) => {
+        const [potentialMatch = {}] = hits;
+        return potentialMatch.name === someTagName
+          ? potentialMatch
+          : { name: someTagName };
+      })
+  });
+  const fetchSuggestions = (searchTerm) => (
+    algoliaIndex.search(searchTerm, {
+      facetFilters: subforemId ? [`subforem_ids:${document.body.dataset.subforemId}`] : ['supported:true'],
+    }).then(
+      (response) => response.hits
+    )
+  );
+  return {
+    defaultSelections,
+    fetchSuggestions
+  };
+};
+
+const useTagsFieldBase = ({ defaultValue, searchTagsCallback }) => {
+  const [defaultSelections, setDefaultSelections] = useState([]);
+  const [defaultsLoaded, setDefaultsLoaded] = useState(false);
+  useEffect(() => {
+    // Previously selected tags are passed as a plain comma separated string
+    // Fetching further tag data allows us to display a richer UI
+    // This fetch only happens once on first component load
+    if (defaultValue && defaultValue !== '' && !defaultsLoaded) {
+      const tagNames = defaultValue.split(', ');
+      const tagRequests = tagNames.map((someTagName) => searchTagsCallback(someTagName));
+      Promise.all(tagRequests).then((data) => {
+        setDefaultSelections(data);
+      });
+    }
+    setDefaultsLoaded(true);
+  }, [defaultValue, defaultsLoaded, searchTagsCallback]);
+  return {
+    defaultSelections
   };
 };
