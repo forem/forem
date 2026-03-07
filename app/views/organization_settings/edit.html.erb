@@ -13,7 +13,62 @@
   </div>
 <% end %>
 
-<div class="crayons-layout crayons-layout--limited-m pt-7">
+<style>
+  .org-settings-layout {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: var(--su-6);
+    align-items: start;
+  }
+  .org-settings-sidebar {
+    position: sticky;
+    top: calc(var(--header-height, 56px) + var(--su-4));
+  }
+  .org-settings-sidebar nav a {
+    display: block;
+    padding: var(--su-2) var(--su-3);
+    border-radius: var(--radius);
+    font-size: var(--fs-s);
+    color: var(--base-70);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+  }
+  .org-settings-sidebar nav a:hover {
+    color: var(--base-100);
+    background: var(--base-10);
+  }
+  .org-settings-sidebar nav a.active {
+    color: var(--accent-brand);
+    border-left-color: var(--accent-brand);
+    font-weight: var(--fw-medium);
+  }
+  @media (max-width: 768px) {
+    .org-settings-layout {
+      grid-template-columns: 1fr;
+    }
+    .org-settings-sidebar {
+      position: static;
+      border-bottom: 1px solid var(--base-20);
+      padding-bottom: var(--su-4);
+    }
+    .org-settings-sidebar nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--su-1);
+    }
+    .org-settings-sidebar nav a {
+      border-left: none;
+      border-bottom: 2px solid transparent;
+    }
+    .org-settings-sidebar nav a.active {
+      border-left-color: transparent;
+      border-bottom-color: var(--accent-brand);
+    }
+  }
+</style>
+
+<div class="crayons-layout crayons-layout--limited-l pt-7">
   <div class="flex items-center justify-between mb-4">
     <h1 class="crayons-title"><%= @organization.name %></h1>
     <a href="/<%= @organization.slug %>" class="crayons-btn crayons-btn--secondary">
@@ -21,335 +76,583 @@
     </a>
   </div>
 
-  <div class="grid gap-6">
+  <div class="org-settings-layout">
+    <%# ── Sidebar Navigation ── %>
+    <aside class="org-settings-sidebar">
+      <nav id="org-settings-nav">
+        <a href="#section-page"><%= t("views.organization_settings.page.heading") %></a>
+        <a href="#section-profile"><%= t("views.settings.org.admin.details") %></a>
+        <a href="#section-social"><%= t("views.organization_settings.social_links.heading") %></a>
+        <a href="#section-header-cta"><%= t("views.organization_settings.header_cta.heading") %></a>
+        <a href="#section-sidebar-cta"><%= t("views.settings.org.admin.cta") %></a>
+        <a href="#section-members"><%= t("views.settings.org.admin.members") %></a>
+        <a href="#section-invitations"><%= t("views.organization_settings.sidebar.invitations") %></a>
+        <a href="#section-danger"><%= t("views.settings.danger") %></a>
+      </nav>
+    </aside>
 
-    <%# ── Page: Cover image + README editor ── %>
-    <div class="crayons-card crayons-card--content-rows">
-      <h2><%= t("views.organization_settings.page.heading") %></h2>
+    <%# ── Main Content ── %>
+    <div class="grid gap-6">
 
-      <%= form_for @organization, url: organization_settings_path(@organization.slug), method: :patch, html: { class: "grid gap-6", multipart: true } do |f| %>
-        <div class="crayons-field">
-          <%= f.label :cover_image, t("views.organization_settings.page.cover_image"), class: "crayons-field__label" %>
-          <% if @organization.cover_image_url.present? %>
-            <div class="mb-2">
-              <img src="<%= @organization.cover_image_url %>" alt="<%= t("views.organizations.cover_image_alt", org: @organization.name) %>" style="max-height: 150px; object-fit: cover;" class="radius-default" />
+      <%# ── Page: Cover image + README editor ── %>
+      <div id="section-page" class="crayons-card crayons-card--content-rows">
+        <h2><%= t("views.organization_settings.page.heading") %></h2>
+
+        <%= form_for @organization, url: organization_settings_path(@organization.slug), method: :patch, html: { class: "grid gap-6", multipart: true } do |f| %>
+          <div class="crayons-field">
+            <%= f.label :cover_image, t("views.organization_settings.page.cover_image"), class: "crayons-field__label" %>
+            <% if @organization.cover_image_url.present? %>
+              <div class="mb-2">
+                <img src="<%= @organization.cover_image_url %>" alt="<%= t("views.organizations.cover_image_alt", org: @organization.name) %>" style="max-height: 150px; object-fit: cover;" class="radius-default" />
+              </div>
+            <% end %>
+            <%= f.file_field :cover_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
+          </div>
+
+          <div class="crayons-field">
+            <label for="org_page_markdown" class="crayons-field__label"><%= t("views.organization_settings.page.readme") %></label>
+            <div id="org-page-editor-root"
+                 data-default-value="<%= @organization.page_markdown %>"
+                 data-textarea-name="organization[page_markdown]">
+              <%# Fallback textarea shown before JS loads %>
+              <textarea name="organization[page_markdown]"
+                        id="org_page_markdown"
+                        rows="20"
+                        class="crayons-textfield ff-monospace"
+                        placeholder="<%= t("views.organization_settings.page.readme_placeholder") %>"><%= @organization.page_markdown %></textarea>
             </div>
-          <% end %>
-          <%= f.file_field :cover_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
-        </div>
-
-        <div class="crayons-field">
-          <label for="org_page_markdown" class="crayons-field__label"><%= t("views.organization_settings.page.readme") %></label>
-          <div id="org-page-editor-root"
-               data-default-value="<%= @organization.page_markdown %>"
-               data-textarea-name="organization[page_markdown]">
-            <%# Fallback textarea shown before JS loads %>
-            <textarea name="organization[page_markdown]"
-                      id="org_page_markdown"
-                      rows="20"
-                      class="crayons-textfield ff-monospace"
-                      placeholder="<%= t("views.organization_settings.page.readme_placeholder") %>"><%= @organization.page_markdown %></textarea>
+            <p class="crayons-field__description"><%= t("views.organization_settings.page.readme_description") %></p>
           </div>
-          <p class="crayons-field__description"><%= t("views.organization_settings.page.readme_description") %></p>
-        </div>
 
-        <button class="crayons-btn w-max" type="submit"><%= t("views.organization_settings.page.save") %></button>
-      <% end %>
-    </div>
+          <button class="crayons-btn w-max" type="submit"><%= t("views.organization_settings.page.save") %></button>
+        <% end %>
+      </div>
 
-    <%# ── Profile details ── %>
-    <div class="crayons-card crayons-card--content-rows">
-      <h2><%= t("views.settings.org.admin.details") %></h2>
+      <%# ── Profile details ── %>
+      <div id="section-profile" class="crayons-card crayons-card--content-rows">
+        <h2><%= t("views.settings.org.admin.details") %></h2>
 
-      <%= form_for @organization, url: organization_settings_path(@organization.slug), method: :patch, html: { class: "grid gap-6", multipart: true } do |f| %>
-        <div class="crayons-field">
-          <%= f.label :name, class: "crayons-field__label" %>
-          <%= f.text_field :name, maxlength: 50, class: "crayons-textfield", placeholder: "Acme Inc." %>
-        </div>
-        <div class="crayons-field">
-          <%= f.label :slug, class: "crayons-field__label" %>
-          <%= f.text_field :slug, maxlength: 30, minlength: 2, class: "crayons-textfield" %>
-          <p class="crayons-field__description"><%= t("views.settings.org.admin.form.slug", slug: app_url(@organization.slug)) %></p>
-        </div>
+        <%= form_for @organization, url: organization_settings_path(@organization.slug), method: :patch, html: { class: "grid gap-6", multipart: true } do |f| %>
+          <div class="crayons-field">
+            <%= f.label :name, class: "crayons-field__label" %>
+            <%= f.text_field :name, maxlength: 50, class: "crayons-textfield", placeholder: "Acme Inc." %>
+          </div>
+          <div class="crayons-field">
+            <%= f.label :slug, class: "crayons-field__label" %>
+            <%= f.text_field :slug, maxlength: 30, minlength: 2, class: "crayons-textfield" %>
+            <p class="crayons-field__description"><%= t("views.settings.org.admin.form.slug", slug: app_url(@organization.slug)) %></p>
+          </div>
 
-        <div class="crayons-field">
-          <%= f.label :profile_image, "Profile image *", class: "crayons-field__label" %>
-          <div class="flex items-center">
-            <span class="crayons-logo crayons-logo--xl mr-2">
-              <% if @organization.profile_image_url.present? %>
-                <img alt="<%= @organization.name %> profile image" src="<%= optimized_image_url(@organization.profile_image_url, width: 50) %>" class="crayons-logo__image" />
+          <div class="crayons-field">
+            <%= f.label :profile_image, "Profile image *", class: "crayons-field__label" %>
+            <div class="flex items-center">
+              <span class="crayons-logo crayons-logo--xl mr-2">
+                <% if @organization.profile_image_url.present? %>
+                  <img alt="<%= @organization.name %> profile image" src="<%= optimized_image_url(@organization.profile_image_url, width: 50) %>" class="crayons-logo__image" />
+                <% end %>
+              </span>
+              <%= f.file_field :profile_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
+            </div>
+          </div>
+
+          <div class="crayons-field">
+            <%= f.label :url, "Website url", class: "crayons-field__label" %>
+            <%= f.url_field :url, maxlength: 128, placeholder: "https://yoursite.com", class: "crayons-textfield" %>
+          </div>
+          <div class="crayons-field">
+            <%= f.label :tag_line, class: "crayons-field__label" %>
+            <%= f.text_field :tag_line, maxlength: 60, class: "crayons-textfield" %>
+            <p class="crayons-field__description"><%= t("views.settings.org.admin.form.tag_line") %></p>
+          </div>
+          <div class="crayons-field">
+            <%= f.label :summary, class: "crayons-field__label" %>
+            <%= f.text_area :summary, maxlength: 250, class: "crayons-textfield" %>
+            <p class="crayons-field__description"><%= t("views.settings.org.admin.form.summary") %></p>
+          </div>
+
+          <%= render partial: "shared/logo_design", locals: { f: f, account: @organization } %>
+
+          <div class="crayons-field">
+            <%= f.label :location, class: "crayons-field__label" %>
+            <%= f.text_field :location, maxlength: 64, class: "crayons-textfield" %>
+            <p class="crayons-field__description"><%= t("views.settings.org.admin.form.location") %></p>
+          </div>
+          <div class="crayons-field">
+            <%= f.label :email, class: "crayons-field__label" %>
+            <%= f.text_field :email, maxlength: 64, class: "crayons-textfield" %>
+            <p class="crayons-field__description"><%= t("views.settings.org.admin.form.email") %></p>
+          </div>
+          <div class="crayons-field">
+            <%= f.label :company_size, class: "crayons-field__label" %>
+            <%= f.text_field :company_size, maxlength: 7, class: "crayons-textfield" %>
+            <p class="crayons-field__description"><%= t("views.settings.org.admin.form.company_size") %></p>
+          </div>
+          <div class="crayons-field">
+            <%= f.label :story, class: "crayons-field__label" %>
+            <%= f.text_area :story, maxlength: 640, class: "crayons-textfield" %>
+            <p class="crayons-field__description"><%= t("views.settings.org.admin.form.story") %></p>
+          </div>
+          <div class="crayons-field">
+            <%= f.label :tech_stack, class: "crayons-field__label" %>
+            <%= f.text_area :tech_stack, maxlength: 640, class: "crayons-textfield" %>
+            <p class="crayons-field__description"><%= t("views.settings.org.admin.form.tech_stack") %></p>
+          </div>
+
+          <button class="crayons-btn w-max" type="submit"><%= t("views.settings.org.admin.form.submit") %></button>
+        <% end %>
+      </div>
+
+      <%# ── Social Links ── %>
+      <style>.org-social-link--active { border-left: 3px solid var(--accent-brand); }</style>
+      <div id="section-social" class="crayons-card crayons-card--content-rows">
+        <header>
+          <h2 class="mb-2"><%= t("views.organization_settings.social_links.heading") %></h2>
+          <p class="color-base-70"><%= t("views.organization_settings.social_links.description") %></p>
+        </header>
+
+        <%= form_for @organization, url: organization_settings_path(@organization.slug), method: :patch, html: { class: "grid gap-4" } do |f| %>
+          <% social_platforms = [
+               { key: :twitter, icon: "twitter", field: :twitter_username, placeholder: "yourhandle", label: "Twitter / X" },
+               { key: :github, icon: "github", field: :github_username, placeholder: "yourorg", label: "GitHub" },
+               { key: :youtube, icon: "youtube", placeholder: "https://youtube.com/@yourchannel", label: "YouTube" },
+               { key: :linkedin, icon: "linkedin", placeholder: "https://linkedin.com/company/yourco", label: "LinkedIn" },
+               { key: :instagram, icon: "instagram", placeholder: "https://instagram.com/yourhandle", label: "Instagram" },
+               { key: :facebook, icon: "facebook", placeholder: "https://facebook.com/yourpage", label: "Facebook" },
+               { key: :discord, icon: "discord", placeholder: "https://discord.gg/invite-code", label: "Discord" },
+               { key: :spotify, icon: "spotify", placeholder: "https://open.spotify.com/artist/id", label: "Spotify" },
+               { key: :twitch, icon: "twitch", placeholder: "https://twitch.tv/yourchannel", label: "Twitch" },
+               { key: :mastodon, icon: "mastodon", placeholder: "https://mastodon.social/@yourhandle", label: "Mastodon" },
+             ] %>
+
+          <div class="grid gap-3" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));">
+            <% social_platforms.each do |platform| %>
+              <% has_value = platform[:field] ? @organization.send(platform[:field]).present? : @organization.social_link(platform[:key]).present? %>
+              <div class="crayons-card crayons-card--secondary p-3 flex items-center gap-3<%= ' org-social-link--active' if has_value %>">
+                <span class="shrink-0<%= has_value ? ' color-accent-brand' : ' color-base-60' %>" style="width: 24px; height: 24px;">
+                  <%= crayons_icon_tag(platform[:icon], title: platform[:label]) %>
+                </span>
+                <div class="flex-1">
+                  <% if platform[:field] %>
+                    <%= f.text_field platform[:field],
+                        placeholder: platform[:placeholder],
+                        maxlength: 50,
+                        class: "crayons-textfield crayons-textfield--ghost fs-s p-1",
+                        title: platform[:label],
+                        "aria-label": platform[:label] %>
+                  <% else %>
+                    <input type="url"
+                      name="organization[social_links][<%= platform[:key] %>]"
+                      value="<%= @organization.social_link(platform[:key]) %>"
+                      placeholder="<%= platform[:placeholder] %>"
+                      maxlength="200"
+                      class="crayons-textfield crayons-textfield--ghost fs-s p-1"
+                      title="<%= platform[:label] %>"
+                      aria-label="<%= platform[:label] %>" />
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+
+          <button class="crayons-btn w-max" type="submit"><%= t("views.organization_settings.social_links.save") %></button>
+        <% end %>
+      </div>
+
+      <%# ── Header CTA Button ── %>
+      <div id="section-header-cta" class="crayons-card crayons-card--content-rows">
+        <header>
+          <h2 class="mb-2"><%= t("views.organization_settings.header_cta.heading") %></h2>
+          <p class="color-base-70"><%= t("views.organization_settings.header_cta.description") %></p>
+        </header>
+
+        <%= form_for @organization, url: organization_settings_path(@organization.slug), method: :patch, html: { class: "grid gap-6", id: "header-cta-form" } do |f| %>
+          <div class="crayons-field">
+            <label for="header_cta_text" class="crayons-field__label"><%= t("views.organization_settings.header_cta.button_text") %></label>
+            <input type="text" name="organization[header_cta][text]" id="header_cta_text"
+                   value="<%= @organization.header_cta&.dig("text") %>"
+                   maxlength="40" class="crayons-textfield"
+                   placeholder="<%= t("views.organization_settings.header_cta.button_text_placeholder") %>" />
+            <p class="crayons-field__description"><%= t("views.organization_settings.header_cta.button_text_help") %></p>
+          </div>
+
+          <% has_dropdown_links = @organization.header_cta&.dig("links").present? %>
+          <div class="crayons-field" id="header-cta-url-field">
+            <label for="header_cta_url" class="crayons-field__label"><%= t("views.organization_settings.header_cta.button_url") %></label>
+            <input type="url" name="organization[header_cta][url]" id="header_cta_url"
+                   value="<%= @organization.header_cta&.dig("url") %>"
+                   maxlength="200" class="crayons-textfield"
+                   placeholder="https://example.com"
+                   <%= "style=border-color:var(--accent-danger);opacity:0.5" if has_dropdown_links %> />
+            <p class="crayons-field__description">
+              <%= t("views.organization_settings.header_cta.button_url_help") %>
+              <% if has_dropdown_links %>
+                <br><span id="header-cta-url-override-notice" class="color-accent-danger fw-medium"><%= t("views.organization_settings.header_cta.button_url_overridden") %></span>
               <% end %>
-            </span>
-            <%= f.file_field :profile_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
+            </p>
           </div>
-        </div>
 
-        <div class="crayons-field">
-          <%= f.label :twitter_username, "Twitter username", class: "crayons-field__label" %>
-          <%= f.text_field :twitter_username, class: "crayons-textfield" %>
-        </div>
-        <div class="crayons-field">
-          <%= f.label :github_username, "GitHub username", class: "crayons-field__label" %>
-          <%= f.text_field :github_username, class: "crayons-textfield" %>
-        </div>
-        <div class="crayons-field">
-          <%= f.label :url, "Website url", class: "crayons-field__label" %>
-          <%= f.url_field :url, maxlength: 128, placeholder: "https://yoursite.com", class: "crayons-textfield" %>
-        </div>
-        <div class="crayons-field">
-          <%= f.label :tag_line, class: "crayons-field__label" %>
-          <%= f.text_field :tag_line, maxlength: 60, class: "crayons-textfield" %>
-          <p class="crayons-field__description"><%= t("views.settings.org.admin.form.tag_line") %></p>
-        </div>
-        <div class="crayons-field">
-          <%= f.label :summary, class: "crayons-field__label" %>
-          <%= f.text_area :summary, maxlength: 250, class: "crayons-textfield" %>
-          <p class="crayons-field__description"><%= t("views.settings.org.admin.form.summary") %></p>
-        </div>
+          <fieldset class="crayons-field">
+            <legend class="crayons-field__label mb-2"><%= t("views.organization_settings.header_cta.dropdown_links") %></legend>
+            <p class="crayons-field__description mb-3"><%= t("views.organization_settings.header_cta.dropdown_links_help") %></p>
 
-        <%= render partial: "shared/logo_design", locals: { f: f, account: @organization } %>
+            <div id="header-cta-links" class="grid gap-3">
+              <% links = @organization.header_cta&.dig("links") || [] %>
+              <% links.each do |link| %>
+                <div class="header-cta-link-row crayons-card crayons-card--secondary p-3 flex items-center gap-3">
+                  <div class="flex-1 grid gap-2">
+                    <input type="text" name="organization[header_cta][links][][text]"
+                           value="<%= link["text"] %>" maxlength="40"
+                           class="crayons-textfield crayons-textfield--s" placeholder="<%= t("views.organization_settings.header_cta.link_text_placeholder") %>" />
+                    <input type="url" name="organization[header_cta][links][][url]"
+                           value="<%= link["url"] %>" maxlength="200"
+                           class="crayons-textfield crayons-textfield--s" placeholder="https://..." />
+                    <div class="flex items-center gap-2">
+                      <input type="url" name="organization[header_cta][links][][logo_url]"
+                             value="<%= link["logo_url"] %>" maxlength="200"
+                             class="crayons-textfield crayons-textfield--s flex-1"
+                             placeholder="<%= t("views.organization_settings.header_cta.link_image_placeholder") %>" />
+                      <% if link["logo_url"].present? %>
+                        <img src="<%= link["logo_url"] %>" alt="" class="shrink-0 radius-default" style="width: 20px; height: 20px; object-fit: contain;" />
+                      <% end %>
+                    </div>
+                  </div>
+                  <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon header-cta-remove-link" title="<%= t("views.organization_settings.header_cta.remove_link") %>">
+                    <%= crayons_icon_tag(:x, title: t("views.organization_settings.header_cta.remove_link")) %>
+                  </button>
+                </div>
+              <% end %>
+            </div>
 
-        <div class="crayons-field">
-          <%= f.label :location, class: "crayons-field__label" %>
-          <%= f.text_field :location, maxlength: 64, class: "crayons-textfield" %>
-          <p class="crayons-field__description"><%= t("views.settings.org.admin.form.location") %></p>
-        </div>
-        <div class="crayons-field">
-          <%= f.label :email, class: "crayons-field__label" %>
-          <%= f.text_field :email, maxlength: 64, class: "crayons-textfield" %>
-          <p class="crayons-field__description"><%= t("views.settings.org.admin.form.email") %></p>
-        </div>
-        <div class="crayons-field">
-          <%= f.label :company_size, class: "crayons-field__label" %>
-          <%= f.text_field :company_size, maxlength: 7, class: "crayons-textfield" %>
-          <p class="crayons-field__description"><%= t("views.settings.org.admin.form.company_size") %></p>
-        </div>
-        <div class="crayons-field">
-          <%= f.label :story, class: "crayons-field__label" %>
-          <%= f.text_area :story, maxlength: 640, class: "crayons-textfield" %>
-          <p class="crayons-field__description"><%= t("views.settings.org.admin.form.story") %></p>
-        </div>
-        <div class="crayons-field">
-          <%= f.label :tech_stack, class: "crayons-field__label" %>
-          <%= f.text_area :tech_stack, maxlength: 640, class: "crayons-textfield" %>
-          <p class="crayons-field__description"><%= t("views.settings.org.admin.form.tech_stack") %></p>
-        </div>
+            <button type="button" id="header-cta-add-link" class="crayons-btn crayons-btn--secondary crayons-btn--s mt-3">
+              <%= crayons_icon_tag(:plus, class: "mr-1") %> <%= t("views.organization_settings.header_cta.add_link") %>
+            </button>
+          </fieldset>
 
-        <button class="crayons-btn w-max" type="submit"><%= t("views.settings.org.admin.form.submit") %></button>
-      <% end %>
-    </div>
+          <button class="crayons-btn w-max" type="submit"><%= t("views.organization_settings.header_cta.save") %></button>
+        <% end %>
+      </div>
 
-    <%# ── Call to Action ── %>
-    <div class="crayons-card crayons-card--content-rows">
-      <header>
-        <h2 class="mb-2"><%= t("views.settings.org.admin.cta") %></h2>
-        <p><%= t("views.settings.org.admin.cta_desc") %></p>
-      </header>
+      <script>
+        (function() {
+          const container = document.getElementById('header-cta-links');
+          const addBtn = document.getElementById('header-cta-add-link');
 
-      <%= form_for @organization, url: organization_settings_path(@organization.slug), method: :patch, html: { class: "grid gap-6" } do |f| %>
-        <div class="crayons-field">
-          <%= f.label :cta_body_markdown, class: "crayons-field__label" %>
-          <%= f.text_area :cta_body_markdown, maxlength: 256, class: "crayons-textfield" %>
-          <p class="crayons-field__description"><%= t("views.settings.org.admin.form.cta_body_markdown") %></p>
-        </div>
-        <div class="crayons-field">
-          <%= f.label :cta_button_text, class: "crayons-field__label" %>
-          <%= f.text_field :cta_button_text, maxlength: 20, class: "crayons-textfield" %>
-          <p class="crayons-field__description"><%= t("views.settings.org.admin.form.cta_button_text") %></p>
-        </div>
-        <div class="crayons-field">
-          <%= f.label :cta_button_url, "Link url", class: "crayons-field__label" %>
-          <%= f.text_field :cta_button_url, maxlength: 150, placeholder: "https://example.com", class: "crayons-textfield" %>
-        </div>
+          function createRow() {
+            const row = document.createElement('div');
+            row.className = 'header-cta-link-row crayons-card crayons-card--secondary p-3 flex items-center gap-3';
+            row.innerHTML = `
+              <div class="flex-1 grid gap-2">
+                <input type="text" name="organization[header_cta][links][][text]"
+                       maxlength="40" class="crayons-textfield crayons-textfield--s"
+                       placeholder="<%= j t("views.organization_settings.header_cta.link_text_placeholder") %>" />
+                <input type="url" name="organization[header_cta][links][][url]"
+                       maxlength="200" class="crayons-textfield crayons-textfield--s" placeholder="https://..." />
+                <input type="url" name="organization[header_cta][links][][logo_url]"
+                       maxlength="200" class="crayons-textfield crayons-textfield--s"
+                       placeholder="<%= j t("views.organization_settings.header_cta.link_image_placeholder") %>" />
+              </div>
+              <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon header-cta-remove-link"
+                      title="<%= j t("views.organization_settings.header_cta.remove_link") %>">
+                <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-hidden="true" class="crayons-icon"><path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z"></path></svg>
+              </button>`;
+            return row;
+          }
 
-        <button class="crayons-btn w-max" type="submit"><%= t("views.settings.org.admin.form.submit") %></button>
-      <% end %>
-    </div>
+          var urlInput = document.getElementById('header_cta_url');
+          var overriddenMsg = '<%= j t("views.organization_settings.header_cta.button_url_overridden") %>';
 
-    <%# ── Members ── %>
-    <div class="crayons-card crayons-card--content-rows">
-      <h2><%= t("views.settings.org.admin.members") %></h2>
+          function updateUrlFieldState() {
+            var hasLinks = container.querySelectorAll('.header-cta-link-row').length > 0;
+            urlInput.style.borderColor = hasLinks ? 'var(--accent-danger)' : '';
+            urlInput.style.opacity = hasLinks ? '0.5' : '';
+            var notice = document.getElementById('header-cta-url-override-notice');
+            if (hasLinks && !notice) {
+              var span = document.createElement('span');
+              span.id = 'header-cta-url-override-notice';
+              span.className = 'color-accent-danger fw-medium';
+              span.textContent = overriddenMsg;
+              var desc = urlInput.parentElement.querySelector('.crayons-field__description');
+              if (desc) { desc.appendChild(document.createElement('br')); desc.appendChild(span); }
+            } else if (!hasLinks && notice) {
+              var br = notice.previousSibling;
+              if (br && br.nodeName === 'BR') br.remove();
+              notice.remove();
+            }
+          }
 
-      <% active_memberships = @org_organization_memberships.reject(&:pending?) %>
-      <% pending_memberships = @org_organization_memberships.select(&:pending?) %>
+          if (addBtn) {
+            addBtn.addEventListener('click', function() {
+              if (container.querySelectorAll('.header-cta-link-row').length >= 12) return;
+              container.appendChild(createRow());
+              updateUrlFieldState();
+            });
+          }
 
-      <% if active_memberships.any? %>
-        <h3 class="fs-base fw-bold mb-2"><%= t("views.settings.org.admin.active_members") %></h3>
-        <div class="grid gap-2 mb-6">
-          <% active_memberships.each do |org_membership| %>
-            <div class="crayons-card crayons-card--secondary p-4 flex items-center">
-              <p class="fw-medium flex-1">
-                <a href="<%= org_membership.user.path %>"><%= org_membership.user.name %></a>
-                <% if org_membership.user == current_user %>
-                  <span class="c-indicator"><%= t("views.settings.org.admin.you") %></span>
-                <% end %>
-                <% if org_membership.type_of_user == "admin" %>
-                  <span class="c-indicator c-indicator--danger"><%= t("views.settings.org.admin.admin") %></span>
-                <% end %>
-              </p>
+          if (container) {
+            container.addEventListener('click', function(e) {
+              var removeBtn = e.target.closest('.header-cta-remove-link');
+              if (removeBtn) {
+                removeBtn.closest('.header-cta-link-row').remove();
+                updateUrlFieldState();
+              }
+            });
+          }
+        })();
+      </script>
 
-              <div class="flex">
-                <% if org_membership.user == current_user && org_membership.type_of_user == "admin" %>
-                  <%# Current admin user — no actions %>
-                <% elsif org_membership.user != current_user && org_membership.type_of_user == "admin" %>
-                  <%= form_tag "/users/remove_org_admin", onsubmit: "return confirm('#{t('views.settings.org.admin.revoke.confirm', user: org_membership.user.name)}');" do %>
-                    <%= hidden_field_tag "user_id", org_membership.user_id %>
-                    <%= hidden_field_tag "organization_id", @organization.id %>
-                    <button class="crayons-btn crayons-btn--secondary ml-2" title="<%= t("views.settings.org.admin.revoke.title") %>" type="submit"><%= t("views.settings.org.admin.revoke.text") %></button>
+      <%# ── Sidebar Call to Action ── %>
+      <div id="section-sidebar-cta" class="crayons-card crayons-card--content-rows">
+        <header>
+          <h2 class="mb-2"><%= t("views.settings.org.admin.cta") %></h2>
+          <p><%= t("views.settings.org.admin.cta_desc") %></p>
+        </header>
+
+        <%= form_for @organization, url: organization_settings_path(@organization.slug), method: :patch, html: { class: "grid gap-6" } do |f| %>
+          <div class="crayons-field">
+            <%= f.label :cta_body_markdown, class: "crayons-field__label" %>
+            <%= f.text_area :cta_body_markdown, maxlength: 256, class: "crayons-textfield" %>
+            <p class="crayons-field__description"><%= t("views.settings.org.admin.form.cta_body_markdown") %></p>
+          </div>
+          <div class="crayons-field">
+            <%= f.label :cta_button_text, class: "crayons-field__label" %>
+            <%= f.text_field :cta_button_text, maxlength: 20, class: "crayons-textfield" %>
+            <p class="crayons-field__description"><%= t("views.settings.org.admin.form.cta_button_text") %></p>
+          </div>
+          <div class="crayons-field">
+            <%= f.label :cta_button_url, "Link url", class: "crayons-field__label" %>
+            <%= f.text_field :cta_button_url, maxlength: 150, placeholder: "https://example.com", class: "crayons-textfield" %>
+          </div>
+
+          <button class="crayons-btn w-max" type="submit"><%= t("views.settings.org.admin.form.submit") %></button>
+        <% end %>
+      </div>
+
+      <%# ── Members ── %>
+      <div id="section-members" class="crayons-card crayons-card--content-rows">
+        <h2><%= t("views.settings.org.admin.members") %></h2>
+
+        <% active_memberships = @org_organization_memberships.reject(&:pending?) %>
+        <% pending_memberships = @org_organization_memberships.select(&:pending?) %>
+
+        <% if active_memberships.any? %>
+          <h3 class="fs-base fw-bold mb-2"><%= t("views.settings.org.admin.active_members") %></h3>
+          <div class="grid gap-2 mb-6">
+            <% active_memberships.each do |org_membership| %>
+              <div class="crayons-card crayons-card--secondary p-4 flex items-center">
+                <p class="fw-medium flex-1">
+                  <a href="<%= org_membership.user.path %>"><%= org_membership.user.name %></a>
+                  <% if org_membership.user == current_user %>
+                    <span class="c-indicator"><%= t("views.settings.org.admin.you") %></span>
                   <% end %>
-                <% else %>
-                  <%= form_tag "/users/add_org_admin", onsubmit: "return confirm('#{t('views.settings.org.admin.make.confirm', user: org_membership.user.name)}');" do %>
-                    <%= hidden_field_tag "user_id", org_membership.user_id %>
-                    <%= hidden_field_tag "organization_id", @organization.id %>
-                    <button class="crayons-btn crayons-btn--secondary ml-2" title="<%= t("views.settings.org.admin.make.title") %>" type="submit"><%= t("views.settings.org.admin.make.text") %></button>
+                  <% if org_membership.type_of_user == "admin" %>
+                    <span class="c-indicator c-indicator--danger"><%= t("views.settings.org.admin.admin") %></span>
                   <% end %>
+                </p>
+
+                <div class="flex">
+                  <% if org_membership.user == current_user && org_membership.type_of_user == "admin" %>
+                    <%# Current admin user — no actions %>
+                  <% elsif org_membership.user != current_user && org_membership.type_of_user == "admin" %>
+                    <%= form_tag "/users/remove_org_admin", onsubmit: "return confirm('#{t('views.settings.org.admin.revoke.confirm', user: org_membership.user.name)}');" do %>
+                      <%= hidden_field_tag "user_id", org_membership.user_id %>
+                      <%= hidden_field_tag "organization_id", @organization.id %>
+                      <button class="crayons-btn crayons-btn--secondary ml-2" title="<%= t("views.settings.org.admin.revoke.title") %>" type="submit"><%= t("views.settings.org.admin.revoke.text") %></button>
+                    <% end %>
+                  <% else %>
+                    <%= form_tag "/users/add_org_admin", onsubmit: "return confirm('#{t('views.settings.org.admin.make.confirm', user: org_membership.user.name)}');" do %>
+                      <%= hidden_field_tag "user_id", org_membership.user_id %>
+                      <%= hidden_field_tag "organization_id", @organization.id %>
+                      <button class="crayons-btn crayons-btn--secondary ml-2" title="<%= t("views.settings.org.admin.make.title") %>" type="submit"><%= t("views.settings.org.admin.make.text") %></button>
+                    <% end %>
+                    <%= form_tag "/users/remove_from_org", onsubmit: "return confirm('#{t('views.settings.org.admin.remove.confirm', user: org_membership.user.name)}');" do %>
+                      <%= hidden_field_tag "user_id", org_membership.user_id %>
+                      <%= hidden_field_tag "organization_id", @organization.id %>
+                      <button class="crayons-btn crayons-btn--secondary ml-2" title="<%= t("views.settings.org.admin.remove.title") %>" type="submit"><%= t("views.settings.org.admin.remove.text") %></button>
+                    <% end %>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+
+        <% if pending_memberships.any? %>
+          <h3 class="fs-base fw-bold mb-2"><%= t("views.settings.org.admin.pending_members") %></h3>
+          <div class="grid gap-2 mb-6">
+            <% pending_memberships.each do |org_membership| %>
+              <div class="crayons-card crayons-card--secondary p-4 flex items-center">
+                <p class="fw-medium flex-1">
+                  <a href="<%= org_membership.user.path %>"><%= org_membership.user.name %></a>
+                  <span class="c-indicator c-indicator--warning"><%= t("views.settings.org.admin.pending") %></span>
+                </p>
+                <div class="flex">
                   <%= form_tag "/users/remove_from_org", onsubmit: "return confirm('#{t('views.settings.org.admin.remove.confirm', user: org_membership.user.name)}');" do %>
                     <%= hidden_field_tag "user_id", org_membership.user_id %>
                     <%= hidden_field_tag "organization_id", @organization.id %>
-                    <button class="crayons-btn crayons-btn--secondary ml-2" title="<%= t("views.settings.org.admin.remove.title") %>" type="submit"><%= t("views.settings.org.admin.remove.text") %></button>
+                    <button class="crayons-btn crayons-btn--secondary ml-2" title="<%= t("views.settings.org.admin.cancel_invite.title") %>" type="submit"><%= t("views.settings.org.admin.cancel_invite.text") %></button>
                   <% end %>
-                <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+
+      <%# ── Invitations ── %>
+      <div id="section-invitations" class="crayons-card crayons-card--content-rows">
+        <header>
+          <h2 class="mb-2"><%= t("views.settings.org.admin.grow") %></h2>
+          <p class="color-base-70"><%= t("views.settings.org.admin.grow_description") %></p>
+        </header>
+
+        <% if @organization.fully_trusted? %>
+          <div class="crayons-notice crayons-notice--warning mb-6" role="alert">
+            <div class="flex items-start">
+              <%= crayons_icon_tag("twemoji/warning", native: true, class: "mr-2 shrink-0", title: t("views.settings.org.admin.fully_trusted_warning.icon")) %>
+              <div>
+                <p class="fw-bold mb-1"><%= t("views.settings.org.admin.fully_trusted_warning.title") %></p>
+                <p class="fs-s"><%= t("views.settings.org.admin.fully_trusted_warning.description") %></p>
               </div>
             </div>
-          <% end %>
-        </div>
-      <% end %>
+          </div>
+        <% end %>
 
-      <% if pending_memberships.any? %>
-        <h3 class="fs-base fw-bold mb-2"><%= t("views.settings.org.admin.pending_members") %></h3>
-        <div class="grid gap-2 mb-6">
-          <% pending_memberships.each do |org_membership| %>
-            <div class="crayons-card crayons-card--secondary p-4 flex items-center">
-              <p class="fw-medium flex-1">
-                <a href="<%= org_membership.user.path %>"><%= org_membership.user.name %></a>
-                <span class="c-indicator c-indicator--warning"><%= t("views.settings.org.admin.pending") %></span>
-              </p>
-              <div class="flex">
-                <%= form_tag "/users/remove_from_org", onsubmit: "return confirm('#{t('views.settings.org.admin.remove.confirm', user: org_membership.user.name)}');" do %>
-                  <%= hidden_field_tag "user_id", org_membership.user_id %>
-                  <%= hidden_field_tag "organization_id", @organization.id %>
-                  <button class="crayons-btn crayons-btn--secondary ml-2" title="<%= t("views.settings.org.admin.cancel_invite.title") %>" type="submit"><%= t("views.settings.org.admin.cancel_invite.text") %></button>
-                <% end %>
-              </div>
+        <div class="grid gap-6">
+          <%# Invite by Username %>
+          <div class="crayons-card crayons-card--secondary p-6">
+            <div class="flex items-center mb-4">
+              <%= crayons_icon_tag("user-line", class: "mr-3", title: @organization.fully_trusted? ? t("views.settings.org.admin.invite_methods.username.fully_trusted.icon") : t("views.settings.org.admin.invite_methods.username.icon")) %>
+              <h3 class="fs-l fw-bold"><%= @organization.fully_trusted? ? t("views.settings.org.admin.invite_methods.username.fully_trusted.title") : t("views.settings.org.admin.invite_methods.username.title") %></h3>
             </div>
-          <% end %>
-        </div>
-      <% end %>
-    </div>
+            <p class="color-base-70 mb-4"><%= @organization.fully_trusted? ? t("views.settings.org.admin.invite_methods.username.fully_trusted.description") : t("views.settings.org.admin.invite_methods.username.description") %></p>
 
-    <%# ── Invitations ── %>
-    <div class="crayons-card crayons-card--content-rows">
-      <header>
-        <h2 class="mb-2"><%= t("views.settings.org.admin.grow") %></h2>
-        <p class="color-base-70"><%= t("views.settings.org.admin.grow_description") %></p>
-      </header>
-
-      <% if @organization.fully_trusted? %>
-        <div class="crayons-notice crayons-notice--warning mb-6" role="alert">
-          <div class="flex items-start">
-            <%= crayons_icon_tag("twemoji/warning", native: true, class: "mr-2 shrink-0", title: t("views.settings.org.admin.fully_trusted_warning.icon")) %>
-            <div>
-              <p class="fw-bold mb-1"><%= t("views.settings.org.admin.fully_trusted_warning.title") %></p>
-              <p class="fs-s"><%= t("views.settings.org.admin.fully_trusted_warning.description") %></p>
-            </div>
-          </div>
-        </div>
-      <% end %>
-
-      <div class="grid gap-6">
-        <%# Invite by Username %>
-        <div class="crayons-card crayons-card--secondary p-6">
-          <div class="flex items-center mb-4">
-            <%= crayons_icon_tag("user-line", class: "mr-3", title: @organization.fully_trusted? ? t("views.settings.org.admin.invite_methods.username.fully_trusted.icon") : t("views.settings.org.admin.invite_methods.username.icon")) %>
-            <h3 class="fs-l fw-bold"><%= @organization.fully_trusted? ? t("views.settings.org.admin.invite_methods.username.fully_trusted.title") : t("views.settings.org.admin.invite_methods.username.title") %></h3>
-          </div>
-          <p class="color-base-70 mb-4"><%= @organization.fully_trusted? ? t("views.settings.org.admin.invite_methods.username.fully_trusted.description") : t("views.settings.org.admin.invite_methods.username.description") %></p>
-
-          <%= form_tag organization_invite_path(@organization.id), method: :post, class: "grid gap-4" do %>
-            <%= hidden_field_tag "organization[id]", @organization.id %>
-            <div class="crayons-field">
-              <%= label_tag "username", t("views.settings.org.admin.username_label"), class: "crayons-field__label" %>
-              <%= text_field_tag "username", nil, class: "crayons-textfield", placeholder: t("views.settings.org.admin.username_placeholder"), autocomplete: "off" %>
-              <p class="crayons-field__description"><%= @organization.fully_trusted? ? t("views.settings.org.admin.username_description_fully_trusted") : t("views.settings.org.admin.username_description") %></p>
-            </div>
-            <button type="submit" class="crayons-btn crayons-btn--primary w-max"><%= @organization.fully_trusted? ? t("views.settings.org.admin.add_button") : t("views.settings.org.admin.invite_button") %></button>
-          <% end %>
-        </div>
-
-        <%# Share Secret Code %>
-        <div class="crayons-card crayons-card--secondary p-6">
-          <div class="flex items-center mb-4">
-            <%= crayons_icon_tag("lock", class: "mr-3", title: t("views.settings.org.admin.invite_methods.secret.icon")) %>
-            <h3 class="fs-l fw-bold"><%= t("views.settings.org.admin.invite_methods.secret.title") %></h3>
-          </div>
-          <p class="color-base-70 mb-4"><%= t("views.settings.org.admin.invite_methods.secret.description") %></p>
-
-          <div class="mb-4">
-            <p class="fw-medium mb-2"><%= t("views.settings.org.admin.secret_instructions") %></p>
-            <ol class="list-decimal pl-6 mb-4">
-              <li class="mb-1"><%= t("views.settings.org.admin.inst1_html", url: link_to(app_url, app_url, class: "crayons-link")) %></li>
-              <li class="mb-1"><%= t("views.settings.org.admin.inst2_html", url: link_to(app_url(user_settings_path(:organization)), app_url(user_settings_path(:organization)), class: "crayons-link")) %></li>
-              <li><%= t("views.settings.org.admin.inst3_html") %></li>
-            </ol>
-          </div>
-
-          <div class="crayons-field mb-4">
-            <%= label_tag "settings-org-secret", t("views.settings.org.admin.secret_code"), class: "crayons-field__label" %>
-            <div class="flex gap-2">
-              <input type="text" class="crayons-textfield ff-monospace ff-s fw-medium" autocomplete="off" id="settings-org-secret" value="<%= @organization.secret %>" readonly aria-label="<%= t("views.settings.org.admin.copy.input.aria_label") %>">
-              <button id="settings-org-secret-copy-btn" aria-label="<%= t("views.settings.org.admin.copy.button.aria_label") %>" class="crayons-btn crayons-btn--secondary" type="button">
-                <%= crayons_icon_tag(:copy, title: t("views.settings.org.admin.copy.icon"), aria_hidden: true, class: "mr-1") %>
-                <span class="hidden s:inline-block"><%= t("views.settings.org.admin.copy.button.text") %></span>
-              </button>
-            </div>
-            <div class="crayons-notice crayons-notice--success mt-2 hidden" id="copy-text-announcer" role="alert"><%= t("views.settings.org.admin.copy.text") %></div>
-          </div>
-
-          <div class="flex items-center gap-2">
-            <%= form_tag "/organizations/generate_new_secret", onsubmit: "return confirm('#{t('views.settings.org.admin.gen.confirm')}');" do %>
+            <%= form_tag organization_invite_path(@organization.id), method: :post, class: "grid gap-4" do %>
               <%= hidden_field_tag "organization[id]", @organization.id %>
-              <button type="submit" class="crayons-btn crayons-btn--secondary"><%= t("views.settings.org.admin.gen.submit") %></button>
+              <div class="crayons-field">
+                <%= label_tag "username", t("views.settings.org.admin.username_label"), class: "crayons-field__label" %>
+                <%= text_field_tag "username", nil, class: "crayons-textfield", placeholder: t("views.settings.org.admin.username_placeholder"), autocomplete: "off" %>
+                <p class="crayons-field__description"><%= @organization.fully_trusted? ? t("views.settings.org.admin.username_description_fully_trusted") : t("views.settings.org.admin.username_description") %></p>
+              </div>
+              <button type="submit" class="crayons-btn crayons-btn--primary w-max"><%= @organization.fully_trusted? ? t("views.settings.org.admin.add_button") : t("views.settings.org.admin.invite_button") %></button>
             <% end %>
-            <p class="fs-s color-base-60"><%= t("views.settings.org.admin.gen.text") %></p>
+          </div>
+
+          <%# Share Secret Code %>
+          <div class="crayons-card crayons-card--secondary p-6">
+            <div class="flex items-center mb-4">
+              <%= crayons_icon_tag("lock", class: "mr-3", title: t("views.settings.org.admin.invite_methods.secret.icon")) %>
+              <h3 class="fs-l fw-bold"><%= t("views.settings.org.admin.invite_methods.secret.title") %></h3>
+            </div>
+            <p class="color-base-70 mb-4"><%= t("views.settings.org.admin.invite_methods.secret.description") %></p>
+
+            <div class="mb-4">
+              <p class="fw-medium mb-2"><%= t("views.settings.org.admin.secret_instructions") %></p>
+              <ol class="list-decimal pl-6 mb-4">
+                <li class="mb-1"><%= t("views.settings.org.admin.inst1_html", url: link_to(app_url, app_url, class: "crayons-link")) %></li>
+                <li class="mb-1"><%= t("views.settings.org.admin.inst2_html", url: link_to(app_url(user_settings_path(:organization)), app_url(user_settings_path(:organization)), class: "crayons-link")) %></li>
+                <li><%= t("views.settings.org.admin.inst3_html") %></li>
+              </ol>
+            </div>
+
+            <div class="crayons-field mb-4">
+              <%= label_tag "settings-org-secret", t("views.settings.org.admin.secret_code"), class: "crayons-field__label" %>
+              <div class="flex gap-2">
+                <input type="text" class="crayons-textfield ff-monospace ff-s fw-medium" autocomplete="off" id="settings-org-secret" value="<%= @organization.secret %>" readonly aria-label="<%= t("views.settings.org.admin.copy.input.aria_label") %>">
+                <button id="settings-org-secret-copy-btn" aria-label="<%= t("views.settings.org.admin.copy.button.aria_label") %>" class="crayons-btn crayons-btn--secondary" type="button">
+                  <%= crayons_icon_tag(:copy, title: t("views.settings.org.admin.copy.icon"), aria_hidden: true, class: "mr-1") %>
+                  <span class="hidden s:inline-block"><%= t("views.settings.org.admin.copy.button.text") %></span>
+                </button>
+              </div>
+              <div class="crayons-notice crayons-notice--success mt-2 hidden" id="copy-text-announcer" role="alert"><%= t("views.settings.org.admin.copy.text") %></div>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <%= form_tag "/organizations/generate_new_secret", onsubmit: "return confirm('#{t('views.settings.org.admin.gen.confirm')}');" do %>
+                <%= hidden_field_tag "organization[id]", @organization.id %>
+                <button type="submit" class="crayons-btn crayons-btn--secondary"><%= t("views.settings.org.admin.gen.submit") %></button>
+              <% end %>
+              <p class="fs-s color-base-60"><%= t("views.settings.org.admin.gen.text") %></p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <%# ── Danger Zone ── %>
-    <div class="crayons-card crayons-card--content-rows">
-      <header>
-        <h2 class="color-accent-danger"><%= t("views.settings.danger") %></h2>
-      </header>
-      <div class="crayons-field">
-        <div class="grid gap-2">
-          <header>
-            <h2><%= t("views.settings.org.admin.delete.heading") %></h2>
-          </header>
-          <p><%= t("views.settings.org.admin.delete.desc_html") %></p>
-          <% if @org_organization_memberships.size === 1 && @organization.articles_count.zero? %>
-            <% onsubmit = "return confirm('#{t('views.settings.org.admin.delete.confirm', name: @organization.name)}');" %>
-            <%= form_tag organization_path(@organization.id), method: :delete, onsubmit: onsubmit do %>
-              <button class="crayons-btn crayons-btn--danger crayons-btn--icon-left" type="submit">
-                <%= t("views.settings.org.admin.delete.submit", name: @organization.name) %>
-              </button>
-            <% end %>
-          <% else %>
-            <div class="crayons-card crayons-card--secondary">
-              <div class="crayons-card__body">
-                <%= t("views.settings.org.admin.delete.unmet") %>
+      <%# ── Danger Zone ── %>
+      <div id="section-danger" class="crayons-card crayons-card--content-rows">
+        <header>
+          <h2 class="color-accent-danger"><%= t("views.settings.danger") %></h2>
+        </header>
+        <div class="crayons-field">
+          <div class="grid gap-2">
+            <header>
+              <h2><%= t("views.settings.org.admin.delete.heading") %></h2>
+            </header>
+            <p><%= t("views.settings.org.admin.delete.desc_html") %></p>
+            <% if @org_organization_memberships.size === 1 && @organization.articles_count.zero? %>
+              <% onsubmit = "return confirm('#{t('views.settings.org.admin.delete.confirm', name: @organization.name)}');" %>
+              <%= form_tag organization_path(@organization.id), method: :delete, onsubmit: onsubmit do %>
+                <button class="crayons-btn crayons-btn--danger crayons-btn--icon-left" type="submit">
+                  <%= t("views.settings.org.admin.delete.submit", name: @organization.name) %>
+                </button>
+              <% end %>
+            <% else %>
+              <div class="crayons-card crayons-card--secondary">
+                <div class="crayons-card__body">
+                  <%= t("views.settings.org.admin.delete.unmet") %>
+                </div>
               </div>
-            </div>
-          <% end %>
-          <p>
-            <%= t("views.settings.org.admin.delete.questions_html", email: link_to(ForemInstance.contact_email, ForemInstance.contact_email)) %>
-          </p>
+            <% end %>
+            <p>
+              <%= t("views.settings.org.admin.delete.questions_html", email: link_to(ForemInstance.contact_email, ForemInstance.contact_email)) %>
+            </p>
+          </div>
         </div>
       </div>
-    </div>
 
+    </div>
   </div>
 </div>
+
+<%# Sidebar scroll-spy %>
+<script>
+  (function() {
+    const nav = document.getElementById('org-settings-nav');
+    if (!nav) return;
+    const links = nav.querySelectorAll('a[href^="#"]');
+    const sections = [];
+
+    links.forEach(function(link) {
+      var target = document.querySelector(link.getAttribute('href'));
+      if (target) sections.push({ link: link, target: target });
+    });
+
+    function updateActive() {
+      var scrollY = window.scrollY + 80;
+      var current = null;
+      for (var i = 0; i < sections.length; i++) {
+        if (sections[i].target.offsetTop <= scrollY) {
+          current = sections[i];
+        }
+      }
+      links.forEach(function(l) { l.classList.remove('active'); });
+      if (current) current.link.classList.add('active');
+    }
+
+    window.addEventListener('scroll', updateActive, { passive: true });
+    updateActive();
+
+    links.forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        var target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          history.replaceState(null, '', this.getAttribute('href'));
+        }
+      });
+    });
+  })();
+</script>
 
 <div id="snack-zone"></div>
 <%= javascript_include_tag "orgPageEditor", defer: true %>

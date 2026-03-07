@@ -6,36 +6,51 @@
   margin-bottom: var(--su-4);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .ltag-quote__body {
   padding: 0 var(--su-4);
+  flex-grow: 1;
 }
 
 .ltag-quote__mark {
-  font-size: 2.5rem;
-  line-height: 0.6;
-  font-family: Georgia, serif;
   color: var(--card-color-tertiary);
   user-select: none;
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.ltag-quote__mark--start {
+  display: flex;
+  justify-content: flex-end;
+  transform: scaleX(-1) scaleY(-1);
 }
 
 .ltag-quote__mark--end {
-  text-align: right;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--su-3);
 }
 
 .ltag-quote__text {
   font-size: var(--fs-l);
   color: var(--card-color);
 
+  > br { display: none; }
   > :first-child { margin-top: 0; }
   > :last-child { margin-bottom: 0; }
 }
 
 .ltag-quote__rating {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
   margin-top: var(--su-2);
-  padding: 0 var(--su-4);
 }
 
 .ltag-quote__star {
@@ -50,15 +65,13 @@
 .ltag-quote__divider {
   border: none;
   border-top: 1px solid var(--card-border);
-  margin: var(--su-4) 0;
+  margin: var(--su-2) 0 var(--su-4);
 }
 
 .ltag-quote__footer {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
   gap: var(--su-3);
-  flex-wrap: wrap;
 }
 
 .ltag-quote__author-info {

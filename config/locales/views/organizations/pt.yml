@@ -9,12 +9,47 @@ pt:
         readme_placeholder: "Use Markdown e tags Liquid para personalizar a página da sua organização.\n\nExemplo:\n{% org_team slug-da-org %}\n{% org_team slug-da-org role=admins limit=5 %}\n{% org_posts slug-da-org %}\n{% org_posts slug-da-org limit=5 sort=reactions min_reactions=10 since=30d %}"
         readme_description: "Suporta Markdown e tags Liquid como {% org_team slug %} e {% org_posts slug %}. Opções org_team: limit (1-50), role (all/admins/members). Opções org_posts: limit (1-30), sort (recent/reactions/comments/score), min_reactions, min_comments, since (ex. 30d ou 2025-01-01)."
         save: Salvar página
+      header_cta:
+        heading: Botão CTA do Cabeçalho
+        description: "Adicione um botão de chamada para ação no cabeçalho da página da sua organização. Você pode criar um botão simples ou um menu suspenso com vários links."
+        button_text: Texto do botão
+        button_text_placeholder: "Experimente nosso produto"
+        button_text_help: "O rótulo exibido no botão CTA no cabeçalho da página da sua organização."
+        button_url: URL do botão
+        button_url_help: "Para um botão simples, os visitantes são redirecionados aqui ao clicar. Deixe em branco se usar links suspensos."
+        button_url_overridden: "Ignorado — os links suspensos estão ativos."
+        dropdown_links: Links suspensos (opcional)
+        dropdown_links_help: "Adicione vários links para transformar o CTA em um menu suspenso. Cada link precisa de um rótulo e URL. Se fornecidos, estes são exibidos em vez da URL do botão único."
+        link_text_placeholder: "Rótulo do link"
+        link_image_placeholder: "URL da imagem (opcional)"
+        add_link: Adicionar link
+        remove_link: Remover link
+        save: Salvar CTA do cabeçalho
+      sidebar:
+        invitations: Convites
+      social_links:
+        heading: Links Sociais
+        description: "Conecte os perfis sociais da sua organização. Insira nomes de usuário ou URLs completas."
+        save: Salvar links sociais
     organizations:
       dropdown: Organization actions
       empty: 404 bio not found
       external:
         icon: External link icon
       follow: Follow
+      social:
+        twitter: Twitter
+        github: GitHub
+        youtube: YouTube
+        discord: Discord
+        linkedin: LinkedIn
+        instagram: Instagram
+        facebook: Facebook
+        spotify: Spotify
+        twitch: Twitch
+        mastodon: Mastodon
+      header_cta:
+        expand: Expandir opções
       github:
         icon: GitHub logo
       joined:

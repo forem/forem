@@ -152,6 +152,8 @@ fr:
       invalid_option: "Option '%{option}' non valide pour la balise org_team"
       invalid_limit: "La limite doit être comprise entre 1 et 50"
       invalid_role: "Le rôle doit être l'un des suivants : all, admins, members"
+    netlify_tag:
+      invalid_url: "URL Netlify non valide. Doit être une URL https://*.netlify.app"
     features_tag:
       no_args: "La balise features n'accepte aucun argument"
     feature_tag:
@@ -161,5 +163,7 @@ fr:
       invalid_rating: "La note doit être comprise entre 1 et 5"
     slide_tag:
       missing_image: "La balise slide nécessite une option image"
+    slides_tag:
+      invalid_mode: "Le mode slides doit être 'default' ou 'carousel'"
     youtube_tag:
       invalid_youtube_id: ID ou URL YouTube non valide

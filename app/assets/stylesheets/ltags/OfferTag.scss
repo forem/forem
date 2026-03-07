@@ -2,7 +2,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-evenly;
   gap: var(--su-4);
   padding: var(--su-5);
   border: 2px solid var(--card-border);
@@ -11,11 +11,12 @@
 }
 
 .ltag-offer__body {
-  flex: 1 1 0;
+  flex: 1 1 80%;
   min-width: 200px;
   font-size: var(--fs-l);
   font-weight: var(--fw-medium);
 
+  > br { display: none; }
   > :first-child { margin-top: 0; }
   > :last-child { margin-bottom: 0; }
 }
@@ -25,4 +26,10 @@
   text-decoration: none;
   white-space: nowrap;
   flex-shrink: 0;
+  padding: var(--su-3) var(--su-4);
+  border-radius: var(--radius);
+  font-weight: var(--fw-medium);
+  color: white !important;
+
+  &:hover { color: white !important; }
 }

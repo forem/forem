@@ -40,8 +40,11 @@ module MarkdownProcessor
     RENDERED_MARKDOWN_SCRUBBER = %w[a abbr add b blockquote br center cite code col
                                     colgroup dd del dl dt em figcaption h1 h2 h3 h4 h5
                                     h6 hr img kbd li mark ol p pre q rp rt ruby small
-                                    source span strong sub sup table tbody td tfoot th
-                                    thead time tr u ul video].freeze
+                                    source span strong sub sup svg circle clipPath defs
+                                    ellipse feBlend feColorMatrix feComposite feFlood
+                                    feOffset filter g line linearGradient path polygon
+                                    polyline rect stop style title use table tbody td
+                                    tfoot th thead time tr u ul video].freeze
 
     MARKDOWN_PROCESSOR_DEFAULT = %w[a abbr aside b blockquote br code em h1 h2 h3 h4 h5
                                     h6 hr i img kbd li ol p pre small span strong sub
@@ -72,10 +75,12 @@ module MarkdownProcessor
 
     BILLBOARD = %w[alt class height href src width].freeze
 
-    RENDERED_MARKDOWN_SCRUBBER = %w[alt autoplay colspan controls data-conversation data-lang
-                                    data-gif-video data-no-instant data-url href id loop muted name
-                                    playsinline preload poster ref rel rowspan span src start title
-                                    type value].freeze
+    RENDERED_MARKDOWN_SCRUBBER = %w[alt autoplay class colspan controls cx cy d data-conversation
+                                    data-lang data-gif-video data-no-instant data-url fill
+                                    height href id loop muted name playsinline points preload
+                                    poster r ref rel rowspan rx ry span src start stroke
+                                    stroke-linecap stroke-linejoin stroke-width title type
+                                    value viewBox width x1 x2 xmlns y1 y2].freeze
 
     MARKDOWN_PROCESSOR = %w[alt href src].freeze
 

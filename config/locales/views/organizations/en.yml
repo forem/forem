@@ -9,12 +9,47 @@ en:
         readme_placeholder: "Use Markdown and Liquid tags to customize your org page.\n\nExample:\n{% org_team your-org-slug %}\n{% org_team your-org-slug role=admins limit=5 %}\n{% org_posts your-org-slug %}\n{% org_posts your-org-slug limit=5 sort=reactions min_reactions=10 since=30d %}"
         readme_description: "Supports Markdown and Liquid tags like {% org_team slug %} and {% org_posts slug %}. org_team options: limit (1-50), role (all/admins/members). org_posts options: limit (1-30), sort (recent/reactions/comments/score), min_reactions, min_comments, since (e.g. 30d or 2025-01-01)."
         save: Save page
+      header_cta:
+        heading: Header CTA Button
+        description: Add a call-to-action button to your organization's page header. You can create a simple button or a dropdown with multiple links.
+        button_text: Button text
+        button_text_placeholder: "Try Our Product"
+        button_text_help: The label shown on the CTA button in your org page header.
+        button_url: Button URL
+        button_url_help: For a simple button, visitors go here when they click. Leave blank if using dropdown links instead.
+        button_url_overridden: Ignored — dropdown links are active instead.
+        dropdown_links: Dropdown links (optional)
+        dropdown_links_help: Add multiple links to turn the CTA into a dropdown menu. Each link needs a label and URL. If provided, these are shown instead of the single button URL.
+        link_text_placeholder: "Link label"
+        link_image_placeholder: "Image URL (optional)"
+        add_link: Add link
+        remove_link: Remove link
+        save: Save header CTA
+      sidebar:
+        invitations: Invitations
+      social_links:
+        heading: Social Links
+        description: Connect your organization's social profiles. Enter usernames or full URLs.
+        save: Save social links
     organizations:
       dropdown: Organization actions
       empty: 404 bio not found
       external:
         icon: External link icon
       follow: Follow
+      social:
+        twitter: Twitter
+        github: GitHub
+        youtube: YouTube
+        discord: Discord
+        linkedin: LinkedIn
+        instagram: Instagram
+        facebook: Facebook
+        spotify: Spotify
+        twitch: Twitch
+        mastodon: Mastodon
+      header_cta:
+        expand: Expand options
       github:
         icon: GitHub logo
       joined:

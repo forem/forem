@@ -1,15 +1,30 @@
+<% title_href = link.presence || video.presence %>
 <div class="ltag-slide">
-  <% if video.present? %>
-    <a href="<%= video %>" class="ltag-slide__link" target="_blank" rel="noopener noreferrer">
+  <% if image.present? %>
+    <% if link.present? && video.blank? %>
+      <a href="<%= link %>" class="ltag-slide__link" target="_blank" rel="noopener noreferrer">
+        <img class="ltag-slide__image" src="<%= image %>" alt="<%= alt %>" loading="lazy" />
+      </a>
+    <% elsif video.present? && video_embed_id.blank? %>
+      <a href="<%= video %>" class="ltag-slide__link" target="_blank" rel="noopener noreferrer">
+        <img class="ltag-slide__image" src="<%= image %>" alt="<%= alt %>" loading="lazy" />
+        <span class="ltag-slide__play" aria-label="Play video">&#9654;</span>
+      </a>
+    <% else %>
       <img class="ltag-slide__image" src="<%= image %>" alt="<%= alt %>" loading="lazy" />
-      <span class="ltag-slide__play" aria-label="Play video">▶</span>
-    </a>
-  <% else %>
-    <img class="ltag-slide__image" src="<%= image %>" alt="<%= alt %>" loading="lazy" />
+    <% end %>
+  <% elsif video_embed_id.present? %>
+    <iframe
+      src="https://www.youtube.com/embed/<%= video_embed_id %>"
+      class="ltag-slide__image"
+      style="border:0;"
+      allowfullscreen
+      loading="lazy">
+    </iframe>
   <% end %>
   <% if title.present? %>
-    <% if video.present? %>
-      <a href="<%= video %>" class="ltag-slide__title" target="_blank" rel="noopener noreferrer"><%= title %></a>
+    <% if title_href %>
+      <a href="<%= title_href %>" class="ltag-slide__title" target="_blank" rel="noopener noreferrer"><%= title %></a>
     <% else %>
       <div class="ltag-slide__title"><%= title %></div>
     <% end %>

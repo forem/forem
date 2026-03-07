@@ -20,6 +20,12 @@
   font-size: var(--fs-2xl);
   flex-shrink: 0;
   line-height: 1;
+  color: var(--accent-brand);
+
+  .crayons-icon {
+    width: 32px;
+    height: 32px;
+  }
 }
 
 .ltag-feature__content {

@@ -173,8 +173,8 @@ en:
             input:
               aria_label: Organization secret (to be rotated regularly)
             text: Copied to clipboard!
-          cta: Call-to-action box
-          cta_desc: Customizable text that appears to the right of every post for your organization.
+          cta: Post CTA
+          cta_desc: A call-to-action box shown beside every post published by your organization.
           delete:
             heading: Delete Organization
             confirm: 'Are you absolutely sure you want to delete your organization: %{name}?'
