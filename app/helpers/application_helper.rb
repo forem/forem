@@ -69,6 +69,8 @@ module ApplicationHelper
                      "stories stories-show podcast_episodes-show"
                    elsif @story_show
                      "stories stories-show"
+                   elsif @org_readme_show
+                     "stories organizations-show-readme"
                    else
                      "#{controller_name} #{current_page}"
                    end

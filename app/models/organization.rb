@@ -9,6 +9,13 @@ class Organization < ApplicationRecord
   COLOR_HEX_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
   INTEGER_REGEXP = /\A\d+\z/
 
+  SOCIAL_LINK_PLATFORMS = %w[youtube discord linkedin instagram facebook spotify twitch mastodon].freeze
+  SOCIAL_LINK_ICONS = {
+    "youtube" => "youtube", "discord" => "discord", "linkedin" => "linkedin",
+    "instagram" => "instagram", "facebook" => "facebook", "spotify" => "spotify",
+    "twitch" => "twitch", "mastodon" => "mastodon",
+  }.freeze
+
   acts_as_followable
 
   before_validation :downcase_slug
@@ -64,6 +71,8 @@ class Organization < ApplicationRecord
   validates :unspent_credits_count, presence: true
   validates :url, length: { maximum: 200 }, url: { allow_blank: true, no_local: true }
   validates :baseline_score, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validate :validate_social_links
+  validate :validate_header_cta
 
   unique_across_models :slug, length: { in: 2..30 }
 
@@ -149,7 +158,89 @@ class Organization < ApplicationRecord
     page_markdown.present?
   end
 
+  def social_link(platform)
+    social_links&.dig(platform.to_s)
+  end
+
+  def header_cta?
+    header_cta.present? && header_cta["text"].present?
+  end
+
+  def header_cta_dropdown?
+    header_cta? && header_cta["links"].is_a?(Array) && header_cta["links"].any?
+  end
+
   private
+
+  HEADER_CTA_MAX_TEXT = 40
+  HEADER_CTA_MAX_URL = 200
+  HEADER_CTA_MAX_LINKS = 12
+
+  def validate_header_cta
+    return if header_cta.blank?
+
+    text = header_cta["text"]
+    url = header_cta["url"]
+    links = header_cta["links"]
+
+    if text.present? && text.length > HEADER_CTA_MAX_TEXT
+      errors.add(:header_cta, I18n.t("models.organization.header_cta_text_too_long", max: HEADER_CTA_MAX_TEXT))
+      return
+    end
+
+    if url.present? && url.length > HEADER_CTA_MAX_URL
+      errors.add(:header_cta, I18n.t("models.organization.header_cta_url_too_long", max: HEADER_CTA_MAX_URL))
+      return
+    end
+
+    validate_header_cta_links(links) if links.present?
+  end
+
+  def validate_header_cta_links(links)
+    unless links.is_a?(Array)
+      errors.add(:header_cta, I18n.t("models.organization.header_cta_links_invalid"))
+      return
+    end
+
+    if links.length > HEADER_CTA_MAX_LINKS
+      errors.add(:header_cta, I18n.t("models.organization.header_cta_too_many_links", max: HEADER_CTA_MAX_LINKS))
+      return
+    end
+
+    links.each do |link|
+      unless link.is_a?(Hash) && link["text"].present? && link["url"].present?
+        errors.add(:header_cta, I18n.t("models.organization.header_cta_link_missing_fields"))
+        return
+      end
+
+      if link["text"].length > HEADER_CTA_MAX_TEXT
+        errors.add(:header_cta, I18n.t("models.organization.header_cta_text_too_long", max: HEADER_CTA_MAX_TEXT))
+        return
+      end
+
+      if link["url"].length > HEADER_CTA_MAX_URL
+        errors.add(:header_cta, I18n.t("models.organization.header_cta_url_too_long", max: HEADER_CTA_MAX_URL))
+        return
+      end
+    end
+  end
+
+  def validate_social_links
+    return if social_links.blank?
+
+    social_links.each do |platform, url|
+      next if url.blank?
+
+      unless SOCIAL_LINK_PLATFORMS.include?(platform)
+        errors.add(:social_links, I18n.t("models.organization.unknown_platform", platform: platform))
+        next
+      end
+
+      if url.length > 200
+        errors.add(:social_links, I18n.t("models.organization.social_link_too_long", platform: platform))
+      end
+    end
+  end
 
   def generate_social_images
     change = saved_change_to_attribute?(:name) || saved_change_to_attribute?(:profile_image)
@@ -160,7 +251,7 @@ class Organization < ApplicationRecord
 
   def evaluate_markdown
     self.cta_processed_html = MarkdownProcessor::Parser.new(cta_body_markdown).evaluate_limited_markdown
-    evaluate_page_markdown if has_attribute?(:page_markdown) && will_save_change_to_attribute?(:page_markdown)
+    evaluate_page_markdown if has_attribute?(:page_markdown) && page_markdown.present?
   end
 
   def evaluate_page_markdown

@@ -50,19 +50,44 @@ class OrganizationSettingsController < ApplicationController
   end
 
   def organization_params
-    params.require(:organization).permit(
+    permitted = params.require(:organization).permit(
       :name, :summary, :tag_line, :slug, :url, :proof, :profile_image,
       :location, :company_size, :tech_stack, :email, :story,
       :bg_color_hex, :text_color_hex, :twitter_username, :github_username,
       :cta_button_text, :cta_button_url, :cta_body_markdown,
       :cover_image, :page_markdown,
-    ).transform_values do |value|
-      if value.instance_of?(String)
-        ActionController::Base.helpers.strip_tags(value)
-      else
-        value
-      end
+      social_links: Organization::SOCIAL_LINK_PLATFORMS,
+      header_cta: [:text, :url, links: [:text, :url, :logo_url]],
+    )
+
+    result = permitted.to_h
+    result.transform_values! do |value|
+      value.instance_of?(String) ? ActionController::Base.helpers.strip_tags(value) : value
     end
+
+    if result["social_links"].present?
+      result["social_links"] = result["social_links"].transform_values do |v|
+        ActionController::Base.helpers.strip_tags(v.to_s).strip
+      end.reject { |_, v| v.blank? }
+    end
+
+    if result["header_cta"].present?
+      cta = result["header_cta"]
+      cta["text"] = ActionController::Base.helpers.strip_tags(cta["text"].to_s).strip if cta["text"]
+      cta["url"] = ActionController::Base.helpers.strip_tags(cta["url"].to_s).strip if cta["url"]
+
+      if cta["links"].present?
+        cta["links"] = cta["links"].select { |l| l["text"].present? && l["url"].present? }.map do |link|
+          link.transform_values { |v| ActionController::Base.helpers.strip_tags(v.to_s).strip }
+        end
+        cta.delete("links") if cta["links"].empty?
+      end
+
+      # Clear the CTA entirely if the text is blank
+      result["header_cta"] = cta["text"].present? ? cta : {}
+    end
+
+    result
   end
 
   def valid_image?

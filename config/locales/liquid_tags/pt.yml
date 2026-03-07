@@ -152,6 +152,8 @@ pt:
       invalid_option: "Opção '%{option}' inválida para a tag org_team"
       invalid_limit: "O limite deve estar entre 1 e 50"
       invalid_role: "O papel deve ser um dos seguintes: all, admins, members"
+    netlify_tag:
+      invalid_url: "URL Netlify inválida. Deve ser uma URL https://*.netlify.app"
     features_tag:
       no_args: "A tag features não aceita argumentos"
     feature_tag:
@@ -161,5 +163,7 @@ pt:
       invalid_rating: "A avaliação deve estar entre 1 e 5"
     slide_tag:
       missing_image: "A tag slide requer uma opção image"
+    slides_tag:
+      invalid_mode: "O modo slides deve ser 'default' ou 'carousel'"
     youtube_tag:
       invalid_youtube_id: ID do YouTube inválido

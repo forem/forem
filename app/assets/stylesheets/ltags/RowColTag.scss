@@ -19,6 +19,8 @@
   flex: 1;
   min-width: 0;
 
+  > br { display: none; }
+
   > :first-child {
     margin-top: 0;
   }

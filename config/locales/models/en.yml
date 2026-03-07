@@ -81,6 +81,13 @@ en:
     organization:
       integer_only: Integer only. No sign allowed.
       reserved_word: '%<value>s is a reserved word. Contact site admins for help registering your organization.'
+      unknown_platform: "contains unknown platform: %{platform}"
+      social_link_too_long: "URL for %{platform} is too long (max 200 characters)"
+      header_cta_text_too_long: "button text is too long (max %{max} characters)"
+      header_cta_url_too_long: "URL is too long (max %{max} characters)"
+      header_cta_links_invalid: "links must be an array"
+      header_cta_too_many_links: "has too many links (max %{max})"
+      header_cta_link_missing_fields: "each link must have text and URL"
     page:
       body_must_exist: must exist if body_html or body_json doesn't exist.
     podcast_episode_appearance:

@@ -25,8 +25,17 @@ class OfferTag < Liquid::Block
 
   private
 
+  def fully_unescape_html(str)
+    prev = nil
+    while str != prev
+      prev = str
+      str = CGI.unescape_html(str)
+    end
+    str
+  end
+
   def parse_options(markup)
-    cleaned = strip_tags(markup)
+    cleaned = fully_unescape_html(strip_tags(markup))
     options = {}
     cleaned.scan(OPTION_REGEXP) do |key, quoted_val, plain_val|
       options[key] = (quoted_val || plain_val).strip

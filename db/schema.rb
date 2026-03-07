@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_03_03_230426) do
+ActiveRecord::Schema[7.0].define(version: 2026_03_07_130000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -960,6 +960,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_03_230426) do
     t.string "email"
     t.boolean "fully_trusted", default: false, null: false
     t.string "github_username"
+    t.jsonb "header_cta", default: {}, null: false
     t.integer "ideal_daily_promoted_billboard_impressions", default: 0, null: false
     t.datetime "last_article_at", precision: nil, default: "2017-01-01 05:00:00"
     t.datetime "latest_article_updated_at", precision: nil
@@ -975,6 +976,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_03_230426) do
     t.text "proof"
     t.string "secret"
     t.string "slug"
+    t.jsonb "social_links", default: {}, null: false
     t.integer "spent_credits_count", default: 0, null: false
     t.string "story"
     t.text "summary"

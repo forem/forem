@@ -1,5 +1,43 @@
-<div class="ltag-slides">
+<div class="ltag-slides<%= ' ltag-slides--carousel' if mode == 'carousel' %>">
   <div class="ltag-slides__track">
     <%= content.html_safe %>
   </div>
+  <% if mode == "carousel" %>
+    <button class="ltag-slides__nav ltag-slides__nav--prev" aria-label="Previous slide">&#8249;</button>
+    <button class="ltag-slides__nav ltag-slides__nav--next" aria-label="Next slide">&#8250;</button>
+    <div class="ltag-slides__dots"></div>
+    <script>
+      (function() {
+        var container = document.currentScript.closest('.ltag-slides--carousel');
+        var track = container.querySelector('.ltag-slides__track');
+        var slides = track.querySelectorAll('.ltag-slide');
+        var prevBtn = container.querySelector('.ltag-slides__nav--prev');
+        var nextBtn = container.querySelector('.ltag-slides__nav--next');
+        var dotsContainer = container.querySelector('.ltag-slides__dots');
+        var current = 0;
+        var total = slides.length;
+
+        for (var i = 0; i < total; i++) {
+          var dot = document.createElement('button');
+          dot.className = 'ltag-slides__dot' + (i === 0 ? ' ltag-slides__dot--active' : '');
+          dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+          dot.dataset.index = i;
+          dot.addEventListener('click', function() { goTo(parseInt(this.dataset.index)); });
+          dotsContainer.appendChild(dot);
+        }
+
+        function goTo(index) {
+          current = ((index % total) + total) % total;
+          track.style.transform = 'translateX(-' + (current * 100) + '%)';
+          var dots = dotsContainer.querySelectorAll('.ltag-slides__dot');
+          for (var i = 0; i < dots.length; i++) {
+            dots[i].classList.toggle('ltag-slides__dot--active', i === current);
+          }
+        }
+
+        prevBtn.addEventListener('click', function() { goTo(current - 1); });
+        nextBtn.addEventListener('click', function() { goTo(current + 1); });
+      })();
+    </script>
+  <% end %>
 </div>

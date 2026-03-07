@@ -9,11 +9,46 @@ fr:
         readme_placeholder: "Utilisez Markdown et les balises Liquid pour personnaliser votre page d'organisation.\n\nExemple :\n{% org_team votre-slug-org %}\n{% org_team votre-slug-org role=admins limit=5 %}\n{% org_posts votre-slug-org %}\n{% org_posts votre-slug-org limit=5 sort=reactions min_reactions=10 since=30d %}"
         readme_description: "Supporte Markdown et les balises Liquid comme {% org_team slug %} et {% org_posts slug %}. Options org_team : limit (1-50), role (all/admins/members). Options org_posts : limit (1-30), sort (recent/reactions/comments/score), min_reactions, min_comments, since (ex. 30d ou 2025-01-01)."
         save: Enregistrer la page
+      header_cta:
+        heading: Bouton CTA de l'en-tête
+        description: "Ajoutez un bouton d'appel à l'action dans l'en-tête de la page de votre organisation. Vous pouvez créer un bouton simple ou un menu déroulant avec plusieurs liens."
+        button_text: Texte du bouton
+        button_text_placeholder: "Essayez notre produit"
+        button_text_help: "Le libellé affiché sur le bouton CTA dans l'en-tête de votre page d'organisation."
+        button_url: URL du bouton
+        button_url_help: "Pour un bouton simple, les visiteurs sont redirigés ici lorsqu'ils cliquent. Laissez vide si vous utilisez les liens déroulants."
+        button_url_overridden: "Ignoré — les liens déroulants sont actifs à la place."
+        dropdown_links: Liens déroulants (optionnel)
+        dropdown_links_help: "Ajoutez plusieurs liens pour transformer le CTA en menu déroulant. Chaque lien nécessite un libellé et une URL. Si fournis, ceux-ci sont affichés à la place de l'URL du bouton unique."
+        link_text_placeholder: "Libellé du lien"
+        link_image_placeholder: "URL de l'image (optionnel)"
+        add_link: Ajouter un lien
+        remove_link: Supprimer le lien
+        save: Enregistrer le CTA de l'en-tête
+      sidebar:
+        invitations: Invitations
+      social_links:
+        heading: Liens sociaux
+        description: "Connectez les profils sociaux de votre organisation. Entrez les noms d'utilisateur ou les URL completes."
+        save: Enregistrer les liens sociaux
     organizations:
       empty: 404 bio not found
       external:
         icon: External link icon
       follow: Suivre
+      social:
+        twitter: Twitter
+        github: GitHub
+        youtube: YouTube
+        discord: Discord
+        linkedin: LinkedIn
+        instagram: Instagram
+        facebook: Facebook
+        spotify: Spotify
+        twitch: Twitch
+        mastodon: Mastodon
+      header_cta:
+        expand: Développer les options
       github:
         icon: GitHub logo
       joined:

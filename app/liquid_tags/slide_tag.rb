@@ -11,7 +11,9 @@ class SlideTag < Liquid::Tag
     @alt = options["alt"] || ""
     @title = options["title"]
     @video = options["video"]
-    raise StandardError, I18n.t("liquid_tags.slide_tag.missing_image") unless @image
+    @link = options["link"]
+    @video_embed_id = extract_youtube_id(@video) if @video
+    raise StandardError, I18n.t("liquid_tags.slide_tag.missing_image") unless @image || @video || @link
   end
 
   def render(_context)
@@ -22,6 +24,8 @@ class SlideTag < Liquid::Tag
         alt: @alt,
         title: @title,
         video: @video,
+        link: @link,
+        video_embed_id: @video_embed_id,
       },
     )
   end
@@ -35,6 +39,14 @@ class SlideTag < Liquid::Tag
       options[key] = (quoted_val || plain_val).strip
     end
     options
+  end
+
+  def extract_youtube_id(url)
+    if url.match?(%r{youtu\.be/})
+      url.split("youtu.be/").last.split(/[?&]/).first
+    elsif url.match?(%r{youtube\.com.*[?&]v=})
+      url.match(/[?&]v=([^&]+)/)[1]
+    end
   end
 end
 

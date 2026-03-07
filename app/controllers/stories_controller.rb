@@ -225,6 +225,7 @@ class StoriesController < ApplicationController
     if @organization.readme_page?
       @readme_html = @organization.processed_page_html
       @cover_image_url = @organization.cover_image_url if @organization.cover_image.present?
+      @org_readme_show = true
       render template: "organizations/show_readme"
     else
       render template: "organizations/show"

@@ -80,6 +80,13 @@ fr:
     organization:
       integer_only: Entier seulement. Aucun signe n'est autorisé.
       reserved_word: "%<value>s est un mot réservé. Contactez l'administrateur du site pour obtenir de l'aide pour enregistrer votre organisation."
+      unknown_platform: "contient une plateforme inconnue : %{platform}"
+      social_link_too_long: "L'URL pour %{platform} est trop longue (max 200 caracteres)"
+      header_cta_text_too_long: "le texte du bouton est trop long (max %{max} caractères)"
+      header_cta_url_too_long: "l'URL est trop longue (max %{max} caractères)"
+      header_cta_links_invalid: "les liens doivent être un tableau"
+      header_cta_too_many_links: "contient trop de liens (max %{max})"
+      header_cta_link_missing_fields: "chaque lien doit avoir un texte et une URL"
     page:
       body_must_exist: doit exister si body_html ou body_json n'existe pas.
     podcast_episode_appearance:
