@@ -14,9 +14,11 @@
 }
 
 .ltag-quote__mark {
-  font-size: var(--fs-xl);
-  line-height: 1;
-  color: var(--card-color);
+  font-size: 2.5rem;
+  line-height: 0.6;
+  font-family: Georgia, serif;
+  color: var(--card-color-tertiary);
+  user-select: none;
 }
 
 .ltag-quote__mark--end {
