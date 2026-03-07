@@ -8,6 +8,8 @@
 }
 
 .ltag-feature {
+  display: flex;
+  gap: var(--su-3);
   padding: var(--su-4);
   border: 1px solid var(--card-border);
   border-radius: var(--radius);
@@ -16,14 +18,19 @@
 
 .ltag-feature__icon {
   font-size: var(--fs-2xl);
-  margin-bottom: var(--su-2);
-  color: var(--accent-brand);
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.ltag-feature__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--su-2);
 }
 
 .ltag-feature__title {
-  font-size: var(--fs-l);
+  font-size: var(--fs-base);
   font-weight: var(--fw-bold);
-  margin: 0 0 var(--su-2) 0;
 }
 
 .ltag-feature__body {

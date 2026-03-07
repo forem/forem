@@ -1,4 +1,4 @@
-<div class="ltag-slide<%= ' ltag-slide--video' if video.present? %>">
+<div class="ltag-slide">
   <% if video.present? %>
     <a href="<%= video %>" class="ltag-slide__link" target="_blank" rel="noopener noreferrer">
       <img class="ltag-slide__image" src="<%= image %>" alt="<%= alt %>" loading="lazy" />
@@ -6,5 +6,12 @@
     </a>
   <% else %>
     <img class="ltag-slide__image" src="<%= image %>" alt="<%= alt %>" loading="lazy" />
+  <% end %>
+  <% if title.present? %>
+    <% if video.present? %>
+      <a href="<%= video %>" class="ltag-slide__title" target="_blank" rel="noopener noreferrer"><%= title %></a>
+    <% else %>
+      <div class="ltag-slide__title"><%= title %></div>
+    <% end %>
   <% end %>
 </div>

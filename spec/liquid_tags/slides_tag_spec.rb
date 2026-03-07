@@ -38,7 +38,6 @@ RSpec.describe "Slides and Slide liquid tags", type: :liquid_tag do
   describe "video slides" do
     it "renders a video slide with play button" do
       result = parse('{% slides %}{% slide image="https://example.com/thumb.jpg" video="https://youtube.com/watch?v=abc" %}{% endslides %}').render
-      expect(result).to include("ltag-slide--video")
       expect(result).to include("ltag-slide__play")
       expect(result).to include('href="https://youtube.com/watch?v=abc"')
     end
@@ -46,7 +45,12 @@ RSpec.describe "Slides and Slide liquid tags", type: :liquid_tag do
     it "does not render play button for image-only slides" do
       result = parse('{% slides %}{% slide image="https://example.com/photo.jpg" %}{% endslides %}').render
       expect(result).not_to include("ltag-slide__play")
-      expect(result).not_to include("ltag-slide--video")
+    end
+
+    it "renders title below image" do
+      result = parse('{% slides %}{% slide image="https://example.com/photo.jpg" title="My Article" %}{% endslides %}').render
+      expect(result).to include("ltag-slide__title")
+      expect(result).to include("My Article")
     end
   end
 

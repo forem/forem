@@ -9,6 +9,7 @@ class SlideTag < Liquid::Tag
     options = parse_options(markup.strip)
     @image = options["image"]
     @alt = options["alt"] || ""
+    @title = options["title"]
     @video = options["video"]
     raise StandardError, I18n.t("liquid_tags.slide_tag.missing_image") unless @image
   end
@@ -19,6 +20,7 @@ class SlideTag < Liquid::Tag
       locals: {
         image: @image,
         alt: @alt,
+        title: @title,
         video: @video,
       },
     )
