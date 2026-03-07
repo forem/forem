@@ -5,13 +5,13 @@
 
 .ltag-slides__track {
   display: flex;
-  gap: var(--su-3);
+  gap: var(--su-4);
   overflow-x: auto;
-
-  > br { display: none; }
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   padding-bottom: var(--su-2);
+
+  > br { display: none; }
 
   &::-webkit-scrollbar {
     height: 6px;
@@ -27,6 +27,7 @@
   flex: 0 0 auto;
   width: 280px;
   scroll-snap-align: start;
+  border: 1px solid var(--card-border);
   border-radius: var(--radius);
   overflow: hidden;
   position: relative;
@@ -38,7 +39,6 @@
 
 .ltag-slide__image {
   width: 100%;
-  height: 100%;
   object-fit: cover;
   display: block;
   aspect-ratio: 16 / 9;
@@ -47,6 +47,19 @@
 .ltag-slide__link {
   display: block;
   position: relative;
+}
+
+.ltag-slide__title {
+  display: block;
+  padding: var(--su-3) var(--su-4);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-base);
+  color: var(--card-color);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .ltag-slide__play {

@@ -1,15 +1,20 @@
 .ltag-offer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--su-4);
   padding: var(--su-5);
+  border: 2px solid var(--card-border);
   border-radius: var(--radius);
-  background: var(--accent-brand-lighter);
-  border: 1px solid var(--accent-brand);
-  text-align: center;
   margin-bottom: var(--su-4);
 }
 
 .ltag-offer__body {
+  flex: 1 1 0;
+  min-width: 200px;
   font-size: var(--fs-l);
-  margin-bottom: var(--su-4);
+  font-weight: var(--fw-medium);
 
   > :first-child { margin-top: 0; }
   > :last-child { margin-bottom: 0; }
@@ -18,4 +23,6 @@
 .ltag-offer__button {
   display: inline-flex;
   text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
 }

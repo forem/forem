@@ -30,9 +30,11 @@ RSpec.describe "Quote liquid tag", type: :liquid_tag do
       expect(result).to include("https://example.com/avatar.png")
     end
 
-    it "renders author with link" do
+    it "renders learn more link" do
       result = parse('{% quote author="Jane" link="https://example.com" %}Text{% endquote %}').render
-      expect(result).to include('<a href="https://example.com">Jane</a>')
+      expect(result).to include("ltag-quote__link")
+      expect(result).to include('href="https://example.com"')
+      expect(result).to include("Learn more")
     end
 
     it "renders without optional fields" do
