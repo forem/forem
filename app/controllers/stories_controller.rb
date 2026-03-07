@@ -545,8 +545,8 @@ class StoriesController < ApplicationController
       text: comment.processed_html_final,
       author: {
         "@type": "Person",
-        name: comment&.user&.name,
-        url: URL.user(comment&.user)
+        name: comment.user&.name || "[deleted]",
+        url: comment.user ? URL.user(comment.user) : URL.url("")
       },
       datePublished: comment.created_at.iso8601,
       dateModified: comment.edited_at&.iso8601 || comment.created_at.iso8601,
@@ -620,8 +620,8 @@ class StoriesController < ApplicationController
       text: comment.processed_html_final,
       author: {
         "@type": "Person",
-        name: comment.user.name,
-        url: URL.user(comment.user)
+        name: comment.user&.name || "[deleted]",
+        url: comment.user ? URL.user(comment.user) : URL.url("")
       },
       datePublished: comment.created_at.iso8601,
       dateModified: comment.edited_at&.iso8601 || comment.created_at.iso8601,

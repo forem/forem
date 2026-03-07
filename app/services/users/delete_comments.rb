@@ -9,7 +9,7 @@ module Users
         comment.reactions.delete_all
         EdgeCache::BustComment.call(comment)
         comment.remove_notifications
-        comment.delete
+        comment.update(deleted: true)
       end
       EdgeCache::BustUser.call(user)
     end
