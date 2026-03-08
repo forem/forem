@@ -196,15 +196,15 @@ RSpec.describe OrgPostsTag, type: :liquid_tag do
 
   describe "combined filters" do
     it "applies multiple filters together" do
-      # Old article with high engagement — filtered by since
+      # Old article with high engagement -filtered by since
       old_popular = create(:article, :past, organization: organization, published: true, past_published_at: 120.days.ago)
       old_popular.update_columns(public_reactions_count: 20)
 
-      # Recent article with low engagement — filtered by min_reactions
+      # Recent article with low engagement -filtered by min_reactions
       recent_low = create(:article, :past, organization: organization, published: true, past_published_at: 5.days.ago)
       recent_low.update_columns(public_reactions_count: 1)
 
-      # Recent article with high engagement — should be included
+      # Recent article with high engagement -should be included
       matching = create(:article, :past, organization: organization, published: true, past_published_at: 5.days.ago)
       matching.update_columns(public_reactions_count: 15)
 

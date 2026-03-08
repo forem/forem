@@ -1,5 +1,5 @@
 <%= render "shared/webcomponents_loader_script" %>
-<% title "#{@organization.name} — #{t("views.organizations.settings_link")}" %>
+<% title "#{@organization.name} -#{t("views.organizations.settings_link")}" %>
 
 <% if flash[:settings_notice] %>
   <div class="crayons-banner" aria-live="polite">
@@ -10,6 +10,16 @@
 <% if flash[:error].present? %>
   <div class="crayons-banner crayons-banner--error" role="alert">
     <%= flash[:error] %>
+  </div>
+<% end %>
+
+<% if @organization.errors.any? %>
+  <div class="crayons-banner crayons-banner--error" role="alert">
+    <ul class="list-disc pl-4">
+      <% @organization.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
   </div>
 <% end %>
 
@@ -83,6 +93,7 @@
         <a href="#section-header-cta"><%= t("views.organization_settings.header_cta.heading") %></a>
         <a href="#section-sidebar-cta"><%= t("views.settings.org.admin.cta") %></a>
         <a href="#section-members"><%= t("views.settings.org.admin.members") %></a>
+        <a href="#section-verification"><%= t("views.organization_settings.verification.heading") %></a>
         <a href="#section-invitations"><%= t("views.organization_settings.sidebar.invitations") %></a>
         <a href="#section-danger"><%= t("views.settings.danger") %></a>
       </nav>
@@ -455,7 +466,7 @@
 
                 <div class="flex">
                   <% if org_membership.user == current_user && org_membership.type_of_user == "admin" %>
-                    <%# Current admin user — no actions %>
+                    <%# Current admin user -no actions %>
                   <% elsif org_membership.user != current_user && org_membership.type_of_user == "admin" %>
                     <%= form_tag "/users/remove_org_admin", onsubmit: "return confirm('#{t('views.settings.org.admin.revoke.confirm', user: org_membership.user.name)}');" do %>
                       <%= hidden_field_tag "user_id", org_membership.user_id %>
@@ -499,6 +510,101 @@
               </div>
             <% end %>
           </div>
+        <% end %>
+      </div>
+
+      <%# ── Verification ── %>
+      <div id="section-verification" class="crayons-card crayons-card--content-rows">
+        <header>
+          <h2 class="mb-2"><%= t("views.organization_settings.verification.heading") %></h2>
+          <p class="color-base-70"><%= t("views.organization_settings.verification.description") %></p>
+        </header>
+
+        <% if flash[:verification_notice] %>
+          <div class="crayons-notice crayons-notice--info" aria-live="polite">
+            <%= flash[:verification_notice] %>
+          </div>
+        <% end %>
+        <% if flash[:verification_error] %>
+          <div class="crayons-notice crayons-notice--error" role="alert">
+            <%= flash[:verification_error] %>
+          </div>
+        <% end %>
+
+        <% if @organization.verified? %>
+          <div class="crayons-notice crayons-notice--success">
+            <div class="flex items-center gap-2">
+              <svg width="20" height="20" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+                <path d="M20.396 11c0-.795-.477-1.47-1.15-1.768.15-.394.21-.826.14-1.27a2.612 2.612 0 00-1.59-1.99c-.1-.38-.3-.73-.58-1.01-.28-.28-.63-.48-1.01-.58a2.612 2.612 0 00-1.99-1.59c-.44-.07-.87-.01-1.27.14C12.47 1.477 11.795 1 11 1c-.795 0-1.47.477-1.768 1.15a2.59 2.59 0 00-1.27-.14 2.612 2.612 0 00-1.99 1.59c-.38.1-.73.3-1.01.58-.28.28-.48.63-.58 1.01a2.612 2.612 0 00-1.59 1.99c-.07.44-.01.876.14 1.27C1.477 9.53 1 10.205 1 11c0 .795.477 1.47 1.15 1.768a2.59 2.59 0 00-.14 1.27 2.612 2.612 0 001.59 1.99c.1.38.3.73.58 1.01.28.28.63.48 1.01.58a2.612 2.612 0 001.99 1.59c.44.07.876.01 1.27-.14.298.673.973 1.15 1.768 1.15.795 0 1.47-.477 1.768-1.15.394.15.826.21 1.27.14a2.612 2.612 0 001.99-1.59c.38-.1.73-.3 1.01-.58.28-.28.48-.63.58-1.01a2.612 2.612 0 001.59-1.99c.07-.44.01-.876-.14-1.27.673-.298 1.15-.973 1.15-1.768zM9.662 14.85l-3.429-3.428 1.293-1.302 2.072 2.072 4.181-4.568 1.356 1.234-5.473 5.992z" fill="#3b82f6"/>
+              </svg>
+              <span class="fw-bold"><%= t("views.organization_settings.verification.verified") %></span>
+            </div>
+            <p class="fs-s mt-1"><%= t("views.organization_settings.verification.verified_on", date: l(@organization.verified_at, format: :short)) %></p>
+            <% if @organization.verification_url.present? %>
+              <p class="fs-s mt-1"><%= t("views.organization_settings.verification.verified_url_html", url: @organization.verification_url) %></p>
+            <% end %>
+          </div>
+        <% else %>
+          <% if @organization.url.blank? %>
+            <div class="crayons-notice crayons-notice--warning">
+              <%= t("views.organization_settings.verification.website_required") %>
+            </div>
+          <% else %>
+            <% unless flash[:verification_notice] %>
+              <% if @organization.verification_status == "pending" %>
+                <div class="crayons-notice crayons-notice--info flex items-center gap-2">
+                  <span class="fw-bold"><%= t("views.organization_settings.verification.status_pending") %></span>
+                </div>
+              <% elsif @organization.verification_status == "failed" %>
+                <div class="crayons-notice crayons-notice--error" role="alert">
+                  <p class="fw-bold mb-1"><%= t("views.organization_settings.verification.status_failed") %></p>
+                  <% if @organization.verification_error.present? %>
+                    <p class="fs-s"><%= @organization.verification_error %></p>
+                  <% end %>
+                </div>
+              <% end %>
+            <% end %>
+
+            <div class="crayons-card crayons-card--secondary p-4 mb-4">
+              <h3 class="fw-bold mb-2"><%= t("views.organization_settings.verification.how_it_works") %></h3>
+              <ol class="list-decimal pl-6 fs-s color-base-70">
+                <li class="mb-1"><%= t("views.organization_settings.verification.step_1_html", url: @organization.url) %></li>
+                <li class="mb-1"><%= t("views.organization_settings.verification.step_2_html", org_url: app_url(@organization.path)) %></li>
+                <li><%= t("views.organization_settings.verification.step_3") %></li>
+              </ol>
+            </div>
+
+            <%= form_tag organization_request_verification_path(@organization.slug), method: :post, class: "grid gap-4" do %>
+              <div class="crayons-field">
+                <label for="verification_url" class="crayons-field__label"><%= t("views.organization_settings.verification.url_label") %></label>
+                <input type="url" name="verification_url" id="verification_url"
+                       required
+                       value="<%= @organization.verification_url %>"
+                       class="crayons-textfield"
+                       data-expected-domain="<%= URI.parse(@organization.url).host&.downcase&.sub(/\Awww\./, '') rescue '' %>"
+                       data-domain-error="<%= t("views.organization_settings.verification.domain_mismatch") %>"
+                       placeholder="<%= t("views.organization_settings.verification.url_placeholder", domain: URI.parse(@organization.url).host) rescue @organization.url %>" />
+                <p class="crayons-field__description"><%= t("views.organization_settings.verification.url_help") %></p>
+              </div>
+              <button type="submit" class="crayons-btn w-max"><%= t("views.organization_settings.verification.submit") %></button>
+            <% end %>
+            <script>
+              (function() {
+                var el = document.getElementById('verification_url');
+                if (!el) return;
+                var expected = el.getAttribute('data-expected-domain');
+                var msg = el.getAttribute('data-domain-error');
+                el.addEventListener('input', function() {
+                  try {
+                    var host = new URL(el.value).hostname.toLowerCase().replace(/^www\./, '');
+                    el.setCustomValidity(
+                      host === expected || host.endsWith('.' + expected) ? '' : msg
+                    );
+                  } catch(e) { el.setCustomValidity(''); }
+                });
+              })();
+            </script>
+          <% end %>
         <% end %>
       </div>
 

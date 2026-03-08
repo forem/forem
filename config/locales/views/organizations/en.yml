@@ -24,7 +24,7 @@ en:
         button_text_help: The label shown on the CTA button in your org page header.
         button_url: Button URL
         button_url_help: For a simple button, visitors go here when they click. Leave blank if using dropdown links instead.
-        button_url_overridden: Ignored — dropdown links are active instead.
+        button_url_overridden: Ignored - dropdown links are active instead.
         dropdown_links: Dropdown links (optional)
         dropdown_links_help: Add multiple links to turn the CTA into a dropdown menu. Each link needs a label and URL. If provided, these are shown instead of the single button URL.
         link_text_placeholder: "Link label"
@@ -70,6 +70,27 @@ en:
           location: Location
           username: Username
           submitted_at: Submitted At
+      verification:
+        heading: Verification
+        description: Verify your organization by placing a link back to your organization page from your website. This adds a verified badge to your profile.
+        verified: Your organization is verified!
+        verified_on: "Verified on %{date}"
+        verified_url_html: "Verified via <a href=\"%{url}\" target=\"_blank\" rel=\"noopener\" class=\"crayons-link\">%{url}</a>"
+        website_required: You need to set a website URL in your profile details before you can verify your organization.
+        how_it_works: "How it works:"
+        step_1_html: "Add a link to your organization page from any page on your website (<strong>%{url}</strong>)"
+        step_2_html: "The link should point to <strong>%{org_url}</strong>"
+        step_3: Enter the URL of the page containing the link below and we'll check it
+        url_label: Page URL to verify
+        url_placeholder: "https://%{domain}/about"
+        url_help: Enter the full URL of a page on your website that contains a link back to your organization page.
+        submit: Verify Organization
+        domain_mismatch: The verification URL must be on the same domain as your website URL.
+        url_required: Please provide a URL to verify.
+        check_started: Verification check started. Refresh this page in a few seconds to see the result.
+        status_pending: Verification is in progress. Refresh this page in a few seconds to see the result.
+        status_failed: Verification failed
+        reset_on_domain_change: Your website domain changed, so your verification has been reset. Please re-verify with your new domain.
       sidebar:
         invitations: Invitations
       social_links:
@@ -79,6 +100,7 @@ en:
     organizations:
       dropdown: Organization actions
       empty: 404 bio not found
+      verified_badge: Verified Organization
       external:
         icon: External link icon
       follow: Follow

@@ -74,6 +74,32 @@ module Admin
       redirect_to admin_organization_path(org)
     end
 
+    def update_verified
+      org = Organization.find(params[:id])
+      new_verified = params[:verified] == "true"
+      old_verified = org.verified?
+
+      if new_verified
+        org.update_columns(verified: true, verified_at: Time.current)
+      else
+        org.update_columns(verified: false, verified_at: nil, verification_url: nil)
+      end
+
+      if old_verified != org.verified?
+        Note.create(
+          author_id: current_user.id,
+          noteable_id: org.id,
+          noteable_type: "Organization",
+          reason: "misc_note",
+          content: "Verified status #{org.verified? ? 'enabled (manually)' : 'disabled'}",
+        )
+      end
+
+      status = org.verified? ? "enabled" : "disabled"
+      flash[:notice] = I18n.t("admin.organizations_controller.verified_#{status}")
+      redirect_to admin_organization_path(org)
+    end
+
     def destroy
       organization = Organization.find_by(id: params[:id])
       Organizations::DeleteWorker.perform_async(organization.id, current_user.id, false)

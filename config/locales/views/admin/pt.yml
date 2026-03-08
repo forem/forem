@@ -362,6 +362,14 @@ pt:
         options:
           delete: Excluir organização
           icon: Opções
+        verified:
+          heading: Verificação
+          label: Organização Verificada
+          description: Verifique ou revogue manualmente a verificação desta organização. Organizações verificadas exibem um selo de verificação em seu perfil.
+          verify: Verificar Organização
+          revoke: Revogar Verificação
+          verified_notice: "Esta organização está verificada (desde %{date})."
+          verification_url: URL de verificação
         fully_trusted:
           label: Organização Totalmente Confiável
           description: Quando habilitado, esta organização pode adicionar membros diretamente sem exigir confirmação. Os membros receberão um e-mail de notificação em vez de um convite.

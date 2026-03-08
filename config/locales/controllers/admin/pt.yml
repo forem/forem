@@ -82,6 +82,8 @@ pt:
       fully_trusted_enabled: O status totalmente confiável foi habilitado para esta organização.
       fully_trusted_disabled: O status totalmente confiável foi desabilitado para esta organização.
       baseline_score_updated: A pontuação base foi atualizada!
+      verified_enabled: Esta organização foi verificada.
+      verified_disabled: A verificação foi revogada para esta organização.
     pages_controller:
       updated: Página foi atualizada com sucesso.
       created: Página foi criada com sucesso.

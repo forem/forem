@@ -24,6 +24,7 @@ class Organization < ApplicationRecord
 
   before_save :remove_at_from_usernames
   before_save :generate_secret
+  before_save :reset_verification_on_domain_change
 
   after_save :bust_cache
   after_save :generate_social_images
@@ -71,6 +72,7 @@ class Organization < ApplicationRecord
   validates :twitter_username, length: { maximum: 15 }
   validates :unspent_credits_count, presence: true
   validates :url, length: { maximum: 200 }, url: { allow_blank: true, no_local: true }
+  validates :verification_url, length: { maximum: 200 }, url: { allow_blank: true, no_local: true }
   validates :baseline_score, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validate :validate_social_links
   validate :validate_header_cta
@@ -153,6 +155,10 @@ class Organization < ApplicationRecord
 
   def fully_trusted?
     fully_trusted == true
+  end
+
+  def verified?
+    verified == true
   end
 
   def readme_page?
@@ -266,6 +272,28 @@ class Organization < ApplicationRecord
     self.processed_page_html = result.processed_html
   rescue ContentRenderer::ContentParsingError => e
     errors.add(:page_markdown, e.message)
+  end
+
+  def reset_verification_on_domain_change
+    return unless url_changed? && verified?
+    return if url.blank? || url_was.blank?
+
+    old_host = URI.parse(url_was).host&.downcase&.sub(/\Awww\./, "")
+    new_host = URI.parse(url).host&.downcase&.sub(/\Awww\./, "")
+    return if old_host == new_host
+
+    self.verified = false
+    self.verified_at = nil
+    self.verification_status = nil
+    self.verification_error = nil
+    self.verification_url = nil
+  rescue URI::InvalidURIError
+    # If URL parsing fails, reset verification to be safe
+    self.verified = false
+    self.verified_at = nil
+    self.verification_status = nil
+    self.verification_error = nil
+    self.verification_url = nil
   end
 
   def remove_at_from_usernames

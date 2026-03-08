@@ -24,7 +24,7 @@ pt:
         button_text_help: "O rótulo exibido no botão CTA no cabeçalho da página da sua organização."
         button_url: URL do botão
         button_url_help: "Para um botão simples, os visitantes são redirecionados aqui ao clicar. Deixe em branco se usar links suspensos."
-        button_url_overridden: "Ignorado — os links suspensos estão ativos."
+        button_url_overridden: "Ignorado - os links suspensos estão ativos."
         dropdown_links: Links suspensos (opcional)
         dropdown_links_help: "Adicione vários links para transformar o CTA em um menu suspenso. Cada link precisa de um rótulo e URL. Se fornecidos, estes são exibidos em vez da URL do botão único."
         link_text_placeholder: "Rótulo do link"
@@ -70,6 +70,27 @@ pt:
           location: Localização
           username: Nome de usuário
           submitted_at: Enviado em
+      verification:
+        heading: Verificação
+        description: Verifique sua organização colocando um link de volta para sua página de organização em seu site. Isso adiciona um selo de verificação ao seu perfil.
+        verified: Sua organização está verificada!
+        verified_on: "Verificada em %{date}"
+        verified_url_html: "Verificada via <a href=\"%{url}\" target=\"_blank\" rel=\"noopener\" class=\"crayons-link\">%{url}</a>"
+        website_required: Você precisa definir uma URL do site nos detalhes do seu perfil antes de verificar sua organização.
+        how_it_works: "Como funciona:"
+        step_1_html: "Adicione um link para sua página de organização em qualquer página do seu site (<strong>%{url}</strong>)"
+        step_2_html: "O link deve apontar para <strong>%{org_url}</strong>"
+        step_3: Insira a URL da página que contém o link abaixo e nós a verificaremos
+        url_label: URL da página para verificar
+        url_placeholder: "https://%{domain}/about"
+        url_help: Insira a URL completa de uma página em seu site que contenha um link para sua página de organização.
+        submit: Verificar Organização
+        domain_mismatch: A URL de verificação deve estar no mesmo domínio da URL do seu site.
+        url_required: Por favor, forneça uma URL para verificar.
+        check_started: A verificação foi iniciada. Atualize esta página em alguns segundos para ver o resultado.
+        status_pending: A verificação está em andamento. Atualize esta página em alguns segundos para ver o resultado.
+        status_failed: A verificação falhou
+        reset_on_domain_change: O domínio do seu site mudou, então sua verificação foi redefinida. Por favor, verifique novamente com seu novo domínio.
       sidebar:
         invitations: Convites
       social_links:
@@ -79,6 +100,7 @@ pt:
     organizations:
       dropdown: Organization actions
       empty: 404 bio not found
+      verified_badge: Organização Verificada
       external:
         icon: External link icon
       follow: Follow

@@ -105,6 +105,7 @@ namespace :admin do
         patch "update_org_credits"
         patch "update_fully_trusted"
         patch "update_baseline_score"
+        patch "update_verified"
       end
     end
     resources :emails

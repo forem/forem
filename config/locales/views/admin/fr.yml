@@ -471,6 +471,14 @@ fr:
         options:
           delete: Delete organization
           icon: Options
+        verified:
+          heading: Vérification
+          label: Organisation vérifiée
+          description: Vérifier ou révoquer manuellement la vérification de cette organisation. Les organisations vérifiées affichent un badge de vérification sur leur profil.
+          verify: Vérifier l'organisation
+          revoke: Révoquer la vérification
+          verified_notice: "Cette organisation est vérifiée (depuis le %{date})."
+          verification_url: URL de vérification
         fully_trusted:
           label: Organisation de confiance totale
           description: Lorsqu'elle est activée, cette organisation peut ajouter des membres directement sans nécessiter de confirmation. Les membres recevront un e-mail de notification au lieu d'une invitation.

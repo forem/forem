@@ -13,6 +13,29 @@ class OrganizationSettingsController < ApplicationController
     )
   end
 
+  def request_verification
+    verification_url = params[:verification_url].to_s.strip
+
+    if verification_url.blank?
+      flash[:verification_error] = I18n.t("views.organization_settings.verification.url_required")
+      redirect_to organization_settings_path(@organization.slug, anchor: "section-verification")
+      return
+    end
+
+    unless same_domain?(verification_url, @organization.url)
+      flash[:verification_error] = I18n.t("views.organization_settings.verification.domain_mismatch")
+      redirect_to organization_settings_path(@organization.slug, anchor: "section-verification")
+      return
+    end
+
+    @organization.update_columns(verification_url: verification_url,
+                                   verification_status: "pending", verification_error: nil)
+    Organizations::VerifyLinkbackWorker.perform_async(@organization.id)
+
+    flash[:verification_notice] = I18n.t("views.organization_settings.verification.check_started")
+    redirect_to organization_settings_path(@organization.slug, anchor: "section-verification")
+  end
+
   def preview
     renderer = ContentRenderer.new(params[:body_markdown].to_s, source: @organization, user: current_user)
     result = renderer.process
@@ -34,9 +57,14 @@ class OrganizationSettingsController < ApplicationController
       return
     end
 
+    was_verified = @organization.verified?
     if @organization.update(organization_params.merge(profile_updated_at: Time.current))
       @organization.users.touch_all(:organization_info_updated_at)
-      flash[:settings_notice] = I18n.t("organizations_controller.updated")
+      notice = I18n.t("organizations_controller.updated")
+      if was_verified && !@organization.verified?
+        notice += " " + I18n.t("views.organization_settings.verification.reset_on_domain_change")
+      end
+      flash[:settings_notice] = notice
       redirect_to organization_settings_path(@organization.slug)
     else
       @org_organization_memberships = @organization.organization_memberships.includes(:user)
@@ -119,5 +147,20 @@ class OrganizationSettingsController < ApplicationController
     end
 
     true
+  end
+
+  def same_domain?(url1, url2)
+    host1 = URI.parse(normalize_url(url1)).host&.downcase&.sub(/\Awww\./, "")
+    host2 = URI.parse(normalize_url(url2)).host&.downcase&.sub(/\Awww\./, "")
+    return false if host1.blank? || host2.blank?
+
+    host1 == host2 || host1.end_with?(".#{host2}") || host2.end_with?(".#{host1}")
+  rescue URI::InvalidURIError
+    false
+  end
+
+  def normalize_url(url)
+    url = "https://#{url}" unless url.match?(%r{\Ahttps?://}i)
+    url
   end
 end

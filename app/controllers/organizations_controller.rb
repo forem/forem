@@ -96,7 +96,7 @@ class OrganizationsController < ApplicationController
     @organization.secret = @organization.generated_random_secret
     @organization.save
     flash[:settings_notice] = I18n.t("organizations_controller.secret_updated")
-    redirect_to organization_settings_path(@organization.slug)
+    redirect_to organization_settings_path(@organization.slug, anchor: "section-invitations")
   end
 
   def members
@@ -126,7 +126,7 @@ class OrganizationsController < ApplicationController
 
     unless @user
       flash[:error] = I18n.t("organizations_controller.invite.user_not_found", username: username)
-      redirect_to organization_settings_path(@organization.slug)
+      redirect_to organization_settings_path(@organization.slug, anchor: "section-invitations")
       return
     end
 
@@ -138,7 +138,7 @@ class OrganizationsController < ApplicationController
       else
         flash[:error] = I18n.t("organizations_controller.invite.already_member")
       end
-      redirect_to organization_settings_path(@organization.slug)
+      redirect_to organization_settings_path(@organization.slug, anchor: "section-invitations")
       return
     end
 
@@ -154,7 +154,7 @@ class OrganizationsController < ApplicationController
       if today_pending_count >= Settings::RateLimit.organization_invitation_daily
         flash[:error] = I18n.t("organizations_controller.invite.rate_limit_exceeded",
                                limit: Settings::RateLimit.organization_invitation_daily)
-        redirect_to organization_settings_path(@organization.slug)
+        redirect_to organization_settings_path(@organization.slug, anchor: "section-invitations")
         return
       end
 
@@ -163,7 +163,7 @@ class OrganizationsController < ApplicationController
       if total_pending_count >= Settings::RateLimit.organization_invitation_max_outstanding
         flash[:error] = I18n.t("organizations_controller.invite.max_outstanding_exceeded",
                                limit: Settings::RateLimit.organization_invitation_max_outstanding)
-        redirect_to organization_settings_path(@organization.slug)
+        redirect_to organization_settings_path(@organization.slug, anchor: "section-invitations")
         return
       end
     end
@@ -195,10 +195,10 @@ class OrganizationsController < ApplicationController
 
       flash[:settings_notice] = I18n.t("organizations_controller.invite.success", username: @user.username)
     end
-    redirect_to organization_settings_path(@organization.slug)
+    redirect_to organization_settings_path(@organization.slug, anchor: "section-invitations")
   rescue ActiveRecord::RecordInvalid => e
     flash[:error] = e.message
-    redirect_to organization_settings_path(@organization.slug)
+    redirect_to organization_settings_path(@organization.slug, anchor: "section-invitations")
   end
 
   def confirm_invitation

@@ -117,6 +117,8 @@ fr:
       fully_trusted_enabled: Le statut de confiance totale a été activé pour cette organisation.
       fully_trusted_disabled: Le statut de confiance totale a été désactivé pour cette organisation.
       baseline_score_updated: Le score de base a été mis à jour !
+      verified_enabled: Cette organisation a été vérifiée.
+      verified_disabled: La vérification a été révoquée pour cette organisation.
     pages_controller:
       updated: La page a été mise à jour avec succès.
       created: La page a été créée avec succès.

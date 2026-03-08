@@ -359,6 +359,7 @@ Rails.application.routes.draw do
     get "/:slug/members", to: "organizations#members", as: :organization_members
     get "/:slug/settings", to: "organization_settings#edit", as: :organization_settings
     patch "/:slug/settings", to: "organization_settings#update"
+    post "/:slug/settings/verify", to: "organization_settings#request_verification", as: :organization_request_verification
     post "/:slug/settings/preview", to: "organization_settings#preview", as: :organization_settings_preview
     get "/:slug/settings/lead_forms", to: "organization_lead_forms#index", as: :organization_lead_forms
     post "/:slug/settings/lead_forms", to: "organization_lead_forms#create"

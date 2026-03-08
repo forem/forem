@@ -96,6 +96,31 @@
 </div>
 
 <div class="crayons-card p-6 mb-6">
+  <h3 class="crayons-subtitle-2 mb-4"><%= t("views.admin.organizations.verified.heading") %></h3>
+  <div class="mb-6">
+    <div class="flex items-center justify-between mb-2">
+      <div>
+        <h4 class="fw-bold mb-1"><%= t("views.admin.organizations.verified.label") %></h4>
+        <p class="fs-s color-base-60"><%= t("views.admin.organizations.verified.description") %></p>
+      </div>
+      <%= form_tag update_verified_admin_organization_path(@organization), method: :patch, class: "flex items-center gap-2" do %>
+        <%= hidden_field_tag :verified, !@organization.verified? %>
+        <%= submit_tag @organization.verified? ? t("views.admin.organizations.verified.revoke") : t("views.admin.organizations.verified.verify"),
+                       class: "crayons-btn #{@organization.verified? ? 'crayons-btn--danger' : 'crayons-btn--success'}" %>
+      <% end %>
+    </div>
+    <% if @organization.verified? %>
+      <div class="crayons-notice crayons-notice--success">
+        <%= t("views.admin.organizations.verified.verified_notice", date: @organization.verified_at ? l(@organization.verified_at, format: :short) : "N/A") %>
+        <% if @organization.verification_url.present? %>
+          <br><span class="fs-s"><%= t("views.admin.organizations.verified.verification_url") %>: <a href="<%= @organization.verification_url %>" target="_blank" rel="noopener"><%= @organization.verification_url %></a></span>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="crayons-card p-6 mb-6">
   <% current_credits = @organization.unspent_credits_count %>
   <h3 class="crayons-subtitle-2 mb-4">Credits (current: <%= current_credits %>)</h3>
   <%= form_tag update_org_credits_admin_organization_path(@organization), method: :patch, class: "flex justify-between mb-2" do %>

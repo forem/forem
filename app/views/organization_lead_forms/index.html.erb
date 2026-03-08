@@ -70,9 +70,12 @@
                   <%= t("views.organization_settings.lead_forms.submissions_count", count: form.lead_submissions.count) %>
                 </p>
                 <div class="flex items-center gap-2 mt-1">
-                  <code class="crayons-code fs-xs" id="embed-code-<%= form.id %>">{% org_lead_form <%= form.id %> %}</code>
-                  <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--s lead-form-copy-btn" data-target="embed-code-<%= form.id %>" title="<%= t("views.organization_settings.lead_forms.copy_embed") %>">
-                    <%= crayons_icon_tag(:copy, class: "shrink-0") %>
+                  <code class="crayons-code fs-xs">{% org_lead_form <%= form.id %> %}</code>
+                  <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--s"
+                          onclick="navigator.clipboard.writeText(this.previousElementSibling.textContent.trim());
+                                   this.textContent='Copied!';
+                                   setTimeout(function(){this.textContent='<%= j t("views.organization_settings.lead_forms.copy_embed") %>';}.bind(this), 1500);">
+                    <%= t("views.organization_settings.lead_forms.copy_embed") %>
                   </button>
                 </div>
               </div>
@@ -106,17 +109,3 @@
   <% end %>
 </div>
 
-<script>
-  document.querySelectorAll('.lead-form-copy-btn').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      var target = document.getElementById(btn.getAttribute('data-target'));
-      if (target) {
-        navigator.clipboard.writeText(target.textContent.trim()).then(function() {
-          var original = btn.innerHTML;
-          btn.innerHTML = '<%= crayons_icon_tag(:checkmark, class: "shrink-0") %>';
-          setTimeout(function() { btn.innerHTML = original; }, 1500);
-        });
-      }
-    });
-  });
-</script>

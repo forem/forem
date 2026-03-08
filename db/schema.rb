@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_03_08_120000) do
+ActiveRecord::Schema[7.0].define(version: 2026_03_08_120002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -31,9 +31,9 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_08_120000) do
     t.string "tool_name", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.index ["slug"], name: "index_agent_sessions_on_slug", unique: true
     t.index ["tool_name"], name: "index_agent_sessions_on_tool_name"
     t.index ["user_id", "published"], name: "index_agent_sessions_on_user_id_and_published"
+    t.index ["user_id", "slug"], name: "index_agent_sessions_on_user_id_and_slug", unique: true
     t.index ["user_id"], name: "index_agent_sessions_on_user_id"
   end
 
@@ -1064,6 +1064,11 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_08_120000) do
     t.integer "unspent_credits_count", default: 0, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.string "url"
+    t.string "verification_error"
+    t.string "verification_status"
+    t.string "verification_url"
+    t.boolean "verified", default: false, null: false
+    t.datetime "verified_at"
     t.index ["currently_paused_promotional_billboards"], name: "idx_orgs_on_currently_paused_promo_billboards"
     t.index ["ideal_daily_promoted_billboard_impressions"], name: "idx_orgs_on_ideal_daily_promoted_bb_impressions"
     t.index ["secret"], name: "index_organizations_on_secret", unique: true
@@ -1316,8 +1321,10 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_08_120000) do
   end
 
   create_table "profiles", force: :cascade do |t|
+    t.string "company"
     t.datetime "created_at", null: false
     t.jsonb "data", default: {}, null: false
+    t.string "job_title"
     t.string "location"
     t.string "social_image"
     t.text "summary"

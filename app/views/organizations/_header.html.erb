@@ -61,14 +61,23 @@
 <div class="org-header-cover"></div>
 <div class="org-header-brand-line"></div>
 <div class="crayons-layout crayons-layout--limited-l">
-  <%# Primary row: avatar + name/tagline + actions — same layout in both modes %>
+  <%# Primary row: avatar + name/tagline + actions - same layout in both modes %>
   <div class="org-header-main">
     <span class="org-header-logo">
       <img src="<%= @user.profile_image_url_for(length: 320) %>" alt="<%= @user.name %> logo" title="<%= t("views.organizations.logo", org: @user.name) %>">
     </span>
 
     <div class="org-header-text">
-      <h1 class="crayons-title fw-heavy"><%= sanitize @user.name %></h1>
+      <h1 class="crayons-title fw-heavy">
+        <%= sanitize @user.name %>
+        <% if @organization.verified? %>
+          <span class="crayons-icon-verified" title="<%= t("views.organizations.verified_badge") %>" aria-label="<%= t("views.organizations.verified_badge") %>">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true" style="vertical-align: middle; margin-left: 4px;">
+              <path d="M20.396 11c0-.795-.477-1.47-1.15-1.768.15-.394.21-.826.14-1.27a2.612 2.612 0 00-1.59-1.99c-.1-.38-.3-.73-.58-1.01-.28-.28-.63-.48-1.01-.58a2.612 2.612 0 00-1.99-1.59c-.44-.07-.87-.01-1.27.14C12.47 1.477 11.795 1 11 1c-.795 0-1.47.477-1.768 1.15a2.59 2.59 0 00-1.27-.14 2.612 2.612 0 00-1.99 1.59c-.38.1-.73.3-1.01.58-.28.28-.48.63-.58 1.01a2.612 2.612 0 00-1.59 1.99c-.07.44-.01.876.14 1.27C1.477 9.53 1 10.205 1 11c0 .795.477 1.47 1.15 1.768a2.59 2.59 0 00-.14 1.27 2.612 2.612 0 001.59 1.99c.1.38.3.73.58 1.01.28.28.63.48 1.01.58a2.612 2.612 0 001.99 1.59c.44.07.876.01 1.27-.14.298.673.973 1.15 1.768 1.15.795 0 1.47-.477 1.768-1.15.394.15.826.21 1.27.14a2.612 2.612 0 001.99-1.59c.38-.1.73-.3 1.01-.58.28-.28.48-.63.58-1.01a2.612 2.612 0 001.59-1.99c.07-.44.01-.876-.14-1.27.673-.298 1.15-.973 1.15-1.768zM9.662 14.85l-3.429-3.428 1.293-1.302 2.072 2.072 4.181-4.568 1.356 1.234-5.473 5.992z" fill="#3b82f6"/>
+            </svg>
+          </span>
+        <% end %>
+      </h1>
       <% if @user.tag_line.present? %>
         <p class="fs-base color-base-70 mt-1"><%= sanitize @user.tag_line %></p>
       <% end %>

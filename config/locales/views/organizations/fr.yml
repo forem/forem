@@ -24,7 +24,7 @@ fr:
         button_text_help: "Le libellé affiché sur le bouton CTA dans l'en-tête de votre page d'organisation."
         button_url: URL du bouton
         button_url_help: "Pour un bouton simple, les visiteurs sont redirigés ici lorsqu'ils cliquent. Laissez vide si vous utilisez les liens déroulants."
-        button_url_overridden: "Ignoré — les liens déroulants sont actifs à la place."
+        button_url_overridden: "Ignoré - les liens déroulants sont actifs à la place."
         dropdown_links: Liens déroulants (optionnel)
         dropdown_links_help: "Ajoutez plusieurs liens pour transformer le CTA en menu déroulant. Chaque lien nécessite un libellé et une URL. Si fournis, ceux-ci sont affichés à la place de l'URL du bouton unique."
         link_text_placeholder: "Libellé du lien"
@@ -70,6 +70,27 @@ fr:
           location: Lieu
           username: Nom d'utilisateur
           submitted_at: Soumis le
+      verification:
+        heading: Vérification
+        description: Vérifiez votre organisation en plaçant un lien vers votre page d'organisation depuis votre site web. Cela ajoute un badge vérifié à votre profil.
+        verified: Votre organisation est vérifiée !
+        verified_on: "Vérifiée le %{date}"
+        verified_url_html: "Vérifiée via <a href=\"%{url}\" target=\"_blank\" rel=\"noopener\" class=\"crayons-link\">%{url}</a>"
+        website_required: Vous devez définir une URL de site web dans les détails de votre profil avant de pouvoir vérifier votre organisation.
+        how_it_works: "Comment ça marche :"
+        step_1_html: "Ajoutez un lien vers votre page d'organisation depuis n'importe quelle page de votre site web (<strong>%{url}</strong>)"
+        step_2_html: "Le lien doit pointer vers <strong>%{org_url}</strong>"
+        step_3: Entrez l'URL de la page contenant le lien ci-dessous et nous la vérifierons
+        url_label: URL de la page à vérifier
+        url_placeholder: "https://%{domain}/about"
+        url_help: Entrez l'URL complète d'une page de votre site web contenant un lien vers votre page d'organisation.
+        submit: Vérifier l'organisation
+        domain_mismatch: L'URL de vérification doit être sur le même domaine que l'URL de votre site web.
+        url_required: Veuillez fournir une URL à vérifier.
+        check_started: La vérification a commencé. Actualisez cette page dans quelques secondes pour voir le résultat.
+        status_pending: La vérification est en cours. Actualisez cette page dans quelques secondes pour voir le résultat.
+        status_failed: La vérification a échoué
+        reset_on_domain_change: Le domaine de votre site web a changé, votre vérification a donc été réinitialisée. Veuillez re-vérifier avec votre nouveau domaine.
       sidebar:
         invitations: Invitations
       social_links:
@@ -78,6 +99,7 @@ fr:
         save: Enregistrer les liens sociaux
     organizations:
       empty: 404 bio not found
+      verified_badge: Organisation vérifiée
       external:
         icon: External link icon
       follow: Suivre

@@ -484,6 +484,14 @@ en:
         options:
           delete: Delete organization
           icon: Options
+        verified:
+          heading: Verification
+          label: Verified Organization
+          description: Manually verify or unverify this organization. Verified organizations display a verification badge on their profile.
+          verify: Verify Organization
+          revoke: Revoke Verification
+          verified_notice: "This organization is verified (since %{date})."
+          verification_url: Verification URL
         fully_trusted:
           label: Fully Trusted Organization
           description: When enabled, this organization can add members directly without requiring confirmation. Members will receive a notification email instead of an invitation.
