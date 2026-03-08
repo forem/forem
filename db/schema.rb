@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_03_08_120000) do
+ActiveRecord::Schema[7.0].define(version: 2026_03_08_032335) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -31,9 +31,9 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_08_120000) do
     t.string "tool_name", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["slug"], name: "index_agent_sessions_on_slug", unique: true
     t.index ["tool_name"], name: "index_agent_sessions_on_tool_name"
     t.index ["user_id", "published"], name: "index_agent_sessions_on_user_id_and_published"
-    t.index ["user_id", "slug"], name: "index_agent_sessions_on_user_id_and_slug", unique: true
     t.index ["user_id"], name: "index_agent_sessions_on_user_id"
   end
 
@@ -897,21 +897,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_08_120000) do
     t.index ["slug"], name: "index_labels_on_slug", unique: true
   end
 
-  create_table "lead_submissions", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.string "email"
-    t.string "employer_name"
-    t.string "employment_title"
-    t.string "location"
-    t.string "name"
-    t.bigint "organization_lead_form_id", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.index ["organization_lead_form_id", "user_id"], name: "idx_lead_submissions_form_user_unique", unique: true
-    t.index ["organization_lead_form_id"], name: "index_lead_submissions_on_organization_lead_form_id"
-    t.index ["user_id"], name: "index_lead_submissions_on_user_id"
-  end
-
   create_table "media_sources", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "display_url", null: false
@@ -999,17 +984,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_08_120000) do
     t.index ["user_id", "organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_user_id_organization_id_notifiable_action", unique: true
   end
 
-  create_table "organization_lead_forms", force: :cascade do |t|
-    t.boolean "active", default: true, null: false
-    t.string "button_text", default: "Sign Up", null: false
-    t.datetime "created_at", null: false
-    t.text "description"
-    t.bigint "organization_id", null: false
-    t.string "title", null: false
-    t.datetime "updated_at", null: false
-    t.index ["organization_id"], name: "index_organization_lead_forms_on_organization_id"
-  end
-
   create_table "organization_memberships", force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
     t.string "invitation_token"
@@ -1026,7 +1000,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_08_120000) do
     t.integer "baseline_score", default: 0
     t.string "bg_color_hex"
     t.string "company_size"
-    t.string "cover_image"
     t.datetime "created_at", precision: nil, null: false
     t.integer "credits_count", default: 0, null: false
     t.text "cta_body_markdown"
@@ -1037,7 +1010,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_08_120000) do
     t.string "email"
     t.boolean "fully_trusted", default: false, null: false
     t.string "github_username"
-    t.jsonb "header_cta", default: {}, null: false
     t.integer "ideal_daily_promoted_billboard_impressions", default: 0, null: false
     t.datetime "last_article_at", precision: nil, default: "2017-01-01 05:00:00"
     t.datetime "latest_article_updated_at", precision: nil
@@ -1045,15 +1017,12 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_08_120000) do
     t.string "name"
     t.string "old_old_slug"
     t.string "old_slug"
-    t.text "page_markdown"
     t.integer "past_24_hours_promoted_billboard_impressions", default: 0, null: false
-    t.text "processed_page_html"
     t.string "profile_image"
     t.datetime "profile_updated_at", precision: nil, default: "2017-01-01 05:00:00"
     t.text "proof"
     t.string "secret"
     t.string "slug"
-    t.jsonb "social_links", default: {}, null: false
     t.integer "spent_credits_count", default: 0, null: false
     t.string "story"
     t.text "summary"
@@ -1989,14 +1958,11 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_08_120000) do
   add_foreign_key "github_repos", "users", on_delete: :cascade
   add_foreign_key "html_variants", "users", on_delete: :cascade
   add_foreign_key "identities", "users", on_delete: :cascade
-  add_foreign_key "lead_submissions", "organization_lead_forms", on_delete: :cascade
-  add_foreign_key "lead_submissions", "users", on_delete: :cascade
   add_foreign_key "mentions", "users", on_delete: :cascade
   add_foreign_key "notes", "users", column: "author_id", on_delete: :nullify
   add_foreign_key "notification_subscriptions", "users", on_delete: :cascade
   add_foreign_key "notifications", "organizations", on_delete: :cascade
   add_foreign_key "notifications", "users", on_delete: :cascade
-  add_foreign_key "organization_lead_forms", "organizations", on_delete: :cascade
   add_foreign_key "organization_memberships", "organizations", on_delete: :cascade
   add_foreign_key "organization_memberships", "users", on_delete: :cascade
   add_foreign_key "page_views", "articles", on_delete: :cascade
