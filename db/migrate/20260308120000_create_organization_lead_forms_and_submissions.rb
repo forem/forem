@@ -15,8 +15,8 @@ class CreateOrganizationLeadFormsAndSubmissions < ActiveRecord::Migration[7.0]
       t.references :user, null: false, foreign_key: { on_delete: :cascade }
       t.string :name
       t.string :email
-      t.string :employer_name
-      t.string :employment_title
+      t.string :company
+      t.string :job_title
       t.string :location
 
       t.timestamps

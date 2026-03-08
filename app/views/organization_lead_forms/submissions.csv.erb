@@ -1,6 +1,6 @@
-<%- headers = [t("views.organization_settings.lead_forms.csv.name"), t("views.organization_settings.lead_forms.csv.email"), t("views.organization_settings.lead_forms.csv.employer"), t("views.organization_settings.lead_forms.csv.title"), t("views.organization_settings.lead_forms.csv.location"), t("views.organization_settings.lead_forms.csv.username"), t("views.organization_settings.lead_forms.csv.submitted_at")] -%>
+<%- headers = [t("views.organization_settings.lead_forms.csv.name"), t("views.organization_settings.lead_forms.csv.email"), t("views.organization_settings.lead_forms.csv.company"), t("views.organization_settings.lead_forms.csv.job_title"), t("views.organization_settings.lead_forms.csv.location"), t("views.organization_settings.lead_forms.csv.username"), t("views.organization_settings.lead_forms.csv.submitted_at")] -%>
 <%= CSV.generate_line headers -%>
 <%- @submissions.each do |submission| -%>
-  <%- row = [submission.name, submission.email, submission.employer_name, submission.employment_title, submission.location, submission.user.username, l(submission.created_at, format: :long)] -%>
+  <%- row = [submission.name, submission.email, submission.company, submission.job_title, submission.location, submission.user.username, l(submission.created_at, format: :long)] -%>
   <%= CSV.generate_line(row).html_safe -%>
 <%- end -%>

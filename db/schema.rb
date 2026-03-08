@@ -898,10 +898,10 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_08_120000) do
   end
 
   create_table "lead_submissions", force: :cascade do |t|
+    t.string "company"
     t.datetime "created_at", null: false
     t.string "email"
-    t.string "employer_name"
-    t.string "employment_title"
+    t.string "job_title"
     t.string "location"
     t.string "name"
     t.bigint "organization_lead_form_id", null: false
@@ -1316,8 +1316,10 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_08_120000) do
   end
 
   create_table "profiles", force: :cascade do |t|
+    t.string "company"
     t.datetime "created_at", null: false
     t.jsonb "data", default: {}, null: false
+    t.string "job_title"
     t.string "location"
     t.string "social_image"
     t.text "summary"

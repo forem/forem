@@ -65,8 +65,8 @@ en:
         csv:
           name: Name
           email: Email
-          employer: Company
-          title: Job Title
+          company: Company
+          job_title: Job Title
           location: Location
           username: Username
           submitted_at: Submitted At

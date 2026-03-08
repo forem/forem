@@ -13,15 +13,17 @@ RSpec.describe LeadSubmission do
   end
 
   describe ".snapshot_from_user" do
-    it "captures user profile data" do
+    it "captures user profile data including job title and company" do
       user = create(:user, name: "Jane Doe", email: "jane@example.com")
-      user.profile.update(location: "New York")
+      user.profile.update(location: "New York", job_title: "Software Engineer", company: "Acme Inc.")
 
       snapshot = described_class.snapshot_from_user(user)
 
       expect(snapshot[:name]).to eq("Jane Doe")
       expect(snapshot[:email]).to eq("jane@example.com")
       expect(snapshot[:location]).to eq("New York")
+      expect(snapshot[:job_title]).to eq("Software Engineer")
+      expect(snapshot[:company]).to eq("Acme Inc.")
     end
   end
 end

@@ -65,8 +65,8 @@ pt:
         csv:
           name: Nome
           email: Email
-          employer: Empresa
-          title: Cargo
+          company: Empresa
+          job_title: Cargo
           location: Localização
           username: Nome de usuário
           submitted_at: Enviado em
