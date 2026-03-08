@@ -359,6 +359,7 @@ Rails.application.routes.draw do
     get "/:slug/members", to: "organizations#members", as: :organization_members
     get "/:slug/settings", to: "organization_settings#edit", as: :organization_settings
     patch "/:slug/settings", to: "organization_settings#update"
+    post "/:slug/settings/preview", to: "organization_settings#preview", as: :organization_settings_preview
     post "articles/preview", to: "articles#preview"
     post "comments/preview", to: "comments#preview"
     post "comments/subscribe", to: "notification_subscriptions#create"

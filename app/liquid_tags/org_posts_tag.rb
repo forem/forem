@@ -33,7 +33,7 @@ class OrgPostsTag < LiquidTagBase
     ApplicationController.render(
       partial: PARTIAL,
       locals: { articles: ArticleDecorator.decorate_collection(articles) },
-      assigns: { organization_article_index: true },
+      assigns: { organization_article_index: false },
     )
   end
 

@@ -181,7 +181,7 @@ class StoriesController < ApplicationController
       .includes(:distinct_reaction_categories, :subforem)
       .limited_column_select
       .order(published_at: :desc).page(@page).per(8))
-    @organization_article_index = true
+    @organization_article_index = !@organization.readme_page?
 
     unless @organization.readme_page?
       # Get active users ordered by badge achievements

@@ -135,6 +135,45 @@ body {
     }
   }
 
+  .ltag__link--embedded,
+  .ltag-org-posts {
+    font-size: var(--fs-base);
+    font-family: var(--ff-sans-serif);
+
+    a {
+      text-decoration: none;
+      color: inherit;
+      &:hover {
+        color: var(--link-color-hover);
+      }
+    }
+
+    img {
+      max-width: none;
+      margin: 0;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      margin: 0;
+    }
+
+    .crayons-story__author-pic {
+      margin-right: var(--su-3);
+    }
+
+    .crayons-story__indention {
+      padding-left: 0 !important;
+    }
+  }
+
+  .ltag__link--embedded {
+    margin: var(--su-4) 0;
+
+    .crayons-story {
+      margin: 0;
+    }
+  }
+
   h1,
   h2,
   h3,

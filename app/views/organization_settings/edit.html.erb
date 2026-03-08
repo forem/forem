@@ -69,11 +69,8 @@
 </style>
 
 <div class="crayons-layout crayons-layout--limited-l pt-7">
-  <div class="flex items-center justify-between mb-4">
+  <div class="mb-4">
     <h1 class="crayons-title"><%= @organization.name %></h1>
-    <a href="/<%= @organization.slug %>" class="crayons-btn crayons-btn--secondary">
-      <%= crayons_icon_tag("external-link", class: "mr-1 shrink-0") %> View page
-    </a>
   </div>
 
   <div class="org-settings-layout">
@@ -89,16 +86,23 @@
         <a href="#section-invitations"><%= t("views.organization_settings.sidebar.invitations") %></a>
         <a href="#section-danger"><%= t("views.settings.danger") %></a>
       </nav>
+      <div class="grid gap-2 mt-6 pt-4" style="border-top: 1px solid var(--base-20);">
+        <button type="submit" form="org-settings-form" class="crayons-btn"><%= t("views.organization_settings.page.save") %></button>
+        <button type="button" id="org-page-preview-btn" class="crayons-btn crayons-btn--secondary"><%= t("views.organization_settings.page.preview") %></button>
+        <a href="/<%= @organization.slug %>" class="crayons-btn crayons-btn--secondary">
+          <%= crayons_icon_tag("external-link", class: "mr-1 shrink-0") %> View page
+        </a>
+      </div>
     </aside>
 
     <%# ── Main Content ── %>
     <div class="grid gap-6">
 
+      <%= form_for @organization, url: organization_settings_path(@organization.slug), method: :patch, html: { id: "org-settings-form", class: "grid gap-6", multipart: true } do |f| %>
       <%# ── Page: Cover image + README editor ── %>
       <div id="section-page" class="crayons-card crayons-card--content-rows">
         <h2><%= t("views.organization_settings.page.heading") %></h2>
 
-        <%= form_for @organization, url: organization_settings_path(@organization.slug), method: :patch, html: { class: "grid gap-6", multipart: true } do |f| %>
           <div class="crayons-field">
             <%= f.label :cover_image, t("views.organization_settings.page.cover_image"), class: "crayons-field__label" %>
             <% if @organization.cover_image_url.present? %>
@@ -124,15 +128,12 @@
             <p class="crayons-field__description"><%= t("views.organization_settings.page.readme_description") %></p>
           </div>
 
-          <button class="crayons-btn w-max" type="submit"><%= t("views.organization_settings.page.save") %></button>
-        <% end %>
       </div>
 
       <%# ── Profile details ── %>
       <div id="section-profile" class="crayons-card crayons-card--content-rows">
         <h2><%= t("views.settings.org.admin.details") %></h2>
 
-        <%= form_for @organization, url: organization_settings_path(@organization.slug), method: :patch, html: { class: "grid gap-6", multipart: true } do |f| %>
           <div class="crayons-field">
             <%= f.label :name, class: "crayons-field__label" %>
             <%= f.text_field :name, maxlength: 50, class: "crayons-textfield", placeholder: "Acme Inc." %>
@@ -197,9 +198,6 @@
             <%= f.text_area :tech_stack, maxlength: 640, class: "crayons-textfield" %>
             <p class="crayons-field__description"><%= t("views.settings.org.admin.form.tech_stack") %></p>
           </div>
-
-          <button class="crayons-btn w-max" type="submit"><%= t("views.settings.org.admin.form.submit") %></button>
-        <% end %>
       </div>
 
       <%# ── Social Links ── %>
@@ -210,7 +208,6 @@
           <p class="color-base-70"><%= t("views.organization_settings.social_links.description") %></p>
         </header>
 
-        <%= form_for @organization, url: organization_settings_path(@organization.slug), method: :patch, html: { class: "grid gap-4" } do |f| %>
           <% social_platforms = [
                { key: :twitter, icon: "twitter", field: :twitter_username, placeholder: "yourhandle", label: "Twitter / X" },
                { key: :github, icon: "github", field: :github_username, placeholder: "yourorg", label: "GitHub" },
@@ -254,8 +251,6 @@
             <% end %>
           </div>
 
-          <button class="crayons-btn w-max" type="submit"><%= t("views.organization_settings.social_links.save") %></button>
-        <% end %>
       </div>
 
       <%# ── Header CTA Button ── %>
@@ -265,7 +260,6 @@
           <p class="color-base-70"><%= t("views.organization_settings.header_cta.description") %></p>
         </header>
 
-        <%= form_for @organization, url: organization_settings_path(@organization.slug), method: :patch, html: { class: "grid gap-6", id: "header-cta-form" } do |f| %>
           <div class="crayons-field">
             <label for="header_cta_text" class="crayons-field__label"><%= t("views.organization_settings.header_cta.button_text") %></label>
             <input type="text" name="organization[header_cta][text]" id="header_cta_text"
@@ -328,8 +322,6 @@
             </button>
           </fieldset>
 
-          <button class="crayons-btn w-max" type="submit"><%= t("views.organization_settings.header_cta.save") %></button>
-        <% end %>
       </div>
 
       <script>
@@ -407,7 +399,6 @@
           <p><%= t("views.settings.org.admin.cta_desc") %></p>
         </header>
 
-        <%= form_for @organization, url: organization_settings_path(@organization.slug), method: :patch, html: { class: "grid gap-6" } do |f| %>
           <div class="crayons-field">
             <%= f.label :cta_body_markdown, class: "crayons-field__label" %>
             <%= f.text_area :cta_body_markdown, maxlength: 256, class: "crayons-textfield" %>
@@ -422,10 +413,8 @@
             <%= f.label :cta_button_url, "Link url", class: "crayons-field__label" %>
             <%= f.text_field :cta_button_url, maxlength: 150, placeholder: "https://example.com", class: "crayons-textfield" %>
           </div>
-
-          <button class="crayons-btn w-max" type="submit"><%= t("views.settings.org.admin.form.submit") %></button>
-        <% end %>
       </div>
+      <% end %>
 
       <%# ── Members ── %>
       <div id="section-members" class="crayons-card crayons-card--content-rows">
@@ -652,6 +641,20 @@
       });
     });
   })();
+</script>
+
+<form id="org-page-preview-form" action="<%= organization_settings_preview_path(@organization.slug) %>" method="post" target="_blank" style="display:none">
+  <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+  <input type="hidden" name="body_markdown" id="org-page-preview-markdown">
+</form>
+<script>
+  document.getElementById('org-page-preview-btn').addEventListener('click', function() {
+    var textarea = document.getElementById('org_page_markdown');
+    if (textarea) {
+      document.getElementById('org-page-preview-markdown').value = textarea.value;
+      document.getElementById('org-page-preview-form').submit();
+    }
+  });
 </script>
 
 <div id="snack-zone"></div>

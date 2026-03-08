@@ -1,20 +1,29 @@
-<div class="liquid-comment">
-  <% if comment %>
-    <div class="details">
-      <a href="/<%= comment.user.username %>">
-        <img class="profile-pic" src="<%= comment.user.profile_image_url_for(length: 50) %>" alt="<%= comment.user.username %> profile image" />
+<% if comment %>
+<div class="crayons-card my-2 p-0 overflow-hidden">
+  <% article = comment.commentable %>
+  <% if article %>
+    <a href="<%= URL.article(article) %>" class="flex items-center gap-2 p-3 fs-s color-base-60 hover:color-base-90" style="background: var(--base-10); border-bottom: 1px solid var(--base-20);">
+      <%= crayons_icon_tag("small-comment", class: "shrink-0") %>
+      <span>Comment on <strong class="fw-medium color-base-90"><%= article.title %></strong></span>
+    </a>
+  <% end %>
+  <div class="p-4">
+    <div class="flex items-center gap-2 mb-3">
+      <a href="/<%= comment.user.username %>" class="crayons-avatar crayons-avatar--l">
+        <img src="<%= comment.user.profile_image_url_for(length: 50) %>" alt="<%= comment.user.username %>" class="crayons-avatar__image" loading="lazy" />
       </a>
-      <a href="/<%= comment.user.username %>">
-        <span class="comment-username"><%= comment.user.name %></span>
-      </a>
-      <%= render "comments/comment_date", decorated_comment: comment.decorate %>
+      <div>
+        <a href="/<%= comment.user.username %>" class="crayons-link fw-medium"><%= comment.user.name %></a>
+        <span class="fs-xs color-base-60 ml-1"><%= comment.decorate.readable_publish_date %></span>
+      </div>
     </div>
-    <div class="body">
+    <div class="text-styles">
       <%= comment.safe_processed_html %>
     </div>
-  <% else %>
-    <div class="body">
-      <p>Comment Not Found</p>
-    </div>
-  <% end %>
+  </div>
 </div>
+<% else %>
+<div class="crayons-card my-2 p-4">
+  <p class="color-base-60">Comment not found or has been removed.</p>
+</div>
+<% end %>

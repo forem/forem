@@ -1,0 +1,19 @@
+<% title "Preview — #{sanitize(@organization.name)}" %>
+
+<div class="crayons-layout crayons-layout--limited-l pt-4 m:pt-0" id="index-container">
+  <main class="crayons-layout__content">
+    <div class="crayons-notice crayons-notice--info mb-4 flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      <span><strong><%= t("views.organization_settings.page.preview_badge") %></strong> — <%= t("views.organization_settings.page.preview_badge_description") %></span>
+    </div>
+    <% if @preview_error %>
+      <div class="crayons-notice crayons-notice--danger mb-4">
+        <p><%= @preview_error %></p>
+      </div>
+    <% else %>
+      <div class="crayons-article__body text-styles">
+        <%= @preview_html.html_safe %>
+      </div>
+    <% end %>
+  </main>
+</div>

@@ -13,6 +13,16 @@ class OrganizationSettingsController < ApplicationController
     )
   end
 
+  def preview
+    renderer = ContentRenderer.new(params[:body_markdown].to_s, source: @organization, user: current_user)
+    result = renderer.process
+    @preview_html = result.processed_html
+    render layout: "application"
+  rescue ContentRenderer::ContentParsingError => e
+    @preview_error = e.message
+    render layout: "application"
+  end
+
   def update
     unless valid_image?
       @org_organization_memberships = @organization.organization_memberships.includes(:user)
