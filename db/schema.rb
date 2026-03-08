@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_03_07_130000) do
+ActiveRecord::Schema[7.0].define(version: 2026_03_08_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -897,6 +897,21 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_07_130000) do
     t.index ["slug"], name: "index_labels_on_slug", unique: true
   end
 
+  create_table "lead_submissions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "email"
+    t.string "employer_name"
+    t.string "employment_title"
+    t.string "location"
+    t.string "name"
+    t.bigint "organization_lead_form_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["organization_lead_form_id", "user_id"], name: "idx_lead_submissions_form_user_unique", unique: true
+    t.index ["organization_lead_form_id"], name: "index_lead_submissions_on_organization_lead_form_id"
+    t.index ["user_id"], name: "index_lead_submissions_on_user_id"
+  end
+
   create_table "media_sources", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "display_url", null: false
@@ -982,6 +997,17 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_07_130000) do
     t.index ["user_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_user_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
     t.index ["user_id", "notifiable_id", "notifiable_type"], name: "index_notifications_on_user_notifiable_action_is_null", unique: true, where: "(action IS NULL)"
     t.index ["user_id", "organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_user_id_organization_id_notifiable_action", unique: true
+  end
+
+  create_table "organization_lead_forms", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.string "button_text", default: "Sign Up", null: false
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.bigint "organization_id", null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id"], name: "index_organization_lead_forms_on_organization_id"
   end
 
   create_table "organization_memberships", force: :cascade do |t|
@@ -1961,11 +1987,14 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_07_130000) do
   add_foreign_key "github_repos", "users", on_delete: :cascade
   add_foreign_key "html_variants", "users", on_delete: :cascade
   add_foreign_key "identities", "users", on_delete: :cascade
+  add_foreign_key "lead_submissions", "organization_lead_forms", on_delete: :cascade
+  add_foreign_key "lead_submissions", "users", on_delete: :cascade
   add_foreign_key "mentions", "users", on_delete: :cascade
   add_foreign_key "notes", "users", column: "author_id", on_delete: :nullify
   add_foreign_key "notification_subscriptions", "users", on_delete: :cascade
   add_foreign_key "notifications", "organizations", on_delete: :cascade
   add_foreign_key "notifications", "users", on_delete: :cascade
+  add_foreign_key "organization_lead_forms", "organizations", on_delete: :cascade
   add_foreign_key "organization_memberships", "organizations", on_delete: :cascade
   add_foreign_key "organization_memberships", "users", on_delete: :cascade
   add_foreign_key "page_views", "articles", on_delete: :cascade

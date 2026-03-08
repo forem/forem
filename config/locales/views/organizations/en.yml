@@ -6,8 +6,12 @@ en:
         heading: Page
         cover_image: Cover image
         readme: Page content (Markdown)
-        readme_placeholder: "Use Markdown and Liquid tags to customize your org page.\n\nExample:\n{% org_team your-org-slug %}\n{% org_team your-org-slug role=admins limit=5 %}\n{% org_posts your-org-slug %}\n{% org_posts your-org-slug limit=5 sort=reactions min_reactions=10 since=30d %}"
-        readme_description: "Supports Markdown and Liquid tags like {% org_team slug %} and {% org_posts slug %}. org_team options: limit (1-50), role (all/admins/members). org_posts options: limit (1-30), sort (recent/reactions/comments/score), min_reactions, min_comments, since (e.g. 30d or 2025-01-01)."
+        readme_placeholder: "Use Markdown and Liquid tags to customize your org page.\n\nExample:\n{% org_team your-org-slug %}\n{% org_team your-org-slug role=admins limit=5 %}\n{% org_posts your-org-slug %}\n{% org_posts your-org-slug limit=5 sort=reactions min_reactions=10 since=30d %}\n{% org_lead_form 42 %}"
+        readme_description: "Supports Markdown and Liquid tags like {% org_team slug %}, {% org_posts slug %}, and {% org_lead_form ID %}. org_team options: limit (1-50), role (all/admins/members). org_posts options: limit (1-30), sort (recent/reactions/comments/score), min_reactions, min_comments, since (e.g. 30d or 2025-01-01). Create lead forms in Lead Forms settings."
+        default_notice: "Your page is currently using the default layout."
+        default_explanation: "By default, your org page automatically shows your team members and recent posts. Adding custom content below will replace the entire default layout."
+        default_example_toggle: "Show example to replicate the default page"
+        default_example: "## Meet the team\n{%% org_team %{slug} %%}\n\n## Latest posts\n{%% org_posts %{slug} %%}"
         save: Save page
         preview: Preview
         preview_badge: Preview Mode
@@ -28,6 +32,44 @@ en:
         add_link: Add link
         remove_link: Remove link
         save: Save header CTA
+      lead_forms:
+        heading: Lead Forms
+        sidebar_link: Lead Forms
+        back_to_settings: Back to settings
+        create_heading: Create a new lead form
+        form_title: Title
+        form_title_placeholder: "Get our weekly newsletter"
+        form_description: Description
+        form_description_placeholder: "Sign up to receive updates about our latest products and announcements."
+        form_description_help: Optional text shown above the submit button to explain what users are signing up for.
+        form_button_text: Button text
+        create_button: Create form
+        your_forms: Your forms
+        status_active: Active
+        status_inactive: Inactive
+        submissions_count:
+          zero: No submissions yet
+          one: 1 submission
+          other: "%{count} submissions"
+        embed_code: Embed
+        copy_embed: Copy embed code
+        download_csv: Download CSV
+        activate: Activate
+        deactivate: Deactivate
+        delete: Delete
+        confirm_delete: Are you sure you want to delete this lead form and all its submissions?
+        created: Lead form created successfully.
+        deleted: Lead form deleted.
+        activated: Lead form activated.
+        deactivated: Lead form deactivated.
+        csv:
+          name: Name
+          email: Email
+          employer: Company
+          title: Job Title
+          location: Location
+          username: Username
+          submitted_at: Submitted At
       sidebar:
         invitations: Invitations
       social_links:

@@ -165,5 +165,15 @@ fr:
       missing_image: "La balise slide nécessite une option image"
     slides_tag:
       invalid_mode: "Le mode slides doit être 'default' ou 'carousel'"
+    org_lead_form_tag:
+      not_found: Formulaire de leads non trouvé
+      inactive: Ce formulaire de leads n'est plus actif
+      invalid_id: "ID de formulaire de leads non valide. Utilisez : {% org_lead_form ID %}"
+      data_shared: "Partage votre nom, e-mail, entreprise, poste et localisation avec cette organisation."
+      submitting: Envoi en cours...
+      submitted: Envoyé
+      already_submitted: "Vous avez envoyé ceci le %{date}"
+      error: Une erreur s'est produite. Veuillez réessayer.
+      sign_in_required: Veuillez vous connecter pour soumettre ce formulaire.
     youtube_tag:
       invalid_youtube_id: ID ou URL YouTube non valide

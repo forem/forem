@@ -1,0 +1,122 @@
+<% title t("views.organization_settings.lead_forms.heading") %>
+
+<div class="crayons-layout crayons-layout--limited-l pt-7">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="crayons-title"><%= t("views.organization_settings.lead_forms.heading") %></h1>
+    <a href="/<%= @organization.slug %>/settings" class="crayons-btn crayons-btn--secondary">
+      &larr; <%= t("views.organization_settings.lead_forms.back_to_settings") %>
+    </a>
+  </div>
+
+  <%# ── Create new form ── %>
+  <div class="crayons-card crayons-card--content-rows mb-6">
+    <h2><%= t("views.organization_settings.lead_forms.create_heading") %></h2>
+
+    <%= form_for OrganizationLeadForm.new, url: organization_lead_forms_path(@organization.slug), html: { class: "grid gap-4" } do |f| %>
+      <% if @lead_form&.errors&.any? %>
+        <div class="crayons-notice crayons-notice--danger">
+          <% @lead_form.errors.full_messages.each do |msg| %>
+            <p><%= msg %></p>
+          <% end %>
+        </div>
+      <% end %>
+
+      <div class="crayons-field">
+        <%= f.label :title, t("views.organization_settings.lead_forms.form_title"), class: "crayons-field__label" %>
+        <%= f.text_field :title, class: "crayons-textfield", placeholder: t("views.organization_settings.lead_forms.form_title_placeholder"), maxlength: 150, required: true %>
+      </div>
+
+      <div class="crayons-field">
+        <%= f.label :description, t("views.organization_settings.lead_forms.form_description"), class: "crayons-field__label" %>
+        <%= f.text_area :description, class: "crayons-textfield", placeholder: t("views.organization_settings.lead_forms.form_description_placeholder"), maxlength: 500, rows: 3 %>
+        <p class="crayons-field__description"><%= t("views.organization_settings.lead_forms.form_description_help") %></p>
+      </div>
+
+      <div class="crayons-field">
+        <%= f.label :button_text, t("views.organization_settings.lead_forms.form_button_text"), class: "crayons-field__label" %>
+        <%= f.text_field :button_text, class: "crayons-textfield", value: "Sign Up", maxlength: 40, required: true %>
+      </div>
+
+      <button class="crayons-btn w-max" type="submit"><%= t("views.organization_settings.lead_forms.create_button") %></button>
+    <% end %>
+  </div>
+
+  <%# ── Existing forms ── %>
+  <% if @lead_forms.any? %>
+    <div class="crayons-card crayons-card--content-rows">
+      <h2><%= t("views.organization_settings.lead_forms.your_forms") %></h2>
+
+      <div class="grid gap-4">
+        <% @lead_forms.each do |form| %>
+          <div class="crayons-card crayons-card--secondary p-4">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <h3 class="crayons-subtitle-2"><%= form.title %></h3>
+                  <% if form.active? %>
+                    <span class="crayons-tag crayons-tag--monochrome" style="background: var(--accent-success-a10); color: var(--accent-success);">
+                      <%= t("views.organization_settings.lead_forms.status_active") %>
+                    </span>
+                  <% else %>
+                    <span class="crayons-tag crayons-tag--monochrome">
+                      <%= t("views.organization_settings.lead_forms.status_inactive") %>
+                    </span>
+                  <% end %>
+                </div>
+                <% if form.description.present? %>
+                  <p class="color-base-70 fs-s mb-2"><%= form.description %></p>
+                <% end %>
+                <p class="fs-xs color-base-60">
+                  <%= t("views.organization_settings.lead_forms.submissions_count", count: form.lead_submissions.count) %>
+                </p>
+                <div class="flex items-center gap-2 mt-1">
+                  <code class="crayons-code fs-xs" id="embed-code-<%= form.id %>">{% org_lead_form <%= form.id %> %}</code>
+                  <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--s lead-form-copy-btn" data-target="embed-code-<%= form.id %>" title="<%= t("views.organization_settings.lead_forms.copy_embed") %>">
+                    <%= crayons_icon_tag(:copy, class: "shrink-0") %>
+                  </button>
+                </div>
+              </div>
+
+              <div class="flex gap-2 shrink-0">
+                <% if form.lead_submissions.any? %>
+                  <a href="<%= organization_lead_form_submissions_path(@organization.slug, form, format: :csv) %>"
+                     class="crayons-btn crayons-btn--s crayons-btn--secondary">
+                    <%= t("views.organization_settings.lead_forms.download_csv") %>
+                  </a>
+                <% end %>
+
+                <%= button_to organization_lead_form_toggle_path(@organization.slug, form),
+                    method: :patch,
+                    class: "crayons-btn crayons-btn--s crayons-btn--secondary" do %>
+                  <%= form.active? ? t("views.organization_settings.lead_forms.deactivate") : t("views.organization_settings.lead_forms.activate") %>
+                <% end %>
+
+                <%= button_to organization_lead_form_path(@organization.slug, form),
+                    method: :delete,
+                    class: "crayons-btn crayons-btn--s crayons-btn--ghost-danger",
+                    data: { confirm: t("views.organization_settings.lead_forms.confirm_delete") } do %>
+                  <%= t("views.organization_settings.lead_forms.delete") %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  document.querySelectorAll('.lead-form-copy-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var target = document.getElementById(btn.getAttribute('data-target'));
+      if (target) {
+        navigator.clipboard.writeText(target.textContent.trim()).then(function() {
+          var original = btn.innerHTML;
+          btn.innerHTML = '<%= crayons_icon_tag(:checkmark, class: "shrink-0") %>';
+          setTimeout(function() { btn.innerHTML = original; }, 1500);
+        });
+      }
+    });
+  });
+</script>

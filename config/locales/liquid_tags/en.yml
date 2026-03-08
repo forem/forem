@@ -165,5 +165,15 @@ en:
       missing_image: "Slide tag requires an image option"
     slides_tag:
       invalid_mode: "Slides mode must be 'default' or 'carousel'"
+    org_lead_form_tag:
+      not_found: Lead form not found
+      inactive: This lead form is no longer active
+      invalid_id: "Invalid lead form ID. Use: {% org_lead_form ID %}"
+      data_shared: "Shares your name, email, company, title, and location with this organization."
+      submitting: Submitting...
+      submitted: Submitted
+      already_submitted: "You submitted this on %{date}"
+      error: Something went wrong. Please try again.
+      sign_in_required: Please sign in to submit this form.
     youtube_tag:
       invalid_youtube_id: Invalid YouTube ID or URL

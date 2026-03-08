@@ -90,6 +90,10 @@ fr:
       wrong_user: Vous devez être connecté en tant que l'utilisateur invité pour confirmer cette invitation.
       sign_in_required: Veuillez vous connecter pour confirmer votre adhésion à l'organisation.
       success: "Vous avez rejoint %{organization_name} avec succès !"
+  lead_submissions:
+    inactive_form: Ce formulaire de leads n'accepte plus de soumissions.
+    not_found: Formulaire de leads non trouvé.
+    already_submitted: Vous avez déjà soumis ce formulaire.
   podcasts_controller:
     podcast_suggested: Podcast proposé
   profiles_controller:

@@ -88,6 +88,8 @@ en:
       header_cta_links_invalid: "links must be an array"
       header_cta_too_many_links: "has too many links (max %{max})"
       header_cta_link_missing_fields: "each link must have text and URL"
+    lead_submission:
+      already_submitted: You have already submitted this form.
     page:
       body_must_exist: must exist if body_html or body_json doesn't exist.
     podcast_episode_appearance:

@@ -1,6 +1,102 @@
-<% if @organization_membership %>
-  <%# "org_admin", "org_guest", "org_member", etc. For all types, see app/models/organization_membership.rb  %>
-  <%= render "users/org_#{@organization_membership.type_of_user}" %>
-<% else %>
-  <%= render "users/org_non_member" %>
+<%= javascript_include_tag "validateFileInputs", defer: true %>
+
+<% if @organizations.any? %>
+  <div class="crayons-card crayons-card--content-rows">
+    <h2><%= t("views.settings.org.list.heading") %></h2>
+
+    <div class="grid gap-2">
+      <% @organizations.each do |org| %>
+        <% membership = OrganizationMembership.find_by(user_id: current_user.id, organization_id: org.id) %>
+        <div class="crayons-card crayons-card--secondary p-4 flex items-center gap-4">
+          <span class="crayons-logo crayons-logo--l shrink-0">
+            <% if org.profile_image_url.present? %>
+              <img alt="<%= org.name %>" src="<%= optimized_image_url(org.profile_image_url, width: 40) %>" class="crayons-logo__image" />
+            <% end %>
+          </span>
+          <div class="flex-1">
+            <p class="fw-bold">
+              <a href="/<%= org.slug %>" class="crayons-link"><%= org.name %></a>
+              <% if membership&.type_of_user == "admin" %>
+                <span class="c-indicator c-indicator--danger ml-1"><%= t("views.settings.org.admin.admin") %></span>
+              <% end %>
+            </p>
+            <p class="fs-s color-base-60">@<%= org.slug %></p>
+          </div>
+          <div class="flex gap-2">
+            <% if current_user.org_admin?(org) %>
+              <a href="<%= organization_settings_path(org.slug) %>" class="crayons-btn crayons-btn--s"><%= t("views.settings.org.list.manage") %></a>
+            <% end %>
+            <a href="/<%= org.slug %>" class="crayons-btn crayons-btn--secondary crayons-btn--s"><%= t("views.settings.org.list.view_page") %></a>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
 <% end %>
+
+<div class="crayons-card crayons-card--content-rows">
+  <h2><%= t("views.settings.org.join.heading") %></h2>
+  <%= form_tag "/users/join_org" do %>
+    <div class="crayons-field mb-6">
+      <%= label_tag :org_secret, t("views.settings.org.join.label"), class: "crayons-field__label" %>
+      <p class="crayons-field__description"><%= t("views.settings.org.join.desc") %></p>
+      <%= text_field_tag :org_secret, nil, placeholder: t("views.settings.org.join.placeholder"), class: "crayons-textfield", autocomplete: "off" %>
+    </div>
+
+    <button class="crayons-btn" type="submit"><%= t("views.settings.org.join.submit") %></button>
+  <% end %>
+</div>
+
+<p class="align-center fs-small color-base-60 mb-6 fw-bold"><%= t("views.settings.org.divider") %></p>
+
+<div class="crayons-card crayons-card--content-rows">
+  <header>
+    <h2 class="mb-2"><%= t("views.settings.org.create.heading") %></h2>
+    <p><%= t("views.settings.org.create.required") %></p>
+  </header>
+
+  <%= form_for @organization, html: { class: "grid gap-6" } do |f| %>
+    <div class="crayons-field">
+      <%= f.label :name, class: "crayons-field__label" do |translation| %>
+        <%= translation %>
+        <span class="crayons-field__required" title="<%= t("views.settings.org.create.required") %>">*</span>
+      <% end %>
+      <%= f.text_field :name, class: "crayons-textfield" %>
+    </div>
+    <div class="crayons-field">
+      <%= f.label :slug, class: "crayons-field__label" do |translation| %>
+        <%= translation %>
+        <span class="crayons-field__required" title="<%= t("views.settings.org.create.required") %>">*</span>
+      <% end %>
+      <%= f.text_field :slug, class: "crayons-textfield" %>
+      <p class="crayons-field__description"><%= t("views.settings.org.create.slug", url: app_url) %></p>
+    </div>
+
+    <div class="crayons-field">
+      <%= f.label :profile_image, class: "crayons-field__label" do |translation| %>
+        <%= translation %>
+        <span class="crayons-field__required" title="<%= t("views.settings.org.create.required") %>">*</span>
+      <% end %>
+      <%= f.file_field :profile_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
+    </div>
+
+    <div class="crayons-field">
+      <%= f.label :url, class: "crayons-field__label" %>
+      <%= f.url_field :url, class: "crayons-textfield" %>
+    </div>
+
+    <div class="crayons-field">
+      <%= f.label :summary, class: "crayons-field__label" %>
+      <%= f.text_area :summary, class: "crayons-textfield", rows: 3 %>
+    </div>
+
+    <div class="crayons-field">
+      <%= f.label :proof, class: "crayons-field__label" %>
+      <p class="crayons-field__description"><%= t("views.settings.org.create.proof") %></p>
+      <%= f.text_area :proof, class: "crayons-textfield" %>
+      <p class="crayons-field__description"><%= t("views.settings.org.create.notice") %></p>
+    </div>
+
+    <button class="crayons-btn w-max" type="submit"><%= t("views.settings.org.create.submit") %></button>
+  <% end %>
+</div>

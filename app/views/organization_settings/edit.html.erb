@@ -86,7 +86,10 @@
         <a href="#section-invitations"><%= t("views.organization_settings.sidebar.invitations") %></a>
         <a href="#section-danger"><%= t("views.settings.danger") %></a>
       </nav>
-      <div class="grid gap-2 mt-6 pt-4" style="border-top: 1px solid var(--base-20);">
+      <a href="<%= organization_lead_forms_path(@organization.slug) %>" class="mt-4 crayons-link fw-medium fs-s flex items-center gap-1">
+        <%= t("views.organization_settings.lead_forms.sidebar_link") %> &rarr;
+      </a>
+      <div class="grid gap-2 mt-4 pt-4" style="border-top: 1px solid var(--base-20);">
         <button type="submit" form="org-settings-form" class="crayons-btn"><%= t("views.organization_settings.page.save") %></button>
         <button type="button" id="org-page-preview-btn" class="crayons-btn crayons-btn--secondary"><%= t("views.organization_settings.page.preview") %></button>
         <a href="/<%= @organization.slug %>" class="crayons-btn crayons-btn--secondary">
@@ -115,6 +118,18 @@
 
           <div class="crayons-field">
             <label for="org_page_markdown" class="crayons-field__label"><%= t("views.organization_settings.page.readme") %></label>
+
+            <% if @organization.page_markdown.blank? %>
+              <div class="crayons-notice crayons-notice--info mb-4">
+                <p class="fw-medium mb-1"><%= t("views.organization_settings.page.default_notice") %></p>
+                <p class="fs-s color-base-70 mb-2"><%= t("views.organization_settings.page.default_explanation") %></p>
+                <details>
+                  <summary class="cursor-pointer fw-medium fs-s crayons-link"><%= t("views.organization_settings.page.default_example_toggle") %></summary>
+                  <pre class="crayons-card crayons-card--secondary p-3 mt-2 ff-monospace fs-s" style="white-space: pre-wrap;"><%= t("views.organization_settings.page.default_example", slug: @organization.slug) %></pre>
+                </details>
+              </div>
+            <% end %>
+
             <div id="org-page-editor-root"
                  data-default-value="<%= @organization.page_markdown %>"
                  data-textarea-name="organization[page_markdown]">

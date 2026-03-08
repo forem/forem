@@ -87,6 +87,8 @@ pt:
       header_cta_links_invalid: "os links devem ser um array"
       header_cta_too_many_links: "contém links demais (máx %{max})"
       header_cta_link_missing_fields: "cada link deve ter texto e URL"
+    lead_submission:
+      already_submitted: Você já enviou este formulário.
     page:
       body_must_exist: deve existir se body_html ou body_json não existir.
     podcast_episode_appearance:

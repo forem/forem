@@ -33,6 +33,7 @@ class OrganizationsController < ApplicationController
 
     @tab = "organization"
     @user = current_user
+    @organizations = current_user.organizations.order(name: :asc)
 
     unless valid_image?
       render template: "users/edit"
@@ -46,7 +47,7 @@ class OrganizationsController < ApplicationController
       @organization_membership = OrganizationMembership.create!(organization_id: @organization.id,
                                                                 user_id: current_user.id, type_of_user: "admin")
       flash[:settings_notice] = I18n.t("organizations_controller.created")
-      redirect_to "/settings/organization/#{@organization.id}"
+      redirect_to organization_settings_path(@organization.slug)
     else
       render template: "users/edit"
     end
@@ -55,6 +56,7 @@ class OrganizationsController < ApplicationController
   def update
     @user = current_user
     @tab = "organization"
+    @organizations = current_user.organizations.order(name: :asc)
     set_organization
 
     unless valid_image?
@@ -86,7 +88,7 @@ class OrganizationsController < ApplicationController
     redirect_to user_settings_path(:organization)
   rescue Pundit::NotAuthorizedError
     flash[:error] = I18n.t("organizations_controller.not_deleted")
-    redirect_to user_settings_path(:organization, id: organization.id)
+    redirect_to user_settings_path(:organization)
   end
 
   def generate_new_secret
@@ -232,7 +234,7 @@ class OrganizationsController < ApplicationController
       @membership.confirm!
       flash[:settings_notice] = I18n.t("organizations_controller.confirm_invitation.success",
                                         organization_name: @membership.organization.name)
-      redirect_to user_settings_path(:organization, org_id: @membership.organization.id)
+      redirect_to user_settings_path(:organization)
     else
       # GET request - show confirmation page
       render :confirm_invitation

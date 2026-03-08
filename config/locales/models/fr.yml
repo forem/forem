@@ -87,6 +87,8 @@ fr:
       header_cta_links_invalid: "les liens doivent être un tableau"
       header_cta_too_many_links: "contient trop de liens (max %{max})"
       header_cta_link_missing_fields: "chaque lien doit avoir un texte et une URL"
+    lead_submission:
+      already_submitted: Vous avez déjà soumis ce formulaire.
     page:
       body_must_exist: doit exister si body_html ou body_json n'existe pas.
     podcast_episode_appearance:

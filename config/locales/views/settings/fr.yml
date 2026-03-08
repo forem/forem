@@ -259,6 +259,10 @@ fr:
             text: Revoke admin status
           secret_code: 'Your secret code is:'
           you: You
+        list:
+          heading: Vos organisations
+          manage: Paramètres
+          view_page: Voir la page
         create:
           heading: Create An Organization
           notice: You must have your organization's permission to submit this form. Dishonesty may result in a permanent suspension.

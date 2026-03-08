@@ -90,6 +90,10 @@ en:
       wrong_user: You must be signed in as the invited user to confirm this invitation.
       sign_in_required: Please sign in to confirm your organization membership.
       success: Successfully joined %{organization_name}!
+  lead_submissions:
+    inactive_form: This lead form is no longer accepting submissions.
+    not_found: Lead form not found.
+    already_submitted: You have already submitted this form.
   podcasts_controller:
     podcast_suggested: Podcast suggested
   profiles_controller:

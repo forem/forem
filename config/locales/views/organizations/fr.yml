@@ -8,6 +8,10 @@ fr:
         readme: Contenu de la page (Markdown)
         readme_placeholder: "Utilisez Markdown et les balises Liquid pour personnaliser votre page d'organisation.\n\nExemple :\n{% org_team votre-slug-org %}\n{% org_team votre-slug-org role=admins limit=5 %}\n{% org_posts votre-slug-org %}\n{% org_posts votre-slug-org limit=5 sort=reactions min_reactions=10 since=30d %}"
         readme_description: "Supporte Markdown et les balises Liquid comme {% org_team slug %} et {% org_posts slug %}. Options org_team : limit (1-50), role (all/admins/members). Options org_posts : limit (1-30), sort (recent/reactions/comments/score), min_reactions, min_comments, since (ex. 30d ou 2025-01-01)."
+        default_notice: "Votre page utilise actuellement la mise en page par défaut."
+        default_explanation: "Par défaut, votre page d'organisation affiche automatiquement vos membres et publications récentes. Ajouter du contenu personnalisé ci-dessous remplacera entièrement la mise en page par défaut."
+        default_example_toggle: "Afficher l'exemple pour reproduire la page par défaut"
+        default_example: "## Rencontrez l'équipe\n{%% org_team %{slug} %%}\n\n## Dernières publications\n{%% org_posts %{slug} %%}"
         save: Enregistrer la page
         preview: Aperçu
         preview_badge: Mode aperçu
@@ -28,6 +32,44 @@ fr:
         add_link: Ajouter un lien
         remove_link: Supprimer le lien
         save: Enregistrer le CTA de l'en-tête
+      lead_forms:
+        heading: Formulaires de leads
+        sidebar_link: Formulaires de leads
+        back_to_settings: Retour aux paramètres
+        create_heading: Créer un nouveau formulaire de leads
+        form_title: Titre
+        form_title_placeholder: "Recevez notre newsletter hebdomadaire"
+        form_description: Description
+        form_description_placeholder: "Inscrivez-vous pour recevoir des mises à jour sur nos derniers produits et annonces."
+        form_description_help: Texte optionnel affiché au-dessus du bouton pour expliquer à quoi les utilisateurs s'inscrivent.
+        form_button_text: Texte du bouton
+        create_button: Créer le formulaire
+        your_forms: Vos formulaires
+        status_active: Actif
+        status_inactive: Inactif
+        submissions_count:
+          zero: Aucune soumission
+          one: 1 soumission
+          other: "%{count} soumissions"
+        embed_code: Intégrer
+        copy_embed: Copier le code d'intégration
+        download_csv: Télécharger CSV
+        activate: Activer
+        deactivate: Désactiver
+        delete: Supprimer
+        confirm_delete: Êtes-vous sûr de vouloir supprimer ce formulaire de leads et toutes ses soumissions ?
+        created: Formulaire de leads créé avec succès.
+        deleted: Formulaire de leads supprimé.
+        activated: Formulaire de leads activé.
+        deactivated: Formulaire de leads désactivé.
+        csv:
+          name: Nom
+          email: Email
+          employer: Entreprise
+          title: Poste
+          location: Lieu
+          username: Nom d'utilisateur
+          submitted_at: Soumis le
       sidebar:
         invitations: Invitations
       social_links:

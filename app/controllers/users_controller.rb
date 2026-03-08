@@ -175,10 +175,10 @@ class UsersController < ApplicationController
       OrganizationMembership.create(user_id: current_user.id, organization_id: @organization.id, type_of_user: "member")
       flash[:settings_notice] =
         I18n.t("users_controller.joined_org", organization_name: @organization.name)
-      redirect_to "/settings/organization/#{@organization.id}"
+      redirect_to "/settings/organization"
     else
       flash[:error] = I18n.t("users_controller.invalid_secret")
-      redirect_to "/settings/organization/new"
+      redirect_to "/settings/organization"
     end
   end
 
@@ -187,7 +187,7 @@ class UsersController < ApplicationController
     authorize org
     OrganizationMembership.find_by(organization_id: org.id, user_id: current_user.id)&.destroy
     flash[:settings_notice] = I18n.t("users_controller.left_org")
-    redirect_to "/settings/organization/new"
+    redirect_to "/settings/organization"
   end
 
   def add_org_admin
@@ -298,21 +298,7 @@ class UsersController < ApplicationController
 
   def handle_organization_tab
     @organizations = @current_user.organizations.order(name: :asc)
-    if params[:org_id] == "new" || (params[:org_id].blank? && @organizations.empty?)
-      @organization = Organization.new
-    elsif params[:org_id].blank? || params[:org_id].match?(/\d/)
-      @organization = Organization.find_by(id: params[:org_id]) || @organizations.first
-      authorize @organization, :part_of_org?
-
-      # Redirect admins to the consolidated settings page
-      if current_user.org_admin?(@organization)
-        redirect_to organization_settings_path(@organization.slug) and return
-      end
-
-      @org_organization_memberships = @organization.organization_memberships.includes(:user)
-      @organization_membership = OrganizationMembership.find_by(user_id: current_user.id,
-                                                                organization_id: @organization.id)
-    end
+    @organization = Organization.new
   end
 
   def handle_integrations_tab

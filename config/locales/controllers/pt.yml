@@ -90,6 +90,10 @@ pt:
       wrong_user: Você deve estar conectado como o usuário convidado para confirmar este convite.
       sign_in_required: Por favor, faça login para confirmar sua associação à organização.
       success: "Você se juntou a %{organization_name} com sucesso!"
+  lead_submissions:
+    inactive_form: Este formulário de leads não está mais aceitando submissões.
+    not_found: Formulário de leads não encontrado.
+    already_submitted: Você já enviou este formulário.
   podcasts_controller:
     podcast_suggested: Podcast sugerido
   profiles_controller:

@@ -1,0 +1,81 @@
+<div class="ltag-org-lead-form crayons-card p-6 my-4" data-lead-form-id="<%= form.id %>">
+  <h3 class="crayons-subtitle-2 mb-2"><%= form.title %></h3>
+  <% if form.description.present? %>
+    <p class="color-base-70 mb-3"><%= form.description %></p>
+  <% end %>
+
+  <div class="lead-form-actions">
+    <button type="button"
+            class="crayons-btn lead-form-submit-btn"
+            data-form-id="<%= form.id %>"
+            onclick="submitLeadForm(this)">
+      <%= form.button_text %>
+    </button>
+    <span class="lead-form-status fs-s color-base-60 ml-2" style="display:none;"></span>
+  </div>
+  <p class="fs-s color-base-60" style="margin-top: 1rem;"><%= I18n.t("liquid_tags.org_lead_form_tag.data_shared") %></p>
+</div>
+
+<script>
+  function submitLeadForm(button) {
+    var formId = button.getAttribute('data-form-id');
+    button.disabled = true;
+    button.textContent = '<%= I18n.t("liquid_tags.org_lead_form_tag.submitting") %>';
+
+    fetch('/lead_submissions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      },
+      body: JSON.stringify({ organization_lead_form_id: formId })
+    }).then(function(response) {
+      return response.json();
+    }).then(function(data) {
+      if (data.success) {
+        markFormSubmitted(button, new Date().toISOString());
+      } else {
+        button.textContent = data.error || '<%= I18n.t("liquid_tags.org_lead_form_tag.error") %>';
+        button.disabled = false;
+      }
+    }).catch(function() {
+      button.textContent = '<%= I18n.t("liquid_tags.org_lead_form_tag.error") %>';
+      button.disabled = false;
+    });
+  }
+
+  function markFormSubmitted(button, isoDate) {
+    button.disabled = true;
+    button.textContent = '<%= I18n.t("liquid_tags.org_lead_form_tag.submitted") %>';
+    button.classList.remove('crayons-btn--primary');
+    button.classList.add('crayons-btn--secondary');
+    button.style.opacity = '0.6';
+
+    var statusEl = button.parentElement.querySelector('.lead-form-status');
+    if (statusEl && isoDate) {
+      var date = new Date(isoDate);
+      var formatted = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+      statusEl.textContent = '<%= I18n.t("liquid_tags.org_lead_form_tag.already_submitted", date: "DATEPLACEHOLDER") %>'.replace('DATEPLACEHOLDER', formatted);
+      statusEl.style.display = '';
+    }
+  }
+
+  (function() {
+    var forms = document.querySelectorAll('.ltag-org-lead-form');
+    if (!forms.length) return;
+    var ids = [];
+    forms.forEach(function(f) { ids.push(f.getAttribute('data-lead-form-id')); });
+
+    fetch('/lead_submissions/check?form_ids=' + ids.join(','), {
+      credentials: 'same-origin'
+    }).then(function(r) { return r.json(); }).then(function(data) {
+      forms.forEach(function(f) {
+        var id = f.getAttribute('data-lead-form-id');
+        if (data[id]) {
+          var btn = f.querySelector('.lead-form-submit-btn');
+          if (btn) markFormSubmitted(btn, data[id]);
+        }
+      });
+    }).catch(function() {});
+  })();
+</script>

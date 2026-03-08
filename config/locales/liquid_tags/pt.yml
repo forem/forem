@@ -165,5 +165,15 @@ pt:
       missing_image: "A tag slide requer uma opção image"
     slides_tag:
       invalid_mode: "O modo slides deve ser 'default' ou 'carousel'"
+    org_lead_form_tag:
+      not_found: Formulário de leads não encontrado
+      inactive: Este formulário de leads não está mais ativo
+      invalid_id: "ID de formulário de leads inválido. Use: {% org_lead_form ID %}"
+      data_shared: "Compartilha seu nome, e-mail, empresa, cargo e localização com esta organização."
+      submitting: Enviando...
+      submitted: Enviado
+      already_submitted: "Você enviou isto em %{date}"
+      error: Algo deu errado. Por favor, tente novamente.
+      sign_in_required: Por favor, faça login para enviar este formulário.
     youtube_tag:
       invalid_youtube_id: ID do YouTube inválido
