@@ -77,6 +77,18 @@
 
           <p class="fs-base profile-header__bio m:fs-l color-base-90 mb-4 mx-auto max-w-100 m:max-w-75"><%= @user.tag_line.presence || [t("views.users.empty")].sample %></p>
 
+          <% if @user.profile.job_title.present? || @user.profile.company.present? %>
+            <p class="fs-base color-base-70 mb-2">
+              <% if @user.profile.job_title.present? && @user.profile.company.present? %>
+                <%= @user.profile.job_title %> at <%= @user.profile.company %>
+              <% elsif @user.profile.job_title.present? %>
+                <%= @user.profile.job_title %>
+              <% else %>
+                <%= @user.profile.company %>
+              <% end %>
+            </p>
+          <% end %>
+
           <div class="profile-header__meta">
             <% if @user.profile.location.present? %>
               <span class="profile-header__meta__item">

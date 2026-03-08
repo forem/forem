@@ -10,7 +10,7 @@ class Profile < ApplicationRecord
   after_commit :enqueue_profile_spam_check, on: :update, if: :profile_spam_check_triggered?
 
   validates :user_id, uniqueness: true
-  validates :location, :website_url, length: { maximum: 100 }
+  validates :location, :website_url, :job_title, :company, length: { maximum: 100 }
   validates :website_url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates_with ProfileValidator
 
@@ -19,7 +19,7 @@ class Profile < ApplicationRecord
   # Static fields are columns on the profiles table; they have no relationship
   # to a ProfileField record. These are columns we can safely assume exist for
   # any profile on a given Forem.
-  STATIC_FIELDS = %w[summary location website_url].freeze
+  STATIC_FIELDS = %w[summary location website_url job_title company].freeze
 
   # Update the Rails cache with the currently available attributes.
   def self.refresh_attributes!
@@ -75,6 +75,8 @@ class Profile < ApplicationRecord
     saved_change_to_summary? ||
       saved_change_to_location? ||
       saved_change_to_website_url? ||
+      saved_change_to_job_title? ||
+      saved_change_to_company? ||
       saved_change_to_attribute?(:social_image) ||
       saved_change_to_data?
   end

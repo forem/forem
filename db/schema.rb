@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_03_06_200919) do
+ActiveRecord::Schema[7.0].define(version: 2026_03_08_032335) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1285,8 +1285,10 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_06_200919) do
   end
 
   create_table "profiles", force: :cascade do |t|
+    t.string "company"
     t.datetime "created_at", null: false
     t.jsonb "data", default: {}, null: false
+    t.string "job_title"
     t.string "location"
     t.string "social_image"
     t.text "summary"

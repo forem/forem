@@ -30,6 +30,11 @@
         <span class="color-accent-danger fw-medium"><%= t("views.admin.users.profile.not_member") %></span>
       <% end %>
     </div>
+    <% if @user.profile.job_title.present? || @user.profile.company.present? %>
+      <div class="fs-s color-base-70 mb-1">
+        <%= [@user.profile.job_title, @user.profile.company].compact_blank.join(" at ") %>
+      </div>
+    <% end %>
     <div>
       <ul class="flex flex-col s:flex-row gap-3 s:gap-6 flex-wrap">
         <li>

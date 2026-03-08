@@ -27,6 +27,18 @@ RSpec.describe "Profiles" do
           patch profile_path(profile), params: { profile: { location: new_location } }
         end.to change { profile.reload.location }.to(new_location)
       end
+
+      it "updates the profile job_title" do
+        expect do
+          patch profile_path(profile), params: { profile: { job_title: "Software Engineer" } }
+        end.to change { profile.reload.job_title }.to("Software Engineer")
+      end
+
+      it "updates the profile company" do
+        expect do
+          patch profile_path(profile), params: { profile: { company: "Acme Inc." } }
+        end.to change { profile.reload.company }.to("Acme Inc.")
+      end
     end
   end
 end

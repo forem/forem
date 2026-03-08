@@ -45,6 +45,12 @@ fr:
         website:
           label: Website URL
           placeholder: https://yoursite.com
+        job_title:
+          label: Titre du poste
+          placeholder: Ingénieur logiciel
+        company:
+          label: Entreprise
+          placeholder: Acme Inc.
         education: Education
         currently learning: Currently learning
         currently hacking on: Currently hacking on
