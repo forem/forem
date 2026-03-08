@@ -11,6 +11,7 @@ module Organizations
         next if result.success?
 
         organization.update_columns(verified: false, verified_at: nil)
+        Notifications::OrganizationDeverificationWorker.perform_async(organization.id)
       end
     end
   end

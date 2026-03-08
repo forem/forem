@@ -85,6 +85,10 @@ pt:
           article: seu artigo
           comment: seu comentário
           unknown: você
+      organization:
+        deverification_heading: Verificacao revogada
+        deverification_html: "A verificacao de %{org} foi revogada porque nao encontramos mais um link para sua pagina de organizacao na URL verificada anteriormente."
+        reverify: Re-verificar sua organizacao
       settings: Configurações
       tag:
         heading: "Olá 👋"

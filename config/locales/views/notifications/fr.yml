@@ -85,6 +85,10 @@ fr:
           article: your article
           comment: your comment
           unknown: you
+      organization:
+        deverification_heading: Verification revoquee
+        deverification_html: "La verification de %{org} a ete revoquee car nous n'avons plus trouve de lien vers votre page d'organisation sur l'URL precedemment verifiee."
+        reverify: Re-verifier votre organisation
       settings: Settings
       tag:
         heading: "Hey there 👋"
