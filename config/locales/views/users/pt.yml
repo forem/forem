@@ -2,6 +2,23 @@
 pt:
   views:
     users:
+      profile_fields:
+        bio:
+          label: Bio
+          placeholder: Uma breve biografia...
+        display_email_on_profile: Exibir e-mail no perfil
+        location:
+          label: Localização
+          placeholder: São Paulo, Brasil
+        website:
+          label: URL do site
+          placeholder: https://seusite.com
+        job_title:
+          label: Cargo
+          placeholder: Engenheiro de software
+        company:
+          label: Empresa
+          placeholder: Acme Inc.
       profile:
         title: Perfil do Usuário
         bio: Biografia

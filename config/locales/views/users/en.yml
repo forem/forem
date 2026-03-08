@@ -45,6 +45,12 @@ en:
         website:
           label: Website URL
           placeholder: https://yoursite.com
+        job_title:
+          label: Job title
+          placeholder: Software Engineer
+        company:
+          label: Company
+          placeholder: Acme Inc.
         education: Education
         currently learning: Currently learning
         currently hacking on: Currently hacking on

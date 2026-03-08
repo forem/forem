@@ -108,6 +108,40 @@
         <span id="summary-characters"></span>/200
       </p>
     </div>
+
+    <div class="crayons-field">
+      <label class="crayons-field__label" for="profile[job_title]">
+        <%= t("views.users.profile_fields.job_title.label") %>
+      </label>
+      <%= f.text_field "profile[job_title]",
+                       maxlength: 100,
+                       value: profile.job_title,
+                       placeholder: t("views.users.profile_fields.job_title.placeholder"),
+                       class: "crayons-textfield",
+                       aria: { describedby: "job-title-description" },
+                       data: { character_span_id: "job-title-characters" } %>
+      <p id="job-title-description" class="crayons-field__description align-right">
+        <span class="screen-reader-only"><%= t("views.settings.characters") %></span>
+        <span id="job-title-characters"></span>/100
+      </p>
+    </div>
+
+    <div class="crayons-field">
+      <label class="crayons-field__label" for="profile[company]">
+        <%= t("views.users.profile_fields.company.label") %>
+      </label>
+      <%= f.text_field "profile[company]",
+                       maxlength: 100,
+                       value: profile.company,
+                       placeholder: t("views.users.profile_fields.company.placeholder"),
+                       class: "crayons-textfield",
+                       aria: { describedby: "company-description" },
+                       data: { character_span_id: "company-characters" } %>
+      <p id="company-description" class="crayons-field__description align-right">
+        <span class="screen-reader-only"><%= t("views.settings.characters") %></span>
+        <span id="company-characters"></span>/100
+      </p>
+    </div>
   </div>
 
   <% ProfileFieldGroup.non_empty_groups.each do |group| %>

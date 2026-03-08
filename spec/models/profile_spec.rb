@@ -80,6 +80,42 @@ text of the printing and typesetting industry\r\nLorem Ipsum is simply dummy tex
       end
     end
 
+    describe "validating job_title" do
+      it "is valid if blank" do
+        profile.job_title = nil
+        expect(profile).to be_valid
+      end
+
+      it "is valid if short enough" do
+        profile.job_title = "Software Engineer"
+        expect(profile).to be_valid
+      end
+
+      it "is invalid if too long" do
+        profile.job_title = "x" * 101
+        expect(profile).not_to be_valid
+        expect(profile.errors_as_sentence).to include("Job title is too long")
+      end
+    end
+
+    describe "validating company" do
+      it "is valid if blank" do
+        profile.company = nil
+        expect(profile).to be_valid
+      end
+
+      it "is valid if short enough" do
+        profile.company = "Acme Inc."
+        expect(profile).to be_valid
+      end
+
+      it "is invalid if too long" do
+        profile.company = "x" * 101
+        expect(profile).not_to be_valid
+        expect(profile.errors_as_sentence).to include("Company is too long")
+      end
+    end
+
     describe "validating website_url" do
       it "is valid if blank" do
         profile.website_url = nil
@@ -120,6 +156,18 @@ text of the printing and typesetting industry\r\nLorem Ipsum is simply dummy tex
     it "enqueues a profile details cache bust when summary changes" do
       sidekiq_assert_enqueued_with(job: Users::BustProfileDetailsCacheWorker, args: [user.id]) do
         profile.update!(summary: "Updated bio")
+      end
+    end
+
+    it "enqueues a profile details cache bust when job_title changes" do
+      sidekiq_assert_enqueued_with(job: Users::BustProfileDetailsCacheWorker, args: [user.id]) do
+        profile.update!(job_title: "Software Engineer")
+      end
+    end
+
+    it "enqueues a profile details cache bust when company changes" do
+      sidekiq_assert_enqueued_with(job: Users::BustProfileDetailsCacheWorker, args: [user.id]) do
+        profile.update!(company: "Acme Inc.")
       end
     end
 
