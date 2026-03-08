@@ -25,6 +25,10 @@
           <div class="flex gap-2">
             <% if current_user.org_admin?(org) %>
               <a href="<%= organization_settings_path(org.slug) %>" class="crayons-btn crayons-btn--s"><%= t("views.settings.org.list.manage") %></a>
+            <% else %>
+              <%= form_tag users_leave_org_path(org), method: :post, onsubmit: "return confirm('#{t('views.settings.org.leave.confirm')}');" do %>
+                <button type="submit" class="crayons-btn crayons-btn--s crayons-btn--secondary"><%= t("views.settings.org.leave.submit") %></button>
+              <% end %>
             <% end %>
             <a href="/<%= org.slug %>" class="crayons-btn crayons-btn--secondary crayons-btn--s"><%= t("views.settings.org.list.view_page") %></a>
           </div>

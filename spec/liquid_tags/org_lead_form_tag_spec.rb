@@ -21,12 +21,12 @@ RSpec.describe OrgLeadFormTag, type: :liquid_tag do
       expect(rendered).to include("ltag-org-lead-form")
     end
 
-    it "includes data disclosure" do
+    it "includes data disclosure and submit button" do
       liquid = parse_tag(lead_form.id.to_s)
       rendered = liquid.render
       expect(rendered).to include(I18n.t("liquid_tags.org_lead_form_tag.data_shared"))
-      expect(rendered).to include(I18n.t("liquid_tags.org_lead_form_tag.field_name"))
-      expect(rendered).to include(I18n.t("liquid_tags.org_lead_form_tag.field_email"))
+      expect(rendered).to include("lead-form-submit-btn")
+      expect(rendered).to include(lead_form.button_text)
     end
   end
 

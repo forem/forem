@@ -258,7 +258,7 @@ class Organization < ApplicationRecord
 
   def evaluate_markdown
     self.cta_processed_html = MarkdownProcessor::Parser.new(cta_body_markdown).evaluate_limited_markdown
-    evaluate_page_markdown if has_attribute?(:page_markdown) && page_markdown.present?
+    evaluate_page_markdown if has_attribute?(:page_markdown) && page_markdown_changed?
   end
 
   def evaluate_page_markdown

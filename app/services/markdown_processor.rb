@@ -43,7 +43,7 @@ module MarkdownProcessor
                                     source span strong sub sup svg circle clipPath defs
                                     ellipse feBlend feColorMatrix feComposite feFlood
                                     feOffset filter g line linearGradient path polygon
-                                    polyline rect stop style title use table tbody td
+                                    polyline rect stop title use table tbody td
                                     tfoot th thead time tr u ul video].freeze
 
     MARKDOWN_PROCESSOR_DEFAULT = %w[a abbr aside b blockquote br code em h1 h2 h3 h4 h5
@@ -75,7 +75,7 @@ module MarkdownProcessor
 
     BILLBOARD = %w[alt class height href src width].freeze
 
-    RENDERED_MARKDOWN_SCRUBBER = %w[alt autoplay class colspan controls cx cy d data-conversation
+    RENDERED_MARKDOWN_SCRUBBER = %w[alt autoplay colspan controls cx cy d data-conversation
                                     data-lang data-gif-video data-no-instant data-url fill
                                     height href id loop muted name playsinline points preload
                                     poster r ref rel rowspan rx ry span src start stroke

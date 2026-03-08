@@ -53,7 +53,7 @@ RSpec.describe "UserOrganization" do
     it "redirects to the proper org settings page" do
       create_org
       expect(response).to have_http_status :found
-      expect(response.redirect_url).to include "/settings/organization/#{Organization.last.id}"
+      expect(response.redirect_url).to include "/#{Organization.last.slug}/settings"
     end
 
     it "returns a too_many_requests response if the rate limit is reached" do
@@ -239,7 +239,7 @@ RSpec.describe "UserOrganization" do
       sign_in org_member
       delete organization_path(org_id)
       expect(flash[:error]).to include("Your organization was not deleted")
-      expect(response).to redirect_to(user_settings_path(:organization, id: org_id))
+      expect(response).to redirect_to(user_settings_path(:organization))
     end
   end
 end
