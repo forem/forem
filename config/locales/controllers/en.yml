@@ -95,6 +95,7 @@ en:
     not_found: Lead form not found.
     already_submitted: You have already submitted this form.
     name_and_email_required: Name and email are required.
+    recaptcha_failed: Please complete the CAPTCHA verification.
   podcasts_controller:
     podcast_suggested: Podcast suggested
   profiles_controller:

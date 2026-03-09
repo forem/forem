@@ -100,6 +100,41 @@ RSpec.describe "LeadSubmissions" do
 
         expect(LeadSubmission.count).to eq(2)
       end
+
+      it "rejects anonymous submission when recaptcha fails" do
+        allow(Settings::Authentication).to receive(:recaptcha_site_key).and_return("test-site-key")
+        allow(Settings::Authentication).to receive(:recaptcha_secret_key).and_return("test-secret-key")
+
+        post "/lead_submissions", params: {
+          organization_lead_form_id: lead_form.id,
+          name: "Bot User",
+          email: "bot@example.com",
+          company: "Bot Corp",
+          job_title: "Bot"
+        }, as: :json
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        parsed = response.parsed_body
+        expect(parsed["success"]).to be false
+        expect(parsed["error"]).to eq(I18n.t("lead_submissions.recaptcha_failed"))
+      end
+
+      it "allows anonymous submission when recaptcha is not configured" do
+        allow(Settings::Authentication).to receive(:recaptcha_site_key).and_return(nil)
+        allow(Settings::Authentication).to receive(:recaptcha_secret_key).and_return(nil)
+
+        post "/lead_submissions", params: {
+          organization_lead_form_id: lead_form.id,
+          name: "Real User",
+          email: "real@example.com",
+          company: "Real Corp",
+          job_title: "Dev"
+        }, as: :json
+
+        expect(response).to have_http_status(:ok)
+        parsed = response.parsed_body
+        expect(parsed["success"]).to be true
+      end
     end
   end
 end

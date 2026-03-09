@@ -26,6 +26,10 @@ class LeadSubmissionsController < ApplicationController
         render json: { success: false, error: I18n.t("lead_submissions.name_and_email_required") }, status: :unprocessable_entity
         return
       end
+      unless recaptcha_passed?
+        render json: { success: false, error: I18n.t("lead_submissions.recaptcha_failed") }, status: :unprocessable_entity
+        return
+      end
       submission = form.lead_submissions.build(attrs)
     end
 
@@ -42,5 +46,12 @@ class LeadSubmissionsController < ApplicationController
 
   def anonymous_submission_params
     params.permit(:name, :email, :company, :job_title)
+  end
+
+  def recaptcha_passed?
+    return true unless ReCaptcha::CheckEnabled.call(nil)
+
+    recaptcha_params = { secret_key: Settings::Authentication.recaptcha_secret_key }
+    params["g-recaptcha-response"].present? && verify_recaptcha(recaptcha_params)
   end
 end

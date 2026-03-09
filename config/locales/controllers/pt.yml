@@ -95,6 +95,7 @@ pt:
     not_found: Formulário de leads não encontrado.
     already_submitted: Você já enviou este formulário.
     name_and_email_required: Nome e e-mail são obrigatórios.
+    recaptcha_failed: Por favor, complete a verificação CAPTCHA.
   podcasts_controller:
     podcast_suggested: Podcast sugerido
   profiles_controller:
