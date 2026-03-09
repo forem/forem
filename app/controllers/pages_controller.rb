@@ -9,7 +9,7 @@ class PagesController < ApplicationController
     return if performed?
 
     if @page.redirect_to_url.present?
-      redirect_to @page.redirect_to_url, allow_other_host: true
+      redirect_to @page.redirect_to_url, status: :moved_permanently, allow_other_host: true
       return
     end
 

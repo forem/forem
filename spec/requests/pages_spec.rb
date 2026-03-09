@@ -24,25 +24,28 @@ RSpec.describe "Pages" do
     end
 
     context "when the page has a redirect_to_url set to an external URL" do
-      it "redirects to the external URL" do
+      it "redirects permanently to the external URL" do
         page = create(:page, redirect_to_url: "https://example.com/target")
         get "/page/#{page.slug}"
+        expect(response).to have_http_status(:moved_permanently)
         expect(response).to redirect_to("https://example.com/target")
       end
     end
 
     context "when the page has a redirect_to_url set to an internal path" do
-      it "redirects to the internal path" do
+      it "redirects permanently to the internal path" do
         page = create(:page, redirect_to_url: "/about")
         get "/page/#{page.slug}"
+        expect(response).to have_http_status(:moved_permanently)
         expect(response).to redirect_to("/about")
       end
     end
 
     context "when the page has a redirect_to_url and is_top_level_path" do
-      it "redirects to the external URL for top-level path" do
+      it "redirects permanently to the external URL for top-level path" do
         page = create(:page, redirect_to_url: "https://example.com/target", is_top_level_path: true)
         get "/#{page.slug}"
+        expect(response).to have_http_status(:moved_permanently)
         expect(response).to redirect_to("https://example.com/target")
       end
     end
