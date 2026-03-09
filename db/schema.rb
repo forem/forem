@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_03_09_144216) do
+ActiveRecord::Schema[7.0].define(version: 2026_03_09_200000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1087,6 +1087,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_09_144216) do
     t.boolean "landing_page", default: false, null: false
     t.bigint "page_template_id"
     t.text "processed_html"
+    t.string "redirect_to_url"
     t.string "slug"
     t.string "social_image"
     t.bigint "subforem_id"

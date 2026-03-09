@@ -217,7 +217,7 @@ RSpec.describe "Api::V1::Pages" do
       match_array(%w[id title slug description is_top_level_path
                      landing_page body_html body_json body_markdown
                      processed_html social_image template subforem_id
-                     page_template_id template_data])
+                     page_template_id template_data redirect_to_url])
   end
 
   it "retrieves a page and renders it as json" do
@@ -227,6 +227,6 @@ RSpec.describe "Api::V1::Pages" do
       match_array(%w[id title slug description is_top_level_path
                      landing_page body_html body_json body_markdown
                      processed_html social_image template subforem_id
-                     page_template_id template_data])
+                     page_template_id template_data redirect_to_url])
   end
 end
