@@ -80,6 +80,46 @@
     <p>Put executable code within a runkit liquid block, as follows:</p>
     <pre>{% runkit<br>// hidden setup JavaScript code goes in this preamble area<br>const hiddenVar = 42<br>%}<br>// visible, reader-editable JavaScript code goes here<br>console.log(hiddenVar)<br>{% endrunkit %}<br></pre>
 
+    <h4>Feed</h4>
+    <p>Embed an article feed by organization, tag, or multiple tags:</p>
+    <pre>{% feed org=org-slug %}
+{% feed tag=ruby %}
+{% feed tags=ruby,javascript limit=10 sort=reactions %}</pre>
+    <p class="fs-s">Options: <code>limit</code> (1-30), <code>sort</code> (recent/reactions/comments/score), <code>min_reactions</code>, <code>min_comments</code>, <code>since</code> (e.g. 30d or 2025-01-01).</p>
+
+    <h4>Layout (Row &amp; Col)</h4>
+    <p>Create responsive grid layouts:</p>
+    <pre>{% row %}
+  {% col %}Column 1{% endcol %}
+  {% col span=2 %}Wide column{% endcol %}
+{% endrow %}</pre>
+    <p class="fs-s"><code>span</code> sets column width (1-4, default 1).</p>
+
+    <h4>Features</h4>
+    <p>Display a grid of feature cards:</p>
+    <pre>{% features %}
+  {% feature title="Fast" icon="rocket" %}Optimized for speed.{% endfeature %}
+  {% feature title="Secure" %}Built with security in mind.{% endfeature %}
+{% endfeatures %}</pre>
+
+    <h4>Quote</h4>
+    <p>Display a testimonial or quote:</p>
+    <pre>{% quote author="Jane Doe" role="CTO" rating=5 %}Great product!{% endquote %}</pre>
+    <p class="fs-s">Options: <code>author</code> (required), <code>role</code>, <code>image</code>, <code>rating</code> (1-5), <code>source</code>, <code>link</code>.</p>
+
+    <h4>Offer</h4>
+    <p>Create a call-to-action box with a button:</p>
+    <pre>{% offer link="https://example.com" button="Sign Up" %}Join us today!{% endoffer %}</pre>
+    <p class="fs-s"><code>link</code> is required. <code>button</code> defaults to "Learn More".</p>
+
+    <h4>Slides</h4>
+    <p>Create an image/video carousel or gallery:</p>
+    <pre>{% slides mode="carousel" %}
+  {% slide image="https://example.com/photo.jpg" alt="Description" %}
+  {% slide video="https://youtube.com/watch?v=abc123" %}
+{% endslides %}</pre>
+    <p class="fs-s">Each slide needs at least one of: <code>image</code>, <code>video</code>, or <code>link</code>. Optional: <code>title</code>, <code>alt</code>.</p>
+
     <% if @user_approved_liquid_tags.include? UserSubscriptionTag %>
       <h4><%= community_name %> User Subscriptions</h4>
       <p class="fs-s fw-bold">This embed can only be created within posts by Admins.</p>

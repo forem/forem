@@ -1,6 +1,6 @@
 <% if article %>
 <div class="ltag__link--embedded">
-  <%= render partial: "articles/single_story", locals: { story: article.decorate, featured: false, feed_style_preference: "basic" } %>
+  <%= render partial: "articles/single_story", locals: { story: article.decorate, featured: false, feed_style_preference: "basic", show_organization: true } %>
 </div>
 <% else %>
 <div class="crayons-card my-2 p-4">

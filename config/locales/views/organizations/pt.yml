@@ -6,8 +6,8 @@ pt:
         heading: Página
         cover_image: Imagem de capa
         readme: Conteúdo da página (Markdown)
-        readme_placeholder: "Use Markdown e tags Liquid para personalizar a página da sua organização.\n\nExemplo:\n{% org_team slug-da-org %}\n{% org_team slug-da-org role=admins limit=5 %}\n{% org_posts slug-da-org %}\n{% org_posts slug-da-org limit=5 sort=reactions min_reactions=10 since=30d %}"
-        readme_description: "Suporta Markdown e tags Liquid como {% org_team slug %} e {% org_posts slug %}. Opções org_team: limit (1-50), role (all/admins/members). Opções org_posts: limit (1-30), sort (recent/reactions/comments/score), min_reactions, min_comments, since (ex. 30d ou 2025-01-01)."
+        readme_placeholder: "Use Markdown e tags Liquid para personalizar a página da sua organização.\n\nExemplo:\n{% org_team slug-da-org %}\n{% org_team slug-da-org role=admins limit=5 %}\n{% org_posts slug-da-org %}\n{% org_posts slug-da-org limit=5 sort=reactions min_reactions=10 since=30d %}\n{% org_lead_form 42 %}"
+        readme_description: "Suporta Markdown e tags Liquid. Use {% org_team seu-slug %} para mostrar membros, {% org_posts seu-slug %} para listar artigos, e {% org_lead_form ID %} para incorporar um formulário de leads. Você também pode usar tags de layout como {% row %}, {% col %}, {% features %}, {% quote %}, {% offer %} e {% slides %} para criar páginas ricas. Veja o texto de exemplo para mais detalhes."
         default_notice: "Sua página está usando o layout padrão."
         default_explanation: "Por padrão, a página da sua organização mostra automaticamente os membros da equipe e publicações recentes. Adicionar conteúdo personalizado abaixo substituirá todo o layout padrão."
         default_example_toggle: "Mostrar exemplo para replicar a página padrão"
@@ -58,7 +58,12 @@ pt:
         deactivate: Desativar
         delete: Excluir
         confirm_delete: Tem certeza de que deseja excluir este formulário de leads e todas as suas submissões?
+        edit: Editar
+        edit_heading: Editar formulário de leads
+        save_button: Salvar alterações
+        cancel: Cancelar
         created: Formulário de leads criado com sucesso.
+        updated: Formulário de leads atualizado com sucesso.
         deleted: Formulário de leads excluído.
         activated: Formulário de leads ativado.
         deactivated: Formulário de leads desativado.

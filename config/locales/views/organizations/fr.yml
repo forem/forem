@@ -6,8 +6,8 @@ fr:
         heading: Page
         cover_image: Image de couverture
         readme: Contenu de la page (Markdown)
-        readme_placeholder: "Utilisez Markdown et les balises Liquid pour personnaliser votre page d'organisation.\n\nExemple :\n{% org_team votre-slug-org %}\n{% org_team votre-slug-org role=admins limit=5 %}\n{% org_posts votre-slug-org %}\n{% org_posts votre-slug-org limit=5 sort=reactions min_reactions=10 since=30d %}"
-        readme_description: "Supporte Markdown et les balises Liquid comme {% org_team slug %} et {% org_posts slug %}. Options org_team : limit (1-50), role (all/admins/members). Options org_posts : limit (1-30), sort (recent/reactions/comments/score), min_reactions, min_comments, since (ex. 30d ou 2025-01-01)."
+        readme_placeholder: "Utilisez Markdown et les balises Liquid pour personnaliser votre page d'organisation.\n\nExemple :\n{% org_team votre-slug-org %}\n{% org_team votre-slug-org role=admins limit=5 %}\n{% org_posts votre-slug-org %}\n{% org_posts votre-slug-org limit=5 sort=reactions min_reactions=10 since=30d %}\n{% org_lead_form 42 %}"
+        readme_description: "Supporte Markdown et les balises Liquid. Utilisez {% org_team votre-slug %} pour afficher les membres, {% org_posts votre-slug %} pour lister les articles, et {% org_lead_form ID %} pour intégrer un formulaire de leads. Vous pouvez aussi utiliser des balises de mise en page comme {% row %}, {% col %}, {% features %}, {% quote %}, {% offer %} et {% slides %} pour créer des pages riches. Consultez le texte indicatif pour des exemples."
         default_notice: "Votre page utilise actuellement la mise en page par défaut."
         default_explanation: "Par défaut, votre page d'organisation affiche automatiquement vos membres et publications récentes. Ajouter du contenu personnalisé ci-dessous remplacera entièrement la mise en page par défaut."
         default_example_toggle: "Afficher l'exemple pour reproduire la page par défaut"
@@ -58,7 +58,12 @@ fr:
         deactivate: Désactiver
         delete: Supprimer
         confirm_delete: Êtes-vous sûr de vouloir supprimer ce formulaire de leads et toutes ses soumissions ?
+        edit: Modifier
+        edit_heading: Modifier le formulaire de leads
+        save_button: Enregistrer les modifications
+        cancel: Annuler
         created: Formulaire de leads créé avec succès.
+        updated: Formulaire de leads mis à jour avec succès.
         deleted: Formulaire de leads supprimé.
         activated: Formulaire de leads activé.
         deactivated: Formulaire de leads désactivé.

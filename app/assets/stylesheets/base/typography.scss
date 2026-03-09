@@ -126,6 +126,15 @@ body {
       max-width: none;
       margin: 0;
     }
+
+    // Restore link styling for nested .text-styles blocks (e.g. embedded comment body)
+    .text-styles a {
+      text-decoration: underline;
+      color: var(--link-branded-color);
+      &:hover {
+        color: var(--link-branded-color-hover);
+      }
+    }
   }
 
   a[class*='ltag'] {

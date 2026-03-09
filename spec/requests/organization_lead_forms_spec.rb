@@ -61,6 +61,44 @@ RSpec.describe "OrganizationLeadForms" do
     end
   end
 
+  describe "GET /:slug/settings/lead_forms/:id/edit" do
+    before { sign_in user }
+
+    it "renders the index with the edit form for the given lead form" do
+      form = create(:organization_lead_form, organization: organization, title: "Newsletter Signup")
+      get "/#{organization.slug}/settings/lead_forms/#{form.id}/edit"
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Newsletter Signup")
+    end
+  end
+
+  describe "PATCH /:slug/settings/lead_forms/:id" do
+    before { sign_in user }
+
+    it "updates the lead form" do
+      form = create(:organization_lead_form, organization: organization, title: "Old Title", button_text: "Sign Up")
+      patch "/#{organization.slug}/settings/lead_forms/#{form.id}", params: {
+        organization_lead_form: { title: "New Title", description: "Updated desc", button_text: "Join Now" },
+      }
+
+      expect(response).to redirect_to(organization_lead_forms_path(organization.slug))
+      form.reload
+      expect(form.title).to eq("New Title")
+      expect(form.description).to eq("Updated desc")
+      expect(form.button_text).to eq("Join Now")
+    end
+
+    it "re-renders index on validation error" do
+      form = create(:organization_lead_form, organization: organization, title: "Original")
+      patch "/#{organization.slug}/settings/lead_forms/#{form.id}", params: {
+        organization_lead_form: { title: "", button_text: "" },
+      }
+
+      expect(response).to have_http_status(:ok) # re-renders index
+      expect(form.reload.title).to eq("Original")
+    end
+  end
+
   describe "DELETE /:slug/settings/lead_forms/:id" do
     before { sign_in user }
 

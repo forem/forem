@@ -363,6 +363,8 @@ Rails.application.routes.draw do
     post "/:slug/settings/preview", to: "organization_settings#preview", as: :organization_settings_preview
     get "/:slug/settings/lead_forms", to: "organization_lead_forms#index", as: :organization_lead_forms
     post "/:slug/settings/lead_forms", to: "organization_lead_forms#create"
+    get "/:slug/settings/lead_forms/:id/edit", to: "organization_lead_forms#edit", as: :edit_organization_lead_form
+    patch "/:slug/settings/lead_forms/:id", to: "organization_lead_forms#update", as: :update_organization_lead_form
     delete "/:slug/settings/lead_forms/:id", to: "organization_lead_forms#destroy", as: :organization_lead_form
     patch "/:slug/settings/lead_forms/:id/toggle", to: "organization_lead_forms#toggle", as: :organization_lead_form_toggle
     get "/:slug/settings/lead_forms/:id/submissions", to: "organization_lead_forms#submissions", as: :organization_lead_form_submissions

@@ -2,7 +2,7 @@ class OrganizationLeadFormsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_organization
   before_action :authorize_admin!
-  before_action :set_lead_form, only: %i[destroy toggle submissions]
+  before_action :set_lead_form, only: %i[edit update destroy toggle submissions]
 
   def index
     @lead_forms = @organization.lead_forms.order(created_at: :desc)
@@ -12,6 +12,21 @@ class OrganizationLeadFormsController < ApplicationController
     @lead_form = @organization.lead_forms.build(lead_form_params)
     if @lead_form.save
       flash[:settings_notice] = I18n.t("views.organization_settings.lead_forms.created")
+      redirect_to organization_lead_forms_path(@organization.slug)
+    else
+      @lead_forms = @organization.lead_forms.order(created_at: :desc)
+      render :index
+    end
+  end
+
+  def edit
+    @lead_forms = @organization.lead_forms.order(created_at: :desc)
+    render :index
+  end
+
+  def update
+    if @lead_form.update(lead_form_params)
+      flash[:settings_notice] = I18n.t("views.organization_settings.lead_forms.updated")
       redirect_to organization_lead_forms_path(@organization.slug)
     else
       @lead_forms = @organization.lead_forms.order(created_at: :desc)

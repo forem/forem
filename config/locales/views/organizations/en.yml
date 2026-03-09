@@ -7,7 +7,7 @@ en:
         cover_image: Cover image
         readme: Page content (Markdown)
         readme_placeholder: "Use Markdown and Liquid tags to customize your org page.\n\nExample:\n{% org_team your-org-slug %}\n{% org_team your-org-slug role=admins limit=5 %}\n{% org_posts your-org-slug %}\n{% org_posts your-org-slug limit=5 sort=reactions min_reactions=10 since=30d %}\n{% org_lead_form 42 %}"
-        readme_description: "Supports Markdown and Liquid tags like {% org_team slug %}, {% org_posts slug %}, and {% org_lead_form ID %}. org_team options: limit (1-50), role (all/admins/members). org_posts options: limit (1-30), sort (recent/reactions/comments/score), min_reactions, min_comments, since (e.g. 30d or 2025-01-01). Create lead forms in Lead Forms settings."
+        readme_description: "Supports Markdown and Liquid tags. Use {% org_team your-slug %} to show team members, {% org_posts your-slug %} to list articles, and {% org_lead_form ID %} to embed a lead form. You can also use layout tags like {% row %}, {% col %}, {% features %}, {% quote %}, {% offer %}, and {% slides %} to build rich pages. See the placeholder text for examples."
         default_notice: "Your page is currently using the default layout."
         default_explanation: "By default, your org page automatically shows your team members and recent posts. Adding custom content below will replace the entire default layout."
         default_example_toggle: "Show example to replicate the default page"
@@ -58,7 +58,12 @@ en:
         deactivate: Deactivate
         delete: Delete
         confirm_delete: Are you sure you want to delete this lead form and all its submissions?
+        edit: Edit
+        edit_heading: Edit lead form
+        save_button: Save changes
+        cancel: Cancel
         created: Lead form created successfully.
+        updated: Lead form updated successfully.
         deleted: Lead form deleted.
         activated: Lead form activated.
         deactivated: Lead form deactivated.
