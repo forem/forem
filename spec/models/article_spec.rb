@@ -49,6 +49,10 @@ RSpec.describe Article do
     it { is_expected.to validate_presence_of(:user_subscriptions_count) }
     it { is_expected.to validate_presence_of(:title) }
 
+    # Regression test for Issue #22803: Prevent negative reaction counts
+    it { is_expected.to validate_numericality_of(:public_reactions_count).is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:previous_public_reactions_count).is_greater_than_or_equal_to(0) }
+
     it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:user_id) }
 
     it { is_expected.not_to allow_value("foo").for(:main_image_background_hex_color) }
