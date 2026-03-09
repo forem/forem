@@ -195,6 +195,13 @@ fr:
       what_is_a_billboard: Qu'est-ce qu'un panneau publicitaire?
       report_billboard: Report billboard
       edit_billboard: Modifier le panneau publicitaire
+  org_wizard:
+    page_title: "Assistant de page IA"
+    crawl_failed: "Nous n'avons pas pu atteindre cette URL. Veuillez la vérifier et réessayer."
+    generate_failed: "La génération de la page a échoué. Veuillez réessayer."
+    save_success: "Votre page d'organisation a été créée !"
+    save_failed: "Échec de l'enregistrement de la page. Veuillez réessayer."
+    unauthorized: "Vous devez être administrateur de cette organisation."
   errors:
     messages:
       accepted: doit être accepté

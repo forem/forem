@@ -180,6 +180,13 @@ en:
       what_is_a_billboard: What's a billboard?
       report_billboard: Report billboard
       edit_billboard: Edit billboard
+  org_wizard:
+    page_title: "AI Page Wizard"
+    crawl_failed: "We couldn't reach that URL. Please check it and try again."
+    generate_failed: "Page generation failed. Please try again."
+    save_success: "Your org page has been created!"
+    save_failed: "Failed to save page. Please try again."
+    unauthorized: "You must be an admin of this organization."
   errors:
     messages:
       accepted: must be accepted

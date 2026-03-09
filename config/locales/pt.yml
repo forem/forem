@@ -195,6 +195,13 @@ pt:
       what_is_a_billboard: O que é um painel publicitário?
       report_billboard: Reportar painel publicitário
       edit_billboard: Editar painel publicitário
+  org_wizard:
+    page_title: "Assistente de Página IA"
+    crawl_failed: "Não conseguimos acessar essa URL. Verifique e tente novamente."
+    generate_failed: "A geração da página falhou. Tente novamente."
+    save_success: "Sua página da organização foi criada!"
+    save_failed: "Falha ao salvar a página. Tente novamente."
+    unauthorized: "Você deve ser um administrador desta organização."
   errors:
     messages:
       accepted: deve ser aceito
