@@ -34,6 +34,7 @@
       <label class="crayons-field__label" for="lead_form_job_title_<%= form.id %>"><%= I18n.t("liquid_tags.org_lead_form_tag.field_job_title") %></label>
       <input type="text" id="lead_form_job_title_<%= form.id %>" name="job_title" class="crayons-textfield">
     </div>
+    <div class="lead-form-recaptcha mb-3" id="lead_form_recaptcha_<%= form.id %>" data-sitekey="<%= Settings::Authentication.recaptcha_site_key %>"></div>
     <div class="lead-form-actions">
       <button type="button"
               class="crayons-btn lead-form-submit-btn"
@@ -89,6 +90,13 @@
       return;
     }
 
+    var recaptchaResponse = '';
+    var recaptchaEl = container.querySelector('.lead-form-recaptcha .g-recaptcha');
+    if (recaptchaEl && typeof grecaptcha !== 'undefined') {
+      var widgetId = recaptchaEl.getAttribute('data-widget-id');
+      recaptchaResponse = widgetId ? grecaptcha.getResponse(parseInt(widgetId)) : grecaptcha.getResponse();
+    }
+
     button.disabled = true;
     button.textContent = '<%= I18n.t("liquid_tags.org_lead_form_tag.submitting") %>';
 
@@ -103,7 +111,8 @@
         name: name,
         email: email,
         company: company,
-        job_title: jobTitle
+        job_title: jobTitle,
+        'g-recaptcha-response': recaptchaResponse
       })
     }).then(function(response) {
       return response.json();
@@ -114,6 +123,10 @@
       } else {
         button.textContent = data.error || '<%= I18n.t("liquid_tags.org_lead_form_tag.error") %>';
         button.disabled = false;
+        if (typeof grecaptcha !== 'undefined' && recaptchaEl) {
+          var wId = recaptchaEl.getAttribute('data-widget-id');
+          if (wId) grecaptcha.reset(parseInt(wId));
+        }
       }
     }).catch(function() {
       button.textContent = '<%= I18n.t("liquid_tags.org_lead_form_tag.error") %>';
@@ -167,6 +180,23 @@
           }
         });
       }).catch(function() {});
+    } else {
+      // Render reCAPTCHA widgets for signed-out forms
+      if (typeof grecaptcha !== 'undefined') {
+        forms.forEach(function(f) {
+          var recaptchaContainer = f.querySelector('.lead-form-recaptcha');
+          if (recaptchaContainer && !recaptchaContainer.querySelector('.g-recaptcha')) {
+            var sitekey = recaptchaContainer.getAttribute('data-sitekey');
+            if (sitekey) {
+              var div = document.createElement('div');
+              div.className = 'g-recaptcha';
+              recaptchaContainer.appendChild(div);
+              var widgetId = grecaptcha.render(div, { sitekey: sitekey });
+              div.setAttribute('data-widget-id', widgetId);
+            }
+          }
+        });
+      }
     }
   })();
 </script>
