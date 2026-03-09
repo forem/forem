@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { useEffect } from "react";
+import { useEffect } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { EditorBody } from './EditorBody';
 import { Meta } from './Meta';
