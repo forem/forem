@@ -6,8 +6,8 @@ RSpec.describe "CSRF token handling", type: :request do
 
   before do
     sign_in user
-    # Disable CSRF token verification so we can manually trigger it by
-    # calling the rescue_from handler directly via ActionController.
+    # Stub CSRF token verification to always raise, simulating an invalid CSRF token
+    # so we can trigger the rescue_from handler directly via ActionController.
     # We use `allow_any_instance_of` to raise the exception inside the request.
     allow_any_instance_of(ApplicationController).to receive(:verify_authenticity_token)
       .and_raise(ActionController::InvalidAuthenticityToken)
