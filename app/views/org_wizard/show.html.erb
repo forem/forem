@@ -1,0 +1,9 @@
+<div id="org-wizard-container"
+     data-organization="<%= @organization_json %>"
+     data-crawl-url="<%= org_wizard_crawl_path(@organization.slug) %>"
+     data-generate-url="<%= org_wizard_generate_path(@organization.slug) %>"
+     data-iterate-url="<%= org_wizard_iterate_path(@organization.slug) %>"
+     data-save-url="<%= org_wizard_save_path(@organization.slug) %>"
+     data-settings-url="<%= organization_settings_path(@organization.slug) %>">
+</div>
+<%= javascript_include_tag "OrgWizard", defer: true %>

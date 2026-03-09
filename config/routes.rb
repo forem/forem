@@ -357,6 +357,16 @@ Rails.application.routes.draw do
     get "/search", to: "stories/articles_search#index"
     get "/community", to: "community#index", as: :community
     get "/:slug/members", to: "organizations#members", as: :organization_members
+
+    # Org page wizard
+    scope "org-wizard/:slug" do
+      get  "/",         to: "org_wizard#show",     as: :org_wizard
+      post "/crawl",    to: "org_wizard#crawl",    as: :org_wizard_crawl
+      post "/generate", to: "org_wizard#generate",  as: :org_wizard_generate
+      post "/iterate",  to: "org_wizard#iterate",   as: :org_wizard_iterate
+      post "/save",     to: "org_wizard#save",      as: :org_wizard_save
+    end
+
     get "/:slug/settings", to: "organization_settings#edit", as: :organization_settings
     patch "/:slug/settings", to: "organization_settings#update"
     post "/:slug/settings/verify", to: "organization_settings#request_verification", as: :organization_request_verification
