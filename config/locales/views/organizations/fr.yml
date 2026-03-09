@@ -72,7 +72,6 @@ fr:
           email: Email
           company: Entreprise
           job_title: Poste
-          location: Lieu
           username: Nom d'utilisateur
           submitted_at: Soumis le
       verification:

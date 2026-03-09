@@ -169,11 +169,16 @@ fr:
       not_found: Formulaire de leads non trouvé
       inactive: Ce formulaire de leads n'est plus actif
       invalid_id: "ID de formulaire de leads non valide. Utilisez : {% org_lead_form ID %}"
-      data_shared: "Partage votre nom, e-mail, entreprise, poste et localisation avec cette organisation."
+      data_shared: "Partage votre nom, e-mail, entreprise et poste avec cette organisation."
       submitting: Envoi en cours...
       submitted: Envoyé
       already_submitted: "Vous avez envoyé ceci le %{date}"
       error: Une erreur s'est produite. Veuillez réessayer.
       sign_in_required: Veuillez vous connecter pour soumettre ce formulaire.
+      field_name: Nom
+      field_email: Email
+      field_company: Entreprise
+      field_job_title: Poste
+      name_email_required: Le nom et l'e-mail sont obligatoires.
     youtube_tag:
       invalid_youtube_id: ID ou URL YouTube non valide

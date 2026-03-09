@@ -72,7 +72,6 @@ en:
           email: Email
           company: Company
           job_title: Job Title
-          location: Location
           username: Username
           submitted_at: Submitted At
       verification:

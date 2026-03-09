@@ -169,11 +169,16 @@ en:
       not_found: Lead form not found
       inactive: This lead form is no longer active
       invalid_id: "Invalid lead form ID. Use: {% org_lead_form ID %}"
-      data_shared: "Shares your name, email, company, title, and location with this organization."
+      data_shared: "Shares your name, email, company, and title with this organization."
       submitting: Submitting...
       submitted: Submitted
       already_submitted: "You submitted this on %{date}"
       error: Something went wrong. Please try again.
       sign_in_required: Please sign in to submit this form.
+      field_name: Name
+      field_email: Email
+      field_company: Company
+      field_job_title: Job Title
+      name_email_required: Name and email are required.
     youtube_tag:
       invalid_youtube_id: Invalid YouTube ID or URL
