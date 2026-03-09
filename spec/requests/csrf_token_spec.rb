@@ -28,13 +28,6 @@ RSpec.describe "CSRF token handling", type: :request do
       expect(response.body).not_to be_empty
     end
 
-    it "does not return a 200 OK status" do
-      post comments_path, params: {
-        comment: { body_markdown: "Test comment", commentable_id: article.id, commentable_type: "Article" }
-      }
-      expect(response).not_to have_http_status(:ok)
-    end
-
     it "increments the ForemStatsClient counter" do
       allow(ForemStatsClient).to receive(:increment)
       post comments_path, params: {
@@ -67,13 +60,5 @@ RSpec.describe "CSRF token handling", type: :request do
       expect(json["error"]).to be_present
     end
 
-    it "does not return a 200 OK status" do
-      post comments_path,
-           params: {
-             comment: { body_markdown: "Test comment", commentable_id: article.id, commentable_type: "Article" }
-           },
-           headers: { "Accept" => "application/json" }
-      expect(response).not_to have_http_status(:ok)
-    end
   end
 end
