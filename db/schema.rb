@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_03_08_120002) do
+ActiveRecord::Schema[7.0].define(version: 2026_03_09_174600) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -902,12 +902,12 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_08_120002) do
     t.datetime "created_at", null: false
     t.string "email"
     t.string "job_title"
-    t.string "location"
     t.string "name"
     t.bigint "organization_lead_form_id", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.index ["organization_lead_form_id", "user_id"], name: "idx_lead_submissions_form_user_unique", unique: true
+    t.bigint "user_id"
+    t.string "username"
+    t.index ["organization_lead_form_id", "user_id"], name: "idx_lead_submissions_form_user_unique", unique: true, where: "(user_id IS NOT NULL)"
     t.index ["organization_lead_form_id"], name: "index_lead_submissions_on_organization_lead_form_id"
     t.index ["user_id"], name: "index_lead_submissions_on_user_id"
   end
