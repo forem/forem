@@ -5,7 +5,7 @@ class SurveyMailer < ApplicationMailer
     @community_name = Settings::Community.community_name(subforem_id: subforem_id)
 
     if @survey.industry?
-      subject = "We'd love your input on this #{@community_name} Industry Survey"
+      subject = "You've been randomly selected for a very quick #{@community_name} Industry Survey"
     elsif @survey.fun?
       subject = "A quick, fun survey from #{@community_name}!"
     else
