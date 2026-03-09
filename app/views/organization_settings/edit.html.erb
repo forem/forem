@@ -127,6 +127,15 @@
             <%= f.file_field :cover_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
           </div>
 
+          <% if !@organization.readme_page? && defined?(AI_AVAILABLE) && AI_AVAILABLE %>
+            <div class="crayons-notice crayons-notice--info mb-4">
+              <p class="fw-medium"><%= I18n.t("org_wizard.page_title") %></p>
+              <p class="fs-s mb-2">Let AI generate a beautiful page for your organization using your website and DEV community content.</p>
+              <%= link_to I18n.t("org_wizard.page_title"), org_wizard_path(@organization.slug),
+                  class: "crayons-btn crayons-btn--s" %>
+            </div>
+          <% end %>
+
           <div class="crayons-field">
             <label for="org_page_markdown" class="crayons-field__label"><%= t("views.organization_settings.page.readme") %></label>
 
@@ -139,6 +148,12 @@
                   <pre class="crayons-card crayons-card--secondary p-3 mt-2 ff-monospace fs-s" style="white-space: pre-wrap;"><%= t("views.organization_settings.page.default_example", slug: @organization.slug) %></pre>
                 </details>
               </div>
+            <% end %>
+
+            <% if @organization.readme_page? && defined?(AI_AVAILABLE) && AI_AVAILABLE %>
+              <p class="fs-s color-base-60 mb-2">
+                Want to start fresh? <%= link_to "Regenerate with AI", org_wizard_path(@organization.slug) %>
+              </p>
             <% end %>
 
             <div id="org-page-editor-root"
