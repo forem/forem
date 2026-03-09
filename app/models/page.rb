@@ -148,7 +148,14 @@ class Page < ApplicationRecord
     return if redirect_to_url.blank?
 
     if redirect_to_url.start_with?("http://", "https://")
-      # Absolute URL is valid as-is
+      begin
+        uri = URI.parse(redirect_to_url)
+        unless uri.host.present?
+          errors.add(:redirect_to_url, I18n.t("models.page.redirect_to_url_invalid"))
+        end
+      rescue URI::InvalidURIError
+        errors.add(:redirect_to_url, I18n.t("models.page.redirect_to_url_invalid"))
+      end
     elsif redirect_to_url.start_with?("/")
       # Path: validate it corresponds to a recognized route in the app
       begin

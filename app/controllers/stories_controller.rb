@@ -130,7 +130,9 @@ class StoriesController < ApplicationController
     return if performed?
 
     if @page.redirect_to_url.present?
-      redirect_to @page.redirect_to_url, status: :moved_permanently, allow_other_host: true
+      redirect_options = { status: :moved_permanently }
+      redirect_options[:allow_other_host] = true if @page.redirect_to_url.start_with?("http://", "https://")
+      redirect_to @page.redirect_to_url, **redirect_options
       return
     end
 

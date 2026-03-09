@@ -8,12 +8,15 @@ class PagesController < ApplicationController
     redirect_page_if_different_subforem
     return if performed?
 
+    not_found_conditions
+
     if @page.redirect_to_url.present?
-      redirect_to @page.redirect_to_url, status: :moved_permanently, allow_other_host: true
+      redirect_options = { status: :moved_permanently }
+      redirect_options[:allow_other_host] = true if @page.redirect_to_url.start_with?("http://", "https://")
+      redirect_to @page.redirect_to_url, **redirect_options
       return
     end
 
-    not_found_conditions
     set_surrogate_key_header "show-page-#{params[:slug]}"
 
 
