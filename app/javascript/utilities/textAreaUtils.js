@@ -76,7 +76,7 @@ export const getCursorXY = ({
 };
 
 // TODO: Remove once MentionAutocompleteTextArea removed
-export const getMentionWordData = () => {};
+export const getMentionWordData = () => { };
 
 /**
  * A helper function that searches back to the beginning of the currently typed word (indicated by cursor position) and verifies whether it begins with an '@' symbol for user mention
@@ -280,12 +280,13 @@ export const useTextAreaAutoResize = () => {
 
     const resizeTextArea = () => {
       const allElements = [textArea, ...additionalElements];
-
       const allContentHeights = allElements.map(
         (element) => calculateTextAreaHeight(element).height,
       );
 
-      const height = Math.max(...allContentHeights);
+      // The height to set the textarea to needs to account for the placeholder height in order to avoid jumping when the placeholder disappears on focus.
+      const placeholderHeight = calculateTextAreaHeight(textArea).placeholderHeight;
+      const height = Math.max(...allContentHeights) + placeholderHeight;
       const newHeight = `${height}px`;
 
       allElements.forEach((element) => {
