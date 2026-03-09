@@ -143,6 +143,17 @@ RSpec.describe "Dashboards" do
       end
     end
 
+    describe "sidebar sidebar fetch" do
+      it "assigns the agent_sessions_count utilizing the counter cache" do
+        sign_in user
+        user.reload.update!(agent_sessions_count: 5)
+
+        get "/dashboard/sidebar", params: { state: "show" }, xhr: true
+        
+        expect(assigns(:agent_sessions_count)).to eq(5)
+      end
+    end
+
     context "when logged in as a super admin" do
       it "renders the specified user's articles" do
         article
