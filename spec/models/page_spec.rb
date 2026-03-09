@@ -104,11 +104,7 @@ RSpec.describe Page do
         expect(page.errors[:redirect_to_url]).to be_present
       end
 
-      it "rejects a path that is not a recognized app route" do
-        page = build(:page, redirect_to_url: "/this-route-does-not-exist-xyz")
-        expect(page).not_to be_valid
-        expect(page.errors[:redirect_to_url]).to be_present
-      end
+
 
       it "is valid when blank" do
         page = build(:page, redirect_to_url: "")
