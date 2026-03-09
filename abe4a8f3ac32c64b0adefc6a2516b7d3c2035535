@@ -1,0 +1,30 @@
+app/services/ai/org_page_crawler.rb
+  3b300d9ee498e98c 5,8,64-76,85
+app/javascript/orgWizard/components/StepInput.jsx
+  3b300d9ee498e98c 3-9,15,42,48-55,65,79-97
+app/controllers/org_wizard_controller.rb
+  3b300d9ee498e98c 17-18
+app/javascript/orgWizard/OrgWizard.jsx
+  3b300d9ee498e98c 22-23,27,44
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.9",
+  "base_commit_sha": "abe4a8f3ac32c64b0adefc6a2516b7d3c2035535",
+  "prompts": {
+    "3b300d9ee498e98c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4faf6d65-e132-4d85-b2c8-b4fb1568fd1a",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Jon Gottfried <jonmarkgo@gmail.com>",
+      "messages": [],
+      "total_additions": 61,
+      "total_deletions": 38,
+      "accepted_lines": 61,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/142e071df001969b4e2dbbf312186a52179fd22388c0bbba8a1e32e34e305b9a"
+    }
+  }
+}
