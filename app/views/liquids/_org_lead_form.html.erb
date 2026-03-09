@@ -4,16 +4,46 @@
     <p class="color-base-70 mb-3"><%= form.description %></p>
   <% end %>
 
-  <div class="lead-form-actions">
-    <button type="button"
-            class="crayons-btn lead-form-submit-btn"
-            data-form-id="<%= form.id %>"
-            onclick="submitLeadForm(this)">
-      <%= form.button_text %>
-    </button>
-    <span class="lead-form-status fs-s color-base-60 ml-2" style="display:none;"></span>
-  </div>
-  <p class="fs-s color-base-60" style="margin-top: 1rem;"><%= I18n.t("liquid_tags.org_lead_form_tag.data_shared") %></p>
+  <% if user_signed_in? %>
+    <div class="lead-form-actions">
+      <button type="button"
+              class="crayons-btn lead-form-submit-btn"
+              data-form-id="<%= form.id %>"
+              onclick="submitLeadForm(this)">
+        <%= form.button_text %>
+      </button>
+      <span class="lead-form-status fs-s color-base-60 ml-2" style="display:none;"></span>
+    </div>
+    <p class="fs-s color-base-60" style="margin-top: 1rem;"><%= I18n.t("liquid_tags.org_lead_form_tag.data_shared") %></p>
+  <% else %>
+    <div class="lead-form-fields" data-form-id="<%= form.id %>">
+      <div class="crayons-field mb-3">
+        <label class="crayons-field__label" for="lead_form_name_<%= form.id %>"><%= I18n.t("liquid_tags.org_lead_form_tag.field_name") %></label>
+        <input type="text" id="lead_form_name_<%= form.id %>" name="name" class="crayons-textfield" required>
+      </div>
+      <div class="crayons-field mb-3">
+        <label class="crayons-field__label" for="lead_form_email_<%= form.id %>"><%= I18n.t("liquid_tags.org_lead_form_tag.field_email") %></label>
+        <input type="email" id="lead_form_email_<%= form.id %>" name="email" class="crayons-textfield" required>
+      </div>
+      <div class="crayons-field mb-3">
+        <label class="crayons-field__label" for="lead_form_company_<%= form.id %>"><%= I18n.t("liquid_tags.org_lead_form_tag.field_company") %></label>
+        <input type="text" id="lead_form_company_<%= form.id %>" name="company" class="crayons-textfield">
+      </div>
+      <div class="crayons-field mb-3">
+        <label class="crayons-field__label" for="lead_form_job_title_<%= form.id %>"><%= I18n.t("liquid_tags.org_lead_form_tag.field_job_title") %></label>
+        <input type="text" id="lead_form_job_title_<%= form.id %>" name="job_title" class="crayons-textfield">
+      </div>
+      <div class="lead-form-actions">
+        <button type="button"
+                class="crayons-btn lead-form-submit-btn"
+                data-form-id="<%= form.id %>"
+                onclick="submitLeadFormAnonymous(this)">
+          <%= form.button_text %>
+        </button>
+        <span class="lead-form-status fs-s color-base-60 ml-2" style="display:none;"></span>
+      </div>
+    </div>
+  <% end %>
 </div>
 
 <script>
@@ -44,6 +74,53 @@
     });
   }
 
+  function submitLeadFormAnonymous(button) {
+    var formId = button.getAttribute('data-form-id');
+    var container = button.closest('.lead-form-fields');
+    var name = container.querySelector('input[name="name"]').value.trim();
+    var email = container.querySelector('input[name="email"]').value.trim();
+    var company = container.querySelector('input[name="company"]').value.trim();
+    var jobTitle = container.querySelector('input[name="job_title"]').value.trim();
+
+    if (!name || !email) {
+      var statusEl = container.querySelector('.lead-form-status');
+      statusEl.textContent = '<%= I18n.t("liquid_tags.org_lead_form_tag.name_email_required") %>';
+      statusEl.style.display = '';
+      return;
+    }
+
+    button.disabled = true;
+    button.textContent = '<%= I18n.t("liquid_tags.org_lead_form_tag.submitting") %>';
+
+    fetch('/lead_submissions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      },
+      body: JSON.stringify({
+        organization_lead_form_id: formId,
+        name: name,
+        email: email,
+        company: company,
+        job_title: jobTitle
+      })
+    }).then(function(response) {
+      return response.json();
+    }).then(function(data) {
+      if (data.success) {
+        markFormSubmitted(button, null);
+        container.querySelectorAll('input').forEach(function(input) { input.disabled = true; });
+      } else {
+        button.textContent = data.error || '<%= I18n.t("liquid_tags.org_lead_form_tag.error") %>';
+        button.disabled = false;
+      }
+    }).catch(function() {
+      button.textContent = '<%= I18n.t("liquid_tags.org_lead_form_tag.error") %>';
+      button.disabled = false;
+    });
+  }
+
   function markFormSubmitted(button, isoDate) {
     button.disabled = true;
     button.textContent = '<%= I18n.t("liquid_tags.org_lead_form_tag.submitted") %>';
@@ -63,19 +140,22 @@
   (function() {
     var forms = document.querySelectorAll('.ltag-org-lead-form');
     if (!forms.length) return;
-    var ids = [];
-    forms.forEach(function(f) { ids.push(f.getAttribute('data-lead-form-id')); });
 
-    fetch('/lead_submissions/check?form_ids=' + ids.join(','), {
-      credentials: 'same-origin'
-    }).then(function(r) { return r.json(); }).then(function(data) {
-      forms.forEach(function(f) {
-        var id = f.getAttribute('data-lead-form-id');
-        if (data[id]) {
-          var btn = f.querySelector('.lead-form-submit-btn');
-          if (btn) markFormSubmitted(btn, data[id]);
-        }
-      });
-    }).catch(function() {});
+    <% if user_signed_in? %>
+      var ids = [];
+      forms.forEach(function(f) { ids.push(f.getAttribute('data-lead-form-id')); });
+
+      fetch('/lead_submissions/check?form_ids=' + ids.join(','), {
+        credentials: 'same-origin'
+      }).then(function(r) { return r.json(); }).then(function(data) {
+        forms.forEach(function(f) {
+          var id = f.getAttribute('data-lead-form-id');
+          if (data[id]) {
+            var btn = f.querySelector('.lead-form-submit-btn');
+            if (btn) markFormSubmitted(btn, data[id]);
+          }
+        });
+      }).catch(function() {});
+    <% end %>
   })();
 </script>
