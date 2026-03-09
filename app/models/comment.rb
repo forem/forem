@@ -60,7 +60,7 @@ class Comment < ApplicationRecord
   validates :commentable_id, presence: true, if: :commentable_type
   validates :commentable_type, inclusion: { in: COMMENTABLE_TYPES }, if: :commentable_id
   validates :positive_reactions_count, presence: true
-  validates :public_reactions_count, presence: true
+  validates :public_reactions_count, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :reactions_count, presence: true
   validates :commentable, on: :create, presence: {
     message: lambda do |object, _data|

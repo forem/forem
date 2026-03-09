@@ -24,6 +24,9 @@ RSpec.describe Comment do
       it { is_expected.to validate_presence_of(:positive_reactions_count) }
       it { is_expected.to validate_presence_of(:public_reactions_count) }
       it { is_expected.to validate_presence_of(:reactions_count) }
+
+      # Regression test for Issue #22803: Prevent negative reaction counts
+      it { is_expected.to validate_numericality_of(:public_reactions_count).is_greater_than_or_equal_to(0) }
     end
 
     it do
