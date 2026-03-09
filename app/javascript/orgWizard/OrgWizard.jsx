@@ -1,8 +1,7 @@
 import { h, Component } from 'preact';
 import { StepInput } from './components/StepInput';
 import { StepReview } from './components/StepReview';
-// This will be created in Task 9:
-// import { StepPreview } from './components/StepPreview';
+import { StepPreview } from './components/StepPreview';
 import { request } from '@utilities/http';
 
 export class OrgWizard extends Component {
@@ -173,7 +172,6 @@ export class OrgWizard extends Component {
           />
         )}
 
-        {/* StepPreview will be added in Task 9 */}
         {(step === 'review' || step === 'generating') && (
           <StepReview
             crawlData={this.state.crawlData}
@@ -194,9 +192,15 @@ export class OrgWizard extends Component {
         )}
 
         {(step === 'preview' || step === 'iterating' || step === 'saving') && (
-          <div className="text-center py-8">
-            <p>Step 3 component coming soon (Task 9)</p>
-          </div>
+          <StepPreview
+            html={this.state.html}
+            markdown={this.state.markdown}
+            loading={step === 'iterating' || step === 'saving'}
+            onIterate={this.handleIterate}
+            onSave={this.handleSave}
+            onStartOver={this.handleStartOver}
+            hasExistingPage={organization.has_page}
+          />
         )}
       </div>
     );
