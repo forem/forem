@@ -1,0 +1,24 @@
+app/javascript/packs/OrgWizard.jsx
+  3b300d9ee498e98c 1-44
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.9",
+  "base_commit_sha": "34f830c1319e6c89cbf6340cf0e6193489540d28",
+  "prompts": {
+    "3b300d9ee498e98c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4faf6d65-e132-4d85-b2c8-b4fb1568fd1a",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Jon Gottfried <jonmarkgo@gmail.com>",
+      "messages": [],
+      "total_additions": 44,
+      "total_deletions": 0,
+      "accepted_lines": 44,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/23b4b92c8a75cf557c973d76476a5452176325490a2a9ec5b7a8fbfc76a01f10"
+    }
+  }
+}
