@@ -5,6 +5,13 @@
       <%= f.text_field :title, class: "crayons-textfield", required: true, placeholder: "Survey Title" %>
     </div>
 
+    <div class="crayons-field">
+      <%= f.label :type_of, "Survey Type", class: "crayons-field__label" %>
+      <div class="crayons-select">
+        <%= f.select :type_of, Survey.type_ofs.keys.map { |type| [type.titleize, type] }, {}, class: "crayons-select__native" %>
+      </div>
+    </div>
+
     <div class="grid s:grid-cols-3 gap-4">
       <label class="crayons-field crayons-field--checkbox">
         <%= f.check_box :active, class: "crayons-checkbox" %>

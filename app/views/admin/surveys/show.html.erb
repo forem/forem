@@ -2,15 +2,21 @@
   <div>
     <h1 class="fs-4xl fw-bold"><%= @survey.title %></h1>
     <div class="mt-2 flex items-center gap-2">
-      <span class="crayons-badge crayons-badge--<%= @survey.active? ? "success" : "danger" %>">
-        <%= @survey.active? ? "Active" : "Inactive" %>
-      </span>
+      <% if @survey.active? %>
+        <span class="crayons-badge crayons-badge--success">Active</span>
+      <% else %>
+        <span class="crayons-badge crayons-badge--danger">Inactive</span>
+      <% end %>
+      <span class="crayons-badge crayons-badge--ghost"><%= @survey.type_of.titleize %></span>
       <% if @survey.display_title? %>
         <span class="crayons-badge crayons-badge--ghost">Title Displayed</span>
       <% end %>
       <% if @survey.allow_resubmission? %>
         <span class="crayons-badge crayons-badge--ghost">Allows Resubmission</span>
       <% end %>
+    </div>
+    <div class="mt-2 text-sm color-base-60">
+      Public Link: <%= link_to survey_url(@survey.slug), survey_path(@survey.slug), class: "underline color-base-80 hover:color-base-100", target: "_blank", rel: "noopener" %>
     </div>
   </div>
   <div>
