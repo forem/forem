@@ -9,21 +9,22 @@ RSpec.describe LeadSubmission do
 
   describe "associations" do
     it { is_expected.to belong_to(:organization_lead_form) }
-    it { is_expected.to belong_to(:user) }
+    it { is_expected.to belong_to(:user).optional }
   end
 
   describe ".snapshot_from_user" do
-    it "captures user profile data including job title and company" do
+    it "captures user profile data and username, excluding location" do
       user = create(:user, name: "Jane Doe", email: "jane@example.com")
-      user.profile.update(location: "New York", job_title: "Software Engineer", company: "Acme Inc.")
+      user.profile.update(job_title: "Software Engineer", company: "Acme Inc.", location: "New York")
 
       snapshot = described_class.snapshot_from_user(user)
 
       expect(snapshot[:name]).to eq("Jane Doe")
       expect(snapshot[:email]).to eq("jane@example.com")
-      expect(snapshot[:location]).to eq("New York")
       expect(snapshot[:job_title]).to eq("Software Engineer")
       expect(snapshot[:company]).to eq("Acme Inc.")
+      expect(snapshot[:username]).to eq(user.username)
+      expect(snapshot).not_to have_key(:location)
     end
   end
 end
