@@ -4,9 +4,17 @@ class SurveyMailer < ApplicationMailer
     @survey = params[:survey]
     @community_name = Settings::Community.community_name(subforem_id: subforem_id)
 
+    if @survey.industry?
+      subject = "We'd love your input on this #{@community_name} Industry Survey"
+    elsif @survey.fun?
+      subject = "A quick, fun survey from #{@community_name}!"
+    else
+      subject = "You've been randomly selected for a #{@community_name} Pulse Survey"
+    end
+
     mail(
       to: @user.email,
-      subject: "You've been randomly selected for a #{@community_name} Pulse Survey"
+      subject: subject
     )
   end
 end
