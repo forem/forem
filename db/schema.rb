@@ -198,7 +198,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_09_144216) do
     t.text "slug"
     t.string "social_image"
     t.bigint "subforem_id"
-    t.text "tags_array", default: [], array: true
     t.string "title"
     t.integer "type_of", default: 0
     t.datetime "updated_at", precision: nil, null: false
@@ -239,7 +238,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_09_144216) do
     t.index ["slug", "user_id"], name: "index_articles_on_slug_and_user_id", unique: true
     t.index ["subforem_id", "published", "score", "published_at"], name: "index_articles_on_subforem_published_score_published_at"
     t.index ["subforem_id"], name: "index_articles_on_subforem_id"
-    t.index ["tags_array"], name: "index_articles_on_tags_array", using: :gin
     t.index ["type_of", "published", "score", "published_at"], name: "index_articles_on_type_of_published_score_published_at", order: { published_at: :desc }, where: "(published = true)"
     t.index ["type_of"], name: "index_articles_on_type_of"
     t.index ["user_id", "published", "score", "published_at"], name: "index_articles_on_user_id_published_score_published_at", order: { published_at: :desc }, where: "(published = true)"
@@ -417,7 +415,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_09_144216) do
     t.text "processed_html"
     t.boolean "published"
     t.string "slug"
-    t.text "tags_array", default: [], array: true
     t.string "title"
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
@@ -425,7 +422,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_09_144216) do
     t.index ["classified_listing_category_id"], name: "index_classified_listings_on_classified_listing_category_id"
     t.index ["organization_id"], name: "index_classified_listings_on_organization_id"
     t.index ["published"], name: "index_classified_listings_on_published"
-    t.index ["tags_array"], name: "index_classified_listings_on_tags_array", using: :gin
     t.index ["user_id"], name: "index_classified_listings_on_user_id"
   end
 
@@ -612,7 +608,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_09_144216) do
     t.boolean "requires_cookies", default: false
     t.integer "special_behavior", default: 0, null: false
     t.float "success_rate", default: 0.0
-    t.text "tags_array", default: [], array: true
     t.ltree "target_geolocations", default: [], array: true
     t.string "target_role_names", default: [], array: true
     t.integer "template", default: 0
@@ -630,7 +625,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_09_144216) do
     t.index ["placement_area"], name: "index_display_ads_on_placement_area"
     t.index ["prefer_paired_with_billboard_id"], name: "index_display_ads_on_prefer_paired_with_billboard_id"
     t.index ["preferred_article_ids"], name: "index_display_ads_on_preferred_article_ids", using: :gin
-    t.index ["tags_array"], name: "index_display_ads_on_tags_array", using: :gin
     t.index ["target_geolocations"], name: "gist_index_display_ads_on_target_geolocations", using: :gist
     t.index ["target_role_names"], name: "index_display_ads_on_target_role_names", using: :gin
   end

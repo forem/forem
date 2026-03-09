@@ -26,7 +26,7 @@ RSpec.describe SurveyMailer, type: :mailer do
       let(:survey) { create(:survey, title: "Industry Survey", type_of: :industry, extra_email_context_paragraph: "Industry details.") }
 
       it "renders the headers" do
-        expect(mail.subject).to eq("We'd love your input on this #{community_name} Industry Survey")
+        expect(mail.subject).to eq("You've been randomly selected for a very quick #{community_name} Industry Survey")
       end
 
       it "renders the body with link to survey" do
