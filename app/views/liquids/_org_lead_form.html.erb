@@ -4,8 +4,7 @@
     <p class="color-base-70 mb-3"><%= form.description %></p>
   <% end %>
 
-  <% signed_in = local_assigns.key?(:signed_in) ? local_assigns[:signed_in] : user_signed_in? %>
-  <% if signed_in %>
+  <div class="lead-form-signed-in" style="display:none;">
     <div class="lead-form-actions">
       <button type="button"
               class="crayons-btn lead-form-submit-btn"
@@ -16,35 +15,35 @@
       <span class="lead-form-status fs-s color-base-60 ml-2" style="display:none;"></span>
     </div>
     <p class="fs-s color-base-60" style="margin-top: 1rem;"><%= I18n.t("liquid_tags.org_lead_form_tag.data_shared") %></p>
-  <% else %>
-    <div class="lead-form-fields" data-form-id="<%= form.id %>">
-      <div class="crayons-field mb-3">
-        <label class="crayons-field__label" for="lead_form_name_<%= form.id %>"><%= I18n.t("liquid_tags.org_lead_form_tag.field_name") %></label>
-        <input type="text" id="lead_form_name_<%= form.id %>" name="name" class="crayons-textfield" required>
-      </div>
-      <div class="crayons-field mb-3">
-        <label class="crayons-field__label" for="lead_form_email_<%= form.id %>"><%= I18n.t("liquid_tags.org_lead_form_tag.field_email") %></label>
-        <input type="email" id="lead_form_email_<%= form.id %>" name="email" class="crayons-textfield" required>
-      </div>
-      <div class="crayons-field mb-3">
-        <label class="crayons-field__label" for="lead_form_company_<%= form.id %>"><%= I18n.t("liquid_tags.org_lead_form_tag.field_company") %></label>
-        <input type="text" id="lead_form_company_<%= form.id %>" name="company" class="crayons-textfield">
-      </div>
-      <div class="crayons-field mb-3">
-        <label class="crayons-field__label" for="lead_form_job_title_<%= form.id %>"><%= I18n.t("liquid_tags.org_lead_form_tag.field_job_title") %></label>
-        <input type="text" id="lead_form_job_title_<%= form.id %>" name="job_title" class="crayons-textfield">
-      </div>
-      <div class="lead-form-actions">
-        <button type="button"
-                class="crayons-btn lead-form-submit-btn"
-                data-form-id="<%= form.id %>"
-                onclick="submitLeadFormAnonymous(this)">
-          <%= form.button_text %>
-        </button>
-        <span class="lead-form-status fs-s color-base-60 ml-2" style="display:none;"></span>
-      </div>
+  </div>
+
+  <div class="lead-form-signed-out" data-form-id="<%= form.id %>">
+    <div class="crayons-field mb-3">
+      <label class="crayons-field__label" for="lead_form_name_<%= form.id %>"><%= I18n.t("liquid_tags.org_lead_form_tag.field_name") %></label>
+      <input type="text" id="lead_form_name_<%= form.id %>" name="name" class="crayons-textfield" required>
     </div>
-  <% end %>
+    <div class="crayons-field mb-3">
+      <label class="crayons-field__label" for="lead_form_email_<%= form.id %>"><%= I18n.t("liquid_tags.org_lead_form_tag.field_email") %></label>
+      <input type="email" id="lead_form_email_<%= form.id %>" name="email" class="crayons-textfield" required>
+    </div>
+    <div class="crayons-field mb-3">
+      <label class="crayons-field__label" for="lead_form_company_<%= form.id %>"><%= I18n.t("liquid_tags.org_lead_form_tag.field_company") %></label>
+      <input type="text" id="lead_form_company_<%= form.id %>" name="company" class="crayons-textfield">
+    </div>
+    <div class="crayons-field mb-3">
+      <label class="crayons-field__label" for="lead_form_job_title_<%= form.id %>"><%= I18n.t("liquid_tags.org_lead_form_tag.field_job_title") %></label>
+      <input type="text" id="lead_form_job_title_<%= form.id %>" name="job_title" class="crayons-textfield">
+    </div>
+    <div class="lead-form-actions">
+      <button type="button"
+              class="crayons-btn lead-form-submit-btn"
+              data-form-id="<%= form.id %>"
+              onclick="submitLeadFormAnonymous(this)">
+        <%= form.button_text %>
+      </button>
+      <span class="lead-form-status fs-s color-base-60 ml-2" style="display:none;"></span>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -77,7 +76,7 @@
 
   function submitLeadFormAnonymous(button) {
     var formId = button.getAttribute('data-form-id');
-    var container = button.closest('.lead-form-fields');
+    var container = button.closest('.lead-form-signed-out');
     var name = container.querySelector('input[name="name"]').value.trim();
     var email = container.querySelector('input[name="email"]').value.trim();
     var company = container.querySelector('input[name="company"]').value.trim();
@@ -142,7 +141,18 @@
     var forms = document.querySelectorAll('.ltag-org-lead-form');
     if (!forms.length) return;
 
-    <% if signed_in %>
+    var isLoggedIn = document.body.getAttribute('data-user-status') === 'logged-in';
+
+    forms.forEach(function(f) {
+      var signedInView = f.querySelector('.lead-form-signed-in');
+      var signedOutView = f.querySelector('.lead-form-signed-out');
+      if (isLoggedIn) {
+        signedInView.style.display = '';
+        signedOutView.style.display = 'none';
+      }
+    });
+
+    if (isLoggedIn) {
       var ids = [];
       forms.forEach(function(f) { ids.push(f.getAttribute('data-lead-form-id')); });
 
@@ -152,11 +162,11 @@
         forms.forEach(function(f) {
           var id = f.getAttribute('data-lead-form-id');
           if (data[id]) {
-            var btn = f.querySelector('.lead-form-submit-btn');
+            var btn = f.querySelector('.lead-form-signed-in .lead-form-submit-btn');
             if (btn) markFormSubmitted(btn, data[id]);
           }
         });
       }).catch(function() {});
-    <% end %>
+    }
   })();
 </script>

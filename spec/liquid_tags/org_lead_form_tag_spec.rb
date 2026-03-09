@@ -21,14 +21,22 @@ RSpec.describe OrgLeadFormTag, type: :liquid_tag do
       expect(rendered).to include("ltag-org-lead-form")
     end
 
-    it "includes form fields and submit button for anonymous users" do
+    it "includes both signed-in and signed-out views" do
       liquid = parse_tag(lead_form.id.to_s)
       rendered = liquid.render
-      expect(rendered).to include("lead-form-fields")
+      expect(rendered).to include("lead-form-signed-in")
+      expect(rendered).to include("lead-form-signed-out")
+    end
+
+    it "includes form fields and submit button" do
+      liquid = parse_tag(lead_form.id.to_s)
+      rendered = liquid.render
       expect(rendered).to include("lead-form-submit-btn")
       expect(rendered).to include(lead_form.button_text)
       expect(rendered).to include(I18n.t("liquid_tags.org_lead_form_tag.field_name"))
       expect(rendered).to include(I18n.t("liquid_tags.org_lead_form_tag.field_email"))
+      expect(rendered).to include(I18n.t("liquid_tags.org_lead_form_tag.field_company"))
+      expect(rendered).to include(I18n.t("liquid_tags.org_lead_form_tag.field_job_title"))
     end
   end
 
