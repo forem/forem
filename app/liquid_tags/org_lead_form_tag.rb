@@ -1,5 +1,6 @@
 class OrgLeadFormTag < LiquidTagBase
   PARTIAL = "liquids/org_lead_form".freeze
+  VALID_CONTEXTS = %w[Organization].freeze
 
   def initialize(_tag_name, input, _parse_context)
     super
@@ -7,6 +8,11 @@ class OrgLeadFormTag < LiquidTagBase
     @form = OrganizationLeadForm.find_by(id: @form_id)
     raise StandardError, I18n.t("liquid_tags.org_lead_form_tag.not_found") unless @form
     raise StandardError, I18n.t("liquid_tags.org_lead_form_tag.inactive") unless @form.active?
+
+    source = parse_context.partial_options[:source]
+    unless @form.organization_id == source.id
+      raise StandardError, I18n.t("liquid_tags.org_lead_form_tag.wrong_organization")
+    end
   end
 
   def render(_context)

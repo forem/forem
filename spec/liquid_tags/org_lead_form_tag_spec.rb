@@ -56,4 +56,12 @@ RSpec.describe OrgLeadFormTag, type: :liquid_tag do
       expect { parse_tag(lead_form.id.to_s) }.to raise_error(StandardError, I18n.t("liquid_tags.org_lead_form_tag.inactive"))
     end
   end
+
+  context "when form belongs to a different organization" do
+    it "raises an error" do
+      other_org = create(:organization)
+      other_form = create(:organization_lead_form, organization: other_org)
+      expect { parse_tag(other_form.id.to_s) }.to raise_error(StandardError, I18n.t("liquid_tags.org_lead_form_tag.wrong_organization"))
+    end
+  end
 end

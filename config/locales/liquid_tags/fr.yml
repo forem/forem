@@ -180,5 +180,6 @@ fr:
       field_company: Entreprise
       field_job_title: Poste
       name_email_required: Le nom et l'e-mail sont obligatoires.
+      wrong_organization: Ce formulaire de leads n'appartient pas à cette organisation.
     youtube_tag:
       invalid_youtube_id: ID ou URL YouTube non valide

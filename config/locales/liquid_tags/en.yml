@@ -180,5 +180,6 @@ en:
       field_company: Company
       field_job_title: Job Title
       name_email_required: Name and email are required.
+      wrong_organization: This lead form does not belong to this organization.
     youtube_tag:
       invalid_youtube_id: Invalid YouTube ID or URL
