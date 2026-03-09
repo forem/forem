@@ -94,6 +94,7 @@ en:
     inactive_form: This lead form is no longer accepting submissions.
     not_found: Lead form not found.
     already_submitted: You have already submitted this form.
+    name_and_email_required: Name and email are required.
   podcasts_controller:
     podcast_suggested: Podcast suggested
   profiles_controller:

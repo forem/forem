@@ -94,6 +94,7 @@ fr:
     inactive_form: Ce formulaire de leads n'accepte plus de soumissions.
     not_found: Formulaire de leads non trouvé.
     already_submitted: Vous avez déjà soumis ce formulaire.
+    name_and_email_required: Le nom et l'e-mail sont obligatoires.
   podcasts_controller:
     podcast_suggested: Podcast proposé
   profiles_controller:

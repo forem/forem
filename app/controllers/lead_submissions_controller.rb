@@ -1,5 +1,5 @@
 class LeadSubmissionsController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, only: [:check]
 
   def check
     form_ids = params[:form_ids].to_s.split(",").map(&:to_i).select(&:positive?)
@@ -17,8 +17,17 @@ class LeadSubmissionsController < ApplicationController
       return
     end
 
-    snapshot = LeadSubmission.snapshot_from_user(current_user)
-    submission = form.lead_submissions.build(snapshot.merge(user: current_user))
+    if current_user
+      snapshot = LeadSubmission.snapshot_from_user(current_user)
+      submission = form.lead_submissions.build(snapshot.merge(user: current_user))
+    else
+      attrs = anonymous_submission_params
+      if attrs[:name].blank? || attrs[:email].blank?
+        render json: { success: false, error: I18n.t("lead_submissions.name_and_email_required") }, status: :unprocessable_entity
+        return
+      end
+      submission = form.lead_submissions.build(attrs)
+    end
 
     if submission.save
       render json: { success: true }
@@ -27,5 +36,11 @@ class LeadSubmissionsController < ApplicationController
     end
   rescue ActiveRecord::RecordNotFound
     render json: { success: false, error: I18n.t("lead_submissions.not_found") }, status: :not_found
+  end
+
+  private
+
+  def anonymous_submission_params
+    params.permit(:name, :email, :company, :job_title)
   end
 end
