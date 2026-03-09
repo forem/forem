@@ -1,8 +1,21 @@
 import { h } from 'preact';
+import { useEffect } from "react";
 import PropTypes from 'prop-types';
 import { EditorBody } from './EditorBody';
 import { Meta } from './Meta';
 import { ErrorList } from './ErrorList';
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+
+  const all = document.querySelectorAll("*");
+
+  for (const el of all) {
+    if (el.scrollHeight > el.clientHeight) {
+      el.scrollTop = 0;  // force fallback
+    }
+  }
+}
 
 export const Form = ({
   titleDefaultValue,
@@ -23,6 +36,13 @@ export const Form = ({
   videoSourceUrl,
   onVideoUrlChange,
 }) => {
+
+  useEffect(() => {
+    if (errors) {
+      scrollToTop();
+    }
+  }, [errors]);
+
   return (
     <div className="crayons-article-form__content crayons-card">
       {errors && <ErrorList errors={errors} />}
