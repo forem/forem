@@ -54,7 +54,7 @@ RSpec.describe "CommentsDestroy" do
         expect(child_comment.reload.deleted).to be(false)
       end
 
-      it "renders [deleted]" do
+      it "renders 'Comment deleted'" do
         get parent_comment.path
         expect(response.body).to include "Comment deleted"
       end
