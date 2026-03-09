@@ -1855,7 +1855,7 @@ RSpec.describe Article do
 
       it "enqueues Articles::DetectCodeBlockLanguagesWorker when body_markdown has an unlabeled code block" do
         sidekiq_assert_enqueued_jobs(1, only: Articles::DetectCodeBlockLanguagesWorker) do
-          build(:article, body_markdown: "```\nputs :hi\n```").save
+          build(:article, title: "Unlabeled code block", body_markdown: "```\nputs :hi\n```").save
         end
       end
     end
@@ -1995,8 +1995,7 @@ RSpec.describe Article do
         stub_const("Ai::Base::DEFAULT_KEY", "present")
       end
 
-      it "enqueues Articles::DetectCodeBlockLanguagesWorker when body_markdown changes to include an unlabeled code block" \
-         do
+      it "enqueues Articles::DetectCodeBlockLanguagesWorker when body_markdown changes to include an unlabeled code block" do
         sidekiq_assert_enqueued_with(job: Articles::DetectCodeBlockLanguagesWorker, args: [article.id]) do
           article.update(body_markdown: "```\nconst answer = 42;\n```")
         end

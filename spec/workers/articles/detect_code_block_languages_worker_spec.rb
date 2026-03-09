@@ -57,5 +57,18 @@ RSpec.describe Articles::DetectCodeBlockLanguagesWorker, type: :worker do
         expect(EdgeCache::BustArticle).not_to have_received(:call)
       end
     end
+
+    context "when Gemini is not configured" do
+      before do
+        stub_const("Ai::Base::DEFAULT_KEY", nil)
+        allow(Articles::DetectCodeBlockLanguages).to receive(:call)
+      end
+
+      it "does not call Articles::DetectCodeBlockLanguages" do
+        worker.perform(1)
+
+        expect(Articles::DetectCodeBlockLanguages).not_to have_received(:call)
+      end
+    end
   end
 end

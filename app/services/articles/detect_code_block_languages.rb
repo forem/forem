@@ -29,8 +29,7 @@ module Articles
 
     def initialize(article, ai_client: nil)
       @article = article
-      @ai_client = ai_client || Ai::Base.new(model: Ai::Base::DEFAULT_LITE_MODEL, wrapper: self,
-                                             affected_content: article, affected_user: article.user)
+      @ai_client = ai_client
     end
 
     def call
@@ -38,6 +37,7 @@ module Articles
 
       unlabeled_blocks = extract_unlabeled_blocks
       return false if unlabeled_blocks.blank?
+      return false if ai_client_unconfigured?
 
       detected_languages = parse_response(ai_client.call(build_prompt(unlabeled_blocks)), unlabeled_blocks.count)
       updated_markdown = apply_languages(detected_languages)
@@ -55,6 +55,15 @@ module Articles
     private
 
     attr_reader :ai_client, :article
+
+    def ai_client
+      @ai_client ||= Ai::Base.new(model: Ai::Base::DEFAULT_LITE_MODEL, wrapper: self,
+                                  affected_content: article, affected_user: article.user)
+    end
+
+    def ai_client_unconfigured?
+      @ai_client.blank? && Ai::Base::DEFAULT_KEY.blank?
+    end
 
     def extract_unlabeled_blocks
       article.body_markdown.to_enum(:scan, FENCED_CODE_BLOCK_REGEX).filter_map do

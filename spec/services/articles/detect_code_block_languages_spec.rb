@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Articles::DetectCodeBlockLanguages, type: :service do
-  let(:article) { create(:article, body_markdown: markdown) }
+  let(:article) { create(:article, title: "Code block article", body_markdown: markdown) }
   let(:ai_client) { instance_double(Ai::Base) }
   let(:service) { described_class.new(article, ai_client: ai_client) }
 
@@ -66,7 +66,7 @@ RSpec.describe Articles::DetectCodeBlockLanguages, type: :service do
     it "uses the lite Gemini model by default" do
       allow(Ai::Base).to receive(:new).and_return(ai_client)
 
-      described_class.new(article)
+      described_class.new(article).call
 
       expect(Ai::Base).to have_received(:new).with(
         model: Ai::Base::DEFAULT_LITE_MODEL,
@@ -74,6 +74,14 @@ RSpec.describe Articles::DetectCodeBlockLanguages, type: :service do
         affected_content: article,
         affected_user: article.user,
       )
+    end
+
+    it "returns false without creating an AI client when Gemini is not configured" do
+      stub_const("Ai::Base::DEFAULT_KEY", nil)
+      allow(Ai::Base).to receive(:new)
+
+      expect(described_class.new(article).call).to be(false)
+      expect(Ai::Base).not_to have_received(:new)
     end
   end
 end

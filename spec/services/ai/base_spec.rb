@@ -3,7 +3,8 @@ require "rails_helper"
 RSpec.describe Ai::Base do
   describe "default models" do
     it "exposes the lite Gemini model default" do
-      expect(described_class::DEFAULT_LITE_MODEL).to eq("gemini-3.1-flash-lite-preview")
+      expect(described_class::DEFAULT_LITE_MODEL).to eq(ENV.fetch("GEMINI_API_LITE_MODEL",
+                                                                  "gemini-3.1-flash-lite-preview"))
     end
   end
 
