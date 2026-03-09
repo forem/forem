@@ -6,6 +6,10 @@ RSpec.describe Articles::DetectCodeBlockLanguagesWorker, type: :worker do
   describe "#perform" do
     let(:worker) { described_class.new }
 
+    before do
+      stub_const("Ai::Base::DEFAULT_KEY", "present")
+    end
+
     context "with article" do
       let(:article) { double }
       let(:article_id) { 1 }

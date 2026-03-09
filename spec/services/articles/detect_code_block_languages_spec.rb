@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Articles::DetectCodeBlockLanguages, type: :service do
-  let(:article) { create(:article, title: "Code block article", body_markdown: markdown) }
+  let(:article) { create(:published_article, title: "Code block article", body_markdown: markdown) }
   let(:ai_client) { instance_double(Ai::Base) }
   let(:service) { described_class.new(article, ai_client: ai_client) }
 
