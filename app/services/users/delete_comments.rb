@@ -8,7 +8,7 @@ module Users
       user.comments.find_each do |comment|
         comment.reactions.destroy_all
         EdgeCache::BustComment.call(comment)
-        comment.update_columns(deleted: true)
+        comment.update!(deleted: true)
       end
       EdgeCache::BustUser.call(user)
     end

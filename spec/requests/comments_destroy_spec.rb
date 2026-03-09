@@ -99,7 +99,7 @@ RSpec.describe "CommentsDestroy" do
         Users::Delete.call(commenter)
         expect(child_comment.reload.parent_id).to eq parent_comment.id
       end
-      it "renders [deleted]" do
+      it "renders 'Comment deleted'" do
         Users::Delete.call(commenter)
         get article.path
         expect(response.body).to include "Comment deleted"

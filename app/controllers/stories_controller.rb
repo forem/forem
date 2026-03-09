@@ -539,15 +539,17 @@ class StoriesController < ApplicationController
   end
 
   def build_comment_json_ld(comment)
+    author = {
+      "@type": "Person",
+      name: comment.user&.name || "[deleted]",
+      url: (URL.user(comment.user) if comment.user)
+    }.compact_blank
+
     comment_data = {
       "@type": "Comment",
       "@id": "#comment-#{comment.id}",
       text: comment.processed_html_final,
-      author: {
-        "@type": "Person",
-        name: comment.user&.name || "[deleted]",
-        url: comment.user ? URL.user(comment.user) : URL.url("")
-      },
+      author: author,
       datePublished: comment.created_at.iso8601,
       dateModified: comment.edited_at&.iso8601 || comment.created_at.iso8601,
       url: URL.comment(comment),
@@ -611,38 +613,5 @@ class StoriesController < ApplicationController
     return params[:comments_sort] if Comment::VALID_SORT_OPTIONS.include? params[:comments_sort]
 
     "top"
-  end
-
-  def build_comment_json_ld(comment)
-    comment_data = {
-      "@type": "Comment",
-      "@id": "#comment-#{comment.id}",
-      text: comment.processed_html_final,
-      author: {
-        "@type": "Person",
-        name: comment.user&.name || "[deleted]",
-        url: comment.user ? URL.user(comment.user) : URL.url("")
-      },
-      datePublished: comment.created_at.iso8601,
-      dateModified: comment.edited_at&.iso8601 || comment.created_at.iso8601,
-      url: URL.comment(comment),
-      interactionStatistic: [
-        {
-          "@type": "InteractionCounter",
-          interactionType: "https://schema.org/LikeAction",
-          userInteractionCount: comment.public_reactions_count
-        },
-      ]
-    }
-
-    # Add parent comment reference if this is a reply
-    if comment.ancestry.present?
-      comment_data[:parentItem] = {
-        "@type": "Comment",
-        "@id": "#comment-#{comment&.parent&.id}"
-      }
-    end
-
-    comment_data
   end
 end

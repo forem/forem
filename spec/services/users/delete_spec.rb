@@ -96,6 +96,7 @@ RSpec.describe Users::Delete, type: :service do
 
   # check that all the associated records are being destroyed,
   # except for those that are kept explicitly (kept_associations)
+  # except for those that are kept explicitly (kept_associations)
   describe "deleting associations" do
     let(:kept_association_names) do
       %i[
