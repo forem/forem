@@ -283,17 +283,28 @@ export const useTextAreaAutoResize = () => {
       const allContentHeights = allElements.map(
         (element) => calculateTextAreaHeight(element).height,
       );
-
-      // The height to set the textarea to needs to account for the placeholder height in order to avoid jumping when the placeholder disappears on focus.
       const placeholderHeight = calculateTextAreaHeight(textArea).placeholderHeight;
-      const height = Math.max(...allContentHeights) + placeholderHeight;
+
+      const height = Math.max(...allContentHeights);
       const newHeight = `${height}px`;
 
+      // Calculate the height for the Article Title specifically
+      const heightTitle = Math.max(...allContentHeights) + placeholderHeight;
+      const newHeightTitle = `${heightTitle}px`;
+
       allElements.forEach((element) => {
-        element.style['min-height'] = newHeight;
-        if (constrainToContentHeight) {
-          // Don't allow the textarea to grow to a size larger than the content
-          element.style['max-height'] = newHeight;
+        if (element.id === 'article-form-title') { // If it is an article title, set the height that is account for the placeholder
+          element.style['min-height'] = newHeightTitle;
+          if (constrainToContentHeight) {
+            // Don't allow the textarea to grow to a size larger than the content
+            element.style['max-height'] = newHeightTitle;
+          }
+        } else {
+          element.style['min-height'] = newHeight;
+          if (constrainToContentHeight) {
+            // Don't allow the textarea to grow to a size larger than the content
+            element.style['max-height'] = newHeight;
+          }
         }
       });
     };
