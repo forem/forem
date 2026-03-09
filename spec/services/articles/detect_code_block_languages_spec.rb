@@ -64,6 +64,7 @@ RSpec.describe Articles::DetectCodeBlockLanguages, type: :service do
     end
 
     it "uses the lite Gemini model by default" do
+      stub_const("Ai::Base::DEFAULT_KEY", "fake-api-key")
       allow(Ai::Base).to receive(:new).and_return(ai_client)
 
       described_class.new(article).call
