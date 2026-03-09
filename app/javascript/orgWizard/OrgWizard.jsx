@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 import { StepInput } from './components/StepInput';
-// These will be created in Tasks 8 and 9:
-// import { StepReview } from './components/StepReview';
+import { StepReview } from './components/StepReview';
+// This will be created in Task 9:
 // import { StepPreview } from './components/StepPreview';
 import { request } from '@utilities/http';
 
@@ -173,11 +173,24 @@ export class OrgWizard extends Component {
           />
         )}
 
-        {/* StepReview and StepPreview will be added in Tasks 8 and 9 */}
+        {/* StepPreview will be added in Task 9 */}
         {(step === 'review' || step === 'generating') && (
-          <div className="text-center py-8">
-            <p>Step 2 component coming soon (Task 8)</p>
-          </div>
+          <StepReview
+            crawlData={this.state.crawlData}
+            editedData={this.state.editedData}
+            selectedPosts={this.state.selectedPosts}
+            loading={step === 'generating'}
+            onEditData={(editedData) => this.setState({ editedData })}
+            onTogglePost={(postId) => {
+              const { selectedPosts } = this.state;
+              const updated = selectedPosts.includes(postId)
+                ? selectedPosts.filter((id) => id !== postId)
+                : [...selectedPosts, postId];
+              this.setState({ selectedPosts: updated });
+            }}
+            onGenerate={this.handleGenerate}
+            onBack={this.handleStartOver}
+          />
         )}
 
         {(step === 'preview' || step === 'iterating' || step === 'saving') && (
