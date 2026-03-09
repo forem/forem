@@ -11,7 +11,7 @@ RSpec.describe DescriptTag, type: :liquid_tag do
   let(:http_descript_url) { "http://share.descript.com/view/PnCDOfxkfnP" }
   let(:descript_url_with_query) { "https://share.descript.com/view/PnCDOfxkfnP?utm_source=share" }
   let(:descript_url_with_trailing_slash) { "https://share.descript.com/view/PnCDOfxkfnP/" }
-  let(:expected_link) { "https://share.descript.com/view/PnCDOfxkfnP" }
+  let(:expected_link) { "https://share.descript.com/embed/PnCDOfxkfnP" }
 
   let(:invalid_descript_urls) do
     [
