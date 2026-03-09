@@ -1847,6 +1847,18 @@ RSpec.describe Article do
         end
       end
     end
+
+    describe "detect code block languages" do
+      before do
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+      end
+
+      it "enqueues Articles::DetectCodeBlockLanguagesWorker when body_markdown has an unlabeled code block" do
+        sidekiq_assert_enqueued_jobs(1, only: Articles::DetectCodeBlockLanguagesWorker) do
+          build(:article, body_markdown: "```\nputs :hi\n```").save
+        end
+      end
+    end
   end
 
   context "when callbacks are triggered after save" do
@@ -1974,6 +1986,25 @@ RSpec.describe Article do
       it "does not Articles::EnrichImageAttributesWorker if the HTML does not change" do
         sidekiq_assert_no_enqueued_jobs(only: Articles::EnrichImageAttributesWorker) do
           article.update(tag_list: %w[fsharp go])
+        end
+      end
+    end
+
+    describe "detect code block languages" do
+      before do
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+      end
+
+      it "enqueues Articles::DetectCodeBlockLanguagesWorker when body_markdown changes to include an unlabeled code block" \
+         do
+        sidekiq_assert_enqueued_with(job: Articles::DetectCodeBlockLanguagesWorker, args: [article.id]) do
+          article.update(body_markdown: "```\nconst answer = 42;\n```")
+        end
+      end
+
+      it "does not enqueue Articles::DetectCodeBlockLanguagesWorker when code blocks are already labeled" do
+        sidekiq_assert_no_enqueued_jobs(only: Articles::DetectCodeBlockLanguagesWorker) do
+          article.update(body_markdown: "```ruby\nputs :hi\n```")
         end
       end
     end

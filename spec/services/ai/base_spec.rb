@@ -1,6 +1,12 @@
 require "rails_helper"
 
 RSpec.describe Ai::Base do
+  describe "default models" do
+    it "exposes the lite Gemini model default" do
+      expect(described_class::DEFAULT_LITE_MODEL).to eq("gemini-3.1-flash-lite-preview")
+    end
+  end
+
   describe "#call" do
     let(:api_key) { "test_api_key" }
     let(:model) { "gemini-1.5-pro" }
