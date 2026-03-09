@@ -12,7 +12,7 @@ class OrgLeadFormTag < LiquidTagBase
   def render(_context)
     ApplicationController.render(
       partial: PARTIAL,
-      locals: { form: @form },
+      locals: { form: @form, signed_in: false },
     )
   end
 

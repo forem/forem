@@ -4,7 +4,8 @@
     <p class="color-base-70 mb-3"><%= form.description %></p>
   <% end %>
 
-  <% if user_signed_in? %>
+  <% signed_in = local_assigns.key?(:signed_in) ? local_assigns[:signed_in] : user_signed_in? %>
+  <% if signed_in %>
     <div class="lead-form-actions">
       <button type="button"
               class="crayons-btn lead-form-submit-btn"
@@ -141,7 +142,7 @@
     var forms = document.querySelectorAll('.ltag-org-lead-form');
     if (!forms.length) return;
 
-    <% if user_signed_in? %>
+    <% if signed_in %>
       var ids = [];
       forms.forEach(function(f) { ids.push(f.getAttribute('data-lead-form-id')); });
 
