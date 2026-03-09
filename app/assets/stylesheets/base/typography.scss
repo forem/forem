@@ -97,7 +97,7 @@ body {
     margin-bottom: 0;
   }
 
-  a {
+  a:not(.crayons-btn) {
     text-decoration: underline;
     color: var(--link-branded-color);
 
@@ -128,7 +128,7 @@ body {
     }
 
     // Restore link styling for nested .text-styles blocks (e.g. embedded comment body)
-    .text-styles a {
+    .text-styles a:not(.crayons-btn) {
       text-decoration: underline;
       color: var(--link-branded-color);
       &:hover {
