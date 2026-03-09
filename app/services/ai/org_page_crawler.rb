@@ -2,9 +2,10 @@ module Ai
   class OrgPageCrawler
     VERSION = "1.1"
 
-    def initialize(organization:, urls:)
+    def initialize(organization:, urls:, page_type: "developer")
       @organization = organization
       @urls = urls.select(&:present?).first(4)
+      @page_type = page_type
     end
 
     def crawl
@@ -60,6 +61,19 @@ module Ai
     def build_extraction_prompt(page_texts)
       pages_context = page_texts.map { |p| "URL: #{p[:url]}\nContent: #{p[:text]}" }.join("\n\n---\n\n")
 
+      page_type_hint = case @page_type
+                        when "developer"
+                          "This page is for DEVELOPERS. Focus the tagline and description on technical capabilities, APIs, SDKs, and developer tools. Extract features that developers care about."
+                        when "marketing"
+                          "This page is a MARKETING SHOWCASE. Focus the tagline and description on product value propositions and benefits. Extract features that highlight business value."
+                        when "community"
+                          "This page is a COMMUNITY HUB. Focus the tagline and description on community, collaboration, and shared learning. Extract features about community engagement."
+                        when "talent"
+                          "This page is for TALENT/CAREERS. Focus the tagline and description on team culture, engineering values, and why developers should join. Extract features about the work environment."
+                        else
+                          ""
+                        end
+
       <<~PROMPT
         Analyze the following web pages for the organization "#{@organization.name}" and extract:
 
@@ -67,6 +81,8 @@ module Ai
         2. description: A 1-2 sentence developer-friendly description of the organization
         3. brand_color: The organization's primary brand color as a hex code (e.g. #F22F46). Use your knowledge of well-known brands, or infer from the content.
         4. features: A JSON array of 3-5 key features/capabilities, each with "title" and "description" keys
+
+        #{page_type_hint}
 
         WEB PAGES:
         #{pages_context}

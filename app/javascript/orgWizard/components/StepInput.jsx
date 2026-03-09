@@ -1,10 +1,18 @@
 import { h, Component } from 'preact';
 
+const PAGE_TYPES = [
+  { value: 'developer', label: 'Developer-Focused', description: 'Docs, APIs, code samples, and technical resources' },
+  { value: 'marketing', label: 'Marketing Showcase', description: 'Product highlights, testimonials, and calls-to-action' },
+  { value: 'community', label: 'Community Hub', description: 'Team members, DEV posts, and community engagement' },
+  { value: 'talent', label: 'Talent & Careers', description: 'Team culture, open roles, and why developers should join' },
+];
+
 export class StepInput extends Component {
   constructor(props) {
     super(props);
     this.state = {
       urls: props.urls || [''],
+      pageType: 'developer',
     };
   }
 
@@ -31,13 +39,20 @@ export class StepInput extends Component {
     e.preventDefault();
     const validUrls = this.state.urls.filter((u) => u.trim());
     if (validUrls.length > 0) {
-      this.props.onSubmit(validUrls);
+      this.props.onSubmit(validUrls, this.state.pageType);
     }
   };
 
   render() {
     const { loading } = this.props;
-    const { urls } = this.state;
+    const { urls, pageType } = this.state;
+
+    const loadingMessages = {
+      developer: 'Searching for developer resources, APIs, and docs...',
+      marketing: 'Analyzing your product and brand positioning...',
+      community: 'Finding community content and team members...',
+      talent: 'Learning about your team culture and values...',
+    };
 
     if (loading) {
       return (
@@ -47,7 +62,7 @@ export class StepInput extends Component {
             Learning about your organization...
           </p>
           <p className="fs-s color-base-60">
-            Checking your site, searching DEV, detecting brand colors...
+            {loadingMessages[pageType] || 'Checking your site, searching DEV, detecting brand colors...'}
           </p>
         </div>
       );
@@ -60,6 +75,26 @@ export class StepInput extends Component {
           you a beautiful org page using your content and what the DEV community
           has written about you.
         </p>
+
+        <div className="mb-6">
+          <h3 className="fs-l mb-2">What kind of page do you want?</h3>
+          <div className="grid gap-2" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
+            {PAGE_TYPES.map((pt) => (
+              <button
+                key={pt.value}
+                type="button"
+                className={`crayons-card p-3 text-left cursor-pointer`}
+                style={{
+                  border: pageType === pt.value ? '2px solid var(--accent-brand)' : '1px solid var(--base-20)',
+                }}
+                onClick={() => this.setState({ pageType: pt.value })}
+              >
+                <span className="fw-bold fs-s">{pt.label}</span>
+                <p className="fs-xs color-base-60 mt-1 mb-0">{pt.description}</p>
+              </button>
+            ))}
+          </div>
+        </div>
 
         {urls.map((url, index) => (
           <div key={index} className="flex items-center gap-2 mb-3">

@@ -14,7 +14,8 @@ class OrgWizardController < ApplicationController
 
   def crawl
     urls = params[:urls].to_a.select(&:present?).first(4)
-    crawler = Ai::OrgPageCrawler.new(organization: @organization, urls: urls)
+    page_type = params[:page_type].to_s.presence || "developer"
+    crawler = Ai::OrgPageCrawler.new(organization: @organization, urls: urls, page_type: page_type)
     result = crawler.crawl
     render json: result
   end

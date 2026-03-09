@@ -19,12 +19,12 @@ export class OrgWizard extends Component {
     };
   }
 
-  handleCrawl = async (urls) => {
-    this.setState({ step: 'crawling', urls, error: null });
+  handleCrawl = async (urls, pageType) => {
+    this.setState({ step: 'crawling', urls, pageType, error: null });
     try {
       const response = await request(this.props.crawlUrl, {
         method: 'POST',
-        body: { urls },
+        body: { urls, page_type: pageType },
       });
       if (!response.ok) throw new Error('Failed to crawl URLs');
       const data = await response.json();
@@ -41,7 +41,7 @@ export class OrgWizard extends Component {
           title: data.title || '',
           description: data.description || '',
           detected_color: data.detected_color || '',
-          page_type: 'developer',
+          page_type: this.state.pageType || 'developer',
         },
       });
     } catch (err) {
