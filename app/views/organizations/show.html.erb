@@ -8,9 +8,12 @@
   <% end %>
 <% end %>
 <%= render "organizations/header" %>
+<% org_color = user_colors(@user)[:bg] %>
+<% hex = Color::CompareHex.new([org_color]) %>
 <div
   class="crayons-layout crayons-layout--limited-l crayons-layout--2-cols crayons-layout--2-cols--1-2 pt-4 m:pt-0"
   id="index-container"
+  style="--accent-brand: <%= hex.brightness(1) %>; --accent-brand-darker: <%= hex.brightness(0.8) %>; --accent-brand-lighter: <%= hex.brightness(1.35) %>; --accent-brand-rgb: <%= hex.brightness(1, only_values: true) %>; --accent-brand-darker-rgb: <%= hex.brightness(0.8, only_values: true) %>; --accent-brand-lighter-rgb: <%= hex.brightness(1.35, only_values: true) %>; --button-primary-bg: <%= hex.brightness(1) %>; --button-primary-bg-hover: <%= hex.brightness(0.8) %>; --link-branded-color: <%= hex.brightness(1) %>; --link-branded-color-hover: <%= hex.brightness(0.8) %>;"
   data-params="<%= params.merge(sort_by: "published_at", sort_direction: "desc", organization_id: @organization.id).to_json(only: %i[tag organization_id username q sort_by sort_direction]) %>" data-which="<%= @list_of %>"
   data-feed="<%= params[:timeframe] || "base-feed" %>"
   data-articles-since="<%= Timeframe.datetime_iso8601(params[:timeframe]) %>">

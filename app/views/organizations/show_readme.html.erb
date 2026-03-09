@@ -8,7 +8,10 @@
   <% end %>
 <% end %>
 <%= render "organizations/header" %>
-<div class="crayons-layout crayons-layout--limited-l pt-4 m:pt-0" id="index-container">
+<% org_color = user_colors(@user)[:bg] %>
+<% hex = Color::CompareHex.new([org_color]) %>
+<div class="crayons-layout crayons-layout--limited-l pt-4 m:pt-0" id="index-container"
+     style="--accent-brand: <%= hex.brightness(1) %>; --accent-brand-darker: <%= hex.brightness(0.8) %>; --accent-brand-lighter: <%= hex.brightness(1.35) %>; --accent-brand-rgb: <%= hex.brightness(1, only_values: true) %>; --accent-brand-darker-rgb: <%= hex.brightness(0.8, only_values: true) %>; --accent-brand-lighter-rgb: <%= hex.brightness(1.35, only_values: true) %>; --button-primary-bg: <%= hex.brightness(1) %>; --button-primary-bg-hover: <%= hex.brightness(0.8) %>; --link-branded-color: <%= hex.brightness(1) %>; --link-branded-color-hover: <%= hex.brightness(0.8) %>;">
   <main class="crayons-layout__content">
     <div class="crayons-article__body text-styles">
       <%= @readme_html.html_safe %>
