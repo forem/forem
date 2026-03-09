@@ -8,12 +8,11 @@ import { ErrorList } from './ErrorList';
 function scrollToTop() {
   window.scrollTo({ top: 0, behavior: "smooth" });
 
-  const all = document.querySelectorAll("*");
+  const el = document.getElementById("CreatePost_Content");
+  if (!el) return;
 
-  for (const el of all) {
-    if (el.scrollHeight > el.clientHeight) {
-      el.scrollTop = 0;  // force fallback
-    }
+  if (el.scrollHeight > el.clientHeight) {
+    el.scrollTop = 0;
   }
 }
 
@@ -44,7 +43,7 @@ export const Form = ({
   }, [errors]);
 
   return (
-    <div className="crayons-article-form__content crayons-card">
+    <div className="crayons-article-form__content crayons-card" id="CreatePost_Content">
       {errors && <ErrorList errors={errors} />}
 
       {version === 'v2' && (

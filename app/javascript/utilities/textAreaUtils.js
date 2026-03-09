@@ -283,7 +283,7 @@ export const useTextAreaAutoResize = () => {
       const allContentHeights = allElements.map(
         (element) => calculateTextAreaHeight(element).height,
       );
-      const placeholderHeight = calculateTextAreaHeight(textArea).placeholderHeight;
+      const placeholderHeight = calculateTextAreaHeight(textArea);
 
       const height = Math.max(...allContentHeights);
       const newHeight = `${height}px`;
