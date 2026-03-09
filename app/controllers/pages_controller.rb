@@ -6,6 +6,13 @@ class PagesController < ApplicationController
     params[:slug] = combined_fragmented_slug if params[:slug_0].present?
     @page = proper_page_by_slug
     redirect_page_if_different_subforem
+    return if performed?
+
+    if @page.redirect_to_url.present?
+      redirect_to @page.redirect_to_url, allow_other_host: true
+      return
+    end
+
     not_found_conditions
     set_surrogate_key_header "show-page-#{params[:slug]}"
 

@@ -76,6 +76,40 @@ RSpec.describe Page do
       expect(page).not_to be_valid
     end
 
+    it "does not require body when redirect_to_url is set" do
+      page = build(:page, redirect_to_url: "https://example.com", body_html: nil, body_markdown: nil,
+                          body_json: nil, body_css: nil)
+      expect(page).to be_valid
+    end
+
+    describe "redirect_to_url" do
+      it "allows a full https URL" do
+        page = build(:page, redirect_to_url: "https://example.com/path")
+        expect(page).to be_valid
+      end
+
+      it "allows a full http URL" do
+        page = build(:page, redirect_to_url: "http://example.com")
+        expect(page).to be_valid
+      end
+
+      it "allows a valid app path" do
+        page = build(:page, redirect_to_url: "/about")
+        expect(page).to be_valid
+      end
+
+      it "rejects a value that is neither a URL nor a path" do
+        page = build(:page, redirect_to_url: "not-a-url-or-path")
+        expect(page).not_to be_valid
+        expect(page.errors[:redirect_to_url]).to be_present
+      end
+
+      it "is valid when blank" do
+        page = build(:page, redirect_to_url: "")
+        expect(page).to be_valid
+      end
+    end
+
     it "takes organization slug into account" do
       create(:organization, slug: "benandfriends")
       page = build(:page, slug: "benandfriends")

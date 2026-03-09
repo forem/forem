@@ -129,6 +129,11 @@ class StoriesController < ApplicationController
     redirect_page_if_different_subforem
     return if performed?
 
+    if @page.redirect_to_url.present?
+      redirect_to @page.redirect_to_url, allow_other_host: true
+      return
+    end
+
     @story_show = true
     set_surrogate_key_header "show-page-#{params[:username]}"
 

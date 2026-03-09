@@ -16,6 +16,7 @@ class Page < ApplicationRecord
   validates :template, inclusion: { in: TEMPLATE_OPTIONS }
   validate :body_present
   validate :validate_template_data
+  validate :validate_redirect_to_url
 
   validate :validate_slug_uniqueness
 
@@ -73,7 +74,7 @@ class Page < ApplicationRecord
   def as_json(...)
     super(...).slice(*%w[id title slug description is_top_level_path landing_page
                          body_html body_json body_markdown processed_html
-                         social_image template subforem_id page_template_id template_data])
+                         social_image template subforem_id page_template_id template_data redirect_to_url])
   end
 
   def uses_page_template?
@@ -106,6 +107,8 @@ class Page < ApplicationRecord
   def body_present
     # Skip body validation if using a page template
     return if uses_page_template?
+    # Skip body validation if a redirect URL is set
+    return if redirect_to_url.present?
     return unless body_markdown.blank? && body_html.blank? && body_json.blank? && body_css.blank?
 
     errors.add(:body_markdown, I18n.t("models.page.body_must_exist"))
@@ -139,6 +142,23 @@ class Page < ApplicationRecord
 
   def bust_cache
     Pages::BustCacheWorker.perform_async(slug)
+  end
+
+  def validate_redirect_to_url
+    return if redirect_to_url.blank?
+
+    if redirect_to_url.start_with?("http://", "https://")
+      # Absolute URL is valid as-is
+    elsif redirect_to_url.start_with?("/")
+      # Path: validate it corresponds to a recognized route in the app
+      begin
+        Rails.application.routes.recognize_path(redirect_to_url)
+      rescue ActionController::RoutingError
+        errors.add(:redirect_to_url, I18n.t("models.page.redirect_to_url_invalid_path"))
+      end
+    else
+      errors.add(:redirect_to_url, I18n.t("models.page.redirect_to_url_invalid"))
+    end
   end
 
   def validate_slug_uniqueness
