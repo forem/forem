@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_03_07_140000) do
+ActiveRecord::Schema[7.0].define(version: 2026_03_09_144216) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -210,8 +210,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_07_140000) do
     t.string "video_source_url"
     t.string "video_state"
     t.string "video_thumbnail_url"
-    t.check_constraint "public_reactions_count >= 0", name: "check_articles_public_reactions_count_non_negative"
-    t.check_constraint "previous_public_reactions_count >= 0", name: "check_articles_previous_public_reactions_count_non_negative"
     t.index ["cached_label_list"], name: "index_articles_on_cached_label_list", using: :gin
     t.index ["cached_tag_list"], name: "index_articles_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
     t.index ["canonical_url"], name: "index_articles_on_canonical_url", unique: true, where: "(published IS TRUE)"
@@ -223,6 +221,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_07_140000) do
     t.index ["feed_source_url"], name: "index_articles_on_feed_source_url_unscoped"
     t.index ["hotness_score", "comments_count"], name: "index_articles_on_hotness_score_and_comments_count"
     t.index ["hotness_score"], name: "index_articles_on_hotness_score"
+    t.index ["id"], name: "index_articles_negative_prev_public_reactions_count", where: "(previous_public_reactions_count < 0)"
+    t.index ["id"], name: "index_articles_negative_public_reactions_count", where: "(public_reactions_count < 0)"
     t.index ["language"], name: "index_articles_on_language"
     t.index ["organic_page_views_past_month_count"], name: "index_articles_on_organic_page_views_past_month_count"
     t.index ["organization_id"], name: "index_articles_on_organization_id"
@@ -242,6 +242,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_07_140000) do
     t.index ["type_of"], name: "index_articles_on_type_of"
     t.index ["user_id", "published", "score", "published_at"], name: "index_articles_on_user_id_published_score_published_at", order: { published_at: :desc }, where: "(published = true)"
     t.index ["user_id"], name: "index_articles_on_user_id"
+    t.check_constraint "previous_public_reactions_count >= 0", name: "check_articles_previous_public_reactions_count_non_negative"
+    t.check_constraint "public_reactions_count >= 0", name: "check_articles_public_reactions_count_non_negative"
   end
 
   create_table "audience_segments", force: :cascade do |t|
@@ -462,7 +464,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_07_140000) do
     t.integer "spaminess_rating", default: 0
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
-    t.check_constraint "public_reactions_count >= 0", name: "check_comments_public_reactions_count_non_negative"
     t.index "digest(body_markdown, 'sha512'::text), user_id, ancestry, commentable_id, commentable_type", name: "index_comments_on_body_markdown_user_ancestry_commentable", unique: true
     t.index "to_tsvector('simple'::regconfig, COALESCE(body_markdown, ''::text))", name: "index_comments_on_body_markdown_as_tsvector", using: :gin
     t.index ["ancestry"], name: "index_comments_on_ancestry"
@@ -471,8 +472,10 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_07_140000) do
     t.index ["created_at"], name: "index_comments_on_created_at"
     t.index ["deleted"], name: "index_comments_on_deleted", where: "(deleted = false)"
     t.index ["hidden_by_commentable_user"], name: "index_comments_on_hidden_by_commentable_user", where: "(hidden_by_commentable_user = false)"
+    t.index ["id"], name: "index_comments_negative_public_reactions_count", where: "(public_reactions_count < 0)"
     t.index ["score"], name: "index_comments_on_score"
     t.index ["user_id"], name: "index_comments_on_user_id"
+    t.check_constraint "public_reactions_count >= 0", name: "check_comments_public_reactions_count_non_negative"
   end
 
   create_table "consumer_apps", force: :cascade do |t|
@@ -685,6 +688,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_07_140000) do
     t.float "score_weight", default: 1.0
     t.float "semantic_match_weight", default: 0.0
     t.float "shuffle_weight", default: 0.0, null: false
+    t.integer "status_target", default: 0
     t.float "status_weight", default: 0.0, null: false
     t.float "subforem_follow_weight", default: 0.0, null: false
     t.float "tag_follow_weight", default: 1.0
@@ -1498,6 +1502,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_07_140000) do
     t.string "old_slug"
     t.string "slug"
     t.string "title", null: false
+    t.integer "type_of", default: 0, null: false
     t.datetime "updated_at", null: false
     t.index ["old_old_slug"], name: "index_surveys_on_old_old_slug"
     t.index ["old_slug"], name: "index_surveys_on_old_slug"
