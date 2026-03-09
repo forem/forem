@@ -312,7 +312,7 @@ class Article < ApplicationRecord
     article.saved_change_to_user_id?
   }
 
-  after_commit :async_score_calc, :touch_collection, :enrich_image_attributes,
+  after_commit :async_score_calc, :touch_collection, :enrich_image_attributes, :detect_code_block_languages,
                on: %i[create update]
 
   # The trigger `update_reading_list_document` is used to keep the `articles.reading_list_document` column updated.
@@ -1574,6 +1574,14 @@ class Article < ApplicationRecord
     return unless saved_change_to_attribute?(:processed_html) || saved_change_to_attribute?(:main_image)
 
     ::Articles::EnrichImageAttributesWorker.perform_async(id)
+  end
+
+  def detect_code_block_languages
+    return unless Ai::Base::DEFAULT_KEY.present?
+    return unless saved_change_to_body_markdown?
+    return unless ::Articles::DetectCodeBlockLanguages.contains_unlabeled_code_blocks?(body_markdown)
+
+    ::Articles::DetectCodeBlockLanguagesWorker.perform_async(id)
   end
 
   def remove_prohibited_unicode_characters
