@@ -100,4 +100,45 @@ RSpec.describe "OrgWizard" do
       expect(organization.bg_color_hex).not_to eq("not-a-color")
     end
   end
+
+  describe "full flow: crawl → generate → save" do
+    before do
+      sign_in admin
+      mock_page = double("MetaInspector",
+                         best_title: "Test Org Site",
+                         description: "Building amazing tools",
+                         best_url: "https://test.com",
+                         images: double(best: nil),
+                         meta: {},
+                         meta_tags: { "name" => {} })
+      allow(MetaInspector).to receive(:new).and_return(mock_page)
+      allow(HTTParty).to receive(:get).and_return(double(body: "<html></html>", success?: true))
+      allow(Ai::Base).to receive(:new).and_return(double(call: "## Welcome\n\nHello from the org."))
+    end
+
+    it "generates and saves an org page end-to-end" do
+      # Step 1: Crawl
+      post "/org-wizard/#{organization.slug}/crawl", params: { urls: ["https://test.com"] }, as: :json
+      expect(response).to have_http_status(:ok)
+      crawl_data = response.parsed_body
+
+      # Step 2: Generate
+      post "/org-wizard/#{organization.slug}/generate",
+           params: { org_data: { title: crawl_data["title"], description: crawl_data["description"] }, dev_posts: [] },
+           as: :json
+      expect(response).to have_http_status(:ok)
+      gen_data = response.parsed_body
+      expect(gen_data["markdown"]).to include("Welcome")
+
+      # Step 3: Save
+      post "/org-wizard/#{organization.slug}/save",
+           params: { markdown: gen_data["markdown"], detected_color: "#FF5733" },
+           as: :json
+      expect(response).to have_http_status(:ok)
+
+      organization.reload
+      expect(organization.page_markdown).to include("Welcome")
+      expect(organization.bg_color_hex).to eq("#FF5733")
+    end
+  end
 end
