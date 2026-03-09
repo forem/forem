@@ -5,33 +5,44 @@ RSpec.describe Ai::OrgPageCrawler do
   let(:urls) { ["https://www.testorg.com"] }
   let(:service) { described_class.new(organization: organization, urls: urls) }
 
-  let(:mock_page) do
-    double("MetaInspector",
-           best_title: "TestOrg - Build Great Things",
-           description: "A platform for building great things",
-           best_url: "https://www.testorg.com",
-           images: double(best: "https://www.testorg.com/og.png"),
-           meta: {},
-           meta_tags: { "name" => { "theme-color" => ["#FF5733"] } })
+  let(:ai_extraction_response) do
+    <<~RESPONSE
+      TAGLINE: Build great things with TestOrg
+      DESCRIPTION: TestOrg is a platform that helps developers build, deploy, and scale applications.
+      BRAND_COLOR: #FF5733
+      FEATURES: [{"title": "Fast APIs", "description": "Lightning fast API endpoints"}, {"title": "Easy SDKs", "description": "SDKs for every language"}]
+    RESPONSE
   end
 
   before do
-    allow(HTTParty).to receive(:get).and_return(double(body: "<html></html>", success?: true))
-    allow(MetaInspector).to receive(:new).and_return(mock_page)
+    allow(HTTParty).to receive(:get).and_return(
+      double(body: "<html><body><h1>TestOrg</h1><p>Build great things</p></body></html>", success?: true)
+    )
+    allow(Ai::Base).to receive(:new).and_return(double(call: ai_extraction_response))
     allow(Rails.cache).to receive(:fetch).and_call_original
   end
 
   describe "#crawl" do
-    it "returns structured crawl data" do
+    it "returns AI-extracted tagline" do
       result = service.crawl
-      expect(result[:title]).to eq("TestOrg - Build Great Things")
-      expect(result[:description]).to eq("A platform for building great things")
-      expect(result[:og_image]).to eq("https://www.testorg.com/og.png")
+      expect(result[:title]).to eq("Build great things with TestOrg")
     end
 
-    it "detects brand color from meta theme-color" do
+    it "returns AI-extracted description" do
+      result = service.crawl
+      expect(result[:description]).to include("platform that helps developers")
+    end
+
+    it "returns AI-detected brand color" do
       result = service.crawl
       expect(result[:detected_color]).to eq("#FF5733")
+    end
+
+    it "returns AI-extracted features" do
+      result = service.crawl
+      expect(result[:features]).to be_an(Array)
+      expect(result[:features].length).to eq(2)
+      expect(result[:features].first["title"]).to eq("Fast APIs")
     end
 
     it "returns dev_posts as an array" do
@@ -53,27 +64,33 @@ RSpec.describe Ai::OrgPageCrawler do
       end
     end
 
+    context "when AI extraction fails" do
+      before do
+        allow(Ai::Base).to receive(:new).and_raise(StandardError, "API Error")
+      end
+
+      it "falls back to MetaInspector parsing" do
+        mock_page = double("MetaInspector",
+                           best_title: "TestOrg Fallback",
+                           description: "Fallback description",
+                           images: double(best: "https://testorg.com/og.png"),
+                           meta_tags: { "name" => { "theme-color" => ["#123456"] } })
+        allow(MetaInspector).to receive(:new).and_return(mock_page)
+
+        result = service.crawl
+        expect(result[:title]).to eq("TestOrg Fallback")
+        expect(result[:description]).to eq("Fallback description")
+      end
+    end
+
     context "when URL is unreachable" do
       before do
         allow(HTTParty).to receive(:get).and_raise(StandardError, "Connection refused")
       end
 
-      it "returns nil metadata with graceful fallback" do
+      it "returns error with graceful fallback" do
         result = service.crawl
-        expect(result[:title]).to be_nil
-        expect(result[:description]).to be_nil
-        expect(result[:dev_posts]).to be_an(Array)
-      end
-    end
-
-    context "when crawl raises an unexpected error" do
-      before do
-        allow(service).to receive(:crawl_primary_url).and_raise(StandardError, "Unexpected failure")
-      end
-
-      it "returns error hash with safe dev_posts fallback" do
-        result = service.crawl
-        expect(result[:error]).to eq("Unexpected failure")
+        expect(result[:error]).to be_present
         expect(result[:title]).to be_nil
         expect(result[:dev_posts]).to be_an(Array)
       end

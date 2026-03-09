@@ -82,10 +82,15 @@ module Ai
 
       has_team = @organization.users.any?
       has_lead_form = @organization.lead_forms.active.any?
+      page_type = @org_data[:page_type] || "developer"
+      page_type_instruction = page_type_guidance(page_type)
 
       <<~PROMPT
         You are a page designer for DEV.to organization pages.
         Generate a beautiful, professional markdown page using liquid tags for #{@organization.name}.
+
+        PAGE TYPE: #{page_type}
+        #{page_type_instruction}
 
         CONTEXT:
         - Organization name: #{@organization.name}
@@ -153,6 +158,21 @@ module Ai
         Only use valid liquid tags. Output raw markdown only, no explanations.
         Do NOT wrap output in markdown code blocks.
       PROMPT
+    end
+
+    def page_type_guidance(page_type)
+      case page_type
+      when "developer"
+        "Focus on: API docs, code samples, SDKs, technical tutorials, developer tools. Tone: technical, concise, helpful. Prioritize offer tags linking to docs and features showing technical capabilities."
+      when "marketing"
+        "Focus on: product highlights, customer testimonials, key benefits, social proof. Tone: polished, persuasive, professional. Prioritize quote tags for testimonials and offer tags for product CTAs."
+      when "community"
+        "Focus on: DEV community posts, team members, discussions, community engagement. Tone: warm, inclusive, collaborative. Prioritize org_posts, org_team tags, and community content."
+      when "talent"
+        "Focus on: team culture, engineering values, open roles, why developers should join. Tone: authentic, inspiring, people-first. Prioritize org_team, quote tags from team members, and offer tags linking to careers."
+      else
+        ""
+      end
     end
 
     def org_tag_supplement

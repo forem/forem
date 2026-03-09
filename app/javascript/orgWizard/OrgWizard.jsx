@@ -41,6 +41,7 @@ export class OrgWizard extends Component {
           title: data.title || '',
           description: data.description || '',
           detected_color: data.detected_color || '',
+          page_type: 'developer',
         },
       });
     } catch (err) {

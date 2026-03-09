@@ -1,5 +1,12 @@
 import { h } from 'preact';
 
+const PAGE_TYPES = [
+  { value: 'developer', label: 'Developer-Focused', description: 'Docs, APIs, code samples, and technical resources' },
+  { value: 'marketing', label: 'Marketing Showcase', description: 'Product highlights, testimonials, and calls-to-action' },
+  { value: 'community', label: 'Community Hub', description: 'Team members, DEV posts, and community engagement' },
+  { value: 'talent', label: 'Talent & Careers', description: 'Team culture, open roles, and why developers should join' },
+];
+
 export function StepReview({
   crawlData,
   editedData,
@@ -71,6 +78,28 @@ export function StepReview({
           </div>
         </div>
       )}
+
+      <div className="mb-6">
+        <h3 className="fs-l mb-2">What kind of page?</h3>
+        <div className="grid gap-2" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
+          {PAGE_TYPES.map((pt) => (
+            <button
+              key={pt.value}
+              type="button"
+              className={`crayons-card p-3 text-left cursor-pointer ${
+                editedData.page_type === pt.value ? 'border-accent-brand' : ''
+              }`}
+              style={{
+                border: editedData.page_type === pt.value ? '2px solid var(--accent-brand)' : '1px solid var(--base-20)',
+              }}
+              onClick={() => onEditData({ ...editedData, page_type: pt.value })}
+            >
+              <span className="fw-bold fs-s">{pt.label}</span>
+              <p className="fs-xs color-base-60 mt-1 mb-0">{pt.description}</p>
+            </button>
+          ))}
+        </div>
+      </div>
 
       {devPosts.length > 0 && (
         <div className="mb-6">

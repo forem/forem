@@ -1,6 +1,6 @@
 module Ai
   class OrgPageCrawler
-    VERSION = "1.0"
+    VERSION = "1.1"
 
     def initialize(organization:, urls:)
       @organization = organization
@@ -8,16 +8,17 @@ module Ai
     end
 
     def crawl
-      site_data = crawl_primary_url
+      page_texts = fetch_all_page_texts
+      ai_extracted = extract_with_ai(page_texts)
       dev_posts = search_dev_posts
-      detected_color = detect_brand_color(site_data)
 
       {
-        title: site_data[:title],
-        description: site_data[:description],
-        og_image: site_data[:og_image],
+        title: ai_extracted[:tagline],
+        description: ai_extracted[:description],
+        detected_color: ai_extracted[:brand_color],
+        features: ai_extracted[:features],
+        og_image: ai_extracted[:og_image],
         links: build_links,
-        detected_color: detected_color,
         dev_posts: dev_posts
       }
     rescue StandardError => e
@@ -28,7 +29,80 @@ module Ai
 
     private
 
-    def crawl_primary_url
+    def fetch_all_page_texts
+      @urls.filter_map do |url|
+        html = fetch_html(url)
+        next if html.blank?
+
+        text = extract_text_from_html(html)
+        { url: url, text: text.truncate(3000) }
+      end
+    end
+
+    def extract_text_from_html(html)
+      doc = Nokogiri::HTML(html)
+      doc.css("script, style, nav, footer, header").remove
+      doc.text.gsub(/\s+/, " ").strip
+    end
+
+    def extract_with_ai(page_texts)
+      return {} if page_texts.blank?
+
+      ai_client = Ai::Base.new(wrapper: self, affected_content: @organization)
+      prompt = build_extraction_prompt(page_texts)
+      response = ai_client.call(prompt)
+      parse_extraction_response(response)
+    rescue StandardError => e
+      Rails.logger.warn("AI extraction failed, falling back to basic parsing: #{e.message}")
+      fallback_extraction
+    end
+
+    def build_extraction_prompt(page_texts)
+      pages_context = page_texts.map { |p| "URL: #{p[:url]}\nContent: #{p[:text]}" }.join("\n\n---\n\n")
+
+      <<~PROMPT
+        Analyze the following web pages for the organization "#{@organization.name}" and extract:
+
+        1. tagline: A short, punchy tagline (under 80 chars) that captures what this org does
+        2. description: A 1-2 sentence developer-friendly description of the organization
+        3. brand_color: The organization's primary brand color as a hex code (e.g. #F22F46). Use your knowledge of well-known brands, or infer from the content.
+        4. features: A JSON array of 3-5 key features/capabilities, each with "title" and "description" keys
+
+        WEB PAGES:
+        #{pages_context}
+
+        Respond in EXACTLY this format (no other text):
+        TAGLINE: <tagline>
+        DESCRIPTION: <description>
+        BRAND_COLOR: <hex color>
+        FEATURES: <JSON array>
+      PROMPT
+    end
+
+    def parse_extraction_response(response)
+      return {} if response.blank?
+
+      tagline = response[/TAGLINE:\s*(.+?)(?:\n|$)/i, 1]&.strip
+      description = response[/DESCRIPTION:\s*(.+?)(?:\n|$)/i, 1]&.strip
+      brand_color = response[/BRAND_COLOR:\s*(#[0-9A-Fa-f]{6})/i, 1]&.strip
+      features_json = response[/FEATURES:\s*(\[.+\])/im, 1]
+
+      features = begin
+        JSON.parse(features_json) if features_json.present?
+      rescue JSON::ParserError
+        nil
+      end
+
+      {
+        tagline: tagline,
+        description: description,
+        brand_color: brand_color,
+        features: features || [],
+        og_image: nil
+      }
+    end
+
+    def fallback_extraction
       primary_url = @urls.first
       return {} if primary_url.blank?
 
@@ -36,13 +110,13 @@ module Ai
       page = MetaInspector.new(primary_url, document: html)
 
       {
-        title: page.best_title,
+        tagline: page.best_title,
         description: page.description,
-        og_image: page.images.best,
-        meta_tags: page.meta_tags
+        brand_color: page.meta_tags.dig("name", "theme-color")&.first,
+        features: [],
+        og_image: page.images.best
       }
-    rescue StandardError => e
-      Rails.logger.warn("Failed to crawl #{@urls.first}: #{e.message}")
+    rescue StandardError
       {}
     end
 
@@ -69,53 +143,6 @@ module Ai
       path.split("/").first.capitalize
     rescue URI::InvalidURIError
       "Link"
-    end
-
-    def detect_brand_color(site_data)
-      # Try meta theme-color first
-      color = extract_theme_color(site_data[:meta_tags])
-      return color if valid_hex?(color)
-
-      # Try OG image dominant color via MiniMagick
-      color = detect_from_image(site_data[:og_image])
-      return color if valid_hex?(color)
-
-      nil
-    end
-
-    def extract_theme_color(meta_tags)
-      return nil if meta_tags.blank?
-
-      meta_tags.dig("name", "theme-color")&.first
-    rescue StandardError
-      nil
-    end
-
-    def detect_from_image(image_url)
-      return nil if image_url.blank?
-
-      tempfile = Tempfile.new(["og_image", ".png"])
-      begin
-        response = HTTParty.get(image_url, timeout: 5)
-        return nil unless response.success?
-
-        tempfile.binmode
-        tempfile.write(response.body)
-        tempfile.rewind
-
-        image = MiniMagick::Image.new(tempfile.path)
-        image.resize "1x1"
-        pixel = image.get_pixels.first&.first
-        return nil unless pixel
-
-        "#%02X%02X%02X" % pixel
-      rescue StandardError => e
-        Rails.logger.debug("Brand color detection from image failed: #{e.message}")
-        nil
-      ensure
-        tempfile.close
-        tempfile.unlink
-      end
     end
 
     def search_dev_posts
