@@ -2,7 +2,7 @@ class LeadSubmissionsController < ApplicationController
   before_action :authenticate_user!, only: [:check]
 
   def check
-    form_ids = params[:form_ids].to_s.split(",").map(&:to_i).select(&:positive?)
+    form_ids = params[:form_ids].to_s.split(",").map(&:to_i).select(&:positive?).first(50)
     submissions = current_user.lead_submissions.where(organization_lead_form_id: form_ids)
                               .pluck(:organization_lead_form_id, :created_at)
     result = submissions.to_h { |form_id, created_at| [form_id.to_s, created_at.iso8601] }

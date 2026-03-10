@@ -158,6 +158,8 @@ en:
       no_args: "The features tag does not accept any arguments"
     feature_tag:
       missing_title: "Feature tag requires a title option"
+    offer_tag:
+      default_button: "Learn More"
     quote_tag:
       missing_author: "Quote tag requires an author option"
       invalid_rating: "Rating must be between 1 and 5"

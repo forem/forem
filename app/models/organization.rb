@@ -10,11 +10,9 @@ class Organization < ApplicationRecord
   INTEGER_REGEXP = /\A\d+\z/
 
   SOCIAL_LINK_PLATFORMS = %w[youtube discord linkedin instagram facebook spotify twitch mastodon].freeze
-  SOCIAL_LINK_ICONS = {
-    "youtube" => "youtube", "discord" => "discord", "linkedin" => "linkedin",
-    "instagram" => "instagram", "facebook" => "facebook", "spotify" => "spotify",
-    "twitch" => "twitch", "mastodon" => "mastodon",
-  }.freeze
+  VERIFICATION_STATUS_PENDING = "pending".freeze
+  VERIFICATION_STATUS_SUCCESS = "success".freeze
+  VERIFICATION_STATUS_FAILED = "failed".freeze
 
   acts_as_followable
 
@@ -278,17 +276,14 @@ class Organization < ApplicationRecord
     return unless url_changed? && verified?
     return if url.blank? || url_was.blank?
 
-    old_host = URI.parse(url_was).host&.downcase&.sub(/\Awww\./, "")
-    new_host = URI.parse(url).host&.downcase&.sub(/\Awww\./, "")
-    return if old_host == new_host
+    old_host = UrlDomainHelper.extract_host(url_was)
+    new_host = UrlDomainHelper.extract_host(url)
+    return if old_host.present? && new_host.present? && old_host == new_host
 
-    self.verified = false
-    self.verified_at = nil
-    self.verification_status = nil
-    self.verification_error = nil
-    self.verification_url = nil
-  rescue URI::InvalidURIError
-    # If URL parsing fails, reset verification to be safe
+    clear_verification_fields
+  end
+
+  def clear_verification_fields
     self.verified = false
     self.verified_at = nil
     self.verification_status = nil

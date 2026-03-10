@@ -43,7 +43,7 @@ module Organizations
 
       if found
         organization.update_columns(verified: true, verified_at: Time.current,
-                                    verification_status: "success", verification_error: nil)
+                                    verification_status: Organization::VERIFICATION_STATUS_SUCCESS, verification_error: nil)
         Result.new("success?": true, error: nil)
       else
         fail!("No link to your organization page was found on the verification URL")
@@ -59,23 +59,16 @@ module Organizations
     attr_reader :organization
 
     def fail!(message)
-      organization.update_columns(verification_status: "failed", verification_error: message)
+      organization.update_columns(verification_status: Organization::VERIFICATION_STATUS_FAILED, verification_error: message)
       Result.new("success?": false, error: message)
     end
 
     def normalize_url(url)
-      url = "https://#{url}" unless url.match?(%r{\Ahttps?://}i)
-      url
+      UrlDomainHelper.normalize_url(url)
     end
 
     def same_domain?(url1, url2)
-      host1 = URI.parse(normalize_url(url1)).host&.downcase&.sub(/\Awww\./, "")
-      host2 = URI.parse(normalize_url(url2)).host&.downcase&.sub(/\Awww\./, "")
-      return false if host1.blank? || host2.blank?
-
-      host1 == host2 || host1.end_with?(".#{host2}") || host2.end_with?(".#{host1}")
-    rescue URI::InvalidURIError
-      false
+      UrlDomainHelper.same_domain?(url1, url2)
     end
 
     def matches_org_page?(href, forem_url, org_path)

@@ -158,6 +158,8 @@ pt:
       no_args: "A tag features não aceita argumentos"
     feature_tag:
       missing_title: "A tag feature requer uma opção title"
+    offer_tag:
+      default_button: "Saiba Mais"
     quote_tag:
       missing_author: "A tag quote requer uma opção author"
       invalid_rating: "A avaliação deve estar entre 1 e 5"

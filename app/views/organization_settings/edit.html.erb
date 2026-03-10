@@ -551,11 +551,11 @@
             </div>
           <% else %>
             <% unless flash[:verification_notice] %>
-              <% if @organization.verification_status == "pending" %>
+              <% if @organization.verification_status == Organization::VERIFICATION_STATUS_PENDING %>
                 <div class="crayons-notice crayons-notice--info flex items-center gap-2">
                   <span class="fw-bold"><%= t("views.organization_settings.verification.status_pending") %></span>
                 </div>
-              <% elsif @organization.verification_status == "failed" %>
+              <% elsif @organization.verification_status == Organization::VERIFICATION_STATUS_FAILED %>
                 <div class="crayons-notice crayons-notice--error" role="alert">
                   <p class="fw-bold mb-1"><%= t("views.organization_settings.verification.status_failed") %></p>
                   <% if @organization.verification_error.present? %>

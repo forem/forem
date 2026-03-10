@@ -177,13 +177,14 @@ class StoriesController < ApplicationController
     redirect_if_organization_view_param
     return if performed?
 
+    is_readme = @organization.readme_page?
     @stories = ArticleDecorator.decorate_collection(@organization.articles.published.from_subforem
       .includes(:distinct_reaction_categories, :subforem)
       .limited_column_select
       .order(published_at: :desc).page(@page).per(8))
-    @organization_article_index = !@organization.readme_page?
+    @organization_article_index = !is_readme
 
-    unless @organization.readme_page?
+    unless is_readme
       # Get active users ordered by badge achievements
       # For find_each_respecting_scope compatibility, we get ordered IDs first (with order column in select)
       # then create a relation that preserves that order when .ids is called
@@ -222,7 +223,7 @@ class StoriesController < ApplicationController
     set_organization_json_ld
     set_surrogate_key_header @organization.record_key
 
-    if @organization.readme_page?
+    if is_readme
       @readme_html = @organization.processed_page_html
       @cover_image_url = @organization.cover_image_url if @organization.cover_image.present?
       @org_readme_show = true

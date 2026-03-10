@@ -167,7 +167,7 @@
             <% url = @organization.social_link(platform) %>
             <% if url.present? %>
               <a href="<%= url %>" target="_blank" rel="noopener noreferrer" class="p-1 align-middle inline-block color-base-60 hover:color-base-90">
-                <%= crayons_icon_tag(Organization::SOCIAL_LINK_ICONS[platform], title: t("views.organizations.social.#{platform}")) %>
+                <%= crayons_icon_tag(platform, title: t("views.organizations.social.#{platform}")) %>
               </a>
             <% end %>
           <% end %>

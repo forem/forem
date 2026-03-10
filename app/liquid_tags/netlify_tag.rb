@@ -1,4 +1,6 @@
 class NetlifyTag < LiquidTagBase
+  include LiquidTagHelpers
+
   PARTIAL = "liquids/netlify".freeze
   REGISTRY_REGEXP = %r{https://(?<subdomain>[\w-]+)\.netlify\.app(?<path>/\S*)?}
   VALID_URL_REGEXP = %r{\Ahttps://[\w-]+\.netlify\.app(/\S*)?\z}
@@ -17,15 +19,6 @@ class NetlifyTag < LiquidTagBase
   end
 
   private
-
-  def fully_unescape_html(str)
-    prev = nil
-    while str != prev
-      prev = str
-      str = CGI.unescape_html(str)
-    end
-    str
-  end
 
   def parse_url(input)
     url = input.strip.split.first

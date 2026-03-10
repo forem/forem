@@ -1,14 +1,14 @@
 class OfferTag < Liquid::Block
   include ActionView::Helpers::SanitizeHelper
+  include LiquidTagHelpers
 
   PARTIAL = "liquids/offer".freeze
-  OPTION_REGEXP = /(\w+)=(?:"([^"]+)"|(\S+))/
 
   def initialize(tag_name, markup, parse_context)
     super
-    options = parse_options(markup.strip)
+    options = parse_options(fully_unescape_html(markup.strip))
     @link = options["link"]
-    @button_text = options["button"] || "Learn More"
+    @button_text = options["button"] || I18n.t("liquid_tags.offer_tag.default_button")
   end
 
   def render(context)
@@ -21,26 +21,6 @@ class OfferTag < Liquid::Block
         content: content,
       },
     )
-  end
-
-  private
-
-  def fully_unescape_html(str)
-    prev = nil
-    while str != prev
-      prev = str
-      str = CGI.unescape_html(str)
-    end
-    str
-  end
-
-  def parse_options(markup)
-    cleaned = fully_unescape_html(strip_tags(markup))
-    options = {}
-    cleaned.scan(OPTION_REGEXP) do |key, quoted_val, plain_val|
-      options[key] = (quoted_val || plain_val).strip
-    end
-    options
   end
 end
 

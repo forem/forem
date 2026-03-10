@@ -1,7 +1,5 @@
 class OrganizationLeadFormsController < ApplicationController
-  before_action :authenticate_user!
-  before_action :set_organization
-  before_action :authorize_admin!
+  include OrganizationAdminScoped
   before_action :set_lead_form, only: %i[edit update destroy toggle submissions]
 
   def index
@@ -62,15 +60,6 @@ class OrganizationLeadFormsController < ApplicationController
   end
 
   private
-
-  def set_organization
-    @organization = Organization.find_by(slug: params[:slug])
-    not_found unless @organization
-  end
-
-  def authorize_admin!
-    authorize @organization, :update?, policy_class: OrganizationPolicy
-  end
 
   def set_lead_form
     @lead_form = @organization.lead_forms.find(params[:id])

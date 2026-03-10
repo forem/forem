@@ -191,6 +191,20 @@ module ApplicationHelper
     org&.bg_color_hex ? org.bg_color_hex : "#ffffff"
   end
 
+  def org_brand_style(user)
+    hex = Color::CompareHex.new([user_colors(user)[:bg]])
+    "--accent-brand: #{hex.brightness(1)}; " \
+    "--accent-brand-darker: #{hex.brightness(0.8)}; " \
+    "--accent-brand-lighter: #{hex.brightness(1.35)}; " \
+    "--accent-brand-rgb: #{hex.brightness(1, only_values: true)}; " \
+    "--accent-brand-darker-rgb: #{hex.brightness(0.8, only_values: true)}; " \
+    "--accent-brand-lighter-rgb: #{hex.brightness(1.35, only_values: true)}; " \
+    "--button-primary-bg: #{hex.brightness(1)}; " \
+    "--button-primary-bg-hover: #{hex.brightness(0.8)}; " \
+    "--link-branded-color: #{hex.brightness(1)}; " \
+    "--link-branded-color-hover: #{hex.brightness(0.8)};"
+  end
+
   def sanitize_rendered_markdown(processed_html)
     ActionController::Base.helpers.sanitize processed_html,
                                             scrubber: RenderedMarkdownScrubber.new

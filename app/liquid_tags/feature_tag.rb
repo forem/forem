@@ -1,8 +1,8 @@
 class FeatureTag < Liquid::Block
   include ActionView::Helpers::SanitizeHelper
+  include LiquidTagHelpers
 
   PARTIAL = "liquids/feature".freeze
-  OPTION_REGEXP = /(\w+)=(?:"([^"]+)"|(\S+))/
 
   def initialize(tag_name, markup, parse_context)
     super
@@ -22,17 +22,6 @@ class FeatureTag < Liquid::Block
         content: content,
       },
     )
-  end
-
-  private
-
-  def parse_options(markup)
-    cleaned = strip_tags(markup)
-    options = {}
-    cleaned.scan(OPTION_REGEXP) do |key, quoted_val, plain_val|
-      options[key] = (quoted_val || plain_val).strip
-    end
-    options
   end
 end
 

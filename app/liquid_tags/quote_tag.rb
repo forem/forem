@@ -1,13 +1,13 @@
 class QuoteTag < Liquid::Block
   include ActionView::Helpers::SanitizeHelper
+  include LiquidTagHelpers
 
   PARTIAL = "liquids/quote".freeze
-  OPTION_REGEXP = /(\w+)=(?:"([^"]+)"|(\S+))/
   VALID_RATINGS = (1..5).to_a.freeze
 
   def initialize(tag_name, markup, parse_context)
     super
-    options = parse_options(markup.strip)
+    options = parse_options(fully_unescape_html(markup.strip))
     @author = options["author"]
     @role = options["role"]
     @image = options["image"]
@@ -34,24 +34,6 @@ class QuoteTag < Liquid::Block
   end
 
   private
-
-  def fully_unescape_html(str)
-    prev = nil
-    while str != prev
-      prev = str
-      str = CGI.unescape_html(str)
-    end
-    str
-  end
-
-  def parse_options(markup)
-    cleaned = fully_unescape_html(strip_tags(markup))
-    options = {}
-    cleaned.scan(OPTION_REGEXP) do |key, quoted_val, plain_val|
-      options[key] = (quoted_val || plain_val).strip
-    end
-    options
-  end
 
   def parse_rating(value)
     return nil unless value

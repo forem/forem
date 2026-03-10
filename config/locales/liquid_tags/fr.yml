@@ -158,6 +158,8 @@ fr:
       no_args: "La balise features n'accepte aucun argument"
     feature_tag:
       missing_title: "La balise feature nécessite une option title"
+    offer_tag:
+      default_button: "En savoir plus"
     quote_tag:
       missing_author: "La balise quote nécessite une option author"
       invalid_rating: "La note doit être comprise entre 1 et 5"

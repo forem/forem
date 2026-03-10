@@ -1,16 +1,9 @@
 class OrganizationSettingsController < ApplicationController
   include ImageUploads
-
-  before_action :authenticate_user!
-  before_action :set_organization
-  before_action :authorize_admin!
+  include OrganizationAdminScoped
 
   def edit
-    @org_organization_memberships = @organization.organization_memberships.includes(:user)
-    @organization_membership = OrganizationMembership.find_by(
-      user_id: current_user.id,
-      organization_id: @organization.id,
-    )
+    load_membership_data
   end
 
   def request_verification
@@ -29,7 +22,7 @@ class OrganizationSettingsController < ApplicationController
     end
 
     @organization.update_columns(verification_url: verification_url,
-                                   verification_status: "pending", verification_error: nil)
+                                   verification_status: Organization::VERIFICATION_STATUS_PENDING, verification_error: nil)
     Organizations::VerifyLinkbackWorker.perform_async(@organization.id)
 
     flash[:verification_notice] = I18n.t("views.organization_settings.verification.check_started")
@@ -48,11 +41,7 @@ class OrganizationSettingsController < ApplicationController
 
   def update
     unless valid_image?
-      @org_organization_memberships = @organization.organization_memberships.includes(:user)
-      @organization_membership = OrganizationMembership.find_by(
-        user_id: current_user.id,
-        organization_id: @organization.id,
-      )
+      load_membership_data
       render :edit
       return
     end
@@ -67,24 +56,19 @@ class OrganizationSettingsController < ApplicationController
       flash[:settings_notice] = notice
       redirect_to organization_settings_path(@organization.slug)
     else
-      @org_organization_memberships = @organization.organization_memberships.includes(:user)
-      @organization_membership = OrganizationMembership.find_by(
-        user_id: current_user.id,
-        organization_id: @organization.id,
-      )
+      load_membership_data
       render :edit
     end
   end
 
   private
 
-  def set_organization
-    @organization = Organization.find_by(slug: params[:slug])
-    not_found unless @organization
-  end
-
-  def authorize_admin!
-    authorize @organization, :update?, policy_class: OrganizationPolicy
+  def load_membership_data
+    @org_organization_memberships = @organization.organization_memberships.includes(:user)
+    @organization_membership = OrganizationMembership.find_by(
+      user_id: current_user.id,
+      organization_id: @organization.id,
+    )
   end
 
   def organization_params
@@ -150,17 +134,6 @@ class OrganizationSettingsController < ApplicationController
   end
 
   def same_domain?(url1, url2)
-    host1 = URI.parse(normalize_url(url1)).host&.downcase&.sub(/\Awww\./, "")
-    host2 = URI.parse(normalize_url(url2)).host&.downcase&.sub(/\Awww\./, "")
-    return false if host1.blank? || host2.blank?
-
-    host1 == host2 || host1.end_with?(".#{host2}") || host2.end_with?(".#{host1}")
-  rescue URI::InvalidURIError
-    false
-  end
-
-  def normalize_url(url)
-    url = "https://#{url}" unless url.match?(%r{\Ahttps?://}i)
-    url
+    UrlDomainHelper.same_domain?(url1, url2)
   end
 end
