@@ -810,5 +810,44 @@
   });
 </script>
 
+<script>
+  (function() {
+    var form = document.getElementById('org-settings-form');
+    if (!form) return;
+
+    var initialState = null;
+    var isSubmitting = false;
+
+    function serializeForm() {
+      var data = new FormData(form);
+      var parts = [];
+      for (var pair of data.entries()) {
+        // Skip authenticity token
+        if (pair[0] === 'authenticity_token') continue;
+        parts.push(encodeURIComponent(pair[0]) + '=' + encodeURIComponent(pair[1]));
+      }
+      return parts.sort().join('&');
+    }
+
+    // Capture initial state after a short delay to let Preact editor mount
+    setTimeout(function() {
+      initialState = serializeForm();
+    }, 500);
+
+    form.addEventListener('submit', function() {
+      isSubmitting = true;
+    });
+
+    window.addEventListener('beforeunload', function(e) {
+      if (isSubmitting || initialState === null) return;
+      var currentState = serializeForm();
+      if (currentState !== initialState) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    });
+  })();
+</script>
+
 <div id="snack-zone"></div>
 <%= javascript_include_tag "orgPageEditor", defer: true %>
