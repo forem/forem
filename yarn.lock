@@ -3150,16 +3150,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-storysource@npm:^8.6.15":
-  version: 8.6.15
-  resolution: "@storybook/addon-storysource@npm:8.6.15"
+"@storybook/addon-storysource@npm:^8.6.18":
+  version: 8.6.18
+  resolution: "@storybook/addon-storysource@npm:8.6.18"
   dependencies:
-    "@storybook/source-loader": "npm:8.6.15"
+    "@storybook/source-loader": "npm:8.6.18"
     estraverse: "npm:^5.2.0"
     tiny-invariant: "npm:^1.3.1"
   peerDependencies:
-    storybook: ^8.6.15
-  checksum: 10c0/e7486d3a405b15f15ba6e42bf327d6da0c61f02634f454a167ef02a505c6e65952840ecd6066b32a994313d03fe6615a6295c2027dce3591f017427a95ba4e13
+    storybook: ^8.6.18
+  checksum: 10c0/504f6796f83221dffcc8c686c61119e64e7f937f7c3ec885ae48981a45aa174a978319a5fa13e6ecbbdb3d1373f9554e0bc74f61b3f23f50dd32ea968751da62
   languageName: node
   linkType: hard
 
@@ -3511,16 +3511,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/source-loader@npm:8.6.15":
-  version: 8.6.15
-  resolution: "@storybook/source-loader@npm:8.6.15"
+"@storybook/source-loader@npm:8.6.18":
+  version: 8.6.18
+  resolution: "@storybook/source-loader@npm:8.6.18"
   dependencies:
     es-toolkit: "npm:^1.22.0"
     estraverse: "npm:^5.2.0"
     prettier: "npm:^3.1.1"
   peerDependencies:
-    storybook: ^8.6.15
-  checksum: 10c0/51de6e7d0534142ec7e74e46bbfdfd82dbacffe64c730fd42b323627b1e3ebd83493eb40986a4755f45d923ed8639ee58cd1281471d6f88556a6b8a27956a012
+    storybook: ^8.6.18
+  checksum: 10c0/6a6a10965ee82b2c6822bcd825c2c3e7715fe5d4ff3c5d2d9dcc0a37280715496c19fd8cbdca8b95530fff8ffeec885e9739212de23a0deca6c326ebedbfa59d
   languageName: node
   linkType: hard
 
@@ -6956,7 +6956,7 @@ __metadata:
     "@storybook/addon-backgrounds": "npm:^8.6.15"
     "@storybook/addon-controls": "npm:^8.6.15"
     "@storybook/addon-docs": "npm:^8.6.15"
-    "@storybook/addon-storysource": "npm:^8.6.15"
+    "@storybook/addon-storysource": "npm:^8.6.18"
     "@storybook/preact": "npm:^8.6.15"
     "@storybook/preact-webpack5": "npm:^8.6.15"
     "@testing-library/cypress": "npm:^8.0.3"
