@@ -18,6 +18,7 @@ function renderWizard() {
     crawlUrl: container.dataset.crawlUrl,
     generateUrl: container.dataset.generateUrl,
     iterateUrl: container.dataset.iterateUrl,
+    previewUrl: container.dataset.previewUrl,
     saveUrl: container.dataset.saveUrl,
     settingsUrl: container.dataset.settingsUrl,
   };

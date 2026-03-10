@@ -364,6 +364,7 @@ Rails.application.routes.draw do
       post "/crawl",    to: "org_wizard#crawl",    as: :org_wizard_crawl
       post "/generate", to: "org_wizard#generate",  as: :org_wizard_generate
       post "/iterate",  to: "org_wizard#iterate",   as: :org_wizard_iterate
+      post "/preview",  to: "org_wizard#render_preview", as: :org_wizard_preview
       post "/save",     to: "org_wizard#save",      as: :org_wizard_save
     end
 

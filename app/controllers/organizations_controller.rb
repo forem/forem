@@ -46,8 +46,12 @@ class OrganizationsController < ApplicationController
       rate_limiter.track_limit_by_action(:organization_creation)
       @organization_membership = OrganizationMembership.create!(organization_id: @organization.id,
                                                                 user_id: current_user.id, type_of_user: "admin")
-      flash[:settings_notice] = I18n.t("organizations_controller.created")
-      redirect_to organization_settings_path(@organization.slug)
+      if defined?(AI_AVAILABLE) && AI_AVAILABLE
+        redirect_to org_wizard_path(@organization.slug, new_org: true)
+      else
+        flash[:settings_notice] = I18n.t("organizations_controller.created")
+        redirect_to organization_settings_path(@organization.slug)
+      end
     else
       render template: "users/edit"
     end

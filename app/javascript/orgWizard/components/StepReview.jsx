@@ -10,15 +10,6 @@ export function StepReview({
   onGenerate,
   onBack,
 }) {
-  if (loading) {
-    return (
-      <div className="text-center py-8">
-        <div className="crayons-indicator crayons-indicator--loading" />
-        <p className="fs-l mt-4 color-base-70">Generating your page...</p>
-        <p className="fs-s color-base-60">Our AI is crafting something beautiful using your content and DEV community posts.</p>
-      </div>
-    );
-  }
 
   const devPosts = crawlData?.dev_posts || [];
 
@@ -69,6 +60,19 @@ export function StepReview({
             />
             <span className="fs-s color-base-60">{editedData.detected_color}</span>
           </div>
+        </div>
+      )}
+
+      {editedData.og_image && (
+        <div className="mb-4">
+          <label className="crayons-field__label">Cover Image</label>
+          <img
+            src={editedData.og_image}
+            alt="Detected cover image"
+            className="radius-default"
+            style={{ maxHeight: '160px', width: '100%', objectFit: 'cover', border: '1px solid var(--base-20)' }}
+          />
+          <p className="fs-xs color-base-50 mt-1">This will be used as your org&apos;s cover image.</p>
         </div>
       )}
 

@@ -22,7 +22,7 @@ module Ai
       }
     end
 
-    def call(prompt, retry_count: 0)
+    def call(prompt, retry_count: 0, system_instruction: nil, json_mode: false)
       api_url = "/models/#{@model}:generateContent?key=#{@api_key}"
       body = {
         contents: [{
@@ -31,6 +31,14 @@ module Ai
           }]
         }]
       }
+
+      if system_instruction.present?
+        body[:system_instruction] = { parts: [{ text: system_instruction }] }
+      end
+
+      if json_mode
+        body[:generationConfig] = { responseMimeType: "application/json" }
+      end
 
       @options[:body] = body.to_json
 
