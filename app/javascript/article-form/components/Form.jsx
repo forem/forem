@@ -1,8 +1,20 @@
 import { h } from 'preact';
+import { useEffect } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { EditorBody } from './EditorBody';
 import { Meta } from './Meta';
 import { ErrorList } from './ErrorList';
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+
+  const el = document.getElementById("CreatePost_Content");
+  if (!el) return;
+
+  if (el.scrollHeight > el.clientHeight) {
+    el.scrollTop = 0;
+  }
+}
 
 export const Form = ({
   titleDefaultValue,
@@ -23,8 +35,15 @@ export const Form = ({
   videoSourceUrl,
   onVideoUrlChange,
 }) => {
+
+  useEffect(() => {
+    if (errors) {
+      scrollToTop();
+    }
+  }, [errors]);
+
   return (
-    <div className="crayons-article-form__content crayons-card">
+    <div className="crayons-article-form__content crayons-card" id="CreatePost_Content">
       {errors && <ErrorList errors={errors} />}
 
       {version === 'v2' && (
