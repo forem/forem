@@ -15,6 +15,12 @@ class OrganizationSettingsController < ApplicationController
       return
     end
 
+    if @organization.url.blank?
+      flash[:verification_error] = I18n.t("views.organization_settings.verification.website_required")
+      redirect_to organization_settings_path(@organization.slug, anchor: "section-verification")
+      return
+    end
+
     unless same_domain?(verification_url, @organization.url)
       flash[:verification_error] = I18n.t("views.organization_settings.verification.domain_mismatch")
       redirect_to organization_settings_path(@organization.slug, anchor: "section-verification")

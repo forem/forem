@@ -192,6 +192,12 @@ class StoriesController < ApplicationController
       .order(published_at: :desc).page(@page).per(8))
     @organization_article_index = !is_readme
 
+    # Anti-spam/visibility guard: apply for both README and non-README views
+    user_score = @organization.active_users.sum(:score)
+    if !user_signed_in? && user_score.negative? && @stories.sum(&:score) <= 0
+      not_found
+    end
+
     unless is_readme
       # Get active users ordered by badge achievements
       # For find_each_respecting_scope compatibility, we get ordered IDs first (with order column in select)
@@ -220,9 +226,6 @@ class StoriesController < ApplicationController
           end
         end
       end)
-      if !user_signed_in? && @organization_users.sum(:score).negative? && @stories.sum(&:score) <= 0
-        not_found
-      end
     end
 
     redirect_if_inactive_in_subforem_for_organization

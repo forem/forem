@@ -1,12 +1,13 @@
 <%= javascript_include_tag "validateFileInputs", defer: true %>
 
 <% if @organizations.any? %>
+  <% memberships_by_org = OrganizationMembership.where(user_id: current_user.id, organization_id: @organizations.map(&:id)).index_by(&:organization_id) %>
   <div class="crayons-card crayons-card--content-rows">
     <h2><%= t("views.settings.org.list.heading") %></h2>
 
     <div class="grid gap-2">
       <% @organizations.each do |org| %>
-        <% membership = OrganizationMembership.find_by(user_id: current_user.id, organization_id: org.id) %>
+        <% membership = memberships_by_org[org.id] %>
         <div class="crayons-card crayons-card--secondary p-4 flex items-center gap-4">
           <span class="crayons-logo crayons-logo--l shrink-0">
             <% if org.profile_image_url.present? %>

@@ -13,7 +13,10 @@ class SlideTag < Liquid::Tag
     @video = options["video"]
     @link = options["link"]
     @video_embed_id = YoutubeTag.extract_video_id(@video) if @video
-    raise StandardError, I18n.t("liquid_tags.slide_tag.missing_image") unless @image || @video || @link
+    validate_url!(@image, "image")
+    validate_url!(@video, "video")
+    validate_url!(@link, "link")
+    raise StandardError, I18n.t("liquid_tags.slide_tag.missing_content") unless @image || @video || @link
   end
 
   def render(_context)

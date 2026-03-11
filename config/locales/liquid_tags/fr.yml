@@ -1,6 +1,7 @@
 ---
 fr:
   liquid_tags:
+    invalid_url_scheme: "URL non valide pour '%{option}' : seules les URL http et https sont autorisées"
     asciinema_tag:
       invalid_asciinema_id: "ID d'Asciinema non valide : %{id}"
     blogcast_tag:
@@ -163,8 +164,10 @@ fr:
     quote_tag:
       missing_author: "La balise quote nécessite une option author"
       invalid_rating: "La note doit être comprise entre 1 et 5"
+      learn_more: "En savoir plus"
     slide_tag:
       missing_image: "La balise slide nécessite une option image"
+      missing_content: "La balise slide nécessite au moins l'un des éléments suivants : image, video ou link"
     slides_tag:
       invalid_mode: "Le mode slides doit être 'default' ou 'carousel'"
     org_lead_form_tag:

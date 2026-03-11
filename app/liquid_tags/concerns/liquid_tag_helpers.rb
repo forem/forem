@@ -20,4 +20,13 @@ module LiquidTagHelpers
     end
     options
   end
+
+  def validate_url!(url, option_name = "url")
+    return if url.blank?
+
+    uri = URI.parse(url)
+    raise StandardError, I18n.t("liquid_tags.invalid_url_scheme", option: option_name) unless %w[http https].include?(uri.scheme)
+  rescue URI::InvalidURIError
+    raise StandardError, I18n.t("liquid_tags.invalid_url_scheme", option: option_name)
+  end
 end

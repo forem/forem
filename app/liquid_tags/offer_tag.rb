@@ -8,6 +8,7 @@ class OfferTag < Liquid::Block
     super
     options = parse_options(fully_unescape_html(markup.strip))
     @link = options["link"]
+    validate_url!(@link, "link")
     @button_text = options["button"] || I18n.t("liquid_tags.offer_tag.default_button")
   end
 

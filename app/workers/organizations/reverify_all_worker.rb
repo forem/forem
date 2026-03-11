@@ -9,11 +9,7 @@ module Organizations
         .where.not(verification_url: [nil, ""])
         .where("verification_status IS NULL OR verification_status != ?", Organization::VERIFICATION_STATUS_ADMIN)
         .find_each do |organization|
-        result = Organizations::VerifyLinkback.call(organization)
-        next if result.success?
-
-        organization.update_columns(verified: false, verified_at: nil)
-        Notifications::OrganizationDeverificationWorker.perform_async(organization.id)
+        Organizations::ReverifyOneWorker.perform_async(organization.id)
       end
     end
   end

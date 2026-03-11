@@ -36,7 +36,7 @@
       </div>
     </div>
     <% if link.present? %>
-      <a href="<%= link %>" class="ltag-quote__link" target="_blank" rel="noopener noreferrer">Learn more &rarr;</a>
+      <a href="<%= link %>" class="ltag-quote__link" target="_blank" rel="noopener noreferrer"><%= I18n.t("liquid_tags.quote_tag.learn_more") %> &rarr;</a>
     <% end %>
   </footer>
 </div>

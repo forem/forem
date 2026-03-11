@@ -14,6 +14,8 @@ class QuoteTag < Liquid::Block
     @rating = parse_rating(options["rating"])
     @source = options["source"]
     @link = options["link"]
+    validate_url!(@link, "link")
+    validate_url!(@image, "image")
     raise StandardError, I18n.t("liquid_tags.quote_tag.missing_author") unless @author
   end
 

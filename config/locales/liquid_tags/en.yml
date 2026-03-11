@@ -1,6 +1,7 @@
 ---
 en:
   liquid_tags:
+    invalid_url_scheme: "Invalid URL for '%{option}': only http and https URLs are allowed"
     asciinema_tag:
       invalid_asciinema_id: 'Invalid Asciinema ID: %{id}'
     blogcast_tag:
@@ -163,8 +164,10 @@ en:
     quote_tag:
       missing_author: "Quote tag requires an author option"
       invalid_rating: "Rating must be between 1 and 5"
+      learn_more: "Learn more"
     slide_tag:
       missing_image: "Slide tag requires an image option"
+      missing_content: "Slide tag requires at least one of: image, video, or link"
     slides_tag:
       invalid_mode: "Slides mode must be 'default' or 'carousel'"
     org_lead_form_tag:

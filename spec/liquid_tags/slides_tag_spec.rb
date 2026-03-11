@@ -55,10 +55,10 @@ RSpec.describe "Slides and Slide liquid tags", type: :liquid_tag do
   end
 
   describe "validation" do
-    it "raises error when image is missing" do
+    it "raises error when image, video, and link are all missing" do
       expect do
         parse('{% slides %}{% slide alt="No image" %}{% endslides %}')
-      end.to raise_error(StandardError, /requires an image/)
+      end.to raise_error(StandardError, /requires at least one of/)
     end
   end
 end
