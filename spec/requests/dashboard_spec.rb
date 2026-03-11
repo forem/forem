@@ -146,7 +146,7 @@ RSpec.describe "Dashboards" do
     describe "sidebar sidebar fetch" do
       it "assigns the agent_sessions_count utilizing the counter cache" do
         sign_in user
-        user.update_column(:agent_sessions_count, 5)
+        user.reload.update!(agent_sessions_count: 5)
 
         get "/dashboard/sidebar", params: { state: "show" }, xhr: true
         

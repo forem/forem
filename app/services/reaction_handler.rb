@@ -73,12 +73,12 @@ class ReactionHandler
   end
 
   def existing_reaction
-    @existing_reaction ||= Reaction.where(
-      user_id: current_user.id,
-      reactable_id: reactable_id,
-      reactable_type: reactable_type,
-      category: category,
-    ).first
+  @existing_reaction ||= Reaction.where(
+    user_id: current_user.id,
+    reactable_id: reactable_id,
+    reactable_type: reactable_type,
+    category: category,
+  ).first
   end
 
   def create_new_reaction

@@ -91,6 +91,8 @@ pt:
       already_submitted: Você já enviou este formulário.
     page:
       body_must_exist: deve existir se body_html ou body_json não existir.
+      redirect_to_url_invalid: deve ser uma URL completa (começando com http:// ou https://) ou um caminho do aplicativo (começando com /).
+      redirect_to_url_invalid_path: não é um caminho reconhecido nesta aplicação.
     podcast_episode_appearance:
       provided_role_is_not_valid: papel fornecido não é válido
     poll_skip:

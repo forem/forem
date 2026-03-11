@@ -91,6 +91,8 @@ fr:
       already_submitted: Vous avez déjà soumis ce formulaire.
     page:
       body_must_exist: doit exister si body_html ou body_json n'existe pas.
+      redirect_to_url_invalid: doit être une URL complète (commençant par http:// ou https://) ou un chemin d'application (commençant par /).
+      redirect_to_url_invalid_path: n'est pas un chemin reconnu dans cette application.
     podcast_episode_appearance:
       provided_role_is_not_valid: le rôle fourni n'est pas valide.
     poll_skip:

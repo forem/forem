@@ -92,6 +92,8 @@ en:
       already_submitted: You have already submitted this form.
     page:
       body_must_exist: must exist if body_html or body_json doesn't exist.
+      redirect_to_url_invalid: must be a full URL (starting with http:// or https://) or an app path (starting with /).
+      redirect_to_url_invalid_path: is not a recognized path in this application.
     podcast_episode_appearance:
       provided_role_is_not_valid: provided role is not valid
     poll_skip:
