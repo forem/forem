@@ -185,7 +185,7 @@ describe('<Form />', () => {
       expect(getByRole('img', { name: /post cover/i })).toBeInTheDocument();
       expect(getByRole('textbox', { name: /post title/i })).toBeInTheDocument();
       expect(
-        getByRole('textbox', { name: 'Add up to 4 tags' }),
+        getByRole('combobox', { hidden: true }), // Autosuggest creates a combobox element for tags
       ).toBeInTheDocument();
       expect(getByTestId('article-form__body')).toBeInTheDocument();
 
