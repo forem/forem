@@ -76,6 +76,7 @@ pt:
     not_deleted: Sua organização não foi excluída; você deve ser um administrador, o único membro da organização, e não ter artigos conectados à organização.
     created: Sua organização foi criada com sucesso e você é um administrador.
     updated: Sua organização foi atualizada com sucesso.
+    page_save_error: "A página não pôde ser salva: %{message}"
     invite:
       user_not_found: Usuário com nome de usuário "%{username}" não encontrado.
       already_member: Este usuário já é membro da organização.

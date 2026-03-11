@@ -12,8 +12,6 @@ class OrganizationsController < ApplicationController
     url
     proof
     profile_image
-    cover_image
-    page_markdown
     location
     company_size
     tech_stack

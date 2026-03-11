@@ -420,7 +420,9 @@ RSpec.describe "StoriesIndex" do
 
     context "when organization has a readme page" do
       before do
-        organization.update!(page_markdown: "**Welcome to our org!**")
+        create(:page, organization: organization, body_markdown: "**Welcome to our org!**",
+               title: organization.name, description: "desc", slug: "#{organization.slug}-page",
+               template: "full_within_layout")
       end
 
       it "renders the readme show template" do

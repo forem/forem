@@ -76,6 +76,7 @@ en:
     not_deleted: Your organization was not deleted; you must be an admin, the only member in the organization, and have no articles connected to the organization.
     created: Your organization was successfully created and you are an admin.
     updated: Your organization was successfully updated.
+    page_save_error: "Page could not be saved: %{message}"
     invite:
       user_not_found: User with username "%{username}" not found.
       already_member: This user is already a member of the organization.

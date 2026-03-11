@@ -39,6 +39,7 @@ class Organization < ApplicationRecord
   has_many :listings, dependent: :destroy
   has_many :notifications, dependent: :delete_all
   has_many :lead_forms, class_name: "OrganizationLeadForm", dependent: :destroy
+  has_many :pages, dependent: :nullify
   has_many :organization_memberships, dependent: :delete_all
   has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :destroy
   has_many :unspent_credits, -> { where spent: false }, class_name: "Credit", inverse_of: :organization
@@ -65,7 +66,6 @@ class Organization < ApplicationRecord
   validates :summary, length: { maximum: 250 }
   validates :tag_line, length: { maximum: 60 }
   validates :tech_stack, :story, length: { maximum: 640 }
-  validates :page_markdown, length: { maximum: 20_000 }
   validates :text_color_hex, format: COLOR_HEX_REGEXP, allow_blank: true
   validates :twitter_username, length: { maximum: 15 }
   validates :unspent_credits_count, presence: true
@@ -160,7 +160,11 @@ class Organization < ApplicationRecord
   end
 
   def readme_page?
-    page_markdown.present?
+    main_page.present?
+  end
+
+  def main_page
+    pages.order(:created_at).first
   end
 
   def social_link(platform)
@@ -256,20 +260,6 @@ class Organization < ApplicationRecord
 
   def evaluate_markdown
     self.cta_processed_html = MarkdownProcessor::Parser.new(cta_body_markdown).evaluate_limited_markdown
-    evaluate_page_markdown if has_attribute?(:page_markdown) && page_markdown_changed?
-  end
-
-  def evaluate_page_markdown
-    if page_markdown.blank?
-      self.processed_page_html = nil
-      return
-    end
-
-    renderer = ContentRenderer.new(page_markdown, source: self, user: nil)
-    result = renderer.process
-    self.processed_page_html = result.processed_html
-  rescue ContentRenderer::ContentParsingError => e
-    errors.add(:page_markdown, e.message)
   end
 
   def reset_verification_on_domain_change

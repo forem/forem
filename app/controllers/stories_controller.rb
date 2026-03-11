@@ -177,7 +177,8 @@ class StoriesController < ApplicationController
     redirect_if_organization_view_param
     return if performed?
 
-    is_readme = @organization.readme_page?
+    main_page = @organization.main_page
+    is_readme = main_page.present?
     @stories = ArticleDecorator.decorate_collection(@organization.articles.published.from_subforem
       .includes(:distinct_reaction_categories, :subforem)
       .limited_column_select
@@ -224,7 +225,7 @@ class StoriesController < ApplicationController
     set_surrogate_key_header @organization.record_key
 
     if is_readme
-      @readme_html = @organization.processed_page_html
+      @readme_html = main_page.processed_html
       @cover_image_url = @organization.cover_image_url if @organization.cover_image.present?
       @org_readme_show = true
       render template: "organizations/show_readme"

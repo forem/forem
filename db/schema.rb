@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_03_09_174600) do
+ActiveRecord::Schema[7.0].define(version: 2026_03_11_000002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1045,9 +1045,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_09_174600) do
     t.string "name"
     t.string "old_old_slug"
     t.string "old_slug"
-    t.text "page_markdown"
     t.integer "past_24_hours_promoted_billboard_impressions", default: 0, null: false
-    t.text "processed_page_html"
     t.string "profile_image"
     t.datetime "profile_updated_at", precision: nil, default: "2017-01-01 05:00:00"
     t.text "proof"
@@ -1114,6 +1112,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_09_174600) do
     t.string "description"
     t.boolean "is_top_level_path", default: false
     t.boolean "landing_page", default: false, null: false
+    t.bigint "organization_id"
     t.bigint "page_template_id"
     t.text "processed_html"
     t.string "slug"
@@ -1123,6 +1122,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_09_174600) do
     t.jsonb "template_data", default: {}
     t.string "title"
     t.datetime "updated_at", precision: nil, null: false
+    t.index ["organization_id"], name: "index_pages_on_organization_id"
     t.index ["page_template_id"], name: "index_pages_on_page_template_id"
     t.index ["slug", "subforem_id"], name: "index_pages_on_slug_and_subforem_id", unique: true
     t.index ["subforem_id"], name: "index_pages_on_subforem_id"
@@ -2006,6 +2006,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_09_174600) do
   add_foreign_key "organization_memberships", "users", on_delete: :cascade
   add_foreign_key "page_views", "articles", on_delete: :cascade
   add_foreign_key "page_views", "users", on_delete: :nullify
+  add_foreign_key "pages", "organizations", on_delete: :nullify
   add_foreign_key "podcast_episode_appearances", "podcast_episodes"
   add_foreign_key "podcast_episode_appearances", "users"
   add_foreign_key "podcast_episodes", "podcasts", on_delete: :cascade

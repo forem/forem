@@ -10,6 +10,7 @@ class Page < ApplicationRecord
   has_many :billboards, dependent: :nullify
   belongs_to :subforem, optional: true
   belongs_to :page_template, optional: true
+  belongs_to :organization, optional: true
 
   validates :title, presence: true
   validates :description, presence: true
@@ -92,7 +93,8 @@ class Page < ApplicationRecord
 
   def evaluate_markdown
     if body_markdown.present?
-      parsed_markdown = MarkdownProcessor::Parser.new(body_markdown)
+      source = organization || nil
+      parsed_markdown = MarkdownProcessor::Parser.new(body_markdown, source: source)
       self.processed_html = parsed_markdown.finalize
     else
       self.processed_html = body_html
@@ -142,7 +144,13 @@ class Page < ApplicationRecord
   end
 
   def validate_slug_uniqueness
-    # Custom cross-model validation to allow for the same slug in different subforems for pages
+    if organization_id.present?
+      if Page.where(slug: slug, organization_id: organization_id).where.not(id: id).exists?
+        errors.add(:slug, "has already been taken for this organization")
+      end
+      return
+    end
+
     return if Page.where(slug: slug).exists? && Page.where(slug: slug, subforem_id: subforem_id).where.not(id: id).none?
 
     if Page.where(slug: slug, subforem_id: subforem_id).where.not(id: id).exists?

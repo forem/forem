@@ -41,19 +41,47 @@ RSpec.describe "OrganizationSettings" do
   describe "PATCH /:slug/settings" do
     before { sign_in user }
 
-    it "updates page_markdown" do
-      patch "/#{organization.slug}/settings", params: {
-        organization: { page_markdown: "# Welcome to our org" }
-      }
-      expect(response).to redirect_to(organization_settings_path(organization.slug))
-      expect(organization.reload.page_markdown).to eq("# Welcome to our org")
+    it "creates a Page record when submitting page_markdown" do
+      expect {
+        patch "/#{organization.slug}/settings", params: {
+          organization: { page_markdown: "# Welcome to our org" }
+        }
+      }.to change(Page, :count).by(1)
+
+      page = organization.pages.first
+      expect(page.body_markdown).to eq("# Welcome to our org")
+      expect(page.title).to eq(organization.name)
     end
 
-    it "processes page_markdown into HTML" do
+    it "processes page_markdown into HTML via Page record" do
       patch "/#{organization.slug}/settings", params: {
         organization: { page_markdown: "**bold**" }
       }
-      expect(organization.reload.processed_page_html).to include("<strong>bold</strong>")
+      page = organization.pages.first
+      expect(page.processed_html).to include("<strong>bold</strong>")
+    end
+
+    it "updates existing Page record on subsequent edits" do
+      patch "/#{organization.slug}/settings", params: {
+        organization: { page_markdown: "# First" }
+      }
+      expect {
+        patch "/#{organization.slug}/settings", params: {
+          organization: { page_markdown: "# Updated" }
+        }
+      }.not_to change(Page, :count)
+      expect(organization.pages.first.body_markdown).to eq("# Updated")
+    end
+
+    it "destroys Page record when page_markdown is cleared" do
+      patch "/#{organization.slug}/settings", params: {
+        organization: { page_markdown: "# Hello" }
+      }
+      expect {
+        patch "/#{organization.slug}/settings", params: {
+          organization: { page_markdown: "" }
+        }
+      }.to change(Page, :count).by(-1)
     end
 
     it "updates organization profile fields" do
@@ -74,7 +102,7 @@ RSpec.describe "OrganizationSettings" do
       it "denies access" do
         expect do
           patch "/#{organization.slug}/settings", params: {
-            organization: { page_markdown: "# Hello" }
+            organization: { name: "Hacked Name" }
           }
         end.to raise_error(Pundit::NotAuthorizedError)
       end

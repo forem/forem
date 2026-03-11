@@ -53,6 +53,47 @@
     border-left-color: var(--accent-brand);
     font-weight: var(--fw-medium);
   }
+  #org-page-editor-root .crayons-article-form__content {
+    border: 1px solid var(--base-20);
+    border-radius: var(--radius);
+    min-height: 480px;
+    display: flex;
+    flex-direction: column;
+  }
+  #org-page-editor-root .crayons-article-form__header {
+    border-bottom: 1px solid var(--base-20);
+    padding: var(--su-1) var(--su-2);
+    background: var(--card-bg);
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+  #org-page-editor-root .crayons-article-form__header--fixed {
+    z-index: 100;
+    border-radius: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  #org-page-editor-root .crayons-article-form__header--placeholder {
+    height: 44px;
+  }
+  #org-page-editor-root .crayons-tabs {
+    margin-left: 0;
+  }
+  #org-page-editor-root .crayons-tabs__list {
+    width: auto;
+  }
+  #org-page-editor-root .crayons-tabs__list li {
+    width: auto;
+  }
+  #org-page-editor-root .crayons-tabs__item {
+    width: auto;
+    white-space: nowrap;
+  }
+  #org-page-editor-root .crayons-article-form__body {
+    flex: 1;
+  }
+  #org-page-editor-root .crayons-article-form__body textarea,
+  #org-page-editor-root .crayons-article-form__body .crayons-textfield {
+    min-height: 400px;
+  }
   @media (max-width: 768px) {
     .org-settings-layout {
       grid-template-columns: 1fr;
@@ -100,9 +141,8 @@
       <a href="<%= organization_lead_forms_path(@organization.slug) %>" class="mt-4 crayons-link fw-medium fs-s flex items-center gap-1">
         <%= t("views.organization_settings.lead_forms.sidebar_link") %> &rarr;
       </a>
-      <div class="grid gap-2 mt-4 pt-4" style="border-top: 1px solid var(--base-20);">
+      <div class="grid gap-2 mt-4 pt-4" style="border-top: 1px solid var(--base-20); position: sticky; bottom: 1rem;">
         <button type="submit" form="org-settings-form" class="crayons-btn"><%= t("views.organization_settings.page.save") %></button>
-        <button type="button" id="org-page-preview-btn" class="crayons-btn crayons-btn--secondary"><%= t("views.organization_settings.page.preview") %></button>
         <a href="/<%= @organization.slug %>" class="crayons-btn crayons-btn--secondary">
           <%= crayons_icon_tag("external-link", class: "mr-1 shrink-0") %> View page
         </a>
@@ -130,7 +170,8 @@
           <div class="crayons-field">
             <label for="org_page_markdown" class="crayons-field__label"><%= t("views.organization_settings.page.readme") %></label>
 
-            <% if @organization.page_markdown.blank? %>
+            <% page_markdown = @organization.main_page&.body_markdown %>
+            <% if page_markdown.blank? %>
               <div class="crayons-notice crayons-notice--info mb-4">
                 <p class="fw-medium mb-1"><%= t("views.organization_settings.page.default_notice") %></p>
                 <p class="fs-s color-base-70 mb-2"><%= t("views.organization_settings.page.default_explanation") %></p>
@@ -142,14 +183,15 @@
             <% end %>
 
             <div id="org-page-editor-root"
-                 data-default-value="<%= @organization.page_markdown %>"
-                 data-textarea-name="organization[page_markdown]">
+                 data-default-value="<%= page_markdown %>"
+                 data-textarea-name="organization[page_markdown]"
+                 data-preview-url="<%= organization_settings_preview_path(@organization.slug) %>">
               <%# Fallback textarea shown before JS loads %>
               <textarea name="organization[page_markdown]"
                         id="org_page_markdown"
                         rows="20"
                         class="crayons-textfield ff-monospace"
-                        placeholder="<%= t("views.organization_settings.page.readme_placeholder") %>"><%= @organization.page_markdown %></textarea>
+                        placeholder="<%= t("views.organization_settings.page.readme_placeholder") %>"><%= page_markdown %></textarea>
             </div>
             <p class="crayons-field__description"><%= t("views.organization_settings.page.readme_description") %></p>
           </div>
@@ -764,19 +806,6 @@
   })();
 </script>
 
-<form id="org-page-preview-form" action="<%= organization_settings_preview_path(@organization.slug) %>" method="post" target="_blank" style="display:none">
-  <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
-  <input type="hidden" name="body_markdown" id="org-page-preview-markdown">
-</form>
-<script>
-  document.getElementById('org-page-preview-btn').addEventListener('click', function() {
-    var textarea = document.getElementById('org_page_markdown');
-    if (textarea) {
-      document.getElementById('org-page-preview-markdown').value = textarea.value;
-      document.getElementById('org-page-preview-form').submit();
-    }
-  });
-</script>
 
 <div id="editor-guide-sidecar" class="editor-sidecar hidden">
   <div class="editor-sidecar__header">
