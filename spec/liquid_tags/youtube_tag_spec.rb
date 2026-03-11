@@ -43,6 +43,21 @@ RSpec.describe YoutubeTag, type: :liquid_tag do
       expect(result).to include("https://www.youtube.com/embed/#{valid_id}")
     end
 
+    it "accepts a YouTube Shorts URL" do
+      result = generate_tag("https://www.youtube.com/shorts/#{valid_id}")
+      expect(result).to include("https://www.youtube.com/embed/#{valid_id}")
+    end
+
+    it "accepts a YouTube Shorts URL with query parameters" do
+      result = generate_tag("https://www.youtube.com/shorts/#{valid_id}?si=FPFWKE9g0PhQjAUE")
+      expect(result).to include("https://www.youtube.com/embed/#{valid_id}")
+    end
+
+    it "accepts a YouTube Live URL" do
+      result = generate_tag("https://www.youtube.com/live/#{valid_id}")
+      expect(result).to include("https://www.youtube.com/embed/#{valid_id}")
+    end
+
     it "accepts an ID only" do
       result = Liquid::Template.parse("{% youtube #{valid_id} %}").render
       expect(result).to include("https://www.youtube.com/embed/#{valid_id}")

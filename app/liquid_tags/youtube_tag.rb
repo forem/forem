@@ -26,6 +26,7 @@ class YoutubeTag < LiquidTagBase
 
   def find_video_id(str)
     match = str.match(%r{youtu\.be/([a-zA-Z0-9_-]{11})}) ||
+            str.match(%r{youtube\.com/(?:shorts|live)/([a-zA-Z0-9_-]{11})}) ||
             str.match(%r{[?&]v=([a-zA-Z0-9_-]{11})}) ||
             str.match(/\A([a-zA-Z0-9_-]{11})\z/)
     match[1] if match
