@@ -144,13 +144,6 @@ class Page < ApplicationRecord
   end
 
   def validate_slug_uniqueness
-    if organization_id.present?
-      if Page.where(slug: slug, organization_id: organization_id).where.not(id: id).exists?
-        errors.add(:slug, "has already been taken for this organization")
-      end
-      return
-    end
-
     return if Page.where(slug: slug).exists? && Page.where(slug: slug, subforem_id: subforem_id).where.not(id: id).none?
 
     if Page.where(slug: slug, subforem_id: subforem_id).where.not(id: id).exists?

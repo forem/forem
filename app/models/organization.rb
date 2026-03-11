@@ -13,6 +13,7 @@ class Organization < ApplicationRecord
   VERIFICATION_STATUS_PENDING = "pending".freeze
   VERIFICATION_STATUS_SUCCESS = "success".freeze
   VERIFICATION_STATUS_FAILED = "failed".freeze
+  VERIFICATION_STATUS_ADMIN = "admin_verified".freeze
 
   acts_as_followable
 

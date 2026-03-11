@@ -14,8 +14,6 @@ fr:
         default_example: "## Rencontrez l'équipe\n{%% org_team %{slug} %%}\n\n## Dernières publications\n{%% org_posts %{slug} %%}"
         save: Enregistrer la page
         preview: Aperçu
-        preview_badge: Mode aperçu
-        preview_badge_description: Ceci est un aperçu de votre page d'organisation. Les modifications n'ont pas été enregistrées.
       header_cta:
         heading: Bouton CTA de l'en-tête
         description: "Ajoutez un bouton d'appel à l'action dans l'en-tête de la page de votre organisation. Vous pouvez créer un bouton simple ou un menu déroulant avec plusieurs liens."

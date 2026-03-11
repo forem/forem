@@ -16,6 +16,7 @@ RSpec.describe "/admin/content_manager/organizations verified" do
       end.to change { organization.reload.verified }.from(false).to(true)
 
       expect(organization.verified_at).to be_present
+      expect(organization.verification_status).to eq(Organization::VERIFICATION_STATUS_ADMIN)
       expect(response).to redirect_to(admin_organization_path(organization))
       expect(flash[:notice]).to include("verified")
     end

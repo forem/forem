@@ -14,8 +14,6 @@ pt:
         default_example: "## Conheça a equipe\n{%% org_team %{slug} %%}\n\n## Últimas publicações\n{%% org_posts %{slug} %%}"
         save: Salvar página
         preview: Visualizar
-        preview_badge: Modo de visualização
-        preview_badge_description: Esta é uma visualização da página da sua organização. As alterações não foram salvas.
       header_cta:
         heading: Botão CTA do Cabeçalho
         description: "Adicione um botão de chamada para ação no cabeçalho da página da sua organização. Você pode criar um botão simples ou um menu suspenso com vários links."

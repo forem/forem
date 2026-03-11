@@ -32,22 +32,9 @@ class OrganizationSettingsController < ApplicationController
   def preview
     renderer = ContentRenderer.new(params[:body_markdown].to_s, source: @organization, user: current_user)
     result = renderer.process
-
-    respond_to do |format|
-      format.json { render json: { processed_html: result.processed_html } }
-      format.html do
-        @preview_html = result.processed_html
-        render layout: "application"
-      end
-    end
+    render json: { processed_html: result.processed_html }
   rescue ContentRenderer::ContentParsingError => e
-    respond_to do |format|
-      format.json { render json: { error: e.message }, status: :unprocessable_entity }
-      format.html do
-        @preview_error = e.message
-        render layout: "application"
-      end
-    end
+    render json: { error: e.message }, status: :unprocessable_entity
   end
 
   def update

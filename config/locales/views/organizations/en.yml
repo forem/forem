@@ -14,8 +14,6 @@ en:
         default_example: "## Meet the team\n{%% org_team %{slug} %%}\n\n## Latest posts\n{%% org_posts %{slug} %%}"
         save: Save page
         preview: Preview
-        preview_badge: Preview Mode
-        preview_badge_description: This is a preview of your org page. Changes have not been saved.
       header_cta:
         heading: Header CTA Button
         description: Add a call-to-action button to your organization's page header. You can create a simple button or a dropdown with multiple links.

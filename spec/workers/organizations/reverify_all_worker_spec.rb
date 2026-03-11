@@ -55,5 +55,14 @@ RSpec.describe Organizations::ReverifyAllWorker, type: :worker do
       # Only the first org (with verification_url) should be checked
       expect(Organizations::VerifyLinkback).to have_received(:call).once
     end
+
+    it "skips admin-verified organizations" do
+      organization.update_columns(verification_status: Organization::VERIFICATION_STATUS_ADMIN)
+
+      allow(Organizations::VerifyLinkback).to receive(:call)
+
+      subject.perform
+      expect(Organizations::VerifyLinkback).not_to have_received(:call)
+    end
   end
 end

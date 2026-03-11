@@ -80,7 +80,8 @@ module Admin
       old_verified = org.verified?
 
       if new_verified
-        org.update_columns(verified: true, verified_at: Time.current)
+        org.update_columns(verified: true, verified_at: Time.current,
+                           verification_status: Organization::VERIFICATION_STATUS_ADMIN)
       else
         org.update_columns(verified: false, verified_at: nil, verification_url: nil)
       end
