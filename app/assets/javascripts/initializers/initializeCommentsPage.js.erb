@@ -256,7 +256,7 @@ function handleCommentSubmit(event) {
 
           var mainCommentsForm = document.getElementById("new_comment");
           if (parentComment) {
-            handleFormClose(event);
+            handleFormClose(event, true);
             if (newComment.depth > 3) {
               var replyTrigger = parentComment.getElementsByClassName("toggle-reply-form")[0];
               var threadIndicator = `<span class="fs-s inline-flex items-center fs-italic color-base-50 pl-1">${ iconSmallThread }Thread</span>`;
@@ -363,7 +363,7 @@ function handleKeyDown(event) {
   }
 }
 
-function handleFormClose(event) {
+function handleFormClose(event, forceClose) {
   // When closing the inline reply form, remove the temporary
   // "replying" state from the correct container. The class is
   // added on `.comment__details` when the reply form is opened,
@@ -381,7 +381,7 @@ function handleFormClose(event) {
   const hasContent = textarea && textarea.value.trim().length > 0;
 
   // Only prompt if there is content in the reply area. This will prevent accidental deletion
-  if (hasContent) {
+  if (hasContent && !forceClose) {
     const ok = window.confirm('Your comment will be erased. Are you sure you want to dismiss?');
     if (!ok) {
       // User canceled dismissal
