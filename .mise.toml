@@ -2,4 +2,3 @@
 yarn = "1"
 postgres = "13.12"
 redis = "6.0.9"
-ruby = "3.3.0"
