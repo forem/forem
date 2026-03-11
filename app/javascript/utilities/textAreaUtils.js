@@ -76,7 +76,7 @@ export const getCursorXY = ({
 };
 
 // TODO: Remove once MentionAutocompleteTextArea removed
-export const getMentionWordData = () => {};
+export const getMentionWordData = () => { };
 
 /**
  * A helper function that searches back to the beginning of the currently typed word (indicated by cursor position) and verifies whether it begins with an '@' symbol for user mention
@@ -283,28 +283,16 @@ export const useTextAreaAutoResize = () => {
       const allContentHeights = allElements.map(
         (element) => calculateTextAreaHeight(element).height,
       );
-      const placeholderHeight = calculateTextAreaHeight(textArea);
-
+      // Determine the dynamic height properly based on content.
+      // `calculateTextAreaHeight` already accounts for scrollHeight safely.
       const height = Math.max(...allContentHeights);
       const newHeight = `${height}px`;
 
-      // Calculate the height for the Article Title specifically
-      const heightTitle = Math.max(...allContentHeights) + placeholderHeight;
-      const newHeightTitle = `${heightTitle}px`;
-
       allElements.forEach((element) => {
-        if (element.id === 'article-form-title') { // If it is an article title, set the height that is account for the placeholder
-          element.style['min-height'] = newHeightTitle;
-          if (constrainToContentHeight) {
-            // Don't allow the textarea to grow to a size larger than the content
-            element.style['max-height'] = newHeightTitle;
-          }
-        } else {
-          element.style['min-height'] = newHeight;
-          if (constrainToContentHeight) {
-            // Don't allow the textarea to grow to a size larger than the content
-            element.style['max-height'] = newHeight;
-          }
+        element.style['min-height'] = newHeight;
+        if (constrainToContentHeight) {
+          // Don't allow the textarea to grow to a size larger than the content
+          element.style['max-height'] = newHeight;
         }
       });
     };
