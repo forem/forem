@@ -144,6 +144,7 @@ class Page < ApplicationRecord
   end
 
   def validate_slug_uniqueness
+    # Custom cross-model validation to allow for the same slug in different subforems for pages
     return if Page.where(slug: slug).exists? && Page.where(slug: slug, subforem_id: subforem_id).where.not(id: id).none?
 
     if Page.where(slug: slug, subforem_id: subforem_id).where.not(id: id).exists?
