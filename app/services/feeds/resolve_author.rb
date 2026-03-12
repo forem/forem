@@ -26,8 +26,7 @@ module Feeds
     # feed owner themselves.
     def eligible_users
       @eligible_users ||= if feed_source.organization_id.present?
-                             User.joins(:organization_memberships)
-                               .where(organization_memberships: { organization_id: feed_source.organization_id })
+                             feed_source.organization.active_users
                            else
                              User.where(id: feed_source.user_id)
                            end
