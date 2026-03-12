@@ -106,6 +106,7 @@ namespace :admin do
         patch "update_fully_trusted"
         patch "update_baseline_score"
         patch "update_verified"
+        patch "update_premium_feature"
       end
     end
     resources :emails

@@ -101,6 +101,37 @@ module Admin
       redirect_to admin_organization_path(org)
     end
 
+    PREMIUM_FEATURES = %w[org_readme org_lead_forms].freeze
+
+    def update_premium_feature
+      org = Organization.find(params[:id])
+      feature = params[:feature]
+
+      unless PREMIUM_FEATURES.include?(feature)
+        flash[:error] = I18n.t("admin.organizations_controller.premium_feature_invalid")
+        return redirect_to admin_organization_path(org)
+      end
+
+      actor = FeatureFlag::Actor[org]
+      if params[:enabled] == "true"
+        FeatureFlag.enable(feature.to_sym, actor)
+      else
+        FeatureFlag.disable(feature.to_sym, actor)
+      end
+
+      status = params[:enabled] == "true" ? "enabled" : "disabled"
+      Note.create(
+        author_id: current_user.id,
+        noteable_id: org.id,
+        noteable_type: "Organization",
+        reason: "misc_note",
+        content: "Premium feature '#{feature}' #{status}",
+      )
+
+      flash[:notice] = I18n.t("admin.organizations_controller.premium_feature_#{status}", feature: feature.humanize)
+      redirect_to admin_organization_path(org)
+    end
+
     def destroy
       organization = Organization.find_by(id: params[:id])
       Organizations::DeleteWorker.perform_async(organization.id, current_user.id, false)
