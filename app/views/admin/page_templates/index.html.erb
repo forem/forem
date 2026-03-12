@@ -11,11 +11,11 @@
     <table class="crayons-table">
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Fields</th>
-          <th>Pages</th>
+          <th scope="col"><%= sort_link(@q, :name, { aria: { label: "Sort by Name" } }) %></th>
+          <th scope="col"><%= sort_link(@q, :fields_count, "Fields", { aria: { label: "Sort by Fields" } }) %></th>
+          <th scope="col"><%= sort_link(@q, :pages_count, "Pages", { aria: { label: "Sort by Pages" } }) %></th>
           <th>Forked From</th>
-          <th>Forks</th>
+          <th scope="col"><%= sort_link(@q, :forks_count, "Forks", { aria: { label: "Sort by Forks" } }) %></th>
           <th>Actions</th>
         </tr>
       </thead>

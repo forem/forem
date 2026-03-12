@@ -19,6 +19,19 @@ class PageTemplate < ApplicationRecord
   # Scopes
   scope :root_templates, -> { where(forked_from_id: nil) }
 
+  # Ransack custom sorters
+  ransacker :fields_count do
+    Arel.sql("jsonb_array_length(COALESCE(page_templates.data_schema->'fields', '[]'::jsonb))")
+  end
+
+  ransacker :pages_count do
+    Arel.sql("(SELECT COUNT(*) FROM pages WHERE pages.page_template_id = page_templates.id)")
+  end
+
+  ransacker :forks_count do
+    Arel.sql("(SELECT COUNT(*) FROM page_templates AS pt WHERE pt.forked_from_id = page_templates.id)")
+  end
+
   # Returns the schema fields as an array of hashes
   # Each field has: name, type, label, required, default_value
   def schema_fields
