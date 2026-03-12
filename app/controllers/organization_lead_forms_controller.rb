@@ -1,6 +1,7 @@
 class OrganizationLeadFormsController < ApplicationController
   include OrganizationAdminScoped
   before_action :set_lead_form, only: %i[edit update destroy toggle submissions]
+  before_action :check_lead_forms_feature
 
   def index
     @lead_forms = @organization.lead_forms.order(created_at: :desc)
@@ -60,6 +61,12 @@ class OrganizationLeadFormsController < ApplicationController
   end
 
   private
+
+  def check_lead_forms_feature
+    return if FeatureFlag.enabled?(:org_lead_forms, FeatureFlag::Actor[@organization])
+
+    @premium_gated = true
+  end
 
   def set_lead_form
     @lead_form = @organization.lead_forms.find(params[:id])
