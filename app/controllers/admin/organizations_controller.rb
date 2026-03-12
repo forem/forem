@@ -101,14 +101,14 @@ module Admin
       redirect_to admin_organization_path(org)
     end
 
-    PREMIUM_FEATURES = %w[org_readme org_lead_forms].freeze
+    ORG_FEATURES = %w[org_readme org_lead_forms].freeze
 
-    def update_premium_feature
+    def update_org_feature
       org = Organization.find(params[:id])
       feature = params[:feature]
 
-      unless PREMIUM_FEATURES.include?(feature)
-        flash[:error] = I18n.t("admin.organizations_controller.premium_feature_invalid")
+      unless ORG_FEATURES.include?(feature)
+        flash[:error] = I18n.t("admin.organizations_controller.org_feature_invalid")
         return redirect_to admin_organization_path(org)
       end
 
@@ -125,10 +125,10 @@ module Admin
         noteable_id: org.id,
         noteable_type: "Organization",
         reason: "misc_note",
-        content: "Premium feature '#{feature}' #{status}",
+        content: "Org feature '#{feature}' #{status}",
       )
 
-      flash[:notice] = I18n.t("admin.organizations_controller.premium_feature_#{status}", feature: feature.humanize)
+      flash[:notice] = I18n.t("admin.organizations_controller.org_feature_#{status}", feature: feature.humanize)
       redirect_to admin_organization_path(org)
     end
 

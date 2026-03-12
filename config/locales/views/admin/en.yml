@@ -498,8 +498,8 @@ en:
           enable: Enable Fully Trusted
           disable: Disable Fully Trusted
           enabled_notice: This organization is fully trusted. Members can be added directly without confirmation.
-        premium_features:
-          heading: Premium Features
+        org_features:
+          heading: Org Features
           readme:
             label: Readme Page
             description: When enabled, this organization can build and display a custom readme page on their profile.

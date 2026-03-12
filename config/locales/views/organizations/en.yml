@@ -99,7 +99,7 @@ en:
         heading: Social Links
         description: Connect your organization's social profiles. Enter usernames or full URLs.
         save: Save social links
-      premium_upgrade:
+      org_features_upgrade:
         heading: Premium Feature
         cta_fallback: "This is a premium feature. Contact our partnerships team to learn more."
         button_text: "Learn More"

@@ -96,27 +96,27 @@
 </div>
 
 <div class="crayons-card p-6 mb-6">
-  <h3 class="crayons-subtitle-2 mb-4"><%= t("views.admin.organizations.premium_features.heading") %></h3>
+  <h3 class="crayons-subtitle-2 mb-4"><%= t("views.admin.organizations.org_features.heading") %></h3>
 
   <% org_actor = FeatureFlag::Actor[@organization] %>
 
   <div class="mb-6">
     <div class="flex items-center justify-between mb-2">
       <div>
-        <h4 class="fw-bold mb-1"><%= t("views.admin.organizations.premium_features.readme.label") %></h4>
-        <p class="fs-s color-base-60"><%= t("views.admin.organizations.premium_features.readme.description") %></p>
+        <h4 class="fw-bold mb-1"><%= t("views.admin.organizations.org_features.readme.label") %></h4>
+        <p class="fs-s color-base-60"><%= t("views.admin.organizations.org_features.readme.description") %></p>
       </div>
       <% readme_enabled = FeatureFlag.enabled?(:org_readme, org_actor) %>
-      <%= form_tag update_premium_feature_admin_organization_path(@organization), method: :patch, class: "flex items-center gap-2" do %>
+      <%= form_tag update_org_feature_admin_organization_path(@organization), method: :patch, class: "flex items-center gap-2" do %>
         <%= hidden_field_tag :feature, "org_readme" %>
         <%= hidden_field_tag :enabled, !readme_enabled %>
-        <%= submit_tag readme_enabled ? t("views.admin.organizations.premium_features.readme.disable") : t("views.admin.organizations.premium_features.readme.enable"),
+        <%= submit_tag readme_enabled ? t("views.admin.organizations.org_features.readme.disable") : t("views.admin.organizations.org_features.readme.enable"),
                        class: "crayons-btn #{readme_enabled ? 'crayons-btn--danger' : 'crayons-btn--success'}" %>
       <% end %>
     </div>
     <% if readme_enabled %>
       <div class="crayons-notice crayons-notice--success">
-        <%= t("views.admin.organizations.premium_features.readme.enabled_notice") %>
+        <%= t("views.admin.organizations.org_features.readme.enabled_notice") %>
       </div>
     <% end %>
   </div>
@@ -124,20 +124,20 @@
   <div class="mb-6">
     <div class="flex items-center justify-between mb-2">
       <div>
-        <h4 class="fw-bold mb-1"><%= t("views.admin.organizations.premium_features.lead_forms.label") %></h4>
-        <p class="fs-s color-base-60"><%= t("views.admin.organizations.premium_features.lead_forms.description") %></p>
+        <h4 class="fw-bold mb-1"><%= t("views.admin.organizations.org_features.lead_forms.label") %></h4>
+        <p class="fs-s color-base-60"><%= t("views.admin.organizations.org_features.lead_forms.description") %></p>
       </div>
       <% lead_forms_enabled = FeatureFlag.enabled?(:org_lead_forms, org_actor) %>
-      <%= form_tag update_premium_feature_admin_organization_path(@organization), method: :patch, class: "flex items-center gap-2" do %>
+      <%= form_tag update_org_feature_admin_organization_path(@organization), method: :patch, class: "flex items-center gap-2" do %>
         <%= hidden_field_tag :feature, "org_lead_forms" %>
         <%= hidden_field_tag :enabled, !lead_forms_enabled %>
-        <%= submit_tag lead_forms_enabled ? t("views.admin.organizations.premium_features.lead_forms.disable") : t("views.admin.organizations.premium_features.lead_forms.enable"),
+        <%= submit_tag lead_forms_enabled ? t("views.admin.organizations.org_features.lead_forms.disable") : t("views.admin.organizations.org_features.lead_forms.enable"),
                        class: "crayons-btn #{lead_forms_enabled ? 'crayons-btn--danger' : 'crayons-btn--success'}" %>
       <% end %>
     </div>
     <% if lead_forms_enabled %>
       <div class="crayons-notice crayons-notice--success">
-        <%= t("views.admin.organizations.premium_features.lead_forms.enabled_notice") %>
+        <%= t("views.admin.organizations.org_features.lead_forms.enabled_notice") %>
       </div>
     <% end %>
   </div>

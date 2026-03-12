@@ -376,8 +376,8 @@ pt:
           enable: Habilitar Totalmente Confiável
           disable: Desabilitar Totalmente Confiável
           enabled_notice: Esta organização é totalmente confiável. Os membros podem ser adicionados diretamente sem confirmação.
-        premium_features:
-          heading: Funcionalidades Premium
+        org_features:
+          heading: Funcionalidades da Organização
           readme:
             label: Página Readme
             description: Quando habilitado, esta organização pode criar e exibir uma página readme personalizada em seu perfil.

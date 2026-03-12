@@ -84,9 +84,9 @@ pt:
       baseline_score_updated: A pontuação base foi atualizada!
       verified_enabled: Esta organização foi verificada.
       verified_disabled: A verificação foi revogada para esta organização.
-      premium_feature_enabled: "%{feature} foi habilitado para esta organização."
-      premium_feature_disabled: "%{feature} foi desabilitado para esta organização."
-      premium_feature_invalid: "Funcionalidade premium especificada inválida."
+      org_feature_enabled: "%{feature} foi habilitado para esta organização."
+      org_feature_disabled: "%{feature} foi desabilitado para esta organização."
+      org_feature_invalid: "Funcionalidade de organização especificada inválida."
     pages_controller:
       updated: Página foi atualizada com sucesso.
       created: Página foi criada com sucesso.

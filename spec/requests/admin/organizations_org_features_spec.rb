@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/content_manager/organizations premium features" do
+RSpec.describe "/admin/content_manager/organizations org features" do
   let(:admin) { create(:user, :super_admin) }
   let(:organization) { create(:organization) }
 
@@ -15,9 +15,9 @@ RSpec.describe "/admin/content_manager/organizations premium features" do
     FeatureFlag.disable(:org_lead_forms)
   end
 
-  describe "PATCH /admin/organizations/:id/update_premium_feature" do
+  describe "PATCH /admin/organizations/:id/update_org_feature" do
     it "enables org_readme for an organization" do
-      patch update_premium_feature_admin_organization_path(organization),
+      patch update_org_feature_admin_organization_path(organization),
             params: { feature: "org_readme", enabled: "true" }
 
       expect(FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[organization])).to be(true)
@@ -28,7 +28,7 @@ RSpec.describe "/admin/content_manager/organizations premium features" do
     it "disables org_readme for an organization" do
       FeatureFlag.enable(:org_readme, FeatureFlag::Actor[organization])
 
-      patch update_premium_feature_admin_organization_path(organization),
+      patch update_org_feature_admin_organization_path(organization),
             params: { feature: "org_readme", enabled: "false" }
 
       expect(FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[organization])).to be(false)
@@ -37,7 +37,7 @@ RSpec.describe "/admin/content_manager/organizations premium features" do
     end
 
     it "enables org_lead_forms for an organization" do
-      patch update_premium_feature_admin_organization_path(organization),
+      patch update_org_feature_admin_organization_path(organization),
             params: { feature: "org_lead_forms", enabled: "true" }
 
       expect(FeatureFlag.enabled?(:org_lead_forms, FeatureFlag::Actor[organization])).to be(true)
@@ -46,7 +46,7 @@ RSpec.describe "/admin/content_manager/organizations premium features" do
     it "disables org_lead_forms for an organization" do
       FeatureFlag.enable(:org_lead_forms, FeatureFlag::Actor[organization])
 
-      patch update_premium_feature_admin_organization_path(organization),
+      patch update_org_feature_admin_organization_path(organization),
             params: { feature: "org_lead_forms", enabled: "false" }
 
       expect(FeatureFlag.enabled?(:org_lead_forms, FeatureFlag::Actor[organization])).to be(false)
@@ -54,7 +54,7 @@ RSpec.describe "/admin/content_manager/organizations premium features" do
 
     it "creates a note when toggling a feature" do
       expect do
-        patch update_premium_feature_admin_organization_path(organization),
+        patch update_org_feature_admin_organization_path(organization),
               params: { feature: "org_readme", enabled: "true" }
       end.to change(Note, :count).by(1)
 
@@ -65,7 +65,7 @@ RSpec.describe "/admin/content_manager/organizations premium features" do
     end
 
     it "rejects unknown feature names" do
-      patch update_premium_feature_admin_organization_path(organization),
+      patch update_org_feature_admin_organization_path(organization),
             params: { feature: "org_evil_feature", enabled: "true" }
 
       expect(response).to redirect_to(admin_organization_path(organization))

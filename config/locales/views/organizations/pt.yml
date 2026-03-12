@@ -99,7 +99,7 @@ pt:
         heading: Links Sociais
         description: "Conecte os perfis sociais da sua organização. Insira nomes de usuário ou URLs completas."
         save: Salvar links sociais
-      premium_upgrade:
+      org_features_upgrade:
         heading: Funcionalidade Premium
         cta_fallback: "Esta é uma funcionalidade premium. Entre em contato com nossa equipe de parcerias para saber mais."
         button_text: "Saiba Mais"
