@@ -109,12 +109,6 @@ namespace :admin do
         patch "update_org_feature"
       end
     end
-    resources :org_features, only: [:index], controller: "org_features" do
-      collection do
-        patch :toggle_global
-        patch :update_cta
-      end
-    end
     resources :emails
     resources :user_queries do
       member do
@@ -146,6 +140,12 @@ namespace :admin do
   scope :customization do
     # We renamed the controller but don't want to change the route (yet)
     resource :config, controller: "settings"
+    resources :org_features, only: [:index], controller: "org_features" do
+      collection do
+        patch :toggle_global
+        patch :update_cta
+      end
+    end
     resources :billboards
     resources :billboard_placement_area_configs, only: %i[index edit update]
     resources :html_variants, only: %i[index edit update new create show destroy]

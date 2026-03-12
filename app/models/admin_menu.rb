@@ -20,7 +20,6 @@ class AdminMenu
              item(name: "achievements", controller: "badge_achievements"),
            ]),
       item(name: "organizations"),
-      item(name: "org features", controller: "org_features"),
       item(name: "podcasts"),
       item(name: "tags"),
       item(name: "emails"),
@@ -34,6 +33,7 @@ class AdminMenu
       item(name: "pages"),
       item(name: "profile fields"),
       item(name: "subforems"),
+      item(name: "org features", controller: "org_features"),
     ]
 
     scope :admin_team, "user-line", [

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/content_manager/org_features" do
+RSpec.describe "/admin/customization/org_features" do
   let(:admin) { create(:user, :super_admin) }
 
   before do
@@ -14,7 +14,7 @@ RSpec.describe "/admin/content_manager/org_features" do
     FeatureFlag.disable(:org_lead_forms)
   end
 
-  describe "GET /admin/content_manager/org_features" do
+  describe "GET /admin/customization/org_features" do
     it "renders the org features page" do
       get admin_org_features_path
       expect(response).to have_http_status(:ok)
@@ -31,7 +31,7 @@ RSpec.describe "/admin/content_manager/org_features" do
     end
   end
 
-  describe "PATCH /admin/content_manager/org_features/toggle_global" do
+  describe "PATCH /admin/customization/org_features/toggle_global" do
     it "enables a feature globally" do
       patch toggle_global_admin_org_features_path, params: { feature: "org_readme", enabled: "true" }
 
@@ -57,7 +57,7 @@ RSpec.describe "/admin/content_manager/org_features" do
     end
   end
 
-  describe "PATCH /admin/content_manager/org_features/update_cta" do
+  describe "PATCH /admin/customization/org_features/update_cta" do
     it "updates CTA settings" do
       patch update_cta_admin_org_features_path, params: {
         cta_text: "Contact sales for premium access",

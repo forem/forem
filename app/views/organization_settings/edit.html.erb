@@ -23,6 +23,15 @@
   </div>
 <% end %>
 
+<% if current_user&.any_admin? %>
+  <div class="crayons-banner crayons-banner--info mb-4" style="display: flex; align-items: center; gap: var(--su-2);">
+    <%= crayons_icon_tag(:lock, width: 16, height: 16) %>
+    <a href="<%= admin_organization_path(@organization) %>" class="crayons-link fw-medium">
+      <%= t("views.organizations.admin_link") %> &rarr;
+    </a>
+  </div>
+<% end %>
+
 <style>
   .org-settings-layout {
     display: grid;
