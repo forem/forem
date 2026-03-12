@@ -157,6 +157,7 @@
       <div id="section-page" class="crayons-card crayons-card--content-rows">
         <h2><%= t("views.organization_settings.page.heading") %></h2>
 
+        <% if FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization]) %>
           <div class="crayons-field">
             <%= f.label :cover_image, t("views.organization_settings.page.cover_image"), class: "crayons-field__label" %>
             <% if @organization.cover_image_url.present? %>
@@ -195,6 +196,9 @@
             </div>
             <p class="crayons-field__description"><%= t("views.organization_settings.page.readme_description") %></p>
           </div>
+        <% else %>
+          <%= render "shared/premium_upgrade_cta" %>
+        <% end %>
 
       </div>
 
