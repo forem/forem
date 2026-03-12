@@ -376,3 +376,17 @@ pt:
           enable: Habilitar Totalmente Confiável
           disable: Desabilitar Totalmente Confiável
           enabled_notice: Esta organização é totalmente confiável. Os membros podem ser adicionados diretamente sem confirmação.
+        premium_features:
+          heading: Funcionalidades Premium
+          readme:
+            label: Página Readme
+            description: Quando habilitado, esta organização pode criar e exibir uma página readme personalizada em seu perfil.
+            enable: Habilitar Readme
+            disable: Desabilitar Readme
+            enabled_notice: A funcionalidade de página readme está habilitada para esta organização.
+          lead_forms:
+            label: Formulários de Leads
+            description: Quando habilitado, esta organização pode criar e gerenciar formulários de captura de leads para incorporar em seus artigos.
+            enable: Habilitar Formulários de Leads
+            disable: Desabilitar Formulários de Leads
+            enabled_notice: A funcionalidade de formulários de leads está habilitada para esta organização.

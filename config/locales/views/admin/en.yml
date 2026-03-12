@@ -498,3 +498,17 @@ en:
           enable: Enable Fully Trusted
           disable: Disable Fully Trusted
           enabled_notice: This organization is fully trusted. Members can be added directly without confirmation.
+        premium_features:
+          heading: Premium Features
+          readme:
+            label: Readme Page
+            description: When enabled, this organization can build and display a custom readme page on their profile.
+            enable: Enable Readme
+            disable: Disable Readme
+            enabled_notice: Readme page feature is enabled for this organization.
+          lead_forms:
+            label: Lead Forms
+            description: When enabled, this organization can create and manage lead capture forms to embed in their articles.
+            enable: Enable Lead Forms
+            disable: Disable Lead Forms
+            enabled_notice: Lead forms feature is enabled for this organization.

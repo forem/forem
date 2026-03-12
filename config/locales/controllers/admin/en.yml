@@ -119,6 +119,9 @@ en:
       baseline_score_updated: Baseline score updated!
       verified_enabled: This organization has been verified.
       verified_disabled: Verification has been revoked for this organization.
+      premium_feature_enabled: "%{feature} has been enabled for this organization."
+      premium_feature_disabled: "%{feature} has been disabled for this organization."
+      premium_feature_invalid: "Invalid premium feature specified."
     pages_controller:
       updated: Page has been successfully updated.
       created: Page has been successfully created.

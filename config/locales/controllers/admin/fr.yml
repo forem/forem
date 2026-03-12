@@ -119,6 +119,9 @@ fr:
       baseline_score_updated: Le score de base a été mis à jour !
       verified_enabled: Cette organisation a été vérifiée.
       verified_disabled: La vérification a été révoquée pour cette organisation.
+      premium_feature_enabled: "%{feature} a été activé pour cette organisation."
+      premium_feature_disabled: "%{feature} a été désactivé pour cette organisation."
+      premium_feature_invalid: "Fonctionnalité premium spécifiée invalide."
     pages_controller:
       updated: La page a été mise à jour avec succès.
       created: La page a été créée avec succès.

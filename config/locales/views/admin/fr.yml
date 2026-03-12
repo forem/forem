@@ -485,3 +485,17 @@ fr:
           enable: Activer la confiance totale
           disable: Désactiver la confiance totale
           enabled_notice: Cette organisation est de confiance totale. Les membres peuvent être ajoutés directement sans confirmation.
+        premium_features:
+          heading: Fonctionnalités Premium
+          readme:
+            label: Page Readme
+            description: Lorsqu'elle est activée, cette organisation peut créer et afficher une page readme personnalisée sur son profil.
+            enable: Activer le Readme
+            disable: Désactiver le Readme
+            enabled_notice: La fonctionnalité de page readme est activée pour cette organisation.
+          lead_forms:
+            label: Formulaires de leads
+            description: Lorsqu'elle est activée, cette organisation peut créer et gérer des formulaires de capture de leads à intégrer dans ses articles.
+            enable: Activer les formulaires de leads
+            disable: Désactiver les formulaires de leads
+            enabled_notice: La fonctionnalité de formulaires de leads est activée pour cette organisation.

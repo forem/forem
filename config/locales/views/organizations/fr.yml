@@ -99,6 +99,10 @@ fr:
         heading: Liens sociaux
         description: "Connectez les profils sociaux de votre organisation. Entrez les noms d'utilisateur ou les URL completes."
         save: Enregistrer les liens sociaux
+    premium_upgrade:
+      heading: Fonctionnalité Premium
+      cta_fallback: "Ceci est une fonctionnalité premium. Contactez notre équipe partenariats pour en savoir plus."
+      button_text: "En savoir plus"
     organizations:
       empty: 404 bio not found
       verified_badge: Organisation vérifiée
