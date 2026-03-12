@@ -235,29 +235,13 @@ class StoriesController < ApplicationController
     set_surrogate_key_header @organization.record_key
 
     if is_readme
-      @readme_html = if FeatureFlag.enabled?(:org_dofollow_links, FeatureFlag::Actor[@organization])
-                       main_page.processed_html
-                     else
-                       add_nofollow_to_links(main_page.processed_html)
-                     end
+      @readme_html = main_page.processed_html
       @cover_image_url = @organization.cover_image_url if @organization.cover_image.present?
       @org_readme_show = true
       render template: "organizations/show_readme"
     else
       render template: "organizations/show"
     end
-  end
-
-  def add_nofollow_to_links(html)
-    doc = Nokogiri::HTML.fragment(html)
-    doc.css("a[href]").each do |link|
-      href = link["href"].to_s
-      next if href.start_with?("/") || href.start_with?("#")
-      next if href.include?(Settings::General.app_domain)
-
-      link["rel"] = "nofollow ugc noopener"
-    end
-    doc.to_html
   end
 
   def handle_user_index

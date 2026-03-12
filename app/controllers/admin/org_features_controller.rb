@@ -59,6 +59,11 @@ module Admin
         FeatureFlag.disable(feature)
       end
 
+      # Reprocess all org pages when dofollow flag changes globally
+      if feature == :org_dofollow_links
+        Page.where.not(organization_id: nil).find_each(&:save!)
+      end
+
       status = params[:enabled] == "true" ? "enabled" : "disabled"
       flash[:notice] = I18n.t("admin.org_features_controller.global_#{status}", feature: FEATURES[feature][:name])
       redirect_to admin_org_features_path

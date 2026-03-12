@@ -96,10 +96,17 @@ class Page < ApplicationRecord
     if body_markdown.present?
       source = organization || nil
       parsed_markdown = MarkdownProcessor::Parser.new(body_markdown, source: source)
-      self.processed_html = parsed_markdown.finalize
+      self.processed_html = parsed_markdown.finalize(link_attributes: link_attributes_for_org)
     else
       self.processed_html = body_html
     end
+  end
+
+  def link_attributes_for_org
+    return {} unless organization
+    return {} if FeatureFlag.enabled?(:org_dofollow_links, FeatureFlag::Actor[organization])
+
+    { rel: "nofollow ugc" }
   end
 
   def set_default_template

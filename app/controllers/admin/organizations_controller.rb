@@ -128,6 +128,11 @@ module Admin
         content: "Org feature '#{feature}' #{status}",
       )
 
+      # Reprocess org pages when dofollow flag changes so link attributes are updated
+      if feature == "org_dofollow_links"
+        org.pages.find_each(&:save!)
+      end
+
       flash[:notice] = I18n.t("admin.organizations_controller.org_feature_#{status}", feature: feature.humanize)
       redirect_to admin_organization_path(org)
     end
