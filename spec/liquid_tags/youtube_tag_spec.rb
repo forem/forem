@@ -48,6 +48,16 @@ RSpec.describe YoutubeTag, type: :liquid_tag do
       expect(result).to include("https://www.youtube.com/embed/#{valid_id}")
     end
 
+    it "uses a vertical aspect ratio for YouTube Shorts" do
+      result = generate_tag("https://www.youtube.com/shorts/#{valid_id}")
+      expect(result).to include("aspect-ratio: 9 / 16")
+    end
+
+    it "uses a horizontal aspect ratio for regular videos" do
+      result = generate_tag("https://www.youtube.com/watch?v=#{valid_id}")
+      expect(result).to include("aspect-ratio: 16 / 9")
+    end
+
     it "accepts a YouTube Shorts URL with query parameters" do
       result = generate_tag("https://www.youtube.com/shorts/#{valid_id}?si=FPFWKE9g0PhQjAUE")
       expect(result).to include("https://www.youtube.com/embed/#{valid_id}")
