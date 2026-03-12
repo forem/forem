@@ -11,8 +11,8 @@ class LeadSubmission < ApplicationRecord
     {
       name: user.name,
       email: user.email,
-      company: profile&.company,
-      job_title: profile&.job_title,
+      company: profile&.read_attribute(:company),
+      job_title: profile&.read_attribute(:job_title),
       username: user.username,
     }
   end
