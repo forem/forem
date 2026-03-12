@@ -390,3 +390,24 @@ pt:
             enable: Habilitar Formulários de Leads
             disable: Desabilitar Formulários de Leads
             enabled_notice: A funcionalidade de formulários de leads está habilitada para esta organização.
+      org_features:
+        heading: Funcionalidades Org
+        description: Gerencie as funcionalidades das organizações globalmente ou por organização.
+        enable_global: Habilitar para todas as orgs
+        disable_global: Desabilitar acesso global
+        globally_enabled_notice: Esta funcionalidade está habilitada para todas as organizações.
+        individually_enabled:
+          one: "Habilitado individualmente para %{count} organização:"
+          other: "Habilitado individualmente para %{count} organizações:"
+        no_orgs_enabled: Nenhuma organização tem esta funcionalidade habilitada individualmente. Use a página de administração de cada organização para habilitá-la.
+        table:
+          name: Organização
+          slug: Slug
+          actions: ""
+          manage: Gerenciar
+        cta_config:
+          heading: Configurações do CTA
+          description: Configure o call-to-action exibido para organizações que não têm acesso a uma funcionalidade.
+          text_label: Texto do CTA
+          url_label: URL do CTA
+          save: Salvar configurações do CTA

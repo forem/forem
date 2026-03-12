@@ -122,6 +122,11 @@ en:
       org_feature_enabled: "%{feature} has been enabled for this organization."
       org_feature_disabled: "%{feature} has been disabled for this organization."
       org_feature_invalid: "Invalid org feature specified."
+    org_features_controller:
+      invalid_feature: "Invalid feature specified."
+      global_enabled: "%{feature} has been enabled for all organizations."
+      global_disabled: "%{feature} global access has been disabled. Only individually enabled organizations retain access."
+      cta_updated: "Upgrade CTA settings have been updated."
     pages_controller:
       updated: Page has been successfully updated.
       created: Page has been successfully created.

@@ -512,3 +512,24 @@ en:
             enable: Enable Lead Forms
             disable: Disable Lead Forms
             enabled_notice: Lead forms feature is enabled for this organization.
+      org_features:
+        heading: Org Features
+        description: Manage organization feature flags globally or per-organization.
+        enable_global: Enable for All Orgs
+        disable_global: Disable Global Access
+        globally_enabled_notice: This feature is enabled for all organizations.
+        individually_enabled:
+          one: "Individually enabled for %{count} organization:"
+          other: "Individually enabled for %{count} organizations:"
+        no_orgs_enabled: No organizations have this feature individually enabled. Use each organization's admin page to enable it.
+        table:
+          name: Organization
+          slug: Slug
+          actions: ""
+          manage: Manage
+        cta_config:
+          heading: Upgrade CTA Settings
+          description: Configure the call-to-action shown to organizations that don't have access to a feature. This appears in place of the gated feature.
+          text_label: CTA Text
+          url_label: CTA URL
+          save: Save CTA Settings

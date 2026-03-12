@@ -109,6 +109,12 @@ namespace :admin do
         patch "update_org_feature"
       end
     end
+    resources :org_features, only: [:index], controller: "org_features" do
+      collection do
+        patch :toggle_global
+        patch :update_cta
+      end
+    end
     resources :emails
     resources :user_queries do
       member do

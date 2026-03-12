@@ -122,6 +122,11 @@ fr:
       org_feature_enabled: "%{feature} a été activé pour cette organisation."
       org_feature_disabled: "%{feature} a été désactivé pour cette organisation."
       org_feature_invalid: "Fonctionnalité d'organisation spécifiée invalide."
+    org_features_controller:
+      invalid_feature: "Fonctionnalité spécifiée invalide."
+      global_enabled: "%{feature} a été activé pour toutes les organisations."
+      global_disabled: "L'accès global à %{feature} a été désactivé. Seules les organisations activées individuellement conservent l'accès."
+      cta_updated: "Les paramètres du CTA ont été mis à jour."
     pages_controller:
       updated: La page a été mise à jour avec succès.
       created: La page a été créée avec succès.
