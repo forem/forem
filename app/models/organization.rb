@@ -180,6 +180,10 @@ class Organization < ApplicationRecord
     header_cta? && header_cta["links"].is_a?(Array) && header_cta["links"].any?
   end
 
+  def flipper_id
+    "Organization;#{id}"
+  end
+
   private
 
   HEADER_CTA_MAX_TEXT = 40

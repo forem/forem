@@ -461,6 +461,12 @@ RSpec.describe Organization do
     end
   end
 
+  describe "#flipper_id" do
+    it "returns a string with Organization prefix and id" do
+      expect(organization.flipper_id).to eq("Organization;#{organization.id}")
+    end
+  end
+
   describe "#fully_trusted?" do
     it "returns true when fully_trusted is true" do
       organization.update(fully_trusted: true)
