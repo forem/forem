@@ -47,16 +47,60 @@ export const EditorBody = ({
       setElement(textAreaRef.current);
       setPasteElement(textAreaRef.current);
     }
-  });
+  }, [setElement, setPasteElement]);
 
-  // Attach URL paste handler for embed prompt
+  // If it's a URL, embed as a URL. Otherwise paste as plain text
   useEffect(() => {
+    // Make sure we are in the editor
     const textarea = textAreaRef.current;
     if (!textarea) return;
 
-    const handler = handleURLPasted(textAreaRef);
-    textarea.addEventListener('paste', handler);
-    return () => textarea.removeEventListener('paste', handler);
+    const urlHandler = handleURLPasted(textAreaRef);
+
+    // Handle text that were pasted onto the editor
+    const onPaste = (e) => {
+
+      // Get the clipboard data
+      const dt = e.clipboardData || window.clipboardData;
+      const pastedText = dt?.getData?.('text/plain') ?? '';
+
+      if (!pastedText) return; // If no text, do not proceed
+
+      const trimmed = pastedText.trim();
+
+      // If it's a URL, treat it as a URL
+      const isProbablyURL = /^(https?:\/\/|www\.)\S+$/i.test(trimmed);
+      if (isProbablyURL) {
+        urlHandler(e);
+        return;
+      }
+
+      // Otherwise, paste as plain text, but neutralize '@' so it won't trigger mentions
+      // Insert a zero-width space right after '@'
+      const neutralized = pastedText.replace(/@/g, '@\u200B');
+      
+      e.preventDefault();
+
+      // get the cursor index from start to end
+      const el = textarea;
+      const start = el.selectionStart;
+      const end = el.selectionEnd;
+
+      if (typeof el.setRangeText === 'function') {
+        el.setRangeText(neutralized, start, end, 'end'); // move to end of inserted text
+      } else {
+        // Fallback for very old browsers
+        const before = el.value.slice(0, start);
+        const after = el.value.slice(end);
+        el.value = before + neutralized + after;
+        el.selectionStart = el.selectionEnd = (before + neutralized).length;
+      }
+
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+    };
+
+    textarea.addEventListener('paste', onPaste);
+    return () => textarea.removeEventListener('paste', onPaste);
   }, []);
 
   return (
