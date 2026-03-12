@@ -4,6 +4,13 @@ RSpec.describe "OrganizationLeadForms" do
   let(:user) { create(:user, :org_admin) }
   let(:organization) { user.organizations.first }
 
+  before do
+    FeatureFlag.add(:org_lead_forms)
+    FeatureFlag.enable(:org_lead_forms, FeatureFlag::Actor[organization])
+  end
+
+  after { FeatureFlag.disable(:org_lead_forms) }
+
   describe "GET /:slug/settings/lead_forms" do
     context "when signed in as org admin" do
       before { sign_in user }
