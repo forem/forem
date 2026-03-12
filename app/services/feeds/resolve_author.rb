@@ -21,6 +21,18 @@ module Feeds
       @author_string ||= item.try(:author)&.strip
     end
 
+    # Scope author lookup to users who could legitimately own articles for this
+    # feed source: organization members when an org is set, otherwise only the
+    # feed owner themselves.
+    def eligible_users
+      @eligible_users ||= if feed_source.organization_id.present?
+                             User.joins(:organization_memberships)
+                               .where(organization_memberships: { organization_id: feed_source.organization_id })
+                           else
+                             User.where(id: feed_source.user_id)
+                           end
+    end
+
     def find_by_email
       return unless author_string.present?
 
@@ -28,7 +40,7 @@ module Feeds
       email = author_string[/[\w.+-]+@[\w.-]+\.\w+/]
       return unless email
 
-      User.find_by(email: email)
+      eligible_users.find_by(email: email)
     end
 
     def find_by_name
@@ -38,7 +50,7 @@ module Feeds
       name = author_string.sub(/<[^>]+>/, "").strip
       return if name.blank?
 
-      User.find_by(name: name)
+      eligible_users.find_by(name: name)
     end
   end
 end

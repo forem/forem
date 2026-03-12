@@ -94,9 +94,7 @@ module Feeds
         cleaned_url = url.to_s.strip
         next if cleaned_url.blank?
 
-        response = HTTParty.get(cleaned_url,
-                                timeout: 10,
-                                headers: { "User-Agent" => "Forem Feeds Importer" })
+        response = fetch_with_retry(cleaned_url)
 
         [source_id, response.body]
       rescue StandardError => e
@@ -302,6 +300,20 @@ module Feeds
 
     def sanitize_error(message)
       message.to_s.gsub(%r{/[\w/.-]+\.rb:\d+}, "[path]").truncate(500)
+    end
+
+    FEED_USER_AGENT = "Forem/1.0 (+https://forem.com; RSS Feed Fetcher)".freeze
+    MAX_FETCH_RETRIES = 2
+
+    def fetch_with_retry(url, retries: 0)
+      HTTParty.get(url,
+                   timeout: 20,
+                   headers: { "User-Agent" => FEED_USER_AGENT })
+    rescue Net::OpenTimeout, Net::ReadTimeout, Errno::ECONNRESET => e
+      raise e if retries >= MAX_FETCH_RETRIES
+
+      sleep(2**retries)
+      fetch_with_retry(url, retries: retries + 1)
     end
   end
 end
