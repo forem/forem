@@ -141,6 +141,27 @@
       </div>
     <% end %>
   </div>
+
+  <div class="mb-6">
+    <div class="flex items-center justify-between mb-2">
+      <div>
+        <h4 class="fw-bold mb-1"><%= t("views.admin.organizations.org_features.dofollow_links.label") %></h4>
+        <p class="fs-s color-base-60"><%= t("views.admin.organizations.org_features.dofollow_links.description") %></p>
+      </div>
+      <% dofollow_enabled = FeatureFlag.enabled?(:org_dofollow_links, org_actor) %>
+      <%= form_tag update_org_feature_admin_organization_path(@organization), method: :patch, class: "flex items-center gap-2" do %>
+        <%= hidden_field_tag :feature, "org_dofollow_links" %>
+        <%= hidden_field_tag :enabled, !dofollow_enabled %>
+        <%= submit_tag dofollow_enabled ? t("views.admin.organizations.org_features.dofollow_links.disable") : t("views.admin.organizations.org_features.dofollow_links.enable"),
+                       class: "crayons-btn #{dofollow_enabled ? 'crayons-btn--danger' : 'crayons-btn--success'}" %>
+      <% end %>
+    </div>
+    <% if dofollow_enabled %>
+      <div class="crayons-notice crayons-notice--success">
+        <%= t("views.admin.organizations.org_features.dofollow_links.enabled_notice") %>
+      </div>
+    <% end %>
+  </div>
 </div>
 
 <div class="crayons-card p-6 mb-6">

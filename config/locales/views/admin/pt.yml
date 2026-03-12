@@ -390,6 +390,12 @@ pt:
             enable: Habilitar Formulários de Leads
             disable: Desabilitar Formulários de Leads
             enabled_notice: A funcionalidade de formulários de leads está habilitada para esta organização.
+          dofollow_links:
+            label: Links Dofollow
+            description: Quando habilitado, os links na página readme desta organização transmitem autoridade SEO (dofollow). Quando desabilitado, todos os links externos são nofollow.
+            enable: Habilitar Dofollow
+            disable: Desabilitar Dofollow
+            enabled_notice: Links dofollow estão habilitados para a página readme desta organização.
       org_features:
         heading: Funcionalidades Org
         description: Gerencie as funcionalidades das organizações globalmente ou por organização.

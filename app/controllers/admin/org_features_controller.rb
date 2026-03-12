@@ -10,6 +10,10 @@ module Admin
       org_lead_forms: {
         name: "Lead Forms",
         description: "When enabled, organizations can create and manage lead capture forms to embed in their articles."
+      },
+      org_dofollow_links: {
+        name: "Dofollow Links",
+        description: "When enabled, links in this organization's readme page are dofollow (pass SEO authority). When disabled, all links are nofollow."
       }
     }.freeze
 
