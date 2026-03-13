@@ -1,0 +1,76 @@
+@import '../config/import';
+
+.c-emoji-popup {
+  z-index: var(--z-popover);
+
+  &.picmo__picker,
+  &.picmo__popupContainer {
+    --background-color: var(--card-bg);
+    --border-color: var(--base-20);
+    --text-color: var(--card-color);
+    --secondary-text-color: var(--base-70);
+
+    --category-name-background-color: var(--card-bg);
+    --category-name-text-color: var(--base-70);
+    --category-name-button-color: var(--base-50);
+
+    --category-tab-color: var(--base-50);
+    --category-tab-active-color: var(--link-color);
+    --category-tab-active-background-color: transparent;
+    --category-tab-highlight-background-color: var(--base-10);
+
+    --hover-background-color: var(--base-10);
+
+    --search-background-color: var(--form-bg);
+    --search-focus-background-color: var(--form-bg-focus);
+    --search-placeholder-color: var(--base-50);
+    --search-icon-color: var(--base-50);
+
+    --preview-background-color: var(--card-bg);
+    --secondary-background-color: var(--card-bg);
+
+    --focus-indicator-background-color: var(--form-bg-focus);
+    --focus-indicator-color: var(--link-color);
+
+    // Make the content smaller per user request
+    --emoji-size: 1.5rem; // Default is 2rem
+    --emoji-preview-size: 1.75rem; // Default is 2.75rem
+    --emoji-preview-height: calc(var(--emoji-preview-size) + 1.2em + 6px);
+    --category-tab-size: 1.1rem; // Default is 1.2rem
+    --ui-font-size: 14px; // Default is 16px
+    --picker-width: 320px;
+    --emoji-area-height: 250px;
+    --category-tabs-height: 2.25rem;
+    --search-height: 2.25rem;
+    --search-margin-bottom: 0.5rem;
+    --border-radius: var(--radius);
+
+    // Forem specific layout
+    border: none;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.1);
+  }
+
+
+  // Adjust specific element spacing that doesn't use custom props
+  .picmo__searchContainer {
+    padding-top: 0.5rem;
+  }
+}
+
+.picmo__popupContainer {
+  box-shadow: none !important;
+}
+
+.picmo__picker .picmo__searchContainer .picmo__searchField {
+  font-size: 0.95em;
+  padding: 0.1em 2.25em .5em .5em
+}
+
+.picmo__picker .picmo__categoryButtons .picmo__categoryTab.picmo__categoryTabActive .picmo__categoryButton {
+  background: var(--base-10);
+}
+
+.picmo__closeButton {
+  display: none !important;
+}
