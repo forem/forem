@@ -5,6 +5,7 @@ fr:
     revoked: Votre clé API a été révoquée.
   application_controller:
     bad_request: 'Erreur : mauvaise demande'
+    invalid_authenticity_token: 'Erreur : jeton d''authenticité invalide'
     not_authorized: 'Erreur : non autorisé'
     please_sign_in : Veuillez vous connecter
   articles_controller:

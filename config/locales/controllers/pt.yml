@@ -5,6 +5,7 @@ pt:
     revoked: Sua chave de API foi revogada.
   application_controller:
     bad_request: 'Erro: Solicitação inválida'
+    invalid_authenticity_token: 'Erro: token de autenticidade inválido'
     not_authorized: 'Erro: não autorizado'
     please_sign_in: Por favor, faça login
   articles_controller:
