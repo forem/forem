@@ -1122,13 +1122,12 @@ RSpec.describe User do
       user.reload
       original_updated_at = user.updated_at
 
-      expect do
+      sidekiq_assert_enqueued_with(job: Users::BustCacheWorker, args: [user.id]) do
         travel 1.second do
           user.remove_role(:trusted)
         end
-      end.to change(Users::BustCacheWorker.jobs, :size).by(1)
+      end
 
-      expect(Users::BustCacheWorker.jobs.last["args"]).to eq([user.id])
       expect(user.reload.updated_at).to be > original_updated_at
     end
   end
