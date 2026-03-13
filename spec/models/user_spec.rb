@@ -1104,6 +1104,33 @@ RSpec.describe User do
         user.update!(last_comment_at: Time.current)
       end
     end
+
+    it "busts the full profile cache and updates the user cache version when a base subscriber role is added" do
+      original_updated_at = user.updated_at
+
+      travel 1.second do
+        sidekiq_assert_enqueued_with(job: Users::BustCacheWorker, args: [user.id]) do
+          user.add_role(:base_subscriber)
+        end
+      end
+
+      expect(user.reload.updated_at).to be > original_updated_at
+    end
+
+    it "busts the full profile cache and updates the user cache version when a role is removed" do
+      user.add_role(:trusted)
+      user.reload
+      original_updated_at = user.updated_at
+
+      expect do
+        travel 1.second do
+          user.remove_role(:trusted)
+        end
+      end.to change(Users::BustCacheWorker.jobs, :size).by(1)
+
+      expect(Users::BustCacheWorker.jobs.last["args"]).to eq([user.id])
+      expect(user.reload.updated_at).to be > original_updated_at
+    end
   end
 
   describe "profile spam checks" do
