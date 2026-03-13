@@ -62,8 +62,10 @@
   }
 
   &--initiated {
-    .comment-textarea {
-      height: 128px;
+    .comment-textarea,
+    .c-autocomplete {
+      box-sizing: border-box;
+      min-height: 128px;
     }
   }
 

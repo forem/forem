@@ -51,13 +51,18 @@ window.Forem = {
       return;
     }
 
-    const [{ CommentTextArea }, { render, h }] =
-      await window.Forem.getEnhancedCommentTextAreaImports();
+    try {
+      const [{ CommentTextArea }, { render, h }] =
+        await window.Forem.getEnhancedCommentTextAreaImports();
 
-    render(
-      <CommentTextArea vanillaTextArea={originalTextArea} />,
-      createRootFragment(parentContainer, originalTextArea),
-    );
+      console.log('Rendering CommentTextArea on', parentContainer);
+      render(
+        <CommentTextArea vanillaTextArea={originalTextArea} />,
+        createRootFragment(parentContainer, originalTextArea),
+      );
+    } catch (e) {
+      console.error("Error initializing CommentTextArea:", e);
+    }
   },
   showModal: showWindowModal,
   closeModal: () => closeWindowModal(),
