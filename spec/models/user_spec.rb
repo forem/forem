@@ -1108,7 +1108,7 @@ RSpec.describe User do
     it "busts the full profile cache and updates the user cache version when a base subscriber role is added" do
       original_updated_at = user.updated_at
 
-      travel 1.second do
+      Timecop.travel(1.second.from_now) do
         sidekiq_assert_enqueued_with(job: Users::BustCacheWorker, args: [user.id]) do
           user.add_role(:base_subscriber)
         end
@@ -1123,7 +1123,7 @@ RSpec.describe User do
       original_updated_at = user.updated_at
 
       sidekiq_assert_enqueued_with(job: Users::BustCacheWorker, args: [user.id]) do
-        travel 1.second do
+        Timecop.travel(1.second.from_now) do
           user.remove_role(:trusted)
         end
       end
