@@ -34,6 +34,10 @@ class ApplicationController < ActionController::Base
       "users.invalid_authenticity_token",
       tags: ["controller_name:#{controller_name}", "path:#{request.fullpath}"],
     )
+    respond_to do |format|
+      format.html { render plain: I18n.t("application_controller.invalid_authenticity_token"), status: :unprocessable_entity }
+      format.json { render json: { error: I18n.t("application_controller.invalid_authenticity_token") }, status: :unprocessable_entity }
+    end
   end
 
   rescue_from ApplicationPolicy::UserSuspendedError, with: :respond_with_user_suspended
