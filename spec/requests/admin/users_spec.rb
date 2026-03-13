@@ -39,27 +39,49 @@ RSpec.describe "/admin/member_manager/users" do
       expect(response.body).to include(user.username)
     end
 
-it "displays profile contact links without leading whitespace" do
-  get admin_user_path(user)
+    it "displays profile contact links without leading whitespace" do
+      get admin_user_path(user)
 
-  doc = Nokogiri::HTML(response.body)
+      doc = Nokogiri::HTML(response.body)
 
-  email_link = doc.at_css("a.c-link--icon-left.inline-block[href='mailto:#{user.email}']")
-  expect(email_link).to be_present
-  expect(email_link.xpath("./text()[last()]").text.lstrip).to eq(user.email)
+      email_link = doc.at_css("a.c-link[href='mailto:#{user.email}']")
+      expect(email_link).to be_present
+      expect(email_link.text.strip).to eq(user.email)
 
-  if user.github_username.present?
-    github_link = doc.at_css("a.c-link--icon-left.inline-block[href='https://github.com/#{user.github_username}']")
-    expect(github_link).to be_present
-    expect(github_link.xpath("./text()[last()]").text.lstrip).to eq(user.github_username)
-  end
+      if user.github_username.present?
+        github_link = doc.at_css("a.c-link--icon-left.inline-block[href='https://github.com/#{user.github_username}']")
+        expect(github_link).to be_present
+        expect(github_link.xpath("./text()[last()]").text.lstrip).to eq(user.github_username)
+      end
 
-  if user.twitter_username.present?
-    twitter_link = doc.at_css("a.c-link--icon-left.inline-block[href='https://twitter.com/#{user.twitter_username}']")
-    expect(twitter_link).to be_present
-    expect(twitter_link.xpath("./text()[last()]").text.lstrip).to eq(user.twitter_username)
-  end
-end
+      if user.twitter_username.present?
+        twitter_link = doc.at_css("a.c-link--icon-left.inline-block[href='https://twitter.com/#{user.twitter_username}']")
+        expect(twitter_link).to be_present
+        expect(twitter_link.xpath("./text()[last()]").text.lstrip).to eq(user.twitter_username)
+      end
+    end
+
+    it "displays OAuth identity emails that differ from the primary email" do
+      oauth_email = "github-oauth@example.com"
+      omniauth_mock_github_payload
+      auth = OmniAuth.config.mock_auth[:github].dup
+      auth[:info][:email] = oauth_email
+      identity = user.identities.first
+      identity.update!(auth_data_dump: auth)
+
+      get admin_user_path(user)
+
+      expect(response.body).to include(oauth_email)
+      expect(response.body).to include("GitHub email")
+    end
+
+    it "does not duplicate the primary email in the OAuth emails list" do
+      get admin_user_path(user)
+
+      doc = Nokogiri::HTML(response.body)
+      email_links = doc.css("a.c-link[href='mailto:#{user.email}']")
+      expect(email_links.size).to eq(1)
+    end
 
     it "redirects from /username/moderate" do
       get "/#{user.username}/moderate"
