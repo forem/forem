@@ -54,7 +54,7 @@ module ApplicationHelper
     listings_url = URL.url(try(:listings_path) || "/listings") # listings_path helper might eventually be removed too
 
     return false if listings_url == URL.url(link.url)
-    
+
     true
   end
 
@@ -86,7 +86,7 @@ module ApplicationHelper
 
   def page_view_classes
     return "" unless @page.slug.present?
-    
+
     " pageslug-#{@page.slug.gsub('/', '__SLASH__')}"
   end
 
@@ -264,7 +264,12 @@ module ApplicationHelper
     release_footprint = ForemInstance.deployed_at
     return path if release_footprint.blank?
 
-    "#{path}-#{params[:locale]}-#{release_footprint}-#{Settings::General.admin_action_taken_at.rfc3339}-#{RequestStore.store[:subforem_id]}"
+    "#{path}-#{params[:locale]}-#{release_footprint}-#{formatted_admin_action_taken_at}-#{RequestStore.store[:subforem_id]}"
+  end
+
+  def formatted_admin_action_taken_at
+    admin_action = Settings::General.admin_action_taken_at
+    admin_action.respond_to?(:rfc3339) ? admin_action.rfc3339 : admin_action.to_s
   end
 
   def social_media_constructed_url(social_media_type, handle)
@@ -302,7 +307,8 @@ module ApplicationHelper
 
   def is_root_subforem?
     return false unless RequestStore.store[:subforem_id].present?
-    return true if RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
+
+    true if RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
   end
 
   def copyright_notice
