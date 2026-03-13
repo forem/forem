@@ -66,3 +66,7 @@
   font-size: 0.95em;
   padding: 0.1em 2.25em .5em .5em
 }
+
+.picmo__picker .picmo__categoryButtons .picmo__categoryTab.picmo__categoryTabActive .picmo__categoryButton {
+  background: var(--base-10);
+}
