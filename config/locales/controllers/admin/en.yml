@@ -207,6 +207,8 @@ en:
       tag_not_found: 'Tag "%{tag_name}" was not found'
       email_confirmed: Email confirmed!
       email_confirm_fail: Email confirmation failed.
+      pending_email_confirmed: Pending email change confirmed!
+      pending_email_confirm_fail: No pending email change to confirm.
     welcome_controller:
       thread_content: |
         ---

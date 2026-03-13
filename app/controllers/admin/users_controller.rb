@@ -499,6 +499,44 @@ module Admin
       end
     end
 
+    def confirm_pending_email
+      @user = User.find(params[:id])
+      old_email = @user.email
+      new_email = @user.unconfirmed_email
+
+      if new_email.present? && @user.update_columns(email: new_email, unconfirmed_email: nil, confirmed_at: Time.current)
+        Note.create(
+          author_id: current_user.id,
+          noteable_id: @user.id,
+          noteable_type: "User",
+          reason: "pending_email_confirmed",
+          content: "Pending email change confirmed by #{current_user.username}. Email changed from #{old_email} to #{new_email}",
+        )
+
+        respond_to do |format|
+          message = I18n.t("admin.users_controller.pending_email_confirmed")
+
+          format.html do
+            flash[:success] = message
+            redirect_back(fallback_location: admin_user_path(params[:id]))
+          end
+
+          format.js { render json: { result: message }, content_type: "application/json" }
+        end
+      else
+        message = I18n.t("admin.users_controller.pending_email_confirm_fail")
+
+        respond_to do |format|
+          format.html do
+            flash[:danger] = message
+            redirect_back(fallback_location: admin_user_path(params[:id]))
+          end
+
+          format.js { render json: { error: message }, content_type: "application/json", status: :service_unavailable }
+        end
+      end
+    end
+
     def unlock_access
       @user = User.find(params[:id])
       @user.unlock_access!

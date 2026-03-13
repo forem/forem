@@ -218,6 +218,11 @@ fr:
           body: Body
           body_placeholder: What do you want to say?
           send_submit: Send email
+          pending_email:
+            subtitle: Changement d'e-mail en attente
+            desc: "%{user} a demandé à changer son e-mail pour %{email}."
+            confirm: Confirmer le nouvel e-mail
+            confirm_dialog: "Êtes-vous sûr de vouloir confirmer ce changement d'e-mail vers %{email} ?"
           not_verified:
             subtitle: Email not verified
             desc: "%{user}'s email hasn't been verified yet."
@@ -341,6 +346,8 @@ fr:
           since_html: Member since %{time}
           not_member: User has not accepted their invitation yet.
           email: Email
+          primary_email: "E-mail principal"
+          oauth_email: "E-mail %{provider}"
           github: GitHub
           twitter: Twitter
           visit: Visit profile
