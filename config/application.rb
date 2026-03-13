@@ -75,7 +75,7 @@ module PracticalDeveloper
     config.autoload_paths += Dir["#{config.root}/lib"]
     config.eager_load_paths += Dir["#{config.root}/lib"]
 
-    config.middleware.use Rack::Deflater
+    config.middleware.use Rack::Deflater if Rails.env.production?
 
     config.i18n.load_path += Dir[Rails.root.join("config/locales/**/*.yml")]
 

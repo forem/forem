@@ -1,4 +1,4 @@
-<% cache "comment-box-#{@last_user_reaction}-#{@last_user_comment}-#{subscription_status_indicator}-#{notification.comment_updated_at}-#{notification.comment_id}" do %>
+<% cache "v2-comment-box-#{@last_user_reaction}-#{@last_user_comment}-#{subscription_status_indicator}-#{notification.comment_updated_at}-#{notification.comment_id}" do %>
   <% if notification.commentable %>
     <% if notification.comment_depth > 0 %>
       <h3>
@@ -49,7 +49,7 @@
             </span>
           </button>
 
-          <% cache "comment-box-comment-reply-#{@last_user_comment}-#{notification.comment_updated_at}-#{notification.comment_id}" do %>
+          <% cache "v2-comment-box-comment-reply-#{@last_user_comment}-#{notification.comment_updated_at}-#{notification.comment_id}" do %>
             <% reply = Comment.select(:id, :user_id, :ancestry).find_by(id: notification.comment_id)&.children&.find_by(user_id: current_user.id) %>
             <% if reply %>
               <a class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left mr-1 inline-flex reaction-comment reacted" href="<%= reply.path %>" aria-label="<%= t("views.comments.footer.reply.done") %>">
@@ -89,18 +89,26 @@
         <% @comment = Comment.new %>
         <%= form_for(@comment,
                      authenticity_token: false,
-                     html: { id: "comment-form-for-#{notification.comment_id}", onsubmit: "handleCommentSubmit.bind(this)(event)", onkeydown: "handleKeyDown(event)", class: "p-2 pb-1 pt-3 hidden" }) do |f| %>
+                     html: { id: "comment-form-for-#{notification.comment_id}", onsubmit: "handleCommentSubmit.bind(this)(event)", onkeydown: "handleKeyDown(event)", class: "comment-form p-2 pb-1 pt-3 hidden" }) do |f| %>
           <%= f.hidden_field :commentable_id, value: notification.commentable_id %>
           <%= f.hidden_field :commentable_type, value: notification.commentable_class_name %>
           <%= f.hidden_field :parent_id, value: notification.comment_id %>
-          <%= f.text_area :body_markdown,
-                          id: "comment-textarea-for-#{notification.comment_id}",
-                          class: "comment-textarea crayons-textfield mb-2 resize-y",
-                          placeholder: t("views.comments.footer.reply.placeholder"),
-                          "aria-label": t("views.comments.footer.reply.aria_label"),
-                          onfocus: "handleFocus(event)" %>
-          <div class="actions">
-            <button type="submit" class="crayons-btn comment-action-button" onclick="validateField(event)"><%= t("views.comments.write.submit") %></button>
+          
+          <div class="comment-form__inner">
+            <div class="comment-form__field">
+              <%= f.text_area :body_markdown,
+                              id: "comment-textarea-for-#{notification.comment_id}",
+                              class: "comment-textarea crayons-textfield crayons-textfield--ghost mb-2 resize-y",
+                              placeholder: t("views.comments.footer.reply.placeholder"),
+                              "aria-label": t("views.comments.footer.reply.aria_label"),
+                              onfocus: "handleFocus(event)",
+                              onkeyup: "handleKeyUp(event)",
+                              oninput: "handleChange(event)" %>
+            </div>
+            
+            <div class="comment-form__buttons flex items-center mb-4 mt-2">
+              <button type="submit" class="crayons-btn comment-action-button js-btn-enable" onclick="validateField(event)" disabled><%= t("views.comments.write.submit") %></button>
+            </div>
           </div>
         <% end %>
       </footer>

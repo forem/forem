@@ -59,7 +59,7 @@ export const calculateTextAreaHeight = (uiTextNode) => {
   // narrower for content
   hiddenTextarea.setAttribute(
     'style',
-    `${sizingStyle};${HIDDEN_TEXTAREA_STYLE}`,
+    `${sizingStyle};box-sizing:border-box !important;${HIDDEN_TEXTAREA_STYLE}`,
   );
   hiddenTextarea.value = uiTextNode.value || uiTextNode.placeholder || 'x';
 
