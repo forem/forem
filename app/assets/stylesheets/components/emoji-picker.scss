@@ -70,3 +70,7 @@
 .picmo__picker .picmo__categoryButtons .picmo__categoryTab.picmo__categoryTabActive .picmo__categoryButton {
   background: var(--base-10);
 }
+
+.picmo__closeButton {
+  display: none !important;
+}
