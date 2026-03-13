@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { timestampToLocalDateTimeShort } from '../../utilities/localDateTime';
 
 /* global timeAgo */
 
@@ -21,9 +22,14 @@ export const PublishDate = ({
     return '';
   };
 
+  // Format date using user's local timezone instead of server timezone
+  const formattedDate = publishedTimestamp
+    ? timestampToLocalDateTimeShort(publishedTimestamp)
+    : readablePublishDate; // Fallback to server-formatted date if timestamp is missing
+
   return (
     <time dateTime={publishedTimestamp}>
-      {readablePublishDate}
+      {formattedDate}
       {timeAgoText()}
     </time>
   );

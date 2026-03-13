@@ -396,6 +396,12 @@ function insertArticles(articles) {
   );
   var lastElement = singleArticles[singleArticles.length - 1];
   insertAfter(newNode, lastElement);
+  
+  // Format dates in newly inserted articles using user's local timezone
+  if (typeof formatAllTimeElements === 'function') {
+    formatAllTimeElements(newNode);
+  }
+  
   if (window.observeFeedElements && articles.length > 0) {
     window.observeFeedElements();
   }
