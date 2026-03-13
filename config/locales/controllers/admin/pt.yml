@@ -168,6 +168,8 @@ pt:
       manual_verification_sent: E-mail verificado manualmente!
       email_confirmed: E-mail confirmado!
       email_confirm_fail: A confirmação do e-mail falhou.
+      pending_email_confirmed: Mudança de e-mail pendente confirmada!
+      pending_email_confirm_fail: Nenhuma mudança de e-mail pendente para confirmar.
     welcome_controller:
       thread_content: |
         ---

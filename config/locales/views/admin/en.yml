@@ -229,6 +229,11 @@ en:
           not_confirmed:
             subtitle: Email not confirmed
             desc: "%{user}'s email hasn't been confirmed yet."
+          pending_email:
+            subtitle: Pending email change
+            desc: "%{user} has requested to change their email to %{email}."
+            confirm: Confirm new email
+            confirm_dialog: "Are you sure you want to confirm this email change to %{email}?"
           not_verified:
             subtitle: Email not verified
             desc: "%{user}'s email hasn't been verified yet."
