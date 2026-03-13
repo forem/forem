@@ -356,6 +356,8 @@ en:
           since_html: Member since %{time}
           not_member: User has not accepted their invitation yet.
           email: Email
+          primary_email: "Primary email"
+          oauth_email: "%{provider} email"
           github: GitHub
           twitter: Twitter
           visit: Visit profile
