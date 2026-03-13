@@ -5,6 +5,7 @@ en:
     revoked: Your API Key has been revoked.
   application_controller:
     bad_request: 'Error: Bad Request'
+    invalid_authenticity_token: 'Error: Invalid authenticity token'
     not_authorized: 'Error: not authorized'
     please_sign_in: Please sign in
   articles_controller:
