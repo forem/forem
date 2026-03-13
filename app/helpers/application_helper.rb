@@ -306,9 +306,8 @@ module ApplicationHelper
   end
 
   def is_root_subforem?
-    return false unless RequestStore.store[:subforem_id].present?
-
-    true if RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
+    RequestStore.store[:subforem_id].present? &&
+      RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
   end
 
   def copyright_notice
