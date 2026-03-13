@@ -108,6 +108,36 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
         expect(Rails.logger).to have_received(:error).at_least(:once)
       end
 
+      it "retries on transient network errors then succeeds" do
+        call_count = 0
+        allow(HTTParty).to receive(:get).and_wrap_original do |_method, *args, **kwargs|
+          call_count += 1
+          raise Net::OpenTimeout if call_count == 1
+
+          # Return a minimal valid RSS response on retry
+          double("Response", body: <<~XML)
+            <?xml version="1.0"?>
+            <rss version="2.0"><channel><title>Test</title></channel></rss>
+          XML
+        end
+        allow_any_instance_of(described_class).to receive(:sleep) # don't actually wait
+
+        source = Feeds::Source.first
+        described_class.call(users_scope: User.where(id: source.user_id))
+
+        expect(call_count).to be >= 2
+      end
+
+      it "gives up after max retries on persistent timeouts" do
+        allow(HTTParty).to receive(:get).and_raise(Net::ReadTimeout)
+        allow(Rails.logger).to receive(:error)
+        allow_any_instance_of(described_class).to receive(:sleep)
+
+        described_class.call
+
+        expect(Rails.logger).to have_received(:error).at_least(:once)
+      end
+
       it "reports a parsing error" do
         allow(Feedjira).to receive(:parse).and_raise(StandardError)
         allow(Rails.logger).to receive(:error)

@@ -38,6 +38,8 @@ pt:
         username: Nome de usuário
         name: Nome
         profile:
+          primary_email: "E-mail principal"
+          oauth_email: "E-mail %{provider}"
           options:
             edit_profile: Editar perfil
           edit_profile:
