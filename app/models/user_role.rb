@@ -10,9 +10,9 @@ class UserRole < ApplicationRecord
   private
 
   def bust_user_profile_cache
-    return unless user
+    return unless user_id
 
-    user.touch
-    Users::BustCacheWorker.perform_async(user.id)
+    User.where(id: user_id).touch_all
+    Users::BustCacheWorker.perform_async(user_id)
   end
 end
