@@ -947,5 +947,11 @@ class User < ApplicationRecord
     end
 
     sync_base_email_eligible! if role.name == "suspended" || role.name == "spam"
+    user_class = self.class
+    user_id = id
+    user_class.current_transaction.after_commit do
+      user_class.where(id: user_id).touch_all
+      Users::BustCacheWorker.perform_async(user_id)
+    end
   end
 end

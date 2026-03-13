@@ -1106,9 +1106,12 @@ RSpec.describe User do
     end
 
     it "busts the full profile cache and updates the user cache version when a base subscriber role is added" do
+      transaction = instance_double(ActiveRecord::Transaction)
+      expect(User).to receive(:current_transaction).and_return(transaction)
       original_updated_at = user.updated_at
 
       Timecop.travel(1.second.from_now) do
+        expect(transaction).to receive(:after_commit).and_yield
         sidekiq_assert_enqueued_with(job: Users::BustCacheWorker, args: [user.id]) do
           user.add_role(:base_subscriber)
         end
@@ -1120,10 +1123,13 @@ RSpec.describe User do
     it "busts the full profile cache and updates the user cache version when a role is removed" do
       user.add_role(:trusted)
       user.reload
+      transaction = instance_double(ActiveRecord::Transaction)
+      expect(User).to receive(:current_transaction).and_return(transaction)
       original_updated_at = user.updated_at
 
       sidekiq_assert_enqueued_with(job: Users::BustCacheWorker, args: [user.id]) do
         Timecop.travel(1.second.from_now) do
+          expect(transaction).to receive(:after_commit).and_yield
           user.remove_role(:trusted)
         end
       end
