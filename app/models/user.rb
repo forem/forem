@@ -267,6 +267,8 @@ class User < ApplicationRecord
   before_validation :set_username
   before_create :create_users_settings_and_notification_settings_records
   after_update :refresh_auto_audience_segments
+  after_update :create_email_change_note, if: :saved_change_to_unconfirmed_email?
+  after_update :create_password_change_note, if: :saved_change_to_encrypted_password?
   before_destroy :remove_from_mailchimp_newsletters, prepend: true
   before_destroy :destroy_follows, prepend: true
 
@@ -905,6 +907,24 @@ class User < ApplicationRecord
     return true if password == password_confirmation
 
     errors.add(:password, I18n.t("models.user.password_not_matched"))
+  end
+
+  def create_email_change_note
+    return unless unconfirmed_email.present?
+
+    Note.create(
+      noteable: self,
+      reason: "email_change_requested",
+      content: "User requested email change to #{unconfirmed_email}",
+    )
+  end
+
+  def create_password_change_note
+    Note.create(
+      noteable: self,
+      reason: "password_changed",
+      content: "User changed their password",
+    )
   end
 
   def confirmation_required?
