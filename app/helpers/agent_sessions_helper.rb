@@ -4,7 +4,8 @@ module AgentSessionsHelper
     "codex" => { bg: "#10A37F", label: "Codex", svg: "agent-codex.svg" },
     "gemini_cli" => { bg: "#4285F4", label: "Gemini CLI", svg: "agent-gemini-cli.svg" },
     "github_copilot" => { bg: "#333", label: "GitHub Copilot", svg: "agent-github-copilot.svg" },
-    "pi" => { bg: "#EF4444", label: "Pi", svg: "agent-pi.svg" }
+    "pi" => { bg: "#EF4444", label: "Pi", svg: "agent-pi.svg" },
+    "shelley" => { bg: "#6366F1", label: "Shelley", svg: "agent-shelley.svg" }
   }.freeze
 
   def agent_session_tool_icon(tool_name, show_label: true)

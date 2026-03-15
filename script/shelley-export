@@ -1,0 +1,181 @@
+#!/usr/bin/env python3
+"""
+Export a Shelley conversation from its SQLite database to JSONL format
+compatible with the Forem agent session uploader.
+
+Usage:
+  shelley-export <conversation_id_or_slug> [--db PATH]
+
+The default database path is ~/.config/shelley/shelley.db
+
+Output goes to stdout. Redirect to a file:
+  shelley-export my-session > session.jsonl
+"""
+
+import json
+import os
+import sqlite3
+import sys
+import argparse
+
+
+def get_db_path():
+    return os.path.expanduser("~/.config/shelley/shelley.db")
+
+
+def find_conversation(db, identifier):
+    """Find a conversation by ID or slug."""
+    cursor = db.execute(
+        "SELECT conversation_id, slug, model, cwd, created_at, updated_at "
+        "FROM conversations WHERE conversation_id = ? OR slug = ?",
+        (identifier, identifier),
+    )
+    row = cursor.fetchone()
+    if not row:
+        return None
+    return {
+        "conversation_id": row[0],
+        "slug": row[1],
+        "model": row[2],
+        "cwd": row[3],
+        "created_at": row[4],
+        "updated_at": row[5],
+    }
+
+
+def get_messages(db, conversation_id):
+    """Get all messages for a conversation, ordered by sequence."""
+    cursor = db.execute(
+        "SELECT sequence_id, type, llm_data, created_at "
+        "FROM messages WHERE conversation_id = ? "
+        "ORDER BY sequence_id",
+        (conversation_id,),
+    )
+    return cursor.fetchall()
+
+
+def role_from_type(msg_type):
+    """Map message type to role."""
+    mapping = {"system": "system", "user": "user", "agent": "assistant"}
+    return mapping.get(msg_type)
+
+
+def export_conversation(db, conversation_id, slug, model, cwd, created_at, updated_at):
+    """Export a conversation as JSONL lines."""
+    # Header line
+    header = {
+        "type": "shelley_session",
+        "version": 1,
+        "conversation_id": conversation_id,
+        "slug": slug,
+        "model": model,
+        "cwd": cwd,
+        "created_at": created_at,
+        "updated_at": updated_at,
+    }
+    print(json.dumps(header, ensure_ascii=False))
+
+    # Messages
+    messages = get_messages(db, conversation_id)
+    for seq_id, msg_type, llm_data_json, created_at_msg in messages:
+        role = role_from_type(msg_type)
+        if role is None:
+            continue  # Skip unknown message types
+
+        try:
+            llm_data = json.loads(llm_data_json) if llm_data_json else {}
+        except json.JSONDecodeError:
+            continue
+
+        content = llm_data.get("Content", [])
+        if not content:
+            continue
+
+        record = {
+            "type": "message",
+            "role": role,
+            "sequence_id": seq_id,
+            "timestamp": created_at_msg,
+            "content": content,
+        }
+
+        # Include model from the LLM data if present in any content block
+        # (model info is typically in the conversation metadata)
+
+        print(json.dumps(record, ensure_ascii=False))
+
+
+def list_conversations(db, limit=20):
+    """List recent conversations."""
+    cursor = db.execute(
+        "SELECT conversation_id, slug, model, "
+        "datetime(created_at, 'localtime') as created, "
+        "datetime(updated_at, 'localtime') as updated "
+        "FROM conversations "
+        "WHERE archived = 0 "
+        "ORDER BY updated_at DESC LIMIT ?",
+        (limit,),
+    )
+    rows = cursor.fetchall()
+    if not rows:
+        print("No conversations found.", file=sys.stderr)
+        return
+
+    print(f"{'ID':<10} {'Slug':<40} {'Model':<25} {'Updated'}", file=sys.stderr)
+    print("-" * 100, file=sys.stderr)
+    for row in rows:
+        cid, slug, model, created, updated = row
+        slug = slug or "(unnamed)"
+        model = model or "(unknown)"
+        print(f"{cid:<10} {slug:<40} {model:<25} {updated}", file=sys.stderr)
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Export Shelley conversations to JSONL for Forem"
+    )
+    parser.add_argument(
+        "conversation",
+        nargs="?",
+        help="Conversation ID or slug to export (omit to list recent conversations)",
+    )
+    parser.add_argument(
+        "--db",
+        default=get_db_path(),
+        help="Path to Shelley SQLite database",
+    )
+    args = parser.parse_args()
+
+    if not os.path.exists(args.db):
+        print(f"Database not found: {args.db}", file=sys.stderr)
+        sys.exit(1)
+
+    db = sqlite3.connect(f"file:{args.db}?mode=ro", uri=True)
+
+    if not args.conversation:
+        list_conversations(db)
+        sys.exit(0)
+
+    conv = find_conversation(db, args.conversation)
+    if not conv:
+        print(
+            f"Conversation not found: {args.conversation}",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    export_conversation(
+        db,
+        conv["conversation_id"],
+        conv["slug"],
+        conv["model"],
+        conv["cwd"],
+        conv["created_at"],
+        conv["updated_at"],
+    )
+
+    db.close()
+
+
+if __name__ == "__main__":
+    main()

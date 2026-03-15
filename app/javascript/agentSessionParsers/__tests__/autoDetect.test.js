@@ -12,6 +12,11 @@ describe('autoDetect', () => {
       expect(detectTool(content)).toBe('claude_code');
     });
 
+    it('detects Shelley from shelley_session type', () => {
+      const content = JSON.stringify({ type: 'shelley_session', version: 1, conversation_id: 'c123' });
+      expect(detectTool(content)).toBe('shelley');
+    });
+
     it('detects GitHub Copilot from session.start', () => {
       const content = JSON.stringify({ type: 'session.start', data: { sessionId: 's1' } });
       expect(detectTool(content)).toBe('github_copilot');
@@ -71,6 +76,19 @@ describe('autoDetect', () => {
       const { toolName, result } = detectAndParse(content);
       expect(toolName).toBe('claude_code');
       expect(result.messages).toHaveLength(2);
+    });
+
+    it('detects and parses Shelley JSONL', () => {
+      const content = [
+        JSON.stringify({ type: 'shelley_session', version: 1, conversation_id: 'c123', model: 'claude-sonnet-4.5' }),
+        JSON.stringify({ type: 'message', role: 'user', sequence_id: 1, timestamp: '2025-01-01T00:00:00Z', content: [{ Type: 2, Text: 'Hello' }] }),
+        JSON.stringify({ type: 'message', role: 'assistant', sequence_id: 2, timestamp: '2025-01-01T00:00:01Z', content: [{ Type: 2, Text: 'Hi there' }] }),
+      ].join('\n');
+
+      const { toolName, result } = detectAndParse(content);
+      expect(toolName).toBe('shelley');
+      expect(result.messages).toHaveLength(2);
+      expect(result.messages[0].content[0].text).toBe('Hello');
     });
   });
 });

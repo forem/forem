@@ -4,6 +4,7 @@ import * as codex from './codex.js';
 import * as geminiCli from './geminiCli.js';
 import * as pi from './pi.js';
 import * as githubCopilot from './githubCopilot.js';
+import * as shelley from './shelley.js';
 
 const PARSER_MAP = {
   claude_code: claudeCode,
@@ -11,6 +12,7 @@ const PARSER_MAP = {
   gemini_cli: geminiCli,
   pi: pi,
   github_copilot: githubCopilot,
+  shelley: shelley,
 };
 
 export function parserFor(toolName) {
@@ -36,6 +38,9 @@ export function detectTool(content) {
   if (firstLine.startsWith('{')) {
     try {
       const firstRecord = JSON.parse(firstLine);
+
+      // Shelley: first record has type "shelley_session"
+      if (firstRecord.type === 'shelley_session') return 'shelley';
 
       // GitHub Copilot: session.start with copilot producer
       if (firstRecord.type === 'session.start') return 'github_copilot';

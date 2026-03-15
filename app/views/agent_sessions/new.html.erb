@@ -28,6 +28,7 @@
         <option value="gemini_cli">Gemini CLI</option>
         <option value="pi">Pi</option>
         <option value="github_copilot">GitHub Copilot</option>
+        <option value="shelley">Shelley</option>
       </select>
     </div>
 
@@ -69,6 +70,8 @@
           <dd><code>~/.pi/agent/sessions/&lt;project&gt;/*.jsonl</code></dd>
           <dt>GitHub Copilot</dt>
           <dd><code>~/.copilot/session-state/&lt;session-id&gt;/events.jsonl</code></dd>
+          <dt>Shelley</dt>
+          <dd>Use <code>shelley-export</code> to export: <code>shelley-export &lt;conversation-id&gt; &gt; session.jsonl</code></dd>
         </dl>
       </details>
     </div>
@@ -247,7 +250,7 @@
   function formatToolName(tool) {
     var names = {
       claude_code: 'Claude Code', codex: 'Codex', gemini_cli: 'Gemini CLI',
-      pi: 'Pi', github_copilot: 'GitHub Copilot'
+      pi: 'Pi', github_copilot: 'GitHub Copilot', shelley: 'Shelley'
     };
     return names[tool] || tool;
   }
