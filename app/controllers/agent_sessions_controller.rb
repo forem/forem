@@ -1,9 +1,9 @@
 class AgentSessionsController < ApplicationController
   before_action :require_agent_sessions_enabled!
-  before_action :authenticate_user!, except: %i[show]
+  before_action :authenticate_user!, except: %i[show ingest]
   before_action :set_agent_session, only: %i[show edit update destroy raw_url]
   before_action :limit_uploads, only: %i[create presign]
-  after_action :verify_authorized
+  after_action :verify_authorized, except: %i[ingest]
 
   def index
     authorize AgentSession
@@ -22,6 +22,89 @@ class AgentSessionsController < ApplicationController
   def new
     @agent_session = AgentSession.new
     authorize @agent_session
+  end
+
+  # POST /agent_sessions/generate_ingest_link
+  # Creates a placeholder session with an ingest token and returns the upload URL.
+  def generate_ingest_link
+    authorize AgentSession, :create?
+
+    title = params[:title].presence || "Shelley Session #{Time.current.strftime('%Y-%m-%d %H:%M')}"
+    token = SecureRandom.urlsafe_base64(32)
+
+    @agent_session = current_user.agent_sessions.new(
+      title: title,
+      tool_name: "shelley",
+      ingest_token: token,
+    )
+
+    if @agent_session.save(validate: false) # skip validation — no curated_data yet
+      ingest_url = URL.url(ingest_agent_sessions_path(token: token))
+      render json: { success: true, ingest_url: ingest_url, token: token, session_id: @agent_session.id }
+    else
+      render json: { error: @agent_session.errors.full_messages.join(", ") }, status: :unprocessable_entity
+    end
+  end
+
+  # PUT /agent_sessions/ingest/:token
+  # Receives normalized agent session JSON from a CLI tool (e.g., shelley-export).
+  # No authentication required — the token itself is the credential.
+  def ingest
+    @agent_session = AgentSession.find_by(ingest_token: params[:token])
+
+    unless @agent_session
+      render json: { error: "Invalid or expired ingest token" }, status: :not_found
+      return
+    end
+
+    if @agent_session.curated_data.present? && @agent_session.curated_data != {}
+      render json: { error: "This ingest link has already been used" }, status: :conflict
+      return
+    end
+
+    begin
+      body = request.body.read
+      curated = JSON.parse(body, max_nesting: 50)
+    rescue JSON::ParserError
+      render json: { error: "Invalid JSON body" }, status: :unprocessable_entity
+      return
+    end
+
+    validation_errors = AgentSessionParsers::NormalizedDataValidator.validate(curated)
+    if validation_errors.any?
+      render json: { error: validation_errors.map(&:message).join(", ") }, status: :unprocessable_entity
+      return
+    end
+
+    # Server-side secret scrubbing
+    result = AgentSessionParsers::SensitiveDataScrubber.scrub(curated)
+
+    tool_name = curated.dig("metadata", "tool_name") || "shelley"
+    @agent_session.tool_name = tool_name if AgentSession::TOOL_NAMES.include?(tool_name)
+    @agent_session.curated_data = result.scrubbed_data
+    @agent_session.session_metadata = result.scrubbed_data.fetch("metadata", {}).merge(
+      "redactions" => result.redactions.map { |r| { "name" => r.pattern_name, "count" => r.match_count } },
+    )
+    # Update title from metadata if the placeholder title is still there
+    if curated.dig("metadata", "slug").present? && @agent_session.title.start_with?("Shelley Session")
+      @agent_session.title = curated.dig("metadata", "slug").tr("-", " ").titleize.truncate(200)
+    end
+    # Consume the token — one-time use
+    @agent_session.ingest_token = nil
+
+    if @agent_session.save
+      session_url = URL.url(agent_session_path(@agent_session))
+      edit_url = URL.url(edit_agent_session_path(@agent_session))
+      render json: {
+        success: true,
+        url: session_url,
+        edit_url: edit_url,
+        slug: @agent_session.slug,
+        total_messages: @agent_session.total_messages,
+      }, status: :created
+    else
+      render json: { error: @agent_session.errors.full_messages.join(", ") }, status: :unprocessable_entity
+    end
   end
 
   def edit

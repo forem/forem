@@ -170,6 +170,8 @@ Rails.application.routes.draw do
     resources :agent_sessions, only: %i[index new create show edit update destroy] do
       collection do
         post :presign
+        post :generate_ingest_link
+        put "ingest/:token", action: :ingest, as: :ingest
       end
       member do
         get :raw_url

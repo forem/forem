@@ -1698,6 +1698,50 @@
   color: var(--card-color, #374151);
 }
 
+// === Ingest Link ===
+.agent-session-ingest-link {
+  margin-bottom: 20px;
+  padding: 16px;
+  border: 1px solid #c7d2fe;
+  border-radius: 8px;
+  background: #eef2ff;
+  font-size: 0.9em;
+
+  p {
+    margin: 0 0 8px;
+    color: #374151;
+  }
+
+  code {
+    font-size: 0.85em;
+  }
+}
+
+.agent-session-ingest-link-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.agent-session-ingest-url {
+  flex: 1;
+  font-family: var(--ff-monospace);
+  font-size: 0.9em;
+  padding: 8px 12px;
+  background: #fff;
+  border: 1px solid #c7d2fe;
+  border-radius: 4px;
+  user-select: all;
+  word-break: break-all;
+}
+
+.agent-session-ingest-hint {
+  font-size: 0.85em;
+  color: #6b7280;
+  margin: 0 !important;
+}
+
 .agent-session-embed-snippet {
   font-family: var(--ff-monospace);
   font-size: 0.85em;

@@ -4,7 +4,19 @@
   <header class="agent-session-page-header">
     <div class="agent-session-index-header">
       <h1>Agent Sessions</h1>
-      <%= link_to "Upload New Session", new_agent_session_path, class: "crayons-btn" %>
+      <div class="agent-session-header-actions">
+        <button type="button" id="generate-ingest-link-btn" class="crayons-btn crayons-btn--secondary">Generate Upload Link</button>
+        <%= link_to "Upload New Session", new_agent_session_path, class: "crayons-btn" %>
+      </div>
+    </div>
+
+    <div id="ingest-link-result" class="agent-session-ingest-link" style="display:none">
+      <p><strong>Upload link generated!</strong> Give this URL to Shelley or use it with <code>shelley-export</code>:</p>
+      <div class="agent-session-ingest-link-row">
+        <code id="ingest-link-url" class="agent-session-ingest-url"></code>
+        <button type="button" id="copy-ingest-link-btn" class="crayons-btn crayons-btn--s">Copy</button>
+      </div>
+      <p class="agent-session-ingest-hint">This link is single-use and expires once a session is uploaded to it.</p>
     </div>
   </header>
 
@@ -42,3 +54,54 @@
     </div>
   <% end %>
 </div>
+
+<script>
+(function() {
+  var generateBtn = document.getElementById('generate-ingest-link-btn');
+  var resultDiv = document.getElementById('ingest-link-result');
+  var urlCode = document.getElementById('ingest-link-url');
+  var copyBtn = document.getElementById('copy-ingest-link-btn');
+
+  if (!generateBtn) return;
+
+  generateBtn.addEventListener('click', function() {
+    generateBtn.disabled = true;
+    generateBtn.textContent = 'Generating...';
+
+    var csrfToken = document.querySelector("meta[name='csrf-token']");
+    fetch('<%= generate_ingest_link_agent_sessions_path %>', {
+      method: 'POST',
+      headers: {
+        'X-CSRF-Token': csrfToken ? csrfToken.getAttribute('content') : '',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      credentials: 'same-origin',
+    }).then(function(resp) {
+      return resp.json();
+    }).then(function(data) {
+      if (data.success && data.ingest_url) {
+        urlCode.textContent = data.ingest_url;
+        resultDiv.style.display = 'block';
+        generateBtn.textContent = 'Generate Another Link';
+        generateBtn.disabled = false;
+      } else {
+        alert('Error: ' + (data.error || 'Unknown error'));
+        generateBtn.textContent = 'Generate Upload Link';
+        generateBtn.disabled = false;
+      }
+    }).catch(function(err) {
+      alert('Error: ' + err.message);
+      generateBtn.textContent = 'Generate Upload Link';
+      generateBtn.disabled = false;
+    });
+  });
+
+  copyBtn.addEventListener('click', function() {
+    navigator.clipboard.writeText(urlCode.textContent).then(function() {
+      copyBtn.textContent = 'Copied!';
+      setTimeout(function() { copyBtn.textContent = 'Copy'; }, 2000);
+    });
+  });
+})();
+</script>

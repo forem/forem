@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
 """
 Export a Shelley conversation from its SQLite database to JSONL format
-compatible with the Forem agent session uploader.
+or upload it directly to a Forem instance via an ingest URL.
 
 Usage:
   shelley-export <conversation_id_or_slug> [--db PATH]
+  shelley-export <conversation_id_or_slug> --upload <ingest_url>
 
 The default database path is ~/.config/shelley/shelley.db
 
-Output goes to stdout. Redirect to a file:
+Without --upload, output goes to stdout:
   shelley-export my-session > session.jsonl
+
+With --upload, posts directly to Forem:
+  shelley-export my-session --upload https://dev.to/agent_sessions/ingest/TOKEN
 """
 
 import json
@@ -17,6 +21,8 @@ import os
 import sqlite3
 import sys
 import argparse
+import urllib.request
+import urllib.error
 
 
 def get_db_path():
@@ -60,49 +66,219 @@ def role_from_type(msg_type):
     return mapping.get(msg_type)
 
 
-def export_conversation(db, conversation_id, slug, model, cwd, created_at, updated_at):
-    """Export a conversation as JSONL lines."""
-    # Header line
-    header = {
-        "type": "shelley_session",
-        "version": 1,
-        "conversation_id": conversation_id,
-        "slug": slug,
-        "model": model,
-        "cwd": cwd,
-        "created_at": created_at,
-        "updated_at": updated_at,
-    }
-    print(json.dumps(header, ensure_ascii=False))
+def truncate_str(s, max_len):
+    if s is None:
+        return s
+    if len(s) <= max_len:
+        return s
+    return s[:max_len] + "..."
 
-    # Messages
-    messages = get_messages(db, conversation_id)
-    for seq_id, msg_type, llm_data_json, created_at_msg in messages:
+
+def summarize_tool_input(name, tool_input):
+    """Summarize tool input to a short string."""
+    if not tool_input or not isinstance(tool_input, dict):
+        return None
+
+    if name == "bash":
+        return tool_input.get("command")
+    elif name == "patch":
+        return tool_input.get("path")
+    elif name == "keyword_search":
+        q = tool_input.get("query")
+        return truncate_str(q, 100) if q else None
+    elif name == "change_dir":
+        return tool_input.get("path")
+    elif name == "browser":
+        return tool_input.get("url") or tool_input.get("action")
+    elif name in ("browser_emulate", "browser_network", "browser_accessibility", "browser_profile"):
+        return tool_input.get("action")
+    elif name == "output_iframe":
+        return tool_input.get("path") or tool_input.get("title")
+    elif name == "subagent":
+        slug = tool_input.get("slug", "")
+        prompt = truncate_str(tool_input.get("prompt", ""), 80)
+        return f"{slug}: {prompt}" if slug else prompt
+    elif name == "llm_one_shot":
+        return tool_input.get("prompt_file")
+    elif name == "read_image":
+        return tool_input.get("path")
+    else:
+        return truncate_str(json.dumps(tool_input), 200)
+
+
+def extract_tool_result_text(block):
+    """Extract text from a tool result block."""
+    results = block.get("ToolResult")
+    if not isinstance(results, list):
+        return ""
+    texts = [r["Text"] for r in results if r.get("Type") == 2 and r.get("Text")]
+    return "\n".join(texts)
+
+
+def build_normalized(db, conv):
+    """Build normalized agent session data from a conversation."""
+    messages_raw = get_messages(db, conv["conversation_id"])
+
+    # First pass: build tool results map
+    tool_results_map = {}
+    parsed_records = []
+    for seq_id, msg_type, llm_data_json, created_at in messages_raw:
         role = role_from_type(msg_type)
         if role is None:
-            continue  # Skip unknown message types
-
+            continue
         try:
             llm_data = json.loads(llm_data_json) if llm_data_json else {}
         except json.JSONDecodeError:
             continue
-
         content = llm_data.get("Content", [])
         if not content:
             continue
 
+        parsed_records.append((role, content, created_at))
+
+        if role == "user":
+            for block in content:
+                if block.get("Type") == 6 and block.get("ToolUseID"):
+                    tool_results_map[block["ToolUseID"]] = extract_tool_result_text(block)
+
+    # Second pass: build normalized messages
+    normalized_messages = []
+    for role, content, timestamp in parsed_records:
+        if role == "system":
+            continue
+
+        if role == "user":
+            blocks = []
+            for block in content:
+                if block.get("Type") == 2 and block.get("Text"):
+                    blocks.append({"type": "text", "text": block["Text"]})
+            if not blocks:
+                continue
+            msg = {"role": "user", "content": blocks}
+            if timestamp:
+                msg["timestamp"] = timestamp
+            msg["index"] = len(normalized_messages)
+            normalized_messages.append(msg)
+
+        elif role == "assistant":
+            blocks = []
+            for block in content:
+                if block.get("Type") == 2 and block.get("Text"):
+                    blocks.append({"type": "text", "text": block["Text"]})
+                elif block.get("Type") == 5:
+                    tool_name = block.get("ToolName", "unknown")
+                    input_summary = summarize_tool_input(tool_name, block.get("ToolInput"))
+                    output = tool_results_map.get(block.get("ID"))
+                    tc = {"type": "tool_call", "name": tool_name}
+                    if input_summary is not None:
+                        tc["input"] = input_summary
+                    if output is not None:
+                        tc["output"] = output
+                    if block.get("ID"):
+                        tc["tool_call_id"] = block["ID"]
+                    blocks.append(tc)
+            if not blocks:
+                continue
+            msg = {"role": "assistant", "content": blocks}
+            if timestamp:
+                msg["timestamp"] = timestamp
+            msg["index"] = len(normalized_messages)
+            normalized_messages.append(msg)
+
+    metadata = {
+        "tool_name": "shelley",
+        "total_messages": len(normalized_messages),
+    }
+    if conv.get("conversation_id"):
+        metadata["session_id"] = conv["conversation_id"]
+    if conv.get("slug"):
+        metadata["slug"] = conv["slug"]
+    if conv.get("model"):
+        metadata["model"] = conv["model"]
+    if conv.get("cwd"):
+        metadata["working_directory"] = conv["cwd"]
+    if conv.get("created_at"):
+        metadata["start_time"] = conv["created_at"]
+    if conv.get("updated_at"):
+        metadata["end_time"] = conv["updated_at"]
+
+    return {
+        "messages": normalized_messages,
+        "metadata": metadata,
+    }
+
+
+def export_jsonl(db, conv):
+    """Export a conversation as JSONL lines to stdout."""
+    header = {
+        "type": "shelley_session",
+        "version": 1,
+        "conversation_id": conv["conversation_id"],
+        "slug": conv["slug"],
+        "model": conv["model"],
+        "cwd": conv["cwd"],
+        "created_at": conv["created_at"],
+        "updated_at": conv["updated_at"],
+    }
+    print(json.dumps(header, ensure_ascii=False))
+
+    messages_raw = get_messages(db, conv["conversation_id"])
+    for seq_id, msg_type, llm_data_json, created_at in messages_raw:
+        role = role_from_type(msg_type)
+        if role is None:
+            continue
+        try:
+            llm_data = json.loads(llm_data_json) if llm_data_json else {}
+        except json.JSONDecodeError:
+            continue
+        content = llm_data.get("Content", [])
+        if not content:
+            continue
         record = {
             "type": "message",
             "role": role,
             "sequence_id": seq_id,
-            "timestamp": created_at_msg,
+            "timestamp": created_at,
             "content": content,
         }
-
-        # Include model from the LLM data if present in any content block
-        # (model info is typically in the conversation metadata)
-
         print(json.dumps(record, ensure_ascii=False))
+
+
+def upload_to_forem(db, conv, ingest_url):
+    """Build normalized data and POST to a Forem ingest URL."""
+    normalized = build_normalized(db, conv)
+    body = json.dumps(normalized, ensure_ascii=False).encode("utf-8")
+
+    print(f"Uploading {normalized['metadata']['total_messages']} messages "
+          f"({len(body)} bytes) to {ingest_url}", file=sys.stderr)
+
+    req = urllib.request.Request(
+        ingest_url,
+        data=body,
+        method="PUT",
+        headers={
+            "Content-Type": "application/json",
+        },
+    )
+
+    try:
+        with urllib.request.urlopen(req) as resp:
+            result = json.loads(resp.read())
+            if result.get("success"):
+                print(f"\n✓ Session uploaded successfully!", file=sys.stderr)
+                print(f"  View: {result.get('url', 'N/A')}", file=sys.stderr)
+                print(f"  Edit: {result.get('edit_url', 'N/A')}", file=sys.stderr)
+                print(f"  Slug: {result.get('slug', 'N/A')}", file=sys.stderr)
+                print(f"  Messages: {result.get('total_messages', 'N/A')}", file=sys.stderr)
+            else:
+                print(f"Upload response: {result}", file=sys.stderr)
+    except urllib.error.HTTPError as e:
+        body = e.read().decode("utf-8", errors="replace")
+        print(f"Upload failed (HTTP {e.code}): {body}", file=sys.stderr)
+        sys.exit(1)
+    except urllib.error.URLError as e:
+        print(f"Connection failed: {e.reason}", file=sys.stderr)
+        sys.exit(1)
 
 
 def list_conversations(db, limit=20):
@@ -132,7 +308,7 @@ def list_conversations(db, limit=20):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Export Shelley conversations to JSONL for Forem"
+        description="Export Shelley conversations to JSONL for Forem, or upload directly."
     )
     parser.add_argument(
         "conversation",
@@ -143,6 +319,11 @@ def main():
         "--db",
         default=get_db_path(),
         help="Path to Shelley SQLite database",
+    )
+    parser.add_argument(
+        "--upload",
+        metavar="URL",
+        help="Forem ingest URL to upload to directly (e.g., https://dev.to/agent_sessions/ingest/TOKEN)",
     )
     args = parser.parse_args()
 
@@ -158,21 +339,13 @@ def main():
 
     conv = find_conversation(db, args.conversation)
     if not conv:
-        print(
-            f"Conversation not found: {args.conversation}",
-            file=sys.stderr,
-        )
+        print(f"Conversation not found: {args.conversation}", file=sys.stderr)
         sys.exit(1)
 
-    export_conversation(
-        db,
-        conv["conversation_id"],
-        conv["slug"],
-        conv["model"],
-        conv["cwd"],
-        conv["created_at"],
-        conv["updated_at"],
-    )
+    if args.upload:
+        upload_to_forem(db, conv, args.upload)
+    else:
+        export_jsonl(db, conv)
 
     db.close()
 
