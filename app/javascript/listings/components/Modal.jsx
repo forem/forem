@@ -17,6 +17,7 @@ export const Modal = ({
         onClose={onClick}
         closeOnClickOutside={true}
         title="Listing"
+        noPadding
       >
         <div className="p-3 m:p-6 l:p-8">
           <SingleListing
