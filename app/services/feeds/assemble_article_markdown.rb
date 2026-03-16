@@ -50,7 +50,13 @@ module Feeds
     end
 
     def assemble_body_markdown
-      cleaned_content = Feeds::CleanHtml.call(get_content)
+      raw_content = get_content
+
+      unless html_content?(raw_content)
+        return raw_content.to_s.strip
+      end
+
+      cleaned_content = Feeds::CleanHtml.call(raw_content)
       cleaned_content = thorough_parsing(cleaned_content, base_url)
 
       content = ReverseMarkdown
@@ -66,7 +72,13 @@ module Feeds
     end
 
     def get_content
-      @item.content || @item.summary || @item.description
+      @item.content || @item.summary
+    end
+
+    def html_content?(content)
+      return false if content.blank?
+
+      content.match?(/<\s*(p|div|h[1-6]|ul|ol|li|blockquote|pre|table|section|figure)[\s>]/i)
     end
 
     def thorough_parsing(content, feed_url)
