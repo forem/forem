@@ -29,6 +29,11 @@ module Api
     private_constant :ME_ATTRIBUTES_FOR_SERIALIZATION
 
     def index
+      if invalid_tags_present?
+        render json: { error: "Not Found", status: 404 }, status: :not_found
+        return
+      end
+
       @articles = ArticleApiIndexService.new(params).get
       @articles = @articles.select(INDEX_ATTRIBUTES_FOR_SERIALIZATION).decorate
 
@@ -139,6 +144,16 @@ module Api
     end
 
     private
+
+    def invalid_tags_present?
+      tag_params = [params[:tag], params[:tags], params[:tags_exclude]].flatten.compact
+
+      return false if tag_params.empty?
+
+      all_tags = tag_params.flat_map { |t| t.to_s.split(",") }.map(&:strip).compact_blank
+
+      all_tags.any? { |t| !t.match?(/\A[[:alnum:]\-]+\z/i) }
+    end
 
     def per_page_max
       (ApplicationConfig["API_PER_PAGE_MAX"] || 1000).to_i
