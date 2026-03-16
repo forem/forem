@@ -59,6 +59,11 @@ export const EditorBody = ({
 
     // Handle text that were pasted onto the editor
     const onPaste = (e) => {
+      // If files are present in the clipboard, let the image paste handler deal with it
+      const types = e.clipboardData?.types;
+      if (types && (types.includes?.('Files') || types.contains?.('Files'))) {
+        return;
+      }
 
       // Get the clipboard data
       const dt = e.clipboardData || window.clipboardData;
@@ -78,7 +83,7 @@ export const EditorBody = ({
       // Otherwise, paste as plain text, but neutralize '@' so it won't trigger mentions
       // Insert a zero-width space right after '@'
       const neutralized = pastedText.replace(/@/g, '@\u200B');
-      
+
       e.preventDefault();
 
       // get the cursor index from start to end
