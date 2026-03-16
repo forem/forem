@@ -101,6 +101,63 @@ RSpec.describe Feeds::AssembleArticleMarkdown, type: :service do
     end
   end
 
+  context "when markdown content has relative image URLs" do
+    let(:content) do
+      "### Post\n\n<img src=\"/content/blog/image.png\">\n\nMore text."
+    end
+
+    it "resolves relative img src to absolute URLs" do
+      body = feeds_assemble_article_markdown.call
+
+      expect(body).to include("<img src=\"https://feed.source/content/blog/image.png\">")
+      expect(body).not_to include("src=\"/content")
+    end
+  end
+
+  context "when markdown content has relative markdown image syntax" do
+    let(:content) do
+      "### Post\n\n![screenshot](/images/screenshot.png)\n\nMore text."
+    end
+
+    it "resolves relative markdown images to absolute URLs" do
+      body = feeds_assemble_article_markdown.call
+
+      expect(body).to include("![screenshot](https://feed.source/images/screenshot.png)")
+    end
+  end
+
+  context "when content is markdown with some inline HTML block tags" do
+    let(:content) do
+      <<~MARKDOWN
+        ### A Heading
+
+        Some paragraph text here.
+
+        Another paragraph with more text.
+
+        <p style="text-align: center"><a href="https://example.com">link</a></p>
+
+        ![](/images/photo.png)
+
+        More markdown text after the HTML.
+      MARKDOWN
+    end
+
+    it "treats as markdown and preserves formatting" do
+      body = feeds_assemble_article_markdown.call
+
+      expect(body).to include("### A Heading")
+      expect(body).to include("Some paragraph text here.")
+      expect(body).to include("More markdown text after the HTML.")
+    end
+
+    it "resolves relative image URLs" do
+      body = feeds_assemble_article_markdown.call
+
+      expect(body).to include("![](https://feed.source/images/photo.png)")
+    end
+  end
+
   context "when content is nil" do
     let(:item) do
       instance_double(

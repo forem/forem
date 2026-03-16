@@ -107,7 +107,11 @@ module DataUpdateScripts
     end
 
     def html_content?(content)
-      content.match?(/<\s*(p|div|h[1-6]|ul|ol|li|blockquote|pre|table|section|figure)[\s>]/i)
+      block_tag_count = content.scan(/<\s*(p|div|h[1-6]|ul|ol|li|blockquote|pre|table|section|figure)[\s>]/i).size
+      return false if block_tag_count.zero?
+
+      paragraph_breaks = content.scan(/\n\s*\n/).size
+      block_tag_count > paragraph_breaks
     end
 
     def log(message)
