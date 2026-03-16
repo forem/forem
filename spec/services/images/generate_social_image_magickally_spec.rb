@@ -350,6 +350,8 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
 
       before do
         allow(result_image).to receive(:composite).and_return(result_image)
+        allow(author_image).to receive(:collapse!)
+        allow(author_image).to receive(:format)
         allow(author_image).to receive(:resize)
         allow(rounded_mask).to receive(:resize)
 
@@ -358,11 +360,24 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         generator.instance_variable_set(:@rounded_mask, rounded_mask)
       end
 
-      it "adds the profile image and rounded mask to the image" do
+      it "adds the profile image and rounded mask to the image after collapsing animation frames" do
         generator.send(:add_profile_image, result_image)
+        expect(author_image).to have_received(:collapse!)
+        expect(author_image).to have_received(:format).with("png")
         expect(author_image).to have_received(:resize).with("77x77")
         expect(rounded_mask).to have_received(:resize).with("77x77")
         expect(result_image).to have_received(:composite).twice
+      end
+
+      it "gracefully rescues a Timeout::Error, logs to Honeybadger, and returns the bare result image without an avatar" do
+        allow(author_image).to receive(:collapse!).and_raise(Timeout::Error)
+        allow(Honeybadger).to receive(:notify)
+
+        expect(generator.send(:add_profile_image, result_image)).to eq(result_image)
+        expect(Honeybadger).to have_received(:notify).with(instance_of(Timeout::Error))
+        # Ensure that resize was safely aborted and not called after the exception
+        expect(author_image).not_to have_received(:resize)
+        expect(result_image).not_to have_received(:composite)
       end
     end
 

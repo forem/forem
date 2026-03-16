@@ -50,7 +50,13 @@ module Feeds
     end
 
     def assemble_body_markdown
-      cleaned_content = Feeds::CleanHtml.call(get_content)
+      raw_content = get_content
+
+      unless html_content?(raw_content)
+        return resolve_relative_image_urls(raw_content.to_s.strip)
+      end
+
+      cleaned_content = Feeds::CleanHtml.call(raw_content)
       cleaned_content = thorough_parsing(cleaned_content, base_url)
 
       content = ReverseMarkdown
@@ -66,7 +72,43 @@ module Feeds
     end
 
     def get_content
-      @item.content || @item.summary || @item.description
+      @item.content || @item.summary
+    end
+
+    def resolve_relative_image_urls(content)
+      # Fix relative src attributes in inline <img> tags
+      content = content.gsub(/(<img\s[^>]*?src=["'])([^"']+)(["'])/) do
+        prefix, path, suffix = Regexp.last_match(1), Regexp.last_match(2), Regexp.last_match(3)
+        if path.match?(%r{\Ahttps?://})
+          "#{prefix}#{path}#{suffix}"
+        else
+          resource = path.start_with?("/") ? base_url : @feed_source_url
+          "#{prefix}#{URI.join(resource, path)}#{suffix}"
+        end
+      end
+
+      # Fix relative URLs in markdown image syntax ![alt](/path)
+      content.gsub(/!\[([^\]]*)\]\(([^)]+)\)/) do
+        alt, path = Regexp.last_match(1), Regexp.last_match(2)
+        if path.match?(%r{\Ahttps?://})
+          "![#{alt}](#{path})"
+        else
+          resource = path.start_with?("/") ? base_url : @feed_source_url
+          "![#{alt}](#{URI.join(resource, path)})"
+        end
+      end
+    end
+
+    def html_content?(content)
+      return false if content.blank?
+
+      block_tag_count = content.scan(/<\s*(p|div|h[1-6]|ul|ol|li|blockquote|pre|table|section|figure)[\s>]/i).size
+      return false if block_tag_count.zero?
+
+      # If markdown paragraph breaks (blank lines) outnumber HTML block tags,
+      # the content is predominantly markdown with some inline HTML sprinkled in.
+      paragraph_breaks = content.scan(/\n\s*\n/).size
+      block_tag_count > paragraph_breaks
     end
 
     def thorough_parsing(content, feed_url)
