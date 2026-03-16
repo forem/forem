@@ -128,8 +128,14 @@ module Images
     def add_profile_image(result)
       profile_image_size = "77x77"
       profile_image_location = "+96+79"
-      # Add subtext and author image
+
+      # Flatten animated GIFs to a single frame and convert to PNG immediately to prevent 
+      # mogrify from attempting to resize hundreds of frames, sparking Timeout::Errors.
+      @author_image.collapse!
+      @author_image.format("png")
       @author_image.resize profile_image_size
+
+      # Add subtext and author image
       result = result.composite(@author_image) do |c|
         c.compose "Over"
         c.gravity "Southwest"
@@ -143,6 +149,11 @@ module Images
         c.gravity "Southwest"
         c.geometry profile_image_location
       end
+    rescue Timeout::Error, StandardError => e
+      Honeybadger.notify(e)
+      # If processing the profile picture triggers a mogrify lockup, 
+      # gracefully fall back to returning the social image without their avatar.
+      result
     end
 
     def upload_result(result)
