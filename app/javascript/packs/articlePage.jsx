@@ -3,6 +3,7 @@ import { initializeDropdown } from '../utilities/dropdownUtils';
 import { setupBillboardInteractivity } from '../utilities/billboardInteractivity';
 import { embedGists } from '../utilities/gist';
 import { isNativeAndroid, copyToClipboard } from '@utilities/runtime';
+import { initializeImageLightbox } from '../utilities/imageLightbox';
 
 // Open in new tab backfill
 // We added this behavior on rendering, so this is a backfill for the existing articles
@@ -15,7 +16,7 @@ function backfillLinkTarget() {
 
     if (href && (href.startsWith('http://') || href.startsWith('https://')) && !href.includes(appDomain)) {
       link.setAttribute('target', '_blank');
-      
+
       const existingRel = link.getAttribute('rel');
       const newRelValues = ["noopener", "noreferrer"];
 
@@ -147,3 +148,6 @@ focusOnComments();
 // Temporary Ahoy Stats for comment section clicks on controls
 backfillLinkTarget();
 renderBottomContent();
+
+// Open article body images in the in-page lightbox instead of navigating to the CDN URL
+initializeImageLightbox(document);
