@@ -199,13 +199,17 @@ function updateFollowButton(button, newState, buttonInfo) {
   button.dataset.verb = 'follow';
   button.classList.remove('crayons-btn--outlined');
 
-  if (followStyle === 'primary') {
-    button.classList.add('crayons-btn--primary');
-  } else if (followStyle === 'secondary') {
-    button.classList.add('crayons-btn--secondary');
-  } else {
+  // Only adjust primary/secondary variant if followStyle is explicitly provided.
+  if (followStyle) {
+    // Normalize by clearing existing variants, then apply the requested one.
     button.classList.remove('crayons-btn--primary');
     button.classList.remove('crayons-btn--secondary');
+
+    if (followStyle === 'primary') {
+      button.classList.add('crayons-btn--primary');
+    } else if (followStyle === 'secondary') {
+      button.classList.add('crayons-btn--secondary');
+    }
   }
 
   const nextButtonStyle = newState === 'follow-back' ? newState : style;
