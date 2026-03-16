@@ -80,6 +80,7 @@ article {
       font-size: calc(2vw + 26px);
       word-break: break-word;
       line-height: 1.28em;
+
       @media screen and (min-width: 1600px) {
         font-size: 57px;
       }
@@ -90,6 +91,7 @@ article {
 
       &.medium {
         font-size: calc(1.82vw + 25px);
+
         @media screen and (min-width: 1600px) {
           font-size: 47px;
         }
@@ -174,6 +176,7 @@ article {
         padding: 0 0 0 0;
         display: inline-flex;
         min-width: 44px;
+
         a {
           display: inline-block;
           background: $green;
@@ -184,6 +187,7 @@ article {
           font-family: $helvetica-condensed;
           font-stretch: condensed;
           margin-right: 4px;
+
           @media screen and (max-width: 376px) {
             padding: 2px 6px 3px;
             margin-left: 3px;
@@ -346,7 +350,7 @@ article {
       display: block;
     }
 
-    p + figcaption {
+    p+figcaption {
       margin-top: -0.8em;
     }
 
@@ -617,7 +621,9 @@ center .ff-container {
 }
 
 
-body.user-role--admin, .user-role--super_admin, .current-user-is-article-author {
+body.user-role--admin,
+.user-role--super_admin,
+.current-user-is-article-author {
   .crayons-article__actions {
     display: block !important;
     min-height: 42px !important;
@@ -656,36 +662,26 @@ html.image-lightbox-open {
 
 .image-lightbox__close {
   position: fixed;
-  top: 16px;
-  right: 20px;
+  top: 0.4vw;
+  right: 0.4vw;
   z-index: 10001;
   width: 44px;
   height: 44px;
-  border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.12);
+  border: none;
+  background: transparent;
   color: #fff;
-  font-size: 26px;
+  font-size: 32px;
   line-height: 1;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.15s ease;
+  transition: transform 0.15s ease;
 
   &:hover,
   &:focus-visible {
-    background: rgba(255, 255, 255, 0.25);
-    border-color: rgba(255, 255, 255, 0.6);
     transform: scale(1.1);
     outline: none;
-  }
-
-  &:focus-visible {
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5);
   }
 }
 

@@ -43,8 +43,32 @@ function getOrBuildOverlay() {
   return elements;
 }
 
+function handleKeydown(e) {
+  if (e.key === 'Escape') closeLightbox();
+}
+
+function handleOverlayClick(e) {
+  const overlay = document.getElementById(OVERLAY_ID);
+  const closeBtn = document.querySelector('.image-lightbox__close');
+  if (e.target === overlay || e.target === closeBtn) closeLightbox();
+}
+
 function openLightbox(src, alt) {
   const { overlay, closeBtn, img } = getOrBuildOverlay();
+
+  // If a timeout was queued from a previous close operation, clear it
+  // so the new image doesn't instantly vanish mid-view.
+  if (overlay._timeout) {
+    clearTimeout(overlay._timeout);
+    overlay._timeout = null;
+  }
+
+  // Clear any existing listeners first to prevent orphaned closures
+  // from piling up if openLightbox is called sequentially.
+  if (typeof overlay._cleanup === 'function') overlay._cleanup();
+
+  // Cache the element that triggered the modal for a11y focus restoration
+  overlay._triggerElement = document.activeElement;
 
   img.src = src;
   img.alt = alt || '';
@@ -56,38 +80,39 @@ function openLightbox(src, alt) {
   // keyboard users to be able to dismiss the overlay immediately with Escape.
   requestAnimationFrame(() => closeBtn.focus());
 
-  function handleKeydown(e) {
-    if (e.key === 'Escape') closeLightbox();
-  }
-
-  function handleOverlayClick(e) {
-    if (e.target === overlay || e.target === closeBtn) closeLightbox();
-  }
-
   overlay.addEventListener('click', handleOverlayClick);
   document.addEventListener('keydown', handleKeydown);
 
   overlay._cleanup = () => {
     overlay.removeEventListener('click', handleOverlayClick);
     document.removeEventListener('keydown', handleKeydown);
-    delete overlay._cleanup;
   };
 }
 
-function closeLightbox() {
+export function closeLightbox() {
   const overlay = document.getElementById(OVERLAY_ID);
   if (!overlay) return;
 
   overlay.classList.remove('image-lightbox--visible');
   document.documentElement.classList.remove('image-lightbox-open');
 
-  if (typeof overlay._cleanup === 'function') overlay._cleanup();
+  if (typeof overlay._cleanup === 'function') {
+    overlay._cleanup();
+    delete overlay._cleanup;
+  }
+
+  // Restore focus to the triggering element (A11y)
+  if (overlay._triggerElement && typeof overlay._triggerElement.focus === 'function') {
+    overlay._triggerElement.focus();
+    delete overlay._triggerElement;
+  }
 
   // Clear src after the CSS transition completes so the previous image
   // does not flash when the next one is loading.
-  setTimeout(() => {
+  overlay._timeout = setTimeout(() => {
     const img = overlay.querySelector('.image-lightbox__img');
     if (img) img.src = '';
+    overlay._timeout = null;
   }, 350);
 }
 
@@ -119,4 +144,11 @@ export function initializeImageLightbox(rootEl = document) {
 
     if (src) openLightbox(src, alt);
   });
+
+  // Ensure lightbox closes when InstantClick navigates to a new page,
+  // preventing users from being trapped with `overflow: hidden` on the next view.
+  if (window.InstantClick && !closeLightbox.isBound) {
+    closeLightbox.isBound = true;
+    window.InstantClick.on('change', closeLightbox);
+  }
 }
