@@ -58,6 +58,10 @@
                     <%= t("views.users.#{@user.spam? ? 'unspam' : 'spam'}", user: @user.username) %>
                   </a>
                 <% end %>
+                <span
+                  class="admin-link-wrapper"
+                  data-path="<%= admin_user_path(@user) %>"
+                  data-text="<%= t("views.main.nav.admin") %>"></span>
                 <span class="report-abuse-link-wrapper" data-path="/report-abuse?url=<%= user_url(@user) %>"></span>
               </div>
             </div>

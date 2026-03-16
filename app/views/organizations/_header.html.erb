@@ -29,6 +29,10 @@
               </button>
 
               <div id="organization-profile-dropdownmenu" class="crayons-dropdown left-2 right-2 s:right-0 s:left-auto top-100 mt-1">
+                <span
+                  class="admin-link-wrapper"
+                  data-path="<%= admin_organization_path(@organization) %>"
+                  data-text="<%= t("views.main.nav.admin") %>"></span>
                 <span class="report-abuse-link-wrapper" data-path="/report-abuse?url=<%= organization_url(@organization) %>"></span>
               </div>
             </div>
