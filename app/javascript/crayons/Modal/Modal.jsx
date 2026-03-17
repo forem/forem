@@ -15,6 +15,7 @@ export const Modal = ({
   sheet,
   centered,
   noBackdrop,
+  noPadding = false,
   showHeader = true,
   sheetAlign = 'center',
   backdropDismissible = false,
@@ -59,7 +60,11 @@ export const Modal = ({
               />
             </header>
           )}
-          <div className="crayons-modal__box__body">{children}</div>
+          <div
+            className={`crayons-modal__box__body${noPadding ? ' crayons-modal__box__body--no-padding' : ''}`}
+          >
+            {children}
+          </div>
         </div>
         {!noBackdrop && (
           <div
@@ -88,4 +93,5 @@ Modal.propTypes = {
   sheet: PropTypes.bool,
   sheetAlign: PropTypes.oneOf(['center', 'left', 'right']),
   showHeader: PropTypes.bool,
+  noPadding: PropTypes.bool,
 };
