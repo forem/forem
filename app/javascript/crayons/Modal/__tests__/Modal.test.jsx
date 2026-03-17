@@ -167,4 +167,32 @@ describe('Modal', () => {
       true,
     );
   });
+
+  it('should render the modal body with default padding class', async () => {
+    const { container } = render(
+      <Modal title="This is a modal title" onClose={jest.fn()}>
+        This is the modal body content
+      </Modal>,
+    );
+
+    const modalBody = container.querySelector('.crayons-modal__box__body');
+    expect(modalBody).not.toBeNull();
+    expect(
+      modalBody.classList.contains('crayons-modal__box__body--no-padding'),
+    ).toEqual(false);
+  });
+
+  it('should render the modal body with no-padding class when noPadding is true', async () => {
+    const { container } = render(
+      <Modal title="This is a modal title" onClose={jest.fn()} noPadding>
+        This is the modal body content
+      </Modal>,
+    );
+
+    const modalBody = container.querySelector('.crayons-modal__box__body');
+    expect(modalBody).not.toBeNull();
+    expect(
+      modalBody.classList.contains('crayons-modal__box__body--no-padding'),
+    ).toEqual(true);
+  });
 });
