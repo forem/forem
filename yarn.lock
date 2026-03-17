@@ -4487,25 +4487,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@whitespace/storybook-addon-html@npm:^5.1.1":
-  version: 5.1.1
-  resolution: "@whitespace/storybook-addon-html@npm:5.1.1"
+"@whitespace/storybook-addon-html@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@whitespace/storybook-addon-html@npm:9.0.0"
   peerDependencies:
-    "@storybook/addons": ^6.5.8
-    "@storybook/api": ^6.5.8
-    "@storybook/components": ^6.5.8
-    "@storybook/core-events": ^6.5.8
-    "@storybook/theming": ^6.5.8
-    prettier: ^2.0.0
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0
-    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-    react-syntax-highlighter: ^15.0.0
-  peerDependenciesMeta:
-    react:
-      optional: true
-    react-dom:
-      optional: true
-  checksum: 10c0/1f1d7eae995293dce6946c639397b59e7304941c376d1928250f57c78a324a5c31d9bf829c1fc586ee36b3a7f0ca62745976c6e034c53b50edd9a89f684a5875
+    prettier: ^3.7.1
+    storybook: ^10
+  checksum: 10c0/0a79ec9e4d5e0ca48cd604beabd3da5ae104f1bd508c722f617ed85cd83ebc606f9696f96b2b32e7d0f79a26dd6e825524f00adb4a24e1cb3d384f3ce5baa9a0
   languageName: node
   linkType: hard
 
@@ -7003,7 +6991,7 @@ __metadata:
     "@testing-library/preact": "npm:^2.0.1"
     "@testing-library/preact-hooks": "npm:^1.1.0"
     "@testing-library/user-event": "npm:^14.5.2"
-    "@whitespace/storybook-addon-html": "npm:^5.1.1"
+    "@whitespace/storybook-addon-html": "npm:^9.0.0"
     ahoy.js: "npm:^0.4.4"
     algoliasearch: "npm:4.23.3"
     autoprefixer: "npm:^10.4.16"
