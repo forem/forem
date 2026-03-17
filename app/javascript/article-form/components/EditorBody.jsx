@@ -16,6 +16,28 @@ import { useDragAndDrop } from '@utilities/dragAndDrop';
 import { fetchSearch } from '@utilities/search';
 import { AutocompleteTriggerTextArea } from '@crayons/AutocompleteTriggerTextArea';
 
+// For any line containing a pipe, replace `\|` with `&#124;` automatically.
+const normalizeEscapedPipes = (text) => {
+  const lines = text.split('\n');
+  let inFence = false;
+  const fenceRe = /^\s*```/;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+
+    if (fenceRe.test(line)) {
+      inFence = !inFence;
+      continue;
+    }
+
+    if (!inFence && line.includes('|')) {
+      lines[i] = line.replace(/\\\|/g, '&#124;');
+    }
+  }
+
+  return lines.join('\n');
+};
+
 export const EditorBody = ({
   onChange,
   defaultValue,
@@ -58,6 +80,31 @@ export const EditorBody = ({
     textarea.addEventListener('paste', handler);
     return () => textarea.removeEventListener('paste', handler);
   }, []);
+  
+  // normalize \| to &#124; on lines with pipes, outside code fences.
+  const handleBodyChange = (e) => {
+    const el = e?.target;
+    if (!el) {
+      onChange?.(e);
+      return;
+    }
+
+    const original = el.value;
+    const normalized = normalizeEscapedPipes(original);
+
+    if (normalized !== original) {
+      const start = el.selectionStart;
+      const end = el.selectionEnd;
+      el.value = normalized;
+      try {
+        el.setSelectionRange(start, end);
+      } catch {
+        // ignore selection errors
+      }
+    }
+
+    onChange?.(e);
+  };
 
   return (
     <div
@@ -76,7 +123,7 @@ export const EditorBody = ({
           )
         }
         autoResize
-        onChange={onChange}
+        onChange={handleBodyChange}
         onFocus={switchHelpContext}
         aria-label="Post Content"
         name="body_markdown"
