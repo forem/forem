@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
   skip_before_action :track_ahoy_visit
   before_action :set_session_domain
+  before_action :set_unauthenticated_session_expiry
   before_action :verify_private_forem
   protect_from_forgery with: :exception, prepend: true
   before_action :set_devise_rememberable_options # Add this line
@@ -436,6 +437,12 @@ class ApplicationController < ActionController::Base
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[username name profile_image profile_image_url])
     devise_parameter_sanitizer.permit(:accept_invitation, keys: %i[name])
+  end
+
+  def set_unauthenticated_session_expiry
+    # If the user is unauthenticated, expire their session quickly to save Redis memory.
+    # Authenticated users use the default `expire_after` defined in config/initializers/session_store.rb
+    request.session_options[:expire_after] = 2.days.to_i unless user_signed_in?
   end
 
   def set_session_domain
