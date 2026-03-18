@@ -442,7 +442,16 @@ class ApplicationController < ActionController::Base
   def set_unauthenticated_session_expiry
     # If the user is unauthenticated, expire their session quickly to save Redis memory.
     # Authenticated users use the default `expire_after` defined in config/initializers/session_store.rb
-    request.session_options[:expire_after] = 2.days.to_i unless user_signed_in?
+    return if user_signed_in?
+
+    configured_ttl = ApplicationConfig["ANONYMOUS_SESSION_EXPIRY_SECONDS"]
+    ttl_seconds = if configured_ttl.present?
+                    configured_ttl.to_i
+                  else
+                    2.days.to_i
+                  end
+
+    request.session_options[:expire_after] = ttl_seconds
   end
 
   def set_session_domain
