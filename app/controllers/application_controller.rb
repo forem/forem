@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
   skip_before_action :track_ahoy_visit
   before_action :set_session_domain
-  before_action :set_unauthenticated_session_expiry
+  after_action :set_unauthenticated_session_expiry
   before_action :verify_private_forem
   protect_from_forgery with: :exception, prepend: true
   before_action :set_devise_rememberable_options # Add this line
