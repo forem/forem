@@ -123,16 +123,12 @@
         data-info='<%= DataInfo.to_json(object: @user) %>'>
         <%= t("views.organizations.follow") %>
       </button>
-      <% if user_signed_in? && current_user.org_admin?(@organization) %>
-        <a href="/<%= @organization.slug %>/settings" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon ml-1" title="<%= t("views.organizations.settings_link") %>">
-          <%= crayons_icon_tag(:cog, title: t("views.organizations.settings_link")) %>
-        </a>
-      <% end %>
-      <% if user_signed_in? && current_user.any_admin? %>
-        <a href="<%= admin_organization_path(@organization) %>" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon ml-1" title="<%= t("views.organizations.admin_link") %>">
-          <%= crayons_icon_tag(:lock, title: t("views.organizations.admin_link")) %>
-        </a>
-      <% end %>
+      <a href="/<%= @organization.slug %>/settings" id="org-settings-btn" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon ml-1 hidden" title="<%= t("views.organizations.settings_link") %>" data-org-id="<%= @organization.id %>">
+        <%= crayons_icon_tag(:cog, title: t("views.organizations.settings_link")) %>
+      </a>
+      <a href="<%= admin_organization_path(@organization) %>" id="org-admin-btn" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon ml-1 hidden" title="<%= t("views.organizations.admin_link") %>">
+        <%= crayons_icon_tag(:lock, title: t("views.organizations.admin_link")) %>
+      </a>
       <div class="profile-dropdown ml-1 s:relative" data-organizationname="<%= @organization.name %>">
         <button id="organization-profile-dropdown" aria-expanded="false" aria-controls="organization-profile-dropdownmenu" aria-haspopup="true" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon">
           <%= crayons_icon_tag("overflow-horizontal", class: "dropdown-icon", title: t("views.organizations.dropdown")) %>

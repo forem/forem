@@ -35,9 +35,10 @@
 <style>
   .org-settings-layout {
     display: grid;
-    grid-template-columns: 200px 1fr;
+    grid-template-columns: 200px minmax(0, 1fr);
     gap: var(--su-6);
     align-items: start;
+    min-width: 0;
   }
   .org-settings-sidebar {
     position: sticky;
@@ -62,12 +63,26 @@
     border-left-color: var(--accent-brand);
     font-weight: var(--fw-medium);
   }
+  .org-settings-layout .grid,
+  .org-settings-layout .grid > * {
+    min-width: 0;
+  }
+  
+  /* Allow liquid row tags to gracefully wrap inside the squeezed preview context */
+  .org-settings-layout .crayons-article-form__body .ltag-row {
+    flex-wrap: wrap;
+  }
+  .org-settings-layout .crayons-article-form__body .ltag-row > * {
+    min-width: min(100%, 200px);
+  }
+
   #org-page-editor-root .crayons-article-form__content {
     border: 1px solid var(--base-20);
     border-radius: var(--radius);
     min-height: 480px;
     display: flex;
     flex-direction: column;
+    min-width: 0;
   }
   #org-page-editor-root .crayons-article-form__header {
     border-bottom: 1px solid var(--base-20);
@@ -103,9 +118,20 @@
   #org-page-editor-root .crayons-article-form__body .crayons-textfield {
     min-height: 400px;
   }
+  #section-page,
+  #section-profile,
+  #section-social,
+  #section-header-cta,
+  #section-sidebar-cta,
+  #section-members,
+  #section-verification,
+  #section-invitations,
+  #section-danger {
+    overflow-x: hidden;
+  }
   @media (max-width: 768px) {
     .org-settings-layout {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
     .org-settings-sidebar {
       position: static;
@@ -196,12 +222,28 @@
                  data-default-value="<%= page_markdown %>"
                  data-textarea-name="organization[page_markdown]"
                  data-preview-url="<%= organization_settings_preview_path(@organization.slug) %>">
-              <%# Fallback textarea shown before JS loads %>
-              <textarea name="organization[page_markdown]"
-                        id="org_page_markdown"
-                        rows="20"
-                        class="crayons-textfield ff-monospace"
-                        placeholder="<%= t("views.organization_settings.page.readme_placeholder") %>"><%= page_markdown %></textarea>
+              <%# Fallback layout mimicking the JS component to prevent FOUC %>
+              <div class="crayons-article-form__content">
+                <div class="crayons-article-form__header">
+                  <nav class="crayons-article-form__tabs crayons-tabs ml-auto" aria-label="View post modes">
+                    <ul class="crayons-tabs__list">
+                      <li>
+                        <button data-text="Edit" class="crayons-tabs__item crayons-tabs__item--current" type="button" aria-current="page">Edit</button>
+                      </li>
+                      <li>
+                        <button data-text="Preview" class="crayons-tabs__item" type="button">Preview</button>
+                      </li>
+                    </ul>
+                  </nav>
+                </div>
+                <div class="crayons-article-form__body drop-area text-padding">
+                  <textarea name="organization[page_markdown]"
+                            id="org_page_markdown"
+                            rows="20"
+                            class="crayons-textfield crayons-textfield--ghost crayons-article-form__body__field ff-monospace fs-l h-100"
+                            placeholder="<%= t("views.organization_settings.page.readme_placeholder") %>"><%= page_markdown %></textarea>
+                </div>
+              </div>
             </div>
             <p class="crayons-field__description"><%= t("views.organization_settings.page.readme_description") %></p>
           </div>

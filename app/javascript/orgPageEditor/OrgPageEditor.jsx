@@ -128,7 +128,7 @@ export const OrgPageEditor = ({ defaultValue, textAreaName, previewUrl }) => {
         </div>
       ) : (
         <EditorBody
-          defaultValue={defaultValue}
+          defaultValue={bodyRef.current}
           onChange={handleChange}
           textAreaId={TEXTAREA_ID}
           textAreaName={textAreaName}
