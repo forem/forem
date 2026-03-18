@@ -10,6 +10,16 @@ class Organization < ApplicationRecord
   INTEGER_REGEXP = /\A\d+\z/
 
   SOCIAL_LINK_PLATFORMS = %w[youtube discord linkedin instagram facebook spotify twitch mastodon].freeze
+  SOCIAL_LINK_DOMAINS = {
+    "youtube" => /(youtube\.com|youtu\.be)\z/i,
+    "discord" => /(discord\.com|discord\.gg)\z/i,
+    "linkedin" => /linkedin\.com\z/i,
+    "instagram" => /instagram\.com\z/i,
+    "facebook" => /(facebook\.com|fb\.com)\z/i,
+    "spotify" => /(spotify\.com|open\.spotify\.com)\z/i,
+    "twitch" => /twitch\.tv\z/i,
+    "mastodon" => nil
+  }.freeze
   VERIFICATION_STATUS_PENDING = "pending".freeze
   VERIFICATION_STATUS_SUCCESS = "success".freeze
   VERIFICATION_STATUS_FAILED = "failed".freeze
@@ -202,9 +212,16 @@ class Organization < ApplicationRecord
       return
     end
 
-    if url.present? && url.length > HEADER_CTA_MAX_URL
-      errors.add(:header_cta, I18n.t("models.organization.header_cta_url_too_long", max: HEADER_CTA_MAX_URL))
-      return
+    if url.present?
+      if url.length > HEADER_CTA_MAX_URL
+        errors.add(:header_cta, I18n.t("models.organization.header_cta_url_too_long", max: HEADER_CTA_MAX_URL))
+        return
+      end
+
+      unless url.match?(/\A#{URI::DEFAULT_PARSER.make_regexp(%w[http https mailto])}\z/)
+        errors.add(:header_cta, I18n.t("models.organization.header_cta_url_invalid", default: "Link must be a valid HTTP, HTTPS, or Mailto URL"))
+        return
+      end
     end
 
     validate_header_cta_links(links) if links.present?
@@ -236,6 +253,11 @@ class Organization < ApplicationRecord
         errors.add(:header_cta, I18n.t("models.organization.header_cta_url_too_long", max: HEADER_CTA_MAX_URL))
         return
       end
+
+      unless link["url"].match?(/\A#{URI::DEFAULT_PARSER.make_regexp(%w[http https mailto])}\z/)
+        errors.add(:header_cta, I18n.t("models.organization.header_cta_url_invalid", default: "Link must be a valid HTTP, HTTPS, or Mailto URL"))
+        return
+      end
     end
   end
 
@@ -252,6 +274,24 @@ class Organization < ApplicationRecord
 
       if url.length > 200
         errors.add(:social_links, I18n.t("models.organization.social_link_too_long", platform: platform))
+      end
+
+      unless url.match?(/\A#{URI::DEFAULT_PARSER.make_regexp(%w[http https])}\z/)
+        errors.add(:social_links, I18n.t("models.organization.social_link_invalid", default: "must be valid HTTP or HTTPS URLs"))
+        next
+      end
+
+      domain_regex = SOCIAL_LINK_DOMAINS[platform]
+      if domain_regex
+        host = begin
+                 URI.parse(url).host
+               rescue URI::InvalidURIError
+                 nil
+               end
+
+        unless host && host.match?(domain_regex)
+          errors.add(:social_links, I18n.t("models.organization.social_link_domain_mismatch", platform: platform.capitalize, default: "URL domain must match the selected platform (#{platform.capitalize})"))
+        end
       end
     end
   end
