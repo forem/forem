@@ -1244,6 +1244,40 @@ RSpec.describe User do
     end
   end
 
+  describe "#create_email_change_note" do
+    it "creates a note when unconfirmed_email is set" do
+      expect do
+        user.update(email: "changed@example.com")
+      end.to change(Note, :count).by(1)
+
+      note = user.notes.last
+      expect(note.reason).to eq("email_change_requested")
+      expect(note.content).to include("changed@example.com")
+      expect(note.author_id).to be_nil
+    end
+
+    it "does not create a note when unconfirmed_email is cleared" do
+      user.update_columns(unconfirmed_email: "old@example.com")
+
+      expect do
+        user.update_columns(unconfirmed_email: nil)
+      end.not_to change(Note, :count)
+    end
+  end
+
+  describe "#create_password_change_note" do
+    it "creates a note when password is changed" do
+      expect do
+        user.update(password: "newpassword123", password_confirmation: "newpassword123")
+      end.to change(Note, :count).by(1)
+
+      note = user.notes.last
+      expect(note.reason).to eq("password_changed")
+      expect(note.content).to eq("User changed their password")
+      expect(note.author_id).to be_nil
+    end
+  end
+
   describe "community_bots_for_subforem scope" do
     let(:subforem) { create(:subforem) }
     let!(:community_bot) { create(:user, type_of: :community_bot, onboarding_subforem_id: subforem.id) }

@@ -37,9 +37,7 @@ class FollowsController < ApplicationController
         "self"
       else
         following_them_check = Follows::CheckCached.call(current_user, params[:followable_type], id)
-        if params[:followable_type] != "User"
-          following_them_check.to_s
-        else
+        if params[:followable_type] == "User"
           following_you_check = Follows::CheckCached.call(User.find_by(id: id), params[:followable_type],
                                                           current_user.id)
           if following_them_check && following_you_check
@@ -49,6 +47,8 @@ class FollowsController < ApplicationController
           else
             following_them_check.to_s
           end
+        else
+          following_them_check.to_s
         end
       end
     end
@@ -119,7 +119,7 @@ class FollowsController < ApplicationController
 
   def clear_followed_tag_caches
     # Clear the followed_tags model cache, which is nested inside the async_info cache
-    Rails.cache.delete("#{current_user.cache_key}-#{current_user.last_followed_at&.rfc3339}/followed_tags")
+    Rails.cache.delete("#{current_user.cache_key}-#{current_user.formatted_last_followed_at}/followed_tags")
     # Clear the async_info cache, which contains the list of tags the user is currently following
     Rails.cache.delete("#{current_user.cache_key_with_version}/user-info")
   end
