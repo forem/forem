@@ -18,10 +18,10 @@ RSpec.describe "ApplicationController", type: :request do
   end
 
   describe "#set_unauthenticated_session_expiry" do
-    let(:request) { instance_double(ActionDispatch::Request, session_options: {}) }
+    let(:mock_request) { instance_double(ActionDispatch::Request, session_options: {}) }
 
     before do
-      allow(controller).to receive(:request).and_return(request)
+      allow(controller).to receive(:request).and_return(mock_request)
     end
 
     context "when user is not signed in" do
@@ -31,7 +31,7 @@ RSpec.describe "ApplicationController", type: :request do
 
       it "sets session expire_after to 2 days" do
         controller.send(:set_unauthenticated_session_expiry)
-        expect(request.session_options[:expire_after]).to eq(2.days.to_i)
+        expect(mock_request.session_options[:expire_after]).to eq(2.days.to_i)
       end
     end
 
@@ -42,7 +42,7 @@ RSpec.describe "ApplicationController", type: :request do
 
       it "does not alter expire_after, relying on the global default" do
         controller.send(:set_unauthenticated_session_expiry)
-        expect(request.session_options[:expire_after]).to be_nil
+        expect(mock_request.session_options[:expire_after]).to be_nil
       end
     end
   end
