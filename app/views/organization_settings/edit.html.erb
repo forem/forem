@@ -163,7 +163,9 @@
     <%# ── Sidebar Navigation ── %>
     <aside class="org-settings-sidebar">
       <nav id="org-settings-nav">
-        <a href="#section-page"><%= t("views.organization_settings.page.heading") %></a>
+        <% if FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization]) %>
+          <a href="#section-page"><%= t("views.organization_settings.page.heading") %></a>
+        <% end %>
         <a href="#section-profile"><%= t("views.settings.org.admin.details") %></a>
         <a href="#section-social"><%= t("views.organization_settings.social_links.heading") %></a>
         <a href="#section-header-cta"><%= t("views.organization_settings.header_cta.heading") %></a>
@@ -189,10 +191,10 @@
 
       <%= form_for @organization, url: organization_settings_path(@organization.slug), method: :patch, html: { id: "org-settings-form", class: "grid gap-6", multipart: true } do |f| %>
       <%# ── Page: Cover image + README editor ── %>
-      <div id="section-page" class="crayons-card crayons-card--content-rows">
-        <h2><%= t("views.organization_settings.page.heading") %></h2>
+      <% if FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization]) %>
+        <div id="section-page" class="crayons-card crayons-card--content-rows">
+          <h2><%= t("views.organization_settings.page.heading") %></h2>
 
-        <% if FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization]) %>
           <div class="crayons-field">
             <%= f.label :cover_image, t("views.organization_settings.page.cover_image"), class: "crayons-field__label" %>
             <% if @organization.cover_image_url.present? %>
@@ -247,11 +249,8 @@
             </div>
             <p class="crayons-field__description"><%= t("views.organization_settings.page.readme_description") %></p>
           </div>
-        <% else %>
-          <%= render "shared/org_features_upgrade_cta" %>
-        <% end %>
-
-      </div>
+        </div>
+      <% end %>
 
       <%# ── Profile details ── %>
       <div id="section-profile" class="crayons-card crayons-card--content-rows">
