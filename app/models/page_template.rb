@@ -25,11 +25,11 @@ class PageTemplate < ApplicationRecord
   end
 
   ransacker :pages_count do
-    Arel.sql("(SELECT COUNT(*) FROM pages WHERE pages.page_template_id = page_templates.id)")
+    Arel.sql("pages_count")
   end
 
   ransacker :forks_count do
-    Arel.sql("(SELECT COUNT(*) FROM page_templates AS pt WHERE pt.forked_from_id = page_templates.id)")
+    Arel.sql("forks_count")
   end
 
   # Returns the schema fields as an array of hashes

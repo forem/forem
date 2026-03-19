@@ -9,7 +9,12 @@ module Admin
     before_action :set_default_options, only: %i[index]
 
     def index
-      @q = PageTemplate.includes(:forked_from, :forks).ransack(params[:q])
+      @q = PageTemplate
+        .left_outer_joins(:pages, :forks)
+        .select("page_templates.*, COUNT(DISTINCT pages.id) AS pages_count, COUNT(DISTINCT forks_page_templates.id) AS forks_count")
+        .group("page_templates.id")
+        .includes(:forked_from)
+        .ransack(params[:q])
       @page_templates = @q.result
     end
 

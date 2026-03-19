@@ -32,7 +32,7 @@
               <%= template.schema_fields.count %> field(s)
             </td>
             <td>
-              <%= template.pages.count %> page(s)
+              <%= template.pages_count %> page(s)
             </td>
             <td>
               <% if template.forked_from.present? %>
@@ -42,8 +42,8 @@
               <% end %>
             </td>
             <td>
-              <% if template.forks.any? %>
-                <%= template.forks.count %> fork(s)
+              <% if template.forks_count > 0 %>
+                <%= template.forks_count %> fork(s)
               <% else %>
                 <span class="color-base-50">—</span>
               <% end %>
