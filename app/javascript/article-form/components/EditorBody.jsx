@@ -95,9 +95,30 @@ export const EditorBody = ({
     if (normalized !== original) {
       const start = el.selectionStart;
       const end = el.selectionEnd;
+
+      // Compute how normalization affects text length before the selection,
+      // so we can adjust caret/selection positions accordingly.
+      const beforeStartOriginal = original.slice(0, start);
+      const beforeEndOriginal = original.slice(0, end);
+      const beforeStartNormalized = normalizeEscapedPipes(beforeStartOriginal);
+      const beforeEndNormalized = normalizeEscapedPipes(beforeEndOriginal);
+
+      const deltaStart = beforeStartNormalized.length - beforeStartOriginal.length;
+      const deltaEnd = beforeEndNormalized.length - beforeEndOriginal.length;
+
+      let newStart = start + deltaStart;
+      let newEnd = end + deltaEnd;
+
+      // Clamp selection to the bounds of the new text.
+      const maxPos = normalized.length;
+      if (newStart < 0) newStart = 0;
+      if (newEnd < 0) newEnd = 0;
+      if (newStart > maxPos) newStart = maxPos;
+      if (newEnd > maxPos) newEnd = maxPos;
+
       el.value = normalized;
       try {
-        el.setSelectionRange(start, end);
+        el.setSelectionRange(newStart, newEnd);
       } catch {
         // ignore selection errors
       }
