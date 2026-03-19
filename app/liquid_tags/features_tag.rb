@@ -8,7 +8,10 @@ class FeaturesTag < Liquid::Block
   end
 
   def render(context)
-    content = super
+    content = ""
+    @body.nodelist.each do |node|
+      content << node.render(context) if node.is_a?(FeatureTag)
+    end
     ApplicationController.render(
       partial: PARTIAL,
       locals: { content: content },

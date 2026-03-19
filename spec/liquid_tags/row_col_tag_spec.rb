@@ -86,4 +86,25 @@ RSpec.describe "Row and Col liquid tags", type: :liquid_tag do
       expect(result).to include("<em>Italic</em>")
     end
   end
+
+  describe "content filtering" do
+    it "ignores whitespace and newlines between cols" do
+      result = parse("{% row %}\n   {% col %}A{% endcol %}\n  {% col %}B{% endcol %}\n{% endrow %}").render
+      expect(result).to include("A")
+      expect(result).to include("B")
+    end
+
+    it "ignores stray text and comments between cols" do
+      result = parse("{% row %} This should disappear {% col %}A{% endcol %} # Note: hi {% endrow %}").render
+      expect(result).to include("A")
+      expect(result).not_to include("This should disappear")
+      expect(result).not_to include("# Note: hi")
+    end
+
+    it "ignores other liquid tags between cols" do
+      Liquid::Template.register_tag("dummy", Liquid::Tag)
+      result = parse("{% row %}{% dummy %}{% col %}A{% endcol %}{% endrow %}").render
+      expect(result).to include("A")
+    end
+  end
 end

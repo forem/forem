@@ -58,4 +58,13 @@ RSpec.describe "Features and Feature liquid tags", type: :liquid_tag do
       end.to raise_error(StandardError, /requires a title/)
     end
   end
+
+  describe "content filtering" do
+    it "ignores whitespace and stray text between features" do
+      result = parse("{% features %}\n  This should disappear \n  {% feature title='A' %}A{% endfeature %} # Note: comment \n{% endfeatures %}").render
+      expect(result).to include("A")
+      expect(result).not_to include("This should disappear")
+      expect(result).not_to include("# Note: comment")
+    end
+  end
 end

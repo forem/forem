@@ -61,4 +61,12 @@ RSpec.describe "Slides and Slide liquid tags", type: :liquid_tag do
       end.to raise_error(StandardError, /requires at least one of/)
     end
   end
+
+  describe "content filtering" do
+    it "ignores whitespace and stray text between slides" do
+      result = parse("{% slides %}\n  # Note: Slides are NOT blocks. \n  {% slide image=\"https://example.com/1.jpg\" %} \n{% endslides %}").render
+      expect(result).to include("https://example.com/1.jpg")
+      expect(result).not_to include("# Note: Slides are NOT blocks")
+    end
+  end
 end
