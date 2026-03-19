@@ -126,8 +126,8 @@
       <a href="/<%= @organization.slug %>/settings" id="org-settings-btn" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon ml-1 hidden" title="<%= t("views.organizations.settings_link") %>" data-org-id="<%= @organization.id %>">
         <%= crayons_icon_tag(:cog, title: t("views.organizations.settings_link")) %>
       </a>
-      <a href="<%= admin_organization_path(@organization) %>" id="org-admin-btn" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon ml-1 hidden" title="<%= t("views.organizations.admin_link") %>">
-        <%= crayons_icon_tag(:lock, title: t("views.organizations.admin_link")) %>
+      <a href="<%= admin_organization_path(@organization) %>" id="org-admin-btn" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon ml-1 hidden" title="<%= t("views.organizations.admin_link") %>" data-no-instant>
+        <%= crayons_icon_tag("tools-line", title: t("views.organizations.admin_link")) %>
       </a>
       <script>
         try {
