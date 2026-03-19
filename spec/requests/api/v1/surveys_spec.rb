@@ -303,6 +303,24 @@ RSpec.describe "Api::V1::Surveys" do
         expect(response.parsed_body["poll_votes"].size).to eq(1)
         expect(response.parsed_body["text_responses"].size).to eq(1)
       end
+
+      it "returns unprocessable entity when since parameter is an invalid string" do
+        get responses_api_survey_path(survey.id),
+            params: { since: "not-a-date" },
+            headers: auth_headers
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to eq("Invalid since timestamp")
+      end
+
+      it "returns unprocessable entity when since parameter is an out-of-range date" do
+        get responses_api_survey_path(survey.id),
+            params: { since: "2026-99-99" },
+            headers: auth_headers
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to eq("Invalid since timestamp")
+      end
     end
   end
 end

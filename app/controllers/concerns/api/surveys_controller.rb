@@ -29,7 +29,7 @@ module Api
 
     def responses
       poll_ids = @survey.polls.ids
-      since = params[:since].present? ? Time.zone.parse(params[:since]) : nil
+      since = Time.iso8601(params[:since]).in_time_zone if params[:since].present?
 
       per_page = (params[:per_page] || DEFAULT_PER_PAGE).to_i
       num = [per_page, per_page_max].min
@@ -46,6 +46,8 @@ module Api
         .includes(:user)
         .order(created_at: :asc)
         .page(page).per(num)
+    rescue ArgumentError
+      error_unprocessable_entity("Invalid since timestamp")
     end
 
     private

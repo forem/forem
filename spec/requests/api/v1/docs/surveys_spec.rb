@@ -3,7 +3,6 @@ require "swagger_helper"
 
 # rubocop:disable RSpec/EmptyExampleGroup
 # rubocop:disable RSpec/VariableName
-# rubocop:disable Layout/LineLength
 
 RSpec.describe "Api::V1::Docs::Surveys" do
   let(:Accept) { "application/vnd.forem.api-v1+json" }
@@ -138,8 +137,9 @@ RSpec.describe "Api::V1::Docs::Surveys" do
         parameter "$ref": "#/components/parameters/pageParam"
         parameter "$ref": "#/components/parameters/perPageParam30to1000"
         parameter name: :since, in: :query, required: false,
-                  description: "Return only responses created after this ISO 8601 timestamp (e.g. 2026-01-15T12:00:00Z).",
-                  schema: { type: :string, format: "date-time" }
+                  description: "Return only responses created after this ISO 8601 timestamp.",
+                  schema: { type: :string, format: "date-time" },
+                  example: "2026-01-15T12:00:00Z"
 
         response "200", "Poll votes and text responses" do
           let(:"api-key") { api_secret.secret }
@@ -172,11 +172,20 @@ RSpec.describe "Api::V1::Docs::Surveys" do
 
           run_test!
         end
+
+        response "422", "Unprocessable entity" do
+          let(:"api-key") { api_secret.secret }
+          let(:id_or_slug) { survey.id }
+          let(:since) { "not-a-date" }
+
+          add_examples
+
+          run_test!
+        end
       end
     end
   end
 end
 
-# rubocop:enable Layout/LineLength
 # rubocop:enable RSpec/VariableName
 # rubocop:enable RSpec/EmptyExampleGroup
