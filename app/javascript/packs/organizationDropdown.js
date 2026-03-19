@@ -52,37 +52,6 @@ function initHeaderCtaDropdown() {
   });
 }
 
-function initOrgAdminButtons() {
-  const settingsBtn = document.getElementById('org-settings-btn');
-  const adminBtn = document.getElementById('org-admin-btn');
-  
-  if (!settingsBtn && !adminBtn) return;
-  
-  const orgId = Number(settingsBtn ? settingsBtn.dataset.orgId : adminBtn.dataset.orgId);
-  if (!orgId) return;
-
-  waitOnBaseData().then(() => {
-    const userStr = document.body.dataset.user;
-    if (!userStr) return;
-    
-    try {
-      const currentUser = JSON.parse(userStr);
-      const isAdmin = currentUser.admin;
-      const isOrgAdmin = currentUser.admin_organization_ids?.includes(orgId);
-      
-      if (settingsBtn && isOrgAdmin) {
-        settingsBtn.classList.remove('hidden');
-      }
-      
-      if (adminBtn && isAdmin) {
-        adminBtn.classList.remove('hidden');
-      }
-    } catch (e) {
-      console.error("Failed to parse current user for organization settings", e);
-    }
-  });
-}
 
 initDropdown();
 initHeaderCtaDropdown();
-initOrgAdminButtons();
