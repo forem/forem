@@ -10,9 +10,10 @@ class ColTag < Liquid::Block
 
   def render(context)
     content = super
+    parsed_content = MarkdownProcessor::Parser.new(content).evaluate_markdown
     ApplicationController.render(
       partial: PARTIAL,
-      locals: { content: content, span: @span },
+      locals: { content: parsed_content, span: @span },
     )
   end
 

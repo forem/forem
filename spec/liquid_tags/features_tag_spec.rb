@@ -52,6 +52,12 @@ RSpec.describe "Features and Feature liquid tags", type: :liquid_tag do
       expect(result).to include("<strong>Bold</strong>")
     end
 
+    it "evaluates Markdown in the body content" do
+      result = parse('{% features %}{% feature title="Test" %}*Italic* and **Bold**{% endfeature %}{% endfeatures %}').render
+      expect(result).to include("<em>Italic</em>")
+      expect(result).to include("<strong>Bold</strong>")
+    end
+
     it "raises error when title is missing" do
       expect do
         parse('{% features %}{% feature icon="star-line" %}No title{% endfeature %}{% endfeatures %}')

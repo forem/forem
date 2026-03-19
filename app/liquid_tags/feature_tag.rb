@@ -14,12 +14,13 @@ class FeatureTag < Liquid::Block
 
   def render(context)
     content = super
+    parsed_content = MarkdownProcessor::Parser.new(content).evaluate_markdown
     ApplicationController.render(
       partial: PARTIAL,
       locals: {
         icon: @icon,
         title: @title,
-        content: content,
+        content: parsed_content,
       },
     )
   end

@@ -85,6 +85,13 @@ RSpec.describe "Row and Col liquid tags", type: :liquid_tag do
       expect(result).to include("<strong>Bold</strong>")
       expect(result).to include("<em>Italic</em>")
     end
+
+    it "evaluates nested Markdown successfully" do
+      result = parse("{% row %}{% col %}#### Welcome to Forem\n\nSoftware that powers millions.{% endcol %}{% endrow %}").render
+      expect(result).to match(/<h4[^>]*>/)
+      expect(result).to include("Welcome to Forem")
+      expect(result).to include("<p>Software that powers millions.</p>")
+    end
   end
 
   describe "content filtering" do

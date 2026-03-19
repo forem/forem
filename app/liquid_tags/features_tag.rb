@@ -10,7 +10,7 @@ class FeaturesTag < Liquid::Block
   def render(context)
     content = ""
     @body.nodelist.each do |node|
-      content << node.render(context) << "\n" if node.is_a?(FeatureTag)
+      content << node.render(context) << "\n\n" if node.is_a?(FeatureTag)
     end
     ApplicationController.render(
       partial: PARTIAL,
