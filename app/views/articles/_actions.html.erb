@@ -83,9 +83,7 @@
           <a href="#" class="dropdown-link-row crayons-link crayons-link--block"><%= t("views.actions.share.link") %></a>
         </template>
 
-        <% if current_user != @article.user %>
-          <%= link_to t("views.actions.share.report"), report_abuse_path(@article), class: "crayons-link crayons-link--block" %>
-        <% end %>
+        <a href="/report-abuse" class="crayons-link crayons-link--block"><%= t("views.actions.share.report") %></a>
       </div>
     </div>
   </div>
