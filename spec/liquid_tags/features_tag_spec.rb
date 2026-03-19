@@ -47,6 +47,13 @@ RSpec.describe "Features and Feature liquid tags", type: :liquid_tag do
       expect(result).to include("Launch")
     end
 
+    it "falls back to heart if a broken or missing SVG icon is provided" do
+      result = parse('{% features %}{% feature icon="nonexistent-broken-icon-123" title="Broken" %}content{% endfeature %}{% endfeatures %}').render
+      expect(result).not_to be_empty
+      expect(result).to include("Broken")
+      expect(result).to match(/<svg/)
+    end
+
     it "preserves HTML content in body" do
       result = parse('{% features %}{% feature title="Test" %}<strong>Bold</strong>{% endfeature %}{% endfeatures %}').render
       expect(result).to include("<strong>Bold</strong>")
