@@ -37,7 +37,6 @@ class BaseUploader < CarrierWave::Uploader::Base
   end
 
   def validate_frame_count
-    return
     begin
       return unless MiniMagick::Image.new(file.path).frames.count > FRAME_MAX
     rescue Timeout::Error
