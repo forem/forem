@@ -31,9 +31,9 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_11_000002) do
     t.string "tool_name", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["slug"], name: "index_agent_sessions_on_slug", unique: true
     t.index ["tool_name"], name: "index_agent_sessions_on_tool_name"
     t.index ["user_id", "published"], name: "index_agent_sessions_on_user_id_and_published"
-    t.index ["user_id", "slug"], name: "index_agent_sessions_on_user_id_and_slug", unique: true
     t.index ["user_id"], name: "index_agent_sessions_on_user_id"
   end
 
@@ -688,6 +688,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_11_000002) do
     t.float "score_weight", default: 1.0
     t.float "semantic_match_weight", default: 0.0
     t.float "shuffle_weight", default: 0.0, null: false
+    t.integer "status_target", default: 0
     t.float "status_weight", default: 0.0, null: false
     t.float "subforem_follow_weight", default: 0.0, null: false
     t.float "tag_follow_weight", default: 1.0
@@ -1328,10 +1329,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_11_000002) do
   end
 
   create_table "profiles", force: :cascade do |t|
-    t.string "company"
     t.datetime "created_at", null: false
     t.jsonb "data", default: {}, null: false
-    t.string "job_title"
     t.string "location"
     t.string "social_image"
     t.text "summary"
