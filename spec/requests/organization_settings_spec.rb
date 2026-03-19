@@ -41,47 +41,73 @@ RSpec.describe "OrganizationSettings" do
   describe "PATCH /:slug/settings" do
     before { sign_in user }
 
-    it "creates a Page record when submitting page_markdown" do
-      expect {
-        patch "/#{organization.slug}/settings", params: {
-          organization: { page_markdown: "# Welcome to our org" }
-        }
-      }.to change(Page, :count).by(1)
+    context "when org_readme is enabled" do
+      before do
+        allow(FeatureFlag).to receive(:enabled?).and_return(false) # Default
+        allow(FeatureFlag).to receive(:enabled?).with(:org_readme, anything).and_return(true)
+      end
 
-      page = organization.pages.first
-      expect(page.body_markdown).to eq("# Welcome to our org")
-      expect(page.title).to eq(organization.name)
+      it "creates a Page record when submitting page_markdown" do
+        expect {
+          patch "/#{organization.slug}/settings", params: {
+            organization: { page_markdown: "# Welcome to our org" }
+          }
+        }.to change(Page, :count).by(1)
+
+        page = organization.pages.first
+        expect(page.body_markdown).to eq("# Welcome to our org")
+        expect(page.title).to eq(organization.name)
+      end
+
+      it "processes page_markdown into HTML via Page record" do
+        patch "/#{organization.slug}/settings", params: {
+          organization: { page_markdown: "**bold**" }
+        }
+        page = organization.pages.first
+        expect(page.processed_html).to include("<strong>bold</strong>")
+      end
+
+      it "updates existing Page record on subsequent edits" do
+        patch "/#{organization.slug}/settings", params: {
+          organization: { page_markdown: "# First" }
+        }
+        expect {
+          patch "/#{organization.slug}/settings", params: {
+            organization: { page_markdown: "# Updated" }
+          }
+        }.not_to change(Page, :count)
+        expect(organization.pages.first.body_markdown).to eq("# Updated")
+      end
+
+      it "destroys Page record when page_markdown is cleared" do
+        patch "/#{organization.slug}/settings", params: {
+          organization: { page_markdown: "# Hello" }
+        }
+        expect {
+          patch "/#{organization.slug}/settings", params: {
+            organization: { page_markdown: "" }
+          }
+        }.to change(Page, :count).by(-1)
+      end
     end
 
-    it "processes page_markdown into HTML via Page record" do
-      patch "/#{organization.slug}/settings", params: {
-        organization: { page_markdown: "**bold**" }
-      }
-      page = organization.pages.first
-      expect(page.processed_html).to include("<strong>bold</strong>")
-    end
+    context "when org_readme is disabled" do
+      before do
+        allow(FeatureFlag).to receive(:enabled?).and_return(false)
+        allow(FeatureFlag).to receive(:enabled?).with(:org_readme, anything).and_return(false)
+      end
 
-    it "updates existing Page record on subsequent edits" do
-      patch "/#{organization.slug}/settings", params: {
-        organization: { page_markdown: "# First" }
-      }
-      expect {
-        patch "/#{organization.slug}/settings", params: {
-          organization: { page_markdown: "# Updated" }
-        }
-      }.not_to change(Page, :count)
-      expect(organization.pages.first.body_markdown).to eq("# Updated")
-    end
+      it "does not process page_markdown" do
+        expect {
+          patch "/#{organization.slug}/settings", params: {
+            organization: { 
+              page_markdown: "# Attempted page update"
+            }
+          }
+        }.not_to change(Page, :count)
 
-    it "destroys Page record when page_markdown is cleared" do
-      patch "/#{organization.slug}/settings", params: {
-        organization: { page_markdown: "# Hello" }
-      }
-      expect {
-        patch "/#{organization.slug}/settings", params: {
-          organization: { page_markdown: "" }
-        }
-      }.to change(Page, :count).by(-1)
+        organization.reload
+      end
     end
 
     it "updates organization profile fields" do

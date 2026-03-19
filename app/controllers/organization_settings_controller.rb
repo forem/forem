@@ -54,7 +54,9 @@ class OrganizationSettingsController < ApplicationController
 
     was_verified = @organization.verified?
     if @organization.update(organization_params.merge(profile_updated_at: Time.current))
-      sync_org_page(raw_page_markdown) if params[:organization].key?(:page_markdown)
+      if FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization])
+        sync_org_page(raw_page_markdown) if params[:organization].key?(:page_markdown)
+      end
       @organization.users.touch_all(:organization_info_updated_at)
       notice = I18n.t("organizations_controller.updated")
       if was_verified && !@organization.verified?
@@ -106,6 +108,8 @@ class OrganizationSettingsController < ApplicationController
       social_links: Organization::SOCIAL_LINK_PLATFORMS,
       header_cta: [:text, :url, links: [:text, :url, :logo_url]],
     )
+
+    permitted.delete(:cover_image) unless FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization])
 
     result = permitted.to_h
     result.transform_values! do |value|
