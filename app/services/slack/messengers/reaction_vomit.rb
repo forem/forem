@@ -1,15 +1,13 @@
 module Slack
   module Messengers
-    class ReactionVomit
+    class ReactionVomit < Base
       MESSAGE_TEMPLATE = <<~TEXT.chomp.freeze
         %<name>s (%<user_url>s)
         reacted with a vomit on
         %<reactable_url>s
       TEXT
 
-      def self.call(...)
-        new(...).call
-      end
+
 
       def initialize(reaction:)
         @reaction = reaction
@@ -27,7 +25,7 @@ module Slack
           reactable_url: URL.reaction(reaction),
         )
 
-        Slack::Messengers::Worker.perform_async(
+        enqueue_slack_message(
           "message" => message,
           "channel" => "abuse-reports",
           "username" => "abuse_bot",
