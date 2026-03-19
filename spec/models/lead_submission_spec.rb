@@ -15,7 +15,11 @@ RSpec.describe LeadSubmission do
   describe ".snapshot_from_user" do
     it "captures user profile data and username, excluding location" do
       user = create(:user, name: "Jane Doe", email: "jane@example.com")
-      user.profile.update_columns(job_title: "Software Engineer", company: "Acme Inc.", location: "New York")
+      user.profile.update!(location: "New York")
+
+      allow(user.profile).to receive(:read_attribute).and_call_original
+      allow(user.profile).to receive(:read_attribute).with(:job_title).and_return("Software Engineer")
+      allow(user.profile).to receive(:read_attribute).with(:company).and_return("Acme Inc.")
 
       snapshot = described_class.snapshot_from_user(user)
 

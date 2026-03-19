@@ -123,29 +123,36 @@
         data-info='<%= DataInfo.to_json(object: @user) %>'>
         <%= t("views.organizations.follow") %>
       </button>
-      <a href="/<%= @organization.slug %>/settings" id="org-settings-btn" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon ml-1 hidden" title="<%= t("views.organizations.settings_link") %>" data-org-id="<%= @organization.id %>">
-        <%= crayons_icon_tag(:cog, title: t("views.organizations.settings_link")) %>
-      </a>
-      <a href="<%= admin_organization_path(@organization) %>" id="org-admin-btn" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon ml-1 hidden" title="<%= t("views.organizations.admin_link") %>" data-no-instant>
-        <%= crayons_icon_tag("tools-line", title: t("views.organizations.admin_link")) %>
-      </a>
+      <style id="org-buttons-style">
+        #org-settings-btn, #org-admin-btn { display: none !important; }
+      </style>
       <script>
         try {
           var userStr = localStorage.getItem('current_user');
           if (userStr) {
             var currentUser = JSON.parse(userStr);
             var orgId = <%= @organization.id %>;
+            var css = '';
             if (currentUser.admin_organization_ids && currentUser.admin_organization_ids.includes(orgId)) {
-              document.getElementById('org-settings-btn').classList.remove('hidden');
+              css += '#org-settings-btn { display: inline-flex !important; } ';
             }
             if (currentUser.admin) {
-              document.getElementById('org-admin-btn').classList.remove('hidden');
+              css += '#org-admin-btn { display: inline-flex !important; } ';
+            }
+            if (css) {
+              document.getElementById('org-buttons-style').innerHTML += css;
             }
           }
         } catch (e) {
           // ignore
         }
       </script>
+      <a href="/<%= @organization.slug %>/settings" id="org-settings-btn" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon ml-1" title="<%= t("views.organizations.settings_link") %>" data-org-id="<%= @organization.id %>">
+        <%= crayons_icon_tag(:cog, title: t("views.organizations.settings_link")) %>
+      </a>
+      <a href="<%= admin_organization_path(@organization) %>" id="org-admin-btn" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon ml-1" title="<%= t("views.organizations.admin_link") %>" data-no-instant>
+        <%= crayons_icon_tag("tools-line", title: t("views.organizations.admin_link")) %>
+      </a>
       <div class="profile-dropdown ml-1 s:relative" data-organizationname="<%= @organization.name %>">
         <button id="organization-profile-dropdown" aria-expanded="false" aria-controls="organization-profile-dropdownmenu" aria-haspopup="true" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon">
           <%= crayons_icon_tag("overflow-horizontal", class: "dropdown-icon", title: t("views.organizations.dropdown")) %>

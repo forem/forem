@@ -89,7 +89,7 @@ class OrganizationSettingsController < ApplicationController
         title: @organization.name,
         body_markdown: markdown,
         description: @organization.summary.presence || @organization.name,
-        slug: "#{@organization.slug}-page",
+        slug: "#{@organization.slug}/readme",
         template: "full_within_layout",
       )
       page.save!

@@ -57,6 +57,7 @@ RSpec.describe "OrganizationSettings" do
         page = organization.pages.first
         expect(page.body_markdown).to eq("# Welcome to our org")
         expect(page.title).to eq(organization.name)
+        expect(page.slug).to eq("#{organization.slug}/readme")
       end
 
       it "processes page_markdown into HTML via Page record" do
@@ -65,6 +66,22 @@ RSpec.describe "OrganizationSettings" do
         }
         page = organization.pages.first
         expect(page.processed_html).to include("<strong>bold</strong>")
+      end
+
+      it "ignores organization_id spoofing via parameters" do
+        other_org = create(:organization)
+        expect {
+          patch "/#{organization.slug}/settings", params: {
+            organization: { 
+              page_markdown: "# Welcome to our org",
+              organization_id: other_org.id
+            }
+          }
+        }.to change(Page, :count).by(1)
+
+        page = organization.pages.last
+        expect(page.organization_id).to eq(organization.id)
+        expect(page.organization_id).not_to eq(other_org.id)
       end
 
       it "updates existing Page record on subsequent edits" do
