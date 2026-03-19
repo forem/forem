@@ -38,7 +38,7 @@
         "tags": [
           "agent_sessions"
         ],
-        "description": "This endpoint allows the client to upload a new agent session transcript.\n\nAccepts raw session content (JSONL from Claude Code, JSON from other tools) via\nthe `body` parameter or as a `session_file` upload. The tool format is auto-detected\nunless `tool_name` is explicitly provided.\n\nUse the [Forem CLI plugin](https://github.com/forem/forem-cli-plugin) to upload\nsessions directly from the command line.",
+        "description": "This endpoint allows the client to create a new agent session.\n\nSessions are created from pre-parsed and curated data (`curated_data` JSON) and\noptionally linked to an S3-stored raw file via `s3_key`. Use the presign endpoint\nto get an upload URL for the raw file first.\n\nUse the [Forem CLI plugin](https://github.com/forem/forem-cli-plugin) to upload\nsessions directly from the command line.",
         "operationId": "createAgentSession",
         "parameters": [
 
@@ -71,25 +71,28 @@
                     "type": "string",
                     "description": "Title for the session (auto-generated if omitted)"
                   },
-                  "body": {
+                  "curated_data": {
                     "type": "string",
-                    "description": "Raw session content (JSONL or JSON). Provide this or session_file."
+                    "description": "JSON string of curated session data with messages array and metadata."
+                  },
+                  "s3_key": {
+                    "type": "string",
+                    "description": "S3 object key from presign endpoint (optional)."
                   },
                   "tool_name": {
                     "type": "string",
-                    "description": "Tool that produced the session (e.g. claude_code, codex). Defaults to auto-detect.",
+                    "description": "Tool that produced the session (e.g. claude_code, codex).",
                     "enum": [
                       "claude_code",
                       "codex",
-                      "copilot_chat",
                       "gemini_cli",
-                      "aider",
-                      "auto"
+                      "github_copilot",
+                      "pi"
                     ]
                   }
                 },
                 "required": [
-                  "body"
+                  "curated_data"
                 ]
               }
             }
@@ -2081,6 +2084,168 @@
         }
       }
     },
+    "/api/surveys": {
+      "get": {
+        "summary": "List surveys",
+        "tags": [
+          "surveys"
+        ],
+        "description": "This endpoint allows the client to retrieve a list of surveys.\n\nIt supports pagination and optional filtering by active status.\n\nInternal only. Admin authorization is required to access this endpoint.",
+        "operationId": "getSurveys",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          },
+          {
+            "name": "active",
+            "in": "query",
+            "required": false,
+            "description": "Filter by active status. Omit to return all surveys.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of surveys",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Survey"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/surveys/{id_or_slug}": {
+      "get": {
+        "summary": "A survey with polls",
+        "tags": [
+          "surveys"
+        ],
+        "description": "This endpoint allows the client to retrieve a single survey by ID or slug,\nincluding its nested polls and poll options.\n\nInternal only. Admin authorization is required to access this endpoint.",
+        "operationId": "getSurveyByIdOrSlug",
+        "parameters": [
+          {
+            "name": "id_or_slug",
+            "in": "path",
+            "required": true,
+            "description": "The ID or slug of the survey.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "community-pulse-2026"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A survey with nested polls and options",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SurveyWithPolls"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/api/surveys/{id_or_slug}/responses": {
+      "get": {
+        "summary": "Survey responses",
+        "tags": [
+          "surveys"
+        ],
+        "description": "This endpoint allows the client to retrieve poll votes and text responses\nfor a given survey. Results are paginated.\n\nInternal only. Admin authorization is required to access this endpoint.",
+        "operationId": "getSurveyResponses",
+        "parameters": [
+          {
+            "name": "id_or_slug",
+            "in": "path",
+            "required": true,
+            "description": "The ID or slug of the survey.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "required": false,
+            "description": "Return only responses created after this ISO 8601 timestamp.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "example": "2026-01-15T12:00:00Z"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Poll votes and text responses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "poll_votes": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PollVote"
+                      }
+                    },
+                    "text_responses": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PollTextResponse"
+                      }
+                    }
+                  },
+                  "required": [
+                    "poll_votes",
+                    "text_responses"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          }
+        }
+      }
+    },
     "/api/tags": {
       "get": {
         "summary": "Tags",
@@ -3594,13 +3759,6 @@
             },
             "description": "All normalized messages in the session"
           },
-          "curated_selections": {
-            "type": "array",
-            "items": {
-              "type": "object"
-            },
-            "description": "Ranges of curated message selections"
-          },
           "slices": {
             "type": "array",
             "items": {
@@ -3630,11 +3788,346 @@
           "curated_count",
           "published",
           "messages",
-          "curated_selections",
           "slices",
           "created_at",
           "updated_at",
           "url"
+        ]
+      },
+      "PollOption": {
+        "description": "A single option within a poll",
+        "type": "object",
+        "properties": {
+          "type_of": {
+            "type": "string",
+            "enum": [
+              "poll_option"
+            ],
+            "description": "Resource discriminator"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "markdown": {
+            "type": "string",
+            "nullable": true,
+            "description": "Option text in markdown"
+          },
+          "processed_html": {
+            "type": "string",
+            "nullable": true,
+            "description": "Option text rendered as HTML"
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Display order within the poll"
+          },
+          "poll_votes_count": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Number of votes for this option"
+          },
+          "supplementary_text": {
+            "type": "string",
+            "nullable": true,
+            "description": "Additional descriptive text for the option"
+          }
+        },
+        "required": [
+          "type_of",
+          "id",
+          "markdown",
+          "processed_html",
+          "position",
+          "poll_votes_count"
+        ]
+      },
+      "Poll": {
+        "description": "A poll (question) belonging to a survey or article",
+        "type": "object",
+        "properties": {
+          "type_of": {
+            "type": "string",
+            "enum": [
+              "poll"
+            ],
+            "description": "Resource discriminator"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "prompt_markdown": {
+            "type": "string",
+            "nullable": true,
+            "description": "Question text in markdown"
+          },
+          "prompt_html": {
+            "type": "string",
+            "nullable": true,
+            "description": "Question text rendered as HTML"
+          },
+          "poll_type_of": {
+            "type": "string",
+            "enum": [
+              "single_choice",
+              "multiple_choice",
+              "scale",
+              "text_input"
+            ],
+            "description": "Poll question type: single_choice, multiple_choice, scale, or text_input"
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Display order within the survey"
+          },
+          "poll_votes_count": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Total number of votes across all options"
+          },
+          "poll_skips_count": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Number of users who skipped this poll"
+          },
+          "poll_options_count": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Number of options in this poll"
+          },
+          "scale_min": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true,
+            "description": "Minimum value for scale polls"
+          },
+          "scale_max": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true,
+            "description": "Maximum value for scale polls"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "poll_options": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PollOption"
+            },
+            "description": "The available options for this poll"
+          }
+        },
+        "required": [
+          "type_of",
+          "id",
+          "prompt_markdown",
+          "prompt_html",
+          "poll_type_of",
+          "position",
+          "poll_votes_count",
+          "poll_skips_count",
+          "poll_options_count",
+          "created_at",
+          "updated_at",
+          "poll_options"
+        ]
+      },
+      "Survey": {
+        "description": "Representation of a survey",
+        "type": "object",
+        "properties": {
+          "type_of": {
+            "type": "string",
+            "enum": [
+              "survey"
+            ],
+            "description": "Resource discriminator"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "survey_type_of": {
+            "type": "string",
+            "enum": [
+              "community_pulse",
+              "industry",
+              "fun"
+            ],
+            "description": "Survey category"
+          },
+          "active": {
+            "type": "boolean",
+            "nullable": true,
+            "description": "Whether the survey is currently active"
+          },
+          "display_title": {
+            "type": "boolean",
+            "description": "Whether to show the title to respondents"
+          },
+          "allow_resubmission": {
+            "type": "boolean",
+            "description": "Whether users can submit multiple times"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "type_of",
+          "id",
+          "title",
+          "slug",
+          "survey_type_of",
+          "display_title",
+          "allow_resubmission",
+          "created_at",
+          "updated_at"
+        ]
+      },
+      "SurveyWithPolls": {
+        "description": "Representation of a survey including its polls and poll options",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Survey"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "polls": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Poll"
+                },
+                "description": "All polls in the survey, ordered by position"
+              }
+            },
+            "required": [
+              "polls"
+            ]
+          }
+        ]
+      },
+      "PollVote": {
+        "description": "Representation of a single poll vote cast by a user",
+        "type": "object",
+        "properties": {
+          "type_of": {
+            "type": "string",
+            "enum": [
+              "poll_vote"
+            ],
+            "description": "Resource discriminator"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "poll_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "poll_option_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "user_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "user_email": {
+            "type": "string",
+            "format": "email"
+          },
+          "session_start": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "type_of",
+          "id",
+          "poll_id",
+          "poll_option_id",
+          "user_id",
+          "user_email",
+          "session_start",
+          "created_at"
+        ]
+      },
+      "PollTextResponse": {
+        "description": "Representation of a free-text response to a text-input poll",
+        "type": "object",
+        "properties": {
+          "type_of": {
+            "type": "string",
+            "enum": [
+              "poll_text_response"
+            ],
+            "description": "Resource discriminator"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "poll_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "user_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "user_email": {
+            "type": "string",
+            "format": "email"
+          },
+          "text_content": {
+            "type": "string"
+          },
+          "session_start": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "type_of",
+          "id",
+          "poll_id",
+          "user_id",
+          "user_email",
+          "text_content",
+          "session_start",
+          "created_at"
         ]
       }
     }

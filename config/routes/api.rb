@@ -61,6 +61,12 @@ resources :organizations, only: [:show], param: :id_or_slug do
   resources :articles, only: [:index], to: "organizations#articles"
 end
 
+resources :surveys, only: %i[index show], param: :id_or_slug do
+  member do
+    get :responses
+  end
+end
+
 resource :instance, only: %i[show]
 
 constraints(RailsEnvConstraint.new(allowed_envs: %w[test])) do
