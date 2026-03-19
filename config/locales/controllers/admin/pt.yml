@@ -148,6 +148,9 @@ pt:
       data_fix_enqueued: 'Correção de dados enfileirada: %{fix_name}'
       data_fix_missing_param: O nome da correção de dados é obrigatório.
       data_fix_unknown: 'Correção de dados desconhecida: %{fix_name}'
+      data_check_result: 'Verificação de contagem de tags: %{mismatched} de %{total} tags têm contagens incompatíveis.'
+      data_check_missing_param: O nome da verificação de dados é obrigatório.
+      data_check_unknown: 'Verificação de dados desconhecida: %{check_name}'
     users_controller:
       role_removed: 'Função: %{role} foi removida com sucesso do usuário!'
       updated: Usuário foi atualizado

@@ -181,6 +181,7 @@ namespace :admin do
       collection do
         post "bust_cache"
         post "run_data_fix"
+        post "run_data_check"
         get "feed_playground"
         post "feed_playground"
       end

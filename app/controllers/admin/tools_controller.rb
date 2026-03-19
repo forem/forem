@@ -59,6 +59,26 @@ module Admin
       redirect_to admin_tools_path
     end
 
+    def run_data_check
+      check_name = params.require(:check_name)
+      check_class = DataFixes::Registry.fetch_check!(check_name)
+
+      result = check_class.new.call
+
+      flash[:success] = I18n.t(
+        "admin.tools_controller.data_check_result",
+        total: result[:total],
+        mismatched: result[:mismatched],
+      )
+      redirect_to admin_tools_path
+    rescue ActionController::ParameterMissing
+      flash[:danger] = I18n.t("admin.tools_controller.data_check_missing_param")
+      redirect_to admin_tools_path
+    rescue ArgumentError
+      flash[:danger] = I18n.t("admin.tools_controller.data_check_unknown", check_name: check_name)
+      redirect_to admin_tools_path
+    end
+
     private
 
     def handle_dead_path

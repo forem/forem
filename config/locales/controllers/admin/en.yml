@@ -187,6 +187,9 @@ en:
       data_fix_enqueued: 'Enqueued data fix: %{fix_name}'
       data_fix_missing_param: Data fix name is required.
       data_fix_unknown: 'Unknown data fix: %{fix_name}'
+      data_check_result: 'Tag count verification: %{mismatched} of %{total} tags have mismatched counts.'
+      data_check_missing_param: Data check name is required.
+      data_check_unknown: 'Unknown data check: %{check_name}'
     users_controller:
       exported: Data exported to the %{receiver}. The job will complete momentarily.
       email_fail: Email failed to send!

@@ -47,6 +47,23 @@ RSpec.describe "/admin/advanced/tools" do
         expect(DataFixes::RunWorker).not_to have_received(:perform_async)
       end
     end
+
+    describe "POST /admin/advanced/tools/run_data_check" do
+      it "runs the selected data check and redirects" do
+        create(:tag)
+        post run_data_check_admin_tools_path, params: { check_name: DataFixes::VerifyTagCounts::KEY }
+
+        expect(response).to redirect_to(admin_tools_path)
+        follow_redirect!
+        expect(response.body).to include("Tag count verification")
+      end
+
+      it "rejects unknown data checks" do
+        post run_data_check_admin_tools_path, params: { check_name: "unknown_check" }
+
+        expect(response).to redirect_to(admin_tools_path)
+      end
+    end
   end
 
   context "when the user is a single resource admin" do
