@@ -1,7 +1,7 @@
 <h1 class="crayons-title mb-3">Organizations</h1>
 
 <%= search_form_for(@q, url: admin_organizations_path, class: "inline-flex") do |f| %>
-  <%= f.search_field(:name_cont, aria: { label: "Search" }, class: "crayons-textfield", autocomplete: "off") %>
+  <%= f.search_field(:name_cont, aria: { label: "Search" }, class: "crayons-textfield", autocomplete: "off", placeholder: "Search") %>
   <%= f.submit "Search", class: "crayons-btn ml-2" %>
 <% end %>
 

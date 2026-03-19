@@ -11,7 +11,7 @@ RSpec.describe "Admin manages organizations" do
       create_list(:organization, 5)
       visit admin_organizations_path
 
-      fill_in "Search", with: organization.name.to_s
+      fill_in "Search", with: organization.name.to_s, match: :first
       click_on "Search"
 
       expect(page.body).to have_link(organization.name)
