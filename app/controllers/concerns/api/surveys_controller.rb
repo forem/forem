@@ -28,23 +28,24 @@ module Api
     def show; end
 
     def responses
-      poll_ids = @survey.polls.ids
       since = Time.iso8601(params[:since]).in_time_zone if params[:since].present?
 
       per_page = (params[:per_page] || DEFAULT_PER_PAGE).to_i
       num = [per_page, per_page_max].min
       page = params[:page] || 1
 
-      @poll_votes = PollVote.where(poll_id: poll_ids)
-        .then { |q| since ? q.where("created_at > ?", since) : q }
+      @poll_votes = PollVote.joins(:poll)
+        .where(polls: { survey_id: @survey.id })
+        .then { |q| since ? q.where("poll_votes.created_at > ?", since) : q }
         .includes(:user)
-        .order(created_at: :asc)
+        .order(Arel.sql("poll_votes.created_at ASC"))
         .page(page).per(num)
 
-      @text_responses = PollTextResponse.where(poll_id: poll_ids)
-        .then { |q| since ? q.where("created_at > ?", since) : q }
+      @text_responses = PollTextResponse.joins(:poll)
+        .where(polls: { survey_id: @survey.id })
+        .then { |q| since ? q.where("poll_text_responses.created_at > ?", since) : q }
         .includes(:user)
-        .order(created_at: :asc)
+        .order(Arel.sql("poll_text_responses.created_at ASC"))
         .page(page).per(num)
     rescue ArgumentError
       error_unprocessable_entity("Invalid since timestamp")
