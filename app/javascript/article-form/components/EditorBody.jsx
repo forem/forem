@@ -4,7 +4,7 @@ import { useEffect, useLayoutEffect, useRef } from 'preact/hooks';
 import { locale } from '@utilities/locale';
 import { Toolbar } from './Toolbar';
 import { handleImagePasted } from './pasteImageHelpers';
-import { handleURLPasted } from './pasteURLHelpers';
+import { handleURLPasted, URL_REGEX } from './pasteURLHelpers';
 import {
   handleImageUploadSuccess,
   handleImageUploading,
@@ -57,7 +57,7 @@ export const EditorBody = ({
 
     const urlHandler = handleURLPasted(textAreaRef);
 
-    // Handle text that were pasted onto the editor
+    // Handle text that was pasted into the editor
     const onPaste = (e) => {
       // If files are present in the clipboard, let the image paste handler deal with it
       const types = e.clipboardData?.types;
@@ -74,15 +74,15 @@ export const EditorBody = ({
       const trimmed = pastedText.trim();
 
       // If it's a URL, treat it as a URL
-      const isProbablyURL = /^(https?:\/\/|www\.)\S+$/i.test(trimmed);
+      const isProbablyURL = URL_REGEX.test(trimmed);
       if (isProbablyURL) {
         urlHandler(e);
         return;
       }
 
-      // Otherwise, paste as plain text, but neutralize '@' so it won't trigger mentions
-      // Insert a zero-width space right after '@'
-      const neutralized = pastedText.replace(/@/g, '@\u200B');
+      // Otherwise, paste as plain text, but neutralize '@' in mention-like contexts so it won't trigger mentions
+      // Insert a zero-width space right after '@' when it appears at the start of the text or after whitespace
+      const neutralized = pastedText.replace(/(^|\s)@(\w+)/g, '$1@\u200B$2');
 
       e.preventDefault();
 
