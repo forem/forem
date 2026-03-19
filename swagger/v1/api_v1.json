@@ -2086,11 +2086,11 @@
     },
     "/api/surveys": {
       "get": {
-        "summary": "Published surveys",
+        "summary": "List surveys",
         "tags": [
           "surveys"
         ],
-        "description": "This endpoint allows the client to retrieve a list of surveys.\n\nIt supports pagination and optional filtering by active status.",
+        "description": "This endpoint allows the client to retrieve a list of surveys.\n\nIt supports pagination and optional filtering by active status.\n\nInternal only. Admin authorization is required to access this endpoint.",
         "operationId": "getSurveys",
         "parameters": [
           {
@@ -2135,7 +2135,7 @@
         "tags": [
           "surveys"
         ],
-        "description": "This endpoint allows the client to retrieve a single survey by ID or slug,\nincluding its nested polls and poll options.",
+        "description": "This endpoint allows the client to retrieve a single survey by ID or slug,\nincluding its nested polls and poll options.\n\nInternal only. Admin authorization is required to access this endpoint.",
         "operationId": "getSurveyByIdOrSlug",
         "parameters": [
           {
@@ -2175,7 +2175,7 @@
         "tags": [
           "surveys"
         ],
-        "description": "This endpoint allows the client to retrieve poll votes and text responses\nfor a given survey. Results are paginated.",
+        "description": "This endpoint allows the client to retrieve poll votes and text responses\nfor a given survey. Results are paginated.\n\nInternal only. Admin authorization is required to access this endpoint.",
         "operationId": "getSurveyResponses",
         "parameters": [
           {

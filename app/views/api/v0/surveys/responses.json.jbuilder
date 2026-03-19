@@ -1,3 +1,6 @@
+# This endpoint is for admin-authorized use only. User emails are
+# included by design for internal tracking.
+
 json.poll_votes @poll_votes do |vote|
   json.type_of "poll_vote"
   json.extract!(

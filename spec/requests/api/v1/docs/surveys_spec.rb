@@ -16,12 +16,14 @@ RSpec.describe "Api::V1::Docs::Surveys" do
 
   describe "GET /api/surveys" do
     path "/api/surveys" do
-      get "Published surveys" do
+      get "List surveys" do
         tags "surveys"
         description(<<~DESCRIBE.strip)
           This endpoint allows the client to retrieve a list of surveys.
 
           It supports pagination and optional filtering by active status.
+
+          Internal only. Admin authorization is required to access this endpoint.
         DESCRIBE
         operationId "getSurveys"
         produces "application/json"
@@ -66,6 +68,8 @@ RSpec.describe "Api::V1::Docs::Surveys" do
         description(<<~DESCRIBE.strip)
           This endpoint allows the client to retrieve a single survey by ID or slug,
           including its nested polls and poll options.
+
+          Internal only. Admin authorization is required to access this endpoint.
         DESCRIBE
         operationId "getSurveyByIdOrSlug"
         produces "application/json"
@@ -122,6 +126,8 @@ RSpec.describe "Api::V1::Docs::Surveys" do
         description(<<~DESCRIBE.strip)
           This endpoint allows the client to retrieve poll votes and text responses
           for a given survey. Results are paginated.
+
+          Internal only. Admin authorization is required to access this endpoint.
         DESCRIBE
         operationId "getSurveyResponses"
         produces "application/json"
