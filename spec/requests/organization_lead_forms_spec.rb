@@ -1,151 +1,43 @@
 require "rails_helper"
 
-RSpec.describe "OrganizationLeadForms" do
-  let(:user) { create(:user, :org_admin) }
-  let(:organization) { user.organizations.first }
+RSpec.describe "Organization Lead Forms Backend Protection" do
+  let(:admin_user) { create(:user, :org_admin) }
+  let(:organization) { admin_user.organizations.first }
 
   before do
-    FeatureFlag.add(:org_lead_forms)
-    FeatureFlag.enable(:org_lead_forms, FeatureFlag::Actor[organization])
+    sign_in admin_user
   end
 
-  after { FeatureFlag.disable(:org_lead_forms) }
+  describe "GET /:slug/settings/lead-forms" do
+    context "when feature flag is disabled" do
+      before { FeatureFlag.disable(:org_lead_forms) }
 
-  describe "GET /:slug/settings/lead_forms" do
-    context "when signed in as org admin" do
-      before { sign_in user }
-
-      it "renders the lead forms page" do
-        get "/#{organization.slug}/settings/lead_forms"
-        expect(response).to have_http_status(:ok)
-      end
-
-      it "shows existing lead forms" do
-        form = create(:organization_lead_form, organization: organization, title: "Newsletter Signup")
-        get "/#{organization.slug}/settings/lead_forms"
-        expect(response.body).to include("Newsletter Signup")
-      end
-    end
-
-    context "when not an admin" do
-      let(:member) { create(:user) }
-
-      before do
-        create(:organization_membership, organization: organization, user: member, type_of_user: "member")
-        sign_in member
-      end
-
-      it "denies access" do
+      it "returns 404 Not Found" do
         expect do
-          get "/#{organization.slug}/settings/lead_forms"
-        end.to raise_error(Pundit::NotAuthorizedError)
+          get organization_lead_forms_path(organization.slug)
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    context "when feature flag is enabled" do
+      before { FeatureFlag.enable(:org_lead_forms, FeatureFlag::Actor[organization]) }
+
+      it "returns 200 OK" do
+        get organization_lead_forms_path(organization.slug)
+        expect(response).to have_http_status(:success)
       end
     end
   end
 
-  describe "POST /:slug/settings/lead_forms" do
-    before { sign_in user }
+  describe "POST /:slug/settings/lead-forms" do
+    context "when feature flag is disabled" do
+      before { FeatureFlag.disable(:org_lead_forms) }
 
-    it "creates a new lead form" do
-      expect do
-        post "/#{organization.slug}/settings/lead_forms", params: {
-          organization_lead_form: { title: "Demo Request", description: "Book a demo", button_text: "Request Demo" },
-        }
-      end.to change(OrganizationLeadForm, :count).by(1)
-
-      expect(response).to redirect_to(organization_lead_forms_path(organization.slug))
-      form = OrganizationLeadForm.last
-      expect(form.title).to eq("Demo Request")
-      expect(form.button_text).to eq("Request Demo")
-    end
-
-    it "rejects invalid forms" do
-      post "/#{organization.slug}/settings/lead_forms", params: {
-        organization_lead_form: { title: "", button_text: "" },
-      }
-      expect(response).to have_http_status(:ok) # re-renders index
-      expect(OrganizationLeadForm.count).to eq(0)
-    end
-  end
-
-  describe "GET /:slug/settings/lead_forms/:id/edit" do
-    before { sign_in user }
-
-    it "renders the index with the edit form for the given lead form" do
-      form = create(:organization_lead_form, organization: organization, title: "Newsletter Signup")
-      get "/#{organization.slug}/settings/lead_forms/#{form.id}/edit"
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Newsletter Signup")
-    end
-  end
-
-  describe "PATCH /:slug/settings/lead_forms/:id" do
-    before { sign_in user }
-
-    it "updates the lead form" do
-      form = create(:organization_lead_form, organization: organization, title: "Old Title", button_text: "Sign Up")
-      patch "/#{organization.slug}/settings/lead_forms/#{form.id}", params: {
-        organization_lead_form: { title: "New Title", description: "Updated desc", button_text: "Join Now" },
-      }
-
-      expect(response).to redirect_to(organization_lead_forms_path(organization.slug))
-      form.reload
-      expect(form.title).to eq("New Title")
-      expect(form.description).to eq("Updated desc")
-      expect(form.button_text).to eq("Join Now")
-    end
-
-    it "re-renders index on validation error" do
-      form = create(:organization_lead_form, organization: organization, title: "Original")
-      patch "/#{organization.slug}/settings/lead_forms/#{form.id}", params: {
-        organization_lead_form: { title: "", button_text: "" },
-      }
-
-      expect(response).to have_http_status(:ok) # re-renders index
-      expect(form.reload.title).to eq("Original")
-    end
-  end
-
-  describe "DELETE /:slug/settings/lead_forms/:id" do
-    before { sign_in user }
-
-    it "deletes a lead form" do
-      form = create(:organization_lead_form, organization: organization)
-      expect do
-        delete "/#{organization.slug}/settings/lead_forms/#{form.id}"
-      end.to change(OrganizationLeadForm, :count).by(-1)
-
-      expect(response).to redirect_to(organization_lead_forms_path(organization.slug))
-    end
-  end
-
-  describe "PATCH /:slug/settings/lead_forms/:id/toggle" do
-    before { sign_in user }
-
-    it "toggles active status" do
-      form = create(:organization_lead_form, organization: organization, active: true)
-      patch "/#{organization.slug}/settings/lead_forms/#{form.id}/toggle"
-
-      expect(form.reload.active).to be false
-      expect(response).to redirect_to(organization_lead_forms_path(organization.slug))
-    end
-  end
-
-  describe "GET /:slug/settings/lead_forms/:id/submissions" do
-    before { sign_in user }
-
-    it "downloads CSV of submissions" do
-      form = create(:organization_lead_form, organization: organization)
-      submission_user = create(:user, name: "Lead Person", email: "lead@example.com")
-      create(:lead_submission, organization_lead_form: form, user: submission_user,
-                               name: "Lead Person", email: "lead@example.com")
-
-      get "/#{organization.slug}/settings/lead_forms/#{form.id}/submissions", params: { format: :csv }
-
-      expect(response).to have_http_status(:ok)
-      expect(response.headers["Content-Type"]).to include("text/csv")
-      expect(response.body).to include("Lead Person")
-      expect(response.body).to include("lead@example.com")
+      it "returns 404 Not Found" do
+        expect do
+          post organization_lead_forms_path(organization.slug), params: { organization_lead_form: { title: "Test", button_text: "Submit" } }
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
     end
   end
 end

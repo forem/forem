@@ -63,9 +63,7 @@ class OrganizationLeadFormsController < ApplicationController
   private
 
   def check_lead_forms_feature
-    return if FeatureFlag.enabled?(:org_lead_forms, FeatureFlag::Actor[@organization])
-
-    @premium_gated = true
+    not_found unless FeatureFlag.enabled?(:org_lead_forms, FeatureFlag::Actor[@organization])
   end
 
   def set_lead_form

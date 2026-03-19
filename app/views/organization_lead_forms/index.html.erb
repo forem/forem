@@ -8,10 +8,7 @@
     </a>
   </div>
 
-  <% if @premium_gated %>
-    <%= render "shared/org_features_upgrade_cta" %>
-  <% else %>
-    <%# ── Create new form ── %>
+  <%# ── Create new form ── %>
     <div class="crayons-card crayons-card--content-rows mb-6">
       <h2><%= t("views.organization_settings.lead_forms.create_heading") %></h2>
 
@@ -154,6 +151,5 @@
         </div>
       </div>
     <% end %>
-  <% end %>
 </div>
 

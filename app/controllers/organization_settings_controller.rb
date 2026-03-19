@@ -2,6 +2,8 @@ class OrganizationSettingsController < ApplicationController
   include ImageUploads
   include OrganizationAdminScoped
 
+  before_action :check_org_verification_feature, only: [:request_verification]
+
   def edit
     load_membership_data
   end
@@ -164,5 +166,9 @@ class OrganizationSettingsController < ApplicationController
 
   def same_domain?(url1, url2)
     UrlDomainHelper.same_domain?(url1, url2)
+  end
+
+  def check_org_verification_feature
+    not_found unless FeatureFlag.enabled?(:org_verification, FeatureFlag::Actor[@organization])
   end
 end

@@ -171,13 +171,17 @@
         <a href="#section-header-cta"><%= t("views.organization_settings.header_cta.heading") %></a>
         <a href="#section-sidebar-cta"><%= t("views.settings.org.admin.cta") %></a>
         <a href="#section-members"><%= t("views.settings.org.admin.members") %></a>
-        <a href="#section-verification"><%= t("views.organization_settings.verification.heading") %></a>
+        <% if FeatureFlag.enabled?(:org_verification, FeatureFlag::Actor[@organization]) %>
+          <a href="#section-verification"><%= t("views.organization_settings.verification.heading") %></a>
+        <% end %>
         <a href="#section-invitations"><%= t("views.organization_settings.sidebar.invitations") %></a>
         <a href="#section-danger"><%= t("views.settings.danger") %></a>
       </nav>
-      <a href="<%= organization_lead_forms_path(@organization.slug) %>" class="mt-4 crayons-link fw-medium fs-s flex items-center gap-1">
-        <%= t("views.organization_settings.lead_forms.sidebar_link") %> &rarr;
-      </a>
+      <% if FeatureFlag.enabled?(:org_lead_forms, FeatureFlag::Actor[@organization]) %>
+        <a href="<%= organization_lead_forms_path(@organization.slug) %>" class="mt-4 crayons-link fw-medium fs-s flex items-center gap-1">
+          <%= t("views.organization_settings.lead_forms.sidebar_link") %> &rarr;
+        </a>
+      <% end %>
       <div class="grid gap-2 mt-4 pt-4" style="border-top: 1px solid var(--base-20); position: sticky; bottom: 1rem;">
         <button type="submit" form="org-settings-form" class="crayons-btn"><%= t("views.organization_settings.page.save") %></button>
         <a href="/<%= @organization.slug %>" class="crayons-btn crayons-btn--secondary">
@@ -610,6 +614,7 @@
       </div>
 
       <%# ── Verification ── %>
+      <% if FeatureFlag.enabled?(:org_verification, FeatureFlag::Actor[@organization]) %>
       <div id="section-verification" class="crayons-card crayons-card--content-rows">
         <header>
           <h2 class="mb-2"><%= t("views.organization_settings.verification.heading") %></h2>
@@ -703,6 +708,7 @@
           <% end %>
         <% end %>
       </div>
+      <% end %>
 
       <%# ── Invitations ── %>
       <div id="section-invitations" class="crayons-card crayons-card--content-rows">

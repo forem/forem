@@ -14,6 +14,10 @@ module Admin
       org_dofollow_links: {
         name: "Dofollow Links",
         description: "When enabled, links in this organization's readme page are dofollow (pass SEO authority). When disabled, all links are nofollow."
+      },
+      org_verification: {
+        name: "Organization Verification",
+        description: "When enabled, organizations can request verification and display a verified badge."
       }
     }.freeze
 
