@@ -18,6 +18,15 @@ import { AutocompleteTriggerTextArea } from '@crayons/AutocompleteTriggerTextAre
 
 // For any line containing a pipe, replace `\|` with `&#124;` automatically.
 const normalizeEscapedPipes = (text) => {
+  // nothing to normalize.
+  if (!text || !text.includes('\\|')) {
+    return text;
+  }
+  // If there are escaped pipes but no fenced code blocks, we can do a simple global replace.
+  if (!text.includes('```')) {
+    return text.replace(/\\\|/g, '&#124;');
+  }
+
   const lines = text.split('\n');
   let inFence = false;
   const fenceRe = /^\s*```/;
@@ -80,7 +89,7 @@ export const EditorBody = ({
     textarea.addEventListener('paste', handler);
     return () => textarea.removeEventListener('paste', handler);
   }, []);
-  
+
   // normalize \| to &#124; on lines with pipes, outside code fences.
   const handleBodyChange = (e) => {
     const el = e?.target;
