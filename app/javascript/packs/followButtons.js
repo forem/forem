@@ -221,7 +221,7 @@ function updateFollowButton(button, newState, buttonInfo) {
  *
  * @param {HTMLElement} target The target of the click event
  */
-function handleFollowButtonClick({ target }) {
+function handleFollowButtonClick({ target }, verb) {
   if (
     target.classList.contains('follow-action-button') ||
     target.classList.contains('follow-user') ||
@@ -239,17 +239,12 @@ function handleFollowButtonClick({ target }) {
       showLoginModal(trackingData);
       return;
     }
-
-    optimisticallyUpdateButtonUI(target);
+    optimisticallyUpdateButtonUI(target, verb);
     browserStoreCache('remove');
-
-    const { verb } = target.dataset;
-
     if (verb === 'self') {
       window.location.href = '/settings';
       return;
     }
-
     const { className, id } = JSON.parse(target.dataset.info);
     const formData = new FormData();
     formData.append('followable_type', className);
