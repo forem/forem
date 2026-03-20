@@ -11,6 +11,7 @@ class Notification < ApplicationRecord
   validates :user_id, uniqueness: { scope: %i[organization_id notifiable_id notifiable_type action] }
 
   before_create :mark_notified_at_time
+  after_commit :cleanup_old_notifications, on: :create
 
   scope :for_published_articles, -> { where(notifiable_type: "Article", action: "Published") }
   scope :for_comments, -> { where(notifiable_type: "Comment", action: nil) } # nil action means "not a reaction"
@@ -173,6 +174,39 @@ class Notification < ApplicationRecord
       BulkSqlDelete.delete_in_batches(notification_sql)
     end
 
+    def fast_cleanup_older_than_150_for(user_id)
+      comment_sql = <<-SQL.squish
+        DELETE FROM notifications
+        WHERE notifications.id IN (
+          SELECT id FROM (
+            SELECT id FROM notifications
+            WHERE user_id = ? AND notifiable_type = 'Comment'
+            ORDER BY created_at DESC
+            OFFSET 150
+            LIMIT 1000
+          ) as sub
+          LIMIT 50000
+        )
+      SQL
+
+      non_comment_sql = <<-SQL.squish
+        DELETE FROM notifications
+        WHERE notifications.id IN (
+          SELECT id FROM (
+            SELECT id FROM notifications
+            WHERE user_id = ? AND (notifiable_type != 'Comment' OR notifiable_type IS NULL)
+            ORDER BY created_at DESC
+            OFFSET 150
+            LIMIT 1000
+          ) as sub
+          LIMIT 50000
+        )
+      SQL
+
+      BulkSqlDelete.delete_in_batches(Notification.sanitize_sql([comment_sql, user_id]))
+      BulkSqlDelete.delete_in_batches(Notification.sanitize_sql([non_comment_sql, user_id]))
+    end
+
     private
 
     def reaction_notification_attributes(reaction, receiver)
@@ -190,5 +224,12 @@ class Notification < ApplicationRecord
 
   def mark_notified_at_time
     self.notified_at = Time.current
+  end
+
+  def cleanup_old_notifications
+    return unless user_id
+    return unless rand(10).zero?
+
+    Notifications::CleanupUserWorker.perform_async(user_id)
   end
 end
