@@ -22,18 +22,21 @@
   font-style: normal;
   font-weight: normal;
 }
+
 @font-face {
   font-family: OpenDyslexic;
   @include font-src('OpenDyslexic-Italic.otf');
   font-style: italic;
   font-weight: normal;
 }
+
 @font-face {
   font-family: OpenDyslexic;
   @include font-src('OpenDyslexic-Bold.otf');
   font-weight: bold;
   font-style: normal;
 }
+
 @font-face {
   font-family: OpenDyslexic;
   @include font-src('OpenDyslexic-BoldItalic.otf');
@@ -73,6 +76,7 @@ body {
   overflow-wrap: break-word;
 
   &--billboard {
+
     h1,
     h2,
     h3,
@@ -117,6 +121,7 @@ body {
     a {
       text-decoration: none;
       color: inherit;
+
       &:hover {
         color: var(--color-hover);
       }
@@ -131,6 +136,7 @@ body {
     .text-styles a:not(.crayons-btn) {
       text-decoration: underline;
       color: var(--link-branded-color);
+
       &:hover {
         color: var(--link-branded-color-hover);
       }
@@ -139,6 +145,7 @@ body {
 
   a[class*='ltag'] {
     text-decoration: none;
+
     &:hover {
       color: var(--color-hover);
     }
@@ -152,6 +159,7 @@ body {
     a {
       text-decoration: none;
       color: inherit;
+
       &:hover {
         color: var(--link-color-hover);
       }
@@ -182,11 +190,17 @@ body {
 
     img.subscription-icon {
       max-height: 13px;
+      max-width: 21px;
       display: inline-block;
       border-radius: 0;
     }
 
-    h1, h2, h3, h4, h5, h6 {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
       margin: 0;
     }
 
@@ -325,7 +339,7 @@ body {
     display: block;
   }
 
-  p + figcaption {
+  p+figcaption {
     margin-top: -0.8em;
   }
 
@@ -379,7 +393,7 @@ body {
   }
 
   pre:not(.highlight),
-  div:not(.highlight) > pre.highlight,
+  div:not(.highlight)>pre.highlight,
   div.highlight {
     margin: 0 0 var(--content-rhythm) 0;
   }
@@ -457,6 +471,7 @@ body {
   padding: var(--su-3);
   border: 1px solid var(--form-border);
   box-shadow: var(--shadow-smooth) !important;
+
   @media screen and (min-width: $breakpoint-s) {
     padding: var(--su-5);
   }
@@ -470,14 +485,14 @@ body {
   &__cover {
     margin-bottom: var(--su-4);
     flex-shrink: 0;
-    
+
     // New horizontal layout styles
     .c-embed__content & {
       margin-bottom: 0;
       width: 80px;
       height: 80px;
       text-align: center;
-      
+
       img {
         width: 100%;
         height: 100%;
