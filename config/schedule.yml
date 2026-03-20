@@ -198,3 +198,7 @@ agent_session_raw_file_cleanup:
   description: "Deletes expired raw agent session files from S3 (runs daily at 04:15 UTC)"
   cron: "15 4 * * *"
   class: "AgentSessions::CleanupExpiredRawFilesWorker"
+reverify_organizations:
+  description: "Re-checks verified organizations to ensure linkback still exists (runs daily at 06:00 UTC)"
+  cron: "0 6 * * *"
+  class: "Organizations::ReverifyAllWorker"

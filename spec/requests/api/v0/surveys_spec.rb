@@ -185,12 +185,12 @@ RSpec.describe "Api::V0::Surveys" do
     end
   end
 
-  describe "GET /api/surveys/:id_or_slug/responses" do
+  describe "GET /api/surveys/:id_or_slug/poll_votes" do
     context "when unauthenticated" do
       let!(:survey) { create(:survey) }
 
       it "returns unauthorized" do
-        get responses_api_survey_path(survey.id)
+        get poll_votes_api_survey_path(survey.id)
         expect(response).to have_http_status(:unauthorized)
       end
     end
@@ -199,7 +199,7 @@ RSpec.describe "Api::V0::Surveys" do
       let!(:survey) { create(:survey) }
 
       it "returns unauthorized" do
-        get responses_api_survey_path(survey.id), headers: auth_headers
+        get poll_votes_api_survey_path(survey.id), headers: auth_headers
         expect(response).to have_http_status(:unauthorized)
       end
     end
@@ -207,30 +207,26 @@ RSpec.describe "Api::V0::Surveys" do
     context "when authenticated" do
       let!(:survey) { create(:survey) }
       let!(:poll) { create(:poll, survey: survey, article: nil) }
-      let!(:text_poll) { create(:poll, :text_input, survey: survey, article: nil) }
       let(:voter) { create(:user) }
 
       before do
         user.add_role(:admin)
         create(:poll_vote, poll: poll, poll_option: poll.poll_options.first, user: voter)
-        create(:poll_text_response, poll: text_poll, user: voter, text_content: "Great survey!")
       end
 
-      it "returns poll votes and text responses" do
-        get responses_api_survey_path(survey.id), headers: auth_headers
+      it "returns poll votes" do
+        get poll_votes_api_survey_path(survey.id), headers: auth_headers
         expect(response).to have_http_status(:ok)
 
         json_response = response.parsed_body
-        expect(json_response["poll_votes"]).to be_an(Array)
-        expect(json_response["poll_votes"].size).to eq(1)
-        expect(json_response["text_responses"]).to be_an(Array)
-        expect(json_response["text_responses"].size).to eq(1)
+        expect(json_response).to be_an(Array)
+        expect(json_response.size).to eq(1)
       end
 
       it "returns expected fields for poll votes" do
-        get responses_api_survey_path(survey.id), headers: auth_headers
+        get poll_votes_api_survey_path(survey.id), headers: auth_headers
 
-        vote_json = response.parsed_body["poll_votes"].first
+        vote_json = response.parsed_body.first
         expect(vote_json).to include(
           "type_of", "id", "poll_id", "poll_option_id", "user_id",
           "user_email", "session_start", "created_at"
@@ -239,10 +235,96 @@ RSpec.describe "Api::V0::Surveys" do
         expect(vote_json["user_id"]).to eq(voter.id)
       end
 
-      it "returns expected fields for text responses" do
-        get responses_api_survey_path(survey.id), headers: auth_headers
+      it "paginates results" do
+        other_users = create_list(:user, 5)
+        other_users.each do |u|
+          create(:poll_vote, poll: poll, poll_option: poll.poll_options.first, user: u)
+        end
 
-        text_json = response.parsed_body["text_responses"].first
+        get poll_votes_api_survey_path(survey.id), params: { per_page: 2 }, headers: auth_headers
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.size).to eq(2)
+      end
+
+      it "returns empty array for survey with no votes" do
+        empty_survey = create(:survey)
+        create(:poll, survey: empty_survey, article: nil)
+
+        get poll_votes_api_survey_path(empty_survey.id), headers: auth_headers
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body).to eq([])
+      end
+
+      it "returns 404 for nonexistent survey" do
+        get poll_votes_api_survey_path("nonexistent"), headers: auth_headers
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "returns only votes after the given ID" do
+        first_vote = PollVote.order(:id).first
+        second_vote = create(:poll_vote, poll: poll, poll_option: poll.poll_options.first,
+                                         user: create(:user))
+
+        get poll_votes_api_survey_path(survey.id),
+            params: { after: first_vote.id },
+            headers: auth_headers
+        expect(response).to have_http_status(:ok)
+
+        returned_ids = response.parsed_body.pluck("id")
+        expect(returned_ids).to include(second_vote.id)
+        expect(returned_ids).not_to include(first_vote.id)
+      end
+
+      it "returns all votes when after param is omitted" do
+        get poll_votes_api_survey_path(survey.id), headers: auth_headers
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.size).to eq(1)
+      end
+    end
+  end
+
+  describe "GET /api/surveys/:id_or_slug/poll_text_responses" do
+    context "when unauthenticated" do
+      let!(:survey) { create(:survey) }
+
+      it "returns unauthorized" do
+        get poll_text_responses_api_survey_path(survey.id)
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context "when authenticated but not admin" do
+      let!(:survey) { create(:survey) }
+
+      it "returns unauthorized" do
+        get poll_text_responses_api_survey_path(survey.id), headers: auth_headers
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context "when authenticated" do
+      let!(:survey) { create(:survey) }
+      let!(:text_poll) { create(:poll, :text_input, survey: survey, article: nil) }
+      let(:voter) { create(:user) }
+
+      before do
+        user.add_role(:admin)
+        create(:poll_text_response, poll: text_poll, user: voter, text_content: "Great survey!")
+      end
+
+      it "returns text responses" do
+        get poll_text_responses_api_survey_path(survey.id), headers: auth_headers
+        expect(response).to have_http_status(:ok)
+
+        json_response = response.parsed_body
+        expect(json_response).to be_an(Array)
+        expect(json_response.size).to eq(1)
+      end
+
+      it "returns expected fields for text responses" do
+        get poll_text_responses_api_survey_path(survey.id), headers: auth_headers
+
+        text_json = response.parsed_body.first
         expect(text_json).to include(
           "type_of", "id", "poll_id", "user_id", "text_content",
           "user_email", "session_start", "created_at"
@@ -253,72 +335,47 @@ RSpec.describe "Api::V0::Surveys" do
       it "paginates results" do
         other_users = create_list(:user, 5)
         other_users.each do |u|
-          create(:poll_vote, poll: poll, poll_option: poll.poll_options.first, user: u)
+          create(:poll_text_response, poll: text_poll, user: u, text_content: "Response")
         end
 
-        get responses_api_survey_path(survey.id), params: { per_page: 2 }, headers: auth_headers
+        get poll_text_responses_api_survey_path(survey.id), params: { per_page: 2 }, headers: auth_headers
         expect(response).to have_http_status(:ok)
-
-        json_response = response.parsed_body
-        expect(json_response["poll_votes"].size).to eq(2)
+        expect(response.parsed_body.size).to eq(2)
       end
 
-      it "returns empty arrays for survey with no responses" do
+      it "returns empty array for survey with no text responses" do
         empty_survey = create(:survey)
-        create(:poll, survey: empty_survey, article: nil)
+        create(:poll, :text_input, survey: empty_survey, article: nil)
 
-        get responses_api_survey_path(empty_survey.id), headers: auth_headers
+        get poll_text_responses_api_survey_path(empty_survey.id), headers: auth_headers
         expect(response).to have_http_status(:ok)
-
-        json_response = response.parsed_body
-        expect(json_response["poll_votes"]).to eq([])
-        expect(json_response["text_responses"]).to eq([])
+        expect(response.parsed_body).to eq([])
       end
 
       it "returns 404 for nonexistent survey" do
-        get responses_api_survey_path("nonexistent"), headers: auth_headers
+        get poll_text_responses_api_survey_path("nonexistent"), headers: auth_headers
         expect(response).to have_http_status(:not_found)
       end
 
-      it "filters responses created after the given since timestamp" do
-        old_vote = create(:poll_vote, poll: poll, poll_option: poll.poll_options.first,
-                                      user: create(:user), created_at: 1.hour.ago)
-        newer_vote = create(:poll_vote, poll: poll, poll_option: poll.poll_options.first,
-                                        user: create(:user), created_at: 1.minute.ago)
+      it "returns only text responses after the given ID" do
+        first_response = PollTextResponse.order(:id).first
+        second_response = create(:poll_text_response, poll: text_poll,
+                                                      user: create(:user), text_content: "Another")
 
-        get responses_api_survey_path(survey.id),
-            params: { since: 30.minutes.ago.iso8601 },
+        get poll_text_responses_api_survey_path(survey.id),
+            params: { after: first_response.id },
             headers: auth_headers
         expect(response).to have_http_status(:ok)
 
-        returned_ids = response.parsed_body["poll_votes"].pluck("id")
-        expect(returned_ids).to include(newer_vote.id)
-        expect(returned_ids).not_to include(old_vote.id)
+        returned_ids = response.parsed_body.pluck("id")
+        expect(returned_ids).to include(second_response.id)
+        expect(returned_ids).not_to include(first_response.id)
       end
 
-      it "returns all responses when since param is omitted" do
-        get responses_api_survey_path(survey.id), headers: auth_headers
+      it "returns all text responses when after param is omitted" do
+        get poll_text_responses_api_survey_path(survey.id), headers: auth_headers
         expect(response).to have_http_status(:ok)
-        expect(response.parsed_body["poll_votes"].size).to eq(1)
-        expect(response.parsed_body["text_responses"].size).to eq(1)
-      end
-
-      it "returns unprocessable entity when since parameter is an invalid string" do
-        get responses_api_survey_path(survey.id),
-            params: { since: "not-a-date" },
-            headers: auth_headers
-
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.parsed_body["error"]).to eq("Invalid since timestamp")
-      end
-
-      it "returns unprocessable entity when since parameter is an out-of-range date" do
-        get responses_api_survey_path(survey.id),
-            params: { since: "2026-99-99" },
-            headers: auth_headers
-
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.parsed_body["error"]).to eq("Invalid since timestamp")
+        expect(response.parsed_body.size).to eq(1)
       end
     end
   end

@@ -78,8 +78,8 @@
   z-index: var(--z-popover);
   animation: popoverEnter 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
   box-shadow: 0 -6px 34px rgba(0, 0, 0, 0.14),
-              0 -16px 84px rgba(0, 0, 0, 0.18),
-              0 -2px 12px rgba(0, 0, 0, 0.08) !important;
+    0 -16px 84px rgba(0, 0, 0, 0.18),
+    0 -2px 12px rgba(0, 0, 0, 0.08) !important;
   border-radius: var(--radius-xl) var(--radius-xl) 0 0 !important;
   max-height: calc(100vh - var(--header-height));
   max-width: calc(var(--site-width) + 100px);
@@ -125,6 +125,7 @@
     .popover-billboard__content {
       font-size: 1.22em;
     }
+
     .crayons-bb__header {
       padding-left: var(--su-4);
     }

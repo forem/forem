@@ -1,6 +1,7 @@
 ---
 fr:
   liquid_tags:
+    invalid_url_scheme: "URL non valide pour '%{option}' : seules les URL http et https sont autorisées"
     asciinema_tag:
       invalid_asciinema_id: "ID d'Asciinema non valide : %{id}"
     blogcast_tag:
@@ -129,5 +130,61 @@ fr:
       invalid: "Syntaxe agent_session non valide. Utilisez : {% agent_session ID %}, {% agent_session ID debut..fin %}, ou {% agent_session ID nom_tranche %}"
       not_found: Session d'agent non trouvée
       unpublished: Seul le propriétaire de la session peut intégrer cette session
+    feed_tag:
+      missing_source: "La balise feed nécessite au moins une source : org, tag ou tags"
+      invalid_option: "Option '%{option}' non valide pour la balise feed"
+      invalid_org: "Organisation '%{slug}' non trouvée"
+      invalid_tags: "L'option tags nécessite au moins un nom de tag"
+      invalid_limit: "La limite doit être comprise entre 1 et 30"
+      invalid_sort: "Le tri doit être l'un des suivants : recent, reactions, comments, score"
+      invalid_since: "Since doit être une durée relative (ex. 30d) ou une date (AAAA-MM-JJ)"
+    row_tag:
+      no_args: "La balise row n'accepte aucun argument"
+    col_tag:
+      invalid_span: "Le span doit être compris entre 1 et 4"
+    org_posts_tag:
+      invalid_slug: Slug de l'organisation non valide
+      invalid_option: "Option '%{option}' non valide pour la balise org_posts"
+      invalid_limit: "La limite doit être comprise entre 1 et 30"
+      invalid_sort: "Le tri doit être l'un des suivants : recent, reactions, comments, score"
+      invalid_since: "Since doit être une durée relative (ex. 30d) ou une date (AAAA-MM-JJ)"
+    org_team_tag:
+      invalid_slug: Slug de l'organisation non valide
+      invalid_option: "Option '%{option}' non valide pour la balise org_team"
+      invalid_limit: "La limite doit être comprise entre 1 et 50"
+      invalid_role: "Le rôle doit être l'un des suivants : all, admins, members"
+    netlify_tag:
+      invalid_url: "URL Netlify non valide. Doit être une URL https://*.netlify.app"
+    features_tag:
+      no_args: "La balise features n'accepte aucun argument"
+    feature_tag:
+      missing_title: "La balise feature nécessite une option title"
+    offer_tag:
+      default_button: "En savoir plus"
+    quote_tag:
+      missing_author: "La balise quote nécessite une option author"
+      invalid_rating: "La note doit être comprise entre 1 et 5"
+      learn_more: "En savoir plus"
+    slide_tag:
+      missing_image: "La balise slide nécessite une option image"
+      missing_content: "La balise slide nécessite au moins l'un des éléments suivants : image, video ou link"
+    slides_tag:
+      invalid_mode: "Le mode slides doit être 'default' ou 'carousel'"
+    org_lead_form_tag:
+      not_found: Formulaire de leads non trouvé
+      inactive: Ce formulaire de leads n'est plus actif
+      invalid_id: "ID de formulaire de leads non valide. Utilisez : {% org_lead_form ID %}"
+      data_shared: "Partage votre nom, e-mail, entreprise et poste avec cette organisation."
+      submitting: Envoi en cours...
+      submitted: Envoyé
+      already_submitted: "Vous avez envoyé ceci le %{date}"
+      error: Une erreur s'est produite. Veuillez réessayer.
+      sign_in_required: Veuillez vous connecter pour soumettre ce formulaire.
+      field_name: Nom
+      field_email: Email
+      field_company: Entreprise
+      field_job_title: Poste
+      name_email_required: Le nom et l'e-mail sont obligatoires.
+      wrong_organization: Ce formulaire de leads n'appartient pas à cette organisation.
     youtube_tag:
       invalid_youtube_id: ID ou URL YouTube non valide
