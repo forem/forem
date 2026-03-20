@@ -22,5 +22,14 @@ RSpec.describe AsyncInfo do
       expect(policies.map { |p| p.fetch(:dom_class) }.sort)
         .to eq(%w[js-policy-article-create js-policy-article-moderate])
     end
+
+    it "includes a list of admin_organization_ids for the current user" do
+      org = create(:organization)
+      create(:organization_membership, user: user, organization: org, type_of_user: "admin")
+
+      payload = async_info
+      expect(payload).to have_key(:admin_organization_ids)
+      expect(payload[:admin_organization_ids]).to eq([org.id])
+    end
   end
 end

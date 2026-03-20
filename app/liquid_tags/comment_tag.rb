@@ -1,6 +1,7 @@
 class CommentTag < LiquidTagBase
   PARTIAL = "comments/liquid".freeze
-  VALID_LINK_REGEXP = %r{#{URL.url}/\w+/comment/(?<comment_id>\w+)}
+  VALID_DOMAINS = -> { ([Settings::General.app_domain] + Subforem.cached_domains).compact.uniq }
+  VALID_LINK_REGEXP = %r{https?://(?<domain>[^/]+)/\w+/comment/(?<comment_id>\w+)}
   VALID_ID_REGEXP = /\A(?<comment_id>\w+)\Z/
   REGEXP_OPTIONS = [VALID_LINK_REGEXP, VALID_ID_REGEXP].freeze
 
@@ -27,6 +28,10 @@ class CommentTag < LiquidTagBase
   def parse_id_code(input)
     match = pattern_match_for(input, REGEXP_OPTIONS)
     raise StandardError, I18n.t("liquid_tags.comment_tag.invalid_comment") unless match
+
+    if match.names.include?("domain") && match[:domain]
+      raise StandardError, I18n.t("liquid_tags.comment_tag.invalid_comment") unless VALID_DOMAINS.call.include?(match[:domain])
+    end
 
     match[:comment_id]
   end

@@ -58,6 +58,51 @@ RSpec.describe Organization do
       it { is_expected.to allow_value("123_4").for(:slug) }
       it { is_expected.not_to allow_value("1234").for(:slug) }
     end
+
+    describe "custom validations" do
+      describe "#validate_header_cta" do
+        it "allows valid HTTP and HTTPS urls" do
+          organization.header_cta = { "text" => "Click Here", "url" => "https://example.com" }
+          expect(organization).to be_valid
+        end
+
+        it "rejects javascript pseudo-protocols to prevent Stored XSS" do
+          organization.header_cta = { "text" => "Click Here", "url" => "javascript:alert(1)//" }
+          expect(organization).not_to be_valid
+          expect(organization.errors[:header_cta]).to include("Link must be a valid HTTP, HTTPS, or Mailto URL")
+        end
+
+        it "rejects javascript pseudo-protocols in dropdown links to prevent Stored XSS" do
+          organization.header_cta = { "text" => "Dropdown", "links" => [{ "text" => "Malicious", "url" => "javascript:alert(1)//" }] }
+          expect(organization).not_to be_valid
+          expect(organization.errors[:header_cta]).to include("Link must be a valid HTTP, HTTPS, or Mailto URL")
+        end
+      end
+
+      describe "#validate_social_links" do
+        it "allows valid domains matching the platform" do
+          organization.social_links = { "youtube" => "https://youtube.com/c/forem" }
+          expect(organization).to be_valid
+        end
+
+        it "allows valid alternate domains designed for the platform" do
+          organization.social_links = { "youtube" => "https://youtu.be/forem" }
+          expect(organization).to be_valid
+        end
+
+        it "rejects cross-platform domain spoofing" do
+          organization.social_links = { "youtube" => "https://evildomain.com/youtube" }
+          expect(organization).not_to be_valid
+          expect(organization.errors[:social_links]).to include("URL domain must match the selected platform (Youtube)")
+        end
+
+        it "rejects javascript pseudo-protocols to prevent XSS" do
+          organization.social_links = { "youtube" => "javascript:alert(1)//https://youtube.com" }
+          expect(organization).not_to be_valid
+          expect(organization.errors[:social_links]).to include("must be valid HTTP or HTTPS URLs")
+        end
+      end
+    end
   end
 
   context "when callbacks are triggered before save" do
@@ -446,6 +491,24 @@ RSpec.describe Organization do
       allow(search_index_worker).to receive(:perform_async)
       create(:organization)
       expect(search_index_worker).to have_received(:perform_async).with("Organization", kind_of(Integer), false).once
+    end
+  end
+
+  describe "#readme_page?" do
+    it "returns true when organization has a page" do
+      create(:page, organization: organization, body_markdown: "# Hello",
+             title: organization.name, description: "desc", slug: "#{organization.slug}-page")
+      expect(organization.readme_page?).to be(true)
+    end
+
+    it "returns false when organization has no pages" do
+      expect(organization.readme_page?).to be(false)
+    end
+  end
+
+  describe "#flipper_id" do
+    it "returns a string with Organization prefix and id" do
+      expect(organization.flipper_id).to eq("Organization;#{organization.id}")
     end
   end
 
