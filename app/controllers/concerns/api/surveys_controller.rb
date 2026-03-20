@@ -7,11 +7,10 @@ module Api
     included do
       before_action :authenticate_with_api_key_or_current_user!
       before_action :authorize_admin
-      before_action :set_survey, only: %i[show responses]
+      before_action :set_survey, only: %i[show poll_votes poll_text_responses]
     end
 
     def index
-      per_page = (params[:per_page] || DEFAULT_PER_PAGE).to_i
       num = [per_page, per_page_max].min
 
       @surveys = Survey
@@ -27,28 +26,12 @@ module Api
 
     def show; end
 
-    def responses
-      since = Time.iso8601(params[:since]).in_time_zone if params[:since].present?
+    def poll_votes
+      @poll_votes = paginated_survey_responses(PollVote)
+    end
 
-      per_page = (params[:per_page] || DEFAULT_PER_PAGE).to_i
-      num = [per_page, per_page_max].min
-      page = params[:page] || 1
-
-      @poll_votes = PollVote.joins(:poll)
-        .where(polls: { survey_id: @survey.id })
-        .then { |q| since ? q.where("poll_votes.created_at > ?", since) : q }
-        .includes(:user)
-        .order(Arel.sql("poll_votes.created_at ASC"))
-        .page(page).per(num)
-
-      @text_responses = PollTextResponse.joins(:poll)
-        .where(polls: { survey_id: @survey.id })
-        .then { |q| since ? q.where("poll_text_responses.created_at > ?", since) : q }
-        .includes(:user)
-        .order(Arel.sql("poll_text_responses.created_at ASC"))
-        .page(page).per(num)
-    rescue ArgumentError
-      error_unprocessable_entity("Invalid since timestamp")
+    def poll_text_responses
+      @poll_text_responses = paginated_survey_responses(PollTextResponse)
     end
 
     private
@@ -64,6 +47,25 @@ module Api
 
     def authorize_admin
       authorize Survey, :access?, policy_class: InternalPolicy
+    end
+
+    def paginated_survey_responses(model_class)
+      after_id = params[:after].to_i if params[:after].present?
+
+      num = [per_page, per_page_max].min
+
+      model_class.joins(:poll)
+        .where(polls: { survey_id: @survey.id })
+        .then { |q| after_id ? q.where(model_class.arel_table[:id].gt(after_id)) : q }
+        .includes(:user)
+        .order(id: :asc)
+        .limit(num)
+    end
+
+    def per_page
+      return params[:per_page].to_i if params[:per_page]
+
+      DEFAULT_PER_PAGE
     end
 
     def per_page_max
