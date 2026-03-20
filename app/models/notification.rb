@@ -230,6 +230,8 @@ class Notification < ApplicationRecord
     return unless user_id
     return unless rand(10).zero?
 
+    return unless Rails.cache.write("cleanup_user_notifications_#{user_id}", 1, expires_in: 10.minutes, unless_exist: true)
+
     Notifications::CleanupUserWorker.perform_async(user_id)
   end
 end
