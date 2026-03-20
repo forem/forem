@@ -491,9 +491,58 @@ en:
         options:
           delete: Delete organization
           icon: Options
+        verified:
+          heading: Verification
+          label: Verified Organization
+          description: Manually verify or unverify this organization. Verified organizations display a verification badge on their profile.
+          verify: Verify Organization
+          revoke: Revoke Verification
+          verified_notice: "This organization is verified (since %{date})."
+          verification_url: Verification URL
         fully_trusted:
           label: Fully Trusted Organization
           description: When enabled, this organization can add members directly without requiring confirmation. Members will receive a notification email instead of an invitation.
           enable: Enable Fully Trusted
           disable: Disable Fully Trusted
           enabled_notice: This organization is fully trusted. Members can be added directly without confirmation.
+        org_features:
+          heading: Org Features
+          readme:
+            label: Readme Page
+            description: When enabled, this organization can build and display a custom readme page on their profile.
+            enable: Enable Readme
+            disable: Disable Readme
+            enabled_notice: Readme page feature is enabled for this organization.
+          lead_forms:
+            label: Lead Forms
+            description: When enabled, this organization can create and manage lead capture forms to embed in their articles.
+            enable: Enable Lead Forms
+            disable: Disable Lead Forms
+            enabled_notice: Lead forms feature is enabled for this organization.
+          dofollow_links:
+            label: Dofollow Links
+            description: When enabled, links in this organization's readme page pass SEO authority (dofollow). When disabled, all external links are nofollow.
+            enable: Enable Dofollow
+            disable: Disable Dofollow
+            enabled_notice: Dofollow links are enabled for this organization's readme page.
+      org_features:
+        heading: Org Features
+        description: Manage organization feature flags globally or per-organization.
+        enable_global: Enable for All Orgs
+        disable_global: Disable Global Access
+        globally_enabled_notice: This feature is enabled for all organizations.
+        individually_enabled:
+          one: "Individually enabled for %{count} organization:"
+          other: "Individually enabled for %{count} organizations:"
+        no_orgs_enabled: No organizations have this feature individually enabled. Use each organization's admin page to enable it.
+        table:
+          name: Organization
+          slug: Slug
+          actions: ""
+          manage: Manage
+        cta_config:
+          heading: Upgrade CTA Settings
+          description: Configure the call-to-action shown to organizations that don't have access to a feature. This appears in place of the gated feature.
+          text_label: CTA Text
+          url_label: CTA URL
+          save: Save CTA Settings

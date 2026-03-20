@@ -167,6 +167,9 @@ RSpec.configure do |config|
   end
 
   config.before(:suite) do
+    # Ensure ESBuild assets are present for system specs locally
+    system("bin/rails javascript:build") unless ENV["CI"] || ENV["SKIP_JS_BUILD"]
+
     # Set the TZ ENV variable with the current random timezone from zonebie
     # which we can then use to properly set the browser time for Capybara specs
     ENV["TZ"] = Time.zone.tzinfo.name

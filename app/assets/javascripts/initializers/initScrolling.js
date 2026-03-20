@@ -534,6 +534,7 @@ function fetchNextPageIfNearBottom() {
   }
 
   if (
+    scrollableElem &&
     !done &&
     !fetching &&
     window.scrollY > scrollableElem.scrollHeight - 3700
