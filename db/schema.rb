@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_03_09_200000) do
+ActiveRecord::Schema[7.0].define(version: 2026_03_11_000002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -904,6 +904,21 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_09_200000) do
     t.index ["slug"], name: "index_labels_on_slug", unique: true
   end
 
+  create_table "lead_submissions", force: :cascade do |t|
+    t.string "company"
+    t.datetime "created_at", null: false
+    t.string "email"
+    t.string "job_title"
+    t.string "name"
+    t.bigint "organization_lead_form_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.string "username"
+    t.index ["organization_lead_form_id", "user_id"], name: "idx_lead_submissions_form_user_unique", unique: true, where: "(user_id IS NOT NULL)"
+    t.index ["organization_lead_form_id"], name: "index_lead_submissions_on_organization_lead_form_id"
+    t.index ["user_id"], name: "index_lead_submissions_on_user_id"
+  end
+
   create_table "media_sources", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "display_url", null: false
@@ -991,6 +1006,17 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_09_200000) do
     t.index ["user_id", "organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_user_id_organization_id_notifiable_action", unique: true
   end
 
+  create_table "organization_lead_forms", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.string "button_text", default: "Sign Up", null: false
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.bigint "organization_id", null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id"], name: "index_organization_lead_forms_on_organization_id"
+  end
+
   create_table "organization_memberships", force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
     t.string "invitation_token"
@@ -1007,6 +1033,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_09_200000) do
     t.integer "baseline_score", default: 0
     t.string "bg_color_hex"
     t.string "company_size"
+    t.string "cover_image"
     t.datetime "created_at", precision: nil, null: false
     t.integer "credits_count", default: 0, null: false
     t.text "cta_body_markdown"
@@ -1017,6 +1044,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_09_200000) do
     t.string "email"
     t.boolean "fully_trusted", default: false, null: false
     t.string "github_username"
+    t.jsonb "header_cta", default: {}, null: false
     t.integer "ideal_daily_promoted_billboard_impressions", default: 0, null: false
     t.datetime "last_article_at", precision: nil, default: "2017-01-01 05:00:00"
     t.datetime "latest_article_updated_at", precision: nil
@@ -1030,6 +1058,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_09_200000) do
     t.text "proof"
     t.string "secret"
     t.string "slug"
+    t.jsonb "social_links", default: {}, null: false
     t.integer "spent_credits_count", default: 0, null: false
     t.string "story"
     t.text "summary"
@@ -1040,6 +1069,11 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_09_200000) do
     t.integer "unspent_credits_count", default: 0, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.string "url"
+    t.string "verification_error"
+    t.string "verification_status"
+    t.string "verification_url"
+    t.boolean "verified", default: false, null: false
+    t.datetime "verified_at"
     t.index ["currently_paused_promotional_billboards"], name: "idx_orgs_on_currently_paused_promo_billboards"
     t.index ["ideal_daily_promoted_billboard_impressions"], name: "idx_orgs_on_ideal_daily_promoted_bb_impressions"
     t.index ["secret"], name: "index_organizations_on_secret", unique: true
@@ -1085,6 +1119,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_09_200000) do
     t.string "description"
     t.boolean "is_top_level_path", default: false
     t.boolean "landing_page", default: false, null: false
+    t.bigint "organization_id"
     t.bigint "page_template_id"
     t.text "processed_html"
     t.string "redirect_to_url"
@@ -1095,6 +1130,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_09_200000) do
     t.jsonb "template_data", default: {}
     t.string "title"
     t.datetime "updated_at", precision: nil, null: false
+    t.index ["organization_id"], name: "index_pages_on_organization_id"
     t.index ["page_template_id"], name: "index_pages_on_page_template_id"
     t.index ["slug", "subforem_id"], name: "index_pages_on_slug_and_subforem_id", unique: true
     t.index ["subforem_id"], name: "index_pages_on_subforem_id"
@@ -1965,15 +2001,19 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_09_200000) do
   add_foreign_key "github_repos", "users", on_delete: :cascade
   add_foreign_key "html_variants", "users", on_delete: :cascade
   add_foreign_key "identities", "users", on_delete: :cascade
+  add_foreign_key "lead_submissions", "organization_lead_forms", on_delete: :cascade
+  add_foreign_key "lead_submissions", "users", on_delete: :cascade
   add_foreign_key "mentions", "users", on_delete: :cascade
   add_foreign_key "notes", "users", column: "author_id", on_delete: :nullify
   add_foreign_key "notification_subscriptions", "users", on_delete: :cascade
   add_foreign_key "notifications", "organizations", on_delete: :cascade
   add_foreign_key "notifications", "users", on_delete: :cascade
+  add_foreign_key "organization_lead_forms", "organizations", on_delete: :cascade
   add_foreign_key "organization_memberships", "organizations", on_delete: :cascade
   add_foreign_key "organization_memberships", "users", on_delete: :cascade
   add_foreign_key "page_views", "articles", on_delete: :cascade
   add_foreign_key "page_views", "users", on_delete: :nullify
+  add_foreign_key "pages", "organizations", on_delete: :nullify
   add_foreign_key "podcast_episode_appearances", "podcast_episodes"
   add_foreign_key "podcast_episode_appearances", "users"
   add_foreign_key "podcast_episodes", "podcasts", on_delete: :cascade

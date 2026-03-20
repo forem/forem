@@ -400,4 +400,56 @@ RSpec.describe "StoriesIndex" do
       end
     end
   end
+
+  describe "GET /:slug (organization page)" do
+    let(:organization) { create(:organization) }
+    let(:user) { create(:user) }
+
+    before do
+      create(:organization_membership, organization: organization, user: user, type_of_user: "member")
+      create(:article, organization: organization, user: user, published: true)
+    end
+
+    context "when organization has no readme page" do
+      it "renders the classic show template" do
+        get "/#{organization.slug}"
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("sidebar-left")
+      end
+    end
+
+    context "when organization has a readme page and org_readme flag is enabled" do
+      before do
+        create(:page, organization: organization, body_markdown: "**Welcome to our org!**",
+               title: organization.name, description: "desc", slug: "#{organization.slug}-page",
+               template: "full_within_layout")
+        FeatureFlag.add(:org_readme)
+        FeatureFlag.enable(:org_readme, FeatureFlag::Actor[organization])
+      end
+
+      after { FeatureFlag.disable(:org_readme) }
+
+      it "renders the readme show template" do
+        get "/#{organization.slug}"
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("<strong>Welcome to our org!</strong>")
+        expect(response.body).not_to include("sidebar-left")
+      end
+    end
+
+    context "when organization has a readme page but org_readme flag is disabled" do
+      before do
+        create(:page, organization: organization, body_markdown: "**Welcome to our org!**",
+               title: organization.name, description: "desc", slug: "#{organization.slug}-page",
+               template: "full_within_layout")
+        FeatureFlag.add(:org_readme)
+      end
+
+      it "shows classic feed view instead of readme" do
+        get "/#{organization.slug}"
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("sidebar-left")
+      end
+    end
+  end
 end

@@ -21,6 +21,11 @@ export const EditorBody = ({
   defaultValue,
   switchHelpContext,
   version,
+  textAreaId = 'article_body_markdown',
+  textAreaName = 'body_markdown',
+  placeholder,
+  ariaLabel = 'Post Content',
+  className = 'crayons-textfield crayons-textfield--ghost crayons-article-form__body__field ff-monospace fs-l h-100',
 }) => {
   const textAreaRef = useRef(null);
 
@@ -64,7 +69,7 @@ export const EditorBody = ({
       data-testid="article-form__body"
       className="crayons-article-form__body drop-area text-padding"
     >
-      <Toolbar version={version} textAreaId="article_body_markdown" />
+      <Toolbar version={version} textAreaId={textAreaId} />
       <AutocompleteTriggerTextArea
         triggerCharacter="@"
         maxSuggestions={6}
@@ -78,12 +83,12 @@ export const EditorBody = ({
         autoResize
         onChange={onChange}
         onFocus={switchHelpContext}
-        aria-label="Post Content"
-        name="body_markdown"
-        id="article_body_markdown"
+        aria-label={ariaLabel}
+        name={textAreaName}
+        id={textAreaId}
         defaultValue={defaultValue}
-        placeholder={locale('core.editor_body_placeholder')}
-        className="crayons-textfield crayons-textfield--ghost crayons-article-form__body__field ff-monospace fs-l h-100"
+        placeholder={placeholder || locale('core.editor_body_placeholder')}
+        className={className}
       />
     </div>
   );
@@ -92,8 +97,13 @@ export const EditorBody = ({
 EditorBody.propTypes = {
   onChange: PropTypes.func.isRequired,
   defaultValue: PropTypes.string.isRequired,
-  switchHelpContext: PropTypes.func.isRequired,
-  version: PropTypes.string.isRequired,
+  switchHelpContext: PropTypes.func,
+  version: PropTypes.string,
+  textAreaId: PropTypes.string,
+  textAreaName: PropTypes.string,
+  placeholder: PropTypes.string,
+  ariaLabel: PropTypes.string,
+  className: PropTypes.string,
 };
 
 EditorBody.displayName = 'EditorBody';

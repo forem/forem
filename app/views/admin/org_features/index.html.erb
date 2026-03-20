@@ -1,0 +1,75 @@
+<header class="crayons-card p-6 mb-6">
+  <h1 class="crayons-title"><%= t("views.admin.org_features.heading") %></h1>
+  <p class="color-base-60 mt-1"><%= t("views.admin.org_features.description") %></p>
+</header>
+
+<% @features.each do |feature| %>
+  <div class="crayons-card p-6 mb-6">
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <h3 class="crayons-subtitle-2"><%= feature[:name] %></h3>
+        <p class="fs-s color-base-60 mt-1"><%= feature[:description] %></p>
+      </div>
+      <%= form_tag toggle_global_admin_org_features_path, method: :patch, class: "flex items-center gap-2" do %>
+        <%= hidden_field_tag :feature, feature[:key] %>
+        <%= hidden_field_tag :enabled, !feature[:globally_enabled] %>
+        <% if feature[:globally_enabled] %>
+          <%= submit_tag t("views.admin.org_features.disable_global"), class: "crayons-btn crayons-btn--danger" %>
+        <% else %>
+          <%= submit_tag t("views.admin.org_features.enable_global"), class: "crayons-btn crayons-btn--success" %>
+        <% end %>
+      <% end %>
+    </div>
+
+    <% if feature[:globally_enabled] %>
+      <div class="crayons-notice crayons-notice--success">
+        <%= t("views.admin.org_features.globally_enabled_notice") %>
+      </div>
+    <% else %>
+      <% if feature[:enabled_orgs].any? %>
+        <div class="mt-4">
+          <h4 class="fw-bold fs-s mb-2"><%= t("views.admin.org_features.individually_enabled", count: feature[:enabled_orgs].size) %></h4>
+          <table class="crayons-card crayons-card--secondary" style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr>
+                <th class="p-3 text-left fs-s fw-bold"><%= t("views.admin.org_features.table.name") %></th>
+                <th class="p-3 text-left fs-s fw-bold"><%= t("views.admin.org_features.table.slug") %></th>
+                <th class="p-3 text-right fs-s fw-bold"><%= t("views.admin.org_features.table.actions") %></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% feature[:enabled_orgs].each do |org| %>
+                <tr style="border-top: 1px solid var(--base-20);">
+                  <td class="p-3 fs-s"><%= org.name %></td>
+                  <td class="p-3 fs-s color-base-60"><%= org.slug %></td>
+                  <td class="p-3 text-right">
+                    <%= link_to t("views.admin.org_features.table.manage"), admin_organization_path(org), class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <p class="fs-s color-base-60 mt-2"><%= t("views.admin.org_features.no_orgs_enabled") %></p>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>
+
+<div class="crayons-card p-6 mb-6">
+  <h3 class="crayons-subtitle-2 mb-4"><%= t("views.admin.org_features.cta_config.heading") %></h3>
+  <p class="fs-s color-base-60 mb-4"><%= t("views.admin.org_features.cta_config.description") %></p>
+
+  <%= form_tag update_cta_admin_org_features_path, method: :patch, class: "grid gap-4" do %>
+    <div class="crayons-field">
+      <label class="crayons-field__label" for="cta_text"><%= t("views.admin.org_features.cta_config.text_label") %></label>
+      <input type="text" id="cta_text" name="cta_text" value="<%= @cta_text %>" class="crayons-textfield">
+    </div>
+    <div class="crayons-field">
+      <label class="crayons-field__label" for="cta_url"><%= t("views.admin.org_features.cta_config.url_label") %></label>
+      <input type="url" id="cta_url" name="cta_url" value="<%= @cta_url %>" class="crayons-textfield" placeholder="https://...">
+    </div>
+    <%= submit_tag t("views.admin.org_features.cta_config.save"), class: "crayons-btn" %>
+  <% end %>
+</div>
