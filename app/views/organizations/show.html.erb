@@ -11,6 +11,7 @@
 <div
   class="crayons-layout crayons-layout--limited-l crayons-layout--2-cols crayons-layout--2-cols--1-2 pt-4 m:pt-0"
   id="index-container"
+  style="<%= org_brand_style(@user) %>"
   data-params="<%= params.merge(sort_by: "published_at", sort_direction: "desc", organization_id: @organization.id).to_json(only: %i[tag organization_id username q sort_by sort_direction]) %>" data-which="<%= @list_of %>"
   data-feed="<%= params[:timeframe] || "base-feed" %>"
   data-articles-since="<%= Timeframe.datetime_iso8601(params[:timeframe]) %>">

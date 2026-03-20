@@ -13,7 +13,7 @@ RSpec.describe CtaTag, type: :liquid_tag do
     it "contains the correct static attributes" do
       rendered = generate_details_liquid(link, description).render
 
-      expect(rendered).to include("class=\"ltag_cta ltag_cta--branded")
+      expect(rendered).to include("class=\"crayons-btn crayons-btn--primary")
       expect(rendered).to include("role=\"button")
     end
 

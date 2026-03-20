@@ -97,7 +97,7 @@ body {
     margin-bottom: 0;
   }
 
-  a {
+  a:not(.crayons-btn) {
     text-decoration: underline;
     color: var(--link-branded-color);
 
@@ -110,10 +110,30 @@ body {
   // Liquid tags styling is still pretty random and overwriting what's been
   // implemented there makes some things look worse. We should circle back
   // when/if we "redesign" liquid tags.
-  [class*='ltag'] a {
-    text-decoration: none;
-    &:hover {
-      color: var(--color-hover);
+  [class*='ltag'] {
+    font-size: initial;
+    font-family: var(--ff-sans-serif);
+
+    a {
+      text-decoration: none;
+      color: inherit;
+      &:hover {
+        color: var(--color-hover);
+      }
+    }
+
+    img {
+      max-width: none;
+      margin: 0;
+    }
+
+    // Restore link styling for nested .text-styles blocks (e.g. embedded comment body)
+    .text-styles a:not(.crayons-btn) {
+      text-decoration: underline;
+      color: var(--link-branded-color);
+      &:hover {
+        color: var(--link-branded-color-hover);
+      }
     }
   }
 
@@ -121,6 +141,45 @@ body {
     text-decoration: none;
     &:hover {
       color: var(--color-hover);
+    }
+  }
+
+  .ltag__link--embedded,
+  .ltag-org-posts {
+    font-size: var(--fs-base);
+    font-family: var(--ff-sans-serif);
+
+    a {
+      text-decoration: none;
+      color: inherit;
+      &:hover {
+        color: var(--link-color-hover);
+      }
+    }
+
+    img {
+      max-width: none;
+      margin: 0;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      margin: 0;
+    }
+
+    .crayons-story__author-pic {
+      margin-right: var(--su-3);
+    }
+
+    .crayons-story__indention {
+      padding-left: 0 !important;
+    }
+  }
+
+  .ltag__link--embedded {
+    margin: var(--su-4) 0;
+
+    .crayons-story {
+      margin: 0;
     }
   }
 
