@@ -648,6 +648,16 @@ RSpec.describe Notification do
       Rails.cache.delete("cleanup_user_notifications_#{user.id}")
     end
 
+    it "does not enqueue a cleanup job if DISABLE_USER_NOTIFICATION_CLEANUP is true" do
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("DISABLE_USER_NOTIFICATION_CLEANUP").and_return("true")
+      
+      notification = build(:notification, user: user)
+      expect do
+        notification.send(:cleanup_old_notifications)
+      end.not_to change(Notifications::CleanupUserWorker.jobs, :size)
+    end
+
     it "enqueues a cleanup job 10% of the time and throttles via cache" do
       allow_any_instance_of(described_class).to receive(:rand).with(10).and_return(0)
       

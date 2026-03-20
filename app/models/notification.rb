@@ -227,6 +227,7 @@ class Notification < ApplicationRecord
   end
 
   def cleanup_old_notifications
+    return if ENV["DISABLE_USER_NOTIFICATION_CLEANUP"] == "true"
     return unless user_id
     return unless rand(10).zero?
 
