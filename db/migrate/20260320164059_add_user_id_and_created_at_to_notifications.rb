@@ -1,25 +1,10 @@
 class AddUserIdAndCreatedAtToNotifications < ActiveRecord::Migration[7.0]
-  disable_ddl_transaction!
-
   def up
-    safety_assured do
-      execute "SET statement_timeout = 0;"
-
-      if index_exists?(:notifications, [:user_id, :created_at])
-        remove_index :notifications, [:user_id, :created_at], algorithm: :concurrently
-      end
-
-      add_index :notifications, [:user_id, :created_at], algorithm: :concurrently
-    end
+    # Empty because we decided the index wasn't needed and it was timing out releases.
+    # The actual removal of the index (if it managed to build on any community) will happen in a follow-on migration.
   end
 
   def down
-    safety_assured do
-      execute "SET statement_timeout = 0;"
-
-      if index_exists?(:notifications, [:user_id, :created_at])
-        remove_index :notifications, [:user_id, :created_at], algorithm: :concurrently
-      end
-    end
+    # Empty
   end
 end

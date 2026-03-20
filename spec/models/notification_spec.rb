@@ -648,29 +648,51 @@ RSpec.describe Notification do
       Rails.cache.delete("cleanup_user_notifications_#{user.id}")
     end
 
-    it "enqueues a cleanup job 10% of the time and throttles via cache" do
-      allow_any_instance_of(described_class).to receive(:rand).with(10).and_return(0)
-      
-      notification = build(:notification, user: user)
-      expect do
-        notification.send(:cleanup_old_notifications)
-      end.to change(Notifications::CleanupUserWorker.jobs, :size).by(1)
-      
-      # Throttling test - 1-in-10 hit should be skipped if lock exists
-      allow(Rails.cache).to receive(:write).with("cleanup_user_notifications_#{user.id}", 1, expires_in: 10.minutes, unless_exist: true).and_return(false)
-      
-      expect do
-        notification.send(:cleanup_old_notifications)
-      end.not_to change(Notifications::CleanupUserWorker.jobs, :size)
+    context "when ENABLE_USER_NOTIFICATION_CLEANUP is not set" do
+      before do
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("ENABLE_USER_NOTIFICATION_CLEANUP").and_return(nil)
+      end
+
+      it "does not enqueue a cleanup job" do
+        allow_any_instance_of(described_class).to receive(:rand).with(10).and_return(0)
+        notification = build(:notification, user: user)
+
+        expect do
+          notification.send(:cleanup_old_notifications)
+        end.not_to change(Notifications::CleanupUserWorker.jobs, :size)
+      end
     end
 
-    it "does not enqueue a cleanup job 90% of the time" do
-      allow_any_instance_of(described_class).to receive(:rand).with(10).and_return(1)
-      
-      notification = build(:notification, user: user)
-      expect do
-        notification.send(:cleanup_old_notifications)
-      end.not_to change(Notifications::CleanupUserWorker.jobs, :size)
+    context "when ENABLE_USER_NOTIFICATION_CLEANUP is true" do
+      before do
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("ENABLE_USER_NOTIFICATION_CLEANUP").and_return("true")
+      end
+
+      it "enqueues a cleanup job 10% of the time and throttles via cache" do
+        allow_any_instance_of(described_class).to receive(:rand).with(10).and_return(0)
+        
+        notification = build(:notification, user: user)
+        expect do
+          notification.send(:cleanup_old_notifications)
+        end.to change(Notifications::CleanupUserWorker.jobs, :size).by(1)
+        
+        allow(Rails.cache).to receive(:write).with("cleanup_user_notifications_#{user.id}", 1, expires_in: 10.minutes, unless_exist: true).and_return(false)
+        
+        expect do
+          notification.send(:cleanup_old_notifications)
+        end.not_to change(Notifications::CleanupUserWorker.jobs, :size)
+      end
+
+      it "does not enqueue a cleanup job 90% of the time" do
+        allow_any_instance_of(described_class).to receive(:rand).with(10).and_return(1)
+        
+        notification = build(:notification, user: user)
+        expect do
+          notification.send(:cleanup_old_notifications)
+        end.not_to change(Notifications::CleanupUserWorker.jobs, :size)
+      end
     end
   end
 end
