@@ -77,6 +77,7 @@ pt:
     not_deleted: Sua organização não foi excluída; você deve ser um administrador, o único membro da organização, e não ter artigos conectados à organização.
     created: Sua organização foi criada com sucesso e você é um administrador.
     updated: Sua organização foi atualizada com sucesso.
+    page_save_error: "A página não pôde ser salva: %{message}"
     invite:
       user_not_found: Usuário com nome de usuário "%{username}" não encontrado.
       already_member: Este usuário já é membro da organização.
@@ -91,6 +92,12 @@ pt:
       wrong_user: Você deve estar conectado como o usuário convidado para confirmar este convite.
       sign_in_required: Por favor, faça login para confirmar sua associação à organização.
       success: "Você se juntou a %{organization_name} com sucesso!"
+  lead_submissions:
+    inactive_form: Este formulário de leads não está mais aceitando submissões.
+    not_found: Formulário de leads não encontrado.
+    already_submitted: Você já enviou este formulário.
+    name_and_email_required: Nome e e-mail são obrigatórios.
+    recaptcha_failed: Por favor, complete a verificação CAPTCHA.
   podcasts_controller:
     podcast_suggested: Podcast sugerido
   profiles_controller:

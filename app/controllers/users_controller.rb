@@ -175,10 +175,10 @@ class UsersController < ApplicationController
       OrganizationMembership.create(user_id: current_user.id, organization_id: @organization.id, type_of_user: "member")
       flash[:settings_notice] =
         I18n.t("users_controller.joined_org", organization_name: @organization.name)
-      redirect_to "/settings/organization/#{@organization.id}"
+      redirect_to "/settings/organization"
     else
       flash[:error] = I18n.t("users_controller.invalid_secret")
-      redirect_to "/settings/organization/new"
+      redirect_to "/settings/organization"
     end
   end
 
@@ -187,7 +187,7 @@ class UsersController < ApplicationController
     authorize org
     OrganizationMembership.find_by(organization_id: org.id, user_id: current_user.id)&.destroy
     flash[:settings_notice] = I18n.t("users_controller.left_org")
-    redirect_to "/settings/organization/new"
+    redirect_to "/settings/organization"
   end
 
   def add_org_admin
@@ -199,7 +199,7 @@ class UsersController < ApplicationController
 
     OrganizationMembership.find_by(user_id: adminable.id, organization_id: org.id).update(type_of_user: "admin")
     flash[:settings_notice] = I18n.t("users_controller.added_admin", name: adminable.name)
-    redirect_to "/settings/organization/#{org.id}"
+    redirect_to organization_settings_path(org.slug)
   end
 
   def remove_org_admin
@@ -210,7 +210,7 @@ class UsersController < ApplicationController
 
     OrganizationMembership.find_by(user_id: unadminable.id, organization_id: org.id).update(type_of_user: "member")
     flash[:settings_notice] = I18n.t("users_controller.removed_admin", name: unadminable.name)
-    redirect_to "/settings/organization/#{org.id}"
+    redirect_to organization_settings_path(org.slug)
   end
 
   def remove_from_org
@@ -222,7 +222,7 @@ class UsersController < ApplicationController
 
     removable_org_membership.delete
     flash[:settings_notice] = I18n.t("users_controller.removed_member", name: removable.name)
-    redirect_to "/settings/organization/#{org.id}"
+    redirect_to organization_settings_path(org.slug)
   end
 
   def signout_confirm; end
@@ -298,16 +298,7 @@ class UsersController < ApplicationController
 
   def handle_organization_tab
     @organizations = @current_user.organizations.order(name: :asc)
-    if params[:org_id] == "new" || (params[:org_id].blank? && @organizations.empty?)
-      @organization = Organization.new
-    elsif params[:org_id].blank? || params[:org_id].match?(/\d/)
-      @organization = Organization.find_by(id: params[:org_id]) || @organizations.first
-      authorize @organization, :part_of_org?
-
-      @org_organization_memberships = @organization.organization_memberships.includes(:user)
-      @organization_membership = OrganizationMembership.find_by(user_id: current_user.id,
-                                                                organization_id: @organization.id)
-    end
+    @organization = Organization.new
   end
 
   def handle_integrations_tab

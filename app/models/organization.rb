@@ -9,6 +9,22 @@ class Organization < ApplicationRecord
   COLOR_HEX_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
   INTEGER_REGEXP = /\A\d+\z/
 
+  SOCIAL_LINK_PLATFORMS = %w[youtube discord linkedin instagram facebook spotify twitch mastodon].freeze
+  SOCIAL_LINK_DOMAINS = {
+    "youtube" => /(youtube\.com|youtu\.be)\z/i,
+    "discord" => /(discord\.com|discord\.gg)\z/i,
+    "linkedin" => /linkedin\.com\z/i,
+    "instagram" => /instagram\.com\z/i,
+    "facebook" => /(facebook\.com|fb\.com)\z/i,
+    "spotify" => /(spotify\.com|open\.spotify\.com)\z/i,
+    "twitch" => /twitch\.tv\z/i,
+    "mastodon" => nil
+  }.freeze
+  VERIFICATION_STATUS_PENDING = "pending".freeze
+  VERIFICATION_STATUS_SUCCESS = "success".freeze
+  VERIFICATION_STATUS_FAILED = "failed".freeze
+  VERIFICATION_STATUS_ADMIN = "admin_verified".freeze
+
   acts_as_followable
 
   before_validation :downcase_slug
@@ -17,6 +33,7 @@ class Organization < ApplicationRecord
 
   before_save :remove_at_from_usernames
   before_save :generate_secret
+  before_save :reset_verification_on_domain_change
 
   after_save :bust_cache
   after_save :generate_social_images
@@ -32,6 +49,8 @@ class Organization < ApplicationRecord
   has_many :billboards, class_name: "Billboard", dependent: :destroy
   has_many :listings, dependent: :destroy
   has_many :notifications, dependent: :delete_all
+  has_many :lead_forms, class_name: "OrganizationLeadForm", dependent: :destroy
+  has_many :pages, dependent: :nullify
   has_many :organization_memberships, dependent: :delete_all
   has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :destroy
   has_many :unspent_credits, -> { where spent: false }, class_name: "Credit", inverse_of: :organization
@@ -62,11 +81,15 @@ class Organization < ApplicationRecord
   validates :twitter_username, length: { maximum: 15 }
   validates :unspent_credits_count, presence: true
   validates :url, length: { maximum: 200 }, url: { allow_blank: true, no_local: true }
+  validates :verification_url, length: { maximum: 200 }, url: { allow_blank: true, no_local: true }
   validates :baseline_score, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validate :validate_social_links
+  validate :validate_header_cta
 
   unique_across_models :slug, length: { in: 2..30 }
 
   mount_uploader :profile_image, ProfileImageUploader
+  mount_uploader :cover_image, CoverImageUploader
 
   alias_attribute :username, :slug
   alias_attribute :old_username, :old_slug
@@ -143,7 +166,135 @@ class Organization < ApplicationRecord
     fully_trusted == true
   end
 
+  def verified?
+    verified == true
+  end
+
+  def readme_page?
+    main_page.present?
+  end
+
+  def main_page
+    pages.order(:created_at).first
+  end
+
+  def social_link(platform)
+    social_links&.dig(platform.to_s)
+  end
+
+  def header_cta?
+    header_cta.present? && header_cta["text"].present?
+  end
+
+  def header_cta_dropdown?
+    header_cta? && header_cta["links"].is_a?(Array) && header_cta["links"].any?
+  end
+
+  def flipper_id
+    "Organization;#{id}"
+  end
+
   private
+
+  HEADER_CTA_MAX_TEXT = 40
+  HEADER_CTA_MAX_URL = 200
+  HEADER_CTA_MAX_LINKS = 12
+
+  def validate_header_cta
+    return if header_cta.blank?
+
+    text = header_cta["text"]
+    url = header_cta["url"]
+    links = header_cta["links"]
+
+    if text.present? && text.length > HEADER_CTA_MAX_TEXT
+      errors.add(:header_cta, I18n.t("models.organization.header_cta_text_too_long", max: HEADER_CTA_MAX_TEXT))
+      return
+    end
+
+    if url.present?
+      if url.length > HEADER_CTA_MAX_URL
+        errors.add(:header_cta, I18n.t("models.organization.header_cta_url_too_long", max: HEADER_CTA_MAX_URL))
+        return
+      end
+
+      unless url.match?(/\A#{URI::DEFAULT_PARSER.make_regexp(%w[http https mailto])}\z/)
+        errors.add(:header_cta, I18n.t("models.organization.header_cta_url_invalid", default: "Link must be a valid HTTP, HTTPS, or Mailto URL"))
+        return
+      end
+    end
+
+    validate_header_cta_links(links) if links.present?
+  end
+
+  def validate_header_cta_links(links)
+    unless links.is_a?(Array)
+      errors.add(:header_cta, I18n.t("models.organization.header_cta_links_invalid"))
+      return
+    end
+
+    if links.length > HEADER_CTA_MAX_LINKS
+      errors.add(:header_cta, I18n.t("models.organization.header_cta_too_many_links", max: HEADER_CTA_MAX_LINKS))
+      return
+    end
+
+    links.each do |link|
+      unless link.is_a?(Hash) && link["text"].present? && link["url"].present?
+        errors.add(:header_cta, I18n.t("models.organization.header_cta_link_missing_fields"))
+        return
+      end
+
+      if link["text"].length > HEADER_CTA_MAX_TEXT
+        errors.add(:header_cta, I18n.t("models.organization.header_cta_text_too_long", max: HEADER_CTA_MAX_TEXT))
+        return
+      end
+
+      if link["url"].length > HEADER_CTA_MAX_URL
+        errors.add(:header_cta, I18n.t("models.organization.header_cta_url_too_long", max: HEADER_CTA_MAX_URL))
+        return
+      end
+
+      unless link["url"].match?(/\A#{URI::DEFAULT_PARSER.make_regexp(%w[http https mailto])}\z/)
+        errors.add(:header_cta, I18n.t("models.organization.header_cta_url_invalid", default: "Link must be a valid HTTP, HTTPS, or Mailto URL"))
+        return
+      end
+    end
+  end
+
+  def validate_social_links
+    return if social_links.blank?
+
+    social_links.each do |platform, url|
+      next if url.blank?
+
+      unless SOCIAL_LINK_PLATFORMS.include?(platform)
+        errors.add(:social_links, I18n.t("models.organization.unknown_platform", platform: platform))
+        next
+      end
+
+      if url.length > 200
+        errors.add(:social_links, I18n.t("models.organization.social_link_too_long", platform: platform))
+      end
+
+      unless url.match?(/\A#{URI::DEFAULT_PARSER.make_regexp(%w[http https])}\z/)
+        errors.add(:social_links, I18n.t("models.organization.social_link_invalid", default: "must be valid HTTP or HTTPS URLs"))
+        next
+      end
+
+      domain_regex = SOCIAL_LINK_DOMAINS[platform]
+      if domain_regex
+        host = begin
+                 URI.parse(url).host
+               rescue URI::InvalidURIError
+                 nil
+               end
+
+        unless host && host.match?(domain_regex)
+          errors.add(:social_links, I18n.t("models.organization.social_link_domain_mismatch", platform: platform.capitalize, default: "URL domain must match the selected platform (#{platform.capitalize})"))
+        end
+      end
+    end
+  end
 
   def generate_social_images
     change = saved_change_to_attribute?(:name) || saved_change_to_attribute?(:profile_image)
@@ -154,6 +305,25 @@ class Organization < ApplicationRecord
 
   def evaluate_markdown
     self.cta_processed_html = MarkdownProcessor::Parser.new(cta_body_markdown).evaluate_limited_markdown
+  end
+
+  def reset_verification_on_domain_change
+    return unless url_changed? && verified?
+    return if url.blank? || url_was.blank?
+
+    old_host = UrlDomainHelper.extract_host(url_was)
+    new_host = UrlDomainHelper.extract_host(url)
+    return if old_host.present? && new_host.present? && old_host == new_host
+
+    clear_verification_fields
+  end
+
+  def clear_verification_fields
+    self.verified = false
+    self.verified_at = nil
+    self.verification_status = nil
+    self.verification_error = nil
+    self.verification_url = nil
   end
 
   def remove_at_from_usernames

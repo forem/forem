@@ -54,6 +54,15 @@
         document.body.classList.add("user-tags-followed-max");
       }
       document.getElementById('user-prestyle').innerHTML += '<style>.hide-if-belongs-to-current-user-'+user.id+' { display: none !important; }</style>';
+      
+      if (user.admin_organization_ids && user.admin_organization_ids.length > 0) {
+        user.admin_organization_ids.forEach(function(orgId) {
+          document.body.classList.add("user-admin-org-" + orgId);
+        });
+      }
+      if (user.admin) {
+        document.body.classList.add("user-super-admin");
+      }
     }
   } catch (e) {
     setTimeout(function () {
