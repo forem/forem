@@ -1,6 +1,7 @@
 ---
 pt:
   liquid_tags:
+    invalid_url_scheme: "URL inválida para '%{option}': somente URLs http e https são permitidas"
     asciinema_tag:
       invalid_asciinema_id: 'ID do Asciinema inválido: %{id}'
     blogcast_tag:
@@ -129,5 +130,61 @@ pt:
       invalid: "Sintaxe agent_session inválida. Use: {% agent_session ID %}, {% agent_session ID inicio..fim %}, ou {% agent_session ID nome_fatia %}"
       not_found: Sessão de agente não encontrada
       unpublished: Apenas o proprietário da sessão pode incorporar esta sessão
+    feed_tag:
+      missing_source: "A tag feed requer pelo menos uma fonte: org, tag ou tags"
+      invalid_option: "Opção '%{option}' inválida para a tag feed"
+      invalid_org: "Organização '%{slug}' não encontrada"
+      invalid_tags: "A opção tags requer pelo menos um nome de tag"
+      invalid_limit: "O limite deve estar entre 1 e 30"
+      invalid_sort: "A ordenação deve ser uma das seguintes: recent, reactions, comments, score"
+      invalid_since: "Since deve ser uma duração relativa (ex. 30d) ou uma data (AAAA-MM-DD)"
+    row_tag:
+      no_args: "A tag row não aceita argumentos"
+    col_tag:
+      invalid_span: "O span deve estar entre 1 e 4"
+    org_posts_tag:
+      invalid_slug: Slug da organização inválido
+      invalid_option: "Opção '%{option}' inválida para a tag org_posts"
+      invalid_limit: "O limite deve estar entre 1 e 30"
+      invalid_sort: "A ordenação deve ser uma das seguintes: recent, reactions, comments, score"
+      invalid_since: "Since deve ser uma duração relativa (ex. 30d) ou uma data (AAAA-MM-DD)"
+    org_team_tag:
+      invalid_slug: Slug da organização inválido
+      invalid_option: "Opção '%{option}' inválida para a tag org_team"
+      invalid_limit: "O limite deve estar entre 1 e 50"
+      invalid_role: "O papel deve ser um dos seguintes: all, admins, members"
+    netlify_tag:
+      invalid_url: "URL Netlify inválida. Deve ser uma URL https://*.netlify.app"
+    features_tag:
+      no_args: "A tag features não aceita argumentos"
+    feature_tag:
+      missing_title: "A tag feature requer uma opção title"
+    offer_tag:
+      default_button: "Saiba Mais"
+    quote_tag:
+      missing_author: "A tag quote requer uma opção author"
+      invalid_rating: "A avaliação deve estar entre 1 e 5"
+      learn_more: "Saiba mais"
+    slide_tag:
+      missing_image: "A tag slide requer uma opção image"
+      missing_content: "A tag slide requer pelo menos um dos seguintes: image, video ou link"
+    slides_tag:
+      invalid_mode: "O modo slides deve ser 'default' ou 'carousel'"
+    org_lead_form_tag:
+      not_found: Formulário de leads não encontrado
+      inactive: Este formulário de leads não está mais ativo
+      invalid_id: "ID de formulário de leads inválido. Use: {% org_lead_form ID %}"
+      data_shared: "Compartilha seu nome, e-mail, empresa e cargo com esta organização."
+      submitting: Enviando...
+      submitted: Enviado
+      already_submitted: "Você enviou isto em %{date}"
+      error: Algo deu errado. Por favor, tente novamente.
+      sign_in_required: Por favor, faça login para enviar este formulário.
+      field_name: Nome
+      field_email: Email
+      field_company: Empresa
+      field_job_title: Cargo
+      name_email_required: Nome e e-mail são obrigatórios.
+      wrong_organization: Este formulário de leads não pertence a esta organização.
     youtube_tag:
       invalid_youtube_id: ID do YouTube inválido

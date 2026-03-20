@@ -2,6 +2,13 @@ class YoutubeTag < LiquidTagBase
   PARTIAL = "liquids/youtube".freeze
   MARKER_TO_SECONDS_MAP = { "h" => 3600, "m" => 60, "s" => 1 }.freeze
 
+  def self.extract_video_id(str)
+    match = str.match(%r{youtu\.be/([a-zA-Z0-9_-]{11})}) ||
+            str.match(%r{[?&]v=([a-zA-Z0-9_-]{11})}) ||
+            str.match(/\A([a-zA-Z0-9_-]{11})\z/)
+    match[1] if match
+  end
+
   def initialize(_tag_name, input, _parse_context)
     super
     @input = CGI.unescape_html(strip_tags(input.strip))
