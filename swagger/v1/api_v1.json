@@ -2169,14 +2169,14 @@
         }
       }
     },
-    "/api/surveys/{id_or_slug}/responses": {
+    "/api/surveys/{id_or_slug}/poll_votes": {
       "get": {
-        "summary": "Survey responses",
+        "summary": "Survey poll votes",
         "tags": [
           "surveys"
         ],
-        "description": "This endpoint allows the client to retrieve poll votes and text responses\nfor a given survey. Results are paginated.\n\nInternal only. Admin authorization is required to access this endpoint.",
-        "operationId": "getSurveyResponses",
+        "description": "This endpoint allows the client to retrieve poll votes for a given survey.\nResults are paginated. Use the `after` parameter with the last seen vote ID\nfor cursor-based pagination.\n\nInternal only. Admin authorization is required to access this endpoint.",
+        "operationId": "getSurveyPollVotes",
         "parameters": [
           {
             "name": "id_or_slug",
@@ -2188,48 +2188,29 @@
             }
           },
           {
-            "$ref": "#/components/parameters/pageParam"
-          },
-          {
             "$ref": "#/components/parameters/perPageParam30to1000"
           },
           {
-            "name": "since",
+            "name": "after",
             "in": "query",
             "required": false,
-            "description": "Return only responses created after this ISO 8601 timestamp.",
+            "description": "Return only votes with an ID greater than this value.",
             "schema": {
-              "type": "string",
-              "format": "date-time"
+              "type": "integer"
             },
-            "example": "2026-01-15T12:00:00Z"
+            "example": 42
           }
         ],
         "responses": {
           "200": {
-            "description": "Poll votes and text responses",
+            "description": "Poll votes",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "poll_votes": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/PollVote"
-                      }
-                    },
-                    "text_responses": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/PollTextResponse"
-                      }
-                    }
-                  },
-                  "required": [
-                    "poll_votes",
-                    "text_responses"
-                  ]
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PollVote"
+                  }
                 }
               }
             }
@@ -2239,9 +2220,61 @@
           },
           "404": {
             "description": "Not found"
+          }
+        }
+      }
+    },
+    "/api/surveys/{id_or_slug}/poll_text_responses": {
+      "get": {
+        "summary": "Survey poll text responses",
+        "tags": [
+          "surveys"
+        ],
+        "description": "This endpoint allows the client to retrieve text responses for a given survey.\nResults are paginated. Use the `after` parameter with the last seen response ID\nfor cursor-based pagination.\n\nInternal only. Admin authorization is required to access this endpoint.",
+        "operationId": "getSurveyPollTextResponses",
+        "parameters": [
+          {
+            "name": "id_or_slug",
+            "in": "path",
+            "required": true,
+            "description": "The ID or slug of the survey.",
+            "schema": {
+              "type": "string"
+            }
           },
-          "422": {
-            "description": "Unprocessable entity"
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "description": "Return only text responses with an ID greater than this value.",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 42
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Poll text responses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PollTextResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
           }
         }
       }
