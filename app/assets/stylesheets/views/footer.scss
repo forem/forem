@@ -30,10 +30,12 @@
   background: var(--footer-bg);
   color: var(--footer-color);
   padding: var(--footer-padding);
+  padding-bottom: calc(var(--footer-padding) + 56px + env(safe-area-inset-bottom, 0px));
   text-align: center;
 
   @media (min-width: $breakpoint-m) {
     --footer-padding: var(--su-8);
+    padding-bottom: var(--footer-padding);
   }
 
   &__container {

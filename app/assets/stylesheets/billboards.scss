@@ -129,6 +129,9 @@
       padding-left: var(--su-4);
     }
   }
+  @media (max-width: $breakpoint-m - 1) {
+    bottom: calc(56px + env(safe-area-inset-bottom, 0px)) !important;
+  }
 }
 
 // Adjust popover-billboard position when main sidebar is visible
