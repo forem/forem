@@ -138,6 +138,7 @@ jobs:
         run: |
           bin/rails db:create
           bin/rails db:schema:load
+          bin/rails javascript:build
 
       - name: RSpec
         run: bin/knapsack_pro_rspec
