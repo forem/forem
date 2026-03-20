@@ -1,0 +1,17 @@
+app/views/organization_settings/edit.html.erb
+  36dd4faacfee16e8 870-901
+app/views/liquids/_cta.html.erb
+  36dd4faacfee16e8 1
+spec/liquid_tags/cta_tag_spec.rb
+  36dd4faacfee16e8 16
+app/assets/stylesheets/base/typography.scss
+  36dd4faacfee16e8 100,131
+app/views/liquids/_org_lead_form.html.erb
+  b172f74f607742a2 184-212
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.9",
+  "base_commit_sha": "93319a05c1e09de4089e8cfab3b9f99e5c371a22",
+  "prompts": {}
+}
