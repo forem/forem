@@ -157,7 +157,7 @@ class Notification < ApplicationRecord
       Notifications::UpdateWorker.perform_async(notifiable.id, notifiable.class.name, action)
     end
 
-    def fast_destroy_old_notifications(destroy_before_timestamp = 3.months.ago)
+    def fast_destroy_old_notifications(destroy_before_timestamp = 85.days.ago)
       sql = <<-SQL.squish
         DELETE FROM notifications
         WHERE notifications.id IN (

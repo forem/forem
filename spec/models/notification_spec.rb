@@ -2,6 +2,8 @@ require "rails_helper"
 require "sidekiq/testing"
 
 RSpec.describe Notification do
+  include ActiveSupport::Testing::TimeHelpers
+
   let(:user)            { create(:user) }
   let(:user2)           { create(:user) }
   let(:user3)           { create(:user) }
@@ -605,6 +607,17 @@ RSpec.describe Notification do
       allow(BulkSqlDelete).to receive(:delete_in_batches)
       described_class.fast_destroy_old_notifications("a_time")
       expect(BulkSqlDelete).to have_received(:delete_in_batches).with(a_string_including("< 'a_time'"))
+    end
+
+    it "uses an 85 day retention window by default" do
+      freeze_time do
+        allow(BulkSqlDelete).to receive(:delete_in_batches)
+        allow(described_class).to receive(:sanitize_sql).and_call_original
+
+        described_class.fast_destroy_old_notifications
+
+        expect(described_class).to have_received(:sanitize_sql).with(array_including(85.days.ago))
+      end
     end
   end
 end
