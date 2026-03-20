@@ -108,49 +108,43 @@ RSpec.describe "Api::V1::Docs::Surveys" do
     end
   end
 
-  describe "GET /api/surveys/{id_or_slug}/responses" do
-    let(:poll) { create(:poll, survey: survey, article: nil) }
-    let(:text_poll) { create(:poll, :text_input, survey: survey, article: nil) }
-    let(:voter) { create(:user) }
+  describe "GET /api/surveys/{id_or_slug}/poll_votes" do
     let(:survey) { create(:survey) }
+    let(:poll) { create(:poll, survey: survey, article: nil) }
+    let(:voter) { create(:user) }
 
     before do
       create(:poll_vote, poll: poll, poll_option: poll.poll_options.first, user: voter)
-      create(:poll_text_response, poll: text_poll, user: voter, text_content: "Great survey!")
     end
 
-    path "/api/surveys/{id_or_slug}/responses" do
-      get "Survey responses" do
+    path "/api/surveys/{id_or_slug}/poll_votes" do
+      get "Survey poll votes" do
         tags "surveys"
         description(<<~DESCRIBE.strip)
-          This endpoint allows the client to retrieve poll votes and text responses
-          for a given survey. Results are paginated.
+          This endpoint allows the client to retrieve poll votes for a given survey.
+          Results are paginated. Use the `after` parameter with the last seen vote ID
+          for cursor-based pagination.
 
           Internal only. Admin authorization is required to access this endpoint.
         DESCRIBE
-        operationId "getSurveyResponses"
+        operationId "getSurveyPollVotes"
         produces "application/json"
 
         parameter name: :id_or_slug, in: :path, required: true,
                   description: "The ID or slug of the survey.",
                   schema: { type: :string }
-        parameter "$ref": "#/components/parameters/pageParam"
         parameter "$ref": "#/components/parameters/perPageParam30to1000"
-        parameter name: :since, in: :query, required: false,
-                  description: "Return only responses created after this ISO 8601 timestamp.",
-                  schema: { type: :string, format: "date-time" },
-                  example: "2026-01-15T12:00:00Z"
+        parameter name: :after, in: :query, required: false,
+                  description: "Return only votes with an ID greater than this value.",
+                  schema: { type: :integer },
+                  example: 42
 
-        response "200", "Poll votes and text responses" do
+        response "200", "Poll votes" do
           let(:"api-key") { api_secret.secret }
           let(:id_or_slug) { survey.id }
 
-          schema type: :object,
-                 properties: {
-                   poll_votes: { type: :array, items: { "$ref": "#/components/schemas/PollVote" } },
-                   text_responses: { type: :array, items: { "$ref": "#/components/schemas/PollTextResponse" } }
-                 },
-                 required: %w[poll_votes text_responses]
+          schema type: :array,
+                 items: { "$ref": "#/components/schemas/PollVote" }
           add_examples
 
           run_test!
@@ -172,11 +166,63 @@ RSpec.describe "Api::V1::Docs::Surveys" do
 
           run_test!
         end
+      end
+    end
+  end
 
-        response "422", "Unprocessable entity" do
+  describe "GET /api/surveys/{id_or_slug}/poll_text_responses" do
+    let(:survey) { create(:survey) }
+    let(:text_poll) { create(:poll, :text_input, survey: survey, article: nil) }
+    let(:voter) { create(:user) }
+
+    before do
+      create(:poll_text_response, poll: text_poll, user: voter, text_content: "Great survey!")
+    end
+
+    path "/api/surveys/{id_or_slug}/poll_text_responses" do
+      get "Survey poll text responses" do
+        tags "surveys"
+        description(<<~DESCRIBE.strip)
+          This endpoint allows the client to retrieve text responses for a given survey.
+          Results are paginated. Use the `after` parameter with the last seen response ID
+          for cursor-based pagination.
+
+          Internal only. Admin authorization is required to access this endpoint.
+        DESCRIBE
+        operationId "getSurveyPollTextResponses"
+        produces "application/json"
+
+        parameter name: :id_or_slug, in: :path, required: true,
+                  description: "The ID or slug of the survey.",
+                  schema: { type: :string }
+        parameter "$ref": "#/components/parameters/perPageParam30to1000"
+        parameter name: :after, in: :query, required: false,
+                  description: "Return only text responses with an ID greater than this value.",
+                  schema: { type: :integer },
+                  example: 42
+
+        response "200", "Poll text responses" do
           let(:"api-key") { api_secret.secret }
           let(:id_or_slug) { survey.id }
-          let(:since) { "not-a-date" }
+
+          schema type: :array,
+                 items: { "$ref": "#/components/schemas/PollTextResponse" }
+          add_examples
+
+          run_test!
+        end
+
+        response "401", "Unauthorized" do
+          let(:"api-key") { "invalid" }
+          let(:id_or_slug) { survey.id }
+          add_examples
+
+          run_test!
+        end
+
+        response "404", "Not found" do
+          let(:"api-key") { api_secret.secret }
+          let(:id_or_slug) { "nonexistent" }
 
           add_examples
 
