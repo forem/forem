@@ -63,7 +63,8 @@ end
 
 resources :surveys, only: %i[index show], param: :id_or_slug do
   member do
-    get :responses
+    get :poll_votes
+    get :poll_text_responses
   end
 end
 

@@ -1,0 +1,17 @@
+<% json_data = notification.json_data %>
+<div class="crayons-card notification">
+  <div class="notification__content">
+    <h3 class="mb-2 color-base-90"><%= t("views.notifications.organization.deverification_heading") %></h3>
+    <p class="mb-4">
+      <%= t(
+            "views.notifications.organization.deverification_html",
+            org: link_to(json_data.dig("organization", "name"), json_data.dig("organization", "path"), class: "crayons-link fw-bold"),
+          ) %>
+    </p>
+    <p>
+      <a href="<%= organization_settings_path(json_data.dig("organization", "slug")) %>#section-verification" class="crayons-btn crayons-btn--secondary">
+        <%= t("views.notifications.organization.reverify") %>
+      </a>
+    </p>
+  </div>
+</div>

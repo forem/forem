@@ -478,9 +478,58 @@ fr:
         options:
           delete: Delete organization
           icon: Options
+        verified:
+          heading: Vérification
+          label: Organisation vérifiée
+          description: Vérifier ou révoquer manuellement la vérification de cette organisation. Les organisations vérifiées affichent un badge de vérification sur leur profil.
+          verify: Vérifier l'organisation
+          revoke: Révoquer la vérification
+          verified_notice: "Cette organisation est vérifiée (depuis le %{date})."
+          verification_url: URL de vérification
         fully_trusted:
           label: Organisation de confiance totale
           description: Lorsqu'elle est activée, cette organisation peut ajouter des membres directement sans nécessiter de confirmation. Les membres recevront un e-mail de notification au lieu d'une invitation.
           enable: Activer la confiance totale
           disable: Désactiver la confiance totale
           enabled_notice: Cette organisation est de confiance totale. Les membres peuvent être ajoutés directement sans confirmation.
+        org_features:
+          heading: Fonctionnalités d'organisation
+          readme:
+            label: Page Readme
+            description: Lorsqu'elle est activée, cette organisation peut créer et afficher une page readme personnalisée sur son profil.
+            enable: Activer le Readme
+            disable: Désactiver le Readme
+            enabled_notice: La fonctionnalité de page readme est activée pour cette organisation.
+          lead_forms:
+            label: Formulaires de leads
+            description: Lorsqu'elle est activée, cette organisation peut créer et gérer des formulaires de capture de leads à intégrer dans ses articles.
+            enable: Activer les formulaires de leads
+            disable: Désactiver les formulaires de leads
+            enabled_notice: La fonctionnalité de formulaires de leads est activée pour cette organisation.
+          dofollow_links:
+            label: Liens Dofollow
+            description: Lorsque activé, les liens dans la page readme de cette organisation transmettent l'autorité SEO (dofollow). Lorsque désactivé, tous les liens externes sont nofollow.
+            enable: Activer Dofollow
+            disable: Désactiver Dofollow
+            enabled_notice: Les liens dofollow sont activés pour la page readme de cette organisation.
+      org_features:
+        heading: Fonctionnalités Org
+        description: Gérer les fonctionnalités des organisations globalement ou par organisation.
+        enable_global: Activer pour toutes les orgs
+        disable_global: Désactiver l'accès global
+        globally_enabled_notice: Cette fonctionnalité est activée pour toutes les organisations.
+        individually_enabled:
+          one: "Activé individuellement pour %{count} organisation :"
+          other: "Activé individuellement pour %{count} organisations :"
+        no_orgs_enabled: Aucune organisation n'a cette fonctionnalité activée individuellement. Utilisez la page d'administration de chaque organisation pour l'activer.
+        table:
+          name: Organisation
+          slug: Slug
+          actions: ""
+          manage: Gérer
+        cta_config:
+          heading: Paramètres du CTA
+          description: Configurez l'appel à l'action affiché aux organisations qui n'ont pas accès à une fonctionnalité.
+          text_label: Texte du CTA
+          url_label: URL du CTA
+          save: Enregistrer les paramètres du CTA
