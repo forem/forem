@@ -24,11 +24,14 @@ class SitemapsController < ApplicationController
     set_surrogate_controls(Time.current)
     @articles_count = Article.published.from_subforem
       .where("score >= ?", Settings::UserExperience.index_minimum_score).size
+    @articles_count = 200_000 if @articles_count > 200_000
     @page_limit = RESULTS_LIMIT
     @view_template = "index"
   end
 
   def resource_sitemap(resource)
+    return not_found if offset > 200_000
+
     case resource
     when "users"
       @users = User.order("comments_count DESC")

@@ -90,6 +90,10 @@ RSpec.describe "Sitemaps" do
         expect(response.body).not_to include(Article.order("published_at DESC").last.path)
       end
 
+      it "renders not found if over 200_000 offset" do
+        expect { get "/sitemap-posts-45000.xml" }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
       it "renders 'recent' version of surrogate control" do
         get "/sitemap-posts-2.xml"
         expect(response.header["Surrogate-Control"]).to include("8640")
