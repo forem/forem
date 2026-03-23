@@ -26,7 +26,11 @@ module Html
 
     def remove_nested_linebreak_in_list
       html_doc = Nokogiri::HTML(@html)
-      html_doc.xpath("//*[self::ul or self::ol or self::li]/br").each(&:remove)
+      html_doc.css("ul > br, ol > br, li > br").each do |linebreak|
+        next if footnote_linebreak?(linebreak)
+
+        linebreak.remove
+      end
       @html = html_doc.to_html
 
       self
@@ -290,6 +294,13 @@ module Html
 
     def blank?(node)
       (node.text? && node.content.strip == "") || (node.element? && node.name == "br")
+    end
+
+    def footnote_linebreak?(linebreak)
+      linebreak.parent.name == "li" && linebreak.parent["id"].to_s.start_with?("fn") ||
+        linebreak.ancestors.any? do |node|
+          node.name == "div" && node["class"].to_s.split.include?("footnotes")
+        end
     end
 
     def allowed_image_host?(src)
