@@ -229,7 +229,7 @@ class Notification < ApplicationRecord
   def cleanup_old_notifications
     return unless ENV["ENABLE_USER_NOTIFICATION_CLEANUP"] == "true"
     return unless user_id
-    return unless user && user.created_at < 90.days.ago
+    return unless User.where(id: user_id).where("registered_at < ?", 90.days.ago).exists?
     return unless rand(15).zero?
 
     Notifications::CleanupUserWorker.perform_async(user_id)
