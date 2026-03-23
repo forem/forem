@@ -2,7 +2,7 @@ class SitemapsController < ApplicationController
   before_action :set_cache_control_headers, only: %i[show]
 
   SITEMAP_REGEX = /\Asitemap-(?<date_string>[A-Z][a-z][a-z]-\d{4})\.xml\z/
-  RESULTS_LIMIT = Rails.env.production? ? 10_000 : 5
+  RESULTS_LIMIT = Rails.env.production? ? 750 : 5
 
   def show
     if params[:sitemap].start_with? "sitemap-index"
