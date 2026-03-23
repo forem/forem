@@ -174,7 +174,7 @@ class Notification < ApplicationRecord
       BulkSqlDelete.delete_in_batches(notification_sql)
     end
 
-    def fast_cleanup_older_than_150_for(user_id)
+    def fast_cleanup_older_than_100_for(user_id)
       comment_sql = <<-SQL.squish
         DELETE FROM notifications
         WHERE notifications.id IN (
@@ -182,7 +182,7 @@ class Notification < ApplicationRecord
             SELECT id FROM notifications
             WHERE user_id = ? AND notifiable_type = 'Comment'
             ORDER BY created_at DESC
-            OFFSET 150
+            OFFSET 100
             LIMIT 1000
           ) as sub
           LIMIT 50000
@@ -196,7 +196,7 @@ class Notification < ApplicationRecord
             SELECT id FROM notifications
             WHERE user_id = ? AND (notifiable_type != 'Comment' OR notifiable_type IS NULL)
             ORDER BY created_at DESC
-            OFFSET 150
+            OFFSET 100
             LIMIT 1000
           ) as sub
           LIMIT 50000
@@ -229,9 +229,8 @@ class Notification < ApplicationRecord
   def cleanup_old_notifications
     return unless ENV["ENABLE_USER_NOTIFICATION_CLEANUP"] == "true"
     return unless user_id
-    return unless rand(10).zero?
-
-    return unless Rails.cache.write("cleanup_user_notifications_#{user_id}", 1, expires_in: 10.minutes, unless_exist: true)
+    return unless user && user.created_at < 90.days.ago
+    return unless rand(15).zero?
 
     Notifications::CleanupUserWorker.perform_async(user_id)
   end
