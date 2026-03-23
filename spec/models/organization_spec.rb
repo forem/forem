@@ -21,6 +21,7 @@ RSpec.describe Organization do
       it { is_expected.to validate_length_of(:company_size).is_at_most(7) }
       it { is_expected.to validate_length_of(:cta_body_markdown).is_at_most(256) }
       it { is_expected.to validate_length_of(:cta_button_text).is_at_most(20) }
+      it { is_expected.to validate_length_of(:cta_button_url).is_at_most(1000) }
       it { is_expected.to validate_length_of(:email).is_at_most(64) }
       it { is_expected.to validate_length_of(:github_username).is_at_most(50) }
       it { is_expected.to validate_length_of(:location).is_at_most(64) }
