@@ -9,7 +9,9 @@ Rack::Timeout::Logger.disable
 if defined?(Rack::Timeout) && defined?(ActiveRecord::Base)
   Rack::Timeout.register_state_change_observer(:clear_db_connections_on_timeout) do |env|
     if env[Rack::Timeout::ENV_INFO_KEY].state == :timed_out
-      ActiveRecord::Base.connection_pool.active_connection?&.disconnect!
+      if ActiveRecord::Base.connection_pool.active_connection?
+        ActiveRecord::Base.connection_pool.connection.disconnect!
+      end
       ActiveRecord::Base.clear_active_connections!
     end
   end
