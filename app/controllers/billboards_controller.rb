@@ -8,6 +8,7 @@ class BillboardsController < ApplicationController
     skip_authorization
 
     if ApplicationConfig["DISABLE_BILLBOARDS"] == "yes" # Turned on if needed
+      set_cache_control_headers(180)
       render plain: ""
       return
     end
