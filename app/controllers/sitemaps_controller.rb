@@ -3,6 +3,7 @@ class SitemapsController < ApplicationController
 
   SITEMAP_REGEX = /\Asitemap-(?<date_string>[A-Z][a-z][a-z]-\d{4})\.xml\z/
   RESULTS_LIMIT = Rails.env.production? ? 750 : 5
+  MAX_OFFSET = 250 * RESULTS_LIMIT
 
   def show
     if params[:sitemap].start_with? "sitemap-index"
@@ -24,11 +25,14 @@ class SitemapsController < ApplicationController
     set_surrogate_controls(Time.current)
     @articles_count = Article.published.from_subforem
       .where("score >= ?", Settings::UserExperience.index_minimum_score).size
+    @articles_count = MAX_OFFSET if @articles_count > MAX_OFFSET
     @page_limit = RESULTS_LIMIT
     @view_template = "index"
   end
 
   def resource_sitemap(resource)
+    return not_found if offset > MAX_OFFSET
+
     case resource
     when "users"
       @users = User.order("comments_count DESC")
