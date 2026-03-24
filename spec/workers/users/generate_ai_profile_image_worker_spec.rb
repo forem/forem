@@ -40,7 +40,7 @@ RSpec.describe Users::GenerateAiProfileImageWorker, type: :worker do
         worker.perform(user_id)
 
         expect(Ai::ImageGenerator).to have_received(:new)
-          .with("#{described_class::MAGIC_LINK_PLACEHOLDER_PROMPT}.\n\n#{described_class::CONTENT_SAFETY_SUFFIX}")
+          .with("#{described_class::MAGIC_LINK_PLACEHOLDER_PROMPT}.\n\n#{described_class::CONTENT_SAFETY_SUFFIX}", affected_user: user)
         expect(user).to have_received(:remote_profile_image_url=).with(result.url)
         expect(user).to have_received(:save!)
       end
@@ -55,7 +55,7 @@ RSpec.describe Users::GenerateAiProfileImageWorker, type: :worker do
 
         worker.perform(user_id)
 
-        expect(Ai::ImageGenerator).to have_received(:new).with(prompt_with_instructions)
+        expect(Ai::ImageGenerator).to have_received(:new).with(prompt_with_instructions, affected_user: user)
       end
 
       it "falls back to default subforem aesthetic instructions" do
@@ -68,7 +68,7 @@ RSpec.describe Users::GenerateAiProfileImageWorker, type: :worker do
 
         worker.perform(user_id)
 
-        expect(Ai::ImageGenerator).to have_received(:new).with(include("Vibrant coding-inspired patterns"))
+        expect(Ai::ImageGenerator).to have_received(:new).with(include("Vibrant coding-inspired patterns"), affected_user: user)
       end
     end
 
