@@ -65,7 +65,7 @@ class Organization < ApplicationRecord
   validates :credits_count, presence: true
   validates :cta_body_markdown, length: { maximum: 256 }
   validates :cta_button_text, length: { maximum: 20 }
-  validates :cta_button_url, length: { maximum: 150 }, url: { allow_blank: true, no_local: true }
+  validates :cta_button_url, length: { maximum: 255 }, url: { allow_blank: true, no_local: true }
   validates :github_username, length: { maximum: 50 }
   validates :location, :email, length: { maximum: 64 }
   validates :name, :profile_image, presence: true
