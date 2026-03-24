@@ -53,8 +53,9 @@ module Ai
     # @param aspect_ratio [String, nil] Optional aspect ratio (e.g., "16:9", "1:1")
     # @param response_modalities [Array<String>] Output types - ['Image', 'Text'] or ['Image']
     # @param api_key [String] Gemini API key (defaults to ENV['GEMINI_API_KEY'])
+    # @param affected_user [User, nil] The user executing the action
     def initialize(prompt, input_images: nil, aspect_ratio: nil, response_modalities: %w[Image Text],
-                   api_key: DEFAULT_API_KEY)
+                   api_key: DEFAULT_API_KEY, affected_user: nil)
       raise ArgumentError, "Prompt cannot be blank" if prompt.blank?
       raise ArgumentError, "API key cannot be nil" if api_key.nil? && !Rails.env.test?
 
@@ -67,6 +68,7 @@ module Ai
       @aspect_ratio = aspect_ratio
       @response_modalities = response_modalities
       @api_key = api_key
+      @affected_user = affected_user
       @options = {
         headers: {
           "Content-Type" => "application/json"
@@ -119,7 +121,7 @@ module Ai
 
     private
 
-    attr_reader :prompt, :input_images, :aspect_ratio, :response_modalities, :api_key, :options
+    attr_reader :prompt, :input_images, :aspect_ratio, :response_modalities, :api_key, :options, :affected_user
 
     ##
     # Builds the request body for the Gemini API
@@ -259,6 +261,7 @@ module Ai
         request_body: options[:body],
         response_body: response&.parsed_response,
         retry_count: 0,
+        affected_user: affected_user,
         prompt_token_count: prompt_tokens,
         candidates_token_count: candidates_tokens,
         total_token_count: total_tokens,
