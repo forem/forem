@@ -19,7 +19,11 @@ function addRelevantButtonsToArticle(user) {
 
     if (parseInt(articleContainer.dataset.authorId, 10) === user.id) {
 
-      document.getElementById("ReportButtonAuthor").style.display = "none"; // Hide the Report button if the Author is viewing its own post
+      const reportButton = document.getElementById("ReportButtonAuthor"); 
+
+if (reportButton) {
+  reportButton.style.display = "none"; // Hide the Report button if the Author is viewing its own post
+}
 
       actions.push(
         `<a class="crayons-btn crayons-btn--s crayons-btn--ghost px-2" href="${articleContainer.dataset.path}/edit" rel="nofollow">Edit</a>`,
