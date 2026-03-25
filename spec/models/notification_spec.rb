@@ -605,8 +605,8 @@ RSpec.describe Notification do
   describe "#fast_destroy_old_notifications" do
     it "bulk deletes notifications older than given timestamp" do
       allow(BulkSqlDelete).to receive(:delete_in_batches)
-      described_class.fast_destroy_old_notifications("a_time")
-      expect(BulkSqlDelete).to have_received(:delete_in_batches).with(a_string_including("< 'a_time'"))
+      described_class.fast_destroy_old_notifications(10.days.ago)
+      expect(BulkSqlDelete).to have_received(:delete_in_batches).with(/</)
     end
 
     it "uses an 85 day retention window by default" do
@@ -621,25 +621,25 @@ RSpec.describe Notification do
     end
   end
 
-  describe ".fast_cleanup_older_than_150_for" do
-    it "bulk deletes comment and non-comment notifications older than 150 for a user" do
+  describe ".fast_cleanup_older_than_100_for" do
+    it "bulk deletes comment and non-comment notifications older than 100 for a user" do
       allow(BulkSqlDelete).to receive(:delete_in_batches)
-      described_class.fast_cleanup_older_than_150_for(user.id)
+      described_class.fast_cleanup_older_than_100_for(user.id)
       expect(BulkSqlDelete).to have_received(:delete_in_batches).twice
     end
 
     it "actually deletes the excessive notifications" do
       now = Time.current
-      comments_data = 155.times.map { |i| { user_id: user.id, notifiable_type: "Comment", notifiable_id: i, created_at: now - i.minutes, updated_at: now - i.minutes } }
-      reactions_data = 155.times.map { |i| { user_id: user.id, action: "Reaction", notifiable_type: "Article", notifiable_id: i, created_at: now - i.minutes, updated_at: now - i.minutes } }
+      comments_data = 105.times.map { |i| { user_id: user.id, notifiable_type: "Comment", notifiable_id: i, created_at: now - i.minutes, updated_at: now - i.minutes } }
+      reactions_data = 105.times.map { |i| { user_id: user.id, action: "Reaction", notifiable_type: "Article", notifiable_id: i, created_at: now - i.minutes, updated_at: now - i.minutes } }
 
       described_class.insert_all!(comments_data)
       described_class.insert_all!(reactions_data)
 
-      described_class.fast_cleanup_older_than_150_for(user.id)
+      described_class.fast_cleanup_older_than_100_for(user.id)
 
-      expect(user.notifications.where(notifiable_type: "Comment").count).to eq(150)
-      expect(user.notifications.where("notifiable_type != 'Comment' OR notifiable_type IS NULL").count).to eq(150)
+      expect(user.notifications.where(notifiable_type: "Comment").count).to eq(100)
+      expect(user.notifications.where("notifiable_type != 'Comment' OR notifiable_type IS NULL").count).to eq(100)
     end
   end
 

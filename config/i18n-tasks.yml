@@ -71,7 +71,7 @@ search:
     - app/assets/images
     - app/assets/fonts
     - app/assets/videos
-    - app/assets/builds
+    - app/assets/builds/*
     - app/javascript/storybook-static
 
   ## Alternatively, the only files or `File.fnmatch patterns` to search in `paths`:

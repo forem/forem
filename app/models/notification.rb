@@ -158,7 +158,9 @@ class Notification < ApplicationRecord
       Notifications::UpdateWorker.perform_async(notifiable.id, notifiable.class.name, action)
     end
 
-    def fast_destroy_old_notifications(destroy_before_timestamp = 85.days.ago)
+    def fast_destroy_old_notifications(destroy_before_timestamp = ENV.fetch("FAST_DESTROY_OLD_NOTIFICATIONS_DAYS", 85).to_i.days.ago)
+      return if destroy_before_timestamp > 7.days.ago
+
       sql = <<-SQL.squish
         DELETE FROM notifications
         WHERE notifications.id IN (
@@ -174,7 +176,7 @@ class Notification < ApplicationRecord
       BulkSqlDelete.delete_in_batches(notification_sql)
     end
 
-    def fast_cleanup_older_than_150_for(user_id)
+    def fast_cleanup_older_than_100_for(user_id)
       comment_sql = <<-SQL.squish
         DELETE FROM notifications
         WHERE notifications.id IN (
@@ -182,7 +184,7 @@ class Notification < ApplicationRecord
             SELECT id FROM notifications
             WHERE user_id = ? AND notifiable_type = 'Comment'
             ORDER BY created_at DESC
-            OFFSET 150
+            OFFSET 100
             LIMIT 1000
           ) as sub
           LIMIT 50000
@@ -196,7 +198,7 @@ class Notification < ApplicationRecord
             SELECT id FROM notifications
             WHERE user_id = ? AND (notifiable_type != 'Comment' OR notifiable_type IS NULL)
             ORDER BY created_at DESC
-            OFFSET 150
+            OFFSET 100
             LIMIT 1000
           ) as sub
           LIMIT 50000

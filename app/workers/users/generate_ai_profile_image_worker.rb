@@ -15,7 +15,7 @@ module Users
       return unless user
 
       prompt = build_prompt
-      result = Ai::ImageGenerator.new(prompt).generate
+      result = Ai::ImageGenerator.new(prompt, affected_user: user).generate
       return unless result&.url
 
       user.remote_profile_image_url = result.url
