@@ -14,7 +14,7 @@ import {
 // Used to ensure dropdown appears just below search text
 const DROPDOWN_VERTICAL_OFFSET = '1.5rem';
 const EMPTY_STATE_MESSAGE = 'No results found';
-const MINIMUM_SEARCH_CHARS = 0;
+const MINIMUM_SEARCH_CHARS = 1;
 
 const KEYS = {
   UP: 'ArrowUp',
