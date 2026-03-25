@@ -477,7 +477,9 @@ class User < ApplicationRecord
   end
 
   def refresh_auto_audience_segments
-    SegmentedUserRefreshWorker.perform_async(id)
+    if ENV["ENABLE_REFRESH_SEGMENT_WORKERS"]  == "true"
+      SegmentedUserRefreshWorker.perform_async(id)
+    end
   end
 
   ##############################################################################
