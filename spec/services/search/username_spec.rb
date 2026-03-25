@@ -210,5 +210,18 @@ RSpec.describe Search::Username, type: :service do
       expect(usernames).to match_array(%w[priority recent lowscore])
       expect(usernames).not_to include("highscore")
     end
+
+    it "filters out users with negative scores" do
+      penalized_user = create(:user, username: "penalized", name: "Match", score: -10)
+      
+      results = described_class.search_documents(
+        "Match",
+        priority_user_ids: [priority_user.id, penalized_user.id],
+        recent_user_ids: [recent_user.id]
+      )
+
+      usernames = results.pluck(:username)
+      expect(usernames).not_to include("penalized")
+    end
   end
 end

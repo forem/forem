@@ -75,6 +75,7 @@ module Search
 
       scope = ::User
         .select(*selects)
+        .where("users.score >= 0")
         .order(::Arel.sql(order_clauses.join(", ")))
 
       scope = scope.where.not(id: @requesting_user_id) if @requesting_user_id.present?
