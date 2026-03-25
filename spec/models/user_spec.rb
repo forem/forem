@@ -33,6 +33,8 @@ RSpec.describe User do
 
   before do
     omniauth_mock_providers_payload
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with("ENABLE_REFRESH_SEGMENT_WORKERS").and_return("true")
     allow(SegmentedUserRefreshWorker).to receive(:perform_async)
     allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
   end
