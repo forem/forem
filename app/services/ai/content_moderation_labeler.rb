@@ -211,9 +211,8 @@ module Ai
       rescue JSON::ParserError => e
         Rails.logger.error("Content Moderation JSON Parsing Error: #{e}. Response was: #{response}")
         
-        # Fallback to legacy string parsing
-        legacy_label = response.strip.downcase.gsub(/[^a-z_]/, "")
-        final_label = valid_labels.include?(legacy_label) ? legacy_label : "no_moderation_label"
+        # Fallback to legacy string parsing / scanning
+        final_label = valid_labels.sort_by(&:length).reverse.find { |l| response.downcase.include?(l) } || "no_moderation_label"
         
         { label: final_label, compellingness_score: 0.0 }
       end
