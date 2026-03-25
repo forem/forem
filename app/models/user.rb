@@ -131,6 +131,12 @@ class User < ApplicationRecord
   has_many :user_visit_contexts, dependent: :delete_all
   has_one :user_activity, dependent: :delete
 
+  def cached_recent_user_ids
+    Rails.cache.fetch("user-#{id}/recent_users", expires_in: 5.minutes) do
+      user_activity&.recent_users || []
+    end
+  end
+
   mount_uploader :profile_image, ProfileImageUploader
 
   devise :invitable, :omniauthable, :registerable, :database_authenticatable, :confirmable, :rememberable,
