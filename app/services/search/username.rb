@@ -55,10 +55,6 @@ module Search
 
     private
 
-    def scope_without_context
-      ::User.select(*ATTRIBUTES)
-    end
-
     def scope_with_priorities
       selects = ATTRIBUTES.map { |sym| "users.#{sym}".to_sym }
       order_clauses = []
