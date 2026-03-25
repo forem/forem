@@ -78,10 +78,13 @@ export const EditorBody = ({
         ref={textAreaRef}
         fetchSuggestions={(username) => {
           const priorityUserIds = gatherPriorityUserIds(textAreaRef.current);
-          return fetchSearch('usernames', {
-            username,
-            priority_user_ids: priorityUserIds.length ? priorityUserIds : undefined 
-          }).then(({ result }) =>
+          const params = { username };
+
+          if (priorityUserIds.length) {
+            params.priority_user_ids = priorityUserIds;
+          }
+
+          return fetchSearch('usernames', params).then(({ result }) =>
             result.map((user) => ({ ...user, value: user.username })),
           );
         }}

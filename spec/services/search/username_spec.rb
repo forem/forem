@@ -197,7 +197,7 @@ RSpec.describe Search::Username, type: :service do
     end
 
     it "filters out the requesting user" do
-      # Pass high_score_user as the requesting user; it should be completely removed from results
+      # Pass max_score as the requesting user; it should be completely removed from results
       results = described_class.search_documents(
         "Match",
         priority_user_ids: [priority_user.id],

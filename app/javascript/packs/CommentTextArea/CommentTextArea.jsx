@@ -171,12 +171,17 @@ export const CommentTextArea = ({ vanillaTextArea }) => {
         replaceElement={vanillaTextArea}
         fetchSuggestions={(username) => {
           const priorityUserIds = gatherPriorityUserIds(textAreaRef.current);
-          return fetchSearch('usernames', {
+          const params = {
             username,
             context_type: contextData?.['commentableType'],
             context_id: contextData?.['commentableId'],
-            priority_user_ids: priorityUserIds.length ? priorityUserIds : undefined,
-          }).then(({ result }) =>
+          };
+          
+          if (priorityUserIds.length) {
+            params.priority_user_ids = priorityUserIds;
+          }
+          
+          return fetchSearch('usernames', params).then(({ result }) =>
             result?.map((user) => ({ ...user, value: user.username })),
           );
         }}

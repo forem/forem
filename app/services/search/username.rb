@@ -31,6 +31,8 @@ module Search
     end
 
     def initialize(context: nil, priority_user_ids: [], recent_user_ids: nil, requesting_user_id: nil)
+      frontend_provided_priorities = priority_user_ids.present?
+
       @priority_user_ids = Array(priority_user_ids).compact_blank.map(&:to_i)
       @requesting_user_id = requesting_user_id
       
@@ -38,7 +40,7 @@ module Search
         @priority_user_ids << context.try(:user_id)
         @priority_user_ids += context.co_author_ids if context&.co_author_ids.present?
 
-        if @priority_user_ids.empty?
+        unless frontend_provided_priorities
           @priority_user_ids += ::Comment.where(commentable: context).pluck(:user_id)
         end
       end
