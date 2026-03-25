@@ -14,13 +14,12 @@ module Search
     #   - used to rank search results by prior comment activity
     #   - connected to comment via polymorphic Commentable
     def self.search_documents(term, context: nil, priority_user_ids: [], recent_user_ids: nil, requesting_user_id: nil, limit: MAX_RESULTS)
-      results = new(
+      new(
         context: context, 
         priority_user_ids: priority_user_ids,
         recent_user_ids: recent_user_ids,
         requesting_user_id: requesting_user_id
-      ).search(term).limit(limit)
-      serialize results
+      ).search(term, limit)
     end
 
     def self.serialize(results)
@@ -47,39 +46,38 @@ module Search
       
       @priority_user_ids = @priority_user_ids.compact.uniq
       @recent_user_ids = Array(recent_user_ids).compact_blank.map(&:to_i)
-      
-      @scope = scope_with_priorities
     end
 
-    def search(term)
-      @scope.search_by_name_and_username(term)
+    def search(term, limit)
+      users = []
+
+      if @priority_user_ids.any?
+        priority_scope = scope_without_context.where(id: @priority_user_ids)
+        priority_scope = priority_scope.where.not(id: @requesting_user_id) if @requesting_user_id.present?
+        users += priority_scope.search_by_name_and_username(term).where("users.score >= 0").limit(limit).to_a
+      end
+
+      if users.size < limit && @recent_user_ids.any?
+        recent_scope = scope_without_context.where(id: @recent_user_ids)
+        recent_scope = recent_scope.where.not(id: users.map(&:id)) if users.any?
+        recent_scope = recent_scope.where.not(id: @requesting_user_id) if @requesting_user_id.present?
+        users += recent_scope.search_by_name_and_username(term).where("users.score >= 0").limit(limit - users.size).to_a
+      end
+
+      if users.size < limit
+        global_scope = scope_without_context.where("users.score >= 0")
+        global_scope = global_scope.where.not(id: users.map(&:id)) if users.any?
+        global_scope = global_scope.where.not(id: @requesting_user_id) if @requesting_user_id.present?
+        users += global_scope.search_by_name_and_username(term).order(score: :desc).limit(limit - users.size).to_a
+      end
+
+      self.class.send(:serialize, users)
     end
 
     private
 
-    def scope_with_priorities
-      selects = ATTRIBUTES.map { |sym| "users.#{sym}".to_sym }
-      order_clauses = []
-
-      if @priority_user_ids.any?
-        selects << ::User.sanitize_sql(["users.id IN (?) as is_priority", @priority_user_ids])
-        order_clauses << "is_priority DESC"
-      end
-
-      if @recent_user_ids.any?
-        selects << ::User.sanitize_sql(["users.id IN (?) as is_recent", @recent_user_ids])
-        order_clauses << "is_recent DESC"
-      end
-
-      order_clauses << "users.score DESC"
-
-      scope = ::User
-        .select(*selects)
-        .where("users.score >= 0")
-        .order(::Arel.sql(order_clauses.join(", ")))
-
-      scope = scope.where.not(id: @requesting_user_id) if @requesting_user_id.present?
-      scope
+    def scope_without_context
+      ::User.select(*ATTRIBUTES)
     end
 
     private_class_method :serialize
