@@ -13,7 +13,7 @@ export function gatherPriorityUserIds(targetNode) {
     }
   }
 
-  // 2. Direct Comment Thread Ancestors
+  // 2. Direct Comment Thread Ancestors (always prioritize exact reply chain)
   if (targetNode) {
     let current = targetNode;
     while (current) {
@@ -21,6 +21,17 @@ export function gatherPriorityUserIds(targetNode) {
         ids.add(current.dataset.contentUserId);
       }
       current = current.parentElement?.closest('.single-comment-node');
+    }
+  }
+
+  // 3. Broad Page Context (backfill up to 50)
+  if (ids.size < 50) {
+    const allCommentNodes = document.querySelectorAll('[data-content-user-id]');
+    for (const node of allCommentNodes) {
+      if (node.dataset.contentUserId) {
+        ids.add(node.dataset.contentUserId);
+        if (ids.size >= 50) break;
+      }
     }
   }
 
