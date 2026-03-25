@@ -15,6 +15,7 @@ import { usePasteImage } from '@utilities/pasteImage';
 import { useDragAndDrop } from '@utilities/dragAndDrop';
 import { fetchSearch } from '@utilities/search';
 import { AutocompleteTriggerTextArea } from '@crayons/AutocompleteTriggerTextArea';
+import { gatherPriorityUserIds } from '../../shared/helpers/contextUsers';
 
 export const EditorBody = ({
   onChange,
@@ -75,11 +76,15 @@ export const EditorBody = ({
         maxSuggestions={6}
         searchInstructionsMessage="Type to search for a user"
         ref={textAreaRef}
-        fetchSuggestions={(username) =>
-          fetchSearch('usernames', { username }).then(({ result }) =>
+        fetchSuggestions={(username) => {
+          const priorityUserIds = gatherPriorityUserIds(textAreaRef.current);
+          return fetchSearch('usernames', {
+            username,
+            priority_user_ids: priorityUserIds.length ? priorityUserIds : undefined 
+          }).then(({ result }) =>
             result.map((user) => ({ ...user, value: user.username })),
-          )
-        }
+          );
+        }}
         autoResize
         onChange={onChange}
         onFocus={switchHelpContext}

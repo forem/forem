@@ -27,6 +27,7 @@ import Templates from '@images/templates.svg';
 import EmojiIcon from '@images/emoji.svg';
 import { usePasteImage } from '@utilities/pasteImage';
 import { useDragAndDrop } from '@utilities/dragAndDrop';
+import { gatherPriorityUserIds } from '../../shared/helpers/contextUsers';
 
 const getClosestTemplatesContainer = (element) =>
   element
@@ -168,15 +169,17 @@ export const CommentTextArea = ({ vanillaTextArea }) => {
         maxSuggestions={6}
         searchInstructionsMessage="Type to search for a user"
         replaceElement={vanillaTextArea}
-        fetchSuggestions={(username) =>
-          fetchSearch('usernames', {
+        fetchSuggestions={(username) => {
+          const priorityUserIds = gatherPriorityUserIds(textAreaRef.current);
+          return fetchSearch('usernames', {
             username,
             context_type: contextData?.['commentableType'],
             context_id: contextData?.['commentableId'],
+            priority_user_ids: priorityUserIds.length ? priorityUserIds : undefined,
           }).then(({ result }) =>
             result?.map((user) => ({ ...user, value: user.username })),
-          )
-        }
+          );
+        }}
       />
       <MarkdownToolbar
         textAreaId={vanillaTextArea.id}

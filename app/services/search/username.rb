@@ -13,8 +13,13 @@ module Search
     # @param context [Article] or [PodcastEpisode]
     #   - used to rank search results by prior comment activity
     #   - connected to comment via polymorphic Commentable
-    def self.search_documents(term, context: nil, limit: MAX_RESULTS)
-      results = new(context: context).search(term).limit(limit)
+    def self.search_documents(term, context: nil, priority_user_ids: [], recent_user_ids: nil, requesting_user_id: nil, limit: MAX_RESULTS)
+      results = new(
+        context: context, 
+        priority_user_ids: priority_user_ids,
+        recent_user_ids: recent_user_ids,
+        requesting_user_id: requesting_user_id
+      ).search(term).limit(limit)
       serialize results
     end
 
@@ -25,36 +30,57 @@ module Search
         .pluck(:attributes)
     end
 
-    def initialize(context: nil)
-      @scope = scope_with_context(context) if context
-      @scope ||= scope_without_context
+    def initialize(context: nil, priority_user_ids: [], recent_user_ids: nil, requesting_user_id: nil)
+      @priority_user_ids = Array(priority_user_ids).compact_blank.map(&:to_i)
+      @requesting_user_id = requesting_user_id
+      
+      if context
+        @priority_user_ids << context.try(:user_id)
+        @priority_user_ids += context.co_author_ids if context&.co_author_ids.present?
+
+        if @priority_user_ids.empty?
+          @priority_user_ids += ::Comment.where(commentable: context).pluck(:user_id)
+        end
+      end
+      
+      @priority_user_ids = @priority_user_ids.compact.uniq
+      @recent_user_ids = Array(recent_user_ids).compact_blank.map(&:to_i)
+      
+      @scope = scope_with_priorities
     end
 
     def search(term)
-      scope.search_by_name_and_username(term)
+      @scope.search_by_name_and_username(term)
     end
 
     private
-
-    attr_reader :scope
 
     def scope_without_context
       ::User.select(*ATTRIBUTES)
     end
 
-    def scope_with_context(context)
-      # PodcastEpisodes are also commentable but have more complex authorship
-      user_ids = [context.try(:user_id)]
-      user_ids += context.co_author_ids if context&.co_author_ids.present?
-      user_ids += ::Comment.where(commentable: context).pluck(:user_id)
-
+    def scope_with_priorities
       selects = ATTRIBUTES.map { |sym| "users.#{sym}".to_sym }
-      selects << ::User.sanitize_sql(["users.id IN (?) as has_commented", user_ids])
+      order_clauses = []
 
-      ::User
-        .group("users.id")
+      if @priority_user_ids.any?
+        selects << ::User.sanitize_sql(["users.id IN (?) as is_priority", @priority_user_ids])
+        order_clauses << "is_priority DESC"
+      end
+
+      if @recent_user_ids.any?
+        selects << ::User.sanitize_sql(["users.id IN (?) as is_recent", @recent_user_ids])
+        order_clauses << "is_recent DESC"
+      end
+
+      order_clauses << "users.score DESC"
+
+      scope = ::User
         .select(*selects)
-        .order("has_commented DESC")
+        .order(::Arel.sql(order_clauses.join(", ")))
+
+      scope = scope.where.not(id: @requesting_user_id) if @requesting_user_id.present?
+      scope
     end
 
     private_class_method :serialize
