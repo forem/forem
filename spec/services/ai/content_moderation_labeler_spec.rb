@@ -14,7 +14,7 @@ RSpec.describe Ai::ContentModerationLabeler, type: :service do
   describe "#label" do
     context "when AI responds successfully" do
       before do
-        allow(ai_client).to receive(:call).and_return("okay_and_on_topic")
+        allow(ai_client).to receive(:call).and_return('{"moderation_label": "okay_and_on_topic", "compellingness_score": 0.85}')
       end
 
       it "returns the correct label" do
@@ -61,7 +61,7 @@ RSpec.describe Ai::ContentModerationLabeler, type: :service do
           if call_count < 3
             raise StandardError, "Temporary API Error"
           else
-            "okay_and_on_topic"
+            '{"moderation_label": "okay_and_on_topic", "compellingness_score": 0.99}'
           end
         end
       end
@@ -98,7 +98,7 @@ RSpec.describe Ai::ContentModerationLabeler, type: :service do
           if call_count == 1
             raise StandardError, "Temporary API Error"
           else
-            "very_good_and_on_topic"
+            '{"moderation_label": "very_good_and_on_topic", "compellingness_score": 0.4}'
           end
         end
       end

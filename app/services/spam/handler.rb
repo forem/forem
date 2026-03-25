@@ -238,14 +238,19 @@ module Spam
       suspend!(user: user)
     end
 
-    # NEW/private: Label article content using AI moderation.
+    # NEW/private: Label article content using AI moderation and calculate compellingness.
     def self.label_article_content!(article)
       return unless Ai::Base::DEFAULT_KEY.present?
 
       begin
         labeler = Ai::ContentModerationLabeler.new(article)
-        label = labeler.label
-        article.update_column(:automod_label, label)
+        results = labeler.evaluate!
+        label = results[:label]
+        
+        article.update_columns(
+          automod_label: label,
+          compellingness_score: results[:compellingness_score]
+        )
 
         # Only check for subforem reassignment if the article is marked as offtopic
         if offtopic_label?(label)
@@ -254,7 +259,7 @@ module Spam
       rescue StandardError => e
         Rails.logger.error("Failed to label article content: #{e}")
         # Set a safe default label
-        article.update_column(:automod_label, "no_moderation_label")
+        article.update_columns(automod_label: "no_moderation_label", compellingness_score: 0.0)
       end
     end
 

@@ -1889,7 +1889,7 @@ RSpec.describe Article do
 
       it "updates score after content moderation labeling" do
         # Mock the content moderation labeler to return a specific label
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("clear_and_obvious_harmful")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate!).and_return({ label: "clear_and_obvious_harmful", compellingness_score: 0.5 })
         stub_const("Ai::Base::DEFAULT_KEY", "present")
 
         initial_score = article.score
@@ -1904,7 +1904,7 @@ RSpec.describe Article do
 
       it "updates score with positive adjustment for high quality content" do
         # Mock the content moderation labeler to return a high quality label
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("great_and_on_topic")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate!).and_return({ label: "great_and_on_topic", compellingness_score: 0.5 })
         stub_const("Ai::Base::DEFAULT_KEY", "present")
 
         initial_score = article.score
