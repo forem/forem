@@ -79,6 +79,34 @@
     box-shadow: 0 0 0 1px var(--card-border);
     display: flex;
     flex-direction: column;
+    
+    /* Ensure smooth scrolling and prevent scroll issues on Windows */
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    
+    /* Styled scrollbar for better UX */
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: var(--base-10);
+      border-radius: 4px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: var(--base-40);
+      border-radius: 4px;
+      transition: background-color 0.2s ease;
+    }
+    
+    &::-webkit-scrollbar-thumb:hover {
+      background: var(--base-60);
+    }
+    
+    /* For Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: var(--base-40) var(--base-10);
 
     @media (min-width: $breakpoint-m) {
       grid-column-end: span 2;
@@ -158,18 +186,35 @@
   }
 
   &__body {
-    flex: 1 0 auto;
-    position: relative;
-    outline: none;
-    display: flex;
-    flex-direction: column;
-    border-radius: 0 0 var(--radius) var(--radius);
+      flex: 1 0 auto;
+      position: relative;
+      outline: none;
+      display: flex;
+      flex-direction: column;
+      border-radius: 0 0 var(--radius) var(--radius);
+      
+      /* Remove overflow from body to prevent double scrollbars */
+      overflow: visible;
 
     &__field {
       flex: 1 auto;
-      overflow: hidden;
+      /* Remove overflow here - let parent container handle scrolling */
+      overflow: visible;
+      resize: none;
+      
+      /* Ensure textarea grows with content */
+      min-height: 300px;
+      height: auto;
+      
+      /* Ensure no additional scrollbars appear */
+      &::-webkit-scrollbar {
+        display: none;
+      }
+      
+      /* Hide scrollbars in Firefox */
+      scrollbar-width: none;
     }
-  }
+    }
 
   &__toolbar {
     position: -webkit-sticky;
@@ -244,6 +289,19 @@
   &__title {
     margin-bottom: var(--su-2);
     position: relative;
+    
+    /* Ensure title doesn't get clipped on Windows */
+    overflow: visible;
+    
+    textarea {
+      /* Ensure title text area adapts properly */
+      overflow: hidden;
+      resize: none;
+      word-wrap: break-word;
+      
+      /* Better line height for Windows compatibility */
+      line-height: 1.2;
+    }
   }
 
   &__tagsfield {
