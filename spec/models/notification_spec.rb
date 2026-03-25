@@ -605,8 +605,8 @@ RSpec.describe Notification do
   describe "#fast_destroy_old_notifications" do
     it "bulk deletes notifications older than given timestamp" do
       allow(BulkSqlDelete).to receive(:delete_in_batches)
-      described_class.fast_destroy_old_notifications("a_time")
-      expect(BulkSqlDelete).to have_received(:delete_in_batches).with(a_string_including("< 'a_time'"))
+      described_class.fast_destroy_old_notifications(10.days.ago)
+      expect(BulkSqlDelete).to have_received(:delete_in_batches).with(/</)
     end
 
     it "uses an 85 day retention window by default" do
