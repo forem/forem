@@ -4089,9 +4089,8 @@
             "type": "integer",
             "format": "int64"
           },
-          "user_email": {
-            "type": "string",
-            "format": "email"
+          "username": {
+            "type": "string"
           },
           "session_start": {
             "type": "integer",
@@ -4108,7 +4107,7 @@
           "poll_id",
           "poll_option_id",
           "user_id",
-          "user_email",
+          "username",
           "session_start",
           "created_at"
         ]
@@ -4136,9 +4135,8 @@
             "type": "integer",
             "format": "int64"
           },
-          "user_email": {
-            "type": "string",
-            "format": "email"
+          "username": {
+            "type": "string"
           },
           "text_content": {
             "type": "string"
@@ -4157,7 +4155,7 @@
           "id",
           "poll_id",
           "user_id",
-          "user_email",
+          "username",
           "text_content",
           "session_start",
           "created_at"

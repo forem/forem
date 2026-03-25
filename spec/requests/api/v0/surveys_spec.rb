@@ -229,10 +229,11 @@ RSpec.describe "Api::V0::Surveys" do
         vote_json = response.parsed_body.first
         expect(vote_json).to include(
           "type_of", "id", "poll_id", "poll_option_id", "user_id",
-          "user_email", "session_start", "created_at"
+          "username", "session_start", "created_at"
         )
         expect(vote_json["poll_id"]).to eq(poll.id)
         expect(vote_json["user_id"]).to eq(voter.id)
+        expect(vote_json["username"]).to eq(voter.username)
       end
 
       it "paginates results" do
@@ -327,9 +328,10 @@ RSpec.describe "Api::V0::Surveys" do
         text_json = response.parsed_body.first
         expect(text_json).to include(
           "type_of", "id", "poll_id", "user_id", "text_content",
-          "user_email", "session_start", "created_at"
+          "username", "session_start", "created_at"
         )
         expect(text_json["text_content"]).to eq("Great survey!")
+        expect(text_json["username"]).to eq(voter.username)
       end
 
       it "paginates results" do

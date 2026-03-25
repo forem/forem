@@ -1,6 +1,3 @@
-# This endpoint is for admin-authorized use only. User emails are
-# included by design for internal tracking.
-
 json.array! @poll_text_responses do |text_response|
   json.type_of "poll_text_response"
   json.extract!(
@@ -11,6 +8,6 @@ json.array! @poll_text_responses do |text_response|
     :text_content,
     :session_start
   )
-  json.user_email text_response.user.email
+  json.username text_response.user.username
   json.created_at utc_iso_timestamp(text_response.created_at)
 end

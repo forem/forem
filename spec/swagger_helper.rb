@@ -618,11 +618,11 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               poll_id: { type: :integer, format: :int64 },
               poll_option_id: { type: :integer, format: :int64 },
               user_id: { type: :integer, format: :int64 },
-              user_email: { type: :string, format: :email },
+              username: { type: :string },
               session_start: { type: :integer, format: :int32 },
               created_at: { type: :string, format: "date-time" }
             },
-            required: %w[type_of id poll_id poll_option_id user_id user_email session_start created_at]
+            required: %w[type_of id poll_id poll_option_id user_id username session_start created_at]
           },
           PollTextResponse: {
             description: "Representation of a free-text response to a text-input poll",
@@ -632,12 +632,12 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               id: { type: :integer, format: :int64 },
               poll_id: { type: :integer, format: :int64 },
               user_id: { type: :integer, format: :int64 },
-              user_email: { type: :string, format: :email },
+              username: { type: :string },
               text_content: { type: :string },
               session_start: { type: :integer, format: :int32 },
               created_at: { type: :string, format: "date-time" }
             },
-            required: %w[type_of id poll_id user_id user_email text_content session_start created_at]
+            required: %w[type_of id poll_id user_id username text_content session_start created_at]
           }
         }
       }
