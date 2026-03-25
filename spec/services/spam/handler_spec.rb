@@ -18,7 +18,7 @@ RSpec.describe Spam::Handler, type: :service do
         allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(false)
         # Mock content moderation labeling
         stub_const("Ai::Base::DEFAULT_KEY", "present")
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate!).and_return({ label: "no_moderation_label", compellingness_score: 0.5 })
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "no_moderation_label", compellingness_score: 0.5 })
       end
 
       it { is_expected.to eq(:not_spam) }
@@ -64,7 +64,7 @@ RSpec.describe Spam::Handler, type: :service do
         allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(false)
         # Mock content moderation labeling
         stub_const("Ai::Base::DEFAULT_KEY", "present")
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate!).and_return({ label: "no_moderation_label", compellingness_score: 0.5 })
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "no_moderation_label", compellingness_score: 0.5 })
       end
 
       context "for a first-time offender" do
@@ -84,7 +84,7 @@ RSpec.describe Spam::Handler, type: :service do
         allow(article).to receive(:processed_html).and_return("<p>contains a <a href='spam.com'>link</a></p>")
         allow(Ai::ArticleCheck).to receive(:new).with(article).and_return(double(spam?: true))
         # Mock content moderation labeling
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate!).and_return({ label: "no_moderation_label", compellingness_score: 0.5 })
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "no_moderation_label", compellingness_score: 0.5 })
       end
 
       context "for a first-time offender" do
@@ -101,7 +101,7 @@ RSpec.describe Spam::Handler, type: :service do
         allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
         allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(false)
         stub_const("Ai::Base::DEFAULT_KEY", "present")
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate!).and_return({ label: "clear_and_obvious_spam", compellingness_score: 0.5 })
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "clear_and_obvious_spam", compellingness_score: 0.5 })
         allow(article).to receive(:automod_label).and_return("clear_and_obvious_spam")
         allow(article).to receive(:update_column)
       end
@@ -141,7 +141,7 @@ RSpec.describe Spam::Handler, type: :service do
         allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
         allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(false)
         stub_const("Ai::Base::DEFAULT_KEY", "present")
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate!).and_return({ label: "clear_and_obvious_harmful", compellingness_score: 0.5 })
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "clear_and_obvious_harmful", compellingness_score: 0.5 })
         allow(article).to receive(:automod_label).and_return("clear_and_obvious_harmful")
         allow(article).to receive(:update_column)
       end
@@ -168,7 +168,7 @@ RSpec.describe Spam::Handler, type: :service do
         allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
         allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(false)
         stub_const("Ai::Base::DEFAULT_KEY", "present")
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate!).and_return({ label: "likely_harmful", compellingness_score: 0.5 })
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "likely_harmful", compellingness_score: 0.5 })
         allow(article).to receive(:automod_label).and_return("likely_harmful")
         allow(article).to receive(:update_column)
       end
@@ -186,7 +186,7 @@ RSpec.describe Spam::Handler, type: :service do
         allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
         allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(false)
         stub_const("Ai::Base::DEFAULT_KEY", "present")
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate!).and_return({ label: "clear_and_obvious_inciting", compellingness_score: 0.5 })
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "clear_and_obvious_inciting", compellingness_score: 0.5 })
         allow(article).to receive(:automod_label).and_return("clear_and_obvious_inciting")
         allow(article).to receive(:update_column)
       end
@@ -213,7 +213,7 @@ RSpec.describe Spam::Handler, type: :service do
         allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
         allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(false)
         stub_const("Ai::Base::DEFAULT_KEY", "present")
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate!).and_return({ label: "likely_inciting", compellingness_score: 0.5 })
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "likely_inciting", compellingness_score: 0.5 })
         allow(article).to receive(:automod_label).and_return("likely_inciting")
         allow(article).to receive(:update_column)
       end
@@ -231,7 +231,7 @@ RSpec.describe Spam::Handler, type: :service do
         allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
         allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(false)
         stub_const("Ai::Base::DEFAULT_KEY", "present")
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate!).and_return({ label: "likely_spam", compellingness_score: 0.5 })
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "likely_spam", compellingness_score: 0.5 })
         allow(article).to receive(:automod_label).and_return("likely_spam")
         allow(article).to receive(:update_column)
       end
@@ -249,7 +249,7 @@ RSpec.describe Spam::Handler, type: :service do
         allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(true) # Would normally trigger spam
         allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(true) # Would normally trigger spam
         stub_const("Ai::Base::DEFAULT_KEY", "present")
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate!).and_return({ label: "very_good_and_on_topic", compellingness_score: 0.5 })
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "very_good_and_on_topic", compellingness_score: 0.5 })
         allow(article).to receive(:automod_label).and_return("very_good_and_on_topic")
         allow(article).to receive(:update_column)
       end
@@ -264,7 +264,7 @@ RSpec.describe Spam::Handler, type: :service do
         allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(true) # Would normally trigger spam
         allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(true) # Would normally trigger spam
         stub_const("Ai::Base::DEFAULT_KEY", "present")
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate!).and_return({ label: "great_and_on_topic", compellingness_score: 0.5 })
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "great_and_on_topic", compellingness_score: 0.5 })
         allow(article).to receive(:automod_label).and_return("great_and_on_topic")
         allow(article).to receive(:update_column)
       end

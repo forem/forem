@@ -244,7 +244,7 @@ module Spam
 
       begin
         labeler = Ai::ContentModerationLabeler.new(article)
-        results = labeler.evaluate!
+        results = labeler.evaluate
         label = results[:label]
         
         article.update_columns(

@@ -16,7 +16,7 @@ module Ai
     # Backward compatible wrapper for legacy evaluation.
     # @return [String] The moderation label for the article.
     def label
-      evaluate![:label]
+      evaluate[:label]
     end
 
     ##
@@ -24,7 +24,7 @@ module Ai
     # Retries up to 2 times on error before falling back to default.
     #
     # @return [Hash] Hash with :label and :compellingness_score.
-    def evaluate!
+    def evaluate
       attempt = 0
       max_retries = 2
 
@@ -187,6 +187,14 @@ module Ai
     def parse_response(response)
       fallback = { label: "no_moderation_label", compellingness_score: 0.0 }
       return fallback unless response
+      
+      valid_labels = %w[
+        no_moderation_label clear_and_obvious_harmful likely_harmful
+        clear_and_obvious_inciting likely_inciting clear_and_obvious_spam
+        likely_spam clear_and_obvious_low_quality likely_low_quality
+        ok_but_offtopic_for_subforem okay_and_on_topic very_good_but_offtopic_for_subforem
+        very_good_and_on_topic great_and_on_topic great_but_off_topic_for_subforem
+      ]
 
       begin
         # Clean potential markdown wrapping (e.g. ```json ... ```)
@@ -196,21 +204,18 @@ module Ai
         label = data["moderation_label"].to_s.strip.downcase.gsub(/[^a-z_]/, "")
         score = data["compellingness_score"].to_f
 
-        valid_labels = %w[
-          no_moderation_label clear_and_obvious_harmful likely_harmful
-          clear_and_obvious_inciting likely_inciting clear_and_obvious_spam
-          likely_spam clear_and_obvious_low_quality likely_low_quality
-          ok_but_offtopic_for_subforem okay_and_on_topic very_good_but_offtopic_for_subforem
-          very_good_and_on_topic great_and_on_topic great_but_off_topic_for_subforem
-        ]
-
         final_label = valid_labels.include?(label) ? label : "no_moderation_label"
         final_score = score.clamp(0.0, 1.0)
         
         { label: final_label, compellingness_score: final_score }
       rescue JSON::ParserError => e
         Rails.logger.error("Content Moderation JSON Parsing Error: #{e}. Response was: #{response}")
-        fallback
+        
+        # Fallback to legacy string parsing
+        legacy_label = response.strip.downcase.gsub(/[^a-z_]/, "")
+        final_label = valid_labels.include?(legacy_label) ? legacy_label : "no_moderation_label"
+        
+        { label: final_label, compellingness_score: 0.0 }
       end
     end
   end
