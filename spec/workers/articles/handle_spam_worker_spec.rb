@@ -153,7 +153,7 @@ RSpec.describe Articles::HandleSpamWorker, type: :worker do
     context "when content moderation labeling affects the score" do
       before do
         # Mock the content moderation labeler to return a specific label
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("clear_and_obvious_harmful")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "clear_and_obvious_harmful", compellingness_score: 0.5 })
         stub_const("Ai::Base::DEFAULT_KEY", "present")
       end
 
@@ -172,7 +172,7 @@ RSpec.describe Articles::HandleSpamWorker, type: :worker do
     context "when content moderation labeling identifies high quality content" do
       before do
         # Mock the content moderation labeler to return a high quality label
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("great_and_on_topic")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "great_and_on_topic", compellingness_score: 0.5 })
         stub_const("Ai::Base::DEFAULT_KEY", "present")
       end
 

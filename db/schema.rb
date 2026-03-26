@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_03_20_192633) do
+ActiveRecord::Schema[7.0].define(version: 2026_03_25_220847) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1870,6 +1870,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_20_192633) do
     t.index ["old_username"], name: "index_users_on_old_username"
     t.index ["onboarding_subforem_id"], name: "index_users_on_onboarding_subforem_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["score"], name: "index_users_on_score"
     t.index ["twitter_username"], name: "index_users_on_twitter_username", unique: true
     t.index ["type_of"], name: "index_users_on_type_of"
     t.index ["username"], name: "index_users_on_username", unique: true
