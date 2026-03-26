@@ -81,6 +81,7 @@ class User < ApplicationRecord
   has_many :feed_events, dependent: :nullify
   has_many :feed_import_logs, class_name: "Feeds::ImportLog", dependent: :delete_all
   has_many :feed_sources, class_name: "Feeds::Source", dependent: :delete_all
+  has_many :lead_submissions, dependent: :destroy
   has_many :field_test_memberships, class_name: "FieldTest::Membership", as: :participant, dependent: :destroy
   # Consider that we might be able to use dependent: :delete_all as the GithubRepo busts the user cache
   has_many :github_repos, dependent: :destroy
@@ -129,6 +130,12 @@ class User < ApplicationRecord
   has_many :languages, class_name: "UserLanguage", inverse_of: :user, dependent: :delete_all
   has_many :user_visit_contexts, dependent: :delete_all
   has_one :user_activity, dependent: :delete
+
+  def cached_recent_user_ids
+    Rails.cache.fetch("user-#{id}/recent_users", expires_in: 5.minutes) do
+      user_activity&.recent_users || []
+    end
+  end
 
   mount_uploader :profile_image, ProfileImageUploader
 
@@ -267,6 +274,8 @@ class User < ApplicationRecord
   before_validation :set_username
   before_create :create_users_settings_and_notification_settings_records
   after_update :refresh_auto_audience_segments
+  after_update :create_email_change_note, if: :saved_change_to_unconfirmed_email?
+  after_update :create_password_change_note, if: :saved_change_to_encrypted_password?
   before_destroy :remove_from_mailchimp_newsletters, prepend: true
   before_destroy :destroy_follows, prepend: true
 
@@ -400,7 +409,7 @@ class User < ApplicationRecord
   end
 
   def cached_following_users_ids
-    cache_key = "user-#{id}-#{last_followed_at}-#{following_users_count}/following_users_ids"
+    cache_key = "user-#{id}-#{formatted_last_followed_at}-#{following_users_count}/following_users_ids"
     begin
       Timeout.timeout(0.05) do
         Rails.cache.fetch(cache_key, expires_in: 12.hours) do
@@ -413,7 +422,7 @@ class User < ApplicationRecord
   end
 
   def cached_following_organizations_ids
-    cache_key = "user-#{id}-#{last_followed_at}-#{following_orgs_count}/following_organizations_ids"
+    cache_key = "user-#{id}-#{formatted_last_followed_at}-#{following_orgs_count}/following_organizations_ids"
     begin
       Timeout.timeout(0.05) do
         Rails.cache.fetch(cache_key, expires_in: 12.hours) do
@@ -460,21 +469,23 @@ class User < ApplicationRecord
   end
 
   def cached_followed_tag_names
-    cache_name = "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}-x/followed_tag_names"
+    cache_name = "user-#{id}-#{following_tags_count}-#{formatted_last_followed_at}-x/followed_tag_names"
     Rails.cache.fetch(cache_name, expires_in: 24.hours) do
       Tag.followed_by(self).pluck(:name)
     end
   end
 
   def cached_antifollowed_tag_names
-    cache_name = "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/antifollowed_tag_names"
+    cache_name = "user-#{id}-#{following_tags_count}-#{formatted_last_followed_at}/antifollowed_tag_names"
     Rails.cache.fetch(cache_name, expires_in: 24.hours) do
       Tag.antifollowed_by(self).pluck(:name)
     end
   end
 
   def refresh_auto_audience_segments
-    SegmentedUserRefreshWorker.perform_async(id)
+    if ENV["ENABLE_REFRESH_SEGMENT_WORKERS"]  == "true"
+      SegmentedUserRefreshWorker.perform_async(id)
+    end
   end
 
   ##############################################################################
@@ -782,6 +793,12 @@ class User < ApplicationRecord
     end
   end
 
+  def formatted_last_followed_at
+    return unless last_followed_at
+
+    last_followed_at.respond_to?(:rfc3339) ? last_followed_at.rfc3339 : last_followed_at.to_s
+  end
+
   protected
 
   # Send emails asynchronously
@@ -905,6 +922,24 @@ class User < ApplicationRecord
     return true if password == password_confirmation
 
     errors.add(:password, I18n.t("models.user.password_not_matched"))
+  end
+
+  def create_email_change_note
+    return unless unconfirmed_email.present?
+
+    Note.create(
+      noteable: self,
+      reason: "email_change_requested",
+      content: "User requested email change to #{unconfirmed_email}",
+    )
+  end
+
+  def create_password_change_note
+    Note.create(
+      noteable: self,
+      reason: "password_changed",
+      content: "User changed their password",
+    )
   end
 
   def confirmation_required?

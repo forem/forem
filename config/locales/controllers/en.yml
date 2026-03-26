@@ -5,6 +5,7 @@ en:
     revoked: Your API Key has been revoked.
   application_controller:
     bad_request: 'Error: Bad Request'
+    invalid_authenticity_token: 'Error: Invalid authenticity token'
     not_authorized: 'Error: not authorized'
     please_sign_in: Please sign in
   articles_controller:
@@ -76,6 +77,7 @@ en:
     not_deleted: Your organization was not deleted; you must be an admin, the only member in the organization, and have no articles connected to the organization.
     created: Your organization was successfully created and you are an admin.
     updated: Your organization was successfully updated.
+    page_save_error: "Page could not be saved: %{message}"
     invite:
       user_not_found: User with username "%{username}" not found.
       already_member: This user is already a member of the organization.
@@ -90,6 +92,12 @@ en:
       wrong_user: You must be signed in as the invited user to confirm this invitation.
       sign_in_required: Please sign in to confirm your organization membership.
       success: Successfully joined %{organization_name}!
+  lead_submissions:
+    inactive_form: This lead form is no longer accepting submissions.
+    not_found: Lead form not found.
+    already_submitted: You have already submitted this form.
+    name_and_email_required: Name and email are required.
+    recaptcha_failed: Please complete the CAPTCHA verification.
   podcasts_controller:
     podcast_suggested: Podcast suggested
   profiles_controller:

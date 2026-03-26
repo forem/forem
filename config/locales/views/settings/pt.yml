@@ -172,3 +172,7 @@ pt:
             submit: Gerar novo segredo
       extensions:
         rss_moved_html: 'As configurações de feed RSS foram movidas! Gerencie seus feeds no <a href="%{link}" class="crayons-link">painel de importações</a>.'
+        list:
+          heading: Suas organizações
+          manage: Configurações
+          view_page: Ver página

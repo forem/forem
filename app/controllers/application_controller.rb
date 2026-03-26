@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
   skip_before_action :track_ahoy_visit
   before_action :set_session_domain
+  after_action :set_unauthenticated_session_expiry
   before_action :verify_private_forem
   protect_from_forgery with: :exception, prepend: true
   before_action :set_devise_rememberable_options # Add this line
@@ -34,6 +35,10 @@ class ApplicationController < ActionController::Base
       "users.invalid_authenticity_token",
       tags: ["controller_name:#{controller_name}", "path:#{request.fullpath}"],
     )
+    respond_to do |format|
+      format.html { render plain: I18n.t("application_controller.invalid_authenticity_token"), status: :unprocessable_entity }
+      format.json { render json: { error: I18n.t("application_controller.invalid_authenticity_token") }, status: :unprocessable_entity }
+    end
   end
 
   rescue_from ApplicationPolicy::UserSuspendedError, with: :respond_with_user_suspended
@@ -432,6 +437,21 @@ class ApplicationController < ActionController::Base
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[username name profile_image profile_image_url])
     devise_parameter_sanitizer.permit(:accept_invitation, keys: %i[name])
+  end
+
+  def set_unauthenticated_session_expiry
+    # If the user is unauthenticated, expire their session quickly to save Redis memory.
+    # Authenticated users use the default `expire_after` defined in config/initializers/session_store.rb
+    return if user_signed_in?
+
+    configured_ttl = ApplicationConfig["ANONYMOUS_SESSION_EXPIRY_SECONDS"]
+    ttl_seconds = if configured_ttl.present?
+                    configured_ttl.to_i
+                  else
+                    2.days.to_i
+                  end
+
+    request.session_options[:expire_after] = ttl_seconds
   end
 
   def set_session_domain

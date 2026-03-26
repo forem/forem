@@ -1,0 +1,14 @@
+<div class="crayons-card p-6 text-center">
+  <div class="mb-4">
+    <%= crayons_icon_tag("lock", class: "color-base-50", width: 48, height: 48) %>
+  </div>
+  <h3 class="crayons-subtitle-2 mb-2"><%= t("views.organization_settings.org_features_upgrade.heading") %></h3>
+  <p class="color-base-70 mb-4">
+    <%= Settings::General.org_features_cta_text.presence || t("views.organization_settings.org_features_upgrade.cta_fallback") %>
+  </p>
+  <% if Settings::General.org_features_cta_url.present? %>
+    <a href="<%= Settings::General.org_features_cta_url %>" class="crayons-btn" target="_blank" rel="noopener">
+      <%= t("views.organization_settings.org_features_upgrade.button_text") %>
+    </a>
+  <% end %>
+</div>
