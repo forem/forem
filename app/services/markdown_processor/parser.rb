@@ -156,7 +156,7 @@ module MarkdownProcessor
         escaped_codeblock.gsub!("{% endraw %}", "{----% endraw %----}")
         escaped_codeblock.gsub!("{% raw %}", "{----% raw %----}")
 
-        if codeblock.match?(/[[:space:]]*~{3}|[[:space:]]*`{3}/)
+        if codeblock.match?(/\A[[:space:]]*(~{3}|`{3})/)
           "\n{% raw %}\n#{escaped_codeblock}\n{% endraw %}\n"
         else
           "{% raw %}#{escaped_codeblock}{% endraw %}"
