@@ -1,0 +1,229 @@
+<div class="ltag-org-lead-form crayons-card p-6 my-4" data-lead-form-id="<%= form.id %>">
+  <h3 class="crayons-subtitle-2 mb-2"><%= form.title %></h3>
+  <% if form.description.present? %>
+    <p class="color-base-70 mb-3"><%= form.description %></p>
+  <% end %>
+
+  <div class="lead-form-signed-in" style="display:none;">
+    <div class="lead-form-actions">
+      <button type="button"
+              class="crayons-btn lead-form-submit-btn"
+              data-form-id="<%= form.id %>"
+              onclick="submitLeadForm(this)">
+        <%= form.button_text %>
+      </button>
+      <span class="lead-form-status fs-s color-base-60 ml-2" style="display:none;"></span>
+    </div>
+    <p class="fs-s color-base-60" style="margin-top: 1rem;"><%= I18n.t("liquid_tags.org_lead_form_tag.data_shared") %></p>
+  </div>
+
+  <div class="lead-form-signed-out" data-form-id="<%= form.id %>">
+    <div class="crayons-field mb-3">
+      <label class="crayons-field__label" for="lead_form_name_<%= form.id %>"><%= I18n.t("liquid_tags.org_lead_form_tag.field_name") %></label>
+      <input type="text" id="lead_form_name_<%= form.id %>" name="name" class="crayons-textfield" required>
+    </div>
+    <div class="crayons-field mb-3">
+      <label class="crayons-field__label" for="lead_form_email_<%= form.id %>"><%= I18n.t("liquid_tags.org_lead_form_tag.field_email") %></label>
+      <input type="email" id="lead_form_email_<%= form.id %>" name="email" class="crayons-textfield" required>
+    </div>
+    <div class="crayons-field mb-3">
+      <label class="crayons-field__label" for="lead_form_company_<%= form.id %>"><%= I18n.t("liquid_tags.org_lead_form_tag.field_company") %></label>
+      <input type="text" id="lead_form_company_<%= form.id %>" name="company" class="crayons-textfield">
+    </div>
+    <div class="crayons-field mb-3">
+      <label class="crayons-field__label" for="lead_form_job_title_<%= form.id %>"><%= I18n.t("liquid_tags.org_lead_form_tag.field_job_title") %></label>
+      <input type="text" id="lead_form_job_title_<%= form.id %>" name="job_title" class="crayons-textfield">
+    </div>
+    <div class="lead-form-recaptcha mb-3" id="lead_form_recaptcha_<%= form.id %>" data-sitekey="<%= Settings::Authentication.recaptcha_site_key %>"></div>
+    <div class="lead-form-actions">
+      <button type="button"
+              class="crayons-btn lead-form-submit-btn"
+              data-form-id="<%= form.id %>"
+              onclick="submitLeadFormAnonymous(this)">
+        <%= form.button_text %>
+      </button>
+      <span class="lead-form-status fs-s color-base-60 ml-2" style="display:none;"></span>
+    </div>
+  </div>
+</div>
+
+<script>
+  function submitLeadForm(button) {
+    var formId = button.getAttribute('data-form-id');
+    button.disabled = true;
+    button.textContent = '<%= I18n.t("liquid_tags.org_lead_form_tag.submitting") %>';
+
+    fetch('/lead_submissions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      },
+      body: JSON.stringify({ organization_lead_form_id: formId })
+    }).then(function(response) {
+      return response.json();
+    }).then(function(data) {
+      if (data.success) {
+        markFormSubmitted(button, new Date().toISOString());
+      } else {
+        button.textContent = data.error || '<%= I18n.t("liquid_tags.org_lead_form_tag.error") %>';
+        button.disabled = false;
+      }
+    }).catch(function() {
+      button.textContent = '<%= I18n.t("liquid_tags.org_lead_form_tag.error") %>';
+      button.disabled = false;
+    });
+  }
+
+  function submitLeadFormAnonymous(button) {
+    var formId = button.getAttribute('data-form-id');
+    var container = button.closest('.lead-form-signed-out');
+    var name = container.querySelector('input[name="name"]').value.trim();
+    var email = container.querySelector('input[name="email"]').value.trim();
+    var company = container.querySelector('input[name="company"]').value.trim();
+    var jobTitle = container.querySelector('input[name="job_title"]').value.trim();
+
+    if (!name || !email) {
+      var statusEl = container.querySelector('.lead-form-status');
+      statusEl.textContent = '<%= I18n.t("liquid_tags.org_lead_form_tag.name_email_required") %>';
+      statusEl.style.display = '';
+      return;
+    }
+
+    var recaptchaResponse = '';
+    var recaptchaEl = container.querySelector('.lead-form-recaptcha .g-recaptcha');
+    if (recaptchaEl && typeof grecaptcha !== 'undefined') {
+      var widgetId = recaptchaEl.getAttribute('data-widget-id');
+      recaptchaResponse = widgetId ? grecaptcha.getResponse(parseInt(widgetId)) : grecaptcha.getResponse();
+    }
+
+    button.disabled = true;
+    button.textContent = '<%= I18n.t("liquid_tags.org_lead_form_tag.submitting") %>';
+
+    fetch('/lead_submissions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      },
+      body: JSON.stringify({
+        organization_lead_form_id: formId,
+        name: name,
+        email: email,
+        company: company,
+        job_title: jobTitle,
+        'g-recaptcha-response': recaptchaResponse
+      })
+    }).then(function(response) {
+      return response.json();
+    }).then(function(data) {
+      if (data.success) {
+        markFormSubmitted(button, null);
+        container.querySelectorAll('input').forEach(function(input) { input.disabled = true; });
+      } else {
+        button.textContent = data.error || '<%= I18n.t("liquid_tags.org_lead_form_tag.error") %>';
+        button.disabled = false;
+        if (typeof grecaptcha !== 'undefined' && recaptchaEl) {
+          var wId = recaptchaEl.getAttribute('data-widget-id');
+          if (wId) grecaptcha.reset(parseInt(wId));
+        }
+      }
+    }).catch(function() {
+      button.textContent = '<%= I18n.t("liquid_tags.org_lead_form_tag.error") %>';
+      button.disabled = false;
+    });
+  }
+
+  function markFormSubmitted(button, isoDate) {
+    button.disabled = true;
+    button.textContent = '<%= I18n.t("liquid_tags.org_lead_form_tag.submitted") %>';
+    button.classList.remove('crayons-btn--primary');
+    button.classList.add('crayons-btn--secondary');
+    button.style.opacity = '0.6';
+
+    var statusEl = button.parentElement.querySelector('.lead-form-status');
+    if (statusEl && isoDate) {
+      var date = new Date(isoDate);
+      var formatted = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+      statusEl.textContent = '<%= I18n.t("liquid_tags.org_lead_form_tag.already_submitted", date: "DATEPLACEHOLDER") %>'.replace('DATEPLACEHOLDER', formatted);
+      statusEl.style.display = '';
+    }
+  }
+
+  (function() {
+    var forms = document.querySelectorAll('.ltag-org-lead-form');
+    if (!forms.length) return;
+
+    var isLoggedIn = document.body.getAttribute('data-user-status') === 'logged-in';
+
+    forms.forEach(function(f) {
+      var signedInView = f.querySelector('.lead-form-signed-in');
+      var signedOutView = f.querySelector('.lead-form-signed-out');
+      if (isLoggedIn) {
+        signedInView.style.display = '';
+        signedOutView.style.display = 'none';
+      }
+    });
+
+    if (isLoggedIn) {
+      var ids = [];
+      forms.forEach(function(f) { ids.push(f.getAttribute('data-lead-form-id')); });
+
+      fetch('/lead_submissions/check?form_ids=' + ids.join(','), {
+        credentials: 'same-origin'
+      }).then(function(r) { return r.json(); }).then(function(data) {
+        forms.forEach(function(f) {
+          var id = f.getAttribute('data-lead-form-id');
+          if (data[id]) {
+            var btn = f.querySelector('.lead-form-signed-in .lead-form-submit-btn');
+            if (btn) markFormSubmitted(btn, data[id]);
+          }
+        });
+      }).catch(function() {});
+    } else {
+      // Load reCAPTCHA script and render widgets for signed-out forms
+      var hasSitekey = false;
+      forms.forEach(function(f) {
+        var rc = f.querySelector('.lead-form-recaptcha');
+        if (rc && rc.getAttribute('data-sitekey')) hasSitekey = true;
+      });
+
+      if (hasSitekey && typeof grecaptcha === 'undefined' && !document.querySelector('script[src*="recaptcha/api.js"]')) {
+        window.__leadFormRecaptchaOnload = function() {
+          forms.forEach(function(f) {
+            var recaptchaContainer = f.querySelector('.lead-form-recaptcha');
+            if (recaptchaContainer && !recaptchaContainer.querySelector('.g-recaptcha')) {
+              var sitekey = recaptchaContainer.getAttribute('data-sitekey');
+              if (sitekey) {
+                var div = document.createElement('div');
+                div.className = 'g-recaptcha';
+                recaptchaContainer.appendChild(div);
+                var widgetId = grecaptcha.render(div, { sitekey: sitekey });
+                div.setAttribute('data-widget-id', widgetId);
+              }
+            }
+          });
+        };
+        var script = document.createElement('script');
+        script.src = 'https://www.google.com/recaptcha/api.js?onload=__leadFormRecaptchaOnload&render=explicit';
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+      } else if (typeof grecaptcha !== 'undefined') {
+        forms.forEach(function(f) {
+          var recaptchaContainer = f.querySelector('.lead-form-recaptcha');
+          if (recaptchaContainer && !recaptchaContainer.querySelector('.g-recaptcha')) {
+            var sitekey = recaptchaContainer.getAttribute('data-sitekey');
+            if (sitekey) {
+              var div = document.createElement('div');
+              div.className = 'g-recaptcha';
+              recaptchaContainer.appendChild(div);
+              var widgetId = grecaptcha.render(div, { sitekey: sitekey });
+              div.setAttribute('data-widget-id', widgetId);
+            }
+          }
+        });
+      }
+    }
+  })();
+</script>

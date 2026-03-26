@@ -2,16 +2,22 @@ class YoutubeTag < LiquidTagBase
   PARTIAL = "liquids/youtube".freeze
   MARKER_TO_SECONDS_MAP = { "h" => 3600, "m" => 60, "s" => 1 }.freeze
 
+  def self.extract_video_id(str)
+    match = str.match(%r{youtu\.be/([a-zA-Z0-9_-]{11})}) ||
+            str.match(%r{[?&]v=([a-zA-Z0-9_-]{11})}) ||
+            str.match(/\A([a-zA-Z0-9_-]{11})\z/)
+    match[1] if match
+  end
+
   def initialize(_tag_name, input, _parse_context)
     super
     @input = CGI.unescape_html(strip_tags(input.strip))
     @id = extract_video_id_and_start_time || raise(StandardError, "Invalid YouTube URL")
-    @width = 710
-    @height = 399
+    @shorts = shorts_url?
   end
 
   def render(_context)
-    ApplicationController.render(partial: PARTIAL, locals: { id: @id, width: @width, height: @height })
+    ApplicationController.render(partial: PARTIAL, locals: { id: @id, shorts: @shorts })
   end
 
   private
@@ -24,8 +30,13 @@ class YoutubeTag < LiquidTagBase
     time_parameter ? "#{video_id}?start=#{parse_time(time_parameter)}" : video_id
   end
 
+  def shorts_url?
+    @input.match?(%r{youtube\.com/shorts/})
+  end
+
   def find_video_id(str)
     match = str.match(%r{youtu\.be/([a-zA-Z0-9_-]{11})}) ||
+            str.match(%r{youtube\.com/(?:shorts|live)/([a-zA-Z0-9_-]{11})}) ||
             str.match(%r{[?&]v=([a-zA-Z0-9_-]{11})}) ||
             str.match(/\A([a-zA-Z0-9_-]{11})\z/)
     match[1] if match

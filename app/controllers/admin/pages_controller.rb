@@ -4,7 +4,7 @@ module Admin
 
     PAGE_ALLOWED_PARAMS = %i[
       title slug body_markdown body_html body_json body_css description template
-      is_top_level_path social_image landing_page page_template_id
+      is_top_level_path social_image landing_page page_template_id redirect_to_url
     ].freeze
 
     def index

@@ -54,7 +54,7 @@ module ApplicationHelper
     listings_url = URL.url(try(:listings_path) || "/listings") # listings_path helper might eventually be removed too
 
     return false if listings_url == URL.url(link.url)
-    
+
     true
   end
 
@@ -69,6 +69,8 @@ module ApplicationHelper
                      "stories stories-show podcast_episodes-show"
                    elsif @story_show
                      "stories stories-show"
+                   elsif @org_readme_show
+                     "stories organizations-show-readme"
                    else
                      "#{controller_name} #{current_page}"
                    end
@@ -86,7 +88,7 @@ module ApplicationHelper
 
   def page_view_classes
     return "" unless @page.slug.present?
-    
+
     " pageslug-#{@page.slug.gsub('/', '__SLASH__')}"
   end
 
@@ -189,6 +191,20 @@ module ApplicationHelper
     org&.bg_color_hex ? org.bg_color_hex : "#ffffff"
   end
 
+  def org_brand_style(user)
+    hex = Color::CompareHex.new([user_colors(user)[:bg]])
+    "--accent-brand: #{hex.brightness(1)}; " \
+    "--accent-brand-darker: #{hex.brightness(0.8)}; " \
+    "--accent-brand-lighter: #{hex.brightness(1.35)}; " \
+    "--accent-brand-rgb: #{hex.brightness(1, only_values: true)}; " \
+    "--accent-brand-darker-rgb: #{hex.brightness(0.8, only_values: true)}; " \
+    "--accent-brand-lighter-rgb: #{hex.brightness(1.35, only_values: true)}; " \
+    "--button-primary-bg: #{hex.brightness(1)}; " \
+    "--button-primary-bg-hover: #{hex.brightness(0.8)}; " \
+    "--link-branded-color: #{hex.brightness(1)}; " \
+    "--link-branded-color-hover: #{hex.brightness(0.8)};"
+  end
+
   def sanitize_rendered_markdown(processed_html)
     ActionController::Base.helpers.sanitize processed_html,
                                             scrubber: RenderedMarkdownScrubber.new
@@ -264,7 +280,12 @@ module ApplicationHelper
     release_footprint = ForemInstance.deployed_at
     return path if release_footprint.blank?
 
-    "#{path}-#{params[:locale]}-#{release_footprint}-#{Settings::General.admin_action_taken_at.rfc3339}-#{RequestStore.store[:subforem_id]}"
+    "#{path}-#{params[:locale]}-#{release_footprint}-#{formatted_admin_action_taken_at}-#{RequestStore.store[:subforem_id]}"
+  end
+
+  def formatted_admin_action_taken_at
+    admin_action = Settings::General.admin_action_taken_at
+    admin_action.respond_to?(:rfc3339) ? admin_action.rfc3339 : admin_action.to_s
   end
 
   def social_media_constructed_url(social_media_type, handle)
@@ -301,8 +322,8 @@ module ApplicationHelper
   end
 
   def is_root_subforem?
-    return false unless RequestStore.store[:subforem_id].present?
-    return true if RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
+    RequestStore.store[:subforem_id].present? &&
+      RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
   end
 
   def copyright_notice

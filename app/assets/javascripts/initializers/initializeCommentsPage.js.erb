@@ -256,7 +256,7 @@ function handleCommentSubmit(event) {
 
           var mainCommentsForm = document.getElementById("new_comment");
           if (parentComment) {
-            handleFormClose(event);
+            handleFormClose(event, true);
             if (newComment.depth > 3) {
               var replyTrigger = parentComment.getElementsByClassName("toggle-reply-form")[0];
               var threadIndicator = `<span class="fs-s inline-flex items-center fs-italic color-base-50 pl-1">${ iconSmallThread }Thread</span>`;
@@ -363,18 +363,39 @@ function handleKeyDown(event) {
   }
 }
 
-function handleFormClose(event) {
+function handleFormClose(event, forceClose) {
   // When closing the inline reply form, remove the temporary
   // "replying" state from the correct container. The class is
   // added on `.comment__details` when the reply form is opened,
   // but previously we attempted to remove it from `.inner-comment`,
   // which left the comment in a semi-disabled visual state (e.g.,
   // faded/hidden footer and odd tooltip stacking) until page reload.
-  var detailsEl = event.target.closest('.comment__details');
+  // Do not proceed if it does not exist
+
+  // See if the classname exist
+  const formEl = event.target.closest('.comment-form');
+  if (!formEl) return;
+
+  // Find the textarea inside this form
+  const textarea = formEl.querySelector('textarea, .comment-form__textarea');
+  const hasContent = textarea && textarea.value.trim().length > 0;
+
+  // Only prompt if there is content in the reply area. This will prevent accidental deletion
+  if (hasContent && !forceClose) {
+    const ok = window.confirm('Your comment will be erased. Are you sure you want to dismiss?');
+    if (!ok) {
+      // User canceled dismissal
+      return;
+    }
+  }
+
+  // Remove the elements after confirmation from the user.
+  const detailsEl = event.target.closest('.comment__details');
+
   if (detailsEl) {
     detailsEl.classList.remove('replying');
   }
-  event.target.closest('.comment-form').remove();
+  formEl.remove();
   initializeCommentsPage();
 }
 
