@@ -92,7 +92,7 @@ RSpec.describe "/admin/content_manager/podcasts" do
 
     it "redirects after update" do
       put admin_podcast_path(podcast), params: { podcast: update_params }
-      expect(response).to redirect_to(admin_podcasts_path)
+      expect(response).to redirect_to(edit_admin_podcast_path(podcast))
     end
   end
 

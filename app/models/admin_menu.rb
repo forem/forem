@@ -33,6 +33,7 @@ class AdminMenu
       item(name: "pages"),
       item(name: "profile fields"),
       item(name: "subforems"),
+      item(name: "org features", controller: "org_features"),
     ]
 
     scope :admin_team, "user-line", [

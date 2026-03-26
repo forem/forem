@@ -34,3 +34,6 @@ Follow these rules and patterns to ensure high-quality contributions.
 
 ## Documentation
 - If you find documentation that contradicts the codebase, trust the codebase patterns but note the discrepancy.
+
+## Schema.rb collisions
+If the schema.rb file is modified with extra changes not tied to the migration due to branch collision, etc, fix the schema.rb file to match the work being done in the migration.

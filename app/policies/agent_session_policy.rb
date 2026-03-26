@@ -37,4 +37,12 @@ class AgentSessionPolicy < ApplicationPolicy
     require_user!
     record.user_id == user.id || user_any_admin?
   end
+
+  def presign?
+    create?
+  end
+
+  def raw_url?
+    edit?
+  end
 end

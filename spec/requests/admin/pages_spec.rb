@@ -27,4 +27,36 @@ RSpec.describe "/admin/customization/pages" do
       expect(response.body).to include(" (Forking <code style='margin-left: 8px;'>#{page.slug}</code>)")
     end
   end
+
+  describe "mass assignment security" do
+    let(:admin) { create(:user, :super_admin) }
+    let(:organization) { create(:organization) }
+
+    before { sign_in admin }
+
+    it "filters out organization_id on create" do
+      expect {
+        post admin_pages_path, params: {
+          page: {
+            title: "Test Spoof",
+            description: "A page",
+            slug: "test-spoof",
+            template: "contained",
+            body_markdown: "hello",
+            organization_id: organization.id
+          }
+        }
+      }.to change(Page, :count).by(1)
+
+      expect(Page.last.organization_id).to be_nil
+    end
+
+    it "filters out organization_id on update" do
+      page_record = create(:page)
+      patch admin_page_path(page_record), params: {
+        page: { organization_id: organization.id }
+      }
+      expect(page_record.reload.organization_id).to be_nil
+    end
+  end
 end

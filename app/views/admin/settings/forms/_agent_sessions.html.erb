@@ -1,0 +1,25 @@
+<%= form_for(Settings::General.new,
+             url: admin_settings_general_settings_path,
+             html: { data: {
+               action: "submit->config#updateConfigurationSettings",
+               testid: "agentSessionsForm"
+             } }) do |f| %>
+  <details class="crayons-card">
+    <summary class="crayons-subtitle-2 p-6">Agent Sessions</summary>
+
+    <div class="p-6 pt-0">
+      <fieldset class="grid gap-4">
+        <div class="crayons-field crayons-field--checkbox">
+          <%= f.check_box :enable_agent_sessions, checked: Settings::General.enable_agent_sessions, class: "crayons-checkbox" %>
+          <div class="mt-0">
+            <%= admin_config_label :enable_agent_sessions %>
+            <p class="crayons-field__description">
+              Enable the Agent Sessions feature, which allows users to upload, curate, and embed coding agent session transcripts (e.g. from Claude Code, Codex, Gemini CLI).
+            </p>
+          </div>
+        </div>
+      </fieldset>
+      <%= render "update_setting_button", f: f %>
+    </div>
+  </details>
+<% end %>

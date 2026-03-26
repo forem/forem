@@ -2425,6 +2425,32 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@floating-ui/core@npm:^1.7.5":
+  version: 1.7.5
+  resolution: "@floating-ui/core@npm:1.7.5"
+  dependencies:
+    "@floating-ui/utils": "npm:^0.2.11"
+  checksum: 10c0/f9c52205e198b231d63a387b09c659aab08c46a1899e0b0bbe147b8b4f048b546f15ba17cb5d2a471da9534f1883d979425e13e5c4ceee67be63e4b0abd4db5d
+  languageName: node
+  linkType: hard
+
+"@floating-ui/dom@npm:^1.0.0":
+  version: 1.7.6
+  resolution: "@floating-ui/dom@npm:1.7.6"
+  dependencies:
+    "@floating-ui/core": "npm:^1.7.5"
+    "@floating-ui/utils": "npm:^0.2.11"
+  checksum: 10c0/5c098e0d7b58c9bc769f276cca1766994c2c9c70c92d091a61bba8b3e9be53c011e0a79a8457fc2fb2f3d91697a26eb52e0a4962ef936dc963b45f58613c212f
+  languageName: node
+  linkType: hard
+
+"@floating-ui/utils@npm:^0.2.11":
+  version: 0.2.11
+  resolution: "@floating-ui/utils@npm:0.2.11"
+  checksum: 10c0/f4bcea1559bdbb721ecc8e8ead423ac58d6a5b6e70b602cf0810ba6ad4ed1c77211b207faa88b278a9042f0c743133de08a203ed6741c1b6443423332884d5b3
+  languageName: node
+  linkType: hard
+
 "@honeybadger-io/core@npm:^6.6.0":
   version: 6.6.0
   resolution: "@honeybadger-io/core@npm:6.6.0"
@@ -3021,6 +3047,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@picmo/popup-picker@npm:^5.8.5":
+  version: 5.8.5
+  resolution: "@picmo/popup-picker@npm:5.8.5"
+  dependencies:
+    "@floating-ui/dom": "npm:^1.0.0"
+  peerDependencies:
+    picmo: ^5.8.0
+  checksum: 10c0/cbf78a7b2ea9a018164679ea2181c5f6f9fe1dbd89c33a46c20db0fff6634cc06237863998cae5142d42c1f6b1141c071f51aada9d182c36c76c575f100e89f2
+  languageName: node
+  linkType: hard
+
 "@pkgjs/parseargs@npm:^0.11.0":
   version: 0.11.0
   resolution: "@pkgjs/parseargs@npm:0.11.0"
@@ -3150,16 +3187,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-storysource@npm:^8.6.15":
-  version: 8.6.15
-  resolution: "@storybook/addon-storysource@npm:8.6.15"
+"@storybook/addon-storysource@npm:^8.6.18":
+  version: 8.6.18
+  resolution: "@storybook/addon-storysource@npm:8.6.18"
   dependencies:
-    "@storybook/source-loader": "npm:8.6.15"
+    "@storybook/source-loader": "npm:8.6.18"
     estraverse: "npm:^5.2.0"
     tiny-invariant: "npm:^1.3.1"
   peerDependencies:
-    storybook: ^8.6.15
-  checksum: 10c0/e7486d3a405b15f15ba6e42bf327d6da0c61f02634f454a167ef02a505c6e65952840ecd6066b32a994313d03fe6615a6295c2027dce3591f017427a95ba4e13
+    storybook: ^8.6.18
+  checksum: 10c0/504f6796f83221dffcc8c686c61119e64e7f937f7c3ec885ae48981a45aa174a978319a5fa13e6ecbbdb3d1373f9554e0bc74f61b3f23f50dd32ea968751da62
   languageName: node
   linkType: hard
 
@@ -3511,16 +3548,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/source-loader@npm:8.6.15":
-  version: 8.6.15
-  resolution: "@storybook/source-loader@npm:8.6.15"
+"@storybook/source-loader@npm:8.6.18":
+  version: 8.6.18
+  resolution: "@storybook/source-loader@npm:8.6.18"
   dependencies:
     es-toolkit: "npm:^1.22.0"
     estraverse: "npm:^5.2.0"
     prettier: "npm:^3.1.1"
   peerDependencies:
-    storybook: ^8.6.15
-  checksum: 10c0/51de6e7d0534142ec7e74e46bbfdfd82dbacffe64c730fd42b323627b1e3ebd83493eb40986a4755f45d923ed8639ee58cd1281471d6f88556a6b8a27956a012
+    storybook: ^8.6.18
+  checksum: 10c0/6a6a10965ee82b2c6822bcd825c2c3e7715fe5d4ff3c5d2d9dcc0a37280715496c19fd8cbdca8b95530fff8ffeec885e9739212de23a0deca6c326ebedbfa59d
   languageName: node
   linkType: hard
 
@@ -6950,13 +6987,14 @@ __metadata:
     "@honeybadger-io/js": "npm:^6.9.1"
     "@hotwired/stimulus": "npm:3.2.2"
     "@knapsack-pro/cypress": "npm:^7.4.0"
+    "@picmo/popup-picker": "npm:^5.8.5"
     "@rails/ujs": "npm:7.1.3"
     "@storybook/addon-a11y": "npm:^8.6.15"
     "@storybook/addon-actions": "npm:^8.6.15"
     "@storybook/addon-backgrounds": "npm:^8.6.15"
     "@storybook/addon-controls": "npm:^8.6.15"
     "@storybook/addon-docs": "npm:^8.6.15"
-    "@storybook/addon-storysource": "npm:^8.6.15"
+    "@storybook/addon-storysource": "npm:^8.6.18"
     "@storybook/preact": "npm:^8.6.15"
     "@storybook/preact-webpack5": "npm:^8.6.15"
     "@testing-library/cypress": "npm:^8.0.3"
@@ -7020,6 +7058,7 @@ __metadata:
     markdown-loader: "npm:^7.0.0"
     mocha-junit-reporter: "npm:^2.2.1"
     moment: "npm:^2.29.4"
+    picmo: "npm:^5.8.5"
     postcss: "npm:^8.4.31"
     postcss-cli: "npm:^11.0.0"
     postcss-flexbugs-fixes: "npm:^5.0.2"
@@ -7268,6 +7307,13 @@ __metadata:
   version: 9.2.2
   resolution: "emoji-regex@npm:9.2.2"
   checksum: 10c0/af014e759a72064cf66e6e694a7fc6b0ed3d8db680427b021a89727689671cefe9d04151b2cad51dbaf85d5ba790d061cd167f1cf32eb7b281f6368b3c181639
+  languageName: node
+  linkType: hard
+
+"emojibase@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "emojibase@npm:6.1.0"
+  checksum: 10c0/e84a5300f615b20e763abbbdcb3e18a0ee5a937fc97420b44c562becdbe93c33bad1845a225e94587ad152c8b30c482de1aa2fd645c9afea275346616c0f6e1d
   languageName: node
   linkType: hard
 
@@ -12993,6 +13039,15 @@ __metadata:
   version: 2.1.0
   resolution: "performance-now@npm:2.1.0"
   checksum: 10c0/22c54de06f269e29f640e0e075207af57de5052a3d15e360c09b9a8663f393f6f45902006c1e71aa8a5a1cdfb1a47fe268826f8496d6425c362f00f5bc3e85d9
+  languageName: node
+  linkType: hard
+
+"picmo@npm:^5.8.5":
+  version: 5.8.5
+  resolution: "picmo@npm:5.8.5"
+  dependencies:
+    emojibase: "npm:^6.1.0"
+  checksum: 10c0/b9d0f27b906a0312dbc80b86dd9bed2409f05b13f89c70e0ad0ba021059fa65f5d1ea9d4962f9c4a36dfba77542fad22d6e40de6c7f13068421aa568b23bbd07
   languageName: node
   linkType: hard
 

@@ -247,8 +247,8 @@ class Article < ApplicationRecord
   validates :main_image, url: { allow_blank: true, schemes: %w[https http] }
   validates :main_image_background_hex_color, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
   validates :positive_reactions_count, presence: true
-  validates :previous_public_reactions_count, presence: true
-  validates :public_reactions_count, presence: true
+  validates :previous_public_reactions_count, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :public_reactions_count, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :rating_votes_count, presence: true
   validates :reactions_count, presence: true
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z\-_]*\z/
@@ -312,7 +312,7 @@ class Article < ApplicationRecord
     article.saved_change_to_user_id?
   }
 
-  after_commit :async_score_calc, :touch_collection, :enrich_image_attributes,
+  after_commit :async_score_calc, :touch_collection, :enrich_image_attributes, :detect_code_block_languages,
                on: %i[create update]
 
   # The trigger `update_reading_list_document` is used to keep the `articles.reading_list_document` column updated.
@@ -1180,7 +1180,7 @@ class Article < ApplicationRecord
                  end
     if title.blank?
       errors.add(:title, "can't be blank")
-    elsif title.to_s.length > max_length
+    elsif title.gsub(/\p{Space}+/u, '').length > max_length
       errors.add(:title, "is too long (maximum is #{max_length} characters for #{type_of})")
     end
   end
@@ -1574,6 +1574,14 @@ class Article < ApplicationRecord
     return unless saved_change_to_attribute?(:processed_html) || saved_change_to_attribute?(:main_image)
 
     ::Articles::EnrichImageAttributesWorker.perform_async(id)
+  end
+
+  def detect_code_block_languages
+    return unless Ai::Base::DEFAULT_KEY.present?
+    return unless saved_change_to_body_markdown?
+    return unless ::Articles::DetectCodeBlockLanguages.contains_unlabeled_code_blocks?(body_markdown)
+
+    ::Articles::DetectCodeBlockLanguagesWorker.perform_async(id)
   end
 
   def remove_prohibited_unicode_characters

@@ -59,6 +59,7 @@ module Settings
     setting :resized_logo_aspect_ratio, type: :string
 
     setting :enable_video_upload, type: :boolean, default: false
+    setting :enable_agent_sessions, type: :boolean, default: true
 
     # Mascot
     setting :mascot_user_id, type: :integer, default: nil
@@ -154,6 +155,11 @@ module Settings
     setting :algolia_api_key, type: :string, default: ApplicationConfig["ALGOLIA_API_KEY"]
     setting :algolia_search_only_api_key, type: :string, default: ApplicationConfig["ALGOLIA_SEARCH_ONLY_API_KEY"]
     setting :display_algolia_branding, type: :boolean, default: ApplicationConfig["ALGOLIA_DISPLAY_BRANDING"] == "true"
+
+    # Org features
+    setting :org_features_cta_text, type: :string,
+            default: "This is a premium feature. Contact our partnerships team to learn more."
+    setting :org_features_cta_url, type: :string
 
     def self.algolia_search_enabled?
       algolia_application_id.present? && algolia_search_only_api_key.present? && algolia_api_key.present?

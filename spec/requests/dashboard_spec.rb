@@ -143,6 +143,17 @@ RSpec.describe "Dashboards" do
       end
     end
 
+    describe "sidebar sidebar fetch" do
+      it "assigns the agent_sessions_count utilizing the counter cache" do
+        sign_in user
+        user.reload.update!(agent_sessions_count: 5)
+
+        get "/dashboard/sidebar", params: { state: "show" }, xhr: true
+        
+        expect(assigns(:agent_sessions_count)).to eq(5)
+      end
+    end
+
     context "when logged in as a super admin" do
       it "renders the specified user's articles" do
         article
@@ -398,6 +409,100 @@ RSpec.describe "Dashboards" do
         sign_in user
         get "/dashboard/analytics/org/#{org.id}"
         expect(response.body).to include("Analytics")
+      end
+    end
+  end
+
+  describe "GET /dashboard/feed_imports" do
+    context "when not logged in" do
+      it "redirects to /enter" do
+        get "/dashboard/feed_imports"
+        expect(response).to redirect_to("/magic_links/new")
+      end
+    end
+
+    context "when logged in" do
+      before do
+        sign_in user
+      end
+
+      it "renders successfully" do
+        get "/dashboard/feed_imports"
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "renders add source form when no sources exist" do
+        get "/dashboard/feed_imports"
+        expect(response.body).to include("Add a Feed Source")
+        expect(response.body).to include("Publishing from RSS")
+      end
+
+      it "renders existing feed sources with edit controls" do
+        allow(Feeds::ValidateUrl).to receive(:call).and_return(true)
+        source = create(:feed_source, user: user, name: "My Blog", feed_url: "https://example.com/feed.xml")
+
+        get "/dashboard/feed_imports"
+        expect(response.body).to include("My Blog")
+        expect(response.body).to include("Your Feed Sources")
+        expect(response.body).to include("Edit")
+      end
+
+      it "shows import history when feed source exists" do
+        allow(Feeds::ValidateUrl).to receive(:call).and_return(true)
+        source = create(:feed_source, user: user, feed_url: "https://example.com/feed.xml")
+        create(:feed_import_log, user: user, feed_source: source)
+
+        get "/dashboard/feed_imports"
+        expect(response.body).to include("Completed")
+      end
+
+      it "shows health warning when feed is degraded" do
+        allow(Feeds::ValidateUrl).to receive(:call).and_return(true)
+        create(:feed_source, user: user, feed_url: "https://example.com/feed.xml", status: :degraded)
+
+        get "/dashboard/feed_imports"
+        expect(response.body).to include("recent failures")
+      end
+
+      it "shows health warning when feed is failing" do
+        allow(Feeds::ValidateUrl).to receive(:call).and_return(true)
+        create(:feed_source, user: user, feed_url: "https://example.com/feed.xml", status: :failing)
+
+        get "/dashboard/feed_imports"
+        expect(response.body).to include("failing consistently")
+      end
+
+      it "shows empty import state when source exists but no imports" do
+        allow(Feeds::ValidateUrl).to receive(:call).and_return(true)
+        create(:feed_source, user: user, feed_url: "https://example.com/feed.xml")
+
+        get "/dashboard/feed_imports"
+        expect(response.body).to include("No import history yet")
+      end
+
+      it "shows skipped items in collapsible section on first-time logs" do
+        allow(Feeds::ValidateUrl).to receive(:call).and_return(true)
+        source = create(:feed_source, user: user, feed_url: "https://example.com/feed.xml")
+        log = create(:feed_import_log, user: user, feed_source: source,
+                                       items_imported: 1, items_skipped: 3)
+        create(:feed_import_item, :imported, import_log: log, feed_item_title: "My New Article")
+        create_list(:feed_import_item, 3, :skipped, import_log: log)
+
+        get "/dashboard/feed_imports"
+
+        expect(response.body).to include("My New Article")
+        expect(response.body).to include("Show 3 skipped duplicates")
+      end
+
+      it "shows skipped count in summary even without individual skip items" do
+        allow(Feeds::ValidateUrl).to receive(:call).and_return(true)
+        source = create(:feed_source, user: user, feed_url: "https://example.com/feed.xml")
+        create(:feed_import_log, user: user, feed_source: source,
+                                 items_imported: 0, items_skipped: 5)
+
+        get "/dashboard/feed_imports"
+
+        expect(response.body).to include("5")
       end
     end
   end

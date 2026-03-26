@@ -172,4 +172,56 @@ RSpec.describe Search::Username, type: :service do
       expect(results.pluck(:username)).not_to be_empty
     end
   end
+
+  describe "::search_documents with multi-tier priority" do
+    let!(:priority_user) { create(:user, username: "priority", name: "Match", score: 10) }
+    let!(:recent_user)   { create(:user, username: "recent", name: "Match", score: 50) }
+    let!(:max_score)     { create(:user, username: "highscore", name: "Match", score: 100) }
+    let!(:min_score)     { create(:user, username: "lowscore", name: "Match", score: 0) }
+
+    it "ranks users correctly based on strict 3-tier precedence" do
+      results = described_class.search_documents(
+        "Match",
+        priority_user_ids: [priority_user.id],
+        recent_user_ids: [recent_user.id]
+      )
+
+      usernames = results.pluck(:username)
+
+      expect(usernames).to match_array(%w[priority recent highscore lowscore])
+      
+      expect(usernames[0]).to eq("priority")
+      expect(usernames[1]).to eq("recent")
+      expect(usernames[2]).to eq("highscore")
+      expect(usernames[3]).to eq("lowscore")
+    end
+
+    it "filters out the requesting user" do
+      # Pass max_score as the requesting user; it should be completely removed from results
+      results = described_class.search_documents(
+        "Match",
+        priority_user_ids: [priority_user.id],
+        recent_user_ids: [recent_user.id],
+        requesting_user_id: max_score.id
+      )
+
+      usernames = results.pluck(:username)
+
+      expect(usernames).to match_array(%w[priority recent lowscore])
+      expect(usernames).not_to include("highscore")
+    end
+
+    it "filters out users with negative scores" do
+      penalized_user = create(:user, username: "penalized", name: "Match", score: -10)
+      
+      results = described_class.search_documents(
+        "Match",
+        priority_user_ids: [priority_user.id, penalized_user.id],
+        recent_user_ids: [recent_user.id]
+      )
+
+      usernames = results.pluck(:username)
+      expect(usernames).not_to include("penalized")
+    end
+  end
 end

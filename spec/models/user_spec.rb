@@ -33,6 +33,8 @@ RSpec.describe User do
 
   before do
     omniauth_mock_providers_payload
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with("ENABLE_REFRESH_SEGMENT_WORKERS").and_return("true")
     allow(SegmentedUserRefreshWorker).to receive(:perform_async)
     allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
   end
@@ -185,7 +187,7 @@ RSpec.describe User do
       it { is_expected.not_to allow_value("AcMe_1%").for(:username) }
       it { is_expected.to allow_value("AcMe_1").for(:username) }
 
-      it { is_expected.to validate_length_of(:email).is_at_most(50).allow_nil }
+      it { is_expected.to validate_length_of(:email).is_at_most(254).allow_nil }
       it { is_expected.to validate_length_of(:name).is_at_most(100).is_at_least(1) }
       it { is_expected.to validate_length_of(:password).is_at_most(100).is_at_least(8) }
       it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
@@ -618,6 +620,23 @@ RSpec.describe User do
     end
   end
 
+  describe "#good_standing_followers_count" do
+    let!(:good_user) { create(:user) }
+    let!(:suspended_user) { create(:user, :suspended) }
+    let!(:spam_user) { create(:user, :spam) }
+
+    before do
+      good_user.follow(user)
+      suspended_user.follow(user)
+      spam_user.follow(user)
+    end
+
+    it "returns the count of non-suspended and non-spam followers using the rails cache" do
+      expect(Rails.cache).to receive(:fetch).with("#{user.cache_key_with_version}/good_standing_followers_count", expires_in: 24.hours).and_call_original
+      expect(user.good_standing_followers_count).to eq(1)
+    end
+  end
+
   describe "theming properties" do
     before do
       allow(Settings::UserExperience).to receive(:default_font).and_return("sans-serif")
@@ -786,6 +805,16 @@ RSpec.describe User do
       Articles::Unpublish.call(article2.user, article2)
 
       expect(user.cached_reading_list_article_ids).to eq([article3.id, article.id])
+    end
+
+    it "has an accurate agent_sessions_count using counter cache" do
+      expect(user.agent_sessions_count).to eq(0)
+      create(:agent_session, user: user)
+      expect(user.reload.agent_sessions_count).to eq(1)
+      create(:agent_session, user: user)
+      expect(user.reload.agent_sessions_count).to eq(2)
+      user.agent_sessions.last.destroy
+      expect(user.reload.agent_sessions_count).to eq(1)
     end
   end
 
@@ -1214,6 +1243,40 @@ RSpec.describe User do
       it "returns false for bot?" do
         expect(user.bot?).to be false
       end
+    end
+  end
+
+  describe "#create_email_change_note" do
+    it "creates a note when unconfirmed_email is set" do
+      expect do
+        user.update(email: "changed@example.com")
+      end.to change(Note, :count).by(1)
+
+      note = user.notes.last
+      expect(note.reason).to eq("email_change_requested")
+      expect(note.content).to include("changed@example.com")
+      expect(note.author_id).to be_nil
+    end
+
+    it "does not create a note when unconfirmed_email is cleared" do
+      user.update_columns(unconfirmed_email: "old@example.com")
+
+      expect do
+        user.update_columns(unconfirmed_email: nil)
+      end.not_to change(Note, :count)
+    end
+  end
+
+  describe "#create_password_change_note" do
+    it "creates a note when password is changed" do
+      expect do
+        user.update(password: "newpassword123", password_confirmation: "newpassword123")
+      end.to change(Note, :count).by(1)
+
+      note = user.notes.last
+      expect(note.reason).to eq("password_changed")
+      expect(note.content).to eq("User changed their password")
+      expect(note.author_id).to be_nil
     end
   end
 

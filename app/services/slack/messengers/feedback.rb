@@ -1,9 +1,6 @@
 module Slack
   module Messengers
-    class Feedback
-      def self.call(...)
-        new(...).call
-      end
+    class Feedback < Base
 
       def initialize(type:, category:, reported_url:, message:, user: nil)
         @user = user
@@ -27,7 +24,7 @@ module Slack
           message: message,
         )
 
-        Slack::Messengers::Worker.perform_async(
+        enqueue_slack_message(
           "message" => final_message,
           "channel" => type,
           "username" => "#{type}_bot",

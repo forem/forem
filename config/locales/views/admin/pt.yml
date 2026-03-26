@@ -38,6 +38,8 @@ pt:
         username: Nome de usuário
         name: Nome
         profile:
+          primary_email: "E-mail principal"
+          oauth_email: "E-mail %{provider}"
           options:
             edit_profile: Editar perfil
           edit_profile:
@@ -362,9 +364,58 @@ pt:
         options:
           delete: Excluir organização
           icon: Opções
+        verified:
+          heading: Verificação
+          label: Organização Verificada
+          description: Verifique ou revogue manualmente a verificação desta organização. Organizações verificadas exibem um selo de verificação em seu perfil.
+          verify: Verificar Organização
+          revoke: Revogar Verificação
+          verified_notice: "Esta organização está verificada (desde %{date})."
+          verification_url: URL de verificação
         fully_trusted:
           label: Organização Totalmente Confiável
           description: Quando habilitado, esta organização pode adicionar membros diretamente sem exigir confirmação. Os membros receberão um e-mail de notificação em vez de um convite.
           enable: Habilitar Totalmente Confiável
           disable: Desabilitar Totalmente Confiável
           enabled_notice: Esta organização é totalmente confiável. Os membros podem ser adicionados diretamente sem confirmação.
+        org_features:
+          heading: Funcionalidades da Organização
+          readme:
+            label: Página Readme
+            description: Quando habilitado, esta organização pode criar e exibir uma página readme personalizada em seu perfil.
+            enable: Habilitar Readme
+            disable: Desabilitar Readme
+            enabled_notice: A funcionalidade de página readme está habilitada para esta organização.
+          lead_forms:
+            label: Formulários de Leads
+            description: Quando habilitado, esta organização pode criar e gerenciar formulários de captura de leads para incorporar em seus artigos.
+            enable: Habilitar Formulários de Leads
+            disable: Desabilitar Formulários de Leads
+            enabled_notice: A funcionalidade de formulários de leads está habilitada para esta organização.
+          dofollow_links:
+            label: Links Dofollow
+            description: Quando habilitado, os links na página readme desta organização transmitem autoridade SEO (dofollow). Quando desabilitado, todos os links externos são nofollow.
+            enable: Habilitar Dofollow
+            disable: Desabilitar Dofollow
+            enabled_notice: Links dofollow estão habilitados para a página readme desta organização.
+      org_features:
+        heading: Funcionalidades Org
+        description: Gerencie as funcionalidades das organizações globalmente ou por organização.
+        enable_global: Habilitar para todas as orgs
+        disable_global: Desabilitar acesso global
+        globally_enabled_notice: Esta funcionalidade está habilitada para todas as organizações.
+        individually_enabled:
+          one: "Habilitado individualmente para %{count} organização:"
+          other: "Habilitado individualmente para %{count} organizações:"
+        no_orgs_enabled: Nenhuma organização tem esta funcionalidade habilitada individualmente. Use a página de administração de cada organização para habilitá-la.
+        table:
+          name: Organização
+          slug: Slug
+          actions: ""
+          manage: Gerenciar
+        cta_config:
+          heading: Configurações do CTA
+          description: Configure o call-to-action exibido para organizações que não têm acesso a uma funcionalidade.
+          text_label: Texto do CTA
+          url_label: URL do CTA
+          save: Salvar configurações do CTA

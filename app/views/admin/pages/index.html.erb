@@ -29,6 +29,11 @@
             <%= page.page_template.name %>
           </span>
         <% end %>
+        <% if page.organization_id.present? %>
+          <span class="crayons-tag crayons-tag--monochrome fs-xs ml-2" title="Belongs to an organization">
+            Org: <%= page.organization.name %>
+          </span>
+        <% end %>
       </div>
       <div class="ml-auto flex gap-2">
         <%= link_to "Edit", edit_admin_page_path(page.id), class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>

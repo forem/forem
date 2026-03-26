@@ -487,7 +487,7 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       end
 
       it "strips the styles as expected" do
-        linked_user = %(<a class="mentioned-user" href="http://forem.test/user1">@user1</a>)
+        linked_user = %(<a class="mentioned-user" href="#{ApplicationConfig['APP_PROTOCOL']}forem.test/user1">@user1</a>)
         expected_result = <<~HTML.strip
           <p>x{animation:s}#{linked_user} s{}&lt;br&gt;
           &lt;style&gt;{transition:color 1s}:hover{color:red}&lt;/p&gt;

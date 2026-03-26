@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe AgentSessionTag, type: :liquid_tag do
   let(:user) { create(:user) }
-  let(:normalized_data) do
+  let(:curated_data) do
     {
       "messages" => [
         { "index" => 0, "role" => "user", "content" => [{ "type" => "text", "text" => "Fix the bug" }] },
@@ -16,7 +16,7 @@ RSpec.describe AgentSessionTag, type: :liquid_tag do
       user: user,
       title: "Test Session",
       tool_name: "claude_code",
-      normalized_data: normalized_data,
+      curated_data: curated_data,
       published: true,
     )
   end
@@ -41,8 +41,13 @@ RSpec.describe AgentSessionTag, type: :liquid_tag do
     expect { generate_tag(999_999) }.to raise_error(StandardError, /not found/)
   end
 
-  it "renders curated messages only" do
-    agent_session.update!(curated_selections: [0])
+  it "renders only the messages in curated_data" do
+    agent_session.update!(curated_data: {
+                            "messages" => [
+                              { "index" => 0, "role" => "user", "content" => [{ "type" => "text", "text" => "Fix the bug" }] },
+                            ],
+                            "metadata" => { "tool_name" => "claude_code" }
+                          })
     html = generate_tag(agent_session.id).render
     expect(html).to include("Fix the bug")
     expect(html).not_to include("Done!")
@@ -72,7 +77,7 @@ RSpec.describe AgentSessionTag, type: :liquid_tag do
         user: user,
         title: "Draft Session",
         tool_name: "claude_code",
-        normalized_data: normalized_data,
+        curated_data: curated_data,
         published: false,
       )
     end
@@ -123,7 +128,7 @@ RSpec.describe AgentSessionTag, type: :liquid_tag do
       title: "Model Change Session",
       tool_name: "claude_code",
       published: true,
-      normalized_data: {
+      curated_data: {
         "messages" => [
           { "index" => 0, "role" => "user", "model" => "claude-sonnet-4-5-20250514",
             "content" => [{ "type" => "text", "text" => "Hello" }] },
@@ -149,7 +154,7 @@ RSpec.describe AgentSessionTag, type: :liquid_tag do
       title: "Same Model Session",
       tool_name: "claude_code",
       published: true,
-      normalized_data: {
+      curated_data: {
         "messages" => [
           { "index" => 0, "role" => "user", "model" => "claude-sonnet-4-5-20250514",
             "content" => [{ "type" => "text", "text" => "Hello" }] },
@@ -170,7 +175,7 @@ RSpec.describe AgentSessionTag, type: :liquid_tag do
       title: "Model Badge Session",
       tool_name: "claude_code",
       published: true,
-      normalized_data: {
+      curated_data: {
         "messages" => [
           { "index" => 0, "role" => "user", "content" => [{ "type" => "text", "text" => "Hi" }] },
         ],
@@ -189,7 +194,7 @@ RSpec.describe AgentSessionTag, type: :liquid_tag do
       title: "Tool Session",
       tool_name: "claude_code",
       published: true,
-      normalized_data: {
+      curated_data: {
         "messages" => [
           {
             "index" => 0, "role" => "assistant",

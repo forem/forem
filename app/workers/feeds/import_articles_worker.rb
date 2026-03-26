@@ -19,7 +19,7 @@ module Feeds
         # the last time a feed was fetched at
         earlier_than = nil
       else
-        users_scope = users_scope.where(id: Users::Setting.with_feed.select(:user_id))
+        users_scope = users_scope.where(id: Feeds::Source.active.select(:user_id))
 
         # Only batch users who have been active recently — avoids dispatching
         # Sidekiq jobs for users that will just be filtered out downstream.
