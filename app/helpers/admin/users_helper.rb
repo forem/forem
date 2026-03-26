@@ -113,5 +113,17 @@ module Admin
         "#A3A3A3"
       end
     end
+
+    # Returns the count of active filters applied in the member index view
+    #
+    # @return [Integer] The total count of active filter criteria
+    def active_filters_count
+      count = 0
+      count += params[:roles]&.size.to_i
+      count += params[:statuses]&.size.to_i
+      count += params[:organizations]&.size.to_i
+      count += 1 if params[:joining_start].present? || params[:joining_end].present?
+      count
+    end
   end
 end

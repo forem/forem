@@ -30,6 +30,57 @@ RSpec.describe "/admin/member_manager/users" do
         expect(response.body).to include(CGI.escapeHTML(admin.name))
       end
     end
+
+    context "when filters are applied" do
+      it "displays a filter count badge when a single role filter is applied" do
+        get "#{admin_users_path}?roles[]=Super%20Admin"
+        expect(response.body).to include("c-indicator c-indicator--info fs-xs")
+        doc = Nokogiri::HTML(response.body)
+        indicator = doc.at_css(".js-open-filter-modal-btn .c-indicator")
+        expect(indicator).to be_present
+        expect(indicator.text.strip).to eq("1")
+      end
+
+      it "displays a filter count badge when multiple role filters are applied" do
+        get "#{admin_users_path}?roles[]=Super%20Admin&roles[]=Admin"
+        doc = Nokogiri::HTML(response.body)
+        indicator = doc.at_css(".js-open-filter-modal-btn .c-indicator")
+        expect(indicator).to be_present
+        expect(indicator.text.strip).to eq("2")
+      end
+
+      it "displays a filter count when status filters are applied" do
+        get "#{admin_users_path}?statuses[]=Suspended&statuses[]=Spam"
+        doc = Nokogiri::HTML(response.body)
+        indicator = doc.at_css(".js-open-filter-modal-btn .c-indicator")
+        expect(indicator).to be_present
+        expect(indicator.text.strip).to eq("2")
+      end
+
+      it "displays a combined filter count when multiple filter types are applied" do
+        org = create(:organization)
+        get "#{admin_users_path}?roles[]=Super%20Admin&statuses[]=Suspended&organizations[]=#{org.id}"
+        doc = Nokogiri::HTML(response.body)
+        indicator = doc.at_css(".js-open-filter-modal-btn .c-indicator")
+        expect(indicator).to be_present
+        expect(indicator.text.strip).to eq("3")
+      end
+
+      it "displays a filter count badge when joining date filters are applied" do
+        get "#{admin_users_path}?joining_start=01/01/2024&joining_end=31/12/2024&date_format=DD/MM/YYYY"
+        doc = Nokogiri::HTML(response.body)
+        indicator = doc.at_css(".js-open-filter-modal-btn .c-indicator")
+        expect(indicator).to be_present
+        expect(indicator.text.strip).to eq("1")
+      end
+
+      it "does not display a filter count badge when no filters are applied" do
+        get admin_users_path
+        doc = Nokogiri::HTML(response.body)
+        indicator = doc.at_css(".js-open-filter-modal-btn .c-indicator")
+        expect(indicator).to be_nil
+      end
+    end
   end
 
   describe "GET /admin/member_manager/users/:id" do

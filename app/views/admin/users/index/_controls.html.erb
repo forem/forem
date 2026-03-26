@@ -13,7 +13,12 @@
         <div class="m:hidden">
           <%= render "admin/users/controls/expand_search_button" %>
         </div>
-        <button type="button" aria-label="<%= t("views.admin.users.filters.aria_label") %>" class="js-open-filter-modal-btn c-btn c-btn--icon-alone"><%= crayons_icon_tag("filter", aria_hidden: true) %></button>
+        <button type="button" aria-label="<%= t("views.admin.users.filters.aria_label") %>" class="js-open-filter-modal-btn c-btn c-btn--icon-alone relative">
+          <%= crayons_icon_tag("filter", aria_hidden: true) %>
+          <% if active_filters_count > 0 %>
+            <span class="c-indicator c-indicator--info fs-xs absolute" style="top: -4px; right: -4px;"><%= active_filters_count %></span>
+          <% end %>
+        </button>
         <%= render "admin/users/controls/export" %>
       </div>
     </div>
