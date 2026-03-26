@@ -123,6 +123,7 @@ module Admin
       count += params[:statuses]&.size.to_i
       count += params[:organizations]&.size.to_i
       count += 1 if params[:joining_start].present? || params[:joining_end].present?
+      count += 1 if params[:role].present?
       count
     end
   end
