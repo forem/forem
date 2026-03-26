@@ -15,6 +15,7 @@ import { usePasteImage } from '@utilities/pasteImage';
 import { useDragAndDrop } from '@utilities/dragAndDrop';
 import { fetchSearch } from '@utilities/search';
 import { AutocompleteTriggerTextArea } from '@crayons/AutocompleteTriggerTextArea';
+import { gatherPriorityUserIds } from '../../shared/helpers/contextUsers';
 
 // For any line containing a pipe, replace `\|` with `&#124;` automatically.
 const normalizeEscapedPipes = (text) => {
@@ -152,11 +153,18 @@ export const EditorBody = ({
         maxSuggestions={6}
         searchInstructionsMessage="Type to search for a user"
         ref={textAreaRef}
-        fetchSuggestions={(username) =>
-          fetchSearch('usernames', { username }).then(({ result }) =>
+        fetchSuggestions={(username) => {
+          const priorityUserIds = gatherPriorityUserIds(textAreaRef.current);
+          const params = { username };
+
+          if (priorityUserIds.length) {
+            params.priority_user_ids = priorityUserIds;
+          }
+
+          return fetchSearch('usernames', params).then(({ result }) =>
             result.map((user) => ({ ...user, value: user.username })),
-          )
-        }
+          );
+        }}
         autoResize
         onChange={handleBodyChange}
         onFocus={switchHelpContext}
