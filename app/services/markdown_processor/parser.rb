@@ -132,11 +132,15 @@ module MarkdownProcessor
     end
 
     def escape_liquid_tags_in_codeblock(content)
-      # Escape codeblocks, code spans, and inline code
-      content.gsub(/[[:space:]]*~{3}.*?~{3}|[[:space:]]*`{3}.*?`{3}|`{2}.+?`{2}|`{1}.+?`{1}/m) do |codeblock|
+      # Escape fenced code blocks, code spans, and inline code.
+      # Fences (``` or ~~~) must appear at the start of a line to be treated as
+      # block delimiters, preventing lines like `/// ``` ` from terminating a block.
+      content.gsub(/^[[:blank:]]*(~{3,}|`{3,})[^\n]*\n.*?^[[:blank:]]*\1[[:blank:]]*$|`{2}.+?`{2}|`{1}.+?`{1}/m) do |codeblock|
+        next codeblock unless codeblock.match?(/(\{%|\{\{)/)
+
         codeblock.gsub!("{% endraw %}", "{----% endraw %----}")
         codeblock.gsub!("{% raw %}", "{----% raw %----}")
-        if codeblock.match?(/[[:space:]]*`{3}/)
+        if codeblock.match?(/\A[[:blank:]]*(~{3,}|`{3,})/)
           "\n{% raw %}\n#{codeblock}\n{% endraw %}\n"
         else
           "{% raw %}#{codeblock}{% endraw %}"

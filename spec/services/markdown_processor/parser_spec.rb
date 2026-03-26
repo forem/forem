@@ -81,6 +81,24 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     expect(number_of_triple_backticks).to eq(2)
   end
 
+  it "does not treat triple backticks mid-line as a fence boundary" do
+    markdown = <<~MARKDOWN
+      ```rust
+      /// # Example
+      ///
+      /// ```
+      /// let foo = "foo";
+      /// assert_eq!(foo, "foo");
+      /// ```
+      ```
+
+      ## heading after code block
+    MARKDOWN
+    output = generate_and_parse_markdown(markdown)
+    expect(output).to include("let foo")
+    expect(output).to include("heading after code block")
+  end
+
   xit "allows more than 1 codeblock written separately" do
     code_block = "~~~\n Hello my name is  \n~~~   \n ```\n whatever too \n```"
     number_of_code_blocks = generate_and_parse_markdown(code_block).scan("<code>").count
