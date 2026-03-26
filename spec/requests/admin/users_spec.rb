@@ -80,6 +80,14 @@ RSpec.describe "/admin/member_manager/users" do
         indicator = doc.at_css(".js-open-filter-modal-btn .c-indicator")
         expect(indicator).to be_nil
       end
+
+      it "displays a filter count badge when the legacy role param is applied" do
+        get "#{admin_users_path}?role=super_admin"
+        doc = Nokogiri::HTML(response.body)
+        indicator = doc.at_css(".js-open-filter-modal-btn .c-indicator")
+        expect(indicator).to be_present
+        expect(indicator.text.strip).to eq("1")
+      end
     end
   end
 
