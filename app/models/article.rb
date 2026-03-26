@@ -1180,7 +1180,7 @@ class Article < ApplicationRecord
                  end
     if title.blank?
       errors.add(:title, "can't be blank")
-    elsif title.to_s.length > max_length
+    elsif title.gsub(/\p{Space}+/u, '').length > max_length
       errors.add(:title, "is too long (maximum is #{max_length} characters for #{type_of})")
     end
   end

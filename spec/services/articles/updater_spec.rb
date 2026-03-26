@@ -7,6 +7,8 @@ RSpec.describe Articles::Updater, type: :service do
   let(:draft) { create(:article, user: user, published: false, published_at: nil) }
 
   before do
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with("ENABLE_REFRESH_SEGMENT_WORKERS").and_return("true")
     allow(SegmentedUserRefreshWorker).to receive(:perform_async)
   end
 
