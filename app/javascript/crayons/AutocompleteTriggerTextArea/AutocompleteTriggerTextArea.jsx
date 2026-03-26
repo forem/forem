@@ -14,7 +14,7 @@ import {
 // Used to ensure dropdown appears just below search text
 const DROPDOWN_VERTICAL_OFFSET = '1.5rem';
 const EMPTY_STATE_MESSAGE = 'No results found';
-const MINIMUM_SEARCH_CHARS = 2;
+const MINIMUM_SEARCH_CHARS = 1;
 
 const KEYS = {
   UP: 'ArrowUp',
@@ -362,12 +362,12 @@ export const AutocompleteTriggerTextArea = forwardRef(
 
     const comboboxProps = isComboboxMode
       ? {
-          role: 'combobox',
-          'aria-haspopup': 'listbox',
-          'aria-expanded': isComboboxMode,
-          'aria-owns': `${id}-listbox`,
-          'aria-activedescendant': `${id}-suggestion-${activeDescendentIndex}`,
-        }
+        role: 'combobox',
+        'aria-haspopup': 'listbox',
+        'aria-expanded': isComboboxMode,
+        'aria-owns': `${id}-listbox`,
+        'aria-activedescendant': `${id}-suggestion-${activeDescendentIndex}`,
+      }
       : {};
 
     return (
@@ -399,43 +399,43 @@ export const AutocompleteTriggerTextArea = forwardRef(
         />
         {isComboboxMode && !suppressPopover
           ? createPortal(
-              <div
-                ref={popoverRef}
-                className="c-autocomplete__popover absolute"
-                id={`${id}-autocomplete-popover`}
-                style={{
-                  top: `calc(${dropdownPositionPoints.y}px + ${DROPDOWN_VERTICAL_OFFSET}`,
-                  left: `${dropdownPositionPoints.x}px`,
-                }}
-              >
-                {suggestions && suggestions.length > 0 ? (
-                  <ul className="list-none" role="listbox" id={`${id}-listbox`}>
-                    {suggestions.map((suggestion, index) => (
-                      // Disabled as the key handler is attached to the textarea
-                      // eslint-disable-next-line jsx-a11y/click-events-have-key-events
-                      <li
-                        key={`${id}-suggestion-${index}`}
-                        id={`${id}-suggestion-${index}`}
-                        role="option"
-                        aria-selected={index === activeDescendentIndex}
-                        className="c-autocomplete__option flex items-center"
-                        onClick={() => selectSuggestion(suggestion)}
-                        onMouseDown={() =>
-                          dispatch({ type: 'setIgnoreBlur', payload: true })
-                        }
-                      >
-                        <UserListItemContent {...suggestion} />
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <span className="c-autocomplete__empty">
-                    {emptyStateMessage}
-                  </span>
-                )}
-              </div>,
-              document.querySelector('body'),
-            )
+            <div
+              ref={popoverRef}
+              className="c-autocomplete__popover absolute"
+              id={`${id}-autocomplete-popover`}
+              style={{
+                top: `calc(${dropdownPositionPoints.y}px + ${DROPDOWN_VERTICAL_OFFSET}`,
+                left: `${dropdownPositionPoints.x}px`,
+              }}
+            >
+              {suggestions && suggestions.length > 0 ? (
+                <ul className="list-none" role="listbox" id={`${id}-listbox`}>
+                  {suggestions.map((suggestion, index) => (
+                    // Disabled as the key handler is attached to the textarea
+                    // eslint-disable-next-line jsx-a11y/click-events-have-key-events
+                    <li
+                      key={`${id}-suggestion-${index}`}
+                      id={`${id}-suggestion-${index}`}
+                      role="option"
+                      aria-selected={index === activeDescendentIndex}
+                      className="c-autocomplete__option flex items-center"
+                      onClick={() => selectSuggestion(suggestion)}
+                      onMouseDown={() =>
+                        dispatch({ type: 'setIgnoreBlur', payload: true })
+                      }
+                    >
+                      <UserListItemContent {...suggestion} />
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <span className="c-autocomplete__empty">
+                  {emptyStateMessage}
+                </span>
+              )}
+            </div>,
+            document.querySelector('body'),
+          )
           : null}
       </div>
     );
