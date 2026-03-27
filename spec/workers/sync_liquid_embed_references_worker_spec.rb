@@ -70,7 +70,7 @@ RSpec.describe SyncLiquidEmbedReferencesWorker do
 
       expect(LiquidEmbedReference.count).to eq(1)
       ref = LiquidEmbedReference.last
-      expect(ref.tag_name).to eq("tweet")
+      expect(ref.tag_name).to eq("twitter")
       expect(ref.url).to eq("1234567890")
     end
   end
