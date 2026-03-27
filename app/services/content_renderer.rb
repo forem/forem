@@ -73,7 +73,7 @@ class ContentRenderer
     parsed = front_matter_parser.call(fixed)
     front_matter = parsed.front_matter
     front_matter.any? && front_matter["title"].present?
-  rescue ContentRenderer::ContentParsingError
+  rescue StandardError
     true
   end
 
