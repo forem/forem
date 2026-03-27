@@ -1,6 +1,6 @@
 class SyncLiquidEmbedReferencesWorker
   include Sidekiq::Worker
-  sidekiq_options queue: :low
+  sidekiq_options queue: :low_priority
 
   def perform(record_class_name, record_id)
     record_class = record_class_name.safe_constantize
