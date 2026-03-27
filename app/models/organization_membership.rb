@@ -11,6 +11,9 @@ class OrganizationMembership < ApplicationRecord
   validates :user_id, uniqueness: { scope: :organization_id }
   validates :type_of_user, inclusion: { in: USER_TYPES }
 
+  validate :must_retain_at_least_one_admin, on: :update, if: :type_of_user_changed?
+  before_destroy :ensure_not_last_admin
+
   before_create :generate_invitation_token, if: -> { type_of_user == "pending" && invitation_token.blank? }
 
   after_create  :update_user_organization_info_updated_at
@@ -31,7 +34,26 @@ class OrganizationMembership < ApplicationRecord
     update!(type_of_user: "member")
   end
 
+  def last_admin?
+    type_of_user == "admin" && organization.organization_memberships.where(type_of_user: "admin").count == 1
+  end
+
   private
+
+  def must_retain_at_least_one_admin
+    return unless type_of_user_was == "admin"
+    return if organization.organization_memberships.where(type_of_user: "admin").where.not(id: id).exists?
+
+    errors.add(:base, I18n.t("models.organization_membership.last_admin"))
+  end
+
+  def ensure_not_last_admin
+    return unless type_of_user == "admin"
+    return if organization.organization_memberships.where(type_of_user: "admin").where.not(id: id).exists?
+
+    errors.add(:base, I18n.t("models.organization_membership.last_admin"))
+    throw(:abort)
+  end
 
   def generate_invitation_token
     self.invitation_token = SecureRandom.urlsafe_base64(32)

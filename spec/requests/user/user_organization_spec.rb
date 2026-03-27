@@ -104,14 +104,22 @@ RSpec.describe "UserOrganization" do
 
   context "when an org admin leaves their org" do
     let(:org_admin) { create(:user, :org_admin) }
+    let(:org) { org_admin.organizations.first }
 
     before { sign_in org_admin }
 
-    it "leaves org and deletes the admin's organization membership" do
-      org = org_admin.organizations.first
+    it "leaves org when another admin exists" do
+      second_admin = create(:user)
+      create(:organization_membership, user: second_admin, organization: org, type_of_user: "admin")
       post "/users/leave_org/#{org.id}"
       expect(OrganizationMembership.exists?(user_id: org_admin.id, organization_id: org.id)).to be false
       expect(response).to redirect_to("/settings/organization")
+    end
+
+    it "does not allow the sole admin to leave" do
+      expect {
+        post "/users/leave_org/#{org.id}"
+      }.to raise_error(Pundit::NotAuthorizedError)
     end
   end
 
@@ -176,6 +184,13 @@ RSpec.describe "UserOrganization" do
       org_admin.organization_memberships.update_all(type_of_user: "member")
       expect { post "/users/remove_org_admin", params: { user_id: second_org_admin.id, organization_id: org_id } }
         .to raise_error Pundit::NotAuthorizedError
+    end
+
+    it "does not allow revoking the sole remaining admin" do
+      second_org_admin.organization_memberships.first.update_column(:type_of_user, "member")
+      post "/users/remove_org_admin", params: { user_id: org_admin.id, organization_id: org_id }
+      expect(org_admin.reload.org_admin?(org_id)).to be true
+      expect(flash[:error]).to eq(I18n.t("users_controller.cannot_remove_last_admin"))
     end
   end
 
