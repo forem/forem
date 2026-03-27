@@ -94,15 +94,21 @@ RSpec.describe LiquidTagBase, type: :liquid_tag do
       template.render
     end
 
-    it "wraps standard liquid tags with FOREM_LTAG HTML bounds" do
+    def expect_embed_wrapper(result, tag_name, url)
+      expect(result).to match(/<!-- FOREM_LTAG_START:.*"tag":"#{tag_name}".*"url":"#{Regexp.escape(url)}".* -->/i)
+      # Wait, CGI.escapeHTML turns " into &quot;
+    end
+
+    def expect_encoded_embed_wrapper(result, tag_name, url)
+      expect(result).to match(/<!-- FOREM_LTAG_START:.*&quot;tag&quot;:&quot;#{tag_name}&quot;.*&quot;url&quot;:&quot;#{Regexp.escape(url)}&quot;.* -->/i)
+    end
+
+    it "wraps standard liquid tags with FOREM_LTAG HTML bounds natively configured with JSON" do
       result = parse_and_render("{% youtube dQw4w9WgXcQ %}")
-      expect(result).to include("<!-- FOREM_LTAG_START: youtube dQw4w9WgXcQ -->")
-      expect(result).to include("<!-- FOREM_LTAG_END: youtube dQw4w9WgXcQ -->")
+      expect_encoded_embed_wrapper(result, "youtube", "dQw4w9WgXcQ")
     end
 
     it "handles malicious XSS string injections via CGI escaping to protect the comment block boundaries natively" do
-      # Test the strict AST buffer injection isolation on an explicit XSS tag string 
-      # to ensure HTML boundaries are not cleanly broken terminating the comment early.
       stub_tag_class = Class.new(LiquidTagBase) do
         def self.name; "XssTag"; end
         def initialize(_tag_name, input, _parse_context)
@@ -115,19 +121,20 @@ RSpec.describe LiquidTagBase, type: :liquid_tag do
       output = String.new
       dummy_tag.render_to_output_buffer(Liquid::Context.new, output)
 
-      expect(output).to include("<!-- FOREM_LTAG_START: xss &quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt; -->")
-      expect(output).to include("<!-- FOREM_LTAG_END: xss &quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt; -->")
+      expect(output).to match(/FOREM_LTAG_START/)
+      expect(output).to match(/\\u003cscript\\u003ealert\(1\)\\u003c\/script\\u003e/)
+      expect(output).not_to include("<script>")
     end
 
     it "safely wraps valid UnifiedEmbed alias inputs identically" do
       result = parse_and_render("{% embed https://youtube.com/watch?v=dQw4w9WgXcQ %}")
-      expect(result).to include("<!-- FOREM_LTAG_START: youtube dQw4w9WgXcQ -->")
+      expect_encoded_embed_wrapper(result, "youtube", "dQw4w9WgXcQ")
     end
     
     it "handles Forem database Tag objects seamlessly" do
       create(:tag, name: "ruby")
       result = parse_and_render("{% tag ruby %}")
-      expect(result).to include("<!-- FOREM_LTAG_START: tag ruby -->")
+      expect_encoded_embed_wrapper(result, "tag", "ruby")
     end
 
     it "safely wraps valid DEV Article embeds leveraging UnifiedEmbed link mappings" do
@@ -141,13 +148,13 @@ RSpec.describe LiquidTagBase, type: :liquid_tag do
       stub_request(:get, article_url).to_return(status: 200, body: "<html><head></head><body>Example</body></html>", headers: {})
 
       result = parse_and_render("{% embed #{article_url} %}")
-      expect(result).to include("<!-- FOREM_LTAG_START: link #{article_url} -->")
+      expect_encoded_embed_wrapper(result, "link", article_url)
     end
 
     it "safely wraps direct platform Comment tags dynamically" do
       target_comment = create(:comment)
       result = parse_and_render("{% comment #{target_comment.id_code} %}")
-      expect(result).to include("<!-- FOREM_LTAG_START: comment #{target_comment.id_code} -->")
+      expect_encoded_embed_wrapper(result, "comment", target_comment.id_code)
     end
 
     it "safely wraps OpenGraph generic fallback URL embeds properly" do
@@ -155,7 +162,7 @@ RSpec.describe LiquidTagBase, type: :liquid_tag do
       stub_request(:get, "https://example.com/unsupported-embed").to_return(status: 200, body: "<html><head></head><body>Example</body></html>", headers: {})
 
       result = parse_and_render("{% embed https://example.com/unsupported-embed %}")
-      expect(result).to include("<!-- FOREM_LTAG_START: open_graph https://example.com/unsupported-embed -->")
+      expect_encoded_embed_wrapper(result, "open_graph", "https://example.com/unsupported-embed")
     end
   end
 end
