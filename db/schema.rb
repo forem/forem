@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_03_25_220847) do
+ActiveRecord::Schema[7.0].define(version: 2026_03_27_164732) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -923,6 +923,24 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_25_220847) do
     t.index ["organization_lead_form_id", "user_id"], name: "idx_lead_submissions_form_user_unique", unique: true, where: "(user_id IS NOT NULL)"
     t.index ["organization_lead_form_id"], name: "index_lead_submissions_on_organization_lead_form_id"
     t.index ["user_id"], name: "index_lead_submissions_on_user_id"
+  end
+
+  create_table "liquid_embed_references", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "options"
+    t.boolean "published", default: true, null: false
+    t.datetime "published_at"
+    t.bigint "record_id", null: false
+    t.string "record_type", null: false
+    t.bigint "referenced_id"
+    t.string "referenced_type"
+    t.integer "score", default: 0, null: false
+    t.string "tag_name", null: false
+    t.datetime "updated_at", null: false
+    t.string "url"
+    t.index ["record_type", "record_id"], name: "index_liquid_embed_references_on_record"
+    t.index ["referenced_type", "referenced_id"], name: "index_liquid_embed_references_on_referenced"
+    t.index ["tag_name", "url"], name: "index_liquid_embed_references_on_tag_name_and_url"
   end
 
   create_table "media_sources", force: :cascade do |t|
