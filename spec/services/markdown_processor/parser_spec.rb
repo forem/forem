@@ -95,8 +95,9 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       ## heading after code block
     MARKDOWN
     output = generate_and_parse_markdown(markdown)
-    expect(output).to include("let foo")
-    expect(output).to include("heading after code block")
+    doc = Nokogiri::HTML.fragment(output)
+    expect(doc.at_css("code").text).to include("let foo")
+    expect(doc.at_css("h2").text).to include("heading after code block")
   end
 
   xit "allows more than 1 codeblock written separately" do
