@@ -102,6 +102,19 @@ RSpec.describe "UserOrganization" do
     end
   end
 
+  context "when an org admin leaves their org" do
+    let(:org_admin) { create(:user, :org_admin) }
+
+    before { sign_in org_admin }
+
+    it "leaves org and deletes the admin's organization membership" do
+      org = org_admin.organizations.first
+      post "/users/leave_org/#{org.id}"
+      expect(OrganizationMembership.exists?(user_id: org_admin.id, organization_id: org.id)).to be false
+      expect(response).to redirect_to("/settings/organization")
+    end
+  end
+
   context "when adding an org admin" do
     let(:org_admin) { create(:user, :org_admin) }
     let(:org_member) { create(:user, :org_member) }

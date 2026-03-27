@@ -24,7 +24,9 @@
 
           <div class="flex">
             <% if org_membership.user == @user && org_membership.type_of_user == "admin" %>
-            <!-- TODO: ? -->
+              <%= form_tag users_leave_org_path(@organization), onsubmit: "return confirm('#{t('views.settings.org.leave.confirm')}');" do %>
+                <button class="crayons-btn crayons-btn--danger ml-2" type="submit"><%= t("views.settings.org.leave.submit") %></button>
+              <% end %>
             <% elsif org_membership.user != @user && org_membership.type_of_user == "admin" %>
               <%= form_tag "/users/remove_org_admin", onsubmit: "return confirm('#{t('views.settings.org.admin.revoke.confirm', user: org_membership.user.name)}');" do %>
                 <%= hidden_field_tag "user_id", org_membership.user_id %>
