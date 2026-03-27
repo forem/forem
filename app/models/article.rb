@@ -1,4 +1,5 @@
 class Article < ApplicationRecord
+  include LiquidEmbeddable
   include CloudinaryHelper
   include ActionView::Helpers
   include Reactable
