@@ -93,9 +93,9 @@ class LiquidTagBase < Liquid::Tag
 
     out_payload = CGI.escapeHTML(data)
 
-    output << "\n<!-- FOREM_LTAG_START:#{out_payload} -->\n"
+    output << "<!-- FOREM_LTAG_START:#{out_payload} -->"
     super
-    output << "\n<!-- FOREM_LTAG_END:#{out_payload} -->\n"
+    output << "<!-- FOREM_LTAG_END:#{out_payload} -->"
   end
 
   private
