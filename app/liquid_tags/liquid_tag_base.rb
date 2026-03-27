@@ -73,30 +73,6 @@ class LiquidTagBase < Liquid::Tag
     self.class.user_authorization_method_name
   end
 
-  def render_to_output_buffer(context, output)
-    tag_name = self.class.name.underscore.delete_suffix("_tag")
-    identifier = @id || @url || @link || @input || @markup.to_s.strip
-
-    ignore_keys = [:@parse_context, :@markup, :@source]
-    
-    ref = instance_variables.filter_map do |ivar|
-      instance_variable_get(ivar) unless ignore_keys.include?(ivar)
-    end.find { |val| val.is_a?(ApplicationRecord) }
-
-    data = {
-      tag: tag_name,
-      url: identifier.to_s,
-      options: @markup.to_s.strip,
-      ref_type: ref&.class&.name,
-      ref_id: ref&.id
-    }.compact.to_json
-
-    out_payload = Base64.strict_encode64(data)
-
-    output << "<!-- FOREM_LTAG_START:#{out_payload} -->".html_safe
-    super
-    output << "<!-- FOREM_LTAG_END:#{out_payload} -->".html_safe
-  end
 
   private
 
