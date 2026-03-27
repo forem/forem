@@ -1,4 +1,5 @@
 class Comment < ApplicationRecord
+  include LiquidEmbeddable
   has_ancestry
   resourcify
 

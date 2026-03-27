@@ -73,6 +73,7 @@ class LiquidTagBase < Liquid::Tag
     self.class.user_authorization_method_name
   end
 
+
   private
 
   def validate_contexts
