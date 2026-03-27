@@ -18,10 +18,10 @@ RSpec.describe LiquidEmbedExtractor do
       comment = create(:comment, body_markdown: body)
       data = described_class.extract(comment)
 
-      # NOTE: TweetTag registers as 'tweet' internally.
+      # NOTE: Historically TweetTag registered as 'tweet', but regex matches raw 'twitter'.
       expect(data).to contain_exactly(
         { tag_name: "youtube", url: "dQw4w9WgXcQ", options: "dQw4w9WgXcQ", referenced_type: nil, referenced_id: nil },
-        { tag_name: "tweet", url: "1234567890", options: "1234567890", referenced_type: nil, referenced_id: nil }
+        { tag_name: "twitter", url: "1234567890", options: "1234567890", referenced_type: nil, referenced_id: nil }
       )
     end
 
@@ -33,8 +33,9 @@ RSpec.describe LiquidEmbedExtractor do
       comment = create(:comment, body_markdown: body)
       data = described_class.extract(comment)
 
+      # The raw URL remains assigned to embed inherently bypassing ActionView.
       expect(data).to contain_exactly(
-        { tag_name: "youtube", url: "dQw4w9WgXcQ", options: "https://youtube.com/watch?v=dQw4w9WgXcQ", referenced_type: nil, referenced_id: nil }
+        { tag_name: "embed", url: "https://youtube.com/watch?v=dQw4w9WgXcQ", options: "https://youtube.com/watch?v=dQw4w9WgXcQ", referenced_type: nil, referenced_id: nil }
       )
     end
 
@@ -72,7 +73,7 @@ RSpec.describe LiquidEmbedExtractor do
       data = described_class.extract(comment)
 
       expect(data).to contain_exactly(
-        { tag_name: "link", url: article_url, options: article_url, referenced_type: "Article", referenced_id: dev_article.id }
+        { tag_name: "embed", url: article_url, options: article_url, referenced_type: "Article", referenced_id: dev_article.id }
       )
     end
 
@@ -91,11 +92,9 @@ RSpec.describe LiquidEmbedExtractor do
       )
     end
 
-    it "correctly resolves general fallback URL embeds via OpenGraph mappings natively" do
-      stub_request(:head, "https://example.com/unsupported-embed")
-        .to_return(status: 200, body: "", headers: {})
-      stub_request(:get, "https://example.com/unsupported-embed")
-        .to_return(status: 200, body: "<html><head></head><body>Example</body></html>", headers: {})
+    it "correctly resolves general fallback URL embeds bypassing native OpenGraph mappings securely" do
+      stub_request(:head, "https://example.com/unsupported-embed").to_return(status: 200, body: "", headers: {})
+      stub_request(:get, "https://example.com/unsupported-embed").to_return(status: 200, body: "<html><head></head><body>Example</body></html>", headers: {})
 
       body = <<~MARKDOWN
         {% embed https://example.com/unsupported-embed %}
@@ -105,7 +104,7 @@ RSpec.describe LiquidEmbedExtractor do
       data = described_class.extract(parent)
 
       expect(data).to contain_exactly(
-        { tag_name: "open_graph", url: "https://example.com/unsupported-embed", options: "https://example.com/unsupported-embed", referenced_type: nil, referenced_id: nil }
+        { tag_name: "embed", url: "https://example.com/unsupported-embed", options: "https://example.com/unsupported-embed", referenced_type: nil, referenced_id: nil }
       )
     end
   end
