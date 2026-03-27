@@ -105,10 +105,10 @@ RSpec.describe ContentRenderer do
       expect { cr.has_front_matter? }.not_to raise_error
     end
 
-    it "returns true when front matter parsing raises Psych::SyntaxError" do
+    it "returns false when body starts with --- and parsed front matter is not a Hash" do
       markdown = "\n---\n\n## Introduction\n\nSome content here.\n\n---\n\n## Next Section\n"
       cr = described_class.new(markdown, source: nil, user: nil)
-      expect(cr.has_front_matter?).to be(true)
+      expect(cr.has_front_matter?).to be(false)
     end
   end
 
