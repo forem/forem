@@ -31,7 +31,7 @@ RSpec.describe SyncLiquidEmbedReferencesWorker do
 
     it "efficiently propagates score and publication changes inline via the concern update_all native hook" do
       article = create(:article)
-      article.update_columns(body_markdown: "{% youtube updates %}", score: 10, published: false, published_at: 1.day.ago)
+      article.update_columns(body_markdown: "{% youtube abcdefghijk %}", score: 10, published: false, published_at: 1.day.ago)
 
       described_class.new.perform("Article", article.id)
 
