@@ -87,8 +87,9 @@ module Admin
               I18n.t("admin.organization_memberships_controller.removed",
                      org: organization.name)
           else
-            flash[:danger] = I18n.t("admin.organization_memberships_controller.wrong",
-                                    org: organization.name)
+            flash[:danger] = organization_membership.errors.full_messages.first ||
+              I18n.t("admin.organization_memberships_controller.wrong",
+                     org: organization.name)
           end
 
           redirect_to admin_user_path(organization_membership.user_id)
@@ -101,11 +102,12 @@ module Admin
                      org: organization.name)
             render json: { result: message }, content_type: "application/json"
           else
-            message = I18n.t("admin.organization_memberships_controller.wrong",
-                             org: organization.name)
+            message = organization_membership.errors.full_messages.first ||
+              I18n.t("admin.organization_memberships_controller.wrong",
+                     org: organization.name)
             render json: { error: message },
                    content_type: "application/json",
-                   status: :internal_server_error
+                   status: :unprocessable_entity
           end
         end
       end
