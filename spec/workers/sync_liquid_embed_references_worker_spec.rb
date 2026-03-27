@@ -18,8 +18,14 @@ RSpec.describe SyncLiquidEmbedReferencesWorker do
     end
 
     it "persists newly populated attributes for publication status, date, and score mapping natively to the source record" do
-      article = create(:article)
-      article.update_columns(body_markdown: "{% youtube dQw4w9WgXcQ %}", score: 42, published: true, published_at: 2.days.ago)
+      body = <<~MARKDOWN
+        ---
+        title: Valid Native Test Title
+        ---
+        {% youtube dQw4w9WgXcQ %}
+      MARKDOWN
+      article = create(:article, body_markdown: body)
+      article.update_columns(score: 42, published: true, published_at: 2.days.ago)
       
       described_class.new.perform("Article", article.id)
       
@@ -30,8 +36,14 @@ RSpec.describe SyncLiquidEmbedReferencesWorker do
     end
 
     it "efficiently propagates score and publication changes inline via the concern update_all native hook" do
-      article = create(:article)
-      article.update_columns(body_markdown: "{% youtube abcdefghijk %}", score: 10, published: false, published_at: 1.day.ago)
+      body = <<~MARKDOWN
+        ---
+        title: Valid Native Propagate Title
+        ---
+        {% youtube abcdefghijk %}
+      MARKDOWN
+      article = create(:article, body_markdown: body)
+      article.update_columns(score: 10, published: false, published_at: 1.day.ago)
 
       described_class.new.perform("Article", article.id)
 
