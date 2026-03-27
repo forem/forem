@@ -73,6 +73,16 @@ class LiquidTagBase < Liquid::Tag
     self.class.user_authorization_method_name
   end
 
+  def render_to_output_buffer(context, output)
+    tag_name = self.class.name.underscore.delete_suffix("_tag")
+    identifier = @id || @url || @link || @input || @markup.to_s.strip
+    escaped_identifier = CGI.escapeHTML(identifier.to_s)
+
+    output << "\n<!-- FOREM_LTAG_START: #{tag_name} #{escaped_identifier} -->\n"
+    super
+    output << "\n<!-- FOREM_LTAG_END: #{tag_name} #{escaped_identifier} -->\n"
+  end
+
   private
 
   def validate_contexts
