@@ -8,7 +8,7 @@ class LiquidEmbedExtractor
     parser = MarkdownProcessor::Parser.new(record.body_markdown, liquid_tag_options: liquid_tag_options)
 
     # Scrape out the inner markdown with escaped logic via the parser instance to ensure safety
-    cleaned_parsed = parser.escape_liquid_tags_in_codeblock(parser.instance_variable_get(:@content))
+    cleaned_parsed = parser.escape_liquid_tags_in_codeblock(record.body_markdown)
     template = begin
                  Liquid::Template.parse(cleaned_parsed, liquid_tag_options)
                rescue Liquid::SyntaxError
