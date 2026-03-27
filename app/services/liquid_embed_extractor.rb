@@ -11,7 +11,7 @@ class LiquidEmbedExtractor
     cleaned_parsed = parser.escape_liquid_tags_in_codeblock(record.body_markdown)
     template = begin
                  Liquid::Template.parse(cleaned_parsed, liquid_tag_options)
-               rescue Liquid::SyntaxError
+               rescue Liquid::SyntaxError, LiquidTags::Errors::InvalidParseContext, Pundit::NotAuthorizedError
                  return []
                end
 
