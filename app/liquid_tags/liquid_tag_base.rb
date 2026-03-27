@@ -91,11 +91,11 @@ class LiquidTagBase < Liquid::Tag
       ref_id: ref&.id
     }.compact.to_json
 
-    out_payload = CGI.escapeHTML(data)
+    out_payload = Base64.strict_encode64(data)
 
-    output << "<!-- FOREM_LTAG_START:#{out_payload} -->"
+    output << "<!-- FOREM_LTAG_START:#{out_payload} -->".html_safe
     super
-    output << "<!-- FOREM_LTAG_END:#{out_payload} -->"
+    output << "<!-- FOREM_LTAG_END:#{out_payload} -->".html_safe
   end
 
   private
