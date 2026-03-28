@@ -1,13 +1,16 @@
 module MarkdownProcessor
   class Parser
     BAD_XSS_REGEX = [
-      /src=["'](data|&)/i,
+      /src=["'](data|&amp;)/i,
       %r{data:text/html[,;][\sa-z0-9]*}i,
     ].freeze
 
     CODE_BLOCKS_REGEX = /(~{3}|`{3}|`{2}|`)[\s\S]*?\1/
 
     WORDS_READ_PER_MINUTE = 275.0
+
+    # Redcarpet drops list item text beyond this indentation depth
+    MAX_LIST_INDENT_SPACES = 16
 
     # @param content [String] The user input, mix of markdown and liquid.  This might be an
     #        article's markdown body.
@@ -19,9 +22,7 @@ module MarkdownProcessor
     #       that with user input, but perhaps via a data migration script.
     #
     # @see LiquidTagBase for more information regarding the liquid tag options.
-
-    def initialize(content, source: nil, user: nil,
-                   liquid_tag_options: {})
+    def initialize(content, source: nil, user: nil, liquid_tag_options: {})
       @content = (content || "").gsub(/!\[Image Description\]/i, "![ ]")
       @source = source
       @user = user
@@ -33,14 +34,14 @@ module MarkdownProcessor
       renderer = Redcarpet::Render::HTMLRouge.new(options)
       markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
       catch_xss_attempts(@content)
+
+      # Workarounds for Redcarpet limitations
+      content = normalize_overly_nested_lists(convert_deeply_nested_links_to_html(@content))
       
-      # Workaround for Redcarpet dropping link text at nesting levels >= 5 (16+ spaces)
-      content_with_fixed_links = convert_deeply_nested_links_to_html(@content)
-      
-      code_tag_content = convert_code_tags_to_triple_backticks(content_with_fixed_links)
+      code_tag_content = convert_code_tags_to_triple_backticks(content)
       escaped_content = escape_liquid_tags_in_codeblock(code_tag_content)
       html = markdown.render(escaped_content)
-      sanitized_content = ActionController::Base.helpers.sanitize html, { scrubber: RenderedMarkdownScrubber.new }
+      sanitized_content = ActionController::Base.helpers.sanitize(html, { scrubber: RenderedMarkdownScrubber.new })
 
       begin
         # NOTE: [@rhymes] liquid 5.0.0 does not support ActiveSupport::SafeBuffer,
@@ -63,6 +64,24 @@ module MarkdownProcessor
       parse_html(html, prefix_images_options)
     end
 
+    # Prevent Redcarpet from dropping text in deeply nested lists
+    def normalize_overly_nested_lists(content)
+      content.gsub(/^([ \t]+)([-*+]|\d+\.)\s+(.*)$/) do
+        indent = Regexp.last_match(1)
+        marker = Regexp.last_match(2)
+        text   = Regexp.last_match(3)
+
+        normalized_indent =
+          if indent.include?("\t")
+            indent[0, 4]
+          else
+            indent[0, MAX_LIST_INDENT_SPACES]
+          end
+
+        "#{normalized_indent}#{marker} #{text}"
+      end
+    end
+
     def convert_deeply_nested_links_to_html(content)
       content.gsub(/^(?: {16,}|\t{4,})[-*+ \d.]* .*$/) do |line|
         line.gsub(/\[([^\]]*)\]\(([^)]*)\)/) do
@@ -81,13 +100,12 @@ module MarkdownProcessor
         link[:target] = "_blank"
         existing_rel = link[:rel]
         new_rel = %w[noopener noreferrer]
-        if existing_rel
-          existing_rel_values = existing_rel.split
-          new_rel = (existing_rel_values + new_rel).uniq.join(" ")
-        else
-          new_rel = new_rel.join(" ")
-        end
-        link[:rel] = new_rel
+        link[:rel] =
+          if existing_rel
+            (existing_rel.split + new_rel).uniq.join(" ")
+          else
+            new_rel.join(" ")
+          end
       end
       doc.to_html
     end
@@ -158,9 +176,7 @@ module MarkdownProcessor
     def convert_code_tags_to_triple_backticks(content)
       # return content if there is not a <code> tag
       return content unless /^<code>$/.match?(content)
-
-      # return content if there is a <pre> and <code> tag
-      return content if content.include?("<code>") && content.include?("<pre>")
+      return content if content.include?("<pre>")
 
       # Convert all multiline code tags to triple backticks
       content.gsub(%r{^</?code>$}, "\n```\n")
