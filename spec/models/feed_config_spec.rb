@@ -57,6 +57,30 @@ RSpec.describe FeedConfig, type: :model do
         expect(sql).to include("articles.cached_tag_list ~ '[[:<:]]tagX[[:>:]]'")
         expect(sql).to include("articles.cached_tag_list ~ '[[:<:]]tagY[[:>:]]'")
       end
+
+      it "uses GIN optimized array overlaps when OPTIMIZED_FEED_TAGS_QUERY is true" do
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("OPTIMIZED_FEED_TAGS_QUERY").and_return("true")
+
+        sql = feed_config.score_sql(user)
+        expect(sql).to include("articles.tags_array && ARRAY['tagX','tagY']::text[]")
+        expect(sql).not_to include("articles.cached_tag_list ~")
+      end
+
+      it "does not limit tag mapping sequentially escaping prior regex 24 bounds dynamically" do
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("OPTIMIZED_FEED_TAGS_QUERY").and_return("true")
+
+        thirty_tags = Array.new(30) { |i| "tag#{i}" }
+        allow(activity_store)
+          .to receive(:relevant_tags)
+          .with(2, 3)
+          .and_return(thirty_tags)
+
+        sql = feed_config.score_sql(user)
+        expect(sql).to include("articles.tags_array && ARRAY[#{thirty_tags.map { |t| "'#{t}'" }.join(',')}]::text[]")
+        expect(sql).to include("tag29")
+      end
     end
 
     context "when tag_follow_weight is positive but no tag count configs" do

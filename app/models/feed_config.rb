@@ -40,9 +40,14 @@ class FeedConfig < ApplicationRecord
     end
 
     if tag_follow_weight.positive? && tag_names.present?
-      tag_condition = "CASE WHEN " + tag_names.first(24).map { |tag|
-        "articles.cached_tag_list ~ '[[:<:]]#{tag}[[:>:]]'"
-      }.join(' OR ') + " THEN #{tag_follow_weight} ELSE 0 END"
+      tag_condition = if ENV["OPTIMIZED_FEED_TAGS_QUERY"] == "true"
+                        tags_overlap_sql = tag_names.map { |t| "'#{t.gsub("'", "''")}'" }.join(',')
+                        "CASE WHEN articles.tags_array && ARRAY[#{tags_overlap_sql}]::text[] THEN #{tag_follow_weight} ELSE 0 END"
+                      else
+                        "CASE WHEN " + tag_names.first(24).map { |tag|
+                          "articles.cached_tag_list ~ '[[:<:]]#{tag}[[:>:]]'"
+                        }.join(' OR ') + " THEN #{tag_follow_weight} ELSE 0 END"
+                      end
       terms << "(#{tag_condition})"
     end
 

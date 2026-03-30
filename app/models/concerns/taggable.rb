@@ -6,11 +6,16 @@ module Taggable
     scope :cached_tagged_with, lambda { |tag|
       case tag
       when String, Symbol
-        # In Postgres regexes, the [[:<:]] and [[:>:]] are equivalent to "start of
-        # word" and "end of word", respectively. They're similar to `\b` in Perl-
-        # compatible regexes (PCRE), but that matches at either end of a word.
-        # They're more comparable to how vim's `\<` and `\>` work.
-        where("cached_tag_list ~ ?", "[[:<:]]#{tag}[[:>:]]")
+        if ENV["OPTIMIZED_TAGGABLE_QUERY"] == "true"
+          # Accelerate native `WHERE` filtering escaping sequential regex scans by leveraging GIN index bounds organically dynamically. 
+          where("tags_array @> ARRAY[?]::varchar[]", tag.to_s)
+        else
+          # In Postgres regexes, the [[:<:]] and [[:>:]] are equivalent to "start of
+          # word" and "end of word", respectively. They're similar to `\b` in Perl-
+          # compatible regexes (PCRE), but that matches at either end of a word.
+          # They're more comparable to how vim's `\<` and `\>` work.
+          where("cached_tag_list ~ ?", "[[:<:]]#{tag}[[:>:]]")
+        end
       when Array
         tag.reduce(self) { |acc, elem| acc.cached_tagged_with(elem) }
       when Tag
@@ -25,9 +30,14 @@ module Taggable
       when String, Symbol
         cached_tagged_with(tags)
       when Array
-        tags
-          .map { |tag| cached_tagged_with(tag) }
-          .reduce { |acc, elem| acc.or(elem) }
+        if ENV["OPTIMIZED_TAGGABLE_QUERY"] == "true"
+          # Accelerate `any` conditions natively utilizing absolute overlap intersections eliminating `OR` sequential bottlenecks dynamically!
+          where("tags_array && ARRAY[?]::varchar[]", tags.map(&:to_s))
+        else
+          tags
+            .map { |tag| cached_tagged_with(tag) }
+            .reduce { |acc, elem| acc.or(elem) }
+        end
       when Tag
         cached_tagged_with(tags.name)
       else
@@ -43,6 +53,27 @@ module Taggable
     scope :not_cached_tagged_with_any, lambda { |tags|
       where(cached_tagged_with_any(tags).arel.constraints.reduce(:or).not)
     }
+
+    before_save :sync_tags_array
+
+    def sync_tags_array
+      return unless self.class.column_names.include?("tags_array")
+      
+      # We meticulously avoid N+1 evaluation queries by identifying if ActsAsTaggableOn
+      # tags were explicitly interrogated/mutated. 
+      # Forem intrinsically instantiates `@tag_list` when validating front matter tags.
+      tags_were_mutated = cached_tag_list_changed? || instance_variable_defined?(:@tag_list)
+      
+      return unless tags_were_mutated
+      
+      new_array = if instance_variable_defined?(:@tag_list)
+                    tag_list.to_a
+                  else
+                    cached_tag_list.to_s.split(",").map(&:strip).reject(&:blank?).compact
+                  end
+                  
+      self.tags_array = new_array unless tags_array == new_array
+    end
   end
   # rubocop:enable Metrics/BlockLength(RuboCop)
 

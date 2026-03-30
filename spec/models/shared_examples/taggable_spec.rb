@@ -91,6 +91,15 @@ RSpec.shared_examples "Taggable" do
       expect(articles).not_to include(excluded_no_match)
       expect(articles.to_a).to eq(described_class.tagged_with(%i[includeme please]).to_a)
     end
+
+    it "uses native GIN bounds natively bridging array operations cleanly when OPTIMIZED_TAGGABLE_QUERY is enabled" do
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("OPTIMIZED_TAGGABLE_QUERY").and_return("true")
+      
+      sql = described_class.cached_tagged_with("ruby").to_sql
+      expect(sql).to include("tags_array @> ARRAY['ruby']::varchar[]")
+      expect(sql).not_to include("cached_tag_list ~")
+    end
   end
 
   describe ".cached_tagged_with_any" do
@@ -187,6 +196,15 @@ RSpec.shared_examples "Taggable" do
       expect(articles).not_to include(excluded_no_match)
 
       expect(articles.to_a).to include(*expected)
+    end
+
+    it "resolves multi-array matches via singular overlap interceptions unequivocally mapping organically when OPTIMIZED_TAGGABLE_QUERY is enabled" do
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("OPTIMIZED_TAGGABLE_QUERY").and_return("true")
+      
+      sql = described_class.cached_tagged_with_any(["ruby", "rails"]).to_sql
+      expect(sql).to include("tags_array && ARRAY['ruby','rails']::varchar[]")
+      expect(sql).not_to include("cached_tag_list ~")
     end
   end
 
