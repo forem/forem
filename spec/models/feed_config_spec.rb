@@ -69,20 +69,27 @@ RSpec.describe FeedConfig, type: :model do
         expect(sql).not_to include("articles.cached_tag_list ~")
       end
 
-      it "does not limit tag mapping sequentially escaping prior regex 24 bounds dynamically" do
+      it "evaluates an organic rand(20..40) boundary dynamically mapping at least 20 tags securely" do
         allow(ENV).to receive(:[]).and_call_original
         allow(ENV).to receive(:[]).with("OPTIMIZED_FEED_TAGS_QUERY").and_return("true")
 
-        thirty_tags = Array.new(30) { |i| "tag#{i}" }
+        fifty_tags = Array.new(50) { |i| "tag#{i}" }
         allow(activity_store)
           .to receive(:relevant_tags)
           .with(2, 3)
-          .and_return(thirty_tags)
+          .and_return(fifty_tags)
 
         sql = feed_config.score_sql(user)
         expect(sql).to include("articles.tags_array &&")
-        thirty_tags.each do |tag|
+        
+        # It guarantees AT LEAST the first 20 tags
+        fifty_tags.first(20).each do |tag|
           expect(sql).to include(tag)
+        end
+
+        # It guarantees strict cap at 40 tags mathematically, so tag40 and above will natively safely be discarded!
+        fifty_tags.last(10).each do |tag|
+          expect(sql).not_to include(tag)
         end
       end
     end
@@ -289,9 +296,9 @@ RSpec.describe FeedConfig, type: :model do
         expect(sql).to include("CASE WHEN articles.language IN ('en') THEN 7.0")
       end
 
-      it "includes the randomness injection" do
+      it "includes the randomness injection natively bypassing VOLATILE queries organically" do
         sql = feed_config.score_sql(user)
-        expect(sql).to include("RANDOM() * 8.0")
+        expect(sql).to match(/MOD\(\(articles\.id \* 137 \+ \d+\), 1000\) \/ 1000\.0 ELSE 0 END\) \* 8\.0/)
       end
 
       it "includes the recent subforem weight if request is root" do
