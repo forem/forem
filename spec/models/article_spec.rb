@@ -1388,6 +1388,12 @@ RSpec.describe Article do
       allow(FrontMatterParser::Parser).to receive(:new).and_raise(syntax_error)
       expect(article.has_frontmatter?).to be(true)
     end
+
+    it "does not raise when body starts with --- but has no valid YAML front matter" do
+      article.body_markdown = "\n---\n\n## Introduction\n\nSome content here.\n\n---\n\n## Next Section\n"
+      expect { article.has_frontmatter? }.not_to raise_error
+      expect(article.has_frontmatter?).to be(false)
+    end
   end
 
   describe "#readable_edit_date" do
