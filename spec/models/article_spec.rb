@@ -3596,4 +3596,43 @@ RSpec.describe Article do
       expect(article.title_for_metadata).to eq("Check this out https://example.com More text")
     end
   end
+
+  describe "#sync_tags_array" do
+    it "syncs tags_array identically with tag_list upon creation natively" do
+      user = create(:user)
+      article = create(:article, user: user, tag_list: "ruby, rails, beginners")
+      expect(article.tags_array).to match_array(article.tag_list.to_a)
+      expect(article.tags_array).to include("ruby", "rails", "beginners")
+    end
+
+    it "syncs tags_array perfectly when tags are updated mapping upstream cleanly" do
+      user = create(:user)
+      article = Article.new(title: "Test Dual Write", body_markdown: "This is a test body.", user: user)
+      
+      article.tag_list = "javascript, typescript, webdev"
+      article.save!
+      expect(article.tags_array).to match_array(["javascript", "typescript", "webdev"])
+    end
+    
+    it "handles empty tag sets gracefully" do
+      user = create(:user)
+      article = Article.new(title: "Test Dual Write", body_markdown: "This is a test body.", user: user)
+      
+      article.tag_list = ""
+      article.save!
+      expect(article.tags_array).to eq([])
+    end
+    
+    it "skips dual-write processing if tags were not inherently targeted during save" do
+      user = create(:user)
+      article = create(:article, user: user)
+      
+      # Reset local instantiation memory footprint safely bypassing acts_as_taggable
+      article.remove_instance_variable(:@tag_list) if article.instance_variable_defined?(:@tag_list)
+      
+      # Ensure reading `tags_array` doesn't inadvertently trigger sync_tags_array
+      article.sync_tags_array
+      expect(article.instance_variable_defined?(:@tag_list)).to be_falsey
+    end
+  end
 end
