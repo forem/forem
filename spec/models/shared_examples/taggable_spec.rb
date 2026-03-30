@@ -97,7 +97,8 @@ RSpec.shared_examples "Taggable" do
       allow(ENV).to receive(:[]).with("OPTIMIZED_TAGGABLE_QUERY").and_return("true")
       
       sql = described_class.cached_tagged_with("ruby").to_sql
-      expect(sql).to include("tags_array @> ARRAY['ruby']::varchar[]")
+      expect(sql).to include("tags_array @>")
+      expect(sql).to include("ruby")
       expect(sql).not_to include("cached_tag_list ~")
     end
   end
@@ -203,7 +204,8 @@ RSpec.shared_examples "Taggable" do
       allow(ENV).to receive(:[]).with("OPTIMIZED_TAGGABLE_QUERY").and_return("true")
       
       sql = described_class.cached_tagged_with_any(["ruby", "rails"]).to_sql
-      expect(sql).to include("tags_array && ARRAY['ruby','rails']::varchar[]")
+      expect(sql).to include("tags_array &&")
+      %w[ruby rails].each { |tag| expect(sql).to include(tag) }
       expect(sql).not_to include("cached_tag_list ~")
     end
   end

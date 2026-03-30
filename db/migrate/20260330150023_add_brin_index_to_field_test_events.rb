@@ -6,6 +6,7 @@ class AddBrinIndexToFieldTestEvents < ActiveRecord::Migration[7.0]
               :created_at, 
               using: :brin, 
               algorithm: :concurrently,
+              if_not_exists: true,
               name: "index_field_test_events_on_created_at_brin"
   end
 end

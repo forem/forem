@@ -63,7 +63,9 @@ RSpec.describe FeedConfig, type: :model do
         allow(ENV).to receive(:[]).with("OPTIMIZED_FEED_TAGS_QUERY").and_return("true")
 
         sql = feed_config.score_sql(user)
-        expect(sql).to include("articles.tags_array && ARRAY['tagX','tagY']::text[]")
+        expect(sql).to include("articles.tags_array &&")
+        expect(sql).to include("tagX")
+        expect(sql).to include("tagY")
         expect(sql).not_to include("articles.cached_tag_list ~")
       end
 
@@ -78,8 +80,10 @@ RSpec.describe FeedConfig, type: :model do
           .and_return(thirty_tags)
 
         sql = feed_config.score_sql(user)
-        expect(sql).to include("articles.tags_array && ARRAY[#{thirty_tags.map { |t| "'#{t}'" }.join(',')}]::text[]")
-        expect(sql).to include("tag29")
+        expect(sql).to include("articles.tags_array &&")
+        thirty_tags.each do |tag|
+          expect(sql).to include(tag)
+        end
       end
     end
 

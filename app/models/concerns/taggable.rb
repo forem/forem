@@ -8,7 +8,7 @@ module Taggable
       when String, Symbol
         if ENV["OPTIMIZED_TAGGABLE_QUERY"] == "true"
           # Accelerate native `WHERE` filtering escaping sequential regex scans by leveraging GIN index bounds organically dynamically. 
-          where("tags_array @> ARRAY[?]::varchar[]", tag.to_s)
+          where("tags_array @> ARRAY[?]::text[]", tag.to_s)
         else
           # In Postgres regexes, the [[:<:]] and [[:>:]] are equivalent to "start of
           # word" and "end of word", respectively. They're similar to `\b` in Perl-
@@ -32,7 +32,7 @@ module Taggable
       when Array
         if ENV["OPTIMIZED_TAGGABLE_QUERY"] == "true"
           # Accelerate `any` conditions natively utilizing absolute overlap intersections eliminating `OR` sequential bottlenecks dynamically!
-          where("tags_array && ARRAY[?]::varchar[]", tags.map(&:to_s))
+          where("tags_array && ARRAY[?]::text[]", tags.map(&:to_s))
         else
           tags
             .map { |tag| cached_tagged_with(tag) }
