@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_03_27_164732) do
+ActiveRecord::Schema[7.0].define(version: 2026_03_30_150026) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -263,6 +263,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_27_164732) do
     t.string "slug"
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
+    t.index ["created_at"], name: "index_audit_logs_on_created_at_brin", using: :brin
     t.index ["data"], name: "index_audit_logs_on_data", using: :gin
     t.index ["user_id"], name: "index_audit_logs_on_user_id"
   end
@@ -573,6 +574,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_27_164732) do
     t.string "geolocation"
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
+    t.index ["created_at"], name: "index_display_ad_events_on_created_at_brin", using: :brin
     t.index ["display_ad_id"], name: "index_display_ad_events_on_display_ad_id"
     t.index ["user_id"], name: "index_display_ad_events_on_user_id"
   end
@@ -795,6 +797,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_27_164732) do
     t.datetime "created_at", precision: nil
     t.bigint "field_test_membership_id"
     t.string "name"
+    t.index ["created_at"], name: "index_field_test_events_on_created_at_brin", using: :brin
     t.index ["field_test_membership_id"], name: "index_field_test_events_on_field_test_membership_id"
   end
 
