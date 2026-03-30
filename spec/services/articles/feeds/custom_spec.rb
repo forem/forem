@@ -147,6 +147,15 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
           expect(result).not_to include(hidden_article)
           expect(result).to include(visible_article)
         end
+
+        it "excludes articles natively intersecting GIN hidden tags when OPTIMIZED_FEED_TAGS_QUERY is active" do
+          allow(ENV).to receive(:[]).and_call_original
+          allow(ENV).to receive(:[]).with("OPTIMIZED_FEED_TAGS_QUERY").and_return("true")
+
+          result = feed.default_home_feed.to_a
+          expect(result).not_to include(hidden_article)
+          expect(result).to include(visible_article)
+        end
       end
 
       context "when all articles are recent (within a week)" do
