@@ -1,12 +1,12 @@
-class AddBrinIndexToDisplayAdEvents < ActiveRecord::Migration[7.0]
+class AddBrinIndexToFieldTestEvents < ActiveRecord::Migration[7.0]
   disable_ddl_transaction!
 
   def change
-    add_index :display_ad_events, 
+    add_index :field_test_events, 
               :created_at, 
               using: :brin, 
               algorithm: :concurrently,
               if_not_exists: true,
-              name: "index_display_ad_events_on_created_at_brin"
+              name: "index_field_test_events_on_created_at_brin"
   end
 end
