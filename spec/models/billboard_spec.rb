@@ -1380,4 +1380,19 @@ RSpec.describe Billboard do
       expect(EdgeCache::PurgeByKey).not_to have_received(:call)
     end
   end
+
+  describe "#sync_tags_array" do
+    it "syncs tags_array perfectly when tags are updated using tag_list" do
+      billboard = create(:billboard, tag_list: "javascript")
+      expect(billboard.tags_array).to match_array(["javascript"])
+      
+      billboard.update!(tag_list: "javascript, typescript, webdev")
+      expect(billboard.tags_array).to match_array(["javascript", "typescript", "webdev"])
+    end
+    
+    it "handles empty tags gracefully natively" do
+      billboard = create(:billboard, tag_list: "")
+      expect(billboard.tags_array).to eq([])
+    end
+  end
 end
