@@ -128,8 +128,41 @@ RSpec.describe GithubTag::GithubReadmeTag, type: :liquid_tag, vcr: true do
         expect(result).to include('href="https://github.com/owner/repo#license"')
         expect(result).to include('href="https://github.com/owner/repo/blob/main/file.png"')
         expect(result).not_to include("/owner/repo/owner/repo/") # Should not duplicate path
-        expect(result).to include('src="https://github.com/owner/repo/image.png"')
+        expect(result).to include('src="https://raw.githubusercontent.com/owner/repo/HEAD/image.png"')
         expect(result).to include('href="https://external.com"')
+      end
+    end
+
+    describe "relative img src rewriting" do
+      let(:tag) { described_class.new("https://github.com/owner/repo") }
+      let(:repo_url) { "https://github.com/owner/repo" }
+
+      it "rewrites a relative img src to a raw.githubusercontent.com URL" do
+        html = '<img src="docs/screenshot.png">'
+        result = tag.send(:clean_relative_path!, html, repo_url)
+        expect(result).to include('src="https://raw.githubusercontent.com/owner/repo/HEAD/docs/screenshot.png"')
+      end
+
+      it "does not rewrite an absolute img src" do
+        html = '<img src="https://cdn.example.com/logo.png">'
+        result = tag.send(:clean_relative_path!, html, repo_url)
+        expect(result).to include('src="https://cdn.example.com/logo.png"')
+        expect(result).not_to include("raw.githubusercontent.com")
+      end
+
+      it "does not rewrite a root-relative img src to raw.githubusercontent.com" do
+        # Root-relative paths (starting with /) go through the base_github_url branch, not raw
+        html = '<img src="/owner/repo/raw/main/logo.png">'
+        result = tag.send(:clean_relative_path!, html, repo_url)
+        expect(result).to include('src="https://github.com/owner/repo/raw/main/logo.png"')
+        expect(result).not_to include("raw.githubusercontent.com")
+      end
+
+      it "does not rewrite a relative a href to raw.githubusercontent.com" do
+        html = '<a href="blob/main/README.md">README</a>'
+        result = tag.send(:clean_relative_path!, html, repo_url)
+        expect(result).to include('href="https://github.com/owner/repo/blob/main/README.md"')
+        expect(result).not_to include("raw.githubusercontent.com")
       end
     end
   end

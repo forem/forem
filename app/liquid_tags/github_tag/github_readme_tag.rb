@@ -97,6 +97,9 @@ class GithubTag
         elsif path.start_with?("#")
           # Anchor link (e.g., #license)
           element.attributes[attribute].value = "#{url}#{path}"
+        elsif element.name == "img"
+          # Relative image path — resolve to raw content URL so the CDN caches valid bytes
+          element.attributes[attribute].value = "#{url.sub('github.com', 'raw.githubusercontent.com')}/HEAD/#{path}"
         else
           # Relative path (e.g., blob/main/file.png)
           element.attributes[attribute].value = "#{url}/#{path}"
