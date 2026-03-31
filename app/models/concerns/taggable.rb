@@ -62,7 +62,7 @@ module Taggable
       # We meticulously avoid N+1 evaluation queries by identifying if ActsAsTaggableOn
       # tags were explicitly interrogated/mutated. 
       # Forem intrinsically instantiates `@tag_list` when validating front matter tags.
-      tags_were_mutated = cached_tag_list_changed? || 
+      tags_were_mutated = cached_tag_list_changed? ||
                           instance_variable_defined?(:@tag_list) ||
                           (cached_tag_list.present? && tags_array.blank?)
       
