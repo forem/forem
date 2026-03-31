@@ -35,9 +35,11 @@
     <% if @articles.any? %>
       <%= javascript_include_tag "dashboardDropdowns", defer: true %>
       <div class="crayons-card mb-6 mt-3">
+        <% org_users_cache = {} %>
         <% @articles.each do |article| %>
           <% if params[:which] == "organization" %>
-            <%= render "dashboard_article_row", article: article, organization: article.organization, org_admin: true, manage_view: false, article_series: article.collection.present? %>
+            <% org_users = (org_users_cache[article.organization_id] ||= article.organization.users.pluck(:name, :id)) %>
+            <%= render "dashboard_article_row", article: article, organization: article.organization, org_admin: true, manage_view: false, article_series: article.collection.present?, org_users: org_users %>
           <% else %>
             <%= render "dashboard_article_row", article: article, organization: nil, org_admin: false, manage_view: false %>
           <% end %>
