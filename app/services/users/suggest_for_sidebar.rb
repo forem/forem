@@ -30,7 +30,10 @@ module Users
     end
 
     def active_authors_for_given_tags
-      @active_authors_for_given_tags ||= Article.published.from_subforem.cached_tagged_with_any([given_tag])
+      scope = Article.published.from_subforem
+      scope = scope.cached_tagged_with_any([given_tag]) if given_tag.present?
+
+      @active_authors_for_given_tags ||= scope
         .where(public_reactions_count: minimum_reaction_count..)
         .where(published_at: 4.months.ago..)
         .not_authored_by([user.id] + user.following_by_type("User"))
