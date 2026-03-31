@@ -9,6 +9,29 @@ RSpec.describe "Sidebars" do
       expect(response.body).to include("rubymagoo")
     end
 
+    context "when onboarding progress is shown" do
+      let(:user) { create(:user) }
+
+      it "shows onboarding progress card for new signed-in user" do
+        sign_in user
+        get "/sidebars/home"
+        expect(response.body).to include("onboarding-progress-card")
+      end
+
+      it "does not show onboarding progress card for signed-out user" do
+        get "/sidebars/home"
+        expect(response.body).not_to include("onboarding-progress-card")
+      end
+
+      it "does not show onboarding progress card when all items are completed" do
+        checklist = user.onboarding_checklist
+        OnboardingChecklist::ITEM_KEYS.each { |key| checklist.complete_item!(key) }
+        sign_in user
+        get "/sidebars/home"
+        expect(response.body).not_to include("onboarding-progress-card")
+      end
+    end
+
     context "when active discussions exist" do
       let(:tag) { create(:tag, name: "testmagoo") }
       let(:user) { create(:user) }

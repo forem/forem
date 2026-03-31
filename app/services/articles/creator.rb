@@ -29,6 +29,7 @@ module Articles
       create_article.tap do
         subscribe_author if article.persisted?
         refresh_auto_audience_segments if article.published?
+        complete_onboarding_first_post if article.published?
       end
     end
 
@@ -57,6 +58,10 @@ module Articles
 
     def refresh_auto_audience_segments
       user.refresh_auto_audience_segments
+    end
+
+    def complete_onboarding_first_post
+      user.onboarding_checklist&.complete_item!("made_first_post")
     end
 
     def create_article
