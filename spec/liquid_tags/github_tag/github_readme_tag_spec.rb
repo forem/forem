@@ -164,6 +164,43 @@ RSpec.describe GithubTag::GithubReadmeTag, type: :liquid_tag, vcr: true do
         expect(result).to include('href="https://github.com/owner/repo/blob/main/README.md"')
         expect(result).not_to include("raw.githubusercontent.com")
       end
+
+      it "does not rewrite an img with a blank src to a bogus raw.githubusercontent.com URL" do
+        html = '<img src="">'
+        result = tag.send(:clean_relative_path!, html, repo_url)
+        expect(result).not_to include("raw.githubusercontent.com")
+        expect(result).not_to include("/HEAD/")
+      end
+
+      it "does not rewrite an img with no src attribute to a bogus raw.githubusercontent.com URL" do
+        html = "<img>"
+        result = tag.send(:clean_relative_path!, html, repo_url)
+        expect(result).not_to include("raw.githubusercontent.com")
+        expect(result).not_to include("/HEAD/")
+      end
+
+      it "does not rewrite a protocol-relative img src (//cdn.example.com/img.png)" do
+        html = '<img src="//cdn.example.com/img.png">'
+        result = tag.send(:clean_relative_path!, html, repo_url)
+        expect(result).to include('src="//cdn.example.com/img.png"')
+        expect(result).not_to include("raw.githubusercontent.com")
+        expect(result).not_to include("/HEAD/")
+      end
+
+      it "does not rewrite a data: URI img src" do
+        html = '<img src="data:image/png;base64,abc123">'
+        result = tag.send(:clean_relative_path!, html, repo_url)
+        expect(result).to include('src="data:image/png;base64,abc123"')
+        expect(result).not_to include("raw.githubusercontent.com")
+        expect(result).not_to include("/HEAD/")
+      end
+
+      it "does not rewrite a mailto: href to a github path" do
+        html = '<a href="mailto:user@example.com">Email</a>'
+        result = tag.send(:clean_relative_path!, html, repo_url)
+        expect(result).to include('href="mailto:user@example.com"')
+        expect(result).not_to include("github.com/owner/repo/mailto")
+      end
     end
   end
 end
