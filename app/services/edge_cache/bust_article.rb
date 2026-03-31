@@ -64,7 +64,7 @@ module EdgeCache
         end
 
         next unless rand(2) == 1 &&
-          Article.published.tagged_with(tag)
+          Article.published.cached_tagged_with(tag)
             .order(hotness_score: :desc).limit(2).ids.include?(article.id)
 
         cache_bust.call("/t/#{tag}")
