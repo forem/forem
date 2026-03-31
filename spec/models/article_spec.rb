@@ -1388,6 +1388,12 @@ RSpec.describe Article do
       allow(FrontMatterParser::Parser).to receive(:new).and_raise(syntax_error)
       expect(article.has_frontmatter?).to be(true)
     end
+
+    it "does not raise when body starts with --- but has no valid YAML front matter" do
+      article.body_markdown = "\n---\n\n## Introduction\n\nSome content here.\n\n---\n\n## Next Section\n"
+      expect { article.has_frontmatter? }.not_to raise_error
+      expect(article.has_frontmatter?).to be(false)
+    end
   end
 
   describe "#readable_edit_date" do
@@ -3588,6 +3594,45 @@ RSpec.describe Article do
       article.type_of = "status"
       article.title = "Check this out\nhttps://example.com\n\nMore text"
       expect(article.title_for_metadata).to eq("Check this out https://example.com More text")
+    end
+  end
+
+  describe "#sync_tags_array" do
+    it "syncs tags_array identically with tag_list upon creation natively" do
+      user = create(:user)
+      article = create(:article, user: user, tag_list: "ruby, rails, beginners")
+      expect(article.tags_array).to match_array(article.tag_list.to_a)
+      expect(article.tags_array).to include("ruby", "rails", "beginners")
+    end
+
+    it "syncs tags_array perfectly when tags are updated mapping upstream cleanly" do
+      user = create(:user)
+      article = Article.new(title: "Test Dual Write", body_markdown: "This is a test body.", user: user)
+      
+      article.tag_list = "javascript, typescript, webdev"
+      article.save!
+      expect(article.tags_array).to match_array(["javascript", "typescript", "webdev"])
+    end
+    
+    it "handles empty tag sets gracefully" do
+      user = create(:user)
+      article = Article.new(title: "Test Dual Write", body_markdown: "This is a test body.", user: user)
+      
+      article.tag_list = ""
+      article.save!
+      expect(article.tags_array).to eq([])
+    end
+    
+    it "skips dual-write processing if tags were not inherently targeted during save" do
+      user = create(:user)
+      article = create(:article, user: user)
+      
+      # Reset local instantiation memory footprint safely bypassing acts_as_taggable
+      article.remove_instance_variable(:@tag_list) if article.instance_variable_defined?(:@tag_list)
+      
+      # Ensure reading `tags_array` doesn't inadvertently trigger sync_tags_array
+      article.sync_tags_array
+      expect(article.instance_variable_defined?(:@tag_list)).to be_falsey
     end
   end
 end

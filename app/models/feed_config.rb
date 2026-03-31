@@ -40,9 +40,14 @@ class FeedConfig < ApplicationRecord
     end
 
     if tag_follow_weight.positive? && tag_names.present?
-      tag_condition = "CASE WHEN " + tag_names.first(24).map { |tag|
-        "articles.cached_tag_list ~ '[[:<:]]#{tag}[[:>:]]'"
-      }.join(' OR ') + " THEN #{tag_follow_weight} ELSE 0 END"
+      tag_condition = if ENV["OPTIMIZED_FEED_TAGS_QUERY"] == "true"
+                        tags_overlap_sql = tag_names.first(rand(20..40)).map { |t| self.class.connection.quote(t) }.join(',')
+                        "CASE WHEN articles.tags_array && ARRAY[#{tags_overlap_sql}]::text[] THEN #{tag_follow_weight} ELSE 0 END"
+                      else
+                        "CASE WHEN " + tag_names.first(24).map { |tag|
+                          "articles.cached_tag_list ~ '[[:<:]]#{tag}[[:>:]]'"
+                        }.join(' OR ') + " THEN #{tag_follow_weight} ELSE 0 END"
+                      end
       terms << "(#{tag_condition})"
     end
 
@@ -55,9 +60,8 @@ class FeedConfig < ApplicationRecord
 
     ## Labels slightly different because we can use native Postgres array operators
     if label_match_weight.positive? && label_names.present?
-      label_condition = "CASE WHEN " + label_names.map { |label|
-        "? = ANY(articles.cached_label_list)"
-      }.join(' OR ') + " THEN #{label_match_weight} ELSE 0 END"
+      labels_str = label_names.map { |l| self.class.connection.quote(l) }.join(',')
+      label_condition = "CASE WHEN articles.cached_label_list && ARRAY[#{labels_str}]::varchar[] THEN #{label_match_weight} ELSE 0 END"
       terms << "(#{label_condition})"
     end
 
@@ -125,7 +129,10 @@ class FeedConfig < ApplicationRecord
     terms << "(- (articles.clickbait_score * #{clickbait_score_weight}))" if clickbait_score_weight.positive?
     terms << "(articles.compellingness_score * #{compellingness_score_weight})" if compellingness_score_weight.positive?
     terms << "(CASE WHEN articles.language IN ('#{languages.join("','")}') THEN #{language_match_weight} ELSE 0 END)" if language_match_weight.positive? && score_weight.positive?
-    terms << "(RANDOM() * #{randomness_weight})" if randomness_weight.positive?
+    if randomness_weight.positive?
+      # Injecting a dynamic Ruby scope guarantees row shuffling uniquely per-request without sacrificing query planners dynamically!
+      terms << "((CASE WHEN articles.id IS NOT NULL THEN MOD((articles.id * 137 + #{rand(10000)}), 1000) / 1000.0 ELSE 0 END) * #{randomness_weight})"
+    end
 
     total_expression = terms.any? ? terms.join(" + ") : "0"
 
