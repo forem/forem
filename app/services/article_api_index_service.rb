@@ -83,8 +83,8 @@ class ArticleApiIndexService
 
   def tagged_articles
     articles = published_articles_with_users_and_organizations
-    articles = articles.tagged_with(tags, any: true).unscope(:select) if tags
-    articles = articles.tagged_with(tags_exclude, exclude: true) if tags_exclude
+    articles = articles.cached_tagged_with(tags, any: true).unscope(:select) if tags
+    articles = articles.cached_tagged_with(tags_exclude, exclude: true) if tags_exclude
 
     articles
       .order(score: :desc)
