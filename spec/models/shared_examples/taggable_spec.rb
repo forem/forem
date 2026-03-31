@@ -225,4 +225,28 @@ RSpec.shared_examples "Taggable" do
       expect(articles).not_to include excluded2
     end
   end
+
+  describe "before_save :sync_tags_array" do
+    it "syncs tags_array natively out of cached_tag_list if the array is unexpectedly blank or uninitialized" do
+      record = described_class.new
+      record.cached_tag_list = "ruby, rails"
+      record.tags_array = []
+      
+      record.sync_tags_array
+      expect(record.tags_array).to eq(%w[ruby rails])
+    end
+
+    it "skips expensive N+1 arrays if values are completely synchronized and untampered" do
+      record = described_class.new
+      record.cached_tag_list = "javascript"
+      record.tags_array = ["javascript"]
+      
+      record.clear_changes_information
+      
+      expect(record).not_to receive(:tag_list)
+      record.sync_tags_array
+      
+      expect(record.tags_array).to eq(["javascript"])
+    end
+  end
 end

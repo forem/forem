@@ -88,7 +88,8 @@ class GithubTag
         element["src"] = "" if attribute == "src" && element.attributes[attribute].blank?
 
         path = element.attributes[attribute].value
-        next if path[0, 4] == "http" # Skip absolute URLs
+        next if path.blank? # Skip missing/empty attributes — avoids bogus rewrite to .../HEAD/
+        next if path.start_with?("http", "//", "data:", "mailto:") # Skip absolute/non-relative URLs
 
         # Handle different types of relative paths
         if path.start_with?("/")
@@ -97,6 +98,9 @@ class GithubTag
         elsif path.start_with?("#")
           # Anchor link (e.g., #license)
           element.attributes[attribute].value = "#{url}#{path}"
+        elsif element.name == "img"
+          # Relative image path — resolve to raw content URL so the CDN caches valid bytes
+          element.attributes[attribute].value = "#{url.sub('github.com', 'raw.githubusercontent.com')}/HEAD/#{path}"
         else
           # Relative path (e.g., blob/main/file.png)
           element.attributes[attribute].value = "#{url}/#{path}"
