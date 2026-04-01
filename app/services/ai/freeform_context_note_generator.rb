@@ -70,6 +70,8 @@ module Ai
         It should complement the info in the title (do not re-hash the title).
         Do not overly summarize; just provide a bit of helpful extra context that might be interesting to someone browsing.
         Do not use clickbait or sensational language; just a basic interesting tidbit.
+        Speak in minmal and partial additive sentences if possible vs full sentences that add an unnecessary reference. I.e. instead of "Highlights the struggle to stop mid-task", prefer "The struggle to stop mid-task"
+        Do not end in a period. Just go punctuation-free. I.e. prefer "The struggle to stop mid-task" to "The struggle to stop mid-task."
         Respond ONLY with the context note itself, no other text or explanation.
 
         #{extra_emphasis}
