@@ -168,11 +168,12 @@ module ApplicationHelper
   end
 
   def tag_colors(tag)
-    if tag.is_a?(Tag)
+    if tag.respond_to?(:bg_color_hex) && tag.respond_to?(:text_color_hex)
       { background: tag.bg_color_hex, color: tag.text_color_hex }
     else
-      Rails.cache.fetch("view-helper-#{tag}/tag_colors", expires_in: 5.hours) do
-        if (found_tag = Tag.select(%i[bg_color_hex text_color_hex]).find_by(name: tag))
+      tag_name = tag.respond_to?(:name) ? tag.name : tag.to_s
+      Rails.cache.fetch("view-helper-#{tag_name}/tag_colors", expires_in: 5.hours) do
+        if (found_tag = Tag.select(%i[bg_color_hex text_color_hex]).find_by(name: tag_name))
           { background: found_tag.bg_color_hex, color: found_tag.text_color_hex }
         else
           { background: "#d6d9e0", color: "#606570" }
