@@ -2609,6 +2609,45 @@ RSpec.describe Article do
     end
   end
 
+  describe "#trigger_freeform_context_note_generation" do
+    let(:article) { create(:article, score: 0) }
+
+    before do
+      allow(Articles::GenerateFreeformContextNoteWorker).to receive(:perform_async)
+    end
+
+    it "bails if score is less than 50" do
+      article.update_columns(score: 49, comment_score: 25)
+      article.trigger_freeform_context_note_generation
+      expect(Articles::GenerateFreeformContextNoteWorker).not_to have_received(:perform_async)
+    end
+
+    it "bails if comment_score is less than 25" do
+      article.update_columns(score: 50, comment_score: 24, published_at: 1.day.ago)
+      article.trigger_freeform_context_note_generation
+      expect(Articles::GenerateFreeformContextNoteWorker).not_to have_received(:perform_async)
+    end
+
+    it "bails if article was published more than a week ago" do
+      article.update_columns(score: 50, comment_score: 25, published_at: 8.days.ago)
+      article.trigger_freeform_context_note_generation
+      expect(Articles::GenerateFreeformContextNoteWorker).not_to have_received(:perform_async)
+    end
+
+    it "bails if article already has context notes" do
+      article.update_columns(score: 50, comment_score: 25, published_at: 1.day.ago)
+      create(:context_note, article: article, body_markdown: "existing note")
+      article.trigger_freeform_context_note_generation
+      expect(Articles::GenerateFreeformContextNoteWorker).not_to have_received(:perform_async)
+    end
+
+    it "calls the worker when conditions are met" do
+      article.update_columns(score: 50, comment_score: 25, published_at: 1.day.ago)
+      article.trigger_freeform_context_note_generation
+      expect(Articles::GenerateFreeformContextNoteWorker).to have_received(:perform_async).with(article.id)
+    end
+  end
+
   describe "#feed_source_url and canonical_url must be unique for published articles" do
     let(:url) { "http://www.example.com" }
 

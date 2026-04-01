@@ -963,6 +963,16 @@ class Article < ApplicationRecord
                    privileged_users_reaction_points_sum: reactions.privileged_category.sum(:points),
                    comment_score: comment_score,
                    hotness_score: BlackBox.article_hotness_score(self))
+
+    trigger_freeform_context_note_generation
+  end
+
+  def trigger_freeform_context_note_generation
+    return if score < 50 || comment_score < 25
+    return if published_at.blank? || published_at < 1.week.ago
+    return if context_notes.exists?
+    
+    Articles::GenerateFreeformContextNoteWorker.perform_async(id)
   end
 
   def co_author_ids_list
