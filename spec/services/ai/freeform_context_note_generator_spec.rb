@@ -41,6 +41,16 @@ RSpec.describe Ai::FreeformContextNoteGenerator, type: :service do
       expect(ai_client).to have_received(:call).twice
     end
     
+    it "retries and succeeds when the first response is too short" do
+      too_short = "A" * 9
+      short_response = "This framework revolutionizes tech."
+      
+      allow(ai_client).to receive(:call).and_return(too_short, short_response)
+
+      expect { generator.call }.to change(ContextNote, :count).by(1)
+      expect(ai_client).to have_received(:call).twice
+    end
+
     it "fails gracefully after max retries" do
       long_response = "A" * 60
       allow(ai_client).to receive(:call).and_return(long_response)

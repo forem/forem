@@ -23,18 +23,18 @@ module Ai
         # Strip response and remove surrounding quotes if the AI added them
         note_text = response.strip.gsub(/^["']|["']$/, "")
         
-        if note_text.length <= 50
+        if (10..50).cover?(note_text.length)
           ContextNote.create!(
             body_markdown: note_text,
             article: @article,
           )
         else
-          raise "Note too long: #{note_text.length} characters"
+          raise "Note invalid length: #{note_text.length} characters"
         end
       rescue => e
         if retries < MAX_RETRIES
           retries += 1
-          extra_emphasis = "RETRY: Your previous response was too long. You MUST ensure the response is FEWER THAN 50 CHARACTERS. Be extremely brief. One short sentence only."
+          extra_emphasis = "RETRY: Your previous response was an invalid length. You MUST ensure the response is BETWEEN 10 and 50 CHARACTERS. Be extremely brief. One short sentence only."
           retry
         else
           Rails.logger.error("Freeform Context Note Generation failed: #{e.message}")
@@ -46,7 +46,13 @@ module Ai
 
     def build_prompt(extra_emphasis)
       article_text = @article.body_markdown.to_s[0..1500]
-      top_comments = @article.comments.order(score: :desc).limit(3).pluck(:body_markdown).map { |c| "- #{c.to_s[0..300]}" }.join("\n")
+      top_comments = @article.comments
+                             .where(deleted: false, hidden_by_commentable_user: false, ancestry: nil)
+                             .order(score: :desc)
+                             .limit(3)
+                             .pluck(:body_markdown)
+                             .map { |c| "- #{c.to_s[0..300]}" }
+                             .join("\n")
 
       <<~PROMPT
         You are an AI assistant tasked with generating a freeform context note for a highly engaging article.

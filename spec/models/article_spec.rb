@@ -2613,7 +2613,15 @@ RSpec.describe Article do
     let(:article) { create(:article, score: 0) }
 
     before do
+      stub_const("Ai::Base::DEFAULT_KEY", "some_key")
       allow(Articles::GenerateFreeformContextNoteWorker).to receive(:perform_async)
+    end
+
+    it "bails if Ai::Base::DEFAULT_KEY is not present" do
+      stub_const("Ai::Base::DEFAULT_KEY", nil)
+      article.update_columns(score: 50, comment_score: 25, published_at: 1.day.ago)
+      article.trigger_freeform_context_note_generation
+      expect(Articles::GenerateFreeformContextNoteWorker).not_to have_received(:perform_async)
     end
 
     it "bails if score is less than 50" do

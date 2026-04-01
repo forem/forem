@@ -968,6 +968,7 @@ class Article < ApplicationRecord
   end
 
   def trigger_freeform_context_note_generation
+    return unless Ai::Base::DEFAULT_KEY.present?
     return if score < 50 || comment_score < 25
     return if published_at.blank? || published_at < 1.week.ago
     return if context_notes.exists?

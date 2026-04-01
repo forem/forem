@@ -6,7 +6,14 @@ RSpec.describe Articles::GenerateFreeformContextNoteWorker, type: :worker do
     let(:generator_instance) { instance_double(Ai::FreeformContextNoteGenerator, call: true) }
 
     before do
+      stub_const("Ai::Base::DEFAULT_KEY", "some_key")
       allow(Ai::FreeformContextNoteGenerator).to receive(:new).with(article).and_return(generator_instance)
+    end
+
+    it "bails if Ai::Base::DEFAULT_KEY is not present" do
+      stub_const("Ai::Base::DEFAULT_KEY", nil)
+      expect(Ai::FreeformContextNoteGenerator).not_to receive(:new)
+      described_class.new.perform(article.id)
     end
 
     it "bails if article is not found" do
