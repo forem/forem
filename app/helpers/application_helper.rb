@@ -168,11 +168,15 @@ module ApplicationHelper
   end
 
   def tag_colors(tag)
-    Rails.cache.fetch("view-helper-#{tag}/tag_colors", expires_in: 5.hours) do
-      if (found_tag = Tag.select(%i[bg_color_hex text_color_hex]).find_by(name: tag))
-        { background: found_tag.bg_color_hex, color: found_tag.text_color_hex }
-      else
-        { background: "#d6d9e0", color: "#606570" }
+    if tag.is_a?(Tag)
+      { background: tag.bg_color_hex, color: tag.text_color_hex }
+    else
+      Rails.cache.fetch("view-helper-#{tag}/tag_colors", expires_in: 5.hours) do
+        if (found_tag = Tag.select(%i[bg_color_hex text_color_hex]).find_by(name: tag))
+          { background: found_tag.bg_color_hex, color: found_tag.text_color_hex }
+        else
+          { background: "#d6d9e0", color: "#606570" }
+        end
       end
     end
   end
@@ -439,9 +443,11 @@ module ApplicationHelper
   end
 
   def render_tag_link(tag, filled: false, monochrome: false, classes: "", path_suffix: nil)
+    tag_name = tag.is_a?(Tag) ? tag.accessible_name : tag.to_s
+    tag_route = tag.is_a?(Tag) ? tag.name : tag.to_s
     color = tag_colors(tag)[:background].presence || Settings::UserExperience.primary_brand_color_hex
     color_faded = Color::CompareHex.new([color]).opacity(0.1)
-    label = safe_join([content_tag(:span, "#", class: "crayons-tag__prefix"), tag])
+    label = safe_join([content_tag(:span, "#", class: "crayons-tag__prefix"), tag_name])
 
     options = {
       class: "crayons-tag #{'crayons-tag--filled' if filled} #{'crayons-tag--monochrome' if monochrome} #{classes}",
@@ -453,7 +459,7 @@ module ApplicationHelper
       "
     }
 
-    link_to(label, tag_path(tag) + path_suffix.to_s, options)
+    link_to(label, tag_path(tag_route) + path_suffix.to_s, options)
   end
 
   def creator_settings_form?
