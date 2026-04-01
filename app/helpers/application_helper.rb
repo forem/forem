@@ -444,8 +444,20 @@ module ApplicationHelper
   end
 
   def render_tag_link(tag, filled: false, monochrome: false, classes: "", path_suffix: nil)
-    tag_name = tag.is_a?(Tag) ? tag.accessible_name : tag.to_s
-    tag_route = tag.is_a?(Tag) ? tag.name : tag.to_s
+    tag_name =
+      if tag.respond_to?(:accessible_name)
+        tag.accessible_name
+      elsif tag.respond_to?(:name)
+        tag.name
+      else
+        tag.to_s
+      end
+    tag_route =
+      if tag.respond_to?(:name)
+        tag.name
+      else
+        tag.to_s
+      end
     color = tag_colors(tag)[:background].presence || Settings::UserExperience.primary_brand_color_hex
     color_faded = Color::CompareHex.new([color]).opacity(0.1)
     label = safe_join([content_tag(:span, "#", class: "crayons-tag__prefix"), tag_name])
