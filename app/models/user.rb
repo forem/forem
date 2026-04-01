@@ -831,6 +831,8 @@ class User < ApplicationRecord
   end
 
   def create_onboarding_checklist
+    return unless Settings::General.display_sidebar_onboarding_checklist
+
     OnboardingChecklist.find_or_create_by(user: self)
   end
 

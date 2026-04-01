@@ -142,6 +142,8 @@ RSpec.describe Articles::Creator, type: :service do
   end
 
   describe "onboarding checklist" do
+    before { allow(Settings::General).to receive(:display_sidebar_onboarding_checklist).and_return(true) }
+
     let(:checklist_user) { create(:user) }
 
     it "completes made_first_post when a published article is created" do

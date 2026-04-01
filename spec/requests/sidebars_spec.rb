@@ -12,6 +12,8 @@ RSpec.describe "Sidebars" do
     context "when onboarding progress is shown" do
       let(:user) { create(:user) }
 
+      before { allow(Settings::General).to receive(:display_sidebar_onboarding_checklist).and_return(true) }
+
       it "shows onboarding progress card for new signed-in user" do
         sign_in user
         get "/sidebars/home"
@@ -26,6 +28,13 @@ RSpec.describe "Sidebars" do
       it "does not show onboarding progress card when all items are completed" do
         checklist = user.onboarding_checklist
         OnboardingChecklist::ITEM_KEYS.each { |key| checklist.complete_item!(key) }
+        sign_in user
+        get "/sidebars/home"
+        expect(response.body).not_to include("onboarding-progress-card")
+      end
+
+      it "does not show onboarding progress card when setting is disabled" do
+        allow(Settings::General).to receive(:display_sidebar_onboarding_checklist).and_return(false)
         sign_in user
         get "/sidebars/home"
         expect(response.body).not_to include("onboarding-progress-card")

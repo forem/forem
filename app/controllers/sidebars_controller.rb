@@ -45,6 +45,8 @@ class SidebarsController < ApplicationController
   end
 
   def set_onboarding_checklist
+    return unless Settings::General.display_sidebar_onboarding_checklist
+
     checklist = current_user.onboarding_checklist
     return unless checklist && !checklist.completed?
 

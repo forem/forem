@@ -131,6 +131,8 @@ text of the printing and typesetting industry\r\nLorem Ipsum is simply dummy tex
   end
 
   describe "onboarding checklist" do
+    before { allow(Settings::General).to receive(:display_sidebar_onboarding_checklist).and_return(true) }
+
     let(:checklist_user) { create(:user) }
     let(:checklist) { checklist_user.onboarding_checklist }
 

@@ -466,6 +466,8 @@ RSpec.describe Comment do
     end
 
     describe "onboarding checklist" do
+      before { allow(Settings::General).to receive(:display_sidebar_onboarding_checklist).and_return(true) }
+
       let(:checklist_user) { create(:user) }
       let(:admin) { create(:user, :admin) }
       let!(:welcome_article) { create(:article, user: admin, tags: "welcome") }

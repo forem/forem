@@ -394,6 +394,8 @@ description:\ntags: heytag\n---\n\nHey this is the article"
   end
 
   describe "onboarding checklist" do
+    before { allow(Settings::General).to receive(:display_sidebar_onboarding_checklist).and_return(true) }
+
     let(:checklist_user) { create(:user) }
     let!(:draft) { create(:article, user: checklist_user, published: false, published_at: nil) }
 

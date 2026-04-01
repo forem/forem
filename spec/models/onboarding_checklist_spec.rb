@@ -6,9 +6,17 @@ RSpec.describe OnboardingChecklist do
   let(:user) { create(:user) }
   let(:checklist) { user.onboarding_checklist }
 
+  before { allow(Settings::General).to receive(:display_sidebar_onboarding_checklist).and_return(true) }
+
   describe "auto-creation" do
     it "is created when a user is created" do
       expect(checklist).to be_present
+    end
+
+    it "is not created when setting is disabled" do
+      allow(Settings::General).to receive(:display_sidebar_onboarding_checklist).and_return(false)
+      new_user = create(:user)
+      expect(new_user.onboarding_checklist).to be_nil
     end
 
     it "starts with empty items" do
