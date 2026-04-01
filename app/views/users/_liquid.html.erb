@@ -2,12 +2,12 @@
   <% if user_path.present? %>
     <a href="<%= user_path %>" class="ltag__user__link profile-image-link">
       <div class="ltag__user__pic">
-        <img src="<%= user.profile_image_url_for(length: 150) %>" alt="<%= "#{user.username} image" %>" />
+        <img src="<%= user.profile_image_url_for(length: 150) %>" alt="<%= "#{user.username} image" %>" data-ignore-prefix="true" />
       </div>
     </a>
   <% else %>
     <div class="ltag__user__pic">
-      <img src="<%= user.profile_image_url_for(length: 150) %>" alt="<%= "#{user.username} image" %>" />
+      <img src="<%= user.profile_image_url_for(length: 150) %>" alt="<%= "#{user.username} image" %>" data-ignore-prefix="true" />
     </div>
   <% end %>
   <div class="ltag__user__content">
