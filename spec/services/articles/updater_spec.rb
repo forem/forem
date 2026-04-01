@@ -392,4 +392,19 @@ description:\ntags: heytag\n---\n\nHey this is the article"
       expect(SegmentedUserRefreshWorker).not_to have_received(:perform_async)
     end
   end
+
+  describe "onboarding checklist" do
+    let(:checklist_user) { create(:user) }
+    let!(:draft) { create(:article, user: checklist_user, published: false, published_at: nil) }
+
+    it "completes made_first_post when a draft is published" do
+      described_class.call(checklist_user, draft, { body_markdown: "updated content", published: true })
+      expect(checklist_user.onboarding_checklist.reload.items["made_first_post"]).to be_present
+    end
+
+    it "does not complete made_first_post when a draft is updated but not published" do
+      described_class.call(checklist_user, draft, { body_markdown: "updated content" })
+      expect(checklist_user.onboarding_checklist.reload.items["made_first_post"]).to be_nil
+    end
+  end
 end
