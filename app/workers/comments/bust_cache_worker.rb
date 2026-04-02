@@ -6,6 +6,10 @@ module Comments
 
       comment.purge
       comment.commentable.purge
+
+      if comment.commentable_type == "Article"
+        Articles::UpdateDependentEmbedsWorker.perform_async(comment.commentable_id)
+      end
     end
   end
 end
