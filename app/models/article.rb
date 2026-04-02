@@ -316,6 +316,8 @@ class Article < ApplicationRecord
   after_commit :async_score_calc, :touch_collection, :enrich_image_attributes, :detect_code_block_languages,
                on: %i[create update]
 
+  after_update_commit :update_dependent_embeds_if_key_info_changed
+
   # The trigger `update_reading_list_document` is used to keep the `articles.reading_list_document` column updated.
   #
   # Its body is inserted in a PostgreSQL trigger function and that joins the columns values
@@ -963,6 +965,17 @@ class Article < ApplicationRecord
                    privileged_users_reaction_points_sum: reactions.privileged_category.sum(:points),
                    comment_score: comment_score,
                    hotness_score: BlackBox.article_hotness_score(self))
+
+    trigger_freeform_context_note_generation
+  end
+
+  def trigger_freeform_context_note_generation
+    return unless Ai::Base::DEFAULT_KEY.present?
+    return if score < 50 || comment_score < 25
+    return if published_at.blank? || published_at < 1.week.ago
+    return if context_notes.exists?
+    
+    Articles::GenerateFreeformContextNoteWorker.perform_async(id)
   end
 
   def co_author_ids_list
@@ -1675,5 +1688,20 @@ class Article < ApplicationRecord
     normalized_expected = expected_content.gsub(/\s+/, " ").strip
 
     normalized_body == normalized_expected
+  end
+
+  def update_dependent_embeds_if_key_info_changed
+    return if destroyed?
+    
+    # We only care about fields that affect the visual liquid embed card
+    if saved_change_to_title? ||
+       saved_change_to_user_id? ||
+       saved_change_to_organization_id? ||
+       saved_change_to_published? ||
+       saved_change_to_cached_tag_list? ||
+       saved_change_to_published_at? ||
+       saved_change_to_main_image?
+      Articles::UpdateDependentEmbedsWorker.perform_async(id)
+    end
   end
 end
