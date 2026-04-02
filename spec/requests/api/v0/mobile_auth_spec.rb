@@ -29,7 +29,8 @@ RSpec.describe 'Api::V0::MobileAuth', type: :request do
       }.to_json, headers: { 'Content-Type' => 'application/json' })
 
     # Stub Faraday Facebook Token request for valid token
-    stub_request(:get, "https://graph.facebook.com/me?access_token=#{valid_access_token}&fields=id,email").
+    stub_request(:get, "https://graph.facebook.com/me").
+      with(query: { access_token: valid_access_token, fields: "id,email" }).
       to_return(status: 200, body: {
         "email" => user.email,
         "id" => "1234567890"
@@ -60,7 +61,7 @@ RSpec.describe 'Api::V0::MobileAuth', type: :request do
     allow(Settings::Authentication).to receive(:twitter_secret).and_return("mock_twitter_secret")
   end
 
-  describe 'POST /api/v0/auth/mobile_exchange' do
+  describe 'POST /api/auth/mobile_exchange' do
     context 'with a valid google_oauth2 provider' do
       it 'authenticates the user and returns a Forem JWT' do
         post '/api/auth/mobile_exchange', params: {

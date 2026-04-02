@@ -1,7 +1,7 @@
 module Api
   module V0
-    class MobileAuthController < ApplicationController
-      skip_before_action :verify_authenticity_token
+    class MobileAuthController < Api::V0::ApiController
+      skip_before_action :verify_authenticity_token, only: :create
       
       def create
         provider = params[:provider]
@@ -17,6 +17,8 @@ module Api
           case provider
           when "google_oauth2"
             response = Faraday.get("https://oauth2.googleapis.com/tokeninfo") do |req|
+              req.options.timeout = 10
+              req.options.open_timeout = 5
               req.params['access_token'] = access_token
             end
             parsed_response = JSON.parse(response.body)
@@ -29,6 +31,8 @@ module Api
 
           when "github"
             response = Faraday.get("https://api.github.com/user") do |req|
+              req.options.timeout = 10
+              req.options.open_timeout = 5
               req.headers['Authorization'] = "token #{access_token}"
               req.headers['Accept'] = "application/vnd.github.v3+json"
             end
@@ -43,6 +47,8 @@ module Api
             # If email is private, Github might return nil. We should fetch it if necessary.
             if extracted_email.blank?
               emails_response = Faraday.get("https://api.github.com/user/emails") do |req|
+                req.options.timeout = 10
+                req.options.open_timeout = 5
                 req.headers['Authorization'] = "token #{access_token}"
               end
               if emails_response.status == 200
@@ -54,6 +60,8 @@ module Api
 
           when "facebook"
             response = Faraday.get("https://graph.facebook.com/me") do |req|
+              req.options.timeout = 10
+              req.options.open_timeout = 5
               req.params['access_token'] = access_token
               req.params['fields'] = "id,email"
             end
@@ -68,12 +76,14 @@ module Api
           when "mlh"
             # MLH passes an authorization code rather than an implicit token
             exchange_response = Faraday.post("https://my.mlh.io/oauth/token") do |req|
+              req.options.timeout = 10
+              req.options.open_timeout = 5
               req.headers['Content-Type'] = 'application/json'
               req.body = {
                 client_id: Settings::Authentication.mlh_key,
                 client_secret: Settings::Authentication.mlh_secret,
                 code: access_token,
-                redirect_uri: "https://forem.com/users/auth/mlh/callback",
+                redirect_uri: "#{URL.url}/users/auth/mlh/callback",
                 grant_type: "authorization_code"
               }.to_json
             end
@@ -81,9 +91,12 @@ module Api
             if exchange_response.status != 200
               return render json: { error: 'Token exchange failed' }, status: :unauthorized
             end
-            token = JSON.parse(exchange_response.body)["access_token"]
+            access_token = JSON.parse(exchange_response.body)["access_token"]
             
-            response = Faraday.get("https://my.mlh.io/api/v3/user.json?access_token=#{token}")
+            response = Faraday.get("https://my.mlh.io/api/v3/user.json?access_token=#{access_token}") do |req|
+              req.options.timeout = 10
+              req.options.open_timeout = 5
+            end
             parsed_response = JSON.parse(response.body)
             
             if response.status != 200 || parsed_response["status"] == "Error"
@@ -95,13 +108,15 @@ module Api
           when "twitter2"
             # Twitter passes an authorization code with PKCE rather than an implicit token
             exchange_response = Faraday.post("https://api.twitter.com/2/oauth2/token") do |req|
+              req.options.timeout = 10
+              req.options.open_timeout = 5
               req.headers['Content-Type'] = 'application/x-www-form-urlencoded'
               req.headers['Authorization'] = "Basic #{Base64.strict_encode64("#{Settings::Authentication.twitter_key}:#{Settings::Authentication.twitter_secret}")}"
               req.body = URI.encode_www_form({
                 code: access_token,
                 grant_type: "authorization_code",
                 client_id: Settings::Authentication.twitter_key,
-                redirect_uri: "https://forem.com/users/auth/twitter/callback",
+                redirect_uri: "#{URL.url}/users/auth/twitter/callback",
                 code_verifier: code_verifier
               })
             end
@@ -109,10 +124,12 @@ module Api
             if exchange_response.status != 200
               return render json: { error: 'Token exchange failed' }, status: :unauthorized
             end
-            token = JSON.parse(exchange_response.body)["access_token"]
+            access_token = JSON.parse(exchange_response.body)["access_token"]
             
             response = Faraday.get("https://api.twitter.com/2/users/me?user.fields=profile_image_url") do |req|
-              req.headers['Authorization'] = "Bearer #{token}"
+              req.options.timeout = 10
+              req.options.open_timeout = 5
+              req.headers['Authorization'] = "Bearer #{access_token}"
             end
             parsed_response = JSON.parse(response.body)
             
@@ -140,18 +157,27 @@ module Api
         })
         
         # Step 3: Match Identity to a User
-        @user = ::Authentication::Authenticator.call(auth_payload)
-        
-        if @user&.persisted?
-          # Step 4: Issue the Application JWT
-          payload = {
-            user_id: @user.id,
-            exp: 30.days.from_now.to_i 
-          }
-          jwt_token = JWT.encode(payload, Rails.application.secret_key_base)
-          render json: { jwt: jwt_token }, status: :ok
-        else
-          render json: { error: 'Authentication failed' }, status: :unauthorized
+        begin
+          @user = ::Authentication::Authenticator.call(auth_payload)
+          
+          if @user&.persisted?
+            # Step 4: Issue the Application JWT
+            payload = {
+              user_id: @user.id,
+              exp: 30.days.from_now.to_i 
+            }
+            jwt_token = JWT.encode(payload, Rails.application.secret_key_base)
+            render json: { jwt: jwt_token }, status: :ok
+          else
+            render json: { error: 'Authentication failed' }, status: :unauthorized
+          end
+        rescue ::Authentication::Errors::ProviderNotEnabled, ::Authentication::Errors::ProviderNotFound => e
+          render json: { error: e.message }, status: :bad_request
+        rescue ActiveRecord::RecordInvalid => e
+          render json: { error: e.message }, status: :unprocessable_entity
+        rescue StandardError => e
+          Rails.logger.error "Mobile Auth Exchange Authenticator Error: #{e.message}"
+          render json: { error: 'Internal server processing error' }, status: :internal_server_error
         end
       end
     end
