@@ -61,7 +61,7 @@ We welcome pull requests on any issue, regardless of its current status, if it p
 
 We welcome AI-assisted pull requests but will turn away "slop"—all submissions must maintain high standards of code quality and meaningful utility.
 
-🤖 AI Agents should check out `AGENTS.md` for more instructions.
+🤖 AI Agents should check out `AGENTS.md` for more instructions. For specific IDEs and environments, Forem also synchronizes these rules across `.cursorrules`, `.windsurfrules`, and `.github/copilot-instructions.md`.
 
 Please also check out the [Contributing to Forem guide](https://developers.forem.com/contributing-guide/forem) for more detailed guidelines.
 
