@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_03_30_151720) do
+ActiveRecord::Schema[7.0].define(version: 2026_04_02_165751) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1018,6 +1018,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_30_151720) do
     t.datetime "notified_at", precision: nil
     t.bigint "organization_id"
     t.boolean "read", default: false
+    t.datetime "read_at"
     t.bigint "subforem_id"
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"

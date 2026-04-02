@@ -69,10 +69,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       auth_origin = extra_params["auth_origin"]
       # Check if this is a mobile authentication request.
 
-      if @user.username.downcase.include?("ben")
-        Honeybadger.notify("Full omniauth strategy", context: { auth_strategy: request.env["omniauth.strategy"].to_s })
-        Honeybadger.notify("Auth payload", context: { auth_payload: auth_payload })
-      end
 
       user_agent = request.user_agent
 
@@ -85,9 +81,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         # (Replace the following with your actual token generation logic.)
         token = generate_auth_token(@user)
 
-        if @user.username.downcase.include?("ben")
-          Honeybadger.notify("Token path", context: { token: token, username: @user.username })
-        end
+
   
   
         # Render a minimal HTML page that redirects via a custom scheme.
@@ -95,9 +89,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         redirect_to "#{test_path}?jwt=#{token}"
       else
 
-        if @user.username.downcase.include?("ben")
-          Honeybadger.notify("Standard path", context: { username: @user.username })
-        end
+
         # Standard behavior for non-mobile requests.
         sign_in_and_redirect(@user, event: :authentication)
       end
