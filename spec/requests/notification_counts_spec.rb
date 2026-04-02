@@ -23,14 +23,15 @@ RSpec.describe "NotificationCounts" do
         create(:notification, user: user, action: "Reaction", read: true, read_at: old_time, notified_at: 3.days.ago)
 
         # Unread notification (newer)
-        create(:notification, user: user, action: "New Follower", notified_at: 1.day.ago)
+        new_notification = create(:notification, user: user, action: "New Follower", notified_at: 1.day.ago)
 
         get "/notifications/counts", params: { mode: "detailed" }
         json_response = JSON.parse(response.body)
         
         expect(json_response["count"]).to eq(1)
+        expect(json_response["last_notification_id"]).to eq(new_notification.id)
         expect(json_response["last_read_at"]).to be_nil # because newest is unread
-        expect(json_response["notified_at"]).to eq(Notification.order(created_at: :desc).first.notified_at.as_json)
+        expect(json_response["notified_at"]).to eq(Notification.order(notified_at: :desc, created_at: :desc).first.notified_at.as_json)
         expect(json_response["action"]).to eq("New Follower")
       end
 
@@ -39,6 +40,7 @@ RSpec.describe "NotificationCounts" do
         json_response = JSON.parse(response.body)
         
         expect(json_response["count"]).to eq(0)
+        expect(json_response["last_notification_id"]).to be_nil
         expect(json_response["last_read_at"]).to be_nil
         expect(json_response["notified_at"]).to be_nil
       end
