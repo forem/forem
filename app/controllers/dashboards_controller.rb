@@ -46,6 +46,8 @@ class DashboardsController < ApplicationController
       @articles = params[:state] == "status" ? @articles.statuses : @articles.full_posts
     end
 
+    filter_archived_articles
+
     @reactions_count = @articles.sum(&:public_reactions_count)
     @comments_count = @articles.sum(&:comments_count)
     @page_views_count = @articles.sum(&:page_views_count)
@@ -166,6 +168,12 @@ class DashboardsController < ApplicationController
   end
 
   private
+
+  def filter_archived_articles
+    @show_archived = params[:show_archived] == "true"
+    @has_archived = @articles.exists?(archived: true)
+    @articles = @articles.where(archived: false) unless @show_archived
+  end
 
   def set_agent_sessions_count
     @agent_sessions_count = current_user.agent_sessions_count

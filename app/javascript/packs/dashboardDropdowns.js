@@ -27,7 +27,9 @@ function getFormValues(form) {
 
 function toggleArchived(article, needsArchived) {
   if (needsArchived === 'true') {
-    article.classList.add('story-archived', 'hidden');
+    // Remove from DOM immediately — the server-side filter excludes archived articles by default,
+    // so keeping it visible would contradict what a page reload would show.
+    article.remove();
   } else {
     article.classList.remove('story-archived');
   }
