@@ -16,6 +16,9 @@ RSpec.describe Comments::BustCacheWorker, type: :worker do
         allow(Comment).to receive(:find_by).with(id: comment_id).and_return(comment)
         allow(comment).to receive(:purge)
         allow(commentable).to receive(:purge)
+        allow(comment).to receive(:commentable_type).and_return("Article")
+        allow(comment).to receive(:commentable_id).and_return(2)
+        allow(Articles::UpdateDependentEmbedsWorker).to receive(:perform_async)
       end
 
       it "does not call purge on comment when commentable is not available" do
@@ -33,6 +36,17 @@ RSpec.describe Comments::BustCacheWorker, type: :worker do
         worker.perform(comment_id)
 
         expect(commentable).not_to have_received(:purge)
+      end
+
+      it "calls UpdateDependentEmbedsWorker if commentable_type is Article" do
+        worker.perform(comment_id)
+        expect(Articles::UpdateDependentEmbedsWorker).to have_received(:perform_async).with(2)
+      end
+
+      it "does not call UpdateDependentEmbedsWorker if commentable_type is not Article" do
+        allow(comment).to receive(:commentable_type).and_return("PodcastEpisode")
+        worker.perform(comment_id)
+        expect(Articles::UpdateDependentEmbedsWorker).not_to have_received(:perform_async)
       end
     end
 
