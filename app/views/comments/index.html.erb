@@ -142,9 +142,25 @@
                               commentable: @commentable, is_view_root: true, is_admin: @is_admin) %>
         <% end %>
       <% else %>
-        <% Comments::Tree.for_commentable(@commentable, include_negative: user_signed_in?).each do |comment, sub_comments| %>
-          <% cache ["comment_root_#{user_signed_in?}", comment] do %>
-            <%= nested_comments(tree: { comment => sub_comments }, commentable: @commentable, is_view_root: true) %>
+        <%
+          full_tree = Comments::Tree.for_commentable(@commentable, include_negative: user_signed_in?)
+          total_top_level = full_tree.size
+          is_limited = !user_signed_in? && total_top_level > 75
+          tree_to_render = is_limited ? full_tree.first(75).to_h : full_tree
+        %>
+        
+        <% if is_limited %>
+          <div class="crayons-notice crayons-notice--info mb-4">
+            <p>
+              <%= t("views.comments.limited_unauthenticated.text_html", sign_in: link_to(t("views.comments.limited_unauthenticated.sign_in"), "/enter"), count: total_top_level) %>
+            </p>
+          </div>
+        <% end %>
+
+        <% tree_to_render.each do |comment, sub_comments| %>
+          <% cache ["comment_root_v2_#{user_signed_in?}", comment] do %>
+            <% limited_sub_comments = user_signed_in? ? sub_comments : limit_descendants(sub_comments, 5) %>
+            <%= nested_comments(tree: { comment => limited_sub_comments }, commentable: @commentable, is_view_root: true) %>
           <% end %>
         <% end %>
       <% end %>

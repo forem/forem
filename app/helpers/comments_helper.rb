@@ -113,6 +113,20 @@ module CommentsHelper
 
   private
 
+  def limit_descendants(sub_hash, limit)
+    count = 0
+    traverse = ->(hash) do
+      new_hash = {}
+      hash.each do |c, children|
+        break if count >= limit
+        count += 1
+        new_hash[c] = traverse.call(children)
+      end
+      new_hash
+    end
+    traverse.call(sub_hash)
+  end
+
   def nested_comments(tree:, commentable:, is_view_root: false, is_admin: false)
     comments = tree.filter_map do |comment, sub_comments|
       is_childless = sub_comments.empty?
