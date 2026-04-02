@@ -1,6 +1,8 @@
 module CommentsHelper
   MAX_COMMENTS_TO_RENDER = 250
   MIN_COMMENTS_TO_RENDER = 8
+  MAX_TOP_LEVEL_COMMENTS_UNAUTHENTICATED = 75
+  MAX_DESCENDANT_COMMENTS_UNAUTHENTICATED = 5
 
   def any_negative_comments?(commentable)
     commentable.comments.where("score < 0").any?

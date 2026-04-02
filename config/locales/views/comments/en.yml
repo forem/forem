@@ -39,7 +39,7 @@ en:
         text_html: "Some comments may only be visible to logged-in visitors. %{sign_in} to view all comments."
         sign_in: "Sign in"
       limited_unauthenticated:
-        text_html: "Displaying a subset of the total comments. Please %{sign_in} to view all %{count} comments on this post."
+        text_html: "Displaying a subset of the total comments. Please %{sign_in} to view all comments on this post."
         sign_in: "sign in"
       hidden:
         text_html: Some comments have been hidden by the post's author - %{info}
