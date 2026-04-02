@@ -400,4 +400,170 @@ RSpec.describe ApplicationHelper do
       expect(content).to include(%(<p class="something js-policy-article-create">My Content</p>))
     end
   end
+
+  describe "#tag_colors" do
+    context "when given a Tag object with color attributes" do
+      let(:tag) { create(:tag, bg_color_hex: "#ff0000", text_color_hex: "#ffffff") }
+
+      it "returns colors directly from the object" do
+        expect(helper.tag_colors(tag)).to eq(background: "#ff0000", color: "#ffffff")
+      end
+
+      it "does not call Tag.find_by (no DB lookup)" do
+        expect(Tag).not_to receive(:find_by)
+        helper.tag_colors(tag)
+      end
+    end
+
+    context "when given an ActsAsTaggableOn::Tag object (as returned by follow.followable)" do
+      let(:forem_tag) { create(:tag, bg_color_hex: "#00ff00", text_color_hex: "#000000") }
+      let(:acts_as_tag) { ActsAsTaggableOn::Tag.find(forem_tag.id) }
+
+      it "returns colors directly from the object" do
+        expect(helper.tag_colors(acts_as_tag)).to eq(background: "#00ff00", color: "#000000")
+      end
+
+      it "does not call Tag.find_by (no DB lookup)" do
+        preloaded = acts_as_tag
+        expect(Tag).not_to receive(:find_by)
+        helper.tag_colors(preloaded)
+      end
+    end
+
+    context "when given a string tag name" do
+      let!(:tag) { create(:tag, name: "ruby", bg_color_hex: "#cc0000", text_color_hex: "#ffffff") }
+
+      it "looks up color by name" do
+        Rails.cache.delete("view-helper-ruby/tag_colors")
+        expect(helper.tag_colors("ruby")).to eq(background: "#cc0000", color: "#ffffff")
+      end
+
+      it "caches the result to avoid repeated DB queries" do
+        Rails.cache.delete("view-helper-ruby/tag_colors")
+        helper.tag_colors("ruby")
+        expect(Tag).not_to receive(:find_by)
+        helper.tag_colors("ruby")
+      end
+
+      it "returns default colors when the tag does not exist in DB" do
+        Rails.cache.delete("view-helper-unknowntag/tag_colors")
+        expect(helper.tag_colors("unknowntag")).to eq(background: "#d6d9e0", color: "#606570")
+      end
+    end
+
+    context "when given an object with a name method but no color attributes" do
+      let(:name_only_obj) { double("TagLike", name: "python") }
+      let!(:tag) { create(:tag, name: "python", bg_color_hex: "#3572a5", text_color_hex: "#ffffff") }
+
+      it "uses the name method to look up the tag in DB" do
+        Rails.cache.delete("view-helper-python/tag_colors")
+        expect(helper.tag_colors(name_only_obj)).to eq(background: "#3572a5", color: "#ffffff")
+      end
+    end
+
+    context "when tag has nil color attributes" do
+      let(:tag) { create(:tag, bg_color_hex: nil, text_color_hex: nil) }
+
+      it "returns nil background and color directly from the object" do
+        expect(Tag).not_to receive(:find_by)
+        expect(helper.tag_colors(tag)).to eq(background: nil, color: nil)
+      end
+    end
+  end
+
+  describe "#render_tag_link" do
+    context "when given a string" do
+      let!(:tag) { create(:tag, name: "ruby", bg_color_hex: "#cc0000", text_color_hex: "#ffffff") }
+
+      it "renders a tag link with the correct href" do
+        Rails.cache.delete("view-helper-ruby/tag_colors")
+        result = helper.render_tag_link("ruby")
+        expect(result).to include('href="/t/ruby"')
+      end
+
+      it "renders the tag label with a # prefix" do
+        Rails.cache.delete("view-helper-ruby/tag_colors")
+        result = helper.render_tag_link("ruby")
+        expect(result).to include("#").and include("ruby")
+      end
+    end
+
+    context "when given a Tag object" do
+      let(:tag) { create(:tag, :with_colors) }
+
+      it "renders the correct href using the tag name" do
+        result = helper.render_tag_link(tag)
+        expect(result).to include("href=\"/t/#{tag.name}\"")
+      end
+
+      it "does not call Tag.find_by for color lookup" do
+        expect(Tag).not_to receive(:find_by)
+        helper.render_tag_link(tag)
+      end
+
+      it "uses accessible_name for the label when available" do
+        allow(tag).to receive(:accessible_name).and_return("Ruby on Rails")
+        result = helper.render_tag_link(tag)
+        expect(result).to include("Ruby on Rails")
+      end
+
+      it "applies the crayons-tag class" do
+        expect(helper.render_tag_link(tag)).to include("crayons-tag")
+      end
+    end
+
+    context "when given an ActsAsTaggableOn::Tag object (as from follow.followable)" do
+      let(:forem_tag) { create(:tag, bg_color_hex: "#00ff00", text_color_hex: "#000000") }
+      let(:acts_as_tag) { ActsAsTaggableOn::Tag.find(forem_tag.id) }
+
+      it "renders the correct href using the tag name" do
+        result = helper.render_tag_link(acts_as_tag)
+        expect(result).to include("href=\"/t/#{acts_as_tag.name}\"")
+      end
+
+      it "uses tag name for the label" do
+        result = helper.render_tag_link(acts_as_tag)
+        expect(result).to include(acts_as_tag.name)
+      end
+
+      it "does not call Tag.find_by for color lookup (avoids N+1)" do
+        preloaded = acts_as_tag
+        expect(Tag).not_to receive(:find_by)
+        helper.render_tag_link(preloaded)
+      end
+
+      it "applies the crayons-tag class" do
+        expect(helper.render_tag_link(acts_as_tag)).to include("crayons-tag")
+      end
+    end
+
+    context "with options" do
+      let(:tag) { create(:tag, :with_colors) }
+
+      it "includes the filled class when filled: true" do
+        result = helper.render_tag_link(tag, filled: true)
+        expect(result).to include("crayons-tag--filled")
+      end
+
+      it "does not include the filled class when filled: false" do
+        result = helper.render_tag_link(tag, filled: false)
+        expect(result).not_to include("crayons-tag--filled")
+      end
+
+      it "includes the monochrome class when monochrome: true" do
+        result = helper.render_tag_link(tag, monochrome: true)
+        expect(result).to include("crayons-tag--monochrome")
+      end
+
+      it "appends path_suffix to the href" do
+        result = helper.render_tag_link(tag, path_suffix: "/edit")
+        expect(result).to include("href=\"/t/#{tag.name}/edit\"")
+      end
+
+      it "adds custom classes to the link" do
+        result = helper.render_tag_link(tag, classes: "my-custom-class")
+        expect(result).to include("my-custom-class")
+      end
+    end
+  end
 end
