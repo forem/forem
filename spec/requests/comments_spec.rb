@@ -69,6 +69,50 @@ RSpec.describe "Comments" do
       end
     end
 
+    context "when viewing massive comment pages" do
+      let!(:top_level_1) { create(:comment, commentable: article, user: user, score: 100, body_markdown: "Top level one") }
+      let!(:top_level_2) { create(:comment, commentable: article, user: user, score: 50, body_markdown: "Top level two") }
+      let!(:top_level_3) { create(:comment, commentable: article, user: user, score: -10, body_markdown: "Top level three") }
+
+      before do
+        stub_const("CommentsHelper::MAX_TOP_LEVEL_COMMENTS_UNAUTHENTICATED", 2)
+        stub_const("CommentsHelper::MAX_DESCENDANT_COMMENTS_UNAUTHENTICATED", 1)
+
+        # Add 2 descendants to top_level_1 which is guaranteed to be first
+        create(:comment, parent: top_level_1, commentable: article, user: user, body_markdown: "Sub one")
+        create(:comment, parent: top_level_1, commentable: article, user: user, body_markdown: "Sub two")
+      end
+
+      it "truncates descendants and root threads for logged-out visitors and displays a notice" do
+        get "#{article.path}/comments"
+
+        # It's difficult to assert exactly which root is dropped due to score/date sorting
+        expect(response.body).to include("Top level")
+
+        expect(response.body).to include("Sub one")
+        expect(response.body).not_to include("Sub two")
+
+        article.reload
+        # Notice confirms that truncation occurred
+        text = I18n.t("views.comments.limited_unauthenticated.text_html", sign_in: "placeholder").split("placeholder").first
+        expect(response.body).to include(text)
+      end
+
+      it "renders the full thread when a user is signed in" do
+        sign_in user
+        get "#{article.path}/comments"
+
+        expect(response.body).to include("Top level one")
+        expect(response.body).to include("Top level two")
+        expect(response.body).to include("Top level three")
+        expect(response.body).to include("Sub one")
+        expect(response.body).to include("Sub two")
+
+        text = I18n.t("views.comments.limited_unauthenticated.text_html", sign_in: "placeholder").split("placeholder").first
+        expect(response.body).not_to include(text)
+      end
+    end
+
     context "when there are child spam comments" do
       it "hides child spam comment if it has no children" do
         create(:comment, commentable: article, score: -500, body_markdown: "child-spam-comment", parent: comment)
