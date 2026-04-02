@@ -57,7 +57,7 @@
           <div>
             <div class="mb-1 flex items-center justify-between">
               <h4 class="-ml-2">
-                <%= render_tag_link(tag.accessible_name) %>
+                <%= render_tag_link(tag) %>
               </h4>
               <div class="fs-xs color-base-60"><%= t("views.tags.published", count: number_with_delimiter(tag.taggings_count, delimiter: ",")) %></div>
             </div>
