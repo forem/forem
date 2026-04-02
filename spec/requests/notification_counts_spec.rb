@@ -30,8 +30,8 @@ RSpec.describe "NotificationCounts" do
         
         expect(json_response["count"]).to eq(1)
         expect(json_response["last_notification_id"]).to eq(new_notification.id)
-        expect(json_response["last_read_at"]).to be_nil # because newest is unread
-        expect(json_response["notified_at"]).to eq(Notification.order(notified_at: :desc, created_at: :desc).first.notified_at.as_json)
+        expect(json_response["read_at"]).to be_nil # because newest is unread
+        expect(json_response["notified_at"]).to eq(new_notification.notified_at.as_json)
         expect(json_response["action"]).to eq("New Follower")
       end
 
@@ -41,9 +41,14 @@ RSpec.describe "NotificationCounts" do
         
         expect(json_response["count"]).to eq(0)
         expect(json_response["last_notification_id"]).to be_nil
-        expect(json_response["last_read_at"]).to be_nil
+        expect(json_response["read_at"]).to be_nil
         expect(json_response["notified_at"]).to be_nil
       end
+    end
+
+    it "returns 0 if no user is present (plain default mode)" do
+      get "/notifications/counts"
+      expect(response.body).to eq("0")
     end
   end
 end

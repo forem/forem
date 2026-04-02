@@ -12,7 +12,7 @@ module Notifications
         render json: { 
           count: count, 
           last_notification_id: most_recent&.id,
-          last_read_at: most_recent&.read_at,
+          read_at: most_recent&.read_at,
           notified_at: most_recent&.notified_at,
           action: most_recent&.action
         }
