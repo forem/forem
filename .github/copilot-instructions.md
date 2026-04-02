@@ -27,6 +27,7 @@ If you are modifying these agent instructions, you **MUST** replicate your chang
 - **Partial Double Verification**: RSpec in Forem is configured with strict partial double verification. Be extremely careful when mocking methods like `is_a?` or chaining methods on Active Record callbacks natively.
 
 ## Performance, Callbacks & Caching
+- **Fastly Edge Caching & Params**: Forem strictly strips unknown GET query parameters at the Fastly edge layer to prevent cache splintering. If you add a new parameter to a controller, you MUST use an allowed param from `config/fastly/snippets/safe_params_list.vcl` (such as `mode`, `filter`, or `sort`) or explicitly state why you bypassed it.
 - **Counter Caches Caveat**: Remember that Rails counter caches (used heavily in Forem for comments/reactions) skip Active Record callbacks (like `after_update_commit`). Do not rely on model callbacks to trigger events based on simple counter increments.
 - **Avoid `current_user` in Cache**: Never use `current_user` objects in cached pages or partials to prevent cache leaks and private data exposure.
 - **Database Indexes**:
