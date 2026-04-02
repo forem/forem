@@ -3,6 +3,13 @@
 This file contains instructions for AI coding assistants working on the Forem codebase (the platform that powers dev.to).
 Follow these rules and patterns to ensure high-quality contributions.
 
+## Meta: AI Instruction Synchronization
+If you are modifying these agent instructions, you **MUST** replicate your changes across all of Forem's ecosystem AI configuration files to maintain absolute consistency. Forem utilizes multiple environments, and an update to one must happen in all:
+- `AGENTS.md`
+- `.cursorrules`
+- `.windsurfrules`
+- `.github/copilot-instructions.md`
+
 ## General Philosophy
 - **Follow Patterns**: Application consistency is key. Mimic existing patterns for controllers, services, and specs.
 - **Smaller is Better**: Prefer atomic, focused modifications over sprawling refactors.
