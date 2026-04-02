@@ -30,6 +30,12 @@ function toggleArchived(article, needsArchived) {
     // Remove from DOM immediately — the server-side filter excludes archived articles by default,
     // so keeping it visible would contradict what a page reload would show.
     article.remove();
+
+    // Reveal the "Show Archived" button if it was hidden (first archive on the page).
+    const showArchivedBtn = document.querySelector('.js-show-archived-btn[hidden]');
+    if (showArchivedBtn) {
+      showArchivedBtn.removeAttribute('hidden');
+    }
   } else {
     article.classList.remove('story-archived');
   }
@@ -130,3 +136,5 @@ const initializeEllipsisMenuToggle = () => {
 
 initializeEllipsisMenuToggle();
 initializeArchiveToggleFormSubmit();
+
+export { toggleArchived };

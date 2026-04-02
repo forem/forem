@@ -162,10 +162,42 @@ RSpec.describe "Dashboards" do
         expect(response.body).to include("Hide archived")
       end
 
-      it "does not render archive toggle when no archived articles exist" do
+      it "preserves show_archived when switching from full posts to statuses" do
+        get "/dashboard", params: { show_archived: "true", sort: "views-desc" }
+
+        doc = Nokogiri::HTML(response.body)
+        statuses_link = doc.xpath("//a[contains(normalize-space(.), 'Show quickie posts')]").first
+
+        expect(statuses_link[:href]).to include("state=status")
+        expect(statuses_link[:href]).to include("sort=views-desc")
+        expect(statuses_link[:href]).to include("show_archived=true")
+      end
+
+      it "preserves show_archived when switching from statuses to full posts" do
+        get "/dashboard", params: { show_archived: "true", state: "status", sort: "views-desc" }
+
+        doc = Nokogiri::HTML(response.body)
+        full_link = doc.xpath("//a[contains(normalize-space(.), 'Show full posts')]").first
+
+        expect(full_link[:href]).to include("sort=views-desc")
+        expect(full_link[:href]).to include("show_archived=true")
+        expect(full_link[:href]).not_to include("state=status")
+      end
+
+      it "does not add show_archived to the statuses toggle when it is not active" do
+        get "/dashboard"
+
+        doc = Nokogiri::HTML(response.body)
+        statuses_link = doc.xpath("//a[contains(normalize-space(.), 'Show quickie posts')]").first
+
+        expect(statuses_link[:href]).not_to include("show_archived=true")
+      end
+
+      it "renders the archive toggle hidden when no archived articles exist" do
         archived_article.destroy
         get "/dashboard"
-        expect(response.body).not_to include("Show archived")
+        expect(response.body).to include("Show archived")
+        expect(response.body).to include('hidden="hidden"')
         expect(response.body).not_to include("Hide archived")
       end
 
@@ -238,6 +270,43 @@ RSpec.describe "Dashboards" do
       it "does not include archivedPostFilters in the page" do
         get "/dashboard"
         expect(response.body).not_to include("archivedPostFilters")
+      end
+
+      it "includes js-show-archived-btn class on the show archived toggle" do
+        get "/dashboard"
+        expect(response.body).to include("js-show-archived-btn")
+      end
+
+      it "does not apply hidden attribute to show archived toggle when archives exist" do
+        get "/dashboard"
+        expect(response.body).not_to include('hidden="hidden"')
+      end
+
+      it "includes show_archived=true in the show archived button href" do
+        get "/dashboard"
+        expect(response.body).to include("show_archived=true")
+      end
+
+      it "does not include show_archived param in the hide archived button href" do
+        get "/dashboard", params: { show_archived: "true" }
+
+        doc = Nokogiri::HTML(response.body)
+        hide_link = doc.css('a.js-show-archived-btn[aria-pressed="true"]').first
+
+        expect(hide_link[:href]).not_to include("show_archived=true")
+      end
+
+      it "preserves which param in the archive toggle link" do
+        get "/dashboard", params: { which: "personal" }
+        expect(response.body).to include("which=personal")
+      end
+
+      it "preserves org_id param in the archive toggle link" do
+        organization = create(:organization)
+        create(:organization_membership, user: user, organization: organization, type_of_user: "admin")
+        create(:article, user: user, organization: organization, archived: true)
+        get "/dashboard", params: { org_id: organization.id }
+        expect(response.body).to include("org_id=#{organization.id}")
       end
     end
 
