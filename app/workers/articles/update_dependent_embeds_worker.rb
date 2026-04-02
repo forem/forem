@@ -1,10 +1,10 @@
 module Articles
   class UpdateDependentEmbedsWorker
-    include Sidekiq::Worker
-    sidekiq_options queue: :low_priority
+    include Sidekiq::Job
+    sidekiq_options queue: :low_priority, lock: :until_executing, on_conflict: :replace
 
     def perform(article_id)
-      LiquidEmbedReference.where(referenced_type: "Article", referenced_id: article_id).find_each do |reference|
+      LiquidEmbedReference.where(referenced_type: ["Article", nil], referenced_id: article_id).find_each do |reference|
         record = reference.record
         next unless record
 

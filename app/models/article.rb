@@ -1694,7 +1694,13 @@ class Article < ApplicationRecord
     return if destroyed?
     
     # We only care about fields that affect the visual liquid embed card
-    if saved_change_to_title? || saved_change_to_user_id? || saved_change_to_organization_id? || saved_change_to_published?
+    if saved_change_to_title? ||
+       saved_change_to_user_id? ||
+       saved_change_to_organization_id? ||
+       saved_change_to_published? ||
+       saved_change_to_cached_tag_list? ||
+       saved_change_to_published_at? ||
+       saved_change_to_main_image?
       Articles::UpdateDependentEmbedsWorker.perform_async(id)
     end
   end

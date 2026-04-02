@@ -18,10 +18,17 @@ RSpec.describe Articles::UpdateDependentEmbedsWorker, type: :worker do
     let(:source_article_id) { 100 }
 
     before do
-      allow(LiquidEmbedReference).to receive_message_chain(:where, :find_each)
-        .and_yield(OpenStruct.new(record: article))
-        .and_yield(OpenStruct.new(record: comment))
-        .and_yield(OpenStruct.new(record: nil))
+      liquid_embed_relation = double("LiquidEmbedReference::Relation")
+      allow(LiquidEmbedReference).to receive(:where).and_return(liquid_embed_relation)
+      
+      article_reference = double("LiquidEmbedReference", record: article)
+      comment_reference = double("LiquidEmbedReference", record: comment)
+      nil_reference = double("LiquidEmbedReference", record: nil)
+      
+      allow(liquid_embed_relation).to receive(:find_each)
+        .and_yield(article_reference)
+        .and_yield(comment_reference)
+        .and_yield(nil_reference)
         
       allow(article).to receive(:evaluate_and_update_column_from_markdown) do
         article.processed_html = "changed_article"
@@ -34,7 +41,11 @@ RSpec.describe Articles::UpdateDependentEmbedsWorker, type: :worker do
     end
 
     it "queries LiquidEmbedReference successfully" do
-      expect(LiquidEmbedReference).to receive(:where).with(referenced_type: "Article", referenced_id: source_article_id)
+      liquid_embed_relation = double("LiquidEmbedReference::Relation")
+      allow(liquid_embed_relation).to receive(:find_each)
+      expect(LiquidEmbedReference).to receive(:where)
+        .with(referenced_type: ["Article", nil], referenced_id: source_article_id)
+        .and_return(liquid_embed_relation)
       subject.perform(source_article_id)
     end
 
