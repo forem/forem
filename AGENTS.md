@@ -1,4 +1,4 @@
-# Forem AI Context & Rules (AGENTS.md)
+# Forem AI Context & Rules
 
 This file contains instructions for AI coding assistants working on the Forem codebase (the platform that powers dev.to).
 Follow these rules and patterns to ensure high-quality contributions.
@@ -8,10 +8,27 @@ Follow these rules and patterns to ensure high-quality contributions.
 - **Smaller is Better**: Prefer atomic, focused modifications over sprawling refactors.
 - **Re-usability**: Changes should strengthen Forem as a platform, avoiding DEV-specific hardcoding unless absolutely necessary.
 
+## Background Workers & Sidekiq
+- **Job Storm Prevention**: When enqueuing jobs that might trigger rapidly (e.g., from reactions, comments, or article updates), carefully assess if a debounce lock is required. 
+- **Modern Configuration**: Prefer `include Sidekiq::Job` over `Sidekiq::Worker`. Use `sidekiq_options lock: :until_executing, on_conflict: :replace` for coalescing repetitive events.
+
 ## Testing Standards
 - **Regression Tests are Mandatory**: specific regression tests to verify your code works are required for almost all PRs.
 - **Follow Test Patterns**: Use `create(:factory)` syntax (FactoryBot) and standard RSpec expectations.
 - **Frontend vs Backend**: We are currently focused on robust backend regression tests. Frontend changes require more manual user review, so clear descriptions of UI changes are vital.
+- **Strict Linting Compliance**: Avoid legacy RSpec patterns like `receive_message_chain` and `OpenStruct` which violate existing Forem RuboCop configurations. Use strictly typed relation doubles or explicit anonymous `Class.new` instances for tests instead.
+- **Partial Double Verification**: RSpec in Forem is configured with strict partial double verification. Be extremely careful when mocking methods like `is_a?` or chaining methods on Active Record callbacks natively.
+
+## Performance, Callbacks & Caching
+- **Counter Caches Caveat**: Remember that Rails counter caches (used heavily in Forem for comments/reactions) skip Active Record callbacks (like `after_update_commit`). Do not rely on model callbacks to trigger events based on simple counter increments.
+- **Avoid `current_user` in Cache**: Never use `current_user` objects in cached pages or partials to prevent cache leaks and private data exposure.
+- **Database Indexes**:
+  - Add indexes concurrently using `algorithm: :concurrently`.
+  - Use `disable_ddl_transaction!` in the migration class.
+  - Ideally, place index additions in their own separate migration files.
+
+## Database & Schema Collisions
+- If the `schema.rb` file is modified with extra changes not tied to the migration (due to branch collision, etc.), clean up and manually fix the `schema.rb` file to match the scope of work actually being done in your migration.
 
 ## Internationalization (i18n)
 - **Update All Locales**: If your change involves new or modified text, you MUST update the corresponding i18n files for ALL supported languages found in `config/locales`.
@@ -21,19 +38,9 @@ Follow these rules and patterns to ensure high-quality contributions.
   - `pt` (Portuguese)
   - And any others present in `config/locales`.
 
-## Performance & Caching
-- **Avoid `current_user` in Cache**: Never use `current_user` objects in cached pages or partials to prevent cache leaks and private data exposure.
-- **Database Indexes**:
-  - Add indexes concurrently using `algorithm: :concurrently`.
-  - Use `disable_ddl_transaction!` in the migration class.
-  - Ideally, place index additions in their own separate migration files.
-
 ## Frontend
 - We are transitioning to a Preact-first frontend.
 - Use `app/javascript` and `app/assets` patterns as established.
 
 ## Documentation
 - If you find documentation that contradicts the codebase, trust the codebase patterns but note the discrepancy.
-
-## Schema.rb collisions
-If the schema.rb file is modified with extra changes not tied to the migration due to branch collision, etc, fix the schema.rb file to match the work being done in the migration.
