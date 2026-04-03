@@ -45,7 +45,7 @@ class ApplicationController < ActionController::Base
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
-  rescue_from ArgumentError, with: :handle_argument_error
+  around_action :handle_argument_error
 
   PUBLIC_CONTROLLERS = %w[async_info
                           confirmations
@@ -146,7 +146,9 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def handle_argument_error(exception)
+  def handle_argument_error
+    yield
+  rescue ArgumentError => exception
     if exception.message.include?("string contains null byte") || exception.message.include?("invalid byte sequence")
       bad_request
     else
