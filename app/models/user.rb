@@ -47,6 +47,7 @@ class User < ApplicationRecord
   acts_as_follower
 
   has_one :notification_setting, class_name: "Users::NotificationSetting", dependent: :delete
+  has_one :onboarding_checklist, dependent: :delete
   has_one :setting, class_name: "Users::Setting", dependent: :delete
 
   has_many :affected_feedback_messages, class_name: "FeedbackMessage",
@@ -280,6 +281,7 @@ class User < ApplicationRecord
   before_destroy :destroy_follows, prepend: true
 
   after_create_commit :send_welcome_notification
+  after_create_commit :create_onboarding_checklist
 
   after_save :sync_base_email_eligible!, if: lambda {
                                                saved_changes.key?(:email) || saved_changes.key?(:registered) || saved_changes.key?(:score)
@@ -826,6 +828,12 @@ class User < ApplicationRecord
     return unless (set_up_profile_broadcast = Broadcast.active.find_by(title: "Welcome Notification: set_up_profile"))
 
     Notification.send_welcome_notification(id, set_up_profile_broadcast.id)
+  end
+
+  def create_onboarding_checklist
+    return unless Settings::General.display_sidebar_onboarding_checklist
+
+    OnboardingChecklist.find_or_create_by(user: self)
   end
 
   def set_username
