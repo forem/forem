@@ -73,6 +73,17 @@ describe('initializeDashboardSort', () => {
     expect(buildNavigationUrl('/dashboard?sort=views-desc#archived')).toContain('#archived');
   });
 
+  test('should return the destination URL unchanged when there are no current query params', () => {
+    window.history.pushState({}, '', '/dashboard');
+    expect(buildNavigationUrl('/dashboard?sort=views-desc')).toBe('/dashboard?sort=views-desc');
+  });
+
+  test('should return a path-relative URL without the origin', () => {
+    const result = buildNavigationUrl('/dashboard?sort=views-desc');
+    expect(result).toMatch(/^\//);
+    expect(result).not.toContain('http');
+  });
+
   test('should keep show_archived when changing dashboard sort', () => {
     const sortSelect = document.getElementById('dashboard_sort');
     selectNavigation('dashboard_sort', '/dashboard?sort=');

@@ -25,20 +25,9 @@ function getFormValues(form) {
   return formData;
 }
 
-function toggleArchived(article, needsArchived) {
-  if (needsArchived === 'true') {
-    // Remove from DOM immediately — the server-side filter excludes archived articles by default,
-    // so keeping it visible would contradict what a page reload would show.
-    article.remove();
-
-    // Reveal the "Show Archived" button if it was hidden (first archive on the page).
-    const showArchivedBtn = document.querySelector('.js-show-archived-btn[hidden]');
-    if (showArchivedBtn) {
-      showArchivedBtn.removeAttribute('hidden');
-    }
-  } else {
-    article.classList.remove('story-archived');
-  }
+function toggleArchived() {
+  InstantClick.preload(window.location.href);
+  InstantClick.display(window.location.href);
 }
 
 function toggleNotifications(submit, action) {
@@ -51,7 +40,7 @@ function toggleNotifications(submit, action) {
 
 function onXhrSuccess(form, article, values) {
   if (values.article.archived) {
-    toggleArchived(article, values.article.archived);
+    toggleArchived();
   } else {
     const submit = form.querySelector('[type="submit"]');
     const submitValue = submit.getAttribute('value');

@@ -308,6 +308,30 @@ RSpec.describe "Dashboards" do
         get "/dashboard", params: { org_id: organization.id }
         expect(response.body).to include("org_id=#{organization.id}")
       end
+
+      it "excludes archived status posts by default when state=status" do
+        archived_status = create(:article, user: user, type_of: "status", body_markdown: "", main_image: nil, archived: true)
+        get "/dashboard", params: { state: "status" }
+        expect(response.body).not_to include(CGI.escapeHTML(archived_status.title))
+      end
+
+      it "includes archived status posts when state=status and show_archived=true" do
+        archived_status = create(:article, user: user, type_of: "status", body_markdown: "", main_image: nil, archived: true)
+        get "/dashboard", params: { state: "status", show_archived: "true" }
+        expect(response.body).to include(CGI.escapeHTML(archived_status.title))
+      end
+
+      it "treats show_archived=TRUE (wrong case) the same as absent" do
+        get "/dashboard", params: { show_archived: "TRUE" }
+        expect(response.body).not_to include(CGI.escapeHTML(archived_article.title))
+      end
+
+      it "returns 200 and shows active articles when show_archived=true but no archived articles exist" do
+        archived_article.destroy
+        get "/dashboard", params: { show_archived: "true" }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(CGI.escapeHTML(active_article.title))
+      end
     end
 
     context "when logged but has no articles nor can create them" do
