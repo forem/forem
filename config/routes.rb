@@ -106,6 +106,7 @@ Rails.application.routes.draw do
       end
 
       scope module: :v0, constraints: ApiConstraints.new(version: 0, default: true) do
+        post "/auth/mobile_exchange", to: "mobile_auth#create"
         draw :api
       end
     end

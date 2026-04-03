@@ -52,14 +52,10 @@
       .c-embed__body {
         font-size: var(--fs-s);
       }
-      div
-        :not(.crayons-comment__readmore)
-        :not(.highlight__panel-action)
-        :not(.highlight__panel)
-        :not(.highlight) {
+      > div:not(.crayons-comment__readmore):not(.highlight__panel-action):not(.highlight__panel):not(.highlight) {
         background: var(--card-secondary-bg);
       }
-      div:not(.crayons-comment__readmore) {
+      > div:not(.crayons-comment__readmore) {
         margin-bottom: var(--su-3);
       }
       .liquid-comment .body {
@@ -90,32 +86,23 @@
       margin-top: -3px;
       padding-bottom: var(--su-1);
     }
-    img {
+    img:not([class]) {
       max-height: 130px;
       border-radius: var(--radius);
       max-width: 220px;
     }
-    iframe {
+    iframe:not([class]) {
       max-height: 240px;
       border-radius: var(--radius);
       border: 0;
     }
 
-    a:hover {
+    a:not([class]):hover {
       text-decoration: underline; //todo: default for all in-content links
     }
 
-    p {
+    p:not([class]) {
       margin-bottom: var(--su-3);
-    }
-
-    * {
-      max-width: 100%;
-    }
-
-    div {
-      width: auto;
-      object-fit: contain;
     }
 
     pre:not(.highlight),

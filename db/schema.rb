@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_03_30_151720) do
+ActiveRecord::Schema[7.0].define(version: 2026_04_02_165751) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1018,6 +1018,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_30_151720) do
     t.datetime "notified_at", precision: nil
     t.bigint "organization_id"
     t.boolean "read", default: false
+    t.datetime "read_at"
     t.bigint "subforem_id"
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
@@ -1031,6 +1032,15 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_30_151720) do
     t.index ["user_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_user_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
     t.index ["user_id", "notifiable_id", "notifiable_type"], name: "index_notifications_on_user_notifiable_action_is_null", unique: true, where: "(action IS NULL)"
     t.index ["user_id", "organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_user_id_organization_id_notifiable_action", unique: true
+  end
+
+  create_table "onboarding_checklists", force: :cascade do |t|
+    t.datetime "completed_at"
+    t.datetime "created_at", null: false
+    t.jsonb "items", default: {}, null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_onboarding_checklists_on_user_id", unique: true
   end
 
   create_table "organization_lead_forms", force: :cascade do |t|
@@ -2037,6 +2047,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_30_151720) do
   add_foreign_key "notification_subscriptions", "users", on_delete: :cascade
   add_foreign_key "notifications", "organizations", on_delete: :cascade
   add_foreign_key "notifications", "users", on_delete: :cascade
+  add_foreign_key "onboarding_checklists", "users", on_delete: :cascade
   add_foreign_key "organization_lead_forms", "organizations", on_delete: :cascade
   add_foreign_key "organization_memberships", "organizations", on_delete: :cascade
   add_foreign_key "organization_memberships", "users", on_delete: :cascade
