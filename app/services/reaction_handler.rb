@@ -67,15 +67,19 @@ class ReactionHandler
   end
 
   def destroy_reaction(reaction)
-    Reaction.transaction do
+    destroyed_reaction = Reaction.transaction do
       locked = Reaction.lock.find_by(id: reaction.id)
-      return unless locked
+      next unless locked
 
       locked.destroy
-      sink_articles(locked)
-      send_notifications_without_delay(locked)
       locked
     end
+
+    return unless destroyed_reaction
+
+    sink_articles(destroyed_reaction)
+    send_notifications_without_delay(destroyed_reaction)
+    destroyed_reaction
   end
 
   def existing_reaction
