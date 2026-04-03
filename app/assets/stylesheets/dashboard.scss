@@ -237,11 +237,7 @@ $column-flex: 1;
   }
   .charts-container {
     padding: var(--su-4);
-    height: 320px;
-    canvas {
-      min-height: 280px;
-      max-height: 280px;
-    }
+    min-height: 320px;
   }
 }
 

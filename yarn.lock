@@ -4820,6 +4820,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"apexcharts@npm:^5.10.4":
+  version: 5.10.4
+  resolution: "apexcharts@npm:5.10.4"
+  checksum: 10c0/4261ea1da61058f022256a712015e236ca10b736e5141a5015c75f9504e65a56e3880cb11647fa171d8f58bdd998534ffedd07a5faa9f4f4eb9121a5c01c505f
+  languageName: node
+  linkType: hard
+
 "append-transform@npm:^2.0.0":
   version: 2.0.0
   resolution: "append-transform@npm:2.0.0"
@@ -6968,6 +6975,7 @@ __metadata:
     "@whitespace/storybook-addon-html": "npm:^5.1.1"
     ahoy.js: "npm:^0.4.4"
     algoliasearch: "npm:4.23.3"
+    apexcharts: "npm:^5.10.4"
     autoprefixer: "npm:^10.4.16"
     babel-jest: "npm:^28.1.3"
     babel-loader: "npm:^8.2.5"

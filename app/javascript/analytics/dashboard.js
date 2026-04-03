@@ -42,73 +42,68 @@ function writeCards(data, timeRangeLabel) {
   reactionCard.innerHTML = cardHTML(reactions, `${locale('core.dashboard_analytics_reactions')} ${timeRangeLabel}`);
 }
 
-function drawChart({ id, showPoints = true, title, labels, datasets }) {
-  const chartOptions = {
-    elements: {
-      point: {
-        // The default is 3: https://www.chartjs.org/docs/latest/configuration/elements.html#point-configuration
-        radius: showPoints ? 3 : 0,
+function drawChart({ id, showPoints = true, labels, series, colors }) {
+  const options = {
+    chart: {
+      type: 'line',
+      height: 280,
+      toolbar: { show: false },
+      zoom: { enabled: false },
+      animations: {
+        enabled: true,
+        easing: 'easeinout',
+        speed: 400,
       },
     },
-    scales: {
-      y: {
-        type: 'linear',
-        suggestedMin: 0,
-        ticks: {
-          precision: 0,
-        },
+    series,
+    colors,
+    xaxis: {
+      categories: labels,
+      labels: {
+        rotate: -45,
+        rotateAlways: false,
+        hideOverlappingLabels: true,
+        style: { fontSize: '11px' },
+      },
+      tickAmount: Math.min(labels.length, 14),
+    },
+    yaxis: {
+      min: 0,
+      labels: {
+        formatter: (val) => Math.round(val),
       },
     },
-  };
-  const dataOptions = {
-    plugins: {
-      legend: {
-        position: 'top',
-      },
+    stroke: {
+      curve: 'smooth',
+      width: 2,
     },
-    responsive: true,
-    title: {
-      display: true,
-      text: title,
+    markers: {
+      size: showPoints ? 3 : 0,
+    },
+    legend: {
+      position: 'top',
+    },
+    tooltip: {
+      shared: true,
+      intersect: false,
+    },
+    grid: {
+      borderColor: '#e7e7e7',
     },
   };
 
-  import('chart.js').then(
-    ({
-      Chart,
-      LineController,
-      LinearScale,
-      CategoryScale,
-      PointElement,
-      LineElement,
-      Legend,
-    }) => {
-      Chart.register(
-        LineController,
-        LinearScale,
-        CategoryScale,
-        PointElement,
-        LineElement,
-        Legend,
-      );
-      const currentChart = activeCharts[id];
-      if (currentChart) {
-        currentChart.destroy();
-      }
+  import('apexcharts').then(({ default: ApexCharts }) => {
+    const currentChart = activeCharts[id];
+    if (currentChart) {
+      currentChart.destroy();
+    }
 
-      const canvas = document.getElementById(id);
-      // eslint-disable-next-line no-new
-      activeCharts[id] = new Chart(canvas, {
-        type: 'line',
-        data: {
-          labels,
-          datasets,
-          options: dataOptions,
-        },
-        options: chartOptions,
-      });
-    },
-  );
+    const el = document.getElementById(id);
+    el.innerHTML = '';
+    const chart = new ApexCharts(el, options);
+    chart.render();
+    activeCharts[id] = chart;
+  });
 }
 
 function drawCharts(data, timeRangeLabel) {
@@ -127,76 +122,30 @@ function drawCharts(data, timeRangeLabel) {
   drawChart({
     id: 'reactions-chart',
     showPoints,
-    title: `Reactions ${timeRangeLabel}`,
     labels,
-    datasets: [
-      {
-        label: 'Total',
-        data: reactions,
-        fill: false,
-        borderColor: 'rgb(75, 192, 192)',
-        backgroundColor: 'rgb(75, 192, 192)',
-        lineTension: 0.1,
-      },
-      {
-        label: 'Likes',
-        data: likes,
-        fill: false,
-        borderColor: 'rgb(229, 100, 100)',
-        backgroundColor: 'rgb(229, 100, 100)',
-        lineTension: 0.1,
-      },
-      {
-        label: 'Unicorns',
-        data: unicorns,
-        fill: false,
-        borderColor: 'rgb(157, 57, 233)',
-        backgroundColor: 'rgb(157, 57, 233)',
-        lineTension: 0.1,
-      },
-      {
-        label: 'Bookmarks',
-        data: readingList,
-        fill: false,
-        borderColor: 'rgb(10, 133, 255)',
-        backgroundColor: 'rgb(10, 133, 255)',
-        lineTension: 0.1,
-      },
+    colors: ['#4bc0c0', '#e56464', '#9d39e9', '#0a85ff'],
+    series: [
+      { name: 'Total', data: reactions },
+      { name: 'Likes', data: likes },
+      { name: 'Unicorns', data: unicorns },
+      { name: 'Bookmarks', data: readingList },
     ],
   });
 
   drawChart({
     id: 'comments-chart',
     showPoints,
-    title: `Comments ${timeRangeLabel}`,
     labels,
-    datasets: [
-      {
-        label: 'Comments',
-        data: comments,
-        fill: false,
-        borderColor: 'rgb(75, 192, 192)',
-        backgroundColor: 'rgb(75, 192, 192)',
-        lineTension: 0.1,
-      },
-    ],
+    colors: ['#4bc0c0'],
+    series: [{ name: 'Comments', data: comments }],
   });
 
   drawChart({
     id: 'readers-chart',
     showPoints,
-    title: `Reads ${timeRangeLabel}`,
     labels,
-    datasets: [
-      {
-        label: 'Reads',
-        data: readers,
-        fill: false,
-        borderColor: 'rgb(157, 57, 233)',
-        backgroundColor: 'rgb(157, 57, 233)',
-        lineTension: 0.1,
-      },
-    ],
+    colors: ['#9d39e9'],
+    series: [{ name: 'Reads', data: readers }],
   });
 }
 
