@@ -13,7 +13,7 @@ class GithubTag
       content = Github::OauthClient.new.repository(repository_path)
 
       if show_readme?
-        readme_html = fetch_readme(repository_path, content.html_url)
+        readme_html = fetch_readme(repository_path, content.html_url, content.default_branch)
       end
 
       ApplicationController.render(
@@ -59,9 +59,9 @@ class GithubTag
       options.none?
     end
 
-    def fetch_readme(repository_path, repository_url)
+    def fetch_readme(repository_path, repository_url, default_branch)
       readme_html = Github::OauthClient.new.readme(repository_path, accept: "application/vnd.github.html")
-      clean_relative_path!(readme_html, repository_url)
+      clean_relative_path!(readme_html, repository_url, default_branch)
     rescue Github::Errors::NotFound
       nil
     end
@@ -76,7 +76,7 @@ class GithubTag
       raise StandardError, I18n.t("liquid_tags.github_tag.github_readme_tag.invalid_github_repository")
     end
 
-    def clean_relative_path!(readme_html, url)
+    def clean_relative_path!(readme_html, url, default_branch)
       readme = Nokogiri::HTML(readme_html)
       uri = URI.parse(url)
       base_github_url = "#{uri.scheme}://#{uri.host}"
@@ -88,7 +88,7 @@ class GithubTag
         element["src"] = "" if attribute == "src" && element.attributes[attribute].blank?
 
         path = element.attributes[attribute].value
-        next if path.blank? # Skip missing/empty attributes — avoids bogus rewrite to .../HEAD/
+        next if path.blank? # Skip missing/empty attributes — avoids bogus rewrite to .../default_branch/
         next if path.start_with?("http", "//", "data:", "mailto:") # Skip absolute/non-relative URLs
 
         # Handle different types of relative paths
@@ -100,7 +100,10 @@ class GithubTag
           element.attributes[attribute].value = "#{url}#{path}"
         elsif element.name == "img"
           # Relative image path — resolve to raw content URL so the CDN caches valid bytes
-          element.attributes[attribute].value = "#{url.sub('github.com', 'raw.githubusercontent.com')}/HEAD/#{path}"
+          element.attributes[attribute].value = "#{url.sub('github.com', 'raw.githubusercontent.com')}/#{default_branch}/#{path}"
+          # Bypass CDN explicitly for github raw blobs to avoid large imgproxy error 
+          # blocks natively when the upstream repo has missing files
+          element["data-ignore-prefix"] = "true"
         else
           # Relative path (e.g., blob/main/file.png)
           element.attributes[attribute].value = "#{url}/#{path}"

@@ -123,12 +123,12 @@ RSpec.describe GithubTag::GithubReadmeTag, type: :liquid_tag, vcr: true do
           <a href="https://external.com">External</a>
         HTML
 
-        result = tag.send(:clean_relative_path!, readme_html, "https://github.com/owner/repo")
+        result = tag.send(:clean_relative_path!, readme_html, "https://github.com/owner/repo", "main")
 
         expect(result).to include('href="https://github.com/owner/repo#license"')
         expect(result).to include('href="https://github.com/owner/repo/blob/main/file.png"')
         expect(result).not_to include("/owner/repo/owner/repo/") # Should not duplicate path
-        expect(result).to include('src="https://raw.githubusercontent.com/owner/repo/HEAD/image.png"')
+        expect(result).to include('src="https://raw.githubusercontent.com/owner/repo/main/image.png" data-ignore-prefix="true"')
         expect(result).to include('href="https://external.com"')
       end
     end
@@ -139,13 +139,13 @@ RSpec.describe GithubTag::GithubReadmeTag, type: :liquid_tag, vcr: true do
 
       it "rewrites a relative img src to a raw.githubusercontent.com URL" do
         html = '<img src="docs/screenshot.png">'
-        result = tag.send(:clean_relative_path!, html, repo_url)
-        expect(result).to include('src="https://raw.githubusercontent.com/owner/repo/HEAD/docs/screenshot.png"')
+        result = tag.send(:clean_relative_path!, html, repo_url, "main")
+        expect(result).to include('src="https://raw.githubusercontent.com/owner/repo/main/docs/screenshot.png" data-ignore-prefix="true"')
       end
 
       it "does not rewrite an absolute img src" do
         html = '<img src="https://cdn.example.com/logo.png">'
-        result = tag.send(:clean_relative_path!, html, repo_url)
+        result = tag.send(:clean_relative_path!, html, repo_url, "main")
         expect(result).to include('src="https://cdn.example.com/logo.png"')
         expect(result).not_to include("raw.githubusercontent.com")
       end
@@ -153,51 +153,51 @@ RSpec.describe GithubTag::GithubReadmeTag, type: :liquid_tag, vcr: true do
       it "does not rewrite a root-relative img src to raw.githubusercontent.com" do
         # Root-relative paths (starting with /) go through the base_github_url branch, not raw
         html = '<img src="/owner/repo/raw/main/logo.png">'
-        result = tag.send(:clean_relative_path!, html, repo_url)
+        result = tag.send(:clean_relative_path!, html, repo_url, "main")
         expect(result).to include('src="https://github.com/owner/repo/raw/main/logo.png"')
         expect(result).not_to include("raw.githubusercontent.com")
       end
 
       it "does not rewrite a relative a href to raw.githubusercontent.com" do
         html = '<a href="blob/main/README.md">README</a>'
-        result = tag.send(:clean_relative_path!, html, repo_url)
+        result = tag.send(:clean_relative_path!, html, repo_url, "main")
         expect(result).to include('href="https://github.com/owner/repo/blob/main/README.md"')
         expect(result).not_to include("raw.githubusercontent.com")
       end
 
       it "does not rewrite an img with a blank src to a bogus raw.githubusercontent.com URL" do
         html = '<img src="">'
-        result = tag.send(:clean_relative_path!, html, repo_url)
+        result = tag.send(:clean_relative_path!, html, repo_url, "main")
         expect(result).not_to include("raw.githubusercontent.com")
-        expect(result).not_to include("/HEAD/")
+        expect(result).not_to include("/main/")
       end
 
       it "does not rewrite an img with no src attribute to a bogus raw.githubusercontent.com URL" do
         html = "<img>"
-        result = tag.send(:clean_relative_path!, html, repo_url)
+        result = tag.send(:clean_relative_path!, html, repo_url, "main")
         expect(result).not_to include("raw.githubusercontent.com")
-        expect(result).not_to include("/HEAD/")
+        expect(result).not_to include("/main/")
       end
 
       it "does not rewrite a protocol-relative img src (//cdn.example.com/img.png)" do
         html = '<img src="//cdn.example.com/img.png">'
-        result = tag.send(:clean_relative_path!, html, repo_url)
+        result = tag.send(:clean_relative_path!, html, repo_url, "main")
         expect(result).to include('src="//cdn.example.com/img.png"')
         expect(result).not_to include("raw.githubusercontent.com")
-        expect(result).not_to include("/HEAD/")
+        expect(result).not_to include("/main/")
       end
 
       it "does not rewrite a data: URI img src" do
         html = '<img src="data:image/png;base64,abc123">'
-        result = tag.send(:clean_relative_path!, html, repo_url)
+        result = tag.send(:clean_relative_path!, html, repo_url, "main")
         expect(result).to include('src="data:image/png;base64,abc123"')
         expect(result).not_to include("raw.githubusercontent.com")
-        expect(result).not_to include("/HEAD/")
+        expect(result).not_to include("/main/")
       end
 
       it "does not rewrite a mailto: href to a github path" do
         html = '<a href="mailto:user@example.com">Email</a>'
-        result = tag.send(:clean_relative_path!, html, repo_url)
+        result = tag.send(:clean_relative_path!, html, repo_url, "main")
         expect(result).to include('href="mailto:user@example.com"')
         expect(result).not_to include("github.com/owner/repo/mailto")
       end
