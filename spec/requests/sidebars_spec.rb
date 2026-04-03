@@ -33,6 +33,13 @@ RSpec.describe "Sidebars" do
         expect(response.body).not_to include("onboarding-progress-card")
       end
 
+      it "does not show onboarding progress card for users registered more than 28 days ago" do
+        user.update_column(:registered_at, 29.days.ago)
+        sign_in user
+        get "/sidebars/home"
+        expect(response.body).not_to include("onboarding-progress-card")
+      end
+
       it "does not show onboarding progress card when setting is disabled" do
         allow(Settings::General).to receive(:display_sidebar_onboarding_checklist).and_return(false)
         sign_in user
