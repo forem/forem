@@ -408,5 +408,13 @@ description:\ntags: heytag\n---\n\nHey this is the article"
       described_class.call(checklist_user, draft, { body_markdown: "updated content" })
       expect(checklist_user.onboarding_checklist.reload.items["made_first_post"]).to be_nil
     end
+
+    it "does not query or complete made_first_post if the user registered more than 28 days ago" do
+      checklist_user.update_column(:registered_at, 29.days.ago)
+      # Assert database is not hit for checklist
+      expect(checklist_user).not_to receive(:onboarding_checklist)
+      
+      described_class.call(checklist_user, draft, { body_markdown: "updated content", published: true })
+    end
   end
 end
