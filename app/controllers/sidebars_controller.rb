@@ -46,7 +46,7 @@ class SidebarsController < ApplicationController
 
   def set_onboarding_checklist
     return unless Settings::General.display_sidebar_onboarding_checklist
-    return if current_user.registered_at && current_user.registered_at < 28.days.ago
+    return if current_user.registered_at&.before?(28.days.ago)
 
     checklist = current_user.onboarding_checklist
     return unless checklist && !checklist.completed?

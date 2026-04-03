@@ -52,6 +52,8 @@ module Articles
     end
 
     def complete_onboarding_first_post
+      return if user.registered_at&.before?(28.days.ago)
+
       user.onboarding_checklist&.complete_item!("made_first_post")
     end
 
