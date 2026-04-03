@@ -140,14 +140,17 @@ class ApplicationController < ActionController::Base
       format.json do
         render json: { error: I18n.t("application_controller.bad_request") }, status: :bad_request
       end
+      format.any do
+        render plain: "The request could not be understood (400).", status: :bad_request
+      end
     end
   end
 
   def handle_argument_error(exception)
     if exception.message.include?("string contains null byte") || exception.message.include?("invalid byte sequence")
-      render plain: "The request could not be understood (400).", status: :bad_request
+      bad_request
     else
-      raise exception
+      raise
     end
   end
 
