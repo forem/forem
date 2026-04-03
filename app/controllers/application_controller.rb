@@ -150,7 +150,7 @@ class ApplicationController < ActionController::Base
     if exception.message.include?("string contains null byte") || exception.message.include?("invalid byte sequence")
       bad_request
     else
-      raise
+      raise exception
     end
   end
 
