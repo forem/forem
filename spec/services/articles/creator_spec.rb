@@ -140,4 +140,20 @@ RSpec.describe Articles::Creator, type: :service do
       expect(Collection.where(slug: "shared-series", organization: organization).count).to eq(1)
     end
   end
+
+  describe "onboarding checklist" do
+    before { allow(Settings::General).to receive(:display_sidebar_onboarding_checklist).and_return(true) }
+
+    let(:checklist_user) { create(:user) }
+
+    it "completes made_first_post when a published article is created" do
+      described_class.call(checklist_user, attributes_for(:article, published: true))
+      expect(checklist_user.onboarding_checklist.reload.items["made_first_post"]).to be_present
+    end
+
+    it "does not complete made_first_post when a draft is created" do
+      described_class.call(checklist_user, attributes_for(:article, published: false))
+      expect(checklist_user.onboarding_checklist.reload.items["made_first_post"]).to be_nil
+    end
+  end
 end
