@@ -117,7 +117,7 @@ namespace :db do
       }
 
       # --- Helper: seed engagement data for a set of articles ---
-      seed_engagement = lambda { |target_articles, label|
+      seed_engagement = lambda { |target_articles|
         pv_count = 0
         rx_count = 0
         cm_count = 0
@@ -188,7 +188,7 @@ namespace :db do
       articles = ensure_articles.call(user)
       puts "  User: #{user.username} (ID: #{user.id})"
       puts "  Articles: #{articles.count} | Others: #{other_users.size} | Range: #{days_back}d"
-      seed_engagement.call(articles, "Personal")
+      seed_engagement.call(articles)
 
       # Follows
       follow_count = 0
@@ -218,7 +218,7 @@ namespace :db do
           puts "=== Org: #{org.name} (ID: #{org.id}) ==="
           org_articles = ensure_articles.call(user, org: org)
           puts "  Articles: #{org_articles.count}"
-          seed_engagement.call(org_articles, org.name)
+          seed_engagement.call(org_articles)
 
           org_follow_count = 0
           other_users.each do |follower|
