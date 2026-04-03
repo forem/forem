@@ -23,6 +23,13 @@ RSpec.describe "Pages" do
       expect(response.body).to include(" pageslug-#{page.slug}")
     end
 
+    context "with a null byte in the slug URL" do
+      it "returns a 400 Bad Request error without raising an unhandled exception" do
+        get "/page/%00.env"
+        expect(response).to have_http_status(:bad_request)
+      end
+    end
+
     context "when the page has a redirect_to_url set to an external URL" do
       it "redirects permanently to the external URL" do
         page = create(:page, redirect_to_url: "https://example.com/target")

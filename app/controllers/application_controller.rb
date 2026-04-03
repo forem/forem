@@ -45,6 +45,8 @@ class ApplicationController < ActionController::Base
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
+  rescue_from ArgumentError, with: :handle_argument_error
+
   PUBLIC_CONTROLLERS = %w[async_info
                           confirmations
                           deep_links
@@ -138,6 +140,14 @@ class ApplicationController < ActionController::Base
       format.json do
         render json: { error: I18n.t("application_controller.bad_request") }, status: :bad_request
       end
+    end
+  end
+
+  def handle_argument_error(exception)
+    if exception.message.include?("string contains null byte") || exception.message.include?("invalid byte sequence")
+      render plain: "The request could not be understood (400).", status: :bad_request
+    else
+      raise exception
     end
   end
 
