@@ -3,7 +3,7 @@ function buildNavigationUrl(url) {
   const currentSearchParams = new URLSearchParams(window.location.search);
 
   currentSearchParams.forEach((value, key) => {
-    if (!destination.searchParams.has(key)) {
+    if (key !== 'page' && !destination.searchParams.has(key)) {
       destination.searchParams.set(key, value);
     }
   });

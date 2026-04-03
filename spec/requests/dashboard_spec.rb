@@ -326,6 +326,16 @@ RSpec.describe "Dashboards" do
         expect(response.body).not_to include(CGI.escapeHTML(archived_article.title))
       end
 
+      it "treats show_archived=True (mixed case) the same as absent" do
+        get "/dashboard", params: { show_archived: "True" }
+        expect(response.body).not_to include(CGI.escapeHTML(archived_article.title))
+      end
+
+      it "treats show_archived=1 (numeric string) the same as absent" do
+        get "/dashboard", params: { show_archived: "1" }
+        expect(response.body).not_to include(CGI.escapeHTML(archived_article.title))
+      end
+
       it "returns 200 and shows active articles when show_archived=true but no archived articles exist" do
         archived_article.destroy
         get "/dashboard", params: { show_archived: "true" }

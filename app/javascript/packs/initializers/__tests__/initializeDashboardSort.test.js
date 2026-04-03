@@ -84,6 +84,46 @@ describe('initializeDashboardSort', () => {
     expect(result).not.toContain('http');
   });
 
+  test('should not inherit page param when building a navigation URL', () => {
+    window.history.pushState({}, '', '/dashboard?show_archived=true&state=status&page=3');
+    const url = buildNavigationUrl('/dashboard?sort=views-desc');
+    expect(url).not.toContain('page=3');
+    expect(url).toContain('show_archived=true');
+    expect(url).toContain('sort=views-desc');
+  });
+
+  test('should not inherit page=1 when building a navigation URL', () => {
+    window.history.pushState({}, '', '/dashboard?show_archived=true&page=1');
+    const url = buildNavigationUrl('/dashboard?sort=views-desc');
+    expect(url).not.toContain('page=');
+    expect(url).toContain('show_archived=true');
+  });
+
+  test('should preserve an explicit page on the destination URL and not overwrite it from current', () => {
+    window.history.pushState({}, '', '/dashboard?page=3');
+    const url = buildNavigationUrl('/dashboard?sort=views-desc&page=2');
+    expect(url).toContain('page=2');
+    expect(url).not.toContain('page=3');
+  });
+
+  test('should return clean destination URL when page is the only current param', () => {
+    window.history.pushState({}, '', '/dashboard?page=3');
+    const url = buildNavigationUrl('/dashboard?sort=views-desc');
+    expect(url).toBe('/dashboard?sort=views-desc');
+  });
+
+  test('should not carry page to InstantClick when changing sort from a paged state', () => {
+    window.history.pushState({}, '', '/dashboard?show_archived=true&page=3');
+    const sortSelect = document.getElementById('dashboard_sort');
+    selectNavigation('dashboard_sort', '/dashboard?sort=');
+    sortSelect.value = 'views-desc';
+    sortSelect.dispatchEvent(new Event('change'));
+    const preloadArg = global.InstantClick.preload.mock.calls[0][0];
+    expect(preloadArg).not.toContain('page=3');
+    expect(preloadArg).toContain('show_archived=true');
+    expect(preloadArg).toContain('sort=views-desc');
+  });
+
   test('should keep show_archived when changing dashboard sort', () => {
     const sortSelect = document.getElementById('dashboard_sort');
     selectNavigation('dashboard_sort', '/dashboard?sort=');
