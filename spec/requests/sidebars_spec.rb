@@ -9,6 +9,45 @@ RSpec.describe "Sidebars" do
       expect(response.body).to include("rubymagoo")
     end
 
+    context "when onboarding progress is shown" do
+      let(:user) { create(:user) }
+
+      before { allow(Settings::General).to receive(:display_sidebar_onboarding_checklist).and_return(true) }
+
+      it "shows onboarding progress card for new signed-in user" do
+        sign_in user
+        get "/sidebars/home"
+        expect(response.body).to include("onboarding-progress-card")
+      end
+
+      it "does not show onboarding progress card for signed-out user" do
+        get "/sidebars/home"
+        expect(response.body).not_to include("onboarding-progress-card")
+      end
+
+      it "does not show onboarding progress card when all items are completed" do
+        checklist = user.onboarding_checklist
+        OnboardingChecklist::ITEM_KEYS.each { |key| checklist.complete_item!(key) }
+        sign_in user
+        get "/sidebars/home"
+        expect(response.body).not_to include("onboarding-progress-card")
+      end
+
+      it "does not show onboarding progress card for users registered more than 28 days ago" do
+        user.update_column(:registered_at, 29.days.ago)
+        sign_in user
+        get "/sidebars/home"
+        expect(response.body).not_to include("onboarding-progress-card")
+      end
+
+      it "does not show onboarding progress card when setting is disabled" do
+        allow(Settings::General).to receive(:display_sidebar_onboarding_checklist).and_return(false)
+        sign_in user
+        get "/sidebars/home"
+        expect(response.body).not_to include("onboarding-progress-card")
+      end
+    end
+
     context "when active discussions exist" do
       let(:tag) { create(:tag, name: "testmagoo") }
       let(:user) { create(:user) }
@@ -65,6 +104,20 @@ RSpec.describe "Sidebars" do
 
       it "does not include non-featured non-tagg-followed article" do
         second_article = create(:article, language: "en")
+        sign_in user
+        get "/sidebars/home"
+        expect(response.body).not_to include(CGI.escapeHTML(second_article.title))
+      end
+
+      it "includes article with >= 15 comments and >= 25 comment score regardless of other factors" do
+        second_article = create(:article, language: "en", comments_count: 15, comment_score: 25)
+        sign_in user
+        get "/sidebars/home"
+        expect(response.body).to include(CGI.escapeHTML(second_article.title))
+      end
+
+      it "does not include article with < 15 comments even if comment score >= 25" do
+        second_article = create(:article, language: "en", comments_count: 14, comment_score: 25)
         sign_in user
         get "/sidebars/home"
         expect(response.body).not_to include(CGI.escapeHTML(second_article.title))

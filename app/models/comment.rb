@@ -1,4 +1,5 @@
 class Comment < ApplicationRecord
+  include LiquidEmbeddable
   has_ancestry
   resourcify
 
@@ -60,7 +61,7 @@ class Comment < ApplicationRecord
   validates :commentable_id, presence: true, if: :commentable_type
   validates :commentable_type, inclusion: { in: COMMENTABLE_TYPES }, if: :commentable_id
   validates :positive_reactions_count, presence: true
-  validates :public_reactions_count, presence: true
+  validates :public_reactions_count, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :reactions_count, presence: true
   validates :commentable, on: :create, presence: {
     message: lambda do |object, _data|
@@ -70,6 +71,7 @@ class Comment < ApplicationRecord
   }
 
   after_create_commit :record_field_test_event
+  after_create_commit :complete_onboarding_welcome_item
   after_create_commit :send_email_notification, if: :should_send_email_notification?
 
   after_commit :calculate_score, on: %i[create update]
@@ -401,6 +403,15 @@ class Comment < ApplicationRecord
 
     Users::RecordFieldTestEventWorker
       .perform_async(user_id, AbExperiment::GoalConversionHandler::USER_CREATES_COMMENT_GOAL)
+  end
+
+  def complete_onboarding_welcome_item
+    return unless commentable_type == "Article"
+
+    welcome = Article.cached_admin_published_with("welcome")
+    return unless welcome && commentable_id == welcome.id
+
+    user.onboarding_checklist&.complete_item!("comment_in_welcome")
   end
 
   def notify_slack_channel_about_warned_users

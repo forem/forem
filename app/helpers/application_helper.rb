@@ -54,7 +54,7 @@ module ApplicationHelper
     listings_url = URL.url(try(:listings_path) || "/listings") # listings_path helper might eventually be removed too
 
     return false if listings_url == URL.url(link.url)
-    
+
     true
   end
 
@@ -69,6 +69,8 @@ module ApplicationHelper
                      "stories stories-show podcast_episodes-show"
                    elsif @story_show
                      "stories stories-show"
+                   elsif @org_readme_show
+                     "stories organizations-show-readme"
                    else
                      "#{controller_name} #{current_page}"
                    end
@@ -86,7 +88,7 @@ module ApplicationHelper
 
   def page_view_classes
     return "" unless @page.slug.present?
-    
+
     " pageslug-#{@page.slug.gsub('/', '__SLASH__')}"
   end
 
@@ -166,11 +168,16 @@ module ApplicationHelper
   end
 
   def tag_colors(tag)
-    Rails.cache.fetch("view-helper-#{tag}/tag_colors", expires_in: 5.hours) do
-      if (found_tag = Tag.select(%i[bg_color_hex text_color_hex]).find_by(name: tag))
-        { background: found_tag.bg_color_hex, color: found_tag.text_color_hex }
-      else
-        { background: "#d6d9e0", color: "#606570" }
+    if tag.respond_to?(:bg_color_hex) && tag.respond_to?(:text_color_hex)
+      { background: tag.bg_color_hex, color: tag.text_color_hex }
+    else
+      tag_name = tag.respond_to?(:name) ? tag.name : tag.to_s
+      Rails.cache.fetch("view-helper-#{tag_name}/tag_colors", expires_in: 5.hours) do
+        if (found_tag = Tag.select(%i[bg_color_hex text_color_hex]).find_by(name: tag_name))
+          { background: found_tag.bg_color_hex, color: found_tag.text_color_hex }
+        else
+          { background: "#d6d9e0", color: "#606570" }
+        end
       end
     end
   end
@@ -187,6 +194,20 @@ module ApplicationHelper
 
   def org_bg_or_white(org)
     org&.bg_color_hex ? org.bg_color_hex : "#ffffff"
+  end
+
+  def org_brand_style(user)
+    hex = Color::CompareHex.new([user_colors(user)[:bg]])
+    "--accent-brand: #{hex.brightness(1)}; " \
+    "--accent-brand-darker: #{hex.brightness(0.8)}; " \
+    "--accent-brand-lighter: #{hex.brightness(1.35)}; " \
+    "--accent-brand-rgb: #{hex.brightness(1, only_values: true)}; " \
+    "--accent-brand-darker-rgb: #{hex.brightness(0.8, only_values: true)}; " \
+    "--accent-brand-lighter-rgb: #{hex.brightness(1.35, only_values: true)}; " \
+    "--button-primary-bg: #{hex.brightness(1)}; " \
+    "--button-primary-bg-hover: #{hex.brightness(0.8)}; " \
+    "--link-branded-color: #{hex.brightness(1)}; " \
+    "--link-branded-color-hover: #{hex.brightness(0.8)};"
   end
 
   def sanitize_rendered_markdown(processed_html)
@@ -264,7 +285,12 @@ module ApplicationHelper
     release_footprint = ForemInstance.deployed_at
     return path if release_footprint.blank?
 
-    "#{path}-#{params[:locale]}-#{release_footprint}-#{Settings::General.admin_action_taken_at.rfc3339}-#{RequestStore.store[:subforem_id]}"
+    "#{path}-#{params[:locale]}-#{release_footprint}-#{formatted_admin_action_taken_at}-#{RequestStore.store[:subforem_id]}"
+  end
+
+  def formatted_admin_action_taken_at
+    admin_action = Settings::General.admin_action_taken_at
+    admin_action.respond_to?(:rfc3339) ? admin_action.rfc3339 : admin_action.to_s
   end
 
   def social_media_constructed_url(social_media_type, handle)
@@ -301,8 +327,8 @@ module ApplicationHelper
   end
 
   def is_root_subforem?
-    return false unless RequestStore.store[:subforem_id].present?
-    return true if RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
+    RequestStore.store[:subforem_id].present? &&
+      RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
   end
 
   def copyright_notice
@@ -418,9 +444,23 @@ module ApplicationHelper
   end
 
   def render_tag_link(tag, filled: false, monochrome: false, classes: "", path_suffix: nil)
+    tag_name =
+      if tag.respond_to?(:accessible_name)
+        tag.accessible_name
+      elsif tag.respond_to?(:name)
+        tag.name
+      else
+        tag.to_s
+      end
+    tag_route =
+      if tag.respond_to?(:name)
+        tag.name
+      else
+        tag.to_s
+      end
     color = tag_colors(tag)[:background].presence || Settings::UserExperience.primary_brand_color_hex
     color_faded = Color::CompareHex.new([color]).opacity(0.1)
-    label = safe_join([content_tag(:span, "#", class: "crayons-tag__prefix"), tag])
+    label = safe_join([content_tag(:span, "#", class: "crayons-tag__prefix"), tag_name])
 
     options = {
       class: "crayons-tag #{'crayons-tag--filled' if filled} #{'crayons-tag--monochrome' if monochrome} #{classes}",
@@ -432,7 +472,7 @@ module ApplicationHelper
       "
     }
 
-    link_to(label, tag_path(tag) + path_suffix.to_s, options)
+    link_to(label, tag_path(tag_route) + path_suffix.to_s, options)
   end
 
   def creator_settings_form?

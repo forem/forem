@@ -106,6 +106,7 @@ Rails.application.routes.draw do
       end
 
       scope module: :v0, constraints: ApiConstraints.new(version: 0, default: true) do
+        post "/auth/mobile_exchange", to: "mobile_auth#create"
         draw :api
       end
     end
@@ -151,6 +152,9 @@ Rails.application.routes.draw do
     namespace :users do
       resource :settings, only: %i[update]
       resource :notification_settings, only: %i[update]
+    end
+    namespace :feeds do
+      resources :sources, only: %i[create update destroy]
     end
     resources :users, only: %i[update]
     resources :reactions, only: %i[index create]
@@ -354,6 +358,19 @@ Rails.application.routes.draw do
     get "/search", to: "stories/articles_search#index"
     get "/community", to: "community#index", as: :community
     get "/:slug/members", to: "organizations#members", as: :organization_members
+    get "/:slug/settings", to: "organization_settings#edit", as: :organization_settings
+    patch "/:slug/settings", to: "organization_settings#update"
+    post "/:slug/settings/verify", to: "organization_settings#request_verification", as: :organization_request_verification
+    post "/:slug/settings/preview", to: "organization_settings#preview", as: :organization_settings_preview
+    get "/:slug/settings/lead_forms", to: "organization_lead_forms#index", as: :organization_lead_forms
+    post "/:slug/settings/lead_forms", to: "organization_lead_forms#create"
+    get "/:slug/settings/lead_forms/:id/edit", to: "organization_lead_forms#edit", as: :edit_organization_lead_form
+    patch "/:slug/settings/lead_forms/:id", to: "organization_lead_forms#update", as: :update_organization_lead_form
+    delete "/:slug/settings/lead_forms/:id", to: "organization_lead_forms#destroy", as: :organization_lead_form
+    patch "/:slug/settings/lead_forms/:id/toggle", to: "organization_lead_forms#toggle", as: :organization_lead_form_toggle
+    get "/:slug/settings/lead_forms/:id/submissions", to: "organization_lead_forms#submissions", as: :organization_lead_form_submissions
+    post "/lead_submissions", to: "lead_submissions#create"
+    get "/lead_submissions/check", to: "lead_submissions#check"
     post "articles/preview", to: "articles#preview"
     post "comments/preview", to: "comments#preview"
     post "comments/subscribe", to: "notification_subscriptions#create"
@@ -402,6 +419,7 @@ Rails.application.routes.draw do
     get "dashboard/following_organizations", to: "dashboards#following_organizations"
     get "dashboard/following_podcasts", to: "dashboards#following_podcasts"
     get "dashboard/hidden_tags", to: "dashboards#hidden_tags"
+    get "dashboard/feed_imports", to: "dashboards#feed_imports"
     get "/dashboard/subscriptions", to: "dashboards#subscriptions"
     get "/dashboard/:which", to: "dashboards#followers", constraints: { which: /user_followers/ }
     get "/dashboard/:which/:org_id", to: "dashboards#show",

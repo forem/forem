@@ -29,7 +29,7 @@ jobs:
       E2E: true
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -94,7 +94,7 @@ jobs:
         ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Restore compiled assets
         uses: actions/cache/restore@v5
         with:
@@ -138,6 +138,7 @@ jobs:
         run: |
           bin/rails db:create
           bin/rails db:schema:load
+          bin/rails javascript:build
 
       - name: RSpec
         run: bin/knapsack_pro_rspec

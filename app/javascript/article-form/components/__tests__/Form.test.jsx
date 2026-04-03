@@ -6,7 +6,12 @@ import { userEvent } from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import { Form } from '../Form';
 
+import '@testing-library/jest-dom';
+
 fetch.enableMocks();
+
+// Keep original scrollTo to restore after the suite
+const originalScrollTo = window.scrollTo;
 
 // Mock Algolia
 jest.mock('algoliasearch/lite', () => {
@@ -45,6 +50,14 @@ describe('<Form />', () => {
         removeListener: jest.fn(),
       };
     });
+
+    // In jsdom, window.scrollTo is not implemented; mock to avoid throws.
+    window.scrollTo = jest.fn();
+  });
+
+  afterAll(() => {
+    // Restore original scrollTo after all tests in this file
+    window.scrollTo = originalScrollTo;
   });
 
   describe('v1', () => {
@@ -172,7 +185,7 @@ describe('<Form />', () => {
       expect(getByRole('img', { name: /post cover/i })).toBeInTheDocument();
       expect(getByRole('textbox', { name: /post title/i })).toBeInTheDocument();
       expect(
-        getByRole('textbox', { name: 'Add up to 4 tags' }),
+        getByRole('combobox', { hidden: true }), // Autosuggest creates a combobox element for tags
       ).toBeInTheDocument();
       expect(getByTestId('article-form__body')).toBeInTheDocument();
 
@@ -304,6 +317,73 @@ describe('<Form />', () => {
         expect(overflowMenuButton).toHaveAttribute('aria-expanded', 'true'),
       );
       expect(getByRole('menuitem', { name: 'Help' })).toBeInTheDocument();
+    });
+  });
+
+  // Tests for auto-scrolling on errors
+  describe('auto-scroll on errors', () => {
+    const baseProps = {
+      titleDefaultValue: 'Test',
+      titleOnChange: null,
+      tagsDefaultValue: 'javascript, career',
+      tagsOnInput: null,
+      bodyDefaultValue: '',
+      bodyOnChange: null,
+      bodyHasFocus: false,
+      version: 'v1',
+      mainImage: 'https://example.com/image.png',
+      onMainImageUrlChange: null,
+      switchHelpContext: null,
+    };
+
+    const renderForm = (override = {}) =>
+      render(<Form {...baseProps} {...override} />);
+
+    afterEach(() => {
+      // Ensure clean slate for scrollTo between tests
+      jest.clearAllMocks();
+    });
+
+    it('does NOT scroll when rendered without errors', async () => {
+      renderForm({ errors: null });
+      // Guard against async effect timing
+      await waitFor(() => {
+        expect(window.scrollTo).not.toHaveBeenCalled();
+      });
+    });
+
+    it('scrolls when rendered with errors (initial render)', async () => {
+      renderForm({ errors: { title: ["can't be blank"] } });
+      await waitFor(() => {
+        expect(window.scrollTo).toHaveBeenCalled();
+      });
+    });
+
+    it('scrolls when errors change from falsy -> truthy (update)', async () => {
+      const { rerender } = renderForm({ errors: undefined });
+      expect(window.scrollTo).not.toHaveBeenCalled();
+
+      rerender(<Form {...baseProps} errors={{ email: ['Invalid'] }} />);
+      await waitFor(() => {
+        expect(window.scrollTo).toHaveBeenCalled();
+      });
+    });
+
+    it('does NOT scroll when errors change from truthy -> falsy', async () => {
+      const { rerender } = renderForm({ errors: { x: ['oops'] } });
+
+      // initial effect
+      await waitFor(() => {
+        expect(window.scrollTo).toHaveBeenCalledTimes(1);
+      });
+
+      jest.clearAllMocks();
+
+      rerender(<Form {...baseProps} errors={null} />);
+      // Should not scroll when errors become falsy
+      await waitFor(() => {
+        expect(window.scrollTo).not.toHaveBeenCalled();
+      });
     });
   });
 

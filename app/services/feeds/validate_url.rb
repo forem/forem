@@ -12,8 +12,8 @@ module Feeds
       return false if feed_url.blank?
 
       xml = HTTParty.get(feed_url,
-                         timeout: 10,
-                         headers: { "User-Agent" => "Forem Feeds Importer" }).body
+                         timeout: 20,
+                         headers: { "User-Agent" => Feeds::Import::FEED_USER_AGENT }).body
       Feedjira.parse(xml)
 
       true

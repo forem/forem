@@ -41,6 +41,7 @@ module Html
         next unless src
         # allow image to render as-is
         next if allowed_image_host?(src)
+        next if img["data-ignore-prefix"] == "true"
 
         if synchronous_detail_detection
           header = { "User-Agent" => "#{Settings::Community.community_name} (#{URL.url})" }

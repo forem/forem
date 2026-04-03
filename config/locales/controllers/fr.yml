@@ -5,6 +5,7 @@ fr:
     revoked: Votre clé API a été révoquée.
   application_controller:
     bad_request: 'Erreur : mauvaise demande'
+    invalid_authenticity_token: 'Erreur : jeton d''authenticité invalide'
     not_authorized: 'Erreur : non autorisé'
     please_sign_in : Veuillez vous connecter
   articles_controller:
@@ -40,6 +41,11 @@ fr:
     this_list: cette liste
     unread_notifications: notifications non lues
     newsletter: bulletin d'information
+  feeds:
+    sources:
+      created: Votre source de flux a été ajoutée et un import a été déclenché.
+      updated: Votre source de flux a été mise à jour.
+      deleted: Votre source de flux a été supprimée.
   feedback_messages_controller:
     error_fill: "Assurez-vous que les formulaires sont remplis. 🤖 Autres erreurs possibles : %{errors}"
     n_a: NON DISPONIBLE
@@ -71,6 +77,7 @@ fr:
     not_deleted: Votre organisation n'a pas été supprimée ; vous devez être un administrateur, le seul membre de l'organisation, et n'avoir aucun article connecté à l'organisation.
     created: Votre organisation a été créée avec succès et vous êtes un administrateur.
     updated: Votre organisation a été mise à jour avec succès.
+    page_save_error: "La page n'a pas pu être enregistrée : %{message}"
     invite:
       user_not_found: Utilisateur avec le nom d'utilisateur "%{username}" introuvable.
       already_member: Cet utilisateur est déjà membre de l'organisation.
@@ -85,6 +92,12 @@ fr:
       wrong_user: Vous devez être connecté en tant que l'utilisateur invité pour confirmer cette invitation.
       sign_in_required: Veuillez vous connecter pour confirmer votre adhésion à l'organisation.
       success: "Vous avez rejoint %{organization_name} avec succès !"
+  lead_submissions:
+    inactive_form: Ce formulaire de leads n'accepte plus de soumissions.
+    not_found: Formulaire de leads non trouvé.
+    already_submitted: Vous avez déjà soumis ce formulaire.
+    name_and_email_required: Le nom et l'e-mail sont obligatoires.
+    recaptcha_failed: Veuillez compléter la vérification CAPTCHA.
   podcasts_controller:
     podcast_suggested: Podcast proposé
   profiles_controller:

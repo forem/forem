@@ -49,6 +49,10 @@ RSpec.describe Article do
     it { is_expected.to validate_presence_of(:user_subscriptions_count) }
     it { is_expected.to validate_presence_of(:title) }
 
+    # Regression test for Issue #22803: Prevent negative reaction counts
+    it { is_expected.to validate_numericality_of(:public_reactions_count).is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:previous_public_reactions_count).is_greater_than_or_equal_to(0) }
+
     it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:user_id) }
 
     it { is_expected.not_to allow_value("foo").for(:main_image_background_hex_color) }
@@ -1384,6 +1388,12 @@ RSpec.describe Article do
       allow(FrontMatterParser::Parser).to receive(:new).and_raise(syntax_error)
       expect(article.has_frontmatter?).to be(true)
     end
+
+    it "does not raise when body starts with --- but has no valid YAML front matter" do
+      article.body_markdown = "\n---\n\n## Introduction\n\nSome content here.\n\n---\n\n## Next Section\n"
+      expect { article.has_frontmatter? }.not_to raise_error
+      expect(article.has_frontmatter?).to be(false)
+    end
   end
 
   describe "#readable_edit_date" do
@@ -1847,6 +1857,18 @@ RSpec.describe Article do
         end
       end
     end
+
+    describe "detect code block languages" do
+      before do
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+      end
+
+      it "enqueues Articles::DetectCodeBlockLanguagesWorker when body_markdown has an unlabeled code block" do
+        sidekiq_assert_enqueued_jobs(1, only: Articles::DetectCodeBlockLanguagesWorker) do
+          build(:published_article, title: "Unlabeled code block", body_markdown: "```\nputs :hi\n```").save
+        end
+      end
+    end
   end
 
   context "when callbacks are triggered after save" do
@@ -1873,7 +1895,7 @@ RSpec.describe Article do
 
       it "updates score after content moderation labeling" do
         # Mock the content moderation labeler to return a specific label
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("clear_and_obvious_harmful")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "clear_and_obvious_harmful", compellingness_score: 0.5 })
         stub_const("Ai::Base::DEFAULT_KEY", "present")
 
         initial_score = article.score
@@ -1888,7 +1910,7 @@ RSpec.describe Article do
 
       it "updates score with positive adjustment for high quality content" do
         # Mock the content moderation labeler to return a high quality label
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("great_and_on_topic")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "great_and_on_topic", compellingness_score: 0.5 })
         stub_const("Ai::Base::DEFAULT_KEY", "present")
 
         initial_score = article.score
@@ -1974,6 +1996,24 @@ RSpec.describe Article do
       it "does not Articles::EnrichImageAttributesWorker if the HTML does not change" do
         sidekiq_assert_no_enqueued_jobs(only: Articles::EnrichImageAttributesWorker) do
           article.update(tag_list: %w[fsharp go])
+        end
+      end
+    end
+
+    describe "detect code block languages" do
+      before do
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+      end
+
+      it "enqueues Articles::DetectCodeBlockLanguagesWorker when body_markdown changes to include an unlabeled code block" do
+        sidekiq_assert_enqueued_with(job: Articles::DetectCodeBlockLanguagesWorker, args: [article.id]) do
+          article.update(body_markdown: "```\nconst answer = 42;\n```")
+        end
+      end
+
+      it "does not enqueue Articles::DetectCodeBlockLanguagesWorker when code blocks are already labeled" do
+        sidekiq_assert_no_enqueued_jobs(only: Articles::DetectCodeBlockLanguagesWorker) do
+          article.update(body_markdown: "```ruby\nputs :hi\n```")
         end
       end
     end
@@ -2566,6 +2606,53 @@ RSpec.describe Article do
         article.update_score
         expect(article.reload.score).to eq(5)
       end
+    end
+  end
+
+  describe "#trigger_freeform_context_note_generation" do
+    let(:article) { create(:article, score: 0) }
+
+    before do
+      stub_const("Ai::Base::DEFAULT_KEY", "some_key")
+      allow(Articles::GenerateFreeformContextNoteWorker).to receive(:perform_async)
+    end
+
+    it "bails if Ai::Base::DEFAULT_KEY is not present" do
+      stub_const("Ai::Base::DEFAULT_KEY", nil)
+      article.update_columns(score: 50, comment_score: 25, published_at: 1.day.ago)
+      article.trigger_freeform_context_note_generation
+      expect(Articles::GenerateFreeformContextNoteWorker).not_to have_received(:perform_async)
+    end
+
+    it "bails if score is less than 50" do
+      article.update_columns(score: 49, comment_score: 25)
+      article.trigger_freeform_context_note_generation
+      expect(Articles::GenerateFreeformContextNoteWorker).not_to have_received(:perform_async)
+    end
+
+    it "bails if comment_score is less than 25" do
+      article.update_columns(score: 50, comment_score: 24, published_at: 1.day.ago)
+      article.trigger_freeform_context_note_generation
+      expect(Articles::GenerateFreeformContextNoteWorker).not_to have_received(:perform_async)
+    end
+
+    it "bails if article was published more than a week ago" do
+      article.update_columns(score: 50, comment_score: 25, published_at: 8.days.ago)
+      article.trigger_freeform_context_note_generation
+      expect(Articles::GenerateFreeformContextNoteWorker).not_to have_received(:perform_async)
+    end
+
+    it "bails if article already has context notes" do
+      article.update_columns(score: 50, comment_score: 25, published_at: 1.day.ago)
+      create(:context_note, article: article, body_markdown: "existing note")
+      article.trigger_freeform_context_note_generation
+      expect(Articles::GenerateFreeformContextNoteWorker).not_to have_received(:perform_async)
+    end
+
+    it "calls the worker when conditions are met" do
+      article.update_columns(score: 50, comment_score: 25, published_at: 1.day.ago)
+      article.trigger_freeform_context_note_generation
+      expect(Articles::GenerateFreeformContextNoteWorker).to have_received(:perform_async).with(article.id)
     end
   end
 
@@ -3554,6 +3641,45 @@ RSpec.describe Article do
       article.type_of = "status"
       article.title = "Check this out\nhttps://example.com\n\nMore text"
       expect(article.title_for_metadata).to eq("Check this out https://example.com More text")
+    end
+  end
+
+  describe "#sync_tags_array" do
+    it "syncs tags_array identically with tag_list upon creation natively" do
+      user = create(:user)
+      article = create(:article, user: user, tag_list: "ruby, rails, beginners")
+      expect(article.tags_array).to match_array(article.tag_list.to_a)
+      expect(article.tags_array).to include("ruby", "rails", "beginners")
+    end
+
+    it "syncs tags_array perfectly when tags are updated mapping upstream cleanly" do
+      user = create(:user)
+      article = Article.new(title: "Test Dual Write", body_markdown: "This is a test body.", user: user)
+      
+      article.tag_list = "javascript, typescript, webdev"
+      article.save!
+      expect(article.tags_array).to match_array(["javascript", "typescript", "webdev"])
+    end
+    
+    it "handles empty tag sets gracefully" do
+      user = create(:user)
+      article = Article.new(title: "Test Dual Write", body_markdown: "This is a test body.", user: user)
+      
+      article.tag_list = ""
+      article.save!
+      expect(article.tags_array).to eq([])
+    end
+    
+    it "skips dual-write processing if tags were not inherently targeted during save" do
+      user = create(:user)
+      article = create(:article, user: user)
+      
+      # Reset local instantiation memory footprint safely bypassing acts_as_taggable
+      article.remove_instance_variable(:@tag_list) if article.instance_variable_defined?(:@tag_list)
+      
+      # Ensure reading `tags_array` doesn't inadvertently trigger sync_tags_array
+      article.sync_tags_array
+      expect(article.instance_variable_defined?(:@tag_list)).to be_falsey
     end
   end
 end

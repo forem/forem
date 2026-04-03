@@ -18,7 +18,11 @@ RSpec.describe "UserSettings" do
         Constants::Settings::TAB_LIST.each do |tab|
           get user_settings_path(tab.downcase.tr(" ", "-"))
 
-          expect(response.body).to include("@#{user.username}")
+          if tab == "Organization"
+            expect(response).to have_http_status(:ok)
+          else
+            expect(response.body).to include("@#{user.username}")
+          end
         end
       end
 
@@ -82,14 +86,9 @@ RSpec.describe "UserSettings" do
       it "displays content on Extensions tab properly" do
         get user_settings_path(:extensions)
 
-        feed_section = "Publishing to #{Settings::Community.community_name} from RSS"
-        titles = ["Comment templates", feed_section, "API Keys"]
+        titles = ["Comment templates", "API Keys"]
         expect(response.body).to include(*titles)
-      end
-
-      it "includes contact us on RSS page properly" do
-        get user_settings_path(:extensions)
-        expect(response.body).to include(I18n.t("contact_prompts.if_any_questions_html"))
+        expect(response.body).to include("Manage my RSS feeds")
       end
 
       it "renders heads up dupe account message with proper param" do

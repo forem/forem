@@ -28,7 +28,7 @@ RSpec.describe SpotifyTag, type: :liquid_tag do
     end
 
     it "generates the proper iframe if the uri is valid" do
-      expect(generate_tag(valid_uri).render).to eq(generate_iframe("track", "0K1UpnetfCKtcNu37rJmCg", 80))
+      expect(generate_tag(valid_uri).render).to include(generate_iframe("track", "0K1UpnetfCKtcNu37rJmCg", 80))
     end
 
     it "does not raise an error if the uri is valid" do

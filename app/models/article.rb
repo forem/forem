@@ -1,4 +1,5 @@
 class Article < ApplicationRecord
+  include LiquidEmbeddable
   include CloudinaryHelper
   include ActionView::Helpers
   include Reactable
@@ -247,8 +248,8 @@ class Article < ApplicationRecord
   validates :main_image, url: { allow_blank: true, schemes: %w[https http] }
   validates :main_image_background_hex_color, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
   validates :positive_reactions_count, presence: true
-  validates :previous_public_reactions_count, presence: true
-  validates :public_reactions_count, presence: true
+  validates :previous_public_reactions_count, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :public_reactions_count, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :rating_votes_count, presence: true
   validates :reactions_count, presence: true
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z\-_]*\z/
@@ -312,8 +313,10 @@ class Article < ApplicationRecord
     article.saved_change_to_user_id?
   }
 
-  after_commit :async_score_calc, :touch_collection, :enrich_image_attributes,
+  after_commit :async_score_calc, :touch_collection, :enrich_image_attributes, :detect_code_block_languages,
                on: %i[create update]
+
+  after_update_commit :update_dependent_embeds_if_key_info_changed
 
   # The trigger `update_reading_list_document` is used to keep the `articles.reading_list_document` column updated.
   #
@@ -962,6 +965,17 @@ class Article < ApplicationRecord
                    privileged_users_reaction_points_sum: reactions.privileged_category.sum(:points),
                    comment_score: comment_score,
                    hotness_score: BlackBox.article_hotness_score(self))
+
+    trigger_freeform_context_note_generation
+  end
+
+  def trigger_freeform_context_note_generation
+    return unless Ai::Base::DEFAULT_KEY.present?
+    return if score < 50 || comment_score < 25
+    return if published_at.blank? || published_at < 1.week.ago
+    return if context_notes.exists?
+    
+    Articles::GenerateFreeformContextNoteWorker.perform_async(id)
   end
 
   def co_author_ids_list
@@ -1180,7 +1194,7 @@ class Article < ApplicationRecord
                  end
     if title.blank?
       errors.add(:title, "can't be blank")
-    elsif title.to_s.length > max_length
+    elsif title.gsub(/\p{Space}+/u, '').length > max_length
       errors.add(:title, "is too long (maximum is #{max_length} characters for #{type_of})")
     end
   end
@@ -1576,6 +1590,14 @@ class Article < ApplicationRecord
     ::Articles::EnrichImageAttributesWorker.perform_async(id)
   end
 
+  def detect_code_block_languages
+    return unless Ai::Base::DEFAULT_KEY.present?
+    return unless saved_change_to_body_markdown?
+    return unless ::Articles::DetectCodeBlockLanguages.contains_unlabeled_code_blocks?(body_markdown)
+
+    ::Articles::DetectCodeBlockLanguagesWorker.perform_async(id)
+  end
+
   def remove_prohibited_unicode_characters
     return unless title&.match?(BIDI_CONTROL_CHARACTERS)
 
@@ -1666,5 +1688,20 @@ class Article < ApplicationRecord
     normalized_expected = expected_content.gsub(/\s+/, " ").strip
 
     normalized_body == normalized_expected
+  end
+
+  def update_dependent_embeds_if_key_info_changed
+    return if destroyed?
+    
+    # We only care about fields that affect the visual liquid embed card
+    if saved_change_to_title? ||
+       saved_change_to_user_id? ||
+       saved_change_to_organization_id? ||
+       saved_change_to_published? ||
+       saved_change_to_cached_tag_list? ||
+       saved_change_to_published_at? ||
+       saved_change_to_main_image?
+      Articles::UpdateDependentEmbedsWorker.perform_async(id)
+    end
   end
 end
