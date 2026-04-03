@@ -1,0 +1,29 @@
+<section class="onboarding-progress-card" id="onboarding-progress-card">
+  <h3 class="onboarding-progress-card__title">
+    <%= t("views.sidebars.onboarding_progress.heading") %>
+  </h3>
+  <p class="onboarding-progress-card__subtitle">
+    <%= t("views.sidebars.onboarding_progress.subheading",
+          completed: @onboarding_checklist.completed_count,
+          total: @onboarding_checklist.total_count) %>
+  </p>
+  <div class="onboarding-progress-card__bar">
+    <div class="onboarding-progress-card__bar-fill"
+         style="width: <%= (@onboarding_checklist.completed_count.to_f / @onboarding_checklist.total_count * 100).round %>%">
+    </div>
+  </div>
+  <ul class="onboarding-progress-card__list">
+    <% @onboarding_checklist.item_statuses.each do |item| %>
+      <li class="onboarding-progress-card__item<%= " onboarding-progress-card__item--done" if item[:completed] %>">
+        <% item_label = t(item[:label_i18n_key]) %>
+        <% if item[:completed] %>
+          <span class="onboarding-progress-card__check onboarding-progress-card__check--done" aria-hidden="true">&#10003;</span>
+          <span class="onboarding-progress-card__label"><%= item_label %></span>
+        <% else %>
+          <span class="onboarding-progress-card__check" aria-hidden="true">&#9675;</span>
+          <a href="<%= item[:action_url] %>" class="onboarding-progress-card__link"><%= item_label %></a>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+</section>

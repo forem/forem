@@ -141,6 +141,9 @@ module Constants
             description: I18n.t("lib.constants.settings.general.video.description"),
             placeholder: ""
           },
+          display_sidebar_onboarding_checklist: {
+            description: I18n.t("lib.constants.settings.general.display_sidebar_onboarding_checklist.description")
+          },
           enable_agent_sessions: {
             description: I18n.t("lib.constants.settings.general.enable_agent_sessions.description",
                                 default: "Enable the Agent Sessions feature for uploading and embedding coding agent session transcripts.")
