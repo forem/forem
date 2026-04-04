@@ -20,6 +20,11 @@ RSpec.describe "ApiSecretsDestroy" do
         expect(flash[:error]).to be_nil
       end
 
+      it "redirects back" do
+        delete "/users/api_secrets/#{api_secret.id}"
+        expect(response).to have_http_status(:redirect)
+      end
+
       it "cannot delete a non existing secret" do
         expect do
           delete "/users/api_secrets/9999"
@@ -51,6 +56,41 @@ RSpec.describe "ApiSecretsDestroy" do
         delete "/users/api_secrets/#{api_secret.id}"
         expect(flash[:error]).to be_truthy
         expect(flash[:notice]).to be_nil
+      end
+    end
+
+    context "when user is suspended", proper_status: true do
+      let(:suspended_user) { create(:user, :suspended) }
+      let(:owned_secret) { create(:api_secret, user: suspended_user) }
+
+      before do
+        sign_in suspended_user
+      end
+
+      # destroy? checks user_owner?, not spam_or_suspended? —
+      # suspended users should still be able to revoke their own keys.
+      it "allows suspended user to delete their own secret" do
+        owned_secret # ensure created
+        expect do
+          delete "/users/api_secrets/#{owned_secret.id}"
+        end.to change(suspended_user.api_secrets, :count).by(-1)
+      end
+    end
+
+    context "when user has spam role", proper_status: true do
+      let(:spam_user) { create(:user, :spam) }
+      let(:owned_secret) { create(:api_secret, user: spam_user) }
+
+      before do
+        sign_in spam_user
+      end
+
+      # destroy? checks user_owner?, not spam_or_suspended?
+      it "allows spam user to delete their own secret" do
+        owned_secret # ensure created
+        expect do
+          delete "/users/api_secrets/#{owned_secret.id}"
+        end.to change(spam_user.api_secrets, :count).by(-1)
       end
     end
   end
