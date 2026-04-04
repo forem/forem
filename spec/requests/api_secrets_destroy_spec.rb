@@ -4,10 +4,10 @@ RSpec.describe "ApiSecretsDestroy" do
   let(:api_secret) { create(:api_secret) }
   let(:user) { api_secret.user }
 
-  before { sign_in user }
-
   describe "DELETE /users/api_secrets" do
     context "when delete succeeds" do
+      before { sign_in user }
+
       it "deletes the ApiSecret for the user" do
         expect do
           delete "/users/api_secrets/#{api_secret.id}"
@@ -43,6 +43,7 @@ RSpec.describe "ApiSecretsDestroy" do
 
     context "when delete fails" do
       before do
+        sign_in user
         allow(ApiSecret).to receive(:find).with(api_secret.id.to_s).and_return(api_secret)
         allow(api_secret).to receive(:destroy).and_return(false)
       end
