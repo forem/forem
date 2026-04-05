@@ -39,8 +39,8 @@ RSpec.describe Articles::LabelCleanupWorker, type: :worker do
       end
 
       it "limits to MAX_ARTICLES_PER_RUN when there are more articles" do
-        # Create 80 articles (more than the max limit of 75)
-        80.times do |i|
+        # Create 160 articles (more than the max limit of 150)
+        160.times do |i|
           article = create(:article, user: user, published: true, automod_label: "no_moderation_label")
           article.update_columns(published_at: (1 + i).hours.ago)
         end
@@ -49,8 +49,8 @@ RSpec.describe Articles::LabelCleanupWorker, type: :worker do
         eligible_articles = worker.send(:find_eligible_articles)
         expect(eligible_articles.size).to be <= Articles::LabelCleanupWorker::MAX_ARTICLES_PER_RUN
 
-        # Should only process up to 75 articles due to LIMIT clause
-        expect(Articles::HandleSpamWorker).to receive(:perform_async).at_most(75).times
+        # Should only process up to 150 articles due to LIMIT clause
+        expect(Articles::HandleSpamWorker).to receive(:perform_async).at_most(150).times
 
         worker.perform
       end
@@ -93,6 +93,16 @@ RSpec.describe Articles::LabelCleanupWorker, type: :worker do
         worker.perform
       end
 
+      it "does not process articles with a score of -80 or lower" do
+        # Create article with score of -80
+        article = create(:article, user: user, published: true, automod_label: "no_moderation_label", score: -80)
+        article.update_columns(published_at: 1.hour.ago)
+
+        expect(Articles::HandleSpamWorker).not_to receive(:perform_async)
+
+        worker.perform
+      end
+
       it "logs that no eligible articles were found when none exist" do
         allow(Rails.logger).to receive(:info)
 
@@ -125,23 +135,22 @@ RSpec.describe Articles::LabelCleanupWorker, type: :worker do
         expect(eligible_articles).not_to include(ineligible_article)
       end
 
-      it "orders results randomly and limits to MAX_ARTICLES_PER_RUN" do
+      it "orders results by published_at descending and limits to MAX_ARTICLES_PER_RUN" do
         older_article = create(:article, user: user, published: true, automod_label: "no_moderation_label")
         older_article.update_columns(published_at: 6.hours.ago)
 
         eligible_articles = worker.send(:find_eligible_articles)
 
-        # Should return articles in random order and be limited to MAX_ARTICLES_PER_RUN
+        # Should return articles ordered by published_at and be limited to MAX_ARTICLES_PER_RUN
         expect(eligible_articles.size).to be <= Articles::LabelCleanupWorker::MAX_ARTICLES_PER_RUN
-        expect(eligible_articles).to include(older_article)
-        expect(eligible_articles).to include(eligible_article)
+        expect(eligible_articles.to_a).to eq([eligible_article, older_article])
       end
     end
   end
 
   describe "constants" do
     it "has the correct MAX_ARTICLES_PER_RUN value" do
-      expect(Articles::LabelCleanupWorker::MAX_ARTICLES_PER_RUN).to eq(75)
+      expect(Articles::LabelCleanupWorker::MAX_ARTICLES_PER_RUN).to eq(150)
     end
   end
 end

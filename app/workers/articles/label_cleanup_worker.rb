@@ -5,10 +5,10 @@ module Articles
     sidekiq_options queue: :high_priority
 
     # Maximum number of articles to process per run
-    MAX_ARTICLES_PER_RUN = 75
+    MAX_ARTICLES_PER_RUN = 150
 
     def perform
-      # Find and randomly select articles published in the last 12 hours but not in the last 15 minutes
+      # Find and select articles published in the last 48 hours but not in the last 10 minutes
       # that have the automod_label of "no_moderation_label"
       selected_articles = find_eligible_articles
 
@@ -29,20 +29,20 @@ module Articles
     private
 
     def find_eligible_articles
-      # Articles published in the last 12 hours but not in the last 15 minutes
+      # Articles published in the last 48 hours but not in the last 10 minutes
       # that have automod_label of "no_moderation_label"
-      # Using >= for 12.hours.ago (inclusive) and < for 15.minutes.ago (exclusive)
-      twelve_hours_ago = 12.hours.ago
-      fifteen_minutes_ago = 15.minutes.ago
+      # Using >= for 48.hours.ago (inclusive) and < for 10.minutes.ago (exclusive)
+      forty_eight_hours_ago = 48.hours.ago
+      ten_minutes_ago = 10.minutes.ago
       
       # Add a small buffer to handle precision issues
-      twelve_hours_ago = twelve_hours_ago - 1.second
+      forty_eight_hours_ago = forty_eight_hours_ago - 1.second
       
       Article.published
              .where(automod_label: "no_moderation_label")
              .where("score > -80")
-             .where("published_at >= ? AND published_at < ?", twelve_hours_ago, fifteen_minutes_ago)
-             .order(Arel.sql("RANDOM()"))
+             .where("published_at >= ? AND published_at < ?", forty_eight_hours_ago, ten_minutes_ago)
+             .order(published_at: :desc)
              .limit(MAX_ARTICLES_PER_RUN)
     end
   end
