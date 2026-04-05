@@ -42,7 +42,7 @@ module Articles
              .where(automod_label: "no_moderation_label")
              .where("score > -80")
              .where("published_at >= ? AND published_at < ?", forty_eight_hours_ago, ten_minutes_ago)
-             .order(published_at: :desc)
+             .order(published_at: :asc)
              .limit(MAX_ARTICLES_PER_RUN)
     end
   end

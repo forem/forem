@@ -42,7 +42,7 @@ RSpec.describe Articles::LabelCleanupWorker, type: :worker do
         # Create 160 articles (more than the max limit of 150)
         160.times do |i|
           article = create(:article, user: user, published: true, automod_label: "no_moderation_label")
-          article.update_columns(published_at: (1 + i).hours.ago)
+          article.update_columns(published_at: (15 + i).minutes.ago)
         end
 
         # Test that the query itself is limited
@@ -135,7 +135,7 @@ RSpec.describe Articles::LabelCleanupWorker, type: :worker do
         expect(eligible_articles).not_to include(ineligible_article)
       end
 
-      it "orders results by published_at descending and limits to MAX_ARTICLES_PER_RUN" do
+      it "orders results by published_at ascending and limits to MAX_ARTICLES_PER_RUN" do
         older_article = create(:article, user: user, published: true, automod_label: "no_moderation_label")
         older_article.update_columns(published_at: 6.hours.ago)
 
@@ -143,7 +143,7 @@ RSpec.describe Articles::LabelCleanupWorker, type: :worker do
 
         # Should return articles ordered by published_at and be limited to MAX_ARTICLES_PER_RUN
         expect(eligible_articles.size).to be <= Articles::LabelCleanupWorker::MAX_ARTICLES_PER_RUN
-        expect(eligible_articles.to_a).to eq([eligible_article, older_article])
+        expect(eligible_articles.to_a).to eq([older_article, eligible_article])
       end
     end
   end
