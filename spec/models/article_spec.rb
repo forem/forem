@@ -1951,9 +1951,27 @@ RSpec.describe Article do
           end
         end
 
-        it "does not enqueue for non-body changes" do
+        it "enqueues for title changes" do
+          # Have to update both because set_caches reverts title if frontmatter title is unchanged
+          article.body_markdown = article.body_markdown.gsub(/title: .*/, "title: delayed title tweak")
+          article.title = "delayed title tweak"
+          sidekiq_assert_enqueued_jobs(1, only: worker) do
+            article.save!
+          end
+        end
+
+        it "does not enqueue for other non-monitored changes like collection_id" do
           sidekiq_assert_no_enqueued_jobs(only: worker) do
-            article.update(title: "delayed title tweak")
+            # Use an update that doesn't trigger other conditions
+            collection = create(:collection)
+            article.update(collection_id: collection.id)
+          end
+        end
+
+        it "enqueues when toggled back to published without body changes" do
+          article.update_column(:published, false)
+          sidekiq_assert_enqueued_jobs(1, only: worker) do
+            article.update(published: true)
           end
         end
       end
