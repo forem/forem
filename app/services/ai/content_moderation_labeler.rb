@@ -9,7 +9,7 @@ module Ai
     # @param article [Article] The article to be labeled.
     def initialize(article)
       @article = article
-      @is_negative = @article.score < 0
+      @is_negative = @article.score.to_i.negative?
       model = @is_negative ? Ai::Base::DEFAULT_LITE_MODEL : Ai::Base::DEFAULT_MODEL
       @ai_client = Ai::Base.new(model: model, wrapper: self, affected_content: article, affected_user: article.user)
     end
@@ -42,7 +42,7 @@ module Ai
         if attempt <= max_retries
           sleep_duration = attempt * 2
           Rails.logger.info("Retrying content moderation labeling (attempt #{attempt + 1}/#{max_retries + 1}) after #{sleep_duration}s")
-          sleep(sleep_duration)
+          sleep(sleep_duration) unless Rails.env.test?
           retry
         else
           Rails.logger.error("Content Moderation Labeling failed after #{max_retries + 1} attempts, falling back to default")
