@@ -1572,7 +1572,10 @@ class Article < ApplicationRecord
 
   def create_conditional_autovomits
     return unless published
-    return unless saved_change_to_body_markdown? || published_at > 1.minute.ago
+    return unless saved_change_to_body_markdown? ||
+                  saved_change_to_title? ||
+                  saved_change_to_published? ||
+                  published_at > 1.minute.ago
 
     Articles::HandleSpamWorker.perform_async(id)
   end
