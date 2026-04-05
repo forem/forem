@@ -63,7 +63,7 @@ RSpec.describe "User manages API secrets", :js do
   context "when not signed in" do
     it "redirects to authentication when visiting settings/extensions" do
       visit "/settings/extensions"
-      expect(page).to have_current_path("/magic_links/new")
+      expect(page).to have_current_path("/enter")
     end
   end
 end
