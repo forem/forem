@@ -109,3 +109,5 @@ This Agreement is the entire agreement between the parties, and supersedes any
 and all prior agreements, understandings or communications, written or oral,
 between the parties relating to the subject matter hereof. This Agreement may be
 assigned by DEV.
+
+I have read the CLA document and i hereby sign the CLA
