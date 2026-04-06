@@ -10,6 +10,7 @@ RSpec.describe "Api::V0::MobileAuth", type: :request do
     
     allow(Settings::Authentication).to receive(:google_oauth2_key).and_return("google_client_id")
     allow(Settings::Authentication).to receive(:github_key).and_return("github_client_id")
+    allow(Settings::Authentication).to receive(:github_secret).and_return("github_secret")
     allow(Settings::Authentication).to receive(:facebook_key).and_return("fb_app_id")
     allow(Settings::Authentication).to receive(:facebook_secret).and_return("fb_secret")
     allow(Settings::Authentication).to receive(:twitter_key).and_return("twitter_key")
@@ -32,10 +33,17 @@ RSpec.describe "Api::V0::MobileAuth", type: :request do
             .to_return(status: 200, body: { email: user.email, sub: "12345", aud: "google_client_id" }.to_json)
         end
 
-        it "authenticates the user successfully" do
+        it "authenticates the user successfully and issues an aligned jwt cookie" do
           post "/api/auth/mobile_exchange", params: { provider: "google_oauth2", access_token: "valid_token" }
+          
           expect(response).to have_http_status(:ok)
           expect(JSON.parse(response.body)["jwt"]).to eq(valid_jwt)
+          
+          # Assert cookie is present and attributes are properly set (httponly)
+          jwt_cookie_header = response.headers["Set-Cookie"]
+          expect(jwt_cookie_header).to be_present
+          expect(jwt_cookie_header).to match(/jwt=mock\.jwt\.token/)
+          expect(jwt_cookie_header).to match(/HttpOnly/i)
         end
       end
 
@@ -56,13 +64,19 @@ RSpec.describe "Api::V0::MobileAuth", type: :request do
     describe "GitHub OAuth" do
       context "with a valid token intended for Forem" do
         before do
+          # 1. Introspection check succeeds
+          basic_auth_header = "Basic #{Base64.strict_encode64("github_client_id:github_secret")}"
+          stub_request(:post, "https://api.github.com/applications/github_client_id/token")
+            .with(
+              body: { access_token: "valid_token" }.to_json,
+              headers: { 'Authorization' => basic_auth_header }
+            )
+            .to_return(status: 200, body: {}.to_json)
+            
+          # 2. Get user profile succeeds
           stub_request(:get, "https://api.github.com/user")
             .with(headers: { 'Authorization' => 'token valid_token' })
-            .to_return(
-              status: 200, 
-              headers: { "X-OAuth-Client-Id" => "github_client_id" }, 
-              body: { id: 67890, email: user.email }.to_json
-            )
+            .to_return(status: 200, body: { id: 67890, email: user.email }.to_json)
         end
 
         it "authenticates successfully" do
@@ -73,13 +87,14 @@ RSpec.describe "Api::V0::MobileAuth", type: :request do
 
       context "with a Confused Deputy (token from another app)" do
         before do
-          stub_request(:get, "https://api.github.com/user")
-            .with(headers: { 'Authorization' => 'token hijacked_token' })
-            .to_return(
-              status: 200, 
-              headers: { "X-OAuth-Client-Id" => "malicious_github_oauth_id" }, 
-              body: { id: 67890, email: user.email }.to_json
+          # Introspection check identifies token mismatch (404 Not Found per GitHub API docs)
+          basic_auth_header = "Basic #{Base64.strict_encode64("github_client_id:github_secret")}"
+          stub_request(:post, "https://api.github.com/applications/github_client_id/token")
+            .with(
+              body: { access_token: "hijacked_token" }.to_json,
+              headers: { 'Authorization' => basic_auth_header }
             )
+            .to_return(status: 404, body: {}.to_json)
         end
 
         it "fails safely with 401" do
@@ -92,12 +107,14 @@ RSpec.describe "Api::V0::MobileAuth", type: :request do
     describe "Facebook OAuth" do
       context "with a valid token intended for Forem" do
         before do
-          # Debug Token validates app_id matches Forem
-          stub_request(:get, "https://graph.facebook.com/debug_token?access_token=fb_app_id%7Cfb_secret&input_token=valid_token")
+          # Debug Token validates app_id matches Forem via query hashes
+          stub_request(:get, "https://graph.facebook.com/debug_token")
+            .with(query: hash_including("access_token" => "fb_app_id|fb_secret", "input_token" => "valid_token"))
             .to_return(status: 200, body: { data: { app_id: "fb_app_id", is_valid: true } }.to_json)
             
           # Next step fetches the user profile
-          stub_request(:get, "https://graph.facebook.com/me?access_token=valid_token&fields=id,email")
+          stub_request(:get, "https://graph.facebook.com/me")
+            .with(query: hash_including("access_token" => "valid_token"))
             .to_return(status: 200, body: { id: "55555", email: user.email }.to_json)
         end
 
@@ -110,7 +127,8 @@ RSpec.describe "Api::V0::MobileAuth", type: :request do
       context "with a Confused Deputy (token intended for a malicious app)" do
         before do
           # Debug Token reveals it belongs to malicious_app_id
-          stub_request(:get, "https://graph.facebook.com/debug_token?access_token=fb_app_id%7Cfb_secret&input_token=hijacked_token")
+          stub_request(:get, "https://graph.facebook.com/debug_token")
+            .with(query: hash_including("access_token" => "fb_app_id|fb_secret", "input_token" => "hijacked_token"))
             .to_return(status: 200, body: { data: { app_id: "malicious_app_id", is_valid: true } }.to_json)
         end
 
@@ -137,9 +155,6 @@ RSpec.describe "Api::V0::MobileAuth", type: :request do
           expect(response).to have_http_status(:ok)
         end
       end
-      
-      # Twitter is inherently protected from confused deputy because we exchange an authorization code
-      # using our exact Server-side Client Secret. If it was from another app, the exchange would fail upstream 401.
     end
   end
 end

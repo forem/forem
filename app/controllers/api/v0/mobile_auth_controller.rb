@@ -41,13 +41,13 @@ module Api
             payload = { user_id: @user.id, exp: 30.days.from_now.to_i }
             jwt_token = JWT.encode(payload, Rails.application.secret_key_base)
             
-            cookies[:jwt] = {
+            session_cookie_options = Rails.application.config.session_options.slice(:domain, :secure, :same_site)
+            
+            cookies[:jwt] = session_cookie_options.merge(
               value: jwt_token,
-              domain: :all,
               expires: 30.days.from_now,
-              httponly: true,
-              secure: Rails.env.production?
-            }
+              httponly: true
+            )
             
             render json: { jwt: jwt_token }, status: :ok
           else
@@ -100,6 +100,21 @@ module Api
       end
 
       def verify_github(access_token)
+        # Verify audience using GitHub's token introspection endpoint
+        debug_response = Faraday.post("https://api.github.com/applications/#{Settings::Authentication.github_key}/token") do |req|
+          req.options.timeout = 10
+          req.options.open_timeout = 5
+          req.headers['Accept'] = "application/vnd.github.v3+json"
+          req.headers['Content-Type'] = "application/json"
+          # Introspection requires Basic Auth with Forem's Client ID & Secret
+          req.headers['Authorization'] = "Basic #{Base64.strict_encode64("#{Settings::Authentication.github_key}:#{Settings::Authentication.github_secret}")}"
+          req.body = { access_token: access_token }.to_json
+        end
+        
+        if debug_response.status != 200
+          raise StandardError, 'Token invalid or audience mismatch'
+        end
+
         response = Faraday.get("https://api.github.com/user") do |req|
           req.options.timeout = 10
           req.options.open_timeout = 5
@@ -110,10 +125,6 @@ module Api
         
         if response.status != 200
           raise StandardError, 'Invalid access token'
-        end
-        
-        if response.headers["X-OAuth-Client-Id"].present? && response.headers["X-OAuth-Client-Id"] != Settings::Authentication.github_key
-          raise StandardError, 'Token audience mismatch'
         end
         
         extracted_email = parsed_response["email"]
