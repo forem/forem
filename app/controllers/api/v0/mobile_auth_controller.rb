@@ -19,7 +19,7 @@ module Api
           provider = 'twitter' if provider == 'twitter2'
         rescue StandardError => e
           Rails.logger.error "Mobile Auth Token Verification Failed: #{e.message}"
-          return render json: { error: 'Token verification failed' }, status: :unauthorized
+          return render json: { error: e.message }, status: :unauthorized
         end
         
         # Step 2: Form an OmniAuth Mock Hash
