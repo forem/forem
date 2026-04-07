@@ -37,9 +37,8 @@ module Api
           
           if @user&.persisted?
             # Ensure the user passes the AuthPassController `user_not_signed_out?` validation
-            if @user.current_sign_in_at.blank?
-              @user.update_column(:current_sign_in_at, Time.current) 
-            end
+            @user.update_tracked_fields!(request)
+            @user.save(validate: false)
 
             bypass_sign_in(@user)
             

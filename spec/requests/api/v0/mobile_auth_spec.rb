@@ -68,9 +68,10 @@ RSpec.describe "Api::V0::MobileAuth", type: :request do
             user.update_column(:current_sign_in_at, previous_time)
           end
 
-          it "does not overwrite the existing current_sign_in_at value" do
+          it "updates current_sign_in_at to the current time" do
             post "/api/auth/mobile_exchange", params: { provider: "google_oauth2", access_token: valid_access_token }
-            expect(user.reload.current_sign_in_at).to eq(previous_time)
+            expect(user.reload.current_sign_in_at).not_to eq(previous_time)
+            expect(user.current_sign_in_at).to be_within(5.seconds).of(Time.current)
           end
         end
       end
