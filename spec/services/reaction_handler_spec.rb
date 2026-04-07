@@ -432,6 +432,26 @@ RSpec.describe ReactionHandler, type: :service do
         expect(own_article.public_reactions_count).to eq(actual_db_count)
       end
 
+      it "short-circuits destruction safely if reaction is deleted concurrently via race condition" do
+        handler = described_class.new(params, current_user: author)
+        handler.toggle # Initial creation
+
+        # Simulate race condition: reaction exists when queried, but by the time the
+        # pessimistic lock evaluates it within the transaction, another thread destroyed it.
+        locked_relation = instance_double(ActiveRecord::Relation)
+        allow(Reaction).to receive(:lock).and_return(locked_relation)
+        allow(locked_relation).to receive(:find_by).and_return(nil)
+
+        expect(handler).not_to receive(:send_notifications_without_delay)
+        expect(handler).not_to receive(:sink_articles)
+
+        result = handler.toggle
+
+        # Safely completes with a destroy payload having bypassed actual secondary destruction + callbacks
+        expect(result.action).to eq("destroy")
+        expect(result).to be_success
+      end
+
       it "recalculates correct count when out of sync" do
         # Create reactions directly (bypassing counter_culture)
         2.times { create(:reaction, reactable: own_article, category: "like") }

@@ -15,6 +15,8 @@ module OmniAuth
 
       def callback_phase
         original_callback_phase
+      rescue ::OAuth2::Error => e
+        fail!(:invalid_credentials, e)
       rescue NoMethodError => e
         if e.message.include?("expired?' for nil")
           fail!(:invalid_credentials, StandardError.new("access_token was nil when checking expiration"))
