@@ -23,6 +23,22 @@ RSpec.describe "Pages" do
       expect(response.body).to include(" pageslug-#{page.slug}")
     end
 
+    context "with a null byte in the slug URL" do
+      it "returns a 400 Bad Request error without raising an unhandled exception for default formats" do
+        get "/page/%00.env"
+        expect(response).to have_http_status(:bad_request)
+        expect(response.body).to include("The request could not be understood (400).")
+      end
+
+      it "returns a JSON formatted error for JSON clients" do
+        get "/page/%00.json", headers: { "Accept" => "application/json" }
+        expect(response).to have_http_status(:bad_request)
+        expect(response.content_type).to start_with("application/json")
+        json_response = JSON.parse(response.body)
+        expect(json_response["error"]).to eq(I18n.t("application_controller.bad_request"))
+      end
+    end
+
     context "when the page has a redirect_to_url set to an external URL" do
       it "redirects permanently to the external URL" do
         page = create(:page, redirect_to_url: "https://example.com/target")
