@@ -176,6 +176,8 @@ pt:
           hashtag:
             description: Default hashtag for the community
             placeholder: Default hashtag for the community
+          display_sidebar_onboarding_checklist:
+            description: Exibir a lista de primeiros passos na barra lateral direita para novos usuários.
           enable_agent_sessions:
             description: Enable the Agent Sessions feature for uploading and embedding coding agent session transcripts.
           video:
