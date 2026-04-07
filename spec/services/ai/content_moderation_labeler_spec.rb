@@ -23,6 +23,35 @@ RSpec.describe Ai::ContentModerationLabeler, type: :service do
       end
     end
 
+    context "when article has a negative score" do
+      before do
+        allow(article).to receive(:score).and_return(-10)
+        allow(ai_client).to receive(:call).and_return('{"moderation_label": "okay_and_on_topic", "compellingness_score": 0.85}')
+      end
+
+      it "uses the lite model" do
+        described_class.new(article).evaluate
+        expect(Ai::Base).to have_received(:new).with(
+          hash_including(model: Ai::Base::DEFAULT_LITE_MODEL)
+        )
+      end
+
+      it "truncates body_markdown to 2000 characters" do
+        allow(article).to receive(:body_markdown).and_return("a" * 3000)
+        labeler = described_class.new(article)
+        prompt = labeler.send(:build_prompt)
+        expect(prompt).to include("a" * 1997 + "...")
+        expect(prompt).not_to include("a" * 2000)
+      end
+
+      it "omits very_good and great labels from the prompt" do
+        labeler = described_class.new(article)
+        prompt = labeler.send(:build_prompt)
+        expect(prompt).not_to include("very_good_and_on_topic")
+        expect(prompt).not_to include("great_and_on_topic")
+      end
+    end
+
     context "when AI responds with invalid JSON but valid text" do
       before do
         allow(ai_client).to receive(:call).and_return("I think it is very_good_and_on_topic")

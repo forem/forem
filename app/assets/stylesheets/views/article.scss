@@ -111,6 +111,10 @@
     font-size: calc(var(--fs-base) - 1px);
     line-height: 1.5;
     display: inline-block;
+
+    p {
+      margin-bottom: 0 !important;
+    }
   }
 
   &__context-note__feed {
