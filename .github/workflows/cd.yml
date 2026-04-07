@@ -20,7 +20,7 @@ jobs:
         run: |
           curl https://cli-assets.heroku.com/install.sh | sh 
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       
       - uses: akhileshns/heroku-deploy@v3.14.15
         with:

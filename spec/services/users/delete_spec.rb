@@ -58,6 +58,24 @@ RSpec.describe Users::Delete, type: :service do
     expect(audit_log.reload.user_id).to be_nil
   end
 
+  it "does not delete user's ai_audits but nullifies the reference" do
+    ai_audit = create(:ai_audit, affected_user_id: user.id)
+
+    expect do
+      described_class.call(user)
+    end.not_to change(AiAudit, :count)
+
+    expect(ai_audit.reload.affected_user_id).to be_nil
+  end
+
+  it "deletes user's user_activity" do
+    create(:user_activity, user: user)
+
+    expect do
+      described_class.call(user)
+    end.to change(UserActivity, :count).by(-1)
+  end
+
   it "deletes field tests memberships" do
     create(:field_test_membership, participant_id: user.id)
 
