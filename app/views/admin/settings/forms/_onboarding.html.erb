@@ -45,6 +45,16 @@
           <% end %>
        </div>
 
+        <div class="crayons-field crayons-field--checkbox">
+          <%= f.check_box :display_sidebar_onboarding_checklist,
+                          checked: Settings::General.display_sidebar_onboarding_checklist,
+                          class: "crayons-checkbox" %>
+          <div class="mt-0">
+            <%= admin_config_label :display_sidebar_onboarding_checklist %>
+            <%= admin_config_description Constants::Settings::General.details[:display_sidebar_onboarding_checklist][:description] %>
+          </div>
+        </div>
+
       </fieldset>
       <%= render "update_setting_button", f: f %>
     </div>

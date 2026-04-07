@@ -1,5 +1,9 @@
 <% @billboards = get_homepage_sidebar_billboards %>
 <aside class="side-bar sidebar-additional showing grid gap-4" id="sidebar-additional">
+  <% if user_signed_in? && @onboarding_checklist %>
+    <%= render "sidebars/onboarding_progress" %>
+  <% end %>
+
   <% if @billboards.first %>
     <%= render partial: "shared/billboard", locals: { billboard: @billboards.first, data_context_type: BillboardEvent::CONTEXT_TYPE_HOME } %>
   <% end %>
