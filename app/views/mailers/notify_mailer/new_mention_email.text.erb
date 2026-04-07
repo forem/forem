@@ -1,5 +1,0 @@
-<%= @mentioner.name %> just mentioned you in their <%= @mention.mentionable_type.downcase %>
-
-<%= ActionController::Base.helpers.strip_tags(@mentionable.processed_html.html_safe) %>
-
-View now: <%= app_url(@mention.mentionable.path) %>

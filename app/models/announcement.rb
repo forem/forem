@@ -1,2 +1,0 @@
-class Announcement < ApplicationRecord
-end

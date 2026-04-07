@@ -1,6 +1,0 @@
-.sample-texts p::after {
-  position: absolute;
-  color: orange;
-  margin-left: 0.5em;
-  content: attr(class);
-}

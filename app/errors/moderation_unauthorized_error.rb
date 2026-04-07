@@ -1,1 +1,0 @@
-class ModerationUnauthorizedError < StandardError; end

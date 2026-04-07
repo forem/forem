@@ -1,5 +1,0 @@
----
-fr:
-  decorators:
-    article_decorator:
-      tagged_with: " Tagué avec %{cached_tag_list}."

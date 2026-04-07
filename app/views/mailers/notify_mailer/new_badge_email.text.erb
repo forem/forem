@@ -1,8 +1,0 @@
-Congratulations, <%= @user.name %>! You got the <%= @badge.title %> badge! Be sure to check out your profile.
-
-<%= @badge.description if @badge_achievement.include_default_description %>
-
-<%= strip_tags @badge_achievement.rewarding_context_message %>
-
-<%= user_url(@user) %>
-

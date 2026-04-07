@@ -1,9 +1,0 @@
-<div class="field-unit__label">
-  <%= f.label field.attribute %>
-</div>
-<div class="field-unit__field">
-  <%= f.text_field field.attribute, value: field.to_s, placeholder: t("views.tags.moderator.placeholder") %>
-  <sub>
-    <%= t("views.tags.moderator.text_html", code: tag.code(t("views.tags.moderator.code"), style: "background: #D2D2D2; padding: 4px; border-radius: 5px; font-weight: bold;")) %>
-  </sub>
-</div>

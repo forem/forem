@@ -1,9 +1,0 @@
-steps:
-  - command: ./scripts/build_containers.sh
-    label: ":hammer: Build containers!"
-    key: build-containers
-    plugins:
-      - docker-login#v2.0.1:
-          username: forem+buildkite
-          password-env: QUAY_LOGIN_PASSWORD
-          server: quay.io

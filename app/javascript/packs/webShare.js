@@ -1,1 +1,0 @@
-import 'web-share-wrapper';

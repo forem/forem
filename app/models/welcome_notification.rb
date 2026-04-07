@@ -1,2 +1,0 @@
-class WelcomeNotification < ApplicationRecord
-end

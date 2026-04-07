@@ -1,1 +1,0 @@
-::AI_AVAILABLE = ENV["GEMINI_API_KEY"].present?

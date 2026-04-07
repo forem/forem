@@ -1,8 +1,0 @@
-<h1 class="crayons-title">Comments</h1>
-<%= paginate @comments %>
-
-<div class="flex flex-col gap-2">
-  <%= render partial: "comment", collection: @comments, locals: { is_individual_comment: false } %>
-</div>
-
-<%= paginate @comments %>

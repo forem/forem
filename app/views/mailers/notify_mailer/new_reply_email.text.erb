@@ -1,5 +1,0 @@
-<%= @comment.user.name %> replied to your <%= @comment.parent_type %>:
-
-<%= ActionController::Base.helpers.strip_tags(@comment.processed_html.html_safe) %>
-
-View now: <%= comment_url(@comment) %>

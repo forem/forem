@@ -1,9 +1,0 @@
-<h1 class="crayons-title mb-6">Edit <%= @page.title %></h1>
-
-<% if @page.organization_id.present? %>
-  <div class="crayons-notice crayons-notice--danger mb-6">
-    <strong class="fw-bold">Warning:</strong> This page belongs to the organization <strong><%= @page.organization.name %></strong> and is not a site-wide page!
-  </div>
-<% end %>
-
-<%= render "form" %>
