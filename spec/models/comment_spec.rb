@@ -465,6 +465,24 @@ RSpec.describe Comment do
       expect { comment.save }.to change(user, :last_comment_at)
     end
 
+    describe "onboarding checklist" do
+      before { allow(Settings::General).to receive(:display_sidebar_onboarding_checklist).and_return(true) }
+
+      let(:checklist_user) { create(:user) }
+      let(:admin) { create(:user, :admin) }
+      let!(:welcome_article) { create(:article, user: admin, tags: "welcome") }
+
+      it "completes comment_in_welcome when user comments on the welcome article" do
+        create(:comment, user: checklist_user, commentable: welcome_article)
+        expect(checklist_user.onboarding_checklist.reload.items["comment_in_welcome"]).to be_present
+      end
+
+      it "does not complete comment_in_welcome when user comments on a regular article" do
+        create(:comment, user: checklist_user, commentable: article)
+        expect(checklist_user.onboarding_checklist.reload.items["comment_in_welcome"]).to be_nil
+      end
+    end
+
     describe "slack messages" do
       let!(:user) { create(:user) }
 

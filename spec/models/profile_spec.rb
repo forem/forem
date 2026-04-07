@@ -130,6 +130,18 @@ text of the printing and typesetting industry\r\nLorem Ipsum is simply dummy tex
     end
   end
 
+  describe "onboarding checklist" do
+    before { allow(Settings::General).to receive(:display_sidebar_onboarding_checklist).and_return(true) }
+
+    let(:checklist_user) { create(:user) }
+    let(:checklist) { checklist_user.onboarding_checklist }
+
+    it "completes fill_out_profile when profile summary is updated" do
+      checklist_user.profile.update!(summary: "Hello, I'm new here!")
+      expect(checklist.reload.items["fill_out_profile"]).to be_present
+    end
+  end
+
   describe "profile spam checks" do
     it "enqueues a profile spam check when website_url changes" do
       sidekiq_assert_enqueued_with(job: Users::HandleProfileSpamWorker, args: [user.id]) do
