@@ -49,6 +49,31 @@ RSpec.describe "Api::V0::MobileAuth", type: :request do
           expect(jwt_cookie_header).to match(/jwt=mock\.jwt\.token/)
           expect(jwt_cookie_header).to match(/HttpOnly/i)
         end
+
+        context "when the user has never signed in before (current_sign_in_at is blank)" do
+          before do
+            user.update_column(:current_sign_in_at, nil)
+          end
+
+          it "updates current_sign_in_at to the current time" do
+            post "/api/auth/mobile_exchange", params: { provider: "google_oauth2", access_token: valid_access_token }
+            expect(user.reload.current_sign_in_at).to be_within(5.seconds).of(Time.current)
+          end
+        end
+
+        context "when the user has previously signed in (current_sign_in_at is present)" do
+          let(:previous_time) { 1.day.ago.change(usec: 0) }
+
+          before do
+            user.update_column(:current_sign_in_at, previous_time)
+          end
+
+          it "updates current_sign_in_at to the current time" do
+            post "/api/auth/mobile_exchange", params: { provider: "google_oauth2", access_token: valid_access_token }
+            expect(user.reload.current_sign_in_at).not_to eq(previous_time)
+            expect(user.current_sign_in_at).to be_within(5.seconds).of(Time.current)
+          end
+        end
       end
 
       context "with a Confused Deputy (token intended for a malicious app)" do

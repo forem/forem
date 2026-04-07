@@ -36,6 +36,10 @@ module Api
           @user = ::Authentication::Authenticator.call(auth_payload)
           
           if @user&.persisted?
+            # Ensure the user passes the AuthPassController `user_not_signed_out?` validation
+            @user.update_tracked_fields!(request)
+            @user.save(validate: false)
+
             bypass_sign_in(@user)
             
             payload = { user_id: @user.id, exp: 30.days.from_now.to_i }
