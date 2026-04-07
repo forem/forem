@@ -140,4 +140,28 @@ RSpec.describe Articles::Creator, type: :service do
       expect(Collection.where(slug: "shared-series", organization: organization).count).to eq(1)
     end
   end
+
+  describe "onboarding checklist" do
+    before { allow(Settings::General).to receive(:display_sidebar_onboarding_checklist).and_return(true) }
+
+    let(:checklist_user) { create(:user) }
+
+    it "completes made_first_post when a published article is created" do
+      described_class.call(checklist_user, attributes_for(:article, published: true))
+      expect(checklist_user.onboarding_checklist.reload.items["made_first_post"]).to be_present
+    end
+
+    it "does not complete made_first_post when a draft is created" do
+      described_class.call(checklist_user, attributes_for(:article, published: false))
+      expect(checklist_user.onboarding_checklist.reload.items["made_first_post"]).to be_nil
+    end
+
+    it "does not query or complete made_first_post if the user registered more than 28 days ago" do
+      checklist_user.update_column(:registered_at, 29.days.ago)
+      # Assert database is not hit for checklist
+      expect(checklist_user).not_to receive(:onboarding_checklist)
+      
+      described_class.call(checklist_user, attributes_for(:article, published: true))
+    end
+  end
 end
