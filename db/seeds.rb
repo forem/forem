@@ -995,8 +995,7 @@ seeder.create_if_none(Notification) do
         user_id: admin.id,
         notifiable_id: Article.order(Arel.sql("RANDOM()")).first&.id,
         notifiable_type: "Article",
-        action: "Published",
-        action_user_id: random_user.id
+        action: "Published"
       )
     end
   end
