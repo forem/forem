@@ -1,8 +1,12 @@
 class CodepenTag < LiquidTagBase
   PARTIAL = "liquids/codepen".freeze
+  # Classic CodePen usernames allow letters, numbers, underscores, and dashes.
   USERNAME_REGEXP = "[a-zA-Z0-9_-]{1,30}".freeze
+  # Classic slugs and private pen hashes are alphanumeric.
   PEN_ID_REGEXP = "[a-zA-Z0-9]{5,32}".freeze
+  # CodePen 2.0 editor IDs are UUID-like and can include dashes.
   EDITOR_PEN_ID_REGEXP = "[a-zA-Z0-9-]{5,36}".freeze
+  # CodePen 2.0 editor URLs include both the editor pen ID and the classic pen hash.
   REGISTRY_REGEXP =
     %r{\Ahttps?://codepen\.io/(?:
       (?:team/)?#{USERNAME_REGEXP}/(?:pen|embed)(?:/preview)?/#{PEN_ID_REGEXP}|
@@ -57,7 +61,7 @@ class CodepenTag < LiquidTagBase
     stripped_link = ActionController::Base.helpers.strip_tags(link)
     the_link = stripped_link.split.first
     raise_error unless valid_link?(the_link)
-    the_link.sub("/pen/", "/embed/")
+    the_link.gsub("/pen/", "/embed/")
   end
 
   def valid_link?(link)
