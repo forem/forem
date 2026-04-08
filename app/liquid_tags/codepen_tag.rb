@@ -1,9 +1,13 @@
 class CodepenTag < LiquidTagBase
   PARTIAL = "liquids/codepen".freeze
-  # rubocop:disable Layout/LineLength
+  USERNAME_REGEXP = "[a-zA-Z0-9_-]{1,30}".freeze
+  PEN_ID_REGEXP = "[a-zA-Z0-9]{5,32}".freeze
+  EDITOR_PEN_ID_REGEXP = "[a-zA-Z0-9-]{5,36}".freeze
   REGISTRY_REGEXP =
-    %r{\A(http|https)://(codepen\.io|codepen\.io/team)/[a-zA-Z0-9_-]{1,30}/(pen|embed)(/preview)?/([a-zA-Z0-9]{5,32})/{0,1}\z}
-  # rubocop:enable Layout/LineLength
+    %r{\Ahttps?://codepen\.io/(?:
+      (?:team/)?#{USERNAME_REGEXP}/(?:pen|embed)(?:/preview)?/#{PEN_ID_REGEXP}|
+      editor/#{USERNAME_REGEXP}/(?:pen|embed)(?:/preview)?/#{EDITOR_PEN_ID_REGEXP}/#{PEN_ID_REGEXP}
+    )/?\z}x
 
   def initialize(_tag_name, link, _parse_context)
     super
@@ -53,7 +57,7 @@ class CodepenTag < LiquidTagBase
     stripped_link = ActionController::Base.helpers.strip_tags(link)
     the_link = stripped_link.split.first
     raise_error unless valid_link?(the_link)
-    the_link.gsub("/pen/", "/embed/")
+    the_link.sub("/pen/", "/embed/")
   end
 
   def valid_link?(link)
