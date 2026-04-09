@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_04_09_163500) do
+ActiveRecord::Schema[7.0].define(version: 2026_04_09_170801) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -594,6 +594,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_09_163500) do
     t.string "custom_display_label"
     t.string "dismissal_sku"
     t.integer "display_to", default: 0, null: false
+    t.bigint "event_id"
     t.integer "exclude_article_ids", default: [], array: true
     t.string "exclude_role_names", default: [], array: true
     t.boolean "exclude_survey_completions", default: false, null: false
@@ -622,6 +623,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_09_163500) do
     t.datetime "updated_at", precision: nil, null: false
     t.float "weight", default: 1.0, null: false
     t.index ["cached_tag_list"], name: "index_display_ads_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
+    t.index ["event_id"], name: "index_display_ads_on_event_id"
     t.index ["exclude_article_ids"], name: "index_display_ads_on_exclude_article_ids", using: :gin
     t.index ["exclude_role_names"], name: "index_display_ads_on_exclude_role_names", using: :gin
     t.index ["exclude_survey_completions"], name: "idx_display_ads_survey_completions"
@@ -667,6 +669,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_09_163500) do
   end
 
   create_table "events", force: :cascade do |t|
+    t.integer "broadcast_config", default: 0
     t.string "cached_tag_list"
     t.datetime "created_at", null: false
     t.jsonb "data", default: {}
