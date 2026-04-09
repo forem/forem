@@ -23,6 +23,15 @@ class Event < ApplicationRecord
 
   scope :published, -> { where(published: true) }
 
+  def self.active_broadcast_events
+    Rails.cache.fetch("active_broadcast_events", expires_in: 30.seconds) do
+      published
+        .where.not(broadcast_config: "no_broadcast")
+        .where("start_time <= ? AND end_time >= ?", Time.current + 15.minutes, Time.current - 5.minutes)
+        .to_a
+    end
+  end
+
   private
 
   def end_time_after_start_time
