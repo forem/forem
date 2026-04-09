@@ -68,7 +68,6 @@ resources :surveys, only: %i[index show], param: :id_or_slug do
   end
 end
 
-resources :events
 
 resource :instance, only: %i[show]
 

@@ -15,6 +15,7 @@ class Event < ApplicationRecord
   validates :end_time, presence: true
   validates :event_name_slug, presence: true, format: { with: /\A[a-z0-9-]+\z/, message: "can only contain lowercase letters, numbers, and dashes" }
   validates :event_variation_slug, presence: true, format: { with: /\A[a-z0-9-]+\z/, message: "can only contain lowercase letters, numbers, and dashes" }, uniqueness: { scope: :event_name_slug, case_sensitive: false }
+  validate :end_time_after_start_time
   validates :primary_stream_url, format: { with: /\Ahttps:\/\/(www\.)?(youtube\.com|youtu\.be|twitch\.tv|player\.twitch\.tv)\/.*\z/, message: "must be a valid HTTPS YouTube or Twitch URL" }, allow_blank: true
 
   before_save :format_stream_urls
@@ -23,6 +24,14 @@ class Event < ApplicationRecord
   scope :published, -> { where(published: true) }
 
   private
+
+  def end_time_after_start_time
+    return if end_time.blank? || start_time.blank?
+
+    if end_time < start_time
+      errors.add(:end_time, "must be after the start time")
+    end
+  end
 
   def format_stream_urls
     return if primary_stream_url.blank?
@@ -168,7 +177,7 @@ class Event < ApplicationRecord
             </a>
           </p>
           <p style="font-size:0.7em;opacity:0.8;margin-bottom:8px;font-style:italic">
-            DEV is partnering to bring live events to the community. Join us or dismiss this billboard if you're not interested. ❤️
+            #{Settings::Community.community_name} is partnering to bring live events to the community. Join us or dismiss this billboard if you're not interested. ❤️
           </p>
         </div>
       </div>
@@ -220,7 +229,7 @@ class Event < ApplicationRecord
       </p>
   
       <p style="font-size:0.9em;opacity:0.8;margin-bottom:8px;font-style:italic">
-        DEV is partnering to bring live events to the community. Join us or dismiss this billboard if you're not interested. ❤️
+        #{Settings::Community.community_name} is partnering to bring live events to the community. Join us or dismiss this billboard if you're not interested. ❤️
       </p>
     HTML
   end
