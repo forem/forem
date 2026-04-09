@@ -22,6 +22,9 @@
   <div class="summary-stats__col crayons-card mx-5">
     <div id="comments-card" class="py-3"></div>
   </div>
+  <div class="summary-stats__col crayons-card mx-5">
+    <div id="bookmarks-card" class="py-3"></div>
+  </div>
 </div>
 
 <div class="graphs my-2">
@@ -36,6 +39,7 @@
 <div class="grid xl:grid-cols-2 gap-4 mx-5 mb-2">
   <div class="graphs__col crayons-card">
     <h2 class="mt-5 mx-5"><%= t("views.stats.reactions") %></h2>
+    <p class="mx-5 color-base-60 fs-xs"><em>Bookmarks not included in Total</em></p>
     <div class="charts-container">
       <div id="reactions-chart"></div>
     </div>

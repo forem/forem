@@ -40,6 +40,8 @@ pt:
     dashboard_analytics_readers: Leitores
     dashboard_analytics_comments: Comentários
     dashboard_analytics_reactions: Reações
+    dashboard_analytics_unique_reactors: de %{count} usuários únicos
+    dashboard_analytics_bookmarks: Favoritos
     stats_by: por
     editor_new_title: Novo título do post aqui...
     editor_body_placeholder: Escreva o conteúdo do seu post aqui...

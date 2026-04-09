@@ -1,4 +1,4 @@
-import { callHistoricalAPI, callReferrersAPI } from './client';
+import { callHistoricalAPI, callReferrersAPI, callTotalsAPI } from './client';
 import { locale } from '@utilities/locale';
 
 const activeCharts = {};
@@ -21,6 +21,13 @@ function sumAnalytics(data, key) {
   return Object.entries(data).reduce((sum, day) => sum + day[1][key].total, 0);
 }
 
+function sumBookmarks(data) {
+  return Object.entries(data).reduce(
+    (sum, day) => sum + (day[1].reactions.readinglist || 0),
+    0,
+  );
+}
+
 function cardHTML(stat, header) {
   return `
     <h4>${header}</h4>
@@ -28,25 +35,38 @@ function cardHTML(stat, header) {
   `;
 }
 
-function writeCards(data, timeRangeLabel) {
+function reactionCardHTML(reactions, uniqueReactors, header) {
+  return `
+    <h4>${header}</h4>
+    <div class="featured-stat">${reactions}</div>
+    <p class="color-base-60 fs-s">${locale('core.dashboard_analytics_unique_reactors', { count: uniqueReactors })}</p>
+  `;
+}
+
+function writeCards(data, timeRangeLabel, totals) {
   const readers = sumAnalytics(data, 'page_views');
-  const reactions = sumAnalytics(data, 'reactions');
+  const totalReactions = sumAnalytics(data, 'reactions');
+  const bookmarks = sumBookmarks(data);
+  const reactions = totalReactions - bookmarks;
   const comments = sumAnalytics(data, 'comments');
+  const uniqueReactors = totals ? (totals.reactions.unique_reactors || 0) : 0;
 
   const reactionCard = document.getElementById('reactions-card');
   const commentCard = document.getElementById('comments-card');
   const readerCard = document.getElementById('readers-card');
+  const bookmarkCard = document.getElementById('bookmarks-card');
 
   readerCard.innerHTML = cardHTML(readers, `${locale('core.dashboard_analytics_readers')} ${timeRangeLabel}`);
+  reactionCard.innerHTML = reactionCardHTML(reactions, uniqueReactors, `${locale('core.dashboard_analytics_reactions')} ${timeRangeLabel}`);
   commentCard.innerHTML = cardHTML(comments, `${locale('core.dashboard_analytics_comments')} ${timeRangeLabel}`);
-  reactionCard.innerHTML = cardHTML(reactions, `${locale('core.dashboard_analytics_reactions')} ${timeRangeLabel}`);
+  bookmarkCard.innerHTML = cardHTML(bookmarks, `${locale('core.dashboard_analytics_bookmarks')} ${timeRangeLabel}`);
 }
 
-function drawChart({ id, showPoints = true, labels, series, colors }) {
+function drawChart({ id, showPoints = true, labels, series, colors, strokeDashArray }) {
   const options = {
     chart: {
       type: 'line',
-      height: 280,
+      height: 320,
       toolbar: { show: false },
       zoom: { enabled: false },
       animations: {
@@ -76,6 +96,7 @@ function drawChart({ id, showPoints = true, labels, series, colors }) {
     stroke: {
       curve: 'smooth',
       width: 2,
+      dashArray: strokeDashArray || Array(series.length).fill(0),
     },
     markers: {
       size: showPoints ? 3 : 0,
@@ -114,6 +135,11 @@ function drawCharts(data, timeRangeLabel) {
   const likes = parsedData.map((date) => date.reactions.like);
   const readingList = parsedData.map((date) => date.reactions.readinglist);
   const unicorns = parsedData.map((date) => date.reactions.unicorn);
+  const explodingHeads = parsedData.map((date) => date.reactions.exploding_head);
+  const raisedHands = parsedData.map((date) => date.reactions.raised_hands);
+  const fires = parsedData.map((date) => date.reactions.fire);
+  // Total excluding bookmarks — bookmarks are shown separately
+  const reactionsExclBookmarks = reactions.map((val, i) => val - readingList[i]);
   const readers = parsedData.map((date) => date.page_views.total);
 
   // When timeRange is "Infinity" we hide the points to avoid over-crowding the UI
@@ -123,11 +149,16 @@ function drawCharts(data, timeRangeLabel) {
     id: 'reactions-chart',
     showPoints,
     labels,
-    colors: ['#4bc0c0', '#e56464', '#9d39e9', '#0a85ff'],
+    colors: ['#4bc0c0', '#e56464', '#9d39e9', '#f59e0b', '#10b981', '#ef4444', '#0a85ff'],
+    // dashArray: 0 = solid for first 6 series, 5 = dashed for Bookmarks (last)
+    strokeDashArray: [0, 0, 0, 0, 0, 0, 5],
     series: [
-      { name: 'Total', data: reactions },
+      { name: 'Total', data: reactionsExclBookmarks },
       { name: 'Likes', data: likes },
       { name: 'Unicorns', data: unicorns },
+      { name: 'Exploding Heads', data: explodingHeads },
+      { name: 'Raised Hands', data: raisedHands },
+      { name: 'Fire', data: fires },
       { name: 'Bookmarks', data: readingList },
     ],
   });
@@ -267,9 +298,12 @@ function showErrorsOnReferrers() {
 }
 
 function callAnalyticsAPI(date, timeRangeLabel, { organizationId, articleId }) {
-  callHistoricalAPI(date, { organizationId, articleId })
-    .then((data) => {
-      writeCards(data, timeRangeLabel);
+  Promise.all([
+    callHistoricalAPI(date, { organizationId, articleId }),
+    callTotalsAPI(date, { organizationId, articleId }),
+  ])
+    .then(([data, totals]) => {
+      writeCards(data, timeRangeLabel, totals);
       drawCharts(data, timeRangeLabel);
     })
     .catch((_err) => {

@@ -23,7 +23,7 @@ namespace :db do
         google.com twitter.com github.com reddit.com linkedin.com
         facebook.com dev.to hackernews.com medium.com stackoverflow.com
       ].freeze
-      reaction_categories = %w[like readinglist unicorn].freeze
+      reaction_categories = %w[like readinglist unicorn exploding_head raised_hands fire].freeze
       comment_templates = [
         "Great article, thanks for sharing!",
         "This is really helpful, I learned something new.",
@@ -147,11 +147,16 @@ namespace :db do
             :page_views_count, PageView.where(article_id: article.id).sum(:counts_for_number_of_views),
           )
 
-          # Reactions
+          # Reactions — ensure multiple reactions per user for realistic unique_reactors stats
           other_users.each do |reactor|
-            next if rand(10) > 3
+            # ~50% of users react with ALL categories (power users)
+            # ~30% react with 2-3 categories
+            # ~20% skip this article
+            roll = rand(10)
+            next if roll > 7
 
-            reaction_categories.sample(rand(1..3)).each do |category|
+            num_categories = roll < 5 ? reaction_categories.size : rand(2..3)
+            reaction_categories.sample(num_categories).each do |category|
               next if Reaction.exists?(user_id: reactor.id, reactable: article, category: category)
 
               Reaction.create!(
