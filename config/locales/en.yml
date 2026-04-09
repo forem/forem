@@ -42,6 +42,7 @@ en:
     dashboard_analytics_reactions: Reactions
     dashboard_analytics_unique_reactors: from %{count} unique users
     dashboard_analytics_bookmarks: Bookmarks
+    dashboard_analytics_followers: New Followers
     stats_by: by
     editor_new_title: New post title here...
     editor_body_placeholder: Write your post content here...

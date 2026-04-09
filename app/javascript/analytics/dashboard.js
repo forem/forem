@@ -55,17 +55,21 @@ function writeCards(data, timeRangeLabel, totals) {
   const commentCard = document.getElementById('comments-card');
   const readerCard = document.getElementById('readers-card');
   const bookmarkCard = document.getElementById('bookmarks-card');
+  const followersCard = document.getElementById('followers-card');
 
   readerCard.innerHTML = cardHTML(readers, `${locale('core.dashboard_analytics_readers')} ${timeRangeLabel}`);
   reactionCard.innerHTML = reactionCardHTML(reactions, uniqueReactors, `${locale('core.dashboard_analytics_reactions')} ${timeRangeLabel}`);
   commentCard.innerHTML = cardHTML(comments, `${locale('core.dashboard_analytics_comments')} ${timeRangeLabel}`);
   bookmarkCard.innerHTML = cardHTML(bookmarks, `${locale('core.dashboard_analytics_bookmarks')} ${timeRangeLabel}`);
+  if (followersCard) {
+    followersCard.innerHTML = cardHTML(sumAnalytics(data, 'follows'), `${locale('core.dashboard_analytics_followers')} ${timeRangeLabel}`);
+  }
 }
 
-function drawChart({ id, showPoints = true, labels, series, colors, strokeDashArray }) {
+function drawChart({ id, chartType = 'line', showPoints = true, labels, series, colors, strokeDashArray, fillOptions, dataLabels }) {
   const options = {
     chart: {
-      type: 'line',
+      type: chartType,
       height: 320,
       toolbar: { show: false },
       zoom: { enabled: false },
@@ -113,6 +117,14 @@ function drawChart({ id, showPoints = true, labels, series, colors, strokeDashAr
     },
   };
 
+  if (fillOptions) {
+    options.fill = fillOptions;
+  }
+
+  if (dataLabels) {
+    options.dataLabels = dataLabels;
+  }
+
   import('apexcharts').then(({ default: ApexCharts }) => {
     const currentChart = activeCharts[id];
     if (currentChart) {
@@ -120,6 +132,7 @@ function drawChart({ id, showPoints = true, labels, series, colors, strokeDashAr
     }
 
     const el = document.getElementById(id);
+    if (!el) return;
     el.innerHTML = '';
     const chart = new ApexCharts(el, options);
     chart.render();
@@ -141,6 +154,12 @@ function drawCharts(data, timeRangeLabel) {
   // Total excluding bookmarks — bookmarks are shown separately
   const reactionsExclBookmarks = reactions.map((val, i) => val - readingList[i]);
   const readers = parsedData.map((date) => date.page_views.total);
+  const followers = parsedData.map((date) => date.follows.total);
+  // Cumulative running total for follower growth
+  const cumulativeFollowers = followers.reduce((acc, val) => {
+    acc.push((acc.length ? acc[acc.length - 1] : 0) + val);
+    return acc;
+  }, []);
 
   // When timeRange is "Infinity" we hide the points to avoid over-crowding the UI
   const showPoints = timeRangeLabel !== '';
@@ -177,6 +196,46 @@ function drawCharts(data, timeRangeLabel) {
     labels,
     colors: ['#9d39e9'],
     series: [{ name: 'Reads', data: readers }],
+  });
+
+  drawChart({
+    id: 'followers-chart',
+    chartType: 'area',
+    showPoints: false,
+    labels,
+    colors: ['#f59e0b'],
+    series: [{ name: 'Total Followers', data: cumulativeFollowers }],
+    fillOptions: {
+      type: 'gradient',
+      gradient: {
+        shadeIntensity: 1,
+        opacityFrom: 0.4,
+        opacityTo: 0.05,
+        stops: [0, 95, 100],
+      },
+    },
+    dataLabels: {
+      enabled: true,
+      formatter: (val, { dataPointIndex }) => {
+        // Show label only when the cumulative total increased (new followers gained)
+        if (dataPointIndex === 0) return val > 0 ? val : '';
+        return cumulativeFollowers[dataPointIndex] !== cumulativeFollowers[dataPointIndex - 1] ? val : '';
+      },
+      offsetY: -8,
+      style: {
+        fontSize: '11px',
+        fontWeight: 600,
+        colors: ['#f59e0b'],
+      },
+      background: {
+        enabled: true,
+        foreColor: '#fff',
+        borderRadius: 3,
+        padding: 4,
+        borderWidth: 0,
+        dropShadow: { enabled: false },
+      },
+    },
   });
 }
 
@@ -283,9 +342,10 @@ function removeCardElements() {
 }
 
 function showErrorsOnCharts() {
-  const target = ['reactions-chart', 'comments-chart', 'readers-chart'];
+  const target = ['reactions-chart', 'comments-chart', 'readers-chart', 'followers-chart'];
   target.forEach((id) => {
     const el = document.getElementById(id);
+    if (!el) return;
     el.outerHTML = `<p class="m-5" id="${id}">Failed to fetch chart data. If this error persists for a minute, you can try to disable adblock etc. on this page or site.</p>`;
   });
 }
