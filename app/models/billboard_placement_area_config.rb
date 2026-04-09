@@ -38,7 +38,7 @@ class BillboardPlacementAreaConfig < ApplicationRecord
 
   # Get delivery rate for a specific placement area and user state
   def self.delivery_rate_for(placement_area:, user_signed_in:)
-    if ["feed_first", "post_fixed_bottom"].include?(placement_area) && Event.active_broadcast_events.exists?
+    if ["feed_first", "post_fixed_bottom"].include?(placement_area) && Event.active_broadcast_events.any?
       return 100
     end
 
