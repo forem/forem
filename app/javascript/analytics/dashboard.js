@@ -149,6 +149,73 @@ function drawCharts(data, timeRangeLabel) {
   });
 }
 
+function drawReferrerChart(data) {
+  const MAX_SLICES = 8;
+  const referrers = data.domains
+    .map((r) => ({ label: r.domain || 'Other', count: r.count }))
+    .sort((a, b) => b.count - a.count);
+
+  if (referrers.length === 0) return;
+
+  let labels, series;
+  if (referrers.length <= MAX_SLICES) {
+    labels = referrers.map((r) => r.label);
+    series = referrers.map((r) => r.count);
+  } else {
+    const top = referrers.slice(0, MAX_SLICES - 1);
+    const rest = referrers.slice(MAX_SLICES - 1);
+    const otherCount = rest.reduce((sum, r) => sum + r.count, 0);
+    labels = [...top.map((r) => r.label), 'Other'];
+    series = [...top.map((r) => r.count), otherCount];
+  }
+
+  const options = {
+    chart: {
+      type: 'donut',
+      height: 300,
+      animations: {
+        enabled: true,
+        easing: 'easeinout',
+        speed: 400,
+      },
+    },
+    series,
+    labels,
+    legend: {
+      position: 'bottom',
+      fontSize: '13px',
+    },
+    tooltip: {
+      y: {
+        formatter: (val) => `${val} views`,
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    plotOptions: {
+      pie: {
+        donut: {
+          size: '55%',
+        },
+      },
+    },
+  };
+
+  import('apexcharts').then(({ default: ApexCharts }) => {
+    const currentChart = activeCharts['referrers-chart'];
+    if (currentChart) {
+      currentChart.destroy();
+    }
+
+    const el = document.getElementById('referrers-chart');
+    el.innerHTML = '';
+    const chart = new ApexCharts(el, options);
+    chart.render();
+    activeCharts['referrers-chart'] = chart;
+  });
+}
+
 function renderReferrers(data) {
   const container = document.getElementById('referrers-container');
   const tableBody = data.domains
@@ -176,6 +243,7 @@ function renderReferrers(data) {
   }
 
   container.innerHTML = tableBody.join('');
+  drawReferrerChart(data);
 }
 
 function removeCardElements() {
@@ -192,6 +260,8 @@ function showErrorsOnCharts() {
 }
 
 function showErrorsOnReferrers() {
+  const chartEl = document.getElementById('referrers-chart');
+  if (chartEl) chartEl.innerHTML = '';
   document.getElementById('referrers-container').outerHTML =
     '<p class="m-5" id="referrers-container">Failed to fetch referrer data. If this error persists for a minute, you can try to disable adblock etc. on this page or site.</p>';
 }
