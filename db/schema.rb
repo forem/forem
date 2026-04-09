@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_04_02_165751) do
+ActiveRecord::Schema[7.0].define(version: 2026_04_09_162100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -664,6 +664,26 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_02_165751) do
     t.index ["audience_segment_id"], name: "index_emails_on_audience_segment_id"
     t.index ["onboarding_subforem_id"], name: "index_emails_on_onboarding_subforem_id"
     t.index ["user_query_id"], name: "index_emails_on_user_query_id"
+  end
+
+  create_table "events", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.jsonb "data", default: {}
+    t.text "description"
+    t.datetime "end_time"
+    t.string "event_name_slug"
+    t.string "event_variation_slug"
+    t.bigint "organization_id"
+    t.text "primary_stream_url"
+    t.boolean "published", default: false
+    t.datetime "start_time"
+    t.string "title", null: false
+    t.integer "type_of", default: 0
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["event_name_slug", "event_variation_slug"], name: "index_events_on_event_name_slug_and_event_variation_slug", unique: true
+    t.index ["organization_id"], name: "index_events_on_organization_id"
+    t.index ["user_id"], name: "index_events_on_user_id"
   end
 
   create_table "feed_configs", force: :cascade do |t|
@@ -2025,6 +2045,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_02_165751) do
   add_foreign_key "email_authorizations", "users", on_delete: :cascade
   add_foreign_key "emails", "audience_segments"
   add_foreign_key "emails", "user_queries"
+  add_foreign_key "events", "organizations"
+  add_foreign_key "events", "users"
   add_foreign_key "feed_events", "articles", on_delete: :cascade
   add_foreign_key "feed_events", "users", on_delete: :nullify
   add_foreign_key "feed_import_items", "articles", on_delete: :nullify

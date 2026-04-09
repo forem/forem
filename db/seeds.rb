@@ -1041,6 +1041,37 @@ end
 # Pin an article for dynamic feed representation
 first_article = Article.order(Arel.sql("RANDOM()")).first
 PinnedArticle.set(first_article) if first_article.present?
+##############################################################################
+
+seeder.create_if_none(Event) do
+  user_ids = User.pluck(:id)
+  
+  Event.create!(
+    title: "AWS Industries LIVE!",
+    description: "AWS Industries LIVE! features AWS Partners discussing various topics related to their industry, their solutions, and how they can help customers.",
+    primary_stream_url: "https://player.twitch.tv/?channel=aws&parent=dev.to",
+    data: { chat_url: "https://www.twitch.tv/embed/aws/chat?parent=dev.to" },
+    published: true,
+    start_time: 1.day.ago,
+    end_time: 1.week.from_now,
+    type_of: :live_stream,
+    user_id: user_ids.sample,
+    tag_list: "aws"
+  )
+  
+  Event.create!(
+    title: "Forem Walkthrough with Ben Halpern",
+    description: "Join us for a walkthrough of the newest Forem features.",
+    primary_stream_url: "https://player.twitch.tv/?channel=ThePracticalDev&parent=dev.to",
+    data: {},
+    published: true,
+    start_time: 2.days.from_now,
+    end_time: 2.days.from_now + 2.hours,
+    type_of: :live_stream,
+    user_id: user_ids.sample,
+    tag_list: "forem, updates"
+  )
+end
 
 puts <<-ASCII
 
