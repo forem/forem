@@ -9,6 +9,7 @@ class InitializeEventsTable < ActiveRecord::Migration[7.0]
       t.datetime :end_time, null: false
       t.jsonb :data, default: {}
       t.integer :type_of, default: 0
+      t.integer :broadcast_config, default: 0
       
       t.string :event_name_slug, null: false
       t.string :event_variation_slug, null: false
@@ -22,6 +23,7 @@ class InitializeEventsTable < ActiveRecord::Migration[7.0]
       t.timestamps
     end
 
+    add_check_constraint :events, "broadcast_config IS NOT NULL", name: "events_broadcast_config_null"
     add_index :events, [:event_name_slug, :event_variation_slug], unique: true
     add_index :events, :tags_array, using: :gin
   end

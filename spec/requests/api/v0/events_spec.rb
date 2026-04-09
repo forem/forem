@@ -72,6 +72,8 @@ RSpec.describe "Api::V0::Events", type: :request do
       {
         event: {
           title: "New Stream",
+          event_name_slug: "new-stream",
+          event_variation_slug: "v1",
           start_time: 1.day.from_now,
           end_time: 2.days.from_now,
           type_of: "live_stream",

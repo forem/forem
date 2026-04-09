@@ -30,9 +30,9 @@
     </div>
 
     <div class="info-section crayons-card p-6 mt-4">
-        <p class="mb-4 text-lg">
-            <%= @event.description %>
-        </p>
+        <div class="mb-4 text-lg">
+            <%= simple_format(@event.description) %>
+        </div>
 
         <% if @event.organization %>
           <a href="<%= organization_path(@event.organization) %>" class="profile-card">

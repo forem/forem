@@ -1,7 +1,7 @@
 module Events
   class ManageBroadcastBillboardsWorker
     include Sidekiq::Job
-    sidekiq_options queue: :high_priority, retry: 3
+    sidekiq_options queue: :high_priority, retry: 3, lock: :until_executing, on_conflict: :replace
 
     def perform
       # Look for all active broadcasts
@@ -14,14 +14,15 @@ module Events
       # We must turn ON billboards for active events, and OFF for ALL OTHER EXPIRED event broadcasts.
       # To do this safely:
       # Step 1: Any billboard owned by an event that IS currently active, should be approved.
+      newly_approved_count = 0
       if active_events.any?
-        newly_approved_count = Billboard.where(event_id: active_events, approved: false).update_all(approved: true)
-        if newly_approved_count > 0
-          EdgeCache::PurgeByKey.call("main_app_home_page", fallback_paths: "/")
-          Billboard.where(event_id: active_events).find_each do |bb|
-            EdgeCache::PurgeByKey.call(bb.record_key)
-          end
+        Billboard.where(event_id: active_events, approved: false).find_each do |bb|
+          bb.update!(approved: true)
+          newly_approved_count += 1
+          # Manually purge the specific billboard cache when activating since being_taken_down is false
+          EdgeCache::PurgeByKey.call(bb.record_key)
         end
+        EdgeCache::PurgeByKey.call("main_app_home_page", fallback_paths: "/") if newly_approved_count > 0
       end
 
       # Step 2: Any billboard owned by a broadcast_config event that is NOT currently active, should be unapproved.
@@ -29,13 +30,13 @@ module Events
       billboards_to_disable = Billboard.where.not(event_id: nil)
       billboards_to_disable = billboards_to_disable.where.not(event_id: active_events) if active_events.any?
       
-      newly_disabled_count = billboards_to_disable.where(approved: true).update_all(approved: false)
-      if newly_disabled_count > 0
-        EdgeCache::PurgeByKey.call("main_app_home_page", fallback_paths: "/")
-        billboards_to_disable.find_each do |bb|
-          EdgeCache::PurgeByKey.call(bb.record_key)
-        end
+      newly_disabled_count = 0
+      billboards_to_disable.where(approved: true).find_each do |bb|
+        # This update triggers bust_billboard_cache naturally
+        bb.update!(approved: false) 
+        newly_disabled_count += 1
       end
+      EdgeCache::PurgeByKey.call("main_app_home_page", fallback_paths: "/") if newly_disabled_count > 0
     end
   end
 end

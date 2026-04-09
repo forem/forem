@@ -41,7 +41,7 @@
       <%= form.text_area :primary_stream_url, class: "crayons-textfield", rows: 2 %>
     </div>
 
-    <div class="crayons-field" data-controller="jsonb-data">
+    <div class="crayons-field">
       <%= form.fields_for :data, event.data || {} do |data_form| %>
         <%= data_form.label :chat_url, "Chat Embed URL", class: "crayons-field__label" do %>
           Chat Embed URL

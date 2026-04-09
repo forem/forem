@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_04_09_170801) do
+ActiveRecord::Schema[7.0].define(version: 2026_04_09_173612) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -690,6 +690,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_09_170801) do
     t.index ["organization_id"], name: "index_events_on_organization_id"
     t.index ["tags_array"], name: "index_events_on_tags_array", using: :gin
     t.index ["user_id"], name: "index_events_on_user_id"
+    t.check_constraint "broadcast_config IS NOT NULL", name: "events_broadcast_config_null"
   end
 
   create_table "feed_configs", force: :cascade do |t|
@@ -2047,6 +2048,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_09_170801) do
   add_foreign_key "discussion_locks", "users", column: "locking_user_id"
   add_foreign_key "display_ad_events", "display_ads", on_delete: :cascade
   add_foreign_key "display_ad_events", "users", on_delete: :cascade
+  add_foreign_key "display_ads", "events"
   add_foreign_key "display_ads", "organizations", on_delete: :cascade
   add_foreign_key "email_authorizations", "users", on_delete: :cascade
   add_foreign_key "emails", "audience_segments"

@@ -18,10 +18,10 @@ RSpec.describe Events::ManageBroadcastBillboardsWorker, type: :worker do
       create(:event, start_time: 5.minutes.ago, end_time: 1.hour.from_now, broadcast_config: "no_broadcast", published: true)
     end
 
-    let!(:past_billboard) { create(:billboard, event: past_event, approved: true) }
-    let!(:active_billboard) { create(:billboard, event: active_event, approved: false) }
-    let!(:future_billboard) { create(:billboard, event: future_event, approved: false) }
-    let!(:no_broadcast_billboard) { create(:billboard, event: no_broadcast_event, approved: true) } # should unapprove if somehow associated
+    let!(:past_billboard) { create(:billboard, event: past_event, approved: true, published: true) }
+    let!(:active_billboard) { create(:billboard, event: active_event, approved: false, published: true) }
+    let!(:future_billboard) { create(:billboard, event: future_event, approved: false, published: true) }
+    let!(:no_broadcast_billboard) { create(:billboard, event: no_broadcast_event, approved: true, published: true) } # should unapprove if somehow associated
     let!(:standard_billboard) { create(:billboard, event: nil, approved: true) }
 
     it "approves billboards for active broadcast events and unapproves for inactive ones" do

@@ -1,8 +1,8 @@
 module Api
   module V0
     class EventsController < ApiController
+      skip_before_action :verify_authenticity_token, only: %i[create update destroy]
       before_action :authenticate!, except: %i[index show]
-      before_action :authenticate_admin!, except: %i[index show]
       before_action :set_event, only: %i[show update destroy]
 
       # Authentication is optional for index and show
@@ -25,7 +25,10 @@ module Api
       end
 
       def create
-        @event = Event.new(event_params)
+        authorize Event
+        @event = Event.new(event_params.except(:user_id))
+        @event.user_id = @user.id if @event.user_id.blank?
+
         if @event.save
           render json: @event, status: :created
         else
@@ -34,7 +37,9 @@ module Api
       end
 
       def update
-        if @event.update(event_params)
+        authorize @event
+        # Prevents arbitrary user hijacking via parameters:
+        if @event.update(event_params.except(:user_id))
           render json: @event
         else
           render json: { error: @event.errors.full_messages }, status: :unprocessable_entity
@@ -42,6 +47,7 @@ module Api
       end
 
       def destroy
+        authorize @event
         @event.destroy
         head :no_content
       end
@@ -60,12 +66,6 @@ module Api
         @event = Event.find(params[:id])
       rescue ActiveRecord::RecordNotFound
         render json: { error: "Event not found" }, status: :not_found
-      end
-
-      def authenticate_admin!
-        unless @user&.administrative_access_to?(resource: Event)
-          render json: { error: "Unauthorized" }, status: :unauthorized
-        end
       end
 
       def event_params
