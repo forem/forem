@@ -79,6 +79,28 @@ RSpec.describe BillboardPlacementAreaConfig, type: :model do
   describe ".delivery_rate_for" do
     let!(:config) { described_class.create!(placement_area: "sidebar_left", signed_in_rate: 80, signed_out_rate: 60) }
 
+    context "with active broadcast events" do
+      before do
+        allow(Event).to receive(:active_broadcast_events).and_return([double("event")])
+      end
+
+      it "returns 100 for feed_first regardless of config" do
+        described_class.create!(placement_area: "feed_first", signed_in_rate: 10, signed_out_rate: 0)
+        expect(described_class.delivery_rate_for(placement_area: "feed_first", user_signed_in: true)).to eq(100)
+        expect(described_class.delivery_rate_for(placement_area: "feed_first", user_signed_in: false)).to eq(100)
+      end
+
+      it "returns 100 for post_fixed_bottom regardless of config" do
+        described_class.create!(placement_area: "post_fixed_bottom", signed_in_rate: 5, signed_out_rate: 5)
+        expect(described_class.delivery_rate_for(placement_area: "post_fixed_bottom", user_signed_in: true)).to eq(100)
+        expect(described_class.delivery_rate_for(placement_area: "post_fixed_bottom", user_signed_in: false)).to eq(100)
+      end
+
+      it "does not override other placement areas" do
+        expect(described_class.delivery_rate_for(placement_area: "sidebar_left", user_signed_in: true)).to eq(80)
+      end
+    end
+
     it "returns the signed_in_rate for signed in users" do
       rate = described_class.delivery_rate_for(placement_area: "sidebar_left", user_signed_in: true)
       expect(rate).to eq(80)
