@@ -107,6 +107,7 @@ Rails.application.routes.draw do
 
       scope module: :v0, constraints: ApiConstraints.new(version: 0, default: true) do
         post "/auth/mobile_exchange", to: "mobile_auth#create"
+        resources :events, only: %i[index show create update destroy]
         draw :api
       end
     end
@@ -130,6 +131,8 @@ Rails.application.routes.draw do
       patch "/admin_unpublish", to: "articles#admin_unpublish"
       patch "/admin_featured_toggle", to: "articles#admin_featured_toggle"
     end
+    resources :events, only: %i[index]
+    get "events/:event_name_slug/:event_variation_slug", to: "events#show", as: :event
     resources :article_mutes, only: %i[update]
     resources :comments, only: %i[create update destroy] do
       patch "/hide", to: "comments#hide"
