@@ -28,7 +28,7 @@ class Event < ApplicationRecord
       published
         .where.not(broadcast_config: "no_broadcast")
         .where("start_time <= ? AND end_time >= ?", Time.current + 15.minutes, Time.current - 5.minutes)
-        .select(:id, :broadcast_config, :start_time, :end_time)
+        .select(:id, :broadcast_config, :start_time, :end_time, :tags_array)
         .to_a
     end
   end
