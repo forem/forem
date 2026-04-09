@@ -1,0 +1,43 @@
+<div class="crayons-card p-6">
+  <div class="flex items-center justify-between mb-4">
+    <h1 class="crayons-title">Events</h1>
+    <%= link_to "New Event", new_admin_event_path, class: "c-btn c-btn--primary" %>
+  </div>
+
+  <table class="crayons-table">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Start Time</th>
+        <th>Type</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @events.each do |event| %>
+        <tr>
+          <td><%= event.title %></td>
+          <td><%= event.start_time&.to_fs(:short) %></td>
+          <td><%= event.type_of.titleize %></td>
+          <td>
+            <% if event.published? %>
+              <span class="c-indicator c-indicator--success">Published</span>
+            <% else %>
+              <span class="c-indicator c-indicator--warning">Draft</span>
+            <% end %>
+          </td>
+          <td>
+            <div class="flex gap-2">
+              <%= link_to "Edit", edit_admin_event_path(event), class: "c-btn c-btn--secondary btn-sm" %>
+              <% if event.published? %>
+                <%= link_to "View", event_path(event.event_name_slug, event.event_variation_slug), target: "_blank", class: "c-btn c-btn--secondary btn-sm" %>
+              <% end %>
+              <%= link_to "Delete", admin_event_path(event), method: :delete, data: { confirm: "Are you sure?" }, class: "c-btn c-btn--destructive btn-sm" %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
