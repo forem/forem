@@ -667,6 +667,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_09_163500) do
   end
 
   create_table "events", force: :cascade do |t|
+    t.string "cached_tag_list"
     t.datetime "created_at", null: false
     t.jsonb "data", default: {}
     t.text "description"
@@ -677,12 +678,14 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_09_163500) do
     t.string "primary_stream_url"
     t.boolean "published", default: false
     t.datetime "start_time", null: false
+    t.text "tags_array", default: [], array: true
     t.string "title", null: false
     t.integer "type_of", default: 0
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
+    t.bigint "user_id"
     t.index ["event_name_slug", "event_variation_slug"], name: "index_events_on_event_name_slug_and_event_variation_slug", unique: true
     t.index ["organization_id"], name: "index_events_on_organization_id"
+    t.index ["tags_array"], name: "index_events_on_tags_array", using: :gin
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 

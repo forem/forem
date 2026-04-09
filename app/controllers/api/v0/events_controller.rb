@@ -51,7 +51,7 @@ module Api
       def evaluate_authentication
         # Forem's ApiController usually requires valid token if provided, but optional if omitted.
         # This safely tries to log them in if token is sent.
-        if request.headers["api-key"] || request.headers["Authorization"]
+        if request.headers["api-key"]
           authenticate!
         end
       end
