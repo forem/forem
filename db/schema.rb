@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_04_09_162100) do
+ActiveRecord::Schema[7.0].define(version: 2026_04_09_163500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -670,17 +670,17 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_09_162100) do
     t.datetime "created_at", null: false
     t.jsonb "data", default: {}
     t.text "description"
-    t.datetime "end_time"
-    t.string "event_name_slug"
-    t.string "event_variation_slug"
+    t.datetime "end_time", null: false
+    t.string "event_name_slug", null: false
+    t.string "event_variation_slug", null: false
     t.bigint "organization_id"
-    t.text "primary_stream_url"
+    t.string "primary_stream_url"
     t.boolean "published", default: false
-    t.datetime "start_time"
+    t.datetime "start_time", null: false
     t.string "title", null: false
     t.integer "type_of", default: 0
     t.datetime "updated_at", null: false
-    t.bigint "user_id"
+    t.bigint "user_id", null: false
     t.index ["event_name_slug", "event_variation_slug"], name: "index_events_on_event_name_slug_and_event_variation_slug", unique: true
     t.index ["organization_id"], name: "index_events_on_organization_id"
     t.index ["user_id"], name: "index_events_on_user_id"
