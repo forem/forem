@@ -101,7 +101,7 @@ RSpec.describe Event, type: :model do
                      description: "A very exciting summary",
                      event_name_slug: "test-html-event", 
                      event_variation_slug: "v1",
-                     data: { "image_url" => "https://example.test/img.jpg" },
+                     data: { "image_url" => "https://dummyimage.com/img.jpg" },
                      user: user)
 
       # 2 billboards (feed_first, post_fixed_bottom)
@@ -113,13 +113,27 @@ RSpec.describe Event, type: :model do
       expect(feed_bb.published).to be(true)
       expect(feed_bb.approved).to be(false) # Needs worker to approve
       
+      expect(feed_bb.render_mode).to eq("raw")
+      expect(feed_bb.template).to eq("plain")
+      expect(feed_bb.custom_display_label).to eq("#{Settings::Community.community_name} Live Events")
+      
+      expect(feed_bb.name).to start_with("live_now_")
+      expect(feed_bb.dismissal_sku).to start_with("live_now_")
+      expect(feed_bb.name).to include("_feed")
+      
+      expect(post_bb.render_mode).to eq("raw")
+      expect(post_bb.template).to eq("plain")
+      expect(post_bb.dismissal_sku).to eq(feed_bb.dismissal_sku)
+      expect(post_bb.name).to include("_post")
+      expect(post_bb.name).to_not eq(feed_bb.name)
+      
       # Assert the HTML was injected cleanly inside body_markdown using user fallback
       expect(feed_bb.body_markdown).to include("id=\"event-takeover-image-feed\"")
       expect(feed_bb.body_markdown).to include("Tune in to the full event")
       expect(feed_bb.body_markdown).to include("Test HTML Event")
       expect(feed_bb.body_markdown).to include("A very exciting summary")
       expect(feed_bb.body_markdown).to include("/events/test-html-event/v1")
-      expect(feed_bb.body_markdown).to include("https://example.test/img.jpg")
+      expect(feed_bb.body_markdown).to include("https://dummyimage.com/img.jpg")
 
       expect(post_bb.body_markdown).to include("id=\"event-takeover-image\"")
     end
