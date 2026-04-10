@@ -35,6 +35,10 @@ fr:
             description: The "Client ID" portion of the OAuth 2.0 page on the Google Cloud Platform portal
           google_secret:
             description: The "Client Secret" portion of the OAuth 2.0 page on the Google Cloud Platform portal
+          google_ios_key:
+            description: L'ID client iOS natif configuré dans le portail Google Cloud Platform
+          google_android_key:
+            description: L'ID client Android natif configuré dans le portail Google Cloud Platform
           invite_only:
             description: Only users invited by email can join this community.
           new_user_status:
