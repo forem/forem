@@ -101,12 +101,13 @@ fr:
         week: Week
         month: Month
         infinity: Infinity
-      readers: Readers Summary
-      followers: New Followers Summary
-      reactions: "Reactions Summary ❤🦄🔖"
-      comments: "Comments Summary 💬"
+      readers: Lecteurs
+      readers_description: "Pages vues de tous les visiteurs (les vues anonymes sont estimées). Le temps de lecture est suivi uniquement pour les lecteurs connectés."
+      followers: Nouveaux abonnés
+      reactions: "Réactions"
+      comments: "Commentaires"
       traffic:
-        text: "Traffic Source Summary 🚦"
+        text: "Sources de trafic"
         source: Source
         views: Views
       reactions_history: "Historique des réactions"

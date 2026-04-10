@@ -38,6 +38,7 @@ pt:
     survey_thank_you_response: Obrigado pela sua resposta.
     survey_thank_you_completing: Obrigado por completar a pesquisa!
     dashboard_analytics_readers: Leitores
+    dashboard_analytics_avg_read_time: tempo médio de leitura %{seconds}s
     dashboard_analytics_comments: Comentários
     dashboard_analytics_reactions: Reações
     dashboard_analytics_unique_reactors: de %{count} usuários únicos

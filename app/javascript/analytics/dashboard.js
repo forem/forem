@@ -35,6 +35,17 @@ function cardHTML(stat, header) {
   `;
 }
 
+function readerCardHTML(readers, avgReadTime, header) {
+  let html = `
+    <h4>${header}</h4>
+    <div class="featured-stat">${readers}</div>
+  `;
+  if (avgReadTime > 0) {
+    html += `<p class="color-base-60 fs-s">${locale('core.dashboard_analytics_avg_read_time', { seconds: avgReadTime })}</p>`;
+  }
+  return html;
+}
+
 function reactionCardHTML(reactions, uniqueReactors, header) {
   return `
     <h4>${header}</h4>
@@ -50,6 +61,7 @@ function writeCards(data, timeRangeLabel, totals) {
   const reactions = totalReactions - bookmarks;
   const comments = sumAnalytics(data, 'comments');
   const uniqueReactors = totals ? (totals.reactions.unique_reactors || 0) : 0;
+  const avgReadTime = totals ? (totals.page_views.average_read_time_in_seconds || 0) : 0;
 
   const reactionCard = document.getElementById('reactions-card');
   const commentCard = document.getElementById('comments-card');
@@ -57,7 +69,7 @@ function writeCards(data, timeRangeLabel, totals) {
   const bookmarkCard = document.getElementById('bookmarks-card');
   const followersCard = document.getElementById('followers-card');
 
-  readerCard.innerHTML = cardHTML(readers, `${locale('core.dashboard_analytics_readers')} ${timeRangeLabel}`);
+  readerCard.innerHTML = readerCardHTML(readers, avgReadTime, `${locale('core.dashboard_analytics_readers')} ${timeRangeLabel}`);
   reactionCard.innerHTML = reactionCardHTML(reactions, uniqueReactors, `${locale('core.dashboard_analytics_reactions')} ${timeRangeLabel}`);
   commentCard.innerHTML = cardHTML(comments, `${locale('core.dashboard_analytics_comments')} ${timeRangeLabel}`);
   bookmarkCard.innerHTML = cardHTML(bookmarks, `${locale('core.dashboard_analytics_bookmarks')} ${timeRangeLabel}`);
@@ -66,7 +78,7 @@ function writeCards(data, timeRangeLabel, totals) {
   }
 }
 
-function drawChart({ id, chartType = 'line', showPoints = true, labels, series, colors, strokeDashArray, fillOptions, dataLabels }) {
+function drawChart({ id, chartType = 'line', showPoints = true, labels, series, colors, strokeDashArray, fillOptions, dataLabels, yaxis }) {
   const options = {
     chart: {
       type: chartType,
@@ -91,7 +103,7 @@ function drawChart({ id, chartType = 'line', showPoints = true, labels, series, 
       },
       tickAmount: Math.min(labels.length, 14),
     },
-    yaxis: {
+    yaxis: yaxis || {
       min: 0,
       labels: {
         formatter: (val) => Math.round(val),
@@ -154,6 +166,7 @@ function drawCharts(data, timeRangeLabel) {
   // Total excluding bookmarks — bookmarks are shown separately
   const reactionsExclBookmarks = reactions.map((val, i) => val - readingList[i]);
   const readers = parsedData.map((date) => date.page_views.total);
+  const avgReadTime = parsedData.map((date) => date.page_views.average_read_time_in_seconds || 0);
   const followers = parsedData.map((date) => date.follows.total);
   // Cumulative running total for follower growth
   const cumulativeFollowers = followers.reduce((acc, val) => {
@@ -194,8 +207,25 @@ function drawCharts(data, timeRangeLabel) {
     id: 'readers-chart',
     showPoints,
     labels,
-    colors: ['#9d39e9'],
-    series: [{ name: 'Reads', data: readers }],
+    colors: ['#9d39e9', '#10b981'],
+    strokeDashArray: [0, 4],
+    series: [
+      { name: 'Reads', data: readers },
+      { name: 'Avg Read Time (s)', data: avgReadTime },
+    ],
+    yaxis: [
+      {
+        min: 0,
+        title: { text: 'Reads', style: { color: '#9d39e9', fontSize: '12px' } },
+        labels: { formatter: (val) => Math.round(val) },
+      },
+      {
+        opposite: true,
+        min: 0,
+        title: { text: 'Avg Read Time (s)', style: { color: '#10b981', fontSize: '12px' } },
+        labels: { formatter: (val) => `${Math.round(val)}s` },
+      },
+    ],
   });
 
   drawChart({

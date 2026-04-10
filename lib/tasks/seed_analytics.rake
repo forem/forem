@@ -67,6 +67,12 @@ namespace :db do
         puts "  Created user '#{user.username}' (ID: #{user.id})"
       end
 
+      # --- Fix users missing settings records (prevents nil errors on page loads) ---
+      User.left_joins(:setting).where(users_settings: { id: nil }).find_each do |u|
+        u.create_setting
+        puts "  Fixed missing setting for user '#{u.username}' (ID: #{u.id})"
+      end
+
       # --- Ensure enough other users for realistic engagement ---
       other_users = User.where.not(id: user.id).to_a
       needed = 3 - other_users.size
