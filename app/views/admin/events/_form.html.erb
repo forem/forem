@@ -1,0 +1,86 @@
+<%= form_with model: [:admin, event], local: true do |form| %>
+  <div class="flex flex-col gap-4">
+    <div class="crayons-field">
+      <%= form.label :title, class: "crayons-field__label" %>
+      <%= form.text_field :title, class: "crayons-textfield", required: true %>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="crayons-field">
+        <%= form.label :event_name_slug, "Event Name Slug", class: "crayons-field__label" do %>
+          Event Name Slug *
+          <p class="crayons-field__description">The root name grouping of the event. Requires lowercase alphanumerical and dashes (e.g., 'aws-industries').</p>
+        <% end %>
+        <%= form.text_field :event_name_slug, class: "crayons-textfield", required: true, pattern: "[a-z0-9-]+" %>
+      </div>
+
+      <div class="crayons-field">
+        <%= form.label :event_variation_slug, "Event Variation Slug", class: "crayons-field__label" do %>
+          Event Variation Slug *
+          <p class="crayons-field__description">The unique date or subtitle identifier for this iteration. Requires lowercase alphanumerical and dashes (e.g., 'march-31-2026').</p>
+        <% end %>
+        <%= form.text_field :event_variation_slug, class: "crayons-textfield", required: true, pattern: "[a-z0-9-]+" %>
+      </div>
+    </div>
+
+    <div class="crayons-field">
+      <%= form.label :description, class: "crayons-field__label" %>
+      <%= form.text_area :description, class: "crayons-textfield", rows: 3 %>
+    </div>
+
+    <div class="crayons-field">
+      <%= form.label :type_of, "Event Type", class: "crayons-field__label" %>
+      <%= form.select :type_of, Event.type_ofs.keys.map { |type| [type.titleize, type] }, {}, class: "crayons-select" %>
+    </div>
+
+    <div class="crayons-field">
+      <%= form.label :primary_stream_url, "Primary Stream URL", class: "crayons-field__label" do %>
+        Primary Stream URL
+        <p class="crayons-field__description">The streaming embed URL (e.g., Twitch, YouTube player src)</p>
+      <% end %>
+      <%= form.text_area :primary_stream_url, class: "crayons-textfield", rows: 2 %>
+    </div>
+
+    <div class="crayons-field">
+      <%= form.fields_for :data, event.data || {} do |data_form| %>
+        <%= data_form.label :chat_url, "Chat Embed URL", class: "crayons-field__label" do %>
+          Chat Embed URL
+          <p class="crayons-field__description">Optional. The chat embed URL (e.g., Twitch Chat src)</p>
+        <% end %>
+        <input type="text" name="event[data][chat_url]" id="event_data_chat_url" class="crayons-textfield" value="<%= event.data&.dig('chat_url') || event.data&.dig(:chat_url) %>">
+      <% end %>
+    </div>
+
+    <div class="crayons-field">
+      <%= form.label :tag_list, "Tags", class: "crayons-field__label" do %>
+        Tags
+        <p class="crayons-field__description">Comma separated tags. The first tag is used to fetch related articles.</p>
+      <% end %>
+      <%= form.text_field :tag_list, value: event.tag_list.join(", "), class: "crayons-textfield", placeholder: "aws, ai, streaming" %>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="crayons-field">
+        <%= form.label :start_time, class: "crayons-field__label" %>
+        <%= form.datetime_field :start_time, class: "crayons-textfield", required: true %>
+      </div>
+
+      <div class="crayons-field">
+        <%= form.label :end_time, class: "crayons-field__label" %>
+        <%= form.datetime_field :end_time, class: "crayons-textfield", required: true %>
+      </div>
+    </div>
+
+    <div class="crayons-field crayons-field--checkbox">
+      <%= form.check_box :published, class: "crayons-checkbox" %>
+      <%= form.label :published, class: "crayons-field__label" do %>
+        Published
+        <p class="crayons-field__description">Determines if the event is publicly accessible.</p>
+      <% end %>
+    </div>
+
+    <div class="mt-4">
+      <%= form.submit class: "c-btn c-btn--primary" %>
+    </div>
+  </div>
+<% end %>

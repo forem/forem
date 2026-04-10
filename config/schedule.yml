@@ -175,8 +175,8 @@ article_quality_reactions:
   cron: "8 * * * *"
   class: "Articles::QualityReactionWorker"
 article_label_cleanup:
-  description: "Processes articles with no_moderation_label that may have been missed (runs hourly on the 35th minute after the hour)"
-  cron: "35 * * * *"
+  description: "Processes articles with no_moderation_label that may have been missed (runs twice hourly on the 5th and 35th minute)"
+  cron: "5,35 * * * *"
   class: "Articles::LabelCleanupWorker"
 scheduled_automations_process:
   description: "Processes scheduled automations that are due for execution (runs every 10 minutes)"
@@ -202,3 +202,7 @@ reverify_organizations:
   description: "Re-checks verified organizations to ensure linkback still exists (runs daily at 06:00 UTC)"
   cron: "0 6 * * *"
   class: "Organizations::ReverifyAllWorker"
+events_manage_broadcast_billboards:
+  description: "Manages automatic Billboard deployments natively toggling configurations depending on Event start/end boundaries (runs every 5 minutes)"
+  cron: "*/5 * * * *"
+  class: "Events::ManageBroadcastBillboardsWorker"
