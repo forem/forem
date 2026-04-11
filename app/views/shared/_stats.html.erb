@@ -22,50 +22,78 @@
   <div class="summary-stats__col crayons-card mx-5">
     <div id="comments-card" class="py-3"></div>
   </div>
+  <div class="summary-stats__col crayons-card mx-5">
+    <div id="bookmarks-card" class="py-3"></div>
+  </div>
+  <% unless @article %>
+    <div class="summary-stats__col crayons-card mx-5">
+      <div id="followers-card" class="py-3"></div>
+    </div>
+  <% end %>
 </div>
 
 <div class="graphs my-2">
   <div class="graphs__col crayons-card mx-5">
     <h2 class="mt-5 mx-5"><%= t("views.stats.readers") %></h2>
+    <p class="mx-5 color-base-60 fs-xs"><em><%= t("views.stats.readers_description") %></em></p>
     <div class="charts-container">
-      <canvas id="readers-chart"></canvas>
+      <div id="readers-chart"></div>
     </div>
   </div>
 </div>
 
-<div class="grid xl:grid-cols-2 gap-4 mx-5 mb-2">
-  <div class="graphs__col crayons-card">
+<div class="graphs my-2">
+  <div class="graphs__col crayons-card mx-5">
     <h2 class="mt-5 mx-5"><%= t("views.stats.reactions") %></h2>
+    <p class="mx-5 color-base-60 fs-xs"><em>Bookmarks not included in Total</em></p>
     <div class="charts-container">
-      <canvas id="reactions-chart"></canvas>
-    </div>
-  </div>
-  <div class="graphs__col crayons-card">
-    <h2 class="mt-5 mx-5"><%= t("views.stats.comments") %></h2>
-    <div class="charts-container">
-      <canvas id="comments-chart"></canvas>
+      <div id="reactions-chart"></div>
     </div>
   </div>
 </div>
 
-<div class="grid xl:grid-cols-2 gap-4 mx-5 ">
-  <div class="crayons-card p-2">
-  <h2 class="mt-5 mx-5"><%= t("views.stats.traffic.text") %></h2>
-  <table class="w-100 m-auto crayons-table">
-    <thead>
-      <tr>
-        <th class="align-left"><%= t("views.stats.traffic.source") %></th>
-        <th class="align-right"><%= t("views.stats.traffic.views") %></th>
-      </tr>
-    </thead>
-
-    <tbody id="referrers-container">
-    </tbody>
-  </table>
+<% if @article %>
+  <div class="graphs my-2">
+    <div class="graphs__col crayons-card mx-5">
+      <h2 class="mt-5 mx-5"><%= t("views.stats.comments") %></h2>
+      <div class="charts-container">
+        <div id="comments-chart"></div>
+      </div>
+    </div>
   </div>
+<% else %>
+  <div class="grid xl:grid-cols-2 gap-4 mx-5 mb-2">
+    <div class="graphs__col crayons-card">
+      <h2 class="mt-5 mx-5"><%= t("views.stats.comments") %></h2>
+      <div class="charts-container">
+        <div id="comments-chart"></div>
+      </div>
+    </div>
+    <div class="graphs__col crayons-card">
+      <h2 class="mt-5 mx-5"><%= t("views.stats.followers") %></h2>
+      <div class="charts-container">
+        <div id="followers-chart"></div>
+      </div>
+    </div>
+  </div>
+<% end %>
 
-  <% if @reactions && @reactions.any? %>
-    <div class="crayons-card p-4 overflow-auto" style="max-height:calc(100vh - 150px)">
+<% if @reactions && @reactions.any? %>
+  <div class="grid xl:grid-cols-2 gap-4 mx-5">
+    <div class="crayons-card p-2 overflow-auto" style="max-height:600px">
+      <h2 class="mt-5 mx-5"><%= t("views.stats.traffic.text") %></h2>
+      <div id="referrers-chart"></div>
+      <table class="w-100 m-auto crayons-table">
+        <thead>
+          <tr>
+            <th class="align-left"><%= t("views.stats.traffic.source") %></th>
+            <th class="align-right"><%= t("views.stats.traffic.views") %></th>
+          </tr>
+        </thead>
+        <tbody id="referrers-container"></tbody>
+      </table>
+    </div>
+    <div class="crayons-card p-4 overflow-auto" style="max-height:600px">
       <h2 class="crayons-subtitle mb-2">
         <%= t("views.stats.reactions_history") %>
       </h2>
@@ -87,5 +115,21 @@
         </div>
       <% end %>
     </div>
-  <% end %>
-</div>
+  </div>
+<% else %>
+  <div class="graphs my-2">
+    <div class="graphs__col crayons-card mx-5">
+      <h2 class="mt-5 mx-5"><%= t("views.stats.traffic.text") %></h2>
+      <div id="referrers-chart"></div>
+      <table class="w-100 m-auto crayons-table">
+        <thead>
+          <tr>
+            <th class="align-left"><%= t("views.stats.traffic.source") %></th>
+            <th class="align-right"><%= t("views.stats.traffic.views") %></th>
+          </tr>
+        </thead>
+        <tbody id="referrers-container"></tbody>
+      </table>
+    </div>
+  </div>
+<% end %>
