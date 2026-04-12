@@ -72,7 +72,7 @@
         <%= sanitize @user.name %>
         <% if @organization.verified? %>
           <span class="screen-reader-only"><%= t("views.organizations.verified_badge") %></span>
-          <%= crayons_icon_tag("verified", aria_hidden: true, style: "color: #3b82f6;", aria_title: t("views.organizations.verified_badge")) %>
+          <%= crayons_icon_tag("verified", aria_hidden: true, style: "color: #3b82f6; margin-left: var(--su-1);", aria_title: t("views.organizations.verified_badge")) %>
         <% end %>
       </h1>
       <% if @user.tag_line.present? %>
