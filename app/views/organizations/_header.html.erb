@@ -67,7 +67,10 @@
     flex-shrink: 0;
     width: 100%;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
+    gap: var(--su-1);
+    max-width: 100%;
   }
   @media (min-width: 768px) {
     .org-header-actions {
@@ -176,7 +179,7 @@
         <button id="organization-profile-dropdown" aria-expanded="false" aria-controls="organization-profile-dropdownmenu" aria-haspopup="true" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon">
           <%= crayons_icon_tag("overflow-horizontal", class: "dropdown-icon", title: t("views.organizations.dropdown")) %>
         </button>
-        <div id="organization-profile-dropdownmenu" class="crayons-dropdown right-0 top-100 mt-1">
+        <div id="organization-profile-dropdownmenu" class="crayons-dropdown left-0 top-100 mt-1">
           <span class="report-abuse-link-wrapper" data-path="/report-abuse?url=<%= organization_url(@organization) %>"></span>
         </div>
       </div>
@@ -185,7 +188,7 @@
 
   <%# Secondary info: description + meta %>
   <% if @user.summary.present? || @user&.profile&.website_url.present? || @organization.location.present? %>
-    <div class="px-4 m:px-0 pb-4">
+    <div class="px-4 m:px-0 pb-4" style="overflow-wrap: anywhere;">
       <% if @user.summary.present? %>
         <p class="fs-base color-base-90 mb-3"><%= sanitize @user.summary %></p>
       <% end %>
