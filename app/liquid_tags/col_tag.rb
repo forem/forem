@@ -10,7 +10,9 @@ class ColTag < Liquid::Block
 
   def render(context)
     content = super
-    parsed_content = MarkdownProcessor::Parser.new(content).evaluate_markdown
+    renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
+    markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
+    parsed_content = markdown.render(content)
     ApplicationController.render(
       partial: PARTIAL,
       locals: { content: parsed_content, span: @span },

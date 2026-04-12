@@ -114,9 +114,17 @@
   #org-page-editor-root .crayons-article-form__body {
     flex: 1;
   }
-  #org-page-editor-root .crayons-article-form__body textarea,
-  #org-page-editor-root .crayons-article-form__body .crayons-textfield {
+  #org-page-editor-root #org_page_markdown {
     min-height: 400px;
+  }
+  /* Reset lead form inputs inside the preview so they don't inherit the editor textarea sizing */
+  #org-page-editor-root .crayons-article__body .crayons-textfield {
+    min-height: 0;
+    font-size: var(--fs-base);
+  }
+  /* Give quote cards room to breathe in the narrow preview context */
+  #org-page-editor-root .ltag-quote {
+    min-width: 0;
   }
   #section-page,
   #section-profile,
