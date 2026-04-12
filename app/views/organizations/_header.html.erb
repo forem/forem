@@ -172,11 +172,11 @@
       <a href="<%= admin_organization_path(@organization) %>" id="org-admin-btn" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon ml-1" title="<%= t("views.organizations.admin_link") %>" data-no-instant>
         <%= crayons_icon_tag("tools-line", title: t("views.organizations.admin_link")) %>
       </a>
-      <div class="profile-dropdown ml-1 s:relative" data-organizationname="<%= @organization.name %>">
+      <div class="profile-dropdown ml-1 relative" data-organizationname="<%= @organization.name %>">
         <button id="organization-profile-dropdown" aria-expanded="false" aria-controls="organization-profile-dropdownmenu" aria-haspopup="true" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon">
           <%= crayons_icon_tag("overflow-horizontal", class: "dropdown-icon", title: t("views.organizations.dropdown")) %>
         </button>
-        <div id="organization-profile-dropdownmenu" class="crayons-dropdown left-2 right-2 s:right-0 s:left-auto top-100 mt-1">
+        <div id="organization-profile-dropdownmenu" class="crayons-dropdown right-0 top-100 mt-1">
           <span class="report-abuse-link-wrapper" data-path="/report-abuse?url=<%= organization_url(@organization) %>"></span>
         </div>
       </div>
