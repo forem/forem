@@ -203,7 +203,7 @@
             <%= f.label :cover_image, t("views.organization_settings.page.cover_image"), class: "crayons-field__label" %>
             <% if @organization.cover_image_url.present? %>
               <div class="mb-2">
-                <img src="<%= @organization.cover_image_url %>" alt="<%= t("views.organizations.cover_image_alt", org: @organization.name) %>" style="max-height: 150px; object-fit: cover;" class="radius-default" />
+                <img src="<%= @organization.cover_image_url %>" alt="<%= t("views.organizations.cover_image_alt", org: @organization.name) %>" style="max-width: 100%; max-height: 150px; object-fit: cover;" class="radius-default" />
               </div>
             <% end %>
             <%= f.file_field :cover_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
