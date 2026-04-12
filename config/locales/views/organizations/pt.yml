@@ -8,7 +8,6 @@ pt:
         cover_image_hint: "Proporção recomendada: 8:1 (ex. 1600×200 ou 2400×300)"
         readme: Conteúdo da página (Markdown)
         readme_placeholder: "Use Markdown e tags Liquid para personalizar a página da sua organização.\n\nExemplo:\n{% org_team slug-da-org %}\n{% org_team slug-da-org role=admins limit=5 %}\n{% org_posts slug-da-org %}\n{% org_posts slug-da-org limit=5 sort=reactions min_reactions=10 since=30d %}\n{% org_lead_form 42 %}"
-        readme_description: "Suporta Markdown e tags Liquid. Use {% org_team seu-slug %} para mostrar membros, {% org_posts seu-slug %} para listar artigos, e {% org_lead_form ID %} para incorporar um formulário de leads. Você também pode usar tags de layout como {% row %}, {% col %}, {% features %}, {% quote %}, {% offer %} e {% slides %} para criar páginas ricas. Veja o texto de exemplo para mais detalhes."
         default_notice: "Sua página está usando o layout padrão."
         default_explanation: "Por padrão, a página da sua organização mostra automaticamente os membros da equipe e publicações recentes. Adicionar conteúdo personalizado abaixo substituirá todo o layout padrão."
         default_example_toggle: "Mostrar exemplo para replicar a página padrão"

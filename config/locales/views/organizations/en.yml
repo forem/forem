@@ -8,7 +8,6 @@ en:
         cover_image_hint: "Recommended aspect ratio: 8:1 (e.g. 1600×200 or 2400×300)"
         readme: Page content (Markdown)
         readme_placeholder: "Use Markdown and Liquid tags to customize your org page.\n\nExample:\n{% org_team your-org-slug %}\n{% org_team your-org-slug role=admins limit=5 %}\n{% org_posts your-org-slug %}\n{% org_posts your-org-slug limit=5 sort=reactions min_reactions=10 since=30d %}\n{% org_lead_form 42 %}"
-        readme_description: "Supports Markdown and Liquid tags. Use {% org_team your-slug %} to show team members, {% org_posts your-slug %} to list articles, and {% org_lead_form ID %} to embed a lead form. You can also use layout tags like {% row %}, {% col %}, {% features %}, {% quote %}, {% offer %}, and {% slides %} to build rich pages. See the placeholder text for examples."
         default_notice: "Your page is currently using the default layout."
         default_explanation: "By default, your org page automatically shows your team members and recent posts. Adding custom content below will replace the entire default layout."
         default_example_toggle: "Show example to replicate the default page"
