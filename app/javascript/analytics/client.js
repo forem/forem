@@ -36,3 +36,14 @@ export function callReferrersAPI(
     { organizationId, articleId },
   );
 }
+
+export function callTotalsAPI(
+  date,
+  { organizationId, articleId },
+) {
+  return callAnalyticsAPI(
+    '/api/analytics/totals',
+    date,
+    { organizationId, articleId },
+  );
+}

@@ -1,9 +1,17 @@
 class CodepenTag < LiquidTagBase
   PARTIAL = "liquids/codepen".freeze
-  # rubocop:disable Layout/LineLength
+  # Classic CodePen usernames allow letters, numbers, underscores, and dashes.
+  USERNAME_REGEXP = "[a-zA-Z0-9_-]{1,30}".freeze
+  # Classic slugs and private pen hashes are alphanumeric.
+  PEN_ID_REGEXP = "[a-zA-Z0-9]{5,32}".freeze
+  # CodePen 2.0 editor IDs are UUID-like and can include dashes.
+  EDITOR_PEN_ID_REGEXP = "[a-zA-Z0-9-]{5,36}".freeze
+  # CodePen 2.0 editor URLs include both the editor pen ID and the classic pen hash.
   REGISTRY_REGEXP =
-    %r{\A(http|https)://(codepen\.io|codepen\.io/team)/[a-zA-Z0-9_-]{1,30}/(pen|embed)(/preview)?/([a-zA-Z0-9]{5,32})/{0,1}\z}
-  # rubocop:enable Layout/LineLength
+    %r{\Ahttps?://codepen\.io/(?:
+      (?:team/)?#{USERNAME_REGEXP}/(?:pen|embed)(?:/preview)?/#{PEN_ID_REGEXP}|
+      editor/#{USERNAME_REGEXP}/(?:pen|embed)(?:/preview)?/#{EDITOR_PEN_ID_REGEXP}/#{PEN_ID_REGEXP}
+    )/?\z}x
 
   def initialize(_tag_name, link, _parse_context)
     super

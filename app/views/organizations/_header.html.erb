@@ -13,7 +13,12 @@
     background-image: url('<%= @cover_image_url %>');
     background-size: cover;
     background-position: center;
-    height: 200px;
+    aspect-ratio: 3 / 1;
+  }
+  @media (min-width: 768px) {
+    .org-header-cover {
+      aspect-ratio: 8 / 1;
+    }
   }
 <% else %>
   /* === COMPACT MODE (brand color bar) === */
@@ -24,18 +29,25 @@
 <% end %>
   .org-header-main {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: var(--su-4);
+    gap: var(--su-3);
     padding: var(--su-4);
   }
   .org-header-logo {
-    width: 80px;
-    height: 80px;
+    width: 56px;
+    height: 56px;
     border-radius: var(--radius);
     overflow: hidden;
     border: 1px solid rgba(0,0,0,0.1);
     background-color: var(--card-bg);
     flex-shrink: 0;
+  }
+  @media (min-width: 768px) {
+    .org-header-logo {
+      width: 80px;
+      height: 80px;
+    }
   }
   .org-header-logo img {
     border-radius: var(--radius);
@@ -51,7 +63,20 @@
     font-size: var(--fs-2xl);
     line-height: 1.2;
   }
-  .org-header-actions { flex-shrink: 0; }
+  .org-header-actions {
+    flex-shrink: 0;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--su-1);
+    max-width: 100%;
+  }
+  @media (min-width: 768px) {
+    .org-header-actions {
+      width: auto;
+    }
+  }
   .org-header-brand-line {
     height: 3px;
     background: var(--profile-brand-color);
@@ -72,7 +97,7 @@
         <%= sanitize @user.name %>
         <% if @organization.verified? %>
           <span class="screen-reader-only"><%= t("views.organizations.verified_badge") %></span>
-          <%= crayons_icon_tag("verified", aria_hidden: true, style: "color: #3b82f6;", aria_title: t("views.organizations.verified_badge")) %>
+          <%= crayons_icon_tag("verified", aria_hidden: true, style: "color: #3b82f6; margin-left: var(--su-1);", aria_title: t("views.organizations.verified_badge")) %>
         <% end %>
       </h1>
       <% if @user.tag_line.present? %>
@@ -150,11 +175,11 @@
       <a href="<%= admin_organization_path(@organization) %>" id="org-admin-btn" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon ml-1" title="<%= t("views.organizations.admin_link") %>" data-no-instant>
         <%= crayons_icon_tag("tools-line", title: t("views.organizations.admin_link")) %>
       </a>
-      <div class="profile-dropdown ml-1 s:relative" data-organizationname="<%= @organization.name %>">
+      <div class="profile-dropdown ml-1 relative" data-organizationname="<%= @organization.name %>">
         <button id="organization-profile-dropdown" aria-expanded="false" aria-controls="organization-profile-dropdownmenu" aria-haspopup="true" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon">
           <%= crayons_icon_tag("overflow-horizontal", class: "dropdown-icon", title: t("views.organizations.dropdown")) %>
         </button>
-        <div id="organization-profile-dropdownmenu" class="crayons-dropdown left-2 right-2 s:right-0 s:left-auto top-100 mt-1">
+        <div id="organization-profile-dropdownmenu" class="crayons-dropdown left-0 top-100 mt-1">
           <span class="report-abuse-link-wrapper" data-path="/report-abuse?url=<%= organization_url(@organization) %>"></span>
         </div>
       </div>
@@ -163,7 +188,7 @@
 
   <%# Secondary info: description + meta %>
   <% if @user.summary.present? || @user&.profile&.website_url.present? || @organization.location.present? %>
-    <div class="px-4 m:px-0 pb-4">
+    <div class="px-4 m:px-0 pb-4" style="overflow-wrap: anywhere;">
       <% if @user.summary.present? %>
         <p class="fs-base color-base-90 mb-3"><%= sanitize @user.summary %></p>
       <% end %>
