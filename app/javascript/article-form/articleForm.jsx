@@ -324,11 +324,11 @@ export class ArticleForm extends Component {
   };
 
   handleOrgIdChange = (e) => {
-    const organizationId = e.target.selectedOptions[0].value;
+    const nextOrganizationId = e.target.selectedOptions[0].value;
     this.setState((currentState) => ({
-      organizationId,
+      organizationId: nextOrganizationId,
       coAuthorIdsList:
-        currentState.organizationId === organizationId
+        currentState.organizationId === nextOrganizationId
           ? currentState.coAuthorIdsList
           : '',
     }));

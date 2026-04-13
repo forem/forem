@@ -369,7 +369,7 @@ class ArticlesController < ApplicationController
 
   def allowed_to_change_org_id?
     potential_user = @article&.user || current_user
-    potential_org_id = params["article"]["organization_id"].presence || @article&.organization_id
+    potential_org_id = requested_organization_id || @article&.organization_id
     OrganizationMembership.exists?(user: potential_user, organization_id: potential_org_id) ||
       current_user.any_admin?
   end
@@ -383,12 +383,18 @@ class ArticlesController < ApplicationController
   end
 
   def allowed_to_manage_org_co_authors?
-    organization_id = if params["article"].key?("organization_id") && allowed_to_change_org_id?
-                        params["article"]["organization_id"].presence
-                      else
-                        @article&.organization_id
-                      end
+    organization_id = effective_organization_id
 
     organization_id.present? && current_user.org_admin?(organization_id)
+  end
+
+  def effective_organization_id
+    return requested_organization_id if params["article"].key?("organization_id") && allowed_to_change_org_id?
+
+    @article&.organization_id
+  end
+
+  def requested_organization_id
+    params["article"]["organization_id"].presence
   end
 end
