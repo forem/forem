@@ -26,5 +26,17 @@ RSpec.describe "PollSkips" do
         post "/poll_skips", params: { poll_skip: { poll_id: poll.id } }
       end.to change(user.poll_skips, :count).by(1)
     end
+
+    describe "when the poll is part of a survey" do
+      let(:survey) { create(:survey) }
+      let!(:poll) { create(:poll, survey: survey, article: nil) }
+
+      it "registers the skip with a session start" do
+        post "/poll_skips", params: { poll_skip: { poll_id: poll.id, session_start: 1234 } }
+        
+        expect(response).to have_http_status(:success)
+        expect(user.poll_skips.last.session_start).to eq(1234)
+      end
+    end
   end
 end

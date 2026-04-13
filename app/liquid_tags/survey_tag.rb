@@ -112,7 +112,14 @@ class SurveyTag < LiquidTagBase
         // --- LOGGED-IN USER LOGIC ---
         function setAndLockAnsweredPoll(poll, votedOptionIds) {
           poll.classList.add('is-answered');
-          if (Array.isArray(votedOptionIds)) {
+          const skipBtn = poll.querySelector('.survey-skip-btn');
+          if (skipBtn) skipBtn.disabled = true;
+
+          if (votedOptionIds === 'skipped') {
+            if (skipBtn) skipBtn.classList.add('user-selected');
+            const textarea = poll.querySelector('.survey-text-input');
+            if (textarea) textarea.disabled = true;
+          } else if (Array.isArray(votedOptionIds)) {
             // Multiple choice poll
             votedOptionIds.forEach(optionId => {
               const selectedOption = poll.querySelector(`.survey-poll-option[data-option-id="${optionId}"]`);
@@ -192,6 +199,28 @@ class SurveyTag < LiquidTagBase
           }
         }
 
+        function handleSkip(pollElement) {
+          const pollId = pollElement.dataset.pollId;
+          
+          if (pollElement.dataset.pollType === 'text_input') {
+            const textarea = pollElement.querySelector('.survey-text-input');
+            if (textarea) textarea.value = '';
+          } else {
+            pollElement.querySelectorAll('.survey-poll-option').forEach(opt => {
+              opt.classList.remove('user-selected');
+              const input = opt.querySelector('input');
+              if (input) input.checked = false;
+            });
+          }
+
+          const skipBtn = pollElement.querySelector('.survey-skip-btn');
+          if (skipBtn) skipBtn.classList.add('user-selected');
+
+          pendingVotes[pollId] = { type: 'skip' };
+          pollElement.classList.add('is-answered');
+          updateUI();
+        }
+
         function handleTextInput(pollElement) {
           const pollId = pollElement.dataset.pollId;
           const textarea = pollElement.querySelector('.survey-text-input');
@@ -225,6 +254,15 @@ class SurveyTag < LiquidTagBase
                   })
                 );
               });
+            } else if (typeof voteData === 'object' && voteData.type === 'skip') {
+              promises.push(
+                window.fetch(`/poll_skips`, {
+                  method: 'POST',
+                  headers: { 'X-CSRF-Token': csrfToken, 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ poll_skip: { poll_id: pollId, session_start: currentSession } }),
+                  credentials: 'same-origin',
+                })
+              );
             } else if (typeof voteData === 'object' && voteData.type === 'text') {
               // Text input - submit text response
               promises.push(
@@ -310,6 +348,11 @@ class SurveyTag < LiquidTagBase
     #{'    '}
         // Always attach event listeners first to ensure functionality
         polls.forEach(poll => {
+          const skipBtn = poll.querySelector('.survey-skip-btn');
+          if (skipBtn) {
+            skipBtn.addEventListener('click', () => handleSkip(poll));
+          }
+
           if (poll.dataset.pollType === 'text_input') {
             const textarea = poll.querySelector('.survey-text-input');
             if (textarea) {
@@ -345,6 +388,11 @@ class SurveyTag < LiquidTagBase
               // Clear all previous answers and start from first poll
               polls.forEach(poll => {
                 poll.classList.remove('is-answered');
+                const skipBtn = poll.querySelector('.survey-skip-btn');
+                if (skipBtn) {
+                  skipBtn.classList.remove('user-selected');
+                  skipBtn.disabled = false;
+                }
                 poll.querySelectorAll('.survey-poll-option').forEach(option => {
                   option.classList.remove('user-selected');
                   option.classList.remove('disabled');
@@ -393,6 +441,11 @@ class SurveyTag < LiquidTagBase
             console.error("Survey Error:", error);
             // If survey state fetch fails, still attach event listeners for fresh start
             polls.forEach(poll => {
+              const skipBtn = poll.querySelector('.survey-skip-btn');
+              if (skipBtn) {
+                skipBtn.addEventListener('click', () => handleSkip(poll));
+              }
+
               if (poll.dataset.pollType === 'text_input') {
                 const textarea = poll.querySelector('.survey-text-input');
                 if (textarea) {
