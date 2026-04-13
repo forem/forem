@@ -1,3 +1,4 @@
+import { showSnackbar } from '../utilities/showSnackbar';
 import {
   initializeDropdown,
   getDropdownRepositionListener,
@@ -10,7 +11,7 @@ const handleCopyPermalink = (closeDropdown) => {
     event.preventDefault();
     const permalink = event.target.href;
     copyToClipboard(permalink).then(() => {
-      top.addSnackbarItem({ message: 'Copied to clipboard' });
+      showSnackbar('Copied to clipboard');
     });
     closeDropdown();
   };

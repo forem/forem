@@ -1,4 +1,5 @@
 /* eslint-disable no-restricted-globals */
+import { showSnackbar } from '../utilities/showSnackbar';
 import { closeWindowModal, showWindowModal } from '@utilities/showModal';
 import { request } from '@utilities/http';
 
@@ -16,16 +17,10 @@ async function confirmAdminUnpublishPost(id, username, slug) {
     if (outcome.message == 'success') {
       window.top.location.assign(`${window.location.origin}${outcome.path}`);
     } else {
-      top.addSnackbarItem({
-        message: `Error: ${outcome.message}`,
-        addCloseButton: true,
-      });
+      showSnackbar(`Error: ${outcome.message}`);
     }
   } catch (error) {
-    top.addSnackbarItem({
-      message: `Error: ${error}`,
-      addCloseButton: true,
-    });
+    showSnackbar(`Error: ${error}`);
   }
 
   closeWindowModal(window.parent.document);

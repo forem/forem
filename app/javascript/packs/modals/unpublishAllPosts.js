@@ -1,3 +1,4 @@
+import { showSnackbar } from '../../utilities/showSnackbar';
 import { closeWindowModal, showWindowModal } from '@utilities/showModal';
 import { request } from '@utilities/http';
 
@@ -20,15 +21,9 @@ const unpublishAllPosts = async (event) => {
 
     const outcome = await response.json();
 
-    top.addSnackbarItem({
-      message: outcome.message,
-      addCloseButton: true,
-    });
+    showSnackbar(outcome.message);
   } catch (error) {
-    top.addSnackbarItem({
-      message: `Error: ${error}`,
-      addCloseButton: true,
-    });
+    showSnackbar(`Error: ${error}`);
   }
 
   closeWindowModal(window.parent.document);
