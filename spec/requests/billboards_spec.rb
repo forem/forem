@@ -92,7 +92,7 @@ RSpec.describe "Billboards" do
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_fixed_bottom")
 
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include("border: 5px solid #{billboard.color};border-bottom: none")
+        expect(response.body).to include("border: 1px solid #{billboard.color}; border-bottom: none")
       end
     end
 
@@ -103,7 +103,7 @@ RSpec.describe "Billboards" do
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
 
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include("border: 5px solid #{billboard.color}")
+        expect(response.body).to include("border: 1px solid #{billboard.color}")
       end
     end
 
@@ -115,7 +115,7 @@ RSpec.describe "Billboards" do
 
         expect(response).to have_http_status(:ok)
         expect(response.body).not_to include("border-top: calc(9px + 0.5vw) solid")
-        expect(response.body).not_to include("border: 5px solid")
+        expect(response.body).not_to include("border: 1px solid")
       end
     end
   end
