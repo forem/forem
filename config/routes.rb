@@ -466,7 +466,7 @@ Rails.application.routes.draw do
     get "/t/:tag/top/:timeframe", to: "stories/tagged_articles#index"
     get "/t/:tag/page/:page", to: "stories/tagged_articles#index"
     get "/t/:tag/:timeframe", to: "stories/tagged_articles#index",
-                              constraints: { timeframe: /latest|latest_less_filtered/ }
+                              constraints: { timeframe: /latest/ }
 
     get "/t/:tag/edit", to: "tags#edit", as: :edit_tag
     get "/t/:tag/videos", to: "videos#index"
