@@ -47,7 +47,7 @@ module Moderator
     end
 
     def delete_vomit_reactions
-      Reaction.where(reactable: user, category: "vomit").delete_all
+      Reaction.where(reactable: user, category: "vomit").destroy_all
     end
 
     def delete_organization
