@@ -2,6 +2,17 @@
 en:
   views:
     admin:
+      tools:
+        data_fix_jobs:
+          heading: Data Fix Jobs
+          section_description: Run long-running maintenance fixes and diagnostics.
+          tag_counts:
+            title: Tag Counts
+            description: Verify or fix the cached taggings_count for all tags. Counts can drift out of sync over time due to race conditions in the tagging system.
+          verify_tag_counts:
+            button: Verify Tag Counts
+          fix_tag_counts:
+            button: Fix Tag Counts
       articles:
         flags:
           score: Score affected by a particular flag

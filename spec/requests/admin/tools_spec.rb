@@ -26,6 +26,44 @@ RSpec.describe "/admin/advanced/tools" do
     it "allows the request" do
       expect(response).to have_http_status(:ok)
     end
+
+    describe "POST /admin/advanced/tools/run_data_fix" do
+      before do
+        allow(DataFixes::RunWorker).to receive(:perform_async)
+      end
+
+      it "enqueues the selected data fix" do
+        post run_data_fix_admin_tools_path, params: { fix_name: DataFixes::FixTagCounts::KEY }
+
+        expect(response).to redirect_to(admin_tools_path)
+        expect(DataFixes::RunWorker).to have_received(:perform_async).with(DataFixes::FixTagCounts::KEY,
+                                                                           super_admin.id)
+      end
+
+      it "does not enqueue unknown data fixes" do
+        post run_data_fix_admin_tools_path, params: { fix_name: "unknown_fix" }
+
+        expect(response).to redirect_to(admin_tools_path)
+        expect(DataFixes::RunWorker).not_to have_received(:perform_async)
+      end
+    end
+
+    describe "POST /admin/advanced/tools/run_data_check" do
+      it "runs the selected data check and redirects" do
+        create(:tag)
+        post run_data_check_admin_tools_path, params: { check_name: DataFixes::VerifyTagCounts::KEY }
+
+        expect(response).to redirect_to(admin_tools_path)
+        follow_redirect!
+        expect(response.body).to include("Tag count verification")
+      end
+
+      it "rejects unknown data checks" do
+        post run_data_check_admin_tools_path, params: { check_name: "unknown_check" }
+
+        expect(response).to redirect_to(admin_tools_path)
+      end
+    end
   end
 
   context "when the user is a single resource admin" do

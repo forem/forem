@@ -82,6 +82,18 @@ Sidekiq.configure_server do |config|
 end
 
 Sidekiq.configure_client do |config|
+  sidekiq_url = ApplicationConfig["REDIS_SIDEKIQ_URL"] || ApplicationConfig["REDIS_URL"] || "redis://localhost:6379"
+  if Rails.env.development?
+    begin
+      require "uri"
+      uri = URI.parse(sidekiq_url)
+      uri.path = "/3" if uri.path.nil? || uri.path == "" || uri.path == "/"
+      sidekiq_url = uri.to_s
+    rescue URI::InvalidURIError
+    end
+  end
+  config.redis = { url: sidekiq_url }
+
   config.client_middleware do |chain|
     chain.add SidekiqUniqueJobs::Middleware::Client
   end
