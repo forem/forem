@@ -34,10 +34,23 @@ RSpec.describe "Events", type: :request do
     end
     
     context "when an event does not exist" do
-      it "raises an ActiveRecord::RecordNotFound implicitly handled as a 404" do
-        expect {
-          get "/events/does-not-exist/version"
-        }.to raise_error(ActiveRecord::RecordNotFound)
+      context "and a matching page does not exist" do
+        it "raises an ActiveRecord::RecordNotFound implicitly handled as a 404" do
+          expect {
+            get "/events/does-not-exist/version"
+          }.to raise_error(ActiveRecord::RecordNotFound)
+        end
+      end
+
+      context "and a matching page exists" do
+        let!(:fallback_page) { create(:page, slug: "events/midnight/april-2-2026", body_markdown: "This is the fallback midnight event page") }
+        
+        it "renders the page instead of raising a 404" do
+          get "/events/midnight/april-2-2026"
+          
+          expect(response).to have_http_status(:success)
+          expect(response.body).to include("This is the fallback midnight event page")
+        end
       end
     end
   end
