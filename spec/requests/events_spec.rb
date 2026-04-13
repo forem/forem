@@ -34,6 +34,18 @@ RSpec.describe "Events", type: :request do
         end
       end
 
+      context "as a regular logged in user" do
+        let(:regular_user) { create(:user) }
+        
+        before { login_as(regular_user) }
+
+        it "raises a 404 RoutingError to maintain draft secrecy" do
+          expect {
+            get event_path(draft_event.event_name_slug, draft_event.event_variation_slug)
+          }.to raise_error(ActionController::RoutingError, "Not Found")
+        end
+      end
+
       context "as an admin" do
         let(:admin) { create(:user, :super_admin) }
         
