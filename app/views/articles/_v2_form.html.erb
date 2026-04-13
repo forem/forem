@@ -45,9 +45,22 @@
 </style>
 
 <% @editor_context = true %>
+<%
+  serialized_organizations = Array(organizations).map do |organization|
+    {
+      id: organization.id,
+      name: organization.name,
+      bg_color_hex: organization.bg_color_hex,
+      text_color_hex: organization.text_color_hex,
+      profile_image_90: organization.profile_image_90,
+      can_add_co_authors: current_user&.org_admin?(organization),
+      fetch_users_url: organization_members_path(slug: organization.slug, format: :json)
+    }
+  end
+%>
 <main id="main-content"
-  data-article="<%= article.to_json(only: %i[id title cached_tag_list published published_at body_markdown main_image organization_id canonical_url updated_at video_source_url], methods: %i[series all_series]) %>"
-  data-organizations="<%= organizations&.to_json(only: %i[id name bg_color_hex text_color_hex], methods: [:profile_image_90]) %>"
+  data-article="<%= article.to_json(only: %i[id user_id title cached_tag_list published published_at body_markdown main_image organization_id canonical_url updated_at video_source_url], methods: %i[series all_series co_author_ids_list]) %>"
+  data-organizations="<%= serialized_organizations.to_json %>"
   data-version="<%= version %>"
   data-site-logo='<%= render "layouts/logo" %>'
   data-cover-image-height="<%= Settings::UserExperience.cover_image_height %>"

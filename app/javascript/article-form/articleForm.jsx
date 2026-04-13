@@ -179,6 +179,8 @@ export class ArticleForm extends Component {
       videoSourceUrl: this.article.video_source_url || null,
       organizations,
       organizationId: this.article.organization_id,
+      authorId: this.article.user_id,
+      coAuthorIdsList: this.article.co_author_ids_list || '',
       errors: null,
       edited: false,
       updatedAt: this.article.updated_at,
@@ -323,7 +325,13 @@ export class ArticleForm extends Component {
 
   handleOrgIdChange = (e) => {
     const organizationId = e.target.selectedOptions[0].value;
-    this.setState({ organizationId });
+    this.setState((currentState) => ({
+      organizationId,
+      coAuthorIdsList:
+        currentState.organizationId === organizationId
+          ? currentState.coAuthorIdsList
+          : '',
+    }));
   };
 
   failedPreview = (response) => {
@@ -430,6 +438,8 @@ export class ArticleForm extends Component {
       submitting: false,
       editing: this.article.id !== null, // eslint-disable-line react/no-unused-state
       mainImage: this.article.main_image || null,
+      organizationId: this.article.organization_id,
+      coAuthorIdsList: this.article.co_author_ids_list || '',
       errors: null,
       edited: false,
       helpFor: null,

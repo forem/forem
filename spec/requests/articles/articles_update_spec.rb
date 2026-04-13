@@ -92,6 +92,28 @@ RSpec.describe "ArticlesUpdate" do
     expect(article.organization_id).to eq(admin_org_id)
   end
 
+  it "allows an org admin to update co-authors from the editor" do
+    admin_org_id = user.organizations.first.id
+    article.update_columns(organization_id: admin_org_id)
+    co_author = create(:user)
+    create(:organization_membership, user: co_author, organization_id: admin_org_id)
+
+    put "/articles/#{article.id}", params: { article: { co_author_ids_list: co_author.id.to_s } }
+
+    expect(article.reload.co_author_ids).to eq([co_author.id])
+  end
+
+  it "rejects co-authors who are not active members of the selected organization" do
+    admin_org_id = user.organizations.first.id
+    article.update_columns(organization_id: admin_org_id)
+    outsider = create(:user)
+
+    put "/articles/#{article.id}", params: { article: { co_author_ids_list: outsider.id.to_s }, format: :json }
+
+    expect(response).to have_http_status(:unprocessable_entity)
+    expect(article.reload.co_author_ids).to eq([])
+  end
+
   it "allows super_admin to edit an article" do
     user.add_role(:super_admin)
     put "/articles/#{other_article.id}", params: { article: { title: "new", body_markdown: "hello" } }
