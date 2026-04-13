@@ -64,6 +64,11 @@
           </a>
         </li>
         <li>
+          <a data-text="<%= t("views.stories.sort.year") %>" href="/top/year" class="p-2 crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("year") %>"<%= timeframe_check("year") ? ' aria-current="page"'.html_safe : "" %>>
+            <%= t("views.stories.feed.top_this_year") %>
+          </a>
+        </li>
+        <li>
           <a data-text="<%= t("views.stories.sort.infinity") %>" href="/top/infinity" class="p-2 crayons-navigation__item <%= "crayons-navigation__item--current" if timeframe_check("infinity") %>"<%= timeframe_check("infinity") ? ' aria-current="page"'.html_safe : "" %>>
           <%= t("views.stories.feed.top_this_infinity") %>
           </a>
@@ -84,33 +89,95 @@
   </nav>
   <script>
     (function() {
-      var currentPath = window.location.pathname;
-      var currentFeedNav = "";
+      function initializeFeedNavigation() {
+        var currentPath = window.location.pathname;
+        var currentFeedNav = "";
 
-      if (currentPath === "/following" || currentPath === "/discover" || currentPath === "/latest" || currentPath === "/latest_less_filtered") {
-        currentFeedNav = currentPath.substring(1);
-        if (currentFeedNav === "latest_less_filtered") { currentFeedNav = "latest"; }
-        
-        var feedToCache = currentFeedNav === "latest" ? "discover" : currentFeedNav;
-        localStorage.setItem("current_feed", feedToCache);
-      } else {
-        currentFeedNav = localStorage.getItem("current_feed") || "discover";
-        if (currentFeedNav === "latest") {
-          currentFeedNav = "discover";
-          localStorage.setItem("current_feed", "discover");
+        if (currentPath === "/following" || currentPath === "/discover" || currentPath === "/latest" || currentPath === "/latest_less_filtered") {
+          currentFeedNav = currentPath.substring(1);
+          if (currentFeedNav === "latest_less_filtered") { currentFeedNav = "latest"; }
+          
+          var feedToCache = currentFeedNav === "latest" ? "discover" : currentFeedNav;
+          localStorage.setItem("current_feed", feedToCache);
+        } else {
+          currentFeedNav = localStorage.getItem("current_feed") || "discover";
+          if (currentFeedNav === "latest") {
+            currentFeedNav = "discover";
+            localStorage.setItem("current_feed", "discover");
+          }
+        }
+
+        var feedNavItems = document.querySelectorAll("[data-feed-nav]");
+        feedNavItems.forEach(function(item) {
+          if (item.getAttribute("data-feed-nav") === currentFeedNav) {
+            item.classList.add("crayons-navigation__item--current");
+          } else {
+            item.classList.remove("crayons-navigation__item--current");
+          }
+        });
+
+        // Setup soft navigations
+        var feedLinks = document.querySelectorAll(".pill-nav-item");
+        feedLinks.forEach(function(link) {
+          link.setAttribute("data-no-instant", "true"); // Prevent full page reload
+          link.addEventListener("click", function(e) {
+            var targetHref = link.getAttribute("href");
+            if (window.location.pathname === targetHref) return;
+            
+            e.preventDefault();
+            window.history.pushState({}, "", targetHref);
+            handleFeedSoftNavigation(targetHref);
+          });
+        });
+
+        window.addEventListener("popstate", function() {
+          handleFeedSoftNavigation(window.location.pathname);
+        });
+      }
+
+      function handleFeedSoftNavigation(targetHref) {
+        var newFeedNav = targetHref.replace(/^\//, '');
+        if (newFeedNav === "" || newFeedNav === "latest_less_filtered") newFeedNav = newFeedNav === "" ? "discover" : "latest";
+
+        var cacheTarget = newFeedNav === "latest" ? "discover" : newFeedNav;
+        localStorage.setItem("current_feed", cacheTarget);
+
+        document.querySelectorAll("[data-feed-nav]").forEach(function(item) {
+          if (item.getAttribute("data-feed-nav") === newFeedNav) {
+            item.classList.add("crayons-navigation__item--current");
+          } else {
+            item.classList.remove("crayons-navigation__item--current");
+          }
+        });
+
+        const { userStatus } = document.body.dataset;
+        if (userStatus === 'logged-in') {
+          // Tell Preact to redraw the feed component gracefully based on the new URL
+          window.dispatchEvent(new CustomEvent('forem:feed:refresh'));
+        } else {
+          // If signed out, Forem rendered HTML natively, so we just fetch and swap the subset manually
+          var container = document.getElementById("homepage-feed") || document.getElementById("substories") || document.querySelector(".articles-list");
+          if(container) container.style.opacity = "0.5";
+          
+          fetch(targetHref, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            .then(res => res.text())
+            .then(html => {
+              var parser = new DOMParser();
+              var doc = parser.parseFromString(html, "text/html");
+              var newFeed = doc.getElementById("homepage-feed") || doc.getElementById("substories") || doc.querySelector(".articles-list");
+              
+              if (container && newFeed) {
+                container.innerHTML = newFeed.innerHTML;
+                container.style.opacity = "1";
+              }
+            }).catch(() => {
+              // Fallback to hard navigation if error chunks arise
+              window.location.href = targetHref;
+            });
         }
       }
 
-      var feedNavItems = document.querySelectorAll("[data-feed-nav]");
-      feedNavItems.forEach(function(item) {
-        if (item.getAttribute("data-feed-nav") === currentFeedNav) {
-          item.classList.add("crayons-navigation__item--current");
-        } else {
-          item.classList.remove("crayons-navigation__item--current");
-        }
-      });
-
-
+      initializeFeedNavigation();
     })();
   </script>
 <% else %>
