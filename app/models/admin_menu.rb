@@ -24,6 +24,7 @@ class AdminMenu
       item(name: "tags"),
       item(name: "emails"),
       item(name: "surveys"),
+      item(name: "events"),
     ]
 
     scope :customization, "tools-line", [
