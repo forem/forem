@@ -466,7 +466,7 @@ Rails.application.routes.draw do
     get "/t/:tag/top/:timeframe", to: "stories/tagged_articles#index"
     get "/t/:tag/page/:page", to: "stories/tagged_articles#index"
     get "/t/:tag/:timeframe", to: "stories/tagged_articles#index",
-                              constraints: { timeframe: /latest/ }
+                              constraints: { timeframe: /latest|latest_less_filtered/ }
 
     get "/t/:tag/edit", to: "tags#edit", as: :edit_tag
     get "/t/:tag/videos", to: "videos#index"
@@ -475,9 +475,9 @@ Rails.application.routes.draw do
 
     get "/top/:timeframe", to: "stories#index"
 
-    get "/:feed_type/:timeframe", to: "stories#index", constraints: { feed_type: /following/, timeframe: /latest/ }
+    get "/:feed_type/:timeframe", to: "stories#index", constraints: { feed_type: /following/, timeframe: /latest|latest_less_filtered/ }
 
-    get "/:timeframe", to: "stories#index", constraints: { timeframe: /latest/ }
+    get "/:timeframe", to: "stories#index", constraints: { timeframe: /latest|latest_less_filtered/ }
     get "/:feed_type", to: "stories#index", constraints: { feed_type: /discover|following/ }
 
     get "/:username/series", to: "collections#index", as: "user_series"

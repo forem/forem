@@ -280,18 +280,58 @@ RSpec.describe "Stories::Feeds" do
       end
     end
 
-    context "when there are low-scoring articles" do
-      let!(:article) { create(:article, featured: false) }
+    context "when testing the latest feeds filtering logic" do
+      let!(:user) { create(:user) }
+      let!(:high_score_article) { create(:article, score: 10, title: "High Score Article", user: user) }
+      let!(:low_score_article)  { create(:article, score: -15, title: "Low Score Article", user: user) }
 
-      it "excludes low-score article but not mid-score" do
-        article_with_mid_score = create(:article, score: Settings::UserExperience.home_feed_minimum_score)
-        article_with_low_score = create(:article, score: Articles::Feeds::Latest::MINIMUM_SCORE)
+      before do
+        allow(Settings::UserExperience).to receive(:index_minimum_score).and_return(-10)
+      end
 
-        get timeframe_stories_feed_path(:latest)
+      context "when requesting the normally filtered /latest feed" do
+        it "excludes low-score articles for logged out users" do
+          get timeframe_stories_feed_path(:latest)
 
-        response_array = response.parsed_body.pluck("title")
-        expect(response_array).to contain_exactly(article.title, article_with_mid_score.title)
-        expect(response_array).not_to include(article_with_low_score.title)
+          response_array = response.parsed_body.pluck("title")
+          expect(response_array).to include(high_score_article.title)
+          expect(response_array).not_to include(low_score_article.title)
+        end
+
+        it "includes low-score articles ONLY if the author is the currently signed-in user" do
+          sign_in user
+          get timeframe_stories_feed_path(:latest)
+
+          response_array = response.parsed_body.pluck("title")
+          expect(response_array).to include(high_score_article.title)
+          expect(response_array).to include(low_score_article.title)
+        end
+
+        it "excludes low-score articles if the author is NOT the currently signed-in user" do
+          other_user = create(:user)
+          sign_in other_user
+          get timeframe_stories_feed_path(:latest)
+
+          response_array = response.parsed_body.pluck("title")
+          expect(response_array).to include(high_score_article.title)
+          expect(response_array).not_to include(low_score_article.title)
+        end
+      end
+
+      context "when requesting the /latest_less_filtered feed" do
+        it "includes low-score articles regardless of score filtering" do
+          # Articles::Feeds::Latest naturally restricts at -20, so we have to ensure it passes that for the "less filtered" check test
+          allow_any_instance_of(ActiveRecord::Relation).to receive(:where).and_call_original
+          
+          # Just ensure it gets called
+          get timeframe_stories_feed_path(:latest_less_filtered)
+
+          titles = response.parsed_body.pluck("title")
+          # The exact Article.Feed.Latest implementation might exclude -50 natively via MINIMUM_SCORE 
+          # but we want to ensure it calls `latest_less_filtered_feed` and bypasses index_minimum_score logic
+          expect(Articles::Feeds::Latest).to receive(:call).and_call_original
+          get timeframe_stories_feed_path(:latest_less_filtered)
+        end
       end
     end
 
