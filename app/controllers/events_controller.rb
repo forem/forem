@@ -11,7 +11,7 @@ class EventsController < ApplicationController
     
     if @event
       unless @event.published?
-        raise ActionController::RoutingError.new('Not Found')
+        raise ActionController::RoutingError.new('Not Found') unless current_user&.any_admin?
       end
 
       tag_name = @event.tags.first&.name

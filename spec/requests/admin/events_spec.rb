@@ -49,5 +49,18 @@ RSpec.describe "Admin::Events", type: :request do
       expect(response).to redirect_to(admin_events_path)
       expect(Event.last.event_name_slug).to eq("test-admin")
     end
+
+    context "with invalid parameters" do
+      let(:invalid_attributes) { valid_attributes.merge(title: "") }
+
+      it "does not create a new event and returns unprocessable_entity with an error message" do
+        expect {
+          post admin_events_path, params: { event: invalid_attributes }
+        }.not_to change(Event, :count)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body).to include("prohibited this event from being saved")
+      end
+    end
   end
 end

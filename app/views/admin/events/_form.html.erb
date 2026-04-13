@@ -1,4 +1,15 @@
 <%= form_with model: [:admin, event], local: true do |form| %>
+  <% if event.errors.any? %>
+    <div class="crayons-notice crayons-notice--danger mb-4">
+      <h4><%= pluralize(event.errors.count, "error") %> prohibited this event from being saved:</h4>
+      <ul class="list-disc list-inside mt-2">
+        <% event.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
   <div class="flex flex-col gap-4">
     <div class="crayons-field">
       <%= form.label :title, class: "crayons-field__label" %>
