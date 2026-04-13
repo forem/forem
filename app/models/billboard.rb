@@ -401,7 +401,7 @@ class Billboard < ApplicationRecord
     return "" if color.blank?
 
     if placement_area.include?("fixed_")
-      "border: 1px solid #{color}; border-bottom: none; border-top-width: 3px;"
+      "border: 1px solid #{color}; border-bottom: none;"
     else
       "border: 1px solid #{color}; border-left-width: 4px;"
     end
