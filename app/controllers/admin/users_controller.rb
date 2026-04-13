@@ -106,6 +106,12 @@ module Admin
           reason: "reputation_modifier_change",
           content: note_content,
         )
+        Audit::Logger.log(:moderator, current_user, {
+                            "action" => params[:action],
+                            "controller" => params[:controller],
+                            "target_user_id" => @user.id,
+                            "reputation_modifier" => reputation_modifier_value
+                          })
         flash[:success] = I18n.t("views.admin.users.reputation.success", reputation_modifier: reputation_modifier_value)
       else
         flash[:error] = I18n.t("views.admin.users.reputation.error")
@@ -125,6 +131,13 @@ module Admin
           reason: "Update Email",
           content: "Updated email from #{old_email} to #{new_email}",
         )
+        Audit::Logger.log(:moderator, current_user, {
+                            "action" => params[:action],
+                            "controller" => params[:controller],
+                            "target_user_id" => @user.id,
+                            "old_email" => old_email,
+                            "new_email" => new_email
+                          })
         flash[:success] = I18n.t("views.admin.users.update_email.success")
       else
         flash[:error] = I18n.t("views.admin.users.update_email.error")
@@ -142,13 +155,20 @@ module Admin
                                          profile: admin_profile_params)
 
       if update_result.success?
+        note_content = profile_update_note(previous_user_values, previous_profile_values)
         Note.create(
           author_id: current_user.id,
           noteable_id: @user.id,
           noteable_type: "User",
           reason: "admin_profile_update",
-          content: profile_update_note(previous_user_values, previous_profile_values),
+          content: note_content,
         )
+        Audit::Logger.log(:moderator, current_user, {
+                            "action" => params[:action],
+                            "controller" => params[:controller],
+                            "target_user_id" => @user.id,
+                            "changes" => note_content
+                          })
         flash[:success] = I18n.t("views.admin.users.edit_profile.success")
       else
         flash[:error] = update_result.errors_as_sentence
@@ -174,6 +194,12 @@ module Admin
           reason: "max_score_change",
           content: note_content,
         )
+        Audit::Logger.log(:moderator, current_user, {
+                            "action" => params[:action],
+                            "controller" => params[:controller],
+                            "target_user_id" => @user.id,
+                            "max_score" => max_score_value
+                          })
         flash[:success] = I18n.t("views.admin.users.max_score.success", max_score: max_score_value)
       else
         flash[:error] = I18n.t("views.admin.users.max_score.error")
@@ -195,6 +221,14 @@ module Admin
       )
 
       if response.success
+        Audit::Logger.log(:moderator, current_user, {
+                            "action" => "remove_role",
+                            "controller" => params[:controller],
+                            "target_user_id" => @user.id,
+                            "role" => role.name,
+                            "resource_type" => params[:resource_type],
+                            "resource_id" => params[:resource_id]
+                          })
         flash[:success] =
           I18n.t("admin.users_controller.role_removed",
                  role: I18n.t("views.admin.users.overview.roles.name.#{
@@ -264,6 +298,13 @@ module Admin
 
       result = TagModerators::Add.call(user.id, tag.id)
       if result.success?
+        Audit::Logger.log(:moderator, current_user, {
+                            "action" => params[:action],
+                            "controller" => params[:controller],
+                            "target_user_id" => user.id,
+                            "tag_id" => tag.id,
+                            "tag_name" => tag.name
+                          })
         flash[:success] = I18n.t("admin.tags.moderators_controller.added", username: user.username)
       else
         flash[:error] = I18n.t("errors.messages.general", errors:
@@ -359,6 +400,12 @@ module Admin
         # We should delete them when a user unlinks their GitHub account.
         @user.github_repos.destroy_all if identity.provider.to_sym == :github
 
+        Audit::Logger.log(:moderator, current_user, {
+                            "action" => params[:action],
+                            "controller" => params[:controller],
+                            "target_user_id" => @user.id,
+                            "provider" => identity.provider
+                          })
         flash[:success] =
           I18n.t("admin.users_controller.identity_removed",
                  provider: identity.provider.capitalize)
@@ -475,7 +522,12 @@ module Admin
           reason: "email_confirmed",
           content: "Email manually confirmed by #{current_user.username}",
         )
-        
+        Audit::Logger.log(:moderator, current_user, {
+                            "action" => params[:action],
+                            "controller" => params[:controller],
+                            "target_user_id" => @user.id
+                          })
+
         respond_to do |format|
           message = I18n.t("admin.users_controller.email_confirmed")
 
@@ -513,6 +565,13 @@ module Admin
           reason: "pending_email_confirmed",
           content: "Pending email change confirmed by #{current_user.username}. Email changed from #{old_email} to #{new_email}",
         )
+        Audit::Logger.log(:moderator, current_user, {
+                            "action" => params[:action],
+                            "controller" => params[:controller],
+                            "target_user_id" => @user.id,
+                            "old_email" => old_email,
+                            "new_email" => new_email
+                          })
 
         respond_to do |format|
           message = I18n.t("admin.users_controller.pending_email_confirmed")

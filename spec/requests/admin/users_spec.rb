@@ -792,6 +792,124 @@ RSpec.describe "/admin/member_manager/users" do
     end
   end
 
+  describe "audit log creation" do
+    before { Audit::Subscribe.listen :moderator }
+
+    after { Audit::Subscribe.forget :moderator }
+
+    describe "PATCH /admin/member_manager/users/:id/update_email" do
+      it "creates an audit log record" do
+        expect do
+          patch update_email_admin_user_path(user), params: { user: { email: "audit@example.com" } }
+        end.to change(AuditLog, :count).by(1)
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
+        expect(log.user_id).to eq(admin.id)
+        expect(log.data["action"]).to eq("update_email")
+        expect(log.data["target_user_id"]).to eq(user.id)
+        expect(log.data["new_email"]).to eq("audit@example.com")
+      end
+    end
+
+    describe "PATCH /admin/member_manager/users/:id/update_profile" do
+      it "creates an audit log record" do
+        expect do
+          patch update_profile_admin_user_path(user), params: { user: { name: "New Name" } }
+        end.to change(AuditLog, :count).by(1)
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
+        expect(log.user_id).to eq(admin.id)
+        expect(log.data["action"]).to eq("update_profile")
+        expect(log.data["target_user_id"]).to eq(user.id)
+        expect(log.data["changes"]).to be_present
+      end
+    end
+
+    describe "POST /admin/member_manager/users/:id/confirm_pending_email" do
+      it "creates an audit log record" do
+        user.update_columns(unconfirmed_email: "pending@example.com")
+
+        expect do
+          post confirm_pending_email_admin_user_path(user)
+        end.to change(AuditLog, :count).by(1)
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
+        expect(log.user_id).to eq(admin.id)
+        expect(log.data["action"]).to eq("confirm_pending_email")
+        expect(log.data["target_user_id"]).to eq(user.id)
+        expect(log.data["new_email"]).to eq("pending@example.com")
+      end
+    end
+
+    describe "PATCH /admin/member_manager/users/:id/reputation_modifier" do
+      it "creates an audit log record" do
+        expect do
+          patch reputation_modifier_admin_user_path(user), params: { user: { reputation_modifier: 2.0 } }
+        end.to change(AuditLog, :count).by(1)
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
+        expect(log.user_id).to eq(admin.id)
+        expect(log.data["action"]).to eq("reputation_modifier")
+        expect(log.data["target_user_id"]).to eq(user.id)
+      end
+    end
+
+    describe "PATCH /admin/member_manager/users/:id/max_score" do
+      it "creates an audit log record" do
+        expect do
+          patch max_score_admin_user_path(user), params: { user: { max_score: 50 } }
+        end.to change(AuditLog, :count).by(1)
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
+        expect(log.user_id).to eq(admin.id)
+        expect(log.data["action"]).to eq("max_score")
+        expect(log.data["target_user_id"]).to eq(user.id)
+      end
+    end
+
+    describe "POST /admin/member_manager/users/:id/confirm_email" do
+      it "creates an audit log record" do
+        unconfirmed_user = create(:user, confirmed_at: nil)
+
+        expect do
+          post confirm_email_admin_user_path(unconfirmed_user)
+        end.to change(AuditLog, :count).by(1)
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
+        expect(log.user_id).to eq(admin.id)
+        expect(log.data["action"]).to eq("confirm_email")
+        expect(log.data["target_user_id"]).to eq(unconfirmed_user.id)
+      end
+    end
+
+    describe "DELETE /admin/member_manager/users/:id/remove_identity" do
+      it "creates an audit log record" do
+        omniauth_mock_providers_payload
+        allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
+        identity_user = create(:user, :with_identity, uid: rand(1_000_000).to_s)
+        identity = identity_user.identities.first
+
+        expect do
+          delete remove_identity_admin_user_path(identity_user.id),
+                 params: { user: { identity_id: identity.id } }
+        end.to change(AuditLog, :count).by(1)
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
+        expect(log.user_id).to eq(admin.id)
+        expect(log.data["action"]).to eq("remove_identity")
+        expect(log.data["target_user_id"]).to eq(identity_user.id)
+        expect(log.data["provider"]).to eq(identity.provider)
+      end
+    end
+  end
+
   describe "GET /admin/member_manager/users/:id?tab=audit_log" do
     it "displays the audit log tab" do
       get "#{admin_user_path(user.id)}?tab=audit_log"
