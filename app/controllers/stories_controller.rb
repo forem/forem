@@ -335,8 +335,13 @@ class StoriesController < ApplicationController
   def assign_feed_stories
     if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
       @stories = Articles::Feeds::Timeframe.call(params[:timeframe])
+    elsif params[:timeframe] == "latest_less_filtered"
+      @stories = Articles::Feeds::Latest.call(page: @page)
     elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
-      @stories = Articles::Feeds::Latest.call(minimum_score: Settings::UserExperience.home_feed_minimum_score)
+      base_relation = Articles::Feeds::Latest.call(minimum_score: Settings::UserExperience.home_feed_minimum_score, page: @page)
+      score_minimum = Settings::UserExperience.index_minimum_score
+      author_id = current_user&.id || -1
+      @stories = base_relation.where("articles.score >= ? OR articles.user_id = ?", score_minimum, author_id)
     else
       @default_home_feed = true
       feed = Articles::Feeds::LargeForemExperimental.new(page: @page, tag: params[:tag])

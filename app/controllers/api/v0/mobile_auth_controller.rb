@@ -96,7 +96,13 @@ module Api
           raise StandardError, 'Invalid access token'
         end
         
-        if parsed_response["aud"] != Settings::Authentication.google_oauth2_key
+        valid_clients = [
+          Settings::Authentication.google_oauth2_key,
+          Settings::Authentication.google_ios_key,
+          Settings::Authentication.google_android_key
+        ].reject(&:blank?)
+        
+        if !valid_clients.include?(parsed_response["aud"])
           raise StandardError, 'Token audience mismatch'
         end
         
