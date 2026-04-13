@@ -101,7 +101,7 @@ module Admin
       redirect_to admin_organization_path(org)
     end
 
-    ORG_FEATURES = %w[org_readme org_lead_forms org_dofollow_links].freeze
+    ORG_FEATURES = %w[org_readme org_lead_forms org_dofollow_links org_verification].freeze
 
     def update_org_feature
       org = Organization.find(params[:id])

@@ -528,6 +528,22 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     end
   end
 
+  context "when rendering a quote liquid tag through the full pipeline" do
+    it "preserves quote tag HTML structure without converting SVG to code blocks" do
+      markdown = '{% quote author="Jane Doe" role="CTO" link="https://example.com" %}Great platform!{% endquote %}'
+      result = generate_and_parse_markdown(markdown)
+
+      expect(result).to include('class="ltag-quote"')
+      expect(result).to include("ltag-quote__body")
+      expect(result).to include("ltag-quote__footer")
+      expect(result).to include("Jane Doe")
+      expect(result).to include("Great platform!")
+      # SVG quote marks must render as actual SVG, not as escaped code blocks
+      expect(result).not_to include("<pre><code>")
+      expect(result).not_to include("&lt;svg")
+    end
+  end
+
   context "when provided with kbd tag" do
     it "leaves the kbd tag in place" do
       inline_kbd = generate_and_parse_markdown("<kbd>Ctrl</kbd> + <kbd>,</kbd>")
