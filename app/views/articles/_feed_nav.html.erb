@@ -139,9 +139,16 @@
           });
         });
 
-        window.addEventListener("popstate", function() {
-          handleFeedSoftNavigation(window.location.pathname);
-        });
+        if (!window.feedPopstateHandler) {
+          window.feedPopstateHandler = function() {
+            // Only fire soft SPA reloads if we are currently on the feed view layout.
+            // If popping back from an Article, the DOM is still Article markup, so we let InstantClick natively restore!
+            if (document.getElementById("homepage-feed") || document.getElementById("rendered-article-feed")) {
+              handleFeedSoftNavigation(window.location.pathname);
+            }
+          };
+          window.addEventListener("popstate", window.feedPopstateHandler);
+        }
       }
 
       function handleFeedSoftNavigation(targetHref) {
