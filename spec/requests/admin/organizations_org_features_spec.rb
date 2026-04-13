@@ -8,11 +8,13 @@ RSpec.describe "/admin/content_manager/organizations org features" do
     sign_in(admin)
     FeatureFlag.add(:org_readme)
     FeatureFlag.add(:org_lead_forms)
+    FeatureFlag.add(:org_verification)
   end
 
   after do
     FeatureFlag.disable(:org_readme)
     FeatureFlag.disable(:org_lead_forms)
+    FeatureFlag.disable(:org_verification)
   end
 
   describe "PATCH /admin/organizations/:id/update_org_feature" do
@@ -62,6 +64,26 @@ RSpec.describe "/admin/content_manager/organizations org features" do
       expect(note.noteable).to eq(organization)
       expect(note.author).to eq(admin)
       expect(note.content).to include("org_readme")
+    end
+
+    it "enables org_verification for an organization" do
+      patch update_org_feature_admin_organization_path(organization),
+            params: { feature: "org_verification", enabled: "true" }
+
+      expect(FeatureFlag.enabled?(:org_verification, FeatureFlag::Actor[organization])).to be(true)
+      expect(response).to redirect_to(admin_organization_path(organization))
+      expect(flash[:notice]).to include("enabled")
+    end
+
+    it "disables org_verification for an organization" do
+      FeatureFlag.enable(:org_verification, FeatureFlag::Actor[organization])
+
+      patch update_org_feature_admin_organization_path(organization),
+            params: { feature: "org_verification", enabled: "false" }
+
+      expect(FeatureFlag.enabled?(:org_verification, FeatureFlag::Actor[organization])).to be(false)
+      expect(response).to redirect_to(admin_organization_path(organization))
+      expect(flash[:notice]).to include("disabled")
     end
 
     it "rejects unknown feature names" do
