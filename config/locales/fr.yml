@@ -38,8 +38,12 @@ fr:
     survey_thank_you_response: Merci pour votre réponse.
     survey_thank_you_completing: Merci d'avoir complété le sondage !
     dashboard_analytics_readers: Lecteurs
+    dashboard_analytics_avg_read_time: temps de lecture moy. %{seconds}s
     dashboard_analytics_comments: Commentaires
     dashboard_analytics_reactions: Réactions
+    dashboard_analytics_unique_reactors: de %{count} utilisateurs uniques
+    dashboard_analytics_bookmarks: Favoris
+    dashboard_analytics_followers: Nouveaux Abonnés
     stats_by: par
     editor_new_title: Nouveau titre d'article ici...
     editor_body_placeholder: Écrivez le contenu de votre article ici...
