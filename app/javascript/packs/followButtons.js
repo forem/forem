@@ -1,4 +1,11 @@
 import { getInstantClick } from '../topNavigation/utilities';
+import {
+  getCachedFollowButtonStatus,
+  readCachedFollowButtonStatuses,
+  removeCachedFollowButtonStatus,
+  syncBulkCachedFollowButtonStatuses,
+  syncCachedFollowButtonStatus,
+} from '../utilities/followButtonStatusCache';
 import { waitOnBaseData } from '../utilities/waitOnBaseData';
 import { locale } from '@utilities/locale';
 
@@ -222,6 +229,8 @@ function handleFollowButtonClick({ target }) {
       return;
     }
 
+    const buttonInfo = JSON.parse(target.dataset.info);
+    removeCachedFollowButtonStatus(buttonInfo);
     optimisticallyUpdateButtonUI(target);
     browserStoreCache('remove');
 
@@ -232,7 +241,7 @@ function handleFollowButtonClick({ target }) {
       return;
     }
 
-    const { className, id } = JSON.parse(target.dataset.info);
+    const { className, id } = buttonInfo;
     const formData = new FormData();
     formData.append('followable_type', className);
     formData.append('followable_id', id);
@@ -306,6 +315,14 @@ function updateInitialButtonUI(followStatus, button) {
   }
 }
 
+function updateInitialButtonUIFromCache(button, buttonInfo, cache) {
+  const cachedFollowStatus = getCachedFollowButtonStatus(buttonInfo, cache);
+
+  if (cachedFollowStatus) {
+    updateInitialButtonUI(cachedFollowStatus, button);
+  }
+}
+
 /**
  * Fetches all 'follow statuses' for the given IDs and type, and then updates the UI for all related buttons.
  *
@@ -332,6 +349,7 @@ function fetchBulkFollowStatuses(idButtonHash, followableType) {
   })
     .then((response) => response.json())
     .then((idStatuses) => {
+      syncBulkCachedFollowButtonStatuses(followableType, idStatuses);
       Object.keys(idStatuses).forEach((id) => {
         idButtonHash[id].forEach((button) => {
           updateInitialButtonUI(idStatuses[id], button);
@@ -355,6 +373,8 @@ function initializeBulkFollowButtons() {
 
   const followables = {};
 
+  const cache = readCachedFollowButtonStatuses();
+
   Array.from(buttons, (button) => {
     button.dataset.fetched = 'fetched';
     const { userStatus } = document.body.dataset;
@@ -366,6 +386,7 @@ function initializeBulkFollowButtons() {
       addButtonFollowText(button, style);
     } else {
       addAriaLabelToButton({ button, followType: className, followName: name });
+      updateInitialButtonUIFromCache(button, buttonInfo, cache);
       const { id } = buttonInfo;
       if (!followables[className]) {
         followables[className] = {};
@@ -406,6 +427,7 @@ function fetchFollowButtonStatus(button, buttonInfo) {
   })
     .then((response) => response.text())
     .then((followStatus) => {
+      syncCachedFollowButtonStatus(buttonInfo, followStatus);
       updateInitialButtonUI(followStatus, button);
     });
 }
@@ -429,6 +451,7 @@ function initializeNonBulkFollowButtons() {
       : [];
 
     const followedTagIds = new Set(followedTags);
+    const cache = readCachedFollowButtonStatuses();
 
     nonBulkFollowButtons.forEach((button) => {
       const { info } = button.dataset;
@@ -446,6 +469,7 @@ function initializeNonBulkFollowButtons() {
           : 'false';
         updateInitialButtonUI(initialButtonFollowState, button);
       } else {
+        updateInitialButtonUIFromCache(button, buttonInfo, cache);
         fetchFollowButtonStatus(button, buttonInfo);
       }
     });

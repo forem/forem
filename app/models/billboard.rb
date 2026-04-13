@@ -5,6 +5,7 @@ class Billboard < ApplicationRecord
   belongs_to :creator, class_name: "User", optional: true
   belongs_to :audience_segment, optional: true
   belongs_to :page, optional: true
+  belongs_to :event, optional: true
 
   ALLOWED_PLACEMENT_AREAS = %w[sidebar_left
                                sidebar_left_2
@@ -400,9 +401,9 @@ class Billboard < ApplicationRecord
     return "" if color.blank?
 
     if placement_area.include?("fixed_")
-      "border: 5px solid #{color};border-bottom: none"
+      "border: 1px solid #{color}; border-bottom: none;"
     else
-      "border: 5px solid #{color}"
+      "border: 1px solid #{color}; border-left-width: 4px;"
     end
   end
 

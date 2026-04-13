@@ -202,3 +202,7 @@ reverify_organizations:
   description: "Re-checks verified organizations to ensure linkback still exists (runs daily at 06:00 UTC)"
   cron: "0 6 * * *"
   class: "Organizations::ReverifyAllWorker"
+events_manage_broadcast_billboards:
+  description: "Manages automatic Billboard deployments natively toggling configurations depending on Event start/end boundaries (runs every 5 minutes)"
+  cron: "*/5 * * * *"
+  class: "Events::ManageBroadcastBillboardsWorker"
