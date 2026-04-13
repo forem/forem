@@ -1,5 +1,11 @@
 <!-- Forem Event Show Page -->
 <div class="container crayons-layout event-show-layout">
+    <% if !@event.published? %>
+      <div class="crayons-notice crayons-notice--warning mb-8 p-4 text-center">
+        <strong>This event is not published!</strong> Only admins can see this page.
+        <a href="<%= edit_admin_event_path(@event) %>" class="c-link c-link--branded ml-2">Edit Event</a>
+      </div>
+    <% end %>
     
     <div class="event-header">
         <h1><%= @event.title %></h1>
@@ -77,7 +83,7 @@
                       <h3 class="article-title"><%= article.title %></h3>
                   </a>
                   <div class="article-tags">
-                      <% article.cached_tag_list_array.take(3).each do |tag| %>
+                      <% article.decorate.cached_tag_list_array.take(3).each do |tag| %>
                         <span class="tag">#<%= tag %></span>
                       <% end %>
                   </div>
