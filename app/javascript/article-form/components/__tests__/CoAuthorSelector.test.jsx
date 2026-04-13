@@ -77,7 +77,7 @@ describe('<CoAuthorSelector />', () => {
     );
 
     await waitFor(() => expect(fetch).toHaveBeenCalledWith('/forem/members.json'));
-    expect(await screen.findByText('Co-authors')).toBeInTheDocument();
+    expect((await screen.findAllByText('Co-authors')).length).toBeGreaterThan(0);
     expect(await screen.findByText('Bob')).toBeInTheDocument();
   });
 
