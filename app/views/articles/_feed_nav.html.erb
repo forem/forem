@@ -106,7 +106,7 @@
   <% end %>
   </nav>
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    (function() {
       var currentPath = window.location.pathname;
       var currentFeedNav = "";
 
@@ -144,7 +144,7 @@
           item.classList.remove("showing");
         }
       });
-    });
+    })();
   </script>
 <% else %>
   <nav class="-mx-3 m:mx-0 s:flex items-center justify-between" aria-label="<%= t("views.stories.sort.aria_label") %>">
