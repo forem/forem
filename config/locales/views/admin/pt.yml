@@ -345,6 +345,28 @@ pt:
         host: Host
         custom_element: Elemento personalizado
         unknown: Desconhecido
+        audit_log:
+          title: Log de Auditoria
+          filter_by_user: Ações pelo usuário
+          filter_on_user: Ações sobre o usuário
+          empty: Nenhuma entrada de log de auditoria encontrada para este usuário.
+          table:
+            heading:
+              id: ID
+              user: Usuário
+              action: Ação
+              data: Dados
+              date: Data
+        tabs:
+          overview: Visão Geral
+          notes: Notas
+          emails: E-mails
+          reports: Relatórios
+          flags: Sinalizações
+          articles: Artigos
+          comments: Comentários
+          audit_log: Log de Auditoria
+          unpublish_logs: Histórico de Despublicação
       organizations:
         profile:
           id: ID %{organizationid}

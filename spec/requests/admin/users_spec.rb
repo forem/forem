@@ -791,4 +791,67 @@ RSpec.describe "/admin/member_manager/users" do
       expect(response).to redirect_to admin_user_path(user)
     end
   end
+
+  describe "GET /admin/member_manager/users/:id?tab=audit_log" do
+    it "displays the audit log tab" do
+      get "#{admin_user_path(user.id)}?tab=audit_log"
+      expect(response).to be_successful
+      expect(response.body).to include("Audit Log")
+    end
+
+    it "defaults to by_user filter showing actions performed by the user" do
+      create(:audit_log, user: user, category: AuditLog::MODERATOR_AUDIT_LOG_CATEGORY,
+                         slug: "test_actor_action", data: { "action" => "test_actor_action" })
+      create(:audit_log, user: admin, category: AuditLog::MODERATOR_AUDIT_LOG_CATEGORY,
+                         slug: "user_status",
+                         data: { "action" => "user_status", "target_user_id" => user.id })
+      get "#{admin_user_path(user.id)}?tab=audit_log"
+      expect(response.body).to include("Test actor action")
+      expect(response.body).not_to include("User status")
+    end
+
+    it "shows actions performed by the user with filter=by_user" do
+      create(:audit_log, user: user, category: AuditLog::MODERATOR_AUDIT_LOG_CATEGORY,
+                         slug: "test_actor_action", data: { "action" => "test_actor_action" })
+      get "#{admin_user_path(user.id)}?tab=audit_log&filter=by_user"
+      expect(response.body).to include("Test actor action")
+    end
+
+    it "shows actions taken on the user with filter=on_user" do
+      create(:audit_log, user: admin, category: AuditLog::MODERATOR_AUDIT_LOG_CATEGORY,
+                         slug: "user_status",
+                         data: { "action" => "user_status", "target_user_id" => user.id })
+      get "#{admin_user_path(user.id)}?tab=audit_log&filter=on_user"
+      expect(response.body).to include("User status")
+    end
+
+    it "excludes actor-only logs when filter=on_user" do
+      create(:audit_log, user: user, category: AuditLog::MODERATOR_AUDIT_LOG_CATEGORY,
+                         slug: "test_actor_action", data: { "action" => "test_actor_action" })
+      get "#{admin_user_path(user.id)}?tab=audit_log&filter=on_user"
+      expect(response.body).not_to include("Test actor action")
+    end
+
+    it "excludes target-only logs when filter=by_user" do
+      create(:audit_log, user: admin, category: AuditLog::MODERATOR_AUDIT_LOG_CATEGORY,
+                         slug: "user_status",
+                         data: { "action" => "user_status", "target_user_id" => user.id })
+      get "#{admin_user_path(user.id)}?tab=audit_log&filter=by_user"
+      expect(response.body).not_to include("User status")
+    end
+
+    it "shows an empty message when no audit logs exist" do
+      get "#{admin_user_path(user.id)}?tab=audit_log"
+      expect(response.body).to include("No audit log entries found")
+    end
+
+    it "paginates audit logs" do
+      # rubocop:disable FactoryBot/ExcessiveCreateList
+      create_list(:audit_log, 26, user: user, category: AuditLog::MODERATOR_AUDIT_LOG_CATEGORY,
+                                  slug: "test", data: { "action" => "test" })
+      # rubocop:enable FactoryBot/ExcessiveCreateList
+      get "#{admin_user_path(user.id)}?tab=audit_log"
+      expect(response.body).to include("Next")
+    end
+  end
 end

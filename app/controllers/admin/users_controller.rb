@@ -66,6 +66,7 @@ module Admin
       set_banishable_user
       set_feedback_messages
       set_related_reactions
+      set_audit_logs
       @articles = @user.articles.order(created_at: :desc)
       # Remove the .includes(:commentable)
       @comments = @user.comments.order(created_at: :desc)
@@ -693,6 +694,23 @@ module Admin
     def set_banishable_user
       @banishable_user = (@user.comments.where("created_at < ?", 100.days.ago).empty? &&
         @user.created_at < 100.days.ago) || current_user.super_admin? || current_user.support_admin?
+    end
+
+    def set_audit_logs
+      return unless @current_tab == "audit_log"
+
+      @audit_log_filter = %w[by_user on_user].include?(params[:filter]) ? params[:filter] : "by_user"
+      scope = case @audit_log_filter
+              when "on_user"
+                AuditLog.on_user(@user)
+              else
+                AuditLog.where(user: @user)
+              end
+      @audit_logs = scope
+        .includes(:user)
+        .order(created_at: :desc)
+        .page(params[:page])
+        .per(25)
     end
 
     def set_unpublish_all_log
