@@ -26,10 +26,26 @@ RSpec.describe "Events", type: :request do
     end
 
     context "when requesting a draft event" do
-      it "raises a 404 RoutingError as if it does not exist" do
-        expect {
+      context "as a logged out user" do
+        it "raises a 404 RoutingError as if it does not exist" do
+          expect {
+            get event_path(draft_event.event_name_slug, draft_event.event_variation_slug)
+          }.to raise_error(ActionController::RoutingError, "Not Found")
+        end
+      end
+
+      context "as an admin" do
+        let(:admin) { create(:user, :super_admin) }
+        
+        before { login_as(admin) }
+
+        it "renders the show view with an unpublished warning banner" do
           get event_path(draft_event.event_name_slug, draft_event.event_variation_slug)
-        }.to raise_error(ActionController::RoutingError, "Not Found")
+          
+          expect(response).to have_http_status(:success)
+          expect(response.body).to include("This event is not published!")
+          expect(response.body).to include("Edit Event")
+        end
       end
     end
     
