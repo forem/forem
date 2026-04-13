@@ -5,9 +5,9 @@ fr:
       page:
         heading: Page d'organisation entièrement personnalisable
         cover_image: Image de couverture
+        cover_image_hint: "Format recommandé : 8:1 (par ex. 1600×200 ou 2400×300)"
         readme: Contenu de la page (Markdown)
         readme_placeholder: "Utilisez Markdown et les balises Liquid pour personnaliser votre page d'organisation.\n\nExemple :\n{% org_team votre-slug-org %}\n{% org_team votre-slug-org role=admins limit=5 %}\n{% org_posts votre-slug-org %}\n{% org_posts votre-slug-org limit=5 sort=reactions min_reactions=10 since=30d %}\n{% org_lead_form 42 %}"
-        readme_description: "Supporte Markdown et les balises Liquid. Utilisez {% org_team votre-slug %} pour afficher les membres, {% org_posts votre-slug %} pour lister les articles, et {% org_lead_form ID %} pour intégrer un formulaire de leads. Vous pouvez aussi utiliser des balises de mise en page comme {% row %}, {% col %}, {% features %}, {% quote %}, {% offer %} et {% slides %} pour créer des pages riches. Consultez le texte indicatif pour des exemples."
         default_notice: "Votre page utilise actuellement la mise en page par défaut."
         default_explanation: "Par défaut, votre page d'organisation affiche automatiquement vos membres et publications récentes. Ajouter du contenu personnalisé ci-dessous remplacera entièrement la mise en page par défaut."
         default_example_toggle: "Afficher l'exemple pour reproduire la page par défaut"

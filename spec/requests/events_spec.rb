@@ -26,18 +26,59 @@ RSpec.describe "Events", type: :request do
     end
 
     context "when requesting a draft event" do
-      it "raises a 404 RoutingError as if it does not exist" do
-        expect {
+      context "as a logged out user" do
+        it "raises a 404 RoutingError as if it does not exist" do
+          expect {
+            get event_path(draft_event.event_name_slug, draft_event.event_variation_slug)
+          }.to raise_error(ActionController::RoutingError, "Not Found")
+        end
+      end
+
+      context "as a regular logged in user" do
+        let(:regular_user) { create(:user) }
+        
+        before { login_as(regular_user) }
+
+        it "raises a 404 RoutingError to maintain draft secrecy" do
+          expect {
+            get event_path(draft_event.event_name_slug, draft_event.event_variation_slug)
+          }.to raise_error(ActionController::RoutingError, "Not Found")
+        end
+      end
+
+      context "as an admin" do
+        let(:admin) { create(:user, :super_admin) }
+        
+        before { login_as(admin) }
+
+        it "renders the show view with an unpublished warning banner" do
           get event_path(draft_event.event_name_slug, draft_event.event_variation_slug)
-        }.to raise_error(ActionController::RoutingError, "Not Found")
+          
+          expect(response).to have_http_status(:success)
+          expect(response.body).to include("This event is not published!")
+          expect(response.body).to include("Edit Event")
+        end
       end
     end
     
     context "when an event does not exist" do
-      it "raises an ActiveRecord::RecordNotFound implicitly handled as a 404" do
-        expect {
-          get "/events/does-not-exist/version"
-        }.to raise_error(ActiveRecord::RecordNotFound)
+      context "and a matching page does not exist" do
+        it "raises an ActiveRecord::RecordNotFound implicitly handled as a 404" do
+          expect {
+            get "/events/does-not-exist/version"
+          }.to raise_error(ActiveRecord::RecordNotFound)
+        end
+      end
+
+      context "and a matching page exists" do
+        let!(:fallback_page) { create(:page, slug: "events/midnight/april-2-2026", body_markdown: "This is the fallback midnight event page") }
+        
+        it "renders the page instead of raising a 404" do
+          get "/events/midnight/april-2-2026"
+          
+          expect(response).to have_http_status(:success)
+          expect(response.body).to include("This is the fallback midnight event page")
+        end
       end
     end
   end

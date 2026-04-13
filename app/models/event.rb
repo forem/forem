@@ -23,6 +23,16 @@ class Event < ApplicationRecord
 
   scope :published, -> { where(published: true) }
 
+  def self.active_broadcast_events
+    Rails.cache.fetch("active_broadcast_events", expires_in: 30.seconds) do
+      published
+        .where.not(broadcast_config: "no_broadcast")
+        .where("start_time <= ? AND end_time >= ?", Time.current + 15.minutes, Time.current - 5.minutes)
+        .select(:id, :broadcast_config, :start_time, :end_time, :tags_array)
+        .to_a
+    end
+  end
+
   private
 
   def end_time_after_start_time
@@ -67,26 +77,40 @@ class Event < ApplicationRecord
   def ensure_broadcast_billboards_and_workers
     return if no_broadcast?
 
+    prefix = takeover? ? "takeover" : "live_now"
+    stream_hour = start_time.strftime("%H")
+    base_name = "#{prefix}_#{Time.now.strftime('%B').downcase}_#{Time.now.strftime('%d')}_#{stream_hour}_#{Time.now.strftime('%Y')}"
+    
+    custom_display_label = takeover? ? "#{Settings::Community.community_name} Takeovers" : "#{Settings::Community.community_name} Live Events"
+
     # Only process if it has a published state linking (though we generate them regardless)
     # Billboard templates
     home_feed_bb = billboards.find_or_initialize_by(placement_area: "feed_first")
     home_feed_bb.update!(
-      name: "Event #{id} Broadcast - Home Feed",
+      name: "#{base_name}_feed",
+      dismissal_sku: base_name,
+      custom_display_label: custom_display_label,
       body_markdown: generated_takeover_feed_html,
       organization_id: organization_id,
       creator_id: user_id,
       color: "#18181A",
+      render_mode: "raw",
+      template: "plain",
       approved: home_feed_bb.new_record? ? false : home_feed_bb.approved,
       published: true
     )
 
     post_bottom_bb = billboards.find_or_initialize_by(placement_area: "post_fixed_bottom")
     post_bottom_bb.update!(
-      name: "Event #{id} Broadcast - Post Bottom",
+      name: "#{base_name}_post",
+      dismissal_sku: base_name,
+      custom_display_label: custom_display_label,
       body_markdown: generated_takeover_post_html,
       organization_id: organization_id,
       creator_id: user_id,
       color: "#18181A",
+      render_mode: "raw",
+      template: "plain",
       approved: post_bottom_bb.new_record? ? false : post_bottom_bb.approved,
       published: true
     )

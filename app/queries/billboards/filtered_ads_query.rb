@@ -97,12 +97,7 @@ module Billboards
 
     def apply_event_broadcast_overrides!
       if @area.in?(%w[feed_first post_fixed_bottom])
-        active_events = Rails.cache.fetch("active_broadcast_event_for_#{@area}", expires_in: 30.seconds) do
-          Event.published
-               .where.not(broadcast_config: "no_broadcast")
-               .where("start_time <= ? AND end_time >= ?", Time.current + 15.minutes, Time.current - 5.minutes)
-               .to_a
-        end
+        active_events = Event.active_broadcast_events
 
         verified_event_ids = []
         active_events.each do |active_event|
