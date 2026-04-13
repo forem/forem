@@ -1,4 +1,9 @@
 import { getInstantClick } from '../topNavigation/utilities';
+import {
+  getCachedFollowButtonStatus,
+  removeCachedFollowButtonStatus,
+  syncCachedFollowButtonStatus,
+} from '../utilities/followButtonStatusCache';
 import { waitOnBaseData } from '../utilities/waitOnBaseData';
 import { locale } from '@utilities/locale';
 
@@ -222,6 +227,8 @@ function handleFollowButtonClick({ target }) {
       return;
     }
 
+    const buttonInfo = JSON.parse(target.dataset.info);
+    removeCachedFollowButtonStatus(buttonInfo);
     optimisticallyUpdateButtonUI(target);
     browserStoreCache('remove');
 
@@ -232,7 +239,7 @@ function handleFollowButtonClick({ target }) {
       return;
     }
 
-    const { className, id } = JSON.parse(target.dataset.info);
+    const { className, id } = buttonInfo;
     const formData = new FormData();
     formData.append('followable_type', className);
     formData.append('followable_id', id);
@@ -306,6 +313,14 @@ function updateInitialButtonUI(followStatus, button) {
   }
 }
 
+function updateInitialButtonUIFromCache(button, buttonInfo) {
+  const cachedFollowStatus = getCachedFollowButtonStatus(buttonInfo);
+
+  if (cachedFollowStatus) {
+    updateInitialButtonUI(cachedFollowStatus, button);
+  }
+}
+
 /**
  * Fetches all 'follow statuses' for the given IDs and type, and then updates the UI for all related buttons.
  *
@@ -333,6 +348,10 @@ function fetchBulkFollowStatuses(idButtonHash, followableType) {
     .then((response) => response.json())
     .then((idStatuses) => {
       Object.keys(idStatuses).forEach((id) => {
+        syncCachedFollowButtonStatus(
+          { className: followableType, id },
+          idStatuses[id],
+        );
         idButtonHash[id].forEach((button) => {
           updateInitialButtonUI(idStatuses[id], button);
         });
@@ -366,6 +385,7 @@ function initializeBulkFollowButtons() {
       addButtonFollowText(button, style);
     } else {
       addAriaLabelToButton({ button, followType: className, followName: name });
+      updateInitialButtonUIFromCache(button, buttonInfo);
       const { id } = buttonInfo;
       if (!followables[className]) {
         followables[className] = {};
@@ -406,6 +426,7 @@ function fetchFollowButtonStatus(button, buttonInfo) {
   })
     .then((response) => response.text())
     .then((followStatus) => {
+      syncCachedFollowButtonStatus(buttonInfo, followStatus);
       updateInitialButtonUI(followStatus, button);
     });
 }
@@ -446,6 +467,7 @@ function initializeNonBulkFollowButtons() {
           : 'false';
         updateInitialButtonUI(initialButtonFollowState, button);
       } else {
+        updateInitialButtonUIFromCache(button, buttonInfo);
         fetchFollowButtonStatus(button, buttonInfo);
       }
     });
