@@ -9,12 +9,9 @@ module Admin
     }.with_indifferent_access.freeze
 
     def index
-      @organizations = Organization.page(params[:page]).per(PER_PAGE_MAX)
-      @organizations = if params[:search].present?
-                         @organizations.simple_name_match(params[:search].presence)
-                       else
-                         @organizations.order("created_at DESC")
-                       end
+      @q = Organization.ransack(params[:q])
+      @q.sorts = 'created_at desc' if @q.sorts.empty?
+      @organizations = @q.result.page(params[:page]).per(PER_PAGE_MAX)
     end
 
     def show

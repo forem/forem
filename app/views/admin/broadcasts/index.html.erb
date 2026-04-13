@@ -24,7 +24,7 @@
   <table class="crayons-table">
     <thead>
       <tr>
-        <th scope="col">Title</th>
+        <th scope="col"><%= sort_link(@q, :title, { aria: { label: "Sort by Title" } }) %></th>
         <th scope="col">Status</th>
       </tr>
     </thead>

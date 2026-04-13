@@ -6,8 +6,16 @@ module Admin
       name description body_html body_markdown template_type
     ].freeze
 
+    before_action :set_default_options, only: %i[index]
+
     def index
-      @page_templates = PageTemplate.includes(:forked_from, :forks).order(created_at: :desc)
+      @q = PageTemplate
+        .left_outer_joins(:pages, :forks)
+        .select("page_templates.*, COUNT(DISTINCT pages.id) AS pages_count, COUNT(DISTINCT forks_page_templates.id) AS forks_count")
+        .group("page_templates.id")
+        .includes(:forked_from)
+        .ransack(params[:q])
+      @page_templates = @q.result
     end
 
     def show
@@ -69,6 +77,11 @@ module Admin
     end
 
     private
+
+    def set_default_options
+      params[:q] ||= {}
+      params[:q][:s] = "name asc" if params[:q][:s].blank?
+    end
 
     def page_template_params
       params.require(:page_template).permit(PAGE_TEMPLATE_ALLOWED_PARAMS)

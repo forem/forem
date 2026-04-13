@@ -18,6 +18,57 @@ RSpec.describe "/admin/customization/page_templates" do
       get admin_page_templates_path
       expect(response.body).to include("Test Template")
     end
+
+    it "defaults to sorting by name ascending" do
+      create(:page_template, name: "Zulu Template")
+      create(:page_template, name: "Alpha Template")
+
+      get admin_page_templates_path
+      expect(response).to have_http_status(:ok)
+      expect(response.body.index("Alpha Template")).to be < response.body.index("Zulu Template")
+    end
+
+    it "sorts by name descending when requested" do
+      create(:page_template, name: "Alpha Template")
+      create(:page_template, name: "Zulu Template")
+
+      get admin_page_templates_path, params: { q: { s: "name desc" } }
+      expect(response.body.index("Zulu Template")).to be < response.body.index("Alpha Template")
+    end
+
+    it "sorts by name ascending when requested" do
+      create(:page_template, name: "Zulu Template")
+      create(:page_template, name: "Alpha Template")
+
+      get admin_page_templates_path, params: { q: { s: "name asc" } }
+      expect(response.body.index("Alpha Template")).to be < response.body.index("Zulu Template")
+    end
+
+    it "sorts by fields_count" do
+      create(:page_template, name: "Many Fields",
+                             data_schema: { "fields" => [
+                               { "name" => "a", "type" => "text" },
+                               { "name" => "b", "type" => "text" },
+                               { "name" => "c", "type" => "text" },
+                             ] })
+      create(:page_template, name: "Few Fields",
+                             data_schema: { "fields" => [{ "name" => "a", "type" => "text" }] })
+
+      get admin_page_templates_path, params: { q: { s: "fields_count desc" } }
+      expect(response.body.index("Many Fields")).to be < response.body.index("Few Fields")
+
+      get admin_page_templates_path, params: { q: { s: "fields_count asc" } }
+      expect(response.body.index("Few Fields")).to be < response.body.index("Many Fields")
+    end
+
+    it "renders sort links in table headers" do
+      create(:page_template, name: "Test Template")
+      get admin_page_templates_path
+      expect(response.body).to include("Sort by Name")
+      expect(response.body).to include("Sort by Fields")
+      expect(response.body).to include("Sort by Pages")
+      expect(response.body).to include("Sort by Forks")
+    end
   end
 
   describe "GET /admin/customization/page_templates/:id" do
