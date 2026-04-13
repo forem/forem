@@ -320,17 +320,13 @@ RSpec.describe "Stories::Feeds" do
 
       context "when requesting the /latest_less_filtered feed" do
         it "includes low-score articles regardless of score filtering" do
-          # Articles::Feeds::Latest naturally restricts at -20, so we have to ensure it passes that for the "less filtered" check test
-          allow_any_instance_of(ActiveRecord::Relation).to receive(:where).and_call_original
-          
-          # Just ensure it gets called
+          expect(Articles::Feeds::Latest).to receive(:call).and_call_original
+
           get timeframe_stories_feed_path(:latest_less_filtered)
 
-          titles = response.parsed_body.pluck("title")
-          # The exact Article.Feed.Latest implementation might exclude -50 natively via MINIMUM_SCORE 
-          # but we want to ensure it calls `latest_less_filtered_feed` and bypasses index_minimum_score logic
-          expect(Articles::Feeds::Latest).to receive(:call).and_call_original
-          get timeframe_stories_feed_path(:latest_less_filtered)
+          response_array = response.parsed_body.pluck("title")
+          expect(response_array).to include(high_score_article.title)
+          expect(response_array).to include(low_score_article.title)
         end
       end
     end
