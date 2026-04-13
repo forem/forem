@@ -34,7 +34,7 @@ function normalizeCacheEntry(entry) {
   };
 }
 
-function readCachedFollowButtonStatuses(storage = getLocalStorage()) {
+export function readCachedFollowButtonStatuses(storage = getLocalStorage()) {
   if (!storage) {
     return {};
   }
@@ -89,6 +89,10 @@ function persistCachedFollowButtonStatuses(
 }
 
 function trimCachedFollowButtonStatuses(cache) {
+  if (Object.keys(cache).length <= MAX_CACHED_FOLLOW_BUTTON_STATUSES) {
+    return cache;
+  }
+
   const trimmedEntries = Object.entries(cache)
     .sort(([, left], [, right]) => right.updatedAt - left.updatedAt)
     .slice(0, MAX_CACHED_FOLLOW_BUTTON_STATUSES);
@@ -143,6 +147,48 @@ export function syncCachedFollowButtonStatus(buttonInfo, followStatus) {
   );
 }
 
+/**
+ * Batched version of syncCachedFollowButtonStatus that reads and writes
+ * localStorage only once for a set of id → status pairs.
+ *
+ * @param {string} followableType The className of the followable (e.g. 'User')
+ * @param {Object} idStatuses A hash of { id: followStatus } pairs
+ */
+export function syncBulkCachedFollowButtonStatuses(followableType, idStatuses) {
+  const cachedStatuses = readCachedFollowButtonStatuses();
+  let dirty = false;
+
+  Object.keys(idStatuses).forEach((id) => {
+    const cacheKey = getFollowButtonStatusCacheKey({ className: followableType, id });
+
+    if (!cacheKey) {
+      return;
+    }
+
+    const followStatus = idStatuses[id];
+
+    if (!CACHEABLE_FOLLOW_BUTTON_STATUSES.has(followStatus)) {
+      if (cachedStatuses[cacheKey]) {
+        delete cachedStatuses[cacheKey];
+        dirty = true;
+      }
+      return;
+    }
+
+    cachedStatuses[cacheKey] = {
+      status: followStatus,
+      updatedAt: Date.now(),
+    };
+    dirty = true;
+  });
+
+  if (dirty) {
+    persistCachedFollowButtonStatuses(
+      trimCachedFollowButtonStatuses(cachedStatuses),
+    );
+  }
+}
+
 export function removeCachedFollowButtonStatus(buttonInfo) {
   const cacheKey = getFollowButtonStatusCacheKey(buttonInfo);
 
@@ -164,4 +210,5 @@ export {
   CACHEABLE_FOLLOW_BUTTON_STATUSES,
   FOLLOW_BUTTON_STATUS_CACHE_KEY,
   MAX_CACHED_FOLLOW_BUTTON_STATUSES,
+  readCachedFollowButtonStatuses,
 };

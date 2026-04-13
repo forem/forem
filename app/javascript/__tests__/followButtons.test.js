@@ -102,4 +102,36 @@ describe('followButtons', () => {
     expect(button).toHaveTextContent('Follow');
     expect(window.localStorage.getItem(FOLLOW_BUTTON_STATUS_CACHE_KEY)).toBeNull();
   });
+
+  it('clears the cached follow status when a follow button is clicked', async () => {
+    global.fetch.mockResolvedValue({
+      json: () =>
+        Promise.resolve({
+          42: 'false',
+        }),
+    });
+
+    require('../packs/followButtons');
+    const button = document.querySelector('.follow-action-button');
+    await flushPromises();
+
+    // Simulate a cache entry that might exist from a previous page load
+    window.localStorage.setItem(
+      FOLLOW_BUTTON_STATUS_CACHE_KEY,
+      JSON.stringify({
+        'User:42': { status: 'mutual', updatedAt: Date.now() },
+      }),
+    );
+
+    expect(window.localStorage.getItem(FOLLOW_BUTTON_STATUS_CACHE_KEY)).not.toBeNull();
+
+    button.click();
+
+    // After clicking, the cache entry for this followable should have been removed
+    // to prevent stale state on the next page load
+    const cacheAfterClick = window.localStorage.getItem(FOLLOW_BUTTON_STATUS_CACHE_KEY);
+    expect(cacheAfterClick === null || !JSON.parse(cacheAfterClick)['User:42']).toBe(true);
+
+    await flushPromises();
+  });
 });

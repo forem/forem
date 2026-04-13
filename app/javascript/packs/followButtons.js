@@ -1,7 +1,9 @@
 import { getInstantClick } from '../topNavigation/utilities';
 import {
   getCachedFollowButtonStatus,
+  readCachedFollowButtonStatuses,
   removeCachedFollowButtonStatus,
+  syncBulkCachedFollowButtonStatuses,
   syncCachedFollowButtonStatus,
 } from '../utilities/followButtonStatusCache';
 import { waitOnBaseData } from '../utilities/waitOnBaseData';
@@ -313,8 +315,8 @@ function updateInitialButtonUI(followStatus, button) {
   }
 }
 
-function updateInitialButtonUIFromCache(button, buttonInfo) {
-  const cachedFollowStatus = getCachedFollowButtonStatus(buttonInfo);
+function updateInitialButtonUIFromCache(button, buttonInfo, cache) {
+  const cachedFollowStatus = getCachedFollowButtonStatus(buttonInfo, cache);
 
   if (cachedFollowStatus) {
     updateInitialButtonUI(cachedFollowStatus, button);
@@ -347,11 +349,8 @@ function fetchBulkFollowStatuses(idButtonHash, followableType) {
   })
     .then((response) => response.json())
     .then((idStatuses) => {
+      syncBulkCachedFollowButtonStatuses(followableType, idStatuses);
       Object.keys(idStatuses).forEach((id) => {
-        syncCachedFollowButtonStatus(
-          { className: followableType, id },
-          idStatuses[id],
-        );
         idButtonHash[id].forEach((button) => {
           updateInitialButtonUI(idStatuses[id], button);
         });
@@ -374,6 +373,8 @@ function initializeBulkFollowButtons() {
 
   const followables = {};
 
+  const cache = readCachedFollowButtonStatuses();
+
   Array.from(buttons, (button) => {
     button.dataset.fetched = 'fetched';
     const { userStatus } = document.body.dataset;
@@ -385,7 +386,7 @@ function initializeBulkFollowButtons() {
       addButtonFollowText(button, style);
     } else {
       addAriaLabelToButton({ button, followType: className, followName: name });
-      updateInitialButtonUIFromCache(button, buttonInfo);
+      updateInitialButtonUIFromCache(button, buttonInfo, cache);
       const { id } = buttonInfo;
       if (!followables[className]) {
         followables[className] = {};
@@ -450,6 +451,7 @@ function initializeNonBulkFollowButtons() {
       : [];
 
     const followedTagIds = new Set(followedTags);
+    const cache = readCachedFollowButtonStatuses();
 
     nonBulkFollowButtons.forEach((button) => {
       const { info } = button.dataset;
@@ -467,7 +469,7 @@ function initializeNonBulkFollowButtons() {
           : 'false';
         updateInitialButtonUI(initialButtonFollowState, button);
       } else {
-        updateInitialButtonUIFromCache(button, buttonInfo);
+        updateInitialButtonUIFromCache(button, buttonInfo, cache);
         fetchFollowButtonStatus(button, buttonInfo);
       }
     });
