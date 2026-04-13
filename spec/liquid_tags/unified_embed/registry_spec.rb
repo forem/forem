@@ -147,6 +147,14 @@ RSpec.describe UnifiedEmbed::Registry do
         .to eq(CodepenTag)
     end
 
+    it "returns CodepenTag for a CodePen 2.0 editor url" do
+      expect(
+        described_class.find_liquid_tag_for(
+          link: "https://codepen.io/editor/alvaromontoro/pen/019d657e-d7bc-746a-9bc3-4df2244c97cc/24ac30a5aad27b2b927702d3557c6e70",
+        ),
+      ).to eq(CodepenTag)
+    end
+
     it "returns DotnetFiddleTag for a dotnetfiddle url" do
       expect(described_class.find_liquid_tag_for(link: "https://dotnetfiddle.net/PmoDip"))
         .to eq(DotnetFiddleTag)
