@@ -14,6 +14,11 @@
   --base: #f9f9f9;
   --base-inverted: #000;
 
+  /* Notion Grey Scale Overrides for Dark Mode */
+  --grey-900: 20, 19, 17;
+  --grey-800: 26, 25, 23;
+  --grey-700: 38, 36, 33;
+
   --base-100: var(--base);
   --base-90: #efefef;
   --base-80: #d6d6d7;
