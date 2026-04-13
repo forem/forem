@@ -78,31 +78,51 @@ function writeCards(data, timeRangeLabel, totals) {
   }
 }
 
-function drawChart({ id, chartType = 'line', showPoints = true, labels, series, colors, strokeDashArray, fillOptions, dataLabels, yaxis }) {
+function drawChart({ id, chartType = 'line', showPoints = true, labels, series, colors, strokeDashArray, fillOptions, dataLabels, yaxis, isInfinity = false }) {
+  const brushId = `brush-${id}`;
+  const mainChartId = `main-${id}`;
+
+  // Convert labels to timestamps for infinity mode (enables datetime x-axis + brush)
+  const timestamps = isInfinity ? labels.map((l) => new Date(l).getTime()) : null;
+
+  // X-axis: datetime for infinity (brush support), categories for week/month
+  const xaxisConfig = isInfinity
+    ? {
+        type: 'datetime',
+        labels: { datetimeUTC: false, style: { fontSize: '11px' } },
+      }
+    : {
+        categories: labels,
+        labels: {
+          rotate: -45,
+          rotateAlways: false,
+          hideOverlappingLabels: true,
+          style: { fontSize: '11px' },
+        },
+        tickAmount: Math.min(labels.length, 14),
+      };
+
+  // For infinity, pair values with timestamps: [[ts, val], ...]
+  const chartSeries = isInfinity
+    ? series.map((s) => ({ ...s, data: s.data.map((val, i) => [timestamps[i], val]) }))
+    : series;
+
   const options = {
     chart: {
+      ...(isInfinity ? { id: mainChartId } : {}),
       type: chartType,
       height: 320,
-      toolbar: { show: false },
-      zoom: { enabled: false },
+      toolbar: { show: isInfinity, autoSelected: 'zoom' },
+      zoom: { enabled: isInfinity },
       animations: {
         enabled: true,
         easing: 'easeinout',
         speed: 400,
       },
     },
-    series,
+    series: chartSeries,
     colors,
-    xaxis: {
-      categories: labels,
-      labels: {
-        rotate: -45,
-        rotateAlways: false,
-        hideOverlappingLabels: true,
-        style: { fontSize: '11px' },
-      },
-      tickAmount: Math.min(labels.length, 14),
-    },
+    xaxis: xaxisConfig,
     yaxis: yaxis || {
       min: 0,
       labels: {
@@ -138,10 +158,16 @@ function drawChart({ id, chartType = 'line', showPoints = true, labels, series, 
   }
 
   import('apexcharts').then(({ default: ApexCharts }) => {
-    const currentChart = activeCharts[id];
-    if (currentChart) {
-      currentChart.destroy();
+    // Destroy existing charts (main + brush)
+    if (activeCharts[id]) {
+      activeCharts[id].destroy();
     }
+    if (activeCharts[brushId]) {
+      activeCharts[brushId].destroy();
+      delete activeCharts[brushId];
+    }
+    const existingBrushEl = document.getElementById(brushId);
+    if (existingBrushEl) existingBrushEl.remove();
 
     const el = document.getElementById(id);
     if (!el) return;
@@ -149,6 +175,60 @@ function drawChart({ id, chartType = 'line', showPoints = true, labels, series, 
     const chart = new ApexCharts(el, options);
     chart.render();
     activeCharts[id] = chart;
+
+    // Render brush navigator for infinity mode
+    if (isInfinity && timestamps.length > 0) {
+      const brushEl = document.createElement('div');
+      brushEl.id = brushId;
+      el.parentNode.insertBefore(brushEl, el.nextSibling);
+
+      const ninetyDaysMs = 90 * 24 * 60 * 60 * 1000;
+      const selMin = Math.max(timestamps[0], timestamps[timestamps.length - 1] - ninetyDaysMs);
+      const selMax = timestamps[timestamps.length - 1];
+
+      const brushOptions = {
+        chart: {
+          type: 'area',
+          height: 100,
+          brush: {
+            target: mainChartId,
+            enabled: true,
+          },
+          selection: {
+            enabled: true,
+            xaxis: { min: selMin, max: selMax },
+          },
+          toolbar: { show: false },
+          animations: { enabled: false },
+        },
+        series: [{ name: chartSeries[0].name, data: chartSeries[0].data }],
+        colors: [colors[0]],
+        xaxis: {
+          type: 'datetime',
+          labels: { datetimeUTC: false, style: { fontSize: '10px' } },
+          axisBorder: { show: false },
+        },
+        yaxis: {
+          min: 0,
+          labels: { show: false },
+        },
+        fill: {
+          type: 'gradient',
+          gradient: { opacityFrom: 0.3, opacityTo: 0.05 },
+        },
+        stroke: { width: 1, curve: 'smooth' },
+        legend: { show: false },
+        dataLabels: { enabled: false },
+        grid: {
+          borderColor: '#e7e7e7',
+          padding: { left: 10, right: 10 },
+        },
+      };
+
+      const brushChart = new ApexCharts(brushEl, brushOptions);
+      brushChart.render();
+      activeCharts[brushId] = brushChart;
+    }
   });
 }
 
@@ -174,13 +254,16 @@ function drawCharts(data, timeRangeLabel) {
     return acc;
   }, []);
 
+  // Infinity mode: brush navigator + datetime x-axis
+  const isInfinity = timeRangeLabel === '';
   // When timeRange is "Infinity" we hide the points to avoid over-crowding the UI
-  const showPoints = timeRangeLabel !== '';
+  const showPoints = !isInfinity;
 
   drawChart({
     id: 'reactions-chart',
     showPoints,
     labels,
+    isInfinity,
     colors: ['#4bc0c0', '#e56464', '#9d39e9', '#f59e0b', '#10b981', '#ef4444', '#0a85ff'],
     // dashArray: 0 = solid for first 6 series, 5 = dashed for Bookmarks (last)
     strokeDashArray: [0, 0, 0, 0, 0, 0, 5],
@@ -199,6 +282,7 @@ function drawCharts(data, timeRangeLabel) {
     id: 'comments-chart',
     showPoints,
     labels,
+    isInfinity,
     colors: ['#4bc0c0'],
     series: [{ name: 'Comments', data: comments }],
   });
@@ -207,6 +291,7 @@ function drawCharts(data, timeRangeLabel) {
     id: 'readers-chart',
     showPoints,
     labels,
+    isInfinity,
     colors: ['#9d39e9', '#10b981'],
     strokeDashArray: [0, 4],
     series: [
@@ -233,6 +318,7 @@ function drawCharts(data, timeRangeLabel) {
     chartType: 'area',
     showPoints: false,
     labels,
+    isInfinity,
     colors: ['#f59e0b'],
     series: [{ name: 'Total Followers', data: cumulativeFollowers }],
     fillOptions: {
