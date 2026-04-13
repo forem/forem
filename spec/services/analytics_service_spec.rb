@@ -78,7 +78,7 @@ RSpec.describe AnalyticsService, type: :service do
 
       it "returns stats" do
         stats = described_class.new(user).totals[:reactions]
-        expect(stats.keys).to eq(%i[total like readinglist unicorn])
+        expect(stats.keys).to eq(%i[total like readinglist unicorn exploding_head raised_hands fire unique_reactors])
       end
 
       it "returns the total number of reactions" do
@@ -120,6 +120,33 @@ RSpec.describe AnalyticsService, type: :service do
       it "returns zero as the number of unicorn reactions" do
         create(:reaction, reactable: article, category: :like)
         expect(analytics_service.totals[:reactions][:unicorn]).to eq(0)
+      end
+
+      it "returns the number of exploding_head reactions" do
+        create(:reaction, reactable: article, category: :exploding_head)
+        expect(analytics_service.totals[:reactions][:exploding_head]).to eq(1)
+      end
+
+      it "returns the number of raised_hands reactions" do
+        create(:reaction, reactable: article, category: :raised_hands)
+        expect(analytics_service.totals[:reactions][:raised_hands]).to eq(1)
+      end
+
+      it "returns the number of fire reactions" do
+        create(:reaction, reactable: article, category: :fire)
+        expect(analytics_service.totals[:reactions][:fire]).to eq(1)
+      end
+
+      it "returns the number of unique reactors" do
+        user2 = create(:user)
+        create(:reaction, reactable: article, category: :like, user: user)
+        create(:reaction, reactable: article, category: :unicorn, user: user)
+        create(:reaction, reactable: article, category: :like, user: user2)
+        expect(analytics_service.totals[:reactions][:unique_reactors]).to eq(2)
+      end
+
+      it "returns zero unique reactors when there are no reactions" do
+        expect(analytics_service.totals[:reactions][:unique_reactors]).to eq(0)
       end
     end
 
@@ -231,7 +258,7 @@ RSpec.describe AnalyticsService, type: :service do
       it "returns stats" do
         analytics_service = described_class.new(user, start_date: "2019-04-01")
         stats = analytics_service.grouped_by_day["2019-04-01"][:reactions]
-        expect(stats.keys).to eq(%i[total like readinglist unicorn])
+        expect(stats.keys).to eq(%i[total like readinglist unicorn exploding_head raised_hands fire unique_reactors])
       end
 
       it "returns the total number of reactions" do
@@ -289,6 +316,16 @@ RSpec.describe AnalyticsService, type: :service do
         date = format_date(reaction.created_at)
         analytics_service = described_class.new(user, start_date: date)
         expect(analytics_service.grouped_by_day[date][:reactions][:unicorn]).to eq(0)
+      end
+
+      it "returns unique reactors per day" do
+        user2 = create(:user)
+        create(:reaction, reactable: article, category: :like, user: user)
+        reaction = create(:reaction, reactable: article, category: :unicorn, user: user)
+        create(:reaction, reactable: article, category: :like, user: user2)
+        date = format_date(reaction.created_at)
+        analytics_service = described_class.new(user, start_date: date)
+        expect(analytics_service.grouped_by_day[date][:reactions][:unique_reactors]).to eq(2)
       end
     end
 

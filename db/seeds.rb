@@ -1041,6 +1041,41 @@ end
 # Pin an article for dynamic feed representation
 first_article = Article.order(Arel.sql("RANDOM()")).first
 PinnedArticle.set(first_article) if first_article.present?
+##############################################################################
+
+seeder.create_if_none(Event) do
+  user_ids = User.pluck(:id)
+  
+  Event.create!(
+    title: "AWS Industries LIVE!",
+    event_name_slug: "aws-industries-live",
+    event_variation_slug: "v1",
+    description: "AWS Industries LIVE! features AWS Partners discussing various topics related to their industry, their solutions, and how they can help customers.",
+    primary_stream_url: "https://player.twitch.tv/?channel=aws&parent=#{Settings::General.app_domain.split(':').first}",
+    data: { chat_url: "https://www.twitch.tv/embed/aws/chat?parent=#{Settings::General.app_domain.split(':').first}" },
+    published: true,
+    start_time: 1.day.ago,
+    end_time: 1.week.from_now,
+    type_of: :live_stream,
+    user_id: user_ids.sample,
+    tag_list: "aws"
+  )
+  
+  Event.create!(
+    title: "Forem Walkthrough with Ben Halpern",
+    event_name_slug: "forem-walkthrough-with-ben-halpern",
+    event_variation_slug: "v1",
+    description: "Join us for a walkthrough of the newest Forem features.",
+    primary_stream_url: "https://player.twitch.tv/?channel=ThePracticalDev&parent=#{Settings::General.app_domain.split(':').first}",
+    data: {},
+    published: true,
+    start_time: 2.days.from_now,
+    end_time: 2.days.from_now + 2.hours,
+    type_of: :live_stream,
+    user_id: user_ids.sample,
+    tag_list: "forem, updates"
+  )
+end
 
 puts <<-ASCII
 

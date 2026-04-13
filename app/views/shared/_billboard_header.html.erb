@@ -4,9 +4,9 @@
       <% if billboard.custom_display_label.present? %>
         <div class="crayons-bb__title"><%= billboard.custom_display_label %></div>
       <% else %>
-        <a href="<%= billboard.organization.path %>" target="_blank" rel="noopener" class="flex">
-          <img width="24" height="24" class="radius-default crayons-bb__image" src="<%= billboard.organization.profile_image_url_for(length: 64) %>" alt="profile" loading="lazy" />
-          <div class="crayons-bb__title ml-2 fs-s fw-medium"><%= billboard.organization.name %></div>
+        <a href="<%= billboard.organization.path %>" target="_blank" rel="noopener" class="flex" style="align-items: center;">
+          <img width="20" height="20" class="radius-default crayons-bb__image" src="<%= billboard.organization.profile_image_url_for(length: 64) %>" alt="profile" loading="lazy" />
+          <div class="crayons-bb__title ml-2"><%= billboard.organization.name %></div>
         </a>
       <% end %>
       <% if billboard.type_of == "external" %>
