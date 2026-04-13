@@ -1,4 +1,5 @@
 <!-- Forem Event Show Page -->
+<% content_for :title, @event.title %>
 <div class="container crayons-layout event-show-layout">
     <% if !@event.published? %>
       <div class="crayons-notice crayons-notice--warning mb-8 p-4 text-center">
