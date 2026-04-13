@@ -79,7 +79,7 @@ transitioning to a [Preact](https://preactjs.com/)-first frontend.
 A more complete overview of our stack is available in
 [our docs](https://developers.forem.com/technical-overview/stack).
 
-To **launch Forem in Gitpod**, navigate to
+To **launch Forem in Gitpod**, please navigate to
 [https://gitpod.io/#https://github.com/{your_github_username}/forem](https://gitpod.io/#https://github.com/{your_github_username}/forem).
 
 To **launch Forem in Ona** (formerly Gitpod), the project is fully configured for Ona development environments. Simply open the project in Ona and the environment will be automatically configured with all necessary services and dependencies.
