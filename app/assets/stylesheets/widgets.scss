@@ -376,12 +376,12 @@
   }
 
   &__title {
-    color: var(--label-secondary);
-    font-size: var(--fs-base);
+    color: var(--card-color-tertiary);
+    font-size: var(--fs-s);
     line-height: var(--lh-base);
     margin-left: var(--su-1);
     align-self: center;
-    font-weight: var(--fw-bold);
+    font-weight: var(--fw-medium);
   }
 
   &__dropdown {
