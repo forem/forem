@@ -166,15 +166,15 @@
 
 <div id="editor-sidecar" class="editor-sidecar hidden">
   <div class="editor-sidecar__header">
-    <h3 class="fs-base fw-bold m-0">DEV Buddy <span class="crayons-badge crayons-badge--warning crayons-badge--brand fw-medium fs-s">BETA</span></h3>
+    <h3 class="fs-base fw-bold m-0"><%= t("views.editor.ai_helper.sidecar_title", community_name: Settings::Community.community_name) %> <span class="crayons-badge crayons-badge--warning crayons-badge--brand fw-medium fs-s">BETA</span></h3>
     <button id="editor-ai-close-btn" class="crayons-btn crayons-btn--icon crayons-btn--ghost" aria-label="Close AI Helper" title="Close AI Helper">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="crayons-icon"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
     </button>
   </div>
   <div class="editor-sidecar__content" style="flex: 1; overflow-y: auto;">
     <%= render "ai_chats/chat_interface",
-      title: "DEV Buddy",
-      greeting: "Hello! I am your writing assistant. I know DEV Editor guidelines. Need help with markdown, embeds, or formatting?",
+      title: t("views.editor.ai_helper.title", community_name: Settings::Community.community_name),
+      greeting: t("views.editor.ai_helper.greeting", community_name: Settings::Community.community_name),
       chat_context: "editor",
       hide_header: true
     %>
