@@ -26,7 +26,7 @@ RSpec.describe "Events", type: :request do
 
       context "when the event has associated articles via tags" do
         let(:tag) { create(:tag, name: "awstest") }
-        let(:article) { create(:article, title: "A Custom Event Article", cached_tag_list: tag.name) }
+        let(:article) { create(:article, title: "A Custom Event Article", tags: tag.name) }
 
         before do
           published_event.tags << tag
