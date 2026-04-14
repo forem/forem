@@ -231,6 +231,47 @@ if admin_user
   end
 end
 
+seeder.create_if_doesnt_exist(User, "email", "org_admin@forem.local") do
+  user = User.create!(
+    name: "Org Admin",
+    email: "org_admin@forem.local",
+    username: "org_admin_local",
+    profile_image: Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+  )
+  OrganizationMembership.create!(user: user, organization: Organization.first, type_of_user: "admin") if Organization.any?
+end
+
+seeder.create_if_doesnt_exist(User, "email", "org_member@forem.local") do
+  user = User.create!(
+    name: "Org Member",
+    email: "org_member@forem.local",
+    username: "org_member_local",
+    profile_image: Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+  )
+  OrganizationMembership.create!(user: user, organization: Organization.first, type_of_user: "member") if Organization.any?
+end
+
+seeder.create_if_doesnt_exist(User, "email", "no_org@forem.local") do
+  User.create!(
+    name: "Independent User",
+    email: "no_org@forem.local",
+    username: "independent_local",
+    profile_image: Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+  )
+end
+
 Users::CreateMascotAccount.call unless Settings::General.mascot_user_id
 
 ##############################################################################
