@@ -38,6 +38,7 @@ RSpec.describe "Events", type: :request do
           
           expect(response).to have_http_status(:success)
           expect(response.body).to include("A Custom Event Article")
+          expect(response.body).to include(article.path)
           expect(response.body).to include("##{tag.name}")
         end
       end
