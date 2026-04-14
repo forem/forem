@@ -62,6 +62,26 @@ function drawChart({ id, showPoints = true, title, labels, datasets }) {
   };
   const dataOptions = {
     plugins: {
+      tooltip: {
+        enabled: true,
+        backgroundColor: 'rgba(0, 0, 0, 0.8)', // Ensures readability
+        titleSpacing: 3,
+        bodySpacing: 3,
+        padding: 10,
+        callbacks: {
+          // You can add a suffix like "Reads" or "Reactions"
+          label: function (context) {
+            let label = context.dataset.label || '';
+            if (label) {
+              label += ': ';
+            }
+            if (context.parsed.y !== null) {
+              label += context.parsed.y;
+            }
+            return label;
+          }
+        }
+      },
       legend: {
         position: 'top',
       },
@@ -82,6 +102,7 @@ function drawChart({ id, showPoints = true, title, labels, datasets }) {
       PointElement,
       LineElement,
       Legend,
+      Tooltip,
     }) => {
       Chart.register(
         LineController,
@@ -90,6 +111,7 @@ function drawChart({ id, showPoints = true, title, labels, datasets }) {
         PointElement,
         LineElement,
         Legend,
+        Tooltip,
       );
       const currentChart = activeCharts[id];
       if (currentChart) {
