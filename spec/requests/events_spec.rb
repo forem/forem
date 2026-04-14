@@ -23,6 +23,25 @@ RSpec.describe "Events", type: :request do
         expect(response).to have_http_status(:success)
         expect(response.body).to include(published_event.title)
       end
+
+      context "when the event has associated articles via tags" do
+        let(:tag) { create(:tag, name: "awstest") }
+        let(:article) { create(:article, title: "A Custom Event Article", tag_list: tag.name, published: true) }
+
+        before do
+          published_event.tags << tag
+          article # force article creation in DB so it can be queried
+        end
+
+        it "renders the articles with their tags successfully without throwing NoMethodError" do
+          get event_path(published_event.event_name_slug, published_event.event_variation_slug)
+          
+          expect(response).to have_http_status(:success)
+          expect(response.body).to include("A Custom Event Article")
+          expect(response.body).to include(article.path)
+          expect(response.body).to include("##{tag.name}")
+        end
+      end
     end
 
     context "when requesting a draft event" do
