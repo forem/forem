@@ -131,7 +131,7 @@ remove_old_notifications:
   cron: "0 5 * * *"
   class: "Notifications::RemoveOldNotificationsWorker"
 trim_old_ai_audits:
-  description: "Trims large JSON payload fields from AiAudits older than 30 days (runs daily at 06:00 UTC)"
+  description: "Trims large JSON payload fields from AiAudits older than the configured threshold (defaults to 30 days via FAST_TRIM_AI_AUDITS_DAYS; runs daily at 06:00 UTC)"
   cron: "0 6 * * *"
   class: "AiAudits::TrimOldAuditsWorker"
 remove_old_emails:

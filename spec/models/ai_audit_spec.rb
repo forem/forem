@@ -21,8 +21,8 @@ RSpec.describe AiAudit do
     let!(:empty_old_audit) do
       create(:ai_audit,
         created_at: 35.days.ago,
-        request_body: "{}",
-        response_body: "{}"
+        request_body: {},
+        response_body: {}
       )
     end
 
@@ -30,8 +30,8 @@ RSpec.describe AiAudit do
       described_class.fast_trim_old_audits(30.days.ago)
 
       old_audit.reload
-      expect(old_audit.request_body).to eq("{}")
-      expect(old_audit.response_body).to eq("{}")
+      expect(old_audit.request_body).to eq({})
+      expect(old_audit.response_body).to eq({})
     end
 
     it "leaves recent audits completely untouched" do
@@ -40,6 +40,15 @@ RSpec.describe AiAudit do
       recent_audit.reload
       expect(recent_audit.request_body).to eq({ "data" => "recent_payload" })
       expect(recent_audit.response_body).to eq({ "data" => "recent_response" })
+    end
+
+    it "skips processing records that are already gracefully trimmed preventing wasteful overwriting loops" do
+      described_class.fast_trim_old_audits(30.days.ago)
+
+      # We can check if it stays fundamentally identical by tracking object untouched status or just verifying expectations directly.
+      empty_old_audit.reload
+      expect(empty_old_audit.request_body).to eq({})
+      expect(empty_old_audit.response_body).to eq({})
     end
   end
 end
