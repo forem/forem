@@ -28,6 +28,7 @@ module Settings
 
     # Moderation
     setting :internal_content_description_spec, type: :string
+    setting :expanded_content_advisement_spec, type: :string
 
     # A helper function to determine if we should consider the user a "new" user.
     #
