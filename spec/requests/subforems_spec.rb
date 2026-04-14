@@ -279,6 +279,15 @@ RSpec.describe "Subforems", type: :request do
         expect(Settings::RateLimit.internal_content_description_spec(subforem_id: subforem.id)).to eq("New spec for moderators")
       end
 
+      it "can update expanded_content_advisement_spec" do
+        patch subforem_path(subforem), params: {
+          subforem: { discoverable: true },
+          expanded_content_advisement_spec: "New expanded advise guidelines"
+        }
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(Settings::RateLimit.expanded_content_advisement_spec(subforem_id: subforem.id)).to eq("New expanded advise guidelines")
+      end
+
       it "cannot update discoverable field (admin-only)" do
         subforem.update!(discoverable: false)
         
@@ -351,6 +360,7 @@ RSpec.describe "Subforems", type: :request do
           tagline: "New tagline",
           member_label: "contributor",
           internal_content_description_spec: "New content spec",
+          expanded_content_advisement_spec: "New expanded ad spec",
           feed_style: "basic",
           primary_brand_color_hex: "#0a0a0a"
         }
@@ -360,6 +370,7 @@ RSpec.describe "Subforems", type: :request do
         expect(Settings::Community.tagline(subforem_id: subforem.id)).to eq("New tagline")
         expect(Settings::Community.member_label(subforem_id: subforem.id)).to eq("contributor")
         expect(Settings::RateLimit.internal_content_description_spec(subforem_id: subforem.id)).to eq("New content spec")
+        expect(Settings::RateLimit.expanded_content_advisement_spec(subforem_id: subforem.id)).to eq("New expanded ad spec")
         expect(Settings::UserExperience.feed_style(subforem_id: subforem.id)).to eq("basic")
         expect(Settings::UserExperience.primary_brand_color_hex(subforem_id: subforem.id)).to eq("#0a0a0a")
       end

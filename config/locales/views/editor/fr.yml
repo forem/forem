@@ -20,6 +20,10 @@ fr:
       modes: Voir les modes de publication
       new_title: Nouveau titre de publication ici...
       preview: Aperçu
+      ai_helper:
+        sidecar_title: "%{community_name} Buddy"
+        title: "%{community_name} Buddy"
+        greeting: "Hello! I am your writing assistant. I know %{community_name} Editor guidelines. Need help with markdown, embeds, formatting, or advice on community guidelines and expectations?"
       video:
         progress:
           heading: "⏳ Transcodage Vidéo en Cours ⏳"

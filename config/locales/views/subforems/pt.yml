@@ -67,6 +67,10 @@ pt:
             label: Especificação de Descrição de Conteúdo Interno
             placeholder: Descreva a especificação de descrição de conteúdo interno...
             description: Descreva o tipo de conteúdo que deve ser exibido ou priorizado no feed. Isso ajuda a IA a determinar o que deve e não deve aparecer neste feed para ajudar a lidar com spam.
+          expanded_advisement_spec:
+            label: Expanded Content Advisement Spec
+            placeholder: Enter expanded guidelines and advice to feed the AI editor engine...
+            description: Provide rich holistic guidelines on how users should post structurally and culturally if the AI is queried for deeper advice on writing a successful post.
           sidebar_tags:
             label: Tags da Barra Lateral
             placeholder: "help,discuss,explainlikeimfive,meta"
