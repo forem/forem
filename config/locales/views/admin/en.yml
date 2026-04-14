@@ -415,6 +415,18 @@ en:
           submit: Change maximum score
           success: Successfully changed user's maximum score to %{max_score}.
           error: Failed to change user's maximum score (select between 0 and 100)
+        audit_log:
+          title: Audit Log
+          filter_by_user: Actions by user
+          filter_on_user: Actions on user
+          empty: No audit log entries found for this user.
+          table:
+            heading:
+              id: ID
+              user: User
+              action: Action
+              data: Data
+              date: Date
         unpublish_logs:
           subtitle_html: Unpublished by %{user} on %{time}
           posts: "Posts:"
@@ -431,6 +443,7 @@ en:
           flags: Flags
           articles: Articles
           comments: Comments
+          audit_log: Audit Log
           unpublish_logs: Unpublish All History
         status_title: Current status
         status_reader: "Current status:"

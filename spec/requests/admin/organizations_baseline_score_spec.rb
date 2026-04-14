@@ -44,9 +44,29 @@ RSpec.describe "Update Organization Baseline Score", type: :request do
       expect do
         patch update_baseline_score_admin_organization_path(organization), params: { baseline_score: -5 }
       end.to raise_error(ActiveRecord::RecordInvalid)
-      
+
       organization.reload
       expect(organization.baseline_score).to eq(0)
+    end
+
+    context "with audit logging" do
+      before { Audit::Subscribe.listen :moderator }
+
+      after { Audit::Subscribe.forget :moderator }
+
+      it "creates an audit log record" do
+        expect do
+          patch update_baseline_score_admin_organization_path(organization), params: { baseline_score: 75 }
+        end.to change(AuditLog, :count).by(1)
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
+        expect(log.data["action"]).to eq("update_baseline_score")
+        expect(log.user_id).to eq(super_admin.id)
+        expect(log.data["target_organization_id"]).to eq(organization.id)
+        expect(log.data["old_baseline_score"]).to eq(0)
+        expect(log.data["new_baseline_score"]).to eq(75)
+      end
     end
   end
 end
