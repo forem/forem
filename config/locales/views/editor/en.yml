@@ -20,6 +20,10 @@ en:
       modes: View post modes
       new_title: New post title here...
       preview: Preview
+      ai_helper:
+        sidecar_title: "%{community_name} Buddy"
+        title: "%{community_name} Buddy"
+        greeting: "Hello! I am your writing assistant. I know %{community_name} Editor guidelines. Need help with markdown, embeds, formatting, or advice on community guidelines and expectations?"
       video:
         progress:
           heading: "⏳ Video Transcoding In Progress ⏳"

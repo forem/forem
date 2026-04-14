@@ -1,0 +1,45 @@
+<h3 class="crayons-subtitle-2 mb-5"><%= t("views.admin.users.audit_log.title") %></h3>
+
+<nav class="mb-4" aria-label="Audit log filters">
+  <ul class="crayons-navigation crayons-navigation--horizontal">
+    <li><%= link_to t("views.admin.users.audit_log.filter_by_user"),
+            admin_user_path(@user.id, tab: :audit_log, filter: :by_user),
+            class: "crayons-navigation__item #{'crayons-navigation__item--current' if @audit_log_filter == 'by_user'}",
+            aria: @audit_log_filter == "by_user" ? { current: "page" } : {} %></li>
+    <li><%= link_to t("views.admin.users.audit_log.filter_on_user"),
+            admin_user_path(@user.id, tab: :audit_log, filter: :on_user),
+            class: "crayons-navigation__item #{'crayons-navigation__item--current' if @audit_log_filter == 'on_user'}",
+            aria: @audit_log_filter == "on_user" ? { current: "page" } : {} %></li>
+  </ul>
+</nav>
+
+<% if @audit_logs.present? %>
+  <%= paginate @audit_logs %>
+
+  <table class="crayons-table" width="100%">
+    <thead>
+      <tr>
+        <th scope="col"><%= t("views.admin.users.audit_log.table.heading.id") %></th>
+        <th scope="col"><%= t("views.admin.users.audit_log.table.heading.user") %></th>
+        <th scope="col"><%= t("views.admin.users.audit_log.table.heading.action") %></th>
+        <th scope="col"><%= t("views.admin.users.audit_log.table.heading.data") %></th>
+        <th scope="col"><%= t("views.admin.users.audit_log.table.heading.date") %></th>
+      </tr>
+    </thead>
+    <tbody class="crayons-card">
+      <% @audit_logs.each do |log| %>
+        <tr>
+          <td class="whitespace-nowrap"><%= log.id %></td>
+          <td><%= link_to(log.user.username, admin_user_path(log.user_id)) if log.user %></td>
+          <td><%= "#{log.data['action']&.humanize} #{log.data['controller']&.humanize&.singularize&.titleize}".strip if log.data.present? %></td>
+          <td class="mod-actions__data"><%= log.data %></td>
+          <td><%= log.created_at %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <%= paginate @audit_logs %>
+<% else %>
+  <p><%= t("views.admin.users.audit_log.empty") %></p>
+<% end %>
