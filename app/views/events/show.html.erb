@@ -1,4 +1,5 @@
 <!-- Forem Event Show Page -->
+<% content_for :title, @event.title %>
 <div class="container crayons-layout event-show-layout">
     <% if !@event.published? %>
       <div class="crayons-notice crayons-notice--warning mb-8 p-4 text-center">
@@ -79,7 +80,7 @@
                       <img src="<%= article.user.profile_image_url %>" alt="<%= article.user.name %>" loading="lazy">
                       <span><%= article.user.name %></span>
                   </div>
-                  <a href="<%= article_path(article) %>" target="_blank" rel="noopener">
+                  <a href="<%= article.path %>" target="_blank" rel="noopener">
                       <h3 class="article-title"><%= article.title %></h3>
                   </a>
                   <div class="article-tags">
