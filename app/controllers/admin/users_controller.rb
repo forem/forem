@@ -110,7 +110,7 @@ module Admin
                             "action" => params[:action],
                             "controller" => params[:controller],
                             "target_user_id" => @user.id,
-                            "reputation_modifier" => reputation_modifier_value
+                            "reputation_modifier" => @user.reputation_modifier
                           })
         flash[:success] = I18n.t("views.admin.users.reputation.success", reputation_modifier: reputation_modifier_value)
       else
@@ -198,7 +198,7 @@ module Admin
                             "action" => params[:action],
                             "controller" => params[:controller],
                             "target_user_id" => @user.id,
-                            "max_score" => max_score_value
+                            "max_score" => @user.max_score
                           })
         flash[:success] = I18n.t("views.admin.users.max_score.success", max_score: max_score_value)
       else

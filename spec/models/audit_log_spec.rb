@@ -27,10 +27,17 @@ RSpec.describe AuditLog do
       expect(described_class.on_user(user)).to include(log)
     end
 
-    it "finds logs where user is the reactable target" do
+    it "finds logs where user is the reactable target (string reactable_id)" do
       log = create(:audit_log, user: admin,
                                data: { "action" => "create", "controller" => "reactions",
                                        "reactable_type" => "User", "reactable_id" => user.id.to_s })
+      expect(described_class.on_user(user)).to include(log)
+    end
+
+    it "finds logs where user is the reactable target (integer reactable_id)" do
+      log = create(:audit_log, user: admin,
+                               data: { "action" => "create", "controller" => "reactions",
+                                       "reactable_type" => "User", "reactable_id" => user.id })
       expect(described_class.on_user(user)).to include(log)
     end
 

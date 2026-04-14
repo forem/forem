@@ -33,7 +33,7 @@ module Admin
                           "controller" => params[:controller],
                           "target_organization_id" => org.id,
                           "credit_action" => params[:credit_action],
-                          "credits" => params[:credits]
+                          "credits" => amount
                         })
 
       flash[:notice] = I18n.t("admin.organizations_controller.credit_updated")
@@ -158,7 +158,7 @@ module Admin
                           "controller" => params[:controller],
                           "target_organization_id" => org.id,
                           "feature" => feature,
-                          "enabled" => params[:enabled]
+                          "enabled" => params[:enabled] == "true"
                         })
 
       # Reprocess org pages when dofollow flag changes so link attributes are updated
