@@ -217,8 +217,9 @@ if admin_user
     )
     membership.update!(type_of_user: "admin")
 
-    if organization.users.count < 3
-      User.where.not(id: organization.users.pluck(:id)).limit(2).each do |other_user|
+    user_ids = organization.user_ids
+    if user_ids.size < 3
+      User.where.not(id: user_ids).limit(2).each do |other_user|
         OrganizationMembership.find_or_create_by!(
           user_id: other_user.id,
           organization_id: organization.id

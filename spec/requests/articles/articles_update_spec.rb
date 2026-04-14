@@ -85,7 +85,7 @@ RSpec.describe "ArticlesUpdate" do
     admin_org_id = user.organizations.first.id
     article.update_columns(organization_id: admin_org_id)
     other_user = create(:user)
-    create(:organization_membership, user_id: other_user.id, organization_id: admin_org_id)
+    create(:organization_membership, user: other_user, organization: user.organizations.first)
 
     put "/articles/#{article.id}", params: { article: { user_id: other_user.id } }
     expect(article.reload.user).to eq(other_user)
@@ -96,7 +96,7 @@ RSpec.describe "ArticlesUpdate" do
     admin_org_id = user.organizations.first.id
     article.update_columns(organization_id: admin_org_id)
     co_author = create(:user)
-    create(:organization_membership, user: co_author, organization_id: admin_org_id)
+    create(:organization_membership, user: co_author, organization: user.organizations.first)
 
     put "/articles/#{article.id}", params: { article: { co_author_ids_list: co_author.id.to_s } }
 

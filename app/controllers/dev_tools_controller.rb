@@ -1,11 +1,10 @@
 class DevToolsController < ApplicationController
   before_action :ensure_development_environment
-  skip_before_action :verify_authenticity_token, only: [:sign_in_as]
 
 
 
   def index
-    @users = User.order(created_at: :desc).limit(100)
+    @users = User.includes(:roles).order(created_at: :desc).limit(100)
   end
 
   def sign_in_as
