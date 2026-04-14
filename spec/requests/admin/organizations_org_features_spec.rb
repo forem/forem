@@ -93,5 +93,25 @@ RSpec.describe "/admin/content_manager/organizations org features" do
       expect(response).to redirect_to(admin_organization_path(organization))
       expect(flash[:error]).to be_present
     end
+
+    context "with audit logging" do
+      before { Audit::Subscribe.listen :moderator }
+
+      after { Audit::Subscribe.forget :moderator }
+
+      it "creates an audit log record" do
+        expect do
+          patch update_org_feature_admin_organization_path(organization),
+                params: { feature: "org_readme", enabled: "true" }
+        end.to change(AuditLog, :count).by(1)
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
+        expect(log.user_id).to eq(admin.id)
+        expect(log.data["action"]).to eq("update_org_feature")
+        expect(log.data["target_organization_id"]).to eq(organization.id)
+        expect(log.data["feature"]).to eq("org_readme")
+      end
+    end
   end
 end

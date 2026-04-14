@@ -11,14 +11,15 @@ import { setupBillboardInteractivity } from '@utilities/billboardInteractivity';
 import { trackCreateAccountClicks } from '@utilities/ahoy/trackEvents';
 
 /* global userData */
-// This logic is similar to that in initScrolling.js.erb
 const frontPageFeedPathNames = new Map([
   ['/', ''],
+  ['/discover', ''],
   ['/top/week', 'week'],
   ['/top/month', 'month'],
   ['/top/year', 'year'],
   ['/top/infinity', 'infinity'],
   ['/latest', 'latest'],
+  ['/latest_less_filtered', 'latest_less_filtered'],
   ['/following', ''],
   ['/following/latest', 'latest']
 ]);
@@ -137,6 +138,24 @@ if (document.getElementById('sidebar-nav-followed-tags')) {
             return;
           }
 
+          const url = new URL(window.location);
+          const changedFeedTimeFrame = frontPageFeedPathNames.get(url.pathname);
+
+          if (!frontPageFeedPathNames.has(url.pathname)) {
+            return;
+          }
+
+          const callback = () => {
+            initializeBillboardVisibility();
+            observeBillboards();
+            setupBillboardInteractivity();
+            observeFeedElements();
+          };
+
+          renderFeed(changedFeedTimeFrame, callback);
+        });
+
+        window.addEventListener('forem:feed:refresh', () => {
           const url = new URL(window.location);
           const changedFeedTimeFrame = frontPageFeedPathNames.get(url.pathname);
 
