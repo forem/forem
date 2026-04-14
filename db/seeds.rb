@@ -208,6 +208,28 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   user.add_role(:tech_admin)
 end
 
+admin_user = User.find_by(email: "admin@forem.local")
+if admin_user
+  Organization.find_each do |organization|
+    membership = OrganizationMembership.find_or_initialize_by(
+      user_id: admin_user.id,
+      organization_id: organization.id
+    )
+    membership.update!(type_of_user: "admin")
+
+    if organization.users.count < 3
+      User.where.not(id: organization.users.pluck(:id)).limit(2).each do |other_user|
+        OrganizationMembership.find_or_create_by!(
+          user_id: other_user.id,
+          organization_id: organization.id
+        ) do |m|
+          m.type_of_user = "member"
+        end
+      end
+    end
+  end
+end
+
 Users::CreateMascotAccount.call unless Settings::General.mascot_user_id
 
 ##############################################################################
