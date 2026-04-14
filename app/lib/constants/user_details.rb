@@ -8,6 +8,7 @@ module Constants
       Flags
       Articles
       Comments
+      AuditLog
       UnpublishLogs
     ].freeze
   end

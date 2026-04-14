@@ -46,6 +46,15 @@
                           value: Settings::RateLimit.internal_content_description_spec,
                           placeholder: Constants::Settings::RateLimit.details[:internal_content_description_spec][:placeholder] %>
         </div>
+        <div class="crayons-field">
+          <% # expanded_content_advisement_spec %>
+          <%= admin_config_label :expanded_content_advisement_spec, model: Settings::RateLimit %>
+          <%= admin_config_description Constants::Settings::RateLimit.details[:expanded_content_advisement_spec][:description] %>
+          <%= f.text_area :expanded_content_advisement_spec,
+                          class: "crayons-textfield",
+                          value: Settings::RateLimit.expanded_content_advisement_spec,
+                          placeholder: Constants::Settings::RateLimit.details[:expanded_content_advisement_spec][:placeholder] %>
+        </div>
       </fieldset>
       <%= render "update_setting_button", f: f %>
     </div>

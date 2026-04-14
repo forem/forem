@@ -41,6 +41,25 @@ RSpec.describe "/admin/content_manager/organizations fully_trusted" do
       expect(note.noteable).to eq(organization)
       expect(note.author).to eq(admin)
     end
+
+    context "with audit logging" do
+      before { Audit::Subscribe.listen :moderator }
+
+      after { Audit::Subscribe.forget :moderator }
+
+      it "creates an audit log record" do
+        expect do
+          patch update_fully_trusted_admin_organization_path(organization),
+                params: { fully_trusted: "true" }
+        end.to change(AuditLog, :count).by(1)
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
+        expect(log.user_id).to eq(admin.id)
+        expect(log.data["action"]).to eq("update_fully_trusted")
+        expect(log.data["target_organization_id"]).to eq(organization.id)
+      end
+    end
   end
 end
 
