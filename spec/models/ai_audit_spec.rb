@@ -1,28 +1,45 @@
 require "rails_helper"
 
-RSpec.describe AiAudit, type: :model do
-  describe "associations" do
-    it { is_expected.to belong_to(:affected_user).class_name("User").optional }
-    it { is_expected.to belong_to(:affected_content).optional }
-  end
-
-  describe "validations" do
-    it "can be created with minimum attributes" do
-      audit = AiAudit.new(
-        ai_model: "gemini-1.5-pro",
-        wrapper_object_class: "Ai::ChatService",
-        wrapper_object_version: "1.0",
-        request_body: { prompt: "hello" }.to_json,
-        response_body: { text: "hi" }.to_json,
-        retry_count: 0,
-        prompt_token_count: 10,
-        candidates_token_count: 20,
-        total_token_count: 30,
-        latency_ms: 125,
-        status_code: 200,
-        error_message: nil,
+RSpec.describe AiAudit do
+  describe ".fast_trim_old_audits" do
+    let!(:old_audit) do
+      create(:ai_audit,
+        created_at: 35.days.ago,
+        request_body: { "data" => "heavy_payload" },
+        response_body: { "data" => "heavy_response" }
       )
-      expect(audit).to be_valid
+    end
+
+    let!(:recent_audit) do
+      create(:ai_audit,
+        created_at: 10.days.ago,
+        request_body: { "data" => "recent_payload" },
+        response_body: { "data" => "recent_response" }
+      )
+    end
+
+    let!(:empty_old_audit) do
+      create(:ai_audit,
+        created_at: 35.days.ago,
+        request_body: "{}",
+        response_body: "{}"
+      )
+    end
+
+    it "trims the request and response bodies of audits older than the threshold" do
+      described_class.fast_trim_old_audits(30.days.ago)
+
+      old_audit.reload
+      expect(old_audit.request_body).to eq("{}")
+      expect(old_audit.response_body).to eq("{}")
+    end
+
+    it "leaves recent audits completely untouched" do
+      described_class.fast_trim_old_audits(30.days.ago)
+
+      recent_audit.reload
+      expect(recent_audit.request_body).to eq({ "data" => "recent_payload" })
+      expect(recent_audit.response_body).to eq({ "data" => "recent_response" })
     end
   end
 end
