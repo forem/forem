@@ -3,6 +3,7 @@ import { useState, useCallback, useRef, useEffect } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { SeriesSelector } from './SeriesSelector';
+import { CoAuthorSelector } from './CoAuthorSelector';
 import { Modal, ButtonNew as Button } from '@crayons';
 import CogIcon from '@images/cog.svg';
 
@@ -26,6 +27,9 @@ export const Options = ({
     canonicalUrl = '',
     series = '',
     organizationId = null,
+    organizations = [],
+    authorId = null,
+    coAuthorIdsList = '',
   },
   schedulingEnabled: _schedulingEnabled, // Deprecated - scheduling is always enabled now
   onSaveDraft,
@@ -207,6 +211,7 @@ export const Options = ({
 
   return (
     <Fragment>
+      <span className="mx-2 color-base-30" aria-hidden="true">|</span>
       <Button
         id="post-options-btn"
         icon={CogIcon}
@@ -214,7 +219,9 @@ export const Options = ({
         aria-label="Advanced Post options"
         disabled={previewLoading}
         onClick={() => setIsOptionsModalOpen(true)}
-      />
+      >
+        <span className="hidden l:inline-block ml-1">Advanced Options</span>
+      </Button>
       {isOptionsModalOpen && (
         <Modal
           title="Advanced Post Options"
@@ -269,6 +276,14 @@ export const Options = ({
                 />
               </div>
 
+              <CoAuthorSelector
+                authorId={authorId}
+                coAuthorIdsList={coAuthorIdsList}
+                organizationId={organizationId}
+                organizations={organizations}
+                onConfigChange={handleConfigChangeWithModalOpen}
+              />
+
               {publishedField}
             </div>
             <div className="post-options-modal__footer">
@@ -300,7 +315,10 @@ Options.propTypes = {
     allSeries: PropTypes.array.isRequired,
     canonicalUrl: PropTypes.string.isRequired,
     series: PropTypes.string.isRequired,
-    organizationId: PropTypes.string,
+    organizations: PropTypes.array.isRequired,
+    authorId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    coAuthorIdsList: PropTypes.string,
+    organizationId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   }).isRequired,
   schedulingEnabled: PropTypes.bool, // Kept for backward compatibility but no longer used
   onSaveDraft: PropTypes.func.isRequired,

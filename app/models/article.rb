@@ -279,6 +279,8 @@ class Article < ApplicationRecord
   validate :validate_co_authors, unless: -> { co_author_ids.blank? }
   validate :validate_co_authors_must_not_be_the_same, unless: -> { co_author_ids.blank? }
   validate :validate_co_authors_exist, unless: -> { co_author_ids.blank? }
+  validate :validate_co_authors_belong_to_organization,
+           unless: -> { co_author_ids.blank? || organization_id.blank? }
 
   before_validation :extract_url_from_status_title, if: :status?
   before_validation :set_markdown_from_body_url, if: :body_url?
@@ -983,6 +985,10 @@ class Article < ApplicationRecord
     co_author_ids.join(", ")
   end
 
+  def co_authors_data
+    User.where(id: co_author_ids).select(:id, :name, :username).as_json
+  end
+
   def co_author_ids_list=(list_of_co_author_ids)
     self.co_author_ids = list_of_co_author_ids.split(",").map(&:strip)
   end
@@ -1437,6 +1443,12 @@ class Article < ApplicationRecord
 
   def validate_co_authors_exist
     return if User.where(id: co_author_ids).count == co_author_ids.count
+
+    errors.add(:co_author_ids, I18n.t("models.article.invalid_coauthor"))
+  end
+
+  def validate_co_authors_belong_to_organization
+    return if OrganizationMembership.active.where(organization_id: organization_id, user_id: co_author_ids).count == co_author_ids.count
 
     errors.add(:co_author_ids, I18n.t("models.article.invalid_coauthor"))
   end

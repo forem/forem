@@ -32,6 +32,9 @@ en:
     article_form_publish: Publish
     article_form_loading_preview: Loading preview
     article_form_preview_loaded: Preview loaded
+    article_form_co_authors: Co-authors
+    article_form_co_authors_description: Add up to 4 co-authors from %{org_name}.
+    article_form_co_authors_placeholder: Add up to 4...
     comments_preview: Preview
     comments_continue_editing: Continue editing
     survey_enter_response: Enter your response here...
