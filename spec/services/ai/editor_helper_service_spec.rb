@@ -33,9 +33,8 @@ RSpec.describe Ai::EditorHelperService do
     end
 
     describe "content advisement specs" do
-      context "when neither spec has values" do
+      context "when advisement spec has no value" do
         it "does not render the advisement context block" do
-          allow(Settings::RateLimit).to receive(:internal_content_description_spec).and_return(nil)
           allow(Settings::RateLimit).to receive(:expanded_content_advisement_spec).and_return(nil)
 
           prompt = service.send(:prompt)
@@ -45,13 +44,11 @@ RSpec.describe Ai::EditorHelperService do
 
       context "when specs are configured" do
         it "embeds the configured specs actively inside the prompt pipeline" do
-          allow(Settings::RateLimit).to receive(:internal_content_description_spec).and_return("We are a Ruby specific subset.")
           allow(Settings::RateLimit).to receive(:expanded_content_advisement_spec).and_return("Focus on deep technical blocks.")
 
           prompt = service.send(:prompt)
           
           expect(prompt).to include("The platform explicitly specifies the following about ideal content:")
-          expect(prompt).to include("We are a Ruby specific subset.")
           expect(prompt).to include("Focus on deep technical blocks.")
         end
       end

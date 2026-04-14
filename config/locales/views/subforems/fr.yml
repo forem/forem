@@ -68,9 +68,9 @@ fr:
             placeholder: Décrivez la spécification de description de contenu interne...
             description: Décrivez le type de contenu qui doit être affiché ou priorisé dans le fil. Cela aide l'IA à déterminer ce qui devrait et ne devrait pas apparaître dans ce fil pour aider à gérer le spam.
           expanded_advisement_spec:
-            label: Expanded Content Advisement Spec
-            placeholder: Enter expanded guidelines and advice to feed the AI editor engine...
-            description: Provide rich holistic guidelines on how users should post structurally and culturally if the AI is queried for deeper advice on writing a successful post.
+            label: Spécification Étendue des Conseils de Contenu
+            placeholder: Saisissez des directives et conseils détaillés pour alimenter le moteur d’édition IA...
+            description: Fournissez des directives globales et détaillées sur la manière dont les utilisateurs devraient publier, sur le fond comme sur la forme, si l’IA est sollicitée pour des conseils plus approfondis afin de rédiger une publication réussie.
           sidebar_tags:
             label: Tags de la Barre Latérale
             placeholder: "help,discuss,explainlikeimfive,meta"

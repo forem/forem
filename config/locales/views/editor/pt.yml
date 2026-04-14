@@ -21,9 +21,9 @@ pt:
       new_title: Novo título de post aqui...
       preview: Visualizar
       ai_helper:
-        sidecar_title: "%{community_name} Buddy"
-        title: "%{community_name} Buddy"
-        greeting: "Hello! I am your writing assistant. I know %{community_name} Editor guidelines. Need help with markdown, embeds, formatting, or advice on community guidelines and expectations?"
+        sidecar_title: "Assistente do %{community_name}"
+        title: "Assistente do %{community_name}"
+        greeting: "Olá! Sou seu assistente de escrita. Conheço as diretrizes do editor do %{community_name}. Precisa de ajuda com markdown, incorporações, formatação ou conselhos sobre as diretrizes e expectativas da comunidade?"
       video:
         progress:
           heading: "⏳ Transcodificação de Vídeo em Andamento ⏳"

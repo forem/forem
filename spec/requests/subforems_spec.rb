@@ -282,10 +282,10 @@ RSpec.describe "Subforems", type: :request do
       it "can update expanded_content_advisement_spec" do
         patch subforem_path(subforem), params: {
           subforem: { discoverable: true },
-          expanded_content_advisement_spec: "New expanded advise guidelines"
+          expanded_content_advisement_spec: "New expanded advice guidelines"
         }
         expect(response).to redirect_to(manage_subforem_path)
-        expect(Settings::RateLimit.expanded_content_advisement_spec(subforem_id: subforem.id)).to eq("New expanded advise guidelines")
+        expect(Settings::RateLimit.expanded_content_advisement_spec(subforem_id: subforem.id)).to eq("New expanded advice guidelines")
       end
 
       it "cannot update discoverable field (admin-only)" do
