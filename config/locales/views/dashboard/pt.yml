@@ -103,6 +103,25 @@ pt:
         icon: Detalhes
         author_is: 'AUTOR: '
         save: Salvar
+      posts:
+        heading: Posts
+        show_archived: Mostrar arquivados
+        hide_archived: Ocultar arquivados
+        statuses: Mostrar posts rápidos
+        full: Mostrar posts completos
+        option:
+          creation-desc: Criados recentemente
+          published-desc: Publicados recentemente
+          views-desc: Mais visualizações
+          reactions-desc: Mais reações
+          comments-desc: Mais comentários
+          aria_label: Ordenar por
+        org: "%{name} (%{num})"
+        personal: Pessoal
+        empty:
+          desc: Aqui é onde você pode gerenciar seus posts, mas você ainda não escreveu nada.
+          new: Escreva seu primeiro post agora
+          status_desc: Você ainda não tem posts rápidos aqui...
       feed_imports:
         heading: Painel » Importações de Feeds RSS
         empty: Adicione uma fonte de feed RSS abaixo para começar a importar posts como rascunhos.
