@@ -1,4 +1,4 @@
-import { callHistoricalAPI, callReferrersAPI } from './client';
+import { callHistoricalAPI, callReferrersAPI, callTotalsAPI } from './client';
 import { locale } from '@utilities/locale';
 
 const activeCharts = {};
@@ -21,6 +21,13 @@ function sumAnalytics(data, key) {
   return Object.entries(data).reduce((sum, day) => sum + day[1][key].total, 0);
 }
 
+function sumBookmarks(data) {
+  return Object.entries(data).reduce(
+    (sum, day) => sum + (day[1].reactions.readinglist || 0),
+    0,
+  );
+}
+
 function cardHTML(stat, header) {
   return `
     <h4>${header}</h4>
@@ -28,36 +35,73 @@ function cardHTML(stat, header) {
   `;
 }
 
-function writeCards(data, timeRangeLabel) {
+function readerCardHTML(readers, avgReadTime, header) {
+  let html = `
+    <h4>${header}</h4>
+    <div class="featured-stat">${readers}</div>
+  `;
+  if (avgReadTime > 0) {
+    html += `<p class="color-base-60 fs-s">${locale('core.dashboard_analytics_avg_read_time', { seconds: avgReadTime })}</p>`;
+  }
+  return html;
+}
+
+function reactionCardHTML(reactions, uniqueReactors, header) {
+  return `
+    <h4>${header}</h4>
+    <div class="featured-stat">${reactions}</div>
+    <p class="color-base-60 fs-s">${locale('core.dashboard_analytics_unique_reactors', { count: uniqueReactors })}</p>
+  `;
+}
+
+function writeCards(data, timeRangeLabel, totals) {
   const readers = sumAnalytics(data, 'page_views');
-  const reactions = sumAnalytics(data, 'reactions');
+  const totalReactions = sumAnalytics(data, 'reactions');
+  const bookmarks = sumBookmarks(data);
+  const reactions = totalReactions - bookmarks;
   const comments = sumAnalytics(data, 'comments');
+  const uniqueReactors = totals ? (totals.reactions.unique_reactors || 0) : 0;
+  const avgReadTime = totals ? (totals.page_views.average_read_time_in_seconds || 0) : 0;
 
   const reactionCard = document.getElementById('reactions-card');
   const commentCard = document.getElementById('comments-card');
   const readerCard = document.getElementById('readers-card');
+  const bookmarkCard = document.getElementById('bookmarks-card');
+  const followersCard = document.getElementById('followers-card');
 
-  readerCard.innerHTML = cardHTML(readers, `${locale('core.dashboard_analytics_readers')} ${timeRangeLabel}`);
+  readerCard.innerHTML = readerCardHTML(readers, avgReadTime, `${locale('core.dashboard_analytics_readers')} ${timeRangeLabel}`);
+  reactionCard.innerHTML = reactionCardHTML(reactions, uniqueReactors, `${locale('core.dashboard_analytics_reactions')} ${timeRangeLabel}`);
   commentCard.innerHTML = cardHTML(comments, `${locale('core.dashboard_analytics_comments')} ${timeRangeLabel}`);
-  reactionCard.innerHTML = cardHTML(reactions, `${locale('core.dashboard_analytics_reactions')} ${timeRangeLabel}`);
+  bookmarkCard.innerHTML = cardHTML(bookmarks, `${locale('core.dashboard_analytics_bookmarks')} ${timeRangeLabel}`);
+  if (followersCard) {
+    followersCard.innerHTML = cardHTML(sumAnalytics(data, 'follows'), `${locale('core.dashboard_analytics_followers')} ${timeRangeLabel}`);
+  }
 }
 
-function drawChart({ id, showPoints = true, title, labels, datasets }) {
-  const chartOptions = {
-    elements: {
-      point: {
-        // The default is 3: https://www.chartjs.org/docs/latest/configuration/elements.html#point-configuration
-        radius: showPoints ? 3 : 0,
+function drawChart({ id, chartType = 'line', showPoints = true, labels, series, colors, strokeDashArray, fillOptions, dataLabels, yaxis }) {
+  const options = {
+    chart: {
+      type: chartType,
+      height: 320,
+      toolbar: { show: false },
+      zoom: { enabled: false },
+      animations: {
+        enabled: true,
+        easing: 'easeinout',
+        speed: 400,
       },
     },
-    scales: {
-      y: {
-        type: 'linear',
-        suggestedMin: 0,
-        ticks: {
-          precision: 0,
-        },
+    series,
+    colors,
+    xaxis: {
+      categories: labels,
+      labels: {
+        rotate: -45,
+        rotateAlways: false,
+        hideOverlappingLabels: true,
+        style: { fontSize: '11px' },
       },
+      tickAmount: Math.min(labels.length, 14),
     },
   };
   const dataOptions = {
@@ -84,12 +128,29 @@ function drawChart({ id, showPoints = true, title, labels, datasets }) {
       },
       legend: {
         position: 'top',
+    yaxis: yaxis || {
+      min: 0,
+      labels: {
+        formatter: (val) => Math.round(val),
       },
     },
-    responsive: true,
-    title: {
-      display: true,
-      text: title,
+    stroke: {
+      curve: 'smooth',
+      width: 2,
+      dashArray: strokeDashArray || Array(series.length).fill(0),
+    },
+    markers: {
+      size: showPoints ? 3 : 0,
+    },
+    legend: {
+      position: 'top',
+    },
+    tooltip: {
+      shared: true,
+      intersect: false,
+    },
+    grid: {
+      borderColor: '#e7e7e7',
     },
   };
 
@@ -131,6 +192,27 @@ function drawChart({ id, showPoints = true, title, labels, datasets }) {
       });
     },
   );
+  if (fillOptions) {
+    options.fill = fillOptions;
+  }
+
+  if (dataLabels) {
+    options.dataLabels = dataLabels;
+  }
+
+  import('apexcharts').then(({ default: ApexCharts }) => {
+    const currentChart = activeCharts[id];
+    if (currentChart) {
+      currentChart.destroy();
+    }
+
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = '';
+    const chart = new ApexCharts(el, options);
+    chart.render();
+    activeCharts[id] = chart;
+  });
 }
 
 function drawCharts(data, timeRangeLabel) {
@@ -141,7 +223,19 @@ function drawCharts(data, timeRangeLabel) {
   const likes = parsedData.map((date) => date.reactions.like);
   const readingList = parsedData.map((date) => date.reactions.readinglist);
   const unicorns = parsedData.map((date) => date.reactions.unicorn);
+  const explodingHeads = parsedData.map((date) => date.reactions.exploding_head);
+  const raisedHands = parsedData.map((date) => date.reactions.raised_hands);
+  const fires = parsedData.map((date) => date.reactions.fire);
+  // Total excluding bookmarks — bookmarks are shown separately
+  const reactionsExclBookmarks = reactions.map((val, i) => val - readingList[i]);
   const readers = parsedData.map((date) => date.page_views.total);
+  const avgReadTime = parsedData.map((date) => date.page_views.average_read_time_in_seconds || 0);
+  const followers = parsedData.map((date) => date.follows.total);
+  // Cumulative running total for follower growth
+  const cumulativeFollowers = followers.reduce((acc, val) => {
+    acc.push((acc.length ? acc[acc.length - 1] : 0) + val);
+    return acc;
+  }, []);
 
   // When timeRange is "Infinity" we hide the points to avoid over-crowding the UI
   const showPoints = timeRangeLabel !== '';
@@ -149,76 +243,159 @@ function drawCharts(data, timeRangeLabel) {
   drawChart({
     id: 'reactions-chart',
     showPoints,
-    title: `Reactions ${timeRangeLabel}`,
     labels,
-    datasets: [
-      {
-        label: 'Total',
-        data: reactions,
-        fill: false,
-        borderColor: 'rgb(75, 192, 192)',
-        backgroundColor: 'rgb(75, 192, 192)',
-        lineTension: 0.1,
-      },
-      {
-        label: 'Likes',
-        data: likes,
-        fill: false,
-        borderColor: 'rgb(229, 100, 100)',
-        backgroundColor: 'rgb(229, 100, 100)',
-        lineTension: 0.1,
-      },
-      {
-        label: 'Unicorns',
-        data: unicorns,
-        fill: false,
-        borderColor: 'rgb(157, 57, 233)',
-        backgroundColor: 'rgb(157, 57, 233)',
-        lineTension: 0.1,
-      },
-      {
-        label: 'Bookmarks',
-        data: readingList,
-        fill: false,
-        borderColor: 'rgb(10, 133, 255)',
-        backgroundColor: 'rgb(10, 133, 255)',
-        lineTension: 0.1,
-      },
+    colors: ['#4bc0c0', '#e56464', '#9d39e9', '#f59e0b', '#10b981', '#ef4444', '#0a85ff'],
+    // dashArray: 0 = solid for first 6 series, 5 = dashed for Bookmarks (last)
+    strokeDashArray: [0, 0, 0, 0, 0, 0, 5],
+    series: [
+      { name: 'Total', data: reactionsExclBookmarks },
+      { name: 'Likes', data: likes },
+      { name: 'Unicorns', data: unicorns },
+      { name: 'Exploding Heads', data: explodingHeads },
+      { name: 'Raised Hands', data: raisedHands },
+      { name: 'Fire', data: fires },
+      { name: 'Bookmarks', data: readingList },
     ],
   });
 
   drawChart({
     id: 'comments-chart',
     showPoints,
-    title: `Comments ${timeRangeLabel}`,
     labels,
-    datasets: [
-      {
-        label: 'Comments',
-        data: comments,
-        fill: false,
-        borderColor: 'rgb(75, 192, 192)',
-        backgroundColor: 'rgb(75, 192, 192)',
-        lineTension: 0.1,
-      },
-    ],
+    colors: ['#4bc0c0'],
+    series: [{ name: 'Comments', data: comments }],
   });
 
   drawChart({
     id: 'readers-chart',
     showPoints,
-    title: `Reads ${timeRangeLabel}`,
     labels,
-    datasets: [
+    colors: ['#9d39e9', '#10b981'],
+    strokeDashArray: [0, 4],
+    series: [
+      { name: 'Reads', data: readers },
+      { name: 'Avg Read Time (s)', data: avgReadTime },
+    ],
+    yaxis: [
       {
-        label: 'Reads',
-        data: readers,
-        fill: false,
-        borderColor: 'rgb(157, 57, 233)',
-        backgroundColor: 'rgb(157, 57, 233)',
-        lineTension: 0.1,
+        min: 0,
+        title: { text: 'Reads', style: { color: '#9d39e9', fontSize: '12px' } },
+        labels: { formatter: (val) => Math.round(val) },
+      },
+      {
+        opposite: true,
+        min: 0,
+        title: { text: 'Avg Read Time (s)', style: { color: '#10b981', fontSize: '12px' } },
+        labels: { formatter: (val) => `${Math.round(val)}s` },
       },
     ],
+  });
+
+  drawChart({
+    id: 'followers-chart',
+    chartType: 'area',
+    showPoints: false,
+    labels,
+    colors: ['#f59e0b'],
+    series: [{ name: 'Total Followers', data: cumulativeFollowers }],
+    fillOptions: {
+      type: 'gradient',
+      gradient: {
+        shadeIntensity: 1,
+        opacityFrom: 0.4,
+        opacityTo: 0.05,
+        stops: [0, 95, 100],
+      },
+    },
+    dataLabels: {
+      enabled: true,
+      formatter: (val, { dataPointIndex }) => {
+        // Show label only when the cumulative total increased (new followers gained)
+        if (dataPointIndex === 0) return val > 0 ? val : '';
+        return cumulativeFollowers[dataPointIndex] !== cumulativeFollowers[dataPointIndex - 1] ? val : '';
+      },
+      offsetY: -8,
+      style: {
+        fontSize: '11px',
+        fontWeight: 600,
+        colors: ['#f59e0b'],
+      },
+      background: {
+        enabled: true,
+        foreColor: '#fff',
+        borderRadius: 3,
+        padding: 4,
+        borderWidth: 0,
+        dropShadow: { enabled: false },
+      },
+    },
+  });
+}
+
+function drawReferrerChart(data) {
+  const MAX_SLICES = 8;
+  const referrers = data.domains
+    .map((r) => ({ label: r.domain || 'Other', count: r.count }))
+    .sort((a, b) => b.count - a.count);
+
+  if (referrers.length === 0) return;
+
+  let labels, series;
+  if (referrers.length <= MAX_SLICES) {
+    labels = referrers.map((r) => r.label);
+    series = referrers.map((r) => r.count);
+  } else {
+    const top = referrers.slice(0, MAX_SLICES - 1);
+    const rest = referrers.slice(MAX_SLICES - 1);
+    const otherCount = rest.reduce((sum, r) => sum + r.count, 0);
+    labels = [...top.map((r) => r.label), 'Other'];
+    series = [...top.map((r) => r.count), otherCount];
+  }
+
+  const options = {
+    chart: {
+      type: 'donut',
+      height: 300,
+      animations: {
+        enabled: true,
+        easing: 'easeinout',
+        speed: 400,
+      },
+    },
+    series,
+    labels,
+    legend: {
+      position: 'bottom',
+      fontSize: '13px',
+    },
+    tooltip: {
+      y: {
+        formatter: (val) => `${val} views`,
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    plotOptions: {
+      pie: {
+        donut: {
+          size: '55%',
+        },
+      },
+    },
+  };
+
+  import('apexcharts').then(({ default: ApexCharts }) => {
+    const currentChart = activeCharts['referrers-chart'];
+    if (currentChart) {
+      currentChart.destroy();
+    }
+
+    const el = document.getElementById('referrers-chart');
+    el.innerHTML = '';
+    const chart = new ApexCharts(el, options);
+    chart.render();
+    activeCharts['referrers-chart'] = chart;
   });
 }
 
@@ -249,6 +426,7 @@ function renderReferrers(data) {
   }
 
   container.innerHTML = tableBody.join('');
+  drawReferrerChart(data);
 }
 
 function removeCardElements() {
@@ -257,22 +435,28 @@ function removeCardElements() {
 }
 
 function showErrorsOnCharts() {
-  const target = ['reactions-chart', 'comments-chart', 'readers-chart'];
+  const target = ['reactions-chart', 'comments-chart', 'readers-chart', 'followers-chart'];
   target.forEach((id) => {
     const el = document.getElementById(id);
+    if (!el) return;
     el.outerHTML = `<p class="m-5" id="${id}">Failed to fetch chart data. If this error persists for a minute, you can try to disable adblock etc. on this page or site.</p>`;
   });
 }
 
 function showErrorsOnReferrers() {
+  const chartEl = document.getElementById('referrers-chart');
+  if (chartEl) chartEl.innerHTML = '';
   document.getElementById('referrers-container').outerHTML =
     '<p class="m-5" id="referrers-container">Failed to fetch referrer data. If this error persists for a minute, you can try to disable adblock etc. on this page or site.</p>';
 }
 
 function callAnalyticsAPI(date, timeRangeLabel, { organizationId, articleId }) {
-  callHistoricalAPI(date, { organizationId, articleId })
-    .then((data) => {
-      writeCards(data, timeRangeLabel);
+  Promise.all([
+    callHistoricalAPI(date, { organizationId, articleId }),
+    callTotalsAPI(date, { organizationId, articleId }),
+  ])
+    .then(([data, totals]) => {
+      writeCards(data, timeRangeLabel, totals);
       drawCharts(data, timeRangeLabel);
     })
     .catch((_err) => {
