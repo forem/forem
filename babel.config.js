@@ -40,14 +40,13 @@ module.exports = function (api) {
       isTestEnv && '@babel/plugin-transform-modules-commonjs',
       '@babel/plugin-transform-destructuring',
       [
-        '@babel/plugin-proposal-class-properties',
+        '@babel/plugin-transform-class-properties',
         {
-          spec: true,
           loose: true,
         },
       ],
       [
-        '@babel/plugin-proposal-object-rest-spread',
+        '@babel/plugin-transform-object-rest-spread',
         {
           useBuiltIns: true,
         },
