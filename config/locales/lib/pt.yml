@@ -197,6 +197,9 @@ pt:
           content_spec:
             description: Content specification rate limit settings
             placeholder: Content specification rate limit settings
+          expanded_advisement_spec:
+            description: Detailed guidelines and advice given to the AI Editor
+            placeholder: Detailed guidelines and advice given to the AI Editor
         smtp:
           address:
             description: SMTP server address

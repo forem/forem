@@ -1,11 +1,11 @@
 <table width="100%" cellpadding="0" cellspacing="0">
   <tr>
     <td align="center">
-      <table style="width:100%;" cellpadding="0" cellspacing="0">
+      <table style="width:100%; max-width: 600px;" cellpadding="0" cellspacing="0">
         <!-- Header -->
         <tr>
-          <td align="center" bgcolor="#FFFFFF" style="padding: 25px 2px 35px;">
-            <h1 style="margin: 0; font-size: 24px; color: #333;"> 
+          <td align="center" bgcolor="#FFFFFF" style="padding: 35px 2px 35px;">
+            <h1 style="margin: 0; font-size: 24px; color: #111111; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; letter-spacing: -0.01em;"> 
               <% if ForemInstance.dev_to? %>
                 <% if @user_follows_any_subforems %>
                   Forem Digest
@@ -19,17 +19,17 @@
           </td>
         </tr>
         <tr>
-          <td bgcolor="#F8F8F8" style="padding: 14px; text-align: center; color: #3a3c3d; font-size: 16px;border-radius: 12px; border: 3px solid <%= Settings::UserExperience.primary_brand_color_hex %>; font-weight: bold;">
+          <td bgcolor="#FAFAFA" style="padding: 18px 24px; text-align: center; color: #111111; font-size: 16px; border-radius: 8px; border: 1px solid #EAEAEA; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
             👋 Hey <%= @user.name.split.first %>, let's get you <span style="display:inline-block">caught up!</span>
           </td>
         </tr>
 
         <% if @smart_summary.present? %>
           <tr>
-            <td bgcolor="#FFFFFF" style="padding: 24px 0 10px; text-align: left;">
-              <div style="background-color: #f0f7ff; border: 2px solid #3b49df; border-radius: 12px; padding: 16px; color: #0a0a0a;">
-                <h3 style="margin-top: 0; margin-bottom: 12px; font-size: 18px; color: #3b49df;">✨ Digest Overview</h3>
-                <div style="font-size: 15px; line-height: 1.5;">
+            <td bgcolor="#FFFFFF" style="padding: 32px 0 16px; text-align: left;">
+              <div style="background-color: #FAFAFA; border: 1px solid #EAEAEA; border-radius: 8px; padding: 24px; color: #333333; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+                <h3 style="margin-top: 0; margin-bottom: 12px; font-size: 16px; font-weight: 600; color: <%= Settings::UserExperience.primary_brand_color_hex %>;">✨ Digest Overview</h3>
+                <div style="font-size: 15px; line-height: 1.6; color: #444444;">
                   <%= ContentRenderer.new(@smart_summary).process.processed_html.html_safe %>
                 </div>
               </div>
@@ -39,46 +39,56 @@
 
         <% if @billboards&.first&.present? %>
           <tr>
-            <td bgcolor="#FFFFFF" style="padding: 16px 0 4px;">
-              <hr style="border-top: 3px solid #0a0a0a;" />
+            <td bgcolor="#FFFFFF" style="padding: 24px 0 12px;">
+              <hr style="border: 0; border-top: 1px solid #EAEAEA; margin: 0;" />
             </td>
           </tr>
           <tr>
-            <td bgcolor="#FFFFFF" style="padding: 20px 0 12px;">
+            <td bgcolor="#FFFFFF" style="padding: 12px 0 12px;">
               <%= @billboards.first.processed_html.html_safe %>
             </td>
           </tr>
           <tr>
-            <td bgcolor="#FFFFFF" style="padding: 12px 0 8px;">
-              <hr style="border-top: 3px solid #0a0a0a;" />
+            <td bgcolor="#FFFFFF" style="padding: 12px 0 24px;">
+              <hr style="border: 0; border-top: 1px solid #EAEAEA; margin: 0;" />
             </td>
           </tr>
         <% end %>
+
         <!-- Articles List -->
         <% @articles.each_with_index do |article, i| %>
           <tr>
-            <td bgcolor="#FFFFFF" style="padding: <%= i.zero? ? "27" : "17" %>px 0px 0px; text-align: left;">
-              <div style="border:2px solid #0a0a0a;border-radius:12px;padding:12px 12px 3px;">
-                <a href="<%= article_url(article) %>?context=digest" style="font-weight: bold; color:#0a0a0a; font-size: 16px;display:block;"><%= article.title.strip %></a>
-                <p style="margin-top: 5px; font-size: 14px; color: #808080;">
+            <td bgcolor="#FFFFFF" style="padding: <%= i.zero? ? "24" : "16" %>px 0px 16px; text-align: left; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+              <div style="padding: 4px 8px;">
+                <a href="<%= article_url(article) %>?context=digest" style="text-decoration: none; font-weight: 600; color:#111111; font-size: 18px; line-height: 1.4; display:block; letter-spacing: -0.01em;"><%= article.title.strip %></a>
+                <p style="margin-top: 8px; margin-bottom: 0px; font-size: 15px; color: #555555; line-height: 1.5;">
                   <%= truncate(article.description, length: 180) %>
                 </p>
               </div>
             </td>
           </tr>
+          <% if i < @articles.size - 1 %>
+            <tr>
+              <td bgcolor="#FFFFFF" style="padding: 0;">
+                <hr style="border: 0; border-top: 1px solid #F5F5F5; margin: 0;" />
+              </td>
+            </tr>
+          <% end %>
         <% end %>
+
         <% if ForemInstance.dev_to? %>
           <tr>
-            <td bgcolor="#FFFFFF" style="padding: 30px 0 8px;">
-                <p style="margin: 0; font-weight: bold; font-size: 20px;">
+            <td bgcolor="#FFFFFF" style="padding: 40px 0 12px; text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+                <p style="margin: 0; font-weight: 600; font-size: 18px; color: #111111;">
                   Happy coding ❤️
                 </p>
             </td>
           </tr>
         <% end %>
+        
         <tr>
-          <td bgcolor="#FFFFFF" style="padding: 20px 0;">
-            <hr style="border-top: 3px solid #0a0a0a;" />
+          <td bgcolor="#FFFFFF" style="padding: 40px 0 16px;">
+            <hr style="border: 0; border-top: 1px solid #EAEAEA; margin: 0;" />
           </td>
         </tr>
 
@@ -89,32 +99,28 @@
             </td>
           </tr>
           <tr>
-            <td bgcolor="#FFFFFF" style="padding: 12px 0 8px;">
-              <hr style="border-top: 3px solid #0a0a0a;" />
+            <td bgcolor="#FFFFFF" style="padding: 12px 0 16px;">
+              <hr style="border: 0; border-top: 1px solid #EAEAEA; margin: 0;" />
             </td>
           </tr>
 
         <% end %>
+        
         <!-- Footer -->
         <tr>
-          <td bgcolor="#FFFFFF" style="padding: 15px 0; font-size: 16px;">
-            <h2>How to make your Digest better</h2>
+          <td bgcolor="#FFFFFF" style="padding: 24px 0 40px; font-size: 13.5px; text-align: center; color: #888888; line-height: 1.6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+            <p style="margin: 0 0 12px; font-weight: 600; color: #555555; font-size: 14px;">How to make your Digest better</p>
             <% if @user.setting.experience_level.nil? %>
-              <p style="margin: 22px 0; font-size: 16px;">
-                Visit <b><a href="<%= app_url(user_settings_path(:customization)) %>" style="color: #0a0a0a; text-decoration: underline;">your settings</a></b> to enter your experience level to get more relevant posts for you.
+              <p style="margin: 0 0 12px;">
+                Visit <a href="<%= app_url(user_settings_path(:customization)) %>" style="color: #666666; text-decoration: underline;">your settings</a> to update your experience level for more relevant content.
               </p>
             <% end %>
-            <p style="margin: 22px 0 10px; font-size: 16px;">
-              Visit the <b><a href="<%= app_url(tags_path) %>" style="color: #0a0a0a; text-decoration: underline;">tags page</a></b> to choose which types of content will be featured.
+            <p style="margin: 0 0 12px;">
+              Visit the <a href="<%= app_url(tags_path) %>" style="color: #666666; text-decoration: underline;">tags page</a> to choose which types of content will be featured.
             </p>
           </td>
         </tr>
 
-        <tr>
-          <td bgcolor="#FFFFFF" style="padding: 10px 0;">
-            <hr style="border-top: 3px solid #0a0a0a;" />
-          </td>
-        </tr>
       </table>
     </td>
   </tr>
