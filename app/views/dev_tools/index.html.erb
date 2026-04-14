@@ -1,0 +1,39 @@
+<div class="crayons-layout">
+  <div class="crayons-layout__content">
+    <div class="crayons-card p-6">
+      <h1 class="crayons-title mb-4">Development Utilities</h1>
+      <p class="mb-6">Developer restricted dashboard to easily navigate and spoof seeded local users for testing workflows.</p>
+
+      <h2 class="crayons-subtitle mb-4">Accounts Seeded (Most Recent 100)</h2>
+      
+      <div class="table-responsive">
+        <table class="crayons-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Roles</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @users.each do |user| %>
+              <tr>
+                <td><%= user.id %></td>
+                <td><strong><%= user.username %></strong></td>
+                <td><%= user.email %></td>
+                <td>
+                  <span class="crayons-badge crayons-badge--brand mr-1"><%= user.roles.map(&:name).join(", ") %></span>
+                </td>
+                <td>
+                  <%= button_to "Sign in natively", dev_tools_sign_in_as_path(user_id: user.id), method: :post, class: "crayons-btn crayons-btn--s crayons-btn--brand" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

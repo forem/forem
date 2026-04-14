@@ -59,7 +59,7 @@
   end
 %>
 <main id="main-content"
-  data-article="<%= article.to_json(only: %i[id user_id title cached_tag_list published published_at body_markdown main_image organization_id canonical_url updated_at video_source_url], methods: %i[series all_series co_author_ids_list]) %>"
+  data-article="<%= article.to_json(only: %i[id user_id title cached_tag_list published published_at body_markdown main_image organization_id canonical_url updated_at video_source_url], methods: %i[series all_series co_author_ids_list co_authors_data]) %>"
   data-organizations="<%= serialized_organizations.to_json %>"
   data-version="<%= version %>"
   data-site-logo='<%= render "layouts/logo" %>'

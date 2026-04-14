@@ -61,7 +61,9 @@ export const CoAuthorSelector = ({
         {locale('core.article_form_co_authors')}
       </label>
       <p className="crayons-field__description mb-4">
-        {locale('core.article_form_co_authors_description')}
+        {locale('core.article_form_co_authors_description', {
+          org_name: selectedOrganization?.name || 'the selected organization',
+        })}
       </p>
       <UsernameInput
         labelText={locale('core.article_form_co_authors')}
@@ -70,7 +72,7 @@ export const CoAuthorSelector = ({
         inputId="article-co-author-ids-list"
         defaultValue={defaultValue}
         fetchSuggestions={(term) => users.search(term, { except: authorId })}
-        handleSelectionsChanged={(ids) =>
+        handleSelectionsChanged={(ids) => {
           onConfigChange({
             target: {
               name: 'coAuthorIdsList',
@@ -78,8 +80,16 @@ export const CoAuthorSelector = ({
             },
             preventDefault: () => {},
             stopPropagation: () => {},
-          })
-        }
+          });
+          onConfigChange({
+            target: {
+              name: 'coAuthorsData',
+              value: users.matchingIds(ids.split(',').map((i) => i.trim()).filter(Boolean)),
+            },
+            preventDefault: () => {},
+            stopPropagation: () => {},
+          });
+        }}
       />
     </div>
   );

@@ -985,6 +985,10 @@ class Article < ApplicationRecord
     co_author_ids.join(", ")
   end
 
+  def co_authors_data
+    User.where(id: co_author_ids).select(:id, :name, :username).as_json
+  end
+
   def co_author_ids_list=(list_of_co_author_ids)
     self.co_author_ids = list_of_co_author_ids.split(",").map(&:strip)
   end

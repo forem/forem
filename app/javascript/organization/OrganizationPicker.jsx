@@ -42,7 +42,7 @@ export const OrganizationPicker = ({
     name={name}
     id={id}
     className={className}
-    onBlur={onToggle}
+    onChange={onToggle}
   >
     {orgOptions(organizations, organizationId, emptyLabel)}
   </select>

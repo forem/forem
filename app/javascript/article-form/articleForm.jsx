@@ -181,6 +181,7 @@ export class ArticleForm extends Component {
       organizationId: this.article.organization_id,
       authorId: this.article.user_id,
       coAuthorIdsList: this.article.co_author_ids_list || '',
+      coAuthorsData: this.article.co_authors_data || [],
       errors: null,
       edited: false,
       updatedAt: this.article.updated_at,
@@ -328,9 +329,13 @@ export class ArticleForm extends Component {
     this.setState((currentState) => ({
       organizationId: nextOrganizationId,
       coAuthorIdsList:
-        currentState.organizationId === nextOrganizationId
+        String(currentState.organizationId || '') === String(nextOrganizationId || '')
           ? currentState.coAuthorIdsList
           : '',
+      coAuthorsData:
+        String(currentState.organizationId || '') === String(nextOrganizationId || '')
+          ? currentState.coAuthorsData
+          : [],
     }));
   };
 
@@ -440,6 +445,7 @@ export class ArticleForm extends Component {
       mainImage: this.article.main_image || null,
       organizationId: this.article.organization_id,
       coAuthorIdsList: this.article.co_author_ids_list || '',
+      coAuthorsData: this.article.co_authors_data || [],
       errors: null,
       edited: false,
       helpFor: null,
@@ -575,6 +581,7 @@ export class ArticleForm extends Component {
             aiAvailable={aiAvailable}
             videoSourceUrl={this.state.videoSourceUrl}
             onVideoUrlChange={this.handleVideoUrlChange}
+            coAuthorsData={this.state.coAuthorsData}
           />
         )}
 
