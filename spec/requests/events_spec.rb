@@ -26,7 +26,7 @@ RSpec.describe "Events", type: :request do
 
       context "when the event has associated articles via tags" do
         let(:tag) { create(:tag, name: "awstest") }
-        let(:article) { create(:article, title: "A Custom Event Article", cached_tag_list: tag.name) }
+        let(:article) { create(:article, title: "A Custom Event Article", tag_list: tag.name, published: true) }
 
         before do
           published_event.tags << tag
@@ -38,6 +38,7 @@ RSpec.describe "Events", type: :request do
           
           expect(response).to have_http_status(:success)
           expect(response.body).to include("A Custom Event Article")
+          expect(response.body).to include(article.path)
           expect(response.body).to include("##{tag.name}")
         end
       end
