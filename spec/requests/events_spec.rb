@@ -23,13 +23,60 @@ RSpec.describe "Events", type: :request do
         expect(response).to have_http_status(:success)
         expect(response.body).to include(published_event.title)
       end
+
+      context "when the event has associated articles via tags" do
+        let(:tag) { create(:tag, name: "awstest") }
+        let(:article) { create(:article, title: "A Custom Event Article", tag_list: tag.name, published: true) }
+
+        before do
+          published_event.tags << tag
+          article # force article creation in DB so it can be queried
+        end
+
+        it "renders the articles with their tags successfully without throwing NoMethodError" do
+          get event_path(published_event.event_name_slug, published_event.event_variation_slug)
+          
+          expect(response).to have_http_status(:success)
+          expect(response.body).to include("A Custom Event Article")
+          expect(response.body).to include(article.path)
+          expect(response.body).to include("##{tag.name}")
+        end
+      end
     end
 
     context "when requesting a draft event" do
-      it "raises a 404 RoutingError as if it does not exist" do
-        expect {
+      context "as a logged out user" do
+        it "raises a 404 RoutingError as if it does not exist" do
+          expect {
+            get event_path(draft_event.event_name_slug, draft_event.event_variation_slug)
+          }.to raise_error(ActionController::RoutingError, "Not Found")
+        end
+      end
+
+      context "as a regular logged in user" do
+        let(:regular_user) { create(:user) }
+        
+        before { login_as(regular_user) }
+
+        it "raises a 404 RoutingError to maintain draft secrecy" do
+          expect {
+            get event_path(draft_event.event_name_slug, draft_event.event_variation_slug)
+          }.to raise_error(ActionController::RoutingError, "Not Found")
+        end
+      end
+
+      context "as an admin" do
+        let(:admin) { create(:user, :super_admin) }
+        
+        before { login_as(admin) }
+
+        it "renders the show view with an unpublished warning banner" do
           get event_path(draft_event.event_name_slug, draft_event.event_variation_slug)
-        }.to raise_error(ActionController::RoutingError, "Not Found")
+          
+          expect(response).to have_http_status(:success)
+          expect(response.body).to include("This event is not published!")
+          expect(response.body).to include("Edit Event")
+        end
       end
     end
     

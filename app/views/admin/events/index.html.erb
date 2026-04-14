@@ -30,9 +30,7 @@
           <td>
             <div class="flex gap-2">
               <%= link_to "Edit", edit_admin_event_path(event), class: "c-btn c-btn--secondary btn-sm" %>
-              <% if event.published? %>
-                <%= link_to "View", event_path(event.event_name_slug, event.event_variation_slug), target: "_blank", class: "c-btn c-btn--secondary btn-sm" %>
-              <% end %>
+              <%= link_to "View", event_path(event.event_name_slug, event.event_variation_slug), target: "_blank", class: "c-btn c-btn--secondary btn-sm" %>
               <%= link_to "Delete", admin_event_path(event), method: :delete, data: { confirm: "Are you sure?" }, class: "c-btn c-btn--destructive btn-sm" %>
             </div>
           </td>
