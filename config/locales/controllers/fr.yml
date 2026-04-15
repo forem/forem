@@ -133,6 +133,7 @@ fr:
     tag_successfully_updated: "Tag mis à jour avec succès ! 👍 "
   users_controller:
     removed_admin: "%{name} n'est plus un administrateur."
+    cannot_remove_last_admin: "Impossible de retirer le dernier administrateur de l'organisation."
     removed_member: "%{name} ne fait plus partie de votre organisation."
     added_admin: "%{name} est maintenant un administrateur."
     provide_email: Veuillez fournir une adresse e-mail pour supprimer votre compte
