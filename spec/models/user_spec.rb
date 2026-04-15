@@ -1106,6 +1106,52 @@ RSpec.describe User do
         user.update!(last_comment_at: Time.current)
       end
     end
+
+    it "busts the full profile cache and updates the user cache version when a base subscriber role is added" do
+      connection = User.connection
+      original_updated_at = user.updated_at
+
+      allow(connection).to receive(:add_transaction_record).and_wrap_original do |original, record, ensure_finalize = true|
+        if record.is_a?(User::RoleChangeTransactionRecord)
+          record.committed!
+        else
+          original.call(record, ensure_finalize)
+        end
+      end
+
+      Timecop.travel(1.second.from_now) do
+        sidekiq_assert_enqueued_with(job: Users::BustCacheWorker, args: [user.id]) do
+          user.add_role(:base_subscriber)
+        end
+      end
+
+      expect(connection).to have_received(:add_transaction_record).with(instance_of(User::RoleChangeTransactionRecord))
+      expect(user.reload.updated_at).to be > original_updated_at
+    end
+
+    it "busts the full profile cache and updates the user cache version when a role is removed" do
+      user.add_role(:trusted)
+      user.reload
+      connection = User.connection
+      original_updated_at = user.updated_at
+
+      allow(connection).to receive(:add_transaction_record).and_wrap_original do |original, record, ensure_finalize = true|
+        if record.is_a?(User::RoleChangeTransactionRecord)
+          record.committed!
+        else
+          original.call(record, ensure_finalize)
+        end
+      end
+
+      sidekiq_assert_enqueued_with(job: Users::BustCacheWorker, args: [user.id]) do
+        Timecop.travel(1.second.from_now) do
+          user.remove_role(:trusted)
+        end
+      end
+
+      expect(connection).to have_received(:add_transaction_record).with(instance_of(User::RoleChangeTransactionRecord))
+      expect(user.reload.updated_at).to be > original_updated_at
+    end
   end
 
   describe "profile spam checks" do

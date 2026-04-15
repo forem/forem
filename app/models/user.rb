@@ -1,4 +1,26 @@
 class User < ApplicationRecord
+  class RoleChangeTransactionRecord
+    def initialize(user_class, user_id)
+      @user_class = user_class
+      @user_id = user_id
+    end
+
+    def trigger_transactional_callbacks?
+      true
+    end
+
+    def before_committed!; end
+
+    def committed!(should_run_callbacks: true)
+      return unless should_run_callbacks
+
+      @user_class.where(id: @user_id).touch_all
+      Users::BustCacheWorker.perform_async(@user_id)
+    end
+
+    def rolledback!(force_restore_state: false, should_run_callbacks: true); end
+  end
+
   resourcify
   rolify after_add: :update_user_roles_cache, after_remove: :update_user_roles_cache
 
@@ -970,5 +992,15 @@ class User < ApplicationRecord
     end
 
     sync_base_email_eligible! if role.name == "suspended" || role.name == "spam"
+    user_class = self.class
+    user_id = id
+    connection = user_class.connection
+
+    if connection.transaction_open?
+      connection.add_transaction_record(RoleChangeTransactionRecord.new(user_class, user_id))
+    else
+      user_class.where(id: user_id).touch_all
+      Users::BustCacheWorker.perform_async(user_id)
+    end
   end
 end
