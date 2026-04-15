@@ -33,11 +33,12 @@ module MarkdownProcessor
       renderer = Redcarpet::Render::HTMLRouge.new(options)
       markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
       catch_xss_attempts(@content)
-      
+
       # Workaround for Redcarpet dropping link text at nesting levels >= 5 (16+ spaces)
       content_with_fixed_links = convert_deeply_nested_links_to_html(@content)
-      
-      code_tag_content = convert_code_tags_to_triple_backticks(content_with_fixed_links)
+
+      normalized_footnotes_content = normalize_footnote_continuation_spacing(content_with_fixed_links)
+      code_tag_content = convert_code_tags_to_triple_backticks(normalized_footnotes_content)
       escaped_content = escape_liquid_tags_in_codeblock(code_tag_content)
       html = markdown.render(escaped_content)
       sanitized_content = ActionController::Base.helpers.sanitize html, { scrubber: RenderedMarkdownScrubber.new }
@@ -69,6 +70,10 @@ module MarkdownProcessor
           "<a href=\"#{$2}\">#{$1}</a>"
         end
       end
+    end
+
+    def normalize_footnote_continuation_spacing(content)
+      content.gsub(/(^\[\^[^\]]+\]:[^\n]*\n)((?: {4}|\t)\S)/, "\\1\n\\2")
     end
 
     def add_target_blank_to_outbound_links(html)
@@ -145,12 +150,16 @@ module MarkdownProcessor
     def escape_liquid_tags_in_codeblock(content)
       # Escape codeblocks, code spans, and inline code
       content.gsub(/[[:space:]]*~{3}.*?~{3}|[[:space:]]*`{3}.*?`{3}|`{2}.+?`{2}|`{1}.+?`{1}/m) do |codeblock|
-        codeblock.gsub!("{% endraw %}", "{----% endraw %----}")
-        codeblock.gsub!("{% raw %}", "{----% raw %----}")
-        if codeblock.match?(/[[:space:]]*`{3}/)
-          "\n{% raw %}\n#{codeblock}\n{% endraw %}\n"
+        next codeblock unless codeblock.match?(/({%|{{)/)
+
+        escaped_codeblock = codeblock.dup
+        escaped_codeblock.gsub!("{% endraw %}", "{----% endraw %----}")
+        escaped_codeblock.gsub!("{% raw %}", "{----% raw %----}")
+
+        if codeblock.match?(/\A[[:space:]]*(~{3}|`{3})/)
+          "\n{% raw %}\n#{escaped_codeblock}\n{% endraw %}\n"
         else
-          "{% raw %}#{codeblock}{% endraw %}"
+          "{% raw %}#{escaped_codeblock}{% endraw %}"
         end
       end
     end

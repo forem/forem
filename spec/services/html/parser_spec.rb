@@ -28,6 +28,21 @@ RSpec.describe Html::Parser, type: :service do
       parsed_html = described_class.new(html).remove_nested_linebreak_in_list.html
       expect(parsed_html).not_to include("<br>")
     end
+
+    it "preserves linebreaks inside footnotes" do
+      html = <<~HTML
+        <div class="footnotes">
+          <ol>
+            <li id="fn1">First paragraph.<br>Second paragraph.<br><pre>puts :hello</pre></li>
+          </ol>
+        </div>
+      HTML
+
+      parsed_html = described_class.new(html).remove_nested_linebreak_in_list.html
+      document = Nokogiri::HTML(parsed_html)
+
+      expect(document.at_css("div.footnotes li#fn1").to_html).to include("<br>")
+    end
   end
 
   describe "#prefix_all_images" do
