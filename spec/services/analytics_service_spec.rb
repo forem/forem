@@ -549,7 +549,7 @@ RSpec.describe AnalyticsService, type: :service do
       user_a = create(:user)
       user_b = create(:user)
       create(:reaction, reactable: article, category: :like, user: user_a)
-      create(:comment, commentable: article, user: user_b, score: 1) # score 3
+      create(:comment, commentable: article, user: user_b, score: 1) # score 6
       result = analytics_service.top_contributors
       expect(result.first[:username]).to eq(user_b.username)
     end
