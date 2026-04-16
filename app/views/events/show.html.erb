@@ -1,0 +1,98 @@
+<!-- Forem Event Show Page -->
+<% content_for :title, @event.title %>
+<div class="container crayons-layout event-show-layout">
+    <% if !@event.published? %>
+      <div class="crayons-notice crayons-notice--warning mb-8 p-4 text-center">
+        <strong>This event is not published!</strong> Only admins can see this page.
+        <a href="<%= edit_admin_event_path(@event) %>" class="c-link c-link--branded ml-2">Edit Event</a>
+      </div>
+    <% end %>
+    
+    <div class="event-header">
+        <h1><%= @event.title %></h1>
+        <% if @event.start_time <= Time.current && @event.end_time >= Time.current %>
+          <span class="live-indicator">LIVE</span>
+        <% end %>
+    </div>
+
+    <div class="stream-grid">
+        <div class="video-wrapper">
+            <% if @event.primary_stream_url.present? %>
+              <iframe src="<%= @event.primary_stream_url %>" frameborder="0" allowfullscreen="true" scrolling="no" title="Event Stream" loading="lazy">
+              </iframe>
+            <% else %>
+              <div class="crayons-card p-8 text-center flex items-center justify-center h-100 w-100">
+                <p class="color-base-60">Stream URL not configured.</p>
+              </div>
+            <% end %>
+        </div>
+
+        <% chat_url = @event.data&.dig('chat_url') || @event.data&.dig(:chat_url) %>
+        <% if chat_url.present? %>
+          <div class="chat-wrapper">
+              <iframe id="chat-frame" width="100%" height="100%" src="<%= chat_url %>" frameborder="0" title="Event Chat" loading="lazy">
+              </iframe>
+          </div>
+        <% end %>
+    </div>
+
+    <div class="info-section crayons-card p-6 mt-4">
+        <div class="mb-4 text-lg">
+            <%= simple_format(@event.description) %>
+        </div>
+
+        <% if @event.organization %>
+          <a href="<%= organization_path(@event.organization) %>" class="profile-card">
+              <img src="<%= @event.organization.profile_image_url %>" alt="<%= @event.organization.name %> Logo">
+              <div>
+                  <strong><%= @event.organization.name %></strong>
+                  <span>@<%= @event.organization.slug %></span>
+              </div>
+          </a>
+        <% elsif @event.user %>
+          <a href="<%= user_path(@event.user) %>" class="profile-card">
+              <img src="<%= @event.user.profile_image_url %>" alt="<%= @event.user.name %> Silhouette">
+              <div>
+                  <strong><%= @event.user.name %></strong>
+                  <span>@<%= @event.user.username %></span>
+              </div>
+          </a>
+        <% end %>
+    </div>
+
+    <% tag_name = @event.tags.first&.name %>
+
+    <% if @articles.any? %>
+      <div class="community-header mt-8 mb-4">
+          <h2 class="crayons-title">
+            <% if tag_name.present? %>
+              What the <%= tag_name.upcase %> community has been writing about
+            <% else %>
+              What the community has been writing about
+            <% end %>
+          </h2>
+      </div>
+
+      <div id="feed-container" class="feed-grid">
+          <% @articles.each do |article| %>
+              <article class="article-card">
+                  <div class="article-user">
+                      <img src="<%= article.user.profile_image_url %>" alt="<%= article.user.name %>" loading="lazy">
+                      <span><%= article.user.name %></span>
+                  </div>
+                  <a href="<%= article.path %>" target="_blank" rel="noopener">
+                      <h3 class="article-title"><%= article.title %></h3>
+                  </a>
+                  <div class="article-tags">
+                      <% article.decorate.cached_tag_list_array.take(3).each do |tag| %>
+                        <span class="tag">#<%= tag %></span>
+                      <% end %>
+                  </div>
+                  <div class="article-meta">
+                      <span><%= article.published_at&.strftime("%b %-d") %></span>
+                  </div>
+              </article>
+          <% end %>
+      </div>
+    <% end %>
+</div>

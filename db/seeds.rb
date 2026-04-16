@@ -208,6 +208,70 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   user.add_role(:tech_admin)
 end
 
+admin_user = User.find_by(email: "admin@forem.local")
+if admin_user
+  Organization.find_each do |organization|
+    membership = OrganizationMembership.find_or_initialize_by(
+      user_id: admin_user.id,
+      organization_id: organization.id
+    )
+    membership.update!(type_of_user: "admin")
+
+    user_ids = organization.user_ids
+    if user_ids.size < 3
+      User.where.not(id: user_ids).limit(2).each do |other_user|
+        OrganizationMembership.find_or_create_by!(
+          user_id: other_user.id,
+          organization_id: organization.id
+        ) do |m|
+          m.type_of_user = "member"
+        end
+      end
+    end
+  end
+end
+
+seeder.create_if_doesnt_exist(User, "email", "org_admin@forem.local") do
+  user = User.create!(
+    name: "Org Admin",
+    email: "org_admin@forem.local",
+    username: "org_admin_local",
+    profile_image: Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+  )
+  OrganizationMembership.create!(user: user, organization: Organization.first, type_of_user: "admin") if Organization.any?
+end
+
+seeder.create_if_doesnt_exist(User, "email", "org_member@forem.local") do
+  user = User.create!(
+    name: "Org Member",
+    email: "org_member@forem.local",
+    username: "org_member_local",
+    profile_image: Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+  )
+  OrganizationMembership.create!(user: user, organization: Organization.first, type_of_user: "member") if Organization.any?
+end
+
+seeder.create_if_doesnt_exist(User, "email", "no_org@forem.local") do
+  User.create!(
+    name: "Independent User",
+    email: "no_org@forem.local",
+    username: "independent_local",
+    profile_image: Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+  )
+end
+
 Users::CreateMascotAccount.call unless Settings::General.mascot_user_id
 
 ##############################################################################
@@ -951,6 +1015,131 @@ seeder.create_if_none(NavigationLink) do
 end
 
 ##############################################################################
+
+##############################################################################
+
+seeder.create_if_none(Collection) do
+  # The Series Graph
+  # The Series Graph
+  User.order(Arel.sql("RANDOM()")).limit(3).each do |user|
+    collection = Collection.create!(
+      title: "#{Faker::Hacker.verb.capitalize} #{Faker::Hacker.noun.capitalize}",
+      slug: "series-#{SecureRandom.hex(4)}",
+      user_id: user.id,
+      description: Faker::Lorem.paragraph,
+    )
+    user.articles.limit(3).update_all(collection_id: collection.id)
+  end
+end
+
+##############################################################################
+
+seeder.create_if_none(Follow) do
+  # The Social Graph
+  User.order(Arel.sql("RANDOM()")).limit(10).each do |user|
+    # Follow random users
+    User.where.not(id: user.id).order(Arel.sql("RANDOM()")).limit(3).each do |followed_user|
+      Follow.find_or_create_by!(follower_id: user.id, follower_type: "User", followable_id: followed_user.id, followable_type: "User")
+    end
+    # Follow random tags
+    Tag.order(Arel.sql("RANDOM()")).limit(3).each do |tag|
+      Follow.find_or_create_by!(follower_id: user.id, follower_type: "User", followable_id: tag.id, followable_type: "Tag")
+    end
+  end
+end
+
+##############################################################################
+
+seeder.create_if_none(Notification) do
+  # Populating the bell for the admin
+  admin = User.find_by(email: "admin@forem.local")
+  if admin
+    User.order(Arel.sql("RANDOM()")).limit(5).each do |random_user|
+      Notification.create!(
+        user_id: admin.id,
+        notifiable_id: Article.order(Arel.sql("RANDOM()")).first&.id,
+        notifiable_type: "Article",
+        action: "Published"
+      )
+    end
+  end
+end
+
+##############################################################################
+
+seeder.create_if_none(ContextNote) do
+  # Add Automated AI Context Notes to popular articles
+  Article.order(Arel.sql("RANDOM()")).limit(5).each do |article|
+    begin
+      ContextNote.create!(
+        article_id: article.id,
+        body_markdown: "This article exhibits highly engaging and constructive patterns.",
+        processed_html: "<p>This article exhibits highly engaging and constructive patterns.</p>"
+      )
+    rescue ActiveRecord::RecordInvalid
+      # Already exists or validation fails
+    end
+  end
+end
+
+##############################################################################
+
+seeder.create_if_none(AiAudit) do
+  # AI Moderation Audits representing Forem's updated moderation flows
+  Article.order(Arel.sql("RANDOM()")).limit(10).each do |article|
+    AiAudit.create!(
+      affected_user_id: article.user_id,
+      affected_content_type: "Article",
+      affected_content_id: article.id,
+      ai_model: "gemini-1.5-pro",
+      wrapper_object_class: "Ai::ContentModerationLabeler",
+      request_body: { text: "evaluate this article" },
+      response_body: { label: "safe", score: 0.9 },
+      status_code: 200
+    )
+  end
+end
+
+##############################################################################
+
+# Pin an article for dynamic feed representation
+first_article = Article.order(Arel.sql("RANDOM()")).first
+PinnedArticle.set(first_article) if first_article.present?
+##############################################################################
+
+seeder.create_if_none(Event) do
+  user_ids = User.pluck(:id)
+  
+  Event.create!(
+    title: "AWS Industries LIVE!",
+    event_name_slug: "aws-industries-live",
+    event_variation_slug: "v1",
+    description: "AWS Industries LIVE! features AWS Partners discussing various topics related to their industry, their solutions, and how they can help customers.",
+    primary_stream_url: "https://player.twitch.tv/?channel=aws&parent=#{Settings::General.app_domain.split(':').first}",
+    data: { chat_url: "https://www.twitch.tv/embed/aws/chat?parent=#{Settings::General.app_domain.split(':').first}" },
+    published: true,
+    start_time: 1.day.ago,
+    end_time: 1.week.from_now,
+    type_of: :live_stream,
+    user_id: user_ids.sample,
+    tag_list: "aws"
+  )
+  
+  Event.create!(
+    title: "Forem Walkthrough with Ben Halpern",
+    event_name_slug: "forem-walkthrough-with-ben-halpern",
+    event_variation_slug: "v1",
+    description: "Join us for a walkthrough of the newest Forem features.",
+    primary_stream_url: "https://player.twitch.tv/?channel=ThePracticalDev&parent=#{Settings::General.app_domain.split(':').first}",
+    data: {},
+    published: true,
+    start_time: 2.days.from_now,
+    end_time: 2.days.from_now + 2.hours,
+    type_of: :live_stream,
+    user_id: user_ids.sample,
+    tag_list: "forem, updates"
+  )
+end
 
 puts <<-ASCII
 

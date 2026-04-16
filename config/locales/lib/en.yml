@@ -35,6 +35,10 @@ en:
             description: The "Client ID" portion of the OAuth 2.0 page on the Google Cloud Platform portal
           google_secret:
             description: The "Client Secret" portion of the OAuth 2.0 page on the Google Cloud Platform portal
+          google_ios_key:
+            description: The Native iOS Client ID configured in the Google Cloud Platform portal
+          google_android_key:
+            description: The Native Android Client ID configured in the Google Cloud Platform portal
           invite_only:
             description: Only users invited by email can join this community.
           new_user_status:
@@ -193,6 +197,9 @@ en:
           content_spec:
             description: Internal description of content which is considered generally "on-topic" — be very descriptive to best differentiate from other communities..
             placeholder: e.g. "A place for developers to share their work, ask questions, and learn from each other.... But much longer and more specific"
+          expanded_advisement_spec:
+            description: Detailed guidelines and advice given to the AI Editor when assisting users on what content is highly successful or desired.
+            placeholder: e.g. "Try to encourage users to share code snippets, talk about their engineering challenges, and stay away from generic promotional content..."
         smtp:
           address:
             description: Address of the remote mail server

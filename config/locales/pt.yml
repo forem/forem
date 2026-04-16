@@ -32,14 +32,21 @@ pt:
     article_form_publish: Publicar
     article_form_loading_preview: Carregando visualização
     article_form_preview_loaded: Visualização carregada
+    article_form_co_authors: Co-autores
+    article_form_co_authors_description: Adicione até 4 co-autores da %{org_name}.
+    article_form_co_authors_placeholder: Adicionar até 4...
     comments_preview: Visualizar
     comments_continue_editing: Continuar editando
     survey_enter_response: Digite sua resposta aqui...
     survey_thank_you_response: Obrigado pela sua resposta.
     survey_thank_you_completing: Obrigado por completar a pesquisa!
     dashboard_analytics_readers: Leitores
+    dashboard_analytics_avg_read_time: tempo médio de leitura %{seconds}s
     dashboard_analytics_comments: Comentários
     dashboard_analytics_reactions: Reações
+    dashboard_analytics_unique_reactors: de %{count} usuários únicos
+    dashboard_analytics_bookmarks: Favoritos
+    dashboard_analytics_followers: Novos Seguidores
     stats_by: por
     editor_new_title: Novo título do post aqui...
     editor_body_placeholder: Escreva o conteúdo do seu post aqui...
