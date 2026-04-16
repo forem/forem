@@ -70,7 +70,7 @@ class AnalyticsService
 
   # Returns top contributors who engaged with the user/org's articles
   # via reactions (excl. bookmarks) and comments, excluding self-interactions.
-  # Comments are weighted 3x, reactions 1x.
+  # Comments are weighted 6x, reactions 1x.
   def top_contributors(limit: 20)
     article_ids = article_data.ids
     return [] if article_ids.empty?
