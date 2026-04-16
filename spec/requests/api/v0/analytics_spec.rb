@@ -42,4 +42,8 @@ RSpec.describe "Api::V0::Analytics" do
   describe "GET /api/analytics/referrers" do
     include_examples "GET /api/analytics/:endpoint authorization examples", "referrers"
   end
+
+  describe "GET /api/analytics/top_contributors" do
+    include_examples "GET /api/analytics/:endpoint authorization examples", "top_contributors"
+  end
 end

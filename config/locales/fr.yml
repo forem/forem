@@ -47,6 +47,10 @@ fr:
     dashboard_analytics_unique_reactors: de %{count} utilisateurs uniques
     dashboard_analytics_bookmarks: Favoris
     dashboard_analytics_followers: Nouveaux Abonnés
+    top_contributors_empty: Aucun contributeur trouvé pour cette période.
+    top_contributors_reactions: réactions
+    top_contributors_comments: commentaires
+    top_contributors_weight_note: Les commentaires ont plus de poids
     stats_by: par
     editor_new_title: Nouveau titre d'article ici...
     editor_body_placeholder: Écrivez le contenu de votre article ici...

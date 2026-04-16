@@ -47,3 +47,14 @@ export function callTotalsAPI(
     { organizationId, articleId },
   );
 }
+
+export function callTopContributorsAPI(
+  date,
+  { organizationId, articleId },
+) {
+  return callAnalyticsAPI(
+    '/api/analytics/top_contributors',
+    date,
+    { organizationId, articleId },
+  );
+}

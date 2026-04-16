@@ -68,6 +68,71 @@ class AnalyticsService
     { domains: domains }
   end
 
+  # Returns top contributors who engaged with the user/org's articles
+  # via reactions (excl. bookmarks) and comments, excluding self-interactions.
+  # Comments are weighted 3x, reactions 1x.
+  def top_contributors(limit: 20)
+    article_ids = article_data.ids
+    return [] if article_ids.empty?
+
+    # Determine author IDs to exclude self-interactions
+    author_ids = article_data.distinct.pluck(:user_id)
+
+    # Reactions (excl readinglist/self) → weight 1
+    reactions_sql = Reaction.for_analytics
+      .where(reactable_id: article_ids, reactable_type: "Article")
+      .where.not(category: "readinglist")
+      .where.not(user_id: author_ids)
+    reactions_sql = reactions_sql.where(created_at: start_date..end_date) if start_date && end_date
+    reactions_query = reactions_sql
+      .select("user_id, COUNT(*) AS reactions_count, 0 AS comments_count, COUNT(*) AS score")
+      .group(:user_id)
+
+    # Comments (excl self, score > 0) → weight 6
+    # Comments carry more weight than reactions because they require
+    # significantly more effort and drive meaningful discussion.
+    comments_sql = Comment
+      .where(commentable_id: article_ids, commentable_type: "Article")
+      .where("score > 0")
+      .where.not(user_id: author_ids)
+    comments_sql = comments_sql.where(created_at: start_date..end_date) if start_date && end_date
+    comments_query = comments_sql
+      .select("user_id, 0 AS reactions_count, COUNT(*) AS comments_count, COUNT(*) * 6 AS score")
+      .group(:user_id)
+
+    # UNION and aggregate
+    union_sql = "(" \
+      "#{reactions_query.to_sql}" \
+      " UNION ALL " \
+      "#{comments_query.to_sql}" \
+    ")"
+
+    rows = ActiveRecord::Base.connection.select_all(
+      "SELECT user_id, SUM(reactions_count)::int AS reactions_count, " \
+      "SUM(comments_count)::int AS comments_count, SUM(score)::int AS score " \
+      "FROM #{union_sql} AS combined " \
+      "GROUP BY user_id ORDER BY score DESC, user_id ASC LIMIT #{limit.to_i}",
+    )
+
+    user_ids = rows.map { |r| r["user_id"] }
+    users_by_id = User.where(id: user_ids).index_by(&:id)
+
+    rows.filter_map do |row|
+      user = users_by_id[row["user_id"]]
+      next unless user
+
+      {
+        user_id: user.id,
+        username: user.username,
+        name: user.name,
+        profile_image: user.profile_image_90,
+        reactions_count: row["reactions_count"],
+        comments_count: row["comments_count"],
+        score: row["score"]
+      }
+    end
+  end
+
   private
 
   attr_reader(

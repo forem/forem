@@ -1,4 +1,4 @@
-import { callHistoricalAPI, callReferrersAPI, callTotalsAPI } from './client';
+import { callHistoricalAPI, callReferrersAPI, callTotalsAPI, callTopContributorsAPI } from './client';
 import { locale } from '@utilities/locale';
 
 // Window-level state survives esbuild IIFE re-execution during InstantClick
@@ -469,6 +469,35 @@ function renderReferrers(data) {
   drawReferrerChart(data);
 }
 
+function renderTopContributors(data) {
+  const container = document.getElementById('top-contributors-container');
+  if (!container) return;
+
+  if (!data || data.length === 0) {
+    container.innerHTML = `<p class="color-base-60 fs-s p-4">${locale('core.top_contributors_empty')}</p>`;
+    return;
+  }
+
+  const rows = data.map((contributor, index) => {
+    return `
+      <div class="flex items-center gap-3 py-3 ${index > 0 ? 'border-t-1 border-base-10' : ''}">
+        <span class="color-base-50 fs-s fw-bold" style="min-width:1.75rem;text-align:right">${index + 1}</span>
+        <img class="crayons-avatar crayons-avatar--l" src="${contributor.profile_image}" alt="${contributor.username}" width="40" height="40" loading="lazy" />
+        <div class="flex-1 min-w-0">
+          <a href="/${contributor.username}" class="fw-bold fs-base block truncate color-base-90">${contributor.name || contributor.username}</a>
+          <div class="flex items-center gap-3 mt-1">
+            ${contributor.reactions_count > 0 ? `<span class="fs-s color-base-70"><span style="color:#4bc0c0">&#x2764;&#xFE0F;</span> <strong>${contributor.reactions_count}</strong> ${locale('core.top_contributors_reactions')}</span>` : ''}
+            ${contributor.comments_count > 0 ? `<span class="fs-s color-base-70"><span style="color:#9d39e9">&#x1F4AC;</span> <strong>${contributor.comments_count}</strong> ${locale('core.top_contributors_comments')}</span>` : ''}
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+
+  container.innerHTML = `
+    <p class="fs-xs color-base-50 mt-0 mb-3" style="font-style:italic">${locale('core.top_contributors_weight_note')}</p>
+    ${rows}`;
+}
+
 function showLoadingPlaceholders() {
   const cardIds = ['readers-card', 'reactions-card', 'comments-card', 'bookmarks-card', 'followers-card'];
   cardIds.forEach((id) => {
@@ -558,6 +587,20 @@ function callAnalyticsAPI(date, timeRangeLabel, { organizationId, articleId }) {
       if (generation !== _state.apiGeneration) return;
       showErrorsOnReferrers();
     });
+
+  // Top contributors panel (user/org dashboard only — container may not exist for articles)
+  if (document.getElementById('top-contributors-container')) {
+    callTopContributorsAPI(date, { organizationId, articleId })
+      .then((data) => {
+        if (generation !== _state.apiGeneration) return;
+        renderTopContributors(data);
+      })
+      .catch((_err) => {
+        if (generation !== _state.apiGeneration) return;
+        const el = document.getElementById('top-contributors-container');
+        if (el) el.innerHTML = '';
+      });
+  }
 }
 
 function drawWeekCharts({ organizationId, articleId }) {

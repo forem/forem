@@ -26,6 +26,7 @@ jest.mock('../client', () => ({
   callHistoricalAPI: jest.fn(),
   callTotalsAPI: jest.fn(),
   callReferrersAPI: jest.fn(),
+  callTopContributorsAPI: jest.fn(),
 }));
 
 // Build sample historical data spanning 120 days
@@ -57,6 +58,10 @@ const mockTotalsData = {
   follows: { total: 15 },
 };
 const mockReferrersData = { domains: [{ domain: 'google.com', count: 100 }] };
+const mockTopContributorsData = [
+  { user_id: 1, username: 'alice', name: 'Alice', profile_image: '/img/alice.png', reactions_count: 5, comments_count: 2, score: 11 },
+  { user_id: 2, username: 'bob', name: 'Bob', profile_image: '/img/bob.png', reactions_count: 3, comments_count: 0, score: 3 },
+];
 
 function setupDOM() {
   document.body.innerHTML = `
@@ -80,11 +85,12 @@ function setupDOM() {
     <div class="charts-container"><div id="followers-chart"><div class="analytics-loading crayons-scaffold-loading"></div></div></div>
     <div id="referrers-chart"><div class="analytics-loading crayons-scaffold-loading"></div></div>
     <table><tbody id="referrers-container"></tbody></table>
+    <div id="top-contributors-container"><div class="analytics-loading crayons-scaffold-loading"></div></div>
   `;
 }
 
 describe('Analytics Dashboard – Brush/Zoom for Infinity', () => {
-  const { callHistoricalAPI, callTotalsAPI, callReferrersAPI } = require('../client');
+  const { callHistoricalAPI, callTotalsAPI, callReferrersAPI, callTopContributorsAPI } = require('../client');
 
   beforeEach(() => {
     // Reset shared window state between tests
@@ -96,6 +102,7 @@ describe('Analytics Dashboard – Brush/Zoom for Infinity', () => {
     callHistoricalAPI.mockResolvedValue(mockHistoricalData);
     callTotalsAPI.mockResolvedValue(mockTotalsData);
     callReferrersAPI.mockResolvedValue(mockReferrersData);
+    callTopContributorsAPI.mockResolvedValue(mockTopContributorsData);
   });
 
   async function flushPromises() {
@@ -256,7 +263,7 @@ describe('Analytics Dashboard – Brush/Zoom for Infinity', () => {
 });
 
 describe('Analytics Dashboard – Async Chart Loading', () => {
-  const { callHistoricalAPI, callTotalsAPI, callReferrersAPI } = require('../client');
+  const { callHistoricalAPI, callTotalsAPI, callReferrersAPI, callTopContributorsAPI } = require('../client');
 
   beforeEach(() => {
     // Reset shared window state between tests
@@ -265,6 +272,7 @@ describe('Analytics Dashboard – Async Chart Loading', () => {
     MockApexCharts.mockClear();
     mockRender.mockClear();
     mockDestroy.mockClear();
+    callTopContributorsAPI.mockResolvedValue([]);
   });
 
   async function flushPromises() {
@@ -351,6 +359,7 @@ describe('Analytics Dashboard – Async Chart Loading', () => {
     callHistoricalAPI.mockRejectedValue(new Error('API error'));
     callTotalsAPI.mockRejectedValue(new Error('API error'));
     callReferrersAPI.mockResolvedValue(mockReferrersData);
+    callTopContributorsAPI.mockResolvedValue([]);
 
     initCharts({});
     await flushPromises();
@@ -358,5 +367,52 @@ describe('Analytics Dashboard – Async Chart Loading', () => {
     // Referrers should still render
     const referrersContainer = document.getElementById('referrers-container');
     expect(referrersContainer.innerHTML).toContain('google.com');
+  });
+
+  test('top contributors panel renders async with ranked list', async () => {
+    callHistoricalAPI.mockResolvedValue(mockHistoricalData);
+    callTotalsAPI.mockResolvedValue(mockTotalsData);
+    callReferrersAPI.mockResolvedValue(mockReferrersData);
+    callTopContributorsAPI.mockResolvedValue(mockTopContributorsData);
+
+    initCharts({});
+    await flushPromises();
+
+    const container = document.getElementById('top-contributors-container');
+    expect(container.innerHTML).toContain('alice');
+    expect(container.innerHTML).toContain('bob');
+    // Alice should appear before Bob (higher score)
+    expect(container.innerHTML.indexOf('alice')).toBeLessThan(container.innerHTML.indexOf('bob'));
+  });
+
+  test('top contributors shows empty message when no data', async () => {
+    callTopContributorsAPI.mockResolvedValue([]);
+
+    initCharts({});
+    await flushPromises();
+
+    const container = document.getElementById('top-contributors-container');
+    expect(container.innerHTML).toContain('top_contributors_empty');
+  });
+
+  test('stale top contributors response is discarded after navigation', async () => {
+    callHistoricalAPI.mockResolvedValue(mockHistoricalData);
+    callTotalsAPI.mockResolvedValue(mockTotalsData);
+    callReferrersAPI.mockResolvedValue(mockReferrersData);
+
+    let resolveContributors;
+    callTopContributorsAPI.mockReturnValue(new Promise((r) => { resolveContributors = r; }));
+
+    initCharts({});
+    // Simulate navigation — call initCharts again which bumps generation
+    callTopContributorsAPI.mockResolvedValue([]);
+    initCharts({});
+
+    resolveContributors(mockTopContributorsData);
+    await flushPromises();
+
+    const container = document.getElementById('top-contributors-container');
+    // Should NOT have rendered the stale data — only the empty message from the second call
+    expect(container.innerHTML).not.toContain('alice');
   });
 });

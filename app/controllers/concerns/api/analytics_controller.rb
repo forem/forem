@@ -34,6 +34,15 @@ module Api
       render json: data.to_json
     end
 
+    def top_contributors
+      analytics = AnalyticsService.new(
+        @owner,
+        start_date: params[:start], end_date: params[:end], article_id: params[:article_id],
+      )
+      data = analytics.top_contributors
+      render json: data.to_json
+    end
+
     private
 
     def authorize_user_organization
