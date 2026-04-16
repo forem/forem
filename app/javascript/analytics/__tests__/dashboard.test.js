@@ -68,17 +68,17 @@ function setupDOM() {
       </ul>
     </div>
     <div class="summary-stats">
-      <div><div id="readers-card" class="py-3"></div></div>
-      <div><div id="reactions-card" class="py-3"></div></div>
-      <div><div id="comments-card" class="py-3"></div></div>
-      <div><div id="bookmarks-card" class="py-3"></div></div>
-      <div><div id="followers-card" class="py-3"></div></div>
+      <div><div id="readers-card" class="py-3"><div class="analytics-loading crayons-scaffold-loading"></div></div></div>
+      <div><div id="reactions-card" class="py-3"><div class="analytics-loading crayons-scaffold-loading"></div></div></div>
+      <div><div id="comments-card" class="py-3"><div class="analytics-loading crayons-scaffold-loading"></div></div></div>
+      <div><div id="bookmarks-card" class="py-3"><div class="analytics-loading crayons-scaffold-loading"></div></div></div>
+      <div><div id="followers-card" class="py-3"><div class="analytics-loading crayons-scaffold-loading"></div></div></div>
     </div>
-    <div class="charts-container"><div id="readers-chart"></div></div>
-    <div class="charts-container"><div id="reactions-chart"></div></div>
-    <div class="charts-container"><div id="comments-chart"></div></div>
-    <div class="charts-container"><div id="followers-chart"></div></div>
-    <div id="referrers-chart"></div>
+    <div class="charts-container"><div id="readers-chart"><div class="analytics-loading crayons-scaffold-loading"></div></div></div>
+    <div class="charts-container"><div id="reactions-chart"><div class="analytics-loading crayons-scaffold-loading"></div></div></div>
+    <div class="charts-container"><div id="comments-chart"><div class="analytics-loading crayons-scaffold-loading"></div></div></div>
+    <div class="charts-container"><div id="followers-chart"><div class="analytics-loading crayons-scaffold-loading"></div></div></div>
+    <div id="referrers-chart"><div class="analytics-loading crayons-scaffold-loading"></div></div>
     <table><tbody id="referrers-container"></tbody></table>
   `;
 }
@@ -87,6 +87,8 @@ describe('Analytics Dashboard – Brush/Zoom for Infinity', () => {
   const { callHistoricalAPI, callTotalsAPI, callReferrersAPI } = require('../client');
 
   beforeEach(() => {
+    // Reset shared window state between tests
+    window._analyticsState = { activeCharts: {}, apiGeneration: 0 };
     setupDOM();
     MockApexCharts.mockClear();
     mockRender.mockClear();
@@ -146,9 +148,11 @@ describe('Analytics Dashboard – Brush/Zoom for Infinity', () => {
     expect(mainCalls.length).toBe(4);
     expect(brushCalls.length).toBe(4);
 
-    // Main charts should use datetime x-axis
+    // Main charts should use datetime x-axis with initial zoom range
     mainCalls.forEach(([, opts]) => {
       expect(opts.xaxis.type).toBe('datetime');
+      expect(opts.xaxis.min).toBeDefined();
+      expect(opts.xaxis.max).toBeDefined();
       expect(opts.chart.zoom.enabled).toBe(true);
       expect(opts.chart.toolbar.show).toBe(true);
     });
@@ -248,5 +252,111 @@ describe('Analytics Dashboard – Brush/Zoom for Infinity', () => {
     expect(document.getElementById('brush-reactions-chart')).toBeNull();
     expect(document.getElementById('brush-comments-chart')).toBeNull();
     expect(document.getElementById('brush-followers-chart')).toBeNull();
+  });
+});
+
+describe('Analytics Dashboard – Async Chart Loading', () => {
+  const { callHistoricalAPI, callTotalsAPI, callReferrersAPI } = require('../client');
+
+  beforeEach(() => {
+    // Reset shared window state between tests
+    window._analyticsState = { activeCharts: {}, apiGeneration: 0 };
+    setupDOM();
+    MockApexCharts.mockClear();
+    mockRender.mockClear();
+    mockDestroy.mockClear();
+  });
+
+  async function flushPromises() {
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  }
+
+  test('charts render when historical resolves even if totals is still pending', async () => {
+    let resolveTotals;
+    const totalsPromise = new Promise((resolve) => { resolveTotals = resolve; });
+    callHistoricalAPI.mockResolvedValue(mockHistoricalData);
+    callTotalsAPI.mockReturnValue(totalsPromise);
+    callReferrersAPI.mockResolvedValue(mockReferrersData);
+
+    initCharts({});
+    await flushPromises();
+
+    // Charts should be rendered (from historical)
+    const chartCalls = MockApexCharts.mock.calls.filter(([, opts]) => opts.chart.type !== 'donut');
+    expect(chartCalls.length).toBeGreaterThan(0);
+
+    // Cards should show data (from historical, without totals)
+    expect(document.getElementById('readers-card').innerHTML).not.toContain('analytics-loading');
+
+    // Now resolve totals — cards should update with extra info
+    resolveTotals(mockTotalsData);
+    await flushPromises();
+
+    expect(document.getElementById('reactions-card').innerHTML).toContain('unique reactors');
+  });
+
+  test('referrers load independently of historical and totals', async () => {
+    let resolveHistorical;
+    const historicalPromise = new Promise((resolve) => { resolveHistorical = resolve; });
+    callHistoricalAPI.mockReturnValue(historicalPromise);
+    callTotalsAPI.mockResolvedValue(mockTotalsData);
+    callReferrersAPI.mockResolvedValue(mockReferrersData);
+
+    initCharts({});
+    await flushPromises();
+
+    // Referrers should be rendered even though historical hasn't resolved
+    const referrersContainer = document.getElementById('referrers-container');
+    expect(referrersContainer.innerHTML).toContain('google.com');
+
+    // Charts should NOT be rendered yet
+    const chartCalls = MockApexCharts.mock.calls.filter(([, opts]) => opts.chart.type !== 'donut');
+    // Only the donut chart should exist at this point
+    const donutCalls = MockApexCharts.mock.calls.filter(([, opts]) => opts.chart.type === 'donut');
+    expect(donutCalls.length).toBe(1);
+
+    // Now resolve historical — charts appear
+    resolveHistorical(mockHistoricalData);
+    await flushPromises();
+
+    const allChartCalls = MockApexCharts.mock.calls.filter(([, opts]) => opts.chart.type !== 'donut');
+    expect(allChartCalls.length).toBeGreaterThan(0);
+  });
+
+  test('loading placeholders are shown before data arrives', async () => {
+    let resolveHistorical;
+    const historicalPromise = new Promise((resolve) => { resolveHistorical = resolve; });
+    callHistoricalAPI.mockReturnValue(historicalPromise);
+    callTotalsAPI.mockReturnValue(new Promise(() => {}));
+    callReferrersAPI.mockReturnValue(new Promise(() => {}));
+
+    initCharts({});
+    // Don't flush — let promises stay pending
+
+    // Placeholders should be visible in chart containers
+    expect(document.getElementById('readers-chart').querySelector('.analytics-loading')).not.toBeNull();
+    expect(document.getElementById('reactions-chart').querySelector('.analytics-loading')).not.toBeNull();
+
+    // Resolve historical to clear chart placeholders
+    resolveHistorical(mockHistoricalData);
+    await flushPromises();
+
+    // Chart containers should no longer have placeholders (replaced by ApexCharts)
+    // The innerHTML is cleared by drawChart before rendering
+    expect(document.getElementById('readers-chart').querySelector('.analytics-loading')).toBeNull();
+  });
+
+  test('chart errors do not prevent referrer rendering', async () => {
+    callHistoricalAPI.mockRejectedValue(new Error('API error'));
+    callTotalsAPI.mockRejectedValue(new Error('API error'));
+    callReferrersAPI.mockResolvedValue(mockReferrersData);
+
+    initCharts({});
+    await flushPromises();
+
+    // Referrers should still render
+    const referrersContainer = document.getElementById('referrers-container');
+    expect(referrersContainer.innerHTML).toContain('google.com');
   });
 });

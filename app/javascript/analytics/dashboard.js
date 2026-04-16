@@ -1,7 +1,15 @@
 import { callHistoricalAPI, callReferrersAPI, callTotalsAPI } from './client';
 import { locale } from '@utilities/locale';
 
-const activeCharts = {};
+// Window-level state survives esbuild IIFE re-execution during InstantClick
+// navigation. Without this, each script re-execution creates a new closure scope
+// with empty charts/counter, and the on('change') handler (bound to the first
+// scope) can't reach later scopes' charts — breaking brush/zoom bindings.
+if (!window._analyticsState) {
+  window._analyticsState = { activeCharts: {}, apiGeneration: 0 };
+}
+const activeCharts = window._analyticsState.activeCharts;
+const _state = window._analyticsState;
 
 function resetActive(activeButton) {
   const buttons = document.querySelectorAll(
@@ -85,10 +93,20 @@ function drawChart({ id, chartType = 'line', showPoints = true, labels, series, 
   // Convert labels to timestamps for infinity mode (enables datetime x-axis + brush)
   const timestamps = isInfinity ? labels.map((l) => new Date(l).getTime()) : null;
 
+  // Calculate 90-day selection window for infinity mode (used by both main chart and brush)
+  let selMin, selMax;
+  if (isInfinity && timestamps && timestamps.length > 0) {
+    const ninetyDaysMs = 90 * 24 * 60 * 60 * 1000;
+    selMin = Math.max(timestamps[0], timestamps[timestamps.length - 1] - ninetyDaysMs);
+    selMax = timestamps[timestamps.length - 1];
+  }
+
   // X-axis: datetime for infinity (brush support), categories for week/month
   const xaxisConfig = isInfinity
     ? {
         type: 'datetime',
+        min: selMin,
+        max: selMax,
         labels: { datetimeUTC: false, style: { fontSize: '11px' } },
       }
     : {
@@ -158,10 +176,7 @@ function drawChart({ id, chartType = 'line', showPoints = true, labels, series, 
   }
 
   import('apexcharts').then(({ default: ApexCharts }) => {
-    // Destroy existing charts (main + brush)
-    if (activeCharts[id]) {
-      activeCharts[id].destroy();
-    }
+    // Destroy existing charts (brush first, then main — order matters for ApexCharts registry)
     if (activeCharts[brushId]) {
       activeCharts[brushId].destroy();
       delete activeCharts[brushId];
@@ -169,22 +184,24 @@ function drawChart({ id, chartType = 'line', showPoints = true, labels, series, 
     const existingBrushEl = document.getElementById(brushId);
     if (existingBrushEl) existingBrushEl.remove();
 
+    if (activeCharts[id]) {
+      activeCharts[id].destroy();
+      delete activeCharts[id];
+    }
+
     const el = document.getElementById(id);
     if (!el) return;
     el.innerHTML = '';
     const chart = new ApexCharts(el, options);
-    chart.render();
     activeCharts[id] = chart;
 
-    // Render brush navigator for infinity mode
-    if (isInfinity && timestamps.length > 0) {
+    // Render main chart, then brush — brush must bind after main is in the registry
+    chart.render().then(() => {
+      if (!isInfinity || !timestamps || timestamps.length === 0) return;
+
       const brushEl = document.createElement('div');
       brushEl.id = brushId;
       el.parentNode.insertBefore(brushEl, el.nextSibling);
-
-      const ninetyDaysMs = 90 * 24 * 60 * 60 * 1000;
-      const selMin = Math.max(timestamps[0], timestamps[timestamps.length - 1] - ninetyDaysMs);
-      const selMax = timestamps[timestamps.length - 1];
 
       const brushOptions = {
         chart: {
@@ -228,7 +245,7 @@ function drawChart({ id, chartType = 'line', showPoints = true, labels, series, 
       const brushChart = new ApexCharts(brushEl, brushOptions);
       brushChart.render();
       activeCharts[brushId] = brushChart;
-    }
+    });
   });
 }
 
@@ -452,6 +469,24 @@ function renderReferrers(data) {
   drawReferrerChart(data);
 }
 
+function showLoadingPlaceholders() {
+  const cardIds = ['readers-card', 'reactions-card', 'comments-card', 'bookmarks-card', 'followers-card'];
+  cardIds.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el && !el.querySelector('.analytics-loading')) {
+      el.innerHTML = '<div class="analytics-loading crayons-scaffold-loading w-75 h-0 py-4 mx-auto my-3"></div>';
+    }
+  });
+
+  const chartIds = ['readers-chart', 'reactions-chart', 'comments-chart', 'followers-chart', 'referrers-chart'];
+  chartIds.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el && !el.querySelector('.analytics-loading')) {
+      el.innerHTML = '<div class="analytics-loading crayons-scaffold-loading w-100 mx-auto" style="height:200px"></div>';
+    }
+  });
+}
+
 function removeCardElements() {
   const el = document.getElementsByClassName('summary-stats')[0];
   el && el.remove();
@@ -474,24 +509,55 @@ function showErrorsOnReferrers() {
 }
 
 function callAnalyticsAPI(date, timeRangeLabel, { organizationId, articleId }) {
-  Promise.all([
-    callHistoricalAPI(date, { organizationId, articleId }),
-    callTotalsAPI(date, { organizationId, articleId }),
-  ])
-    .then(([data, totals]) => {
-      writeCards(data, timeRangeLabel, totals);
+  const generation = ++_state.apiGeneration;
+
+  // Destroy existing charts before showing placeholders to clean ApexCharts registry
+  Object.keys(activeCharts).forEach((key) => {
+    activeCharts[key].destroy();
+    delete activeCharts[key];
+  });
+  document.querySelectorAll('[id^="brush-"]').forEach((el) => el.remove());
+
+  showLoadingPlaceholders();
+
+  // Single historical fetch, shared by charts and cards
+  const historicalPromise = callHistoricalAPI(date, { organizationId, articleId });
+
+  // Historical data → draw charts as soon as available
+  historicalPromise
+    .then((data) => {
+      if (generation !== _state.apiGeneration) return;
+      writeCards(data, timeRangeLabel, null);
       drawCharts(data, timeRangeLabel);
     })
     .catch((_err) => {
-      removeCardElements();
+      if (generation !== _state.apiGeneration) return;
       showErrorsOnCharts();
+    });
+
+  // Totals → update cards with extra info (avg read time, unique reactors)
+  callTotalsAPI(date, { organizationId, articleId })
+    .then((totals) => {
+      if (generation !== _state.apiGeneration) return;
+      // Re-render cards once totals arrive (historical likely already resolved)
+      historicalPromise.then((data) => {
+        if (generation !== _state.apiGeneration) return;
+        writeCards(data, timeRangeLabel, totals);
+      });
+    })
+    .catch((_err) => {
+      // Cards already rendered from historical; totals failure is non-critical
     });
 
   callReferrersAPI(date, { organizationId, articleId })
     .then((data) => {
+      if (generation !== _state.apiGeneration) return;
       renderReferrers(data);
     })
-    .catch((_err) => showErrorsOnReferrers());
+    .catch((_err) => {
+      if (generation !== _state.apiGeneration) return;
+      showErrorsOnReferrers();
+    });
 }
 
 function drawWeekCharts({ organizationId, articleId }) {
@@ -515,21 +581,44 @@ function drawInfinityCharts({ organizationId, articleId }) {
   callAnalyticsAPI(beginningOfTime, '', { organizationId, articleId });
 }
 
+export function destroyCharts() {
+  // Invalidate any in-flight API responses
+  _state.apiGeneration++;
+  Object.keys(activeCharts).forEach((key) => {
+    activeCharts[key].destroy();
+    delete activeCharts[key];
+  });
+  // Remove dynamically created brush elements
+  document.querySelectorAll('[id^="brush-"]').forEach((el) => el.remove());
+}
+
 export function initCharts({ organizationId, articleId }) {
+  // Destroy any leftover charts from previous navigation
+  destroyCharts();
+
   const weekButton = document.getElementById('week-button');
-  weekButton.addEventListener(
+  const monthButton = document.getElementById('month-button');
+  const infinityButton = document.getElementById('infinity-button');
+
+  // Replace elements to remove all old event listeners cleanly
+  const newWeek = weekButton.cloneNode(true);
+  const newMonth = monthButton.cloneNode(true);
+  const newInfinity = infinityButton.cloneNode(true);
+  weekButton.replaceWith(newWeek);
+  monthButton.replaceWith(newMonth);
+  infinityButton.replaceWith(newInfinity);
+
+  newWeek.addEventListener(
     'click',
     drawWeekCharts.bind(null, { organizationId, articleId }),
   );
 
-  const monthButton = document.getElementById('month-button');
-  monthButton.addEventListener(
+  newMonth.addEventListener(
     'click',
     drawMonthCharts.bind(null, { organizationId, articleId }),
   );
 
-  const infinityButton = document.getElementById('infinity-button');
-  infinityButton.addEventListener(
+  newInfinity.addEventListener(
     'click',
     drawInfinityCharts.bind(null, { organizationId, articleId }),
   );
