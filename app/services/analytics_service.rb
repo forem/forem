@@ -72,15 +72,17 @@ class AnalyticsService
   # via reactions (excl. bookmarks) and comments, excluding self-interactions.
   # Comments are weighted 6x, reactions 1x.
   def top_contributors(limit: 20)
-    article_ids = article_data.ids
-    return [] if article_ids.empty?
+    return [] unless article_data.exists?
+
+    # Use subqueries to avoid loading all IDs into memory for large datasets
+    article_ids_subquery = article_data.select(:id)
 
     # Determine author IDs to exclude self-interactions
     author_ids = article_data.distinct.pluck(:user_id)
 
     # Reactions (excl readinglist/self) → weight 1
     reactions_sql = Reaction.for_analytics
-      .where(reactable_id: article_ids, reactable_type: "Article")
+      .where(reactable_id: article_ids_subquery, reactable_type: "Article")
       .where.not(category: "readinglist")
       .where.not(user_id: author_ids)
     reactions_sql = reactions_sql.where(created_at: start_date..end_date) if start_date && end_date
@@ -92,7 +94,7 @@ class AnalyticsService
     # Comments carry more weight than reactions because they require
     # significantly more effort and drive meaningful discussion.
     comments_sql = Comment
-      .where(commentable_id: article_ids, commentable_type: "Article")
+      .where(commentable_id: article_ids_subquery, commentable_type: "Article")
       .where("score > 0")
       .where.not(user_id: author_ids)
     comments_sql = comments_sql.where(created_at: start_date..end_date) if start_date && end_date

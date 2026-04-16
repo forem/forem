@@ -473,29 +473,84 @@ function renderTopContributors(data) {
   const container = document.getElementById('top-contributors-container');
   if (!container) return;
 
+  container.innerHTML = '';
+
   if (!data || data.length === 0) {
-    container.innerHTML = `<p class="color-base-60 fs-s p-4">${locale('core.top_contributors_empty')}</p>`;
+    const emptyMsg = document.createElement('p');
+    emptyMsg.className = 'color-base-60 fs-s p-4';
+    emptyMsg.textContent = locale('core.top_contributors_empty');
+    container.appendChild(emptyMsg);
     return;
   }
 
-  const rows = data.map((contributor, index) => {
-    return `
-      <div class="flex items-center gap-3 py-3 ${index > 0 ? 'border-t-1 border-base-10' : ''}">
-        <span class="color-base-50 fs-s fw-bold" style="min-width:1.75rem;text-align:right">${index + 1}</span>
-        <img class="crayons-avatar crayons-avatar--l" src="${contributor.profile_image}" alt="${contributor.username}" width="40" height="40" loading="lazy" />
-        <div class="flex-1 min-w-0">
-          <a href="/${contributor.username}" class="fw-bold fs-base block truncate color-base-90">${contributor.name || contributor.username}</a>
-          <div class="flex items-center gap-3 mt-1">
-            ${contributor.reactions_count > 0 ? `<span class="fs-s color-base-70"><span style="color:#4bc0c0">&#x2764;&#xFE0F;</span> <strong>${contributor.reactions_count}</strong> ${locale('core.top_contributors_reactions')}</span>` : ''}
-            ${contributor.comments_count > 0 ? `<span class="fs-s color-base-70"><span style="color:#9d39e9">&#x1F4AC;</span> <strong>${contributor.comments_count}</strong> ${locale('core.top_contributors_comments')}</span>` : ''}
-          </div>
-        </div>
-      </div>`;
-  }).join('');
+  const note = document.createElement('p');
+  note.className = 'fs-xs color-base-50 mt-0 mb-3';
+  note.style.fontStyle = 'italic';
+  note.textContent = locale('core.top_contributors_weight_note');
+  container.appendChild(note);
 
-  container.innerHTML = `
-    <p class="fs-xs color-base-50 mt-0 mb-3" style="font-style:italic">${locale('core.top_contributors_weight_note')}</p>
-    ${rows}`;
+  data.forEach((contributor, index) => {
+    const row = document.createElement('div');
+    row.className = `flex items-center gap-3 py-3${index > 0 ? ' border-t-1 border-base-10' : ''}`;
+
+    const rank = document.createElement('span');
+    rank.className = 'color-base-50 fs-s fw-bold';
+    rank.style.minWidth = '1.75rem';
+    rank.style.textAlign = 'right';
+    rank.textContent = index + 1;
+    row.appendChild(rank);
+
+    const avatar = document.createElement('img');
+    avatar.className = 'crayons-avatar crayons-avatar--l';
+    avatar.src = contributor.profile_image;
+    avatar.alt = contributor.username;
+    avatar.width = 40;
+    avatar.height = 40;
+    avatar.loading = 'lazy';
+    row.appendChild(avatar);
+
+    const info = document.createElement('div');
+    info.className = 'flex-1 min-w-0';
+
+    const nameLink = document.createElement('a');
+    nameLink.href = `/${contributor.username}`;
+    nameLink.className = 'fw-bold fs-base block truncate color-base-90';
+    nameLink.textContent = contributor.name || contributor.username;
+    info.appendChild(nameLink);
+
+    const counts = document.createElement('div');
+    counts.className = 'flex items-center gap-3 mt-1';
+
+    if (contributor.reactions_count > 0) {
+      const rSpan = document.createElement('span');
+      rSpan.className = 'fs-s color-base-70';
+      const rIcon = document.createElement('span');
+      rIcon.style.color = '#4bc0c0';
+      rIcon.textContent = '\u2764\uFE0F';
+      const rStrong = document.createElement('strong');
+      rStrong.textContent = contributor.reactions_count;
+      rSpan.appendChild(rIcon);
+      rSpan.append(' ', rStrong, ' ', locale('core.top_contributors_reactions'));
+      counts.appendChild(rSpan);
+    }
+
+    if (contributor.comments_count > 0) {
+      const cSpan = document.createElement('span');
+      cSpan.className = 'fs-s color-base-70';
+      const cIcon = document.createElement('span');
+      cIcon.style.color = '#9d39e9';
+      cIcon.textContent = '\uD83D\uDCAC';
+      const cStrong = document.createElement('strong');
+      cStrong.textContent = contributor.comments_count;
+      cSpan.appendChild(cIcon);
+      cSpan.append(' ', cStrong, ' ', locale('core.top_contributors_comments'));
+      counts.appendChild(cSpan);
+    }
+
+    info.appendChild(counts);
+    row.appendChild(info);
+    container.appendChild(row);
+  });
 }
 
 function showLoadingPlaceholders() {
