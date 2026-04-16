@@ -32,6 +32,9 @@ fr:
     article_form_publish: Publier
     article_form_loading_preview: Chargement de l'aperçu
     article_form_preview_loaded: Aperçu chargé
+    article_form_co_authors: Co-auteurs
+    article_form_co_authors_description: Ajoutez jusqu'à 4 co-auteurs de %{org_name}.
+    article_form_co_authors_placeholder: Ajouter jusqu'à 4...
     comments_preview: Aperçu
     comments_continue_editing: Continuer l'édition
     survey_enter_response: Entrez votre réponse ici...
