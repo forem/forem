@@ -592,11 +592,23 @@ RSpec.describe Billboard do
   describe "#update_exclude_article_ids" do
     let(:article) { create(:article) }
 
-    it "automatically extracts article IDs from links in the billboard content" do
-      # Set up the billboard with a link to the article
-      billboard = build(:billboard, body_markdown: "Check out this great post: [link](https://dev.to#{article.path})")
+    it "automatically extracts article IDs from relative links in the billboard content" do
+      billboard = build(:billboard, body_markdown: "Check out this great post: [link](#{article.path})")
       
       expect { billboard.save! }.to change { billboard.exclude_article_ids }.from([]).to([article.id])
+    end
+
+    it "automatically extracts article IDs from absolute links matching the app domain" do
+      app_url = URI.parse(URL.url)
+      billboard = build(:billboard, body_markdown: "Check out this great post: [link](#{app_url}#{article.path})")
+      
+      expect { billboard.save! }.to change { billboard.exclude_article_ids }.from([]).to([article.id])
+    end
+
+    it "does not parse links from external domains" do
+      billboard = build(:billboard, body_markdown: "Check out this great post: [link](https://external-domain.com#{article.path})")
+      
+      expect { billboard.save! }.not_to change { billboard.exclude_article_ids }
     end
     
     it "does not add invalid paths" do
@@ -605,15 +617,25 @@ RSpec.describe Billboard do
       expect { billboard.save! }.not_to change { billboard.exclude_article_ids }
     end
 
+    it "removes IDs of linked articles if they are removed from the markdown" do
+      billboard = create(:billboard, body_markdown: "Check out this great post: [link](#{article.path})")
+      expect(billboard.exclude_article_ids).to eq([article.id])
+
+      expect {
+        billboard.update!(body_markdown: "Never mind, no links here!")
+      }.to change { billboard.exclude_article_ids }.from([article.id]).to([])
+    end
+
     it "only runs when the body_markdown is changed" do
-      billboard = create(:billboard, body_markdown: "Check out this great post: [link](https://dev.to#{article.path})")
+      billboard = create(:billboard, body_markdown: "Check out this great post: [link](#{article.path})")
       
-      allow(Nokogiri).to receive(:HTML).and_call_original
+      allow(Article).to receive(:where).and_call_original
       
       # Now save without changing markdown
       billboard.update!(name: "A different name")
       
-      expect(Nokogiri).not_to have_received(:HTML)
+      expect(Article).not_to have_received(:where)
+      expect(billboard.exclude_article_ids).to eq([article.id])
     end
   end
 

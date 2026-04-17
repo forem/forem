@@ -477,32 +477,46 @@ class Billboard < ApplicationRecord
   def update_exclude_article_ids
     return if body_markdown.blank? || !body_markdown_changed?
 
-    extracted_paths = []
+    old_paths = extract_internal_article_paths(processed_html_was)
+    new_paths = extract_internal_article_paths(processed_html)
 
-    if processed_html.present?
-      full_html = "<html><head></head><body>#{processed_html}</body></html>"
-      doc = Nokogiri::HTML(full_html)
+    removed_paths = old_paths - new_paths
+    added_paths = new_paths - old_paths
 
-      doc.css("a").each do |link|
-        href = link["href"]
-        next unless href.present? && href.start_with?("http", "/")
+    removed_ids = removed_paths.any? ? Article.where(path: removed_paths).pluck(:id) : []
+    added_ids = added_paths.any? ? Article.where(path: added_paths).pluck(:id) : []
 
-        begin
-          uri = URI.parse(href)
-          path = uri.path
-          if path.present? && path != "/"
-            extracted_paths << path.chomp("/").downcase
-          end
-        rescue URI::InvalidURIError
-          next
-        end
+    current_ids = self.exclude_article_ids.to_a
+    self.exclude_article_ids = ((current_ids - removed_ids) + added_ids).uniq
+  end
+
+  def extract_internal_article_paths(html)
+    return [] if html.blank?
+
+    paths = []
+    doc = Nokogiri::HTML("<html><body>#{html}</body></html>")
+    
+    internal_hosts = [
+      nil,
+      ApplicationConfig["APP_DOMAIN"],
+      URI.parse(URL.url).host
+    ].compact.uniq
+
+    doc.css("a").each do |link|
+      href = link["href"]
+      next unless href.present? && href.start_with?("http", "/")
+
+      begin
+        uri = URI.parse(href)
+        next unless internal_hosts.include?(uri.host)
+
+        path = uri.path
+        paths << path.chomp("/").downcase if path.present? && path != "/"
+      rescue URI::InvalidURIError
+        next
       end
     end
-
-    if extracted_paths.any?
-      found_article_ids = Article.where(path: extracted_paths).pluck(:id)
-      self.exclude_article_ids = (self.exclude_article_ids.to_a + found_article_ids).uniq if found_article_ids.any?
-    end
+    paths.uniq
   end
 
   def update_event_counts_when_taking_down
