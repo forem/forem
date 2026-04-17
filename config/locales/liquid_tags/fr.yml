@@ -82,8 +82,8 @@ fr:
       invalid_reddit_link: 'Lien Reddit invalide : %{url}'
     replit_tag:
       invalid_replit_id: URL Replit non valide ou @user/slug
-    runkit_tag:
-      runkit_tag_is_invalid: Le tag Runkit n'est pas valide
+    legacy_code_tag:
+      invalid_tag: Balise de code héritée invalide
     slideshare_tag:
       invalid_slideshare_key: Clé Slideshare non valide
     soundcloud_tag:

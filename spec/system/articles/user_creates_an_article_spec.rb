@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Creating an article with the editor" do
-  include_context "with runkit_tag"
+  include_context "with legacy code tag"
 
   let(:user) do
     u = create(:user)
@@ -9,11 +9,11 @@ RSpec.describe "Creating an article with the editor" do
     u
   end
   let!(:template) { file_fixture("article_published.txt").read }
-  let!(:template_with_runkit_tag) do
-    file_fixture("article_with_runkit_tag.txt").read
+  let!(:template_with_legacy_code_tag) do
+    file_fixture("article_with_legacy_code_tag.txt").read
   end
-  let!(:template_with_runkit_tag_with_preamble) do
-    file_fixture("article_with_runkit_tag_with_preamble.txt").read
+  let!(:template_with_legacy_code_tag_with_preamble) do
+    file_fixture("article_with_legacy_code_tag_with_preamble.txt").read
   end
 
   before do
@@ -41,41 +41,41 @@ RSpec.describe "Creating an article with the editor" do
     end
   end
 
-  context "with Runkit tag", js: true do
-    # These are skipped because Runkit may be deprecated and this consistency is not a priority
-    xit "creates a new article with a Runkit tag" do
+  context "with legacy code tag", js: true do
+    # These are skipped because the legacy code tag consistency is not a priority
+    xit "creates a new article with a legacy code tag" do
       visit new_path
-      fill_in "article_body_markdown", with: template_with_runkit_tag
+      fill_in "article_body_markdown", with: template_with_legacy_code_tag
       click_button "Save changes"
 
       expect(page).not_to have_current_path(new_path)
-      expect_runkit_tag_to_be_active
+      expect_legacy_code_tag_to_be_visible
     end
 
-    xit "creates a new article with a Runkit tag with complex preamble" do
+    xit "creates a new article with a legacy code tag with complex preamble" do
       visit new_path
-      fill_in "article_body_markdown", with: template_with_runkit_tag_with_preamble
+      fill_in "article_body_markdown", with: template_with_legacy_code_tag_with_preamble
       click_button "Save changes"
 
       expect(page).not_to have_current_path(new_path)
-      expect_runkit_tag_to_be_active(count: 2)
+      expect_legacy_code_tag_to_be_visible(count: 2)
     end
 
     # TODO: [@forem/sre] figure out why this fails intermittently :-|
-    xit "previews article with a Runkit tag and creates it" do
+    xit "previews article with a legacy code tag and creates it" do
       visit new_path
-      fill_in "article_body_markdown", with: template_with_runkit_tag
+      fill_in "article_body_markdown", with: template_with_legacy_code_tag
       click_button "Preview"
 
-      expect_runkit_tag_to_be_active
+      expect_legacy_code_tag_to_be_visible
 
       click_button "Edit"
 
-      expect_no_runkit_tag_to_be_active
+      expect_no_legacy_code_tag_to_be_visible
 
       click_button "Save changes"
 
-      expect_runkit_tag_to_be_active
+      expect_legacy_code_tag_to_be_visible
     end
   end
 
