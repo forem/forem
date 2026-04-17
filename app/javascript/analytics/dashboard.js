@@ -11,6 +11,10 @@ if (!window._analyticsState) {
 const activeCharts = window._analyticsState.activeCharts;
 const _state = window._analyticsState;
 
+function isDarkMode() {
+  return document.body.classList.contains('dark-theme');
+}
+
 function resetActive(activeButton) {
   const buttons = document.querySelectorAll(
     '.crayons-tabs--analytics .crayons-tabs__item',
@@ -158,12 +162,15 @@ function drawChart({ id, chartType = 'line', showPoints = true, labels, series, 
     legend: {
       position: 'top',
     },
+    theme: {
+      mode: isDarkMode() ? 'dark' : 'light',
+    },
     tooltip: {
       shared: true,
       intersect: false,
     },
     grid: {
-      borderColor: '#e7e7e7',
+      borderColor: isDarkMode() ? '#333' : '#e7e7e7',
     },
   };
 
@@ -236,8 +243,11 @@ function drawChart({ id, chartType = 'line', showPoints = true, labels, series, 
         stroke: { width: 1, curve: 'smooth' },
         legend: { show: false },
         dataLabels: { enabled: false },
+        theme: {
+          mode: isDarkMode() ? 'dark' : 'light',
+        },
         grid: {
-          borderColor: '#e7e7e7',
+          borderColor: isDarkMode() ? '#333' : '#e7e7e7',
           padding: { left: 10, right: 10 },
         },
       };
@@ -401,6 +411,9 @@ function drawReferrerChart(data) {
         easing: 'easeinout',
         speed: 400,
       },
+    },
+    theme: {
+      mode: isDarkMode() ? 'dark' : 'light',
     },
     series,
     labels,
