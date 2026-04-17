@@ -34,28 +34,29 @@ module Admin
       redirect_to admin_events_path, notice: "Event destroyed successfully."
     end
 
-    private
+  private
 
-    def set_event
-      @event = Event.find(params[:id])
-    end
+  def set_event
+    @event = Event.find(params[:id])
+  end
 
-    def event_params
-      params.require(:event).permit(
-        :title, 
-        :event_name_slug,
-        :event_variation_slug,
-        :description, 
-        :primary_stream_url, 
-        :published, 
-        :start_time, 
-        :end_time, 
-        :type_of, 
-        :user_id, 
-        :organization_id, 
-        :tag_list,
-        data: {}
-      )
-    end
+  def event_params
+    params.require(:event).permit(
+      :title, 
+      :event_name_slug,
+      :event_variation_slug,
+      :description, 
+      :primary_stream_url, 
+      :published, 
+      :start_time, 
+      :end_time, 
+      :type_of,
+      :broadcast_config,
+      :user_id, 
+      :organization_id, 
+      :tag_list,
+      data: {}
+    )
+  end
   end
 end
