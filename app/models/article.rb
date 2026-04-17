@@ -607,7 +607,7 @@ class Article < ApplicationRecord
   end
 
   def processed_html_final
-    processed_html = replace_legacy_runkit_html(self.processed_html)
+    processed_html = replace_legacy_code_html(self.processed_html)
 
     return processed_html if ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"].blank? || ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"].blank?
 
@@ -617,7 +617,7 @@ class Article < ApplicationRecord
 
   private
 
-  def replace_legacy_runkit_html(html)
+  def replace_legacy_code_html(html)
     return html if html.blank?
 
     fragment = Nokogiri::HTML.fragment(html)
@@ -625,7 +625,7 @@ class Article < ApplicationRecord
       preamble = element.at_css('code:nth-of-type(1)')&.text.to_s
       content = element.at_css('code:nth-of-type(2)')&.text.to_s
 
-      replacement_html = RunkitTag.fallback_html(
+      replacement_html = LegacyCodeTag.fallback_html(
         preamble: preamble,
         parsed_content: content,
       )
