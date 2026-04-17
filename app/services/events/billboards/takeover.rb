@@ -8,6 +8,9 @@ module Events
       end
 
       def feed_html
+        escaped_title = ERB::Util.html_escape(event.title.to_s)
+        escaped_description = ERB::Util.html_escape(event.description.to_s)
+        
         <<~HTML
           <style>
             #event-takeover-image-feed {
@@ -23,18 +26,18 @@ module Events
           </style>
       
           <h1 style="font-size:calc(18px + 0.75vw);margin: 25px auto;margin-top:15px !important">
-            #{event.title}
+            #{escaped_title}
           </h1>
       
           <img
             id="event-takeover-image-feed"
             src="#{image_url}"
-            alt="#{event.title}"
+            alt="#{escaped_title}"
             style="border-radius:12px;margin-bottom:20px !important"
           />
       
           <p style="opacity:0.9;margin-bottom:12px;font-size:calc(1em + 0.1vw);">
-            #{event.description}
+            #{escaped_description}
           </p>
       
           <p style="margin-bottom:15px">
@@ -55,6 +58,9 @@ module Events
       end
 
       def post_html
+        escaped_title = ERB::Util.html_escape(event.title.to_s)
+        escaped_description = ERB::Util.html_escape(event.description.to_s)
+        
         <<~HTML
           <style>
             .bb-grid-container {
@@ -100,7 +106,7 @@ module Events
               }
             }
             @media (min-width: 1000px) {
-              .crayons-card[data-id="93431"] {
+              .bb-grid-item:not(.bb-grid-item--first) {
                 padding-left: 8px !important;
               }
             }
@@ -111,16 +117,16 @@ module Events
               <img
                 id="event-takeover-image"
                 src="#{image_url}"
-                alt="#{event.title}"
+                alt="#{escaped_title}"
                 style="border-radius:12px;margin-bottom:20px!important"
               />
             </div>
             <div class="bb-grid-item">
               <h1 style="font-size:calc(18px + 0.75vw);margin:25px auto;margin-top:0px!important">
-                #{event.title}
+                #{escaped_title}
               </h1>
               <p style="opacity:0.9;margin-bottom:30px;font-size:calc(1em - 0.15vw);">
-                #{event.description}
+                #{escaped_description}
               </p>
               <p style="margin-bottom:20px">
                 <a

@@ -8,8 +8,10 @@ module Events
       end
 
       def feed_html
-        start_hour = event.start_time.in_time_zone("America/New_York").hour
-        start_min = event.start_time.in_time_zone("America/New_York").min
+        escaped_title = ERB::Util.html_escape(event.title.to_s)
+        escaped_description = ERB::Util.html_escape(event.description.to_s)
+        escaped_link = ERB::Util.html_escape(link.to_s)
+        escaped_community = ERB::Util.html_escape(Settings::Community.community_name)
 
         <<~HTML
           <style>
@@ -45,7 +47,7 @@ module Events
           </style>
       
           <h1 style="font-size:calc(18px + 0.75vw);margin: 25px auto;margin-top:15px !important">
-            #{event.title}
+            #{escaped_title}
           </h1>
       
           <div class="overlay-feed" id="overlay-feed-#{event.id}">
@@ -55,12 +57,12 @@ module Events
           <div class="player-container-feed" id="player-container-feed-#{event.id}"></div>
       
           <p style="opacity:0.9;margin-bottom:12px;font-size:calc(1em + 0.1vw);">
-            #{event.description}
+            #{escaped_description}
           </p>
       
           <p style="margin-bottom:15px">
             <a
-              href="#{link}"
+              href="#{escaped_link}"
               class="ltag_cta ltag_cta--branded"
               role="button"
               style="font-weight:bold;border-width:2px;width:100%;padding:15px 2px;text-align:center !important;font-size:calc(16px + 0.6vw);display:block"
@@ -70,21 +72,13 @@ module Events
           </p>
       
           <p style="font-size:0.9em;opacity:0.8;margin-bottom:8px;font-style:italic">
-            #{Settings::Community.community_name} is partnering to bring live events to the community. Join us or dismiss this billboard if you're not interested. ❤️
+            #{escaped_community} is partnering to bring live events to the community. Join us or dismiss this billboard if you're not interested. ❤️
           </p>
           
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.33/moment-timezone-with-data.min.js"></script>
           <script>
             (function() {
-              const START_HOUR = #{start_hour};
-              const START_MINUTE = #{start_min};
-              const IFRAME_SRC = "#{event.primary_stream_url}";
-
-              function getTargetMoment() {
-                const nowNY = moment.tz("America/New_York");
-                return nowNY.clone().hour(START_HOUR).minute(START_MINUTE).second(0).millisecond(0);
-              }
+              const TARGET_TIME = new Date(#{event.start_time.iso8601.to_json}).getTime();
+              const IFRAME_SRC = #{event.primary_stream_url.to_json};
 
               const overlay = document.getElementById("overlay-feed-#{event.id}");
               const countdownEl = document.getElementById("countdown-feed-#{event.id}");
@@ -92,10 +86,9 @@ module Events
               let timerId;
 
               function update() {
-                const nowNY = moment.tz("America/New_York");
-                const target = getTargetMoment();
+                const now = Date.now();
 
-                if (nowNY.isSameOrAfter(target)) {
+                if (now >= TARGET_TIME) {
                   clearInterval(timerId);
                   if (overlay) overlay.classList.add("hidden");
 
@@ -109,10 +102,10 @@ module Events
                 }
 
                 if (countdownEl) {
-                  const diff = moment.duration(target.diff(nowNY));
-                  const hours = String(Math.floor(diff.asHours())).padStart(2, "0");
-                  const minutes = String(diff.minutes()).padStart(2, "0");
-                  const seconds = String(diff.seconds()).padStart(2, "0");
+                  const diffSeconds = Math.max(0, Math.floor((TARGET_TIME - now) / 1000));
+                  const hours = String(Math.floor(diffSeconds / 3600)).padStart(2, "0");
+                  const minutes = String(Math.floor((diffSeconds % 3600) / 60)).padStart(2, "0");
+                  const seconds = String(diffSeconds % 60).padStart(2, "0");
                   countdownEl.textContent = `${hours}:${minutes}:${seconds}`;
                 }
               }
@@ -125,8 +118,10 @@ module Events
       end
 
       def post_html
-        start_hour = event.start_time.in_time_zone("America/New_York").hour
-        start_min = event.start_time.in_time_zone("America/New_York").min
+        escaped_title = ERB::Util.html_escape(event.title.to_s)
+        escaped_description = ERB::Util.html_escape(event.description.to_s)
+        escaped_link = ERB::Util.html_escape(link.to_s)
+        escaped_community = ERB::Util.html_escape(Settings::Community.community_name)
 
         <<~HTML
           <style>
@@ -196,7 +191,7 @@ module Events
               }
             }
             @media (min-width: 1000px) {
-              .crayons-card[data-id="93431"] {
+              .bb-grid-item:not(.bb-grid-item--first) {
                 padding-left: 8px !important;
               }
             }
@@ -212,14 +207,14 @@ module Events
             </div>
             <div class="bb-grid-item">
               <h1 style="font-size:calc(18px + 0.75vw);margin:25px auto;margin-top:0px!important">
-                #{event.title}
+                #{escaped_title}
               </h1>
               <p style="opacity:0.9;margin-bottom:30px;font-size:calc(1em - 0.15vw);">
-                #{event.description}
+                #{escaped_description}
               </p>
               <p style="margin-bottom:20px">
                 <a
-                  href="#{link}"
+                  href="#{escaped_link}"
                   class="ltag_cta ltag_cta--branded"
                   role="button"
                   style="font-weight:bold;border-width:2px;width:100%;padding:15px 2px;text-align:center!important;font-size:calc(16px + 0.6vw);display:block"
@@ -228,23 +223,15 @@ module Events
                 </a>
               </p>
               <p style="font-size:0.7em;opacity:0.8;margin-bottom:8px;font-style:italic">
-                #{Settings::Community.community_name} is partnering to bring live events to the community. Join us or dismiss this billboard if you're not interested. ❤️
+                #{escaped_community} is partnering to bring live events to the community. Join us or dismiss this billboard if you're not interested. ❤️
               </p>
             </div>
           </div>
           
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.33/moment-timezone-with-data.min.js"></script>
           <script>
             (function() {
-              const START_HOUR = #{start_hour};
-              const START_MINUTE = #{start_min};
-              const IFRAME_SRC = "#{event.primary_stream_url}";
-
-              function getTargetMoment() {
-                const nowNY = moment.tz("America/New_York");
-                return nowNY.clone().hour(START_HOUR).minute(START_MINUTE).second(0).millisecond(0);
-              }
+              const TARGET_TIME = new Date(#{event.start_time.iso8601.to_json}).getTime();
+              const IFRAME_SRC = #{event.primary_stream_url.to_json};
 
               const overlay = document.getElementById("overlay-post-#{event.id}");
               const countdownEl = document.getElementById("countdown-post-#{event.id}");
@@ -252,10 +239,9 @@ module Events
               let timerId;
 
               function update() {
-                const nowNY = moment.tz("America/New_York");
-                const target = getTargetMoment();
+                const now = Date.now();
 
-                if (nowNY.isSameOrAfter(target)) {
+                if (now >= TARGET_TIME) {
                   clearInterval(timerId);
                   if (overlay) overlay.classList.add("hidden");
 
@@ -269,10 +255,10 @@ module Events
                 }
 
                 if (countdownEl) {
-                  const diff = moment.duration(target.diff(nowNY));
-                  const hours = String(Math.floor(diff.asHours())).padStart(2, "0");
-                  const minutes = String(diff.minutes()).padStart(2, "0");
-                  const seconds = String(diff.seconds()).padStart(2, "0");
+                  const diffSeconds = Math.max(0, Math.floor((TARGET_TIME - now) / 1000));
+                  const hours = String(Math.floor(diffSeconds / 3600)).padStart(2, "0");
+                  const minutes = String(Math.floor((diffSeconds % 3600) / 60)).padStart(2, "0");
+                  const seconds = String(diffSeconds % 60).padStart(2, "0");
                   countdownEl.textContent = `${hours}:${minutes}:${seconds}`;
                 }
               }

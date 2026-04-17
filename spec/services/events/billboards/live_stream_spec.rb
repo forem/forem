@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Events::Billboards::LiveStream do
-  let(:start_time) { Time.zone.parse("2026-04-16 18:30:00") } # 2:30 PM ET
+  let(:start_time) { Time.utc(2026, 4, 16, 18, 30, 0) } # 2:30 PM ET
   
   let(:event) do
     create(:event,
@@ -25,10 +25,9 @@ RSpec.describe Events::Billboards::LiveStream do
       expect(html).to include("id=\"overlay-feed-#{event.id}\"")
       expect(html).to include("id=\"player-container-feed-#{event.id}\"")
       
-      # The script passes the calculated hour and min in local ET: 14:30
-      expect(html).to include("const START_HOUR = 14;")
-      expect(html).to include("const START_MINUTE = 30;")
-      expect(html).to include("const IFRAME_SRC = \"#{event.primary_stream_url}\";")
+      # The script passes the absolute start timestamp
+      expect(html).to include("const TARGET_TIME = new Date(#{event.start_time.iso8601.to_json}).getTime();")
+      expect(html).to include("const IFRAME_SRC = #{event.primary_stream_url.to_json};")
     end
   end
 
@@ -42,9 +41,8 @@ RSpec.describe Events::Billboards::LiveStream do
       expect(html).to include("id=\"overlay-post-#{event.id}\"")
       expect(html).to include("id=\"player-container-post-#{event.id}\"")
       
-      expect(html).to include("const START_HOUR = 14;")
-      expect(html).to include("const START_MINUTE = 30;")
-      expect(html).to include("const IFRAME_SRC = \"#{event.primary_stream_url}\";")
+      expect(html).to include("const TARGET_TIME = new Date(#{event.start_time.iso8601.to_json}).getTime();")
+      expect(html).to include("const IFRAME_SRC = #{event.primary_stream_url.to_json};")
     end
   end
 end
