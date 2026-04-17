@@ -141,6 +141,18 @@ RSpec.describe Article do
       end
     end
 
+    describe "#before_destroy_actions" do
+      let(:user) { create(:user) }
+      let(:article) { create(:article, user: user, published: true, type_of: "full_post") }
+
+      it "touches the author's last_article_at when the article is destroyed" do
+        old_last_article_at = user.last_article_at
+        travel_to 1.minute.from_now do
+          expect { article.destroy }.to change { user.reload.last_article_at }.from(old_last_article_at)
+        end
+      end
+    end
+
     describe "#validate_video" do
       let(:new_user) { create(:user, created_at: 1.week.ago) }
       let(:old_user) { create(:user, created_at: 3.weeks.ago) }
