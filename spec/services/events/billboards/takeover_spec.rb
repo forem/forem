@@ -35,9 +35,11 @@ RSpec.describe Events::Billboards::Takeover do
   end
 
   describe "fallback image logic" do
-    let(:organization) { create(:organization, profile_image_url: "https://example.com/org.jpg") }
+    let(:organization) { create(:organization) }
 
     it "falls back to the organization image if data image_url is blank" do
+      allow(organization).to receive(:profile_image_url).and_return("https://example.com/org.jpg")
+      
       event.data.delete("image_url")
       event.organization = organization
       
