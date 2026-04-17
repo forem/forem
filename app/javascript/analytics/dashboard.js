@@ -103,6 +103,31 @@ function drawChart({ id, chartType = 'line', showPoints = true, labels, series, 
       },
       tickAmount: Math.min(labels.length, 14),
     },
+  };
+  const dataOptions = {
+    plugins: {
+      tooltip: {
+        enabled: true,
+        backgroundColor: 'rgba(0, 0, 0, 0.8)', // Ensures readability
+        titleSpacing: 3,
+        bodySpacing: 3,
+        padding: 10,
+        callbacks: {
+          // You can add a suffix like "Reads" or "Reactions"
+          label: function (context) {
+            let label = context.dataset.label || '';
+            if (label) {
+              label += ': ';
+            }
+            if (context.parsed.y !== null) {
+              label += context.parsed.y;
+            }
+            return label;
+          }
+        }
+      },
+      legend: {
+        position: 'top',
     yaxis: yaxis || {
       min: 0,
       labels: {
@@ -129,6 +154,44 @@ function drawChart({ id, chartType = 'line', showPoints = true, labels, series, 
     },
   };
 
+  import('chart.js').then(
+    ({
+      Chart,
+      LineController,
+      LinearScale,
+      CategoryScale,
+      PointElement,
+      LineElement,
+      Legend,
+      Tooltip,
+    }) => {
+      Chart.register(
+        LineController,
+        LinearScale,
+        CategoryScale,
+        PointElement,
+        LineElement,
+        Legend,
+        Tooltip,
+      );
+      const currentChart = activeCharts[id];
+      if (currentChart) {
+        currentChart.destroy();
+      }
+
+      const canvas = document.getElementById(id);
+      // eslint-disable-next-line no-new
+      activeCharts[id] = new Chart(canvas, {
+        type: 'line',
+        data: {
+          labels,
+          datasets,
+          options: dataOptions,
+        },
+        options: chartOptions,
+      });
+    },
+  );
   if (fillOptions) {
     options.fill = fillOptions;
   }
