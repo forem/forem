@@ -49,7 +49,7 @@ RSpec.describe "Creating an article with the editor" do
       click_button "Save changes"
 
       expect(page).not_to have_current_path(new_path)
-      expect_runkit_tag_to_be_active
+      expect_runkit_tag_to_be_visible
     end
 
     xit "creates a new article with a Runkit tag with complex preamble" do
@@ -58,7 +58,7 @@ RSpec.describe "Creating an article with the editor" do
       click_button "Save changes"
 
       expect(page).not_to have_current_path(new_path)
-      expect_runkit_tag_to_be_active(count: 2)
+      expect_runkit_tag_to_be_visible(count: 2)
     end
 
     # TODO: [@forem/sre] figure out why this fails intermittently :-|
@@ -67,15 +67,15 @@ RSpec.describe "Creating an article with the editor" do
       fill_in "article_body_markdown", with: template_with_runkit_tag
       click_button "Preview"
 
-      expect_runkit_tag_to_be_active
+      expect_runkit_tag_to_be_visible
 
       click_button "Edit"
 
-      expect_no_runkit_tag_to_be_active
+      expect_no_runkit_tag_to_be_visible
 
       click_button "Save changes"
 
-      expect_runkit_tag_to_be_active
+      expect_runkit_tag_to_be_visible
     end
   end
 

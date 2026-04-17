@@ -1,73 +1,25 @@
-class RunkitTag < Liquid::Block
-  PARTIAL = "liquids/runkit".freeze
-
-  SCRIPT = <<~JAVASCRIPT.freeze
-    function activateRunkitTags() {
-      if (!areAnyRunkitTagsPresent())
-        return
-
-      var checkRunkit = setInterval(function() {
-        try {
-          dynamicallyLoadRunkitLibrary()
-
-          if (typeof(RunKit) === 'undefined') {
-            return
-          }
-
-          replaceTagContentsWithRunkitWidget()
-          clearInterval(checkRunkit);
-        } catch(e) {
-          console.error(e);
-          clearInterval(checkRunkit);
-        }
-      }, 200);
-    }
-
-    function isRunkitTagAlreadyActive(runkitTag) {
-      return runkitTag.querySelector("iframe") !== null;
-    };
-
-    function areAnyRunkitTagsPresent() {
-      var presentRunkitTags = document.getElementsByClassName("runkit-element");
-
-      return presentRunkitTags.length > 0
-    }
-
-    function replaceTagContentsWithRunkitWidget() {
-      var targets = document.getElementsByClassName("runkit-element");
-      for (var i = 0; i < targets.length; i++) {
-        if (isRunkitTagAlreadyActive(targets[i])) {
-          continue;
-        }
-
-        var wrapperContent = targets[i].textContent;
-        if (/^(<iframe src)/.test(wrapperContent) === false) {
-          if (targets[i].children.length > 0) {
-            var preamble = targets[i].children[0].textContent;
-            var content = targets[i].children[1].textContent;
-            targets[i].innerHTML = "";
-            var notebook = RunKit.createNotebook({
-              element: targets[i],
-              source: content,
-              preamble: preamble
-            });
-          }
-        }
-      }
-    };
-
-    function dynamicallyLoadRunkitLibrary() {
-      if (typeof(dynamicallyLoadScript) === "undefined")
-        return
-
-      dynamicallyLoadScript("//embed.runkit.com")
-    }
-
-    activateRunkitTags();
-  JAVASCRIPT
-
+﻿class RunkitTag < Liquid::Block
   def self.script
-    SCRIPT
+    ""
+  end
+
+  def self.fallback_html(preamble:, parsed_content:)
+    escaped_preamble = ERB::Util.html_escape(preamble)
+    escaped_content = ERB::Util.html_escape(parsed_content)
+
+    html = +''
+    html << '<div class="ltag-runkit-fallback crayons-notice crayons-notice--warning">'
+    html << '<p>RunKit is no longer available. The original code is shown below.</p>'
+    if preamble.present?
+      html << '<pre class="ltag-runkit-fallback__preamble"><code>'
+      html << escaped_preamble
+      html << '</code></pre>'
+    end
+    html << '<pre class="ltag-runkit-fallback__code"><code>'
+    html << escaped_content
+    html << '</code></pre>'
+    html << '</div>'
+    html
   end
 
   def initialize(_tag_name, markup, _parse_context)
@@ -78,17 +30,15 @@ class RunkitTag < Liquid::Block
   def render(context)
     content = Nokogiri::HTML.parse(super)
     parsed_content = content.xpath("//html/body").text
-    ApplicationController.render(
-      partial: PARTIAL,
-      locals: {
-        preamble: @preamble,
-        parsed_content: parsed_content
-      },
+
+    self.class.fallback_html(
+      preamble: @preamble,
+      parsed_content: parsed_content,
     )
   end
 
   def sanitized_preamble(markup)
-    raise StandardError, I18n.t("liquid_tags.runkit_tag.runkit_tag_is_invalid") if markup.include? "\">"
+    raise StandardError, I18n.t("liquid_tags.runkit_tag.runkit_tag_is_invalid") if markup.include? ">"
 
     ActionView::Base.full_sanitizer.sanitize(markup, tags: [])
   end

@@ -96,26 +96,26 @@ RSpec.xdescribe "Creating Comment", js: true do
       fill_in "text-area", with: runkit_comment
       click_button("Submit")
 
-      expect_runkit_tag_to_be_active
+      expect_runkit_tag_to_be_visible
     end
 
     it "Users fills out comment box 2 Runkit tags" do
       fill_in "text-area", with: runkit_comment
       click_button("Submit")
 
-      expect_runkit_tag_to_be_active
+      expect_runkit_tag_to_be_visible
 
       fill_in "text-area", with: runkit_comment2
       click_button("Submit")
 
-      expect_runkit_tag_to_be_active(count: 2)
+      expect_runkit_tag_to_be_visible(count: 2)
     end
 
     it "User fill out comment box with a Runkit tag, then clicks preview" do
       fill_in "text-area", with: runkit_comment
       click_button("Preview")
 
-      expect_runkit_tag_to_be_active
+      expect_runkit_tag_to_be_visible
     end
   end
 

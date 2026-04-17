@@ -196,15 +196,35 @@ class Comment < ApplicationRecord
   end
 
   def processed_html_final
-    # This is a final non-database-driven step to adjust processed html
-    # It is sort of a hack to avoid having to reprocess all articles
-    # It is currently only for this one cloudflare domain change
-    # It is duplicated across article, bullboard and comment where it is most needed
-    # In the future this could be made more customizable. For now it's just this one thing.
+    processed_html = replace_legacy_runkit_html(self.processed_html)
+
     return processed_html if ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"].blank? || ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"].blank?
 
     processed_html.gsub(ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"],
                         ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
+  end
+
+  private
+
+  def replace_legacy_runkit_html(html)
+    return html if html.blank?
+
+    fragment = Nokogiri::HTML.fragment(html)
+    fragment.css('.runkit-element').each do |element|
+      preamble = element.at_css('code:nth-of-type(1)')&.text.to_s
+      content = element.at_css('code:nth-of-type(2)')&.text.to_s
+
+      replacement_html = RunkitTag.fallback_html(
+        preamble: preamble,
+        parsed_content: content,
+      )
+
+      element.replace(Nokogiri::HTML.fragment(replacement_html))
+    end
+
+    fragment.to_html
+  rescue StandardError
+    html
   end
 
   def subforem_id

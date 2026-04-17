@@ -22,14 +22,12 @@ RSpec.describe RunkitTag, type: :liquid_tag do
       Liquid::Template.parse("{% runkit #{preamble_str}%}#{block}{% endrunkit %}")
     end
 
-    it "generates proper div with content" do
+    it "generates a fallback block with the original source" do
       rendered = generate_runkit_liquid(preamble, content).render
 
-      # rubocop:disable Style/StringLiterals
-      expect(rendered).to include('<code')
-      expect(rendered).to include('style="display: none"')
+      expect(rendered).to include('RunKit is no longer available')
+      expect(rendered).to include('<pre class="ltag-runkit-fallback__code"><code>')
       expect(rendered).to include('await getJSON(&quot;https://storage.googleapis.com/maps-devrel/google.json&quot;);')
-      # rubocop:enable Style/StringLiterals
     end
   end
 end
