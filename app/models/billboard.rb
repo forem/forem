@@ -91,6 +91,7 @@ class Billboard < ApplicationRecord
            :validate_expiration_approval
 
   before_save :process_markdown
+  before_save :update_exclude_article_ids
   before_save :update_content_updated_at_if_needed
   after_save :generate_billboard_name
   after_save :refresh_audience_segment, if: :should_refresh_audience_segment?
@@ -471,6 +472,37 @@ class Billboard < ApplicationRecord
     return unless content_fields.any? { |field| will_save_change_to_attribute?(field) }
     
     self.content_updated_at = Time.current
+  end
+
+  def update_exclude_article_ids
+    return if body_markdown.blank? || !body_markdown_changed?
+
+    extracted_paths = []
+
+    if processed_html.present?
+      full_html = "<html><head></head><body>#{processed_html}</body></html>"
+      doc = Nokogiri::HTML(full_html)
+
+      doc.css("a").each do |link|
+        href = link["href"]
+        next unless href.present? && href.start_with?("http", "/")
+
+        begin
+          uri = URI.parse(href)
+          path = uri.path
+          if path.present? && path != "/"
+            extracted_paths << path.chomp("/").downcase
+          end
+        rescue URI::InvalidURIError
+          next
+        end
+      end
+    end
+
+    if extracted_paths.any?
+      found_article_ids = Article.where(path: extracted_paths).pluck(:id)
+      self.exclude_article_ids = (self.exclude_article_ids.to_a + found_article_ids).uniq if found_article_ids.any?
+    end
   end
 
   def update_event_counts_when_taking_down

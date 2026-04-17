@@ -589,6 +589,34 @@ RSpec.describe Billboard do
     end
   end
 
+  describe "#update_exclude_article_ids" do
+    let(:article) { create(:article) }
+
+    it "automatically extracts article IDs from links in the billboard content" do
+      # Set up the billboard with a link to the article
+      billboard = build(:billboard, body_markdown: "Check out this great post: [link](https://dev.to#{article.path})")
+      
+      expect { billboard.save! }.to change { billboard.exclude_article_ids }.from([]).to([article.id])
+    end
+    
+    it "does not add invalid paths" do
+      billboard = build(:billboard, body_markdown: "Check out this great post: [link](/not-a-real-path)")
+      
+      expect { billboard.save! }.not_to change { billboard.exclude_article_ids }
+    end
+
+    it "only runs when the body_markdown is changed" do
+      billboard = create(:billboard, body_markdown: "Check out this great post: [link](https://dev.to#{article.path})")
+      
+      allow(Nokogiri).to receive(:HTML).and_call_original
+      
+      # Now save without changing markdown
+      billboard.update!(name: "A different name")
+      
+      expect(Nokogiri).not_to have_received(:HTML)
+    end
+  end
+
   describe "when a stale audience segment is associated" do
     let(:audience_segment) do
       Timecop.travel(5.days.ago) do
