@@ -447,4 +447,66 @@ describe('Analytics Dashboard – Async Chart Loading', () => {
     const card = document.getElementById('followers-card');
     expect(card.querySelector('.follower-engagement')).toBeNull();
   });
+
+  test('charts show empty state message when historical data is empty', async () => {
+    callHistoricalAPI.mockResolvedValue({});
+    callTotalsAPI.mockResolvedValue({
+      comments: { total: 0 },
+      reactions: { total: 0, like: 0, readinglist: 0, unicorn: 0, exploding_head: 0, raised_hands: 0, fire: 0, unique_reactors: 0 },
+      page_views: { total: 0, average_read_time_in_seconds: 0 },
+      follows: { total: 0 },
+    });
+    callReferrersAPI.mockResolvedValue({ domains: [] });
+
+    initCharts({});
+    await flushPromises();
+
+    ['readers-chart', 'reactions-chart', 'comments-chart', 'followers-chart'].forEach((id) => {
+      const el = document.getElementById(id);
+      expect(el.innerHTML).toContain('dashboard_analytics_no_data');
+    });
+
+    // No ApexCharts instances should be created for main charts
+    const mainChartCalls = MockApexCharts.mock.calls.filter(([, opts]) => opts.chart.type !== 'donut');
+    expect(mainChartCalls.length).toBe(0);
+  });
+
+  test('referrers show empty state when no domains', async () => {
+    callHistoricalAPI.mockResolvedValue(mockHistoricalData);
+    callTotalsAPI.mockResolvedValue(mockTotalsData);
+    callReferrersAPI.mockResolvedValue({ domains: [] });
+
+    initCharts({});
+    await flushPromises();
+
+    const container = document.getElementById('referrers-container');
+    expect(container.innerHTML).toContain('dashboard_analytics_no_referrers');
+
+    // Referrer chart should be cleared, no donut rendered
+    const donutCalls = MockApexCharts.mock.calls.filter(([, opts]) => opts.chart.type === 'donut');
+    expect(donutCalls.length).toBe(0);
+  });
+
+  test('cards show zero values when data is empty', async () => {
+    callHistoricalAPI.mockResolvedValue({});
+    callTotalsAPI.mockResolvedValue({
+      comments: { total: 0 },
+      reactions: { total: 0, like: 0, readinglist: 0, unicorn: 0, exploding_head: 0, raised_hands: 0, fire: 0, unique_reactors: 0 },
+      page_views: { total: 0, average_read_time_in_seconds: 0 },
+      follows: { total: 0 },
+    });
+    callReferrersAPI.mockResolvedValue({ domains: [] });
+
+    initCharts({});
+    await flushPromises();
+
+    const readersCard = document.getElementById('readers-card');
+    expect(readersCard.innerHTML).toContain('0');
+
+    const reactionsCard = document.getElementById('reactions-card');
+    expect(reactionsCard.innerHTML).toContain('0');
+
+    const commentsCard = document.getElementById('comments-card');
+    expect(commentsCard.innerHTML).toContain('0');
+  });
 });

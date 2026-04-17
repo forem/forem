@@ -263,6 +263,17 @@ function drawChart({ id, chartType = 'line', showPoints = true, labels, series, 
 
 function drawCharts(data, timeRangeLabel) {
   const labels = Object.keys(data);
+
+  if (labels.length === 0) {
+    ['reactions-chart', 'comments-chart', 'readers-chart', 'followers-chart'].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.innerHTML = `<p class="color-base-60 fs-s m-5 text-center">${locale('core.dashboard_analytics_no_data')}</p>`;
+      }
+    });
+    return;
+  }
+
   const parsedData = Object.entries(data).map((date) => date[1]);
   const comments = parsedData.map((date) => date.comments.total);
   const reactions = parsedData.map((date) => date.reactions.total);
@@ -456,6 +467,14 @@ function drawReferrerChart(data) {
 
 function renderReferrers(data) {
   const container = document.getElementById('referrers-container');
+
+  if (!data.domains || data.domains.length === 0) {
+    container.innerHTML = `<tr><td colspan="2" class="color-base-60 fs-s p-4 text-center">${locale('core.dashboard_analytics_no_referrers')}</td></tr>`;
+    const chartEl = document.getElementById('referrers-chart');
+    if (chartEl) chartEl.innerHTML = '';
+    return;
+  }
+
   const tableBody = data.domains
     .filter((referrer) => referrer.domain)
     .map((referrer) => {

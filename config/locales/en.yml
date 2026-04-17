@@ -53,6 +53,8 @@ en:
     top_contributors_weight_note: Comments carry more weight
     follower_engagement_ratio: "%{ratio}% of followers engaged"
     follower_engagement_detail: "(%{engaged} of %{total})"
+    dashboard_analytics_no_data: No data available for this period
+    dashboard_analytics_no_referrers: No traffic sources yet
     stats_by: by
     editor_new_title: New post title here...
     editor_body_placeholder: Write your post content here...
