@@ -53,7 +53,7 @@ module PracticalDeveloper
 
     ## Rails 7.0
     config.action_dispatch.cookies_serializer = :json
-
+    config.active_support.cache_format_version = 6.1
     # Rails 7.0 default flips this to OpenSSL::Digest::SHA256, which would invalidate
     # every existing encrypted cookie and message. Pin to the prior (6.1) default until
     # a key rotation is performed. See deleted config/initializers/new_framework_defaults_7_0.rb
