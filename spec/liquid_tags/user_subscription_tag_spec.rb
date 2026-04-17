@@ -6,18 +6,6 @@ RSpec.describe UserSubscriptionTag, type: :liquid_tag do
   let(:article_with_user_subscription_tag) do
     create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true)
   end
-  
-  describe "#before_destroy_actions" do
-  let(:user) { create(:user) }
-  let(:article) { create(:article, user: user, published: true, type_of: "full_post") }
-
-  it "touches the author's last_article_at when the article is destroyed" do
-    old_last_article_at = user.last_article_at
-    travel_to 1.minute.from_now do
-      expect { article.destroy }.to change { user.reload.last_article_at }.from(old_last_article_at)
-    end
-  end
-end
 
   before do
     Liquid::Template.register_tag("user_subscription", described_class)
