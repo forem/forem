@@ -39,9 +39,19 @@
       <%= form.text_area :description, class: "crayons-textfield", rows: 3 %>
     </div>
 
-    <div class="crayons-field">
-      <%= form.label :type_of, "Event Type", class: "crayons-field__label" %>
-      <%= form.select :type_of, Event.type_ofs.keys.map { |type| [type.titleize, type] }, {}, class: "crayons-select" %>
+    <div class="grid grid-cols-2 gap-4">
+      <div class="crayons-field">
+        <%= form.label :type_of, "Event Type", class: "crayons-field__label" %>
+        <%= form.select :type_of, Event.type_ofs.keys.map { |type| [type.titleize, type] }, {}, class: "crayons-select" %>
+      </div>
+
+      <div class="crayons-field">
+        <%= form.label :broadcast_config, "Billboard Broadcast Config", class: "crayons-field__label" do %>
+          Billboard Broadcast Config
+          <p class="crayons-field__description">Controls billboard auto-generation. No Broadcast = Billboards disabled. Tagged = Billboards target relevant tags only. Global = Billboards show to all users everywhere.</p>
+        <% end %>
+        <%= form.select :broadcast_config, Event.broadcast_configs.keys.map { |cfg| [cfg.titleize, cfg] }, {}, class: "crayons-select" %>
+      </div>
     </div>
 
     <div class="crayons-field">
