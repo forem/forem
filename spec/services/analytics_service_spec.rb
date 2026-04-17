@@ -570,4 +570,100 @@ RSpec.describe AnalyticsService, type: :service do
       expect(result).to include(:user_id, :username, :name, :profile_image, :reactions_count, :comments_count, :score)
     end
   end
+
+  describe "#follower_engagement" do
+    let(:analytics_service) { described_class.new(user) }
+    let(:follower) { create(:user) }
+
+    before do
+      create(:follow, follower: follower, followable: user, blocked: false)
+    end
+
+    it "returns zero ratio when user has no followers" do
+      other_user = create(:user)
+      create(:article, user: other_user, published: true)
+      service = described_class.new(other_user)
+      result = service.follower_engagement
+      expect(result).to eq({ total_followers: 0, engaged_followers: 0, ratio: 0.0 })
+    end
+
+    it "returns zero engaged when follower has not interacted" do
+      result = analytics_service.follower_engagement
+      expect(result[:total_followers]).to eq(1)
+      expect(result[:engaged_followers]).to eq(0)
+      expect(result[:ratio]).to eq(0.0)
+    end
+
+    it "counts a follower who reacted" do
+      create(:reaction, reactable: article, category: :like, user: follower)
+      result = analytics_service.follower_engagement
+      expect(result[:total_followers]).to eq(1)
+      expect(result[:engaged_followers]).to eq(1)
+      expect(result[:ratio]).to eq(100.0)
+    end
+
+    it "counts a follower who commented" do
+      create(:comment, commentable: article, user: follower, score: 1)
+      result = analytics_service.follower_engagement
+      expect(result[:engaged_followers]).to eq(1)
+    end
+
+    it "counts a follower with both reaction and comment only once" do
+      create(:reaction, reactable: article, category: :like, user: follower)
+      create(:comment, commentable: article, user: follower, score: 1)
+      result = analytics_service.follower_engagement
+      expect(result[:engaged_followers]).to eq(1)
+    end
+
+    it "excludes readinglist reactions" do
+      create(:reaction, reactable: article, category: :readinglist, user: follower)
+      result = analytics_service.follower_engagement
+      expect(result[:engaged_followers]).to eq(0)
+    end
+
+    it "excludes low-score comments" do
+      create(:comment, commentable: article, user: follower, score: 0)
+      result = analytics_service.follower_engagement
+      expect(result[:engaged_followers]).to eq(0)
+    end
+
+    it "excludes blocked followers" do
+      blocked_follower = create(:user)
+      create(:follow, follower: blocked_follower, followable: user, blocked: true)
+      create(:reaction, reactable: article, category: :like, user: blocked_follower)
+      result = analytics_service.follower_engagement
+      expect(result[:total_followers]).to eq(1) # only the non-blocked follower
+    end
+
+    it "does not count non-followers" do
+      non_follower = create(:user)
+      create(:reaction, reactable: article, category: :like, user: non_follower)
+      result = analytics_service.follower_engagement
+      expect(result[:engaged_followers]).to eq(0)
+    end
+
+    it "calculates correct ratio with multiple followers" do
+      follower2 = create(:user)
+      follower3 = create(:user)
+      create(:follow, follower: follower2, followable: user, blocked: false)
+      create(:follow, follower: follower3, followable: user, blocked: false)
+      create(:reaction, reactable: article, category: :like, user: follower)
+      result = analytics_service.follower_engagement
+      expect(result[:total_followers]).to eq(3)
+      expect(result[:engaged_followers]).to eq(1)
+      expect(result[:ratio]).to eq(33.3)
+    end
+
+    it "works with organization owner" do
+      create(:organization_membership, user: user, organization: organization)
+      org_article = create(:article, user: user, organization: organization, published: true)
+      org_follower = create(:user)
+      create(:follow, follower: org_follower, followable: organization, blocked: false)
+      create(:reaction, reactable: org_article, category: :like, user: org_follower)
+      service = described_class.new(organization)
+      result = service.follower_engagement
+      expect(result[:total_followers]).to eq(1)
+      expect(result[:engaged_followers]).to eq(1)
+    end
+  end
 end

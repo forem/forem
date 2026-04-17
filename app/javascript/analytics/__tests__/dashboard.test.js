@@ -27,6 +27,7 @@ jest.mock('../client', () => ({
   callTotalsAPI: jest.fn(),
   callReferrersAPI: jest.fn(),
   callTopContributorsAPI: jest.fn(),
+  callFollowerEngagementAPI: jest.fn(),
 }));
 
 // Build sample historical data spanning 120 days
@@ -62,6 +63,7 @@ const mockTopContributorsData = [
   { user_id: 1, username: 'alice', name: 'Alice', profile_image: '/img/alice.png', reactions_count: 5, comments_count: 2, score: 11 },
   { user_id: 2, username: 'bob', name: 'Bob', profile_image: '/img/bob.png', reactions_count: 3, comments_count: 0, score: 3 },
 ];
+const mockFollowerEngagementData = { total_followers: 200, engaged_followers: 30, ratio: 15.0 };
 
 function setupDOM() {
   document.body.innerHTML = `
@@ -90,7 +92,7 @@ function setupDOM() {
 }
 
 describe('Analytics Dashboard – Brush/Zoom for Infinity', () => {
-  const { callHistoricalAPI, callTotalsAPI, callReferrersAPI, callTopContributorsAPI } = require('../client');
+  const { callHistoricalAPI, callTotalsAPI, callReferrersAPI, callTopContributorsAPI, callFollowerEngagementAPI } = require('../client');
 
   beforeEach(() => {
     // Reset shared window state between tests
@@ -103,6 +105,7 @@ describe('Analytics Dashboard – Brush/Zoom for Infinity', () => {
     callTotalsAPI.mockResolvedValue(mockTotalsData);
     callReferrersAPI.mockResolvedValue(mockReferrersData);
     callTopContributorsAPI.mockResolvedValue(mockTopContributorsData);
+    callFollowerEngagementAPI.mockResolvedValue(mockFollowerEngagementData);
   });
 
   async function flushPromises() {
@@ -263,7 +266,7 @@ describe('Analytics Dashboard – Brush/Zoom for Infinity', () => {
 });
 
 describe('Analytics Dashboard – Async Chart Loading', () => {
-  const { callHistoricalAPI, callTotalsAPI, callReferrersAPI, callTopContributorsAPI } = require('../client');
+  const { callHistoricalAPI, callTotalsAPI, callReferrersAPI, callTopContributorsAPI, callFollowerEngagementAPI } = require('../client');
 
   beforeEach(() => {
     // Reset shared window state between tests
@@ -273,6 +276,7 @@ describe('Analytics Dashboard – Async Chart Loading', () => {
     mockRender.mockClear();
     mockDestroy.mockClear();
     callTopContributorsAPI.mockResolvedValue([]);
+    callFollowerEngagementAPI.mockResolvedValue({ total_followers: 0, engaged_followers: 0, ratio: 0.0 });
   });
 
   async function flushPromises() {
@@ -414,5 +418,33 @@ describe('Analytics Dashboard – Async Chart Loading', () => {
     const container = document.getElementById('top-contributors-container');
     // Should NOT have rendered the stale data — only the empty message from the second call
     expect(container.innerHTML).not.toContain('alice');
+  });
+
+  test('follower engagement ratio renders on followers card', async () => {
+    callHistoricalAPI.mockResolvedValue(mockHistoricalData);
+    callTotalsAPI.mockResolvedValue(mockTotalsData);
+    callReferrersAPI.mockResolvedValue(mockReferrersData);
+    callFollowerEngagementAPI.mockResolvedValue(mockFollowerEngagementData);
+
+    initCharts({});
+    await flushPromises();
+
+    const card = document.getElementById('followers-card');
+    const engagement = card.querySelector('.follower-engagement');
+    expect(engagement).not.toBeNull();
+    expect(engagement.textContent).toContain('follower_engagement_ratio');
+  });
+
+  test('follower engagement does not render when no followers', async () => {
+    callHistoricalAPI.mockResolvedValue(mockHistoricalData);
+    callTotalsAPI.mockResolvedValue(mockTotalsData);
+    callReferrersAPI.mockResolvedValue(mockReferrersData);
+    callFollowerEngagementAPI.mockResolvedValue({ total_followers: 0, engaged_followers: 0, ratio: 0.0 });
+
+    initCharts({});
+    await flushPromises();
+
+    const card = document.getElementById('followers-card');
+    expect(card.querySelector('.follower-engagement')).toBeNull();
   });
 });

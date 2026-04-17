@@ -43,6 +43,15 @@ module Api
       render json: data.to_json
     end
 
+    def follower_engagement
+      analytics = AnalyticsService.new(
+        @owner,
+        start_date: params[:start], end_date: params[:end],
+      )
+      data = analytics.follower_engagement
+      render json: data.to_json
+    end
+
     private
 
     def authorize_user_organization

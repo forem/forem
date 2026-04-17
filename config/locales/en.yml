@@ -51,6 +51,8 @@ en:
     top_contributors_reactions: reactions
     top_contributors_comments: comments
     top_contributors_weight_note: Comments carry more weight
+    follower_engagement_ratio: "%{ratio}% of followers engaged"
+    follower_engagement_detail: "(%{engaged} of %{total})"
     stats_by: by
     editor_new_title: New post title here...
     editor_body_placeholder: Write your post content here...

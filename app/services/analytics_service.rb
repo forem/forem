@@ -135,6 +135,47 @@ class AnalyticsService
     end
   end
 
+  # Returns what percentage of followers engaged (reacted or commented)
+  # with the user/org's articles in the given period.
+  def follower_engagement
+    follower_scope = Follow
+      .where(followable_type: user_or_org.class.name, followable_id: user_or_org.id)
+      .where(blocked: false)
+
+    total_followers = follower_scope.count
+    return { total_followers: 0, engaged_followers: 0, ratio: 0.0 } if total_followers.zero?
+    return { total_followers: total_followers, engaged_followers: 0, ratio: 0.0 } unless article_data.exists?
+
+    follower_ids_subquery = follower_scope.select(:follower_id)
+    article_ids_subquery = article_data.select(:id)
+
+    # Followers who reacted (excl readinglist)
+    reacting_scope = Reaction.for_analytics
+      .where(reactable_id: article_ids_subquery, reactable_type: "Article")
+      .where.not(category: "readinglist")
+      .where(user_id: follower_ids_subquery)
+    reacting_scope = reacting_scope.where(created_at: start_date..end_date) if start_date && end_date
+
+    # Followers who commented (score > 0)
+    commenting_scope = Comment
+      .where(commentable_id: article_ids_subquery, commentable_type: "Article")
+      .where("score > 0")
+      .where(user_id: follower_ids_subquery)
+    commenting_scope = commenting_scope.where(created_at: start_date..end_date) if start_date && end_date
+
+    engaged_count = ActiveRecord::Base.connection.select_value(
+      "SELECT COUNT(DISTINCT user_id) FROM (" \
+      "#{reacting_scope.select(:user_id).to_sql} UNION ALL #{commenting_scope.select(:user_id).to_sql}" \
+      ") AS engaged",
+    ).to_i
+
+    {
+      total_followers: total_followers,
+      engaged_followers: engaged_count,
+      ratio: (engaged_count.to_f / total_followers * 100).round(1)
+    }
+  end
+
   private
 
   attr_reader(

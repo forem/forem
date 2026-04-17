@@ -1,4 +1,4 @@
-import { callHistoricalAPI, callReferrersAPI, callTotalsAPI, callTopContributorsAPI } from './client';
+import { callHistoricalAPI, callReferrersAPI, callTotalsAPI, callTopContributorsAPI, callFollowerEngagementAPI } from './client';
 import { locale } from '@utilities/locale';
 
 // Window-level state survives esbuild IIFE re-execution during InstantClick
@@ -86,7 +86,9 @@ function writeCards(data, timeRangeLabel, totals) {
   commentCard.innerHTML = cardHTML(comments, `${locale('core.dashboard_analytics_comments')} ${timeRangeLabel}`);
   bookmarkCard.innerHTML = cardHTML(bookmarks, `${locale('core.dashboard_analytics_bookmarks')} ${timeRangeLabel}`);
   if (followersCard) {
+    const engagementEl = followersCard.querySelector('.follower-engagement');
     followersCard.innerHTML = cardHTML(sumAnalytics(data, 'follows'), `${locale('core.dashboard_analytics_followers')} ${timeRangeLabel}`);
+    if (engagementEl) followersCard.appendChild(engagementEl);
   }
 }
 
@@ -566,6 +568,24 @@ function renderTopContributors(data) {
   });
 }
 
+function renderFollowerEngagement(data) {
+  const card = document.getElementById('followers-card');
+  if (!card) return;
+
+  // Remove any previous engagement line
+  const existing = card.querySelector('.follower-engagement');
+  if (existing) existing.remove();
+
+  if (!data || data.total_followers === 0) return;
+
+  const p = document.createElement('p');
+  p.className = 'follower-engagement color-base-60 fs-s';
+  p.appendChild(document.createTextNode(locale('core.follower_engagement_ratio', { ratio: data.ratio })));
+  p.appendChild(document.createElement('br'));
+  p.appendChild(document.createTextNode(locale('core.follower_engagement_detail', { engaged: data.engaged_followers, total: data.total_followers })));
+  card.appendChild(p);
+}
+
 function showLoadingPlaceholders() {
   const cardIds = ['readers-card', 'reactions-card', 'comments-card', 'bookmarks-card', 'followers-card'];
   cardIds.forEach((id) => {
@@ -668,6 +688,16 @@ function callAnalyticsAPI(date, timeRangeLabel, { organizationId, articleId }) {
         const el = document.getElementById('top-contributors-container');
         if (el) el.innerHTML = '';
       });
+  }
+
+  // Follower engagement ratio (user/org dashboard only)
+  if (document.getElementById('followers-card')) {
+    callFollowerEngagementAPI(date, { organizationId })
+      .then((data) => {
+        if (generation !== _state.apiGeneration) return;
+        renderFollowerEngagement(data);
+      })
+      .catch(() => {});
   }
 }
 

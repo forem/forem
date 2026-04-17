@@ -40,6 +40,7 @@ get "/analytics/historical", to: "analytics#historical"
 get "/analytics/past_day", to: "analytics#past_day"
 get "/analytics/referrers", to: "analytics#referrers"
 get "/analytics/top_contributors", to: "analytics#top_contributors"
+get "/analytics/follower_engagement", to: "analytics#follower_engagement"
 
 resources :health_checks, only: [] do
   collection do

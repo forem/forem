@@ -58,3 +58,14 @@ export function callTopContributorsAPI(
     { organizationId, articleId },
   );
 }
+
+export function callFollowerEngagementAPI(
+  date,
+  { organizationId },
+) {
+  return callAnalyticsAPI(
+    '/api/analytics/follower_engagement',
+    date,
+    { organizationId },
+  );
+}
