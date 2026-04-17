@@ -142,11 +142,12 @@ RSpec.describe Article do
     end
 
     describe "#before_destroy_actions" do
+      include ActiveSupport::Testing::TimeHelpers
       let(:user) { create(:user) }
       let(:article) { create(:article, user: user, published: true, type_of: "full_post") }
 
       it "touches the author's last_article_at when the article is destroyed" do
-        old_last_article_at = user.last_article_at
+        old_last_article_at = user.reload.last_article_at
         travel_to 1.minute.from_now do
           expect { article.destroy }.to change { user.reload.last_article_at }.from(old_last_article_at)
         end
