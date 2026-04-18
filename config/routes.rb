@@ -134,6 +134,7 @@ Rails.application.routes.draw do
     resources :events, only: %i[index]
     get "events/:event_name_slug/:event_variation_slug", to: "events#show", as: :event
     resources :article_mutes, only: %i[update]
+    get "/chat_comments/:article_id", to: "chat_comments#index", as: :chat_comments
     resources :comments, only: %i[create update destroy] do
       patch "/hide", to: "comments#hide"
       patch "/unhide", to: "comments#unhide"

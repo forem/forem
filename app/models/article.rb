@@ -125,7 +125,8 @@ class Article < ApplicationRecord
   enum type_of: {
     full_post: 0,
     status: 1,
-    fullscreen_embed: 2
+    fullscreen_embed: 2,
+    chat: 3
   }
 
   enum automod_label: {

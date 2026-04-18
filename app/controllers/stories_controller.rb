@@ -329,7 +329,11 @@ class StoriesController < ApplicationController
     redirect_if_appropriate
     return if performed?
 
-    render template: "articles/show"
+    if @article.type_of == "chat"
+      render template: "articles/chat"
+    else
+      render template: "articles/show"
+    end
   end
 
   def assign_feed_stories
