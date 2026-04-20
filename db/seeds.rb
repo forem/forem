@@ -208,6 +208,70 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   user.add_role(:tech_admin)
 end
 
+admin_user = User.find_by(email: "admin@forem.local")
+if admin_user
+  Organization.find_each do |organization|
+    membership = OrganizationMembership.find_or_initialize_by(
+      user_id: admin_user.id,
+      organization_id: organization.id
+    )
+    membership.update!(type_of_user: "admin")
+
+    user_ids = organization.user_ids
+    if user_ids.size < 3
+      User.where.not(id: user_ids).limit(2).each do |other_user|
+        OrganizationMembership.find_or_create_by!(
+          user_id: other_user.id,
+          organization_id: organization.id
+        ) do |m|
+          m.type_of_user = "member"
+        end
+      end
+    end
+  end
+end
+
+seeder.create_if_doesnt_exist(User, "email", "org_admin@forem.local") do
+  user = User.create!(
+    name: "Org Admin",
+    email: "org_admin@forem.local",
+    username: "org_admin_local",
+    profile_image: Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+  )
+  OrganizationMembership.create!(user: user, organization: Organization.first, type_of_user: "admin") if Organization.any?
+end
+
+seeder.create_if_doesnt_exist(User, "email", "org_member@forem.local") do
+  user = User.create!(
+    name: "Org Member",
+    email: "org_member@forem.local",
+    username: "org_member_local",
+    profile_image: Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+  )
+  OrganizationMembership.create!(user: user, organization: Organization.first, type_of_user: "member") if Organization.any?
+end
+
+seeder.create_if_doesnt_exist(User, "email", "no_org@forem.local") do
+  User.create!(
+    name: "Independent User",
+    email: "no_org@forem.local",
+    username: "independent_local",
+    profile_image: Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+  )
+end
+
 Users::CreateMascotAccount.call unless Settings::General.mascot_user_id
 
 ##############################################################################

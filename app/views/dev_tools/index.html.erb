@@ -1,0 +1,65 @@
+<div class="crayons-layout">
+  <div class="crayons-layout__content">
+    <div class="crayons-card p-6">
+      <h1 class="crayons-title mb-4">Development Utilities</h1>
+      <p class="mb-6">Developer restricted dashboard to easily navigate and spoof seeded local users for testing workflows.</p>
+
+      <h2 class="crayons-subtitle mb-4">Accounts Seeded (Most Recent 100)</h2>
+      
+      <div class="table-responsive">
+        <table class="crayons-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Organizations</th>
+              <th>Roles</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @users.each do |user| %>
+              <tr>
+                <td><%= user.id %></td>
+                <td><strong><%= user.username %></strong></td>
+                <td><%= user.email %></td>
+                <td>
+                  <% if user.organization_memberships.any? %>
+                    <% user.organization_memberships.each do |membership| %>
+                      <span class="crayons-badge crayons-badge--<%= membership.type_of_user == 'admin' ? 'brand' : 'opacity' %> mr-1 mb-1 inline-block">
+                        <%= membership.organization.name %> (<%= membership.type_of_user %>)
+                      </span>
+                    <% end %>
+                  <% else %>
+                    <span class="color-base-50">None</span>
+                  <% end %>
+                </td>
+                <td>
+                  <span class="crayons-badge crayons-badge--brand mr-1"><%= user.roles.map(&:name).join(", ") %></span>
+                </td>
+                <td>
+                  <%= button_to "Sign in natively", dev_tools_sign_in_as_path(user_id: user.id), method: :post, class: "crayons-btn crayons-btn--s crayons-btn--brand" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mt-8">
+        <h2 class="crayons-subtitle mb-4">Useful scripts</h2>
+        <div class="crayons-card p-4 bg-base-10">
+          <h3 class="fw-bold mb-2"><code>bin/fresh_start</code></h3>
+          <p class="mb-4 text-sm color-base-70">Providing a clean slate for development, this script natively executes:</p>
+          <ul class="list-disc pl-5 mb-0 text-sm color-base-70">
+            <li class="mb-1"><strong>Cleans public cruft:</strong> Removes all compiled assets, uploads, javascript packs, and pipeline builds.</li>
+            <li class="mb-1"><strong>Cleans tmp cruft:</strong> Clears standard Rails cache, pids, sockets, and logs natively via <code>bin/rails tmp:clear</code> and <code>log:clear</code>.</li>
+            <li class="mb-1"><strong>Strips debug artifacts:</strong> Hard-deletes manual Capybara testing snapshots, random ruby files, and JSON dumps floating in <code>/tmp</code>.</li>
+            <li><strong>Rebuilds database natively:</strong> Executes <code>bin/rails db:seed:replant</code> which completely truncates all tables bypassing migrations and cleanly re-runs <code>db/seeds.rb</code> from scratch!</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
