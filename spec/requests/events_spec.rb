@@ -24,6 +24,15 @@ RSpec.describe "Events", type: :request do
         expect(response.body).to include(published_event.title)
       end
 
+      context "when forced_live state is passed" do
+        it "renders the show view indicating that forced live mode is enabled" do
+          get event_path(published_event.event_name_slug, published_event.event_variation_slug), params: { state: "forced_live" }
+          
+          expect(response).to have_http_status(:success)
+          expect(response.body).to include("IS_FORCED_LIVE = true;")
+        end
+      end
+
       context "when the event has associated articles via tags" do
         let(:tag) { create(:tag, name: "awstest") }
         let(:article) { create(:article, title: "A Custom Event Article", tag_list: tag.name, published: true) }
