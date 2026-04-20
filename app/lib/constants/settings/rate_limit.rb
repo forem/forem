@@ -14,6 +14,10 @@ module Constants
           internal_content_description_spec: {
             description: I18n.t("lib.constants.settings.rate_limit.content_spec.description"),
             placeholder: I18n.t("lib.constants.settings.rate_limit.content_spec.placeholder")
+          },
+          expanded_content_advisement_spec: {
+            description: I18n.t("lib.constants.settings.rate_limit.expanded_advisement_spec.description"),
+            placeholder: I18n.t("lib.constants.settings.rate_limit.expanded_advisement_spec.placeholder")
           }
         }
       end
