@@ -45,6 +45,41 @@ RSpec.describe "ArticlesCreate" do
     expect(Article.last.organization_id).to eq(user_org_id)
   end
 
+  it "does not allow a non-org-admin to set co-authors from the editor" do
+    organization = user.organizations.first
+    co_author = create(:user)
+    create(:organization_membership, user: co_author, organization: organization)
+
+    post "/articles", params: {
+      article: {
+        title: new_title,
+        body_markdown: "Yo ho ho#{rand(100)}",
+        organization_id: organization.id,
+        co_author_ids_list: co_author.id.to_s
+      }
+    }
+
+    expect(Article.last.co_author_ids).to eq([])
+  end
+
+  it "allows an org admin to set co-authors from the editor" do
+    organization = user.organizations.first
+    user.organization_memberships.find_by(organization: organization).update!(type_of_user: "admin")
+    co_author = create(:user)
+    create(:organization_membership, user: co_author, organization: organization)
+
+    post "/articles", params: {
+      article: {
+        title: new_title,
+        body_markdown: "Yo ho ho#{rand(100)}",
+        organization_id: organization.id,
+        co_author_ids_list: co_author.id.to_s
+      }
+    }
+
+    expect(Article.last.co_author_ids).to eq([co_author.id])
+  end
+
   it "creates series when series is created with frontmatter" do
     new_title = "NEW TITLE #{rand(100)}"
     post "/articles", params: {
