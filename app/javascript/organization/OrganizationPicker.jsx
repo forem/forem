@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 const orgOptions = (organizations, organizationId, emptyLabel) => {
   const orgs = organizations.map((organization) => {
-    if (organizationId === organization.id) {
+    if (String(organizationId || '') === String(organization.id || '')) {
       return (
         <option key={organization.id} value={organization.id} selected>
           {organization.name}
@@ -42,7 +42,7 @@ export const OrganizationPicker = ({
     name={name}
     id={id}
     className={className}
-    onBlur={onToggle}
+    onChange={onToggle}
   >
     {orgOptions(organizations, organizationId, emptyLabel)}
   </select>

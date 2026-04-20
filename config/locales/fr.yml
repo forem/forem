@@ -32,6 +32,9 @@ fr:
     article_form_publish: Publier
     article_form_loading_preview: Chargement de l'aperçu
     article_form_preview_loaded: Aperçu chargé
+    article_form_co_authors: Co-auteurs
+    article_form_co_authors_description: Ajoutez jusqu'à 4 co-auteurs de %{org_name}.
+    article_form_co_authors_placeholder: Ajouter jusqu'à 4...
     comments_preview: Aperçu
     comments_continue_editing: Continuer l'édition
     survey_enter_response: Entrez votre réponse ici...
@@ -44,6 +47,14 @@ fr:
     dashboard_analytics_unique_reactors: de %{count} utilisateurs uniques
     dashboard_analytics_bookmarks: Favoris
     dashboard_analytics_followers: Nouveaux Abonnés
+    top_contributors_empty: Aucun contributeur trouvé pour cette période.
+    top_contributors_reactions: réactions
+    top_contributors_comments: commentaires
+    top_contributors_weight_note: Les commentaires ont plus de poids
+    follower_engagement_ratio: "%{ratio}% des abonnés engagés"
+    follower_engagement_detail: "(%{engaged} sur %{total})"
+    dashboard_analytics_no_data: Aucune donnée disponible pour cette période
+    dashboard_analytics_no_referrers: Pas encore de sources de trafic
     stats_by: par
     editor_new_title: Nouveau titre d'article ici...
     editor_body_placeholder: Écrivez le contenu de votre article ici...

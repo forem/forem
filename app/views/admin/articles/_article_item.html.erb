@@ -175,7 +175,21 @@
           </label>
           <input id="max_score_<%= article.id %>" class="crayons-textfield" type="number" name="article[max_score]" value="<%= article.max_score %>">
         </div>
+        </div>
       </div>
+      <% if article.context_notes.any? %>
+        <div class="flex">
+          <div class="crayons-field w-100">
+            <label class="crayons-field__label">Context Notes</label>
+            <%= f.fields_for :context_notes do |cn_form| %>
+              <div class="mb-3 w-100">
+                <span class="fs-s color-secondary mb-1 block">Context tag: <%= cn_form.object.tag&.name || "None" %></span>
+                <%= cn_form.text_area :body_markdown, class: "crayons-textfield w-100 p-2", rows: 3 %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
       <% if article.published? %>
         <div class="flex">
           <div class="crayons-field">

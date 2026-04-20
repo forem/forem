@@ -60,4 +60,22 @@ RSpec.describe "Api::V1::Analytics" do
       expect(response).to have_http_status(:unauthorized)
     end
   end
+
+  describe "GET /api/analytics/top_contributors" do
+    include_examples "GET /api/analytics/:endpoint authorization examples", "top_contributors"
+
+    it "returns 401 when unauthenticated" do
+      get "/api/analytics/top_contributors", headers: { "Accept" => "application/vnd.forem.api-v1+json" }
+      expect(response).to have_http_status(:unauthorized)
+    end
+  end
+
+  describe "GET /api/analytics/follower_engagement" do
+    include_examples "GET /api/analytics/:endpoint authorization examples", "follower_engagement"
+
+    it "returns 401 when unauthenticated" do
+      get "/api/analytics/follower_engagement", headers: { "Accept" => "application/vnd.forem.api-v1+json" }
+      expect(response).to have_http_status(:unauthorized)
+    end
+  end
 end
