@@ -66,7 +66,7 @@
           <h3 class="font-bold text-lg mb-2">Display Area: <%= billboard.placement_area %></h3>
           <p class="text-sm opacity-75 mb-4">Name: <%= billboard.name %> | Approved: <%= billboard.approved %></p>
           <div class="border rounded p-4 overflow-hidden relative break-words" style="background-color: var(--body-bg);">
-            <%= raw billboard.body_markdown %>
+            <%= raw billboard.processed_html_final %>
           </div>
         </div>
       <% end %>
