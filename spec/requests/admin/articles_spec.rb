@@ -71,6 +71,14 @@ RSpec.describe "/admin/content_manager/articles" do
       end.to change { article.reload.published_at }.to(DateTime.parse(updated_published_at.to_s))
     end
 
+    it "allows an Admin to update an article's context_notes" do
+      context_note = create(:context_note, article: article, body_markdown: "Original markdown note that is long enough")
+      
+      expect do
+        patch admin_article_path(article.id), params: { article: { context_notes_attributes: { "0" => { id: context_note.id, body_markdown: "Updated markdown note that is long enough" } } } }
+      end.to change { context_note.reload.body_markdown }.to("Updated markdown note that is long enough")
+    end
+
     it "creates an audit log on update" do
       Audit::Subscribe.listen(:moderator)
 

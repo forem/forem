@@ -39,9 +39,19 @@
       <%= form.text_area :description, class: "crayons-textfield", rows: 3 %>
     </div>
 
-    <div class="crayons-field">
-      <%= form.label :type_of, "Event Type", class: "crayons-field__label" %>
-      <%= form.select :type_of, Event.type_ofs.keys.map { |type| [type.titleize, type] }, {}, class: "crayons-select" %>
+    <div class="grid grid-cols-2 gap-4">
+      <div class="crayons-field">
+        <%= form.label :type_of, "Event Type", class: "crayons-field__label" %>
+        <%= form.select :type_of, Event.type_ofs.keys.map { |type| [type.titleize, type] }, {}, class: "crayons-select" %>
+      </div>
+
+      <div class="crayons-field">
+        <%= form.label :broadcast_config, "Billboard Broadcast Config", class: "crayons-field__label" do %>
+          Billboard Broadcast Config
+          <p class="crayons-field__description">Controls billboard auto-generation. No Broadcast = Billboards disabled. Tagged = Billboards target relevant tags only. Global = Billboards show to all users everywhere.</p>
+        <% end %>
+        <%= form.select :broadcast_config, Event.broadcast_configs.keys.map { |cfg| [cfg.titleize, cfg] }, {}, class: "crayons-select" %>
+      </div>
     </div>
 
     <div class="crayons-field">
@@ -70,17 +80,67 @@
       <%= form.text_field :tag_list, value: event.tag_list.join(", "), class: "crayons-textfield", placeholder: "aws, ai, streaming" %>
     </div>
 
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="crayons-field">
-        <%= form.label :start_time, class: "crayons-field__label" %>
+        <%= form.label :start_time, class: "crayons-field__label" do %>
+          Start Time <span style="color:var(--brand-primary);">(Expected in UTC)</span>
+        <% end %>
         <%= form.datetime_field :start_time, class: "crayons-textfield", required: true %>
+        <div id="start_time_info"></div>
       </div>
 
       <div class="crayons-field">
-        <%= form.label :end_time, class: "crayons-field__label" %>
+        <%= form.label :end_time, class: "crayons-field__label" do %>
+          End Time <span style="color:var(--brand-primary);">(Expected in UTC)</span>
+        <% end %>
         <%= form.datetime_field :end_time, class: "crayons-textfield", required: true %>
+        <div id="end_time_info"></div>
       </div>
     </div>
+
+    <script>
+      (function() {
+        const startInput = document.getElementById('event_start_time');
+        const endInput = document.getElementById('event_end_time');
+        
+        function updateTimeInfo(inputEl, displayElId) {
+          const displayEl = document.getElementById(displayElId);
+          if(!inputEl.value) {
+            displayEl.innerHTML = "";
+            return;
+          }
+          // The database expects UTC. Rails renders the UTC string into the datetime-local value.
+          // By appending "Z", we force JS to parse this input explicitly as a UTC timestamp.
+          const utcTime = new Date(inputEl.value + "Z");
+          
+          if(isNaN(utcTime)) return;
+          
+          const localString = utcTime.toLocaleString(undefined, { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' });
+          const utcString = utcTime.toUTCString();
+          
+          const diffMs = utcTime - new Date();
+          const diffHours = (diffMs / (1000 * 60 * 60)).toFixed(1);
+          const relativeInfo = diffHours >= 0 ? `in ${diffHours} hours` : `${Math.abs(diffHours)} hours ago`;
+          
+          displayEl.innerHTML = `
+            <div style="background-color: var(--card-bg); border: 2px solid var(--brand-primary); border-radius: 6px; padding: 12px; margin-top: 8px; font-size: var(--fs-xs);">
+              <div style="margin-bottom: 4px;"><strong>You are inputting:</strong> ${utcString}</div>
+              <div style="margin-bottom: 4px; color: var(--brand-primary);"><strong>Translates to your local time:</strong> ${localString}</div>
+              <div class="opacity-75"><em>${relativeInfo}</em></div>
+            </div>
+          `;
+        }
+
+        if (startInput) {
+          startInput.addEventListener('input', () => updateTimeInfo(startInput, 'start_time_info'));
+          updateTimeInfo(startInput, 'start_time_info');
+        }
+        if (endInput) {
+          endInput.addEventListener('input', () => updateTimeInfo(endInput, 'end_time_info'));
+          updateTimeInfo(endInput, 'end_time_info');
+        }
+      })();
+    </script>
 
     <div class="crayons-field crayons-field--checkbox">
       <%= form.check_box :published, class: "crayons-checkbox" %>
