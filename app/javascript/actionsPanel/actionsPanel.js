@@ -1,3 +1,4 @@
+import { showSnackbar } from '../utilities/showSnackbar';
 import { toggleFlagUserModal } from '../packs/toggleUserFlagModal';
 import { toggleSuspendUserModal } from '../packs/toggleUserSuspensionModal';
 import { toggleUnpublishPostModal } from '../packs/unpublishPostModal';
@@ -116,10 +117,7 @@ export function addReactionButtonListeners() {
           message = `Error: ${outcome.error}`;
           rollbackReactionButtonsState();
         }
-        top.addSnackbarItem({
-          message,
-          addCloseButton: true,
-        });
+        showSnackbar(message);
         /* eslint-enable no-restricted-globals */
       } catch (error) {
         // eslint-disable-next-line no-alert
@@ -192,16 +190,10 @@ const adminFeatureArticle = async (id, featured) => {
     if (outcome.message == 'success') {
       window.top.location.assign(`${window.location.origin}${outcome.path}`);
     } else {
-      top.addSnackbarItem({
-        message: `Error: ${outcome.message}`,
-        addCloseButton: true,
-      });
+      showSnackbar(`Error: ${outcome.message}`);
     }
   } catch (error) {
-    top.addSnackbarItem({
-      message: `Error: ${error}`,
-      addCloseButton: true,
-    });
+    showSnackbar(`Error: ${error}`);
   }
 };
 
@@ -276,21 +268,17 @@ async function adjustTag(el, reasonElement) {
       }
 
       // eslint-disable-next-line no-restricted-globals
-      top.addSnackbarItem({
-        message: `The #${adjustedTagName} tag was ${
+      showSnackbar(
+        `The #${adjustedTagName} tag was ${
           outcome.result === 'addition' ? 'added' : 'removed'
         }.`,
-        addCloseButton: true,
-      });
+      );
       // TODO: explore possible alternatives to reloading window, which seems to have the side effect
       // of making deferred JS load-in times unpredictable in e2e tests
       window.location.reload();
     } else {
       // eslint-disable-next-line no-restricted-globals
-      top.addSnackbarItem({
-        message: `An error occurred: ${outcome.error}`,
-        addCloseButton: true,
-      });
+      showSnackbar(`An error occurred: ${outcome.error}`);
     }
   } catch (error) {
     // eslint-disable-next-line no-alert

@@ -11,13 +11,17 @@ import {
   initializeHeight,
 } from '../actionsPanel';
 import { postReactions } from '../services/reactions';
+import { showSnackbar } from '../../utilities/showSnackbar';
 
 global.fetch = fetch;
-global.top.addSnackbarItem = jest.fn();
 global.alert = jest.fn();
 
 jest.mock('../services/reactions', () => ({
   postReactions: jest.fn(),
+}));
+
+jest.mock('../../utilities/showSnackbar', () => ({
+  showSnackbar: jest.fn(),
 }));
 
 describe('addCloseListener()', () => {
@@ -86,7 +90,6 @@ describe('addReactionButtonListeners()', () => {
 
     window.fetch = fetch;
     window.getCsrfToken = async () => csrfToken;
-    top.addSnackbarItem = jest.fn();
   });
 
   function sampleResponse(category, create = true) {
@@ -229,10 +232,9 @@ describe('addReactionButtonListeners()', () => {
         button.click();
 
         await waitFor(() => {
-          expect(top.addSnackbarItem).toHaveBeenCalledWith({
-            message: 'This post will be more visible.',
-            addCloseButton: true,
-          });
+          expect(showSnackbar).toHaveBeenCalledWith(
+            'This post will be more visible.',
+          );
         });
       });
     });
@@ -252,10 +254,9 @@ describe('addReactionButtonListeners()', () => {
         button.click();
 
         await waitFor(() => {
-          expect(top.addSnackbarItem).toHaveBeenCalledWith({
-            message: 'This post will be less visible.',
-            addCloseButton: true,
-          });
+          expect(showSnackbar).toHaveBeenCalledWith(
+            'This post will be less visible.',
+          );
         });
       });
     });
@@ -275,10 +276,9 @@ describe('addReactionButtonListeners()', () => {
         button.click();
 
         await waitFor(() => {
-          expect(top.addSnackbarItem).toHaveBeenCalledWith({
-            message: "You've flagged this post as abusive or spam.",
-            addCloseButton: true,
-          });
+          expect(showSnackbar).toHaveBeenCalledWith(
+            "You've flagged this post as abusive or spam.",
+          );
         });
       });
     });
@@ -298,10 +298,9 @@ describe('addReactionButtonListeners()', () => {
         button.click();
 
         await waitFor(() => {
-          expect(top.addSnackbarItem).toHaveBeenCalledWith({
-            message: "Your quality rating was removed.",
-            addCloseButton: true,
-          });
+          expect(showSnackbar).toHaveBeenCalledWith(
+            'Your quality rating was removed.',
+          );
         });
       });
     });
