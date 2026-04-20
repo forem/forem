@@ -5,6 +5,8 @@ class EmailDigestArticleCollector
   ARTICLES_TO_SEND = "EmailDigestArticleCollector#articles_to_send".freeze
   RESULTS_COUNT = 7 # Winner of digest_count_03_18 field test
   CLICK_LOOKBACK = 30
+  DIGEST_ARTICLE_COLUMNS = %i[title description path cached_user cached_tag_list
+                              subforem_id comment_score comments_count].freeze
 
   def initialize(user, force_send: false)
     @user = user
@@ -12,112 +14,16 @@ class EmailDigestArticleCollector
   end
 
   def articles_to_send
-    # rubocop:disable Metrics/BlockLength
-    order = Arel.sql("(((score + comment_score) * ((feed_success_score * 12) + 0.1)) - (clickbait_score * 2)) DESC")
     instrument ARTICLES_TO_SEND, tags: { user_id: @user.id } do
       return [] unless @force_send || should_receive_email?
 
-      articles = if @user.cached_followed_tag_names.any?
-                   # Set subforem context for followed subforems or default
-                   set_subforem_context
-
-                   articles_query = @user.followed_articles
-                     .select(:title, :description, :path, :cached_user, :cached_tag_list, :subforem_id, :comment_score, :comments_count)
-                     .published
-                     .full_posts
-                     .where("published_at > ?", cutoff_date)
-                     .where(email_digest_eligible: true)
-                     .not_authored_by(@user.id)
-                     .where("score > ?", 8)
-
-                   # Only filter by subforem if we're not skipping subforem filtering
-                   articles_query = articles_query.where(subforem_id: @subforem_ids) unless @skip_subforem_filtering
-
-                   articles_query.order(order).limit(RESULTS_COUNT)
-                 else
-                   tags = @user.cached_followed_tag_names_or_recent_tags
-                   # Set subforem context for followed subforems or default
-                   set_subforem_context
-
-                   articles_query = if @skip_subforem_filtering
-                                      # If skipping subforem filtering, get articles from anywhere
-                                      Article.select(
-                                        :title, :description, :path, :cached_user, :cached_tag_list, :subforem_id, :comment_score, :comments_count
-                                      )
-                                        .published
-                                        .full_posts
-                                        .where("published_at > ?", cutoff_date)
-                                        .where(email_digest_eligible: true)
-                                        .not_authored_by(@user.id)
-                                        .where("score > ?", 11)
-                                        .merge(Article.featured.or(Article.cached_tagged_with_any(tags)))
-                                        .order(order)
-                                        .limit(RESULTS_COUNT)
-                                    else
-                                      # Normal logic with subforem filtering and tags
-                                      Article.select(
-                                        :title, :description, :path, :cached_user, :cached_tag_list, :subforem_id, :comment_score, :comments_count
-                                      )
-                                        .published
-                                        .full_posts
-                                        .where("published_at > ?", cutoff_date)
-                                        .where(email_digest_eligible: true)
-                                        .not_authored_by(@user.id)
-                                        .where("score > ?", 11)
-                                        .where(subforem_id: @subforem_ids)
-                                        .order(order)
-                                        .limit(RESULTS_COUNT)
-                                        .merge(Article.featured.or(Article.cached_tagged_with_any(tags)))
-                                    end
-                 end
-
-      # Fallback if there are not enough articles
-      if articles.length < 3
-        if @skip_subforem_filtering
-          # If we're skipping subforem filtering, get articles from anywhere
-          articles_query = Article.select(:title, :description, :path, :cached_user, :cached_tag_list, :subforem_id, :comment_score, :comments_count)
-            .published
-            .full_posts
-            .where("published_at > ?", cutoff_date)
-            .where(email_digest_eligible: true)
-            .where("score > ?", 11)
-        else
-          # For fallback, include both followed subforems and default subforem
-          fallback_subforem_ids = @subforem_ids.dup
-          default_subforem_id = Subforem.cached_default_id
-          if default_subforem_id && fallback_subforem_ids.exclude?(default_subforem_id)
-            fallback_subforem_ids << default_subforem_id
-          end
-
-          articles_query = Article.select(:title, :description, :path, :cached_user, :cached_tag_list, :subforem_id, :comment_score, :comments_count)
-            .published
-            .full_posts
-            .where("published_at > ?", cutoff_date)
-            .where(email_digest_eligible: true)
-            .where("score > ?", 11)
-            .where(subforem_id: fallback_subforem_ids)
-        end
-
-        articles = articles_query.not_authored_by(@user.id)
-          .order(order)
-          .limit(RESULTS_COUNT)
-
-        if @user.cached_antifollowed_tag_names.any?
-          articles = articles.not_cached_tagged_with_any(@user.cached_antifollowed_tag_names)
-        end
+      if Settings::UserExperience.feed_strategy == "configured"
+        articles = personalized_articles
+        return articles if articles
       end
 
-      # Ensure we operate on an array to avoid relation-slicing surprises
-      articles = articles.to_a
-
-      # Pop second article to front if the first article is the same as the last email
-      if articles.any? && last_email_includes_title_in_subject?(articles.first.title)
-        articles = articles.rotate(1)
-      end
-
-      articles.length < 3 ? [] : articles
+      legacy_articles
     end
-    # rubocop:enable Metrics/BlockLength
   end
 
   def should_receive_email?
@@ -132,6 +38,140 @@ class EmailDigestArticleCollector
   end
 
   private
+
+  # rubocop:disable Metrics/PerceivedComplexity
+  def legacy_articles
+    order = Arel.sql("(((score + comment_score) * ((feed_success_score * 12) + 0.1)) - (clickbait_score * 2)) DESC")
+    articles = if @user.cached_followed_tag_names.any?
+                 # Set subforem context for followed subforems or default
+                 set_subforem_context
+
+                 articles_query = @user.followed_articles
+                   .select(*DIGEST_ARTICLE_COLUMNS)
+                   .published
+                   .full_posts
+                   .where("published_at > ?", cutoff_date)
+                   .where(email_digest_eligible: true)
+                   .not_authored_by(@user.id)
+                   .where("score > ?", 8)
+
+                 # Only filter by subforem if we're not skipping subforem filtering
+                 articles_query = articles_query.where(subforem_id: @subforem_ids) unless @skip_subforem_filtering
+
+                 articles_query.order(order).limit(RESULTS_COUNT)
+               else
+                 tags = @user.cached_followed_tag_names_or_recent_tags
+                 # Set subforem context for followed subforems or default
+                 set_subforem_context
+
+                 articles_query = if @skip_subforem_filtering
+                                    # If skipping subforem filtering, get articles from anywhere
+                                    Article.select(*DIGEST_ARTICLE_COLUMNS)
+                                      .published
+                                      .full_posts
+                                      .where("published_at > ?", cutoff_date)
+                                      .where(email_digest_eligible: true)
+                                      .not_authored_by(@user.id)
+                                      .where("score > ?", 11)
+                                      .merge(Article.featured.or(Article.cached_tagged_with_any(tags)))
+                                      .order(order)
+                                      .limit(RESULTS_COUNT)
+                                  else
+                                    # Normal logic with subforem filtering and tags
+                                    Article.select(*DIGEST_ARTICLE_COLUMNS)
+                                      .published
+                                      .full_posts
+                                      .where("published_at > ?", cutoff_date)
+                                      .where(email_digest_eligible: true)
+                                      .not_authored_by(@user.id)
+                                      .where("score > ?", 11)
+                                      .where(subforem_id: @subforem_ids)
+                                      .order(order)
+                                      .limit(RESULTS_COUNT)
+                                      .merge(Article.featured.or(Article.cached_tagged_with_any(tags)))
+                                  end
+               end
+
+    # Fallback if there are not enough articles
+    if articles.length < 3
+      if @skip_subforem_filtering
+        # If we're skipping subforem filtering, get articles from anywhere
+        articles_query = Article.select(*DIGEST_ARTICLE_COLUMNS)
+          .published
+          .full_posts
+          .where("published_at > ?", cutoff_date)
+          .where(email_digest_eligible: true)
+          .where("score > ?", 11)
+      else
+        # For fallback, include both followed subforems and default subforem
+        fallback_subforem_ids = @subforem_ids.dup
+        default_subforem_id = Subforem.cached_default_id
+        if default_subforem_id && fallback_subforem_ids.exclude?(default_subforem_id)
+          fallback_subforem_ids << default_subforem_id
+        end
+
+        articles_query = Article.select(*DIGEST_ARTICLE_COLUMNS)
+          .published
+          .full_posts
+          .where("published_at > ?", cutoff_date)
+          .where(email_digest_eligible: true)
+          .where("score > ?", 11)
+          .where(subforem_id: fallback_subforem_ids)
+      end
+
+      articles = articles_query.not_authored_by(@user.id)
+        .order(order)
+        .limit(RESULTS_COUNT)
+
+      if @user.cached_antifollowed_tag_names.any?
+        articles = articles.not_cached_tagged_with_any(@user.cached_antifollowed_tag_names)
+      end
+    end
+
+    # Ensure we operate on an array to avoid relation-slicing surprises
+    articles = articles.to_a
+
+    # Pop second article to front if the first article is the same as the last email
+    if articles.any? && last_email_includes_title_in_subject?(articles.first.title)
+      articles = articles.rotate(1)
+    end
+
+    articles.length < 3 ? [] : articles
+  end
+  # rubocop:enable Metrics/PerceivedComplexity
+
+  def personalized_articles
+    feed_config = FeedConfig.order(feed_success_score: :desc).first
+    return unless feed_config
+
+    set_subforem_context
+
+    score_sql = feed_config.score_sql(@user)
+
+    articles_query = Article
+      .select(*DIGEST_ARTICLE_COLUMNS)
+      .published
+      .full_posts
+      .where("published_at > ?", cutoff_date)
+      .where(email_digest_eligible: true)
+      .not_authored_by(@user.id)
+      .order(Arel.sql("#{score_sql} DESC"))
+      .limit(RESULTS_COUNT)
+
+    articles_query = articles_query.where(subforem_id: @subforem_ids) unless @skip_subforem_filtering
+
+    blocked_ids = UserBlock.cached_blocked_ids_for_blocker(@user.id)
+    articles_query = articles_query.where.not(user_id: blocked_ids) if blocked_ids.any?
+
+    hidden_tags = @user.cached_antifollowed_tag_names
+    articles_query = articles_query.not_cached_tagged_with_any(hidden_tags) if hidden_tags.any?
+
+    articles = articles_query.to_a
+    articles = articles.rotate(1) if articles.any? && last_email_includes_title_in_subject?(articles.first.title)
+    articles.length >= 3 ? articles : nil
+  rescue StandardError
+    nil
+  end
 
   def set_subforem_context
     # Get user's followed subforems from UserActivity
