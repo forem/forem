@@ -23,6 +23,7 @@ export const Form = ({
   aiAvailable,
   videoSourceUrl,
   onVideoUrlChange,
+  coAuthorsData,
 }) => {
   const contentRef = useRef(null);
 
@@ -54,6 +55,7 @@ export const Form = ({
           aiAvailable={aiAvailable}
           videoSourceUrl={videoSourceUrl}
           onVideoUrlChange={onVideoUrlChange}
+          coAuthorsData={coAuthorsData}
         />
       )}
 
@@ -86,6 +88,7 @@ Form.propTypes = {
   aiAvailable: PropTypes.bool.isRequired,
   videoSourceUrl: PropTypes.string,
   onVideoUrlChange: PropTypes.func,
+  coAuthorsData: PropTypes.array,
 };
 
 Form.displayName = 'Form';
