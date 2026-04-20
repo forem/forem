@@ -6984,6 +6984,7 @@ __metadata:
     "@babel/plugin-proposal-export-default-from": "npm:^7.23.3"
     "@babel/plugin-proposal-object-rest-spread": "npm:^7.20.7"
     "@babel/plugin-syntax-dynamic-import": "npm:^7.8.3"
+    "@babel/plugin-transform-dynamic-import": "npm:^7.23.3"
     "@babel/plugin-transform-private-methods": "npm:^7.24.1"
     "@babel/plugin-transform-react-jsx": "npm:^7.22.15"
     "@babel/preset-env": "npm:^7.23.3"
