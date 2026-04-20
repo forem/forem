@@ -1,10 +1,12 @@
 module Admin
   class EventsController < Admin::ApplicationController
-    before_action :set_event, only: %i[edit update destroy]
+    before_action :set_event, only: %i[show edit update destroy]
 
     def index
       @events = Event.all.order(created_at: :desc)
     end
+
+    def show; end
 
     def new
       @event = Event.new
@@ -50,7 +52,8 @@ module Admin
         :published, 
         :start_time, 
         :end_time, 
-        :type_of, 
+        :type_of,
+        :broadcast_config,
         :user_id, 
         :organization_id, 
         :tag_list,
