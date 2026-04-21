@@ -358,7 +358,11 @@ export class ArticleForm extends Component {
   };
 
   handleMainImageUrlChange = (payload) => {
-    const newImage = payload.links[0];
+    let newImage = payload.links[0];
+    // Convert relative URLs to absolute URLs for backend validation
+    if (newImage && newImage.startsWith('/')) {
+      newImage = `${window.location.origin}${newImage}`;
+    }
     this.setState({
       mainImage: newImage,
       // Clear video when image is set
