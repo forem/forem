@@ -114,8 +114,10 @@ class ArticlesController < ApplicationController
   def preview
     authorize Article
 
+    video_url = params[:video_source_url]
+
     begin
-      renderer = ContentRenderer.new(params[:article_body], source: Article.new, user: current_user)
+      renderer = ContentRenderer.new(params[:article_body], source: Article.new(video_source_url: video_url), user: current_user)
       result = renderer.process_article
       processed_html = result.processed_html
       front_matter = result.front_matter.to_h
@@ -306,6 +308,23 @@ class ArticlesController < ApplicationController
     @article = found_article || not_found
   end
 
+
+
+  private
+
+  def article_params
+    params.require(:article).permit(
+      :title, 
+      :body_markdown, 
+      :main_image, 
+      :tag_list,
+      :video_source_url,
+      :description,
+      :published,
+      :organization_id
+    )
+  end
+
   # TODO: refactor all of this update logic into the Articles::Updater possibly,
   # ideally there should only be one place to handle the update logic
   def article_params_json
@@ -321,19 +340,28 @@ class ArticlesController < ApplicationController
                        %i[
                          title body_markdown main_image published description video_thumbnail_url
                          tag_list canonical_url series collection_id archived published_at timezone
-                         published_at_date published_at_time type_of body_url subforem_id
+                         published_at_date published_at_time type_of body_url subforem_id video_source_url
                        ]
                      end
 
     # Allow video_source_url if it's a valid YouTube, Mux, or Twitch URL
-    video_url = params.dig("article", "video_source_url")
-    if video_url.present?
-      youtube_pattern = /\Ahttps?:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)/
-      mux_pattern = /\Ahttps?:\/\/player\.mux\.com\//
-      twitch_pattern = /\Ahttps?:\/\/(www\.)?twitch\.tv\/videos\//
-      allowed_params << :video_source_url if video_url.match?(youtube_pattern) || video_url.match?(mux_pattern) || video_url.match?(twitch_pattern)
-    end
+    # Define validation patterns
+    youtube_pattern = /\Ahttps?:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)/
+    mux_pattern = /\Ahttps?:\/\/player\.mux\.com\//
+    twitch_pattern = /\Ahttps?:\/\/(www\.)?twitch\.tv\/videos\//
 
+    # Logic: Explicitly allow video_source_url if it's being cleared (blank?)
+    # OR if it matches one of the approved provider patterns.
+    video_url = params.dig("article", "video_source_url")
+
+    if video_url.blank? || 
+       video_url.match?(youtube_pattern) || 
+       video_url.match?(mux_pattern) || 
+       video_url.match?(twitch_pattern)
+       
+      allowed_params << :video_source_url
+    end
+    
     # NOTE: the organization logic is still a little counter intuitive but this should
     # fix the bug <https://github.com/forem/forem/issues/2871>
     if org_admin_user_change_privilege
