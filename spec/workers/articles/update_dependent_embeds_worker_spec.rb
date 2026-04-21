@@ -71,6 +71,23 @@ RSpec.describe Articles::UpdateDependentEmbedsWorker, type: :worker do
       subject.perform(source_article_id)
     end
 
+    context "when the source article has been deleted" do
+      before do
+        allow(Article).to receive(:find_by).with(id: source_article_id).and_return(nil)
+      end
+
+      it "still queries and processes generic Article LiquidEmbedReferences successfully" do
+        liquid_embed_relation = double("LiquidEmbedReference::Relation")
+        allow(liquid_embed_relation).to receive(:find_each)
+        
+        expect(LiquidEmbedReference).to receive(:where)
+          .with(referenced_type: ["Article", nil], referenced_id: source_article_id)
+          .and_return(liquid_embed_relation)
+          
+        subject.perform(source_article_id)
+      end
+    end
+
     it "rebuilds markdown columns directly without triggers and evaluates loops conditionally" do
       subject.perform(source_article_id)
       
