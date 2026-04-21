@@ -97,7 +97,7 @@ RSpec.describe CloudRunTag, type: :liquid_tag do
 
     def generate_embed_liquid(input)
       # Stub the HTTP request for URL validation
-      url = input.split.first
+      url = input.split.find { |part| part.match?(%r{^https?://}) }
 
       stub_request(:head, url)
         .to_return(status: 200, body: "", headers: {})

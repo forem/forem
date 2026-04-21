@@ -12,10 +12,10 @@ module UnifiedEmbed
       # Parse input to check for 'minimal' keyword
       parts = stripped_input.split(/\s+/)
       minimal_mode = parts.include?("minimal")
-      url_index = parts.find_index { |part| part.match?(%r{^https?://}) } || 0
 
       # Find the URL (first part that looks like a URL)
-      url = parts[url_index]
+      url = parts.find { |part| part.match?(%r{^https?://}) } || parts.first
+      url_index = parts.index(url)
 
       handler_before_validation = UnifiedEmbed::Registry.find_handler_for(link: url)
 
@@ -54,9 +54,7 @@ module UnifiedEmbed
     def self.input_for_handler(klass:, validated_link:, parts:, url_index:)
       return validated_link unless klass == CloudRunTag
 
-      options = parts.each_with_index.filter_map do |part, index|
-        part unless index == url_index || part == "minimal"
-      end
+      options = parts.each_with_index.filter_map { |part, index| part if index != url_index && part != "minimal" }
 
       ([validated_link] + options).join(" ")
     end
