@@ -26,6 +26,30 @@ RSpec.describe "Admin::Events", type: :request do
     end
   end
 
+  describe "GET /admin/content_manager/events/:id" do
+    let(:event) { create(:event) }
+
+    context "when logged in as an admin" do
+      before { login_as(super_admin) }
+
+      it "renders the show template" do
+        get admin_event_path(event)
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include(event.title)
+      end
+    end
+
+    context "when logged in as a normal user" do
+      before { login_as(regular_user) }
+
+      it "denies access" do
+        expect {
+          get admin_event_path(event)
+        }.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
+  end
+
   describe "POST /admin/content_manager/events" do
     before { login_as(super_admin) }
 
