@@ -1575,6 +1575,42 @@ RSpec.describe Article do
     end
   end
 
+  describe "video_source_url blank string handling" do
+    let(:user) { create(:user, created_at: 3.weeks.ago) }
+    let(:article) { create(:article, user: user, video_source_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ") }
+
+    it "converts empty string to nil when saving" do
+      article.update(video_source_url: "")
+      article.reload
+      expect(article.video_source_url).to be_nil
+    end
+
+    it "converts whitespace-only string to nil when saving" do
+      article.update(video_source_url: "   ")
+      article.reload
+      expect(article.video_source_url).to be_nil
+    end
+
+    it "clears video_code and video_thumbnail_url when video_source_url is cleared" do
+      article.update(video_source_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+      article.update(video_code: "dQw4w9WgXcQ", video_thumbnail_url: "https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg")
+
+      article.update(video_source_url: "")
+      article.reload
+
+      expect(article.video_source_url).to be_nil
+      expect(article.video_code).to be_nil
+      expect(article.video_thumbnail_url).to be_nil
+    end
+
+    it "preserves video_source_url when it's a valid URL" do
+      valid_url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+      article.update(video_source_url: valid_url)
+      article.reload
+      expect(article.video_source_url).to eq(valid_url)
+    end
+  end
+
   describe "#main_image_from_frontmatter" do
     let(:article) { create(:article, user: user, main_image_from_frontmatter: false) }
 

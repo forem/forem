@@ -11,7 +11,7 @@ class Article < ApplicationRecord
   acts_as_taggable_on :tags
   resourcify
 
-  include StringAttributeCleaner.nullify_blanks_for(:canonical_url, on: :before_save)
+  include StringAttributeCleaner.nullify_blanks_for(:canonical_url, :video_source_url, on: :before_save)
   DEFAULT_FEED_PAGINATION_WINDOW_SIZE = 18
 
   # When we cache an entity, either {User} or {Organization}, these are the names of the attributes
