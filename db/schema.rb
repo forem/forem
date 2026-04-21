@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_04_09_173612) do
+ActiveRecord::Schema[7.0].define(version: 2026_04_21_160606) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -670,6 +670,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_09_173612) do
 
   create_table "events", force: :cascade do |t|
     t.integer "broadcast_config", default: 0
+    t.datetime "broadcast_ended_at"
     t.string "cached_tag_list"
     t.datetime "created_at", null: false
     t.jsonb "data", default: {}
@@ -677,6 +678,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_09_173612) do
     t.datetime "end_time", null: false
     t.string "event_name_slug", null: false
     t.string "event_variation_slug", null: false
+    t.boolean "manual_broadcast_end", default: false, null: false
     t.bigint "organization_id"
     t.string "primary_stream_url"
     t.boolean "published", default: false

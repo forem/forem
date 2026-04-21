@@ -30,6 +30,17 @@
             <span class="c-indicator c-indicator--warning">Draft</span>
           <% end %>
         </li>
+        <% if @event.manual_broadcast_end? %>
+          <li>
+            <strong>Manual Termination:</strong>
+            <% if @event.broadcast_ended_at.present? %>
+               <span class="c-indicator">Closed</span>
+               <span class="text-xs opacity-75">(<%= @event.broadcast_ended_at.to_fs(:short) %>)</span>
+            <% else %>
+               <span class="c-indicator c-indicator--warning">Holding: Waiting for trigger</span>
+            <% end %>
+          </li>
+        <% end %>
         <li><strong>Event Type:</strong> <%= @event.type_of.titleize %></li>
         <li><strong>Broadcast Config:</strong> <%= @event.broadcast_config.titleize %></li>
         <li>
@@ -60,9 +71,14 @@
 
   <div class="flex items-center justify-between mb-6">
     <h2 class="text-2xl font-bold">Generated Billboards</h2>
-    <% if @event.live_stream? %>
-      <button id="toggle-stream-btn" class="c-btn c-btn--secondary c-btn--sm">Test Stream Transition</button>
-    <% end %>
+    <div class="flex items-center gap-2">
+      <% if @event.manual_broadcast_end? && @event.broadcast_ended_at.nil? && @event.published? %>
+        <%= button_to "End Broadcast", end_broadcast_admin_event_path(@event), method: :patch, form: { data: { turbo: false } }, data: { confirm: "Are you sure? This will tear down all active billboards." }, class: "c-btn c-btn--danger c-btn--sm" %>
+      <% end %>
+      <% if @event.live_stream? %>
+        <button id="toggle-stream-btn" class="c-btn c-btn--secondary c-btn--sm">Test Stream Transition</button>
+      <% end %>
+    </div>
   </div>
   
   <% if @event.billboards.any? %>
