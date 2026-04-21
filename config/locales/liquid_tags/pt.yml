@@ -10,6 +10,7 @@ pt:
       invalid_url: URL do Bolt inválida
     cloud_run_tag:
       invalid_cloud_run_url: URL do Cloud Run inválida
+      invalid_aspect_ratio: Proporção do Cloud Run inválida
 
     codepen_tag:
       invalid_codepen_url: URL do CodePen inválida

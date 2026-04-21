@@ -10,6 +10,7 @@ fr:
       invalid_url: URL Bolt non valide
     cloud_run_tag:
       invalid_cloud_run_url: URL Cloud Run non valide
+      invalid_aspect_ratio: Ratio d’aspect Cloud Run non valide
 
     codepen_tag:
       invalid_codepen_url: URL du CodePen non valide

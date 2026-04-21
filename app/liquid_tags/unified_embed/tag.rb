@@ -12,9 +12,10 @@ module UnifiedEmbed
       # Parse input to check for 'minimal' keyword
       parts = stripped_input.split(/\s+/)
       minimal_mode = parts.include?("minimal")
+      url_index = parts.find_index { |part| part.match?(%r{^https?://}) } || 0
 
       # Find the URL (first part that looks like a URL)
-      url = parts.find { |part| part.match?(%r{^https?://}) } || parts.first
+      url = parts[url_index]
 
       handler_before_validation = UnifiedEmbed::Registry.find_handler_for(link: url)
 
@@ -36,11 +37,28 @@ module UnifiedEmbed
                   UnifiedEmbed::Registry.find_liquid_tag_for(link: validated_link)
                 end
 
-        klass.__send__(:new, tag_name, validated_link, parse_context)
+        tag_input = input_for_handler(
+          klass: klass,
+          validated_link: validated_link,
+          parts: parts,
+          url_index: url_index,
+        )
+
+        klass.__send__(:new, tag_name, tag_input, parse_context)
       rescue SocketError, Timeout::Error, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, OpenSSL::SSL::SSLError => e
         Rails.logger.warn("[UnifiedEmbed::Tag] Network/SSL error during validation for '#{url}': #{e.class} - #{e.message}")
         FallbackTag.__send__(:new, tag_name, url, parse_context)
       end
+    end
+
+    def self.input_for_handler(klass:, validated_link:, parts:, url_index:)
+      return validated_link unless klass == CloudRunTag
+
+      options = parts.each_with_index.filter_map do |part, index|
+        part unless index == url_index || part == "minimal"
+      end
+
+      ([validated_link] + options).join(" ")
     end
 
     def self.validate_link(input:, retries: MAX_REDIRECTION_COUNT, method: Net::HTTP::Head)

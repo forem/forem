@@ -9,10 +9,13 @@ RSpec.describe CloudRunTag, type: :liquid_tag do
     let(:invalid_cloud_run_url) { "https://example.com/invalid" }
     let(:invalid_format_url) { "not-a-url" }
     let(:invalid_non_run_app_url) { "https://My-App-123.example.com" }
+    let(:valid_landscape_cloud_run_input) { "#{valid_cloud_run_with_region} landscape" }
+    let(:valid_portrait_cloud_run_input) { "#{valid_cloud_run_with_region} portrait" }
+    let(:invalid_layout_cloud_run_input) { "#{valid_cloud_run_with_region} square" }
 
-    def generate_new_liquid(url)
+    def generate_new_liquid(input)
       Liquid::Template.register_tag("cloudrun", CloudRunTag)
-      Liquid::Template.parse("{% cloudrun #{url} %}")
+      Liquid::Template.parse("{% cloudrun #{input} %}")
     end
 
     it "accepts valid Cloud Run URL with trailing slash" do
@@ -50,7 +53,23 @@ RSpec.describe CloudRunTag, type: :liquid_tag do
       expect(rendered).to include('frameborder="0"')
       expect(rendered).to include('height="600px"')
       expect(rendered).to include('loading="lazy"')
-      expect(rendered).to include('style="width: 100%; border: 1px solid #e1e5e9; border-radius: 4px;"')
+      expect(rendered).to include('style="width: 100%; aspect-ratio: 4 / 3; height: auto; border: 1px solid #e1e5e9; border-radius: 4px;"')
+    end
+
+    it "renders a landscape layout when requested" do
+      liquid = generate_new_liquid(valid_landscape_cloud_run_input)
+      rendered = liquid.render
+
+      expect(rendered).to include('height="420px"')
+      expect(rendered).to include('aspect-ratio: 16 / 9;')
+    end
+
+    it "renders a portrait layout when requested" do
+      liquid = generate_new_liquid(valid_portrait_cloud_run_input)
+      rendered = liquid.render
+
+      expect(rendered).to include('height="780px"')
+      expect(rendered).to include('aspect-ratio: 3 / 4;')
     end
 
     it "raises an error for invalid Cloud Run URL" do
@@ -64,17 +83,26 @@ RSpec.describe CloudRunTag, type: :liquid_tag do
     it "raises an error for non-Cloud Run URLs" do
       expect { generate_new_liquid(invalid_non_run_app_url).render }.to raise_error("Invalid Cloud Run URL")
     end
+
+    it "raises an error for unsupported layout options" do
+      expect { generate_new_liquid(invalid_layout_cloud_run_input).render }.to raise_error("Invalid Cloud Run aspect ratio")
+    end
   end
 
   describe "embed tag integration" do
     let(:valid_cloud_run_url) { "https://hello-world-app-584800428475.us-west1.run.app" }
+    let(:landscape_cloud_run_embed) { "#{valid_cloud_run_url} landscape" }
+    let(:portrait_cloud_run_embed) { "#{valid_cloud_run_url} portrait" }
+    let(:invalid_cloud_run_embed) { "#{valid_cloud_run_url} square" }
 
-    def generate_embed_liquid(url)
+    def generate_embed_liquid(input)
       # Stub the HTTP request for URL validation
+      url = input.split.first
+
       stub_request(:head, url)
         .to_return(status: 200, body: "", headers: {})
       
-      Liquid::Template.parse("{% embed #{url} %}")
+      Liquid::Template.parse("{% embed #{input} %}")
     end
 
     it "works with embed tag" do
@@ -91,7 +119,27 @@ RSpec.describe CloudRunTag, type: :liquid_tag do
       expect(rendered).to include('frameborder="0"')
       expect(rendered).to include('height="600px"')
       expect(rendered).to include('loading="lazy"')
-      expect(rendered).to include('style="width: 100%; border: 1px solid #e1e5e9; border-radius: 4px;"')
+      expect(rendered).to include('style="width: 100%; aspect-ratio: 4 / 3; height: auto; border: 1px solid #e1e5e9; border-radius: 4px;"')
+    end
+
+    it "supports the landscape option via embed tag" do
+      liquid = generate_embed_liquid(landscape_cloud_run_embed)
+      rendered = liquid.render
+
+      expect(rendered).to include('height="420px"')
+      expect(rendered).to include('aspect-ratio: 16 / 9;')
+    end
+
+    it "supports the portrait option via embed tag" do
+      liquid = generate_embed_liquid(portrait_cloud_run_embed)
+      rendered = liquid.render
+
+      expect(rendered).to include('height="780px"')
+      expect(rendered).to include('aspect-ratio: 3 / 4;')
+    end
+
+    it "raises an error for unsupported embed options" do
+      expect { generate_embed_liquid(invalid_cloud_run_embed).render }.to raise_error("Invalid Cloud Run aspect ratio")
     end
   end
 end
