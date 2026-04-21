@@ -369,6 +369,8 @@ export class ArticleForm extends Component {
   handleVideoUrlChange = (url) => {
     this.setState({
       videoSourceUrl: url || null, // Force empty strings to null
+      // Clear image when video is set
+      mainImage: url ? null : this.state.mainImage,
       videoThumbnailUrl: null,     // Explicitly kill these
       videoCode: null,
       edited: true,
