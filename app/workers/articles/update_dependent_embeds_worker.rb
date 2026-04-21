@@ -4,7 +4,16 @@ module Articles
     sidekiq_options queue: :low_priority, lock: :until_executing, on_conflict: :replace
 
     def perform(article_id)
-      LiquidEmbedReference.where(referenced_type: ["Article", nil], referenced_id: article_id).find_each do |reference|
+      article = Article.find_by(id: article_id)
+      return unless article
+      
+      references = LiquidEmbedReference.where(referenced_type: ["Article", nil], referenced_id: article_id)
+      
+      if article.organization_id.present?
+        references = references.or(LiquidEmbedReference.where(referenced_type: "Organization", referenced_id: article.organization_id, tag_name: "org_posts"))
+      end
+
+      references.find_each do |reference|
         record = reference.record
         next unless record
 
