@@ -1,0 +1,173 @@
+<div class="crayons-card p-6">
+  <div class="flex items-center justify-between mb-4">
+    <h1 class="crayons-title">Event Configuration: <%= @event.title %></h1>
+    <div class="flex gap-2">
+      <%= link_to "Edit Event", edit_admin_event_path(@event), class: "c-btn c-btn--primary" %>
+      <%= link_to "Public View", event_path(@event.event_name_slug, @event.event_variation_slug), target: "_blank", class: "c-btn c-btn--secondary" %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 gap-8 mb-8">
+    <div>
+      <h2 class="text-xl font-bold mb-4">General Settings</h2>
+      <ul class="space-y-3">
+        <li><strong>Title:</strong> <%= @event.title %></li>
+        <li><strong>Event Name Slug:</strong> <%= @event.event_name_slug %></li>
+        <li><strong>Event Variation Slug:</strong> <%= @event.event_variation_slug %></li>
+        <li><strong>Description:</strong> <%= @event.description %></li>
+        <li><strong>Tags:</strong> <%= @event.tag_list.join(", ") %></li>
+      </ul>
+    </div>
+    
+    <div>
+      <h2 class="text-xl font-bold mb-4">Broadcast & Status</h2>
+      <ul class="space-y-3">
+        <li>
+          <strong>Status:</strong> 
+          <% if @event.published? %>
+            <span class="c-indicator c-indicator--success">Published</span>
+          <% else %>
+            <span class="c-indicator c-indicator--warning">Draft</span>
+          <% end %>
+        </li>
+        <% if @event.manual_broadcast_end? %>
+          <li>
+            <strong>Manual Termination:</strong>
+            <% if @event.broadcast_ended_at.present? %>
+               <span class="c-indicator">Closed</span>
+               <span class="text-xs opacity-75">(<%= @event.broadcast_ended_at.to_fs(:short) %>)</span>
+            <% else %>
+               <span class="c-indicator c-indicator--warning">Holding: Waiting for trigger</span>
+            <% end %>
+          </li>
+        <% end %>
+        <li><strong>Event Type:</strong> <%= @event.type_of.titleize %></li>
+        <li><strong>Broadcast Config:</strong> <%= @event.broadcast_config.titleize %></li>
+        <li>
+          <strong>Start Time:</strong> 
+          <span class="utc-time" data-iso="<%= @event.start_time.iso8601 %>"><%= @event.start_time %></span>
+        </li>
+        <li>
+          <strong>End Time:</strong> 
+          <span class="utc-time" data-iso="<%= @event.end_time.iso8601 %>"><%= @event.end_time %></span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mb-8">
+    <h2 class="text-xl font-bold mb-4">Stream Links & Data</h2>
+    <ul class="space-y-3">
+      <li><strong>Primary Stream URL:</strong> <%= @event.primary_stream_url %></li>
+      <% if @event.data.present? %>
+        <% @event.data.each do |key, value| %>
+          <li><strong>Data [<%= key %>]:</strong> <%= value %></li>
+        <% end %>
+      <% end %>
+    </ul>
+  </div>
+
+  <hr class="my-8" />
+
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="text-2xl font-bold">Generated Billboards</h2>
+    <div class="flex items-center gap-2">
+      <% if @event.manual_broadcast_end? && @event.broadcast_ended_at.nil? && @event.published? %>
+        <%= button_to "End Broadcast", end_broadcast_admin_event_path(@event), method: :patch, form: { data: { turbo: false } }, data: { confirm: "Are you sure? This will tear down all active billboards." }, class: "c-btn c-btn--danger c-btn--sm" %>
+      <% end %>
+      <% if @event.live_stream? %>
+        <button id="toggle-stream-btn" class="c-btn c-btn--secondary c-btn--sm">Test Stream Transition</button>
+      <% end %>
+    </div>
+  </div>
+  
+  <% if @event.billboards.any? %>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <% @event.billboards.each do |billboard| %>
+        <div class="crayons-card p-4 bg-white border">
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="font-bold text-lg m-0">Display Area: <%= billboard.placement_area %></h3>
+            <%= link_to "Admin Settings", edit_admin_billboard_path(billboard), class: "c-btn c-btn--sm c-btn--secondary" %>
+          </div>
+          <div class="text-sm mb-4 flex items-center gap-2">
+            <span class="opacity-75">Name: <%= billboard.name %></span>
+            <span class="opacity-75">&bull;</span>
+            <% if billboard.approved && billboard.published %>
+              <span class="c-indicator c-indicator--success">Live (Approved & Published)</span>
+            <% elsif billboard.published %>
+              <span class="c-indicator c-indicator--warning">Published (Waiting for Approval)</span>
+            <% elsif billboard.approved %>
+              <span class="c-indicator c-indicator--warning">Approved (Not Published)</span>
+            <% else %>
+              <span class="c-indicator">Draft</span>
+            <% end %>
+          </div>
+          <div class="border rounded p-4 overflow-hidden relative break-words" style="background-color: var(--body-bg);">
+            <%= raw billboard.processed_html_final %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="opacity-75 italic">No billboards generated for this event. (Check the broadcast config or wait for the background worker to execute).</p>
+  <% end %>
+
+  <% if @event.live_stream? %>
+    <script>
+      (function () {
+        const toggleBtn = document.getElementById("toggle-stream-btn");
+        if (toggleBtn) {
+          toggleBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            
+            ['feed', 'post'].forEach(function(type) {
+              const overlay = document.getElementById("overlay-" + type + "-<%= @event.id %>");
+              const playerContainer = document.getElementById("player-container-" + type + "-<%= @event.id %>");
+              
+              if (overlay && playerContainer) {
+                if (overlay.classList.contains("hidden")) {
+                  // Show countdown
+                  overlay.classList.remove("hidden");
+                  playerContainer.innerHTML = "";
+                } else {
+                  // Show stream
+                  overlay.classList.add("hidden");
+                  if (!playerContainer.querySelector("iframe")) {
+                    const iframe = document.createElement("iframe");
+                    iframe.src = <%= @event.primary_stream_url.to_json.html_safe %>;
+                    iframe.allowFullscreen = true;
+                    playerContainer.appendChild(iframe);
+                  }
+                }
+              }
+            });
+          });
+        }
+      })();
+    </script>
+  <% end %>
+
+  <script>
+    (function () {
+      document.querySelectorAll('.utc-time').forEach(el => {
+        const utcTime = new Date(el.dataset.iso);
+        if (isNaN(utcTime)) return;
+        
+        const localString = utcTime.toLocaleString(undefined, { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' });
+        const utcString = utcTime.toUTCString();
+        
+        const diffMs = utcTime - new Date();
+        const diffHours = (diffMs / (1000 * 60 * 60)).toFixed(1);
+        const relativeInfo = diffHours >= 0 ? `in ${diffHours} hours` : `${Math.abs(diffHours)} hours ago`;
+        
+        el.innerHTML = `
+          <div style="background-color: var(--card-bg); border: 2px solid var(--brand-primary); border-radius: 6px; padding: 12px; margin-top: 8px; font-size: var(--fs-xs);">
+            <div style="margin-bottom: 4px;"><strong>System (UTC):</strong> ${utcString}</div>
+            <div style="margin-bottom: 4px; color: var(--brand-primary);"><strong>Translates to your local time:</strong> ${localString}</div>
+            <div class="opacity-75"><em>${relativeInfo}</em></div>
+          </div>
+        `;
+      });
+    })();
+  </script>
+</div>

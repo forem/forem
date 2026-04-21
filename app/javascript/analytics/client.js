@@ -47,3 +47,25 @@ export function callTotalsAPI(
     { organizationId, articleId },
   );
 }
+
+export function callTopContributorsAPI(
+  date,
+  { organizationId, articleId },
+) {
+  return callAnalyticsAPI(
+    '/api/analytics/top_contributors',
+    date,
+    { organizationId, articleId },
+  );
+}
+
+export function callFollowerEngagementAPI(
+  date,
+  { organizationId },
+) {
+  return callAnalyticsAPI(
+    '/api/analytics/follower_engagement',
+    date,
+    { organizationId },
+  );
+}
