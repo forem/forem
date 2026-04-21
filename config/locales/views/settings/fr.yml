@@ -258,6 +258,7 @@ fr:
             title: Revoke admin status
             text: Revoke admin status
           secret_code: 'Your secret code is:'
+          sole_admin: Seul administrateur
           you: You
         list:
           heading: Vos organisations

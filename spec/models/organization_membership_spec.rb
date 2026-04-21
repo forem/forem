@@ -84,4 +84,50 @@ RSpec.describe OrganizationMembership do
       expect(membership.invitation_token).to eq(existing_token)
     end
   end
+
+  describe "last admin protection" do
+    let(:org) { create(:organization) }
+    let(:admin_user) { create(:user) }
+    let!(:membership) { create(:organization_membership, user: admin_user, organization: org, type_of_user: "admin") }
+
+    describe "#last_admin?" do
+      it "returns true when the sole admin" do
+        expect(membership.last_admin?).to be true
+      end
+
+      it "returns false when another admin exists" do
+        create(:organization_membership, organization: org, type_of_user: "admin")
+        expect(membership.last_admin?).to be false
+      end
+
+      it "returns false for non-admin members" do
+        membership.update_column(:type_of_user, "member")
+        expect(membership.last_admin?).to be false
+      end
+    end
+
+    it "prevents destroying the last admin membership" do
+      expect(membership.destroy).to be false
+      expect(membership.errors[:base]).to include(I18n.t("models.organization_membership.last_admin"))
+      expect(OrganizationMembership.exists?(membership.id)).to be true
+    end
+
+    it "prevents demoting the last admin to member" do
+      membership.type_of_user = "member"
+      expect(membership).not_to be_valid
+      expect(membership.errors[:base]).to include(I18n.t("models.organization_membership.last_admin"))
+    end
+
+    it "allows destroying an admin when another admin exists" do
+      create(:organization_membership, organization: org, type_of_user: "admin")
+      expect(membership.destroy).to be_truthy
+      expect(OrganizationMembership.exists?(membership.id)).to be false
+    end
+
+    it "allows demoting an admin when another admin exists" do
+      create(:organization_membership, organization: org, type_of_user: "admin")
+      membership.type_of_user = "member"
+      expect(membership).to be_valid
+    end
+  end
 end
