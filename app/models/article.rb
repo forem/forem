@@ -1262,6 +1262,7 @@ class Article < ApplicationRecord
 
   def clear_video_data
     # This ensures the iframe code and thumbnail are wiped from the DB
+    self.video = nil
     self.video_code = nil
     self.video_thumbnail_url = nil
   end

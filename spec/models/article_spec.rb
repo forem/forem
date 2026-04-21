@@ -1599,6 +1599,7 @@ RSpec.describe Article do
       article.reload
 
       expect(article.video_source_url).to be_nil
+      expect(article.video).to be_nil
       expect(article.video_code).to be_nil
       expect(article.video_thumbnail_url).to be_nil
     end
@@ -1608,6 +1609,17 @@ RSpec.describe Article do
       article.update(video_source_url: valid_url)
       article.reload
       expect(article.video_source_url).to eq(valid_url)
+    end
+
+    it "clears the video embed URL (video field) when video_source_url is removed" do
+      # This is critical: the video field contains the embed URL that renders in the UI
+      article.update(video_source_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+      article.reload
+      expect(article.video).not_to be_nil # Embed URL should be generated
+
+      article.update(video_source_url: "")
+      article.reload
+      expect(article.video).to be_nil # Embed URL must be cleared so UI doesn't render the video
     end
   end
 
