@@ -260,7 +260,6 @@ class Article < ApplicationRecord
   validates :video, url: { allow_blank: true, schemes: %w[https http] }
   validates :video_closed_caption_track_url, url: { allow_blank: true, schemes: ["https"] }
   validates :video_source_url, url: { allow_blank: true, schemes: ["https"] }
-  validates :video_source_url, url: { allow_blank: true, schemes: ["https"] }
   validates :video_state, inclusion: { in: %w[PROGRESSING COMPLETED] }, allow_nil: true
   validates :video_thumbnail_url, url: { allow_blank: true, schemes: %w[https http] }
   validates :clickbait_score, numericality: { greater_than_or_equal_to: 0.0, less_than_or_equal_to: 1.0 }
@@ -297,6 +296,7 @@ class Article < ApplicationRecord
   before_save :set_cached_entities
   before_save :set_all_dates
 
+  before_save :clear_video_data, if: -> { video_source_url_changed? && video_source_url.blank? }
   before_save :calculate_base_scores
   before_save :fetch_video_duration
   before_save :set_caches
@@ -1405,6 +1405,8 @@ class Article < ApplicationRecord
   end
 
   def validate_video
+    return if video_source_url.blank?
+
     if published && video_state == "PROGRESSING"
       return errors.add(:published,
                         I18n.t("models.article.video_processing"))

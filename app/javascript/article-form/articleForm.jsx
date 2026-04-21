@@ -61,13 +61,13 @@ export class ArticleForm extends Component {
   }
 
   static handleAgentSessionPreview() {
-    document.querySelectorAll('.ltag-agent-session').forEach(function(embed) {
+    document.querySelectorAll('.ltag-agent-session').forEach(function (embed) {
       if (embed.dataset.bound) return;
       embed.dataset.bound = '1';
 
       // Tool call expand/collapse
-      embed.querySelectorAll('.agent-session-tool-toggle').forEach(function(toggle) {
-        toggle.addEventListener('click', function() {
+      embed.querySelectorAll('.agent-session-tool-toggle').forEach(function (toggle) {
+        toggle.addEventListener('click', function () {
           var detail = this.nextElementSibling;
           var isExpanded = this.getAttribute('aria-expanded') === 'true';
           detail.style.display = isExpanded ? 'none' : 'block';
@@ -77,7 +77,7 @@ export class ArticleForm extends Component {
       });
 
       // Collapsible long text
-      embed.querySelectorAll('[data-collapsible]').forEach(function(wrapper) {
+      embed.querySelectorAll('[data-collapsible]').forEach(function (wrapper) {
         var textEl = wrapper.querySelector('.agent-session-text-collapse');
         var btn = wrapper.querySelector('.agent-session-expand-btn');
         if (!textEl || !btn) return;
@@ -86,7 +86,7 @@ export class ArticleForm extends Component {
           textEl.classList.remove('agent-session-text-collapse');
           return;
         }
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
           var expanded = textEl.classList.toggle('expanded');
           btn.textContent = expanded ? 'Show less' : 'Show more';
         });
@@ -135,13 +135,13 @@ export class ArticleForm extends Component {
     const previousContentState =
       previousContent && isLocalstorageNewer
         ? {
-            title: previousContent.title || '',
-            tagList: previousContent.tagList || '',
-            mainImage: previousContent.mainImage || null,
-            bodyMarkdown: previousContent.bodyMarkdown || '',
-            videoSourceUrl: previousContent.videoSourceUrl || null,
-            edited: true,
-          }
+          title: previousContent.title || '',
+          tagList: previousContent.tagList || '',
+          mainImage: previousContent.mainImage || null,
+          bodyMarkdown: previousContent.bodyMarkdown || '',
+          videoSourceUrl: previousContent.videoSourceUrl || null,
+          edited: true,
+        }
         : {};
 
     this.publishedAtTime = '';
@@ -253,7 +253,7 @@ export class ArticleForm extends Component {
   };
 
   fetchPreview = (e) => {
-    const { previewShowing, bodyMarkdown } = this.state;
+    const { previewShowing, bodyMarkdown, videoSourceUrl } = this.state;
     e.preventDefault();
     if (previewShowing) {
       this.setState({
@@ -261,7 +261,10 @@ export class ArticleForm extends Component {
       });
     } else {
       this.showLoadingPreview();
-      previewArticle(bodyMarkdown, this.showPreview, this.failedPreview);
+      previewArticle({
+        body_markdown: bodyMarkdown,
+        video_source_url: videoSourceUrl
+      }, this.showPreview, this.failedPreview);
     }
   };
 
@@ -365,9 +368,10 @@ export class ArticleForm extends Component {
 
   handleVideoUrlChange = (url) => {
     this.setState({
-      videoSourceUrl: url,
-      // Clear image when video is set
-      mainImage: url ? null : this.state.mainImage,
+      videoSourceUrl: url || null, // Force empty strings to null
+      videoThumbnailUrl: null,     // Explicitly kill these
+      videoCode: null,
+      edited: true,
     });
   };
 
@@ -380,8 +384,12 @@ export class ArticleForm extends Component {
   onPublish = (e) => {
     e.preventDefault();
     this.setState({ submitting: true });
+
+    // Construct the payload explicitly
     const payload = {
       ...this.state,
+      // Ensure the backend receives the snake_case key it expects
+      video_source_url: this.state.videoSourceUrl || "",
       published: true,
     };
 
@@ -389,7 +397,8 @@ export class ArticleForm extends Component {
       payload,
       onSuccess: () => {
         this.removeLocalStorage();
-        this.setState({ published: true, submitting: false });
+        // Reset edited state so the UI knows we are "clean"
+        this.setState({ published: true, submitting: false, edited: false });
       },
       onError: this.handleArticleError,
     });
@@ -398,8 +407,11 @@ export class ArticleForm extends Component {
   onSaveDraft = (e) => {
     e.preventDefault();
     this.setState({ submitting: true });
+
+    // Explicitly mapping the payload to ensure nulls are passed
     const payload = {
       ...this.state,
+      video_source_url: this.state.videoSourceUrl || "", // Ensure the key matches what the Rails/API expects
       published: false,
     };
 
@@ -407,7 +419,7 @@ export class ArticleForm extends Component {
       payload,
       onSuccess: () => {
         this.removeLocalStorage();
-        this.setState({ published: false, submitting: false });
+        this.setState({ published: false, submitting: false, edited: false });
       },
       onError: this.handleArticleError,
     });
