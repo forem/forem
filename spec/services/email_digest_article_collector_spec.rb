@@ -294,6 +294,7 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
       let(:feed_config) { create(:feed_config) }
 
       before do
+        FeatureFlag.enable(:personalized_email_digests)
         allow(Settings::UserExperience).to receive(:feed_strategy).and_return("configured")
         allow(FeedConfig).to receive(:order).and_return(instance_double(ActiveRecord::Relation, first: feed_config))
         allow(feed_config).to receive(:score_sql).and_return("articles.score")
@@ -343,6 +344,18 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
 
       it "skips personalized path when feed_strategy is not 'configured'" do
         allow(Settings::UserExperience).to receive(:feed_strategy).and_return("basic")
+        allow(FeedConfig).to receive(:order).and_call_original
+
+        other_user = create(:user)
+        create_list(:article, 3, score: 40, featured: true, email_digest_eligible: true,
+                                 subforem: default_subforem, user: other_user)
+        described_class.new(user).articles_to_send
+
+        expect(FeedConfig).not_to have_received(:order)
+      end
+
+      it "skips personalized path when feature flag is disabled" do
+        FeatureFlag.disable(:personalized_email_digests)
         allow(FeedConfig).to receive(:order).and_call_original
 
         other_user = create(:user)

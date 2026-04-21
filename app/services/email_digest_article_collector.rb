@@ -17,7 +17,8 @@ class EmailDigestArticleCollector
     instrument ARTICLES_TO_SEND, tags: { user_id: @user.id } do
       return [] unless @force_send || should_receive_email?
 
-      if Settings::UserExperience.feed_strategy == "configured"
+      if FeatureFlag.enabled?(:personalized_email_digests) &&
+          Settings::UserExperience.feed_strategy == "configured"
         articles = personalized_articles
         return articles if articles
       end
