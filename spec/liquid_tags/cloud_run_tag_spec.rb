@@ -51,16 +51,15 @@ RSpec.describe CloudRunTag, type: :liquid_tag do
       rendered = liquid.render
       
       expect(rendered).to include('frameborder="0"')
-      expect(rendered).to include('height="600px"')
       expect(rendered).to include('loading="lazy"')
-      expect(rendered).to include('style="width: 100%; aspect-ratio: 4 / 3; height: auto; border: 1px solid #e1e5e9; border-radius: 4px;"')
+      expect(rendered).to include('style="width: 100%; aspect-ratio: 4 / 3; min-height: 600px; border: 1px solid #e1e5e9; border-radius: 4px;"')
     end
 
     it "renders a landscape layout when requested" do
       liquid = generate_new_liquid(valid_landscape_cloud_run_input)
       rendered = liquid.render
 
-      expect(rendered).to include('height="420px"')
+      expect(rendered).to include('min-height: 420px;')
       expect(rendered).to include('aspect-ratio: 16 / 9;')
     end
 
@@ -68,7 +67,7 @@ RSpec.describe CloudRunTag, type: :liquid_tag do
       liquid = generate_new_liquid(valid_portrait_cloud_run_input)
       rendered = liquid.render
 
-      expect(rendered).to include('height="780px"')
+      expect(rendered).to include('min-height: 780px;')
       expect(rendered).to include('aspect-ratio: 3 / 4;')
     end
 
@@ -117,16 +116,15 @@ RSpec.describe CloudRunTag, type: :liquid_tag do
       rendered = liquid.render
       
       expect(rendered).to include('frameborder="0"')
-      expect(rendered).to include('height="600px"')
       expect(rendered).to include('loading="lazy"')
-      expect(rendered).to include('style="width: 100%; aspect-ratio: 4 / 3; height: auto; border: 1px solid #e1e5e9; border-radius: 4px;"')
+      expect(rendered).to include('style="width: 100%; aspect-ratio: 4 / 3; min-height: 600px; border: 1px solid #e1e5e9; border-radius: 4px;"')
     end
 
     it "supports the landscape option via embed tag" do
       liquid = generate_embed_liquid(landscape_cloud_run_embed)
       rendered = liquid.render
 
-      expect(rendered).to include('height="420px"')
+      expect(rendered).to include('min-height: 420px;')
       expect(rendered).to include('aspect-ratio: 16 / 9;')
     end
 
@@ -134,7 +132,7 @@ RSpec.describe CloudRunTag, type: :liquid_tag do
       liquid = generate_embed_liquid(portrait_cloud_run_embed)
       rendered = liquid.render
 
-      expect(rendered).to include('height="780px"')
+      expect(rendered).to include('min-height: 780px;')
       expect(rendered).to include('aspect-ratio: 3 / 4;')
     end
 

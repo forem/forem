@@ -4,6 +4,7 @@ require "ipaddr"
 module UnifiedEmbed
   class Tag < LiquidTagBase
     MAX_REDIRECTION_COUNT = 3
+    CONTROL_OPTIONS = %w[minimal].freeze
     MINIMAL_ALLOWLIST = [LinkTag].freeze
 
     def self.new(tag_name, input, parse_context)
@@ -54,7 +55,9 @@ module UnifiedEmbed
     def self.input_for_handler(klass:, validated_link:, parts:, url_index:)
       return validated_link unless klass == CloudRunTag
 
-      options = parts.each_with_index.filter_map { |part, index| part if index != url_index && part != "minimal" }
+      options = parts.each_with_index.filter_map do |part, index|
+        part if index != url_index && !CONTROL_OPTIONS.include?(part)
+      end
 
       ([validated_link] + options).join(" ")
     end
