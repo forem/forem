@@ -1064,7 +1064,10 @@ class Article < ApplicationRecord
   end
 
   def generate_video_embed_url
-    return if video_source_url.blank?
+    if video_source_url.blank?
+      self.video = nil
+      return
+    end
 
     if video_source_url.include?("youtube.com") || video_source_url.include?("youtu.be")
       begin
