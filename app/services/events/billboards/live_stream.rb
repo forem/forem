@@ -15,34 +15,58 @@ module Events
 
         <<~HTML
           <style>
-            .overlay-feed {
+            /* 1. The wrapper holds the space and acts as the anchor */
+            .media-wrapper-feed {
+              position: relative;
               width: 100%;
               height: 51vw;
               background: #000;
+              border-radius: 12px;
+              margin-bottom: 20px !important;
+              overflow: hidden;
+            }
+            
+            @media (min-width: 768px) {
+              .media-wrapper-feed {
+                height: 340px;
+              }
+            }
+
+            /* 2. Pin the overlay to the corners of the wrapper */
+            .overlay-feed {
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
               color: #fff;
-              display: none;
+              display: none; /* Hidden by default */
               flex-direction: column;
               align-items: center;
               justify-content: center;
               font-family: sans-serif;
               font-size: calc(1rem + 1vw);
-              border-radius: 12px;
-              margin-bottom: 20px !important;
+              z-index: 2; /* Keeps overlay on top if needed */
             }
+            
             .overlay-feed.active {
               display: flex;
             }
+            
+            /* 3. Pin the container and iframe to the corners of the wrapper */
+            .player-container-feed {
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              z-index: 1;
+            }
+
             .player-container-feed iframe {
               width: 100%;
-              height: 51vw;
+              height: 100%;
               border: none;
-              border-radius: 12px;
-              margin-bottom: 20px !important;
-            }
-            @media (min-width: 768px) {
-              .overlay-feed, .player-container-feed iframe {
-                height: 340px;
-              }
             }
           </style>
       
@@ -50,11 +74,13 @@ module Events
             #{escaped_title}
           </h1>
       
-          <div class="overlay-feed" id="overlay-feed-#{event.id}">
-            <div>Stream starts in…</div>
-            <div id="countdown-feed-#{event.id}">--:--:--</div>
+          <div class="media-wrapper-feed">
+            <div class="overlay-feed" id="overlay-feed-#{event.id}">
+              <div>Stream starts in…</div>
+              <div id="countdown-feed-#{event.id}">--:--:--</div>
+            </div>
+            <div class="player-container-feed" id="player-container-feed-#{event.id}"></div>
           </div>
-          <div class="player-container-feed" id="player-container-feed-#{event.id}"></div>
       
           <p style="opacity:0.9;margin-bottom:12px;font-size:calc(1em + 0.1vw);">
             #{escaped_description}
@@ -150,9 +176,17 @@ module Events
               grid-template-columns: 1fr;
               width: 100%;
             }
+            
+            /* 1. The grid item anchors the elements */
             .bb-grid-item--first {
               display: none;
+              background: #000;
+              border-radius: 12px;
+              min-height: 200px;
+              position: relative;
+              overflow: hidden;
             }
+            
             @media (min-width: 1280px) {
               .popover-billboard .text-styles {
                 font-size: 1.22em;
@@ -171,42 +205,50 @@ module Events
               align-items: center;
             }
             
+            /* 2. Pin overlay to corners */
             .overlay-post {
-              width: 100%;
-              height: 100%;
-              min-height: 200px;
-              background: #000;
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
               color: #fff;
-              display: none;
+              display: none; 
               flex-direction: column;
               align-items: center;
               justify-content: center;
               font-family: sans-serif;
               font-size: calc(1rem + 1vw);
-              border-radius: 12px;
-              margin-bottom: 20px !important;
+              z-index: 2;
             }
+            
             .overlay-post.active {
               display: flex;
             }
+            
+            /* 3. Pin container and iframe to corners */
+            .player-container-post {
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              z-index: 1;
+            }
+
             .player-container-post iframe {
               width: 100%;
               height: 100%;
-              min-height: 200px;
               border: none;
-              border-radius: 12px;
-              margin-bottom: 20px !important;
             }
             
             @media (min-width: 768px) {
-              .overlay-post, .player-container-post iframe {
-                height: 340px;
-              }
               .bb-grid-container {
                 grid-template-columns: 1fr 1fr;
               }
               .bb-grid-item--first {
-                display: block;
+                display: block; 
+                height: 340px;  
               }
             }
             @media (min-width: 1000px) {
