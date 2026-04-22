@@ -104,7 +104,7 @@ class Event < ApplicationRecord
       creator_id: user_id,
       color: "#18181A",
       render_mode: "raw",
-      template: "plain",
+      template: "authorship_box",
       approved: home_feed_bb.new_record? ? false : home_feed_bb.approved,
       published: true
     )
@@ -119,7 +119,7 @@ class Event < ApplicationRecord
       creator_id: user_id,
       color: "#18181A",
       render_mode: "raw",
-      template: "plain",
+      template: "authorship_box",
       approved: post_bottom_bb.new_record? ? false : post_bottom_bb.approved,
       published: true
     )

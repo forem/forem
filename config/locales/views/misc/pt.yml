@@ -112,6 +112,8 @@ pt:
         views: Views
       reactions_history: "Histórico de Reações"
       by: por
+      top_contributors:
+        heading: Principais Engajadores
     sticky:
       joined: Joined
       default_cta: Learn more
