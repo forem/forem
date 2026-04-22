@@ -93,13 +93,11 @@
             <span class="opacity-75">Name: <%= billboard.name %></span>
             <span class="opacity-75">&bull;</span>
             <% if billboard.approved && billboard.published %>
-              <span class="c-indicator c-indicator--success">Live (Approved & Published)</span>
+              <span class="c-indicator c-indicator--success">Live (Currently Broadcasting)</span>
             <% elsif billboard.published %>
-              <span class="c-indicator c-indicator--warning">Published (Waiting for Approval)</span>
-            <% elsif billboard.approved %>
-              <span class="c-indicator c-indicator--warning">Approved (Not Published)</span>
+              <span class="c-indicator c-indicator--warning">Configured to go live with event</span>
             <% else %>
-              <span class="c-indicator">Draft</span>
+              <span class="c-indicator">Unpublished (Will not go live with event)</span>
             <% end %>
           </div>
           <div class="border rounded p-4 overflow-hidden relative break-words" style="background-color: var(--body-bg);">
