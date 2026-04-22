@@ -36,8 +36,10 @@ Sidekiq.configure_server do |config|
     ActiveRecord::Base.connection_pool.disconnect!
 
     # Create a new configuration hash with the correct pool size
+    # We add a buffer of + 5 to the Sidekiq DB pool to account for
+    # Sidekiq's internal threads (Fetcher, Heartbeat) and any Rails housekeeping.
     db_config = Rails.application.config.database_configuration[Rails.env].merge(
-      'pool' => sidekiq_concurrency
+      'pool' => sidekiq_concurrency + 5
     )
 
     # Re-establish the database connection with the new pool size
