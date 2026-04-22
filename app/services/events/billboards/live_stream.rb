@@ -20,7 +20,7 @@ module Events
               height: 51vw;
               background: #000;
               color: #fff;
-              display: flex;
+              display: none;
               flex-direction: column;
               align-items: center;
               justify-content: center;
@@ -29,8 +29,8 @@ module Events
               border-radius: 12px;
               margin-bottom: 20px !important;
             }
-            .overlay-feed.hidden {
-              display: none;
+            .overlay-feed.active {
+              display: flex;
             }
             .player-container-feed iframe {
               width: 100%;
@@ -90,16 +90,35 @@ module Events
 
                 if (now >= TARGET_TIME) {
                   clearInterval(timerId);
-                  if (overlay) overlay.classList.add("hidden");
+                  if (overlay) overlay.classList.remove("active");
 
                   if (playerContainer && !playerContainer.querySelector("iframe")) {
                     const iframe = document.createElement("iframe");
-                    iframe.src = IFRAME_SRC;
+                    
+                    let finalSrc = IFRAME_SRC;
+                    try {
+                      const url = new URL(finalSrc);
+                      if (url.hostname.includes("youtube.com") || url.hostname.includes("youtu.be")) {
+                        url.searchParams.set("autoplay", "1");
+                        url.searchParams.set("mute", "1");
+                      } else if (url.hostname.includes("twitch.tv")) {
+                        url.searchParams.set("autoplay", "true");
+                        url.searchParams.set("muted", "true");
+                      }
+                      finalSrc = url.toString();
+                    } catch (e) {
+                      // ignore
+                    }
+
+                    iframe.src = finalSrc;
+                    iframe.allow = "autoplay; fullscreen";
                     iframe.allowFullscreen = true;
                     playerContainer.appendChild(iframe);
                   }
                   return;
                 }
+
+                if (overlay) overlay.classList.add("active");
 
                 if (countdownEl) {
                   const diffSeconds = Math.max(0, Math.floor((TARGET_TIME - now) / 1000));
@@ -158,7 +177,7 @@ module Events
               min-height: 200px;
               background: #000;
               color: #fff;
-              display: flex;
+              display: none;
               flex-direction: column;
               align-items: center;
               justify-content: center;
@@ -167,8 +186,8 @@ module Events
               border-radius: 12px;
               margin-bottom: 20px !important;
             }
-            .overlay-post.hidden {
-              display: none;
+            .overlay-post.active {
+              display: flex;
             }
             .player-container-post iframe {
               width: 100%;
@@ -243,16 +262,35 @@ module Events
 
                 if (now >= TARGET_TIME) {
                   clearInterval(timerId);
-                  if (overlay) overlay.classList.add("hidden");
+                  if (overlay) overlay.classList.remove("active");
 
                   if (playerContainer && !playerContainer.querySelector("iframe")) {
                     const iframe = document.createElement("iframe");
-                    iframe.src = IFRAME_SRC;
+                    
+                    let finalSrc = IFRAME_SRC;
+                    try {
+                      const url = new URL(finalSrc);
+                      if (url.hostname.includes("youtube.com") || url.hostname.includes("youtu.be")) {
+                        url.searchParams.set("autoplay", "1");
+                        url.searchParams.set("mute", "1");
+                      } else if (url.hostname.includes("twitch.tv")) {
+                        url.searchParams.set("autoplay", "true");
+                        url.searchParams.set("muted", "true");
+                      }
+                      finalSrc = url.toString();
+                    } catch (e) {
+                      // ignore
+                    }
+
+                    iframe.src = finalSrc;
+                    iframe.allow = "autoplay; fullscreen";
                     iframe.allowFullscreen = true;
                     playerContainer.appendChild(iframe);
                   }
                   return;
                 }
+
+                if (overlay) overlay.classList.add("active");
 
                 if (countdownEl) {
                   const diffSeconds = Math.max(0, Math.floor((TARGET_TIME - now) / 1000));
