@@ -1,10 +1,12 @@
 module Admin
   class EventsController < Admin::ApplicationController
-    before_action :set_event, only: %i[edit update destroy]
+    before_action :set_event, only: %i[show edit update destroy]
 
     def index
       @events = Event.all.order(created_at: :desc)
     end
+
+    def show; end
 
     def new
       @event = Event.new
@@ -34,6 +36,17 @@ module Admin
       redirect_to admin_events_path, notice: "Event destroyed successfully."
     end
 
+    def end_broadcast
+      @event = Event.find(params[:id])
+      
+      if @event.update(broadcast_ended_at: Time.current)
+        Events::ManageBroadcastBillboardsWorker.perform_async
+        redirect_to admin_event_path(@event), notice: "Broadcast manually ended. Billboards are being deactivated locally."
+      else
+        redirect_to admin_event_path(@event), alert: "Failed to end broadcast."
+      end
+    end
+
     private
 
     def set_event
@@ -52,6 +65,7 @@ module Admin
         :end_time, 
         :type_of,
         :broadcast_config,
+        :manual_broadcast_end,
         :user_id, 
         :organization_id, 
         :tag_list,
