@@ -784,7 +784,7 @@ class Article < ApplicationRecord
     return unless has_attribute?(:processed_html)
     return if processed_html.blank?
 
-    processed_html_final
+    ActionView::Base.full_sanitizer.sanitize(processed_html_final)
   end
 
   def readable_publish_date
