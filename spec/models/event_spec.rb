@@ -93,10 +93,11 @@ RSpec.describe Event, type: :model do
       expect(event.billboards).to be_empty
     end
 
-    it "generates fully formulated HTML billboards containing dynamic parameters" do
+    it "generates fully formulated HTML billboards containing dynamic parameters for a takeover" do
       user = create(:user)
       event = create(:event, 
                      broadcast_config: "global_broadcast", 
+                     type_of: "takeover",
                      title: "Test HTML Event", 
                      description: "A very exciting summary",
                      event_name_slug: "test-html-event", 
@@ -114,15 +115,16 @@ RSpec.describe Event, type: :model do
       expect(feed_bb.approved).to be(false) # Needs worker to approve
       
       expect(feed_bb.render_mode).to eq("raw")
-      expect(feed_bb.template).to eq("plain")
-      expect(feed_bb.custom_display_label).to eq("#{Settings::Community.community_name} Live Events")
+      expect(feed_bb.template).to eq("authorship_box")
+      expect(post_bb.template).to eq("authorship_box")
+      expect(feed_bb.custom_display_label).to eq("#{Settings::Community.community_name} Takeovers")
       
-      expect(feed_bb.name).to start_with("live_now_")
-      expect(feed_bb.dismissal_sku).to start_with("live_now_")
+      expect(feed_bb.name).to start_with("takeover_")
+      expect(feed_bb.dismissal_sku).to start_with("takeover_")
       expect(feed_bb.name).to include("_feed")
       
       expect(post_bb.render_mode).to eq("raw")
-      expect(post_bb.template).to eq("plain")
+      expect(post_bb.template).to eq("authorship_box")
       expect(post_bb.dismissal_sku).to eq(feed_bb.dismissal_sku)
       expect(post_bb.name).to include("_post")
       expect(post_bb.name).to_not eq(feed_bb.name)

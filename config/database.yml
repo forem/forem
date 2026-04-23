@@ -17,13 +17,14 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  # For details on connection pooling, see Rails configuration guide
-  # http://guides.rubyonrails.org/configuring.html#database-pooling
-  pool: <%= ENV.fetch("DATABASE_POOL_SIZE") { ENV.fetch("RAILS_MAX_THREADS", 5).to_i } %>
+  # Web dynos will default to RAILS_MAX_THREADS plus a small 5 connection buffer
+  # This buffer protects against starvation from ActionCable, internal telemetry, or out-of-band threads.
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5).to_i + 5 %>
   connect_timeout: 6
   checkout_timeout: 10
   idle_timeout: 60
-  reaping_frequency: 40
+  # Sweeps for dead thread connections every 10 seconds instead of 40
+  reaping_frequency: <%= ENV.fetch("REAPING_FREQUENCY", 10).to_i %>
   variables:
       statement_timeout: <%= ENV.fetch("STATEMENT_TIMEOUT", 2500).to_i %>
 
