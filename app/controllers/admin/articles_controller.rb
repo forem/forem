@@ -6,16 +6,19 @@ module Admin
       Audit::Logger.log(:moderator, current_user, params.dup)
     end
 
-    ARTICLES_ALLOWED_PARAMS = %i[featured
-                                 social_image
-                                 body_markdown
-                                 approved
-                                 email_digest_eligible
-                                 main_image_background_hex_color
-                                 user_id
-                                 max_score
-                                 co_author_ids_list
-                                 published_at].freeze
+    ARTICLES_ALLOWED_PARAMS = [
+      :featured,
+      :social_image,
+      :body_markdown,
+      :approved,
+      :email_digest_eligible,
+      :main_image_background_hex_color,
+      :user_id,
+      :max_score,
+      :co_author_ids_list,
+      :published_at,
+      { context_notes_attributes: %i[id body_markdown] }
+    ].freeze
 
     def index
       case params[:state]

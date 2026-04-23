@@ -481,4 +481,189 @@ RSpec.describe AnalyticsService, type: :service do
       end
     end
   end
+
+  describe "#top_contributors" do
+    let(:analytics_service) { described_class.new(user) }
+    let(:contributor) { create(:user) }
+
+    it "returns an empty array when there are no articles" do
+      other_user = create(:user)
+      service = described_class.new(other_user)
+      expect(service.top_contributors).to eq([])
+    end
+
+    it "excludes self-reactions from results" do
+      create(:reaction, reactable: article, category: :like, user: user)
+      expect(analytics_service.top_contributors).to eq([])
+    end
+
+    it "excludes readinglist reactions" do
+      create(:reaction, reactable: article, category: :readinglist, user: contributor)
+      expect(analytics_service.top_contributors).to eq([])
+    end
+
+    it "includes non-readinglist reactions from other users" do
+      create(:reaction, reactable: article, category: :like, user: contributor)
+      result = analytics_service.top_contributors
+      expect(result.length).to eq(1)
+      expect(result.first[:username]).to eq(contributor.username)
+      expect(result.first[:reactions_count]).to eq(1)
+      expect(result.first[:comments_count]).to eq(0)
+      expect(result.first[:score]).to eq(1)
+    end
+
+    it "weights comments at 6x" do
+      create(:comment, commentable: article, user: contributor, score: 1)
+      result = analytics_service.top_contributors
+      expect(result.first[:comments_count]).to eq(1)
+      expect(result.first[:score]).to eq(6)
+    end
+
+    it "excludes comments with score <= 0" do
+      create(:comment, commentable: article, user: contributor, score: 0)
+      expect(analytics_service.top_contributors).to eq([])
+    end
+
+    it "excludes self-comments" do
+      create(:comment, commentable: article, user: user, score: 1)
+      expect(analytics_service.top_contributors).to eq([])
+    end
+
+    it "combines reactions and comments for the same user" do
+      create(:reaction, reactable: article, category: :like, user: contributor)
+      create(:comment, commentable: article, user: contributor, score: 1)
+      result = analytics_service.top_contributors
+      expect(result.length).to eq(1)
+      expect(result.first[:reactions_count]).to eq(1)
+      expect(result.first[:comments_count]).to eq(1)
+      expect(result.first[:score]).to eq(7) # 1 + 6
+    end
+
+    it "respects the limit parameter" do
+      3.times { |i| create(:reaction, reactable: article, category: :like, user: create(:user)) }
+      result = analytics_service.top_contributors(limit: 2)
+      expect(result.length).to eq(2)
+    end
+
+    it "orders by score descending" do
+      user_a = create(:user)
+      user_b = create(:user)
+      create(:reaction, reactable: article, category: :like, user: user_a)
+      create(:comment, commentable: article, user: user_b, score: 1) # score 6
+      result = analytics_service.top_contributors
+      expect(result.first[:username]).to eq(user_b.username)
+    end
+
+    it "works with organization owner" do
+      create(:organization_membership, user: user, organization: organization)
+      org_article = create(:article, user: user, organization: organization, published: true)
+      create(:reaction, reactable: org_article, category: :like, user: contributor)
+      service = described_class.new(organization)
+      result = service.top_contributors
+      expect(result.length).to eq(1)
+      expect(result.first[:username]).to eq(contributor.username)
+    end
+
+    it "returns profile data for each contributor" do
+      create(:reaction, reactable: article, category: :like, user: contributor)
+      result = analytics_service.top_contributors.first
+      expect(result).to include(:user_id, :username, :name, :profile_image, :reactions_count, :comments_count, :score)
+    end
+  end
+
+  describe "#follower_engagement" do
+    let(:analytics_service) { described_class.new(user) }
+    let(:follower) { create(:user) }
+
+    before do
+      create(:follow, follower: follower, followable: user, blocked: false)
+    end
+
+    it "returns zero ratio when user has no followers" do
+      other_user = create(:user)
+      create(:article, user: other_user, published: true)
+      service = described_class.new(other_user)
+      result = service.follower_engagement
+      expect(result).to eq({ total_followers: 0, engaged_followers: 0, ratio: 0.0 })
+    end
+
+    it "returns zero engaged when follower has not interacted" do
+      result = analytics_service.follower_engagement
+      expect(result[:total_followers]).to eq(1)
+      expect(result[:engaged_followers]).to eq(0)
+      expect(result[:ratio]).to eq(0.0)
+    end
+
+    it "counts a follower who reacted" do
+      create(:reaction, reactable: article, category: :like, user: follower)
+      result = analytics_service.follower_engagement
+      expect(result[:total_followers]).to eq(1)
+      expect(result[:engaged_followers]).to eq(1)
+      expect(result[:ratio]).to eq(100.0)
+    end
+
+    it "counts a follower who commented" do
+      create(:comment, commentable: article, user: follower, score: 1)
+      result = analytics_service.follower_engagement
+      expect(result[:engaged_followers]).to eq(1)
+    end
+
+    it "counts a follower with both reaction and comment only once" do
+      create(:reaction, reactable: article, category: :like, user: follower)
+      create(:comment, commentable: article, user: follower, score: 1)
+      result = analytics_service.follower_engagement
+      expect(result[:engaged_followers]).to eq(1)
+    end
+
+    it "excludes readinglist reactions" do
+      create(:reaction, reactable: article, category: :readinglist, user: follower)
+      result = analytics_service.follower_engagement
+      expect(result[:engaged_followers]).to eq(0)
+    end
+
+    it "excludes low-score comments" do
+      create(:comment, commentable: article, user: follower, score: 0)
+      result = analytics_service.follower_engagement
+      expect(result[:engaged_followers]).to eq(0)
+    end
+
+    it "excludes blocked followers" do
+      blocked_follower = create(:user)
+      create(:follow, follower: blocked_follower, followable: user, blocked: true)
+      create(:reaction, reactable: article, category: :like, user: blocked_follower)
+      result = analytics_service.follower_engagement
+      expect(result[:total_followers]).to eq(1) # only the non-blocked follower
+    end
+
+    it "does not count non-followers" do
+      non_follower = create(:user)
+      create(:reaction, reactable: article, category: :like, user: non_follower)
+      result = analytics_service.follower_engagement
+      expect(result[:engaged_followers]).to eq(0)
+    end
+
+    it "calculates correct ratio with multiple followers" do
+      follower2 = create(:user)
+      follower3 = create(:user)
+      create(:follow, follower: follower2, followable: user, blocked: false)
+      create(:follow, follower: follower3, followable: user, blocked: false)
+      create(:reaction, reactable: article, category: :like, user: follower)
+      result = analytics_service.follower_engagement
+      expect(result[:total_followers]).to eq(3)
+      expect(result[:engaged_followers]).to eq(1)
+      expect(result[:ratio]).to eq(33.3)
+    end
+
+    it "works with organization owner" do
+      create(:organization_membership, user: user, organization: organization)
+      org_article = create(:article, user: user, organization: organization, published: true)
+      org_follower = create(:user)
+      create(:follow, follower: org_follower, followable: organization, blocked: false)
+      create(:reaction, reactable: org_article, category: :like, user: org_follower)
+      service = described_class.new(organization)
+      result = service.follower_engagement
+      expect(result[:total_followers]).to eq(1)
+      expect(result[:engaged_followers]).to eq(1)
+    end
+  end
 end
