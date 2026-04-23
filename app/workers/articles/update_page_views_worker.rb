@@ -12,11 +12,12 @@ module Articles
                     retry: false
 
     def perform(create_params)
-      article = Article.find_by(id: create_params["article_id"])
-      return unless article&.published?
-      return if create_params[:user_id] && article.user_id == create_params[:user_id]
+      if create_params["article_id"].present?
+        article = Article.find_by(id: create_params["article_id"])
+        return unless article&.published?
+        return if create_params["user_id"] && article.user_id == create_params["user_id"]
+      end
 
-      # --- START: MODIFIED CODE ---
       begin
         PageView.create!(create_params)
       rescue ActiveRecord::RecordNotUnique
@@ -30,19 +31,20 @@ module Articles
         Rails.logger.error("Articles::UpdatePageViewsWorker validation failed: #{e.message} for params: #{create_params}")
         return
       end
-      # --- END: MODIFIED CODE ---
 
-      updated_count = article.page_views.sum(:counts_for_number_of_views)
-      if updated_count > article.page_views_count
-        article.update_column(:page_views_count, updated_count)
+      if article
+        updated_count = article.page_views.sum(:counts_for_number_of_views)
+        if updated_count > article.page_views_count
+          article.update_column(:page_views_count, updated_count)
+        end
+
+        return unless create_params["referrer"] == GOOGLE_REFERRER
+
+        Articles::UpdateOrganicPageViewsWorker.perform_at(
+          25.minutes.from_now,
+          article.id,
+        )
       end
-
-      return unless create_params["referrer"] == GOOGLE_REFERRER
-
-      Articles::UpdateOrganicPageViewsWorker.perform_at(
-        25.minutes.from_now,
-        article.id,
-      )
     end
   end
 end

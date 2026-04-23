@@ -16,6 +16,8 @@ module Articles
     #       adds a complication in the testing logic
     #       (e.g., `expect { Articles::PageViewUpdater.call }.not_to change(PageView, :count) `
     def self.call(article_id:, user_id:)
+      return false unless Article.exists?(id: article_id)
+
       # Don't record views to unpublished articles.
       return false if Article.unpublished.exists?(id: article_id)
       # Don't record author's own views.

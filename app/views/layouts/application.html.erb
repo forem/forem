@@ -57,6 +57,7 @@
     <%= Settings::UserExperience.head_content.html_safe %>
   </head>
   <% unless internal_navigation? %>
+    <% @viewable_for_tracking = @article || @podcast_episode || @page || @tag || @user || @organization || @feed_config %>
     <body
       class="<%= Settings::UserExperience.default_font.tr("_", "-") %>-article-body default-header"
       data-user-status="<%= j(user_logged_in_status) %>"
@@ -78,7 +79,9 @@
       data-algolia-search-key="<%= j(Settings::General.algolia_search_only_api_key) if feature_flag_enabled?(:algolia_frontend) %>"
       data-algolia-display="<%= j(Settings::General.display_algolia_branding) %>"
       data-dynamic-url-component="<%= ENV.fetch("BILLBOARD_URL_COMPONENT", "bb") %>"
-      data-ga4-tracking-id="<%= j(Settings::General.ga_analytics_4_id) %>">
+      data-ga4-tracking-id="<%= j(Settings::General.ga_analytics_4_id) %>"
+      data-viewable-id="<%= @viewable_for_tracking&.id %>"
+      data-viewable-type="<%= @viewable_for_tracking&.class&.name %>">
       <%# Repeat of stylesheets in <head> to fix rendering glitch: https://github.com/forem/forem/issues/12377 %>
       
       <%# First script to run no matter what %>

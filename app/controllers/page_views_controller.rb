@@ -15,7 +15,9 @@ class PageViewsController < ApplicationMetalController
   VISITOR_IMPRESSIONS_AGGREGATE_COUNTS_FOR_NUMBER_OF_VIEWS = 10
 
   def create
-    page_view_create_params = params.slice(:article_id, :referrer, :user_agent)
+    page_view_create_params = params.slice(:article_id, :viewable_type, :viewable_id, :referrer, :user_agent)
+    page_view_create_params[:region] = request.headers["HTTP_FASTLY_CLIENT_GEO_REGION"].presence || client_geolocation
+
     if session_current_user_id
       page_view_create_params[:user_id] = session_current_user_id
     else
