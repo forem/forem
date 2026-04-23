@@ -52,6 +52,37 @@ module Api
       render json: data.to_json
     end
 
+    # Bundled endpoint: returns every payload the analytics dashboard UI needs
+    # in a single response. Consolidating into one request avoids tripping the
+    # per-IP Rack::Attack api_throttle (3 GETs/sec), halves middleware overhead,
+    # and gives the client a consistent point-in-time snapshot across panels.
+    def dashboard
+      dated = AnalyticsService.new(
+        @owner,
+        start_date: params[:start], end_date: params[:end], article_id: params[:article_id],
+      )
+      all_time = AnalyticsService.new(@owner, article_id: analytics_params[:article_id])
+
+      cache_key = [
+        "analytics-dashboard-v1",
+        params[:start], params[:end],
+        @owner.class.name, @owner.id,
+        params[:article_id]
+      ].join("-")
+
+      data = Rails.cache.fetch(cache_key, expires_in: 7.days) do
+        {
+          historical: dated.grouped_by_day,
+          totals: all_time.totals,
+          referrers: dated.referrers,
+          top_contributors: dated.top_contributors,
+          follower_engagement: dated.follower_engagement
+        }
+      end
+
+      render json: data.to_json
+    end
+
     private
 
     def authorize_user_organization
