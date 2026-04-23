@@ -10,7 +10,7 @@ class CodepenTag < LiquidTagBase
   REGISTRY_REGEXP =
     %r{\Ahttps?://codepen\.io/(?:
       (?:team/)?#{USERNAME_REGEXP}/(?:pen|embed)(?:/preview)?/#{PEN_ID_REGEXP}|
-      editor/#{USERNAME_REGEXP}/(?:pen|embed)(?:/preview)?/#{EDITOR_PEN_ID_REGEXP}/#{PEN_ID_REGEXP}
+      editor/#{USERNAME_REGEXP}/(?:pen|embed)(?:/preview)?/#{EDITOR_PEN_ID_REGEXP}(?:/#{PEN_ID_REGEXP})?
     )/?\z}x
 
   def initialize(_tag_name, link, _parse_context)

@@ -9,6 +9,9 @@ RSpec.describe CodepenTag, type: :liquid_tag do
     let(:codepen_editor_link) do
       "https://codepen.io/editor/alvaromontoro/pen/019d657e-d7bc-746a-9bc3-4df2244c97cc/24ac30a5aad27b2b927702d3557c6e70"
     end
+    let(:codepen_editor_single_id_link) do
+      "https://codepen.io/editor/alvaromontoro/pen/019d657e-d7bc-746a-9bc3-4df2244c97cc"
+    end
     let(:codepen_link_with_default_tab) { "https://codepen.io/twhite96/pen/XKqrJX default-tab=js,result" }
     let(:codepen_link_with_theme_id) { "https://codepen.io/propjockey/pen/dyVMgBg theme-id=40148" }
     let(:codepen_link_with_preview_indicator) { "https://codepen.io/propjockey/pen/preview/dyVMgBg" }
@@ -82,6 +85,15 @@ RSpec.describe CodepenTag, type: :liquid_tag do
       expect(liquid.render).to include("<iframe")
         .and include(
           'src="https://codepen.io/editor/alvaromontoro/embed/019d657e-d7bc-746a-9bc3-4df2244c97cc/24ac30a5aad27b2b927702d3557c6e70?height=600&default-tab=result&embed-version=2"',
+        )
+    end
+
+    it "accepts CodePen 2.0 editor link with only the editor pen ID" do
+      liquid = generate_new_liquid(codepen_editor_single_id_link)
+
+      expect(liquid.render).to include("<iframe")
+        .and include(
+          'src="https://codepen.io/editor/alvaromontoro/embed/019d657e-d7bc-746a-9bc3-4df2244c97cc?height=600&default-tab=result&embed-version=2"',
         )
     end
 
