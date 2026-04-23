@@ -186,6 +186,11 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
 
   User.order(Arel.sql("RANDOM()"))
 end
+
+# create_if_none returns nil when the block is skipped (users already exist).
+# Always resolve to a live relation so downstream badge assignment never crashes.
+users_in_random_order ||= User.order(Arel.sql("RANDOM()"))
+
 seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   user = User.create!(
     name: "Admin \"The \\:/ Administrator\" McAdmin",
