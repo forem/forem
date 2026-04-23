@@ -108,6 +108,43 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     expect(generate_and_parse_markdown(code_block)).to include("{% raw %}", "{% endraw %}")
   end
 
+  it "keeps multi-paragraph footnotes and fenced code in the same footnote" do
+    markdown = <<~MARKDOWN
+      Here's a simple footnote,[^1] and here's a longer one.[^bignote]
+
+      [^1]: This is the first footnote.
+      [^bignote]: Here's one with multiple paragraphs and code.
+          Indent paragraphs to include them in the footnote.
+
+          ```
+          { my code }
+          ```
+
+          Add as many paragraphs as you like.
+    MARKDOWN
+
+    output = generate_and_parse_markdown(markdown)
+    fragment = Nokogiri::HTML.fragment(output)
+    footnote = fragment.at_css("li#fn2")
+    top_level_html = fragment.children.reject { |node| node.name == "ol" }.map(&:to_html).join
+
+    aggregate_failures do
+      expect(output).not_to include("[^bignote]")
+      expect(footnote).to be_present
+      expect(footnote.text).to include(
+        "Here's one with multiple paragraphs and code.",
+        "Indent paragraphs to include them in the footnote.",
+        "Add as many paragraphs as you like."
+      )
+      expect(footnote.at_css("pre code").text).to include("{ my code }")
+      expect(top_level_html).not_to include(
+        "Indent paragraphs to include them in the footnote.",
+        "{ my code }",
+        "Add as many paragraphs as you like."
+      )
+    end
+  end
+
   it "escapes codeblocks in numbered lists" do
     code_block = <<~CODE_BLOCK
       1. Define your hooks in config file `lefthook.yml`
@@ -126,6 +163,27 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     expect(escaped_codeblock).not_to include("```")
     expect(escaped_codeblock).not_to include("`")
     expect(escaped_codeblock).to include("bundle exec rspec --fail-fast")
+  end
+
+  it "renders a second simple footnote definition" do
+    markdown = <<~MARKDOWN
+      Here's a simple footnote,[^1] and here's a one more[^2].
+
+      [^1]: This is the first footnote.
+      [^2]: Here's another one.
+    MARKDOWN
+
+    output = generate_and_parse_markdown(markdown)
+    fragment = Nokogiri::HTML.fragment(output)
+    second_reference = fragment.at_css("sup#fnref2 a[href='#fn2']")
+    second_footnote = fragment.at_css("li#fn2")
+
+    aggregate_failures do
+      expect(output).not_to include("[^2]")
+      expect(second_reference).to be_present
+      expect(second_footnote).to be_present
+      expect(second_footnote.text).to include("Here's another one.")
+    end
   end
 
   it "escapes liquid tags in code spans" do
