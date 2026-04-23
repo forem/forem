@@ -10,7 +10,7 @@ module Users
 
       Users::Delete.call(user)
       # notify admins internally that they need to delete gdpr data
-      GDPRDeleteRequest.create(user_id: user.id, email: user.email, username: user.username)
+      GDPRDeleteRequest.create(user_id: user.id, email: user.email, username: user.username, name: user.name)
 
       return if admin_delete || user.email.blank?
 
