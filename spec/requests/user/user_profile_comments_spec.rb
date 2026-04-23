@@ -51,9 +51,11 @@ RSpec.describe "User profile comments", type: :request do
       expect(response).to have_http_status(:ok)
 
       doc = Nokogiri::HTML(response.body)
-      sidebar_comment_text = doc.css("div.crayons-card--secondary.p-4 div.flex.items-center.mb-4")[1].text
-      sidebar_comment_count = sidebar_comment_text[/\d[\d,]*/]&.delete(",")&.to_i
+      sidebar_comment_row = doc.css("div.crayons-card--secondary.p-4 div.flex.items-center.mb-4")
+                               .find { |row| row.text.match?(/comments/i) }
+      expect(sidebar_comment_row).to be_present
 
+      sidebar_comment_count = sidebar_comment_row.text[/\d[\d,]*/]&.delete(",")&.to_i
       expect(sidebar_comment_count).to eq(2)
       expect(doc.css("a.profile-comment-row").count).to eq(2)
 
