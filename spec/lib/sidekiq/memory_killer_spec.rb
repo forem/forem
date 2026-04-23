@@ -14,12 +14,13 @@ RSpec.describe Sidekiq::MemoryKiller do
 
   describe "#call" do
     it "yields to the block" do
+      stub_const("ENV", ENV.to_hash.merge("SIDEKIQ_MEMORY_KILLER_ENABLED" => "false"))
       expect { |b| middleware.call(worker, job, queue, &b) }.to yield_control
     end
 
     context "when disabled via ENV" do
       before do
-        middleware.instance_variable_set(:@enabled, false)
+        stub_const("ENV", ENV.to_hash.merge("SIDEKIQ_MEMORY_KILLER_ENABLED" => "false"))
       end
 
       it "does not check memory" do
@@ -30,8 +31,7 @@ RSpec.describe Sidekiq::MemoryKiller do
 
     context "when enabled via ENV" do
       before do
-        middleware.instance_variable_set(:@enabled, true)
-        middleware.instance_variable_set(:@max_rss_mb, 1024)
+        stub_const("ENV", ENV.to_hash.merge("SIDEKIQ_MEMORY_KILLER_ENABLED" => "true", "SIDEKIQ_MEMORY_KILLER_MAX_MB" => "1024"))
       end
 
       it "checks memory" do
