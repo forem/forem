@@ -5,6 +5,7 @@ require "sidekiq/worker_retries_exhausted_reporter"
 require "sidekiq/sidekiq_connection_cleanup"
 require "sidekiq/transaction_safe_rescue"
 require "sidekiq/throttled"
+require "sidekiq/memory_killer"
 
 module Sidekiq
   module Cron
@@ -78,6 +79,7 @@ Sidekiq.configure_server do |config|
     chain.add SidekiqUniqueJobs::Middleware::Client
     chain.add SidekiqUniqueJobs::Middleware::Server
     chain.add Sidekiq::SidekiqConnectionCleanup
+    chain.add Sidekiq::MemoryKiller
   end
 
   SidekiqUniqueJobs::Server.configure(config)
