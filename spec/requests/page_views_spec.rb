@@ -42,13 +42,7 @@ RSpec.describe "PageViews" do
 
       it "sends viewable attributes and region" do
         user = create(:user)
-        post "/page_views", params: { viewable_type: "User", viewable_id: user.id }, headers: { "Fastly-Client-Geo-Region" => "US-NY" }
 
-        # The worker executes inline due to sidekiq_test_helpers but wait, we need to use page_views_post to ensure it runs
-        page_views_post(viewable_type: "User", viewable_id: user.id)
-
-        # Region is set in the controller using headers, so we test the worker receives it
-        # Actually it's easier to just call the endpoint directly with headers and run jobs
         sidekiq_perform_enqueued_jobs do
           post "/page_views", params: { viewable_type: "User", viewable_id: user.id }, headers: { "HTTP_FASTLY_CLIENT_GEO_REGION" => "US-NY" }
         end

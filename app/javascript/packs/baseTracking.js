@@ -163,8 +163,9 @@ function trackCustomImpressions() {
       
       const ArticleElement = document.getElementById('article-body') || document.getElementById('comment-article-indicator');
       const articleId = ArticleElement ? ArticleElement.dataset.articleId : null;
-      const viewableType = document.body.dataset.viewableType;
-      const viewableId = document.body.dataset.viewableId;
+      const pageContentInner = document.getElementById('page-content-inner');
+      const viewableType = pageContentInner ? pageContentInner.dataset.viewableType : null;
+      const viewableId = pageContentInner ? pageContentInner.dataset.viewableId : null;
 
       const dataBody = {
         article_id: articleId,
