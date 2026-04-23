@@ -659,7 +659,9 @@ function showErrorsOnReferrers() {
   if (chartEl) chartEl.innerHTML = '';
   const container = document.getElementById('referrers-container');
   if (container) {
-    container.outerHTML = `<div class="m-5" id="referrers-container"><p>Failed to fetch referrer data. If this error persists for a minute, you can try to disable adblock etc. on this page or site.</p>${retryButtonHTML()}</div>`;
+    // referrers-container is a <tbody>; preserve it and inject a valid table row
+    // so the surrounding <table> markup stays well-formed.
+    container.innerHTML = `<tr><td colspan="2" class="p-5"><p>Failed to fetch referrer data. If this error persists for a minute, you can try to disable adblock etc. on this page or site.</p>${retryButtonHTML()}</td></tr>`;
   }
   bindRetryButtons();
 }
