@@ -24,14 +24,20 @@ RSpec.describe Events::ManageBroadcastBillboardsWorker, type: :worker do
     let!(:no_broadcast_billboard) { create(:billboard, event: no_broadcast_event, approved: true, published: true) } # should unapprove if somehow associated
     let!(:standard_billboard) { create(:billboard, event: nil, approved: true) }
 
-    it "approves billboards for active broadcast events and unapproves for inactive ones" do
+    let!(:future_billboard_approved) { create(:billboard, event: future_event, approved: true, published: true) }
+
+    it "approves billboards for active broadcast events and unapproves for expired ones, leaving upcoming ones alone" do
       described_class.new.perform
 
       expect(active_billboard.reload.approved).to eq(true)
       expect(past_billboard.reload.approved).to eq(false)
       expect(past_billboard.reload.published).to eq(false)
+      
+      # Future/upcoming events should be untouched
       expect(future_billboard.reload.approved).to eq(false)
-      expect(future_billboard.reload.published).to eq(false)
+      expect(future_billboard.reload.published).to eq(true)
+      expect(future_billboard_approved.reload.approved).to eq(true)
+      expect(future_billboard_approved.reload.published).to eq(true)
       
       # Standard billboards remain untouched
       expect(standard_billboard.reload.approved).to eq(true)
