@@ -21,10 +21,11 @@ module Sidekiq
       rss_kb = extract_memory_kb
       return if rss_kb <= 0
 
-      rss_mb = rss_kb / 1024
+      max_rss_kb = @max_rss_mb * 1024
 
-      if rss_mb > @max_rss_mb
+      if rss_kb > max_rss_kb
         @terminating = true
+        rss_mb = (rss_kb / 1024.0).round(2)
         ::Rails.logger.warn("SidekiqMemoryKiller: Memory usage #{rss_mb}MB exceeds max #{@max_rss_mb}MB. Sending SIGTERM to PID #{::Process.pid}.")
         # Send SIGTERM to the current process to gracefully shut down Sidekiq.
         # It will stop accepting new jobs, finish current ones, and then exit.
@@ -42,7 +43,8 @@ module Sidekiq
       end
       
       `ps -o rss= -p #{::Process.pid}`.strip.to_i
-    rescue StandardError
+    rescue StandardError => e
+      ::Rails.logger.error("SidekiqMemoryKiller: Error checking memory in extract_memory_kb: #{e.message}")
       0
     end
   end
