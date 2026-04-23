@@ -12,10 +12,12 @@ module Articles
                     retry: false
 
     def perform(create_params)
-      if create_params["article_id"].present?
-        article = Article.find_by(id: create_params["article_id"])
+      create_params = create_params.with_indifferent_access
+
+      if create_params[:article_id].present?
+        article = Article.find_by(id: create_params[:article_id])
         return unless article&.published?
-        return if create_params["user_id"] && article.user_id == create_params["user_id"]
+        return if create_params[:user_id] && article.user_id == create_params[:user_id]
       end
 
       begin
@@ -38,7 +40,7 @@ module Articles
           article.update_column(:page_views_count, updated_count)
         end
 
-        return unless create_params["referrer"] == GOOGLE_REFERRER
+        return unless create_params[:referrer] == GOOGLE_REFERRER
 
         Articles::UpdateOrganicPageViewsWorker.perform_at(
           25.minutes.from_now,
