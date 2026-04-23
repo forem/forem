@@ -25,12 +25,9 @@ function getFormValues(form) {
   return formData;
 }
 
-function toggleArchived(article, needsArchived) {
-  if (needsArchived === 'true') {
-    article.classList.add('story-archived', 'hidden');
-  } else {
-    article.classList.remove('story-archived');
-  }
+function toggleArchived() {
+  InstantClick.preload(window.location.href);
+  InstantClick.display(window.location.href);
 }
 
 function toggleNotifications(submit, action) {
@@ -43,7 +40,7 @@ function toggleNotifications(submit, action) {
 
 function onXhrSuccess(form, article, values) {
   if (values.article.archived) {
-    toggleArchived(article, values.article.archived);
+    toggleArchived();
   } else {
     const submit = form.querySelector('[type="submit"]');
     const submitValue = submit.getAttribute('value');
@@ -128,3 +125,5 @@ const initializeEllipsisMenuToggle = () => {
 
 initializeEllipsisMenuToggle();
 initializeArchiveToggleFormSubmit();
+
+export { toggleArchived };

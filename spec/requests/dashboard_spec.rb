@@ -124,6 +124,226 @@ RSpec.describe "Dashboards" do
       end
     end
 
+    context "when logged in with archived articles" do
+      before { sign_in user }
+
+      let!(:archived_article) { create(:article, user: user, title: "Archived Post Title", archived: true) }
+      let!(:active_article) { create(:article, user: user, title: "Active Post Title") }
+
+      it "excludes archived articles by default" do
+        get "/dashboard"
+        expect(response.body).to include(CGI.escapeHTML(active_article.title))
+        expect(response.body).not_to include(CGI.escapeHTML(archived_article.title))
+      end
+
+      it "includes archived articles when show_archived=true" do
+        get "/dashboard", params: { show_archived: "true" }
+        expect(response.body).to include(CGI.escapeHTML(archived_article.title))
+        expect(response.body).to include(CGI.escapeHTML(active_article.title))
+      end
+
+      it "treats show_archived=false the same as absent" do
+        get "/dashboard", params: { show_archived: "false" }
+        expect(response.body).not_to include(CGI.escapeHTML(archived_article.title))
+      end
+
+      it "ignores non-true values for show_archived" do
+        get "/dashboard", params: { show_archived: "yes" }
+        expect(response.body).not_to include(CGI.escapeHTML(archived_article.title))
+      end
+
+      it "renders the show archived toggle when user has archived articles" do
+        get "/dashboard"
+        expect(response.body).to include("Show archived")
+      end
+
+      it "renders the hide archived toggle when showing archived" do
+        get "/dashboard", params: { show_archived: "true" }
+        expect(response.body).to include("Hide archived")
+      end
+
+      it "preserves show_archived when switching from full posts to statuses" do
+        get "/dashboard", params: { show_archived: "true", sort: "views-desc" }
+
+        doc = Nokogiri::HTML(response.body)
+        statuses_link = doc.xpath("//a[contains(normalize-space(.), 'Show quickie posts')]").first
+
+        expect(statuses_link[:href]).to include("state=status")
+        expect(statuses_link[:href]).to include("sort=views-desc")
+        expect(statuses_link[:href]).to include("show_archived=true")
+      end
+
+      it "preserves show_archived when switching from statuses to full posts" do
+        get "/dashboard", params: { show_archived: "true", state: "status", sort: "views-desc" }
+
+        doc = Nokogiri::HTML(response.body)
+        full_link = doc.xpath("//a[contains(normalize-space(.), 'Show full posts')]").first
+
+        expect(full_link[:href]).to include("sort=views-desc")
+        expect(full_link[:href]).to include("show_archived=true")
+        expect(full_link[:href]).not_to include("state=status")
+      end
+
+      it "does not add show_archived to the statuses toggle when it is not active" do
+        get "/dashboard"
+
+        doc = Nokogiri::HTML(response.body)
+        statuses_link = doc.xpath("//a[contains(normalize-space(.), 'Show quickie posts')]").first
+
+        expect(statuses_link[:href]).not_to include("show_archived=true")
+      end
+
+      it "renders the archive toggle hidden when no archived articles exist" do
+        archived_article.destroy
+        get "/dashboard"
+        expect(response.body).to include("Show archived")
+        expect(response.body).to include('hidden="hidden"')
+        expect(response.body).not_to include("Hide archived")
+      end
+
+      it "sets aria-pressed to false on the show archived toggle" do
+        get "/dashboard"
+        expect(response.body).to include('aria-pressed="false"')
+      end
+
+      it "sets aria-pressed to true on the hide archived toggle" do
+        get "/dashboard", params: { show_archived: "true" }
+        expect(response.body).to include('aria-pressed="true"')
+      end
+
+      it "shows empty state when all articles are archived" do
+        active_article.update_column(:archived, true)
+        get "/dashboard"
+        expect(response.body).to include(CGI.escapeHTML(I18n.t("views.dashboard.posts.empty.desc")))
+        expect(response.body).to include("Show archived")
+      end
+
+      it "shows archived articles when all are archived and show_archived=true" do
+        active_article.update_column(:archived, true)
+        get "/dashboard", params: { show_archived: "true" }
+        expect(response.body).to include(CGI.escapeHTML(archived_article.title))
+      end
+
+      it "renders the archived badge when showing archived articles" do
+        get "/dashboard", params: { show_archived: "true" }
+        expect(response.body).to include(I18n.t("views.dashboard.article.archived"))
+      end
+
+      it "excludes archived articles from summary counts by default" do
+        archived_article.update_columns(public_reactions_count: 50, comments_count: 10, page_views_count: 500)
+        active_article.update_columns(public_reactions_count: 5, comments_count: 1, page_views_count: 100)
+        get "/dashboard"
+        expect(assigns(:reactions_count)).to eq(5)
+        expect(assigns(:comments_count)).to eq(1)
+        expect(assigns(:page_views_count)).to eq(100)
+      end
+
+      it "includes archived articles in summary counts when show_archived=true" do
+        archived_article.update_columns(public_reactions_count: 50, comments_count: 10, page_views_count: 500)
+        active_article.update_columns(public_reactions_count: 5, comments_count: 1, page_views_count: 100)
+        get "/dashboard", params: { show_archived: "true" }
+        expect(assigns(:reactions_count)).to eq(55)
+        expect(assigns(:comments_count)).to eq(11)
+        expect(assigns(:page_views_count)).to eq(600)
+      end
+
+      it "preserves sort param in the archive toggle link" do
+        get "/dashboard", params: { sort: "views-desc" }
+        expect(response.body).to include("sort=views-desc")
+      end
+
+      it "preserves state param in the archive toggle link" do
+        create(:article, user: user, type_of: "status", body_markdown: "", main_image: nil, archived: true)
+        get "/dashboard", params: { state: "status" }
+        expect(response.body).to include("state=status")
+      end
+
+      it "paginates correctly without archived articles inflating page count" do
+        create_list(:article, 25, user: user)
+        get "/dashboard"
+        # 25 active + 1 active_article = 26 articles, over ARTICLES_PER_PAGE (25)
+        expect(response.body).to include "pagination"
+        # Archived article should not contribute to the set
+        expect(response.body).not_to include(CGI.escapeHTML(archived_article.title))
+      end
+
+      it "does not include archivedPostFilters in the page" do
+        get "/dashboard"
+        expect(response.body).not_to include("archivedPostFilters")
+      end
+
+      it "includes js-show-archived-btn class on the show archived toggle" do
+        get "/dashboard"
+        expect(response.body).to include("js-show-archived-btn")
+      end
+
+      it "does not apply hidden attribute to show archived toggle when archives exist" do
+        get "/dashboard"
+        expect(response.body).not_to include('hidden="hidden"')
+      end
+
+      it "includes show_archived=true in the show archived button href" do
+        get "/dashboard"
+        expect(response.body).to include("show_archived=true")
+      end
+
+      it "does not include show_archived param in the hide archived button href" do
+        get "/dashboard", params: { show_archived: "true" }
+
+        doc = Nokogiri::HTML(response.body)
+        hide_link = doc.css('a.js-show-archived-btn[aria-pressed="true"]').first
+
+        expect(hide_link[:href]).not_to include("show_archived=true")
+      end
+
+      it "preserves which param in the archive toggle link" do
+        get "/dashboard", params: { which: "personal" }
+        expect(response.body).to include("which=personal")
+      end
+
+      it "preserves org_id param in the archive toggle link" do
+        organization = create(:organization)
+        create(:organization_membership, user: user, organization: organization, type_of_user: "admin")
+        create(:article, user: user, organization: organization, archived: true)
+        get "/dashboard", params: { org_id: organization.id }
+        expect(response.body).to include("org_id=#{organization.id}")
+      end
+
+      it "excludes archived status posts by default when state=status" do
+        archived_status = create(:article, user: user, type_of: "status", body_markdown: "", main_image: nil, archived: true)
+        get "/dashboard", params: { state: "status" }
+        expect(response.body).not_to include(CGI.escapeHTML(archived_status.title))
+      end
+
+      it "includes archived status posts when state=status and show_archived=true" do
+        archived_status = create(:article, user: user, type_of: "status", body_markdown: "", main_image: nil, archived: true)
+        get "/dashboard", params: { state: "status", show_archived: "true" }
+        expect(response.body).to include(CGI.escapeHTML(archived_status.title))
+      end
+
+      it "treats show_archived=TRUE (wrong case) the same as absent" do
+        get "/dashboard", params: { show_archived: "TRUE" }
+        expect(response.body).not_to include(CGI.escapeHTML(archived_article.title))
+      end
+
+      it "treats show_archived=True (mixed case) the same as absent" do
+        get "/dashboard", params: { show_archived: "True" }
+        expect(response.body).not_to include(CGI.escapeHTML(archived_article.title))
+      end
+
+      it "treats show_archived=1 (numeric string) the same as absent" do
+        get "/dashboard", params: { show_archived: "1" }
+        expect(response.body).not_to include(CGI.escapeHTML(archived_article.title))
+      end
+
+      it "returns 200 and shows active articles when show_archived=true but no archived articles exist" do
+        archived_article.destroy
+        get "/dashboard", params: { show_archived: "true" }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(CGI.escapeHTML(active_article.title))
+      end
+    end
+
     context "when logged but has no articles nor can create them" do
       it "redirects to /dashboard/following_tags" do
         sign_in user
@@ -149,7 +369,7 @@ RSpec.describe "Dashboards" do
         user.reload.update!(agent_sessions_count: 5)
 
         get "/dashboard/sidebar", params: { state: "show" }, xhr: true
-        
+
         expect(assigns(:agent_sessions_count)).to eq(5)
       end
     end
@@ -206,6 +426,26 @@ RSpec.describe "Dashboards" do
         get "/dashboard/organization/#{organization.id}"
         expect(response.body).not_to include("Delete")
         expect(response.body).to include(ERB::Util.html_escape(unpublished_article.title))
+      end
+
+      it "excludes archived org articles by default" do
+        create(:organization_membership, user: user, organization: organization, type_of_user: "admin")
+        active_org_article = create(:article, user: user, organization: organization, title: "Active Org Post")
+        archived_org_article = create(:article, user: user, organization: organization,
+                                                title: "Archived Org Post", archived: true)
+        sign_in user
+        get "/dashboard/organization/#{organization.id}"
+        expect(response.body).to include(CGI.escapeHTML(active_org_article.title))
+        expect(response.body).not_to include(CGI.escapeHTML(archived_org_article.title))
+      end
+
+      it "includes archived org articles when show_archived=true" do
+        create(:organization_membership, user: user, organization: organization, type_of_user: "admin")
+        archived_org_article = create(:article, user: user, organization: organization,
+                                                title: "Archived Org Post", archived: true)
+        sign_in user
+        get "/dashboard/organization/#{organization.id}", params: { show_archived: "true" }
+        expect(response.body).to include(CGI.escapeHTML(archived_org_article.title))
       end
     end
 
