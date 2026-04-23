@@ -383,6 +383,7 @@ export class ArticleForm extends Component {
     const payload = {
       ...this.state,
       published: true,
+      video_thumbnail_url: this.state.videoSourceUrl ? this.state.video_thumbnail_url : null,
     };
 
     submitArticle({
@@ -401,6 +402,7 @@ export class ArticleForm extends Component {
     const payload = {
       ...this.state,
       published: false,
+      video_thumbnail_url: this.state.videoSourceUrl ? this.state.video_thumbnail_url : null,
     };
 
     submitArticle({
