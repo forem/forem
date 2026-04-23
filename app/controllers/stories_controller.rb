@@ -642,16 +642,6 @@ class StoriesController < ApplicationController
     "top"
   end
 
-  def assign_user_comments
-    @user_profile_comments = user_profile_comments
-    @user_profile_comments_count = @user_profile_comments.count
-
-    @comments = @user_profile_comments
-      .order(created_at: :desc)
-      .includes(commentable: [:podcast])
-      .limit(helpers.comment_count(params[:view]))
-  end
-
   def user_profile_comments
     @user.comments.good_quality.where(deleted: false)
       .joins("INNER JOIN articles ON articles.id = comments.commentable_id AND comments.commentable_type = 'Article'")
