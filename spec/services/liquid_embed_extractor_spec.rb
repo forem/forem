@@ -55,6 +55,24 @@ RSpec.describe LiquidEmbedExtractor do
       )
     end
 
+    it "correctly captures org_posts and explicit organization Liquid Tags into polymorphic references sequentially" do
+      org = create(:organization, slug: "test_org")
+      
+      body = <<~MARKDOWN
+        {% organization test_org %}
+        {% org_posts test_org %}
+      MARKDOWN
+
+      article = create(:article)
+      article.update_column(:body_markdown, body)
+      data = described_class.extract(article)
+
+      expect(data).to contain_exactly(
+        { tag_name: "organization", url: "test_org", options: "test_org", referenced_type: "Organization", referenced_id: org.id },
+        { tag_name: "org_posts", url: "test_org", options: "test_org", referenced_type: "Organization", referenced_id: org.id }
+      )
+    end
+
     it "correctly resolves internal DEV Article links wrapped in general UnifiedEmbeds into native polymorphic relationships" do
       dev_article = create(:article, title: "Test Article")
       dev_article.user.update!(username: "testuser")

@@ -135,7 +135,8 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
                                  tag_list: "career", user: other_user, featured: true)
         create_list(:article, 3, public_reactions_count: 40, score: 40, subforem: default_subforem,
                                  tag_list: "productivity", user: other_user, featured: true)
-        create_list(:article, 2, public_reactions_count: 40, score: 40, subforem: create(:subforem, domain: "other.test"),
+        other_subforem = create(:subforem, domain: "other.test")
+        create_list(:article, 2, public_reactions_count: 40, score: 40, subforem: other_subforem,
                                  tag_list: "ruby", user: other_user, featured: true)
 
         articles = described_class.new(user).articles_to_send
@@ -286,6 +287,157 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
         result = described_class.new(user).articles_to_send
 
         expect(result.first.title).to eq articles.first.title
+      end
+    end
+
+    context "with personalized selection via FeedConfig" do
+      let(:feed_config) { create(:feed_config) }
+
+      before do
+        FeatureFlag.enable(:personalized_email_digests)
+        allow(Settings::UserExperience).to receive(:feed_strategy).and_return("configured")
+        allow(FeedConfig).to receive(:order).and_return(instance_double(ActiveRecord::Relation, first: feed_config))
+        allow(feed_config).to receive(:score_sql).and_return("articles.score")
+      end
+
+      it "returns personalized articles when FeedConfig produces >= 3 eligible results" do
+        other_user = create(:user)
+        create_list(:article, 4, score: 40, featured: true, email_digest_eligible: true,
+                                 subforem: default_subforem, user: other_user)
+
+        articles = described_class.new(user).articles_to_send
+        expect(articles.length).to be >= 3
+      end
+
+      it "falls back to legacy selection when personalized result has < 3 articles" do
+        other_user = create(:user)
+        # Only 2 eligible articles → personalized returns nil → legacy path runs
+        create_list(:article, 2, score: 40, featured: true, email_digest_eligible: true,
+                                 subforem: default_subforem, user: other_user)
+        # Add a 3rd article that the legacy path can also find
+        create(:article, score: 40, featured: true, email_digest_eligible: true,
+                         subforem: default_subforem, user: other_user)
+
+        articles = described_class.new(user).articles_to_send
+        expect(articles.length).to be >= 3
+      end
+
+      it "falls back to legacy selection when personalized path raises" do
+        other_user = create(:user)
+        create_list(:article, 3, score: 40, featured: true, email_digest_eligible: true,
+                                 subforem: default_subforem, user: other_user)
+        allow(feed_config).to receive(:score_sql).and_raise(StandardError, "boom")
+
+        articles = described_class.new(user).articles_to_send
+        expect(articles.length).to be >= 3
+      end
+
+      it "falls back to legacy selection when no FeedConfig exists" do
+        allow(FeedConfig).to receive(:order).and_return(instance_double(ActiveRecord::Relation, first: nil))
+        other_user = create(:user)
+        create_list(:article, 3, score: 40, featured: true, email_digest_eligible: true,
+                                 subforem: default_subforem, user: other_user)
+
+        articles = described_class.new(user).articles_to_send
+        expect(articles.length).to be >= 3
+      end
+
+      it "skips personalized path when feed_strategy is not 'configured'" do
+        allow(Settings::UserExperience).to receive(:feed_strategy).and_return("basic")
+        allow(FeedConfig).to receive(:order).and_call_original
+
+        other_user = create(:user)
+        create_list(:article, 3, score: 40, featured: true, email_digest_eligible: true,
+                                 subforem: default_subforem, user: other_user)
+        described_class.new(user).articles_to_send
+
+        expect(FeedConfig).not_to have_received(:order)
+      end
+
+      it "skips personalized path when feature flag is disabled" do
+        FeatureFlag.disable(:personalized_email_digests)
+        allow(FeedConfig).to receive(:order).and_call_original
+
+        other_user = create(:user)
+        create_list(:article, 3, score: 40, featured: true, email_digest_eligible: true,
+                                 subforem: default_subforem, user: other_user)
+        described_class.new(user).articles_to_send
+
+        expect(FeedConfig).not_to have_received(:order)
+      end
+
+      it "never includes the user's own articles" do
+        own_articles = create_list(:article, 5, score: 40, featured: true, email_digest_eligible: true,
+                                                subforem: default_subforem, user: user)
+        other_user = create(:user)
+        create_list(:article, 3, score: 30, featured: true, email_digest_eligible: true,
+                                 subforem: default_subforem, user: other_user)
+
+        articles = described_class.new(user).articles_to_send
+        own_paths = own_articles.map(&:path)
+        expect(articles.none? { |a| own_paths.include?(a.path) }).to be true
+      end
+
+      it "never includes digest-ineligible articles" do
+        other_user = create(:user)
+        ineligible = create_list(:article, 3, score: 40, email_digest_eligible: false,
+                                              subforem: default_subforem, user: other_user)
+        create_list(:article, 3, score: 30, email_digest_eligible: true, featured: true,
+                                 subforem: default_subforem, user: other_user)
+
+        articles = described_class.new(user).articles_to_send
+        ineligible_paths = ineligible.map(&:path)
+        expect(articles.none? { |a| ineligible_paths.include?(a.path) }).to be true
+      end
+
+      it "never includes articles from blocked authors" do
+        blocked_author = create(:user)
+        create(:user_block, blocker: user, blocked: blocked_author, config: "default")
+        allow(UserBlock).to receive(:cached_blocked_ids_for_blocker).with(user.id).and_return([blocked_author.id])
+
+        blocked_articles = create_list(:article, 3, score: 40, featured: true, email_digest_eligible: true,
+                                                    subforem: default_subforem, user: blocked_author)
+        other_user = create(:user)
+        create_list(:article, 3, score: 30, featured: true, email_digest_eligible: true,
+                                 subforem: default_subforem, user: other_user)
+
+        articles = described_class.new(user).articles_to_send
+        blocked_paths = blocked_articles.map(&:path)
+        expect(articles.none? { |a| blocked_paths.include?(a.path) }).to be true
+      end
+
+      it "bumps the second article to the top when the first matches the last email subject" do
+        other_user = create(:user)
+        articles = (1..5).map do |i|
+          create(:article, score: 100 - i, featured: true, email_digest_eligible: true,
+                           subforem: default_subforem, user: other_user)
+        end
+
+        Ahoy::Message.create(mailer: "DigestMailer#digest_email",
+                             user_id: user.id, sent_at: 25.hours.ago,
+                             clicked_at: 20.hours.ago,
+                             subject: articles.first.title)
+
+        result = described_class.new(user).articles_to_send
+        expect(result.first.title).to eq articles.second.title
+        expect(result.last.title).to eq articles.first.title
+      end
+
+      it "never includes articles tagged with antifollowed tags" do
+        other_user = create(:user)
+        antifollowed_articles = create_list(:article, 3, score: 40, featured: true, email_digest_eligible: true,
+                                                         tag_list: "ruby", subforem: default_subforem, user: other_user)
+        create_list(:article, 3, score: 30, featured: true, email_digest_eligible: true,
+                                 tag_list: "python", subforem: default_subforem, user: other_user)
+
+        tag = Tag.find_by(name: "ruby") || create(:tag, name: "ruby")
+        user.follow(tag)
+        user.follows.find_by(followable: tag).update!(explicit_points: -999)
+        allow(user).to receive(:cached_antifollowed_tag_names).and_return(["ruby"])
+
+        articles = described_class.new(user).articles_to_send
+        antifollowed_paths = antifollowed_articles.map(&:path)
+        expect(articles.none? { |a| antifollowed_paths.include?(a.path) }).to be true
       end
     end
   end

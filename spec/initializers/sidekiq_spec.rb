@@ -60,7 +60,7 @@ RSpec.describe "Sidekiq Initializer" do
       expect(pool_mock).to receive(:disconnect!)
       allow(ActiveRecord::Base).to receive(:connection_pool).and_return(pool_mock)
       
-      expected_db_config = Rails.application.config.database_configuration[Rails.env].merge('pool' => 25)
+      expected_db_config = Rails.application.config.database_configuration[Rails.env].merge('pool' => 30)
       expect(ActiveRecord::Base).to receive(:establish_connection).with(expected_db_config)
       
       # Simulate Sidekiq boot completing and triggering our specific startup hook
