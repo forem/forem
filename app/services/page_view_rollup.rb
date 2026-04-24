@@ -1,10 +1,10 @@
 class PageViewRollup
-  ATTRIBUTES_PRESERVED = %i[article_id viewable_id viewable_type created_at user_id region].freeze
+  ATTRIBUTES_PRESERVED = %i[article_id viewable_id viewable_type created_at user_id].freeze
   ATTRIBUTES_DESTROYED = %i[id domain path referrer updated_at user_agent counts_for_number_of_views
-                            time_tracked_in_seconds].freeze
+                            time_tracked_in_seconds region].freeze
 
   class ViewAggregator
-    Compact = Struct.new(:views, :article_id, :viewable_id, :viewable_type, :user_id, :region) do
+    Compact = Struct.new(:views, :article_id, :viewable_id, :viewable_type, :user_id) do
       def to_h
         super.except(:views).merge({
                                      counts_for_number_of_views: views.sum(&:counts_for_number_of_views),
@@ -22,7 +22,7 @@ class PageViewRollup
     end
 
     def <<(view)
-      group_key = [view.article_id, view.viewable_id, view.viewable_type, view.region]
+      group_key = [view.article_id, view.viewable_id, view.viewable_type]
       @aggregator[group_key][view.user_id] << view
     end
 
@@ -31,7 +31,7 @@ class PageViewRollup
         grouped_by_user.each_pair do |user_id, views|
           next unless views.size > 1
 
-          yield Compact.new(views, group_key[0], group_key[1], group_key[2], user_id, group_key[3])
+          yield Compact.new(views, group_key[0], group_key[1], group_key[2], user_id)
         end
       end
     end
