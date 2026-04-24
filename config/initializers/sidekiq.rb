@@ -5,6 +5,7 @@ require "sidekiq/worker_retries_exhausted_reporter"
 require "sidekiq/sidekiq_connection_cleanup"
 require "sidekiq/transaction_safe_rescue"
 require "sidekiq/throttled"
+require "sidekiq/memory_killer"
 
 module Sidekiq
   module Cron
@@ -36,8 +37,10 @@ Sidekiq.configure_server do |config|
     ActiveRecord::Base.connection_pool.disconnect!
 
     # Create a new configuration hash with the correct pool size
+    # We add a buffer of + 5 to the Sidekiq DB pool to account for
+    # Sidekiq's internal threads (Fetcher, Heartbeat) and any Rails housekeeping.
     db_config = Rails.application.config.database_configuration[Rails.env].merge(
-      'pool' => sidekiq_concurrency
+      'pool' => sidekiq_concurrency + 5
     )
 
     # Re-establish the database connection with the new pool size
@@ -76,6 +79,7 @@ Sidekiq.configure_server do |config|
     chain.add SidekiqUniqueJobs::Middleware::Client
     chain.add SidekiqUniqueJobs::Middleware::Server
     chain.add Sidekiq::SidekiqConnectionCleanup
+    chain.add Sidekiq::MemoryKiller
   end
 
   SidekiqUniqueJobs::Server.configure(config)

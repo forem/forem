@@ -136,7 +136,11 @@ namespace :admin do
       resource :moderator, only: %i[create destroy], module: "tags"
     end
     resources :surveys
-    resources :events
+    resources :events do
+      member do
+        patch :end_broadcast
+      end
+    end
   end
 
   scope :customization do
