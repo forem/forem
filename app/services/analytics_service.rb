@@ -4,11 +4,20 @@ class AnalyticsService
     exploding_head: 0, raised_hands: 0, fire: 0, unique_reactors: 0
   }.freeze
 
+  # When a date range exceeds this many days the older portion is bucketed by
+  # week instead of by day to keep payload size and chart point count bounded.
+  # The most recent DAILY_HISTORY_DAYS still resolve daily.
+  DAILY_HISTORY_DAYS = 180
+
   def initialize(user_or_org, start_date: "", end_date: "", article_id: nil)
     @user_or_org = user_or_org
     @article_id = article_id
     @start_date = Time.zone.parse(start_date.to_s)&.beginning_of_day
     @end_date = Time.zone.parse(end_date.to_s)&.end_of_day || Time.current.end_of_day
+
+    # Clamp start_date to the owner's registration date so we don't generate
+    # a long tail of empty zero buckets predating the account.
+    @start_date = clamp_start_to_owner_registration(@start_date)
 
     load_data
   end
@@ -23,12 +32,16 @@ class AnalyticsService
     }
   end
 
-  # Computes counts for comments, reactions, follows and page views per each day
+  # Computes counts for comments, reactions, follows and page views per each
+  # day (or per week for data older than DAILY_HISTORY_DAYS).
   def grouped_by_day
     return {} unless start_date && end_date
 
-    # cache all stats in the date range for the requested user or organization
-    cache_key = "analytics-for-dates-#{start_date}-#{end_date}-#{user_or_org.class.name}-#{user_or_org.id}"
+    # cache all stats in the date range for the requested user or organization.
+    # NOTE: prefix is bumped to v2 because the response shape now includes
+    # weekly buckets when the range exceeds DAILY_HISTORY_DAYS; previously
+    # cached v1 payloads would be daily-only.
+    cache_key = "analytics-for-dates-v2-#{start_date}-#{end_date}-#{user_or_org.class.name}-#{user_or_org.id}"
     cache_key = "#{cache_key}-article-#{article_id}" if article_id
 
     Rails.cache.fetch(cache_key, expires_in: 7.days) do
@@ -38,9 +51,9 @@ class AnalyticsService
       reactions_stats_per_day = calculate_reactions_stats_per_day(reaction_data)
       page_views_stats_per_day = calculate_page_views_stats_per_day(page_view_data)
 
-      # 2. build the final hash, one per each day
+      # 2. build the final hash, one entry per bucket (daily for recent, weekly for old)
       stats = {}
-      (start_date.to_date..end_date.to_date).each do |date|
+      bucket_dates.each do |date|
         stats[date.iso8601] = stats_per_day(
           date,
           comments_stats: comments_stats_per_day,
@@ -252,19 +265,19 @@ class AnalyticsService
 
   def calculate_comments_stats_per_day(comment_data)
     # AR returns a hash with date => count, we transform it using ISO dates for convenience
-    comment_data.group("DATE(created_at)").count.transform_keys(&:iso8601)
+    comment_data.group(bucket_sql).count.transform_keys(&:iso8601)
   end
 
   def calculate_follows_stats_per_day(follow_data)
     # AR returns a hash with date => count, we transform it using ISO dates for convenience
-    follow_data.group("DATE(created_at)").count.transform_keys(&:iso8601)
+    follow_data.group(bucket_sql).count.transform_keys(&:iso8601)
   end
 
   def calculate_reactions_stats_per_day(reaction_data)
     # we issue one single query that contains all requested aggregates
     # and that groups them by date
     reactions = reaction_data.select(
-      Arel.sql("DATE(created_at)").as("date"),
+      Arel.sql(bucket_sql).as("date"),
       Arel.sql("COUNT(*)").as("total"),
       Arel.sql("COUNT(*) FILTER (WHERE category = 'like')").as("like"),
       Arel.sql("COUNT(*) FILTER (WHERE category = 'readinglist')").as("readinglist"),
@@ -273,7 +286,7 @@ class AnalyticsService
       Arel.sql("COUNT(*) FILTER (WHERE category = 'raised_hands')").as("raised_hands"),
       Arel.sql("COUNT(*) FILTER (WHERE category = 'fire')").as("fire"),
       Arel.sql("COUNT(DISTINCT user_id)").as("unique_reactors"),
-    ).group("DATE(created_at)")
+    ).group(bucket_sql)
 
     # this transforms the collection of pseudo Reaction objects previously selected
     # in a hash with all reaction category counts plus unique reactors
@@ -295,11 +308,11 @@ class AnalyticsService
     # we issue one single query that contains all requested aggregates
     # and that groups them by date
     page_views = page_view_data.select(
-      Arel.sql("DATE(created_at)").as("date"),
+      Arel.sql(bucket_sql).as("date"),
       Arel.sql("SUM(counts_for_number_of_views)").as("total"),
       # count the average only for logged in users
       Arel.sql("AVG(time_tracked_in_seconds) FILTER (WHERE user_id IS NOT NULL)").as("average"),
-    ).group("DATE(created_at)")
+    ).group(bucket_sql)
 
     # this transforms the collection of pseudo PageView objects previously selected
     # in a hash, eg. {total: 2, average_read_time_in_seconds: 10, total_read_time_in_seconds: 20}
@@ -328,5 +341,64 @@ class AnalyticsService
       reactions: reactions_stats[iso_date] || default_reactions_stats,
       page_views: page_views_stats[iso_date] || default_page_views_stats
     }
+  end
+
+  # Returns the timestamp the owner became part of the platform.
+  # Users have a dedicated registered_at column; organizations fall back to created_at.
+  def owner_registered_at
+    if user_or_org.respond_to?(:registered_at) && user_or_org.registered_at
+      user_or_org.registered_at
+    else
+      user_or_org.created_at
+    end
+  end
+
+  def clamp_start_to_owner_registration(parsed_start)
+    return parsed_start unless parsed_start
+
+    floor = owner_registered_at&.beginning_of_day
+    floor && parsed_start < floor ? floor : parsed_start
+  end
+
+  # SQL expression used to bucket created_at into either a daily date or the
+  # Monday of its ISO week, depending on whether the timestamp falls within
+  # the most recent DAILY_HISTORY_DAYS of the requested range. Postgres returns
+  # a date in either branch so AR transforms the result with `&:iso8601`.
+  def bucket_sql
+    if weekly_bucketing?
+      cutoff = end_date - DAILY_HISTORY_DAYS.days
+      cutoff_literal = ActiveRecord::Base.connection.quote(cutoff)
+      "CASE WHEN created_at >= #{cutoff_literal} " \
+        "THEN DATE(created_at) " \
+        "ELSE DATE_TRUNC('week', created_at)::date END"
+    else
+      "DATE(created_at)"
+    end
+  end
+
+  def weekly_bucketing?
+    return false unless start_date && end_date
+
+    (end_date - start_date) > DAILY_HISTORY_DAYS.days
+  end
+
+  # Iterates the set of bucket start dates that should appear in the response.
+  # For weekly_bucketing? mode: weekly Mondays from start to cutoff, then daily
+  # from cutoff to end_date. Otherwise: every day in range.
+  def bucket_dates
+    dates = []
+    if weekly_bucketing?
+      cutoff_date = (end_date - DAILY_HISTORY_DAYS.days).to_date
+      week = start_date.to_date.beginning_of_week
+      while week < cutoff_date
+        dates << week
+        week += 7
+      end
+      daily_start = [cutoff_date, start_date.to_date].max
+      dates.concat((daily_start..end_date.to_date).to_a)
+    else
+      dates.concat((start_date.to_date..end_date.to_date).to_a)
+    end
+    dates
   end
 end
