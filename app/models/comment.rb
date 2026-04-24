@@ -75,6 +75,7 @@ class Comment < ApplicationRecord
   after_create_commit :send_email_notification, if: :should_send_email_notification?
 
   after_commit :calculate_score, on: %i[create update]
+  after_commit :enqueue_article_activity_update, on: %i[create update destroy], if: :commentable_is_article?
 
   after_update_commit :update_notifications, if: proc { |comment| comment.saved_changes.include? "body_markdown" }
 
@@ -212,6 +213,39 @@ class Comment < ApplicationRecord
   end
 
   private
+
+  def commentable_is_article?
+    commentable_type == "Article"
+  end
+
+  def enqueue_article_activity_update
+    iso = created_at.to_date.iso8601
+    payload = { "iso" => iso, "score" => 1 }
+
+    if destroyed?
+      return unless score.to_i.positive?
+
+      Articles::UpdateArticleActivityWorker.perform_async(commentable_id, "comment", "destroy", payload)
+      return
+    end
+
+    score_change = saved_change_to_score
+    if score_change.nil?
+      # No score change on this commit. On create the column starts at NULL or 0
+      # and saved_change_to_score IS populated; on update with no score change
+      # we skip — the article_activity row already reflects the prior state.
+      return
+    end
+
+    prev = score_change.first.to_i
+    curr = score_change.last.to_i
+    was_counted = prev.positive?
+    is_counted = curr.positive?
+    return if was_counted == is_counted
+
+    action = is_counted ? "create" : "destroy"
+    Articles::UpdateArticleActivityWorker.perform_async(commentable_id, "comment", action, payload)
+  end
 
   def remove_notifications?
     deleted? || hidden_by_commentable_user?

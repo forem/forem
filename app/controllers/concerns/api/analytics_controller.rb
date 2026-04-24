@@ -64,7 +64,7 @@ module Api
       effective_start = params[:start].presence || @owner_start_floor.iso8601
 
       cache_key = [
-        "analytics-dashboard-v2",
+        "analytics-dashboard-v3",
         effective_start, params[:end],
         @owner.class.name, @owner.id,
         params[:article_id]
