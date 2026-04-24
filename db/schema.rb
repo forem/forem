@@ -140,6 +140,9 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_24_100000) do
   end
 
   create_table "articles", force: :cascade do |t|
+    t.text "ai_summary"
+    t.datetime "ai_summary_generated_at"
+    t.string "ai_summary_prompt_version"
     t.boolean "any_comments_hidden", default: false
     t.boolean "approved", default: false
     t.boolean "archived", default: false
@@ -1171,14 +1174,18 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_24_100000) do
     t.string "domain"
     t.string "path"
     t.string "referrer"
+    t.string "region"
     t.integer "time_tracked_in_seconds", default: 15
     t.datetime "updated_at", precision: nil, null: false
     t.string "user_agent"
     t.bigint "user_id"
     t.index ["article_id", "created_at"], name: "index_page_views_on_article_id_and_created_at"
+    t.bigint "viewable_id"
+    t.string "viewable_type"
     t.index ["article_id"], name: "index_page_views_on_article_id"
     t.index ["created_at"], name: "index_page_views_on_created_at"
     t.index ["user_id"], name: "index_page_views_on_user_id"
+    t.index ["viewable_type", "viewable_id"], name: "index_page_views_on_viewable_type_and_viewable_id"
   end
 
   create_table "pages", force: :cascade do |t|
