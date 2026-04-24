@@ -190,7 +190,10 @@ function trackCustomImpressions() {
           timeOnSiteCounter++
           const CurrentArticleElement = document.getElementById('article-body') || document.getElementById('comment-article-indicator');
           if (CurrentArticleElement && checkUserLoggedIn()) {
-            trackFifteenSecondsOnPage(articleId, csrfToken);
+            const currentArticleId = CurrentArticleElement.dataset.articleId;
+            if (currentArticleId) {
+              trackFifteenSecondsOnPage(currentArticleId, csrfToken);
+            }
           } else {
             clearInterval(timeOnSiteInterval);
           }
