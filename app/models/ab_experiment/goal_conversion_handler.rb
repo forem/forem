@@ -11,6 +11,7 @@ class AbExperiment
     USER_CREATES_COMMENT_GOAL = "user_creates_comment".freeze
     USER_CREATES_ARTICLE_REACTION_GOAL = "user_creates_article_reaction".freeze
     USER_CREATES_EMAIL_FEED_EVENT_GOAL = "user_creates_email_feed_event".freeze
+    USER_CLICKS_EMAIL_LINK_GOAL = "user_clicks_email_link".freeze
 
     def self.call(...)
       new(...).call
