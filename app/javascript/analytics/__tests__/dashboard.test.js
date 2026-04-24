@@ -23,11 +23,7 @@ jest.mock('apexcharts', () => ({
 }));
 
 jest.mock('../client', () => ({
-  callHistoricalAPI: jest.fn(),
-  callTotalsAPI: jest.fn(),
-  callReferrersAPI: jest.fn(),
-  callTopContributorsAPI: jest.fn(),
-  callFollowerEngagementAPI: jest.fn(),
+  callDashboardAPI: jest.fn(),
 }));
 
 // Build sample historical data spanning 120 days
@@ -65,6 +61,17 @@ const mockTopContributorsData = [
 ];
 const mockFollowerEngagementData = { total_followers: 200, engaged_followers: 30, ratio: 15.0 };
 
+function bundle(overrides = {}) {
+  return {
+    historical: mockHistoricalData,
+    totals: mockTotalsData,
+    referrers: mockReferrersData,
+    top_contributors: mockTopContributorsData,
+    follower_engagement: mockFollowerEngagementData,
+    ...overrides,
+  };
+}
+
 function setupDOM() {
   document.body.innerHTML = `
     <div class="crayons-tabs crayons-tabs--analytics">
@@ -91,47 +98,37 @@ function setupDOM() {
   `;
 }
 
+async function flushPromises() {
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  await new Promise((resolve) => setTimeout(resolve, 0));
+}
+
 describe('Analytics Dashboard – Brush/Zoom for Infinity', () => {
-  const { callHistoricalAPI, callTotalsAPI, callReferrersAPI, callTopContributorsAPI, callFollowerEngagementAPI } = require('../client');
+  const { callDashboardAPI } = require('../client');
 
   beforeEach(() => {
-    // Reset shared window state between tests
     window._analyticsState = { activeCharts: {}, apiGeneration: 0 };
     setupDOM();
     MockApexCharts.mockClear();
     mockRender.mockClear();
     mockDestroy.mockClear();
-    callHistoricalAPI.mockResolvedValue(mockHistoricalData);
-    callTotalsAPI.mockResolvedValue(mockTotalsData);
-    callReferrersAPI.mockResolvedValue(mockReferrersData);
-    callTopContributorsAPI.mockResolvedValue(mockTopContributorsData);
-    callFollowerEngagementAPI.mockResolvedValue(mockFollowerEngagementData);
+    callDashboardAPI.mockResolvedValue(bundle());
   });
-
-  async function flushPromises() {
-    await new Promise((resolve) => setTimeout(resolve, 0));
-    await new Promise((resolve) => setTimeout(resolve, 0));
-  }
 
   test('week/month charts use category x-axis without brush', async () => {
     initCharts({});
     await flushPromises();
 
-    // 4 main charts (readers, reactions, comments, followers) + 1 donut (referrers)
     const calls = MockApexCharts.mock.calls;
     const mainChartCalls = calls.filter(([, opts]) => opts.chart.type !== 'donut');
 
     mainChartCalls.forEach(([, opts]) => {
-      // Should use categories, not datetime
       expect(opts.xaxis.type).toBeUndefined();
       expect(opts.xaxis.categories).toBeDefined();
-      // Should not have brush config
       expect(opts.chart.brush).toBeUndefined();
-      // Zoom should be disabled
       expect(opts.chart.zoom.enabled).toBe(false);
     });
 
-    // No brush divs should exist
     expect(document.getElementById('brush-readers-chart')).toBeNull();
     expect(document.getElementById('brush-reactions-chart')).toBeNull();
     expect(document.getElementById('brush-comments-chart')).toBeNull();
@@ -143,22 +140,16 @@ describe('Analytics Dashboard – Brush/Zoom for Infinity', () => {
     await flushPromises();
     MockApexCharts.mockClear();
 
-    // Click infinity button
     document.getElementById('infinity-button').click();
     await flushPromises();
 
     const calls = MockApexCharts.mock.calls;
-
-    // Find main chart calls (have chart.id starting with 'main-')
     const mainCalls = calls.filter(([, opts]) => opts.chart.id && opts.chart.id.startsWith('main-'));
-    // Find brush chart calls (have chart.brush.enabled)
     const brushCalls = calls.filter(([, opts]) => opts.chart.brush && opts.chart.brush.enabled);
 
-    // Should have 4 main charts and 4 brush charts
     expect(mainCalls.length).toBe(4);
     expect(brushCalls.length).toBe(4);
 
-    // Main charts should use datetime x-axis with initial zoom range
     mainCalls.forEach(([, opts]) => {
       expect(opts.xaxis.type).toBe('datetime');
       expect(opts.xaxis.min).toBeDefined();
@@ -167,7 +158,6 @@ describe('Analytics Dashboard – Brush/Zoom for Infinity', () => {
       expect(opts.chart.toolbar.show).toBe(true);
     });
 
-    // Brush charts should target correct main charts
     const brushTargets = brushCalls.map(([, opts]) => opts.chart.brush.target).sort();
     expect(brushTargets).toEqual([
       'main-comments-chart',
@@ -176,13 +166,11 @@ describe('Analytics Dashboard – Brush/Zoom for Infinity', () => {
       'main-readers-chart',
     ]);
 
-    // Brush charts should have datetime x-axis
     brushCalls.forEach(([, opts]) => {
       expect(opts.xaxis.type).toBe('datetime');
       expect(opts.chart.selection.enabled).toBe(true);
     });
 
-    // Brush divs should exist in DOM
     expect(document.getElementById('brush-readers-chart')).not.toBeNull();
     expect(document.getElementById('brush-reactions-chart')).not.toBeNull();
     expect(document.getElementById('brush-comments-chart')).not.toBeNull();
@@ -208,10 +196,7 @@ describe('Analytics Dashboard – Brush/Zoom for Infinity', () => {
 
     brushCalls.forEach(([, opts]) => {
       const { min, max } = opts.chart.selection.xaxis;
-      // Selection max should be the last data point
       expect(max).toBe(lastTimestamp);
-      // Selection min should be ~90 days before the last data point
-      // (may be clamped to first data point if data < 90 days)
       const firstTimestamp = new Date(labels[0]).getTime();
       expect(min).toBe(Math.max(firstTimestamp, expectedMin));
     });
@@ -232,11 +217,10 @@ describe('Analytics Dashboard – Brush/Zoom for Infinity', () => {
     mainCalls.forEach(([, opts]) => {
       opts.series.forEach((s) => {
         s.data.forEach((point) => {
-          // Each data point should be a [timestamp, value] pair
           expect(Array.isArray(point)).toBe(true);
           expect(point.length).toBe(2);
-          expect(typeof point[0]).toBe('number'); // timestamp
-          expect(typeof point[1]).toBe('number'); // value
+          expect(typeof point[0]).toBe('number');
+          expect(typeof point[1]).toBe('number');
         });
       });
     });
@@ -246,18 +230,14 @@ describe('Analytics Dashboard – Brush/Zoom for Infinity', () => {
     initCharts({});
     await flushPromises();
 
-    // Switch to infinity
     document.getElementById('infinity-button').click();
     await flushPromises();
 
-    // Brush divs should exist
     expect(document.getElementById('brush-readers-chart')).not.toBeNull();
 
-    // Switch back to week
     document.getElementById('week-button').click();
     await flushPromises();
 
-    // Brush divs should be removed
     expect(document.getElementById('brush-readers-chart')).toBeNull();
     expect(document.getElementById('brush-reactions-chart')).toBeNull();
     expect(document.getElementById('brush-comments-chart')).toBeNull();
@@ -265,132 +245,89 @@ describe('Analytics Dashboard – Brush/Zoom for Infinity', () => {
   });
 });
 
-describe('Analytics Dashboard – Async Chart Loading', () => {
-  const { callHistoricalAPI, callTotalsAPI, callReferrersAPI, callTopContributorsAPI, callFollowerEngagementAPI } = require('../client');
+describe('Analytics Dashboard – Bundled Endpoint Rendering', () => {
+  const { callDashboardAPI } = require('../client');
 
   beforeEach(() => {
-    // Reset shared window state between tests
     window._analyticsState = { activeCharts: {}, apiGeneration: 0 };
     setupDOM();
     MockApexCharts.mockClear();
     mockRender.mockClear();
     mockDestroy.mockClear();
-    callTopContributorsAPI.mockResolvedValue([]);
-    callFollowerEngagementAPI.mockResolvedValue({ total_followers: 0, engaged_followers: 0, ratio: 0.0 });
+    callDashboardAPI.mockReset();
   });
 
-  async function flushPromises() {
-    await new Promise((resolve) => setTimeout(resolve, 0));
-    await new Promise((resolve) => setTimeout(resolve, 0));
-  }
-
-  test('charts render when historical resolves even if totals is still pending', async () => {
-    let resolveTotals;
-    const totalsPromise = new Promise((resolve) => { resolveTotals = resolve; });
-    callHistoricalAPI.mockResolvedValue(mockHistoricalData);
-    callTotalsAPI.mockReturnValue(totalsPromise);
-    callReferrersAPI.mockResolvedValue(mockReferrersData);
+  test('issues exactly ONE dashboard API call per initCharts', async () => {
+    callDashboardAPI.mockResolvedValue(bundle());
 
     initCharts({});
     await flushPromises();
 
-    // Charts should be rendered (from historical)
-    const chartCalls = MockApexCharts.mock.calls.filter(([, opts]) => opts.chart.type !== 'donut');
-    expect(chartCalls.length).toBeGreaterThan(0);
+    expect(callDashboardAPI).toHaveBeenCalledTimes(1);
+  });
 
-    // Cards should show data (from historical, without totals)
+  test('renders cards, charts, referrers, top contributors, and followers from single response', async () => {
+    callDashboardAPI.mockResolvedValue(bundle());
+
+    initCharts({});
+    await flushPromises();
+
+    // Cards populated (no more loading placeholders)
     expect(document.getElementById('readers-card').innerHTML).not.toContain('analytics-loading');
-
-    // Now resolve totals — cards should update with extra info
-    resolveTotals(mockTotalsData);
-    await flushPromises();
-
     expect(document.getElementById('reactions-card').innerHTML).toContain('unique reactors');
-  });
 
-  test('referrers load independently of historical and totals', async () => {
-    let resolveHistorical;
-    const historicalPromise = new Promise((resolve) => { resolveHistorical = resolve; });
-    callHistoricalAPI.mockReturnValue(historicalPromise);
-    callTotalsAPI.mockResolvedValue(mockTotalsData);
-    callReferrersAPI.mockResolvedValue(mockReferrersData);
-
-    initCharts({});
-    await flushPromises();
-
-    // Referrers should be rendered even though historical hasn't resolved
+    // Referrers rendered
     const referrersContainer = document.getElementById('referrers-container');
     expect(referrersContainer.innerHTML).toContain('google.com');
 
-    // Charts should NOT be rendered yet
+    // Top contributors rendered
+    const topContribContainer = document.getElementById('top-contributors-container');
+    expect(topContribContainer.innerHTML).toContain('alice');
+    expect(topContribContainer.innerHTML).toContain('bob');
+    expect(topContribContainer.innerHTML.indexOf('alice')).toBeLessThan(topContribContainer.innerHTML.indexOf('bob'));
+
+    // Follower engagement rendered
+    const followerCard = document.getElementById('followers-card');
+    expect(followerCard.querySelector('.follower-engagement')).not.toBeNull();
+
+    // Charts rendered
     const chartCalls = MockApexCharts.mock.calls.filter(([, opts]) => opts.chart.type !== 'donut');
-    // Only the donut chart should exist at this point
-    const donutCalls = MockApexCharts.mock.calls.filter(([, opts]) => opts.chart.type === 'donut');
-    expect(donutCalls.length).toBe(1);
-
-    // Now resolve historical — charts appear
-    resolveHistorical(mockHistoricalData);
-    await flushPromises();
-
-    const allChartCalls = MockApexCharts.mock.calls.filter(([, opts]) => opts.chart.type !== 'donut');
-    expect(allChartCalls.length).toBeGreaterThan(0);
+    expect(chartCalls.length).toBeGreaterThan(0);
   });
 
   test('loading placeholders are shown before data arrives', async () => {
-    let resolveHistorical;
-    const historicalPromise = new Promise((resolve) => { resolveHistorical = resolve; });
-    callHistoricalAPI.mockReturnValue(historicalPromise);
-    callTotalsAPI.mockReturnValue(new Promise(() => {}));
-    callReferrersAPI.mockReturnValue(new Promise(() => {}));
+    let resolve;
+    callDashboardAPI.mockReturnValue(new Promise((r) => { resolve = r; }));
 
     initCharts({});
-    // Don't flush — let promises stay pending
+    // Don't flush — promise stays pending
 
-    // Placeholders should be visible in chart containers
     expect(document.getElementById('readers-chart').querySelector('.analytics-loading')).not.toBeNull();
     expect(document.getElementById('reactions-chart').querySelector('.analytics-loading')).not.toBeNull();
 
-    // Resolve historical to clear chart placeholders
-    resolveHistorical(mockHistoricalData);
+    resolve(bundle());
     await flushPromises();
 
-    // Chart containers should no longer have placeholders (replaced by ApexCharts)
-    // The innerHTML is cleared by drawChart before rendering
     expect(document.getElementById('readers-chart').querySelector('.analytics-loading')).toBeNull();
   });
 
-  test('chart errors do not prevent referrer rendering', async () => {
-    callHistoricalAPI.mockRejectedValue(new Error('API error'));
-    callTotalsAPI.mockRejectedValue(new Error('API error'));
-    callReferrersAPI.mockResolvedValue(mockReferrersData);
-    callTopContributorsAPI.mockResolvedValue([]);
+  test('shows error UI on both charts and referrers when the request fails', async () => {
+    callDashboardAPI.mockRejectedValue(new Error('boom'));
 
     initCharts({});
     await flushPromises();
 
-    // Referrers should still render
+    ['readers-chart', 'reactions-chart', 'comments-chart', 'followers-chart'].forEach((id) => {
+      const el = document.getElementById(id);
+      expect(el.textContent).toContain('Failed to fetch chart data');
+    });
+
     const referrersContainer = document.getElementById('referrers-container');
-    expect(referrersContainer.innerHTML).toContain('google.com');
-  });
-
-  test('top contributors panel renders async with ranked list', async () => {
-    callHistoricalAPI.mockResolvedValue(mockHistoricalData);
-    callTotalsAPI.mockResolvedValue(mockTotalsData);
-    callReferrersAPI.mockResolvedValue(mockReferrersData);
-    callTopContributorsAPI.mockResolvedValue(mockTopContributorsData);
-
-    initCharts({});
-    await flushPromises();
-
-    const container = document.getElementById('top-contributors-container');
-    expect(container.innerHTML).toContain('alice');
-    expect(container.innerHTML).toContain('bob');
-    // Alice should appear before Bob (higher score)
-    expect(container.innerHTML.indexOf('alice')).toBeLessThan(container.innerHTML.indexOf('bob'));
+    expect(referrersContainer.textContent).toContain('Failed to fetch referrer data');
   });
 
   test('top contributors shows empty message when no data', async () => {
-    callTopContributorsAPI.mockResolvedValue([]);
+    callDashboardAPI.mockResolvedValue(bundle({ top_contributors: [] }));
 
     initCharts({});
     await flushPromises();
@@ -399,32 +336,27 @@ describe('Analytics Dashboard – Async Chart Loading', () => {
     expect(container.innerHTML).toContain('top_contributors_empty');
   });
 
-  test('stale top contributors response is discarded after navigation', async () => {
-    callHistoricalAPI.mockResolvedValue(mockHistoricalData);
-    callTotalsAPI.mockResolvedValue(mockTotalsData);
-    callReferrersAPI.mockResolvedValue(mockReferrersData);
-
-    let resolveContributors;
-    callTopContributorsAPI.mockReturnValue(new Promise((r) => { resolveContributors = r; }));
+  test('stale response is discarded after navigation', async () => {
+    let resolveStale;
+    callDashboardAPI
+      .mockReturnValueOnce(new Promise((r) => { resolveStale = r; }))
+      .mockResolvedValueOnce(bundle({ top_contributors: [] }));
 
     initCharts({});
-    // Simulate navigation — call initCharts again which bumps generation
-    callTopContributorsAPI.mockResolvedValue([]);
+    // Simulate navigation — second initCharts bumps generation
     initCharts({});
+    await flushPromises();
 
-    resolveContributors(mockTopContributorsData);
+    // Resolve the first (stale) call after navigation — it must be ignored
+    resolveStale(bundle());
     await flushPromises();
 
     const container = document.getElementById('top-contributors-container');
-    // Should NOT have rendered the stale data — only the empty message from the second call
     expect(container.innerHTML).not.toContain('alice');
   });
 
   test('follower engagement ratio renders on followers card', async () => {
-    callHistoricalAPI.mockResolvedValue(mockHistoricalData);
-    callTotalsAPI.mockResolvedValue(mockTotalsData);
-    callReferrersAPI.mockResolvedValue(mockReferrersData);
-    callFollowerEngagementAPI.mockResolvedValue(mockFollowerEngagementData);
+    callDashboardAPI.mockResolvedValue(bundle());
 
     initCharts({});
     await flushPromises();
@@ -436,10 +368,9 @@ describe('Analytics Dashboard – Async Chart Loading', () => {
   });
 
   test('follower engagement does not render when no followers', async () => {
-    callHistoricalAPI.mockResolvedValue(mockHistoricalData);
-    callTotalsAPI.mockResolvedValue(mockTotalsData);
-    callReferrersAPI.mockResolvedValue(mockReferrersData);
-    callFollowerEngagementAPI.mockResolvedValue({ total_followers: 0, engaged_followers: 0, ratio: 0.0 });
+    callDashboardAPI.mockResolvedValue(bundle({
+      follower_engagement: { total_followers: 0, engaged_followers: 0, ratio: 0.0 },
+    }));
 
     initCharts({});
     await flushPromises();
@@ -449,14 +380,16 @@ describe('Analytics Dashboard – Async Chart Loading', () => {
   });
 
   test('charts show empty state message when historical data is empty', async () => {
-    callHistoricalAPI.mockResolvedValue({});
-    callTotalsAPI.mockResolvedValue({
-      comments: { total: 0 },
-      reactions: { total: 0, like: 0, readinglist: 0, unicorn: 0, exploding_head: 0, raised_hands: 0, fire: 0, unique_reactors: 0 },
-      page_views: { total: 0, average_read_time_in_seconds: 0 },
-      follows: { total: 0 },
-    });
-    callReferrersAPI.mockResolvedValue({ domains: [] });
+    callDashboardAPI.mockResolvedValue(bundle({
+      historical: {},
+      totals: {
+        comments: { total: 0 },
+        reactions: { total: 0, like: 0, readinglist: 0, unicorn: 0, exploding_head: 0, raised_hands: 0, fire: 0, unique_reactors: 0 },
+        page_views: { total: 0, average_read_time_in_seconds: 0 },
+        follows: { total: 0 },
+      },
+      referrers: { domains: [] },
+    }));
 
     initCharts({});
     await flushPromises();
@@ -466,15 +399,12 @@ describe('Analytics Dashboard – Async Chart Loading', () => {
       expect(el.innerHTML).toContain('dashboard_analytics_no_data');
     });
 
-    // No ApexCharts instances should be created for main charts
     const mainChartCalls = MockApexCharts.mock.calls.filter(([, opts]) => opts.chart.type !== 'donut');
     expect(mainChartCalls.length).toBe(0);
   });
 
   test('referrers show empty state when no domains', async () => {
-    callHistoricalAPI.mockResolvedValue(mockHistoricalData);
-    callTotalsAPI.mockResolvedValue(mockTotalsData);
-    callReferrersAPI.mockResolvedValue({ domains: [] });
+    callDashboardAPI.mockResolvedValue(bundle({ referrers: { domains: [] } }));
 
     initCharts({});
     await flushPromises();
@@ -482,31 +412,27 @@ describe('Analytics Dashboard – Async Chart Loading', () => {
     const container = document.getElementById('referrers-container');
     expect(container.innerHTML).toContain('dashboard_analytics_no_referrers');
 
-    // Referrer chart should be cleared, no donut rendered
     const donutCalls = MockApexCharts.mock.calls.filter(([, opts]) => opts.chart.type === 'donut');
     expect(donutCalls.length).toBe(0);
   });
 
   test('cards show zero values when data is empty', async () => {
-    callHistoricalAPI.mockResolvedValue({});
-    callTotalsAPI.mockResolvedValue({
-      comments: { total: 0 },
-      reactions: { total: 0, like: 0, readinglist: 0, unicorn: 0, exploding_head: 0, raised_hands: 0, fire: 0, unique_reactors: 0 },
-      page_views: { total: 0, average_read_time_in_seconds: 0 },
-      follows: { total: 0 },
-    });
-    callReferrersAPI.mockResolvedValue({ domains: [] });
+    callDashboardAPI.mockResolvedValue(bundle({
+      historical: {},
+      totals: {
+        comments: { total: 0 },
+        reactions: { total: 0, like: 0, readinglist: 0, unicorn: 0, exploding_head: 0, raised_hands: 0, fire: 0, unique_reactors: 0 },
+        page_views: { total: 0, average_read_time_in_seconds: 0 },
+        follows: { total: 0 },
+      },
+      referrers: { domains: [] },
+    }));
 
     initCharts({});
     await flushPromises();
 
-    const readersCard = document.getElementById('readers-card');
-    expect(readersCard.innerHTML).toContain('0');
-
-    const reactionsCard = document.getElementById('reactions-card');
-    expect(reactionsCard.innerHTML).toContain('0');
-
-    const commentsCard = document.getElementById('comments-card');
-    expect(commentsCard.innerHTML).toContain('0');
+    expect(document.getElementById('readers-card').innerHTML).toContain('0');
+    expect(document.getElementById('reactions-card').innerHTML).toContain('0');
+    expect(document.getElementById('comments-card').innerHTML).toContain('0');
   });
 });

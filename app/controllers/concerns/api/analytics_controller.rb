@@ -52,6 +52,50 @@ module Api
       render json: data.to_json
     end
 
+    # Bundled endpoint: returns every payload the analytics dashboard UI needs
+    # in a single response. Consolidating into one request avoids tripping the
+    # per-IP Rack::Attack api_throttle (3 GETs/sec), halves middleware overhead,
+    # and gives the client a consistent point-in-time snapshot across panels.
+    def dashboard
+      # When `start` is omitted (Infinity range), fall back to the owner's
+      # registration timestamp so we don't fabricate years of empty buckets
+      # before the account existed. AnalyticsService also clamps internally,
+      # but resolving here keeps the cache key precise.
+      effective_start = params[:start].presence || @owner_start_floor.iso8601
+
+      cache_key = [
+        "analytics-dashboard-v3",
+        effective_start, params[:end],
+        @owner.class.name, @owner.id,
+        params[:article_id]
+      ].join("-")
+
+      # HTTP cache: short browser/CDN TTL keeps the dashboard snappy on repeat
+      # navigations without sacrificing the 7-day server-side memoization above.
+      expires_in 5.minutes, public: false
+
+      data = Rails.cache.fetch(cache_key, expires_in: 7.days) do
+        # Construct services lazily inside the cache block: AnalyticsService#initialize
+        # runs load_data, so building them on cache hits would defeat the cache.
+        dated = AnalyticsService.new(
+          @owner,
+          start_date: effective_start, end_date: params[:end], article_id: params[:article_id],
+        )
+        all_time = AnalyticsService.new(@owner, article_id: analytics_params[:article_id])
+
+        {
+          historical: dated.grouped_by_day,
+          totals: all_time.totals,
+          referrers: dated.referrers,
+          top_contributors: dated.top_contributors,
+          follower_engagement: dated.follower_engagement,
+          start_date_floor: @owner_start_floor.iso8601
+        }
+      end
+
+      render json: data.to_json
+    end
+
     private
 
     def authorize_user_organization
@@ -63,10 +107,22 @@ module Api
 
     def load_owner
       @owner = @org || @user
+      @owner_start_floor = (
+        (@owner.respond_to?(:registered_at) && @owner.registered_at) || @owner.created_at
+      ).to_date
     end
 
     def validate_date_params
-      raise ArgumentError, I18n.t("api.v0.analytics_controller.start_missing") if analytics_params[:start].blank?
+      # The bundled `dashboard` endpoint allows an omitted `start` and falls
+      # back to the owner's registration date so Infinity range works without
+      # the client knowing the account creation date. All other actions still
+      # require an explicit `start`.
+      if analytics_params[:start].blank?
+        raise ArgumentError, I18n.t("api.v0.analytics_controller.start_missing") unless action_name == "dashboard"
+
+        return
+      end
+
       raise ArgumentError, I18n.t("api.v0.analytics_controller.invalid_date_format") unless valid_date_params?
     end
 
