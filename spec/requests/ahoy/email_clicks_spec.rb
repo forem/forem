@@ -65,6 +65,15 @@ RSpec.describe "AhoyEmailClicks" do
         expect { post ahoy_email_clicks_path, params: { t: token, c: campaign, u: url, s: signature } }
           .to change { user.reload.last_presence_at }
       end
+
+      it "enqueues a Users::RecordFieldTestEventWorker" do
+        user = create(:user)
+        create(:email_message, user: user, token: token)
+
+        sidekiq_assert_enqueued_with(job: Users::RecordFieldTestEventWorker, args: [user.id, AbExperiment::GoalConversionHandler::USER_CLICKS_EMAIL_LINK_GOAL]) do
+          post ahoy_email_clicks_path, params: { t: token, c: campaign, u: url, s: signature }
+        end
+      end
     end
 
     context "with an invalid signature" do
