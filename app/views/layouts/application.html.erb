@@ -57,6 +57,13 @@
     <%= Settings::UserExperience.head_content.html_safe %>
   </head>
   <% unless internal_navigation? %>
+    <%
+      @viewable_for_tracking = [@article, @podcast_episode, @episode, @page, @organization, @feed_config].find do |viewable_candidate|
+        viewable_record = viewable_candidate.respond_to?(:object) ? viewable_candidate.object : viewable_candidate
+        viewable_record.respond_to?(:persisted?) && viewable_record.persisted?
+      end
+      @viewable_for_tracking = @viewable_for_tracking.object if @viewable_for_tracking.respond_to?(:object)
+    %>
     <body
       class="<%= Settings::UserExperience.default_font.tr("_", "-") %>-article-body default-header"
       data-user-status="<%= j(user_logged_in_status) %>"
@@ -132,7 +139,7 @@
       <%== flash[:global_notice] %>
     </div>
   <% end %>
-  <div id="page-content-inner" data-internal-nav="<%= internal_navigation? %>">
+  <div id="page-content-inner" data-internal-nav="<%= internal_navigation? %>" data-viewable-id="<%= @viewable_for_tracking&.id %>" data-viewable-type="<%= @viewable_for_tracking&.class&.name %>">
     <div id="page-route-change" class="screen-reader-only" aria-live="polite" aria-atomic="true"></div>
 
     <% if @hero_html && @hero_billboard.blank? %>

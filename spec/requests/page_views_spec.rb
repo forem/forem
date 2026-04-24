@@ -40,6 +40,20 @@ RSpec.describe "PageViews" do
         expect(PageView.last.user_agent).to eq("test")
       end
 
+      it "sends viewable attributes and region" do
+        user = create(:user)
+
+        sidekiq_perform_enqueued_jobs do
+          post "/page_views",
+               params: { viewable_type: "User", viewable_id: user.id },
+               headers: { "HTTP_FASTLY_CLIENT_GEO_REGION" => "US-NY" }
+        end
+
+        expect(PageView.last.viewable_type).to eq("User")
+        expect(PageView.last.viewable_id).to eq(user.id)
+        expect(PageView.last.region).to eq("US-NY")
+      end
+
       it "sends Algolia insight event" do
         article = create(:article)
         # Set up the expectation before making the request
