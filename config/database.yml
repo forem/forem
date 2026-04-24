@@ -17,8 +17,9 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  # Web dynos will default to 5 connections, perfectly matching Puma threads
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5).to_i %>
+  # Web dynos will default to RAILS_MAX_THREADS plus a small 5 connection buffer
+  # This buffer protects against starvation from ActionCable, internal telemetry, or out-of-band threads.
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5).to_i + 5 %>
   connect_timeout: 6
   checkout_timeout: 10
   idle_timeout: 60

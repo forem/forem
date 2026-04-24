@@ -146,14 +146,13 @@ function checkUserLoggedIn() {
 
 function trackCustomImpressions() {
   setTimeout(()=> {
-    const ArticleElement = document.getElementById('article-body') || document.getElementById('comment-article-indicator');
     const tokenMeta = document.querySelector("meta[name='csrf-token']")
     const isBot = /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(navigator.userAgent) // is crawler
     // eslint-disable-next-line no-unused-vars
     const windowBigEnough =  window.innerWidth > 1023
 
     // page view
-    if (ArticleElement && tokenMeta && !isBot) {
+    if (tokenMeta && !isBot) {
       // See https://github.com/forem/forem/blob/main/app/controllers/page_views_controller.rb
       //
       // If you change the 10, you should look at the PageViewsController as well.
@@ -161,26 +160,48 @@ function trackCustomImpressions() {
       if (!checkUserLoggedIn() && randomNumber != 1) {
         return;
       }
+      
+      const ArticleElement = document.getElementById('article-body') || document.getElementById('comment-article-indicator');
+      const articleId = ArticleElement ? ArticleElement.dataset.articleId : null;
+      const pageContentInner = document.getElementById('page-content-inner');
+      const viewableType = (pageContentInner && pageContentInner.dataset.viewableType) || null;
+      const viewableId = (pageContentInner && pageContentInner.dataset.viewableId) || null;
+
       const dataBody = {
-        article_id: ArticleElement.dataset.articleId,
+        article_id: articleId,
         referrer: document.referrer,
         user_agent: navigator.userAgent,
       };
+      if (viewableType && viewableId) {
+        dataBody.viewable_type = viewableType;
+        dataBody.viewable_id = viewableId;
+      }
+      
+      if (!articleId && !(viewableType && viewableId)) {
+        return;
+      }
+      
       const csrfToken = tokenMeta.getAttribute('content');
       trackPageView(dataBody, csrfToken);
-      let timeOnSiteCounter = 0;
-      const timeOnSiteInterval = setInterval(()=> {
-        timeOnSiteCounter++
-        const ArticleElement = document.getElementById('article-body') || document.getElementById('comment-article-indicator');
-        if (ArticleElement && checkUserLoggedIn()) {
-          trackFifteenSecondsOnPage(ArticleElement.dataset.articleId, csrfToken);
-        } else {
-          clearInterval(timeOnSiteInterval);
-        }
-        if ( timeOnSiteCounter > 118 ) {
-          clearInterval(timeOnSiteInterval);
-        }
-      }, 15000)
+      
+      if (articleId) {
+        let timeOnSiteCounter = 0;
+        const timeOnSiteInterval = setInterval(()=> {
+          timeOnSiteCounter++
+          const CurrentArticleElement = document.getElementById('article-body') || document.getElementById('comment-article-indicator');
+          if (CurrentArticleElement && checkUserLoggedIn()) {
+            const currentArticleId = CurrentArticleElement.dataset.articleId;
+            if (currentArticleId) {
+              trackFifteenSecondsOnPage(currentArticleId, csrfToken);
+            }
+          } else {
+            clearInterval(timeOnSiteInterval);
+          }
+          if ( timeOnSiteCounter > 118 ) {
+            clearInterval(timeOnSiteInterval);
+          }
+        }, 15000)
+      }
     }
 
   }, 1800)
