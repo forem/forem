@@ -2957,7 +2957,7 @@ RSpec.describe Article do
     end
 
     context "when the article has score below minimum and is not featured" do
-      let(:article) { build(:published_article, featured: false, score: 2, published_at: 1.day.ago) }
+      let(:article) { build(:published_article, featured: false, score: 2, published_at: 3.days.ago) }
 
       before do
         allow(Settings::UserExperience).to receive_messages(index_minimum_score: 10,
@@ -2966,6 +2966,19 @@ RSpec.describe Article do
 
       it "returns true" do
         expect(article.skip_indexing?).to be true
+      end
+    end
+
+    context "when the article has score below minimum but was published within the grace period" do
+      let(:article) { build(:published_article, featured: false, score: 2, published_at: 1.day.ago) }
+
+      before do
+        allow(Settings::UserExperience).to receive_messages(index_minimum_score: 10,
+                                                            index_minimum_date: 1.week.ago)
+      end
+
+      it "returns false (allows indexing during grace period)" do
+        expect(article.skip_indexing?).to be false
       end
     end
 
@@ -3036,6 +3049,7 @@ RSpec.describe Article do
       article.published = true
       article.score = 3
       article.featured = false
+      article.published_at = 3.days.ago
       expect(article.skip_indexing_reason).to eq("below_minimum_score")
     end
 
