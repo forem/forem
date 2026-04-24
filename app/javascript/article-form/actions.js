@@ -100,7 +100,12 @@ export function generateMainImage({ payload, successCb, failureCb, signal }) {
     credentials: 'same-origin',
     signal,
   })
-    .then((response) => response.json())
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('An error occurred, please try again later');
+      }
+      return response.json();
+    })
     .then((json) => {
       if (json.error) {
         throw new Error(json.error);
