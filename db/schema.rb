@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_04_21_160606) do
+ActiveRecord::Schema[7.0].define(version: 2026_04_22_102533) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -125,6 +125,9 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_21_160606) do
   end
 
   create_table "articles", force: :cascade do |t|
+    t.text "ai_summary"
+    t.datetime "ai_summary_generated_at"
+    t.string "ai_summary_prompt_version"
     t.boolean "any_comments_hidden", default: false
     t.boolean "approved", default: false
     t.boolean "archived", default: false
