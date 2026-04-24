@@ -13,9 +13,23 @@ class PageViewsController < ApplicationMetalController
   # @see https://github.com/forem/forem/blob/main/app/assets/javascripts/initializers/initializeBaseTracking.js.erb#L113-L117
   # @see https://github.com/forem/forem/pull/12686#discussion_r577271589 for further discussion.
   VISITOR_IMPRESSIONS_AGGREGATE_COUNTS_FOR_NUMBER_OF_VIEWS = 10
+  ALLOWED_VIEWABLE_TYPES = %w[User Organization Tag Page PodcastEpisode FeedConfig].freeze
 
   def create
-    page_view_create_params = params.slice(:article_id, :referrer, :user_agent)
+    page_view_create_params = params.slice(:article_id, :viewable_type, :viewable_id, :referrer, :user_agent)
+
+    if page_view_create_params[:viewable_type].blank? || page_view_create_params[:viewable_id].blank?
+      page_view_create_params.delete(:viewable_type)
+      page_view_create_params.delete(:viewable_id)
+    elsif !ALLOWED_VIEWABLE_TYPES.include?(page_view_create_params[:viewable_type]) || page_view_create_params[:viewable_id].to_i <= 0
+      page_view_create_params.delete(:viewable_type)
+      page_view_create_params.delete(:viewable_id)
+    else
+      page_view_create_params[:viewable_id] = page_view_create_params[:viewable_id].to_i
+    end
+
+    page_view_create_params[:region] = request.headers["HTTP_FASTLY_CLIENT_GEO_REGION"].presence || client_geolocation
+
     if session_current_user_id
       page_view_create_params[:user_id] = session_current_user_id
     else
@@ -42,6 +56,7 @@ class PageViewsController < ApplicationMetalController
   private
 
   def send_algolia_insight
+    return unless params[:article_id].present?
     return unless session_current_user_id &&
       Settings::General.algolia_application_id.present? &&
       Settings::General.algolia_api_key.present?
