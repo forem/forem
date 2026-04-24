@@ -125,6 +125,9 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_23_130947) do
   end
 
   create_table "articles", force: :cascade do |t|
+    t.text "ai_summary"
+    t.datetime "ai_summary_generated_at"
+    t.string "ai_summary_prompt_version"
     t.boolean "any_comments_hidden", default: false
     t.boolean "approved", default: false
     t.boolean "archived", default: false
