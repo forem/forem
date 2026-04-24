@@ -322,6 +322,8 @@ class Article < ApplicationRecord
 
   after_update_commit :update_dependent_embeds_if_key_info_changed
 
+  after_update_commit :regenerate_summary_if_content_changed
+
   # The trigger `update_reading_list_document` is used to keep the `articles.reading_list_document` column updated.
   #
   # Its body is inserted in a PostgreSQL trigger function and that joins the columns values
@@ -992,6 +994,7 @@ class Article < ApplicationRecord
                    hotness_score: BlackBox.article_hotness_score(self))
 
     trigger_freeform_context_note_generation
+    trigger_summary_generation
   end
 
   def trigger_freeform_context_note_generation
@@ -1001,6 +1004,27 @@ class Article < ApplicationRecord
     return if context_notes.exists?
     
     Articles::GenerateFreeformContextNoteWorker.perform_async(id)
+  end
+
+  def trigger_summary_generation
+    return unless Ai::Base::DEFAULT_KEY.present?
+    return if score < 50 || comment_score < 25
+    return if ai_summary.present?
+
+    Articles::GenerateSummaryWorker.perform_async(id)
+  end
+
+  # This is specifically for regenerating an existing summary when body or title
+  # change. First-time generation is still done by trigger_summary_generation
+  # when eligible after score computation.
+  def regenerate_summary_if_content_changed
+    return unless Ai::Base::DEFAULT_KEY.present?
+    return unless published?
+    return unless saved_change_to_body_markdown? || saved_change_to_title?
+    return if score < 50 || comment_score < 25
+    return if ai_summary.blank?
+
+    Articles::GenerateSummaryWorker.perform_async(id)
   end
 
   def co_author_ids_list
