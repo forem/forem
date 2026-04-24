@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_04_21_160606) do
+ActiveRecord::Schema[7.0].define(version: 2026_04_23_180002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -473,6 +473,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_21_160606) do
     t.index "to_tsvector('simple'::regconfig, COALESCE(body_markdown, ''::text))", name: "index_comments_on_body_markdown_as_tsvector", using: :gin
     t.index ["ancestry"], name: "index_comments_on_ancestry"
     t.index ["ancestry"], name: "index_comments_on_ancestry_trgm", opclass: :gin_trgm_ops, using: :gin
+    t.index ["commentable_id", "commentable_type", "created_at"], name: "index_comments_on_commentable_and_created_at"
     t.index ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type"
     t.index ["created_at"], name: "index_comments_on_created_at"
     t.index ["deleted"], name: "index_comments_on_deleted", where: "(deleted = false)"
@@ -1171,6 +1172,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_21_160606) do
     t.datetime "updated_at", precision: nil, null: false
     t.string "user_agent"
     t.bigint "user_id"
+    t.index ["article_id", "created_at"], name: "index_page_views_on_article_id_and_created_at"
     t.index ["article_id"], name: "index_page_views_on_article_id"
     t.index ["created_at"], name: "index_page_views_on_created_at"
     t.index ["user_id"], name: "index_page_views_on_user_id"
@@ -1431,6 +1433,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_21_160606) do
     t.index ["category"], name: "index_reactions_on_category"
     t.index ["created_at"], name: "index_reactions_on_created_at"
     t.index ["points"], name: "index_reactions_on_points"
+    t.index ["reactable_id", "reactable_type", "created_at"], name: "index_reactions_on_reactable_and_created_at"
     t.index ["reactable_id", "reactable_type"], name: "index_reactions_on_reactable_id_and_reactable_type"
     t.index ["reactable_type"], name: "index_reactions_on_reactable_type"
     t.index ["status"], name: "index_reactions_on_status"

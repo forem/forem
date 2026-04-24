@@ -687,6 +687,11 @@ function callAnalyticsAPI(date, timeRangeLabel, { organizationId, articleId }) {
     .then((data) => {
       if (generation !== _state.apiGeneration) return;
 
+      // Cache the owner's registration floor so subsequent Infinity clicks
+      // can request data starting at the account creation date instead of
+      // the legacy hardcoded 2019-04-01.
+      if (data.start_date_floor) _state.startDateFloor = data.start_date_floor;
+
       writeCards(data.historical, timeRangeLabel, data.totals);
       drawCharts(data.historical, timeRangeLabel);
       renderReferrers(data.referrers);
@@ -728,8 +733,13 @@ function drawInfinityCharts({ organizationId, articleId }) {
   _state.lastDraw = drawInfinityCharts;
   _state.lastContext = { organizationId, articleId };
   resetActive(document.getElementById('infinity-button'));
-  // April 1st is when the DEV analytics feature went into place
-  const beginningOfTime = new Date('2019-04-01');
+  // Prefer the backend-provided start floor (the owner's registration date)
+  // when we've seen one from a prior dashboard response. Fall back to the
+  // historical 2019-04-01 anchor (when the analytics feature first shipped)
+  // for the first render before the bundled API has responded.
+  const beginningOfTime = _state.startDateFloor
+    ? new Date(_state.startDateFloor)
+    : new Date('2019-04-01');
   callAnalyticsAPI(beginningOfTime, '', { organizationId, articleId });
 }
 
