@@ -4,7 +4,7 @@ RSpec.describe PageView do
   let(:page_view) { create(:page_view, referrer: "http://example.com/page") }
 
   it { is_expected.to belong_to(:user).optional }
-  it { is_expected.to belong_to(:article) }
+  it { is_expected.to belong_to(:article).optional }
 
   context "when callbacks are triggered before create" do
     describe "#domain" do
