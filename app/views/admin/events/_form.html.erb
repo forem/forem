@@ -142,6 +142,14 @@
       })();
     </script>
 
+    <div class="crayons-field crayons-field--checkbox mt-4">
+      <%= form.check_box :manual_broadcast_end, class: "crayons-checkbox" %>
+      <%= form.label :manual_broadcast_end, class: "crayons-field__label" do %>
+        Manually End Broadcast (Overrides End Time)
+        <p class="crayons-field__description">If checked, the background worker will NOT tear down the billboards when End Time is reached. You must manually press "End Broadcast" on the details page.</p>
+      <% end %>
+    </div>
+
     <div class="crayons-field crayons-field--checkbox">
       <%= form.check_box :published, class: "crayons-checkbox" %>
       <%= form.label :published, class: "crayons-field__label" do %>
