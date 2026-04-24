@@ -58,7 +58,7 @@
   </head>
   <% unless internal_navigation? %>
     <%
-      @viewable_for_tracking = [@article, @podcast_episode, @episode, @page, @tag, @user, @organization, @feed_config].find do |viewable_candidate|
+      @viewable_for_tracking = [@article, @podcast_episode, @episode, @page, @organization, @feed_config].find do |viewable_candidate|
         viewable_record = viewable_candidate.respond_to?(:object) ? viewable_candidate.object : viewable_candidate
         viewable_record.is_a?(ApplicationRecord)
       end

@@ -176,6 +176,11 @@ function trackCustomImpressions() {
         dataBody.viewable_type = viewableType;
         dataBody.viewable_id = viewableId;
       }
+      
+      if (!articleId && !(viewableType && viewableId)) {
+        return;
+      }
+      
       const csrfToken = tokenMeta.getAttribute('content');
       trackPageView(dataBody, csrfToken);
       
