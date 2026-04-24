@@ -128,7 +128,7 @@ RSpec.describe "Api::V1::Analytics" do
         get "/api/analytics/dashboard?start=2019-03-29", headers: v1_headers
 
         expect(Rails.cache).to have_received(:fetch).twice.with(
-          a_string_starting_with("analytics-dashboard-v2-"),
+          a_string_starting_with("analytics-dashboard-v3-"),
           hash_including(expires_in: 7.days),
         )
       end
