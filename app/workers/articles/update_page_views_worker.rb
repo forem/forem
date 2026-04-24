@@ -14,6 +14,8 @@ module Articles
     def perform(create_params)
       create_params = create_params.with_indifferent_access
 
+      return unless create_params[:article_id].present? || create_params[:viewable_id].present?
+
       if create_params[:article_id].present?
         article = Article.find_by(id: create_params[:article_id])
         return unless article&.published?
