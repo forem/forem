@@ -164,16 +164,18 @@ function trackCustomImpressions() {
       const ArticleElement = document.getElementById('article-body') || document.getElementById('comment-article-indicator');
       const articleId = ArticleElement ? ArticleElement.dataset.articleId : null;
       const pageContentInner = document.getElementById('page-content-inner');
-      const viewableType = pageContentInner ? pageContentInner.dataset.viewableType : null;
-      const viewableId = pageContentInner ? pageContentInner.dataset.viewableId : null;
+      const viewableType = (pageContentInner && pageContentInner.dataset.viewableType) || null;
+      const viewableId = (pageContentInner && pageContentInner.dataset.viewableId) || null;
 
       const dataBody = {
         article_id: articleId,
-        viewable_type: viewableType,
-        viewable_id: viewableId,
         referrer: document.referrer,
         user_agent: navigator.userAgent,
       };
+      if (viewableType && viewableId) {
+        dataBody.viewable_type = viewableType;
+        dataBody.viewable_id = viewableId;
+      }
       const csrfToken = tokenMeta.getAttribute('content');
       trackPageView(dataBody, csrfToken);
       

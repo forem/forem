@@ -100,7 +100,7 @@ RSpec.describe Articles::UpdatePageViewsWorker, type: :worker do
                        "viewable_id" => user.id,
                        "region" => region)
       end.to change(PageView, :count).by(1)
-      
+
       page_view = PageView.last
       expect(page_view.viewable).to eq(user)
       expect(page_view.region).to eq(region)

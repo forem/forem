@@ -57,7 +57,13 @@
     <%= Settings::UserExperience.head_content.html_safe %>
   </head>
   <% unless internal_navigation? %>
-    <% @viewable_for_tracking = [@article, @podcast_episode, @page, @tag, @user, @organization, @feed_config].find { |v| v.is_a?(ApplicationRecord) } %>
+    <%
+      @viewable_for_tracking = [@article, @podcast_episode, @episode, @page, @tag, @user, @organization, @feed_config].find do |viewable_candidate|
+        viewable_record = viewable_candidate.respond_to?(:object) ? viewable_candidate.object : viewable_candidate
+        viewable_record.is_a?(ApplicationRecord)
+      end
+      @viewable_for_tracking = @viewable_for_tracking.object if @viewable_for_tracking.respond_to?(:object)
+    %>
     <body
       class="<%= Settings::UserExperience.default_font.tr("_", "-") %>-article-body default-header"
       data-user-status="<%= j(user_logged_in_status) %>"

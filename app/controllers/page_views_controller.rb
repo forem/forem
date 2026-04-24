@@ -18,12 +18,12 @@ class PageViewsController < ApplicationMetalController
   def create
     page_view_create_params = params.slice(:article_id, :viewable_type, :viewable_id, :referrer, :user_agent)
 
-    if page_view_create_params[:viewable_type].present? && page_view_create_params[:viewable_id].present?
-      unless ALLOWED_VIEWABLE_TYPES.include?(page_view_create_params[:viewable_type]) && 
-             page_view_create_params[:viewable_type].constantize.exists?(page_view_create_params[:viewable_id])
-        page_view_create_params.delete(:viewable_type)
-        page_view_create_params.delete(:viewable_id)
-      end
+    if page_view_create_params[:viewable_type].blank? || page_view_create_params[:viewable_id].blank?
+      page_view_create_params.delete(:viewable_type)
+      page_view_create_params.delete(:viewable_id)
+    elsif !ALLOWED_VIEWABLE_TYPES.include?(page_view_create_params[:viewable_type])
+      page_view_create_params.delete(:viewable_type)
+      page_view_create_params.delete(:viewable_id)
     end
 
     page_view_create_params[:region] = request.headers["HTTP_FASTLY_CLIENT_GEO_REGION"].presence || client_geolocation

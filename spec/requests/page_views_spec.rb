@@ -44,9 +44,11 @@ RSpec.describe "PageViews" do
         user = create(:user)
 
         sidekiq_perform_enqueued_jobs do
-          post "/page_views", params: { viewable_type: "User", viewable_id: user.id }, headers: { "HTTP_FASTLY_CLIENT_GEO_REGION" => "US-NY" }
+          post "/page_views",
+               params: { viewable_type: "User", viewable_id: user.id },
+               headers: { "HTTP_FASTLY_CLIENT_GEO_REGION" => "US-NY" }
         end
-        
+
         expect(PageView.last.viewable_type).to eq("User")
         expect(PageView.last.viewable_id).to eq(user.id)
         expect(PageView.last.region).to eq("US-NY")
