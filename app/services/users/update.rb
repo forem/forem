@@ -38,6 +38,7 @@ module Users
         @success = true
         @user.touch(:profile_updated_at)
         conditionally_resave_articles
+        conditionally_refresh_notification_paths
       else
         errors.concat(@profile.errors.full_messages)
         errors.concat(@user.errors.full_messages)
@@ -125,6 +126,13 @@ module Users
       @updated_user_attributes.any_key?(user_fields) ||
         @updated_profile_attributes.any_key?(CORE_PROFILE_FIELDS) ||
         @updated_users_setting_attributes.any_key?(CORE_SETTINGS_FIELDS)
+    end
+
+    def conditionally_refresh_notification_paths
+      return unless @user.saved_change_to_username?
+      return if @user.spam_or_suspended?
+
+      Notifications::UpdateJsonDataForUserWorker.perform_async(@user.id)
     end
   end
 end
