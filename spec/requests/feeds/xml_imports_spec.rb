@@ -7,7 +7,7 @@ RSpec.describe "Feeds::XmlImports" do
     context "when not signed in" do
       it "redirects to sign in" do
         post feeds_xml_imports_path, params: { xml_content: "<rss/>" }
-        expect(response).to redirect_to("/enter")
+        expect(response).to redirect_to("/magic_links/new")
       end
     end
 
