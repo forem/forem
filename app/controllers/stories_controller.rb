@@ -642,6 +642,13 @@ class StoriesController < ApplicationController
     "top"
   end
 
+  def user_profile_comments
+    @user.comments.good_quality.where(deleted: false)
+      .joins("INNER JOIN articles ON articles.id = comments.commentable_id AND comments.commentable_type = 'Article'")
+      .merge(Article.from_subforem)
+      .merge(Article.published)
+  end
+
   def build_comment_json_ld(comment)
     comment_data = {
       "@type": "Comment",

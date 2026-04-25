@@ -1336,6 +1336,7 @@ class Article < ApplicationRecord
 
   def before_destroy_actions
     bust_cache(destroying: true)
+    user.touch(:last_article_at)
     article_ids = user.article_ids.dup
     if organization
       organization.touch(:last_article_at)
