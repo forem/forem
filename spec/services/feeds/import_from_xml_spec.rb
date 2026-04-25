@@ -74,9 +74,14 @@ RSpec.describe Feeds::ImportFromXml, type: :service do
         content: "Body 2",
       )
       allow(feed).to receive(:entries).and_return([item, item2])
-      allow(Feeds::CheckItemPreviouslyImported).to receive(:call).and_return(false)
-      allow(Article).to receive(:create!).and_raise(StandardError, "fail").once.ordered
-      allow(Article).to receive(:create!).and_call_original.once.ordered
+
+      call_count = 0
+      allow(Feeds::AssembleArticleMarkdown).to receive(:call) do
+        call_count += 1
+        raise StandardError, "assembly failed" if call_count == 1
+
+        "---\ntitle: Second Article\n---\n\nBody 2"
+      end
 
       result = described_class.call(xml_content: valid_xml, user: user)
       expect(result[:imported]).to eq(1)
