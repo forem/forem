@@ -3792,4 +3792,21 @@ RSpec.describe Article do
       expect(article.instance_variable_defined?(:@tag_list)).to be_falsey
     end
   end
+
+  describe "#body_preview" do
+    let(:user) { create(:user) }
+
+    it "returns nil for non-status articles" do
+      article = create(:article, user: user)
+      expect(article.body_preview).to be_nil
+    end
+
+    it "strips HTML tags from processed_html so raw tags are never shown in the feed" do
+      article = create(:article, user: user)
+      article.update_columns(type_of: 1, processed_html: '<p class="quickie-paragraph">Hello world</p>')
+      expect(article.body_preview).not_to include("<p")
+      expect(article.body_preview).not_to include("</p>")
+      expect(article.body_preview).to include("Hello world")
+    end
+  end
 end

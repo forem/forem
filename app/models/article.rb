@@ -786,7 +786,7 @@ class Article < ApplicationRecord
     return unless has_attribute?(:processed_html)
     return if processed_html.blank?
 
-    processed_html_final
+    ActionView::Base.full_sanitizer.sanitize(processed_html_final)
   end
 
   def readable_publish_date
@@ -1088,7 +1088,10 @@ class Article < ApplicationRecord
   end
 
   def generate_video_embed_url
-    return if video_source_url.blank?
+    if video_source_url.blank?
+      self.video = nil
+      return
+    end
 
     if video_source_url.include?("youtube.com") || video_source_url.include?("youtu.be")
       begin
