@@ -56,6 +56,10 @@ class Article < ApplicationRecord
 
   MAX_TAG_LIST_SIZE = 4
 
+  # New articles are exempt from the index_minimum_score check for this long,
+  # giving them time to accumulate reactions before score-based noindex kicks in.
+  INDEXING_GRACE_PERIOD = 2.days
+
   # Filter out anything that isn't a word, space, punctuation mark,
   # recognized emoji, and other auxiliary marks.
   # See: https://github.com/forem/forem/pull/16787#issuecomment-1062044359
@@ -861,9 +865,10 @@ class Article < ApplicationRecord
   def skip_indexing?
     # should the article be skipped indexed by crawlers?
     # true if unpublished, or spammy,
-    # or low score, and not featured
+    # or low score (and not featured and past the publishing grace period), or
+    # published before minimum date
     !published ||
-      (score < Settings::UserExperience.index_minimum_score && !featured) ||
+      (score < Settings::UserExperience.index_minimum_score && !featured && past_indexing_grace_period?) ||
       published_at.to_i < Settings::UserExperience.index_minimum_date.to_i ||
       score < -1
   end
@@ -871,7 +876,7 @@ class Article < ApplicationRecord
   def skip_indexing_reason
     return "unpublished" unless published
     return "negative_score" if score < -1
-    return "below_minimum_score" if score < Settings::UserExperience.index_minimum_score && !featured
+    return "below_minimum_score" if score < Settings::UserExperience.index_minimum_score && !featured && past_indexing_grace_period?
     return "below_minimum_date" if published_at.to_i < Settings::UserExperience.index_minimum_date.to_i
 
     "indexed"
@@ -1656,6 +1661,10 @@ class Article < ApplicationRecord
   end
 
   private
+
+  def past_indexing_grace_period?
+    published_at.present? && published_at < INDEXING_GRACE_PERIOD.ago
+  end
 
   def admin_published_user?
     return false unless user
