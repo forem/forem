@@ -246,6 +246,15 @@ fr:
             inactive: Inactif
           last_fetched: "Dernière récupération : %{time}"
           never_fetched: Jamais récupéré
+        xml_import:
+          heading: Importer depuis le XML (unique)
+          description: Si l'URL de votre flux est bloquée par une protection bot (ex. Cloudflare), collez le XML RSS/Atom brut ci-dessous. Les articles seront créés comme brouillons.
+          url_blocked_hint_html: "L'URL du flux ne fonctionne pas ? %{link} à la place."
+          url_blocked_link: Collez votre XML directement
+          note_label: "Importation unique :"
+          note: "Les articles publiés après ce collage n'apparaîtront pas automatiquement — recollez le XML mis à jour pour importer de nouveaux articles."
+          placeholder: Collez le XML RSS/Atom ici...
+          submit: Importer depuis le XML
       summary:
         reactions: Total post reactions
         views: Total post views

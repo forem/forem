@@ -158,6 +158,7 @@ Rails.application.routes.draw do
     end
     namespace :feeds do
       resources :sources, only: %i[create update destroy]
+      resources :xml_imports, only: %i[create]
     end
     resources :users, only: %i[update]
     resources :reactions, only: %i[index create]

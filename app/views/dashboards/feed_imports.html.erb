@@ -71,6 +71,10 @@
           </summary>
           <div class="crayons-card p-4 mt-3">
             <%= render "feed_source_form", source: Feeds::Source.new %>
+            <p class="fs-s color-base-60 mt-3">
+              <%= t("views.dashboard.feed_imports.xml_import.url_blocked_hint_html",
+                    link: "<a href='#xml-import' class='crayons-link'>#{t("views.dashboard.feed_imports.xml_import.url_blocked_link")}</a>".html_safe) %>
+            </p>
           </div>
         </details>
 
@@ -260,8 +264,30 @@
 
           <h3 class="crayons-subtitle-2 mb-4"><%= t("views.dashboard.feed_imports.sources.add_heading") %></h3>
           <%= render "feed_source_form", source: Feeds::Source.new %>
+          <p class="fs-s color-base-60 mt-3">
+            <%= t("views.dashboard.feed_imports.xml_import.url_blocked_hint_html",
+                  link: "<a href='#xml-import' class='crayons-link'>#{t("views.dashboard.feed_imports.xml_import.url_blocked_link")}</a>".html_safe) %>
+          </p>
         </div>
       <% end %>
+
+      <div id="xml-import" class="crayons-card p-6 mb-4">
+        <h2 class="crayons-subtitle-2 mb-1"><%= t("views.dashboard.feed_imports.xml_import.heading") %></h2>
+        <p class="fs-s color-base-60 mb-4"><%= t("views.dashboard.feed_imports.xml_import.description") %></p>
+        <div class="crayons-notice crayons-notice--warning mb-4">
+          <strong><%= t("views.dashboard.feed_imports.xml_import.note_label") %></strong>
+          <%= t("views.dashboard.feed_imports.xml_import.note") %>
+        </div>
+        <%= form_with url: feeds_xml_imports_path, method: :post do |f| %>
+          <%= f.text_area :xml_content,
+              placeholder: t("views.dashboard.feed_imports.xml_import.placeholder"),
+              rows: 12,
+              class: "crayons-textfield w-100 mb-3",
+              style: "font-family: monospace; font-size: 0.8rem;" %>
+          <%= f.submit t("views.dashboard.feed_imports.xml_import.submit"),
+              class: "crayons-btn" %>
+        <% end %>
+      </div>
 
       <%= render "sublist" %>
     </div>
