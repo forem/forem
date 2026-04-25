@@ -6,11 +6,11 @@ class CodepenTag < LiquidTagBase
   PEN_ID_REGEXP = "[a-zA-Z0-9]{5,32}".freeze
   # CodePen 2.0 editor IDs are UUID-like and can include dashes.
   EDITOR_PEN_ID_REGEXP = "[a-zA-Z0-9-]{5,36}".freeze
-  # CodePen 2.0 editor URLs include both the editor pen ID and the classic pen hash.
+  # CodePen 2.0 editor URLs may have a classic pen hash appended, but it's optional.
   REGISTRY_REGEXP =
     %r{\Ahttps?://codepen\.io/(?:
       (?:team/)?#{USERNAME_REGEXP}/(?:pen|embed)(?:/preview)?/#{PEN_ID_REGEXP}|
-      editor/#{USERNAME_REGEXP}/(?:pen|embed)(?:/preview)?/#{EDITOR_PEN_ID_REGEXP}/#{PEN_ID_REGEXP}
+      editor/#{USERNAME_REGEXP}/(?:pen|embed)(?:/preview)?/#{EDITOR_PEN_ID_REGEXP}(?:/#{PEN_ID_REGEXP})?
     )/?\z}x
 
   def initialize(_tag_name, link, _parse_context)
