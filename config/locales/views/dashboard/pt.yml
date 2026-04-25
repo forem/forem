@@ -193,3 +193,12 @@ pt:
             inactive: Inativo
           last_fetched: "Última busca: %{time}"
           never_fetched: Nunca buscado
+        xml_import:
+          heading: Importar do XML (única vez)
+          description: Se a URL do seu feed está bloqueada por proteção bot (ex. Cloudflare), cole o XML RSS/Atom bruto abaixo. Os artigos serão criados como rascunhos.
+          url_blocked_hint_html: "URL do feed não funciona? %{link}."
+          url_blocked_link: Cole seu XML diretamente
+          note_label: "Importação única:"
+          note: "Artigos publicados após esta colagem não aparecerão automaticamente — cole novamente o XML atualizado para importar novos artigos."
+          placeholder: Cole o XML RSS/Atom aqui...
+          submit: Importar do XML

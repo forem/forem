@@ -249,6 +249,15 @@ en:
             inactive: Inactive
           last_fetched: "Last fetched: %{time}"
           never_fetched: Never fetched
+        xml_import:
+          heading: Import from XML (one-time)
+          description: If your feed URL is blocked by bot protection (e.g. Cloudflare), you can paste the raw RSS/Atom XML below. Articles will be created as drafts.
+          url_blocked_hint_html: "Feed URL not working? %{link} instead."
+          url_blocked_link: Paste your XML directly
+          note_label: "One-time only:"
+          note: Articles published after this paste will not appear automatically — re-paste updated XML to import new posts.
+          placeholder: Paste RSS/Atom XML here...
+          submit: Import from XML
       summary:
         reactions: Total post reactions
         views: Total post views
