@@ -36,9 +36,9 @@ module Users
     def call
       if update_successful?
         @success = true
-        @user.touch(:profile_updated_at)
         conditionally_resave_articles
         conditionally_refresh_notification_paths
+        @user.touch(:profile_updated_at)
       else
         errors.concat(@profile.errors.full_messages)
         errors.concat(@user.errors.full_messages)

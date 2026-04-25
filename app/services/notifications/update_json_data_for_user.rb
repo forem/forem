@@ -156,9 +156,10 @@ module Notifications
     end
 
     def build_article_json_data(article, action)
+      article.reload
       data = {
         user: user_data(article.user),
-        article: article_data(article),
+        article: fresh_article_data(article),
       }
       data[:organization] = organization_data(article.organization) if article.organization
       data
@@ -167,8 +168,35 @@ module Notifications
     def build_comment_json_data(comment)
       {
         user: user_data(comment.user),
-        comment: comment_data(comment),
+        comment: fresh_comment_data(comment),
       }
+    end
+
+    # Notifications.article_data uses article.path which is a stored column
+    # that goes stale after a username change until the article is resaved
+    # (ResaveArticlesWorker runs asynchronously). Override with the correct
+    # path computed from the current username.
+    def fresh_article_data(article)
+      article_data(article).tap do |data|
+        data[:path] = computed_article_path(article)
+      end
+    end
+
+    def fresh_comment_data(comment)
+      comment_data(comment).tap do |data|
+        commentable = comment.commentable
+        next unless commentable.is_a?(Article)
+
+        data[:commentable][:path] = computed_article_path(commentable)
+      end
+    end
+
+    def computed_article_path(article)
+      if article.organization
+        "/#{article.organization.slug}/#{article.slug}"
+      else
+        "/#{article.user.username}/#{article.slug}"
+      end
     end
 
     def build_mention_json_data(mention)

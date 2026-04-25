@@ -48,8 +48,13 @@ RSpec.describe Notifications::UpdateJsonDataForUser, type: :service do
       let(:comment) { create(:comment, commentable: article, user: commenter) }
 
       it "updates comment notification json_data with the new comment path" do
-        Notifications::NewComment::Send.call(comment)
-        notification = Notification.find_by(notifiable: comment, user: reader)
+        notification = create(:notification,
+                              notifiable: comment,
+                              user: reader,
+                              json_data: {
+                                user: Notifications.user_data(commenter),
+                                comment: Notifications.comment_data(comment)
+                              })
 
         old_comment_path = notification.json_data["comment"]["path"]
         expect(old_comment_path).to include(commenter.username)
@@ -104,8 +109,13 @@ RSpec.describe Notifications::UpdateJsonDataForUser, type: :service do
       let(:comment) { create(:comment, commentable: article, user: commenter) }
 
       it "updates the commentable path in comment notifications" do
-        Notifications::NewComment::Send.call(comment)
-        notification = Notification.find_by(notifiable: comment, user: author)
+        notification = create(:notification,
+                              notifiable: comment,
+                              user: author,
+                              json_data: {
+                                user: Notifications.user_data(commenter),
+                                comment: Notifications.comment_data(comment)
+                              })
 
         # The commentable path in the notification should contain the author's username
         expect(notification.json_data["comment"]["commentable"]["path"]).to include("old_username")
