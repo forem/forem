@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render, waitFor } from '@testing-library/preact';
+import { render, waitFor, fireEvent } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 import { userEvent } from '@testing-library/user-event';
@@ -317,6 +317,101 @@ describe('<Form />', () => {
         expect(overflowMenuButton).toHaveAttribute('aria-expanded', 'true'),
       );
       expect(getByRole('menuitem', { name: 'Help' })).toBeInTheDocument();
+    });
+
+    // New tests for pipe normalization behavior
+    describe('pipe normalization (\\| → &#124;)', () => {
+      const baseV2Props = {
+        titleDefaultValue: 'Test Title v2',
+        titleOnChange: null,
+        tagsDefaultValue: 'javascript, career',
+        tagsOnInput: null,
+        bodyDefaultValue: '',
+        bodyOnChange: null,
+        bodyHasFocus: false,
+        version: 'v2',
+        mainImage:
+          'https://dev-to-uploads.s3.amazonaws.com/uploads/badge/badge_image/12/8_week_streak-Shadow.png',
+        onMainImageUrlChange: null,
+        errors: null,
+        switchHelpContext: null,
+      };
+
+      it('normalizes "\\|" to "&#124;" on table lines', async () => {
+        const { getByRole } = render(<Form {...baseV2Props} />);
+
+        const textarea = getByRole('textbox', { name: /Post Content/i });
+
+        // Simulate typing a markdown table row where one cell contains an escaped pipe.
+        // Example input: | col1 \| inner | col2 |
+        fireEvent.input(textarea, {
+          target: {
+            value: '| col1 \\| inner | col2 |',
+          },
+        });
+
+        // Wait for any internal normalization/effects to run
+        await waitFor(() => {
+          // Expect the escaped pipe to be replaced with the HTML entity
+          expect(textarea.value).toContain('| col1 &#124; inner | col2 |');
+          expect(textarea.value).not.toContain('\\|');
+        });
+      });
+
+      it('does NOT normalize inside fenced code blocks', async () => {
+        const { getByRole } = render(<Form {...baseV2Props} />);
+
+        const textarea = getByRole('textbox', { name: /Post Content/i });
+
+        // A fenced code block that contains a would-be table-like line with an escaped pipe
+        // The content inside code fences should remain untouched.
+        const codeBlock = ['```', '| raw \\| pipe stays | not a real table', '```'].join('\n');
+
+        fireEvent.input(textarea, {
+          target: {
+            value: codeBlock,
+          },
+        });
+
+        await waitFor(() => {
+          // Ensure the escaped pipe is preserved and not replaced by &#124;
+          expect(textarea.value).toContain('| raw \\| pipe stays | not a real table');
+          expect(textarea.value).not.toContain('&#124;');
+        });
+      });
+
+      it('keeps caret position correct after normalization on a table line', async () => {
+        const { getByRole } = render(<Form {...baseV2Props} />);
+
+        const textarea = getByRole('textbox', { name: /Post Content/i });
+
+        // Start with a partial table row and place the caret at the end
+        textarea.value = '| a ';
+        textarea.focus();
+        textarea.selectionStart = textarea.value.length;
+        textarea.selectionEnd = textarea.value.length;
+
+        const before = textarea.selectionStart;
+
+        // Simulate the user typing "\|" at the caret position.
+        // The component should normalize this to "&#124;" and place the caret *after* the entity.
+        const typed = '\\|';
+        const newValue = textarea.value.slice(0, before) + typed + textarea.value.slice(before);
+
+        fireEvent.input(textarea, {
+          target: { value: newValue },
+        });
+
+        // After normalization, we expect "\|" → "&#124;" and caret to be after the entity.
+        await waitFor(() => {
+          expect(textarea.value).toContain('| a &#124;');
+
+          // The component should manage caret so it lands immediately after the inserted entity.
+          const expectedCaret = before + '&#124;'.length;
+          expect(textarea.selectionStart).toBe(expectedCaret);
+          expect(textarea.selectionEnd).toBe(expectedCaret);
+        });
+      });
     });
   });
 
