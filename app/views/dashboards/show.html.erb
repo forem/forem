@@ -13,8 +13,12 @@
           <% else %>
             <%= link_to t("views.dashboard.posts.statuses"), "/dashboard?state=status", class: "crayons-btn crayons-btn--outlined whitespace-nowrap" %>
           <% end %>
-          <% if @articles.any?(&:archived) %>
-            <%= link_to t("views.dashboard.posts.archived"), "javascript:;", id: "toggleArchivedLink", class: "crayons-btn crayons-btn--outlined whitespace-nowrap" %>
+          <% if @has_archived_posts %>
+            <% if params[:filter] == "archived" %>
+              <%= link_to t("views.dashboard.posts.full"), "/dashboard", class: "crayons-btn crayons-btn--outlined whitespace-nowrap" %>
+            <% else %>
+              <%= link_to t("views.dashboard.posts.archived"), "/dashboard?filter=archived", class: "crayons-btn crayons-btn--outlined whitespace-nowrap" %>
+            <% end %>
           <% end %>
           <% if @articles.any? %>
             <%= select_tag "dashboard_sort", options_for_select(sort_options, params[:sort]), "aria-label": t("views.dashboard.posts.option.aria_label"), class: "crayons-select w-auto" %>
@@ -67,4 +71,4 @@
   </div>
 </main>
 
-<%= javascript_include_tag "archivedPostFilters", "dashboards/convertCoauthorIdsToUsernameInputs", defer: true %>
+<%= javascript_include_tag "dashboards/convertCoauthorIdsToUsernameInputs", defer: true %>

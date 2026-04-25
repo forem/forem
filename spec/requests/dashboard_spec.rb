@@ -95,6 +95,30 @@ RSpec.describe "Dashboards" do
         expect(response.body).not_to include "pagination"
       end
 
+      it "excludes archived posts from pagination count" do
+        # Create 30 articles, then archive 26 of them.
+        # Before the fix, all 30 counted toward pagination, so page 1
+        # would show only 4 non-archived posts (or none if archived were hidden).
+        # After the fix, only the 4 non-archived posts are paginated.
+        articles = create_list(:article, 30, user: user)
+        articles.first(26).each { |a| a.update_column(:archived, true) }
+
+        get "/dashboard"
+        expect(response.body).not_to include "pagination"
+      end
+
+      it "shows archived posts when filter=archived param is present" do
+        articles = create_list(:article, 5, user: user)
+        articles.first(3).each { |a| a.update_column(:archived, true) }
+
+        get "/dashboard", params: { filter: "archived" }
+        archived_titles = articles.first(3).map { |a| CGI.escapeHTML(a.title) }
+        non_archived_titles = articles.last(2).map { |a| CGI.escapeHTML(a.title) }
+
+        archived_titles.each { |title| expect(response.body).to include(title) }
+        non_archived_titles.each { |title| expect(response.body).not_to include(title) }
+      end
+
       it "renders a link to analytics dashboard" do
         get dashboard_path
 
