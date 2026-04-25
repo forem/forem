@@ -38,7 +38,8 @@ RSpec.describe Notifications::UpdateJsonDataForUser, type: :service do
 
         notification.reload
         expect(notification.json_data["user"]["path"]).to eq("/new_username")
-        expect(notification.json_data["article"]["path"]).to include("new_username")
+        # Org article paths use the org slug, not the username
+        expect(notification.json_data["article"]["path"]).to include(org.slug)
         expect(notification.json_data["organization"]["id"]).to eq(org.id)
       end
     end
