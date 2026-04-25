@@ -36,8 +36,10 @@ module MarkdownProcessor
       
       # Workaround for Redcarpet dropping link text at nesting levels >= 5 (16+ spaces)
       content_with_fixed_links = convert_deeply_nested_links_to_html(@content)
-      
-      code_tag_content = convert_code_tags_to_triple_backticks(content_with_fixed_links)
+      # Workaround for Redcarpet not honouring \| as an escaped pipe inside tables (issue #18111)
+      content_with_fixed_pipes = convert_escaped_pipes_outside_codeblocks(content_with_fixed_links)
+
+      code_tag_content = convert_code_tags_to_triple_backticks(content_with_fixed_pipes)
       escaped_content = escape_liquid_tags_in_codeblock(code_tag_content)
       html = markdown.render(escaped_content)
       sanitized_content = ActionController::Base.helpers.sanitize html, { scrubber: RenderedMarkdownScrubber.new }
@@ -69,6 +71,27 @@ module MarkdownProcessor
           "<a href=\"#{$2}\">#{$1}</a>"
         end
       end
+    end
+
+    # Replaces escaped pipes (`\|`) with the `&#124;` HTML entity outside of code so
+    # that Redcarpet renders them as literal `|` inside tables instead of breaking
+    # the cell. Inline code spans and fenced code blocks are preserved verbatim.
+    # A negative lookbehind protects `\\|` (escaped backslash followed by a table
+    # separator) from being consumed.
+    # Note: Traverser only detects fenced code blocks (```), not 4-space-indented
+    # code blocks — same constraint as `Fixer::Base#underscores_in_usernames`.
+    def convert_escaped_pipes_outside_codeblocks(content)
+      return content unless content.include?('\|')
+
+      placeholder = "\x00FOREM_ESC_PIPE\x00"
+      traverser = MarkdownProcessor::Traverser.new(content)
+      traverser.each do |line|
+        next if traverser.in_codeblock?
+
+        line.gsub!(/`[^`\n]*`/) { |span| span.gsub('\|') { placeholder } }
+        line.gsub!(/(?<!\\)\\\|/, "&#124;")
+        line.gsub!(placeholder) { '\|' }
+      end.join
     end
 
     def add_target_blank_to_outbound_links(html)
