@@ -11,10 +11,18 @@ module Feeds
     def call
       return false if feed_url.blank?
 
-      xml = HTTParty.get(feed_url,
-                         timeout: 20,
-                         headers: { "User-Agent" => Feeds::Import::FEED_USER_AGENT }).body
-      Feedjira.parse(xml)
+      response = HTTParty.get(feed_url,
+                             timeout: 20,
+                             headers: { "User-Agent" => Feeds::Import::FEED_USER_AGENT })
+
+      if [401, 403, 429].include?(response.code)
+        raise StandardError,
+              "Feed URL could not be retrieved — it may be protected by bot detection or temporarily unavailable"
+      end
+
+      return false unless response.success?
+
+      Feedjira.parse(response.body)
 
       true
     rescue Feedjira::NoParserAvailable
