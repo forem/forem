@@ -19,7 +19,11 @@ module Articles
       if success
         user.rate_limiter.track_limit_by_action(:article_update)
 
-        remove_all_notifications if became_unpublished?
+        if became_unpublished?
+          remove_all_notifications
+          bust_author_profile_cache
+        end
+
         send_to_mentioned_users_and_followers if remains_published?
         refresh_auto_audience_segments if became_published?
         complete_onboarding_first_post if became_published?
@@ -90,6 +94,10 @@ module Articles
 
       Notification.remove_all(notifiable_ids: article.mentions.ids,
                               notifiable_type: "Mention")
+    end
+
+    def bust_author_profile_cache
+      EdgeCache::BustUser.call(article.user)
     end
   end
 end

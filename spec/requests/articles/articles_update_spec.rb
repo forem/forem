@@ -172,6 +172,8 @@ RSpec.describe "ArticlesUpdate" do
 
   it "removes all published notifications if unpublished" do
     user2.follow(user)
+    allow(EdgeCache::BustUser).to receive(:call)
+
     sidekiq_perform_enqueued_jobs do
       Notification.send_to_followers(article, "Published")
     end
@@ -181,6 +183,7 @@ RSpec.describe "ArticlesUpdate" do
       article: { body_markdown: article.body_markdown.gsub("published: true", "published: false"), version: "v1" }
     }
     expect(article.notifications.size).to eq 0
+    expect(EdgeCache::BustUser).to have_received(:call).with(user)
   end
 
   it "changes video_thumbnail_url effectively" do
