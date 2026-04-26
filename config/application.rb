@@ -25,7 +25,7 @@ module PracticalDeveloper
   class Application < Rails::Application
     # Specify the default Rails settings version we're targetting
     # See: https://guides.rubyonrails.org/configuring.html#results-of-config-load-defaults
-    config.load_defaults 6.1
+    config.load_defaults 7.0
 
     ### FRAMEWORK DEFAULT OVERRIDES
     # Override new framework defaults to keep existing behavior.
@@ -53,6 +53,12 @@ module PracticalDeveloper
 
     ## Rails 7.0
     config.action_dispatch.cookies_serializer = :json
+    config.active_support.cache_format_version = 6.1
+    # Rails 7.0 default flips this to OpenSSL::Digest::SHA256, which would invalidate
+    # every existing encrypted cookie and message. Pin to the prior (6.1) default until
+    # a key rotation is performed. See deleted config/initializers/new_framework_defaults_7_0.rb
+    # for context.
+    config.active_support.key_generator_hash_digest_class = OpenSSL::Digest::SHA1
 
     # Enable parameter wrapping for JSON.
     # Previously this was set in an initializer. It's fine to keep using that initializer if you've customized it.
