@@ -359,6 +359,9 @@ GEM
     google-protobuf (4.33.5-arm64-darwin)
       bigdecimal
       rake (>= 13)
+    google-protobuf (4.33.5-x64-mingw-ucrt)
+      bigdecimal
+      rake (>= 13)
     google-protobuf (4.33.5-x86_64-darwin)
       bigdecimal
       rake (>= 13)
@@ -436,7 +439,7 @@ GEM
     inline_svg (1.9.0)
       activesupport (>= 3.0)
       nokogiri (>= 1.6)
-    io-console (0.7.2)
+    io-console (0.8.2)
     irb (1.12.0)
       rdoc
       reline (>= 0.4.2)
@@ -571,6 +574,8 @@ GEM
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     nokogiri (1.19.1-arm64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.19.1-x64-mingw-ucrt)
       racc (~> 1.4)
     nokogiri (1.19.1-x86_64-darwin)
       racc (~> 1.4)
@@ -825,6 +830,7 @@ GEM
       rubocop (~> 1.40)
     ruby-next-core (0.15.2)
     ruby-prof (1.7.0)
+    ruby-prof (1.7.0-x64-mingw-ucrt)
     ruby-progressbar (1.13.0)
     ruby-statistics (3.0.0)
     ruby-vips (2.2.1)
@@ -960,6 +966,8 @@ GEM
       simple_oauth (~> 0.3.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
+    tzinfo-data (1.2026.2)
+      tzinfo (>= 1.0.0)
     unaccent (0.4.0)
     unicode-display_width (2.5.0)
     uniform_notifier (1.16.0)
@@ -1008,6 +1016,7 @@ GEM
 PLATFORMS
   arm64-darwin-20
   ruby
+  x64-mingw-ucrt
   x86_64-darwin-19
   x86_64-darwin-20
   x86_64-linux
@@ -1163,6 +1172,7 @@ DEPENDENCIES
   test-prof (~> 1.0)
   timecop (~> 0.9)
   twitter (~> 7.0)
+  tzinfo-data
   validate_url (~> 1.0)
   vault (~> 0.17)
   vcr (~> 6.3)
@@ -1177,7 +1187,7 @@ DEPENDENCIES
   zonebie (~> 0.6.1)
 
 RUBY VERSION
-   ruby 3.3.0p0
+   ruby 3.3.11p205
 
 BUNDLED WITH
    2.4.17

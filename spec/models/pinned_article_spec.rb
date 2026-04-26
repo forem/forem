@@ -129,4 +129,14 @@ RSpec.describe PinnedArticle do
       expect(Settings::General.feed_pinned_article_id).to be_nil
     end
   end
+
+  describe "when a pinned article is destroyed" do
+    it "clears the pinned_article_id setting" do
+      Settings::General.feed_pinned_article_id = article.id
+
+      article.destroy
+
+      expect(Settings::General.feed_pinned_article_id).to be_nil
+    end
+  end
 end
