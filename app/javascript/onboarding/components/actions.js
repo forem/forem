@@ -1,3 +1,5 @@
+import { locale } from '@utilities/locale';
+
 function generateUploadFormdata(image) {
   const token = window.csrfToken;
   const formData = new FormData();
@@ -21,13 +23,28 @@ export function generateMainImage({ payload, successCb, failureCb, signal }) {
       credentials: 'same-origin',
       signal,
     })
-      .then((response) => response.json())
-      .then((json) => {
+      .then(async (response) => {
+        const text = await response.text();
+        let json;
+        try {
+          json = text ? JSON.parse(text) : {};
+        } catch (e) {
+          throw new Error(locale('image_uploads_controller.server_error') || 'A server error has occurred!');
+        }
+        if (!response.ok) {
+           throw new Error(json.error || locale('image_uploads_controller.server_error') || 'A server error has occurred!');
+        }
         if (json.error) {
           throw new Error(json.error);
         }
+        return json;
+      })
+      .then((json) => {
         return successCb(json.user.profile_image.url);
       })
-      .catch((message) => failureCb(message));
+      .catch((error) => {
+        const message = error instanceof Error ? error.message : String(error);
+        failureCb(message);
+      });
   }
 }
