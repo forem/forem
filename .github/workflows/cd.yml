@@ -37,3 +37,26 @@ jobs:
         with:
           api_key: ${{ secrets.HONEYBADGER_API_KEY_JAVASCRIPT }}
         if: matrix.environment == 'production'
+
+      - name: Notify Slack on production deploy
+        uses: slackapi/slack-github-action@v1.27.0
+        if: matrix.environment == 'production'
+        with:
+          payload: |
+            {
+              "text": ":rocket: *Production deploy complete*",
+              "attachments": [
+                {
+                  "color": "good",
+                  "fields": [
+                    { "title": "Repository", "value": "${{ github.repository }}", "short": true },
+                    { "title": "Branch", "value": "${{ github.ref_name }}", "short": true },
+                    { "title": "Commit", "value": "<${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${{ github.sha }}>" , "short": false },
+                    { "title": "Triggered by", "value": "${{ github.actor }}", "short": true }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
