@@ -25,31 +25,8 @@ function getFormValues(form) {
   return formData;
 }
 
-function toggleArchived(article, needsArchived) {
-  if (needsArchived === 'true') {
-    article.classList.add('story-archived', 'hidden');
-  } else {
-    article.classList.remove('story-archived');
-  }
-}
-
-function toggleNotifications(submit, action) {
-  if (action === 'Mute Notifications') {
-    submit.setAttribute('value', 'Receive Notifications');
-  } else {
-    submit.setAttribute('value', 'Mute Notifications');
-  }
-}
-
-function onXhrSuccess(form, article, values) {
-  if (values.article.archived) {
-    toggleArchived(article, values.article.archived);
-  } else {
-    const submit = form.querySelector('[type="submit"]');
-    const submitValue = submit.getAttribute('value');
-
-    toggleNotifications(submit, submitValue);
-  }
+function onXhrSuccess() {
+  window.location.reload();
 }
 
 const handleFormSubmit = (e) => {
@@ -76,7 +53,7 @@ const handleFormSubmit = (e) => {
     );
 
     if (xhr.status === 200) {
-      onXhrSuccess(form, article, values);
+      onXhrSuccess();
       const message =
         values.commit === 'Mute Notifications'
           ? 'Notifications Muted'
