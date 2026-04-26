@@ -136,6 +136,7 @@ en:
       posts:
         heading: Posts
         archived: Show archived
+        hide_archived: Hide archived
         statuses: Show quickie posts
         full: Show full posts
         option:
