@@ -196,7 +196,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_23_130947) do
     t.integer "score", default: 0
     t.string "search_optimized_description_replacement"
     t.string "search_optimized_title_preamble"
-    t.jsonb "semantic_interests", default: {}
     t.boolean "show_comments", default: true
     t.text "slug"
     t.string "social_image"
@@ -238,7 +237,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_23_130947) do
     t.index ["published"], name: "index_articles_on_published"
     t.index ["published_at"], name: "index_articles_on_published_at"
     t.index ["reading_list_document"], name: "index_articles_on_reading_list_document", using: :gin
-    t.index ["semantic_interests"], name: "index_articles_on_semantic_interests", using: :gin
     t.index ["slug", "user_id"], name: "index_articles_on_slug_and_user_id", unique: true
     t.index ["subforem_id", "published", "score", "published_at"], name: "index_articles_on_subforem_published_score_published_at"
     t.index ["subforem_id"], name: "index_articles_on_subforem_id"
@@ -421,7 +419,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_23_130947) do
     t.text "processed_html"
     t.boolean "published"
     t.string "slug"
-    t.text "tags_array", default: [], array: true
     t.string "title"
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
@@ -429,7 +426,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_23_130947) do
     t.index ["classified_listing_category_id"], name: "index_classified_listings_on_classified_listing_category_id"
     t.index ["organization_id"], name: "index_classified_listings_on_organization_id"
     t.index ["published"], name: "index_classified_listings_on_published"
-    t.index ["tags_array"], name: "index_classified_listings_on_tags_array", using: :gin
     t.index ["user_id"], name: "index_classified_listings_on_user_id"
   end
 
@@ -504,11 +500,9 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_23_130947) do
     t.datetime "created_at", null: false
     t.text "processed_html", null: false
     t.bigint "tag_id"
-    t.bigint "trend_id"
     t.datetime "updated_at", null: false
     t.index ["article_id"], name: "index_context_notes_on_article_id"
     t.index ["tag_id"], name: "index_context_notes_on_tag_id"
-    t.index ["trend_id"], name: "index_context_notes_on_trend_id"
   end
 
   create_table "context_notifications", force: :cascade do |t|
@@ -726,9 +720,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_23_130947) do
     t.integer "recent_tag_count_min", default: 0
     t.float "recently_active_past_day_bonus_weight", default: 0.0, null: false
     t.float "score_weight", default: 1.0
-    t.float "semantic_match_weight", default: 0.0
     t.float "shuffle_weight", default: 0.0, null: false
-    t.integer "status_target", default: 0
     t.float "status_weight", default: 0.0, null: false
     t.float "subforem_follow_weight", default: 0.0, null: false
     t.float "tag_follow_weight", default: 1.0
@@ -978,13 +970,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_23_130947) do
     t.index ["tag_name", "url"], name: "index_liquid_embed_references_on_tag_name_and_url"
   end
 
-  create_table "media_sources", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.string "display_url", null: false
-    t.string "input_url", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "media_stores", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "media_type", default: 0, null: false
@@ -1005,7 +990,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_23_130947) do
 
   create_table "navigation_links", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.text "description"
     t.boolean "display_only_when_signed_in", default: false
     t.integer "display_to", default: 0, null: false
     t.string "icon"
@@ -1351,7 +1335,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_23_130947) do
   create_table "polls", force: :cascade do |t|
     t.bigint "article_id"
     t.datetime "created_at", precision: nil, null: false
-    t.boolean "optional", default: false, null: false
     t.integer "poll_options_count", default: 0, null: false
     t.integer "poll_skips_count", default: 0, null: false
     t.integer "poll_votes_count", default: 0, null: false
@@ -1406,7 +1389,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_23_130947) do
     t.datetime "created_at", null: false
     t.jsonb "data", default: {}, null: false
     t.string "location"
-    t.string "social_image"
     t.text "summary"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
@@ -1517,6 +1499,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_23_130947) do
     t.datetime "updated_at", null: false
     t.text "value"
     t.string "var", null: false
+    t.index ["subforem_id"], name: "index_settings_authentications_on_subforem_id"
     t.index ["var", "subforem_id"], name: "index_settings_authentications_on_var_and_subforem_id", unique: true
   end
 
@@ -1526,6 +1509,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_23_130947) do
     t.datetime "updated_at", null: false
     t.text "value"
     t.string "var", null: false
+    t.index ["subforem_id"], name: "index_settings_campaigns_on_subforem_id"
     t.index ["var", "subforem_id"], name: "index_settings_campaigns_on_var_and_subforem_id", unique: true
   end
 
@@ -1535,6 +1519,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_23_130947) do
     t.datetime "updated_at", null: false
     t.text "value"
     t.string "var", null: false
+    t.index ["subforem_id"], name: "index_settings_communities_on_subforem_id"
     t.index ["var", "subforem_id"], name: "index_settings_communities_on_var_and_subforem_id", unique: true
   end
 
@@ -1544,6 +1529,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_23_130947) do
     t.datetime "updated_at", null: false
     t.text "value"
     t.string "var", null: false
+    t.index ["subforem_id"], name: "index_settings_rate_limits_on_subforem_id"
     t.index ["var", "subforem_id"], name: "index_settings_rate_limits_on_var_and_subforem_id", unique: true
   end
 
@@ -1553,6 +1539,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_23_130947) do
     t.datetime "updated_at", null: false
     t.text "value"
     t.string "var", null: false
+    t.index ["subforem_id"], name: "index_settings_smtp_on_subforem_id"
     t.index ["var", "subforem_id"], name: "index_settings_smtp_on_var_and_subforem_id", unique: true
   end
 
@@ -1562,15 +1549,17 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_23_130947) do
     t.datetime "updated_at", null: false
     t.text "value"
     t.string "var", null: false
+    t.index ["subforem_id"], name: "index_settings_user_experiences_on_subforem_id"
     t.index ["var", "subforem_id"], name: "index_settings_user_experiences_on_var_and_subforem_id", unique: true
   end
 
   create_table "site_configs", force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
-    t.integer "subforem_id"
+    t.bigint "subforem_id"
     t.datetime "updated_at", precision: nil, null: false
     t.text "value"
     t.string "var", null: false
+    t.index ["subforem_id"], name: "index_site_configs_on_subforem_id"
     t.index ["var", "subforem_id"], name: "index_site_configs_on_var_and_subforem_id", unique: true
   end
 
@@ -1633,14 +1622,10 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_23_130947) do
   end
 
   create_table "tag_subforem_relationships", force: :cascade do |t|
-    t.string "bg_color_hex"
     t.datetime "created_at", null: false
-    t.string "pretty_name"
-    t.text "short_summary"
     t.bigint "subforem_id", null: false
     t.boolean "supported", default: true
     t.bigint "tag_id", null: false
-    t.string "text_color_hex"
     t.datetime "updated_at", null: false
     t.index ["subforem_id"], name: "index_tag_subforem_relationships_on_subforem_id"
     t.index ["tag_id"], name: "index_tag_subforem_relationships_on_tag_id"
@@ -1698,18 +1683,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_23_130947) do
     t.index ["taggings_count"], name: "index_tags_on_taggings_count"
   end
 
-  create_table "trends", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "expiry_date", null: false
-    t.text "full_content_description", null: false
-    t.text "public_description", null: false
-    t.string "short_title", null: false
-    t.bigint "subforem_id", null: false
-    t.datetime "updated_at", null: false
-    t.index ["expiry_date"], name: "index_trends_on_expiry_date"
-    t.index ["subforem_id"], name: "index_trends_on_subforem_id"
-  end
-
   create_table "tweets", force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
     t.text "extended_entities_serialized", default: "--- {}\n"
@@ -1755,10 +1728,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_23_130947) do
     t.jsonb "recent_tags", default: []
     t.jsonb "recent_users", default: []
     t.jsonb "recently_viewed_articles", default: []
-    t.jsonb "semantic_interest_profile", default: {}
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.index ["semantic_interest_profile"], name: "index_user_activities_on_semantic_interest_profile", using: :gin
     t.index ["user_id"], name: "index_user_activities_on_user_id"
   end
 
@@ -1870,7 +1841,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_23_130947) do
     t.datetime "last_article_at", precision: nil, default: "2017-01-01 05:00:00"
     t.datetime "last_comment_at", precision: nil, default: "2017-01-01 05:00:00"
     t.datetime "last_followed_at", precision: nil
-    t.datetime "last_moderation_notification", precision: nil, default: "2017-01-01 05:00:00"
+    t.datetime "last_moderation_notification", precision: nil, default: "2016-12-31 16:00:00"
     t.datetime "last_notification_activity", precision: nil
     t.string "last_onboarding_page"
     t.datetime "last_presence_at"
@@ -1984,7 +1955,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_23_130947) do
   end
 
   create_table "users_settings", force: :cascade do |t|
-    t.boolean "auto_relocation_enabled", default: true, null: false
     t.string "brand_color1", default: "#000000"
     t.integer "config_font", default: 0, null: false
     t.integer "config_homepage_feed", default: 0, null: false
@@ -2127,7 +2097,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_23_130947) do
   add_foreign_key "tag_subforem_relationships", "tags"
   add_foreign_key "taggings", "tags", on_delete: :cascade
   add_foreign_key "tags", "badges", on_delete: :nullify
-  add_foreign_key "trends", "subforems"
   add_foreign_key "tweets", "users", on_delete: :nullify
   add_foreign_key "user_activities", "users"
   add_foreign_key "user_blocks", "users", column: "blocked_id"

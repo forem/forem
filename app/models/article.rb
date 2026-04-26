@@ -1335,6 +1335,7 @@ class Article < ApplicationRecord
   end
 
   def before_destroy_actions
+    PinnedArticle.remove if PinnedArticle.id == id
     bust_cache(destroying: true)
     article_ids = user.article_ids.dup
     if organization

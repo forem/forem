@@ -17,7 +17,7 @@ RSpec.describe "StoriesShow" do
     it "renders the Mastodon share link via Share2Fedi" do
       get article.path
 
-      share_url = "https://s2f.kytta.dev/?text=#{CGI.escape(URL.article(article))}"
+      share_url = "https://share2fedi.de/?text=#{CGI.escape(URL.article(article))}"
       expect(response.body).to include(share_url)
     end
 
