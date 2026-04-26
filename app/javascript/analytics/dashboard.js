@@ -1,4 +1,4 @@
-import { callHistoricalAPI, callReferrersAPI, callTotalsAPI, callTopContributorsAPI, callFollowerEngagementAPI } from './client';
+import { callDashboardAPI } from './client';
 import { locale } from '@utilities/locale';
 
 // Window-level state survives esbuild IIFE re-execution during InstantClick
@@ -628,20 +628,42 @@ function removeCardElements() {
   el && el.remove();
 }
 
+function retryButtonHTML() {
+  return '<button type="button" class="crayons-btn crayons-btn--secondary mt-2" data-analytics-retry>Retry</button>';
+}
+
+function bindRetryButtons(root = document) {
+  root.querySelectorAll('[data-analytics-retry]').forEach((btn) => {
+    if (btn.dataset.analyticsRetryBound === 'true') return;
+    btn.dataset.analyticsRetryBound = 'true';
+    btn.addEventListener('click', () => {
+      if (typeof _state.lastDraw === 'function') {
+        _state.lastDraw(_state.lastContext || {});
+      }
+    });
+  });
+}
+
 function showErrorsOnCharts() {
   const target = ['reactions-chart', 'comments-chart', 'readers-chart', 'followers-chart'];
   target.forEach((id) => {
     const el = document.getElementById(id);
     if (!el) return;
-    el.outerHTML = `<p class="m-5" id="${id}">Failed to fetch chart data. If this error persists for a minute, you can try to disable adblock etc. on this page or site.</p>`;
+    el.outerHTML = `<div class="m-5" id="${id}"><p>Failed to fetch chart data. If this error persists for a minute, you can try to disable adblock etc. on this page or site.</p>${retryButtonHTML()}</div>`;
   });
+  bindRetryButtons();
 }
 
 function showErrorsOnReferrers() {
   const chartEl = document.getElementById('referrers-chart');
   if (chartEl) chartEl.innerHTML = '';
-  document.getElementById('referrers-container').outerHTML =
-    '<p class="m-5" id="referrers-container">Failed to fetch referrer data. If this error persists for a minute, you can try to disable adblock etc. on this page or site.</p>';
+  const container = document.getElementById('referrers-container');
+  if (container) {
+    // referrers-container is a <tbody>; preserve it and inject a valid table row
+    // so the surrounding <table> markup stays well-formed.
+    container.innerHTML = `<tr><td colspan="2" class="p-5"><p>Failed to fetch referrer data. If this error persists for a minute, you can try to disable adblock etc. on this page or site.</p>${retryButtonHTML()}</td></tr>`;
+  }
+  bindRetryButtons();
 }
 
 function callAnalyticsAPI(date, timeRangeLabel, { organizationId, articleId }) {
@@ -656,71 +678,37 @@ function callAnalyticsAPI(date, timeRangeLabel, { organizationId, articleId }) {
 
   showLoadingPlaceholders();
 
-  // Single historical fetch, shared by charts and cards
-  const historicalPromise = callHistoricalAPI(date, { organizationId, articleId });
-
-  // Historical data → draw charts as soon as available
-  historicalPromise
+  // Single bundled request: /api/analytics/dashboard returns all five panels
+  // (historical, totals, referrers, top_contributors, follower_engagement) in
+  // one response. This replaces 5 parallel GETs that systematically tripped
+  // the Rack::Attack api_throttle (3 GET/sec per IP) and caused "Failed to
+  // fetch chart data" errors in production.
+  callDashboardAPI(date, { organizationId, articleId })
     .then((data) => {
       if (generation !== _state.apiGeneration) return;
-      writeCards(data, timeRangeLabel, null);
-      drawCharts(data, timeRangeLabel);
+
+      writeCards(data.historical, timeRangeLabel, data.totals);
+      drawCharts(data.historical, timeRangeLabel);
+      renderReferrers(data.referrers);
+
+      if (document.getElementById('top-contributors-container')) {
+        renderTopContributors(data.top_contributors);
+      }
+
+      if (document.getElementById('followers-card')) {
+        renderFollowerEngagement(data.follower_engagement);
+      }
     })
     .catch((_err) => {
       if (generation !== _state.apiGeneration) return;
       showErrorsOnCharts();
-    });
-
-  // Totals → update cards with extra info (avg read time, unique reactors)
-  callTotalsAPI(date, { organizationId, articleId })
-    .then((totals) => {
-      if (generation !== _state.apiGeneration) return;
-      // Re-render cards once totals arrive (historical likely already resolved)
-      historicalPromise.then((data) => {
-        if (generation !== _state.apiGeneration) return;
-        writeCards(data, timeRangeLabel, totals);
-      });
-    })
-    .catch((_err) => {
-      // Cards already rendered from historical; totals failure is non-critical
-    });
-
-  callReferrersAPI(date, { organizationId, articleId })
-    .then((data) => {
-      if (generation !== _state.apiGeneration) return;
-      renderReferrers(data);
-    })
-    .catch((_err) => {
-      if (generation !== _state.apiGeneration) return;
       showErrorsOnReferrers();
     });
-
-  // Top contributors panel (user/org dashboard only — container may not exist for articles)
-  if (document.getElementById('top-contributors-container')) {
-    callTopContributorsAPI(date, { organizationId, articleId })
-      .then((data) => {
-        if (generation !== _state.apiGeneration) return;
-        renderTopContributors(data);
-      })
-      .catch((_err) => {
-        if (generation !== _state.apiGeneration) return;
-        const el = document.getElementById('top-contributors-container');
-        if (el) el.innerHTML = '';
-      });
-  }
-
-  // Follower engagement ratio (user/org dashboard only)
-  if (document.getElementById('followers-card')) {
-    callFollowerEngagementAPI(date, { organizationId })
-      .then((data) => {
-        if (generation !== _state.apiGeneration) return;
-        renderFollowerEngagement(data);
-      })
-      .catch(() => {});
-  }
 }
 
 function drawWeekCharts({ organizationId, articleId }) {
+  _state.lastDraw = drawWeekCharts;
+  _state.lastContext = { organizationId, articleId };
   resetActive(document.getElementById('week-button'));
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
@@ -728,6 +716,8 @@ function drawWeekCharts({ organizationId, articleId }) {
 }
 
 function drawMonthCharts({ organizationId, articleId }) {
+  _state.lastDraw = drawMonthCharts;
+  _state.lastContext = { organizationId, articleId };
   resetActive(document.getElementById('month-button'));
   const oneMonthAgo = new Date();
   oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
@@ -735,6 +725,8 @@ function drawMonthCharts({ organizationId, articleId }) {
 }
 
 function drawInfinityCharts({ organizationId, articleId }) {
+  _state.lastDraw = drawInfinityCharts;
+  _state.lastContext = { organizationId, articleId };
   resetActive(document.getElementById('infinity-button'));
   // April 1st is when the DEV analytics feature went into place
   const beginningOfTime = new Date('2019-04-01');
