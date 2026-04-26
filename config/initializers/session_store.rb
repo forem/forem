@@ -17,7 +17,7 @@ if Rails.env.development?
   end
 end
 
-domain = Rails.env.production? ? ApplicationConfig["APP_DOMAIN"] : nil
+domain = ApplicationConfig["APP_DOMAIN"]
 
 begin
   parsed = PublicSuffix.parse(domain, default_rule: nil)
