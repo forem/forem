@@ -1,6 +1,6 @@
 class SyncWebpageReferencesWorker
-  include Sidekiq::Worker
-  sidekiq_options queue: :low_priority
+  include Sidekiq::Job
+  sidekiq_options queue: :low_priority, lock: :until_executing, on_conflict: :replace
 
   def perform(record_class_name, record_id)
     record_class = record_class_name.safe_constantize
@@ -12,6 +12,7 @@ class SyncWebpageReferencesWorker
     urls = WebpageExtractor.extract(record)
     
     previous_domain_ids = record.webpage_references.pluck(:linked_domain_id)
+    current_domain_ids = []
 
     WebpageReference.transaction do
       # 1. Clear out existing references for this record
@@ -23,6 +24,8 @@ class SyncWebpageReferencesWorker
         urls.each do |url|
           domain = LinkedDomain.find_or_create_by_url(url)
           next unless domain
+
+          current_domain_ids << domain.id
 
           references_to_insert << {
             record_type: record_class_name,
@@ -39,7 +42,6 @@ class SyncWebpageReferencesWorker
     end
 
     # Trigger score update for the domains involved
-    current_domain_ids = urls.filter_map { |u| LinkedDomain.find_by(host: URI.parse(u).host&.downcase)&.id } rescue []
     domain_ids_to_update = (previous_domain_ids + current_domain_ids).uniq
     
     domain_ids_to_update.each do |domain_id|

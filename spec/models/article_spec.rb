@@ -2497,6 +2497,21 @@ RSpec.describe Article do
         expect(LinkedDomains::UpdateScoreWorker).not_to have_received(:perform_async)
       end
     end
+
+    context "triggering LinkedDomains::UpdateScoreWorker on destroy" do
+      before { Sidekiq::Testing.fake! }
+      let!(:domain) { LinkedDomain.create!(host: "destroytest.com") }
+
+      before do
+        WebpageReference.create!(record: article, linked_domain: domain, url: "https://destroytest.com/page")
+        allow(LinkedDomains::UpdateScoreWorker).to receive(:perform_async)
+      end
+
+      it "triggers the worker when article is destroyed" do
+        article.destroy
+        expect(LinkedDomains::UpdateScoreWorker).to have_received(:perform_async).with(domain.id)
+      end
+    end
   end
 
   context "when the article has a context note" do
