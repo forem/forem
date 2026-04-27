@@ -19,8 +19,13 @@ class EmailDigestArticleCollector
 
       if FeatureFlag.enabled?(:personalized_email_digests) &&
           Settings::UserExperience.feed_strategy == "configured"
-        articles = personalized_articles
-        return articles if articles
+        
+        variant = field_test(:personalized_email_digests_ab_test, participant: @user)
+        
+        if variant == "personalized"
+          articles = personalized_articles
+          return articles if articles
+        end
       end
 
       legacy_articles
