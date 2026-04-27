@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_04_23_130947) do
+ActiveRecord::Schema[7.0].define(version: 2026_04_27_171402) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -958,6 +958,15 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_23_130947) do
     t.index ["organization_lead_form_id", "user_id"], name: "idx_lead_submissions_form_user_unique", unique: true, where: "(user_id IS NOT NULL)"
     t.index ["organization_lead_form_id"], name: "index_lead_submissions_on_organization_lead_form_id"
     t.index ["user_id"], name: "index_lead_submissions_on_user_id"
+  end
+
+  create_table "linked_domains", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "host", null: false
+    t.integer "net_score", default: 0, null: false
+    t.datetime "score_updated_at"
+    t.datetime "updated_at", null: false
+    t.index ["host"], name: "index_linked_domains_on_host", unique: true
   end
 
   create_table "liquid_embed_references", force: :cascade do |t|
@@ -2018,6 +2027,18 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_23_130947) do
   create_table "users_suspended_usernames", primary_key: "username_hash", id: :string, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "webpage_references", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "linked_domain_id", null: false
+    t.bigint "record_id", null: false
+    t.string "record_type", null: false
+    t.datetime "updated_at", null: false
+    t.string "url", null: false
+    t.index ["linked_domain_id", "record_type", "record_id"], name: "idx_webpage_refs_on_domain_and_record"
+    t.index ["linked_domain_id"], name: "index_webpage_references_on_linked_domain_id"
+    t.index ["record_type", "record_id"], name: "index_webpage_references_on_record"
   end
 
   create_table "welcome_notifications", force: :cascade do |t|
