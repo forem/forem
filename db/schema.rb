@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_04_23_130947) do
+ActiveRecord::Schema[7.0].define(version: 2026_04_27_121000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -431,6 +431,15 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_23_130947) do
     t.index ["published"], name: "index_classified_listings_on_published"
     t.index ["tags_array"], name: "index_classified_listings_on_tags_array", using: :gin
     t.index ["user_id"], name: "index_classified_listings_on_user_id"
+  end
+
+  create_table "collection_id_aliases", force: :cascade do |t|
+    t.bigint "collection_id", null: false
+    t.datetime "created_at", null: false
+    t.bigint "legacy_collection_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["collection_id"], name: "index_collection_id_aliases_on_collection_id"
+    t.index ["legacy_collection_id"], name: "index_collection_id_aliases_on_legacy_collection_id", unique: true
   end
 
   create_table "collections", force: :cascade do |t|
@@ -2044,6 +2053,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_23_130947) do
   add_foreign_key "classified_listings", "classified_listing_categories"
   add_foreign_key "classified_listings", "organizations", on_delete: :cascade
   add_foreign_key "classified_listings", "users", on_delete: :cascade
+  add_foreign_key "collection_id_aliases", "collections"
   add_foreign_key "collections", "organizations", on_delete: :nullify
   add_foreign_key "collections", "users", on_delete: :cascade
   add_foreign_key "comments", "users", on_delete: :cascade

@@ -319,6 +319,7 @@ class Article < ApplicationRecord
 
   after_commit :async_score_calc, :touch_collection, :enrich_image_attributes, :detect_code_block_languages,
                on: %i[create update]
+  after_commit :register_collection_id_alias, on: :update
 
   after_update_commit :update_dependent_embeds_if_key_info_changed
 
@@ -1624,6 +1625,28 @@ class Article < ApplicationRecord
 
   def touch_collection
     collection.touch if collection && previous_changes.present?
+  end
+
+  def register_collection_id_alias
+    return unless saved_change_to_collection_id?
+
+    previous_collection_id, current_collection_id = saved_change_to_collection_id
+    return if previous_collection_id.blank? || current_collection_id.blank?
+    return if previous_collection_id == current_collection_id
+
+    previous_collection = Collection.find_by(id: previous_collection_id)
+    current_collection = Collection.find_by(id: current_collection_id)
+    return if previous_collection.blank? || current_collection.blank?
+
+    # Only alias IDs when the series slug is unchanged for the same author.
+    # This guards against broken links caused by scoped-series reassignment,
+    # while avoiding redirects for intentional moves to a different series.
+    return unless previous_collection.slug == current_collection.slug
+    return unless previous_collection.user_id == current_collection.user_id
+
+    CollectionIdAlias.find_or_create_by!(legacy_collection_id: previous_collection_id) do |alias_record|
+      alias_record.collection_id = current_collection_id
+    end
   end
 
   def enrich_image_attributes

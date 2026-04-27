@@ -16,6 +16,22 @@ RSpec.describe "Collections" do
       get collection.path
       expect(response).to have_http_status(:ok)
     end
+
+    it "redirects legacy series IDs to canonical collection path" do
+      replacement_collection = create(:collection, user: user, slug: "replacement-series")
+      CollectionIdAlias.create!(legacy_collection_id: 999_999_999, collection: replacement_collection)
+
+      get "/#{user.username}/series/999999999"
+
+      expect(response).to have_http_status(:moved_permanently)
+      expect(response).to redirect_to(replacement_collection.path)
+    end
+
+    it "returns not found when series ID is unknown and has no alias" do
+      expect do
+        get "/#{user.username}/series/999999998"
+      end.to raise_error(ActiveRecord::RecordNotFound)
+    end
   end
 
   describe "GET large user collection show" do
