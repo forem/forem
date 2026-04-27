@@ -5,10 +5,13 @@ class LinkedDomain < ApplicationRecord
 
   def self.find_or_create_by_url(url)
     uri = URI.parse(url)
-    return nil unless uri.host
+    host = uri.host&.downcase
+    return nil unless host
 
-    find_or_create_by(host: uri.host.downcase)
+    find_or_create_by(host: host)
   rescue URI::InvalidURIError
     nil
+  rescue ActiveRecord::RecordNotUnique
+    find_by(host: host)
   end
 end

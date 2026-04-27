@@ -15,8 +15,8 @@ class WebpageExtractor
 
     urls = stripped_content.scan(URL_REGEX)
     
-    # Clean up URLs (remove trailing punctuation often caught by regex)
-    urls.map! { |url| url.gsub(/[.,:;!?]$/, "") }
+    # Clean up URLs (remove trailing punctuation often caught by regex, and markdown parentheses)
+    urls.map! { |url| url.gsub(/[.,:;!?)]+$/, "") }
     
     urls.uniq
   end
