@@ -8,6 +8,18 @@ import { ProfileImage } from '../ProfileForm/ProfileImage';
 global.fetch = fetch;
 
 describe('<ProfileImage />', () => {
+  beforeEach(() => {
+    document.head.innerHTML =
+      '<meta name="csrf-token" content="fresh-csrf-token" />';
+    window.csrfToken = 'stale-csrf-token';
+    fetch.resetMocks();
+    fetch.mockResponse(
+      JSON.stringify({
+        user: { profile_image: { url: '/uploads/profile-image.jpg' } },
+      }),
+    );
+  });
+
   it('should render correctly', () => {
     const onMainImageUrlChangeMock = jest.fn();
     const { getByTestId } = render(
@@ -80,6 +92,63 @@ describe('<ProfileImage />', () => {
     fireEvent.change(uploadInput, { target: { files: [file] } });
 
     expect(getByText('Uploading...')).toBeInTheDocument();
+  });
+
+  it('uses the current CSRF meta token when uploading an image', async () => {
+    const onMainImageUrlChangeMock = jest.fn();
+    const { getByLabelText } = render(
+      <ProfileImage
+        onMainImageUrlChange={onMainImageUrlChangeMock}
+        mainImage="test.png"
+        userId="1"
+        name="Test User"
+      />,
+    );
+    const inputEl = getByLabelText('Edit profile image', { exact: false });
+
+    const file = new File(['file content'], 'profile.jpg', {
+      type: 'image/jpeg',
+    });
+
+    fireEvent.change(inputEl, { target: { files: [file] } });
+
+    await waitFor(() => {
+      expect(onMainImageUrlChangeMock).toHaveBeenCalledWith(
+        '/uploads/profile-image.jpg',
+      );
+    });
+
+    const [, requestOptions] = fetch.mock.calls[0];
+    expect(requestOptions.headers['X-CSRF-Token']).toEqual('fresh-csrf-token');
+    expect(requestOptions.body.get('authenticity_token')).toEqual(
+      'fresh-csrf-token',
+    );
+  });
+
+  it('displays a friendly upload error when the response body is empty', async () => {
+    fetch.mockResponseOnce('', { status: 500 });
+    const { getByLabelText, findByText, queryByText } = render(
+      <ProfileImage
+        onMainImageUrlChange={jest.fn()}
+        mainImage="test.png"
+        userId="1"
+        name="Test User"
+      />,
+    );
+    const inputEl = getByLabelText('Edit profile image', { exact: false });
+
+    const file = new File(['file content'], 'profile.jpg', {
+      type: 'image/jpeg',
+    });
+
+    fireEvent.change(inputEl, { target: { files: [file] } });
+
+    expect(
+      await findByText('Unable to upload profile image. Please try again.'),
+    ).toBeInTheDocument();
+    expect(
+      queryByText(/Unexpected end of JSON input/i),
+    ).not.toBeInTheDocument();
   });
 
   it('displays an upload error when necessary', async () => {
