@@ -1573,6 +1573,15 @@ experiments:
       - user_views_pages_on_at_least_four_different_hours_within_a_day
       - user_views_pages_on_at_least_nine_different_days_within_two_weeks
       - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+  personalized_email_digests_ab_test:
+    variants:
+      - legacy
+      - personalized
+    weights:
+      - 50
+      - 50
+    goals:
+      - user_clicks_email_link
 # Dashboard performance
 cache: true
 precision: 2
