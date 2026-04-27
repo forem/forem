@@ -54,7 +54,9 @@ end
 
 num_users = 10 * SEEDS_MULTIPLIER
 
-users_in_random_order = seeder.create_if_none(User, num_users) do
+users_in_random_order = nil
+
+seeder.create_if_none(User, num_users) do
   roles = %i[trusted]
 
   num_users.times do |i|
@@ -184,8 +186,9 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
     end
   end
 
-  User.order(Arel.sql("RANDOM()"))
+  users_in_random_order = User.order(Arel.sql("RANDOM()"))
 end
+users_in_random_order ||= User.order(Arel.sql("RANDOM()"))
 seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   user = User.create!(
     name: "Admin \"The \\:/ Administrator\" McAdmin",
