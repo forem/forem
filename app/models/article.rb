@@ -969,7 +969,7 @@ class Article < ApplicationRecord
                       calculated_comment_score
                     end
 
-    score_changed_flag = score_changed? || comment_score_changed?
+    score_changed_flag = score_changed? || self.comment_score != comment_score
 
     update_columns(score: score,
                    privileged_users_reaction_points_sum: reactions.privileged_category.sum(:points),

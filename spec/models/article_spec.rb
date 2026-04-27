@@ -2475,17 +2475,12 @@ RSpec.describe Article do
     end
 
     context "triggering LinkedDomains::UpdateScoreWorker" do
-      let(:domain) { LinkedDomain.create!(host: "example.com") }
+      before { Sidekiq::Testing.fake! }
+      let!(:domain) { LinkedDomain.create!(host: "example.com") }
 
       before do
         WebpageReference.create!(record: article, linked_domain: domain, url: "https://example.com/page")
         allow(LinkedDomains::UpdateScoreWorker).to receive(:perform_async)
-        allow(article).to receive(:reactions).and_return(double(sum: 10, privileged_category: double(sum: 5)))
-        allow(BlackBox).to receive(:article_hotness_score).and_return(100)
-        # We need a custom mock for comments to avoid breaking #comments_changed? checks if any exist,
-        # but the comments double defined above uses .sum, so we'll just reuse it.
-        # Wait, the parent context defines a double for comments. Let's just mock sum.
-        allow(article).to receive(:comments).and_return(double(sum: 3))
       end
 
       it "triggers the worker when score changes" do
@@ -2495,7 +2490,7 @@ RSpec.describe Article do
 
       it "does not trigger the worker when score does not change" do
         # Set the score to what update_score will calculate (10)
-        article.update_column(:score, 10)
+        article.update_columns(score: 10, comment_score: 3)
         article.clear_changes_information
         
         article.update_score # call should not change score

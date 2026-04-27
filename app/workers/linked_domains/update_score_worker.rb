@@ -18,10 +18,14 @@ module LinkedDomains
       end
 
       # We sum the score of all unique articles that link to this domain
+      # Note: This net_score currently aggregates scores from Article records only. 
+      # Links appearing exclusively in Comment bodies do not contribute to this score.
       total_score = Article.joins(:webpage_references)
                            .where(webpage_references: { linked_domain_id: domain.id })
-                           .distinct
+                           .group(:id)
                            .sum(:score)
+                           .values
+                           .sum
 
       domain.update(net_score: total_score, score_updated_at: Time.current)
     end

@@ -11,6 +11,8 @@ class SyncWebpageReferencesWorker
 
     urls = WebpageExtractor.extract(record)
     
+    previous_domain_ids = record.webpage_references.pluck(:linked_domain_id)
+
     WebpageReference.transaction do
       # 1. Clear out existing references for this record
       record.webpage_references.delete_all
@@ -35,8 +37,13 @@ class SyncWebpageReferencesWorker
         WebpageReference.insert_all(references_to_insert) if references_to_insert.any?
       end
     end
-    
+
     # Trigger score update for the domains involved
-    # (Optional: we could do this more efficiently in bulk)
+    current_domain_ids = urls.filter_map { |u| LinkedDomain.find_by(host: URI.parse(u).host&.downcase)&.id } rescue []
+    domain_ids_to_update = (previous_domain_ids + current_domain_ids).uniq
+    
+    domain_ids_to_update.each do |domain_id|
+      LinkedDomains::UpdateScoreWorker.perform_async(domain_id)
+    end
   end
 end
