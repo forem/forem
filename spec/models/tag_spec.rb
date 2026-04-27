@@ -305,6 +305,12 @@ RSpec.describe Tag do
 
       expect(tag.published_articles_count).to eq(0)
     end
+
+    it "returns zero when there are no articles for a tag" do
+      tag = create(:tag)
+
+      expect(tag.published_articles_count).to eq(0)
+    end
   end
 
   context "when indexing with Algolia", :algolia do
