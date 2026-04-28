@@ -113,9 +113,10 @@ RSpec.describe Spam::Handler, type: :service do
       context "when user score is 0" do
         before { article.user.update!(score: 0) }
 
-        it "triggers spam reaction when domain net_score is <= -2000" do
+        it "triggers spam reaction and labels as clear_and_obvious_spam when domain net_score is <= -2000" do
           linked_domain.update!(net_score: -2000)
           expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
+          expect(article.reload.automod_label).to eq("clear_and_obvious_spam")
         end
 
         it "returns :not_spam when domain net_score is > -2000" do
@@ -123,19 +124,21 @@ RSpec.describe Spam::Handler, type: :service do
           expect(handler).to eq(:not_spam)
         end
 
-        it "triggers spam reaction when html uses single quotes" do
+        it "triggers spam reaction and labels as clear_and_obvious_spam when html uses single quotes" do
           allow(article).to receive(:processed_html).and_return("<a href='https://#{spam_domain}/foo'>spam link</a>")
           linked_domain.update!(net_score: -2000)
           expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
+          expect(article.reload.automod_label).to eq("clear_and_obvious_spam")
         end
       end
 
       context "when user score is 100" do
         before { article.user.update!(score: 100) }
 
-        it "triggers spam reaction when domain net_score is <= -22000" do
+        it "triggers spam reaction and labels as clear_and_obvious_spam when domain net_score is <= -22000" do
           linked_domain.update!(net_score: -22000)
           expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
+          expect(article.reload.automod_label).to eq("clear_and_obvious_spam")
         end
 
         it "returns :not_spam when domain net_score is > -22000" do
@@ -156,9 +159,10 @@ RSpec.describe Spam::Handler, type: :service do
       context "when user score is 20" do
         before { article.user.update!(score: 20) }
 
-        it "triggers spam reaction when domain net_score is <= -6000" do
+        it "triggers spam reaction and labels as clear_and_obvious_spam when domain net_score is <= -6000" do
           linked_domain.update!(net_score: -6000)
           expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
+          expect(article.reload.automod_label).to eq("clear_and_obvious_spam")
         end
 
         it "returns :not_spam when domain net_score is > -6000" do
