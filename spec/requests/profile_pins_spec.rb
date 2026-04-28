@@ -29,6 +29,28 @@ RSpec.describe "ProfilePins" do
       end
       expect(user.reload.profile_pins.size).to eq(5)
     end
+
+    it "ignores orphaned pins when enforcing the five pin limit" do
+      [article, article2, article3, article4, article5].each do |pinned_article|
+        post "/profile_pins", params: {
+          profile_pin: { pinnable_id: pinned_article.id }
+        }
+      end
+
+      Article.delete(article.id)
+
+      post "/profile_pins", params: {
+        profile_pin: { pinnable_id: article6.id }
+      }
+
+      expect(user.reload.profile_pins.pluck(:pinnable_id)).to contain_exactly(
+        article2.id,
+        article3.id,
+        article4.id,
+        article5.id,
+        article6.id,
+      )
+    end
   end
 
   describe "PUT /profile_pins/:id" do # delete

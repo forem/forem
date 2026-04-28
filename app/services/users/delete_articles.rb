@@ -15,6 +15,8 @@ module Users
           comment.delete
         end
         article.discussion_lock&.delete
+        # `article.delete` bypasses the association's `dependent: :delete_all` cleanup.
+        article.profile_pins.delete_all
         article.delete
         article.purge
       end

@@ -1,6 +1,3 @@
-# @note When we destroy the related article (via pinnable), it's using
-#       dependent: :delete for the relationship.  That means no
-#       before/after destroy callbacks will be called on this object.
 class ProfilePin < ApplicationRecord
   belongs_to :pinnable, polymorphic: true
   belongs_to :profile, polymorphic: true
@@ -14,7 +11,7 @@ class ProfilePin < ApplicationRecord
   private
 
   def only_five_pins_per_profile
-    errors.add(:base, I18n.t("models.profile_pin.only_five")) if profile.profile_pins.size > 4
+    errors.add(:base, I18n.t("models.profile_pin.only_five")) if profile.profile_pins.count > 4
   end
 
   def pinnable_belongs_to_profile

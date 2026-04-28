@@ -2,6 +2,8 @@ class ProfilePinsController < ApplicationController
   before_action :authenticate_user!, only: %i[create update]
 
   def create
+    remove_orphaned_profile_pins
+
     @profile_pin = ProfilePin.new
     @profile_pin.profile_id = current_user.id
     @profile_pin.profile_type = "User"
@@ -34,5 +36,12 @@ class ProfilePinsController < ApplicationController
     cache_bust = EdgeCache::Bust.new
     cache_bust.call(current_user.path)
     cache_bust.call("#{current_user.path}?i=i")
+  end
+
+  def remove_orphaned_profile_pins
+    current_user.profile_pins.where(pinnable_type: "Article").where.not(
+      pinnable_id: Article.unscoped.select(:id),
+    ).delete_all
+    current_user.profile_pins.reset
   end
 end
