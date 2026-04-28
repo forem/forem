@@ -1,0 +1,71 @@
+require "rails_helper"
+
+RSpec.describe LinkedDomains::UpdateScoreWorker do
+  describe "#perform" do
+    before { Sidekiq::Testing.fake! }
+
+    let!(:article1) { create(:article, score: 10) }
+    let!(:article2) { create(:article, score: 20) }
+    let!(:domain) { LinkedDomain.create!(host: "example.com", score_updated_at: 2.hours.ago) }
+
+    before do
+      WebpageReference.create!(record: article1, linked_domain: domain, url: "https://example.com/page1")
+      WebpageReference.create!(record: article2, linked_domain: domain, url: "https://example.com/page2")
+    end
+
+    it "updates the net score of the domain" do
+      expect {
+        subject.perform(domain.id)
+      }.to change { domain.reload.net_score }.to(30)
+    end
+
+    context "when multiple linked articles have the same score" do
+      let(:article3) { create(:article, score: 10) }
+      
+      before do
+        WebpageReference.create!(record: article3, linked_domain: domain, url: "https://example.com/page3")
+      end
+
+      it "includes both articles in the domain net_score" do
+        expect {
+          subject.perform(domain.id)
+        }.to change { domain.reload.net_score }.to(40) # 10 + 20 + 10
+      end
+    end
+
+    it "updates the score_updated_at timestamp" do
+      expect {
+        subject.perform(domain.id)
+      }.to change { domain.reload.score_updated_at }
+    end
+
+    context "when the domain was updated recently" do
+      before do
+        domain.update!(score_updated_at: 10.minutes.ago)
+      end
+
+      it "does not update the net_score immediately" do
+        expect {
+          subject.perform(domain.id)
+        }.not_to change { domain.reload.net_score }
+      end
+
+      it "reschedules itself for the end of the 1 hour window" do
+        expect(described_class).to receive(:perform_in).with(anything, domain.id) do |delay, _id|
+          expect(delay).to be_within(1.minute).of(50.minutes)
+        end
+        subject.perform(domain.id)
+      end
+    end
+
+    context "when score_updated_at is nil" do
+      let(:domain) { LinkedDomain.create!(host: "example.com", score_updated_at: nil) }
+
+      it "updates the net score of the domain immediately" do
+        expect {
+          subject.perform(domain.id)
+        }.to change { domain.reload.net_score }.to(30)
+      end
+    end
+  end
+end
