@@ -186,6 +186,7 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
 
   User.order(Arel.sql("RANDOM()"))
 end
+users_in_random_order ||= User.order(Arel.sql("RANDOM()"))
 seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   user = User.create!(
     name: "Admin \"The \\:/ Administrator\" McAdmin",
@@ -359,11 +360,14 @@ end
 num_comments = 30 * SEEDS_MULTIPLIER
 
 seeder.create_if_none(Comment, num_comments) do
+  published_articles = Article.published.to_a
+  next if published_articles.empty?
+
   num_comments.times do
     attributes = {
       body_markdown: Faker::Hipster.paragraph(sentence_count: 1),
       user_id: User.order(Arel.sql("RANDOM()")).first.id,
-      commentable_id: Article.order(Arel.sql("RANDOM()")).first.id,
+      commentable_id: published_articles.sample.id,
       commentable_type: "Article"
     }
 
@@ -532,16 +536,16 @@ seeder.create_if_none(FeedbackMessage) do
   )
 
   3.times do
-    article_id = Article
+    article = Article
       .left_joins(:reactions)
       .where.not(articles: { id: Reaction.article_vomits.pluck(:reactable_id) })
       .order(Arel.sql("RANDOM()"))
       .first
-      .id
+    next unless article
 
     Reaction.create!(
       category: "vomit",
-      reactable_id: article_id,
+      reactable_id: article.id,
       reactable_type: "Article",
       user_id: mod.id,
     )
@@ -1055,9 +1059,12 @@ seeder.create_if_none(Notification) do
   admin = User.find_by(email: "admin@forem.local")
   if admin
     User.order(Arel.sql("RANDOM()")).limit(5).each do |random_user|
-      Notification.create!(
+      article = Article.order(Arel.sql("RANDOM()")).first
+      next unless article
+
+      Notification.find_or_create_by!(
         user_id: admin.id,
-        notifiable_id: Article.order(Arel.sql("RANDOM()")).first&.id,
+        notifiable_id: article.id,
         notifiable_type: "Article",
         action: "Published"
       )

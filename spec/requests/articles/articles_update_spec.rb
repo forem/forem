@@ -191,6 +191,17 @@ RSpec.describe "ArticlesUpdate" do
     expect(article.reload.video_thumbnail_url).to include "https://i.imgur.com/HPiu7N4.jpg"
   end
 
+  it "clears video_source_url and video when an empty video_source_url is submitted" do
+    article.update_columns(video_source_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                           video: "https://www.youtube.com/embed/dQw4w9WgXcQ")
+    put "/articles/#{article.id}", params: {
+      article: { title: article.title, body_markdown: article.body_markdown, video_source_url: "" }
+    }
+    article.reload
+    expect(article.video_source_url).to be_blank
+    expect(article.video).to be_nil
+  end
+
   context "when setting published_at in editor v2" do
     let(:tomorrow) { 1.day.from_now }
     let(:published_at) { "#{tomorrow.strftime('%d.%m.%Y')} 18:00" }
