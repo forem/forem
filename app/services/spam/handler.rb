@@ -76,6 +76,7 @@ module Spam
 
       # Check if we should trigger spam detection
       should_check = Settings::RateLimit.trigger_spam_for?(text: text) ||
+        article_linked_domain_spam?(article) ||
         (article.processed_html.include?("<a") && Ai::Base::DEFAULT_KEY.present? &&
          (bypass_restrictions || article.user.badge_achievements_count < 4) &&
          Ai::ArticleCheck.new(article).spam?)
@@ -314,11 +315,52 @@ module Spam
       PROFILE_SPAM_TRIGGER_TERMS.any? { |term| normalized.include?(term) }
     end
 
+    # NEW/private: Check if article links to highly negative domains
+    def self.article_linked_domain_spam?(article)
+      html = article.processed_html
+      return false if html.blank? || !html.include?("<a")
+
+      score = article.user.score
+      return false if score > 100
+
+      threshold = score <= 0 ? -2000 : -2000 - ((score / 10) * 2000)
+
+      domains = extract_all_domains_from(html, limit: 25)
+      return false if domains.empty?
+
+      LinkedDomain.where(host: domains).where("net_score <= ?", threshold).exists?
+    end
+
+    # NEW/private: Extract all domains from processed HTML
+    def self.extract_all_domains_from(html, limit: 25)
+      return [] if html.blank? || !html.include?("<a") || limit.to_i <= 0
+
+      domains = []
+      seen_domains = {}
+
+      html.to_enum(:scan, /<a\s+[^>]*href=(['"])(.*?)\1/i).each do
+        begin
+          host = URI.parse(Regexp.last_match(2)).host&.downcase
+        rescue URI::InvalidURIError
+          next
+        end
+
+        next if host.blank? || seen_domains[host]
+
+        seen_domains[host] = true
+        domains << host
+        break if domains.size >= limit
+      end
+
+      domains
+    end
+
     private_class_method :suspend!, :issue_spam_reaction_for!,
                          :extensive_domain_spam?, :extract_first_domain_from,
                          :suspend_if_user_is_repeat_offender, :label_article_content!,
                          :offtopic_label?, :check_subforem_reassignment,
                          :clear_profile_violation_label?, :eligible_for_profile_spam_check?,
-                         :published_articles_over_limit?, :published_comments_over_limit?
+                         :published_articles_over_limit?, :published_comments_over_limit?,
+                         :article_linked_domain_spam?, :extract_all_domains_from
   end
 end

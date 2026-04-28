@@ -96,6 +96,107 @@ RSpec.describe Spam::Handler, type: :service do
       end
     end
 
+    context "when spam is triggered by linked domain net_score check" do
+      let(:spam_domain) { "bad-seo-site.com" }
+      let!(:linked_domain) { LinkedDomain.create!(host: spam_domain, net_score: -2000) }
+
+      before do
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
+        allow(article).to receive(:processed_html).and_return("<a href=\"https://#{spam_domain}/foo\">spam link</a>")
+        article_check = instance_double(Ai::ArticleCheck, spam?: false)
+        allow(Ai::ArticleCheck).to receive(:new).with(article).and_return(article_check)
+        # Mock content moderation labeling
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "no_moderation_label", compellingness_score: 0.5 })
+      end
+
+      context "when user score is 0" do
+        before { article.user.update!(score: 0) }
+
+        it "triggers spam reaction when domain net_score is <= -2000" do
+          linked_domain.update!(net_score: -2000)
+          expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
+        end
+
+        it "returns :not_spam when domain net_score is > -2000" do
+          linked_domain.update!(net_score: -1999)
+          expect(handler).to eq(:not_spam)
+        end
+
+        it "triggers spam reaction when html uses single quotes" do
+          allow(article).to receive(:processed_html).and_return("<a href='https://#{spam_domain}/foo'>spam link</a>")
+          linked_domain.update!(net_score: -2000)
+          expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
+        end
+      end
+
+      context "when user score is 100" do
+        before { article.user.update!(score: 100) }
+
+        it "triggers spam reaction when domain net_score is <= -22000" do
+          linked_domain.update!(net_score: -22000)
+          expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
+        end
+
+        it "returns :not_spam when domain net_score is > -22000" do
+          linked_domain.update!(net_score: -21999)
+          expect(handler).to eq(:not_spam)
+        end
+      end
+
+      context "when user score is greater than 100" do
+        before { article.user.update!(score: 101) }
+
+        it "skips the check and returns :not_spam even if domain net_score is very low" do
+          linked_domain.update!(net_score: -100000)
+          expect(handler).to eq(:not_spam)
+        end
+      end
+
+      context "when user score is 20" do
+        before { article.user.update!(score: 20) }
+
+        it "triggers spam reaction when domain net_score is <= -6000" do
+          linked_domain.update!(net_score: -6000)
+          expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
+        end
+
+        it "returns :not_spam when domain net_score is > -6000" do
+          linked_domain.update!(net_score: -5999)
+          expect(handler).to eq(:not_spam)
+        end
+      end
+
+      context "with invalid URLs in HTML" do
+        before do
+          article.user.update!(score: 0)
+          allow(article).to receive(:processed_html).and_return("<a href=\"http://[\">bad link</a>")
+        end
+
+        it "gracefully handles URI parse errors and returns :not_spam" do
+          expect(handler).to eq(:not_spam)
+        end
+      end
+
+      context "for a first-time offender" do
+        before do
+          article.user.update!(score: 0)
+          linked_domain.update!(net_score: -2000)
+        end
+
+        it_behaves_like "first-time spam offender"
+      end
+
+      context "for a multiple offender" do
+        before do
+          article.user.update!(score: 0)
+          linked_domain.update!(net_score: -2000)
+        end
+
+        it_behaves_like "multiple spam offender"
+      end
+    end
+
     context "when content moderation labeler identifies spam" do
       before do
         allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
