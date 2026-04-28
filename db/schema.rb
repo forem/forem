@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_04_27_171402) do
+ActiveRecord::Schema[7.0].define(version: 2026_04_28_125926) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -963,6 +963,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_27_171402) do
   create_table "linked_domains", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "host", null: false
+    t.integer "manual_setting", default: 0, null: false
     t.integer "net_score", default: 0, null: false
     t.datetime "score_updated_at"
     t.datetime "updated_at", null: false
