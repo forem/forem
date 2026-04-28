@@ -3,7 +3,8 @@
 #       destroy callbacks will be called on this object.
 class PageView < ApplicationRecord
   belongs_to :user, optional: true
-  belongs_to :article
+  belongs_to :article, optional: true
+  belongs_to :viewable, polymorphic: true, optional: true
 
   before_create :extract_domain_and_path
   # after_create_commit :record_field_test_event
