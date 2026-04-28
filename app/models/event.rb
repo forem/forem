@@ -74,10 +74,11 @@ class Event < ApplicationRecord
     elsif primary_stream_url.match?(%r{streamyard\.com}i)
       begin
         uri = URI.parse(primary_stream_url)
-        params = URI.decode_www_form(String(uri.query)).to_h
-        params["embed"] = "true"
-        uri.query = URI.encode_www_form(params)
-        self.primary_stream_url = uri.to_s
+        path_segments = uri.path.split('/').reject(&:blank?)
+        if path_segments.any?
+          streamyard_id = path_segments.last
+          self.primary_stream_url = "https://streamyard.com/e/#{streamyard_id}"
+        end
       rescue URI::InvalidURIError
         # ignore, allow the url to pass through as is if unparseable
       end

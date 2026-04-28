@@ -88,9 +88,15 @@ RSpec.describe Event, type: :model do
     end
 
     it "automatically embeds URLs for Streamyard and does not set chat_url" do
-      event = create(:event, primary_stream_url: "https://streamyard.com/watch/12345")
-      expect(event.primary_stream_url).to eq("https://streamyard.com/watch/12345?embed=true")
-      expect(event.data["chat_url"]).to be_nil
+      event1 = create(:event, primary_stream_url: "https://streamyard.com/watch/12345")
+      expect(event1.primary_stream_url).to eq("https://streamyard.com/e/12345")
+      expect(event1.data["chat_url"]).to be_nil
+
+      event2 = create(:event, primary_stream_url: "https://streamyard.com/e/12345")
+      expect(event2.primary_stream_url).to eq("https://streamyard.com/e/12345")
+      
+      event3 = create(:event, primary_stream_url: "https://streamyard.com/12345")
+      expect(event3.primary_stream_url).to eq("https://streamyard.com/e/12345")
     end
   end
 
