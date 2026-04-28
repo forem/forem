@@ -75,7 +75,7 @@ module EdgeCache
     private_class_method :bust_tag_pages
 
     def self.bust_user_profile_pages(article)
-
+      EdgeCache::PurgeByKey.call(article.user.profile_cache_keys)
     end
 
     private_class_method :bust_user_profile_pages
