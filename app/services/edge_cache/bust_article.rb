@@ -76,8 +76,11 @@ module EdgeCache
 
     def self.bust_user_profile_pages(article)
       return unless article.user
-      
-      EdgeCache::PurgeByKey.call(article.user.profile_cache_keys)
+
+      EdgeCache::PurgeByKey.call(
+        article.user.profile_cache_keys,
+        fallback_paths: article.user.profile_cache_bust_paths,
+      )
     end
 
     private_class_method :bust_user_profile_pages
