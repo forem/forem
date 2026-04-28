@@ -73,4 +73,18 @@ module ArticlesHelper
   def active_threads(...)
     Articles::ActiveThreadsQuery.call(...)
   end
+######################################################################
+
+def clean_feed_preview(content)
+    return "" if content.blank?
+
+    sanitized = ActionController::Base.helpers.sanitize(
+      content,
+      tags: %w[p br strong em a],
+      attributes: %w[href class]
+    )
+
+    ActionController::Base.helpers.strip_tags(sanitized)
+  end
+  ##################################################################
 end

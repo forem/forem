@@ -69,4 +69,23 @@ describe ArticlesHelper do
       expect(helper.utc_iso_timestamp(nil)).to be_nil
     end
   end
+##########################################################################
+RSpec.describe ArticlesHelper, type: :helper do
+  describe "#clean_feed_preview" do
+    it "removes raw html tags from quickie preview content" do
+      content = '<p class="quickie-paragraph">Big drop for EchoHR <br> Postgres queue + worker </p>'
+
+      result = helper.clean_feed_preview(content)
+
+      expect(result).to include("Big drop for EchoHR")
+      expect(result).to include("Postgres queue + worker")
+      expect(result).not_to include("<p")
+      expect(result).not_to include("<br>")
+      expect(result).not_to include("</p>")
+    end
+  end
+end
+
+
+#########################################################################
 end
