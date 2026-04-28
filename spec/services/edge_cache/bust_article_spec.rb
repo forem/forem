@@ -41,7 +41,10 @@ RSpec.describe EdgeCache::BustArticle, type: :service do
 
     described_class.call(article)
 
-    expect(EdgeCache::PurgeByKey).to have_received(:call).with(article.user.profile_cache_keys).once
+    expect(EdgeCache::PurgeByKey).to have_received(:call).with(
+      article.user.profile_cache_keys,
+      fallback_paths: article.user.profile_cache_bust_paths
+    ).once
   end
 
   it "does not raise when article has no user" do
