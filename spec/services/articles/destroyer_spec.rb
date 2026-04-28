@@ -15,4 +15,11 @@ RSpec.describe Articles::Destroyer, type: :service do
       described_class.call(article)
     end
   end
+
+  it "busts the author's profile cache so stale pinned-article cards are evicted" do
+    user = article.user
+    allow(EdgeCache::BustUser).to receive(:call)
+    described_class.call(article)
+    expect(EdgeCache::BustUser).to have_received(:call).with(user)
+  end
 end
