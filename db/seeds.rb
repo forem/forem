@@ -186,6 +186,13 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
 
   User.order(Arel.sql("RANDOM()"))
 end
+
+# create_if_none returns nil when records already exist (the block is skipped),
+# so users_in_random_order is nil on a re-run with users present. The badge
+# section below calls .limit(10) on it, which crashes. Resolve to a live
+# relation so subsequent sections work regardless of which path ran.
+users_in_random_order ||= User.order(Arel.sql("RANDOM()"))
+
 seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   user = User.create!(
     name: "Admin \"The \\:/ Administrator\" McAdmin",
@@ -360,14 +367,15 @@ num_comments = 30 * SEEDS_MULTIPLIER
 
 seeder.create_if_none(Comment, num_comments) do
   num_comments.times do
-    attributes = {
+    article = Article.published.order(Arel.sql("RANDOM()")).first
+    next unless article
+
+    Comment.create!(
       body_markdown: Faker::Hipster.paragraph(sentence_count: 1),
       user_id: User.order(Arel.sql("RANDOM()")).first.id,
-      commentable_id: Article.order(Arel.sql("RANDOM()")).first.id,
+      commentable_id: article.id,
       commentable_type: "Article"
-    }
-
-    Comment.create!(attributes)
+    )
   end
 end
 
@@ -532,16 +540,16 @@ seeder.create_if_none(FeedbackMessage) do
   )
 
   3.times do
-    article_id = Article
+    article = Article
       .left_joins(:reactions)
       .where.not(articles: { id: Reaction.article_vomits.pluck(:reactable_id) })
       .order(Arel.sql("RANDOM()"))
       .first
-      .id
+    next unless article
 
     Reaction.create!(
       category: "vomit",
-      reactable_id: article_id,
+      reactable_id: article.id,
       reactable_type: "Article",
       user_id: mod.id,
     )
@@ -1054,10 +1062,15 @@ seeder.create_if_none(Notification) do
   # Populating the bell for the admin
   admin = User.find_by(email: "admin@forem.local")
   if admin
-    User.order(Arel.sql("RANDOM()")).limit(5).each do |random_user|
-      Notification.create!(
+    # Iterate over distinct articles (not users — the original `random_user`
+    # was unused inside the block) so the uniqueness validation on
+    # (user_id, notifiable_id, notifiable_type, action) is respected even when
+    # fewer than 5 articles exist. find_or_create_by! makes the block safe to
+    # re-enter if it ever runs partially.
+    Article.order(Arel.sql("RANDOM()")).limit(5).each do |article|
+      Notification.find_or_create_by!(
         user_id: admin.id,
-        notifiable_id: Article.order(Arel.sql("RANDOM()")).first&.id,
+        notifiable_id: article.id,
         notifiable_type: "Article",
         action: "Published"
       )
