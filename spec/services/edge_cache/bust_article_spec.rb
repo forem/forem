@@ -11,7 +11,6 @@ RSpec.describe EdgeCache::BustArticle, type: :service do
     allow(cache_bust).to receive(:call)
     allow(described_class).to receive(:bust_home_pages)
     allow(described_class).to receive(:bust_tag_pages)
-    allow(described_class).to receive(:bust_user_profile_pages)
   end
 
   it "defines TIMEFRAMES" do
@@ -28,6 +27,7 @@ RSpec.describe EdgeCache::BustArticle, type: :service do
   end
 
   it "busts the cache" do
+    allow(described_class).to receive(:bust_user_profile_pages)
     described_class.call(article)
     expect(article).to have_received(:purge).once
     allow(article.user).to receive(:purge)
