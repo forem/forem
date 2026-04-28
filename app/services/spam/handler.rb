@@ -45,8 +45,13 @@ module Spam
     # @param article [Article] the article to check for spamminess
     # @param attributes [Array<Symbol>] test these attributes of the article.
     def self.handle_article!(article:, attributes: %i[title body_markdown])
-      # First, run content moderation labeling
-      label_article_content!(article)
+      if article_linked_domain_spam?(article)
+        article.update_column(:automod_label, "clear_and_obvious_spam")
+        article.automod_label = "clear_and_obvious_spam"
+      else
+        # First, run content moderation labeling
+        label_article_content!(article)
+      end
 
       # Handle clear and obvious violations immediately
       if %w[clear_and_obvious_spam clear_and_obvious_harmful clear_and_obvious_inciting].include?(article.automod_label)
@@ -76,7 +81,6 @@ module Spam
 
       # Check if we should trigger spam detection
       should_check = Settings::RateLimit.trigger_spam_for?(text: text) ||
-        article_linked_domain_spam?(article) ||
         (article.processed_html.include?("<a") && Ai::Base::DEFAULT_KEY.present? &&
          (bypass_restrictions || article.user.badge_achievements_count < 4) &&
          Ai::ArticleCheck.new(article).spam?)
