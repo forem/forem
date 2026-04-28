@@ -303,6 +303,7 @@ class Article < ApplicationRecord
   before_save :detect_language
   before_create :create_password
   before_destroy :before_destroy_actions, prepend: true
+  after_commit :bust_cache_after_destroy, on: :destroy
 
   after_save :create_conditional_autovomits
   after_save :bust_cache
@@ -1672,6 +1673,10 @@ class Article < ApplicationRecord
 
     self.class.bust_cached_admin_published_with("welcome", subforem_id: subforem_id)
     self.class.bust_cached_admin_published_with("welcome")
+  end
+
+  def bust_cache_after_destroy
+    EdgeCache::BustArticle.call(self)
   end
 
   def should_add_urls_from_title?
