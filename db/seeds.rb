@@ -292,6 +292,7 @@ seeder.create_if_none(Badge) do
     )
   end
 end
+
 ##############################################################################
 
 seeder.create_if_none(Tag) do

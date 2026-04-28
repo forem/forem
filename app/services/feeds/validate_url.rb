@@ -26,3 +26,37 @@ module Feeds
     attr_reader :feed_url
   end
 end
+
+##############################################################################################################
+
+class ValidateUrl < ActiveModel::EachValidator
+  def validate_each(record, attribute, value)
+    return if value.blank?
+
+    uri = URI.parse(value)
+
+    unless uri.is_a?(URI::HTTP) || uri.is_a?(URI::HTTPS)
+      record.errors.add(attribute, "must be a valid HTTP or HTTPS URL")
+      return
+    end
+
+    response = URI.open(
+      uri,
+      "User-Agent" => "Forem RSS Validator",
+      read_timeout: 10,
+      open_timeout: 10,
+    )
+
+    content = response.read
+
+    RSS::Parser.parse(content, false)
+  rescue RSS::InvalidRSSError, RSS::NotWellFormedError
+    record.errors.add(attribute, "This is not a valid RSS feed")
+  rescue URI::InvalidURIError
+    record.errors.add(attribute, "Please use a valid URL")
+  rescue OpenURI::HTTPError, SocketError, Timeout::Error
+    record.errors.add(attribute, "The site could not be reached")
+  end
+end
+
+######################################################################
