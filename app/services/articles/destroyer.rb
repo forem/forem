@@ -8,13 +8,19 @@ module Articles
       # we need to cache the ids in advance
       article_comments_ids = article.comments.ids
 
-      article.destroy!
+        # create a lightweight copy to use for cache purging after destroy
+        virtual_article = Article.new(article.attributes)
 
-      Notification.remove_all(notifiable_ids: article.id, notifiable_type: "Article")
+        article.destroy!
 
-      return if article_comments_ids.blank?
+        # purge any edge caches that reference this article (and related records)
+        EdgeCache::BustArticle.call(virtual_article)
 
-      Notification.remove_all(notifiable_ids: article_comments_ids, notifiable_type: "Comment")
+        Notification.remove_all(notifiable_ids: article.id, notifiable_type: "Article")
+
+        return if article_comments_ids.blank?
+
+        Notification.remove_all(notifiable_ids: article_comments_ids, notifiable_type: "Comment")
     end
   end
 end
