@@ -34,6 +34,7 @@ class Seeder
       yield
     else
       puts "  #{@counter}. #{plural} already exist. Skipping."
+      klass.all
     end
   end
 
