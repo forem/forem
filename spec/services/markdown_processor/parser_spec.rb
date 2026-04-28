@@ -764,6 +764,26 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       expect(output).not_to include("&#124;")
     end
 
+    it "leaves \\| inside tilde fenced code blocks unchanged" do
+      markdown = <<~MD
+        ~~~
+        a\\|b
+        ~~~
+      MD
+      output = described_class.new(markdown).convert_escaped_pipes_outside_codeblocks(markdown)
+
+      expect(output).to include("a\\|b")
+      expect(output).not_to include("&#124;")
+    end
+
+    it "leaves \\| inside multi-backtick inline code unchanged" do
+      markdown = "`` a\\|b ``"
+      output = described_class.new(markdown).convert_escaped_pipes_outside_codeblocks(markdown)
+
+      expect(output).to include("a\\|b")
+      expect(output).not_to include("&#124;")
+    end
+
     it "renders \\| in regular prose as a literal pipe" do
       output = generate_and_parse_markdown('text a\\|b end')
 
