@@ -36,6 +36,14 @@ RSpec.describe EdgeCache::BustArticle, type: :service do
     expect(described_class).to have_received(:bust_user_profile_pages).with(article).once
   end
 
+  it "busts user profile pages" do
+    allow(EdgeCache::PurgeByKey).to receive(:call)
+
+    described_class.call(article)
+
+    expect(EdgeCache::PurgeByKey).to have_received(:call).with(article.user.profile_cache_keys).once
+  end
+
   context "when an article is part of an organization" do
     it "busts the organization slug" do
       organization = create(:organization)
