@@ -2473,6 +2473,45 @@ RSpec.describe Article do
         expect(article.reload.comment_score).to eq(7)
       end
     end
+
+    context "triggering LinkedDomains::UpdateScoreWorker" do
+      before { Sidekiq::Testing.fake! }
+      let!(:domain) { LinkedDomain.create!(host: "example.com") }
+
+      before do
+        WebpageReference.create!(record: article, linked_domain: domain, url: "https://example.com/page")
+        allow(LinkedDomains::UpdateScoreWorker).to receive(:perform_async)
+      end
+
+      it "triggers the worker when score changes" do
+        article.update_score
+        expect(LinkedDomains::UpdateScoreWorker).to have_received(:perform_async).with(domain.id)
+      end
+
+      it "does not trigger the worker when score does not change" do
+        # Set the score to what update_score will calculate (10)
+        article.update_columns(score: 10, comment_score: 3)
+        article.clear_changes_information
+        
+        article.update_score # call should not change score
+        expect(LinkedDomains::UpdateScoreWorker).not_to have_received(:perform_async)
+      end
+    end
+
+    context "triggering LinkedDomains::UpdateScoreWorker on destroy" do
+      before { Sidekiq::Testing.fake! }
+      let!(:domain) { LinkedDomain.create!(host: "destroytest.com") }
+
+      before do
+        WebpageReference.create!(record: article, linked_domain: domain, url: "https://destroytest.com/page")
+        allow(LinkedDomains::UpdateScoreWorker).to receive(:perform_async)
+      end
+
+      it "triggers the worker when article is destroyed" do
+        article.destroy
+        expect(LinkedDomains::UpdateScoreWorker).to have_received(:perform_async).with(domain.id)
+      end
+    end
   end
 
   context "when the article has a context note" do
