@@ -103,7 +103,8 @@ RSpec.describe Spam::Handler, type: :service do
       before do
         allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
         allow(article).to receive(:processed_html).and_return("<a href=\"https://#{spam_domain}/foo\">spam link</a>")
-        allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(false)
+        article_check = instance_double(Ai::ArticleCheck, spam?: false)
+        allow(Ai::ArticleCheck).to receive(:new).with(article).and_return(article_check)
         # Mock content moderation labeling
         stub_const("Ai::Base::DEFAULT_KEY", "present")
         allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "no_moderation_label", compellingness_score: 0.5 })
@@ -120,6 +121,12 @@ RSpec.describe Spam::Handler, type: :service do
         it "returns :not_spam when domain net_score is > -2000" do
           linked_domain.update!(net_score: -1999)
           expect(handler).to eq(:not_spam)
+        end
+
+        it "triggers spam reaction when html uses single quotes" do
+          allow(article).to receive(:processed_html).and_return("<a href='https://#{spam_domain}/foo'>spam link</a>")
+          linked_domain.update!(net_score: -2000)
+          expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
         end
       end
 

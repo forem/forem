@@ -317,28 +317,42 @@ module Spam
 
     # NEW/private: Check if article links to highly negative domains
     def self.article_linked_domain_spam?(article)
+      html = article.processed_html
+      return false if html.blank? || !html.include?("<a")
+
       score = article.user.score
       return false if score > 100
 
       threshold = score <= 0 ? -2000 : -2000 - ((score / 10) * 2000)
 
-      domains = extract_all_domains_from(article.processed_html)
+      domains = extract_all_domains_from(html, limit: 25)
       return false if domains.empty?
 
       LinkedDomain.where(host: domains).where("net_score <= ?", threshold).exists?
     end
 
     # NEW/private: Extract all domains from processed HTML
-    def self.extract_all_domains_from(html)
-      return [] if html.blank?
+    def self.extract_all_domains_from(html, limit: 25)
+      return [] if html.blank? || !html.include?("<a") || limit.to_i <= 0
 
-      html.scan(/<a\s+[^>]*href="([^"]+)"/i).filter_map do |match|
+      domains = []
+      seen_domains = {}
+
+      html.to_enum(:scan, /<a\s+[^>]*href=(['"])(.*?)\1/i).each do
         begin
-          URI.parse(match.first).host&.downcase
+          host = URI.parse(Regexp.last_match(2)).host&.downcase
         rescue URI::InvalidURIError
-          nil
+          next
         end
-      end.compact.uniq
+
+        next if host.blank? || seen_domains[host]
+
+        seen_domains[host] = true
+        domains << host
+        break if domains.size >= limit
+      end
+
+      domains
     end
 
     private_class_method :suspend!, :issue_spam_reaction_for!,
