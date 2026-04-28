@@ -44,6 +44,14 @@ RSpec.describe EdgeCache::BustArticle, type: :service do
     expect(EdgeCache::PurgeByKey).to have_received(:call).with(article.user.profile_cache_keys).once
   end
 
+  it "does not raise when article has no user" do
+    article_without_user = create(:article)
+    article_without_user.user = nil
+    allow(EdgeCache::PurgeByKey).to receive(:call)
+
+    expect { described_class.call(article_without_user) }.not_to raise_error
+  end
+
   context "when an article is part of an organization" do
     it "busts the organization slug" do
       organization = create(:organization)
