@@ -14,6 +14,20 @@ RSpec.describe Users::Delete, type: :service do
     expect(User.find_by(id: user.id)).to be_nil
   end
 
+  it "retries deletion if a concurrent AiAudit triggers InvalidForeignKey" do
+    attempts = 0
+    original_method = user.method(:destroy)
+    allow(user).to receive(:destroy) do
+      attempts += 1
+      raise ActiveRecord::InvalidForeignKey, "violates foreign key constraint on table ai_audits" if attempts == 1
+      original_method.call
+    end
+
+    described_class.call(user)
+    expect(User.find_by(id: user.id)).to be_nil
+    expect(attempts).to eq(2)
+  end
+
   it "busts user profile page" do
     described_class.new(user).call
     expect(EdgeCache::BustUser).to have_received(:call).with(user)

@@ -17,7 +17,16 @@ module Users
       user.remove_from_mailchimp_newsletters
       EdgeCache::BustUser.call(user)
       Users::SuspendedUsername.create_from_user(user) if user.spam_or_suspended?
-      user.destroy
+
+      begin
+        user.destroy
+      rescue ActiveRecord::InvalidForeignKey => e
+        raise unless e.message.include?("ai_audits")
+
+        AiAudit.where(affected_user_id: user.id).update_all(affected_user_id: nil)
+        user.destroy
+      end
+
       Rails.cache.delete("user-destroy-token-#{user.id}")
     end
 
