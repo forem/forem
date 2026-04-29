@@ -1,6 +1,10 @@
 # rubocop:disable Metrics/BlockLength
 
 Rails.application.routes.draw do
+  constraints OrgCustomDomainConstraint.new do
+    get "/", to: "stories#custom_domain_index"
+  end
+
   # Devise does not support scoping omniauth callbacks under a dynamic segment
   # so this lives outside our i18n scope.
   devise_for :users, controllers: {

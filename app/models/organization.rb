@@ -81,6 +81,7 @@ class Organization < ApplicationRecord
   validates :twitter_username, length: { maximum: 15 }
   validates :unspent_credits_count, presence: true
   validates :url, length: { maximum: 200 }, url: { allow_blank: true, no_local: true }
+  validates :custom_domain, uniqueness: { allow_blank: true }, format: { with: /\A[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,10}\z/ix, allow_blank: true }
   validates :verification_url, length: { maximum: 200 }, url: { allow_blank: true, no_local: true }
   validates :baseline_score, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validate :validate_social_links
