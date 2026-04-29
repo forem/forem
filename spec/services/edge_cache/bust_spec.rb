@@ -60,6 +60,34 @@ RSpec.describe EdgeCache::Bust, type: :service do
         described_class.call(path)
         expect(fastly_provider_class).to have_received(:call)
       end
+
+      it "gracefully ignores malformed URLs without raising an error or calling HTTParty" do
+        allow(HTTParty).to receive(:post)
+        
+        expect { fastly_provider_class.call("https://") }.not_to raise_error
+        expect(HTTParty).not_to have_received(:post)
+      end
+
+      it "rescues network timeouts, records stats, and logs a structured warning" do
+        allow(HTTParty).to receive(:post).and_raise(Net::OpenTimeout, "execution expired")
+        allow(ForemStatsClient).to receive(:increment)
+        allow(Rails.logger).to receive(:warn)
+
+        expect { fastly_provider_class.call(path) }.not_to raise_error
+
+        expect(ForemStatsClient).to have_received(:increment).with(
+          "edgecache_bust.provider_error",
+          tags: ["provider_class:EdgeCache::Bust::Fastly", "error_class:Net::OpenTimeout"]
+        ).at_least(:once)
+
+        expect(Rails.logger).to have_received(:warn).with(
+          hash_including(
+            message: "EdgeCache::Bust::Fastly failed to purge",
+            error_class: "Net::OpenTimeout",
+            error_message: "execution expired"
+          )
+        ).at_least(:once)
+      end
     end
   end
 
