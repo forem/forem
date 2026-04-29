@@ -205,12 +205,13 @@ RSpec.describe Homepage::ArticlesQuery, type: :query do
         published_at = 1.day.ago.change(usec: 0)
         articles = create_list(:article, 4)
         articles.each { |article| article.update_columns(published_at: published_at) }
+        expected_order = articles.map(&:id).sort.reverse
 
         first_page_ids = described_class.call(sort_by: :published_at, sort_direction: :desc, page: 0, per_page: 2).ids
         second_page_ids = described_class.call(sort_by: :published_at, sort_direction: :desc, page: 1, per_page: 2).ids
 
-        expect(first_page_ids).to eq(articles.map(&:id).sort.reverse.first(2))
-        expect(second_page_ids).to eq(articles.map(&:id).sort.reverse.last(2))
+        expect(first_page_ids).to eq(expected_order.first(2))
+        expect(second_page_ids).to eq(expected_order.last(2))
       end
     end
 
@@ -255,17 +256,17 @@ RSpec.describe Homepage::ArticlesQuery, type: :query do
       end
 
       it "sorts by published_at deterministically when timestamps tie", :aggregate_failures do
-        article1, article2 = create_list(:article, 2)
+        lower_id_article, higher_id_article = create_list(:article, 2)
         published_at = 1.week.ago.change(usec: 0)
 
-        article1.update_columns(published_at: published_at)
-        article2.update_columns(published_at: published_at)
+        lower_id_article.update_columns(published_at: published_at)
+        higher_id_article.update_columns(published_at: published_at)
 
         result = described_class.call(sort_by: :published_at, sort_direction: :desc).ids
-        expect(result).to eq([article2.id, article1.id].sort.reverse)
+        expect(result).to eq([higher_id_article.id, lower_id_article.id].sort.reverse)
 
         result = described_class.call(sort_by: :published_at, sort_direction: :asc).ids
-        expect(result).to eq([article1.id, article2.id].sort)
+        expect(result).to eq([lower_id_article.id, higher_id_article.id].sort)
       end
 
       it "does not sort by unknown parameters" do

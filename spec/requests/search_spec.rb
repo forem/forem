@@ -110,6 +110,7 @@ RSpec.describe "Search", :proper_status do
       published_at = 2.days.ago.change(usec: 0)
       articles = create_list(:article, 4, user: user)
       articles.each { |article| article.update_columns(published_at: published_at) }
+      expected_order = articles.map(&:id).sort.reverse
 
       get search_feed_content_path(homepage_params.merge(user_id: user.id, per_page: 2, page: 0))
       first_page_ids = response.parsed_body["result"].pluck("id")
@@ -117,8 +118,8 @@ RSpec.describe "Search", :proper_status do
       get search_feed_content_path(homepage_params.merge(user_id: user.id, per_page: 2, page: 1))
       second_page_ids = response.parsed_body["result"].pluck("id")
 
-      expect(first_page_ids).to eq(articles.map(&:id).sort.reverse.first(2))
-      expect(second_page_ids).to eq(articles.map(&:id).sort.reverse.last(2))
+      expect(first_page_ids).to eq(expected_order.first(2))
+      expect(second_page_ids).to eq(expected_order.last(2))
     end
 
     context "when searching for articles" do
