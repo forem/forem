@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_04_28_125926) do
+ActiveRecord::Schema[7.0].define(version: 2026_04_29_132710) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -710,6 +710,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_28_125926) do
     t.bigint "feed_impressions_count", default: 0
     t.float "feed_success_score", default: 0.0
     t.float "feed_success_weight", default: 1.0
+    t.float "follow_status_weight", default: 0.0, null: false
     t.float "general_past_day_bonus_weight", default: 0.0, null: false
     t.float "label_match_weight", default: 1.0
     t.float "language_match_weight", default: 1.0, null: false

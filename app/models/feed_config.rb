@@ -39,6 +39,11 @@ class FeedConfig < ApplicationRecord
       terms << "(CASE WHEN articles.user_id IN (#{user_ids}) THEN #{user_follow_weight} ELSE 0 END)"
     end
 
+    if follow_status_weight.positive?
+      user_ids = user_follow_ids.empty? ? "-1" : user_follow_ids.join(',')
+      terms << "(CASE WHEN articles.type_of = 1 AND articles.user_id IN (#{user_ids}) THEN #{follow_status_weight} ELSE 0 END)"
+    end
+
     if tag_follow_weight.positive? && tag_names.present?
       tag_condition = if ENV["OPTIMIZED_FEED_TAGS_QUERY"] == "true"
                         tags_overlap_sql = tag_names.first(rand(20..40)).map { |t| self.class.connection.quote(t) }.join(',')
@@ -161,6 +166,7 @@ class FeedConfig < ApplicationRecord
     clone.recently_active_past_day_bonus_weight = recently_active_past_day_bonus_weight * rand(0.9..1.1)
     clone.featured_weight = featured_weight * rand(0.9..1.1)
     clone.status_weight = status_weight * rand(0.9..1.1)
+    clone.follow_status_weight = follow_status_weight * rand(0.9..1.1)
     clone.clickbait_score_weight = clickbait_score_weight * rand(0.9..1.1)
     clone.compellingness_score_weight = compellingness_score_weight * rand(0.9..1.1)
     clone.language_match_weight = language_match_weight * rand(0.9..1.1)
