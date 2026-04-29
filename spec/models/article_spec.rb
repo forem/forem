@@ -3245,6 +3245,13 @@ RSpec.describe Article do
       article.evaluate_and_update_column_from_markdown
       expect(article.processed_html).to include("Hello World!")
     end
+
+    it "does not raise an error when a ContentParsingError occurs and leaves processed_html unchanged" do
+      original_html = article.processed_html
+      allow_any_instance_of(ContentRenderer).to receive(:process_article).and_raise(ContentRenderer::ContentParsingError, "Parsing error")
+      expect { article.evaluate_and_update_column_from_markdown }.not_to raise_error
+      expect(article.reload.processed_html).to eq(original_html)
+    end
   end
 
   context "when indexing with Algolia", :algolia do
