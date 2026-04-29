@@ -345,7 +345,7 @@ module Spam
       html.to_enum(:scan, /<a\s+[^>]*href=(['"])(.*?)\1/i).each do
         begin
           host = URI.parse(Regexp.last_match(2)).host&.downcase
-        rescue URI::InvalidURIError
+        rescue URI::Error
           next
         end
 
