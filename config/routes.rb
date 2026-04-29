@@ -3,8 +3,17 @@
 Rails.application.routes.draw do
   constraints OrgCustomDomainConstraint.new do
     get "/", to: "stories#custom_domain_index"
-    get "/:username/:slug", to: "stories#custom_domain_show"
-    get "/:slug", to: "stories#custom_domain_show"
+    get "/:username/:slug",
+        to: "stories#custom_domain_show",
+        constraints: {
+          username: /(?!(?:assets|packs|rails|r|ahoy|enter)\z)[^\/.]+/,
+          slug: /[^\/.]+/
+        }
+    get "/:slug",
+        to: "stories#custom_domain_show",
+        constraints: {
+          slug: /(?!(?:assets|packs|rails|r|ahoy|enter)\z)[^\/.]+/
+        }
   end
 
   # Devise does not support scoping omniauth callbacks under a dynamic segment

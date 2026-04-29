@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_04_29_135753) do
+ActiveRecord::Schema[7.0].define(version: 2026_04_29_201519) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1156,7 +1156,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_29_135753) do
     t.boolean "verified", default: false, null: false
     t.datetime "verified_at"
     t.index ["currently_paused_promotional_billboards"], name: "idx_orgs_on_currently_paused_promo_billboards"
-    t.index ["custom_domain"], name: "index_organizations_on_custom_domain", unique: true
+    t.index ["custom_domain"], name: "index_organizations_on_custom_domain", unique: true, where: "((custom_domain IS NOT NULL) AND ((custom_domain)::text <> ''::text))"
     t.index ["ideal_daily_promoted_billboard_impressions"], name: "idx_orgs_on_ideal_daily_promoted_bb_impressions"
     t.index ["secret"], name: "index_organizations_on_secret", unique: true
     t.index ["slug"], name: "index_organizations_on_slug", unique: true
@@ -2022,6 +2022,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_29_135753) do
     t.integer "inbox_type", default: 0, null: false
     t.boolean "permit_adjacent_sponsors", default: true
     t.boolean "prefer_os_color_scheme", default: true
+    t.integer "scraping_restriction", default: 0, null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["feed_url"], name: "index_users_settings_on_feed_url", where: "((COALESCE(feed_url, ''::character varying))::text <> ''::text)"

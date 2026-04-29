@@ -28,6 +28,7 @@ class Organization < ApplicationRecord
   acts_as_followable
 
   before_validation :downcase_slug
+  before_validation :normalize_custom_domain
   before_validation :check_for_slug_change
   before_validation :evaluate_markdown
 
@@ -334,6 +335,10 @@ class Organization < ApplicationRecord
 
   def downcase_slug
     self.slug = slug&.downcase
+  end
+
+  def normalize_custom_domain
+    self.custom_domain = custom_domain.presence&.downcase
   end
 
   def conditionally_update_articles
