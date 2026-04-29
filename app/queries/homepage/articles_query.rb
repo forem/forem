@@ -67,7 +67,7 @@ module Homepage
                 :sort_by, :sort_direction, :page, :per_page
 
     def filter
-      @relation = @relation.full_posts
+      @relation = @relation.full_posts if user_id.present?
       @relation = @relation.where(approved: approved) unless approved.nil?
       @relation = @relation.where(published_at: published_at) if published_at.present?
       @relation = @relation.where(user_id: user_id) if user_id.present?
@@ -75,7 +75,7 @@ module Homepage
       @relation = @relation.cached_tagged_with_any(tags) if tags.any?
       @relation = @relation.not_cached_tagged_with_any(hidden_tags) if hidden_tags.any?
       @relation = @relation.includes(:distinct_reaction_categories)
-      @relation = @relation.where("score >= 0") # Never return negative score articles
+      @relation = @relation.where("score >= 0") unless profile_articles_query?
       @relation = @relation.from_subforem
 
       relation
@@ -84,11 +84,15 @@ module Homepage
     def sort
       return relation unless SORT_PARAMS.include?(sort_by&.to_sym)
 
-      relation.order(sort_by => sort_direction)
+      relation.order(sort_by => sort_direction, id: sort_direction)
     end
 
     def paginate
       relation.page(page).per(per_page)
+    end
+
+    def profile_articles_query?
+      user_id.present? || organization_id.present?
     end
   end
 end

@@ -75,6 +75,12 @@ RSpec.describe Homepage::ArticlesQuery, type: :query do
         expect(described_class.call(user_id: article_user1.user_id).ids).to include(article_user1.id)
         expect(described_class.call(user_id: article_user1.user_id).ids).not_to include(article_user2.id)
       end
+
+      it "keeps negative score articles for profile feeds" do
+        article = create(:article, score: -10)
+
+        expect(described_class.call(user_id: article.user_id).ids).to include(article.id)
+      end
     end
 
     describe "organization_id" do
@@ -92,6 +98,13 @@ RSpec.describe Homepage::ArticlesQuery, type: :query do
         expect(described_class.call(organization_id: org1.id).ids).to include(article_org1.id)
         expect(described_class.call(organization_id: org1.id).ids).not_to include(article_org2.id)
         expect(described_class.call(organization_id: org1.id).ids).not_to include(article_no_org.id)
+      end
+
+      it "keeps negative score articles for organization profile feeds" do
+        organization = create(:organization)
+        article = create(:article, organization: organization, score: -10)
+
+        expect(described_class.call(organization_id: organization.id).ids).to include(article.id)
       end
     end
 
@@ -187,6 +200,18 @@ RSpec.describe Homepage::ArticlesQuery, type: :query do
 
         expect(described_class.call(page: 1, per_page: 1).size).to eq(1)
       end
+
+      it "paginates deterministically when published_at values tie" do
+        published_at = 1.day.ago.change(usec: 0)
+        articles = create_list(:article, 4)
+        articles.each { |article| article.update_columns(published_at: published_at) }
+
+        first_page_ids = described_class.call(sort_by: :published_at, sort_direction: :desc, page: 0, per_page: 2).ids
+        second_page_ids = described_class.call(sort_by: :published_at, sort_direction: :desc, page: 1, per_page: 2).ids
+
+        expect(first_page_ids).to eq(articles.map(&:id).sort.reverse.first(2))
+        expect(second_page_ids).to eq(articles.map(&:id).sort.reverse.last(2))
+      end
     end
 
     describe "sorting" do
@@ -227,6 +252,20 @@ RSpec.describe Homepage::ArticlesQuery, type: :query do
 
         result = described_class.call(sort_by: :published_at, sort_direction: :asc).ids
         expect(result).to eq([article1.id, article2.id])
+      end
+
+      it "sorts by published_at deterministically when timestamps tie", :aggregate_failures do
+        article1, article2 = create_list(:article, 2)
+        published_at = 1.week.ago.change(usec: 0)
+
+        article1.update_columns(published_at: published_at)
+        article2.update_columns(published_at: published_at)
+
+        result = described_class.call(sort_by: :published_at, sort_direction: :desc).ids
+        expect(result).to eq([article2.id, article1.id].sort.reverse)
+
+        result = described_class.call(sort_by: :published_at, sort_direction: :asc).ids
+        expect(result).to eq([article1.id, article2.id].sort)
       end
 
       it "does not sort by unknown parameters" do

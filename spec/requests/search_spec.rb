@@ -81,10 +81,44 @@ RSpec.describe "Search", :proper_status do
       expect(Homepage::FetchArticles).to have_received(:call).with(hash_including(organization_id: "1"))
     end
 
+    it "keeps negative score articles in user profile feed results" do
+      user = create(:user)
+      article = create(:article, user: user, score: -25)
+
+      get search_feed_content_path(homepage_params.merge(user_id: user.id))
+
+      expect(response.parsed_body["result"].pluck("id")).to include(article.id)
+    end
+
+    it "keeps negative score articles in organization profile feed results" do
+      organization = create(:organization)
+      article = create(:article, organization: organization, score: -25)
+
+      get search_feed_content_path(homepage_params.merge(organization_id: organization.id))
+
+      expect(response.parsed_body["result"].pluck("id")).to include(article.id)
+    end
+
     it "supports the tag_names parameter" do
       allow(Homepage::FetchArticles).to receive(:call)
       get search_feed_content_path(homepage_params.merge(tag_names: %i[ruby]))
       expect(Homepage::FetchArticles).to have_received(:call).with(hash_including(tags: %w[ruby]))
+    end
+
+    it "returns deterministic published_at ordering across pages for profile feeds" do
+      user = create(:user)
+      published_at = 2.days.ago.change(usec: 0)
+      articles = create_list(:article, 4, user: user)
+      articles.each { |article| article.update_columns(published_at: published_at) }
+
+      get search_feed_content_path(homepage_params.merge(user_id: user.id, per_page: 2, page: 0))
+      first_page_ids = response.parsed_body["result"].pluck("id")
+
+      get search_feed_content_path(homepage_params.merge(user_id: user.id, per_page: 2, page: 1))
+      second_page_ids = response.parsed_body["result"].pluck("id")
+
+      expect(first_page_ids).to eq(articles.map(&:id).sort.reverse.first(2))
+      expect(second_page_ids).to eq(articles.map(&:id).sort.reverse.last(2))
     end
 
     context "when searching for articles" do

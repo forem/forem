@@ -189,7 +189,7 @@ class StoriesController < ApplicationController
     @stories = ArticleDecorator.decorate_collection(@organization.articles.published.from_subforem
       .includes(:distinct_reaction_categories, :subforem)
       .limited_column_select
-      .order(published_at: :desc).page(@page).per(8))
+      .order(published_at: :desc, id: :desc).page(@page).per(8))
     @organization_article_index = !is_readme
 
     # Anti-spam/visibility guard: apply for both README and non-README views
@@ -419,12 +419,12 @@ class StoriesController < ApplicationController
   def assign_user_stories
     @pinned_stories = Article.published.from_subforem.full_posts.where(id: @user.profile_pins.select(:pinnable_id))
       .limited_column_select
-      .order(published_at: :desc).decorate
+      .order(published_at: :desc, id: :desc).decorate
     @stories = ArticleDecorator.decorate_collection(@user.articles.published.from_subforem.full_posts
       .includes(:distinct_reaction_categories, :subforem)
       .limited_column_select
       .where.not(id: @pinned_stories.map(&:id))
-      .order(published_at: :desc).page(@page).per(user_signed_in? ? 2 : SIGNED_OUT_RECORD_COUNT))
+      .order(published_at: :desc, id: :desc).page(@page).per(user_signed_in? ? 2 : SIGNED_OUT_RECORD_COUNT))
   end
 
   def assign_user_github_repositories
