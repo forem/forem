@@ -12,6 +12,9 @@ module EdgeCache
 
         urls(path).map do |url|
           HTTParty.post("https://api.fastly.com/purge/#{url}", headers: headers)
+        rescue HTTParty::Error, SocketError, Net::OpenTimeout, Net::ReadTimeout, Errno::ECONNREFUSED, Timeout::Error => e
+          Rails.logger.warn("EdgeCache::Bust::Fastly failed to purge #{url}: #{e.message}")
+          nil
         end
       end
       private_class_method :fastly_purge

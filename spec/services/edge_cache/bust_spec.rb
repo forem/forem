@@ -4,6 +4,10 @@ RSpec.describe EdgeCache::Bust, type: :service do
   let(:user) { create(:user) }
   let(:path) { "/#{user.username}" }
 
+  before do
+    allow(ApplicationConfig).to receive(:[]).and_call_original
+  end
+
   context "when passing an Array of paths" do
     let(:fastly_provider_class) { EdgeCache::Bust::Fastly }
 
