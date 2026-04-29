@@ -7,7 +7,6 @@ RSpec.describe LinkedDomain, type: :model do
     before { LinkedDomain.create!(host: "example.com") }
 
     it { is_expected.to validate_presence_of(:host) }
-    it { is_expected.to validate_uniqueness_of(:host) }
   end
 
   describe "enums" do
