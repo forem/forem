@@ -2666,6 +2666,53 @@ RSpec.describe Article do
     end
   end
 
+  describe "established_user_adjustment in update_score" do
+    before do
+      allow(article).to receive(:reactions).and_return(double(sum: 0, privileged_category: double(sum: 0)))
+      allow(article).to receive(:comments).and_return(double(sum: 0))
+      allow(BlackBox).to receive(:article_hotness_score).and_return(0)
+      allow(Settings::UserExperience).to receive(:index_minimum_score).and_return(12)
+    end
+
+    context "when user score is > 100" do
+      before do
+        article.user.update_column(:score, 101)
+      end
+
+      it "adds the index_minimum_score if article is not labeled as spam" do
+        article.update_column(:automod_label, "no_moderation_label")
+        article.update_score
+        expect(article.reload.score).to eq(12)
+      end
+
+      it "does not add the index_minimum_score if article is clear_and_obvious_spam" do
+        article.update_column(:automod_label, "clear_and_obvious_spam")
+        article.update_score
+        # Automod adjusts score by -10 for clear_and_obvious_spam
+        expect(article.reload.score).to eq(-10)
+      end
+
+      it "does not add the index_minimum_score if article is likely_spam" do
+        article.update_column(:automod_label, "likely_spam")
+        article.update_score
+        # Automod adjusts score by -5 for likely_spam
+        expect(article.reload.score).to eq(-5)
+      end
+    end
+
+    context "when user score is <= 100" do
+      before do
+        article.user.update_column(:score, 100)
+      end
+
+      it "does not add the index_minimum_score" do
+        article.update_column(:automod_label, "no_moderation_label")
+        article.update_score
+        expect(article.reload.score).to eq(0)
+      end
+    end
+  end
+
   describe "#trigger_freeform_context_note_generation" do
     let(:article) { create(:article, score: 0) }
 
