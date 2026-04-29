@@ -62,7 +62,7 @@
               <div style="padding: 4px 8px;">
                 <a href="<%= article_url(article) %>?context=digest" style="text-decoration: none; font-weight: 600; color:#111111; font-size: 18px; line-height: 1.4; display:block; letter-spacing: -0.01em;"><%= article.title.strip %></a>
                 <p style="margin-top: 8px; margin-bottom: 0px; font-size: 15px; color: #555555; line-height: 1.5;">
-                  <%= truncate(article.description, length: 180) %>
+                  <%= article.ai_summary.presence || truncate(article.description, length: 180) %>
                 </p>
               </div>
             </td>
