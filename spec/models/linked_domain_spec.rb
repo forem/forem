@@ -4,8 +4,6 @@ RSpec.describe LinkedDomain, type: :model do
   describe "validations" do
     subject { LinkedDomain.new(host: "example.com") }
 
-    before { LinkedDomain.create!(host: "example.com") }
-
     it { is_expected.to validate_presence_of(:host) }
   end
 
