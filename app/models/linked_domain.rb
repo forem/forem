@@ -17,8 +17,10 @@ class LinkedDomain < ApplicationRecord
     host = uri.host&.downcase
     return nil unless host
 
-    find_or_create_by(host: host)
-  rescue URI::InvalidURIError
+    domain = find_or_create_by(host: host)
+    domain = find_by(host: host) unless domain.persisted?
+    domain
+  rescue URI::Error
     nil
   rescue ActiveRecord::RecordNotUnique
     find_by(host: host)
