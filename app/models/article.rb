@@ -1078,7 +1078,7 @@ class Article < ApplicationRecord
     result = content_renderer.process_article
     update_column(:processed_html, result.processed_html)
   rescue ContentRenderer::ContentParsingError => e
-    Rails.logger.warn("Article #{id} evaluate_and_update_column_from_markdown failed: #{e.message}")
+    Rails.logger.warn("Article #{id} evaluate_and_update_column_from_markdown failed: #{e.class}: #{ErrorMessages::Clean.call(e.message)}")
   end
 
   def labels=(input)
