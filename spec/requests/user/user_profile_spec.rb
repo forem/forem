@@ -23,6 +23,15 @@ RSpec.describe "UserProfiles" do
       expect(response.body).to include "Pinned"
     end
 
+    it "does not render unpublished pinned stories" do
+      unpublished_article = create(:article, user: user, published: false, published_at: nil, title: "Unpublished Pinned Story")
+      create(:profile_pin, pinnable: unpublished_article, profile: user)
+
+      get "/#{user.username}"
+
+      expect(response.body).not_to include("Unpublished Pinned Story")
+    end
+
     context "when has articles" do
       before do
         create(:article, user: user, title: "Super Article", published: true, type_of: "full_post")

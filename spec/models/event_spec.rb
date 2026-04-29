@@ -60,9 +60,10 @@ RSpec.describe Event, type: :model do
     end
 
     describe "primary_stream_url format" do
-      it "allows valid youtube or twitch https URLs" do
+      it "allows valid youtube, twitch, or streamyard https URLs" do
         expect(build(:event, primary_stream_url: "https://www.youtube.com/watch?v=1234567890a")).to be_valid
         expect(build(:event, primary_stream_url: "https://twitch.tv/ThePracticalDev")).to be_valid
+        expect(build(:event, primary_stream_url: "https://streamyard.com/watch/12345")).to be_valid
       end
 
       it "rejects non-https, XSS, or unknown URLs" do
@@ -84,6 +85,18 @@ RSpec.describe Event, type: :model do
       event = create(:event, primary_stream_url: "https://youtu.be/abcdefghijk")
       expect(event.primary_stream_url).to include("youtube.com/embed/abcdefghijk?autoplay=1")
       expect(event.data["chat_url"]).to include("youtube.com/live_chat?v=abcdefghijk")
+    end
+
+    it "automatically embeds URLs for Streamyard and does not set chat_url" do
+      event1 = create(:event, primary_stream_url: "https://streamyard.com/watch/12345")
+      expect(event1.primary_stream_url).to eq("https://streamyard.com/e/12345")
+      expect(event1.data["chat_url"]).to be_nil
+
+      event2 = create(:event, primary_stream_url: "https://streamyard.com/e/12345")
+      expect(event2.primary_stream_url).to eq("https://streamyard.com/e/12345")
+      
+      event3 = create(:event, primary_stream_url: "https://streamyard.com/12345")
+      expect(event3.primary_stream_url).to eq("https://streamyard.com/e/12345")
     end
   end
 
