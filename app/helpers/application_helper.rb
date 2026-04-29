@@ -502,4 +502,9 @@ module ApplicationHelper
 
     content_tag(name, class: dom_class, **kwargs, &block)
   end
+
+  def enabled_global_feature_flags
+    RequestStore.store[:enabled_global_feature_flags] ||=
+      FeatureFlag.all.select { |_, state| state == :on }.keys.join(" ")
+  end
 end
