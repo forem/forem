@@ -39,5 +39,31 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
       # The organization show page should be rendered
       expect(response.body).to include(organization.name)
     end
+
+    describe "article routing" do
+      let(:user) { create(:user) }
+      let!(:article) { create(:article, organization: organization, user: user, title: "Test Article Content") }
+
+      it "routes /:slug to the organization's article" do
+        get "http://custom.org/#{article.slug}"
+
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include("Test Article Content")
+      end
+
+      it "routes /:username/:slug to the organization's article" do
+        get "http://custom.org/#{organization.slug}/#{article.slug}"
+
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include("Test Article Content")
+      end
+
+      it "returns 404 for articles not belonging to the organization" do
+        other_article = create(:article)
+        expect {
+          get "http://custom.org/#{other_article.slug}"
+        }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
   end
 end
