@@ -33,7 +33,7 @@ class StoriesController < ApplicationController
 
   def custom_domain_index
     @page = (params[:page] || 1).to_i
-    @organization = request.env["forem.custom_domain_org"] || Organization.find_by(custom_domain: request.host)
+    @organization = request.env["forem.custom_domain_org"] || Organization.find_by(custom_domain: request.host&.downcase)
     not_found unless @organization
 
     handle_organization_index
@@ -41,11 +41,10 @@ class StoriesController < ApplicationController
 
   def custom_domain_show
     @story_show = true
-    @organization = request.env["forem.custom_domain_org"] || Organization.find_by(custom_domain: request.host)
+    @organization = request.env["forem.custom_domain_org"] || Organization.find_by(custom_domain: request.host&.downcase)
     not_found unless @organization
 
     @article = Article.includes(:user).find_by(slug: params[:slug], organization_id: @organization.id)&.decorate
-    
     if @article
       handle_article_show
     else

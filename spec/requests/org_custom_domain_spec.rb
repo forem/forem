@@ -16,7 +16,7 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
       # With the feature disabled, the custom domain request should not be handled
       # as the organization's custom-domain root route.
       get "http://custom.org/"
-      
+
       # The request falls through to the normal root handling, so we assert that
       # it succeeds but does not render the organization profile content.
       expect(response).to have_http_status(:success)

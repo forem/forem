@@ -1,21 +1,6 @@
 # rubocop:disable Metrics/BlockLength
 
 Rails.application.routes.draw do
-  constraints OrgCustomDomainConstraint.new do
-    get "/", to: "stories#custom_domain_index"
-    get "/:username/:slug",
-        to: "stories#custom_domain_show",
-        constraints: {
-          username: /(?!(?:assets|packs|rails|r|ahoy|enter)\z)[^\/.]+/,
-          slug: /[^\/.]+/
-        }
-    get "/:slug",
-        to: "stories#custom_domain_show",
-        constraints: {
-          slug: /(?!(?:assets|packs|rails|r|ahoy|enter)\z)[^\/.]+/
-        }
-  end
-
   # Devise does not support scoping omniauth callbacks under a dynamic segment
   # so this lives outside our i18n scope.
   devise_for :users, controllers: {
@@ -45,6 +30,21 @@ Rails.application.routes.draw do
 
   get "/r/mobile", to: "deep_links#mobile"
   get "/.well-known/apple-app-site-association", to: "deep_links#aasa"
+
+  constraints OrgCustomDomainConstraint.new do
+    get "/", to: "stories#custom_domain_index"
+    get "/:username/:slug",
+        to: "stories#custom_domain_show",
+        constraints: {
+          username: /(?!(?:assets|packs|rails|r|ahoy|enter|users)\z)[^\/.]+/,
+          slug: /[^\/.]+/
+        }
+    get "/:slug",
+        to: "stories#custom_domain_show",
+        constraints: {
+          slug: /(?!(?:assets|packs|rails|r|ahoy|enter|users)\z)[^\/.]+/
+        }
+  end
 
   # [@forem/delightful] - all routes are nested under this optional scope to
   # begin supporting i18n.
