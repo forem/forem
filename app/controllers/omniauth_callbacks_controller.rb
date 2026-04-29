@@ -42,7 +42,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       
       if error.class.name == "OmniAuth::Strategies::OAuth2::CallbackError"
         is_expected_oauth_error = error.message.include?("nonce_mismatch") || error.message.include?("csrf_detected")
-      elsif error.class.name == "OAuth2::Error"
+      elsif error.class.name == "OAuth2::Error" || error.class.name == "OAuth::Unauthorized" || error.class.name == "OmniAuth::NoSessionError"
         is_expected_oauth_error = true # These are all expired/invalid HTTP token grants natively raised by remote provider APIs
       elsif error.class.name == "StandardError"
         is_expected_oauth_error = error.message.include?("access_token was nil")
