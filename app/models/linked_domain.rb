@@ -8,7 +8,7 @@ class LinkedDomain < ApplicationRecord
 
   has_many :webpage_references, dependent: :destroy
 
-  validates :host, presence: true, uniqueness: true
+  validates :host, presence: true
 
   before_save :apply_manual_setting_limits
 
