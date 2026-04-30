@@ -25,6 +25,8 @@ class Organization < ApplicationRecord
   VERIFICATION_STATUS_FAILED = "failed".freeze
   VERIFICATION_STATUS_ADMIN = "admin_verified".freeze
 
+  enum tls_status: { not_started: 0, pending: 1, issued: 2, failed: 3 }
+
   acts_as_followable
 
   before_validation :downcase_slug
@@ -40,6 +42,7 @@ class Organization < ApplicationRecord
   after_save :generate_social_images
 
   after_update_commit :conditionally_update_articles
+  after_save_commit :manage_fastly_tls_subscription
   after_destroy_commit :bust_cache
 
   pg_search_scope :search_organizations, against: :name
@@ -348,6 +351,24 @@ class Organization < ApplicationRecord
     app_domain = Settings::General.app_domain
     if custom_domain == app_domain || custom_domain.ends_with?(".#{app_domain}")
       errors.add(:custom_domain, "cannot be the main application domain or a subdomain of it")
+    end
+  end
+
+  def manage_fastly_tls_subscription
+    return unless ApplicationConfig["FASTLY_API_KEY"].present?
+
+    if saved_change_to_custom_domain?
+      old_domain = saved_change_to_custom_domain[0]
+      new_domain = saved_change_to_custom_domain[1]
+
+      if old_domain.present? && tls_subscription_id.present?
+        FastlyTls::Client.delete_subscription(tls_subscription_id) rescue StandardError
+        update_columns(tls_subscription_id: nil, tls_status: Organization.tls_statuses[:not_started])
+      end
+
+      if new_domain.present?
+        Organizations::ProvisionCustomDomainWorker.perform_async(id)
+      end
     end
   end
 
