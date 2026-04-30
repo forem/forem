@@ -9,7 +9,7 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
 
   context "when the custom domain feature is disabled" do
     before do
-      Flipper.disable(:org_custom_domain, organization)
+      FeatureFlag.disable(:org_custom_domain, FeatureFlag::Actor.new(organization))
     end
 
     it "falls back to the default root behavior instead of rendering the organization profile" do
@@ -26,7 +26,7 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
 
   context "when the custom domain feature is enabled" do
     before do
-      Flipper.enable(:org_custom_domain, organization)
+      FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor.new(organization))
     end
 
     it "routes root path to the organization profile" do
@@ -41,8 +41,10 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
       it "does not intercept /api endpoints on a custom domain" do
         get "http://custom.org/api/articles"
         # Assuming the API route exists and returns 200 or 4xx, but not a 404 from the custom domain catch-all
-        # We can check that the route resolves to the Api::V0::ArticlesController
-        expect(request.controller_class).to eq(Api::V0::ArticlesController)
+        # Assert the request was routed through the API controller/action
+        # rather than being intercepted by the custom-domain root handling.
+        expect(request.path_parameters[:controller]).to eq("api/v0/articles")
+        expect(request.path_parameters[:action]).to eq("index")
       end
     end
 

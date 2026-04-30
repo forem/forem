@@ -40,7 +40,7 @@ RSpec.describe OrgCustomDomainConstraint do
 
     context "when org_custom_domain feature flag is disabled" do
       before do
-        Flipper.disable(:org_custom_domain, organization)
+        FeatureFlag.disable(:org_custom_domain, FeatureFlag::Actor.new(organization))
       end
 
       it "returns false" do
@@ -50,7 +50,7 @@ RSpec.describe OrgCustomDomainConstraint do
 
     context "when org_custom_domain feature flag is enabled" do
       before do
-        Flipper.enable(:org_custom_domain, organization)
+        FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor.new(organization))
       end
 
       it "returns true and sets the organization in the env" do

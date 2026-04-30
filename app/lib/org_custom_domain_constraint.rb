@@ -2,6 +2,7 @@ class OrgCustomDomainConstraint
   def matches?(request)
     host = request.host&.downcase
     return false if host == Settings::General.app_domain || host.blank?
+    return false if Subforem.cached_domains.include?(host)
 
     cache_key = "org_custom_domain_id:#{host}"
     org_id = Rails.cache.read(cache_key)
@@ -25,7 +26,7 @@ class OrgCustomDomainConstraint
       end
     end
 
-    if FeatureFlag.enabled?(:org_custom_domain, org)
+    if FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
       request.env["forem.custom_domain_org"] = org
       true
     else
