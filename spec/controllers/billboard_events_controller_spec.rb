@@ -46,5 +46,12 @@ RSpec.describe BillboardEventsController, type: :controller do
         expect(response).to have_http_status(:ok)
       end
     end
+
+    context "when event params are missing entirely" do
+      it "does not raise an error and returns ok" do
+        post :create, params: {}
+        expect(response).to have_http_status(:ok)
+      end
+    end
   end
 end

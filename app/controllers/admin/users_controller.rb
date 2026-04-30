@@ -637,7 +637,7 @@ module Admin
 
     def set_user_details
       @organizations = @user.organizations.order(:name)
-      @notes = @user.notes.order(created_at: :desc).limit(10)
+      @notes = @user.notes.includes(:author).order(created_at: :desc).limit(10)
       @organization_memberships = @user.organization_memberships
         .joins(:organization)
         .order("organizations.name" => :asc)

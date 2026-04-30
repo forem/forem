@@ -185,6 +185,7 @@ namespace :admin do
     resources :moderator_actions, only: %i[index]
     resources :privileged_reactions, only: %i[index]
     resources :blocked_email_domains, only: %i[index new create destroy]
+    resources :linked_domains, only: %i[index edit update]
   end
 
   scope :advanced do
