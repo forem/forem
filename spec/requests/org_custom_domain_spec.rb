@@ -37,6 +37,15 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
       expect(response.body).to include(organization.name)
     end
 
+    describe "API routing" do
+      it "does not intercept /api endpoints on a custom domain" do
+        get "http://custom.org/api/articles"
+        # Assuming the API route exists and returns 200 or 4xx, but not a 404 from the custom domain catch-all
+        # We can check that the route resolves to the Api::V0::ArticlesController
+        expect(request.controller_class).to eq(Api::V0::ArticlesController)
+      end
+    end
+
     describe "article routing" do
       let(:user) { create(:user) }
       let!(:article) { create(:article, organization: organization, user: user, title: "Test Article Content") }

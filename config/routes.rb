@@ -36,13 +36,13 @@ Rails.application.routes.draw do
     get "/:org_slug/:slug",
         to: "stories#custom_domain_show",
         constraints: {
-          org_slug: /(?!(?:assets|packs|rails|r|ahoy|enter|users)\z)[^\/.]+/,
+          org_slug: /(?!(?:api|assets|packs|rails|r|ahoy|enter|users)\z)[^\/.]+/,
           slug: /[^\/.]+/
         }
     get "/:slug",
         to: "stories#custom_domain_show",
         constraints: {
-          slug: /(?!(?:assets|packs|rails|r|ahoy|enter|users)\z)[^\/.]+/
+          slug: /(?!(?:api|assets|packs|rails|r|ahoy|enter|users)\z)[^\/.]+/
         }
   end
 

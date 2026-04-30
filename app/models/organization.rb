@@ -338,7 +338,7 @@ class Organization < ApplicationRecord
   end
 
   def normalize_custom_domain
-    self.custom_domain = custom_domain.presence&.downcase
+    self.custom_domain = custom_domain.to_s.strip.presence&.downcase
   end
 
   def conditionally_update_articles

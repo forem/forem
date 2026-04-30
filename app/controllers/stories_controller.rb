@@ -43,6 +43,7 @@ class StoriesController < ApplicationController
     @story_show = true
     @organization = request.env["forem.custom_domain_org"] || Organization.find_by(custom_domain: request.host&.downcase)
     not_found unless @organization
+    not_found if params[:org_slug].present? && params[:org_slug] != @organization.slug
 
     @article = Article.includes(:user).find_by(slug: params[:slug], organization_id: @organization.id)&.decorate
     if @article
