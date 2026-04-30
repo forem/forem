@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_04_29_135753) do
+ActiveRecord::Schema[7.0].define(version: 2026_04_30_185100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1146,6 +1146,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_29_135753) do
     t.string "tag_line"
     t.string "tech_stack"
     t.string "text_color_hex"
+    t.integer "tls_status", default: 0, null: false
+    t.string "tls_subscription_id"
     t.string "twitter_username"
     t.integer "unspent_credits_count", default: 0, null: false
     t.datetime "updated_at", precision: nil, null: false
@@ -1160,6 +1162,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_29_135753) do
     t.index ["ideal_daily_promoted_billboard_impressions"], name: "idx_orgs_on_ideal_daily_promoted_bb_impressions"
     t.index ["secret"], name: "index_organizations_on_secret", unique: true
     t.index ["slug"], name: "index_organizations_on_slug", unique: true
+    t.index ["tls_subscription_id"], name: "index_organizations_on_tls_subscription_id", unique: true, where: "((tls_subscription_id IS NOT NULL) AND ((tls_subscription_id)::text <> ''::text))"
   end
 
   create_table "page_templates", force: :cascade do |t|
