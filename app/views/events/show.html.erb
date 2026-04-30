@@ -120,7 +120,24 @@
 
               if (playerContainer && !playerContainer.querySelector("iframe")) {
                 const iframe = document.createElement("iframe");
-                iframe.src = IFRAME_SRC;
+                
+                let finalSrc = IFRAME_SRC;
+                try {
+                  const url = new URL(finalSrc);
+                  if (url.hostname.includes("youtube.com") || url.hostname.includes("youtu.be")) {
+                    url.searchParams.set("autoplay", "1");
+                    url.searchParams.set("mute", "1");
+                  } else if (url.hostname.includes("twitch.tv")) {
+                    url.searchParams.set("autoplay", "true");
+                    url.searchParams.set("muted", "true");
+                  }
+                  finalSrc = url.toString();
+                } catch (e) {
+                  // ignore
+                }
+
+                iframe.src = finalSrc;
+                iframe.allow = "autoplay; fullscreen";
                 iframe.allowFullscreen = true;
                 iframe.setAttribute("frameborder", "0");
                 iframe.setAttribute("scrolling", "no");

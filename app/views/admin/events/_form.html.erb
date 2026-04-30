@@ -57,7 +57,7 @@
     <div class="crayons-field">
       <%= form.label :primary_stream_url, "Primary Stream URL", class: "crayons-field__label" do %>
         Primary Stream URL
-        <p class="crayons-field__description">The streaming embed URL (e.g., Twitch, YouTube player src)</p>
+        <p class="crayons-field__description">The streaming embed URL (e.g., Twitch, YouTube, or Streamyard player src)</p>
       <% end %>
       <%= form.text_area :primary_stream_url, class: "crayons-textfield", rows: 2 %>
     </div>
@@ -141,6 +141,14 @@
         }
       })();
     </script>
+
+    <div class="crayons-field crayons-field--checkbox mt-4">
+      <%= form.check_box :manual_broadcast_end, class: "crayons-checkbox" %>
+      <%= form.label :manual_broadcast_end, class: "crayons-field__label" do %>
+        Manually End Broadcast (Overrides End Time)
+        <p class="crayons-field__description">If checked, the background worker will NOT tear down the billboards when End Time is reached. You must manually press "End Broadcast" on the details page.</p>
+      <% end %>
+    </div>
 
     <div class="crayons-field crayons-field--checkbox">
       <%= form.check_box :published, class: "crayons-checkbox" %>

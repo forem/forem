@@ -60,9 +60,10 @@ RSpec.describe Event, type: :model do
     end
 
     describe "primary_stream_url format" do
-      it "allows valid youtube or twitch https URLs" do
+      it "allows valid youtube, twitch, or streamyard https URLs" do
         expect(build(:event, primary_stream_url: "https://www.youtube.com/watch?v=1234567890a")).to be_valid
         expect(build(:event, primary_stream_url: "https://twitch.tv/ThePracticalDev")).to be_valid
+        expect(build(:event, primary_stream_url: "https://streamyard.com/watch/12345")).to be_valid
       end
 
       it "rejects non-https, XSS, or unknown URLs" do
@@ -84,6 +85,18 @@ RSpec.describe Event, type: :model do
       event = create(:event, primary_stream_url: "https://youtu.be/abcdefghijk")
       expect(event.primary_stream_url).to include("youtube.com/embed/abcdefghijk?autoplay=1")
       expect(event.data["chat_url"]).to include("youtube.com/live_chat?v=abcdefghijk")
+    end
+
+    it "automatically embeds URLs for Streamyard and does not set chat_url" do
+      event1 = create(:event, primary_stream_url: "https://streamyard.com/watch/12345")
+      expect(event1.primary_stream_url).to eq("https://streamyard.com/e/12345")
+      expect(event1.data["chat_url"]).to be_nil
+
+      event2 = create(:event, primary_stream_url: "https://streamyard.com/e/12345")
+      expect(event2.primary_stream_url).to eq("https://streamyard.com/e/12345")
+      
+      event3 = create(:event, primary_stream_url: "https://streamyard.com/12345")
+      expect(event3.primary_stream_url).to eq("https://streamyard.com/e/12345")
     end
   end
 
@@ -115,7 +128,8 @@ RSpec.describe Event, type: :model do
       expect(feed_bb.approved).to be(false) # Needs worker to approve
       
       expect(feed_bb.render_mode).to eq("raw")
-      expect(feed_bb.template).to eq("plain")
+      expect(feed_bb.template).to eq("authorship_box")
+      expect(post_bb.template).to eq("authorship_box")
       expect(feed_bb.custom_display_label).to eq("#{Settings::Community.community_name} Takeovers")
       
       expect(feed_bb.name).to start_with("takeover_")
@@ -123,7 +137,7 @@ RSpec.describe Event, type: :model do
       expect(feed_bb.name).to include("_feed")
       
       expect(post_bb.render_mode).to eq("raw")
-      expect(post_bb.template).to eq("plain")
+      expect(post_bb.template).to eq("authorship_box")
       expect(post_bb.dismissal_sku).to eq(feed_bb.dismissal_sku)
       expect(post_bb.name).to include("_post")
       expect(post_bb.name).to_not eq(feed_bb.name)

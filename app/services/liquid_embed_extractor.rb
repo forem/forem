@@ -45,7 +45,7 @@ class LiquidEmbedExtractor
     when "podcast"
       podcast = Podcast.find_by(slug: identifier)
       [podcast&.class&.name, podcast&.id]
-    when "organization"
+    when "organization", "org_posts"
       org = Organization.find_by(slug: identifier)
       [org&.class&.name, org&.id]
     when "embed"
