@@ -78,6 +78,11 @@ class ArticleActivity < ApplicationRecord
   # that destroy/update operations work without depending on the source row.
 
   # payload: { iso, total, sum_read_seconds, logged_in_count, domain }
+  #
+  # All sub-statements run inside a single DB transaction so that a mid-write
+  # error can't leave per-day counters, totals, and referrers out of sync
+  # (the worker uses retry: false, so partial application would never be
+  # repaired by a retry — only by a full recompute).
   def apply_page_view_delta!(payload)
     iso = payload["iso"]
     delta = {
@@ -85,10 +90,12 @@ class ArticleActivity < ApplicationRecord
       "sum_read_seconds" => payload["sum_read_seconds"].to_i,
       "logged_in_count" => payload["logged_in_count"].to_i
     }
-    merge_day_counters!(:daily_page_views, iso, delta)
-    bump_total!(:total_page_views, delta["total"])
-    if payload["domain"].present? && delta["total"].positive?
-      append_referrer!(iso, payload["domain"], delta["total"])
+    self.class.transaction do
+      merge_day_counters!(:daily_page_views, iso, delta)
+      bump_total!(:total_page_views, delta["total"])
+      if payload["domain"].present? && delta["total"].positive?
+        append_referrer!(iso, payload["domain"], delta["total"])
+      end
     end
     reload
   end
@@ -99,13 +106,15 @@ class ArticleActivity < ApplicationRecord
     cat = payload["category"]
     delta = { "total" => sign }
     delta[cat] = sign if REACTION_CATEGORIES.include?(cat)
-    merge_day_counters!(:daily_reactions, iso, delta)
-    if sign.positive? && payload["user_id"]
-      append_reactor_id!(iso, payload["user_id"].to_i)
-    elsif sign.negative? && payload["user_id"]
-      remove_reactor_id!(iso, payload["user_id"].to_i)
+    self.class.transaction do
+      merge_day_counters!(:daily_reactions, iso, delta)
+      if sign.positive? && payload["user_id"]
+        append_reactor_id!(iso, payload["user_id"].to_i)
+      elsif sign.negative? && payload["user_id"]
+        remove_reactor_id!(iso, payload["user_id"].to_i)
+      end
+      bump_total!(:total_reactions, sign)
     end
-    bump_total!(:total_reactions, sign)
     reload
   end
 
@@ -115,8 +124,10 @@ class ArticleActivity < ApplicationRecord
     iso = payload["iso"]
     return if iso.blank?
 
-    bump_day_int!(:daily_comments, iso, sign)
-    bump_total!(:total_comments, sign)
+    self.class.transaction do
+      bump_day_int!(:daily_comments, iso, sign)
+      bump_total!(:total_comments, sign)
+    end
     reload
   end
 
@@ -167,10 +178,14 @@ class ArticleActivity < ApplicationRecord
   # jsonb_build_object and merges it in with `||`.
   def merge_day_counters!(column, iso, delta_hash)
     quoted_iso = quote(iso)
+    # Quote both the JSON key (for jsonb_build_object) and the lookup key
+    # via connection.quote rather than string-interpolating raw input — keeps
+    # this safe even if a payload key ever contains a quote character.
     pairs = delta_hash.flat_map do |key, n|
+      quoted_key = quote(key.to_s)
       [
-        "'#{key}'",
-        "to_jsonb(COALESCE((((#{column}) -> #{quoted_iso}) ->> #{quote(key)})::int, 0) + #{n.to_i})"
+        quoted_key,
+        "to_jsonb(COALESCE((((#{column}) -> #{quoted_iso}) ->> #{quoted_key})::int, 0) + #{n.to_i})"
       ]
     end
     sql = <<~SQL
@@ -293,7 +308,11 @@ class ArticleActivity < ApplicationRecord
   end
 
   def build_reactions_from_raw
-    rows = Reaction.for_analytics
+    # Aggregate per-day category counts AND distinct reactor ids in a single
+    # grouped query. Previously we plucked one Ruby row per reaction to build
+    # the reactor_ids array client-side, which got expensive on hot articles;
+    # array_agg(DISTINCT ...) keeps the materialization in Postgres.
+    Reaction.for_analytics
       .where(reactable_id: article_id, reactable_type: "Article")
       .group("DATE(created_at)")
       .pluck(
@@ -305,24 +324,16 @@ class ArticleActivity < ApplicationRecord
         Arel.sql("COUNT(*) FILTER (WHERE category = 'exploding_head')"),
         Arel.sql("COUNT(*) FILTER (WHERE category = 'raised_hands')"),
         Arel.sql("COUNT(*) FILTER (WHERE category = 'fire')"),
-      )
-
-    reactor_ids_by_date = Reaction.for_analytics
-      .where(reactable_id: article_id, reactable_type: "Article")
-      .where.not(user_id: nil)
-      .pluck(Arel.sql("DATE(created_at)"), :user_id)
-      .each_with_object(Hash.new { |h, k| h[k] = [] }) { |(d, uid), h| h[d.iso8601] << uid }
-
-    rows.each_with_object({}) do |row, hash|
-      date, total, like, rl, uni, eh, rh, fire = row
-      iso = date.iso8601
-      hash[iso] = {
-        "total" => total.to_i, "like" => like.to_i, "readinglist" => rl.to_i,
-        "unicorn" => uni.to_i, "exploding_head" => eh.to_i,
-        "raised_hands" => rh.to_i, "fire" => fire.to_i,
-        "reactor_ids" => reactor_ids_by_date[iso] || []
-      }
-    end
+        Arel.sql("COALESCE(array_agg(DISTINCT user_id) FILTER (WHERE user_id IS NOT NULL), '{}')"),
+      ).each_with_object({}) do |row, hash|
+        date, total, like, rl, uni, eh, rh, fire, reactor_ids = row
+        hash[date.iso8601] = {
+          "total" => total.to_i, "like" => like.to_i, "readinglist" => rl.to_i,
+          "unicorn" => uni.to_i, "exploding_head" => eh.to_i,
+          "raised_hands" => rh.to_i, "fire" => fire.to_i,
+          "reactor_ids" => Array(reactor_ids).map(&:to_i)
+        }
+      end
   end
 
   def build_comments_from_raw

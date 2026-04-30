@@ -31,8 +31,15 @@ module Articles
       if activity.nil?
         return unless Article.exists?(id: article_id)
 
-        activity = ArticleActivity.create!(article_id: article_id)
-        activity.recompute_all!
+        # find_or_create_by! handles the race where two near-simultaneous
+        # events for the same article try to create the row at the same
+        # moment (the article_id unique index would otherwise raise
+        # RecordNotUnique and, with retry: false, drop one event entirely).
+        # We only run a full recompute when *we* won the create; the loser
+        # returns and lets the recompute the winner is about to do cover
+        # both source rows.
+        activity = ArticleActivity.find_or_create_by!(article_id: article_id)
+        activity.recompute_all! if activity.previously_new_record?
         return
       end
 
