@@ -33,10 +33,10 @@ Rails.application.routes.draw do
 
   constraints OrgCustomDomainConstraint.new do
     get "/", to: "stories#custom_domain_index"
-    get "/:username/:slug",
+    get "/:org_slug/:slug",
         to: "stories#custom_domain_show",
         constraints: {
-          username: /(?!(?:assets|packs|rails|r|ahoy|enter|users)\z)[^\/.]+/,
+          org_slug: /(?!(?:assets|packs|rails|r|ahoy|enter|users)\z)[^\/.]+/,
           slug: /[^\/.]+/
         }
     get "/:slug",

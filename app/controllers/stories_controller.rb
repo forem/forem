@@ -46,7 +46,13 @@ class StoriesController < ApplicationController
 
     @article = Article.includes(:user).find_by(slug: params[:slug], organization_id: @organization.id)&.decorate
     if @article
-      handle_article_show
+      previous_subforem_id = RequestStore.store[:subforem_id]
+      RequestStore.store[:subforem_id] = @article.subforem_id if @article.subforem_id.present?
+      begin
+        handle_article_show
+      ensure
+        RequestStore.store[:subforem_id] = previous_subforem_id
+      end
     else
       not_found
     end
@@ -329,6 +335,7 @@ class StoriesController < ApplicationController
   end
 
   def redirect_if_inactive_in_subforem_for_organization
+    return if request.env["forem.custom_domain_org"].present?
     return unless @stories.none? &&
       RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id]
 
