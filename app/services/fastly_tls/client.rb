@@ -15,11 +15,13 @@ module FastlyTls
             certificate_authority: "lets-encrypt"
           },
           relationships: {
-            tls_domain: {
-              data: {
-                type: "tls_domain",
-                id: domain
-              }
+            tls_domains: {
+              data: [
+                {
+                  type: "tls_domain",
+                  id: domain
+                }
+              ]
             }
           }
         }
@@ -34,10 +36,10 @@ module FastlyTls
         }
       end
 
-      response = post("/tls/subscriptions", headers: headers, body: payload.to_json)
-      handle_response(response)
-
       begin
+        response = post("/tls/subscriptions", headers: headers, body: payload.to_json)
+        handle_response(response)
+
         parsed = response.parsed_response
         parsed = JSON.parse(response.body) if parsed.is_a?(String)
         
@@ -48,30 +50,35 @@ module FastlyTls
         end
         subscription_id
       rescue JSON::ParserError, TypeError, NoMethodError => e
-        Rails.logger.error("[FastlyTls::Client] ERROR in create_subscription: #{e.message}. Body: #{response.body.inspect}")
+        Rails.logger.error("[FastlyTls::Client] ERROR in create_subscription: #{e.message}")
         raise Error, "Fastly API Error: Unable to parse TLS subscription response"
       end
     end
 
     def self.get_subscription(id)
-      response = get("/tls/subscriptions/#{id}", headers: headers)
-      handle_response(response, allow_not_found: true)
-      return nil if response.code == 404
-
       begin
+        response = get("/tls/subscriptions/#{id}", headers: headers)
+        handle_response(response, allow_not_found: true)
+        return nil if response.code == 404
+
         parsed = response.parsed_response
         parsed = JSON.parse(response.body) if parsed.is_a?(String)
         parsed.dig("data")
       rescue JSON::ParserError, TypeError, NoMethodError => e
-        Rails.logger.error("[FastlyTls::Client] ERROR in get_subscription: #{e.message}. Body: #{response.body.inspect}")
+        Rails.logger.error("[FastlyTls::Client] ERROR in get_subscription: #{e.message}")
         raise Error, "Fastly API Error: Unable to parse TLS subscription response"
       end
     end
 
     def self.delete_subscription(id)
-      response = delete("/tls/subscriptions/#{id}", headers: headers)
-      handle_response(response, allow_not_found: true)
-      true
+      begin
+        response = delete("/tls/subscriptions/#{id}", headers: headers)
+        handle_response(response, allow_not_found: true)
+        true
+      rescue JSON::ParserError => e
+        Rails.logger.error("[FastlyTls::Client] ERROR in delete_subscription: #{e.message}")
+        raise Error, "Fastly API Error: Unable to parse TLS subscription response"
+      end
     end
 
     def self.headers
@@ -91,8 +98,12 @@ module FastlyTls
       return if response.success?
       return if allow_not_found && response.code == 404
 
-      parsed = response.parsed_response
-      parsed = JSON.parse(response.body) if parsed.is_a?(String) rescue nil
+      begin
+        parsed = response.parsed_response
+        parsed = JSON.parse(response.body) if parsed.is_a?(String)
+      rescue StandardError
+        parsed = nil
+      end
       error_message = parsed&.dig("errors", 0, "detail") || response.message
       Rails.logger.error("[FastlyTls::Client] HTTP #{response.code} - #{error_message}")
       raise Error, "Fastly API Error: #{error_message}"
