@@ -67,5 +67,18 @@ RSpec.describe LinkedDomains::UpdateScoreWorker do
         }.to change { domain.reload.net_score }.to(30)
       end
     end
+
+    context "when the domain is marked as ignored" do
+      before do
+        domain.update!(manual_setting: "ignored", score_updated_at: 2.hours.ago)
+      end
+
+      it "skips the score recalculation entirely" do
+        expect(Article).not_to receive(:where)
+        expect {
+          subject.perform(domain.id)
+        }.not_to change { domain.reload.score_updated_at }
+      end
+    end
   end
 end

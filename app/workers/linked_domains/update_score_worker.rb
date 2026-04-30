@@ -6,6 +6,7 @@ module LinkedDomains
     def perform(domain_id)
       domain = LinkedDomain.find_by(id: domain_id)
       return unless domain
+      return if domain.ignored?
 
       # Check if updated in the last hour
       time_since_update = Time.current - (domain.score_updated_at || 10.years.ago)

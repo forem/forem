@@ -53,3 +53,6 @@ If you are modifying these agent instructions, you **MUST** replicate your chang
 
 ## Documentation
 - If you find documentation that contradicts the codebase, trust the codebase patterns but note the discrepancy.
+
+## Scratch Files
+- **Temporary Scripts**: When creating temporary scripts for testing or debugging (e.g., `test_retry.rb` or `test_destroy.rb`), always place them in the `/tmp` directory. You must delete these scratch files as soon as you are done with them to keep the project root clean.

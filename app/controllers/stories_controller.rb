@@ -17,9 +17,9 @@ class StoriesController < ApplicationController
   SIGNED_OUT_RECORD_COUNT = 60
   REDIRECT_VIEW_PARAMS = %w[moderate admin].freeze
 
-  before_action :authenticate_user!, except: %i[index show]
-  before_action :set_cache_control_headers, only: %i[index show]
-  before_action :set_user_limit, only: %i[index show]
+  before_action :authenticate_user!, except: %i[index show custom_domain_index custom_domain_show]
+  before_action :set_cache_control_headers, only: %i[index show custom_domain_index custom_domain_show]
+  before_action :set_user_limit, only: %i[index show custom_domain_index custom_domain_show]
   before_action :redirect_to_lowercase_username, only: %i[index]
 
   rescue_from ArgumentError, with: :bad_request
@@ -29,6 +29,34 @@ class StoriesController < ApplicationController
     return handle_user_or_organization_or_podcast_or_page_index if params[:username]
 
     handle_base_index
+  end
+
+  def custom_domain_index
+    @page = (params[:page] || 1).to_i
+    @organization = request.env["forem.custom_domain_org"] || Organization.find_by(custom_domain: request.host&.downcase)
+    not_found unless @organization
+
+    handle_organization_index
+  end
+
+  def custom_domain_show
+    @story_show = true
+    @organization = request.env["forem.custom_domain_org"] || Organization.find_by(custom_domain: request.host&.downcase)
+    not_found unless @organization
+    not_found if params[:org_slug].present? && params[:org_slug] != @organization.slug
+
+    @article = Article.includes(:user).find_by(slug: params[:slug], organization_id: @organization.id)&.decorate
+    if @article
+      previous_subforem_id = RequestStore.store[:subforem_id]
+      RequestStore.store[:subforem_id] = @article.subforem_id if @article.subforem_id.present?
+      begin
+        handle_article_show
+      ensure
+        RequestStore.store[:subforem_id] = previous_subforem_id
+      end
+    else
+      not_found
+    end
   end
 
   def show
@@ -308,6 +336,7 @@ class StoriesController < ApplicationController
   end
 
   def redirect_if_inactive_in_subforem_for_organization
+    return if request.env["forem.custom_domain_org"].present?
     return unless @stories.none? &&
       RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id]
 
