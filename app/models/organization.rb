@@ -362,7 +362,7 @@ class Organization < ApplicationRecord
       new_domain = saved_change_to_custom_domain[1]
 
       if old_domain.present? && tls_subscription_id.present?
-        FastlyTls::Client.delete_subscription(tls_subscription_id) rescue StandardError
+        FastlyTls::Client.delete_subscription(tls_subscription_id)
         update_columns(tls_subscription_id: nil, tls_status: Organization.tls_statuses[:not_started])
       end
 

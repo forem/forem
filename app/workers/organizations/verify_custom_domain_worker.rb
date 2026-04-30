@@ -13,6 +13,13 @@ module Organizations
       return if organization.tls_subscription_id.blank?
 
       subscription_data = FastlyTls::Client.get_subscription(organization.tls_subscription_id)
+      
+      if subscription_data.nil?
+        # Subscription was deleted on Fastly
+        organization.update_columns(tls_status: Organization.tls_statuses[:failed])
+        return
+      end
+
       state = subscription_data.dig("attributes", "state")
 
       case state
@@ -24,13 +31,6 @@ module Organizations
       else
         # If it failed or was destroyed upstream, mark it as failed
         organization.update_columns(tls_status: Organization.tls_statuses[:failed])
-      end
-    rescue FastlyTls::Client::Error => e
-      if e.message.include?("404")
-        # Subscription was deleted on Fastly
-        organization.update_columns(tls_status: Organization.tls_statuses[:failed])
-      else
-        raise
       end
     end
   end

@@ -39,24 +39,31 @@ module FastlyTls
       begin
         parsed = response.parsed_response
         parsed = JSON.parse(response.body) if parsed.is_a?(String)
-        parsed.dig("data", "id")
-      rescue => e
-        puts "ERROR in create_subscription: #{e.message}. Body: #{response.body.inspect}"
-        raise e
+        
+        subscription_id = parsed.dig("data", "id")
+        if subscription_id.blank?
+          Rails.logger.error("[FastlyTls::Client] Missing TLS subscription ID in create_subscription response. Body: #{response.body.inspect}")
+          raise Error, "Fastly API Error: Missing TLS subscription ID in response"
+        end
+        subscription_id
+      rescue JSON::ParserError, TypeError, NoMethodError => e
+        Rails.logger.error("[FastlyTls::Client] ERROR in create_subscription: #{e.message}. Body: #{response.body.inspect}")
+        raise Error, "Fastly API Error: Unable to parse TLS subscription response"
       end
     end
 
     def self.get_subscription(id)
       response = get("/tls/subscriptions/#{id}", headers: headers)
-      handle_response(response)
+      handle_response(response, allow_not_found: true)
+      return nil if response.code == 404
 
       begin
         parsed = response.parsed_response
         parsed = JSON.parse(response.body) if parsed.is_a?(String)
         parsed.dig("data")
-      rescue => e
-        puts "ERROR in get_subscription: #{e.message}. Body: #{response.body.inspect}"
-        raise e
+      rescue JSON::ParserError, TypeError, NoMethodError => e
+        Rails.logger.error("[FastlyTls::Client] ERROR in get_subscription: #{e.message}. Body: #{response.body.inspect}")
+        raise Error, "Fastly API Error: Unable to parse TLS subscription response"
       end
     end
 
