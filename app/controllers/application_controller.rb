@@ -254,6 +254,8 @@ class ApplicationController < ActionController::Base
       uri.scheme = nil
       uri.host = nil
       uri.port = nil
+      uri.path = "/" if uri.path.blank?
+      uri.path = "/#{uri.path}" unless uri.path.start_with?("/")
       uri.query_values = if uri.query_values
                            # Ignore i=i (internal navigation) param
                            uri.query_values.except("i").merge(signin_param)
