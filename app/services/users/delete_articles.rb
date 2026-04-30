@@ -15,6 +15,7 @@ module Users
           comment.delete
         end
         article.discussion_lock&.delete
+        article.context_notes.delete_all
         article.delete
         article.purge
       end

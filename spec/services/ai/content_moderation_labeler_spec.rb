@@ -52,6 +52,32 @@ RSpec.describe Ai::ContentModerationLabeler, type: :service do
       end
     end
 
+    context "when article is a status" do
+      before do
+        allow(article).to receive(:status?).and_return(true)
+        allow(ai_client).to receive(:call).and_return('{"moderation_label": "okay_and_on_topic", "compellingness_score": 0.85}')
+      end
+
+      it "includes the quickie context in the prompt" do
+        labeler = described_class.new(article)
+        prompt = labeler.send(:build_prompt)
+        expect(prompt).to include("This article is a \"status\" post")
+      end
+    end
+
+    context "when article is not a status" do
+      before do
+        allow(article).to receive(:status?).and_return(false)
+        allow(ai_client).to receive(:call).and_return('{"moderation_label": "okay_and_on_topic", "compellingness_score": 0.85}')
+      end
+
+      it "does not include the quickie context in the prompt" do
+        labeler = described_class.new(article)
+        prompt = labeler.send(:build_prompt)
+        expect(prompt).not_to include("This article is a \"status\" post")
+      end
+    end
+
     context "when AI responds with invalid JSON but valid text" do
       before do
         allow(ai_client).to receive(:call).and_return("I think it is very_good_and_on_topic")
