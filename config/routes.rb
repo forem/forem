@@ -31,6 +31,21 @@ Rails.application.routes.draw do
   get "/r/mobile", to: "deep_links#mobile"
   get "/.well-known/apple-app-site-association", to: "deep_links#aasa"
 
+  constraints OrgCustomDomainConstraint.new do
+    get "/", to: "stories#custom_domain_index"
+    get "/:org_slug/:slug",
+        to: "stories#custom_domain_show",
+        constraints: {
+          org_slug: /(?!(?:api|assets|packs|rails|r|ahoy|enter|users)\z)[^\/.]+/,
+          slug: /[^\/.]+/
+        }
+    get "/:slug",
+        to: "stories#custom_domain_show",
+        constraints: {
+          slug: /(?!(?:api|assets|packs|rails|r|ahoy|enter|users)\z)[^\/.]+/
+        }
+  end
+
   # [@forem/delightful] - all routes are nested under this optional scope to
   # begin supporting i18n.
   scope "(/locale/:locale)", defaults: { locale: nil } do

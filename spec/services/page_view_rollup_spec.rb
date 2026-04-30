@@ -58,6 +58,17 @@ RSpec.describe PageViewRollup, type: :service do
         described_class.rollup(2.days.ago)
       end.not_to change(PageView, :count)
     end
+
+    it "does not compact views with different viewable attributes" do
+      create(:page_view, article: article1, user: nil, created_at: 2.days.ago, viewable_type: "User", viewable_id: user1.id)
+      create(:page_view, article: article1, user: nil, created_at: 2.days.ago, viewable_type: "User", viewable_id: user1.id)
+      
+      create(:page_view, article: article1, user: nil, created_at: 2.days.ago, viewable_type: "User", viewable_id: user2.id)
+
+      expect do
+        described_class.rollup(2.days.ago)
+      end.to change(PageView, :count).from(3).to(2)
+    end
   end
 
   it "only compacts views of the same article" do

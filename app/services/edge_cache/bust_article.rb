@@ -17,6 +17,7 @@ module EdgeCache
 
       bust_home_pages(cache_bust, article)
       bust_tag_pages(cache_bust, article)
+      bust_user_profile_pages(article)
     end
 
     def self.bust_home_pages(cache_bust, article)
@@ -72,5 +73,16 @@ module EdgeCache
     end
 
     private_class_method :bust_tag_pages
+
+    def self.bust_user_profile_pages(article)
+      return unless article.user
+
+      EdgeCache::PurgeByKey.call(
+        article.user.profile_cache_keys,
+        fallback_paths: article.user.profile_cache_bust_paths,
+      )
+    end
+
+    private_class_method :bust_user_profile_pages
   end
 end

@@ -67,13 +67,26 @@ module Articles
     end
 
     def create_article
-      @article = Article.create(article_params) do |article|
-        article.user_id = user.id
-        article.show_comments = true
+      begin
+        @article = Article.new(article_params) do |article|
+          article.user_id = user.id
+          article.show_comments = true
+        end
+      rescue ArgumentError => e
+        if e.message.include?("is not a valid type_of")
+          @article = Article.new(article_params.except(:type_of)) do |article|
+            article.user_id = user.id
+          end
+          @article.errors.add(:type_of, :invalid)
+          return @article
+        else
+          raise e
+        end
       end
+
       # Set collection after creation to avoid it being cleared by evaluate_front_matter
       # which clears collection_id when title is present in frontmatter
-      if @article.persisted?
+      if @article.save
         found_series = series
         if found_series.present?
           @article.update_column(:collection_id, found_series.id)

@@ -738,4 +738,81 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       expect(rendered_html).not_to include('alt="Image Description"')
   end
 
+  context "when escaped pipes (\\|) are used in markdown" do
+    it "renders \\| inside a table cell as a literal pipe and keeps the table intact" do
+      markdown = <<~MD
+        | input | result |
+        |-------|--------|
+        | a\\|b | c\\|d  |
+      MD
+      output = generate_and_parse_markdown(markdown)
+
+      expect(output).to include("<table")
+      expect(output).to match(%r{<td[^>]*>\s*a\|b\s*</td>})
+      expect(output).to match(%r{<td[^>]*>\s*c\|d\s*</td>})
+    end
+
+    it "leaves \\| inside fenced code blocks unchanged" do
+      markdown = <<~MD
+        ```
+        a\\|b
+        ```
+      MD
+      output = generate_and_parse_markdown(markdown)
+
+      expect(output).to include("a\\|b")
+      expect(output).not_to include("&#124;")
+    end
+
+    it "leaves \\| inside tilde fenced code blocks unchanged" do
+      markdown = <<~MD
+        ~~~
+        a\\|b
+        ~~~
+      MD
+      output = described_class.new(markdown).convert_escaped_pipes_outside_codeblocks(markdown)
+
+      expect(output).to include("a\\|b")
+      expect(output).not_to include("&#124;")
+    end
+
+    it "leaves \\| inside multi-backtick inline code unchanged" do
+      markdown = "`` a\\|b ``"
+      output = described_class.new(markdown).convert_escaped_pipes_outside_codeblocks(markdown)
+
+      expect(output).to include("a\\|b")
+      expect(output).not_to include("&#124;")
+    end
+
+    it "renders \\| in regular prose as a literal pipe" do
+      output = generate_and_parse_markdown('text a\\|b end')
+
+      expect(output).to include("a|b")
+    end
+
+    it "does not consume the backslash in \\\\| (escaped backslash before a pipe)" do
+      input = "leave \\\\|alone"
+
+      result = described_class.new(input).convert_escaped_pipes_outside_codeblocks(input)
+
+      expect(result).to eq(input)
+      expect(result).not_to include("&#124;")
+    end
+
+    it "does not alter tables that contain no escaped pipes" do
+      markdown = <<~MD
+        | input | result |
+        |-------|--------|
+        | foo   | bar    |
+      MD
+      output = generate_and_parse_markdown(markdown)
+
+      expect(output).to include("<table")
+      expect(output).to match(%r{<td[^>]*>\s*foo\s*</td>})
+      expect(output).to match(%r{<td[^>]*>\s*bar\s*</td>})
+      expect(output).not_to include("&#124;")
+    end
+
+  end
+
 end
