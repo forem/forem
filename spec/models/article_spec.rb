@@ -2473,6 +2473,45 @@ RSpec.describe Article do
         expect(article.reload.comment_score).to eq(7)
       end
     end
+
+    context "triggering LinkedDomains::UpdateScoreWorker" do
+      before { Sidekiq::Testing.fake! }
+      let!(:domain) { LinkedDomain.create!(host: "example.com") }
+
+      before do
+        WebpageReference.create!(record: article, linked_domain: domain, url: "https://example.com/page")
+        allow(LinkedDomains::UpdateScoreWorker).to receive(:perform_async)
+      end
+
+      it "triggers the worker when score changes" do
+        article.update_score
+        expect(LinkedDomains::UpdateScoreWorker).to have_received(:perform_async).with(domain.id)
+      end
+
+      it "does not trigger the worker when score does not change" do
+        # Set the score to what update_score will calculate (10)
+        article.update_columns(score: 10, comment_score: 3)
+        article.clear_changes_information
+        
+        article.update_score # call should not change score
+        expect(LinkedDomains::UpdateScoreWorker).not_to have_received(:perform_async)
+      end
+    end
+
+    context "triggering LinkedDomains::UpdateScoreWorker on destroy" do
+      before { Sidekiq::Testing.fake! }
+      let!(:domain) { LinkedDomain.create!(host: "destroytest.com") }
+
+      before do
+        WebpageReference.create!(record: article, linked_domain: domain, url: "https://destroytest.com/page")
+        allow(LinkedDomains::UpdateScoreWorker).to receive(:perform_async)
+      end
+
+      it "triggers the worker when article is destroyed" do
+        article.destroy
+        expect(LinkedDomains::UpdateScoreWorker).to have_received(:perform_async).with(domain.id)
+      end
+    end
   end
 
   context "when the article has a context note" do
@@ -2627,6 +2666,53 @@ RSpec.describe Article do
     end
   end
 
+  describe "established_user_adjustment in update_score" do
+    before do
+      allow(article).to receive(:reactions).and_return(double(sum: 0, privileged_category: double(sum: 0)))
+      allow(article).to receive(:comments).and_return(double(sum: 0))
+      allow(BlackBox).to receive(:article_hotness_score).and_return(0)
+      allow(Settings::UserExperience).to receive(:index_minimum_score).and_return(12)
+    end
+
+    context "when user score is > 100" do
+      before do
+        article.user.update_column(:score, 101)
+      end
+
+      it "adds the index_minimum_score if article is not labeled as spam" do
+        article.update_column(:automod_label, "no_moderation_label")
+        article.update_score
+        expect(article.reload.score).to eq(12)
+      end
+
+      it "does not add the index_minimum_score if article is clear_and_obvious_spam" do
+        article.update_column(:automod_label, "clear_and_obvious_spam")
+        article.update_score
+        # Automod adjusts score by -10 for clear_and_obvious_spam
+        expect(article.reload.score).to eq(-10)
+      end
+
+      it "does not add the index_minimum_score if article is likely_spam" do
+        article.update_column(:automod_label, "likely_spam")
+        article.update_score
+        # Automod adjusts score by -5 for likely_spam
+        expect(article.reload.score).to eq(-5)
+      end
+    end
+
+    context "when user score is <= 100" do
+      before do
+        article.user.update_column(:score, 100)
+      end
+
+      it "does not add the index_minimum_score" do
+        article.update_column(:automod_label, "no_moderation_label")
+        article.update_score
+        expect(article.reload.score).to eq(0)
+      end
+    end
+  end
+
   describe "#trigger_freeform_context_note_generation" do
     let(:article) { create(:article, score: 0) }
 
@@ -2671,6 +2757,98 @@ RSpec.describe Article do
       article.update_columns(score: 50, comment_score: 25, published_at: 1.day.ago)
       article.trigger_freeform_context_note_generation
       expect(Articles::GenerateFreeformContextNoteWorker).to have_received(:perform_async).with(article.id)
+    end
+  end
+
+  describe "#trigger_summary_generation" do
+    let(:article) { create(:article) }
+
+    before do
+      stub_const("Ai::Base::DEFAULT_KEY", "some_key")
+      allow(Articles::GenerateSummaryWorker).to receive(:perform_async)
+    end
+
+    it "bails if Ai::Base::DEFAULT_KEY is not present" do
+      stub_const("Ai::Base::DEFAULT_KEY", nil)
+      article.update_columns(score: 50, comment_score: 25)
+      article.trigger_summary_generation
+      expect(Articles::GenerateSummaryWorker).not_to have_received(:perform_async)
+    end
+
+    it "bails if score is less than 50" do
+      article.update_columns(score: 49, comment_score: 25)
+      article.trigger_summary_generation
+      expect(Articles::GenerateSummaryWorker).not_to have_received(:perform_async)
+    end
+
+    it "bails if comment_score is less than 25" do
+      article.update_columns(score: 50, comment_score: 24)
+      article.trigger_summary_generation
+      expect(Articles::GenerateSummaryWorker).not_to have_received(:perform_async)
+    end
+
+    it "bails if the article already has a summary" do
+      article.update_columns(score: 50, comment_score: 25, ai_summary: "done")
+      article.trigger_summary_generation
+      expect(Articles::GenerateSummaryWorker).not_to have_received(:perform_async)
+    end
+
+    it "calls the worker when conditions are met" do
+      article.update_columns(score: 50, comment_score: 25)
+      article.trigger_summary_generation
+      expect(Articles::GenerateSummaryWorker).to have_received(:perform_async).with(article.id)
+    end
+  end
+
+  describe "#regenerate_summary_if_content_changed" do
+    let(:article) do
+      create(:article).tap do |a|
+        a.update_columns(
+          score: 60, comment_score: 30, published_at: 1.day.ago, published: true,
+          ai_summary: "existing summary text",
+          ai_summary_prompt_version: Ai::ArticleSummaryGenerator::VERSION,
+        )
+      end
+    end
+
+    before do
+      stub_const("Ai::Base::DEFAULT_KEY", "some_key")
+      allow(Articles::GenerateSummaryWorker).to receive(:perform_async)
+    end
+
+    it "enqueues a forced regeneration when body_markdown changes" do
+      article.update!(body_markdown: "#{article.body_markdown} edited")
+      expect(Articles::GenerateSummaryWorker).to have_received(:perform_async).with(article.id)
+    end
+
+    it "does not enqueue when a non-content attribute changes" do
+      article.update!(cached_tag_list: "ruby, rails")
+      expect(Articles::GenerateSummaryWorker).not_to have_received(:perform_async)
+    end
+
+    it "does not enqueue when no existing summary is stored" do
+      article.update_columns(ai_summary: nil, ai_summary_prompt_version: nil)
+      article.update!(body_markdown: "#{article.body_markdown} edited")
+      expect(Articles::GenerateSummaryWorker).not_to have_received(:perform_async)
+    end
+
+    it "does not enqueue when article is not eligible" do
+      article.update_columns(score: 10, comment_score: 5)
+      article.update!(body_markdown: "#{article.body_markdown} edited")
+      expect(Articles::GenerateSummaryWorker).not_to have_received(:perform_async)
+    end
+
+    it "does not enqueue when article is unpublished" do
+      draft_body = "---\ntitle: Draft\npublished: false\n---\n\nbody text"
+      draft = create(:article, body_markdown: draft_body)
+      draft.update_columns(
+        score: 60, comment_score: 30,
+        ai_summary: "existing", ai_summary_prompt_version: Ai::ArticleSummaryGenerator::VERSION,
+      )
+
+      draft.update!(body_markdown: "---\ntitle: Draft\npublished: false\n---\n\nedited body")
+
+      expect(Articles::GenerateSummaryWorker).not_to have_received(:perform_async)
     end
   end
 
@@ -3066,6 +3244,13 @@ RSpec.describe Article do
       article.body_markdown = "## Hello World!"
       article.evaluate_and_update_column_from_markdown
       expect(article.processed_html).to include("Hello World!")
+    end
+
+    it "does not raise an error when a ContentParsingError occurs and leaves processed_html unchanged" do
+      original_html = article.processed_html
+      allow_any_instance_of(ContentRenderer).to receive(:process_article).and_raise(ContentRenderer::ContentParsingError, "Parsing error")
+      expect { article.evaluate_and_update_column_from_markdown }.not_to raise_error
+      expect(article.reload.processed_html).to eq(original_html)
     end
   end
 

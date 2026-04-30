@@ -61,6 +61,18 @@ RSpec.describe Articles::Creator, type: :service do
     end
   end
 
+  context "when invalid enum for type_of is passed" do
+    let(:invalid_enum_attributes) { attributes_for(:article).merge(type_of: "invalid_type") }
+
+    it "doesn't create an article and returns an invalid article object with errors" do
+      expect do
+        article = described_class.call(user, invalid_enum_attributes)
+        expect(article).not_to be_persisted
+        expect(article.errors[:type_of]).to include("is invalid")
+      end.not_to change(Article, :count)
+    end
+  end
+
   context "when creating a published article" do
     let(:article_params) { attributes_for(:article, published: true) }
 

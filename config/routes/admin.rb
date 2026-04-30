@@ -136,7 +136,11 @@ namespace :admin do
       resource :moderator, only: %i[create destroy], module: "tags"
     end
     resources :surveys
-    resources :events
+    resources :events do
+      member do
+        patch :end_broadcast
+      end
+    end
   end
 
   scope :customization do
@@ -181,6 +185,7 @@ namespace :admin do
     resources :moderator_actions, only: %i[index]
     resources :privileged_reactions, only: %i[index]
     resources :blocked_email_domains, only: %i[index new create destroy]
+    resources :linked_domains, only: %i[index edit update]
   end
 
   scope :advanced do
