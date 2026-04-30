@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_04_30_154553) do
+ActiveRecord::Schema[7.0].define(version: 2026_04_29_135753) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1146,8 +1146,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_30_154553) do
     t.string "tag_line"
     t.string "tech_stack"
     t.string "text_color_hex"
-    t.integer "tls_status", default: 0
-    t.string "tls_subscription_id"
     t.string "twitter_username"
     t.integer "unspent_credits_count", default: 0, null: false
     t.datetime "updated_at", precision: nil, null: false
@@ -1162,7 +1160,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_30_154553) do
     t.index ["ideal_daily_promoted_billboard_impressions"], name: "idx_orgs_on_ideal_daily_promoted_bb_impressions"
     t.index ["secret"], name: "index_organizations_on_secret", unique: true
     t.index ["slug"], name: "index_organizations_on_slug", unique: true
-    t.index ["tls_subscription_id"], name: "index_organizations_on_tls_subscription_id"
   end
 
   create_table "page_templates", force: :cascade do |t|
@@ -2025,7 +2022,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_30_154553) do
     t.integer "inbox_type", default: 0, null: false
     t.boolean "permit_adjacent_sponsors", default: true
     t.boolean "prefer_os_color_scheme", default: true
-    t.integer "scraping_restriction", default: 0, null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["feed_url"], name: "index_users_settings_on_feed_url", where: "((COALESCE(feed_url, ''::character varying))::text <> ''::text)"
