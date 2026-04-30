@@ -362,18 +362,14 @@ class Organization < ApplicationRecord
 
     if old_domain.present? && tls_subscription_id.present?
       previous_tls_subscription_id = tls_subscription_id
-      begin
-        FastlyTls::Client.delete_subscription(previous_tls_subscription_id) if fastly_api_key_present
-      rescue StandardError => e
-        Rails.logger.error(
-          "Failed to delete Fastly TLS subscription #{previous_tls_subscription_id} for Organization #{id}: #{e.class} #{e.message}"
-        )
-      ensure
-        update_columns(tls_subscription_id: nil, tls_status: Organization.tls_statuses[:not_started])
+      update_columns(tls_subscription_id: nil, tls_status: Organization.tls_statuses[:not_started])
+      
+      if fastly_api_key_present
+        Organizations::DeleteCustomDomainWorker.perform_async(previous_tls_subscription_id)
       end
     end
 
-    if new_domain.present? && fastly_api_key_present
+    if new_domain.present? && fastly_api_key_present && tls_subscription_id.blank? && tls_status == "not_started"
       Organizations::ProvisionCustomDomainWorker.perform_async(id)
     end
   end

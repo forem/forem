@@ -3,6 +3,7 @@ module FastlyTls
     include HTTParty
     base_uri "https://api.fastly.com"
     format :json
+    default_timeout 10
 
     class Error < StandardError; end
 

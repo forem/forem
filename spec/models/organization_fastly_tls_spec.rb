@@ -31,11 +31,11 @@ RSpec.describe Organization, type: :model do
       organization.custom_domain = nil
       allow(organization).to receive(:saved_change_to_custom_domain?).and_return(true)
       allow(organization).to receive(:saved_change_to_custom_domain).and_return(["old.example.com", nil])
-      allow(FastlyTls::Client).to receive(:delete_subscription)
 
-      organization.send(:manage_fastly_tls_subscription)
+      expect {
+        organization.send(:manage_fastly_tls_subscription)
+      }.to change(Organizations::DeleteCustomDomainWorker.jobs, :size).by(1)
       
-      expect(FastlyTls::Client).to have_received(:delete_subscription).with("subs_123")
       expect(organization.reload.tls_subscription_id).to be_nil
       expect(organization.reload.tls_status).to eq("not_started")
     end
