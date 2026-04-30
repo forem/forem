@@ -23,6 +23,7 @@ RSpec.describe "ArticlesAdminUnpublish" do
 
   it "removes the related notifications when unpublishing" do
     expect(article.published).to be true
+    allow(EdgeCache::BustUser).to receive(:call)
     create(:notification, notifiable: article, action: "Published")
     expect do
       patch "/articles/#{article.id}/admin_unpublish", params: {
@@ -31,5 +32,6 @@ RSpec.describe "ArticlesAdminUnpublish" do
         slug: article.slug
       }
     end.to change(Notification, :count).by(-1)
+    expect(EdgeCache::BustUser).to have_received(:call).with(user)
   end
 end

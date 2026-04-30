@@ -1,5 +1,6 @@
 class Comment < ApplicationRecord
   include LiquidEmbeddable
+  include WebpageTrackable
   has_ancestry
   resourcify
 

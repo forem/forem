@@ -143,13 +143,13 @@ RSpec.describe "Authenticating with Twitter" do
         expect(page).to have_current_path("/users/sign_up")
       end
 
-      it "reports errors" do
+      it "does not report errors to Honeybadger" do
         allow(Honeybadger).to receive(:notify)
 
         visit sign_up_path
         click_on(sign_in_link, match: :first)
 
-        expect(Honeybadger).to have_received(:notify)
+        expect(Honeybadger).not_to have_received(:notify)
       end
     end
   end
