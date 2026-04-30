@@ -33,6 +33,24 @@ RSpec.describe DigestMailer do
       expect(smtpapi_header["category"]).to include("Digest Email")
     end
 
+    it "renders the article ai_summary when present" do
+      article.update_columns(ai_summary: "An AI generated summary of the article.",
+                             description: "Original description text.")
+
+      email = described_class.with(user: user, articles: [article]).digest_email
+
+      expect(email.body.encoded).to include("An AI generated summary of the article.")
+      expect(email.body.encoded).not_to include("Original description text.")
+    end
+
+    it "falls back to the truncated description when ai_summary is blank" do
+      article.update_columns(ai_summary: nil, description: "Fallback description text.")
+
+      email = described_class.with(user: user, articles: [article]).digest_email
+
+      expect(email.body.encoded).to include("Fallback description text.")
+    end
+
     it "includes billboard html in body" do
       bb_1 = create(:billboard, placement_area: "digest_first", published: true, approved: true)
       bb_2 = create(:billboard, placement_area: "digest_second", published: true, approved: true)
