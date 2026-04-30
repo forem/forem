@@ -116,9 +116,15 @@ module Api
       # The bundled `dashboard` endpoint allows an omitted `start` and falls
       # back to the owner's registration date so Infinity range works without
       # the client knowing the account creation date. All other actions still
-      # require an explicit `start`.
+      # require an explicit `start`. `end` is always validated when supplied
+      # so a malformed value can't silently fall back to Time.current and
+      # poison the cache key.
       if analytics_params[:start].blank?
         raise ArgumentError, I18n.t("api.v0.analytics_controller.start_missing") unless action_name == "dashboard"
+
+        if analytics_params[:end].present? && !valid_end_param?
+          raise ArgumentError, I18n.t("api.v0.analytics_controller.invalid_date_format")
+        end
 
         return
       end
@@ -137,6 +143,10 @@ module Api
       else
         (analytics_params[:start] =~ date_regex)&.zero?
       end
+    end
+
+    def valid_end_param?
+      (analytics_params[:end] =~ /\A\d{4}-\d{1,2}-\d{1,2}\Z/)&.zero?
     end
   end
 end

@@ -23,7 +23,9 @@ RSpec.describe ArticleActivity do
       expect(raw["sum_read_seconds"]).to eq(90)
       expect(raw["logged_in_count"]).to eq(3)
       expect(activity.total_page_views).to eq(8)
-      expect(activity.daily_referrers[iso]).to eq("google.com" => 2)
+      # Referrer count matches sum of `total` (counts_for_number_of_views)
+      # across the deltas, not the number of deltas.
+      expect(activity.daily_referrers[iso]).to eq("google.com" => 8)
     end
 
     it "derives a response-shape day with weighted average read time" do
@@ -74,8 +76,8 @@ RSpec.describe ArticleActivity do
       expect(activity.total_comments).to eq(1)
     end
 
-    it "no-ops when score is zero/negative" do
-      activity.apply_comment_delta!({ "iso" => iso, "score" => 0 }, sign: 1)
+    it "no-ops when iso is blank" do
+      activity.apply_comment_delta!({ "iso" => "" }, sign: 1)
       expect(activity.daily_comments).to eq({})
       expect(activity.total_comments).to eq(0)
     end

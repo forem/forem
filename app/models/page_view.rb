@@ -9,7 +9,7 @@ class PageView < ApplicationRecord
   before_create :extract_domain_and_path
   # after_create_commit :record_field_test_event
   after_create_commit :update_user_activities
-  after_create_commit :enqueue_article_activity_update
+  after_create_commit :enqueue_article_activity_update, if: :article_id?
 
   private
 

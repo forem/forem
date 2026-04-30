@@ -87,7 +87,9 @@ class ArticleActivity < ApplicationRecord
     }
     merge_day_counters!(:daily_page_views, iso, delta)
     bump_total!(:total_page_views, delta["total"])
-    append_referrer!(iso, payload["domain"]) if payload["domain"].present?
+    if payload["domain"].present? && delta["total"].positive?
+      append_referrer!(iso, payload["domain"], delta["total"])
+    end
     reload
   end
 
@@ -107,10 +109,11 @@ class ArticleActivity < ApplicationRecord
     reload
   end
 
-  # payload: { iso, score }, sign: +1 (create / score-rises-positive) or -1 (destroy / score-drops)
+  # payload: { iso }, sign: +1 (score crossed into positive) or -1 (score dropped / destroy)
+  # Callers gate on score positivity; the worker just applies the supplied delta.
   def apply_comment_delta!(payload, sign:)
     iso = payload["iso"]
-    return unless payload["score"].to_i.positive?
+    return if iso.blank?
 
     bump_day_int!(:daily_comments, iso, sign)
     bump_total!(:total_comments, sign)
@@ -235,9 +238,10 @@ class ArticleActivity < ApplicationRecord
     # rebuilds it precisely.
   end
 
-  def append_referrer!(iso, domain)
+  def append_referrer!(iso, domain, count = 1)
     quoted_iso = quote(iso)
     quoted_domain = quote(domain)
+    delta_int = count.to_i
     sql = <<~SQL
       UPDATE article_activities
       SET daily_referrers = jsonb_set(
@@ -247,7 +251,7 @@ class ArticleActivity < ApplicationRecord
           jsonb_build_object(
             #{quoted_domain},
             to_jsonb(
-              COALESCE(((daily_referrers -> #{quoted_iso}) ->> #{quoted_domain})::int, 0) + 1
+              COALESCE(((daily_referrers -> #{quoted_iso}) ->> #{quoted_domain})::int, 0) + #{delta_int}
             )
           ),
         true

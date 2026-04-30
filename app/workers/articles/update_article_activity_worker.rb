@@ -17,7 +17,11 @@ module Articles
   class UpdateArticleActivityWorker
     include Sidekiq::Job
 
-    sidekiq_options queue: :low_priority, retry: 10
+    # Deltas are non-idempotent — applying the same job twice would
+    # double-count (or, on destroy, drive totals negative). retry: false
+    # accepts that a transient failure loses one event; the next full
+    # recompute (lazy upsert path or manual repair) reconciles drift.
+    sidekiq_options queue: :low_priority, retry: false
 
     def perform(article_id, event_type = nil, action = "create", payload = {})
       return if article_id.nil?

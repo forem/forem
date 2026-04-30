@@ -440,7 +440,11 @@ class AnalyticsService
     activities = ArticleActivity.where(article_id: article_ids).index_by(&:article_id)
     missing = article_ids - activities.keys
     if missing.any?
-      missing.each { |aid| Articles::UpdateArticleActivityWorker.perform_async(aid) }
+      # Enqueue a single batch backfill rather than one job per article so
+      # that owners with thousands of articles don't spike the queue on a
+      # cold dashboard load. The current request still falls back to the
+      # raw-table path; the cache is warm on the next visit.
+      Articles::BackfillActivitiesWorker.perform_async(missing)
       @scoped_activities = nil
       return nil
     end
