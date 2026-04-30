@@ -36,5 +36,14 @@ RSpec.describe Users::SuspendedUsername do
         described_class.create_from_user(create(:user, :suspended))
       end.to change(described_class, :count).by(1)
     end
+
+    it "does not raise an error if the user was already in the database" do
+      user = create(:user, :suspended)
+      described_class.create_from_user(user)
+
+      expect do
+        described_class.create_from_user(user)
+      end.not_to raise_error
+    end
   end
 end

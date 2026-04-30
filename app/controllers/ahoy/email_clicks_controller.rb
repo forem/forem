@@ -14,7 +14,10 @@ module Ahoy
       track_billboard if params[:bb].present?
       record_feed_event if @url.present?
       
-      EmailMessage.find_by(token: @token)&.user&.update_presence!
+      if (user = EmailMessage.find_by(token: @token)&.user)
+        user.update_presence!
+        Users::RecordFieldTestEventWorker.perform_async(user.id, AbExperiment::GoalConversionHandler::USER_CLICKS_EMAIL_LINK_GOAL)
+      end
 
       head :ok # Renders a blank response with a 200 OK status
     end

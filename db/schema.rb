@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_04_09_173612) do
+ActiveRecord::Schema[7.0].define(version: 2026_04_29_135753) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -125,6 +125,9 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_09_173612) do
   end
 
   create_table "articles", force: :cascade do |t|
+    t.text "ai_summary"
+    t.datetime "ai_summary_generated_at"
+    t.string "ai_summary_prompt_version"
     t.boolean "any_comments_hidden", default: false
     t.boolean "approved", default: false
     t.boolean "archived", default: false
@@ -670,6 +673,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_09_173612) do
 
   create_table "events", force: :cascade do |t|
     t.integer "broadcast_config", default: 0
+    t.datetime "broadcast_ended_at"
     t.string "cached_tag_list"
     t.datetime "created_at", null: false
     t.jsonb "data", default: {}
@@ -677,6 +681,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_09_173612) do
     t.datetime "end_time", null: false
     t.string "event_name_slug", null: false
     t.string "event_variation_slug", null: false
+    t.boolean "manual_broadcast_end", default: false, null: false
     t.bigint "organization_id"
     t.string "primary_stream_url"
     t.boolean "published", default: false
@@ -705,6 +710,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_09_173612) do
     t.bigint "feed_impressions_count", default: 0
     t.float "feed_success_score", default: 0.0
     t.float "feed_success_weight", default: 1.0
+    t.float "follow_status_weight", default: 0.0, null: false
     t.float "general_past_day_bonus_weight", default: 0.0, null: false
     t.float "label_match_weight", default: 1.0
     t.float "language_match_weight", default: 1.0, null: false
@@ -955,6 +961,16 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_09_173612) do
     t.index ["user_id"], name: "index_lead_submissions_on_user_id"
   end
 
+  create_table "linked_domains", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "host", null: false
+    t.integer "manual_setting", default: 0, null: false
+    t.integer "net_score", default: 0, null: false
+    t.datetime "score_updated_at"
+    t.datetime "updated_at", null: false
+    t.index ["host"], name: "index_linked_domains_on_host", unique: true
+  end
+
   create_table "liquid_embed_references", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "options"
@@ -1105,6 +1121,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_09_173612) do
     t.string "cta_button_url"
     t.text "cta_processed_html"
     t.boolean "currently_paused_promotional_billboards", default: false, null: false
+    t.string "custom_domain"
     t.string "email"
     t.boolean "fully_trusted", default: false, null: false
     t.string "github_username"
@@ -1139,6 +1156,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_09_173612) do
     t.boolean "verified", default: false, null: false
     t.datetime "verified_at"
     t.index ["currently_paused_promotional_billboards"], name: "idx_orgs_on_currently_paused_promo_billboards"
+    t.index ["custom_domain"], name: "index_organizations_on_custom_domain", unique: true, where: "((custom_domain IS NOT NULL) AND ((custom_domain)::text <> ''::text))"
     t.index ["ideal_daily_promoted_billboard_impressions"], name: "idx_orgs_on_ideal_daily_promoted_bb_impressions"
     t.index ["secret"], name: "index_organizations_on_secret", unique: true
     t.index ["slug"], name: "index_organizations_on_slug", unique: true
@@ -1165,13 +1183,17 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_09_173612) do
     t.string "domain"
     t.string "path"
     t.string "referrer"
+    t.string "region"
     t.integer "time_tracked_in_seconds", default: 15
     t.datetime "updated_at", precision: nil, null: false
     t.string "user_agent"
     t.bigint "user_id"
+    t.bigint "viewable_id"
+    t.string "viewable_type"
     t.index ["article_id"], name: "index_page_views_on_article_id"
     t.index ["created_at"], name: "index_page_views_on_created_at"
     t.index ["user_id"], name: "index_page_views_on_user_id"
+    t.index ["viewable_type", "viewable_id"], name: "index_page_views_on_viewable_type_and_viewable_id"
   end
 
   create_table "pages", force: :cascade do |t|
@@ -2009,6 +2031,18 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_09_173612) do
   create_table "users_suspended_usernames", primary_key: "username_hash", id: :string, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "webpage_references", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "linked_domain_id", null: false
+    t.bigint "record_id", null: false
+    t.string "record_type", null: false
+    t.datetime "updated_at", null: false
+    t.string "url", null: false
+    t.index ["linked_domain_id", "record_type", "record_id"], name: "idx_webpage_refs_on_domain_and_record"
+    t.index ["linked_domain_id"], name: "index_webpage_references_on_linked_domain_id"
+    t.index ["record_type", "record_id"], name: "index_webpage_references_on_record"
   end
 
   create_table "welcome_notifications", force: :cascade do |t|

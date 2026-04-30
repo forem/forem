@@ -86,5 +86,32 @@ RSpec.describe "Admin::Events", type: :request do
         expect(response.body).to include("prohibited this event from being saved")
       end
     end
+
+    context "with manual_broadcast_end config" do
+      let(:attributes_with_manual) { valid_attributes.merge(manual_broadcast_end: true) }
+      it "permits and sets the manual_broadcast_end flag" do
+        post admin_events_path, params: { event: attributes_with_manual }
+        expect(Event.last.manual_broadcast_end).to eq(true)
+      end
+    end
+  end
+
+  describe "PATCH /admin/content_manager/events/:id/end_broadcast" do
+    let(:event) { create(:event, manual_broadcast_end: true, broadcast_ended_at: nil) }
+
+    context "when logged in as an admin" do
+      before { login_as(super_admin) }
+
+      it "updates broadcast_ended_at and enqueues the worker" do
+        allow(Events::ManageBroadcastBillboardsWorker).to receive(:perform_async)
+        
+        patch end_broadcast_admin_event_path(event)
+        
+        expect(response).to redirect_to(admin_event_path(event))
+        expect(flash[:notice]).to include("Broadcast manually ended")
+        expect(event.reload.broadcast_ended_at).to be_within(1.second).of(Time.current)
+        expect(Events::ManageBroadcastBillboardsWorker).to have_received(:perform_async)
+      end
+    end
   end
 end

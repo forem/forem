@@ -73,6 +73,16 @@ module Ai
       # Gather article context
       article_context = build_article_context
 
+      quickie_context = if @article.status?
+                          <<~QUICKIE
+
+                            **Important Context:**
+                            Note: This article is a "status" post (a quick update or thought). These are shorter, more casual posts that we encourage for community engagement. Please err on the side of higher quality labels and higher compellingness scores, provided it is not clear spam or completely low quality.
+                          QUICKIE
+                        else
+                          ""
+                        end
+
       <<~PROMPT
         Analyze the following article and assign it a content moderation label based on quality, relevance, and community standards.
 
@@ -83,7 +93,7 @@ module Ai
         #{user_context}
 
         **Article Content:**
-        #{article_context}
+        #{article_context}#{quickie_context}
 
         **Assessment Criteria:**
 

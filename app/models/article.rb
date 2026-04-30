@@ -7,6 +7,7 @@ class Article < ApplicationRecord
   include UserSubscriptionSourceable
   include PgSearch::Model
   include AlgoliaSearchable
+  include WebpageTrackable
 
   acts_as_taggable_on :tags
   resourcify
@@ -321,6 +322,8 @@ class Article < ApplicationRecord
                on: %i[create update]
 
   after_update_commit :update_dependent_embeds_if_key_info_changed
+
+  after_update_commit :regenerate_summary_if_content_changed
 
   # The trigger `update_reading_list_document` is used to keep the `articles.reading_list_document` column updated.
   #
@@ -952,7 +955,9 @@ class Article < ApplicationRecord
 
     organization_baseline_score = organization&.baseline_score || 0
 
-    self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment + user_featured_count_adjustment + user_negative_count_adjustment + context_note_adjustment + automod_label_adjustment + badge_reputation_bonus + organization_baseline_score
+    established_user_adjustment = (user.score.to_i > 100 && !clear_and_obvious_spam? && !likely_spam?) ? Settings::UserExperience.index_minimum_score.to_i : 0
+
+    self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment + user_featured_count_adjustment + user_negative_count_adjustment + context_note_adjustment + automod_label_adjustment + badge_reputation_bonus + organization_baseline_score + established_user_adjustment
     accepted_max = [max_score, user&.max_score.to_i].min
     accepted_max = [max_score, user&.max_score.to_i].max if accepted_max.zero?
     self.score = accepted_max if accepted_max.positive? && accepted_max < score
@@ -966,12 +971,16 @@ class Article < ApplicationRecord
                       calculated_comment_score
                     end
 
+    score_changed_flag = score_changed? || self.comment_score != comment_score
+
     update_columns(score: score,
                    privileged_users_reaction_points_sum: reactions.privileged_category.sum(:points),
                    comment_score: comment_score,
                    hotness_score: BlackBox.article_hotness_score(self))
 
+    trigger_linked_domain_score_updates if score_changed_flag
     trigger_freeform_context_note_generation
+    trigger_summary_generation
   end
 
   def trigger_freeform_context_note_generation
@@ -981,6 +990,36 @@ class Article < ApplicationRecord
     return if context_notes.exists?
     
     Articles::GenerateFreeformContextNoteWorker.perform_async(id)
+  end
+
+  def trigger_summary_generation
+    return unless Ai::Base::DEFAULT_KEY.present?
+    return if score < 50 || comment_score < 25
+    return if ai_summary.present?
+
+    Articles::GenerateSummaryWorker.perform_async(id)
+  end
+
+  def trigger_linked_domain_score_updates
+    domain_ids = webpage_references.select(:linked_domain_id).distinct.pluck(:linked_domain_id)
+    return if domain_ids.empty?
+
+    domain_ids.each do |domain_id|
+      LinkedDomains::UpdateScoreWorker.perform_async(domain_id)
+    end
+  end
+
+  # This is specifically for regenerating an existing summary when body or title
+  # change. First-time generation is still done by trigger_summary_generation
+  # when eligible after score computation.
+  def regenerate_summary_if_content_changed
+    return unless Ai::Base::DEFAULT_KEY.present?
+    return unless published?
+    return unless saved_change_to_body_markdown? || saved_change_to_title?
+    return if score < 50 || comment_score < 25
+    return if ai_summary.blank?
+
+    Articles::GenerateSummaryWorker.perform_async(id)
   end
 
   def co_author_ids_list
@@ -1038,6 +1077,8 @@ class Article < ApplicationRecord
 
     result = content_renderer.process_article
     update_column(:processed_html, result.processed_html)
+  rescue ContentRenderer::ContentParsingError => e
+    Rails.logger.warn("Article #{id} evaluate_and_update_column_from_markdown failed: #{e.class}: #{ErrorMessages::Clean.call(e.message)}")
   end
 
   def labels=(input)

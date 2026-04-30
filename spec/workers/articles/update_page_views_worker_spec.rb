@@ -89,4 +89,22 @@ RSpec.describe Articles::UpdatePageViewsWorker, type: :worker do
       end
     end
   end
+
+  context "when no article id is provided (global page view)" do
+    let(:user) { create(:user) }
+    let(:region) { "US-CA" }
+
+    it "creates a page view with viewable and region" do
+      expect do
+        worker.perform("viewable_type" => "User",
+                       "viewable_id" => user.id,
+                       "region" => region)
+      end.to change(PageView, :count).by(1)
+
+      page_view = PageView.last
+      expect(page_view.viewable).to eq(user)
+      expect(page_view.region).to eq(region)
+      expect(page_view.article_id).to be_nil
+    end
+  end
 end
