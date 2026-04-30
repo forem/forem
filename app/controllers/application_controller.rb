@@ -251,6 +251,9 @@ class ApplicationController < ActionController::Base
       signin_param = { "signin" => "true" } # the "signin" param is used by the service worker
 
       uri = Addressable::URI.parse(path)
+      uri.scheme = nil
+      uri.host = nil
+      uri.port = nil
       uri.query_values = if uri.query_values
                            # Ignore i=i (internal navigation) param
                            uri.query_values.except("i").merge(signin_param)
