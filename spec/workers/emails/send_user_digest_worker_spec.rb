@@ -102,6 +102,19 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
         expect(Honeybadger).to have_received(:notify).with(instance_of(StandardError))
       end
 
+      it "rescues Net::SMTPSyntaxError and logs a warning without notifying Honeybadger" do
+        create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
+
+        allow(message_delivery).to receive(:deliver_now).and_raise(Net::SMTPSyntaxError.new("501 Recipient syntax error"))
+        allow(Rails.logger).to receive(:warn)
+        allow(Honeybadger).to receive(:notify)
+
+        worker.perform(user.id)
+
+        expect(Rails.logger).to have_received(:warn).with(/SMTP syntax\/fatal error/)
+        expect(Honeybadger).not_to have_received(:notify)
+      end
+
       it "does not open a transaction when no billboards are present" do
         create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
 
