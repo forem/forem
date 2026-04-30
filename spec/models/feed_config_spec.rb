@@ -131,6 +131,7 @@ RSpec.describe FeedConfig, type: :model do
         feed_config.lookback_window_weight        = 9.0
         feed_config.precomputed_selections_weight = 10.0
         feed_config.subforem_follow_weight        = 11.0
+        feed_config.follow_status_weight          = 12.0
 
         subforem = create(:subforem)
         root_subforem = create(:subforem)
@@ -154,6 +155,7 @@ RSpec.describe FeedConfig, type: :model do
         expect(sql).to include("EXTRACT(epoch FROM (NOW() - articles.last_comment_at))")
         expect(sql).to include("CASE WHEN articles.published_at BETWEEN")
         expect(sql).to include("CASE WHEN articles.subforem_id IN (30,40) THEN 11.0") # Added expectation
+        expect(sql).to include("CASE WHEN articles.type_of = 1 AND articles.user_id IN (10,20) THEN 12.0")
       end
     end
 
@@ -171,6 +173,7 @@ RSpec.describe FeedConfig, type: :model do
         feed_config.lookback_window_weight        = 9.0
         feed_config.precomputed_selections_weight = 0.0
         feed_config.subforem_follow_weight        = 0.0 # Added new weight
+        feed_config.follow_status_weight          = 0.0
       end
 
       it "skips SQL terms for weights that are zero including labels and subforems" do
@@ -187,6 +190,7 @@ RSpec.describe FeedConfig, type: :model do
         expect(sql).to include("CASE WHEN articles.published_at BETWEEN")
         expect(sql).not_to include("articles.id IN (")
         expect(sql).not_to include("subforem_id IN") # Added expectation
+        expect(sql).not_to include("articles.type_of = 1 AND articles.user_id IN")
       end
     end
 
@@ -373,6 +377,7 @@ RSpec.describe FeedConfig, type: :model do
       feed_config.recently_active_past_day_bonus_weight = 20.0
       feed_config.subforem_follow_weight        = 21.0 # Added new weight
       feed_config.recent_page_views_shuffle_weight = 22.0
+      feed_config.follow_status_weight          = 23.0
       feed_config.recent_tag_count_min           = 2
       feed_config.recent_tag_count_max           = 5
       feed_config.all_time_tag_count_min         = 3
@@ -412,6 +417,7 @@ RSpec.describe FeedConfig, type: :model do
       expect(clone.recently_active_past_day_bonus_weight).to eq(20.0 * 1.1)
       expect(clone.subforem_follow_weight).to eq(21.0 * 1.1) # Added expectation
       expect(clone.recent_page_views_shuffle_weight).to eq(22.0 * 1.1)
+      expect(clone.follow_status_weight).to eq(23.0 * 1.1)
     end
 
     it "does not modify the original feed_config" do
@@ -439,6 +445,7 @@ RSpec.describe FeedConfig, type: :model do
         "language_match_weight",
         "subforem_follow_weight", # Added new weight to check
         "recent_page_views_shuffle_weight",
+        "follow_status_weight",
         "recent_tag_count_min",
         "recent_tag_count_max",
         "all_time_tag_count_min",

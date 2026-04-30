@@ -28,6 +28,7 @@ class Organization < ApplicationRecord
   acts_as_followable
 
   before_validation :downcase_slug
+  before_validation :normalize_custom_domain
   before_validation :check_for_slug_change
   before_validation :evaluate_markdown
 
@@ -81,10 +82,12 @@ class Organization < ApplicationRecord
   validates :twitter_username, length: { maximum: 15 }
   validates :unspent_credits_count, presence: true
   validates :url, length: { maximum: 200 }, url: { allow_blank: true, no_local: true }
+  validates :custom_domain, uniqueness: { allow_blank: true }, format: { with: /\A[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,}\z/ix, allow_blank: true }
   validates :verification_url, length: { maximum: 200 }, url: { allow_blank: true, no_local: true }
   validates :baseline_score, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validate :validate_social_links
   validate :validate_header_cta
+  validate :custom_domain_must_not_be_app_domain
 
   unique_across_models :slug, length: { in: 2..30 }
 
@@ -333,6 +336,19 @@ class Organization < ApplicationRecord
 
   def downcase_slug
     self.slug = slug&.downcase
+  end
+
+  def normalize_custom_domain
+    self.custom_domain = custom_domain.to_s.strip.presence&.downcase
+  end
+
+  def custom_domain_must_not_be_app_domain
+    return if custom_domain.blank?
+    
+    app_domain = Settings::General.app_domain
+    if custom_domain == app_domain || custom_domain.ends_with?(".#{app_domain}")
+      errors.add(:custom_domain, "cannot be the main application domain or a subdomain of it")
+    end
   end
 
   def conditionally_update_articles

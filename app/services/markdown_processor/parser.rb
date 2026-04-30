@@ -36,8 +36,10 @@ module MarkdownProcessor
       
       # Workaround for Redcarpet dropping link text at nesting levels >= 5 (16+ spaces)
       content_with_fixed_links = convert_deeply_nested_links_to_html(@content)
-      
-      code_tag_content = convert_code_tags_to_triple_backticks(content_with_fixed_links)
+      # Workaround for Redcarpet not honouring \| as an escaped pipe inside tables (issue #18111)
+      content_with_fixed_pipes = convert_escaped_pipes_outside_codeblocks(content_with_fixed_links)
+
+      code_tag_content = convert_code_tags_to_triple_backticks(content_with_fixed_pipes)
       escaped_content = escape_liquid_tags_in_codeblock(code_tag_content)
       html = markdown.render(escaped_content)
       sanitized_content = ActionController::Base.helpers.sanitize html, { scrubber: RenderedMarkdownScrubber.new }
@@ -69,6 +71,52 @@ module MarkdownProcessor
           "<a href=\"#{$2}\">#{$1}</a>"
         end
       end
+    end
+
+    # Note: This preserves fenced code blocks opened with either ``` or ~~~, but
+    # not 4-space-indented code blocks — same constraint as
+    # `Fixer::Base#underscores_in_usernames`.
+    def fenced_code_block_opening_marker(line)
+      line[/^\s*((`{3,}|~{3,}))/i, 1]
+    end
+
+    def fenced_code_block_closing_marker?(line, opening_marker)
+      return false unless opening_marker
+
+      fence_char = opening_marker[0]
+      minimum_length = opening_marker.length
+      line.match?(/^\s*#{Regexp.escape(fence_char)}{#{minimum_length},}\s*$/)
+    end
+
+    # Replaces escaped pipes (`\|`) with the `&#124;` HTML entity outside of code so
+    # that Redcarpet renders them as literal `|` inside tables instead of breaking
+    # the cell. Inline code spans and fenced code blocks are preserved verbatim.
+    # A negative lookbehind protects `\\|` (escaped backslash followed by a table
+    # separator) from being consumed.
+    def convert_escaped_pipes_outside_codeblocks(content)
+      return content unless content.include?('\|')
+
+      placeholder = "\x00FOREM_ESC_PIPE\x00"
+      current_fence_marker = nil
+
+      content.each_line.map do |line|
+        if current_fence_marker
+          current_fence_marker = nil if fenced_code_block_closing_marker?(line, current_fence_marker)
+          next line
+        end
+
+        opening_marker = fenced_code_block_opening_marker(line)
+        if opening_marker
+          current_fence_marker = opening_marker
+          next line
+        end
+
+        line.gsub!(/(`+)([^`\n]*?(?:`(?!\1)[^`\n]*?)*)\1/) { |span| span.gsub('\|') { placeholder } }
+        line.gsub!(/(?<!\\)\\\|/, "&#124;")
+        line.gsub!(placeholder) { '\|' }
+        
+        line
+      end.join
     end
 
     def add_target_blank_to_outbound_links(html)

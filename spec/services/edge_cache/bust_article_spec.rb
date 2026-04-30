@@ -27,11 +27,32 @@ RSpec.describe EdgeCache::BustArticle, type: :service do
   end
 
   it "busts the cache" do
+    allow(described_class).to receive(:bust_user_profile_pages)
     described_class.call(article)
     expect(article).to have_received(:purge).once
     allow(article.user).to receive(:purge)
     expect(described_class).to have_received(:bust_home_pages).with(cache_bust, article).once
     expect(described_class).to have_received(:bust_tag_pages).with(cache_bust, article).once
+    expect(described_class).to have_received(:bust_user_profile_pages).with(article).once
+  end
+
+  it "busts user profile pages" do
+    allow(EdgeCache::PurgeByKey).to receive(:call)
+
+    described_class.call(article)
+
+    expect(EdgeCache::PurgeByKey).to have_received(:call).with(
+      article.user.profile_cache_keys,
+      fallback_paths: article.user.profile_cache_bust_paths
+    ).once
+  end
+
+  it "does not raise when article has no user" do
+    article_without_user = create(:article)
+    article_without_user.user = nil
+    allow(EdgeCache::PurgeByKey).to receive(:call)
+
+    expect { described_class.call(article_without_user) }.not_to raise_error
   end
 
   context "when an article is part of an organization" do

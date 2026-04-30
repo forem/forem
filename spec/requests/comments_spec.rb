@@ -79,8 +79,8 @@ RSpec.describe "Comments" do
         stub_const("CommentsHelper::MAX_DESCENDANT_COMMENTS_UNAUTHENTICATED", 1)
 
         # Add 2 descendants to top_level_1 which is guaranteed to be first
-        create(:comment, parent: top_level_1, commentable: article, user: user, body_markdown: "Sub one")
-        create(:comment, parent: top_level_1, commentable: article, user: user, body_markdown: "Sub two")
+        create(:comment, parent: top_level_1, commentable: article, user: user, body_markdown: "Sub one", score: 10)
+        create(:comment, parent: top_level_1, commentable: article, user: user, body_markdown: "Sub two", score: 5)
       end
 
       it "truncates descendants and root threads for logged-out visitors and displays a notice" do

@@ -8,7 +8,7 @@
   <% else %>
     <div class="pt-3">
       <% @notes.each do |note| %>
-        <% author = User.find_by(id: note.author_id)&.username %>
+        <% author = note.author&.username %>
         <article class="c-list-item flex justify-between gap-4">
           <h3 class="screen-reader-only"><%= t("views.admin.users.notes.note_by", author: author || t("views.admin.users.notes.unknown_user"), time: l(note.created_at, format: :short_with_yy)) %></h3>
           <div>
