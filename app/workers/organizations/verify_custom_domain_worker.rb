@@ -15,8 +15,11 @@ module Organizations
       subscription_data = FastlyTls::Client.get_subscription(organization.tls_subscription_id)
       
       if subscription_data.nil?
-        # Subscription was deleted on Fastly
-        organization.update_columns(tls_status: Organization.tls_statuses[:failed])
+        # Subscription was deleted on Fastly, so clear the stale upstream reference
+        organization.update_columns(
+          tls_status: Organization.tls_statuses[:failed],
+          tls_subscription_id: nil
+        )
         return
       end
 

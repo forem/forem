@@ -25,10 +25,12 @@ RSpec.describe Organizations::VerifyCustomDomainWorker, type: :worker do
     expect(organization.reload.tls_status).to eq("pending")
   end
 
-  it "marks as failed if deleted upstream (404 error returned as nil)" do
+  it "marks as failed and clears subscription_id if deleted upstream (404 error returned as nil)" do
     allow(FastlyTls::Client).to receive(:get_subscription).and_return(nil)
     
     described_class.new.perform(organization.id)
-    expect(organization.reload.tls_status).to eq("failed")
+    organization.reload
+    expect(organization.tls_status).to eq("failed")
+    expect(organization.tls_subscription_id).to be_nil
   end
 end
