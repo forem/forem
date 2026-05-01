@@ -50,7 +50,7 @@ module Images
         end
       end
     rescue OpenURI::HTTPError, Timeout::Error, Net::OpenTimeout, Net::ReadTimeout => e
-      # Silently ignore fetching timeouts for external assets (like author avatars)
+      # Ignore external asset fetch failures (including HTTP and timeout errors), but log a warning.
       Rails.logger.warn("[GenerateSocialImageMagickally] Image fetch failed: #{e.message}")
     rescue MiniMagick::Error => e
       # Status 15 is SIGTERM (often from Sidekiq memory killers). No need to alert Honeybadger.
