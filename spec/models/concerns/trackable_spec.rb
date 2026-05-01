@@ -123,5 +123,27 @@ RSpec.describe Trackable do
 
       expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
     end
+
+    it "does not enqueue model_updated when only touch-only keys changed" do
+      record = trackable_class.create!(name: "alpha", user_id: 7)
+      allow(Trackable::DispatchWorker).to receive(:perform_async)
+
+      record.touch  # rubocop:disable Rails/SkipsModelValidations
+
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async).with(
+        anything, "trackable_test_record_updated", anything, anything, anything,
+      )
+    end
+
+    it "still enqueues model_updated when a non-touch-only key also changed" do
+      record = trackable_class.create!(name: "alpha", user_id: 7)
+      allow(Trackable::DispatchWorker).to receive(:perform_async)
+
+      record.update!(name: "beta")
+
+      expect(Trackable::DispatchWorker).to have_received(:perform_async).with(
+        anything, "trackable_test_record_updated", anything, anything, anything,
+      )
+    end
   end
 end

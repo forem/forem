@@ -28,6 +28,8 @@ module Trackable
   end
 
   def enqueue_trackable_event_updated
+    return if touch_only_change?
+
     enqueue_trackable_event("#{model_name.param_key}_updated")
   end
 
@@ -58,5 +60,9 @@ module Trackable
 
   def clear_trackable_user_id_snapshot
     @_trackable_destroyed_user_ids = nil
+  end
+
+  def touch_only_change?
+    (previous_changes.keys - Trackable::TOUCH_ONLY_KEYS).empty?
   end
 end
