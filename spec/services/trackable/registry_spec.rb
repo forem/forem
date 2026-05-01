@@ -13,7 +13,7 @@ RSpec.describe Trackable::Registry do
   let(:disabled_adapter_class) do
     Class.new(Trackers::Base) do
       def track(event_name:, user_ids:, properties:, timestamp: nil); end
-      def enabled?; false; end
+      def enabled? = false
     end
   end
 
@@ -64,7 +64,8 @@ RSpec.describe Trackable::Registry do
       allow(ApplicationConfig).to receive(:[]).and_call_original
       allow(ApplicationConfig).to receive(:[]).with("TRACKABLE_ADAPTERS").and_return("dummy")
 
-      expect(described_class.active.first).to be(described_class.active.first)
+      first_call = described_class.active.first
+      expect(described_class.active.first).to be(first_call)
     end
 
     it "returns empty array when TRACKABLE_ADAPTERS is unset" do
@@ -74,14 +75,11 @@ RSpec.describe Trackable::Registry do
       expect(described_class.active).to eq([])
     end
 
-    it ".active_with_names returns [name, instance] pairs" do
+    it ".active_names returns the symbols of enabled, registered adapters" do
       allow(ApplicationConfig).to receive(:[]).and_call_original
-      allow(ApplicationConfig).to receive(:[]).with("TRACKABLE_ADAPTERS").and_return("dummy")
+      allow(ApplicationConfig).to receive(:[]).with("TRACKABLE_ADAPTERS").and_return("dummy,disabled,nope")
 
-      result = described_class.active_with_names
-      expect(result.size).to eq(1)
-      expect(result.first[0]).to eq(:dummy)
-      expect(result.first[1]).to be_a(dummy_adapter_class)
+      expect(described_class.active_names).to eq([:dummy])
     end
   end
 

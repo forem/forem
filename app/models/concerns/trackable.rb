@@ -89,9 +89,9 @@ module Trackable
     properties = trackable_payload.merge(properties_override)
     timestamp  = Time.current.iso8601
 
-    Trackable::Registry.active_with_names.each do |adapter_name, _adapter|
+    Trackable::Registry.active_names.each do |adapter_name|
       Trackable::DispatchWorker.perform_async(
-        adapter_name.to_s, event_name, user_ids, properties, timestamp,
+        adapter_name.to_s, event_name, user_ids, properties, timestamp
       )
     end
   end

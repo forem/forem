@@ -1,5 +1,8 @@
 require "rails_helper"
 
+# rubocop:disable RSpec/DescribeClass
+# The unit under test is the side effect of loading config/initializers/trackable.rb,
+# not a single class — string description is appropriate here.
 RSpec.describe "config/initializers/trackable.rb" do
   before do
     Trackable::Registry.register(:null, Trackers::Null)
@@ -14,3 +17,4 @@ RSpec.describe "config/initializers/trackable.rb" do
     expect(Trackable::Registry.lookup(:customerio_cdp)).to eq(Trackers::CustomerioCdp)
   end
 end
+# rubocop:enable RSpec/DescribeClass

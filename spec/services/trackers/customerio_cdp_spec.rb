@@ -27,7 +27,9 @@ RSpec.describe Trackers::CustomerioCdp do
   end
 
   describe "#track" do
-    let(:client) { double(track: nil) }
+    # Segment::Analytics implements #track via method_missing, so instance_double's
+    # signature verification fails on it. Plain double is the correct fallback here.
+    let(:client) { double(track: nil) } # rubocop:disable RSpec/VerifiedDoubles
 
     before do
       allow(ApplicationConfig).to receive(:[]).and_call_original

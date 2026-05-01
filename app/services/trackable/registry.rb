@@ -17,19 +17,17 @@ module Trackable
 
       def instance_for(name)
         klass = lookup(name)
-        return nil unless klass
+        return unless klass
 
         instances[name.to_sym] ||= klass.new
       end
 
       def active
-        active_with_names.map { |_name, instance| instance }
+        active_names.map { |name| instance_for(name) }
       end
 
-      def active_with_names
-        configured_adapter_names
-          .filter_map { |name| instance = instance_for(name); [name, instance] if instance }
-          .select { |_name, instance| instance.enabled? }
+      def active_names
+        configured_adapter_names.select { |name| instance_for(name)&.enabled? }
       end
 
       def reset!
@@ -48,7 +46,7 @@ module Trackable
       end
 
       def configured_adapter_names
-        ApplicationConfig["TRACKABLE_ADAPTERS"].to_s.split(",").map { |n| n.strip.to_sym }.reject { |n| n.empty? }
+        ApplicationConfig["TRACKABLE_ADAPTERS"].to_s.split(",").map { |n| n.strip.to_sym }.reject(&:empty?)
       end
     end
   end

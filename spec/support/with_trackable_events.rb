@@ -1,7 +1,7 @@
 module WithTrackableEventsHelper
   # Forces Trackable callbacks to fire inside the block. Useful only in tests
   # since Trackable defaults to skipping in Rails.env.test?.
-  def with_trackable_events(&block)
+  def with_trackable_events
     previous = Thread.current[:trackable_events_enabled]
     Thread.current[:trackable_events_enabled] = true
     yield

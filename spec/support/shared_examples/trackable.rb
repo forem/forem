@@ -25,7 +25,7 @@ shared_examples_for "trackable" do
     end
 
     before do
-      allow(Trackable::Registry).to receive(:active_with_names).and_return([[:any, stub_adapter]])
+      allow(Trackable::Registry).to receive(:active_names).and_return([:any])
       allow(Trackable::DispatchWorker).to receive(:perform_async)
     end
 
@@ -33,18 +33,18 @@ shared_examples_for "trackable" do
 
     it "enqueues a model_updated event after a non-touch-only change" do
       subject.save! unless subject.persisted?
-      subject.touch  # baseline; should not enqueue # rubocop:disable Rails/SkipsModelValidations
+      subject.touch # baseline; should not enqueue
 
       # Trigger a real change. The shared example caller is responsible for the
       # subject having at least one writable, non-touch attribute.
       changeable_attr = (subject.class.attribute_names - Trackable::TOUCH_ONLY_KEYS - %w[id created_at]).first
       raise "subject has no changeable attribute for trackable shared example" unless changeable_attr
 
-      subject.update!(changeable_attr => subject[changeable_attr].to_s + "_x")
+      subject.update!(changeable_attr => "#{subject[changeable_attr]}_x")
 
       param_key = subject.class.model_name.param_key
       expect(Trackable::DispatchWorker).to have_received(:perform_async).with(
-        anything, "#{param_key}_updated", anything, anything, anything,
+        anything, "#{param_key}_updated", anything, anything, anything
       )
     end
   end

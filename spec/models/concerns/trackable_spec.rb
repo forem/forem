@@ -1,8 +1,9 @@
 require "rails_helper"
 
 RSpec.describe Trackable do
-  # We define a temporary AR-backed table so we can include the concern
-  # without coupling the spec to any production model.
+  # Temp table for the entire describe block — recreating per example would be
+  # wasteful for a concern that doesn't mutate schema.
+  # rubocop:disable RSpec/BeforeAfterAll
   before(:all) do
     ActiveRecord::Migration.suppress_messages do
       ActiveRecord::Schema.define do
@@ -21,6 +22,7 @@ RSpec.describe Trackable do
       ActiveRecord::Base.connection.drop_table :trackable_test_records
     end
   end
+  # rubocop:enable RSpec/BeforeAfterAll
 
   let(:trackable_class) do
     Class.new(ApplicationRecord) do
@@ -42,7 +44,7 @@ RSpec.describe Trackable do
       anon_class = Class.new(ApplicationRecord) do
         self.table_name = "trackable_test_records"
         include Trackable
-        def self.name; "Anon"; end
+        def self.name = "Anon"
       end
 
       record = anon_class.new
@@ -61,8 +63,8 @@ RSpec.describe Trackable do
 
     it "is overridable per model" do
       overridden = Class.new(trackable_class) do
-        def self.name; "Overridden"; end
-        def trackable_payload; { only: name }; end
+        def self.name = "Overridden"
+        def trackable_payload = { only: name }
       end
 
       expect(overridden.new(name: "n").trackable_payload).to eq(only: "n")
@@ -73,7 +75,7 @@ RSpec.describe Trackable do
     before do
       stub_adapter = instance_double(Trackers::Base, enabled?: true)
       allow(stub_adapter).to receive(:track)
-      allow(Trackable::Registry).to receive(:active_with_names).and_return([[:any, stub_adapter]])
+      allow(Trackable::Registry).to receive(:active_names).and_return([:any])
       allow(Trackable::DispatchWorker).to receive(:perform_async)
     end
 
@@ -132,10 +134,10 @@ RSpec.describe Trackable do
       record = trackable_class.create!(name: "alpha", user_id: 7)
       allow(Trackable::DispatchWorker).to receive(:perform_async)
 
-      record.touch  # rubocop:disable Rails/SkipsModelValidations
+      record.touch
 
       expect(Trackable::DispatchWorker).not_to have_received(:perform_async).with(
-        anything, "trackable_test_record_updated", anything, anything, anything,
+        anything, "trackable_test_record_updated", anything, anything, anything
       )
     end
 
@@ -146,7 +148,7 @@ RSpec.describe Trackable do
       record.update!(name: "beta")
 
       expect(Trackable::DispatchWorker).to have_received(:perform_async).with(
-        anything, "trackable_test_record_updated", anything, anything, anything,
+        anything, "trackable_test_record_updated", anything, anything, anything
       )
     end
   end
@@ -155,7 +157,7 @@ RSpec.describe Trackable do
     before do
       stub_adapter = instance_double(Trackers::Base, enabled?: true)
       allow(stub_adapter).to receive(:track)
-      allow(Trackable::Registry).to receive(:active_with_names).and_return([[:any, stub_adapter]])
+      allow(Trackable::Registry).to receive(:active_names).and_return([:any])
       allow(Trackable::DispatchWorker).to receive(:perform_async)
     end
 
@@ -194,7 +196,7 @@ RSpec.describe Trackable do
     let(:stub_adapter) { instance_double(Trackers::Base, enabled?: true).tap { |a| allow(a).to receive(:track) } }
 
     before do
-      allow(Trackable::Registry).to receive(:active_with_names).and_return([[:any, stub_adapter]])
+      allow(Trackable::Registry).to receive(:active_names).and_return([:any])
       allow(Trackable::DispatchWorker).to receive(:perform_async)
     end
 
@@ -210,20 +212,20 @@ RSpec.describe Trackable do
 
         expect(result).to be true
         expect(Trackable::DispatchWorker).to have_received(:perform_async).with(
-          "any", "custom_event", [7], hash_including("name" => "beta"), kind_of(String),
+          "any", "custom_event", [7], hash_including("name" => "beta"), kind_of(String)
         )
       end
 
       it "returns false and does not fire when only touch-only keys changed" do
         record = trackable_class.create!(name: "alpha", user_id: 7)
-        record.touch  # rubocop:disable Rails/SkipsModelValidations
+        record.touch
         allow(Trackable::DispatchWorker).to receive(:perform_async)
 
         result = record.track("custom_event")
 
         expect(result).to be false
         expect(Trackable::DispatchWorker).not_to have_received(:perform_async).with(
-          anything, "custom_event", anything, anything, anything,
+          anything, "custom_event", anything, anything, anything
         )
       end
     end
@@ -236,7 +238,7 @@ RSpec.describe Trackable do
         record.track!("custom_event")
 
         expect(Trackable::DispatchWorker).to have_received(:perform_async).with(
-          "any", "custom_event", [7], kind_of(Hash), kind_of(String),
+          "any", "custom_event", [7], kind_of(Hash), kind_of(String)
         )
       end
 
@@ -247,7 +249,7 @@ RSpec.describe Trackable do
         record.track!("custom_event", "extra" => "value")
 
         expect(Trackable::DispatchWorker).to have_received(:perform_async).with(
-          anything, anything, anything, hash_including("extra" => "value"), anything,
+          anything, anything, anything, hash_including("extra" => "value"), anything
         )
       end
     end
