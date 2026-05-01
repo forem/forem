@@ -73,6 +73,16 @@ RSpec.describe Trackable::Registry do
 
       expect(described_class.active).to eq([])
     end
+
+    it ".active_with_names returns [name, instance] pairs" do
+      allow(ApplicationConfig).to receive(:[]).and_call_original
+      allow(ApplicationConfig).to receive(:[]).with("TRACKABLE_ADAPTERS").and_return("dummy")
+
+      result = described_class.active_with_names
+      expect(result.size).to eq(1)
+      expect(result.first[0]).to eq(:dummy)
+      expect(result.first[1]).to be_a(dummy_adapter_class)
+    end
   end
 
   describe ".instance_for" do

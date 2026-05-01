@@ -23,9 +23,13 @@ module Trackable
       end
 
       def active
+        active_with_names.map { |_name, instance| instance }
+      end
+
+      def active_with_names
         configured_adapter_names
-          .filter_map { |name| instance_for(name) }
-          .select(&:enabled?)
+          .filter_map { |name| instance = instance_for(name); [name, instance] if instance }
+          .select { |_name, instance| instance.enabled? }
       end
 
       def reset!
