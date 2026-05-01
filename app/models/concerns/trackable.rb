@@ -5,12 +5,31 @@ module Trackable
   TOUCH_ONLY_KEYS       = %w[updated_at engaged_at].freeze
 
   included do
-    after_commit :enqueue_trackable_event_created,   on: :create
-    after_commit :enqueue_trackable_event_updated,   on: :update
-    after_commit :enqueue_trackable_event_destroyed, on: :destroy
+    attr_accessor :skip_trackable_events
 
-    before_destroy :snapshot_trackable_user_ids
+    after_commit :enqueue_trackable_event_created,   on: :create,  unless: :trackable_events_skipped?
+    after_commit :enqueue_trackable_event_updated,   on: :update,  unless: :trackable_events_skipped?
+    after_commit :enqueue_trackable_event_destroyed, on: :destroy, unless: :trackable_events_skipped?
+
+    before_destroy :snapshot_trackable_user_ids, unless: :trackable_events_skipped?
     after_rollback :clear_trackable_user_id_snapshot, on: :destroy
+  end
+
+  class_methods do
+    # Block-scoped, class-level skip. All instances of this class skip events
+    # while the block runs. Useful for backfills and migrations.
+    def skip_trackable_events
+      key = "trackable_skip_class_#{name}"
+      previous = Thread.current[key]
+      Thread.current[key] = true
+      yield
+    ensure
+      Thread.current[key] = previous
+    end
+
+    def trackable_class_skipped?
+      Thread.current["trackable_skip_class_#{name}"] == true
+    end
   end
 
   def trackable_user_ids
@@ -22,6 +41,14 @@ module Trackable
   end
 
   private
+
+  def trackable_events_skipped?
+    return true if skip_trackable_events
+    return true if self.class.trackable_class_skipped?
+    return true if Rails.env.test? && !Thread.current[:trackable_events_enabled]
+
+    false
+  end
 
   def enqueue_trackable_event_created
     enqueue_trackable_event("#{model_name.param_key}_created")
@@ -54,15 +81,15 @@ module Trackable
     end
   end
 
+  def touch_only_change?
+    (previous_changes.keys - Trackable::TOUCH_ONLY_KEYS).empty?
+  end
+
   def snapshot_trackable_user_ids
     @_trackable_destroyed_user_ids = Array.wrap(trackable_user_ids).compact.uniq
   end
 
   def clear_trackable_user_id_snapshot
     @_trackable_destroyed_user_ids = nil
-  end
-
-  def touch_only_change?
-    (previous_changes.keys - Trackable::TOUCH_ONLY_KEYS).empty?
   end
 end

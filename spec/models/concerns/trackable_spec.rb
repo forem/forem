@@ -77,6 +77,10 @@ RSpec.describe Trackable do
       allow(Trackable::DispatchWorker).to receive(:perform_async)
     end
 
+    around do |example|
+      with_trackable_events { example.run }
+    end
+
     it "enqueues a model_created event after create" do
       trackable_class.create!(name: "alpha", user_id: 7)
 
@@ -144,6 +148,45 @@ RSpec.describe Trackable do
       expect(Trackable::DispatchWorker).to have_received(:perform_async).with(
         anything, "trackable_test_record_updated", anything, anything, anything,
       )
+    end
+  end
+
+  describe "skip toggle" do
+    before do
+      stub_adapter = instance_double(Trackers::Base, enabled?: true)
+      allow(stub_adapter).to receive(:track)
+      allow(Trackable::Registry).to receive(:active_with_names).and_return([[:any, stub_adapter]])
+      allow(Trackable::DispatchWorker).to receive(:perform_async)
+    end
+
+    it "skips events by default in Rails.env.test?" do
+      trackable_class.create!(name: "alpha", user_id: 7)
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+    end
+
+    it "fires events inside with_trackable_events" do
+      with_trackable_events do
+        trackable_class.create!(name: "alpha", user_id: 7)
+      end
+      expect(Trackable::DispatchWorker).to have_received(:perform_async)
+    end
+
+    it "skips events on instances with skip_trackable_events = true" do
+      with_trackable_events do
+        record = trackable_class.new(name: "alpha", user_id: 7)
+        record.skip_trackable_events = true
+        record.save!
+      end
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+    end
+
+    it "skips events inside the class-level skip_trackable_events block" do
+      with_trackable_events do
+        trackable_class.skip_trackable_events do
+          trackable_class.create!(name: "alpha", user_id: 7)
+        end
+      end
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
     end
   end
 end
