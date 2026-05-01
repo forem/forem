@@ -70,9 +70,22 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         expect(generator).to have_received(:read_files).with(article)
       end
 
-      context "when an external fetch times out" do
+      context "when an external fetch fails with an HTTP error" do
         it "logs a warning and does not alert Honeybadger" do
           allow(generator).to receive(:read_files).and_raise(OpenURI::HTTPError.new("504 Gateway Timeout", StringIO.new))
+          allow(Rails.logger).to receive(:warn)
+          allow(Honeybadger).to receive(:notify)
+
+          described_class.call(article)
+
+          expect(Rails.logger).to have_received(:warn).with(/Image fetch failed:/)
+          expect(Honeybadger).not_to have_received(:notify)
+        end
+      end
+
+      context "when an external fetch times out" do
+        it "logs a warning and does not alert Honeybadger" do
+          allow(generator).to receive(:read_files).and_raise(Net::ReadTimeout)
           allow(Rails.logger).to receive(:warn)
           allow(Honeybadger).to receive(:notify)
 

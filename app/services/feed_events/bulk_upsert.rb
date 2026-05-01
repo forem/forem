@@ -70,8 +70,13 @@ module FeedEvents
 
       return if records_to_insert.blank?
 
-      FeedEvent.insert_all(records_to_insert)
-      FeedEvent.bulk_update_counters_by_article_id(records_to_insert.pluck(:article_id).sample(5))
+      begin
+        FeedEvent.insert_all(records_to_insert)
+        FeedEvent.bulk_update_counters_by_article_id(records_to_insert.pluck(:article_id).sample(5))
+      rescue ActiveRecord::InvalidForeignKey
+        # Race condition: article or user was deleted after our check but before insert_all.
+        # We can gracefully ignore this failure rather than throwing a 500 for an analytics payload.
+      end
     end
 
     private

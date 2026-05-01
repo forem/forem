@@ -170,10 +170,16 @@ RSpec.describe FeedEvents::BulkUpsert, type: :service do
     end
 
     it "safely ignores the foreign key violation in the single-event path" do
-      # Simulate a concurrent delete exactly as find_or_create_by runs
-      allow(FeedEvent).to receive(:find_or_create_by).and_raise(ActiveRecord::InvalidForeignKey)
+      # Simulate a concurrent delete exactly as find_or_create_by runs by stubbing the relation chain
+      relation = instance_double(ActiveRecord::Relation)
+      where_chain = instance_double(ActiveRecord::QueryMethods::WhereChain)
+      allow(FeedEvent).to receive(:where).and_return(where_chain)
+      allow(where_chain).to receive(:not).and_return(relation)
+      allow(relation).to receive(:create_with).and_return(relation)
+      allow(relation).to receive(:find_or_create_by).and_raise(ActiveRecord::InvalidForeignKey)
       
       expect { described_class.call(feed_event_data) }.not_to raise_error
+      expect(relation).to have_received(:find_or_create_by)
     end
   end
 
