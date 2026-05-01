@@ -40,6 +40,21 @@ module Trackable
     as_json.except(*Trackable::DEFAULT_EXCLUDED_KEYS)
   end
 
+  # Fire `event_name` for this record's trackable users, but only if there are
+  # non-touch-only changes since the last save. Returns true if fired, false if
+  # suppressed.
+  def track(event_name, properties_override = {})
+    return false if touch_only_change?
+
+    track!(event_name, properties_override)
+    true
+  end
+
+  # Fire `event_name` for this record's trackable users regardless of changes.
+  def track!(event_name, properties_override = {})
+    enqueue_trackable_event(event_name, properties_override: properties_override)
+  end
+
   private
 
   def trackable_events_skipped?

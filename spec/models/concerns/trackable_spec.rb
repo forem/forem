@@ -189,4 +189,67 @@ RSpec.describe Trackable do
       expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
     end
   end
+
+  describe "#track and #track!" do
+    let(:stub_adapter) { instance_double(Trackers::Base, enabled?: true).tap { |a| allow(a).to receive(:track) } }
+
+    before do
+      allow(Trackable::Registry).to receive(:active_with_names).and_return([[:any, stub_adapter]])
+      allow(Trackable::DispatchWorker).to receive(:perform_async)
+    end
+
+    around { |ex| with_trackable_events { ex.run } }
+
+    describe "#track" do
+      it "fires when there are non-touch-only changes" do
+        record = trackable_class.create!(name: "alpha", user_id: 7)
+        record.assign_attributes(name: "beta")
+        record.save!
+
+        result = record.track("custom_event")
+
+        expect(result).to be true
+        expect(Trackable::DispatchWorker).to have_received(:perform_async).with(
+          "any", "custom_event", [7], hash_including("name" => "beta"), kind_of(String),
+        )
+      end
+
+      it "returns false and does not fire when only touch-only keys changed" do
+        record = trackable_class.create!(name: "alpha", user_id: 7)
+        record.touch  # rubocop:disable Rails/SkipsModelValidations
+        allow(Trackable::DispatchWorker).to receive(:perform_async)
+
+        result = record.track("custom_event")
+
+        expect(result).to be false
+        expect(Trackable::DispatchWorker).not_to have_received(:perform_async).with(
+          anything, "custom_event", anything, anything, anything,
+        )
+      end
+    end
+
+    describe "#track!" do
+      it "fires regardless of whether there are changes" do
+        record = trackable_class.create!(name: "alpha", user_id: 7)
+        allow(Trackable::DispatchWorker).to receive(:perform_async)
+
+        record.track!("custom_event")
+
+        expect(Trackable::DispatchWorker).to have_received(:perform_async).with(
+          "any", "custom_event", [7], kind_of(Hash), kind_of(String),
+        )
+      end
+
+      it "merges the optional properties_override into the payload" do
+        record = trackable_class.create!(name: "alpha", user_id: 7)
+        allow(Trackable::DispatchWorker).to receive(:perform_async)
+
+        record.track!("custom_event", "extra" => "value")
+
+        expect(Trackable::DispatchWorker).to have_received(:perform_async).with(
+          anything, anything, anything, hash_including("extra" => "value"), anything,
+        )
+      end
+    end
+  end
 end
