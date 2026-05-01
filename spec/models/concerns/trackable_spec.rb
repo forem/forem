@@ -190,6 +190,35 @@ RSpec.describe Trackable do
       end
       expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
     end
+
+    it "skips #track when skip_trackable_events = true" do
+      with_trackable_events do
+        record = trackable_class.create!(name: "alpha", user_id: 7)
+        record.skip_trackable_events = true
+        record.assign_attributes(name: "beta")
+        record.save!
+
+        result = record.track("explicit_event")
+
+        expect(result).to be false
+        expect(Trackable::DispatchWorker).not_to have_received(:perform_async).with(
+          anything, "explicit_event", anything, anything, anything
+        )
+      end
+    end
+
+    it "skips #track! when skip_trackable_events = true" do
+      with_trackable_events do
+        record = trackable_class.create!(name: "alpha", user_id: 7)
+        record.skip_trackable_events = true
+
+        record.track!("explicit_event")
+
+        expect(Trackable::DispatchWorker).not_to have_received(:perform_async).with(
+          anything, "explicit_event", anything, anything, anything
+        )
+      end
+    end
   end
 
   describe "#track and #track!" do

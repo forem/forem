@@ -35,12 +35,13 @@ shared_examples_for "trackable" do
       subject.save! unless subject.persisted?
       subject.touch # baseline; should not enqueue
 
-      # Trigger a real change. The shared example caller is responsible for the
-      # subject having at least one writable, non-touch attribute.
-      changeable_attr = (subject.class.attribute_names - Trackable::TOUCH_ONLY_KEYS - %w[id created_at]).first
-      raise "subject has no changeable attribute for trackable shared example" unless changeable_attr
+      # Find a string column we can mutate without violating constraints.
+      # Models without a writable string attribute should override this example.
+      excluded = (Trackable::TOUCH_ONLY_KEYS + %w[id created_at]).map(&:to_s)
+      string_column = subject.class.columns.detect { |c| c.type == :string && excluded.exclude?(c.name) }
+      raise "subject has no string attribute for the trackable shared example" unless string_column
 
-      subject.update!(changeable_attr => "#{subject[changeable_attr]}_x")
+      subject.update!(string_column.name => "#{subject[string_column.name]}_x")
 
       param_key = subject.class.model_name.param_key
       expect(Trackable::DispatchWorker).to have_received(:perform_async).with(

@@ -41,22 +41,29 @@ module Trackable
   end
 
   # Fire `event_name` for this record's trackable users, but only if there are
-  # non-touch-only changes since the last save. Returns true if fired, false if
-  # suppressed.
+  # non-touch-only changes since the last save. Returns false (no-op) if the
+  # record's previous_changes is empty (e.g. after #reload) or if the skip
+  # toggle is active. Returns true if fired.
   def track(event_name, properties_override = {})
+    return false if trackable_events_skipped?
     return false if touch_only_change?
 
     track!(event_name, properties_override)
     true
   end
 
-  # Fire `event_name` for this record's trackable users regardless of changes.
+  # Fire `event_name` for this record's trackable users regardless of whether
+  # the record has dirty changes. Still honors the skip toggle.
   def track!(event_name, properties_override = {})
+    return if trackable_events_skipped?
+
     enqueue_trackable_event(event_name, properties_override: properties_override)
   end
 
   private
 
+  # Default: events fire. In test env, events skip unless wrapped in
+  # `with_trackable_events { ... }` (see spec/support/with_trackable_events.rb).
   def trackable_events_skipped?
     return true if skip_trackable_events
     return true if self.class.trackable_class_skipped?

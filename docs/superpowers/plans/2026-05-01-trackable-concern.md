@@ -10,6 +10,11 @@
 
 **Spec:** [`docs/superpowers/specs/2026-05-01-trackable-concern-design.md`](../specs/2026-05-01-trackable-concern-design.md)
 
+> **Post-implementation amendments (2026-05-01):**
+> - The plan describes a `Registry.active_with_names` helper returning `[name, instance]` pairs. The shipped registry instead exposes `Registry.active_names` (a list of symbols), since the concern only needs names; the worker re-resolves instances. Tasks 7, 9, 10, 13 reference the older name — refer to the actual code in `app/services/trackable/registry.rb` for the final API.
+> - The shared example in Task 13 originally located its mutation target via `attribute_names.first`, which can pick up integer foreign keys (e.g. `user_id`). The shipped version filters to string columns specifically. See `spec/support/shared_examples/trackable.rb`.
+> - The shipped `Trackable#track` and `Trackable#track!` honor the `skip_trackable_events` toggle (instance flag, class block, test-env default) — the plan's snippet only guarded against touch-only changes.
+
 ---
 
 ## Task 1: Add the `analytics-ruby` gem
