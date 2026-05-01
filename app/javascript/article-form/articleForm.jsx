@@ -17,13 +17,6 @@ import {
 } from '@utilities/markdown/markdownLintCustomRules';
 import { getOSKeyboardModifierKeyString } from '@utilities/runtime';
 
-/* global activateRunkitTags */
-
-/*
-  Although the state fields: id, description, canonicalUrl, publishedAtDate, publishedAtTime, series, allSeries and
-  editing are not used in this file, they are important to the
-  editor.
-*/
 
 /**
  * Settings for the markdownlint library we use to identify potential accessibility failings in posts
@@ -99,7 +92,7 @@ export class ArticleForm extends Component {
     article: PropTypes.string.isRequired,
     organizations: PropTypes.string,
     siteLogo: PropTypes.string.isRequired,
-    schedulingEnabled: PropTypes.bool, // Kept for backward compatibility but always true now
+    schedulingEnabled: PropTypes.bool,
     coverImageHeight: PropTypes.string.isRequired,
     coverImageCrop: PropTypes.string.isRequired,
     aiAvailable: PropTypes.bool.isRequired,
@@ -126,22 +119,20 @@ export class ArticleForm extends Component {
     this.url = window.location.href;
 
     const previousContent =
-      JSON.parse(
-        localStorage.getItem(`editor-${version}-${window.location.href}`),
-      ) || {};
+      JSON.parse(localStorage.getItem(`editor-${version}-${window.location.href}`)) || {};
     const isLocalstorageNewer =
       new Date(previousContent.updatedAt) > new Date(this.article.updated_at);
 
     const previousContentState =
       previousContent && isLocalstorageNewer
         ? {
-          title: previousContent.title || '',
-          tagList: previousContent.tagList || '',
-          mainImage: previousContent.mainImage || null,
-          bodyMarkdown: previousContent.bodyMarkdown || '',
-          videoSourceUrl: previousContent.videoSourceUrl || null,
-          edited: true,
-        }
+            title: previousContent.title || '',
+            tagList: previousContent.tagList || '',
+            mainImage: previousContent.mainImage || null,
+            bodyMarkdown: previousContent.bodyMarkdown || '',
+            videoSourceUrl: previousContent.videoSourceUrl || null,
+            edited: true,
+          }
         : {};
 
     this.publishedAtTime = '';
@@ -253,7 +244,7 @@ export class ArticleForm extends Component {
   };
 
   fetchPreview = (e) => {
-    const { previewShowing, bodyMarkdown, videoSourceUrl } = this.state;
+    const { previewShowing, bodyMarkdown } = this.state;
     e.preventDefault();
     if (previewShowing) {
       this.setState({
@@ -261,10 +252,8 @@ export class ArticleForm extends Component {
       });
     } else {
       this.showLoadingPreview();
-      previewArticle({
-        body_markdown: bodyMarkdown,
-        video_source_url: videoSourceUrl
-      }, this.showPreview, this.failedPreview);
+
+      previewArticle(bodyMarkdown, this.showPreview, this.failedPreview);
     }
   };
 
@@ -395,7 +384,7 @@ export class ArticleForm extends Component {
     const payload = {
       ...this.state,
       // Ensure the backend receives the snake_case key it expects
-      video_source_url: this.state.videoSourceUrl || "",
+      video_source_url: this.state.videoSourceUrl || '',
       published: true,
     };
 
@@ -417,7 +406,7 @@ export class ArticleForm extends Component {
     // Explicitly mapping the payload to ensure nulls are passed
     const payload = {
       ...this.state,
-      video_source_url: this.state.videoSourceUrl || "", // Ensure the key matches what the Rails/API expects
+      video_source_url: this.state.videoSourceUrl || '', // Ensure the key matches what the Rails/API expects
       published: false,
     };
 
@@ -433,10 +422,7 @@ export class ArticleForm extends Component {
 
   onClearChanges = (e) => {
     e.preventDefault();
-    // eslint-disable-next-line no-alert
-    const revert = window.confirm(
-      'Are you sure you want to revert to the previous save?',
-    );
+    const revert = window.confirm('Are you sure you want to revert to the previous save?');
     if (!revert && navigator.userAgent !== 'DEV-Native-ios') return;
 
     this.setState({
@@ -611,15 +597,8 @@ export class ArticleForm extends Component {
           version={version}
         />
         {this.state.isModalOpen && (
-          <Modal
-            size="s"
-            title="You have unsaved changes"
-            onClose={() => this.showModal(false)}
-          >
-            <p>
-              You've made changes to your post. Do you want to navigate to leave
-              this page?
-            </p>
+          <Modal size="s" title="You have unsaved changes" onClose={() => this.showModal(false)}>
+            <p>You've made changes to your post. Do you want to navigate to leave this page?</p>
             <div className="pt-4">
               <Button className="mr-2" variant="danger" url="/" tagName="a">
                 Yes, leave the page
@@ -651,8 +630,7 @@ export class ArticleForm extends Component {
 
         <KeyboardShortcuts
           shortcuts={{
-            [`${getOSKeyboardModifierKeyString()}+shift+KeyP`]:
-              this.fetchPreview,
+            [`${getOSKeyboardModifierKeyString()}+shift+KeyP`]: this.fetchPreview,
           }}
         />
       </form>
