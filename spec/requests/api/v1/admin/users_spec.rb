@@ -304,4 +304,65 @@ RSpec.describe "/api/admin/users" do
       expect(response.parsed_body["error_code"]).to eq("validation_failed")
     end
   end
+
+  describe "PUT /api/admin/users/:id/status" do
+    before { Audit::Subscribe.listen :admin_api }
+    after  { Audit::Subscribe.forget :admin_api }
+
+    let!(:target) { create(:user) }
+
+    %w[Suspended Spam Warned Trusted Limited].each do |status|
+      it "applies #{status}" do
+        put "/api/admin/users/#{target.id}/status",
+            params: { status: status, note: "for testing" },
+            headers: admin_api_headers
+
+        expect(response).to have_http_status(:ok)
+        target.reload
+        case status
+        when "Suspended" then expect(target.suspended?).to be true
+        when "Spam"      then expect(target.spam?).to be true
+        when "Warned"    then expect(target.warned?).to be true
+        when "Trusted"   then expect(target.roles.exists?(name: "trusted")).to be true
+        when "Limited"   then expect(target.roles.exists?(name: "limited")).to be true
+        end
+      end
+    end
+
+    it "applies Good standing (clears moderation roles)" do
+      target.add_role(:suspended)
+      put "/api/admin/users/#{target.id}/status",
+          params: { status: "Good standing", note: "rehab" },
+          headers: admin_api_headers
+
+      expect(response).to have_http_status(:ok)
+      expect(target.reload.suspended?).to be false
+    end
+
+    it "rejects invalid status" do
+      put "/api/admin/users/#{target.id}/status",
+          params: { status: "Banishedish" }, headers: admin_api_headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body["error_code"]).to eq("invalid_status")
+    end
+
+    it "rejects role-grant statuses (Admin, Super Moderator, Tech Admin)" do
+      put "/api/admin/users/#{target.id}/status",
+          params: { status: "Admin" }, headers: admin_api_headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body["error_code"]).to eq("invalid_status")
+    end
+
+    it "audits the change" do
+      expect {
+        put "/api/admin/users/#{target.id}/status",
+            params: { status: "Suspended", note: "auditable" }, headers: admin_api_headers
+      }.to change(AuditLog, :count).by(1)
+      audit = AuditLog.last
+      expect(audit.slug).to eq("update_user_status")
+      expect(audit.data).to include("target_user_id" => target.id, "new_status" => "Suspended")
+    end
+  end
 end

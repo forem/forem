@@ -7,6 +7,10 @@ module Api
       MAX_PER_PAGE = 100
       USER_UPDATE_FIELDS = %i[name username].freeze
       PROFILE_UPDATE_FIELDS = %i[summary location website_url].freeze
+      ALLOWED_STATUSES = [
+        "Good standing", "Suspended", "Spam", "Warned",
+        "Comment Suspended", "Trusted", "Limited"
+      ].freeze
 
       def index
         users = filtered_users
@@ -64,6 +68,30 @@ module Api
         audit!(slug: "update_user_email",
                data: { "target_user_id" => @user_record.id, "old_email" => old_email, "new_email" => new_email })
         render json: { id: @user_record.id, email: new_email }
+      end
+
+      def update_status
+        @user_record = User.find(params[:id])
+        status = params.require(:status)
+        unless ALLOWED_STATUSES.include?(status)
+          raise Api::Admin::ApiError.new(:invalid_status, "Status not allowed", status: 422)
+        end
+
+        old_status = current_moderation_status(@user_record)
+        Moderator::ManageActivityAndRoles.handle_user_roles(
+          admin: current_user,
+          user: @user_record,
+          user_params: { user_status: status, note_for_current_role: params[:note].to_s },
+        )
+
+        audit!(slug: "update_user_status",
+               data: {
+                 "target_user_id" => @user_record.id,
+                 "old_status" => old_status,
+                 "new_status" => status,
+                 "note" => params[:note].to_s
+               })
+        render json: { id: @user_record.id, status: status }
       end
 
       def create
@@ -124,6 +152,17 @@ module Api
           after_val = after[key]
           memo[key.to_s] = [before_val, after_val] if before_val != after_val
         end
+      end
+
+      def current_moderation_status(user)
+        return "Suspended" if user.suspended?
+        return "Spam" if user.spam?
+        return "Warned" if user.warned?
+        return "Comment Suspended" if user.comment_suspended?
+        return "Limited" if user.roles.exists?(name: "limited")
+        return "Trusted" if user.roles.exists?(name: "trusted")
+
+        "Good standing"
       end
     end
   end
