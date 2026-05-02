@@ -54,7 +54,7 @@ module Api
 
       def update_email
         @user_record = User.find(params[:id])
-        new_email = params.require(:email)
+        new_email = params.require(:email).to_s.strip.downcase
         old_email = @user_record.email
 
         unless URI::MailTo::EMAIL_REGEXP.match?(new_email)
@@ -64,7 +64,11 @@ module Api
           raise Api::Admin::ApiError.new(:email_taken, I18n.t("admin_api.errors.email_taken"), status: 409)
         end
 
-        @user_record.update_columns(email: new_email)
+        # Mirrors the admin UI's `update_email`: bypasses Devise reconfirmation
+        # but explicitly bust the user cache that the after_commit hook would
+        # otherwise refresh.
+        @user_record.update_columns(email: new_email, unconfirmed_email: nil)
+        Users::BustCacheWorker.perform_async(@user_record.id)
         audit!(slug: "update_user_email",
                data: { "target_user_id" => @user_record.id, "old_email" => old_email, "new_email" => new_email })
         render json: { id: @user_record.id, email: new_email }
@@ -106,10 +110,18 @@ module Api
           )
         end
 
+        # Surface a missing target as 404 before invoking the merge service
+        # so the broad-StandardError rescue below only applies to mid-merge
+        # identity conflicts (which Moderator::MergeUser raises as plain
+        # StandardError with i18n messages).
+        delete_user = User.find(delete_id)
+
         begin
           Moderator::MergeUser.call(
-            admin: current_user, keep_user: @user_record, delete_user_id: delete_id,
+            admin: current_user, keep_user: @user_record, delete_user_id: delete_user.id,
           )
+        rescue ActiveRecord::RecordNotFound
+          raise
         rescue StandardError => e
           raise Api::Admin::ApiError.new(
             :merge_identity_conflict,

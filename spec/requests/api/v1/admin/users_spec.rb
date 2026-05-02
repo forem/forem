@@ -303,6 +303,23 @@ RSpec.describe "/api/admin/users" do
       expect(response).to have_http_status(:unprocessable_entity)
       expect(response.parsed_body["error_code"]).to eq("validation_failed")
     end
+
+    it "normalizes the new email to downcased form" do
+      put "/api/admin/users/#{target.id}/email",
+          params: { email: "  Mixed.Case@Example.COM  " },
+          headers: admin_api_headers
+
+      expect(response).to have_http_status(:ok)
+      expect(target.reload.email).to eq("mixed.case@example.com")
+    end
+
+    it "enqueues a cache-bust for the target user" do
+      sidekiq_assert_enqueued_with(job: Users::BustCacheWorker, args: [target.id]) do
+        put "/api/admin/users/#{target.id}/email",
+            params: { email: "bust@example.com" },
+            headers: admin_api_headers
+      end
+    end
   end
 
   describe "PUT /api/admin/users/:id/status" do
@@ -392,6 +409,14 @@ RSpec.describe "/api/admin/users" do
 
       expect(response).to have_http_status(:conflict)
       expect(response.parsed_body["error_code"]).to eq("cannot_merge_user_into_itself")
+    end
+
+    it "returns 404 when merge_user_id does not exist (does not mask as conflict)" do
+      post "/api/admin/users/#{keeper.id}/merge",
+           params: { merge_user_id: 999_999 }, headers: admin_api_headers
+
+      expect(response).to have_http_status(:not_found)
+      expect(response.parsed_body["error_code"]).to eq("not_found")
     end
 
     it "returns 409 merge_identity_conflict when MergeUser raises" do

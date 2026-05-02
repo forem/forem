@@ -1,8 +1,16 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::Admin::UserIdentities" do
-  before { Audit::Subscribe.listen :admin_api }
-  after  { Audit::Subscribe.forget :admin_api }
+  before do
+    Audit::Subscribe.listen :admin_api
+    # Identity linking checks Authentication::Providers.enabled?, which reads
+    # Settings::Authentication.providers; default test config doesn't enable
+    # the providers exercised below.
+    allow(Settings::Authentication).to receive(:providers)
+      .and_return(Authentication::Providers.available)
+  end
+
+  after { Audit::Subscribe.forget :admin_api }
 
   let!(:user) { create(:user) }
 

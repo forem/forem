@@ -13,7 +13,7 @@ module Api
         provider = params.require(:provider)
         uid = params.require(:uid).to_s
 
-        unless Authentication::Providers.available?(provider)
+        unless Authentication::Providers.enabled?(provider)
           raise Api::Admin::ApiError.new(:unknown_provider,
                                          I18n.t("admin_api.errors.unknown_provider", provider: provider),
                                          status: 422)
@@ -21,31 +21,7 @@ module Api
 
         already_linked = false
         ActiveRecord::Base.transaction do
-          existing_for_user = target.identities.find_by(provider: provider)
-          if existing_for_user
-            if existing_for_user.uid == uid
-              @identity = existing_for_user
-              update_provider_username(target, provider, params[:username]) if params[:username].present?
-              already_linked = true
-              next
-            else
-              raise Api::Admin::ApiError.new(
-                :user_already_has_identity_for_provider,
-                I18n.t("admin_api.errors.user_already_has_identity_for_provider", provider: provider),
-                status: 409,
-              )
-            end
-          end
-
-          if Identity.exists?(provider: provider, uid: uid)
-            raise Api::Admin::ApiError.new(
-              :identity_uid_taken,
-              I18n.t("admin_api.errors.identity_uid_taken", uid: uid, provider: provider),
-              status: 409,
-            )
-          end
-
-          @identity = Identity.create!(user: target, provider: provider, uid: uid)
+          @identity, already_linked = resolve_identity_for_link(target, provider, uid)
           update_provider_username(target, provider, params[:username]) if params[:username].present?
         end
 
@@ -93,11 +69,50 @@ module Api
 
       private
 
+      # Returns [identity, already_linked]. Raises Api::Admin::ApiError for the
+      # strict-fail-closed conflict states (user has different uid for provider,
+      # or uid already linked to another user). Catches RecordNotUnique from
+      # the create! to handle the race window between the exists? pre-check
+      # and the insert.
+      def resolve_identity_for_link(target, provider, uid)
+        existing_for_user = target.identities.find_by(provider: provider)
+        if existing_for_user
+          return [existing_for_user, true] if existing_for_user.uid == uid
+
+          raise Api::Admin::ApiError.new(
+            :user_already_has_identity_for_provider,
+            I18n.t("admin_api.errors.user_already_has_identity_for_provider", provider: provider),
+            status: 409,
+          )
+        end
+
+        if Identity.exists?(provider: provider, uid: uid)
+          raise Api::Admin::ApiError.new(
+            :identity_uid_taken,
+            I18n.t("admin_api.errors.identity_uid_taken", uid: uid, provider: provider),
+            status: 409,
+          )
+        end
+
+        [Identity.create!(user: target, provider: provider, uid: uid), false]
+      rescue ActiveRecord::RecordNotUnique
+        raise Api::Admin::ApiError.new(
+          :identity_uid_taken,
+          I18n.t("admin_api.errors.identity_uid_taken", uid: uid, provider: provider),
+          status: 409,
+        )
+      end
+
+      # Uses `update` (not `update_column`) so the User model's
+      # `before_validation clean_provider_username` and uniqueness check on
+      # `<provider>_username` run, matching the existing admin UI's
+      # `remove_identity` action.
       def update_provider_username(user, provider, username)
         field = "#{provider}_username"
         return unless user.respond_to?(:"#{field}=")
+        return if user.update(field => username)
 
-        user.update_column(field, username)
+        raise ActiveRecord::RecordInvalid, user
       end
     end
   end
