@@ -365,4 +365,56 @@ RSpec.describe "/api/admin/users" do
       expect(audit.data).to include("target_user_id" => target.id, "new_status" => "Suspended")
     end
   end
+
+  describe "POST /api/admin/users/:id/merge" do
+    before { Audit::Subscribe.listen :admin_api }
+    after  { Audit::Subscribe.forget :admin_api }
+
+    let!(:keeper) { create(:user) }
+    let!(:loser)  { create(:user) }
+
+    it "merges loser into keeper end-to-end" do
+      article = create(:article, user: loser, with_main_image: false)
+      comment = create(:comment, user: loser, commentable: article)
+
+      post "/api/admin/users/#{keeper.id}/merge",
+           params: { merge_user_id: loser.id },
+           headers: admin_api_headers
+
+      expect(response).to have_http_status(:ok)
+      expect(article.reload.user_id).to eq(keeper.id)
+      expect(comment.reload.user_id).to eq(keeper.id)
+    end
+
+    it "returns 409 cannot_merge_user_into_itself when ids match" do
+      post "/api/admin/users/#{keeper.id}/merge",
+           params: { merge_user_id: keeper.id }, headers: admin_api_headers
+
+      expect(response).to have_http_status(:conflict)
+      expect(response.parsed_body["error_code"]).to eq("cannot_merge_user_into_itself")
+    end
+
+    it "returns 409 merge_identity_conflict when MergeUser raises" do
+      omniauth_mock_github_payload if defined?(omniauth_mock_github_payload)
+      omniauth_mock_twitter_payload if defined?(omniauth_mock_twitter_payload)
+      create(:identity, user: loser, provider: "github", uid: "1")
+      create(:identity, user: loser, provider: "twitter", uid: "2")
+
+      post "/api/admin/users/#{keeper.id}/merge",
+           params: { merge_user_id: loser.id }, headers: admin_api_headers
+
+      expect(response).to have_http_status(:conflict)
+      expect(response.parsed_body["error_code"]).to eq("merge_identity_conflict")
+    end
+
+    it "audits the merge" do
+      expect {
+        post "/api/admin/users/#{keeper.id}/merge",
+             params: { merge_user_id: loser.id }, headers: admin_api_headers
+      }.to change(AuditLog, :count).by(1)
+      audit = AuditLog.last
+      expect(audit.slug).to eq("merge_users")
+      expect(audit.data).to include("keep_user_id" => keeper.id, "deleted_user_id" => loser.id)
+    end
+  end
 end

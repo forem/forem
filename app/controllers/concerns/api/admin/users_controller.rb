@@ -94,6 +94,30 @@ module Api
         render json: { id: @user_record.id, status: status }
       end
 
+      def merge
+        @user_record = User.find(params[:id])
+        delete_id = params.require(:merge_user_id).to_i
+
+        if delete_id == @user_record.id
+          raise Api::Admin::ApiError.new(
+            :cannot_merge_user_into_itself,
+            "Cannot merge a user into itself",
+            status: 409,
+          )
+        end
+
+        begin
+          Moderator::MergeUser.call(
+            admin: current_user, keep_user: @user_record, delete_user_id: delete_id,
+          )
+        rescue StandardError => e
+          raise Api::Admin::ApiError.new(:merge_identity_conflict, e.message, status: 409)
+        end
+
+        audit!(slug: "merge_users",
+               data: { "keep_user_id" => @user_record.id, "deleted_user_id" => delete_id })
+      end
+
       def create
         # NOTE: We can add an inviting user here, e.g. User.invite!(current_user, user_params).
         options = {
