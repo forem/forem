@@ -1,6 +1,6 @@
 module Trackable
   # Fans a tracked event out to a single registered adapter.
-  # Trackable::Concern enqueues one of these per active adapter on each event.
+  # The Trackable concern enqueues one of these per active adapter on each event.
   class DispatchWorker
     include Sidekiq::Job
 
