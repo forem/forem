@@ -2,16 +2,7 @@ resources :badges, only: %i[index show create update destroy]
 resources :badge_achievements, only: %i[index show create destroy]
 
 namespace :admin do
-  resources :users, only: %i[index show create update] do
-    member do
-      put :email, action: :update_email
-      put :status, action: :update_status
-      post :merge
-    end
-
-    resources :notes, only: %i[index create], controller: "user_notes"
-    resources :identities, only: %i[index create destroy], controller: "user_identities"
-  end
+  resources :users, only: [:create]
 end
 
 resources :articles, only: %i[index show create update] do
