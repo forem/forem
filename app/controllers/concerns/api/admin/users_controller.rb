@@ -48,6 +48,24 @@ module Api
         audit!(slug: "update_user", data: { "target_user_id" => @user_record.id, "changed" => changed })
       end
 
+      def update_email
+        @user_record = User.find(params[:id])
+        new_email = params.require(:email)
+        old_email = @user_record.email
+
+        if new_email !~ URI::MailTo::EMAIL_REGEXP
+          raise Api::Admin::ApiError.new(:validation_failed, "Email is invalid", status: 422)
+        end
+        if User.where.not(id: @user_record.id).exists?(email: new_email)
+          raise Api::Admin::ApiError.new(:email_taken, "Email already in use", status: 409)
+        end
+
+        @user_record.update_columns(email: new_email)
+        audit!(slug: "update_user_email",
+               data: { "target_user_id" => @user_record.id, "old_email" => old_email, "new_email" => new_email })
+        render json: { id: @user_record.id, email: new_email }
+      end
+
       def create
         # NOTE: We can add an inviting user here, e.g. User.invite!(current_user, user_params).
         options = {

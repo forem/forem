@@ -249,4 +249,59 @@ RSpec.describe "/api/admin/users" do
       expect(audit.data["changed"]).to include("name")
     end
   end
+
+  describe "PUT /api/admin/users/:id/email" do
+    before { Audit::Subscribe.listen :admin_api }
+    after  { Audit::Subscribe.forget :admin_api }
+
+    let!(:target) { create(:user, email: "old@example.com") }
+
+    it "updates email without sending a confirmation email" do
+      ActionMailer::Base.deliveries.clear
+
+      put "/api/admin/users/#{target.id}/email",
+          params: { email: "new@example.com" },
+          headers: admin_api_headers
+
+      expect(response).to have_http_status(:ok)
+      expect(target.reload.email).to eq("new@example.com")
+      expect(ActionMailer::Base.deliveries).to be_empty
+    end
+
+    it "returns 409 email_taken on conflict" do
+      create(:user, email: "taken@example.com")
+
+      put "/api/admin/users/#{target.id}/email",
+          params: { email: "taken@example.com" },
+          headers: admin_api_headers
+
+      expect(response).to have_http_status(:conflict)
+      expect(response.parsed_body["error_code"]).to eq("email_taken")
+    end
+
+    it "logs an audit entry" do
+      expect {
+        put "/api/admin/users/#{target.id}/email",
+            params: { email: "audited@example.com" },
+            headers: admin_api_headers
+      }.to change(AuditLog, :count).by(1)
+
+      audit = AuditLog.last
+      expect(audit.slug).to eq("update_user_email")
+      expect(audit.data).to include(
+        "target_user_id" => target.id,
+        "old_email" => "old@example.com",
+        "new_email" => "audited@example.com",
+      )
+    end
+
+    it "rejects malformed email" do
+      put "/api/admin/users/#{target.id}/email",
+          params: { email: "not-an-email" },
+          headers: admin_api_headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body["error_code"]).to eq("validation_failed")
+    end
+  end
 end
