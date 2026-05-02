@@ -28,7 +28,7 @@ module Api
       end
 
       def show
-        @user_record = User.find(params[:id])
+        @user_record = User.includes(:identities, :profile, :roles).find(params[:id])
       end
 
       def update
@@ -77,7 +77,7 @@ module Api
           raise Api::Admin::ApiError.new(:invalid_status, I18n.t("admin_api.errors.invalid_status"), status: 422)
         end
 
-        old_status = current_moderation_status(@user_record)
+        old_status = user_moderation_status(@user_record)
         Moderator::ManageActivityAndRoles.handle_user_roles(
           admin: current_user,
           user: @user_record,
@@ -180,17 +180,6 @@ module Api
           after_val = after[key]
           memo[key.to_s] = [before_val, after_val] if before_val != after_val
         end
-      end
-
-      def current_moderation_status(user)
-        return "Suspended" if user.suspended?
-        return "Spam" if user.spam?
-        return "Warned" if user.warned?
-        return "Comment Suspended" if user.comment_suspended?
-        return "Limited" if user.roles.exists?(name: "limited")
-        return "Trusted" if user.roles.exists?(name: "trusted")
-
-        "Good standing"
       end
     end
   end

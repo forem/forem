@@ -13,7 +13,7 @@ module Api
         provider = params.require(:provider)
         uid = params.require(:uid).to_s
 
-        unless Authentication::Providers.available.map(&:to_s).include?(provider)
+        unless Authentication::Providers.available?(provider)
           raise Api::Admin::ApiError.new(:unknown_provider,
                                          I18n.t("admin_api.errors.unknown_provider", provider: provider),
                                          status: 422)

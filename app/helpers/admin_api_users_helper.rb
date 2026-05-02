@@ -1,12 +1,20 @@
 module AdminApiUsersHelper
-  STATUS_PRIORITY = %w[suspended spam warned comment_suspended limited trusted].freeze
+  # Highest-priority role first; values match the strings accepted by the
+  # PUT /api/admin/users/:id/status endpoint and Moderator::ManageActivityAndRoles.
+  STATUS_PRIORITY = {
+    "suspended" => "Suspended",
+    "spam" => "Spam",
+    "warned" => "Warned",
+    "comment_suspended" => "Comment Suspended",
+    "limited" => "Limited",
+    "trusted" => "Trusted"
+  }.freeze
 
-  # Returns the user's current moderation status as a snake_case string.
-  # Uses .map(&:name) so it operates on Rolify's eager-loaded roles association
-  # (see Api::Admin::UsersController#index) without firing a query per status.
-  # We avoid User#has_role? because it's private on Forem's User model.
+  # Operates on the eager-loaded roles association (no query per status).
+  # User#has_role? is private on Forem's User model, hence the manual lookup.
   def user_moderation_status(user)
     role_names = user.roles.map(&:name)
-    STATUS_PRIORITY.detect { |r| role_names.include?(r) } || "good_standing"
+    matched = STATUS_PRIORITY.detect { |role, _label| role_names.include?(role) }
+    matched ? matched.last : "Good standing"
   end
 end

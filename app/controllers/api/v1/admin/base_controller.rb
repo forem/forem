@@ -2,6 +2,8 @@ module Api
   module V1
     module Admin
       class BaseController < Api::V1::ApiController
+        include AdminApiUsersHelper
+
         before_action :authenticate!
         before_action :authorize_super_admin
         after_action :flush_audit, if: -> { response.successful? && @audit_payload }
