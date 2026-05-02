@@ -185,4 +185,68 @@ RSpec.describe "/api/admin/users" do
       }.not_to change(AuditLog, :count)
     end
   end
+
+  describe "PATCH /api/admin/users/:id" do
+    before { Audit::Subscribe.listen :admin_api }
+    after  { Audit::Subscribe.forget :admin_api }
+
+    let!(:target) { create(:user, name: "Old Name", username: "old_username") }
+
+    it "updates name and username" do
+      patch "/api/admin/users/#{target.id}",
+            params: { name: "New Name", username: "new_username" },
+            headers: admin_api_headers
+
+      expect(response).to have_http_status(:ok)
+      target.reload
+      expect(target.name).to eq("New Name")
+      expect(target.username).to eq("new_username")
+    end
+
+    it "updates profile fields summary, location, website_url" do
+      patch "/api/admin/users/#{target.id}",
+            params: { summary: "New summary", location: "Brooklyn", website_url: "https://example.com" },
+            headers: admin_api_headers
+
+      expect(response).to have_http_status(:ok)
+      profile = target.reload.profile
+      expect(profile.summary).to eq("New summary")
+      expect(profile.location).to eq("Brooklyn")
+      expect(profile.website_url).to eq("https://example.com")
+    end
+
+    it "ignores unsupported fields silently" do
+      patch "/api/admin/users/#{target.id}",
+            params: { reputation_modifier: 99 },
+            headers: admin_api_headers
+
+      expect(response).to have_http_status(:ok)
+      expect(target.reload.reputation_modifier).not_to eq(99)
+    end
+
+    it "returns 422 with errors hash on validation failure" do
+      taken_user = create(:user, username: "taken_username")
+      patch "/api/admin/users/#{target.id}",
+            params: { username: taken_user.username },
+            headers: admin_api_headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      body = response.parsed_body
+      expect(body["error_code"]).to eq("validation_failed")
+      expect(body["errors"]).to have_key("username")
+    end
+
+    it "logs an audit entry with changed fields" do
+      expect {
+        patch "/api/admin/users/#{target.id}",
+              params: { name: "Audit Name" },
+              headers: admin_api_headers
+      }.to change(AuditLog, :count).by(1)
+
+      audit = AuditLog.last
+      expect(audit.slug).to eq("update_user")
+      expect(audit.data["target_user_id"]).to eq(target.id)
+      expect(audit.data["changed"]).to include("name")
+    end
+  end
 end
