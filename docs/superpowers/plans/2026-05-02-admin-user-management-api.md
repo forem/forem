@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Build a `/api/v1/admin/users` HTTP API on Forem that lets MLH Core programmatically read users, update profiles/emails/status, merge accounts, manage admin notes, and link/unlink third-party identities — primarily so Core can record "this Forem user is MLH ID X."
+**Goal:** Build a `/api/admin/users` HTTP API on Forem that lets MLH Core programmatically read users, update profiles/emails/status, merge accounts, manage admin notes, and link/unlink third-party identities — primarily so Core can record "this Forem user is MLH ID X."
 
 **Architecture:** Three new controllers in the `Api::V1::Admin` namespace (users extended, plus new `user_notes` and `user_identities`), each backed by a thin shared concern, with JBuilder views for response shapes. A new `Api::V1::Admin::BaseController` adds typed error handling and an audit-logging helper on top of the existing `Api::V1::ApiController`. All endpoints reuse existing service objects (`Moderator::MergeUser`, `Moderator::ManageActivityAndRoles`, `Users::Update`) and the existing `Note` and `Identity` models. Auth: existing `authenticate!` + `authorize_super_admin`. Identity linking is **strict-fail-closed** on conflicts; the unique DB indexes on `(provider, uid)` and `(provider, user_id)` already exist.
 
@@ -17,26 +17,26 @@
 | File | Status | Responsibility |
 |---|---|---|
 | `app/errors/api/admin/api_error.rb` | create | Typed error class with `error_code` and `status` |
-| `app/controllers/api/v1/admin/base_controller.rb` | create | Shared base: auth, error rendering, audit helper |
+| `app/controllers/api/admin/base_controller.rb` | create | Shared base: auth, error rendering, audit helper |
 | `app/controllers/concerns/api/admin/users_controller.rb` | modify | Add `index`, `show`, `update`, `update_email`, `update_status`, `merge` actions |
-| `app/controllers/api/v1/admin/users_controller.rb` | modify | Wire new actions, swap to inherit from `BaseController` |
+| `app/controllers/api/admin/users_controller.rb` | modify | Wire new actions, swap to inherit from `BaseController` |
 | `app/controllers/concerns/api/admin/user_notes_controller.rb` | create | `index`, `create` |
-| `app/controllers/api/v1/admin/user_notes_controller.rb` | create | Thin V1 wrapper |
+| `app/controllers/api/admin/user_notes_controller.rb` | create | Thin V1 wrapper |
 | `app/controllers/concerns/api/admin/user_identities_controller.rb` | create | `index`, `create`, `destroy` with strict semantics |
-| `app/controllers/api/v1/admin/user_identities_controller.rb` | create | Thin V1 wrapper |
-| `app/views/api/v1/admin/users/{index,show,update,merge}.json.jbuilder` | create | User response shapes |
-| `app/views/api/v1/admin/user_notes/{index,create}.json.jbuilder` | create | Note response shapes |
-| `app/views/api/v1/admin/user_identities/{index,create}.json.jbuilder` | create | Identity response shapes |
-| `app/views/api/v1/admin/users/_user.json.jbuilder` | create | Shared user partial |
-| `app/views/api/v1/admin/user_identities/_identity.json.jbuilder` | create | Shared identity partial |
-| `app/views/api/v1/admin/user_notes/_note.json.jbuilder` | create | Shared note partial |
+| `app/controllers/api/admin/user_identities_controller.rb` | create | Thin V1 wrapper |
+| `app/views/api/admin/users/{index,show,update,merge}.json.jbuilder` | create | User response shapes |
+| `app/views/api/admin/user_notes/{index,create}.json.jbuilder` | create | Note response shapes |
+| `app/views/api/admin/user_identities/{index,create}.json.jbuilder` | create | Identity response shapes |
+| `app/views/api/admin/users/_user.json.jbuilder` | create | Shared user partial |
+| `app/views/api/admin/user_identities/_identity.json.jbuilder` | create | Shared identity partial |
+| `app/views/api/admin/user_notes/_note.json.jbuilder` | create | Shared note partial |
 | `config/routes/api.rb` | modify | Extend `namespace :admin` with new routes |
 | `config/locales/en.yml` | modify | Error / message strings |
 | `config/locales/fr.yml` | modify | Error / message strings (translated) |
 | `config/locales/pt.yml` | modify | Error / message strings (translated) |
-| `spec/requests/api/v1/admin/users_spec.rb` | create | Request specs for users controller |
-| `spec/requests/api/v1/admin/user_notes_spec.rb` | create | Request specs for notes controller |
-| `spec/requests/api/v1/admin/user_identities_spec.rb` | create | Request specs for identities controller |
+| `spec/requests/api/admin/users_spec.rb` | create | Request specs for users controller |
+| `spec/requests/api/admin/user_notes_spec.rb` | create | Request specs for notes controller |
+| `spec/requests/api/admin/user_identities_spec.rb` | create | Request specs for identities controller |
 | `spec/requests/authenticator_api_link_round_trip_spec.rb` | create | OAuth callback round-trip verification |
 | `spec/support/api_admin_helpers.rb` | create | Shared helper for super_admin api-key headers |
 
@@ -203,12 +203,12 @@ git commit -m "Add ApiAdminHelpers for super_admin api-key auth in request specs
 ## Task 3: BaseController — auth, error rendering, audit helper
 
 **Files:**
-- Create: `app/controllers/api/v1/admin/base_controller.rb`
-- Test: `spec/requests/api/v1/admin/base_controller_spec.rb`
+- Create: `app/controllers/api/admin/base_controller.rb`
+- Test: `spec/requests/api/admin/base_controller_spec.rb`
 
 - [ ] **Step 1: Write the failing test**
 
-Create `spec/requests/api/v1/admin/base_controller_spec.rb`:
+Create `spec/requests/api/admin/base_controller_spec.rb`:
 
 ```ruby
 require "rails_helper"
@@ -245,14 +245,14 @@ RSpec.describe Api::V1::Admin::BaseController, type: :request do
 
   context "without an api key" do
     it "returns 401" do
-      get "/api/v1/admin/test_probe"
+      get "/api/admin/test_probe"
       expect(response).to have_http_status(:unauthorized)
     end
   end
 
   context "with a non-super-admin api key" do
     it "returns 401" do
-      get "/api/v1/admin/test_probe", headers: non_admin_api_headers
+      get "/api/admin/test_probe", headers: non_admin_api_headers
       expect(response).to have_http_status(:unauthorized)
     end
   end
@@ -260,7 +260,7 @@ RSpec.describe Api::V1::Admin::BaseController, type: :request do
   context "with a super_admin api key" do
     it "renders successfully and emits an audit log" do
       expect {
-        get "/api/v1/admin/test_probe", headers: admin_api_headers
+        get "/api/admin/test_probe", headers: admin_api_headers
       }.to change(AuditLog, :count).by(1)
 
       expect(response).to have_http_status(:ok)
@@ -272,7 +272,7 @@ RSpec.describe Api::V1::Admin::BaseController, type: :request do
     end
 
     it "renders Api::Admin::ApiError as the standard envelope" do
-      get "/api/v1/admin/test_probe", params: { raise: "conflict" }, headers: admin_api_headers
+      get "/api/admin/test_probe", params: { raise: "conflict" }, headers: admin_api_headers
 
       expect(response).to have_http_status(:conflict)
       expect(response.parsed_body).to eq(
@@ -281,7 +281,7 @@ RSpec.describe Api::V1::Admin::BaseController, type: :request do
     end
 
     it "maps RecordNotFound to a 404 with error_code" do
-      get "/api/v1/admin/test_probe", params: { raise: "ar_not_found" }, headers: admin_api_headers
+      get "/api/admin/test_probe", params: { raise: "ar_not_found" }, headers: admin_api_headers
 
       expect(response).to have_http_status(:not_found)
       expect(response.parsed_body).to include("error_code" => "not_found", "status" => 404)
@@ -292,12 +292,12 @@ end
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `bundle exec rspec spec/requests/api/v1/admin/base_controller_spec.rb`
+Run: `bundle exec rspec spec/requests/api/admin/base_controller_spec.rb`
 Expected: FAIL with "uninitialized constant Api::V1::Admin::BaseController".
 
 - [ ] **Step 3: Implement**
 
-Create `app/controllers/api/v1/admin/base_controller.rb`:
+Create `app/controllers/api/admin/base_controller.rb`:
 
 ```ruby
 module Api
@@ -350,13 +350,13 @@ end
 
 - [ ] **Step 4: Run test to verify it passes**
 
-Run: `bundle exec rspec spec/requests/api/v1/admin/base_controller_spec.rb`
+Run: `bundle exec rspec spec/requests/api/admin/base_controller_spec.rb`
 Expected: 5 examples, 0 failures.
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add app/controllers/api/v1/admin/base_controller.rb spec/requests/api/v1/admin/base_controller_spec.rb
+git add app/controllers/api/admin/base_controller.rb spec/requests/api/admin/base_controller_spec.rb
 git commit -m "Add Api::V1::Admin::BaseController with auth, error envelope, audit helper"
 ```
 
@@ -372,7 +372,7 @@ Forem's V1 routes are gated by `ApiConstraints` (require `Accept: application/vn
 - [ ] **Step 1: Inspect current routes**
 
 Run: `bundle exec rails routes | grep admin/users`
-Expected: only `POST /api/v1/admin/users` (the invite endpoint).
+Expected: only `POST /api/admin/users` (the invite endpoint).
 
 - [ ] **Step 2: Implement**
 
@@ -407,14 +407,14 @@ Run: `bundle exec rails routes | grep "admin/users"`
 Expected output (in any order):
 
 ```
-api_admin_user_email PUT  /api/v1/admin/users/:id/email     api/v1/admin/users#update_email
-api_admin_user_status PUT /api/v1/admin/users/:id/status    api/v1/admin/users#update_status
-api_admin_user_merge POST /api/v1/admin/users/:id/merge     api/v1/admin/users#merge
-api_admin_user_notes GET  /api/v1/admin/users/:user_id/notes api/v1/admin/user_notes#index
+api_admin_user_email PUT  /api/admin/users/:id/email     api/v1/admin/users#update_email
+api_admin_user_status PUT /api/admin/users/:id/status    api/v1/admin/users#update_status
+api_admin_user_merge POST /api/admin/users/:id/merge     api/v1/admin/users#merge
+api_admin_user_notes GET  /api/admin/users/:user_id/notes api/v1/admin/user_notes#index
 ... (more)
 ```
 
-Plus the existing `POST /api/v1/admin/users` (invite).
+Plus the existing `POST /api/admin/users` (invite).
 
 - [ ] **Step 4: Commit**
 
@@ -429,14 +429,14 @@ git commit -m "Add admin user/note/identity API routes under /api/v1/admin"
 
 **Files:**
 - Modify: `app/controllers/concerns/api/admin/users_controller.rb`
-- Modify: `app/controllers/api/v1/admin/users_controller.rb`
-- Create: `app/views/api/v1/admin/users/index.json.jbuilder`
-- Create: `app/views/api/v1/admin/users/_user.json.jbuilder`
-- Test: `spec/requests/api/v1/admin/users_spec.rb`
+- Modify: `app/controllers/api/admin/users_controller.rb`
+- Create: `app/views/api/admin/users/index.json.jbuilder`
+- Create: `app/views/api/admin/users/_user.json.jbuilder`
+- Test: `spec/requests/api/admin/users_spec.rb`
 
 - [ ] **Step 1: Write the failing test**
 
-Create `spec/requests/api/v1/admin/users_spec.rb`:
+Create `spec/requests/api/admin/users_spec.rb`:
 
 ```ruby
 require "rails_helper"
@@ -445,22 +445,22 @@ RSpec.describe "Api::V1::Admin::Users", type: :request do
   before { Audit::Subscribe.listen :admin_api }
   after  { Audit::Subscribe.forget :admin_api }
 
-  describe "GET /api/v1/admin/users" do
+  describe "GET /api/admin/users" do
     let!(:older) { create(:user, email: "alpha@example.com", username: "alpha_user", created_at: 2.days.ago) }
     let!(:newer) { create(:user, email: "beta@example.com",  username: "beta_user",  created_at: 1.day.ago) }
 
     it "rejects requests without an api key" do
-      get "/api/v1/admin/users"
+      get "/api/admin/users"
       expect(response).to have_http_status(:unauthorized)
     end
 
     it "rejects non-super-admin callers" do
-      get "/api/v1/admin/users", headers: non_admin_api_headers
+      get "/api/admin/users", headers: non_admin_api_headers
       expect(response).to have_http_status(:unauthorized)
     end
 
     it "returns users ordered by created_at DESC" do
-      get "/api/v1/admin/users", headers: admin_api_headers
+      get "/api/admin/users", headers: admin_api_headers
 
       expect(response).to have_http_status(:ok)
       ids = response.parsed_body["users"].map { |u| u["id"] }
@@ -468,13 +468,13 @@ RSpec.describe "Api::V1::Admin::Users", type: :request do
     end
 
     it "filters by exact email" do
-      get "/api/v1/admin/users", params: { email: "alpha@example.com" }, headers: admin_api_headers
+      get "/api/admin/users", params: { email: "alpha@example.com" }, headers: admin_api_headers
 
       expect(response.parsed_body["users"].map { |u| u["id"] }).to eq([older.id])
     end
 
     it "filters by exact username" do
-      get "/api/v1/admin/users", params: { username: "beta_user" }, headers: admin_api_headers
+      get "/api/admin/users", params: { username: "beta_user" }, headers: admin_api_headers
 
       expect(response.parsed_body["users"].map { |u| u["id"] }).to eq([newer.id])
     end
@@ -482,7 +482,7 @@ RSpec.describe "Api::V1::Admin::Users", type: :request do
     it "filters by identity_provider + identity_uid" do
       create(:identity, user: older, provider: "mlh", uid: "core-12345")
 
-      get "/api/v1/admin/users",
+      get "/api/admin/users",
           params: { identity_provider: "mlh", identity_uid: "core-12345" },
           headers: admin_api_headers
 
@@ -490,7 +490,7 @@ RSpec.describe "Api::V1::Admin::Users", type: :request do
     end
 
     it "paginates with page and per_page" do
-      get "/api/v1/admin/users", params: { page: 1, per_page: 1 }, headers: admin_api_headers
+      get "/api/admin/users", params: { page: 1, per_page: 1 }, headers: admin_api_headers
 
       body = response.parsed_body
       expect(body["users"].size).to eq(1)
@@ -500,14 +500,14 @@ RSpec.describe "Api::V1::Admin::Users", type: :request do
     end
 
     it "clamps per_page above 100 to 100" do
-      get "/api/v1/admin/users", params: { per_page: 999 }, headers: admin_api_headers
+      get "/api/admin/users", params: { per_page: 999 }, headers: admin_api_headers
 
       expect(response.parsed_body["per_page"]).to eq(100)
     end
 
     it "does not log an audit entry for reads" do
       expect {
-        get "/api/v1/admin/users", headers: admin_api_headers
+        get "/api/admin/users", headers: admin_api_headers
       }.not_to change(AuditLog, :count)
     end
   end
@@ -516,7 +516,7 @@ end
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `bundle exec rspec spec/requests/api/v1/admin/users_spec.rb`
+Run: `bundle exec rspec spec/requests/api/admin/users_spec.rb`
 Expected: most FAIL with routing/missing-action errors; auth-related ones may pass once Task 4 routes exist.
 
 - [ ] **Step 3: Implement the concern**
@@ -593,7 +593,7 @@ end
 
 - [ ] **Step 4: Update the V1 wrapper to use BaseController**
 
-Replace `app/controllers/api/v1/admin/users_controller.rb` with:
+Replace `app/controllers/api/admin/users_controller.rb` with:
 
 ```ruby
 module Api
@@ -611,7 +611,7 @@ end
 
 - [ ] **Step 5: Create the JBuilder views**
 
-Create `app/views/api/v1/admin/users/_user.json.jbuilder`:
+Create `app/views/api/admin/users/_user.json.jbuilder`:
 
 ```ruby
 json.id user.id
@@ -636,7 +636,7 @@ json.counts do
 end
 ```
 
-Create `app/views/api/v1/admin/users/index.json.jbuilder`:
+Create `app/views/api/admin/users/index.json.jbuilder`:
 
 ```ruby
 json.users(@users) do |user|
@@ -649,7 +649,7 @@ json.total @total
 
 Also create the identity partial referenced by `_user.json.jbuilder` above. (Tasks 12–14 add controller logic, but the partial itself is complete here — `id`, `provider`, `uid`, `created_at` are the only fields the API exposes.)
 
-Create `app/views/api/v1/admin/user_identities/_identity.json.jbuilder`:
+Create `app/views/api/admin/user_identities/_identity.json.jbuilder`:
 
 ```ruby
 json.id identity.id
@@ -679,20 +679,20 @@ This module is auto-included in views by Rails. (If Forem requires explicit incl
 
 - [ ] **Step 7: Run tests to verify they pass**
 
-Run: `bundle exec rspec spec/requests/api/v1/admin/users_spec.rb`
+Run: `bundle exec rspec spec/requests/api/admin/users_spec.rb`
 Expected: 8 examples, 0 failures.
 
 - [ ] **Step 8: Commit**
 
 ```bash
 git add app/controllers/concerns/api/admin/users_controller.rb \
-        app/controllers/api/v1/admin/users_controller.rb \
-        app/views/api/v1/admin/users/index.json.jbuilder \
-        app/views/api/v1/admin/users/_user.json.jbuilder \
-        app/views/api/v1/admin/user_identities/_identity.json.jbuilder \
+        app/controllers/api/admin/users_controller.rb \
+        app/views/api/admin/users/index.json.jbuilder \
+        app/views/api/admin/users/_user.json.jbuilder \
+        app/views/api/admin/user_identities/_identity.json.jbuilder \
         app/helpers/admin_api_users_helper.rb \
-        spec/requests/api/v1/admin/users_spec.rb
-git commit -m "Add GET /api/v1/admin/users index with filters and pagination"
+        spec/requests/api/admin/users_spec.rb
+git commit -m "Add GET /api/admin/users index with filters and pagination"
 ```
 
 ---
@@ -701,21 +701,21 @@ git commit -m "Add GET /api/v1/admin/users index with filters and pagination"
 
 **Files:**
 - Modify: `app/controllers/concerns/api/admin/users_controller.rb`
-- Create: `app/views/api/v1/admin/users/show.json.jbuilder`
-- Modify: `spec/requests/api/v1/admin/users_spec.rb` (append)
+- Create: `app/views/api/admin/users/show.json.jbuilder`
+- Modify: `spec/requests/api/admin/users_spec.rb` (append)
 
 - [ ] **Step 1: Append failing tests**
 
-Append to `spec/requests/api/v1/admin/users_spec.rb`:
+Append to `spec/requests/api/admin/users_spec.rb`:
 
 ```ruby
-  describe "GET /api/v1/admin/users/:id" do
+  describe "GET /api/admin/users/:id" do
     let!(:user) { create(:user) }
 
     it "returns the user payload" do
       create(:identity, user: user, provider: "mlh", uid: "core-99")
 
-      get "/api/v1/admin/users/#{user.id}", headers: admin_api_headers
+      get "/api/admin/users/#{user.id}", headers: admin_api_headers
 
       expect(response).to have_http_status(:ok)
       body = response.parsed_body
@@ -725,7 +725,7 @@ Append to `spec/requests/api/v1/admin/users_spec.rb`:
     end
 
     it "returns 404 with error_code for missing user" do
-      get "/api/v1/admin/users/999999", headers: admin_api_headers
+      get "/api/admin/users/999999", headers: admin_api_headers
 
       expect(response).to have_http_status(:not_found)
       expect(response.parsed_body["error_code"]).to eq("not_found")
@@ -733,7 +733,7 @@ Append to `spec/requests/api/v1/admin/users_spec.rb`:
 
     it "does not log an audit entry" do
       expect {
-        get "/api/v1/admin/users/#{user.id}", headers: admin_api_headers
+        get "/api/admin/users/#{user.id}", headers: admin_api_headers
       }.not_to change(AuditLog, :count)
     end
   end
@@ -741,7 +741,7 @@ Append to `spec/requests/api/v1/admin/users_spec.rb`:
 
 - [ ] **Step 2: Run tests to verify they fail**
 
-Run: `bundle exec rspec spec/requests/api/v1/admin/users_spec.rb`
+Run: `bundle exec rspec spec/requests/api/admin/users_spec.rb`
 Expected: new examples FAIL ("No route matches" or action not defined).
 
 - [ ] **Step 3: Add the action**
@@ -758,7 +758,7 @@ Note: `@user` is reserved by `Api::V1::ApiController` for the *caller*. Use `@us
 
 - [ ] **Step 4: Create show.json.jbuilder**
 
-Create `app/views/api/v1/admin/users/show.json.jbuilder`:
+Create `app/views/api/admin/users/show.json.jbuilder`:
 
 ```ruby
 json.partial!("api/v1/admin/users/user", user: @user_record)
@@ -766,16 +766,16 @@ json.partial!("api/v1/admin/users/user", user: @user_record)
 
 - [ ] **Step 5: Run tests to verify they pass**
 
-Run: `bundle exec rspec spec/requests/api/v1/admin/users_spec.rb`
+Run: `bundle exec rspec spec/requests/api/admin/users_spec.rb`
 Expected: 11 examples, 0 failures.
 
 - [ ] **Step 6: Commit**
 
 ```bash
 git add app/controllers/concerns/api/admin/users_controller.rb \
-        app/views/api/v1/admin/users/show.json.jbuilder \
-        spec/requests/api/v1/admin/users_spec.rb
-git commit -m "Add GET /api/v1/admin/users/:id"
+        app/views/api/admin/users/show.json.jbuilder \
+        spec/requests/api/admin/users_spec.rb
+git commit -m "Add GET /api/admin/users/:id"
 ```
 
 ---
@@ -784,19 +784,19 @@ git commit -m "Add GET /api/v1/admin/users/:id"
 
 **Files:**
 - Modify: `app/controllers/concerns/api/admin/users_controller.rb`
-- Create: `app/views/api/v1/admin/users/update.json.jbuilder`
-- Modify: `spec/requests/api/v1/admin/users_spec.rb` (append)
+- Create: `app/views/api/admin/users/update.json.jbuilder`
+- Modify: `spec/requests/api/admin/users_spec.rb` (append)
 
 - [ ] **Step 1: Append failing tests**
 
-Append to `spec/requests/api/v1/admin/users_spec.rb`:
+Append to `spec/requests/api/admin/users_spec.rb`:
 
 ```ruby
-  describe "PATCH /api/v1/admin/users/:id" do
+  describe "PATCH /api/admin/users/:id" do
     let!(:user) { create(:user, name: "Old Name", username: "old_username") }
 
     it "updates name and username" do
-      patch "/api/v1/admin/users/#{user.id}",
+      patch "/api/admin/users/#{user.id}",
             params: { name: "New Name", username: "new_username" },
             headers: admin_api_headers
 
@@ -807,7 +807,7 @@ Append to `spec/requests/api/v1/admin/users_spec.rb`:
     end
 
     it "updates profile fields summary, location, website_url" do
-      patch "/api/v1/admin/users/#{user.id}",
+      patch "/api/admin/users/#{user.id}",
             params: { summary: "New summary", location: "Brooklyn", website_url: "https://example.com" },
             headers: admin_api_headers
 
@@ -819,7 +819,7 @@ Append to `spec/requests/api/v1/admin/users_spec.rb`:
     end
 
     it "ignores unsupported fields silently" do
-      patch "/api/v1/admin/users/#{user.id}",
+      patch "/api/admin/users/#{user.id}",
             params: { reputation_modifier: 99 },
             headers: admin_api_headers
 
@@ -829,7 +829,7 @@ Append to `spec/requests/api/v1/admin/users_spec.rb`:
 
     it "returns 422 with errors hash on validation failure" do
       taken_user = create(:user, username: "taken_username")
-      patch "/api/v1/admin/users/#{user.id}",
+      patch "/api/admin/users/#{user.id}",
             params: { username: taken_user.username },
             headers: admin_api_headers
 
@@ -841,7 +841,7 @@ Append to `spec/requests/api/v1/admin/users_spec.rb`:
 
     it "logs an audit entry with changed fields" do
       expect {
-        patch "/api/v1/admin/users/#{user.id}",
+        patch "/api/admin/users/#{user.id}",
               params: { name: "Audit Name" },
               headers: admin_api_headers
       }.to change(AuditLog, :count).by(1)
@@ -856,7 +856,7 @@ Append to `spec/requests/api/v1/admin/users_spec.rb`:
 
 - [ ] **Step 2: Run tests to verify they fail**
 
-Run: `bundle exec rspec spec/requests/api/v1/admin/users_spec.rb -e "PATCH"`
+Run: `bundle exec rspec spec/requests/api/admin/users_spec.rb -e "PATCH"`
 Expected: failures (action missing).
 
 - [ ] **Step 3: Add the action**
@@ -969,7 +969,7 @@ end
 
 - [ ] **Step 4: Create update.json.jbuilder**
 
-Create `app/views/api/v1/admin/users/update.json.jbuilder`:
+Create `app/views/api/admin/users/update.json.jbuilder`:
 
 ```ruby
 json.partial!("api/v1/admin/users/user", user: @user_record)
@@ -977,16 +977,16 @@ json.partial!("api/v1/admin/users/user", user: @user_record)
 
 - [ ] **Step 5: Run tests to verify they pass**
 
-Run: `bundle exec rspec spec/requests/api/v1/admin/users_spec.rb -e "PATCH"`
+Run: `bundle exec rspec spec/requests/api/admin/users_spec.rb -e "PATCH"`
 Expected: 5 examples, 0 failures.
 
 - [ ] **Step 6: Commit**
 
 ```bash
 git add app/controllers/concerns/api/admin/users_controller.rb \
-        app/views/api/v1/admin/users/update.json.jbuilder \
-        spec/requests/api/v1/admin/users_spec.rb
-git commit -m "Add PATCH /api/v1/admin/users/:id for profile updates"
+        app/views/api/admin/users/update.json.jbuilder \
+        spec/requests/api/admin/users_spec.rb
+git commit -m "Add PATCH /api/admin/users/:id for profile updates"
 ```
 
 ---
@@ -995,20 +995,20 @@ git commit -m "Add PATCH /api/v1/admin/users/:id for profile updates"
 
 **Files:**
 - Modify: `app/controllers/concerns/api/admin/users_controller.rb`
-- Modify: `spec/requests/api/v1/admin/users_spec.rb` (append)
+- Modify: `spec/requests/api/admin/users_spec.rb` (append)
 
 - [ ] **Step 1: Append failing tests**
 
-Append to `spec/requests/api/v1/admin/users_spec.rb`:
+Append to `spec/requests/api/admin/users_spec.rb`:
 
 ```ruby
-  describe "PUT /api/v1/admin/users/:id/email" do
+  describe "PUT /api/admin/users/:id/email" do
     let!(:user) { create(:user, email: "old@example.com") }
 
     it "updates email without sending a confirmation email" do
       ActionMailer::Base.deliveries.clear
 
-      put "/api/v1/admin/users/#{user.id}/email",
+      put "/api/admin/users/#{user.id}/email",
           params: { email: "new@example.com" },
           headers: admin_api_headers
 
@@ -1020,7 +1020,7 @@ Append to `spec/requests/api/v1/admin/users_spec.rb`:
     it "returns 409 email_taken on conflict" do
       create(:user, email: "taken@example.com")
 
-      put "/api/v1/admin/users/#{user.id}/email",
+      put "/api/admin/users/#{user.id}/email",
           params: { email: "taken@example.com" },
           headers: admin_api_headers
 
@@ -1030,7 +1030,7 @@ Append to `spec/requests/api/v1/admin/users_spec.rb`:
 
     it "logs an audit entry" do
       expect {
-        put "/api/v1/admin/users/#{user.id}/email",
+        put "/api/admin/users/#{user.id}/email",
             params: { email: "audited@example.com" },
             headers: admin_api_headers
       }.to change(AuditLog, :count).by(1)
@@ -1045,7 +1045,7 @@ Append to `spec/requests/api/v1/admin/users_spec.rb`:
     end
 
     it "rejects malformed email" do
-      put "/api/v1/admin/users/#{user.id}/email",
+      put "/api/admin/users/#{user.id}/email",
           params: { email: "not-an-email" },
           headers: admin_api_headers
 
@@ -1057,7 +1057,7 @@ Append to `spec/requests/api/v1/admin/users_spec.rb`:
 
 - [ ] **Step 2: Run to confirm failure**
 
-Run: `bundle exec rspec spec/requests/api/v1/admin/users_spec.rb -e "/email"`
+Run: `bundle exec rspec spec/requests/api/admin/users_spec.rb -e "/email"`
 Expected: failures (action missing).
 
 - [ ] **Step 3: Add the action**
@@ -1086,14 +1086,14 @@ end
 
 - [ ] **Step 4: Run to verify**
 
-Run: `bundle exec rspec spec/requests/api/v1/admin/users_spec.rb -e "/email"`
+Run: `bundle exec rspec spec/requests/api/admin/users_spec.rb -e "/email"`
 Expected: 4 examples, 0 failures.
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add app/controllers/concerns/api/admin/users_controller.rb spec/requests/api/v1/admin/users_spec.rb
-git commit -m "Add PUT /api/v1/admin/users/:id/email"
+git add app/controllers/concerns/api/admin/users_controller.rb spec/requests/api/admin/users_spec.rb
+git commit -m "Add PUT /api/admin/users/:id/email"
 ```
 
 ---
@@ -1102,17 +1102,17 @@ git commit -m "Add PUT /api/v1/admin/users/:id/email"
 
 **Files:**
 - Modify: `app/controllers/concerns/api/admin/users_controller.rb`
-- Modify: `spec/requests/api/v1/admin/users_spec.rb` (append)
+- Modify: `spec/requests/api/admin/users_spec.rb` (append)
 
 - [ ] **Step 1: Append failing tests**
 
 ```ruby
-  describe "PUT /api/v1/admin/users/:id/status" do
+  describe "PUT /api/admin/users/:id/status" do
     let!(:target) { create(:user) }
 
     %w[Suspended Spam Warned Trusted Limited].each do |status|
       it "applies #{status}" do
-        put "/api/v1/admin/users/#{target.id}/status",
+        put "/api/admin/users/#{target.id}/status",
             params: { status: status, note: "for testing" },
             headers: admin_api_headers
 
@@ -1130,7 +1130,7 @@ git commit -m "Add PUT /api/v1/admin/users/:id/email"
 
     it "applies Good standing (clears moderation roles)" do
       target.add_role(:suspended)
-      put "/api/v1/admin/users/#{target.id}/status",
+      put "/api/admin/users/#{target.id}/status",
           params: { status: "Good standing", note: "rehab" },
           headers: admin_api_headers
 
@@ -1139,7 +1139,7 @@ git commit -m "Add PUT /api/v1/admin/users/:id/email"
     end
 
     it "rejects invalid status" do
-      put "/api/v1/admin/users/#{target.id}/status",
+      put "/api/admin/users/#{target.id}/status",
           params: { status: "Banishedish" }, headers: admin_api_headers
 
       expect(response).to have_http_status(:unprocessable_entity)
@@ -1147,7 +1147,7 @@ git commit -m "Add PUT /api/v1/admin/users/:id/email"
     end
 
     it "rejects role-grant statuses (Admin, Super Moderator, Tech Admin)" do
-      put "/api/v1/admin/users/#{target.id}/status",
+      put "/api/admin/users/#{target.id}/status",
           params: { status: "Admin" }, headers: admin_api_headers
 
       expect(response).to have_http_status(:unprocessable_entity)
@@ -1156,7 +1156,7 @@ git commit -m "Add PUT /api/v1/admin/users/:id/email"
 
     it "audits the change" do
       expect {
-        put "/api/v1/admin/users/#{target.id}/status",
+        put "/api/admin/users/#{target.id}/status",
             params: { status: "Suspended", note: "auditable" }, headers: admin_api_headers
       }.to change(AuditLog, :count).by(1)
       audit = AuditLog.last
@@ -1168,7 +1168,7 @@ git commit -m "Add PUT /api/v1/admin/users/:id/email"
 
 - [ ] **Step 2: Run to confirm failure**
 
-Run: `bundle exec rspec spec/requests/api/v1/admin/users_spec.rb -e "/status"`
+Run: `bundle exec rspec spec/requests/api/admin/users_spec.rb -e "/status"`
 Expected: failures (action missing).
 
 - [ ] **Step 3: Add the action**
@@ -1218,14 +1218,14 @@ end
 
 - [ ] **Step 4: Run to verify**
 
-Run: `bundle exec rspec spec/requests/api/v1/admin/users_spec.rb -e "/status"`
+Run: `bundle exec rspec spec/requests/api/admin/users_spec.rb -e "/status"`
 Expected: 9 examples, 0 failures.
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add app/controllers/concerns/api/admin/users_controller.rb spec/requests/api/v1/admin/users_spec.rb
-git commit -m "Add PUT /api/v1/admin/users/:id/status"
+git add app/controllers/concerns/api/admin/users_controller.rb spec/requests/api/admin/users_spec.rb
+git commit -m "Add PUT /api/admin/users/:id/status"
 ```
 
 ---
@@ -1234,13 +1234,13 @@ git commit -m "Add PUT /api/v1/admin/users/:id/status"
 
 **Files:**
 - Modify: `app/controllers/concerns/api/admin/users_controller.rb`
-- Create: `app/views/api/v1/admin/users/merge.json.jbuilder`
-- Modify: `spec/requests/api/v1/admin/users_spec.rb` (append)
+- Create: `app/views/api/admin/users/merge.json.jbuilder`
+- Modify: `spec/requests/api/admin/users_spec.rb` (append)
 
 - [ ] **Step 1: Append failing tests**
 
 ```ruby
-  describe "POST /api/v1/admin/users/:id/merge" do
+  describe "POST /api/admin/users/:id/merge" do
     let!(:keeper) { create(:user) }
     let!(:loser)  { create(:user) }
 
@@ -1248,7 +1248,7 @@ git commit -m "Add PUT /api/v1/admin/users/:id/status"
       article = create(:article, user: loser)
       comment = create(:comment, user: loser)
 
-      post "/api/v1/admin/users/#{keeper.id}/merge",
+      post "/api/admin/users/#{keeper.id}/merge",
            params: { merge_user_id: loser.id },
            headers: admin_api_headers
 
@@ -1258,7 +1258,7 @@ git commit -m "Add PUT /api/v1/admin/users/:id/status"
     end
 
     it "returns 409 cannot_merge_user_into_itself when ids match" do
-      post "/api/v1/admin/users/#{keeper.id}/merge",
+      post "/api/admin/users/#{keeper.id}/merge",
            params: { merge_user_id: keeper.id }, headers: admin_api_headers
 
       expect(response).to have_http_status(:conflict)
@@ -1269,7 +1269,7 @@ git commit -m "Add PUT /api/v1/admin/users/:id/status"
       create(:identity, user: loser, provider: "github", uid: "1")
       create(:identity, user: loser, provider: "twitter", uid: "2")
 
-      post "/api/v1/admin/users/#{keeper.id}/merge",
+      post "/api/admin/users/#{keeper.id}/merge",
            params: { merge_user_id: loser.id }, headers: admin_api_headers
 
       expect(response).to have_http_status(:conflict)
@@ -1278,7 +1278,7 @@ git commit -m "Add PUT /api/v1/admin/users/:id/status"
 
     it "audits the merge" do
       expect {
-        post "/api/v1/admin/users/#{keeper.id}/merge",
+        post "/api/admin/users/#{keeper.id}/merge",
              params: { merge_user_id: loser.id }, headers: admin_api_headers
       }.to change(AuditLog, :count).by(1)
       audit = AuditLog.last
@@ -1290,7 +1290,7 @@ git commit -m "Add PUT /api/v1/admin/users/:id/status"
 
 - [ ] **Step 2: Run to confirm failure**
 
-Run: `bundle exec rspec spec/requests/api/v1/admin/users_spec.rb -e "merge"`
+Run: `bundle exec rspec spec/requests/api/admin/users_spec.rb -e "merge"`
 Expected: failures (action missing).
 
 - [ ] **Step 3: Add the action**
@@ -1323,7 +1323,7 @@ end
 
 - [ ] **Step 4: Create merge.json.jbuilder**
 
-Create `app/views/api/v1/admin/users/merge.json.jbuilder`:
+Create `app/views/api/admin/users/merge.json.jbuilder`:
 
 ```ruby
 json.partial!("api/v1/admin/users/user", user: @user_record)
@@ -1331,21 +1331,21 @@ json.partial!("api/v1/admin/users/user", user: @user_record)
 
 - [ ] **Step 5: Run to verify**
 
-Run: `bundle exec rspec spec/requests/api/v1/admin/users_spec.rb -e "merge"`
+Run: `bundle exec rspec spec/requests/api/admin/users_spec.rb -e "merge"`
 Expected: 4 examples, 0 failures.
 
 - [ ] **Step 6: Run full users spec**
 
-Run: `bundle exec rspec spec/requests/api/v1/admin/users_spec.rb`
+Run: `bundle exec rspec spec/requests/api/admin/users_spec.rb`
 Expected: all examples (~28) pass.
 
 - [ ] **Step 7: Commit**
 
 ```bash
 git add app/controllers/concerns/api/admin/users_controller.rb \
-        app/views/api/v1/admin/users/merge.json.jbuilder \
-        spec/requests/api/v1/admin/users_spec.rb
-git commit -m "Add POST /api/v1/admin/users/:id/merge"
+        app/views/api/admin/users/merge.json.jbuilder \
+        spec/requests/api/admin/users_spec.rb
+git commit -m "Add POST /api/admin/users/:id/merge"
 ```
 
 ---
@@ -1354,15 +1354,15 @@ git commit -m "Add POST /api/v1/admin/users/:id/merge"
 
 **Files:**
 - Create: `app/controllers/concerns/api/admin/user_notes_controller.rb`
-- Create: `app/controllers/api/v1/admin/user_notes_controller.rb`
-- Create: `app/views/api/v1/admin/user_notes/index.json.jbuilder`
-- Create: `app/views/api/v1/admin/user_notes/create.json.jbuilder`
-- Create: `app/views/api/v1/admin/user_notes/_note.json.jbuilder`
-- Test: `spec/requests/api/v1/admin/user_notes_spec.rb`
+- Create: `app/controllers/api/admin/user_notes_controller.rb`
+- Create: `app/views/api/admin/user_notes/index.json.jbuilder`
+- Create: `app/views/api/admin/user_notes/create.json.jbuilder`
+- Create: `app/views/api/admin/user_notes/_note.json.jbuilder`
+- Test: `spec/requests/api/admin/user_notes_spec.rb`
 
 - [ ] **Step 1: Write the failing tests**
 
-Create `spec/requests/api/v1/admin/user_notes_spec.rb`:
+Create `spec/requests/api/admin/user_notes_spec.rb`:
 
 ```ruby
 require "rails_helper"
@@ -1373,13 +1373,13 @@ RSpec.describe "Api::V1::Admin::UserNotes", type: :request do
 
   let!(:user) { create(:user) }
 
-  describe "GET /api/v1/admin/users/:user_id/notes" do
+  describe "GET /api/admin/users/:user_id/notes" do
     it "lists notes newest first" do
       caller = create(:user, :super_admin)
       old = Note.create!(noteable: user, author: caller, reason: "misc_note", content: "older", created_at: 2.days.ago)
       new_note = Note.create!(noteable: user, author: caller, reason: "misc_note", content: "newer", created_at: 1.day.ago)
 
-      get "/api/v1/admin/users/#{user.id}/notes", headers: admin_api_headers
+      get "/api/admin/users/#{user.id}/notes", headers: admin_api_headers
 
       expect(response).to have_http_status(:ok)
       ids = response.parsed_body["notes"].map { |n| n["id"] }
@@ -1387,23 +1387,23 @@ RSpec.describe "Api::V1::Admin::UserNotes", type: :request do
     end
 
     it "returns 404 for missing user" do
-      get "/api/v1/admin/users/999999/notes", headers: admin_api_headers
+      get "/api/admin/users/999999/notes", headers: admin_api_headers
       expect(response).to have_http_status(:not_found)
     end
 
     it "rejects unauth callers" do
-      get "/api/v1/admin/users/#{user.id}/notes"
+      get "/api/admin/users/#{user.id}/notes"
       expect(response).to have_http_status(:unauthorized)
     end
   end
 
-  describe "POST /api/v1/admin/users/:user_id/notes" do
+  describe "POST /api/admin/users/:user_id/notes" do
     it "creates a note with default reason and the api caller as author" do
       caller_user = create(:user, :super_admin)
       headers = admin_api_headers(user: caller_user)
 
       expect {
-        post "/api/v1/admin/users/#{user.id}/notes",
+        post "/api/admin/users/#{user.id}/notes",
              params: { content: "spotted spam pattern" }, headers: headers
       }.to change(Note, :count).by(1)
 
@@ -1416,7 +1416,7 @@ RSpec.describe "Api::V1::Admin::UserNotes", type: :request do
     end
 
     it "accepts a custom reason" do
-      post "/api/v1/admin/users/#{user.id}/notes",
+      post "/api/admin/users/#{user.id}/notes",
            params: { content: "x", reason: "core_sync" }, headers: admin_api_headers
 
       expect(response).to have_http_status(:created)
@@ -1425,7 +1425,7 @@ RSpec.describe "Api::V1::Admin::UserNotes", type: :request do
 
     it "audits the creation without leaking content" do
       expect {
-        post "/api/v1/admin/users/#{user.id}/notes",
+        post "/api/admin/users/#{user.id}/notes",
              params: { content: "secret" }, headers: admin_api_headers
       }.to change(AuditLog, :count).by(1)
 
@@ -1436,7 +1436,7 @@ RSpec.describe "Api::V1::Admin::UserNotes", type: :request do
     end
 
     it "returns 422 on missing content" do
-      post "/api/v1/admin/users/#{user.id}/notes", params: {}, headers: admin_api_headers
+      post "/api/admin/users/#{user.id}/notes", params: {}, headers: admin_api_headers
       expect(response).to have_http_status(:unprocessable_entity)
     end
   end
@@ -1445,7 +1445,7 @@ end
 
 - [ ] **Step 2: Run to confirm failure**
 
-Run: `bundle exec rspec spec/requests/api/v1/admin/user_notes_spec.rb`
+Run: `bundle exec rspec spec/requests/api/admin/user_notes_spec.rb`
 Expected: all FAIL with route or controller errors.
 
 - [ ] **Step 3: Implement concern**
@@ -1483,7 +1483,7 @@ end
 
 - [ ] **Step 4: Implement V1 wrapper**
 
-Create `app/controllers/api/v1/admin/user_notes_controller.rb`:
+Create `app/controllers/api/admin/user_notes_controller.rb`:
 
 ```ruby
 module Api
@@ -1499,7 +1499,7 @@ end
 
 - [ ] **Step 5: Implement views**
 
-Create `app/views/api/v1/admin/user_notes/_note.json.jbuilder`:
+Create `app/views/api/admin/user_notes/_note.json.jbuilder`:
 
 ```ruby
 json.id note.id
@@ -1509,7 +1509,7 @@ json.author_id note.author_id
 json.created_at note.created_at
 ```
 
-Create `app/views/api/v1/admin/user_notes/index.json.jbuilder`:
+Create `app/views/api/admin/user_notes/index.json.jbuilder`:
 
 ```ruby
 json.notes(@notes) do |note|
@@ -1517,7 +1517,7 @@ json.notes(@notes) do |note|
 end
 ```
 
-Create `app/views/api/v1/admin/user_notes/create.json.jbuilder`:
+Create `app/views/api/admin/user_notes/create.json.jbuilder`:
 
 ```ruby
 json.partial!("api/v1/admin/user_notes/note", note: @note)
@@ -1544,16 +1544,16 @@ end
 
 - [ ] **Step 7: Run to verify**
 
-Run: `bundle exec rspec spec/requests/api/v1/admin/user_notes_spec.rb`
+Run: `bundle exec rspec spec/requests/api/admin/user_notes_spec.rb`
 Expected: 8 examples, 0 failures.
 
 - [ ] **Step 8: Commit**
 
 ```bash
 git add app/controllers/concerns/api/admin/user_notes_controller.rb \
-        app/controllers/api/v1/admin/user_notes_controller.rb \
-        app/views/api/v1/admin/user_notes/ \
-        spec/requests/api/v1/admin/user_notes_spec.rb
+        app/controllers/api/admin/user_notes_controller.rb \
+        app/views/api/admin/user_notes/ \
+        spec/requests/api/admin/user_notes_spec.rb
 git commit -m "Add admin API user notes endpoints"
 ```
 
@@ -1563,14 +1563,14 @@ git commit -m "Add admin API user notes endpoints"
 
 **Files:**
 - Create: `app/controllers/concerns/api/admin/user_identities_controller.rb`
-- Create: `app/controllers/api/v1/admin/user_identities_controller.rb`
-- Create: `app/views/api/v1/admin/user_identities/index.json.jbuilder`
+- Create: `app/controllers/api/admin/user_identities_controller.rb`
+- Create: `app/views/api/admin/user_identities/index.json.jbuilder`
 - (`_identity.json.jbuilder` was created in Task 5; it stays.)
-- Test: `spec/requests/api/v1/admin/user_identities_spec.rb`
+- Test: `spec/requests/api/admin/user_identities_spec.rb`
 
 - [ ] **Step 1: Write failing tests**
 
-Create `spec/requests/api/v1/admin/user_identities_spec.rb`:
+Create `spec/requests/api/admin/user_identities_spec.rb`:
 
 ```ruby
 require "rails_helper"
@@ -1581,12 +1581,12 @@ RSpec.describe "Api::V1::Admin::UserIdentities", type: :request do
 
   let!(:user) { create(:user) }
 
-  describe "GET /api/v1/admin/users/:user_id/identities" do
+  describe "GET /api/admin/users/:user_id/identities" do
     it "returns identities without leaking secrets" do
       identity = create(:identity, user: user, provider: "mlh", uid: "core-1",
                                    token: "topsecret", secret: "alsosecret")
 
-      get "/api/v1/admin/users/#{user.id}/identities", headers: admin_api_headers
+      get "/api/admin/users/#{user.id}/identities", headers: admin_api_headers
 
       expect(response).to have_http_status(:ok)
       payload = response.parsed_body["identities"].first
@@ -1595,17 +1595,17 @@ RSpec.describe "Api::V1::Admin::UserIdentities", type: :request do
     end
 
     it "returns [] for users without identities" do
-      get "/api/v1/admin/users/#{user.id}/identities", headers: admin_api_headers
+      get "/api/admin/users/#{user.id}/identities", headers: admin_api_headers
       expect(response.parsed_body["identities"]).to eq([])
     end
 
     it "404s for missing user" do
-      get "/api/v1/admin/users/999999/identities", headers: admin_api_headers
+      get "/api/admin/users/999999/identities", headers: admin_api_headers
       expect(response).to have_http_status(:not_found)
     end
 
     it "401s without api key" do
-      get "/api/v1/admin/users/#{user.id}/identities"
+      get "/api/admin/users/#{user.id}/identities"
       expect(response).to have_http_status(:unauthorized)
     end
   end
@@ -1614,7 +1614,7 @@ end
 
 - [ ] **Step 2: Run to confirm failure**
 
-Run: `bundle exec rspec spec/requests/api/v1/admin/user_identities_spec.rb`
+Run: `bundle exec rspec spec/requests/api/admin/user_identities_spec.rb`
 Expected: all FAIL.
 
 - [ ] **Step 3: Implement concern with `index`**
@@ -1638,7 +1638,7 @@ end
 
 - [ ] **Step 4: Implement V1 wrapper**
 
-Create `app/controllers/api/v1/admin/user_identities_controller.rb`:
+Create `app/controllers/api/admin/user_identities_controller.rb`:
 
 ```ruby
 module Api
@@ -1654,7 +1654,7 @@ end
 
 - [ ] **Step 5: Implement view**
 
-Create `app/views/api/v1/admin/user_identities/index.json.jbuilder`:
+Create `app/views/api/admin/user_identities/index.json.jbuilder`:
 
 ```ruby
 json.identities(@identities) do |identity|
@@ -1664,17 +1664,17 @@ end
 
 - [ ] **Step 6: Run to verify**
 
-Run: `bundle exec rspec spec/requests/api/v1/admin/user_identities_spec.rb`
+Run: `bundle exec rspec spec/requests/api/admin/user_identities_spec.rb`
 Expected: 4 examples, 0 failures.
 
 - [ ] **Step 7: Commit**
 
 ```bash
 git add app/controllers/concerns/api/admin/user_identities_controller.rb \
-        app/controllers/api/v1/admin/user_identities_controller.rb \
-        app/views/api/v1/admin/user_identities/index.json.jbuilder \
-        spec/requests/api/v1/admin/user_identities_spec.rb
-git commit -m "Add GET /api/v1/admin/users/:user_id/identities"
+        app/controllers/api/admin/user_identities_controller.rb \
+        app/views/api/admin/user_identities/index.json.jbuilder \
+        spec/requests/api/admin/user_identities_spec.rb
+git commit -m "Add GET /api/admin/users/:user_id/identities"
 ```
 
 ---
@@ -1683,16 +1683,16 @@ git commit -m "Add GET /api/v1/admin/users/:user_id/identities"
 
 **Files:**
 - Modify: `app/controllers/concerns/api/admin/user_identities_controller.rb`
-- Create: `app/views/api/v1/admin/user_identities/create.json.jbuilder`
-- Modify: `spec/requests/api/v1/admin/user_identities_spec.rb` (append)
+- Create: `app/views/api/admin/user_identities/create.json.jbuilder`
+- Modify: `spec/requests/api/admin/user_identities_spec.rb` (append)
 
 - [ ] **Step 1: Append failing tests**
 
 ```ruby
-  describe "POST /api/v1/admin/users/:user_id/identities" do
+  describe "POST /api/admin/users/:user_id/identities" do
     it "creates a new identity (state 1: clean)" do
       expect {
-        post "/api/v1/admin/users/#{user.id}/identities",
+        post "/api/admin/users/#{user.id}/identities",
              params: { provider: "mlh", uid: "core-12345" }, headers: admin_api_headers
       }.to change { user.reload.identities.count }.by(1)
 
@@ -1705,7 +1705,7 @@ git commit -m "Add GET /api/v1/admin/users/:user_id/identities"
       create(:identity, user: user, provider: "mlh", uid: "core-12345")
 
       expect {
-        post "/api/v1/admin/users/#{user.id}/identities",
+        post "/api/admin/users/#{user.id}/identities",
              params: { provider: "mlh", uid: "core-12345" }, headers: admin_api_headers
       }.not_to change { Identity.count }
 
@@ -1715,7 +1715,7 @@ git commit -m "Add GET /api/v1/admin/users/:user_id/identities"
     it "409s when user has different uid for same provider (state 3)" do
       create(:identity, user: user, provider: "mlh", uid: "core-old")
 
-      post "/api/v1/admin/users/#{user.id}/identities",
+      post "/api/admin/users/#{user.id}/identities",
            params: { provider: "mlh", uid: "core-new" }, headers: admin_api_headers
 
       expect(response).to have_http_status(:conflict)
@@ -1726,7 +1726,7 @@ git commit -m "Add GET /api/v1/admin/users/:user_id/identities"
       other = create(:user)
       create(:identity, user: other, provider: "mlh", uid: "core-shared")
 
-      post "/api/v1/admin/users/#{user.id}/identities",
+      post "/api/admin/users/#{user.id}/identities",
            params: { provider: "mlh", uid: "core-shared" }, headers: admin_api_headers
 
       expect(response).to have_http_status(:conflict)
@@ -1734,7 +1734,7 @@ git commit -m "Add GET /api/v1/admin/users/:user_id/identities"
     end
 
     it "422s on unknown provider" do
-      post "/api/v1/admin/users/#{user.id}/identities",
+      post "/api/admin/users/#{user.id}/identities",
            params: { provider: "doesnotexist", uid: "x" }, headers: admin_api_headers
 
       expect(response).to have_http_status(:unprocessable_entity)
@@ -1742,7 +1742,7 @@ git commit -m "Add GET /api/v1/admin/users/:user_id/identities"
     end
 
     it "sets user.<provider>_username when 'username' param is provided" do
-      post "/api/v1/admin/users/#{user.id}/identities",
+      post "/api/admin/users/#{user.id}/identities",
            params: { provider: "mlh", uid: "core-12345", username: "jane_mlh" },
            headers: admin_api_headers
 
@@ -1751,7 +1751,7 @@ git commit -m "Add GET /api/v1/admin/users/:user_id/identities"
 
     it "audits the link" do
       expect {
-        post "/api/v1/admin/users/#{user.id}/identities",
+        post "/api/admin/users/#{user.id}/identities",
              params: { provider: "mlh", uid: "audited" }, headers: admin_api_headers
       }.to change(AuditLog, :count).by(1)
 
@@ -1764,7 +1764,7 @@ git commit -m "Add GET /api/v1/admin/users/:user_id/identities"
 
 - [ ] **Step 2: Run to confirm failure**
 
-Run: `bundle exec rspec spec/requests/api/v1/admin/user_identities_spec.rb -e "POST"`
+Run: `bundle exec rspec spec/requests/api/admin/user_identities_spec.rb -e "POST"`
 Expected: failures.
 
 - [ ] **Step 3: Implement create**
@@ -1834,7 +1834,7 @@ end
 
 - [ ] **Step 4: Implement view**
 
-Create `app/views/api/v1/admin/user_identities/create.json.jbuilder`:
+Create `app/views/api/admin/user_identities/create.json.jbuilder`:
 
 ```ruby
 json.partial!("api/v1/admin/user_identities/identity", identity: @identity)
@@ -1842,16 +1842,16 @@ json.partial!("api/v1/admin/user_identities/identity", identity: @identity)
 
 - [ ] **Step 5: Run to verify**
 
-Run: `bundle exec rspec spec/requests/api/v1/admin/user_identities_spec.rb -e "POST"`
+Run: `bundle exec rspec spec/requests/api/admin/user_identities_spec.rb -e "POST"`
 Expected: 7 examples, 0 failures.
 
 - [ ] **Step 6: Commit**
 
 ```bash
 git add app/controllers/concerns/api/admin/user_identities_controller.rb \
-        app/views/api/v1/admin/user_identities/create.json.jbuilder \
-        spec/requests/api/v1/admin/user_identities_spec.rb
-git commit -m "Add POST /api/v1/admin/users/:user_id/identities (strict link)"
+        app/views/api/admin/user_identities/create.json.jbuilder \
+        spec/requests/api/admin/user_identities_spec.rb
+git commit -m "Add POST /api/admin/users/:user_id/identities (strict link)"
 ```
 
 ---
@@ -1860,19 +1860,19 @@ git commit -m "Add POST /api/v1/admin/users/:user_id/identities (strict link)"
 
 **Files:**
 - Modify: `app/controllers/concerns/api/admin/user_identities_controller.rb`
-- Modify: `spec/requests/api/v1/admin/user_identities_spec.rb` (append)
+- Modify: `spec/requests/api/admin/user_identities_spec.rb` (append)
 
 - [ ] **Step 1: Append failing tests**
 
 ```ruby
-  describe "DELETE /api/v1/admin/users/:user_id/identities/:id" do
+  describe "DELETE /api/admin/users/:user_id/identities/:id" do
     let!(:identity) { create(:identity, user: user, provider: "mlh", uid: "core-1") }
 
     before { user.update_column(:mlh_username, "jane_mlh") }
 
     it "destroys the identity and nulls user.<provider>_username" do
       expect {
-        delete "/api/v1/admin/users/#{user.id}/identities/#{identity.id}", headers: admin_api_headers
+        delete "/api/admin/users/#{user.id}/identities/#{identity.id}", headers: admin_api_headers
       }.to change(Identity, :count).by(-1)
 
       expect(response).to have_http_status(:no_content)
@@ -1884,7 +1884,7 @@ git commit -m "Add POST /api/v1/admin/users/:user_id/identities (strict link)"
       create(:github_repo, user: user)
 
       expect {
-        delete "/api/v1/admin/users/#{user.id}/identities/#{gh.id}", headers: admin_api_headers
+        delete "/api/admin/users/#{user.id}/identities/#{gh.id}", headers: admin_api_headers
       }.to change(GithubRepo, :count).by(-1)
     end
 
@@ -1892,14 +1892,14 @@ git commit -m "Add POST /api/v1/admin/users/:user_id/identities (strict link)"
       other = create(:user)
       foreign = create(:identity, user: other, provider: "mlh", uid: "core-2")
 
-      delete "/api/v1/admin/users/#{user.id}/identities/#{foreign.id}", headers: admin_api_headers
+      delete "/api/admin/users/#{user.id}/identities/#{foreign.id}", headers: admin_api_headers
       expect(response).to have_http_status(:not_found)
       expect(response.parsed_body["error_code"]).to eq("identity_not_found")
     end
 
     it "audits the unlink" do
       expect {
-        delete "/api/v1/admin/users/#{user.id}/identities/#{identity.id}", headers: admin_api_headers
+        delete "/api/admin/users/#{user.id}/identities/#{identity.id}", headers: admin_api_headers
       }.to change(AuditLog, :count).by(1)
       audit = AuditLog.last
       expect(audit.slug).to eq("unlink_identity")
@@ -1910,7 +1910,7 @@ git commit -m "Add POST /api/v1/admin/users/:user_id/identities (strict link)"
 
 - [ ] **Step 2: Run to confirm failure**
 
-Run: `bundle exec rspec spec/requests/api/v1/admin/user_identities_spec.rb -e "DELETE"`
+Run: `bundle exec rspec spec/requests/api/admin/user_identities_spec.rb -e "DELETE"`
 Expected: failures.
 
 - [ ] **Step 3: Implement destroy**
@@ -1961,19 +1961,19 @@ This already handles `nil` (passes it straight through to `update_column`). Veri
 
 - [ ] **Step 4: Run to verify**
 
-Run: `bundle exec rspec spec/requests/api/v1/admin/user_identities_spec.rb -e "DELETE"`
+Run: `bundle exec rspec spec/requests/api/admin/user_identities_spec.rb -e "DELETE"`
 Expected: 4 examples, 0 failures.
 
 - [ ] **Step 5: Run full identities spec**
 
-Run: `bundle exec rspec spec/requests/api/v1/admin/user_identities_spec.rb`
+Run: `bundle exec rspec spec/requests/api/admin/user_identities_spec.rb`
 Expected: 15 examples, 0 failures.
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add app/controllers/concerns/api/admin/user_identities_controller.rb spec/requests/api/v1/admin/user_identities_spec.rb
-git commit -m "Add DELETE /api/v1/admin/users/:user_id/identities/:id"
+git add app/controllers/concerns/api/admin/user_identities_controller.rb spec/requests/api/admin/user_identities_spec.rb
+git commit -m "Add DELETE /api/admin/users/:user_id/identities/:id"
 ```
 
 ---
@@ -1998,7 +1998,7 @@ RSpec.describe "API-linked identity round-trips through OAuth login", type: :req
     secret = create(:api_secret, user: create(:user, :super_admin)).secret
 
     # Pre-link via API
-    post "/api/v1/admin/users/#{target.id}/identities",
+    post "/api/admin/users/#{target.id}/identities",
          params: { provider: "mlh", uid: "core-roundtrip", username: "rt_user" },
          headers: { "api-key" => secret }
     expect(response).to have_http_status(:created)
@@ -2141,7 +2141,7 @@ Expected: prints the Portuguese string.
 
 - [ ] **Step 6: Run the full test suite**
 
-Run: `bundle exec rspec spec/requests/api/v1/admin/ spec/requests/authenticator_api_link_round_trip_spec.rb spec/routing/api/v1/admin_routes_spec.rb spec/errors/api/admin/api_error_spec.rb`
+Run: `bundle exec rspec spec/requests/api/admin/ spec/requests/authenticator_api_link_round_trip_spec.rb spec/routing/api/v1/admin_routes_spec.rb spec/errors/api/admin/api_error_spec.rb`
 Expected: all green.
 
 - [ ] **Step 7: Commit**
@@ -2163,12 +2163,12 @@ git commit -m "Localize admin API error messages (en, fr, pt)"
 
 - [ ] **Step 1: Run the full admin API test suite once more**
 
-Run: `bundle exec rspec spec/requests/api/v1/admin/ spec/requests/authenticator_api_link_round_trip_spec.rb spec/routing/api/v1/admin_routes_spec.rb spec/errors/api/admin/api_error_spec.rb`
+Run: `bundle exec rspec spec/requests/api/admin/ spec/requests/authenticator_api_link_round_trip_spec.rb spec/routing/api/v1/admin_routes_spec.rb spec/errors/api/admin/api_error_spec.rb`
 Expected: all green. Note total example count (~50+).
 
 - [ ] **Step 2: Run RuboCop on touched files**
 
-Run: `bundle exec rubocop app/controllers/api/v1/admin/ app/controllers/concerns/api/admin/ app/errors/api/admin/ app/views/api/v1/admin/ spec/requests/api/v1/admin/`
+Run: `bundle exec rubocop app/controllers/api/admin/ app/controllers/concerns/api/admin/ app/errors/api/admin/ app/views/api/admin/ spec/requests/api/admin/`
 Expected: no offenses. Fix any reported.
 
 - [ ] **Step 3: Write the runbook**
