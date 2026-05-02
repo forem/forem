@@ -58,10 +58,10 @@ module Api
         old_email = @user_record.email
 
         if new_email !~ URI::MailTo::EMAIL_REGEXP
-          raise Api::Admin::ApiError.new(:validation_failed, "Email is invalid", status: 422)
+          raise Api::Admin::ApiError.new(:validation_failed, I18n.t("admin_api.errors.email_invalid"), status: 422)
         end
         if User.where.not(id: @user_record.id).exists?(email: new_email)
-          raise Api::Admin::ApiError.new(:email_taken, "Email already in use", status: 409)
+          raise Api::Admin::ApiError.new(:email_taken, I18n.t("admin_api.errors.email_taken"), status: 409)
         end
 
         @user_record.update_columns(email: new_email)
@@ -74,7 +74,7 @@ module Api
         @user_record = User.find(params[:id])
         status = params.require(:status)
         unless ALLOWED_STATUSES.include?(status)
-          raise Api::Admin::ApiError.new(:invalid_status, "Status not allowed", status: 422)
+          raise Api::Admin::ApiError.new(:invalid_status, I18n.t("admin_api.errors.invalid_status"), status: 422)
         end
 
         old_status = current_moderation_status(@user_record)
@@ -101,7 +101,7 @@ module Api
         if delete_id == @user_record.id
           raise Api::Admin::ApiError.new(
             :cannot_merge_user_into_itself,
-            "Cannot merge a user into itself",
+            I18n.t("admin_api.errors.cannot_merge_user_into_itself"),
             status: 409,
           )
         end
@@ -111,7 +111,7 @@ module Api
             admin: current_user, keep_user: @user_record, delete_user_id: delete_id,
           )
         rescue StandardError => e
-          raise Api::Admin::ApiError.new(:merge_identity_conflict, e.message, status: 409)
+          raise Api::Admin::ApiError.new(:merge_identity_conflict, I18n.t("admin_api.errors.merge_identity_conflict", reason: e.message), status: 409)
         end
 
         audit!(slug: "merge_users",

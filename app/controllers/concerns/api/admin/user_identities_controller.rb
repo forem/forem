@@ -15,7 +15,7 @@ module Api
 
         unless Authentication::Providers.available.map(&:to_s).include?(provider)
           raise Api::Admin::ApiError.new(:unknown_provider,
-                                         "Provider '#{provider}' is not configured",
+                                         I18n.t("admin_api.errors.unknown_provider", provider: provider),
                                          status: 422)
         end
 
@@ -29,7 +29,7 @@ module Api
             else
               raise Api::Admin::ApiError.new(
                 :user_already_has_identity_for_provider,
-                "User already has identity for provider '#{provider}'",
+                I18n.t("admin_api.errors.user_already_has_identity_for_provider", provider: provider),
                 status: 409,
               )
             end
@@ -38,7 +38,7 @@ module Api
           if Identity.exists?(provider: provider, uid: uid)
             raise Api::Admin::ApiError.new(
               :identity_uid_taken,
-              "Identity uid #{uid} (#{provider}) is already linked to another user",
+              I18n.t("admin_api.errors.identity_uid_taken", uid: uid, provider: provider),
               status: 409,
             )
           end
@@ -62,7 +62,7 @@ module Api
         identity = target.identities.find_by(id: params[:id])
         unless identity
           raise Api::Admin::ApiError.new(
-            :identity_not_found, "Identity not found for user", status: 404,
+            :identity_not_found, I18n.t("admin_api.errors.identity_not_found"), status: 404,
           )
         end
 
