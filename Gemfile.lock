@@ -1022,7 +1022,7 @@ DEPENDENCIES
   ahoy_matey (~> 5.0.2)
   algoliasearch-rails (~> 2.3)
   amazing_print (~> 1.4)
-  analytics-ruby (~> 2.4)
+  analytics-ruby (~> 2.5)
   ancestry (~> 4.2)
   better_errors (~> 2.9)
   blazer (~> 2.6)
