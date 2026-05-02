@@ -19,16 +19,19 @@ module Trackable
     # Block-scoped, class-level skip. All instances of this class skip events
     # while the block runs. Useful for backfills and migrations.
     def skip_trackable_events
-      key = "trackable_skip_class_#{name}"
-      previous = Thread.current[key]
-      Thread.current[key] = true
+      previous = Thread.current[trackable_skip_key]
+      Thread.current[trackable_skip_key] = true
       yield
     ensure
-      Thread.current[key] = previous
+      Thread.current[trackable_skip_key] = previous
     end
 
     def trackable_class_skipped?
-      Thread.current["trackable_skip_class_#{name}"] == true
+      Thread.current[trackable_skip_key] == true
+    end
+
+    def trackable_skip_key
+      "trackable_skip_class_#{name}"
     end
   end
 
@@ -36,6 +39,9 @@ module Trackable
     raise NotImplementedError, "#{self.class.name} must implement #trackable_user_ids"
   end
 
+  # Default payload sent to tracking adapters. Override in adopting models to
+  # send a curated subset — the `as_json` default ships every column, which can
+  # be expensive for wide records (e.g. Article#body_markdown).
   def trackable_payload
     as_json.except(*Trackable::DEFAULT_EXCLUDED_KEYS)
   end
@@ -85,7 +91,7 @@ module Trackable
   def enqueue_trackable_event_destroyed
     enqueue_trackable_event(
       "#{model_name.param_key}_destroyed",
-      user_ids: @_trackable_destroyed_user_ids || Array.wrap(trackable_user_ids).compact.uniq,
+      user_ids: @_trackable_destroyed_user_ids,
     )
   end
 

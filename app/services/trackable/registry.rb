@@ -26,13 +26,16 @@ module Trackable
         active_names.map { |name| instance_for(name) }
       end
 
+      # Memoized: TRACKABLE_ADAPTERS and adapter `#enabled?` are both ENV-driven
+      # and effectively static after boot. Cleared by `reset!`.
       def active_names
-        configured_adapter_names.select { |name| instance_for(name)&.enabled? }
+        @active_names ||= configured_adapter_names.select { |name| instance_for(name)&.enabled? }
       end
 
       def reset!
         @adapters = {}
         @instances = {}
+        @active_names = nil
       end
 
       private
