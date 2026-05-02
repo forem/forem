@@ -4,9 +4,6 @@ The admin API at `/api/admin/users/...` lets a trusted caller (initially MLH Cor
 programmatically read users, update profile / email / status, merge accounts,
 manage admin notes, and link/unlink third-party identities.
 
-Spec: `docs/superpowers/specs/2026-05-02-admin-user-management-api-design.md`
-Plan: `docs/superpowers/plans/2026-05-02-admin-user-management-api.md`
-
 ## Creating a service account for MLH Core
 
 1. In a Rails console (production), create a dedicated super_admin user:
