@@ -12,7 +12,10 @@ module Api
         per_page = [positive_integer(params[:per_page], default: DEFAULT_PER_PAGE), MAX_PER_PAGE].min
 
         total = users.count
-        @users = users.order(created_at: :desc).offset((page - 1) * per_page).limit(per_page)
+        @users = users.includes(:identities, :profile, :roles)
+                      .order(created_at: :desc)
+                      .offset((page - 1) * per_page)
+                      .limit(per_page)
         @page = page
         @per_page = per_page
         @total = total
