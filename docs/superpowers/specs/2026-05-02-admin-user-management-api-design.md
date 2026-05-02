@@ -11,7 +11,7 @@ Expose an admin-only HTTP API on Forem (`/api/v1/admin/users/...`) that lets a t
 
 The primary driver is letting MLH Core record "this Forem user is MLH Core ID 12345" so that subsequent MyMLH OAuth sign-ins resolve to the right Forem account, and so Core can build out user sync the way OHQ has.
 
-The implementation reuses Forem's existing service objects (`Moderator::MergeUser`, `Moderator::ManageActivityAndRoles`, `Users::UpdateEmail`, `Users::UpdateUsername`, the `Note` and `Identity` models) and follows Forem's established API conventions (concern + thin V1 wrapper + JBuilder views + `authenticate_with_api_key!` + `authorize_super_admin`). No new auth plumbing.
+The implementation reuses Forem's existing service objects (`Moderator::MergeUser`, `Moderator::ManageActivityAndRoles`, `Users::Update`, the `Note` and `Identity` models) and follows Forem's established API conventions (concern + thin V1 wrapper + JBuilder views + `authenticate!` + `authorize_super_admin`). No new auth plumbing.
 
 ## Goals
 
@@ -42,7 +42,7 @@ The API caller is a super_admin Forem user dedicated to Core (a service account)
 
 - **Shared concern + thin version wrapper**. Logic in `app/controllers/concerns/api/admin/<resource>_controller.rb`. V1 class in `app/controllers/api/v1/admin/<resource>_controller.rb` — subclasses `Api::V1::ApiController`, includes the concern, declares `before_action`s.
 - **JBuilder views** for response shapes, in `app/views/api/v1/admin/<resource>/*.json.jbuilder`. (Forem does not use serializer POROs for API responses; `app/serializers/` is nearly empty.)
-- **Per-action auth** via `before_action :authenticate!` (or `authenticate_with_api_key!`) and `before_action :authorize_super_admin`.
+- **Per-action auth** via `before_action :authenticate!` (defined on `Api::V1::ApiController` as `authenticate_with_api_key_or_current_user!`) and `before_action :authorize_super_admin`. This matches the existing `Api::V1::Admin::UsersController` and lets a service-account API key OR a logged-in super_admin browser session call the API.
 - **Audit logging** via `Audit::Logger.log(:admin_api, current_user, payload)` from an `after_action` on each writing action.
 
 ### File layout
@@ -67,7 +67,7 @@ app/views/api/v1/admin/
 
 ### Authentication & authorization
 
-- **Auth**: `authenticate_with_api_key!` (existing). Caller sends `api-key: <secret>` header. The `ApiSecret` belongs to a Forem `User`; that user becomes `current_user`.
+- **Auth**: `authenticate!` (existing wrapper on `Api::V1::ApiController`, equivalent to `authenticate_with_api_key_or_current_user!`). Service callers (Core) send `api-key: <secret>` header; an `ApiSecret` belongs to a Forem `User`, who becomes `current_user`. A logged-in super_admin browser session also passes (useful for testing/curl).
 - **Authorization**: `authorize_super_admin` (existing). Returns `403 forbidden` unless `current_user.super_admin?`.
 - **Service account**: a dedicated super_admin Forem user is created for MLH Core; an `ApiSecret` is generated for it; the secret is stored in Core's vault.
 
@@ -77,8 +77,8 @@ app/views/api/v1/admin/
 |---|---|
 | Merge | `Moderator::MergeUser.call(admin:, keep_user:, delete_user_id:)` |
 | Status change | `Moderator::ManageActivityAndRoles.handle_user_roles(admin:, user:, user_params:)` |
-| Email change | `Users::UpdateEmail` (with API-only `skip_confirmation` path) |
-| Username change | `Users::UpdateUsername` |
+| Profile update (incl. username) | `Users::Update.call(user, user: {...}, profile: {...})` (same path as admin UI's `update_profile`) |
+| Email change | `@user.update_columns(email: new_email)` directly (mirrors admin UI's `update_email`; bypasses Devise confirmation by design — Core is trusted) |
 | Notes | `Note` model directly (`noteable: user`, `author: current_user`) |
 | Identity link/unlink | `Identity` model directly (no service exists; new logic is small) |
 | Audit | `Audit::Logger.log(:admin_api, current_user, payload)` + existing `AuditLog` model |
@@ -94,8 +94,8 @@ All paths under `/api/v1/admin/`. All require `api-key` header + super_admin cal
 | `GET` | `/users` | List/search users. Query params: `email`, `username`, `identity_provider`+`identity_uid`, `page`, `per_page` (max 100). Order: `created_at DESC`. |
 | `GET` | `/users/:id` | Fetch single user (full admin payload incl. identities). |
 | `PATCH` | `/users/:id` | Update profile fields: `name`, `username`, `summary`, `location`, `website_url`. PATCH semantics — only present fields update. |
-| `PUT` | `/users/:id/email` | Change email. Body: `{email}`. **Skips Devise confirmation** (Core is trusted). |
-| `PUT` | `/users/:id/status` | Change moderation status. Body: `{status, note?}`. `status` ∈ `{good_standing, suspended, spam, warned, trusted}`. Delegates to `Moderator::ManageActivityAndRoles`. |
+| `PUT` | `/users/:id/email` | Change email. Body: `{email}`. **Skips Devise confirmation** (uses `update_columns`, mirroring admin UI). |
+| `PUT` | `/users/:id/status` | Change moderation status. Body: `{status, note?}`. `status` ∈ `{"Good standing", "Suspended", "Spam", "Warned", "Comment Suspended", "Trusted", "Limited"}` — the moderation-status subset of `Moderator::ManageActivityAndRoles`'s accepted roles. Admin/Super Moderator/Tech Admin role grants are deliberately **not** accepted here; those go through `Api::V1::UserRolesController`. |
 | `POST` | `/users/:id/merge` | Merge another user **into** `:id`. Body: `{merge_user_id}`. Delegates to `Moderator::MergeUser.call(keep_user: User.find(:id), delete_user_id: merge_user_id)`. **Synchronous**. |
 
 ### User notes
@@ -173,7 +173,7 @@ All paths under `/api/v1/admin/`. All require `api-key` header + super_admin cal
 
 **No tokens**. API-linked identities do not get `token`, `secret`, or `auth_data_dump`. Those fields are populated on first real OAuth login. The API is a *claim* of the mapping, not a session credential.
 
-**OAuth-login compatibility**: when a user later signs in via the corresponding OAuth provider (e.g., MyMLH), Forem's existing omniauth callback uses `find_or_create_by(provider:, uid:)` semantics on `Identity`. The pre-existing API-linked row is found and the OAuth tokens are populated on it; no new user is created. **Implementation must verify this round-trip behavior** in the OAuth callback code path before shipping the link endpoint — see Implementation Plan §1.
+**OAuth-login compatibility**: when a user later signs in via the corresponding OAuth provider (e.g., MyMLH), Forem's existing omniauth callback is expected to use `find_or_create_by(provider:, uid:)` semantics on `Identity`, so the pre-existing API-linked row is found and OAuth tokens are populated on it (no new user, no duplicate row). **Implementation must verify this round-trip behavior** in the OAuth callback code path before shipping the link endpoint — see "Open implementation tasks" below.
 
 ### Unlink behavior
 
@@ -292,9 +292,9 @@ spec/requests/api/v1/admin/user_identities_spec.rb
 |---|---|
 | `GET /users` | filters: `email` exact, `username` exact, `identity_provider`+`identity_uid` reverse lookup, pagination boundaries, `per_page > 100` clamped |
 | `GET /users/:id` | unregistered user vs registered, identities listed, no token leakage in JSON |
-| `PATCH /users/:id` | username change triggers `Users::UpdateUsername`, profile fields persisted, validation errors → `422` with `errors:` |
-| `PUT /users/:id/email` | persists, **no** Devise confirmation email (`ActionMailer::Base.deliveries.empty?`), conflict → `409 email_taken` |
-| `PUT /users/:id/status` | each enum value, real call to `Moderator::ManageActivityAndRoles`, invalid status → `422 invalid_status` |
+| `PATCH /users/:id` | calls `Users::Update.call` with the right param shape, profile fields persisted (via the `Profile` model), username change persists, validation errors → `422` with `errors:` |
+| `PUT /users/:id/email` | persists via `update_columns`, **no** Devise confirmation email (`ActionMailer::Base.deliveries.empty?`), conflict (duplicate email) → `409 email_taken` |
+| `PUT /users/:id/status` | each accepted moderation-status value, real call to `Moderator::ManageActivityAndRoles`, invalid status (including admin-role values like `"Admin"` or `"Super Moderator"`) → `422 invalid_status` |
 | `POST /users/:id/merge` | end-to-end merge with factory content (articles/comments/reactions move; loser soft-destroyed), self-merge → `409 cannot_merge_user_into_itself`, mid-merge identity conflict → `409 merge_identity_conflict` |
 | `POST /notes` | persists with correct `noteable`/`author`/default reason; custom reason |
 | `GET /notes` | newest-first ordering |
