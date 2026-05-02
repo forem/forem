@@ -169,7 +169,7 @@ RSpec.describe "/api/admin/users" do
       body = response.parsed_body
       expect(body["id"]).to eq(user.id)
       expect(body["username"]).to eq(user.username)
-      expect(body["identities"].map { |i| i["uid"] }).to include("core-99")
+      expect(body["identities"].pluck("uid")).to include("core-99")
     end
 
     it "returns 404 with error_code for missing user" do
@@ -180,9 +180,9 @@ RSpec.describe "/api/admin/users" do
     end
 
     it "does not log an audit entry" do
-      expect {
+      expect do
         get "/api/admin/users/#{user.id}", headers: admin_api_headers
-      }.not_to change(AuditLog, :count)
+      end.not_to change(AuditLog, :count)
     end
   end
 
@@ -237,11 +237,11 @@ RSpec.describe "/api/admin/users" do
     end
 
     it "logs an audit entry with changed fields" do
-      expect {
+      expect do
         patch "/api/admin/users/#{target.id}",
               params: { name: "Audit Name" },
               headers: admin_api_headers
-      }.to change(AuditLog, :count).by(1)
+      end.to change(AuditLog, :count).by(1)
 
       audit = AuditLog.last
       expect(audit.slug).to eq("update_user")
@@ -280,11 +280,11 @@ RSpec.describe "/api/admin/users" do
     end
 
     it "logs an audit entry" do
-      expect {
+      expect do
         put "/api/admin/users/#{target.id}/email",
             params: { email: "audited@example.com" },
             headers: admin_api_headers
-      }.to change(AuditLog, :count).by(1)
+      end.to change(AuditLog, :count).by(1)
 
       audit = AuditLog.last
       expect(audit.slug).to eq("update_user_email")
@@ -356,10 +356,10 @@ RSpec.describe "/api/admin/users" do
     end
 
     it "audits the change" do
-      expect {
+      expect do
         put "/api/admin/users/#{target.id}/status",
             params: { status: "Suspended", note: "auditable" }, headers: admin_api_headers
-      }.to change(AuditLog, :count).by(1)
+      end.to change(AuditLog, :count).by(1)
       audit = AuditLog.last
       expect(audit.slug).to eq("update_user_status")
       expect(audit.data).to include("target_user_id" => target.id, "new_status" => "Suspended")
@@ -408,10 +408,10 @@ RSpec.describe "/api/admin/users" do
     end
 
     it "audits the merge" do
-      expect {
+      expect do
         post "/api/admin/users/#{keeper.id}/merge",
              params: { merge_user_id: loser.id }, headers: admin_api_headers
-      }.to change(AuditLog, :count).by(1)
+      end.to change(AuditLog, :count).by(1)
       audit = AuditLog.last
       expect(audit.slug).to eq("merge_users")
       expect(audit.data).to include("keep_user_id" => keeper.id, "deleted_user_id" => loser.id)

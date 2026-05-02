@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::Admin::UserNotes", type: :request do
+RSpec.describe "Api::V1::Admin::UserNotes" do
   before { Audit::Subscribe.listen :admin_api }
   after  { Audit::Subscribe.forget :admin_api }
 
@@ -9,13 +9,15 @@ RSpec.describe "Api::V1::Admin::UserNotes", type: :request do
   describe "GET /api/admin/users/:user_id/notes" do
     it "lists notes newest first" do
       caller = create(:user, :super_admin)
-      old_note = Note.create!(noteable: user, author: caller, reason: "misc_note", content: "older", created_at: 2.days.ago)
-      new_note = Note.create!(noteable: user, author: caller, reason: "misc_note", content: "newer", created_at: 1.day.ago)
+      old_note = Note.create!(noteable: user, author: caller, reason: "misc_note", content: "older",
+                              created_at: 2.days.ago)
+      new_note = Note.create!(noteable: user, author: caller, reason: "misc_note", content: "newer",
+                              created_at: 1.day.ago)
 
       get "/api/admin/users/#{user.id}/notes", headers: admin_api_headers
 
       expect(response).to have_http_status(:ok)
-      ids = response.parsed_body["notes"].map { |n| n["id"] }
+      ids = response.parsed_body["notes"].pluck("id")
       expect(ids).to eq([new_note.id, old_note.id])
     end
 
@@ -36,10 +38,10 @@ RSpec.describe "Api::V1::Admin::UserNotes", type: :request do
       caller_user = create(:user, :super_admin)
       headers = admin_api_headers(user: caller_user)
 
-      expect {
+      expect do
         post "/api/admin/users/#{user.id}/notes",
              params: { content: "spotted spam pattern" }, headers: headers
-      }.to change(Note, :count).by(1)
+      end.to change(Note, :count).by(1)
 
       expect(response).to have_http_status(:created)
       note = Note.last
@@ -58,10 +60,10 @@ RSpec.describe "Api::V1::Admin::UserNotes", type: :request do
     end
 
     it "audits the creation without leaking content" do
-      expect {
+      expect do
         post "/api/admin/users/#{user.id}/notes",
              params: { content: "secret" }, headers: admin_api_headers
-      }.to change(AuditLog, :count).by(1)
+      end.to change(AuditLog, :count).by(1)
 
       audit = AuditLog.last
       expect(audit.slug).to eq("add_user_note")

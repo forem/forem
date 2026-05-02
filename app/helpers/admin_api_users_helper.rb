@@ -7,6 +7,6 @@ module AdminApiUsersHelper
   # We avoid User#has_role? because it's private on Forem's User model.
   def user_moderation_status(user)
     role_names = user.roles.map(&:name)
-    STATUS_PRIORITY.find { |r| role_names.include?(r) } || "good_standing"
+    STATUS_PRIORITY.detect { |r| role_names.include?(r) } || "good_standing"
   end
 end

@@ -1,12 +1,12 @@
 require "rails_helper"
 
-RSpec.describe "API-linked identity round-trips through OAuth login", type: :request do
+RSpec.describe "API-linked identity round-trips through OAuth login" do
   before { Audit::Subscribe.listen :admin_api }
   after  { Audit::Subscribe.forget :admin_api }
 
   it "reuses an API-pre-created Identity row on first OAuth login (no duplicate user, no duplicate identity)" do
-    allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
-    allow(Settings::Authentication).to receive(:acceptable_domain?).and_return(true)
+    allow(Settings::Authentication).to receive_messages(providers: Authentication::Providers.available,
+                                                        acceptable_domain?: true)
 
     target = create(:user)
     secret = create(:api_secret, user: create(:user, :super_admin)).secret
@@ -29,10 +29,10 @@ RSpec.describe "API-linked identity round-trips through OAuth login", type: :req
       extra: OmniAuth::AuthHash.new(raw_info: OmniAuth::AuthHash.new(created_at: Time.current.iso8601)),
     )
 
-    expect {
+    expect do
       authed = Authentication::Authenticator.call(auth_payload, current_user: nil)
       expect(authed.id).to eq(target.id)
-    }.not_to change(User, :count)
+    end.not_to change(User, :count)
 
     expect(Identity.where(provider: "mlh", uid: "core-roundtrip").count).to eq(1)
     expect(Identity.find(pre_existing_id).user_id).to eq(target.id)

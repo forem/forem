@@ -1,10 +1,7 @@
 require "rails_helper"
 
 # Validate BaseController behavior via a real subclass mounted at a temporary route.
-RSpec.describe Api::V1::Admin::BaseController, type: :request do
-  before { Audit::Subscribe.listen :admin_api }
-  after  { Audit::Subscribe.forget :admin_api }
-
+RSpec.describe Api::V1::Admin::BaseController do
   controller_class = Class.new(described_class) do
     def index
       raise Api::Admin::ApiError.new(:test_conflict, "test", status: 409) if params[:raise] == "conflict"
@@ -16,6 +13,7 @@ RSpec.describe Api::V1::Admin::BaseController, type: :request do
   end
 
   before do
+    Audit::Subscribe.listen :admin_api
     stub_const("Api::V1::Admin::TestProbeController", controller_class)
     Rails.application.routes.draw do
       namespace :api do
@@ -28,7 +26,10 @@ RSpec.describe Api::V1::Admin::BaseController, type: :request do
     end
   end
 
-  after { Rails.application.reload_routes! }
+  after do
+    Audit::Subscribe.forget :admin_api
+    Rails.application.reload_routes!
+  end
 
   context "without an api key" do
     it "returns 401" do
@@ -46,9 +47,9 @@ RSpec.describe Api::V1::Admin::BaseController, type: :request do
 
   context "with a super_admin api key" do
     it "renders successfully and emits an audit log" do
-      expect {
+      expect do
         get "/api/v1/admin/test_probe", headers: admin_api_headers
-      }.to change(AuditLog, :count).by(1)
+      end.to change(AuditLog, :count).by(1)
 
       expect(response).to have_http_status(:ok)
       expect(response.parsed_body).to eq("ok" => true)

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::Admin::UserIdentities", type: :request do
+RSpec.describe "Api::V1::Admin::UserIdentities" do
   before { Audit::Subscribe.listen :admin_api }
   after  { Audit::Subscribe.forget :admin_api }
 
@@ -40,10 +40,10 @@ RSpec.describe "Api::V1::Admin::UserIdentities", type: :request do
   describe "POST /api/admin/users/:user_id/identities" do
     it "creates a new identity (state 1: clean)" do
       omniauth_mock_mlh_payload if defined?(omniauth_mock_mlh_payload)
-      expect {
+      expect do
         post "/api/admin/users/#{user.id}/identities",
              params: { provider: "mlh", uid: "core-12345" }, headers: admin_api_headers
-      }.to change { user.reload.identities.count }.by(1)
+      end.to change { user.reload.identities.count }.by(1)
 
       expect(response).to have_http_status(:created)
       body = response.parsed_body
@@ -54,10 +54,10 @@ RSpec.describe "Api::V1::Admin::UserIdentities", type: :request do
       omniauth_mock_mlh_payload if defined?(omniauth_mock_mlh_payload)
       create(:identity, user: user, provider: "mlh", uid: "core-12345")
 
-      expect {
+      expect do
         post "/api/admin/users/#{user.id}/identities",
              params: { provider: "mlh", uid: "core-12345" }, headers: admin_api_headers
-      }.not_to change { Identity.count }
+      end.not_to change(Identity, :count)
 
       expect(response).to have_http_status(:ok)
     end
@@ -104,10 +104,10 @@ RSpec.describe "Api::V1::Admin::UserIdentities", type: :request do
 
     it "audits the link" do
       omniauth_mock_mlh_payload if defined?(omniauth_mock_mlh_payload)
-      expect {
+      expect do
         post "/api/admin/users/#{user.id}/identities",
              params: { provider: "mlh", uid: "audited" }, headers: admin_api_headers
-      }.to change(AuditLog, :count).by(1)
+      end.to change(AuditLog, :count).by(1)
 
       audit = AuditLog.last
       expect(audit.slug).to eq("link_identity")
@@ -116,17 +116,17 @@ RSpec.describe "Api::V1::Admin::UserIdentities", type: :request do
   end
 
   describe "DELETE /api/admin/users/:user_id/identities/:id" do
-    let!(:identity) {
+    let!(:identity) do
       omniauth_mock_mlh_payload if defined?(omniauth_mock_mlh_payload)
       create(:identity, user: user, provider: "mlh", uid: "core-1")
-    }
+    end
 
     before { user.update_column(:mlh_username, "jane_mlh") }
 
     it "destroys the identity and nulls user.<provider>_username" do
-      expect {
+      expect do
         delete "/api/admin/users/#{user.id}/identities/#{identity.id}", headers: admin_api_headers
-      }.to change(Identity, :count).by(-1)
+      end.to change(Identity, :count).by(-1)
 
       expect(response).to have_http_status(:no_content)
       expect(user.reload.mlh_username).to be_nil
@@ -137,9 +137,9 @@ RSpec.describe "Api::V1::Admin::UserIdentities", type: :request do
       gh = create(:identity, user: user, provider: "github", uid: "gh-1")
       create(:github_repo, user: user)
 
-      expect {
+      expect do
         delete "/api/admin/users/#{user.id}/identities/#{gh.id}", headers: admin_api_headers
-      }.to change(GithubRepo, :count).by(-1)
+      end.to change(GithubRepo, :count).by(-1)
     end
 
     it "404s when identity does not belong to user" do
@@ -153,9 +153,9 @@ RSpec.describe "Api::V1::Admin::UserIdentities", type: :request do
     end
 
     it "audits the unlink" do
-      expect {
+      expect do
         delete "/api/admin/users/#{user.id}/identities/#{identity.id}", headers: admin_api_headers
-      }.to change(AuditLog, :count).by(1)
+      end.to change(AuditLog, :count).by(1)
       audit = AuditLog.last
       expect(audit.slug).to eq("unlink_identity")
       expect(audit.data).to include("provider" => "mlh", "uid" => "core-1", "identity_id" => identity.id)

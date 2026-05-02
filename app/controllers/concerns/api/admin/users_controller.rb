@@ -19,9 +19,9 @@ module Api
 
         total = users.count
         @users = users.includes(:identities, :profile, :roles)
-                      .order(created_at: :desc)
-                      .offset((page - 1) * per_page)
-                      .limit(per_page)
+          .order(created_at: :desc)
+          .offset((page - 1) * per_page)
+          .limit(per_page)
         @page = page
         @per_page = per_page
         @total = total
@@ -57,7 +57,7 @@ module Api
         new_email = params.require(:email)
         old_email = @user_record.email
 
-        if new_email !~ URI::MailTo::EMAIL_REGEXP
+        unless URI::MailTo::EMAIL_REGEXP.match?(new_email)
           raise Api::Admin::ApiError.new(:validation_failed, I18n.t("admin_api.errors.email_invalid"), status: 422)
         end
         if User.where.not(id: @user_record.id).exists?(email: new_email)
@@ -111,7 +111,11 @@ module Api
             admin: current_user, keep_user: @user_record, delete_user_id: delete_id,
           )
         rescue StandardError => e
-          raise Api::Admin::ApiError.new(:merge_identity_conflict, I18n.t("admin_api.errors.merge_identity_conflict", reason: e.message), status: 409)
+          raise Api::Admin::ApiError.new(
+            :merge_identity_conflict,
+            I18n.t("admin_api.errors.merge_identity_conflict", reason: e.message),
+            status: 409,
+          )
         end
 
         audit!(slug: "merge_users",

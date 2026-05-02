@@ -19,13 +19,15 @@ module Api
                                          status: 422)
         end
 
+        already_linked = false
         ActiveRecord::Base.transaction do
           existing_for_user = target.identities.find_by(provider: provider)
           if existing_for_user
             if existing_for_user.uid == uid
               @identity = existing_for_user
               update_provider_username(target, provider, params[:username]) if params[:username].present?
-              return render :create, status: :ok
+              already_linked = true
+              next
             else
               raise Api::Admin::ApiError.new(
                 :user_already_has_identity_for_provider,
@@ -47,6 +49,11 @@ module Api
           update_provider_username(target, provider, params[:username]) if params[:username].present?
         end
 
+        if already_linked
+          render :create, status: :ok
+          return
+        end
+
         audit!(slug: "link_identity",
                data: {
                  "target_user_id" => target.id,
@@ -62,7 +69,7 @@ module Api
         identity = target.identities.find_by(id: params[:id])
         unless identity
           raise Api::Admin::ApiError.new(
-            :identity_not_found, I18n.t("admin_api.errors.identity_not_found"), status: 404,
+            :identity_not_found, I18n.t("admin_api.errors.identity_not_found"), status: 404
           )
         end
 
@@ -88,7 +95,7 @@ module Api
 
       def update_provider_username(user, provider, username)
         field = "#{provider}_username"
-        return unless user.respond_to?("#{field}=")
+        return unless user.respond_to?(:"#{field}=")
 
         user.update_column(field, username)
       end
