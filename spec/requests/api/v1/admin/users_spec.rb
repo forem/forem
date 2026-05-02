@@ -155,4 +155,34 @@ RSpec.describe "/api/admin/users" do
       end.not_to change(AuditLog, :count)
     end
   end
+
+  describe "GET /api/admin/users/:id" do
+    let!(:user) { create(:user) }
+
+    it "returns the user payload" do
+      omniauth_mock_mlh_payload if defined?(omniauth_mock_mlh_payload)
+      create(:identity, user: user, provider: "mlh", uid: "core-99")
+
+      get "/api/admin/users/#{user.id}", headers: admin_api_headers
+
+      expect(response).to have_http_status(:ok)
+      body = response.parsed_body
+      expect(body["id"]).to eq(user.id)
+      expect(body["username"]).to eq(user.username)
+      expect(body["identities"].map { |i| i["uid"] }).to include("core-99")
+    end
+
+    it "returns 404 with error_code for missing user" do
+      get "/api/admin/users/999999", headers: admin_api_headers
+
+      expect(response).to have_http_status(:not_found)
+      expect(response.parsed_body["error_code"]).to eq("not_found")
+    end
+
+    it "does not log an audit entry" do
+      expect {
+        get "/api/admin/users/#{user.id}", headers: admin_api_headers
+      }.not_to change(AuditLog, :count)
+    end
+  end
 end

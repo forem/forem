@@ -21,6 +21,10 @@ module Api
         @total = total
       end
 
+      def show
+        @user_record = User.find(params[:id])
+      end
+
       def create
         # NOTE: We can add an inviting user here, e.g. User.invite!(current_user, user_params).
         options = {
