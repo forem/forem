@@ -57,6 +57,33 @@ module Api
         render :create, status: :created
       end
 
+      def destroy
+        target = User.find(params[:user_id])
+        identity = target.identities.find_by(id: params[:id])
+        unless identity
+          raise Api::Admin::ApiError.new(
+            :identity_not_found, "Identity not found for user", status: 404,
+          )
+        end
+
+        provider = identity.provider
+        uid = identity.uid
+        identity_id = identity.id
+
+        identity.destroy!
+        update_provider_username(target, provider, nil)
+        target.github_repos.destroy_all if provider.to_sym == :github
+
+        audit!(slug: "unlink_identity",
+               data: {
+                 "target_user_id" => target.id,
+                 "identity_id" => identity_id,
+                 "provider" => provider,
+                 "uid" => uid
+               })
+        head :no_content
+      end
+
       private
 
       def update_provider_username(user, provider, username)

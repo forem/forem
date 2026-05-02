@@ -114,4 +114,51 @@ RSpec.describe "Api::V1::Admin::UserIdentities", type: :request do
       expect(audit.data).to include("provider" => "mlh", "uid" => "audited", "target_user_id" => user.id)
     end
   end
+
+  describe "DELETE /api/admin/users/:user_id/identities/:id" do
+    let!(:identity) {
+      omniauth_mock_mlh_payload if defined?(omniauth_mock_mlh_payload)
+      create(:identity, user: user, provider: "mlh", uid: "core-1")
+    }
+
+    before { user.update_column(:mlh_username, "jane_mlh") }
+
+    it "destroys the identity and nulls user.<provider>_username" do
+      expect {
+        delete "/api/admin/users/#{user.id}/identities/#{identity.id}", headers: admin_api_headers
+      }.to change(Identity, :count).by(-1)
+
+      expect(response).to have_http_status(:no_content)
+      expect(user.reload.mlh_username).to be_nil
+    end
+
+    it "destroys github_repos when unlinking github" do
+      omniauth_mock_github_payload if defined?(omniauth_mock_github_payload)
+      gh = create(:identity, user: user, provider: "github", uid: "gh-1")
+      create(:github_repo, user: user)
+
+      expect {
+        delete "/api/admin/users/#{user.id}/identities/#{gh.id}", headers: admin_api_headers
+      }.to change(GithubRepo, :count).by(-1)
+    end
+
+    it "404s when identity does not belong to user" do
+      omniauth_mock_mlh_payload if defined?(omniauth_mock_mlh_payload)
+      other = create(:user)
+      foreign = create(:identity, user: other, provider: "mlh", uid: "core-2")
+
+      delete "/api/admin/users/#{user.id}/identities/#{foreign.id}", headers: admin_api_headers
+      expect(response).to have_http_status(:not_found)
+      expect(response.parsed_body["error_code"]).to eq("identity_not_found")
+    end
+
+    it "audits the unlink" do
+      expect {
+        delete "/api/admin/users/#{user.id}/identities/#{identity.id}", headers: admin_api_headers
+      }.to change(AuditLog, :count).by(1)
+      audit = AuditLog.last
+      expect(audit.slug).to eq("unlink_identity")
+      expect(audit.data).to include("provider" => "mlh", "uid" => "core-1", "identity_id" => identity.id)
+    end
+  end
 end
