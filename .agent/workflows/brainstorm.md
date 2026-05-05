@@ -1,0 +1,5 @@
+---
+description: "You MUST use this before any creative work - creating features, building components, adding functionality, or modifying behavior. Explores requirements and design before implementation."
+---
+
+Invoke the `.agent/skills/brainstorming/SKILL.md` workflow and follow it exactly as presented to you.
