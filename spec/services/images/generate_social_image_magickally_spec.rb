@@ -70,6 +70,55 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         expect(generator).to have_received(:read_files).with(article)
       end
 
+      context "when an external fetch fails with an HTTP error" do
+        it "logs a warning and does not alert Honeybadger" do
+          allow(generator).to receive(:read_files).and_raise(OpenURI::HTTPError.new("504 Gateway Timeout", StringIO.new))
+          allow(Rails.logger).to receive(:warn)
+          allow(Honeybadger).to receive(:notify)
+
+          described_class.call(article)
+
+          expect(Rails.logger).to have_received(:warn).with(/Image fetch failed:/)
+          expect(Honeybadger).not_to have_received(:notify)
+        end
+      end
+
+      context "when an external fetch times out" do
+        it "logs a warning and does not alert Honeybadger" do
+          allow(generator).to receive(:read_files).and_raise(Net::ReadTimeout)
+          allow(Rails.logger).to receive(:warn)
+          allow(Honeybadger).to receive(:notify)
+
+          described_class.call(article)
+
+          expect(Rails.logger).to have_received(:warn).with(/Image fetch failed:/)
+          expect(Honeybadger).not_to have_received(:notify)
+        end
+      end
+
+      context "when MiniMagick throws an error" do
+        it "logs a warning and does not alert Honeybadger if it is a status 15 SIGTERM" do
+          allow(generator).to receive(:generate_magickally).and_raise(MiniMagick::Error, "mogrify failed with status: 15")
+          allow(Rails.logger).to receive(:warn)
+          allow(Honeybadger).to receive(:notify)
+
+          described_class.call(article)
+
+          expect(Rails.logger).to have_received(:warn).with(/MiniMagick terminated by SIGTERM/)
+          expect(Honeybadger).not_to have_received(:notify)
+        end
+
+        it "alerts Honeybadger for other MiniMagick errors" do
+          error = MiniMagick::Error.new("mogrify failed with status: 1")
+          allow(generator).to receive(:generate_magickally).and_raise(error)
+          allow(Honeybadger).to receive(:notify)
+
+          described_class.call(article)
+
+          expect(Honeybadger).to have_received(:notify).with(error)
+        end
+      end
+
       context "with custom subforem" do
         let(:generator) { described_class.new(article_with_custom_subforem) }
 

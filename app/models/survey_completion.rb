@@ -8,11 +8,12 @@ class SurveyCompletion < ApplicationRecord
   scope :for_user, ->(user) { where(user: user) }
   scope :for_surveys, ->(survey_ids) { where(survey_id: survey_ids) }
 
-  # Mark a survey as completed for a user
   def self.mark_completed!(user:, survey:)
-    find_or_create_by(user: user, survey: survey) do |completion|
+    create_or_find_by!(user: user, survey: survey) do |completion|
       completion.completed_at = Time.current
     end
+  rescue ActiveRecord::RecordInvalid
+    find_by!(user: user, survey: survey)
   end
 
   # Check if a user has completed any of the given surveys
