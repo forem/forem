@@ -177,6 +177,7 @@ class Article < ApplicationRecord
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :page_views, dependent: :delete_all
+  has_one :article_activity, dependent: :delete
   # `dependent: :destroy` because in Poll we cascade the deletes of
   #     the poll votes, options, and skips.
   has_many :polls, dependent: :destroy

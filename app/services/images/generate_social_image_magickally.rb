@@ -49,6 +49,16 @@ module Images
           article.update_column(:social_image, url)
         end
       end
+    rescue OpenURI::HTTPError, Timeout::Error, Net::OpenTimeout, Net::ReadTimeout => e
+      # Ignore external asset fetch failures (including HTTP and timeout errors), but log a warning.
+      Rails.logger.warn("[GenerateSocialImageMagickally] Image fetch failed: #{e.message}")
+    rescue MiniMagick::Error => e
+      # Status 15 is SIGTERM (often from Sidekiq memory killers). No need to alert Honeybadger.
+      if e.message.include?("status: 15")
+        Rails.logger.warn("[GenerateSocialImageMagickally] MiniMagick terminated by SIGTERM")
+      else
+        Honeybadger.notify(e)
+      end
     rescue StandardError => e
       Rails.logger.error(e)
       Honeybadger.notify(e)

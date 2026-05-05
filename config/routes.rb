@@ -117,6 +117,23 @@ Rails.application.routes.draw do
           end
         end
 
+        # V1-only admin user management API. Lives in the V1 block (not in the
+        # shared config/routes/api.rb) because Api::V0::Admin::* controllers do
+        # not implement these actions; placing the routes here scopes them to
+        # callers using the application/vnd.forem.api-v1+json Accept header.
+        namespace :admin do
+          resources :users, only: %i[index show update] do
+            member do
+              put :email, action: :update_email
+              put :status, action: :update_status
+              post :merge
+            end
+
+            resources :notes, only: %i[index create], controller: "user_notes"
+            resources :identities, only: %i[index create destroy], controller: "user_identities"
+          end
+        end
+
         draw :api
       end
 

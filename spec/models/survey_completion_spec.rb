@@ -39,6 +39,12 @@ RSpec.describe SurveyCompletion, type: :model do
       completion = SurveyCompletion.mark_completed!(user: user, survey: survey)
       expect(completion.completed_at).to be_within(1.second).of(Time.current)
     end
+
+    it "uses create_or_find_by! to safely handle database race conditions" do
+      allow(SurveyCompletion).to receive(:create_or_find_by!).and_call_original
+      SurveyCompletion.mark_completed!(user: user, survey: survey)
+      expect(SurveyCompletion).to have_received(:create_or_find_by!).with(user: user, survey: survey)
+    end
   end
 
   describe ".user_completed_any?" do
