@@ -57,19 +57,29 @@ module Api
     # per-IP Rack::Attack api_throttle (3 GETs/sec), halves middleware overhead,
     # and gives the client a consistent point-in-time snapshot across panels.
     def dashboard
+      # When `start` is omitted (Infinity range), fall back to the owner's
+      # registration timestamp so we don't fabricate years of empty buckets
+      # before the account existed. AnalyticsService also clamps internally,
+      # but resolving here keeps the cache key precise.
+      effective_start = params[:start].presence || @owner_start_floor.iso8601
+
       cache_key = [
-        "analytics-dashboard",
-        params[:start], params[:end],
+        "analytics-dashboard-v3",
+        effective_start, params[:end],
         @owner.class.name, @owner.id,
         params[:article_id]
       ].join("-")
+
+      # HTTP cache: short browser/CDN TTL keeps the dashboard snappy on repeat
+      # navigations without sacrificing the 7-day server-side memoization above.
+      expires_in 5.minutes, public: false
 
       data = Rails.cache.fetch(cache_key, expires_in: 7.days) do
         # Construct services lazily inside the cache block: AnalyticsService#initialize
         # runs load_data, so building them on cache hits would defeat the cache.
         dated = AnalyticsService.new(
           @owner,
-          start_date: params[:start], end_date: params[:end], article_id: params[:article_id],
+          start_date: effective_start, end_date: params[:end], article_id: params[:article_id],
         )
         all_time = AnalyticsService.new(@owner, article_id: analytics_params[:article_id])
 
@@ -78,7 +88,8 @@ module Api
           totals: all_time.totals,
           referrers: dated.referrers,
           top_contributors: dated.top_contributors,
-          follower_engagement: dated.follower_engagement
+          follower_engagement: dated.follower_engagement,
+          start_date_floor: @owner_start_floor.iso8601
         }
       end
 
@@ -96,10 +107,28 @@ module Api
 
     def load_owner
       @owner = @org || @user
+      @owner_start_floor = (
+        (@owner.respond_to?(:registered_at) && @owner.registered_at) || @owner.created_at
+      ).to_date
     end
 
     def validate_date_params
-      raise ArgumentError, I18n.t("api.v0.analytics_controller.start_missing") if analytics_params[:start].blank?
+      # The bundled `dashboard` endpoint allows an omitted `start` and falls
+      # back to the owner's registration date so Infinity range works without
+      # the client knowing the account creation date. All other actions still
+      # require an explicit `start`. `end` is always validated when supplied
+      # so a malformed value can't silently fall back to Time.current and
+      # poison the cache key.
+      if analytics_params[:start].blank?
+        raise ArgumentError, I18n.t("api.v0.analytics_controller.start_missing") unless action_name == "dashboard"
+
+        if analytics_params[:end].present? && !valid_end_param?
+          raise ArgumentError, I18n.t("api.v0.analytics_controller.invalid_date_format")
+        end
+
+        return
+      end
+
       raise ArgumentError, I18n.t("api.v0.analytics_controller.invalid_date_format") unless valid_date_params?
     end
 
@@ -114,6 +143,10 @@ module Api
       else
         (analytics_params[:start] =~ date_regex)&.zero?
       end
+    end
+
+    def valid_end_param?
+      (analytics_params[:end] =~ /\A\d{4}-\d{1,2}-\d{1,2}\Z/)&.zero?
     end
   end
 end
