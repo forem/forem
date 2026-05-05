@@ -17,6 +17,12 @@ RSpec.describe BlackBox, type: :lib do
       lower_score = described_class.article_hotness_score(lower_article)
       expect(score).to be > lower_score
     end
+
+    it "returns 0 if the article does not have a published_at date" do
+      article = build_stubbed(:article, score: 99, published_at: nil)
+      score = described_class.article_hotness_score(article)
+      expect(score).to eq(0)
+    end
   end
 
   describe "#comment_quality_score" do

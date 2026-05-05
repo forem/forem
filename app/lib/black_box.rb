@@ -2,6 +2,8 @@ class BlackBox
   OUR_EPOCH_NUMBER = "2010-01-01 00:00:01".to_time.to_i # Arbitrary date, but the one we went with.
   class << self
     def article_hotness_score(article)
+      return 0 unless article.published_at
+
       usable_date = article.crossposted_at || article.published_at
       reaction_points = article.score
       super_super_recent_bonus = usable_date > 1.hour.ago ? 28 : 0
