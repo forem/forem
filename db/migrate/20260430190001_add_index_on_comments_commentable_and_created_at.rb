@@ -5,14 +5,20 @@ class AddIndexOnCommentsCommentableAndCreatedAt < ActiveRecord::Migration[7.0]
   # (commentable_id, commentable_type) and then filter by created_at.
   def up
     safety_assured do
-      execute "SET statement_timeout = 0;"
+      db_user = connection.query_value("SELECT current_user")
+      begin
+        execute "ALTER ROLE #{db_user} SET statement_timeout = 0;"
+        execute "SET statement_timeout = 0;"
 
-      remove_index :comments, name: "index_comments_on_commentable_and_created_at", if_exists: true, algorithm: :concurrently
+        remove_index :comments, name: "index_comments_on_commentable_and_created_at", if_exists: true, algorithm: :concurrently
 
-      add_index :comments,
-                %i[commentable_id commentable_type created_at],
-                name: "index_comments_on_commentable_and_created_at",
-                algorithm: :concurrently
+        add_index :comments,
+                  %i[commentable_id commentable_type created_at],
+                  name: "index_comments_on_commentable_and_created_at",
+                  algorithm: :concurrently
+      ensure
+        execute "ALTER ROLE #{db_user} RESET statement_timeout;"
+      end
     end
   end
 

@@ -7,15 +7,21 @@ class AddIndexOnReactionsReactableAndCreatedAt < ActiveRecord::Migration[7.0]
   # and the bundled /api/analytics/dashboard endpoint.
   def up
     safety_assured do
-      execute "SET statement_timeout = 0;"
+      db_user = connection.query_value("SELECT current_user")
+      begin
+        execute "ALTER ROLE #{db_user} SET statement_timeout = 0;"
+        execute "SET statement_timeout = 0;"
 
-      # Drop in case a previous deploy timed out and left an invalid index
-      remove_index :reactions, name: "index_reactions_on_reactable_and_created_at", if_exists: true, algorithm: :concurrently
+        # Drop in case a previous deploy timed out and left an invalid index
+        remove_index :reactions, name: "index_reactions_on_reactable_and_created_at", if_exists: true, algorithm: :concurrently
 
-      add_index :reactions,
-                %i[reactable_id reactable_type created_at],
-                name: "index_reactions_on_reactable_and_created_at",
-                algorithm: :concurrently
+        add_index :reactions,
+                  %i[reactable_id reactable_type created_at],
+                  name: "index_reactions_on_reactable_and_created_at",
+                  algorithm: :concurrently
+      ensure
+        execute "ALTER ROLE #{db_user} RESET statement_timeout;"
+      end
     end
   end
 
