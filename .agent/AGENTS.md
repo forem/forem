@@ -1,4 +1,4 @@
-# Superpowers for Antigravity
+# Superpowers
 
 You have superpowers.
 
