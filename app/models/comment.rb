@@ -76,6 +76,7 @@ class Comment < ApplicationRecord
   after_create_commit :send_email_notification, if: :should_send_email_notification?
 
   after_commit :calculate_score, on: %i[create update]
+  after_commit :enqueue_article_activity_update, on: :destroy, if: :commentable_is_article?
 
   after_update_commit :update_notifications, if: proc { |comment| comment.saved_changes.include? "body_markdown" }
 
@@ -213,6 +214,22 @@ class Comment < ApplicationRecord
   end
 
   private
+
+  def commentable_is_article?
+    commentable_type == "Article"
+  end
+
+  def enqueue_article_activity_update
+    # Score-driven create/destroy enqueues are emitted from
+    # Comments::CalculateScore (which uses update_columns and therefore
+    # bypasses callbacks). This after_commit only handles the destroy case:
+    # if a counted (score > 0) comment is removed, decrement the cache.
+    return unless destroyed?
+    return unless score.to_i.positive?
+
+    payload = { "iso" => created_at.to_date.iso8601 }
+    Articles::UpdateArticleActivityWorker.perform_async(commentable_id, "comment", "destroy", payload)
+  end
 
   def remove_notifications?
     deleted? || hidden_by_commentable_user?
