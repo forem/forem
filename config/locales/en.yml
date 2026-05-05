@@ -195,6 +195,19 @@ en:
       what_is_a_billboard: What's a billboard?
       report_billboard: Report billboard
       edit_billboard: Edit billboard
+  admin_api:
+    errors:
+      user_not_found: "User not found"
+      identity_not_found: "Identity not found for user"
+      user_already_has_identity_for_provider: "User already has an identity for provider '%{provider}'"
+      identity_uid_taken: "Identity uid %{uid} (%{provider}) is already linked to another user"
+      cannot_merge_user_into_itself: "Cannot merge a user into itself"
+      merge_identity_conflict: "Merge could not complete: %{reason}"
+      unknown_provider: "Provider '%{provider}' is not configured"
+      invalid_status: "Status not allowed"
+      email_taken: "Email already in use"
+      email_invalid: "Email is invalid"
+      validation_failed: "Validation failed"
   errors:
     messages:
       accepted: must be accepted
