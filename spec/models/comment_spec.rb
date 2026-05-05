@@ -721,5 +721,30 @@ false).once
       expect(comment.processed_html_final).to eq("Content with the old domain #{prior_domain}.")
     end
   end
+
+  describe "#enqueue_article_activity_update callback" do
+    it "enqueues a destroy event when a counted (score > 0) comment is destroyed" do
+      comment.update_columns(score: 5)
+      allow(Articles::UpdateArticleActivityWorker).to receive(:perform_async)
+      comment.destroy
+      expect(Articles::UpdateArticleActivityWorker)
+        .to have_received(:perform_async)
+        .with(article.id, "comment", "destroy", hash_including("iso"))
+    end
+
+    it "does not enqueue when destroying a comment whose score is not positive" do
+      comment.update_columns(score: 0)
+      allow(Articles::UpdateArticleActivityWorker).to receive(:perform_async)
+      comment.destroy
+      expect(Articles::UpdateArticleActivityWorker).not_to have_received(:perform_async)
+    end
+
+    it "does not enqueue from create/update commits (score path handles those)" do
+      allow(Articles::UpdateArticleActivityWorker).to receive(:perform_async)
+      c = create(:comment, user: user, commentable: article)
+      c.update!(body_markdown: "edited body content here")
+      expect(Articles::UpdateArticleActivityWorker).not_to have_received(:perform_async)
+    end
+  end
 end
 end
