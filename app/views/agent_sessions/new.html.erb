@@ -445,7 +445,8 @@
       messages: curatedMessages,
       metadata: Object.assign({}, parsedResult.metadata || {}, {
         total_messages: parsedResult.messages.length,
-        curated_indices: curationData.curated
+        curated_indices: curationData.curated,
+        redactions: redactionsForMessages(curatedMessages)
       })
     };
 
@@ -498,6 +499,23 @@
         saveBtn.textContent = '<%= j t("views.agent_sessions.save_and_upload", default: "Save & Upload") %>';
       }
       alert('Error saving session: ' + (err.message || 'Network error'));
+    });
+  }
+
+  function redactionsForMessages(messages) {
+    var counts = {};
+    (messages || []).forEach(function(msg) {
+      var redactions = msg.metadata && msg.metadata.redactions;
+      (redactions || []).forEach(function(r) {
+        var name = r.name || r.pattern_name;
+        var count = Number(r.count || r.match_count || 0);
+        if (!name || count <= 0) return;
+        counts[name] = (counts[name] || 0) + count;
+      });
+    });
+
+    return Object.keys(counts).map(function(name) {
+      return { name: name, count: counts[name] };
     });
   }
 
