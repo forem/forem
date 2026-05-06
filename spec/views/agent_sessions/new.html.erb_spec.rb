@@ -20,6 +20,7 @@ RSpec.describe "agent_sessions/new" do
     expect(help_text).to include("Gemini CLI")
     expect(help_text).to include("GitHub Copilot")
     expect(help_text).to include("OpenCode")
+    expect(help_text).to include("opencode export <session-id> > opencode-session.json")
     expect(help_text).to include("Pi")
   end
 
