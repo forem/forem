@@ -23,9 +23,10 @@ RSpec.describe "agent_sessions/new" do
     expect(help_text).to include("Pi")
   end
 
-  it "uses OpenCode as the generated display label" do
+  it "renders OpenCode as the upload option label" do
     render
 
-    expect(rendered).to include("opencode: 'OpenCode'")
+    option = Capybara.string(rendered).find("select#session-tool option[value='opencode']")
+    expect(option.text).to eq("OpenCode")
   end
 end

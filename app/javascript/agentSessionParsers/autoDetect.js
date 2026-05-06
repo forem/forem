@@ -83,11 +83,12 @@ export function detectTool(content) {
 }
 
 function isOpenCodeExport(data) {
+  // OpenCode CLI export session IDs currently use the ses_ prefix.
   return data && typeof data === 'object' && !Array.isArray(data) &&
     data.info && typeof data.info === 'object' &&
     typeof data.info.id === 'string' && data.info.id.startsWith('ses_') &&
     Array.isArray(data.messages) &&
-    data.messages.some(m => m?.info && Array.isArray(m.parts));
+    data.messages.every(m => m?.info && Array.isArray(m.parts));
 }
 
 function detectJsonlTool(firstRecord) {

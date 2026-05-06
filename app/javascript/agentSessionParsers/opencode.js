@@ -18,7 +18,7 @@ export function parse(rawContent) {
       role,
       contentBlocks,
       timestamp: timestampFromTime(message.info?.time),
-      model: modelName(message.info?.model),
+      model: modelName(message.info?.model || message.info),
     }));
   }
 
@@ -91,7 +91,9 @@ function extractMetadata(data, messages) {
   if (data.info?.time?.created) meta.start_time = new Date(data.info.time.created).toISOString();
   if (data.info?.time?.updated) meta.end_time = new Date(data.info.time.updated).toISOString();
 
-  const model = data.messages?.find(m => m.info?.model)?.info?.model;
+  const model = data.messages
+    ?.map(m => m.info?.model || m.info)
+    .find(m => m?.providerID || m?.modelID);
   if (model) meta.model = modelName(model);
 
   return meta;
