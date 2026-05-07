@@ -1,5 +1,12 @@
 class OrgCustomDomainConstraint
   def matches?(request)
+    is_ajax = request.respond_to?(:xhr?) && request.xhr?
+    is_json = request.path.to_s.end_with?(".json") || request.respond_to?(:accept) && request.accept.to_s.include?("application/json")
+    
+    if (is_ajax || is_json) && request.params[:i] != "i"
+      return false
+    end
+
     host = request.host&.downcase
     return false if host == Settings::General.app_domain || host.blank?
     return false if Subforem.cached_domains.include?(host)
