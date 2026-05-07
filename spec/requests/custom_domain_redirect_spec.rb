@@ -100,17 +100,19 @@ RSpec.describe "Custom Domain Redirects", type: :request do
     it "bypasses the custom domain constraint for /async_info paths" do
       host! "blog.example.com"
       
+      # Since we bypassed the constraint, it hits the standard Forem routes
       expect {
         get "/async_info/base_data"
-      }.to raise_error(ActiveRecord::RecordNotFound)
+      }.not_to raise_error
     end
 
     it "bypasses the custom domain constraint for /reactions paths" do
       host! "blog.example.com"
       
+      # Since we bypassed the constraint, it hits the standard Forem routes
       expect {
         get "/reactions"
-      }.to raise_error(ActiveRecord::RecordNotFound)
+      }.not_to raise_error
     end
 
     it "does not bypass the constraint if the request is AJAX but has ?i=i" do
