@@ -106,6 +106,18 @@ class ApplicationController < ActionController::Base
   #
   # @raise [ActiveRecord::RecordNotFound] when called
   def not_found
+    if request.env["forem.custom_domain_org"].present? || Organization.find_by(custom_domain: request.host&.downcase)
+      redirect_rule = RequestRedirect.find_by(
+        request_domain: request.host&.downcase,
+        original_url: [request.path, request.fullpath].uniq
+      )
+      
+      if redirect_rule
+        redirect_to redirect_rule.destination_url, allow_other_host: true, status: :moved_permanently
+        return
+      end
+    end
+
     raise ActiveRecord::RecordNotFound, "Not Found"
   end
 
