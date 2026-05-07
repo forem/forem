@@ -1,5 +1,9 @@
 class OrgCustomDomainConstraint
   def matches?(request)
+    if (request.xhr? || request.format.json?) && request.params[:i] != "i"
+      return false
+    end
+
     host = request.host&.downcase
     return false if host == Settings::General.app_domain || host.blank?
     return false if Subforem.cached_domains.include?(host)
