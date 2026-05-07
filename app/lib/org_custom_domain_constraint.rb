@@ -1,6 +1,9 @@
 class OrgCustomDomainConstraint
   def matches?(request)
-    if (request.xhr? || request.format.json?) && request.params[:i] != "i"
+    is_ajax = request.respond_to?(:xhr?) && request.xhr?
+    is_json = request.path.to_s.end_with?(".json") || request.respond_to?(:accept) && request.accept.to_s.include?("application/json")
+    
+    if (is_ajax || is_json) && request.params[:i] != "i"
       return false
     end
 
