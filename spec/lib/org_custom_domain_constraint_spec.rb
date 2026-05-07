@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe OrgCustomDomainConstraint do
   subject(:constraint) { described_class.new }
 
-  let(:request) { instance_double(ActionDispatch::Request, host: host, env: env) }
+  let(:request) { instance_double(ActionDispatch::Request, host: host, env: env, path: "/", accept: "") }
   let(:env) { {} }
   let(:organization) { create(:organization, custom_domain: "custom.org") }
 

@@ -62,6 +62,34 @@ RSpec.describe "Custom Domain Redirects", type: :request do
         get "/my-old-post"
       }.to raise_error(ActiveRecord::RecordNotFound)
     end
+
+    it "bypasses the custom domain constraint and does not use custom domain routes for AJAX requests" do
+      host! "blog.example.com"
+      
+      # Since we don't have a route for /my-old-post in standard routes,
+      # it will raise RecordNotFound instead of redirecting because the constraint was bypassed.
+      expect {
+        get "/my-old-post", xhr: true
+      }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "bypasses the custom domain constraint for JSON format requests" do
+      host! "blog.example.com"
+      
+      expect {
+        get "/my-old-post", as: :json
+      }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "does not bypass the constraint if the request is AJAX but has ?i=i" do
+      host! "blog.example.com"
+      
+      # Should redirect because i=i prevents the AJAX bypass
+      get "/my-old-post", params: { i: "i" }, xhr: true
+      
+      expect(response).to redirect_to("https://dev.to/my-new-post")
+      expect(response).to have_http_status(:moved_permanently)
+    end
   end
 
   context "when the custom domain feature flag is disabled" do
