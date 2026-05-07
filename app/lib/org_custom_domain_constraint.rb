@@ -2,8 +2,10 @@ class OrgCustomDomainConstraint
   def matches?(request)
     is_ajax = request.respond_to?(:xhr?) && request.xhr?
     is_json = request.path.to_s.end_with?(".json") || request.respond_to?(:accept) && request.accept.to_s.include?("application/json")
+    is_fetch = request.headers["Sec-Fetch-Mode"] == "cors" || request.headers["Sec-Fetch-Dest"] == "empty"
+    is_async_path = request.path.to_s.start_with?("/async_info", "/reactions")
     
-    if (is_ajax || is_json) && request.params[:i] != "i"
+    if (is_ajax || is_json || is_fetch || is_async_path) && request.params[:i] != "i"
       return false
     end
 

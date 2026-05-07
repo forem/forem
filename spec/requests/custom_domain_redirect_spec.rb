@@ -81,6 +81,38 @@ RSpec.describe "Custom Domain Redirects", type: :request do
       }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
+    it "bypasses the custom domain constraint for requests with Sec-Fetch-Mode: cors" do
+      host! "blog.example.com"
+      
+      expect {
+        get "/my-old-post", headers: { "Sec-Fetch-Mode" => "cors" }
+      }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "bypasses the custom domain constraint for requests with Sec-Fetch-Dest: empty" do
+      host! "blog.example.com"
+      
+      expect {
+        get "/my-old-post", headers: { "Sec-Fetch-Dest" => "empty" }
+      }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "bypasses the custom domain constraint for /async_info paths" do
+      host! "blog.example.com"
+      
+      expect {
+        get "/async_info/base_data"
+      }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "bypasses the custom domain constraint for /reactions paths" do
+      host! "blog.example.com"
+      
+      expect {
+        get "/reactions"
+      }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
     it "does not bypass the constraint if the request is AJAX but has ?i=i" do
       host! "blog.example.com"
       
