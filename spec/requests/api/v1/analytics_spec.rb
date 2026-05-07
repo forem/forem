@@ -115,21 +115,25 @@ RSpec.describe "Api::V1::Analytics" do
         expect(response).to have_http_status(:unprocessable_entity)
       end
 
-      it "sets a 5-minute Cache-Control header for browser/CDN caching" do
+      it "sets a no-store Cache-Control header so the dashboard always reflects fresh activity" do
         get "/api/analytics/dashboard?start=2019-03-29", headers: v1_headers
 
-        expect(response.headers["Cache-Control"]).to include("max-age=300", "private")
+        expect(response.headers["Cache-Control"]).to include("no-store")
       end
 
-      it "serves the second request from cache" do
+      it "does not server-side memoize the dashboard payload (always reads live from ArticleActivity)" do
         allow(Rails.cache).to receive(:fetch).and_call_original
 
         get "/api/analytics/dashboard?start=2019-03-29", headers: v1_headers
         get "/api/analytics/dashboard?start=2019-03-29", headers: v1_headers
 
-        expect(Rails.cache).to have_received(:fetch).twice.with(
+        expect(Rails.cache).not_to have_received(:fetch).with(
           a_string_starting_with("analytics-dashboard-v3-"),
-          hash_including(expires_in: 7.days),
+          anything,
+        )
+        expect(Rails.cache).not_to have_received(:fetch).with(
+          a_string_starting_with("analytics-for-dates-v3-"),
+          anything,
         )
       end
     end
