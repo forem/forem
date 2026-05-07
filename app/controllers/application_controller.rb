@@ -106,10 +106,15 @@ class ApplicationController < ActionController::Base
   #
   # @raise [ActiveRecord::RecordNotFound] when called
   def not_found
-    if request.env["forem.custom_domain_org"].present? || Organization.find_by(custom_domain: request.host&.downcase)
+    if request.env["forem.custom_domain_org"].present?
       redirect_rule = RequestRedirect.find_by(
         request_domain: request.host&.downcase,
-        original_url: [request.path, request.fullpath].uniq
+        original_url: request.fullpath
+      )
+      
+      redirect_rule ||= RequestRedirect.find_by(
+        request_domain: request.host&.downcase,
+        original_url: request.path
       )
       
       if redirect_rule

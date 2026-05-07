@@ -7,7 +7,7 @@ RSpec.describe "Admin::RequestRedirects", type: :request do
 
   describe "Authentication" do
     it "raises error for guests" do
-      expect { get admin_request_redirects_path }.to raise_error(ApplicationPolicy::UserRequiredError)
+      expect { get admin_request_redirects_path }.to raise_error(Pundit::NotAuthorizedError)
     end
 
     it "raises error for normal users" do

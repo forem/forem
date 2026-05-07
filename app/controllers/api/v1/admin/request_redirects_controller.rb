@@ -2,7 +2,10 @@ class Api::V1::Admin::RequestRedirectsController < Api::V1::Admin::BaseControlle
   before_action :set_request_redirect, only: %i[show update destroy]
 
   def index
-    @request_redirects = RequestRedirect.all
+    page = [params.fetch(:page, 1).to_i, 1].max
+    per_page = [params.fetch(:per_page, 50).to_i, 100].min
+
+    @request_redirects = RequestRedirect.order(created_at: :desc).page(page).per(per_page)
     render json: @request_redirects
   end
 

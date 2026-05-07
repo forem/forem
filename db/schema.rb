@@ -2052,7 +2052,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_05_07_124354) do
     t.integer "inbox_type", default: 0, null: false
     t.boolean "permit_adjacent_sponsors", default: true
     t.boolean "prefer_os_color_scheme", default: true
-    t.integer "scraping_restriction", default: 0, null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["feed_url"], name: "index_users_settings_on_feed_url", where: "((COALESCE(feed_url, ''::character varying))::text <> ''::text)"

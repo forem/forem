@@ -133,7 +133,7 @@ Rails.application.routes.draw do
             resources :identities, only: %i[index create destroy], controller: "user_identities"
           end
 
-          resources :request_redirects
+          resources :request_redirects, only: %i[index show create update destroy]
         end
 
         draw :api

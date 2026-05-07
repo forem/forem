@@ -7,21 +7,25 @@ RSpec.describe "Api::V1::Admin::RequestRedirects", type: :request do
 
   let(:headers) do
     {
-      "api-key" => admin.api_keys.create!.token,
+      "api-key" => create(:api_secret, user: admin).secret,
       "Accept" => "application/vnd.forem.api-v1+json"
     }
   end
 
   let(:user_headers) do
     {
-      "api-key" => user.api_keys.create!.token,
+      "api-key" => create(:api_secret, user: user).secret,
       "Accept" => "application/vnd.forem.api-v1+json"
     }
   end
 
   describe "Authentication" do
+    let(:guest_headers) do
+      { "Accept" => "application/vnd.forem.api-v1+json" }
+    end
+
     it "returns 401 for guests" do
-      get api_admin_request_redirects_path
+      get api_admin_request_redirects_path, headers: guest_headers
       expect(response).to have_http_status(:unauthorized)
     end
 

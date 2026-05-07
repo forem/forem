@@ -1,9 +1,11 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe "Custom Domain Redirects", type: :request do
   let!(:organization) { create(:organization, custom_domain: "blog.example.com") }
   
   before do
+    FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor.new(organization))
+
     # Create the request redirect
     RequestRedirect.create!(
       request_domain: "blog.example.com",
