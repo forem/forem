@@ -48,14 +48,14 @@ export const CommentsList = ({ comments = [], articlePath, totalCount }) => {
 
 CommentsList.displayName = 'CommentsList';
 
-Comment.propTypes = PropTypes.shape({
+const commentShape = PropTypes.shape({
   name: PropTypes.string.isRequired,
   profile_image_90: PropTypes.string.isRequired,
   published_at_int: PropTypes.number.isRequired,
 });
 
 CommentsList.propTypes = {
-  comments: PropTypes.arrayOf(Comment.propTypes).isRequired,
+  comments: PropTypes.arrayOf(commentShape).isRequired,
   articlePath: PropTypes.string.isRequired,
   totalCount: PropTypes.number.isRequired,
 };
