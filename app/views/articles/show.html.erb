@@ -14,9 +14,13 @@
 
 <%= render "shared/webcomponents_loader_script" %>
 <% if user_signed_in? && @article.type_of != "fullscreen_embed" %>
-  <%= javascript_include_tag "webShare", "articlePage", "articleSignedIn", "articleModerationTools", "commentDropdowns", "commentCuePopup", defer: true %>
+  <%= javascript_include_tag "webShare", "articlePage", "articleSignedIn", "articleModerationTools", "commentDropdowns", defer: true %>
 <% elsif @article.type_of != "fullscreen_embed" %>
-  <%= javascript_include_tag "webShare", "articlePage", "commentDropdowns", "commentCuePopup", defer: true %>
+  <%= javascript_include_tag "webShare", "articlePage", "commentDropdowns", defer: true %>
+<% end %>
+
+<% if @article.type_of != "fullscreen_embed" && FeatureFlag.enabled?(:comment_cue_popup) %>
+  <%= javascript_include_tag "commentCuePopup", defer: true %>
 <% end %>
 
 <% unless internal_navigation? || user_signed_in? %>
