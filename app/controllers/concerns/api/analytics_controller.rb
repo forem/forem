@@ -100,9 +100,22 @@ module Api
 
     def load_owner
       @owner = @org || @user
-      @owner_start_floor = (
-        (@owner.respond_to?(:registered_at) && @owner.registered_at) || @owner.created_at
-      ).to_date
+      @owner_start_floor = compute_start_floor.to_date
+    end
+
+    # Earliest meaningful date for the current request scope. For per-article
+    # views this is the article's publication date — articles can live in an
+    # organization created long after they were published (cross-posts), so
+    # clamping to the org's creation date would silently hide pre-org
+    # activity. For owner-wide views this is the owner's registration / org
+    # creation date.
+    def compute_start_floor
+      if (article_id = analytics_params[:article_id]).present?
+        published_at = Article.where(id: article_id).pick(:published_at)
+        return published_at if published_at
+      end
+
+      (@owner.respond_to?(:registered_at) && @owner.registered_at) || @owner.created_at
     end
 
     def validate_date_params
