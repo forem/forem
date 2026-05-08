@@ -36,6 +36,9 @@ module Images
     def self.cloudflare(img_src, **kwargs)
       template = Addressable::Template.new("https://{domain}/{directory}/image/{options*}/{src}")
       fit = kwargs[:crop] == "crop" ? "cover" : "scale-down"
+
+      format_option = img_src&.include?(".gif") ? nil : "auto"
+      
       template.expand(
         domain: ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"],
         directory: CLOUDFLARE_DIRECTORY,
@@ -62,6 +65,8 @@ module Images
                        end
       if img_src&.include?(".gif")
         options[:quality] = 66
+        options[:fetch_format] = nil
+        options[:flags] = "animated"
       end
 
       ActionController::Base.helpers.cl_image_path(img_src, options)
