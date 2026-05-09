@@ -107,6 +107,25 @@ Sidekiq.configure_server do |config|
 end
 
 Sidekiq.configure_client do |config|
+  # Keep the client (Rails app / runner / specs) on the same Redis database the
+  # server consumes from. The `Sidekiq.configure_server` block above remaps the
+  # URL to db `/3` in development so it doesn't collide with Rails.cache /
+  # Rack::Attack / RequestStore data sitting in db `/0`. Without the matching
+  # override here, enqueues silently land in `/0` while the worker daemon polls
+  # `/3` — jobs pile up forever and never run.
+  sidekiq_url = ApplicationConfig["REDIS_SIDEKIQ_URL"] || ApplicationConfig["REDIS_URL"] || "redis://localhost:6379"
+  if Rails.env.development?
+    begin
+      require "uri"
+      uri = URI.parse(sidekiq_url)
+      uri.path = "/3" if uri.path.nil? || uri.path == "" || uri.path == "/"
+      sidekiq_url = uri.to_s
+    rescue URI::InvalidURIError
+      # fall through with the original url
+    end
+  end
+  config.redis = { url: sidekiq_url }
+
   config.client_middleware do |chain|
     chain.add SidekiqUniqueJobs::Middleware::Client
   end
