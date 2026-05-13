@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe GenerateArticleEmbeddingWorker, type: :worker do
   let(:user) { create(:user) }
-  let(:article) { create(:article, user: user, title: "Test Article", body_markdown: "This is the body.") }
+  let(:article) { create(:article, user: user) }
 
   describe "#perform" do
     it "generates and saves an embedding, then queues the user interest worker" do

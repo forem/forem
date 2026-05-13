@@ -328,7 +328,7 @@ class Article < ApplicationRecord
 
   after_commit :enqueue_generate_embedding,
                on: %i[create update],
-               if: -> { published? && Ai::Base::DEFAULT_KEY.present? && (previously_new_record? || !score_changed_flag) }
+               if: -> { published? && Ai::Base::DEFAULT_KEY.present? }
 
   after_commit :async_score_calc, :touch_collection, :enrich_image_attributes, :detect_code_block_languages,
                on: %i[create update]
