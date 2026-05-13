@@ -85,7 +85,8 @@
       data-algolia-search-key="<%= j(Settings::General.algolia_search_only_api_key) if feature_flag_enabled?(:algolia_frontend) %>"
       data-algolia-display="<%= j(Settings::General.display_algolia_branding) %>"
       data-dynamic-url-component="<%= ENV.fetch("BILLBOARD_URL_COMPONENT", "bb") %>"
-      data-ga4-tracking-id="<%= j(Settings::General.ga_analytics_4_id) %>">
+      data-ga4-tracking-id="<%= j(Settings::General.ga_analytics_4_id) %>"
+      data-global-feature-flags-enabled="<%= j(enabled_global_feature_flags) %>">
       <%# Repeat of stylesheets in <head> to fix rendering glitch: https://github.com/forem/forem/issues/12377 %>
       
       <%# First script to run no matter what %>

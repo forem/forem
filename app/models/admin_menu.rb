@@ -35,6 +35,7 @@ class AdminMenu
       item(name: "profile fields"),
       item(name: "subforems"),
       item(name: "org features", controller: "org_features"),
+      item(name: "request redirects", controller: "request_redirects"),
     ]
 
     scope :admin_team, "user-line", [
