@@ -3889,6 +3889,10 @@ RSpec.describe Article do
   describe "semantic embeddings" do
     let(:article) { build(:article, score: Settings::UserExperience.home_feed_minimum_score) }
 
+    before do
+      stub_const("Ai::Base::DEFAULT_KEY", "test-key")
+    end
+
     it "enqueues generate embedding when score is above threshold and content changes" do
       allow(GenerateArticleEmbeddingWorker).to receive(:perform_async)
       article.save!

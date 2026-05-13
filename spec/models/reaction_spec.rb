@@ -509,7 +509,7 @@ RSpec.describe Reaction do
 
     it "does not enqueue the worker for non-public reactions" do
       allow(UpdateUserInterestEmbeddingWorker).to receive(:perform_async)
-      create(:reaction, reactable: article, user: user, category: "vomit")
+      create(:reaction, reactable: article, user: user, category: "readinglist")
       expect(UpdateUserInterestEmbeddingWorker).not_to have_received(:perform_async)
     end
 
