@@ -37,7 +37,9 @@ module Images
       template = Addressable::Template.new("https://{domain}/{directory}/image/{options*}/{src}")
       fit = kwargs[:crop] == "crop" ? "cover" : "scale-down"
 
-      format_option = img_src&.include?(".gif") ? nil : "auto"
+      # Preserve animation for GIFs and animated WebPs
+      is_animated = img_src&.match?(/\.(gif|webp)$/i)
+      format_option = is_animated ? nil : "auto"
       
       template.expand(
         domain: ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"],
@@ -47,7 +49,7 @@ module Images
           height: kwargs[:height],
           fit: fit,
           gravity: "auto",
-          format: "auto"
+          format: format_option
         },
         src: extract_suffix_url(img_src),
       ).to_s
@@ -63,7 +65,7 @@ module Images
                        else
                          "limit"
                        end
-      if img_src&.include?(".gif")
+      if img_src&.match?(/\.(gif|webp)$/i)
         options[:quality] = 66
         options[:fetch_format] = nil
         options[:flags] = "animated"
