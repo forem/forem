@@ -325,7 +325,7 @@ module Spam
       return false if html.blank? || !html.include?("<a")
 
       score = article.user.score
-      return false if score > 100
+      return false if score > 50
 
       threshold = score <= 0 ? -2000 : -2000 - ((score / 10) * 2000)
 

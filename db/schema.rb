@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_04_30_190003) do
+ActiveRecord::Schema[7.0].define(version: 2026_05_07_124354) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1490,6 +1490,15 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_30_190003) do
     t.index ["expires_at"], name: "index_recommended_articles_lists_on_expires_at"
     t.index ["placement_area"], name: "index_recommended_articles_lists_on_placement_area"
     t.index ["user_id"], name: "index_recommended_articles_lists_on_user_id"
+  end
+
+  create_table "request_redirects", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "destination_url", null: false
+    t.string "original_url", null: false
+    t.string "request_domain", null: false
+    t.datetime "updated_at", null: false
+    t.index ["request_domain", "original_url"], name: "index_request_redirects_on_request_domain_and_original_url", unique: true
   end
 
   create_table "response_templates", force: :cascade do |t|
