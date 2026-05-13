@@ -504,7 +504,8 @@ module ApplicationHelper
   end
 
   def enabled_global_feature_flags
-    RequestStore.store[:enabled_global_feature_flags] ||=
+    RequestStore.store[:enabled_global_feature_flags] ||= MemoryFirstCache.fetch("enabled_global_feature_flags", redis_expires_in: 10.minutes) do
       FeatureFlag.all.select { |_, state| state == :on }.keys.join(" ")
+    end
   end
 end

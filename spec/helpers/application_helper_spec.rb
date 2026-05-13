@@ -568,7 +568,11 @@ RSpec.describe ApplicationHelper do
   end
 
   describe "#enabled_global_feature_flags" do
-    before { RequestStore.store[:enabled_global_feature_flags] = nil }
+    before do
+      RequestStore.store[:enabled_global_feature_flags] = nil
+      MemoryFirstCache.clear
+      Rails.cache.delete("enabled_global_feature_flags")
+    end
 
     it "returns a space-separated list of globally enabled flag names" do
       allow(FeatureFlag).to receive(:all).and_return(
