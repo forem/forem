@@ -87,6 +87,7 @@
                       "codex",
                       "gemini_cli",
                       "github_copilot",
+                      "opencode",
                       "pi"
                     ]
                   }

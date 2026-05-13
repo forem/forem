@@ -1,0 +1,15 @@
+<% content_for :h1 do %>
+  Request Redirects &raquo; Edit
+<% end %>
+
+<div class="crayons-card p-4">
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="fs-xl fw-bold">Edit Request Redirect</h2>
+    <div>
+      <%= link_to "Show", admin_request_redirect_path(@request_redirect), class: "crayons-btn crayons-btn--s crayons-btn--ghost" %>
+      <%= link_to "Back", admin_request_redirects_path, class: "crayons-btn crayons-btn--s crayons-btn--ghost" %>
+    </div>
+  </div>
+
+  <%= render "form", request_redirect: @request_redirect %>
+</div>
