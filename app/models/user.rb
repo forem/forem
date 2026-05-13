@@ -353,6 +353,16 @@ class User < ApplicationRecord
     end
   end
 
+  def author_trust_score
+    case score.to_i
+    when -Float::INFINITY...25 then 0
+    when 25...75 then 1
+    when 75...175 then 2
+    when 175...300 then 3
+    else 4
+    end
+  end
+
   def calculate_score
     # User score is used to mitigate spam by reducing visibility of flagged users
     # It can generally be used as a baseline for affecting certain functionality which

@@ -1,0 +1,38 @@
+<% content_for :h1 do %>
+  Request Redirects
+<% end %>
+
+<div class="crayons-card p-4">
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="fs-xl fw-bold">Request Redirects</h2>
+    <%= link_to "New Redirect", new_admin_request_redirect_path, class: "crayons-btn crayons-btn--s" %>
+  </div>
+
+  <table class="w-100 fs-s">
+    <thead>
+      <tr class="bb">
+        <th class="p-2 text-left">Original URL</th>
+        <th class="p-2 text-left">Destination URL</th>
+        <th class="p-2 text-left">Request Domain</th>
+        <th class="p-2 text-right">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @request_redirects.each do |redirect| %>
+        <tr class="bb">
+          <td class="p-2"><%= redirect.original_url %></td>
+          <td class="p-2"><%= redirect.destination_url %></td>
+          <td class="p-2"><%= redirect.request_domain %></td>
+          <td class="p-2 text-right">
+            <%= link_to "Edit", edit_admin_request_redirect_path(redirect), class: "crayons-btn crayons-btn--s crayons-btn--ghost" %>
+            <%= link_to "Destroy", admin_request_redirect_path(redirect), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }, class: "crayons-btn crayons-btn--s crayons-btn--danger-ghost" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <div class="mt-4">
+    <%= paginate @request_redirects %>
+  </div>
+</div>
