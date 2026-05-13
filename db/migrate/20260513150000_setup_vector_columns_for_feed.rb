@@ -1,6 +1,5 @@
 class SetupVectorColumnsForFeed < ActiveRecord::Migration[7.0]
   def up
-    enable_extension "vector"
     safety_assured do
       remove_column :user_activities, :semantic_interest_profile
     end
