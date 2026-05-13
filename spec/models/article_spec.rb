@@ -3911,7 +3911,7 @@ RSpec.describe Article do
 
     it "does not trigger semantic embedding generation manually if embedding is already present" do
       article.save!
-      article.update_column(:semantic_embedding, [0.1])
+      article.update_column(:semantic_embedding, Array.new(768, 0.1))
       allow(GenerateArticleEmbeddingWorker).to receive(:perform_async)
       article.trigger_semantic_embedding_generation
       expect(GenerateArticleEmbeddingWorker).not_to have_received(:perform_async)

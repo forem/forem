@@ -7,17 +7,17 @@ RSpec.describe UpdateUserInterestEmbeddingWorker, type: :worker do
 
   describe "#perform" do
     it "sets the embedding directly if the user currently has none" do
-      article.update_column(:semantic_embedding, [1.0, 1.0])
+      article.update_column(:semantic_embedding, Array.new(768, 1.0))
       user_activity.update_column(:interest_embedding, nil)
 
       described_class.new.perform(user.id, article.id)
 
-      expect(user_activity.reload.interest_embedding).to eq([1.0, 1.0])
+      expect(user_activity.reload.interest_embedding).to eq(Array.new(768, 1.0))
     end
 
     it "blends the embedding using EMA if the user already has one" do
-      article.update_column(:semantic_embedding, [1.0, 0.0])
-      user_activity.update_column(:interest_embedding, [0.0, 1.0])
+      article.update_column(:semantic_embedding, Array.new(768) { |i| i.even? ? 1.0 : 0.0 })
+      user_activity.update_column(:interest_embedding, Array.new(768) { |i| i.even? ? 0.0 : 1.0 })
 
       # Blend factor is 0.2.
       # new_x = 0.0 * 0.8 + 1.0 * 0.2 = 0.2
@@ -32,11 +32,11 @@ RSpec.describe UpdateUserInterestEmbeddingWorker, type: :worker do
 
     it "does nothing if the article has no embedding" do
       article.update_column(:semantic_embedding, nil)
-      user_activity.update_column(:interest_embedding, [0.0, 1.0])
+      user_activity.update_column(:interest_embedding, Array.new(768, 1.0))
 
       described_class.new.perform(user.id, article.id)
 
-      expect(user_activity.reload.interest_embedding).to eq([0.0, 1.0])
+      expect(user_activity.reload.interest_embedding).to eq(Array.new(768, 1.0))
     end
   end
 end

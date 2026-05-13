@@ -139,7 +139,9 @@ class FeedConfig < ApplicationRecord
 
     # Additional weights
     if semantic_similarity_weight.positive? && activity_store.respond_to?(:interest_embedding) && activity_store.interest_embedding.present?
-      embedding_sql = self.class.connection.quote(activity_store.interest_embedding.to_a.to_s)
+      embedding_values = activity_store.interest_embedding.to_a
+      embedding_literal = "[#{embedding_values.join(',')}]"
+      embedding_sql = self.class.connection.quote(embedding_literal)
       terms << "(CASE WHEN articles.semantic_embedding IS NOT NULL THEN (1 - (articles.semantic_embedding <=> #{embedding_sql})) * #{semantic_similarity_weight} ELSE 0 END)"
     end
 

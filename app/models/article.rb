@@ -1,11 +1,4 @@
 class Article < ApplicationRecord
-  begin
-    has_neighbors :semantic_embedding if column_names.include?("semantic_embedding")
-  rescue StandardError
-    # db not available yet
-  end
-
-  after_commit :enqueue_generate_embedding, on: [:create, :update], if: -> { published? && Ai::Base::DEFAULT_KEY.present? }
 
   include LiquidEmbeddable
   include CloudinaryHelper
@@ -326,6 +319,16 @@ class Article < ApplicationRecord
   after_update_commit :update_notification_subscriptions, if: proc { |article|
     article.saved_change_to_user_id?
   }
+
+  begin
+    has_neighbors :semantic_embedding if column_names.include?("semantic_embedding")
+  rescue StandardError
+    # db not available yet
+  end
+
+  after_commit :enqueue_generate_embedding,
+               on: %i[create update],
+               if: -> { published? && Ai::Base::DEFAULT_KEY.present? && (previously_new_record? || !score_changed_flag) }
 
   after_commit :async_score_calc, :touch_collection, :enrich_image_attributes, :detect_code_block_languages,
                on: %i[create update]
@@ -993,10 +996,15 @@ class Article < ApplicationRecord
     trigger_semantic_embedding_generation if score_changed_flag
   end
 
+  def eligible_for_semantic_embedding?
+    respond_to?(:semantic_embedding) &&
+      score >= Settings::UserExperience.home_feed_minimum_score &&
+      semantic_embedding.blank?
+  end
+  private :eligible_for_semantic_embedding?
+
   def trigger_semantic_embedding_generation
-    return unless respond_to?(:semantic_embedding)
-    return unless score >= Settings::UserExperience.home_feed_minimum_score
-    return if semantic_embedding.present?
+    return unless eligible_for_semantic_embedding?
 
     GenerateArticleEmbeddingWorker.perform_async(id)
   end
@@ -1743,8 +1751,7 @@ class Article < ApplicationRecord
   end
 
   def enqueue_generate_embedding
-    return unless respond_to?(:semantic_embedding)
-    return unless score >= Settings::UserExperience.home_feed_minimum_score
+    return unless eligible_for_semantic_embedding?
 
     if saved_change_to_title? || saved_change_to_body_markdown? || saved_change_to_cached_tag_list?
       GenerateArticleEmbeddingWorker.perform_async(id)

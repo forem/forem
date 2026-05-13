@@ -13,21 +13,23 @@ class UpdateUserInterestEmbeddingWorker
     return unless article_vector.length == 768
 
     UserActivity.transaction do
-      user_activity = UserActivity.lock.find_by(user_id: user_id)
-      return unless user_activity && user_activity.respond_to?(:interest_embedding)
+      user_activity = UserActivity.find_or_create_by!(user_id: user_id)
+      user_activity = UserActivity.lock.find(user_activity.id)
 
-      current_vector = user_activity.interest_embedding&.to_a
+      if user_activity.respond_to?(:interest_embedding)
+        current_vector = user_activity.interest_embedding&.to_a
 
-      new_vector = if current_vector.blank? || current_vector.length != 768
-                     article_vector
-                   else
-                     # Blend vectors using Exponential Moving Average
-                     current_vector.zip(article_vector).map do |c, a|
-                       (c * (1 - BLEND_FACTOR)) + (a * BLEND_FACTOR)
+        new_vector = if current_vector.blank? || current_vector.length != 768
+                       article_vector
+                     else
+                       # Blend vectors using Exponential Moving Average
+                       current_vector.zip(article_vector).map do |c, a|
+                         (c * (1 - BLEND_FACTOR)) + (a * BLEND_FACTOR)
+                       end
                      end
-                   end
 
-      user_activity.update_column(:interest_embedding, new_vector)
+        user_activity.update_column(:interest_embedding, new_vector)
+      end
     end
   end
 end

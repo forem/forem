@@ -13,6 +13,5 @@ class SetupVectorColumnsForFeed < ActiveRecord::Migration[7.0]
     remove_column :user_activities, :interest_embedding
     add_column :user_activities, :semantic_interest_profile, :jsonb, default: {}
     add_index :user_activities, :semantic_interest_profile, using: :gin
-    disable_extension "vector"
   end
 end
