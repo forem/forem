@@ -127,8 +127,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   rescue ::Authentication::Errors::PreviouslySuspended, ::Authentication::Errors::SpammyEmailDomain => e
     flash[:global_notice] = e.message
 
-    Honeybadger.notify(e)
-
     redirect_to root_path
   rescue ActiveRecord::RecordInvalid => e
     flash[:alert] = e.record&.errors&.full_messages&.join(", ").presence || I18n.t("omniauth_callbacks_controller.log_in_error", e: e.message)
