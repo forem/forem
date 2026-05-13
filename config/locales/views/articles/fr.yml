@@ -26,6 +26,11 @@ fr:
           oldest_html: Oldest comments %{num}
         num: "(%{num})"
         subscribe: Subscribe
+      comment_cue:
+        zero: C'est bien calme ici... presque trop calme. Soyez le premier à lancer la conversation !
+        few: Quelques personnes discutent déjà. Ne les laissez pas en plan—donnez votre avis !
+        many: La section commentaires s'enflamme. 🔥 Sautez dans la mêlée et dites ce que vous en pensez !
+        close: Fermer
       conduct:
         aria_label: Conduct controls
         code: Code of Conduct

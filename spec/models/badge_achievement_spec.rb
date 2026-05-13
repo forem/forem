@@ -29,6 +29,12 @@ RSpec.describe BadgeAchievement do
     expect(credits_achievement.user.credits.size).to eq(10)
   end
 
+  it "calculates user score after create" do
+    user = create(:user)
+    expect(user).to receive(:calculate_score)
+    create(:badge_achievement, user: user, badge: badge)
+  end
+
   it "notifies recipients after commit" do
     achievement
     allow(Notification).to receive(:send_new_badge_achievement_notification)

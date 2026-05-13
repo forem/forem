@@ -26,6 +26,11 @@ en:
           oldest_html: Oldest comments %{num}
         num: "(%{num})"
         subscribe: Subscribe
+      comment_cue:
+        zero: It's quiet in here... almost too quiet. Be the trendsetter and start the conversation!
+        few: A few folks are already chatting. Don't leave them hanging—add your two cents!
+        many: The comment section is popping off. 🔥 Jump in and have your say!
+        close: Dismiss
       conduct:
         aria_label: Conduct controls
         code: Code of Conduct

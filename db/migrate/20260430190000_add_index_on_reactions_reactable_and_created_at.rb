@@ -9,7 +9,7 @@ class AddIndexOnReactionsReactableAndCreatedAt < ActiveRecord::Migration[7.0]
     safety_assured do
       db_user = connection.query_value("SELECT current_user")
       begin
-        execute "ALTER ROLE #{db_user} SET statement_timeout = 0;"
+        execute "ALTER ROLE \"#{db_user}\" SET statement_timeout = 0;"
         execute "SET statement_timeout = 0;"
 
         # Drop in case a previous deploy timed out and left an invalid index
@@ -20,7 +20,7 @@ class AddIndexOnReactionsReactableAndCreatedAt < ActiveRecord::Migration[7.0]
                   name: "index_reactions_on_reactable_and_created_at",
                   algorithm: :concurrently
       ensure
-        execute "ALTER ROLE #{db_user} RESET statement_timeout;"
+        execute "ALTER ROLE \"#{db_user}\" RESET statement_timeout;"
       end
     end
   end

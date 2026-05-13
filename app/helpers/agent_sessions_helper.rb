@@ -4,6 +4,7 @@ module AgentSessionsHelper
     "codex" => { bg: "#10A37F", label: "Codex", svg: "agent-codex.svg" },
     "gemini_cli" => { bg: "#4285F4", label: "Gemini CLI", svg: "agent-gemini-cli.svg" },
     "github_copilot" => { bg: "#333", label: "GitHub Copilot", svg: "agent-github-copilot.svg" },
+    "opencode" => { bg: "#F59E0B", label: "OpenCode", svg: "agent-opencode.svg" },
     "pi" => { bg: "#EF4444", label: "Pi", svg: "agent-pi.svg" }
   }.freeze
 

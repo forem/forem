@@ -4,29 +4,43 @@ class CloudRunTag < LiquidTagBase
 
   def initialize(_tag_name, input, _parse_context)
     super
-    @url = parse_input(strip_tags(input))
+    args = strip_tags(input).split
+    @url = parse_url(args[0].to_s)
+    @ratio = parse_ratio(args[1])
   end
 
   def render(_context)
     ApplicationController.render(
       partial: PARTIAL,
       locals: {
-        url: @url
+        url: @url,
+        ratio: @ratio
       },
     )
   end
 
   private
 
-  def parse_input(input)
-    stripped_input = input.strip
-    raise StandardError, I18n.t("liquid_tags.cloud_run_tag.invalid_cloud_run_url") unless valid_url?(stripped_input)
+  def parse_url(url)
+    stripped_url = url.strip
+    raise StandardError, I18n.t("liquid_tags.cloud_run_tag.invalid_cloud_run_url") unless valid_url?(stripped_url)
     
-    stripped_input
+    stripped_url
   end
 
   def valid_url?(url)
     url.match?(REGISTRY_REGEXP)
+  end
+
+  def parse_ratio(ratio)
+    case ratio&.downcase
+    when "landscape"
+      "landscape"
+    when "portrait"
+      "portrait"
+    else
+      "default"
+    end
   end
 end
 

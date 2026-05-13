@@ -53,6 +53,16 @@ RSpec.describe CloudRunTag, type: :liquid_tag do
       expect(rendered).to include('style="width: 100%; border: 1px solid #e1e5e9; border-radius: 4px;"')
     end
 
+    it "renders landscape ratio with proper height" do
+      liquid = generate_new_liquid("#{valid_cloud_run_url} landscape")
+      expect(liquid.render).to include('height="400px"')
+    end
+
+    it "renders portrait ratio with proper height" do
+      liquid = generate_new_liquid("#{valid_cloud_run_url} portrait")
+      expect(liquid.render).to include('height="900px"')
+    end
+
     it "raises an error for invalid Cloud Run URL" do
       expect { generate_new_liquid(invalid_cloud_run_url).render }.to raise_error("Invalid Cloud Run URL")
     end
