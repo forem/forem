@@ -2,6 +2,7 @@
 import * as claudeCode from './claudeCode.js';
 import * as codex from './codex.js';
 import * as geminiCli from './geminiCli.js';
+import * as opencode from './opencode.js';
 import * as pi from './pi.js';
 import * as githubCopilot from './githubCopilot.js';
 
@@ -9,6 +10,7 @@ const PARSER_MAP = {
   claude_code: claudeCode,
   codex: codex,
   gemini_cli: geminiCli,
+  opencode: opencode,
   pi: pi,
   github_copilot: githubCopilot,
 };
@@ -50,6 +52,9 @@ export function detectTool(content) {
       // Gemini: has session_metadata type
       if (firstRecord.type === 'session_metadata') return 'gemini_cli';
 
+      // OpenCode CLI export: { info: { id, ... }, messages: [{ info, parts }] }
+      if (isOpenCodeExport(firstRecord)) return 'opencode';
+
       // JSONL-based agents (Claude Code, Pi, etc.)
       if ('sessionId' in firstRecord || 'version' in firstRecord ||
           'parentId' in firstRecord || 'parentUuid' in firstRecord ||
@@ -64,6 +69,8 @@ export function detectTool(content) {
   // Try full JSON parse (Gemini CLI uses single JSON object)
   try {
     const data = JSON.parse(content);
+    if (isOpenCodeExport(data)) return 'opencode';
+
     if (data && typeof data === 'object' && !Array.isArray(data) && !('parentId' in data)) {
       return 'gemini_cli';
     }
@@ -73,6 +80,15 @@ export function detectTool(content) {
 
   // Default fallback
   return 'claude_code';
+}
+
+function isOpenCodeExport(data) {
+  // OpenCode CLI export session IDs currently use the ses_ prefix.
+  return data && typeof data === 'object' && !Array.isArray(data) &&
+    data.info && typeof data.info === 'object' &&
+    typeof data.info.id === 'string' && data.info.id.startsWith('ses_') &&
+    Array.isArray(data.messages) &&
+    data.messages.every(m => m?.info && Array.isArray(m.parts));
 }
 
 function detectJsonlTool(firstRecord) {
