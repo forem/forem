@@ -170,6 +170,7 @@ namespace :admin do
         end
       end
     end
+    resources :request_redirects
   end
 
   scope :moderation do

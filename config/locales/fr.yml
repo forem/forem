@@ -210,6 +210,19 @@ fr:
       what_is_a_billboard: Qu'est-ce qu'un panneau publicitaire?
       report_billboard: Report billboard
       edit_billboard: Modifier le panneau publicitaire
+  admin_api:
+    errors:
+      user_not_found: "Utilisateur introuvable"
+      identity_not_found: "Identité introuvable pour cet utilisateur"
+      user_already_has_identity_for_provider: "L'utilisateur a déjà une identité pour le fournisseur « %{provider} »"
+      identity_uid_taken: "L'uid %{uid} (%{provider}) est déjà lié à un autre utilisateur"
+      cannot_merge_user_into_itself: "Impossible de fusionner un utilisateur avec lui-même"
+      merge_identity_conflict: "La fusion n'a pas pu être effectuée : %{reason}"
+      unknown_provider: "Le fournisseur « %{provider} » n'est pas configuré"
+      invalid_status: "Statut non autorisé"
+      email_taken: "Adresse e-mail déjà utilisée"
+      email_invalid: "Adresse e-mail invalide"
+      validation_failed: "La validation a échoué"
   errors:
     messages:
       accepted: doit être accepté

@@ -472,4 +472,31 @@ RSpec.describe Reaction do
       end
     end
   end
+
+  describe "#enqueue_article_activity_update callback" do
+    it "enqueues with action=create and the reaction payload on create" do
+      allow(Articles::UpdateArticleActivityWorker).to receive(:perform_async)
+      reaction = create(:reaction, reactable: article, user: user, category: "like")
+      expect(Articles::UpdateArticleActivityWorker)
+        .to have_received(:perform_async)
+        .with(article.id, "reaction", "create",
+              hash_including("category" => "like", "user_id" => user.id))
+    end
+
+    it "enqueues with action=destroy on destroy" do
+      reaction = create(:reaction, reactable: article, user: user, category: "like")
+      allow(Articles::UpdateArticleActivityWorker).to receive(:perform_async)
+      reaction.destroy
+      expect(Articles::UpdateArticleActivityWorker)
+        .to have_received(:perform_async)
+        .with(article.id, "reaction", "destroy", hash_including("category" => "like"))
+    end
+
+    it "does not enqueue when reactable is not an Article" do
+      comment = create(:comment, commentable: article, user: user)
+      allow(Articles::UpdateArticleActivityWorker).to receive(:perform_async)
+      create(:reaction, reactable: comment, user: user, category: "like")
+      expect(Articles::UpdateArticleActivityWorker).not_to have_received(:perform_async)
+    end
+  end
 end
