@@ -746,5 +746,20 @@ false).once
       expect(Articles::UpdateArticleActivityWorker).not_to have_received(:perform_async)
     end
   end
+
+  describe "update user interest embedding" do
+    it "enqueues the worker when a comment is created on an article" do
+      allow(UpdateUserInterestEmbeddingWorker).to receive(:perform_async)
+      comment = create(:comment, commentable: article, user: user)
+      expect(UpdateUserInterestEmbeddingWorker).to have_received(:perform_async).with(user.id, article.id)
+    end
+
+    it "does not enqueue the worker if commentable is not an article" do
+      podcast = create(:podcast_episode)
+      allow(UpdateUserInterestEmbeddingWorker).to receive(:perform_async)
+      create(:comment, commentable: podcast, user: user)
+      expect(UpdateUserInterestEmbeddingWorker).not_to have_received(:perform_async)
+    end
+  end
 end
 end

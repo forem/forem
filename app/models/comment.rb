@@ -74,6 +74,7 @@ class Comment < ApplicationRecord
   after_create_commit :record_field_test_event
   after_create_commit :complete_onboarding_welcome_item
   after_create_commit :send_email_notification, if: :should_send_email_notification?
+  after_create_commit :enqueue_update_user_interest_embedding, if: :commentable_is_article?
 
   after_commit :calculate_score, on: %i[create update]
   after_commit :enqueue_article_activity_update, on: :destroy, if: :commentable_is_article?
@@ -217,6 +218,10 @@ class Comment < ApplicationRecord
 
   def commentable_is_article?
     commentable_type == "Article"
+  end
+
+  def enqueue_update_user_interest_embedding
+    UpdateUserInterestEmbeddingWorker.perform_async(user_id, commentable_id)
   end
 
   def enqueue_article_activity_update

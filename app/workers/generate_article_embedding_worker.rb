@@ -16,6 +16,9 @@ class GenerateArticleEmbeddingWorker
     client = Ai::Embedding.new(affected_content: article, wrapper: self)
     embedding = client.call(text_to_embed, task_type: "RETRIEVAL_DOCUMENT", output_dimensionality: 768)
 
-    article.update_column(:semantic_embedding, embedding) if embedding
+    if embedding
+      article.update_column(:semantic_embedding, embedding)
+      UpdateUserInterestEmbeddingWorker.perform_async(article.user_id, article.id)
+    end
   end
 end
