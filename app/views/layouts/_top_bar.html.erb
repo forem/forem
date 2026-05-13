@@ -85,7 +85,7 @@
 
         <div class="crayons-header__menu mx-1" id="crayons-header__menu">
           <button type="button" class="c-btn c-btn--icon-alone radius-full p-1" id="member-menu-button" aria-label="<%= t("views.main.header.nav.aria_label") %>" aria-expanded="false">
-            <span class="crayons-avatar crayons-avatar--l"><img class="crayons-avatar__image" alt="" id="nav-profile-image" /></span>
+            <span class="crayons-avatar crayons-avatar--l" style="--profile-brand-color: <%= Color::CompareHex.new([user_colors(current_user)[:bg], user_colors(current_user)[:text]]).brightness(0.88) %>;"><img class="crayons-avatar__image" alt="" id="nav-profile-image" /></span>
           </button>
           <%= render "layouts/nav_menu" %>
         </div>
