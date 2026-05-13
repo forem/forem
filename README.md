@@ -76,7 +76,13 @@ you'll want to refer to our complete
 We run on a [Rails](https://rubyonrails.org/) backend, and we are currently
 transitioning to a [Preact](https://preactjs.com/)-first frontend.
 
-**Prerequisites Note**: Forem now utilizes advanced AI embeddings for feed generation. You must ensure your PostgreSQL installation has the `pgvector` extension (version 0.8.0 or higher) installed to support HNSW indexing. This database extension is a **hard requirement** to migrate the database and run the app. However, providing a Gemini API key (`GEMINI_API_KEY`) to actually generate the embeddings is completely optional; if omitted, the app will continue to function normally without semantic recommendations.
+**Prerequisites Note**: Forem now utilizes advanced AI embeddings for feed generation. You must ensure your PostgreSQL installation has the `pgvector` extension (version 0.8.0 or higher) installed to support HNSW indexing. This database extension is a **hard requirement** to migrate the database and run the app. 
+
+To install `pgvector`:
+- **macOS (Homebrew)**: `brew install pgvector`
+- **Linux (Debian/Ubuntu)**: `sudo apt install postgresql-15-pgvector` (adjust `15` to match your installed PostgreSQL version), or compile from source following the [pgvector installation guide](https://github.com/pgvector/pgvector#installation).
+
+However, providing a Gemini API key (`GEMINI_API_KEY`) to actually generate the embeddings is completely optional; if omitted, the app will continue to function normally without semantic recommendations.
 
 A more complete overview of our stack is available in
 [our docs](https://developers.forem.com/technical-overview/stack).
