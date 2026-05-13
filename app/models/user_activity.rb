@@ -1,4 +1,6 @@
 class UserActivity < ApplicationRecord
+  has_neighbors :interest_embedding
+
   belongs_to :user
 
   def set_activity!

@@ -66,6 +66,7 @@ class Reaction < ApplicationRecord
   after_commit :record_field_test_event, on: %i[create]
   after_commit :check_for_reaction_ring, on: :create
   after_commit :enqueue_article_activity_update, on: %i[create destroy], if: :reactable_is_article?
+  after_commit :enqueue_update_user_interest_embedding, on: :create, if: :reactable_is_article_and_public?
 
   class << self
     def count_for_article(id)
@@ -199,6 +200,14 @@ class Reaction < ApplicationRecord
 
   def reactable_is_article?
     reactable_type == "Article"
+  end
+
+  def reactable_is_article_and_public?
+    reactable_is_article? && visible_to_public?
+  end
+
+  def enqueue_update_user_interest_embedding
+    UpdateUserInterestEmbeddingWorker.perform_async(user_id, reactable_id)
   end
 
   def enqueue_article_activity_update

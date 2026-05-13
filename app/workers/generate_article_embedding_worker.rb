@@ -1,0 +1,21 @@
+class GenerateArticleEmbeddingWorker
+  include Sidekiq::Job
+  sidekiq_options queue: :low, lock: :until_executing, on_conflict: :replace
+
+  def perform(article_id)
+    article = Article.find_by(id: article_id)
+    return unless article && article.published?
+
+    # Lightweight representation: Title, Tags, and first 1000 characters of the body
+    text_to_embed = <<~TEXT
+      Title: #{article.title}
+      Tags: #{article.cached_tag_list}
+      Summary: #{article.body_markdown.truncate(1000)}
+    TEXT
+
+    client = Ai::Embedding.new(affected_content: article, wrapper: self)
+    embedding = client.call(text_to_embed, task_type: "RETRIEVAL_DOCUMENT", output_dimensionality: 768)
+
+    article.update_column(:semantic_embedding, embedding) if embedding
+  end
+end
