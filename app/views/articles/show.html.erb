@@ -19,6 +19,10 @@
   <%= javascript_include_tag "webShare", "articlePage", "commentDropdowns", defer: true %>
 <% end %>
 
+<% if @article.type_of != "fullscreen_embed" && FeatureFlag.enabled?(:comment_cue_popup) %>
+  <%= javascript_include_tag "commentCuePopup", defer: true %>
+<% end %>
+
 <% unless internal_navigation? || user_signed_in? %>
   <script type="application/ld+json">
     <%= @article_json_ld.to_json.html_safe %>
@@ -227,7 +231,12 @@
                 <%= @context_note.processed_html.html_safe %>
               </div>
             <% end %>
-            <div class="crayons-article__body text-styles spec__body" data-article-id="<%= @article.id %>" id="article-body">
+            <div class="crayons-article__body text-styles spec__body" data-article-id="<%= @article.id %>"
+              <% if FeatureFlag.enabled?(:comment_cue_popup) %>
+                data-cue-message="<%= comment_cue_message(@comments_count) %>"
+                data-cue-close-label="<%= t("views.articles.comment_cue.close") %>"
+              <% end %>
+              id="article-body">
               <% if @article.type_of == "status" && @article.processed_html_final.present? %>
                 <% if user_signed_in? %>
                   <div class="pt-2">

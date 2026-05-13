@@ -304,5 +304,27 @@ RSpec.describe "StoriesShow" do
       expect(response.body).to redirect_to org.path
       expect(response).to have_http_status(:moved_permanently)
     end
+
+    context "with comment cue popup data attributes" do
+      it "renders cue data attributes when the flag is fully enabled globally" do
+        allow(FeatureFlag).to receive(:enabled?).and_call_original
+        allow(FeatureFlag).to receive(:enabled?).with(:comment_cue_popup).and_return(true)
+
+        get article.path
+
+        expect(response.body).to include("data-cue-message=")
+        expect(response.body).to include("data-cue-close-label=")
+      end
+
+      it "omits cue data attributes when the flag is off" do
+        allow(FeatureFlag).to receive(:enabled?).and_call_original
+        allow(FeatureFlag).to receive(:enabled?).with(:comment_cue_popup).and_return(false)
+
+        get article.path
+
+        expect(response.body).not_to include("data-cue-message=")
+        expect(response.body).not_to include("data-cue-close-label=")
+      end
+    end
   end
 end
