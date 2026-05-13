@@ -48,6 +48,30 @@ describe('autoDetect', () => {
       expect(detectTool(content)).toBe('gemini_cli');
     });
 
+    it('detects OpenCode CLI exports', () => {
+      const content = JSON.stringify({
+        info: { id: 'ses_123', title: 'OpenCode session' },
+        messages: [{ info: { role: 'user' }, parts: [{ type: 'text', text: 'hi' }] }],
+      });
+      expect(detectTool(content)).toBe('opencode');
+    });
+
+    it('detects empty OpenCode CLI exports', () => {
+      const content = JSON.stringify({
+        info: { id: 'ses_123', title: 'Empty OpenCode session' },
+        messages: [],
+      });
+      expect(detectTool(content)).toBe('opencode');
+    });
+
+    it('does not detect OpenCode when the session id has an unexpected format', () => {
+      const content = JSON.stringify({
+        info: { id: 'session_123', title: 'OpenCode-like session' },
+        messages: [{ info: { role: 'user' }, parts: [{ type: 'text', text: 'hi' }] }],
+      });
+      expect(detectTool(content)).toBe('gemini_cli');
+    });
+
     it('detects claude_code when sessionId present (even with messages)', () => {
       // sessionId on first line triggers JSONL detection branch
       const content = JSON.stringify({ sessionId: 's1', messages: [{ role: 'user', content: 'hi' }] });
