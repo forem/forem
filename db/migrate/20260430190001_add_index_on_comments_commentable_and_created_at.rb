@@ -7,7 +7,7 @@ class AddIndexOnCommentsCommentableAndCreatedAt < ActiveRecord::Migration[7.0]
     safety_assured do
       db_user = connection.query_value("SELECT current_user")
       begin
-        execute "ALTER ROLE #{db_user} SET statement_timeout = 0;"
+        execute "ALTER ROLE \"#{db_user}\" SET statement_timeout = 0;"
         execute "SET statement_timeout = 0;"
 
         remove_index :comments, name: "index_comments_on_commentable_and_created_at", if_exists: true, algorithm: :concurrently
@@ -17,7 +17,7 @@ class AddIndexOnCommentsCommentableAndCreatedAt < ActiveRecord::Migration[7.0]
                   name: "index_comments_on_commentable_and_created_at",
                   algorithm: :concurrently
       ensure
-        execute "ALTER ROLE #{db_user} RESET statement_timeout;"
+        execute "ALTER ROLE \"#{db_user}\" RESET statement_timeout;"
       end
     end
   end
