@@ -7,7 +7,7 @@ class AddVectorIndexesForFeed < ActiveRecord::Migration[7.0]
   end
 
   def down
-    remove_index :articles, :semantic_embedding
-    remove_index :user_activities, :interest_embedding
+    remove_index :articles, :semantic_embedding, algorithm: :concurrently
+    remove_index :user_activities, :interest_embedding, algorithm: :concurrently
   end
 end

@@ -1,7 +1,11 @@
 class Article < ApplicationRecord
-  has_neighbors :semantic_embedding
+  begin
+    has_neighbors :semantic_embedding if column_names.include?("semantic_embedding")
+  rescue StandardError
+    # db not available yet
+  end
 
-  after_commit :enqueue_generate_embedding, on: [:create, :update], if: :published?
+  after_commit :enqueue_generate_embedding, on: [:create, :update], if: -> { published? && Ai::Base::DEFAULT_KEY.present? }
 
   include LiquidEmbeddable
   include CloudinaryHelper
@@ -990,6 +994,7 @@ class Article < ApplicationRecord
   end
 
   def trigger_semantic_embedding_generation
+    return unless respond_to?(:semantic_embedding)
     return unless score >= Settings::UserExperience.home_feed_minimum_score
     return if semantic_embedding.present?
 
@@ -1738,6 +1743,7 @@ class Article < ApplicationRecord
   end
 
   def enqueue_generate_embedding
+    return unless respond_to?(:semantic_embedding)
     return unless score >= Settings::UserExperience.home_feed_minimum_score
 
     if saved_change_to_title? || saved_change_to_body_markdown? || saved_change_to_cached_tag_list?

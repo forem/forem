@@ -1,10 +1,10 @@
 class GenerateArticleEmbeddingWorker
   include Sidekiq::Job
-  sidekiq_options queue: :low, lock: :until_executing, on_conflict: :replace
+  sidekiq_options queue: :low_priority, lock: :until_executing, on_conflict: :replace
 
   def perform(article_id)
     article = Article.find_by(id: article_id)
-    return unless article && article.published?
+    return unless article && article.published? && article.respond_to?(:semantic_embedding)
 
     # Lightweight representation: Title, Tags, and first 1000 characters of the body
     text_to_embed = <<~TEXT

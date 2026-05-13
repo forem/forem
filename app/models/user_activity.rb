@@ -1,5 +1,9 @@
 class UserActivity < ApplicationRecord
-  has_neighbors :interest_embedding
+  begin
+    has_neighbors :interest_embedding if column_names.include?("interest_embedding")
+  rescue StandardError
+    # db not available yet
+  end
 
   belongs_to :user
 
