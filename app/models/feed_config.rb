@@ -142,7 +142,17 @@ class FeedConfig < ApplicationRecord
       embedding_values = activity_store.interest_embedding.to_a
       embedding_literal = "[#{embedding_values.join(',')}]"
       embedding_sql = self.class.connection.quote(embedding_literal)
-      terms << "(CASE WHEN articles.semantic_embedding IS NOT NULL THEN (1 - (articles.semantic_embedding <=> #{embedding_sql})) * #{semantic_similarity_weight} ELSE 0 END)"
+      semantic_similarity_published_since = self.class.connection.quote(30.days.ago.utc.to_fs(:db))
+      terms << <<~SQL.squish
+        (
+          CASE
+            WHEN articles.semantic_embedding IS NOT NULL
+              AND articles.published_at >= #{semantic_similarity_published_since}
+            THEN (1 - (articles.semantic_embedding <=> #{embedding_sql})) * #{semantic_similarity_weight}
+            ELSE 0
+          END
+        )
+      SQL
     end
 
     terms << "(CASE WHEN articles.featured = TRUE THEN #{featured_weight} ELSE 0 END)" if featured_weight.positive?
