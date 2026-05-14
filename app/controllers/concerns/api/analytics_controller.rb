@@ -60,7 +60,8 @@ module Api
       # When `start` is omitted (Infinity range), fall back to the owner's
       # registration timestamp so we don't fabricate years of empty buckets
       # before the account existed. AnalyticsService also clamps internally,
-      # but resolving here keeps the cache key precise.
+      # but resolving here keeps the serialized `start_date_floor` consistent
+      # with the data the dashboard actually charts.
       effective_start = params[:start].presence || @owner_start_floor.iso8601
 
       # No HTTP or server-side cache: the dashboard is a personal/owner-scoped

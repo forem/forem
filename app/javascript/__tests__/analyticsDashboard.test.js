@@ -2,7 +2,7 @@
  * Regression test for the analytics dashboard org selector. The previous
  * implementation queried `getElementsByClassName('organization')`, but the
  * view renders org tabs as `<a data-organization-id="...">` with no
- * `organization` class. The result was an empty NodeList, the early `else`
+ * `organization` class. The result was an empty HTMLCollection, the early `else`
  * branch was never taken, and every analytics page (personal AND org) booted
  * with `organizationId: null` — the org dashboards rendered the user's
  * personal stats.

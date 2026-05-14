@@ -109,6 +109,25 @@ RSpec.describe "Api::V1::Analytics" do
         expect(response.parsed_body["start_date_floor"]).to eq(user.registered_at.to_date.iso8601)
       end
 
+      it "uses the article's published_at as start_date_floor when article_id is set" do
+        # Cross-post case: article was published before the owner's account
+        # existed, so the owner-registration floor would silently chop off
+        # pre-account activity. The endpoint must surface the article's own
+        # publish date instead.
+        article = create(
+          :article,
+          :past,
+          user: user,
+          published: true,
+          past_published_at: user.registered_at - 2.years,
+        )
+
+        get "/api/analytics/dashboard?article_id=#{article.id}", headers: v1_headers
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body["start_date_floor"]).to eq(article.published_at.to_date.iso8601)
+      end
+
       it "rejects requests with malformed date parameters" do
         get "/api/analytics/dashboard?start=2019/3/29", headers: v1_headers
 

@@ -17,7 +17,7 @@ class AnalyticsService
 
     # Clamp start_date to the owner's registration date so we don't generate
     # a long tail of empty zero buckets predating the account.
-    @start_date = clamp_start_to_owner_registration(@start_date)
+    @start_date = clamp_start_to_scope_floor(@start_date)
 
     load_data
   end
@@ -571,7 +571,7 @@ class AnalyticsService
   #   published (cross-posted into a newer org), and clamping to the org's
   #   creation date silently hides every bit of activity from before the org
   #   existed. An article's stats should reflect the article's own lifetime.
-  def clamp_start_to_owner_registration(parsed_start)
+  def clamp_start_to_scope_floor(parsed_start)
     return parsed_start unless parsed_start
 
     floor = scope_floor_at&.beginning_of_day
