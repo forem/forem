@@ -1003,6 +1003,7 @@ class Article < ApplicationRecord
   private :eligible_for_semantic_embedding?
 
   def trigger_semantic_embedding_generation
+    return unless Ai::Base::DEFAULT_KEY.present?
     return unless eligible_for_semantic_embedding?
 
     GenerateArticleEmbeddingWorker.perform_async(id)
@@ -1750,6 +1751,8 @@ class Article < ApplicationRecord
   end
 
   def enqueue_generate_embedding
+    return unless Ai::Base::DEFAULT_KEY.present?
+
     content_changed = saved_change_to_title? || saved_change_to_body_markdown?
     return unless content_changed
     return unless respond_to?(:semantic_embedding)
