@@ -17,7 +17,7 @@ class AnalyticsService
 
     # Clamp start_date to the owner's registration date so we don't generate
     # a long tail of empty zero buckets predating the account.
-    @start_date = clamp_start_to_owner_registration(@start_date)
+    @start_date = clamp_start_to_scope_floor(@start_date)
 
     load_data
   end
@@ -41,16 +41,23 @@ class AnalyticsService
   def grouped_by_day
     return {} unless start_date && end_date
 
-    # cache all stats in the date range for the requested user or organization.
-    # NOTE: prefix is bumped to v3 because the response can now be served by
-    # the article_activities fast-path (same shape, but built from the cache
-    # table); previously cached v2 payloads had been computed from raw rows.
-    cache_key = "analytics-for-dates-v3-#{start_date}-#{end_date}-#{user_or_org.class.name}-#{user_or_org.id}"
-    cache_key = "#{cache_key}-article-#{article_id}" if article_id
+    # The activities fast-path is itself the cache (single indexed lookup per
+    # article_activities row), and we deliberately leave it uncached so worker
+    # writes show up immediately. The raw-row fallback, however, runs whenever
+    # any in-scope article is missing an ArticleActivity row (i.e. mid-backfill
+    # for an owner with many articles), so we wrap *only* that branch in a
+    # short-TTL cache to avoid hammering the DB on every reload while backfill
+    # catches up. The TTL is short enough that newly-backfilled freshness still
+    # arrives within ~one minute.
+    fast = grouped_by_day_from_activities
+    return fast if fast
 
-    Rails.cache.fetch(cache_key, expires_in: 7.days) do
-      grouped_by_day_from_activities || grouped_by_day_from_raw
-    end
+    cache_key = [
+      "analytics-grouped-by-day-raw-v1",
+      user_or_org.class.name, user_or_org.id,
+      start_date, end_date, article_id
+    ].join("-")
+    Rails.cache.fetch(cache_key, expires_in: 1.minute) { grouped_by_day_from_raw }
   end
 
   # Returns the list of referrers
@@ -565,11 +572,34 @@ class AnalyticsService
     end
   end
 
-  def clamp_start_to_owner_registration(parsed_start)
+  # Clamps the requested start to the earliest meaningful date for this scope:
+  #
+  # - For owner-wide stats (no article_id): the owner's registration / org
+  #   creation date. Earlier dates would just produce a long tail of empty
+  #   zero buckets predating the account.
+  # - For per-article stats (article_id present): the article's publication
+  #   date. The owner-registration floor is wrong here because an article may
+  #   live in an organization that was created long after the article was
+  #   published (cross-posted into a newer org), and clamping to the org's
+  #   creation date silently hides every bit of activity from before the org
+  #   existed. An article's stats should reflect the article's own lifetime.
+  def clamp_start_to_scope_floor(parsed_start)
     return parsed_start unless parsed_start
 
-    floor = owner_registered_at&.beginning_of_day
+    floor = scope_floor_at&.beginning_of_day
     floor && parsed_start < floor ? floor : parsed_start
+  end
+
+  def scope_floor_at
+    return article_published_at if article_id && article_published_at
+
+    owner_registered_at
+  end
+
+  def article_published_at
+    return @article_published_at if defined?(@article_published_at)
+
+    @article_published_at = Article.where(id: article_id).pick(:published_at)
   end
 
   # SQL expression used to bucket created_at into either a daily date or the
