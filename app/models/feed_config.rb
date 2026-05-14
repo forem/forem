@@ -138,6 +138,23 @@ class FeedConfig < ApplicationRecord
     end
 
     # Additional weights
+    if semantic_similarity_weight.positive? && activity_store&.respond_to?(:interest_embedding) && activity_store&.interest_embedding.present?
+      embedding_values = activity_store.interest_embedding.to_a
+      embedding_literal = "[#{embedding_values.join(',')}]"
+      embedding_sql = self.class.connection.quote(embedding_literal)
+      semantic_similarity_published_since = self.class.connection.quote(30.days.ago.utc.to_fs(:db))
+      terms << <<~SQL.squish
+        (
+          CASE
+            WHEN articles.semantic_embedding IS NOT NULL
+              AND articles.published_at >= #{semantic_similarity_published_since}
+            THEN (1 - (articles.semantic_embedding <=> #{embedding_sql})) * #{semantic_similarity_weight}
+            ELSE 0
+          END
+        )
+      SQL
+    end
+
     terms << "(CASE WHEN articles.featured = TRUE THEN #{featured_weight} ELSE 0 END)" if featured_weight.positive?
     terms << "(CASE WHEN articles.type_of = 1 THEN #{status_weight} ELSE 0 END)" if status_weight.positive?
     terms << "(- (articles.clickbait_score * #{clickbait_score_weight}))" if clickbait_score_weight.positive?
@@ -161,6 +178,7 @@ class FeedConfig < ApplicationRecord
     clone.comment_score_weight = comment_score_weight * rand(0.9..1.1)
     clone.feed_success_weight = feed_success_weight * rand(0.9..1.1)
     clone.label_match_weight = label_match_weight * rand(0.9..1.1)
+    clone.semantic_similarity_weight = semantic_similarity_weight * rand(0.9..1.1)
     clone.lookback_window_weight = lookback_window_weight * rand(0.9..1.1)
     clone.organization_follow_weight = organization_follow_weight * rand(0.9..1.1)
     clone.precomputed_selections_weight = precomputed_selections_weight * rand(0.9..1.1)

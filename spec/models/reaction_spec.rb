@@ -499,4 +499,25 @@ RSpec.describe Reaction do
       expect(Articles::UpdateArticleActivityWorker).not_to have_received(:perform_async)
     end
   end
+
+  describe "update user interest embedding" do
+    it "enqueues the worker when a public reaction is created on an article" do
+      allow(UpdateUserInterestEmbeddingWorker).to receive(:perform_async)
+      reaction = create(:reaction, reactable: article, user: user, category: "like")
+      expect(UpdateUserInterestEmbeddingWorker).to have_received(:perform_async).with(user.id, article.id)
+    end
+
+    it "does not enqueue the worker for non-public reactions" do
+      allow(UpdateUserInterestEmbeddingWorker).to receive(:perform_async)
+      create(:reaction, reactable: article, user: user, category: "readinglist")
+      expect(UpdateUserInterestEmbeddingWorker).not_to have_received(:perform_async)
+    end
+
+    it "does not enqueue the worker for non-article reactables" do
+      comment = create(:comment, commentable: article, user: user)
+      allow(UpdateUserInterestEmbeddingWorker).to receive(:perform_async)
+      create(:reaction, reactable: comment, user: user, category: "like")
+      expect(UpdateUserInterestEmbeddingWorker).not_to have_received(:perform_async)
+    end
+  end
 end

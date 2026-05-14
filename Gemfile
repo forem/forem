@@ -182,3 +182,4 @@ group :test do
   gem "zonebie", "~> 0.6.1" # Runs your tests in a random timezone
 end
 
+gem "neighbor", "~> 0.5.2"

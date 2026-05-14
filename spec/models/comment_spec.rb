@@ -684,41 +684,42 @@ RSpec.describe Comment do
       allow(AlgoliaSearch::SearchIndexWorker).to receive(:perform_async)
       create(:comment)
       expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("Comment", kind_of(Integer),
-false).once
+                                                                                     false).once
     end
   end
 
   describe "#processed_html_final" do
-  let(:prior_domain) { "https://old.cdn.com" }
-  let(:new_domain) { "https://new.cdn.com" }
+    let(:prior_domain) { "https://old.cdn.com" }
+    let(:new_domain) { "https://new.cdn.com" }
 
-  before do
-    allow(ApplicationConfig).to receive(:[]).and_call_original # allow all real calls by default
-    allow(ApplicationConfig).to receive(:[]).with("PRIOR_CLOUDFLARE_IMAGES_DOMAIN").and_return(prior_domain)
-    allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return(new_domain)
-    end
-
-  context "when the prior domain and new domain are both present" do
-    it "replaces instances of the prior domain with the new domain" do
-      comment.processed_html = "Here is an image <img src='#{prior_domain}/image1.jpg'> and another <img src='#{prior_domain}/image2.jpg'>."
-      expect(comment.processed_html_final).to eq("Here is an image <img src='#{new_domain}/image1.jpg'> and another <img src='#{new_domain}/image2.jpg'>.")
-    end
-
-    it "does not modify text if the prior domain is not present in the processed_html" do
-      comment.processed_html = "Content with no images or domains."
-      expect(comment.processed_html_final).to eq("Content with no images or domains.")
-    end
-  end
-
-  context "when the application configuration for the domains is blank" do
     before do
-      allow(ApplicationConfig).to receive(:[]).with("PRIOR_CLOUDFLARE_IMAGES_DOMAIN").and_return(nil)
-      allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return(nil)
+      allow(ApplicationConfig).to receive(:[]).and_call_original # allow all real calls by default
+      allow(ApplicationConfig).to receive(:[]).with("PRIOR_CLOUDFLARE_IMAGES_DOMAIN").and_return(prior_domain)
+      allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return(new_domain)
     end
 
-    it "returns the original processed_html unchanged" do
-      comment.processed_html = "Content with the old domain #{prior_domain}."
-      expect(comment.processed_html_final).to eq("Content with the old domain #{prior_domain}.")
+    context "when the prior domain and new domain are both present" do
+      it "replaces instances of the prior domain with the new domain" do
+        comment.processed_html = "Here is an image <img src='#{prior_domain}/image1.jpg'> and another <img src='#{prior_domain}/image2.jpg'>."
+        expect(comment.processed_html_final).to eq("Here is an image <img src='#{new_domain}/image1.jpg'> and another <img src='#{new_domain}/image2.jpg'>.")
+      end
+
+      it "does not modify text if the prior domain is not present in the processed_html" do
+        comment.processed_html = "Content with no images or domains."
+        expect(comment.processed_html_final).to eq("Content with no images or domains.")
+      end
+    end
+
+    context "when the application configuration for the domains is blank" do
+      before do
+        allow(ApplicationConfig).to receive(:[]).with("PRIOR_CLOUDFLARE_IMAGES_DOMAIN").and_return(nil)
+        allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return(nil)
+      end
+
+      it "returns the original processed_html unchanged" do
+        comment.processed_html = "Content with the old domain #{prior_domain}."
+        expect(comment.processed_html_final).to eq("Content with the old domain #{prior_domain}.")
+      end
     end
   end
 
@@ -746,5 +747,19 @@ false).once
       expect(Articles::UpdateArticleActivityWorker).not_to have_received(:perform_async)
     end
   end
-end
+
+  describe "update user interest embedding" do
+    it "enqueues the worker when a comment is created on an article" do
+      allow(UpdateUserInterestEmbeddingWorker).to receive(:perform_async)
+      comment = create(:comment, commentable: article, user: user)
+      expect(UpdateUserInterestEmbeddingWorker).to have_received(:perform_async).with(user.id, article.id)
+    end
+
+    it "does not enqueue the worker if commentable is not an article" do
+      podcast = create(:podcast_episode)
+      allow(UpdateUserInterestEmbeddingWorker).to receive(:perform_async)
+      create(:comment, commentable: podcast, user: user)
+      expect(UpdateUserInterestEmbeddingWorker).not_to have_received(:perform_async)
+    end
+  end
 end
