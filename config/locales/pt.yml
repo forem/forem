@@ -210,6 +210,19 @@ pt:
       what_is_a_billboard: O que é um painel publicitário?
       report_billboard: Reportar painel publicitário
       edit_billboard: Editar painel publicitário
+  admin_api:
+    errors:
+      user_not_found: "Usuário não encontrado"
+      identity_not_found: "Identidade não encontrada para o usuário"
+      user_already_has_identity_for_provider: "O usuário já possui uma identidade para o provedor '%{provider}'"
+      identity_uid_taken: "O uid %{uid} (%{provider}) já está vinculado a outro usuário"
+      cannot_merge_user_into_itself: "Não é possível mesclar um usuário consigo mesmo"
+      merge_identity_conflict: "A mesclagem não pôde ser concluída: %{reason}"
+      unknown_provider: "O provedor '%{provider}' não está configurado"
+      invalid_status: "Status não permitido"
+      email_taken: "E-mail já utilizado"
+      email_invalid: "E-mail inválido"
+      validation_failed: "A validação falhou"
   errors:
     messages:
       accepted: deve ser aceito

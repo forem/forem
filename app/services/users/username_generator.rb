@@ -27,7 +27,9 @@ module Users
     end
 
     def normalized_usernames
-      @normalized_usernames ||= filtered_usernames.map { |s| s.downcase.gsub(/[^0-9a-z_]/i, "").delete(" ") }
+      @normalized_usernames ||= filtered_usernames
+                                .map { |s| s.downcase.gsub(/[^0-9a-z_]/i, "").delete(" ") }
+                                .select { |s| s.length >= 2 }
     end
 
     def filtered_usernames

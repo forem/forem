@@ -73,4 +73,16 @@ module ArticlesHelper
   def active_threads(...)
     Articles::ActiveThreadsQuery.call(...)
   end
+
+  def comment_cue_message(count)
+    count = count.to_i
+    bucket = if count.zero?
+               :zero
+             elsif count <= 10
+               :few
+             else
+               :many
+             end
+    t("views.articles.comment_cue.#{bucket}")
+  end
 end
