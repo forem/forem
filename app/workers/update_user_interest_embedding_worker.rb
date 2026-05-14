@@ -13,8 +13,7 @@ class UpdateUserInterestEmbeddingWorker
     return unless article_vector.length == 768
 
     UserActivity.transaction do
-      user_activity = UserActivity.find_or_create_by!(user_id: user_id)
-      user_activity = UserActivity.lock.find(user_activity.id)
+      user_activity = UserActivity.lock.find_or_create_by!(user_id: user_id)
 
       if user_activity.respond_to?(:interest_embedding)
         current_vector = user_activity.interest_embedding&.to_a

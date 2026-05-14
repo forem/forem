@@ -138,7 +138,7 @@ class FeedConfig < ApplicationRecord
     end
 
     # Additional weights
-    if semantic_similarity_weight.positive? && activity_store.respond_to?(:interest_embedding) && activity_store.interest_embedding.present?
+    if semantic_similarity_weight.positive? && activity_store&.respond_to?(:interest_embedding) && activity_store&.interest_embedding.present?
       embedding_values = activity_store.interest_embedding.to_a
       embedding_literal = "[#{embedding_values.join(',')}]"
       embedding_sql = self.class.connection.quote(embedding_literal)

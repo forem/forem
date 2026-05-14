@@ -1,6 +1,7 @@
 module Ai
   class Embedding < Base
-    DEFAULT_EMBEDDING_MODEL = ENV.fetch("GEMINI_EMBEDDING_MODEL", "text-embedding-004").freeze
+    DEFAULT_EMBEDDING_MODEL = ENV.fetch("GEMINI_EMBEDDING_MODEL", "gemini-embedding-2").freeze
+
 
     def initialize(api_key: DEFAULT_KEY, model: DEFAULT_EMBEDDING_MODEL, wrapper: nil, affected_user: nil, affected_content: nil)
       super

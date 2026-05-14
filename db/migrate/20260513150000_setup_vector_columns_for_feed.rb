@@ -1,4 +1,6 @@
 class SetupVectorColumnsForFeed < ActiveRecord::Migration[7.0]
+  disable_ddl_transaction!
+
   def up
     if column_exists?(:user_activities, :semantic_interest_profile)
       # This column was added in an earlier PR but never populated in production.
@@ -15,6 +17,6 @@ class SetupVectorColumnsForFeed < ActiveRecord::Migration[7.0]
     remove_column :articles, :semantic_embedding
     remove_column :user_activities, :interest_embedding
     add_column :user_activities, :semantic_interest_profile, :jsonb, default: {}
-    add_index :user_activities, :semantic_interest_profile, using: :gin
+    add_index :user_activities, :semantic_interest_profile, using: :gin, algorithm: :concurrently
   end
 end
