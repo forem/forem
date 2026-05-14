@@ -41,11 +41,23 @@ class AnalyticsService
   def grouped_by_day
     return {} unless start_date && end_date
 
-    # No Rails.cache wrapper: the activities fast-path is itself the cache
-    # (single indexed lookup per article_activities row), and we need it to
-    # reflect worker writes immediately. The raw-row fallback path is rare
-    # and still cheap for normal date ranges.
-    grouped_by_day_from_activities || grouped_by_day_from_raw
+    # The activities fast-path is itself the cache (single indexed lookup per
+    # article_activities row), and we deliberately leave it uncached so worker
+    # writes show up immediately. The raw-row fallback, however, runs whenever
+    # any in-scope article is missing an ArticleActivity row (i.e. mid-backfill
+    # for an owner with many articles), so we wrap *only* that branch in a
+    # short-TTL cache to avoid hammering the DB on every reload while backfill
+    # catches up. The TTL is short enough that newly-backfilled freshness still
+    # arrives within ~one minute.
+    fast = grouped_by_day_from_activities
+    return fast if fast
+
+    cache_key = [
+      "analytics-grouped-by-day-raw-v1",
+      user_or_org.class.name, user_or_org.id,
+      start_date, end_date, article_id
+    ].join("-")
+    Rails.cache.fetch(cache_key, expires_in: 1.minute) { grouped_by_day_from_raw }
   end
 
   # Returns the list of referrers
