@@ -740,6 +740,33 @@ RSpec.describe User do
     end
   end
 
+  describe "#author_trust_score" do
+    it "returns 0 for score < 25" do
+      user.update_column(:score, 10)
+      expect(user.author_trust_score).to eq(0)
+    end
+
+    it "returns 1 for score between 25 and 74" do
+      user.update_column(:score, 50)
+      expect(user.author_trust_score).to eq(1)
+    end
+
+    it "returns 2 for score between 75 and 174" do
+      user.update_column(:score, 100)
+      expect(user.author_trust_score).to eq(2)
+    end
+
+    it "returns 3 for score between 175 and 299" do
+      user.update_column(:score, 200)
+      expect(user.author_trust_score).to eq(3)
+    end
+
+    it "returns 4 for score >= 300" do
+      user.update_column(:score, 350)
+      expect(user.author_trust_score).to eq(4)
+    end
+  end
+
   describe "#calculate_score" do
     it "calculates a score" do
       user.update_column(:badge_achievements_count, 3)

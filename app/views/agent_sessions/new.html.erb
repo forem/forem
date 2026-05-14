@@ -26,6 +26,7 @@
         <option value="claude_code">Claude Code</option>
         <option value="codex">Codex (OpenAI)</option>
         <option value="gemini_cli">Gemini CLI</option>
+        <option value="opencode">OpenCode</option>
         <option value="pi">Pi</option>
         <option value="github_copilot">GitHub Copilot</option>
       </select>
@@ -65,6 +66,8 @@
           <dd><code>~/.codex/sessions/YYYY/MM/DD/*.jsonl</code></dd>
           <dt>Gemini CLI</dt>
           <dd><code>~/.gemini/tmp/session-*.json</code></dd>
+          <dt>OpenCode</dt>
+          <dd>Run <code>opencode export &lt;session-id&gt; &gt; opencode-session.json</code>, then upload the exported file.</dd>
           <dt>Pi</dt>
           <dd><code>~/.pi/agent/sessions/&lt;project&gt;/*.jsonl</code></dd>
           <dt>GitHub Copilot</dt>
@@ -247,9 +250,15 @@
   function formatToolName(tool) {
     var names = {
       claude_code: 'Claude Code', codex: 'Codex', gemini_cli: 'Gemini CLI',
-      pi: 'Pi', github_copilot: 'GitHub Copilot'
+      opencode: 'OpenCode', pi: 'Pi', github_copilot: 'GitHub Copilot'
     };
     return names[tool] || tool;
+  }
+
+  function isGeneratedSessionTitle(title) {
+    var values = ['claude_code', 'codex', 'gemini_cli', 'opencode', 'pi', 'github_copilot']
+      .map(function(tool) { return formatToolName(tool) + ' Session'; });
+    return values.indexOf(title) !== -1;
   }
 
   // Parse button
@@ -360,6 +369,11 @@
           : 'No secrets found');
 
         parsedResult = result;
+
+        if (result.metadata && result.metadata.title && isGeneratedSessionTitle(titleInput.value.trim())) {
+          titleInput.value = result.metadata.title;
+        }
+
         setStep('done', 'done', '<%= j t("views.agent_sessions.ready_to_curate", default: "Ready to curate") %>');
         setProgress(100);
 

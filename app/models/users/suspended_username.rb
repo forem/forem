@@ -13,9 +13,8 @@ module Users
       where(username_hash: hash_username(username)).any?
     end
 
-    # Convenience method for easily adding a suspended/spam user
     def self.create_from_user(user)
-      create!(username_hash: hash_username(user.username))
+      find_or_create_by!(username_hash: hash_username(user.username))
     end
   end
 end

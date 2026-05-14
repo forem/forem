@@ -39,6 +39,75 @@ RSpec.describe AnalyticsService, type: :service do
       article = create(:article, user: other_user)
       expect { described_class.new(user, article_id: article.id) }.to raise_error(ArgumentError)
     end
+
+    it "clamps start_date to the owner's registration date when an earlier date is requested" do
+      late_user = create(:user, registered_at: Time.zone.parse("2020-06-01"))
+      service = described_class.new(late_user, start_date: "2015-01-01", end_date: "2020-06-30")
+      # Weekly bucketing kicks in here (range > 180 days), so the first bucket
+      # is the Monday of the week containing the registration date, not 2015.
+      expect(service.grouped_by_day.keys.first).to eq("2020-06-01")
+    end
+
+    it "leaves start_date unchanged when it is after the owner's registration" do
+      early_user = create(:user, registered_at: Time.zone.parse("2018-01-01"))
+      service = described_class.new(early_user, start_date: "2019-04-01", end_date: "2019-04-04")
+      expect(service.grouped_by_day.keys.first).to eq("2019-04-01")
+    end
+
+    it "clamps to the article's published_at when article_id is set, ignoring the owner's registration" do
+      # Real-world case: an article is cross-posted into an organization that
+      # was created long after the article was published. The org-creation
+      # floor would silently chop off every bit of activity from before the
+      # org existed; the article's stats should reflect the article's own
+      # lifetime instead. (Time is frozen at 2019-04-01 by the outer before
+      # block, so we use dates relative to that anchor.)
+      org = create(:organization)
+      org.update_columns(created_at: Time.zone.parse("2019-03-27"))
+      author = create(:user)
+      create(:organization_membership, user: author, organization: org, type_of_user: "admin")
+      article = create(
+        :article,
+        :past,
+        user: author,
+        organization: org,
+        published: true,
+        past_published_at: Time.zone.parse("2018-05-01"),
+      )
+
+      service = described_class.new(
+        org,
+        start_date: "2010-04-01",
+        end_date: "2019-04-01",
+        article_id: article.id,
+      )
+
+      # Floor is the article's published_at (2018-05-01), NOT the org's
+      # created_at (2019-03-27). Range > 180 days so weekly bucketing snaps
+      # the first bucket to the Monday of the publish week (2018-04-30).
+      expect(service.grouped_by_day.keys.first).to eq("2018-04-30")
+    end
+  end
+
+  describe "adaptive bucketing" do
+    it "uses daily buckets when the range is within DAILY_HISTORY_DAYS" do
+      service = described_class.new(user, start_date: "2019-04-01", end_date: "2019-04-04")
+      expect(service.grouped_by_day.keys).to eq(%w[2019-04-01 2019-04-02 2019-04-03 2019-04-04])
+    end
+
+    it "uses weekly buckets for old data and daily buckets for the most recent DAILY_HISTORY_DAYS" do
+      long_user = create(:user, registered_at: Time.zone.parse("2018-01-01"))
+      Timecop.freeze("2020-04-01T12:00:00Z") do
+        service = described_class.new(long_user, start_date: "2019-04-01", end_date: "2020-04-01")
+        keys = service.grouped_by_day.keys
+        # Older portion: weekly Mondays. Recent 180 days: daily.
+        expect(keys.first).to eq("2019-04-01") # a Monday
+        expect(keys).to include("2020-03-31") # daily bucket near the end
+        # Buckets in the older portion should be 7 days apart.
+        weekly_keys = keys.select { |k| Date.parse(k) < (Date.parse("2020-04-01") - 180) }
+        gaps = weekly_keys.each_cons(2).map { |a, b| (Date.parse(b) - Date.parse(a)).to_i }
+        expect(gaps).to all(eq(7))
+      end
+    end
   end
 
   describe "#totals" do
