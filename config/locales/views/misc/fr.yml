@@ -112,6 +112,8 @@ fr:
         views: Views
       reactions_history: "Historique des réactions"
       by: par
+      top_contributors:
+        heading: Meilleurs participants
     sticky:
       joined: Rejoint
       default_cta: Learn more

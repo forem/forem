@@ -1,7 +1,19 @@
-import { callHistoricalAPI, callReferrersAPI, callTotalsAPI } from './client';
+import { callDashboardAPI } from './client';
 import { locale } from '@utilities/locale';
 
-const activeCharts = {};
+// Window-level state survives esbuild IIFE re-execution during InstantClick
+// navigation. Without this, each script re-execution creates a new closure scope
+// with empty charts/counter, and the on('change') handler (bound to the first
+// scope) can't reach later scopes' charts — breaking brush/zoom bindings.
+if (!window._analyticsState) {
+  window._analyticsState = { activeCharts: {}, apiGeneration: 0 };
+}
+const activeCharts = window._analyticsState.activeCharts;
+const _state = window._analyticsState;
+
+function isDarkMode() {
+  return document.body.classList.contains('dark-theme');
+}
 
 function resetActive(activeButton) {
   const buttons = document.querySelectorAll(
@@ -74,35 +86,67 @@ function writeCards(data, timeRangeLabel, totals) {
   commentCard.innerHTML = cardHTML(comments, `${locale('core.dashboard_analytics_comments')} ${timeRangeLabel}`);
   bookmarkCard.innerHTML = cardHTML(bookmarks, `${locale('core.dashboard_analytics_bookmarks')} ${timeRangeLabel}`);
   if (followersCard) {
+    const engagementEl = followersCard.querySelector('.follower-engagement');
     followersCard.innerHTML = cardHTML(sumAnalytics(data, 'follows'), `${locale('core.dashboard_analytics_followers')} ${timeRangeLabel}`);
+    if (engagementEl) followersCard.appendChild(engagementEl);
   }
 }
 
-function drawChart({ id, chartType = 'line', showPoints = true, labels, series, colors, strokeDashArray, fillOptions, dataLabels, yaxis }) {
+function drawChart({ id, chartType = 'line', showPoints = true, labels, series, colors, strokeDashArray, fillOptions, dataLabels, yaxis, isInfinity = false }) {
+  const brushId = `brush-${id}`;
+  const mainChartId = `main-${id}`;
+
+  // Convert labels to timestamps for infinity mode (enables datetime x-axis + brush)
+  const timestamps = isInfinity ? labels.map((l) => new Date(l).getTime()) : null;
+
+  // Calculate 90-day selection window for infinity mode (used by both main chart and brush)
+  let selMin, selMax;
+  if (isInfinity && timestamps && timestamps.length > 0) {
+    const ninetyDaysMs = 90 * 24 * 60 * 60 * 1000;
+    selMin = Math.max(timestamps[0], timestamps[timestamps.length - 1] - ninetyDaysMs);
+    selMax = timestamps[timestamps.length - 1];
+  }
+
+  // X-axis: datetime for infinity (brush support), categories for week/month
+  const xaxisConfig = isInfinity
+    ? {
+        type: 'datetime',
+        min: selMin,
+        max: selMax,
+        labels: { datetimeUTC: false, style: { fontSize: '11px' } },
+      }
+    : {
+        categories: labels,
+        labels: {
+          rotate: -45,
+          rotateAlways: false,
+          hideOverlappingLabels: true,
+          style: { fontSize: '11px' },
+        },
+        tickAmount: Math.min(labels.length, 14),
+      };
+
+  // For infinity, pair values with timestamps: [[ts, val], ...]
+  const chartSeries = isInfinity
+    ? series.map((s) => ({ ...s, data: s.data.map((val, i) => [timestamps[i], val]) }))
+    : series;
+
   const options = {
     chart: {
+      ...(isInfinity ? { id: mainChartId } : {}),
       type: chartType,
       height: 320,
-      toolbar: { show: false },
-      zoom: { enabled: false },
+      toolbar: { show: isInfinity, autoSelected: 'zoom' },
+      zoom: { enabled: isInfinity },
       animations: {
         enabled: true,
         easing: 'easeinout',
         speed: 400,
       },
     },
-    series,
+    series: chartSeries,
     colors,
-    xaxis: {
-      categories: labels,
-      labels: {
-        rotate: -45,
-        rotateAlways: false,
-        hideOverlappingLabels: true,
-        style: { fontSize: '11px' },
-      },
-      tickAmount: Math.min(labels.length, 14),
-    },
+    xaxis: xaxisConfig,
     yaxis: yaxis || {
       min: 0,
       labels: {
@@ -120,12 +164,15 @@ function drawChart({ id, chartType = 'line', showPoints = true, labels, series, 
     legend: {
       position: 'top',
     },
+    theme: {
+      mode: isDarkMode() ? 'dark' : 'light',
+    },
     tooltip: {
       shared: true,
       intersect: false,
     },
     grid: {
-      borderColor: '#e7e7e7',
+      borderColor: isDarkMode() ? '#333' : '#e7e7e7',
     },
   };
 
@@ -138,22 +185,95 @@ function drawChart({ id, chartType = 'line', showPoints = true, labels, series, 
   }
 
   import('apexcharts').then(({ default: ApexCharts }) => {
-    const currentChart = activeCharts[id];
-    if (currentChart) {
-      currentChart.destroy();
+    // Destroy existing charts (brush first, then main — order matters for ApexCharts registry)
+    if (activeCharts[brushId]) {
+      activeCharts[brushId].destroy();
+      delete activeCharts[brushId];
+    }
+    const existingBrushEl = document.getElementById(brushId);
+    if (existingBrushEl) existingBrushEl.remove();
+
+    if (activeCharts[id]) {
+      activeCharts[id].destroy();
+      delete activeCharts[id];
     }
 
     const el = document.getElementById(id);
     if (!el) return;
     el.innerHTML = '';
     const chart = new ApexCharts(el, options);
-    chart.render();
     activeCharts[id] = chart;
+
+    // Render main chart, then brush — brush must bind after main is in the registry
+    chart.render().then(() => {
+      if (!isInfinity || !timestamps || timestamps.length === 0) return;
+
+      const brushEl = document.createElement('div');
+      brushEl.id = brushId;
+      el.parentNode.insertBefore(brushEl, el.nextSibling);
+
+      const brushOptions = {
+        chart: {
+          type: 'area',
+          height: 100,
+          brush: {
+            target: mainChartId,
+            enabled: true,
+          },
+          selection: {
+            enabled: true,
+            xaxis: { min: selMin, max: selMax },
+          },
+          toolbar: { show: false },
+          animations: { enabled: false },
+        },
+        series: [{ name: chartSeries[0].name, data: chartSeries[0].data }],
+        colors: [colors[0]],
+        xaxis: {
+          type: 'datetime',
+          labels: { datetimeUTC: false, style: { fontSize: '10px' } },
+          axisBorder: { show: false },
+        },
+        yaxis: {
+          min: 0,
+          labels: { show: false },
+        },
+        fill: {
+          type: 'gradient',
+          gradient: { opacityFrom: 0.3, opacityTo: 0.05 },
+        },
+        stroke: { width: 1, curve: 'smooth' },
+        legend: { show: false },
+        dataLabels: { enabled: false },
+        theme: {
+          mode: isDarkMode() ? 'dark' : 'light',
+        },
+        grid: {
+          borderColor: isDarkMode() ? '#333' : '#e7e7e7',
+          padding: { left: 10, right: 10 },
+        },
+      };
+
+      const brushChart = new ApexCharts(brushEl, brushOptions);
+      brushChart.render();
+      activeCharts[brushId] = brushChart;
+    });
   });
 }
 
 function drawCharts(data, timeRangeLabel) {
   const labels = Object.keys(data);
+
+  if (labels.length === 0) {
+    ['reactions-chart', 'comments-chart', 'readers-chart', 'followers-chart'].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.innerHTML = `<p class="color-base-60 fs-s m-5 text-center">${locale('core.dashboard_analytics_no_data')}</p>`;
+      }
+    });
+    return;
+  }
+
   const parsedData = Object.entries(data).map((date) => date[1]);
   const comments = parsedData.map((date) => date.comments.total);
   const reactions = parsedData.map((date) => date.reactions.total);
@@ -174,13 +294,16 @@ function drawCharts(data, timeRangeLabel) {
     return acc;
   }, []);
 
+  // Infinity mode: brush navigator + datetime x-axis
+  const isInfinity = timeRangeLabel === '';
   // When timeRange is "Infinity" we hide the points to avoid over-crowding the UI
-  const showPoints = timeRangeLabel !== '';
+  const showPoints = !isInfinity;
 
   drawChart({
     id: 'reactions-chart',
     showPoints,
     labels,
+    isInfinity,
     colors: ['#4bc0c0', '#e56464', '#9d39e9', '#f59e0b', '#10b981', '#ef4444', '#0a85ff'],
     // dashArray: 0 = solid for first 6 series, 5 = dashed for Bookmarks (last)
     strokeDashArray: [0, 0, 0, 0, 0, 0, 5],
@@ -199,6 +322,7 @@ function drawCharts(data, timeRangeLabel) {
     id: 'comments-chart',
     showPoints,
     labels,
+    isInfinity,
     colors: ['#4bc0c0'],
     series: [{ name: 'Comments', data: comments }],
   });
@@ -207,6 +331,7 @@ function drawCharts(data, timeRangeLabel) {
     id: 'readers-chart',
     showPoints,
     labels,
+    isInfinity,
     colors: ['#9d39e9', '#10b981'],
     strokeDashArray: [0, 4],
     series: [
@@ -233,6 +358,7 @@ function drawCharts(data, timeRangeLabel) {
     chartType: 'area',
     showPoints: false,
     labels,
+    isInfinity,
     colors: ['#f59e0b'],
     series: [{ name: 'Total Followers', data: cumulativeFollowers }],
     fillOptions: {
@@ -299,6 +425,9 @@ function drawReferrerChart(data) {
         speed: 400,
       },
     },
+    theme: {
+      mode: isDarkMode() ? 'dark' : 'light',
+    },
     series,
     labels,
     legend: {
@@ -338,6 +467,14 @@ function drawReferrerChart(data) {
 
 function renderReferrers(data) {
   const container = document.getElementById('referrers-container');
+
+  if (!data.domains || data.domains.length === 0) {
+    container.innerHTML = `<tr><td colspan="2" class="color-base-60 fs-s p-4 text-center">${locale('core.dashboard_analytics_no_referrers')}</td></tr>`;
+    const chartEl = document.getElementById('referrers-chart');
+    if (chartEl) chartEl.innerHTML = '';
+    return;
+  }
+
   const tableBody = data.domains
     .filter((referrer) => referrer.domain)
     .map((referrer) => {
@@ -366,9 +503,145 @@ function renderReferrers(data) {
   drawReferrerChart(data);
 }
 
+function renderTopContributors(data) {
+  const container = document.getElementById('top-contributors-container');
+  if (!container) return;
+
+  container.innerHTML = '';
+
+  if (!data || data.length === 0) {
+    const emptyMsg = document.createElement('p');
+    emptyMsg.className = 'color-base-60 fs-s p-4';
+    emptyMsg.textContent = locale('core.top_contributors_empty');
+    container.appendChild(emptyMsg);
+    return;
+  }
+
+  const note = document.createElement('p');
+  note.className = 'fs-xs color-base-50 mt-0 mb-3';
+  note.style.fontStyle = 'italic';
+  note.textContent = locale('core.top_contributors_weight_note');
+  container.appendChild(note);
+
+  data.forEach((contributor, index) => {
+    const row = document.createElement('div');
+    row.className = `flex items-center gap-3 py-3${index > 0 ? ' border-t-1 border-base-10' : ''}`;
+
+    const rank = document.createElement('span');
+    rank.className = 'color-base-50 fs-s fw-bold';
+    rank.style.minWidth = '1.75rem';
+    rank.style.textAlign = 'right';
+    rank.textContent = index + 1;
+    row.appendChild(rank);
+
+    const avatar = document.createElement('img');
+    avatar.className = 'crayons-avatar crayons-avatar--l';
+    avatar.src = contributor.profile_image;
+    avatar.alt = contributor.username;
+    avatar.width = 40;
+    avatar.height = 40;
+    avatar.loading = 'lazy';
+    row.appendChild(avatar);
+
+    const info = document.createElement('div');
+    info.className = 'flex-1 min-w-0';
+
+    const nameLink = document.createElement('a');
+    nameLink.href = `/${contributor.username}`;
+    nameLink.className = 'fw-bold fs-base block truncate color-base-90';
+    nameLink.textContent = contributor.name || contributor.username;
+    info.appendChild(nameLink);
+
+    const counts = document.createElement('div');
+    counts.className = 'flex items-center gap-3 mt-1';
+
+    if (contributor.reactions_count > 0) {
+      const rSpan = document.createElement('span');
+      rSpan.className = 'fs-s color-base-70';
+      const rIcon = document.createElement('span');
+      rIcon.style.color = '#4bc0c0';
+      rIcon.textContent = '\u2764\uFE0F';
+      const rStrong = document.createElement('strong');
+      rStrong.textContent = contributor.reactions_count;
+      rSpan.appendChild(rIcon);
+      rSpan.append(' ', rStrong, ' ', locale('core.top_contributors_reactions'));
+      counts.appendChild(rSpan);
+    }
+
+    if (contributor.comments_count > 0) {
+      const cSpan = document.createElement('span');
+      cSpan.className = 'fs-s color-base-70';
+      const cIcon = document.createElement('span');
+      cIcon.style.color = '#9d39e9';
+      cIcon.textContent = '\uD83D\uDCAC';
+      const cStrong = document.createElement('strong');
+      cStrong.textContent = contributor.comments_count;
+      cSpan.appendChild(cIcon);
+      cSpan.append(' ', cStrong, ' ', locale('core.top_contributors_comments'));
+      counts.appendChild(cSpan);
+    }
+
+    info.appendChild(counts);
+    row.appendChild(info);
+    container.appendChild(row);
+  });
+}
+
+function renderFollowerEngagement(data) {
+  const card = document.getElementById('followers-card');
+  if (!card) return;
+
+  // Remove any previous engagement line
+  const existing = card.querySelector('.follower-engagement');
+  if (existing) existing.remove();
+
+  if (!data || data.total_followers === 0) return;
+
+  const p = document.createElement('p');
+  p.className = 'follower-engagement color-base-60 fs-s';
+  p.appendChild(document.createTextNode(locale('core.follower_engagement_ratio', { ratio: data.ratio })));
+  p.appendChild(document.createElement('br'));
+  p.appendChild(document.createTextNode(locale('core.follower_engagement_detail', { engaged: data.engaged_followers, total: data.total_followers })));
+  card.appendChild(p);
+}
+
+function showLoadingPlaceholders() {
+  const cardIds = ['readers-card', 'reactions-card', 'comments-card', 'bookmarks-card', 'followers-card'];
+  cardIds.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el && !el.querySelector('.analytics-loading')) {
+      el.innerHTML = '<div class="analytics-loading crayons-scaffold-loading w-75 h-0 py-4 mx-auto my-3"></div>';
+    }
+  });
+
+  const chartIds = ['readers-chart', 'reactions-chart', 'comments-chart', 'followers-chart', 'referrers-chart'];
+  chartIds.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el && !el.querySelector('.analytics-loading')) {
+      el.innerHTML = '<div class="analytics-loading crayons-scaffold-loading w-100 mx-auto" style="height:200px"></div>';
+    }
+  });
+}
+
 function removeCardElements() {
   const el = document.getElementsByClassName('summary-stats')[0];
   el && el.remove();
+}
+
+function retryButtonHTML() {
+  return '<button type="button" class="crayons-btn crayons-btn--secondary mt-2" data-analytics-retry>Retry</button>';
+}
+
+function bindRetryButtons(root = document) {
+  root.querySelectorAll('[data-analytics-retry]').forEach((btn) => {
+    if (btn.dataset.analyticsRetryBound === 'true') return;
+    btn.dataset.analyticsRetryBound = 'true';
+    btn.addEventListener('click', () => {
+      if (typeof _state.lastDraw === 'function') {
+        _state.lastDraw(_state.lastContext || {});
+      }
+    });
+  });
 }
 
 function showErrorsOnCharts() {
@@ -376,39 +649,71 @@ function showErrorsOnCharts() {
   target.forEach((id) => {
     const el = document.getElementById(id);
     if (!el) return;
-    el.outerHTML = `<p class="m-5" id="${id}">Failed to fetch chart data. If this error persists for a minute, you can try to disable adblock etc. on this page or site.</p>`;
+    el.outerHTML = `<div class="m-5" id="${id}"><p>Failed to fetch chart data. If this error persists for a minute, you can try to disable adblock etc. on this page or site.</p>${retryButtonHTML()}</div>`;
   });
+  bindRetryButtons();
 }
 
 function showErrorsOnReferrers() {
   const chartEl = document.getElementById('referrers-chart');
   if (chartEl) chartEl.innerHTML = '';
-  document.getElementById('referrers-container').outerHTML =
-    '<p class="m-5" id="referrers-container">Failed to fetch referrer data. If this error persists for a minute, you can try to disable adblock etc. on this page or site.</p>';
+  const container = document.getElementById('referrers-container');
+  if (container) {
+    // referrers-container is a <tbody>; preserve it and inject a valid table row
+    // so the surrounding <table> markup stays well-formed.
+    container.innerHTML = `<tr><td colspan="2" class="p-5"><p>Failed to fetch referrer data. If this error persists for a minute, you can try to disable adblock etc. on this page or site.</p>${retryButtonHTML()}</td></tr>`;
+  }
+  bindRetryButtons();
 }
 
 function callAnalyticsAPI(date, timeRangeLabel, { organizationId, articleId }) {
-  Promise.all([
-    callHistoricalAPI(date, { organizationId, articleId }),
-    callTotalsAPI(date, { organizationId, articleId }),
-  ])
-    .then(([data, totals]) => {
-      writeCards(data, timeRangeLabel, totals);
-      drawCharts(data, timeRangeLabel);
+  const generation = ++_state.apiGeneration;
+
+  // Destroy existing charts before showing placeholders to clean ApexCharts registry
+  Object.keys(activeCharts).forEach((key) => {
+    activeCharts[key].destroy();
+    delete activeCharts[key];
+  });
+  document.querySelectorAll('[id^="brush-"]').forEach((el) => el.remove());
+
+  showLoadingPlaceholders();
+
+  // Single bundled request: /api/analytics/dashboard returns all five panels
+  // (historical, totals, referrers, top_contributors, follower_engagement) in
+  // one response. This replaces 5 parallel GETs that systematically tripped
+  // the Rack::Attack api_throttle (3 GET/sec per IP) and caused "Failed to
+  // fetch chart data" errors in production.
+  callDashboardAPI(date, { organizationId, articleId })
+    .then((data) => {
+      if (generation !== _state.apiGeneration) return;
+
+      // Cache the owner's registration floor so subsequent Infinity clicks
+      // can request data starting at the account creation date instead of
+      // the legacy hardcoded 2019-04-01.
+      if (data.start_date_floor) _state.startDateFloor = data.start_date_floor;
+
+      writeCards(data.historical, timeRangeLabel, data.totals);
+      drawCharts(data.historical, timeRangeLabel);
+      renderReferrers(data.referrers);
+
+      if (document.getElementById('top-contributors-container')) {
+        renderTopContributors(data.top_contributors);
+      }
+
+      if (document.getElementById('followers-card')) {
+        renderFollowerEngagement(data.follower_engagement);
+      }
     })
     .catch((_err) => {
-      removeCardElements();
+      if (generation !== _state.apiGeneration) return;
       showErrorsOnCharts();
+      showErrorsOnReferrers();
     });
-
-  callReferrersAPI(date, { organizationId, articleId })
-    .then((data) => {
-      renderReferrers(data);
-    })
-    .catch((_err) => showErrorsOnReferrers());
 }
 
 function drawWeekCharts({ organizationId, articleId }) {
+  _state.lastDraw = drawWeekCharts;
+  _state.lastContext = { organizationId, articleId };
   resetActive(document.getElementById('week-button'));
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
@@ -416,6 +721,8 @@ function drawWeekCharts({ organizationId, articleId }) {
 }
 
 function drawMonthCharts({ organizationId, articleId }) {
+  _state.lastDraw = drawMonthCharts;
+  _state.lastContext = { organizationId, articleId };
   resetActive(document.getElementById('month-button'));
   const oneMonthAgo = new Date();
   oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
@@ -423,27 +730,62 @@ function drawMonthCharts({ organizationId, articleId }) {
 }
 
 function drawInfinityCharts({ organizationId, articleId }) {
+  _state.lastDraw = drawInfinityCharts;
+  _state.lastContext = { organizationId, articleId };
   resetActive(document.getElementById('infinity-button'));
-  // April 1st is when the DEV analytics feature went into place
-  const beginningOfTime = new Date('2019-04-01');
+  // Prefer the backend-provided start floor (the owner's registration date)
+  // when we've seen one from a prior dashboard response. Fall back to the
+  // historical 2019-04-01 anchor (when the analytics feature first shipped)
+  // for the first render before the bundled API has responded.
+  const beginningOfTime = _state.startDateFloor
+    ? new Date(_state.startDateFloor)
+    : new Date('2019-04-01');
   callAnalyticsAPI(beginningOfTime, '', { organizationId, articleId });
 }
 
+export function destroyCharts() {
+  // Invalidate any in-flight API responses
+  _state.apiGeneration++;
+  // Clear the cached start floor: it's owner-scoped and would otherwise leak
+  // across InstantClick navigation. Without this, clicking Infinity on a new
+  // owner before its first dashboard response lands would send the previous
+  // owner's floor (and the backend only clamps later, never expands earlier).
+  _state.startDateFloor = null;
+  Object.keys(activeCharts).forEach((key) => {
+    activeCharts[key].destroy();
+    delete activeCharts[key];
+  });
+  // Remove dynamically created brush elements
+  document.querySelectorAll('[id^="brush-"]').forEach((el) => el.remove());
+}
+
 export function initCharts({ organizationId, articleId }) {
+  // Destroy any leftover charts from previous navigation
+  destroyCharts();
+
   const weekButton = document.getElementById('week-button');
-  weekButton.addEventListener(
+  const monthButton = document.getElementById('month-button');
+  const infinityButton = document.getElementById('infinity-button');
+
+  // Replace elements to remove all old event listeners cleanly
+  const newWeek = weekButton.cloneNode(true);
+  const newMonth = monthButton.cloneNode(true);
+  const newInfinity = infinityButton.cloneNode(true);
+  weekButton.replaceWith(newWeek);
+  monthButton.replaceWith(newMonth);
+  infinityButton.replaceWith(newInfinity);
+
+  newWeek.addEventListener(
     'click',
     drawWeekCharts.bind(null, { organizationId, articleId }),
   );
 
-  const monthButton = document.getElementById('month-button');
-  monthButton.addEventListener(
+  newMonth.addEventListener(
     'click',
     drawMonthCharts.bind(null, { organizationId, articleId }),
   );
 
-  const infinityButton = document.getElementById('infinity-button');
-  infinityButton.addEventListener(
+  newInfinity.addEventListener(
     'click',
     drawInfinityCharts.bind(null, { organizationId, articleId }),
   );

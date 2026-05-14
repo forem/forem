@@ -112,6 +112,8 @@ en:
         views: Views
       reactions_history: "Reactions History"
       by: by
+      top_contributors:
+        heading: Top Engagers
     sticky:
       joined: Joined
       default_cta: Learn more
