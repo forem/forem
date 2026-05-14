@@ -255,7 +255,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_05_13_150002) do
     t.index ["published"], name: "index_articles_on_published"
     t.index ["published_at"], name: "index_articles_on_published_at"
     t.index ["reading_list_document"], name: "index_articles_on_reading_list_document", using: :gin
-    t.index ["semantic_embedding"], name: "index_articles_on_semantic_embedding", opclass: :vector_cosine_ops, using: :ivfflat
     t.index ["semantic_interests"], name: "index_articles_on_semantic_interests", using: :gin
     t.index ["slug", "user_id"], name: "index_articles_on_slug_and_user_id", unique: true
     t.index ["subforem_id", "published", "score", "published_at"], name: "index_articles_on_subforem_published_score_published_at"
@@ -1213,6 +1212,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_05_13_150002) do
     t.bigint "user_id"
     t.bigint "viewable_id"
     t.string "viewable_type"
+    t.index ["article_id", "created_at"], name: "index_page_views_on_article_id_and_created_at"
     t.index ["article_id"], name: "index_page_views_on_article_id"
     t.index ["created_at"], name: "index_page_views_on_created_at"
     t.index ["user_id"], name: "index_page_views_on_user_id"
@@ -1804,7 +1804,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_05_13_150002) do
     t.jsonb "recently_viewed_articles", default: []
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.index ["interest_embedding"], name: "index_user_activities_on_interest_embedding", opclass: :vector_cosine_ops, using: :ivfflat
     t.index ["user_id"], name: "index_user_activities_on_user_id"
   end
 
