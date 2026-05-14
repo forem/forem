@@ -1,5 +1,4 @@
 class Article < ApplicationRecord
-
   include LiquidEmbeddable
   include CloudinaryHelper
   include ActionView::Helpers
@@ -1751,11 +1750,12 @@ class Article < ApplicationRecord
   end
 
   def enqueue_generate_embedding
-    return unless eligible_for_semantic_embedding?
+    content_changed = saved_change_to_title? || saved_change_to_body_markdown? || saved_change_to_cached_tag_list?
+    return unless content_changed
+    return unless respond_to?(:semantic_embedding)
+    return unless score >= Settings::UserExperience.home_feed_minimum_score
 
-    if saved_change_to_title? || saved_change_to_body_markdown? || saved_change_to_cached_tag_list?
-      GenerateArticleEmbeddingWorker.perform_async(id)
-    end
+    GenerateArticleEmbeddingWorker.perform_async(id)
   end
 
   def body_markdown_only_contains_embed_tags_from_title?
