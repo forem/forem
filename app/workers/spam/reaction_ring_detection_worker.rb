@@ -5,7 +5,7 @@ module Spam
   class ReactionRingDetectionWorker
     include Sidekiq::Worker
 
-    sidekiq_options queue: :default, retry: 3
+    sidekiq_options queue: :default, retry: 3, lock: :until_and_while_executing
 
     def perform(user_id)
       return unless user_id

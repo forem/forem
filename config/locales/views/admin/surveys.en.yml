@@ -1,0 +1,19 @@
+en:
+  admin:
+    surveys:
+      index:
+        title: Manage Surveys
+        create: Create New Survey
+        empty: No surveys found.
+        table:
+          title: Title
+          active: Active
+          polls_count: Polls
+          created_at: Created At
+          actions: Actions
+      new:
+        title: New Survey
+      edit:
+        title: Edit Survey
+      show:
+        title: Survey Details

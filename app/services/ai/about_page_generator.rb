@@ -1,8 +1,9 @@
 module Ai
   class AboutPageGenerator
+    VERSION = "1.0"
     MAX_RETRIES = 3
 
-    def initialize(subforem_id, brain_dump, name, locale = 'en')
+    def initialize(subforem_id, brain_dump, name, locale = "en")
       @subforem_id = subforem_id
       @brain_dump = brain_dump
       @name = name
@@ -64,13 +65,13 @@ module Ai
 
     def generate_about_content
       prompt = build_prompt
-      response = Ai::Base.new.call(prompt)
+      response = Ai::Base.new(wrapper: self).call(prompt)
       parse_about_response(response)
     end
 
     def build_prompt
       locale_instruction = get_locale_instruction
-      
+
       <<~PROMPT
         Generate an "About" page content for the subforem "#{@name}" with domain #{@subforem.domain} based on the following brain dump: #{@brain_dump}
 
@@ -99,9 +100,9 @@ module Ai
 
     def get_locale_instruction
       case @locale
-      when 'pt'
+      when "pt"
         "LANGUAGE REQUIREMENT: Generate ALL content in Brazilian Portuguese. Use proper Portuguese grammar, vocabulary, and cultural context. Avoid special characters in tags and technical terms - use ASCII characters only for tags and URLs."
-      when 'fr'
+      when "fr"
         "LANGUAGE REQUIREMENT: Generate ALL content in French. Use proper French grammar, vocabulary, and cultural context. Avoid special characters in tags and technical terms - use ASCII characters only for tags and URLs."
       else
         "LANGUAGE REQUIREMENT: Generate ALL content in English. Use proper English grammar, vocabulary, and cultural context. Avoid special characters in tags and technical terms - use ASCII characters only for tags and URLs."

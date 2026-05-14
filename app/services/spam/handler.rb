@@ -3,6 +3,29 @@ module Spam
   #
   # @note We may not immediately block spam but instead slowly escalate our response.
   module Handler
+    # These are purely words that can help trigger an investigation.
+    # They are never to be used to directly take any action.
+    # They can absolutely be used out of context and only exist to trigger investigation.
+    # Depending on the forem, they are hypothetically not even abuse in any way.
+    PROFILE_SPAM_TRIGGER_TERMS = [
+      "buy links",
+      "buying links",
+      "backlinks",
+      "link building",
+      "seo services",
+      "casino",
+      "gambling",
+      "betting",
+      "escort",
+      "prostitut",
+      "adult",
+      "girls",
+      "porn",
+      "onlyfans",
+      "crypto pump",
+      "forex signals",
+      "loan shark",
+    ].freeze
     # @return [TrueClass] if we are going to try to use more rigorous spam handling
     # @return [FalseClass] if we are using less rigorous spam handling
     def self.more_rigorous_user_profile_spam_checking?
@@ -22,8 +45,13 @@ module Spam
     # @param article [Article] the article to check for spamminess
     # @param attributes [Array<Symbol>] test these attributes of the article.
     def self.handle_article!(article:, attributes: %i[title body_markdown])
-      # First, run content moderation labeling
-      label_article_content!(article)
+      if article_linked_domain_spam?(article)
+        article.update_column(:automod_label, "clear_and_obvious_spam")
+        article.automod_label = "clear_and_obvious_spam"
+      else
+        # First, run content moderation labeling
+        label_article_content!(article)
+      end
 
       # Handle clear and obvious violations immediately
       if %w[clear_and_obvious_spam clear_and_obvious_harmful clear_and_obvious_inciting].include?(article.automod_label)
@@ -123,6 +151,28 @@ module Spam
       issue_spam_reaction_for!(reactable: user)
     end
 
+    # Test a user profile update for clear and obvious spam or abuse.
+    #
+    # @param user [User] the user to check for spamminess
+    def self.handle_profile_update!(user:)
+      return :skipped if user.spam_or_suspended?
+      return :skipped unless eligible_for_profile_spam_check?(user: user)
+      return :skipped unless Ai::Base::DEFAULT_KEY.present?
+
+      label = Ai::ProfileModerationLabeler.new(user).label
+      return :not_spam unless clear_profile_violation_label?(label)
+
+      issue_spam_reaction_for!(reactable: user)
+
+      if label == "clear_and_obvious_spam"
+        user.add_role(:spam)
+      else
+        suspend!(user: user)
+      end
+
+      :spam
+    end
+
     # Suspend the given user because of too many spammy actions.
     #
     # @param user [User]
@@ -193,14 +243,19 @@ module Spam
       suspend!(user: user)
     end
 
-    # NEW/private: Label article content using AI moderation.
+    # NEW/private: Label article content using AI moderation and calculate compellingness.
     def self.label_article_content!(article)
       return unless Ai::Base::DEFAULT_KEY.present?
 
       begin
         labeler = Ai::ContentModerationLabeler.new(article)
-        label = labeler.label
-        article.update_column(:automod_label, label)
+        results = labeler.evaluate
+        label = results[:label]
+        
+        article.update_columns(
+          automod_label: label,
+          compellingness_score: results[:compellingness_score]
+        )
 
         # Only check for subforem reassignment if the article is marked as offtopic
         if offtopic_label?(label)
@@ -209,7 +264,7 @@ module Spam
       rescue StandardError => e
         Rails.logger.error("Failed to label article content: #{e}")
         # Set a safe default label
-        article.update_column(:automod_label, "no_moderation_label")
+        article.update_columns(automod_label: "no_moderation_label", compellingness_score: 0.0)
       end
     end
 
@@ -235,9 +290,81 @@ module Spam
       end
     end
 
+    # NEW/private: Determine if a profile label is a clear violation.
+    def self.clear_profile_violation_label?(label)
+      %w[clear_and_obvious_spam clear_and_obvious_harmful clear_and_obvious_inciting].include?(label)
+    end
+
+    # NEW/private: Skip profile checks for established accounts.
+    def self.eligible_for_profile_spam_check?(user:)
+      return false if published_articles_over_limit?(user: user)
+      return false if published_comments_over_limit?(user: user)
+
+      true
+    end
+
+    def self.published_articles_over_limit?(user:, limit: 3)
+      user.articles.published.limit(limit + 1).count > limit
+    end
+
+    def self.published_comments_over_limit?(user:, limit: 3)
+      user.comments.where(deleted: false).limit(limit + 1).count > limit
+    end
+
+    # NEW/private: Detects trigger terms in profile text.
+    def self.profile_spam_trigger_term_match?(text)
+      normalized = text.to_s.downcase
+      return false if normalized.blank?
+
+      PROFILE_SPAM_TRIGGER_TERMS.any? { |term| normalized.include?(term) }
+    end
+
+    # NEW/private: Check if article links to highly negative domains
+    def self.article_linked_domain_spam?(article)
+      html = article.processed_html
+      return false if html.blank? || !html.include?("<a")
+
+      score = article.user.score
+      return false if score > 50
+
+      threshold = score <= 0 ? -2000 : -2000 - ((score / 10) * 2000)
+
+      domains = extract_all_domains_from(html, limit: 25)
+      return false if domains.empty?
+
+      LinkedDomain.where(host: domains).where("net_score <= ?", threshold).exists?
+    end
+
+    # NEW/private: Extract all domains from processed HTML
+    def self.extract_all_domains_from(html, limit: 25)
+      return [] if html.blank? || !html.include?("<a") || limit.to_i <= 0
+
+      domains = []
+      seen_domains = {}
+
+      html.to_enum(:scan, /<a\s+[^>]*href=(['"])(.*?)\1/i).each do
+        begin
+          host = URI.parse(Regexp.last_match(2)).host&.downcase
+        rescue URI::Error
+          next
+        end
+
+        next if host.blank? || seen_domains[host]
+
+        seen_domains[host] = true
+        domains << host
+        break if domains.size >= limit
+      end
+
+      domains
+    end
+
     private_class_method :suspend!, :issue_spam_reaction_for!,
                          :extensive_domain_spam?, :extract_first_domain_from,
                          :suspend_if_user_is_repeat_offender, :label_article_content!,
-                         :offtopic_label?, :check_subforem_reassignment
+                         :offtopic_label?, :check_subforem_reassignment,
+                         :clear_profile_violation_label?, :eligible_for_profile_spam_check?,
+                         :published_articles_over_limit?, :published_comments_over_limit?,
+                         :article_linked_domain_spam?, :extract_all_domains_from
   end
 end

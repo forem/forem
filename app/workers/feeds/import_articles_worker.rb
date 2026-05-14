@@ -1,6 +1,9 @@
 module Feeds
   class ImportArticlesWorker
     include Sidekiq::Job
+    include Sidekiq::Throttled::Job
+
+    sidekiq_throttle(concurrency: { limit: 1 })
 
     sidekiq_options queue: :medium_priority, retry: 10, lock: :until_and_while_executing
 
@@ -16,7 +19,14 @@ module Feeds
         # the last time a feed was fetched at
         earlier_than = nil
       else
-        users_scope = users_scope.where(id: Users::Setting.with_feed.select(:user_id))
+        users_scope = users_scope.where(id: Feeds::Source.active.select(:user_id))
+
+        # Only batch users who have been active recently — avoids dispatching
+        # Sidekiq jobs for users that will just be filtered out downstream.
+        recent_activity_since = 3.months.ago
+        users_scope = users_scope.where("last_article_at >= ? OR last_presence_at >= ?",
+                                        recent_activity_since, recent_activity_since)
+
         earlier_than ||= 4.hours.ago
       end
 
@@ -35,6 +45,9 @@ module Feeds
 
     class ForUser
       include Sidekiq::Job
+      include Sidekiq::Throttled::Job
+
+      sidekiq_throttle(concurrency: { limit: 5 })
 
       def perform(user_ids, earlier_than)
         users_scope = User.where(id: user_ids)

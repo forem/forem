@@ -589,6 +589,56 @@ RSpec.describe Billboard do
     end
   end
 
+  describe "#update_exclude_article_ids" do
+    let(:article) { create(:article) }
+
+    it "automatically extracts article IDs from relative links in the billboard content" do
+      billboard = build(:billboard, body_markdown: "Check out this great post: [link](#{article.path})")
+      
+      expect { billboard.save! }.to change { billboard.exclude_article_ids }.from([]).to([article.id])
+    end
+
+    it "automatically extracts article IDs from absolute links matching the app domain" do
+      app_url = URI.parse(URL.url)
+      billboard = build(:billboard, body_markdown: "Check out this great post: [link](#{app_url}#{article.path})")
+      
+      expect { billboard.save! }.to change { billboard.exclude_article_ids }.from([]).to([article.id])
+    end
+
+    it "does not parse links from external domains" do
+      billboard = build(:billboard, body_markdown: "Check out this great post: [link](https://external-domain.com#{article.path})")
+      
+      expect { billboard.save! }.not_to change { billboard.exclude_article_ids }
+    end
+    
+    it "does not add invalid paths" do
+      billboard = build(:billboard, body_markdown: "Check out this great post: [link](/not-a-real-path)")
+      
+      expect { billboard.save! }.not_to change { billboard.exclude_article_ids }
+    end
+
+    it "removes IDs of linked articles if they are removed from the markdown" do
+      billboard = create(:billboard, body_markdown: "Check out this great post: [link](#{article.path})")
+      expect(billboard.exclude_article_ids).to eq([article.id])
+
+      expect {
+        billboard.update!(body_markdown: "Never mind, no links here!")
+      }.to change { billboard.exclude_article_ids }.from([article.id]).to([])
+    end
+
+    it "only runs when the body_markdown is changed" do
+      billboard = create(:billboard, body_markdown: "Check out this great post: [link](#{article.path})")
+      
+      allow(Article).to receive(:where).and_call_original
+      
+      # Now save without changing markdown
+      billboard.update!(name: "A different name")
+      
+      expect(Article).not_to have_received(:where)
+      expect(billboard.exclude_article_ids).to eq([article.id])
+    end
+  end
+
   describe "when a stale audience segment is associated" do
     let(:audience_segment) do
       Timecop.travel(5.days.ago) do
@@ -1004,6 +1054,24 @@ RSpec.describe Billboard do
       billboard.update_column(:expires_at, 1.day.ago)
       expect { billboard.check_and_handle_expiration }.to change { billboard.reload.approved }.from(true).to(false)
     end
+
+    it "busts caches if the billboard was published and on home page" do
+      billboard.update!(placement_area: "feed_first")
+      billboard.update_column(:expires_at, 1.day.ago)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.check_and_handle_expiration
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with(billboard.record_key)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "busts only billboard cache if the billboard was published but not on home page" do
+      billboard.update!(placement_area: "sidebar_left")
+      billboard.update_column(:expires_at, 1.day.ago)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.check_and_handle_expiration
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with(billboard.record_key)
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
   end
 
   describe "scopes" do
@@ -1240,6 +1308,141 @@ RSpec.describe Billboard do
       relation = described_class.where(id: billboards.map(&:id))
       result = described_class.select_billboard_by_weighted_strategy(relation, area)
       expect(result).to be_a(described_class)
+    end
+  end
+
+  describe "#bust_billboard_cache (when being taken down)" do
+    let(:billboard) { create(:billboard, approved: true, published: true) }
+
+    it "purges the billboard surrogate key when approved is set to false" do
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(approved: false)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with(billboard.record_key)
+    end
+
+    it "purges the billboard surrogate key when published is set to false" do
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(published: false)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with(billboard.record_key)
+    end
+
+    it "does not purge the billboard surrogate key when billboard is not being taken down" do
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(name: "Updated name")
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call).with(billboard.record_key)
+    end
+  end
+
+  describe "#should_bust_home_page_cache?" do
+    let(:billboard) { create(:billboard, placement_area: "feed_first", approved: false, published: false) }
+
+    it "busts home page cache when feed_first billboard is approved from unapproved state" do
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(approved: true, published: true)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "busts home page cache when feed_first billboard is published from unpublished state while already approved" do
+      billboard.update!(approved: true, published: false)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(published: true)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "busts home page cache when feed_first billboard is approved from unapproved state while already published" do
+      billboard.update!(approved: false, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(approved: true)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "busts cache when billboard is being taken down (approved set to false)" do
+      billboard.update!(approved: true, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(approved: false)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "busts cache when billboard is being taken down (published set to false)" do
+      billboard.update!(approved: true, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(published: false)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "busts cache when active billboard content is updated" do
+      billboard.update!(approved: true, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(name: "Updated name")
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "does not bust cache when active billboard unrelated attributes are updated" do
+      billboard.update!(approved: true, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(weight: 100)
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "busts cache when placement_area is changed away from home page for an active billboard" do
+      billboard.update!(approved: true, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(placement_area: "post_sidebar")
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "does not bust cache when billboard is not a home page placement and is activated" do
+      sidebar_billboard = create(:billboard, placement_area: "sidebar_left", approved: false, published: false)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      sidebar_billboard.update!(approved: true, published: true)
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "does not bust cache when billboard is not a home page placement and content is updated" do
+      sidebar_billboard = create(:billboard, placement_area: "sidebar_left", approved: true, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      sidebar_billboard.update!(name: "Updated name")
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+  end
+
+  describe "after_destroy cache busting" do
+    it "busts billboard and home page cache for active home page billboard" do
+      billboard = create(:billboard, placement_area: "feed_first", approved: true, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.destroy
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with(billboard.record_key)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "busts billboard cache but not home page for active non-home page billboard" do
+      billboard = create(:billboard, placement_area: "sidebar_left", approved: true, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.destroy
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with(billboard.record_key)
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "does not bust cache for inactive billboard" do
+      billboard = create(:billboard, placement_area: "feed_first", approved: false, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.destroy
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call)
+    end
+  end
+
+  describe "#sync_tags_array" do
+    it "syncs tags_array perfectly when tags are updated using tag_list" do
+      billboard = create(:billboard, tag_list: "javascript")
+      expect(billboard.tags_array).to match_array(["javascript"])
+      
+      billboard.update!(tag_list: "javascript, typescript, webdev")
+      expect(billboard.tags_array).to match_array(["javascript", "typescript", "webdev"])
+    end
+    
+    it "handles empty tags gracefully natively" do
+      billboard = create(:billboard, tag_list: "")
+      expect(billboard.tags_array).to eq([])
     end
   end
 end

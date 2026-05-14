@@ -231,10 +231,10 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
             expect(response.body).to include('<span class="olderposts-pagenumber">')
           end
 
-          it "renders tag index without pagination when not needed" do
+          it "renders tag index with pagination for supported tags" do
             get "/t/#{tag.name}"
 
-            expect(response.body).not_to include('<span class="olderposts-pagenumber">')
+            expect(response.body).to include('<span class="olderposts-pagenumber">')
           end
 
           it "does not include sidebar for page tag" do

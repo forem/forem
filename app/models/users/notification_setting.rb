@@ -13,6 +13,9 @@ module Users
     alias_attribute :subscribed_to_email_follower_notifications?, :email_follower_notifications
 
     after_commit :subscribe_to_mailchimp_newsletter
+    after_save if: :saved_change_to_email_newsletter? do
+      user&.sync_base_email_eligible!
+    end
 
     def subscribe_to_mailchimp_newsletter
       return if Settings::General.mailchimp_api_key.blank?

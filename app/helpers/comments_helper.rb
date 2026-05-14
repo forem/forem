@@ -1,6 +1,8 @@
 module CommentsHelper
   MAX_COMMENTS_TO_RENDER = 250
   MIN_COMMENTS_TO_RENDER = 8
+  MAX_TOP_LEVEL_COMMENTS_UNAUTHENTICATED = 75
+  MAX_DESCENDANT_COMMENTS_UNAUTHENTICATED = 5
 
   def any_negative_comments?(commentable)
     commentable.comments.where("score < 0").any?
@@ -112,6 +114,20 @@ module CommentsHelper
   end
 
   private
+
+  def limit_descendants(sub_hash, limit)
+    count = 0
+    traverse = ->(hash) do
+      new_hash = {}
+      hash.each do |c, children|
+        break if count >= limit
+        count += 1
+        new_hash[c] = traverse.call(children)
+      end
+      new_hash
+    end
+    traverse.call(sub_hash)
+  end
 
   def nested_comments(tree:, commentable:, is_view_root: false, is_admin: false)
     comments = tree.filter_map do |comment, sub_comments|

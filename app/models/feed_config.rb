@@ -30,34 +30,47 @@ class FeedConfig < ApplicationRecord
     terms << "(articles.score * #{score_weight})" if score_weight.positive?
 
     if organization_follow_weight.positive?
-      org_ids = organization_follow_ids.empty? ? "-1" : organization_follow_ids.join(',')
-      terms << "(CASE WHEN articles.organization_id IN (#{org_ids}) THEN #{organization_follow_weight} ELSE 0 END)"
+      org_ids = organization_follow_ids.compact_blank
+      org_ids_str = org_ids.empty? ? "-1" : org_ids.join(',')
+      terms << "(CASE WHEN articles.organization_id IN (#{org_ids_str}) THEN #{organization_follow_weight} ELSE 0 END)"
     end
 
     if user_follow_weight.positive?
-      user_ids = user_follow_ids.empty? ? "-1" : user_follow_ids.join(',')
-      terms << "(CASE WHEN articles.user_id IN (#{user_ids}) THEN #{user_follow_weight} ELSE 0 END)"
+      user_ids = user_follow_ids.compact_blank
+      user_ids_str = user_ids.empty? ? "-1" : user_ids.join(',')
+      terms << "(CASE WHEN articles.user_id IN (#{user_ids_str}) THEN #{user_follow_weight} ELSE 0 END)"
+    end
+
+    if follow_status_weight.positive?
+      user_ids = user_follow_ids.compact_blank
+      user_ids_str = user_ids.empty? ? "-1" : user_ids.join(',')
+      terms << "(CASE WHEN articles.type_of = 1 AND articles.user_id IN (#{user_ids_str}) THEN #{follow_status_weight} ELSE 0 END)"
     end
 
     if tag_follow_weight.positive? && tag_names.present?
-      tag_condition = "CASE WHEN " + tag_names.first(24).map { |tag|
-        "articles.cached_tag_list ~ '[[:<:]]#{tag}[[:>:]]'"
-      }.join(' OR ') + " THEN #{tag_follow_weight} ELSE 0 END"
+      tag_condition = if ENV["OPTIMIZED_FEED_TAGS_QUERY"] == "true"
+                        tags_overlap_sql = tag_names.first(rand(20..40)).map { |t| self.class.connection.quote(t) }.join(',')
+                        "CASE WHEN articles.tags_array && ARRAY[#{tags_overlap_sql}]::text[] THEN #{tag_follow_weight} ELSE 0 END"
+                      else
+                        "CASE WHEN " + tag_names.first(24).map { |tag|
+                          "articles.cached_tag_list ~ '[[:<:]]#{tag}[[:>:]]'"
+                        }.join(' OR ') + " THEN #{tag_follow_weight} ELSE 0 END"
+                      end
       terms << "(#{tag_condition})"
     end
 
     if subforem_follow_weight.positive? &&
       RequestStore.store[:subforem_id].present? &&
       RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
-      subforem_ids = subforem_follow_ids.empty? ? "-1" : subforem_follow_ids.join(',')
-      terms << "(CASE WHEN articles.subforem_id IN (#{subforem_ids}) THEN #{subforem_follow_weight} ELSE 0 END)"
+      subforem_ids = subforem_follow_ids.compact_blank
+      subforem_ids_str = subforem_ids.empty? ? "-1" : subforem_ids.join(',')
+      terms << "(CASE WHEN articles.subforem_id IN (#{subforem_ids_str}) THEN #{subforem_follow_weight} ELSE 0 END)"
     end
 
     ## Labels slightly different because we can use native Postgres array operators
     if label_match_weight.positive? && label_names.present?
-      label_condition = "CASE WHEN " + label_names.map { |label|
-        "? = ANY(articles.cached_label_list)"
-      }.join(' OR ') + " THEN #{label_match_weight} ELSE 0 END"
+      labels_str = label_names.map { |l| self.class.connection.quote(l) }.join(',')
+      label_condition = "CASE WHEN articles.cached_label_list && ARRAY[#{labels_str}]::varchar[] THEN #{label_match_weight} ELSE 0 END"
       terms << "(#{label_condition})"
     end
 
@@ -69,12 +82,15 @@ class FeedConfig < ApplicationRecord
     end
 
     if precomputed_selections_weight.positive? && precomputed_selections.present?
-      terms << "(CASE WHEN articles.id IN (#{precomputed_selections.join(',')}) THEN #{precomputed_selections_weight} ELSE 0 END)"
+      selections = precomputed_selections.compact_blank
+      if selections.any?
+        terms << "(CASE WHEN articles.id IN (#{selections.join(',')}) THEN #{precomputed_selections_weight} ELSE 0 END)"
+      end
     end
 
     if recent_article_suppression_rate.positive? && activity_store
       # Compute recently viewed article IDs using the page_views table.
-      recent_ids = activity_store.recently_viewed_articles.map(&:first)
+      recent_ids = activity_store.recently_viewed_articles.map(&:first).compact_blank
       recent_ids_str = recent_ids.any? ? recent_ids.join(',') : "-1"
       terms << "(CASE WHEN articles.id IN (#{recent_ids_str}) THEN -#{recent_article_suppression_rate} ELSE 0 END)"
     end
@@ -99,24 +115,26 @@ class FeedConfig < ApplicationRecord
       activity_store&.recent_subforems&.any? &&
       RequestStore.store[:root_subforem_id].present? &&
       RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
-      ids     = activity_store.recent_subforems.compact
-      arr_sql = "ARRAY[#{ids.join(',')}]::bigint[]"
+      ids     = activity_store.recent_subforems.compact_blank
+      if ids.any?
+        arr_sql = "ARRAY[#{ids.join(',')}]::bigint[]"
 
-      terms << <<~SQL.squish
-        (
-          CASE
-            WHEN articles.subforem_id = ANY(#{arr_sql})
-            THEN #{recent_subforem_weight}
-                 * COALESCE(
-                     cardinality(
-                       array_positions(#{arr_sql}, articles.subforem_id)
-                     ),
-                     0
-                   )
-            ELSE 0
-          END
-        )
-      SQL
+        terms << <<~SQL.squish
+          (
+            CASE
+              WHEN articles.subforem_id = ANY(#{arr_sql})
+              THEN #{recent_subforem_weight}
+                   * COALESCE(
+                       cardinality(
+                         array_positions(#{arr_sql}, articles.subforem_id)
+                       ),
+                       0
+                     )
+              ELSE 0
+            END
+          )
+        SQL
+      end
     end
 
     # Additional weights
@@ -125,7 +143,10 @@ class FeedConfig < ApplicationRecord
     terms << "(- (articles.clickbait_score * #{clickbait_score_weight}))" if clickbait_score_weight.positive?
     terms << "(articles.compellingness_score * #{compellingness_score_weight})" if compellingness_score_weight.positive?
     terms << "(CASE WHEN articles.language IN ('#{languages.join("','")}') THEN #{language_match_weight} ELSE 0 END)" if language_match_weight.positive? && score_weight.positive?
-    terms << "(RANDOM() * #{randomness_weight})" if randomness_weight.positive?
+    if randomness_weight.positive?
+      # Injecting a dynamic Ruby scope guarantees row shuffling uniquely per-request without sacrificing query planners dynamically!
+      terms << "((CASE WHEN articles.id IS NOT NULL THEN MOD((articles.id * 137 + #{rand(10000)}), 1000) / 1000.0 ELSE 0 END) * #{randomness_weight})"
+    end
 
     total_expression = terms.any? ? terms.join(" + ") : "0"
 
@@ -154,6 +175,7 @@ class FeedConfig < ApplicationRecord
     clone.recently_active_past_day_bonus_weight = recently_active_past_day_bonus_weight * rand(0.9..1.1)
     clone.featured_weight = featured_weight * rand(0.9..1.1)
     clone.status_weight = status_weight * rand(0.9..1.1)
+    clone.follow_status_weight = follow_status_weight * rand(0.9..1.1)
     clone.clickbait_score_weight = clickbait_score_weight * rand(0.9..1.1)
     clone.compellingness_score_weight = compellingness_score_weight * rand(0.9..1.1)
     clone.language_match_weight = language_match_weight * rand(0.9..1.1)

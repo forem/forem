@@ -8,7 +8,10 @@ module Users
     HEX_COLOR_REGEXP = /\A#?(?:\h{6}|\h{3})\z/
 
     belongs_to :user, touch: true
-    scope :with_feed, -> { where.not(feed_url: [nil, ""]) }
+    scope :with_feed, lambda {
+      where(user_id: Feeds::Source.active.select(:user_id))
+        .or(where.not(feed_url: [nil, ""]))
+    }
 
     enum editor_version: { v2: 0, v1: 1 }, _suffix: :editor
     enum config_font: { default: 0, comic_sans: 1, monospace: 2, open_dyslexic: 3, sans_serif: 4, serif: 5 },
@@ -19,6 +22,7 @@ module Users
     enum config_theme: { light_theme: 0, dark_theme: 2 }
     enum config_homepage_feed: { default: 0, latest: 1, top_week: 2, top_month: 3, top_year: 4, top_infinity: 5 },
          _suffix: :feed
+    enum feed_status: { healthy: 0, degraded: 1, failing: 2, inactive: 3 }, _prefix: :feed
 
     validates :brand_color1,
               format: { with: HEX_COLOR_REGEXP,
@@ -35,9 +39,20 @@ module Users
 
     before_update :update_content_preferences_updated_at_if_changed
     after_update :refresh_auto_audience_segments
+    after_commit :bust_user_profile_details_cache, on: :update, if: :display_email_setting_changed_for_cache?
 
     def resolved_font_name
       config_font.gsub("default", Settings::UserExperience.default_font)
+    end
+
+    def update_feed_health!(success:)
+      if success
+        update!(feed_status: :healthy, feed_status_message: nil, consecutive_feed_failures: 0)
+      else
+        new_count = consecutive_feed_failures + 1
+        new_status = new_count >= 3 ? :failing : :degraded
+        update!(feed_status: new_status, consecutive_feed_failures: new_count)
+      end
     end
 
     private
@@ -60,6 +75,14 @@ module Users
       return unless content_preferences_input.present? && content_preferences_input_changed?
 
       self.content_preferences_updated_at = Time.current
+    end
+
+    def bust_user_profile_details_cache
+      Users::BustProfileDetailsCacheWorker.perform_async(user_id)
+    end
+
+    def display_email_setting_changed_for_cache?
+      saved_change_to_display_email_on_profile?
     end
   end
 end

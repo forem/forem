@@ -33,6 +33,9 @@ module Billboards
     def call
       @filtered_billboards = approved_and_published_ads
       @filtered_billboards = placement_area_ads
+
+      apply_event_broadcast_overrides!
+
       @filtered_billboards = included_subforem_ads # if @subforem_id.present?
       @filtered_billboards = browser_context_ads if @user_agent.present?
       @filtered_billboards = page_ads if @page_id.present?
@@ -91,6 +94,34 @@ module Billboards
     end
 
     private
+
+    def apply_event_broadcast_overrides!
+      if @area.in?(%w[feed_first post_fixed_bottom])
+        active_events = Event.active_broadcast_events
+
+        verified_event_ids = []
+        active_events.each do |active_event|
+          if active_event.global_broadcast? || (active_event.tagged_broadcast? && event_matches_tags?(active_event))
+            verified_event_ids << active_event.id
+          end
+        end
+
+        if verified_event_ids.any?
+          @filtered_billboards = @filtered_billboards.where(event_id: verified_event_ids)
+          return
+        end
+      end
+      
+      # For untouched configurations OR silent areas, strip any billboards intrinsically attached to Events so they don't organically leak across default displays!
+      @filtered_billboards = @filtered_billboards.where(event_id: nil)
+    end
+
+    def event_matches_tags?(event)
+      event_tags = event.tags_array || []
+      return false if event_tags.empty?
+      
+      (@article_tags & event_tags).any? || (@user_tags.to_a & event_tags).any?
+    end
 
     def approved_and_published_ads
       @filtered_billboards.approved_and_published

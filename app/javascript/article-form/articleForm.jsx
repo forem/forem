@@ -60,6 +60,40 @@ export class ArticleForm extends Component {
     }
   }
 
+  static handleAgentSessionPreview() {
+    document.querySelectorAll('.ltag-agent-session').forEach(function(embed) {
+      if (embed.dataset.bound) return;
+      embed.dataset.bound = '1';
+
+      // Tool call expand/collapse
+      embed.querySelectorAll('.agent-session-tool-toggle').forEach(function(toggle) {
+        toggle.addEventListener('click', function() {
+          var detail = this.nextElementSibling;
+          var isExpanded = this.getAttribute('aria-expanded') === 'true';
+          detail.style.display = isExpanded ? 'none' : 'block';
+          this.setAttribute('aria-expanded', !isExpanded);
+          this.querySelector('.agent-session-chevron').textContent = isExpanded ? '\u25B8' : '\u25BE';
+        });
+      });
+
+      // Collapsible long text
+      embed.querySelectorAll('[data-collapsible]').forEach(function(wrapper) {
+        var textEl = wrapper.querySelector('.agent-session-text-collapse');
+        var btn = wrapper.querySelector('.agent-session-expand-btn');
+        if (!textEl || !btn) return;
+        if (textEl.scrollHeight <= textEl.clientHeight + 2) {
+          btn.style.display = 'none';
+          textEl.classList.remove('agent-session-text-collapse');
+          return;
+        }
+        btn.addEventListener('click', function() {
+          var expanded = textEl.classList.toggle('expanded');
+          btn.textContent = expanded ? 'Show less' : 'Show more';
+        });
+      });
+    });
+  }
+
   static propTypes = {
     version: PropTypes.string.isRequired,
     article: PropTypes.string.isRequired,
@@ -145,6 +179,9 @@ export class ArticleForm extends Component {
       videoSourceUrl: this.article.video_source_url || null,
       organizations,
       organizationId: this.article.organization_id,
+      authorId: this.article.user_id,
+      coAuthorIdsList: this.article.co_author_ids_list || '',
+      coAuthorsData: this.article.co_authors_data || [],
       errors: null,
       edited: false,
       updatedAt: this.article.updated_at,
@@ -176,6 +213,7 @@ export class ArticleForm extends Component {
       embedGists(this.formElement);
       this.constructor.handleRunkitPreview();
       this.constructor.handleAsciinemaPreview();
+      this.constructor.handleAgentSessionPreview();
     }
   }
 
@@ -287,8 +325,18 @@ export class ArticleForm extends Component {
   };
 
   handleOrgIdChange = (e) => {
-    const organizationId = e.target.selectedOptions[0].value;
-    this.setState({ organizationId });
+    const nextOrganizationId = e.target.selectedOptions[0].value;
+    this.setState((currentState) => ({
+      organizationId: nextOrganizationId,
+      coAuthorIdsList:
+        String(currentState.organizationId || '') === String(nextOrganizationId || '')
+          ? currentState.coAuthorIdsList
+          : '',
+      coAuthorsData:
+        String(currentState.organizationId || '') === String(nextOrganizationId || '')
+          ? currentState.coAuthorsData
+          : [],
+    }));
   };
 
   failedPreview = (response) => {
@@ -395,6 +443,9 @@ export class ArticleForm extends Component {
       submitting: false,
       editing: this.article.id !== null, // eslint-disable-line react/no-unused-state
       mainImage: this.article.main_image || null,
+      organizationId: this.article.organization_id,
+      coAuthorIdsList: this.article.co_author_ids_list || '',
+      coAuthorsData: this.article.co_authors_data || [],
       errors: null,
       edited: false,
       helpFor: null,
@@ -530,6 +581,7 @@ export class ArticleForm extends Component {
             aiAvailable={aiAvailable}
             videoSourceUrl={this.state.videoSourceUrl}
             onVideoUrlChange={this.handleVideoUrlChange}
+            coAuthorsData={this.state.coAuthorsData}
           />
         )}
 

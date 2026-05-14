@@ -13,7 +13,7 @@
         <div role="button" onclick="window.Forem.showModal({size: 'medium', showHeader: false, contentSelector: '#badge-<%= achievement.badge_id %>', overlay: true})"
            title="<%= achievement.badge_title %>"
            class="js-profile-badge <% if i >= limit %>hidden<% end %> relative">
-          <img src="<%= optimized_image_url(achievement.badge_image_url, width: 180) %>"
+          <img src="<%= optimized_image_url(achievement.badge_image_url, width: 192) %>"
                alt="<%= achievement.badge_title %>"
                class="mx-auto w-75 h-auto align-middle"
                style="object-fit: contain; cursor: pointer; width: 100%; aspect-ratio: 1 / 1; max-width: 80px;"
@@ -21,9 +21,9 @@
           <% if badge_achievements.length > 1 %><div class="badge-indicator" title="<%= t("views.badges.indicator", user: @user.name, number: badge_achievements.length) %>"><%= badge_achievements.length %></div><% end %>
         </div>
 
-        <div id="badge-<%= achievement.badge_id %>" class="hidden">
+        <template id="badge-<%= achievement.badge_id %>">
           <%= render partial: "badges/badge_detail", locals: { badge: achievement.badge } %>
-        </div>
+        </template>
       <% end %>
     </div>
 

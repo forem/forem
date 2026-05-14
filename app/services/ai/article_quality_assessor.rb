@@ -5,12 +5,14 @@ module Ai
   # It is ultimately used only for *nudging* purposes and should not be used for major actions.
   # This class uses AI to assess articles based on authenticity, community value, and non-promotional content.
   class ArticleQualityAssessor
+    VERSION = "1.0"
+
     # @param articles [Array<Article>] The articles to be assessed.
     # @param subforem_id [Integer, nil] The subforem ID for context-specific assessment.
     def initialize(articles, subforem_id: nil)
-      @ai_client = Ai::Base.new
       @articles = articles
       @subforem_id = subforem_id
+      @ai_client = Ai::Base.new(wrapper: self)
     end
 
     ##

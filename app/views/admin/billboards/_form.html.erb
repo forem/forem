@@ -44,7 +44,7 @@
         <style>
           #color-popover-btn-color { top: 36px; }
         </style>
-        <%= text_field_tag :color, @billboard.color, class: "crayons-textfield", placeholder: "#000000", data: { color_picker: true, label_text: "Border color" } %>
+        <%= text_field_tag :color, @billboard.color.presence, class: "crayons-textfield", placeholder: "No color (leave empty)", data: { color_picker: true, label_text: "Border color" } %>
       </div>
     </div>
 

@@ -62,6 +62,14 @@ module Constants
             description: I18n.t("lib.constants.settings.authentication.google_secret.description"),
             placeholder: ""
           },
+          google_ios_key: {
+            description: I18n.t("lib.constants.settings.authentication.google_ios_key.description", default: "The Native iOS Client ID for Google Auth"),
+            placeholder: ""
+          },
+          google_android_key: {
+            description: I18n.t("lib.constants.settings.authentication.google_android_key.description", default: "The Native Android Client ID for Google Auth"),
+            placeholder: ""
+          },
           invite_only_mode: {
             description: I18n.t("lib.constants.settings.authentication.invite_only.description"),
             placeholder: ""
@@ -69,6 +77,14 @@ module Constants
           new_user_status: {
             description: I18n.t("lib.constants.settings.authentication.new_user_status.description"),
             placeholder: I18n.t("lib.constants.settings.authentication.new_user_status.placeholder")
+          },
+          mlh_key: {
+            description: I18n.t("lib.constants.settings.authentication.mlh_key.description"),
+            placeholder: ""
+          },
+          mlh_secret: {
+            description: I18n.t("lib.constants.settings.authentication.mlh_secret.description"),
+            placeholder: ""
           },
           recaptcha_site_key: {
             description: I18n.t("lib.constants.settings.authentication.recaptcha_site.description"),

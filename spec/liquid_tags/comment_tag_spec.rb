@@ -21,10 +21,10 @@ RSpec.describe CommentTag, type: :liquid_tag do
         .and include(user.name)
     end
 
-    it "renders 'Comment Not Found' message if comment ID does not exist" do
+    it "renders 'Comment not found' message if comment ID does not exist" do
       liquid = generate_comment_tag("nonexistentid")
 
-      expect(liquid.render).to include("Comment Not Found")
+      expect(liquid.render).to include("Comment not found or has been removed.")
     end
   end
 
@@ -35,8 +35,8 @@ RSpec.describe CommentTag, type: :liquid_tag do
       expect(rendered_tag).to include(comment.readable_publish_date)
     end
 
-    it "embeds the comment published timestamp" do
-      expect(rendered_tag).to include(comment.decorate.published_timestamp)
+    it "embeds the comment published date" do
+      expect(rendered_tag).to include(comment.decorate.readable_publish_date)
     end
   end
 

@@ -534,6 +534,7 @@ function fetchNextPageIfNearBottom() {
   }
 
   if (
+    scrollableElem &&
     !done &&
     !fetching &&
     window.scrollY > scrollableElem.scrollHeight - 3700
@@ -574,7 +575,7 @@ function checkIfNearBottomOfPage() {
 function initScrolling() {
   var elCheck = document.getElementById('index-container');
 
-  if (elCheck) {
+  if (elCheck && elCheck.dataset.disableInfiniteScroll !== 'true') {
     initScrolling.called = true;
     checkIfNearBottomOfPage();
   }

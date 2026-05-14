@@ -85,6 +85,7 @@ RSpec.describe "MagicLinks", type: :request do
           allow(ForemInstance).to receive(:invitation_only?).and_return(false)
           allow(Settings::Authentication).to receive(:acceptable_domain?).with(domain: "example.com").and_return(true)
           allow(Users::GenerateAiProfileImageWorker).to receive(:perform_async)
+          FeatureFlag.enable(:auto_generated_profile_pics)
 
           post "/magic_links", params: { email: email }, headers: { "Host" => subforem.domain }
 

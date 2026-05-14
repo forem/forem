@@ -10,11 +10,12 @@ module Users
         article.reactions.delete_all
         article.comments.includes(:user).find_each do |comment|
           comment.reactions.delete_all
-          EdgeCache::BustComment.call(comment.commentable)
+          EdgeCache::BustComment.call(comment)
           EdgeCache::BustUser.call(comment.user)
           comment.delete
         end
         article.discussion_lock&.delete
+        article.context_notes.delete_all
         article.delete
         article.purge
       end

@@ -24,6 +24,9 @@ RSpec.describe Comment do
       it { is_expected.to validate_presence_of(:positive_reactions_count) }
       it { is_expected.to validate_presence_of(:public_reactions_count) }
       it { is_expected.to validate_presence_of(:reactions_count) }
+
+      # Regression test for Issue #22803: Prevent negative reaction counts
+      it { is_expected.to validate_numericality_of(:public_reactions_count).is_greater_than_or_equal_to(0) }
     end
 
     it do
@@ -462,6 +465,24 @@ RSpec.describe Comment do
       expect { comment.save }.to change(user, :last_comment_at)
     end
 
+    describe "onboarding checklist" do
+      before { allow(Settings::General).to receive(:display_sidebar_onboarding_checklist).and_return(true) }
+
+      let(:checklist_user) { create(:user) }
+      let(:admin) { create(:user, :admin) }
+      let!(:welcome_article) { create(:article, user: admin, tags: "welcome") }
+
+      it "completes comment_in_welcome when user comments on the welcome article" do
+        create(:comment, user: checklist_user, commentable: welcome_article)
+        expect(checklist_user.onboarding_checklist.reload.items["comment_in_welcome"]).to be_present
+      end
+
+      it "does not complete comment_in_welcome when user comments on a regular article" do
+        create(:comment, user: checklist_user, commentable: article)
+        expect(checklist_user.onboarding_checklist.reload.items["comment_in_welcome"]).to be_nil
+      end
+    end
+
     describe "slack messages" do
       let!(:user) { create(:user) }
 
@@ -698,6 +719,31 @@ false).once
     it "returns the original processed_html unchanged" do
       comment.processed_html = "Content with the old domain #{prior_domain}."
       expect(comment.processed_html_final).to eq("Content with the old domain #{prior_domain}.")
+    end
+  end
+
+  describe "#enqueue_article_activity_update callback" do
+    it "enqueues a destroy event when a counted (score > 0) comment is destroyed" do
+      comment.update_columns(score: 5)
+      allow(Articles::UpdateArticleActivityWorker).to receive(:perform_async)
+      comment.destroy
+      expect(Articles::UpdateArticleActivityWorker)
+        .to have_received(:perform_async)
+        .with(article.id, "comment", "destroy", hash_including("iso"))
+    end
+
+    it "does not enqueue when destroying a comment whose score is not positive" do
+      comment.update_columns(score: 0)
+      allow(Articles::UpdateArticleActivityWorker).to receive(:perform_async)
+      comment.destroy
+      expect(Articles::UpdateArticleActivityWorker).not_to have_received(:perform_async)
+    end
+
+    it "does not enqueue from create/update commits (score path handles those)" do
+      allow(Articles::UpdateArticleActivityWorker).to receive(:perform_async)
+      c = create(:comment, user: user, commentable: article)
+      c.update!(body_markdown: "edited body content here")
+      expect(Articles::UpdateArticleActivityWorker).not_to have_received(:perform_async)
     end
   end
 end

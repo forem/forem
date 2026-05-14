@@ -21,6 +21,13 @@ RSpec.describe Users::DeleteArticles, type: :service do
     end.to change(DiscussionLock, :count).from(1).to(0)
   end
 
+  it "deletes the articles' context notes before deleting the article" do
+    create(:context_note, article: article)
+    expect do
+      described_class.call(user)
+    end.to change(ContextNote, :count).from(1).to(0)
+  end
+
   context "with comments" do
     before do
       allow(EdgeCache::BustComment).to receive(:call)
@@ -37,7 +44,7 @@ RSpec.describe Users::DeleteArticles, type: :service do
 
     it "busts cache" do
       described_class.call(user)
-      expect(EdgeCache::BustComment).to have_received(:call).with(article).twice
+      expect(EdgeCache::BustComment).to have_received(:call).with(instance_of(Comment)).twice
       expect(EdgeCache::BustUser).to have_received(:call).with(user2).at_least(:once)
       expect(EdgeCache::BustArticle).to have_received(:call).with(article)
     end

@@ -1,0 +1,14 @@
+<style>
+  #page-content.surveys-show {
+    min-height: 105vh;
+  }
+</style>
+
+<div class="crayons-layout crayons-layout--limited mx-auto my-3">
+  <%= render partial: 'liquids/survey', locals: { survey: @survey } %>
+</div>
+
+<script>
+  <%= SurveyTag.script.html_safe %>
+</script>
+

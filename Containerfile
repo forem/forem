@@ -1,5 +1,8 @@
 FROM ghcr.io/forem/ruby:3.3.0@sha256:9cda49a45931e9253d58f7d561221e43bd0d47676b8e75f55862ce1e9997ab5c as base
 
+# HOTFIX: Remove broken nodesource list from base image to unblock apt update
+RUN rm -f /etc/apt/sources.list.d/nodesource.list
+
 FROM base as builder
 
 # This is provided by BuildKit

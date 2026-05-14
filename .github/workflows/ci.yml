@@ -29,7 +29,7 @@ jobs:
       E2E: true
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -37,14 +37,14 @@ jobs:
       - name: Install ImageMagick
         run: sudo apt-get update && sudo apt-get install -y imagemagick
       - name: Cache pre-compiled assets
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: assetscache
         with:
           path: |
             public/assets
           key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles( 'app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v3-
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
           cache: yarn
@@ -94,16 +94,16 @@ jobs:
         ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Restore compiled assets
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           fail-on-cache-miss: true
           path: |
             public/assets
           key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v3-
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
           cache: yarn
@@ -138,6 +138,7 @@ jobs:
         run: |
           bin/rails db:create
           bin/rails db:schema:load
+          bin/rails javascript:build
 
       - name: RSpec
         run: bin/knapsack_pro_rspec
@@ -148,7 +149,7 @@ jobs:
           name: rspec-artifacts-${{ matrix.ci_node_index }}
           path: tmp/capybara
       - name: Rename folder
-        run: mv coverage/simplecov coverage/simplecov-${{ matrix.ci_node_index }}
+        run: if [ -d "coverage/simplecov" ]; then mv coverage/simplecov coverage/simplecov-${{ matrix.ci_node_index }}; fi
       - name: Upload test coverage result
         uses: actions/upload-artifact@v4
         with:

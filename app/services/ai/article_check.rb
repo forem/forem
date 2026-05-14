@@ -6,11 +6,13 @@ module Ai
   # history, and the community it's posted in to create a detailed
   # prompt for the AI.
   class ArticleCheck
+    VERSION = "1.0"
+
     # @param article [Object] The article object to be checked.
     #   It should respond to `title`, `body_markdown`, `user`, and `subforem_id`.
     def initialize(article)
-      @ai_client = Ai::Base.new
       @article = article
+      @ai_client = Ai::Base.new(wrapper: self, affected_user: article.user, affected_content: article)
     end
 
     ##
@@ -58,7 +60,7 @@ module Ai
 
         1.  **Community Context** (The community this article was posted in):
             ---
-            #{community_description.present? ? community_description : 'No community description provided.'}
+            #{community_description.presence || 'No community description provided.'}
             ---
 
         2.  **The Author's Recent Article History**:
@@ -87,7 +89,7 @@ module Ai
     # @return [Boolean]
     def parse_response(response)
       # Check if the response contains "YES", ignoring case and leading/trailing whitespace.
-      !response.nil? && response.strip.upcase == 'YES'
+      !response.nil? && response.strip.upcase == "YES"
     end
   end
 end

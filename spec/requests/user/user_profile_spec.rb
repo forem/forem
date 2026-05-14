@@ -23,6 +23,15 @@ RSpec.describe "UserProfiles" do
       expect(response.body).to include "Pinned"
     end
 
+    it "does not render unpublished pinned stories" do
+      unpublished_article = create(:article, user: user, published: false, published_at: nil, title: "Unpublished Pinned Story")
+      create(:profile_pin, pinnable: unpublished_article, profile: user)
+
+      get "/#{user.username}"
+
+      expect(response.body).not_to include("Unpublished Pinned Story")
+    end
+
     context "when has articles" do
       before do
         create(:article, user: user, title: "Super Article", published: true, type_of: "full_post")
@@ -412,13 +421,25 @@ RSpec.describe "UserProfiles" do
     it "redirects to admin" do
       user = create(:user)
       get "/#{user.username}/admin"
-      expect(response.body).to redirect_to admin_user_path(user.id)
+      expect(response).to redirect_to admin_user_path(user.id)
     end
 
     it "redirects to moderate" do
       user = create(:user)
       get "/#{user.username}/moderate"
-      expect(response.body).to redirect_to admin_user_path(user.id)
+      expect(response).to redirect_to admin_user_path(user.id)
+    end
+
+    it "redirects organization moderate to admin organization page" do
+      organization = create(:organization)
+      get "/#{organization.slug}/moderate"
+      expect(response).to redirect_to admin_organization_path(organization.id)
+    end
+
+    it "redirects organization admin to admin organization page" do
+      organization = create(:organization)
+      get "/#{organization.slug}/admin"
+      expect(response).to redirect_to admin_organization_path(organization.id)
     end
   end
 end

@@ -70,10 +70,10 @@ module ScheduledAutomations
       # Try from subforem context if available, otherwise just get the most recent one
       subforem_id = RequestStore.store[:subforem_id] if defined?(RequestStore) && RequestStore.store
       if subforem_id
-        Article.from_subforem(subforem_id).admin_published_with("welcome").first ||
-          Article.admin_published_with("welcome").first
+        Article.cached_admin_published_with("welcome", subforem_id: subforem_id) ||
+          Article.cached_admin_published_with("welcome")
       else
-        Article.admin_published_with("welcome").first
+        Article.cached_admin_published_with("welcome")
       end
     end
 

@@ -6,7 +6,10 @@ class BillboardEventsController < ApplicationMetalController
   def create
     # Only tracking for logged‐in users at the moment
     billboard_event_create_params = billboard_event_params.merge(user_id: session_current_user_id)
-    @billboard_event = BillboardEvent.create(billboard_event_create_params)
+    return head :ok if billboard_event_create_params[:billboard_id].blank?
+    @billboard_event = ApplicationRecord.with_synchronous_commit_off do
+      BillboardEvent.create(billboard_event_create_params)
+    end
 
     unless ApplicationConfig["DISABLE_BILLBOARD_DATA_UPDATE"] == "yes"
       # Enqueue the worker instead of doing the update inline
@@ -22,7 +25,7 @@ class BillboardEventsController < ApplicationMetalController
   private
 
   def billboard_event_params
-    event_params = params[:billboard_event] || params[:display_ad_event]
+    event_params = params[:billboard_event] || params[:display_ad_event] || ActionController::Parameters.new
     # Keeping while we may receive data in the "old" format from cached JS
     billboard_id = event_params.delete(:display_ad_id)
     event_params[:billboard_id] ||= billboard_id

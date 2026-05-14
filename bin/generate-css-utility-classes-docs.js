@@ -81,7 +81,7 @@ function groupCssRulesByCssProperty(rules) {
  * @returns {string} The content for Storybook stories for all the CSS
  * utility classes associated to the given CSS property
  */
-function generateUtilityClassStories(cssProperty, cssRules) {
+async function generateUtilityClassStories(cssProperty, cssRules) {
   const storybookStories = [
     `  // This is an auto-generated file. DO NOT EDIT
     import { h } from 'preact';
@@ -109,15 +109,17 @@ function generateUtilityClassStories(cssProperty, cssRules) {
         </li>`);
     }
 
+    const formattedCss = await prettier.format(cssRule.cssText, {
+      parser: 'css',
+    });
+
     storybookStories.push(`
     export const ${sanitizedCssClassName} = () => <div class="container">
       <p><code>${className}</code> utility class for the following CSS properties:</p>
       <ul>
         ${propertiesAndValues.join('')}
       </ul>
-      <pre><code>{\`${prettier.format(cssRule.cssText, {
-        parser: 'css',
-      })}\`}</code></pre>
+      <pre><code>{\`${formattedCss}\`}</code></pre>
     </div>
 
     ${sanitizedCssClassName}.storyName = '${className.replace(/^\./, '')}';
@@ -139,7 +141,7 @@ async function generateUtilityClassesDocumentation(
   const rulesForStorybook = groupCssRulesByCssProperty(styleSheet.cssRules);
 
   for (const [cssProperty, cssRules] of Object.entries(rulesForStorybook)) {
-    const storybookContent = generateUtilityClassStories(cssProperty, cssRules);
+    const storybookContent = await generateUtilityClassStories(cssProperty, cssRules);
 
     if (!process.env.CI) {
       // eslint-disable-next-line no-console

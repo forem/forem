@@ -14,6 +14,7 @@ fr:
           following_orgs: Following organizations (%{num})
           following_pods: Following podcasts (%{num})
           hidden_tags: Hidden tags (%{num})
+          feed_imports: Importations de flux RSS
         posts: Publications
         series: Séries
         followers: Suiveurs
@@ -24,6 +25,7 @@ fr:
         hidden_tags: Hidden tags
         listings: Annonces
         analytics: Analytique
+        feed_imports: Importations de flux RSS
         for_org: Analytics for %{org}
         upload: Charger une vidéo
       analytics:
@@ -154,6 +156,96 @@ fr:
           text_html: "%{for} %{source}"
           for: for
         empty: You don't have any subscribers for this %{kind} yet...
+      feed_imports:
+        heading: Tableau de bord » Importations de flux RSS
+        empty: Ajoutez une source de flux RSS ci-dessous pour commencer à importer des articles comme brouillons.
+        no_history: Pas encore d'historique d'importation. Votre flux sera vérifié automatiquement.
+        no_notable_history: Toutes les vérifications récentes n'ont trouvé aucun nouveau post.
+        history_heading: Historique des importations
+        routine_checks:
+          one: "Afficher %{count} vérification de routine (aucun nouveau post)"
+          other: "Afficher %{count} vérifications de routine (aucun nouveau post)"
+        source_filter: Filtrer par source
+        all_sources: Toutes les sources
+        source_label: "Source :"
+        overview:
+          status:
+            healthy: Sain
+            degraded: Dégradé
+            failing: En échec
+            inactive: Inactif
+          last_success: "Dernière importation réussie il y a %{time}"
+        summary:
+          total_imported: Articles importés
+          total_skipped: Autres éléments ignorés
+          total_failed: Éléments échoués
+        health:
+          healthy: Votre flux fonctionne correctement.
+          degraded: Votre flux a rencontré des erreurs récentes. Certaines importations ont pu être manquées.
+          failing: Votre flux échoue de manière répétée. Veuillez vérifier l'URL de votre flux ci-dessus.
+        status:
+          pending: En attente
+          fetching: Récupération
+          parsing: Analyse
+          importing: Importation
+          completed: Terminé
+          no_new_posts: Aucun nouveau post
+          failed: Échoué
+        counts:
+          items_in_feed: Éléments dans le flux
+          imported: Importés
+          skipped: Ignorés
+          failed: Échoués
+          duration: "Durée : %{seconds}s"
+        items:
+          heading: Détails de l'importation
+          title: Titre
+          status: Statut
+          article: Article
+          statuses:
+            imported: Importé
+            skipped_duplicate: Ignoré (doublon)
+            skipped_medium_reply: Ignoré (réponse Medium)
+            failed: Échoué
+          show_duplicates:
+            one: "Afficher %{count} doublon ignoré"
+            other: "Afficher %{count} doublons ignorés"
+        sources:
+          your_sources: Vos sources de flux
+          add_heading: Ajouter une source de flux
+          welcome_heading: Publication depuis RSS
+          welcome_desc1_html: Les articles arriveront dans votre tableau de bord <strong>en tant que brouillons</strong>, puis vous pourrez les publier.
+          welcome_desc2: Le formatage sera généralement correct, mais vous pourriez devoir faire des corrections manuelles. Dans le cas de Medium, vous devrez peut-être corriger manuellement les intégrations.
+          welcome_desc3_html: Pour en savoir plus sur la création de brouillons à partir de votre flux, lisez ce %{guide}.
+          welcome_desc4: Votre flux sera récupéré chaque fois que vous ajoutez une source et les mises à jour seront automatiquement récupérées périodiquement.
+          welcome_desc5_html: 'FYI : Les URL de flux RSS Medium sont <em>https://medium.com/feed/@your_username</em>'
+          welcome_desc6: En soumettant l'URL de votre flux RSS, vous acceptez que vous possédez et/ou avez la permission de syndiquer le contenu associé.
+          guide: guide
+          url_label: URL du flux RSS
+          url_placeholder: "https://example.com/feed.xml"
+          name_label: Nom (optionnel)
+          name_placeholder: Mon Blog
+          org_label: Organisation (optionnel)
+          org_description: Les articles importés seront publiés sous cette organisation.
+          org_none: Aucune (personnel)
+          org_no_orgs: Vous n'êtes membre d'aucune organisation. Les articles seront publiés sous votre compte personnel.
+          author_label: Auteur par défaut
+          author_description: Lorsque l'auteur d'un élément RSS ne correspond à aucun compte existant, l'article importé sera attribué à cet utilisateur. Pour assigner un autre membre, sélectionnez une organisation et assurez-vous d'avoir les privilèges d'administrateur.
+          author_self: Moi-même (par défaut)
+          submit: Ajouter la source
+          edit: Modifier
+          save: Enregistrer
+          delete: Supprimer
+          delete_confirm: Êtes-vous sûr de vouloir supprimer cette source de flux ?
+          mark_canonical_html: Marquer la source RSS comme URL canonique par défaut <p class='crayons-field__description'>Si vous cochez cette case, l'article marquera automatiquement la source du flux comme URL canonique.</p>
+          referential_html: Remplacer les liens auto-référencés par des liens spécifiques à %{community} <p class='crayons-field__description'>Si vous cochez cette case, l'article changera automatiquement les URLs pour référencer la version de l'article sur %{community} si disponible.</p>
+          status:
+            healthy: Fonctionnel
+            degraded: Dégradé
+            failing: En échec
+            inactive: Inactif
+          last_fetched: "Dernière récupération : %{time}"
+          never_fetched: Jamais récupéré
       summary:
         reactions: Total post reactions
         views: Total post views

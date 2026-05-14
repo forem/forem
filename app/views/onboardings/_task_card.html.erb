@@ -30,7 +30,7 @@
   <h2 class="task-card-title" id="task-card-title"><%= t("views.onboardings.heading") %></h2>
   <p id="task-card-subtitle" class="task-card-subtitle"><%= t("views.onboardings.subtitle") %></p>
   <ul class="task-card-actions">
-    <% if Article.admin_published_with("welcome").any? %>
+    <% if Article.cached_admin_published_with("welcome").present? %>
       <li class="task-card-action">
         <a class="task-card-link" href="/welcome">
           <p><%= t("views.onboardings.welcome_html") %></p>

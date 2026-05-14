@@ -6,7 +6,17 @@ class PagesController < ApplicationController
     params[:slug] = combined_fragmented_slug if params[:slug_0].present?
     @page = proper_page_by_slug
     redirect_page_if_different_subforem
+    return if performed?
+
     not_found_conditions
+
+    if @page.redirect_to_url.present?
+      redirect_options = { status: :moved_permanently }
+      redirect_options[:allow_other_host] = true if @page.redirect_to_url.start_with?("http://", "https://")
+      redirect_to @page.redirect_to_url, **redirect_options
+      return
+    end
+
     set_surrogate_key_header "show-page-#{params[:slug]}"
 
 
@@ -107,15 +117,15 @@ class PagesController < ApplicationController
   end
 
   def welcome
-    article = Article.from_subforem.admin_published_with("welcome").first
-    article = Article.admin_published_with("welcome").first unless article
+    article = Article.cached_admin_published_with("welcome", subforem_id: RequestStore.store[:subforem_id])
+    article ||= Article.cached_admin_published_with("welcome")
     redirect_daily_thread_request(article)
   end
 
   def challenge
-    article = Article.from_subforem.admin_published_with("welcome").first
-    article = Article.admin_published_with("welcome").first unless article
-    redirect_daily_thread_request(Article.admin_published_with("challenge").first)
+    article = Article.cached_admin_published_with("welcome", subforem_id: RequestStore.store[:subforem_id])
+    article ||= Article.cached_admin_published_with("welcome")
+    redirect_daily_thread_request(Article.cached_admin_published_with("challenge"))
   end
 
   def checkin

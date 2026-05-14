@@ -56,8 +56,8 @@
   --card-tertiary-bg: rgb(var(--grey-100));
   --card-tertiary-bg-hover: rgba(var(--grey-200), 0.55);
   --card-secondary-color: rgb(var(--grey-700));
-  --card-border: rgba(var(--grey-900), 0.1);
-  --card-secondary-border: rgba(var(--grey-900), 0.033);
+  --card-border: rgba(var(--grey-900), 0.09);
+  --card-secondary-border: rgba(var(--grey-900), 0.04);
 
   /* Header */
   --header-bg: rgb(var(--white));
@@ -401,9 +401,7 @@
   --divider: rgb(var(--grey-200));
 
   /* Shadows */
-  --shadow-1: 0 10px 15px -3px rgba(var(--black), 0.1),
-    0 4px 6px -2px rgba(var(--black), 0.05), 0 0 0 1px rgba(var(--black), 0.1);
-  --shadow-2: 0 20px 25px -5px rgba(var(--black), 0.1),
-    0 10px 10px -5px rgba(var(--black), 0.05), 0 0 0 1px rgba(var(--black), 0.1);
-  --shadow-smooth: 0px 8px 16px rgba(0, 0, 0, 0.05);
+  --shadow-1: rgba(var(--black), 0.04) 0px 0px 0px 1px, rgba(var(--black), 0.03) 0px 3px 6px, rgba(var(--black), 0.04) 0px 9px 24px;
+  --shadow-2: rgba(var(--black), 0.05) 0px 0px 0px 1px, rgba(var(--black), 0.08) 0px 3px 6px, rgba(var(--black), 0.12) 0px 9px 24px;
+  --shadow-smooth: rgba(var(--black), 0.02) 0px 4px 12px;
 }

@@ -246,6 +246,38 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       expect(test).to eq("<p><a href=\"mailto:test@example.com\">Contact us</a></p>\n\n")
     end
 
+
+    it "preserves hyperlinks and structure in five-level nested lists" do
+      nested_list = <<~MARKDOWN
+        - The [first](https://dev.to/) list:
+            - The [second](https://dev.to/) list:
+                - The [third](https://dev.to/) list:
+                    - The [fourth](https://dev.to/) list:
+                        - The [fifth](https://dev.to/) list:
+      MARKDOWN
+
+      test = generate_and_parse_markdown(nested_list)
+      doc = Nokogiri::HTML.fragment(test)
+
+      links = doc.css('a[href="https://dev.to/"]')
+      expect(links.size).to eq(5)
+
+      links.each do |link|
+        expect(link["target"]).to eq("_blank")
+        rel_values = link["rel"].to_s.split
+        expect(rel_values).to include("noopener", "noreferrer")
+      end
+
+      expect(links.map(&:text)).to match_array(%w[first second third fourth fifth])
+
+      expect(doc.css("ul").size).to eq(5)
+
+      # Ensure at least one link is nested within five levels of <ul>
+      expect(
+        links.any? { |link| link.ancestors("ul").size == 5 }
+      ).to be(true)
+    end
+
     it "renders tel links correctly" do
       code_span = "[Call us](tel:+1234567890)"
       test = generate_and_parse_markdown(code_span)
@@ -455,7 +487,7 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       end
 
       it "strips the styles as expected" do
-        linked_user = %(<a class="mentioned-user" href="http://forem.test/user1">@user1</a>)
+        linked_user = %(<a class="mentioned-user" href="#{ApplicationConfig['APP_PROTOCOL']}forem.test/user1">@user1</a>)
         expected_result = <<~HTML.strip
           <p>x{animation:s}#{linked_user} s{}&lt;br&gt;
           &lt;style&gt;{transition:color 1s}:hover{color:red}&lt;/p&gt;
@@ -493,6 +525,22 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     it "does not raises error if liquid tag was used incorrectly" do
       bad_ltag = "{% #{random_word} %}"
       expect { generate_and_parse_markdown(bad_ltag) }.not_to raise_error
+    end
+  end
+
+  context "when rendering a quote liquid tag through the full pipeline" do
+    it "preserves quote tag HTML structure without converting SVG to code blocks" do
+      markdown = '{% quote author="Jane Doe" role="CTO" link="https://example.com" %}Great platform!{% endquote %}'
+      result = generate_and_parse_markdown(markdown)
+
+      expect(result).to include('class="ltag-quote"')
+      expect(result).to include("ltag-quote__body")
+      expect(result).to include("ltag-quote__footer")
+      expect(result).to include("Jane Doe")
+      expect(result).to include("Great platform!")
+      # SVG quote marks must render as actual SVG, not as escaped code blocks
+      expect(result).not_to include("<pre><code>")
+      expect(result).not_to include("&lt;svg")
     end
   end
 
@@ -688,6 +736,83 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       expect(rendered_html).to include('<img')
       expect(rendered_html).to include('src="https://example.com/image.jpg"')
       expect(rendered_html).not_to include('alt="Image Description"')
+  end
+
+  context "when escaped pipes (\\|) are used in markdown" do
+    it "renders \\| inside a table cell as a literal pipe and keeps the table intact" do
+      markdown = <<~MD
+        | input | result |
+        |-------|--------|
+        | a\\|b | c\\|d  |
+      MD
+      output = generate_and_parse_markdown(markdown)
+
+      expect(output).to include("<table")
+      expect(output).to match(%r{<td[^>]*>\s*a\|b\s*</td>})
+      expect(output).to match(%r{<td[^>]*>\s*c\|d\s*</td>})
+    end
+
+    it "leaves \\| inside fenced code blocks unchanged" do
+      markdown = <<~MD
+        ```
+        a\\|b
+        ```
+      MD
+      output = generate_and_parse_markdown(markdown)
+
+      expect(output).to include("a\\|b")
+      expect(output).not_to include("&#124;")
+    end
+
+    it "leaves \\| inside tilde fenced code blocks unchanged" do
+      markdown = <<~MD
+        ~~~
+        a\\|b
+        ~~~
+      MD
+      output = described_class.new(markdown).convert_escaped_pipes_outside_codeblocks(markdown)
+
+      expect(output).to include("a\\|b")
+      expect(output).not_to include("&#124;")
+    end
+
+    it "leaves \\| inside multi-backtick inline code unchanged" do
+      markdown = "`` a\\|b ``"
+      output = described_class.new(markdown).convert_escaped_pipes_outside_codeblocks(markdown)
+
+      expect(output).to include("a\\|b")
+      expect(output).not_to include("&#124;")
+    end
+
+    it "renders \\| in regular prose as a literal pipe" do
+      output = generate_and_parse_markdown('text a\\|b end')
+
+      expect(output).to include("a|b")
+    end
+
+    it "does not consume the backslash in \\\\| (escaped backslash before a pipe)" do
+      input = "leave \\\\|alone"
+
+      result = described_class.new(input).convert_escaped_pipes_outside_codeblocks(input)
+
+      expect(result).to eq(input)
+      expect(result).not_to include("&#124;")
+    end
+
+    it "does not alter tables that contain no escaped pipes" do
+      markdown = <<~MD
+        | input | result |
+        |-------|--------|
+        | foo   | bar    |
+      MD
+      output = generate_and_parse_markdown(markdown)
+
+      expect(output).to include("<table")
+      expect(output).to match(%r{<td[^>]*>\s*foo\s*</td>})
+      expect(output).to match(%r{<td[^>]*>\s*bar\s*</td>})
+      expect(output).not_to include("&#124;")
+    end
+
   end
 
 end
