@@ -1,7 +1,17 @@
+<% 
+  height_px = case local_assigns[:ratio]
+              when "landscape"
+                "400px"
+              when "portrait"
+                "900px"
+              else
+                "600px"
+              end
+%>
 <div class="ltag__cloud-run">
   <iframe 
     frameborder="0" 
-    height="600px" 
+    height="<%= height_px %>" 
     src="<%= url %>" 
     loading="lazy"
     style="width: 100%; border: 1px solid #e1e5e9; border-radius: 4px;">
