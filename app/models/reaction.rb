@@ -65,6 +65,7 @@ class Reaction < ApplicationRecord
   after_commit :bust_reactable_cache, :update_reactable, :bust_reaction_counts_cache, on: %i[create update]
   after_commit :record_field_test_event, on: %i[create]
   after_commit :check_for_reaction_ring, on: :create
+  after_commit :enqueue_article_activity_update, on: %i[create destroy], if: :reactable_is_article?
 
   class << self
     def count_for_article(id)
@@ -195,6 +196,20 @@ class Reaction < ApplicationRecord
   end
 
   private
+
+  def reactable_is_article?
+    reactable_type == "Article"
+  end
+
+  def enqueue_article_activity_update
+    action = destroyed? ? "destroy" : "create"
+    payload = {
+      "iso" => created_at.to_date.iso8601,
+      "category" => category,
+      "user_id" => user_id
+    }
+    Articles::UpdateArticleActivityWorker.perform_async(reactable_id, "reaction", action, payload)
+  end
 
   def update_reactable
     Reactions::UpdateRelevantScoresWorker.perform_async(id)

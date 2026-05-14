@@ -566,4 +566,31 @@ RSpec.describe ApplicationHelper do
       end
     end
   end
+
+  describe "#enabled_global_feature_flags" do
+    before do
+      RequestStore.store[:enabled_global_feature_flags] = nil
+      MemoryFirstCache.clear
+      Rails.cache.delete("enabled_global_feature_flags")
+    end
+
+    it "returns a space-separated list of globally enabled flag names" do
+      allow(FeatureFlag).to receive(:all).and_return(
+        { foo: :on, bar: :off, baz: :on },
+      )
+      expect(helper.enabled_global_feature_flags.split).to contain_exactly("foo", "baz")
+    end
+
+    it "returns an empty string when no flags are enabled" do
+      allow(FeatureFlag).to receive(:all).and_return({ foo: :off })
+      expect(helper.enabled_global_feature_flags).to eq("")
+    end
+
+    it "memoizes the result on RequestStore" do
+      allow(FeatureFlag).to receive(:all).and_return({ foo: :on })
+      helper.enabled_global_feature_flags
+      helper.enabled_global_feature_flags
+      expect(FeatureFlag).to have_received(:all).once
+    end
+  end
 end

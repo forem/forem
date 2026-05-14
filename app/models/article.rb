@@ -177,6 +177,7 @@ class Article < ApplicationRecord
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :page_views, dependent: :delete_all
+  has_one :article_activity, dependent: :delete
   # `dependent: :destroy` because in Poll we cascade the deletes of
   #     the poll votes, options, and skips.
   has_many :polls, dependent: :destroy
@@ -955,7 +956,9 @@ class Article < ApplicationRecord
 
     organization_baseline_score = organization&.baseline_score || 0
 
-    self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment + user_featured_count_adjustment + user_negative_count_adjustment + context_note_adjustment + automod_label_adjustment + badge_reputation_bonus + organization_baseline_score
+    established_user_adjustment = (user.score.to_i > 100 && !clear_and_obvious_spam? && !likely_spam?) ? Settings::UserExperience.index_minimum_score.to_i : 0
+
+    self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment + user_featured_count_adjustment + user_negative_count_adjustment + context_note_adjustment + automod_label_adjustment + badge_reputation_bonus + organization_baseline_score + established_user_adjustment
     accepted_max = [max_score, user&.max_score.to_i].min
     accepted_max = [max_score, user&.max_score.to_i].max if accepted_max.zero?
     self.score = accepted_max if accepted_max.positive? && accepted_max < score
@@ -1075,6 +1078,8 @@ class Article < ApplicationRecord
 
     result = content_renderer.process_article
     update_column(:processed_html, result.processed_html)
+  rescue ContentRenderer::ContentParsingError => e
+    Rails.logger.warn("Article #{id} evaluate_and_update_column_from_markdown failed: #{e.class}: #{ErrorMessages::Clean.call(e.message)}")
   end
 
   def labels=(input)
