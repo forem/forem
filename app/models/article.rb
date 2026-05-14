@@ -1750,7 +1750,7 @@ class Article < ApplicationRecord
   end
 
   def enqueue_generate_embedding
-    content_changed = saved_change_to_title? || saved_change_to_body_markdown? || saved_change_to_cached_tag_list?
+    content_changed = saved_change_to_title? || saved_change_to_body_markdown?
     return unless content_changed
     return unless respond_to?(:semantic_embedding)
     return unless score >= Settings::UserExperience.home_feed_minimum_score

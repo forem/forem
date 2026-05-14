@@ -14,9 +14,6 @@ class SetupVectorColumnsForFeed < ActiveRecord::Migration[7.0]
   end
 
   def down
-    remove_column :articles, :semantic_embedding
-    remove_column :user_activities, :interest_embedding
-    add_column :user_activities, :semantic_interest_profile, :jsonb, default: {}
-    add_index :user_activities, :semantic_interest_profile, using: :gin, algorithm: :concurrently
+    raise ActiveRecord::IrreversibleMigration, "Rollback is data-destructive: dropped interest and semantic embeddings cannot be restored."
   end
 end
