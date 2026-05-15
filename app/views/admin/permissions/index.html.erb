@@ -48,7 +48,11 @@
           <td class="align-middle whitespace-nowrap px-6 py-4 text-base-60"><%= user.id %></td>
           <td class="align-middle px-6 py-4">
             <div class="flex items-center gap-3">
-              <%= image_tag user.profile_image_90, class: "w-8 h-8 rounded-full object-cover", alt: "" if user.profile_image_90.present? %>
+              <% if user.profile_image_90.present? %>
+                <span class="crayons-avatar crayons-avatar--l">
+                  <img src="<%= user.profile_image_90 %>" class="crayons-avatar__image" alt="" />
+                </span>
+              <% end %>
               <%= link_to "@#{user.username}", user.path, class: "crayons-link fw-bold" %>
             </div>
           </td>
