@@ -11,7 +11,7 @@
 
 <div class="crayons-card p-6 mb-8 border border-base-20 rounded-md shadow-sm">
   <h2 class="crayons-subtitle-2 mb-4 text-base-80">Grant Admin Role</h2>
-  <%= form_with url: grant_admin_permissions_path, method: :post, class: "flex items-end gap-4 flex-wrap" do |f| %>
+  <%= form_with url: grant_admin_permissions_path, method: :post, data: { turbo: false }, class: "flex items-end gap-4 flex-wrap" do |f| %>
     <div class="flex-1 min-w-[200px]">
       <%= f.label :username, "Username", class: "crayons-field__label" %>
       <div class="relative">
@@ -78,7 +78,7 @@
                   <span class="mr-2">
                     <%= role[:label] %>
                   </span>
-                  <%= button_to revoke_admin_permissions_path(user_id: user.id, role_name: role[:value]), method: :delete, class: "crayons-btn crayons-btn--icon crayons-btn--danger crayons-btn--s rounded-full p-1 w-6 h-6 flex items-center justify-center", data: { confirm: "Revoke #{role[:label]} from #{user.username}?" }, title: "Revoke Role" do %>
+                  <%= button_to revoke_admin_permissions_path(user_id: user.id, role_name: role[:value]), method: :delete, class: "crayons-btn crayons-btn--icon crayons-btn--danger crayons-btn--s rounded-full p-1 w-6 h-6 flex items-center justify-center", data: { turbo: false, confirm: "Revoke #{role[:label]} from #{user.username}?" }, title: "Revoke Role" do %>
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                   <% end %>
                 </div>
@@ -86,7 +86,7 @@
               </div>
               
               <% unless fetched_roles.any? { |r| r[0] == 'super_admin' } %>
-                <%= form_with url: grant_admin_permissions_path, method: :post, class: "flex items-center gap-2" do |f| %>
+                <%= form_with url: grant_admin_permissions_path, method: :post, data: { turbo: false }, class: "flex items-center gap-2" do |f| %>
                   <%= f.hidden_field :username, value: user.username %>
                   <div class="crayons-select crayons-select--s">
                     <%= f.select :role_name, options_for_select(role_options), { prompt: "Add role..." }, class: "crayons-field__input w-auto text-sm py-1 min-w-[160px]" %>
