@@ -468,4 +468,20 @@ RSpec.describe FeedConfig, type: :model do
       expect(clone.feed_impressions_count).to eq(0)
     end
   end
+
+  describe "#score_sql" do
+    let(:user) { create(:user) }
+    let(:feed_config) { FeedConfig.new(semantic_similarity_weight: 10.0) }
+    let(:interest_embedding) { [0.1, 0.2, 0.3] + Array.new(765, 0.0) }
+
+    it "includes semantic embedding calculation when activity store has a vector" do
+      user_activity = create(:user_activity, user: user)
+      # Simulating a pgvector array using standard ruby array to test the sql string generation
+      user_activity.update_column(:interest_embedding, interest_embedding)
+
+      sql = feed_config.score_sql(user)
+      expect(sql).to include("articles.semantic_embedding <=> '[#{interest_embedding.join(',')}]'")
+      expect(sql).to include("* 10.0")
+    end
+  end
 end

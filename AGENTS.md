@@ -56,3 +56,8 @@ If you are modifying these agent instructions, you **MUST** replicate your chang
 
 ## Scratch Files
 - **Temporary Scripts**: When creating temporary scripts for testing or debugging (e.g., `test_retry.rb` or `test_destroy.rb`), always place them in the `/tmp` directory. You must delete these scratch files as soon as you are done with them to keep the project root clean.
+
+## ML & AI Infrastructure
+- **Embeddings**: Forem uses Google's `gemini-embedding-2` model for semantic embeddings.
+- **Database Vector Indexes**: We use `pgvector` version `0.8.0+` to support HNSW (Hierarchical Navigable Small World) indexing for high-performance cosine distance queries (`<=>`).
+- **Data Integrity**: Vector columns (like `semantic_embedding`) are expensive to compute. Migrations that roll back or drop these columns must raise `ActiveRecord::IrreversibleMigration` to prevent destructive data loss.

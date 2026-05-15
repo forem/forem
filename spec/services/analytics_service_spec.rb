@@ -53,6 +53,39 @@ RSpec.describe AnalyticsService, type: :service do
       service = described_class.new(early_user, start_date: "2019-04-01", end_date: "2019-04-04")
       expect(service.grouped_by_day.keys.first).to eq("2019-04-01")
     end
+
+    it "clamps to the article's published_at when article_id is set, ignoring the owner's registration" do
+      # Real-world case: an article is cross-posted into an organization that
+      # was created long after the article was published. The org-creation
+      # floor would silently chop off every bit of activity from before the
+      # org existed; the article's stats should reflect the article's own
+      # lifetime instead. (Time is frozen at 2019-04-01 by the outer before
+      # block, so we use dates relative to that anchor.)
+      org = create(:organization)
+      org.update_columns(created_at: Time.zone.parse("2019-03-27"))
+      author = create(:user)
+      create(:organization_membership, user: author, organization: org, type_of_user: "admin")
+      article = create(
+        :article,
+        :past,
+        user: author,
+        organization: org,
+        published: true,
+        past_published_at: Time.zone.parse("2018-05-01"),
+      )
+
+      service = described_class.new(
+        org,
+        start_date: "2010-04-01",
+        end_date: "2019-04-01",
+        article_id: article.id,
+      )
+
+      # Floor is the article's published_at (2018-05-01), NOT the org's
+      # created_at (2019-03-27). Range > 180 days so weekly bucketing snaps
+      # the first bucket to the Monday of the publish week (2018-04-30).
+      expect(service.grouped_by_day.keys.first).to eq("2018-04-30")
+    end
   end
 
   describe "adaptive bucketing" do
