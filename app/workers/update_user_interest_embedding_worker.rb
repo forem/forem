@@ -3,6 +3,7 @@ class UpdateUserInterestEmbeddingWorker
   sidekiq_options queue: :low_priority, lock: :until_executing, on_conflict: :replace
 
   def perform(user_id, article_id, blend_factor = 0.2)
+    blend_factor = blend_factor.to_f.clamp(0.0, 1.0)
     article = Article.find_by(id: article_id)
     return unless article && article.respond_to?(:semantic_embedding) && article.semantic_embedding.present?
 
