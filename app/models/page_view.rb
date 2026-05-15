@@ -10,6 +10,7 @@ class PageView < ApplicationRecord
   # after_create_commit :record_field_test_event
   after_create_commit :update_user_activities
   after_create_commit :enqueue_article_activity_update, if: :article_id?
+  after_create_commit :enqueue_update_user_interest_embedding, if: -> { user_id? && article_id? }
 
   private
 
@@ -22,6 +23,10 @@ class PageView < ApplicationRecord
       "domain" => domain
     }
     Articles::UpdateArticleActivityWorker.perform_async(article_id, "page_view", "create", payload)
+  end
+
+  def enqueue_update_user_interest_embedding
+    UpdateUserInterestEmbeddingWorker.perform_async(user_id, article_id, 0.05)
   end
 
   def extract_domain_and_path

@@ -37,4 +37,29 @@ RSpec.describe PageView do
       expect(Articles::UpdateArticleActivityWorker).not_to have_received(:perform_async)
     end
   end
+
+  describe "#enqueue_update_user_interest_embedding callback" do
+    let(:user) { create(:user) }
+    let(:article) { create(:article) }
+
+    it "enqueues UpdateUserInterestEmbeddingWorker for signed-in user article page views" do
+      allow(UpdateUserInterestEmbeddingWorker).to receive(:perform_async)
+      create(:page_view, user: user, article: article)
+      expect(UpdateUserInterestEmbeddingWorker)
+        .to have_received(:perform_async)
+        .with(user.id, article.id, 0.05)
+    end
+
+    it "does not enqueue when user is not signed in" do
+      allow(UpdateUserInterestEmbeddingWorker).to receive(:perform_async)
+      create(:page_view, user: nil, article: article)
+      expect(UpdateUserInterestEmbeddingWorker).not_to have_received(:perform_async)
+    end
+
+    it "does not enqueue when the page view is not for an article" do
+      allow(UpdateUserInterestEmbeddingWorker).to receive(:perform_async)
+      PageView.create!(user: user, article_id: nil, counts_for_number_of_views: 1, time_tracked_in_seconds: 0)
+      expect(UpdateUserInterestEmbeddingWorker).not_to have_received(:perform_async)
+    end
+  end
 end
