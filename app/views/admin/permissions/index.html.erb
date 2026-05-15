@@ -59,16 +59,30 @@
           <td class="align-middle px-6 py-4">
             <div class="flex flex-col items-start gap-3">
               <div class="flex flex-wrap gap-2">
-                <% user.roles.pluck(:name, :resource_type, :resource_id).each do |role| %>
-                  <div class="flex items-center crayons-tag">
-                    <span class="mr-2">
-                      <%= role[0] %><%= ": #{role[1]}" if role[1] %><%= "/#{role[2]}" if role[2] %>
-                    </span>
-                    <%= button_to revoke_admin_permissions_path(user_id: user.id, role_name: role[1] ? "#{role[0]}|#{role[1]}" : role[0]), method: :delete, class: "crayons-btn crayons-btn--icon crayons-btn--danger crayons-btn--s rounded-full p-1 w-6 h-6 flex items-center justify-center", data: { confirm: "Revoke #{role[0]} from #{user.username}?" }, title: "Revoke Role" do %>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                    <% end %>
-                  </div>
-                <% end %>
+                <% 
+                fetched_roles = user.roles.pluck(:name, :resource_type, :resource_id)
+                display_roles = []
+                if fetched_roles.any? { |r| r[0] == 'super_admin' }
+                  display_roles = [{ label: "Super Admin", value: "super_admin" }]
+                elsif fetched_roles.any? { |r| r[0] == 'admin' }
+                  display_roles = [{ label: "Admin", value: "admin" }]
+                else
+                  display_roles = fetched_roles.select { |r| r[0] == 'single_resource_admin' && r[1].present? }.map do |r|
+                    { label: "#{r[1]} Admin", value: "single_resource_admin|#{r[1]}" }
+                  end
+                end
+              %>
+              
+              <% display_roles.each do |role| %>
+                <div class="flex items-center crayons-tag">
+                  <span class="mr-2">
+                    <%= role[:label] %>
+                  </span>
+                  <%= button_to revoke_admin_permissions_path(user_id: user.id, role_name: role[:value]), method: :delete, class: "crayons-btn crayons-btn--icon crayons-btn--danger crayons-btn--s rounded-full p-1 w-6 h-6 flex items-center justify-center", data: { confirm: "Revoke #{role[:label]} from #{user.username}?" }, title: "Revoke Role" do %>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                  <% end %>
+                </div>
+              <% end %>
               </div>
               
               <%= form_with url: grant_admin_permissions_path, method: :post, class: "flex items-center gap-2" do |f| %>
