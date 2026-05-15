@@ -274,13 +274,19 @@ class UsersController < ApplicationController
       when :put
         manager = Moderator::ManageActivityAndRoles.new(admin: @current_user, user: @target_user, user_params: {})
         manager.handle_user_status("Spam", "Mark as Spam from user profile")
-        payload = { action: "mark_as_spam", target_user_id: params[:id] }
-        Audit::Logger.log(:admin, @current_user, payload)
+        Audit::Logger.log(:moderator, @current_user, {
+                            "action" => "add_spam_role_to_user",
+                            "controller" => params[:controller],
+                            "target_user_id" => @target_user.id
+                          })
       when :delete
         manager = Moderator::ManageActivityAndRoles.new(admin: @current_user, user: @target_user, user_params: {})
         manager.handle_user_status("Good standing", "Set in good standing from user profile")
-        payload = { action: "remove_spam_role_from_user", target_user_id: params[:id] }
-        Audit::Logger.log(:admin, @current_user, payload)
+        Audit::Logger.log(:moderator, @current_user, {
+                            "action" => "remove_spam_role_from_user",
+                            "controller" => params[:controller],
+                            "target_user_id" => @target_user.id
+                          })
       else
         render json, status: :method_not_allowed
       end

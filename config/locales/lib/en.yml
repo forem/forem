@@ -197,6 +197,9 @@ en:
           content_spec:
             description: Internal description of content which is considered generally "on-topic" — be very descriptive to best differentiate from other communities..
             placeholder: e.g. "A place for developers to share their work, ask questions, and learn from each other.... But much longer and more specific"
+          expanded_advisement_spec:
+            description: Detailed guidelines and advice given to the AI Editor when assisting users on what content is highly successful or desired.
+            placeholder: e.g. "Try to encourage users to share code snippets, talk about their engineering challenges, and stay away from generic promotional content..."
         smtp:
           address:
             description: Address of the remote mail server

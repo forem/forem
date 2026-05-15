@@ -5,6 +5,7 @@ require "sidekiq/worker_retries_exhausted_reporter"
 require "sidekiq/sidekiq_connection_cleanup"
 require "sidekiq/transaction_safe_rescue"
 require "sidekiq/throttled"
+require "sidekiq/memory_killer"
 
 module Sidekiq
   module Cron
@@ -25,6 +26,29 @@ module Sidekiq
 end
 
 Sidekiq.configure_server do |config|
+  # Grab the concurrency passed to Sidekiq (defaults to 16 if not set)
+  sidekiq_concurrency = ENV.fetch("SIDEKIQ_CONCURRENCY", 16).to_i
+
+  # Adjust Sidekiq's internal concurrency
+  config.concurrency = sidekiq_concurrency if config.respond_to?(:concurrency=)
+
+  config.on(:startup) do
+    # Disconnect the default Rails pool (which booted at 5 from RAILS_MAX_THREADS)
+    ActiveRecord::Base.connection_pool.disconnect!
+
+    # Create a new configuration hash with the correct pool size
+    # We add a buffer of + 5 to the Sidekiq DB pool to account for
+    # Sidekiq's internal threads (Fetcher, Heartbeat) and any Rails housekeeping.
+    db_config = Rails.application.config.database_configuration[Rails.env].merge(
+      'pool' => sidekiq_concurrency + 5
+    )
+
+    # Re-establish the database connection with the new pool size
+    ActiveRecord::Base.establish_connection(db_config)
+    
+    Rails.logger.info("Sidekiq DB Pool re-established with size: #{sidekiq_concurrency}")
+  end
+
   # @mstruve/@sre: sidekiq-cron still uses the removed poll_interval
   # to determine how often to poll for jobs so we should manually set it
   # https://github.com/ondrejbartas/sidekiq-cron/issues/254
@@ -55,6 +79,7 @@ Sidekiq.configure_server do |config|
     chain.add SidekiqUniqueJobs::Middleware::Client
     chain.add SidekiqUniqueJobs::Middleware::Server
     chain.add Sidekiq::SidekiqConnectionCleanup
+    chain.add Sidekiq::MemoryKiller
   end
 
   SidekiqUniqueJobs::Server.configure(config)

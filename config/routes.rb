@@ -31,6 +31,21 @@ Rails.application.routes.draw do
   get "/r/mobile", to: "deep_links#mobile"
   get "/.well-known/apple-app-site-association", to: "deep_links#aasa"
 
+  constraints OrgCustomDomainConstraint.new do
+    get "/", to: "stories#custom_domain_index"
+    get "/:org_slug/:slug",
+        to: "stories#custom_domain_show",
+        constraints: {
+          org_slug: /(?!(?:api|assets|packs|rails|r|ahoy|enter|users)\z)[^\/.]+/,
+          slug: /[^\/.]+/
+        }
+    get "/:slug",
+        to: "stories#custom_domain_show",
+        constraints: {
+          slug: /(?!(?:api|assets|packs|rails|r|ahoy|enter|users)\z)[^\/.]+/
+        }
+  end
+
   # [@forem/delightful] - all routes are nested under this optional scope to
   # begin supporting i18n.
   scope "(/locale/:locale)", defaults: { locale: nil } do
@@ -100,6 +115,25 @@ Rails.application.routes.draw do
           constraints(role: /limited|spam|trusted/) do
             delete "/:role", to: "user_roles#destroy", as: "user_remove_role"
           end
+        end
+
+        # V1-only admin user management API. Lives in the V1 block (not in the
+        # shared config/routes/api.rb) because Api::V0::Admin::* controllers do
+        # not implement these actions; placing the routes here scopes them to
+        # callers using the application/vnd.forem.api-v1+json Accept header.
+        namespace :admin do
+          resources :users, only: %i[index show update] do
+            member do
+              put :email, action: :update_email
+              put :status, action: :update_status
+              post :merge
+            end
+
+            resources :notes, only: %i[index create], controller: "user_notes"
+            resources :identities, only: %i[index create destroy], controller: "user_identities"
+          end
+
+          resources :request_redirects, only: %i[index show create update destroy]
         end
 
         draw :api
@@ -431,10 +465,12 @@ Rails.application.routes.draw do
                                      }
     get "/dashboard/:username", to: "dashboards#show", as: :dashboard_show_user
 
-    # for testing rails mailers
     unless Rails.env.production?
       get "/rails/mailers", to: "rails/mailers#index"
       get "/rails/mailers/*path", to: "rails/mailers#preview"
+
+      get "dev_tools", to: "dev_tools#index"
+      post "dev_tools/sign_in_as", to: "dev_tools#sign_in_as"
     end
 
     get "/embed/:embeddable", to: "liquid_embeds#show", as: "liquid_embed"

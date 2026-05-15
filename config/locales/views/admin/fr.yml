@@ -404,6 +404,18 @@ fr:
           submit: Changer le score maximum
           success: Modification réussie du score maximum de l'utilisateur en %{max_score}.
           error: Échec de la modification du score maximum de l'utilisateur (sélectionnez entre 0 et 100)
+        audit_log:
+          title: Journal d'audit
+          filter_by_user: Actions par l'utilisateur
+          filter_on_user: Actions sur l'utilisateur
+          empty: Aucune entrée de journal d'audit trouvée pour cet utilisateur.
+          table:
+            heading:
+              id: ID
+              user: Utilisateur
+              action: Action
+              data: Données
+              date: Date
         unpublish_logs:
           subtitle_html: Unpublished by %{user} on %{time}
           posts: "Posts:"
@@ -418,6 +430,7 @@ fr:
           emails: Emails
           reports: Reports
           flags: Flags
+          audit_log: Journal d'audit
           unpublish_logs: Unpublish All History
         status_title: Current status
         status_reader: "Current status:"
