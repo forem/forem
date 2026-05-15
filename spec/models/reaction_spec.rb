@@ -504,7 +504,7 @@ RSpec.describe Reaction do
     it "enqueues the worker when a public reaction is created on an article" do
       allow(UpdateUserInterestEmbeddingWorker).to receive(:perform_async)
       reaction = create(:reaction, reactable: article, user: user, category: "like")
-      expect(UpdateUserInterestEmbeddingWorker).to have_received(:perform_async).with(user.id, article.id)
+      expect(UpdateUserInterestEmbeddingWorker).to have_received(:perform_async).with(user.id, article.id, 0.2)
     end
 
     it "does not enqueue the worker for non-public reactions" do

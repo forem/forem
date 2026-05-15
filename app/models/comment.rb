@@ -221,7 +221,7 @@ class Comment < ApplicationRecord
   end
 
   def enqueue_update_user_interest_embedding
-    UpdateUserInterestEmbeddingWorker.perform_async(user_id, commentable_id)
+    UpdateUserInterestEmbeddingWorker.perform_async(user_id, commentable_id, 0.3)
   end
 
   def enqueue_article_activity_update

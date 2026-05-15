@@ -2,10 +2,8 @@ class UpdateUserInterestEmbeddingWorker
   include Sidekiq::Job
   sidekiq_options queue: :low_priority, lock: :until_executing, on_conflict: :replace
 
-  # Blend factor determines how fast the user's interests shift. 0.2 means 20% weight to new article, 80% to old interests.
-  BLEND_FACTOR = 0.2
-
-  def perform(user_id, article_id)
+  def perform(user_id, article_id, blend_factor = 0.2)
+    blend_factor = blend_factor.to_f.clamp(0.0, 1.0)
     article = Article.find_by(id: article_id)
     return unless article && article.respond_to?(:semantic_embedding) && article.semantic_embedding.present?
 
@@ -23,7 +21,7 @@ class UpdateUserInterestEmbeddingWorker
                      else
                        # Blend vectors using Exponential Moving Average
                        current_vector.zip(article_vector).map do |c, a|
-                         (c * (1 - BLEND_FACTOR)) + (a * BLEND_FACTOR)
+                         (c * (1 - blend_factor)) + (a * blend_factor)
                        end
                      end
 

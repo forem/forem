@@ -15,19 +15,19 @@ RSpec.describe UpdateUserInterestEmbeddingWorker, type: :worker do
       expect(user_activity.reload.interest_embedding).to eq(Array.new(768, 1.0))
     end
 
-    it "blends the embedding using EMA if the user already has one" do
+    it "blends the embedding using EMA if the user already has one, using provided blend factor" do
       article.update_column(:semantic_embedding, Array.new(768) { |i| i.even? ? 1.0 : 0.0 })
       user_activity.update_column(:interest_embedding, Array.new(768) { |i| i.even? ? 0.0 : 1.0 })
 
-      # Blend factor is 0.2.
-      # new_x = 0.0 * 0.8 + 1.0 * 0.2 = 0.2
-      # new_y = 1.0 * 0.8 + 0.0 * 0.2 = 0.8
+      # Blend factor is 0.3.
+      # new_x = 0.0 * 0.7 + 1.0 * 0.3 = 0.3
+      # new_y = 1.0 * 0.7 + 0.0 * 0.3 = 0.7
       
-      described_class.new.perform(user.id, article.id)
+      described_class.new.perform(user.id, article.id, 0.3)
 
       result = user_activity.reload.interest_embedding.to_a
-      expect(result[0]).to be_within(0.001).of(0.2)
-      expect(result[1]).to be_within(0.001).of(0.8)
+      expect(result[0]).to be_within(0.001).of(0.3)
+      expect(result[1]).to be_within(0.001).of(0.7)
     end
 
     it "does nothing if the article has no embedding" do

@@ -207,7 +207,7 @@ class Reaction < ApplicationRecord
   end
 
   def enqueue_update_user_interest_embedding
-    UpdateUserInterestEmbeddingWorker.perform_async(user_id, reactable_id)
+    UpdateUserInterestEmbeddingWorker.perform_async(user_id, reactable_id, 0.2)
   end
 
   def enqueue_article_activity_update

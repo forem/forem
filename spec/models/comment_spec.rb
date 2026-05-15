@@ -752,7 +752,7 @@ RSpec.describe Comment do
     it "enqueues the worker when a comment is created on an article" do
       allow(UpdateUserInterestEmbeddingWorker).to receive(:perform_async)
       comment = create(:comment, commentable: article, user: user)
-      expect(UpdateUserInterestEmbeddingWorker).to have_received(:perform_async).with(user.id, article.id)
+      expect(UpdateUserInterestEmbeddingWorker).to have_received(:perform_async).with(user.id, article.id, 0.3)
     end
 
     it "does not enqueue the worker if commentable is not an article" do
