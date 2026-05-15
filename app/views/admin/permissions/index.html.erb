@@ -85,12 +85,14 @@
               <% end %>
               </div>
               
-              <%= form_with url: grant_admin_permissions_path, method: :post, class: "flex items-center gap-2" do |f| %>
-                <%= f.hidden_field :username, value: user.username %>
-                <div class="crayons-select crayons-select--s">
-                  <%= f.select :role_name, options_for_select(role_options), { prompt: "Add role..." }, class: "crayons-field__input w-auto text-sm py-1 min-w-[160px]" %>
-                </div>
-                <%= f.submit "Add", class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
+              <% unless fetched_roles.any? { |r| r[0] == 'super_admin' } %>
+                <%= form_with url: grant_admin_permissions_path, method: :post, class: "flex items-center gap-2" do |f| %>
+                  <%= f.hidden_field :username, value: user.username %>
+                  <div class="crayons-select crayons-select--s">
+                    <%= f.select :role_name, options_for_select(role_options), { prompt: "Add role..." }, class: "crayons-field__input w-auto text-sm py-1 min-w-[160px]" %>
+                  </div>
+                  <%= f.submit "Add", class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
+                <% end %>
               <% end %>
             </div>
           </td>
