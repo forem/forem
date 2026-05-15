@@ -57,16 +57,26 @@
             </div>
           </td>
           <td class="align-middle px-6 py-4">
-            <div class="flex flex-wrap gap-2">
-              <% user.roles.pluck(:name, :resource_type, :resource_id).each do |role| %>
-                <div class="flex items-center crayons-tag">
-                  <span class="mr-2">
-                    <%= role[0] %><%= ": #{role[1]}" if role[1] %><%= "/#{role[2]}" if role[2] %>
-                  </span>
-                  <%= button_to revoke_admin_permissions_path(user_id: user.id, role_name: role[1] ? "#{role[0]}|#{role[1]}" : role[0]), method: :delete, class: "crayons-btn crayons-btn--icon crayons-btn--danger crayons-btn--s rounded-full p-1 w-6 h-6 flex items-center justify-center", data: { confirm: "Revoke #{role[0]} from #{user.username}?" }, title: "Revoke Role" do %>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                  <% end %>
+            <div class="flex flex-col items-start gap-3">
+              <div class="flex flex-wrap gap-2">
+                <% user.roles.pluck(:name, :resource_type, :resource_id).each do |role| %>
+                  <div class="flex items-center crayons-tag">
+                    <span class="mr-2">
+                      <%= role[0] %><%= ": #{role[1]}" if role[1] %><%= "/#{role[2]}" if role[2] %>
+                    </span>
+                    <%= button_to revoke_admin_permissions_path(user_id: user.id, role_name: role[1] ? "#{role[0]}|#{role[1]}" : role[0]), method: :delete, class: "crayons-btn crayons-btn--icon crayons-btn--danger crayons-btn--s rounded-full p-1 w-6 h-6 flex items-center justify-center", data: { confirm: "Revoke #{role[0]} from #{user.username}?" }, title: "Revoke Role" do %>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    <% end %>
+                  </div>
+                <% end %>
+              </div>
+              
+              <%= form_with url: grant_admin_permissions_path, method: :post, class: "flex items-center gap-2" do |f| %>
+                <%= f.hidden_field :username, value: user.username %>
+                <div class="crayons-select crayons-select--s">
+                  <%= f.select :role_name, options_for_select(role_options), { prompt: "Add role..." }, class: "crayons-field__input w-auto text-sm py-1 min-w-[160px]" %>
                 </div>
+                <%= f.submit "Add", class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
               <% end %>
             </div>
           </td>
