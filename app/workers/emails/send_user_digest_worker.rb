@@ -31,7 +31,7 @@ module Emails
                                                                    user_signed_in: true)
 
       begin
-        smart_summary = if user.last_presence_at.present? && user.last_presence_at >= 3.days.ago
+        smart_summary = if user.last_presence_at.present? && user.last_presence_at >= 3.days.ago && FeatureFlag.enabled?(:digest_smart_summary)
                           Ai::EmailDigestSummary.new(articles.to_a).generate
                         end
 
