@@ -243,8 +243,8 @@ RSpec.describe AnalyticsService, type: :service do
         expect(stats.keys).to eq(%i[total average_read_time_in_seconds total_read_time_in_seconds])
       end
 
-      it "returns the total number of page views from page_views_count" do
-        article.update_columns(page_views_count: 1)
+      it "returns the total number of page views from ArticleActivity" do
+        create(:page_view, article: article, counts_for_number_of_views: 1)
         expect(analytics_service.totals[:page_views][:total]).to eq(1)
       end
 
@@ -263,11 +263,10 @@ RSpec.describe AnalyticsService, type: :service do
       end
 
       it "returns the total read time in seconds" do
-        article.update_columns(page_views_count: 1)
-        create(:page_view, user: user, article: article, time_tracked_in_seconds: 15)
-        create(:page_view, user: user, article: article, time_tracked_in_seconds: 45)
-        # average read time * total_views
-        expect(analytics_service.totals[:page_views][:total_read_time_in_seconds]).to eq(30)
+        create(:page_view, user: user, article: article, time_tracked_in_seconds: 15, counts_for_number_of_views: 1)
+        create(:page_view, user: user, article: article, time_tracked_in_seconds: 45, counts_for_number_of_views: 1)
+        # average read time * total_views = 30 * 2 = 60
+        expect(analytics_service.totals[:page_views][:total_read_time_in_seconds]).to eq(60)
       end
 
       it "returns zero as the total read time in seconds with no page views" do
