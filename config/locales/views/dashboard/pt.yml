@@ -38,6 +38,32 @@ pt:
         readers: Leitores
         comments: Comentários
         reactions: Reações
+        heatmap:
+          title: Atividade
+          subtitle: "%{count} contribuições no último ano"
+          subtitle_year: "%{count} contribuições em %{year}"
+          year_picker_label: Período
+          last_year_option: Últimos 12 meses
+          loading: Carregando atividade…
+          empty: Nenhuma atividade no último ano.
+          error: Não foi possível carregar a atividade.
+          less: Menos
+          more: Mais
+          day: dia
+          days: dias
+          articles: Artigos
+          comments: Comentários
+          reactions: Reações
+          contribution: contribuição
+          contributions: contribuições
+          detail_hint: Passe o mouse ou clique em um dia para ver os detalhes.
+          pinned: Fixado · pressione Esc para limpar
+          no_activity: Sem atividade
+          stats:
+            total: Total
+            current_streak: Sequência atual
+            longest_streak: Maior sequência
+            best_day: Melhor dia
       article:
         heading:
           text_html: "%{archived}%{title}"

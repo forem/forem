@@ -40,6 +40,32 @@ en:
         readers: Readers
         comments: Comments
         reactions: Reactions
+        heatmap:
+          title: Activity
+          subtitle: "%{count} contributions in the last year"
+          subtitle_year: "%{count} contributions in %{year}"
+          year_picker_label: Period
+          last_year_option: Last 12 months
+          loading: Loading activity…
+          empty: No activity in the last year.
+          error: Could not load activity.
+          less: Less
+          more: More
+          day: day
+          days: days
+          articles: Articles
+          comments: Comments
+          reactions: Reactions
+          contribution: contribution
+          contributions: contributions
+          detail_hint: Hover or click any day to see the breakdown.
+          pinned: Pinned · press Esc to clear
+          no_activity: No activity yet
+          stats:
+            total: Total
+            current_streak: Current streak
+            longest_streak: Longest streak
+            best_day: Best day
       article:
         heading:
           text_html: "%{archived}%{title}"

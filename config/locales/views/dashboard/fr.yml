@@ -38,6 +38,32 @@ fr:
         readers: Lecteurs
         comments: Commentaires
         reactions: Réactions
+        heatmap:
+          title: Activité
+          subtitle: "%{count} contributions au cours de l'année écoulée"
+          subtitle_year: "%{count} contributions en %{year}"
+          year_picker_label: Période
+          last_year_option: 12 derniers mois
+          loading: Chargement de l'activité…
+          empty: Aucune activité au cours de l'année écoulée.
+          error: Impossible de charger l'activité.
+          less: Moins
+          more: Plus
+          day: jour
+          days: jours
+          articles: Articles
+          comments: Commentaires
+          reactions: Réactions
+          contribution: contribution
+          contributions: contributions
+          detail_hint: Survolez ou cliquez sur un jour pour voir le détail.
+          pinned: Épinglé · appuyez sur Échap pour annuler
+          no_activity: Aucune activité
+          stats:
+            total: Total
+            current_streak: Série actuelle
+            longest_streak: Plus longue série
+            best_day: Meilleur jour
       article:
         heading:
           text_html: "%{archived}%{title}"

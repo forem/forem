@@ -27,7 +27,10 @@
 
   <h1 class="fs-4xl fw-bold mx-5"><%= t("views.dashboard.analytics.heading", name: @user_or_org.name) %></h1>
 
+  <%= render "heatmap" %>
+
   <%= render "shared/stats" %>
 </main>
 
 <%= javascript_include_tag "analyticsDashboard", defer: true %>
+<%= javascript_include_tag "dashboardHeatmap", defer: true %>
