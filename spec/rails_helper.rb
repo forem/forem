@@ -325,23 +325,4 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 end
-class AnalyticsService
-  def scoped_activities
-    return @scoped_activities if defined?(@scoped_activities)
 
-    article_ids = article_data.ids
-    if article_ids.empty?
-      @scoped_activities = []
-      return []
-    end
-
-    activities = ArticleActivity.where(article_id: article_ids).index_by(&:article_id)
-    missing = article_ids - activities.keys
-    if missing.any?
-      missing.each { |id| ArticleActivity.find_or_create_by!(article_id: id).recompute_all! }
-      activities = ArticleActivity.where(article_id: article_ids).index_by(&:article_id)
-    end
-
-    @scoped_activities = activities.values
-  end
-end

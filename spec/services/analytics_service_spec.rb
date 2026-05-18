@@ -245,6 +245,7 @@ RSpec.describe AnalyticsService, type: :service do
 
       it "returns the total number of page views from ArticleActivity" do
         create(:page_view, article: article, counts_for_number_of_views: 1)
+        ArticleActivity.find_or_create_by!(article_id: article.id).recompute_all!
         expect(analytics_service.totals[:page_views][:total]).to eq(1)
       end
 
@@ -265,6 +266,7 @@ RSpec.describe AnalyticsService, type: :service do
       it "returns the total read time in seconds" do
         create(:page_view, user: user, article: article, time_tracked_in_seconds: 15, counts_for_number_of_views: 1)
         create(:page_view, user: user, article: article, time_tracked_in_seconds: 45, counts_for_number_of_views: 1)
+        ArticleActivity.find_or_create_by!(article_id: article.id).recompute_all!
         # average read time * total_views = 30 * 2 = 60
         expect(analytics_service.totals[:page_views][:total_read_time_in_seconds]).to eq(60)
       end
@@ -432,6 +434,7 @@ RSpec.describe AnalyticsService, type: :service do
       it "returns the total number of page views from counts_for_number_of_views" do
         pv = create(:page_view, user: user, article: article, counts_for_number_of_views: 5)
         date = format_date(pv.created_at)
+        ArticleActivity.find_or_create_by!(article_id: article.id).recompute_all!
         analytics_service = described_class.new(user, start_date: date)
         expect(analytics_service.grouped_by_day[date][:page_views][:total]).to eq(5)
       end
