@@ -16,7 +16,7 @@ class Event < ApplicationRecord
   validates :event_name_slug, presence: true, format: { with: /\A[a-z0-9-]+\z/, message: "can only contain lowercase letters, numbers, and dashes" }
   validates :event_variation_slug, presence: true, format: { with: /\A[a-z0-9-]+\z/, message: "can only contain lowercase letters, numbers, and dashes" }, uniqueness: { scope: :event_name_slug, case_sensitive: false }
   validate :end_time_after_start_time
-  validates :primary_stream_url, format: { with: /\Ahttps:\/\/(www\.)?(youtube\.com|youtu\.be|twitch\.tv|player\.twitch\.tv)\/.*\z/, message: "must be a valid HTTPS YouTube or Twitch URL" }, allow_blank: true
+  validates :primary_stream_url, format: { with: /\Ahttps:\/\/(www\.)?(youtube\.com|youtu\.be|twitch\.tv|player\.twitch\.tv|streamyard\.com)\/.*\z/, message: "must be a valid HTTPS YouTube, Twitch, or Streamyard URL" }, allow_blank: true
 
   before_save :format_stream_urls
   after_commit :ensure_broadcast_billboards_and_workers, on: [:create, :update]
@@ -70,6 +70,17 @@ class Event < ApplicationRecord
       if channel_name && !%w[videos clip clips directory].include?(channel_name.downcase)
         self.primary_stream_url = "https://player.twitch.tv/?channel=#{channel_name}&parent=#{app_domain}"
         self.data["chat_url"] = "https://www.twitch.tv/embed/#{channel_name}/chat?parent=#{app_domain}"
+      end
+    elsif primary_stream_url.match?(%r{streamyard\.com}i)
+      begin
+        uri = URI.parse(primary_stream_url)
+        path_segments = uri.path.split('/').reject(&:blank?)
+        if path_segments.any?
+          streamyard_id = path_segments.last
+          self.primary_stream_url = "https://streamyard.com/e/#{streamyard_id}"
+        end
+      rescue URI::InvalidURIError
+        # ignore, allow the url to pass through as is if unparseable
       end
     end
   end

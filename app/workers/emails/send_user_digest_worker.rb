@@ -31,7 +31,7 @@ module Emails
                                                                    user_signed_in: true)
 
       begin
-        smart_summary = if user.last_presence_at.present? && user.last_presence_at >= 3.days.ago
+        smart_summary = if user.last_presence_at.present? && user.last_presence_at >= 3.days.ago && FeatureFlag.enabled?(:digest_smart_summary)
                           Ai::EmailDigestSummary.new(articles.to_a).generate
                         end
 
@@ -52,6 +52,8 @@ module Emails
             BillboardEvent.create(event_params.merge(billboard_id: second_billboard.id)) if second_billboard.present?
           end
         end
+      rescue Net::SMTPSyntaxError, Net::SMTPFatalError => e
+        Rails.logger.warn("Failed to send digest to user #{user.id} due to SMTP syntax/fatal error: #{e.message}")
       rescue StandardError => e
         Honeybadger.context({ user_id: user.id, article_ids: articles.map(&:id) })
         Honeybadger.notify(e)

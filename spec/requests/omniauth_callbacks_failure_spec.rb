@@ -62,6 +62,32 @@ RSpec.describe "OmniAuth Callbacks Failure", type: :request do
     expect(response).to redirect_to(new_user_session_url)
   end
 
+  it "does not notify Honeybadger on OAuth::Unauthorized" do
+    response_double = double("HTTPResponse", code: 401, message: "Unauthorized")
+    error = Object.const_defined?("OAuth::Unauthorized") ? OAuth::Unauthorized.new(response_double) : StandardError.new("fallback")
+    allow(error).to receive(:class).and_return(double(name: "OAuth::Unauthorized"))
+    omniauth_setup_authentication_error(error)
+    omniauth_setup_invalid_credentials(:twitter)
+
+    post "/users/auth/twitter"
+    follow_redirect!
+
+    expect(Honeybadger).not_to have_received(:notify)
+    expect(response).to redirect_to(new_user_session_url)
+  end
+
+  it "does not notify Honeybadger on OmniAuth::NoSessionError" do
+    error = OmniAuth::NoSessionError.new("Session Expired")
+    omniauth_setup_authentication_error(error)
+    omniauth_setup_invalid_credentials(:twitter)
+
+    post "/users/auth/twitter"
+    follow_redirect!
+
+    expect(Honeybadger).not_to have_received(:notify)
+    expect(response).to redirect_to(new_user_session_url)
+  end
+
   it "does not notify Honeybadger on StandardError with 'access_token was nil'" do
     error = StandardError.new("access_token was nil when checking expiration")
     omniauth_setup_authentication_error(error)
