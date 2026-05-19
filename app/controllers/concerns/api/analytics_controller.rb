@@ -60,38 +60,32 @@ module Api
       # When `start` is omitted (Infinity range), fall back to the owner's
       # registration timestamp so we don't fabricate years of empty buckets
       # before the account existed. AnalyticsService also clamps internally,
-      # but resolving here keeps the cache key precise.
+      # but resolving here keeps the serialized `start_date_floor` consistent
+      # with the data the dashboard actually charts.
       effective_start = params[:start].presence || @owner_start_floor.iso8601
 
-      cache_key = [
-        "analytics-dashboard-v3",
-        effective_start, params[:end],
-        @owner.class.name, @owner.id,
-        params[:article_id]
-      ].join("-")
+      # No HTTP or server-side cache: the dashboard is a personal/owner-scoped
+      # view that must reflect new activity (page views, reactions, comments)
+      # immediately. Reads now hit the ArticleActivity fast-path (single
+      # indexed row lookup), so removing the cache is cheap and keeps the
+      # numbers honest. The endpoint is rate-limited at the Rack::Attack
+      # layer, so naive reload mashing is already bounded.
+      response.headers["Cache-Control"] = "no-store"
 
-      # HTTP cache: short browser/CDN TTL keeps the dashboard snappy on repeat
-      # navigations without sacrificing the 7-day server-side memoization above.
-      expires_in 5.minutes, public: false
+      dated = AnalyticsService.new(
+        @owner,
+        start_date: effective_start, end_date: params[:end], article_id: params[:article_id],
+      )
+      all_time = AnalyticsService.new(@owner, article_id: analytics_params[:article_id])
 
-      data = Rails.cache.fetch(cache_key, expires_in: 7.days) do
-        # Construct services lazily inside the cache block: AnalyticsService#initialize
-        # runs load_data, so building them on cache hits would defeat the cache.
-        dated = AnalyticsService.new(
-          @owner,
-          start_date: effective_start, end_date: params[:end], article_id: params[:article_id],
-        )
-        all_time = AnalyticsService.new(@owner, article_id: analytics_params[:article_id])
-
-        {
-          historical: dated.grouped_by_day,
-          totals: all_time.totals,
-          referrers: dated.referrers,
-          top_contributors: dated.top_contributors,
-          follower_engagement: dated.follower_engagement,
-          start_date_floor: @owner_start_floor.iso8601
-        }
-      end
+      data = {
+        historical: dated.grouped_by_day,
+        totals: all_time.totals,
+        referrers: dated.referrers,
+        top_contributors: dated.top_contributors,
+        follower_engagement: dated.follower_engagement,
+        start_date_floor: @owner_start_floor.iso8601
+      }
 
       render json: data.to_json
     end
@@ -107,9 +101,22 @@ module Api
 
     def load_owner
       @owner = @org || @user
-      @owner_start_floor = (
-        (@owner.respond_to?(:registered_at) && @owner.registered_at) || @owner.created_at
-      ).to_date
+      @owner_start_floor = compute_start_floor.to_date
+    end
+
+    # Earliest meaningful date for the current request scope. For per-article
+    # views this is the article's publication date — articles can live in an
+    # organization created long after they were published (cross-posts), so
+    # clamping to the org's creation date would silently hide pre-org
+    # activity. For owner-wide views this is the owner's registration / org
+    # creation date.
+    def compute_start_floor
+      if (article_id = analytics_params[:article_id]).present?
+        published_at = Article.where(id: article_id).pick(:published_at)
+        return published_at if published_at
+      end
+
+      (@owner.respond_to?(:registered_at) && @owner.registered_at) || @owner.created_at
     end
 
     def validate_date_params
