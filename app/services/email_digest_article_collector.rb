@@ -5,7 +5,7 @@ class EmailDigestArticleCollector
   ARTICLES_TO_SEND = "EmailDigestArticleCollector#articles_to_send".freeze
   RESULTS_COUNT = 7 # Winner of digest_count_03_18 field test
   CLICK_LOOKBACK = 30
-  DIGEST_ARTICLE_COLUMNS = %i[title description path cached_user cached_tag_list
+  DIGEST_ARTICLE_COLUMNS = %i[id title description path cached_user cached_tag_list
                               subforem_id comment_score comments_count ai_summary ai_summary_generated_at].freeze
 
   def initialize(user, force_send: false)

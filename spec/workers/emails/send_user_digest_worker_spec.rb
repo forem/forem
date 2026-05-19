@@ -276,7 +276,9 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
         end
         
         it "uses a cache lock to prevent multiple attempts" do
-          Rails.cache.write("article_summary_attempt:#{article.id}", true)
+          allow(Rails.cache).to receive(:read).and_call_original
+          allow(Rails.cache).to receive(:read).with("article_summary_attempt:#{article.id}").and_return(true)
+          
           worker.perform(user.id)
           expect(Ai::ArticleSummaryGenerator).not_to have_received(:new)
           expect(message_delivery).to have_received(:deliver_now)

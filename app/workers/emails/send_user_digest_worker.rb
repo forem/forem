@@ -16,7 +16,7 @@ module Emails
       return unless articles.any?
 
       articles_needing_summary = articles.select { |a| a.ai_summary.blank? && a.ai_summary_generated_at.nil? }
-      
+
       if articles_needing_summary.any? && defined?(Ai::Base::DEFAULT_KEY) && Ai::Base::DEFAULT_KEY.present?
         full_articles = Article.where(id: articles_needing_summary.map(&:id)).index_by(&:id)
 
