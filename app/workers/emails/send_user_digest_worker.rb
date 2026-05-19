@@ -15,18 +15,31 @@ module Emails
       articles = EmailDigestArticleCollector.new(user, force_send: force_send).articles_to_send
       return unless articles.any?
 
-      articles.each do |article|
-        if article.ai_summary.blank? && article.ai_summary_generated_at.nil?
-          full_article = Article.find_by(id: article.id)
+      articles_needing_summary = articles.select { |a| a.ai_summary.blank? && a.ai_summary_generated_at.nil? }
+      
+      if articles_needing_summary.any? && defined?(Ai::Base::DEFAULT_KEY) && Ai::Base::DEFAULT_KEY.present?
+        full_articles = Article.where(id: articles_needing_summary.map(&:id)).index_by(&:id)
+
+        articles_needing_summary.each do |article|
+          full_article = full_articles[article.id]
           next unless full_article
 
-          # Mark as generated immediately to prevent infinite retries across multiple users
-          full_article.update_column(:ai_summary_generated_at, Time.current)
+          # Use a cache lock to prevent multiple digest jobs from hammering the AI API for the same article simultaneously
+          cache_key = "article_summary_attempt:#{article.id}"
+          next if Rails.cache.read(cache_key)
+          
+          # Lock for 15 minutes to allow digest processing to finish without overlapping retries
+          Rails.cache.write(cache_key, true, expires_in: 15.minutes)
 
-          Ai::ArticleSummaryGenerator.new(full_article).call
+          begin
+            Ai::ArticleSummaryGenerator.new(full_article).call
 
-          # Assign the generated summary to the partial record so the email template can use it
-          article.ai_summary = full_article.reload.ai_summary
+            # Assign the generated summary to the partial record so the email template can use it
+            article.ai_summary = full_article.reload.ai_summary
+          rescue StandardError => e
+            Rails.logger.warn("Failed to generate summary for article #{article.id} in digest: #{e.message}")
+            Honeybadger.notify(e) if defined?(Honeybadger)
+          end
         end
       end
 
