@@ -295,6 +295,7 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
 
       before do
         FeatureFlag.enable(:personalized_email_digests)
+        allow_any_instance_of(described_class).to receive(:field_test).with(:personalized_email_digests_ab_test, participant: user).and_return("personalized")
         allow(Settings::UserExperience).to receive(:feed_strategy).and_return("configured")
         allow(FeedConfig).to receive(:order).and_return(instance_double(ActiveRecord::Relation, first: feed_config))
         allow(feed_config).to receive(:score_sql).and_return("articles.score")
@@ -320,6 +321,18 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
 
         articles = described_class.new(user).articles_to_send
         expect(articles.length).to be >= 3
+      end
+
+      it "falls back to legacy selection when field test assigns legacy variant" do
+        allow_any_instance_of(described_class).to receive(:field_test).with(:personalized_email_digests_ab_test, participant: user).and_return("legacy")
+        
+        other_user = create(:user)
+        create_list(:article, 3, score: 40, featured: true, email_digest_eligible: true,
+                                 subforem: default_subforem, user: other_user)
+        described_class.new(user).articles_to_send
+
+        # If legacy is used, FeedConfig is not evaluated
+        expect(FeedConfig).not_to have_received(:order)
       end
 
       it "falls back to legacy selection when personalized path raises" do
