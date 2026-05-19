@@ -16,9 +16,19 @@ RSpec.describe AnalyticsService, type: :service do
     # and hence never be selected by the Analytics engine
     # In the meantime for a lack of a better solution, we force this tests to run at midday in UTC
     Timecop.freeze("2019-04-01T12:00:00Z")
+    # Pin Time.zone for the duration of the spec too: the service clamps
+    # start_date to the owner's `registered_at.beginning_of_day` evaluated in
+    # Time.zone, so a Zonebie-set zone ahead of UTC (e.g. Pacific/Apia at
+    # UTC+13) shifts the floor to the next calendar day and lops 2019-04-01
+    # off every bucketed assertion below.
+    @original_time_zone = Time.zone
+    Time.zone = "UTC"
   end
 
-  after { Timecop.return }
+  after do
+    Timecop.return
+    Time.zone = @original_time_zone if @original_time_zone
+  end
 
   def format_date(datetime)
     # PostgreSQL DATE(..) function uses UTC.

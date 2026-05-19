@@ -69,23 +69,9 @@ RSpec.describe UserActivityHeatmapService do
       create(:article, user: user, published: false, published_at: nil)
       deleted = create(:comment, user: user)
       deleted.update_columns(deleted: true)
-
-      # Insert the readinglist reaction via raw SQL so we don't trip any
-      # Reaction/Article factory callbacks that have caused incidental
-      # `like`-category reactions to be attributed to the test user in CI.
-      article_for_reaction = create(:article, user: create(:user), published: true)
-      Reaction.insert_all!([{
-        user_id: user.id,
-        reactable_type: "Article",
-        reactable_id: article_for_reaction.id,
-        category: "readinglist",
-        status: "valid",
-        created_at: Time.current,
-        updated_at: Time.current,
-      }])
-      # Drop anything else attributed to our user so the assertion only
-      # exercises the public_category scope filtering we care about.
-      Reaction.where(user_id: user.id).where.not(category: "readinglist").delete_all
+      # readinglist is explicitly excluded from the `public_category` scope
+      # the heatmap uses; ensures we only count visible-to-public reactions.
+      create(:reading_reaction, user: user)
 
       payload = service.call
 
