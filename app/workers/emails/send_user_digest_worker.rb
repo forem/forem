@@ -15,6 +15,21 @@ module Emails
       articles = EmailDigestArticleCollector.new(user, force_send: force_send).articles_to_send
       return unless articles.any?
 
+      articles.each do |article|
+        if article.ai_summary.blank? && article.ai_summary_generated_at.nil?
+          full_article = Article.find_by(id: article.id)
+          next unless full_article
+
+          # Mark as generated immediately to prevent infinite retries across multiple users
+          full_article.update_column(:ai_summary_generated_at, Time.current)
+
+          Ai::ArticleSummaryGenerator.new(full_article).call
+
+          # Assign the generated summary to the partial record so the email template can use it
+          article.ai_summary = full_article.reload.ai_summary
+        end
+      end
+
       tags = user.cached_followed_tag_names&.first(12)
       first_billboard = Billboard.for_display(area: "digest_first",
                                               user_id: user.id,
