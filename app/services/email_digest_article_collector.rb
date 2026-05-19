@@ -153,7 +153,7 @@ class EmailDigestArticleCollector
   # rubocop:enable Metrics/PerceivedComplexity
 
   def personalized_articles
-    feed_config = FeedConfig.order(feed_success_score: :desc).limit(15).to_a.sample
+    feed_config = FeedConfig.order(feed_success_score: :desc).limit(15).to_a.sample || FeedConfig.first_or_create
     return unless feed_config
 
     set_subforem_context
