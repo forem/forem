@@ -15,6 +15,34 @@ module Emails
       articles = EmailDigestArticleCollector.new(user, force_send: force_send).articles_to_send
       return unless articles.any?
 
+      articles_needing_summary = articles.select { |a| a.ai_summary.blank? && a.ai_summary_generated_at.nil? }
+
+      if articles_needing_summary.any? && defined?(Ai::Base::DEFAULT_KEY) && Ai::Base::DEFAULT_KEY.present?
+        full_articles = Article.where(id: articles_needing_summary.map(&:id)).index_by(&:id)
+
+        articles_needing_summary.each do |article|
+          full_article = full_articles[article.id]
+          next unless full_article
+
+          # Use an atomic cache lock to prevent multiple digest jobs from hammering the AI API
+          # for the same article simultaneously.
+          cache_key = "article_summary_attempt:#{article.id}"
+
+          # Lock for 15 minutes to allow digest processing to finish without overlapping retries.
+          next unless Rails.cache.write(cache_key, true, expires_in: 15.minutes, unless_exist: true)
+
+          begin
+            Ai::ArticleSummaryGenerator.new(full_article).call
+
+            # Assign the generated summary to the partial record so the email template can use it
+            article.ai_summary = full_article.reload.ai_summary
+          rescue StandardError => e
+            Rails.logger.warn("Failed to generate summary for article #{article.id} in digest: #{e.message}")
+            Honeybadger.notify(e) if defined?(Honeybadger)
+          end
+        end
+      end
+
       tags = user.cached_followed_tag_names&.first(12)
       first_billboard = Billboard.for_display(area: "digest_first",
                                               user_id: user.id,

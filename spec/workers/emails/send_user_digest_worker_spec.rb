@@ -232,6 +232,65 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
           expect(DigestMailer).not_to have_received(:with)
         end
       end
+
+      context "with missing per-article AI summaries" do
+        let!(:article) { create(:article, user_id: author.id, public_reactions_count: 30, score: 30, tag_list: [tag.name]) }
+        let(:ai_generator) { instance_double(Ai::ArticleSummaryGenerator) }
+        
+        before do
+          # create enough articles to trigger the digest
+          create_list(:article, 2, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name], ai_summary: "Existing summary", ai_summary_generated_at: Time.current)
+          
+          # The one missing summary
+          article.update_columns(ai_summary: nil, ai_summary_generated_at: nil)
+          
+          stub_const("Ai::Base::DEFAULT_KEY", "dummy_key")
+          allow(Ai::ArticleSummaryGenerator).to receive(:new).and_return(ai_generator)
+          allow(ai_generator).to receive(:call) do
+            article.update_column(:ai_summary, "Generated inline summary")
+          end
+        end
+
+        it "invokes the generator and updates the article in the email payload" do
+          worker.perform(user.id)
+          expect(Ai::ArticleSummaryGenerator).to have_received(:new)
+          expect(ai_generator).to have_received(:call)
+          
+          expect(DigestMailer).to have_received(:with) do |args|
+            delivered_article = args[:articles].find { |a| a.id == article.id }
+            expect(delivered_article.ai_summary).to eq("Generated inline summary")
+          end
+        end
+
+        it "skips generation if Ai::Base::DEFAULT_KEY is missing" do
+          stub_const("Ai::Base::DEFAULT_KEY", nil)
+          worker.perform(user.id)
+          expect(Ai::ArticleSummaryGenerator).not_to have_received(:new)
+          expect(message_delivery).to have_received(:deliver_now)
+        end
+
+        it "rescues errors during generation and still delivers digest" do
+          allow(ai_generator).to receive(:call).and_raise(StandardError.new("AI error"))
+          allow(Rails.logger).to receive(:warn)
+          allow(Honeybadger).to receive(:notify)
+          
+          worker.perform(user.id)
+          
+          expect(Rails.logger).to have_received(:warn).with(/Failed to generate summary for article #{article.id} in digest: AI error/)
+          expect(message_delivery).to have_received(:deliver_now)
+        end
+        
+        it "uses a cache lock to prevent multiple attempts" do
+          allow(Rails.cache).to receive(:write).and_call_original
+          allow(Rails.cache).to receive(:write)
+            .with("article_summary_attempt:#{article.id}", true, hash_including(unless_exist: true))
+            .and_return(false)
+          
+          worker.perform(user.id)
+          expect(Ai::ArticleSummaryGenerator).not_to have_received(:new)
+          expect(message_delivery).to have_received(:deliver_now)
+        end
+      end
     end
   end
 end
