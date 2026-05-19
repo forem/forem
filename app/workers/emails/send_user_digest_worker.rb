@@ -24,12 +24,11 @@ module Emails
           full_article = full_articles[article.id]
           next unless full_article
 
-          # Use a cache lock to prevent multiple digest jobs from hammering the AI API for the same article simultaneously
-          cache_key = "article_summary_attempt:#{article.id}"
-          next if Rails.cache.read(cache_key)
-          
+          # Use an atomic cache lock to prevent multiple digest jobs from hammering the AI API for the same article simultaneously
           # Lock for 15 minutes to allow digest processing to finish without overlapping retries
-          Rails.cache.write(cache_key, true, expires_in: 15.minutes)
+          cache_key = "article_summary_attempt:#{article.id}"
+          lock_acquired = Rails.cache.write(cache_key, true, expires_in: 15.minutes, unless_exist: true)
+          next unless lock_acquired
 
           begin
             Ai::ArticleSummaryGenerator.new(full_article).call

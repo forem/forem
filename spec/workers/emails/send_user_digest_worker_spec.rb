@@ -251,10 +251,15 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
           end
         end
 
-        it "invokes the generator and updates the article" do
+        it "invokes the generator and updates the article in the email payload" do
           worker.perform(user.id)
           expect(Ai::ArticleSummaryGenerator).to have_received(:new)
           expect(ai_generator).to have_received(:call)
+          
+          expect(DigestMailer).to have_received(:with) do |args|
+            delivered_article = args[:articles].find { |a| a.id == article.id }
+            expect(delivered_article.ai_summary).to eq("Generated inline summary")
+          end
         end
 
         it "skips generation if Ai::Base::DEFAULT_KEY is missing" do
@@ -276,8 +281,10 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
         end
         
         it "uses a cache lock to prevent multiple attempts" do
-          allow(Rails.cache).to receive(:read).and_call_original
-          allow(Rails.cache).to receive(:read).with("article_summary_attempt:#{article.id}").and_return(true)
+          allow(Rails.cache).to receive(:write).and_call_original
+          allow(Rails.cache).to receive(:write)
+            .with("article_summary_attempt:#{article.id}", true, hash_including(unless_exist: true))
+            .and_return(false)
           
           worker.perform(user.id)
           expect(Ai::ArticleSummaryGenerator).not_to have_received(:new)
