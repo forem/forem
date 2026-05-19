@@ -8,6 +8,12 @@ class EmailDigestArticleCollector
   DIGEST_ARTICLE_COLUMNS = %i[id title description path cached_user cached_tag_list
                               subforem_id comment_score comments_count ai_summary ai_summary_generated_at].freeze
 
+  # Personalized email digests require a higher minimum score than the home feed
+  # to ensure that the content sent in emails is of higher quality.
+  MINIMUM_SCORE_OFFSET = 15
+
+  attr_reader :feed_config_id
+
   def initialize(user, force_send: false)
     @user = user
     @force_send = force_send
@@ -19,9 +25,9 @@ class EmailDigestArticleCollector
 
       if FeatureFlag.enabled?(:personalized_email_digests) &&
           Settings::UserExperience.feed_strategy == "configured"
-        
+
         variant = field_test(:personalized_email_digests_ab_test, participant: @user)
-        
+
         if variant == "personalized"
           articles = personalized_articles
           return articles if articles
@@ -147,7 +153,7 @@ class EmailDigestArticleCollector
   # rubocop:enable Metrics/PerceivedComplexity
 
   def personalized_articles
-    feed_config = FeedConfig.order(feed_success_score: :desc).first
+    feed_config = FeedConfig.order(feed_success_score: :desc).limit(15).to_a.sample || FeedConfig.first_or_create
     return unless feed_config
 
     set_subforem_context
@@ -158,6 +164,7 @@ class EmailDigestArticleCollector
       .select(*DIGEST_ARTICLE_COLUMNS)
       .published
       .full_posts
+      .where("score >= ?", Settings::UserExperience.home_feed_minimum_score + MINIMUM_SCORE_OFFSET)
       .where("published_at > ?", cutoff_date)
       .where(email_digest_eligible: true)
       .not_authored_by(@user.id)
@@ -174,7 +181,13 @@ class EmailDigestArticleCollector
 
     articles = articles_query.to_a
     articles = articles.rotate(1) if articles.any? && last_email_includes_title_in_subject?(articles.first.title)
-    articles.length >= 3 ? articles : nil
+    
+    if articles.length >= 3
+      @feed_config_id = feed_config.id
+      articles
+    else
+      nil
+    end
   rescue StandardError
     nil
   end
