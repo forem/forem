@@ -12,7 +12,8 @@ module Emails
         return
       end
 
-      articles = EmailDigestArticleCollector.new(user, force_send: force_send).articles_to_send
+      collector = EmailDigestArticleCollector.new(user, force_send: force_send)
+      articles = collector.articles_to_send
       return unless articles.any?
 
       articles_needing_summary = articles.select { |a| a.ai_summary.blank? && a.ai_summary_generated_at.nil? }
@@ -68,6 +69,7 @@ module Emails
           articles: articles.to_a,
           billboards: [first_billboard, second_billboard],
           smart_summary: smart_summary,
+          feed_config_id: collector.feed_config_id
         )
           .digest_email.deliver_now
 
@@ -78,6 +80,19 @@ module Emails
           ApplicationRecord.with_synchronous_commit_off do
             BillboardEvent.create(event_params.merge(billboard_id: first_billboard.id)) if first_billboard.present?
             BillboardEvent.create(event_params.merge(billboard_id: second_billboard.id)) if second_billboard.present?
+            
+            if collector.feed_config_id.present?
+              articles.each_with_index do |article, index|
+                FeedEvent.create(
+                  article_id: article.id,
+                  feed_config_id: collector.feed_config_id,
+                  user_id: user.id,
+                  context_type: "email",
+                  category: "impression",
+                  article_position: index + 1
+                )
+              end
+            end
           end
         end
       rescue Net::SMTPSyntaxError, Net::SMTPFatalError => e

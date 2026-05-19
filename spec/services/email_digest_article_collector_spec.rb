@@ -291,14 +291,14 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
     end
 
     context "with personalized selection via FeedConfig" do
-      let(:feed_config) { create(:feed_config) }
+      let!(:feed_config) { create(:feed_config) }
 
       before do
         FeatureFlag.enable(:personalized_email_digests)
         allow_any_instance_of(described_class).to receive(:field_test).with(:personalized_email_digests_ab_test, participant: user).and_return("personalized")
         allow(Settings::UserExperience).to receive(:feed_strategy).and_return("configured")
-        allow(FeedConfig).to receive(:order).and_return(instance_double(ActiveRecord::Relation, first: feed_config))
-        allow(feed_config).to receive(:score_sql).and_return("articles.score")
+        allow_any_instance_of(FeedConfig).to receive(:score_sql).and_return("articles.score")
+        allow(FeedConfig).to receive(:order).and_call_original
       end
 
       it "returns personalized articles when FeedConfig produces >= 3 eligible results" do
@@ -339,21 +339,13 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
         other_user = create(:user)
         create_list(:article, 3, score: 40, featured: true, email_digest_eligible: true,
                                  subforem: default_subforem, user: other_user)
-        allow(feed_config).to receive(:score_sql).and_raise(StandardError, "boom")
+        allow_any_instance_of(FeedConfig).to receive(:score_sql).and_raise(StandardError, "boom")
 
         articles = described_class.new(user).articles_to_send
         expect(articles.length).to be >= 3
       end
 
-      it "falls back to legacy selection when no FeedConfig exists" do
-        allow(FeedConfig).to receive(:order).and_return(instance_double(ActiveRecord::Relation, first: nil))
-        other_user = create(:user)
-        create_list(:article, 3, score: 40, featured: true, email_digest_eligible: true,
-                                 subforem: default_subforem, user: other_user)
 
-        articles = described_class.new(user).articles_to_send
-        expect(articles.length).to be >= 3
-      end
 
       it "skips personalized path when feed_strategy is not 'configured'" do
         allow(Settings::UserExperience).to receive(:feed_strategy).and_return("basic")
@@ -401,6 +393,18 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
         articles = described_class.new(user).articles_to_send
         ineligible_paths = ineligible.map(&:path)
         expect(articles.none? { |a| ineligible_paths.include?(a.path) }).to be true
+      end
+
+      it "never includes articles with a score lower than the custom minimum" do
+        other_user = create(:user)
+        low_score = create_list(:article, 3, score: Settings::UserExperience.home_feed_minimum_score + 14,
+                                             email_digest_eligible: true, subforem: default_subforem, user: other_user)
+        create_list(:article, 3, score: Settings::UserExperience.home_feed_minimum_score + 20,
+                                 email_digest_eligible: true, subforem: default_subforem, user: other_user)
+
+        articles = described_class.new(user).articles_to_send
+        low_score_paths = low_score.map(&:path)
+        expect(articles.none? { |a| low_score_paths.include?(a.path) }).to be true
       end
 
       it "never includes articles from blocked authors" do
