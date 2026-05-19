@@ -178,6 +178,7 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
         let(:smart_summary_service) { instance_double(Ai::EmailDigestSummary) }
 
         before do
+          allow(FeatureFlag).to receive(:enabled?).with(:digest_smart_summary).and_return(true)
           allow(Ai::EmailDigestSummary).to receive(:new).and_return(smart_summary_service)
           allow(smart_summary_service).to receive(:generate).and_return("Smart AI Summary")
         end
