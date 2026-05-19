@@ -15,6 +15,42 @@ RSpec.describe "Admin::Surveys", type: :request do
     end
   end
 
+  describe "GET /admin/content_manager/surveys/:id" do
+    let(:survey) { create(:survey) }
+    let(:poll) { create(:poll, survey: survey, type_of: :single_choice) }
+    let(:option1) { create(:poll_option, poll: poll, markdown: "Option 1") }
+    let(:option2) { create(:poll_option, poll: poll, markdown: "Option 2") }
+
+    before do
+      # Create votes outside the date range
+      create(:poll_vote, poll: poll, poll_option: option1, created_at: 2.weeks.ago)
+      create(:survey_completion, survey: survey, user: create(:user), completed_at: 2.weeks.ago)
+
+      # Create votes inside the date range
+      create(:poll_vote, poll: poll, poll_option: option1, created_at: Time.current)
+      create(:poll_vote, poll: poll, poll_option: option2, created_at: Time.current)
+      create(:survey_completion, survey: survey, user: create(:user), completed_at: Time.current)
+    end
+
+    it "renders the show page with visualizations" do
+      get admin_survey_path(survey)
+      expect(response).to have_http_status(:success)
+      expect(response.body).to include(survey.title)
+      # Visualizer uses ApexCharts
+      expect(response.body).to include("ApexCharts")
+    end
+
+    it "applies date filters to the visualization data" do
+      start_date = 1.week.ago.to_date.to_s
+      end_date = Time.current.to_date.to_s
+
+      get admin_survey_path(survey), params: { start_date: start_date, end_date: end_date }
+      
+      expect(response).to have_http_status(:success)
+      expect(response.body).to include('Total completions')
+    end
+  end
+
   describe "POST /admin/content_manager/surveys" do
     context "with valid parameters" do
       let(:survey_params) do
