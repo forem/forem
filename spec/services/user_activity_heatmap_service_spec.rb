@@ -52,12 +52,23 @@ RSpec.describe UserActivityHeatmapService do
     end
 
     it "excludes unpublished articles, deleted comments, and non-public reactions" do
+      # Start from a known-empty state for the test user. Other factories
+      # (article/comment) can trigger side-effects that touch the reactions
+      # table, which has caused flaky leakage in CI runs where this spec
+      # asserts a zero reactions total.
+      Reaction.where(user_id: user.id).delete_all
+
       create(:article, user: user, published: false, published_at: nil)
       deleted = create(:comment, user: user)
       deleted.update_columns(deleted: true)
       # readinglist is explicitly excluded from the `public_category` scope
       # the heatmap uses; ensures we only count visible-to-public reactions.
       create(:reading_reaction, user: user)
+
+      # Belt and braces: drop any non-readinglist reactions an upstream
+      # factory may have created so this test only exercises the scope
+      # filtering we care about.
+      Reaction.where(user_id: user.id).where.not(category: "readinglist").delete_all
 
       payload = service.call
 
