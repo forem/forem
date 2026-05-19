@@ -152,8 +152,6 @@ class EmailDigestArticleCollector
     feed_config = FeedConfig.order("feed_success_score DESC").limit(rand(15)).sample || FeedConfig.first_or_create
     return unless feed_config
 
-    @feed_config_id = feed_config.id
-
     set_subforem_context
 
     score_sql = feed_config.score_sql(@user)
@@ -179,7 +177,13 @@ class EmailDigestArticleCollector
 
     articles = articles_query.to_a
     articles = articles.rotate(1) if articles.any? && last_email_includes_title_in_subject?(articles.first.title)
-    articles.length >= 3 ? articles : nil
+    
+    if articles.length >= 3
+      @feed_config_id = feed_config.id
+      articles
+    else
+      nil
+    end
   rescue StandardError
     nil
   end

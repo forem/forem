@@ -70,7 +70,7 @@ module Ahoy
       uri = URI.parse(@url)
       path = uri.path
       query_params = uri.query ? Rack::Utils.parse_query(uri.query) : {}
-      feed_config_id = query_params["fc"]
+      feed_config_id = Integer(query_params["fc"], exception: false)
 
       article = Article.find_by(path: path)
       return unless article

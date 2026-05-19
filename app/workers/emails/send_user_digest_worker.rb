@@ -73,25 +73,25 @@ module Emails
         )
           .digest_email.deliver_now
 
-        # Track billboard impressions with relaxed durability — these are
+        # Track impressions with relaxed durability — these are
         # low-priority analytics writes that don't need synchronous WAL flush.
-        if first_billboard.present? || second_billboard.present?
-          event_params = { user_id: user.id, context_type: "email", category: "impression" }
-          ApplicationRecord.with_synchronous_commit_off do
+        ApplicationRecord.with_synchronous_commit_off do
+          if first_billboard.present? || second_billboard.present?
+            event_params = { user_id: user.id, context_type: "email", category: "impression" }
             BillboardEvent.create(event_params.merge(billboard_id: first_billboard.id)) if first_billboard.present?
             BillboardEvent.create(event_params.merge(billboard_id: second_billboard.id)) if second_billboard.present?
-            
-            if collector.feed_config_id.present?
-              articles.each_with_index do |article, index|
-                FeedEvent.create(
-                  article_id: article.id,
-                  feed_config_id: collector.feed_config_id,
-                  user_id: user.id,
-                  context_type: "email",
-                  category: "impression",
-                  article_position: index + 1
-                )
-              end
+          end
+
+          if collector.feed_config_id.present?
+            articles.each_with_index do |article, index|
+              FeedEvent.create(
+                article_id: article.id,
+                feed_config_id: collector.feed_config_id,
+                user_id: user.id,
+                context_type: "email",
+                category: "impression",
+                article_position: index + 1
+              )
             end
           end
         end

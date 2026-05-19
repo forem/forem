@@ -115,10 +115,10 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
         expect(Honeybadger).not_to have_received(:notify)
       end
 
-      it "does not open a transaction when no billboards are present" do
+      it "opens a transaction for analytics tracking even when no billboards are present" do
         create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
 
-        expect(ApplicationRecord).not_to receive(:with_synchronous_commit_off)
+        expect(ApplicationRecord).to receive(:with_synchronous_commit_off).and_call_original
 
         worker.perform(user.id)
 
