@@ -15,6 +15,15 @@ RSpec.describe UserActivityHeatmapService do
     article
   end
 
+  # The service buckets by DATE(timestamp) against UTC-stored values. Using
+  # `Date#beginning_of_day - N.days` lands at midnight which becomes the
+  # previous calendar day in any TZ ahead of UTC and trips off-by-one
+  # assertions in CI. Anchor backdates at noon UTC so DATE() always returns
+  # the intended calendar day regardless of zone.
+  def noon_utc_for(date)
+    Time.utc(date.year, date.month, date.day, 12)
+  end
+
   describe "#call" do
     it "returns a fully-padded 365-day window" do
       payload = service.call
@@ -27,47 +36,55 @@ RSpec.describe UserActivityHeatmapService do
     end
 
     it "includes per-day breakdowns and totals" do
-      two_days_ago = today.beginning_of_day - 2.days
-      yesterday = today.beginning_of_day - 1.day
-      now = Time.current
+      # Use dates a few days back rather than `today` itself. The service caps
+      # end_date with `Date.current` (Time.zone-aware) and builds its window
+      # with `.beginning_of_day` / `.end_of_day`, while grouping by UTC
+      # `DATE(...)`. Activity timestamped near the day boundary can otherwise
+      # land outside the window in TZ-aware CI environments (e.g. Zonebie).
+      article_day = today - 5.days
+      comment_day = today - 4.days
+      reaction_day = today - 3.days
 
       article = create(:article, user: user, published: true)
-      backdate_article(article, two_days_ago)
+      backdate_article(article, noon_utc_for(article_day))
       comment = create(:comment, user: user)
-      comment.update_columns(created_at: yesterday)
+      comment.update_columns(created_at: noon_utc_for(comment_day))
       r1 = create(:reaction, user: user, category: "like")
       r2 = create(:reaction, user: user, category: "unicorn")
-      r1.update_columns(created_at: now)
-      r2.update_columns(created_at: now)
+      r1.update_columns(created_at: noon_utc_for(reaction_day))
+      r2.update_columns(created_at: noon_utc_for(reaction_day))
 
       payload = service.call
 
       bucket = ->(date) { payload[:days].detect { |d| d[:date] == date.iso8601 } }
-      expect(bucket.call(today - 2.days)).to include(articles: 1, total: 1)
-      expect(bucket.call(today - 1.day)).to include(comments: 1, total: 1)
-      expect(bucket.call(today)).to include(reactions: 2, total: 2)
+      expect(bucket.call(article_day)).to include(articles: 1, total: 1)
+      expect(bucket.call(comment_day)).to include(comments: 1, total: 1)
+      expect(bucket.call(reaction_day)).to include(reactions: 2, total: 2)
 
       expect(payload[:totals]).to eq(articles: 1, comments: 1, reactions: 2, total: 4)
       expect(payload[:max]).to eq(2)
     end
 
     it "excludes unpublished articles, deleted comments, and non-public reactions" do
-      # Start from a known-empty state for the test user. Other factories
-      # (article/comment) can trigger side-effects that touch the reactions
-      # table, which has caused flaky leakage in CI runs where this spec
-      # asserts a zero reactions total.
-      Reaction.where(user_id: user.id).delete_all
-
       create(:article, user: user, published: false, published_at: nil)
       deleted = create(:comment, user: user)
       deleted.update_columns(deleted: true)
-      # readinglist is explicitly excluded from the `public_category` scope
-      # the heatmap uses; ensures we only count visible-to-public reactions.
-      create(:reading_reaction, user: user)
 
-      # Belt and braces: drop any non-readinglist reactions an upstream
-      # factory may have created so this test only exercises the scope
-      # filtering we care about.
+      # Insert the readinglist reaction via raw SQL so we don't trip any
+      # Reaction/Article factory callbacks that have caused incidental
+      # `like`-category reactions to be attributed to the test user in CI.
+      article_for_reaction = create(:article, user: create(:user), published: true)
+      Reaction.insert_all!([{
+        user_id: user.id,
+        reactable_type: "Article",
+        reactable_id: article_for_reaction.id,
+        category: "readinglist",
+        status: "valid",
+        created_at: Time.current,
+        updated_at: Time.current,
+      }])
+      # Drop anything else attributed to our user so the assertion only
+      # exercises the public_category scope filtering we care about.
       Reaction.where(user_id: user.id).where.not(category: "readinglist").delete_all
 
       payload = service.call
@@ -78,9 +95,9 @@ RSpec.describe UserActivityHeatmapService do
 
     it "excludes activity outside the window" do
       article = create(:article, user: user, published: true)
-      backdate_article(article, today.beginning_of_day - 400.days)
+      backdate_article(article, noon_utc_for(today - 400.days))
       future_comment = create(:comment, user: user)
-      future_comment.update_columns(created_at: today.beginning_of_day + 1.day)
+      future_comment.update_columns(created_at: noon_utc_for(today + 1.day))
 
       payload = service.call
 
@@ -90,7 +107,7 @@ RSpec.describe UserActivityHeatmapService do
     it "ignores other users' activity" do
       other = create(:user)
       article = create(:article, user: other, published: true)
-      backdate_article(article, today.beginning_of_day - 1.day)
+      backdate_article(article, noon_utc_for(today - 1.day))
 
       payload = service.call
 
