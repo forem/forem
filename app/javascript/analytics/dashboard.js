@@ -746,6 +746,11 @@ function drawInfinityCharts({ organizationId, articleId }) {
 export function destroyCharts() {
   // Invalidate any in-flight API responses
   _state.apiGeneration++;
+  // Clear the cached start floor: it's owner-scoped and would otherwise leak
+  // across InstantClick navigation. Without this, clicking Infinity on a new
+  // owner before its first dashboard response lands would send the previous
+  // owner's floor (and the backend only clamps later, never expands earlier).
+  _state.startDateFloor = null;
   Object.keys(activeCharts).forEach((key) => {
     activeCharts[key].destroy();
     delete activeCharts[key];
