@@ -120,48 +120,13 @@
                 <p class="color-base-60 italic">No text responses yet.</p>
               <% end %>
             <% else %>
-              <div id="poll-chart-<%= poll.id %>" class="bg-white rounded p-2 w-100"></div>
-              <script type="module">
-                import('apexcharts').then(({ default: ApexCharts }) => {
-                  const pollType = "<%= poll.type_of %>";
-                  const categories = <%= raw data[:options].map { |o| truncate(o[:markdown], length: 50) }.to_json %>;
-                  const votes = <%= raw data[:options].map { |o| o[:votes] }.to_json %>;
-
-                  const options = {
-                    series: [],
-                    chart: {
-                      height: 350,
-                      toolbar: { show: false }
-                    },
-                    colors: ['#3b49df', '#f9c513', '#ff4242', '#1cae65', '#2a0076', '#e03131', '#0f172a'],
-                    dataLabels: { enabled: true }
-                  };
-
-                  if (pollType === 'single_choice') {
-                    options.chart.type = 'donut';
-                    options.series = votes;
-                    options.labels = categories;
-                  } else if (pollType === 'multiple_choice') {
-                    options.chart.type = 'bar';
-                    options.series = [{ name: 'Votes', data: votes }];
-                    options.xaxis = { categories: categories };
-                    options.plotOptions = { bar: { horizontal: true, borderRadius: 4 } };
-                  } else if (pollType === 'scale') {
-                    options.chart.type = 'bar';
-                    options.series = [{ name: 'Votes', data: votes }];
-                    options.xaxis = { categories: categories };
-                    options.plotOptions = { bar: { horizontal: false, borderRadius: 4, columnWidth: '50%' } };
-                  }
-
-                  // Only render if there's actually data
-                  if (votes.some(v => v > 0) || pollType === 'scale') {
-                    const chart = new ApexCharts(document.querySelector("#poll-chart-<%= poll.id %>"), options);
-                    chart.render();
-                  } else {
-                    document.querySelector("#poll-chart-<%= poll.id %>").innerHTML = '<p class="color-base-60 italic">No votes yet.</p>';
-                  }
-                });
-              </script>
+              <div id="poll-chart-<%= poll.id %>" 
+                   class="bg-white rounded p-2 w-100"
+                   data-controller="admin-survey-chart"
+                   data-admin-survey-chart-type-value="<%= poll.type_of %>"
+                   data-admin-survey-chart-categories-value="<%= data[:options].map { |o| truncate(o[:markdown], length: 50) }.to_json %>"
+                   data-admin-survey-chart-votes-value="<%= data[:options].map { |o| o[:votes] }.to_json %>">
+              </div>
             <% end %>
           </div>
         <% end %>

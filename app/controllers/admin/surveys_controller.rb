@@ -9,11 +9,14 @@ module Admin
     def show
       @survey = Survey.includes(polls: :poll_options).find(params[:id])
 
-      @start_date = params[:start_date].presence ? Time.zone.parse(params[:start_date]).beginning_of_day : @survey.created_at.beginning_of_day
-      @end_date = params[:end_date].presence ? Time.zone.parse(params[:end_date]).end_of_day : Time.current.end_of_day
+      parsed_start = params[:start_date].presence ? (Time.zone.parse(params[:start_date]) rescue nil) : nil
+      @start_date = parsed_start ? parsed_start.beginning_of_day : @survey.created_at.beginning_of_day
+
+      parsed_end = params[:end_date].presence ? (Time.zone.parse(params[:end_date]) rescue nil) : nil
+      @end_date = parsed_end ? parsed_end.end_of_day : Time.current.end_of_day
 
       polls = @survey.polls
-      poll_ids_relation = polls.select(:id)
+      poll_ids = polls.map(&:id)
 
       completions = @survey.survey_completions.where(completed_at: @start_date..@end_date)
 
@@ -21,30 +24,35 @@ module Admin
         polls_count: polls.size,
         completions_count: completions.count,
         unique_respondents_count: completions.select(:user_id).distinct.count,
-        poll_votes_count: PollVote.where(poll_id: poll_ids_relation, created_at: @start_date..@end_date).count,
-        poll_skips_count: PollSkip.where(poll_id: poll_ids_relation, created_at: @start_date..@end_date).count,
-        poll_text_responses_count: PollTextResponse.where(poll_id: poll_ids_relation, created_at: @start_date..@end_date).count,
+        poll_votes_count: PollVote.where(poll_id: poll_ids, created_at: @start_date..@end_date).count,
+        poll_skips_count: PollSkip.where(poll_id: poll_ids, created_at: @start_date..@end_date).count,
+        poll_text_responses_count: PollTextResponse.where(poll_id: poll_ids, created_at: @start_date..@end_date).count,
         last_completed_at: completions.maximum(:completed_at)
       }
+
+      # Pre-calculate counts grouped by poll and option to avoid N+1
+      poll_skips_counts = PollSkip.where(poll_id: poll_ids, created_at: @start_date..@end_date).group(:poll_id).count
+      poll_text_response_counts = PollTextResponse.where(poll_id: poll_ids, created_at: @start_date..@end_date).group(:poll_id).count
+      poll_vote_counts = PollVote.where(poll_id: poll_ids, created_at: @start_date..@end_date).group(:poll_id, :poll_option_id).count
 
       @poll_data = polls.map do |poll|
         data = {
           poll: poll,
-          skips: poll.poll_skips.where(created_at: @start_date..@end_date).count
+          skips: poll_skips_counts[poll.id] || 0
         }
 
         if poll.text_input?
           text_responses = poll.poll_text_responses.where(created_at: @start_date..@end_date).order(created_at: :desc).limit(100)
-          data[:total_responses] = poll.poll_text_responses.where(created_at: @start_date..@end_date).count
+          data[:total_responses] = poll_text_response_counts[poll.id] || 0
           data[:text_responses] = text_responses.pluck(:text_response, :created_at)
         else
-          votes = poll.poll_votes.where(created_at: @start_date..@end_date).group(:poll_option_id).count
-          data[:total_responses] = votes.values.sum
+          poll_votes_subset = poll_vote_counts.select { |(p_id, _), _| p_id == poll.id }
+          data[:total_responses] = poll_votes_subset.values.sum
           data[:options] = poll.poll_options.map do |opt|
             {
               id: opt.id,
               markdown: opt.markdown,
-              votes: votes[opt.id] || 0
+              votes: poll_vote_counts[[poll.id, opt.id]] || 0
             }
           end
         end

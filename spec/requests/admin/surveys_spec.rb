@@ -36,8 +36,8 @@ RSpec.describe "Admin::Surveys", type: :request do
       get admin_survey_path(survey)
       expect(response).to have_http_status(:success)
       expect(response.body).to include(survey.title)
-      # Visualizer uses ApexCharts
-      expect(response.body).to include("ApexCharts")
+      # Visualizer uses a Stimulus controller
+      expect(response.body).to include("admin-survey-chart")
     end
 
     it "applies date filters to the visualization data" do
