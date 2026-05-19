@@ -8,6 +8,10 @@ class EmailDigestArticleCollector
   DIGEST_ARTICLE_COLUMNS = %i[id title description path cached_user cached_tag_list
                               subforem_id comment_score comments_count ai_summary ai_summary_generated_at].freeze
 
+  # Personalized email digests require a higher minimum score than the home feed
+  # to ensure that the content sent in emails is of higher quality.
+  MINIMUM_SCORE_OFFSET = 15
+
   attr_reader :feed_config_id
 
   def initialize(user, force_send: false)
@@ -149,7 +153,7 @@ class EmailDigestArticleCollector
   # rubocop:enable Metrics/PerceivedComplexity
 
   def personalized_articles
-    feed_config = FeedConfig.order("feed_success_score DESC").limit(rand(15)).sample || FeedConfig.first_or_create
+    feed_config = FeedConfig.order(feed_success_score: :desc).limit(15).to_a.sample
     return unless feed_config
 
     set_subforem_context
@@ -160,7 +164,7 @@ class EmailDigestArticleCollector
       .select(*DIGEST_ARTICLE_COLUMNS)
       .published
       .full_posts
-      .where("score >= ?", Settings::UserExperience.home_feed_minimum_score + 15)
+      .where("score >= ?", Settings::UserExperience.home_feed_minimum_score + MINIMUM_SCORE_OFFSET)
       .where("published_at > ?", cutoff_date)
       .where(email_digest_eligible: true)
       .not_authored_by(@user.id)

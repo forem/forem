@@ -1,5 +1,7 @@
 module Ahoy
   class EmailClicksController < ApplicationController
+    EMAIL_CLICK_INTEREST_BLEND_FACTOR = 0.025
+
     skip_before_action :verify_authenticity_token # Signitures are used to verify requests here
     before_action :verify_signature
 
@@ -85,7 +87,7 @@ module Ahoy
                        feed_config_id: feed_config_id)
                        
       if user_id
-        UpdateUserInterestEmbeddingWorker.perform_async(user_id, article.id, 0.025)
+        UpdateUserInterestEmbeddingWorker.perform_async(user_id, article.id, EMAIL_CLICK_INTEREST_BLEND_FACTOR)
       end
     rescue StandardError => e
       Rails.logger.error "Error processing feed click: #{e.message}"

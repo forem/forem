@@ -56,7 +56,7 @@ RSpec.describe "AhoyEmailClicks" do
         expect(AhoyEmail::Utils).to have_received(:publish)
           .with(:click,
                 hash_including(token: token, campaign: campaign, url: url, controller: controller))
-        expect(FeedEvent.where(article_id: article.id, category: "click", context_type: "email", feed_config_id: feed_config.id.to_s).size).to be(1)
+        expect(FeedEvent.where(article_id: article.id, category: "click", context_type: "email", feed_config_id: feed_config.id).size).to be(1)
       end
       
       it "enqueues UpdateUserInterestEmbeddingWorker with weight 0.025 if user and article are present" do
@@ -68,7 +68,7 @@ RSpec.describe "AhoyEmailClicks" do
 
         allow(AhoyEmail::Utils).to receive(:publish).and_return(true)
 
-        sidekiq_assert_enqueued_with(job: UpdateUserInterestEmbeddingWorker, args: [user.id, article.id, 0.025]) do
+        sidekiq_assert_enqueued_with(job: UpdateUserInterestEmbeddingWorker, args: [user.id, article.id, Ahoy::EmailClicksController::EMAIL_CLICK_INTEREST_BLEND_FACTOR]) do
           post ahoy_email_clicks_path, params: { t: token, c: campaign, u: url, s: signature }
         end
       end

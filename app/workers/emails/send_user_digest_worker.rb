@@ -83,16 +83,18 @@ module Emails
           end
 
           if collector.feed_config_id.present?
-            articles.each_with_index do |article, index|
-              FeedEvent.create(
+            feed_events_data = articles.map.with_index do |article, index|
+              {
                 article_id: article.id,
                 feed_config_id: collector.feed_config_id,
                 user_id: user.id,
                 context_type: "email",
                 category: "impression",
                 article_position: index + 1
-              )
+              }
             end
+            FeedEvents::BulkUpsert.call(feed_events_data)
+            FeedEvent.update_single_feed_config_counters(collector.feed_config_id)
           end
         end
       rescue Net::SMTPSyntaxError, Net::SMTPFatalError => e

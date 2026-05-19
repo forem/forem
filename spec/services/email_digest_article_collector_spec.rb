@@ -310,6 +310,28 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
         expect(articles.length).to be >= 3
       end
 
+      it "sets feed_config_id when personalized selection succeeds" do
+        other_user = create(:user)
+        create_list(:article, 3, score: 40, featured: true, email_digest_eligible: true,
+                                 subforem: default_subforem, user: other_user)
+
+        collector = described_class.new(user)
+        articles = collector.articles_to_send
+        expect(articles.length).to be >= 3
+        expect(collector.feed_config_id).to eq(feed_config.id)
+      end
+
+      it "does not set feed_config_id when fallback to legacy occurs" do
+        other_user = create(:user)
+        # Only 2 eligible articles → personalized returns nil → fallback to legacy
+        create_list(:article, 2, score: 40, featured: true, email_digest_eligible: true,
+                                 subforem: default_subforem, user: other_user)
+
+        collector = described_class.new(user)
+        collector.articles_to_send
+        expect(collector.feed_config_id).to be_nil
+      end
+
       it "falls back to legacy selection when personalized result has < 3 articles" do
         other_user = create(:user)
         # Only 2 eligible articles → personalized returns nil → legacy path runs
@@ -397,9 +419,10 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
 
       it "never includes articles with a score lower than the custom minimum" do
         other_user = create(:user)
-        low_score = create_list(:article, 3, score: Settings::UserExperience.home_feed_minimum_score + 14,
+        offset = described_class::MINIMUM_SCORE_OFFSET
+        low_score = create_list(:article, 3, score: Settings::UserExperience.home_feed_minimum_score + offset - 1,
                                              email_digest_eligible: true, subforem: default_subforem, user: other_user)
-        create_list(:article, 3, score: Settings::UserExperience.home_feed_minimum_score + 20,
+        create_list(:article, 3, score: Settings::UserExperience.home_feed_minimum_score + offset + 5,
                                  email_digest_eligible: true, subforem: default_subforem, user: other_user)
 
         articles = described_class.new(user).articles_to_send

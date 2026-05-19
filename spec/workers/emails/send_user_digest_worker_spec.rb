@@ -291,6 +291,55 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
           expect(message_delivery).to have_received(:deliver_now)
         end
       end
+
+      context "with feed_config_id present" do
+        let(:feed_config) { create(:feed_config) }
+
+        before do
+          allow_any_instance_of(EmailDigestArticleCollector).to receive(:feed_config_id).and_return(feed_config.id)
+        end
+
+        it "creates FeedEvent impressions using BulkUpsert and updates feed config counters" do
+          create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
+          
+          expect(FeedEvents::BulkUpsert).to receive(:call).with(
+            array_including(
+              hash_including(
+                article_id: kind_of(Integer),
+                feed_config_id: feed_config.id,
+                user_id: user.id,
+                context_type: "email",
+                category: "impression",
+                article_position: kind_of(Integer)
+              )
+            )
+          ).and_call_original
+          
+          expect(FeedEvent).to receive(:update_single_feed_config_counters).with(feed_config.id).and_call_original
+
+          expect {
+            worker.perform(user.id)
+          }.to change(FeedEvent, :count).by(3)
+
+          events = FeedEvent.where(feed_config_id: feed_config.id, category: "impression")
+          expect(events.count).to eq(3)
+          expect(events.pluck(:article_position)).to match_array([1, 2, 3])
+        end
+      end
+
+      context "when feed_config_id is nil" do
+        before do
+          allow_any_instance_of(EmailDigestArticleCollector).to receive(:feed_config_id).and_return(nil)
+        end
+
+        it "does not create FeedEvent impressions" do
+          create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
+
+          expect {
+            worker.perform(user.id)
+          }.not_to change(FeedEvent, :count)
+        end
+      end
     end
   end
 end
