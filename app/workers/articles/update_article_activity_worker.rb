@@ -21,157 +21,87 @@ module Articles
     # double-count (or, on destroy, drive totals negative). retry: false
     # accepts that a transient failure loses one event; the next full
     # recompute (lazy upsert path or manual repair) reconciles drift.
-    sidekiq_options queue: :low_priority, retry: false
+    # We use sidekiq-unique-jobs to ensure at most one job is enqueued/scheduled.
+    sidekiq_options queue: :low_priority,
+                    retry: false,
+                    lock: :until_executing,
+                    on_conflict: :replace
 
     class << self
-      def perform_async(article_id, event_type = nil, action = "create", payload = {})
+      def perform_async(article_id, _event_type = nil, _action = "create", _payload = {})
         return if article_id.nil?
 
-        delay = debounce_delay_for(article_id)
+        # Fetch last_aggregated_at, page_views_count, and created_at in a single fast query
+        article_data = Article.joins("LEFT JOIN article_activities ON article_activities.article_id = articles.id")
+                              .where(id: article_id)
+                              .pluck("articles.created_at, articles.page_views_count, article_activities.last_aggregated_at")
+                              .first
+        return if article_data.nil?
 
-        Sidekiq.redis do |redis|
-          redis.rpush("article_activity_debounce:#{article_id}", {
-            event_type: event_type,
-            action: action,
-            payload: payload
-          }.to_json)
+        created_at, page_views_count, last_aggregated_at = article_data
 
-          lock_key = "article_activity_debounce_scheduled:#{article_id}"
-          lock_expiry = [delay.to_i * 2, 60].max
-          locked = redis.set(lock_key, 1, nx: true, ex: lock_expiry)
-          if locked
-            perform_in(delay, article_id)
+        delay = debounce_delay_for(page_views_count.to_i, created_at)
+
+        if last_aggregated_at.nil?
+          # If never aggregated, run immediately
+          super(article_id)
+        else
+          elapsed = Time.current - last_aggregated_at
+          if elapsed >= delay
+            # If it has been longer than the delay, run immediately
+            super(article_id)
+          else
+            # Schedule it for the remaining delay time
+            # Since lock: :until_executing, on_conflict: :replace is active,
+            # this will replace/coalesce any already scheduled job for this article.
+            perform_in(delay - elapsed, article_id)
           end
         end
       end
 
-      def debounce_delay_for(article_id)
-        # Pluck only page_views_count using indexed primary key lookup
-        page_views = Article.where(id: article_id).pluck(:page_views_count).first.to_i
+      def debounce_delay_for(page_views, created_at)
+        base_delay = if page_views >= 100_000
+                       5.minutes
+                     elsif page_views >= 10_000
+                       1.minute
+                     elsif page_views >= 1_000
+                       30.seconds
+                     else
+                       10.seconds
+                     end
 
-        if page_views >= 100_000
-          5.minutes
-        elsif page_views >= 10_000
-          1.minute
-        elsif page_views >= 1_000
-          30.seconds
-        else
-          10.seconds
-        end
+        return base_delay if created_at.nil?
+
+        # Exponential decay/backoff based on age (up to 30 days to avoid float overflow)
+        days_old = [[(Time.current - created_at) / 1.day, 0].max, 30].min
+        calculated_delay = base_delay * (1.5**days_old)
+
+        [calculated_delay, 30.minutes].min
       end
     end
 
     def perform(article_id, event_type = nil, action = "create", payload = {})
       return if article_id.nil?
 
+      activity = ArticleActivity.find_by(article_id: article_id)
+
+      if activity.nil?
+        return unless Article.exists?(id: article_id)
+
+        activity = ArticleActivity.find_or_create_by!(article_id: article_id)
+        activity.recompute_all! if activity.previously_new_record?
+        return
+      end
+
       if event_type.present?
         # Direct/non-debounced call (e.g. from tests or old queue items)
-        activity = find_or_create_activity(article_id)
-        return unless activity
-
         apply_event(activity, event_type, action, (payload || {}).with_indifferent_access)
       else
-        # Debounced run or full recompute (event_type is nil)
-        events_json = Sidekiq.redis do |redis|
-          res = redis.multi do |multi|
-            multi.lrange("article_activity_debounce:#{article_id}", 0, -1)
-            multi.del("article_activity_debounce:#{article_id}")
-            multi.del("article_activity_debounce_scheduled:#{article_id}")
-          end
-          res[0]
-        end
-
-        if events_json.present?
-          process_debounced_events(article_id, events_json)
-        else
-          # Fallback to full recompute
-          activity = find_or_create_activity(article_id)
-          return unless activity
-
-          activity.recompute_all!
-        end
+        activity.recompute_all!
       end
     end
 
     private
-
-    def find_or_create_activity(article_id)
-      activity = ArticleActivity.find_by(article_id: article_id)
-
-      if activity.nil?
-        return nil unless Article.exists?(id: article_id)
-
-        activity = ArticleActivity.find_or_create_by!(article_id: article_id)
-        activity.recompute_all! if activity.previously_new_record?
-        return nil
-      end
-
-      activity
-    end
-
-    def process_debounced_events(article_id, events_json)
-      events = events_json.map { |j| JSON.parse(j) rescue nil }.compact
-
-      # If any event in the list represents a full recompute, do it and stop.
-      if events.any? { |e| e["event_type"].nil? }
-        activity = find_or_create_activity(article_id)
-        activity&.recompute_all!
-        return
-      end
-
-      activity = find_or_create_activity(article_id)
-      return unless activity
-
-      # Separate page views from other events (reactions, comments)
-      page_views = []
-      other_events = []
-
-      events.each do |event|
-        if event["event_type"] == "page_view"
-          page_views << event
-        else
-          other_events << event
-        end
-      end
-
-      # Process aggregated page views
-      if page_views.present?
-        # Group by iso and domain to sum up counters
-        grouped_pvs = Hash.new { |h, k| h[k] = Hash.new { |h2, k2| h2[k2] = { "total" => 0, "sum_read_seconds" => 0, "logged_in_count" => 0 } } }
-
-        page_views.each do |pv|
-          payload = pv["payload"] || {}
-          iso = payload["iso"]
-          domain = payload["domain"] || ""
-
-          next if iso.blank?
-
-          grouped_pvs[iso][domain]["total"] += (payload["total"] || 0).to_i
-          grouped_pvs[iso][domain]["sum_read_seconds"] += (payload["sum_read_seconds"] || 0).to_i
-          grouped_pvs[iso][domain]["logged_in_count"] += (payload["logged_in_count"] || 0).to_i
-        end
-
-        grouped_pvs.each do |iso, domains|
-          domains.each do |domain, data|
-            next if data["total"] <= 0
-
-            payload = {
-              "iso" => iso,
-              "domain" => domain.presence,
-              "total" => data["total"],
-              "sum_read_seconds" => data["sum_read_seconds"],
-              "logged_in_count" => data["logged_in_count"]
-            }
-            activity.apply_page_view_delta!(payload)
-          end
-        end
-      end
-
-      # Process other events sequentially
-      other_events.each do |event|
-        apply_event(activity, event["event_type"], event["action"], (event["payload"] || {}).with_indifferent_access)
-      end
-    end
 
     def apply_event(activity, event_type, action, payload)
       case event_type

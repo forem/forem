@@ -72,107 +72,48 @@ RSpec.describe Articles::UpdateArticleActivityWorker do
     end
   end
 
-  context "when enqueued via perform_async (debounced path)" do
+  context "when enqueued via perform_async" do
     before { Sidekiq::Testing.fake! }
 
-    it "queues a single debounced job and stores events in Redis" do
-      described_class.perform_async(article.id, "page_view", "create",
-                                    "iso" => iso, "total" => 2, "sum_read_seconds" => 10, "logged_in_count" => 1, "domain" => "google.com")
-      described_class.perform_async(article.id, "page_view", "create",
-                                    "iso" => iso, "total" => 3, "sum_read_seconds" => 15, "logged_in_count" => 1, "domain" => "google.com")
-      described_class.perform_async(article.id, "reaction", "create",
-                                    "iso" => iso, "category" => "like", "user_id" => 123)
-
+    it "runs immediately if the article has never been aggregated (last_aggregated_at is nil)" do
+      described_class.perform_async(article.id)
       expect(described_class.jobs.size).to eq(1)
       job = described_class.jobs.first
       expect(job["args"]).to eq([article.id])
-      expect(job["at"]).to be_present
-
-      events = Sidekiq.redis { |r| r.lrange("article_activity_debounce:#{article.id}", 0, -1) }
-      expect(events.size).to eq(3)
-
-      parsed_events = events.map { |e| JSON.parse(e) }
-      expect(parsed_events[0]["event_type"]).to eq("page_view")
-      expect(parsed_events[1]["event_type"]).to eq("page_view")
-      expect(parsed_events[2]["event_type"]).to eq("reaction")
+      expect(job["at"]).to be_nil
     end
 
-    it "adjusts the debounce delay dynamically based on page views" do
-      # Test default (low page views)
-      described_class.perform_async(article.id, "page_view", "create", "iso" => iso, "total" => 1)
-      expect(described_class.jobs.first["at"]).to be_within(1.second).of((Time.now + 10.seconds).to_f)
+    it "runs immediately if the last aggregation was longer ago than the debounce delay" do
+      # Create activity with old last_aggregated_at
+      ArticleActivity.create!(article: article, last_aggregated_at: 1.hour.ago)
 
-      # Helper to clear state
-      clear_state = -> {
-        described_class.clear
-        Sidekiq.redis { |r| r.del("article_activity_debounce:#{article.id}", "article_activity_debounce_scheduled:#{article.id}") }
-      }
+      described_class.perform_async(article.id)
+      expect(described_class.jobs.size).to eq(1)
+      job = described_class.jobs.first
+      expect(job["at"]).to be_nil
+    end
 
-      # Test medium traffic (>= 1,000 views)
-      clear_state.call
-      article.update_column(:page_views_count, 2_000)
-      described_class.perform_async(article.id, "page_view", "create", "iso" => iso, "total" => 1)
-      expect(described_class.jobs.first["at"]).to be_within(1.second).of((Time.now + 30.seconds).to_f)
-
-      # Test higher traffic (>= 10,000 views)
-      clear_state.call
+    it "schedules with the remaining delay if the last aggregation was recent" do
+      # Set page_views_count to 10k so base delay is 1 minute (60 seconds)
       article.update_column(:page_views_count, 15_000)
-      described_class.perform_async(article.id, "page_view", "create", "iso" => iso, "total" => 1)
-      expect(described_class.jobs.first["at"]).to be_within(1.second).of((Time.now + 1.minute).to_f)
+      # Last aggregated 20 seconds ago -> remaining delay = 40 seconds
+      ArticleActivity.create!(article: article, last_aggregated_at: 20.seconds.ago)
 
-      # Test extremely high traffic (>= 100,000 views)
-      clear_state.call
-      article.update_column(:page_views_count, 120_000)
-      described_class.perform_async(article.id, "page_view", "create", "iso" => iso, "total" => 1)
-      expect(described_class.jobs.first["at"]).to be_within(1.second).of((Time.now + 5.minutes).to_f)
-      
-      clear_state.call
+      described_class.perform_async(article.id)
+      expect(described_class.jobs.size).to eq(1)
+      job = described_class.jobs.first
+      expect(job["at"]).to be_within(2.seconds).of((Time.now + 40.seconds).to_f)
     end
 
-    it "coalesces and applies the debounced events when performed" do
-      activity = ArticleActivity.create!(article: article)
+    it "calculates dynamic delay based on both page views and age (exponential backoff)" do
+      # 1. Low views, new article (0 days old) -> base 10 seconds
+      expect(described_class.debounce_delay_for(50, Time.current)).to be_within(1.second).of(10.seconds)
 
-      described_class.perform_async(article.id, "page_view", "create",
-                                    "iso" => iso, "total" => 2, "sum_read_seconds" => 10, "logged_in_count" => 1, "domain" => "google.com")
-      described_class.perform_async(article.id, "page_view", "create",
-                                    "iso" => iso, "total" => 3, "sum_read_seconds" => 15, "logged_in_count" => 1, "domain" => "google.com")
-      described_class.perform_async(article.id, "reaction", "create",
-                                    "iso" => iso, "category" => "like", "user_id" => 123)
+      # 2. Medium views, 2 days old article -> base 30 seconds * 1.5^2 (2.25) = 67.5 seconds
+      expect(described_class.debounce_delay_for(2_000, 2.days.ago)).to be_within(1.second).of(67.5.seconds)
 
-      described_class.clear
-
-      described_class.new.perform(article.id)
-
-      activity.reload
-      expect(activity.page_views_by_day[iso]["total"]).to eq(5)
-      expect(activity.page_views_by_day[iso]["average_read_time_in_seconds"]).to eq(13)
-      expect(activity.daily_reactions[iso]["total"]).to eq(1)
-      expect(activity.daily_reactions[iso]["like"]).to eq(1)
-
-      Sidekiq.redis do |r|
-        expect(r.lrange("article_activity_debounce:#{article.id}", 0, -1)).to be_empty
-        expect(r.get("article_activity_debounce_scheduled:#{article.id}")).to be_nil
-      end
-    end
-
-    it "prioritizes a full recompute if present in the debounced queue" do
-      activity = ArticleActivity.create!(article: article)
-
-      described_class.perform_async(article.id, "page_view", "create",
-                                    "iso" => iso, "total" => 2, "sum_read_seconds" => 10, "logged_in_count" => 1, "domain" => "google.com")
-      described_class.perform_async(article.id, nil)
-      described_class.perform_async(article.id, "reaction", "create",
-                                    "iso" => iso, "category" => "like", "user_id" => 123)
-
-      ts = Time.utc(day.year, day.month, day.day, 12, 0, 0)
-      create(:page_view, article: article, created_at: ts, counts_for_number_of_views: 10, domain: "z.com")
-
-      described_class.clear
-
-      described_class.new.perform(article.id)
-
-      activity.reload
-      expect(activity.daily_page_views[iso]["total"]).to eq(10)
+      # 3. High views, 10 days old article -> base 1 minute * 1.5^10 (57.66) = 57.66 minutes -> capped at 30 minutes
+      expect(described_class.debounce_delay_for(15_000, 10.days.ago)).to eq(30.minutes)
     end
   end
 end
