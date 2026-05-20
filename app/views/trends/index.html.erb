@@ -57,7 +57,11 @@
 
           <div class="mt-4 pt-3 border-t border-base-10 flex items-center justify-between">
             <span class="fs-xs color-base-50">
-              Active <%= time_ago_in_words(trend.last_observed_at) %> ago
+              <% if trend.last_observed_at.present? %>
+                Active <%= time_ago_in_words(trend.last_observed_at) %> ago
+              <% else %>
+                Active recently
+              <% end %>
             </span>
             <%= link_to "Explore Trend →", trend_path(trend.slug), class: "crayons-btn crayons-btn--ghost crayons-btn--s" %>
           </div>

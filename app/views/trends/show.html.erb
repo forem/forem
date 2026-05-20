@@ -18,7 +18,11 @@
       <div class="fs-s color-base-60 flex gap-4">
         <span><%= pluralize(@trend.articles_count, 'article') %> in this trend</span>
         <span>•</span>
-        <span>Active <%= time_ago_in_words(@trend.last_observed_at) %> ago</span>
+        <% if @trend.last_observed_at.present? %>
+          <span>Active <%= time_ago_in_words(@trend.last_observed_at) %> ago</span>
+        <% else %>
+          <span>Active recently</span>
+        <% end %>
       </div>
     </header>
 
@@ -58,8 +62,12 @@
       <% end %>
 
       <div class="pt-3 border-t border-base-10 fs-xs color-base-60 space-y-1">
-        <div>First detected: <%= @trend.first_observed_at.strftime("%B %d, %Y") %></div>
-        <div>Last updated: <%= time_ago_in_words(@trend.last_observed_at) %> ago</div>
+        <% if @trend.first_observed_at.present? %>
+          <div>First detected: <%= @trend.first_observed_at.strftime("%B %d, %Y") %></div>
+        <% end %>
+        <% if @trend.last_observed_at.present? %>
+          <div>Last updated: <%= time_ago_in_words(@trend.last_observed_at) %> ago</div>
+        <% end %>
         <div>Algorithm: Vector Leader Clustering (threshold: 85%)</div>
       </div>
     </section>

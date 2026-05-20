@@ -2,15 +2,21 @@ class Trend < ApplicationRecord
   has_many :trend_memberships, dependent: :destroy
   has_many :articles, through: :trend_memberships
 
-  has_neighbors :centroid_embedding
+  begin
+    has_neighbors :centroid_embedding if column_names.include?("centroid_embedding")
+  rescue StandardError
+    # db not available yet
+  end
 
   validates :name, presence: true, length: { maximum: 100 }
   validates :slug, presence: true, uniqueness: true
   validates :centroid_embedding, presence: true
+  validates :first_observed_at, presence: true
+  validates :last_observed_at, presence: true
 
   before_validation :generate_slug, on: :create
 
-  scope :hot_and_recent, -> { order(score: :desc, last_observed_at: :desc) }
+  scope :hot_and_recent, -> { where("last_observed_at >= ?", 7.days.ago).order(score: :desc, last_observed_at: :desc) }
 
   private
 

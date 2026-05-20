@@ -9,11 +9,12 @@ module Ai
     def call(days_lookback: 7, similarity_threshold: 0.85, match_threshold: 0.88, min_articles: 10, min_score: nil)
       min_score ||= Settings::UserExperience.index_minimum_score.to_i + 15
 
-      # Fetch all articles published in the lookback window with embeddings and score above index amount
       articles = Article.published
                         .where("published_at >= ?", days_lookback.days.ago)
                         .where("score >= ?", min_score)
                         .where.not(semantic_embedding: nil)
+                        .order(score: :desc)
+                        .limit(1000)
                         .to_a
 
       return if articles.empty?
@@ -84,11 +85,14 @@ module Ai
                   end
 
           # Sync memberships
+          active_article_ids = cluster[:articles].map(&:id)
+          trend.trend_memberships.where.not(article_id: active_article_ids).destroy_all
+
           cluster[:articles].each do |article|
             dist = cosine_distance(trend.centroid_embedding.to_a, article.semantic_embedding.to_a)
-            TrendMembership.find_or_create_by!(trend: trend, article: article) do |m|
-              m.distance = dist
-            end
+            membership = trend.trend_memberships.find_or_initialize_by(article: article)
+            membership.distance = dist
+            membership.save!
           end
 
           # Recalculate trend score

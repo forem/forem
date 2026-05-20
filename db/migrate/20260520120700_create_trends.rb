@@ -1,9 +1,5 @@
 class CreateTrends < ActiveRecord::Migration[7.0]
   def change
-    if table_exists?(:trends)
-      safety_assured { drop_table :trends }
-    end
-
     create_table :trends do |t|
       t.string :name, null: false
       t.string :slug, null: false
@@ -12,8 +8,8 @@ class CreateTrends < ActiveRecord::Migration[7.0]
       t.vector :centroid_embedding, limit: 768, null: false
       t.float :score, default: 0.0, null: false
       t.integer :articles_count, default: 0, null: false
-      t.datetime :first_observed_at
-      t.datetime :last_observed_at
+      t.datetime :first_observed_at, null: false
+      t.datetime :last_observed_at, null: false
 
       t.timestamps
     end
