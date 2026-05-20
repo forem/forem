@@ -1,0 +1,68 @@
+<% title "Semantic Trends" %>
+
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="<%= app_url("/trends") %>" />
+  <meta name="description" content="Explore timely and nuanced developer trends on <%= community_name %> powered by AI embeddings.">
+<% end %>
+
+<main id="main-content" class="crayons-layout crayons-layout--header-inside">
+  <header class="crayons-page-header">
+    <h1 class="crayons-title">
+      Emergent Semantic Trends
+    </h1>
+    <p class="color-base-75 fs-m mt-2">
+      Timely, algorithmically-clustered discussions and insights across <%= community_name %>, detected using vector embeddings.
+    </p>
+  </header>
+
+  <% if @trends.empty? %>
+    <div class="articles-list crayons-layout__content" id="articles-list">
+      <div class="p-9 align-center crayons-card">
+        No active trends detected in the last 7 days. Check back later!
+      </div>
+    </div>
+  <% else %>
+    <div class="grid gap-4 m:grid-cols-2 pb-6 px-3 m:px-0">
+      <% @trends.each do |trend| %>
+        <div class="crayons-card p-5 relative flex flex-col justify-between hover:shadow-md transition-shadow duration-200">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="fs-xs font-semibold uppercase tracking-wider px-2 py-1 bg-brand-10 color-brand rounded">
+                Trend
+              </span>
+              <span class="fs-xs color-base-60">
+                <%= pluralize(trend.articles_count, 'article') %>
+              </span>
+            </div>
+
+            <h2 class="fs-xl font-bold mb-2">
+              <%= link_to trend.name, trend_path(trend.slug), class: "color-base-100 hover:color-brand-100" %>
+            </h2>
+
+            <p class="color-base-70 mb-4 fs-m leading-relaxed">
+              <%= trend.description %>
+            </p>
+
+            <% if trend.key_questions.present? %>
+              <div class="mb-4">
+                <h4 class="fs-s font-semibold color-base-80 mb-2">Key Areas of Focus:</h4>
+                <ul class="list-disc pl-5 color-base-70 fs-s space-y-1">
+                  <% trend.key_questions.take(3).each do |q| %>
+                    <li><%= q %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-base-10 flex items-center justify-between">
+            <span class="fs-xs color-base-50">
+              Active <%= time_ago_in_words(trend.last_observed_at) %> ago
+            </span>
+            <%= link_to "Explore Trend →", trend_path(trend.slug), class: "crayons-btn crayons-btn--ghost crayons-btn--s" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</main>
