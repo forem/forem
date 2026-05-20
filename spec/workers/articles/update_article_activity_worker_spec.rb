@@ -97,6 +97,38 @@ RSpec.describe Articles::UpdateArticleActivityWorker do
       expect(parsed_events[2]["event_type"]).to eq("reaction")
     end
 
+    it "adjusts the debounce delay dynamically based on page views" do
+      # Test default (low page views)
+      described_class.perform_async(article.id, "page_view", "create", "iso" => iso, "total" => 1)
+      expect(described_class.jobs.first["at"]).to be_within(1.second).of((Time.now + 10.seconds).to_f)
+
+      # Helper to clear state
+      clear_state = -> {
+        described_class.clear
+        Sidekiq.redis { |r| r.del("article_activity_debounce:#{article.id}", "article_activity_debounce_scheduled:#{article.id}") }
+      }
+
+      # Test medium traffic (>= 1,000 views)
+      clear_state.call
+      article.update_column(:page_views_count, 2_000)
+      described_class.perform_async(article.id, "page_view", "create", "iso" => iso, "total" => 1)
+      expect(described_class.jobs.first["at"]).to be_within(1.second).of((Time.now + 30.seconds).to_f)
+
+      # Test higher traffic (>= 10,000 views)
+      clear_state.call
+      article.update_column(:page_views_count, 15_000)
+      described_class.perform_async(article.id, "page_view", "create", "iso" => iso, "total" => 1)
+      expect(described_class.jobs.first["at"]).to be_within(1.second).of((Time.now + 1.minute).to_f)
+
+      # Test extremely high traffic (>= 100,000 views)
+      clear_state.call
+      article.update_column(:page_views_count, 120_000)
+      described_class.perform_async(article.id, "page_view", "create", "iso" => iso, "total" => 1)
+      expect(described_class.jobs.first["at"]).to be_within(1.second).of((Time.now + 5.minutes).to_f)
+      
+      clear_state.call
+    end
+
     it "coalesces and applies the debounced events when performed" do
       activity = ArticleActivity.create!(article: article)
 

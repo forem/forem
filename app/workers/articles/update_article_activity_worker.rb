@@ -23,11 +23,11 @@ module Articles
     # recompute (lazy upsert path or manual repair) reconciles drift.
     sidekiq_options queue: :low_priority, retry: false
 
-    DEBOUNCE_DELAY = 10.seconds
-
     class << self
       def perform_async(article_id, event_type = nil, action = "create", payload = {})
         return if article_id.nil?
+
+        delay = debounce_delay_for(article_id)
 
         Sidekiq.redis do |redis|
           redis.rpush("article_activity_debounce:#{article_id}", {
@@ -37,10 +37,26 @@ module Articles
           }.to_json)
 
           lock_key = "article_activity_debounce_scheduled:#{article_id}"
-          locked = redis.set(lock_key, 1, nx: true, ex: 60)
+          lock_expiry = [delay.to_i * 2, 60].max
+          locked = redis.set(lock_key, 1, nx: true, ex: lock_expiry)
           if locked
-            perform_in(DEBOUNCE_DELAY, article_id)
+            perform_in(delay, article_id)
           end
+        end
+      end
+
+      def debounce_delay_for(article_id)
+        # Pluck only page_views_count using indexed primary key lookup
+        page_views = Article.where(id: article_id).pluck(:page_views_count).first.to_i
+
+        if page_views >= 100_000
+          5.minutes
+        elsif page_views >= 10_000
+          1.minute
+        elsif page_views >= 1_000
+          30.seconds
+        else
+          10.seconds
         end
       end
     end
