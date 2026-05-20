@@ -7,6 +7,13 @@ describe ApplicationConfig do
     expect(Rails.logger).to have_received(:debug)
   end
 
+  describe "Warning configuration" do
+    it "ignores parser/current warnings" do
+      ignored = Warning.instance_variable_get(:@ignore)
+      expect(ignored).to include(include(/parser\/current/))
+    end
+  end
+
   describe ".app_domain_no_port" do
     it "handles plain subdomain only name" do
       setup_app_domain("renner")
