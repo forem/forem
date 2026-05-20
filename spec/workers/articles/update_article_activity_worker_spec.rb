@@ -35,9 +35,14 @@ RSpec.describe Articles::UpdateArticleActivityWorker do
   context "when activity row already exists" do
     let!(:activity) { ArticleActivity.create!(article: article) }
 
-    it "applies a page_view delta atomically" do
+    it "recomputes page views from database page_views table and ignores delta arguments" do
+      ts = Time.utc(day.year, day.month, day.day, 12, 0, 0)
+      create(:page_view, article: article, created_at: ts,
+                         counts_for_number_of_views: 3, domain: "y.com")
+
+      # Even when passing legacy delta arguments, it does a full recompute from database
       described_class.new.perform(article.id, "page_view", "create",
-                                  "iso" => iso, "total" => 3,
+                                  "iso" => iso, "total" => 50,
                                   "sum_read_seconds" => 30, "logged_in_count" => 1,
                                   "domain" => "y.com")
       activity.reload
@@ -45,30 +50,30 @@ RSpec.describe Articles::UpdateArticleActivityWorker do
       expect(activity.total_page_views).to eq(3)
     end
 
-    it "applies a reaction delta with sign +1 / -1" do
-      described_class.new.perform(article.id, "reaction", "create",
-                                  "iso" => iso, "category" => "like", "user_id" => 7)
-      described_class.new.perform(article.id, "reaction", "destroy",
-                                  "iso" => iso, "category" => "like", "user_id" => 7)
+    it "recomputes reactions from database reactions table" do
+      ts = Time.utc(day.year, day.month, day.day, 12, 0, 0)
+      # Create reaction
+      reaction = create(:reaction, reactable: article, created_at: ts, category: "like")
+      described_class.new.perform(article.id)
       activity.reload
-      expect(activity.daily_reactions[iso]["total"]).to eq(0)
+      expect(activity.daily_reactions.dig(iso, "total").to_i).to eq(1)
+      expect(activity.total_reactions).to eq(1)
+
+      # Destroy reaction
+      reaction.destroy!
+      described_class.new.perform(article.id)
+      activity.reload
+      expect(activity.daily_reactions.dig(iso, "total").to_i).to eq(0)
       expect(activity.total_reactions).to eq(0)
     end
 
-    it "applies a comment delta" do
-      described_class.new.perform(article.id, "comment", "create",
-                                  "iso" => iso, "score" => 4)
-      activity.reload
-      expect(activity.daily_comments[iso]).to eq(1)
-    end
-
-    it "runs a full recompute when event_type is nil" do
+    it "recomputes comments from database comments table" do
       ts = Time.utc(day.year, day.month, day.day, 12, 0, 0)
-      create(:page_view, article: article, created_at: ts,
-                         counts_for_number_of_views: 11, domain: "z.com")
+      create(:comment, commentable: article, created_at: ts, score: 1)
       described_class.new.perform(article.id)
       activity.reload
-      expect(activity.daily_page_views[iso]["total"]).to eq(11)
+      expect(activity.daily_comments[iso]).to eq(1)
+      expect(activity.total_comments).to eq(1)
     end
   end
 
@@ -105,15 +110,32 @@ RSpec.describe Articles::UpdateArticleActivityWorker do
       expect(job["at"]).to be_within(2.seconds).of((Time.now + 40.seconds).to_f)
     end
 
-    it "calculates dynamic delay based on both page views and age (exponential backoff)" do
-      # 1. Low views, new article (0 days old) -> base 10 seconds
-      expect(described_class.debounce_delay_for(50, Time.current)).to be_within(1.second).of(10.seconds)
+    it "calculates dynamic delay based on page views and age boundaries" do
+      # 1. Low views (< 1k), new article (0 days old) -> base 10 seconds
+      expect(described_class.debounce_delay_for(0, Time.current)).to be_within(1.second).of(10.seconds)
+      expect(described_class.debounce_delay_for(999, Time.current)).to be_within(1.second).of(10.seconds)
 
-      # 2. Medium views, 2 days old article -> base 30 seconds * 1.5^2 (2.25) = 67.5 seconds
-      expect(described_class.debounce_delay_for(2_000, 2.days.ago)).to be_within(1.second).of(67.5.seconds)
+      # 2. Medium views (1k - 10k), 0 days old -> base 30 seconds
+      expect(described_class.debounce_delay_for(1_000, Time.current)).to be_within(1.second).of(30.seconds)
+      expect(described_class.debounce_delay_for(9_999, Time.current)).to be_within(1.second).of(30.seconds)
 
-      # 3. High views, 10 days old article -> base 1 minute * 1.5^10 (57.66) = 57.66 minutes -> capped at 30 minutes
-      expect(described_class.debounce_delay_for(15_000, 10.days.ago)).to eq(30.minutes)
+      # 3. High views (10k - 100k), 0 days old -> base 1 minute
+      expect(described_class.debounce_delay_for(10_000, Time.current)).to be_within(1.second).of(1.minute)
+      expect(described_class.debounce_delay_for(99_999, Time.current)).to be_within(1.second).of(1.minute)
+
+      # 4. Extremely high views (>= 100k), 0 days old -> base 5 minutes
+      expect(described_class.debounce_delay_for(100_000, Time.current)).to be_within(1.second).of(5.minutes)
+      expect(described_class.debounce_delay_for(500_000, Time.current)).to be_within(1.second).of(5.minutes)
+
+      # Age multipliers (exponential backoff)
+      # 5. Low views, 1 day old article -> 10 seconds * 1.5^1 = 15 seconds
+      expect(described_class.debounce_delay_for(500, 1.day.ago)).to be_within(1.second).of(15.seconds)
+
+      # 6. Low views, 5 days old article -> 10 seconds * 1.5^5 (7.59) = 75.9 seconds
+      expect(described_class.debounce_delay_for(500, 5.days.ago)).to be_within(1.second).of(75.9.seconds)
+
+      # 7. Extremely old article (e.g. 100 days) -> capped at 30 minutes
+      expect(described_class.debounce_delay_for(500, 100.days.ago)).to eq(30.minutes)
     end
   end
 end

@@ -32,9 +32,9 @@ module Articles
         return if article_id.nil?
 
         # Fetch last_aggregated_at, page_views_count, and created_at in a single fast query
-        article_data = Article.joins("LEFT JOIN article_activities ON article_activities.article_id = articles.id")
+        article_data = Article.left_outer_joins(:article_activity)
                               .where(id: article_id)
-                              .pluck("articles.created_at, articles.page_views_count, article_activities.last_aggregated_at")
+                              .pluck(:created_at, :page_views_count, "article_activities.last_aggregated_at")
                               .first
         return if article_data.nil?
 
@@ -80,7 +80,7 @@ module Articles
       end
     end
 
-    def perform(article_id, event_type = nil, action = "create", payload = {})
+    def perform(article_id, _event_type = nil, _action = "create", _payload = {})
       return if article_id.nil?
 
       activity = ArticleActivity.find_by(article_id: article_id)
@@ -93,33 +93,10 @@ module Articles
         return
       end
 
-      if event_type.present?
-        # Direct/non-debounced call (e.g. from tests or old queue items)
-        apply_event(activity, event_type, action, (payload || {}).with_indifferent_access)
-      else
-        activity.recompute_all!
-      end
-    end
-
-    private
-
-    def apply_event(activity, event_type, action, payload)
-      case event_type
-      when "page_view"
-        activity.apply_page_view_delta!(payload) if action == "create"
-      when "reaction"
-        if action == "destroy"
-          activity.apply_reaction_delta!(payload, sign: -1)
-        else
-          activity.apply_reaction_delta!(payload, sign: +1)
-        end
-      when "comment"
-        if action == "destroy"
-          activity.apply_comment_delta!(payload, sign: -1)
-        else
-          activity.apply_comment_delta!(payload, sign: +1)
-        end
-      end
+      # Always recompute on execution so legacy queued jobs with delta-style
+      # args converge with newer article_id-only jobs. This avoids drift when
+      # an older non-idempotent delta job runs after a recompute/coalesced job.
+      activity.recompute_all!
     end
   end
 end
