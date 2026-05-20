@@ -21,6 +21,7 @@ class Trend < ApplicationRecord
   private
 
   def generate_slug
+    return if slug.present?
     return if name.blank?
 
     base_slug = name.parameterize

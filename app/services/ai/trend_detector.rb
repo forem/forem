@@ -33,22 +33,32 @@ module Ai
 
         clusters.each do |c|
           dist = cosine_distance(c[:centroid], article_vec)
-          if dist < min_dist
+          if dist <= dist_threshold
+            best_cluster = c
+            min_dist = dist
+            break
+          elsif dist < min_dist
             min_dist = dist
             best_cluster = c
           end
         end
 
         if min_dist <= dist_threshold && best_cluster
+          # Incremental centroid update: (old_centroid * N + new_vector) / (N + 1)
+          n = best_cluster[:articles].length
+          best_cluster[:centroid] = best_cluster[:centroid].zip(article_vec).map do |c_val, a_val|
+            (c_val * n + a_val) / (n + 1)
+          end
           best_cluster[:articles] << article
-          best_cluster[:centroid] = calculate_centroid(best_cluster[:articles])
         else
           clusters << { centroid: article_vec, articles: [article] }
         end
       end
 
-      # Filter clusters: must have at least min_articles articles
+      # Filter clusters: must have at least min_articles articles, sorted by size descending, limit to top 5
       valid_clusters = clusters.select { |c| c[:articles].length >= min_articles }
+                               .sort_by { |c| -c[:articles].length }
+                               .first(5)
 
       # Process each valid cluster
       valid_clusters.each do |cluster|
@@ -57,7 +67,7 @@ module Ai
 
         # Check if this cluster matches an existing active trend in the DB
         # Match threshold 0.88 means distance <= 0.12
-        existing_trend = find_matching_trend(cluster[:centroid], 1.0 - match_threshold)
+        existing_trend = find_matching_trend(cluster[:centroid], 1.0 - match_threshold, days_lookback: days_lookback)
 
         # Build prompt and call Gemini to get trend metadata (name, description, key questions)
         metadata = generate_trend_metadata(cluster[:articles].first(5))
@@ -96,7 +106,7 @@ module Ai
           end
 
           # Recalculate trend score
-          recalculate_trend_score(trend)
+          recalculate_trend_score(trend, days_lookback: days_lookback)
         end
       end
     end
@@ -132,10 +142,12 @@ module Ai
       sum_vector.map { |val| val / vectors.length }
     end
 
-    def find_matching_trend(centroid, max_distance)
+    def find_matching_trend(centroid, max_distance, days_lookback:)
       centroid_literal = "[#{centroid.join(',')}]"
-      # Order by pgvector cosine distance operator
-      trend = Trend.order(Arel.sql("centroid_embedding <=> #{Trend.connection.quote(centroid_literal)}")).first
+      # Order by pgvector cosine distance operator, filtering to active trends
+      trend = Trend.where("last_observed_at >= ?", days_lookback.days.ago)
+                   .order(Arel.sql("centroid_embedding <=> #{Trend.connection.quote(centroid_literal)}"))
+                   .first
       return nil unless trend
 
       dist = cosine_distance(trend.centroid_embedding.to_a, centroid)
@@ -177,11 +189,11 @@ module Ai
       end
     end
 
-    def recalculate_trend_score(trend)
-      # Score is sum of (article.score * decay) for all articles associated in the last 7 days
+    def recalculate_trend_score(trend, days_lookback:)
+      # Score is sum of (article.score * decay) for all articles associated in the lookback window
       recent_memberships = trend.trend_memberships
                                 .joins(:article)
-                                .where("articles.published_at >= ?", 7.days.ago)
+                                .where("articles.published_at >= ?", days_lookback.days.ago)
                                 .includes(:article)
 
       total_score = 0.0
