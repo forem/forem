@@ -5,7 +5,7 @@ FactoryBot.define do
     description { "Algorithmically detected trend details." }
     centroid_embedding { Array.new(768) { rand } }
     score { 10.0 }
-    articles_count { 1 }
+    articles_count { 0 }
     first_observed_at { Time.current }
     last_observed_at { Time.current }
   end

@@ -9,7 +9,7 @@ class TrendsController < ApplicationController
   def show
     skip_authorization
     @trend = Trend.find_by!(slug: params[:slug])
-    @articles = @trend.articles.published
+    @articles = Article.published
                        .joins(:trend_memberships)
                        .where(trend_memberships: { trend_id: @trend.id })
                        .order("trend_memberships.distance ASC, articles.score DESC")

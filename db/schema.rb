@@ -1759,9 +1759,9 @@ ActiveRecord::Schema[7.0].define(version: 2026_05_20_120701) do
     t.vector "centroid_embedding", limit: 768, null: false
     t.datetime "created_at", null: false
     t.text "description"
-    t.datetime "first_observed_at"
+    t.datetime "first_observed_at", null: false
     t.text "key_questions", default: [], array: true
-    t.datetime "last_observed_at"
+    t.datetime "last_observed_at", null: false
     t.string "name", null: false
     t.float "score", default: 0.0, null: false
     t.string "slug", null: false
