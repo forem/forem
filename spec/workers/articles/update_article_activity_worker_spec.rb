@@ -71,4 +71,76 @@ RSpec.describe Articles::UpdateArticleActivityWorker do
       expect(activity.daily_page_views[iso]["total"]).to eq(11)
     end
   end
+
+  context "when enqueued via perform_async (debounced path)" do
+    before { Sidekiq::Testing.fake! }
+
+    it "queues a single debounced job and stores events in Redis" do
+      described_class.perform_async(article.id, "page_view", "create",
+                                    "iso" => iso, "total" => 2, "sum_read_seconds" => 10, "logged_in_count" => 1, "domain" => "google.com")
+      described_class.perform_async(article.id, "page_view", "create",
+                                    "iso" => iso, "total" => 3, "sum_read_seconds" => 15, "logged_in_count" => 1, "domain" => "google.com")
+      described_class.perform_async(article.id, "reaction", "create",
+                                    "iso" => iso, "category" => "like", "user_id" => 123)
+
+      expect(described_class.jobs.size).to eq(1)
+      job = described_class.jobs.first
+      expect(job["args"]).to eq([article.id])
+      expect(job["at"]).to be_present
+
+      events = Sidekiq.redis { |r| r.lrange("article_activity_debounce:#{article.id}", 0, -1) }
+      expect(events.size).to eq(3)
+
+      parsed_events = events.map { |e| JSON.parse(e) }
+      expect(parsed_events[0]["event_type"]).to eq("page_view")
+      expect(parsed_events[1]["event_type"]).to eq("page_view")
+      expect(parsed_events[2]["event_type"]).to eq("reaction")
+    end
+
+    it "coalesces and applies the debounced events when performed" do
+      activity = ArticleActivity.create!(article: article)
+
+      described_class.perform_async(article.id, "page_view", "create",
+                                    "iso" => iso, "total" => 2, "sum_read_seconds" => 10, "logged_in_count" => 1, "domain" => "google.com")
+      described_class.perform_async(article.id, "page_view", "create",
+                                    "iso" => iso, "total" => 3, "sum_read_seconds" => 15, "logged_in_count" => 1, "domain" => "google.com")
+      described_class.perform_async(article.id, "reaction", "create",
+                                    "iso" => iso, "category" => "like", "user_id" => 123)
+
+      described_class.clear
+
+      described_class.new.perform(article.id)
+
+      activity.reload
+      expect(activity.page_views_by_day[iso]["total"]).to eq(5)
+      expect(activity.page_views_by_day[iso]["average_read_time_in_seconds"]).to eq(13)
+      expect(activity.daily_reactions[iso]["total"]).to eq(1)
+      expect(activity.daily_reactions[iso]["like"]).to eq(1)
+
+      Sidekiq.redis do |r|
+        expect(r.lrange("article_activity_debounce:#{article.id}", 0, -1)).to be_empty
+        expect(r.get("article_activity_debounce_scheduled:#{article.id}")).to be_nil
+      end
+    end
+
+    it "prioritizes a full recompute if present in the debounced queue" do
+      activity = ArticleActivity.create!(article: article)
+
+      described_class.perform_async(article.id, "page_view", "create",
+                                    "iso" => iso, "total" => 2, "sum_read_seconds" => 10, "logged_in_count" => 1, "domain" => "google.com")
+      described_class.perform_async(article.id, nil)
+      described_class.perform_async(article.id, "reaction", "create",
+                                    "iso" => iso, "category" => "like", "user_id" => 123)
+
+      ts = Time.utc(day.year, day.month, day.day, 12, 0, 0)
+      create(:page_view, article: article, created_at: ts, counts_for_number_of_views: 10, domain: "z.com")
+
+      described_class.clear
+
+      described_class.new.perform(article.id)
+
+      activity.reload
+      expect(activity.daily_page_views[iso]["total"]).to eq(10)
+    end
+  end
 end
