@@ -26,6 +26,11 @@ pt:
           oldest_html: Comentários mais antigos %{num}
         num: "(%{num})"
         subscribe: Inscrever
+      comment_cue:
+        zero: Está silencioso por aqui... quase silencioso demais. Seja o pioneiro e inicie a conversa!
+        few: Algumas pessoas já estão conversando. Não as deixe na mão—dê sua opinião!
+        many: A seção de comentários está bombando. 🔥 Entre na conversa e dê seu pitaco!
+        close: Fechar
       conduct:
         aria_label: Controles de conduta
         code: Código de Conduta

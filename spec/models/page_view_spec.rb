@@ -37,4 +37,5 @@ RSpec.describe PageView do
       expect(Articles::UpdateArticleActivityWorker).not_to have_received(:perform_async)
     end
   end
+
 end
