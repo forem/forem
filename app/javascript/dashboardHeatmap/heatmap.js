@@ -18,6 +18,24 @@ const MONTH_LABELS = [
   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
 ];
 
+// Track the currently-rendered heatmap so a single module-scope keydown
+// listener can dispatch Esc to the latest instance. Without this, every
+// renderHeatmap call (year-picker change, InstantClick re-init) would attach
+// a new document listener bound to a stale closure — slow leak + N handlers
+// firing on every keystroke.
+let activeInstance = null;
+let keydownAttached = false;
+
+function ensureKeydownListener() {
+  if (keydownAttached) return;
+  keydownAttached = true;
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && activeInstance && activeInstance.pinnedDate) {
+      activeInstance.clearPin();
+    }
+  });
+}
+
 function bucketFor(count, max) {
   if (count <= 0) return 0;
   if (max <= 1) return 4;
@@ -346,11 +364,16 @@ export function renderHeatmap(rootEl, payload, options = {}) {
     else showDefault();
   });
 
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && pinnedDate) {
+  // Register this render as the active instance for the module-scope Esc
+  // handler. Replacing instead of adding means re-renders don't pile up
+  // listeners on document.
+  activeInstance = {
+    get pinnedDate() { return pinnedDate; },
+    clearPin() {
       pinnedDate = null;
       refreshPinHighlight();
       showDefault();
-    }
-  });
+    },
+  };
+  ensureKeydownListener();
 }

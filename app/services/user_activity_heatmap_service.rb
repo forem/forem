@@ -66,7 +66,8 @@ class UserActivityHeatmapService
   end
 
   def articles_by_day
-    Article.where(user_id: user.id, published: true)
+    Article.published.from_subforem
+      .where(user_id: user.id)
       .where(published_at: range)
       .group(Arel.sql("DATE(published_at)")).count
       .transform_keys { |k| k.is_a?(String) ? Date.parse(k) : k }
