@@ -1,11 +1,11 @@
-<% title "#{@trend.name} - Semantic Trend" %>
+<% title "#{@trend.name} - Trend" %>
 
 <%= content_for :page_meta do %>
   <link rel="canonical" href="<%= app_url(trend_path(@trend.slug)) %>" />
   <meta name="description" content="<%= @trend.description %>">
 <% end %>
 
-<div class="crayons-layout crayons-layout--2-cols px-3 m:px-0" id="trend-show-container">
+<div class="crayons-layout crayons-layout--2-cols crayons-layout--2-cols--inverted px-3 m:px-0" id="trend-show-container">
   <%# Left Column: List of Articles %>
   <main class="articles-list crayons-layout__content" id="main-content" data-follow-button-container="true">
     <header class="mb-4">
@@ -16,7 +16,7 @@
         <%= @trend.name %>
       </h1>
       <div class="fs-s color-base-60 flex gap-4">
-        <span><%= pluralize(@trend.articles_count, 'article') %> in this trend</span>
+        <span><%= pluralize(@trend.articles_count, 'post') %> in this trend</span>
         <span>•</span>
         <% if @trend.last_observed_at.present? %>
           <span>Active <%= time_ago_in_words(@trend.last_observed_at) %> ago</span>
@@ -36,14 +36,14 @@
         </div>
       <% else %>
         <div class="p-9 align-center crayons-card">
-          No articles associated with this trend yet.
+          No posts associated with this trend yet.
         </div>
       <% end %>
     </div>
   </main>
 
   <%# Right Column: Trend Metadata & Key Questions %>
-  <aside class="crayons-layout__sidebar text-styles">
+  <aside class="crayons-layout__sidebar-right text-styles">
     <section class="crayons-card p-5 mb-4">
       <h3 class="fs-l font-bold mb-3 border-b pb-2 border-base-10">Trend Analysis</h3>
       <p class="color-base-80 fs-m leading-relaxed mb-4">
