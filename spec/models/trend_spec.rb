@@ -34,6 +34,26 @@ RSpec.describe Trend do
       expect(new_trend).to be_valid
       expect(new_trend.slug).to eq("ruby-3-4-release")
     end
+
+    it "calls purge_all on create" do
+      new_trend = build(:trend)
+      expect(new_trend).to receive(:purge_all)
+      new_trend.save!
+    end
+
+    it "calls purge and purge_all on update" do
+      trend = create(:trend)
+      expect(trend).to receive(:purge)
+      expect(trend).to receive(:purge_all)
+      trend.update!(name: "Updated Trend Name")
+    end
+
+    it "calls purge and purge_all on destroy" do
+      trend = create(:trend)
+      expect(trend).to receive(:purge)
+      expect(trend).to receive(:purge_all)
+      trend.destroy!
+    end
   end
 
   describe "scopes" do

@@ -2,6 +2,9 @@ class Trend < ApplicationRecord
   has_many :trend_memberships, dependent: :destroy
   has_many :articles, through: :trend_memberships
 
+  after_commit :purge, on: %i[update destroy]
+  after_commit :purge_all, on: %i[create update destroy]
+
   begin
     has_neighbors :centroid_embedding if column_names.include?("centroid_embedding")
   rescue StandardError

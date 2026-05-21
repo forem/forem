@@ -4,6 +4,7 @@ class TrendsController < ApplicationController
   def index
     skip_authorization
     @trends = Trend.hot_and_recent.limit(20)
+    set_surrogate_key_header Trend.table_key, *@trends.map(&:record_key)
   end
 
   def show
@@ -15,5 +16,6 @@ class TrendsController < ApplicationController
                        .order("trend_memberships.distance ASC, articles.score DESC")
                        .page(params[:page])
                        .per(18)
+    set_surrogate_key_header @trend.record_key, *@articles.map(&:record_key)
   end
 end
