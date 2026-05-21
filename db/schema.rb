@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_05_13_150002) do
+ActiveRecord::Schema[7.0].define(version: 2026_05_20_120701) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1744,16 +1744,30 @@ ActiveRecord::Schema[7.0].define(version: 2026_05_13_150002) do
     t.index ["taggings_count"], name: "index_tags_on_taggings_count"
   end
 
-  create_table "trends", force: :cascade do |t|
+  create_table "trend_memberships", force: :cascade do |t|
+    t.bigint "article_id", null: false
     t.datetime "created_at", null: false
-    t.datetime "expiry_date", null: false
-    t.text "full_content_description", null: false
-    t.text "public_description", null: false
-    t.string "short_title", null: false
-    t.bigint "subforem_id", null: false
+    t.float "distance", null: false
+    t.bigint "trend_id", null: false
     t.datetime "updated_at", null: false
-    t.index ["expiry_date"], name: "index_trends_on_expiry_date"
-    t.index ["subforem_id"], name: "index_trends_on_subforem_id"
+    t.index ["article_id"], name: "index_trend_memberships_on_article_id"
+    t.index ["trend_id", "article_id"], name: "index_trend_memberships_uniqueness", unique: true
+  end
+
+  create_table "trends", force: :cascade do |t|
+    t.integer "articles_count", default: 0, null: false
+    t.vector "centroid_embedding", limit: 768, null: false
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.datetime "first_observed_at", null: false
+    t.text "key_questions", default: [], array: true
+    t.datetime "last_observed_at", null: false
+    t.string "name", null: false
+    t.float "score", default: 0.0, null: false
+    t.string "slug", null: false
+    t.datetime "updated_at", null: false
+    t.index ["centroid_embedding"], name: "index_trends_on_centroid_embedding", opclass: :vector_cosine_ops, using: :hnsw
+    t.index ["slug"], name: "index_trends_on_slug", unique: true
   end
 
   create_table "tweets", force: :cascade do |t|
@@ -2185,7 +2199,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_05_13_150002) do
   add_foreign_key "tag_subforem_relationships", "tags"
   add_foreign_key "taggings", "tags", on_delete: :cascade
   add_foreign_key "tags", "badges", on_delete: :nullify
-  add_foreign_key "trends", "subforems"
+  add_foreign_key "trend_memberships", "articles"
+  add_foreign_key "trend_memberships", "trends"
   add_foreign_key "tweets", "users", on_delete: :nullify
   add_foreign_key "user_activities", "users"
   add_foreign_key "user_blocks", "users", column: "blocked_id"

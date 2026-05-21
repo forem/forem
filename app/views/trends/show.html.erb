@@ -1,0 +1,75 @@
+<% title "#{@trend.name} - Trend" %>
+
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="<%= app_url(trend_path(@trend.slug)) %>" />
+  <meta name="description" content="<%= @trend.description %>">
+<% end %>
+
+<div class="crayons-layout crayons-layout--2-cols crayons-layout--2-cols--inverted px-3 m:px-0" id="trend-show-container">
+  <%# Left Column: List of Articles %>
+  <main class="articles-list crayons-layout__content" id="main-content" data-follow-button-container="true">
+    <header class="mb-4">
+      <div class="flex items-center gap-2 mb-2">
+        <%= link_to "← All Trends", trends_path, class: "fs-s fw-semibold color-base-60 hover:color-brand-100" %>
+      </div>
+      <h1 class="crayons-title fs-3xl font-extrabold mb-2">
+        <%= @trend.name %>
+      </h1>
+      <div class="fs-s color-base-60 flex gap-4">
+        <span><%= pluralize(@trend.articles_count, 'post') %> in this trend</span>
+        <span>•</span>
+        <% if @trend.last_observed_at.present? %>
+          <span>Active <%= time_ago_in_words(@trend.last_observed_at) %> ago</span>
+        <% else %>
+          <span>Active recently</span>
+        <% end %>
+      </div>
+    </header>
+
+    <div class="substories" id="substories">
+      <% if @articles.any? %>
+        <% @articles.each do |article| %>
+          <%= render partial: "articles/single_story", locals: { story: article.decorate, featured: false, pinned: false } %>
+        <% end %>
+        <div class="mt-4">
+          <%= paginate @articles %>
+        </div>
+      <% else %>
+        <div class="p-9 align-center crayons-card">
+          No posts associated with this trend yet.
+        </div>
+      <% end %>
+    </div>
+  </main>
+
+  <%# Right Column: Trend Metadata & Key Questions %>
+  <aside class="crayons-layout__sidebar-right text-styles">
+    <section class="crayons-card p-5 mb-4">
+      <h3 class="fs-l font-bold mb-3 border-b pb-2 border-base-10">Trend Analysis</h3>
+      <p class="color-base-80 fs-m leading-relaxed mb-4">
+        <%= @trend.description %>
+      </p>
+
+      <% if @trend.key_questions.present? %>
+        <div class="mb-4">
+          <h4 class="fs-m font-bold color-base-90 mb-2">Core Questions Under Debate:</h4>
+          <ul class="list-disc pl-5 color-base-80 fs-s space-y-2">
+            <% @trend.key_questions.each do |q| %>
+              <li><%= q %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="pt-3 border-t border-base-10 fs-xs color-base-60 space-y-1">
+        <% if @trend.first_observed_at.present? %>
+          <div>First detected: <%= @trend.first_observed_at.strftime("%B %d, %Y") %></div>
+        <% end %>
+        <% if @trend.last_observed_at.present? %>
+          <div>Last updated: <%= time_ago_in_words(@trend.last_observed_at) %> ago</div>
+        <% end %>
+        <div>Algorithm: Vector Leader Clustering (threshold: 85%)</div>
+      </div>
+    </section>
+  </aside>
+</div>
