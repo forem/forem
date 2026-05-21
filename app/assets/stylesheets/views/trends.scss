@@ -1,0 +1,45 @@
+@import 'config/import';
+
+#trend-show-container,
+.trends-index-container {
+  padding-left: var(--su-3) !important;
+  padding-right: var(--su-3) !important;
+
+  @media (min-width: $breakpoint-m) {
+    padding-left: var(--su-4) !important;
+    padding-right: var(--su-4) !important;
+    --layout-sidebar-left-width: 350px;
+  }
+
+  @media (min-width: $breakpoint-l) {
+    padding-left: var(--su-4) !important;
+    padding-right: var(--su-4) !important;
+    --layout-sidebar-left-width: 450px;
+  }
+}
+
+.trends-index-container {
+  .crayons-page-header {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+#trend-show-container {
+  .crayons-layout__sidebar-right {
+    p {
+      font-size: var(--fs-s) !important;
+      line-height: var(--lh-base) !important;
+    }
+  }
+}
+
+.trend-card {
+  transition: transform var(--transition-time) var(--transition-func),
+              box-shadow var(--transition-time) var(--transition-func);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-2);
+  }
+}
