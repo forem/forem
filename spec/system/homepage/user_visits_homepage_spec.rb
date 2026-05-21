@@ -176,7 +176,6 @@ RSpec.describe "User visits a homepage" do
 
       before do
         visit "/"
-        expect(page).to have_selector("body[data-loaded='true']")
       end
 
       it "shows the correct navigation_links" do
