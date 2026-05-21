@@ -172,14 +172,20 @@
   //
   // The wrapper is also styled as a panel so it visually mirrors the side
   // detail panel (same bg, border, radius, padding) — they read as a pair.
+  //
+  // On desktop, overflow stays `visible` so ApexCharts' tooltip is allowed
+  // to spill outside the panel chrome instead of being clipped.
   &__chart-scroll {
     background: var(--body-bg);
     border: 1px solid var(--card-border);
     border-radius: var(--radius);
     padding: var(--su-3);
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
+
+    @media (max-width: #{$breakpoint-m - 1px}) {
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
   }
 
   &__chart {

@@ -32,6 +32,7 @@ pt:
         meta:
           title: Analytics
         heading: Analytics para %{name}
+        audience_heading: Seu público
         back: "Voltar ao Painel Principal"
         your: Seu Painel
         org: "Painel de Analytics do %{org}"
@@ -39,7 +40,7 @@ pt:
         comments: Comentários
         reactions: Reações
         heatmap:
-          title: Atividade
+          title: Sua atividade diária
           subtitle: "%{count} contribuições no último ano"
           subtitle_year: "%{count} contribuições em %{year}"
           year_picker_label: Período
@@ -49,7 +50,7 @@ pt:
           error: Não foi possível carregar a atividade.
           day: dia
           days: dias
-          articles: Artigos
+          articles: Posts
           comments: Comentários
           reactions: Reações
           contribution: contribuição

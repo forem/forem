@@ -34,6 +34,7 @@ en:
         meta:
           title: Analytics
         heading: Analytics for %{name}
+        audience_heading: Your Audience
         back: "Back to Main Dashboard"
         your: Your Dashboard
         org: "%{org} Analytics Dashboard"
@@ -41,7 +42,7 @@ en:
         comments: Comments
         reactions: Reactions
         heatmap:
-          title: Activity
+          title: Your Daily Activity
           subtitle: "%{count} contributions in the last year"
           subtitle_year: "%{count} contributions in %{year}"
           year_picker_label: Period
@@ -51,7 +52,7 @@ en:
           error: Could not load activity.
           day: day
           days: days
-          articles: Articles
+          articles: Posts
           comments: Comments
           reactions: Reactions
           contribution: contribution
