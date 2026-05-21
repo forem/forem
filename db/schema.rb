@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_05_07_124354) do
+ActiveRecord::Schema[7.0].define(version: 2026_05_13_150002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -18,6 +18,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_05_07_124354) do
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
   enable_extension "unaccent"
+  enable_extension "vector"
 
   create_table "agent_sessions", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -211,6 +212,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_05_07_124354) do
     t.integer "score", default: 0
     t.string "search_optimized_description_replacement"
     t.string "search_optimized_title_preamble"
+    t.vector "semantic_embedding", limit: 768
     t.jsonb "semantic_interests", default: {}
     t.boolean "show_comments", default: true
     t.text "slug"
@@ -744,6 +746,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_05_07_124354) do
     t.float "recently_active_past_day_bonus_weight", default: 0.0, null: false
     t.float "score_weight", default: 1.0
     t.float "semantic_match_weight", default: 0.0
+    t.float "semantic_similarity_weight", default: 0.0, null: false
     t.float "shuffle_weight", default: 0.0, null: false
     t.integer "status_target", default: 0
     t.float "status_weight", default: 0.0, null: false
@@ -1791,6 +1794,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_05_07_124354) do
     t.jsonb "alltime_tags", default: []
     t.jsonb "alltime_users", default: []
     t.datetime "created_at", null: false
+    t.vector "interest_embedding", limit: 768
     t.datetime "last_activity_at"
     t.jsonb "recent_labels", default: []
     t.jsonb "recent_organizations", default: []
@@ -1798,10 +1802,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_05_07_124354) do
     t.jsonb "recent_tags", default: []
     t.jsonb "recent_users", default: []
     t.jsonb "recently_viewed_articles", default: []
-    t.jsonb "semantic_interest_profile", default: {}
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.index ["semantic_interest_profile"], name: "index_user_activities_on_semantic_interest_profile", using: :gin
     t.index ["user_id"], name: "index_user_activities_on_user_id"
   end
 

@@ -253,7 +253,7 @@ RSpec.configure do |config|
       .to_return(status: 200, body: "", headers: {})
 
     stub_request(:post, /generativelanguage.googleapis.com/)
-      .to_return(status: 200, body: "", headers: {})
+      .to_return(status: 200, body: { "embedding" => { "values" => Array.new(768, 0.0) }, "candidates" => [ { "content" => { "parts" => [ { "text" => "mocked text" } ] } } ] }.to_json, headers: { "Content-Type" => "application/json" })
 
     stub_request(:any, /robohash.org/)
       .with(headers:
@@ -280,7 +280,7 @@ RSpec.configure do |config|
     if AbExperiment::CURRENT_FEED_STRATEGY_EXPERIMENT.blank?
       config = { "experiments" =>
                 { "wut" =>
-                 { "start_date" => 30.days.ago,
+                 { "started_at" => 30.days.ago,
                    "variants" => %w[base var_1],
                    "weights" => [50, 50],
                    "goals" => %w[user_creates_comment
@@ -325,3 +325,4 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 end
+
