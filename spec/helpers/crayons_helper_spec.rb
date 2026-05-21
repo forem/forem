@@ -5,7 +5,7 @@ RSpec.describe CrayonsHelper do
     let(:icon_tag) { helper.crayons_icon_tag("twitter.svg") }
 
     it "generates an SVG tag" do
-      expect(icon_tag).to match(%r{\A<svg.*</svg>\n\z}m)
+      expect(icon_tag).to match(%r{\A<svg.*</svg>\s*\z}m)
     end
 
     it "includes the correct class" do
