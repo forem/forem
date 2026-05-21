@@ -33,27 +33,25 @@
     <div class="dashboard-heatmap__stats" data-heatmap-stats></div>
 
     <div class="dashboard-heatmap__body">
-      <div id="dashboard-heatmap"
-           class="dashboard-heatmap__chart"
-           data-empty-label="<%= t("views.dashboard.analytics.heatmap.empty") %>"
-           data-less-label="<%= t("views.dashboard.analytics.heatmap.less") %>"
-           data-more-label="<%= t("views.dashboard.analytics.heatmap.more") %>"
-           data-error-label="<%= t("views.dashboard.analytics.heatmap.error") %>"
-           data-total-label="<%= t("views.dashboard.analytics.heatmap.stats.total") %>"
-           data-current-streak-label="<%= t("views.dashboard.analytics.heatmap.stats.current_streak") %>"
-           data-longest-streak-label="<%= t("views.dashboard.analytics.heatmap.stats.longest_streak") %>"
-           data-best-day-label="<%= t("views.dashboard.analytics.heatmap.stats.best_day") %>"
-           data-day-label="<%= t("views.dashboard.analytics.heatmap.day") %>"
-           data-days-label="<%= t("views.dashboard.analytics.heatmap.days") %>"
-           data-articles-label="<%= t("views.dashboard.analytics.heatmap.articles") %>"
-           data-comments-label="<%= t("views.dashboard.analytics.heatmap.comments") %>"
-           data-reactions-label="<%= t("views.dashboard.analytics.heatmap.reactions") %>"
-           data-contribution-label="<%= t("views.dashboard.analytics.heatmap.contribution") %>"
-           data-contributions-label="<%= t("views.dashboard.analytics.heatmap.contributions") %>"
-           data-detail-hint-label="<%= t("views.dashboard.analytics.heatmap.detail_hint") %>"
-           data-pinned-label="<%= t("views.dashboard.analytics.heatmap.pinned") %>"
-           data-no-activity-label="<%= t("views.dashboard.analytics.heatmap.no_activity") %>">
-        <div data-heatmap-grid></div>
+      <div class="dashboard-heatmap__chart-scroll">
+        <div id="dashboard-heatmap"
+             class="dashboard-heatmap__chart"
+             data-empty-label="<%= t("views.dashboard.analytics.heatmap.empty") %>"
+             data-error-label="<%= t("views.dashboard.analytics.heatmap.error") %>"
+             data-total-label="<%= t("views.dashboard.analytics.heatmap.stats.total") %>"
+             data-current-streak-label="<%= t("views.dashboard.analytics.heatmap.stats.current_streak") %>"
+             data-longest-streak-label="<%= t("views.dashboard.analytics.heatmap.stats.longest_streak") %>"
+             data-best-day-label="<%= t("views.dashboard.analytics.heatmap.stats.best_day") %>"
+             data-day-label="<%= t("views.dashboard.analytics.heatmap.day") %>"
+             data-days-label="<%= t("views.dashboard.analytics.heatmap.days") %>"
+             data-articles-label="<%= t("views.dashboard.analytics.heatmap.articles") %>"
+             data-comments-label="<%= t("views.dashboard.analytics.heatmap.comments") %>"
+             data-reactions-label="<%= t("views.dashboard.analytics.heatmap.reactions") %>"
+             data-contribution-label="<%= t("views.dashboard.analytics.heatmap.contribution") %>"
+             data-contributions-label="<%= t("views.dashboard.analytics.heatmap.contributions") %>"
+             data-no-activity-label="<%= t("views.dashboard.analytics.heatmap.no_activity") %>"
+             data-detail-hint-label="<%= t("views.dashboard.analytics.heatmap.detail_hint") %>"
+             data-pinned-label="<%= t("views.dashboard.analytics.heatmap.pinned") %>"></div>
       </div>
 
       <aside class="dashboard-heatmap__detail" data-heatmap-detail aria-live="polite">

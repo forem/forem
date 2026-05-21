@@ -47,8 +47,6 @@ fr:
           loading: Chargement de l'activité…
           empty: Aucune activité au cours de l'année écoulée.
           error: Impossible de charger l'activité.
-          less: Moins
-          more: Plus
           day: jour
           days: jours
           articles: Articles
@@ -56,9 +54,9 @@ fr:
           reactions: Réactions
           contribution: contribution
           contributions: contributions
-          detail_hint: Survolez ou cliquez sur un jour pour voir le détail.
-          pinned: Épinglé · appuyez sur Échap pour annuler
           no_activity: Aucune activité
+          detail_hint: Cliquez sur un jour pour épingler les détails.
+          pinned: Épinglé · appuyez sur Échap pour annuler
           stats:
             total: Total
             current_streak: Série actuelle

@@ -39,8 +39,6 @@ function buildLabels(rootEl) {
   const d = rootEl.dataset;
   return {
     emptyLabel: d.emptyLabel,
-    lessLabel: d.lessLabel,
-    moreLabel: d.moreLabel,
     totalLabel: d.totalLabel,
     currentStreakLabel: d.currentStreakLabel,
     longestStreakLabel: d.longestStreakLabel,
@@ -52,27 +50,25 @@ function buildLabels(rootEl) {
     reactionsLabel: d.reactionsLabel,
     contributionLabel: d.contributionLabel,
     contributionsLabel: d.contributionsLabel,
+    noActivityLabel: d.noActivityLabel,
     detailHintLabel: d.detailHintLabel,
     pinnedLabel: d.pinnedLabel,
-    noActivityLabel: d.noActivityLabel,
   };
 }
 
 function renderInto(wrapperEl, rootEl, payload, year) {
   updateSubtitle(wrapperEl, payload, year);
-  const gridRoot = rootEl.querySelector('[data-heatmap-grid]') || rootEl;
-  renderHeatmap(gridRoot, payload, { ...buildLabels(rootEl), wrapperEl });
+  renderHeatmap(rootEl, payload, { ...buildLabels(rootEl), wrapperEl });
 }
 
 function showError(wrapperEl, rootEl) {
   const subtitleEl = wrapperEl.querySelector('[data-heatmap-subtitle]');
   if (subtitleEl) subtitleEl.textContent = rootEl.dataset.errorLabel || 'Could not load activity.';
-  const gridRoot = rootEl.querySelector('[data-heatmap-grid]') || rootEl;
-  gridRoot.innerHTML = '';
+  rootEl.innerHTML = '';
   const err = document.createElement('p');
   err.className = 'heatmap__empty';
   err.textContent = rootEl.dataset.errorLabel || 'Could not load activity.';
-  gridRoot.appendChild(err);
+  rootEl.appendChild(err);
 }
 
 // Map a year-picker selection to the `end` query param the API expects.

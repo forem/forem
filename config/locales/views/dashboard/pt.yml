@@ -47,8 +47,6 @@ pt:
           loading: Carregando atividade…
           empty: Nenhuma atividade no último ano.
           error: Não foi possível carregar a atividade.
-          less: Menos
-          more: Mais
           day: dia
           days: dias
           articles: Artigos
@@ -56,9 +54,9 @@ pt:
           reactions: Reações
           contribution: contribuição
           contributions: contribuições
-          detail_hint: Passe o mouse ou clique em um dia para ver os detalhes.
-          pinned: Fixado · pressione Esc para limpar
           no_activity: Sem atividade
+          detail_hint: Clique em um dia para fixar os detalhes.
+          pinned: Fixado · pressione Esc para limpar
           stats:
             total: Total
             current_streak: Sequência atual

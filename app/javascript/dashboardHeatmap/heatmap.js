@@ -1,16 +1,17 @@
-// GitHub-style activity heatmap renderer.
+// GitHub-style activity heatmap, rendered via ApexCharts.
 //
-// Builds a grid: 53 columns × 7 rows (Sun..Sat). Cells are positioned by
-// week-of-year columns and day-of-week rows. Empty leading cells are still
-// rendered so the grid stays visually rectangular before the start date.
+// The dashboard analytics page already uses ApexCharts for every other
+// time-series visual (see app/javascript/analytics/dashboard.js), so the
+// heatmap follows the same lazy-import / activeCharts-registry pattern.
 //
-// Color buckets: 0, 1..p25, p25..p50, p50..p75, p75+. Bucket boundaries are
-// derived from `payload.max` so a quiet user still sees gradation.
+// Series layout: 7 series (one per weekday, Sun..Sat top-to-bottom).
+// Each series.data is one entry per calendar week, with `x` set to the ISO
+// date of that week's Sunday so the x-axis formatter can label month
+// boundaries.
 //
-// Beyond the grid we render: a summary stats row (total / current streak /
-// longest streak / best day) and a detail panel that updates on hover and
-// can be pinned by clicking a cell. Keyboard accessible via Escape to clear
-// the pin; cells are <button> elements so they're tab-focusable.
+// Color buckets are derived from `payload.max` so a quiet user still sees
+// gradation. Detail breakdown (articles / comments / reactions) is shown
+// via a custom tooltip — replacing the older sidebar detail panel.
 
 const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const MONTH_LABELS = [
@@ -18,11 +19,13 @@ const MONTH_LABELS = [
   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
 ];
 
-// Track the currently-rendered heatmap so a single module-scope keydown
-// listener can dispatch Esc to the latest instance. Without this, every
-// renderHeatmap call (year-picker change, InstantClick re-init) would attach
-// a new document listener bound to a stale closure — slow leak + N handlers
-// firing on every keystroke.
+// Module-scope registry of rendered charts keyed by container id so a
+// re-render (year-picker change, InstantClick re-init) can destroy the
+// previous instance before mounting a new one.
+const activeCharts = {};
+
+// Track the currently-rendered instance so a single document-level Esc
+// listener can clear the pin without leaking one new listener per render.
 let activeInstance = null;
 let keydownAttached = false;
 
@@ -36,14 +39,8 @@ function ensureKeydownListener() {
   });
 }
 
-function bucketFor(count, max) {
-  if (count <= 0) return 0;
-  if (max <= 1) return 4;
-  const ratio = count / max;
-  if (ratio <= 0.25) return 1;
-  if (ratio <= 0.5) return 2;
-  if (ratio <= 0.75) return 3;
-  return 4;
+function isDarkMode() {
+  return document.body.classList.contains('dark-theme');
 }
 
 function parseIso(iso) {
@@ -53,21 +50,16 @@ function parseIso(iso) {
 
 function formatDate(iso) {
   const date = parseIso(iso);
-  const day = DAY_LABELS[date.getUTCDay()];
-  return `${day} ${MONTH_LABELS[date.getUTCMonth()]} ${date.getUTCDate()}, ${date.getUTCFullYear()}`;
+  return `${DAY_LABELS[date.getUTCDay()]} ${MONTH_LABELS[date.getUTCMonth()]} ${date.getUTCDate()}, ${date.getUTCFullYear()}`;
 }
 
 function pluralize(count, singular, plural) {
   return count === 1 ? singular : plural;
 }
 
-// Walk the day list to compute the longest run anywhere and the current
-// run from the most recent day.
 function computeStreaks(days) {
-  let current = 0;
   let longest = 0;
   let run = 0;
-
   for (let i = 0; i < days.length; i += 1) {
     if (days[i].total > 0) {
       run += 1;
@@ -76,12 +68,11 @@ function computeStreaks(days) {
       run = 0;
     }
   }
-
+  let current = 0;
   for (let i = days.length - 1; i >= 0; i -= 1) {
     if (days[i].total > 0) current += 1;
     else break;
   }
-
   return { current, longest };
 }
 
@@ -143,20 +134,125 @@ function renderStats(statsEl, days, totals, labels) {
   });
 }
 
+// Pack the linear `days` array into a 7-row × N-column grid aligned to
+// calendar weeks. Row index 0 is Sunday so ApexCharts (which renders the
+// first series at the top) produces a GitHub-style Sun..Sat layout.
+//
+// Returns { series, dayLookup } where dayLookup is a {row}-{col} -> day map
+// the tooltip uses to access the original day record without round-tripping
+// through ApexCharts' data point representation.
+function buildSeries(days) {
+  if (!days.length) return { series: [], dayLookup: {} };
+
+  const firstDate = parseIso(days[0].date);
+  const firstDow = firstDate.getUTCDay();
+
+  const dayLookup = {};
+  let maxCol = 0;
+  days.forEach((day, i) => {
+    const cell = i + firstDow;
+    const row = cell % 7;
+    const col = Math.floor(cell / 7);
+    dayLookup[`${row}-${col}`] = day;
+    if (col > maxCol) maxCol = col;
+  });
+  const columnCount = maxCol + 1;
+
+  // Sunday on/before the first observed day — used to label each column
+  // with the ISO date of its starting Sunday.
+  const anchor = new Date(firstDate.getTime());
+  anchor.setUTCDate(anchor.getUTCDate() - firstDow);
+
+  const xLabels = [];
+  for (let c = 0; c < columnCount; c += 1) {
+    const wkStart = new Date(anchor.getTime());
+    wkStart.setUTCDate(anchor.getUTCDate() + c * 7);
+    xLabels.push(wkStart.toISOString().slice(0, 10));
+  }
+
+  const series = [];
+  for (let row = 0; row < 7; row += 1) {
+    const data = [];
+    for (let col = 0; col < columnCount; col += 1) {
+      const day = dayLookup[`${row}-${col}`] || null;
+      data.push({ x: xLabels[col], y: day ? day.total : 0 });
+    }
+    series.push({ name: DAY_LABELS[row], data });
+  }
+
+  return { series, dayLookup, xLabels };
+}
+
+// Discrete color ramp keyed off `payload.max`. ApexCharts' `colorScale`
+// switches color when y >= `from`, so half-open boundaries (`-0.5`, `0.5`)
+// keep integer totals from straddling buckets.
+function colorRanges(max) {
+  const empty = isDarkMode() ? '#1f2937' : '#ebedf0';
+  const colors = ['#9be9a8', '#40c463', '#30a14e', '#216e39'];
+
+  if (max <= 0) {
+    return [{ from: -0.5, to: 0.5, color: empty, name: '0' }];
+  }
+  if (max === 1) {
+    return [
+      { from: -0.5, to: 0.5, color: empty, name: '0' },
+      { from: 0.5, to: 1.5, color: colors[3], name: '1' },
+    ];
+  }
+
+  const q1 = Math.max(1, Math.round(max * 0.25));
+  const q2 = Math.max(q1 + 1, Math.round(max * 0.5));
+  const q3 = Math.max(q2 + 1, Math.round(max * 0.75));
+
+  return [
+    { from: -0.5, to: 0.5, color: empty, name: '0' },
+    { from: 0.5, to: q1 + 0.5, color: colors[0], name: `1-${q1}` },
+    { from: q1 + 0.5, to: q2 + 0.5, color: colors[1], name: `${q1 + 1}-${q2}` },
+    { from: q2 + 0.5, to: q3 + 0.5, color: colors[2], name: `${q2 + 1}-${q3}` },
+    { from: q3 + 0.5, to: max + 0.5, color: colors[3], name: `${q3 + 1}+` },
+  ];
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, (c) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+  }[c]));
+}
+
+function tooltipHTML(day, labels) {
+  if (!day) {
+    return `<div class="heatmap-tooltip"><div class="heatmap-tooltip__title">${escapeHtml(labels.noActivityLabel)}</div></div>`;
+  }
+  const title = escapeHtml(formatDate(day.date));
+  const totalCount = day.total || 0;
+  const totalText = `${totalCount} ${pluralize(totalCount, labels.contributionLabel, labels.contributionsLabel)}`;
+  return [
+    '<div class="heatmap-tooltip">',
+    `<div class="heatmap-tooltip__title">${title}</div>`,
+    `<div class="heatmap-tooltip__total">${escapeHtml(totalText)}</div>`,
+    '<ul class="heatmap-tooltip__list">',
+    `<li><span>${escapeHtml(labels.articlesLabel)}</span><span>${day.articles || 0}</span></li>`,
+    `<li><span>${escapeHtml(labels.commentsLabel)}</span><span>${day.comments || 0}</span></li>`,
+    `<li><span>${escapeHtml(labels.reactionsLabel)}</span><span>${day.reactions || 0}</span></li>`,
+    '</ul>',
+    '</div>',
+  ].join('');
+}
+
+// Render the persistent side panel. `pinned` toggles the "Pinned · Esc to
+// clear" affordance so users know the panel is sticky.
 function renderDetail(panelEl, day, labels, pinned) {
   if (!panelEl) return;
   panelEl.innerHTML = '';
+  panelEl.dataset.pinned = pinned ? 'true' : 'false';
 
   if (!day) {
     const hint = document.createElement('p');
     hint.className = 'heatmap-detail__hint';
     hint.textContent = labels.detailHintLabel;
     panelEl.appendChild(hint);
-    panelEl.dataset.pinned = 'false';
     return;
   }
-
-  panelEl.dataset.pinned = pinned ? 'true' : 'false';
 
   const header = document.createElement('div');
   header.className = 'heatmap-detail__header';
@@ -164,7 +260,6 @@ function renderDetail(panelEl, day, labels, pinned) {
   title.className = 'heatmap-detail__title';
   title.textContent = formatDate(day.date);
   header.appendChild(title);
-
   if (pinned) {
     const pin = document.createElement('span');
     pin.className = 'heatmap-detail__pin';
@@ -173,9 +268,10 @@ function renderDetail(panelEl, day, labels, pinned) {
   }
   panelEl.appendChild(header);
 
+  const totalCount = day.total || 0;
   const total = document.createElement('p');
   total.className = 'heatmap-detail__total';
-  total.textContent = `${day.total} ${pluralize(day.total, labels.contributionLabel, labels.contributionsLabel)}`;
+  total.textContent = `${totalCount} ${pluralize(totalCount, labels.contributionLabel, labels.contributionsLabel)}`;
   panelEl.appendChild(total);
 
   const list = document.createElement('ul');
@@ -200,14 +296,107 @@ function renderDetail(panelEl, day, labels, pinned) {
   panelEl.appendChild(list);
 }
 
+function buildChartOptions(payload, labels, dayLookup, series, xLabels, onSelect) {
+  const max = (payload && payload.max) || 0;
+  return {
+    chart: {
+      type: 'heatmap',
+      height: 240,
+      toolbar: { show: false },
+      animations: { enabled: false },
+      fontFamily: 'inherit',
+      // Let the chart panel’s background show through instead of the
+      // ApexCharts default so the chart wrapper looks like one solid
+      // surface flush with the side panel.
+      background: 'transparent',
+      // ApexCharts' keyboard-navigation a11y feature paints a blue stroke
+      // on the initially-focused heatmap rect (data point 0,0, which is
+      // the bottom-left cell because Sun is series index 0). We do not
+      // expose keyboard-driven cell traversal anyway — pinning happens
+      // via the side panel and Esc — so disable that subsystem.
+      accessibility: {
+        keyboard: { enabled: false },
+      },
+      events: {
+        // Use the plain click event instead of `dataPointSelection` so
+        // ApexCharts does not promote the clicked rect to its internal
+        // "selected" state (which paints a blue outline on data point 0,0).
+        click: (_event, _ctx, config) => {
+          if (!onSelect) return;
+          if (config.seriesIndex == null || config.dataPointIndex == null) return;
+          if (config.seriesIndex < 0 || config.dataPointIndex < 0) return;
+          const day = dayLookup[`${config.seriesIndex}-${config.dataPointIndex}`];
+          if (day) onSelect(day);
+        },
+      },
+    },
+    series,
+    plotOptions: {
+      heatmap: {
+        radius: 2,
+        enableShades: false,
+        colorScale: { ranges: colorRanges(max) },
+      },
+    },
+    // Suppress ApexCharts' default "active" selection highlight (a blue
+    // outline on the picked cell, which also bleeds onto a stray default
+    // data-point) — pinning is communicated via the side panel instead.
+    states: {
+      hover: { filter: { type: 'lighten', value: 0.1 } },
+      active: { allowMultipleDataPointsSelection: false, filter: { type: 'none' } },
+    },
+    dataLabels: { enabled: false },
+    stroke: {
+      width: 1,
+      colors: [isDarkMode() ? '#0b0d10' : '#ffffff'],
+    },
+    // Leave room on the left so the Sun..Sat row labels aren't clipped.
+    grid: { padding: { left: 8, right: 0, top: 0, bottom: 0 } },
+    legend: { show: false },
+    theme: { mode: isDarkMode() ? 'dark' : 'light' },
+    xaxis: {
+      type: 'category',
+      categories: xLabels,
+      labels: {
+        rotate: 0,
+        hideOverlappingLabels: true,
+        // Show a month label only on the column that contains the first of
+        // the month, so the axis reads like a calendar without overcrowding.
+        formatter: (val) => {
+          if (!val || typeof val !== 'string') return '';
+          const d = parseIso(val);
+          if (Number.isNaN(d.getTime())) return '';
+          if (d.getUTCDate() <= 7) return MONTH_LABELS[d.getUTCMonth()];
+          return '';
+        },
+        style: { fontSize: '11px' },
+      },
+      axisBorder: { show: false },
+      axisTicks: { show: false },
+      tooltip: { enabled: false },
+    },
+    yaxis: {
+      labels: {
+        style: { fontSize: '11px' },
+        minWidth: 28,
+      },
+      axisBorder: { show: false },
+      axisTicks: { show: false },
+    },
+    tooltip: {
+      custom: ({ seriesIndex, dataPointIndex }) => {
+        const day = dayLookup[`${seriesIndex}-${dataPointIndex}`];
+        return tooltipHTML(day, labels);
+      },
+    },
+  };
+}
+
 export function renderHeatmap(rootEl, payload, options = {}) {
   if (!rootEl) return;
-  rootEl.innerHTML = '';
 
   const labels = {
     emptyLabel: options.emptyLabel || 'No activity yet.',
-    lessLabel: options.lessLabel || 'Less',
-    moreLabel: options.moreLabel || 'More',
     totalLabel: options.totalLabel || 'Total',
     currentStreakLabel: options.currentStreakLabel || 'Current streak',
     longestStreakLabel: options.longestStreakLabel || 'Longest streak',
@@ -219,20 +408,25 @@ export function renderHeatmap(rootEl, payload, options = {}) {
     reactionsLabel: options.reactionsLabel || 'Reactions',
     contributionLabel: options.contributionLabel || 'contribution',
     contributionsLabel: options.contributionsLabel || 'contributions',
-    detailHintLabel: options.detailHintLabel || 'Hover or click any day to see the breakdown.',
-    pinnedLabel: options.pinnedLabel || 'Pinned · press Esc to clear',
     noActivityLabel: options.noActivityLabel || 'No activity yet',
+    detailHintLabel: options.detailHintLabel || 'Click any day to pin the breakdown.',
+    pinnedLabel: options.pinnedLabel || 'Pinned · press Esc to clear',
   };
 
-  // Stats and detail panel can live in sibling slots provided by the view.
-  // Fall back to the immediate parent so the renderer still works in tests
-  // that mount a single wrapper.
   const wrapper = options.wrapperEl || rootEl.parentElement || rootEl;
   const statsEl = wrapper.querySelector('[data-heatmap-stats]');
   const panelEl = wrapper.querySelector('[data-heatmap-detail]');
 
   const days = (payload && payload.days) || [];
   renderStats(statsEl, days, payload && payload.totals, labels);
+
+  // Tear down any previous chart bound to this container before re-mounting.
+  const chartKey = rootEl.id || '__heatmap__';
+  if (activeCharts[chartKey]) {
+    activeCharts[chartKey].destroy();
+    delete activeCharts[chartKey];
+  }
+  rootEl.innerHTML = '';
 
   if (days.length === 0) {
     const empty = document.createElement('p');
@@ -243,137 +437,62 @@ export function renderHeatmap(rootEl, payload, options = {}) {
     return;
   }
 
-  const max = (payload && payload.max) || 0;
-  const dayByDate = new Map();
-  days.forEach((d) => dayByDate.set(d.date, d));
+  const { series, dayLookup, xLabels } = buildSeries(days);
 
-  // Anchor the grid to the Sunday on/before the first day.
-  const firstDate = parseIso(days[0].date);
-  const leadingBlanks = firstDate.getUTCDay();
-
-  const grid = document.createElement('div');
-  grid.className = 'heatmap__grid';
-
-  const labelsCol = document.createElement('div');
-  labelsCol.className = 'heatmap__day-labels';
-  DAY_LABELS.forEach((label) => {
-    const span = document.createElement('span');
-    span.textContent = label;
-    span.className = 'heatmap__day-label';
-    labelsCol.appendChild(span);
-  });
-  grid.appendChild(labelsCol);
-
-  const cells = document.createElement('div');
-  cells.className = 'heatmap__cells';
-
-  for (let i = 0; i < leadingBlanks; i += 1) {
-    const blank = document.createElement('div');
-    blank.className = 'heatmap__cell heatmap__cell--blank';
-    blank.setAttribute('aria-hidden', 'true');
-    cells.appendChild(blank);
-  }
-
-  const cellEls = [];
-  days.forEach((day) => {
-    const cell = document.createElement('button');
-    cell.type = 'button';
-    cell.className = 'heatmap__cell';
-    cell.dataset.level = String(bucketFor(day.total, max));
-    cell.dataset.date = day.date;
-    cell.dataset.count = String(day.total);
-    cell.setAttribute(
-      'title',
-      `${day.total} ${pluralize(day.total, labels.contributionLabel, labels.contributionsLabel)} · ${formatDate(day.date)}`,
-    );
-    cell.setAttribute(
-      'aria-label',
-      `${formatDate(day.date)}: ${day.total} ${pluralize(day.total, labels.contributionLabel, labels.contributionsLabel)}`,
-    );
-    cells.appendChild(cell);
-    cellEls.push(cell);
-  });
-
-  grid.appendChild(cells);
-
-  const legend = document.createElement('div');
-  legend.className = 'heatmap__legend';
-  const less = document.createElement('span');
-  less.textContent = labels.lessLabel;
-  legend.appendChild(less);
-  for (let i = 0; i <= 4; i += 1) {
-    const swatch = document.createElement('span');
-    swatch.className = 'heatmap__cell heatmap__cell--legend';
-    swatch.dataset.level = String(i);
-    legend.appendChild(swatch);
-  }
-  const more = document.createElement('span');
-  more.textContent = labels.moreLabel;
-  legend.appendChild(more);
-
-  rootEl.appendChild(grid);
-  rootEl.appendChild(legend);
-
-  // Hover updates the detail card; click pins it. A pinned selection
-  // survives subsequent hover until cleared via Esc or by clicking the
-  // pinned cell again.
-  const best = findBestDay(days);
-  let pinnedDate = null;
-
-  const showFor = (iso, pinned) => {
-    const day = dayByDate.get(iso) || null;
-    renderDetail(panelEl, day, labels, !!pinned);
-  };
-
-  const showDefault = () => {
-    if (best && best.total > 0) renderDetail(panelEl, best, labels, false);
-    else renderDetail(panelEl, null, labels, false);
-  };
-
-  const refreshPinHighlight = () => {
-    cellEls.forEach((c) => {
-      c.classList.toggle('heatmap__cell--pinned', c.dataset.date === pinnedDate);
-    });
-  };
-
-  showDefault();
-
-  cells.addEventListener('mouseover', (event) => {
-    const cell = event.target.closest('.heatmap__cell:not(.heatmap__cell--blank)');
-    if (!cell || pinnedDate) return;
-    showFor(cell.dataset.date, false);
-  });
-
-  cells.addEventListener('mouseleave', () => {
-    if (pinnedDate) showFor(pinnedDate, true);
-    else showDefault();
-  });
-
-  cells.addEventListener('focusin', (event) => {
-    const cell = event.target.closest('.heatmap__cell:not(.heatmap__cell--blank)');
-    if (!cell || pinnedDate) return;
-    showFor(cell.dataset.date, false);
-  });
-
-  cells.addEventListener('click', (event) => {
-    const cell = event.target.closest('.heatmap__cell:not(.heatmap__cell--blank)');
-    if (!cell) return;
-    pinnedDate = pinnedDate === cell.dataset.date ? null : cell.dataset.date;
-    refreshPinHighlight();
-    if (pinnedDate) showFor(pinnedDate, true);
-    else showDefault();
-  });
-
-  // Register this render as the active instance for the module-scope Esc
-  // handler. Replacing instead of adding means re-renders don't pile up
-  // listeners on document.
-  activeInstance = {
-    get pinnedDate() { return pinnedDate; },
+  // Per-render instance with the pin state. Closing over panelEl/labels
+  // keeps the Esc-listener dispatch tidy via module-scope activeInstance.
+  const instance = {
+    pinnedDate: null,
     clearPin() {
-      pinnedDate = null;
-      refreshPinHighlight();
-      showDefault();
+      this.pinnedDate = null;
+      const best = findBestDay(days);
+      if (best && best.total > 0) renderDetail(panelEl, best, labels, false);
+      else renderDetail(panelEl, null, labels, false);
     },
   };
+  activeInstance = instance;
   ensureKeydownListener();
+
+  const onSelect = (day) => {
+    // Clicking the already-pinned cell clears the pin; otherwise the new
+    // cell becomes the sticky selection.
+    if (instance.pinnedDate === day.date) {
+      instance.clearPin();
+      return;
+    }
+    instance.pinnedDate = day.date;
+    renderDetail(panelEl, day, labels, true);
+  };
+
+  // Seed the side panel: show the best day as a default sticky view so
+  // users see something meaningful before they click.
+  const best = findBestDay(days);
+  if (best && best.total > 0) renderDetail(panelEl, best, labels, false);
+  else renderDetail(panelEl, null, labels, false);
+
+  const opts = buildChartOptions(payload, labels, dayLookup, series, xLabels, onSelect);
+
+  import('apexcharts').then(({ default: ApexCharts }) => {
+    // A second render may have superseded us while the dynamic import was
+    // in flight; bail if the container has been torn down.
+    if (!rootEl.isConnected) return;
+    if (activeCharts[chartKey]) {
+      activeCharts[chartKey].destroy();
+      delete activeCharts[chartKey];
+    }
+    const chart = new ApexCharts(rootEl, opts);
+    activeCharts[chartKey] = chart;
+    chart.render();
+  });
 }
+
+// Exported for unit tests so we can exercise the pure helpers without
+// stubbing the ApexCharts side of `renderHeatmap`.
+export const __testing__ = {
+  buildSeries,
+  colorRanges,
+  computeStreaks,
+  findBestDay,
+  tooltipHTML,
+  renderDetail,
+};
