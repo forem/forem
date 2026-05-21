@@ -87,7 +87,7 @@ gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compa
 gem "rack-timeout", "~> 0.7.0" # Rack middleware which aborts requests that have been running for longer than a specified timeout
 gem "rails", "~> 7.0.8.4" # Ruby on Rails
 gem "ransack", "~> 3.2" # Searching and sorting
-gem "recaptcha", "~> 5.10", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
+gem "recaptcha", "~> 5.21", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 
 gem "redis", "~> 4.7.1" # Redis ruby client
@@ -107,11 +107,11 @@ gem "sidekiq-throttled", "~> 1.5" # Concurrency control for Sidekiq
 gem "sidekiq-cron", "~> 1.7" # Allows execution of scheduled cron jobs as specific times
 gem "sidekiq-unique-jobs", "~> 7.1.27" # Ensures that Sidekiq jobs are unique when enqueued
 gem "slack-notifier", "~> 2.4" # A slim ruby wrapper for posting to slack webhooks
-gem "sprockets-rails", "~> 3.4" # Sprockets Rails integration
+gem "sprockets-rails", "~> 3.5" # Sprockets Rails integration
 gem "sterile", "~> 1.0" # Transliterate Unicode and Latin1 text to 7-bit ASCII for URLs
 gem "stripe", "~> 5.55" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 1.7" # Catch unsafe migrations
-gem "terser", "~> 1.1" # Terser is a Ruby wrapper for the terser JavaScript parser and minifier
+gem "terser", "~> 1.2" # Terser is a Ruby wrapper for the terser JavaScript parser and minifier
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
 gem "vault", "~> 0.17" # Used to store secrets
