@@ -21,11 +21,6 @@
       <div class="flex items-center gap-2 mb-2">
         <%= link_to "← All Trends", trends_path, class: "fs-s fw-semibold color-base-60 hover:color-brand-100" %>
       </div>
-      <% if @trend.cover_image.present? %>
-        <div class="mb-4 overflow-hidden rounded" style="aspect-ratio: 16/9; max-height: 350px;">
-          <img src="<%= optimized_image_url(@trend.cover_image, width: 1000, random_fallback: false) %>" class="w-100 h-100 object-cover block" alt="Cover image for <%= @trend.name %>">
-        </div>
-      <% end %>
       <h1 class="crayons-title fs-3xl font-extrabold mb-2">
         <%= @trend.name %>
       </h1>
@@ -58,7 +53,13 @@
 
   <%# Right Column: Trend Metadata & Key Questions %>
   <aside class="crayons-layout__sidebar-right">
-    <section class="crayons-card p-5 mb-4">
+    <% if @trend.cover_image.present? %>
+      <div class="mb-4 overflow-hidden rounded w-100" style="aspect-ratio: 16/9;">
+        <img src="<%= optimized_image_url(@trend.cover_image, width: 500, random_fallback: false) %>" class="w-100 h-100 object-cover block" alt="Cover image for <%= @trend.name %>">
+      </div>
+    <% end %>
+
+    <section class="crayons-card p-5 mb-4 trend-analysis-sticky">
       <h3 class="fs-l font-bold mb-3 border-b pb-2 border-base-10">Trend Analysis</h3>
       <p class="color-base-80 fs-s lh-base mb-4">
         <%= @trend.description %>

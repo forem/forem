@@ -34,6 +34,39 @@ RSpec.describe Trend do
       expect(new_trend).to be_valid
       expect(new_trend.slug).to eq("ruby-3-4-release")
     end
+
+    it "registers #purge as an after_commit callback" do
+      callback_names = Trend._commit_callbacks.select { |cb| cb.kind == :after }.map(&:filter)
+      expect(callback_names).to include(:purge)
+    end
+
+    it "registers #purge_all as an after_commit callback" do
+      callback_names = Trend._commit_callbacks.select { |cb| cb.kind == :after }.map(&:filter)
+      expect(callback_names).to include(:purge_all)
+    end
+  end
+
+  describe "#purge" do
+    it "purges the record key via EdgeCache::PurgeByKey" do
+      trend = create(:trend)
+      expect(EdgeCache::PurgeByKey).to receive(:call).with(trend.record_key)
+      trend.purge
+    end
+  end
+
+  describe "#purge_all" do
+    it "purges the table key via EdgeCache::PurgeByKey" do
+      trend = create(:trend)
+      expect(EdgeCache::PurgeByKey).to receive(:call).with("trends")
+      trend.purge_all
+    end
+  end
+
+  describe ".purge_all" do
+    it "purges the table key via EdgeCache::PurgeByKey" do
+      expect(EdgeCache::PurgeByKey).to receive(:call).with("trends")
+      Trend.purge_all
+    end
   end
 
   describe "scopes" do

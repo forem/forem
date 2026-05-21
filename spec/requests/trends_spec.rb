@@ -15,6 +15,11 @@ RSpec.describe "Trends", type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Emergent Trends", "Ruby 3.4 release", "AI Agent Revolution")
       expect(response.body).to include("https://optimized.example.com/ruby34_500.png")
+
+      # Assert surrogate keys
+      expect(response.headers["Surrogate-Key"]).to include("trends")
+      expect(response.headers["Surrogate-Key"]).to include(trend1.record_key)
+      expect(response.headers["Surrogate-Key"]).to include(trend2.record_key)
     end
   end
 
@@ -22,8 +27,8 @@ RSpec.describe "Trends", type: :request do
     it "renders the trend details and list of articles" do
       allow(Images::Optimizer).to receive(:call).and_call_original
       allow(Images::Optimizer).to receive(:call)
-        .with("https://example.com/ruby34_large.png", hash_including(width: 1000))
-        .and_return("https://optimized.example.com/ruby34_1000.png")
+        .with("https://example.com/ruby34_large.png", hash_including(width: 500))
+        .and_return("https://optimized.example.com/ruby34_500.png")
       allow(Images::Optimizer).to receive(:call)
         .with("https://example.com/ruby34_large.png", hash_including(width: 1200))
         .and_return("https://optimized.example.com/ruby34_1200.png")
@@ -42,9 +47,14 @@ RSpec.describe "Trends", type: :request do
       expect(response.body).to include("Ruby 3.4 features deep dive", "Why I love Ruby 3.4")
       
       # Assert cover image and OG/Twitter tags
-      expect(response.body).to include("https://optimized.example.com/ruby34_1000.png")
+      expect(response.body).to include("https://optimized.example.com/ruby34_500.png")
       expect(response.body).to include('property="og:image" content="https://optimized.example.com/ruby34_1200.png"')
       expect(response.body).to include('name="twitter:image:src" content="https://optimized.example.com/ruby34_1200.png"')
+
+      # Assert surrogate keys
+      expect(response.headers["Surrogate-Key"]).to include(trend.record_key)
+      expect(response.headers["Surrogate-Key"]).to include(article1.record_key)
+      expect(response.headers["Surrogate-Key"]).to include(article2.record_key)
     end
   end
 end

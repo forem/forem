@@ -1,0 +1,11 @@
+pt:
+  trends:
+    index:
+      title: "Tendências"
+      meta_description: "Explore os tópicos e conversas mais populares do momento na comunidade %{community_name}."
+      header_title: "Tendências Emergentes"
+      description: "O que a comunidade está conversando agora."
+      empty_state: "Nenhuma tendência ativa detectada nos últimos 7 dias. Volte mais tarde!"
+      explore_trend: "Explorar Tendência →"
+      active_ago: "Ativo há %{time}"
+      active_recently: "Ativo recentemente"
