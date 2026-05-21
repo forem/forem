@@ -1,0 +1,11 @@
+en:
+  trends:
+    index:
+      title: "Trends"
+      meta_description: "Explore the trending topics and conversations happening right now in the %{community_name} community."
+      header_title: "Emergent Trends"
+      description: "What the community is talking about right now."
+      empty_state: "No active trends detected in the last 7 days. Check back later!"
+      explore_trend: "Explore Trend →"
+      active_ago: "Active %{time} ago"
+      active_recently: "Active recently"

@@ -3,7 +3,7 @@ class Trend < ApplicationRecord
   has_many :articles, through: :trend_memberships
 
   after_commit :purge, on: %i[update destroy]
-  after_commit :purge_all, on: %i[create update destroy]
+  after_commit :purge_all, on: :create
 
   begin
     has_neighbors :centroid_embedding if column_names.include?("centroid_embedding")

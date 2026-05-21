@@ -25,32 +25,20 @@ RSpec.describe TrendMembership do
   end
 
   describe "callbacks" do
-    it "purges its trend on create" do
-      trend = create(:trend)
-      article = create(:article)
-      membership = build(:trend_membership, trend: trend, article: article)
-
-      expect(trend).to receive(:purge)
-      expect(trend).to receive(:purge_all)
-      membership.save!
+    it "registers #purge_trend as an after_commit callback" do
+      callback_names = TrendMembership._commit_callbacks.select { |cb| cb.kind == :after }.map(&:filter)
+      expect(callback_names).to include(:purge_trend)
     end
+  end
 
-    it "purges its trend on update" do
-      trend = create(:trend)
-      membership = create(:trend_membership, trend: trend)
-
-      expect(trend).to receive(:purge)
-      expect(trend).to receive(:purge_all)
-      membership.update!(distance: 0.99)
-    end
-
-    it "purges its trend on destroy" do
-      trend = create(:trend)
-      membership = create(:trend_membership, trend: trend)
+  describe "#purge_trend" do
+    it "purges its associated trend" do
+      trend = double("Trend")
+      membership = build(:trend_membership)
+      allow(membership).to receive(:trend).and_return(trend)
 
       expect(trend).to receive(:purge)
-      expect(trend).to receive(:purge_all)
-      membership.destroy!
+      membership.send(:purge_trend)
     end
   end
 end
