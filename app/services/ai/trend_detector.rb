@@ -73,26 +73,30 @@ module Ai
         metadata = generate_trend_metadata(cluster[:articles].first(5))
         next if metadata.blank?
 
+        trend = nil
+        new_trend_created = false
+
         Trend.transaction do
-          trend = if existing_trend
-                    existing_trend.update!(
-                      name: metadata["name"],
-                      description: metadata["description"],
-                      key_questions: metadata["key_questions"],
-                      centroid_embedding: cluster[:centroid],
-                      last_observed_at: Time.current
-                    )
-                    existing_trend
-                  else
-                    Trend.create!(
-                      name: metadata["name"],
-                      description: metadata["description"],
-                      key_questions: metadata["key_questions"],
-                      centroid_embedding: cluster[:centroid],
-                      first_observed_at: Time.current,
-                      last_observed_at: Time.current
-                    )
-                  end
+          if existing_trend
+            existing_trend.update!(
+              name: metadata["name"],
+              description: metadata["description"],
+              key_questions: metadata["key_questions"],
+              centroid_embedding: cluster[:centroid],
+              last_observed_at: Time.current
+            )
+            trend = existing_trend
+          else
+            trend = Trend.create!(
+              name: metadata["name"],
+              description: metadata["description"],
+              key_questions: metadata["key_questions"],
+              centroid_embedding: cluster[:centroid],
+              first_observed_at: Time.current,
+              last_observed_at: Time.current
+            )
+            new_trend_created = true
+          end
 
           # Sync memberships
           active_article_ids = cluster[:articles].map(&:id)
@@ -107,6 +111,10 @@ module Ai
 
           # Recalculate trend score
           recalculate_trend_score(trend, days_lookback: days_lookback)
+        end
+
+        if new_trend_created && trend
+          Trends::GenerateCoverImageWorker.perform_async(trend.id)
         end
       end
     end

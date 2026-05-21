@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_05_20_120701) do
+ActiveRecord::Schema[7.0].define(version: 2026_05_21_163241) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1757,6 +1757,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_05_20_120701) do
   create_table "trends", force: :cascade do |t|
     t.integer "articles_count", default: 0, null: false
     t.vector "centroid_embedding", limit: 768, null: false
+    t.string "cover_image"
     t.datetime "created_at", null: false
     t.text "description"
     t.datetime "first_observed_at", null: false
