@@ -18,6 +18,17 @@ fr:
             below_minimum_date: Publié avant la date d'indexation minimale
             negative_score: Note négative
             unknown: Inconnue
+      tools:
+        data_fix_jobs:
+          heading: Correctifs de données
+          section_description: Exécutez des correctifs de maintenance et des diagnostics de longue durée.
+          tag_counts:
+            title: Compteurs de tags
+            description: Vérifiez ou corrigez le compteur de marquages en cache pour toutes les tags. Les compteurs peuvent se désynchroniser au fil du temps en raison de conditions de concurrence dans le système de marquage.
+          verify_tag_counts:
+            button: Vérifier les compteurs de tags
+          fix_tag_counts:
+            button: Corriger les compteurs de tags
       comments:
         flags:
           score: Score affecté par un drapeau particulier

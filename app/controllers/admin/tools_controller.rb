@@ -43,6 +43,42 @@ module Admin
       end
     end
 
+    def run_data_fix
+      fix_name = params.require(:fix_name)
+      DataFixes::Registry.fetch!(fix_name)
+
+      DataFixes::RunWorker.perform_async(fix_name, current_user.id)
+
+      flash[:success] = I18n.t("admin.tools_controller.data_fix_enqueued", fix_name: fix_name)
+      redirect_to admin_tools_path
+    rescue ActionController::ParameterMissing
+      flash[:danger] = I18n.t("admin.tools_controller.data_fix_missing_param")
+      redirect_to admin_tools_path
+    rescue ArgumentError
+      flash[:danger] = I18n.t("admin.tools_controller.data_fix_unknown", fix_name: fix_name)
+      redirect_to admin_tools_path
+    end
+
+    def run_data_check
+      check_name = params.require(:check_name)
+      check_class = DataFixes::Registry.fetch_check!(check_name)
+
+      result = check_class.new.call
+
+      flash[:success] = I18n.t(
+        "admin.tools_controller.data_check_result",
+        total: result[:total],
+        mismatched: result[:mismatched],
+      )
+      redirect_to admin_tools_path
+    rescue ActionController::ParameterMissing
+      flash[:danger] = I18n.t("admin.tools_controller.data_check_missing_param")
+      redirect_to admin_tools_path
+    rescue ArgumentError
+      flash[:danger] = I18n.t("admin.tools_controller.data_check_unknown", check_name: check_name)
+      redirect_to admin_tools_path
+    end
+
     private
 
     def handle_dead_path

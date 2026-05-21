@@ -2,6 +2,17 @@
 pt:
   views:
     admin:
+      tools:
+        data_fix_jobs:
+          heading: Correções de dados
+          section_description: Execute correções de manutenção e diagnósticos de longa duração.
+          tag_counts:
+            title: Contagens de tags
+            description: Verifique ou corrija a contagem de marcações em cache para todas as tags. As contagens podem ficar dessincronizadas ao longo do tempo devido a condições de corrida no sistema de marcação.
+          verify_tag_counts:
+            button: Verificar contagens de tags
+          fix_tag_counts:
+            button: Corrigir contagens de tags
       dashboard:
         title: Painel de Administração
         welcome: Bem-vindo ao painel de administração
