@@ -189,6 +189,9 @@ class Article < ApplicationRecord
   has_many :context_notes, dependent: :delete_all
   accepts_nested_attributes_for :context_notes
 
+  has_many :trend_memberships, dependent: :destroy
+  has_many :trends, through: :trend_memberships
+
   has_many :top_comments,
            lambda {
              where(comments: { score: 11.. }, ancestry: nil, hidden_by_commentable_user: false, deleted: false)

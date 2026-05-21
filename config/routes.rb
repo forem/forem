@@ -222,6 +222,7 @@ Rails.application.routes.draw do
         get "/bulk", to: "tags#bulk", defaults: { format: :json }
       end
     end
+    resources :trends, param: :slug, only: %i[index show]
     resources :stripe_active_cards, only: %i[create update destroy]
     resources :stripe_subscriptions, only: %i[new edit destroy]
     resources :github_repos, only: %i[index] do
