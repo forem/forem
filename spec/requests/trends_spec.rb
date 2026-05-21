@@ -8,7 +8,7 @@ RSpec.describe "Trends", type: :request do
 
       get trends_path
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Emergent Semantic Trends", "Ruby 3.4 release", "AI Agent Revolution")
+      expect(response.body).to include("Emergent Trends", "Ruby 3.4 release", "AI Agent Revolution")
     end
   end
 
