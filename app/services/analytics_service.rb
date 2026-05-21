@@ -84,11 +84,12 @@ class AnalyticsService
   def top_contributors(limit: 20)
     return [] unless article_data.exists?
 
-    # Use subqueries to avoid loading all IDs into memory for large datasets
-    article_ids_subquery = article_data.select(:id)
+    # Use subqueries to avoid loading all IDs into memory for large datasets,
+    # but use the direct array for single articles to prevent Postgres sequential scans
+    article_ids_subquery = @article_id ? [@article_id] : article_data.select(:id)
 
     # Determine author IDs to exclude self-interactions
-    author_ids = article_data.distinct.pluck(:user_id)
+    author_ids = @article_id ? article_data.pluck(:user_id) : article_data.distinct.pluck(:user_id)
 
     # Reactions (excl readinglist/self) → weight 1
     reactions_sql = Reaction.for_analytics
@@ -157,7 +158,7 @@ class AnalyticsService
     return { total_followers: total_followers, engaged_followers: 0, ratio: 0.0 } unless article_data.exists?
 
     follower_ids_subquery = follower_scope.select(:follower_id)
-    article_ids_subquery = article_data.select(:id)
+    article_ids_subquery = @article_id ? [@article_id] : article_data.select(:id)
 
     # Followers who reacted (excl readinglist)
     reacting_scope = Reaction.for_analytics
@@ -422,7 +423,7 @@ class AnalyticsService
 
     counts = Hash.new(0)
     activities.each do |a|
-      a.daily_referrers.each do |iso, day_hash|
+      a[:daily_referrers].each do |iso, day_hash|
         next unless iso_in_range?(iso)
 
         day_hash.each { |domain, n| counts[domain] += n.to_i }
@@ -471,9 +472,11 @@ class AnalyticsService
   # Aggregates the raw counter shape stored in daily_page_views across all
   # in-scope articles, returning {iso => {total, sum_read_seconds, logged_in_count}}.
   def aggregate_page_view_counters(activities)
+    return @pv_raw if defined?(@pv_raw)
+
     out = Hash.new { |h, k| h[k] = { "total" => 0, "sum_read_seconds" => 0, "logged_in_count" => 0 } }
     activities.each do |a|
-      a.daily_page_views.each do |iso, raw|
+      a[:daily_page_views].each do |iso, raw|
         next unless iso_in_range?(iso)
 
         out[iso]["total"] += raw["total"].to_i
@@ -481,17 +484,19 @@ class AnalyticsService
         out[iso]["logged_in_count"] += raw["logged_in_count"].to_i
       end
     end
-    out
+    @pv_raw = out
   end
 
   def aggregate_reaction_counters(activities)
+    return @rx_raw if defined?(@rx_raw)
+
     out = Hash.new do |h, k|
       h[k] = { "total" => 0, "like" => 0, "readinglist" => 0, "unicorn" => 0,
                "exploding_head" => 0, "raised_hands" => 0, "fire" => 0,
                "reactor_ids" => [] }
     end
     activities.each do |a|
-      a.daily_reactions.each do |iso, raw|
+      a[:daily_reactions].each do |iso, raw|
         next unless iso_in_range?(iso)
 
         ArticleActivity::REACTION_CATEGORIES.each { |c| out[iso][c] += raw[c].to_i }
@@ -499,19 +504,21 @@ class AnalyticsService
         out[iso]["reactor_ids"].concat(Array(raw["reactor_ids"]))
       end
     end
-    out
+    @rx_raw = out
   end
 
   def aggregate_comment_counters(activities)
+    return @cm_raw if defined?(@cm_raw)
+
     out = Hash.new(0)
     activities.each do |a|
-      a.daily_comments.each do |iso, n|
+      a[:daily_comments].each do |iso, n|
         next unless iso_in_range?(iso)
 
         out[iso] += n.to_i
       end
     end
-    out
+    @cm_raw = out
   end
 
   # Returns the list of ISO date strings that contribute to a given bucket
