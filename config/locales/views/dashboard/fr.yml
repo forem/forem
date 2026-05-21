@@ -56,7 +56,6 @@ fr:
           contributions: contributions
           no_activity: Aucune activité
           detail_hint: Cliquez sur un jour pour épingler les détails.
-          pinned: Épinglé · appuyez sur Échap pour annuler
           stats:
             total: Total
             current_streak: Série actuelle

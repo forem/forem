@@ -239,8 +239,9 @@ function tooltipHTML(day, labels) {
   ].join('');
 }
 
-// Render the persistent side panel. `pinned` toggles the "Pinned · Esc to
-// clear" affordance so users know the panel is sticky.
+// Render the persistent side panel. `pinned` controls the data-attribute
+// hook that styling/tests can key off; the visible UI is identical so the
+// panel stays uncluttered (clicking a cell or hitting Esc is self-evident).
 function renderDetail(panelEl, day, labels, pinned) {
   if (!panelEl) return;
   panelEl.innerHTML = '';
@@ -260,12 +261,6 @@ function renderDetail(panelEl, day, labels, pinned) {
   title.className = 'heatmap-detail__title';
   title.textContent = formatDate(day.date);
   header.appendChild(title);
-  if (pinned) {
-    const pin = document.createElement('span');
-    pin.className = 'heatmap-detail__pin';
-    pin.textContent = labels.pinnedLabel;
-    header.appendChild(pin);
-  }
   panelEl.appendChild(header);
 
   const totalCount = day.total || 0;
@@ -410,7 +405,6 @@ export function renderHeatmap(rootEl, payload, options = {}) {
     contributionsLabel: options.contributionsLabel || 'contributions',
     noActivityLabel: options.noActivityLabel || 'No activity yet',
     detailHintLabel: options.detailHintLabel || 'Click any day to pin the breakdown.',
-    pinnedLabel: options.pinnedLabel || 'Pinned · press Esc to clear',
   };
 
   const wrapper = options.wrapperEl || rootEl.parentElement || rootEl;

@@ -56,7 +56,6 @@ pt:
           contributions: contribuições
           no_activity: Sem atividade
           detail_hint: Clique em um dia para fixar os detalhes.
-          pinned: Fixado · pressione Esc para limpar
           stats:
             total: Total
             current_streak: Sequência atual

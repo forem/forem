@@ -202,7 +202,6 @@ describe('renderHeatmap', () => {
     renderHeatmap(root, { days, max: 9 }, {
       wrapperEl: wrapper,
       detailHintLabel: 'Click any day',
-      pinnedLabel: 'Pinned',
       contributionLabel: 'contribution',
       contributionsLabel: 'contributions',
       articlesLabel: 'Articles',
@@ -222,7 +221,6 @@ describe('renderHeatmap', () => {
     const opts = MockApexCharts.mock.calls[0][1];
     opts.chart.events.click(null, null, { seriesIndex: 3, dataPointIndex: 0 });
     expect(panel.dataset.pinned).toBe('true');
-    expect(panel.textContent).toContain('Pinned');
     expect(panel.textContent).toContain('2025');
 
     // Esc clears the pin.

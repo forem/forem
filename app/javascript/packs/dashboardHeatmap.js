@@ -52,7 +52,6 @@ function buildLabels(rootEl) {
     contributionsLabel: d.contributionsLabel,
     noActivityLabel: d.noActivityLabel,
     detailHintLabel: d.detailHintLabel,
-    pinnedLabel: d.pinnedLabel,
   };
 }
 

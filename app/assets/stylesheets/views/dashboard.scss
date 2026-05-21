@@ -162,7 +162,7 @@
     gap: var(--su-4);
 
     @media (min-width: $breakpoint-l) {
-      grid-template-columns: minmax(0, 3fr) minmax(220px, 1fr);
+      grid-template-columns: minmax(0, 5fr) minmax(180px, 1fr);
     }
   }
 

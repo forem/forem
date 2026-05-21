@@ -58,7 +58,6 @@ en:
           contributions: contributions
           no_activity: No activity yet
           detail_hint: Click any day to pin the breakdown.
-          pinned: Pinned · press Esc to clear
           stats:
             total: Total
             current_streak: Current streak
