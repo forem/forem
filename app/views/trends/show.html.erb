@@ -3,6 +3,15 @@
 <%= content_for :page_meta do %>
   <link rel="canonical" href="<%= app_url(trend_path(@trend.slug)) %>" />
   <meta name="description" content="<%= @trend.description %>">
+  <meta property="og:title" content="<%= @trend.name %> - Trend" />
+  <meta property="og:description" content="<%= @trend.description %>" />
+  <meta property="og:url" content="<%= app_url(trend_path(@trend.slug)) %>" />
+  <meta property="og:type" content="article" />
+  <% if @trend.cover_image.present? %>
+    <meta property="og:image" content="<%= optimized_image_url(@trend.cover_image, width: 1200, random_fallback: false) %>" />
+    <meta name="twitter:image:src" content="<%= optimized_image_url(@trend.cover_image, width: 1200, random_fallback: false) %>">
+    <meta name="twitter:card" content="summary_large_image">
+  <% end %>
 <% end %>
 
 <div class="crayons-layout crayons-layout--2-cols crayons-layout--2-cols--inverted" id="trend-show-container">
@@ -12,6 +21,11 @@
       <div class="flex items-center gap-2 mb-2">
         <%= link_to "← All Trends", trends_path, class: "fs-s fw-semibold color-base-60 hover:color-brand-100" %>
       </div>
+      <% if @trend.cover_image.present? %>
+        <div class="mb-4 overflow-hidden rounded" style="aspect-ratio: 16/9; max-height: 350px;">
+          <img src="<%= optimized_image_url(@trend.cover_image, width: 1000, random_fallback: false) %>" class="w-100 h-100 object-cover block" alt="Cover image for <%= @trend.name %>">
+        </div>
+      <% end %>
       <h1 class="crayons-title fs-3xl font-extrabold mb-2">
         <%= @trend.name %>
       </h1>
