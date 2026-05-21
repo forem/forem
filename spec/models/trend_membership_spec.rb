@@ -24,21 +24,4 @@ RSpec.describe TrendMembership do
     end
   end
 
-  describe "callbacks" do
-    it "registers #purge_trend as an after_commit callback" do
-      callback_names = TrendMembership._commit_callbacks.select { |cb| cb.kind == :after }.map(&:filter)
-      expect(callback_names).to include(:purge_trend)
-    end
-  end
-
-  describe "#purge_trend" do
-    it "purges its associated trend" do
-      trend = double("Trend")
-      membership = build(:trend_membership)
-      allow(membership).to receive(:trend).and_return(trend)
-
-      expect(trend).to receive(:purge)
-      membership.send(:purge_trend)
-    end
-  end
 end

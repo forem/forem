@@ -47,30 +47,25 @@ RSpec.describe Trend do
   end
 
   describe "#purge" do
-    it "purges the record key via Fastly if configured" do
-      trend = build(:trend)
-      fastly_double = instance_double(Fastly)
-      service_double = double
-
-      allow(Trend).to receive(:fastly).and_return(fastly_double)
-      allow(Trend).to receive(:service).and_return(service_double)
-
-      expect(service_double).to receive(:purge_by_key).with(trend.record_key)
+    it "purges the record key via EdgeCache::PurgeByKey" do
+      trend = create(:trend)
+      expect(EdgeCache::PurgeByKey).to receive(:call).with(trend.record_key)
       trend.purge
     end
   end
 
   describe "#purge_all" do
-    it "purges the table key via Fastly if configured" do
-      trend = build(:trend)
-      fastly_double = instance_double(Fastly)
-      service_double = double
-
-      allow(Trend).to receive(:fastly).and_return(fastly_double)
-      allow(Trend).to receive(:service).and_return(service_double)
-
-      expect(service_double).to receive(:purge_by_key).with(Trend.table_key)
+    it "purges the table key via EdgeCache::PurgeByKey" do
+      trend = create(:trend)
+      expect(EdgeCache::PurgeByKey).to receive(:call).with("trends")
       trend.purge_all
+    end
+  end
+
+  describe ".purge_all" do
+    it "purges the table key via EdgeCache::PurgeByKey" do
+      expect(EdgeCache::PurgeByKey).to receive(:call).with("trends")
+      Trend.purge_all
     end
   end
 
