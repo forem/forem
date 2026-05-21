@@ -32,12 +32,36 @@ pt:
         meta:
           title: Analytics
         heading: Analytics para %{name}
+        audience_heading: Seu público
         back: "Voltar ao Painel Principal"
         your: Seu Painel
         org: "Painel de Analytics do %{org}"
         readers: Leitores
         comments: Comentários
         reactions: Reações
+        heatmap:
+          title: Sua atividade diária
+          subtitle: "%{count} contribuições no último ano"
+          subtitle_year: "%{count} contribuições em %{year}"
+          year_picker_label: Período
+          last_year_option: Últimos 12 meses
+          loading: Carregando atividade…
+          empty: Nenhuma atividade no último ano.
+          error: Não foi possível carregar a atividade.
+          day: dia
+          days: dias
+          articles: Posts
+          comments: Comentários
+          reactions: Reações
+          contribution: contribuição
+          contributions: contribuições
+          no_activity: Sem atividade
+          detail_hint: Clique em um dia para fixar os detalhes.
+          stats:
+            total: Total
+            current_streak: Sequência atual
+            longest_streak: Maior sequência
+            best_day: Melhor dia
       article:
         heading:
           text_html: "%{archived}%{title}"
