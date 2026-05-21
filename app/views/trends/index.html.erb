@@ -5,7 +5,7 @@
   <meta name="description" content="Explore timely and nuanced developer trends on <%= community_name %> powered by AI embeddings.">
 <% end %>
 
-<main id="main-content" class="crayons-layout crayons-layout--header-inside">
+<main id="main-content" class="crayons-layout crayons-layout--header-inside trends-index-container">
   <header class="crayons-page-header">
     <h1 class="crayons-title">
       Emergent Trends
@@ -22,9 +22,9 @@
       </div>
     </div>
   <% else %>
-    <div class="grid gap-4 m:grid-cols-2 pb-6 px-3 m:px-0">
+    <div class="grid gap-4 m:grid-cols-2 pb-6">
       <% @trends.each do |trend| %>
-        <div class="crayons-card p-5 relative flex flex-col justify-between hover:shadow-md transition-shadow duration-200">
+        <div class="crayons-card trend-card p-5 relative flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between mb-3">
               <span class="fs-xs font-semibold uppercase tracking-wider px-2 py-1 bg-brand-10 color-brand rounded">
@@ -39,16 +39,16 @@
               <%= link_to trend.name, trend_path(trend.slug), class: "color-base-100 hover:color-brand-100" %>
             </h2>
 
-            <p class="color-base-70 mb-4 fs-m leading-relaxed">
+            <p class="color-base-70 mb-4 fs-m lh-base">
               <%= trend.description %>
             </p>
 
             <% if trend.key_questions.present? %>
               <div class="mb-4">
                 <h4 class="fs-s font-semibold color-base-80 mb-2">Key Areas of Focus:</h4>
-                <ul class="list-disc pl-5 color-base-70 fs-s space-y-1">
+                <ul class="list-disc pl-5 color-base-70 fs-s">
                   <% trend.key_questions.take(3).each do |q| %>
-                    <li><%= q %></li>
+                    <li class="mb-1"><%= q %></li>
                   <% end %>
                 </ul>
               </div>
