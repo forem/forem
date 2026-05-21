@@ -34,12 +34,36 @@ en:
         meta:
           title: Analytics
         heading: Analytics for %{name}
+        audience_heading: Your Audience
         back: "Back to Main Dashboard"
         your: Your Dashboard
         org: "%{org} Analytics Dashboard"
         readers: Readers
         comments: Comments
         reactions: Reactions
+        heatmap:
+          title: Your Daily Activity
+          subtitle: "%{count} contributions in the last year"
+          subtitle_year: "%{count} contributions in %{year}"
+          year_picker_label: Period
+          last_year_option: Last 12 months
+          loading: Loading activity…
+          empty: No activity in the last year.
+          error: Could not load activity.
+          day: day
+          days: days
+          articles: Posts
+          comments: Comments
+          reactions: Reactions
+          contribution: contribution
+          contributions: contributions
+          no_activity: No activity yet
+          detail_hint: Click any day to pin the breakdown.
+          stats:
+            total: Total
+            current_streak: Current streak
+            longest_streak: Longest streak
+            best_day: Best day
       article:
         heading:
           text_html: "%{archived}%{title}"
