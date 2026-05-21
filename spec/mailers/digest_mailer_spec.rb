@@ -60,6 +60,18 @@ RSpec.describe DigestMailer do
       expect(email.body.encoded).to include(bb_1.processed_html)
       expect(email.body.encoded).to include(bb_2.processed_html)
     end
+
+    it "includes the feed_config_id in email links when present" do
+      email = described_class.with(user: user, articles: [article], feed_config_id: 12345).digest_email
+      
+      expect(email.body.encoded).to include("fc=12345")
+    end
+
+    it "does not include fc parameter in email links when feed_config_id is nil" do
+      email = described_class.with(user: user, articles: [article], feed_config_id: nil).digest_email
+      
+      expect(email.body.encoded).not_to include("fc=")
+    end
   end
 
   describe "#generate_title" do
