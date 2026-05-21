@@ -23,4 +23,5 @@ RSpec.describe TrendMembership do
       expect(trend_membership).not_to be_valid
     end
   end
+
 end

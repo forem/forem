@@ -43,3 +43,14 @@
     box-shadow: var(--shadow-2);
   }
 }
+
+.trend-analysis-sticky {
+  position: -webkit-sticky;
+  position: sticky;
+  top: calc(var(--header-height) + var(--layout-padding));
+
+  .static-header & {
+    top: var(--layout-padding);
+  }
+}
+
