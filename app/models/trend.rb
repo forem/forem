@@ -2,6 +2,9 @@ class Trend < ApplicationRecord
   has_many :trend_memberships, dependent: :destroy
   has_many :articles, through: :trend_memberships
 
+  after_commit :purge, on: %i[create update destroy]
+  after_commit :purge_all, on: %i[create update destroy]
+
   begin
     has_neighbors :centroid_embedding if column_names.include?("centroid_embedding")
   rescue StandardError
@@ -17,6 +20,18 @@ class Trend < ApplicationRecord
   before_validation :generate_slug, on: :create
 
   scope :hot_and_recent, -> { where("last_observed_at >= ?", 7.days.ago).order(score: :desc, last_observed_at: :desc) }
+
+  def purge
+    EdgeCache::PurgeByKey.call(record_key)
+  end
+
+  def purge_all
+    self.class.purge_all
+  end
+
+  def self.purge_all
+    EdgeCache::PurgeByKey.call(table_key)
+  end
 
   private
 

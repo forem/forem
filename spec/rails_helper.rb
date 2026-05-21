@@ -1,6 +1,7 @@
 ENV["RAILS_ENV"] = "test"
 # Temporary workaround for Ruby 3.0.6 / CGI udpate
 ENV["APP_DOMAIN"] = "forem.test"
+ENV["APP_PROTOCOL"] ||= "http://"
 require "knapsack_pro"
 require "simplecov"
 require "simplecov_json_formatter"

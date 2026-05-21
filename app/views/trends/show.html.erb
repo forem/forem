@@ -3,9 +3,18 @@
 <%= content_for :page_meta do %>
   <link rel="canonical" href="<%= app_url(trend_path(@trend.slug)) %>" />
   <meta name="description" content="<%= @trend.description %>">
+  <meta property="og:title" content="<%= @trend.name %> - Trend" />
+  <meta property="og:description" content="<%= @trend.description %>" />
+  <meta property="og:url" content="<%= app_url(trend_path(@trend.slug)) %>" />
+  <meta property="og:type" content="article" />
+  <% if @trend.cover_image.present? %>
+    <meta property="og:image" content="<%= optimized_image_url(@trend.cover_image, width: 1200, random_fallback: false) %>" />
+    <meta name="twitter:image:src" content="<%= optimized_image_url(@trend.cover_image, width: 1200, random_fallback: false) %>">
+    <meta name="twitter:card" content="summary_large_image">
+  <% end %>
 <% end %>
 
-<div class="crayons-layout crayons-layout--2-cols crayons-layout--2-cols--inverted px-3 m:px-0" id="trend-show-container">
+<div class="crayons-layout crayons-layout--2-cols crayons-layout--2-cols--inverted" id="trend-show-container">
   <%# Left Column: List of Articles %>
   <main class="articles-list crayons-layout__content" id="main-content" data-follow-button-container="true">
     <header class="mb-4">
@@ -43,30 +52,36 @@
   </main>
 
   <%# Right Column: Trend Metadata & Key Questions %>
-  <aside class="crayons-layout__sidebar-right text-styles">
-    <section class="crayons-card p-5 mb-4">
+  <aside class="crayons-layout__sidebar-right">
+    <% if @trend.cover_image.present? %>
+      <div class="mb-4 overflow-hidden rounded w-100" style="aspect-ratio: 16/9;">
+        <img src="<%= optimized_image_url(@trend.cover_image, width: 500, random_fallback: false) %>" class="w-100 h-100 object-cover block" alt="Cover image for <%= @trend.name %>">
+      </div>
+    <% end %>
+
+    <section class="crayons-card p-5 mb-4 trend-analysis-sticky">
       <h3 class="fs-l font-bold mb-3 border-b pb-2 border-base-10">Trend Analysis</h3>
-      <p class="color-base-80 fs-m leading-relaxed mb-4">
+      <p class="color-base-80 fs-s lh-base mb-4">
         <%= @trend.description %>
       </p>
 
       <% if @trend.key_questions.present? %>
         <div class="mb-4">
           <h4 class="fs-m font-bold color-base-90 mb-2">Core Questions Under Debate:</h4>
-          <ul class="list-disc pl-5 color-base-80 fs-s space-y-2">
+          <ul class="list-disc pl-5 color-base-80 fs-s">
             <% @trend.key_questions.each do |q| %>
-              <li><%= q %></li>
+              <li class="mb-2"><%= q %></li>
             <% end %>
           </ul>
         </div>
       <% end %>
 
-      <div class="pt-3 border-t border-base-10 fs-xs color-base-60 space-y-1">
+      <div class="pt-3 border-t border-base-10 fs-xs color-base-60">
         <% if @trend.first_observed_at.present? %>
-          <div>First detected: <%= @trend.first_observed_at.strftime("%B %d, %Y") %></div>
+          <div class="mb-1">First detected: <%= @trend.first_observed_at.strftime("%B %d, %Y") %></div>
         <% end %>
         <% if @trend.last_observed_at.present? %>
-          <div>Last updated: <%= time_ago_in_words(@trend.last_observed_at) %> ago</div>
+          <div class="mb-1">Last updated: <%= time_ago_in_words(@trend.last_observed_at) %> ago</div>
         <% end %>
         <div>Algorithm: Vector Leader Clustering (threshold: 85%)</div>
       </div>

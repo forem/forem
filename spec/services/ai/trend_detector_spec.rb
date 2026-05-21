@@ -6,6 +6,7 @@ RSpec.describe Ai::TrendDetector do
 
   before do
     allow(Ai::Base).to receive(:new).and_return(ai_client)
+    allow(Trends::GenerateCoverImageWorker).to receive(:perform_async)
   end
 
   describe "#call" do
@@ -43,6 +44,8 @@ RSpec.describe Ai::TrendDetector do
         expect(trend.description).to eq("A cluster of discussions focused on Ruby patterns and updates.")
         expect(trend.key_questions).to eq(["What is Ruby 3.4 bringing?", "How do these patterns compare to python?"])
         expect(trend.articles).to contain_exactly(article1, article2, article3)
+
+        expect(Trends::GenerateCoverImageWorker).to have_received(:perform_async).with(trend.id)
       end
     end
 
@@ -86,6 +89,8 @@ RSpec.describe Ai::TrendDetector do
         expect(existing_trend.name).to eq("Emergent Ruby Patterns")
         expect(existing_trend.description).to eq("A cluster of discussions focused on Ruby patterns and updates.")
         expect(existing_trend.articles).to contain_exactly(article1, article2, article3)
+
+        expect(Trends::GenerateCoverImageWorker).not_to have_received(:perform_async)
       end
     end
 
