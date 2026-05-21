@@ -1,4 +1,4 @@
-<% title "Semantic Trends" %>
+<% title "Trends" %>
 
 <%= content_for :page_meta do %>
   <link rel="canonical" href="<%= app_url("/trends") %>" />
@@ -8,7 +8,7 @@
 <main id="main-content" class="crayons-layout crayons-layout--header-inside">
   <header class="crayons-page-header">
     <h1 class="crayons-title">
-      Emergent Semantic Trends
+      Emergent Trends
     </h1>
     <p class="color-base-75 fs-m mt-2">
       Timely, algorithmically-clustered discussions and insights across <%= community_name %>, detected using vector embeddings.
@@ -31,7 +31,7 @@
                 Trend
               </span>
               <span class="fs-xs color-base-60">
-                <%= pluralize(trend.articles_count, 'article') %>
+                <%= pluralize(trend.articles_count, 'post') %>
               </span>
             </div>
 
