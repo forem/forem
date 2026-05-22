@@ -152,6 +152,17 @@ RSpec.describe Reaction do
       ]
       expect(described_class.count_for_article(article.id)).to match_array(expected_result)
     end
+
+    it "does not pollute the .public_category scope on subsequent calls" do
+      # Regression: count_for_article and .for_analytics used to mutate the
+      # memoized @public_reaction_types array with `<< 'readinglist'`,
+      # permanently corrupting .public_category for the rest of the process.
+      described_class.count_for_article(article.id)
+      described_class.for_analytics
+
+      expect(described_class.public_category.where_values_hash["category"])
+        .not_to include("readinglist")
+    end
   end
 
   context "when callbacks are called after create" do
@@ -504,7 +515,7 @@ RSpec.describe Reaction do
     it "enqueues the worker when a public reaction is created on an article" do
       allow(UpdateUserInterestEmbeddingWorker).to receive(:perform_async)
       reaction = create(:reaction, reactable: article, user: user, category: "like")
-      expect(UpdateUserInterestEmbeddingWorker).to have_received(:perform_async).with(user.id, article.id)
+      expect(UpdateUserInterestEmbeddingWorker).to have_received(:perform_async).with(user.id, article.id, 0.2)
     end
 
     it "does not enqueue the worker for non-public reactions" do
