@@ -70,6 +70,25 @@ RSpec.describe "AgentSessions#create" do
       expect(text).not_to include("ghp_")
     end
 
+    it "preserves client-side redaction counts from already scrubbed uploads" do
+      data_with_client_redaction = valid_curated_data.deep_dup
+      data_with_client_redaction["messages"][0]["content"][0]["text"] = "My key is [REDACTED]"
+      data_with_client_redaction["metadata"]["redactions"] = [{ "name" => "GitHub Token", "count" => 1 }]
+
+      post agent_sessions_path, params: {
+        agent_session: {
+          title: "Client Scrubbed Session",
+          tool_name: "claude_code",
+          curated_data: data_with_client_redaction.to_json,
+        }
+      }, as: :json
+
+      expect(response).to have_http_status(:ok)
+      session = AgentSession.last
+      expect(session.redactions).to eq([{ "name" => "GitHub Token", "count" => 1 }])
+      expect(session.total_redactions).to eq(1)
+    end
+
     it "rejects invalid curated_data structure" do
       post agent_sessions_path, params: {
         agent_session: {
@@ -221,6 +240,29 @@ RSpec.describe "AgentSessions#create" do
       expect(response).to have_http_status(:ok)
       agent_session.reload
       expect(agent_session.curated_data["messages"].size).to eq(1)
+    end
+
+    it "preserves per-message redaction counts when updating already scrubbed curated_data" do
+      new_curated = {
+        "messages" => [
+          {
+            "index" => 0,
+            "role" => "user",
+            "content" => [{ "type" => "text", "text" => "My key is [REDACTED]" }],
+            "metadata" => { "redactions" => [{ "pattern_name" => "GitHub Token", "match_count" => 1 }] },
+          },
+        ],
+        "metadata" => { "total_messages" => 2, "curated_indices" => [0] }
+      }
+
+      patch agent_session_path(agent_session), params: {
+        agent_session: { curated_data: new_curated.to_json }
+      }, as: :json
+
+      expect(response).to have_http_status(:ok)
+      agent_session.reload
+      expect(agent_session.redactions).to eq([{ "name" => "GitHub Token", "count" => 1 }])
+      expect(agent_session.total_redactions).to eq(1)
     end
   end
 end
