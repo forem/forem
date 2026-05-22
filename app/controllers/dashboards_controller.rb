@@ -49,9 +49,11 @@ class DashboardsController < ApplicationController
     @reactions_count = @articles.sum(&:public_reactions_count)
     @comments_count = @articles.sum(&:comments_count)
     @page_views_count = @articles.sum(&:page_views_count)
+    @has_archived_posts = @articles.any?(&:archived)
 
-    @articles = @articles.includes(:collection).sorting(params[:sort]).decorate
-    @articles = Kaminari.paginate_array(@articles).page(params[:page]).per(ARTICLES_PER_PAGE)
+    @articles = @articles.includes(:collection).sorting(params[:sort])
+    @articles = @articles.where(archived: params[:filter] == "archived")
+    @articles = Kaminari.paginate_array(@articles.decorate).page(params[:page]).per(ARTICLES_PER_PAGE)
     @collections_count = target.collections.non_empty.count
   end
 
