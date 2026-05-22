@@ -1130,7 +1130,7 @@ DEPENDENCIES
   redcarpet (~> 3.5)
   redis (~> 4.7.1)
   redis-actionpack (~> 5.4.0)
-  request_store (~> 1.5)
+  request_store (~> 1.7)
   reverse_markdown (~> 2.1)
   rolify (~> 6.0)
   rouge (~> 4.2)
