@@ -6,7 +6,7 @@ module Ai
       @ai_client = Ai::Base.new(wrapper: self)
     end
 
-    def call(days_lookback: 7, similarity_threshold: 0.82, match_threshold: 0.85, min_articles: 10, min_score: nil)
+    def call(days_lookback: 7, similarity_threshold: 0.82, match_threshold: 0.92, min_articles: 10, min_score: nil)
       min_score ||= Settings::UserExperience.index_minimum_score.to_i
 
       articles = Article.published
