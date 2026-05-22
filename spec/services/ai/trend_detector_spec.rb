@@ -116,7 +116,7 @@ RSpec.describe Ai::TrendDetector do
         }.not_to change(Trend, :count)
       end
 
-      it "creates a new trend under the default match_threshold of 0.92" do
+      it "creates a new trend under the default match_threshold of 0.98" do
         expect {
           detector.call(min_articles: 3, min_score: 10)
         }.to change(Trend, :count).by(1)
