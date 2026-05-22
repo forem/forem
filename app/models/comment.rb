@@ -209,6 +209,7 @@ class Comment < ApplicationRecord
 
   def replace_legacy_code_html(html)
     return html if html.blank?
+    return html unless html.include?("runkit-element")
 
     fragment = Nokogiri::HTML.fragment(html)
     fragment.css('.runkit-element').each do |element|
