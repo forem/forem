@@ -14,6 +14,7 @@ class OrganizationMembership < ApplicationRecord
   before_create :generate_invitation_token, if: -> { type_of_user == "pending" && invitation_token.blank? }
 
   after_create  :update_user_organization_info_updated_at
+  after_update  :update_user_organization_info_updated_at, if: :saved_change_to_type_of_user?
   after_destroy :update_user_organization_info_updated_at
 
   after_commit :bust_cache
