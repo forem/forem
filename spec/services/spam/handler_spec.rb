@@ -132,23 +132,23 @@ RSpec.describe Spam::Handler, type: :service do
         end
       end
 
-      context "when user score is 100" do
-        before { article.user.update!(score: 100) }
+      context "when user score is 50" do
+        before { article.user.update!(score: 50) }
 
-        it "triggers spam reaction and labels as clear_and_obvious_spam when domain net_score is <= -22000" do
-          linked_domain.update!(net_score: -22000)
+        it "triggers spam reaction and labels as clear_and_obvious_spam when domain net_score is <= -12000" do
+          linked_domain.update!(net_score: -12000)
           expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
           expect(article.reload.automod_label).to eq("clear_and_obvious_spam")
         end
 
-        it "returns :not_spam when domain net_score is > -22000" do
-          linked_domain.update!(net_score: -21999)
+        it "returns :not_spam when domain net_score is > -12000" do
+          linked_domain.update!(net_score: -11999)
           expect(handler).to eq(:not_spam)
         end
       end
 
-      context "when user score is greater than 100" do
-        before { article.user.update!(score: 101) }
+      context "when user score is greater than 50" do
+        before { article.user.update!(score: 51) }
 
         it "skips the check and returns :not_spam even if domain net_score is very low" do
           linked_domain.update!(net_score: -100000)

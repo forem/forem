@@ -1,0 +1,34 @@
+<%= form_with(model: [:admin, request_redirect], local: true, class: "crayons-form") do |form| %>
+  <% if request_redirect.errors.any? %>
+    <div class="crayons-notice crayons-notice--danger mb-4">
+      <p class="fw-bold"><%= pluralize(request_redirect.errors.count, "error") %> prohibited this request redirect from being saved:</p>
+      <ul class="pl-4">
+        <% request_redirect.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="crayons-field mb-4">
+    <%= form.label :request_domain, class: "crayons-label" %>
+    <p class="fs-xs color-base-60 mb-2">The custom domain to match (e.g. blog.example.com)</p>
+    <%= form.text_field :request_domain, class: "crayons-textfield" %>
+  </div>
+
+  <div class="crayons-field mb-4">
+    <%= form.label :original_url, class: "crayons-label" %>
+    <p class="fs-xs color-base-60 mb-2">The original path to match (e.g. /my-old-post or /2020/10/my-old-post)</p>
+    <%= form.text_field :original_url, class: "crayons-textfield" %>
+  </div>
+
+  <div class="crayons-field mb-4">
+    <%= form.label :destination_url, class: "crayons-label" %>
+    <p class="fs-xs color-base-60 mb-2">The destination URL to redirect to (e.g. https://dev.to/user/new-post)</p>
+    <%= form.text_field :destination_url, class: "crayons-textfield" %>
+  </div>
+
+  <div class="mt-4">
+    <%= form.submit class: "crayons-btn" %>
+  </div>
+<% end %>

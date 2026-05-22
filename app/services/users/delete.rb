@@ -24,6 +24,7 @@ module Users
         raise unless e.message.include?("ai_audits")
 
         AiAudit.where(affected_user_id: user.id).update_all(affected_user_id: nil)
+        user.reload
         user.destroy
       end
 

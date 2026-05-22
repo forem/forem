@@ -115,6 +115,21 @@ RSpec.describe Middlewares::SetSubforem do
         expect(RequestStore.store[:subforem_domain]).to eq("override.example.com")
       end
     end
+
+    context "when a request has an empty body and a multipart Content-Type header" do
+      let(:env) do
+        Rack::MockRequest.env_for(
+          "https://actual.example.com/articles",
+          "CONTENT_TYPE" => "multipart/form-data; boundary=----WebKitFormBoundaryE199uG4vT6",
+          "CONTENT_LENGTH" => "100",
+          :input => ""
+        )
+      end
+
+      it "does not raise EOFError" do
+        expect { middleware.call(env) }.not_to raise_error
+      end
+    end
   end
 end
 
