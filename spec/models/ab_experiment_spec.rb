@@ -4,6 +4,12 @@ RSpec.describe AbExperiment do
   let(:controller) { ApplicationController.new }
   let(:user) { double }
 
+  describe "FieldTest integration" do
+    it "is loaded with the expected upgraded version" do
+      expect(FieldTest::VERSION).to eq("0.7.0")
+    end
+  end
+
   describe "CURRENT_FEED_STRATEGY_EXPERIMENT" do
     subject(:variant) { described_class::CURRENT_FEED_STRATEGY_EXPERIMENT }
 
