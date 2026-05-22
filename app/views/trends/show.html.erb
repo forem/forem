@@ -1,11 +1,11 @@
 <% title "#{@trend.name} - Trend" %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="<%= app_url(trend_path(@trend.slug)) %>" />
+  <link rel="canonical" href="<%= app_url(trending_path(@trend.slug)) %>" />
   <meta name="description" content="<%= @trend.description %>">
   <meta property="og:title" content="<%= @trend.name %> - Trend" />
   <meta property="og:description" content="<%= @trend.description %>" />
-  <meta property="og:url" content="<%= app_url(trend_path(@trend.slug)) %>" />
+  <meta property="og:url" content="<%= app_url(trending_path(@trend.slug)) %>" />
   <meta property="og:type" content="article" />
   <% if @trend.cover_image.present? %>
     <meta property="og:image" content="<%= optimized_image_url(@trend.cover_image, width: 1200, random_fallback: false) %>" />
@@ -19,13 +19,13 @@
   <main class="articles-list crayons-layout__content" id="main-content" data-follow-button-container="true">
     <header class="mb-4">
       <div class="flex items-center gap-2 mb-2">
-        <%= link_to "← All Trends", trends_path, class: "fs-s fw-semibold color-base-60 hover:color-brand-100" %>
+        <%= link_to "← All Trends", trending_index_path, class: "fs-s fw-semibold color-base-60 hover:color-brand-100" %>
       </div>
       <h1 class="crayons-title fs-3xl font-extrabold mb-2">
         <%= @trend.name %>
       </h1>
       <div class="fs-s color-base-60 flex gap-4">
-        <span><%= pluralize(@trend.articles_count, 'post') %> in this trend</span>
+        <span><%= t("trends.show.posts_count", count: @trend.articles_count) %></span>
         <span>•</span>
         <% if @trend.last_observed_at.present? %>
           <span>Active <%= time_ago_in_words(@trend.last_observed_at) %> ago</span>
@@ -83,8 +83,15 @@
         <% if @trend.last_observed_at.present? %>
           <div class="mb-1">Last updated: <%= time_ago_in_words(@trend.last_observed_at) %> ago</div>
         <% end %>
-        <div>Algorithm: Vector Leader Clustering (threshold: 85%)</div>
+        <div>Algorithm: Vector Leader Clustering (threshold: 82%)</div>
       </div>
+    </section>
+
+    <section class="crayons-card p-5 mb-4">
+      <h4 class="fs-s font-bold mb-2 color-base-90"><%= t("trends.show.about_trend") %></h4>
+      <p class="color-base-70 fs-xs lh-base">
+        <%= t("trends.show.about_trend_description") %>
+      </p>
     </section>
   </aside>
 </div>
