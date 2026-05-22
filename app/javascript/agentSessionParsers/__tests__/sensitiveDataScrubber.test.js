@@ -19,6 +19,28 @@ describe('sensitiveDataScrubber', () => {
       expect(result.redactions[0].pattern_name).toBe('GitHub Token');
     });
 
+    it('redacts GitHub fine-grained tokens', () => {
+      const token = 'github_pat_' + 'a'.repeat(22) + '_' + 'b'.repeat(29) + '_' + 'c'.repeat(29);
+      const result = scrub(makeData('My token is ' + token));
+      expect(result.scrubbed_data.messages[0].content[0].text).toContain('[REDACTED]');
+      expect(result.scrubbed_data.messages[0].content[0].text).not.toContain(token);
+      expect(result.redactions.some(r => r.pattern_name === 'GitHub Fine-Grained Token')).toBe(true);
+    });
+
+    it('does not redact masked GitHub fine-grained token placeholders', () => {
+      const token = 'github_pat_' + 'a'.repeat(22) + '_' + '*'.repeat(35);
+      const result = scrub(makeData('Masked token: ' + token));
+      expect(result.scrubbed_data.messages[0].content[0].text).toContain(token);
+      expect(result.redactions.some(r => r.pattern_name === 'GitHub Fine-Grained Token')).toBe(false);
+    });
+
+    it('records redaction counts on individual messages', () => {
+      const result = scrub(makeData('My token is ghp_abcdefghijklmnopqrstuvwxyz1234567890'));
+      expect(result.scrubbed_data.messages[0].metadata.redactions).toEqual([
+        { pattern_name: 'GitHub Token', match_count: 1 },
+      ]);
+    });
+
     it('redacts AWS access keys', () => {
       const result = scrub(makeData('Key: AKIAIOSFODNN7EXAMPLE'));
       expect(result.scrubbed_data.messages[0].content[0].text).toContain('[REDACTED]');
@@ -34,6 +56,21 @@ describe('sensitiveDataScrubber', () => {
     it('redacts Stripe keys', () => {
       const result = scrub(makeData('sk_live_' + 'a'.repeat(25)));
       expect(result.scrubbed_data.messages[0].content[0].text).toContain('[REDACTED]');
+    });
+
+    it('redacts Heroku API keys when explicitly labeled', () => {
+      const key = '01234567-89ab-cdef-0123-456789abcdef';
+      const result = scrub(makeData('HEROKU_API_KEY=' + key));
+      expect(result.scrubbed_data.messages[0].content[0].text).toContain('[REDACTED]');
+      expect(result.scrubbed_data.messages[0].content[0].text).not.toContain(key);
+      expect(result.redactions.some(r => r.pattern_name === 'Heroku API Key')).toBe(true);
+    });
+
+    it('does not redact unrelated UUIDs just because Heroku is mentioned', () => {
+      const uuid = '01234567-89ab-cdef-0123-456789abcdef';
+      const result = scrub(makeData('Review Heroku deploy logs for session ' + uuid));
+      expect(result.scrubbed_data.messages[0].content[0].text).toContain(uuid);
+      expect(result.redactions.some(r => r.pattern_name === 'Heroku API Key')).toBe(false);
     });
 
     it('redacts private key headers', () => {
