@@ -1,5 +1,6 @@
 require_relative "boot"
 
+require "logger"
 require "rails"
 # Pick the frameworks you want:
 require "active_model/railtie"
@@ -47,7 +48,7 @@ module PracticalDeveloper
     ## Rails 6.1
     # Make `form_with` generate non-remote forms by default. We want this to be true as it was the default in 5.2
     config.action_view.form_with_generates_remote_forms = true
-    
+
     # Disable partial writes to avoid issues with strong_migrations
     config.active_record.partial_inserts = false
 
