@@ -28,6 +28,12 @@ pt:
         feed_imports: Importações de Feeds RSS
         for_org: Analytics para %{org}
         upload: Fazer upload de um vídeo
+      posts:
+        heading: Posts
+        archived: Mostrar arquivados
+        hide_archived: Ocultar arquivados
+        statuses: Mostrar posts rápidos
+        full: Mostrar posts completos
       analytics:
         meta:
           title: Analytics
