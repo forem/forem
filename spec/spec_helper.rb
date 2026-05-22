@@ -1,3 +1,4 @@
+require "logger"
 require "dotenv/load"
 require "active_support"
 require "active_support/testing/time_helpers"
