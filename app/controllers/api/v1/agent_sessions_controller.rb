@@ -91,9 +91,7 @@ module Api
         @agent_session.tool_name = params[:tool_name].presence || curated.dig("metadata", "tool_name") || "claude_code"
         @agent_session.curated_data = result.scrubbed_data
         @agent_session.s3_key = params[:s3_key] if params[:s3_key].present?
-        @agent_session.session_metadata = result.scrubbed_data.fetch("metadata", {}).merge(
-          "redactions" => result.redactions.map { |r| { "name" => r.pattern_name, "count" => r.match_count } },
-        )
+        @agent_session.session_metadata = session_metadata_from_scrub_result(result)
 
         save_and_respond
       rescue JSON::ParserError
@@ -104,6 +102,16 @@ module Api
         @agent_session.tool_name = params[:tool_name].presence || "claude_code"
         @agent_session.s3_key = params[:s3_key]
         save_and_respond
+      end
+
+      def session_metadata_from_scrub_result(result)
+        metadata = result.scrubbed_data.fetch("metadata", {}) || {}
+        metadata_redactions = metadata["redactions"].presence ||
+          AgentSessionParsers::RedactionMetadata.from_messages(result.scrubbed_data["messages"])
+
+        metadata.merge(
+          "redactions" => AgentSessionParsers::RedactionMetadata.merge(metadata_redactions, result.redactions),
+        )
       end
 
       def save_and_respond
