@@ -207,8 +207,6 @@ class Comment < ApplicationRecord
                         ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
   end
 
-  private
-
   def replace_legacy_code_html(html)
     return html if html.blank?
 
@@ -229,6 +227,7 @@ class Comment < ApplicationRecord
   rescue StandardError
     html
   end
+  private :replace_legacy_code_html
 
   def subforem_id
     commentable&.subforem_id
