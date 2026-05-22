@@ -303,7 +303,7 @@ class UsersController < ApplicationController
   private
 
   def handle_organization_tab
-    @organizations = @current_user.organizations.order(name: :asc)
+    @organizations = @current_user.member_organizations.order(name: :asc)
     @organization = Organization.new
   end
 
