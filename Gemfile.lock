@@ -263,7 +263,7 @@ GEM
       tzinfo
     excon (0.104.0)
     execjs (2.9.1)
-    exifr (1.4.0)
+    exifr (1.5.1)
     factory_bot (6.4.5)
       activesupport (>= 5.0.0)
     factory_bot_rails (6.4.3)
@@ -741,7 +741,7 @@ GEM
     regexp_parser (2.9.0)
     reline (0.5.3)
       io-console (~> 0.5)
-    request_store (1.6.0)
+    request_store (1.7.0)
       rack (>= 1.4)
     responders (3.1.1)
       actionpack (>= 5.2)
