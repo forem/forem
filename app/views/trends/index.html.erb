@@ -1,7 +1,7 @@
 <% title t("trends.index.title") %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="<%= app_url("/trends") %>" />
+  <link rel="canonical" href="<%= app_url("/trending") %>" />
   <meta name="description" content="<%= t("trends.index.meta_description", community_name: community_name) %>">
 <% end %>
 
@@ -31,18 +31,18 @@
                 Trend
               </span>
               <span class="fs-xs color-base-60">
-                <%= pluralize(trend.articles_count, 'post') %>
+                <%= t("trends.index.posts_count", count: trend.articles_count) %>
               </span>
             </div>
 
             <% if trend.cover_image.present? %>
-              <%= link_to trend_path(trend.slug), class: "block mb-4 overflow-hidden rounded", style: "aspect-ratio: 16/9;" do %>
+              <%= link_to trending_path(trend.slug), class: "block mb-4 overflow-hidden rounded", style: "aspect-ratio: 16/9;" do %>
                 <img src="<%= optimized_image_url(trend.cover_image, width: 500, random_fallback: false) %>" class="w-100 h-100 object-cover block" alt="Cover image for <%= trend.name %>" loading="lazy">
               <% end %>
             <% end %>
 
             <h2 class="fs-xl font-bold mb-2">
-              <%= link_to trend.name, trend_path(trend.slug), class: "color-base-100 hover:color-brand-100" %>
+              <%= link_to trend.name, trending_path(trend.slug), class: "color-base-100 hover:color-brand-100" %>
             </h2>
 
             <p class="color-base-70 mb-4 fs-m lh-base">
@@ -69,7 +69,7 @@
                 <%= t("trends.index.active_recently") %>
               <% end %>
             </span>
-            <%= link_to t("trends.index.explore_trend"), trend_path(trend.slug), class: "crayons-btn crayons-btn--ghost crayons-btn--s" %>
+            <%= link_to t("trends.index.explore_trend"), trending_path(trend.slug), class: "crayons-btn crayons-btn--ghost crayons-btn--s" %>
           </div>
         </div>
       <% end %>

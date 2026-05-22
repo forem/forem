@@ -9,3 +9,12 @@ pt:
       explore_trend: "Explorar Tendência →"
       active_ago: "Ativo há %{time}"
       active_recently: "Ativo recentemente"
+      posts_count:
+        one: "1 publicação nos últimos 7 dias"
+        other: "%{count} publicações nos últimos 7 dias"
+    show:
+      posts_count:
+        one: "1 publicação nesta tendência nos últimos 7 dias"
+        other: "%{count} publicações nesta tendência nos últimos 7 dias"
+      about_trend: "Sobre esta tendência"
+      about_trend_description: "Esta tendência agrupa publicações dos últimos 7 dias que discutem conceitos, tecnologias ou ideias semelhantes."

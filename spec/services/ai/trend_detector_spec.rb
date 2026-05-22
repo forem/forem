@@ -99,9 +99,9 @@ RSpec.describe Ai::TrendDetector do
         allow(Settings::UserExperience).to receive(:index_minimum_score).and_return(5)
       end
 
-      it "uses Settings::UserExperience.index_minimum_score + 15 as the default min_score threshold" do
-        # index_minimum_score (5) + 15 = 20.
-        # Since article1 (20), article2 (25), and article3 (30) all have score >= 20,
+      it "uses Settings::UserExperience.index_minimum_score as the default min_score threshold" do
+        # index_minimum_score (5).
+        # Since article1 (20), article2 (25), and article3 (30) all have score >= 5,
         # they are all included. However, default min_articles is 10.
         # Let's verify that under default configurations, 3 articles are not enough to create a trend.
         expect {
