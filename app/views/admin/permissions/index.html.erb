@@ -1,30 +1,105 @@
-<h1 class="crayons-title mb-6">Admin roles</h1>
+<%
+  role_options = Constants::Role::SPECIAL_ROLES_LABELS_TO_WHERE_CLAUSE.map do |label, config|
+    value = config[:resource_type] ? "#{config[:name]}|#{config[:resource_type]}" : config[:name]
+    [label, value]
+  end
+%>
+
+<div class="flex items-center justify-between mb-6">
+  <h1 class="crayons-title">Admin Team Permissions</h1>
+</div>
+
+<div class="crayons-card p-6 mb-8 border border-base-20 rounded-md shadow-sm">
+  <h2 class="crayons-subtitle-2 mb-4 text-base-80">Grant Admin Role</h2>
+  <%= form_with url: grant_admin_permissions_path, method: :post, local: true, class: "flex items-end gap-4 flex-wrap" do |f| %>
+    <div class="flex-1 min-w-[200px]">
+      <%= f.label :username, "Username", class: "crayons-field__label" %>
+      <div class="relative">
+        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-base-50">@</span>
+        <%= f.text_field :username, class: "crayons-field__input pl-8", placeholder: "username", required: true %>
+      </div>
+    </div>
+    <div class="flex-1 min-w-[200px]">
+      <%= f.label :role_name, "Role", class: "crayons-field__label" %>
+      <div class="crayons-select">
+        <%= f.select :role_name, options_for_select(role_options), {}, class: "crayons-field__input" %>
+      </div>
+    </div>
+    <div>
+      <%= f.submit "Grant Role", class: "crayons-btn crayons-btn--primary" %>
+    </div>
+  <% end %>
+</div>
 
 <%= paginate @users %>
 
-<table class="crayons-table" width="100%">
-  <thead>
-    <tr>
-      <th scope="col">ID</th>
-      <th scope="col">Profile</th>
-      <th scope="col">Roles</th>
-    </tr>
-  </thead>
-  <tbody class="crayons-card">
-    <% @users.each do |user| %>
+<div class="bg-base-0 border border-base-20 rounded-md shadow-sm overflow-hidden mb-6">
+  <table class="crayons-table crayons-table--hover" width="100%">
+    <thead class="bg-base-10 text-base-60 text-xs uppercase tracking-wide">
       <tr>
-        <td class="align-top whitespace-nowrap"><%= user.id %></td>
-        <td class="align-top"><%= link_to "@#{user.username}", user.path %></td>
-        <td>
-          <ul>
-            <% user.roles.pluck(:name, :resource_type, :resource_id).each do |role| %>
-              <li><%= role[0] %><%= ": #{role[1]}" if role[1] %><%= "/#{role[2]}" if role[2] %></li>
-            <% end %>
-          </ul>
-        </td>
+        <th scope="col" class="px-6 py-4">ID</th>
+        <th scope="col" class="px-6 py-4">Profile</th>
+        <th scope="col" class="px-6 py-4">Roles</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody class="divide-y divide-base-20">
+      <% @users.each do |user| %>
+        <tr>
+          <td class="align-middle whitespace-nowrap px-6 py-4 text-base-60"><%= user.id %></td>
+          <td class="align-middle px-6 py-4">
+            <div class="flex items-center gap-3">
+              <% if user.profile_image_90.present? %>
+                <span class="crayons-avatar crayons-avatar--l">
+                  <img src="<%= user.profile_image_90 %>" class="crayons-avatar__image" alt="" />
+                </span>
+              <% end %>
+              <%= link_to "@#{user.username}", user.path, class: "crayons-link fw-bold" %>
+            </div>
+          </td>
+          <td class="align-middle px-6 py-4">
+            <div class="flex flex-col items-start gap-3">
+              <div class="flex flex-wrap gap-2">
+                <% 
+                fetched_roles = user.roles.pluck(:name, :resource_type, :resource_id)
+                display_roles = []
+                if fetched_roles.any? { |r| r[0] == 'super_admin' }
+                  display_roles = [{ label: "Super Admin", value: "super_admin" }]
+                elsif fetched_roles.any? { |r| r[0] == 'admin' }
+                  display_roles = [{ label: "Admin", value: "admin" }]
+                else
+                  display_roles = fetched_roles.select { |r| r[0] == 'single_resource_admin' && r[1].present? }.map do |r|
+                    { label: "#{r[1]} Admin", value: "single_resource_admin|#{r[1]}" }
+                  end
+                end
+              %>
+              
+              <% display_roles.each do |role| %>
+                <div class="flex items-center crayons-tag">
+                  <span class="mr-2">
+                    <%= role[:label] %>
+                  </span>
+                  <%= button_to revoke_admin_permissions_path(user_id: user.id, role_name: role[:value]), method: :delete, class: "crayons-btn crayons-btn--icon crayons-btn--danger crayons-btn--s rounded-full p-1 w-6 h-6 flex items-center justify-center", data: { confirm: "Revoke #{role[:label]} from #{user.username}?" }, title: "Revoke Role" do %>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                  <% end %>
+                </div>
+              <% end %>
+              </div>
+              
+              <% unless fetched_roles.any? { |r| r[0] == 'super_admin' } %>
+                <%= form_with url: grant_admin_permissions_path, method: :post, local: true, class: "flex items-center gap-2" do |f| %>
+                  <%= f.hidden_field :username, value: user.username %>
+                  <div class="crayons-select crayons-select--s">
+                    <%= f.select :role_name, options_for_select(role_options), { prompt: "Add role..." }, class: "crayons-field__input w-auto text-sm py-1 min-w-[160px]" %>
+                  </div>
+                  <%= f.submit "Add", class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
+                <% end %>
+              <% end %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
 
 <%= paginate @users %>

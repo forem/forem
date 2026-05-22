@@ -29,6 +29,7 @@ module Articles
       page_view.update_column(:time_tracked_in_seconds, new_time_mark)
       if new_time_mark == EXTENDED_PAGEVIEW_NUMBER
         FeedEvent.record_journey_for(page_view.user, article: page_view.article, category: :extended_pageview)
+        UpdateUserInterestEmbeddingWorker.perform_async(user_id, article_id, 0.05) if user_id
       end
 
       true

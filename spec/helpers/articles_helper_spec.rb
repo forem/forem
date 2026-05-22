@@ -69,4 +69,30 @@ describe ArticlesHelper do
       expect(helper.utc_iso_timestamp(nil)).to be_nil
     end
   end
+
+  describe ".comment_cue_message" do
+    it "returns the zero-comment copy when count is 0" do
+      expect(helper.comment_cue_message(0))
+        .to eq(I18n.t("views.articles.comment_cue.zero"))
+    end
+
+    it "returns the few-comments copy for 1..10" do
+      [1, 5, 10].each do |count|
+        expect(helper.comment_cue_message(count))
+          .to eq(I18n.t("views.articles.comment_cue.few"))
+      end
+    end
+
+    it "returns the many-comments copy when count exceeds 10" do
+      [11, 50, 999].each do |count|
+        expect(helper.comment_cue_message(count))
+          .to eq(I18n.t("views.articles.comment_cue.many"))
+      end
+    end
+
+    it "treats nil as zero comments" do
+      expect(helper.comment_cue_message(nil))
+        .to eq(I18n.t("views.articles.comment_cue.zero"))
+    end
+  end
 end

@@ -18,13 +18,13 @@ module AgentSessionParsers
 
       # === Code hosting & CI/CD ===
       { name: "GitHub Token", regex: /(ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9_]{36,}/ },
-      { name: "GitHub Fine-Grained Token", regex: /github_pat_[A-Za-z0-9_]{22,}/ },
+      { name: "GitHub Fine-Grained Token", regex: /github_pat_[A-Za-z0-9]{22}_[A-Za-z0-9_]{59,}/ },
       { name: "GitLab Token", regex: /glpat-[A-Za-z0-9\-_]{20,}/ },
       { name: "Bitbucket Token", regex: /ATBB[A-Za-z0-9]{32,}/ },
       { name: "CircleCI Token", regex: /circle-token\s*[=:]\s*[A-Za-z0-9]{40}/ },
       { name: "Travis CI Token", regex: /travis-token\s*[=:]\s*[A-Za-z0-9]{22}/ },
-      { name: "Heroku API Key", regex: /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
-        context: /heroku/i },
+      { name: "Heroku API Key",
+        regex: /(?:heroku[_\s-]*(?:api[_\s-]*)?key|heroku[_\s-]*token)\s*[=:]\s*["']?[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}["']?/i }, # rubocop:disable Layout/LineLength
       { name: "Vercel Token", regex: /vercel_[A-Za-z0-9]{24}/ },
       { name: "Netlify Token", regex: /netlify_[A-Za-z0-9]{40,}/ },
 

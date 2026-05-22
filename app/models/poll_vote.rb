@@ -12,13 +12,8 @@ class PollVote < ApplicationRecord
   validates :poll_id, uniqueness: { scope: %i[user_id session_start] }, if: :single_choice_survey_poll?
   validates :poll_option_id, uniqueness: { scope: %i[user_id session_start] }, if: :survey_poll?
 
-  # For regular polls, use the old uniqueness constraints
   validates :poll_id, uniqueness: { scope: :user_id }, if: :single_choice_regular_poll?
   validates :poll_option_id, uniqueness: { scope: :user_id }, if: :regular_poll?
-
-  after_destroy :touch_poll_votes_count
-  after_save :touch_poll_votes_count
-
 
   private
 
@@ -40,10 +35,5 @@ class PollVote < ApplicationRecord
 
   def single_choice_regular_poll?
     single_choice_poll? && regular_poll?
-  end
-
-  def touch_poll_votes_count
-    poll.update_column(:poll_votes_count, poll.poll_votes.size)
-    poll_option.update_column(:poll_votes_count, poll_option.poll_votes.size)
   end
 end
