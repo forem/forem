@@ -37,7 +37,7 @@
 
             <% if trend.cover_image.present? %>
               <%= link_to trending_path(trend.slug), class: "block mb-4 overflow-hidden rounded", style: "aspect-ratio: 16/9;" do %>
-                <img src="<%= optimized_image_url(trend.cover_image, width: 500, random_fallback: false) %>" class="w-100 h-100 object-cover block" alt="Cover image for <%= trend.name %>" loading="lazy">
+                <img src="<%= optimized_image_url(trend.cover_image, width: 750, random_fallback: false) %>" class="w-100 h-100 object-cover block" alt="Cover image for <%= trend.name %>" loading="lazy">
               <% end %>
             <% end %>
 
