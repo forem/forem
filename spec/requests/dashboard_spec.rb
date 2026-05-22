@@ -124,6 +124,42 @@ RSpec.describe "Dashboards" do
       end
     end
 
+    context "when logged in with many archived posts" do
+      before do
+        sign_in user
+
+        25.times do |i|
+          create(:article, user: user, title: "Archived Post #{i}", archived: true, created_at: Time.current - i.minutes)
+        end
+
+        26.times do |i|
+          create(:article, user: user, title: "Visible Post #{i}", created_at: 1.day.ago - i.minutes)
+        end
+      end
+
+      it "shows 25 unarchived posts on the first page" do
+        get "/dashboard"
+
+        expect(response.body).to include("Visible Post 0")
+        expect(response.body).not_to include("Archived Post 0")
+        expect(response.body.scan("spec__dashboard-story").size).to eq(25)
+      end
+
+      it "shows remaining unarchived posts on the next page" do
+        get "/dashboard", params: { page: 2 }
+
+        expect(response.body).to include("Visible Post 25")
+        expect(response.body).not_to include("Archived Post 0")
+      end
+
+      it "shows only archived posts when using archived filter" do
+        get "/dashboard", params: { filter: "archived" }
+
+        expect(response.body).to include("Archived Post 0")
+        expect(response.body).not_to include("Visible Post 0")
+      end
+    end
+
     context "when logged but has no articles nor can create them" do
       it "redirects to /dashboard/following_tags" do
         sign_in user

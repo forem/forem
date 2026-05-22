@@ -35,6 +35,8 @@ class DashboardsController < ApplicationController
       target = @organizations.find_by(id: params[:org_id])
       @organization = target
       @articles = target.articles.from_subforem
+      @show_archived = false
+      @has_archived_articles = false
     else
       # This redirect assumes that the dashboards#show action renders article specific information.
       # When a user doesn't have articles nor can they create them, we want to send them somewhere
@@ -44,14 +46,18 @@ class DashboardsController < ApplicationController
       # if the target is a user, we need to eager load the organization
       @articles = target.articles.from_subforem.includes(:organization)
       @articles = params[:state] == "status" ? @articles.statuses : @articles.full_posts
+      @show_archived = params[:filter].to_s.casecmp("archived").zero?
+      @has_archived_articles = @articles.where(archived: true).exists?
     end
 
-    @reactions_count = @articles.sum(&:public_reactions_count)
-    @comments_count = @articles.sum(&:comments_count)
-    @page_views_count = @articles.sum(&:page_views_count)
+    @reactions_count = @articles.sum(:public_reactions_count)
+    @comments_count = @articles.sum(:comments_count)
+    @page_views_count = @articles.sum(:page_views_count)
 
-    @articles = @articles.includes(:collection).sorting(params[:sort]).decorate
-    @articles = Kaminari.paginate_array(@articles).page(params[:page]).per(ARTICLES_PER_PAGE)
+    filtered_articles = @articles
+    filtered_articles = filtered_articles.where(archived: @show_archived) if params[:which] != "organization"
+
+    @articles = filtered_articles.includes(:collection).sorting(params[:sort]).page(params[:page]).per(ARTICLES_PER_PAGE)
     @collections_count = target.collections.non_empty.count
   end
 
