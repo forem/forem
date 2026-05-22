@@ -53,7 +53,7 @@ gem "httparty", "~> 0.20" # Makes http fun! Also, makes consuming restful web se
 gem "httpclient", "~> 2.8.3" # Gives something like the functionality of libwww-perl (LWP) in Ruby
 gem "i18n-js", "~> 3.9.2" # Helps with internationalization in Rails.
 gem "imgproxy", "~> 2.1" # A gem that easily generates imgproxy URLs for your images
-gem "inline_svg", "~> 1.8" # Embed SVG documents in your Rails views and style them with CSS
+gem "inline_svg", "~> 1.10" # Embed SVG documents in your Rails views and style them with CSS
 gem "jbuilder", "~> 2.11" # Create JSON structures via a Builder-style DSL
 gem "js-routes", "~> 2.2" # Brings Rails named routes to javascript
 gem "jsbundling-rails", "~> 1.2" # A Rails plugin to bundle JavaScript
@@ -95,7 +95,7 @@ gem "redis-actionpack", "~> 5.4.0" # Redis session store for ActionPack. Used fo
 gem "rpush", "~> 7.0" # Push Notification library for Rails
 gem "rpush-redis", "~> 1.1" # Redis module capability for rpush library
 
-gem "request_store", "~> 1.5" # RequestStore gives you per-request global storage
+gem "request_store", "~> 1.7" # RequestStore gives you per-request global storage
 gem "reverse_markdown", "~> 2.1" # Map simple html back into markdown
 gem "rolify", "~> 6.0" # Very simple Roles library
 gem "rouge", "~> 4.2" # A pure-ruby code highlighter
