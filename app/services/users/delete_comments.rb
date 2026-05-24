@@ -6,10 +6,9 @@ module Users
       return unless user.comments.any?
 
       user.comments.find_each do |comment|
-        comment.reactions.delete_all
+        comment.reactions.destroy_all
         EdgeCache::BustComment.call(comment)
-        comment.remove_notifications
-        comment.delete
+        comment.update!(deleted: true)
       end
       EdgeCache::BustUser.call(user)
     end
