@@ -1,0 +1,170 @@
+<% title @article.title_with_query_preamble(user_signed_in?) %>
+
+<%= render "shared/webcomponents_loader_script" %>
+<% if user_signed_in? %>
+  <%= javascript_include_tag "webShare", "articlePage", "articleSignedIn", "articleModerationTools", defer: true %>
+<% else %>
+  <%= javascript_include_tag "webShare", "articlePage", defer: true %>
+<% end %>
+
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden !important; /* Lock the global scroll bar completely */
+  }
+  .crayons-footer {
+    display: none !important;
+  }
+</style>
+
+<div class="pb-0" style="position: fixed; top: var(--header-height, 56px); bottom: 0; left: 0; right: 0; width: 100vw; display: flex; flex-direction: column; overflow: hidden; z-index: 5;">
+  <article class="crayons-card p-0 mb-0" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; border: none; outline: none; border-radius: 0;">
+    <header class="p-3 border-b border-base-20 shrink-0 bg-base-0 flex flex-col m:flex-row items-baseline m:items-center gap-2">
+      <h1 class="fs-l fw-bold mb-0 shrink-0"># <%= @article.title %></h1>
+      
+      <div class="fs-s flex-1 color-base-50 flex items-center gap-2 overflow-hidden">
+        <span class="shrink-0">hosted by <a href="<%= @article.user.path %>" class="fw-bold"><%= @article.user.name %></a></span>
+        
+        <% if @article.body_markdown.present? %>
+          <span class="opacity-50 shrink-0">&bull;</span>
+          <span id="chat-body-preview" class="cursor-pointer hover:color-base-90 transition-colors truncate" onclick="document.getElementById('chat-body-full').classList.toggle('hidden');" title="Click to reveal details">
+            <%= truncate(strip_tags(@article.processed_html), length: 80) %>
+          </span>
+        <% end %>
+      </div>
+    </header>
+
+    <% if @article.body_markdown.present? %>
+      <div id="chat-body-full" class="hidden shrink-0 border-b border-base-20 p-4 processed-html fs-s bg-base-10 color-base-80 shadow-inner">
+        <%= @article.processed_html.html_safe %>
+      </div>
+    <% end %>
+
+    <%# The polling injection target zone %>
+    <div id="chat-comments-container" class="px-2 py-4" style="flex: 1; overflow-y: auto; scroll-behavior: auto;" data-chat-polling-url="<%= chat_comments_path(@article) %>" data-chat-polling-interval="30000">
+      <% @top_level_comments = @article.comments.where(ancestry: nil, deleted: false).order(created_at: :asc).includes(:user) %>
+      <%= render "articles/chat_comment_area" %>
+    </div>
+
+    <%# Main comment entry point form restricted to the bottom %>
+    <div id="comments-container" data-commentable-id="<%= @article.id %>" data-commentable-type="Article" class="p-4 border-t border-base-20 shrink-0" style="background: var(--base-0); position: sticky; bottom: -20px;">
+      <% if @discussion_lock %>
+        <%= render "/comments/discussion_lock_reason" %>
+      <% else %>
+        <%= render "/comments/form", commentable: @article, commentable_type: "Article" %>
+      <% end %>
+    </div>
+  </article>
+</div>
+
+<script>
+  document.addEventListener('click', function(e) {
+    const btn = e.target.closest('.chat-reply-button');
+    if (!btn) return;
+    
+    const form = document.getElementById('new_comment');
+    if (form) {
+      // Manage parent_id hidden input
+      let parentIdInput = form.querySelector('input[name="comment[parent_id]"]');
+      if (!parentIdInput) {
+        parentIdInput = document.createElement('input');
+        parentIdInput.type = 'hidden';
+        parentIdInput.name = 'comment[parent_id]';
+        form.appendChild(parentIdInput);
+      }
+      parentIdInput.value = btn.dataset.commentId;
+      
+      // Auto-focus and mention the user being replied to
+      const textarea = form.querySelector('textarea');
+      if (textarea) {
+        // Only prefix if empty to avoid destroying existing drafted text
+        if (!textarea.value.trim()) {
+          textarea.value = '@' + btn.dataset.commentUsername + ' ';
+        }
+        textarea.focus();
+      }
+      
+      // Flash the form slightly to draw attention
+      form.style.transition = "background-color 0.3s ease";
+      form.style.backgroundColor = "var(--base-20)";
+      setTimeout(() => { form.style.backgroundColor = "transparent"; }, 500);
+    }
+  });
+
+  // Vanilla JS Polling since Stimulus isn't loaded on the user-facing frontend
+  document.addEventListener('DOMContentLoaded', function() {
+    const container = document.getElementById('chat-comments-container');
+    const form = document.getElementById('new_comment');
+    
+    function scrollToBottom(force = false) {
+      if (!container) return;
+      // Scroll if forced (e.g. on load) or if the user is already near the bottom
+      const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 150;
+      if (force || isNearBottom) {
+        container.scrollTop = container.scrollHeight;
+      }
+    }
+
+    if (container) {
+      scrollToBottom(true);
+      
+      // Forem's legacy JS inserts new comments at the top (container.firstChild).
+      // We use a MutationObserver to catch that specific insertion and instantly move it to the bottom.
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.target.id === 'comment-trees-container' && mutation.addedNodes.length > 0) {
+            mutation.addedNodes.forEach(node => {
+              if (node.nodeType === 1 && mutation.target.firstChild === node && mutation.target.children.length > 1) {
+                // Hide the misdirected legacy comment instantly
+                node.style.display = 'none';
+                
+                // Fetch the freshly created, properly styled chat HTML right away
+                fetch(container.dataset.chatPollingUrl, { headers: { 'Accept': 'text/html' } })
+                  .then(response => { if (response.ok) return response.text(); })
+                  .then(html => {
+                    if (html) {
+                      container.innerHTML = html;
+                      scrollToBottom(true);
+                    }
+                  });
+              }
+            });
+          }
+        });
+      });
+      observer.observe(container, { childList: true, subtree: true });
+      
+      const url = container.dataset.chatPollingUrl;
+      const interval = parseInt(container.dataset.chatPollingInterval, 10) || 30000;
+      
+      setInterval(function() {
+        if (!document.hidden) {
+          fetch(url, { headers: { 'Accept': 'text/html' } })
+            .then(response => {
+              if (response.ok) return response.text();
+              throw new Error('Network response was not ok');
+            })
+            .then(html => {
+              container.innerHTML = html;
+              scrollToBottom(false);
+            })
+            .catch(error => console.error("Polling failed", error));
+        }
+      }, interval);
+    }
+    
+    // Auto-scroll when the user actively submits a local message to provide instant feedback
+    if (form) {
+      form.addEventListener('submit', () => { setTimeout(() => scrollToBottom(true), 150); });
+      
+      const textarea = form.querySelector('textarea');
+      if (textarea) {
+        // As Forem dynamically expands the textarea, ensure the chat log shifts up so the bottom messages remain visible
+        const syncScroll = () => { setTimeout(() => scrollToBottom(true), 50); };
+        textarea.addEventListener('focus', syncScroll);
+        textarea.addEventListener('input', syncScroll);
+      }
+    }
+  });
+</script>
