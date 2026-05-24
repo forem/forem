@@ -13,10 +13,17 @@ pt:
       cover_image:
         add: Adicionar uma imagem de capa
         change: Alterar
+      cover_video_link:
+        add: Link de vídeo de capa
+        change: Alterar o link de vídeo
       edit: Editar
       modes: Visualizar modos de post
       new_title: Novo título de post aqui...
       preview: Visualizar
+      ai_helper:
+        sidecar_title: "Assistente do %{community_name}"
+        title: "Assistente do %{community_name}"
+        greeting: "Olá! Sou seu assistente de escrita. Conheço as diretrizes do editor do %{community_name}. Precisa de ajuda com markdown, incorporações, formatação ou conselhos sobre as diretrizes e expectativas da comunidade?"
       video:
         progress:
           heading: "⏳ Transcodificação de Vídeo em Andamento ⏳"

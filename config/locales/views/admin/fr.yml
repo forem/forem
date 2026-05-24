@@ -218,6 +218,11 @@ fr:
           body: Body
           body_placeholder: What do you want to say?
           send_submit: Send email
+          pending_email:
+            subtitle: Changement d'e-mail en attente
+            desc: "%{user} a demandé à changer son e-mail pour %{email}."
+            confirm: Confirmer le nouvel e-mail
+            confirm_dialog: "Êtes-vous sûr de vouloir confirmer ce changement d'e-mail vers %{email} ?"
           not_verified:
             subtitle: Email not verified
             desc: "%{user}'s email hasn't been verified yet."
@@ -341,17 +346,31 @@ fr:
           since_html: Member since %{time}
           not_member: User has not accepted their invitation yet.
           email: Email
+          primary_email: "E-mail principal"
+          oauth_email: "E-mail %{provider}"
           github: GitHub
           twitter: Twitter
           visit: Visit profile
           options:
             icon: Options
+            edit_profile: Modifier le profil
             export: Export data
             merge: Merge users
             unpublish: Unpublished all posts
             remove_social: Remove social accounts
             banish: Banish user
             delete: Delete user
+        edit_profile:
+          heading: Modifier le profil de %{user}
+          desc_html: Les changements faits ici sont immédiatement publics sur le profil de l'utilisateur.
+          notice: Soyez prudent. Ces mises à jour sont visibles publiquement et affectent le compte de l'utilisateur.
+          name: Nom
+          username: Nom d'utilisateur
+          summary: Résumé
+          location: Localisation
+          website_url: URL du site
+          submit: Enregistrer les modifications du profil
+          success: Profil mis à jour avec succès.
         reports:
           subtitle: Reports submitted by %{user} (%{num})
           for_html: For %{url}
@@ -385,6 +404,18 @@ fr:
           submit: Changer le score maximum
           success: Modification réussie du score maximum de l'utilisateur en %{max_score}.
           error: Échec de la modification du score maximum de l'utilisateur (sélectionnez entre 0 et 100)
+        audit_log:
+          title: Journal d'audit
+          filter_by_user: Actions par l'utilisateur
+          filter_on_user: Actions sur l'utilisateur
+          empty: Aucune entrée de journal d'audit trouvée pour cet utilisateur.
+          table:
+            heading:
+              id: ID
+              user: Utilisateur
+              action: Action
+              data: Données
+              date: Date
         unpublish_logs:
           subtitle_html: Unpublished by %{user} on %{time}
           posts: "Posts:"
@@ -399,6 +430,7 @@ fr:
           emails: Emails
           reports: Reports
           flags: Flags
+          audit_log: Journal d'audit
           unpublish_logs: Unpublish All History
         status_title: Current status
         status_reader: "Current status:"
@@ -459,3 +491,58 @@ fr:
         options:
           delete: Delete organization
           icon: Options
+        verified:
+          heading: Vérification
+          label: Organisation vérifiée
+          description: Vérifier ou révoquer manuellement la vérification de cette organisation. Les organisations vérifiées affichent un badge de vérification sur leur profil.
+          verify: Vérifier l'organisation
+          revoke: Révoquer la vérification
+          verified_notice: "Cette organisation est vérifiée (depuis le %{date})."
+          verification_url: URL de vérification
+        fully_trusted:
+          label: Organisation de confiance totale
+          description: Lorsqu'elle est activée, cette organisation peut ajouter des membres directement sans nécessiter de confirmation. Les membres recevront un e-mail de notification au lieu d'une invitation.
+          enable: Activer la confiance totale
+          disable: Désactiver la confiance totale
+          enabled_notice: Cette organisation est de confiance totale. Les membres peuvent être ajoutés directement sans confirmation.
+        org_features:
+          heading: Fonctionnalités d'organisation
+          readme:
+            label: Page Readme
+            description: Lorsqu'elle est activée, cette organisation peut créer et afficher une page readme personnalisée sur son profil.
+            enable: Activer le Readme
+            disable: Désactiver le Readme
+            enabled_notice: La fonctionnalité de page readme est activée pour cette organisation.
+          lead_forms:
+            label: Formulaires de leads
+            description: Lorsqu'elle est activée, cette organisation peut créer et gérer des formulaires de capture de leads à intégrer dans ses articles.
+            enable: Activer les formulaires de leads
+            disable: Désactiver les formulaires de leads
+            enabled_notice: La fonctionnalité de formulaires de leads est activée pour cette organisation.
+          dofollow_links:
+            label: Liens Dofollow
+            description: Lorsque activé, les liens dans la page readme de cette organisation transmettent l'autorité SEO (dofollow). Lorsque désactivé, tous les liens externes sont nofollow.
+            enable: Activer Dofollow
+            disable: Désactiver Dofollow
+            enabled_notice: Les liens dofollow sont activés pour la page readme de cette organisation.
+      org_features:
+        heading: Fonctionnalités Org
+        description: Gérer les fonctionnalités des organisations globalement ou par organisation.
+        enable_global: Activer pour toutes les orgs
+        disable_global: Désactiver l'accès global
+        globally_enabled_notice: Cette fonctionnalité est activée pour toutes les organisations.
+        individually_enabled:
+          one: "Activé individuellement pour %{count} organisation :"
+          other: "Activé individuellement pour %{count} organisations :"
+        no_orgs_enabled: Aucune organisation n'a cette fonctionnalité activée individuellement. Utilisez la page d'administration de chaque organisation pour l'activer.
+        table:
+          name: Organisation
+          slug: Slug
+          actions: ""
+          manage: Gérer
+        cta_config:
+          heading: Paramètres du CTA
+          description: Configurez l'appel à l'action affiché aux organisations qui n'ont pas accès à une fonctionnalité.
+          text_label: Texte du CTA
+          url_label: URL du CTA
+          save: Enregistrer les paramètres du CTA

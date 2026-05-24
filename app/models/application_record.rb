@@ -62,6 +62,14 @@ class ApplicationRecord < ActiveRecord::Base
     connection.execute "SET statement_timeout = #{milliseconds}"
   end
 
+  # Used for high-volume inserts to prevent unnecessary locking and blocking of other operations
+  def self.with_synchronous_commit_off
+    transaction do
+      connection.execute("SET LOCAL synchronous_commit TO OFF")
+      yield
+    end
+  end
+
   # ActiveRecord's `find_each` method allows you to work with a large collection of records
   # in batches, but strictly only orders those batches by IDs in ascending order.
   # Any other specified order is either ignored or raises an error (depending on configuration).

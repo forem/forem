@@ -13,7 +13,7 @@ class CustomMailer < ApplicationMailer
     @content = Email.replace_merge_tags(params[:content], @user)
     @subject = Email.replace_merge_tags(params[:subject], @user)
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_newsletter)
-    @from_topic = Email.find_by(id: params[:email_id])&.default_from_name_based_on_type
+    @from_topic = params[:from_name] || Email.find_by(id: params[:email_id])&.default_from_name_based_on_type
 
     # set sendgrid category in the header using smtp api
     # https://docs.sendgrid.com/for-developers/sending-email/building-an-x-smtpapi-header

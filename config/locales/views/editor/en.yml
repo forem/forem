@@ -11,12 +11,19 @@ en:
         icon: Close
         title: Close the editor
       cover_image:
-        add: Add a cover image
+        add: Upload Cover Image
         change: Change
+      cover_video_link:
+        add: Cover Video Link
+        change: Change Video Link
       edit: Edit
       modes: View post modes
       new_title: New post title here...
       preview: Preview
+      ai_helper:
+        sidecar_title: "%{community_name} Buddy"
+        title: "%{community_name} Buddy"
+        greeting: "Hello! I am your writing assistant. I know %{community_name} Editor guidelines. Need help with markdown, embeds, formatting, or advice on community guidelines and expectations?"
       video:
         progress:
           heading: "⏳ Video Transcoding In Progress ⏳"

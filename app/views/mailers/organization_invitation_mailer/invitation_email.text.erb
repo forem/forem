@@ -1,0 +1,15 @@
+<%= t("mailers.organization_invitation_mailer.greeting", name: @user.name) %>
+
+<% if @inviter %>
+<%= t("mailers.organization_invitation_mailer.invited_by_text",
+      inviter_name: @inviter.name,
+      organization_name: @organization.name) %>
+<% else %>
+<%= t("mailers.organization_invitation_mailer.invited_text",
+      organization_name: @organization.name) %>
+<% end %>
+
+<%= t("mailers.organization_invitation_mailer.what_is_organization", community: Settings::Community.community_name) %>
+
+<%= t("mailers.organization_invitation_mailer.confirm_button") %>: <%= @confirmation_url %>
+

@@ -1,0 +1,9 @@
+<h1 class="crayons-title mb-6">
+  <% if @page_template.forked_from.present? %>
+    Fork Template from "<%= @page_template.forked_from.name %>"
+  <% else %>
+    New Page Template
+  <% end %>
+</h1>
+<%= render "form" %>
+

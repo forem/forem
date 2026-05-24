@@ -17,7 +17,7 @@ RSpec.describe Poll, type: :model do
   describe "associations" do
     it { is_expected.to belong_to(:article).optional }
     it { is_expected.to belong_to(:survey).optional }
-    it { is_expected.to have_many(:poll_options).dependent(:delete_all) }
+    it { is_expected.to have_many(:poll_options).dependent(:destroy) }
     it { is_expected.to have_many(:poll_skips).dependent(:delete_all) }
     it { is_expected.to have_many(:poll_votes).dependent(:delete_all) }
   end
@@ -112,6 +112,8 @@ RSpec.describe Poll, type: :model do
       create(:poll_vote, poll: poll, poll_option: poll_option2)
       # Update the poll's vote count to match the created votes
       poll.update_column(:poll_votes_count, 3)
+      poll_option1.update_column(:poll_votes_count, 2)
+      poll_option2.update_column(:poll_votes_count, 1)
     end
 
     it "returns correct voting data" do

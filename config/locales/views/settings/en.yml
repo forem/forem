@@ -40,8 +40,13 @@ en:
           confirm: Are you absolutely sure you want to remove your %{provider} account?
           submit: Remove %{provider}
           unable_to_remove: You are unable to remove one of your authentication methods as you need a remaining method to authenticate you. Please add another authentication method above before continuing.
+        free_billing_info: You are on a free subscription. There is no active billing associated with your account, so no payment management is required.
       billing:
         heading: Billing
+        current_status: Current Subscription Status
+        free_subscription: You are on a free subscription and are not being billed in any capacity.
+        trial_subscription: You are currently on a trial subscription.
+        paying_subscription: You are on a recurring paying subscription.
         add: Add Credit Card
         another: "+ Add Another Credit Card"
         cards: Your Credit Cards
@@ -108,6 +113,7 @@ en:
           one: '1 error prohibited your profile from being saved:'
           other: "%{count} errors prohibited your profile from being saved:"
       extensions:
+        rss_moved_html: 'RSS feed settings have moved! Manage your feeds on the <a href="%{link}" class="crayons-link">Feed Imports dashboard</a>.'
         api:
           heading: "%{community} API Keys"
           desc_html: You can generate personal API keys to use for authentication with the %{community} API.  The API is still in its beta stage. The %{doc} contains further information.
@@ -139,22 +145,6 @@ en:
           heading: GitHub
           desc1: Pin your GitHub repositories to your profile.
           desc2: Repositories will disappear from your profile if you remove the OAuth association with GitHub.
-        rss:
-          heading: Publishing to %{community} from RSS
-          desc1_html: Posts will land in your %{dashboard} <strong>as drafts</strong>, and then you can publish from there.
-          desc2: Formatting will typically look good, but you may have to make manual fixes. In the case of Medium, you may have to manually fix embeds.
-          desc3_html: To find out more about how drafts are created from your feed, read this %{guide}.
-          desc4: Your feed will be fetched every time you submit this form and updates will be automatically fetched periodically thereafter.
-          desc5_html: 'FYI: Medium RSS feed URLs are <em>https://medium.com/feed/@your_username</em>'
-          desc6: By submitting your RSS Feed URL, you agree that you own and/or have permission to syndicate the associated content.
-          dashboard: dashboard
-          fetch: Fetch feed now
-          guide: guide
-          last_html: 'Last Fetched: %{time}'
-          mark_canonical_html: Mark the RSS source as canonical URL by default <p class='crayons-field__description'>If you check this box, the post will automatically mark the feed source as the canonical URL.</p>
-          referential_html: Replace self-referential links with %{community}-specific links <p class='crayons-field__description'>If you check this box, the post will automatically change any URLs included in the post to refer to the version of that article on %{community} if available. This is primarily meant for folks migrating their entire blog onto %{community}.</p>
-          save: Save Feed Settings
-          submit: Submit Feed Settings
       finalize_html: You have requested a change to %{email}. Check your inbox for the verification link to finalize the change.
       for_html: Settings for %{name}
       group:
@@ -178,12 +168,13 @@ en:
           copy:
             button:
               aria_label: Copy organization secret code to clipboard
+              text: Copy
             icon: Copy to clipboard
             input:
               aria_label: Organization secret (to be rotated regularly)
             text: Copied to clipboard!
-          cta: Call-to-action box
-          cta_desc: Customizable text that appears to the right of every post for your organization.
+          cta: Post CTA
+          cta_desc: A call-to-action box shown beside every post published by your organization.
           delete:
             heading: Delete Organization
             confirm: 'Are you absolutely sure you want to delete your organization: %{name}?'
@@ -216,15 +207,48 @@ en:
             text: You should rotate this regularly!
             submit: Generate new secret
           grow: Grow the team
+          grow_description: Invite new members to your organization using one of the methods below.
           invite: 'Invite teammates by sending them the secret and the following instructions:'
           inst1_html: Sign up at %{url}
           inst2_html: Navigate to %{url}
           inst3_html: Paste the secret code below and click <b>Join Organization</b>
+          secret_instructions: "Share these instructions with your teammates:"
+          invite_methods:
+            username:
+              title: Invite by Username
+              description: Invite a specific user by their username. They'll receive an email invitation to join.
+              icon: User icon
+              fully_trusted:
+                title: Add by Username
+                description: Add a specific user by their username. They will receive an email notification that they've been added to the organization. Since this organization is fully trusted, verification is skipped and they'll be added immediately.
+                icon: User icon
+            secret:
+              title: Share Secret Code
+              description: Share your organization's secret code. Anyone with the code can join your organization.
+              icon: Key icon
+          fully_trusted_warning:
+            title: Fully Trusted Organization
+            description: Your organization has elevated privileges. When adding by username, members are added immediately without confirmation. They will receive an email notification that they've been added. Since your organization is fully trusted, verification is skipped on their end. Please verify the username is 100% correct before sending.
+            icon: Warning icon
           make:
             confirm: Are you sure you want to give %{user} admin status?
             title: Make admin
             text: Make admin
           members: Organization Members
+          active_members: Active Members
+          pending_members: Pending Invitations
+          pending: Pending
+          invite_member: Invite a Member
+          invite_member_description: Invite a user to join your organization by their username. They will receive an email invitation.
+          username_label: Username
+          username_placeholder: "Enter username (e.g., johndoe)"
+          username_description: Enter the username of the user you want to invite (without the @ symbol).
+          username_description_fully_trusted: Enter the username of the user you want to add (without the @ symbol). They will receive an email notification and be added immediately without verification.
+          invite_button: Send Invitation
+          add_button: Add Member
+          cancel_invite:
+            title: Cancel invitation
+            text: Cancel Invitation
           remove:
             confirm: Are you sure you want remove %{user} from the organization?
             title: Remove from org
@@ -235,6 +259,10 @@ en:
             text: Revoke admin status
           secret_code: 'Your secret code is:'
           you: You
+        list:
+          heading: Your Organizations
+          manage: Settings
+          view_page: View Page
         create:
           heading: Create An Organization
           notice: You must have your organization's permission to submit this form. Dishonesty may result in a permanent suspension.

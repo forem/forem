@@ -1,14 +1,14 @@
 <% if @page == 1 %>
   <div id="sidebar-wrapper-right" class="sidebar-wrapper sidebar-wrapper-right">
     <div class="sidebar-bg" id="sidebar-bg-right"></div>
-    <aside class="side-bar sidebar-additional showing" id="sidebar-additional">
+    <aside class="side-bar sidebar-additional showing fs-s" id="sidebar-additional">
       <% active_threads = active_threads(tags: [@tag.name, "discuss"], time_ago: Timeframe.datetime(params[:timeframe])) %>
       <% if user_signed_in? && active_threads.present? %>
         <div class="widget">
           <header>
-            <h4><%= t("views.stories.discuss") %></h4>
+            <h4 class="fs-base fw-medium"><%= t("views.stories.discuss") %></h4>
           </header>
-          <div class="widget-body">
+          <div class="widget-body fs-s">
             <div class="widget-link-list">
               <%= render partial: "articles/widget_list_item", collection: active_threads, as: :plucked_article, locals: { show_comment_count: true } %>
             </div>
@@ -20,14 +20,14 @@
         <div id="sidebarWidget__pack" data-tag-info="<%= @tag.attributes.slice("id", "text_color_hex", "bg_color_hex", "name").to_json %>">
         </div>
       <% else %>
-        <% cache("seo-boostable-posts-for-tag-#{@tag.name}-#{params[:timeframe]}-#{RequestStore.store[:subforem_id]}", expires_in: 18.hours) do %>
-          <% boostable_posts = Article.from_subforem.seo_boostable(@tag.name, Timeframe.datetime(params[:timeframe])) %>
+        <% cache("seo-boostable-posts-for-tag-#{@tag.name}-#{params[:timeframe]}-30-#{RequestStore.store[:subforem_id]}", expires_in: 18.hours) do %>
+          <% boostable_posts = Article.from_subforem.seo_boostable(@tag.name, Timeframe.datetime(params[:timeframe]), limit: 25) %>
           <% if boostable_posts.present? %>
             <div class="widget">
               <header>
-                <h4><%= t("views.main.side.trend") %></h4>
+                <h4 class="fs-base fw-medium"><%= t("views.main.side.trend") %></h4>
               </header>
-              <div class="widget-body">
+              <div class="widget-body fs-s">
                 <div class="widget-link-list">
                   <%= render partial: "articles/widget_list_item", collection: boostable_posts, as: :plucked_article, locals: { show_comment_count: false } %>
                 </div>

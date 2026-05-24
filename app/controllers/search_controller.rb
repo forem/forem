@@ -65,7 +65,15 @@ class SearchController < ApplicationController
 
   def usernames
     context = commentable_context(params[:context_type])&.find(params[:context_id])
-    result = Search::Username.search_documents(params[:username], context: context)
+    priority_ids = params[:priority_user_ids] || []
+
+    result = Search::Username.search_documents(
+      params[:username],
+      context: context,
+      priority_user_ids: priority_ids,
+      recent_user_ids: current_user&.cached_recent_user_ids,
+      requesting_user_id: current_user&.id
+    )
 
     render json: { result: result }
   end
@@ -176,6 +184,7 @@ class SearchController < ApplicationController
       statuses: reaction_params[:status],
       tags: reaction_params[:tag_names],
       term: reaction_params[:search_fields],
+      subforem_id: RequestStore.store[:subforem_id],
     )
 
     render json: { result: result[:items], total: result[:total] }

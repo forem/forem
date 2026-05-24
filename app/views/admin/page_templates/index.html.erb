@@ -1,0 +1,67 @@
+<%= csrf_meta_tags %>
+
+<header class="flex items-center mb-6">
+  <h1 class="crayons-title">Page Templates</h1>
+  <%= link_to "New Template", new_admin_page_template_path, class: "ml-auto crayons-btn crayons-btn--s" %>
+  <%= link_to "Back to Pages", admin_pages_path, class: "ml-2 crayons-btn crayons-btn--s crayons-btn--secondary" %>
+</header>
+
+<div class="crayons-card p-6">
+  <% if @page_templates.any? %>
+    <table class="crayons-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Fields</th>
+          <th>Pages</th>
+          <th>Forked From</th>
+          <th>Forks</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @page_templates.each do |template| %>
+          <tr>
+            <td>
+              <%= link_to template.name, admin_page_template_path(template), class: "crayons-link" %>
+              <% if template.description.present? %>
+                <p class="fs-s color-base-60"><%= truncate(template.description, length: 60) %></p>
+              <% end %>
+            </td>
+            <td>
+              <%= template.schema_fields.count %> field(s)
+            </td>
+            <td>
+              <%= template.pages.count %> page(s)
+            </td>
+            <td>
+              <% if template.forked_from.present? %>
+                <%= link_to template.forked_from.name, admin_page_template_path(template.forked_from), class: "crayons-link" %>
+              <% else %>
+                <span class="color-base-50">—</span>
+              <% end %>
+            </td>
+            <td>
+              <% if template.forks.any? %>
+                <%= template.forks.count %> fork(s)
+              <% else %>
+                <span class="color-base-50">—</span>
+              <% end %>
+            </td>
+            <td class="whitespace-nowrap">
+              <%= link_to "Edit", edit_admin_page_template_path(template), class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
+              <%= link_to "Fork", new_admin_page_template_path(fork_from: template.id), class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
+              <%= link_to "Create Page", new_admin_page_path(page_template_id: template.id), class: "crayons-btn crayons-btn--s crayons-btn--ghost" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <div class="flex flex-col items-center py-8">
+      <p class="color-base-60 mb-4">No page templates yet. Templates let you create reusable page structures with dynamic content.</p>
+      <%= link_to "Create your first template", new_admin_page_template_path, class: "crayons-btn" %>
+    </div>
+  <% end %>
+</div>
+

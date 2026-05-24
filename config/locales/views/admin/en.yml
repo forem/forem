@@ -229,6 +229,11 @@ en:
           not_confirmed:
             subtitle: Email not confirmed
             desc: "%{user}'s email hasn't been confirmed yet."
+          pending_email:
+            subtitle: Pending email change
+            desc: "%{user} has requested to change their email to %{email}."
+            confirm: Confirm new email
+            confirm_dialog: "Are you sure you want to confirm this email change to %{email}?"
           not_verified:
             subtitle: Email not verified
             desc: "%{user}'s email hasn't been verified yet."
@@ -351,11 +356,14 @@ en:
           since_html: Member since %{time}
           not_member: User has not accepted their invitation yet.
           email: Email
+          primary_email: "Primary email"
+          oauth_email: "%{provider} email"
           github: GitHub
           twitter: Twitter
           visit: Visit profile
           options:
             icon: Options
+            edit_profile: Edit profile
             update_email: Update User Email
             export: Export data
             merge: Merge users
@@ -363,6 +371,17 @@ en:
             remove_social: Remove social accounts
             banish: Banish user
             delete: Delete user
+        edit_profile:
+          heading: Edit %{user}'s profile
+          desc_html: Changes you make here are immediately public on the user's profile.
+          notice: Be careful. These updates are public-facing and affect the user's account.
+          name: Name
+          username: Username
+          summary: Summary
+          location: Location
+          website_url: Website URL
+          submit: Save profile changes
+          success: Profile updated successfully.
         reports:
           subtitle: Reports submitted by %{user} (%{num})
           for_html: For %{url}
@@ -396,6 +415,18 @@ en:
           submit: Change maximum score
           success: Successfully changed user's maximum score to %{max_score}.
           error: Failed to change user's maximum score (select between 0 and 100)
+        audit_log:
+          title: Audit Log
+          filter_by_user: Actions by user
+          filter_on_user: Actions on user
+          empty: No audit log entries found for this user.
+          table:
+            heading:
+              id: ID
+              user: User
+              action: Action
+              data: Data
+              date: Date
         unpublish_logs:
           subtitle_html: Unpublished by %{user} on %{time}
           posts: "Posts:"
@@ -412,6 +443,7 @@ en:
           flags: Flags
           articles: Articles
           comments: Comments
+          audit_log: Audit Log
           unpublish_logs: Unpublish All History
         status_title: Current status
         status_reader: "Current status:"
@@ -472,3 +504,58 @@ en:
         options:
           delete: Delete organization
           icon: Options
+        verified:
+          heading: Verification
+          label: Verified Organization
+          description: Manually verify or unverify this organization. Verified organizations display a verification badge on their profile.
+          verify: Verify Organization
+          revoke: Revoke Verification
+          verified_notice: "This organization is verified (since %{date})."
+          verification_url: Verification URL
+        fully_trusted:
+          label: Fully Trusted Organization
+          description: When enabled, this organization can add members directly without requiring confirmation. Members will receive a notification email instead of an invitation.
+          enable: Enable Fully Trusted
+          disable: Disable Fully Trusted
+          enabled_notice: This organization is fully trusted. Members can be added directly without confirmation.
+        org_features:
+          heading: Org Features
+          readme:
+            label: Readme Page
+            description: When enabled, this organization can build and display a custom readme page on their profile.
+            enable: Enable Readme
+            disable: Disable Readme
+            enabled_notice: Readme page feature is enabled for this organization.
+          lead_forms:
+            label: Lead Forms
+            description: When enabled, this organization can create and manage lead capture forms to embed in their articles.
+            enable: Enable Lead Forms
+            disable: Disable Lead Forms
+            enabled_notice: Lead forms feature is enabled for this organization.
+          dofollow_links:
+            label: Dofollow Links
+            description: When enabled, links in this organization's readme page pass SEO authority (dofollow). When disabled, all external links are nofollow.
+            enable: Enable Dofollow
+            disable: Disable Dofollow
+            enabled_notice: Dofollow links are enabled for this organization's readme page.
+      org_features:
+        heading: Org Features
+        description: Manage organization feature flags globally or per-organization.
+        enable_global: Enable for All Orgs
+        disable_global: Disable Global Access
+        globally_enabled_notice: This feature is enabled for all organizations.
+        individually_enabled:
+          one: "Individually enabled for %{count} organization:"
+          other: "Individually enabled for %{count} organizations:"
+        no_orgs_enabled: No organizations have this feature individually enabled. Use each organization's admin page to enable it.
+        table:
+          name: Organization
+          slug: Slug
+          actions: ""
+          manage: Manage
+        cta_config:
+          heading: Upgrade CTA Settings
+          description: Configure the call-to-action shown to organizations that don't have access to a feature. This appears in place of the gated feature.
+          text_label: CTA Text
+          url_label: CTA URL
+          save: Save CTA Settings

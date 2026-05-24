@@ -40,6 +40,16 @@ const resetNativeIOSCapabilities = () => {
 };
 
 describe('<ArticleCoverImage />', () => {
+  beforeEach(() => {
+    // Mock window.currentUser
+    global.window.currentUser = {};
+  });
+
+  afterEach(() => {
+    // Clean up
+    delete global.window.currentUser;
+  });
+
   it('should have no a11y violations', async () => {
     const { container } = render(
       <ArticleCoverImage
@@ -57,6 +67,15 @@ describe('<ArticleCoverImage />', () => {
     );
     const uploadInput = getByLabelText(/add a cover image/i);
     expect(uploadInput.getAttribute('type')).toEqual('file');
+  });
+
+  it('displays a generate with AI button when there is no main image', () => {
+    const { getByTestId } = render(
+      <ArticleCoverImage mainImage="" onMainImageUrlChange={jest.fn()} coverImageHeight="420" coverImageCrop="no_crop" aiAvailable={true} />,
+    );
+    const generateButton = getByTestId('generate-ai-image-btn');
+    expect(generateButton).toBeInTheDocument();
+    expect(generateButton.textContent).toContain('Generate Image');
   });
 
   describe('when an image is uploaded', () => {
@@ -165,6 +184,8 @@ describe('<ArticleCoverImage />', () => {
       <ArticleCoverImage
         mainImage="/some-fake-image.jpg"
         onMainImageUrlChange={onMainImageUrlChange}
+        coverImageHeight="420"
+        coverImageCrop="no_crop"
       />,
     );
     const inputEl = getByLabelText('Change', { exact: false });
@@ -186,13 +207,240 @@ describe('<ArticleCoverImage />', () => {
     expect(fakeError).toBeInTheDocument();
   });
 
+  describe('AI image generation', () => {
+    beforeEach(() => {
+      fetch.resetMocks();
+    });
+
+    it('opens the AI prompt modal when generate button is clicked', async () => {
+      const { getByTestId, findByTestId } = render(
+        <ArticleCoverImage
+          mainImage=""
+          onMainImageUrlChange={jest.fn()}
+          coverImageHeight="420"
+          coverImageCrop="no_crop"
+          aiAvailable={true}
+        />,
+      );
+
+      const generateButton = getByTestId('generate-ai-image-btn');
+      fireEvent.click(generateButton);
+
+      const modal = await findByTestId('ai-prompt-modal');
+      expect(modal).toBeInTheDocument();
+    });
+
+    it('displays the AI prompt input in the modal', async () => {
+      const { getByTestId, findByTestId } = render(
+        <ArticleCoverImage
+          mainImage=""
+          onMainImageUrlChange={jest.fn()}
+          coverImageHeight="420"
+          coverImageCrop="no_crop"
+          aiAvailable={true}
+        />,
+      );
+
+      const generateButton = getByTestId('generate-ai-image-btn');
+      fireEvent.click(generateButton);
+
+      const promptInput = await findByTestId('ai-prompt-input');
+      expect(promptInput).toBeInTheDocument();
+      expect(promptInput.tagName).toEqual('TEXTAREA');
+    });
+
+    it('generates an AI image successfully', async () => {
+      const mockImageUrl = 'https://example.com/generated-image.png';
+      fetch.mockResponseOnce(
+        JSON.stringify({ url: mockImageUrl }),
+      );
+
+      const onMainImageUrlChange = jest.fn();
+      const { getByTestId, findByTestId, queryByText } = render(
+        <ArticleCoverImage
+          mainImage=""
+          onMainImageUrlChange={onMainImageUrlChange}
+          coverImageHeight="420"
+          coverImageCrop="no_crop"
+          aiAvailable={true}
+        />,
+      );
+
+      // Open modal
+      const generateButton = getByTestId('generate-ai-image-btn');
+      fireEvent.click(generateButton);
+
+      // Enter prompt
+      const promptInput = await findByTestId('ai-prompt-input');
+      fireEvent.input(promptInput, { target: { value: 'A beautiful sunset' } });
+
+      // Submit
+      const submitButton = getByTestId('generate-submit-btn');
+      fireEvent.click(submitButton);
+
+      // Wait for generation to complete
+      await waitForElementToBeRemoved(() => queryByText(/generating.../i));
+
+      expect(onMainImageUrlChange).toHaveBeenCalledWith({
+        links: [mockImageUrl],
+      });
+      expect(fetch).toHaveBeenCalledWith('/ai_image_generations', expect.objectContaining({
+        method: 'POST',
+        headers: expect.objectContaining({
+          'Content-Type': 'application/json',
+        }),
+        body: JSON.stringify({
+          prompt: 'A beautiful sunset',
+        }),
+      }));
+    });
+
+    it('displays an error when AI generation fails', async () => {
+      fetch.mockResponseOnce(
+        JSON.stringify({ error: 'Generation failed' }),
+      );
+
+      const { getByTestId, findByTestId, findByText } = render(
+        <ArticleCoverImage
+          mainImage=""
+          onMainImageUrlChange={jest.fn()}
+          coverImageHeight="420"
+          coverImageCrop="no_crop"
+          aiAvailable={true}
+        />,
+      );
+
+      // Open modal
+      const generateButton = getByTestId('generate-ai-image-btn');
+      fireEvent.click(generateButton);
+
+      // Enter prompt
+      const promptInput = await findByTestId('ai-prompt-input');
+      fireEvent.input(promptInput, { target: { value: 'A beautiful sunset' } });
+
+      // Submit
+      const submitButton = getByTestId('generate-submit-btn');
+      fireEvent.click(submitButton);
+
+      // Wait for error
+      const errorMessage = await findByText(/generation failed/i);
+      expect(errorMessage).toBeInTheDocument();
+    });
+
+    it('can close the AI prompt modal', async () => {
+      const { getByTestId, findByTestId, queryByTestId } = render(
+        <ArticleCoverImage
+          mainImage=""
+          onMainImageUrlChange={jest.fn()}
+          coverImageHeight="420"
+          coverImageCrop="no_crop"
+          aiAvailable={true}
+        />,
+      );
+
+      // Open modal
+      const generateButton = getByTestId('generate-ai-image-btn');
+      fireEvent.click(generateButton);
+
+      const modal = await findByTestId('ai-prompt-modal');
+      expect(modal).toBeInTheDocument();
+
+      // Click cancel
+      const cancelButton = modal.querySelector('button[type="button"]');
+      fireEvent.click(cancelButton);
+
+      // Modal should be closed
+      expect(queryByTestId('ai-prompt-modal')).not.toBeInTheDocument();
+    });
+
+    it('displays footer with GitHub link in the modal', async () => {
+      const { getByTestId, findByTestId, getByText } = render(
+        <ArticleCoverImage
+          mainImage=""
+          onMainImageUrlChange={jest.fn()}
+          coverImageHeight="420"
+          coverImageCrop="no_crop"
+          aiAvailable={true}
+        />,
+      );
+
+      const generateButton = getByTestId('generate-ai-image-btn');
+      fireEvent.click(generateButton);
+
+      const modal = await findByTestId('ai-prompt-modal');
+      expect(modal).toBeInTheDocument();
+
+      // Check for footer text
+      expect(getByText(/Curious how this works/i)).toBeInTheDocument();
+      expect(getByText(/open source/i)).toBeInTheDocument();
+
+      // Check for GitHub link
+      const githubLink = modal.querySelector('a[href*="github.com"]');
+      expect(githubLink).toBeInTheDocument();
+      expect(githubLink.href).toContain('github.com/forem/forem/blob/main/app/services/ai/image_generator.rb');
+      expect(githubLink.target).toBe('_blank');
+      expect(githubLink.rel).toContain('noopener');
+    });
+
+    it('disables submit button when prompt is empty', async () => {
+      const { getByTestId, findByTestId } = render(
+        <ArticleCoverImage
+          mainImage=""
+          onMainImageUrlChange={jest.fn()}
+          coverImageHeight="420"
+          coverImageCrop="no_crop"
+          aiAvailable={true}
+        />,
+      );
+
+      // Open modal
+      const generateButton = getByTestId('generate-ai-image-btn');
+      fireEvent.click(generateButton);
+
+      const submitButton = await findByTestId('generate-submit-btn');
+      expect(submitButton).toBeDisabled();
+    });
+
+    it('prevents closing modal while generating', async () => {
+      fetch.mockResponseOnce(
+        () => new Promise(resolve => setTimeout(() => resolve({ body: JSON.stringify({ url: 'test.png' }) }), 100))
+      );
+
+      const { getByTestId, findByTestId, queryByRole } = render(
+        <ArticleCoverImage
+          mainImage=""
+          onMainImageUrlChange={jest.fn()}
+          coverImageHeight="420"
+          coverImageCrop="no_crop"
+          aiAvailable={true}
+        />,
+      );
+
+      // Open modal
+      const generateButton = getByTestId('generate-ai-image-btn');
+      fireEvent.click(generateButton);
+
+      // Enter prompt and submit
+      const promptInput = await findByTestId('ai-prompt-input');
+      fireEvent.input(promptInput, { target: { value: 'Test prompt' } });
+
+      const submitButton = getByTestId('generate-submit-btn');
+      fireEvent.click(submitButton);
+
+      // Close button should not be visible during generation
+      expect(queryByRole('button', { name: 'Close' })).not.toBeInTheDocument();
+    });
+  });
+
   describe('when rendered in native iOS with imageUpload support', () => {
     beforeAll(() => {
       stubNativeIOSCapabilities();
+      global.window.currentUser = {};
     });
 
     afterAll(() => {
       resetNativeIOSCapabilities();
+      delete global.window.currentUser;
     });
 
     it('should have no a11y violations when native iOS imageUpload support is available', async () => {

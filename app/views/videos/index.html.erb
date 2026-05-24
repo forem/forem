@@ -32,7 +32,7 @@
     <header class="crayons-page-header">
       <h1 class="crayons-title">
         <% if @tag %>
-          <%= render_tag_link(@tag.accessible_name, path_suffix: "/videos") %> on Video
+          <%= render_tag_link(@tag, path_suffix: "/videos") %> on Video
         <% else %>
           <%= t("views.videos.heading", community: community_name) %>
         <% end %>
@@ -41,14 +41,14 @@
     <% unless @tag %>
       <div class="crayons-subtitle-2 mb-4" style="overflow-x: auto; white-space: nowrap;border-right: 2px solid #b5b5b5;">
         <% Tag.from_subforem.order("hotness_score desc").limit(25).each do |tag| %>
-          <%= render_tag_link(tag.accessible_name, path_suffix: "/videos") %>
+          <%= render_tag_link(tag, path_suffix: "/videos") %>
         <% end %>
       </div>
     <% end %>
     <div class="js-video-collection grid gap-2 m:gap-4 s:grid-cols-2 m:grid-cols-3 mb-6">
       <% @video_articles.each do |video_article| %>
         <a href="<%= video_article.path %>" id="video-article-<%= video_article.id %>" class="crayons-card media-card">
-          <% if video_article.video&.include?("youtube.com") %>
+          <% if video_article.video&.include?("youtube.com") || video_article.video&.include?("player.mux.com") %>
             <div class="crayons-article__cover" style="width:100%; aspect-ratio:16/9; position:relative;">
               <iframe
                 src="<%= video_article.video %>"

@@ -49,9 +49,178 @@ RSpec.describe Article do
     it { is_expected.to validate_presence_of(:user_subscriptions_count) }
     it { is_expected.to validate_presence_of(:title) }
 
+    # Regression test for Issue #22803: Prevent negative reaction counts
+    it { is_expected.to validate_numericality_of(:public_reactions_count).is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:previous_public_reactions_count).is_greater_than_or_equal_to(0) }
+
     it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:user_id) }
 
     it { is_expected.not_to allow_value("foo").for(:main_image_background_hex_color) }
+
+    describe "#validate_collection_permission" do
+      let(:other_user) { create(:user) }
+      let(:collection) { create(:collection, user: other_user) }
+
+      it "allows article owner to add to their own collection" do
+        article = build(:article, user: user, collection: create(:collection, user: user))
+        expect(article).to be_valid
+      end
+
+      it "prevents user from adding article to another user's collection" do
+        # Build article with body_markdown that doesn't have title in frontmatter
+        # to avoid evaluate_front_matter clearing collection_id
+        article = build(:article, user: user, body_markdown: "---\npublished: true\ntags: test\n---\nContent")
+        article.collection_id = collection.id
+        expect(article).not_to be_valid
+        expect(article.errors[:collection_id]).to include(I18n.t("models.article.series_unpermitted"))
+      end
+
+      context "with organization collections" do
+        let(:organization) { create(:organization) }
+        let(:org_collection) { create(:collection, user: other_user, organization: organization) }
+        let(:org_member) { create(:user) }
+
+        before do
+          create(:organization_membership, user: org_member, organization: organization, type_of_user: "member")
+        end
+
+        it "allows org member to add article to org collection when publishing under org" do
+          article = build(:article, user: org_member, organization: organization)
+          # Set collection_id after building. Run valid? once to trigger callbacks, then set it again
+          article.collection_id = org_collection.id
+          article.valid? # This runs before_validation which may clear collection_id
+          article.collection_id = org_collection.id # Set it again after callbacks
+          expect(article).to be_valid
+        end
+
+        it "prevents org member from adding article to org collection when not publishing under org" do
+          article = build(:article, user: org_member, organization: nil,
+                                    body_markdown: "---\npublished: true\ntags: test\n---\nContent")
+          article.collection_id = org_collection.id
+          expect(article).not_to be_valid
+          expect(article.errors[:collection_id]).to include(I18n.t("models.article.series_unpermitted"))
+        end
+
+        it "prevents non-org member from adding article to org collection" do
+          article = build(:article, user: user, organization: organization,
+                                    body_markdown: "---\npublished: true\ntags: test\n---\nContent")
+          article.collection_id = org_collection.id
+          expect(article).not_to be_valid
+          expect(article.errors[:collection_id]).to include(I18n.t("models.article.series_unpermitted"))
+        end
+
+        it "allows org admin to add article to org collection" do
+          org_admin = create(:user)
+          create(:organization_membership, user: org_admin, organization: organization, type_of_user: "admin")
+          article = build(:article, user: org_admin, organization: organization)
+          # Set collection_id after building. Run valid? once to trigger callbacks, then set it again
+          article.collection_id = org_collection.id
+          article.valid? # This runs before_validation which may clear collection_id
+          article.collection_id = org_collection.id # Set it again after callbacks
+          expect(article).to be_valid
+        end
+
+        it "prevents org member from adding article to org collection with different org_id" do
+          other_org = create(:organization)
+          article = build(:article, user: org_member, organization: other_org,
+                                    body_markdown: "---\npublished: true\ntags: test\n---\nContent")
+          article.collection_id = org_collection.id
+          expect(article).not_to be_valid
+          expect(article.errors[:collection_id]).to include(I18n.t("models.article.series_unpermitted"))
+        end
+
+        it "prevents org member from adding article to org collection when org_id doesn't match" do
+          other_org = create(:organization)
+          create(:organization_membership, user: org_member, organization: other_org, type_of_user: "member")
+          article = build(:article, user: org_member, organization: other_org,
+                                    body_markdown: "---\npublished: true\ntags: test\n---\nContent")
+          article.collection_id = org_collection.id
+          expect(article).not_to be_valid
+          expect(article.errors[:collection_id]).to include(I18n.t("models.article.series_unpermitted"))
+        end
+      end
+    end
+
+    describe "#validate_video" do
+      let(:new_user) { create(:user, created_at: 1.week.ago) }
+      let(:old_user) { create(:user, created_at: 3.weeks.ago) }
+
+      context "when user is new (less than 2 weeks old)" do
+        it "does not allow direct uploads (video present but no allowed source url)" do
+          # Simulating a direct upload where video is set but source URL isn't a whitelisted one
+          # We use a valid URL for 'video' to pass the format validation, focusing on the permission check
+          article = build(:article, user: new_user, video: "https://example.com/video.mp4", video_source_url: "https://unknown-source.com/video.mp4")
+
+          expect(article).not_to be_valid
+          expect(article.errors[:video]).to include(I18n.t("models.article.video_unpermitted"))
+        end
+
+        it "allows YouTube videos" do
+          article = build(:article, user: new_user, video: "https://youtube.com/video", video_source_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+          expect(article).to be_valid
+        end
+
+        it "allows Mux videos" do
+          # Use player.mux.com to match the whitelist logic
+          article = build(:article, user: new_user, video: "https://player.mux.com/video", video_source_url: "https://player.mux.com/123.m3u8")
+          expect(article).to be_valid
+        end
+
+        it "allows Twitch videos" do
+          article = build(:article, user: new_user, video: "https://twitch.tv/video", video_source_url: "https://www.twitch.tv/videos/123")
+          expect(article).to be_valid
+        end
+      end
+
+      context "when user is old (more than 2 weeks old)" do
+        it "allows direct uploads" do
+          article = build(:article, user: old_user, video: "https://example.com/video.mp4", video_source_url: "https://unknown-source.com/video.mp4")
+          expect(article).to be_valid
+        end
+      end
+    end
+
+    describe "#all_series" do
+      let(:org_member) { create(:user) }
+      let(:organization) { create(:organization) }
+      let(:other_org) { create(:organization) }
+
+      before do
+        create(:organization_membership, user: org_member, organization: organization, type_of_user: "member")
+        create(:organization_membership, user: org_member, organization: other_org, type_of_user: "member")
+      end
+
+      it "returns personal collections" do
+        personal_collection = create(:collection, user: org_member, organization: nil, slug: "personal-series")
+        article = build(:article, user: org_member)
+        series = article.all_series
+        expect(series).to include(hash_including(slug: "personal-series", is_personal: true))
+      end
+
+      it "returns organization collections for orgs the user is a member of" do
+        org_collection = create(:collection, user: org_member, organization: organization, slug: "org-series")
+        article = build(:article, user: org_member)
+        series = article.all_series
+        expect(series).to include(hash_including(slug: "org-series", organization_id: organization.id,
+                                                 is_personal: false))
+      end
+
+      it "does not return collections from orgs the user is not a member of" do
+        non_member_org = create(:organization)
+        create(:collection, user: create(:user), organization: non_member_org, slug: "other-org-series")
+        article = build(:article, user: org_member)
+        series = article.all_series
+        expect(series.map { |s| s[:slug] }).not_to include("other-org-series")
+      end
+
+      it "returns collections with organization name" do
+        org_collection = create(:collection, user: org_member, organization: organization, slug: "org-series")
+        article = build(:article, user: org_member)
+        series = article.all_series
+        org_series = series.find { |s| s[:slug] == "org-series" }
+        expect(org_series[:organization_name]).to eq(organization.name)
+      end
+    end
 
     describe "::admin_published_with" do
       it "includes mascot-published articles" do
@@ -274,17 +443,29 @@ RSpec.describe Article do
 
     describe "#restrict_attributes_with_status_types" do
       context "when the article is persisted and body_markdown hasn't changed" do
-        it "does not run validation" do
+        it "does not run validation when changing title" do
           article = create(:article, type_of: "status", body_markdown: "", main_image: nil, user: user)
           article.title = "Updated Title"
           expect(article).to be_valid
         end
 
-        it "runs validation if body_markdown has changed" do
+        it "does not run validation when changing featured" do
+          article = create(:article, type_of: "status", body_markdown: "", main_image: nil, user: user)
+          article.featured = true
+          expect(article).to be_valid
+        end
+
+        it "does not run validation when changing other attributes" do
+          article = create(:article, type_of: "status", body_markdown: "", main_image: nil, user: user)
+          article.approved = true
+          expect(article).to be_valid
+        end
+
+        it "shows edit restriction error if body_markdown has changed" do
           article = create(:article, type_of: "status", body_markdown: "", main_image: nil, user: user)
           article.body_markdown = "New body content"
           expect(article).not_to be_valid
-          expect(article.errors[:body_markdown]).to include("is not allowed for status types")
+          expect(article.errors[:body_markdown]).to include("cannot be modified for status type posts. Consider unpublishing if you need to make changes.")
         end
       end
 
@@ -1207,6 +1388,12 @@ RSpec.describe Article do
       allow(FrontMatterParser::Parser).to receive(:new).and_raise(syntax_error)
       expect(article.has_frontmatter?).to be(true)
     end
+
+    it "does not raise when body starts with --- but has no valid YAML front matter" do
+      article.body_markdown = "\n---\n\n## Introduction\n\nSome content here.\n\n---\n\n## Next Section\n"
+      expect { article.has_frontmatter? }.not_to raise_error
+      expect(article.has_frontmatter?).to be(false)
+    end
   end
 
   describe "#readable_edit_date" do
@@ -1302,6 +1489,92 @@ RSpec.describe Article do
     end
   end
 
+  describe "#generate_video_embed_url" do
+    let(:user) { create(:user) }
+    let(:article) { build(:article, user: user) }
+
+    context "with YouTube URL" do
+      it "parses YouTube URL and sets video embed URL" do
+        article.video_source_url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+        article.valid?
+        expect(article.video).to eq("https://www.youtube.com/embed/dQw4w9WgXcQ")
+      end
+    end
+
+    context "with Mux URL" do
+      it "parses Mux URL and sets video embed URL" do
+        article.video_source_url = "https://player.mux.com/nw5QrgIQS02FEx5BJEQH8CdcLmXXRvCNACZKQ01kLoKEI"
+        article.valid?
+        expect(article.video).to eq("https://player.mux.com/nw5QrgIQS02FEx5BJEQH8CdcLmXXRvCNACZKQ01kLoKEI")
+      end
+
+      it "sets video_thumbnail_url for Mux videos" do
+        article.video_source_url = "https://player.mux.com/nw5QrgIQS02FEx5BJEQH8CdcLmXXRvCNACZKQ01kLoKEI"
+        article.valid?
+        expect(article.video_thumbnail_url).to eq("https://image.mux.com/nw5QrgIQS02FEx5BJEQH8CdcLmXXRvCNACZKQ01kLoKEI/thumbnail.webp")
+      end
+
+      it "handles Mux URL with query parameters" do
+        article.video_source_url = "https://player.mux.com/nw5QrgIQS02FEx5BJEQH8CdcLmXXRvCNACZKQ01kLoKEI?autoplay=true"
+        article.valid?
+        expect(article.video).to eq("https://player.mux.com/nw5QrgIQS02FEx5BJEQH8CdcLmXXRvCNACZKQ01kLoKEI")
+      end
+    end
+
+    context "with Twitch URL" do
+      it "parses Twitch URL and sets video embed URL" do
+        article.video_source_url = "https://www.twitch.tv/videos/1234567890"
+        article.valid?
+        expect(article.video).to match(%r{https://player\.twitch\.tv/\?video=1234567890})
+        expect(article.video).to include("autoplay=false")
+      end
+    end
+
+    context "with invalid URL" do
+      it "does not set video for unsupported URLs" do
+        article.video_source_url = "https://example.com/video"
+        article.valid?
+        expect(article.video).to be_nil
+      end
+    end
+  end
+
+  describe "#fetch_video_duration" do
+    let(:user) { create(:user) }
+    let(:article) { build(:article, user: user) }
+
+    it "returns early for YouTube videos without fetching duration" do
+      article.video_source_url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+      article.video_duration_in_seconds = 0
+      article.fetch_video_duration
+      # Should not have changed duration (still 0) because it returns early
+      expect(article.video_duration_in_seconds).to eq(0)
+    end
+
+    it "returns early for Mux videos without fetching duration" do
+      article.video_source_url = "https://player.mux.com/nw5QrgIQS02FEx5BJEQH8CdcLmXXRvCNACZKQ01kLoKEI"
+      article.video_duration_in_seconds = 0
+      article.fetch_video_duration
+      # Should not have changed duration (still 0) because it returns early
+      expect(article.video_duration_in_seconds).to eq(0)
+    end
+  end
+
+  describe "#mux_thumbnail_url" do
+    let(:user) { create(:user) }
+    let(:article) { build(:article, user: user) }
+
+    it "generates correct Mux thumbnail URL" do
+      video_id = "nw5QrgIQS02FEx5BJEQH8CdcLmXXRvCNACZKQ01kLoKEI"
+      expect(article.mux_thumbnail_url(video_id)).to eq("https://image.mux.com/#{video_id}/thumbnail.webp")
+    end
+
+    it "returns nil for blank video_id" do
+      expect(article.mux_thumbnail_url(nil)).to be_nil
+      expect(article.mux_thumbnail_url("")).to be_nil
+    end
+  end
+
   describe "#main_image_from_frontmatter" do
     let(:article) { create(:article, user: user, main_image_from_frontmatter: false) }
 
@@ -1368,6 +1641,112 @@ RSpec.describe Article do
       articles = described_class.active_help
       expect(articles).to include(high_score_article)
       expect(articles).not_to include(low_score_article)
+    end
+  end
+
+  describe ".cached_admin_published_with" do
+    let(:admin) { create(:user, :admin) }
+    let(:cache_store) { ActiveSupport::Cache::MemoryStore.new }
+
+    around do |example|
+      original_cache = Rails.cache
+      Rails.cache = cache_store
+      example.run
+    ensure
+      Rails.cache = original_cache
+    end
+
+    it "caches the admin published article by tag" do
+      article = create(:article, user: admin, tags: "welcome")
+
+      cached = described_class.cached_admin_published_with("welcome")
+
+      expect(cached).to eq(article)
+      expect(Rails.cache.read("admin-published-with:welcome:all").id).to eq(article.id)
+    end
+
+    it "caches the admin published article by tag and subforem" do
+      subforem = create(:subforem)
+      article = create(:article, user: admin, tags: "welcome", subforem_id: subforem.id)
+
+      cached = described_class.cached_admin_published_with("welcome", subforem_id: subforem.id)
+
+      expect(cached).to eq(article)
+      expect(Rails.cache.read("admin-published-with:welcome:#{subforem.id}").id).to eq(article.id)
+    end
+  end
+
+  describe "admin welcome cache busting" do
+    let(:admin) { create(:user, :admin) }
+    let(:super_admin) { create(:user, :super_admin) }
+    let(:mascot) { create(:user) }
+    let(:cache_store) { ActiveSupport::Cache::MemoryStore.new }
+
+    around do |example|
+      original_cache = Rails.cache
+      Rails.cache = cache_store
+      example.run
+    ensure
+      Rails.cache = original_cache
+    end
+
+    it "busts cached welcome keys when an admin publishes a welcome article" do
+      subforem = create(:subforem)
+      article = create(:article, user: admin, tags: "welcome", subforem_id: subforem.id)
+
+      Rails.cache.write("admin-published-with:welcome:all", "cached")
+      Rails.cache.write("admin-published-with:welcome:#{subforem.id}", "cached")
+
+      article.update!(title: "Updated title")
+
+      expect(Rails.cache.read("admin-published-with:welcome:all")).to be_nil
+      expect(Rails.cache.read("admin-published-with:welcome:#{subforem.id}")).to be_nil
+    end
+
+    it "busts cached welcome keys when a super_admin publishes a welcome article" do
+      article = create(:article, user: super_admin, tags: "welcome")
+      Rails.cache.write("admin-published-with:welcome:all", "cached")
+      article.update!(title: "Updated title")
+      expect(Rails.cache.read("admin-published-with:welcome:all")).to be_nil
+    end
+
+    it "busts cached welcome keys when a mascot publishes a welcome article" do
+      allow(Settings::General).to receive(:mascot_user_id).and_return(mascot.id)
+      article = create(:article, user: mascot, tags: "welcome")
+      Rails.cache.write("admin-published-with:welcome:all", "cached")
+      article.update!(title: "Updated title")
+      expect(Rails.cache.read("admin-published-with:welcome:all")).to be_nil
+    end
+
+    it "does not bust cached welcome keys for non-admin authors" do
+      user = create(:user)
+      article = create(:article, user: user, tags: "welcome")
+
+      Rails.cache.write("admin-published-with:welcome:all", "cached")
+
+      article.update!(title: "Updated title")
+
+      expect(Rails.cache.read("admin-published-with:welcome:all")).to eq("cached")
+    end
+
+    it "busts the cache when welcome is in a comma-separated tag list" do
+      article = create(:article, user: admin, tags: "ruby, welcome, rails")
+
+      Rails.cache.write("admin-published-with:welcome:all", "cached")
+
+      article.update!(title: "Updated title")
+
+      expect(Rails.cache.read("admin-published-with:welcome:all")).to be_nil
+    end
+
+    it "does not bust the cache for tags that only contain welcome as a substring" do
+      article = create(:article, user: admin, tags: "welcome2, ruby")
+
+      Rails.cache.write("admin-published-with:welcome:all", "cached")
+
+      article.update!(title: "Updated title")
+
+      expect(Rails.cache.read("admin-published-with:welcome:all")).to eq("cached")
     end
   end
 
@@ -1478,6 +1857,18 @@ RSpec.describe Article do
         end
       end
     end
+
+    describe "detect code block languages" do
+      before do
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+      end
+
+      it "enqueues Articles::DetectCodeBlockLanguagesWorker when body_markdown has an unlabeled code block" do
+        sidekiq_assert_enqueued_jobs(1, only: Articles::DetectCodeBlockLanguagesWorker) do
+          build(:published_article, title: "Unlabeled code block", body_markdown: "```\nputs :hi\n```").save
+        end
+      end
+    end
   end
 
   context "when callbacks are triggered after save" do
@@ -1504,7 +1895,7 @@ RSpec.describe Article do
 
       it "updates score after content moderation labeling" do
         # Mock the content moderation labeler to return a specific label
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("clear_and_obvious_harmful")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "clear_and_obvious_harmful", compellingness_score: 0.5 })
         stub_const("Ai::Base::DEFAULT_KEY", "present")
 
         initial_score = article.score
@@ -1519,7 +1910,7 @@ RSpec.describe Article do
 
       it "updates score with positive adjustment for high quality content" do
         # Mock the content moderation labeler to return a high quality label
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("great_and_on_topic")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "great_and_on_topic", compellingness_score: 0.5 })
         stub_const("Ai::Base::DEFAULT_KEY", "present")
 
         initial_score = article.score
@@ -1560,9 +1951,27 @@ RSpec.describe Article do
           end
         end
 
-        it "does not enqueue for non-body changes" do
+        it "enqueues for title changes" do
+          # Have to update both because set_caches reverts title if frontmatter title is unchanged
+          article.body_markdown = article.body_markdown.gsub(/title: .*/, "title: delayed title tweak")
+          article.title = "delayed title tweak"
+          sidekiq_assert_enqueued_jobs(1, only: worker) do
+            article.save!
+          end
+        end
+
+        it "does not enqueue for other non-monitored changes like collection_id" do
           sidekiq_assert_no_enqueued_jobs(only: worker) do
-            article.update(title: "delayed title tweak")
+            # Use an update that doesn't trigger other conditions
+            collection = create(:collection)
+            article.update(collection_id: collection.id)
+          end
+        end
+
+        it "enqueues when toggled back to published without body changes" do
+          article.update_column(:published, false)
+          sidekiq_assert_enqueued_jobs(1, only: worker) do
+            article.update(published: true)
           end
         end
       end
@@ -1579,16 +1988,6 @@ RSpec.describe Article do
       end
     end
 
-    describe "record field test event" do
-      it "enqueues Users::RecordFieldTestEventWorker" do
-        sidekiq_assert_enqueued_with(
-          job: Users::RecordFieldTestEventWorker,
-          args: [article.user_id, AbExperiment::GoalConversionHandler::USER_PUBLISHES_POST_GOAL],
-        ) do
-          article.save
-        end
-      end
-    end
 
     describe "async score calc" do
       it "enqueues Articles::ScoreCalcWorker if published" do
@@ -1615,6 +2014,24 @@ RSpec.describe Article do
       it "does not Articles::EnrichImageAttributesWorker if the HTML does not change" do
         sidekiq_assert_no_enqueued_jobs(only: Articles::EnrichImageAttributesWorker) do
           article.update(tag_list: %w[fsharp go])
+        end
+      end
+    end
+
+    describe "detect code block languages" do
+      before do
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+      end
+
+      it "enqueues Articles::DetectCodeBlockLanguagesWorker when body_markdown changes to include an unlabeled code block" do
+        sidekiq_assert_enqueued_with(job: Articles::DetectCodeBlockLanguagesWorker, args: [article.id]) do
+          article.update(body_markdown: "```\nconst answer = 42;\n```")
+        end
+      end
+
+      it "does not enqueue Articles::DetectCodeBlockLanguagesWorker when code blocks are already labeled" do
+        sidekiq_assert_no_enqueued_jobs(only: Articles::DetectCodeBlockLanguagesWorker) do
+          article.update(body_markdown: "```ruby\nputs :hi\n```")
         end
       end
     end
@@ -2041,6 +2458,59 @@ RSpec.describe Article do
         article.update_score
         expect(article.reload.comment_score).to eq(25)
       end
+
+      it "ensures no individual comment contributes less than -1 to the total score" do
+        # Create comments with very negative scores
+        create(:comment, commentable: article, score: -177)
+        create(:comment, commentable: article, score: -50)
+        create(:comment, commentable: article, score: 10)
+        create(:comment, commentable: article, score: -1)
+        article.update_column(:max_score, 0)
+
+        article.update_score
+        # -177 counts as -1, -50 counts as -1, 10 counts as 10, -1 counts as -1
+        # Total: -1 + -1 + 10 + -1 = 7
+        expect(article.reload.comment_score).to eq(7)
+      end
+    end
+
+    context "triggering LinkedDomains::UpdateScoreWorker" do
+      before { Sidekiq::Testing.fake! }
+      let!(:domain) { LinkedDomain.create!(host: "example.com") }
+
+      before do
+        WebpageReference.create!(record: article, linked_domain: domain, url: "https://example.com/page")
+        allow(LinkedDomains::UpdateScoreWorker).to receive(:perform_async)
+      end
+
+      it "triggers the worker when score changes" do
+        article.update_score
+        expect(LinkedDomains::UpdateScoreWorker).to have_received(:perform_async).with(domain.id)
+      end
+
+      it "does not trigger the worker when score does not change" do
+        # Set the score to what update_score will calculate (10)
+        article.update_columns(score: 10, comment_score: 3)
+        article.clear_changes_information
+        
+        article.update_score # call should not change score
+        expect(LinkedDomains::UpdateScoreWorker).not_to have_received(:perform_async)
+      end
+    end
+
+    context "triggering LinkedDomains::UpdateScoreWorker on destroy" do
+      before { Sidekiq::Testing.fake! }
+      let!(:domain) { LinkedDomain.create!(host: "destroytest.com") }
+
+      before do
+        WebpageReference.create!(record: article, linked_domain: domain, url: "https://destroytest.com/page")
+        allow(LinkedDomains::UpdateScoreWorker).to receive(:perform_async)
+      end
+
+      it "triggers the worker when article is destroyed" do
+        article.destroy
+        expect(LinkedDomains::UpdateScoreWorker).to have_received(:perform_async).with(domain.id)
+      end
     end
   end
 
@@ -2193,6 +2663,192 @@ RSpec.describe Article do
         article.update_score
         expect(article.reload.score).to eq(5)
       end
+    end
+  end
+
+  describe "established_user_adjustment in update_score" do
+    before do
+      allow(article).to receive(:reactions).and_return(double(sum: 0, privileged_category: double(sum: 0)))
+      allow(article).to receive(:comments).and_return(double(sum: 0))
+      allow(BlackBox).to receive(:article_hotness_score).and_return(0)
+      allow(Settings::UserExperience).to receive(:index_minimum_score).and_return(12)
+    end
+
+    context "when user score is > 100" do
+      before do
+        article.user.update_column(:score, 101)
+      end
+
+      it "adds the index_minimum_score if article is not labeled as spam" do
+        article.update_column(:automod_label, "no_moderation_label")
+        article.update_score
+        expect(article.reload.score).to eq(12)
+      end
+
+      it "does not add the index_minimum_score if article is clear_and_obvious_spam" do
+        article.update_column(:automod_label, "clear_and_obvious_spam")
+        article.update_score
+        # Automod adjusts score by -10 for clear_and_obvious_spam
+        expect(article.reload.score).to eq(-10)
+      end
+
+      it "does not add the index_minimum_score if article is likely_spam" do
+        article.update_column(:automod_label, "likely_spam")
+        article.update_score
+        # Automod adjusts score by -5 for likely_spam
+        expect(article.reload.score).to eq(-5)
+      end
+    end
+
+    context "when user score is <= 100" do
+      before do
+        article.user.update_column(:score, 100)
+      end
+
+      it "does not add the index_minimum_score" do
+        article.update_column(:automod_label, "no_moderation_label")
+        article.update_score
+        expect(article.reload.score).to eq(0)
+      end
+    end
+  end
+
+  describe "#trigger_freeform_context_note_generation" do
+    let(:article) { create(:article, score: 0) }
+
+    before do
+      stub_const("Ai::Base::DEFAULT_KEY", "some_key")
+      allow(Articles::GenerateFreeformContextNoteWorker).to receive(:perform_async)
+    end
+
+    it "bails if Ai::Base::DEFAULT_KEY is not present" do
+      stub_const("Ai::Base::DEFAULT_KEY", nil)
+      article.update_columns(score: 50, comment_score: 25, published_at: 1.day.ago)
+      article.trigger_freeform_context_note_generation
+      expect(Articles::GenerateFreeformContextNoteWorker).not_to have_received(:perform_async)
+    end
+
+    it "bails if score is less than 50" do
+      article.update_columns(score: 49, comment_score: 25)
+      article.trigger_freeform_context_note_generation
+      expect(Articles::GenerateFreeformContextNoteWorker).not_to have_received(:perform_async)
+    end
+
+    it "bails if comment_score is less than 25" do
+      article.update_columns(score: 50, comment_score: 24, published_at: 1.day.ago)
+      article.trigger_freeform_context_note_generation
+      expect(Articles::GenerateFreeformContextNoteWorker).not_to have_received(:perform_async)
+    end
+
+    it "bails if article was published more than a week ago" do
+      article.update_columns(score: 50, comment_score: 25, published_at: 8.days.ago)
+      article.trigger_freeform_context_note_generation
+      expect(Articles::GenerateFreeformContextNoteWorker).not_to have_received(:perform_async)
+    end
+
+    it "bails if article already has context notes" do
+      article.update_columns(score: 50, comment_score: 25, published_at: 1.day.ago)
+      create(:context_note, article: article, body_markdown: "existing note")
+      article.trigger_freeform_context_note_generation
+      expect(Articles::GenerateFreeformContextNoteWorker).not_to have_received(:perform_async)
+    end
+
+    it "calls the worker when conditions are met" do
+      article.update_columns(score: 50, comment_score: 25, published_at: 1.day.ago)
+      article.trigger_freeform_context_note_generation
+      expect(Articles::GenerateFreeformContextNoteWorker).to have_received(:perform_async).with(article.id)
+    end
+  end
+
+  describe "#trigger_summary_generation" do
+    let(:article) { create(:article) }
+
+    before do
+      stub_const("Ai::Base::DEFAULT_KEY", "some_key")
+      allow(Articles::GenerateSummaryWorker).to receive(:perform_async)
+    end
+
+    it "bails if Ai::Base::DEFAULT_KEY is not present" do
+      stub_const("Ai::Base::DEFAULT_KEY", nil)
+      article.update_columns(score: 50, comment_score: 25)
+      article.trigger_summary_generation
+      expect(Articles::GenerateSummaryWorker).not_to have_received(:perform_async)
+    end
+
+    it "bails if score is less than 50" do
+      article.update_columns(score: 49, comment_score: 25)
+      article.trigger_summary_generation
+      expect(Articles::GenerateSummaryWorker).not_to have_received(:perform_async)
+    end
+
+    it "bails if comment_score is less than 25" do
+      article.update_columns(score: 50, comment_score: 24)
+      article.trigger_summary_generation
+      expect(Articles::GenerateSummaryWorker).not_to have_received(:perform_async)
+    end
+
+    it "bails if the article already has a summary" do
+      article.update_columns(score: 50, comment_score: 25, ai_summary: "done")
+      article.trigger_summary_generation
+      expect(Articles::GenerateSummaryWorker).not_to have_received(:perform_async)
+    end
+
+    it "calls the worker when conditions are met" do
+      article.update_columns(score: 50, comment_score: 25)
+      article.trigger_summary_generation
+      expect(Articles::GenerateSummaryWorker).to have_received(:perform_async).with(article.id)
+    end
+  end
+
+  describe "#regenerate_summary_if_content_changed" do
+    let(:article) do
+      create(:article).tap do |a|
+        a.update_columns(
+          score: 60, comment_score: 30, published_at: 1.day.ago, published: true,
+          ai_summary: "existing summary text",
+          ai_summary_prompt_version: Ai::ArticleSummaryGenerator::VERSION,
+        )
+      end
+    end
+
+    before do
+      stub_const("Ai::Base::DEFAULT_KEY", "some_key")
+      allow(Articles::GenerateSummaryWorker).to receive(:perform_async)
+    end
+
+    it "enqueues a forced regeneration when body_markdown changes" do
+      article.update!(body_markdown: "#{article.body_markdown} edited")
+      expect(Articles::GenerateSummaryWorker).to have_received(:perform_async).with(article.id)
+    end
+
+    it "does not enqueue when a non-content attribute changes" do
+      article.update!(cached_tag_list: "ruby, rails")
+      expect(Articles::GenerateSummaryWorker).not_to have_received(:perform_async)
+    end
+
+    it "does not enqueue when no existing summary is stored" do
+      article.update_columns(ai_summary: nil, ai_summary_prompt_version: nil)
+      article.update!(body_markdown: "#{article.body_markdown} edited")
+      expect(Articles::GenerateSummaryWorker).not_to have_received(:perform_async)
+    end
+
+    it "does not enqueue when article is not eligible" do
+      article.update_columns(score: 10, comment_score: 5)
+      article.update!(body_markdown: "#{article.body_markdown} edited")
+      expect(Articles::GenerateSummaryWorker).not_to have_received(:perform_async)
+    end
+
+    it "does not enqueue when article is unpublished" do
+      draft_body = "---\ntitle: Draft\npublished: false\n---\n\nbody text"
+      draft = create(:article, body_markdown: draft_body)
+      draft.update_columns(
+        score: 60, comment_score: 30,
+        ai_summary: "existing", ai_summary_prompt_version: Ai::ArticleSummaryGenerator::VERSION,
+      )
+
+      draft.update!(body_markdown: "---\ntitle: Draft\npublished: false\n---\n\nedited body")
+
+      expect(Articles::GenerateSummaryWorker).not_to have_received(:perform_async)
     end
   end
 
@@ -2350,20 +3006,20 @@ RSpec.describe Article do
 
     it "uses the correct cache key for reaction counts" do
       cache_key = "reaction_counts_for_reactable-Article-#{article.id}"
-      
+
       # Clear any existing cache
       Rails.cache.delete(cache_key)
-      
+
       # Ensure we have reactions (from before block)
       expect(article.reactions.count).to be > 0
-      
+
       # Call the method to populate cache
       result = article.public_reaction_categories
-      
+
       # Verify we got results
       expect(result).to be_present
       expect(result).to be_an(Array)
-      
+
       # The cache should be populated after calling the method
       # Note: The cache might not be populated if there are no reactions or if the cache is disabled
       if Rails.cache.exist?(cache_key)
@@ -2589,6 +3245,13 @@ RSpec.describe Article do
       article.evaluate_and_update_column_from_markdown
       expect(article.processed_html).to include("Hello World!")
     end
+
+    it "does not raise an error when a ContentParsingError occurs and leaves processed_html unchanged" do
+      original_html = article.processed_html
+      allow_any_instance_of(ContentRenderer).to receive(:process_article).and_raise(ContentRenderer::ContentParsingError, "Parsing error")
+      expect { article.evaluate_and_update_column_from_markdown }.not_to raise_error
+      expect(article.reload.processed_html).to eq(original_html)
+    end
   end
 
   context "when indexing with Algolia", :algolia do
@@ -2697,6 +3360,22 @@ RSpec.describe Article do
     end
 
     context "when creating a status post with URLs in title" do
+      before do
+        # Stub network requests for URL validation (HEAD requests)
+        stub_request(:head, %r{https?://example\.com}).to_return(status: 200)
+        stub_request(:head, %r{https?://another-example\.org}).to_return(status: 200)
+        stub_request(:head, %r{https?://first\.com}).to_return(status: 200)
+        stub_request(:head, %r{https?://second\.org}).to_return(status: 200)
+        stub_request(:head, %r{https?://third\.net}).to_return(status: 200)
+
+        # Stub GET requests for metadata fetching (used by OpenGraph)
+        stub_request(:get, %r{https?://example\.com}).to_return(status: 200, body: "<html></html>")
+        stub_request(:get, %r{https?://another-example\.org}).to_return(status: 200, body: "<html></html>")
+        stub_request(:get, %r{https?://first\.com}).to_return(status: 200, body: "<html></html>")
+        stub_request(:get, %r{https?://second\.org}).to_return(status: 200, body: "<html></html>")
+        stub_request(:get, %r{https?://third\.net}).to_return(status: 200, body: "<html></html>")
+      end
+
       it "adds embed tags to body_markdown for URLs found in title" do
         article = build(:published_article,
                         user: user,
@@ -2771,6 +3450,87 @@ RSpec.describe Article do
         article.valid?
 
         expect(article.body_markdown).to eq("{% embed https://example.com/path?param=value#fragment minimal %}")
+      end
+
+      it "handles URLs with trailing punctuation" do
+        article = build(:published_article,
+                        user: user,
+                        type_of: "status",
+                        title: "Check out this site: https://example.com! Amazing stuff.",
+                        body_markdown: "")
+
+        article.valid?
+
+        expect(article.body_markdown).to eq("{% embed https://example.com minimal %}")
+      end
+
+      it "handles URLs with multiple trailing punctuation" do
+        article = build(:published_article,
+                        user: user,
+                        type_of: "status",
+                        title: "Wow... https://example.com!!!",
+                        body_markdown: "")
+
+        article.valid?
+
+        expect(article.body_markdown).to eq("{% embed https://example.com minimal %}")
+      end
+
+      it "preserves URLs that don't have trailing punctuation" do
+        article = build(:published_article,
+                        user: user,
+                        type_of: "status",
+                        title: "Check this https://example.com/path endpoint",
+                        body_markdown: "")
+
+        article.valid?
+
+        expect(article.body_markdown).to eq("{% embed https://example.com/path minimal %}")
+      end
+
+      it "handles mixed URLs with and without trailing punctuation" do
+        article = build(:published_article,
+                        user: user,
+                        type_of: "status",
+                        title: "Sites: https://first.com, and https://second.org! Plus https://third.net here",
+                        body_markdown: "")
+
+        article.valid?
+
+        expected = "{% embed https://first.com minimal %}\n{% embed https://second.org minimal %}\n{% embed https://third.net minimal %}"
+        expect(article.body_markdown).to eq(expected)
+      end
+
+      it "does not re-add embed tags when updating other attributes" do
+        article = create(:published_article,
+                         user: user,
+                         type_of: "status",
+                         title: "Check this out https://example.com",
+                         body_markdown: "")
+
+        # Body markdown should have the embed tag after creation
+        expect(article.body_markdown).to eq("{% embed https://example.com minimal %}")
+
+        # Update a different attribute (e.g., featured)
+        article.featured = true
+        expect(article).to be_valid
+        article.save!
+
+        # Body markdown should remain the same, not duplicated
+        expect(article.reload.body_markdown).to eq("{% embed https://example.com minimal %}")
+      end
+
+      it "still prevents actual body_markdown changes on persisted status posts" do
+        article = create(:published_article,
+                         user: user,
+                         type_of: "status",
+                         title: "Check this out https://example.com",
+                         body_markdown: "")
+
+        # Try to change the body_markdown
+        article.body_markdown = "This is different content"
+        expect(article).not_to be_valid
+        expect(article.errors[:body_markdown]).to include("cannot be modified for status type posts. Consider unpublishing if you need to make changes.")
       end
     end
   end
@@ -2876,6 +3636,73 @@ RSpec.describe Article do
     it "handles whitespace around line breaks" do
       article.title = "Line one\n  \n  Line two"
       expect(article.title_finalized).to eq("<p class=\"quickie-paragraph\">Line one</p><p class=\"quickie-paragraph\">Line two</p>")
+    end
+  end
+
+  describe "#extract_url_from_status_title" do
+    let(:article) { build(:article, type_of: "status", body_url: nil) }
+
+    before do
+      # Stub to prevent the new path from running so we can test the old path in isolation
+      allow(article).to receive(:should_add_urls_from_title?).and_return(false)
+    end
+
+    it "extracts first URL from title and sets body_url" do
+      article.title = "Check this out: https://example.com"
+      article.extract_url_from_status_title
+      expect(article.body_url).to eq("https://example.com")
+    end
+
+    it "extracts only first URL when multiple URLs present" do
+      article.title = "Sites: https://first.com and https://second.org"
+      article.extract_url_from_status_title
+      expect(article.body_url).to eq("https://first.com")
+    end
+
+    it "removes trailing punctuation from URLs" do
+      article.title = "Amazing site: https://example.com!"
+      article.extract_url_from_status_title
+      expect(article.body_url).to eq("https://example.com")
+    end
+
+    it "handles URLs with multiple trailing punctuation" do
+      article.title = "Wow... https://example.com!!!"
+      article.extract_url_from_status_title
+      expect(article.body_url).to eq("https://example.com")
+    end
+
+    it "preserves URLs without trailing punctuation" do
+      article.title = "Check https://example.com/path endpoint"
+      article.extract_url_from_status_title
+      expect(article.body_url).to eq("https://example.com/path")
+    end
+
+    it "handles URLs with query parameters and fragments" do
+      article.title = "Complex: https://example.com/path?param=value#fragment"
+      article.extract_url_from_status_title
+      expect(article.body_url).to eq("https://example.com/path?param=value#fragment")
+    end
+
+    it "does not change body_url when no URLs found" do
+      article.title = "Just a regular title with no URLs"
+      original_body_url = article.body_url
+      article.extract_url_from_status_title
+      expect(article.body_url).to eq(original_body_url)
+    end
+
+    it "does not extract URLs when body_url is already set" do
+      article.title = "Check this: https://example.com"
+      article.body_url = "https://existing.com"
+      article.extract_url_from_status_title
+      expect(article.body_url).to eq("https://existing.com")
+    end
+
+    it "does not extract URLs for non-status type articles" do
+      regular_article = build(:article, type_of: "full_post")
+      regular_article.title = "Check this: https://example.com"
+      original_body_url = regular_article.body_url
+      regular_article.extract_url_from_status_title
+      expect(regular_article.body_url).to eq(original_body_url)
     end
   end
 
@@ -3017,6 +3844,81 @@ RSpec.describe Article do
       article.type_of = "status"
       article.title = "Check this out\nhttps://example.com\n\nMore text"
       expect(article.title_for_metadata).to eq("Check this out https://example.com More text")
+    end
+  end
+
+  describe "#sync_tags_array" do
+    it "syncs tags_array identically with tag_list upon creation natively" do
+      user = create(:user)
+      article = create(:article, user: user, tag_list: "ruby, rails, beginners")
+      expect(article.tags_array).to match_array(article.tag_list.to_a)
+      expect(article.tags_array).to include("ruby", "rails", "beginners")
+    end
+
+    it "syncs tags_array perfectly when tags are updated mapping upstream cleanly" do
+      user = create(:user)
+      article = Article.new(title: "Test Dual Write", body_markdown: "This is a test body.", user: user)
+      
+      article.tag_list = "javascript, typescript, webdev"
+      article.save!
+      expect(article.tags_array).to match_array(["javascript", "typescript", "webdev"])
+    end
+    
+    it "handles empty tag sets gracefully" do
+      user = create(:user)
+      article = Article.new(title: "Test Dual Write", body_markdown: "This is a test body.", user: user)
+      
+      article.tag_list = ""
+      article.save!
+      expect(article.tags_array).to eq([])
+    end
+    
+    it "skips dual-write processing if tags were not inherently targeted during save" do
+      user = create(:user)
+      article = create(:article, user: user)
+      
+      # Reset local instantiation memory footprint safely bypassing acts_as_taggable
+      article.remove_instance_variable(:@tag_list) if article.instance_variable_defined?(:@tag_list)
+      
+      # Ensure reading `tags_array` doesn't inadvertently trigger sync_tags_array
+      article.sync_tags_array
+      expect(article.instance_variable_defined?(:@tag_list)).to be_falsey
+    end
+  end
+
+  describe "semantic embeddings" do
+    let(:article) { build(:article, score: Settings::UserExperience.home_feed_minimum_score) }
+
+    before do
+      stub_const("Ai::Base::DEFAULT_KEY", "test-key")
+    end
+
+    it "enqueues generate embedding when score is above threshold and content changes" do
+      allow(GenerateArticleEmbeddingWorker).to receive(:perform_async)
+      article.save!
+      expect(GenerateArticleEmbeddingWorker).to have_received(:perform_async).with(article.id)
+    end
+
+    it "does not enqueue generate embedding when score is below threshold" do
+      article.score = Settings::UserExperience.home_feed_minimum_score - 1
+      allow(GenerateArticleEmbeddingWorker).to receive(:perform_async)
+      article.save!
+      expect(GenerateArticleEmbeddingWorker).not_to have_received(:perform_async)
+    end
+
+    it "triggers semantic embedding generation manually if no embedding is present and score is high" do
+      article.save!
+      allow(GenerateArticleEmbeddingWorker).to receive(:perform_async)
+      article.trigger_semantic_embedding_generation
+      expect(GenerateArticleEmbeddingWorker).to have_received(:perform_async).with(article.id)
+    end
+
+    it "does not trigger semantic embedding generation manually if embedding is already present" do
+      article.save!
+      article.update_column(:semantic_embedding, Array.new(768, 0.1))
+      allow(GenerateArticleEmbeddingWorker).to receive(:perform_async)
+      article.trigger_semantic_embedding_generation
+      expect(GenerateArticleEmbeddingWorker).not_to have_received(:perform_async)
     end
   end
 end

@@ -60,14 +60,49 @@ export class ArticleForm extends Component {
     }
   }
 
+  static handleAgentSessionPreview() {
+    document.querySelectorAll('.ltag-agent-session').forEach(function(embed) {
+      if (embed.dataset.bound) return;
+      embed.dataset.bound = '1';
+
+      // Tool call expand/collapse
+      embed.querySelectorAll('.agent-session-tool-toggle').forEach(function(toggle) {
+        toggle.addEventListener('click', function() {
+          var detail = this.nextElementSibling;
+          var isExpanded = this.getAttribute('aria-expanded') === 'true';
+          detail.style.display = isExpanded ? 'none' : 'block';
+          this.setAttribute('aria-expanded', !isExpanded);
+          this.querySelector('.agent-session-chevron').textContent = isExpanded ? '\u25B8' : '\u25BE';
+        });
+      });
+
+      // Collapsible long text
+      embed.querySelectorAll('[data-collapsible]').forEach(function(wrapper) {
+        var textEl = wrapper.querySelector('.agent-session-text-collapse');
+        var btn = wrapper.querySelector('.agent-session-expand-btn');
+        if (!textEl || !btn) return;
+        if (textEl.scrollHeight <= textEl.clientHeight + 2) {
+          btn.style.display = 'none';
+          textEl.classList.remove('agent-session-text-collapse');
+          return;
+        }
+        btn.addEventListener('click', function() {
+          var expanded = textEl.classList.toggle('expanded');
+          btn.textContent = expanded ? 'Show less' : 'Show more';
+        });
+      });
+    });
+  }
+
   static propTypes = {
     version: PropTypes.string.isRequired,
     article: PropTypes.string.isRequired,
     organizations: PropTypes.string,
     siteLogo: PropTypes.string.isRequired,
-    schedulingEnabled: PropTypes.bool.isRequired,
+    schedulingEnabled: PropTypes.bool, // Kept for backward compatibility but always true now
     coverImageHeight: PropTypes.string.isRequired,
     coverImageCrop: PropTypes.string.isRequired,
+    aiAvailable: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -83,6 +118,7 @@ export class ArticleForm extends Component {
       schedulingEnabled,
       coverImageHeight,
       coverImageCrop,
+      aiAvailable,
     } = this.props;
     let { organizations } = this.props;
     this.article = JSON.parse(article);
@@ -103,6 +139,7 @@ export class ArticleForm extends Component {
             tagList: previousContent.tagList || '',
             mainImage: previousContent.mainImage || null,
             bodyMarkdown: previousContent.bodyMarkdown || '',
+            videoSourceUrl: previousContent.videoSourceUrl || null,
             edited: true,
           }
         : {};
@@ -139,8 +176,12 @@ export class ArticleForm extends Component {
       submitting: false,
       editing: this.article.id !== null, // eslint-disable-line react/no-unused-state
       mainImage: this.article.main_image || null,
+      videoSourceUrl: this.article.video_source_url || null,
       organizations,
       organizationId: this.article.organization_id,
+      authorId: this.article.user_id,
+      coAuthorIdsList: this.article.co_author_ids_list || '',
+      coAuthorsData: this.article.co_authors_data || [],
       errors: null,
       edited: false,
       updatedAt: this.article.updated_at,
@@ -148,6 +189,7 @@ export class ArticleForm extends Component {
       siteLogo,
       coverImageHeight,
       coverImageCrop,
+      aiAvailable,
       helpFor: null,
       helpPosition: null,
       isModalOpen: false,
@@ -171,6 +213,7 @@ export class ArticleForm extends Component {
       embedGists(this.formElement);
       this.constructor.handleRunkitPreview();
       this.constructor.handleAsciinemaPreview();
+      this.constructor.handleAgentSessionPreview();
     }
   }
 
@@ -180,7 +223,7 @@ export class ArticleForm extends Component {
       return;
     }
 
-    const { version, title, tagList, mainImage, bodyMarkdown } = this.state;
+    const { version, title, tagList, mainImage, bodyMarkdown, videoSourceUrl } = this.state;
     const updatedAt = new Date();
     localStorage.setItem(
       `editor-${version}-${this.url}`,
@@ -189,6 +232,7 @@ export class ArticleForm extends Component {
         tagList,
         mainImage,
         bodyMarkdown,
+        videoSourceUrl,
         updatedAt,
       }),
     );
@@ -281,8 +325,18 @@ export class ArticleForm extends Component {
   };
 
   handleOrgIdChange = (e) => {
-    const organizationId = e.target.selectedOptions[0].value;
-    this.setState({ organizationId });
+    const nextOrganizationId = e.target.selectedOptions[0].value;
+    this.setState((currentState) => ({
+      organizationId: nextOrganizationId,
+      coAuthorIdsList:
+        String(currentState.organizationId || '') === String(nextOrganizationId || '')
+          ? currentState.coAuthorIdsList
+          : '',
+      coAuthorsData:
+        String(currentState.organizationId || '') === String(nextOrganizationId || '')
+          ? currentState.coAuthorsData
+          : [],
+    }));
   };
 
   failedPreview = (response) => {
@@ -301,8 +355,19 @@ export class ArticleForm extends Component {
   };
 
   handleMainImageUrlChange = (payload) => {
+    const newImage = payload.links[0];
     this.setState({
-      mainImage: payload.links[0],
+      mainImage: newImage,
+      // Clear video when image is set
+      videoSourceUrl: newImage ? null : this.state.videoSourceUrl,
+    });
+  };
+
+  handleVideoUrlChange = (url) => {
+    this.setState({
+      videoSourceUrl: url,
+      // Clear image when video is set
+      mainImage: url ? null : this.state.mainImage,
     });
   };
 
@@ -378,6 +443,9 @@ export class ArticleForm extends Component {
       submitting: false,
       editing: this.article.id !== null, // eslint-disable-line react/no-unused-state
       mainImage: this.article.main_image || null,
+      organizationId: this.article.organization_id,
+      coAuthorIdsList: this.article.co_author_ids_list || '',
+      coAuthorsData: this.article.co_authors_data || [],
       errors: null,
       edited: false,
       helpFor: null,
@@ -453,6 +521,7 @@ export class ArticleForm extends Component {
       formKey,
       coverImageHeight,
       coverImageCrop,
+      aiAvailable,
     } = this.state;
 
     return (
@@ -509,6 +578,10 @@ export class ArticleForm extends Component {
             switchHelpContext={this.switchHelpContext}
             coverImageHeight={coverImageHeight}
             coverImageCrop={coverImageCrop}
+            aiAvailable={aiAvailable}
+            videoSourceUrl={this.state.videoSourceUrl}
+            onVideoUrlChange={this.handleVideoUrlChange}
+            coAuthorsData={this.state.coAuthorsData}
           />
         )}
 

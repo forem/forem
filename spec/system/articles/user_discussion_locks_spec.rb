@@ -19,8 +19,8 @@ RSpec.describe "User discussion locks", js: true do
       visit dashboard_path
       click_on "Manage"
 
-      within "div.dashboard-actions" do
-        expect(page).to have_link("Lock discussion", href: "#{article.path}/discussion_lock_confirm")
+      within "#section-discussion" do
+        expect(page).to have_link("Lock Discussion", href: "#{article.path}/discussion_lock_confirm")
       end
     end
 
@@ -75,8 +75,8 @@ RSpec.describe "User discussion locks", js: true do
       visit dashboard_path
       click_on "Manage"
 
-      within "div.dashboard-actions" do
-        expect(page).to have_link("Unlock discussion", href: "#{article.path}/discussion_unlock_confirm")
+      within "#section-discussion" do
+        expect(page).to have_link("Unlock Discussion", href: "#{article.path}/discussion_unlock_confirm")
       end
     end
 

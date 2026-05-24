@@ -49,9 +49,10 @@ RSpec.describe "IncomingWebhooks::StripeEventsController" do
 
       it_behaves_like "a successful stripe event"
 
-      it "grants the base_subscriber role" do
+      it "grants the base_subscriber role and sets status" do
         post "/incoming_webhooks/stripe_events", params: payload, headers: headers
         expect(user.reload.roles.pluck(:name)).to include("base_subscriber")
+        expect(user.current_subscriber_status).to eq("paying_subscription")
       end
 
       it "creates a conversion BillboardEvent" do
@@ -111,7 +112,9 @@ RSpec.describe "IncomingWebhooks::StripeEventsController" do
                 "metadata" => {
                   "user_id" => user.id.to_s,
                   "cancel_at_period_end" => true
-                }
+                },
+                "status" => "active",
+                "items" => { "data" => [{ "price" => { "unit_amount" => 1000 } }] }
               }
             }
           }.to_json
@@ -120,9 +123,12 @@ RSpec.describe "IncomingWebhooks::StripeEventsController" do
 
         it_behaves_like "a successful stripe event"
 
-        it "adds the impending_base_subscriber_cancellation role" do
+        it "adds the impending_base_subscriber_cancellation role and updates status" do
           post "/incoming_webhooks/stripe_events", params: payload, headers: headers
-          expect(user.reload.roles.pluck(:name)).to include("impending_base_subscriber_cancellation")
+          user.reload
+          expect(user.roles.pluck(:name)).to include("impending_base_subscriber_cancellation")
+          # status should still be paying if it's just marked for cancellation
+          expect(user.current_subscriber_status).to eq("paying_subscription")
         end
       end
 
@@ -135,7 +141,9 @@ RSpec.describe "IncomingWebhooks::StripeEventsController" do
                 "metadata" => {
                   "user_id" => user.id.to_s,
                   "cancel_at_period_end" => false
-                }
+                },
+                "status" => "active",
+                "items" => { "data" => [{ "price" => { "unit_amount" => 1000 } }] }
               }
             }
           }.to_json
@@ -166,9 +174,11 @@ RSpec.describe "IncomingWebhooks::StripeEventsController" do
 
       it_behaves_like "a successful stripe event"
 
-      it "adds the impending_base_subscriber_cancellation role" do
+      it "adds the impending_base_subscriber_cancellation role and updates status to not_subscribed" do
         post "/incoming_webhooks/stripe_events", params: payload, headers: headers
-        expect(user.reload.roles.pluck(:name)).to include("impending_base_subscriber_cancellation")
+        user.reload
+        expect(user.roles.pluck(:name)).to include("impending_base_subscriber_cancellation")
+        expect(user.current_subscriber_status).to eq("not_subscribed")
       end
     end
   end

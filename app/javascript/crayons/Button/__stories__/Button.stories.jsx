@@ -1,11 +1,4 @@
 import { h } from 'preact';
-import {
-  withKnobs,
-  object,
-  text,
-  boolean,
-  select,
-} from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import notes from './buttons.mdx';
 import { Button } from '@crayons';
@@ -19,67 +12,111 @@ const commonProps = {
   onBlur: action('onblur fired'),
 };
 
+const variantOptions = {
+  Primary: 'primary',
+  Secondary: 'secondary',
+  Outlined: 'outlined',
+  Danger: 'danger',
+  Ghost: 'ghost',
+  'Ghost Brand': 'ghost-brand',
+  'Ghost Dimmed': 'ghost-dimmed',
+  'Ghost Success': 'ghost-success',
+  'Ghost Warning': 'ghost-warning',
+  'Ghost Danger': 'ghost-danger',
+};
+
+const sizeOptions = {
+  Small: 's',
+  Default: 'default',
+  Large: 'l',
+  'Extra Large': 'xl',
+};
+
+const contentTypeOptions = {
+  Text: 'text',
+  'Icon + Text': 'icon-left',
+  'Text + Icon': 'icon-right',
+  Icon: 'icon',
+  'Icon Rounded': 'icon-rounded',
+};
+
+const tagNameOptions = {
+  Button: 'button',
+  A: 'a',
+};
+
 export default {
   title: 'Deprecated/Buttons',
-  decorator: [withKnobs],
+  component: Button,
   parameters: {
     notes,
   },
+  argTypes: {
+    variant: {
+      control: { type: 'select' },
+      options: Object.values(variantOptions),
+      mapping: variantOptions,
+    },
+    size: {
+      control: { type: 'select' },
+      options: Object.values(sizeOptions),
+      mapping: sizeOptions,
+    },
+    contentType: {
+      control: { type: 'select' },
+      options: Object.values(contentTypeOptions),
+      mapping: contentTypeOptions,
+    },
+    icon: {
+      control: { type: 'object' },
+    },
+    inverted: {
+      control: { type: 'boolean' },
+    },
+    className: {
+      control: { type: 'text' },
+    },
+    tagName: {
+      control: { type: 'select' },
+      options: Object.values(tagNameOptions),
+      mapping: tagNameOptions,
+    },
+    url: {
+      control: { type: 'text' },
+    },
+    buttonType: {
+      control: { type: 'text' },
+    },
+    disabled: {
+      control: { type: 'boolean' },
+    },
+  },
+  args: {
+    variant: 'primary',
+    size: 'default',
+    contentType: 'text',
+    icon: undefined,
+    inverted: false,
+    className: '',
+    tagName: 'button',
+    url: '',
+    buttonType: '',
+    disabled: false,
+  },
 };
 
-export const Default = () => (
+export const Default = (args) => (
   <Button
-    variant={select(
-      'variant',
-      {
-        Primary: 'primary',
-        Secondary: 'secondary',
-        Outlined: 'outlined',
-        Danger: 'danger',
-        Ghost: 'ghost',
-        'Ghost Brand': 'ghost-brand',
-        'Ghost Dimmed': 'ghost-dimmed',
-        'Ghost Success': 'ghost-success',
-        'Ghost Warning': 'ghost-warning',
-        'Ghost Danger': 'ghost-danger',
-      },
-      'primary',
-    )}
-    size={select(
-      'size',
-      {
-        Small: 's',
-        Default: 'default',
-        Large: 'l',
-        'Extra Large': 'xl',
-      },
-      'default',
-    )}
-    contentType={select(
-      'contentType',
-      {
-        Text: 'text',
-        'Icon + Text': 'icon-left',
-        'Text + Icon': 'icon-right',
-        Icon: 'icon',
-        'Icon Rounded': 'icon-rounded',
-      },
-      'text',
-    )}
-    icon={object('icon')}
-    inverted={boolean('inverted', false)}
-    className={text('className')}
-    tagName={select(
-      'tagName',
-      {
-        Button: 'button',
-        A: 'a',
-      },
-      'button',
-    )}
-    url={text('url')}
-    buttonType={text('buttonType')}
-    disabled={boolean('disabled', false)}
+    variant={args.variant}
+    size={args.size}
+    contentType={args.contentType}
+    icon={args.icon}
+    inverted={args.inverted}
+    className={args.className}
+    tagName={args.tagName}
+    url={args.url}
+    buttonType={args.buttonType}
+    disabled={args.disabled}
     {...commonProps}
   >
     Hello world!
@@ -88,7 +125,7 @@ export const Default = () => (
 
 Default.storyName = 'Buttons';
 
-export const ButtonWithIcon = () => {
+export const ButtonWithIcon = (args) => {
   const Icon = () => (
     <svg
       width="24"
@@ -102,57 +139,16 @@ export const ButtonWithIcon = () => {
 
   return (
     <Button
-      variant={select(
-        'variant',
-        {
-          Primary: 'primary',
-          Secondary: 'secondary',
-          Outlined: 'outlined',
-          Danger: 'danger',
-          Ghost: 'ghost',
-          'Ghost Brand': 'ghost-brand',
-          'Ghost Dimmed': 'ghost-dimmed',
-          'Ghost Success': 'ghost-success',
-          'Ghost Warning': 'ghost-warning',
-          'Ghost Danger': 'ghost-danger',
-        },
-        'primary',
-      )}
-      size={select(
-        'size',
-        {
-          Small: 's',
-          Default: 'default',
-          Large: 'l',
-          'Extra Large': 'xl',
-        },
-        'default',
-      )}
-      contentType={select(
-        'contentType',
-        {
-          Text: 'text',
-          'Icon + Text': 'icon-left',
-          'Text + Icon': 'icon-right',
-          Icon: 'icon',
-          'Icon Rounded': 'icon-rounded',
-        },
-        'icon-left',
-      )}
-      icon={object('icon', Icon)}
-      inverted={boolean('inverted', false)}
-      className={text('className')}
-      tagName={select(
-        'tagName',
-        {
-          Button: 'button',
-          A: 'a',
-        },
-        'button',
-      )}
-      url={text('url')}
-      buttonType={text('buttonType')}
-      disabled={boolean('disabled', false)}
+      variant={args.variant}
+      size={args.size}
+      contentType="icon-left"
+      icon={Icon}
+      inverted={args.inverted}
+      className={args.className}
+      tagName={args.tagName}
+      url={args.url}
+      buttonType={args.buttonType}
+      disabled={args.disabled}
       {...commonProps}
     >
       Hello world!

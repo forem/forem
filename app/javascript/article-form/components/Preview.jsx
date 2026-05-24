@@ -1,9 +1,10 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { useEffect } from 'preact/hooks';
+import { useEffect, useMemo } from 'preact/hooks';
 import { ErrorList } from './ErrorList';
 import { AccessibilitySuggestions } from './AccessibilitySuggestions';
 import { LoadingPreview } from './LoadingPreview';
+import { parseVideoUrl } from '../utilities/videoParser';
 
 function titleArea({
   previewResponse,
@@ -40,10 +41,42 @@ function titleArea({
     }
   }
 
+  // Parse video URL for preview
+  const videoInfo = useMemo(() => {
+    if (!articleState.videoSourceUrl) return null;
+    return parseVideoUrl(articleState.videoSourceUrl);
+  }, [articleState.videoSourceUrl]);
+
   const previewTitle = previewResponse.title || articleState.title || '';
 
   return (
     <header className="crayons-article__header">
+      {videoInfo && !coverImage && (
+        <div
+          className="crayons-article__cover"
+          style={{
+            width: '100%',
+            aspectRatio: '16 / 9',
+            position: 'relative',
+          }}
+          data-testid="article-form__video-cover"
+        >
+          <iframe
+            src={videoInfo.embedUrl}
+            style={{
+              border: 0,
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+            }}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            title={previewTitle || 'Video preview'}
+          />
+        </div>
+      )}
       {coverImage.length > 0 && (
         <div
           data-testid="article-form__cover"
@@ -67,6 +100,16 @@ function titleArea({
         </h1>
 
         <div className="spec-article__tags color-base-60">{tags}</div>
+
+        {articleState.coAuthorsData?.length > 0 && (
+          <div className="spec-article__co_authors color-base-60 mt-2 text-sm">
+            Co-authored by: {articleState.coAuthorsData.map((u) => (
+              <span key={u.id} className="fw-bold mr-1">
+                {u.name} (@{u.username})
+              </span>
+            ))}
+          </div>
+        )}
       </div>
     </header>
   );
@@ -159,6 +202,7 @@ Preview.propTypes = {
     imageManagementShowing: PropTypes.bool,
     moreConfigShowing: PropTypes.bool,
     mainImage: PropTypes.string,
+    videoSourceUrl: PropTypes.string,
     organization: PropTypes.shape({
       name: PropTypes.string.isRequired,
       bg_color_hex: PropTypes.string.isRequired,

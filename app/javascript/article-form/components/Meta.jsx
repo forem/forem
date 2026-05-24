@@ -14,6 +14,10 @@ export const Meta = ({
   switchHelpContext,
   coverImageCrop,
   coverImageHeight,
+  aiAvailable,
+  videoSourceUrl,
+  onVideoUrlChange,
+  coAuthorsData,
 }) => {
   return (
     <div className="crayons-article-form__top text-padding drop-area">
@@ -22,6 +26,9 @@ export const Meta = ({
         onMainImageUrlChange={onMainImageUrlChange}
         coverImageCrop={coverImageCrop}
         coverImageHeight={coverImageHeight}
+        aiAvailable={aiAvailable}
+        videoSourceUrl={videoSourceUrl}
+        onVideoUrlChange={onVideoUrlChange}
       />
       <Title
         defaultValue={titleDefaultValue}
@@ -33,6 +40,15 @@ export const Meta = ({
         onInput={tagsOnInput}
         switchHelpContext={switchHelpContext}
       />
+      {coAuthorsData?.length > 0 && (
+        <div className="spec-article__co_authors color-base-60 mt-2 text-sm">
+          Co-authored by: {coAuthorsData.map(u => (
+            <span key={u.id} className="fw-bold mr-1">
+              {u.name} (@{u.username})
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
@@ -47,6 +63,10 @@ Meta.propTypes = {
   switchHelpContext: PropTypes.func.isRequired,
   coverImageHeight: PropTypes.string.isRequired,
   coverImageCrop: PropTypes.string.isRequired,
+  aiAvailable: PropTypes.bool.isRequired,
+  videoSourceUrl: PropTypes.string,
+  onVideoUrlChange: PropTypes.func,
+  coAuthorsData: PropTypes.array,
 };
 
 Meta.displayName = 'Meta';

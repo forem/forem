@@ -1,0 +1,15 @@
+<%= t("mailers.organization_membership_notification_mailer.greeting", name: @user.name) %>
+
+<% if @inviter %>
+<%= t("mailers.organization_membership_notification_mailer.added_by_text",
+      inviter_name: @inviter.name,
+      organization_name: @organization.name) %>
+<% else %>
+<%= t("mailers.organization_membership_notification_mailer.added_text",
+      organization_name: @organization.name) %>
+<% end %>
+
+<%= t("mailers.organization_membership_notification_mailer.what_is_organization", community: Settings::Community.community_name) %>
+
+<%= t("mailers.organization_membership_notification_mailer.view_organization_button") %>: <%= app_url("/#{@organization.slug}") %>
+

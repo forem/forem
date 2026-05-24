@@ -1,0 +1,102 @@
+<header class="flex items-center mb-6">
+  <div>
+    <h1 class="crayons-title">Badge Automations for <%= @badge.title %></h1>
+    <p class="color-secondary">Manage automated badge awarding based on various criteria</p>
+  </div>
+  <div class="ml-auto flex gap-2">
+    <%= link_to "New Automation", new_admin_badge_badge_automation_path(@badge), class: "crayons-btn crayons-btn--s" %>
+    <%= link_to "Back to Badges", admin_badges_path, class: "crayons-btn crayons-btn--outlined crayons-btn--s" %>
+  </div>
+</header>
+
+<div class="crayons-card p-6">
+  <% if @automations.empty? %>
+    <div class="text-center py-8">
+      <p class="color-secondary">No badge automations found for this badge.</p>
+      <%= link_to "Create your first automation", new_admin_badge_badge_automation_path(@badge), class: "crayons-btn mt-4" %>
+    </div>
+  <% else %>
+    <div class="grid gap-4">
+      <% @automations.each do |automation| %>
+        <div class="border border-base-20 rounded-lg p-4 <%= 'opacity-50' unless automation.enabled? %>" data-testid="badge-automation">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex-1">
+              <div class="flex items-center gap-2 mb-2">
+                <h3 class="font-semibold text-lg">
+                  <% if automation.action == "award_article_content_badge" %>
+                    Article Content Quality Badge Automation
+                  <% else %>
+                    First Post Under Organization Badge Automation
+                  <% end %>
+                </h3>
+                <% unless automation.enabled? %>
+                  <span class="crayons-tag crayons-tag--outlined">Disabled</span>
+                <% end %>
+                <% if automation.state == "running" %>
+                  <span class="crayons-tag crayons-tag--filled" style="background-color: #3b49df;">Running</span>
+                <% elsif automation.state == "failed" %>
+                  <span class="crayons-tag crayons-tag--filled" style="background-color: #dc2626;">Failed</span>
+                <% end %>
+              </div>
+              
+              <div class="text-sm color-secondary space-y-1">
+                <div><strong>Created By:</strong> <%= automation.user.name %> (@<%= automation.user.username %>)</div>
+                <% if automation.action == "award_first_org_post_badge" %>
+                  <div><strong>Organization:</strong> 
+                    <% if automation.action_config&.dig("organization_id") %>
+                      <% org = Organization.find_by(id: automation.action_config["organization_id"]) %>
+                      <%= org ? org.name : "Unknown (ID: #{automation.action_config['organization_id']})" %>
+                    <% else %>
+                      Not set
+                    <% end %>
+                  </div>
+                <% else %>
+                  <div><strong>Quality Criteria:</strong> <%= truncate(automation.action_config&.dig("criteria") || "Not set", length: 100) %></div>
+                  <% if automation.action_config&.dig("keywords").present? %>
+                    <div><strong>Keywords:</strong> <%= Array(automation.action_config["keywords"]).join(", ") %></div>
+                  <% end %>
+                  <div><strong>Lookback Hours:</strong> <%= automation.action_config&.dig("lookback_hours") || 2 %></div>
+                <% end %>
+                <div><strong>Frequency:</strong> <%= format_frequency(automation) rescue "Unknown" %></div>
+                <% if automation.next_run_at %>
+                  <div><strong>Next Run:</strong> <%= automation.next_run_at.strftime("%b %d, %Y at %I:%M %p %Z") %></div>
+                <% end %>
+                <% if automation.last_run_at %>
+                  <div><strong>Last Run:</strong> <%= time_ago_in_words(automation.last_run_at) %> ago</div>
+                <% end %>
+                <% if automation.additional_instructions.present? %>
+                  <div class="mt-2 p-2 bg-base-10 rounded">
+                    <strong>Additional Instructions:</strong>
+                    <p class="mt-1"><%= truncate(automation.additional_instructions, length: 150) %></p>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+            
+            <div class="flex gap-2">
+              <%= link_to automation.enabled? ? "Disable" : "Enable", 
+                  toggle_enabled_admin_badge_badge_automation_path(@badge, automation),
+                  method: :patch,
+                  class: "crayons-btn crayons-btn--s crayons-btn--outlined" %>
+              <%= link_to "Edit", edit_admin_badge_badge_automation_path(@badge, automation), 
+                  class: "crayons-btn crayons-btn--s" %>
+              <%= link_to "Delete", admin_badge_badge_automation_path(@badge, automation), 
+                  method: :delete, 
+                  data: { confirm: "Are you sure you want to delete this automation? This action cannot be undone." },
+                  class: "crayons-btn crayons-btn--danger crayons-btn--s" %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<% content_for :head do %>
+  <style>
+    .opacity-50 {
+      opacity: 0.5;
+    }
+  </style>
+<% end %>
+

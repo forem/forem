@@ -4,12 +4,45 @@ module Emails
 
     sidekiq_options queue: :low_priority, retry: 15, lock: :until_executing
 
-    def perform(user_id)
+    def perform(user_id, force_send = false)
       user = User.find_by(id: user_id)
-      return unless user&.notification_setting&.email_digest_periodic? && user&.registered?
+      return unless user&.registered?
 
-      articles = EmailDigestArticleCollector.new(user).articles_to_send
+      if !force_send && !user.notification_setting&.email_digest_periodic?
+        return
+      end
+
+      collector = EmailDigestArticleCollector.new(user, force_send: force_send)
+      articles = collector.articles_to_send
       return unless articles.any?
+
+      articles_needing_summary = articles.select { |a| a.ai_summary.blank? && a.ai_summary_generated_at.nil? }
+
+      if articles_needing_summary.any? && defined?(Ai::Base::DEFAULT_KEY) && Ai::Base::DEFAULT_KEY.present?
+        full_articles = Article.where(id: articles_needing_summary.map(&:id)).index_by(&:id)
+
+        articles_needing_summary.each do |article|
+          full_article = full_articles[article.id]
+          next unless full_article
+
+          # Use an atomic cache lock to prevent multiple digest jobs from hammering the AI API
+          # for the same article simultaneously.
+          cache_key = "article_summary_attempt:#{article.id}"
+
+          # Lock for 15 minutes to allow digest processing to finish without overlapping retries.
+          next unless Rails.cache.write(cache_key, true, expires_in: 15.minutes, unless_exist: true)
+
+          begin
+            Ai::ArticleSummaryGenerator.new(full_article).call
+
+            # Assign the generated summary to the partial record so the email template can use it
+            article.ai_summary = full_article.reload.ai_summary
+          rescue StandardError => e
+            Rails.logger.warn("Failed to generate summary for article #{article.id} in digest: #{e.message}")
+            Honeybadger.notify(e) if defined?(Honeybadger)
+          end
+        end
+      end
 
       tags = user.cached_followed_tag_names&.first(12)
       first_billboard = Billboard.for_display(area: "digest_first",
@@ -27,12 +60,45 @@ module Emails
                                                                    user_signed_in: true)
 
       begin
-        DigestMailer.with(user: user, articles: articles.to_a, billboards: [first_billboard, second_billboard])
+        smart_summary = if user.last_presence_at.present? && user.last_presence_at >= 3.days.ago && FeatureFlag.enabled?(:digest_smart_summary)
+                          Ai::EmailDigestSummary.new(articles.to_a).generate
+                        end
+
+        DigestMailer.with(
+          user: user,
+          articles: articles.to_a,
+          billboards: [first_billboard, second_billboard],
+          smart_summary: smart_summary,
+          feed_config_id: collector.feed_config_id
+        )
           .digest_email.deliver_now
 
-        event_params = { user_id: user.id, context_type: "email", category: "impression" }
-        BillboardEvent.create(event_params.merge(billboard_id: first_billboard.id)) if first_billboard.present?
-        BillboardEvent.create(event_params.merge(billboard_id: second_billboard.id)) if second_billboard.present?
+        # Track impressions with relaxed durability — these are
+        # low-priority analytics writes that don't need synchronous WAL flush.
+        ApplicationRecord.with_synchronous_commit_off do
+          if first_billboard.present? || second_billboard.present?
+            event_params = { user_id: user.id, context_type: "email", category: "impression" }
+            BillboardEvent.create(event_params.merge(billboard_id: first_billboard.id)) if first_billboard.present?
+            BillboardEvent.create(event_params.merge(billboard_id: second_billboard.id)) if second_billboard.present?
+          end
+
+          if collector.feed_config_id.present?
+            feed_events_data = articles.map.with_index do |article, index|
+              {
+                article_id: article.id,
+                feed_config_id: collector.feed_config_id,
+                user_id: user.id,
+                context_type: "email",
+                category: "impression",
+                article_position: index + 1
+              }
+            end
+            FeedEvents::BulkUpsert.call(feed_events_data)
+            FeedEvent.update_single_feed_config_counters(collector.feed_config_id)
+          end
+        end
+      rescue Net::SMTPSyntaxError, Net::SMTPFatalError => e
+        Rails.logger.warn("Failed to send digest to user #{user.id} due to SMTP syntax/fatal error: #{e.message}")
       rescue StandardError => e
         Honeybadger.context({ user_id: user.id, article_ids: articles.map(&:id) })
         Honeybadger.notify(e)

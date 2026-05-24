@@ -3,6 +3,20 @@
     <%= t("views.settings.billing.heading") %>
   </h2>
 
+  <% if current_user.stripe_id_code.present? && current_user.cached_base_subscriber? %>
+    <div class="crayons-notice crayons-notice--info mb-4" role="alert">
+      <p>
+        <strong><%= t("views.settings.billing.current_status") %>:</strong>
+        <%= current_user.current_subscriber_status.humanize %>
+      </p>
+      <% if current_user.free_subscription? || current_user.trial_subscription? || current_user.paying_subscription? %>
+        <p>
+          <%= t("views.settings.billing.#{current_user.current_subscriber_status}") %>
+        </p>
+      <% end %>
+    </div>
+  <% end %>
+
   <% if current_user.stripe_id_code.blank? %>
     <%= form_tag stripe_active_cards_path, id: "credit-card-form", method: :post do %>
       <article>

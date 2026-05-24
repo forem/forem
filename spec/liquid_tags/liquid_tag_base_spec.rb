@@ -84,4 +84,5 @@ RSpec.describe LiquidTagBase, type: :liquid_tag do
       end.not_to raise_error
     end
   end
+
 end

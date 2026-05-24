@@ -46,10 +46,12 @@ class AsyncInfo
       display_announcements: user.display_announcements,
       trusted: user.trusted?,
       moderator_for_tags: user.moderator_for_tags,
+      moderator_for_subforems: user.moderator_for_subforems,
       config_body_class: user.config_body_class,
       feed_style: feed_style_preference_variable(user),
       created_at: user.created_at,
       admin: user.any_admin?,
+      admin_organization_ids: user.organization_memberships.admin.pluck(:organization_id),
       ordered_subforem_ids: user.ordered_subforems,
       policies: [
         {

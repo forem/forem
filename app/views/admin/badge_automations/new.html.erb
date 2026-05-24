@@ -1,0 +1,235 @@
+<header class="mb-6">
+  <h1 class="crayons-title">New Badge Automation for <%= @badge.title %></h1>
+  <p class="color-secondary">Create an automation to award this badge based on specific criteria. Choose the automation type below.</p>
+</header>
+
+<div class="crayons-card p-6">
+  <%= form_with model: [@badge, @automation], url: admin_badge_badge_automations_path(@badge), local: true do |f| %>
+    <% if @automation.errors.any? %>
+      <div class="crayons-notice crayons-notice--danger mb-4">
+        <h4><%= pluralize(@automation.errors.count, "error") %> prohibited this automation from being saved:</h4>
+        <ul class="ml-4 mt-2">
+          <% @automation.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="mb-4">
+      <label class="crayons-field__label" for="automation_type">Automation Type *</label>
+      <select name="automation_type" id="automation_type" class="crayons-select" required onchange="updateAutomationTypeFields()">
+        <option value="">Select automation type</option>
+        <option value="first_org_post" <%= 'selected' if @automation_type == 'first_org_post' %>>First Post Under Organization</option>
+        <option value="article_content" <%= 'selected' if @automation_type == 'article_content' %>>Article Content Quality</option>
+      </select>
+      <p class="crayons-field__description">Choose the type of badge automation to create</p>
+    </div>
+
+    <!-- First Org Post Fields -->
+    <div id="first-org-post-fields" style="display: <%= @automation_type == 'first_org_post' ? 'block' : 'none' %>;">
+      <div class="mb-4">
+        <label class="crayons-field__label" for="organization_id">Organization *</label>
+        <select name="organization_id" id="organization_id" class="crayons-select" <%= 'required' if @automation_type == 'first_org_post' %>>
+          <option value="">Select an organization</option>
+          <% @organizations.each do |org| %>
+            <option value="<%= org.id %>" <%= 'selected' if @automation.action_config&.dig("organization_id")&.to_s == org.id.to_s %>>
+              <%= org.name %>
+            </option>
+          <% end %>
+        </select>
+        <p class="crayons-field__description">The organization to check for first posts</p>
+      </div>
+    </div>
+
+    <!-- Article Content Fields -->
+    <div id="article-content-fields" style="display: <%= @automation_type == 'article_content' ? 'block' : 'none' %>;">
+      <div class="mb-4">
+        <label class="crayons-field__label" for="criteria">Quality Criteria *</label>
+        <textarea name="scheduled_automation[action_config][criteria]" id="criteria" class="crayons-textfield" rows="4" <%= 'required' if @automation_type == 'article_content' %> placeholder="e.g., well-researched technical content about web development"><%= @automation.action_config&.dig("criteria") %></textarea>
+        <p class="crayons-field__description">Describe the quality criteria that articles must meet to qualify for this badge. This will be used by AI to assess articles.</p>
+      </div>
+
+      <div class="mb-4">
+        <label class="crayons-field__label" for="keywords">Keywords (Optional)</label>
+        <input type="text" name="scheduled_automation[action_config][keywords]" id="keywords" class="crayons-textfield" value="<%= Array(@automation.action_config&.dig("keywords")).join(', ') %>" placeholder="ruby, rails, javascript">
+        <p class="crayons-field__description">Comma-separated keywords to search for articles. Articles must match at least one keyword (case-insensitive). Leave empty to check all articles.</p>
+      </div>
+
+      <div class="mb-4">
+        <label class="crayons-field__label" for="lookback_hours">Lookback Hours</label>
+        <input type="number" name="scheduled_automation[action_config][lookback_hours]" id="lookback_hours" class="crayons-textfield" min="1" value="<%= @automation.action_config&.dig("lookback_hours") || 2 %>">
+        <p class="crayons-field__description">How many hours back to look for articles (default: 2). The automation will add 15 minutes buffer to prevent missing articles.</p>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <label class="crayons-field__label" for="frequency">Frequency *</label>
+      <%= f.select :frequency, 
+          [["Hourly", "hourly"], ["Daily", "daily"], ["Weekly", "weekly"], ["Custom Interval", "custom_interval"]], 
+          { selected: @automation.frequency },
+          { class: "crayons-select", id: "frequency", onchange: "updateFrequencyFields()", required: true } %>
+      <p class="crayons-field__description">How often should this automation run?</p>
+    </div>
+
+    <!-- Frequency Configuration Fields -->
+    <div id="frequency-config-fields" class="mb-4">
+      <!-- Populated by JavaScript -->
+    </div>
+
+    <div class="mb-4">
+      <label class="crayons-field__label" for="additional_instructions">Additional Instructions</label>
+      <%= f.text_area :additional_instructions, 
+          rows: 4, 
+          class: "crayons-textfield", 
+          id: "additional_instructions",
+          placeholder: "Optional additional context..." %>
+      <p class="crayons-field__description">Optional additional instructions (not used for badge automations, but stored for reference)</p>
+    </div>
+
+    <div class="mb-4">
+      <label class="crayons-field__label">
+        <%= f.check_box :enabled, { checked: @automation.enabled }, true, false %>
+        Enabled
+      </label>
+      <p class="crayons-field__description">Whether this automation is active</p>
+    </div>
+
+    <div class="flex gap-2">
+      <%= f.submit "Create Automation", class: "crayons-btn" %>
+      <%= link_to "Cancel", admin_badge_badge_automations_path(@badge), class: "crayons-btn crayons-btn--outlined" %>
+    </div>
+  <% end %>
+</div>
+
+<script>
+function updateFrequencyFields() {
+  const frequency = document.getElementById('frequency').value;
+  const container = document.getElementById('frequency-config-fields');
+  const currentConfig = <%= @automation.frequency_config.to_json.html_safe %>;
+  
+  let html = '';
+  
+  if (frequency === 'hourly') {
+    const minute = currentConfig?.minute || 0;
+    html = `
+      <h3 class="crayons-subtitle-2 mb-3">Hourly Schedule</h3>
+      <div class="mb-4">
+        <label class="crayons-field__label" for="minute">Minute</label>
+        <input type="number" name="scheduled_automation[frequency_config][minute]" id="minute" class="crayons-textfield" min="0" max="59" value="${minute}">
+        <p class="crayons-field__description">At which minute of the hour (0-59)</p>
+      </div>
+    `;
+  } else if (frequency === 'daily') {
+    const hour = currentConfig?.hour || 9;
+    const minute = currentConfig?.minute || 0;
+    html = `
+      <h3 class="crayons-subtitle-2 mb-3">Daily Schedule</h3>
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="crayons-field__label" for="hour">Hour</label>
+          <input type="number" name="scheduled_automation[frequency_config][hour]" id="hour" class="crayons-textfield" min="0" max="23" value="${hour}">
+          <p class="crayons-field__description">Hour (0-23, UTC)</p>
+        </div>
+        <div>
+          <label class="crayons-field__label" for="minute">Minute</label>
+          <input type="number" name="scheduled_automation[frequency_config][minute]" id="minute" class="crayons-textfield" min="0" max="59" value="${minute}">
+          <p class="crayons-field__description">Minute (0-59)</p>
+        </div>
+      </div>
+    `;
+  } else if (frequency === 'weekly') {
+    const dayOfWeek = currentConfig?.day_of_week || 5;
+    const hour = currentConfig?.hour || 9;
+    const minute = currentConfig?.minute || 0;
+    html = `
+      <h3 class="crayons-subtitle-2 mb-3">Weekly Schedule</h3>
+      <div class="mb-4">
+        <label class="crayons-field__label" for="day_of_week">Day of Week</label>
+        <select name="scheduled_automation[frequency_config][day_of_week]" id="day_of_week" class="crayons-select">
+          <option value="0" ${dayOfWeek == 0 ? 'selected' : ''}>Sunday</option>
+          <option value="1" ${dayOfWeek == 1 ? 'selected' : ''}>Monday</option>
+          <option value="2" ${dayOfWeek == 2 ? 'selected' : ''}>Tuesday</option>
+          <option value="3" ${dayOfWeek == 3 ? 'selected' : ''}>Wednesday</option>
+          <option value="4" ${dayOfWeek == 4 ? 'selected' : ''}>Thursday</option>
+          <option value="5" ${dayOfWeek == 5 ? 'selected' : ''}>Friday</option>
+          <option value="6" ${dayOfWeek == 6 ? 'selected' : ''}>Saturday</option>
+        </select>
+      </div>
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="crayons-field__label" for="hour">Hour</label>
+          <input type="number" name="scheduled_automation[frequency_config][hour]" id="hour" class="crayons-textfield" min="0" max="23" value="${hour}">
+          <p class="crayons-field__description">Hour (0-23, UTC)</p>
+        </div>
+        <div>
+          <label class="crayons-field__label" for="minute">Minute</label>
+          <input type="number" name="scheduled_automation[frequency_config][minute]" id="minute" class="crayons-textfield" min="0" max="59" value="${minute}">
+          <p class="crayons-field__description">Minute (0-59)</p>
+        </div>
+      </div>
+    `;
+  } else if (frequency === 'custom_interval') {
+    const intervalDays = currentConfig?.interval_days || 7;
+    const hour = currentConfig?.hour || 9;
+    const minute = currentConfig?.minute || 0;
+    html = `
+      <h3 class="crayons-subtitle-2 mb-3">Custom Interval Schedule</h3>
+      <div class="mb-4">
+        <label class="crayons-field__label" for="interval_days">Interval (Days)</label>
+        <input type="number" name="scheduled_automation[frequency_config][interval_days]" id="interval_days" class="crayons-textfield" min="1" value="${intervalDays}">
+        <p class="crayons-field__description">Run every X days</p>
+      </div>
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="crayons-field__label" for="hour">Hour</label>
+          <input type="number" name="scheduled_automation[frequency_config][hour]" id="hour" class="crayons-textfield" min="0" max="23" value="${hour}">
+          <p class="crayons-field__description">Hour (0-23, UTC)</p>
+        </div>
+        <div>
+          <label class="crayons-field__label" for="minute">Minute</label>
+          <input type="number" name="scheduled_automation[frequency_config][minute]" id="minute" class="crayons-textfield" min="0" max="59" value="${minute}">
+          <p class="crayons-field__description">Minute (0-59)</p>
+        </div>
+      </div>
+    `;
+  }
+  
+  container.innerHTML = html;
+}
+
+function updateAutomationTypeFields() {
+  const automationType = document.getElementById('automation_type').value;
+  const firstOrgPostFields = document.getElementById('first-org-post-fields');
+  const articleContentFields = document.getElementById('article-content-fields');
+  const organizationField = document.getElementById('organization_id');
+  const criteriaField = document.getElementById('criteria');
+  
+  if (automationType === 'first_org_post') {
+    firstOrgPostFields.style.display = 'block';
+    articleContentFields.style.display = 'none';
+    if (organizationField) organizationField.required = true;
+    if (criteriaField) criteriaField.required = false;
+  } else if (automationType === 'article_content') {
+    firstOrgPostFields.style.display = 'none';
+    articleContentFields.style.display = 'block';
+    if (organizationField) organizationField.required = false;
+    if (criteriaField) criteriaField.required = true;
+  } else {
+    firstOrgPostFields.style.display = 'none';
+    articleContentFields.style.display = 'none';
+    if (organizationField) organizationField.required = false;
+    if (criteriaField) criteriaField.required = false;
+  }
+}
+
+// Initialize frequency fields on page load
+document.addEventListener('DOMContentLoaded', function() {
+  const frequency = document.getElementById('frequency').value;
+  if (frequency) {
+    updateFrequencyFields();
+  }
+  updateAutomationTypeFields();
+});
+</script>
+

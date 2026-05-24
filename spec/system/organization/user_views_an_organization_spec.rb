@@ -13,7 +13,7 @@ RSpec.describe "Organization index" do
 
       it "shows the header", js: true do
         within("h1.crayons-title") { expect(page).to have_content(organization.name) }
-        within("div.profile-header__actions") do
+        within("div.org-header-actions") do
           expect(page).to have_button(I18n.t("core.follow"))
         end
       end
@@ -68,7 +68,7 @@ RSpec.describe "Organization index" do
     it "shows the correct button", js: true do
       visit "/#{organization.slug}"
 
-      within(".profile-header__actions") do
+      within(".org-header-actions") do
         expect(page).to have_button(I18n.t("core.following"))
       end
     end

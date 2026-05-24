@@ -9,7 +9,8 @@ import { initializeDropdown } from '@utilities/dropdownUtils';
 /* global userData sendHapticMessage showLoginModal buttonFormData renderNewSidebarCount */
 
 export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
-  const { reading_list_ids = [] } = userData(); // eslint-disable-line camelcase
+  const user = userData();
+  const { reading_list_ids = [] } = user || {}; // eslint-disable-line camelcase
   const [bookmarkedFeedItems, setBookmarkedFeedItems] = useState(
     new Set(reading_list_ids),
   );

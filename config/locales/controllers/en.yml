@@ -5,6 +5,7 @@ en:
     revoked: Your API Key has been revoked.
   application_controller:
     bad_request: 'Error: Bad Request'
+    invalid_authenticity_token: 'Error: Invalid authenticity token'
     not_authorized: 'Error: not authorized'
     please_sign_in: Please sign in
   articles_controller:
@@ -40,6 +41,11 @@ en:
     this_list: this list
     unread_notifications: unread notifications
     newsletter: newsletter
+  feeds:
+    sources:
+      created: Your feed source has been added and an import has been triggered.
+      updated: Your feed source has been updated.
+      deleted: Your feed source has been removed.
   feedback_messages_controller:
     error_fill: "Make sure the forms are filled. 🤖 Other possible errors: %{errors}"
     n_a: N/A
@@ -52,6 +58,11 @@ en:
   github_repos_controller:
     repo_not_found: GitHub repository not found
     github_unauthorized: 'GitHub Unauthorized: %{e_message}'
+  ai_image_generations_controller:
+    prompt_required: Image prompt is required
+    generation_failed: Failed to generate image. Please try again.
+    timeout: Image generation timed out. Please try again.
+    unexpected_error: An unexpected error occurred while generating the image.
   image_uploads_controller:
     server_error: A server error has occurred!
   listings_controller:
@@ -66,6 +77,27 @@ en:
     not_deleted: Your organization was not deleted; you must be an admin, the only member in the organization, and have no articles connected to the organization.
     created: Your organization was successfully created and you are an admin.
     updated: Your organization was successfully updated.
+    page_save_error: "Page could not be saved: %{message}"
+    invite:
+      user_not_found: User with username "%{username}" not found.
+      already_member: This user is already a member of the organization.
+      already_pending: This user already has a pending invitation.
+      success: Successfully invited %{username} to the organization.
+      added_success: Successfully added %{username} to the organization.
+      rate_limit_exceeded: You have reached the daily invitation limit of %{limit} invitations per day. Please try again tomorrow.
+      max_outstanding_exceeded: You have reached the maximum outstanding invitations limit of %{limit}. Please wait for some invitations to be accepted or cancelled before sending more.
+    confirm_invitation:
+      invalid_token: Invalid or expired invitation token.
+      already_confirmed: This invitation has already been confirmed.
+      wrong_user: You must be signed in as the invited user to confirm this invitation.
+      sign_in_required: Please sign in to confirm your organization membership.
+      success: Successfully joined %{organization_name}!
+  lead_submissions:
+    inactive_form: This lead form is no longer accepting submissions.
+    not_found: Lead form not found.
+    already_submitted: You have already submitted this form.
+    name_and_email_required: Name and email are required.
+    recaptcha_failed: Please complete the CAPTCHA verification.
   podcasts_controller:
     podcast_suggested: Podcast suggested
   profiles_controller:

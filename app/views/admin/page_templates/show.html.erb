@@ -1,0 +1,134 @@
+<%= csrf_meta_tags %>
+
+<header class="flex items-center mb-6">
+  <h1 class="crayons-title"><%= @page_template.name %></h1>
+  <div class="ml-auto flex gap-2">
+    <%= link_to "Edit", edit_admin_page_template_path(@page_template), class: "crayons-btn crayons-btn--s" %>
+    <%= link_to "Fork", new_admin_page_template_path(fork_from: @page_template.id), class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
+    <%= link_to "Create Page", new_admin_page_path(page_template_id: @page_template.id), class: "crayons-btn crayons-btn--s crayons-btn--ghost" %>
+    <%= link_to "Back to Templates", admin_page_templates_path, class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
+  </div>
+</header>
+
+<div class="grid gap-6 l:grid-cols-2">
+  <div class="crayons-card p-6">
+    <h2 class="crayons-subtitle-2 mb-4">Template Details</h2>
+    
+    <% if @page_template.description.present? %>
+      <p class="mb-4 color-base-70"><%= @page_template.description %></p>
+    <% end %>
+    
+    <dl class="grid gap-4">
+      <div>
+        <dt class="fs-s color-base-60 mb-1">Template Type</dt>
+        <dd><code><%= @page_template.template_type %></code></dd>
+      </div>
+      
+      <% if @page_template.forked_from.present? %>
+        <div>
+          <dt class="fs-s color-base-60 mb-1">Forked From</dt>
+          <dd><%= link_to @page_template.forked_from.name, admin_page_template_path(@page_template.forked_from), class: "crayons-link" %></dd>
+        </div>
+      <% end %>
+      
+      <% if @page_template.forks.any? %>
+        <div>
+          <dt class="fs-s color-base-60 mb-1">Forks</dt>
+          <dd>
+            <ul class="list-disc pl-4">
+              <% @page_template.forks.each do |fork| %>
+                <li><%= link_to fork.name, admin_page_template_path(fork), class: "crayons-link" %></li>
+              <% end %>
+            </ul>
+          </dd>
+        </div>
+      <% end %>
+    </dl>
+  </div>
+  
+  <div class="crayons-card p-6">
+    <h2 class="crayons-subtitle-2 mb-4">Data Schema (<%= @page_template.schema_fields.count %> fields)</h2>
+    
+    <% if @page_template.schema_fields.any? %>
+      <table class="crayons-table crayons-table--compact">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Label</th>
+            <th>Type</th>
+            <th>Required</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @page_template.schema_fields.each do |field| %>
+            <tr>
+              <td><code><%= field["name"] %></code></td>
+              <td><%= field["label"] %></td>
+              <td><%= field["type"] || "text" %></td>
+              <td><%= field["required"] ? "Yes" : "No" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      
+      <div class="mt-4 p-3 bg-base-10 radius-default">
+        <p class="fs-s color-base-70">
+          <strong>Usage:</strong> Use <code>{{field_name}}</code> in your template body to insert field values.
+        </p>
+      </div>
+    <% else %>
+      <p class="color-base-60">No fields defined for this template.</p>
+    <% end %>
+  </div>
+</div>
+
+<div class="crayons-card p-6 mt-6">
+  <h2 class="crayons-subtitle-2 mb-4">Template Body</h2>
+  
+  <% if @page_template.body_markdown.present? %>
+    <div class="crayons-field mb-4">
+      <label class="crayons-field__label">Markdown</label>
+      <pre class="p-4 bg-base-10 radius-default overflow-auto fs-s" style="max-height: 300px;"><%= @page_template.body_markdown %></pre>
+    </div>
+  <% end %>
+  
+  <% if @page_template.body_html.present? %>
+    <div class="crayons-field">
+      <label class="crayons-field__label">HTML</label>
+      <pre class="p-4 bg-base-10 radius-default overflow-auto fs-s" style="max-height: 300px;"><%= @page_template.body_html %></pre>
+    </div>
+  <% end %>
+</div>
+
+<div class="crayons-card p-6 mt-6">
+  <h2 class="crayons-subtitle-2 mb-4">Pages Using This Template (<%= @pages.count %>)</h2>
+  
+  <% if @pages.any? %>
+    <table class="crayons-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Slug</th>
+          <th>Created</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @pages.each do |page| %>
+          <tr>
+            <td><%= link_to page.title, page.path, class: "crayons-link", target: "_blank" %></td>
+            <td><code><%= page.slug %></code></td>
+            <td><%= page.created_at.strftime("%b %d, %Y") %></td>
+            <td>
+              <%= link_to "Edit", edit_admin_page_path(page), class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p class="color-base-60">No pages have been created from this template yet.</p>
+    <%= link_to "Create a page", new_admin_page_path(page_template_id: @page_template.id), class: "crayons-btn crayons-btn--s mt-4" %>
+  <% end %>
+</div>
+

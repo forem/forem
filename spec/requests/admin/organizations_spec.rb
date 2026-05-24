@@ -53,5 +53,48 @@ RSpec.describe "/admin/content_manager/organizations" do
               params: params
       end.to change { organization.reload.unspent_credits_count }.by(-1)
     end
+
+    context "with audit logging" do
+      before { Audit::Subscribe.listen :moderator }
+
+      after { Audit::Subscribe.forget :moderator }
+
+      it "creates an audit log record" do
+        expect do
+          patch update_org_credits_admin_organization_path(organization),
+                params: { credits: 5, credit_action: :add, note: "test" }
+        end.to change(AuditLog, :count).by(1)
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
+        expect(log.user_id).to eq(admin.id)
+        expect(log.data["action"]).to eq("update_org_credits")
+        expect(log.data["target_organization_id"]).to eq(organization.id)
+      end
+    end
+  end
+
+  describe "PATCH /admin/organizations/:id/update_fully_trusted" do
+    it "enables fully_trusted status" do
+      expect do
+        patch update_fully_trusted_admin_organization_path(organization),
+              params: { fully_trusted: "true" }
+      end.to change { organization.reload.fully_trusted }.from(false).to(true)
+
+      expect(response).to redirect_to(admin_organization_path(organization))
+      expect(flash[:notice]).to include("enabled")
+    end
+
+    it "disables fully_trusted status" do
+      organization.update(fully_trusted: true)
+
+      expect do
+        patch update_fully_trusted_admin_organization_path(organization),
+              params: { fully_trusted: "false" }
+      end.to change { organization.reload.fully_trusted }.from(true).to(false)
+
+      expect(response).to redirect_to(admin_organization_path(organization))
+      expect(flash[:notice]).to include("disabled")
+    end
   end
 end

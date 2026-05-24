@@ -1,6 +1,5 @@
 import { h } from 'preact';
 import { action } from '@storybook/addon-actions';
-import { withKnobs, select } from '@storybook/addon-knobs';
 import {
   CommentSubscription,
   COMMENT_SUBSCRIPTION_TYPE,
@@ -8,7 +7,16 @@ import {
 
 export default {
   title: 'App Components/Comment Subscription',
-  decorators: [withKnobs],
+  component: CommentSubscription,
+  argTypes: {
+    subscriptionType: {
+      control: { type: 'select' },
+      options: Object.values(COMMENT_SUBSCRIPTION_TYPE),
+    },
+  },
+  args: {
+    subscriptionType: COMMENT_SUBSCRIPTION_TYPE.NOT_SUBSCRIBED,
+  },
 };
 
 const commonProps = {
@@ -16,42 +24,39 @@ const commonProps = {
   onUnsubscribe: action('unsubscribed'),
 };
 
-export const Unsubscribed = () => (
+export const Unsubscribed = (args) => (
   <CommentSubscription
     {...commonProps}
-    subscriptionType={select(
-      'subscriptionType',
-      COMMENT_SUBSCRIPTION_TYPE,
-      COMMENT_SUBSCRIPTION_TYPE.NOT_SUBSCRIBED,
-    )}
+    subscriptionType={args.subscriptionType}
   />
 );
 
 Unsubscribed.storyName = 'unsubscribed';
+Unsubscribed.args = {
+  subscriptionType: COMMENT_SUBSCRIPTION_TYPE.NOT_SUBSCRIBED,
+};
 
-export const Subscribed = () => (
+export const Subscribed = (args) => (
   <CommentSubscription
     {...commonProps}
-    subscriptionType={select(
-      'subscriptionType',
-      COMMENT_SUBSCRIPTION_TYPE,
-      COMMENT_SUBSCRIPTION_TYPE.ALL,
-    )}
+    subscriptionType={args.subscriptionType}
   />
 );
 
 Subscribed.storyName = 'subscribed';
+Subscribed.args = {
+  subscriptionType: COMMENT_SUBSCRIPTION_TYPE.ALL,
+};
 
-export const SubscribedButNotDefault = () => (
+export const SubscribedButNotDefault = (args) => (
   <CommentSubscription
     {...commonProps}
-    subscriptionType={select(
-      'subscriptionType',
-      COMMENT_SUBSCRIPTION_TYPE,
-      COMMENT_SUBSCRIPTION_TYPE.AUTHOR,
-    )}
+    subscriptionType={args.subscriptionType}
   />
 );
 
 SubscribedButNotDefault.storyName =
   'subscribed (with comment type other than the default';
+SubscribedButNotDefault.args = {
+  subscriptionType: COMMENT_SUBSCRIPTION_TYPE.AUTHOR,
+};

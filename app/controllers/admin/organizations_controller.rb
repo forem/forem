@@ -28,8 +28,145 @@ module Admin
 
       Credit.public_send(update_action, org, amount)
       add_note(org)
+      Audit::Logger.log(:moderator, current_user, {
+                          "action" => params[:action],
+                          "controller" => params[:controller],
+                          "target_organization_id" => org.id,
+                          "credit_action" => params[:credit_action],
+                          "credits" => amount
+                        })
 
       flash[:notice] = I18n.t("admin.organizations_controller.credit_updated")
+      redirect_to admin_organization_path(org)
+    end
+
+    def update_fully_trusted
+      org = Organization.find(params[:id])
+      old_status = org.fully_trusted?
+      org.update!(fully_trusted: params[:fully_trusted] == "true")
+      
+      if old_status != org.fully_trusted?
+        Note.create(
+          author_id: current_user.id,
+          noteable_id: org.id,
+          noteable_type: "Organization",
+          reason: "misc_note",
+          content: "Fully trusted status #{org.fully_trusted? ? 'enabled' : 'disabled'}",
+        )
+        Audit::Logger.log(:moderator, current_user, {
+                            "action" => params[:action],
+                            "controller" => params[:controller],
+                            "target_organization_id" => org.id,
+                            "fully_trusted" => org.fully_trusted?
+                          })
+      end
+
+      status = org.fully_trusted? ? "enabled" : "disabled"
+      flash[:notice] = I18n.t("admin.organizations_controller.fully_trusted_#{status}")
+      redirect_to admin_organization_path(org)
+    end
+
+    def update_baseline_score
+      org = Organization.find(params[:id])
+      old_score = org.baseline_score
+      new_score = params[:baseline_score].to_i
+      
+      org.update!(baseline_score: new_score)
+
+      if old_score != org.baseline_score
+        Note.create(
+          author_id: current_user.id,
+          noteable_id: org.id,
+          noteable_type: "Organization",
+          reason: "misc_note",
+          content: "Baseline score changed from #{old_score} to #{new_score}",
+        )
+        Audit::Logger.log(:moderator, current_user, {
+                            "action" => params[:action],
+                            "controller" => params[:controller],
+                            "target_organization_id" => org.id,
+                            "old_baseline_score" => old_score,
+                            "new_baseline_score" => org.baseline_score
+                          })
+      end
+
+      flash[:notice] = I18n.t("admin.organizations_controller.baseline_score_updated")
+      redirect_to admin_organization_path(org)
+    end
+
+    def update_verified
+      org = Organization.find(params[:id])
+      new_verified = params[:verified] == "true"
+      old_verified = org.verified?
+
+      if new_verified
+        org.update_columns(verified: true, verified_at: Time.current,
+                           verification_status: Organization::VERIFICATION_STATUS_ADMIN)
+      else
+        org.update_columns(verified: false, verified_at: nil, verification_url: nil)
+      end
+
+      if old_verified != org.verified?
+        Note.create(
+          author_id: current_user.id,
+          noteable_id: org.id,
+          noteable_type: "Organization",
+          reason: "misc_note",
+          content: "Verified status #{org.verified? ? 'enabled (manually)' : 'disabled'}",
+        )
+        Audit::Logger.log(:moderator, current_user, {
+                            "action" => params[:action],
+                            "controller" => params[:controller],
+                            "target_organization_id" => org.id,
+                            "verified" => org.verified?
+                          })
+      end
+
+      status = org.verified? ? "enabled" : "disabled"
+      flash[:notice] = I18n.t("admin.organizations_controller.verified_#{status}")
+      redirect_to admin_organization_path(org)
+    end
+
+    ORG_FEATURES = %w[org_readme org_lead_forms org_dofollow_links org_verification].freeze
+
+    def update_org_feature
+      org = Organization.find(params[:id])
+      feature = params[:feature]
+
+      unless ORG_FEATURES.include?(feature)
+        flash[:error] = I18n.t("admin.organizations_controller.org_feature_invalid")
+        return redirect_to admin_organization_path(org)
+      end
+
+      actor = FeatureFlag::Actor[org]
+      if params[:enabled] == "true"
+        FeatureFlag.enable(feature.to_sym, actor)
+      else
+        FeatureFlag.disable(feature.to_sym, actor)
+      end
+
+      status = params[:enabled] == "true" ? "enabled" : "disabled"
+      Note.create(
+        author_id: current_user.id,
+        noteable_id: org.id,
+        noteable_type: "Organization",
+        reason: "misc_note",
+        content: "Org feature '#{feature}' #{status}",
+      )
+      Audit::Logger.log(:moderator, current_user, {
+                          "action" => params[:action],
+                          "controller" => params[:controller],
+                          "target_organization_id" => org.id,
+                          "feature" => feature,
+                          "enabled" => params[:enabled] == "true"
+                        })
+
+      # Reprocess org pages when dofollow flag changes so link attributes are updated
+      if feature == "org_dofollow_links"
+        org.pages.find_each(&:save!)
+      end
+
+      flash[:notice] = I18n.t("admin.organizations_controller.org_feature_#{status}", feature: feature.humanize)
       redirect_to admin_organization_path(org)
     end
 

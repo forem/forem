@@ -159,6 +159,49 @@ RSpec.describe "Api::V0::Articles" do
         expected_key = ["articles", article.record_key].to_set
         expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
       end
+
+      it "returns 404 Not Found if the tag contains an invalid Postgres quantifier character" do
+        get api_articles_path(tag: "c++")
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "returns 404 Not Found if the tag contains other non-alphanumeric punctuation" do
+        get api_articles_path(tag: ".help")
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "returns articles for tag names with numbers" do
+        create(:article, published: true, tags: "ruby3")
+        get api_articles_path(tag: "ruby3")
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.size).to eq(1)
+      end
+
+      it "returns 200 OK for tag names with multiple hyphens even if they don't exist" do
+        get api_articles_path(tag: "my-cool-tag")
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.size).to eq(0)
+      end
+
+      it "returns 404 Not Found for SQL injection attempts" do
+        get api_articles_path(tag: "' OR 1=1; --")
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "returns 404 Not Found for advanced regex injection attempts" do
+        get api_articles_path(tag: "[a-zA-Z]+")
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "returns 404 Not Found if the tag has spaces" do
+        get api_articles_path(tag: "ruby on rails")
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "returns 404 Not Found if the tag has emojis" do
+        get api_articles_path(tag: "ruby💎")
+        expect(response).to have_http_status(:not_found)
+      end
     end
 
     context "with tags param" do
@@ -166,6 +209,36 @@ RSpec.describe "Api::V0::Articles" do
         create(:article, published: true)
         get api_articles_path(tags: "javascript, css, not-existing-tag")
         expect(response.parsed_body.size).to eq(1)
+      end
+
+      it "returns 404 Not Found if one of the tags is invalid among valid comma-separated ones" do
+        create(:article, published: true)
+        get api_articles_path(tags: "javascript, c++, css")
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "returns 404 Not Found if all the tags are completely invalid" do
+        create(:article, published: true)
+        get api_articles_path(tags: "$$$, @@")
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "returns 200 OK when tags have numbers and hyphens even if they don't exist" do
+        get api_articles_path(tags: "custom-tag-one, custom-tag-two, ruby3")
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.size).to eq(0)
+      end
+
+      it "returns articles and ignores multiple commas and blank tags" do
+        create(:article, published: true, tags: "ruby")
+        get api_articles_path(tags: ",,ruby, ,  ")
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.size).to eq(1)
+      end
+
+      it "returns 404 Not Found if there are spaces in a single tag" do
+        get api_articles_path(tags: "ruby, css, ruby on rails")
+        expect(response).to have_http_status(:not_found)
       end
     end
 
@@ -179,6 +252,28 @@ RSpec.describe "Api::V0::Articles" do
         get api_articles_path(tags_exclude: "node, java")
         expect(response.parsed_body.size).to eq(2)
       end
+
+      it "returns 404 Not Found if one of the excluded tags has an invalid quantifier" do
+        create(:article, published: true)
+        get api_articles_path(tags_exclude: "ruby, c#, elixir")
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "returns articles and ignores spaces around valid tags" do
+        create(:article, published: true, tags: "java")
+        create(:article, published: true, tags: "node")
+        get api_articles_path(tags_exclude: "  node  , java  ")
+        expect(response).to have_http_status(:ok)
+        
+        # The test database already has one other globally defined article from `before { article }`
+        expect(response.parsed_body.size).to eq(1)
+        expect(response.parsed_body.first["tags"]).not_to include("java", "node")
+      end
+
+      it "returns 404 Not Found if there's an injection attempt in the excluded tags" do
+        get api_articles_path(tags_exclude: "ruby, css, ' OR 1=1")
+        expect(response).to have_http_status(:not_found)
+      end
     end
 
     context "with tags and tags_exclude params" do
@@ -186,6 +281,18 @@ RSpec.describe "Api::V0::Articles" do
         create(:article, published: true)
         get api_articles_path(tags: "javascript, css", tags_exclude: "node, java")
         expect(response.parsed_body.size).to eq(1)
+      end
+
+      it "returns 404 Not Found if tags parameter has valid syntax but tags_exclude has invalid specifiers" do
+        create(:article, published: true)
+        get api_articles_path(tags: "javascript, css", tags_exclude: "b*d_tag")
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "returns 404 Not Found if tags parameter has invalid syntax but tags_exclude has valid specifiers" do
+        create(:article, published: true)
+        get api_articles_path(tags: ".NET, css", tags_exclude: "node")
+        expect(response).to have_http_status(:not_found)
       end
     end
 

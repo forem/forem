@@ -1,0 +1,219 @@
+<header class="mb-6">
+  <h1 class="crayons-title">Edit Scheduled Automation for <%= @bot.name %></h1>
+  <p class="color-secondary">Update the scheduled automation settings</p>
+</header>
+
+<div class="crayons-card p-6">
+  <%= form_with model: @automation, url: admin_subforem_community_bot_scheduled_automation_path(@subforem, @bot, @automation), method: :patch, local: true do |f| %>
+    <% if @automation.errors.any? %>
+      <div class="crayons-notice crayons-notice--danger mb-4">
+        <h4><%= pluralize(@automation.errors.count, "error") %> prohibited this automation from being saved:</h4>
+        <ul class="ml-4 mt-2">
+          <% @automation.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="mb-4">
+      <label class="crayons-field__label" for="service_name">AI Service</label>
+      <%= f.select :service_name, 
+          [["GitHub Repo Recap", "github_repo_recap"]], 
+          {},
+          class: "crayons-select", 
+          id: "service_name",
+          onchange: "updateServiceFields()" %>
+      <p class="crayons-field__description">Select the AI service to use for generating content</p>
+    </div>
+
+    <div class="mb-4">
+      <label class="crayons-field__label" for="action">Action</label>
+      <%= f.select :action, 
+          [["Create Draft", "create_draft"], ["Publish Article", "publish_article"]], 
+          {},
+          class: "crayons-select", 
+          id: "action" %>
+      <p class="crayons-field__description">Choose whether to create a draft or publish the article directly</p>
+    </div>
+
+    <div class="mb-4">
+      <label class="crayons-field__label" for="frequency">Frequency</label>
+      <%= f.select :frequency, 
+          [["Hourly", "hourly"], ["Daily", "daily"], ["Weekly", "weekly"], ["Custom Interval", "custom_interval"]], 
+          {},
+          class: "crayons-select", 
+          id: "frequency",
+          onchange: "updateFrequencyFields()" %>
+      <p class="crayons-field__description">How often should this automation run?</p>
+    </div>
+
+    <!-- Frequency Configuration Fields (dynamically shown based on frequency) -->
+    <div id="frequency-config-fields" class="mb-4">
+      <!-- These will be populated by JavaScript based on frequency selection -->
+    </div>
+
+    <!-- Service-specific Configuration -->
+    <div id="service-config-fields" class="mb-4">
+      <!-- GitHub Repo Recap specific fields -->
+      <div id="github-repo-recap-fields" style="display: none;">
+        <h3 class="crayons-subtitle-2 mb-3">GitHub Repo Recap Configuration</h3>
+        
+        <div class="mb-4">
+          <label class="crayons-field__label" for="repo_name">Repository Name</label>
+          <input type="text" name="scheduled_automation[action_config][repo_name]" id="repo_name" class="crayons-textfield" placeholder="owner/repo (e.g., forem/forem)" value="<%= @automation.action_config["repo_name"] %>">
+          <p class="crayons-field__description">The GitHub repository in "owner/name" format</p>
+        </div>
+
+        <div class="mb-4">
+          <label class="crayons-field__label" for="days_ago">Days to Look Back</label>
+          <input type="number" name="scheduled_automation[action_config][days_ago]" id="days_ago" class="crayons-textfield" value="<%= @automation.action_config["days_ago"] || 7 %>" min="1">
+          <p class="crayons-field__description">Number of days of activity to include in the recap</p>
+        </div>
+
+        <div class="mb-4">
+          <label class="crayons-field__label" for="tags">Tags (comma-separated)</label>
+          <input type="text" name="scheduled_automation[action_config][tags]" id="tags" class="crayons-textfield" placeholder="opensource, github, recap" value="<%= @automation.action_config["tags"] %>">
+          <p class="crayons-field__description">Optional tags to add to the generated article</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <label class="crayons-field__label" for="additional_instructions">Additional Instructions</label>
+      <%= f.text_area :additional_instructions, 
+          rows: 4, 
+          class: "crayons-textfield", 
+          id: "additional_instructions",
+          placeholder: "Add any additional context or instructions to customize the AI-generated content..." %>
+      <p class="crayons-field__description">Optional additional instructions to customize the generated content</p>
+    </div>
+
+    <div class="flex gap-2">
+      <%= f.submit "Update Automation", class: "crayons-btn" %>
+      <%= link_to "Cancel", admin_subforem_community_bot_scheduled_automations_path(@subforem, @bot), class: "crayons-btn crayons-btn--outlined" %>
+    </div>
+  <% end %>
+</div>
+
+<script>
+function updateFrequencyFields() {
+  const frequency = document.getElementById('frequency').value;
+  const container = document.getElementById('frequency-config-fields');
+  const currentConfig = <%= raw @automation.frequency_config.to_json %>;
+  
+  let html = '';
+  
+  if (frequency === 'hourly') {
+    html = `
+      <h3 class="crayons-subtitle-2 mb-3">Hourly Schedule</h3>
+      <div class="mb-4">
+        <label class="crayons-field__label" for="minute">Minute</label>
+        <input type="number" name="scheduled_automation[frequency_config][minute]" id="minute" class="crayons-textfield" min="0" max="59" value="${currentConfig.minute || 0}">
+        <p class="crayons-field__description">At which minute of the hour (0-59)</p>
+      </div>
+    `;
+  } else if (frequency === 'daily') {
+    html = `
+      <h3 class="crayons-subtitle-2 mb-3">Daily Schedule</h3>
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="crayons-field__label" for="hour">Hour</label>
+          <input type="number" name="scheduled_automation[frequency_config][hour]" id="hour" class="crayons-textfield" min="0" max="23" value="${currentConfig.hour || 9}">
+          <p class="crayons-field__description">Hour (0-23, UTC)</p>
+        </div>
+        <div>
+          <label class="crayons-field__label" for="minute">Minute</label>
+          <input type="number" name="scheduled_automation[frequency_config][minute]" id="minute" class="crayons-textfield" min="0" max="59" value="${currentConfig.minute || 0}">
+          <p class="crayons-field__description">Minute (0-59)</p>
+        </div>
+      </div>
+    `;
+  } else if (frequency === 'weekly') {
+    html = `
+      <h3 class="crayons-subtitle-2 mb-3">Weekly Schedule</h3>
+      <div class="mb-4">
+        <label class="crayons-field__label" for="day_of_week">Day of Week</label>
+        <select name="scheduled_automation[frequency_config][day_of_week]" id="day_of_week" class="crayons-select">
+          <option value="0" ${currentConfig.day_of_week == 0 ? 'selected' : ''}>Sunday</option>
+          <option value="1" ${currentConfig.day_of_week == 1 ? 'selected' : ''}>Monday</option>
+          <option value="2" ${currentConfig.day_of_week == 2 ? 'selected' : ''}>Tuesday</option>
+          <option value="3" ${currentConfig.day_of_week == 3 ? 'selected' : ''}>Wednesday</option>
+          <option value="4" ${currentConfig.day_of_week == 4 ? 'selected' : ''}>Thursday</option>
+          <option value="5" ${currentConfig.day_of_week == 5 || currentConfig.day_of_week === undefined ? 'selected' : ''}>Friday</option>
+          <option value="6" ${currentConfig.day_of_week == 6 ? 'selected' : ''}>Saturday</option>
+        </select>
+      </div>
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="crayons-field__label" for="hour">Hour</label>
+          <input type="number" name="scheduled_automation[frequency_config][hour]" id="hour" class="crayons-textfield" min="0" max="23" value="${currentConfig.hour || 9}">
+          <p class="crayons-field__description">Hour (0-23, UTC)</p>
+        </div>
+        <div>
+          <label class="crayons-field__label" for="minute">Minute</label>
+          <input type="number" name="scheduled_automation[frequency_config][minute]" id="minute" class="crayons-textfield" min="0" max="59" value="${currentConfig.minute || 0}">
+          <p class="crayons-field__description">Minute (0-59)</p>
+        </div>
+      </div>
+    `;
+  } else if (frequency === 'custom_interval') {
+    html = `
+      <h3 class="crayons-subtitle-2 mb-3">Custom Interval Schedule</h3>
+      <div class="mb-4">
+        <label class="crayons-field__label" for="interval_days">Interval (Days)</label>
+        <input type="number" name="scheduled_automation[frequency_config][interval_days]" id="interval_days" class="crayons-textfield" min="1" value="${currentConfig.interval_days || 7}">
+        <p class="crayons-field__description">Run every X days</p>
+      </div>
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="crayons-field__label" for="hour">Hour</label>
+          <input type="number" name="scheduled_automation[frequency_config][hour]" id="hour" class="crayons-textfield" min="0" max="23" value="${currentConfig.hour || 9}">
+          <p class="crayons-field__description">Hour (0-23, UTC)</p>
+        </div>
+        <div>
+          <label class="crayons-field__label" for="minute">Minute</label>
+          <input type="number" name="scheduled_automation[frequency_config][minute]" id="minute" class="crayons-textfield" min="0" max="59" value="${currentConfig.minute || 0}">
+          <p class="crayons-field__description">Minute (0-59)</p>
+        </div>
+      </div>
+    `;
+  }
+  
+  container.innerHTML = html;
+}
+
+function updateServiceFields() {
+  const serviceName = document.getElementById('service_name').value;
+  
+  // Hide all service-specific fields
+  document.querySelectorAll('[id$="-fields"]').forEach(el => {
+    if (el.id !== 'frequency-config-fields' && el.id !== 'service-config-fields') {
+      el.style.display = 'none';
+    }
+  });
+  
+  // Show the selected service's fields
+  if (serviceName) {
+    const serviceFields = document.getElementById(`${serviceName}-fields`);
+    if (serviceFields) {
+      serviceFields.style.display = 'block';
+    }
+  }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+  const frequency = document.getElementById('frequency').value;
+  const serviceName = document.getElementById('service_name').value;
+  
+  // Always update fields on edit page since values are already selected
+  if (frequency) {
+    updateFrequencyFields();
+  }
+  if (serviceName) {
+    updateServiceFields();
+  }
+});
+</script>
+

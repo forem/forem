@@ -27,10 +27,11 @@ module Search
     # @param tags [Array<String>] a list of tags to filter our search
     # @param page [Integer] the page in the pagination
     # @param per_page [Integer] how many items do we return in our pagination result set
+    # @param subforem_id [Integer] the subforem to filter articles by
     #
     # @return [Hash<Symbol,Object>] with keys :items and :total.
     #         :total is an Integer and :items is an Array of serialized data.
-    def self.search_documents(user, term: nil, statuses: [], tags: [], page: 0, per_page: DEFAULT_PER_PAGE)
+    def self.search_documents(user, term: nil, statuses: [], tags: [], page: 0, per_page: DEFAULT_PER_PAGE, subforem_id: nil)
       return {} unless user
 
       statuses = statuses.presence || DEFAULT_STATUSES
@@ -48,6 +49,7 @@ module Search
         tags: tags,
         page: page,
         per_page: per_page,
+        subforem_id: subforem_id,
       )
 
       # NOTE: [@rhymes] an earlier version used `Article.includes(:user)`
@@ -69,7 +71,7 @@ module Search
       }
     end
 
-    def self.find_articles(user:, term:, statuses:, tags:, page:, per_page:, only_published: true)
+    def self.find_articles(user:, term:, statuses:, tags:, page:, per_page:, subforem_id: nil, only_published: true)
       # [@jgaskins, @rhymes] as `reactions` is potentially a big table, adding pagination
       # to an INNER JOIN (eg. `joins(:reactions)`) exponentially decreases the performance,
       # incrementing query time as the database has to scan all the rows just to discard
@@ -87,6 +89,12 @@ module Search
       )
 
       relation = relation.published if only_published
+
+      # Only filter by subforem if we're not in the root subforem context
+      # In root context, show articles from any subforem
+      if subforem_id.present? && subforem_id != RequestStore.store[:root_subforem_id]
+        relation = relation.from_subforem(subforem_id)
+      end
 
       relation = relation.search_articles(term) if term.present?
 

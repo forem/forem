@@ -1,5 +1,4 @@
 import { h } from 'preact';
-import { withKnobs, object, text, boolean } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import { Article } from '..';
 import {
@@ -20,30 +19,54 @@ const commonProps = {
 
 export default {
   title: 'App Components/Article/Video',
-  decorators: [withKnobs],
+  component: Article,
+  argTypes: {
+    commentsIcon: {
+      control: { type: 'text' },
+    },
+    videoIcon: {
+      control: { type: 'text' },
+    },
+    isBookmarked: {
+      control: { type: 'boolean' },
+    },
+    article: {
+      control: { type: 'object' },
+    },
+    currentTag: {
+      control: { type: 'text' },
+    },
+  },
+  args: {
+    commentsIcon: ICONS.COMMENTS_ICON,
+    videoIcon: ICONS.VIDEO_ICON,
+    isBookmarked: false,
+    article: videoArticle,
+    currentTag: 'javascript',
+  },
 };
 
-export const Default = () => (
+export const Default = (args) => (
   <Article
     {...commonProps}
-    commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-    videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
-    isBookmarked={boolean('isBookmarked', false)}
-    article={object('article', videoArticle)}
-    currentTag={text('currentTag', 'javascript')}
+    commentsIcon={args.commentsIcon}
+    videoIcon={args.videoIcon}
+    isBookmarked={args.isBookmarked}
+    article={args.article}
+    currentTag={args.currentTag}
   />
 );
 
 Default.storyName = 'default';
 
-export const VideoArticleWithFlareTag = () => (
+export const VideoArticleWithFlareTag = (args) => (
   <Article
     {...commonProps}
-    commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-    videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
-    isBookmarked={boolean('isBookmarked', false)}
-    article={object('article', videoArticle)}
-    currentTag={text('currentTag')}
+    commentsIcon={args.commentsIcon}
+    videoIcon={args.videoIcon}
+    isBookmarked={args.isBookmarked}
+    article={args.article}
+    currentTag={args.currentTag}
   />
 );
 

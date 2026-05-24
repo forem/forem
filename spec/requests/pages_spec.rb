@@ -23,6 +23,49 @@ RSpec.describe "Pages" do
       expect(response.body).to include(" pageslug-#{page.slug}")
     end
 
+    context "with a null byte in the slug URL" do
+      it "returns a 400 Bad Request error without raising an unhandled exception for default formats" do
+        get "/page/%00.env"
+        expect(response).to have_http_status(:bad_request)
+        expect(response.body).to include("The request could not be understood (400).")
+      end
+
+      it "returns a JSON formatted error for JSON clients" do
+        get "/page/%00.json", headers: { "Accept" => "application/json" }
+        expect(response).to have_http_status(:bad_request)
+        expect(response.content_type).to start_with("application/json")
+        json_response = JSON.parse(response.body)
+        expect(json_response["error"]).to eq(I18n.t("application_controller.bad_request"))
+      end
+    end
+
+    context "when the page has a redirect_to_url set to an external URL" do
+      it "redirects permanently to the external URL" do
+        page = create(:page, redirect_to_url: "https://example.com/target")
+        get "/page/#{page.slug}"
+        expect(response).to have_http_status(:moved_permanently)
+        expect(response).to redirect_to("https://example.com/target")
+      end
+    end
+
+    context "when the page has a redirect_to_url set to an internal path" do
+      it "redirects permanently to the internal path" do
+        page = create(:page, redirect_to_url: "/about")
+        get "/page/#{page.slug}"
+        expect(response).to have_http_status(:moved_permanently)
+        expect(response).to redirect_to("/about")
+      end
+    end
+
+    context "when the page has a redirect_to_url and is_top_level_path" do
+      it "redirects permanently to the external URL for top-level path" do
+        page = create(:page, redirect_to_url: "https://example.com/target", is_top_level_path: true)
+        get "/#{page.slug}"
+        expect(response).to have_http_status(:moved_permanently)
+        expect(response).to redirect_to("https://example.com/target")
+      end
+    end
+
     context "when redirect_if_different_subforem is triggered" do
       let(:subforem) { create(:subforem) }
       let!(:page) { create(:page, slug: "some-page", subforem_id: subforem.id) }

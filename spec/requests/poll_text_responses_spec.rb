@@ -27,7 +27,7 @@ RSpec.describe "PollTextResponses", type: :request do
     end
 
     context "with invalid parameters" do
-      it "returns error for empty text content" do
+      it "returns success even for empty text content (silent failure)" do
         expect do
           post "/polls/#{poll.id}/poll_text_responses", params: {
             poll_text_response: {
@@ -36,13 +36,12 @@ RSpec.describe "PollTextResponses", type: :request do
           }
         end.not_to change(PollTextResponse, :count)
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:success)
         json_response = JSON.parse(response.body)
-        expect(json_response["success"]).to be false
-        expect(json_response["errors"]).to include("Text content can't be blank")
+        expect(json_response["success"]).to be true
       end
 
-      it "returns error for text content too long" do
+      it "returns success even for text content too long (silent failure)" do
         expect do
           post "/polls/#{poll.id}/poll_text_responses", params: {
             poll_text_response: {
@@ -51,10 +50,9 @@ RSpec.describe "PollTextResponses", type: :request do
           }
         end.not_to change(PollTextResponse, :count)
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:success)
         json_response = JSON.parse(response.body)
-        expect(json_response["success"]).to be false
-        expect(json_response["errors"]).to include("Text content is too long (maximum is 1000 characters)")
+        expect(json_response["success"]).to be true
       end
 
       it "creates a new text response when user submits again" do

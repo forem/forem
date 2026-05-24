@@ -2,6 +2,8 @@ module Settings
   class RateLimit < Base
     self.table_name = :settings_rate_limits
 
+    setting :agent_session_creation, type: :integer, default: 5
+    setting :ai_image_generation, type: :integer, default: 5
     setting :article_update, type: :integer, default: 30
     setting :comment_antispam_creation, type: :integer, default: 1
     # Explicitly defaults to 7 to accommodate DEV Top 7 Posts
@@ -13,6 +15,8 @@ module Settings
     setting :image_upload, type: :integer, default: 9
     setting :listing_creation, type: :integer, default: 1
     setting :organization_creation, type: :integer, default: 1
+    setting :organization_invitation_daily, type: :integer, default: 3
+    setting :organization_invitation_max_outstanding, type: :integer, default: 10
     setting :published_article_antispam_creation, type: :integer, default: 1
     setting :published_article_creation, type: :integer, default: 9
     setting :reaction_creation, type: :integer, default: 10
@@ -24,6 +28,7 @@ module Settings
 
     # Moderation
     setting :internal_content_description_spec, type: :string
+    setting :expanded_content_advisement_spec, type: :string
 
     # A helper function to determine if we should consider the user a "new" user.
     #

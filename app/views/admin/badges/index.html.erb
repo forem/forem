@@ -16,7 +16,12 @@
   <tbody class="crayons-card">
     <% @badges.each do |badge| %>
       <tr>
-        <td><%= link_to badge.title, edit_admin_badge_path(badge.id) %></td>
+        <td>
+          <%= link_to badge.title, edit_admin_badge_path(badge.id) %>
+          <div class="text-xs color-secondary mt-1">
+            <%= link_to "Manage Automations", admin_badge_badge_automations_path(badge), class: "c-link c-link--branded" %>
+          </div>
+        </td>
         <td class="justify-center"><%= badge.slug %></td>
         <td class="justify-center">
           <img class="mx-auto mt-3" width="40" height="40" src="<%= badge.badge_image %>" alt="badge image" loading="lazy" />

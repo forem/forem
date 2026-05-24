@@ -48,8 +48,9 @@ RSpec.describe BandcampTag, type: :liquid_tag do
       it "renders the Bandcamp album player iframe" do
         output = generate_liquid_output(album_url_caribou)
         expect(output).to include("<iframe")
-        expect(output).to include("src=\"https://bandcamp.com/EmbeddedPlayer/album=#{album_id_caribou}/size=large/artwork=small/tracklist=false/bgcol=ffffff/linkcol=0687f5/transparent=true/\"")
-        expect(output).to include("style=\"border: 0; width: 100%; height: 120px;\"")
+        expect(output).to include("src=\"https://bandcamp.com/EmbeddedPlayer/album=#{album_id_caribou}/size=large/artwork=small/tracklist=true/bgcol=ffffff/linkcol=0687f5/transparent=true/\"")
+        # With the full album player, base height is 128px when track count is unknown in metadata
+        expect(output).to include("style=\"border: 0; width: 100%; height: 128px;\"")
       end
     end
 

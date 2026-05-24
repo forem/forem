@@ -71,8 +71,8 @@ RSpec.describe "Reactions" do
         expect(result["reactions"]).to be_empty
       end
 
-      it "sets the surrogate key header equal to params for article" do
-        expect(response.headers["Surrogate-Key"]).to eq(controller.params.to_s)
+      it "sets the surrogate key header for article reactions" do
+        expect(response.headers["Surrogate-Key"]).to eq(Reaction.surrogate_key_for_article(article.id))
       end
 
       it "sets the x-accel-expires header equal to max-age for article" do
@@ -135,8 +135,8 @@ RSpec.describe "Reactions" do
         expect(result["reactions"]).to be_empty
       end
 
-      it "sets the surrogate key header equal to params" do
-        expect(response.headers["Surrogate-Key"]).to eq(controller.params.to_s)
+      it "sets the surrogate key header for commentable reactions" do
+        expect(response.headers["Surrogate-Key"]).to eq(Reaction.surrogate_key_for_commentable(article))
       end
 
       it "sets the x-accel-expires header equal to max-age for article" do

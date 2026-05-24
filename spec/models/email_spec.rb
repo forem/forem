@@ -3,14 +3,15 @@ require "rails_helper"
 
 RSpec.describe Email, type: :model do
   describe "Associations" do
-    it { should belong_to(:audience_segment).optional }
+    it { is_expected.to belong_to(:audience_segment).optional }
   end
 
   describe "Callbacks" do
-    it "calls #deliver_to_users after create" do
-      email = build(:email)
-      expect(email).to receive(:deliver_to_users)
-      email.save
+    it "registers #deliver_to_users as an after_commit callback" do
+      # Verify the callback is registered in the chain
+      # Note: checking private internal Rails structure is brittle but confirms configuration
+      callback_names = Email._commit_callbacks.select { |cb| cb.kind == :after }.map(&:filter)
+      expect(callback_names).to include(:deliver_to_users)
     end
   end
 
@@ -27,7 +28,8 @@ RSpec.describe Email, type: :model do
 
       it "does not enqueue any jobs to EnqueueCustomBatchSendWorker" do
         expect(Emails::EnqueueCustomBatchSendWorker).not_to receive(:perform_async)
-        email.send(:deliver_to_users)
+        # Manually trigger since after_commit doesn't run in transactional tests
+        email.deliver_to_users
       end
     end
 
@@ -36,27 +38,61 @@ RSpec.describe Email, type: :model do
 
       it "does not enqueue any jobs to EnqueueCustomBatchSendWorker" do
         expect(Emails::EnqueueCustomBatchSendWorker).not_to receive(:perform_async)
-        email.send(:deliver_to_users)
+        email.deliver_to_users
       end
     end
 
     context "when status is changed from 'draft' to 'active'" do
       let(:email) { create(:email, status: "draft") }
 
-      it "enqueues jobs to EnqueueCustomBatchSendWorker" do
-        email.update(status: "active")
-        expect(Emails::EnqueueCustomBatchSendWorker).to have_received(:perform_async).with(email.id)
+      context "and max user ID is over 5000" do
+        it "enqueues 24 jobs to EnqueueCustomBatchSendWorker" do
+          allow(User).to receive(:maximum).with(:id).and_return(6000)
+
+          email.update(status: "active")
+          email.deliver_to_users
+
+          expect(Emails::EnqueueCustomBatchSendWorker).to have_received(:perform_async).exactly(24).times
+
+          # Example assertions for boundaries
+          expect(Emails::EnqueueCustomBatchSendWorker).to have_received(:perform_async).with(email.id, 1, 250)
+          expect(Emails::EnqueueCustomBatchSendWorker).to have_received(:perform_async).with(email.id, 251, 500)
+          expect(Emails::EnqueueCustomBatchSendWorker).to have_received(:perform_async).with(email.id, 5751,
+                                                                                             6000)
+        end
+
+        it "only enqueues once even if re-saved" do
+          allow(User).to receive(:maximum).with(:id).and_return(6000)
+
+          email.update(status: "active")
+          email.deliver_to_users
+          expect(Emails::EnqueueCustomBatchSendWorker).to have_received(:perform_async).exactly(24).times
+
+          # Clear expectations
+          RSpec::Mocks.space.proxy_for(Emails::EnqueueCustomBatchSendWorker).reset
+          allow(Emails::EnqueueCustomBatchSendWorker).to receive(:perform_async)
+
+          email.reload.save
+          email.deliver_to_users
+          expect(Emails::EnqueueCustomBatchSendWorker).not_to have_received(:perform_async)
+        end
       end
 
-      it "only enqueues once even if re-saved" do
-        email.update(status: "active")
-        email.reload.save
-        expect(Emails::EnqueueCustomBatchSendWorker).to have_received(:perform_async).with(email.id).once
+      context "and max user ID is 5000 or less" do
+        it "enqueues a single job to EnqueueCustomBatchSendWorker" do
+          allow(User).to receive(:maximum).with(:id).and_return(5000)
+
+          email.update(status: "active")
+          email.deliver_to_users
+
+          expect(Emails::EnqueueCustomBatchSendWorker).to have_received(:perform_async).once.with(email.id)
+        end
       end
     end
 
     it "updates the email status to 'delivered'" do
-      email = create(:email, status: "active")
+      email = create(:email, status: "draft") # Start as draft
+      email.update(status: "active") # Make it active/dirty
       email.deliver_to_users
       expect(email.reload.status).to eq("delivered")
     end
@@ -78,11 +114,12 @@ RSpec.describe Email, type: :model do
       it "enqueues a job with the matching users" do
         addresses_string = "test1@example.com, test2@example.com"
         expect(Emails::BatchCustomSendWorker).to receive(:perform_async).with(
-          match_array([user_1.id, user_2.id]), # <--- FIX APPLIED HERE
+          contain_exactly(user_1.id, user_2.id),
           "[TEST] #{email.subject}",
           email.body,
           email.type_of,
-          email.id
+          email.id,
+          email.default_from_name_based_on_type,
         )
         email.deliver_to_test_emails(addresses_string)
       end
@@ -93,14 +130,15 @@ RSpec.describe Email, type: :model do
 
       it "falls back to using test_email_addresses and enqueues a job" do
         email.test_email_addresses = "tester@example.com"
-        # Note: match_array isn't strictly necessary for a single-element array,
+        # NOTE: match_array isn't strictly necessary for a single-element array,
         # but using it here for consistency is fine.
         expect(Emails::BatchCustomSendWorker).to receive(:perform_async).with(
-          match_array([user_1.id]),
+          contain_exactly(user_1.id),
           "[TEST] #{email.subject}",
           email.body,
           email.type_of,
-          email.id
+          email.id,
+          email.default_from_name_based_on_type,
         )
         email.deliver_to_test_emails(nil)
       end

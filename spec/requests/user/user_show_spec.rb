@@ -10,9 +10,6 @@ RSpec.describe "UserShow" do
   end
   let(:user) { profile.user }
 
-  let!(:default_subforem) { create(:subforem, domain: "www.example.com") }
-  let!(:other_subforem)   { create(:subforem, domain: "other.com") }
-
   describe "GET /:slug (user)" do
     before do
       FeatureFlag.add(:subscriber_icon)
@@ -134,6 +131,9 @@ RSpec.describe "UserShow" do
   end
 
   context "redirect_if_inactive_in_subforem_for_user" do
+    let!(:default_subforem) { create(:subforem, domain: "www.example.com") }
+    let!(:other_subforem)   { create(:subforem, domain: "other.com") }
+
     context "when user is 'inactive' in the current subforem" do
       before do
         # Ensure user has no pinned stories, no stories, no comments

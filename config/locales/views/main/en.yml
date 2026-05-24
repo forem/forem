@@ -11,6 +11,9 @@ en:
         moderation:
           aria_label: Moderation
           icon: Moderation
+        manage:
+          aria_label: Manage Subforem
+          icon: Manage Subforem
         notifications:
           aria_label: Notifications
           icon: Notifications
@@ -24,6 +27,8 @@ en:
           text: Log in
       nav:
         admin: Admin
+        manage_subforem: Manage Subforem
+        agent_sessions: Agent Sessions
         dashboard: Dashboard
         placeholder: "..."
         list: Reading list
@@ -42,6 +47,7 @@ en:
         Privacy Policy: Privacy Policy
         Reading List: Reading List
         Tags: Tags
+        trends: Trends
         Terms of use: Terms of Use
         Videos: Videos
       side:

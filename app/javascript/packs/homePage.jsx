@@ -11,14 +11,15 @@ import { setupBillboardInteractivity } from '@utilities/billboardInteractivity';
 import { trackCreateAccountClicks } from '@utilities/ahoy/trackEvents';
 
 /* global userData */
-// This logic is similar to that in initScrolling.js.erb
 const frontPageFeedPathNames = new Map([
   ['/', ''],
+  ['/discover', ''],
   ['/top/week', 'week'],
   ['/top/month', 'month'],
   ['/top/year', 'year'],
   ['/top/infinity', 'infinity'],
   ['/latest', 'latest'],
+  ['/latest_less_filtered', 'latest_less_filtered'],
   ['/following', ''],
   ['/following/latest', 'latest']
 ]);
@@ -30,10 +31,24 @@ const frontPageFeedPathNames = new Map([
  * @param {object} user The currently logged on user, null if not logged on.
  */
 
-function renderTagsFollowed(user = userData()) {
+function renderTagsFollowed(user = null) {
   const tagsFollowedContainer = document.getElementById(
     'sidebar-nav-followed-tags',
   );
+  
+  // Try to get user data if not provided
+  if (user === null) {
+    try {
+      const { user: userDataString = null } = document.body.dataset;
+      if (userDataString) {
+        user = JSON.parse(userDataString);
+      }
+    } catch (error) {
+      console.error('Error parsing user data:', error);
+      return false;
+    }
+  }
+  
   if (user === null || !tagsFollowedContainer) {
     // Return and do not render if the user is not logged in
     // or if this is not the home page.
@@ -123,6 +138,24 @@ if (document.getElementById('sidebar-nav-followed-tags')) {
             return;
           }
 
+          const url = new URL(window.location);
+          const changedFeedTimeFrame = frontPageFeedPathNames.get(url.pathname);
+
+          if (!frontPageFeedPathNames.has(url.pathname)) {
+            return;
+          }
+
+          const callback = () => {
+            initializeBillboardVisibility();
+            observeBillboards();
+            setupBillboardInteractivity();
+            observeFeedElements();
+          };
+
+          renderFeed(changedFeedTimeFrame, callback);
+        });
+
+        window.addEventListener('forem:feed:refresh', () => {
           const url = new URL(window.location);
           const changedFeedTimeFrame = frontPageFeedPathNames.get(url.pathname);
 

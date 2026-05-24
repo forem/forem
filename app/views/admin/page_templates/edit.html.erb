@@ -1,0 +1,12 @@
+<h1 class="crayons-title mb-6">Edit Page Template</h1>
+
+<% if @page_template.pages.any? %>
+  <div class="crayons-notice crayons-notice--warning mb-6" aria-live="polite">
+    <strong>Note:</strong> This template has <%= @page_template.pages.count %> page(s) using it. 
+    Changes to the template body will automatically re-render all associated pages.
+    <strong>The data schema cannot be modified</strong> once pages have been created.
+  </div>
+<% end %>
+
+<%= render "form" %>
+

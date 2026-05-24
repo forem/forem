@@ -13,10 +13,17 @@ fr:
       cover_image:
         add: Ajouter une image de couverture
         change: Changer
+      cover_video_link:
+        add: Lien de vidéo de couverture
+        change: Changer le lien de vidéo
       edit: Éditer
       modes: Voir les modes de publication
       new_title: Nouveau titre de publication ici...
       preview: Aperçu
+      ai_helper:
+        sidecar_title: "Assistant %{community_name}"
+        title: "Assistant %{community_name}"
+        greeting: "Bonjour ! Je suis votre assistant de rédaction. Je connais les consignes de l’éditeur %{community_name}. Besoin d’aide avec le markdown, les intégrations, la mise en forme, ou de conseils sur les règles et les attentes de la communauté ?"
       video:
         progress:
           heading: "⏳ Transcodage Vidéo en Cours ⏳"

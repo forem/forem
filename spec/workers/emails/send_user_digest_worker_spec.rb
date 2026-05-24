@@ -42,7 +42,8 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
 
         worker.perform(user.id)
 
-        expect(DigestMailer).to have_received(:with).with(user: user, articles: Array, billboards: Array)
+        expect(DigestMailer).to have_received(:with).with(hash_including(user: user, articles: kind_of(Array),
+                                                                         billboards: kind_of(Array)))
         expect(mailer).to have_received(:digest_email)
         expect(message_delivery).to have_received(:deliver_now)
       end
@@ -84,6 +85,44 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
 
         expect(BillboardEvent.where(billboard_id: bb_1.id, category: "impression").size).to be(1)
         expect(BillboardEvent.where(billboard_id: bb_2.id, category: "impression").size).to be(1)
+      end
+
+      it "still delivers email even if billboard event creation raises" do
+        create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
+        create(:billboard, placement_area: "digest_first", published: true, approved: true)
+
+        allow(BillboardEvent).to receive(:create).and_raise(StandardError.new("DB error"))
+        allow(Honeybadger).to receive(:context)
+        allow(Honeybadger).to receive(:notify)
+
+        worker.perform(user.id)
+
+        # Email was already delivered before billboard tracking was attempted
+        expect(message_delivery).to have_received(:deliver_now)
+        expect(Honeybadger).to have_received(:notify).with(instance_of(StandardError))
+      end
+
+      it "rescues Net::SMTPSyntaxError and logs a warning without notifying Honeybadger" do
+        create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
+
+        allow(message_delivery).to receive(:deliver_now).and_raise(Net::SMTPSyntaxError.new("501 Recipient syntax error"))
+        allow(Rails.logger).to receive(:warn)
+        allow(Honeybadger).to receive(:notify)
+
+        worker.perform(user.id)
+
+        expect(Rails.logger).to have_received(:warn).with(/SMTP syntax\/fatal error/)
+        expect(Honeybadger).not_to have_received(:notify)
+      end
+
+      it "opens a transaction for analytics tracking even when no billboards are present" do
+        create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
+
+        expect(ApplicationRecord).to receive(:with_synchronous_commit_off).and_call_original
+
+        worker.perform(user.id)
+
+        expect(message_delivery).to have_received(:deliver_now)
       end
 
       context "when there's a preferred paired billboard" do
@@ -132,6 +171,173 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
           expect(BillboardEvent.where(billboard_id: paired_bb.id, category: "impression").count).to eq(1)
           # and it should *not* fire for the other_bb
           expect(BillboardEvent.where(billboard_id: other_bb.id).count).to eq(0)
+        end
+      end
+
+      context "with AI summary experiment" do
+        let(:smart_summary_service) { instance_double(Ai::EmailDigestSummary) }
+
+        before do
+          allow(FeatureFlag).to receive(:enabled?).with(:digest_smart_summary).and_return(true)
+          allow(Ai::EmailDigestSummary).to receive(:new).and_return(smart_summary_service)
+          allow(smart_summary_service).to receive(:generate).and_return("Smart AI Summary")
+        end
+
+        it "generates and includes smart summary if user has recent presence" do
+          user.update_column(:last_presence_at, 1.day.ago)
+          create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
+
+          worker.perform(user.id)
+
+          expect(DigestMailer).to have_received(:with).with(hash_including(smart_summary: "Smart AI Summary"))
+        end
+
+        it "does not include smart summary if user has no recent presence" do
+          user.update_column(:last_presence_at, 4.days.ago)
+          create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
+
+          worker.perform(user.id)
+
+          expect(DigestMailer).to have_received(:with).with(hash_including(smart_summary: nil))
+        end
+
+        it "does not include smart summary if user presence is nil" do
+          user.update_column(:last_presence_at, nil)
+          create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
+
+          worker.perform(user.id)
+
+          expect(DigestMailer).to have_received(:with).with(hash_including(smart_summary: nil))
+        end
+      end
+
+      context "with force_send: true" do
+        it "sends email even if user has email_digest_periodic disabled" do
+          create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
+          user.notification_setting.update_column(:email_digest_periodic, false)
+
+          worker.perform(user.id, true)
+
+          expect(DigestMailer).to have_received(:with).with(hash_including(user: user))
+          expect(mailer).to have_received(:digest_email)
+          expect(message_delivery).to have_received(:deliver_now)
+        end
+
+        it "still does not send email if user is not registered" do
+          create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
+          user.update_column(:registered, false)
+
+          worker.perform(user.id, true)
+
+          expect(DigestMailer).not_to have_received(:with)
+        end
+      end
+
+      context "with missing per-article AI summaries" do
+        let!(:article) { create(:article, user_id: author.id, public_reactions_count: 30, score: 30, tag_list: [tag.name]) }
+        let(:ai_generator) { instance_double(Ai::ArticleSummaryGenerator) }
+        
+        before do
+          # create enough articles to trigger the digest
+          create_list(:article, 2, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name], ai_summary: "Existing summary", ai_summary_generated_at: Time.current)
+          
+          # The one missing summary
+          article.update_columns(ai_summary: nil, ai_summary_generated_at: nil)
+          
+          stub_const("Ai::Base::DEFAULT_KEY", "dummy_key")
+          allow(Ai::ArticleSummaryGenerator).to receive(:new).and_return(ai_generator)
+          allow(ai_generator).to receive(:call) do
+            article.update_column(:ai_summary, "Generated inline summary")
+          end
+        end
+
+        it "invokes the generator and updates the article in the email payload" do
+          worker.perform(user.id)
+          expect(Ai::ArticleSummaryGenerator).to have_received(:new)
+          expect(ai_generator).to have_received(:call)
+          
+          expect(DigestMailer).to have_received(:with) do |args|
+            delivered_article = args[:articles].find { |a| a.id == article.id }
+            expect(delivered_article.ai_summary).to eq("Generated inline summary")
+          end
+        end
+
+        it "skips generation if Ai::Base::DEFAULT_KEY is missing" do
+          stub_const("Ai::Base::DEFAULT_KEY", nil)
+          worker.perform(user.id)
+          expect(Ai::ArticleSummaryGenerator).not_to have_received(:new)
+          expect(message_delivery).to have_received(:deliver_now)
+        end
+
+        it "rescues errors during generation and still delivers digest" do
+          allow(ai_generator).to receive(:call).and_raise(StandardError.new("AI error"))
+          allow(Rails.logger).to receive(:warn)
+          allow(Honeybadger).to receive(:notify)
+          
+          worker.perform(user.id)
+          
+          expect(Rails.logger).to have_received(:warn).with(/Failed to generate summary for article #{article.id} in digest: AI error/)
+          expect(message_delivery).to have_received(:deliver_now)
+        end
+        
+        it "uses a cache lock to prevent multiple attempts" do
+          allow(Rails.cache).to receive(:write).and_call_original
+          allow(Rails.cache).to receive(:write)
+            .with("article_summary_attempt:#{article.id}", true, hash_including(unless_exist: true))
+            .and_return(false)
+          
+          worker.perform(user.id)
+          expect(Ai::ArticleSummaryGenerator).not_to have_received(:new)
+          expect(message_delivery).to have_received(:deliver_now)
+        end
+      end
+
+      context "with feed_config_id present" do
+        let(:feed_config) { create(:feed_config) }
+
+        before do
+          allow_any_instance_of(EmailDigestArticleCollector).to receive(:feed_config_id).and_return(feed_config.id)
+        end
+
+        it "creates FeedEvent impressions using BulkUpsert and updates feed config counters" do
+          create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
+          
+          expect(FeedEvents::BulkUpsert).to receive(:call).with(
+            array_including(
+              hash_including(
+                article_id: kind_of(Integer),
+                feed_config_id: feed_config.id,
+                user_id: user.id,
+                context_type: "email",
+                category: "impression",
+                article_position: kind_of(Integer)
+              )
+            )
+          ).and_call_original
+          
+          expect(FeedEvent).to receive(:update_single_feed_config_counters).with(feed_config.id).and_call_original
+
+          expect {
+            worker.perform(user.id)
+          }.to change(FeedEvent, :count).by(3)
+
+          events = FeedEvent.where(feed_config_id: feed_config.id, category: "impression")
+          expect(events.count).to eq(3)
+          expect(events.pluck(:article_position)).to match_array([1, 2, 3])
+        end
+      end
+
+      context "when feed_config_id is nil" do
+        before do
+          allow_any_instance_of(EmailDigestArticleCollector).to receive(:feed_config_id).and_return(nil)
+        end
+
+        it "does not create FeedEvent impressions" do
+          create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
+
+          expect {
+            worker.perform(user.id)
+          }.not_to change(FeedEvent, :count)
         end
       end
     end

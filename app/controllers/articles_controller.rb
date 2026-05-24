@@ -51,7 +51,12 @@ class ArticlesController < ApplicationController
 
     not_found unless @articles&.any?
 
-    set_surrogate_key_header @user&.record_key, @articles.map(&:record_key)
+    user_keys = if @user&.respond_to?(:profile_identity_cache_keys)
+                  @user.profile_identity_cache_keys
+                else
+                  Array.wrap(@user&.record_key)
+                end
+    set_surrogate_key_header(*[user_keys, @articles.map(&:record_key)].flatten.compact)
     set_cache_control_headers(10.minutes.to_i, stale_while_revalidate: 30, stale_if_error: 1.day.to_i)
 
     render layout: false, content_type: "application/xml", locals: {
@@ -101,7 +106,6 @@ class ArticlesController < ApplicationController
     @article = @article.decorate
     @discussion_lock = @article.discussion_lock
     @user = @article.user
-    @rating_vote = RatingVote.where(article_id: @article.id, user_id: @user.id).first
     @organizations = @user&.organizations
     # TODO: fix this for multi orgs
     @org_members = @organization.users.pluck(:name, :id) if @organization
@@ -321,15 +325,27 @@ class ArticlesController < ApplicationController
                        ]
                      end
 
+    # Allow video_source_url if it's a valid YouTube, Mux, or Twitch URL
+    video_url = params.dig("article", "video_source_url")
+    if video_url.present?
+      youtube_pattern = /\Ahttps?:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)/
+      mux_pattern = /\Ahttps?:\/\/player\.mux\.com\//
+      twitch_pattern = /\Ahttps?:\/\/(www\.)?twitch\.tv\/videos\//
+      allowed_params << :video_source_url if video_url.match?(youtube_pattern) || video_url.match?(mux_pattern) || video_url.match?(twitch_pattern)
+    end
+
     # NOTE: the organization logic is still a little counter intuitive but this should
     # fix the bug <https://github.com/forem/forem/issues/2871>
     if org_admin_user_change_privilege
       allowed_params << :user_id
-      allowed_params << :co_author_ids_list
-    elsif params["article"]["organization_id"] && allowed_to_change_org_id?
+    end
+
+    if params["article"].key?("organization_id") && allowed_to_change_org_id?
       # change the organization of the article only if explicitly asked to do so
       allowed_params << :organization_id
     end
+
+    allowed_params << :co_author_ids_list if allowed_to_manage_org_co_authors?
 
     manage_published_at_params
 
@@ -353,7 +369,7 @@ class ArticlesController < ApplicationController
 
   def allowed_to_change_org_id?
     potential_user = @article&.user || current_user
-    potential_org_id = params["article"]["organization_id"].presence || @article&.organization_id
+    potential_org_id = requested_organization_id || @article&.organization_id
     OrganizationMembership.exists?(user: potential_user, organization_id: potential_org_id) ||
       current_user.any_admin?
   end
@@ -364,5 +380,21 @@ class ArticlesController < ApplicationController
       current_user.org_admin?(@article.organization_id) &&
       # and if the author being changed to belongs to the article's org
       OrganizationMembership.exists?(user_id: params[:article][:user_id], organization_id: @article.organization_id)
+  end
+
+  def allowed_to_manage_org_co_authors?
+    organization_id = effective_organization_id
+
+    organization_id.present? && current_user.org_admin?(organization_id)
+  end
+
+  def effective_organization_id
+    return requested_organization_id if params["article"].key?("organization_id") && allowed_to_change_org_id?
+
+    @article&.organization_id
+  end
+
+  def requested_organization_id
+    params["article"]["organization_id"].presence
   end
 end

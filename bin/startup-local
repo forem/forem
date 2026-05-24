@@ -1,5 +1,77 @@
 #!/usr/bin/env bash
 
+# Color codes for better output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+echo "== Checking Dependencies =="
+
+# Function to check if Redis is running
+check_redis() {
+  if command -v redis-cli &> /dev/null; then
+    if redis-cli ping &> /dev/null; then
+      echo -e "${GREEN}✓ Redis is running${NC}"
+      return 0
+    else
+      echo -e "${RED}✗ Redis is not running${NC}"
+      echo -e "${YELLOW}  Start it with: brew services start redis${NC}"
+      return 1
+    fi
+  else
+    echo -e "${RED}✗ Redis is not installed${NC}"
+    echo -e "${YELLOW}  Install it with: brew install redis${NC}"
+    return 1
+  fi
+}
+
+# Function to check if PostgreSQL is running
+check_postgres() {
+  if command -v psql &> /dev/null; then
+    if pg_isready -h localhost -p 5432 &> /dev/null; then
+      echo -e "${GREEN}✓ PostgreSQL is running${NC}"
+      return 0
+    else
+      echo -e "${RED}✗ PostgreSQL is not running${NC}"
+      echo -e "${YELLOW}  Start it with: brew services start postgresql@14${NC}"
+      echo -e "${YELLOW}  (or the version you have installed)${NC}"
+      return 1
+    fi
+  else
+    echo -e "${RED}✗ PostgreSQL is not installed${NC}"
+    echo -e "${YELLOW}  Install it with: brew install postgresql${NC}"
+    return 1
+  fi
+}
+
+# Check dependencies
+redis_ok=0
+postgres_ok=0
+
+check_redis && redis_ok=1
+check_postgres && postgres_ok=1
+
+# Exit if any dependency is missing
+if [ $redis_ok -eq 0 ] || [ $postgres_ok -eq 0 ]; then
+  echo ""
+  echo -e "${RED}== Cannot start application: missing dependencies ==${NC}"
+  exit 1
+fi
+
+echo ""
+
+# Clear Redis/Sidekiq queues for a clean start
+echo -e "${GREEN}Clearing Redis queues...${NC}"
+redis-cli FLUSHDB > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+  echo -e "${GREEN}✓ Redis queues cleared${NC}"
+else
+  echo -e "${YELLOW}  Could not clear Redis queues (this is usually fine)${NC}"
+fi
+
+echo ""
+
 # Set environment variables for local development
 export DATABASE_URL="postgres://postgres:postgres@localhost:5432/Forem_development"
 export DATABASE_URL_TEST="postgres://postgres:postgres@localhost:5432/Forem_test"
@@ -7,6 +79,20 @@ export REDIS_URL="redis://localhost:6379/"
 export REDIS_SIDEKIQ_URL="redis://localhost:6379"
 export REDIS_SESSIONS_URL="redis://localhost:6379"
 export REDIS_RPUSH_URL="redis://localhost:6379"
+
+# Use single-mode Puma (no workers, just threads) for more stable local development
+# WEB_CONCURRENCY=0 means no workers, just the main process with threads
+export WEB_CONCURRENCY="0"
+export RAILS_MAX_THREADS="5"
+
+# Clear Sidekiq queues on boot (avoids running stale jobs from previous sessions)
+export SIDEKIQ_CLEAR_QUEUES_ON_BOOT="1"
+
+echo -e "${GREEN}== Starting Application ==${NC}"
+echo "  Web Server: http://localhost:3000"
+echo "  Scheduled jobs: enabled (see config/schedule.yml)"
+echo "  To disable scheduled jobs, rename config/schedule.yml temporarily"
+echo ""
 
 # Start the application with the correct environment variables
 exec bin/startup

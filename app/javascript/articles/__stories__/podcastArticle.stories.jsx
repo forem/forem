@@ -1,5 +1,4 @@
 import { h } from 'preact';
-import { withKnobs, object, text, boolean } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import { Article } from '..';
 import {
@@ -21,30 +20,54 @@ const commonProps = {
 
 export default {
   title: 'App Components/Article/Podcast',
-  decorators: [withKnobs],
+  component: Article,
+  argTypes: {
+    commentsIcon: {
+      control: { type: 'text' },
+    },
+    videoIcon: {
+      control: { type: 'text' },
+    },
+    isBookmarked: {
+      control: { type: 'boolean' },
+    },
+    article: {
+      control: { type: 'object' },
+    },
+    currentTag: {
+      control: { type: 'text' },
+    },
+  },
+  args: {
+    commentsIcon: ICONS.COMMENTS_ICON,
+    videoIcon: ICONS.VIDEO_ICON,
+    isBookmarked: false,
+    article: podcastArticle,
+    currentTag: '',
+  },
 };
 
-export const Podcast = () => (
+export const Podcast = (args) => (
   <Article
     {...commonProps}
-    commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-    videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
-    isBookmarked={boolean('isBookmarked', false)}
-    article={object('article', podcastArticle)}
-    currentTag={text('currentTag')}
+    commentsIcon={args.commentsIcon}
+    videoIcon={args.videoIcon}
+    isBookmarked={args.isBookmarked}
+    article={args.article}
+    currentTag={args.currentTag}
   />
 );
 
 Podcast.storyName = 'podcast';
 
-export const PodcastEpisode = () => (
+export const PodcastEpisode = (args) => (
   <Article
     {...commonProps}
-    commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-    videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
-    isBookmarked={boolean('isBookmarked', false)}
-    article={object('article', podcastEpisodeArticle)}
-    currentTag={text('currentTag')}
+    commentsIcon={args.commentsIcon}
+    videoIcon={args.videoIcon}
+    isBookmarked={args.isBookmarked}
+    article={podcastEpisodeArticle}
+    currentTag={args.currentTag}
   />
 );
 

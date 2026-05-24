@@ -1,6 +1,6 @@
 import { h, render } from 'preact';
 import { Snackbar } from '../Snackbar/Snackbar';
-import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
+import { getUserDataAndCsrfTokenSafely } from '@utilities/getUserDataAndCsrfToken';
 
 /* global showLoginModal  */
 
@@ -88,8 +88,9 @@ document.ready.then(() => {
     return;
   }
 
-  getUserDataAndCsrfToken()
+  getUserDataAndCsrfTokenSafely()
     .then(({ currentUser, csrfToken }) => {
+      if (!currentUser) return;
       window.currentUser = currentUser;
       window.csrfToken = csrfToken;
       renderPage(currentUser);

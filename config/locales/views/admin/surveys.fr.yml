@@ -1,0 +1,19 @@
+fr:
+  admin:
+    surveys:
+      index:
+        title: Gérer les sondages
+        create: Créer un nouveau sondage
+        empty: Aucun sondage trouvé.
+        table:
+          title: Titre
+          active: Actif
+          polls_count: Polls
+          created_at: Créé le
+          actions: Actions
+      new:
+        title: Nouveau sondage
+      edit:
+        title: Modifier le sondage
+      show:
+        title: Détails du sondage

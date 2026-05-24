@@ -29,6 +29,7 @@ module Articles
       create_article.tap do
         subscribe_author if article.persisted?
         refresh_auto_audience_segments if article.published?
+        complete_onboarding_first_post if article.published?
       end
     end
 
@@ -59,19 +60,48 @@ module Articles
       user.refresh_auto_audience_segments
     end
 
+    def complete_onboarding_first_post
+      return if user.registered_at&.before?(28.days.ago)
+
+      user.onboarding_checklist&.complete_item!("made_first_post")
+    end
+
     def create_article
-      @article = Article.create(article_params) do |article|
-        article.user_id = user.id
-        article.show_comments = true
-        article.collection = series if series.present?
+      begin
+        @article = Article.new(article_params) do |article|
+          article.user_id = user.id
+          article.show_comments = true
+        end
+      rescue ArgumentError => e
+        if e.message.include?("is not a valid type_of")
+          @article = Article.new(article_params.except(:type_of)) do |article|
+            article.user_id = user.id
+          end
+          @article.errors.add(:type_of, :invalid)
+          return @article
+        else
+          raise e
+        end
       end
+
+      # Set collection after creation to avoid it being cleared by evaluate_front_matter
+      # which clears collection_id when title is present in frontmatter
+      if @article.save
+        found_series = series
+        if found_series.present?
+          @article.update_column(:collection_id, found_series.id)
+          @article.association(:collection).reset
+        end
+      end
+      @article
     end
 
     def series
       @series ||= if article_params[:series].blank?
-                    []
+                    nil
                   else
-                    Collection.find_series(article_params[:series], user)
+                    organization = article_params[:organization_id].present? ? Organization.find_by(id: article_params[:organization_id]) : nil
+                    Collection.find_series(article_params[:series], user, organization: organization)
                   end
     end
 

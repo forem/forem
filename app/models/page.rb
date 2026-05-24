@@ -1,4 +1,5 @@
 class Page < ApplicationRecord
+  include LiquidEmbeddable
   extend UniqueAcrossModels
   TEMPLATE_OPTIONS = %w[contained full_within_layout nav_bar_included json css txt].freeze
 
@@ -9,16 +10,21 @@ class Page < ApplicationRecord
 
   has_many :billboards, dependent: :nullify
   belongs_to :subforem, optional: true
+  belongs_to :page_template, optional: true
+  belongs_to :organization, optional: true
 
   validates :title, presence: true
   validates :description, presence: true
   validates :template, inclusion: { in: TEMPLATE_OPTIONS }
   validate :body_present
+  validate :validate_template_data
+  validate :validate_redirect_to_url
 
   validate :validate_slug_uniqueness
 
   before_validation :set_default_template
   before_save :evaluate_markdown
+  before_save :render_from_page_template, if: :uses_page_template?
 
   after_commit :ensure_uniqueness_of_landinge_page
   after_commit :bust_cache
@@ -70,18 +76,38 @@ class Page < ApplicationRecord
   def as_json(...)
     super(...).slice(*%w[id title slug description is_top_level_path landing_page
                          body_html body_json body_markdown processed_html
-                         social_image template subforem_id])
+                         social_image template subforem_id page_template_id template_data redirect_to_url])
+  end
+
+  def uses_page_template?
+    page_template_id.present?
+  end
+
+  # Re-render the page from its template (called when template changes)
+  def re_render_from_template!
+    return unless uses_page_template?
+
+    render_from_page_template
+    save!
   end
 
   private
 
   def evaluate_markdown
     if body_markdown.present?
-      parsed_markdown = MarkdownProcessor::Parser.new(body_markdown)
-      self.processed_html = parsed_markdown.finalize
+      source = organization || nil
+      parsed_markdown = MarkdownProcessor::Parser.new(body_markdown, source: source)
+      self.processed_html = parsed_markdown.finalize(link_attributes: link_attributes_for_org)
     else
       self.processed_html = body_html
     end
+  end
+
+  def link_attributes_for_org
+    return {} unless organization
+    return {} if FeatureFlag.enabled?(:org_dofollow_links, FeatureFlag::Actor[organization])
+
+    { rel: "nofollow ugc" }
   end
 
   def set_default_template
@@ -89,9 +115,30 @@ class Page < ApplicationRecord
   end
 
   def body_present
+    # Skip body validation if using a page template
+    return if uses_page_template?
+    # Skip body validation if a redirect URL is set
+    return if redirect_to_url.present?
     return unless body_markdown.blank? && body_html.blank? && body_json.blank? && body_css.blank?
 
     errors.add(:body_markdown, I18n.t("models.page.body_must_exist"))
+  end
+
+  def validate_template_data
+    return unless uses_page_template? && page_template.present?
+
+    validation_errors = page_template.validate_data(template_data || {})
+    validation_errors.each do |error|
+      errors.add(:template_data, error)
+    end
+  end
+
+  def render_from_page_template
+    return unless page_template.present?
+
+    rendered_html = page_template.render_with_data(template_data || {})
+    self.processed_html = rendered_html
+    self.template = page_template.template_type
   end
 
   # As there can only be one global landing page, we want to ensure that
@@ -105,6 +152,30 @@ class Page < ApplicationRecord
 
   def bust_cache
     Pages::BustCacheWorker.perform_async(slug)
+  end
+
+  def validate_redirect_to_url
+    return if redirect_to_url.blank?
+
+    if redirect_to_url.start_with?("http://", "https://")
+      begin
+        uri = URI.parse(redirect_to_url)
+        unless uri.host.present?
+          errors.add(:redirect_to_url, I18n.t("models.page.redirect_to_url_invalid"))
+        end
+      rescue URI::InvalidURIError
+        errors.add(:redirect_to_url, I18n.t("models.page.redirect_to_url_invalid"))
+      end
+    elsif redirect_to_url.start_with?("/")
+      # Path: validate it corresponds to a recognized route in the app
+      begin
+        Rails.application.routes.recognize_path(redirect_to_url)
+      rescue ActionController::RoutingError
+        errors.add(:redirect_to_url, I18n.t("models.page.redirect_to_url_invalid_path"))
+      end
+    else
+      errors.add(:redirect_to_url, I18n.t("models.page.redirect_to_url_invalid"))
+    end
   end
 
   def validate_slug_uniqueness

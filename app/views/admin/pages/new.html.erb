@@ -1,2 +1,30 @@
-<h1 class="crayons-title mb-6">New page <%= " (Forking <code style='margin-left: 8px;'>#{@page.slug}</code>)".html_safe if @page.slug.present?%></h1>
+<h1 class="crayons-title mb-6">
+  <% if @page_template.present? && @page.slug.present? %>
+    Forking "<%= @page.slug %>" (using template "<%= @page_template.name %>")
+  <% elsif @page_template.present? %>
+    New page from template "<%= @page_template.name %>"
+  <% elsif @page.slug.present? %>
+    New page (Forking <code style='margin-left: 8px;'><%= @page.slug %></code>)
+  <% else %>
+    New page
+  <% end %>
+</h1>
+
+<% unless @page_template.present? || @page.slug.present? %>
+  <% if @page_templates.any? %>
+    <div class="crayons-card p-6 mb-6">
+      <h2 class="crayons-subtitle-2 mb-4">Create from Template</h2>
+      <p class="color-base-70 mb-4">Choose a template to quickly create a page with pre-defined structure:</p>
+      <div class="flex flex-wrap gap-2">
+        <% @page_templates.each do |template| %>
+          <%= link_to template.name, new_admin_page_path(page_template_id: template.id), 
+              class: "crayons-btn crayons-btn--secondary crayons-btn--s" %>
+        <% end %>
+      </div>
+      <hr class="my-6">
+      <h3 class="crayons-subtitle-3 mb-2">Or create from scratch</h3>
+    </div>
+  <% end %>
+<% end %>
+
 <%= render "form" %>

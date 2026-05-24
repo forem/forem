@@ -111,6 +111,23 @@ RSpec.describe URL, type: :lib do
     it "returns the correct URL for a user" do
       expect(described_class.user(user)).to eq("https://dev.to/#{user.username}")
     end
+
+    context "when a subforem context is set" do
+      let(:subforem) { create(:subforem, domain: "community.example.com") }
+
+      before do
+        RequestStore.store[:subforem_id] = subforem.id
+        allow(Subforem).to receive(:cached_id_to_domain_hash).and_return({ subforem.id => subforem.domain })
+      end
+
+      after do
+        RequestStore.store[:subforem_id] = nil
+      end
+
+      it "returns the correct URL for a user with the subforem domain" do
+        expect(described_class.user(user)).to eq("https://community.example.com/#{user.username}")
+      end
+    end
   end
 
   describe ".organization" do

@@ -1,4 +1,6 @@
 class Comment < ApplicationRecord
+  include LiquidEmbeddable
+  include WebpageTrackable
   has_ancestry
   resourcify
 
@@ -34,6 +36,7 @@ class Comment < ApplicationRecord
 
   has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :delete_all
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
+  has_many :ai_audits, as: :affected_content, dependent: :nullify
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
   before_validation :evaluate_markdown, if: -> { body_markdown }
   before_save :set_markdown_character_count, if: :body_markdown
@@ -53,12 +56,13 @@ class Comment < ApplicationRecord
   validate :discussion_not_locked, if: :commentable, on: :create
   validate :published_article, if: :commentable
   validate :user_mentions_in_markdown
+  validate :body_has_content
   validates :body_markdown, presence: true, length: { in: BODY_MARKDOWN_SIZE_RANGE }
   validates :body_markdown, uniqueness: { scope: %i[user_id ancestry commentable_id commentable_type] }
   validates :commentable_id, presence: true, if: :commentable_type
   validates :commentable_type, inclusion: { in: COMMENTABLE_TYPES }, if: :commentable_id
   validates :positive_reactions_count, presence: true
-  validates :public_reactions_count, presence: true
+  validates :public_reactions_count, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :reactions_count, presence: true
   validates :commentable, on: :create, presence: {
     message: lambda do |object, _data|
@@ -68,9 +72,12 @@ class Comment < ApplicationRecord
   }
 
   after_create_commit :record_field_test_event
+  after_create_commit :complete_onboarding_welcome_item
   after_create_commit :send_email_notification, if: :should_send_email_notification?
+  after_create_commit :enqueue_update_user_interest_embedding, if: :commentable_is_article?
 
   after_commit :calculate_score, on: %i[create update]
+  after_commit :enqueue_article_activity_update, on: :destroy, if: :commentable_is_article?
 
   after_update_commit :update_notifications, if: proc { |comment| comment.saved_changes.include? "body_markdown" }
 
@@ -199,7 +206,8 @@ class Comment < ApplicationRecord
     # In the future this could be made more customizable. For now it's just this one thing.
     return processed_html if ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"].blank? || ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"].blank?
 
-    processed_html.gsub(ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"], ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
+    processed_html.gsub(ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"],
+                        ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
   end
 
   def subforem_id
@@ -207,6 +215,26 @@ class Comment < ApplicationRecord
   end
 
   private
+
+  def commentable_is_article?
+    commentable_type == "Article"
+  end
+
+  def enqueue_update_user_interest_embedding
+    UpdateUserInterestEmbeddingWorker.perform_async(user_id, commentable_id, 0.3)
+  end
+
+  def enqueue_article_activity_update
+    # Score-driven create/destroy enqueues are emitted from
+    # Comments::CalculateScore (which uses update_columns and therefore
+    # bypasses callbacks). This after_commit only handles the destroy case:
+    # if a counted (score > 0) comment is removed, decrement the cache.
+    return unless destroyed?
+    return unless score.to_i.positive?
+
+    payload = { "iso" => created_at.to_date.iso8601 }
+    Articles::UpdateArticleActivityWorker.perform_async(commentable_id, "comment", "destroy", payload)
+  end
 
   def remove_notifications?
     deleted? || hidden_by_commentable_user?
@@ -374,11 +402,39 @@ class Comment < ApplicationRecord
                       count: Settings::RateLimit.mention_creation))
   end
 
+  def body_has_content
+    return if body_markdown.blank?
+    return if processed_html.blank?
+
+    # Allow comments with media content (images, videos, iframes, etc.)
+    # Note: hr (horizontal rule) is not included as it's not meaningful content
+    media_tags = %w[img iframe video audio object embed script]
+
+    return if processed_html.match?(/<(#{media_tags.join('|')})(>|\s)/i)
+
+    # Strip HTML tags and unescape HTML entities to check for actual text content
+    text_content = ActionController::Base.helpers.strip_tags(processed_html)
+    text_content = CGI.unescapeHTML(text_content).strip
+
+    return if text_content.present?
+
+    errors.add(:body_markdown, I18n.t("models.comment.cannot_be_empty"))
+  end
+
   def record_field_test_event
     return if FieldTest.config["experiments"].nil?
 
     Users::RecordFieldTestEventWorker
       .perform_async(user_id, AbExperiment::GoalConversionHandler::USER_CREATES_COMMENT_GOAL)
+  end
+
+  def complete_onboarding_welcome_item
+    return unless commentable_type == "Article"
+
+    welcome = Article.cached_admin_published_with("welcome")
+    return unless welcome && commentable_id == welcome.id
+
+    user.onboarding_checklist&.complete_item!("comment_in_welcome")
   end
 
   def notify_slack_channel_about_warned_users

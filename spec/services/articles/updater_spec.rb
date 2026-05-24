@@ -7,6 +7,8 @@ RSpec.describe Articles::Updater, type: :service do
   let(:draft) { create(:article, user: user, published: false, published_at: nil) }
 
   before do
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with("ENABLE_REFRESH_SEGMENT_WORKERS").and_return("true")
     allow(SegmentedUserRefreshWorker).to receive(:perform_async)
   end
 
@@ -28,6 +30,71 @@ RSpec.describe Articles::Updater, type: :service do
     attributes[:series] = "new-slug"
     described_class.call(admin, article, attributes)
     expect(article.reload.collection.user).to eq(article.user)
+  end
+
+  context "with organization collections" do
+    let(:organization) { create(:organization) }
+    let(:org_member) { create(:user) }
+    let(:org_article) { create(:article, user: org_member, organization: organization) }
+
+    before do
+      create(:organization_membership, user: org_member, organization: organization, type_of_user: "member")
+    end
+
+    it "creates an organization collection when series is provided and article is under org" do
+      attributes[:series] = "org-series"
+      described_class.call(org_member, org_article, attributes)
+      collection = org_article.reload.collection
+      expect(collection).to be_present
+      expect(collection.organization).to eq(organization)
+      expect(collection.slug).to eq("org-series")
+    end
+
+    it "creates a personal collection when series is provided and article has no org" do
+      personal_article = create(:article, user: org_member, organization: nil)
+      attributes[:series] = "personal-series"
+      described_class.call(org_member, personal_article, attributes)
+      collection = personal_article.reload.collection
+      expect(collection).to be_present
+      expect(collection.organization).to be_nil
+      expect(collection.slug).to eq("personal-series")
+    end
+
+    it "updates collection when organization_id changes" do
+      # Create article with org collection
+      org_collection = create(:collection, user: org_member, organization: organization, slug: "org-series")
+      org_article.update_column(:collection_id, org_collection.id)
+
+      # Change to different org
+      other_org = create(:organization)
+      create(:organization_membership, user: org_member, organization: other_org, type_of_user: "member")
+      attributes[:organization_id] = other_org.id
+      attributes[:series] = "other-org-series"
+
+      described_class.call(org_member, org_article, attributes)
+      collection = org_article.reload.collection
+      expect(collection.organization).to eq(other_org)
+      expect(collection.slug).to eq("other-org-series")
+    end
+
+    it "finds existing organization collection regardless of user_id" do
+      # Create collection with one user
+      original_user = create(:user)
+      create(:organization_membership, user: original_user, organization: organization, type_of_user: "member")
+      existing_collection = create(:collection, user: original_user, organization: organization, slug: "shared-series")
+
+      # Try to update article with same series using different user in same organization
+      different_member = create(:user)
+      create(:organization_membership, user: different_member, organization: organization, type_of_user: "member")
+      different_article = create(:article, user: different_member, organization: organization)
+
+      attributes[:series] = "shared-series"
+      described_class.call(different_member, different_article, attributes)
+
+      # Should find the existing collection, not create a new one
+      expect(different_article.reload.collection).to eq(existing_collection)
+      expect(Collection.where(slug: "shared-series", organization: organization).count).to eq(1)
+    end
   end
 
   it "sets tags" do
@@ -323,6 +390,31 @@ description:\ntags: heytag\n---\n\nHey this is the article"
     it "does not refresh user segments" do
       described_class.call(user, unpublished, attributes)
       expect(SegmentedUserRefreshWorker).not_to have_received(:perform_async)
+    end
+  end
+
+  describe "onboarding checklist" do
+    before { allow(Settings::General).to receive(:display_sidebar_onboarding_checklist).and_return(true) }
+
+    let(:checklist_user) { create(:user) }
+    let!(:draft) { create(:article, user: checklist_user, published: false, published_at: nil) }
+
+    it "completes made_first_post when a draft is published" do
+      described_class.call(checklist_user, draft, { body_markdown: "updated content", published: true })
+      expect(checklist_user.onboarding_checklist.reload.items["made_first_post"]).to be_present
+    end
+
+    it "does not complete made_first_post when a draft is updated but not published" do
+      described_class.call(checklist_user, draft, { body_markdown: "updated content" })
+      expect(checklist_user.onboarding_checklist.reload.items["made_first_post"]).to be_nil
+    end
+
+    it "does not query or complete made_first_post if the user registered more than 28 days ago" do
+      checklist_user.update_column(:registered_at, 29.days.ago)
+      # Assert database is not hit for checklist
+      expect(checklist_user).not_to receive(:onboarding_checklist)
+      
+      described_class.call(checklist_user, draft, { body_markdown: "updated content", published: true })
     end
   end
 end

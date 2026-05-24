@@ -3,5 +3,14 @@
 function userData() {
   const { user = null } = document.body.dataset;
 
-  return JSON.parse(user);
+  if (!user) {
+    return null;
+  }
+  
+  try {
+    return JSON.parse(user);
+  } catch (error) {
+    console.error('Error parsing user data:', error);
+    return null;
+  }
 }

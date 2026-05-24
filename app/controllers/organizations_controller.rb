@@ -1,6 +1,7 @@
 class OrganizationsController < ApplicationController
+  skip_before_action :verify_private_forem, only: :confirm_invitation
   after_action :verify_authorized
-  skip_after_action :verify_authorized, only: :members
+  skip_after_action :verify_authorized, only: [:members, :confirm_invitation]
 
   ORGANIZATIONS_PERMITTED_PARAMS = %i[
     id
@@ -30,6 +31,7 @@ class OrganizationsController < ApplicationController
 
     @tab = "organization"
     @user = current_user
+    @organizations = current_user.organizations.order(name: :asc)
 
     unless valid_image?
       render template: "users/edit"
@@ -43,7 +45,7 @@ class OrganizationsController < ApplicationController
       @organization_membership = OrganizationMembership.create!(organization_id: @organization.id,
                                                                 user_id: current_user.id, type_of_user: "admin")
       flash[:settings_notice] = I18n.t("organizations_controller.created")
-      redirect_to "/settings/organization/#{@organization.id}"
+      redirect_to organization_settings_path(@organization.slug)
     else
       render template: "users/edit"
     end
@@ -52,6 +54,7 @@ class OrganizationsController < ApplicationController
   def update
     @user = current_user
     @tab = "organization"
+    @organizations = current_user.organizations.order(name: :asc)
     set_organization
 
     unless valid_image?
@@ -83,7 +86,7 @@ class OrganizationsController < ApplicationController
     redirect_to user_settings_path(:organization)
   rescue Pundit::NotAuthorizedError
     flash[:error] = I18n.t("organizations_controller.not_deleted")
-    redirect_to user_settings_path(:organization, id: organization.id)
+    redirect_to user_settings_path(:organization)
   end
 
   def generate_new_secret
@@ -91,16 +94,148 @@ class OrganizationsController < ApplicationController
     @organization.secret = @organization.generated_random_secret
     @organization.save
     flash[:settings_notice] = I18n.t("organizations_controller.secret_updated")
-    redirect_to user_settings_path(:organization)
+    redirect_to organization_settings_path(@organization.slug, anchor: "section-invitations")
   end
 
   def members
     @organization = Organization.find_by(slug: params[:slug])
-    @members = @organization.users
+    unless @organization
+      respond_to do |format|
+        format.html { render file: Rails.root.join("public/404.html"), layout: false, status: :not_found }
+        format.json { render json: { error: "not found", status: 404 }, status: :not_found }
+      end
+      return
+    end
+    @members = @organization.active_users
 
     respond_to do |format|
       format.json { render json: @members.to_json(only: %i[id name username]) }
       format.html
+    end
+  end
+
+  def invite
+    @organization = Organization.find_by(id: params[:id])
+    not_found unless @organization
+    authorize @organization, :update?
+
+    username = params[:username]&.strip&.delete("@")
+    @user = User.find_by(username: username)
+
+    unless @user
+      flash[:error] = I18n.t("organizations_controller.invite.user_not_found", username: username)
+      redirect_to organization_settings_path(@organization.slug, anchor: "section-invitations")
+      return
+    end
+
+    # Check if user is already a member (active or pending)
+    existing_membership = @organization.organization_memberships.find_by(user_id: @user.id)
+    if existing_membership
+      if existing_membership.pending?
+        flash[:error] = I18n.t("organizations_controller.invite.already_pending")
+      else
+        flash[:error] = I18n.t("organizations_controller.invite.already_member")
+      end
+      redirect_to organization_settings_path(@organization.slug, anchor: "section-invitations")
+      return
+    end
+
+    # Rate limit check: only applies to non-fully-trusted organizations
+    unless @organization.fully_trusted?
+      # Check daily invitation limit
+      today_start = Time.zone.now.beginning_of_day
+      today_pending_count = @organization.organization_memberships
+                                         .pending
+                                         .where(created_at: today_start..)
+                                         .count
+
+      if today_pending_count >= Settings::RateLimit.organization_invitation_daily
+        flash[:error] = I18n.t("organizations_controller.invite.rate_limit_exceeded",
+                               limit: Settings::RateLimit.organization_invitation_daily)
+        redirect_to organization_settings_path(@organization.slug, anchor: "section-invitations")
+        return
+      end
+
+      # Check total outstanding invitations limit
+      total_pending_count = @organization.organization_memberships.pending.count
+      if total_pending_count >= Settings::RateLimit.organization_invitation_max_outstanding
+        flash[:error] = I18n.t("organizations_controller.invite.max_outstanding_exceeded",
+                               limit: Settings::RateLimit.organization_invitation_max_outstanding)
+        redirect_to organization_settings_path(@organization.slug, anchor: "section-invitations")
+        return
+      end
+    end
+
+    # If organization is fully trusted, add user directly as member
+    if @organization.fully_trusted?
+      membership = @organization.organization_memberships.create!(
+        user: @user,
+        type_of_user: "member"
+      )
+
+      # Send notification email that they've been added
+      OrganizationMembershipNotificationMailer.with(
+        membership_id: membership.id
+      ).member_added_email.deliver_now
+
+      flash[:settings_notice] = I18n.t("organizations_controller.invite.added_success", username: @user.username)
+    else
+      # Create pending membership for regular organizations
+      membership = @organization.organization_memberships.create!(
+        user: @user,
+        type_of_user: "pending"
+      )
+
+      # Send invitation email
+      OrganizationInvitationMailer.with(membership_id: membership.id)
+                                 .invitation_email
+                                 .deliver_now
+
+      flash[:settings_notice] = I18n.t("organizations_controller.invite.success", username: @user.username)
+    end
+    redirect_to organization_settings_path(@organization.slug, anchor: "section-invitations")
+  rescue ActiveRecord::RecordInvalid => e
+    flash[:error] = e.message
+    redirect_to organization_settings_path(@organization.slug, anchor: "section-invitations")
+  end
+
+  def confirm_invitation
+    skip_authorization # Public action - no authorization needed
+    @membership = OrganizationMembership.find_by(invitation_token: params[:token])
+    
+    unless @membership
+      flash[:error] = I18n.t("organizations_controller.confirm_invitation.invalid_token")
+      redirect_to root_path
+      return
+    end
+
+    unless @membership.pending?
+      flash[:error] = I18n.t("organizations_controller.confirm_invitation.already_confirmed")
+      redirect_to root_path
+      return
+    end
+
+    # If user is not signed in, show the confirmation page
+    unless user_signed_in?
+      render :confirm_invitation, status: :ok
+      return
+    end
+
+    if current_user.id != @membership.user_id
+      flash[:error] = I18n.t("organizations_controller.confirm_invitation.wrong_user")
+      redirect_to root_path
+      return
+    end
+
+    # Confirm the membership (POST request)
+    if request.post?
+      @membership.confirm!
+      flash[:settings_notice] = I18n.t("organizations_controller.confirm_invitation.success",
+                                        organization_name: @membership.organization.name)
+      redirect_to user_settings_path(:organization)
+    else
+      # GET request - show confirmation page
+      render :confirm_invitation
     end
   end
 

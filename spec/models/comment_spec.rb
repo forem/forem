@@ -24,6 +24,9 @@ RSpec.describe Comment do
       it { is_expected.to validate_presence_of(:positive_reactions_count) }
       it { is_expected.to validate_presence_of(:public_reactions_count) }
       it { is_expected.to validate_presence_of(:reactions_count) }
+
+      # Regression test for Issue #22803: Prevent negative reaction counts
+      it { is_expected.to validate_numericality_of(:public_reactions_count).is_greater_than_or_equal_to(0) }
     end
 
     it do
@@ -67,32 +70,77 @@ RSpec.describe Comment do
 
         expect(subject).not_to be_valid
       end
+    end
 
-      it "checks for commentable_type inclusion only if commentable_id is present" do
-        subject.commentable = nil
-        subject.commentable_id = article.id
-
+    describe "#body_has_content" do
+      it "is invalid when body_markdown contains only bold formatting (****)" do
+        subject.body_markdown = "****"
         expect(subject).not_to be_valid
-        expect(subject.errors.messages[:commentable_type].first).to match(/not included in the list/)
+        expect(subject.errors[:body_markdown]).to include(I18n.t("models.comment.cannot_be_empty"))
       end
 
-      it "is valid with Article commentable type" do
-        subject.commentable_type = "Article"
+      it "is invalid when body_markdown contains only bold with spaces (** **)" do
+        subject.body_markdown = "** **"
+        expect(subject).not_to be_valid
+        expect(subject.errors[:body_markdown]).to include(I18n.t("models.comment.cannot_be_empty"))
+      end
 
+      it "is invalid when body_markdown contains only horizontal rule (---)" do
+        subject.body_markdown = "---"
+        expect(subject).not_to be_valid
+        expect(subject.errors[:body_markdown]).to include(I18n.t("models.comment.cannot_be_empty"))
+      end
+
+      it "is valid when body_markdown contains text with bold formatting" do
+        subject.body_markdown = "**This is a valid comment**"
         expect(subject).to be_valid
       end
 
-      it "is valid with PodcastEpisode commentable type" do
-        subject.commentable_type = "PodcastEpisode"
-
+      it "is valid when body_markdown contains text with italic formatting" do
+        subject.body_markdown = "_This is italic_"
         expect(subject).to be_valid
       end
 
-      it "is not valid with Podcast commentable type" do
-        subject.commentable_type = "Podcast"
-
-        expect(subject).not_to be_valid
+      it "is valid when body_markdown contains text with mixed formatting" do
+        subject.body_markdown = "**Bold text** and _italic text_"
+        expect(subject).to be_valid
       end
+
+      it "is valid when body_markdown contains only plain text" do
+        subject.body_markdown = "This is a plain text comment"
+        expect(subject).to be_valid
+      end
+
+      it "is valid when body_markdown contains only an image" do
+        subject.body_markdown = "![image](https://example.com/image.png)"
+        expect(subject).to be_valid
+      end
+    end
+
+    it "checks for commentable_type inclusion only if commentable_id is present" do
+      subject.commentable = nil
+      subject.commentable_id = article.id
+
+      expect(subject).not_to be_valid
+      expect(subject.errors.messages[:commentable_type].first).to match(/not included in the list/)
+    end
+
+    it "is valid with Article commentable type" do
+      subject.commentable_type = "Article"
+
+      expect(subject).to be_valid
+    end
+
+    it "is valid with PodcastEpisode commentable type" do
+      subject.commentable_type = "PodcastEpisode"
+
+      expect(subject).to be_valid
+    end
+
+    it "is not valid with Podcast commentable type" do
+      subject.commentable_type = "Podcast"
+
+      expect(subject).not_to be_valid
     end
 
     describe "#user_mentions_in_markdown" do
@@ -417,6 +465,24 @@ RSpec.describe Comment do
       expect { comment.save }.to change(user, :last_comment_at)
     end
 
+    describe "onboarding checklist" do
+      before { allow(Settings::General).to receive(:display_sidebar_onboarding_checklist).and_return(true) }
+
+      let(:checklist_user) { create(:user) }
+      let(:admin) { create(:user, :admin) }
+      let!(:welcome_article) { create(:article, user: admin, tags: "welcome") }
+
+      it "completes comment_in_welcome when user comments on the welcome article" do
+        create(:comment, user: checklist_user, commentable: welcome_article)
+        expect(checklist_user.onboarding_checklist.reload.items["comment_in_welcome"]).to be_present
+      end
+
+      it "does not complete comment_in_welcome when user comments on a regular article" do
+        create(:comment, user: checklist_user, commentable: article)
+        expect(checklist_user.onboarding_checklist.reload.items["comment_in_welcome"]).to be_nil
+      end
+    end
+
     describe "slack messages" do
       let!(:user) { create(:user) }
 
@@ -618,42 +684,82 @@ RSpec.describe Comment do
       allow(AlgoliaSearch::SearchIndexWorker).to receive(:perform_async)
       create(:comment)
       expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("Comment", kind_of(Integer),
-false).once
+                                                                                     false).once
     end
   end
 
   describe "#processed_html_final" do
-  let(:prior_domain) { "https://old.cdn.com" }
-  let(:new_domain) { "https://new.cdn.com" }
+    let(:prior_domain) { "https://old.cdn.com" }
+    let(:new_domain) { "https://new.cdn.com" }
 
-  before do
-    allow(ApplicationConfig).to receive(:[]).and_call_original # allow all real calls by default
-    allow(ApplicationConfig).to receive(:[]).with("PRIOR_CLOUDFLARE_IMAGES_DOMAIN").and_return(prior_domain)
-    allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return(new_domain)
-    end
-
-  context "when the prior domain and new domain are both present" do
-    it "replaces instances of the prior domain with the new domain" do
-      comment.processed_html = "Here is an image <img src='#{prior_domain}/image1.jpg'> and another <img src='#{prior_domain}/image2.jpg'>."
-      expect(comment.processed_html_final).to eq("Here is an image <img src='#{new_domain}/image1.jpg'> and another <img src='#{new_domain}/image2.jpg'>.")
-    end
-
-    it "does not modify text if the prior domain is not present in the processed_html" do
-      comment.processed_html = "Content with no images or domains."
-      expect(comment.processed_html_final).to eq("Content with no images or domains.")
-    end
-  end
-
-  context "when the application configuration for the domains is blank" do
     before do
-      allow(ApplicationConfig).to receive(:[]).with("PRIOR_CLOUDFLARE_IMAGES_DOMAIN").and_return(nil)
-      allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return(nil)
+      allow(ApplicationConfig).to receive(:[]).and_call_original # allow all real calls by default
+      allow(ApplicationConfig).to receive(:[]).with("PRIOR_CLOUDFLARE_IMAGES_DOMAIN").and_return(prior_domain)
+      allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return(new_domain)
     end
 
-    it "returns the original processed_html unchanged" do
-      comment.processed_html = "Content with the old domain #{prior_domain}."
-      expect(comment.processed_html_final).to eq("Content with the old domain #{prior_domain}.")
+    context "when the prior domain and new domain are both present" do
+      it "replaces instances of the prior domain with the new domain" do
+        comment.processed_html = "Here is an image <img src='#{prior_domain}/image1.jpg'> and another <img src='#{prior_domain}/image2.jpg'>."
+        expect(comment.processed_html_final).to eq("Here is an image <img src='#{new_domain}/image1.jpg'> and another <img src='#{new_domain}/image2.jpg'>.")
+      end
+
+      it "does not modify text if the prior domain is not present in the processed_html" do
+        comment.processed_html = "Content with no images or domains."
+        expect(comment.processed_html_final).to eq("Content with no images or domains.")
+      end
+    end
+
+    context "when the application configuration for the domains is blank" do
+      before do
+        allow(ApplicationConfig).to receive(:[]).with("PRIOR_CLOUDFLARE_IMAGES_DOMAIN").and_return(nil)
+        allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return(nil)
+      end
+
+      it "returns the original processed_html unchanged" do
+        comment.processed_html = "Content with the old domain #{prior_domain}."
+        expect(comment.processed_html_final).to eq("Content with the old domain #{prior_domain}.")
+      end
     end
   end
-end
+
+  describe "#enqueue_article_activity_update callback" do
+    it "enqueues a destroy event when a counted (score > 0) comment is destroyed" do
+      comment.update_columns(score: 5)
+      allow(Articles::UpdateArticleActivityWorker).to receive(:perform_async)
+      comment.destroy
+      expect(Articles::UpdateArticleActivityWorker)
+        .to have_received(:perform_async)
+        .with(article.id, "comment", "destroy", hash_including("iso"))
+    end
+
+    it "does not enqueue when destroying a comment whose score is not positive" do
+      comment.update_columns(score: 0)
+      allow(Articles::UpdateArticleActivityWorker).to receive(:perform_async)
+      comment.destroy
+      expect(Articles::UpdateArticleActivityWorker).not_to have_received(:perform_async)
+    end
+
+    it "does not enqueue from create/update commits (score path handles those)" do
+      allow(Articles::UpdateArticleActivityWorker).to receive(:perform_async)
+      c = create(:comment, user: user, commentable: article)
+      c.update!(body_markdown: "edited body content here")
+      expect(Articles::UpdateArticleActivityWorker).not_to have_received(:perform_async)
+    end
+  end
+
+  describe "update user interest embedding" do
+    it "enqueues the worker when a comment is created on an article" do
+      allow(UpdateUserInterestEmbeddingWorker).to receive(:perform_async)
+      comment = create(:comment, commentable: article, user: user)
+      expect(UpdateUserInterestEmbeddingWorker).to have_received(:perform_async).with(user.id, article.id, 0.3)
+    end
+
+    it "does not enqueue the worker if commentable is not an article" do
+      podcast = create(:podcast_episode)
+      allow(UpdateUserInterestEmbeddingWorker).to receive(:perform_async)
+      create(:comment, commentable: podcast, user: user)
+      expect(UpdateUserInterestEmbeddingWorker).not_to have_received(:perform_async)
+    end
+  end
 end

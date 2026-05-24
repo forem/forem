@@ -33,6 +33,8 @@ RSpec.describe User do
 
   before do
     omniauth_mock_providers_payload
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with("ENABLE_REFRESH_SEGMENT_WORKERS").and_return("true")
     allow(SegmentedUserRefreshWorker).to receive(:perform_async)
     allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
   end
@@ -185,7 +187,7 @@ RSpec.describe User do
       it { is_expected.not_to allow_value("AcMe_1%").for(:username) }
       it { is_expected.to allow_value("AcMe_1").for(:username) }
 
-      it { is_expected.to validate_length_of(:email).is_at_most(50).allow_nil }
+      it { is_expected.to validate_length_of(:email).is_at_most(254).allow_nil }
       it { is_expected.to validate_length_of(:name).is_at_most(100).is_at_least(1) }
       it { is_expected.to validate_length_of(:password).is_at_most(100).is_at_least(8) }
       it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
@@ -618,6 +620,23 @@ RSpec.describe User do
     end
   end
 
+  describe "#good_standing_followers_count" do
+    let!(:good_user) { create(:user) }
+    let!(:suspended_user) { create(:user, :suspended) }
+    let!(:spam_user) { create(:user, :spam) }
+
+    before do
+      good_user.follow(user)
+      suspended_user.follow(user)
+      spam_user.follow(user)
+    end
+
+    it "returns the count of non-suspended and non-spam followers using the rails cache" do
+      expect(Rails.cache).to receive(:fetch).with("#{user.cache_key_with_version}/good_standing_followers_count", expires_in: 24.hours).and_call_original
+      expect(user.good_standing_followers_count).to eq(1)
+    end
+  end
+
   describe "theming properties" do
     before do
       allow(Settings::UserExperience).to receive(:default_font).and_return("sans-serif")
@@ -721,6 +740,33 @@ RSpec.describe User do
     end
   end
 
+  describe "#author_trust_score" do
+    it "returns 0 for score < 25" do
+      user.update_column(:score, 10)
+      expect(user.author_trust_score).to eq(0)
+    end
+
+    it "returns 1 for score between 25 and 74" do
+      user.update_column(:score, 50)
+      expect(user.author_trust_score).to eq(1)
+    end
+
+    it "returns 2 for score between 75 and 174" do
+      user.update_column(:score, 100)
+      expect(user.author_trust_score).to eq(2)
+    end
+
+    it "returns 3 for score between 175 and 299" do
+      user.update_column(:score, 200)
+      expect(user.author_trust_score).to eq(3)
+    end
+
+    it "returns 4 for score >= 300" do
+      user.update_column(:score, 350)
+      expect(user.author_trust_score).to eq(4)
+    end
+  end
+
   describe "#calculate_score" do
     it "calculates a score" do
       user.update_column(:badge_achievements_count, 3)
@@ -735,6 +781,25 @@ RSpec.describe User do
 
       user.calculate_score
       expect(user.score).to eq(-470)
+    end
+
+    it "calculates a score of -500 if suspended" do
+      user.add_role(:suspended)
+      user.update_column(:badge_achievements_count, 3)
+
+      user.calculate_score
+      expect(user.score).to eq(-470)
+    end
+
+    it "syncs base_email_eligible! after calculating score" do
+      user.update!(email: "test@example.com", registered: true)
+      user.notification_setting.update!(email_newsletter: true)
+      expect(user.base_email_eligible).to eq(true)
+
+      user.add_role(:spam)
+      user.calculate_score
+
+      expect(user.base_email_eligible).to eq(false)
     end
   end
 
@@ -767,6 +832,16 @@ RSpec.describe User do
       Articles::Unpublish.call(article2.user, article2)
 
       expect(user.cached_reading_list_article_ids).to eq([article3.id, article.id])
+    end
+
+    it "has an accurate agent_sessions_count using counter cache" do
+      expect(user.agent_sessions_count).to eq(0)
+      create(:agent_session, user: user)
+      expect(user.reload.agent_sessions_count).to eq(1)
+      create(:agent_session, user: user)
+      expect(user.reload.agent_sessions_count).to eq(2)
+      user.agent_sessions.last.destroy
+      expect(user.reload.agent_sessions_count).to eq(1)
     end
   end
 
@@ -801,6 +876,29 @@ RSpec.describe User do
     it "returns true if the user has more unspent credits than needed" do
       create_list(:credit, 2, user: user, spent: false)
       expect(user.enough_credits?(1)).to be(true)
+    end
+  end
+
+  describe "#update_presence!" do
+    context "when last_presence_at is nil" do
+      it "updates last_presence_at to current time" do
+        user.update_column(:last_presence_at, nil)
+        expect { user.update_presence! }.to change(user, :last_presence_at)
+      end
+    end
+
+    context "when last_presence_at is more than 1 hour ago" do
+      it "updates last_presence_at to current time" do
+        user.update_column(:last_presence_at, 2.hours.ago)
+        expect { user.update_presence! }.to change(user, :last_presence_at)
+      end
+    end
+
+    context "when last_presence_at is less than 1 hour ago" do
+      it "does not update last_presence_at" do
+        user.update_column(:last_presence_at, 30.minutes.ago)
+        expect { user.update_presence! }.not_to change(user, :last_presence_at)
+      end
     end
   end
 
@@ -1017,12 +1115,46 @@ RSpec.describe User do
     end
   end
 
+  describe "profile cache busting" do
+    it "enqueues a profile identity cache bust when name changes" do
+      sidekiq_assert_enqueued_with(job: Users::BustProfileIdentityCacheWorker, args: [user.id]) do
+        user.update!(name: "New Name")
+      end
+    end
+
+    it "enqueues a profile details cache bust when social handle changes" do
+      sidekiq_assert_enqueued_with(job: Users::BustProfileDetailsCacheWorker, args: [user.id]) do
+        user.update!(twitter_username: "new_twitter")
+      end
+    end
+
+    it "does not enqueue identity cache bust for unrelated changes" do
+      sidekiq_assert_no_enqueued_jobs(only: Users::BustProfileIdentityCacheWorker) do
+        user.update!(last_comment_at: Time.current)
+      end
+    end
+  end
+
+  describe "profile spam checks" do
+    it "enqueues a profile spam check when name contains trigger terms" do
+      sidekiq_assert_enqueued_with(job: Users::HandleProfileSpamWorker, args: [user.id]) do
+        user.update!(name: "Best Casino Deals")
+      end
+    end
+
+    it "does not enqueue a profile spam check when name changes without trigger terms" do
+      sidekiq_assert_no_enqueued_jobs(only: Users::HandleProfileSpamWorker) do
+        user.update!(name: "Helpful Developer")
+      end
+    end
+  end
+
   context "when indexing with Algolia", :algolia do
     it "indexes the user on create" do
       allow(AlgoliaSearch::SearchIndexWorker).to receive(:perform_async)
       create(:user)
-      expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("User", kind_of(Integer), 
-false).once
+      expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("User", kind_of(Integer),
+                                                                                     false).once
     end
 
     it "updates user index if user's name has changed" do
@@ -1071,10 +1203,10 @@ false).once
   describe "type_of enum" do
     it "has the correct enum values" do
       expect(User.type_ofs).to eq({
-        "member" => 0,
-        "community_bot" => 1,
-        "member_bot" => 2
-      })
+                                    "member" => 0,
+                                    "community_bot" => 1,
+                                    "member_bot" => 2
+                                  })
     end
 
     it "defaults to member" do
@@ -1141,12 +1273,48 @@ false).once
     end
   end
 
+  describe "#create_email_change_note" do
+    it "creates a note when unconfirmed_email is set" do
+      expect do
+        user.update(email: "changed@example.com")
+      end.to change(Note, :count).by(1)
+
+      note = user.notes.last
+      expect(note.reason).to eq("email_change_requested")
+      expect(note.content).to include("changed@example.com")
+      expect(note.author_id).to be_nil
+    end
+
+    it "does not create a note when unconfirmed_email is cleared" do
+      user.update_columns(unconfirmed_email: "old@example.com")
+
+      expect do
+        user.update_columns(unconfirmed_email: nil)
+      end.not_to change(Note, :count)
+    end
+  end
+
+  describe "#create_password_change_note" do
+    it "creates a note when password is changed" do
+      expect do
+        user.update(password: "newpassword123", password_confirmation: "newpassword123")
+      end.to change(Note, :count).by(1)
+
+      note = user.notes.last
+      expect(note.reason).to eq("password_changed")
+      expect(note.content).to eq("User changed their password")
+      expect(note.author_id).to be_nil
+    end
+  end
+
   describe "community_bots_for_subforem scope" do
     let(:subforem) { create(:subforem) }
     let!(:community_bot) { create(:user, type_of: :community_bot, onboarding_subforem_id: subforem.id) }
     let!(:member_bot) { create(:user, type_of: :member_bot, onboarding_subforem_id: subforem.id) }
     let!(:regular_user) { create(:user, type_of: :member, onboarding_subforem_id: subforem.id) }
-    let!(:other_subforem_bot) { create(:user, type_of: :community_bot, onboarding_subforem_id: create(:subforem, domain: "other.com").id) }
+    let!(:other_subforem_bot) do
+      create(:user, type_of: :community_bot, onboarding_subforem_id: create(:subforem, domain: "other.com").id)
+    end
 
     it "returns only community bots for the specified subforem" do
       result = User.community_bots_for_subforem(subforem.id)

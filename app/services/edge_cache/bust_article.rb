@@ -17,6 +17,7 @@ module EdgeCache
 
       bust_home_pages(cache_bust, article)
       bust_tag_pages(cache_bust, article)
+      bust_user_profile_pages(article)
     end
 
     def self.bust_home_pages(cache_bust, article)
@@ -31,7 +32,7 @@ module EdgeCache
 
       TIMEFRAMES.each do |timestamp, interval|
         next unless Article.published.where("published_at > ?", timestamp.call)
-          .order(public_reactions_count: :desc).limit(3).ids.include?(article.id)
+          .order(score: :desc).limit(3).ids.include?(article.id)
 
         cache_bust.call("/top/#{interval}")
       end
@@ -55,7 +56,7 @@ module EdgeCache
 
         TIMEFRAMES.each do |timestamp, interval|
           next unless Article.published.where("published_at > ?", timestamp.call).cached_tagged_with_any(tag)
-            .order(public_reactions_count: :desc).limit(3).ids.include?(article.id)
+            .order(score: :desc).limit(3).ids.include?(article.id)
 
           cache_bust.call("/top/#{interval}")
           12.times do |i|
@@ -64,7 +65,7 @@ module EdgeCache
         end
 
         next unless rand(2) == 1 &&
-          Article.published.tagged_with(tag)
+          Article.published.cached_tagged_with(tag)
             .order(hotness_score: :desc).limit(2).ids.include?(article.id)
 
         cache_bust.call("/t/#{tag}")
@@ -72,5 +73,16 @@ module EdgeCache
     end
 
     private_class_method :bust_tag_pages
+
+    def self.bust_user_profile_pages(article)
+      return unless article.user
+
+      EdgeCache::PurgeByKey.call(
+        article.user.profile_cache_keys,
+        fallback_paths: article.user.profile_cache_bust_paths,
+      )
+    end
+
+    private_class_method :bust_user_profile_pages
   end
 end
