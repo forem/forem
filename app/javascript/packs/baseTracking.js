@@ -1,5 +1,6 @@
 /*eslint-disable prefer-rest-params*/
 /* global isTouchDevice */
+import { isBotUserAgent } from '@utilities/isBot';
 
 function initializeBaseTracking() {
   showCookieConsentBanner();
@@ -147,9 +148,7 @@ function checkUserLoggedIn() {
 function trackCustomImpressions() {
   setTimeout(()=> {
     const tokenMeta = document.querySelector("meta[name='csrf-token']")
-    // `crawl`/`spider` are generic catch-alls; `chatgpt`, `anthropic`, `cohere-ai`,
-    // `facebookexternalhit` are AI/preview agents whose UAs lack the word "bot".
-    const isBot = /bot|crawl|spider|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex|chatgpt|anthropic|cohere-ai|facebookexternalhit/i.test(navigator.userAgent) // is crawler
+    const isBot = isBotUserAgent(navigator.userAgent);
     // eslint-disable-next-line no-unused-vars
     const windowBigEnough =  window.innerWidth > 1023
 
