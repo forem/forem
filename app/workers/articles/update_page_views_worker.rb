@@ -6,6 +6,15 @@ module Articles
 
     GOOGLE_REFERRER = "https://www.google.com/".freeze
 
+    # Authoritative bot filter. The client gate in baseTracking.js can be
+    # bypassed by any non-browser client that POSTs to /page_views directly,
+    # so self-identified crawlers must also be dropped here before a row is
+    # written. Kept in parity with the client-side list.
+    BOT_USER_AGENT_REGEX = /
+      bot|crawl|spider|google|baidu|bing|msn|duckduckbot|teoma|slurp|
+      yandex|chatgpt|anthropic|cohere-ai|facebookexternalhit
+    /ix
+
     sidekiq_options queue: :medium_priority,
                     lock: :until_executing,
                     on_conflict: :replace,
@@ -13,6 +22,8 @@ module Articles
 
     def perform(create_params)
       create_params = create_params.with_indifferent_access
+
+      return if bot_user_agent?(create_params[:user_agent])
 
       has_viewable_id = create_params[:viewable_id].present?
       has_viewable_type = create_params[:viewable_type].present?
@@ -54,6 +65,12 @@ module Articles
           article.id,
         )
       end
+    end
+
+    private
+
+    def bot_user_agent?(user_agent)
+      user_agent.present? && BOT_USER_AGENT_REGEX.match?(user_agent)
     end
   end
 end
