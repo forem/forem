@@ -8,10 +8,10 @@ image: forem/forem
 servers:
   web:
     hosts:
-      - 192.168.0.1 # Replace with your web server IP
+      - <%= ENV["KAMAL_WEB_IP"] || "192.168.0.1" %>
   job:
     hosts:
-      - 192.168.0.1 # Replace with your job server IP
+      - <%= ENV["KAMAL_JOB_IP"] || "192.168.0.1" %>
     cmd: bundle exec sidekiq
 
 # Enable SSL auto certification via Let's Encrypt and allow for multiple apps on a single web server.
@@ -59,7 +59,7 @@ asset_path: /opt/apps/forem/public/assets
 accessories:
   postgres:
     image: pgvector/pgvector:pg13
-    host: 192.168.0.1 # Replace with your db server IP
+    host: <%= ENV["KAMAL_DB_IP"] || "192.168.0.1" %>
     port: 5432
     env:
       clear:
@@ -71,7 +71,7 @@ accessories:
       - /var/lib/postgresql/data:/var/lib/postgresql/data
   redis:
     image: redis:7.0-alpine
-    host: 192.168.0.1 # Replace with your redis server IP
+    host: <%= ENV["KAMAL_REDIS_IP"] || "192.168.0.1" %>
     port: 6379
     directories:
       - /data:/data

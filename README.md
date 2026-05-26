@@ -122,8 +122,8 @@ Before deploying, ensure you have:
 1. **Deployment Configuration**: Open [config/deploy.yml](config/deploy.yml) and update:
    - Your registry username/credentials.
    - Your domain name in the `proxy` section.
-   - The IP addresses under `servers` (web and job) and `accessories` (postgres and redis).
-2. **Secrets Configuration**: Set the following environment variables on your local machine:
+2. **Environment & Secrets Configuration**: Set the following environment variables on your local machine:
+   - `KAMAL_WEB_IP` / `KAMAL_JOB_IP` / `KAMAL_DB_IP` / `KAMAL_REDIS_IP`: The IP addresses of your servers (default to `192.168.0.1`).
    - `KAMAL_REGISTRY_PASSWORD`: Access token for your Docker container registry.
    - `RAILS_MASTER_KEY`: Your Rails master key.
    - `DATABASE_URL`: Connection string for PostgreSQL (if not using the postgres accessory).

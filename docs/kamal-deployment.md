@@ -30,6 +30,13 @@ Kamal 2 manages secrets via the `.kamal/secrets` file. This file reads from your
 
 Before running any Kamal command, make sure to define the following environment variables on your local machine (or CI/CD runner):
 ```bash
+# Server and Accessory IPs (Evaluated in config/deploy.yml ERB)
+export KAMAL_WEB_IP="192.168.0.1"
+export KAMAL_JOB_IP="192.168.0.1"
+export KAMAL_DB_IP="192.168.0.1"
+export KAMAL_REDIS_IP="192.168.0.1"
+
+# Secrets and credentials
 export KAMAL_REGISTRY_PASSWORD="your-registry-token"
 export RAILS_MASTER_KEY="your-rails-master-key"
 export DATABASE_URL="postgresql://postgres:postgres_secure_password@127.0.0.1:5432/forem_production"
