@@ -21,9 +21,66 @@ module Articles
     # double-count (or, on destroy, drive totals negative). retry: false
     # accepts that a transient failure loses one event; the next full
     # recompute (lazy upsert path or manual repair) reconciles drift.
-    sidekiq_options queue: :low_priority, retry: false
+    # We use sidekiq-unique-jobs to ensure at most one job is enqueued/scheduled.
+    sidekiq_options queue: :low_priority,
+                    retry: false,
+                    lock: :until_executing,
+                    on_conflict: :replace
 
-    def perform(article_id, event_type = nil, action = "create", payload = {})
+    class << self
+      def perform_async(article_id, _event_type = nil, _action = "create", _payload = {})
+        return if article_id.nil?
+
+        # Fetch last_aggregated_at, page_views_count, and created_at in a single fast query
+        article_data = Article.left_outer_joins(:article_activity)
+                              .where(id: article_id)
+                              .pluck(:created_at, :page_views_count, "article_activities.last_aggregated_at")
+                              .first
+        return if article_data.nil?
+
+        created_at, page_views_count, last_aggregated_at = article_data
+
+        delay = debounce_delay_for(page_views_count.to_i, created_at)
+
+        if last_aggregated_at.nil?
+          # If never aggregated, run immediately
+          super(article_id)
+        else
+          elapsed = Time.current - last_aggregated_at
+          if elapsed >= delay
+            # If it has been longer than the delay, run immediately
+            super(article_id)
+          else
+            # Schedule it for the remaining delay time
+            # Since lock: :until_executing, on_conflict: :replace is active,
+            # this will replace/coalesce any already scheduled job for this article.
+            perform_in(delay - elapsed, article_id)
+          end
+        end
+      end
+
+      def debounce_delay_for(page_views, created_at)
+        base_delay = if page_views >= 100_000
+                       5.minutes
+                     elsif page_views >= 10_000
+                       1.minute
+                     elsif page_views >= 1_000
+                       30.seconds
+                     else
+                       10.seconds
+                     end
+
+        return base_delay if created_at.nil?
+
+        # Exponential decay/backoff based on age (up to 30 days to avoid float overflow)
+        days_old = [[(Time.current - created_at) / 1.day, 0].max, 30].min
+        calculated_delay = base_delay * (1.5**days_old)
+
+        [calculated_delay, 30.minutes].min
+      end
+    end
+
+    def perform(article_id, _event_type = nil, _action = "create", _payload = {})
       return if article_id.nil?
 
       activity = ArticleActivity.find_by(article_id: article_id)
@@ -31,42 +88,15 @@ module Articles
       if activity.nil?
         return unless Article.exists?(id: article_id)
 
-        # find_or_create_by! handles the race where two near-simultaneous
-        # events for the same article try to create the row at the same
-        # moment (the article_id unique index would otherwise raise
-        # RecordNotUnique and, with retry: false, drop one event entirely).
-        # We only run a full recompute when *we* won the create; the loser
-        # returns and lets the recompute the winner is about to do cover
-        # both source rows.
         activity = ArticleActivity.find_or_create_by!(article_id: article_id)
         activity.recompute_all! if activity.previously_new_record?
         return
       end
 
-      return activity.recompute_all! if event_type.nil?
-
-      apply_event(activity, event_type, action, (payload || {}).with_indifferent_access)
-    end
-
-    private
-
-    def apply_event(activity, event_type, action, payload)
-      case event_type
-      when "page_view"
-        activity.apply_page_view_delta!(payload) if action == "create"
-      when "reaction"
-        if action == "destroy"
-          activity.apply_reaction_delta!(payload, sign: -1)
-        else
-          activity.apply_reaction_delta!(payload, sign: +1)
-        end
-      when "comment"
-        if action == "destroy"
-          activity.apply_comment_delta!(payload, sign: -1)
-        else
-          activity.apply_comment_delta!(payload, sign: +1)
-        end
-      end
+      # Always recompute on execution so legacy queued jobs with delta-style
+      # args converge with newer article_id-only jobs. This avoids drift when
+      # an older non-idempotent delta job runs after a recompute/coalesced job.
+      activity.recompute_all!
     end
   end
 end

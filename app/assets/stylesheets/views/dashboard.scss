@@ -61,3 +61,288 @@
   color: #666666;
   text-align: left;
 }
+
+
+// ---------------------------------------------------------------------------
+// Activity heatmap (rendered at top of /dashboard/analytics by
+// app/javascript/packs/dashboardHeatmap.js). The chart itself is drawn with
+// ApexCharts; styles below cover the surrounding chrome (header, year
+// picker, stats cards, loading state, custom tooltip).
+// ---------------------------------------------------------------------------
+.dashboard-heatmap {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: var(--su-4);
+  margin: var(--su-4) var(--su-5);
+
+  &__header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--su-2);
+    margin-bottom: var(--su-3);
+  }
+
+  &__heading {
+    min-width: 0;
+  }
+
+  &__title {
+    font-size: var(--fs-l);
+    font-weight: var(--fw-bold);
+    margin: 0 0 var(--su-1) 0;
+  }
+
+  &__subtitle {
+    color: var(--base-60);
+    font-size: var(--fs-s);
+    margin: 0;
+  }
+
+  &__year-picker {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--su-2);
+    font-size: var(--fs-s);
+    color: var(--base-70);
+
+    select {
+      font: inherit;
+      padding: var(--su-1) var(--su-2);
+      border-radius: var(--radius);
+      border: 1px solid var(--card-border);
+      background: var(--body-bg);
+      color: var(--base-90);
+      cursor: pointer;
+
+      &:focus {
+        outline: 2px solid var(--accent-brand);
+        outline-offset: 1px;
+      }
+    }
+  }
+
+  &__year-picker-label {
+    @media (max-width: $breakpoint-s) {
+      // The select itself is self-explanatory on narrow screens; keep the
+      // visual label hidden but accessible to screen readers.
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+    }
+  }
+
+  &.is-loading {
+    .dashboard-heatmap__chart,
+    .dashboard-heatmap__stats,
+    .dashboard-heatmap__detail {
+      opacity: 0.5;
+      transition: opacity 120ms ease-out;
+    }
+  }
+
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--su-2);
+    margin-bottom: var(--su-4);
+
+    @media (min-width: $breakpoint-m) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  &__body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--su-4);
+
+    @media (min-width: $breakpoint-l) {
+      grid-template-columns: minmax(0, 5fr) minmax(180px, 1fr);
+    }
+  }
+
+  // Mobile horizontal-scroll shell. The chart is forced to a minimum width
+  // so the heatmap stays legible on narrow viewports; the wrapper handles
+  // overflow so the rest of the page stays anchored.
+  //
+  // The wrapper is also styled as a panel so it visually mirrors the side
+  // detail panel (same bg, border, radius, padding) — they read as a pair.
+  //
+  // On desktop, overflow stays `visible` so ApexCharts' tooltip is allowed
+  // to spill outside the panel chrome instead of being clipped.
+  &__chart-scroll {
+    background: var(--body-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: var(--su-3);
+
+    @media (max-width: #{$breakpoint-m - 1px}) {
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+
+  &__chart {
+    min-width: 680px;
+    min-height: 240px;
+
+    @media (min-width: $breakpoint-m) {
+      min-width: 0;
+    }
+
+    // Defensive: ApexCharts' keyboard-navigation accessibility module
+    // paints a blue stroke on the focused/selected heatmap rect (and
+    // initially focuses data point 0,0, which lands on the bottom-left
+    // cell because Sun is series index 0). We pin via the side panel
+    // instead, so suppress the SVG outline.
+    .apexcharts-heatmap-rect.apexcharts-keyboard-focused,
+    .apexcharts-heatmap-rect.apexcharts-selected,
+    .apexcharts-heatmap-rect:focus {
+      stroke: var(--card-bg) !important;
+      stroke-width: 1 !important;
+      outline: none !important;
+    }
+  }
+
+  &__detail {
+    background: var(--body-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: var(--su-3);
+    align-self: start;
+  }
+}
+
+.heatmap-stat {
+  background: var(--body-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: var(--su-2) var(--su-3);
+
+  &__value {
+    font-size: var(--fs-xl);
+    font-weight: var(--fw-bold);
+    line-height: 1.1;
+  }
+
+  &__label {
+    color: var(--base-60);
+    font-size: var(--fs-s);
+    margin-top: 2px;
+  }
+
+  &__sub {
+    color: var(--base-50);
+    font-size: var(--fs-xs);
+    margin-top: var(--su-1);
+  }
+}
+
+.heatmap-detail {
+  &__hint {
+    color: var(--base-60);
+    font-size: var(--fs-s);
+    margin: 0;
+  }
+
+  &__header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--su-2);
+    margin-bottom: var(--su-2);
+  }
+
+  &__title {
+    font-size: var(--fs-base);
+    font-weight: var(--fw-bold);
+    margin: 0;
+  }
+
+  &__pin {
+    color: var(--accent-brand);
+    font-size: var(--fs-xs);
+  }
+
+  &__total {
+    font-size: var(--fs-l);
+    font-weight: var(--fw-medium);
+    margin: 0 0 var(--su-2) 0;
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--su-1) 0;
+    border-top: 1px solid var(--card-border);
+    font-size: var(--fs-s);
+
+    &:first-child {
+      border-top: 0;
+    }
+  }
+
+  &__key {
+    color: var(--base-60);
+  }
+
+  &__value {
+    font-weight: var(--fw-medium);
+  }
+}
+
+.heatmap__empty {
+  color: var(--base-60);
+  font-size: var(--fs-s);
+  margin: 0;
+}
+
+// Tooltip injected by the ApexCharts `custom` callback in heatmap.js.
+.heatmap-tooltip {
+  padding: var(--su-2) var(--su-3);
+  min-width: 180px;
+  font-size: var(--fs-s);
+
+  &__title {
+    font-weight: var(--fw-bold);
+    margin-bottom: var(--su-1);
+  }
+
+  &__total {
+    color: var(--base-70);
+    margin-bottom: var(--su-1);
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      gap: var(--su-3);
+      padding: 2px 0;
+
+      span:first-child {
+        color: var(--base-60);
+      }
+
+      span:last-child {
+        font-weight: var(--fw-medium);
+      }
+    }
+  }
+}

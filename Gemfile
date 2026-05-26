@@ -17,6 +17,7 @@ gem "addressable", "~> 2.8" # A replacement for the URI implementation that is p
 gem "ahoy_email", "~> 2.2.0" # Email analytics for Rails
 gem "ahoy_matey", "~> 5.0.2" # Tracking analytics for Rails
 gem "algoliasearch-rails", "~> 2.3" # Algolia Search API Client
+gem "analytics-ruby", "~> 2.5" # Segment-compatible analytics client; used by Trackers::CustomerioCdp pointed at cdp.customer.io
 gem "ancestry", "~> 4.2" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
 gem "blazer", "~> 2.6" # Allows admins to query data
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
@@ -82,9 +83,9 @@ gem "pghero", "~> 3.6" # Dashboard for Postgres
 gem "puma", "~> 5.6.4" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
 gem "pundit", "~> 2.2" # Object oriented authorization for Rails applications
 gem "public_suffix", "~> 6.0" # Domain name parser based on the Public Suffix List
-gem "rack-attack", "~> 6.7.0" # Used to throttle requests to prevent brute force attacks
+gem "rack-attack", "~> 6.8.0" # Used to throttle requests to prevent brute force attacks
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
-gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
+gem "rack-timeout", "~> 0.7.0" # Rack middleware which aborts requests that have been running for longer than a specified timeout
 gem "rails", "~> 7.0.8.4" # Ruby on Rails
 gem "ransack", "~> 3.2" # Searching and sorting
 gem "recaptcha", "~> 5.10", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
@@ -95,12 +96,12 @@ gem "redis-actionpack", "~> 5.4.0" # Redis session store for ActionPack. Used fo
 gem "rpush", "~> 7.0" # Push Notification library for Rails
 gem "rpush-redis", "~> 1.1" # Redis module capability for rpush library
 
-gem "request_store", "~> 1.5" # RequestStore gives you per-request global storage
+gem "request_store", "~> 1.7" # RequestStore gives you per-request global storage
 gem "reverse_markdown", "~> 2.1" # Map simple html back into markdown
 gem "rolify", "~> 6.0" # Very simple Roles library
 gem "rouge", "~> 4.2" # A pure-ruby code highlighter
 gem "rss", "~> 0.2.9" # Ruby's standard library for RSS
-gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip files
+gem "rubyzip", "~> 2.4" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sidekiq", "~> 6.5.3" # Sidekiq is used to process background jobs with the help of Redis
 gem "sidekiq-throttled", "~> 1.5" # Concurrency control for Sidekiq
@@ -182,3 +183,4 @@ group :test do
   gem "zonebie", "~> 0.6.1" # Runs your tests in a random timezone
 end
 
+gem "neighbor", "~> 0.5.2"

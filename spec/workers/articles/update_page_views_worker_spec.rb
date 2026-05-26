@@ -90,6 +90,31 @@ RSpec.describe Articles::UpdatePageViewsWorker, type: :worker do
     end
   end
 
+  context "when filtering bot user agents" do
+    let(:article) { create(:article) }
+
+    it "does not create a page view for a crawler whose UA contains 'bot'" do
+      expect do
+        worker.perform("article_id" => article.id, "user_agent" => "Mozilla/5.0 (compatible; GPTBot/1.2)")
+      end.not_to change(PageView, :count)
+    end
+
+    it "does not create a page view for a crawler whose UA lacks 'bot'" do
+      expect do
+        worker.perform("article_id" => article.id,
+                       "user_agent" => "Mozilla/5.0 (compatible; Bytespider; spider-feedback@bytedance.com)")
+      end.not_to change(PageView, :count)
+    end
+
+    it "creates a page view for a human browser UA" do
+      human_ua = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) " \
+                 "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+      expect do
+        worker.perform("article_id" => article.id, "user_agent" => human_ua)
+      end.to change(PageView, :count).by(1)
+    end
+  end
+
   context "when no article id is provided (global page view)" do
     let(:user) { create(:user) }
     let(:region) { "US-CA" }

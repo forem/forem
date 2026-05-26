@@ -1,0 +1,78 @@
+<% title t("trends.index.title") %>
+
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="<%= app_url("/trending") %>" />
+  <meta name="description" content="<%= t("trends.index.meta_description", community_name: community_name) %>">
+<% end %>
+
+<main id="main-content" class="crayons-layout crayons-layout--header-inside trends-index-container">
+  <header class="crayons-page-header">
+    <h1 class="crayons-title">
+      <%= t("trends.index.header_title") %>
+    </h1>
+    <p class="color-base-75 fs-m mt-2">
+      <%= t("trends.index.description") %>
+    </p>
+  </header>
+
+  <% if @trends.empty? %>
+    <div class="articles-list crayons-layout__content" id="articles-list">
+      <div class="p-9 align-center crayons-card">
+        <%= t("trends.index.empty_state") %>
+      </div>
+    </div>
+  <% else %>
+    <div class="grid gap-4 m:grid-cols-2 pb-6">
+      <% @trends.each do |trend| %>
+        <div class="crayons-card trend-card p-5 relative flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="fs-xs font-semibold uppercase tracking-wider px-2 py-1 bg-brand-10 color-brand rounded">
+                Trend
+              </span>
+              <span class="fs-xs color-base-60">
+                <%= t("trends.index.posts_count", count: trend.articles_count) %>
+              </span>
+            </div>
+
+            <% if trend.cover_image.present? %>
+              <%= link_to trending_path(trend.slug), class: "block mb-4 overflow-hidden rounded", style: "aspect-ratio: 16/9;" do %>
+                <img src="<%= optimized_image_url(trend.cover_image, width: 750, random_fallback: false) %>" class="w-100 h-100 object-cover block" alt="Cover image for <%= trend.name %>" loading="lazy">
+              <% end %>
+            <% end %>
+
+            <h2 class="fs-xl font-bold mb-2">
+              <%= link_to trend.name, trending_path(trend.slug), class: "color-base-100 hover:color-brand-100" %>
+            </h2>
+
+            <p class="color-base-70 mb-4 fs-m lh-base">
+              <%= trend.description %>
+            </p>
+
+            <% if trend.key_questions.present? %>
+              <div class="mb-4">
+                <h4 class="fs-s font-semibold color-base-80 mb-2">Key Areas of Focus:</h4>
+                <ul class="list-disc pl-5 color-base-70 fs-s">
+                  <% trend.key_questions.take(3).each do |q| %>
+                    <li class="mb-1"><%= q %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-base-10 flex items-center justify-between">
+            <span class="fs-xs color-base-50">
+              <% if trend.last_observed_at.present? %>
+                <%= t("trends.index.active_ago", time: time_ago_in_words(trend.last_observed_at)) %>
+              <% else %>
+                <%= t("trends.index.active_recently") %>
+              <% end %>
+            </span>
+            <%= link_to t("trends.index.explore_trend"), trending_path(trend.slug), class: "crayons-btn crayons-btn--ghost crayons-btn--s" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</main>

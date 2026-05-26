@@ -1,4 +1,5 @@
 class NavigationLink < ApplicationRecord
+  resourcify
   SVG_REGEXP = /\A<svg .*>[\s]*\z/im
 
   belongs_to :subforem, optional: true
