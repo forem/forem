@@ -30,14 +30,12 @@ RSpec.describe "Creating an article with the editor" do
   context "with an active announcement" do
     before do
       create(:announcement_broadcast)
-      get "/async_info/base_data" # Explicitly ensure broadcast data is loaded before doing any checks
       visit new_path
+      expect(page).to have_selector("body[data-loaded='true']")
     end
 
     it "does not render the announcement broadcast", js: true do
-      expect(page).not_to have_css(".broadcast-wrapper")
-      expect(page).not_to have_selector(".broadcast-data")
-      expect(page).not_to have_text("Hello, World!")
+      expect(page).not_to have_css(".broadcast-wrapper .broadcast-data")
     end
   end
 

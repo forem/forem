@@ -1,4 +1,5 @@
 class Survey < ApplicationRecord
+  resourcify
   validates :title, presence: true
   validates :slug, uniqueness: true, allow_nil: true
 
