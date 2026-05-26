@@ -1,4 +1,5 @@
 class ProfileField < ApplicationRecord
+  resourcify
   WORD_REGEX = /\b\w+\b/
 
   HEADER_FIELD_LIMIT = 3
