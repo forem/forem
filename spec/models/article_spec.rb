@@ -1465,6 +1465,7 @@ RSpec.describe Article do
 
     it "is not valid if the user is too recent" do
       user.created_at = Time.current
+      article.video = "https://example.com/video.mp4"
       expect(article).not_to be_valid
     end
 
@@ -1546,7 +1547,7 @@ RSpec.describe Article do
     it "returns early for YouTube videos without fetching duration" do
       article.video_source_url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
       article.video_duration_in_seconds = 0
-      article.fetch_video_duration
+      article.send(:fetch_video_duration)
       # Should not have changed duration (still 0) because it returns early
       expect(article.video_duration_in_seconds).to eq(0)
     end
@@ -1554,7 +1555,7 @@ RSpec.describe Article do
     it "returns early for Mux videos without fetching duration" do
       article.video_source_url = "https://player.mux.com/nw5QrgIQS02FEx5BJEQH8CdcLmXXRvCNACZKQ01kLoKEI"
       article.video_duration_in_seconds = 0
-      article.fetch_video_duration
+      article.send(:fetch_video_duration)
       # Should not have changed duration (still 0) because it returns early
       expect(article.video_duration_in_seconds).to eq(0)
     end
