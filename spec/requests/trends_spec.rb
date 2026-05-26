@@ -5,8 +5,8 @@ RSpec.describe "Trends", type: :request do
     it "renders the trends list" do
       allow(Images::Optimizer).to receive(:call).and_call_original
       allow(Images::Optimizer).to receive(:call)
-        .with("https://example.com/ruby34.png", hash_including(width: 500))
-        .and_return("https://optimized.example.com/ruby34_500.png")
+        .with("https://example.com/ruby34.png", hash_including(width: 750))
+        .and_return("https://optimized.example.com/ruby34_750.png")
 
       trend1 = create(:trend, name: "Ruby 3.4 release", score: 10, cover_image: "https://example.com/ruby34.png")
       trend2 = create(:trend, name: "AI Agent Revolution", score: 5)
@@ -14,7 +14,7 @@ RSpec.describe "Trends", type: :request do
       get trending_index_path
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Emergent Trends", "Ruby 3.4 release", "AI Agent Revolution")
-      expect(response.body).to include("https://optimized.example.com/ruby34_500.png")
+      expect(response.body).to include("https://optimized.example.com/ruby34_750.png")
       expect(response.body).to include("What the community is talking about right now.")
 
       # Assert surrogate keys
