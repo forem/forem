@@ -3885,4 +3885,40 @@ RSpec.describe Article do
       expect(article.instance_variable_defined?(:@tag_list)).to be_falsey
     end
   end
+
+  describe "semantic embeddings" do
+    let(:article) { build(:article, score: Settings::UserExperience.home_feed_minimum_score) }
+
+    before do
+      stub_const("Ai::Base::DEFAULT_KEY", "test-key")
+    end
+
+    it "enqueues generate embedding when score is above threshold and content changes" do
+      allow(GenerateArticleEmbeddingWorker).to receive(:perform_async)
+      article.save!
+      expect(GenerateArticleEmbeddingWorker).to have_received(:perform_async).with(article.id)
+    end
+
+    it "does not enqueue generate embedding when score is below threshold" do
+      article.score = Settings::UserExperience.home_feed_minimum_score - 1
+      allow(GenerateArticleEmbeddingWorker).to receive(:perform_async)
+      article.save!
+      expect(GenerateArticleEmbeddingWorker).not_to have_received(:perform_async)
+    end
+
+    it "triggers semantic embedding generation manually if no embedding is present and score is high" do
+      article.save!
+      allow(GenerateArticleEmbeddingWorker).to receive(:perform_async)
+      article.trigger_semantic_embedding_generation
+      expect(GenerateArticleEmbeddingWorker).to have_received(:perform_async).with(article.id)
+    end
+
+    it "does not trigger semantic embedding generation manually if embedding is already present" do
+      article.save!
+      article.update_column(:semantic_embedding, Array.new(768, 0.1))
+      allow(GenerateArticleEmbeddingWorker).to receive(:perform_async)
+      article.trigger_semantic_embedding_generation
+      expect(GenerateArticleEmbeddingWorker).not_to have_received(:perform_async)
+    end
+  end
 end
