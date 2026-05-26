@@ -430,6 +430,18 @@ RSpec.describe "Registrations" do
         expect(User.all.size).to be 0
       end
 
+      it "does not create user when encoded-word email passes the raw domain allow list" do
+        allow(Settings::Authentication).to receive(:allowed_registration_email_domains).and_return(["company.com"])
+
+        post "/users", params:
+        { user: { name: "attacker #{rand(10)}",
+                  username: "attacker_#{rand(10)}",
+                  email: "=?utf-8?q?test=40attacker.com=3e?=@company.com",
+                  password: "PaSSw0rd_yo000",
+                  password_confirmation: "PaSSw0rd_yo000" } }
+        expect(User.all.size).to be 0
+      end
+
       it "creates user when email in allow list" do
         post "/users", params:
         { user: { name: "royal #{rand(10)}",
