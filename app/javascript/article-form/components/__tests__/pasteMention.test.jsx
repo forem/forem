@@ -4,7 +4,7 @@ import { screen, createEvent } from '@testing-library/dom';
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 import { userEvent } from '@testing-library/user-event';
-import { Form } from '../Form';
+import { EditorBody } from '../EditorBody';
 
 // Keep original scrollTo so we can restore it after the suite
 const originalScrollTo = window.scrollTo;
@@ -23,30 +23,21 @@ jest.mock('algoliasearch/lite', () => {
 
 // mock the URL paste helper used by the Form
 // Adjust this import path if your Form imports it from a different location.
-jest.mock('../helpers/paste', () => {
-    const actual = jest.requireActual('../helpers/paste');
+jest.mock('../pasteURLHelpers', () => {
+    const actual = jest.requireActual('../pasteURLHelpers');
     return {
         ...actual,
         handleURLPasted: jest.fn(),
     };
 });
-import { handleURLPasted } from '../helpers/paste';
+import { handleURLPasted } from '../pasteURLHelpers';
 
 describe('<Form /> – paste behavior (regression tests)', () => {
     const baseProps = {
-        titleDefaultValue: 'Test Title v2',
-        titleOnChange: null,
-        tagsDefaultValue: 'javascript, career',
-        tagsOnInput: null,
-        bodyDefaultValue: '',
-        bodyOnChange: null,
-        bodyHasFocus: false,
-        version: 'v2', // v2 editor surface; paste behavior is shared
-        mainImage:
-            'https://dev-to-uploads.s3.amazonaws.com/uploads/badge/badge_image/12/8_week_streak-Shadow.png',
-        onMainImageUrlChange: null,
-        errors: null,
+        defaultValue: '',
+        onChange: null,
         switchHelpContext: null,
+        version: 'v2',
     };
 
     beforeEach(() => {
@@ -85,10 +76,10 @@ describe('<Form /> – paste behavior (regression tests)', () => {
         window.scrollTo = originalScrollTo;
     });
 
-    const renderForm = (override = {}) => render(<Form {...baseProps} {...override} />);
+    const renderEditor = (override = {}) => render(<EditorBody {...baseProps} {...override} />);
 
     it('URL text paste still triggers handleURLPasted', async () => {
-        renderForm();
+        renderEditor();
 
         const textArea = screen.getByRole('textbox', { name: /post content/i });
 
