@@ -108,6 +108,8 @@ Please see our installation guides:
 
 Forem is equipped with [Kamal 2](https://kamal-deploy.org/) to allow you to easily deploy the application to any cloud provider or bare metal server.
 
+For a comprehensive guide, including cloud provider setups (AWS, DigitalOcean, Hetzner, GCP), secrets management, and Forem-specific production gotchas, see the [Kamal Deployment Guide](docs/kamal-deployment.md).
+
 ### Prerequisites
 
 Before deploying, ensure you have:
