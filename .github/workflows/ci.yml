@@ -65,7 +65,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:13-alpine
+        image: pgvector/pgvector:pg13
         env:
           POSTGRES_PASSWORD: postgres
         ports:

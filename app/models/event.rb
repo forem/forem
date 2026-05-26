@@ -1,4 +1,5 @@
 class Event < ApplicationRecord
+  resourcify
   include Taggable
   acts_as_taggable_on :tags
 

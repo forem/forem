@@ -1,0 +1,20 @@
+fr:
+  trends:
+    index:
+      title: "Tendances"
+      meta_description: "Découvrez les sujets et conversations tendance du moment au sein de la communauté %{community_name}."
+      header_title: "Tendances émergentes"
+      description: "Ce dont la communauté discute en ce moment."
+      empty_state: "Aucune tendance active détectée ces 7 derniers jours. Revenez plus tard !"
+      explore_trend: "Explorer la tendance →"
+      active_ago: "Actif il y a %{time}"
+      active_recently: "Actif récemment"
+      posts_count:
+        one: "1 publication au cours des 7 derniers jours"
+        other: "%{count} publications au cours des 7 derniers jours"
+    show:
+      posts_count:
+        one: "1 publication dans cette tendance au cours des 7 derniers jours"
+        other: "%{count} publications dans cette tendance au cours des 7 derniers jours"
+      about_trend: "À propos de cette tendance"
+      about_trend_description: "Cette tendance regroupe les publications des 7 derniers jours traitant de concepts, technologies ou idées similaires."

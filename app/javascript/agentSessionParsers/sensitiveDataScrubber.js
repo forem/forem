@@ -23,7 +23,7 @@ const PATTERNS = [
   { name: 'GitHub Token',
     regex: /(ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9_]{36,}/g },
   { name: 'GitHub Fine-Grained Token',
-    regex: /github_pat_[A-Za-z0-9_]{22,}/g },
+    regex: /github_pat_[A-Za-z0-9]{22}_[A-Za-z0-9_]{59,}/g },
   { name: 'GitLab Token',
     regex: /glpat-[A-Za-z0-9\-_]{20,}/g },
   { name: 'Bitbucket Token',
@@ -33,8 +33,7 @@ const PATTERNS = [
   { name: 'Travis CI Token',
     regex: /travis-token\s*[=:]\s*[A-Za-z0-9]{22}/g },
   { name: 'Heroku API Key',
-    regex: /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/g,
-    context: /heroku/i },
+    regex: /(?:heroku[_\s-]*(?:api[_\s-]*)?key|heroku[_\s-]*token)\s*[=:]\s*["']?[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}["']?/gi },
   { name: 'Vercel Token',
     regex: /vercel_[A-Za-z0-9]{24}/g },
   { name: 'Netlify Token',
@@ -156,22 +155,30 @@ export function scrubText(text) {
 
 function scrubMessage(message, redactionCounts) {
   const content = message.content || [];
+  const messageRedactionCounts = {};
+
   for (const block of content) {
     const isToolOutput = block.type === 'tool_call';
 
     if (block.text) {
-      block.text = scrubTextField(block.text, false, redactionCounts);
+      block.text = scrubTextField(block.text, false, redactionCounts, messageRedactionCounts);
     }
     if (block.input) {
-      block.input = scrubTextField(String(block.input), isToolOutput, redactionCounts);
+      block.input = scrubTextField(String(block.input), isToolOutput, redactionCounts, messageRedactionCounts);
     }
     if (block.output) {
-      block.output = scrubTextField(String(block.output), true, redactionCounts);
+      block.output = scrubTextField(String(block.output), true, redactionCounts, messageRedactionCounts);
     }
+  }
+
+  const messageRedactions = Object.entries(messageRedactionCounts)
+    .map(([name, count]) => ({ pattern_name: name, match_count: count }));
+  if (messageRedactions.length > 0) {
+    message.metadata = { ...(message.metadata || {}), redactions: messageRedactions };
   }
 }
 
-function scrubTextField(text, isToolOutput, redactionCounts) {
+function scrubTextField(text, isToolOutput, redactionCounts, messageRedactionCounts = {}) {
   for (const pattern of PATTERNS) {
     if (isToolOutput && SKIP_IN_TOOL_OUTPUT.has(pattern.name)) continue;
     if (pattern.context && !pattern.context.test(text)) continue;
@@ -180,6 +187,7 @@ function scrubTextField(text, isToolOutput, redactionCounts) {
     pattern.regex.lastIndex = 0;
     text = text.replace(pattern.regex, () => {
       redactionCounts[pattern.name] = (redactionCounts[pattern.name] || 0) + 1;
+      messageRedactionCounts[pattern.name] = (messageRedactionCounts[pattern.name] || 0) + 1;
       return REDACTED_LABEL;
     });
   }

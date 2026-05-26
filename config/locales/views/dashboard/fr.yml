@@ -32,12 +32,36 @@ fr:
         meta:
           title: Analytics
         heading: Analytics Dashboard for %{name}
+        audience_heading: Votre audience
         back: "Back to Main Dashboard"
         your: Your Dashboard
         org: "%{org} Analytics Dashboard"
         readers: Lecteurs
         comments: Commentaires
         reactions: Réactions
+        heatmap:
+          title: Votre activité quotidienne
+          subtitle: "%{count} contributions au cours de l'année écoulée"
+          subtitle_year: "%{count} contributions en %{year}"
+          year_picker_label: Période
+          last_year_option: 12 derniers mois
+          loading: Chargement de l'activité…
+          empty: Aucune activité au cours de l'année écoulée.
+          error: Impossible de charger l'activité.
+          day: jour
+          days: jours
+          articles: Publications
+          comments: Commentaires
+          reactions: Réactions
+          contribution: contribution
+          contributions: contributions
+          no_activity: Aucune activité
+          detail_hint: Cliquez sur un jour pour épingler les détails.
+          stats:
+            total: Total
+            current_streak: Série actuelle
+            longest_streak: Plus longue série
+            best_day: Meilleur jour
       article:
         heading:
           text_html: "%{archived}%{title}"
@@ -133,6 +157,7 @@ fr:
       posts:
         heading: Publications
         archived: Show archived
+        hide_archived: Hide archived
         statuses: Show quickie posts
         full: Show full posts
         option:

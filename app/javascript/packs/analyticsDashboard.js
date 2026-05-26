@@ -1,30 +1,26 @@
 import { initCharts, destroyCharts } from '../analytics/dashboard';
 
-function renderOrgData() {
-  const organizationsArray = Array.from(
-    document.getElementsByClassName('organization'),
+// Resolves the organization context for the current analytics page from the
+// nav rendered in dashboards/analytics.erb. Each org tab is an
+// `<a data-organization-id="...">`; the active tab is marked with
+// `aria-current="page"`. The personal ("Your analytics") tab is also marked
+// with `aria-current="page"` but has no `data-organization-id`, so we fall
+// back to `null` for it.
+//
+// Exported for unit testing — see app/javascript/__tests__/analyticsDashboard.test.js.
+export function getActiveOrganizationId() {
+  const activeTab = document.querySelector(
+    '.analytics-nav a[aria-current="page"]',
   );
-  const activeOrg = organizationsArray.find(
-    (org) => org.getAttribute('aria-current') === 'page',
-  );
-  const chartData = activeOrg.dataset.organizationId
-    ? activeOrg.dataset.organizationId
-    : null;
-
-  initCharts({ organizationId: chartData });
+  if (!activeTab) return null;
+  return activeTab.dataset.organizationId || null;
 }
 
 function initDashboard() {
   // Guard: only run on analytics pages (script re-executes on every InstantClick navigation)
   if (!document.getElementById('week-button')) return;
 
-  const organizationsMenu = document.getElementsByClassName('organization')[0];
-
-  if (!organizationsMenu) {
-    initCharts({ organizationId: null });
-  } else {
-    renderOrgData();
-  }
+  initCharts({ organizationId: getActiveOrganizationId() });
 }
 
 // Register InstantClick cleanup ONCE — prevents stale ApexCharts global registry entries
