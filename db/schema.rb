@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_05_07_124354) do
+ActiveRecord::Schema[7.0].define(version: 2026_05_21_163241) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -18,6 +18,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_05_07_124354) do
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
   enable_extension "unaccent"
+  enable_extension "vector"
 
   create_table "agent_sessions", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -211,6 +212,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_05_07_124354) do
     t.integer "score", default: 0
     t.string "search_optimized_description_replacement"
     t.string "search_optimized_title_preamble"
+    t.vector "semantic_embedding", limit: 768
     t.jsonb "semantic_interests", default: {}
     t.boolean "show_comments", default: true
     t.text "slug"
@@ -744,6 +746,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_05_07_124354) do
     t.float "recently_active_past_day_bonus_weight", default: 0.0, null: false
     t.float "score_weight", default: 1.0
     t.float "semantic_match_weight", default: 0.0
+    t.float "semantic_similarity_weight", default: 0.0, null: false
     t.float "shuffle_weight", default: 0.0, null: false
     t.integer "status_target", default: 0
     t.float "status_weight", default: 0.0, null: false
@@ -1741,16 +1744,31 @@ ActiveRecord::Schema[7.0].define(version: 2026_05_07_124354) do
     t.index ["taggings_count"], name: "index_tags_on_taggings_count"
   end
 
-  create_table "trends", force: :cascade do |t|
+  create_table "trend_memberships", force: :cascade do |t|
+    t.bigint "article_id", null: false
     t.datetime "created_at", null: false
-    t.datetime "expiry_date", null: false
-    t.text "full_content_description", null: false
-    t.text "public_description", null: false
-    t.string "short_title", null: false
-    t.bigint "subforem_id", null: false
+    t.float "distance", null: false
+    t.bigint "trend_id", null: false
     t.datetime "updated_at", null: false
-    t.index ["expiry_date"], name: "index_trends_on_expiry_date"
-    t.index ["subforem_id"], name: "index_trends_on_subforem_id"
+    t.index ["article_id"], name: "index_trend_memberships_on_article_id"
+    t.index ["trend_id", "article_id"], name: "index_trend_memberships_uniqueness", unique: true
+  end
+
+  create_table "trends", force: :cascade do |t|
+    t.integer "articles_count", default: 0, null: false
+    t.vector "centroid_embedding", limit: 768, null: false
+    t.string "cover_image"
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.datetime "first_observed_at", null: false
+    t.text "key_questions", default: [], array: true
+    t.datetime "last_observed_at", null: false
+    t.string "name", null: false
+    t.float "score", default: 0.0, null: false
+    t.string "slug", null: false
+    t.datetime "updated_at", null: false
+    t.index ["centroid_embedding"], name: "index_trends_on_centroid_embedding", opclass: :vector_cosine_ops, using: :hnsw
+    t.index ["slug"], name: "index_trends_on_slug", unique: true
   end
 
   create_table "tweets", force: :cascade do |t|
@@ -1791,6 +1809,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_05_07_124354) do
     t.jsonb "alltime_tags", default: []
     t.jsonb "alltime_users", default: []
     t.datetime "created_at", null: false
+    t.vector "interest_embedding", limit: 768
     t.datetime "last_activity_at"
     t.jsonb "recent_labels", default: []
     t.jsonb "recent_organizations", default: []
@@ -1798,10 +1817,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_05_07_124354) do
     t.jsonb "recent_tags", default: []
     t.jsonb "recent_users", default: []
     t.jsonb "recently_viewed_articles", default: []
-    t.jsonb "semantic_interest_profile", default: {}
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.index ["semantic_interest_profile"], name: "index_user_activities_on_semantic_interest_profile", using: :gin
     t.index ["user_id"], name: "index_user_activities_on_user_id"
   end
 
@@ -2183,7 +2200,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_05_07_124354) do
   add_foreign_key "tag_subforem_relationships", "tags"
   add_foreign_key "taggings", "tags", on_delete: :cascade
   add_foreign_key "tags", "badges", on_delete: :nullify
-  add_foreign_key "trends", "subforems"
+  add_foreign_key "trend_memberships", "articles"
+  add_foreign_key "trend_memberships", "trends"
   add_foreign_key "tweets", "users", on_delete: :nullify
   add_foreign_key "user_activities", "users"
   add_foreign_key "user_blocks", "users", column: "blocked_id"
