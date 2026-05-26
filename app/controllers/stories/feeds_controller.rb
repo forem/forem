@@ -42,10 +42,12 @@ module Stories
 
       stories = if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
                   timeframe_feed
-                elsif params[:type_of] == "following" && user_signed_in? && params[:timeframe] == Timeframe::LATEST_TIMEFRAME
+                elsif params[:type_of] == "following" && user_signed_in? && params[:timeframe].in?([Timeframe::LATEST_TIMEFRAME, "latest_less_filtered"])
                   latest_following_feed
                 elsif params[:type_of] == "following" && user_signed_in?
                   relevant_following_feed
+                elsif params[:timeframe] == "latest_less_filtered"
+                  latest_less_filtered_feed
                 elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
                   latest_feed
                 elsif user_signed_in?
@@ -122,6 +124,17 @@ module Stories
     end
 
     def latest_feed
+      articles = Articles::Feeds::Latest.call(tag: params[:tag], page: @page)
+      minimum_score = Settings::UserExperience.index_minimum_score
+      
+      if user_signed_in?
+        articles.where("score >= ? OR user_id = ?", minimum_score, current_user.id)
+      else
+        articles.where("score >= ?", minimum_score)
+      end
+    end
+
+    def latest_less_filtered_feed
       Articles::Feeds::Latest.call(tag: params[:tag], page: @page)
     end
 

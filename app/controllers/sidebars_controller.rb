@@ -4,7 +4,10 @@ class SidebarsController < ApplicationController
 
   def show
     get_latest_campaign_articles
-    get_active_discussions if user_signed_in?
+    if user_signed_in?
+      get_active_discussions
+      set_onboarding_checklist
+    end
   end
 
   private
@@ -31,9 +34,24 @@ class SidebarsController < ApplicationController
         .where("published_at > ?", 1.week.ago)
         .where("comments_count > ?", 1)
           .with_at_least_home_feed_minimum_score)
+      .or(Article.published.from_subforem
+        .where("published_at > ?", 1.week.ago)
+        .where("comments_count >= ?", 15)
+        .where("comment_score >= ?", 25)
+        .with_at_least_home_feed_minimum_score)
       .order(order)
       .limit(ACTIVE_DISCUSSION_LIMIT)
       .pluck(:path, :title, :comments_count, :created_at, :subforem_id)
+  end
+
+  def set_onboarding_checklist
+    return unless Settings::General.display_sidebar_onboarding_checklist
+    return if current_user.registered_at&.before?(28.days.ago)
+
+    checklist = current_user.onboarding_checklist
+    return unless checklist && !checklist.completed?
+
+    @onboarding_checklist = checklist
   end
 
   def cached_recent_pageview_article_ids

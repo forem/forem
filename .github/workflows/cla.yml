@@ -7,6 +7,7 @@ on:
   merge_group:
     branches:
       - main
+  workflow_dispatch:
   workflow_call:
 
 permissions:
@@ -20,15 +21,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "CLA Assistant"
-        if: ((github.event.comment.body == 'recheck' || github.event.comment.body == 'I have read the CLA Document and I hereby sign the CLA') || github.event_name == 'pull_request_target') && github.repository_owner == 'forem'
-        uses: contributor-assistant/github-action@v2.3.0
+        if: (github.event.comment.body == 'recheck' || github.event.comment.body == 'I have read the CLA Document and I hereby sign the CLA') || github.event_name == 'pull_request_target'
+        uses: contributor-assistant/github-action@v2.6.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PERSONAL_ACCESS_TOKEN: ${{ secrets.CLA_PERSONAL_ACCESS_TOKEN }}
         with:
           path-to-signatures: 'signatures/version1/cla.json'
-          path-to-document: 'https://github.com/forem/forem/blob/main/CLA.md'
-          branch: 'main' # branch should not be protected
+          path-to-document: 'https://github.com/${{ github.repository }}/blob/main/CLA.md'
+          # Branch in the remote signatures repo
+          branch: 'main'
+          remote-organization-name: 'forem'
+          remote-repository-name: 'CLA-signatures'
           allowlist: ${{ secrets.CLA_ALLOWLIST }}
-          remote-repository-name: ${{ secrets.CLA_REPOSITORY }}
           lock-pullrequest-aftermerge: false

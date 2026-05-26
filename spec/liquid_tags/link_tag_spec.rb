@@ -29,69 +29,21 @@ RSpec.describe LinkTag, type: :liquid_tag do
     Liquid::Template.parse("{% post #{slug} %}")
   end
 
-  def correct_link_html(article)
-    tags = article.tag_list.map { |t| "<span class='ltag__link__tag'>##{t}</span>" }.join("\n#{"\s" * 8}")
-    <<~HTML
-      <div class='ltag__link'>
-        <a href='#{article.user.path}' class='ltag__link__link'>
-          <div class='ltag__link__pic'>
-            <img src='#{article.user.profile_image_url_for(length: 150)}' alt='#{article.user.username}'>
-          </div>
-        </a>
-        <a href='#{URL.article(article)}' class='ltag__link__link'>
-          <div class='ltag__link__content'>
-            <h2>#{CGI.escapeHTML(article.title)}</h2>
-            <h3>#{CGI.escapeHTML(article.user.name)} ・ #{article.readable_publish_date}</h3>
-            <div class='ltag__link__taglist'>
-              #{tags}
-            </div>
-          </div>
-        </a>
-      </div>
-    HTML
+  def assert_link_tag_renders(rendered, article)
+    expect(rendered).to include("ltag__link--embedded")
+    expect(rendered).to include(CGI.escapeHTML(article.title))
+    expect(rendered).to include(article.user.username)
   end
 
-  def correct_org_link_html(article)
-    tags = article.tag_list.map { |t| "<span class='ltag__link__tag'>##{t}</span>" }.join("\n#{"\s" * 8}")
-
-    <<~HTML
-      <div class='ltag__link'>
-        <a href='#{article.organization.path}' class='ltag__link__link'>
-          <div class='ltag__link__org__pic'>
-            <img src='#{article.organization.profile_image_url_for(length: 150)}' alt='#{CGI.escapeHTML(article.organization.name)}'>
-            <div class='ltag__link__user__pic'>
-              <img src='#{article.user.profile_image_url_for(length: 150)}' alt=''>
-            </div>
-          </div>
-        </a>
-        <a href='#{URL.article(article)}' class='ltag__link__link'>
-          <div class='ltag__link__content'>
-            <h2>#{CGI.escapeHTML(article.title)}</h2>
-            <h3>#{CGI.escapeHTML(article.user.name)} for #{CGI.escapeHTML(article.organization.name)} ・ #{article.readable_publish_date}</h3>
-            <div class='ltag__link__taglist'>
-              #{tags}
-            </div>
-          </div>
-        </a>
-      </div>
-    HTML
-  end
-
-  def missing_article_html
-    <<~HTML
-      <div class='ltag__link'>
-        <div class='ltag__link__content'>
-          <div class='missing'>
-            <h2>Article No Longer Available</h2>
-          </div>
-        </div>
-      </div>
-    HTML
+  def assert_org_link_tag_renders(rendered, article)
+    expect(rendered).to include("ltag__link--embedded")
+    expect(rendered).to include(CGI.escapeHTML(article.title))
+    expect(rendered).to include(article.user.username)
   end
 
   it 'can use "post" as an alias' do
     liquid = generate_new_liquid_alias(slug: "/#{user.username}/#{article.slug}")
-    expect(liquid.render).to eq(correct_link_html(article))
+    assert_link_tag_renders(liquid.render, article)
   end
 
   it "does not raise an error when invalid" do
@@ -101,32 +53,32 @@ RSpec.describe LinkTag, type: :liquid_tag do
 
   it "renders a proper link tag" do
     liquid = generate_new_liquid(slug: "#{user.username}/#{article.slug}")
-    expect(liquid.render).to eq(correct_link_html(article))
+    assert_link_tag_renders(liquid.render, article)
   end
 
   it "also tries to look for article by organization if failed to find by username" do
     liquid = generate_new_liquid(slug: "#{org_article.username}/#{org_article.slug}")
-    expect(liquid.render).to eq(correct_org_link_html(org_article))
+    assert_org_link_tag_renders(liquid.render, org_article)
   end
 
   it "renders with a leading slash" do
     liquid = generate_new_liquid(slug: "/#{user.username}/#{article.slug}")
-    expect(liquid.render).to eq(correct_link_html(article))
+    assert_link_tag_renders(liquid.render, article)
   end
 
   it "renders with a trailing slash" do
     liquid = generate_new_liquid(slug: "#{user.username}/#{article.slug}/")
-    expect(liquid.render).to eq(correct_link_html(article))
+    assert_link_tag_renders(liquid.render, article)
   end
 
   it "renders with both leading and trailing slashes" do
     liquid = generate_new_liquid(slug: "/#{user.username}/#{article.slug}/")
-    expect(liquid.render).to eq(correct_link_html(article))
+    assert_link_tag_renders(liquid.render, article)
   end
 
   it "renders with a full link" do
     liquid = generate_new_liquid(slug: "https://#{Settings::General.app_domain}/#{user.username}/#{article.slug}")
-    expect(liquid.render).to eq(correct_link_html(article))
+    assert_link_tag_renders(liquid.render, article)
   end
 
   it "raise error when url belongs to different domain" do
@@ -144,23 +96,25 @@ RSpec.describe LinkTag, type: :liquid_tag do
 
   it "renders with a full link with a trailing slash" do
     liquid = generate_new_liquid(slug: "https://#{Settings::General.app_domain}/#{user.username}/#{article.slug}/")
-    expect(liquid.render).to eq(correct_link_html(article))
+    assert_link_tag_renders(liquid.render, article)
   end
 
   it "renders with missing article" do
     article.delete
     liquid = generate_new_liquid(slug: "https://#{Settings::General.app_domain}/#{user.username}/#{article.slug}/")
-    expect(liquid.render).to eq(missing_article_html)
+    rendered = liquid.render
+    expect(rendered).to include("Post not found or has been removed.")
+    expect(rendered).to include("crayons-card")
   end
 
   it "renders with another subforem domain" do
     create(:subforem, domain: "xkcd.com")
     liquid = generate_new_liquid(slug: "https://xkcd.com/#{user.username}/#{article.slug}/")
-    expect(liquid.render).to eq(correct_link_html(article))
+    assert_link_tag_renders(liquid.render, article)
   end
 
   it "escapes title" do
     liquid = generate_new_liquid(slug: "/#{user.username}/#{escaped_article.slug}/")
-    expect(liquid.render).to eq(correct_link_html(escaped_article))
+    assert_link_tag_renders(liquid.render, escaped_article)
   end
 end

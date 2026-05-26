@@ -14,6 +14,20 @@ RSpec.describe Users::Delete, type: :service do
     expect(User.find_by(id: user.id)).to be_nil
   end
 
+  it "retries deletion if a concurrent AiAudit triggers InvalidForeignKey" do
+    attempts = 0
+    original_method = user.method(:destroy)
+    allow(user).to receive(:destroy) do
+      attempts += 1
+      raise ActiveRecord::InvalidForeignKey, "violates foreign key constraint on table ai_audits" if attempts == 1
+      original_method.call
+    end
+
+    described_class.call(user)
+    expect(User.find_by(id: user.id)).to be_nil
+    expect(attempts).to eq(2)
+  end
+
   it "busts user profile page" do
     described_class.new(user).call
     expect(EdgeCache::BustUser).to have_received(:call).with(user)
@@ -58,6 +72,24 @@ RSpec.describe Users::Delete, type: :service do
     expect(audit_log.reload.user_id).to be_nil
   end
 
+  it "does not delete user's ai_audits but nullifies the reference" do
+    ai_audit = create(:ai_audit, affected_user_id: user.id)
+
+    expect do
+      described_class.call(user)
+    end.not_to change(AiAudit, :count)
+
+    expect(ai_audit.reload.affected_user_id).to be_nil
+  end
+
+  it "deletes user's user_activity" do
+    create(:user_activity, user: user)
+
+    expect do
+      described_class.call(user)
+    end.to change(UserActivity, :count).by(-1)
+  end
+
   it "deletes field tests memberships" do
     create(:field_test_membership, participant_id: user.id)
 
@@ -80,6 +112,7 @@ RSpec.describe Users::Delete, type: :service do
     let(:kept_association_names) do
       %i[
         affected_feedback_messages
+        ai_audits
         audit_logs
         banished_users
         billboard_events
@@ -117,9 +150,12 @@ RSpec.describe Users::Delete, type: :service do
 
           # Skip trying to create listings as the factory is removed
           next if possible_factory_name == "listing"
-          
+
           # Skip scheduled_automations as they require a community bot user
           next if possible_factory_name == "scheduled_automation"
+
+          # Skip feeds models — factory names don't match auto-generated names
+          next if possible_factory_name.start_with?("feeds_")
 
           inverse_of = association.options[:inverse_of] || association.options[:as] || :user
 

@@ -1,16 +1,12 @@
 module Slack
   module Messengers
-    class CommentUserWarned
+    class CommentUserWarned < Base
       MESSAGE_TEMPLATE = <<~TEXT.chomp.freeze
         Activity: %<url>s
         Comment text: %<text>s
         ---
         Manage commenter - @%<username>s: %<internal_user_url>s
       TEXT
-
-      def self.call(...)
-        new(...).call
-      end
 
       def initialize(comment:)
         @comment = comment
@@ -32,7 +28,7 @@ module Slack
           internal_user_url: internal_user_url,
         )
 
-        Slack::Messengers::Worker.perform_async(
+        enqueue_slack_message(
           "message" => message,
           "channel" => "warned-user-comments",
           "username" => "sloan_watch_bot",

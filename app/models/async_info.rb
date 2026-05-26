@@ -51,6 +51,7 @@ class AsyncInfo
       feed_style: feed_style_preference_variable(user),
       created_at: user.created_at,
       admin: user.any_admin?,
+      admin_organization_ids: user.organization_memberships.admin.pluck(:organization_id),
       ordered_subforem_ids: user.ordered_subforems,
       policies: [
         {

@@ -51,6 +51,12 @@ FactoryBot.define do
       processed_html { I18n.t("broadcast.connect.twitter") }
     end
 
+    factory :mlh_connect_broadcast do
+      title          { "Welcome Notification: mlh_connect" }
+      type_of        { "Welcome" }
+      processed_html { I18n.t("broadcast.connect.mlh") }
+    end
+
     factory :customize_ux_broadcast do
       title          { "Welcome Notification: customize_experience" }
       type_of        { "Welcome" }

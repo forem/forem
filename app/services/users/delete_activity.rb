@@ -17,6 +17,8 @@ module Users
       user.poll_votes.delete_all
       user.response_templates.delete_all
       user.listings.destroy_all
+      UserActivity.where(user_id: user.id).delete_all
+      AiAudit.where(affected_user_id: user.id).update_all(affected_user_id: nil)
       delete_feedback_messages(user)
     end
 

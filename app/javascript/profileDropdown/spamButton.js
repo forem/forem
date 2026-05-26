@@ -1,7 +1,7 @@
 /* global userData */
 /* eslint-disable no-alert, import/order */
 import { request } from '@utilities/http';
-import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
+import { getUserDataAndCsrfTokenSafely } from '@utilities/getUserDataAndCsrfToken';
 
 function addSpamButton(spamButton) {
   const { profileUserId, profileUserName } = spamButton.dataset;
@@ -22,7 +22,7 @@ function addSpamButton(spamButton) {
         .then((response) => {
           if (response.ok) {
             isUserSpam = !isUserSpam;
-            spamButton.innerHTML = isUserSpam ? `Set ${profileUserName} in Good standing` :  `Mark ${profileUserName} as Spam`;
+            spamButton.innerHTML = isUserSpam ? `Set ${profileUserName} in Good standing` : `Mark ${profileUserName} as Spam`;
           }
         })
         .catch((e) => {
@@ -54,9 +54,8 @@ export function initSpam() {
     return;
   }
 
-  getUserDataAndCsrfToken().then(() => {
-    const user = userData();
-    if (!user || !user.admin) {
+  getUserDataAndCsrfTokenSafely().then(({ currentUser }) => {
+    if (!currentUser || !currentUser.admin) {
       spamButton.remove();
       return;
     }

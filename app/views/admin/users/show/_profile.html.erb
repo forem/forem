@@ -31,27 +31,30 @@
       <% end %>
     </div>
     <div>
-      <ul class="flex flex-col s:flex-row gap-3 s:gap-6 flex-wrap">
-        <li>
-          <a href="mailto:<%= @user.email %>" class="c-link c-link--icon-left inline-block" target="_blank">
-            <%= crayons_icon_tag(:email, title: t("views.admin.users.profile.email"), class: "c-link__icon") %>
-            <%= @user.email %>
-          </a>
+      <ul class="list-none mb-2">
+        <li class="mb-1">
+          <strong class="color-base-60"><%= t("views.admin.users.profile.primary_email") %></strong>
+          <a href="mailto:<%= @user.email %>" class="c-link pl-2" target="_blank"><%= @user.email %></a>
         </li>
+        <% @user.identities.each do |identity| %>
+          <% identity_email = identity.email %>
+          <% next if identity_email == @user.email || identity_email == I18n.t("models.identity.no_email_msg", provider: identity.provider) %>
+          <% provider_name = Authentication::Providers.const_get(identity.provider.to_s.camelize).official_name rescue identity.provider.titleize %>
+          <li class="mb-1">
+            <strong class="color-base-60"><%= t("views.admin.users.profile.oauth_email", provider: provider_name) %></strong>
+            <a href="mailto:<%= identity_email %>" class="c-link pl-2" target="_blank"><%= identity_email %></a>
+          </li>
+        <% end %>
+      </ul>
+      <ul class="flex flex-col s:flex-row gap-3 s:gap-6 flex-wrap">
         <% if @user.github_username %>
           <li>
-            <a href="https://github.com/<%= @user.github_username %>" class="c-link c-link--icon-left inline-block" target="_blank">
-              <%= crayons_icon_tag(:github, title: t("views.admin.users.profile.github")) %>
-              <%= @user.github_username %>
-            </a>
+            <a href="https://github.com/<%= @user.github_username %>" class="c-link c-link--icon-left inline-block" target="_blank"><%= crayons_icon_tag(:github, title: t("views.admin.users.profile.github")) %><%= @user.github_username %></a>
           </li>
         <% end %>
         <% if @user.twitter_username %>
           <li>
-            <a href="https://twitter.com/<%= @user.twitter_username %>" class="c-link c-link--icon-left inline-block" target="_blank">
-              <%= crayons_icon_tag(:twitter, title: t("views.admin.users.profile.twitter")) %>
-              <%= @user.twitter_username %>
-            </a>
+           <a href="https://twitter.com/<%= @user.twitter_username %>" class="c-link c-link--icon-left inline-block" target="_blank"><%= crayons_icon_tag(:twitter, title: t("views.admin.users.profile.twitter")) %><%= @user.twitter_username %></a>
           </li>
         <% end %>
       </ul>

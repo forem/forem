@@ -1,32 +1,28 @@
 <div class="crayons-card mb-4 p-3 m:p-4 s:pl-4 m:pl-7 pr-4">
   <% unless @user.confirmed? %>
-    <%= form_with url: send_email_confirmation_admin_user_path(@user), local: true, class: "flex flex-col s:flex-row justify-between gap-4 s:items-center" do |f| %>
+    <div class="flex flex-col s:flex-row justify-between gap-4 s:items-center">
       <div>
         <h2 class="crayons-subtitle-1"><%= t("views.admin.users.emails.not_confirmed.subtitle") %></h2>
         <p class="color-secondary"><%= t("views.admin.users.emails.not_confirmed.desc", user: @user.name) %></p>
       </div>
       <div class="flex gap-2">
-        <%= f.button t("views.admin.users.emails.confirm"), class: "c-btn c-btn--secondary whitespace-nowrap" %>
+        <%= form_with url: send_email_confirmation_admin_user_path(@user), local: true do |f| %>
+          <%= f.button t("views.admin.users.emails.confirm"), class: "c-btn c-btn--secondary whitespace-nowrap" %>
+        <% end %>
         <%= button_to "Mark as Confirmed", confirm_email_admin_user_path(@user), method: :post, class: "c-btn c-btn--primary whitespace-nowrap", form: { data: { confirm: "Are you sure you want to manually confirm this user's email?" } } %>
       </div>
-    <% end %>
-  <% else %>
-    <%= form_with url: verify_email_ownership_admin_user_path(@user), local: true, class: "flex flex-col s:flex-row justify-between gap-4 s:items-center" do |f| %>
-      <% unless @last_email_verification_date %>
-        <div>
-          <h2 class="crayons-subtitle-1"><%= t("views.admin.users.emails.not_verified.subtitle") %></h2>
-          <p class="color-secondary"><%= t("views.admin.users.emails.not_verified.desc", user: @user.name) %></p>
-        </div>
-        <% if false # Not yet designed to be visible %>
-          <%= f.button t("views.admin.users.emails.manually_verify"), class: "c-btn c-btn--secondary whitespace-nowrap", value: "manual_verify" %>
-        <% end %>
-        <%= f.button t("views.admin.users.emails.verify"), class: "c-btn c-btn--secondary whitespace-nowrap", value: "send_verification_email" %>
-      <% else %>
-        <p>
-          <%= t("views.admin.users.emails.verified_html", time: tag.time(l(@last_email_verification_date, format: :email_verified), datetime: @last_email_verification_date.strftime("%Y-%m-%dT%H:%M:%S%z"), class: "fw-medium whitespace-nowrap")) %>
-        </p>
-        <%= f.button t("views.admin.users.emails.reverify"), class: "c-btn c-btn--secondary whitespace-nowrap" %>
-      <% end %>
-    <% end %>
+    </div>
+  <% end %>
+
+  <% if @user.unconfirmed_email.present? %>
+    <div class="flex flex-col s:flex-row justify-between gap-4 s:items-center mt-3">
+      <div>
+        <h2 class="crayons-subtitle-1"><%= t("views.admin.users.emails.pending_email.subtitle") %></h2>
+        <p class="color-secondary"><%= t("views.admin.users.emails.pending_email.desc", user: @user.name, email: @user.unconfirmed_email) %></p>
+      </div>
+      <div class="flex gap-2">
+        <%= button_to t("views.admin.users.emails.pending_email.confirm"), confirm_pending_email_admin_user_path(@user), method: :post, class: "c-btn c-btn--primary whitespace-nowrap", form: { data: { confirm: t("views.admin.users.emails.pending_email.confirm_dialog", email: @user.unconfirmed_email) } } %>
+      </div>
+    </div>
   <% end %>
 </div>

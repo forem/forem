@@ -51,7 +51,10 @@ class MagicLinksController < ApplicationController
       domain = @user.email.split("@").last
       if Settings::Authentication.acceptable_domain?(domain: domain) && @user.save
         @user.send_magic_link!
-        Users::GenerateAiProfileImageWorker.perform_async(@user.id)
+        
+        if FeatureFlag.enabled?(:auto_generated_profile_pics)
+          Users::GenerateAiProfileImageWorker.perform_async(@user.id)
+        end
       else
         flash[:alert] = @user.errors.full_messages.join(", ")
         redirect_to new_user_session_path and return

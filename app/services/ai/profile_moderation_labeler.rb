@@ -3,6 +3,7 @@ module Ai
   # Analyzes a user's profile and recent articles to determine a moderation label.
   # This is intended for detecting clear and obvious spam or abuse.
   class ProfileModerationLabeler
+    VERSION = "1.0"
     LABELS = %w[
       no_moderation_label
       clear_and_obvious_spam
@@ -22,9 +23,9 @@ module Ai
     ].freeze
 
     # @param user [User] The user whose profile we are labeling.
-    def initialize(user, ai_client: Ai::Base.new)
-      @ai_client = ai_client
+    def initialize(user, ai_client: nil)
       @user = user
+      @ai_client = ai_client || Ai::Base.new(wrapper: self, affected_user: user)
     end
 
     ##
@@ -54,7 +55,7 @@ module Ai
                              <<~ARTICLE
                                Article #{index}:
                                Title: #{article.title}
-                               Body#{ " (truncated)" if article.body_markdown.to_s.size > 1_200 }: #{body}
+                               Body#{' (truncated)' if article.body_markdown.to_s.size > 1_200}: #{body}
                              ARTICLE
                            end.join("\n")
                          else
@@ -84,7 +85,7 @@ module Ai
         #{articles_context}
 
         **Label Categories (choose one):**
-        #{LABELS.join(", ")}
+        #{LABELS.join(', ')}
 
         **Guidelines:**
         - We are looking for *clear and obvious spam or abuse* only.
