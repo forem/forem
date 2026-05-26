@@ -1,0 +1,78 @@
+# Name of your application. Used to uniquely configure containers.
+service: forem
+
+# Name of the container image.
+image: forem/forem
+
+# Deploy to these servers.
+servers:
+  web:
+    hosts:
+      - <%= ENV["KAMAL_WEB_IP"] || "192.168.0.1" %>
+    cmd: bundle exec puma -C config/puma.rb
+  job:
+    hosts:
+      - <%= ENV["KAMAL_JOB_IP"] || "192.168.0.1" %>
+    cmd: bundle exec sidekiq -t 25
+
+# Enable SSL auto certification via Let's Encrypt and allow for multiple apps on a single web server.
+# Remove this section when using multiple web servers and ensure you terminate SSL at your load balancer.
+proxy:
+  ssl: true
+  host: example.com # Replace with your domain name
+  app_port: 3000
+
+# Credentials for your image host.
+registry:
+  server: ghcr.io
+  username: your_username # Replace with your GHCR username
+  # Always use an access token rather than real password (pulled from .kamal/secrets).
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+# Configure builder setup.
+builder:
+  arch: amd64
+  # Our Dockerfile has a multi-stage build, target "production" to get the lean final image.
+  target: production
+
+# Inject ENV variables into containers (secrets come from .kamal/secrets).
+env:
+  clear:
+    PORT: 3000
+    RAILS_ENV: production
+    NODE_ENV: production
+    RAILS_SERVE_STATIC_FILES: "true"
+    REDIS_URL: redis://forem-redis:6379/1
+    REDIS_SIDEKIQ_URL: redis://forem-redis:6379/3
+    REDIS_SESSIONS_URL: redis://forem-redis:6379/4
+    REDIS_RPUSH_URL: redis://forem-redis:6379/5
+  secret:
+    - RAILS_MASTER_KEY
+    - DATABASE_URL
+
+# Bridge fingerprinted assets, like JS and CSS, between versions to avoid
+# hitting 404 on in-flight requests. Combines all files from new and old
+# version inside the asset_path.
+asset_path: /opt/apps/forem/public/assets
+
+# Use accessory services (secrets come from .kamal/secrets).
+accessories:
+  postgres:
+    image: pgvector/pgvector:pg13
+    host: <%= ENV["KAMAL_DB_IP"] || "192.168.0.1" %>
+    port: 5432
+    env:
+      clear:
+        POSTGRES_USER: postgres
+        POSTGRES_DB: forem_production
+      secret:
+        - POSTGRES_PASSWORD
+    directories:
+      - /var/lib/postgresql/data:/var/lib/postgresql/data
+  redis:
+    image: redis:7.0-alpine
+    host: <%= ENV["KAMAL_REDIS_IP"] || "192.168.0.1" %>
+    port: 6379
+    directories:
+      - /data:/data

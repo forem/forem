@@ -189,6 +189,9 @@ class Article < ApplicationRecord
   has_many :context_notes, dependent: :delete_all
   accepts_nested_attributes_for :context_notes
 
+  has_many :trend_memberships, dependent: :destroy
+  has_many :trends, through: :trend_memberships
+
   has_many :top_comments,
            lambda {
              where(comments: { score: 11.. }, ancestry: nil, hidden_by_commentable_user: false, deleted: false)
@@ -318,6 +321,16 @@ class Article < ApplicationRecord
   after_update_commit :update_notification_subscriptions, if: proc { |article|
     article.saved_change_to_user_id?
   }
+
+  begin
+    has_neighbors :semantic_embedding if column_names.include?("semantic_embedding")
+  rescue StandardError
+    # db not available yet
+  end
+
+  after_commit :enqueue_generate_embedding,
+               on: %i[create update],
+               if: -> { published? && Ai::Base::DEFAULT_KEY.present? }
 
   after_commit :async_score_calc, :touch_collection, :enrich_image_attributes, :detect_code_block_languages,
                on: %i[create update]
@@ -982,6 +995,21 @@ class Article < ApplicationRecord
     trigger_linked_domain_score_updates if score_changed_flag
     trigger_freeform_context_note_generation
     trigger_summary_generation
+    trigger_semantic_embedding_generation if score_changed_flag
+  end
+
+  def eligible_for_semantic_embedding?
+    respond_to?(:semantic_embedding) &&
+      score >= Settings::UserExperience.home_feed_minimum_score &&
+      semantic_embedding.blank?
+  end
+  private :eligible_for_semantic_embedding?
+
+  def trigger_semantic_embedding_generation
+    return unless Ai::Base::DEFAULT_KEY.present?
+    return unless eligible_for_semantic_embedding?
+
+    GenerateArticleEmbeddingWorker.perform_async(id)
   end
 
   def trigger_freeform_context_note_generation
@@ -1724,6 +1752,17 @@ class Article < ApplicationRecord
     urls = title.scan(url_regex).uniq
     # Remove trailing punctuation that might not be part of the URL
     urls.map { |url| url.sub(/[.,;:!?)]+$/, "") }
+  end
+
+  def enqueue_generate_embedding
+    return unless Ai::Base::DEFAULT_KEY.present?
+
+    content_changed = saved_change_to_title? || saved_change_to_body_markdown?
+    return unless content_changed
+    return unless respond_to?(:semantic_embedding)
+    return unless score >= Settings::UserExperience.home_feed_minimum_score
+
+    GenerateArticleEmbeddingWorker.perform_async(id)
   end
 
   def body_markdown_only_contains_embed_tags_from_title?
