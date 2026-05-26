@@ -11,9 +11,10 @@ module Articles
     # so self-identified crawlers must also be dropped here before a row is
     # written. Kept in parity with the client-side list.
     BOT_USER_AGENT_REGEX = /
-      bot|crawl|spider|google|baidu|bing|msn|duckduckbot|teoma|slurp|
-      yandex|chatgpt|anthropic|cohere-ai|facebookexternalhit
-    /ix
+  \b(bot|crawl|spider)\b|
+  google|baidu|bing|msn|duckduckbot|teoma|slurp|
+  yandex|chatgpt|anthropic|cohere-ai|facebookexternalhit
+/ix
 
     sidekiq_options queue: :medium_priority,
                     lock: :until_executing,
