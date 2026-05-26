@@ -98,6 +98,20 @@ RSpec.describe "UserProfiles" do
       expect(response.body.split("Whoaaaa").first).to include "crayons-layout__sidebar-left"
     end
 
+    context "when user has organization memberships" do
+      it "does not list pending invitations as organizations on the profile sidebar" do
+        create(:organization_membership, user: user, organization: organization, type_of_user: "pending")
+        get "/#{user.username}"
+        expect(response.body).not_to include(CGI.escapeHTML(organization.name))
+      end
+
+      it "lists accepted organizations on the profile sidebar" do
+        create(:organization_membership, user: user, organization: organization, type_of_user: "member")
+        get "/#{user.username}"
+        expect(response.body).to include(CGI.escapeHTML(organization.name))
+      end
+    end
+
     it "does not render special display header elements naively" do
       user.profile.update(location: "hawaii")
       get "/#{user.username}"

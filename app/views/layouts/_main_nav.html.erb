@@ -9,7 +9,7 @@ end %>
   <ul class="default-navigation-links sidebar-navigation-links spec-sidebar-navigation-links">
     <%= render partial: "layouts/sidebar_nav_link", collection: NavigationLink.where(id: navigation_links[:default_nav_ids]).ordered, as: :link %>
     <li>
-      <a href="<%= trends_path %>" class="sidebar-navigation-link c-link c-link--block c-link--icon-left">
+      <a href="<%= trending_index_path %>" class="sidebar-navigation-link c-link c-link--block c-link--icon-left">
         <span class="c-link__icon">
           <%= crayons_icon_tag("analytics", native: true) %>
         </span>
