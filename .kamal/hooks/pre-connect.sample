@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby
 
+require "benchmark"
+require "socket"
+
 # A sample pre-connect check
 #
 # Warms DNS before connecting to hosts in parallel

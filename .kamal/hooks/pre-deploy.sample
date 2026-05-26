@@ -2,7 +2,7 @@
 
 # A sample pre-deploy hook
 #
-# Checks the Github status of the build, waiting for a pending build to complete for up to 720 seconds.
+# Checks the GitHub status of the build, waiting for a pending build to complete for up to 720 seconds.
 #
 # Fails unless the combined status is "success"
 #
@@ -30,6 +30,9 @@ gemfile(true, quiet: true) do
   gem "octokit"
   gem "faraday-retry"
 end
+
+require "octokit"
+require "faraday/retry"
 
 MAX_ATTEMPTS = 72
 ATTEMPTS_GAP = 10

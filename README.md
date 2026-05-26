@@ -126,7 +126,7 @@ Before deploying, ensure you have:
    - `KAMAL_WEB_IP` / `KAMAL_JOB_IP` / `KAMAL_DB_IP` / `KAMAL_REDIS_IP`: The IP addresses of your servers (default to `192.168.0.1`).
    - `KAMAL_REGISTRY_PASSWORD`: Access token for your Docker container registry.
    - `RAILS_MASTER_KEY`: Your Rails master key.
-   - `DATABASE_URL`: Connection string for PostgreSQL (if not using the postgres accessory).
+   - `DATABASE_URL`: Connection string for PostgreSQL. This is always required. If you are using the Kamal postgres accessory, set it to the accessory hostname (e.g. `postgresql://postgres:password@forem-postgres:5432/forem_production`).
    - `POSTGRES_PASSWORD`: Root password for the PostgreSQL accessory (if using it).
 
 ### Deploying the Application

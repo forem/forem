@@ -36,7 +36,7 @@ if [ -z "$current_branch" ]; then
   exit 1
 fi
 
-remote_head=$(git ls-remote $first_remote --tags $current_branch | cut -f1)
+remote_head=$(git ls-remote $first_remote refs/heads/$current_branch | cut -f1)
 
 if [ -z "$remote_head" ]; then
   echo "Branch not pushed to remote, aborting..." >&2

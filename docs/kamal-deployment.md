@@ -39,7 +39,7 @@ export KAMAL_REDIS_IP="192.168.0.1"
 # Secrets and credentials
 export KAMAL_REGISTRY_PASSWORD="your-registry-token"
 export RAILS_MASTER_KEY="your-rails-master-key"
-export DATABASE_URL="postgresql://postgres:postgres_secure_password@127.0.0.1:5432/forem_production"
+export DATABASE_URL="postgresql://postgres:postgres_secure_password@forem-postgres:5432/forem_production"
 export POSTGRES_PASSWORD="postgres_secure_password"
 ```
 

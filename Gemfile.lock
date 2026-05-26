@@ -1080,7 +1080,7 @@ DEPENDENCIES
   devise (~> 4.8)
   devise_invitable (~> 2.0.6)
   dogstatsd-ruby (~> 5.6)
-  dotenv-rails (>= 2.8.1)
+  dotenv-rails (~> 3.2)
   easy_translate (~> 0.5.1)
   email_validator (~> 2.2)
   emoji_regex (~> 3.2)
