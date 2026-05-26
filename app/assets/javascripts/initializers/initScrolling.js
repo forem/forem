@@ -392,7 +392,7 @@ function insertArticles(articles) {
   });
 
   var singleArticles = document.querySelectorAll(
-    '.single-article, .crayons-story',
+    '.single-article:not(.ltag__link--embedded *), .crayons-story:not(.ltag__link--embedded *)',
   );
   var lastElement = singleArticles[singleArticles.length - 1];
   insertAfter(newNode, lastElement);

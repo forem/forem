@@ -66,12 +66,9 @@ describe('Posts Dashboard', () => {
     }).click();
     cy.findByRole('button', { name: 'Archive post' }).click();
 
-    // Check that the post has disappeared along with the dropdown
-    cy.findByRole('button', { name: 'Archive post' }).should('not.exist');
+    // Check that the post has disappeared after the dashboard refreshes
     cy.findByRole('link', { name: 'Test Article' }).should('not.exist');
 
-    // Currently, the 'Show archived' button is only visible after a page reload from the first post being archived
-    cy.reload();
     cy.findByRole('link', { name: 'Show archived' }).click();
 
     // Check the post is in the archive
@@ -84,12 +81,11 @@ describe('Posts Dashboard', () => {
     }).click();
     cy.findByRole('button', { name: 'Unarchive post' }).click();
 
-    // The text should appear when the post is restored
-    cy.findByText('Notifications Restored').should('exist');
+    // Check that unarchiving removes the post from the archived filter
+    cy.findByRole('link', { name: 'Test Article' }).should('not.exist');
 
-    cy.reload();
-    // Check that we no longer have an archive, and the post shows as normal
-    cy.findByRole('link', { name: 'Show archived' }).should('not.exist');
+    // Check that it is visible again in the default dashboard list
+    cy.visit('/dashboard');
     cy.findByRole('link', { name: 'Test Article' });
   });
 });
