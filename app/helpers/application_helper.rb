@@ -396,8 +396,16 @@ module ApplicationHelper
     URL.url(uri, RequestStore.store[:subforem_domain])
   end
 
-  def article_url(article)
-    URL.article(article)
+  def article_url(article, **options)
+    base_url = URL.article(article)
+    return base_url if options.blank?
+
+    uri = Addressable::URI.parse(base_url)
+    query_values = (uri.query_values || {}).merge(options.transform_keys(&:to_s).compact)
+    uri.query_values = query_values.any? ? query_values : nil
+    uri.to_s
+  rescue StandardError
+    base_url
   end
 
   def comment_url(comment)

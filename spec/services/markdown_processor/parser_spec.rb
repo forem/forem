@@ -98,6 +98,17 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     expect(generate_and_parse_markdown(code_block)).to include("----")
   end
 
+  it "correctly renders escaped code blocks with more than 3 backticks" do
+    # This is the reproduction case from issue #17991
+    # Input: ```` ```javascript ````
+    # Expected: The inner ```javascript should be rendered as literal text
+    markdown_content = "````\n```javascript\n````"
+    output = generate_and_parse_markdown(markdown_content)
+    
+    expect(output).to include("```javascript")
+    expect(output).not_to include("Liquid syntax error")
+  end
+
   it "escapes the `raw` Liquid tag in codespans" do
     code_block = "``{% raw %}some text{% endraw %}``"
     expect(generate_and_parse_markdown(code_block)).to include("{% raw %}", "{% endraw %}")
