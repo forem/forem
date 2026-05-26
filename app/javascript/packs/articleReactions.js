@@ -4,25 +4,28 @@ import { smoothScrollTo } from '../utilities/smoothScroll';
 
 // Set reaction count to correct number
 const setReactionCount = (reactionName, newCount) => {
-  const reactionButtons = document.getElementById(
-    `reaction-butt-${reactionName}`,
-  ).classList;
-  const reactionButtonCounter = document.getElementById(
-    `reaction-number-${reactionName}`,
-  );
-  const reactionEngagementCounter = document.getElementById(
-    `reaction_engagement_${reactionName}_count`,
-  );
+  const reactionButton = document.getElementById(`reaction-butt-${reactionName}`);
+  const reactionButtonCounter = document.getElementById(`reaction-number-${reactionName}`);
+  const reactionEngagementCounter = document.getElementById(`reaction_engagement_${reactionName}_count`);
+
   if (newCount > 0) {
-    reactionButtons.add('activated');
-    reactionButtonCounter.textContent = newCount;
+    if (reactionButton) {
+      reactionButton.classList.add('activated');
+    }
+    if (reactionButtonCounter) {
+      reactionButtonCounter.textContent = newCount;
+    }
     if (reactionEngagementCounter) {
       reactionEngagementCounter.parentElement.classList.remove('hidden');
       reactionEngagementCounter.textContent = newCount;
     }
   } else {
-    reactionButtons.remove('activated');
-    reactionButtonCounter.textContent = '0';
+    if (reactionButton) {
+      reactionButton.classList.remove('activated');
+    }
+    if (reactionButtonCounter) {
+      reactionButtonCounter.textContent = '0';
+    }
     if (reactionEngagementCounter) {
       reactionEngagementCounter.parentElement.classList.add('hidden');
     }
@@ -51,11 +54,17 @@ const showCommentCount = () => {
 };
 
 const showUserReaction = (reactionName, animatedClass) => {
-  const reactionButton = document.getElementById(
-    `reaction-butt-${reactionName}`,
-  );
-  reactionButton.classList.add('user-activated', animatedClass);
-  reactionButton.setAttribute('aria-pressed', 'true');
+  const reactionButton = document.getElementById(`reaction-butt-${reactionName}`);
+  if (reactionButton) {
+    reactionButton.classList.add('user-activated', animatedClass);
+    reactionButton.setAttribute('aria-pressed', 'true');
+  }
+
+  const engagementButton = document.querySelector(`.reaction_engagement_${reactionName}`);
+  if (engagementButton) {
+    engagementButton.classList.add('user-activated', animatedClass);
+    engagementButton.setAttribute('aria-pressed', 'true');
+  }
 
   const reactionDrawerButton = document.getElementById(
     'reaction-drawer-trigger',
@@ -70,11 +79,18 @@ const showUserReaction = (reactionName, animatedClass) => {
 };
 
 const hideUserReaction = (reactionName) => {
-  const reactionButton = document.getElementById(
-    `reaction-butt-${reactionName}`,
-  );
-  reactionButton.classList.remove('user-activated', 'user-animated');
-  reactionButton.setAttribute('aria-pressed', 'false');
+  const reactionButton = document.getElementById(`reaction-butt-${reactionName}`);
+  if (reactionButton) {
+    reactionButton.classList.remove('user-activated', 'user-animated');
+    reactionButton.setAttribute('aria-pressed', 'false');
+  }
+
+  const engagementButton = document.querySelector(`.reaction_engagement_${reactionName}`);
+  if (engagementButton) {
+    engagementButton.classList.remove('user-activated', 'user-animated');
+    engagementButton.setAttribute('aria-pressed', 'false');
+  }
+
   const reactionDrawerButton = document.getElementById(
     'reaction-drawer-trigger',
   );
@@ -87,9 +103,13 @@ const hideUserReaction = (reactionName) => {
 };
 
 const hasUserReacted = (reactionName) => {
-  return document
-    .getElementById(`reaction-butt-${reactionName}`)
-    .classList.contains('user-activated');
+  const btn = document.getElementById(`reaction-butt-${reactionName}`);
+  if (btn && btn.classList.contains('user-activated')) return true;
+
+  const engagementBtn = document.querySelector(`.reaction_engagement_${reactionName}`);
+  if (engagementBtn && engagementBtn.classList.contains('user-activated')) return true;
+
+  return false;
 };
 
 const getNumReactions = (reactionName) => {
@@ -133,7 +153,10 @@ const reactToArticle = (articleId, reaction) => {
     return;
   }
   toggleReaction();
-  document.getElementById(`reaction-butt-${reaction}`).disabled = true;
+  const drawerBtn = document.getElementById(`reaction-butt-${reaction}`);
+  const engagementBtn = document.querySelector(`.reaction_engagement_${reaction}`);
+  if (drawerBtn) drawerBtn.disabled = true;
+  if (engagementBtn) engagementBtn.disabled = true;
 
   function createFormdata() {
     /*
@@ -152,11 +175,17 @@ const reactToArticle = (articleId, reaction) => {
     .then((response) => {
       if (response.status === 200) {
         return response.json().then(() => {
-          document.getElementById(`reaction-butt-${reaction}`).disabled = false;
+          const btn = document.getElementById(`reaction-butt-${reaction}`);
+          const engBtn = document.querySelector(`.reaction_engagement_${reaction}`);
+          if (btn) btn.disabled = false;
+          if (engBtn) engBtn.disabled = false;
         });
       }
       toggleReaction();
-      document.getElementById(`reaction-butt-${reaction}`).disabled = false;
+      const errBtn = document.getElementById(`reaction-butt-${reaction}`);
+      const errEngBtn = document.querySelector(`.reaction_engagement_${reaction}`);
+      if (errBtn) errBtn.disabled = false;
+      if (errEngBtn) errEngBtn.disabled = false;
       showModalAfterError({
         response,
         element: 'reaction',
@@ -167,7 +196,10 @@ const reactToArticle = (articleId, reaction) => {
     })
     .catch((_error) => {
       toggleReaction();
-      document.getElementById(`reaction-butt-${reaction}`).disabled = false;
+      const catchBtn = document.getElementById(`reaction-butt-${reaction}`);
+      const catchEngBtn = document.querySelector(`.reaction_engagement_${reaction}`);
+      if (catchBtn) catchBtn.disabled = false;
+      if (catchEngBtn) catchEngBtn.disabled = false;
     });
 };
 
@@ -206,7 +238,10 @@ const requestReactionCounts = (articleId) => {
         setReactionCount(reaction.category, reaction.count);
       });
       json.reactions.forEach((reaction) => {
-        if (document.getElementById(`reaction-butt-${reaction.category}`)) {
+        if (
+          document.getElementById(`reaction-butt-${reaction.category}`) ||
+          document.querySelector(`.reaction_engagement_${reaction.category}`)
+        ) {
           showUserReaction(reaction.category, 'not-user-animated');
         }
       });

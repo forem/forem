@@ -14,10 +14,9 @@ module Authentication
       end
 
       def self.sign_in_path(**kwargs)
-        ::Authentication::Paths.sign_in_path(
-          provider_name,
-          **kwargs,
-        )
+        # For MLH, we do not inject a callback_url param; OmniAuth will use its
+        # configured callback path, which must match the URL registered in MyMLH.
+        ::Authentication::Paths.authentication_path(provider_name, **kwargs)
       end
 
       def new_user_data

@@ -21,6 +21,27 @@ RSpec.describe Users::DeleteArticles, type: :service do
     end.to change(DiscussionLock, :count).from(1).to(0)
   end
 
+  it "deletes the articles' context notes before deleting the article" do
+    create(:context_note, article: article)
+    expect do
+      described_class.call(user)
+    end.to change(ContextNote, :count).from(1).to(0)
+  end
+
+  it "deletes the articles' article activities before deleting the article" do
+    ArticleActivity.create!(article: article)
+    expect do
+      described_class.call(user)
+    end.to change(ArticleActivity, :count).from(1).to(0)
+  end
+
+  it "deletes the articles' trend memberships before deleting the article" do
+    create(:trend_membership, article: article)
+    expect do
+      described_class.call(user)
+    end.to change(TrendMembership, :count).from(1).to(0)
+  end
+
   context "with comments" do
     before do
       allow(EdgeCache::BustComment).to receive(:call)

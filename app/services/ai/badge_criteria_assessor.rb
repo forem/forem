@@ -4,12 +4,14 @@ module Ai
   # This class uses AI to assess whether an article meets specific quality standards
   # based on custom criteria provided.
   class BadgeCriteriaAssessor
+    VERSION = "1.0"
+
     # @param article [Article] The article object to be assessed.
     # @param criteria [String] The quality criteria to check against.
     def initialize(article, criteria:)
-      @ai_client = Ai::Base.new
       @article = article
       @criteria = criteria
+      @ai_client = Ai::Base.new(wrapper: self, affected_content: article, affected_user: article.user)
     end
 
     ##

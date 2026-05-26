@@ -67,18 +67,28 @@ class ReactionHandler
   end
 
   def destroy_reaction(reaction)
-    reaction.destroy
-    sink_articles(reaction)
-    send_notifications_without_delay(reaction)
+    destroyed_reaction = Reaction.transaction do
+      locked = Reaction.lock.find_by(id: reaction.id)
+      next unless locked
+
+      locked.destroy
+      locked
+    end
+
+    return unless destroyed_reaction
+
+    sink_articles(destroyed_reaction)
+    send_notifications_without_delay(destroyed_reaction)
+    destroyed_reaction
   end
 
   def existing_reaction
-    @existing_reaction ||= Reaction.where(
-      user_id: current_user.id,
-      reactable_id: reactable_id,
-      reactable_type: reactable_type,
-      category: category,
-    ).first
+  @existing_reaction ||= Reaction.where(
+    user_id: current_user.id,
+    reactable_id: reactable_id,
+    reactable_type: reactable_type,
+    category: category,
+  ).first
   end
 
   def create_new_reaction
@@ -125,8 +135,8 @@ class ReactionHandler
   end
 
   def handle_existing_reaction
-    destroy_reaction(existing_reaction)
-    log_audit(existing_reaction)
+    locked_reaction = destroy_reaction(existing_reaction)
+    log_audit(locked_reaction) if locked_reaction
     result(existing_reaction, "destroy")
   end
 

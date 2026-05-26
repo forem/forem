@@ -30,6 +30,23 @@ RSpec.describe "Using the editor" do
         expect(page).to have_text("DEV(local)")
       end
     end
+
+    it "renders the AI Editor Buddy conditionally with dynamic community nomenclature" do
+      stub_const("AI_AVAILABLE", true)
+      visit "/new"
+      
+      expect(page).to have_css("#editor-ai-toggle-btn")
+      find("#editor-ai-toggle-btn").click
+      
+      expect(page).to have_css("#editor-sidecar.editor-sidecar--open", visible: true)
+      
+      within("#editor-sidecar") do
+        # Assert community name is natively interpolated from the Settings table.
+        expect(page).to have_text("#{Settings::Community.community_name} Buddy")
+        expect(page).to have_text("Hello! I am your writing assistant. I know #{Settings::Community.community_name} Editor guidelines.")
+        expect(page).to have_text("advice on community guidelines and expectations?")
+      end
+    end
   end
 
   describe "Previewing an article", :js do

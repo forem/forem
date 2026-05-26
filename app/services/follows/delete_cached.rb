@@ -21,7 +21,8 @@ module Follows
     attr_accessor :follower, :followable_type, :followable_id
 
     def cache_key
-      "user-#{follower.id}-#{follower.updated_at.rfc3339}/is_following_#{followable_type}_#{followable_id}"
+      formatted_updated_at = follower.updated_at.respond_to?(:rfc3339) ? follower.updated_at.rfc3339 : follower.updated_at.to_s
+      "user-#{follower.id}-#{formatted_updated_at}/is_following_#{followable_type}_#{followable_id}"
     end
   end
 end

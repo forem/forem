@@ -3,10 +3,12 @@ module Ai
   # Analyzes an article and finds the most appropriate subforem for it
   # based on content description specs of available subforems.
   class SubforemFinder
+    VERSION = "1.0"
+
     # @param article [Article] The article to find an appropriate subforem for.
     def initialize(article)
-      @ai_client = Ai::Base.new
       @article = article
+      @ai_client = Ai::Base.new(wrapper: self, affected_content: article, affected_user: article.user)
     end
 
     ##

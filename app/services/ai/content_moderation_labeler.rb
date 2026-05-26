@@ -4,36 +4,50 @@ module Ai
   # This assesses articles based on quality, relevance, and spam indicators
   # to provide appropriate moderation labels for automated handling.
   class ContentModerationLabeler
+    VERSION = "1.0"
+
     # @param article [Article] The article to be labeled.
     def initialize(article)
-      @ai_client = Ai::Base.new
       @article = article
+      @is_negative = @article.score.to_i.negative?
+      model = @is_negative ? Ai::Base::DEFAULT_LITE_MODEL : Ai::Base::DEFAULT_MODEL
+      @ai_client = Ai::Base.new(model: model, wrapper: self, affected_content: article, affected_user: article.user)
     end
 
     ##
-    # Asks the AI to label the article and returns the label.
-    # Retries up to 2 times on error before falling back to default.
-    #
+    # Backward compatible wrapper for legacy evaluation.
     # @return [String] The moderation label for the article.
     def label
+      evaluate[:label]
+    end
+
+    ##
+    # Asks the AI to label the article and assess compellingness, returning both.
+    # Retries up to 2 times on error before falling back to default.
+    #
+    # @return [Hash] Hash with :label and :compellingness_score.
+    def evaluate
       attempt = 0
       max_retries = 2
 
       begin
         attempt += 1
         prompt = build_prompt
-        response = @ai_client.call(prompt)
+        # Pass json format request if the wrapper supports it, though explicit instructions might suffice.
+        response = @ai_client.call(prompt, retry_count: attempt - 1, response_mime_type: "application/json")
         parse_response(response)
       rescue StandardError => e
         Rails.logger.error("Content Moderation Labeling failed (attempt #{attempt}/#{max_retries + 1}): #{e}")
-        
+
         if attempt <= max_retries
-          Rails.logger.info("Retrying content moderation labeling (attempt #{attempt + 1}/#{max_retries + 1})")
+          sleep_duration = attempt * 2
+          Rails.logger.info("Retrying content moderation labeling (attempt #{attempt + 1}/#{max_retries + 1}) after #{sleep_duration}s")
+          sleep(sleep_duration) unless Rails.env.test?
           retry
         else
           Rails.logger.error("Content Moderation Labeling failed after #{max_retries + 1} attempts, falling back to default")
           # Fallback to a safe default after all retries exhausted
-          "no_moderation_label"
+          { label: "no_moderation_label", compellingness_score: 0.0 }
         end
       end
     end
@@ -59,6 +73,16 @@ module Ai
       # Gather article context
       article_context = build_article_context
 
+      quickie_context = if @article.status?
+                          <<~QUICKIE
+
+                            **Important Context:**
+                            Note: This article is a "status" post (a quick update or thought). These are shorter, more casual posts that we encourage for community engagement. Please err on the side of higher quality labels and higher compellingness scores, provided it is not clear spam or completely low quality.
+                          QUICKIE
+                        else
+                          ""
+                        end
+
       <<~PROMPT
         Analyze the following article and assign it a content moderation label based on quality, relevance, and community standards.
 
@@ -69,7 +93,7 @@ module Ai
         #{user_context}
 
         **Article Content:**
-        #{article_context}
+        #{article_context}#{quickie_context}
 
         **Assessment Criteria:**
 
@@ -79,6 +103,7 @@ module Ai
         4. **Authenticity**: Does the content appear to be written by a real person with genuine insights?
         5. **Spam Indicators**: Are there signs of promotional content, low-effort posts, or automated generation?
         6. **Community Building**: Does the content foster discussion and community engagement?
+        7. **Compellingness**: Evaluate factors such as originality, emotional resonance, clarity, personal touch, depth, groundedness, and the potential to spark discussion.
 
         **Label Categories:**
 
@@ -99,10 +124,18 @@ module Ai
         **Relevance Labels:**
         - `ok_but_offtopic_for_subforem`: Decent content but not relevant to this community
         - `okay_and_on_topic`: Acceptable content that fits the community
+        #{ @is_negative ? "" : <<~EXTRA_LABELS
         - `very_good_but_offtopic_for_subforem`: High-quality content but not relevant to this community
         - `very_good_and_on_topic`: High-quality content that fits the community well
         - `great_and_on_topic`: Exceptional content that perfectly fits the community
         - `great_but_off_topic_for_subforem`: Exceptional content but not relevant to this community
+        EXTRA_LABELS
+        }
+
+        **Compellingness Score Requirements:**
+        In addition to the moderation label, assess the "compellingness" of the article on a scale from 0.0 to 1.0. 
+        - 0.0 indicates content that is uninteresting, generic, or spam-like.
+        - 1.0 indicates content that is exceptionally engaging, unique, personable, insightful, and thought-provoking.
 
         **Guidelines for Labeling:**
 
@@ -130,8 +163,8 @@ module Ai
         - Topics that align with the community's purpose
         - Content that would be valuable to community members
 
-        Respond with ONLY the label name (e.g., "okay_and_on_topic"):
-
+        Respond ONLY with a raw JSON block containing exactly two fields: "moderation_label" (string) and "compellingness_score" (float). Do not wrap the JSON in markdown code blocks.
+        Example: {"moderation_label": "okay_and_on_topic", "compellingness_score": 0.85}
       PROMPT
     end
 
@@ -154,10 +187,11 @@ module Ai
     # Builds context about the article content.
     # @return [String] Article context information.
     def build_article_context
+      limit = @is_negative ? 2000 : 5000
       <<~ARTICLE_CONTEXT
         Title: #{@article.title}
         Tags: #{@article.cached_tag_list}
-        Body: #{@article.body_markdown.truncate(5000)} #{'(Truncated)' if @article.body_markdown.length > 5000}
+        Body: #{@article.body_markdown.truncate(limit)} #{'(Truncated)' if @article.body_markdown.length > limit}
         Published: #{@article.published_at&.strftime('%B %d, %Y') || 'Not published'}
         Reading time: #{@article.reading_time} minutes
         Word count: #{@article.body_markdown.split.size} words
@@ -165,35 +199,41 @@ module Ai
     end
 
     ##
-    # Parses the AI's response to extract the label.
+    # Parses the AI's response to extract the label and score from JSON.
     # @param response [String] The text response from the AI.
-    # @return [String] The moderation label.
+    # @return [Hash] The Extracted Hash.
     def parse_response(response)
-      return "no_moderation_label" unless response
-
-      # Clean and normalize the response
-      label = response.strip.downcase.gsub(/[^a-z_]/, '')
-
-      # Validate the label is one of the expected values
+      fallback = { label: "no_moderation_label", compellingness_score: 0.0 }
+      return fallback unless response
+      
       valid_labels = %w[
-        no_moderation_label
-        clear_and_obvious_harmful
-        likely_harmful
-        clear_and_obvious_inciting
-        likely_inciting
-        clear_and_obvious_spam
-        likely_spam
-        clear_and_obvious_low_quality
-        likely_low_quality
-        ok_but_offtopic_for_subforem
-        okay_and_on_topic
-        very_good_but_offtopic_for_subforem
-        very_good_and_on_topic
-        great_and_on_topic
-        great_but_off_topic_for_subforem
+        no_moderation_label clear_and_obvious_harmful likely_harmful
+        clear_and_obvious_inciting likely_inciting clear_and_obvious_spam
+        likely_spam clear_and_obvious_low_quality likely_low_quality
+        ok_but_offtopic_for_subforem okay_and_on_topic very_good_but_offtopic_for_subforem
+        very_good_and_on_topic great_and_on_topic great_but_off_topic_for_subforem
       ]
 
-      valid_labels.include?(label) ? label : "no_moderation_label"
+      begin
+        # Clean potential markdown wrapping (e.g. ```json ... ```)
+        cleaned_response = response.strip.gsub(/\A```json\s*/, '').gsub(/\s*```\Z/, '').strip
+        data = JSON.parse(cleaned_response)
+
+        label = data["moderation_label"].to_s.strip.downcase.gsub(/[^a-z_]/, "")
+        score = data["compellingness_score"].to_f
+
+        final_label = valid_labels.include?(label) ? label : "no_moderation_label"
+        final_score = score.clamp(0.0, 1.0)
+        
+        { label: final_label, compellingness_score: final_score }
+      rescue JSON::ParserError => e
+        Rails.logger.error("Content Moderation JSON Parsing Error: #{e}. Response was: #{response}")
+        
+        # Fallback to legacy string parsing / scanning
+        final_label = valid_labels.sort_by(&:length).reverse.find { |l| response.downcase.include?(l) } || "no_moderation_label"
+        
+        { label: final_label, compellingness_score: 0.0 }
+      end
     end
   end
 end

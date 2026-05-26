@@ -32,12 +32,11 @@
     padding: calc(0.6vw + 8px);
     padding-right: 8px;
     img {
-      width: calc(5vw + 30px);
-      height: calc(5vw + 30px);
+      width: 80px !important;
+      height: 80px !important;
       margin: auto auto !important;
       border-radius: 50%;
-      max-width: 100px;
-      max-height: 100px;
+      object-fit: cover !important;
     }
   }
   .ltag__user__content {
@@ -98,8 +97,8 @@
       width: 60px;
       height: 60px;
       img {
-        width: 40px;
-        height: 40px;
+        width: 40px !important;
+        height: 40px !important;
       }
     }
     .ltag__user__content {

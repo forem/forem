@@ -90,6 +90,49 @@ RSpec.describe CustomMailer, type: :mailer do
       end
     end
 
+    context "when from_name param is passed" do
+      let(:email) { create(:email, type_of: "newsletter") }
+
+      before do
+        allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
+        allow(ForemInstance).to receive(:from_email_address).and_return("no-reply@community.com")
+        allow(Settings::Community).to receive(:community_name).and_return("MyCommunity")
+      end
+
+      it "uses the from_name param instead of querying the Email record" do
+        expect(Email).not_to receive(:find_by)
+
+        described_class.with(
+          user: user, content: content, subject: subject,
+          email_id: email.id, from_name: "Newsletter",
+        ).custom_email.deliver_now
+
+        delivered_mail = ActionMailer::Base.deliveries.last
+        expect(delivered_mail[:from].value).to eq("MyCommunity Newsletter <no-reply@community.com>")
+      end
+
+      it "falls back to Email lookup when from_name is nil" do
+        described_class.with(
+          user: user, content: content, subject: subject,
+          email_id: email.id, from_name: nil,
+        ).custom_email.deliver_now
+
+        delivered_mail = ActionMailer::Base.deliveries.last
+        # Should still resolve from the Email record
+        expect(delivered_mail[:from].value).to eq("MyCommunity Newsletter <no-reply@community.com>")
+      end
+
+      it "falls back to Email lookup when from_name is not provided" do
+        described_class.with(
+          user: user, content: content, subject: subject,
+          email_id: email.id,
+        ).custom_email.deliver_now
+
+        delivered_mail = ActionMailer::Base.deliveries.last
+        expect(delivered_mail[:from].value).to eq("MyCommunity Newsletter <no-reply@community.com>")
+      end
+    end
+
     context "when SendGrid is disabled" do
       before do
         allow(ForemInstance).to receive(:sendgrid_enabled?).and_return(false)

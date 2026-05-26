@@ -1,0 +1,33 @@
+<main id="main-content" class="crayons-layout crayons-layout--header-inside">
+  <header class="crayons-page-header">
+    <h1 class="crayons-title">Upcoming Events</h1>
+  </header>
+  
+  <% if @events.any? %>
+    <div class="grid gap-3 m:gap-4 l:gap-4 m:grid-cols-2 l:grid-cols-3 px-3 m:px-0 pb-7">
+      <% @events.each do |event| %>
+        <div class="crayons-card p-4 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="fs-s fw-bold color-base-50"><%= event.type_of.to_s.titleize %></span>
+              <% if event.start_time <= Time.current && event.end_time >= Time.current %>
+                <span class="c-indicator c-indicator--error fw-bold">LIVE</span>
+              <% else %>
+                <span class="fs-s color-base-50"><%= event.start_time.to_fs(:short) %></span>
+              <% end %>
+            </div>
+            <h2 class="crayons-subtitle-2 mb-2">
+              <%= link_to event.title, event_path(event.event_name_slug, event.event_variation_slug), class: "crayons-link" %>
+            </h2>
+            <p class="fs-s color-base-70 mb-4"><%= event.description %></p>
+          </div>
+          <%= link_to "View Event", event_path(event.event_name_slug, event.event_variation_slug), class: "c-btn w-100 text-center" %>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="p-9 align-center crayons-card">
+      <p class="text-center color-base-60 py-8">No upcoming events scheduled right now. Check back soon!</p>
+    </div>
+  <% end %>
+</main>

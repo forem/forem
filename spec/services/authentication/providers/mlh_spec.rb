@@ -24,11 +24,10 @@ RSpec.describe Authentication::Providers::Mlh, type: :service do
   end
 
   describe ".sign_in_path" do
-    it "returns the correct sign in path with callback_url" do
+    it "returns the correct sign in path without callback_url param" do
       path = described_class.sign_in_path
       expect(path).to include("/users/auth/mlh")
-      expect(path).to include("callback_url=")
-      expect(path).to include("users%2Fauth%2Fmlh%2Fcallback")
+      expect(path).not_to include("callback_url=")
     end
 
     it "supports additional parameters" do

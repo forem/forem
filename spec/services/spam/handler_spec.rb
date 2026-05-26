@@ -18,7 +18,7 @@ RSpec.describe Spam::Handler, type: :service do
         allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(false)
         # Mock content moderation labeling
         stub_const("Ai::Base::DEFAULT_KEY", "present")
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("no_moderation_label")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "no_moderation_label", compellingness_score: 0.5 })
       end
 
       it { is_expected.to eq(:not_spam) }
@@ -64,7 +64,7 @@ RSpec.describe Spam::Handler, type: :service do
         allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(false)
         # Mock content moderation labeling
         stub_const("Ai::Base::DEFAULT_KEY", "present")
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("no_moderation_label")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "no_moderation_label", compellingness_score: 0.5 })
       end
 
       context "for a first-time offender" do
@@ -84,7 +84,7 @@ RSpec.describe Spam::Handler, type: :service do
         allow(article).to receive(:processed_html).and_return("<p>contains a <a href='spam.com'>link</a></p>")
         allow(Ai::ArticleCheck).to receive(:new).with(article).and_return(double(spam?: true))
         # Mock content moderation labeling
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("no_moderation_label")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "no_moderation_label", compellingness_score: 0.5 })
       end
 
       context "for a first-time offender" do
@@ -96,12 +96,117 @@ RSpec.describe Spam::Handler, type: :service do
       end
     end
 
+    context "when spam is triggered by linked domain net_score check" do
+      let(:spam_domain) { "bad-seo-site.com" }
+      let!(:linked_domain) { LinkedDomain.create!(host: spam_domain, net_score: -2000) }
+
+      before do
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
+        allow(article).to receive(:processed_html).and_return("<a href=\"https://#{spam_domain}/foo\">spam link</a>")
+        article_check = instance_double(Ai::ArticleCheck, spam?: false)
+        allow(Ai::ArticleCheck).to receive(:new).with(article).and_return(article_check)
+        # Mock content moderation labeling
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "no_moderation_label", compellingness_score: 0.5 })
+      end
+
+      context "when user score is 0" do
+        before { article.user.update!(score: 0) }
+
+        it "triggers spam reaction and labels as clear_and_obvious_spam when domain net_score is <= -2000" do
+          linked_domain.update!(net_score: -2000)
+          expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
+          expect(article.reload.automod_label).to eq("clear_and_obvious_spam")
+        end
+
+        it "returns :not_spam when domain net_score is > -2000" do
+          linked_domain.update!(net_score: -1999)
+          expect(handler).to eq(:not_spam)
+        end
+
+        it "triggers spam reaction and labels as clear_and_obvious_spam when html uses single quotes" do
+          allow(article).to receive(:processed_html).and_return("<a href='https://#{spam_domain}/foo'>spam link</a>")
+          linked_domain.update!(net_score: -2000)
+          expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
+          expect(article.reload.automod_label).to eq("clear_and_obvious_spam")
+        end
+      end
+
+      context "when user score is 50" do
+        before { article.user.update!(score: 50) }
+
+        it "triggers spam reaction and labels as clear_and_obvious_spam when domain net_score is <= -12000" do
+          linked_domain.update!(net_score: -12000)
+          expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
+          expect(article.reload.automod_label).to eq("clear_and_obvious_spam")
+        end
+
+        it "returns :not_spam when domain net_score is > -12000" do
+          linked_domain.update!(net_score: -11999)
+          expect(handler).to eq(:not_spam)
+        end
+      end
+
+      context "when user score is greater than 50" do
+        before { article.user.update!(score: 51) }
+
+        it "skips the check and returns :not_spam even if domain net_score is very low" do
+          linked_domain.update!(net_score: -100000)
+          expect(handler).to eq(:not_spam)
+        end
+      end
+
+      context "when user score is 20" do
+        before { article.user.update!(score: 20) }
+
+        it "triggers spam reaction and labels as clear_and_obvious_spam when domain net_score is <= -6000" do
+          linked_domain.update!(net_score: -6000)
+          expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
+          expect(article.reload.automod_label).to eq("clear_and_obvious_spam")
+        end
+
+        it "returns :not_spam when domain net_score is > -6000" do
+          linked_domain.update!(net_score: -5999)
+          expect(handler).to eq(:not_spam)
+        end
+      end
+
+      context "with invalid URLs in HTML" do
+        before do
+          article.user.update!(score: 0)
+          allow(article).to receive(:processed_html).and_return("<a href=\"http://[\">bad link</a>")
+        end
+
+        it "gracefully handles URI parse errors and returns :not_spam" do
+          expect(handler).to eq(:not_spam)
+        end
+      end
+
+      context "for a first-time offender" do
+        before do
+          article.user.update!(score: 0)
+          linked_domain.update!(net_score: -2000)
+        end
+
+        it_behaves_like "first-time spam offender"
+      end
+
+      context "for a multiple offender" do
+        before do
+          article.user.update!(score: 0)
+          linked_domain.update!(net_score: -2000)
+        end
+
+        it_behaves_like "multiple spam offender"
+      end
+    end
+
     context "when content moderation labeler identifies spam" do
       before do
         allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
         allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(false)
         stub_const("Ai::Base::DEFAULT_KEY", "present")
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("clear_and_obvious_spam")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "clear_and_obvious_spam", compellingness_score: 0.5 })
         allow(article).to receive(:automod_label).and_return("clear_and_obvious_spam")
         allow(article).to receive(:update_column)
       end
@@ -141,7 +246,7 @@ RSpec.describe Spam::Handler, type: :service do
         allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
         allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(false)
         stub_const("Ai::Base::DEFAULT_KEY", "present")
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("clear_and_obvious_harmful")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "clear_and_obvious_harmful", compellingness_score: 0.5 })
         allow(article).to receive(:automod_label).and_return("clear_and_obvious_harmful")
         allow(article).to receive(:update_column)
       end
@@ -168,7 +273,7 @@ RSpec.describe Spam::Handler, type: :service do
         allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
         allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(false)
         stub_const("Ai::Base::DEFAULT_KEY", "present")
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("likely_harmful")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "likely_harmful", compellingness_score: 0.5 })
         allow(article).to receive(:automod_label).and_return("likely_harmful")
         allow(article).to receive(:update_column)
       end
@@ -186,7 +291,7 @@ RSpec.describe Spam::Handler, type: :service do
         allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
         allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(false)
         stub_const("Ai::Base::DEFAULT_KEY", "present")
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("clear_and_obvious_inciting")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "clear_and_obvious_inciting", compellingness_score: 0.5 })
         allow(article).to receive(:automod_label).and_return("clear_and_obvious_inciting")
         allow(article).to receive(:update_column)
       end
@@ -213,7 +318,7 @@ RSpec.describe Spam::Handler, type: :service do
         allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
         allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(false)
         stub_const("Ai::Base::DEFAULT_KEY", "present")
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("likely_inciting")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "likely_inciting", compellingness_score: 0.5 })
         allow(article).to receive(:automod_label).and_return("likely_inciting")
         allow(article).to receive(:update_column)
       end
@@ -231,7 +336,7 @@ RSpec.describe Spam::Handler, type: :service do
         allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
         allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(false)
         stub_const("Ai::Base::DEFAULT_KEY", "present")
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("likely_spam")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "likely_spam", compellingness_score: 0.5 })
         allow(article).to receive(:automod_label).and_return("likely_spam")
         allow(article).to receive(:update_column)
       end
@@ -249,7 +354,7 @@ RSpec.describe Spam::Handler, type: :service do
         allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(true) # Would normally trigger spam
         allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(true) # Would normally trigger spam
         stub_const("Ai::Base::DEFAULT_KEY", "present")
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("very_good_and_on_topic")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "very_good_and_on_topic", compellingness_score: 0.5 })
         allow(article).to receive(:automod_label).and_return("very_good_and_on_topic")
         allow(article).to receive(:update_column)
       end
@@ -264,7 +369,7 @@ RSpec.describe Spam::Handler, type: :service do
         allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(true) # Would normally trigger spam
         allow(Ai::ArticleCheck).to receive_message_chain(:new, :spam?).and_return(true) # Would normally trigger spam
         stub_const("Ai::Base::DEFAULT_KEY", "present")
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("great_and_on_topic")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "great_and_on_topic", compellingness_score: 0.5 })
         allow(article).to receive(:automod_label).and_return("great_and_on_topic")
         allow(article).to receive(:update_column)
       end

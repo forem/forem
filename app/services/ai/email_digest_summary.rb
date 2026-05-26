@@ -1,8 +1,9 @@
 module Ai
   class EmailDigestSummary
+    VERSION = "1.0"
     def initialize(articles, ai_client: nil)
       @articles = articles
-      @ai_client = ai_client || Ai::Base.new
+      @ai_client = ai_client || Ai::Base.new(wrapper: self)
     end
 
     MAX_RETRIES = 1
@@ -27,7 +28,7 @@ module Ai
       loop do
         attempts += 1
         output = @ai_client.call(current_prompt)
-        
+
         if valid_markdown?(output)
           return output
         elsif attempts <= MAX_RETRIES
@@ -35,14 +36,14 @@ module Ai
           current_prompt = prompt + "\n\nIMPORTANT: Your previous output contained HTML tag attributes or raw HTML. Please strictly use Markdown only. Do not use <a> tags."
         else
           Rails.logger.error("AI Digest Summary failed validation after #{attempts} attempts. Output: #{output.to_s.truncate(100)}")
-          return nil
+          return
         end
       end
     end
 
     def valid_markdown?(text)
       return false if text.blank?
-      
+
       # Check for common raw HTML tags that shouldn't be there
       # We allow safe tags if strictly necessary, but for this summary we want pure markdown.
       # Detecting <p>, <div>, <a>, <br>, <strong> with attributes

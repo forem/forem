@@ -1,6 +1,9 @@
 module Spam
   class BlockDomainAndSuspendUsersWorker
     include Sidekiq::Worker
+    include Sidekiq::Throttled::Job
+
+    sidekiq_throttle(concurrency: { limit: 1 })
 
     sidekiq_options queue: :default, retry: 5
 

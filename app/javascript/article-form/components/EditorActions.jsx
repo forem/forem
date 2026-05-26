@@ -89,12 +89,12 @@ export const EditorActions = ({
 
       {!(published || isVersion1) && (
         <Button
-          className="mr-2 whitespace-nowrap"
+          className="border border-base-20 mr-2 whitespace-nowrap"
           onClick={onSaveDraft}
           disabled={previewLoading}
           onFocus={(event) => switchHelpContext(event, 'editor-actions')}
         >
-          Save <span className="hidden s:inline">draft</span>
+          Save <span className="hidden s:inline">Draft</span>
         </Button>
       )}
 
@@ -146,9 +146,13 @@ export const EditorActions = ({
       )}
 
       {edited && (
+        <span className="hidden l:block mx-2 color-base-30" aria-hidden="true">|</span>
+      )}
+
+      {edited && (
         <Button
           onClick={onClearChanges}
-          className="whitespace-nowrap fw-normal fs-s"
+          className="whitespace-nowrap fw-normal fs-xs"
           disabled={previewLoading}
           onFocus={(event) => switchHelpContext(event, 'editor-actions')}
         >

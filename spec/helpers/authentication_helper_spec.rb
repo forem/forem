@@ -40,9 +40,10 @@ RSpec.describe AuthenticationHelper do
 
     it "returns an authentication reminder when a user signs up with email" do
       allow(Authentication::Providers).to receive(:enabled).and_return([])
+      allow(Settings::Community).to receive(:community_name).and_return("TestCommunity")
 
       expect(helper.signed_up_with(user)).to match(/Email & Password/)
-      expect(helper.signed_up_with(user)).to match(/use that/)
+      expect(helper.signed_up_with(user)).to match(/use that to sign back into TestCommunity/)
     end
   end
 

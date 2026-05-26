@@ -31,6 +31,15 @@ RSpec.describe "Omniauth redirect", type: :request do
     expect(path).not_to include("i=i")
     expect(path).to end_with("/settings?signin=true")
   end
+
+  it "strips the host from external omniauth.origin URLs to prevent open redirects" do
+    mock_env = { "omniauth.origin" => "https://github.com/settings?signin=true", "warden" => mock_warden }
+    mock_request = OpenStruct.new(env: mock_env)
+    allow(controller).to receive(:request).and_return(mock_request)
+
+    path = controller.after_sign_in_path_for(user)
+    expect(path).to eq("/settings?signin=true")
+  end
 end
 # rubocop:enable Style/OpenStructUse
 # rubocop:enable Performance/OpenStruct

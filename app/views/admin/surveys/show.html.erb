@@ -2,15 +2,21 @@
   <div>
     <h1 class="fs-4xl fw-bold"><%= @survey.title %></h1>
     <div class="mt-2 flex items-center gap-2">
-      <span class="crayons-badge crayons-badge--<%= @survey.active? ? "success" : "danger" %>">
-        <%= @survey.active? ? "Active" : "Inactive" %>
-      </span>
+      <% if @survey.active? %>
+        <span class="crayons-badge crayons-badge--success">Active</span>
+      <% else %>
+        <span class="crayons-badge crayons-badge--danger">Inactive</span>
+      <% end %>
+      <span class="crayons-badge crayons-badge--ghost"><%= @survey.type_of.titleize %></span>
       <% if @survey.display_title? %>
         <span class="crayons-badge crayons-badge--ghost">Title Displayed</span>
       <% end %>
       <% if @survey.allow_resubmission? %>
         <span class="crayons-badge crayons-badge--ghost">Allows Resubmission</span>
       <% end %>
+    </div>
+    <div class="mt-2 text-sm color-base-60">
+      Public Link: <%= link_to survey_url(@survey.slug), survey_path(@survey.slug), class: "underline color-base-80 hover:color-base-100", target: "_blank", rel: "noopener" %>
     </div>
   </div>
   <div>
@@ -20,6 +26,23 @@
 </header>
 
 <div class="grid gap-6">
+  <section class="crayons-card p-4">
+    <h2 class="fs-2xl fw-bold mb-4">Results Filter</h2>
+    <%= form_with url: admin_survey_path(@survey), method: :get, class: "flex items-end gap-4", local: true do |f| %>
+      <div class="crayons-field">
+        <%= f.label :start_date, "Start Date", class: "crayons-field__label" %>
+        <%= f.date_field :start_date, value: params[:start_date] || @start_date.to_date, class: "crayons-field__input" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :end_date, "End Date", class: "crayons-field__label" %>
+        <%= f.date_field :end_date, value: params[:end_date] || @end_date.to_date, class: "crayons-field__input" %>
+      </div>
+      <div>
+        <%= f.submit "Apply Filter", class: "crayons-btn crayons-btn--secondary" %>
+      </div>
+    <% end %>
+  </section>
+
   <section class="crayons-card p-4">
     <h2 class="fs-2xl fw-bold mb-4">Survey Overview</h2>
 
@@ -68,31 +91,42 @@
   </section>
 
   <section class="crayons-card p-4">
-    <h2 class="fs-2xl fw-bold mb-4">Polls (<%= @survey.polls.count %>)</h2>
+    <h2 class="fs-2xl fw-bold mb-4">Poll Results (<%= @survey.polls.count %>)</h2>
     
-    <% if @survey.polls.any? %>
-      <div class="flex flex-col gap-4">
-        <% @survey.polls.each do |poll| %>
+    <% if @poll_data.any? %>
+      <div class="flex flex-col gap-6">
+        <% @poll_data.each do |data| %>
+          <% poll = data[:poll] %>
           <div class="border rounded p-4 bg-light">
             <div class="flex items-center justify-between mb-2">
               <span class="fw-bold"><%= poll.type_of.humanize %> Poll</span>
-              <span class="color-base-60">Position: <%= poll.position %></span>
+              <span class="color-base-60">Skips: <%= data[:skips] %> | Responses: <%= data[:total_responses] %></span>
             </div>
             <div class="mb-4">
               <%= poll.prompt_html.html_safe %>
             </div>
             
-            <% if poll.poll_options.any? %>
-              <ul class="list-disc pl-5">
-                <% poll.poll_options.each do |option| %>
-                  <li class="mb-2">
-                    <span class="fw-medium"><%= option.markdown %></span>
-                    <% if option.supplementary_text.present? %>
-                      <p class="fs-sm color-base-60"><%= option.supplementary_text %></p>
-                    <% end %>
-                  </li>
-                <% end %>
-              </ul>
+            <% if poll.text_input? %>
+              <% if data[:text_responses].any? %>
+                <div class="max-h-64 overflow-y-auto border rounded p-3 bg-white">
+                  <% data[:text_responses].each do |text, created_at| %>
+                    <div class="mb-2 pb-2 border-b last:border-0 last:mb-0 last:pb-0">
+                      <p class="fs-sm"><%= text %></p>
+                      <span class="fs-xs color-base-50"><%= created_at.strftime("%Y-%m-%d %H:%M") %></span>
+                    </div>
+                  <% end %>
+                </div>
+              <% else %>
+                <p class="color-base-60 italic">No text responses yet.</p>
+              <% end %>
+            <% else %>
+              <div id="poll-chart-<%= poll.id %>" 
+                   class="bg-white rounded p-2 w-100"
+                   data-controller="admin-survey-chart"
+                   data-admin-survey-chart-type-value="<%= poll.type_of %>"
+                   data-admin-survey-chart-categories-value="<%= data[:options].map { |o| truncate(o[:markdown], length: 50) }.to_json %>"
+                   data-admin-survey-chart-votes-value="<%= data[:options].map { |o| o[:votes] }.to_json %>">
+              </div>
             <% end %>
           </div>
         <% end %>
