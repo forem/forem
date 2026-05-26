@@ -318,6 +318,19 @@ fr:
               resource_admin_feedback_message: Feedback Message Admin
               resource_admin_html_variant: HTML Variant Admin
               resource_admin_listing_category: Listing Category Admin
+              resource_admin_page: Page Admin
+              resource_admin_tag: Tag Admin
+              resource_admin_event: Event Admin
+              resource_admin_survey: Survey Admin
+              resource_admin_organization: Organization Admin
+              resource_admin_podcast: Podcast Admin
+              resource_admin_navigation_link: Navigation Link Admin
+              resource_admin_request_redirect: Request Redirect Admin
+              resource_admin_response_template: Response Template Admin
+              resource_admin_subforem: Subforem Admin
+              resource_admin_space: Space Admin
+              resource_admin_profile_field: Profile Field Admin
+              resource_admin_profile_field_group: Profile Field Group Admin
               super_admin: Super Admin
               support_admin: Support Admin
               suspended: Suspended
@@ -455,6 +468,17 @@ fr:
           "Resource Admin: ListingCategory": "Resource Admin: ListingCategory"
           "Resource Admin: Page": "Resource Admin: Page"
           "Resource Admin: Tag": "Resource Admin: Tag"
+          "Resource Admin: Event": "Resource Admin: Event"
+          "Resource Admin: Survey": "Resource Admin: Survey"
+          "Resource Admin: Organization": "Resource Admin: Organization"
+          "Resource Admin: Podcast": "Resource Admin: Podcast"
+          "Resource Admin: NavigationLink": "Resource Admin: NavigationLink"
+          "Resource Admin: RequestRedirect": "Resource Admin: RequestRedirect"
+          "Resource Admin: ResponseTemplate": "Resource Admin: ResponseTemplate"
+          "Resource Admin: Subforem": "Resource Admin: Subforem"
+          "Resource Admin: Space": "Resource Admin: Space"
+          "Resource Admin: ProfileField": "Resource Admin: ProfileField"
+          "Resource Admin: ProfileFieldGroup": "Resource Admin: ProfileFieldGroup"
           Super Moderator: Super Moderator
         statuses:
           Warned: Warned
