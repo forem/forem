@@ -157,4 +157,54 @@ RSpec.describe "Api::V1::Analytics" do
       end
     end
   end
+
+  describe "GET /api/analytics/heatmap" do
+    let(:user) { create(:user) }
+    let(:v1_headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
+
+    it "returns 401 when unauthenticated" do
+      get "/api/analytics/heatmap", headers: v1_headers
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "returns 200 with a session cookie" do
+      sign_in user
+      get "/api/analytics/heatmap", headers: v1_headers
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "returns 200 with a valid api key" do
+      api_secret = create(:api_secret, user: user)
+      get "/api/analytics/heatmap", headers: v1_headers.merge("api-key" => api_secret.secret)
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "returns the expected JSON shape and Cache-Control: no-store" do
+      sign_in user
+      get "/api/analytics/heatmap", headers: v1_headers
+
+      expect(response.headers["Cache-Control"]).to eq("no-store")
+      body = response.parsed_body
+      expect(body.keys).to match_array(%w[start_date end_date days totals max])
+      expect(body["days"].length).to eq(365)
+      expect(body["totals"].keys).to match_array(%w[articles comments reactions total])
+    end
+
+    it "honors the end query param so users can browse past years" do
+      sign_in user
+      get "/api/analytics/heatmap", params: { end: "2024-12-31" }, headers: v1_headers
+
+      expect(response).to have_http_status(:ok)
+      body = response.parsed_body
+      expect(body["end_date"]).to eq("2024-12-31")
+      expect(body["start_date"]).to eq("2024-01-02")
+    end
+
+    it "returns 422 for a malformed end param" do
+      sign_in user
+      get "/api/analytics/heatmap", params: { end: "not-a-date" }, headers: v1_headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+  end
 end

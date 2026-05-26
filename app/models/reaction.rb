@@ -74,8 +74,8 @@ class Reaction < ApplicationRecord
         reactions = Reaction.where(reactable_id: id, reactable_type: "Article")
         counts = reactions.group(:category).count
 
-        reaction_types = public_reaction_types
-        reaction_types << "readinglist" unless public_reaction_types.include?("readinglist")
+        reaction_types = public_reaction_types.dup
+        reaction_types << "readinglist" unless reaction_types.include?("readinglist")
 
         reaction_types.map do |type|
           { category: type, count: counts.fetch(type, 0) }
@@ -105,8 +105,8 @@ class Reaction < ApplicationRecord
     end
 
     def for_analytics
-      reaction_types = public_reaction_types
-      reaction_types << "readinglist" unless public_reaction_types.include?("readinglist")
+      reaction_types = public_reaction_types.dup
+      reaction_types << "readinglist" unless reaction_types.include?("readinglist")
       where(category: reaction_types)
     end
 
