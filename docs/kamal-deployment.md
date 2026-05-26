@@ -1,4 +1,4 @@
-# Forem Deployment Guide using Kamal 2
+# Forem Deployment Guide using Kamal 2 (Beta)
 
 This guide provides instructions, architectural details, and platform-specific gotchas for hosting Forem using [Kamal 2](https://kamal-deploy.org/).
 
