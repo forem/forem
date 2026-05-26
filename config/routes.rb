@@ -222,6 +222,16 @@ Rails.application.routes.draw do
         get "/bulk", to: "tags#bulk", defaults: { format: :json }
       end
     end
+    resources :trending, param: :slug, only: %i[index show], controller: :trends
+    get "/trends", to: redirect { |path_params, req|
+      locale = path_params[:locale]
+      locale ? "/locale/#{locale}/trending" : "/trending"
+    }
+    get "/trends/:slug", to: redirect { |path_params, req|
+      locale = path_params[:locale]
+      slug = path_params[:slug]
+      locale ? "/locale/#{locale}/trending/#{slug}" : "/trending/#{slug}"
+    }
     resources :stripe_active_cards, only: %i[create update destroy]
     resources :stripe_subscriptions, only: %i[new edit destroy]
     resources :github_repos, only: %i[index] do

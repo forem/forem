@@ -123,6 +123,30 @@ RSpec.describe "MagicLinks", type: :request do
           expect(response).to redirect_to(new_user_session_path)
         end
       end
+
+      it "does not create a user or send a magic link when encoded-word email domain is acceptable" do
+        encoded_word_email = "=?utf-8?q?test=40attacker.com=3e?=@company.com"
+        built_user = nil
+
+        allow(ForemInstance).to receive(:invitation_only?).and_return(false)
+        allow(Settings::Authentication).to receive(:acceptable_domain?).with(domain: "company.com").and_return(true)
+        allow(User).to receive(:find_by).and_call_original
+        allow(User).to receive(:find_by).with(email: encoded_word_email).and_return(nil)
+        allow(User).to receive(:new).and_wrap_original do |method, *args, **kwargs|
+          built_user = method.call(*args, **kwargs)
+          allow(built_user).to receive(:send_magic_link!).and_call_original
+          built_user
+        end
+
+        expect do
+          post "/magic_links", params: { email: encoded_word_email }
+        end.not_to change(User, :count)
+
+        expect(built_user).not_to be_persisted
+        expect(built_user).not_to have_received(:send_magic_link!)
+        expect(controller.current_user).to be_nil
+        expect(response).to redirect_to(new_user_session_path)
+      end
     end
 
     context "when no email is provided" do

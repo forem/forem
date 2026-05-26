@@ -81,9 +81,8 @@ module Stories
 
     def stories_by_timeframe(stories:)
       if Timeframe::FILTER_TIMEFRAMES.include?(params[:timeframe])
-        stories.where("published_at > ?", Timeframe.datetime(params[:timeframe]))
-          .where(score: -20..)
-          .order(score: :desc)
+        stories = stories.where("published_at > ?", Timeframe.datetime(params[:timeframe])) if params[:timeframe] != "infinity"
+        stories.where(score: -20..).order(score: :desc)
       elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
         stories.where(score: -20..).order(published_at: :desc)
       else

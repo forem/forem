@@ -62,6 +62,13 @@ RSpec.describe OrganizationMembership do
     it "updates the membership" do
       expect { membership.confirm! }.to change { membership.reload.type_of_user }.from("pending").to("member")
     end
+
+    it "touches the user's organization_info_updated_at so profile caches refresh" do
+      membership.user.update_column(:organization_info_updated_at, 1.day.ago)
+      previous_timestamp = membership.user.reload.organization_info_updated_at
+      membership.confirm!
+      expect(membership.user.reload.organization_info_updated_at).to be > previous_timestamp
+    end
   end
 
   describe "invitation_token generation" do

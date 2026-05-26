@@ -340,6 +340,23 @@ RSpec.describe Authentication::Authenticator, type: :service do
         )
       end
 
+      it "rejects encoded-word provider email through user validation" do
+        encoded_word_email = "=?utf-8?q?test=40attacker.com=3e?=@company.com"
+        auth_payload.info.email = encoded_word_email
+        allow(ForemStatsClient).to receive(:increment)
+        allow(Settings::Authentication).to receive(:acceptable_domain?).with(domain: "company.com").and_return(true)
+
+        expect do
+          expect { described_class.call(auth_payload) }.to raise_error(ActiveRecord::RecordInvalid, /Email is invalid/)
+        end.to not_change(User, :count).and not_change(Identity, :count)
+
+        expect(Settings::Authentication).to have_received(:acceptable_domain?).with(domain: "company.com")
+        expect(User.find_by(email: encoded_word_email)).to be_nil
+        expect(Identity.find_by(provider: "github", uid: auth_payload.uid)).to be_nil
+        tags = hash_including(tags: array_including("error:ActiveRecord::RecordInvalid"))
+        expect(ForemStatsClient).to have_received(:increment).with("identity.errors", tags)
+      end
+
       it "increments identity.errors if any errors occur in the transaction" do
         # rubocop:disable RSpec/AnyInstance
         allow_any_instance_of(Identity).to receive(:save!).and_raise(StandardError)

@@ -453,7 +453,11 @@
         var curatedMsgs = messages.filter(function(m) { return curatedIndices.has(m.index); });
         var curatedDataObj = {
           messages: curatedMsgs,
-          metadata: { total_messages: messages.length, curated_indices: Array.from(curated).sort(function(a,b){ return a-b; }) }
+          metadata: {
+            total_messages: messages.length,
+            curated_indices: Array.from(curated).sort(function(a,b){ return a-b; }),
+            redactions: redactionsForMessages(curatedMsgs)
+          }
         };
         var payload = { agent_session: { curated_data: JSON.stringify(curatedDataObj), slices: slices } };
 
@@ -478,6 +482,23 @@
           btn.textContent = 'Save';
           alert('Error saving curation');
         });
+      });
+    }
+
+    function redactionsForMessages(messages) {
+      var counts = {};
+      (messages || []).forEach(function(msg) {
+        var redactions = msg.metadata && msg.metadata.redactions;
+        (redactions || []).forEach(function(r) {
+          var name = r.name || r.pattern_name;
+          var count = Number(r.count || r.match_count || 0);
+          if (!name || count <= 0) return;
+          counts[name] = (counts[name] || 0) + count;
+        });
+      });
+
+      return Object.keys(counts).map(function(name) {
+        return { name: name, count: counts[name] };
       });
     }
 
