@@ -90,7 +90,7 @@ RSpec.describe Articles::UpdatePageViewsWorker, type: :worker do
     end
   end
 
-  context "when the user agent is a bot" do
+  context "when filtering bot user agents" do
     let(:article) { create(:article) }
 
     it "does not create a page view for a crawler whose UA contains 'bot'" do
