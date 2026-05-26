@@ -9,9 +9,51 @@ RSpec.describe "Admin::Surveys", type: :request do
   end
 
   describe "GET /admin/content_manager/surveys" do
-    it "renders the index page" do
-      get admin_surveys_path
-      expect(response).to have_http_status(:success)
+    context "when logged in as a super admin" do
+      it "renders the index page" do
+        get admin_surveys_path
+        expect(response).to have_http_status(:success)
+      end
+    end
+
+    context "when logged in as a survey admin" do
+      let(:survey_admin) { create(:user) }
+      before do
+        survey_admin.add_role(:single_resource_admin, Survey)
+        login_as(survey_admin)
+      end
+
+      it "renders the index page" do
+        get admin_surveys_path
+        expect(response).to have_http_status(:success)
+      end
+    end
+
+    context "when logged in as an admin for a different resource" do
+      let(:other_admin) { create(:user) }
+      before do
+        other_admin.add_role(:single_resource_admin, Article)
+        login_as(other_admin)
+      end
+
+      it "denies access" do
+        expect {
+          get admin_surveys_path
+        }.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
+
+    context "when logged in as a normal user" do
+      let(:normal_user) { create(:user) }
+      before do
+        login_as(normal_user)
+      end
+
+      it "denies access" do
+        expect {
+          get admin_surveys_path
+        }.to raise_error(Pundit::NotAuthorizedError)
+      end
     end
   end
 
