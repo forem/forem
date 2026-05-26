@@ -11,7 +11,7 @@ module Articles
     # so self-identified crawlers must also be dropped here before a row is
     # written. Kept in parity with the client-side list.
     BOT_USER_AGENT_REGEX = /
-  \b(bot|crawl|spider)\b|
+  \b(bot|gptbot|crawl|spider)\b|
   google|baidu|bing|msn|duckduckbot|teoma|slurp|
   yandex|chatgpt|anthropic|cohere-ai|facebookexternalhit
 /ix
