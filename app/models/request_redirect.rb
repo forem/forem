@@ -1,4 +1,5 @@
 class RequestRedirect < ApplicationRecord
+  resourcify
   before_validation :normalize_request_domain
 
   validates :original_url, presence: true, uniqueness: { scope: :request_domain }, format: { with: /\A\//, message: "must start with /" }

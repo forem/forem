@@ -29,12 +29,18 @@ class AlgoliaInsightsService
 
     payload = { events: [event] }
 
-    response = self.class.post("/events", headers: headers, body: payload.to_json)
-    if response.success?
-      Rails.logger.debug { "Event tracked: #{response.body}" }
-    else
-      Rails.logger.debug { "Failed to track event: #{response.body}" }
+    begin
+      response = self.class.post("/events", headers: headers, body: payload.to_json, timeout: 5)
+      if response.success?
+        Rails.logger.debug { "Event tracked: #{response.body}" }
+      else
+        Rails.logger.debug { "Failed to track event: #{response.body}" }
+      end
+      response
+    rescue StandardError => e
+      Rails.logger.warn("AlgoliaInsightsService network error: #{e.message}")
+      Honeybadger.notify(e) if defined?(Honeybadger)
+      nil
     end
-    response
   end
 end

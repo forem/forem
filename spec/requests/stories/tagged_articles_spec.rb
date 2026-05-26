@@ -114,6 +114,13 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
           expect(response.body).not_to include(CGI.escapeHTML(bad_article.title))
         end
 
+        it "includes articles older than 5 years on top/infinity" do
+          ancient_article = create(:article, :past, tags: tag.name, score: 500,
+                                                    past_published_at: 6.years.ago)
+          get "/t/#{tag.name}/top/infinity"
+          expect(response.body).to include(CGI.escapeHTML(ancient_article.title))
+        end
+
         it "renders tag after alias change" do
           tag2 = create(:tag, alias_for: tag.name)
           get "/t/#{tag2.name}"

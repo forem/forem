@@ -1,4 +1,5 @@
 /* global userData */
+import { isBotUserAgent } from '@utilities/isBot';
 // This is currently a duplicate of app/assets/javascript/initializers/initializeBillboardVisibility.
 export function initializeBillboardVisibility() {
   const billboards = document.querySelectorAll('[data-display-unit]');
@@ -90,10 +91,7 @@ function showDelayed() {
 }
 
 function trackAdImpression(adBox) {
-  const isBot =
-    /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(
-      navigator.userAgent,
-    ); // is crawler
+  const isBot = isBotUserAgent(navigator.userAgent);
   const adSeen = adBox.dataset.impressionRecorded;
   if (isBot || adSeen) {
     return;
@@ -164,9 +162,7 @@ function trackAdClick(adBox, event, currentPath) {
     localStorage.setItem("last_interacted_billboard", JSON.stringify(dataBody));
   }
 
-  const isBot = /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(
-    navigator.userAgent
-  );
+  const isBot = isBotUserAgent(navigator.userAgent);
   const adClicked = adBox.dataset.clickRecorded;
   if (isBot || adClicked) {
     return;

@@ -24,6 +24,34 @@ RSpec.describe "Admin::Events", type: :request do
         }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
+
+    context "when logged in as a resource admin for Event" do
+      let(:event_admin) { create(:user) }
+      before do
+        event_admin.add_role(:single_resource_admin, Event)
+        login_as(event_admin)
+      end
+
+      it "renders the index template" do
+        create(:event)
+        get admin_events_path
+        expect(response).to have_http_status(:success)
+      end
+    end
+
+    context "when logged in as a resource admin for a different resource" do
+      let(:other_admin) { create(:user) }
+      before do
+        other_admin.add_role(:single_resource_admin, Article)
+        login_as(other_admin)
+      end
+
+      it "denies access" do
+        expect {
+          get admin_events_path
+        }.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
   end
 
   describe "GET /admin/content_manager/events/:id" do
