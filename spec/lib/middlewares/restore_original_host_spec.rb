@@ -47,14 +47,36 @@ RSpec.describe Middlewares::RestoreOriginalHost, type: :middleware do
       allow(Rails.env).to receive(:production?).and_return(true)
     end
 
-    it "overrides HTTP_HOST with the value of HTTP_X_FORWARDED_HOST" do
-      env = {
-        "HTTP_HOST" => "practicaldev.herokuapp.com",
-        "HTTP_X_FORWARDED_HOST" => "mlh.forem.wtf"
-      }
-      _status, result_env, _body = middleware.call(env)
+    context "when TRUST_X_FORWARDED_HOST is enabled" do
+      before do
+        stub_const("ENV", ENV.to_h.merge("TRUST_X_FORWARDED_HOST" => "true"))
+      end
 
-      expect(result_env["HTTP_HOST"]).to eq("mlh.forem.wtf")
+      it "overrides HTTP_HOST with the value of HTTP_X_FORWARDED_HOST" do
+        env = {
+          "HTTP_HOST" => "practicaldev.herokuapp.com",
+          "HTTP_X_FORWARDED_HOST" => "mlh.forem.wtf"
+        }
+        _status, result_env, _body = middleware.call(env)
+
+        expect(result_env["HTTP_HOST"]).to eq("mlh.forem.wtf")
+      end
+    end
+
+    context "when TRUST_X_FORWARDED_HOST is not enabled" do
+      before do
+        stub_const("ENV", ENV.to_h.merge("TRUST_X_FORWARDED_HOST" => nil))
+      end
+
+      it "does not override HTTP_HOST to prevent host spoofing" do
+        env = {
+          "HTTP_HOST" => "practicaldev.herokuapp.com",
+          "HTTP_X_FORWARDED_HOST" => "mlh.forem.wtf"
+        }
+        _status, result_env, _body = middleware.call(env)
+
+        expect(result_env["HTTP_HOST"]).to eq("practicaldev.herokuapp.com")
+      end
     end
   end
 
