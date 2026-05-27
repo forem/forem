@@ -11,6 +11,7 @@ module Middlewares
       original_host = env["HTTP_X_FOREM_ORIGINAL_HOST"].presence || env["HTTP_FASTLY_ORIG_HOST"].presence
 
       unless original_host
+        # Allow X-Forwarded-Host in non-production by default (and in production only when explicitly enabled).
         trust_x_forwarded_host = !Rails.env.production? || ENV["TRUST_X_FORWARDED_HOST"] == "true"
         original_host = env["HTTP_X_FORWARDED_HOST"]&.split(",")&.first&.strip.presence if trust_x_forwarded_host
       end
