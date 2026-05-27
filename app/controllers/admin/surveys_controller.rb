@@ -44,7 +44,7 @@ module Admin
         if poll.text_input?
           text_responses = poll.poll_text_responses.where(created_at: @start_date..@end_date).order(created_at: :desc).limit(100)
           data[:total_responses] = poll_text_response_counts[poll.id] || 0
-          data[:text_responses] = text_responses.pluck(:text_response, :created_at)
+          data[:text_responses] = text_responses.pluck(:text_content, :created_at)
         else
           poll_votes_subset = poll_vote_counts.select { |(p_id, _), _| p_id == poll.id }
           data[:total_responses] = poll_votes_subset.values.sum
