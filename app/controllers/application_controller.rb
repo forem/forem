@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   before_action :redirect_www_and_unregistred_subforems_to_root
+  before_action :redirect_all_subforems_to_default
   before_action :configure_permitted_parameters, if: :devise_controller?
   skip_before_action :track_ahoy_visit
   before_action :set_session_domain
@@ -469,6 +470,35 @@ class ApplicationController < ActionController::Base
       redirect_to("#{request.protocol}#{new_host}#{request.fullpath}", allow_other_host: true,
                                                                        status: :moved_permanently)
     end
+  end
+
+  def redirect_all_subforems_to_default
+    return unless ENV["REDIRECT_ALL_SUBFOREMS_TO_DEFAULT"] == "true"
+    return if RequestStore.store[:root_subforem_domain].blank?
+
+    host = request.host&.downcase
+    cache_key = "org_custom_domain_id:#{host}"
+    org_id = Rails.cache.read(cache_key)
+
+    is_custom_org_domain = if org_id == "not_found"
+                             false
+                           elsif org_id.present?
+                             true
+                           else
+                             Organization.exists?(custom_domain: host)
+                           end
+
+    return if is_custom_org_domain
+
+    is_subforem_subdomain = host.end_with?(".#{RequestStore.store[:root_subforem_domain]}")
+    is_registered_subforem = RequestStore.store[:subforem_id].present? &&
+      RequestStore.store[:subforem_id] != RequestStore.store[:root_subforem_id]
+
+    return unless is_subforem_subdomain || is_registered_subforem
+
+    new_host = RequestStore.store[:root_subforem_domain]
+    redirect_to("#{request.protocol}#{new_host}#{request.fullpath}", allow_other_host: true,
+                                                                     status: :moved_permanently)
   end
 
   def configure_permitted_parameters
