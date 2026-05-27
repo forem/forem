@@ -7,6 +7,8 @@ module Middlewares
     end
 
     def call(env)
+      Rails.logger.info("[RestoreOriginalHost] Incoming - HTTP_HOST: #{env["HTTP_HOST"]}, X-Forem-Original-Host: #{env["HTTP_X_FOREM_ORIGINAL_HOST"]}, Fastly-Orig-Host: #{env["HTTP_FASTLY_ORIG_HOST"]}, X-Forwarded-Host: #{env["HTTP_X_FORWARDED_HOST"]}")
+
       # Prioritize the secure custom header set by our Fastly edge, then fall back to X-Forwarded-Host if allowed.
       original_host = env["HTTP_X_FOREM_ORIGINAL_HOST"].presence || env["HTTP_FASTLY_ORIG_HOST"].presence
 
@@ -17,6 +19,7 @@ module Middlewares
       end
 
       if original_host && valid_host?(original_host)
+        Rails.logger.info("[RestoreOriginalHost] Restored HTTP_HOST to #{original_host}")
         env["HTTP_HOST"] = original_host
       end
 
