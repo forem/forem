@@ -9,14 +9,11 @@ sub vcl_recv {
   # This is critical for Forem's cache isolation (Vary: X-Req-Host).
   set req.http.X-Req-Host = req.http.Host;
   set req.http.Fastly-Orig-Host = req.http.Host;
+  set req.http.X-Forwarded-Host = req.http.Host;
 
   # 2. Safely override the Host header only for custom domains.
   # We do NOT touch the host header if it is already dev.to or www.dev.to.
   if (req.http.Host != "dev.to" && req.http.Host != "www.dev.to" && req.http.Host != "practicaldev.herokuapp.com") {
-    # Set X-Forwarded-Host so Rails/Forem can read the custom domain
-    if (!req.http.X-Forwarded-Host) {
-      set req.http.X-Forwarded-Host = req.http.Host;
-    }
     # Rewrite the Host header to match the Heroku application domain
     set req.http.Host = "practicaldev.herokuapp.com";
   }

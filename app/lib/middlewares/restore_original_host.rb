@@ -10,10 +10,9 @@ module Middlewares
       # Fastly-Orig-Host is set by Fastly to the client's original Host header.
       original_host = env["HTTP_FASTLY_ORIG_HOST"].presence
 
-      # Allow X-Forwarded-Host ONLY in non-production environments to prevent spoofing in production
-      if !Rails.env.production?
-        original_host ||= env["HTTP_X_FORWARDED_HOST"]&.split(",")&.first&.strip.presence
-      end
+      # Allow X-Forwarded-Host in non-production by default (and in production only when explicitly enabled).
+      trust_x_forwarded_host = !Rails.env.production? || ENV["TRUST_X_FORWARDED_HOST"] == "true"
+      original_host ||= env["HTTP_X_FORWARDED_HOST"]&.split(",")&.first&.strip.presence if trust_x_forwarded_host
 
       if original_host && valid_host?(original_host)
         env["HTTP_HOST"] = original_host
