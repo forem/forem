@@ -474,29 +474,30 @@ class ApplicationController < ActionController::Base
 
   def redirect_all_subforems_to_default
     return unless ENV["REDIRECT_ALL_SUBFOREMS_TO_DEFAULT"] == "true"
-    return if RequestStore.store[:root_subforem_domain].blank?
+    return if RequestStore.store[:default_subforem_domain].blank?
 
     host = request.host&.downcase
+
+    # Do not redirect the default subforem domain itself
+    return if host == RequestStore.store[:default_subforem_domain]&.downcase
+
+    # Check memory-first cache
     cache_key = "org_custom_domain_id:#{host}"
-    org_id = Rails.cache.read(cache_key)
+    org_id = MemoryFirstCache.fetch(cache_key) do
+      org = Organization.find_by(custom_domain: host)
+      org ? org.id : "not_found"
+    end
 
-    is_custom_org_domain = if org_id == "not_found"
-                             false
-                           elsif org_id.present?
-                             true
-                           else
-                             Organization.exists?(custom_domain: host)
-                           end
-
+    is_custom_org_domain = org_id.present? && org_id != "not_found"
     return if is_custom_org_domain
 
     is_subforem_subdomain = host.end_with?(".#{RequestStore.store[:root_subforem_domain]}")
     is_registered_subforem = RequestStore.store[:subforem_id].present? &&
-      RequestStore.store[:subforem_id] != RequestStore.store[:root_subforem_id]
+      RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id]
 
     return unless is_subforem_subdomain || is_registered_subforem
 
-    new_host = RequestStore.store[:root_subforem_domain]
+    new_host = RequestStore.store[:default_subforem_domain]
     redirect_to("#{request.protocol}#{new_host}#{request.fullpath}", allow_other_host: true,
                                                                      status: :moved_permanently)
   end
