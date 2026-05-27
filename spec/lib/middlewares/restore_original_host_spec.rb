@@ -42,19 +42,19 @@ RSpec.describe Middlewares::RestoreOriginalHost, type: :middleware do
     end
   end
 
-  context "when HTTP_X_FORWARDED_HOST is present but environment is production" do
+  context "when HTTP_X_FORWARDED_HOST is present and environment is production" do
     before do
       allow(Rails.env).to receive(:production?).and_return(true)
     end
 
-    it "does not override HTTP_HOST to prevent host spoofing" do
+    it "overrides HTTP_HOST with the value of HTTP_X_FORWARDED_HOST" do
       env = {
         "HTTP_HOST" => "practicaldev.herokuapp.com",
         "HTTP_X_FORWARDED_HOST" => "mlh.forem.wtf"
       }
       _status, result_env, _body = middleware.call(env)
 
-      expect(result_env["HTTP_HOST"]).to eq("practicaldev.herokuapp.com")
+      expect(result_env["HTTP_HOST"]).to eq("mlh.forem.wtf")
     end
   end
 
