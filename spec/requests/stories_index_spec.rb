@@ -44,6 +44,17 @@ RSpec.describe "StoriesIndex" do
       expect(response).to redirect_to("http://example.com/")
     end
 
+    it "does not redirect an unfound subforem if it is a custom organization domain" do
+      ENV["REDIRECT_WWW_TO_ROOT"] = "true"
+      create(:organization, custom_domain: "mlh.example.com")
+      allow(Subforem).to receive(:cached_id_by_domain).and_return(nil)
+      allow(Subforem).to receive(:cached_root_domain).and_return("example.com")
+      
+      get "http://mlh.example.com"
+      expect(response).not_to redirect_to("http://example.com/")
+      ENV["REDIRECT_WWW_TO_ROOT"] = nil
+    end
+
     it "does not redirect found subforem to root if ENV var set" do
       ENV["REDIRECT_WWW_TO_ROOT"] = "true" # stubbing doesn't work properly here
       allow(Subforem).to receive(:cached_id_by_domain).and_return(1)
