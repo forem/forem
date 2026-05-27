@@ -1,4 +1,5 @@
 class Organization < ApplicationRecord
+  resourcify
   include CloudinaryHelper
   include PgSearch::Model
   include AlgoliaSearchable
