@@ -54,6 +54,46 @@ RSpec.describe "StoriesIndex" do
       ENV["REDIRECT_WWW_TO_ROOT"] = nil
     end
 
+    context "with REDIRECT_ALL_SUBFOREMS_TO_DEFAULT enabled" do
+      before do
+        stub_const("ENV", ENV.to_h.merge("REDIRECT_ALL_SUBFOREMS_TO_DEFAULT" => "true"))
+        allow(Subforem).to receive_messages(
+          cached_root_domain: "example.com",
+          cached_root_id: 1,
+          cached_default_domain: "default.example.com",
+          cached_default_id: 3
+        )
+      end
+
+      it "redirects a registered subforem to the default domain" do
+        allow(Subforem).to receive(:cached_id_by_domain).with("found.example.com").and_return(2)
+        get "http://found.example.com"
+        expect(response).to have_http_status(:moved_permanently)
+        expect(response).to redirect_to("http://default.example.com/")
+      end
+
+      it "redirects an unregistered subforem to the default domain" do
+        allow(Subforem).to receive(:cached_id_by_domain).with("not-found.example.com").and_return(nil)
+        get "http://not-found.example.com"
+        expect(response).to have_http_status(:moved_permanently)
+        expect(response).to redirect_to("http://default.example.com/")
+      end
+
+      it "does not redirect a custom organization domain" do
+        create(:organization, custom_domain: "mlh.forem.wtf")
+        allow(Subforem).to receive(:cached_id_by_domain).with("mlh.forem.wtf").and_return(nil)
+        get "http://mlh.forem.wtf"
+        expect(response).not_to redirect_to("http://default.example.com/")
+      end
+
+      it "does not redirect the default subforem domain itself" do
+        allow(Subforem).to receive(:cached_id_by_domain).with("default.example.com").and_return(3)
+        get "http://default.example.com"
+        expect(response).to have_http_status(:ok)
+        expect(response).not_to redirect_to("http://default.example.com/")
+      end
+    end
+
     it "renders topbar styles if Settings::UserExperience.accent_background_color_hex is set" do
       allow(Settings::UserExperience).to receive(:accent_background_color_hex).and_return("#000000")
       get "/"

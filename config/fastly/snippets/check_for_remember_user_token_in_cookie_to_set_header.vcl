@@ -10,6 +10,7 @@ sub vcl_recv {
   set req.http.X-Req-Host = req.http.Host;
   set req.http.Fastly-Orig-Host = req.http.Host;
   set req.http.X-Forwarded-Host = req.http.Host;
+  set req.http.X-Forem-Original-Host = req.http.Host;
 
   # 2. Safely override the Host header only for custom domains.
   # We do NOT touch the host header if it is already dev.to or www.dev.to.
