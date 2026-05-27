@@ -8,6 +8,7 @@ sub vcl_recv {
   # 1. Capture the original custom domain host header BEFORE we override it.
   # This is critical for Forem's cache isolation (Vary: X-Req-Host).
   set req.http.X-Req-Host = req.http.Host;
+  set req.http.Fastly-Orig-Host = req.http.Host;
 
   # 2. Safely override the Host header only for custom domains.
   # We do NOT touch the host header if it is already dev.to or www.dev.to.
