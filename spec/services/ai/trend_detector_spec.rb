@@ -49,6 +49,29 @@ RSpec.describe Ai::TrendDetector do
       end
     end
 
+    context "when some qualifying articles are excluded from the first-pass sample limit" do
+      before do
+        # Stub the first-pass limit to only select the top 2 articles (article2 and article3 by score)
+        allow(Article).to receive(:published).and_wrap_original do |m, *args|
+          relation = m.call(*args)
+          allow(relation).to receive(:limit).with(1000).and_return(relation.limit(2))
+          relation
+        end
+      end
+
+      it "includes the excluded article in the second pass and marks it as a trend member" do
+        # min_articles: 2, so article2 and article3 (score 25, 30) form a cluster of size 2, creating the trend.
+        # article1 (score 20) is excluded from the first-pass limit(2) but should be caught by the second pass.
+        expect {
+          detector.call(min_articles: 2, min_score: 10)
+        }.to change(Trend, :count).by(1)
+         .and change(TrendMembership, :count).by(3)
+
+        trend = Trend.last
+        expect(trend.articles).to contain_exactly(article1, article2, article3)
+      end
+    end
+
     context "when filtering by article score" do
       it "excludes articles with score below min_score" do
         # If min_score is 22, article1 (score 20) is excluded.
