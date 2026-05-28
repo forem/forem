@@ -52,6 +52,26 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
       expect(response.body).to include(organization.name)
     end
 
+    it "redirects header links to the main app domain and styles the topbar with the organization brand color" do
+      organization.update!(bg_color_hex: "#1ab394", text_color_hex: "#ffffff")
+
+      get "http://custom.org/"
+
+      expect(response).to have_http_status(:success)
+
+      # 1. Logo links to main domain root
+      expect(response.body).to match(/href="http:\/\/forem\.com\/?" class="site-logo"/)
+
+      # 2. Search form action points to search on the main domain
+      expect(response.body).to match(/action="http:\/\/forem\.com\/search"/)
+
+      # 3. Signin / Signup links point to main domain enter page
+      expect(response.body).to match(/href="http:\/\/forem\.com\/enter/)
+
+      # 4. Topbar styling is added with the organization's custom background color
+      expect(response.body).to include("#topbar { background: #1ab394 !important; }")
+    end
+
     describe "API routing" do
       it "does not intercept /api endpoints on a custom domain" do
         get "http://custom.org/api/articles"
