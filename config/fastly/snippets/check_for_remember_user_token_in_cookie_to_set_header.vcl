@@ -7,16 +7,17 @@ sub vcl_recv {
   
   # 1. Capture the original custom domain host header BEFORE we override it.
   # This is critical for Forem's cache isolation (Vary: X-Req-Host).
-  if (!req.http.X-Req-Host) {
+  if (req.http.X-Req-Host) {
+    # On the Shield POP: Since X-Req-Host is already set to the client host (e.g. mlh.forem.wtf),
+    # we use it to restore all other tracking headers.
+    set req.http.Fastly-Orig-Host = req.http.X-Req-Host;
+    set req.http.X-Forwarded-Host = req.http.X-Req-Host;
+    set req.http.X-Forem-Original-Host = req.http.X-Req-Host;
+  } else {
+    # On the Edge POP: Capture directly from the client's Host header.
     set req.http.X-Req-Host = req.http.Host;
-  }
-  if (!req.http.Fastly-Orig-Host) {
     set req.http.Fastly-Orig-Host = req.http.Host;
-  }
-  if (!req.http.X-Forwarded-Host) {
     set req.http.X-Forwarded-Host = req.http.Host;
-  }
-  if (!req.http.X-Forem-Original-Host) {
     set req.http.X-Forem-Original-Host = req.http.Host;
   }
 
