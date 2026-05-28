@@ -9,6 +9,7 @@
     box-shadow: 4px 5px 0px #4e57ef;
   }
 </style>
+<% max_video_mb = current_user.super_admin? ? 20_000 : 6000 %>
 <center style="margin-top:200px">
   <%= stylesheet_link_tag "s3_direct_upload", media: "all" %>
   <h1><%= t("views.videos.upload") %></h1>
@@ -18,11 +19,19 @@
                        key: "video-upload__#{SecureRandom.hex}",
                        key_starts_with: "video-upload__",
                        acl: "public-read",
-                       max_file_size: (current_user.super_admin? ? 20_000 : 6000).megabytes,
+                       max_file_size: max_video_mb.megabytes,
                        id: "s3-uploader",
                        class: "upload-form",
                        data: { key: :val } do %>
-    <%= file_field_tag :file, accept: "video/mp4,video/x-m4v,video/*" %>
+    <%= file_field_tag :file,
+                       accept: "video/mp4,video/x-m4v,video/*",
+                       data: {
+                         max_file_mb: max_video_mb,
+                         permitted_file_types: %w[video].to_json
+                       } %>
+    <p style="margin-top:10px;font-size:0.86em;color:#555;">
+      <%= t("views.videos.max_file_size", size: "#{max_video_mb} MB") %>
+    </p>
     <script id="template-upload" type="text/x-tmpl">
     <div id="file-{%=o.unique_id%}" class="upload">
       {%=o.name%}
@@ -37,13 +46,47 @@
     </p>
   </div>
 </center>
+<%= javascript_include_tag "validateFileInputs", defer: true %>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
   integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <%= javascript_include_tag "s3_direct_upload" %>
 <script>
   setTimeout(function () {
+    var $fileInput = $("#s3-uploader input[type='file']");
+    var maxFileMb = parseInt($fileInput.data("max-file-mb"), 10);
+    var permittedFileTypes = $fileInput.data("permitted-file-types") || ["video"];
+
     $("#s3-uploader").S3Uploader({
-      additional_data: {authenticity_token: "<%= form_authenticity_token %>"}
+      additional_data: {authenticity_token: "<%= form_authenticity_token %>"},
+      before_add: function (file) {
+        var fileSizeMb = file.size / (1024 * 1024);
+        var topLevelType = (file.type || "").split("/")[0];
+
+        if (permittedFileTypes.indexOf(topLevelType) === -1) {
+          if (top.addSnackbarItem) {
+            top.addSnackbarItem({
+              message: "Invalid file format (" + topLevelType + "). Only " + permittedFileTypes.join(", ") + " files are permitted.",
+              addCloseButton: true
+            });
+          } else {
+            alert("Invalid file format. Only " + permittedFileTypes.join(", ") + " files are permitted.");
+          }
+          return false;
+        }
+
+        if (maxFileMb && fileSizeMb > maxFileMb) {
+          var rounded = fileSizeMb.toFixed(2);
+          var msg = "File size too large (" + rounded + " MB). The limit is " + maxFileMb + " MB.";
+          if (top.addSnackbarItem) {
+            top.addSnackbarItem({ message: msg, addCloseButton: true });
+          } else {
+            alert(msg);
+          }
+          return false;
+        }
+
+        return true;
+      }
     })
   }, 1000)
 </script>
