@@ -1466,6 +1466,7 @@ RSpec.describe Article do
     it "is not valid if the user is too recent" do
       user.created_at = Time.current
       article.video = "https://example.com/video.mp4"
+      article.video_source_url = "https://unknown-source.com/video.mp4"
       expect(article).not_to be_valid
     end
 
