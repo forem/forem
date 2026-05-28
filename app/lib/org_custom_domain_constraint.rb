@@ -24,25 +24,17 @@ class OrgCustomDomainConstraint
     return false if Subforem.cached_domains.include?(host)
 
     cache_key = "org_custom_domain_id:#{host}"
-    org_id = Rails.cache.read(cache_key)
-    org = Organization.find_by(id: org_id) if org_id && org_id != "not_found"
-
-    if org && org.custom_domain != host
-      Rails.cache.delete(cache_key)
-      org = nil
+    org_id = MemoryFirstCache.fetch(cache_key) do
+      org = Organization.find_by(custom_domain: host)
+      org ? org.id : "not_found"
     end
 
-    unless org
-      # Return false early for cached misses (1 min TTL)
-      return false if org_id == "not_found"
+    return false if org_id == "not_found"
 
-      org = Organization.find_by(custom_domain: host)
-      if org
-        Rails.cache.write(cache_key, org.id, expires_in: 10.minutes)
-      else
-        Rails.cache.write(cache_key, "not_found", expires_in: 1.minute)
-        return false
-      end
+    org = Organization.find_by(id: org_id)
+    if org.nil? || org.custom_domain != host
+      MemoryFirstCache.delete(cache_key)
+      return false
     end
 
     if FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
