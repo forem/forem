@@ -22,6 +22,21 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
       expect(response).to have_http_status(:success)
       expect(response.body).not_to include(organization.name)
     end
+
+    describe "signed out redirection" do
+      let(:user) { create(:user) }
+      let!(:article) { create(:article, organization: organization, user: user, title: "Test Article Content") }
+
+      it "does not redirect organization profile page requests" do
+        get "http://forem.com/#{organization.slug}"
+        expect(response).to have_http_status(:success)
+      end
+
+      it "does not redirect organization article requests" do
+        get "http://forem.com/#{organization.slug}/#{article.slug}"
+        expect(response).to have_http_status(:success)
+      end
+    end
   end
 
   context "when the custom domain feature is enabled" do
@@ -71,6 +86,55 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
         expect {
           get "http://custom.org/#{other_article.slug}"
         }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    describe "signed out redirection to custom domain" do
+      let(:user) { create(:user) }
+      let!(:article) { create(:article, organization: organization, user: user, title: "Test Article Content") }
+
+      context "when user is not signed in" do
+        it "redirects organization profile page requests on main domain to custom domain root" do
+          get "http://forem.com/#{organization.slug}"
+          expect(response).to redirect_to("http://custom.org/")
+          expect(response).to have_http_status(:found)
+        end
+
+        it "preserves query parameters when redirecting organization profile page" do
+          get "http://forem.com/#{organization.slug}?ref=newsletter&page=2"
+          expect(response).to redirect_to("http://custom.org/?ref=newsletter&page=2")
+          expect(response).to have_http_status(:found)
+        end
+
+        it "redirects organization article requests on main domain to custom domain with slug only" do
+          get "http://forem.com/#{organization.slug}/#{article.slug}"
+          expect(response).to redirect_to("http://custom.org/#{article.slug}")
+          expect(response).to have_http_status(:found)
+        end
+
+        it "preserves query parameters when redirecting article page" do
+          get "http://forem.com/#{organization.slug}/#{article.slug}?utm_source=twitter"
+          expect(response).to redirect_to("http://custom.org/#{article.slug}?utm_source=twitter")
+          expect(response).to have_http_status(:found)
+        end
+      end
+
+      context "when user is signed in" do
+        let(:logged_in_user) { create(:user) }
+
+        before do
+          sign_in logged_in_user
+        end
+
+        it "does not redirect organization profile page requests" do
+          get "http://forem.com/#{organization.slug}"
+          expect(response).to have_http_status(:success)
+        end
+
+        it "does not redirect organization article requests" do
+          get "http://forem.com/#{organization.slug}/#{article.slug}"
+          expect(response).to have_http_status(:success)
+        end
       end
     end
   end
