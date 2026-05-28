@@ -82,8 +82,8 @@ pt:
       invalid_reddit_link: 'Link do Reddit inválido: %{url}'
     replit_tag:
       invalid_replit_id: URL do Replit inválida ou @user/slug
-    runkit_tag:
-      runkit_tag_is_invalid: Tag do Runkit é inválida
+    legacy_code_tag:
+      invalid_tag: Tag de código legado inválida
     slideshare_tag:
       invalid_slideshare_key: Chave do Slideshare inválida
     soundcloud_tag:

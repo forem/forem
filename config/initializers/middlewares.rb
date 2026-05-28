@@ -3,7 +3,7 @@ require_relative "../../app/lib/middlewares/set_cookie_domain"
 require_relative "../../app/lib/middlewares/set_subforem"
 require_relative "../../app/lib/middlewares/set_time_zone"
 
-Rails.configuration.middleware.use(Middlewares::RestoreOriginalHost)
+Rails.configuration.middleware.insert(0, Middlewares::RestoreOriginalHost)
 Rails.configuration.middleware.use(Middlewares::SetCookieDomain) if Rails.env.production?
 
 # Include middleware to ensure timezone for browser requests for Capybara specs
