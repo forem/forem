@@ -81,11 +81,12 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
         expect(response.body).to include("Test Article Content")
       end
 
-      it "returns 404 for articles not belonging to the organization" do
+      it "redirects to the main app domain for articles not belonging to the organization" do
         other_article = create(:article)
-        expect {
-          get "http://custom.org/#{other_article.slug}"
-        }.to raise_error(ActiveRecord::RecordNotFound)
+        get "http://custom.org/#{other_article.slug}"
+
+        expect(response).to redirect_to("http://forem.com/#{other_article.slug}")
+        expect(response).to have_http_status(:moved_permanently)
       end
     end
 
