@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Articles::Feeds::Basic, js: true do
+RSpec.describe Articles::Feeds::Basic, :js do
   let(:user) { create(:user) }
   let(:hot_story) do
     create(:article, :past, hotness_score: 1000, score: 1000, past_published_at: 3.hours.ago)
@@ -13,11 +13,11 @@ RSpec.describe Articles::Feeds::Basic, js: true do
   context "with a user" do
     let(:feed) { described_class.new(user: user, number_of_articles: 100, page: 1) }
 
-    it "doesn't display blocked articles", js: true, type: :system do
+    it "doesn't display blocked articles", :js, type: :system do
       selector = "article[data-content-user-id='#{hot_story.user_id}']"
       sign_in user
       visit root_path
-      
+
       # Assert presence with a retry loop to prevent Ferrum NodeNotFound crashes
       # during active Preact DOM repaints on high-priority feed requests.
       retry_count = 0
@@ -25,12 +25,10 @@ RSpec.describe Articles::Feeds::Basic, js: true do
         expect(page).to have_selector(selector)
       rescue Ferrum::NodeNotFoundError, RSpec::Expectations::ExpectationNotMetError => e
         retry_count += 1
-        if retry_count < 10
-          sleep 0.2
-          retry
-        else
-          raise e
-        end
+        raise e unless retry_count < 10
+
+        sleep 0.2
+        retry
       end
 
       # Use find_or_create_by to prevent uniqueness validation errors if the spec is retried
@@ -40,15 +38,13 @@ RSpec.describe Articles::Feeds::Basic, js: true do
       # Assert absence/invisibility with a retry loop to prevent Ferrum NodeNotFound crashes
       retry_count = 0
       begin
-        expect(page).not_to have_selector(selector, visible: :visible)
+        expect(page).to have_no_selector(selector, visible: :visible)
       rescue Ferrum::NodeNotFoundError => e
         retry_count += 1
-        if retry_count < 10
-          sleep 0.2
-          retry
-        else
-          raise e
-        end
+        raise e unless retry_count < 10
+
+        sleep 0.2
+        retry
       end
     end
   end
