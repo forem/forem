@@ -99,11 +99,23 @@ module Ai
           end
 
           # Sync memberships
-          active_article_ids = cluster[:articles].map(&:id)
+          # Second pass: Find ALL articles in the lookback window matching the trend's centroid within the similarity threshold
+          centroid_literal = "[#{trend.centroid_embedding.join(',')}]"
+          quoted_centroid = Article.connection.quote(centroid_literal)
+
+          qualifying_articles = Article.published
+                                       .select("articles.*, (semantic_embedding <=> #{quoted_centroid}) AS computed_distance")
+                                       .where("published_at >= ?", days_lookback.days.ago)
+                                       .where("score >= ?", min_score)
+                                       .where.not(semantic_embedding: nil)
+                                       .where("semantic_embedding <=> #{quoted_centroid} <= ?", dist_threshold)
+                                       .to_a
+
+          active_article_ids = qualifying_articles.map(&:id)
           trend.trend_memberships.where.not(article_id: active_article_ids).destroy_all
 
-          cluster[:articles].each do |article|
-            dist = cosine_distance(trend.centroid_embedding.to_a, article.semantic_embedding.to_a)
+          qualifying_articles.each do |article|
+            dist = article.respond_to?(:computed_distance) && article.computed_distance ? article.computed_distance.to_f : cosine_distance(trend.centroid_embedding.to_a, article.semantic_embedding.to_a)
             membership = trend.trend_memberships.find_or_initialize_by(article: article)
             membership.distance = dist
             membership.save!
