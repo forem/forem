@@ -24,12 +24,20 @@
 
           <div class="flex">
             <% if org_membership.user == @user && org_membership.type_of_user == "admin" %>
-            <!-- TODO: ? -->
+              <% if @organization.organization_memberships.where(type_of_user: "admin").count > 1 %>
+                <%= form_tag users_leave_org_path(@organization), onsubmit: "return confirm('#{t('views.settings.org.leave.confirm')}');" do %>
+                  <button class="crayons-btn crayons-btn--danger ml-2" type="submit"><%= t("views.settings.org.leave.submit") %></button>
+                <% end %>
+              <% end %>
             <% elsif org_membership.user != @user && org_membership.type_of_user == "admin" %>
-              <%= form_tag "/users/remove_org_admin", onsubmit: "return confirm('#{t('views.settings.org.admin.revoke.confirm', user: org_membership.user.name)}');" do %>
-                <%= hidden_field_tag "user_id", org_membership.user_id %>
-                <%= hidden_field_tag "organization_id", @organization.id %>
-                <button class="crayons-btn crayons-btn--secondary ml-2" title="<%= t("views.settings.org.admin.revoke.title") %>" type="submit"><%= t("views.settings.org.admin.revoke.text") %></button>
+              <% if @organization.organization_memberships.where(type_of_user: "admin").count > 1 %>
+                <%= form_tag "/users/remove_org_admin", onsubmit: "return confirm('#{t('views.settings.org.admin.revoke.confirm', user: org_membership.user.name)}');" do %>
+                  <%= hidden_field_tag "user_id", org_membership.user_id %>
+                  <%= hidden_field_tag "organization_id", @organization.id %>
+                  <button class="crayons-btn crayons-btn--secondary ml-2" title="<%= t("views.settings.org.admin.revoke.title") %>" type="submit"><%= t("views.settings.org.admin.revoke.text") %></button>
+                <% end %>
+              <% else %>
+                <span class="c-indicator ml-2"><%= t("views.settings.org.admin.sole_admin") %></span>
               <% end %>
             <% else %>
               <%= form_tag "/users/add_org_admin", onsubmit: "return confirm('#{t('views.settings.org.admin.make.confirm', user: org_membership.user.name)}');" do %>
