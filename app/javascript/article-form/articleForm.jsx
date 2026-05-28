@@ -38,10 +38,6 @@ const LINT_OPTIONS = {
 };
 
 export class ArticleForm extends Component {
-  static handleRunkitPreview() {
-    activateRunkitTags();
-  }
-
   // Scripts inserted via innerHTML won't execute, so we use this handler to
   // make the Asciinema player work in previews.
   static handleAsciinemaPreview() {
@@ -202,7 +198,6 @@ export class ArticleForm extends Component {
 
     if (previewResponse?.processed_html) {
       embedGists(this.formElement);
-      this.constructor.handleRunkitPreview();
       this.constructor.handleAsciinemaPreview();
       this.constructor.handleAgentSessionPreview();
     }
