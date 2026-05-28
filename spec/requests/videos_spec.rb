@@ -73,7 +73,7 @@ RSpec.describe "Videos" do
       it "exposes client-side max file size validation attributes for regular users" do
         sign_in authorized_user
         get "/videos/new"
-        expect(response.body).to include 'data-max-file-mb="6000"'
+        expect(response.body).to include 'data-max-file-size-mb="6000"'
         expect(response.body).to include 'data-permitted-file-types="[&quot;video&quot;]"'
       end
 
@@ -81,7 +81,7 @@ RSpec.describe "Videos" do
         super_admin = create(:user, :super_admin, created_at: 1.month.ago)
         sign_in super_admin
         get "/videos/new"
-        expect(response.body).to include 'data-max-file-mb="20000"'
+        expect(response.body).to include 'data-max-file-size-mb="20000"'
       end
     end
   end

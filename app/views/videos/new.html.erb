@@ -26,7 +26,7 @@
     <%= file_field_tag :file,
                        accept: "video/mp4,video/x-m4v,video/*",
                        data: {
-                         max_file_mb: max_video_mb,
+                         max_file_size_mb: max_video_mb,
                          permitted_file_types: %w[video].to_json
                        } %>
     <p style="margin-top:10px;font-size:0.86em;color:#555;">
@@ -46,14 +46,13 @@
     </p>
   </div>
 </center>
-<%= javascript_include_tag "validateFileInputs", defer: true %>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
   integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <%= javascript_include_tag "s3_direct_upload" %>
 <script>
   setTimeout(function () {
     var $fileInput = $("#s3-uploader input[type='file']");
-    var maxFileMb = parseInt($fileInput.data("max-file-mb"), 10);
+    var maxFileMb = parseInt($fileInput.data("max-file-size-mb"), 10);
     var permittedFileTypes = $fileInput.data("permitted-file-types") || ["video"];
 
     $("#s3-uploader").S3Uploader({
@@ -63,25 +62,13 @@
         var topLevelType = (file.type || "").split("/")[0];
 
         if (permittedFileTypes.indexOf(topLevelType) === -1) {
-          if (top.addSnackbarItem) {
-            top.addSnackbarItem({
-              message: "Invalid file format (" + topLevelType + "). Only " + permittedFileTypes.join(", ") + " files are permitted.",
-              addCloseButton: true
-            });
-          } else {
-            alert("Invalid file format. Only " + permittedFileTypes.join(", ") + " files are permitted.");
-          }
+          alert("Invalid file format (" + topLevelType + "). Only " + permittedFileTypes.join(", ") + " files are permitted.");
           return false;
         }
 
         if (maxFileMb && fileSizeMb > maxFileMb) {
           var rounded = fileSizeMb.toFixed(2);
-          var msg = "File size too large (" + rounded + " MB). The limit is " + maxFileMb + " MB.";
-          if (top.addSnackbarItem) {
-            top.addSnackbarItem({ message: msg, addCloseButton: true });
-          } else {
-            alert(msg);
-          }
+          alert("File size too large (" + rounded + " MB). The limit is " + maxFileMb + " MB.");
           return false;
         }
 
