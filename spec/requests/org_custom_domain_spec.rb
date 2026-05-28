@@ -97,25 +97,25 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
         it "redirects organization profile page requests on main domain to custom domain root" do
           get "http://forem.com/#{organization.slug}"
           expect(response).to redirect_to("http://custom.org/")
-          expect(response).to have_http_status(:moved_permanently)
+          expect(response).to have_http_status(:found)
         end
 
         it "preserves query parameters when redirecting organization profile page" do
           get "http://forem.com/#{organization.slug}?ref=newsletter&page=2"
           expect(response).to redirect_to("http://custom.org/?ref=newsletter&page=2")
-          expect(response).to have_http_status(:moved_permanently)
+          expect(response).to have_http_status(:found)
         end
 
         it "redirects organization article requests on main domain to custom domain with slug only" do
           get "http://forem.com/#{organization.slug}/#{article.slug}"
           expect(response).to redirect_to("http://custom.org/#{article.slug}")
-          expect(response).to have_http_status(:moved_permanently)
+          expect(response).to have_http_status(:found)
         end
 
         it "preserves query parameters when redirecting article page" do
           get "http://forem.com/#{organization.slug}/#{article.slug}?utm_source=twitter"
           expect(response).to redirect_to("http://custom.org/#{article.slug}?utm_source=twitter")
-          expect(response).to have_http_status(:moved_permanently)
+          expect(response).to have_http_status(:found)
         end
       end
 

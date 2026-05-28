@@ -719,7 +719,7 @@ class StoriesController < ApplicationController
     query_string = request.query_string.present? ? "?#{request.query_string}" : ""
     redirect_to "#{request.protocol}#{@organization.custom_domain}/#{query_string}",
                 allow_other_host: true,
-                status: :moved_permanently
+                status: :found
   end
 
   def redirect_article_to_custom_domain_if_needed
@@ -732,6 +732,6 @@ class StoriesController < ApplicationController
     query_string = request.query_string.present? ? "?#{request.query_string}" : ""
     redirect_to "#{request.protocol}#{@organization.custom_domain}/#{@article.slug}#{query_string}",
                 allow_other_host: true,
-                status: :moved_permanently
+                status: :found
   end
 end
