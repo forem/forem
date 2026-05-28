@@ -212,6 +212,9 @@ class StoriesController < ApplicationController
     redirect_if_organization_view_param
     return if performed?
 
+    redirect_organization_to_custom_domain_if_needed
+    return if performed?
+
     main_page = @organization.main_page
     is_readme = main_page.present? && FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization])
     @stories = ArticleDecorator.decorate_collection(@organization.articles.published.from_subforem
@@ -356,6 +359,9 @@ class StoriesController < ApplicationController
     user_keys = @article.user&.profile_identity_cache_keys
     set_surrogate_key_header(*[@article.record_key, *user_keys].compact)
     redirect_if_appropriate
+    return if performed?
+
+    redirect_article_to_custom_domain_if_needed
     return if performed?
 
     render template: "articles/show"
@@ -702,5 +708,30 @@ class StoriesController < ApplicationController
     end
 
     comment_data
+  end
+
+  def redirect_organization_to_custom_domain_if_needed
+    return if user_signed_in?
+    return if @organization.custom_domain.blank?
+    return if request.host&.downcase == @organization.custom_domain&.downcase
+    return unless FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(@organization))
+
+    query_string = request.query_string.present? ? "?#{request.query_string}" : ""
+    redirect_to "#{request.protocol}#{@organization.custom_domain}/#{query_string}",
+                allow_other_host: true,
+                status: :moved_permanently
+  end
+
+  def redirect_article_to_custom_domain_if_needed
+    return if user_signed_in?
+    return unless @organization
+    return if @organization.custom_domain.blank?
+    return if request.host&.downcase == @organization.custom_domain&.downcase
+    return unless FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(@organization))
+
+    query_string = request.query_string.present? ? "?#{request.query_string}" : ""
+    redirect_to "#{request.protocol}#{@organization.custom_domain}/#{@article.slug}#{query_string}",
+                allow_other_host: true,
+                status: :moved_permanently
   end
 end
