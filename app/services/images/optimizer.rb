@@ -133,12 +133,32 @@ module Images
     end
 
     # This is a feature-flagged Cloudflare preference for hosted images only — works specifically with S3-hosted image sources.
+    # Additional source hosts (e.g. third-party CDNs that Cloudinary's fetch pipeline negatively caches) can be opted in via
+    # the comma-separated `CLOUDFLARE_PREFERRED_IMAGE_HOSTS` ApplicationConfig.
     def self.cloudflare_contextually_preferred?(img_src)
       return false unless cloudflare_enabled?
       return false unless FeatureFlag.enabled?(:cloudflare_preferred_for_hosted_images)
 
       img_src&.start_with?("https://#{ApplicationConfig['AWS_BUCKET_NAME']}.s3.amazonaws.com") ||
-        (img_src&.start_with?(cloudflare_prefix) && !img_src&.end_with?("/"))
+        (img_src&.start_with?(cloudflare_prefix) && !img_src&.end_with?("/")) ||
+        cloudflare_preferred_host?(img_src)
+    end
+
+    def self.cloudflare_preferred_host?(img_src)
+      return false if img_src.blank?
+
+      hosts = cloudflare_preferred_image_hosts
+      return false if hosts.empty?
+
+      host = URI.parse(img_src).host
+      host.present? && hosts.include?(host)
+    rescue URI::InvalidURIError
+      false
+    end
+
+    def self.cloudflare_preferred_image_hosts
+      ApplicationConfig["CLOUDFLARE_PREFERRED_IMAGE_HOSTS"].to_s
+        .split(",").map(&:strip).reject(&:blank?)
     end
 
     def self.cloudflare_prefix

@@ -31,3 +31,20 @@
 </div>
 
 <%= render "admin/shared/image_uploader" %>
+
+<div class="crayons-card p-6 mb-6">
+  <h2 class="crayons-subtitle-1 mb-4">Reprocess Articles by Image Source Host</h2>
+  <p class="mb-2">Finds Articles whose <code>processed_html</code> references the given image host and re-runs the markdown processor on each. Use this when an upstream image host (or a downstream optimizer like Cloudinary's fetch cache) is returning broken assets for content originating from that host.</p>
+  <p class="mb-6">Combine with the <code>CLOUDFLARE_PREFERRED_IMAGE_HOSTS</code> ApplicationConfig (and the <code>cloudflare_preferred_for_hosted_images</code> feature flag) so re-rendered articles route around the broken pipeline.</p>
+  <%= form_tag reprocess_image_host_admin_tools_path do %>
+    <div class="crayons-field">
+      <%= label_tag :image_host, "Image source host:", class: "crayons-field__label" %>
+      <%= text_field_tag :image_host, nil, placeholder: "cdn.hashnode.com", class: "crayons-textfield" %>
+    </div>
+    <div class="crayons-field mt-4">
+      <%= label_tag :image_host_limit, "Max articles (0 = no limit):", class: "crayons-field__label" %>
+      <%= number_field_tag :image_host_limit, 0, min: 0, class: "crayons-textfield" %>
+    </div>
+    <%= submit_tag :"Enqueue Reprocess Job", class: "crayons-btn mt-4 mr-auto" %>
+  <% end %>
+</div>

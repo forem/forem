@@ -200,6 +200,7 @@ namespace :admin do
     resources :tools, only: %i[index create] do
       collection do
         post "bust_cache"
+        post "reprocess_image_host"
         get "feed_playground"
         post "feed_playground"
       end
