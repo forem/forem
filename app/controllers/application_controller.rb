@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   before_action :redirect_www_and_unregistred_subforems_to_root
+  before_action :redirect_all_subforems_to_default
   before_action :configure_permitted_parameters, if: :devise_controller?
   skip_before_action :track_ahoy_visit
   before_action :set_session_domain
@@ -119,6 +120,12 @@ class ApplicationController < ActionController::Base
       
       if redirect_rule
         redirect_to redirect_rule.destination_url, allow_other_host: true, status: :moved_permanently
+        return
+      end
+
+      main_app_domain = Settings::General.app_domain
+      if main_app_domain.present? && request.host&.downcase != main_app_domain.downcase
+        redirect_to "#{request.protocol}#{main_app_domain}#{request.fullpath}", allow_other_host: true, status: :moved_permanently
         return
       end
     end
@@ -460,15 +467,57 @@ class ApplicationController < ActionController::Base
     # This redirect should ideally be done at the edge, but if that is not possible, we can do it here.
     return unless ApplicationConfig["REDIRECT_WWW_TO_ROOT"] == "true"
 
-    if request.host.start_with?("www.")
-      new_host = request.host.sub(/^www\./i, "")
+    host = request.host&.downcase
+    if host.start_with?("www.")
+      new_host = host.sub(/^www\./i, "")
       redirect_to("#{request.protocol}#{new_host}#{request.fullpath}", allow_other_host: true,
                                                                        status: :moved_permanently)
-    elsif request.host.end_with?(".#{RequestStore.store[:root_subforem_domain]}") && RequestStore.store[:subforem_id].blank?
+    elsif host.end_with?(".#{RequestStore.store[:root_subforem_domain]}") &&
+        RequestStore.store[:subforem_id].blank?
+      # Check memory-first cache to avoid redirecting custom organization domains
+      cache_key = "org_custom_domain_id:#{host}"
+      org_id = MemoryFirstCache.fetch(cache_key) do
+        org = Organization.find_by(custom_domain: host)
+        org ? org.id : "not_found"
+      end
+
+      is_custom_org_domain = org_id.present? && org_id != "not_found"
+      return if is_custom_org_domain
+
       new_host = RequestStore.store[:root_subforem_domain]
       redirect_to("#{request.protocol}#{new_host}#{request.fullpath}", allow_other_host: true,
                                                                        status: :moved_permanently)
     end
+  end
+
+  def redirect_all_subforems_to_default
+    return unless ENV["REDIRECT_ALL_SUBFOREMS_TO_DEFAULT"] == "true"
+    return if RequestStore.store[:default_subforem_domain].blank?
+
+    host = request.host&.downcase
+
+    # Do not redirect the default subforem domain itself
+    return if host == RequestStore.store[:default_subforem_domain]&.downcase
+
+    # Check memory-first cache
+    cache_key = "org_custom_domain_id:#{host}"
+    org_id = MemoryFirstCache.fetch(cache_key) do
+      org = Organization.find_by(custom_domain: host)
+      org ? org.id : "not_found"
+    end
+
+    is_custom_org_domain = org_id.present? && org_id != "not_found"
+    return if is_custom_org_domain
+
+    is_subforem_subdomain = host.end_with?(".#{RequestStore.store[:root_subforem_domain]}")
+    is_registered_subforem = RequestStore.store[:subforem_id].present? &&
+      RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id]
+
+    return unless is_subforem_subdomain || is_registered_subforem
+
+    new_host = RequestStore.store[:default_subforem_domain]
+    redirect_to("#{request.protocol}#{new_host}#{request.fullpath}", allow_other_host: true,
+                                                                     status: :moved_permanently)
   end
 
   def configure_permitted_parameters

@@ -1,4 +1,3 @@
-/* global activateRunkitTags */
 import { locale } from '@utilities/locale';
 
 function getAndShowPreview(preview, editor) {
@@ -17,7 +16,6 @@ function getAndShowPreview(preview, editor) {
     if (body.processed_html.includes('twitter-timeline')) {
       attachTwitterTimelineScript();
     }
-    activateRunkitTags();
   }
 
   const payload = JSON.stringify({

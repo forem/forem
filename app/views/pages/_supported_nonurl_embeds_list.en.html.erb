@@ -23,10 +23,6 @@
 <p>To render KaTeX inline add the "inline" option:</p>
 <pre><code>{% katex inline %} c = \pm\sqrt{a^2 + b^2} {% endkatex %}</code></pre>
 
-<h4 class="mt-4">RunKit</h4>
-<p>Put executable code within a runkit liquid block, as follows:</p>
-<pre><code>{% runkit<br>// hidden setup JavaScript code goes in this preamble area<br>const hiddenVar = 42<br>%}<br>// visible, reader-editable JavaScript code goes here<br>console.log(hiddenVar)<br>{% endrunkit %}</code></pre>
-
 <% if @user_approved_liquid_tags.include? UserSubscriptionTag %>
   <h4 class="mt-4"><%= community_name %> User Subscriptions</h4>
   <p class="fs-s fw-bold">This embed can only be created within posts by Admins.</p>
