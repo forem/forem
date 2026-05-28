@@ -15,6 +15,9 @@ resources :articles, only: %i[index show create update] do
 end
 
 resources :subforems, only: [:index]
+resources :trends, only: %i[index show], param: :id_or_slug do
+  resources :articles, only: [:index], to: "trends#articles"
+end
 resources :comments, only: %i[index show]
 resources :videos, only: [:index]
 resources :podcast_episodes, only: [:index]

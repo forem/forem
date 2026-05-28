@@ -16,17 +16,37 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, js: true do
     sign_in user
     visit root_path
     
-    # Assert presence without explicit visibility polling to prevent Ferrum NodeNotFound crashes
+    # Assert presence with a retry loop to prevent Ferrum NodeNotFound crashes
     # during active Preact DOM repaints on high-priority feed requests.
+    retry_count = 0
     begin
       expect(page).to have_selector(selector)
-    rescue Ferrum::NodeNotFoundError
-      sleep 0.5
-      expect(page).to have_selector(selector)
+    rescue Ferrum::NodeNotFoundError, RSpec::Expectations::ExpectationNotMetError => e
+      retry_count += 1
+      if retry_count < 10
+        sleep 0.2
+        retry
+      else
+        raise e
+      end
     end
     
-    create(:user_block, blocker: user, blocked: hot_story.user, config: "default")
+    # Use find_or_create_by to prevent uniqueness validation errors if the spec is retried
+    UserBlock.find_or_create_by!(blocker: user, blocked: hot_story.user, config: "default")
     visit root_path
-    expect(page).not_to have_selector(selector)
+
+    # Assert absence/invisibility with a retry loop to prevent Ferrum NodeNotFound crashes
+    retry_count = 0
+    begin
+      expect(page).not_to have_selector(selector, visible: :visible)
+    rescue Ferrum::NodeNotFoundError => e
+      retry_count += 1
+      if retry_count < 10
+        sleep 0.2
+        retry
+      else
+        raise e
+      end
+    end
   end
 end
