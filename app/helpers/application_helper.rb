@@ -516,4 +516,21 @@ module ApplicationHelper
       FeatureFlag.all.select { |_, state| state == :on }.keys.join(" ")
     end
   end
+
+  def header_link(path)
+    if request.env["forem.custom_domain_org"].present?
+      URL.url(path)
+    else
+      path
+    end
+  end
+
+  def header_sign_up_link(path)
+    if request.env["forem.custom_domain_org"].present?
+      URL.url(path)
+    else
+      subforem_aware_sign_up_url(path)
+    end
+  end
 end
+
