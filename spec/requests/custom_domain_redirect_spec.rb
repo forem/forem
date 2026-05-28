@@ -2,6 +2,10 @@ require "rails_helper"
 
 RSpec.describe "Custom Domain Redirects", type: :request do
   let!(:organization) { create(:organization, custom_domain: "blog.example.com") }
+
+  before do
+    allow(Settings::General).to receive(:app_domain).and_return("forem.com")
+  end
   
   context "when the custom domain feature flag is enabled" do
     let!(:base_redirect) do
@@ -47,12 +51,12 @@ RSpec.describe "Custom Domain Redirects", type: :request do
       expect(response).to have_http_status(:moved_permanently)
     end
 
-    it "raises ActiveRecord::RecordNotFound if no redirect exists" do
+    it "redirects to the main app domain if no redirect exists" do
       host! "blog.example.com"
+      get "/non-existent-post"
       
-      expect {
-        get "/non-existent-post"
-      }.to raise_error(ActiveRecord::RecordNotFound)
+      expect(response).to redirect_to("http://forem.com/non-existent-post")
+      expect(response).to have_http_status(:moved_permanently)
     end
 
     it "does not redirect if the domain does not match even if the path exists" do
