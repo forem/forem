@@ -1348,9 +1348,7 @@ class Article < ApplicationRecord
     errors.add(:title, "has already been used in the last five minutes")
   end
 
-  private
-
-  def clear_video_data
+  private def clear_video_data
     # This ensures the iframe code and thumbnail are wiped from the DB
     self.video = nil
     self.video_code = nil
