@@ -81,8 +81,8 @@ class DeviseMailer < Devise::Mailer
     domain ||= ApplicationConfig["APP_DOMAIN"]
     
     # Add port for development
-    if Rails.env.development? && domain && !domain.include?(":3000")
-      domain = "#{domain}:3000"
+    if Rails.env.development? && domain && !domain.include?(":#{URL.dev_port}")
+      domain = "#{domain}:#{URL.dev_port}"
     end
     
     domain
