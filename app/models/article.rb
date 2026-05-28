@@ -1,4 +1,5 @@
 class Article < ApplicationRecord
+  include LiquidEmbeddable
   include CloudinaryHelper
   include ActionView::Helpers
   include Reactable
@@ -6,6 +7,7 @@ class Article < ApplicationRecord
   include UserSubscriptionSourceable
   include PgSearch::Model
   include AlgoliaSearchable
+  include WebpageTrackable
 
   acts_as_taggable_on :tags
   resourcify
@@ -175,6 +177,7 @@ class Article < ApplicationRecord
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :page_views, dependent: :delete_all
+  has_one :article_activity, dependent: :delete
   # `dependent: :destroy` because in Poll we cascade the deletes of
   #     the poll votes, options, and skips.
   has_many :polls, dependent: :destroy
@@ -184,6 +187,11 @@ class Article < ApplicationRecord
   has_many :rating_votes, dependent: :destroy
   has_many :tag_adjustments
   has_many :context_notes, dependent: :delete_all
+  accepts_nested_attributes_for :context_notes
+
+  has_many :trend_memberships, dependent: :destroy
+  has_many :trends, through: :trend_memberships
+
   has_many :top_comments,
            lambda {
              where(comments: { score: 11.. }, ancestry: nil, hidden_by_commentable_user: false, deleted: false)
@@ -247,8 +255,8 @@ class Article < ApplicationRecord
   validates :main_image, url: { allow_blank: true, schemes: %w[https http] }
   validates :main_image_background_hex_color, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
   validates :positive_reactions_count, presence: true
-  validates :previous_public_reactions_count, presence: true
-  validates :public_reactions_count, presence: true
+  validates :previous_public_reactions_count, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :public_reactions_count, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :rating_votes_count, presence: true
   validates :reactions_count, presence: true
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z\-_]*\z/
@@ -278,6 +286,8 @@ class Article < ApplicationRecord
   validate :validate_co_authors, unless: -> { co_author_ids.blank? }
   validate :validate_co_authors_must_not_be_the_same, unless: -> { co_author_ids.blank? }
   validate :validate_co_authors_exist, unless: -> { co_author_ids.blank? }
+  validate :validate_co_authors_belong_to_organization,
+           unless: -> { co_author_ids.blank? || organization_id.blank? }
 
   before_validation :extract_url_from_status_title, if: :status?
   before_validation :set_markdown_from_body_url, if: :body_url?
@@ -312,8 +322,22 @@ class Article < ApplicationRecord
     article.saved_change_to_user_id?
   }
 
-  after_commit :async_score_calc, :touch_collection, :enrich_image_attributes,
+  begin
+    has_neighbors :semantic_embedding if column_names.include?("semantic_embedding")
+  rescue StandardError
+    # db not available yet
+  end
+
+  after_commit :enqueue_generate_embedding,
+               on: %i[create update],
+               if: -> { published? && Ai::Base::DEFAULT_KEY.present? }
+
+  after_commit :async_score_calc, :touch_collection, :enrich_image_attributes, :detect_code_block_languages,
                on: %i[create update]
+
+  after_update_commit :update_dependent_embeds_if_key_info_changed
+
+  after_update_commit :regenerate_summary_if_content_changed
 
   # The trigger `update_reading_list_document` is used to keep the `articles.reading_list_document` column updated.
   #
@@ -774,6 +798,7 @@ class Article < ApplicationRecord
 
   def body_preview
     return unless type_of == "status"
+    return unless has_attribute?(:processed_html)
     return if processed_html.blank?
 
     processed_html_final
@@ -944,7 +969,9 @@ class Article < ApplicationRecord
 
     organization_baseline_score = organization&.baseline_score || 0
 
-    self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment + user_featured_count_adjustment + user_negative_count_adjustment + context_note_adjustment + automod_label_adjustment + badge_reputation_bonus + organization_baseline_score
+    established_user_adjustment = (user.score.to_i > 100 && !clear_and_obvious_spam? && !likely_spam?) ? Settings::UserExperience.index_minimum_score.to_i : 0
+
+    self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment + user_featured_count_adjustment + user_negative_count_adjustment + context_note_adjustment + automod_label_adjustment + badge_reputation_bonus + organization_baseline_score + established_user_adjustment
     accepted_max = [max_score, user&.max_score.to_i].min
     accepted_max = [max_score, user&.max_score.to_i].max if accepted_max.zero?
     self.score = accepted_max if accepted_max.positive? && accepted_max < score
@@ -958,14 +985,78 @@ class Article < ApplicationRecord
                       calculated_comment_score
                     end
 
+    score_changed_flag = score_changed? || self.comment_score != comment_score
+
     update_columns(score: score,
                    privileged_users_reaction_points_sum: reactions.privileged_category.sum(:points),
                    comment_score: comment_score,
                    hotness_score: BlackBox.article_hotness_score(self))
+
+    trigger_linked_domain_score_updates if score_changed_flag
+    trigger_freeform_context_note_generation
+    trigger_summary_generation
+    trigger_semantic_embedding_generation if score_changed_flag
+  end
+
+  def eligible_for_semantic_embedding?
+    respond_to?(:semantic_embedding) &&
+      score >= Settings::UserExperience.home_feed_minimum_score &&
+      semantic_embedding.blank?
+  end
+  private :eligible_for_semantic_embedding?
+
+  def trigger_semantic_embedding_generation
+    return unless Ai::Base::DEFAULT_KEY.present?
+    return unless eligible_for_semantic_embedding?
+
+    GenerateArticleEmbeddingWorker.perform_async(id)
+  end
+
+  def trigger_freeform_context_note_generation
+    return unless Ai::Base::DEFAULT_KEY.present?
+    return if score < 50 || comment_score < 25
+    return if published_at.blank? || published_at < 1.week.ago
+    return if context_notes.exists?
+    
+    Articles::GenerateFreeformContextNoteWorker.perform_async(id)
+  end
+
+  def trigger_summary_generation
+    return unless Ai::Base::DEFAULT_KEY.present?
+    return if score < 50 || comment_score < 25
+    return if ai_summary.present?
+
+    Articles::GenerateSummaryWorker.perform_async(id)
+  end
+
+  def trigger_linked_domain_score_updates
+    domain_ids = webpage_references.select(:linked_domain_id).distinct.pluck(:linked_domain_id)
+    return if domain_ids.empty?
+
+    domain_ids.each do |domain_id|
+      LinkedDomains::UpdateScoreWorker.perform_async(domain_id)
+    end
+  end
+
+  # This is specifically for regenerating an existing summary when body or title
+  # change. First-time generation is still done by trigger_summary_generation
+  # when eligible after score computation.
+  def regenerate_summary_if_content_changed
+    return unless Ai::Base::DEFAULT_KEY.present?
+    return unless published?
+    return unless saved_change_to_body_markdown? || saved_change_to_title?
+    return if score < 50 || comment_score < 25
+    return if ai_summary.blank?
+
+    Articles::GenerateSummaryWorker.perform_async(id)
   end
 
   def co_author_ids_list
     co_author_ids.join(", ")
+  end
+
+  def co_authors_data
+    User.where(id: co_author_ids).select(:id, :name, :username).as_json
   end
 
   def co_author_ids_list=(list_of_co_author_ids)
@@ -1015,6 +1106,8 @@ class Article < ApplicationRecord
 
     result = content_renderer.process_article
     update_column(:processed_html, result.processed_html)
+  rescue ContentRenderer::ContentParsingError => e
+    Rails.logger.warn("Article #{id} evaluate_and_update_column_from_markdown failed: #{e.class}: #{ErrorMessages::Clean.call(e.message)}")
   end
 
   def labels=(input)
@@ -1180,7 +1273,7 @@ class Article < ApplicationRecord
                  end
     if title.blank?
       errors.add(:title, "can't be blank")
-    elsif title.to_s.length > max_length
+    elsif title.gsub(/\p{Space}+/u, '').length > max_length
       errors.add(:title, "is too long (maximum is #{max_length} characters for #{type_of})")
     end
   end
@@ -1426,6 +1519,12 @@ class Article < ApplicationRecord
     errors.add(:co_author_ids, I18n.t("models.article.invalid_coauthor"))
   end
 
+  def validate_co_authors_belong_to_organization
+    return if OrganizationMembership.active.where(organization_id: organization_id, user_id: co_author_ids).count == co_author_ids.count
+
+    errors.add(:co_author_ids, I18n.t("models.article.invalid_coauthor"))
+  end
+
   def future_or_current_published_at
     # allow published_at in the future or within 15 minutes in the past
     return if !published || published_at.blank? || published_at > 15.minutes.ago
@@ -1557,7 +1656,10 @@ class Article < ApplicationRecord
 
   def create_conditional_autovomits
     return unless published
-    return unless saved_change_to_body_markdown? || published_at > 1.minute.ago
+    return unless saved_change_to_body_markdown? ||
+                  saved_change_to_title? ||
+                  saved_change_to_published? ||
+                  published_at > 1.minute.ago
 
     Articles::HandleSpamWorker.perform_async(id)
   end
@@ -1574,6 +1676,14 @@ class Article < ApplicationRecord
     return unless saved_change_to_attribute?(:processed_html) || saved_change_to_attribute?(:main_image)
 
     ::Articles::EnrichImageAttributesWorker.perform_async(id)
+  end
+
+  def detect_code_block_languages
+    return unless Ai::Base::DEFAULT_KEY.present?
+    return unless saved_change_to_body_markdown?
+    return unless ::Articles::DetectCodeBlockLanguages.contains_unlabeled_code_blocks?(body_markdown)
+
+    ::Articles::DetectCodeBlockLanguagesWorker.perform_async(id)
   end
 
   def remove_prohibited_unicode_characters
@@ -1643,6 +1753,17 @@ class Article < ApplicationRecord
     urls.map { |url| url.sub(/[.,;:!?)]+$/, "") }
   end
 
+  def enqueue_generate_embedding
+    return unless Ai::Base::DEFAULT_KEY.present?
+
+    content_changed = saved_change_to_title? || saved_change_to_body_markdown?
+    return unless content_changed
+    return unless respond_to?(:semantic_embedding)
+    return unless score >= Settings::UserExperience.home_feed_minimum_score
+
+    GenerateArticleEmbeddingWorker.perform_async(id)
+  end
+
   def body_markdown_only_contains_embed_tags_from_title?
     return false unless body_markdown.present?
     return false unless title.present?
@@ -1666,5 +1787,20 @@ class Article < ApplicationRecord
     normalized_expected = expected_content.gsub(/\s+/, " ").strip
 
     normalized_body == normalized_expected
+  end
+
+  def update_dependent_embeds_if_key_info_changed
+    return if destroyed?
+    
+    # We only care about fields that affect the visual liquid embed card
+    if saved_change_to_title? ||
+       saved_change_to_user_id? ||
+       saved_change_to_organization_id? ||
+       saved_change_to_published? ||
+       saved_change_to_cached_tag_list? ||
+       saved_change_to_published_at? ||
+       saved_change_to_main_image?
+      Articles::UpdateDependentEmbedsWorker.perform_async(id)
+    end
   end
 end

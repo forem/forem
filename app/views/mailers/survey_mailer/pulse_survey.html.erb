@@ -1,6 +1,12 @@
 <p>Hi <%= @user.name %>,</p>
 
-<p>You have been randomly selected to participate in a <%= @community_name %> Pulse Survey.</p>
+<% if @survey.industry? %>
+  <p>We invite you to participate in a <%= @community_name %> Industry Survey.</p>
+<% elsif @survey.fun? %>
+  <p>We invite you to participate in a quick, fun survey from <%= @community_name %>.</p>
+<% else %>
+  <p>You have been randomly selected to participate in a <%= @community_name %> Pulse Survey.</p>
+<% end %>
 
 <% if @survey.extra_email_context_paragraph.present? %>
   <p><%= @survey.extra_email_context_paragraph %></p>
@@ -9,7 +15,14 @@
 <p>Please take a few minutes to complete the survey here:</p>
 
 <p>
-  <%= link_to "Take the #{@community_name} Pulse Survey", survey_url(@survey.slug), class: "button" %>
+  <% cta_text = if @survey.industry?
+                  "Take the #{@community_name} Industry Survey"
+                elsif @survey.fun?
+                  "Take this quick #{@community_name} Survey"
+                else
+                  "Take the #{@community_name} Pulse Survey"
+                end %>
+  <%= link_to cta_text, survey_url(@survey.slug), class: "button" %>
 </p>
 
 <p>Your responses are completely anonymous and your info will never be shared.</p>

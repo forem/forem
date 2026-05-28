@@ -19,7 +19,13 @@ require "sprockets/railtie"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-Dotenv::Railtie.load if Rails.env.test? || Rails.env.development?
+if Rails.env.test? || Rails.env.development?
+  if defined?(Dotenv::Rails)
+    Dotenv::Rails.load
+  elsif defined?(Dotenv::Railtie)
+    Dotenv::Railtie.load
+  end
+end
 
 module PracticalDeveloper
   class Application < Rails::Application
@@ -75,7 +81,7 @@ module PracticalDeveloper
     config.autoload_paths += Dir["#{config.root}/lib"]
     config.eager_load_paths += Dir["#{config.root}/lib"]
 
-    config.middleware.use Rack::Deflater
+    config.middleware.use Rack::Deflater unless Rails.env.development?
 
     config.i18n.load_path += Dir[Rails.root.join("config/locales/**/*.yml")]
 

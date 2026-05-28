@@ -1,9 +1,6 @@
 module Slack
   module Messengers
-    class PotentialSpammer
-      def self.call(...)
-        new(...).call
-      end
+    class PotentialSpammer < Base
 
       def initialize(user:)
         @user = user
@@ -15,7 +12,7 @@ module Slack
           url: URL.user(user),
         )
 
-        Slack::Messengers::Worker.perform_async(
+        enqueue_slack_message(
           "message" => message,
           "channel" => "potential-spam",
           "username" => "spam_account_checker_bot",

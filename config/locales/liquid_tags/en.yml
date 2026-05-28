@@ -1,6 +1,7 @@
 ---
 en:
   liquid_tags:
+    invalid_url_scheme: "Invalid URL for '%{option}': only http and https URLs are allowed"
     asciinema_tag:
       invalid_asciinema_id: 'Invalid Asciinema ID: %{id}'
     blogcast_tag:
@@ -129,5 +130,61 @@ en:
       invalid: "Invalid agent_session syntax. Use: {% agent_session ID %}, {% agent_session ID start..end %}, or {% agent_session ID slice_name %}"
       not_found: Agent session not found
       unpublished: Only the session owner can embed this session
+    feed_tag:
+      missing_source: "Feed tag requires at least one source: org, tag, or tags"
+      invalid_option: "Invalid option '%{option}' for feed tag"
+      invalid_org: "Organization '%{slug}' not found"
+      invalid_tags: "Tags option requires at least one tag name"
+      invalid_limit: "Limit must be between 1 and 30"
+      invalid_sort: "Sort must be one of: recent, reactions, comments, score"
+      invalid_since: "Since must be a relative duration (e.g. 30d) or date (YYYY-MM-DD)"
+    row_tag:
+      no_args: "The row tag does not accept any arguments"
+    col_tag:
+      invalid_span: "Span must be between 1 and 4"
+    org_posts_tag:
+      invalid_slug: Invalid organization slug
+      invalid_option: "Invalid option '%{option}' for org_posts tag"
+      invalid_limit: "Limit must be between 1 and 30"
+      invalid_sort: "Sort must be one of: recent, reactions, comments, score"
+      invalid_since: "Since must be a relative duration (e.g. 30d) or date (YYYY-MM-DD)"
+    org_team_tag:
+      invalid_slug: Invalid organization slug
+      invalid_option: "Invalid option '%{option}' for org_team tag"
+      invalid_limit: "Limit must be between 1 and 50"
+      invalid_role: "Role must be one of: all, admins, members"
+    netlify_tag:
+      invalid_url: "Invalid Netlify URL. Must be a https://*.netlify.app URL"
+    features_tag:
+      no_args: "The features tag does not accept any arguments"
+    feature_tag:
+      missing_title: "Feature tag requires a title option"
+    offer_tag:
+      default_button: "Learn More"
+    quote_tag:
+      missing_author: "Quote tag requires an author option"
+      invalid_rating: "Rating must be between 1 and 5"
+      learn_more: "Learn more"
+    slide_tag:
+      missing_image: "Slide tag requires an image option"
+      missing_content: "Slide tag requires at least one of: image, video, or link"
+    slides_tag:
+      invalid_mode: "Slides mode must be 'default' or 'carousel'"
+    org_lead_form_tag:
+      not_found: Lead form not found
+      inactive: This lead form is no longer active
+      invalid_id: "Invalid lead form ID. Use: {% org_lead_form ID %}"
+      data_shared: "Shares your name, email, company, and title with this organization."
+      submitting: Submitting...
+      submitted: Submitted
+      already_submitted: "You submitted this on %{date}"
+      error: Something went wrong. Please try again.
+      sign_in_required: Please sign in to submit this form.
+      field_name: Name
+      field_email: Email
+      field_company: Company
+      field_job_title: Job Title
+      name_email_required: Name and email are required.
+      wrong_organization: This lead form does not belong to this organization.
     youtube_tag:
       invalid_youtube_id: Invalid YouTube ID or URL

@@ -2,6 +2,8 @@ require "rails_helper"
 require "sidekiq/testing"
 
 RSpec.describe Notification do
+  include ActiveSupport::Testing::TimeHelpers
+
   let(:user)            { create(:user) }
   let(:user2)           { create(:user) }
   let(:user3)           { create(:user) }
@@ -603,8 +605,94 @@ RSpec.describe Notification do
   describe "#fast_destroy_old_notifications" do
     it "bulk deletes notifications older than given timestamp" do
       allow(BulkSqlDelete).to receive(:delete_in_batches)
-      described_class.fast_destroy_old_notifications("a_time")
-      expect(BulkSqlDelete).to have_received(:delete_in_batches).with(a_string_including("< 'a_time'"))
+      described_class.fast_destroy_old_notifications(10.days.ago)
+      expect(BulkSqlDelete).to have_received(:delete_in_batches).with(/</)
+    end
+
+    it "uses an 85 day retention window by default" do
+      freeze_time do
+        allow(BulkSqlDelete).to receive(:delete_in_batches)
+        allow(described_class).to receive(:sanitize_sql).and_call_original
+
+        described_class.fast_destroy_old_notifications
+
+        expect(described_class).to have_received(:sanitize_sql).with(array_including(85.days.ago))
+      end
+    end
+  end
+
+  describe ".fast_cleanup_older_than_100_for" do
+    it "bulk deletes comment and non-comment notifications older than 100 for a user" do
+      allow(BulkSqlDelete).to receive(:delete_in_batches)
+      described_class.fast_cleanup_older_than_100_for(user.id)
+      expect(BulkSqlDelete).to have_received(:delete_in_batches).twice
+    end
+
+    it "actually deletes the excessive notifications" do
+      now = Time.current
+      comments_data = 105.times.map { |i| { user_id: user.id, notifiable_type: "Comment", notifiable_id: i, created_at: now - i.minutes, updated_at: now - i.minutes } }
+      reactions_data = 105.times.map { |i| { user_id: user.id, action: "Reaction", notifiable_type: "Article", notifiable_id: i, created_at: now - i.minutes, updated_at: now - i.minutes } }
+
+      described_class.insert_all!(comments_data)
+      described_class.insert_all!(reactions_data)
+
+      described_class.fast_cleanup_older_than_100_for(user.id)
+
+      expect(user.notifications.where(notifiable_type: "Comment").count).to eq(100)
+      expect(user.notifications.where("notifiable_type != 'Comment' OR notifiable_type IS NULL").count).to eq(100)
+    end
+  end
+
+  describe "#cleanup_old_notifications" do
+    after do
+      Rails.cache.delete("cleanup_user_notifications_#{user.id}")
+    end
+
+    context "when ENABLE_USER_NOTIFICATION_CLEANUP is not set" do
+      before do
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("ENABLE_USER_NOTIFICATION_CLEANUP").and_return(nil)
+      end
+
+      it "does not enqueue a cleanup job" do
+        allow_any_instance_of(described_class).to receive(:rand).with(10).and_return(0)
+        notification = build(:notification, user: user)
+
+        expect do
+          notification.send(:cleanup_old_notifications)
+        end.not_to change(Notifications::CleanupUserWorker.jobs, :size)
+      end
+    end
+
+    context "when ENABLE_USER_NOTIFICATION_CLEANUP is true" do
+      before do
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("ENABLE_USER_NOTIFICATION_CLEANUP").and_return("true")
+      end
+
+      it "enqueues a cleanup job 10% of the time and throttles via cache" do
+        allow_any_instance_of(described_class).to receive(:rand).with(10).and_return(0)
+        
+        notification = build(:notification, user: user)
+        expect do
+          notification.send(:cleanup_old_notifications)
+        end.to change(Notifications::CleanupUserWorker.jobs, :size).by(1)
+        
+        allow(Rails.cache).to receive(:write).with("cleanup_user_notifications_#{user.id}", 1, expires_in: 10.minutes, unless_exist: true).and_return(false)
+        
+        expect do
+          notification.send(:cleanup_old_notifications)
+        end.not_to change(Notifications::CleanupUserWorker.jobs, :size)
+      end
+
+      it "does not enqueue a cleanup job 90% of the time" do
+        allow_any_instance_of(described_class).to receive(:rand).with(10).and_return(1)
+        
+        notification = build(:notification, user: user)
+        expect do
+          notification.send(:cleanup_old_notifications)
+        end.not_to change(Notifications::CleanupUserWorker.jobs, :size)
+      end
     end
   end
 end

@@ -110,6 +110,10 @@
       max-height: 100%;
       overflow-y: auto;
       grid-auto-rows: min-content;
+
+      &--no-padding {
+        padding: 0;
+      }
     }
   }
 

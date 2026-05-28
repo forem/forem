@@ -50,6 +50,18 @@ RSpec.describe OrganizationPolicy, type: :policy do
     it { is_expected.to permit_actions(%i[analytics]) }
   end
 
+  context "when user is a site admin but not an org member" do
+    let(:user) { create(:user, :admin) }
+
+    it { is_expected.to permit_action(:update) }
+  end
+
+  context "when user is a super admin but not an org member" do
+    let(:user) { create(:user, :super_admin) }
+
+    it { is_expected.to permit_action(:update) }
+  end
+
   context "when user is an org admin of another org" do
     subject(:organization_policy) { described_class.new(user, new_org) }
 

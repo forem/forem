@@ -30,6 +30,65 @@ RSpec.describe "/admin/member_manager/users" do
         expect(response.body).to include(CGI.escapeHTML(admin.name))
       end
     end
+
+    context "when filters are applied" do
+      it "displays a filter count badge when a single role filter is applied" do
+        get "#{admin_users_path}?roles[]=Super%20Admin"
+        expect(response.body).to include("c-indicator c-indicator--info fs-xs")
+        doc = Nokogiri::HTML(response.body)
+        indicator = doc.at_css(".js-open-filter-modal-btn .c-indicator")
+        expect(indicator).to be_present
+        expect(indicator.text.strip).to eq("1")
+      end
+
+      it "displays a filter count badge when multiple role filters are applied" do
+        get "#{admin_users_path}?roles[]=Super%20Admin&roles[]=Admin"
+        doc = Nokogiri::HTML(response.body)
+        indicator = doc.at_css(".js-open-filter-modal-btn .c-indicator")
+        expect(indicator).to be_present
+        expect(indicator.text.strip).to eq("2")
+      end
+
+      it "displays a filter count when status filters are applied" do
+        get "#{admin_users_path}?statuses[]=Suspended&statuses[]=Spam"
+        doc = Nokogiri::HTML(response.body)
+        indicator = doc.at_css(".js-open-filter-modal-btn .c-indicator")
+        expect(indicator).to be_present
+        expect(indicator.text.strip).to eq("2")
+      end
+
+      it "displays a combined filter count when multiple filter types are applied" do
+        org = create(:organization)
+        get "#{admin_users_path}?roles[]=Super%20Admin&statuses[]=Suspended&organizations[]=#{org.id}"
+        doc = Nokogiri::HTML(response.body)
+        indicator = doc.at_css(".js-open-filter-modal-btn .c-indicator")
+        expect(indicator).to be_present
+        expect(indicator.text.strip).to eq("3")
+      end
+
+      it "displays a filter count badge when joining date filters are applied" do
+        get "#{admin_users_path}?joining_start=01/01/2024&joining_end=31/12/2024&date_format=DD/MM/YYYY"
+        doc = Nokogiri::HTML(response.body)
+        indicator = doc.at_css(".js-open-filter-modal-btn .c-indicator")
+        expect(indicator).to be_present
+        expect(indicator.text.strip).to eq("1")
+      end
+
+      it "does not display a filter count badge when no filters are applied" do
+        get admin_users_path
+        doc = Nokogiri::HTML(response.body)
+        indicator = doc.at_css(".js-open-filter-modal-btn .c-indicator")
+        expect(indicator).to be_nil
+      end
+
+      it "displays a filter count badge when the legacy role param is applied" do
+        get "#{admin_users_path}?role=super_admin"
+        doc = Nokogiri::HTML(response.body)
+        indicator = doc.at_css(".js-open-filter-modal-btn .c-indicator")
+        expect(indicator).to be_present
+        expect(indicator.text.strip).to eq("1")
+      end
+    end
   end
 
   describe "GET /admin/member_manager/users/:id" do
@@ -37,6 +96,50 @@ RSpec.describe "/admin/member_manager/users" do
       get admin_user_path(user)
 
       expect(response.body).to include(user.username)
+    end
+
+    it "displays profile contact links without leading whitespace" do
+      get admin_user_path(user)
+
+      doc = Nokogiri::HTML(response.body)
+
+      email_link = doc.at_css("a.c-link[href='mailto:#{user.email}']")
+      expect(email_link).to be_present
+      expect(email_link.text.strip).to eq(user.email)
+
+      if user.github_username.present?
+        github_link = doc.at_css("a.c-link--icon-left.inline-block[href='https://github.com/#{user.github_username}']")
+        expect(github_link).to be_present
+        expect(github_link.xpath("./text()[last()]").text.lstrip).to eq(user.github_username)
+      end
+
+      if user.twitter_username.present?
+        twitter_link = doc.at_css("a.c-link--icon-left.inline-block[href='https://twitter.com/#{user.twitter_username}']")
+        expect(twitter_link).to be_present
+        expect(twitter_link.xpath("./text()[last()]").text.lstrip).to eq(user.twitter_username)
+      end
+    end
+
+    it "displays OAuth identity emails that differ from the primary email" do
+      oauth_email = "github-oauth@example.com"
+      omniauth_mock_github_payload
+      auth = OmniAuth.config.mock_auth[:github].dup
+      auth[:info][:email] = oauth_email
+      identity = user.identities.first
+      identity.update!(auth_data_dump: auth)
+
+      get admin_user_path(user)
+
+      expect(response.body).to include(oauth_email)
+      expect(response.body).to include("GitHub email")
+    end
+
+    it "does not duplicate the primary email in the OAuth emails list" do
+      get admin_user_path(user)
+
+      doc = Nokogiri::HTML(response.body)
+      email_links = doc.css("a.c-link[href='mailto:#{user.email}']")
+      expect(email_links.size).to eq(1)
     end
 
     it "redirects from /username/moderate" do
@@ -449,6 +552,46 @@ RSpec.describe "/admin/member_manager/users" do
     end
   end
 
+  describe "PATCH /admin/member_manager/users/:id/update_email" do
+    it "returns not found for non-existing users" do
+      expect do
+        patch update_email_admin_user_path(9999), params: { user: { email: "new@example.com" } }
+      end.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "updates the user's email" do
+      old_email = user.email
+
+      patch update_email_admin_user_path(user), params: { user: { email: "updated@example.com" } }
+
+      expect(user.reload.email).to eq("updated@example.com")
+      expect(response).to redirect_to(admin_user_path(user))
+      expect(flash[:success]).to be_present
+    end
+
+    it "creates an audit note recording the email change" do
+      old_email = user.email
+
+      expect do
+        patch update_email_admin_user_path(user), params: { user: { email: "updated@example.com" } }
+      end.to change(Note, :count).by(1)
+
+      note = user.notes.last
+      expect(note.reason).to eq("Update Email")
+      expect(note.content).to include(old_email)
+      expect(note.content).to include("updated@example.com")
+      expect(note.author_id).to eq(admin.id)
+    end
+
+    it "bypasses Devise reconfirmation" do
+      patch update_email_admin_user_path(user), params: { user: { email: "updated@example.com" } }
+
+      user.reload
+      expect(user.email).to eq("updated@example.com")
+      expect(user.unconfirmed_email).to be_nil
+    end
+  end
+
   describe "DELETE /admin/member_manager/users/:id/remove_identity" do
     let(:provider) { Authentication::Providers.available.first }
     let(:user) do
@@ -569,6 +712,69 @@ RSpec.describe "/admin/member_manager/users" do
     end
   end
 
+  describe "POST /admin/member_manager/users/:id/confirm_pending_email" do
+    let(:user_with_pending_email) do
+      u = create(:user, confirmed_at: Time.current)
+      u.update_columns(unconfirmed_email: "newemail@example.com")
+      u
+    end
+
+    context "when interacting via a browser" do
+      it "returns not found for non-existing users" do
+        expect do
+          post confirm_pending_email_admin_user_path(9999)
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "confirms the pending email change successfully" do
+        old_email = user_with_pending_email.email
+
+        post confirm_pending_email_admin_user_path(user_with_pending_email)
+
+        user_with_pending_email.reload
+        expect(user_with_pending_email.email).to eq("newemail@example.com")
+        expect(user_with_pending_email.unconfirmed_email).to be_nil
+        expect(user_with_pending_email.confirmed_at).to be_present
+        expect(response).to redirect_to(admin_user_path(user_with_pending_email))
+        expect(flash[:success]).to be_present
+      end
+
+      it "creates an audit note recording the email change" do
+        old_email = user_with_pending_email.email
+
+        expect do
+          post confirm_pending_email_admin_user_path(user_with_pending_email)
+        end.to change(Note, :count).by(1)
+
+        note = user_with_pending_email.notes.last
+        expect(note.reason).to eq("pending_email_confirmed")
+        expect(note.content).to include(old_email)
+        expect(note.content).to include("newemail@example.com")
+        expect(note.author_id).to eq(admin.id)
+      end
+
+      it "fails gracefully when there is no pending email" do
+        user_without_pending = create(:user, confirmed_at: Time.current)
+
+        post confirm_pending_email_admin_user_path(user_without_pending)
+
+        expect(flash[:danger]).to be_present
+      end
+    end
+
+    context "when interacting via AJAX" do
+      it "confirms the pending email change successfully" do
+        post confirm_pending_email_admin_user_path(user_with_pending_email), xhr: true
+
+        user_with_pending_email.reload
+        expect(user_with_pending_email.email).to eq("newemail@example.com")
+        expect(user_with_pending_email.unconfirmed_email).to be_nil
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body["result"]).to be_present
+      end
+    end
+  end
+
   describe "PATCH admin/users/:id/unlock_access" do
     it "unlocks a locked user account" do
       user.lock_access!
@@ -583,6 +789,187 @@ RSpec.describe "/admin/member_manager/users" do
       sign_in admin
       post export_data_admin_user_path(user), params: { send_to_admin: "true" }
       expect(response).to redirect_to admin_user_path(user)
+    end
+  end
+
+  describe "audit log creation" do
+    before { Audit::Subscribe.listen :moderator }
+
+    after { Audit::Subscribe.forget :moderator }
+
+    describe "PATCH /admin/member_manager/users/:id/update_email" do
+      it "creates an audit log record" do
+        expect do
+          patch update_email_admin_user_path(user), params: { user: { email: "audit@example.com" } }
+        end.to change(AuditLog, :count).by(1)
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
+        expect(log.user_id).to eq(admin.id)
+        expect(log.data["action"]).to eq("update_email")
+        expect(log.data["target_user_id"]).to eq(user.id)
+        expect(log.data["new_email"]).to eq("audit@example.com")
+      end
+    end
+
+    describe "PATCH /admin/member_manager/users/:id/update_profile" do
+      it "creates an audit log record" do
+        expect do
+          patch update_profile_admin_user_path(user), params: { user: { name: "New Name" } }
+        end.to change(AuditLog, :count).by(1)
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
+        expect(log.user_id).to eq(admin.id)
+        expect(log.data["action"]).to eq("update_profile")
+        expect(log.data["target_user_id"]).to eq(user.id)
+        expect(log.data["changes"]).to be_present
+      end
+    end
+
+    describe "POST /admin/member_manager/users/:id/confirm_pending_email" do
+      it "creates an audit log record" do
+        user.update_columns(unconfirmed_email: "pending@example.com")
+
+        expect do
+          post confirm_pending_email_admin_user_path(user)
+        end.to change(AuditLog, :count).by(1)
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
+        expect(log.user_id).to eq(admin.id)
+        expect(log.data["action"]).to eq("confirm_pending_email")
+        expect(log.data["target_user_id"]).to eq(user.id)
+        expect(log.data["new_email"]).to eq("pending@example.com")
+      end
+    end
+
+    describe "PATCH /admin/member_manager/users/:id/reputation_modifier" do
+      it "creates an audit log record" do
+        expect do
+          patch reputation_modifier_admin_user_path(user), params: { user: { reputation_modifier: 2.0 } }
+        end.to change(AuditLog, :count).by(1)
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
+        expect(log.user_id).to eq(admin.id)
+        expect(log.data["action"]).to eq("reputation_modifier")
+        expect(log.data["target_user_id"]).to eq(user.id)
+      end
+    end
+
+    describe "PATCH /admin/member_manager/users/:id/max_score" do
+      it "creates an audit log record" do
+        expect do
+          patch max_score_admin_user_path(user), params: { user: { max_score: 50 } }
+        end.to change(AuditLog, :count).by(1)
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
+        expect(log.user_id).to eq(admin.id)
+        expect(log.data["action"]).to eq("max_score")
+        expect(log.data["target_user_id"]).to eq(user.id)
+      end
+    end
+
+    describe "POST /admin/member_manager/users/:id/confirm_email" do
+      it "creates an audit log record" do
+        unconfirmed_user = create(:user, confirmed_at: nil)
+
+        expect do
+          post confirm_email_admin_user_path(unconfirmed_user)
+        end.to change(AuditLog, :count).by(1)
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
+        expect(log.user_id).to eq(admin.id)
+        expect(log.data["action"]).to eq("confirm_email")
+        expect(log.data["target_user_id"]).to eq(unconfirmed_user.id)
+      end
+    end
+
+    describe "DELETE /admin/member_manager/users/:id/remove_identity" do
+      it "creates an audit log record" do
+        omniauth_mock_providers_payload
+        allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
+        identity_user = create(:user, :with_identity, uid: rand(1_000_000).to_s)
+        identity = identity_user.identities.first
+
+        expect do
+          delete remove_identity_admin_user_path(identity_user.id),
+                 params: { user: { identity_id: identity.id } }
+        end.to change(AuditLog, :count).by(1)
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
+        expect(log.user_id).to eq(admin.id)
+        expect(log.data["action"]).to eq("remove_identity")
+        expect(log.data["target_user_id"]).to eq(identity_user.id)
+        expect(log.data["provider"]).to eq(identity.provider)
+      end
+    end
+  end
+
+  describe "GET /admin/member_manager/users/:id?tab=audit_log" do
+    it "displays the audit log tab" do
+      get "#{admin_user_path(user.id)}?tab=audit_log"
+      expect(response).to be_successful
+      expect(response.body).to include("Audit Log")
+    end
+
+    it "defaults to by_user filter showing actions performed by the user" do
+      create(:audit_log, user: user, category: AuditLog::MODERATOR_AUDIT_LOG_CATEGORY,
+                         slug: "test_actor_action", data: { "action" => "test_actor_action" })
+      create(:audit_log, user: admin, category: AuditLog::MODERATOR_AUDIT_LOG_CATEGORY,
+                         slug: "user_status",
+                         data: { "action" => "user_status", "target_user_id" => user.id })
+      get "#{admin_user_path(user.id)}?tab=audit_log"
+      expect(response.body).to include("Test actor action")
+      expect(response.body).not_to include("User status")
+    end
+
+    it "shows actions performed by the user with filter=by_user" do
+      create(:audit_log, user: user, category: AuditLog::MODERATOR_AUDIT_LOG_CATEGORY,
+                         slug: "test_actor_action", data: { "action" => "test_actor_action" })
+      get "#{admin_user_path(user.id)}?tab=audit_log&filter=by_user"
+      expect(response.body).to include("Test actor action")
+    end
+
+    it "shows actions taken on the user with filter=on_user" do
+      create(:audit_log, user: admin, category: AuditLog::MODERATOR_AUDIT_LOG_CATEGORY,
+                         slug: "user_status",
+                         data: { "action" => "user_status", "target_user_id" => user.id })
+      get "#{admin_user_path(user.id)}?tab=audit_log&filter=on_user"
+      expect(response.body).to include("User status")
+    end
+
+    it "excludes actor-only logs when filter=on_user" do
+      create(:audit_log, user: user, category: AuditLog::MODERATOR_AUDIT_LOG_CATEGORY,
+                         slug: "test_actor_action", data: { "action" => "test_actor_action" })
+      get "#{admin_user_path(user.id)}?tab=audit_log&filter=on_user"
+      expect(response.body).not_to include("Test actor action")
+    end
+
+    it "excludes target-only logs when filter=by_user" do
+      create(:audit_log, user: admin, category: AuditLog::MODERATOR_AUDIT_LOG_CATEGORY,
+                         slug: "user_status",
+                         data: { "action" => "user_status", "target_user_id" => user.id })
+      get "#{admin_user_path(user.id)}?tab=audit_log&filter=by_user"
+      expect(response.body).not_to include("User status")
+    end
+
+    it "shows an empty message when no audit logs exist" do
+      get "#{admin_user_path(user.id)}?tab=audit_log"
+      expect(response.body).to include("No audit log entries found")
+    end
+
+    it "paginates audit logs" do
+      # rubocop:disable FactoryBot/ExcessiveCreateList
+      create_list(:audit_log, 26, user: user, category: AuditLog::MODERATOR_AUDIT_LOG_CATEGORY,
+                                  slug: "test", data: { "action" => "test" })
+      # rubocop:enable FactoryBot/ExcessiveCreateList
+      get "#{admin_user_path(user.id)}?tab=audit_log"
+      expect(response.body).to include("Next")
     end
   end
 end

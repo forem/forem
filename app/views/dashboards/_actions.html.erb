@@ -19,13 +19,7 @@
       </a>
     </li>
 
-    <li>
-      <a class="crayons-link crayons-link--block"
-        href="<%= agent_sessions_path %>">
-        <%= t("views.dashboard.actions.agent_sessions") %>
-        <span class="c-indicator"><%= @agent_sessions_count %></span>
-      </a>
-    </li>
+
 
     <li>
       <a class="crayons-link crayons-link--block <%= "crayons-link--current" if @action == "followers" %>"
@@ -60,18 +54,11 @@
         href="<%= dashboard_following_organizations_path %>"
         <%= @action == "following_organizations" ? ' aria-current="page"'.html_safe : "" %>>
         <%= t("views.dashboard.actions.following_orgs") %>
-        <span class="c-indicator"><%= @user.following_organizations_count %></span>
+        <span class="c-indicator"><%= @user.following_orgs_count %></span>
       </a>
     </li>
 
-    <li>
-      <a class="crayons-link crayons-link--block <%= "crayons-link--current" if @action == "following_podcasts" %>"
-        href="<%= dashboard_following_podcasts_path %>"
-        <%= @action == "following_podcasts" ? ' aria-current="page"'.html_safe : "" %>>
-        <%= t("views.dashboard.actions.following_pods") %>
-        <span class="c-indicator"><%= @user.following_podcasts_count %></span>
-      </a>
-    </li>
+
 
     <%- if policy(Article).has_existing_articles_or_can_create_new_ones? %>
     <li>
@@ -82,11 +69,27 @@
     <%- end %>
 
     <li>
+      <a class="crayons-link crayons-link--block <%= "crayons-link--current" if @action == "feed_imports" %>"
+        href="/dashboard/feed_imports"
+        <%= @action == "feed_imports" ? ' aria-current="page"'.html_safe : "" %>>
+        <%= t("views.dashboard.actions.feed_imports") %>
+      </a>
+    </li>
+
+    <li>
       <a class="crayons-link crayons-link--block js-hidden-tags-link <%= "crayons-link--current" if @action == "hidden_tags" %>"
         href="<%= dashboard_hidden_tags_path %>"
         <%= @action == "hidden_tags" ? ' aria-current="page"'.html_safe : "" %>>
         <%= t("views.dashboard.actions.hidden_tags") %>
         <span class="c-indicator"><%= @user.cached_antifollowed_tag_names.size %></span>
+      </a>
+    </li>
+
+    <li>
+      <a class="crayons-link crayons-link--block"
+        href="<%= agent_sessions_path %>">
+        <%= t("views.dashboard.actions.agent_sessions") %>
+        <span class="c-indicator"><%= @agent_sessions_count %></span>
       </a>
     </li>
 

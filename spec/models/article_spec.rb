@@ -49,6 +49,10 @@ RSpec.describe Article do
     it { is_expected.to validate_presence_of(:user_subscriptions_count) }
     it { is_expected.to validate_presence_of(:title) }
 
+    # Regression test for Issue #22803: Prevent negative reaction counts
+    it { is_expected.to validate_numericality_of(:public_reactions_count).is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:previous_public_reactions_count).is_greater_than_or_equal_to(0) }
+
     it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:user_id) }
 
     it { is_expected.not_to allow_value("foo").for(:main_image_background_hex_color) }
@@ -1384,6 +1388,12 @@ RSpec.describe Article do
       allow(FrontMatterParser::Parser).to receive(:new).and_raise(syntax_error)
       expect(article.has_frontmatter?).to be(true)
     end
+
+    it "does not raise when body starts with --- but has no valid YAML front matter" do
+      article.body_markdown = "\n---\n\n## Introduction\n\nSome content here.\n\n---\n\n## Next Section\n"
+      expect { article.has_frontmatter? }.not_to raise_error
+      expect(article.has_frontmatter?).to be(false)
+    end
   end
 
   describe "#readable_edit_date" do
@@ -1847,6 +1857,18 @@ RSpec.describe Article do
         end
       end
     end
+
+    describe "detect code block languages" do
+      before do
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+      end
+
+      it "enqueues Articles::DetectCodeBlockLanguagesWorker when body_markdown has an unlabeled code block" do
+        sidekiq_assert_enqueued_jobs(1, only: Articles::DetectCodeBlockLanguagesWorker) do
+          build(:published_article, title: "Unlabeled code block", body_markdown: "```\nputs :hi\n```").save
+        end
+      end
+    end
   end
 
   context "when callbacks are triggered after save" do
@@ -1873,7 +1895,7 @@ RSpec.describe Article do
 
       it "updates score after content moderation labeling" do
         # Mock the content moderation labeler to return a specific label
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("clear_and_obvious_harmful")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "clear_and_obvious_harmful", compellingness_score: 0.5 })
         stub_const("Ai::Base::DEFAULT_KEY", "present")
 
         initial_score = article.score
@@ -1888,7 +1910,7 @@ RSpec.describe Article do
 
       it "updates score with positive adjustment for high quality content" do
         # Mock the content moderation labeler to return a high quality label
-        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:label).and_return("great_and_on_topic")
+        allow_any_instance_of(Ai::ContentModerationLabeler).to receive(:evaluate).and_return({ label: "great_and_on_topic", compellingness_score: 0.5 })
         stub_const("Ai::Base::DEFAULT_KEY", "present")
 
         initial_score = article.score
@@ -1929,9 +1951,27 @@ RSpec.describe Article do
           end
         end
 
-        it "does not enqueue for non-body changes" do
+        it "enqueues for title changes" do
+          # Have to update both because set_caches reverts title if frontmatter title is unchanged
+          article.body_markdown = article.body_markdown.gsub(/title: .*/, "title: delayed title tweak")
+          article.title = "delayed title tweak"
+          sidekiq_assert_enqueued_jobs(1, only: worker) do
+            article.save!
+          end
+        end
+
+        it "does not enqueue for other non-monitored changes like collection_id" do
           sidekiq_assert_no_enqueued_jobs(only: worker) do
-            article.update(title: "delayed title tweak")
+            # Use an update that doesn't trigger other conditions
+            collection = create(:collection)
+            article.update(collection_id: collection.id)
+          end
+        end
+
+        it "enqueues when toggled back to published without body changes" do
+          article.update_column(:published, false)
+          sidekiq_assert_enqueued_jobs(1, only: worker) do
+            article.update(published: true)
           end
         end
       end
@@ -1974,6 +2014,24 @@ RSpec.describe Article do
       it "does not Articles::EnrichImageAttributesWorker if the HTML does not change" do
         sidekiq_assert_no_enqueued_jobs(only: Articles::EnrichImageAttributesWorker) do
           article.update(tag_list: %w[fsharp go])
+        end
+      end
+    end
+
+    describe "detect code block languages" do
+      before do
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+      end
+
+      it "enqueues Articles::DetectCodeBlockLanguagesWorker when body_markdown changes to include an unlabeled code block" do
+        sidekiq_assert_enqueued_with(job: Articles::DetectCodeBlockLanguagesWorker, args: [article.id]) do
+          article.update(body_markdown: "```\nconst answer = 42;\n```")
+        end
+      end
+
+      it "does not enqueue Articles::DetectCodeBlockLanguagesWorker when code blocks are already labeled" do
+        sidekiq_assert_no_enqueued_jobs(only: Articles::DetectCodeBlockLanguagesWorker) do
+          article.update(body_markdown: "```ruby\nputs :hi\n```")
         end
       end
     end
@@ -2415,6 +2473,45 @@ RSpec.describe Article do
         expect(article.reload.comment_score).to eq(7)
       end
     end
+
+    context "triggering LinkedDomains::UpdateScoreWorker" do
+      before { Sidekiq::Testing.fake! }
+      let!(:domain) { LinkedDomain.create!(host: "example.com") }
+
+      before do
+        WebpageReference.create!(record: article, linked_domain: domain, url: "https://example.com/page")
+        allow(LinkedDomains::UpdateScoreWorker).to receive(:perform_async)
+      end
+
+      it "triggers the worker when score changes" do
+        article.update_score
+        expect(LinkedDomains::UpdateScoreWorker).to have_received(:perform_async).with(domain.id)
+      end
+
+      it "does not trigger the worker when score does not change" do
+        # Set the score to what update_score will calculate (10)
+        article.update_columns(score: 10, comment_score: 3)
+        article.clear_changes_information
+        
+        article.update_score # call should not change score
+        expect(LinkedDomains::UpdateScoreWorker).not_to have_received(:perform_async)
+      end
+    end
+
+    context "triggering LinkedDomains::UpdateScoreWorker on destroy" do
+      before { Sidekiq::Testing.fake! }
+      let!(:domain) { LinkedDomain.create!(host: "destroytest.com") }
+
+      before do
+        WebpageReference.create!(record: article, linked_domain: domain, url: "https://destroytest.com/page")
+        allow(LinkedDomains::UpdateScoreWorker).to receive(:perform_async)
+      end
+
+      it "triggers the worker when article is destroyed" do
+        article.destroy
+        expect(LinkedDomains::UpdateScoreWorker).to have_received(:perform_async).with(domain.id)
+      end
+    end
   end
 
   context "when the article has a context note" do
@@ -2566,6 +2663,192 @@ RSpec.describe Article do
         article.update_score
         expect(article.reload.score).to eq(5)
       end
+    end
+  end
+
+  describe "established_user_adjustment in update_score" do
+    before do
+      allow(article).to receive(:reactions).and_return(double(sum: 0, privileged_category: double(sum: 0)))
+      allow(article).to receive(:comments).and_return(double(sum: 0))
+      allow(BlackBox).to receive(:article_hotness_score).and_return(0)
+      allow(Settings::UserExperience).to receive(:index_minimum_score).and_return(12)
+    end
+
+    context "when user score is > 100" do
+      before do
+        article.user.update_column(:score, 101)
+      end
+
+      it "adds the index_minimum_score if article is not labeled as spam" do
+        article.update_column(:automod_label, "no_moderation_label")
+        article.update_score
+        expect(article.reload.score).to eq(12)
+      end
+
+      it "does not add the index_minimum_score if article is clear_and_obvious_spam" do
+        article.update_column(:automod_label, "clear_and_obvious_spam")
+        article.update_score
+        # Automod adjusts score by -10 for clear_and_obvious_spam
+        expect(article.reload.score).to eq(-10)
+      end
+
+      it "does not add the index_minimum_score if article is likely_spam" do
+        article.update_column(:automod_label, "likely_spam")
+        article.update_score
+        # Automod adjusts score by -5 for likely_spam
+        expect(article.reload.score).to eq(-5)
+      end
+    end
+
+    context "when user score is <= 100" do
+      before do
+        article.user.update_column(:score, 100)
+      end
+
+      it "does not add the index_minimum_score" do
+        article.update_column(:automod_label, "no_moderation_label")
+        article.update_score
+        expect(article.reload.score).to eq(0)
+      end
+    end
+  end
+
+  describe "#trigger_freeform_context_note_generation" do
+    let(:article) { create(:article, score: 0) }
+
+    before do
+      stub_const("Ai::Base::DEFAULT_KEY", "some_key")
+      allow(Articles::GenerateFreeformContextNoteWorker).to receive(:perform_async)
+    end
+
+    it "bails if Ai::Base::DEFAULT_KEY is not present" do
+      stub_const("Ai::Base::DEFAULT_KEY", nil)
+      article.update_columns(score: 50, comment_score: 25, published_at: 1.day.ago)
+      article.trigger_freeform_context_note_generation
+      expect(Articles::GenerateFreeformContextNoteWorker).not_to have_received(:perform_async)
+    end
+
+    it "bails if score is less than 50" do
+      article.update_columns(score: 49, comment_score: 25)
+      article.trigger_freeform_context_note_generation
+      expect(Articles::GenerateFreeformContextNoteWorker).not_to have_received(:perform_async)
+    end
+
+    it "bails if comment_score is less than 25" do
+      article.update_columns(score: 50, comment_score: 24, published_at: 1.day.ago)
+      article.trigger_freeform_context_note_generation
+      expect(Articles::GenerateFreeformContextNoteWorker).not_to have_received(:perform_async)
+    end
+
+    it "bails if article was published more than a week ago" do
+      article.update_columns(score: 50, comment_score: 25, published_at: 8.days.ago)
+      article.trigger_freeform_context_note_generation
+      expect(Articles::GenerateFreeformContextNoteWorker).not_to have_received(:perform_async)
+    end
+
+    it "bails if article already has context notes" do
+      article.update_columns(score: 50, comment_score: 25, published_at: 1.day.ago)
+      create(:context_note, article: article, body_markdown: "existing note")
+      article.trigger_freeform_context_note_generation
+      expect(Articles::GenerateFreeformContextNoteWorker).not_to have_received(:perform_async)
+    end
+
+    it "calls the worker when conditions are met" do
+      article.update_columns(score: 50, comment_score: 25, published_at: 1.day.ago)
+      article.trigger_freeform_context_note_generation
+      expect(Articles::GenerateFreeformContextNoteWorker).to have_received(:perform_async).with(article.id)
+    end
+  end
+
+  describe "#trigger_summary_generation" do
+    let(:article) { create(:article) }
+
+    before do
+      stub_const("Ai::Base::DEFAULT_KEY", "some_key")
+      allow(Articles::GenerateSummaryWorker).to receive(:perform_async)
+    end
+
+    it "bails if Ai::Base::DEFAULT_KEY is not present" do
+      stub_const("Ai::Base::DEFAULT_KEY", nil)
+      article.update_columns(score: 50, comment_score: 25)
+      article.trigger_summary_generation
+      expect(Articles::GenerateSummaryWorker).not_to have_received(:perform_async)
+    end
+
+    it "bails if score is less than 50" do
+      article.update_columns(score: 49, comment_score: 25)
+      article.trigger_summary_generation
+      expect(Articles::GenerateSummaryWorker).not_to have_received(:perform_async)
+    end
+
+    it "bails if comment_score is less than 25" do
+      article.update_columns(score: 50, comment_score: 24)
+      article.trigger_summary_generation
+      expect(Articles::GenerateSummaryWorker).not_to have_received(:perform_async)
+    end
+
+    it "bails if the article already has a summary" do
+      article.update_columns(score: 50, comment_score: 25, ai_summary: "done")
+      article.trigger_summary_generation
+      expect(Articles::GenerateSummaryWorker).not_to have_received(:perform_async)
+    end
+
+    it "calls the worker when conditions are met" do
+      article.update_columns(score: 50, comment_score: 25)
+      article.trigger_summary_generation
+      expect(Articles::GenerateSummaryWorker).to have_received(:perform_async).with(article.id)
+    end
+  end
+
+  describe "#regenerate_summary_if_content_changed" do
+    let(:article) do
+      create(:article).tap do |a|
+        a.update_columns(
+          score: 60, comment_score: 30, published_at: 1.day.ago, published: true,
+          ai_summary: "existing summary text",
+          ai_summary_prompt_version: Ai::ArticleSummaryGenerator::VERSION,
+        )
+      end
+    end
+
+    before do
+      stub_const("Ai::Base::DEFAULT_KEY", "some_key")
+      allow(Articles::GenerateSummaryWorker).to receive(:perform_async)
+    end
+
+    it "enqueues a forced regeneration when body_markdown changes" do
+      article.update!(body_markdown: "#{article.body_markdown} edited")
+      expect(Articles::GenerateSummaryWorker).to have_received(:perform_async).with(article.id)
+    end
+
+    it "does not enqueue when a non-content attribute changes" do
+      article.update!(cached_tag_list: "ruby, rails")
+      expect(Articles::GenerateSummaryWorker).not_to have_received(:perform_async)
+    end
+
+    it "does not enqueue when no existing summary is stored" do
+      article.update_columns(ai_summary: nil, ai_summary_prompt_version: nil)
+      article.update!(body_markdown: "#{article.body_markdown} edited")
+      expect(Articles::GenerateSummaryWorker).not_to have_received(:perform_async)
+    end
+
+    it "does not enqueue when article is not eligible" do
+      article.update_columns(score: 10, comment_score: 5)
+      article.update!(body_markdown: "#{article.body_markdown} edited")
+      expect(Articles::GenerateSummaryWorker).not_to have_received(:perform_async)
+    end
+
+    it "does not enqueue when article is unpublished" do
+      draft_body = "---\ntitle: Draft\npublished: false\n---\n\nbody text"
+      draft = create(:article, body_markdown: draft_body)
+      draft.update_columns(
+        score: 60, comment_score: 30,
+        ai_summary: "existing", ai_summary_prompt_version: Ai::ArticleSummaryGenerator::VERSION,
+      )
+
+      draft.update!(body_markdown: "---\ntitle: Draft\npublished: false\n---\n\nedited body")
+
+      expect(Articles::GenerateSummaryWorker).not_to have_received(:perform_async)
     end
   end
 
@@ -2961,6 +3244,13 @@ RSpec.describe Article do
       article.body_markdown = "## Hello World!"
       article.evaluate_and_update_column_from_markdown
       expect(article.processed_html).to include("Hello World!")
+    end
+
+    it "does not raise an error when a ContentParsingError occurs and leaves processed_html unchanged" do
+      original_html = article.processed_html
+      allow_any_instance_of(ContentRenderer).to receive(:process_article).and_raise(ContentRenderer::ContentParsingError, "Parsing error")
+      expect { article.evaluate_and_update_column_from_markdown }.not_to raise_error
+      expect(article.reload.processed_html).to eq(original_html)
     end
   end
 
@@ -3554,6 +3844,81 @@ RSpec.describe Article do
       article.type_of = "status"
       article.title = "Check this out\nhttps://example.com\n\nMore text"
       expect(article.title_for_metadata).to eq("Check this out https://example.com More text")
+    end
+  end
+
+  describe "#sync_tags_array" do
+    it "syncs tags_array identically with tag_list upon creation natively" do
+      user = create(:user)
+      article = create(:article, user: user, tag_list: "ruby, rails, beginners")
+      expect(article.tags_array).to match_array(article.tag_list.to_a)
+      expect(article.tags_array).to include("ruby", "rails", "beginners")
+    end
+
+    it "syncs tags_array perfectly when tags are updated mapping upstream cleanly" do
+      user = create(:user)
+      article = Article.new(title: "Test Dual Write", body_markdown: "This is a test body.", user: user)
+      
+      article.tag_list = "javascript, typescript, webdev"
+      article.save!
+      expect(article.tags_array).to match_array(["javascript", "typescript", "webdev"])
+    end
+    
+    it "handles empty tag sets gracefully" do
+      user = create(:user)
+      article = Article.new(title: "Test Dual Write", body_markdown: "This is a test body.", user: user)
+      
+      article.tag_list = ""
+      article.save!
+      expect(article.tags_array).to eq([])
+    end
+    
+    it "skips dual-write processing if tags were not inherently targeted during save" do
+      user = create(:user)
+      article = create(:article, user: user)
+      
+      # Reset local instantiation memory footprint safely bypassing acts_as_taggable
+      article.remove_instance_variable(:@tag_list) if article.instance_variable_defined?(:@tag_list)
+      
+      # Ensure reading `tags_array` doesn't inadvertently trigger sync_tags_array
+      article.sync_tags_array
+      expect(article.instance_variable_defined?(:@tag_list)).to be_falsey
+    end
+  end
+
+  describe "semantic embeddings" do
+    let(:article) { build(:article, score: Settings::UserExperience.home_feed_minimum_score) }
+
+    before do
+      stub_const("Ai::Base::DEFAULT_KEY", "test-key")
+    end
+
+    it "enqueues generate embedding when score is above threshold and content changes" do
+      allow(GenerateArticleEmbeddingWorker).to receive(:perform_async)
+      article.save!
+      expect(GenerateArticleEmbeddingWorker).to have_received(:perform_async).with(article.id)
+    end
+
+    it "does not enqueue generate embedding when score is below threshold" do
+      article.score = Settings::UserExperience.home_feed_minimum_score - 1
+      allow(GenerateArticleEmbeddingWorker).to receive(:perform_async)
+      article.save!
+      expect(GenerateArticleEmbeddingWorker).not_to have_received(:perform_async)
+    end
+
+    it "triggers semantic embedding generation manually if no embedding is present and score is high" do
+      article.save!
+      allow(GenerateArticleEmbeddingWorker).to receive(:perform_async)
+      article.trigger_semantic_embedding_generation
+      expect(GenerateArticleEmbeddingWorker).to have_received(:perform_async).with(article.id)
+    end
+
+    it "does not trigger semantic embedding generation manually if embedding is already present" do
+      article.save!
+      article.update_column(:semantic_embedding, Array.new(768, 0.1))
+      allow(GenerateArticleEmbeddingWorker).to receive(:perform_async)
+      article.trigger_semantic_embedding_generation
+      expect(GenerateArticleEmbeddingWorker).not_to have_received(:perform_async)
     end
   end
 end

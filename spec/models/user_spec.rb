@@ -33,6 +33,8 @@ RSpec.describe User do
 
   before do
     omniauth_mock_providers_payload
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with("ENABLE_REFRESH_SEGMENT_WORKERS").and_return("true")
     allow(SegmentedUserRefreshWorker).to receive(:perform_async)
     allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
   end
@@ -185,10 +187,58 @@ RSpec.describe User do
       it { is_expected.not_to allow_value("AcMe_1%").for(:username) }
       it { is_expected.to allow_value("AcMe_1").for(:username) }
 
-      it { is_expected.to validate_length_of(:email).is_at_most(50).allow_nil }
+      it { is_expected.to validate_length_of(:email).is_at_most(254).allow_nil }
       it { is_expected.to validate_length_of(:name).is_at_most(100).is_at_least(1) }
       it { is_expected.to validate_length_of(:password).is_at_most(100).is_at_least(8) }
       it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
+
+      it "rejects RFC2047 encoded-words in email with a generic invalid error" do
+        invalid_emails = [
+          "=?utf-8?q?test=40attacker.com=3e?=@company.com",
+          "=?utf-8?q?test=40attacker.com=3e=00?=test@company.com",
+          "=?utf-8?q?test=40attacker.com=3e=0A=0D?=test@company.com",
+          "=?utf-8?q?test=40attacker.com=3e=3c?=test@company.com",
+          "=?utf-8?q?test=40attacker.com=3e=0A=0D?=RCPTTO:test@company.com",
+          "user=?utf-8?q?x?=@company.com",
+          "user@=?utf-8?q?company.com?=",
+          "=?utf-8?Q?test=40attacker.com=3e?=@company.com",
+          "=?utf-8?B?dGVzdEBhdHRhY2tlci5jb20+?=@company.com",
+        ]
+
+        invalid_emails.each do |email|
+          user = build(:user, email: email)
+
+          expect(user).not_to be_valid
+          expect(user.errors[:email]).to include("is invalid")
+        end
+      end
+
+      it "documents that mail decoding changes the recipient shape locally" do
+        encoded_word_email = "=?utf-8?q?test=40attacker.com=3e?=@company.com"
+
+        expect(Mail::Encodings.value_decode(encoded_word_email)).to eq("test@attacker.com>@company.com")
+      end
+
+      it "preserves nil email behavior" do
+        user = build(:user, email: nil)
+
+        expect(user).to be_valid
+      end
+
+      it "keeps normal and non-encoded-word email addresses valid" do
+        valid_emails = [
+          "user@example.com",
+          "first.last+tag@example.co.uk",
+          "user=?not-complete@example.com",
+          "user?utf-8?q?x@example.com",
+        ]
+
+        valid_emails.each do |email|
+          user = build(:user, email: email)
+
+          expect(user).to be_valid
+        end
+      end
 
       it { is_expected.not_to allow_value("  ").for(:name) }
 
@@ -618,6 +668,23 @@ RSpec.describe User do
     end
   end
 
+  describe "#good_standing_followers_count" do
+    let!(:good_user) { create(:user) }
+    let!(:suspended_user) { create(:user, :suspended) }
+    let!(:spam_user) { create(:user, :spam) }
+
+    before do
+      good_user.follow(user)
+      suspended_user.follow(user)
+      spam_user.follow(user)
+    end
+
+    it "returns the count of non-suspended and non-spam followers using the rails cache" do
+      expect(Rails.cache).to receive(:fetch).with("#{user.cache_key_with_version}/good_standing_followers_count", expires_in: 24.hours).and_call_original
+      expect(user.good_standing_followers_count).to eq(1)
+    end
+  end
+
   describe "theming properties" do
     before do
       allow(Settings::UserExperience).to receive(:default_font).and_return("sans-serif")
@@ -721,6 +788,33 @@ RSpec.describe User do
     end
   end
 
+  describe "#author_trust_score" do
+    it "returns 0 for score < 25" do
+      user.update_column(:score, 10)
+      expect(user.author_trust_score).to eq(0)
+    end
+
+    it "returns 1 for score between 25 and 74" do
+      user.update_column(:score, 50)
+      expect(user.author_trust_score).to eq(1)
+    end
+
+    it "returns 2 for score between 75 and 174" do
+      user.update_column(:score, 100)
+      expect(user.author_trust_score).to eq(2)
+    end
+
+    it "returns 3 for score between 175 and 299" do
+      user.update_column(:score, 200)
+      expect(user.author_trust_score).to eq(3)
+    end
+
+    it "returns 4 for score >= 300" do
+      user.update_column(:score, 350)
+      expect(user.author_trust_score).to eq(4)
+    end
+  end
+
   describe "#calculate_score" do
     it "calculates a score" do
       user.update_column(:badge_achievements_count, 3)
@@ -786,6 +880,16 @@ RSpec.describe User do
       Articles::Unpublish.call(article2.user, article2)
 
       expect(user.cached_reading_list_article_ids).to eq([article3.id, article.id])
+    end
+
+    it "has an accurate agent_sessions_count using counter cache" do
+      expect(user.agent_sessions_count).to eq(0)
+      create(:agent_session, user: user)
+      expect(user.reload.agent_sessions_count).to eq(1)
+      create(:agent_session, user: user)
+      expect(user.reload.agent_sessions_count).to eq(2)
+      user.agent_sessions.last.destroy
+      expect(user.reload.agent_sessions_count).to eq(1)
     end
   end
 
@@ -1214,6 +1318,40 @@ RSpec.describe User do
       it "returns false for bot?" do
         expect(user.bot?).to be false
       end
+    end
+  end
+
+  describe "#create_email_change_note" do
+    it "creates a note when unconfirmed_email is set" do
+      expect do
+        user.update(email: "changed@example.com")
+      end.to change(Note, :count).by(1)
+
+      note = user.notes.last
+      expect(note.reason).to eq("email_change_requested")
+      expect(note.content).to include("changed@example.com")
+      expect(note.author_id).to be_nil
+    end
+
+    it "does not create a note when unconfirmed_email is cleared" do
+      user.update_columns(unconfirmed_email: "old@example.com")
+
+      expect do
+        user.update_columns(unconfirmed_email: nil)
+      end.not_to change(Note, :count)
+    end
+  end
+
+  describe "#create_password_change_note" do
+    it "creates a note when password is changed" do
+      expect do
+        user.update(password: "newpassword123", password_confirmation: "newpassword123")
+      end.to change(Note, :count).by(1)
+
+      note = user.notes.last
+      expect(note.reason).to eq("password_changed")
+      expect(note.content).to eq("User changed their password")
+      expect(note.author_id).to be_nil
     end
   end
 

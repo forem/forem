@@ -130,6 +130,10 @@ remove_old_notifications:
   description: "Deletes old notifications from the database (runs daily at 05:00 UTC)"
   cron: "0 5 * * *"
   class: "Notifications::RemoveOldNotificationsWorker"
+trim_old_ai_audits:
+  description: "Trims large JSON payload fields from AiAudits older than the configured threshold (defaults to 30 days via FAST_TRIM_AI_AUDITS_DAYS; runs daily at 06:00 UTC)"
+  cron: "0 6 * * *"
+  class: "AiAudits::TrimOldAuditsWorker"
 remove_old_emails:
   description: "Deletes old emails we don't need to retain from the database (runs hourly at the 18th minute after the hour)"
   cron: "18 * * * *"
@@ -175,8 +179,8 @@ article_quality_reactions:
   cron: "8 * * * *"
   class: "Articles::QualityReactionWorker"
 article_label_cleanup:
-  description: "Processes articles with no_moderation_label that may have been missed (runs hourly on the 35th minute after the hour)"
-  cron: "35 * * * *"
+  description: "Processes articles with no_moderation_label that may have been missed (runs twice hourly on the 5th and 35th minute)"
+  cron: "5,35 * * * *"
   class: "Articles::LabelCleanupWorker"
 scheduled_automations_process:
   description: "Processes scheduled automations that are due for execution (runs every 10 minutes)"
@@ -186,7 +190,27 @@ track_promotional_billboard_impressions:
   description: "Tracks and updates promotional billboard impressions for organizations (runs every 30 minutes)"
   cron: "*/30 * * * *"
   class: "Organizations::TrackPromotionalBillboardImpressionsWorker"
+feed_import_log_cleanup:
+  description: "Deletes feed import logs older than 90 days (runs daily at 04:00 UTC)"
+  cron: "0 4 * * *"
+  class: "Feeds::ImportLogCleanupWorker"
 survey_daily_email:
   description: "Send DEV Pulse Survey emails to eligible users for active surveys (runs daily at 18:15 UTC)"
   cron: "15 18 * * *"
   class: "Emails::SurveyDailyEmailWorker"
+agent_session_raw_file_cleanup:
+  description: "Deletes expired raw agent session files from S3 (runs daily at 04:15 UTC)"
+  cron: "15 4 * * *"
+  class: "AgentSessions::CleanupExpiredRawFilesWorker"
+reverify_organizations:
+  description: "Re-checks verified organizations to ensure linkback still exists (runs daily at 06:00 UTC)"
+  cron: "0 6 * * *"
+  class: "Organizations::ReverifyAllWorker"
+events_manage_broadcast_billboards:
+  description: "Manages automatic Billboard deployments natively toggling configurations depending on Event start/end boundaries (runs every 5 minutes)"
+  cron: "*/5 * * * *"
+  class: "Events::ManageBroadcastBillboardsWorker"
+identify_trends:
+  description: "Detects and labels timely semantic trends from recently published articles (runs every 6 hours)"
+  cron: "0 */6 * * *"
+  class: "IdentifyTrendsWorker"

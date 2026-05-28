@@ -27,7 +27,9 @@ Capybara.register_driver(:better_cuprite) do |app|
     app,
     window_size: [1200, 800],
     browser_options: {},
-    process_timeout: 30,
+    process_timeout: 60,
+    timeout: 15,
+    pending_connection_errors: false,
     inspector: true,
     headless: !ENV["HEADLESS"].in?(%w[n 0 no false]), **remote_options
   )

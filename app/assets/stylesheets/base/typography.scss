@@ -22,18 +22,21 @@
   font-style: normal;
   font-weight: normal;
 }
+
 @font-face {
   font-family: OpenDyslexic;
   @include font-src('OpenDyslexic-Italic.otf');
   font-style: italic;
   font-weight: normal;
 }
+
 @font-face {
   font-family: OpenDyslexic;
   @include font-src('OpenDyslexic-Bold.otf');
   font-weight: bold;
   font-style: normal;
 }
+
 @font-face {
   font-family: OpenDyslexic;
   @include font-src('OpenDyslexic-BoldItalic.otf');
@@ -73,6 +76,7 @@ body {
   overflow-wrap: break-word;
 
   &--billboard {
+
     h1,
     h2,
     h3,
@@ -97,7 +101,7 @@ body {
     margin-bottom: 0;
   }
 
-  a {
+  a:not(.crayons-btn) {
     text-decoration: underline;
     color: var(--link-branded-color);
 
@@ -110,17 +114,110 @@ body {
   // Liquid tags styling is still pretty random and overwriting what's been
   // implemented there makes some things look worse. We should circle back
   // when/if we "redesign" liquid tags.
-  [class*='ltag'] a {
-    text-decoration: none;
-    &:hover {
-      color: var(--color-hover);
+  [class*='ltag'] {
+    font-size: initial;
+    font-family: var(--ff-sans-serif);
+
+    a {
+      text-decoration: none;
+      color: inherit;
+
+      &:hover {
+        color: var(--color-hover);
+      }
+    }
+
+    img {
+      max-width: 100%;
+      margin: 0;
+    }
+
+    // Restore link styling for nested .text-styles blocks (e.g. embedded comment body)
+    .text-styles a:not(.crayons-btn) {
+      text-decoration: underline;
+      color: var(--link-branded-color);
+
+      &:hover {
+        color: var(--link-branded-color-hover);
+      }
     }
   }
 
   a[class*='ltag'] {
     text-decoration: none;
+
     &:hover {
       color: var(--color-hover);
+    }
+  }
+
+  .ltag__link--embedded,
+  .ltag-org-posts {
+    font-size: var(--fs-base);
+    font-family: var(--ff-sans-serif);
+
+    a {
+      text-decoration: none;
+      color: inherit;
+
+      &:hover {
+        color: var(--link-color-hover);
+      }
+    }
+
+    img {
+      max-width: 100%;
+      margin: 0;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    .crayons-avatar__image,
+    .crayons-logo__image {
+      height: 100%;
+      display: inline-block;
+    }
+
+    .crayons-avatar__image {
+      border-radius: 100%;
+    }
+
+    .crayons-logo__image {
+      border-radius: var(--radius);
+    }
+
+    img.subscription-icon {
+      max-height: 13px;
+      max-width: 21px;
+      display: inline-block;
+      border-radius: 0;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      margin: 0;
+    }
+
+    .crayons-story__author-pic {
+      margin-right: var(--su-3);
+    }
+
+    .crayons-story__indention {
+      padding-left: 0 !important;
+    }
+  }
+
+  .ltag__link--embedded {
+    margin: var(--su-4) 0;
+
+    .crayons-story {
+      margin: 0;
     }
   }
 
@@ -242,7 +339,7 @@ body {
     display: block;
   }
 
-  p + figcaption {
+  p+figcaption {
     margin-top: -0.8em;
   }
 
@@ -296,7 +393,7 @@ body {
   }
 
   pre:not(.highlight),
-  div:not(.highlight) > pre.highlight,
+  div:not(.highlight)>pre.highlight,
   div.highlight {
     margin: 0 0 var(--content-rhythm) 0;
   }
@@ -374,6 +471,7 @@ body {
   padding: var(--su-3);
   border: 1px solid var(--form-border);
   box-shadow: var(--shadow-smooth) !important;
+
   @media screen and (min-width: $breakpoint-s) {
     padding: var(--su-5);
   }
@@ -387,14 +485,14 @@ body {
   &__cover {
     margin-bottom: var(--su-4);
     flex-shrink: 0;
-    
+
     // New horizontal layout styles
     .c-embed__content & {
       margin-bottom: 0;
       width: 80px;
       height: 80px;
       text-align: center;
-      
+
       img {
         width: 100%;
         height: 100%;

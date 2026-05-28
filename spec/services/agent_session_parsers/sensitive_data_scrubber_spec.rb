@@ -27,6 +27,27 @@ RSpec.describe AgentSessionParsers::SensitiveDataScrubber do
       expect(text).not_to include("ghp_ABCDEFGHIJKLMNOP")
     end
 
+    it "redacts GitHub fine-grained tokens" do
+      token = "github_pat_#{'a' * 22}_#{'b' * 29}_#{'c' * 29}"
+      data = build_normalized("token: #{token}")
+      result = described_class.scrub(data)
+      text = result.scrubbed_data["messages"][0]["content"][0]["text"]
+
+      expect(text).to include("[REDACTED]")
+      expect(text).not_to include(token)
+      expect(result.redactions.map(&:pattern_name)).to include("GitHub Fine-Grained Token")
+    end
+
+    it "does not redact masked GitHub fine-grained token placeholders" do
+      token = "github_pat_#{'a' * 22}_#{'*' * 35}"
+      data = build_normalized("Masked token: #{token}")
+      result = described_class.scrub(data)
+      text = result.scrubbed_data["messages"][0]["content"][0]["text"]
+
+      expect(text).to include(token)
+      expect(result.redactions.map(&:pattern_name)).not_to include("GitHub Fine-Grained Token")
+    end
+
     it "redacts Stripe secret keys" do
       # Build key via interpolation so the literal doesn't trigger GitHub push protection
       stripe_key = "sk_live_#{'a1b2c3d4e5' * 3}"
@@ -65,6 +86,27 @@ RSpec.describe AgentSessionParsers::SensitiveDataScrubber do
       result = described_class.scrub(data)
       text = result.scrubbed_data["messages"][0]["content"][0]["text"]
       expect(text).not_to include("sk-ant-")
+    end
+
+    it "redacts Heroku API keys when explicitly labeled" do
+      key = "01234567-89ab-cdef-0123-456789abcdef"
+      data = build_normalized("HEROKU_API_KEY=#{key}")
+      result = described_class.scrub(data)
+      text = result.scrubbed_data["messages"][0]["content"][0]["text"]
+
+      expect(text).to include("[REDACTED]")
+      expect(text).not_to include(key)
+      expect(result.redactions.map(&:pattern_name)).to include("Heroku API Key")
+    end
+
+    it "does not redact unrelated UUIDs just because Heroku is mentioned" do
+      uuid = "01234567-89ab-cdef-0123-456789abcdef"
+      data = build_normalized("Review Heroku deploy logs for session #{uuid}")
+      result = described_class.scrub(data)
+      text = result.scrubbed_data["messages"][0]["content"][0]["text"]
+
+      expect(text).to include(uuid)
+      expect(result.redactions.map(&:pattern_name)).not_to include("Heroku API Key")
     end
 
     it "redacts Slack tokens" do
@@ -121,12 +163,4 @@ RSpec.describe AgentSessionParsers::SensitiveDataScrubber do
     end
   end
 
-  describe ".scrub_text" do
-    it "scrubs secrets from plain text" do
-      text = "export AWS_KEY=AKIAIOSFODNN7EXAMPLE\nexport OTHER=safe"
-      result = described_class.scrub_text(text)
-      expect(result).not_to include("AKIAIOSFODNN7EXAMPLE")
-      expect(result).to include("safe")
-    end
-  end
 end

@@ -70,6 +70,55 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         expect(generator).to have_received(:read_files).with(article)
       end
 
+      context "when an external fetch fails with an HTTP error" do
+        it "logs a warning and does not alert Honeybadger" do
+          allow(generator).to receive(:read_files).and_raise(OpenURI::HTTPError.new("504 Gateway Timeout", StringIO.new))
+          allow(Rails.logger).to receive(:warn)
+          allow(Honeybadger).to receive(:notify)
+
+          described_class.call(article)
+
+          expect(Rails.logger).to have_received(:warn).with(/Image fetch failed:/)
+          expect(Honeybadger).not_to have_received(:notify)
+        end
+      end
+
+      context "when an external fetch times out" do
+        it "logs a warning and does not alert Honeybadger" do
+          allow(generator).to receive(:read_files).and_raise(Net::ReadTimeout)
+          allow(Rails.logger).to receive(:warn)
+          allow(Honeybadger).to receive(:notify)
+
+          described_class.call(article)
+
+          expect(Rails.logger).to have_received(:warn).with(/Image fetch failed:/)
+          expect(Honeybadger).not_to have_received(:notify)
+        end
+      end
+
+      context "when MiniMagick throws an error" do
+        it "logs a warning and does not alert Honeybadger if it is a status 15 SIGTERM" do
+          allow(generator).to receive(:generate_magickally).and_raise(MiniMagick::Error, "mogrify failed with status: 15")
+          allow(Rails.logger).to receive(:warn)
+          allow(Honeybadger).to receive(:notify)
+
+          described_class.call(article)
+
+          expect(Rails.logger).to have_received(:warn).with(/MiniMagick terminated by SIGTERM/)
+          expect(Honeybadger).not_to have_received(:notify)
+        end
+
+        it "alerts Honeybadger for other MiniMagick errors" do
+          error = MiniMagick::Error.new("mogrify failed with status: 1")
+          allow(generator).to receive(:generate_magickally).and_raise(error)
+          allow(Honeybadger).to receive(:notify)
+
+          described_class.call(article)
+
+          expect(Honeybadger).to have_received(:notify).with(error)
+        end
+      end
+
       context "with custom subforem" do
         let(:generator) { described_class.new(article_with_custom_subforem) }
 
@@ -350,6 +399,8 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
 
       before do
         allow(result_image).to receive(:composite).and_return(result_image)
+        allow(author_image).to receive(:collapse!)
+        allow(author_image).to receive(:format)
         allow(author_image).to receive(:resize)
         allow(rounded_mask).to receive(:resize)
 
@@ -358,11 +409,24 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         generator.instance_variable_set(:@rounded_mask, rounded_mask)
       end
 
-      it "adds the profile image and rounded mask to the image" do
+      it "adds the profile image and rounded mask to the image after collapsing animation frames" do
         generator.send(:add_profile_image, result_image)
+        expect(author_image).to have_received(:collapse!)
+        expect(author_image).to have_received(:format).with("png")
         expect(author_image).to have_received(:resize).with("77x77")
         expect(rounded_mask).to have_received(:resize).with("77x77")
         expect(result_image).to have_received(:composite).twice
+      end
+
+      it "gracefully rescues a Timeout::Error, logs to Honeybadger, and returns the bare result image without an avatar" do
+        allow(author_image).to receive(:collapse!).and_raise(Timeout::Error)
+        allow(Honeybadger).to receive(:notify)
+
+        expect(generator.send(:add_profile_image, result_image)).to eq(result_image)
+        expect(Honeybadger).to have_received(:notify).with(instance_of(Timeout::Error))
+        # Ensure that resize was safely aborted and not called after the exception
+        expect(author_image).not_to have_received(:resize)
+        expect(result_image).not_to have_received(:composite)
       end
     end
 

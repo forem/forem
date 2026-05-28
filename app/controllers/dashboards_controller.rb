@@ -35,6 +35,8 @@ class DashboardsController < ApplicationController
       target = @organizations.find_by(id: params[:org_id])
       @organization = target
       @articles = target.articles.from_subforem
+      @show_archived = false
+      @has_archived_articles = false
     else
       # This redirect assumes that the dashboards#show action renders article specific information.
       # When a user doesn't have articles nor can they create them, we want to send them somewhere
@@ -44,14 +46,18 @@ class DashboardsController < ApplicationController
       # if the target is a user, we need to eager load the organization
       @articles = target.articles.from_subforem.includes(:organization)
       @articles = params[:state] == "status" ? @articles.statuses : @articles.full_posts
+      @show_archived = params[:filter].to_s.casecmp("archived").zero?
+      @has_archived_articles = @articles.where(archived: true).exists?
     end
 
-    @reactions_count = @articles.sum(&:public_reactions_count)
-    @comments_count = @articles.sum(&:comments_count)
-    @page_views_count = @articles.sum(&:page_views_count)
+    @reactions_count = @articles.sum(:public_reactions_count)
+    @comments_count = @articles.sum(:comments_count)
+    @page_views_count = @articles.sum(:page_views_count)
 
-    @articles = @articles.includes(:collection).sorting(params[:sort]).decorate
-    @articles = Kaminari.paginate_array(@articles).page(params[:page]).per(ARTICLES_PER_PAGE)
+    filtered_articles = @articles
+    filtered_articles = filtered_articles.where(archived: @show_archived) if params[:which] != "organization"
+
+    @articles = filtered_articles.includes(:collection).sorting(params[:sort]).page(params[:page]).per(ARTICLES_PER_PAGE)
     @collections_count = target.collections.non_empty.count
   end
 
@@ -116,10 +122,59 @@ class DashboardsController < ApplicationController
     @collections_count = collections_count(@user)
   end
 
+  def feed_imports
+    fetch_and_authorize_user
+    @feed_sources = @user.feed_sources.includes(:organization, :author).order(:created_at)
+    @user_organizations = @user.organizations
+    admin_org_ids = OrganizationMembership
+      .where(user_id: @user.id, type_of_user: "admin")
+      .pluck(:organization_id)
+    @org_members_by_org = OrganizationMembership
+      .where(organization_id: admin_org_ids)
+      .where.not(type_of_user: "pending")
+      .includes(:user)
+      .group_by(&:organization_id)
+      .transform_values { |memberships| memberships.map(&:user) }
+    @selected_source = @feed_sources.find_by(id: params[:feed_source_id]) if params[:feed_source_id].present?
+
+    # Determine overall feed status from sources
+    if @selected_source
+      @feed_status = @selected_source.status
+      @feed_url = @selected_source.feed_url
+    elsif @feed_sources.any?
+      worst = @feed_sources.order(status: :desc).first
+      @feed_status = worst.status
+      @feed_url = @feed_sources.first.feed_url
+    else
+      @feed_status = @user.setting&.feed_status
+      @feed_url = @user.setting&.feed_url
+    end
+
+    logs = @user.feed_import_logs
+    logs = logs.for_feed_source(@selected_source.id) if @selected_source
+
+    @feed_import_logs = logs
+      .notable
+      .recent
+      .includes(:feed_source, import_items: :article)
+      .page(params[:page])
+      .per(ARTICLES_PER_PAGE)
+
+    @routine_logs = logs.routine.recent.includes(:feed_source).limit(20)
+    @routine_logs_count = logs.routine.count
+
+    @total_imported = logs.sum(:items_imported)
+    @total_skipped = logs.sum(:items_skipped)
+    @total_failed = logs.sum(:items_failed)
+    @last_successful_import = logs.completed.maximum(:created_at)
+
+    @collections_count = collections_count(@user)
+  end
+
   private
 
   def set_agent_sessions_count
-    @agent_sessions_count = current_user.agent_sessions.count
+    @agent_sessions_count = current_user.agent_sessions_count
   end
 
   def follows_for(user:, type:, order_by: :created_at)

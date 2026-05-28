@@ -5,6 +5,7 @@ class Billboard < ApplicationRecord
   belongs_to :creator, class_name: "User", optional: true
   belongs_to :audience_segment, optional: true
   belongs_to :page, optional: true
+  belongs_to :event, optional: true
 
   ALLOWED_PLACEMENT_AREAS = %w[sidebar_left
                                sidebar_left_2
@@ -90,6 +91,7 @@ class Billboard < ApplicationRecord
            :validate_expiration_approval
 
   before_save :process_markdown
+  before_save :update_exclude_article_ids
   before_save :update_content_updated_at_if_needed
   after_save :generate_billboard_name
   after_save :refresh_audience_segment, if: :should_refresh_audience_segment?
@@ -400,9 +402,9 @@ class Billboard < ApplicationRecord
     return "" if color.blank?
 
     if placement_area.include?("fixed_")
-      "border: 5px solid #{color};border-bottom: none"
+      "border: 1px solid #{color}; border-bottom: none;"
     else
-      "border: 5px solid #{color}"
+      "border: 1px solid #{color};"
     end
   end
 
@@ -470,6 +472,51 @@ class Billboard < ApplicationRecord
     return unless content_fields.any? { |field| will_save_change_to_attribute?(field) }
     
     self.content_updated_at = Time.current
+  end
+
+  def update_exclude_article_ids
+    return if body_markdown.blank? || !body_markdown_changed?
+
+    old_paths = extract_internal_article_paths(processed_html_was)
+    new_paths = extract_internal_article_paths(processed_html)
+
+    removed_paths = old_paths - new_paths
+    added_paths = new_paths - old_paths
+
+    removed_ids = removed_paths.any? ? Article.where(path: removed_paths).pluck(:id) : []
+    added_ids = added_paths.any? ? Article.where(path: added_paths).pluck(:id) : []
+
+    current_ids = self.exclude_article_ids.to_a
+    self.exclude_article_ids = ((current_ids - removed_ids) + added_ids).uniq
+  end
+
+  def extract_internal_article_paths(html)
+    return [] if html.blank?
+
+    paths = []
+    doc = Nokogiri::HTML("<html><body>#{html}</body></html>")
+    
+    internal_hosts = [
+      nil,
+      ApplicationConfig["APP_DOMAIN"],
+      URI.parse(URL.url).host
+    ].compact.uniq
+
+    doc.css("a").each do |link|
+      href = link["href"]
+      next unless href.present? && href.start_with?("http", "/")
+
+      begin
+        uri = URI.parse(href)
+        next unless internal_hosts.include?(uri.host)
+
+        path = uri.path
+        paths << path.chomp("/").downcase if path.present? && path != "/"
+      rescue URI::InvalidURIError
+        next
+      end
+    end
+    paths.uniq
   end
 
   def update_event_counts_when_taking_down

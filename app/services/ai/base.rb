@@ -4,6 +4,7 @@ module Ai
     include HTTParty
     base_uri "https://generativelanguage.googleapis.com/v1beta"
     DEFAULT_MODEL = ENV.fetch("GEMINI_API_MODEL", "gemini-2.5-pro").freeze
+    DEFAULT_LITE_MODEL = ENV.fetch("GEMINI_API_LITE_MODEL", "gemini-3.1-flash-lite-preview").freeze
     DEFAULT_KEY = ENV["GEMINI_API_KEY"].freeze
     attr_reader :model, :last_response
 
@@ -22,7 +23,7 @@ module Ai
       }
     end
 
-    def call(prompt, retry_count: 0)
+    def call(prompt, retry_count: 0, response_mime_type: nil)
       api_url = "/models/#{@model}:generateContent?key=#{@api_key}"
       body = {
         contents: [{
@@ -31,6 +32,8 @@ module Ai
           }]
         }]
       }
+
+      body[:generationConfig] = { responseMimeType: response_mime_type } if response_mime_type
 
       @options[:body] = body.to_json
 

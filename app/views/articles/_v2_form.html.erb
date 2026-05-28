@@ -45,9 +45,22 @@
 </style>
 
 <% @editor_context = true %>
+<%
+  serialized_organizations = Array(organizations).map do |organization|
+    {
+      id: organization.id,
+      name: organization.name,
+      bg_color_hex: organization.bg_color_hex,
+      text_color_hex: organization.text_color_hex,
+      profile_image_90: organization.profile_image_90,
+      can_add_co_authors: current_user&.org_admin?(organization),
+      fetch_users_url: organization_members_path(slug: organization.slug, format: :json)
+    }
+  end
+%>
 <main id="main-content"
-  data-article="<%= article.to_json(only: %i[id title cached_tag_list published published_at body_markdown main_image organization_id canonical_url updated_at video_source_url], methods: %i[series all_series]) %>"
-  data-organizations="<%= organizations&.to_json(only: %i[id name bg_color_hex text_color_hex], methods: [:profile_image_90]) %>"
+  data-article="<%= article.to_json(only: %i[id user_id title cached_tag_list published published_at body_markdown main_image organization_id canonical_url updated_at video_source_url], methods: %i[series all_series co_author_ids_list co_authors_data]) %>"
+  data-organizations="<%= serialized_organizations.to_json %>"
   data-version="<%= version %>"
   data-site-logo='<%= render "layouts/logo" %>'
   data-cover-image-height="<%= Settings::UserExperience.cover_image_height %>"
@@ -166,15 +179,15 @@
 
 <div id="editor-sidecar" class="editor-sidecar hidden">
   <div class="editor-sidecar__header">
-    <h3 class="fs-base fw-bold m-0">DEV Buddy <span class="crayons-badge crayons-badge--warning crayons-badge--brand fw-medium fs-s">BETA</span></h3>
+    <h3 class="fs-base fw-bold m-0"><%= t("views.editor.ai_helper.sidecar_title", community_name: Settings::Community.community_name) %> <span class="crayons-badge crayons-badge--warning crayons-badge--brand fw-medium fs-s">BETA</span></h3>
     <button id="editor-ai-close-btn" class="crayons-btn crayons-btn--icon crayons-btn--ghost" aria-label="Close AI Helper" title="Close AI Helper">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="crayons-icon"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
     </button>
   </div>
   <div class="editor-sidecar__content" style="flex: 1; overflow-y: auto;">
     <%= render "ai_chats/chat_interface",
-      title: "DEV Buddy",
-      greeting: "Hello! I am your writing assistant. I know DEV Editor guidelines. Need help with markdown, embeds, or formatting?",
+      title: t("views.editor.ai_helper.title", community_name: Settings::Community.community_name),
+      greeting: t("views.editor.ai_helper.greeting", community_name: Settings::Community.community_name),
       chat_context: "editor",
       hide_header: true
     %>

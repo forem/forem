@@ -589,6 +589,56 @@ RSpec.describe Billboard do
     end
   end
 
+  describe "#update_exclude_article_ids" do
+    let(:article) { create(:article) }
+
+    it "automatically extracts article IDs from relative links in the billboard content" do
+      billboard = build(:billboard, body_markdown: "Check out this great post: [link](#{article.path})")
+      
+      expect { billboard.save! }.to change { billboard.exclude_article_ids }.from([]).to([article.id])
+    end
+
+    it "automatically extracts article IDs from absolute links matching the app domain" do
+      app_url = URI.parse(URL.url)
+      billboard = build(:billboard, body_markdown: "Check out this great post: [link](#{app_url}#{article.path})")
+      
+      expect { billboard.save! }.to change { billboard.exclude_article_ids }.from([]).to([article.id])
+    end
+
+    it "does not parse links from external domains" do
+      billboard = build(:billboard, body_markdown: "Check out this great post: [link](https://external-domain.com#{article.path})")
+      
+      expect { billboard.save! }.not_to change { billboard.exclude_article_ids }
+    end
+    
+    it "does not add invalid paths" do
+      billboard = build(:billboard, body_markdown: "Check out this great post: [link](/not-a-real-path)")
+      
+      expect { billboard.save! }.not_to change { billboard.exclude_article_ids }
+    end
+
+    it "removes IDs of linked articles if they are removed from the markdown" do
+      billboard = create(:billboard, body_markdown: "Check out this great post: [link](#{article.path})")
+      expect(billboard.exclude_article_ids).to eq([article.id])
+
+      expect {
+        billboard.update!(body_markdown: "Never mind, no links here!")
+      }.to change { billboard.exclude_article_ids }.from([article.id]).to([])
+    end
+
+    it "only runs when the body_markdown is changed" do
+      billboard = create(:billboard, body_markdown: "Check out this great post: [link](#{article.path})")
+      
+      allow(Article).to receive(:where).and_call_original
+      
+      # Now save without changing markdown
+      billboard.update!(name: "A different name")
+      
+      expect(Article).not_to have_received(:where)
+      expect(billboard.exclude_article_ids).to eq([article.id])
+    end
+  end
+
   describe "when a stale audience segment is associated" do
     let(:audience_segment) do
       Timecop.travel(5.days.ago) do
@@ -1378,6 +1428,21 @@ RSpec.describe Billboard do
       allow(EdgeCache::PurgeByKey).to receive(:call)
       billboard.destroy
       expect(EdgeCache::PurgeByKey).not_to have_received(:call)
+    end
+  end
+
+  describe "#sync_tags_array" do
+    it "syncs tags_array perfectly when tags are updated using tag_list" do
+      billboard = create(:billboard, tag_list: "javascript")
+      expect(billboard.tags_array).to match_array(["javascript"])
+      
+      billboard.update!(tag_list: "javascript, typescript, webdev")
+      expect(billboard.tags_array).to match_array(["javascript", "typescript", "webdev"])
+    end
+    
+    it "handles empty tags gracefully natively" do
+      billboard = create(:billboard, tag_list: "")
+      expect(billboard.tags_array).to eq([])
     end
   end
 end
