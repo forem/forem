@@ -8,6 +8,25 @@
     body:not(.dark-theme) #topbar .crayons-dropdown .c-link { color: #333 !important; }
     </style>
 <% end %>
+<% custom_org = request.env["forem.custom_domain_org"] %>
+<% if custom_org.present? && custom_org.bg_color_hex.present? %>
+  <style>
+    #topbar { background: <%= custom_org.bg_color_hex %> !important; }
+    #topbar .c-link, #topbar .c-cta, #topbar .c-btn {
+      color: <%= custom_org.text_color_hex.presence || '#ffffff' %> !important;
+      border-color: <%= custom_org.text_color_hex.presence || '#ffffff' %> !important;
+    }
+    #topbar .crayons-header--search .c-btn {
+      color: <%= custom_org.bg_color_hex %> !important;
+    }
+    #topbar .c-link[aria-current='page'], #topbar .c-link.c-link--current {
+      background-color: rgba(255,255,255,0.1) !important;
+    }
+    #topbar .crayons-dropdown .c-link {
+      color: #333333 !important;
+    }
+  </style>
+<% end %>
 
 <header id="topbar" class="crayons-header topbar print-hidden">
   <span id="route-change-target" tabindex="-1"></span>
@@ -21,7 +40,7 @@
     <%= render "layouts/logo" %>
 
     <div class="crayons-header--search js-search-form" id="header-search">
-      <form accept-charset="UTF-8" method="get" action="<%= search_path %>" role="search">
+      <form accept-charset="UTF-8" method="get" action="<%= header_link(search_path) %>" role="search">
         <div class="crayons-fields crayons-fields--horizontal">
           <div class="crayons-field flex-1 relative">
             <input id="search-input" class="crayons-header--search-input crayons-textfield js-search-input" type="text" id="nav-search" name="q" placeholder="<%= @article.present? ? t("views.search.find_related_posts") : t("views.search.placeholder") %>" autocomplete="off" />
@@ -42,7 +61,7 @@
 
     <div class="flex items-center h-100 ml-auto">
       <% if user_signed_in? %>
-        <a class="c-link c-link--icon-alone c-link--block m:hidden <% unless user_signed_in? %>mx-1<% end %>" id="search-link" aria-label="<%= t("views.search.icon.aria_label") %>" href="<%= search_path %>">
+        <a class="c-link c-link--icon-alone c-link--block m:hidden <% unless user_signed_in? %>mx-1<% end %>" id="search-link" aria-label="<%= t("views.search.icon.aria_label") %>" href="<%= header_link(search_path) %>">
           <%= crayons_icon_tag(:search, title: t("views.search.icon.title")) %>
         </a>
         <span class="hidden m:flex ml-auto">
@@ -53,13 +72,13 @@
               <%= t("views.main.create_post") %>
             </button>
           <% else %>
-            <%= application_policy_content_tag("a", record: Article, query: :create?, href: new_path, class: "c-cta c-cta--branded mr-2 whitespace-nowrap") do %>
+            <%= application_policy_content_tag("a", record: Article, query: :create?, href: header_link(new_path), class: "c-cta c-cta--branded mr-2 whitespace-nowrap") do %>
               <%= t("views.main.create_post") %>
             <% end %>
           <% end %>
 
           <span class="trusted-visible-block">
-            <a id="moderation-link" class="c-link c-link--icon-alone c-link--block mx-1" aria-label="<%= t("views.main.header.moderation.aria_label") %>" href="<%= mod_path %>">
+            <a id="moderation-link" class="c-link c-link--icon-alone c-link--block mx-1" aria-label="<%= t("views.main.header.moderation.aria_label") %>" href="<%= header_link(mod_path) %>">
               <%= crayons_icon_tag(:mod, title: t("views.main.header.moderation.icon")) %>
             </a>
           </span>
@@ -72,13 +91,13 @@
             }
           </style>
           <span class="subforem-moderator-visible-block">
-            <a id="manage-subforem-link" class="c-link c-link--icon-alone c-link--block mx-1" aria-label="<%= t("views.main.header.manage.aria_label") %>" href="<%= manage_subforem_path %>">
+            <a id="manage-subforem-link" class="c-link c-link--icon-alone c-link--block mx-1" aria-label="<%= t("views.main.header.manage.aria_label") %>" href="<%= header_link(manage_subforem_path) %>">
               <%= crayons_icon_tag(:"tools-line", title: t("views.main.header.manage.icon")) %>
             </a>
           </span>
         </span>
 
-        <a href="<%= notifications_path %>" id="notifications-link" class="c-link c-link--icon-alone c-link--block mx-1" aria-label="<%= t("views.main.header.notifications.aria_label") %>">
+        <a href="<%= header_link(notifications_path) %>" id="notifications-link" class="c-link c-link--icon-alone c-link--block mx-1" aria-label="<%= t("views.main.header.notifications.aria_label") %>">
           <%= crayons_icon_tag(:bell, title: t("views.main.header.notifications.icon")) %>
           <span class="c-indicator c-indicator--danger hidden" id="notifications-number"></span>
         </a>
@@ -92,12 +111,12 @@
       <% else %>
         <div class="flex" id="authentication-top-nav-actions">
           <span class="hidden m:block">
-            <a href="<%= subforem_aware_sign_up_url(sign_up_path(signup_subforem: RequestStore.store[:subforem_id])) %>" class="c-link c-link--block mr-2 whitespace-nowrap ml-auto" data-no-instant>
+            <a href="<%= header_sign_up_link(sign_up_path(signup_subforem: RequestStore.store[:subforem_id])) %>" class="c-link c-link--block mr-2 whitespace-nowrap ml-auto" data-no-instant>
               <%= t("views.main.header.login") %>
             </a>
           </span>
 
-          <a href="<%= subforem_aware_sign_up_url(sign_up_path(state: "new-user", signup_subforem: RequestStore.store[:subforem_id])) %>" data-tracking-id="ca_top_nav" data-tracking-source="top_navbar" class="c-cta c-cta--branded whitespace-nowrap mr-2" data-no-instant>
+          <a href="<%= header_sign_up_link(sign_up_path(state: "new-user", signup_subforem: RequestStore.store[:subforem_id])) %>" data-tracking-id="ca_top_nav" data-tracking-source="top_navbar" class="c-cta c-cta--branded whitespace-nowrap mr-2" data-no-instant>
             <%= t("views.main.header.create_account") %>
           </a>
         </div>
