@@ -54,7 +54,15 @@ RSpec.describe Ai::TrendDetector do
         # Stub the first-pass limit to only select the top 2 articles (article2 and article3 by score)
         allow(Article).to receive(:published).and_wrap_original do |m, *args|
           relation = m.call(*args)
-          allow(relation).to receive(:limit).with(1000).and_return(relation.limit(2))
+          class << relation
+            def limit(limit_val)
+              if limit_val == 1000 && !to_sql.include?("computed_distance")
+                super(2)
+              else
+                super(limit_val)
+              end
+            end
+          end
           relation
         end
       end
