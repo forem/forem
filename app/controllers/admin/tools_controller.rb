@@ -27,7 +27,8 @@ module Admin
       raise ArgumentError, I18n.t("admin.tools_controller.image_host_missing") if host.blank?
 
       limit = params[:image_host_limit].to_i
-      Articles::ReprocessByImageHostWorker.perform_async(host, limit)
+      since = params[:image_host_since].presence
+      Articles::ReprocessByImageHostWorker.perform_async(host, limit, since)
       flash[:success] = I18n.t("admin.tools_controller.image_host_enqueued", host: host)
       redirect_to admin_tools_path
     rescue StandardError => e

@@ -2,6 +2,8 @@ require "rails_helper"
 
 RSpec.describe Articles::ReprocessByImageHostWorker, type: :worker do
   let(:worker) { subject }
+  let(:host) { "cdn.hashnode.com" }
+  let(:stale_html) { %(<p><img src="https://#{host}/foo.png"></p>) }
 
   include_examples "#enqueues_on_correct_queue", "low_priority", ["cdn.example.com"]
 
@@ -11,38 +13,51 @@ RSpec.describe Articles::ReprocessByImageHostWorker, type: :worker do
       worker.perform("")
     end
 
-    it "re-evaluates only articles whose processed_html references the host" do
-      host = "cdn.hashnode.com"
+    it "re-evaluates only published articles whose processed_html references the host" do
       matching = create(:article)
       non_matching = create(:article)
-      matching.update_column(:processed_html, %(<p><img src="https://#{host}/foo.png"></p>))
+      unpublished = create(:article, published: false)
+      matching.update_column(:processed_html, stale_html)
       non_matching.update_column(:processed_html, "<p>nothing to see</p>")
-
-      touched_ids = []
-      allow_any_instance_of(Article).to receive(:evaluate_and_update_column_from_markdown) do |article|
-        touched_ids << article.id
-      end
-      allow_any_instance_of(Article).to receive(:async_bust)
+      unpublished.update_column(:processed_html, stale_html)
 
       worker.perform(host)
 
-      expect(touched_ids).to contain_exactly(matching.id)
+      expect(matching.reload.processed_html).not_to include(host)
+      expect(non_matching.reload.processed_html).to eq("<p>nothing to see</p>")
+      expect(unpublished.reload.processed_html).to eq(stale_html)
     end
 
     it "respects a positive limit" do
-      host = "cdn.hashnode.com"
-      3.times do
-        a = create(:article)
-        a.update_column(:processed_html, %(<img src="https://#{host}/x.png">))
+      articles = Array.new(3) do
+        create(:article).tap { |a| a.update_column(:processed_html, stale_html) }
       end
-
-      touched = 0
-      allow_any_instance_of(Article).to receive(:evaluate_and_update_column_from_markdown) { touched += 1 }
-      allow_any_instance_of(Article).to receive(:async_bust)
 
       worker.perform(host, 2)
 
-      expect(touched).to eq(2)
+      reprocessed = articles.count { |a| !a.reload.processed_html.include?(host) }
+      expect(reprocessed).to eq(2)
+    end
+
+    it "respects a since cutoff" do
+      recent = create(:article)
+      old = create(:article)
+      recent.update_columns(processed_html: stale_html, published_at: 5.days.ago)
+      old.update_columns(processed_html: stale_html, published_at: 60.days.ago)
+
+      worker.perform(host, 0, 30.days.ago.iso8601)
+
+      expect(recent.reload.processed_html).not_to include(host)
+      expect(old.reload.processed_html).to eq(stale_html)
+    end
+
+    it "ignores an unparseable since value and processes everything" do
+      article = create(:article)
+      article.update_column(:processed_html, stale_html)
+
+      worker.perform(host, 0, "not-a-date")
+
+      expect(article.reload.processed_html).not_to include(host)
     end
   end
 end
