@@ -15,6 +15,25 @@
     </p>
   </header>
 
+  <% if @active_trend_tags.any? %>
+    <nav class="crayons-tabs crayons-tabs--scrollable mb-6" aria-label="<%= t("trends.index.tag_filters_nav_label") %>">
+      <ul class="crayons-tabs__list">
+        <li>
+          <a href="<%= trending_index_path %>" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:tag].blank? %>" aria-current="<%= "page" if params[:tag].blank? %>">
+            <%= t("trends.index.all_trends") %>
+          </a>
+        </li>
+        <% @active_trend_tags.each do |tag| %>
+          <li>
+            <a href="<%= trending_index_path(tag: tag.name) %>" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:tag] == tag.name %>" aria-current="<%= "page" if params[:tag] == tag.name %>">
+              #<%= tag.name %>
+            </a>
+          </li>
+        <% end %>
+      </ul>
+    </nav>
+  <% end %>
+
   <% if @trends.empty? %>
     <div class="articles-list crayons-layout__content" id="articles-list">
       <div class="p-9 align-center crayons-card">
@@ -27,9 +46,14 @@
         <div class="crayons-card trend-card p-5 relative flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between mb-3">
-              <span class="fs-xs font-semibold uppercase tracking-wider px-2 py-1 bg-brand-10 color-brand rounded">
-                Trend
-              </span>
+              <div class="flex items-center gap-2">
+                <span class="fs-xs font-semibold uppercase tracking-wider px-2 py-1 bg-brand-10 color-brand rounded">
+                  Trend
+                </span>
+                <% if trend.tag.present? %>
+                  <%= render_tag_link(trend.tag, monochrome: true) %>
+                <% end %>
+              </div>
               <span class="fs-xs color-base-60">
                 <%= t("trends.index.posts_count", count: trend.articles_count) %>
               </span>
