@@ -83,8 +83,16 @@ class ArticleApiIndexService
 
   def tagged_articles
     articles = published_articles_with_users_and_organizations
-    articles = articles.tagged_with(tags, any: true).unscope(:select) if tags
-    articles = articles.tagged_with(tags_exclude, exclude: true) if tags_exclude
+
+    if tags.present?
+      tag_array = tags.split(",").map(&:strip).reject(&:blank?)
+      articles = articles.cached_tagged_with_any(tag_array).unscope(:select) if tag_array.any?
+    end
+
+    if tags_exclude.present?
+      exclude_array = tags_exclude.split(",").map(&:strip).reject(&:blank?)
+      articles = articles.not_cached_tagged_with_any(exclude_array) if exclude_array.any?
+    end
 
     articles
       .order(score: :desc)

@@ -34,4 +34,37 @@ RSpec.describe "Sidekiq Initializer" do
     strategy = Sidekiq::Throttled::Registry.get(Emails::BatchCustomSendWorker)
     expect(strategy).to be_a(Sidekiq::Throttled::Strategy)
   end
+
+  describe "Database Pool Decoupling" do
+    it "reconnects to the database with SIDEKIQ_CONCURRENCY upon Sidekiq startup" do
+      allow(ENV).to receive(:fetch).and_call_original
+      allow(ENV).to receive(:fetch).with("SIDEKIQ_CONCURRENCY", 16).and_return("25")
+
+      startup_blocks = []
+      
+      # Since Sidekiq.configure_server blocks only yield when Sidekiq is running as a server,
+      # we bypass the internal state check and manually yield a mock to capture the `.on(:startup)` hook.
+      allow(Sidekiq).to receive(:configure_server).and_wrap_original do |original_method, &block|
+        config_mock = double("SidekiqConfig").as_null_object
+        allow(config_mock).to receive(:on) # allow other hooks like :shutdown
+        allow(config_mock).to receive(:on).with(:startup) { |&startup| startup_blocks << startup }
+        block.call(config_mock)
+      end
+
+      load initializer_path
+
+      our_block = startup_blocks.find { |b| b.source_location[0].include?("config/initializers/sidekiq.rb") }
+      expect(our_block).not_to be_nil, "Expected config.on(:startup) loop to be defined"
+
+      pool_mock = double("ConnectionPool")
+      expect(pool_mock).to receive(:disconnect!)
+      allow(ActiveRecord::Base).to receive(:connection_pool).and_return(pool_mock)
+      
+      expected_db_config = Rails.application.config.database_configuration[Rails.env].merge('pool' => 30)
+      expect(ActiveRecord::Base).to receive(:establish_connection).with(expected_db_config)
+      
+      # Simulate Sidekiq boot completing and triggering our specific startup hook
+      our_block.call
+    end
+  end
 end

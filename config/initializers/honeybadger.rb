@@ -38,6 +38,8 @@ Rails.application.reloader.to_prepare do
     config.breadcrumbs.enabled = true
 
     config.before_notify do |notice|
+      notice.ignore! if notice.error_class == "SignalException" && notice.error_message&.include?("SIGHUP")
+
       notice.fingerprint = if notice.error_message&.include?("SIGTERM") && notice.component&.include?("feeds_import")
                              notice.error_message
                            elsif (msg_key = message_fingerprints.keys.detect do |k, _v|

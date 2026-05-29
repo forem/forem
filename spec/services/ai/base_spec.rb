@@ -1,6 +1,13 @@
 require "rails_helper"
 
 RSpec.describe Ai::Base do
+  describe "default models" do
+    it "exposes the lite Gemini model default" do
+      expect(described_class::DEFAULT_LITE_MODEL).to eq(ENV.fetch("GEMINI_API_LITE_MODEL",
+                                                                  "gemini-3.1-flash-lite-preview"))
+    end
+  end
+
   describe "#call" do
     let(:api_key) { "test_api_key" }
     let(:model) { "gemini-1.5-pro" }
@@ -48,9 +55,8 @@ RSpec.describe Ai::Base do
       let(:article) { create(:article, user: user) }
 
       before do
-        stub_const("DummyAiWrapper", Class.new do
-          VERSION = "1.0"
-        end)
+        stub_const("DummyAiWrapper", Class.new)
+        DummyAiWrapper.const_set(:VERSION, "1.0")
       end
 
       it "logs AiAudit with provided context" do

@@ -22,9 +22,9 @@
           <%= badge.title %>
       </p>
 
-      <div id="badge-<%= badge.id %>" class="hidden">
+      <template id="badge-<%= badge.id %>">
         <%= render partial: "badge_detail", locals: { badge: badge } %>
-      </div>
+      </template>
     </div>
     <% end %>
   </div>

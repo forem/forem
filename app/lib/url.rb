@@ -4,6 +4,14 @@ module URL
     ApplicationConfig["APP_PROTOCOL"]
   end
 
+  # Port appended to URLs in the development environment. Defaults to "3000"
+  # to preserve historical behavior, but can be overridden by setting the
+  # PORT environment variable to match the actual server port (useful when
+  # Forem runs alongside other Rails apps that also default to 3000).
+  def self.dev_port
+    ENV.fetch("PORT", "3000")
+  end
+
   def self.database_available?
     ActiveRecord::Base.connected? && has_site_configs?
   end
@@ -29,7 +37,7 @@ module URL
 
   def self.url(uri = nil, domain_or_subforem = nil)
     base_url = "#{protocol}#{domain(domain_or_subforem)}"
-    base_url += ":3000" if Rails.env.development? && !base_url.include?(":3000")
+    base_url += ":#{dev_port}" if Rails.env.development? && !base_url.include?(":#{dev_port}")
     return base_url unless uri
     Addressable::URI.parse(base_url).join(uri).normalize.to_s
   end

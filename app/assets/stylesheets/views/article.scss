@@ -111,6 +111,10 @@
     font-size: calc(var(--fs-base) - 1px);
     line-height: 1.5;
     display: inline-block;
+
+    p {
+      margin-bottom: 0 !important;
+    }
   }
 
   &__context-note__feed {
@@ -133,7 +137,8 @@
   background: var(--body-color-inverted);
   padding: var(--su-2);
   box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.2);
-  z-index: var(--z-sticky);
+  // Ensure this is above comments but below dropdowns/modals/popovers (like billboards)
+  z-index: calc(var(--z-dropdown) - 1);
 
   @media (min-width: $breakpoint-m) {
     border-radius: var(--radius-large);
@@ -147,7 +152,7 @@
     box-shadow: none;
     justify-content: stretch;
     top: calc(var(--header-height) + var(--layout-padding) + 6vh);
-    z-index: var(--z-elevate);
+    // z-index: var(--z-elevate);
   }
 
   &__inner {
@@ -160,6 +165,16 @@
       display: grid;
       gap: var(--su-4);
       justify-content: stretch;
+    }
+  }
+}
+
+html.is-twitter-in-app {
+  .crayons-article-actions {
+    display: none !important;
+
+    @media (min-width: $breakpoint-m) {
+      display: grid !important; // Restore desktop layout if Twitter UA is faked/used on tablet
     }
   }
 }
@@ -232,8 +247,9 @@
     color: var(--base-70);
     font-size: var(--fs-s);
     display: inline-flex;
+    align-items: center;
     margin-left: 0px;
-    padding-right: var(--su-1);
+    // padding-right: var(--su-1);
     min-width: var(--su-6);
 
     @media (min-width: $breakpoint-m) {

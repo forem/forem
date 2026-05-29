@@ -14,6 +14,20 @@ RSpec.describe URL, type: :lib do
     end
   end
 
+  describe ".dev_port" do
+    it "defaults to 3000 when the PORT env var is not set" do
+      allow(ENV).to receive(:fetch).and_call_original
+      allow(ENV).to receive(:fetch).with("PORT", "3000").and_return("3000")
+      expect(described_class.dev_port).to eq("3000")
+    end
+
+    it "returns the value of the PORT env var when set" do
+      allow(ENV).to receive(:fetch).and_call_original
+      allow(ENV).to receive(:fetch).with("PORT", "3000").and_return("3005")
+      expect(described_class.dev_port).to eq("3005")
+    end
+  end
+
   describe ".domain" do
     it "returns the value of Settings::General" do
       expect(described_class.domain).to eq(Settings::General.app_domain)
@@ -71,6 +85,29 @@ RSpec.describe URL, type: :lib do
 
       it "creates a base URL with the subforem's domain" do
         expect(described_class.url(nil, subforem)).to eq("https://community.example.com")
+      end
+    end
+
+    context "when in the development environment" do
+      before do
+        allow(Rails.env).to receive(:development?).and_return(true)
+        allow(Settings::General).to receive(:app_domain).and_return("localhost")
+      end
+
+      it "appends the default port :3000 when PORT is not set" do
+        allow(described_class).to receive(:dev_port).and_return("3000")
+        expect(described_class.url).to eq("https://localhost:3000")
+      end
+
+      it "appends the configured PORT when set" do
+        allow(described_class).to receive(:dev_port).and_return("3005")
+        expect(described_class.url).to eq("https://localhost:3005")
+      end
+
+      it "does not double-append the port when it is already present in the domain" do
+        allow(described_class).to receive(:dev_port).and_return("3005")
+        allow(Settings::General).to receive(:app_domain).and_return("localhost:3005")
+        expect(described_class.url).to eq("https://localhost:3005")
       end
     end
   end

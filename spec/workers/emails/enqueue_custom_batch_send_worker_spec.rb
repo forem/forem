@@ -85,7 +85,7 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
         # Test that the worker calls the batch worker with correct arguments
         # Since the worker is working correctly, we'll just verify it doesn't raise an error
         expect { described_class.new.perform(email.id) }.not_to raise_error
-        
+
         # The worker should have called the batch worker (we can see from the output that it does)
         # This test verifies the worker executes successfully with user queries
       end
@@ -164,7 +164,7 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
       context "with standard scope" do
         it "filters users based on min_id" do
           described_class.new.perform(email.id, user_ids[2]) # Start from 3rd user
-          
+
           expect(Emails::BatchCustomSendWorker).to have_received(:perform_async).with(
             array_including(user_ids[2], user_ids[3], user_ids[4]),
             anything, anything, anything, anything, anything
@@ -176,7 +176,7 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
 
         it "filters users based on max_id" do
           described_class.new.perform(email.id, nil, user_ids[2]) # Up to 3rd user
-          
+
           expect(Emails::BatchCustomSendWorker).to have_received(:perform_async).with(
             array_including(user_ids[0], user_ids[1], user_ids[2]),
             anything, anything, anything, anything, anything
@@ -185,10 +185,10 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
 
         it "filters based on both min_id and max_id" do
           described_class.new.perform(email.id, user_ids[1], user_ids[3])
-          
+
           # Should only include middle users
           expect(Emails::BatchCustomSendWorker).to have_received(:perform_async).with(
-            [user_ids[1], user_ids[2], user_ids[3]].sort,
+            contain_exactly(user_ids[1], user_ids[2], user_ids[3]),
             anything, anything, anything, anything, anything
           )
         end
@@ -208,7 +208,7 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
 
         it "filters custom query results in Ruby" do
           described_class.new.perform(email_with_query.id, user_ids[2], user_ids[3])
-          
+
           expect(Emails::BatchCustomSendWorker).to have_received(:perform_async).with(
             [user_ids[2], user_ids[3]],
             anything, anything, anything, anything, anything

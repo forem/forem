@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { ImageUploader } from './ImageUploader';
 import { MarkdownToolbar, Link } from '@crayons';
 import HelpIcon from '@images/help.svg';
+import AgentSessionIcon from '@images/agent-session.svg';
 
 export const Toolbar = ({ version, textAreaId }) => {
   return (
@@ -11,10 +12,32 @@ export const Toolbar = ({ version, textAreaId }) => {
         }`}
     >
       {version === 'v1' ? (
-        <ImageUploader editorVersion={version} />
+        <div className="flex items-center">
+          <ImageUploader editorVersion={version} />
+          <a
+            href="/agent_sessions/new"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="c-btn ml-2"
+            title="Upload Agent Session"
+          >
+            Agent Session
+          </a>
+        </div>
       ) : (
         <MarkdownToolbar
           textAreaId={textAreaId}
+          additionalPrimaryToolbarElements={[
+            <Link
+              key="agent-session-link"
+              href="/agent_sessions/new"
+              target="_blank"
+              rel="noopener noreferrer"
+              icon={AgentSessionIcon}
+              aria-label="Upload Agent Session"
+              title="Upload Agent Session"
+            />,
+          ]}
           additionalSecondaryToolbarElements={[
             <Link
               key="help-link"

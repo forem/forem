@@ -19,7 +19,7 @@
     <div class="crayons-field">
       <%= f.label :email, t("helpers.label.user.email"), for: "user[email]", class: "crayons-field__label" %>
       <%= f.text_field "user[email]",
-                       maxlength: 50,
+                       maxlength: 254,
                        class: "crayons-textfield",
                        placeholder: t("helpers.placeholder.user.email"),
                        value: @user.email %>

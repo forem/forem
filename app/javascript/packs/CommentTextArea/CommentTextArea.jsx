@@ -1,6 +1,8 @@
-import { h } from 'preact';
+import { h, Fragment } from 'preact';
 import { useState, useRef, useLayoutEffect } from 'preact/hooks';
 import { populateTemplates } from '../../responseTemplates/responseTemplates';
+import { createPopup } from '@picmo/popup-picker';
+import { addSnackbarItem } from '../../Snackbar';
 import { handleImagePasted } from '../../article-form/components/pasteImageHelpers';
 import {
   handleImageUploading,
@@ -22,13 +24,97 @@ import {
 import { fetchSearch } from '@utilities/search';
 import HelpIcon from '@images/help.svg';
 import Templates from '@images/templates.svg';
+import EmojiIcon from '@images/emoji.svg';
 import { usePasteImage } from '@utilities/pasteImage';
 import { useDragAndDrop } from '@utilities/dragAndDrop';
+import { gatherPriorityUserIds } from '../../shared/helpers/contextUsers';
 
 const getClosestTemplatesContainer = (element) =>
   element
     .closest('.comment-form__inner')
     ?.querySelector('.response-templates-container');
+
+const insertTextAtCursor = (textArea, text) => {
+  const { selectionStart, selectionEnd, value } = textArea;
+  const newPos = selectionStart + text.length;
+
+  textArea.contentEditable = 'true';
+  textArea.focus({ preventScroll: true });
+  textArea.setSelectionRange(selectionStart, selectionEnd);
+
+  if (document.activeElement === textArea) {
+    try {
+      document.execCommand('insertText', false, text);
+    } catch (e) {
+      textArea.value = value.slice(0, selectionStart) + text + value.slice(selectionEnd);
+    }
+  } else {
+    // Fallback: if focus trap or race condition prevented focusing the textarea, directly insert
+    textArea.value = value.slice(0, selectionStart) + text + value.slice(selectionEnd);
+  }
+
+  textArea.contentEditable = 'false';
+  textArea.dispatchEvent(new Event('input'));
+  
+  setTimeout(() => {
+    textArea.focus({ preventScroll: true });
+    textArea.setSelectionRange(newPos, newPos);
+  }, 10);
+};
+
+const replacePlaceholder = (textArea, searchPattern, replaceWith) => {
+  const { selectionStart, selectionEnd, value } = textArea;
+  const index = value.indexOf(searchPattern);
+  if (index === -1) return;
+  
+  textArea.value = value.replace(searchPattern, replaceWith);
+  textArea.dispatchEvent(new Event('input'));
+  
+  const diff = replaceWith.length - searchPattern.length;
+  if (index < selectionStart) {
+    textArea.setSelectionRange(selectionStart + diff, selectionEnd + diff);
+  } else {
+    textArea.setSelectionRange(selectionStart, selectionEnd);
+  }
+};
+
+const EmojiPickerButton = ({ textAreaId }) => {
+  const pickerRef = useRef(null);
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    if (!pickerRef.current) {
+      pickerRef.current = createPopup({}, {
+        referenceElement: e.currentTarget,
+        triggerElement: e.currentTarget,
+        position: 'bottom-start',
+        className: 'c-emoji-popup'
+      });
+      pickerRef.current.addEventListener('emoji:select', (event) => {
+        pickerRef.current.close();
+        const liveTextArea = document.getElementById(textAreaId);
+        if (liveTextArea) {
+          // 50ms timeout ensures Picmo removes any active focus traps prior to insertion
+          setTimeout(() => {
+            insertTextAtCursor(liveTextArea, event.emoji);
+          }, 50);
+        }
+      });
+    }
+    pickerRef.current.toggle();
+  };
+
+  return (
+    <Button
+      key="emoji-btn"
+      icon={EmojiIcon}
+      aria-label="Insert Emoji"
+      tooltip="Insert Emoji"
+      onClick={handleClick}
+    />
+  );
+};
+
 
 export const CommentTextArea = ({ vanillaTextArea }) => {
   const [templatesVisible, setTemplatesVisible] = useState(false);
@@ -83,18 +169,28 @@ export const CommentTextArea = ({ vanillaTextArea }) => {
         maxSuggestions={6}
         searchInstructionsMessage="Type to search for a user"
         replaceElement={vanillaTextArea}
-        fetchSuggestions={(username) =>
-          fetchSearch('usernames', {
+        fetchSuggestions={(username) => {
+          const priorityUserIds = gatherPriorityUserIds(textAreaRef.current);
+          const params = {
             username,
             context_type: contextData?.['commentableType'],
             context_id: contextData?.['commentableId'],
-          }).then(({ result }) =>
+          };
+          
+          if (priorityUserIds.length) {
+            params.priority_user_ids = priorityUserIds;
+          }
+          
+          return fetchSearch('usernames', params).then(({ result }) =>
             result?.map((user) => ({ ...user, value: user.username })),
-          )
-        }
+          );
+        }}
       />
       <MarkdownToolbar
         textAreaId={vanillaTextArea.id}
+        additionalPrimaryToolbarElements={[
+          <EmojiPickerButton textAreaId={vanillaTextArea.id} />
+        ]}
         additionalSecondaryToolbarElements={[
           <Button
             key="templates-btn"

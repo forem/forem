@@ -21,7 +21,7 @@ module Ai
     private
 
     def prompt
-      final_guide_text = Rails.cache.fetch("ai:editor_helper:guide", expires_in: 12.hours) do
+      final_guide_text = Rails.cache.fetch("ai:editor_helper:guide_with_mechanics_v2", expires_in: 12.hours) do
         guide_path = Rails.root.join("app/views/pages/_editor_guide_text.en.html.erb")
         url_embeds_path = Rails.root.join("app/views/pages/_supported_url_embeds_list.en.html.erb")
         nonurl_embeds_path = Rails.root.join("app/views/pages/_supported_nonurl_embeds_list.en.html.erb")
@@ -61,7 +61,18 @@ module Ai
           .gsub(/<[^>]+>/, "")
           .gsub(/\n\s*\n\s*\n+/, "\n\n").strip
 
+        platform_mechanics = <<~MECHANICS
+          Platform Mechanics Overview:
+          - Tags: Tags are the primary organizational mechanism on the platform. Adding relevant tags enables the engine to correctly route the post to users following those specific subjects via their chronological or curated feed algorithms. The limit is four tags per post.
+          - Titles & Markdown: Catchy, plain-language titles historically perform better. The platform engine relies strictly on standard Markdown semantics alongside special Liquid embed blocks. Avoiding extremely dense text blocks while leveraging Markdown headers actively assists readability logic.
+          - Feed Personalization: Forem utilizes a heavily personalized algorithm where interactions (reads, reactions) actively shape future feed displays. Pushing engaging content inherently improves the likelihood of circulating upward in audience feeds.
+          - Organizations: Users can establish or join Organizations which act as unified brands. An author can elect to publish an article under their Organization domain, aggregating followers implicitly toward the organizational brand rather than solely the personal account.
+          - Following Accounts: The Follow mechanic serves to anchor a baseline connection. When users publish content, their followers are dramatically more likely to be exposed to it initially on their dashboard, establishing a core audience burst. Activity distributions heavily favor connected follow graphs.
+        MECHANICS
+
         <<~GUIDE
+          #{platform_mechanics}
+
           #{clean_guide}
 
           Supported URL Embeds:
@@ -70,6 +81,17 @@ module Ai
           Supported Non-URL (Block) Embeds:
           #{clean_nonurl_embeds}
         GUIDE
+      end
+
+      expanded_spec = Settings::RateLimit.expanded_content_advisement_spec
+
+      advisement_context = ""
+      if expanded_spec.present?
+        advisement_context = <<~ADVISEMENT
+          The platform explicitly specifies the following about ideal content:
+          #{expanded_spec}
+          
+        ADVISEMENT
       end
 
       article_context = ""
@@ -84,19 +106,19 @@ module Ai
       end
 
       <<~PROMPT
-        You are an insightful technical editor assistant for the DEV community.
-        Your goal is to help the user format, write, and structure their article using the DEV editor.
+        You are an insightful technical editor assistant for the #{Settings::Community.community_name} community.
+        Your goal is to help the user format, write, and structure their article.
 
-        Here is the official DEV Editor Guide for your reference:
+        Here is the official #{Settings::Community.community_name} Editor Guide for your reference:
         #{final_guide_text}
 
-        #{article_context}Current Conversation History:
+        #{advisement_context}#{article_context}Current Conversation History:
         #{@history.map { |m| "#{m[:role].capitalize}: #{m[:text]}" }.join("\n")}
 
         Guidelines:
         - Be encouraging, helpful, and technically grounded.
-        - Only answer questions related to using the editor, writing articles, formatting markdown, or embedding content.
-        - Prefer concise answers as far as possible. Brevity is great.
+        - NEVER give unsolicited advice on what subjects to write about or how to structure the story itself UNLESS the user explicitly asks for feedback on their content strategy, or their writing is overwhelmingly non-sensical.
+        - Answer formatting and structural queries natively based on the official guidelines.
         - Use markdown for formatting your own responses. Provide code blocks when giving markdown examples or Liquid tags.
         - Prefer global embeds as instructions (i.e. {% embed https://github... %}) over platform-specific tags (like {% github ... %}), if possible in the context.
         - Do not assume you understand how embeds work beyond instructions as given.

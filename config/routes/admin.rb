@@ -25,7 +25,12 @@ namespace :admin do
   end
 
   resources :organization_memberships, only: %i[update destroy create]
-  resources :permissions, only: %i[index]
+  resources :permissions, only: %i[index] do
+    collection do
+      post :grant
+      delete :revoke
+    end
+  end
   resources :reactions, only: %i[update]
   resources :creator_settings, only: %i[create new]
 
@@ -63,6 +68,7 @@ namespace :admin do
         post "verify_email_ownership"
         post "send_email_confirmation"
         post "confirm_email"
+        post "confirm_pending_email"
         patch "unlock_access"
         post "unpublish_all_articles"
       end
@@ -105,6 +111,8 @@ namespace :admin do
         patch "update_org_credits"
         patch "update_fully_trusted"
         patch "update_baseline_score"
+        patch "update_verified"
+        patch "update_org_feature"
       end
     end
     resources :emails
@@ -133,11 +141,22 @@ namespace :admin do
       resource :moderator, only: %i[create destroy], module: "tags"
     end
     resources :surveys
+    resources :events do
+      member do
+        patch :end_broadcast
+      end
+    end
   end
 
   scope :customization do
     # We renamed the controller but don't want to change the route (yet)
     resource :config, controller: "settings"
+    resources :org_features, only: [:index], controller: "org_features" do
+      collection do
+        patch :toggle_global
+        patch :update_cta
+      end
+    end
     resources :billboards
     resources :billboard_placement_area_configs, only: %i[index edit update]
     resources :html_variants, only: %i[index edit update new create show destroy]
@@ -156,6 +175,7 @@ namespace :admin do
         end
       end
     end
+    resources :request_redirects
   end
 
   scope :moderation do
@@ -171,6 +191,7 @@ namespace :admin do
     resources :moderator_actions, only: %i[index]
     resources :privileged_reactions, only: %i[index]
     resources :blocked_email_domains, only: %i[index new create destroy]
+    resources :linked_domains, only: %i[index edit update]
   end
 
   scope :advanced do

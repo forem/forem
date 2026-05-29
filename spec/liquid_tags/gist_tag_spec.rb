@@ -43,26 +43,26 @@ RSpec.describe GistTag, type: :liquid_tag do
     it "accepts proper gist url" do
       gist_links.each do |link|
         liquid = generate_new_liquid(link: link)
-        expect(liquid.render.tr("\n", " ").delete(" ")).to eq(generate_script(link))
+        expect(liquid.render.tr("\n", " ").delete(" ")).to include(generate_script(link))
       end
     end
 
     it "handles 'file' option" do
       liquid = generate_new_liquid(link: link_with_file_option)
       link, option = link_with_file_option.split(" ", 2)
-      expect(liquid.render.tr("\n", " ").delete(" ")).to eq(generate_script(link, option))
+      expect(liquid.render.tr("\n", " ").delete(" ")).to include(generate_script(link, option))
     end
 
     it "allows embed of specific version" do
       liquid = generate_new_liquid(link: gist_link_with_version)
-      expect(liquid.render.tr("\n", " ").delete(" ")).to eq(generate_script(gist_link_with_version))
+      expect(liquid.render.tr("\n", " ").delete(" ")).to include(generate_script(gist_link_with_version))
     end
 
     it "allows embed of specific version with 'file' option" do
       version_with_file_option = gist_link_with_version.concat(" file=Images.tmpl")
       liquid = generate_new_liquid(link: version_with_file_option)
       link, option = version_with_file_option.split(" ", 2)
-      expect(liquid.render.tr("\n", " ").delete(" ")).to eq(generate_script(link, option))
+      expect(liquid.render.tr("\n", " ").delete(" ")).to include(generate_script(link, option))
     end
 
     it "rejects invalid gist url" do

@@ -85,6 +85,10 @@ en:
           article: your article
           comment: your comment
           unknown: you
+      organization:
+        deverification_heading: Verification revoked
+        deverification_html: "The verification for %{org} has been revoked because we could no longer find a link back to your organization page on the previously verified URL."
+        reverify: Re-verify your organization
       settings: Settings
       tag:
         heading: "Hey there 👋"

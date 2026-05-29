@@ -88,7 +88,11 @@ module Articles
         end
         
         if user_data[:hidden_tags].any?
-          articles = articles.not_cached_tagged_with_any(user_data[:hidden_tags])
+          articles = if ENV["OPTIMIZED_FEED_TAGS_QUERY"] == "true"
+                       articles.where.not("articles.tags_array && ARRAY[?]::text[]", user_data[:hidden_tags].map(&:to_s))
+                     else
+                       articles.not_cached_tagged_with_any(user_data[:hidden_tags])
+                     end
         end
         
         articles

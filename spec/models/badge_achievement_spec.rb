@@ -29,11 +29,34 @@ RSpec.describe BadgeAchievement do
     expect(credits_achievement.user.credits.size).to eq(10)
   end
 
+  it "calculates user score after create" do
+    user = create(:user)
+    expect(user).to receive(:calculate_score)
+    create(:badge_achievement, user: user, badge: badge)
+  end
+
   it "notifies recipients after commit" do
     achievement
     allow(Notification).to receive(:send_new_badge_achievement_notification)
     achievement.run_callbacks(:commit)
     expect(Notification).to have_received(:send_new_badge_achievement_notification).with(achievement)
+  end
+
+  describe "cache busting" do
+    let(:user) { create(:user) }
+
+    it "enqueues Users::BustCacheWorker on create" do
+      sidekiq_assert_enqueued_with(job: Users::BustCacheWorker, args: [user.id]) do
+        create(:badge_achievement, user: user, badge: badge)
+      end
+    end
+
+    it "enqueues Users::BustCacheWorker on destroy" do
+      badge_achievement = create(:badge_achievement, user: user, badge: badge)
+      sidekiq_assert_enqueued_with(job: Users::BustCacheWorker, args: [user.id]) do
+        badge_achievement.destroy
+      end
+    end
   end
 
   describe "Top 7 badge reputation modifier callback" do

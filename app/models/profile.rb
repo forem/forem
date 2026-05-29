@@ -7,6 +7,7 @@ class Profile < ApplicationRecord
   store_accessor :data, :social_image
 
   after_commit :bust_user_profile_details_cache, on: :update, if: :profile_details_changed_for_cache?
+  after_commit :complete_onboarding_profile_item, on: :update, if: :profile_details_changed_for_cache?
   after_commit :enqueue_profile_spam_check, on: :update, if: :profile_spam_check_triggered?
 
   validates :user_id, uniqueness: true
@@ -87,6 +88,10 @@ class Profile < ApplicationRecord
     return false unless saved_change_to_summary?
 
     Spam::Handler.profile_spam_trigger_term_match?(summary)
+  end
+
+  def complete_onboarding_profile_item
+    user.onboarding_checklist&.complete_item!("fill_out_profile")
   end
 
   def enqueue_profile_spam_check

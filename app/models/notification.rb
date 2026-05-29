@@ -11,6 +11,7 @@ class Notification < ApplicationRecord
   validates :user_id, uniqueness: { scope: %i[organization_id notifiable_id notifiable_type action] }
 
   before_create :mark_notified_at_time
+  after_commit :cleanup_old_notifications, on: :create
 
   scope :for_published_articles, -> { where(notifiable_type: "Article", action: "Published") }
   scope :for_comments, -> { where(notifiable_type: "Comment", action: nil) } # nil action means "not a reaction"
@@ -157,7 +158,9 @@ class Notification < ApplicationRecord
       Notifications::UpdateWorker.perform_async(notifiable.id, notifiable.class.name, action)
     end
 
-    def fast_destroy_old_notifications(destroy_before_timestamp = 3.months.ago)
+    def fast_destroy_old_notifications(destroy_before_timestamp = ENV.fetch("FAST_DESTROY_OLD_NOTIFICATIONS_DAYS", 85).to_i.days.ago)
+      return if destroy_before_timestamp > 7.days.ago
+
       sql = <<-SQL.squish
         DELETE FROM notifications
         WHERE notifications.id IN (
@@ -171,6 +174,39 @@ class Notification < ApplicationRecord
       notification_sql = Notification.sanitize_sql([sql, destroy_before_timestamp])
 
       BulkSqlDelete.delete_in_batches(notification_sql)
+    end
+
+    def fast_cleanup_older_than_100_for(user_id)
+      comment_sql = <<-SQL.squish
+        DELETE FROM notifications
+        WHERE notifications.id IN (
+          SELECT id FROM (
+            SELECT id FROM notifications
+            WHERE user_id = ? AND notifiable_type = 'Comment'
+            ORDER BY created_at DESC
+            OFFSET 100
+            LIMIT 1000
+          ) as sub
+          LIMIT 50000
+        )
+      SQL
+
+      non_comment_sql = <<-SQL.squish
+        DELETE FROM notifications
+        WHERE notifications.id IN (
+          SELECT id FROM (
+            SELECT id FROM notifications
+            WHERE user_id = ? AND (notifiable_type != 'Comment' OR notifiable_type IS NULL)
+            ORDER BY created_at DESC
+            OFFSET 100
+            LIMIT 1000
+          ) as sub
+          LIMIT 50000
+        )
+      SQL
+
+      BulkSqlDelete.delete_in_batches(Notification.sanitize_sql([comment_sql, user_id]))
+      BulkSqlDelete.delete_in_batches(Notification.sanitize_sql([non_comment_sql, user_id]))
     end
 
     private
@@ -190,5 +226,15 @@ class Notification < ApplicationRecord
 
   def mark_notified_at_time
     self.notified_at = Time.current
+  end
+
+  def cleanup_old_notifications
+    return unless ENV["ENABLE_USER_NOTIFICATION_CLEANUP"] == "true"
+    return unless user_id
+    return unless rand(10).zero?
+
+    return unless Rails.cache.write("cleanup_user_notifications_#{user_id}", 1, expires_in: 10.minutes, unless_exist: true)
+
+    Notifications::CleanupUserWorker.perform_async(user_id)
   end
 end

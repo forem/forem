@@ -58,6 +58,10 @@
   <section class="crayons-card p-3 s:p-4 m:p-7">
     <%= render "admin/users/show/articles/index" %>
   </section>
+<% elsif @current_tab == "audit_log" %>
+  <section class="crayons-card p-3 s:p-4 m:p-7">
+    <%= render "admin/users/show/audit_log/index" %>
+  </section>
 <% elsif @current_tab == "unpublish_logs" %>
   <section class="crayons-card p-3 s:p-4 m:p-7">
     <%= render "admin/users/show/unpublish_logs/index" %>
