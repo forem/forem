@@ -19,6 +19,19 @@
             "description": "successful",
             "content": {
               "application/json": {
+                "example": [
+                  {
+                    "id": 40,
+                    "slug": "session-a-jsq3q8",
+                    "title": "Session A",
+                    "tool_name": "claude_code",
+                    "total_messages": 2,
+                    "published": false,
+                    "created_at": "2026-05-28T12:45:15-06:00",
+                    "updated_at": "2026-05-28T12:45:15-06:00",
+                    "url": "http://forem.test/agent_sessions/session-a-jsq3q8"
+                  }
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -29,7 +42,15 @@
             }
           },
           "401": {
-            "description": "unauthorized"
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           }
         }
       },
@@ -48,6 +69,16 @@
             "description": "created",
             "content": {
               "application/json": {
+                "example": {
+                  "id": 41,
+                  "slug": "my-claude-session-jg1xld",
+                  "title": "My Claude Session",
+                  "tool_name": "claude_code",
+                  "total_messages": 2,
+                  "published": false,
+                  "created_at": "2026-05-28T12:45:15-06:00",
+                  "url": "http://forem.test/agent_sessions/my-claude-session-jg1xld"
+                },
                 "schema": {
                   "$ref": "#/components/schemas/AgentSessionIndex"
                 }
@@ -55,10 +86,26 @@
             }
           },
           "401": {
-            "description": "unauthorized"
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "422": {
-            "description": "unprocessable"
+            "description": "unprocessable",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Missing session content. Provide 'curated_data' or 's3_key'.",
+                  "status": 422
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -126,6 +173,47 @@
             "description": "successful",
             "content": {
               "application/json": {
+                "example": {
+                  "id": 42,
+                  "slug": "my-session-15rjsb",
+                  "title": "My Session",
+                  "tool_name": "claude_code",
+                  "total_messages": 2,
+                  "curated_count": 2,
+                  "published": false,
+                  "metadata": {
+                    "tool_name": "claude_code",
+                    "total_messages": 2
+                  },
+                  "messages": [
+                    {
+                      "role": "user",
+                      "index": 0,
+                      "content": [
+                        {
+                          "text": "Hello",
+                          "type": "text"
+                        }
+                      ]
+                    },
+                    {
+                      "role": "assistant",
+                      "index": 1,
+                      "content": [
+                        {
+                          "text": "Hi there",
+                          "type": "text"
+                        }
+                      ]
+                    }
+                  ],
+                  "slices": [
+
+                  ],
+                  "created_at": "2026-05-28T12:45:15-06:00",
+                  "updated_at": "2026-05-28T12:45:15-06:00",
+                  "url": "http://forem.test/agent_sessions/my-session-15rjsb"
+                },
                 "schema": {
                   "$ref": "#/components/schemas/AgentSessionShow"
                 }
@@ -133,10 +221,26 @@
             }
           },
           "401": {
-            "description": "unauthorized"
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "404": {
-            "description": "not found"
+            "description": "not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           }
         }
       }
@@ -154,13 +258,75 @@
         ],
         "responses": {
           "201": {
-            "description": "An Article"
+            "description": "An Article",
+            "content": {
+              "application/json": {
+                "example": {
+                  "type_of": "article",
+                  "id": 2233,
+                  "title": "New article",
+                  "description": "New post example",
+                  "readable_publish_date": "May 28",
+                  "slug": "new-article-2gaj",
+                  "path": "/username8/new-article-2gaj",
+                  "url": "http://forem.test/username8/new-article-2gaj",
+                  "comments_count": 0,
+                  "public_reactions_count": 0,
+                  "collection_id": 13,
+                  "published_timestamp": "2026-05-28T18:45:16Z",
+                  "language": "en",
+                  "subforem_id": null,
+                  "positive_reactions_count": 0,
+                  "cover_image": "https://thepracticaldev.s3.amazonaws.com/i/5wfo25724gzgk5e5j50g.jpg",
+                  "social_image": "https://thepracticaldev.s3.amazonaws.com/i/5wfo25724gzgk5e5j50g.jpg",
+                  "canonical_url": "https://dev.to/fdocr/headless-chrome-dual-mode-tests-for-ruby-on-rails-4p6g",
+                  "created_at": "2026-05-28T18:45:16Z",
+                  "edited_at": null,
+                  "crossposted_at": null,
+                  "published_at": "2026-05-28T18:45:16Z",
+                  "last_comment_at": "2026-05-28T18:45:16Z",
+                  "reading_time_minutes": 1,
+                  "tag_list": "",
+                  "tags": [
+
+                  ],
+                  "body_html": "<p><strong>New</strong> body for the article</p>\n\n",
+                  "body_markdown": "**New** body for the article",
+                  "user": {
+                    "name": "Delorse \"Duncan\" \\:/ Kerluke",
+                    "username": "username8",
+                    "twitter_username": "twitter8",
+                    "github_username": "github8",
+                    "user_id": 4056,
+                    "website_url": null,
+                    "profile_image": "/uploads/user/profile_image/4056/149b80c3-1a8e-4e1f-ac70-9da821c6eb8a.jpeg",
+                    "profile_image_90": "/uploads/user/profile_image/4056/149b80c3-1a8e-4e1f-ac70-9da821c6eb8a.jpeg"
+                  }
+                }
+              }
+            }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "422": {
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "param is missing or the value is empty: article",
+                  "status": 422
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -274,6 +440,60 @@
             "description": "A List of Articles",
             "content": {
               "application/json": {
+                "example": [
+                  {
+                    "type_of": "article",
+                    "id": 2236,
+                    "title": "The Golden Apples of the Sun4",
+                    "description": "Banh mi vegan fingerstache. Craft beer wes anderson portland you probably havent heard of them swag....",
+                    "readable_publish_date": "May 28",
+                    "slug": "the-golden-apples-of-the-sun4-453o",
+                    "path": "/username12/the-golden-apples-of-the-sun4-453o",
+                    "url": "http://forem.test/username12/the-golden-apples-of-the-sun4-453o",
+                    "comments_count": 0,
+                    "public_reactions_count": 0,
+                    "collection_id": null,
+                    "published_timestamp": "2026-05-28T18:45:16Z",
+                    "language": "en",
+                    "subforem_id": null,
+                    "positive_reactions_count": 0,
+                    "cover_image": "http://forem.test/assets/30-08b2d52669e0680784f50291966e33f77cbee815907e6abbacf74018fa3f3567.png",
+                    "social_image": "http://forem.test/assets/30-08b2d52669e0680784f50291966e33f77cbee815907e6abbacf74018fa3f3567.png",
+                    "canonical_url": "http://forem.test/username12/the-golden-apples-of-the-sun4-453o",
+                    "created_at": "2026-05-28T18:45:16Z",
+                    "edited_at": null,
+                    "crossposted_at": null,
+                    "published_at": "2026-05-28T18:45:16Z",
+                    "last_comment_at": "2026-05-28T18:45:16Z",
+                    "reading_time_minutes": 1,
+                    "tag_list": [
+                      "discuss"
+                    ],
+                    "tags": "discuss",
+                    "user": {
+                      "name": "Joan \"Stormy\" \\:/ Nienow",
+                      "username": "username12",
+                      "twitter_username": "twitter12",
+                      "github_username": "github12",
+                      "user_id": 4060,
+                      "website_url": null,
+                      "profile_image": "/uploads/user/profile_image/4060/aaa06fa2-d0f3-40cf-9578-bc53c1ca69e3.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/4060/aaa06fa2-d0f3-40cf-9578-bc53c1ca69e3.jpeg"
+                    },
+                    "organization": {
+                      "name": "Bergnaum Inc",
+                      "username": "org4",
+                      "slug": "org4",
+                      "profile_image": "/uploads/organization/profile_image/560/319c0831-b2a0-4bc1-a40b-bd5fdae4ce68.png",
+                      "profile_image_90": "/uploads/organization/profile_image/560/319c0831-b2a0-4bc1-a40b-bd5fdae4ce68.png"
+                    },
+                    "flare_tag": {
+                      "name": "discuss",
+                      "bg_color_hex": "#000000",
+                      "text_color_hex": "#ffffff"
+                    }
+                  }
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -310,6 +530,149 @@
             "description": "A List of Articles",
             "content": {
               "application/json": {
+                "example": [
+                  {
+                    "type_of": "article",
+                    "id": 2239,
+                    "title": "The Mirror Crackd from Side to Side7",
+                    "description": "Vhs aesthetic park freegan microdosing polaroid keytar squid. Hammock hella cardigan shoreditch...",
+                    "readable_publish_date": "May 28",
+                    "slug": "the-mirror-crackd-from-side-to-side7-98n",
+                    "path": "/username15/the-mirror-crackd-from-side-to-side7-98n",
+                    "url": "http://forem.test/username15/the-mirror-crackd-from-side-to-side7-98n",
+                    "comments_count": 0,
+                    "public_reactions_count": 0,
+                    "collection_id": null,
+                    "published_timestamp": "2026-05-28T18:45:17Z",
+                    "language": "en",
+                    "subforem_id": null,
+                    "positive_reactions_count": 0,
+                    "cover_image": "http://forem.test/assets/34-d27f3a4a9f6f1f373003c74b31749764691f510b2a18b55039478583864a067e.png",
+                    "social_image": "http://forem.test/assets/34-d27f3a4a9f6f1f373003c74b31749764691f510b2a18b55039478583864a067e.png",
+                    "canonical_url": "http://forem.test/username15/the-mirror-crackd-from-side-to-side7-98n",
+                    "created_at": "2026-05-28T18:45:17Z",
+                    "edited_at": null,
+                    "crossposted_at": null,
+                    "published_at": "2026-05-28T18:45:17Z",
+                    "last_comment_at": "2026-05-28T18:45:17Z",
+                    "reading_time_minutes": 1,
+                    "tag_list": [
+                      "javascript",
+                      "html",
+                      "discuss"
+                    ],
+                    "tags": "javascript, html, discuss",
+                    "user": {
+                      "name": "Evelina \"Norman\" \\:/ Moen",
+                      "username": "username15",
+                      "twitter_username": "twitter15",
+                      "github_username": "github15",
+                      "user_id": 4063,
+                      "website_url": null,
+                      "profile_image": "/uploads/user/profile_image/4063/194ffea0-3e45-440a-a97c-7b37da7fbf75.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/4063/194ffea0-3e45-440a-a97c-7b37da7fbf75.jpeg"
+                    },
+                    "flare_tag": {
+                      "name": "discuss",
+                      "bg_color_hex": "#000000",
+                      "text_color_hex": "#ffffff"
+                    }
+                  },
+                  {
+                    "type_of": "article",
+                    "id": 2238,
+                    "title": "The Green Bay Tree6",
+                    "description": "Helvetica yr venmo xoxo direct trade meh. Forage polaroid etsy.  Forage vhs fanny pack. Put a bird on...",
+                    "readable_publish_date": "May 28",
+                    "slug": "the-green-bay-tree6-4cif",
+                    "path": "/username14/the-green-bay-tree6-4cif",
+                    "url": "http://forem.test/username14/the-green-bay-tree6-4cif",
+                    "comments_count": 0,
+                    "public_reactions_count": 0,
+                    "collection_id": null,
+                    "published_timestamp": "2026-05-28T18:45:16Z",
+                    "language": null,
+                    "subforem_id": null,
+                    "positive_reactions_count": 0,
+                    "cover_image": "http://forem.test/assets/22-837b6c737e37b6d229b36d73e95ead7f26e0a346e0aa7dfbca74630ae161fb0d.png",
+                    "social_image": "http://forem.test/assets/22-837b6c737e37b6d229b36d73e95ead7f26e0a346e0aa7dfbca74630ae161fb0d.png",
+                    "canonical_url": "http://forem.test/username14/the-green-bay-tree6-4cif",
+                    "created_at": "2026-05-28T18:45:16Z",
+                    "edited_at": null,
+                    "crossposted_at": null,
+                    "published_at": "2026-05-28T18:45:16Z",
+                    "last_comment_at": "2026-05-28T18:45:16Z",
+                    "reading_time_minutes": 1,
+                    "tag_list": [
+                      "javascript",
+                      "html",
+                      "discuss"
+                    ],
+                    "tags": "javascript, html, discuss",
+                    "user": {
+                      "name": "Aletha \"Jordon\" \\:/ Lubowitz",
+                      "username": "username14",
+                      "twitter_username": "twitter14",
+                      "github_username": "github14",
+                      "user_id": 4062,
+                      "website_url": null,
+                      "profile_image": "/uploads/user/profile_image/4062/b1e0cad0-d46f-4386-9e32-28318fc4e6e9.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/4062/b1e0cad0-d46f-4386-9e32-28318fc4e6e9.jpeg"
+                    },
+                    "flare_tag": {
+                      "name": "discuss",
+                      "bg_color_hex": "#000000",
+                      "text_color_hex": "#ffffff"
+                    }
+                  },
+                  {
+                    "type_of": "article",
+                    "id": 2237,
+                    "title": "His Dark Materials5",
+                    "description": "Kitsch pitchfork schlitz 90s. Everyday wes anderson flannel offal muggle magic biodiesel try-hard...",
+                    "readable_publish_date": "May 28",
+                    "slug": "his-dark-materials5-52pe",
+                    "path": "/username13/his-dark-materials5-52pe",
+                    "url": "http://forem.test/username13/his-dark-materials5-52pe",
+                    "comments_count": 0,
+                    "public_reactions_count": 0,
+                    "collection_id": null,
+                    "published_timestamp": "2026-05-28T18:45:16Z",
+                    "language": null,
+                    "subforem_id": null,
+                    "positive_reactions_count": 0,
+                    "cover_image": "http://forem.test/assets/40-57aabe055a9fc60491e0fca9a4dade362141764e7ad214956bbfc9c9e69763b0.png",
+                    "social_image": "http://forem.test/assets/40-57aabe055a9fc60491e0fca9a4dade362141764e7ad214956bbfc9c9e69763b0.png",
+                    "canonical_url": "http://forem.test/username13/his-dark-materials5-52pe",
+                    "created_at": "2026-05-28T18:45:16Z",
+                    "edited_at": null,
+                    "crossposted_at": null,
+                    "published_at": "2026-05-28T18:45:16Z",
+                    "last_comment_at": "2026-05-28T18:45:16Z",
+                    "reading_time_minutes": 1,
+                    "tag_list": [
+                      "javascript",
+                      "html",
+                      "discuss"
+                    ],
+                    "tags": "javascript, html, discuss",
+                    "user": {
+                      "name": "Clinton \"Timika\" \\:/ Konopelski",
+                      "username": "username13",
+                      "twitter_username": "twitter13",
+                      "github_username": "github13",
+                      "user_id": 4061,
+                      "website_url": null,
+                      "profile_image": "/uploads/user/profile_image/4061/b1948bf9-f870-463c-a72d-649a017353b4.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/4061/b1948bf9-f870-463c-a72d-649a017353b4.jpeg"
+                    },
+                    "flare_tag": {
+                      "name": "discuss",
+                      "bg_color_hex": "#000000",
+                      "text_color_hex": "#ffffff"
+                    }
+                  }
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -348,6 +711,53 @@
             "description": "An Article",
             "content": {
               "application/json": {
+                "example": {
+                  "type_of": "article",
+                  "id": 2240,
+                  "title": "Blue Remembered Earth8",
+                  "description": "Yolo next level green juice banjo flexitarian photo booth. Chillwave ennui kogi. Thundercats...",
+                  "readable_publish_date": "May 28",
+                  "slug": "blue-remembered-earth8-3dmj",
+                  "path": "/username16/blue-remembered-earth8-3dmj",
+                  "url": "http://forem.test/username16/blue-remembered-earth8-3dmj",
+                  "comments_count": 0,
+                  "public_reactions_count": 0,
+                  "collection_id": null,
+                  "published_timestamp": "2026-05-28T18:45:17Z",
+                  "language": "en",
+                  "subforem_id": null,
+                  "positive_reactions_count": 0,
+                  "cover_image": "http://forem.test/assets/12-f9d673ae4ff98002f782ab82c641f2f26673be728e8f5409bea83f2d1de15323.png",
+                  "social_image": "http://forem.test/assets/12-f9d673ae4ff98002f782ab82c641f2f26673be728e8f5409bea83f2d1de15323.png",
+                  "canonical_url": "http://forem.test/username16/blue-remembered-earth8-3dmj",
+                  "created_at": "2026-05-28T18:45:17Z",
+                  "edited_at": null,
+                  "crossposted_at": null,
+                  "published_at": "2026-05-28T18:45:17Z",
+                  "last_comment_at": "2026-05-28T18:45:17Z",
+                  "reading_time_minutes": 1,
+                  "tag_list": "discuss",
+                  "tags": [
+                    "discuss"
+                  ],
+                  "body_html": "<p>Yolo next level green juice banjo flexitarian photo booth. Chillwave ennui kogi. Thundercats intelligentsia tousled typewriter flexitarian.</p>\n\n<p>Before they sold out squid pbrb waistcoat.</p>\n\n",
+                  "body_markdown": "---\ntitle: Blue Remembered Earth8\npublished: true\ntags: discuss\ndate: \nseries: \ncanonical_url: \n\n---\n\nYolo next level green juice banjo flexitarian photo booth. Chillwave ennui kogi. Thundercats intelligentsia tousled typewriter flexitarian.\n\n\nBefore they sold out squid pbrb waistcoat.\n\n",
+                  "user": {
+                    "name": "Vance \"Larry\" \\:/ Nikolaus",
+                    "username": "username16",
+                    "twitter_username": "twitter16",
+                    "github_username": "github16",
+                    "user_id": 4064,
+                    "website_url": null,
+                    "profile_image": "/uploads/user/profile_image/4064/17fa7924-534e-4da2-8dc3-5de871a9e38e.jpeg",
+                    "profile_image_90": "/uploads/user/profile_image/4064/17fa7924-534e-4da2-8dc3-5de871a9e38e.jpeg"
+                  },
+                  "flare_tag": {
+                    "name": "discuss",
+                    "bg_color_hex": "#000000",
+                    "text_color_hex": "#ffffff"
+                  }
+                },
                 "schema": {
                   "type": "object",
                   "items": {
@@ -358,7 +768,15 @@
             }
           },
           "404": {
-            "description": "Article Not Found"
+            "description": "Article Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           }
         }
       },
@@ -385,16 +803,91 @@
         ],
         "responses": {
           "200": {
-            "description": "An Article"
+            "description": "An Article",
+            "content": {
+              "application/json": {
+                "example": {
+                  "type_of": "article",
+                  "id": 2241,
+                  "title": "The Heart Is a Lonely Hunter9",
+                  "description": "Scenester banh mi truffaut. Helvetica keytar chillwave tote bag mixtape forage intelligentsia carry....",
+                  "readable_publish_date": "May 28",
+                  "slug": "the-heart-is-a-lonely-hunter9-2ip2",
+                  "path": "/username17/the-heart-is-a-lonely-hunter9-2ip2",
+                  "url": "http://forem.test/username17/the-heart-is-a-lonely-hunter9-2ip2",
+                  "comments_count": 0,
+                  "public_reactions_count": 0,
+                  "collection_id": null,
+                  "published_timestamp": "2026-05-28T18:45:17Z",
+                  "language": "en",
+                  "subforem_id": null,
+                  "positive_reactions_count": 0,
+                  "cover_image": "http://forem.test/assets/23-33ea5a2b5af3dc15b9ed90de0b850f67e2390eaec3361d6687d3b9750c699f84.png",
+                  "social_image": "http://forem.test/assets/23-33ea5a2b5af3dc15b9ed90de0b850f67e2390eaec3361d6687d3b9750c699f84.png",
+                  "canonical_url": "http://forem.test/username17/the-heart-is-a-lonely-hunter9-2ip2",
+                  "created_at": "2026-05-28T18:45:17Z",
+                  "edited_at": "2026-05-28T18:45:17Z",
+                  "crossposted_at": null,
+                  "published_at": "2026-05-28T18:45:17Z",
+                  "last_comment_at": "2026-05-28T18:45:17Z",
+                  "reading_time_minutes": 1,
+                  "tag_list": "discuss",
+                  "tags": [
+                    "discuss"
+                  ],
+                  "body_html": "<p><strong>New</strong> body for the article</p>\n\n",
+                  "body_markdown": "**New** body for the article",
+                  "user": {
+                    "name": "Celsa \"Edwardo\" \\:/ Kirlin",
+                    "username": "username17",
+                    "twitter_username": "twitter17",
+                    "github_username": "github17",
+                    "user_id": 4065,
+                    "website_url": null,
+                    "profile_image": "/uploads/user/profile_image/4065/36a7e5c8-ce49-410d-8fc0-7c2b776c8d4f.jpeg",
+                    "profile_image_90": "/uploads/user/profile_image/4065/36a7e5c8-ce49-410d-8fc0-7c2b776c8d4f.jpeg"
+                  },
+                  "flare_tag": {
+                    "name": "discuss",
+                    "bg_color_hex": "#000000",
+                    "text_color_hex": "#ffffff"
+                  }
+                }
+              }
+            }
           },
           "404": {
-            "description": "Article Not Found"
+            "description": "Article Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "422": {
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "param is missing or the value is empty: article",
+                  "status": 422
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -442,6 +935,53 @@
             "description": "An Article",
             "content": {
               "application/json": {
+                "example": {
+                  "type_of": "article",
+                  "id": 2244,
+                  "title": "Of Human Bondage12",
+                  "description": "Vinegar bespoke mumblecore polaroid. Portland 3 wolf moon yolo austin scenester meditation artisan...",
+                  "readable_publish_date": "May 28",
+                  "slug": "of-human-bondage12-4bfh",
+                  "path": "/username21/of-human-bondage12-4bfh",
+                  "url": "http://forem.test/username21/of-human-bondage12-4bfh",
+                  "comments_count": 0,
+                  "public_reactions_count": 0,
+                  "collection_id": null,
+                  "published_timestamp": "2026-05-28T18:45:17Z",
+                  "language": null,
+                  "subforem_id": null,
+                  "positive_reactions_count": 0,
+                  "cover_image": "http://forem.test/assets/20-92231c1d2ddb3b707b8c1b5cb711ef17632ff2a64495970a58518ce33c3a4f76.png",
+                  "social_image": "http://forem.test/assets/20-92231c1d2ddb3b707b8c1b5cb711ef17632ff2a64495970a58518ce33c3a4f76.png",
+                  "canonical_url": "http://forem.test/username21/of-human-bondage12-4bfh",
+                  "created_at": "2026-05-28T18:45:17Z",
+                  "edited_at": null,
+                  "crossposted_at": null,
+                  "published_at": "2026-05-28T18:45:17Z",
+                  "last_comment_at": "2026-05-28T18:45:17Z",
+                  "reading_time_minutes": 1,
+                  "tag_list": "discuss",
+                  "tags": [
+                    "discuss"
+                  ],
+                  "body_html": "<p>Vinegar bespoke mumblecore polaroid. Portland 3 wolf moon yolo austin scenester meditation artisan pbrb.</p>\n\n<p>Meggings master yolo cliche. Pop-up put a bird on it poutine single-origin coffee brunch.</p>\n\n",
+                  "body_markdown": "---\ntitle: Of Human Bondage12\npublished: true\ntags: discuss\ndate: \nseries: \ncanonical_url: \n\n---\n\nVinegar bespoke mumblecore polaroid. Portland 3 wolf moon yolo austin scenester meditation artisan pbrb.\n\n\nMeggings master yolo cliche. Pop-up put a bird on it poutine single-origin coffee brunch.\n\n",
+                  "user": {
+                    "name": "Joaquin \"Tayna\" \\:/ Veum",
+                    "username": "username21",
+                    "twitter_username": "twitter21",
+                    "github_username": "github21",
+                    "user_id": 4069,
+                    "website_url": null,
+                    "profile_image": "/uploads/user/profile_image/4069/cd9be7fb-4277-4e90-9351-de7a241d1856.jpeg",
+                    "profile_image_90": "/uploads/user/profile_image/4069/cd9be7fb-4277-4e90-9351-de7a241d1856.jpeg"
+                  },
+                  "flare_tag": {
+                    "name": "discuss",
+                    "bg_color_hex": "#000000",
+                    "text_color_hex": "#ffffff"
+                  }
+                },
                 "schema": {
                   "type": "object",
                   "items": {
@@ -452,7 +992,15 @@
             }
           },
           "404": {
-            "description": "Article Not Found"
+            "description": "Article Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           }
         }
       }
@@ -476,12 +1024,23 @@
         ],
         "responses": {
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "200": {
             "description": "A List of the authenticated user's Articles",
             "content": {
               "application/json": {
+                "example": [
+
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -513,12 +1072,23 @@
         ],
         "responses": {
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "200": {
             "description": "A List of the authenticated user's Articles",
             "content": {
               "application/json": {
+                "example": [
+
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -550,12 +1120,23 @@
         ],
         "responses": {
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "200": {
             "description": "A List of the authenticated user's Articles",
             "content": {
               "application/json": {
+                "example": [
+
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -587,12 +1168,23 @@
         ],
         "responses": {
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "200": {
             "description": "A List of the authenticated user's Articles",
             "content": {
               "application/json": {
+                "example": [
+
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -642,10 +1234,26 @@
             "description": "Article successfully unpublished"
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "404": {
-            "description": "Article Not Found"
+            "description": "Article Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           }
         }
       }
@@ -668,6 +1276,24 @@
             "description": "A List of manually managed audience segments",
             "content": {
               "application/json": {
+                "example": [
+                  {
+                    "id": 34,
+                    "created_at": "2026-05-28T12:45:19.104-06:00",
+                    "name": null,
+                    "type_of": "manual",
+                    "updated_at": "2026-05-28T12:45:19.104-06:00",
+                    "user_count": 1
+                  },
+                  {
+                    "id": 33,
+                    "created_at": "2026-05-28T12:45:19.016-06:00",
+                    "name": null,
+                    "type_of": "manual",
+                    "updated_at": "2026-05-28T12:45:19.016-06:00",
+                    "user_count": 3
+                  }
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -678,7 +1304,15 @@
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           }
         }
       },
@@ -691,10 +1325,29 @@
         "operationId": "createSegment",
         "responses": {
           "201": {
-            "description": "A manually managed audience segment"
+            "description": "A manually managed audience segment",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 35,
+                  "created_at": "2026-05-28T12:45:19.421-06:00",
+                  "name": null,
+                  "type_of": "manual",
+                  "updated_at": "2026-05-28T12:45:19.421-06:00"
+                }
+              }
+            }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           }
         }
       }
@@ -724,6 +1377,14 @@
             "description": "The audience segment",
             "content": {
               "application/json": {
+                "example": {
+                  "id": 36,
+                  "created_at": "2026-05-28T12:45:19.625-06:00",
+                  "name": null,
+                  "type_of": "manual",
+                  "updated_at": "2026-05-28T12:45:19.625-06:00",
+                  "user_count": 3
+                },
                 "schema": {
                   "type": "object",
                   "items": {
@@ -734,10 +1395,26 @@
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "404": {
-            "description": "Audience Segment Not Found"
+            "description": "Audience Segment Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           }
         }
       },
@@ -762,16 +1439,50 @@
         ],
         "responses": {
           "200": {
-            "description": "The deleted audience segment"
+            "description": "The deleted audience segment",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 40,
+                  "created_at": "2026-05-28T12:45:20.004-06:00",
+                  "name": null,
+                  "type_of": "manual",
+                  "updated_at": "2026-05-28T12:45:20.004-06:00"
+                }
+              }
+            }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "404": {
-            "description": "Audience Segment Not Found"
+            "description": "Audience Segment Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           },
           "409": {
-            "description": "Audience segment could not be deleted"
+            "description": "Audience segment could not be deleted",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Segments cannot be deleted while in use by any billboards"
+                }
+              }
+            }
           }
         }
       }
@@ -804,6 +1515,47 @@
             "description": "A List of users in the audience segment",
             "content": {
               "application/json": {
+                "example": [
+                  {
+                    "type_of": "user",
+                    "id": 4109,
+                    "username": "username61",
+                    "name": "Erminia \"Pedro\" \\:/ Turcotte",
+                    "twitter_username": "twitter61",
+                    "github_username": "github61",
+                    "summary": null,
+                    "location": null,
+                    "website_url": null,
+                    "joined_at": "May 28, 2026",
+                    "profile_image": "/uploads/user/profile_image/4109/6812d241-6f58-4837-885e-56a5c1a1cac7.jpeg"
+                  },
+                  {
+                    "type_of": "user",
+                    "id": 4110,
+                    "username": "username62",
+                    "name": "Perry \"Jazmin\" \\:/ Harvey",
+                    "twitter_username": "twitter62",
+                    "github_username": "github62",
+                    "summary": null,
+                    "location": null,
+                    "website_url": null,
+                    "joined_at": "May 28, 2026",
+                    "profile_image": "/uploads/user/profile_image/4110/66331066-af5b-44d8-bf8c-5a3787ecbfa2.jpeg"
+                  },
+                  {
+                    "type_of": "user",
+                    "id": 4111,
+                    "username": "username63",
+                    "name": "Kristofer \"Ruth\" \\:/ Graham",
+                    "twitter_username": "twitter63",
+                    "github_username": "github63",
+                    "summary": null,
+                    "location": null,
+                    "website_url": null,
+                    "joined_at": "May 28, 2026",
+                    "profile_image": "/uploads/user/profile_image/4111/1536d24e-ea86-4abf-bbac-d0eef3b4ebbd.jpeg"
+                  }
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -814,10 +1566,26 @@
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "404": {
-            "description": "Audience Segment Not Found"
+            "description": "Audience Segment Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           }
         }
       }
@@ -844,16 +1612,54 @@
         ],
         "responses": {
           "200": {
-            "description": "Result of adding the users to the segment."
+            "description": "Result of adding the users to the segment.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "succeeded": [
+                    4117,
+                    4118,
+                    4119
+                  ],
+                  "failed": [
+
+                  ]
+                }
+              }
+            }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "404": {
-            "description": "Audience Segment Not Found"
+            "description": "Audience Segment Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           },
           "422": {
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "param is missing or the value is empty: user_ids",
+                  "status": 422
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -889,16 +1695,54 @@
         ],
         "responses": {
           "200": {
-            "description": "Result of removing the users to the segment."
+            "description": "Result of removing the users to the segment.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "succeeded": [
+                    4136,
+                    4137,
+                    4138
+                  ],
+                  "failed": [
+
+                  ]
+                }
+              }
+            }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "404": {
-            "description": "Audience Segment Not Found"
+            "description": "Audience Segment Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           },
           "422": {
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "param is missing or the value is empty: user_ids",
+                  "status": 422
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -924,6 +1768,9 @@
             "description": "successful",
             "content": {
               "application/json": {
+                "example": [
+
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -934,7 +1781,15 @@
             }
           },
           "401": {
-            "description": "unauthorized"
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           }
         }
       },
@@ -952,6 +1807,66 @@
             "description": "A billboard",
             "content": {
               "application/json": {
+                "example": {
+                  "id": 100,
+                  "approved": true,
+                  "audience_segment_id": null,
+                  "body_markdown": "# Hi, this is ad\nYep, it's an ad",
+                  "browser_context": "all_browsers",
+                  "cached_tag_list": "",
+                  "clicks_count": 0,
+                  "color": null,
+                  "content_updated_at": "2026-05-28T12:45:22.793-06:00",
+                  "counts_tabulated_at": null,
+                  "created_at": "2026-05-28T12:45:22.793-06:00",
+                  "creator_id": null,
+                  "custom_display_label": null,
+                  "dismissal_sku": null,
+                  "display_to": "all",
+                  "event_id": null,
+                  "exclude_article_ids": "",
+                  "exclude_role_names": [
+
+                  ],
+                  "exclude_survey_completions": false,
+                  "exclude_survey_ids": "",
+                  "expires_at": null,
+                  "impressions_count": 0,
+                  "include_subforem_ids": [
+
+                  ],
+                  "name": "Example Billboard",
+                  "organization_id": null,
+                  "page_id": null,
+                  "placement_area": "post_comments",
+                  "prefer_paired_with_billboard_id": null,
+                  "preferred_article_ids": [
+
+                  ],
+                  "priority": false,
+                  "processed_html": "<h1>  <a name=\"hi-this-is-ad\" href=\"#hi-this-is-ad\">  </a>  Hi, this is ad</h1>\n<p>Yep, it's an ad</p>",
+                  "published": true,
+                  "render_mode": "forem_markdown",
+                  "requires_cookies": false,
+                  "special_behavior": "nothing",
+                  "success_rate": 0.0,
+                  "tags_array": [
+
+                  ],
+                  "target_role_names": [
+
+                  ],
+                  "template": "authorship_box",
+                  "type_of": "in_house",
+                  "updated_at": "2026-05-28T12:45:22.793-06:00",
+                  "weight": 1.0,
+                  "audience_segment_type": null,
+                  "tag_list": "",
+                  "target_geolocations": [
+                    "US-WA",
+                    "CA-BC"
+                  ]
+                },
                 "schema": {
                   "type": "object",
                   "items": {
@@ -962,10 +1877,26 @@
             }
           },
           "401": {
-            "description": "unauthorized"
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "422": {
-            "description": "unprocessable"
+            "description": "unprocessable",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Validation failed: Placement area is not included in the list",
+                  "status": 422
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -1005,13 +1936,92 @@
         ],
         "responses": {
           "200": {
-            "description": "successful"
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 101,
+                  "approved": false,
+                  "audience_segment_id": null,
+                  "body_markdown": "Hello _hey_ Hey hey 2",
+                  "browser_context": "all_browsers",
+                  "cached_tag_list": "",
+                  "clicks_count": 0,
+                  "color": null,
+                  "content_updated_at": "2026-05-28T12:45:22.996-06:00",
+                  "counts_tabulated_at": null,
+                  "created_at": "2026-05-28T12:45:22.992-06:00",
+                  "creator_id": null,
+                  "custom_display_label": null,
+                  "dismissal_sku": null,
+                  "display_to": "all",
+                  "event_id": null,
+                  "exclude_article_ids": "",
+                  "exclude_role_names": [
+
+                  ],
+                  "exclude_survey_completions": false,
+                  "exclude_survey_ids": "",
+                  "expires_at": null,
+                  "impressions_count": 0,
+                  "include_subforem_ids": [
+
+                  ],
+                  "name": "Billboard 101",
+                  "organization_id": 562,
+                  "page_id": null,
+                  "placement_area": "sidebar_left",
+                  "prefer_paired_with_billboard_id": null,
+                  "preferred_article_ids": [
+
+                  ],
+                  "priority": false,
+                  "processed_html": "<p>Hello <em>hey</em> Hey hey 2</p>",
+                  "published": false,
+                  "render_mode": "forem_markdown",
+                  "requires_cookies": false,
+                  "special_behavior": "nothing",
+                  "success_rate": 0.0,
+                  "tags_array": [
+
+                  ],
+                  "target_role_names": [
+
+                  ],
+                  "template": "authorship_box",
+                  "type_of": "in_house",
+                  "updated_at": "2026-05-28T12:45:22.996-06:00",
+                  "weight": 1.0,
+                  "audience_segment_type": null,
+                  "tag_list": "",
+                  "target_geolocations": [
+
+                  ]
+                }
+              }
+            }
           },
           "401": {
-            "description": "unauthorized"
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "404": {
-            "description": "Unknown Billboard ID"
+            "description": "Unknown Billboard ID",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           }
         }
       },
@@ -1040,6 +2050,65 @@
             "description": "successful",
             "content": {
               "application/json": {
+                "example": {
+                  "approved": false,
+                  "body_markdown": "Hello _hey_ Hey hey 3",
+                  "creator_id": null,
+                  "display_to": "all",
+                  "page_id": null,
+                  "browser_context": "all_browsers",
+                  "name": "Billboard 102",
+                  "organization_id": 563,
+                  "placement_area": "sidebar_left",
+                  "published": false,
+                  "dismissal_sku": null,
+                  "type_of": "in_house",
+                  "exclude_article_ids": "",
+                  "weight": 1.0,
+                  "requires_cookies": false,
+                  "color": null,
+                  "audience_segment_id": null,
+                  "priority": false,
+                  "special_behavior": "nothing",
+                  "custom_display_label": null,
+                  "template": "authorship_box",
+                  "render_mode": "forem_markdown",
+                  "prefer_paired_with_billboard_id": null,
+                  "expires_at": null,
+                  "exclude_survey_completions": false,
+                  "exclude_survey_ids": "",
+                  "cached_tag_list": "",
+                  "id": 102,
+                  "clicks_count": 0,
+                  "content_updated_at": "2026-05-28T12:45:23.227-06:00",
+                  "counts_tabulated_at": null,
+                  "created_at": "2026-05-28T12:45:23.224-06:00",
+                  "event_id": null,
+                  "exclude_role_names": [
+
+                  ],
+                  "impressions_count": 0,
+                  "include_subforem_ids": [
+
+                  ],
+                  "preferred_article_ids": [
+
+                  ],
+                  "processed_html": "<p>Hello <em>hey</em> Hey hey 3</p>",
+                  "success_rate": 0.0,
+                  "tags_array": [
+
+                  ],
+                  "target_role_names": [
+
+                  ],
+                  "updated_at": "2026-05-28T12:45:23.227-06:00",
+                  "audience_segment_type": null,
+                  "tag_list": "",
+                  "target_geolocations": [
+
+                  ]
+                },
                 "schema": {
                   "type": "object",
                   "items": {
@@ -1050,10 +2119,26 @@
             }
           },
           "404": {
-            "description": "not found"
+            "description": "not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           },
           "401": {
-            "description": "unauthorized"
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -1096,10 +2181,26 @@
             "description": "no content"
           },
           "404": {
-            "description": "not found"
+            "description": "not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           },
           "401": {
-            "description": "unauthorized"
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           }
         }
       }
@@ -1158,6 +2259,27 @@
             "description": "A List of Comments",
             "content": {
               "application/json": {
+                "example": [
+                  {
+                    "type_of": "comment",
+                    "id_code": "9e",
+                    "created_at": "2026-05-28T18:45:23Z",
+                    "body_html": "<p>Cronut direct trade thundercats. Sustainable ethical asymmetrical +1 pop-up flexitarian scenester. Pitchfork yuccie cronut kale chips austin health.</p>\n\n",
+                    "user": {
+                      "name": "Kayleen \"Silvana\" \\:/ Hoppe",
+                      "username": "username127",
+                      "twitter_username": "twitter127",
+                      "github_username": "github127",
+                      "user_id": 4175,
+                      "website_url": null,
+                      "profile_image": "/uploads/user/profile_image/4175/3f3a1ddd-ab70-45f5-8600-f4e42a293990.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/4175/3f3a1ddd-ab70-45f5-8600-f4e42a293990.jpeg"
+                    },
+                    "children": [
+
+                    ]
+                  }
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -1168,7 +2290,15 @@
             }
           },
           "404": {
-            "description": "Resource Not Found"
+            "description": "Resource Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           }
         }
       }
@@ -1198,10 +2328,41 @@
         ],
         "responses": {
           "200": {
-            "description": "A List of the Comments"
+            "description": "A List of the Comments",
+            "content": {
+              "application/json": {
+                "example": {
+                  "type_of": "comment",
+                  "id_code": "9g",
+                  "created_at": "2026-05-28T18:45:24Z",
+                  "body_html": "<p>Single-origin coffee tofu schlitz typewriter hashtag ennui pork belly. Roof literally gluten-free retro paleo dreamcatcher skateboard twee.</p>\n\n",
+                  "user": {
+                    "name": "Melodie \"Darla\" \\:/ Rice",
+                    "username": "username131",
+                    "twitter_username": "twitter131",
+                    "github_username": "github131",
+                    "user_id": 4179,
+                    "website_url": null,
+                    "profile_image": "/uploads/user/profile_image/4179/3971613f-4374-4827-981c-82d413278b46.jpeg",
+                    "profile_image_90": "/uploads/user/profile_image/4179/3971613f-4374-4827-981c-82d413278b46.jpeg"
+                  },
+                  "children": [
+
+                  ]
+                }
+              }
+            }
           },
           "404": {
-            "description": "Comment Not Found"
+            "description": "Comment Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           }
         }
       }
@@ -1217,12 +2378,32 @@
         "operationId": "getFollowedTags",
         "responses": {
           "401": {
-            "description": "unauthorized"
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "200": {
             "description": "A List of followed tags",
             "content": {
               "application/json": {
+                "example": [
+                  {
+                    "id": 2315,
+                    "name": "tag3",
+                    "points": 1.0
+                  },
+                  {
+                    "id": 2316,
+                    "name": "tag4",
+                    "points": 1.0
+                  }
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -1266,6 +2447,28 @@
             "description": "A List of followers",
             "content": {
               "application/json": {
+                "example": [
+                  {
+                    "type_of": "user_follower",
+                    "id": 91,
+                    "created_at": "2026-05-28T18:45:24Z",
+                    "user_id": 4186,
+                    "name": "Duane \"Douglass\" \\:/ Muller",
+                    "path": "/username138",
+                    "username": "username138",
+                    "profile_image": "/uploads/user/profile_image/4186/c74aadc6-5b29-4f73-b23b-6908a8e9f105.jpeg"
+                  },
+                  {
+                    "type_of": "user_follower",
+                    "id": 90,
+                    "created_at": "2026-05-28T18:45:24Z",
+                    "user_id": 4184,
+                    "name": "Nicki \"Alysa\" \\:/ Heathcote",
+                    "path": "/username136",
+                    "username": "username136",
+                    "profile_image": "/uploads/user/profile_image/4184/5d771299-1520-4435-8380-e9a7697c7c8c.jpeg"
+                  }
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -1304,7 +2507,15 @@
             }
           },
           "401": {
-            "description": "unauthorized"
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           }
         }
       }
@@ -1335,6 +2546,22 @@
             "description": "An Organization",
             "content": {
               "application/json": {
+                "example": {
+                  "type_of": "organization",
+                  "id": 568,
+                  "username": "org12",
+                  "name": "Bartoletti-Dicki",
+                  "summary": "Tattooed gastropub cleanse tofu small batch franzen farm-to-table retro. Flannel whatever mustache hella pug shabby chic master.",
+                  "twitter_username": "org4787",
+                  "github_username": "org1607",
+                  "url": "http://torp.test/zack_sauer",
+                  "location": null,
+                  "tech_stack": null,
+                  "tag_line": null,
+                  "story": null,
+                  "joined_at": "2026-05-28T18:45:24Z",
+                  "profile_image": "/uploads/organization/profile_image/568/37584a82-a0bf-41f8-9807-871b71df211c.png"
+                },
                 "schema": {
                   "type": "object",
                   "items": {
@@ -1345,7 +2572,15 @@
             }
           },
           "404": {
-            "description": "Not Found"
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           }
         }
       }
@@ -1383,6 +2618,34 @@
             "description": "An Organization's users (with ID)",
             "content": {
               "application/json": {
+                "example": [
+                  {
+                    "type_of": "user",
+                    "id": 4199,
+                    "username": "username151",
+                    "name": "Maria \"Mario\" \\:/ Pfeffer",
+                    "twitter_username": "twitter151",
+                    "github_username": "github151",
+                    "summary": null,
+                    "location": null,
+                    "website_url": null,
+                    "joined_at": "May 28, 2026",
+                    "profile_image": "/uploads/user/profile_image/4199/a36085cc-b1c4-4228-a351-a650ba7f4d44.jpeg"
+                  },
+                  {
+                    "type_of": "user",
+                    "id": 4200,
+                    "username": "username152",
+                    "name": "Tiara \"Ebony\" \\:/ Watsica",
+                    "twitter_username": "twitter152",
+                    "github_username": "github152",
+                    "summary": null,
+                    "location": null,
+                    "website_url": null,
+                    "joined_at": "May 28, 2026",
+                    "profile_image": "/uploads/user/profile_image/4200/48796775-4796-4190-ae77-5eb3d3819e6d.jpeg"
+                  }
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -1393,7 +2656,15 @@
             }
           },
           "404": {
-            "description": "Not Found"
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           }
         }
       }
@@ -1431,6 +2702,57 @@
             "description": "An Organization's Articles (with ID)",
             "content": {
               "application/json": {
+                "example": [
+                  {
+                    "type_of": "article",
+                    "id": 2258,
+                    "title": "Whats Become of Waring26",
+                    "description": "Intelligentsia wes anderson pitchfork. Ramps single-origin coffee park kombucha vhs thundercats....",
+                    "readable_publish_date": "May 28",
+                    "slug": "whats-become-of-waring26-1010",
+                    "path": "/org18/whats-become-of-waring26-1010",
+                    "url": "http://forem.test/org18/whats-become-of-waring26-1010",
+                    "comments_count": 0,
+                    "public_reactions_count": 0,
+                    "collection_id": null,
+                    "published_timestamp": "2026-05-28T18:45:25Z",
+                    "language": "en",
+                    "subforem_id": null,
+                    "positive_reactions_count": 0,
+                    "cover_image": "http://forem.test/assets/38-3b0c46cc0d5367229799d282c99b2c42f33501201cac1ceb5c643f9ee11f06c6.png",
+                    "social_image": "http://forem.test/assets/38-3b0c46cc0d5367229799d282c99b2c42f33501201cac1ceb5c643f9ee11f06c6.png",
+                    "canonical_url": "http://forem.test/org18/whats-become-of-waring26-1010",
+                    "created_at": "2026-05-28T18:45:25Z",
+                    "edited_at": null,
+                    "crossposted_at": null,
+                    "published_at": "2026-05-28T18:45:25Z",
+                    "last_comment_at": "2026-05-28T18:45:25Z",
+                    "reading_time_minutes": 1,
+                    "tag_list": [
+                      "javascript",
+                      "html",
+                      "discuss"
+                    ],
+                    "tags": "javascript, html, discuss",
+                    "user": {
+                      "name": "Jeremy \"Arlena\" \\:/ Hintz",
+                      "username": "username162",
+                      "twitter_username": "twitter162",
+                      "github_username": "github162",
+                      "user_id": 4210,
+                      "website_url": null,
+                      "profile_image": "/uploads/user/profile_image/4210/cd03365d-5604-4d37-a2e1-62a537710192.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/4210/cd03365d-5604-4d37-a2e1-62a537710192.jpeg"
+                    },
+                    "organization": {
+                      "name": "Marquardt-Von",
+                      "username": "org18",
+                      "slug": "org18",
+                      "profile_image": "/uploads/organization/profile_image/574/a6c694a7-f32f-45cc-974f-5aa18eca3eac.png",
+                      "profile_image_90": "/uploads/organization/profile_image/574/a6c694a7-f32f-45cc-974f-5aa18eca3eac.png"
+                    }
+                  }
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -1441,7 +2763,15 @@
             }
           },
           "404": {
-            "description": "Not Found"
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           }
         }
       }
@@ -1470,6 +2800,19 @@
             "description": "A list of all organizations",
             "content": {
               "application/json": {
+                "example": [
+                  {
+                    "id": 576,
+                    "name": "Kuphal Inc",
+                    "profile_image": {
+                      "url": "/uploads/organization/profile_image/576/0c9dc328-e6c9-4dba-af45-700d5196da17.png"
+                    },
+                    "slug": "org20",
+                    "summary": "Keffiyeh synth hashtag cold-pressed stumptown readymade. Microdosing drinking semiotics salvia gluten-free synth slow-carb tousled. Try-hard selvage ha",
+                    "tag_line": null,
+                    "url": "http://sipes.test/janiece_greenholt"
+                  }
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -1493,13 +2836,34 @@
         ],
         "responses": {
           "201": {
-            "description": "Successful"
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 579,
+                  "name": "New Test Org",
+                  "profile_image": "uploads/organization/profile_image/1/400x400.jpg",
+                  "slug": "org10001",
+                  "summary": "a newly created test org",
+                  "tag_line": "a test org's tagline",
+                  "url": "https://testorg.io"
+                }
+              }
+            }
           },
           "401": {
             "description": "Unauthorized"
           },
           "422": {
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Validation failed: Name can't be blank, Profile image can't be blank, Slug can't be blank",
+                  "status": 422
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -1539,6 +2903,22 @@
             "description": "An Organization",
             "content": {
               "application/json": {
+                "example": {
+                  "type_of": "organization",
+                  "id": 577,
+                  "username": "org21",
+                  "name": "Emmerich, Schamberger and Hand",
+                  "summary": "Keffiyeh tote bag craft beer. Park jean shorts helvetica butcher.",
+                  "twitter_username": "org8161",
+                  "github_username": "org5019",
+                  "url": "http://sanford-hintz.test/jose",
+                  "location": null,
+                  "tech_stack": null,
+                  "tag_line": null,
+                  "story": null,
+                  "joined_at": "2026-05-28T18:45:26Z",
+                  "profile_image": "/uploads/organization/profile_image/577/4516eda0-ba9a-43f5-80d0-bae770795069.png"
+                },
                 "schema": {
                   "type": "object",
                   "items": {
@@ -1549,7 +2929,15 @@
             }
           },
           "404": {
-            "description": "Not Found"
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           }
         }
       },
@@ -1575,16 +2963,53 @@
         ],
         "responses": {
           "200": {
-            "description": "An Organization"
+            "description": "An Organization",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 580,
+                  "name": "Mosciski, Moore and Moen",
+                  "profile_image": "/uploads/organization/profile_image/580/7cb3619e-86f9-465a-b7af-588b0f007fd1.png",
+                  "slug": "org23",
+                  "summary": "An updated summary for the organization.",
+                  "tag_line": null,
+                  "url": "http://will.example/lenita_gleason"
+                }
+              }
+            }
           },
           "404": {
-            "description": "organization Not Found"
+            "description": "organization Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "422": {
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "param is missing or the value is empty: organization",
+                  "status": 422
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -1619,10 +3044,26 @@
         ],
         "responses": {
           "200": {
-            "description": "successful"
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "deletion scheduled for organization with ID 584",
+                  "status": 200
+                }
+              }
+            }
           },
           "401": {
-            "description": "unauthorized"
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           }
         }
       }
@@ -1642,6 +3083,29 @@
             "description": "successful",
             "content": {
               "application/json": {
+                "example": [
+                  {
+                    "id": 47,
+                    "title": "Death Be Not Proud",
+                    "slug": "satisfaction-design",
+                    "description": "Quasi nesciunt dicta molestiae.",
+                    "is_top_level_path": false,
+                    "landing_page": false,
+                    "body_html": null,
+                    "body_json": null,
+                    "body_markdown": "Quaerat dolorem velit qui.",
+                    "processed_html": "<p>Quaerat dolorem velit qui.</p>\n\n",
+                    "social_image": {
+                      "url": null
+                    },
+                    "template": "contained",
+                    "subforem_id": null,
+                    "page_template_id": null,
+                    "template_data": {
+                    },
+                    "redirect_to_url": null
+                  }
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -1664,13 +3128,71 @@
         ],
         "responses": {
           "200": {
-            "description": "successful"
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 49,
+                  "title": "Example Page",
+                  "slug": "example1",
+                  "description": "a new page",
+                  "is_top_level_path": false,
+                  "landing_page": false,
+                  "body_html": null,
+                  "body_json": null,
+                  "body_markdown": "# Hi, this is a New Page\nYep, it's an a new page",
+                  "processed_html": "<h1>\n  <a name=\"hi-this-is-a-new-page\" href=\"#hi-this-is-a-new-page\">\n  </a>\n  Hi, this is a New Page\n</h1>\n\n<p>Yep, it's an a new page</p>\n\n",
+                  "social_image": {
+                    "url": null
+                  },
+                  "template": "contained",
+                  "subforem_id": null,
+                  "page_template_id": null,
+                  "template_data": {
+                  },
+                  "redirect_to_url": null
+                }
+              }
+            }
           },
           "401": {
-            "description": "unauthorized"
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "422": {
-            "description": "unprocessable"
+            "description": "unprocessable",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": null,
+                  "title": "Example Page",
+                  "slug": "example1",
+                  "description": "a new page",
+                  "is_top_level_path": false,
+                  "landing_page": false,
+                  "body_html": null,
+                  "body_json": null,
+                  "body_markdown": "# Hi, this is a New Page\nYep, it's an a new page",
+                  "processed_html": null,
+                  "social_image": {
+                    "url": null
+                  },
+                  "template": "moon",
+                  "subforem_id": null,
+                  "page_template_id": null,
+                  "template_data": {
+                  },
+                  "redirect_to_url": null
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -1752,6 +3274,27 @@
             "description": "successful",
             "content": {
               "application/json": {
+                "example": {
+                  "id": 52,
+                  "title": "I Will Fear No Evil",
+                  "slug": "agree_strict",
+                  "description": "At qui et illum.",
+                  "is_top_level_path": false,
+                  "landing_page": false,
+                  "body_html": null,
+                  "body_json": null,
+                  "body_markdown": "Aut quia eaque sapiente.",
+                  "processed_html": "<p>Aut quia eaque sapiente.</p>\n\n",
+                  "social_image": {
+                    "url": null
+                  },
+                  "template": "contained",
+                  "subforem_id": null,
+                  "page_template_id": null,
+                  "template_data": {
+                  },
+                  "redirect_to_url": null
+                },
                 "schema": {
                   "$ref": "#/components/schemas/Page"
                 }
@@ -1785,6 +3328,27 @@
             "description": "successful",
             "content": {
               "application/json": {
+                "example": {
+                  "id": 53,
+                  "title": "New Title",
+                  "slug": "rung-cutting",
+                  "description": "Accusantium harum beatae quia.",
+                  "is_top_level_path": false,
+                  "landing_page": false,
+                  "body_html": null,
+                  "body_json": null,
+                  "body_markdown": "Nostrum et modi explicabo.",
+                  "processed_html": "<p>Nostrum et modi explicabo.</p>\n\n",
+                  "social_image": {
+                    "url": null
+                  },
+                  "template": "contained",
+                  "subforem_id": null,
+                  "page_template_id": null,
+                  "template_data": {
+                  },
+                  "redirect_to_url": null
+                },
                 "schema": {
                   "$ref": "#/components/schemas/Page"
                 }
@@ -1792,10 +3356,43 @@
             }
           },
           "401": {
-            "description": "unauthorized"
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "422": {
-            "description": "unprocessable"
+            "description": "unprocessable",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 55,
+                  "title": "Eyeless in Gaza",
+                  "slug": "confuse-thirsty",
+                  "description": "Dolore iure magnam ea.",
+                  "is_top_level_path": false,
+                  "landing_page": false,
+                  "body_html": null,
+                  "body_json": null,
+                  "body_markdown": "Corporis magnam enim dolorem.",
+                  "processed_html": "<p>Consequuntur pariatur delectus similique.</p>\n\n",
+                  "social_image": {
+                    "url": null
+                  },
+                  "template": "moon",
+                  "subforem_id": null,
+                  "page_template_id": null,
+                  "template_data": {
+                  },
+                  "redirect_to_url": null
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -1833,6 +3430,27 @@
             "description": "successful",
             "content": {
               "application/json": {
+                "example": {
+                  "id": 56,
+                  "title": "No Country for Old Men",
+                  "slug": "message_judge",
+                  "description": "Et et dolorum mollitia.",
+                  "is_top_level_path": false,
+                  "landing_page": false,
+                  "body_html": null,
+                  "body_json": null,
+                  "body_markdown": "Libero iste blanditiis et.",
+                  "processed_html": "<p>Libero iste blanditiis et.</p>\n\n",
+                  "social_image": {
+                    "url": null
+                  },
+                  "template": "contained",
+                  "subforem_id": null,
+                  "page_template_id": null,
+                  "template_data": {
+                  },
+                  "redirect_to_url": null
+                },
                 "schema": {
                   "$ref": "#/components/schemas/Page"
                 }
@@ -1840,10 +3458,31 @@
             }
           },
           "401": {
-            "description": "unauthorized"
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "422": {
-            "description": "unprocessable"
+            "description": "unprocessable",
+            "content": {
+              "application/json": {
+                "example": {
+                  "doubled_module": {
+                    "const_name": "Page",
+                    "object": "Page"
+                  },
+                  "__expired": false,
+                  "name": null,
+                  "__sending_message": null
+                }
+              }
+            }
           }
         }
       }
@@ -1882,6 +3521,21 @@
             "description": "A List of Podcast episodes filtered by username",
             "content": {
               "application/json": {
+                "example": [
+                  {
+                    "type_of": "podcast_episodes",
+                    "class_name": "PodcastEpisode",
+                    "id": 42,
+                    "path": "/codenewbie/slug-2",
+                    "title": "2",
+                    "image_url": "/uploads/podcast/image/55/d8d761be-e588-4e8c-90af-5dbbebb3abfa.jpeg",
+                    "podcast": {
+                      "title": "Hennepin",
+                      "slug": "codenewbie",
+                      "image_url": "/uploads/podcast/image/55/d8d761be-e588-4e8c-90af-5dbbebb3abfa.jpeg"
+                    }
+                  }
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -1892,7 +3546,15 @@
             }
           },
           "404": {
-            "description": "Unknown Podcast username"
+            "description": "Unknown Podcast username",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           }
         }
       }
@@ -1922,6 +3584,12 @@
             "description": "An object containing profile image details",
             "content": {
               "application/json": {
+                "example": {
+                  "type_of": "profile_image",
+                  "image_of": "user",
+                  "profile_image": "/uploads/user/profile_image/4234/0984d355-dddc-4f79-9950-1702fa47ee3e.jpeg",
+                  "profile_image_90": "/uploads/user/profile_image/4234/0984d355-dddc-4f79-9950-1702fa47ee3e.jpeg"
+                },
                 "schema": {
                   "type": "object",
                   "items": {
@@ -1932,7 +3600,15 @@
             }
           },
           "404": {
-            "description": "Resource Not Found"
+            "description": "Resource Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           }
         }
       }
@@ -1985,10 +3661,29 @@
         ],
         "responses": {
           "200": {
-            "description": "successful"
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "result": "create",
+                  "category": "like",
+                  "id": 161,
+                  "reactable_id": 2260,
+                  "reactable_type": "Article"
+                }
+              }
+            }
           },
           "401": {
-            "description": "unauthorized"
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           }
         }
       }
@@ -2041,10 +3736,29 @@
         ],
         "responses": {
           "200": {
-            "description": "successful"
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "result": "none",
+                  "category": "like",
+                  "id": 163,
+                  "reactable_id": 2262,
+                  "reactable_type": "Article"
+                }
+              }
+            }
           },
           "401": {
-            "description": "unauthorized"
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           }
         }
       }
@@ -2067,12 +3781,23 @@
         ],
         "responses": {
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "200": {
             "description": "A list of articles in the users readinglist",
             "content": {
               "application/json": {
+                "example": [
+
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -2115,6 +3840,32 @@
             "description": "A list of surveys",
             "content": {
               "application/json": {
+                "example": [
+                  {
+                    "type_of": "survey",
+                    "id": 43,
+                    "title": "dolores",
+                    "slug": "dolores-2875c66f",
+                    "active": true,
+                    "display_title": true,
+                    "allow_resubmission": false,
+                    "survey_type_of": "community_pulse",
+                    "created_at": "2026-05-28T18:45:29Z",
+                    "updated_at": "2026-05-28T18:45:29Z"
+                  },
+                  {
+                    "type_of": "survey",
+                    "id": 44,
+                    "title": "autem",
+                    "slug": "autem-1c9b1a12",
+                    "active": true,
+                    "display_title": true,
+                    "allow_resubmission": false,
+                    "survey_type_of": "community_pulse",
+                    "created_at": "2026-05-28T18:45:29Z",
+                    "updated_at": "2026-05-28T18:45:29Z"
+                  }
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -2125,7 +3876,15 @@
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           }
         }
       }
@@ -2155,6 +3914,73 @@
             "description": "A survey with nested polls and options",
             "content": {
               "application/json": {
+                "example": {
+                  "type_of": "survey",
+                  "id": 45,
+                  "title": "Test Survey",
+                  "slug": "test-survey-1b83c27b",
+                  "active": true,
+                  "display_title": true,
+                  "allow_resubmission": false,
+                  "survey_type_of": "community_pulse",
+                  "created_at": "2026-05-28T18:45:29Z",
+                  "updated_at": "2026-05-28T18:45:29Z",
+                  "polls": [
+                    {
+                      "type_of": "poll",
+                      "id": 51,
+                      "prompt_markdown": "What do you think?",
+                      "prompt_html": "What do you think?\n",
+                      "position": 0,
+                      "poll_votes_count": 0,
+                      "poll_skips_count": 0,
+                      "poll_options_count": 4,
+                      "scale_min": null,
+                      "scale_max": null,
+                      "poll_type_of": "single_choice",
+                      "created_at": "2026-05-28T18:45:29Z",
+                      "updated_at": "2026-05-28T18:45:29Z",
+                      "poll_options": [
+                        {
+                          "type_of": "poll_option",
+                          "id": 178,
+                          "markdown": "2",
+                          "processed_html": "2\n",
+                          "position": 0,
+                          "poll_votes_count": 0,
+                          "supplementary_text": null
+                        },
+                        {
+                          "type_of": "poll_option",
+                          "id": 179,
+                          "markdown": "4",
+                          "processed_html": "4\n",
+                          "position": 1,
+                          "poll_votes_count": 0,
+                          "supplementary_text": null
+                        },
+                        {
+                          "type_of": "poll_option",
+                          "id": 180,
+                          "markdown": "2",
+                          "processed_html": "2\n",
+                          "position": 2,
+                          "poll_votes_count": 0,
+                          "supplementary_text": null
+                        },
+                        {
+                          "type_of": "poll_option",
+                          "id": 181,
+                          "markdown": "1",
+                          "processed_html": "1\n",
+                          "position": 3,
+                          "poll_votes_count": 0,
+                          "supplementary_text": null
+                        }
+                      ]
+                    }
+                  ]
+                },
                 "schema": {
                   "$ref": "#/components/schemas/SurveyWithPolls"
                 }
@@ -2162,10 +3988,26 @@
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "404": {
-            "description": "Not found"
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           }
         }
       }
@@ -2207,6 +4049,18 @@
             "description": "Poll votes",
             "content": {
               "application/json": {
+                "example": [
+                  {
+                    "type_of": "poll_vote",
+                    "id": 28,
+                    "poll_id": 54,
+                    "poll_option_id": 190,
+                    "user_id": 4252,
+                    "session_start": 0,
+                    "user_email": "person204@example.com",
+                    "created_at": "2026-05-28T18:45:29Z"
+                  }
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -2217,10 +4071,26 @@
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "404": {
-            "description": "Not found"
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           }
         }
       }
@@ -2262,6 +4132,18 @@
             "description": "Poll text responses",
             "content": {
               "application/json": {
+                "example": [
+                  {
+                    "type_of": "poll_text_response",
+                    "id": 12,
+                    "poll_id": 57,
+                    "user_id": 4258,
+                    "text_content": "Great survey!",
+                    "session_start": 0,
+                    "user_email": "person210@example.com",
+                    "created_at": "2026-05-28T18:45:30Z"
+                  }
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -2272,10 +4154,26 @@
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "404": {
-            "description": "Not found"
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           }
         }
       }
@@ -2304,11 +4202,258 @@
             "description": "A List of all tags",
             "content": {
               "application/json": {
+                "example": [
+                  {
+                    "id": 2353,
+                    "name": "tag5",
+                    "bg_color_hex": null,
+                    "text_color_hex": null,
+                    "short_summary": null
+                  },
+                  {
+                    "id": 2354,
+                    "name": "tag6",
+                    "bg_color_hex": null,
+                    "text_color_hex": null,
+                    "short_summary": null
+                  },
+                  {
+                    "id": 2355,
+                    "name": "tag7",
+                    "bg_color_hex": null,
+                    "text_color_hex": null,
+                    "short_summary": null
+                  }
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/Tag"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trends": {
+      "get": {
+        "summary": "Trends",
+        "security": [
+
+        ],
+        "tags": [
+          "trends"
+        ],
+        "description": "This endpoint allows the client to retrieve a list of active trends.\n\nTrends represent topics or themes that are currently hot and heavily discussed in the community.\nIt will return trends ordered by score and recency.\n\nIt supports pagination, each page will contain 10 trends by default.",
+        "operationId": "getTrends",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam10to1000"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A List of Trends",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "type_of": "trend",
+                    "id": 269,
+                    "name": "Ruby 3.4 release",
+                    "slug": "ruby-3-4-release",
+                    "description": "Discussions around the latest Ruby 3.4 features",
+                    "key_questions": [
+
+                    ],
+                    "score": 15.5,
+                    "articles_count": 1,
+                    "cover_image": null,
+                    "first_observed_at": "2026-05-28T18:45:30Z",
+                    "last_observed_at": "2026-05-28T18:45:30Z",
+                    "created_at": "2026-05-28T18:45:30Z",
+                    "updated_at": "2026-05-28T18:45:30Z"
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Trend"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trends/{id_or_slug}": {
+      "get": {
+        "summary": "A Trend",
+        "security": [
+
+        ],
+        "tags": [
+          "trends"
+        ],
+        "description": "This endpoint allows the client to retrieve details of a single trend using either its numeric ID or unique slug.",
+        "operationId": "getTrend",
+        "parameters": [
+          {
+            "name": "id_or_slug",
+            "in": "path",
+            "required": true,
+            "description": "The ID or slug of the trend to retrieve.",
+            "example": "ruby-3-4-release",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A Trend",
+            "content": {
+              "application/json": {
+                "example": {
+                  "type_of": "trend",
+                  "id": 270,
+                  "name": "Ruby 3.4 release",
+                  "slug": "ruby-3-4-release",
+                  "description": "Discussions around the latest Ruby 3.4 features",
+                  "key_questions": [
+
+                  ],
+                  "score": 15.5,
+                  "articles_count": 1,
+                  "cover_image": null,
+                  "first_observed_at": "2026-05-28T18:45:30Z",
+                  "last_observed_at": "2026-05-28T18:45:30Z",
+                  "created_at": "2026-05-28T18:45:30Z",
+                  "updated_at": "2026-05-28T18:45:30Z"
+                },
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "$ref": "#/components/schemas/Trend"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Trend Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trends/{trend_id_or_slug}/articles": {
+      "get": {
+        "summary": "Articles in a Trend",
+        "security": [
+
+        ],
+        "tags": [
+          "trends"
+        ],
+        "description": "This endpoint allows the client to retrieve a list of published articles belonging to a trend.\n\nArticles will be ordered by their proximity (distance) to the trend's centroid, then by article score.\nIt supports pagination, each page will contain 10 articles by default.",
+        "operationId": "getTrendArticles",
+        "parameters": [
+          {
+            "name": "trend_id_or_slug",
+            "in": "path",
+            "required": true,
+            "description": "The ID or slug of the trend to retrieve articles for.",
+            "example": "ruby-3-4-release",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam10to1000"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A List of Articles in the Trend",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "type_of": "article",
+                    "id": 2267,
+                    "title": "Ruby 3.4 features deep dive",
+                    "description": "Put a bird on it fashion axe salvia pickled selfies pinterest. Ennui heirloom swag vhs yuccie food...",
+                    "readable_publish_date": "May 28",
+                    "slug": "ruby-34-features-deep-dive-2a22",
+                    "path": "/username218/ruby-34-features-deep-dive-2a22",
+                    "url": "http://forem.test/username218/ruby-34-features-deep-dive-2a22",
+                    "comments_count": 0,
+                    "public_reactions_count": 0,
+                    "collection_id": null,
+                    "published_timestamp": "2026-05-28T18:45:30Z",
+                    "language": "en",
+                    "subforem_id": null,
+                    "positive_reactions_count": 0,
+                    "cover_image": "http://forem.test/assets/4-dcfcc4d8dd259bc0751c2de24b1cf244b181c789934368ca1cb471f0944b695d.png",
+                    "social_image": "http://forem.test/assets/4-dcfcc4d8dd259bc0751c2de24b1cf244b181c789934368ca1cb471f0944b695d.png",
+                    "canonical_url": "http://forem.test/username218/ruby-34-features-deep-dive-2a22",
+                    "created_at": "2026-05-28T18:45:30Z",
+                    "edited_at": null,
+                    "crossposted_at": null,
+                    "published_at": "2026-05-28T18:45:30Z",
+                    "last_comment_at": "2026-05-28T18:45:30Z",
+                    "reading_time_minutes": 1,
+                    "tag_list": [
+                      "javascript",
+                      "html",
+                      "discuss"
+                    ],
+                    "tags": "javascript, html, discuss",
+                    "user": {
+                      "name": "Jennie \"Trenton\" \\:/ Mitchell",
+                      "username": "username218",
+                      "twitter_username": "twitter218",
+                      "github_username": "github218",
+                      "user_id": 4266,
+                      "website_url": null,
+                      "profile_image": "/uploads/user/profile_image/4266/633ee7e9-0ce0-4b3b-ba3a-011971fde181.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/4266/633ee7e9-0ce0-4b3b-ba3a-011971fde181.jpeg"
+                    }
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Trend Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
                 }
               }
             }
@@ -2343,10 +4488,26 @@
             "description": "User successfully unpublished"
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "404": {
-            "description": "Unknown User ID"
+            "description": "Unknown User ID",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           }
         }
       }
@@ -2378,10 +4539,26 @@
             "description": "User successfully limited"
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "404": {
-            "description": "Unknown User ID"
+            "description": "Unknown User ID",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           }
         }
       },
@@ -2411,10 +4588,26 @@
             "description": "User successfully un-limited"
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "404": {
-            "description": "Unknown User ID"
+            "description": "Unknown User ID",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           }
         }
       }
@@ -2446,10 +4639,26 @@
             "description": "Spam role assigned to the user successfully"
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "404": {
-            "description": "Unknown User ID"
+            "description": "Unknown User ID",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           }
         }
       },
@@ -2479,10 +4688,26 @@
             "description": "Successfully removed the spam role from a user"
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "404": {
-            "description": "Unknown User ID"
+            "description": "Unknown User ID",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           }
         }
       }
@@ -2514,10 +4739,26 @@
             "description": "Trusted role assigned to the user successfully"
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "404": {
-            "description": "Unknown User ID"
+            "description": "Unknown User ID",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           }
         }
       },
@@ -2547,10 +4788,26 @@
             "description": "Successfully removed the trusted role from a user"
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "404": {
-            "description": "Unknown User ID"
+            "description": "Unknown User ID",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           }
         }
       }
@@ -2568,6 +4825,24 @@
             "description": "successful",
             "content": {
               "application/json": {
+                "example": {
+                  "type_of": "user",
+                  "id": 4306,
+                  "username": "username258",
+                  "name": "Vania \"Earl\" \\:/ Langworth",
+                  "twitter_username": "twitter258",
+                  "github_username": "github258",
+                  "email": null,
+                  "summary": null,
+                  "location": null,
+                  "website_url": null,
+                  "joined_at": "May 28, 2026",
+                  "profile_image": "/uploads/user/profile_image/4306/55fabae2-ecb8-4e4c-bafa-c7c9b1ed240a.jpeg",
+                  "badge_ids": [
+
+                  ],
+                  "followers_count": 0
+                },
                 "schema": {
                   "type": "object",
                   "items": {
@@ -2578,7 +4853,15 @@
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           }
         }
       }
@@ -2645,10 +4928,26 @@
             "description": "User's articles and comments successfully unpublished"
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "404": {
-            "description": "Unknown User ID (still accepted for async processing)"
+            "description": "Unknown User ID (still accepted for async processing)",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           }
         }
       }
@@ -2669,10 +4968,26 @@
             "description": "Successful"
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "422": {
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "param is missing or the value is empty: email",
+                  "status": 422
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -2711,6 +5026,36 @@
             "description": "A List of all articles with videos",
             "content": {
               "application/json": {
+                "example": [
+                  {
+                    "type_of": "video_article",
+                    "id": 2269,
+                    "path": "/username271/dulce-et-decorum-est32-1c75",
+                    "cloudinary_video_url": "https://dw71fyauz7yz9.cloudfront.net/video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f/thumbs-video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f-00001.png",
+                    "video": "https://s3.amazonaws.com/dev-to-input-v0/video-upload__2d7dc29e39a40c7059572bca75bb646b",
+                    "title": "Dulce et Decorum Est32",
+                    "user_id": 4320,
+                    "video_duration_in_minutes": "00:00",
+                    "video_source_url": "https://dw71fyauz7yz9.cloudfront.net/video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f/video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f.m3u8",
+                    "user": {
+                      "name": "Layne \"Eldon\" \\:/ Satterfield"
+                    }
+                  },
+                  {
+                    "type_of": "video_article",
+                    "id": 2270,
+                    "path": "/username272/an-evil-cradling33-n2e",
+                    "cloudinary_video_url": "https://dw71fyauz7yz9.cloudfront.net/video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f/thumbs-video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f-00001.png",
+                    "video": "https://s3.amazonaws.com/dev-to-input-v0/video-upload__2d7dc29e39a40c7059572bca75bb646b",
+                    "title": "An Evil Cradling33",
+                    "user_id": 4321,
+                    "video_duration_in_minutes": "00:00",
+                    "video_source_url": "https://dw71fyauz7yz9.cloudfront.net/video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f/video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f.m3u8",
+                    "user": {
+                      "name": "Foster \"Augustine\" \\:/ Cruickshank"
+                    }
+                  }
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -4162,6 +6507,77 @@
           "text_content",
           "session_start",
           "created_at"
+        ]
+      },
+      "Trend": {
+        "description": "Representation of a trend",
+        "type": "object",
+        "properties": {
+          "type_of": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "key_questions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "score": {
+            "type": "number",
+            "format": "float"
+          },
+          "articles_count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cover_image": {
+            "type": "string",
+            "format": "url",
+            "nullable": true
+          },
+          "first_observed_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "last_observed_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "type_of",
+          "id",
+          "name",
+          "slug",
+          "key_questions",
+          "score",
+          "articles_count",
+          "first_observed_at",
+          "last_observed_at",
+          "created_at",
+          "updated_at"
         ]
       }
     }
