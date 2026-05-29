@@ -36,7 +36,7 @@ RSpec.describe Ai::TrendDetector do
     context "when thresholds are satisfied" do
       it "clusters articles and creates a new Trend and TrendMemberships" do
         expect do
-          detector.call(min_articles: 3, min_score: 10)
+          detector.call(min_articles: 3, min_score: 10, min_unique_authors: 3)
         end.to change(Trend, :count).by(1)
           .and change(TrendMembership, :count).by(3)
 
@@ -72,7 +72,7 @@ RSpec.describe Ai::TrendDetector do
         # min_articles: 2, so article2 and article3 (score 25, 30) form a cluster of size 2, creating the trend.
         # article1 (score 20) is excluded from the first-pass limit(2) but should be caught by the second pass.
         expect do
-          detector.call(min_articles: 2, min_score: 10)
+          detector.call(min_articles: 2, min_score: 10, min_unique_authors: 2)
         end.to change(Trend, :count).by(1)
           .and change(TrendMembership, :count).by(3)
 
@@ -101,6 +101,27 @@ RSpec.describe Ai::TrendDetector do
       end
     end
 
+    context "when filtering by author diversity (min_unique_authors)" do
+      it "does not create a trend if the number of unique authors is below min_unique_authors" do
+        # Associate the same user to all three articles
+        user = create(:user)
+        article1.update!(user: user)
+        article2.update!(user: user)
+        article3.update!(user: user)
+
+        expect do
+          detector.call(min_articles: 3, min_score: 10, min_unique_authors: 2)
+        end.not_to change(Trend, :count)
+      end
+
+      it "creates a trend if the number of unique authors matches or exceeds min_unique_authors" do
+        # Default behavior where articles have different users
+        expect do
+          detector.call(min_articles: 3, min_score: 10, min_unique_authors: 3)
+        end.to change(Trend, :count).by(1)
+      end
+    end
+
     context "when a similar active trend already exists" do
       let!(:existing_trend) do
         create(:trend,
@@ -115,7 +136,7 @@ RSpec.describe Ai::TrendDetector do
         # The new cluster is very close to embedding1 (distance 0.0) which is within match_threshold.
         # updates existing_trend, doesn't create new
         expect do
-          detector.call(min_articles: 3, min_score: 10, match_threshold: 0.88)
+          detector.call(min_articles: 3, min_score: 10, match_threshold: 0.88, min_unique_authors: 3)
         end.not_to change(Trend, :count)
         existing_trend.reload
         expect(existing_trend.name).to eq("Emergent Ruby Patterns")
@@ -143,14 +164,33 @@ RSpec.describe Ai::TrendDetector do
       end
 
       it "updates the existing trend if match_threshold is set to 0.88" do
+        # Passing min_unique_authors: 3 to satisfy diversity with 3 test articles
         expect do
-          detector.call(min_articles: 3, min_score: 10, match_threshold: 0.88)
+          detector.call(min_articles: 3, min_score: 10, match_threshold: 0.88, min_unique_authors: 3)
         end.not_to change(Trend, :count)
       end
 
       it "creates a new trend under the default match_threshold of 0.98" do
+        # Passing min_unique_authors: 3 to satisfy diversity with 3 test articles
+        expect do
+          detector.call(min_articles: 3, min_score: 10, min_unique_authors: 3)
+        end.to change(Trend, :count).by(1)
+      end
+    end
+
+    context "when using default min_unique_authors" do
+      it "does not create a trend if there are only 3 unique authors" do
         expect do
           detector.call(min_articles: 3, min_score: 10)
+        end.not_to change(Trend, :count)
+      end
+
+      it "creates a trend if there are 4 unique authors" do
+        embedding4 = Array.new(768, 0.105)
+        create(:article, published: true, score: 15, semantic_embedding: embedding4)
+
+        expect do
+          detector.call(min_articles: 4, min_score: 10)
         end.to change(Trend, :count).by(1)
       end
     end
@@ -198,7 +238,7 @@ RSpec.describe Ai::TrendDetector do
 
       it "detects trends for the hottest tags that satisfy min_articles" do
         expect do
-          detector.call(min_articles: 3, min_score: 10)
+          detector.call(min_articles: 3, min_score: 10, min_unique_authors: 3)
         end.to change(Trend, :count).by(2) # 1 global trend and 1 ruby trend
 
         ruby_trend = Trend.find_by(tag: tag_ruby)
@@ -221,7 +261,7 @@ RSpec.describe Ai::TrendDetector do
                                              first_observed_at: 2.days.ago, last_observed_at: 2.days.ago)
 
         expect do
-          detector.call(min_articles: 3, min_score: 10)
+          detector.call(min_articles: 3, min_score: 10, min_unique_authors: 3)
         end.to change(Trend, :count).by(1) # Only creates global trend
 
         expect(existing_ruby_trend.reload.name).to eq("Emergent Ruby Patterns")
