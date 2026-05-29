@@ -1,6 +1,10 @@
 @import '../config/import';
 @import './skip-link';
 
+#topbar {
+  z-index: 10000;
+}
+
 .crayons-header {
   height: var(--header-height);
   background: var(--header-bg);
