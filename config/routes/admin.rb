@@ -25,7 +25,12 @@ namespace :admin do
   end
 
   resources :organization_memberships, only: %i[update destroy create]
-  resources :permissions, only: %i[index]
+  resources :permissions, only: %i[index] do
+    collection do
+      post :grant
+      delete :revoke
+    end
+  end
   resources :reactions, only: %i[update]
   resources :creator_settings, only: %i[create new]
 
@@ -170,6 +175,7 @@ namespace :admin do
         end
       end
     end
+    resources :request_redirects
   end
 
   scope :moderation do
@@ -185,6 +191,7 @@ namespace :admin do
     resources :moderator_actions, only: %i[index]
     resources :privileged_reactions, only: %i[index]
     resources :blocked_email_domains, only: %i[index new create destroy]
+    resources :linked_domains, only: %i[index edit update]
   end
 
   scope :advanced do

@@ -192,6 +192,54 @@ RSpec.describe User do
       it { is_expected.to validate_length_of(:password).is_at_most(100).is_at_least(8) }
       it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
 
+      it "rejects RFC2047 encoded-words in email with a generic invalid error" do
+        invalid_emails = [
+          "=?utf-8?q?test=40attacker.com=3e?=@company.com",
+          "=?utf-8?q?test=40attacker.com=3e=00?=test@company.com",
+          "=?utf-8?q?test=40attacker.com=3e=0A=0D?=test@company.com",
+          "=?utf-8?q?test=40attacker.com=3e=3c?=test@company.com",
+          "=?utf-8?q?test=40attacker.com=3e=0A=0D?=RCPTTO:test@company.com",
+          "user=?utf-8?q?x?=@company.com",
+          "user@=?utf-8?q?company.com?=",
+          "=?utf-8?Q?test=40attacker.com=3e?=@company.com",
+          "=?utf-8?B?dGVzdEBhdHRhY2tlci5jb20+?=@company.com",
+        ]
+
+        invalid_emails.each do |email|
+          user = build(:user, email: email)
+
+          expect(user).not_to be_valid
+          expect(user.errors[:email]).to include("is invalid")
+        end
+      end
+
+      it "documents that mail decoding changes the recipient shape locally" do
+        encoded_word_email = "=?utf-8?q?test=40attacker.com=3e?=@company.com"
+
+        expect(Mail::Encodings.value_decode(encoded_word_email)).to eq("test@attacker.com>@company.com")
+      end
+
+      it "preserves nil email behavior" do
+        user = build(:user, email: nil)
+
+        expect(user).to be_valid
+      end
+
+      it "keeps normal and non-encoded-word email addresses valid" do
+        valid_emails = [
+          "user@example.com",
+          "first.last+tag@example.co.uk",
+          "user=?not-complete@example.com",
+          "user?utf-8?q?x@example.com",
+        ]
+
+        valid_emails.each do |email|
+          user = build(:user, email: email)
+
+          expect(user).to be_valid
+        end
+      end
+
       it { is_expected.not_to allow_value("  ").for(:name) }
 
       it { is_expected.to validate_presence_of(:articles_count) }
@@ -737,6 +785,33 @@ RSpec.describe User do
       expect(UserRole.count).to eq(0)
 
       expect { user.set_initial_roles! }.not_to change(UserRole, :count)
+    end
+  end
+
+  describe "#author_trust_score" do
+    it "returns 0 for score < 25" do
+      user.update_column(:score, 10)
+      expect(user.author_trust_score).to eq(0)
+    end
+
+    it "returns 1 for score between 25 and 74" do
+      user.update_column(:score, 50)
+      expect(user.author_trust_score).to eq(1)
+    end
+
+    it "returns 2 for score between 75 and 174" do
+      user.update_column(:score, 100)
+      expect(user.author_trust_score).to eq(2)
+    end
+
+    it "returns 3 for score between 175 and 299" do
+      user.update_column(:score, 200)
+      expect(user.author_trust_score).to eq(3)
+    end
+
+    it "returns 4 for score >= 300" do
+      user.update_column(:score, 350)
+      expect(user.author_trust_score).to eq(4)
     end
   end
 

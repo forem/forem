@@ -144,9 +144,7 @@ class AgentSessionsController < ApplicationController
     @agent_session.tool_name = tool_name.presence || curated.dig("metadata", "tool_name") || "claude_code"
     @agent_session.curated_data = result.scrubbed_data
     @agent_session.s3_key = create_params[:s3_key] if create_params[:s3_key].present?
-    @agent_session.session_metadata = result.scrubbed_data.fetch("metadata", {}).merge(
-      "redactions" => result.redactions.map { |r| { "name" => r.pattern_name, "count" => r.match_count } },
-    )
+    @agent_session.session_metadata = session_metadata_from_scrub_result(result)
 
     if params[:agent_session]&.key?(:slices)
       @agent_session.slices = parse_create_slices_param
@@ -188,11 +186,19 @@ class AgentSessionsController < ApplicationController
     curated = raw.is_a?(String) ? JSON.parse(raw, max_nesting: 50) : raw.to_unsafe_h
     result = AgentSessionParsers::SensitiveDataScrubber.scrub(curated)
     @agent_session.curated_data = result.scrubbed_data
-    @agent_session.session_metadata = result.scrubbed_data.fetch("metadata", {}).merge(
-      "redactions" => result.redactions.map { |r| { "name" => r.pattern_name, "count" => r.match_count } },
-    )
+    @agent_session.session_metadata = session_metadata_from_scrub_result(result)
   rescue JSON::ParserError
     # Ignore invalid JSON — validation will catch it
+  end
+
+  def session_metadata_from_scrub_result(result)
+    metadata = result.scrubbed_data.fetch("metadata", {}) || {}
+    metadata_redactions = metadata["redactions"].presence ||
+      AgentSessionParsers::RedactionMetadata.from_messages(result.scrubbed_data["messages"])
+
+    metadata.merge(
+      "redactions" => AgentSessionParsers::RedactionMetadata.merge(metadata_redactions, result.redactions),
+    )
   end
 
   def parse_curated_data_param

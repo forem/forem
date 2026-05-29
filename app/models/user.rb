@@ -150,6 +150,7 @@ class User < ApplicationRecord
   validates :comments_count, presence: true
   validates :credits_count, presence: true
   validates :email, length: { maximum: 254 }, email: true, allow_nil: true
+  validate :reject_encoded_word_email, if: -> { email.present? }
   validates :email, uniqueness: { allow_nil: true, case_sensitive: false }, if: :email_changed?
   validates :following_orgs_count, presence: true
   validates :following_tags_count, presence: true
@@ -350,6 +351,16 @@ class User < ApplicationRecord
     elsif Settings::Authentication.limit_new_users?
       add_role(:limited)
       # Otherwise just leave the new user in good standing
+    end
+  end
+
+  def author_trust_score
+    case score.to_i
+    when -Float::INFINITY...25 then 0
+    when 25...75 then 1
+    when 75...175 then 2
+    when 175...300 then 3
+    else 4
     end
   end
 
@@ -854,6 +865,12 @@ class User < ApplicationRecord
 
   def downcase_email
     self.email = email.downcase if email
+  end
+
+  def reject_encoded_word_email
+    encoded_word_regex = /=\?[^?]+\?[BbQq]\?[^?]+\?=/
+
+    errors.add(:email, :invalid) if email.match?(encoded_word_regex)
   end
 
   def bust_cache
