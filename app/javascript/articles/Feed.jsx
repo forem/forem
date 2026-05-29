@@ -22,7 +22,10 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
 
   useEffect(() => {
     async function fetchFeedItems(timeFrame = '', page = 1) {
-      const feedTypeOf = localStorage?.getItem('current_feed') || 'discover';
+      let feedTypeOf = localStorage?.getItem('current_feed');
+      if (feedTypeOf !== 'discover' && feedTypeOf !== 'following') {
+        feedTypeOf = 'discover';
+      }
       const billboardUrlComponent = document.body.dataset.dynamicUrlComponent || 'bb';
       const promises = [
         fetch(`/stories/feed/${timeFrame}?page=${page}&type_of=${feedTypeOf}`, {
