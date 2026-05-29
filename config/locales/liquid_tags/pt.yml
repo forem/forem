@@ -44,6 +44,7 @@ pt:
       invalid_url: URL do Hugging Face Space inválida
     instagram_tag:
       invalid_instagram_id: ID do Instagram inválido
+      view_post: Ver essa publicação no Instagram
     js_fiddle_tag:
       invalid_jsfiddle_url: URL do JSFiddle inválida
       invalid_options: Opções inválidas
