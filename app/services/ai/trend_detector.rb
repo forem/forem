@@ -60,13 +60,14 @@ module Ai
                                .sort_by { |c| -c[:articles].length }
                                .first(5)
 
-      # Process each valid cluster
+      trends_with_centroids = []
+
+      # Process each valid cluster to create or update the Trend records
       valid_clusters.each do |cluster|
         # Sort articles by score (hotness) descending
         cluster[:articles].sort_by! { |a| -a.score }
 
         # Check if this cluster matches an existing active trend in the DB
-        # Match threshold 0.88 means distance <= 0.12
         existing_trend = find_matching_trend(cluster[:centroid], 1.0 - match_threshold, days_lookback: days_lookback)
 
         # Build prompt and call Gemini to get trend metadata (name, description, key questions)
@@ -97,24 +98,76 @@ module Ai
             )
             new_trend_created = true
           end
+        end
 
-          # Sync memberships
-          active_article_ids = cluster[:articles].map(&:id)
+        if new_trend_created && trend
+          Trends::GenerateCoverImageWorker.perform_async(trend.id)
+        end
+
+        trends_with_centroids << { trend: trend, centroid: cluster[:centroid] } if trend
+      end
+
+      # Second pass: Associate recent qualifying articles to their closest trend centroid
+      # Map to track the closest trend assignment for each article: article_id => { trend_id:, distance:, article: }
+      article_closest_trend = {}
+
+      trends_with_centroids.each do |tc|
+        trend = tc[:trend]
+        centroid = tc[:centroid]
+
+        centroid_literal = "[#{centroid.join(',')}]"
+        quoted_centroid = Article.connection.quote(centroid_literal)
+
+        # Find qualifying articles for this centroid, ordered by distance and capped at 1000 to keep the queries bounded
+        qualifying_articles = Article.published
+                                     .select("articles.*, (semantic_embedding <=> #{quoted_centroid}) AS computed_distance")
+                                     .where("published_at >= ?", days_lookback.days.ago)
+                                     .where("score >= ?", min_score)
+                                     .where.not(semantic_embedding: nil)
+                                     .where("semantic_embedding <=> #{quoted_centroid} <= ?", dist_threshold)
+                                     .order(Arel.sql("semantic_embedding <=> #{quoted_centroid}"))
+                                     .limit(1000)
+
+        qualifying_articles.each do |article|
+          dist = article.computed_distance.to_f
+          existing = article_closest_trend[article.id]
+
+          if existing.nil? || dist < existing[:distance]
+            article_closest_trend[article.id] = {
+              trend_id: trend.id,
+              distance: dist,
+              article: article
+            }
+          end
+        end
+      end
+
+      # Group assignments by trend_id and update memberships inside short transactions
+      assigned_by_trend = Hash.new { |h, k| h[k] = [] }
+      article_closest_trend.each_value do |assignment|
+        assigned_by_trend[assignment[:trend_id]] << {
+          article: assignment[:article],
+          distance: assignment[:distance]
+        }
+      end
+
+      trends_with_centroids.each do |tc|
+        trend = tc[:trend]
+        assignments = assigned_by_trend[trend.id] || []
+
+        active_article_ids = assignments.map { |a| a[:article].id }
+
+        Trend.transaction do
           trend.trend_memberships.where.not(article_id: active_article_ids).destroy_all
 
-          cluster[:articles].each do |article|
-            dist = cosine_distance(trend.centroid_embedding.to_a, article.semantic_embedding.to_a)
-            membership = trend.trend_memberships.find_or_initialize_by(article: article)
-            membership.distance = dist
+          assignments.each do |a|
+            membership = trend.trend_memberships.find_or_initialize_by(article: a[:article])
+            membership.distance = a[:distance]
             membership.save!
           end
 
           # Recalculate trend score
           recalculate_trend_score(trend, days_lookback: days_lookback)
-        end
-
-        if new_trend_created && trend
-          Trends::GenerateCoverImageWorker.perform_async(trend.id)
         end
       end
     end
