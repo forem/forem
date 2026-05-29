@@ -9,13 +9,29 @@ module Ai
     def call(days_lookback: 7, similarity_threshold: 0.90, match_threshold: 0.98, min_articles: 10, min_score: nil)
       min_score ||= Settings::UserExperience.index_minimum_score.to_i
 
-      articles = Article.published
-                        .where("published_at >= ?", days_lookback.days.ago)
-                        .where("score >= ?", min_score)
-                        .where.not(semantic_embedding: nil)
-                        .order(score: :desc)
-                        .limit(1000)
-                        .to_a
+      # Run global trend detection
+      detect_trends_for(tag: nil, days_lookback: days_lookback, similarity_threshold: similarity_threshold,
+                        match_threshold: match_threshold, min_articles: min_articles, min_score: min_score)
+
+      # Run per-tag trend detection for the top 25 hottest tags
+      Tag.direct.order(hotness_score: :desc).limit(25).each do |tag|
+        detect_trends_for(tag: tag, days_lookback: days_lookback, similarity_threshold: similarity_threshold,
+                          match_threshold: match_threshold, min_articles: min_articles, min_score: min_score)
+      end
+    end
+
+    def detect_trends_for(tag: nil, days_lookback: 7, similarity_threshold: 0.90, match_threshold: 0.98,
+                          min_articles: 10, min_score: nil)
+      relation = Article.published
+        .where("published_at >= ?", days_lookback.days.ago)
+        .where("score >= ?", min_score)
+        .where.not(semantic_embedding: nil)
+        .order(score: :desc)
+        .limit(1000)
+
+      relation = relation.cached_tagged_with(tag.name) if tag
+
+      articles = relation.to_a
 
       return if articles.empty?
 
@@ -47,7 +63,7 @@ module Ai
           # Incremental centroid update: (old_centroid * N + new_vector) / (N + 1)
           n = best_cluster[:articles].length
           best_cluster[:centroid] = best_cluster[:centroid].zip(article_vec).map do |c_val, a_val|
-            (c_val * n + a_val) / (n + 1)
+            ((c_val * n) + a_val) / (n + 1)
           end
           best_cluster[:articles] << article
         else
@@ -57,8 +73,8 @@ module Ai
 
       # Filter clusters: must have at least min_articles articles, sorted by size descending, limit to top 5
       valid_clusters = clusters.select { |c| c[:articles].length >= min_articles }
-                               .sort_by { |c| -c[:articles].length }
-                               .first(5)
+        .sort_by { |c| -c[:articles].length }
+        .first(5)
 
       trends_with_centroids = []
 
@@ -68,10 +84,11 @@ module Ai
         cluster[:articles].sort_by! { |a| -a.score }
 
         # Check if this cluster matches an existing active trend in the DB
-        existing_trend = find_matching_trend(cluster[:centroid], 1.0 - match_threshold, days_lookback: days_lookback)
+        existing_trend = find_matching_trend(cluster[:centroid], 1.0 - match_threshold, tag: tag,
+                                                                                        days_lookback: days_lookback)
 
         # Build prompt and call Gemini to get trend metadata (name, description, key questions)
-        metadata = generate_trend_metadata(cluster[:articles].first(5))
+        metadata = generate_trend_metadata(cluster[:articles].first(5), tag: tag)
         next if metadata.blank?
 
         trend = nil
@@ -84,7 +101,7 @@ module Ai
               description: metadata["description"],
               key_questions: metadata["key_questions"],
               centroid_embedding: cluster[:centroid],
-              last_observed_at: Time.current
+              last_observed_at: Time.current,
             )
             trend = existing_trend
           else
@@ -93,8 +110,9 @@ module Ai
               description: metadata["description"],
               key_questions: metadata["key_questions"],
               centroid_embedding: cluster[:centroid],
+              tag_id: tag&.id,
               first_observed_at: Time.current,
-              last_observed_at: Time.current
+              last_observed_at: Time.current,
             )
             new_trend_created = true
           end
@@ -119,26 +137,29 @@ module Ai
         quoted_centroid = Article.connection.quote(centroid_literal)
 
         # Find qualifying articles for this centroid, ordered by distance and capped at 1000 to keep the queries bounded
-        qualifying_articles = Article.published
-                                     .select("articles.*, (semantic_embedding <=> #{quoted_centroid}) AS computed_distance")
-                                     .where("published_at >= ?", days_lookback.days.ago)
-                                     .where("score >= ?", min_score)
-                                     .where.not(semantic_embedding: nil)
-                                     .where("semantic_embedding <=> #{quoted_centroid} <= ?", dist_threshold)
-                                     .order(Arel.sql("semantic_embedding <=> #{quoted_centroid}"))
-                                     .limit(1000)
+        qualifying_relation = Article.published
+          .select("articles.*, (semantic_embedding <=> #{quoted_centroid}) AS computed_distance")
+          .where("published_at >= ?", days_lookback.days.ago)
+          .where("score >= ?", min_score)
+          .where.not(semantic_embedding: nil)
+          .where("semantic_embedding <=> #{quoted_centroid} <= ?", dist_threshold)
+
+        qualifying_relation = qualifying_relation.cached_tagged_with(tag.name) if tag
+
+        qualifying_articles = qualifying_relation.order(Arel.sql("semantic_embedding <=> #{quoted_centroid}"))
+          .limit(1000)
 
         qualifying_articles.each do |article|
           dist = article.computed_distance.to_f
           existing = article_closest_trend[article.id]
 
-          if existing.nil? || dist < existing[:distance]
-            article_closest_trend[article.id] = {
-              trend_id: trend.id,
-              distance: dist,
-              article: article
-            }
-          end
+          next unless existing.nil? || dist < existing[:distance]
+
+          article_closest_trend[article.id] = {
+            trend_id: trend.id,
+            distance: dist,
+            article: article
+          }
         end
       end
 
@@ -203,25 +224,28 @@ module Ai
       sum_vector.map { |val| val / vectors.length }
     end
 
-    def find_matching_trend(centroid, max_distance, days_lookback:)
+    def find_matching_trend(centroid, max_distance, tag:, days_lookback:)
       centroid_literal = "[#{centroid.join(',')}]"
       # Order by pgvector cosine distance operator, filtering to active trends
       trend = Trend.where("last_observed_at >= ?", days_lookback.days.ago)
-                   .order(Arel.sql("centroid_embedding <=> #{Trend.connection.quote(centroid_literal)}"))
-                   .first
-      return nil unless trend
+        .where(tag_id: tag&.id)
+        .order(Arel.sql("centroid_embedding <=> #{Trend.connection.quote(centroid_literal)}"))
+        .first
+      return unless trend
 
       dist = cosine_distance(trend.centroid_embedding.to_a, centroid)
       dist <= max_distance ? trend : nil
     end
 
-    def generate_trend_metadata(articles)
+    def generate_trend_metadata(articles, tag: nil)
       articles_text = articles.map.with_index do |a, idx|
         "#{idx + 1}. Title: #{a.title}\nTags: #{a.cached_tag_list}\nSummary: #{a.body_markdown.truncate(400)}"
       end.join("\n\n")
 
+      prompt_tag_context = tag ? " (focused specifically on the '#{tag.name}' tag)" : ""
+
       prompt = <<~PROMPT
-        You are analyzing a cluster of highly related technical articles published recently on a developer community platform.
+        You are analyzing a cluster of highly related technical articles published recently on a developer community platform#{prompt_tag_context}.
         Your goal is to identify the emergent, specific trend or topic that groups these articles together, and produce structured information about it.
 
         Articles in this cluster:
@@ -241,7 +265,7 @@ module Ai
 
       begin
         response = @ai_client.call(prompt, response_mime_type: "application/json")
-        return nil if response.blank?
+        return if response.blank?
 
         JSON.parse(response.strip)
       rescue StandardError => e
@@ -253,9 +277,9 @@ module Ai
     def recalculate_trend_score(trend, days_lookback:)
       # Score is sum of (article.score * decay) for all articles associated in the lookback window
       recent_memberships = trend.trend_memberships
-                                .joins(:article)
-                                .where("articles.published_at >= ?", days_lookback.days.ago)
-                                .includes(:article)
+        .joins(:article)
+        .where("articles.published_at >= ?", days_lookback.days.ago)
+        .includes(:article)
 
       total_score = 0.0
       recent_memberships.each do |m|
