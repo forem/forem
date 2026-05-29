@@ -10,9 +10,9 @@ class TrendsController < ApplicationController
 
     if params[:tag].present?
       @tag = Tag.find_by(name: params[:tag])
-      @trends = Trend.hot_and_recent.where(tag: @tag).limit(20)
+      @trends = Trend.hot_and_recent.includes(:tag).where(tag: @tag).limit(20)
     else
-      @trends = Trend.hot_and_recent.limit(20)
+      @trends = Trend.hot_and_recent.includes(:tag).limit(20)
     end
 
     set_surrogate_key_header Trend.table_key, *@trends.map(&:record_key), *@active_trend_tags.map(&:record_key)

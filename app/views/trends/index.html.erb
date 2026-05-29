@@ -19,13 +19,13 @@
     <nav class="crayons-tabs crayons-tabs--scrollable mb-6" aria-label="<%= t("trends.index.tag_filters_nav_label") %>">
       <ul class="crayons-tabs__list">
         <li>
-          <a href="<%= trending_index_path %>" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:tag].blank? %>" aria-current="<%= "page" if params[:tag].blank? %>">
+          <a href="<%= trending_index_path %>" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:tag].blank? %>" <%= 'aria-current="page"' if params[:tag].blank? %>>
             <%= t("trends.index.all_trends") %>
           </a>
         </li>
         <% @active_trend_tags.each do |tag| %>
           <li>
-            <a href="<%= trending_index_path(tag: tag.name) %>" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:tag] == tag.name %>" aria-current="<%= "page" if params[:tag] == tag.name %>">
+            <a href="<%= trending_index_path(tag: tag.name) %>" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:tag] == tag.name %>" <%= 'aria-current="page"' if params[:tag] == tag.name %>>
               #<%= tag.name %>
             </a>
           </li>
