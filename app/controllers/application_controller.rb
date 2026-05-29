@@ -10,6 +10,7 @@ class ApplicationController < ActionController::Base
   before_action :set_devise_rememberable_options # Add this line
   before_action :remember_cookie_sync
   before_action :forward_to_app_config_domain
+  before_action :redirect_custom_domain_non_profile_pages
   before_action :determine_locale
   after_action  :clear_request_store
 
@@ -462,6 +463,67 @@ class ApplicationController < ActionController::Base
   helper_method :feature_flag_enabled?
 
   private
+
+  def redirect_custom_domain_non_profile_pages
+    org = custom_domain_org
+    return unless org.present?
+    return unless request.get? || request.head?
+    return unless request.format.html?
+
+    if controller_name == "stories" && action_name.in?(%w[custom_domain_index custom_domain_show])
+      return
+    end
+
+    main_app_domain = Settings::General.app_domain
+    if main_app_domain.present? && request.host&.downcase != main_app_domain.downcase
+      redirect_to "#{request.protocol}#{main_app_domain}#{request.fullpath}", allow_other_host: true, status: :moved_permanently
+    end
+  end
+
+  def custom_domain_org
+    is_ajax = request.respond_to?(:xhr?) && request.xhr?
+    is_json = request.path.to_s.end_with?(".json") || request.respond_to?(:accept) && request.accept.to_s.include?("application/json")
+
+    fetch_mode, fetch_dest =
+      if request.respond_to?(:get_header)
+        [request.get_header("HTTP_SEC_FETCH_MODE"), request.get_header("HTTP_SEC_FETCH_DEST")]
+      elsif request.respond_to?(:headers)
+        [request.headers["Sec-Fetch-Mode"], request.headers["Sec-Fetch-Dest"]]
+      else
+        [nil, nil]
+      end
+
+    is_fetch = fetch_mode == "cors" || fetch_dest == "empty"
+    is_async_path = request.path.to_s.start_with?("/async_info", "/reactions")
+
+    if (is_ajax || is_json || is_fetch || is_async_path) && params[:i] != "i"
+      return nil
+    end
+
+    host = request.host&.downcase
+    return nil if host.blank? || host == Settings::General.app_domain
+    return nil if Subforem.cached_domains.include?(host)
+
+    request.env["forem.custom_domain_org"] ||= begin
+      cache_key = "org_custom_domain_id:#{host}"
+      org_id = MemoryFirstCache.fetch(cache_key) do
+        org = Organization.find_by(custom_domain: host)
+        org ? org.id : "not_found"
+      end
+
+      if org_id.present? && org_id != "not_found"
+        org = Organization.find_by(id: org_id)
+        if org && org.custom_domain == host && FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
+          org
+        else
+          MemoryFirstCache.delete(cache_key) if org.nil? || org.custom_domain != host
+          nil
+        end
+      else
+        nil
+      end
+    end
+  end
 
   def redirect_www_and_unregistred_subforems_to_root
     # This redirect should ideally be done at the edge, but if that is not possible, we can do it here.
