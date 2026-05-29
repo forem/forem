@@ -6,22 +6,24 @@ module Ai
       @ai_client = Ai::Base.new(wrapper: self)
     end
 
-    def call(days_lookback: 7, similarity_threshold: 0.90, match_threshold: 0.98, min_articles: 10, min_score: nil)
+    def call(days_lookback: 7, similarity_threshold: 0.90, match_threshold: 0.98, min_articles: 10, min_score: nil, min_unique_authors: 4)
       min_score ||= Settings::UserExperience.index_minimum_score.to_i
 
       # Run global trend detection
       detect_trends_for(tag: nil, days_lookback: days_lookback, similarity_threshold: similarity_threshold,
-                        match_threshold: match_threshold, min_articles: min_articles, min_score: min_score)
+                        match_threshold: match_threshold, min_articles: min_articles, min_score: min_score,
+                        min_unique_authors: min_unique_authors)
 
       # Run per-tag trend detection for the top 25 hottest tags
       Tag.direct.order(hotness_score: :desc).limit(25).each do |tag|
         detect_trends_for(tag: tag, days_lookback: days_lookback, similarity_threshold: similarity_threshold,
-                          match_threshold: match_threshold, min_articles: min_articles, min_score: min_score)
+                          match_threshold: match_threshold, min_articles: min_articles, min_score: min_score,
+                          min_unique_authors: min_unique_authors)
       end
     end
 
     def detect_trends_for(tag: nil, days_lookback: 7, similarity_threshold: 0.90, match_threshold: 0.98,
-                          min_articles: 10, min_score: nil)
+                          min_articles: 10, min_score: nil, min_unique_authors: 4)
       relation = Article.published
         .where("published_at >= ?", days_lookback.days.ago)
         .where("score >= ?", min_score)
@@ -71,8 +73,8 @@ module Ai
         end
       end
 
-      # Filter clusters: must have at least min_articles articles, sorted by size descending, limit to top 5
-      valid_clusters = clusters.select { |c| c[:articles].length >= min_articles }
+      # Filter clusters: must have at least min_articles articles and at least min_unique_authors unique authors, sorted by size descending, limit to top 5
+      valid_clusters = clusters.select { |c| c[:articles].length >= min_articles && c[:articles].map(&:user_id).uniq.size >= min_unique_authors }
         .sort_by { |c| -c[:articles].length }
         .first(5)
 
