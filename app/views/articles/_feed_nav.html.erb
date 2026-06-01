@@ -107,10 +107,13 @@
           }
           
           var feedToCache = currentFeedNav === "latest" ? "discover" : currentFeedNav;
+          if (feedToCache !== "discover" && feedToCache !== "following") {
+            feedToCache = "discover";
+          }
           localStorage.setItem("current_feed", feedToCache);
         } else {
-          currentFeedNav = localStorage.getItem("current_feed") || "discover";
-          if (currentFeedNav === "latest") {
+          currentFeedNav = localStorage.getItem("current_feed");
+          if (currentFeedNav !== "discover" && currentFeedNav !== "following") {
             currentFeedNav = "discover";
             localStorage.setItem("current_feed", "discover");
           }
@@ -160,7 +163,9 @@
         }
 
         var cacheTarget = newFeedNav === "latest" ? "discover" : newFeedNav;
-        localStorage.setItem("current_feed", cacheTarget);
+        if (cacheTarget === "discover" || cacheTarget === "following") {
+          localStorage.setItem("current_feed", cacheTarget);
+        }
 
         document.querySelectorAll("[data-feed-nav]").forEach(function(item) {
           if (item.getAttribute("data-feed-nav") === newFeedNav) {
