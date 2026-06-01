@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_05_21_163241) do
+ActiveRecord::Schema[7.0].define(version: 2026_05_28_205802) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1766,9 +1766,11 @@ ActiveRecord::Schema[7.0].define(version: 2026_05_21_163241) do
     t.string "name", null: false
     t.float "score", default: 0.0, null: false
     t.string "slug", null: false
+    t.bigint "tag_id"
     t.datetime "updated_at", null: false
     t.index ["centroid_embedding"], name: "index_trends_on_centroid_embedding", opclass: :vector_cosine_ops, using: :hnsw
     t.index ["slug"], name: "index_trends_on_slug", unique: true
+    t.index ["tag_id"], name: "index_trends_on_tag_id"
   end
 
   create_table "tweets", force: :cascade do |t|
@@ -2202,6 +2204,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_05_21_163241) do
   add_foreign_key "tags", "badges", on_delete: :nullify
   add_foreign_key "trend_memberships", "articles"
   add_foreign_key "trend_memberships", "trends"
+  add_foreign_key "trends", "tags", on_delete: :nullify
   add_foreign_key "tweets", "users", on_delete: :nullify
   add_foreign_key "user_activities", "users"
   add_foreign_key "user_blocks", "users", column: "blocked_id"

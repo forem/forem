@@ -9,6 +9,8 @@ en:
       explore_trend: "Explore Trend →"
       active_ago: "Active %{time} ago"
       active_recently: "Active recently"
+      all_trends: "All Trends"
+      tag_filters_nav_label: "Filter trends by tag"
       posts_count:
         one: "1 post in the last 7 days"
         other: "%{count} posts in the last 7 days"
