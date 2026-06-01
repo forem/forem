@@ -6,6 +6,7 @@ class User < ApplicationRecord
 
   include Images::Profile.for(:profile_image_url)
   include AlgoliaSearchable
+  include Trackable
 
   # NOTE: we are using an inline module to keep profile related things together.
   concerning :Profiles do
@@ -811,6 +812,44 @@ class User < ApplicationRecord
 
     last_followed_at.respond_to?(:rfc3339) ? last_followed_at.rfc3339 : last_followed_at.to_s
   end
+
+  # === Trackable (DEV → MLH Core user sync) ===
+  # Emits user_created / user_updated to the Customer.io CDP so MLH Core can
+  # link the DEV account (SocialProfiles::Dev) and record engagement.
+
+  def trackable_user_ids
+    [id]
+  end
+
+  # Curated payload — do NOT ship the full users row across the boundary.
+  def trackable_payload
+    { id: id, username: username, email: email, name: name }
+  end
+
+  # Emit user_updated only on deliberate profile edits. Forem touches
+  # profile_updated_at on every profile-edit path (Users::Update, users#update),
+  # so unrelated row churn (sign-ins, counters, score recalcs) does not emit.
+  def enqueue_trackable_event_updated
+    return unless previous_changes.key?("profile_updated_at")
+
+    enqueue_trackable_event("user_updated")
+  end
+
+  # Two gates: the global admin master switch, then the per-account rollout flag.
+  def trackable_events_skipped?
+    return true unless Settings::General.customerio_cdp_enabled?
+    return true unless FeatureFlag.enabled_for_user?(:dev_core_user_sync, self)
+
+    super
+  end
+
+  # User deletion / unlink is intentionally out of scope for the DEV → Core sync
+  # (created + updated only), and the Core consumer does not handle deletes, so
+  # suppress the concern's default user_destroyed emission.
+  def enqueue_trackable_event_destroyed(*)
+    nil
+  end
+  private :enqueue_trackable_event_updated, :trackable_events_skipped?, :enqueue_trackable_event_destroyed
 
   protected
 
