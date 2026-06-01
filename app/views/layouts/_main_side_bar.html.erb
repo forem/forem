@@ -3,7 +3,7 @@
   <div class="crayons-side-nav__scrollable">
     <% @subforems.each_with_index do |subforem, i| %>
     <div id="main-sidebar-dropdown-trigger-<%= subforem.id %>" aria-controls="main-sidebar-dropdown-<%= subforem.id %>" data-sidebar-trigger="true" class="crayons-side-nav__item">
-      <a class="crayons-side-nav-link" href="//<%= subforem.domain %><%= ":3000" if Rails.env.development? %>" rel="noopener noreferrer" id="<%= "root-subforem-link" if i.zero? %>" data-sidebar-subforem-id="<%= subforem.id %>">
+      <a class="crayons-side-nav-link" href="//<%= subforem.domain %><%= ":#{URL.dev_port}" if Rails.env.development? %>" rel="noopener noreferrer" id="<%= "root-subforem-link" if i.zero? %>" data-sidebar-subforem-id="<%= subforem.id %>">
         <img src="<%= optimized_image_url(Settings::General.logo_png(subforem_id: subforem.id), width: 65) %>" alt="<%= Settings::Community.community_name(subforem_id: subforem.id) %> Logo" style="width: 100%; height: auto;">
       </a>
       <% if i == 0 %>
