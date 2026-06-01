@@ -3,10 +3,16 @@ require "rails_helper"
 RSpec.describe Trackers::CustomerioCdp do
   subject(:adapter) { described_class.new }
 
+  def stub_write_key(value)
+    allow(ApplicationConfig).to receive(:[]).and_call_original
+    allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_CDP_WRITE_KEY").and_return(value)
+  end
+
   describe "#enabled?" do
-    it "is true when CUSTOMERIO_CDP_WRITE_KEY is present" do
+    it "is true when CUSTOMERIO_CDP_WRITE_KEY is present and the admin setting is on" do
       allow(ApplicationConfig).to receive(:[]).and_call_original
       allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_CDP_WRITE_KEY").and_return("key123")
+      Settings::General.customerio_cdp_enabled = true
 
       expect(adapter.enabled?).to be true
     end
@@ -14,6 +20,7 @@ RSpec.describe Trackers::CustomerioCdp do
     it "is false when CUSTOMERIO_CDP_WRITE_KEY is unset" do
       allow(ApplicationConfig).to receive(:[]).and_call_original
       allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_CDP_WRITE_KEY").and_return(nil)
+      Settings::General.customerio_cdp_enabled = true
 
       expect(adapter.enabled?).to be false
     end
@@ -21,8 +28,30 @@ RSpec.describe Trackers::CustomerioCdp do
     it "is false when CUSTOMERIO_CDP_WRITE_KEY is empty" do
       allow(ApplicationConfig).to receive(:[]).and_call_original
       allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_CDP_WRITE_KEY").and_return("")
+      Settings::General.customerio_cdp_enabled = true
 
       expect(adapter.enabled?).to be false
+    end
+
+    it "is false when the admin setting is off, even with a write key" do
+      stub_write_key("wk_test")
+      Settings::General.customerio_cdp_enabled = false
+
+      expect(described_class.new.enabled?).to be(false)
+    end
+
+    it "is true when both the write key and the setting are present" do
+      stub_write_key("wk_test")
+      Settings::General.customerio_cdp_enabled = true
+
+      expect(described_class.new.enabled?).to be(true)
+    end
+
+    it "is false when the write key is missing, even if the setting is on" do
+      stub_write_key(nil)
+      Settings::General.customerio_cdp_enabled = true
+
+      expect(described_class.new.enabled?).to be(false)
     end
   end
 
