@@ -42,8 +42,8 @@ function timeAgo({
     `<span class="time-ago-indicator">(${humanTime})</span>`,
   maxDisplayedAge = 60 * 60 * 24 - 1,
 }) {
-  const timeNow = new Date() / 1000;
-  const diff = Math.round(timeNow - oldTimeInSeconds);
+  const timeNow = Math.floor(Date.now() / 1000);
+  const diff = timeNow - Math.floor(oldTimeInSeconds);
 
   if (diff > maxDisplayedAge) return '';
 
