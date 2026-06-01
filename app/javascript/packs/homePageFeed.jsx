@@ -171,7 +171,10 @@ export const renderFeed = async (timeFrame, afterRender) => {
 
     if (feedItems.length === 0 || !hasActualContent) {
       // Determine feed type from localStorage or URL
-      const feedTypeOf = localStorage?.getItem('current_feed') || 'discover';
+      let feedTypeOf = localStorage?.getItem('current_feed');
+      if (feedTypeOf !== 'discover' && feedTypeOf !== 'following') {
+        feedTypeOf = 'discover';
+      }
       const feedType = feedTypeOf === 'following' ? 'following' : 'discover';
 
       return (

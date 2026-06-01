@@ -298,4 +298,21 @@ RSpec.describe UserQueryExecutor do
       expect(yielded_ids).to eq([2])
     end
   end
+
+  describe "#execute_with_timeout" do
+    let(:connection) { double("connection") }
+    let(:executor) { UserQueryExecutor.new(user_query) }
+
+    it "delegates query execution directly to the connection" do
+      expect(connection).to receive(:execute).with("SELECT 1").and_return("mock_result")
+      expect(executor.send(:execute_with_timeout, connection, "SELECT 1")).to eq("mock_result")
+    end
+
+    it "propagates exceptions raised by the connection" do
+      expect(connection).to receive(:execute).with("SELECT 1").and_raise(ActiveRecord::QueryCanceled.new("Query timed out"))
+      expect {
+        executor.send(:execute_with_timeout, connection, "SELECT 1")
+      }.to raise_error(ActiveRecord::QueryCanceled, /Query timed out/)
+    end
+  end
 end
