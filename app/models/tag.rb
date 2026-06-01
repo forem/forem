@@ -39,6 +39,7 @@ class Tag < ActsAsTaggableOn::Tag
   has_many :articles, through: :taggings, source: :taggable, source_type: "Article"
   has_many :billboards, class_name: "Billboard", through: :taggings, source: :taggable, source_type: "Billboard"
   has_many :subforem_relationships, class_name: "TagSubforemRelationship", dependent: :destroy
+  has_many :trends, dependent: :nullify
 
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :social_image, ProfileImageUploader
