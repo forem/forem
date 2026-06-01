@@ -92,6 +92,10 @@ InstantClick.on('change', () => {
 
   initializePodcastPlayback();
 
+  if (window.instgrm?.Embeds?.process) {
+    window.instgrm.Embeds.process();
+  }
+
   const searchElement = document.getElementById('search-input');
   const articleContainer = document.getElementById('article-show-container');
   if (searchElement && articleContainer?.dataset?.articleId) {

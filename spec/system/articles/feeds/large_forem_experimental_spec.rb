@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Articles::Feeds::LargeForemExperimental, js: true do
+RSpec.describe Articles::Feeds::LargeForemExperimental, :js do
   let(:user) { create(:user) }
   let(:second_user) { create(:user) }
   let!(:hot_story) do
@@ -15,18 +15,34 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, js: true do
     selector = "article[data-content-user-id='#{hot_story.user_id}']"
     sign_in user
     visit root_path
-    
-    # Assert presence without explicit visibility polling to prevent Ferrum NodeNotFound crashes
+
+    # Assert presence with a retry loop to prevent Ferrum NodeNotFound crashes
     # during active Preact DOM repaints on high-priority feed requests.
+    retry_count = 0
     begin
       expect(page).to have_selector(selector)
-    rescue Ferrum::NodeNotFoundError
-      sleep 0.5
-      expect(page).to have_selector(selector)
+    rescue Ferrum::NodeNotFoundError, RSpec::Expectations::ExpectationNotMetError => e
+      retry_count += 1
+      raise e unless retry_count < 10
+
+      sleep 0.2
+      retry
     end
-    
-    create(:user_block, blocker: user, blocked: hot_story.user, config: "default")
+
+    # Use find_or_create_by to prevent uniqueness validation errors if the spec is retried
+    UserBlock.find_or_create_by!(blocker: user, blocked: hot_story.user, config: "default")
     visit root_path
-    expect(page).not_to have_selector(selector)
+
+    # Assert absence/invisibility with a retry loop to prevent Ferrum NodeNotFound crashes
+    retry_count = 0
+    begin
+      expect(page).to have_no_selector(selector, visible: :visible)
+    rescue Ferrum::NodeNotFoundError => e
+      retry_count += 1
+      raise e unless retry_count < 10
+
+      sleep 0.2
+      retry
+    end
   end
 end

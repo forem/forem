@@ -38,7 +38,7 @@ module Stories
     end
 
     def assign_feed_stories
-      params[:type_of] = "discover" if params[:type_of].blank?
+      params[:type_of] = "discover" unless params[:type_of].in?(%w[discover following])
 
       stories = if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
                   timeframe_feed
