@@ -8,7 +8,7 @@ describe('timeAgo', () => {
   });
 
   it('should return "just now" for a date that is now.', () => {
-    const oldTimeInSeconds = new Date().getTime();
+    const oldTimeInSeconds = Math.floor(Date.now() / 1000);
 
     expect(timeAgo({ oldTimeInSeconds })).toEqual(
       '<span class="time-ago-indicator">(just now)</span>',
@@ -16,7 +16,7 @@ describe('timeAgo', () => {
   });
 
   it('should support a custom string formatter for the time.', () => {
-    const oldTimeInSeconds = new Date().getTime();
+    const oldTimeInSeconds = Math.floor(Date.now() / 1000);
 
     expect(
       timeAgo({
