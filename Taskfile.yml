@@ -82,6 +82,7 @@ tasks:
         grep -nE 'M0-T9|AnalyzerNGram|AnalyzerIK|go test ./services/api/internal/search/elastic' docs/agentwego/execution-board.md docs/agentwego/search-index-spec.md
         grep -nE 'M0-T10|AllIndexSpecs|CommentIndexSpec|UserIndexSpec|TagIndexSpec' docs/agentwego/execution-board.md docs/agentwego/search-index-spec.md
         grep -nE 'M0-T11|search-manifest|ManifestJSON|schema_version' docs/agentwego/execution-board.md docs/agentwego/search-index-spec.md
+        grep -nE 'M0-T12|ValidateManifest|duplicate index_name|dynamic must be strict' docs/agentwego/execution-board.md docs/agentwego/search-index-spec.md
 
   verify:local:
     desc: Run low-risk local verification for the current Noema M0 slices.

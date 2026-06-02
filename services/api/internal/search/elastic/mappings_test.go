@@ -192,3 +192,37 @@ func TestManifestJSONIsDeterministicAndReviewable(t *testing.T) {
 		t.Fatalf("first index identity = %q/%q", decoded.Indexes[0].IndexName, decoded.Indexes[0].ReadAlias)
 	}
 }
+
+func TestValidateManifestAcceptsGeneratedManifest(t *testing.T) {
+	manifest := elastic.BuildManifest(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic.AnalyzerNGram)
+
+	if err := elastic.ValidateManifest(manifest); err != nil {
+		t.Fatalf("ValidateManifest returned error for generated manifest: %v", err)
+	}
+}
+
+func TestValidateManifestRejectsDuplicateIndexIdentity(t *testing.T) {
+	manifest := elastic.BuildManifest(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic.AnalyzerNGram)
+	manifest.Indexes[1].IndexName = manifest.Indexes[0].IndexName
+
+	err := elastic.ValidateManifest(manifest)
+	if err == nil {
+		t.Fatal("expected duplicate index name validation error")
+	}
+	if got := err.Error(); got != "duplicate index_name noema-articles-v1" {
+		t.Fatalf("error = %q", got)
+	}
+}
+
+func TestValidateManifestRejectsNonStrictMapping(t *testing.T) {
+	manifest := elastic.BuildManifest(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic.AnalyzerNGram)
+	manifest.Indexes[0].Mapping["mappings"].(map[string]any)["dynamic"] = "true"
+
+	err := elastic.ValidateManifest(manifest)
+	if err == nil {
+		t.Fatal("expected non-strict mapping validation error")
+	}
+	if got := err.Error(); got != "articles mapping dynamic must be strict" {
+		t.Fatalf("error = %q", got)
+	}
+}

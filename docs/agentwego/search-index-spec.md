@@ -46,6 +46,7 @@ elastic.TagIndexSpec(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic
 elastic.AllIndexSpecs(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic.AnalyzerNGram)
 elastic.BuildManifest(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic.AnalyzerNGram)
 elastic.ManifestJSON(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic.AnalyzerNGram)
+elastic.ValidateManifest(elastic.BuildManifest(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic.AnalyzerNGram))
 ```
 
 The fifth search slice adds a local CLI for reviewable manifest output:
@@ -109,6 +110,17 @@ The fourth slice extended coverage to all current native search document familie
 ```
 
 The committed CLI prints this manifest to stdout only. The Taskfile validation writes it to `/tmp/noema-search-index-manifest.json` for local review and JSON parsing, deliberately avoiding a committed generated file until the bootstrap/reindex workflow is ready.
+
+`ValidateManifest` adds a local guard before manifest JSON is emitted. It rejects:
+
+- empty schema/prefix/version/analyzer/index list;
+- unknown analyzer modes;
+- duplicate `document_family`, `index_name`, or `read_alias` values;
+- missing/non-JSON mapping objects;
+- mappings whose `dynamic` value is not `strict`;
+- empty mapping properties.
+
+This catches drift in the local spec builder without contacting an Elasticsearch cluster. Example validation errors covered by tests include `duplicate index_name noema-articles-v1` and `articles mapping dynamic must be strict`.
 
 ## Analyzer Posture
 
@@ -197,6 +209,24 @@ search manifest ok 4
 
 `task search:manifest` only writes `/tmp/noema-search-index-manifest.json`; it does not create indexes, contact a cluster, or leave repository artifacts.
 
+Manifest validation guard slice verification:
+
+```bash
+go test ./services/api/internal/search/elastic ./services/api/cmd/search-manifest
+go test ./services/api/...
+task verify:local
+```
+
+Observed output:
+
+```text
+ok  	github.com/agentwego/noema/services/api/internal/search/elastic	0.002s
+ok  	github.com/agentwego/noema/services/api/cmd/search-manifest	0.001s
+search manifest ok 4
+```
+
+The RED step was a compile failure for missing `ValidateManifest`; the GREEN behavior covers generated-manifest acceptance, duplicate `index_name` rejection, and non-`strict` mapping rejection.
+
 ## Rollback
 
 Remove:
@@ -207,5 +237,6 @@ Remove:
 - M0-T9 execution-board references
 - M0-T10 execution-board references if rolling back the all-family extension
 - M0-T11 execution-board references if rolling back the manifest exporter
+- M0-T12 execution-board references if rolling back the manifest validation guard
 
 No external state exists to roll back.
