@@ -91,4 +91,30 @@ RSpec.describe OrganizationMembership do
       expect(membership.invitation_token).to eq(existing_token)
     end
   end
+
+  describe "recompiling organization pages" do
+    let(:organization) { create(:organization) }
+    let(:user) { create(:user) }
+
+    before do
+      allow(Organizations::RecompilePagesWorker).to receive(:perform_async)
+    end
+
+    it "enqueues recompilation on create" do
+      create(:organization_membership, organization: organization, user: user)
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id)
+    end
+
+    it "enqueues recompilation on update" do
+      membership = create(:organization_membership, organization: organization, user: user, type_of_user: "pending")
+      membership.update!(type_of_user: "member")
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id).twice
+    end
+
+    it "enqueues recompilation on destroy" do
+      membership = create(:organization_membership, organization: organization, user: user)
+      membership.destroy!
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id).twice
+    end
+  end
 end

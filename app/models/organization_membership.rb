@@ -18,6 +18,7 @@ class OrganizationMembership < ApplicationRecord
   after_destroy :update_user_organization_info_updated_at
 
   after_commit :bust_cache
+  after_commit :recompile_organization_pages
 
   scope :admin, -> { where(type_of_user: "admin") }
   scope :member, -> { where(type_of_user: %w[admin member]) }
@@ -43,6 +44,10 @@ class OrganizationMembership < ApplicationRecord
   #       :organization_memberships dependent: :delete_all`
   def update_user_organization_info_updated_at
     user.touch(:organization_info_updated_at)
+  end
+
+  def recompile_organization_pages
+    Organizations::RecompilePagesWorker.perform_async(organization_id)
   end
 
   private

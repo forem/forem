@@ -3921,4 +3921,35 @@ RSpec.describe Article do
       expect(GenerateArticleEmbeddingWorker).not_to have_received(:perform_async)
     end
   end
+
+  describe "recompiling organization pages" do
+    let(:organization) { create(:organization) }
+    let(:user) { create(:user) }
+
+    before do
+      allow(Organizations::RecompilePagesWorker).to receive(:perform_async)
+    end
+
+    it "enqueues recompilation on create when organization is present" do
+      create(:article, organization: organization, user: user)
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id)
+    end
+
+    it "does not enqueue recompilation on create when organization is nil" do
+      create(:article, organization: nil, user: user)
+      expect(Organizations::RecompilePagesWorker).not_to have_received(:perform_async)
+    end
+
+    it "enqueues recompilation on update when organization changes" do
+      article = create(:article, organization: nil, user: user)
+      article.update!(organization: organization)
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id)
+    end
+
+    it "enqueues recompilation on destroy when organization is present" do
+      article = create(:article, organization: organization, user: user)
+      article.destroy!
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id).twice
+    end
+  end
 end

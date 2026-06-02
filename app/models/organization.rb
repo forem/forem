@@ -43,6 +43,7 @@ class Organization < ApplicationRecord
   after_save :generate_social_images
 
   after_update_commit :conditionally_update_articles
+  after_update_commit :recompile_pages, if: -> { saved_change_to_name? || saved_change_to_slug? || saved_change_to_summary? }
   after_save_commit :manage_fastly_tls_subscription
   after_destroy_commit :bust_cache
 
@@ -384,5 +385,9 @@ class Organization < ApplicationRecord
 
   def bust_cache
     Organizations::BustCacheWorker.perform_async(id, slug)
+  end
+
+  def recompile_pages
+    Organizations::RecompilePagesWorker.perform_async(id)
   end
 end
