@@ -18,7 +18,7 @@ This document records the local-only verification tasks added for Noema M0 work.
 | --- | --- | --- |
 | `task go:fmt` | Format native Go API skeleton files. | Rewrites local Go files only. |
 | `task go:test` | Run `go test ./services/api/...`. | None beyond Go test cache. |
-| `task api:smoke` | Run `scripts/noema_api_smoke.py`: build the native API to `/tmp`, start it on an unused local port, verify `/healthz`, then terminate the process group and remove the temp binary. | Starts and kills a local process; writes a temporary `/tmp/noema-api-smoke-*` binary. |
+| `task api:smoke` | Run `scripts/noema_api_smoke.py`: build the native API to `/tmp`, start it on an unused local port, verify `/healthz` and `/search`, then terminate the process group and remove the temp binary. | Starts and kills a local process; writes a temporary `/tmp/noema-api-smoke-*` binary. |
 | `task agentwego:gates` | Check inventory counts and control-plane docs. | Read-only. |
 | `task k8s:render` | Render `deploy/k8s/base` to `/tmp/noema-rendered.yaml`. | Writes `/tmp/noema-rendered.yaml`; never applies. |
 | `task search:manifest` | Render the native search index manifest to `/tmp/noema-search-index-manifest.json` and validate schema/family coverage. | Writes a local `/tmp` JSON artifact only; never contacts Elasticsearch. |

@@ -2,7 +2,7 @@
 """Local-only smoke test for the Noema native API skeleton.
 
 Builds the stdlib-only Go API to /tmp, starts it on an unused localhost port,
-verifies /healthz, and always tears down the process group and temp binary.
+verifies /healthz and the local /search contract, and always tears down the process group and temp binary.
 """
 
 from __future__ import annotations
@@ -56,24 +56,32 @@ def main() -> int:
             text=True,
         )
 
-        url = f"http://127.0.0.1:{port}/healthz"
+        health_url = f"http://127.0.0.1:{port}/healthz"
+        search_url = f"http://127.0.0.1:{port}/search?q=%20go%20native%20&limit=250"
         last_error: Exception | None = None
         for _ in range(30):
             if proc.poll() is not None:
                 raise RuntimeError(f"native API exited early with code {proc.returncode}")
             try:
-                with urllib.request.urlopen(url, timeout=1) as response:
-                    body = response.read().decode("utf-8")
-                parsed = json.loads(body)
-                print(json.dumps(parsed, indent=4, sort_keys=True))
-                if parsed.get("status") != "ok" or parsed.get("service") != "noema-api":
-                    raise RuntimeError(f"unexpected health response: {parsed!r}")
+                with urllib.request.urlopen(health_url, timeout=1) as response:
+                    health_body = response.read().decode("utf-8")
+                health = json.loads(health_body)
+                print(json.dumps(health, indent=4, sort_keys=True))
+                if health.get("status") != "ok" or health.get("service") != "noema-api":
+                    raise RuntimeError(f"unexpected health response: {health!r}")
+
+                with urllib.request.urlopen(search_url, timeout=1) as response:
+                    search_body = response.read().decode("utf-8")
+                search = json.loads(search_body)
+                print(json.dumps(search, indent=4, sort_keys=True))
+                if search != {"provider": "postgres", "query": "go native", "limit": 100, "hits": []}:
+                    raise RuntimeError(f"unexpected search response: {search!r}")
                 return 0
             except Exception as exc:  # retry during startup
                 last_error = exc
                 time.sleep(1)
 
-        raise RuntimeError(f"native API smoke check failed on {url}: {last_error}")
+        raise RuntimeError(f"native API smoke check failed on {health_url}: {last_error}")
     finally:
         if proc is not None and proc.poll() is None:
             try:

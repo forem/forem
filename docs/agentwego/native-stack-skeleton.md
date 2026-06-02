@@ -9,7 +9,7 @@ The skeleton is intentionally small:
 - `go.mod` at repo root with module `github.com/agentwego/noema`.
 - `services/api/cmd/api` starts a local HTTP server.
 - `services/api/internal/config` reads non-secret env knobs only.
-- `services/api/internal/http` exposes `/healthz` for local smoke checks.
+- `services/api/internal/http` exposes `/healthz` for local smoke checks and a minimal `/search` contract endpoint backed by the search provider seam.
 - `services/api/internal/search` defines the native search provider/index seam and a no-op provider for bootstrap tests.
 
 ## Inventory Rows Covered

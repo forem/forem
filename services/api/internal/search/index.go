@@ -64,16 +64,16 @@ func NormalizeSearchRequest(req SearchRequest) SearchRequest {
 }
 
 type SearchResult struct {
-	Provider string
-	Query    string
-	Limit    int
-	Hits     []DocumentHit
+	Provider string        `json:"provider"`
+	Query    string        `json:"query"`
+	Limit    int           `json:"limit"`
+	Hits     []DocumentHit `json:"hits"`
 }
 
 type DocumentHit struct {
-	Family string
-	ID     string
-	Title  string
+	Family string `json:"family"`
+	ID     string `json:"id"`
+	Title  string `json:"title"`
 }
 
 type Document interface {
