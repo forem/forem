@@ -21,6 +21,8 @@ func NewPostgresProvider() search.Provider {
 	return postgresProvider{}
 }
 
+func (postgresProvider) Name() string { return "postgres" }
+
 func (postgresProvider) Search(_ context.Context, req search.SearchRequest) (*search.SearchResult, error) {
 	req = search.NormalizeSearchRequest(req)
 	return &search.SearchResult{Provider: "postgres", Query: req.Query, Limit: req.Limit, Hits: []search.DocumentHit{}}, nil

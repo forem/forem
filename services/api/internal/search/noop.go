@@ -8,6 +8,8 @@ func NewNoopProvider() Provider {
 	return noopProvider{}
 }
 
+func (noopProvider) Name() string { return "noop" }
+
 func (noopProvider) Search(_ context.Context, req SearchRequest) (*SearchResult, error) {
 	req = NormalizeSearchRequest(req)
 	return &SearchResult{Provider: "noop", Query: req.Query, Limit: req.Limit, Hits: []DocumentHit{}}, nil

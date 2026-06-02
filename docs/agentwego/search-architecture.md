@@ -19,10 +19,11 @@ Design Noema search as a derived read model backed by Elasticsearch, with Postgr
 
 The rest of the backend should call a stable interface, not Elasticsearch request bodies.
 
-`SearchRequest` normalization is part of the provider seam: trim query whitespace, default empty/non-positive limits to `DefaultSearchLimit` (`20`), and clamp excessive limits to `MaxSearchLimit` (`100`). No provider should bypass this contract.
+`SearchRequest` normalization is part of the provider seam: trim query whitespace, default empty/non-positive limits to `DefaultSearchLimit` (`20`), and clamp excessive limits to `MaxSearchLimit` (`100`). No provider should bypass this contract. `Provider.Name()` is the runtime identity used by health/search responses, so `/healthz` reports the actual injected provider rather than merely echoing requested config.
 
 ```go
 type Provider interface {
+    Name() string
     Search(ctx context.Context, req SearchRequest) (*SearchResult, error)
     UpsertArticle(ctx context.Context, article ArticleDocument) error
     DeleteArticle(ctx context.Context, id string) error

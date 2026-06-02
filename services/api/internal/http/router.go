@@ -24,7 +24,7 @@ func healthHandler(cfg config.Config, searchProvider search.Provider) http.Handl
 			"status":          "ok",
 			"service":         "noema-api",
 			"env":             cfg.Env,
-			"search_provider": cfg.Search.Provider,
+			"search_provider": searchProvider.Name(),
 		})
 	}
 }

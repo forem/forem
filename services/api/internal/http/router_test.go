@@ -40,6 +40,9 @@ func TestRouterExposesLocalHealthWithoutExternalDependencies(t *testing.T) {
 	if body["service"] != "noema-api" {
 		t.Fatalf("service field = %q, want noema-api", body["service"])
 	}
+	if body["search_provider"] != "noop" {
+		t.Fatalf("search_provider field = %q, want actual provider noop", body["search_provider"])
+	}
 }
 
 func TestRouterSearchEndpointUsesProviderAndNormalizesRequest(t *testing.T) {

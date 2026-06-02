@@ -36,6 +36,7 @@ func (f IndexFamily) WriteAlias(documentFamily string) string {
 }
 
 type Provider interface {
+	Name() string
 	Search(ctx context.Context, req SearchRequest) (*SearchResult, error)
 	UpsertArticle(ctx context.Context, article ArticleDocument) error
 	DeleteArticle(ctx context.Context, id string) error
