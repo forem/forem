@@ -25,6 +25,10 @@ func (f IndexFamily) ReadAlias(documentFamily string) string {
 	return fmt.Sprintf("%s-%s-read", f.Prefix, documentFamily)
 }
 
+func (f IndexFamily) WriteAlias(documentFamily string) string {
+	return fmt.Sprintf("%s-%s-write", f.Prefix, documentFamily)
+}
+
 type Provider interface {
 	Search(ctx context.Context, req SearchRequest) (*SearchResult, error)
 	UpsertArticle(ctx context.Context, article ArticleDocument) error

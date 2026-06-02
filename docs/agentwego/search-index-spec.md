@@ -34,6 +34,9 @@ Files:
 - `services/api/internal/search/elastic/manifest.go`
 - `services/api/cmd/search-manifest/main.go`
 - `services/api/cmd/search-manifest/main_test.go`
+- `services/api/internal/search/elastic/bootstrap_plan.go`
+- `services/api/cmd/search-bootstrap-plan/main.go`
+- `services/api/cmd/search-bootstrap-plan/main_test.go`
 
 Current API:
 
@@ -47,6 +50,8 @@ elastic.AllIndexSpecs(search.IndexFamily{Prefix: "noema", Version: "v1"}, elasti
 elastic.BuildManifest(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic.AnalyzerNGram)
 elastic.ManifestJSON(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic.AnalyzerNGram)
 elastic.ValidateManifest(elastic.BuildManifest(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic.AnalyzerNGram))
+elastic.BuildBootstrapPlan(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic.AnalyzerNGram)
+elastic.BootstrapPlanJSON(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic.AnalyzerNGram)
 ```
 
 The fifth search slice adds a local CLI for reviewable manifest output:
@@ -61,6 +66,7 @@ Each spec returns:
 
 - `IndexName`: versioned index such as `noema-articles-v1`, `noema-comments-v1`, `noema-users-v1`, `noema-tags-v1`
 - `ReadAlias`: read alias such as `noema-articles-read`, `noema-comments-read`, `noema-users-read`, `noema-tags-read`
+- `WriteAlias`: write alias such as `noema-articles-write`, `noema-comments-write`, `noema-users-write`, `noema-tags-write`
 - `DocumentFamily`: one of `articles`, `comments`, `users`, `tags`
 - JSON-serializable `Mapping`
 
@@ -121,6 +127,22 @@ The committed CLI prints this manifest to stdout only. The Taskfile validation w
 - empty mapping properties.
 
 This catches drift in the local spec builder without contacting an Elasticsearch cluster. Example validation errors covered by tests include `duplicate index_name noema-articles-v1` and `articles mapping dynamic must be strict`.
+
+## Review-Only Bootstrap Plan
+
+`BuildBootstrapPlan` turns the validated manifest into an ordered local preview for future bootstrap/reindex automation. The plan is explicitly marked `review-only` and currently emits three intended steps per document family:
+
+1. `create_index` with the generated mapping;
+2. `point_read_alias` to the versioned index;
+3. `point_write_alias` to the same versioned index.
+
+The CLI is local-only:
+
+```bash
+go run ./services/api/cmd/search-bootstrap-plan -prefix noema -version v1 -analyzer ngram
+```
+
+`task search:bootstrap-plan` writes `/tmp/noema-search-bootstrap-plan.json` and validates the schema, safety marker, four-family manifest coverage, and 12 planned steps. It does not contact Elasticsearch, create indexes, move aliases, deploy, read Secrets, or mutate data.
 
 ## Analyzer Posture
 
@@ -238,5 +260,6 @@ Remove:
 - M0-T10 execution-board references if rolling back the all-family extension
 - M0-T11 execution-board references if rolling back the manifest exporter
 - M0-T12 execution-board references if rolling back the manifest validation guard
+- M0-T13 execution-board references if rolling back the bootstrap-plan preview
 
 No external state exists to roll back.

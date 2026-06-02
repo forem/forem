@@ -56,6 +56,7 @@ func ValidateManifest(manifest IndexManifest) error {
 	families := map[string]struct{}{}
 	indexes := map[string]struct{}{}
 	aliases := map[string]struct{}{}
+	writeAliases := map[string]struct{}{}
 	for _, spec := range manifest.Indexes {
 		if spec.DocumentFamily == "" {
 			return errors.New("document_family must not be empty")
@@ -80,6 +81,14 @@ func ValidateManifest(manifest IndexManifest) error {
 			return fmt.Errorf("duplicate read_alias %s", spec.ReadAlias)
 		}
 		aliases[spec.ReadAlias] = struct{}{}
+
+		if spec.WriteAlias == "" {
+			return fmt.Errorf("%s write_alias must not be empty", spec.DocumentFamily)
+		}
+		if _, ok := writeAliases[spec.WriteAlias]; ok {
+			return fmt.Errorf("duplicate write_alias %s", spec.WriteAlias)
+		}
+		writeAliases[spec.WriteAlias] = struct{}{}
 
 		if err := validateMapping(spec); err != nil {
 			return err

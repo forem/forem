@@ -11,6 +11,7 @@ type IndexSpec struct {
 	DocumentFamily string         `json:"document_family"`
 	IndexName      string         `json:"index_name"`
 	ReadAlias      string         `json:"read_alias"`
+	WriteAlias     string         `json:"write_alias"`
 	Mapping        map[string]any `json:"mapping"`
 }
 
@@ -44,6 +45,7 @@ func newIndexSpec(family search.IndexFamily, documentFamily string, properties m
 		DocumentFamily: documentFamily,
 		IndexName:      family.VersionedIndex(documentFamily),
 		ReadAlias:      family.ReadAlias(documentFamily),
+		WriteAlias:     family.WriteAlias(documentFamily),
 		Mapping:        documentMapping(properties, analyzer),
 	}
 }

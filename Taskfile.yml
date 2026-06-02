@@ -51,6 +51,26 @@ tasks:
         print('search manifest ok', len(payload['indexes']))
         PY
 
+  search:bootstrap-plan:
+    desc: Render the native search bootstrap plan locally to /tmp; never contacts Elasticsearch.
+    dir: .
+    cmds:
+      - |
+        set -euo pipefail
+        go run ./services/api/cmd/search-bootstrap-plan -prefix noema -version v1 -analyzer ngram >/tmp/noema-search-bootstrap-plan.json
+        python - <<'PY'
+        import json
+        from pathlib import Path
+        payload = json.loads(Path('/tmp/noema-search-bootstrap-plan.json').read_text())
+        assert payload['schema_version'] == 'noema.search.bootstrap-plan/v1'
+        assert payload['safety'] == 'review-only'
+        assert len(payload['manifest']['indexes']) == 4
+        assert len(payload['steps']) == 12
+        assert payload['steps'][0]['action'] == 'create_index'
+        assert payload['steps'][-1]['action'] == 'point_write_alias'
+        print('search bootstrap plan ok', len(payload['steps']))
+        PY
+
   agentwego:gates:
     desc: Run local agentwego control-plane gate checks without touching production.
     dir: .
@@ -83,6 +103,7 @@ tasks:
         grep -nE 'M0-T10|AllIndexSpecs|CommentIndexSpec|UserIndexSpec|TagIndexSpec' docs/agentwego/execution-board.md docs/agentwego/search-index-spec.md
         grep -nE 'M0-T11|search-manifest|ManifestJSON|schema_version' docs/agentwego/execution-board.md docs/agentwego/search-index-spec.md
         grep -nE 'M0-T12|ValidateManifest|duplicate index_name|dynamic must be strict' docs/agentwego/execution-board.md docs/agentwego/search-index-spec.md
+        grep -nE 'M0-T13|BuildBootstrapPlan|search-bootstrap-plan|review-only' docs/agentwego/execution-board.md docs/agentwego/search-index-spec.md docs/agentwego/local-verification-entrypoints.md
 
   verify:local:
     desc: Run low-risk local verification for the current Noema M0 slices.
@@ -90,6 +111,7 @@ tasks:
       - task: go:fmt
       - task: go:test
       - task: search:manifest
+      - task: search:bootstrap-plan
       - task: api:smoke
       - task: agentwego:gates
       - task: k8s:render
