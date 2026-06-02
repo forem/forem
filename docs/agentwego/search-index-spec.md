@@ -12,7 +12,7 @@ It does **not**:
 - read credentials or real Secrets;
 - deploy or mutate production.
 
-It prepares the native provider seam from `docs/agentwego/search-architecture.md` by making index names, read aliases, article document fields, and analyzer choices testable before any real cluster smoke.
+It prepares the native provider seam from `docs/agentwego/search-architecture.md` by making index names, read aliases, document fields, and analyzer choices testable before any real cluster smoke.
 
 ## Inventory Rows Covered
 
@@ -37,13 +37,17 @@ Current API:
 ```go
 elastic.ArticleIndexSpec(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic.AnalyzerNGram)
 elastic.ArticleIndexSpec(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic.AnalyzerIK)
+elastic.CommentIndexSpec(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic.AnalyzerNGram)
+elastic.UserIndexSpec(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic.AnalyzerNGram)
+elastic.TagIndexSpec(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic.AnalyzerNGram)
+elastic.AllIndexSpecs(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic.AnalyzerNGram)
 ```
 
-The spec returns:
+Each spec returns:
 
-- `IndexName`: `noema-articles-v1`
-- `ReadAlias`: `noema-articles-read`
-- `DocumentFamily`: `articles`
+- `IndexName`: versioned index such as `noema-articles-v1`, `noema-comments-v1`, `noema-users-v1`, `noema-tags-v1`
+- `ReadAlias`: read alias such as `noema-articles-read`, `noema-comments-read`, `noema-users-read`, `noema-tags-read`
+- `DocumentFamily`: one of `articles`, `comments`, `users`, `tags`
 - JSON-serializable `Mapping`
 
 The article mapping includes these initial fields:
@@ -61,6 +65,14 @@ The article mapping includes these initial fields:
 - `published_at`
 - `score`
 - `visible`
+
+The fourth slice extended coverage to all current native search document families:
+
+| Family | Initial required fields |
+| --- | --- |
+| `comments` | `id`, `article_id`, `body`, `author_id`, `published`, `created_at`, `visible` |
+| `users` | `id`, `username`, `name`, `summary`, `joined_at`, `active` |
+| `tags` | `id`, `name`, `hotness_score`, `supported`, `created_at` |
 
 ## Analyzer Posture
 
@@ -112,6 +124,24 @@ no stale smoke processes or listeners
 no scripts/__pycache__
 ```
 
+The all-family extension used the same local-only TDD loop:
+
+```bash
+go test ./services/api/internal/search/elastic
+# undefined: elastic.AllIndexSpecs / CommentIndexSpec / UserIndexSpec / TagIndexSpec
+
+go test ./services/api/internal/search/elastic
+go test ./services/api/...
+task verify:local
+```
+
+Result:
+
+```text
+ok  	github.com/agentwego/noema/services/api/internal/search/elastic	0.002s
+no stale smoke processes/listeners; no scripts/__pycache__
+```
+
 ## Rollback
 
 Remove:
@@ -119,5 +149,6 @@ Remove:
 - `services/api/internal/search/elastic/**`
 - this document
 - M0-T9 execution-board references
+- M0-T10 execution-board references if rolling back the all-family extension
 
 No external state exists to roll back.

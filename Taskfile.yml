@@ -64,6 +64,7 @@ tasks:
         grep -nE 'M0-T7|go test ./services/api|healthz' docs/agentwego/execution-board.md docs/agentwego/native-stack-skeleton.md
         grep -nE 'M0-T8|task verify:local|task --list|kind: Deployment' docs/agentwego/execution-board.md docs/agentwego/local-verification-entrypoints.md
         grep -nE 'M0-T9|AnalyzerNGram|AnalyzerIK|go test ./services/api/internal/search/elastic' docs/agentwego/execution-board.md docs/agentwego/search-index-spec.md
+        grep -nE 'M0-T10|AllIndexSpecs|CommentIndexSpec|UserIndexSpec|TagIndexSpec' docs/agentwego/execution-board.md docs/agentwego/search-index-spec.md
 
   verify:local:
     desc: Run low-risk local verification for the current Noema M0 slices.
