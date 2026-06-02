@@ -336,7 +336,7 @@ Current implementation references:
 - `app/models/concerns/algolia_searchable/**`
 - `app/services/search/**`
 
-No OpenSearch/Elasticsearch-first runtime has been confirmed from the inspected files. Keep PostgreSQL/upstream search for first boot, then design provider abstraction separately.
+No OpenSearch/Elasticsearch-first runtime has been confirmed from the inspected Rails files. For the native Go backend, this becomes a target requirement rather than a discovery finding: PostgreSQL remains the source of truth, Elasticsearch is the derived read model, and PostgreSQL search is only a bootstrap/degraded fallback.
 
 ## SMTP / Email Runtime
 
@@ -482,7 +482,7 @@ DEFAULT_EMAIL
 4. **Production DB schema search path includes `heroku_ext`.** Existing CNPG may need compatible schema/extension handling.
 5. **Image still uses Forem internal paths and user names.** Safe for first boot, but rebrand later.
 6. **No SMTP limits user lifecycle flows.** Acceptable only for PoC with an admin bootstrap path.
-7. **Search remains Algolia/PostgreSQL-shaped.** Chinese OpenSearch/Elasticsearch is a later fork task, not first boot.
+7. **Legacy Rails search remains Algolia/PostgreSQL-shaped.** Native Noema must not inherit that as the final architecture; add Elasticsearch as a first-class Go backend search module with provider seam, aliases, analyzers, reindex jobs, and PostgreSQL fallback.
 
 ## Immediate Next Step
 

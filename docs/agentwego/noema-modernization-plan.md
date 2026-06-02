@@ -4,9 +4,9 @@
 
 **Goal:** Transform the Forem fork into **Noema**, an independent self-hosted knowledge community platform for AgentWeGo-scale operations.
 
-**Architecture:** Keep Forem as the upstream compatibility baseline at first, then progressively isolate Noema-specific product, identity, search, storage, and Kubernetes layers. Prefer reversible platform changes before deep Rails rewrites. Deploy a single-replica PoC first, backed by existing CNPG PostgreSQL, Redis, and S3-compatible storage, then scale web/worker/search independently.
+**Architecture:** Keep Forem as the upstream compatibility baseline and legacy migration reference, but treat the long-term Noema direction as a parallel native rewrite. The immediate Rails PoC remains useful for learning runtime semantics; the target product should move toward Solito/NativeWind clients, a Go/Gin/GORM backend, native Elasticsearch search, PostgreSQL, Redis, S3-compatible object storage, Kubernetes, and GitOps.
 
-**Tech Stack:** Ruby on Rails / Sidekiq / PostgreSQL / Redis / imgproxy / object storage / Kubernetes / GitOps / optional OpenSearch or Elasticsearch for Chinese search / optional OIDC-Discord identity bridge.
+**Tech Stack:** Legacy baseline: Ruby on Rails / Sidekiq / PostgreSQL / Redis / imgproxy / object storage. Native target: Solito / NativeWind / Next.js / React Native Android / React Native Windows spike / Go / Gin / GORM / PostgreSQL / Redis / Elasticsearch / S3-compatible object storage / Kubernetes / GitOps.
 
 ---
 
@@ -75,9 +75,9 @@ These are not required to keep planning, but are required before public producti
    - add Discord OAuth directly,
    - or implement OIDC via Hydra/Kratos bridge.
 6. Search posture:
-   - PostgreSQL search first,
-   - Algolia-compatible external search,
-   - or fork search layer for OpenSearch/Elasticsearch + Chinese analyzer.
+   - native Elasticsearch is the target backend search engine,
+   - PostgreSQL search may remain as bootstrap/degraded fallback only,
+   - verify Chinese analyzer/plugin availability before production indexing.
 
 ---
 
@@ -264,21 +264,32 @@ grep -RInE 'AWS_|S3|s3|endpoint|path_style|force_path' app config lib .env_sampl
 
 ---
 
-## Phase 3: Search Modernization
+## Phase 3: Native Elasticsearch Search Modernization
 
-### Task 3.1: Choose initial search posture
+### Task 3.1: Make Elasticsearch the target search posture
 
-**Objective:** Avoid starting with a giant search rewrite before Noema can boot.
+**Objective:** Treat Elasticsearch as a first-class Noema backend module instead of an optional late plugin.
 
 **Recommended sequence:**
 
-1. PoC: keep PostgreSQL search / upstream defaults.
-2. Spike: document current `Search::*` service boundaries.
-3. Build a search provider interface.
-4. Add OpenSearch/Elasticsearch provider with Chinese analyzer.
-5. Add backfill/reindex jobs and operational docs.
+1. PoC/legacy learning: inspect upstream Forem search and Algolia/PostgreSQL assumptions.
+2. Native backend: create an `internal/search` provider seam before implementing article/comment handlers deeply.
+3. Add Elasticsearch provider with versioned indexes, aliases, bulk indexing, and Chinese analyzer support.
+4. Keep PostgreSQL search only as bootstrap/degraded fallback, selected by `SEARCH_PROVIDER=postgres`.
+5. Add full reindex, incremental indexing, dead-letter logging, and operational docs.
 
-**Files to inspect:**
+**Native backend files to create:**
+
+- `services/api/internal/search/index.go`
+- `services/api/internal/search/documents.go`
+- `services/api/internal/search/elastic/client.go`
+- `services/api/internal/search/elastic/mappings.go`
+- `services/api/internal/search/elastic/indexer.go`
+- `services/api/internal/search/elastic/query.go`
+- `services/api/internal/search/elastic/aliases.go`
+- `services/api/internal/search/fallback/postgres.go`
+
+**Legacy files to inspect:**
 
 - `app/controllers/search_controller.rb`
 - `app/services/search/**`
@@ -294,20 +305,22 @@ grep -RInE 'Search::|Algolia|pg_search|ransack|elasticsearch|opensearch' app con
 
 ### Task 3.2: Design multilingual search provider boundary
 
-**Objective:** Make Chinese search an additive provider rather than a hard-coded one-off patch.
+**Objective:** Make Chinese search and mixed-language discovery a native backend read model with explicit operational controls.
 
-**Expected doc:**
+**Expected docs:**
 
 - `docs/agentwego/search-architecture.md`
+- `docs/agentwego/noema-native-rewrite-strategy.md`
 
 **Must include:**
 
-- indexing source of truth
+- PostgreSQL as source of truth and Elasticsearch as derived read model
 - article/comment/user/tag searchable fields
-- reindex trigger and debounce strategy
-- OpenSearch/Elasticsearch index naming
-- analyzer choice for Chinese
-- rollback to PostgreSQL search
+- versioned index naming and read/write aliases
+- analyzer choice for Chinese and mixed Chinese/English content
+- reindex trigger, debounce, bulk indexing, and dead-letter strategy
+- degraded fallback to PostgreSQL search
+- operational metrics and alerting
 
 ---
 
