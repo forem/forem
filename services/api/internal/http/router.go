@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/agentwego/noema/services/api/internal/config"
 	"github.com/agentwego/noema/services/api/internal/search"
@@ -44,6 +45,10 @@ func searchHandler(searchProvider search.Provider) http.HandlerFunc {
 				return
 			}
 			limit = parsedLimit
+		}
+		if strings.TrimSpace(r.URL.Query().Get("q")) == "" {
+			writeJSON(w, http.StatusBadRequest, map[string]string{"error": "missing query"})
+			return
 		}
 
 		result, err := searchProvider.Search(r.Context(), search.SearchRequest{

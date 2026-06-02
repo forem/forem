@@ -77,6 +77,7 @@ def verify_running_api(port: int, expected_provider: str) -> None:
     health_url = f"http://127.0.0.1:{port}/healthz"
     search_url = f"http://127.0.0.1:{port}/search?q=%20go%20native%20&limit=250"
     bad_limit_url = f"http://127.0.0.1:{port}/search?q=go&limit=not-a-number"
+    missing_query_url = f"http://127.0.0.1:{port}/search?q=%20%20&limit=20"
     post_search_url = f"http://127.0.0.1:{port}/search"
 
     status, health = fetch_json(health_url)
@@ -99,6 +100,11 @@ def verify_running_api(port: int, expected_provider: str) -> None:
     print(json.dumps(bad_limit, indent=4, sort_keys=True))
     if status != 400 or bad_limit != {"error": "invalid limit"}:
         raise RuntimeError(f"unexpected bad-limit response: status={status} body={bad_limit!r}")
+
+    status, missing_query = fetch_json(missing_query_url)
+    print(json.dumps(missing_query, indent=4, sort_keys=True))
+    if status != 400 or missing_query != {"error": "missing query"}:
+        raise RuntimeError(f"unexpected missing-query response: status={status} body={missing_query!r}")
 
     status, method_error = fetch_json(post_search_url, method="POST")
     print(json.dumps(method_error, indent=4, sort_keys=True))

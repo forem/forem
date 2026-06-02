@@ -100,6 +100,26 @@ func TestRouterSearchEndpointRejectsNonIntegerLimit(t *testing.T) {
 	}
 }
 
+func TestRouterSearchEndpointRejectsEmptyQuery(t *testing.T) {
+	router := httpapi.NewRouter(config.Config{}, search.NewNoopProvider())
+
+	req := httptest.NewRequest(http.MethodGet, "/search?q=%20%20&limit=20", nil)
+	res := httptest.NewRecorder()
+	router.ServeHTTP(res, req)
+
+	if res.Code != http.StatusBadRequest {
+		t.Fatalf("status = %d, want 400; body=%s", res.Code, res.Body.String())
+	}
+
+	var body map[string]string
+	if err := json.Unmarshal(res.Body.Bytes(), &body); err != nil {
+		t.Fatalf("error response is not JSON: %v", err)
+	}
+	if body["error"] != "missing query" {
+		t.Fatalf("error = %q, want missing query", body["error"])
+	}
+}
+
 func TestRouterSearchEndpointReturnsStableJSONWhenProviderFails(t *testing.T) {
 	router := httpapi.NewRouter(config.Config{}, failingSearchProvider{Provider: search.NewNoopProvider()})
 
