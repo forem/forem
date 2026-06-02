@@ -23,22 +23,24 @@ if defined?(Rack::Timeout) && defined?(ActiveRecord::Base)
       request_thread = env["rack-timeout.request_thread"]
       if request_thread
         ActiveRecord::Base.connection_handler.connection_pool_list.each do |pool|
-          # Safely retrieve and disconnect the connection cached for the request thread
+          # Safely retrieve the connection cached for the request thread
           tcc = pool.instance_variable_get(:@thread_cached_conns)
           conn = tcc[request_thread] if tcc
           if conn
             begin
-              conn.disconnect!
+              # Close the raw connection socket to wake up any blocking C extension query execution
+              # without acquiring the connection's lock (which is held by the request thread).
+              raw_conn = conn.raw_connection
+              if raw_conn
+                if raw_conn.respond_to?(:close)
+                  raw_conn.close
+                elsif raw_conn.respond_to?(:finish)
+                  raw_conn.finish
+                end
+              end
             rescue StandardError => e
-              Rails.logger.warn "Rack::Timeout: failed to disconnect timed out connection: #{e.class}: #{e.message}"
-              conn.discard! if conn.respond_to?(:discard!)
+              Rails.logger.warn "Rack::Timeout: failed to close raw database connection: #{e.class}: #{e.message}"
             end
-          end
-          # Release the connection back to the pool
-          begin
-            pool.release_connection(request_thread)
-          rescue StandardError => e
-            Rails.logger.warn "Rack::Timeout: failed to release timed out connection: #{e.class}: #{e.message}"
           end
         end
       end
