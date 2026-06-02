@@ -104,6 +104,7 @@ tasks:
         grep -nE 'M0-T11|search-manifest|ManifestJSON|schema_version' docs/agentwego/execution-board.md docs/agentwego/search-index-spec.md
         grep -nE 'M0-T12|ValidateManifest|duplicate index_name|dynamic must be strict' docs/agentwego/execution-board.md docs/agentwego/search-index-spec.md
         grep -nE 'M0-T13|BuildBootstrapPlan|search-bootstrap-plan|review-only' docs/agentwego/execution-board.md docs/agentwego/search-index-spec.md docs/agentwego/local-verification-entrypoints.md
+        grep -nE 'M0-T14|NewProvider|ErrReadOnly|fallback/postgres' docs/agentwego/execution-board.md docs/agentwego/search-architecture.md docs/agentwego/native-stack-skeleton.md
 
   verify:local:
     desc: Run low-risk local verification for the current Noema M0 slices.

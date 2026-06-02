@@ -55,6 +55,7 @@ ok  	github.com/agentwego/noema/services/api/internal/config	(cached)
 ok  	github.com/agentwego/noema/services/api/internal/http	(cached)
 ok  	github.com/agentwego/noema/services/api/internal/search	(cached)
 ok  	github.com/agentwego/noema/services/api/internal/search/elastic	(cached)
+ok  	github.com/agentwego/noema/services/api/internal/search/fallback	(cached)
 search manifest ok 4
 search bootstrap plan ok 12
 ```
