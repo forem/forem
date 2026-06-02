@@ -135,6 +135,7 @@ tasks:
         grep -nE 'M0-T22|local/test|fail fast|fallback safety boundary|allowSearchProviderFallback' docs/agentwego/execution-board.md docs/agentwego/search-architecture.md docs/agentwego/native-stack-skeleton.md services/api/cmd/api/main.go
         grep -nE 'M0-T23|missing query|empty-query|blank query' docs/agentwego/execution-board.md docs/agentwego/search-architecture.md docs/agentwego/local-verification-entrypoints.md scripts/noema_api_smoke.py services/api/internal/http/router.go
         grep -nE 'M0-T24|not found|unknown-route|notFoundHandler' docs/agentwego/execution-board.md docs/agentwego/search-architecture.md docs/agentwego/native-stack-skeleton.md docs/agentwego/local-verification-entrypoints.md scripts/noema_api_smoke.py services/api/internal/http/router.go
+        grep -nE 'M0-T25|/healthz unsupported-method|health method|POST /healthz' docs/agentwego/execution-board.md docs/agentwego/search-architecture.md docs/agentwego/native-stack-skeleton.md docs/agentwego/local-verification-entrypoints.md scripts/noema_api_smoke.py services/api/internal/http/router_test.go
 
   verify:local:
     desc: Run low-risk local verification for the current Noema M0 slices.

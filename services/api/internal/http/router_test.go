@@ -45,6 +45,26 @@ func TestRouterExposesLocalHealthWithoutExternalDependencies(t *testing.T) {
 	}
 }
 
+func TestRouterHealthEndpointReturnsJSONForUnsupportedMethod(t *testing.T) {
+	router := httpapi.NewRouter(config.Config{}, search.NewNoopProvider())
+
+	req := httptest.NewRequest(http.MethodPost, "/healthz", nil)
+	res := httptest.NewRecorder()
+	router.ServeHTTP(res, req)
+
+	if res.Code != http.StatusMethodNotAllowed {
+		t.Fatalf("status = %d, want 405; body=%s", res.Code, res.Body.String())
+	}
+
+	var body map[string]string
+	if err := json.Unmarshal(res.Body.Bytes(), &body); err != nil {
+		t.Fatalf("method error response is not JSON: %v; body=%s", err, res.Body.String())
+	}
+	if body["error"] != "method not allowed" {
+		t.Fatalf("error = %q, want method not allowed", body["error"])
+	}
+}
+
 func TestRouterSearchEndpointUsesProviderAndNormalizesRequest(t *testing.T) {
 	router := httpapi.NewRouter(config.Config{}, search.NewNoopProvider())
 

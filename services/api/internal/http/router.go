@@ -12,7 +12,7 @@ import (
 
 func NewRouter(cfg config.Config, searchProvider search.Provider) http.Handler {
 	mux := http.NewServeMux()
-	mux.HandleFunc("GET /healthz", healthHandler(cfg, searchProvider))
+	mux.HandleFunc("/healthz", healthHandler(cfg, searchProvider))
 	mux.HandleFunc("/search", searchHandler(searchProvider))
 	mux.HandleFunc("/", notFoundHandler())
 	return mux
@@ -20,6 +20,11 @@ func NewRouter(cfg config.Config, searchProvider search.Provider) http.Handler {
 
 func healthHandler(cfg config.Config, searchProvider search.Provider) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			writeJSON(w, http.StatusMethodNotAllowed, map[string]string{"error": "method not allowed"})
+			return
+		}
+
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		_ = json.NewEncoder(w).Encode(map[string]string{

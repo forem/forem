@@ -9,7 +9,7 @@ The skeleton is intentionally small:
 - `go.mod` at repo root with module `github.com/agentwego/noema`.
 - `services/api/cmd/api` starts a local HTTP server.
 - `services/api/internal/config` reads non-secret env knobs only.
-- `services/api/internal/http` exposes `/healthz` for local smoke checks and a minimal `/search` contract endpoint backed by the search provider seam. Health reports the actual injected provider identity via `Provider.Name()`, including local/test unknown-provider fallback to noop; non-local envs fail fast on unavailable providers. Unknown API routes return a stable JSON `404 {"error":"not found"}` contract.
+- `services/api/internal/http` exposes `/healthz` for local smoke checks and a minimal `/search` contract endpoint backed by the search provider seam. Health reports the actual injected provider identity via `Provider.Name()`, including local/test unknown-provider fallback to noop; non-local envs fail fast on unavailable providers. Unsupported `/healthz` methods return stable JSON `405 {"error":"method not allowed"}` and unknown API routes return stable JSON `404 {"error":"not found"}`.
 - `services/api/internal/search` defines the native search provider/index seam and a no-op provider for bootstrap tests.
 
 ## Inventory Rows Covered

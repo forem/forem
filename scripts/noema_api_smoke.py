@@ -2,7 +2,7 @@
 """Local-only smoke test for the Noema native API skeleton.
 
 Builds the stdlib-only Go API to /tmp, starts it on unused localhost ports,
-verifies /healthz, /search success, /search JSON error paths, unknown-route JSON 404,
+verifies /healthz, /healthz method errors, /search success, /search JSON error paths, unknown-route JSON 404,
 and unknown-provider fallback,
 and always tears down process groups and temp binaries.
 """
@@ -76,6 +76,7 @@ def stop_api(proc: subprocess.Popen[str] | None) -> None:
 
 def verify_running_api(port: int, expected_provider: str) -> None:
     health_url = f"http://127.0.0.1:{port}/healthz"
+    post_health_url = f"http://127.0.0.1:{port}/healthz"
     search_url = f"http://127.0.0.1:{port}/search?q=%20go%20native%20&limit=250"
     bad_limit_url = f"http://127.0.0.1:{port}/search?q=go&limit=not-a-number"
     missing_query_url = f"http://127.0.0.1:{port}/search?q=%20%20&limit=20"
@@ -91,6 +92,11 @@ def verify_running_api(port: int, expected_provider: str) -> None:
         or health.get("search_provider") != expected_provider
     ):
         raise RuntimeError(f"unexpected health response: status={status} body={health!r}")
+
+    status, health_method_error = fetch_json(post_health_url, method="POST")
+    print(json.dumps(health_method_error, indent=4, sort_keys=True))
+    if status != 405 or health_method_error != {"error": "method not allowed"}:
+        raise RuntimeError(f"unexpected health method response: status={status} body={health_method_error!r}")
 
     status, search = fetch_json(search_url)
     print(json.dumps(search, indent=4, sort_keys=True))
