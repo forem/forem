@@ -13,7 +13,11 @@ import (
 
 func main() {
 	cfg := config.Load()
-	searchProvider := buildSearchProvider(cfg)
+	searchProvider, err := buildSearchProvider(cfg)
+	if err != nil {
+		slog.Error("search provider unavailable", "provider", cfg.Search.Provider, "error", err)
+		os.Exit(1)
+	}
 	router := httpapi.NewRouter(cfg, searchProvider)
 	addr := ":" + cfg.HTTP.Port
 
@@ -24,11 +28,23 @@ func main() {
 	}
 }
 
-func buildSearchProvider(cfg config.Config) search.Provider {
+func buildSearchProvider(cfg config.Config) (search.Provider, error) {
 	searchProvider, err := search.NewProvider(cfg.Search.Provider, search.ProviderOptions{})
 	if err != nil {
-		slog.Warn("search provider unavailable; falling back to noop", "provider", cfg.Search.Provider, "error", err)
-		return search.NewNoopProvider()
+		if allowSearchProviderFallback(cfg.Env) {
+			slog.Warn("search provider unavailable; falling back to noop", "provider", cfg.Search.Provider, "error", err)
+			return search.NewNoopProvider(), nil
+		}
+		return nil, err
 	}
-	return searchProvider
+	return searchProvider, nil
+}
+
+func allowSearchProviderFallback(env string) bool {
+	switch env {
+	case "", "development", "dev", "local", "test":
+		return true
+	default:
+		return false
+	}
 }

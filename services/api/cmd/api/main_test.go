@@ -8,10 +8,13 @@ import (
 	"github.com/agentwego/noema/services/api/internal/search"
 )
 
-func TestBuildSearchProviderFallsBackToNoopWhenConfiguredProviderUnavailable(t *testing.T) {
-	cfg := config.Config{Search: config.SearchConfig{Provider: "does-not-exist"}}
+func TestBuildSearchProviderFallsBackToNoopWhenConfiguredProviderUnavailableInTestEnv(t *testing.T) {
+	cfg := config.Config{Env: "test", Search: config.SearchConfig{Provider: "does-not-exist"}}
 
-	provider := buildSearchProvider(cfg)
+	provider, err := buildSearchProvider(cfg)
+	if err != nil {
+		t.Fatalf("test fallback provider returned error: %v", err)
+	}
 	result, err := provider.Search(context.Background(), search.SearchRequest{})
 	if err != nil {
 		t.Fatalf("fallback provider search returned error: %v", err)
@@ -21,10 +24,22 @@ func TestBuildSearchProviderFallsBackToNoopWhenConfiguredProviderUnavailable(t *
 	}
 }
 
-func TestBuildSearchProviderUsesConfiguredProviderWhenAvailable(t *testing.T) {
-	cfg := config.Config{Search: config.SearchConfig{Provider: "postgres"}}
+func TestBuildSearchProviderRejectsUnavailableProviderOutsideLocalEnv(t *testing.T) {
+	cfg := config.Config{Env: "production", Search: config.SearchConfig{Provider: "does-not-exist"}}
 
-	provider := buildSearchProvider(cfg)
+	provider, err := buildSearchProvider(cfg)
+	if err == nil {
+		t.Fatalf("buildSearchProvider returned provider %v, want error outside local/test env", provider)
+	}
+}
+
+func TestBuildSearchProviderUsesConfiguredProviderWhenAvailable(t *testing.T) {
+	cfg := config.Config{Env: "production", Search: config.SearchConfig{Provider: "postgres"}}
+
+	provider, err := buildSearchProvider(cfg)
+	if err != nil {
+		t.Fatalf("postgres provider returned error: %v", err)
+	}
 	result, err := provider.Search(context.Background(), search.SearchRequest{})
 	if err != nil {
 		t.Fatalf("postgres provider search returned error: %v", err)
