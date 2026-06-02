@@ -1,6 +1,8 @@
 require "rails_helper"
 
-RSpec.describe Organizations::RecompilePagesWorker do
+RSpec.describe Organizations::RecompilePagesWorker, type: :worker do
+  include_examples "#enqueues_on_correct_queue", "default", 1
+
   describe "#perform" do
     let(:organization) { create(:organization) }
     let!(:page) do
@@ -18,9 +20,8 @@ RSpec.describe Organizations::RecompilePagesWorker do
       end
 
       it "does not recompile the organization pages" do
-        allow_any_instance_of(Page).to receive(:recompile!)
-        described_class.new.perform(organization.id)
         expect_any_instance_of(Page).not_to receive(:recompile!)
+        described_class.new.perform(organization.id)
       end
     end
 

@@ -91,9 +91,8 @@ class Page < ApplicationRecord
     save!
   end
 
-  # Force evaluation of markdown and save changes if any
+  # Force evaluation of markdown (via before_save) and persist any resulting changes
   def recompile!
-    evaluate_markdown
     save!
   end
 
