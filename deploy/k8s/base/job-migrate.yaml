@@ -1,0 +1,50 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: noema-migrate
+  namespace: noema
+  labels:
+    app.kubernetes.io/name: noema
+    app.kubernetes.io/component: migrate
+    app.kubernetes.io/part-of: noema
+spec:
+  backoffLimit: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: noema
+        app.kubernetes.io/component: migrate
+        app.kubernetes.io/part-of: noema
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: migrate
+          image: ghcr.io/agentwego/noema:placeholder
+          imagePullPolicy: IfNotPresent
+          command: ["./release-tasks.sh"]
+          env:
+            - name: STATEMENT_TIMEOUT
+              value: "4500000"
+          envFrom:
+            - configMapRef:
+                name: noema-runtime-config
+            - secretRef:
+                name: noema-runtime-secrets
+          resources:
+            requests:
+              cpu: 250m
+              memory: 1Gi
+            limits:
+              cpu: "1"
+              memory: 2Gi
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 80
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - prod-sg-db-03
+                      - prod-sg-db-02

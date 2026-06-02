@@ -1,0 +1,144 @@
+# Noema Super Engineering Execution Board
+
+> **For Hermes:** This board is the operational control plane for the Noema super-engineering effort. Before implementing any slice, select the phase, cite inventory CSV rows, define gates, and record real verification output. Do not deploy or touch production data without an explicit maintenance window and rollback path.
+
+## Current Charter
+
+Noema is a Forem-derived but Noema-native knowledge community platform. The current Rails/Preact repository is a legacy reference, runtime PoC, and migration source. The long-term product is a Solito/NativeWind client suite backed by a Go/Gin/GORM API, PostgreSQL source of truth, Redis coordination, Elasticsearch derived search indexes, S3-compatible object storage, Kubernetes, and GitOps.
+
+## Ground Rules
+
+1. Treat this as a rewrite, not a line-by-line port.
+2. Keep Forem/Rails semantics as reference input; do not copy the Rails global shell.
+3. Do not replay every Rails migration into the native schema; design clean Noema tables plus explicit importers.
+4. Elasticsearch is a first-class backend read model from the start; PostgreSQL search is only bootstrap/degraded fallback.
+5. Every implementation branch must cite rows from `docs/agentwego/noema-file-migration-inventory.csv` and check adjacent edges in `docs/agentwego/noema-file-dependency-edges.csv`.
+6. Every branch must land one coherent artifact with verification output.
+7. No real secrets in git. Use placeholder Secret names and document handoff shape only.
+8. No production/cluster cutover without rollback path, logs, and real user-path verification.
+
+## Baseline Artifacts
+
+| Artifact | Role |
+| --- | --- |
+| `docs/agentwego/noema-modernization-plan.md` | Immediate modernization phases and PoC runtime direction. |
+| `docs/agentwego/runtime-inventory.md` | Rails/Forem-derived process/env/deployment inventory. |
+| `docs/agentwego/noema-native-rewrite-strategy.md` | Long-term native stack strategy and Elasticsearch requirements. |
+| `docs/agentwego/noema-deep-dependency-migration-plan.md` | File-by-file migration control document. |
+| `docs/agentwego/noema-file-migration-inventory.csv` | Per-file migration inventory. |
+| `docs/agentwego/noema-file-dependency-edges.csv` | File dependency edges; use before declaring a slice isolated. |
+| `docs/agentwego/noema-domain-dependency-summary.csv` | Domain dependency graph. |
+| `docs/agentwego/noema-controller-map.csv` | Controller filters/service calls for route/API planning. |
+| `docs/agentwego/noema-model-dependency-map.csv` | Rails model associations/callbacks/scopes for schema/import planning. |
+| `docs/agentwego/noema-worker-map.csv` | Sidekiq worker queues/service calls for native jobs planning. |
+
+## Active Milestone M0: Baseline and Cloud-Native PoC Packaging
+
+**Goal:** Freeze dependency baseline, create a safe Kubernetes render-only PoC package, and document DB/S3/search bootstrap decisions before any cluster deployment.
+
+**Non-goals:**
+
+- No production deployment.
+- No real Kubernetes Secret manifests.
+- No Rails mass rebrand.
+- No native Go backend implementation yet.
+- No database creation or destructive schema changes.
+
+## Gates
+
+### Gate G0 — Baseline Integrity
+
+**Entry:** dependency baseline files exist under `docs/agentwego/`.
+
+**Checks:**
+
+```bash
+python -c "import csv; files=list(csv.DictReader(open('docs/agentwego/noema-file-migration-inventory.csv'))); assert len(files)==5900; assert any(r['file']=='app/models/article.rb' for r in files); assert any(r['file']=='app/controllers/search_controller.rb' for r in files); assert any(r['file']=='config/routes.rb' for r in files); print('inventory ok', len(files))"
+test -s docs/agentwego/noema-file-dependency-edges.csv
+test -s docs/agentwego/noema-domain-dependency-summary.csv
+test -s docs/agentwego/noema-model-dependency-map.csv
+test -s docs/agentwego/noema-controller-map.csv
+test -s docs/agentwego/noema-worker-map.csv
+```
+
+**Failure behavior:** stop implementation and regenerate/fix inventory before using it for task selection.
+
+### Gate G1 — Render-Only Kubernetes Packaging
+
+**Entry:** `deploy/k8s/base/` manifests exist with placeholder Secret references.
+
+**Checks:**
+
+```bash
+kubectl kustomize deploy/k8s/base >/tmp/noema-rendered.yaml
+grep -nE 'kind: Namespace|kind: Deployment|kind: Job|kind: Service|noema' /tmp/noema-rendered.yaml
+```
+
+**Failure behavior:** fix manifests only. Do not deploy.
+
+### Gate G2 — External Dependency Handoff
+
+**Entry:** database, Redis, S3, SMTP, and search posture docs exist.
+
+**Checks:**
+
+```bash
+test -s docs/agentwego/database-bootstrap.md
+test -s docs/agentwego/s3-compatibility.md
+test -s docs/agentwego/search-architecture.md
+grep -nE 'rollback|CNPG|noema|Secret' docs/agentwego/database-bootstrap.md
+grep -nE 'AWS_ENDPOINT_URL|AWS_FORCE_PATH_STYLE|S3-compatible' docs/agentwego/s3-compatibility.md
+grep -nE 'Elasticsearch|alias|analyzer|fallback|reindex' docs/agentwego/search-architecture.md
+```
+
+**Failure behavior:** keep work in planning branch; no cluster or production action.
+
+### Gate G3 — Production Action Escalation
+
+**Entry:** any action would create DB/user, write real Secret, deploy workload, point ingress/domain, or migrate data.
+
+**Required before action:**
+
+- maintenance window or explicit PoC approval;
+- exact target namespace and cluster;
+- DB/Redis/S3 credential source;
+- rollback path;
+- fresh logs and real user-path verification plan.
+
+**Failure behavior:** ask for missing production inputs; do not proceed by default.
+
+## Branch Sequence
+
+1. `docs/noema-modernization-plan` — current branch; docs baseline and PoC planning.
+2. `spike/k8s-minimal` — render-only Kubernetes base manifests.
+3. `spike/s3-compatibility` — prove or patch S3-compatible endpoint support.
+4. `spike/search-boundary` — search architecture doc and native provider seam design.
+5. `spike/native-stack-skeleton` — Go API skeleton only after G0-G2 pass.
+
+## Task Register
+
+| ID | Status | Phase | Artifact | Inventory Coverage | Verification |
+| --- | --- | --- | --- | --- | --- |
+| M0-T1 | done | P0 | dependency baseline committed | full CSV baseline | `git log -1 --oneline` |
+| M0-T2 | done | P0 | `docs/agentwego/execution-board.md` | planning control | `test -s` + grep gates |
+| M0-T3 | done | P0 | `deploy/k8s/base/*` | runtime-config/deploy | `kubectl kustomize` render |
+| M0-T4 | done | P0 | `docs/agentwego/database-bootstrap.md` | runtime-config/legacy-schema | grep rollback/CNPG/Secret |
+| M0-T5 | done | P0/P2 | `docs/agentwego/s3-compatibility.md` | `config/initializers/carrierwave.rb`, upload/media files | grep S3 vars and patch decision |
+| M0-T6 | done | P1 | `docs/agentwego/search-architecture.md` | search/controller/model rows | grep ES alias/analyzer/reindex/fallback |
+
+## Open Inputs Before Deployment
+
+- Final PoC domain or internal hostname.
+- Namespace ownership and GitOps destination.
+- Real CNPG database/user provisioning method.
+- Redis URL DB split and credential handoff.
+- S3 bucket/endpoint/region and path-style requirement.
+- SMTP posture.
+- Identity posture: local only, Discord OAuth, OIDC, or Hydra/Kratos bridge.
+- Elasticsearch/OpenSearch cluster/plugin availability for Chinese analyzer.
+
+## Status Log
+
+- Baseline dependency files identified and used as the source of truth for this board.
+- M0 docs/control-plane artifacts created: execution board, render-only K8s base, database bootstrap, S3 compatibility posture, and search architecture.
+- Gate G0/G1/G2 checks passed locally; rendered manifests written to `/tmp/noema-rendered.yaml`.

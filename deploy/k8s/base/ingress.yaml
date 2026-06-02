@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: noema-web
+  namespace: noema
+  labels:
+    app.kubernetes.io/name: noema
+    app.kubernetes.io/component: web
+    app.kubernetes.io/part-of: noema
+  annotations:
+    # Placeholder only. Replace or move to Gateway API overlay according to GitOps ingress policy.
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  rules:
+    - host: noema.agentwego.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: noema-web
+                port:
+                  name: http

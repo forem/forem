@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: noema-runtime-config
+  namespace: noema
+  labels:
+    app.kubernetes.io/name: noema
+    app.kubernetes.io/part-of: noema
+data:
+  PORT: "3000"
+  RAILS_ENV: production
+  NODE_ENV: production
+  RAILS_SERVE_STATIC_FILES: "true"
+  APP_PROTOCOL: https://
+  APP_DOMAIN: noema.agentwego.com
+  COMMUNITY_NAME: Noema
+  DEFAULT_EMAIL: no-reply@example.invalid
+  FORCE_SSL_IN_RAILS: "true"
+  SKIP_FASTLY_CONFIG_UPDATE: "true"
+  WEB_CONCURRENCY: "1"
+  RAILS_MAX_THREADS: "5"
+  MALLOC_ARENA_MAX: "2"

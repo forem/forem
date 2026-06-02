@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: noema-web
+  namespace: noema
+  labels:
+    app.kubernetes.io/name: noema
+    app.kubernetes.io/component: web
+    app.kubernetes.io/part-of: noema
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: noema
+      app.kubernetes.io/component: web
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: noema
+        app.kubernetes.io/component: web
+        app.kubernetes.io/part-of: noema
+    spec:
+      containers:
+        - name: web
+          image: ghcr.io/agentwego/noema:placeholder
+          imagePullPolicy: IfNotPresent
+          command: ["bundle", "exec", "puma", "-C", "config/puma.rb"]
+          ports:
+            - name: http
+              containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: noema-runtime-config
+            - secretRef:
+                name: noema-runtime-secrets
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 5
+          resources:
+            requests:
+              cpu: 250m
+              memory: 1Gi
+            limits:
+              cpu: "1"
+              memory: 2Gi
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 80
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - prod-sg-db-03
+                      - prod-sg-db-02

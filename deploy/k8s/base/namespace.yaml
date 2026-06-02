@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: noema
+  labels:
+    app.kubernetes.io/name: noema
+    app.kubernetes.io/part-of: noema

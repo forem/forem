@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: noema-worker
+  namespace: noema
+  labels:
+    app.kubernetes.io/name: noema
+    app.kubernetes.io/component: worker
+    app.kubernetes.io/part-of: noema
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: noema
+      app.kubernetes.io/component: worker
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: noema
+        app.kubernetes.io/component: worker
+        app.kubernetes.io/part-of: noema
+    spec:
+      containers:
+        - name: worker
+          image: ghcr.io/agentwego/noema:placeholder
+          imagePullPolicy: IfNotPresent
+          command: ["bundle", "exec", "sidekiq", "-t", "25"]
+          envFrom:
+            - configMapRef:
+                name: noema-runtime-config
+            - secretRef:
+                name: noema-runtime-secrets
+          resources:
+            requests:
+              cpu: 250m
+              memory: 1Gi
+            limits:
+              cpu: "1"
+              memory: 2Gi
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 80
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - prod-sg-db-03
+                      - prod-sg-db-02
