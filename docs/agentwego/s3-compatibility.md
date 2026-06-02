@@ -95,6 +95,27 @@ After patch and approved credentials:
 4. Confirm rendered URL/proxy path works.
 5. Delete test object or use a disposable prefix.
 
+## Local Verification Notes
+
+The S3 compatibility spike now has both Docker-based and local-Ruby validation evidence.
+
+Latest local validation, after fixing host blockers:
+
+```text
+ruby 3.3.0 (mise)
+Bundler version 2.4.17
+bundle install: Bundle complete! 165 Gemfile dependencies, 395 gems now installed.
+kubectl kustomize deploy/k8s/base: render ok, S3 config knobs present
+rspec spec/initializers/carrierwave_spec.rb spec/services/agent_sessions/s3_storage_spec.rb: 15 examples, 0 failures
+```
+
+Local host blockers fixed during validation:
+
+- `.mise.toml` now activates `ruby = "3.3.0"` so contributors do not need to rely on an undeclared Ruby install.
+- The local mise Ruby 3.3.0 install needed `HAVE_STDBOOL_H` present in its generated `config.h` for native gems on this Arch/GCC toolchain; this was a host-local repair under `~/.local/share/mise/installs/ruby/3.3.0`, not a repo change.
+- Docker validation had left several generated directories root-owned; permissions were repaired for `.knapsack_pro`, `coverage`, `.yarn/install-state.gz`, `node_modules`, `log/test.log`, and `app/assets/builds`.
+- The target specs need PostgreSQL with `vector`; local validation used a disposable `pgvector/pgvector:pg13` container on `127.0.0.1:25432`, then removed it.
+
 ## Risks
 
 - Bucket reuse can cause data ownership confusion. Prefer a Noema-specific bucket/prefix.
