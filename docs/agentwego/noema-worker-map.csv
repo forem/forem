@@ -1,0 +1,147 @@
+file,domain,target,phase,queue_options,has_perform,service_calls
+app/workers/agent_sessions/cleanup_expired_raw_files_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 3",True,
+app/workers/ai_audits/trim_old_audits_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 5",True,
+app/workers/algolia_search/search_index_worker.rb,search,"services/api/internal/search/{elastic,fallback}",P1,"queue: :medium_priority, retry: 5, tags: [""algolia""]",True,
+app/workers/articles/backfill_activities_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority,",True,
+app/workers/articles/bust_cache_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,,True,EdgeCache::BustArticle.call
+app/workers/articles/bust_multiple_caches_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 10",True,EdgeCache::Bust.new
+app/workers/articles/detect_code_block_languages_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :high_priority, retry: 5, lock: :until_executing",True,Articles::DetectCodeBlockLanguages.call | EdgeCache::BustArticle.call
+app/workers/articles/enrich_image_attributes_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :high_priority, retry: 5, lock: :until_executing",True,Articles::EnrichImageAttributes.call | EdgeCache::BustArticle.call
+app/workers/articles/generate_context_note_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :high_priority, retry: 5, lock: :until_executing",True,Ai::ContextNoteGenerator.new
+app/workers/articles/generate_freeform_context_note_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, lock: :until_executing",True,Ai::FreeformContextNoteGenerator.new
+app/workers/articles/generate_summary_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, lock: :until_executing, on_conflict: :replace",True,Ai::ArticleSummaryGenerator.new
+app/workers/articles/handle_spam_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,queue: :high_priority,True,Ai::Base.new | Ai::ArticleEnhancer.new
+app/workers/articles/label_cleanup_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,queue: :high_priority,True,Articles::HandleSpamWorker.perform_async
+app/workers/articles/publish_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :medium_priority, lock: :until_executing",True,Slack::Messengers::ArticlePublished.call
+app/workers/articles/quality_reaction_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :medium_priority, retry: 10, lock: :until_and_while_executing",True,Ai::ArticleQualityAssessor.new | Reaction.create
+app/workers/articles/score_calc_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :medium_priority, lock: :until_executing",True,
+app/workers/articles/update_article_activity_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority,",True,
+app/workers/articles/update_dependent_embeds_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, lock: :until_executing, on_conflict: :replace",True,
+app/workers/articles/update_organic_page_views_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :medium_priority,",True,
+app/workers/articles/update_page_views_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :medium_priority,",True,PageView.create
+app/workers/audience_segment_refresh_all_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,queue: :low_priority,True,
+app/workers/audience_segment_refresh_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,queue: :low_priority,True,
+app/workers/badge_achievements/badge_award_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :high_priority, retry: 10",True,Badges::Award.call
+app/workers/badge_achievements/send_email_notification_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 10",True,
+app/workers/billboard_event_rollup_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,queue: :low_priority,True,
+app/workers/billboards/data_update_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 10",True,
+app/workers/billboards/track_email_click_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 10",True,BillboardEvent.create
+app/workers/broadcasts/send_welcome_notifications_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :medium_priority, retry: 15",True,Broadcasts::WelcomeNotification::Generator.call
+app/workers/bust_cache_base_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :high_priority, retry: 15, lock: :until_executing",False,
+app/workers/bust_cache_path_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,,True,EdgeCache::Bust.call
+app/workers/capture_query_stats_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,,True,
+app/workers/comments/bust_cache_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,,True,Articles::UpdateDependentEmbedsWorker.perform_async
+app/workers/comments/calculate_score_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :medium_priority, lock: :until_executing",True,Comments::CalculateScore.call
+app/workers/comments/handle_spam_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,queue: :high_priority,True,
+app/workers/comments/send_email_notification_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,queue: :mailers,True,
+app/workers/credits/sync_counter_cache.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 10",True,
+app/workers/data_update_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :high_priority, retry: 5",True,
+app/workers/discover/register_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 3",True,Discover::Register.call
+app/workers/emails/batch_custom_send_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, lock: :until_and_while_executing",True,Set.new
+app/workers/emails/drip_email_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :medium_priority, retry: 15",True,
+app/workers/emails/enqueue_custom_batch_send_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :medium_priority, retry: 15, lock: :until_and_while_executing",True,UserQueryExecutor.new | Emails::BatchCustomSendWorker.perform_async
+app/workers/emails/enqueue_digest_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :medium_priority, retry: 15",True,
+app/workers/emails/remove_old_emails_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 10",True,
+app/workers/emails/send_user_digest_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 15, lock: :until_executing",True,EmailDigestArticleCollector.new | Ai::ArticleSummaryGenerator.new | Ai::EmailDigestSummary.new | BillboardEvent.create | BillboardEvent.create | FeedEvents::BulkUpsert.call
+app/workers/emails/survey_daily_email_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 5, lock: :until_and_while_executing",True,
+app/workers/events/manage_broadcast_billboards_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :high_priority, retry: 3, lock: :until_executing, on_conflict: :replace",True,EdgeCache::PurgeByKey.call | EdgeCache::PurgeByKey.call | EdgeCache::PurgeByKey.call
+app/workers/export_content_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :medium_priority, retry: 10, lock: :until_executed",True,Exporter::Service.new
+app/workers/feeds/import_articles_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :medium_priority, retry: 10, lock: :until_and_while_executing",True,Feeds::Import.call
+app/workers/feeds/import_log_cleanup_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 10",True,
+app/workers/follows/send_email_notification_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :mailers, retry: 10",True,NotifyMailer.new
+app/workers/follows/update_points_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 10, lock: :until_and_while_executing",True,
+app/workers/generate_article_embedding_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, lock: :until_executing, on_conflict: :replace",True,Ai::Embedding.new | UpdateUserInterestEmbeddingWorker.perform_async
+app/workers/github_repos/repo_sync_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 10, lock: :until_executing",True,
+app/workers/github_repos/update_latest_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :medium_priority, retry: 10",True,
+app/workers/identify_trends_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, lock: :until_executing, on_conflict: :replace",True,Ai::TrendDetector.new
+app/workers/images/social_image_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :medium_priority, retry: 5",True,Images::GenerateSocialImageMagickally.call
+app/workers/linked_domains/update_score_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, lock: :until_executing, on_conflict: :replace",True,
+app/workers/listings/bust_cache_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,,True,EdgeCache::BustListings.call
+app/workers/mentions/create_all_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :default, retry: 10",True,Mentions::CreateAll.call
+app/workers/mentions/send_email_notification_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :default, retry: 10",True,
+app/workers/metrics/check_data_update_script_statuses.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 10",True,
+app/workers/metrics/record_background_queue_stats_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :high_priority, retry: 10",True,Loggers::LogWorkerQueueStats.call
+app/workers/metrics/record_daily_notifications_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 10",True,
+app/workers/metrics/record_daily_usage_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 10",True,
+app/workers/metrics/record_data_counts_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 10",True,
+app/workers/migrate_data_to_work_field_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,,True,
+app/workers/moderator/banish_user_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :high_priority, retry: 10",True,Moderator::BanishUser.call
+app/workers/moderator/sink_articles_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :medium_priority, retry: 10",True,
+app/workers/moderator/unpublish_all_articles_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :medium_priority, retry: 10",True,UnpublishAllArticles.call
+app/workers/notification_subscriptions/update_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :medium_priority, retry: 10, lock: :until_executing",True,NotificationSubscriptions::Update.call
+app/workers/notifications/cleanup_user_worker.rb,notifications,services/api/internal/notifications + worker,P2,"queue: :low_priority, retry: 5",True,
+app/workers/notifications/create_round_robin_moderation_notifications_worker.rb,notifications,services/api/internal/notifications + worker,P2,"queue: :medium_priority, retry: 10",True,Users::SelectModeratorsQuery.call | Notifications::Moderation::Send.call
+app/workers/notifications/mention_worker.rb,notifications,services/api/internal/notifications + worker,P2,"queue: :low_priority, retry: 10",True,Notifications::NewMention::Send.call
+app/workers/notifications/milestone_worker.rb,notifications,services/api/internal/notifications + worker,P2,"queue: :low_priority, retry: 10",True,Notifications::Milestone::Send.call
+app/workers/notifications/new_badge_achievement_worker.rb,notifications,services/api/internal/notifications + worker,P2,"queue: :low_priority, retry: 10",True,Notifications::NewBadgeAchievement::Send.call
+app/workers/notifications/new_follower_worker.rb,notifications,services/api/internal/notifications + worker,P2,"queue: :medium_priority, retry: 10",True,Notifications::NewFollower::Send.call
+app/workers/notifications/new_reaction_worker.rb,notifications,services/api/internal/notifications + worker,P2,"queue: :medium_priority, retry: 10",True,Notifications::Reactions::Send.call
+app/workers/notifications/notifiable_action_worker.rb,notifications,services/api/internal/notifications + worker,P2,"queue: :low_priority, retry: 10",True,Notifications::NotifiableAction::Send.call
+app/workers/notifications/organization_deverification_worker.rb,notifications,services/api/internal/notifications + worker,P2,"queue: :low_priority, retry: 10",True,Notifications::OrganizationDeverification::Send.call
+app/workers/notifications/remove_all_worker.rb,notifications,services/api/internal/notifications + worker,P2,"queue: :low_priority, retry: 10",True,Notifications::RemoveAll.call
+app/workers/notifications/remove_by_spammer_worker.rb,notifications,services/api/internal/notifications + worker,P2,"queue: :low_priority, retry: 10",True,Notifications::RemoveBySpammer.call
+app/workers/notifications/remove_old_notifications_worker.rb,notifications,services/api/internal/notifications + worker,P2,"queue: :low_priority, retry: 10",True,
+app/workers/notifications/subforem_change_notification_worker.rb,notifications,services/api/internal/notifications + worker,P2,"queue: :medium_priority, retry: 10",True,Notifications::SubforemChangeNotification::Send.call
+app/workers/notifications/tag_adjustment_notification_worker.rb,notifications,services/api/internal/notifications + worker,P2,"queue: :medium_priority, retry: 10",True,Notifications::TagAdjustmentNotification::Send.call
+app/workers/notifications/update_worker.rb,notifications,services/api/internal/notifications + worker,P2,"queue: :medium_priority, retry: 10, lock: :until_executing",True,Notifications::Update.call
+app/workers/notifications/welcome_notification_worker.rb,notifications,services/api/internal/notifications + worker,P2,"queue: :low_priority, retry: 10",True,Notifications::WelcomeNotification::Send.call
+app/workers/organizations/bust_cache_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,,True,EdgeCache::BustOrganization.call
+app/workers/organizations/delete_custom_domain_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :default, retry: 5, lock: :until_executing, on_conflict: :replace",True,
+app/workers/organizations/delete_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :high_priority, retry: 10",True,Organizations::Delete.call | EdgeCache::BustUser.call | AuditLog.create
+app/workers/organizations/provision_custom_domain_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"lock: :until_executing, on_conflict: :replace",True,
+app/workers/organizations/recompile_pages_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :default, retry: 3, lock: :until_executing, on_conflict: :replace",True,
+app/workers/organizations/reverify_all_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 1",True,Organizations::ReverifyOneWorker.perform_async
+app/workers/organizations/reverify_one_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 3",True,Organizations::VerifyLinkback.call | Notifications::OrganizationDeverificationWorker.perform_async
+app/workers/organizations/save_article_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,queue: :high_priority,True,
+app/workers/organizations/track_promotional_billboard_impressions_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 3",True,
+app/workers/organizations/update_organization_articles_paths_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,queue: :high_priority,True,
+app/workers/organizations/verify_custom_domain_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"lock: :until_executing, on_conflict: :replace",True,
+app/workers/organizations/verify_linkback_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :default, retry: 3",True,Organizations::VerifyLinkback.call
+app/workers/page_templates/re_render_pages_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :medium_priority, retry: 3",True,
+app/workers/page_view_rollup_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: false",True,
+app/workers/pages/bust_cache_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,,True,EdgeCache::BustPage.call
+app/workers/podcast_episodes/bust_cache_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,,True,EdgeCache::BustPodcastEpisode.call
+app/workers/podcast_episodes/create_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,queue: :high_priority,True,Podcasts::CreateEpisode.call
+app/workers/podcast_episodes/update_media_url_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,queue: :medium_priority,True,Podcasts::UpdateEpisodeMediaUrl.call
+app/workers/podcasts/bust_cache_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,,True,EdgeCache::BustPodcast.call
+app/workers/podcasts/enqueue_get_episodes_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :medium_priority, retry: 10",True,
+app/workers/podcasts/get_episodes_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :high_priority, retry: 10",True,Podcasts::Feed.new
+app/workers/push_notifications/cleanup_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 10, lock: :until_and_while_executing",True,Redis.new
+app/workers/push_notifications/deliver_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :medium_priority,",True,
+app/workers/rating_votes/assign_rating_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 10, lock: :until_executing",True,
+app/workers/reaction_counter_sync_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 3, lock: :until_executed",True,
+app/workers/reactions/bust_homepage_cache_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :high_priority, retry: 10",True,EdgeCache::Bust.new
+app/workers/reactions/bust_reactable_cache_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :high_priority, retry: 10",True,EdgeCache::PurgeByKey.call | EdgeCache::PurgeByKey.call | EdgeCache::BustArticle.call | Articles::UpdateDependentEmbedsWorker.perform_async | EdgeCache::PurgeByKey.call
+app/workers/reactions/update_relevant_scores_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :high_priority, retry: 10",True,Follows::UpdatePointsWorker.perform_async
+app/workers/scheduled_automations/process_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :default, retry: 3",True,ScheduledAutomation.create | Executor.call
+app/workers/segmented_user_refresh_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,queue: :low_priority,True,
+app/workers/slack/messengers/worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :default, retry: 10",True,Slack::Announcer.call
+app/workers/slack/workflow_webhook_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 10",True,Slack::WorkflowWebhook.call
+app/workers/spaces/bust_caches_for_space_change_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,,True,
+app/workers/spam/block_domain_and_suspend_users_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :default, retry: 5",True,Note.create
+app/workers/spam/reaction_ring_detection_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :default, retry: 3, lock: :until_and_while_executing",True,Spam::ReactionRingDetector.new | Slack::Messengers::ReactionRingDetected.call
+app/workers/subforems/create_from_scratch_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :default, retry: 3",True,Images::GenerateSubforemImages.call | Ai::CommunityCopy.new | Ai::ForemTags.new | Ai::AboutPageGenerator.new
+app/workers/sync_liquid_embed_references_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,queue: :low_priority,True,
+app/workers/sync_webpage_references_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, lock: :until_executing, on_conflict: :replace",True,LinkedDomains::UpdateScoreWorker.perform_async
+app/workers/tags/alias_retag_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 5",True,ActsAsTaggableOn::TagParser.new
+app/workers/tags/bust_cache_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,,True,EdgeCache::BustTag.call
+app/workers/tags/resave_supported_tags_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 5, lock: :until_and_while_executing",True,
+app/workers/trackable/dispatch_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 5",True,
+app/workers/trends/generate_cover_image_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 5",True,Ai::ImageGenerator.new
+app/workers/update_user_interest_embedding_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, lock: :until_executing, on_conflict: :replace",True,
+app/workers/users/bust_cache_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,,True,EdgeCache::BustUser.call
+app/workers/users/bust_profile_details_cache_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,,True,EdgeCache::PurgeByKey.call
+app/workers/users/bust_profile_identity_cache_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,,True,EdgeCache::PurgeByKey.call
+app/workers/users/bust_profile_image_cache_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,,True,EdgeCache::PurgeByKey.call
+app/workers/users/confirm_flag_reactions_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :medium_priority, retry: 10, lock: :until_executing",True,Users::ConfirmFlagReactions.call
+app/workers/users/delete_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :high_priority, retry: 10",True,Users::Delete.call | GDPRDeleteRequest.create
+app/workers/users/follow_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :high_priority, retry: 10, lock: :until_executed",True,
+app/workers/users/generate_ai_profile_image_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 5",True,Ai::ImageGenerator.new
+app/workers/users/handle_profile_spam_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,,True,
+app/workers/users/merge_sync_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :high_priority, retry: 10",True,
+app/workers/users/record_field_test_event_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 10, lock: :until_and_while_executing",True,
+app/workers/users/resave_articles_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :medium_priority, retry: 10, lock: :until_executing",True,
+app/workers/users/resolve_spam_reports_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :medium_priority, retry: 10, lock: :until_executing",True,Users::ResolveSpamReports.call
+app/workers/users/subscribe_to_mailchimp_newsletter_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 10, lock: :until_executed",True,Mailchimp::Bot.new
+app/workers/users/update_user_activities_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 10, lock: :until_and_while_executing",True,
+app/workers/visits/remove_old_visits_worker.rb,jobs,services/api/cmd/worker + internal/jobs,P2,"queue: :low_priority, retry: 10",True,
