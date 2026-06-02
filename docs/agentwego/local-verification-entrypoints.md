@@ -21,7 +21,8 @@ This document records the local-only verification tasks added for Noema M0 work.
 | `task api:smoke` | Run `scripts/noema_api_smoke.py`: build the native API to `/tmp`, start it on an unused local port, verify `/healthz`, then terminate the process group and remove the temp binary. | Starts and kills a local process; writes a temporary `/tmp/noema-api-smoke-*` binary. |
 | `task agentwego:gates` | Check inventory counts and control-plane docs. | Read-only. |
 | `task k8s:render` | Render `deploy/k8s/base` to `/tmp/noema-rendered.yaml`. | Writes `/tmp/noema-rendered.yaml`; never applies. |
-| `task verify:local` | Run the current low-risk local validation chain. | Formatting, local test cache, temporary local process, `/tmp` render output. |
+| `task search:manifest` | Render the native search index manifest to `/tmp/noema-search-index-manifest.json` and validate schema/family coverage. | Writes a local `/tmp` JSON artifact only; never contacts Elasticsearch. |
+| `task verify:local` | Run the current low-risk local validation chain. | Formatting, local test cache, temporary local process, `/tmp` manifest/render output. |
 
 ## Verification Output
 
@@ -33,6 +34,7 @@ This document records the local-only verification tasks added for Noema M0 work.
 * go:fmt
 * go:test
 * k8s:render
+* search:manifest
 * verify:local
 ```
 
@@ -46,9 +48,12 @@ Key outputs:
 
 ```text
 ?   	github.com/agentwego/noema/services/api/cmd/api	[no test files]
+ok  	github.com/agentwego/noema/services/api/cmd/search-manifest	(cached)
 ok  	github.com/agentwego/noema/services/api/internal/config	(cached)
 ok  	github.com/agentwego/noema/services/api/internal/http	(cached)
 ok  	github.com/agentwego/noema/services/api/internal/search	(cached)
+ok  	github.com/agentwego/noema/services/api/internal/search/elastic	(cached)
+search manifest ok 4
 ```
 
 Native API smoke output:
@@ -87,4 +92,4 @@ git diff --check
 
 ## Rollback
 
-Remove `Taskfile.yml`, this document, and the M0-T8 execution-board references.
+Remove `Taskfile.yml`, this document, and the corresponding M0-T8/M0-T11 execution-board references. If only rolling back manifest export, remove `task search:manifest`, the `verify:local` manifest step, and the M0-T11 references.

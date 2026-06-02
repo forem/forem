@@ -133,3 +133,62 @@ func TestCommentUserAndTagIndexSpecsExposeRequiredFields(t *testing.T) {
 		})
 	}
 }
+
+func TestBuildManifestCreatesStableReviewableIndexManifest(t *testing.T) {
+	family := search.IndexFamily{Prefix: "noema", Version: "v1"}
+
+	manifest := elastic.BuildManifest(family, elastic.AnalyzerNGram)
+
+	if manifest.SchemaVersion != "noema.search.index-manifest/v1" {
+		t.Fatalf("SchemaVersion = %q", manifest.SchemaVersion)
+	}
+	if manifest.Prefix != "noema" || manifest.Version != "v1" || manifest.Analyzer != elastic.AnalyzerNGram {
+		t.Fatalf("manifest identity = prefix %q version %q analyzer %q", manifest.Prefix, manifest.Version, manifest.Analyzer)
+	}
+	if len(manifest.Indexes) != 4 {
+		t.Fatalf("manifest contains %d indexes, want 4", len(manifest.Indexes))
+	}
+	for i, wantFamily := range []string{search.DocumentFamilyArticles, search.DocumentFamilyComments, search.DocumentFamilyUsers, search.DocumentFamilyTags} {
+		if manifest.Indexes[i].DocumentFamily != wantFamily {
+			t.Fatalf("manifest.Indexes[%d].DocumentFamily = %q, want %q", i, manifest.Indexes[i].DocumentFamily, wantFamily)
+		}
+		if manifest.Indexes[i].Mapping == nil {
+			t.Fatalf("manifest.Indexes[%d].Mapping is nil", i)
+		}
+	}
+}
+
+func TestManifestJSONIsDeterministicAndReviewable(t *testing.T) {
+	family := search.IndexFamily{Prefix: "noema", Version: "v1"}
+
+	first, err := elastic.ManifestJSON(family, elastic.AnalyzerNGram)
+	if err != nil {
+		t.Fatalf("ManifestJSON returned error: %v", err)
+	}
+	second, err := elastic.ManifestJSON(family, elastic.AnalyzerNGram)
+	if err != nil {
+		t.Fatalf("ManifestJSON returned error on second call: %v", err)
+	}
+	if string(first) != string(second) {
+		t.Fatalf("ManifestJSON must be deterministic between calls")
+	}
+
+	var decoded struct {
+		SchemaVersion string `json:"schema_version"`
+		Indexes       []struct {
+			DocumentFamily string         `json:"document_family"`
+			IndexName      string         `json:"index_name"`
+			ReadAlias      string         `json:"read_alias"`
+			Mapping        map[string]any `json:"mapping"`
+		} `json:"indexes"`
+	}
+	if err := json.Unmarshal(first, &decoded); err != nil {
+		t.Fatalf("ManifestJSON must be valid JSON: %v\n%s", err, string(first))
+	}
+	if decoded.SchemaVersion != "noema.search.index-manifest/v1" || len(decoded.Indexes) != 4 {
+		t.Fatalf("decoded manifest = schema %q indexes %d", decoded.SchemaVersion, len(decoded.Indexes))
+	}
+	if decoded.Indexes[0].IndexName != "noema-articles-v1" || decoded.Indexes[0].ReadAlias != "noema-articles-read" {
+		t.Fatalf("first index identity = %q/%q", decoded.Indexes[0].IndexName, decoded.Indexes[0].ReadAlias)
+	}
+}

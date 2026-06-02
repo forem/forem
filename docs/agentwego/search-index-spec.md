@@ -31,6 +31,9 @@ Files:
 
 - `services/api/internal/search/elastic/mappings.go`
 - `services/api/internal/search/elastic/mappings_test.go`
+- `services/api/internal/search/elastic/manifest.go`
+- `services/api/cmd/search-manifest/main.go`
+- `services/api/cmd/search-manifest/main_test.go`
 
 Current API:
 
@@ -41,7 +44,17 @@ elastic.CommentIndexSpec(search.IndexFamily{Prefix: "noema", Version: "v1"}, ela
 elastic.UserIndexSpec(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic.AnalyzerNGram)
 elastic.TagIndexSpec(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic.AnalyzerNGram)
 elastic.AllIndexSpecs(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic.AnalyzerNGram)
+elastic.BuildManifest(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic.AnalyzerNGram)
+elastic.ManifestJSON(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic.AnalyzerNGram)
 ```
+
+The fifth search slice adds a local CLI for reviewable manifest output:
+
+```bash
+go run ./services/api/cmd/search-manifest -prefix noema -version v1 -analyzer ngram
+```
+
+`task search:manifest` writes the generated JSON to `/tmp/noema-search-index-manifest.json` and checks the schema/family coverage without touching Elasticsearch.
 
 Each spec returns:
 
@@ -73,6 +86,29 @@ The fourth slice extended coverage to all current native search document familie
 | `comments` | `id`, `article_id`, `body`, `author_id`, `published`, `created_at`, `visible` |
 | `users` | `id`, `username`, `name`, `summary`, `joined_at`, `active` |
 | `tags` | `id`, `name`, `hotness_score`, `supported`, `created_at` |
+
+## Reviewable Manifest Shape
+
+`BuildManifest` wraps the all-family specs in a stable JSON envelope:
+
+```json
+{
+  "schema_version": "noema.search.index-manifest/v1",
+  "prefix": "noema",
+  "version": "v1",
+  "analyzer": "ngram",
+  "indexes": [
+    {
+      "document_family": "articles",
+      "index_name": "noema-articles-v1",
+      "read_alias": "noema-articles-read",
+      "mapping": {}
+    }
+  ]
+}
+```
+
+The committed CLI prints this manifest to stdout only. The Taskfile validation writes it to `/tmp/noema-search-index-manifest.json` for local review and JSON parsing, deliberately avoiding a committed generated file until the bootstrap/reindex workflow is ready.
 
 ## Analyzer Posture
 
@@ -142,13 +178,34 @@ ok  	github.com/agentwego/noema/services/api/internal/search/elastic	0.002s
 no stale smoke processes/listeners; no scripts/__pycache__
 ```
 
+Manifest export slice verification:
+
+```bash
+go test ./services/api/cmd/search-manifest ./services/api/internal/search/elastic
+go test ./services/api/...
+task search:manifest
+task verify:local
+```
+
+Observed output:
+
+```text
+ok  	github.com/agentwego/noema/services/api/cmd/search-manifest	0.002s
+ok  	github.com/agentwego/noema/services/api/internal/search/elastic	(cached)
+search manifest ok 4
+```
+
+`task search:manifest` only writes `/tmp/noema-search-index-manifest.json`; it does not create indexes, contact a cluster, or leave repository artifacts.
+
 ## Rollback
 
 Remove:
 
 - `services/api/internal/search/elastic/**`
+- `services/api/cmd/search-manifest/**`
 - this document
 - M0-T9 execution-board references
 - M0-T10 execution-board references if rolling back the all-family extension
+- M0-T11 execution-board references if rolling back the manifest exporter
 
 No external state exists to roll back.

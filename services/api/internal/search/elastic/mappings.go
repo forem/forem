@@ -8,10 +8,10 @@ const (
 )
 
 type IndexSpec struct {
-	DocumentFamily string
-	IndexName      string
-	ReadAlias      string
-	Mapping        map[string]any
+	DocumentFamily string         `json:"document_family"`
+	IndexName      string         `json:"index_name"`
+	ReadAlias      string         `json:"read_alias"`
+	Mapping        map[string]any `json:"mapping"`
 }
 
 func ArticleIndexSpec(family search.IndexFamily, analyzer string) IndexSpec {

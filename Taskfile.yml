@@ -35,6 +35,22 @@ tasks:
         kubectl kustomize deploy/k8s/base >/tmp/noema-rendered.yaml
         grep -nE 'kind: Namespace|kind: Deployment|kind: Job|kind: Service|noema' /tmp/noema-rendered.yaml
 
+  search:manifest:
+    desc: Render the native search index manifest locally to /tmp; never contacts Elasticsearch.
+    dir: .
+    cmds:
+      - |
+        set -euo pipefail
+        go run ./services/api/cmd/search-manifest -prefix noema -version v1 -analyzer ngram >/tmp/noema-search-index-manifest.json
+        python - <<'PY'
+        import json
+        from pathlib import Path
+        payload = json.loads(Path('/tmp/noema-search-index-manifest.json').read_text())
+        assert payload['schema_version'] == 'noema.search.index-manifest/v1'
+        assert [i['document_family'] for i in payload['indexes']] == ['articles', 'comments', 'users', 'tags']
+        print('search manifest ok', len(payload['indexes']))
+        PY
+
   agentwego:gates:
     desc: Run local agentwego control-plane gate checks without touching production.
     dir: .
@@ -65,12 +81,14 @@ tasks:
         grep -nE 'M0-T8|task verify:local|task --list|kind: Deployment' docs/agentwego/execution-board.md docs/agentwego/local-verification-entrypoints.md
         grep -nE 'M0-T9|AnalyzerNGram|AnalyzerIK|go test ./services/api/internal/search/elastic' docs/agentwego/execution-board.md docs/agentwego/search-index-spec.md
         grep -nE 'M0-T10|AllIndexSpecs|CommentIndexSpec|UserIndexSpec|TagIndexSpec' docs/agentwego/execution-board.md docs/agentwego/search-index-spec.md
+        grep -nE 'M0-T11|search-manifest|ManifestJSON|schema_version' docs/agentwego/execution-board.md docs/agentwego/search-index-spec.md
 
   verify:local:
     desc: Run low-risk local verification for the current Noema M0 slices.
     cmds:
       - task: go:fmt
       - task: go:test
+      - task: search:manifest
       - task: api:smoke
       - task: agentwego:gates
       - task: k8s:render
