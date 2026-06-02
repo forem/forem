@@ -18,7 +18,7 @@ This document records the local-only verification tasks added for Noema M0 work.
 | --- | --- | --- |
 | `task go:fmt` | Format native Go API skeleton files. | Rewrites local Go files only. |
 | `task go:test` | Run `go test ./services/api/...`. | None beyond Go test cache. |
-| `task api:smoke` | Run `scripts/noema_api_smoke.py`: build the native API to `/tmp`, start it on an unused local port, verify `/healthz` and `/search`, then terminate the process group and remove the temp binary. | Starts and kills a local process; writes a temporary `/tmp/noema-api-smoke-*` binary. |
+| `task api:smoke` | Run `scripts/noema_api_smoke.py`: build the native API to `/tmp`, start it on an unused local port, verify `/healthz`, `/search`, and `/search` JSON error paths, then terminate the process group and remove the temp binary. | Starts and kills a local process; writes a temporary `/tmp/noema-api-smoke-*` binary. |
 | `task agentwego:gates` | Check inventory counts and control-plane docs. | Read-only. |
 | `task k8s:render` | Render `deploy/k8s/base` to `/tmp/noema-rendered.yaml`. | Writes `/tmp/noema-rendered.yaml`; never applies. |
 | `task search:manifest` | Render the native search index manifest to `/tmp/noema-search-index-manifest.json` and validate schema/family coverage. | Writes a local `/tmp` JSON artifact only; never contacts Elasticsearch. |
@@ -70,6 +70,18 @@ Native API smoke output:
   "service": "noema-api",
   "status": "ok"
 }
+{
+  "hits": [],
+  "limit": 100,
+  "provider": "postgres",
+  "query": "go native"
+}
+{
+  "error": "invalid limit"
+}
+{
+  "error": "method not allowed"
+}
 ```
 
 AgentWeGo gate output included:
@@ -97,4 +109,4 @@ git diff --check
 
 ## Rollback
 
-Remove `Taskfile.yml`, this document, and the corresponding M0-T8/M0-T11/M0-T13/M0-T15/M0-T16/M0-T17/M0-T18/M0-T19 execution-board references. If only rolling back manifest export, remove `task search:manifest`, the `verify:local` manifest step, and the M0-T11 references. If only rolling back bootstrap-plan preview, remove `task search:bootstrap-plan`, the `verify:local` bootstrap-plan step, and the M0-T13 references. If only rolling back rollback-plan preview, remove `task search:rollback-plan`, the `verify:local` rollback-plan step, and the M0-T15 references. If only rolling back the local search HTTP contract, remove `/search` handling, the search smoke check, and the M0-T17/M0-T18/M0-T19 references.
+Remove `Taskfile.yml`, this document, and the corresponding M0-T8/M0-T11/M0-T13/M0-T15/M0-T16/M0-T17/M0-T18/M0-T19/M0-T20 execution-board references. If only rolling back manifest export, remove `task search:manifest`, the `verify:local` manifest step, and the M0-T11 references. If only rolling back bootstrap-plan preview, remove `task search:bootstrap-plan`, the `verify:local` bootstrap-plan step, and the M0-T13 references. If only rolling back rollback-plan preview, remove `task search:rollback-plan`, the `verify:local` rollback-plan step, and the M0-T15 references. If only rolling back the local search HTTP contract, remove `/search` handling, the search smoke check, and the M0-T17/M0-T18/M0-T19/M0-T20 references.

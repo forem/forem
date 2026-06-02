@@ -2,7 +2,7 @@
 """Local-only smoke test for the Noema native API skeleton.
 
 Builds the stdlib-only Go API to /tmp, starts it on an unused localhost port,
-verifies /healthz and the local /search contract, and always tears down the process group and temp binary.
+verifies /healthz, the local /search success contract, and the /search JSON error contracts, and always tears down the process group and temp binary.
 """
 
 from __future__ import annotations
@@ -15,6 +15,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import urllib.error
 import urllib.request
 from pathlib import Path
 
@@ -31,6 +32,18 @@ def choose_port() -> int:
         if port_is_free(port):
             return port
     raise RuntimeError("no free local smoke port found in 19091-19099")
+
+
+def fetch_json(url: str, *, method: str = "GET") -> tuple[int, dict]:
+    request = urllib.request.Request(url, method=method)
+    try:
+        with urllib.request.urlopen(request, timeout=1) as response:
+            status = response.status
+            body = response.read().decode("utf-8")
+    except urllib.error.HTTPError as exc:
+        status = exc.code
+        body = exc.read().decode("utf-8")
+    return status, json.loads(body)
 
 
 def main() -> int:
@@ -58,24 +71,32 @@ def main() -> int:
 
         health_url = f"http://127.0.0.1:{port}/healthz"
         search_url = f"http://127.0.0.1:{port}/search?q=%20go%20native%20&limit=250"
+        bad_limit_url = f"http://127.0.0.1:{port}/search?q=go&limit=not-a-number"
+        post_search_url = f"http://127.0.0.1:{port}/search"
         last_error: Exception | None = None
         for _ in range(30):
             if proc.poll() is not None:
                 raise RuntimeError(f"native API exited early with code {proc.returncode}")
             try:
-                with urllib.request.urlopen(health_url, timeout=1) as response:
-                    health_body = response.read().decode("utf-8")
-                health = json.loads(health_body)
+                status, health = fetch_json(health_url)
                 print(json.dumps(health, indent=4, sort_keys=True))
-                if health.get("status") != "ok" or health.get("service") != "noema-api":
-                    raise RuntimeError(f"unexpected health response: {health!r}")
+                if status != 200 or health.get("status") != "ok" or health.get("service") != "noema-api":
+                    raise RuntimeError(f"unexpected health response: status={status} body={health!r}")
 
-                with urllib.request.urlopen(search_url, timeout=1) as response:
-                    search_body = response.read().decode("utf-8")
-                search = json.loads(search_body)
+                status, search = fetch_json(search_url)
                 print(json.dumps(search, indent=4, sort_keys=True))
-                if search != {"provider": "postgres", "query": "go native", "limit": 100, "hits": []}:
-                    raise RuntimeError(f"unexpected search response: {search!r}")
+                if status != 200 or search != {"provider": "postgres", "query": "go native", "limit": 100, "hits": []}:
+                    raise RuntimeError(f"unexpected search response: status={status} body={search!r}")
+
+                status, bad_limit = fetch_json(bad_limit_url)
+                print(json.dumps(bad_limit, indent=4, sort_keys=True))
+                if status != 400 or bad_limit != {"error": "invalid limit"}:
+                    raise RuntimeError(f"unexpected bad-limit response: status={status} body={bad_limit!r}")
+
+                status, method_error = fetch_json(post_search_url, method="POST")
+                print(json.dumps(method_error, indent=4, sort_keys=True))
+                if status != 405 or method_error != {"error": "method not allowed"}:
+                    raise RuntimeError(f"unexpected method response: status={status} body={method_error!r}")
                 return 0
             except Exception as exc:  # retry during startup
                 last_error = exc
