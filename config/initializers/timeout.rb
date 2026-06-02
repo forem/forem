@@ -30,9 +30,13 @@ if defined?(Rack::Timeout) && defined?(ActiveRecord::Base)
             begin
               # Close the raw connection socket to wake up any blocking C extension query execution
               # without acquiring the connection's lock (which is held by the request thread).
-              raw_conn = conn.raw_connection rescue nil
-              if raw_conn && raw_conn.respond_to?(:close)
-                raw_conn.close
+              raw_conn = conn.raw_connection
+              if raw_conn
+                if raw_conn.respond_to?(:close)
+                  raw_conn.close
+                elsif raw_conn.respond_to?(:finish)
+                  raw_conn.finish
+                end
               end
             rescue StandardError => e
               Rails.logger.warn "Rack::Timeout: failed to close raw database connection: #{e.class}: #{e.message}"
