@@ -23,7 +23,8 @@ This document records the local-only verification tasks added for Noema M0 work.
 | `task k8s:render` | Render `deploy/k8s/base` to `/tmp/noema-rendered.yaml`. | Writes `/tmp/noema-rendered.yaml`; never applies. |
 | `task search:manifest` | Render the native search index manifest to `/tmp/noema-search-index-manifest.json` and validate schema/family coverage. | Writes a local `/tmp` JSON artifact only; never contacts Elasticsearch. |
 | `task search:bootstrap-plan` | Render the native search bootstrap plan to `/tmp/noema-search-bootstrap-plan.json` and validate review-only step coverage. | Writes a local `/tmp` JSON artifact only; never contacts Elasticsearch or mutates aliases/indexes. |
-| `task verify:local` | Run the current low-risk local validation chain. | Formatting, local test cache, temporary local process, `/tmp` manifest/bootstrap-plan/render output. |
+| `task search:rollback-plan` | Render the native search rollback plan to `/tmp/noema-search-rollback-plan.json` and validate reverse review-only step coverage. | Writes a local `/tmp` JSON artifact only; never contacts Elasticsearch or deletes/mutates aliases/indexes. |
+| `task verify:local` | Run the current low-risk local validation chain. | Formatting, local test cache, temporary local process, `/tmp` manifest/bootstrap-plan/rollback-plan/render output. |
 
 ## Verification Output
 
@@ -96,4 +97,4 @@ git diff --check
 
 ## Rollback
 
-Remove `Taskfile.yml`, this document, and the corresponding M0-T8/M0-T11/M0-T13 execution-board references. If only rolling back manifest export, remove `task search:manifest`, the `verify:local` manifest step, and the M0-T11 references. If only rolling back bootstrap-plan preview, remove `task search:bootstrap-plan`, the `verify:local` bootstrap-plan step, and the M0-T13 references.
+Remove `Taskfile.yml`, this document, and the corresponding M0-T8/M0-T11/M0-T13/M0-T15 execution-board references. If only rolling back manifest export, remove `task search:manifest`, the `verify:local` manifest step, and the M0-T11 references. If only rolling back bootstrap-plan preview, remove `task search:bootstrap-plan`, the `verify:local` bootstrap-plan step, and the M0-T13 references. If only rolling back rollback-plan preview, remove `task search:rollback-plan`, the `verify:local` rollback-plan step, and the M0-T15 references.

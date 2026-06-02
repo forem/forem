@@ -71,6 +71,26 @@ tasks:
         print('search bootstrap plan ok', len(payload['steps']))
         PY
 
+  search:rollback-plan:
+    desc: Render the native search rollback plan locally to /tmp; never contacts Elasticsearch.
+    dir: .
+    cmds:
+      - |
+        set -euo pipefail
+        go run ./services/api/cmd/search-rollback-plan -prefix noema -version v1 -analyzer ngram >/tmp/noema-search-rollback-plan.json
+        python - <<'PY'
+        import json
+        from pathlib import Path
+        payload = json.loads(Path('/tmp/noema-search-rollback-plan.json').read_text())
+        assert payload['schema_version'] == 'noema.search.rollback-plan/v1'
+        assert payload['safety'] == 'review-only'
+        assert len(payload['manifest']['indexes']) == 4
+        assert len(payload['steps']) == 12
+        assert payload['steps'][0]['action'] == 'remove_write_alias'
+        assert payload['steps'][-1]['action'] == 'delete_index'
+        print('search rollback plan ok', len(payload['steps']))
+        PY
+
   agentwego:gates:
     desc: Run local agentwego control-plane gate checks without touching production.
     dir: .
@@ -105,6 +125,7 @@ tasks:
         grep -nE 'M0-T12|ValidateManifest|duplicate index_name|dynamic must be strict' docs/agentwego/execution-board.md docs/agentwego/search-index-spec.md
         grep -nE 'M0-T13|BuildBootstrapPlan|search-bootstrap-plan|review-only' docs/agentwego/execution-board.md docs/agentwego/search-index-spec.md docs/agentwego/local-verification-entrypoints.md
         grep -nE 'M0-T14|NewProvider|ErrReadOnly|fallback/postgres' docs/agentwego/execution-board.md docs/agentwego/search-architecture.md docs/agentwego/native-stack-skeleton.md
+        grep -nE 'M0-T15|BuildRollbackPlan|search-rollback-plan|remove_write_alias' docs/agentwego/execution-board.md docs/agentwego/search-index-spec.md docs/agentwego/local-verification-entrypoints.md
 
   verify:local:
     desc: Run low-risk local verification for the current Noema M0 slices.
@@ -113,6 +134,7 @@ tasks:
       - task: go:test
       - task: search:manifest
       - task: search:bootstrap-plan
+      - task: search:rollback-plan
       - task: api:smoke
       - task: agentwego:gates
       - task: k8s:render

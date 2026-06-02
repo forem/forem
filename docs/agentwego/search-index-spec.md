@@ -37,6 +37,8 @@ Files:
 - `services/api/internal/search/elastic/bootstrap_plan.go`
 - `services/api/cmd/search-bootstrap-plan/main.go`
 - `services/api/cmd/search-bootstrap-plan/main_test.go`
+- `services/api/cmd/search-rollback-plan/main.go`
+- `services/api/cmd/search-rollback-plan/main_test.go`
 
 Current API:
 
@@ -52,6 +54,8 @@ elastic.ManifestJSON(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic
 elastic.ValidateManifest(elastic.BuildManifest(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic.AnalyzerNGram))
 elastic.BuildBootstrapPlan(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic.AnalyzerNGram)
 elastic.BootstrapPlanJSON(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic.AnalyzerNGram)
+elastic.BuildRollbackPlan(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic.AnalyzerNGram)
+elastic.RollbackPlanJSON(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic.AnalyzerNGram)
 ```
 
 The fifth search slice adds a local CLI for reviewable manifest output:
@@ -261,5 +265,6 @@ Remove:
 - M0-T11 execution-board references if rolling back the manifest exporter
 - M0-T12 execution-board references if rolling back the manifest validation guard
 - M0-T13 execution-board references if rolling back the bootstrap-plan preview
+- `services/api/cmd/search-rollback-plan/**`, `services/api/internal/search/elastic/rollback_plan.go`, `task search:rollback-plan`, and M0-T15 execution-board references if rolling back the rollback-plan preview
 
 No external state exists to roll back.

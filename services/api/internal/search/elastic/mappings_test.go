@@ -286,3 +286,53 @@ func TestBootstrapPlanJSONValidatesManifestBeforeRendering(t *testing.T) {
 		t.Fatalf("decoded plan = schema %q safety %q steps %d", decoded.SchemaVersion, decoded.Safety, len(decoded.Steps))
 	}
 }
+
+func TestBuildRollbackPlanIsLocalReviewOnlyAndReverseOrdered(t *testing.T) {
+	family := search.IndexFamily{Prefix: "noema", Version: "v1"}
+
+	plan := elastic.BuildRollbackPlan(family, elastic.AnalyzerNGram)
+
+	if plan.SchemaVersion != "noema.search.rollback-plan/v1" {
+		t.Fatalf("SchemaVersion = %q", plan.SchemaVersion)
+	}
+	if plan.Safety != "review-only" {
+		t.Fatalf("Safety = %q, want review-only", plan.Safety)
+	}
+	if len(plan.Steps) != 12 {
+		t.Fatalf("plan contains %d steps, want 12", len(plan.Steps))
+	}
+	first := plan.Steps[0]
+	if first.Action != "remove_write_alias" || first.DocumentFamily != search.DocumentFamilyTags || first.Alias != "noema-tags-write" || first.IndexName != "noema-tags-v1" {
+		t.Fatalf("first rollback step = %#v", first)
+	}
+	last := plan.Steps[len(plan.Steps)-1]
+	if last.Action != "delete_index" || last.DocumentFamily != search.DocumentFamilyArticles || last.IndexName != "noema-articles-v1" {
+		t.Fatalf("last rollback step = %#v", last)
+	}
+}
+
+func TestRollbackPlanJSONValidatesManifestBeforeRendering(t *testing.T) {
+	family := search.IndexFamily{Prefix: "noema", Version: "v1"}
+
+	payload, err := elastic.RollbackPlanJSON(family, elastic.AnalyzerNGram)
+	if err != nil {
+		t.Fatalf("RollbackPlanJSON returned error: %v", err)
+	}
+
+	var decoded struct {
+		SchemaVersion string `json:"schema_version"`
+		Safety        string `json:"safety"`
+		Steps         []struct {
+			Action         string `json:"action"`
+			DocumentFamily string `json:"document_family"`
+			IndexName      string `json:"index_name"`
+			Alias          string `json:"alias,omitempty"`
+		} `json:"steps"`
+	}
+	if err := json.Unmarshal(payload, &decoded); err != nil {
+		t.Fatalf("RollbackPlanJSON must be valid JSON: %v\n%s", err, string(payload))
+	}
+	if decoded.SchemaVersion != "noema.search.rollback-plan/v1" || decoded.Safety != "review-only" || len(decoded.Steps) != 12 {
+		t.Fatalf("decoded plan = schema %q safety %q steps %d", decoded.SchemaVersion, decoded.Safety, len(decoded.Steps))
+	}
+}
