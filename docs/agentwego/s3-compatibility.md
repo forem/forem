@@ -52,16 +52,16 @@ Use a Noema-specific bucket or prefix decision before production. Do not assume 
 
 ## Patch Decision
 
-Patch is likely required before relying on S3-compatible storage.
+Patch has been applied for generic S3-compatible endpoints.
 
 Minimum patch requirements:
 
-1. Preserve native AWS behavior when `AWS_ENDPOINT_URL` is unset.
-2. Add endpoint override to CarrierWave/fog config when `AWS_ENDPOINT_URL` is present.
-3. Add path-style/force-path-style support when `AWS_FORCE_PATH_STYLE=true`.
-4. Apply equivalent endpoint/path-style support to `AgentSessions::S3Storage`.
-5. Add tests for config object construction without real credentials.
-6. Document a manual MinIO or approved provider smoke test.
+1. Preserve native AWS behavior when `AWS_ENDPOINT_URL` is unset. — implemented by omitting fog `endpoint`/`path_style` keys unless configured.
+2. Add endpoint override to CarrierWave/fog config when `AWS_ENDPOINT_URL` is present. — implemented in `CarrierWaveInitializer.s3_fog_credentials`.
+3. Add path-style/force-path-style support when `AWS_FORCE_PATH_STYLE=true`. — implemented with Rails boolean casting.
+4. Apply equivalent endpoint/path-style support to `AgentSessions::S3Storage`. — implemented in its fog credentials.
+5. Add tests for config object construction without real credentials. — covered by initializer/service specs; no bucket access.
+6. `deploy/k8s/base/configmap.yaml` carries only non-secret storage knobs (`FILE_STORAGE_LOCATION`, region, endpoint, path-style). Credentials and bucket ownership still belong in `noema-runtime-secrets` or approved GitOps secret tooling.
 
 ## Files to Inspect/Patch
 
@@ -99,5 +99,5 @@ After patch and approved credentials:
 
 - Bucket reuse can cause data ownership confusion. Prefer a Noema-specific bucket/prefix.
 - Path-style requirements vary by provider.
-- Some fog/AWS SDK versions use different option names for endpoint/path-style; verify against the installed gem versions before patching.
+- Some fog/AWS SDK versions use different option names for endpoint/path-style; verified against `fog-aws` 3.21.0 source that `endpoint` and `path_style` are recognized storage options.
 - Upload success is not enough; rendered media URLs and imgproxy behavior need separate browser verification.

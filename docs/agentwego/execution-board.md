@@ -123,7 +123,7 @@ grep -nE 'Elasticsearch|alias|analyzer|fallback|reindex' docs/agentwego/search-a
 | M0-T2 | done | P0 | `docs/agentwego/execution-board.md` | planning control | `test -s` + grep gates |
 | M0-T3 | done | P0 | `deploy/k8s/base/*` | runtime-config/deploy | `kubectl kustomize` render |
 | M0-T4 | done | P0 | `docs/agentwego/database-bootstrap.md` | runtime-config/legacy-schema | grep rollback/CNPG/Secret |
-| M0-T5 | done | P0/P2 | `docs/agentwego/s3-compatibility.md` | `config/initializers/carrierwave.rb`, upload/media files | grep S3 vars and patch decision |
+| M0-T5 | done | P0/P2 | `docs/agentwego/s3-compatibility.md`, `config/initializers/carrierwave.rb`, `app/services/agent_sessions/s3_storage.rb`, `.env_sample`, `deploy/k8s/base/configmap.yaml` | `config/initializers/carrierwave.rb`, upload/media files, agent session raw files | config specs + kustomize + grep S3 vars and patch decision |
 | M0-T6 | done | P1 | `docs/agentwego/search-architecture.md` | search/controller/model rows | grep ES alias/analyzer/reindex/fallback |
 
 ## Open Inputs Before Deployment
@@ -141,4 +141,5 @@ grep -nE 'Elasticsearch|alias|analyzer|fallback|reindex' docs/agentwego/search-a
 
 - Baseline dependency files identified and used as the source of truth for this board.
 - M0 docs/control-plane artifacts created: execution board, render-only K8s base, database bootstrap, S3 compatibility posture, and search architecture.
+- S3-compatible endpoint/path-style patch added for CarrierWave and `AgentSessions::S3Storage`; `.env_sample` now includes the new storage knobs.
 - Gate G0/G1/G2 checks passed locally; rendered manifests written to `/tmp/noema-rendered.yaml`.

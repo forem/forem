@@ -23,13 +23,27 @@ module CarrierWaveInitializer
       config.fog_directory = ApplicationConfig["AWS_BUCKET_NAME"]
       config.fog_provider = "fog/aws"
       config.fog_attributes = { cache_control: "public, max-age=#{365.days.to_i}" }
-      config.fog_credentials = {
-        provider: "AWS",
-        aws_access_key_id: ApplicationConfig["AWS_ID"],
-        aws_secret_access_key: ApplicationConfig["AWS_SECRET"],
-        region: ApplicationConfig["AWS_UPLOAD_REGION"].presence || ApplicationConfig["AWS_DEFAULT_REGION"]
-      }
+      config.fog_credentials = s3_fog_credentials
     end
+  end
+
+  def self.s3_fog_credentials
+    credentials = {
+      provider: "AWS",
+      aws_access_key_id: ApplicationConfig["AWS_ID"],
+      aws_secret_access_key: ApplicationConfig["AWS_SECRET"],
+      region: ApplicationConfig["AWS_UPLOAD_REGION"].presence || ApplicationConfig["AWS_DEFAULT_REGION"]
+    }
+
+    endpoint = ApplicationConfig["AWS_ENDPOINT_URL"]
+    credentials[:endpoint] = endpoint if endpoint.present?
+
+    force_path_style = ApplicationConfig["AWS_FORCE_PATH_STYLE"]
+    if force_path_style.present?
+      credentials[:path_style] = ActiveModel::Type::Boolean.new.cast(force_path_style)
+    end
+
+    credentials
   end
 
   def self.forem_cloud_config

@@ -42,12 +42,22 @@ module AgentSessions
       end
 
       def credentials
-        {
+        credentials = {
           provider: "AWS",
           aws_access_key_id: ApplicationConfig["AWS_ID"],
           aws_secret_access_key: ApplicationConfig["AWS_SECRET"],
           region: ApplicationConfig["AWS_UPLOAD_REGION"].presence || ApplicationConfig["AWS_DEFAULT_REGION"],
         }
+
+        endpoint = ApplicationConfig["AWS_ENDPOINT_URL"]
+        credentials[:endpoint] = endpoint if endpoint.present?
+
+        force_path_style = ApplicationConfig["AWS_FORCE_PATH_STYLE"]
+        if force_path_style.present?
+          credentials[:path_style] = ActiveModel::Type::Boolean.new.cast(force_path_style)
+        end
+
+        credentials
       end
 
       def bucket

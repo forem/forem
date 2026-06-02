@@ -17,6 +17,11 @@ data:
   DEFAULT_EMAIL: no-reply@example.invalid
   FORCE_SSL_IN_RAILS: "true"
   SKIP_FASTLY_CONFIG_UPDATE: "true"
+  FILE_STORAGE_LOCATION: fog
+  AWS_DEFAULT_REGION: ap-southeast-1
+  AWS_UPLOAD_REGION: ap-southeast-1
+  AWS_ENDPOINT_URL: https://s3.example.invalid
+  AWS_FORCE_PATH_STYLE: "true"
   WEB_CONCURRENCY: "1"
   RAILS_MAX_THREADS: "5"
   MALLOC_ARENA_MAX: "2"

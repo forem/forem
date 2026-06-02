@@ -52,6 +52,24 @@ RSpec.describe AgentSessions::S3Storage do
   end
 
   describe ".presigned_put_url" do
+    it "passes S3-compatible endpoint and path-style settings to fog" do
+      fog_storage = double("Fog::Storage") # rubocop:disable RSpec/VerifiedDoubles
+      allow(fog_storage).to receive(:put_object_url).and_return("https://s3.example.com/presigned-put")
+      stub_aws_config(
+        "AWS_ENDPOINT_URL" => "https://s3.example.test",
+        "AWS_FORCE_PATH_STYLE" => "true",
+      )
+
+      expect(Fog::Storage).to receive(:new).with(hash_including(
+        endpoint: "https://s3.example.test",
+        path_style: true,
+      )).and_return(fog_storage)
+
+      reset_storage
+      described_class.presigned_put_url("agent_sessions/1/test.jsonl")
+      reset_storage
+    end
+
     it "calls fog storage with correct arguments" do
       fog_storage = double("Fog::Storage") # rubocop:disable RSpec/VerifiedDoubles
       allow(Fog::Storage).to receive(:new).and_return(fog_storage)
@@ -121,13 +139,21 @@ RSpec.describe AgentSessions::S3Storage do
 
   private
 
-  def stub_aws_config
+  def stub_aws_config(values = {})
+    defaults = {
+      "AWS_ID" => "test-id",
+      "AWS_SECRET" => "test-secret",
+      "AWS_UPLOAD_REGION" => "us-east-1",
+      "AWS_DEFAULT_REGION" => nil,
+      "AWS_BUCKET_NAME" => "test-bucket",
+      "AWS_ENDPOINT_URL" => nil,
+      "AWS_FORCE_PATH_STYLE" => nil,
+    }
+
     allow(ApplicationConfig).to receive(:[]).and_call_original
-    allow(ApplicationConfig).to receive(:[]).with("AWS_ID").and_return("test-id")
-    allow(ApplicationConfig).to receive(:[]).with("AWS_SECRET").and_return("test-secret")
-    allow(ApplicationConfig).to receive(:[]).with("AWS_UPLOAD_REGION").and_return("us-east-1")
-    allow(ApplicationConfig).to receive(:[]).with("AWS_DEFAULT_REGION").and_return(nil)
-    allow(ApplicationConfig).to receive(:[]).with("AWS_BUCKET_NAME").and_return("test-bucket")
+    defaults.merge(values).each do |key, value|
+      allow(ApplicationConfig).to receive(:[]).with(key).and_return(value)
+    end
   end
 
   def reset_storage
