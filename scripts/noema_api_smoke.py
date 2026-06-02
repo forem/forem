@@ -2,7 +2,8 @@
 """Local-only smoke test for the Noema native API skeleton.
 
 Builds the stdlib-only Go API to /tmp, starts it on unused localhost ports,
-verifies /healthz, /search success, /search JSON error paths, and unknown-provider fallback,
+verifies /healthz, /search success, /search JSON error paths, unknown-route JSON 404,
+and unknown-provider fallback,
 and always tears down process groups and temp binaries.
 """
 
@@ -79,6 +80,7 @@ def verify_running_api(port: int, expected_provider: str) -> None:
     bad_limit_url = f"http://127.0.0.1:{port}/search?q=go&limit=not-a-number"
     missing_query_url = f"http://127.0.0.1:{port}/search?q=%20%20&limit=20"
     post_search_url = f"http://127.0.0.1:{port}/search"
+    not_found_url = f"http://127.0.0.1:{port}/does-not-exist"
 
     status, health = fetch_json(health_url)
     print(json.dumps(health, indent=4, sort_keys=True))
@@ -110,6 +112,11 @@ def verify_running_api(port: int, expected_provider: str) -> None:
     print(json.dumps(method_error, indent=4, sort_keys=True))
     if status != 405 or method_error != {"error": "method not allowed"}:
         raise RuntimeError(f"unexpected method response: status={status} body={method_error!r}")
+
+    status, not_found = fetch_json(not_found_url)
+    print(json.dumps(not_found, indent=4, sort_keys=True))
+    if status != 404 or not_found != {"error": "not found"}:
+        raise RuntimeError(f"unexpected not-found response: status={status} body={not_found!r}")
 
 
 def run_case(repo: Path, binary_path: Path, used_ports: set[int], configured_provider: str, expected_provider: str) -> None:

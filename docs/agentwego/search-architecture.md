@@ -36,7 +36,7 @@ type Provider interface {
 }
 ```
 
-The first HTTP route using this seam is intentionally narrow: `GET /search?q=<query>&limit=<n>` parses query parameters, rejects missing/blank query with `400 {"error":"missing query"}`, rejects non-integer `limit` with `400 {"error":"invalid limit"}`, delegates to the selected provider, and returns the provider-normalized JSON contract `{provider, query, limit, hits}`. Unsupported methods return `405 {"error":"method not allowed"}` and provider failures return `503 {"error":"search unavailable"}` without leaking backend error details. It is a local contract stub, not a production-ranking implementation.
+The first HTTP route using this seam is intentionally narrow: `GET /search?q=<query>&limit=<n>` parses query parameters, rejects missing/blank query with `400 {"error":"missing query"}`, rejects non-integer `limit` with `400 {"error":"invalid limit"}`, delegates to the selected provider, and returns the provider-normalized JSON contract `{provider, query, limit, hits}`. Unsupported methods return `405 {"error":"method not allowed"}`, provider failures return `503 {"error":"search unavailable"}` without leaking backend error details, and unknown routes return `404 {"error":"not found"}` instead of framework plaintext. It is a local contract stub, not a production-ranking implementation.
 
 Only `internal/search/elastic` should know index names, aliases, mappings, analyzers, bulk API shapes, retry/backoff, and alias swaps.
 

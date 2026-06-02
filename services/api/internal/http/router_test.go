@@ -163,7 +163,7 @@ func TestRouterSearchEndpointReturnsJSONForUnsupportedMethod(t *testing.T) {
 	}
 }
 
-func TestRouterReturnsNotFoundForUnknownRoute(t *testing.T) {
+func TestRouterReturnsJSONNotFoundForUnknownRoute(t *testing.T) {
 	router := httpapi.NewRouter(config.Config{}, search.NewNoopProvider())
 
 	req := httptest.NewRequest(http.MethodGet, "/does-not-exist", nil)
@@ -172,6 +172,17 @@ func TestRouterReturnsNotFoundForUnknownRoute(t *testing.T) {
 
 	if res.Code != http.StatusNotFound {
 		t.Fatalf("status = %d, want 404", res.Code)
+	}
+	if !bytes.Contains([]byte(res.Header().Get("Content-Type")), []byte("application/json")) {
+		t.Fatalf("content-type = %q, want application/json", res.Header().Get("Content-Type"))
+	}
+
+	var body map[string]string
+	if err := json.Unmarshal(res.Body.Bytes(), &body); err != nil {
+		t.Fatalf("not found response is not JSON: %v; body=%s", err, res.Body.String())
+	}
+	if body["error"] != "not found" {
+		t.Fatalf("error = %q, want not found", body["error"])
 	}
 }
 

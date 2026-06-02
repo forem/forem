@@ -14,6 +14,7 @@ func NewRouter(cfg config.Config, searchProvider search.Provider) http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /healthz", healthHandler(cfg, searchProvider))
 	mux.HandleFunc("/search", searchHandler(searchProvider))
+	mux.HandleFunc("/", notFoundHandler())
 	return mux
 }
 
@@ -60,6 +61,12 @@ func searchHandler(searchProvider search.Provider) http.HandlerFunc {
 			return
 		}
 		writeJSON(w, http.StatusOK, result)
+	}
+}
+
+func notFoundHandler() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		writeJSON(w, http.StatusNotFound, map[string]string{"error": "not found"})
 	}
 }
 
