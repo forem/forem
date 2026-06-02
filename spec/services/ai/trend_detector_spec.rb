@@ -170,7 +170,7 @@ RSpec.describe Ai::TrendDetector do
         end.not_to change(Trend, :count)
       end
 
-      it "creates a new trend under the default match_threshold of 0.98" do
+      it "creates a new trend under the default match_threshold of 0.97" do
         # Passing min_unique_authors: 3 to satisfy diversity with 3 test articles
         expect do
           detector.call(min_articles: 3, min_score: 10, min_unique_authors: 3)
@@ -208,6 +208,20 @@ RSpec.describe Ai::TrendDetector do
         expect do
           detector.call
         end.not_to change(Trend, :count)
+      end
+
+      it "uses 0.89 for similarity_threshold and 0.97 for match_threshold by default" do
+        allow(detector).to receive(:detect_trends_for)
+        detector.call
+        expect(detector).to have_received(:detect_trends_for).with(
+          tag: nil,
+          days_lookback: 7,
+          similarity_threshold: 0.89,
+          match_threshold: 0.97,
+          min_articles: 10,
+          min_score: 5,
+          min_unique_authors: 4
+        ).at_least(:once)
       end
     end
 
