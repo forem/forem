@@ -12,7 +12,7 @@ import (
 func NewRouter(cfg config.Config, searchProvider search.Provider) http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /healthz", healthHandler(cfg, searchProvider))
-	mux.HandleFunc("GET /search", searchHandler(searchProvider))
+	mux.HandleFunc("/search", searchHandler(searchProvider))
 	return mux
 }
 
@@ -31,6 +31,11 @@ func healthHandler(cfg config.Config, searchProvider search.Provider) http.Handl
 
 func searchHandler(searchProvider search.Provider) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			writeJSON(w, http.StatusMethodNotAllowed, map[string]string{"error": "method not allowed"})
+			return
+		}
+
 		limit := 0
 		if rawLimit := r.URL.Query().Get("limit"); rawLimit != "" {
 			parsedLimit, err := strconv.Atoi(rawLimit)

@@ -2,7 +2,9 @@ package httpapi_test
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -95,6 +97,49 @@ func TestRouterSearchEndpointRejectsNonIntegerLimit(t *testing.T) {
 	}
 }
 
+func TestRouterSearchEndpointReturnsStableJSONWhenProviderFails(t *testing.T) {
+	router := httpapi.NewRouter(config.Config{}, failingSearchProvider{Provider: search.NewNoopProvider()})
+
+	req := httptest.NewRequest(http.MethodGet, "/search?q=go", nil)
+	res := httptest.NewRecorder()
+	router.ServeHTTP(res, req)
+
+	if res.Code != http.StatusServiceUnavailable {
+		t.Fatalf("status = %d, want 503; body=%s", res.Code, res.Body.String())
+	}
+	if bytes.Contains(res.Body.Bytes(), []byte("internal backend detail")) {
+		t.Fatalf("search error leaked provider detail: %s", res.Body.String())
+	}
+
+	var body map[string]string
+	if err := json.Unmarshal(res.Body.Bytes(), &body); err != nil {
+		t.Fatalf("error response is not JSON: %v", err)
+	}
+	if body["error"] != "search unavailable" {
+		t.Fatalf("error = %q, want search unavailable", body["error"])
+	}
+}
+
+func TestRouterSearchEndpointReturnsJSONForUnsupportedMethod(t *testing.T) {
+	router := httpapi.NewRouter(config.Config{}, search.NewNoopProvider())
+
+	req := httptest.NewRequest(http.MethodPost, "/search", nil)
+	res := httptest.NewRecorder()
+	router.ServeHTTP(res, req)
+
+	if res.Code != http.StatusMethodNotAllowed {
+		t.Fatalf("status = %d, want 405; body=%s", res.Code, res.Body.String())
+	}
+
+	var body map[string]string
+	if err := json.Unmarshal(res.Body.Bytes(), &body); err != nil {
+		t.Fatalf("method error response is not JSON: %v; body=%s", err, res.Body.String())
+	}
+	if body["error"] != "method not allowed" {
+		t.Fatalf("error = %q, want method not allowed", body["error"])
+	}
+}
+
 func TestRouterReturnsNotFoundForUnknownRoute(t *testing.T) {
 	router := httpapi.NewRouter(config.Config{}, search.NewNoopProvider())
 
@@ -105,4 +150,12 @@ func TestRouterReturnsNotFoundForUnknownRoute(t *testing.T) {
 	if res.Code != http.StatusNotFound {
 		t.Fatalf("status = %d, want 404", res.Code)
 	}
+}
+
+type failingSearchProvider struct {
+	search.Provider
+}
+
+func (p failingSearchProvider) Search(_ context.Context, _ search.SearchRequest) (*search.SearchResult, error) {
+	return nil, errors.New("internal backend detail")
 }

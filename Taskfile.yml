@@ -128,6 +128,7 @@ tasks:
         grep -nE 'M0-T15|BuildRollbackPlan|search-rollback-plan|remove_write_alias' docs/agentwego/execution-board.md docs/agentwego/search-index-spec.md docs/agentwego/local-verification-entrypoints.md
         grep -nE 'M0-T16|NormalizeSearchRequest|DefaultSearchLimit|MaxSearchLimit' docs/agentwego/execution-board.md docs/agentwego/search-architecture.md docs/agentwego/native-stack-skeleton.md
         grep -nE 'M0-T17|GET /search|invalid limit|provider, query, limit, hits' docs/agentwego/execution-board.md docs/agentwego/search-architecture.md docs/agentwego/native-stack-skeleton.md docs/agentwego/local-verification-entrypoints.md
+        grep -nE 'M0-T18|method not allowed|search unavailable|backend error details' docs/agentwego/execution-board.md docs/agentwego/search-architecture.md
 
   verify:local:
     desc: Run low-risk local verification for the current Noema M0 slices.
