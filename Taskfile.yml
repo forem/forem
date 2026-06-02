@@ -52,13 +52,18 @@ tasks:
         test -s docs/agentwego/search-architecture.md
         test -s docs/agentwego/native-stack-skeleton.md
         test -s docs/agentwego/local-verification-entrypoints.md
+        test -s docs/agentwego/search-index-spec.md
         test -s scripts/noema_api_smoke.py
-        python -m py_compile scripts/noema_api_smoke.py
+        python - <<'PY'
+        import py_compile
+        py_compile.compile('scripts/noema_api_smoke.py', cfile='/tmp/noema_api_smoke.pyc', doraise=True)
+        PY
         grep -nE 'rollback|CNPG|noema|Secret' docs/agentwego/database-bootstrap.md
         grep -nE 'AWS_ENDPOINT_URL|AWS_FORCE_PATH_STYLE|S3-compatible' docs/agentwego/s3-compatibility.md
         grep -nE 'Elasticsearch|alias|analyzer|fallback|reindex' docs/agentwego/search-architecture.md
         grep -nE 'M0-T7|go test ./services/api|healthz' docs/agentwego/execution-board.md docs/agentwego/native-stack-skeleton.md
         grep -nE 'M0-T8|task verify:local|task --list|kind: Deployment' docs/agentwego/execution-board.md docs/agentwego/local-verification-entrypoints.md
+        grep -nE 'M0-T9|AnalyzerNGram|AnalyzerIK|go test ./services/api/internal/search/elastic' docs/agentwego/execution-board.md docs/agentwego/search-index-spec.md
 
   verify:local:
     desc: Run low-risk local verification for the current Noema M0 slices.
