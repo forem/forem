@@ -6,7 +6,7 @@ module Ai
       @ai_client = Ai::Base.new(wrapper: self)
     end
 
-    def call(days_lookback: 7, similarity_threshold: 0.90, match_threshold: 0.98, min_articles: 10, min_score: nil, min_unique_authors: 4)
+    def call(days_lookback: 7, similarity_threshold: 0.89, match_threshold: 0.97, min_articles: 10, min_score: nil, min_unique_authors: 4)
       min_score ||= Settings::UserExperience.index_minimum_score.to_i
 
       # Run global trend detection
@@ -22,7 +22,7 @@ module Ai
       end
     end
 
-    def detect_trends_for(tag: nil, days_lookback: 7, similarity_threshold: 0.90, match_threshold: 0.98,
+    def detect_trends_for(tag: nil, days_lookback: 7, similarity_threshold: 0.89, match_threshold: 0.97,
                           min_articles: 10, min_score: nil, min_unique_authors: 4)
       relation = Article.published
         .where("published_at >= ?", days_lookback.days.ago)
