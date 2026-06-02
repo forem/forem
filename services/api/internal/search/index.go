@@ -3,6 +3,7 @@ package search
 import (
 	"context"
 	"fmt"
+	"strings"
 )
 
 const (
@@ -10,6 +11,11 @@ const (
 	DocumentFamilyComments = "comments"
 	DocumentFamilyUsers    = "users"
 	DocumentFamilyTags     = "tags"
+)
+
+const (
+	DefaultSearchLimit = 20
+	MaxSearchLimit     = 100
 )
 
 type IndexFamily struct {
@@ -46,8 +52,21 @@ type SearchRequest struct {
 	Limit int
 }
 
+func NormalizeSearchRequest(req SearchRequest) SearchRequest {
+	req.Query = strings.TrimSpace(req.Query)
+	if req.Limit <= 0 {
+		req.Limit = DefaultSearchLimit
+	}
+	if req.Limit > MaxSearchLimit {
+		req.Limit = MaxSearchLimit
+	}
+	return req
+}
+
 type SearchResult struct {
 	Provider string
+	Query    string
+	Limit    int
 	Hits     []DocumentHit
 }
 

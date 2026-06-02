@@ -8,8 +8,9 @@ func NewNoopProvider() Provider {
 	return noopProvider{}
 }
 
-func (noopProvider) Search(context.Context, SearchRequest) (*SearchResult, error) {
-	return &SearchResult{Provider: "noop", Hits: []DocumentHit{}}, nil
+func (noopProvider) Search(_ context.Context, req SearchRequest) (*SearchResult, error) {
+	req = NormalizeSearchRequest(req)
+	return &SearchResult{Provider: "noop", Query: req.Query, Limit: req.Limit, Hits: []DocumentHit{}}, nil
 }
 
 func (noopProvider) UpsertArticle(context.Context, ArticleDocument) error { return nil }

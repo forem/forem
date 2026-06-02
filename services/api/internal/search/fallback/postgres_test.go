@@ -74,3 +74,18 @@ func TestNewProviderSelectsNoopPostgresOrRejectsUnknownProvider(t *testing.T) {
 		t.Fatal("expected unknown provider error")
 	}
 }
+
+func TestPostgresProviderNormalizesSearchRequests(t *testing.T) {
+	provider := fallback.NewPostgresProvider()
+
+	result, err := provider.Search(context.Background(), search.SearchRequest{Query: "  中文 english  ", Limit: 500})
+	if err != nil {
+		t.Fatalf("Search returned error: %v", err)
+	}
+	if result.Query != "中文 english" {
+		t.Fatalf("result.Query = %q, want normalized query", result.Query)
+	}
+	if result.Limit != search.MaxSearchLimit {
+		t.Fatalf("result.Limit = %d, want MaxSearchLimit", result.Limit)
+	}
+}

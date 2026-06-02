@@ -19,6 +19,8 @@ Design Noema search as a derived read model backed by Elasticsearch, with Postgr
 
 The rest of the backend should call a stable interface, not Elasticsearch request bodies.
 
+`SearchRequest` normalization is part of the provider seam: trim query whitespace, default empty/non-positive limits to `DefaultSearchLimit` (`20`), and clamp excessive limits to `MaxSearchLimit` (`100`). No provider should bypass this contract.
+
 ```go
 type Provider interface {
     Search(ctx context.Context, req SearchRequest) (*SearchResult, error)

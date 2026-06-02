@@ -60,3 +60,35 @@ func TestNoopProviderIsBootstrapOnlyAndDoesNotTouchExternalSearch(t *testing.T) 
 		t.Fatalf("Provider = %q, want noop", result.Provider)
 	}
 }
+
+func TestNormalizeSearchRequestTrimsQueryAndAppliesLimitBounds(t *testing.T) {
+	cases := []struct {
+		name      string
+		req       search.SearchRequest
+		wantQuery string
+		wantLimit int
+	}{
+		{name: "default limit", req: search.SearchRequest{Query: "  中文 english  "}, wantQuery: "中文 english", wantLimit: 20},
+		{name: "negative limit", req: search.SearchRequest{Query: "tags", Limit: -10}, wantQuery: "tags", wantLimit: 20},
+		{name: "explicit limit", req: search.SearchRequest{Query: "articles", Limit: 7}, wantQuery: "articles", wantLimit: 7},
+		{name: "max limit", req: search.SearchRequest{Query: "users", Limit: 500}, wantQuery: "users", wantLimit: 100},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			got := search.NormalizeSearchRequest(tc.req)
+			if got.Query != tc.wantQuery || got.Limit != tc.wantLimit {
+				t.Fatalf("NormalizeSearchRequest() = query %q limit %d, want query %q limit %d", got.Query, got.Limit, tc.wantQuery, tc.wantLimit)
+			}
+		})
+	}
+}
+
+func TestSearchRequestLimitConstantsDocumentLocalContract(t *testing.T) {
+	if search.DefaultSearchLimit != 20 {
+		t.Fatalf("DefaultSearchLimit = %d, want 20", search.DefaultSearchLimit)
+	}
+	if search.MaxSearchLimit != 100 {
+		t.Fatalf("MaxSearchLimit = %d, want 100", search.MaxSearchLimit)
+	}
+}
