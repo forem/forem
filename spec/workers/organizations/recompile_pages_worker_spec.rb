@@ -45,6 +45,43 @@ RSpec.describe Organizations::RecompilePagesWorker, type: :worker do
         described_class.new.perform(organization.id)
         expect(page.reload.processed_html).to include("An Amazing Article")
       end
+
+      it "does not raise an error and logs it if a page compilation fails" do
+        bad_page = create(:page, organization: organization, body_markdown: "# Bad Page",
+                                 title: "Bad Page", description: "desc", slug: "#{organization.slug}/bad")
+
+        allow_any_instance_of(Page).to receive(:recompile!) do |instance|
+          if instance.id == bad_page.id
+            raise StandardError, "Something went wrong"
+          else
+            instance.save!
+          end
+        end
+
+        allow(Rails.logger).to receive(:error)
+        expect { described_class.new.perform(organization.id) }.not_to raise_error
+        expect(Rails.logger).to have_received(:error).with(/failed to recompile page #{bad_page.id}/)
+      end
+
+      it "recompiles successfully when the page uses a legacy slug" do
+        old_slug = organization.slug
+        new_slug = "brand-new-slug"
+
+        # Simulate slug change which stores old_slug
+        organization.update!(slug: new_slug)
+        expect(organization.reload.old_slug).to eq(old_slug)
+
+        # Create page using the legacy slug in the tag
+        legacy_page = create(:page, organization: organization, body_markdown: "{% org_posts #{old_slug} %}",
+                                    title: "Legacy", description: "desc", slug: "#{new_slug}/legacy")
+
+        # Create published article under new slug
+        create(:article, organization: organization, published: true, title: "An Amazing Article")
+
+        # Recompile should find the org by old_slug, render org posts tag, and include the article!
+        described_class.new.perform(organization.id)
+        expect(legacy_page.reload.processed_html).to include("An Amazing Article")
+      end
     end
   end
 end

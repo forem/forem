@@ -1724,6 +1724,12 @@ class Article < ApplicationRecord
   end
 
   def recompile_organization_pages
+    was_published = destroyed? ? published? : published_before_last_save
+    is_published = published?
+    # `{% org_posts %}` only renders published articles, so skip recompilation when
+    # the article is (and was) unpublished.
+    return unless is_published || was_published || saved_change_to_published?
+
     org_ids_to_recompile = []
     if destroyed?
       org_ids_to_recompile << organization_id

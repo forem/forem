@@ -120,6 +120,10 @@ class Organization < ApplicationRecord
     I18n.t("models.organization.reserved_word")
   end
 
+  def self.find_by_slug_or_legacy(slug)
+    find_by(slug: slug) || find_by(old_slug: slug) || find_by(old_old_slug: slug)
+  end
+
   def check_for_slug_change
     return unless slug_changed?
 

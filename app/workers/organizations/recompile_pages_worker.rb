@@ -9,7 +9,15 @@ module Organizations
       return unless organization
       return unless FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[organization])
 
-      organization.pages.find_each(&:recompile!)
+      organization.pages.find_each do |page|
+        begin
+          page.recompile!
+        rescue StandardError => e
+          Rails.logger.error(
+            "Organizations::RecompilePagesWorker failed to recompile page #{page.id} for org #{organization.id}: #{e.class} - #{e.message}",
+          )
+        end
+      end
     end
   end
 end
