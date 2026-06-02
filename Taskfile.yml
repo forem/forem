@@ -131,6 +131,7 @@ tasks:
         grep -nE 'M0-T18|method not allowed|search unavailable|backend error details' docs/agentwego/execution-board.md docs/agentwego/search-architecture.md
         grep -nE 'M0-T19|Provider.Name\(\)|actual injected provider|actual provider identity' docs/agentwego/execution-board.md docs/agentwego/search-architecture.md docs/agentwego/native-stack-skeleton.md
         grep -nE 'M0-T20|invalid limit|method not allowed|JSON error paths' docs/agentwego/execution-board.md docs/agentwego/local-verification-entrypoints.md scripts/noema_api_smoke.py
+        grep -nE 'M0-T21|buildSearchProvider|falling back to noop|unknown-provider|does-not-exist' docs/agentwego/execution-board.md docs/agentwego/search-architecture.md docs/agentwego/native-stack-skeleton.md docs/agentwego/local-verification-entrypoints.md scripts/noema_api_smoke.py
 
   verify:local:
     desc: Run low-risk local verification for the current Noema M0 slices.
