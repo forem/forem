@@ -1,0 +1,71 @@
+version: '3'
+
+silent: false
+
+tasks:
+  default:
+    desc: List available Noema local tasks.
+    cmds:
+      - task --list
+
+  go:test:
+    desc: Run native Go API skeleton tests.
+    dir: .
+    cmds:
+      - go test ./services/api/...
+
+  go:fmt:
+    desc: Format native Go API skeleton files.
+    dir: .
+    cmds:
+      - gofmt -w $(find services/api -name '*.go' -type f | sort)
+
+  api:smoke:
+    desc: Build the native Go API to /tmp, start it locally, verify /healthz, and clean up.
+    dir: .
+    cmds:
+      - python scripts/noema_api_smoke.py
+
+  k8s:render:
+    desc: Render Kubernetes PoC manifests locally; never applies them.
+    dir: .
+    cmds:
+      - |
+        set -euo pipefail
+        kubectl kustomize deploy/k8s/base >/tmp/noema-rendered.yaml
+        grep -nE 'kind: Namespace|kind: Deployment|kind: Job|kind: Service|noema' /tmp/noema-rendered.yaml
+
+  agentwego:gates:
+    desc: Run local agentwego control-plane gate checks without touching production.
+    dir: .
+    cmds:
+      - |
+        set -euo pipefail
+        python -c "import csv; files=list(csv.DictReader(open('docs/agentwego/noema-file-migration-inventory.csv'))); assert len(files)==5900; assert any(r['file']=='app/models/article.rb' for r in files); assert any(r['file']=='app/controllers/search_controller.rb' for r in files); assert any(r['file']=='config/routes.rb' for r in files); print('inventory ok', len(files))"
+        test -s docs/agentwego/noema-file-dependency-edges.csv
+        test -s docs/agentwego/noema-domain-dependency-summary.csv
+        test -s docs/agentwego/noema-model-dependency-map.csv
+        test -s docs/agentwego/noema-controller-map.csv
+        test -s docs/agentwego/noema-worker-map.csv
+        test -s docs/agentwego/database-bootstrap.md
+        test -s docs/agentwego/s3-compatibility.md
+        test -s docs/agentwego/search-architecture.md
+        test -s docs/agentwego/native-stack-skeleton.md
+        test -s docs/agentwego/local-verification-entrypoints.md
+        test -s scripts/noema_api_smoke.py
+        python -m py_compile scripts/noema_api_smoke.py
+        grep -nE 'rollback|CNPG|noema|Secret' docs/agentwego/database-bootstrap.md
+        grep -nE 'AWS_ENDPOINT_URL|AWS_FORCE_PATH_STYLE|S3-compatible' docs/agentwego/s3-compatibility.md
+        grep -nE 'Elasticsearch|alias|analyzer|fallback|reindex' docs/agentwego/search-architecture.md
+        grep -nE 'M0-T7|go test ./services/api|healthz' docs/agentwego/execution-board.md docs/agentwego/native-stack-skeleton.md
+        grep -nE 'M0-T8|task verify:local|task --list|kind: Deployment' docs/agentwego/execution-board.md docs/agentwego/local-verification-entrypoints.md
+
+  verify:local:
+    desc: Run low-risk local verification for the current Noema M0 slices.
+    cmds:
+      - task: go:fmt
+      - task: go:test
+      - task: api:smoke
+      - task: agentwego:gates
+      - task: k8s:render
+      - git diff --check

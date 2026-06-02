@@ -32,6 +32,7 @@ Noema is a Forem-derived but Noema-native knowledge community platform. The curr
 | `docs/agentwego/noema-model-dependency-map.csv` | Rails model associations/callbacks/scopes for schema/import planning. |
 | `docs/agentwego/noema-worker-map.csv` | Sidekiq worker queues/service calls for native jobs planning. |
 | `docs/agentwego/native-stack-skeleton.md` | First native Go API skeleton, config/search seams, and local verification. |
+| `docs/agentwego/local-verification-entrypoints.md` | Taskfile-based local verification commands and outputs. |
 
 ## Active Milestone M0: Baseline and Cloud-Native PoC Packaging
 
@@ -127,6 +128,7 @@ grep -nE 'Elasticsearch|alias|analyzer|fallback|reindex' docs/agentwego/search-a
 | M0-T5 | done | P0/P2 | `docs/agentwego/s3-compatibility.md`, `config/initializers/carrierwave.rb`, `app/services/agent_sessions/s3_storage.rb`, `.env_sample`, `deploy/k8s/base/configmap.yaml`, `.mise.toml` | `config/initializers/carrierwave.rb`, upload/media files, agent session raw files, local Ruby toolchain | config specs + kustomize + grep S3 vars and patch decision; local Ruby 3.3.0 validation now reproducible via mise |
 | M0-T6 | done | P1 | `docs/agentwego/search-architecture.md` | search/controller/model rows | grep ES alias/analyzer/reindex/fallback |
 | M0-T7 | done | P1 | `go.mod`, `services/api/**`, `docs/agentwego/native-stack-skeleton.md` | `config/routes.rb`, `config/routes/api.rb`, API health controller, runtime config, search provider rows | TDD RED observed, `go test ./services/api/...`, local `/healthz` smoke on port 19091 |
+| M0-T8 | done | P0/P1 | `Taskfile.yml`, `scripts/noema_api_smoke.py`, `docs/agentwego/local-verification-entrypoints.md` | control-plane docs, render-only K8s, native API skeleton | `task --list`, `task verify:local`, stale smoke process check |
 
 ## Open Inputs Before Deployment
 
@@ -148,3 +150,4 @@ grep -nE 'Elasticsearch|alias|analyzer|fallback|reindex' docs/agentwego/search-a
 - Local Ruby validation unblocked on 2026-06-03: `mise install ruby@3.3.0` completed, `.mise.toml` now declares `ruby = "3.3.0"`, bundle install completed with `165 Gemfile dependencies, 395 gems`, and targeted S3 specs passed locally with `15 examples, 0 failures` against a disposable `pgvector/pgvector:pg13` PostgreSQL container bound to `127.0.0.1:25432`.
 - Local generated-artifact permissions repaired after Docker validation left root-owned `.knapsack_pro`, `coverage`, `.yarn/install-state.gz`, `node_modules`, `log/test.log`, and `app/assets/builds`; `yarn build` now exits 0. The disposable `noema-test-postgres` container was removed after validation.
 - Native Go API skeleton landed under `services/api` on 2026-06-03 with only stdlib dependencies: non-secret config loader, `/healthz`, search provider/index seam, and noop bootstrap provider. Verification: initial `go test ./services/api/...` failed before module/skeleton existed, final `go test ./services/api/...` passed, and local smoke returned `{ "service": "noema-api", "status": "ok" }` on unused port `19091` after discovering `18080` was already occupied by local Neko.
+- Local verification entrypoints standardized in `Taskfile.yml`: `task verify:local` now runs Go formatting/tests, local API smoke via `scripts/noema_api_smoke.py`, AgentWeGo gate checks, K8s render-only, and `git diff --check`; it passed locally without production access, real Secrets, deploys, or data operations. The smoke helper was hardened to terminate the real process group and a stale-listener check confirmed no leftover processes on ports `19091-19099`.
