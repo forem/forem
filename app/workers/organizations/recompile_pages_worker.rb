@@ -16,6 +16,7 @@ module Organizations
           Rails.logger.error(
             "Organizations::RecompilePagesWorker failed to recompile page #{page.id} for org #{organization.id}: #{e.class} - #{e.message}",
           )
+          Rails.logger.error(e.backtrace.join("\n")) if e.backtrace
         end
       end
     end

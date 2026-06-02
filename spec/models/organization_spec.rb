@@ -552,6 +552,8 @@ RSpec.describe Organization do
 
     before do
       allow(Organizations::RecompilePagesWorker).to receive(:perform_async)
+      allow(FeatureFlag).to receive(:enabled?).and_call_original
+      allow(FeatureFlag).to receive(:enabled?).with(:org_readme, anything).and_return(true)
     end
 
     it "enqueues recompilation when name changes" do

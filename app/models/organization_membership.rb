@@ -47,10 +47,10 @@ class OrganizationMembership < ApplicationRecord
   end
 
   def recompile_organization_pages
+    return unless FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[organization_id])
+
     Organizations::RecompilePagesWorker.perform_async(organization_id)
   end
-
-  private
 
   def bust_cache
     BustCachePathWorker.perform_async(organization.path.to_s)

@@ -392,6 +392,8 @@ class Organization < ApplicationRecord
   end
 
   def recompile_pages
+    return unless FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[self])
+
     Organizations::RecompilePagesWorker.perform_async(id)
   end
 end

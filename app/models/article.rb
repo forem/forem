@@ -1741,6 +1741,8 @@ class Article < ApplicationRecord
     end
 
     org_ids_to_recompile.compact.uniq.each do |org_id|
+      next unless FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[org_id])
+
       Organizations::RecompilePagesWorker.perform_async(org_id)
     end
   end
