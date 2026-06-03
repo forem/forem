@@ -24,6 +24,7 @@ This document records the local-only verification tasks added for Noema M0 work.
 | `task search:manifest` | Render the native search index manifest to `/tmp/noema-search-index-manifest.json` and validate schema/family coverage. | Writes a local `/tmp` JSON artifact only; never contacts Elasticsearch. |
 | `task search:bootstrap-plan` | Render the native search bootstrap plan to `/tmp/noema-search-bootstrap-plan.json` and validate review-only step coverage. | Writes a local `/tmp` JSON artifact only; never contacts Elasticsearch or mutates aliases/indexes. |
 | `task search:rollback-plan` | Render the native search rollback plan to `/tmp/noema-search-rollback-plan.json` and validate reverse review-only step coverage. | Writes a local `/tmp` JSON artifact only; never contacts Elasticsearch or deletes/mutates aliases/indexes. |
+| `task search:adapter-test` | Run the local fake-transport Elasticsearch adapter/client contract tests for `EnsureIndexes`, `BulkIndex`, and `Search`. | Go test cache only; never contacts Elasticsearch/OpenSearch or reads credentials. |
 | `task persistence:test` | Run config and native persistence tests. Persistence integration tests are active only when `NOEMA_TEST_DATABASE_URL` points to a disposable local PostgreSQL database; otherwise they skip DB mutation. | Local Go test cache; optional disposable localhost DB only when explicitly supplied. |
 | `task verify:local` | Run the current low-risk local validation chain. | Formatting, local test cache, temporary local process, `/tmp` manifest/bootstrap-plan/rollback-plan/render output. |
 
@@ -37,8 +38,10 @@ This document records the local-only verification tasks added for Noema M0 work.
 * go:fmt
 * go:test
 * k8s:render
-* search:manifest
+* search:adapter-test
 * search:bootstrap-plan
+* search:manifest
+* search:rollback-plan
 * verify:local
 ```
 
@@ -146,7 +149,7 @@ git diff --check
 
 ## Rollback
 
-Remove `Taskfile.yml`, this document, and the corresponding M0-T8/M0-T11/M0-T13/M0-T15/M0-T16/M0-T17/M0-T18/M0-T19/M0-T20/M0-T21/M0-T22/M0-T23/M0-T24/M0-T25 execution-board references. If only rolling back manifest export, remove `task search:manifest`, the `verify:local` manifest step, and the M0-T11 references. If only rolling back bootstrap-plan preview, remove `task search:bootstrap-plan`, the `verify:local` bootstrap-plan step, and the M0-T13 references. If only rolling back rollback-plan preview, remove `task search:rollback-plan`, the `verify:local` rollback-plan step, and the M0-T15 references. If only rolling back the local search HTTP contract, remove `/search` handling, the search smoke check, unknown-provider fallback smoke, local/test fallback boundary, empty-query rejection, unknown-route JSON 404 handling, `/healthz` unsupported-method JSON handling, and the M0-T17/M0-T18/M0-T19/M0-T20/M0-T21/M0-T22/M0-T23/M0-T24/M0-T25 references.
+Remove `Taskfile.yml`, this document, and the corresponding M0-T8/M0-T11/M0-T13/M0-T15/M0-T16/M0-T17/M0-T18/M0-T19/M0-T20/M0-T21/M0-T22/M0-T23/M0-T24/M0-T25 execution-board references. If only rolling back manifest export, remove `task search:manifest`, the `verify:local` manifest step, and the M0-T11 references. If only rolling back bootstrap-plan preview, remove `task search:bootstrap-plan`, the `verify:local` bootstrap-plan step, and the M0-T13 references. If only rolling back rollback-plan preview, remove `task search:rollback-plan`, the `verify:local` rollback-plan step, and the M0-T15 references. If only rolling back adapter fake-transport coverage, remove `task search:adapter-test`, the `verify:local` adapter step, and the M0-T29 references. If only rolling back the local search HTTP contract, remove `/search` handling, the search smoke check, unknown-provider fallback smoke, local/test fallback boundary, empty-query rejection, unknown-route JSON 404 handling, `/healthz` unsupported-method JSON handling, and the M0-T17/M0-T18/M0-T19/M0-T20/M0-T21/M0-T22/M0-T23/M0-T24/M0-T25 references.
 
 ## M0-T28 Persistence Seam Verification
 
@@ -164,3 +167,28 @@ docker rm -f noema-t28-postgres
 ```
 
 This path does not contact production, read real Secrets, apply Kubernetes manifests, or mutate external DB/S3/Elasticsearch resources.
+
+## M0-T29 Elasticsearch Adapter Contract Verification
+
+The native Elasticsearch adapter/client slice adds `task search:adapter-test` and includes it in `task verify:local`:
+
+```bash
+task search:adapter-test
+```
+
+Expected local-only output shape:
+
+```text
+=== RUN   TestElasticsearchProviderRequiresExplicitTransport
+--- PASS: TestElasticsearchProviderRequiresExplicitTransport
+=== RUN   TestElasticsearchProviderEnsureIndexesUsesMockableTransport
+--- PASS: TestElasticsearchProviderEnsureIndexesUsesMockableTransport
+=== RUN   TestElasticsearchProviderBulkIndexUsesWriteAliasesAndNDJSON
+--- PASS: TestElasticsearchProviderBulkIndexUsesWriteAliasesAndNDJSON
+=== RUN   TestElasticsearchProviderSearchParsesHitsFromMockTransport
+--- PASS: TestElasticsearchProviderSearchParsesHitsFromMockTransport
+PASS
+ok github.com/agentwego/noema/services/api/internal/search/elastic
+```
+
+This path uses only a fake in-memory `search.Transport`; it does not contact Elasticsearch/OpenSearch, read real Secrets, create indexes, move aliases, deploy, or mutate external data.

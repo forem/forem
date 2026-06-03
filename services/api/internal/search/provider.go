@@ -2,7 +2,11 @@ package search
 
 import "fmt"
 
-type ProviderOptions struct{}
+type ProviderOptions struct {
+	IndexFamily IndexFamily
+	Analyzer    string
+	Transport   Transport
+}
 
 type ProviderFactory func(ProviderOptions) (Provider, error)
 

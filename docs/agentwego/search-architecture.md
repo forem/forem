@@ -19,9 +19,13 @@ Design Noema search as a derived read model backed by Elasticsearch, with Postgr
 
 The rest of the backend should call a stable interface, not Elasticsearch request bodies.
 
-`SearchRequest` normalization is part of the provider seam: trim query whitespace, default empty/non-positive limits to `DefaultSearchLimit` (`20`), and clamp excessive limits to `MaxSearchLimit` (`100`). No provider should bypass this contract. `Provider.Name()` is the runtime identity used by health/search responses, so `/healthz` reports the actual injected provider rather than merely echoing requested config. During local/test bootstrap only, an unavailable configured provider falls back to noop with a warning instead of aborting the API process; non-local environments must fail fast on unavailable providers so misconfiguration is not silently masked. The noop provider is read-only for every indexing mutation method, returning `ErrNoopReadOnly` rather than silently accepting writes.
+`SearchRequest` normalization is part of the provider seam: trim query whitespace, default empty/non-positive limits to `DefaultSearchLimit` (`20`), and clamp excessive limits to `MaxSearchLimit` (`100`). No provider should bypass this contract. `Provider.Name()` is the runtime identity used by health/search responses, so `/healthz` reports the actual injected provider rather than merely echoing requested config. During local/test bootstrap only, an unavailable configured provider falls back to noop with a warning instead of aborting the API process; non-local environments must fail fast on unavailable providers so misconfiguration is not silently masked. The noop provider is read-only for every indexing mutation method, returning `ErrNoopReadOnly` rather than silently accepting writes. M0-T29 adds an Elasticsearch adapter boundary behind an explicit `Transport` interface so `EnsureIndexes`, `BulkIndex`, and `Search` can be TDD-tested with a fake local transport before any real cluster/client wiring exists.
 
 ```go
+type Transport interface {
+    Do(ctx context.Context, req TransportRequest) (TransportResponse, error)
+}
+
 type Provider interface {
     Name() string
     Search(ctx context.Context, req SearchRequest) (*SearchResult, error)
@@ -38,7 +42,7 @@ type Provider interface {
 
 The first HTTP route using this seam is intentionally narrow: `GET /search?q=<query>&limit=<n>` parses query parameters, rejects missing/blank query with `400 {"error":"missing query"}`, rejects non-integer `limit` with `400 {"error":"invalid limit"}`, delegates to the selected provider, and returns the provider-normalized JSON contract `{provider, query, limit, hits}`. `/healthz` supports GET only and returns JSON `405 {"error":"method not allowed"}` for unsupported methods. Unsupported search methods return `405 {"error":"method not allowed"}`, provider failures return `503 {"error":"search unavailable"}` without leaking backend error details, and unknown routes return `404 {"error":"not found"}` instead of framework plaintext. It is a local contract stub, not a production-ranking implementation.
 
-Only `internal/search/elastic` should know index names, aliases, mappings, analyzers, bulk API shapes, retry/backoff, and alias swaps.
+Only `internal/search/elastic` should know index names, aliases, mappings, analyzers, bulk API shapes, retry/backoff, and alias swaps. The current adapter is intentionally mockable and local-first: production construction still requires an explicit transport/client handoff, and tests assert that the provider refuses to build without one. The M0-T29 adapter boundary keeps actual I/O behind an injected `search.Transport`; provider construction requires that explicit transport, so local tests can use a fake transport and the code cannot silently open a real Elasticsearch connection. The current adapter contract covers `EnsureIndexes` (versioned index plus read/write alias requests), `BulkIndex` (NDJSON writes to `*-write` aliases), and article `Search` (querying `noema-articles-read` and decoding hits).
 
 ## Native Module Layout
 
@@ -49,6 +53,7 @@ services/api/internal/search/
   errors.go
   elastic/
     client.go
+    client.go       # mockable Transport-backed adapter; no default external client yet
     mappings.go
     indexer.go
     query.go

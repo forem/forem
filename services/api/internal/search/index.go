@@ -35,6 +35,21 @@ func (f IndexFamily) WriteAlias(documentFamily string) string {
 	return fmt.Sprintf("%s-%s-write", f.Prefix, documentFamily)
 }
 
+type TransportRequest struct {
+	Method string
+	Path   string
+	Body   []byte
+}
+
+type TransportResponse struct {
+	StatusCode int
+	Body       []byte
+}
+
+type Transport interface {
+	Do(ctx context.Context, req TransportRequest) (TransportResponse, error)
+}
+
 type Provider interface {
 	Name() string
 	Search(ctx context.Context, req SearchRequest) (*SearchResult, error)

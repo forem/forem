@@ -29,6 +29,8 @@ It prepares the native provider seam from `docs/agentwego/search-architecture.md
 
 Files:
 
+- `services/api/internal/search/elastic/client.go`
+- `services/api/internal/search/elastic/client_test.go`
 - `services/api/internal/search/elastic/mappings.go`
 - `services/api/internal/search/elastic/mappings_test.go`
 - `services/api/internal/search/elastic/manifest.go`
@@ -56,6 +58,7 @@ elastic.BuildBootstrapPlan(search.IndexFamily{Prefix: "noema", Version: "v1"}, e
 elastic.BootstrapPlanJSON(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic.AnalyzerNGram)
 elastic.BuildRollbackPlan(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic.AnalyzerNGram)
 elastic.RollbackPlanJSON(search.IndexFamily{Prefix: "noema", Version: "v1"}, elastic.AnalyzerNGram)
+elastic.NewProvider(search.ProviderOptions{IndexFamily: family, Analyzer: elastic.AnalyzerNGram, Transport: fakeTransport})
 ```
 
 The fifth search slice adds a local CLI for reviewable manifest output:
@@ -147,6 +150,29 @@ go run ./services/api/cmd/search-bootstrap-plan -prefix noema -version v1 -analy
 ```
 
 `task search:bootstrap-plan` writes `/tmp/noema-search-bootstrap-plan.json` and validates the schema, safety marker, four-family manifest coverage, and 12 planned steps. It does not contact Elasticsearch, create indexes, move aliases, deploy, read Secrets, or mutate data.
+
+## M0-T29 Mockable Elasticsearch Adapter Boundary
+
+M0-T29 turns the previous review-only specs into the first executable Elasticsearch adapter boundary without contacting a cluster. `services/api/internal/search/elastic/client.go` registers the `elasticsearch` provider and requires an explicit injected `search.Transport`. There is deliberately no default real HTTP transport in this slice, so tests and future wiring must choose their transport intentionally.
+
+Covered operations:
+
+- `EnsureIndexes(ctx)` validates the generated manifest, sends `PUT /<versioned-index>` with the strict mapping, then sends `POST /_aliases` for the read and write aliases of each family.
+- `BulkIndex(ctx, docs)` writes Elasticsearch NDJSON to `POST /_bulk` and targets per-family write aliases such as `noema-articles-write` and `noema-users-write`.
+- `Search(ctx, req)` normalizes the provider request, queries `POST /noema-articles-read/_search`, and decodes Elasticsearch hits into the stable `search.SearchResult` contract.
+
+The TDD tests use a fake in-memory transport to assert request method/path/body and response decoding. They do not connect to Elasticsearch/OpenSearch, read credentials, create indexes, move aliases, deploy, or mutate external data.
+
+Inventory/edge coverage stays on the search migration path: `app/services/search/article.rb`, `app/services/search/user.rb`, `app/controllers/search_controller.rb`, and `app/workers/algolia_search/search_index_worker.rb` all target `services/api/internal/search/{elastic,fallback}` in the inventory. Dependency edges also show `config/routes.rb -> app/controllers/search_controller.rb`, `app/services/article_api_index_service.rb -> app/services/search/article.rb`, and `app/controllers/search_controller.rb -> app/services/search/tag.rb`, so this slice moves the search controller/service/indexing worker seam forward rather than re-running validation only.
+
+Verification entrypoint:
+
+```bash
+task search:adapter-test
+# go test ./services/api/internal/search/elastic -run 'TestElasticsearchProvider' -count=1
+```
+
+Safety: no endpoint URL, credential, Secret, external Elasticsearch/OpenSearch process, index creation, alias mutation, deployment, or data write is used by this adapter test slice.
 
 ## Analyzer Posture
 

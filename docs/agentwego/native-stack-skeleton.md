@@ -10,7 +10,7 @@ The skeleton is intentionally small:
 - `services/api/cmd/api` starts a local HTTP server.
 - `services/api/internal/config` reads explicit native runtime knobs. Database DSNs are empty by default and only come from environment/Secret handoff via `NOEMA_DATABASE_URL`; local tests use disposable placeholder DSNs only.
 - `services/api/internal/http` exposes `/healthz` for local smoke checks and a minimal `/search` contract endpoint backed by the search provider seam. Health reports the actual injected provider identity via `Provider.Name()`, including local/test unknown-provider fallback to noop; non-local envs fail fast on unavailable providers. Unsupported `/healthz` methods return stable JSON `405 {"error":"method not allowed"}` and unknown API routes return stable JSON `404 {"error":"not found"}`.
-- `services/api/internal/search` defines the native search provider/index seam and a no-op provider for bootstrap tests.
+- `services/api/internal/search` defines the native search provider/index seam and a no-op provider for bootstrap tests; `services/api/internal/search/elastic` now includes a local mockable adapter/client boundary that requires an injected transport and has no default real cluster connection.
 - `services/api/internal/persistence` opens the first Noema-native PostgreSQL/GORM source-of-truth seam with minimal `User` and `Article` records plus a repository interface. The slice does not port Forem ActiveRecord callbacks; it only proves local persistence, author integrity, and list-by-author behavior against a disposable DB.
 
 ## Inventory Rows Covered
@@ -111,7 +111,8 @@ No production database, real Secret, Kubernetes apply/deploy, S3, or Elasticsear
 ## Boundaries
 
 - Database connection code exists only behind the native persistence seam and is verified with disposable local PostgreSQL; no production DB/Secret is configured or contacted.
-- No Redis/S3/Elasticsearch clients yet.
+- A local mockable Elasticsearch adapter/client seam now exists, but it requires an injected fake/test transport and has no default real HTTP transport. No Elasticsearch/OpenSearch cluster is contacted by local verification.
+- No Redis/S3 live clients yet.
 - No real credentials or Secret values.
 - No Kubernetes apply/deploy.
 - No attempt to port Rails routes, controllers, callbacks, or Algolia behavior wholesale.

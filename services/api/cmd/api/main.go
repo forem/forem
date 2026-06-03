@@ -8,6 +8,7 @@ import (
 	"github.com/agentwego/noema/services/api/internal/config"
 	httpapi "github.com/agentwego/noema/services/api/internal/http"
 	"github.com/agentwego/noema/services/api/internal/search"
+	_ "github.com/agentwego/noema/services/api/internal/search/elastic"
 	_ "github.com/agentwego/noema/services/api/internal/search/fallback"
 )
 
