@@ -342,10 +342,7 @@ class Article < ApplicationRecord
 
   after_update_commit :regenerate_summary_if_content_changed
 
-  after_commit :recompile_organization_pages, on: %i[create destroy]
-  after_commit :recompile_organization_pages,
-               on: :update,
-               if: -> { (previous_changes.keys - %w[updated_at semantic_embedding]).any? }
+  after_commit :recompile_organization_pages, on: %i[create update destroy]
 
   # The trigger `update_reading_list_document` is used to keep the `articles.reading_list_document` column updated.
   #
@@ -1730,6 +1727,11 @@ class Article < ApplicationRecord
   end
 
   def recompile_organization_pages
+    # Skip recompiling on updates if only updated_at or semantic_embedding changed
+    if !destroyed? && previous_changes.any? && (previous_changes.keys - %w[updated_at semantic_embedding]).empty?
+      return
+    end
+
     was_published = destroyed? ? published? : published_before_last_save
     is_published = published?
     return unless is_published || was_published
