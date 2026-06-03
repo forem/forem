@@ -192,6 +192,9 @@ class Article < ApplicationRecord
   has_many :trend_memberships, dependent: :destroy
   has_many :trends, through: :trend_memberships
 
+  has_many :concept_memberships, as: :record, dependent: :destroy
+  has_many :concepts, through: :concept_memberships
+
   has_many :top_comments,
            lambda {
              where(comments: { score: 11.. }, ancestry: nil, hidden_by_commentable_user: false, deleted: false)
@@ -1724,11 +1727,14 @@ class Article < ApplicationRecord
   end
 
   def recompile_organization_pages
+    # Skip recompiling on updates if only updated_at or semantic_embedding changed
+    if !destroyed? && previous_changes.any? && (previous_changes.keys - %w[updated_at semantic_embedding]).empty?
+      return
+    end
+
     was_published = destroyed? ? published? : published_before_last_save
     is_published = published?
-    # `{% org_posts %}` only renders published articles, so skip recompilation when
-    # the article is (and was) unpublished.
-    return unless is_published || was_published || saved_change_to_published?
+    return unless is_published || was_published
 
     org_ids_to_recompile = []
     if destroyed?

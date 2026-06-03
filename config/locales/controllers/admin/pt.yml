@@ -194,6 +194,11 @@ pt:
         ![BEM-VINDO À INTERNET](https://slack-imgs.com/?c=1&url=http%3A%2F%2Fmedia0.giphy.com%2Fmedia%2FzhbrTTpmSCYog%2Fgiphy-downsized.gif)
 
         Deixe um comentário abaixo para se apresentar à comunidade!✌️
+    concepts_controller:
+      created: Conceito criado com sucesso. A classificação de backfill foi enfileirada.
+      updated: Conceito atualizado com sucesso. A classificação de backfill foi enfileirada.
+      deleted: Conceito excluído com sucesso.
+      failed_deletion: Algo deu errado ao excluir o conceito.
     secrets_controller:
       not_in_vault: Não está no cofre
       updated: 'Segredo %{key} foi atualizado com sucesso no Vault.'

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_05_28_205802) do
+ActiveRecord::Schema[7.0].define(version: 2026_06_03_170005) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -486,6 +486,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_05_28_205802) do
     t.integer "reactions_count", default: 0, null: false
     t.boolean "receive_notifications", default: true
     t.integer "score", default: 0
+    t.vector "semantic_embedding", limit: 768
     t.integer "spaminess_rating", default: 0
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
@@ -500,8 +501,49 @@ ActiveRecord::Schema[7.0].define(version: 2026_05_28_205802) do
     t.index ["hidden_by_commentable_user"], name: "index_comments_on_hidden_by_commentable_user", where: "(hidden_by_commentable_user = false)"
     t.index ["id"], name: "index_comments_negative_public_reactions_count", where: "(public_reactions_count < 0)"
     t.index ["score"], name: "index_comments_on_score"
+    t.index ["semantic_embedding"], name: "index_comments_on_semantic_embedding", opclass: :vector_cosine_ops, using: :hnsw
     t.index ["user_id"], name: "index_comments_on_user_id"
     t.check_constraint "public_reactions_count >= 0", name: "check_comments_public_reactions_count_non_negative"
+  end
+
+  create_table "concept_daily_metrics", force: :cascade do |t|
+    t.integer "articles_count", default: 0, null: false
+    t.integer "comments_count", default: 0, null: false
+    t.bigint "concept_id", null: false
+    t.datetime "created_at", null: false
+    t.date "date", null: false
+    t.integer "page_views", default: 0, null: false
+    t.float "popularity_score", default: 0.0, null: false
+    t.integer "reactions_count", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["concept_id", "date"], name: "index_concept_daily_metrics_uniqueness", unique: true
+    t.index ["concept_id"], name: "index_concept_daily_metrics_on_concept_id"
+    t.index ["date"], name: "index_concept_daily_metrics_on_date"
+  end
+
+  create_table "concept_memberships", force: :cascade do |t|
+    t.bigint "concept_id", null: false
+    t.datetime "created_at", null: false
+    t.float "distance", null: false
+    t.bigint "record_id", null: false
+    t.string "record_type", null: false
+    t.datetime "updated_at", null: false
+    t.index ["concept_id", "record_type", "record_id"], name: "index_concept_memberships_uniqueness", unique: true
+    t.index ["concept_id"], name: "index_concept_memberships_on_concept_id"
+    t.index ["record_type", "record_id"], name: "index_concept_memberships_on_record_type_and_record_id"
+  end
+
+  create_table "concepts", force: :cascade do |t|
+    t.vector "anchor_embedding", limit: 768, null: false
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "name", null: false
+    t.bigint "parent_id"
+    t.string "slug", null: false
+    t.datetime "updated_at", null: false
+    t.index ["anchor_embedding"], name: "index_concepts_on_anchor_embedding", opclass: :vector_cosine_ops, using: :hnsw
+    t.index ["parent_id"], name: "index_concepts_on_parent_id"
+    t.index ["slug"], name: "index_concepts_on_slug", unique: true
   end
 
   create_table "consumer_apps", force: :cascade do |t|
@@ -2122,6 +2164,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_05_28_205802) do
   add_foreign_key "collections", "organizations", on_delete: :nullify
   add_foreign_key "collections", "users", on_delete: :cascade
   add_foreign_key "comments", "users", on_delete: :cascade
+  add_foreign_key "concept_daily_metrics", "concepts", on_delete: :cascade
+  add_foreign_key "concept_memberships", "concepts", on_delete: :cascade
   add_foreign_key "context_notes", "articles"
   add_foreign_key "context_notes", "tags"
   add_foreign_key "credits", "organizations", on_delete: :restrict
