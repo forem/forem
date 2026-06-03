@@ -3,6 +3,7 @@ package legacyimport
 import (
 	"context"
 	"errors"
+	"strings"
 
 	noemaidentity "github.com/agentwego/noema/services/api/internal/identity"
 	"github.com/agentwego/noema/services/api/internal/persistence"
@@ -10,6 +11,7 @@ import (
 )
 
 const ImportPreviewSchemaVersion = "noema.legacy-import.preview/v1"
+const IdentityPreviewSchemaVersion = "noema.legacy-import.identity-preview/v1"
 const ImportBatchPreviewSchemaVersion = "noema.legacy-import.batch-preview/v1"
 const ImportPreviewSideEffects = "none-local-preview-only"
 
@@ -34,6 +36,13 @@ type ImportPreview struct {
 	Search        SearchPreview             `json:"search"`
 	Kratos        KratosPreview             `json:"kratos"`
 	SideEffects   string                    `json:"side_effects"`
+}
+
+type IdentityPreview struct {
+	SchemaVersion string        `json:"schema_version"`
+	User          UserDTO       `json:"user"`
+	Kratos        KratosPreview `json:"kratos"`
+	SideEffects   string        `json:"side_effects"`
 }
 
 type PersistencePreview struct {
@@ -85,20 +94,7 @@ func (s PreviewService) PreviewForemArticleUserIdentity(ctx context.Context, inp
 	if err != nil {
 		return ImportPreview{}, err
 	}
-
-	identityPreview, err := s.kratos.PreviewIdentityImport(ctx, bundle.Identity.KratosIdentity)
-	if err != nil {
-		return ImportPreview{}, err
-	}
-	sessionPreview, err := s.kratos.PreviewSession(ctx, identityPreview.ID)
-	if err != nil {
-		return ImportPreview{}, err
-	}
-	flowPreviews, err := s.kratos.PreviewSelfServiceFlows(ctx, "")
-	if err != nil {
-		return ImportPreview{}, err
-	}
-	operationPlans, err := s.previewKratosOperationPlans(ctx, bundle.Identity.KratosIdentity)
+	kratosPreview, err := s.previewKratos(ctx, bundle.Identity.KratosIdentity, input.KratosReturnTo)
 	if err != nil {
 		return ImportPreview{}, err
 	}
@@ -114,13 +110,25 @@ func (s PreviewService) PreviewForemArticleUserIdentity(ctx context.Context, inp
 			User:    bundle.User.ToSearchDocument(),
 			Article: bundle.Article.ToSearchDocument(),
 		},
-		Kratos: KratosPreview{
-			Identity:         identityPreview,
-			Session:          sessionPreview,
-			SelfServiceFlows: flowPreviews,
-			OperationPlans:   operationPlans,
-		},
+		Kratos:      kratosPreview,
 		SideEffects: ImportPreviewSideEffects,
+	}, nil
+}
+
+func (s PreviewService) PreviewForemUserIdentity(ctx context.Context, input ForemUserIdentity) (IdentityPreview, error) {
+	boundary, err := MapForemUserIdentity(input)
+	if err != nil {
+		return IdentityPreview{}, err
+	}
+	kratosPreview, err := s.previewKratos(ctx, boundary.KratosIdentity, input.KratosReturnTo)
+	if err != nil {
+		return IdentityPreview{}, err
+	}
+	return IdentityPreview{
+		SchemaVersion: IdentityPreviewSchemaVersion,
+		User:          boundary.User,
+		Kratos:        kratosPreview,
+		SideEffects:   ImportPreviewSideEffects,
 	}, nil
 }
 
@@ -150,7 +158,33 @@ func (s PreviewService) PreviewForemArticleUserIdentityBatch(ctx context.Context
 	return batch, nil
 }
 
-func (s PreviewService) previewKratosOperationPlans(ctx context.Context, input noemaidentity.KratosIdentityImport) ([]noemaidentity.KratosOperationPlan, error) {
+func (s PreviewService) previewKratos(ctx context.Context, input noemaidentity.KratosIdentityImport, returnTo string) (KratosPreview, error) {
+	returnTo = strings.TrimSpace(returnTo)
+	identityPreview, err := s.kratos.PreviewIdentityImport(ctx, input)
+	if err != nil {
+		return KratosPreview{}, err
+	}
+	sessionPreview, err := s.kratos.PreviewSession(ctx, identityPreview.ID)
+	if err != nil {
+		return KratosPreview{}, err
+	}
+	flowPreviews, err := s.kratos.PreviewSelfServiceFlows(ctx, returnTo)
+	if err != nil {
+		return KratosPreview{}, err
+	}
+	operationPlans, err := s.previewKratosOperationPlans(ctx, identityPreview, returnTo)
+	if err != nil {
+		return KratosPreview{}, err
+	}
+	return KratosPreview{
+		Identity:         identityPreview,
+		Session:          sessionPreview,
+		SelfServiceFlows: flowPreviews,
+		OperationPlans:   operationPlans,
+	}, nil
+}
+
+func (s PreviewService) previewKratosOperationPlans(ctx context.Context, input noemaidentity.KratosIdentityImport, returnTo string) ([]noemaidentity.KratosOperationPlan, error) {
 	identityPlan, err := s.kratos.PreviewIdentityImportOperation(ctx, input)
 	if err != nil {
 		return nil, err
@@ -167,7 +201,7 @@ func (s PreviewService) previewKratosOperationPlans(ctx context.Context, input n
 		noemaidentity.KratosFlowRecovery,
 		noemaidentity.KratosFlowVerification,
 	} {
-		plan, err := s.kratos.PreviewSelfServiceFlowOperation(ctx, kind, "")
+		plan, err := s.kratos.PreviewSelfServiceFlowOperation(ctx, kind, returnTo)
 		if err != nil {
 			return nil, err
 		}

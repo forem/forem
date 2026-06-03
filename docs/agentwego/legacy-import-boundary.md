@@ -231,6 +231,7 @@ M0-T32 adds:
   - `Article` (`ForemArticle`, with embedded `ForemUser` for fixture-compatible exports);
   - `User` (`ForemUser`, optional explicit author/user input for split article/user exports);
   - `Email`;
+  - `KratosReturnTo` (`kratos_return_to`, optional local preview-only return target for future self-service flow init review);
   - `ExternalIdentities` (`[]ForemExternalIdentity`).
 - `ArticleUserIdentityBundle`
   - `User` (`UserDTO`);
@@ -376,6 +377,31 @@ Direct focused command:
 
 ```bash
 GOFLAGS=-mod=mod go test ./services/api/internal/identity ./services/api/internal/legacyimport ./services/api/internal/http -run 'TestLocalKratosAdapterBuildsReviewOnlyOperationPlans|TestLocalKratosAdapterRejectsSensitiveOperationPlanInput|TestPreviewServiceBuildsBatchWithPerItemErrorsAndOperationPlans|TestPreviewServiceRejectsEmptyBatch|TestRouterLegacyImportBatchPreview' -count=1 -v
+```
+
+## M0-T38: Identity-only preview + Kratos return_to propagation
+
+M0-T38 continues the same feature-batch direction rather than stopping at a blocker fix. It adds two adjacent local-only capabilities around legacy import and Ory Kratos identity mapping:
+
+- `PreviewForemUserIdentity(ctx, ForemUserIdentity)` builds an identity-only preview for split user imports without requiring an article payload. The envelope returns `schema_version = noema.legacy-import.identity-preview/v1`, clean `UserDTO`, local Ory Kratos identity/session/self-service flow previews, review-only operation plans, and `side_effects = none-local-preview-only`.
+- `kratos_return_to` is now accepted on both `ForemUserIdentity` and `ForemArticleUserIdentityImport`. It is propagated into self-service flow previews as `return_to`, into encoded flow `request_url` values such as `/self-service/settings/browser?return_to=...`, and into review-only `KratosOperationPlan.query.return_to` entries.
+- `POST /legacy-import/identity-preview` exposes the identity-only preview as a local API/test entry. It is a preview/spec route only, not an import executor.
+
+This preserves the identity posture: auth/session/user identity targets Ory Kratos identity/session/self-service flow boundaries, while this slice remains a local mock/spec seam. It does not contact real Kratos, execute flows, create cookies/tokens/sessions, write PostgreSQL, index search, touch S3, read real Secrets, deploy, or mutate production data.
+
+### Verification
+
+```bash
+task import:identity-preview-test
+task import:preview-test
+task api:smoke
+task agentwego:gates
+```
+
+Direct focused command:
+
+```bash
+GOFLAGS=-mod=mod go test ./services/api/internal/identity ./services/api/internal/legacyimport ./services/api/internal/http -run 'TestLocalKratosAdapterPreviewsIdentitySessionAndSelfServiceFlows|TestPreviewServiceBuildsLocalImportPlanFromFixture|TestPreviewServiceBuildsIdentityOnlyPreviewWithReturnToOperationPlans|TestRouterLegacyImportIdentityPreviewBuildsLocalPlanWithoutExternalDependencies' -count=1 -v
 ```
 
 ## Boundaries deferred to later slices

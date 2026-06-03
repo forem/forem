@@ -15,6 +15,7 @@ func NewRouter(cfg config.Config, searchProvider search.Provider) http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/healthz", healthHandler(cfg, searchProvider))
 	mux.HandleFunc("/search", searchHandler(searchProvider))
+	mux.HandleFunc("/legacy-import/identity-preview", legacyImportIdentityPreviewHandler())
 	mux.HandleFunc("/legacy-import/preview", legacyImportPreviewHandler())
 	mux.HandleFunc("/legacy-import/batch-preview", legacyImportBatchPreviewHandler())
 	mux.HandleFunc("/", notFoundHandler())
@@ -69,6 +70,32 @@ func searchHandler(searchProvider search.Provider) http.HandlerFunc {
 			return
 		}
 		writeJSON(w, http.StatusOK, result)
+	}
+}
+
+func legacyImportIdentityPreviewHandler() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			writeJSON(w, http.StatusMethodNotAllowed, map[string]string{"error": "method not allowed"})
+			return
+		}
+
+		defer r.Body.Close()
+		var input legacyimport.ForemUserIdentity
+		decoder := json.NewDecoder(r.Body)
+		decoder.DisallowUnknownFields()
+		if err := decoder.Decode(&input); err != nil {
+			writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid JSON body"})
+			return
+		}
+
+		preview, err := legacyimport.NewPreviewService(legacyimport.PreviewServiceOptions{}).PreviewForemUserIdentity(r.Context(), input)
+		if err != nil {
+			writeJSON(w, http.StatusUnprocessableEntity, map[string]string{"error": err.Error()})
+			return
+		}
+
+		writeJSON(w, http.StatusOK, preview)
 	}
 }
 

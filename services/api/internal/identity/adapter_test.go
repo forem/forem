@@ -2,6 +2,7 @@ package identity_test
 
 import (
 	"context"
+	"strings"
 	"testing"
 	"time"
 
@@ -76,6 +77,9 @@ func TestLocalKratosAdapterPreviewsIdentitySessionAndSelfServiceFlows(t *testing
 		}
 		if flow.ReturnTo != "https://noema.local/settings" {
 			t.Fatalf("flow[%d] return_to = %q", i, flow.ReturnTo)
+		}
+		if flow.RequestURL == "" || !strings.Contains(flow.RequestURL, "/self-service/") || !strings.Contains(flow.RequestURL, "return_to=https%3A%2F%2Fnoema.local%2Fsettings") {
+			t.Fatalf("flow[%d] request_url did not include browser flow path and encoded return_to: %+v", i, flow)
 		}
 	}
 }

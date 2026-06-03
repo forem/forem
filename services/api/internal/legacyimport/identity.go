@@ -21,6 +21,7 @@ type ForemExternalIdentity struct {
 type ForemUserIdentity struct {
 	User               ForemUser               `json:"user"`
 	Email              string                  `json:"email"`
+	KratosReturnTo     string                  `json:"kratos_return_to,omitempty"`
 	ExternalIdentities []ForemExternalIdentity `json:"external_identities"`
 }
 

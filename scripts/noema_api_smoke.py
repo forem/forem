@@ -3,7 +3,7 @@
 
 Builds the stdlib-only Go API to /tmp, starts it on unused localhost ports,
 verifies /healthz, /healthz method errors, /search success, /search JSON error paths,
-/legacy-import/preview and /legacy-import/batch-preview local-only previews,
+/legacy-import/identity-preview, /legacy-import/preview, and /legacy-import/batch-preview local-only previews,
 unknown-route JSON 404, and unknown-provider fallback,
 and always tears down process groups and temp binaries.
 """
@@ -88,6 +88,7 @@ def verify_running_api(port: int, expected_provider: str) -> None:
     missing_query_url = f"http://127.0.0.1:{port}/search?q=%20%20&limit=20"
     post_search_url = f"http://127.0.0.1:{port}/search"
     import_preview_url = f"http://127.0.0.1:{port}/legacy-import/preview"
+    identity_preview_url = f"http://127.0.0.1:{port}/legacy-import/identity-preview"
     import_batch_preview_url = f"http://127.0.0.1:{port}/legacy-import/batch-preview"
     not_found_url = f"http://127.0.0.1:{port}/does-not-exist"
 
@@ -175,6 +176,42 @@ def verify_running_api(port: int, expected_provider: str) -> None:
     print(json.dumps(import_method_error, indent=4, sort_keys=True))
     if status != 405 or import_method_error != {"error": "method not allowed"}:
         raise RuntimeError(f"unexpected import preview method response: status={status} body={import_method_error!r}")
+
+    identity_payload = {
+        "user": preview_payload["user"],
+        "email": "alice@example.com",
+        "kratos_return_to": "https://noema.local/settings",
+        "external_identities": [{"provider": "github", "uid": "alice-gh"}],
+    }
+    status, identity_preview = fetch_json(identity_preview_url, method="POST", payload=identity_payload)
+    identity_operation_plans = identity_preview.get("kratos", {}).get("operation_plans", [])
+    identity_flows = identity_preview.get("kratos", {}).get("self_service_flows", [])
+    print(json.dumps({
+        "schema_version": identity_preview.get("schema_version"),
+        "side_effects": identity_preview.get("side_effects"),
+        "user_id": identity_preview.get("user", {}).get("id"),
+        "kratos_identity_id": identity_preview.get("kratos", {}).get("identity", {}).get("id"),
+        "self_service_flow_count": len(identity_flows),
+        "operation_plan_count": len(identity_operation_plans),
+        "return_to": identity_flows[0].get("return_to") if identity_flows else "",
+    }, indent=4, sort_keys=True))
+    if (
+        status != 200
+        or identity_preview.get("schema_version") != "noema.legacy-import.identity-preview/v1"
+        or identity_preview.get("side_effects") != "none-local-preview-only"
+        or identity_preview.get("user", {}).get("id") != "42"
+        or identity_preview.get("kratos", {}).get("identity", {}).get("id") != "kratos-preview-identity-42"
+        or len(identity_flows) != 5
+        or identity_flows[0].get("return_to") != "https://noema.local/settings"
+        or not identity_operation_plans
+        or identity_operation_plans[2].get("query", {}).get("return_to") != "https://noema.local/settings"
+    ):
+        raise RuntimeError(f"unexpected identity preview response: status={status} body={identity_preview!r}")
+
+    status, identity_method_error = fetch_json(identity_preview_url, method="GET")
+    print(json.dumps(identity_method_error, indent=4, sort_keys=True))
+    if status != 405 or identity_method_error != {"error": "method not allowed"}:
+        raise RuntimeError(f"unexpected identity preview method response: status={status} body={identity_method_error!r}")
 
     batch_payload = {
         "items": [

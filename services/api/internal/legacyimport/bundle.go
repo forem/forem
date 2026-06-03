@@ -8,6 +8,7 @@ type ForemArticleUserIdentityImport struct {
 	Article            ForemArticle            `json:"article"`
 	User               ForemUser               `json:"user"`
 	Email              string                  `json:"email"`
+	KratosReturnTo     string                  `json:"kratos_return_to,omitempty"`
 	ExternalIdentities []ForemExternalIdentity `json:"external_identities"`
 }
 

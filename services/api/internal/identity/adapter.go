@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net/url"
 	"strings"
 	"time"
 )
@@ -73,6 +74,7 @@ func (LocalKratosAdapter) PreviewSession(_ context.Context, identityID string) (
 }
 
 func (LocalKratosAdapter) PreviewSelfServiceFlows(_ context.Context, returnTo string) ([]KratosSelfServiceFlow, error) {
+	returnTo = strings.TrimSpace(returnTo)
 	kinds := []KratosSelfServiceFlowKind{
 		KratosFlowLogin,
 		KratosFlowRegistration,
@@ -82,13 +84,28 @@ func (LocalKratosAdapter) PreviewSelfServiceFlows(_ context.Context, returnTo st
 	}
 	flows := make([]KratosSelfServiceFlow, 0, len(kinds))
 	for _, kind := range kinds {
+		path, ok := selfServiceFlowBrowserPath(kind)
+		if !ok {
+			return nil, fmt.Errorf("unsupported Kratos self-service flow kind: %s", kind)
+		}
 		flows = append(flows, KratosSelfServiceFlow{
-			ID:       fmt.Sprintf("kratos-preview-flow-%s", kind),
-			Kind:     kind,
-			ReturnTo: returnTo,
+			ID:         fmt.Sprintf("kratos-preview-flow-%s", kind),
+			Kind:       kind,
+			RequestURL: selfServiceFlowRequestURL(path, returnTo),
+			ReturnTo:   returnTo,
 		})
 	}
 	return flows, nil
+}
+
+func selfServiceFlowRequestURL(path string, returnTo string) string {
+	returnTo = strings.TrimSpace(returnTo)
+	if returnTo == "" {
+		return path
+	}
+	values := url.Values{}
+	values.Set("return_to", returnTo)
+	return fmt.Sprintf("%s?%s", path, values.Encode())
 }
 
 func previewIdentitySuffix(input KratosIdentityImport) string {

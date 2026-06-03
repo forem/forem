@@ -115,6 +115,12 @@ M0-T35 adds `KratosOperationPlan` as an explicit review-only envelope for the ne
 
 `KratosOperationPlan` is not a transport, client, flow runner, or credentials migration path. It must keep `sensitive_fields_excluded = true`, list excluded token/secret/password/cookie/CSRF/raw-auth fields, and remain usable through batch import previews without contacting real Kratos.
 
+M0-T38 adds an identity-only preview entry and propagates local return targets through the same Ory-named boundary:
+
+- `PreviewForemUserIdentity` and `POST /legacy-import/identity-preview` produce `schema_version = noema.legacy-import.identity-preview/v1` for split user import review without an article payload;
+- `kratos_return_to` is accepted as preview-only input and becomes self-service flow `return_to`, encoded `request_url`, and review-only operation-plan `query.return_to`;
+- this is still a mock/spec seam: no real Kratos client, no flow execution, no browser cookie/session/token capture, and no custom Noema auth store.
+
 ## Inventory and edge evidence
 
 Relevant legacy sources from the AgentWeGo inventory:
@@ -136,6 +142,7 @@ Targeted local verification:
 task identity:test
 task legacyimport:test
 task import:preview-test
+task import:identity-preview-test
 task import:batch-preview-test
 ```
 
@@ -145,6 +152,7 @@ Direct commands:
 GOFLAGS=-mod=mod go test ./services/api/internal/identity -count=1 -v
 GOFLAGS=-mod=mod go test ./services/api/internal/legacyimport -run 'TestMapForemUserIdentityToKratosBoundary' -count=1 -v
 GOFLAGS=-mod=mod go test ./services/api/internal/identity ./services/api/internal/legacyimport ./services/api/internal/http -run 'TestLocalKratosAdapter|TestPreviewService|TestRouterLegacyImportPreview' -count=1 -v
+GOFLAGS=-mod=mod go test ./services/api/internal/identity ./services/api/internal/legacyimport ./services/api/internal/http -run 'TestLocalKratosAdapterPreviewsIdentitySessionAndSelfServiceFlows|TestPreviewServiceBuildsIdentityOnlyPreviewWithReturnToOperationPlans|TestRouterLegacyImportIdentityPreviewBuildsLocalPlanWithoutExternalDependencies' -count=1 -v
 GOFLAGS=-mod=mod go test ./services/api/internal/identity ./services/api/internal/legacyimport ./services/api/internal/http -run 'TestLocalKratosAdapterBuildsReviewOnlyOperationPlans|TestPreviewServiceBuildsBatchWithPerItemErrorsAndOperationPlans|TestRouterLegacyImportBatchPreview' -count=1 -v
 ```
 

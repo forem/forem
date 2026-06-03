@@ -7,6 +7,7 @@ import (
 	"errors"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/agentwego/noema/services/api/internal/config"
@@ -261,6 +262,77 @@ func TestRouterLegacyImportPreviewBuildsLocalPlanWithoutExternalDependencies(t *
 	}
 	if !body.Kratos.Session.Active || body.Kratos.Session.IdentityID != body.Kratos.Identity.ID || len(body.Kratos.SelfServiceFlows) != 5 {
 		t.Fatalf("unexpected Kratos session/flow preview: %+v", body.Kratos)
+	}
+	if body.SideEffects != "none-local-preview-only" {
+		t.Fatalf("side_effects = %q", body.SideEffects)
+	}
+}
+
+func TestRouterLegacyImportIdentityPreviewBuildsLocalPlanWithoutExternalDependencies(t *testing.T) {
+	router := httpapi.NewRouter(config.Config{}, search.NewNoopProvider())
+	payload := `{
+		"user": {
+			"id": 42,
+			"username": "alice",
+			"name": "Alice Example",
+			"profile_image": "https://example.com/avatar.png",
+			"created_at": "2026-06-03T00:00:00Z",
+			"updated_at": "2026-06-03T01:30:00Z"
+		},
+		"email": "alice@example.com",
+		"kratos_return_to": "https://noema.local/settings",
+		"external_identities": [{"provider": "github", "uid": "alice-gh"}]
+	}`
+
+	req := httptest.NewRequest(http.MethodPost, "/legacy-import/identity-preview", bytes.NewBufferString(payload))
+	res := httptest.NewRecorder()
+	router.ServeHTTP(res, req)
+
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want 200; body=%s", res.Code, res.Body.String())
+	}
+	if bytes.Contains(res.Body.Bytes(), []byte(`"ID"`)) || bytes.Contains(res.Body.Bytes(), []byte(`"SchemaVersion"`)) {
+		t.Fatalf("identity preview leaked Go exported JSON keys: %s", res.Body.String())
+	}
+
+	var body struct {
+		SchemaVersion string `json:"schema_version"`
+		User          struct {
+			ID       string `json:"id"`
+			Username string `json:"username"`
+		} `json:"user"`
+		Kratos struct {
+			Identity struct {
+				ID            string            `json:"id"`
+				MetadataAdmin map[string]string `json:"metadata_admin"`
+			} `json:"identity"`
+			SelfServiceFlows []struct {
+				Kind       string `json:"type"`
+				RequestURL string `json:"request_url"`
+				ReturnTo   string `json:"return_to"`
+			} `json:"self_service_flows"`
+			OperationPlans []struct {
+				Path      string            `json:"path"`
+				Query     map[string]string `json:"query,omitempty"`
+				Execution string            `json:"execution"`
+			} `json:"operation_plans"`
+		} `json:"kratos"`
+		SideEffects string `json:"side_effects"`
+	}
+	if err := json.Unmarshal(res.Body.Bytes(), &body); err != nil {
+		t.Fatalf("identity preview response is not JSON: %v; body=%s", err, res.Body.String())
+	}
+	if body.SchemaVersion != "noema.legacy-import.identity-preview/v1" || body.User.ID != "42" || body.Kratos.Identity.ID != "kratos-preview-identity-42" {
+		t.Fatalf("unexpected identity preview body: %+v", body)
+	}
+	if body.Kratos.Identity.MetadataAdmin["legacy_identity_github"] != "github:alice-gh" {
+		t.Fatalf("missing provider subject metadata: %+v", body.Kratos.Identity.MetadataAdmin)
+	}
+	if len(body.Kratos.SelfServiceFlows) != 5 || body.Kratos.SelfServiceFlows[0].ReturnTo != "https://noema.local/settings" || !strings.Contains(body.Kratos.SelfServiceFlows[0].RequestURL, "return_to=https%3A%2F%2Fnoema.local%2Fsettings") {
+		t.Fatalf("unexpected self-service flow preview: %+v", body.Kratos.SelfServiceFlows)
+	}
+	if len(body.Kratos.OperationPlans) != 7 || body.Kratos.OperationPlans[2].Execution != "review-only" || body.Kratos.OperationPlans[2].Query["return_to"] != "https://noema.local/settings" {
+		t.Fatalf("unexpected Kratos operation plans: %+v", body.Kratos.OperationPlans)
 	}
 	if body.SideEffects != "none-local-preview-only" {
 		t.Fatalf("side_effects = %q", body.SideEffects)

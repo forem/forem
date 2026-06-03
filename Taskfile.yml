@@ -214,6 +214,12 @@ tasks:
     cmds:
       - GOFLAGS=-mod=mod go test ./services/api/internal/identity ./services/api/internal/legacyimport ./services/api/internal/http -run 'TestLocalKratosAdapter|TestPreviewService|TestRouterLegacyImportPreview' -count=1 -v
 
+  import:identity-preview-test:
+    desc: Run local legacy user identity preview and Kratos return_to mapping tests; never contacts Kratos.
+    dir: .
+    cmds:
+      - GOFLAGS=-mod=mod go test ./services/api/internal/identity ./services/api/internal/legacyimport ./services/api/internal/http -run 'TestLocalKratosAdapterPreviewsIdentitySessionAndSelfServiceFlows|TestPreviewServiceBuildsLocalImportPlanFromFixture|TestPreviewServiceBuildsIdentityOnlyPreviewWithReturnToOperationPlans|TestRouterLegacyImportIdentityPreviewBuildsLocalPlanWithoutExternalDependencies' -count=1 -v
+
   import:batch-preview-test:
     desc: Run local legacy import batch preview and Kratos operation-plan tests; never writes DB/search or contacts Kratos.
     dir: .
@@ -275,6 +281,7 @@ tasks:
         grep -nE 'M0-T35|import:batch-preview-test|/legacy-import/batch-preview|PreviewForemArticleUserIdentityBatch|ImportBatchPreview|KratosOperationPlan|operation_plans|review-only|none-local-preview-only' docs/agentwego/execution-board.md docs/agentwego/legacy-import-boundary.md docs/agentwego/identity-options.md docs/agentwego/local-verification-entrypoints.md services/api/internal/legacyimport/service.go services/api/internal/identity/operation_plan.go services/api/internal/http/router.go scripts/noema_api_smoke.py
         grep -nE 'M0-T36|go 1\.26|go1\.26|Go module baseline' docs/agentwego/execution-board.md docs/agentwego/native-stack-skeleton.md go.mod
         grep -nE 'M0-T37|compose\.noema\.yml|container:api-build|noema-native|infra/docker-compose-ci' docs/agentwego/execution-board.md docs/agentwego/native-stack-skeleton.md docs/agentwego/local-verification-entrypoints.md Taskfile.yml .github/workflows/noema-native.yml
+        grep -nE 'M0-T38|import:identity-preview-test|/legacy-import/identity-preview|PreviewForemUserIdentity|kratos_return_to|return_to=https|RequestURL|identity-preview/v1' docs/agentwego/execution-board.md docs/agentwego/legacy-import-boundary.md docs/agentwego/identity-options.md docs/agentwego/local-verification-entrypoints.md Taskfile.yml services/api/internal/legacyimport/service.go services/api/internal/identity/adapter.go services/api/internal/http/router.go scripts/noema_api_smoke.py
 
   verify:local:
     desc: Run low-risk local verification for the current Noema M0 slices.
@@ -286,6 +293,7 @@ tasks:
       - task: legacyimport:test
       - task: identity:test
       - task: import:preview-test
+      - task: import:identity-preview-test
       - task: import:batch-preview-test
       - task: compose:config
       - task: ci:workflow-lint
