@@ -179,9 +179,11 @@ ELASTICSEARCH_URL
 ELASTICSEARCH_USERNAME
 ELASTICSEARCH_PASSWORD
 ELASTICSEARCH_INDEX_PREFIX=noema
-ELASTICSEARCH_BULK_SIZE
-ELASTICSEARCH_REQUEST_TIMEOUT
+ELASTICSEARCH_BULK_SIZE=500
+ELASTICSEARCH_REQUEST_TIMEOUT=5s
 ```
+
+The native config loader currently reads only the non-secret search knobs needed by the local skeleton: provider, index prefix, bulk size, and request timeout. Credentials and real cluster endpoints remain deployment handoff inputs and are not required for local verification.
 
 ## Observability
 

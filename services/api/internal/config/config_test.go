@@ -26,6 +26,12 @@ func TestLoadDefaultsAreProductionSafeForLocalSkeleton(t *testing.T) {
 	if cfg.Search.IndexPrefix != "noema" {
 		t.Fatalf("Search.IndexPrefix = %q, want noema", cfg.Search.IndexPrefix)
 	}
+	if cfg.Search.BulkSize != 500 {
+		t.Fatalf("Search.BulkSize = %d, want 500", cfg.Search.BulkSize)
+	}
+	if cfg.Search.RequestTimeout != "5s" {
+		t.Fatalf("Search.RequestTimeout = %q, want 5s", cfg.Search.RequestTimeout)
+	}
 }
 
 func TestLoadReadsExplicitSearchBoundaryEnv(t *testing.T) {
@@ -33,6 +39,8 @@ func TestLoadReadsExplicitSearchBoundaryEnv(t *testing.T) {
 	t.Setenv("PORT", "9090")
 	t.Setenv("SEARCH_PROVIDER", "elasticsearch")
 	t.Setenv("ELASTICSEARCH_INDEX_PREFIX", "noema-ci")
+	t.Setenv("ELASTICSEARCH_BULK_SIZE", "250")
+	t.Setenv("ELASTICSEARCH_REQUEST_TIMEOUT", "750ms")
 
 	cfg := config.Load()
 
@@ -47,5 +55,11 @@ func TestLoadReadsExplicitSearchBoundaryEnv(t *testing.T) {
 	}
 	if cfg.Search.IndexPrefix != "noema-ci" {
 		t.Fatalf("Search.IndexPrefix = %q, want noema-ci", cfg.Search.IndexPrefix)
+	}
+	if cfg.Search.BulkSize != 250 {
+		t.Fatalf("Search.BulkSize = %d, want 250", cfg.Search.BulkSize)
+	}
+	if cfg.Search.RequestTimeout != "750ms" {
+		t.Fatalf("Search.RequestTimeout = %q, want 750ms", cfg.Search.RequestTimeout)
 	}
 }

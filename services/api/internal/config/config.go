@@ -1,6 +1,9 @@
 package config
 
-import "os"
+import (
+	"os"
+	"strconv"
+)
 
 // Config is the native Noema API configuration boundary. Keep it explicit so
 // the Go service does not inherit Rails global runtime state by accident.
@@ -15,8 +18,10 @@ type HTTPConfig struct {
 }
 
 type SearchConfig struct {
-	Provider    string
-	IndexPrefix string
+	Provider       string
+	IndexPrefix    string
+	BulkSize       int
+	RequestTimeout string
 }
 
 // Load reads only non-secret process settings for the local skeleton. Secret
@@ -30,8 +35,10 @@ func Load() Config {
 			Port: envOr("PORT", "8080"),
 		},
 		Search: SearchConfig{
-			Provider:    envOr("SEARCH_PROVIDER", "postgres"),
-			IndexPrefix: envOr("ELASTICSEARCH_INDEX_PREFIX", "noema"),
+			Provider:       envOr("SEARCH_PROVIDER", "postgres"),
+			IndexPrefix:    envOr("ELASTICSEARCH_INDEX_PREFIX", "noema"),
+			BulkSize:       envIntOr("ELASTICSEARCH_BULK_SIZE", 500),
+			RequestTimeout: envOr("ELASTICSEARCH_REQUEST_TIMEOUT", "5s"),
 		},
 	}
 }
@@ -41,4 +48,16 @@ func envOr(name, fallback string) string {
 		return value
 	}
 	return fallback
+}
+
+func envIntOr(name string, fallback int) int {
+	value := os.Getenv(name)
+	if value == "" {
+		return fallback
+	}
+	parsed, err := strconv.Atoi(value)
+	if err != nil || parsed <= 0 {
+		return fallback
+	}
+	return parsed
 }
