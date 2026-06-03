@@ -19,6 +19,21 @@ RSpec.describe "Admin::ConceptsController", type: :request do
     end
   end
 
+  describe "GET /admin/content_manager/concepts/:id" do
+    before { sign_in admin }
+
+    let!(:membership) { create(:concept_membership, concept: concept) }
+    let!(:daily_metric) { create(:concept_daily_metric, concept: concept) }
+
+    it "returns a successful response and renders details, chart, and memberships" do
+      get admin_concept_path(concept)
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(concept.name)
+      expect(response.body).to include(concept.slug)
+      expect(response.body).to include(membership.record.title)
+    end
+  end
+
   describe "POST /admin/content_manager/concepts" do
     before { sign_in admin }
 
