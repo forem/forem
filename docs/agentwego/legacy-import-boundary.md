@@ -207,6 +207,62 @@ GOFLAGS=-mod=mod go test ./services/api/internal/legacyimport -run 'TestMapForem
 
 This remains fixture-only and local-only: no production DB, real Secret, S3, Elasticsearch/OpenSearch, Kratos, deploy, or irreversible mutation.
 
+## M0-T32: Composed article/user import bundle with Ory Kratos boundary
+
+M0-T32 composes the already verified article/user clean DTO mapper with the Ory Kratos identity boundary. It is intentionally a local import preview contract, not an import executor, DB writer, search indexer, or Kratos client.
+
+### Inventory evidence
+
+Relevant legacy rows and edges remain the same high-coupling import surface from M0-T30/M0-T31:
+
+| Legacy file | Boundary decision |
+| --- | --- |
+| `app/models/article.rb` | Continue using `ForemArticle` as a narrow fixture/export input; do not line-port ActiveRecord callbacks or counters. |
+| `app/models/user.rb` | Continue using `ForemUser` as clean profile input; keep auth/session semantics outside the user DTO. |
+| `app/models/identity.rb` | Preserve only provider subjects through the Kratos admin metadata boundary; never import tokens, secrets, or raw auth dumps. |
+| `app/services/feeds/import.rb` | Treat as legacy import behavior evidence; M0-T32 does not fetch feeds, create articles, or write import logs. |
+| `app/services/exporter/articles.rb` | Treat exported article/user fields as source shape evidence; rich legacy extras still need explicit Noema owners before import. |
+
+### Local bundle contract
+
+M0-T32 adds:
+
+- `ForemArticleUserIdentityImport`
+  - `Article` (`ForemArticle`, with embedded `ForemUser`);
+  - `Email`;
+  - `ExternalIdentities` (`[]ForemExternalIdentity`).
+- `ArticleUserIdentityBundle`
+  - `User` (`UserDTO`);
+  - `Article` (`ArticleDTO`);
+  - `Identity` (`UserIdentityBoundary`).
+- `BuildForemArticleUserIdentityBundle`
+
+The builder reuses `MapForemUser`, `MapForemArticle`, and `MapForemUserIdentity` instead of re-normalizing the same legacy fields. This keeps user/profile, article/domain, and Kratos identity semantics separable while giving later slices one reviewable local bundle to feed persistence/search/Kratos adapter work.
+
+Explicitly excluded:
+
+- live DB reads/writes or import replay jobs;
+- feed fetching/parsing or `Feeds::ImportLog`/`Feeds::ImportItem` mutation;
+- Elasticsearch/OpenSearch indexing;
+- Kratos HTTP/admin/public API calls;
+- OAuth tokens, secrets, password hashes, cookies, sessions, and raw OmniAuth dumps.
+
+### Verification
+
+Targeted local verification:
+
+```bash
+task legacyimport:test
+```
+
+Direct focused command:
+
+```bash
+GOFLAGS=-mod=mod go test ./services/api/internal/legacyimport -run 'TestBuildForemArticleUserIdentityBundleComposesCleanDTOsAndKratosBoundary' -count=1 -v
+```
+
+This remains fixture-only and local-only: no production DB, real Secret, S3, Elasticsearch/OpenSearch, Kratos, deploy, or irreversible mutation.
+
 ## Boundaries deferred to later slices
 
 M0-T30 does not attempt to import or map:

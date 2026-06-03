@@ -13,6 +13,7 @@ The skeleton is intentionally small:
 - `services/api/internal/search` defines the native search provider/index seam and a no-op provider for bootstrap tests; `services/api/internal/search/elastic` now includes a local mockable adapter/client boundary that requires an injected transport and has no default real cluster connection.
 - `services/api/internal/persistence` opens the first Noema-native PostgreSQL/GORM source-of-truth seam with minimal `User` and `Article` records plus a repository interface. The slice does not port Forem ActiveRecord callbacks; it only proves local persistence, author integrity, and list-by-author behavior against a disposable DB.
 - `services/api/internal/identity` reserves the Ory Kratos-native identity/session/self-service-flow boundary as local DTO/spec types only; it does not create a Kratos HTTP client, run self-service flows, or implement custom long-lived auth.
+- `services/api/internal/legacyimport` composes Forem article/user clean DTOs with the Ory Kratos `UserIdentityBoundary` through a local-only import bundle; it does not execute feed imports, write persistence/search state, or call Kratos.
 
 ## Inventory Rows Covered
 
@@ -32,6 +33,7 @@ The skeleton is intentionally small:
 | `app/models/article.rb` | articles/content | `services/api/internal/articles + search documents` | M0-T28 starts the native source-of-truth Article persistence shape without line-porting the 1852-line ActiveRecord model. |
 | `app/models/user.rb` | identity/profile | `services/api/internal/identity` | M0-T28 starts the native User identity persistence shape needed for article author ownership; M0-T31 reserves the Ory Kratos identity/session boundary without line-porting Devise. |
 | `app/models/identity.rb` | identity/profile | `services/api/internal/identity` | M0-T31 preserves legacy provider subjects as Kratos admin metadata while excluding tokens/secrets/auth dumps. |
+| `app/services/feeds/import.rb` | service | `services/api/internal/legacyimport` | M0-T32 treats feed import behavior as evidence only and produces a local article/user/Kratos-boundary bundle without fetching feeds or writing import logs. |
 | `app/controllers/omniauth_callbacks_controller.rb` | web-rails-controller | `apps/web routes + services/api handlers` | Future target is Kratos self-service / identity-provider exchange rather than bespoke OAuth callbacks. |
 | `app/controllers/sessions_controller.rb` | web-rails-controller | `apps/web routes + services/api handlers` | Future target is Kratos session assertion/revocation rather than Devise/Warden session ownership. |
 | `app/controllers/articles_controller.rb` | web-rails-controller | `apps/web routes + services/api handlers` | Article persistence will be consumed by future API handlers rather than Rails controller globals. |

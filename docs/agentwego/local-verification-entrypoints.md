@@ -26,7 +26,7 @@ This document records the local-only verification tasks added for Noema M0 work.
 | `task search:rollback-plan` | Render the native search rollback plan to `/tmp/noema-search-rollback-plan.json` and validate reverse review-only step coverage. | Writes a local `/tmp` JSON artifact only; never contacts Elasticsearch or deletes/mutates aliases/indexes. |
 | `task search:adapter-test` | Run the local fake-transport Elasticsearch adapter/client contract tests for `EnsureIndexes`, `BulkIndex`, and `Search`. | Go test cache only; never contacts Elasticsearch/OpenSearch or reads credentials. |
 | `task persistence:test` | Run config and native persistence tests. Persistence integration tests are active only when `NOEMA_TEST_DATABASE_URL` points to a disposable local PostgreSQL database; otherwise they skip DB mutation. | Local Go test cache; optional disposable localhost DB only when explicitly supplied. |
-| `task legacyimport:test` | Run local Forem article/user to Noema clean domain DTO mapping tests. | Local Go test cache and checked-in `testdata` fixture only; never reads an external DB/S3/Elasticsearch or credentials. |
+| `task legacyimport:test` | Run local Forem article/user to Noema clean domain DTO mapping tests, including the composed article/user/Kratos-boundary import bundle. | Local Go test cache and checked-in `testdata` fixture only; never reads an external DB/S3/Elasticsearch/Kratos or credentials. |
 | `task identity:test` | Run local Ory Kratos identity/session boundary DTO tests. | Local Go test cache and checked-in `testdata` fixture only; never contacts Kratos or reads credentials. |
 | `task verify:local` | Run the current low-risk local validation chain. | Formatting, local test cache, temporary local process, `/tmp` manifest/bootstrap-plan/rollback-plan/render output. |
 
@@ -256,3 +256,28 @@ ok github.com/agentwego/noema/services/api/internal/identity
 ```
 
 The fixture path is `services/api/internal/identity/testdata/kratos_identity_session.json`. This path is pure DTO/spec verification for Ory Kratos identity/session/self-service flow naming; it does not contact Kratos, run self-service flows, read real Secrets, deploy, or mutate identities/sessions.
+
+## M0-T32 Legacy Import Bundle Verification
+
+The composed legacy import bundle slice continues to use `task legacyimport:test`:
+
+```bash
+task legacyimport:test
+```
+
+Focused direct command:
+
+```bash
+GOFLAGS=-mod=mod go test ./services/api/internal/legacyimport -run 'TestBuildForemArticleUserIdentityBundleComposesCleanDTOsAndKratosBoundary' -count=1 -v
+```
+
+Expected local-only output shape:
+
+```text
+=== RUN   TestBuildForemArticleUserIdentityBundleComposesCleanDTOsAndKratosBoundary
+--- PASS: TestBuildForemArticleUserIdentityBundleComposesCleanDTOsAndKratosBoundary
+PASS
+ok github.com/agentwego/noema/services/api/internal/legacyimport
+```
+
+The bundle composes `UserDTO`, `ArticleDTO`, and the Ory Kratos `UserIdentityBoundary` from checked-in fixture data only. It does not contact Kratos, PostgreSQL, S3, Elasticsearch/OpenSearch, Kubernetes, or any external service.
