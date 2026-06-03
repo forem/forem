@@ -24,7 +24,7 @@ tasks:
       - gofmt -w $(find services/api -name '*.go' -type f | sort)
 
   api:smoke:
-    desc: Build the native Go API to /tmp, start it locally, verify /healthz, /search, and /legacy-import/preview, then clean up.
+    desc: Build the native Go API to /tmp, start it locally, verify /healthz, /search, /legacy-import/preview, and /legacy-import/batch-preview, then clean up.
     dir: .
     cmds:
       - python scripts/noema_api_smoke.py
@@ -122,7 +122,13 @@ tasks:
     desc: Run local legacy import preview service/API tests; never writes DB/search or contacts Kratos.
     dir: .
     cmds:
-      - go test ./services/api/internal/identity ./services/api/internal/legacyimport ./services/api/internal/http -run 'TestLocalKratosAdapter|TestPreviewService|TestRouterLegacyImportPreview' -count=1
+      - GOFLAGS=-mod=mod go test ./services/api/internal/identity ./services/api/internal/legacyimport ./services/api/internal/http -run 'TestLocalKratosAdapter|TestPreviewService|TestRouterLegacyImportPreview' -count=1 -v
+
+  import:batch-preview-test:
+    desc: Run local legacy import batch preview and Kratos operation-plan tests; never writes DB/search or contacts Kratos.
+    dir: .
+    cmds:
+      - GOFLAGS=-mod=mod go test ./services/api/internal/identity ./services/api/internal/legacyimport ./services/api/internal/http -run 'TestLocalKratosAdapterBuildsReviewOnlyOperationPlans|TestLocalKratosAdapterRejectsSensitiveOperationPlanInput|TestPreviewServiceBuildsBatchWithPerItemErrorsAndOperationPlans|TestPreviewServiceRejectsEmptyBatch|TestRouterLegacyImportBatchPreview' -count=1 -v
 
   agentwego:gates:
     desc: Run local agentwego control-plane gate checks without touching production.
@@ -176,6 +182,7 @@ tasks:
         grep -nE 'M0-T32|BuildForemArticleUserIdentityBundle|ArticleUserIdentityBundle|ForemArticleUserIdentityImport|Kratos boundary' docs/agentwego/execution-board.md docs/agentwego/legacy-import-boundary.md docs/agentwego/identity-options.md docs/agentwego/local-verification-entrypoints.md services/api/internal/legacyimport/bundle.go services/api/internal/legacyimport/bundle_test.go
         grep -nE 'M0-T33|explicit Forem user|AcceptsExplicitForemUser|User.*ForemUser|Ory Kratos identity mapping' docs/agentwego/execution-board.md docs/agentwego/legacy-import-boundary.md docs/agentwego/identity-options.md docs/agentwego/local-verification-entrypoints.md services/api/internal/legacyimport/bundle.go services/api/internal/legacyimport/bundle_test.go
         grep -nE 'M0-T34|import:preview-test|/legacy-import/preview|PreviewForemArticleUserIdentity|NewLocalKratosAdapter|KratosTargetAdapter|self-service flow|none-local-preview-only' docs/agentwego/execution-board.md docs/agentwego/legacy-import-boundary.md docs/agentwego/identity-options.md docs/agentwego/local-verification-entrypoints.md services/api/internal/legacyimport/service.go services/api/internal/identity/adapter.go services/api/internal/http/router.go scripts/noema_api_smoke.py
+        grep -nE 'M0-T35|import:batch-preview-test|/legacy-import/batch-preview|PreviewForemArticleUserIdentityBatch|ImportBatchPreview|KratosOperationPlan|operation_plans|review-only|none-local-preview-only' docs/agentwego/execution-board.md docs/agentwego/legacy-import-boundary.md docs/agentwego/identity-options.md docs/agentwego/local-verification-entrypoints.md services/api/internal/legacyimport/service.go services/api/internal/identity/operation_plan.go services/api/internal/http/router.go scripts/noema_api_smoke.py
 
   verify:local:
     desc: Run low-risk local verification for the current Noema M0 slices.
@@ -187,6 +194,7 @@ tasks:
       - task: legacyimport:test
       - task: identity:test
       - task: import:preview-test
+      - task: import:batch-preview-test
       - task: search:manifest
       - task: search:bootstrap-plan
       - task: search:rollback-plan

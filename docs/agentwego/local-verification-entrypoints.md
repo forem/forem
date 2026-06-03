@@ -18,7 +18,7 @@ This document records the local-only verification tasks added for Noema M0 work.
 | --- | --- | --- |
 | `task go:fmt` | Format native Go API skeleton files. | Rewrites local Go files only. |
 | `task go:test` | Run `go test ./services/api/...`. | None beyond Go test cache. |
-| `task api:smoke` | Run `scripts/noema_api_smoke.py`: build the native API to `/tmp`, start it on unused local ports, verify `/healthz`, `/healthz` unsupported-method JSON `405`, `/search`, `/search` JSON error paths (`invalid limit`, `missing query`, unsupported method), `POST /legacy-import/preview` local-only import preview plus unsupported-method JSON `405`, unknown-route JSON `404`, and unknown-provider fallback to noop, then terminate each process group and remove the temp binary. | Starts and kills local processes; writes a temporary `/tmp/noema-api-smoke-*` binary. |
+| `task api:smoke` | Run `scripts/noema_api_smoke.py`: build the native API to `/tmp`, start it on unused local ports, verify `/healthz`, `/healthz` unsupported-method JSON `405`, `/search`, `/search` JSON error paths (`invalid limit`, `missing query`, unsupported method), `POST /legacy-import/preview`, `POST /legacy-import/batch-preview`, unsupported-method JSON `405`, unknown-route JSON `404`, and unknown-provider fallback to noop, then terminate each process group and remove the temp binary. | Starts and kills local processes; writes a temporary `/tmp/noema-api-smoke-*` binary. |
 | `task agentwego:gates` | Check inventory counts and control-plane docs. | Read-only. |
 | `task k8s:render` | Render `deploy/k8s/base` to `/tmp/noema-rendered.yaml`. | Writes `/tmp/noema-rendered.yaml`; never applies. |
 | `task search:manifest` | Render the native search index manifest to `/tmp/noema-search-index-manifest.json` and validate schema/family coverage. | Writes a local `/tmp` JSON artifact only; never contacts Elasticsearch. |
@@ -29,6 +29,7 @@ This document records the local-only verification tasks added for Noema M0 work.
 | `task legacyimport:test` | Run local Forem article/user to Noema clean domain DTO mapping tests, including the composed article/user/Kratos-boundary import bundle. | Local Go test cache and checked-in `testdata` fixture only; never reads an external DB/S3/Elasticsearch/Kratos or credentials. |
 | `task identity:test` | Run local Ory Kratos identity/session boundary DTO tests. | Local Go test cache and checked-in `testdata` fixture only; never contacts Kratos or reads credentials. |
 | `task import:preview-test` | Run the M0-T34 local import preview tests across `identity`, `legacyimport`, and `http`: Kratos target adapter spec, preview service, and `POST /legacy-import/preview` route. | Local Go test cache and checked-in fixtures only; never writes DB/search, contacts Kratos, or reads credentials. |
+| `task import:batch-preview-test` | Run the M0-T35 local batch preview and KratosOperationPlan tests across `identity`, `legacyimport`, and `http`: review-only Admin/Public operation plans, mixed batch preview, and `POST /legacy-import/batch-preview` route. | Local Go test cache and checked-in fixtures only; never writes DB/search, executes self-service flows, contacts Kratos, or reads credentials. |
 | `task verify:local` | Run the current low-risk local validation chain. | Formatting, local test cache, temporary local process, `/tmp` manifest/bootstrap-plan/rollback-plan/render output. |
 
 ## Verification Output
@@ -41,6 +42,7 @@ This document records the local-only verification tasks added for Noema M0 work.
 * go:fmt
 * go:test
 * identity:test
+* import:batch-preview-test
 * import:preview-test
 * k8s:render
 * legacyimport:test
@@ -338,3 +340,37 @@ PASS
 ```
 
 The API smoke path now also verifies `POST /legacy-import/preview` and expects `schema_version = noema.legacy-import.preview/v1`, `side_effects = none-local-preview-only`, clean article/user DTO output, and Ory Kratos identity/session/self-service flow preview data. This endpoint is still a local test/preview entry: no production DB, real Secret, S3, Elasticsearch/OpenSearch, live Kratos, deploy, or irreversible mutation.
+
+## M0-T35 Batch Preview + KratosOperationPlan Verification
+
+The next feature batch adds `task import:batch-preview-test` and includes it in `task verify:local`:
+
+```bash
+task import:batch-preview-test
+```
+
+Equivalent direct command:
+
+```bash
+GOFLAGS=-mod=mod go test ./services/api/internal/identity ./services/api/internal/legacyimport ./services/api/internal/http -run 'TestLocalKratosAdapterBuildsReviewOnlyOperationPlans|TestLocalKratosAdapterRejectsSensitiveOperationPlanInput|TestPreviewServiceBuildsBatchWithPerItemErrorsAndOperationPlans|TestPreviewServiceRejectsEmptyBatch|TestRouterLegacyImportBatchPreview' -count=1 -v
+```
+
+Expected local-only output shape:
+
+```text
+=== RUN   TestLocalKratosAdapterBuildsReviewOnlyOperationPlans
+--- PASS: TestLocalKratosAdapterBuildsReviewOnlyOperationPlans
+=== RUN   TestLocalKratosAdapterRejectsSensitiveOperationPlanInput
+--- PASS: TestLocalKratosAdapterRejectsSensitiveOperationPlanInput
+=== RUN   TestPreviewServiceBuildsBatchWithPerItemErrorsAndOperationPlans
+--- PASS: TestPreviewServiceBuildsBatchWithPerItemErrorsAndOperationPlans
+=== RUN   TestPreviewServiceRejectsEmptyBatch
+--- PASS: TestPreviewServiceRejectsEmptyBatch
+=== RUN   TestRouterLegacyImportBatchPreviewBuildsMixedLocalPlan
+--- PASS: TestRouterLegacyImportBatchPreviewBuildsMixedLocalPlan
+=== RUN   TestRouterLegacyImportBatchPreviewReturnsJSONErrors
+--- PASS: TestRouterLegacyImportBatchPreviewReturnsJSONErrors
+PASS
+```
+
+The API smoke path now also verifies `POST /legacy-import/batch-preview` and expects `schema_version = noema.legacy-import.batch-preview/v1`, `side_effects = none-local-preview-only`, partial-success counts, per-item error preservation, and `operation_plans` with `execution = review-only`. This endpoint is still a local test/preview entry: no production DB, real Secret, S3, Elasticsearch/OpenSearch, live Kratos, self-service flow execution, session cookies/tokens, deploy, or irreversible mutation.

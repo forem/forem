@@ -3,7 +3,8 @@
 
 Builds the stdlib-only Go API to /tmp, starts it on unused localhost ports,
 verifies /healthz, /healthz method errors, /search success, /search JSON error paths,
-/legacy-import/preview local-only preview, unknown-route JSON 404, and unknown-provider fallback,
+/legacy-import/preview and /legacy-import/batch-preview local-only previews,
+unknown-route JSON 404, and unknown-provider fallback,
 and always tears down process groups and temp binaries.
 """
 
@@ -87,6 +88,7 @@ def verify_running_api(port: int, expected_provider: str) -> None:
     missing_query_url = f"http://127.0.0.1:{port}/search?q=%20%20&limit=20"
     post_search_url = f"http://127.0.0.1:{port}/search"
     import_preview_url = f"http://127.0.0.1:{port}/legacy-import/preview"
+    import_batch_preview_url = f"http://127.0.0.1:{port}/legacy-import/batch-preview"
     not_found_url = f"http://127.0.0.1:{port}/does-not-exist"
 
     status, health = fetch_json(health_url)
@@ -150,7 +152,15 @@ def verify_running_api(port: int, expected_provider: str) -> None:
         "external_identities": [{"provider": "github", "uid": "alice-gh"}],
     }
     status, import_preview = fetch_json(import_preview_url, method="POST", payload=preview_payload)
-    print(json.dumps(import_preview, indent=4, sort_keys=True))
+    print(json.dumps({
+        "schema_version": import_preview.get("schema_version"),
+        "side_effects": import_preview.get("side_effects"),
+        "article_id": import_preview.get("bundle", {}).get("article", {}).get("id"),
+        "user_id": import_preview.get("bundle", {}).get("user", {}).get("id"),
+        "kratos_identity_id": import_preview.get("kratos", {}).get("identity", {}).get("id"),
+        "self_service_flow_count": len(import_preview.get("kratos", {}).get("self_service_flows", [])),
+        "operation_plan_count": len(import_preview.get("kratos", {}).get("operation_plans", [])),
+    }, indent=4, sort_keys=True))
     if (
         status != 200
         or import_preview.get("schema_version") != "noema.legacy-import.preview/v1"
@@ -165,6 +175,60 @@ def verify_running_api(port: int, expected_provider: str) -> None:
     print(json.dumps(import_method_error, indent=4, sort_keys=True))
     if status != 405 or import_method_error != {"error": "method not allowed"}:
         raise RuntimeError(f"unexpected import preview method response: status={status} body={import_method_error!r}")
+
+    batch_payload = {
+        "items": [
+            preview_payload,
+            {
+                "article": {
+                    "id": 123460,
+                    "user_id": 43,
+                    "title": "Broken Import Preview",
+                    "body_markdown": "This item intentionally omits slug.",
+                    "published": True,
+                    "published_at": "2026-06-03T03:00:00Z",
+                    "created_at": "2026-06-03T02:30:00Z",
+                    "updated_at": "2026-06-03T03:05:00Z",
+                    "cached_tag_list": "broken",
+                },
+                "user": {"id": 43, "username": "bob", "name": "Bob Example"},
+                "email": "bob@example.com",
+            },
+        ]
+    }
+    status, import_batch_preview = fetch_json(import_batch_preview_url, method="POST", payload=batch_payload)
+    batch_items = import_batch_preview.get("items", [])
+    first_batch_preview = batch_items[0].get("preview", {}) if batch_items else {}
+    first_operation_plans = first_batch_preview.get("kratos", {}).get("operation_plans", [])
+    print(json.dumps({
+        "schema_version": import_batch_preview.get("schema_version"),
+        "side_effects": import_batch_preview.get("side_effects"),
+        "total": import_batch_preview.get("total"),
+        "succeeded": import_batch_preview.get("succeeded"),
+        "failed": import_batch_preview.get("failed"),
+        "first_item_user_id": first_batch_preview.get("bundle", {}).get("user", {}).get("id"),
+        "first_item_operation_plan_count": len(first_operation_plans),
+        "second_item_error": batch_items[1].get("error") if len(batch_items) > 1 else "",
+    }, indent=4, sort_keys=True))
+    if (
+        status != 200
+        or import_batch_preview.get("schema_version") != "noema.legacy-import.batch-preview/v1"
+        or import_batch_preview.get("total") != 2
+        or import_batch_preview.get("succeeded") != 1
+        or import_batch_preview.get("failed") != 1
+        or import_batch_preview.get("side_effects") != "none-local-preview-only"
+        or first_batch_preview.get("bundle", {}).get("user", {}).get("id") != "42"
+        or not first_operation_plans
+        or first_operation_plans[0].get("path") != "/admin/identities"
+        or first_operation_plans[0].get("execution") != "review-only"
+        or not batch_items[1].get("error")
+    ):
+        raise RuntimeError(f"unexpected import batch preview response: status={status} body={import_batch_preview!r}")
+
+    status, import_batch_method_error = fetch_json(import_batch_preview_url, method="GET")
+    print(json.dumps(import_batch_method_error, indent=4, sort_keys=True))
+    if status != 405 or import_batch_method_error != {"error": "method not allowed"}:
+        raise RuntimeError(f"unexpected import batch preview method response: status={status} body={import_batch_method_error!r}")
 
     status, not_found = fetch_json(not_found_url)
     print(json.dumps(not_found, indent=4, sort_keys=True))

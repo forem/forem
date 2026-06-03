@@ -351,9 +351,36 @@ GOFLAGS=-mod=mod go test ./services/api/internal/identity ./services/api/interna
 
 This remains local-only and fixture/mock/spec-only: no production DB, real Secret, S3, Elasticsearch/OpenSearch, live Kratos, deploy, or irreversible mutation.
 
+## M0-T35: Batch preview + KratosOperationPlan review-only envelopes
+
+M0-T35 expands the M0-T34 preview stack into a larger local feature batch while preserving the same anti-corruption boundary:
+
+- `identity.KratosOperationPlan` describes future Ory Kratos Admin/Public calls as review-only envelopes with `surface`, `method`, `path`, optional `query`/`body`, `execution = review-only`, and `sensitive_fields_excluded = true`;
+- `PreviewIdentityImportOperation` targets `POST /admin/identities`, `PreviewSessionWhoAmIOperation` targets `GET /sessions/whoami`, and `PreviewSelfServiceFlowOperation` targets Ory-named self-service browser flow init paths such as `/self-service/settings/browser`;
+- `PreviewForemArticleUserIdentityBatch` accepts `ImportBatchPreviewRequest{items:[...]}` and returns `schema_version = noema.legacy-import.batch-preview/v1`, total/succeeded/failed counts, per-item previews, and per-item errors;
+- `POST /legacy-import/batch-preview` is the local API/test entry for mixed valid/invalid batches; a bad item does not erase valid item DTO/persistence/search/Kratos previews;
+- `services/api/internal/legacyimport/testdata/forem_article_user_identity_batch_mixed.json` is the fixture for partial-success behavior and must stay free of OAuth tokens, secrets, passwords, cookies, CSRF tokens, and raw auth dumps.
+
+The batch preview is still a preview/plan object, not an executor. It does not write PostgreSQL, replay import jobs, index search, call real Ory Kratos, execute self-service flows, create sessions/cookies/tokens, read/write S3, read Secrets, deploy, or mutate production data.
+
+### Verification
+
+```bash
+task import:batch-preview-test
+task import:preview-test
+task api:smoke
+task agentwego:gates
+```
+
+Direct focused command:
+
+```bash
+GOFLAGS=-mod=mod go test ./services/api/internal/identity ./services/api/internal/legacyimport ./services/api/internal/http -run 'TestLocalKratosAdapterBuildsReviewOnlyOperationPlans|TestLocalKratosAdapterRejectsSensitiveOperationPlanInput|TestPreviewServiceBuildsBatchWithPerItemErrorsAndOperationPlans|TestPreviewServiceRejectsEmptyBatch|TestRouterLegacyImportBatchPreview' -count=1 -v
+```
+
 ## Boundaries deferred to later slices
 
-M0-T30/M0-T34 do not attempt to import or map:
+M0-T30/M0-T35 do not attempt to import or map:
 
 - legacy authentication fields, encrypted passwords, OAuth usernames, roles, or moderation flags;
 - real Kratos public/admin API calls, self-service flows, session cookies, or identity schema deployment;

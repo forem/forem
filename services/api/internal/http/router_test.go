@@ -267,6 +267,138 @@ func TestRouterLegacyImportPreviewBuildsLocalPlanWithoutExternalDependencies(t *
 	}
 }
 
+func TestRouterLegacyImportBatchPreviewBuildsMixedLocalPlan(t *testing.T) {
+	router := httpapi.NewRouter(config.Config{}, search.NewNoopProvider())
+	payload := `{
+		"items": [
+			{
+				"article": {
+					"id": 123459,
+					"user_id": 42,
+					"title": "Composed Import Preview",
+					"body_markdown": "Preview body for the composed import bundle.",
+					"slug": "composed-import-preview",
+					"published": true,
+					"published_at": "2026-06-03T03:00:00Z",
+					"created_at": "2026-06-03T02:30:00Z",
+					"updated_at": "2026-06-03T03:05:00Z",
+					"cached_tag_list": "go, native"
+				},
+				"user": {
+					"id": 42,
+					"username": "alice",
+					"name": "Alice Example",
+					"profile_image": "https://example.com/avatar.png",
+					"created_at": "2026-06-03T00:00:00Z",
+					"updated_at": "2026-06-03T01:30:00Z"
+				},
+				"email": "alice@example.com",
+				"external_identities": [{"provider": "github", "uid": "alice-gh"}]
+			},
+			{
+				"article": {
+					"id": 123460,
+					"user_id": 43,
+					"title": "Broken Import Preview",
+					"body_markdown": "This item intentionally omits slug.",
+					"published": true,
+					"published_at": "2026-06-03T03:00:00Z",
+					"created_at": "2026-06-03T02:30:00Z",
+					"updated_at": "2026-06-03T03:05:00Z",
+					"cached_tag_list": "broken"
+				},
+				"user": {"id": 43, "username": "bob", "name": "Bob Example"},
+				"email": "bob@example.com"
+			}
+		]
+	}`
+
+	req := httptest.NewRequest(http.MethodPost, "/legacy-import/batch-preview", bytes.NewBufferString(payload))
+	res := httptest.NewRecorder()
+	router.ServeHTTP(res, req)
+
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want 200; body=%s", res.Code, res.Body.String())
+	}
+	if bytes.Contains(res.Body.Bytes(), []byte(`"ID"`)) || bytes.Contains(res.Body.Bytes(), []byte(`"SchemaVersion"`)) || bytes.Contains(res.Body.Bytes(), []byte(`"Preview"`)) {
+		t.Fatalf("batch preview leaked Go exported JSON keys: %s", res.Body.String())
+	}
+
+	var body struct {
+		SchemaVersion string `json:"schema_version"`
+		Total         int    `json:"total"`
+		Succeeded     int    `json:"succeeded"`
+		Failed        int    `json:"failed"`
+		Items         []struct {
+			Index   int    `json:"index"`
+			Error   string `json:"error,omitempty"`
+			Preview *struct {
+				Bundle struct {
+					User struct {
+						ID string `json:"id"`
+					} `json:"user"`
+					Article struct {
+						ID string `json:"id"`
+					} `json:"article"`
+				} `json:"bundle"`
+				Kratos struct {
+					Identity struct {
+						ID string `json:"id"`
+					} `json:"identity"`
+					OperationPlans []struct {
+						Surface   string `json:"surface"`
+						Method    string `json:"method"`
+						Path      string `json:"path"`
+						Execution string `json:"execution"`
+					} `json:"operation_plans"`
+				} `json:"kratos"`
+				SideEffects string `json:"side_effects"`
+			} `json:"preview,omitempty"`
+		} `json:"items"`
+		SideEffects string `json:"side_effects"`
+	}
+	if err := json.Unmarshal(res.Body.Bytes(), &body); err != nil {
+		t.Fatalf("batch preview response is not JSON: %v; body=%s", err, res.Body.String())
+	}
+	if body.SchemaVersion != "noema.legacy-import.batch-preview/v1" || body.Total != 2 || body.Succeeded != 1 || body.Failed != 1 || len(body.Items) != 2 {
+		t.Fatalf("unexpected batch preview counts: %+v", body)
+	}
+	if body.Items[0].Preview == nil || body.Items[0].Preview.Kratos.OperationPlans[0].Path != "/admin/identities" || body.Items[0].Preview.Kratos.OperationPlans[0].Execution != "review-only" {
+		t.Fatalf("first batch item missing review-only Kratos operation plan: %+v", body.Items[0])
+	}
+	if body.Items[1].Preview != nil || body.Items[1].Error == "" {
+		t.Fatalf("second batch item should be per-item error: %+v", body.Items[1])
+	}
+	if body.SideEffects != "none-local-preview-only" {
+		t.Fatalf("side_effects = %q", body.SideEffects)
+	}
+}
+
+func TestRouterLegacyImportBatchPreviewReturnsJSONErrors(t *testing.T) {
+	router := httpapi.NewRouter(config.Config{}, search.NewNoopProvider())
+
+	badJSON := httptest.NewRequest(http.MethodPost, "/legacy-import/batch-preview", bytes.NewBufferString(`{"items":`))
+	badJSONRes := httptest.NewRecorder()
+	router.ServeHTTP(badJSONRes, badJSON)
+	if badJSONRes.Code != http.StatusBadRequest {
+		t.Fatalf("malformed batch status = %d, want 400; body=%s", badJSONRes.Code, badJSONRes.Body.String())
+	}
+
+	empty := httptest.NewRequest(http.MethodPost, "/legacy-import/batch-preview", bytes.NewBufferString(`{"items":[]}`))
+	emptyRes := httptest.NewRecorder()
+	router.ServeHTTP(emptyRes, empty)
+	if emptyRes.Code != http.StatusUnprocessableEntity {
+		t.Fatalf("empty batch status = %d, want 422; body=%s", emptyRes.Code, emptyRes.Body.String())
+	}
+
+	method := httptest.NewRequest(http.MethodGet, "/legacy-import/batch-preview", nil)
+	methodRes := httptest.NewRecorder()
+	router.ServeHTTP(methodRes, method)
+	if methodRes.Code != http.StatusMethodNotAllowed {
+		t.Fatalf("method batch status = %d, want 405; body=%s", methodRes.Code, methodRes.Body.String())
+	}
+}
+
 func TestRouterLegacyImportPreviewReturnsJSONErrors(t *testing.T) {
 	router := httpapi.NewRouter(config.Config{}, search.NewNoopProvider())
 

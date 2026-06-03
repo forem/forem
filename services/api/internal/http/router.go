@@ -16,6 +16,7 @@ func NewRouter(cfg config.Config, searchProvider search.Provider) http.Handler {
 	mux.HandleFunc("/healthz", healthHandler(cfg, searchProvider))
 	mux.HandleFunc("/search", searchHandler(searchProvider))
 	mux.HandleFunc("/legacy-import/preview", legacyImportPreviewHandler())
+	mux.HandleFunc("/legacy-import/batch-preview", legacyImportBatchPreviewHandler())
 	mux.HandleFunc("/", notFoundHandler())
 	return mux
 }
@@ -94,6 +95,32 @@ func legacyImportPreviewHandler() http.HandlerFunc {
 		}
 
 		writeJSON(w, http.StatusOK, preview)
+	}
+}
+
+func legacyImportBatchPreviewHandler() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			writeJSON(w, http.StatusMethodNotAllowed, map[string]string{"error": "method not allowed"})
+			return
+		}
+
+		defer r.Body.Close()
+		var request legacyimport.ImportBatchPreviewRequest
+		decoder := json.NewDecoder(r.Body)
+		decoder.DisallowUnknownFields()
+		if err := decoder.Decode(&request); err != nil {
+			writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid JSON body"})
+			return
+		}
+
+		batch, err := legacyimport.NewPreviewService(legacyimport.PreviewServiceOptions{}).PreviewForemArticleUserIdentityBatch(r.Context(), request)
+		if err != nil {
+			writeJSON(w, http.StatusUnprocessableEntity, map[string]string{"error": err.Error()})
+			return
+		}
+
+		writeJSON(w, http.StatusOK, batch)
 	}
 }
 

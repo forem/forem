@@ -21,6 +21,9 @@ type KratosTargetAdapter interface {
 	PreviewIdentityImport(ctx context.Context, input KratosIdentityImport) (KratosIdentityImport, error)
 	PreviewSession(ctx context.Context, identityID string) (KratosSession, error)
 	PreviewSelfServiceFlows(ctx context.Context, returnTo string) ([]KratosSelfServiceFlow, error)
+	PreviewIdentityImportOperation(ctx context.Context, input KratosIdentityImport) (KratosOperationPlan, error)
+	PreviewSessionWhoAmIOperation(ctx context.Context) (KratosOperationPlan, error)
+	PreviewSelfServiceFlowOperation(ctx context.Context, kind KratosSelfServiceFlowKind, returnTo string) (KratosOperationPlan, error)
 }
 
 type LocalKratosAdapter struct{}
