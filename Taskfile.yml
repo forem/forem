@@ -38,6 +38,96 @@ tasks:
         kubectl kustomize deploy/k8s/base >/tmp/noema-rendered.yaml
         grep -nE 'kind: Namespace|kind: Deployment|kind: Job|kind: Service|noema' /tmp/noema-rendered.yaml
 
+  compose:config:
+    desc: Validate the native Noema Docker Compose environment without starting services.
+    dir: .
+    cmds:
+      - docker compose -f compose.noema.yml --profile api --profile search config >/tmp/noema-compose-config.yaml
+      - grep -nE 'noema-native|noema-api|pgvector|redis|elasticsearch' /tmp/noema-compose-config.yaml
+
+  compose:up:
+    desc: Start the native Noema API compose profile on localhost only.
+    dir: .
+    cmds:
+      - |
+        set -euo pipefail
+        export VCS_REF=$(git rev-parse --short HEAD)
+        if [ -z "${NOEMA_API_PORT:-}" ]; then
+          export NOEMA_API_PORT=$(python - <<'PY'
+        import socket
+        for port in range(19093, 19150):
+            sock = socket.socket()
+            try:
+                sock.bind(('127.0.0.1', port))
+            except OSError:
+                sock.close()
+                continue
+            sock.close()
+            print(port)
+            break
+        else:
+            raise SystemExit('no free localhost port found for compose api')
+        PY
+        )
+        fi
+        echo "starting compose native api on 127.0.0.1:${NOEMA_API_PORT}"
+        docker compose -f compose.noema.yml --profile api up -d --build
+
+  compose:down:
+    desc: Stop the native Noema compose environment and leave named volumes intact.
+    dir: .
+    cmds:
+      - docker compose -f compose.noema.yml --profile api --profile search down --remove-orphans
+
+  container:api-build:
+    desc: Build the native Noema API container image locally.
+    dir: .
+    vars:
+      IMAGE: '{{default "ghcr.io/agentwego/noema-api" .NOEMA_API_IMAGE}}'
+      TAG:
+        sh: git rev-parse --short HEAD
+    cmds:
+      - docker build -f services/api/Dockerfile --target runtime --build-arg VCS_REF={{.TAG}} -t {{.IMAGE}}:sha-{{.TAG}} .
+
+  container:api-smoke:
+    desc: Run the locally built native Noema API image and verify /healthz through Docker.
+    dir: .
+    vars:
+      IMAGE: '{{default "ghcr.io/agentwego/noema-api" .NOEMA_API_IMAGE}}'
+      TAG:
+        sh: git rev-parse --short HEAD
+    cmds:
+      - |
+        set -euo pipefail
+        name="noema-api-smoke-$(date +%s)-$$"
+        cleanup() { docker rm -f "$name" >/dev/null 2>&1 || true; }
+        trap cleanup EXIT
+        docker run -d --name "$name" -e NOEMA_ENV=development -e PORT=8080 -p 127.0.0.1::8080 {{.IMAGE}}:sha-{{.TAG}} >/dev/null
+        port=$(docker port "$name" 8080/tcp | sed -E 's/.*:([0-9]+)$/\1/')
+        for i in $(seq 1 30); do
+          if curl -fsS "http://127.0.0.1:${port}/healthz" | grep -q 'noema-api'; then
+            echo "container api smoke ok port=${port} image={{.IMAGE}}:sha-{{.TAG}}"
+            exit 0
+          fi
+          sleep 1
+        done
+        docker logs "$name"
+        exit 1
+
+  ci:workflow-lint:
+    desc: Parse GitHub Actions workflow YAML locally.
+    dir: .
+    cmds:
+      - |
+        python - <<'PY'
+        import yaml
+        from pathlib import Path
+        for path in sorted(Path('.github/workflows').glob('*.yml')):
+            with path.open() as handle:
+                yaml.safe_load(handle)
+            print('workflow yaml ok', path)
+        PY
+
   search:manifest:
     desc: Render the native search index manifest locally to /tmp; never contacts Elasticsearch.
     dir: .
@@ -184,6 +274,7 @@ tasks:
         grep -nE 'M0-T34|import:preview-test|/legacy-import/preview|PreviewForemArticleUserIdentity|NewLocalKratosAdapter|KratosTargetAdapter|self-service flow|none-local-preview-only' docs/agentwego/execution-board.md docs/agentwego/legacy-import-boundary.md docs/agentwego/identity-options.md docs/agentwego/local-verification-entrypoints.md services/api/internal/legacyimport/service.go services/api/internal/identity/adapter.go services/api/internal/http/router.go scripts/noema_api_smoke.py
         grep -nE 'M0-T35|import:batch-preview-test|/legacy-import/batch-preview|PreviewForemArticleUserIdentityBatch|ImportBatchPreview|KratosOperationPlan|operation_plans|review-only|none-local-preview-only' docs/agentwego/execution-board.md docs/agentwego/legacy-import-boundary.md docs/agentwego/identity-options.md docs/agentwego/local-verification-entrypoints.md services/api/internal/legacyimport/service.go services/api/internal/identity/operation_plan.go services/api/internal/http/router.go scripts/noema_api_smoke.py
         grep -nE 'M0-T36|go 1\.26|go1\.26|Go module baseline' docs/agentwego/execution-board.md docs/agentwego/native-stack-skeleton.md go.mod
+        grep -nE 'M0-T37|compose\.noema\.yml|container:api-build|noema-native|infra/docker-compose-ci' docs/agentwego/execution-board.md docs/agentwego/native-stack-skeleton.md docs/agentwego/local-verification-entrypoints.md Taskfile.yml .github/workflows/noema-native.yml
 
   verify:local:
     desc: Run low-risk local verification for the current Noema M0 slices.
@@ -196,6 +287,8 @@ tasks:
       - task: identity:test
       - task: import:preview-test
       - task: import:batch-preview-test
+      - task: compose:config
+      - task: ci:workflow-lint
       - task: search:manifest
       - task: search:bootstrap-plan
       - task: search:rollback-plan

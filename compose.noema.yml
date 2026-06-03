@@ -1,0 +1,88 @@
+name: noema-native
+
+x-api-env: &api-env
+  NOEMA_ENV: development
+  PORT: "8080"
+  SEARCH_PROVIDER: postgres
+  NOEMA_DATABASE_URL: postgres://noema:noema@postgres:5432/noema_development?sslmode=disable
+  REDIS_URL: redis://redis:6379/0
+  ELASTICSEARCH_INDEX_PREFIX: noema-local
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: services/api/Dockerfile
+      target: runtime
+      args:
+        GO_VERSION: ${GO_VERSION:-1.26}
+        VERSION: ${NOEMA_VERSION:-dev}
+        VCS_REF: ${VCS_REF:-local}
+    image: ${NOEMA_API_IMAGE:-ghcr.io/agentwego/noema-api}:${NOEMA_API_TAG:-local}
+    environment:
+      <<: *api-env
+    ports:
+      - "127.0.0.1:${NOEMA_API_PORT:-18080}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8080/healthz >/dev/null"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    profiles: ["api"]
+
+  postgres:
+    image: pgvector/pgvector:pg13
+    environment:
+      POSTGRES_USER: noema
+      POSTGRES_PASSWORD: noema
+      POSTGRES_DB: noema_development
+    ports:
+      - "127.0.0.1:${NOEMA_POSTGRES_PORT:-25434}:5432"
+    volumes:
+      - noema-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U noema -d noema_development"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:7.2-alpine
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    ports:
+      - "127.0.0.1:${NOEMA_REDIS_PORT:-26379}:6379"
+    volumes:
+      - noema-redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.0
+    profiles: ["search"]
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+    ports:
+      - "127.0.0.1:${NOEMA_ELASTICSEARCH_PORT:-29200}:9200"
+    volumes:
+      - noema-elasticsearch:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:9200/_cluster/health >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+volumes:
+  noema-postgres:
+  noema-redis:
+  noema-elasticsearch:

@@ -30,7 +30,12 @@ This document records the local-only verification tasks added for Noema M0 work.
 | `task identity:test` | Run local Ory Kratos identity/session boundary DTO tests. | Local Go test cache and checked-in `testdata` fixture only; never contacts Kratos or reads credentials. |
 | `task import:preview-test` | Run the M0-T34 local import preview tests across `identity`, `legacyimport`, and `http`: Kratos target adapter spec, preview service, and `POST /legacy-import/preview` route. | Local Go test cache and checked-in fixtures only; never writes DB/search, contacts Kratos, or reads credentials. |
 | `task import:batch-preview-test` | Run the M0-T35 local batch preview and KratosOperationPlan tests across `identity`, `legacyimport`, and `http`: review-only Admin/Public operation plans, mixed batch preview, and `POST /legacy-import/batch-preview` route. | Local Go test cache and checked-in fixtures only; never writes DB/search, executes self-service flows, contacts Kratos, or reads credentials. |
-| `task verify:local` | Run the current low-risk local validation chain. | Formatting, local test cache, temporary local process, `/tmp` manifest/bootstrap-plan/rollback-plan/render output. |
+| `task compose:config` | Validate `compose.noema.yml` for the native Noema API, PostgreSQL, Redis, and optional Elasticsearch profile without starting services. | Writes `/tmp/noema-compose-config.yaml`; does not create containers, volumes, DBs, indexes, or Secrets. |
+| `task compose:up` / `task compose:down` | Start/stop the local native API profile; `compose:up` auto-selects a free `127.0.0.1:19093-19149` port unless `NOEMA_API_PORT` is set. | Starts disposable API/PostgreSQL/Redis containers and removes containers/network on `compose:down`; named dev volumes are left intact for explicit operator cleanup. |
+| `task container:api-build` | Build the native API image from `services/api/Dockerfile` with the repository root as build context. | Uses local Docker/BuildKit cache and produces a local `ghcr.io/agentwego/noema-api:sha-<short>` image; no push. |
+| `task container:api-smoke` | Run the locally built native API image on a dynamic localhost port and verify `/healthz`. | Starts one disposable Docker container and removes it via trap; no DB/search writes. |
+| `task ci:workflow-lint` | Parse checked-in GitHub Actions workflow YAML locally. | Read-only except Python/YAML import cache. |
+| `task verify:local` | Run the current low-risk local validation chain. | Formatting, local test cache, temporary local process, `/tmp` manifest/bootstrap-plan/rollback-plan/render/compose output. |
 
 ## Verification Output
 
@@ -39,6 +44,12 @@ This document records the local-only verification tasks added for Noema M0 work.
 ```text
 * agentwego:gates
 * api:smoke
+* ci:workflow-lint
+* compose:config
+* compose:down
+* compose:up
+* container:api-build
+* container:api-smoke
 * go:fmt
 * go:test
 * identity:test
