@@ -2,6 +2,9 @@ version: '3'
 
 silent: false
 
+env:
+  GOFLAGS: -mod=mod
+
 tasks:
   default:
     desc: List available Noema local tasks.
@@ -91,6 +94,12 @@ tasks:
         print('search rollback plan ok', len(payload['steps']))
         PY
 
+  persistence:test:
+    desc: Run native persistence seam tests against a disposable local PostgreSQL database when NOEMA_TEST_DATABASE_URL is set.
+    dir: .
+    cmds:
+      - go test ./services/api/internal/config ./services/api/internal/persistence -count=1
+
   agentwego:gates:
     desc: Run local agentwego control-plane gate checks without touching production.
     dir: .
@@ -136,12 +145,14 @@ tasks:
         grep -nE 'M0-T23|missing query|empty-query|blank query' docs/agentwego/execution-board.md docs/agentwego/search-architecture.md docs/agentwego/local-verification-entrypoints.md scripts/noema_api_smoke.py services/api/internal/http/router.go
         grep -nE 'M0-T24|not found|unknown-route|notFoundHandler' docs/agentwego/execution-board.md docs/agentwego/search-architecture.md docs/agentwego/native-stack-skeleton.md docs/agentwego/local-verification-entrypoints.md scripts/noema_api_smoke.py services/api/internal/http/router.go
         grep -nE 'M0-T25|/healthz unsupported-method|health method|POST /healthz' docs/agentwego/execution-board.md docs/agentwego/search-architecture.md docs/agentwego/native-stack-skeleton.md docs/agentwego/local-verification-entrypoints.md scripts/noema_api_smoke.py services/api/internal/http/router_test.go
+        grep -nE 'M0-T28|NOEMA_DATABASE_URL|persistence:test|GORMRepository|Article.*User|native persistence' docs/agentwego/execution-board.md docs/agentwego/native-stack-skeleton.md docs/agentwego/local-verification-entrypoints.md services/api/internal/config/config.go services/api/internal/persistence/repository_test.go
 
   verify:local:
     desc: Run low-risk local verification for the current Noema M0 slices.
     cmds:
       - task: go:fmt
       - task: go:test
+      - task: persistence:test
       - task: search:manifest
       - task: search:bootstrap-plan
       - task: search:rollback-plan

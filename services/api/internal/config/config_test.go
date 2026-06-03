@@ -32,6 +32,9 @@ func TestLoadDefaultsAreProductionSafeForLocalSkeleton(t *testing.T) {
 	if cfg.Search.RequestTimeout != "5s" {
 		t.Fatalf("Search.RequestTimeout = %q, want 5s", cfg.Search.RequestTimeout)
 	}
+	if cfg.Database.URL != "" {
+		t.Fatalf("Database.URL = %q, want empty default so local skeleton does not require secret-bearing DB config", cfg.Database.URL)
+	}
 }
 
 func TestLoadReadsExplicitSearchBoundaryEnv(t *testing.T) {
@@ -61,5 +64,15 @@ func TestLoadReadsExplicitSearchBoundaryEnv(t *testing.T) {
 	}
 	if cfg.Search.RequestTimeout != "750ms" {
 		t.Fatalf("Search.RequestTimeout = %q, want 750ms", cfg.Search.RequestTimeout)
+	}
+}
+
+func TestLoadReadsNativeDatabaseBoundaryEnv(t *testing.T) {
+	t.Setenv("NOEMA_DATABASE_URL", "postgres://noema-local@127.0.0.1:25432/noema_test?sslmode=disable")
+
+	cfg := config.Load()
+
+	if cfg.Database.URL != "postgres://noema-local@127.0.0.1:25432/noema_test?sslmode=disable" {
+		t.Fatalf("Database.URL = %q, want explicit native database DSN", cfg.Database.URL)
 	}
 }

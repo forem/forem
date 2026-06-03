@@ -149,11 +149,14 @@ def main() -> int:
     repo = Path(__file__).resolve().parents[1]
     binary_path = Path(tempfile.gettempdir()) / f"noema-api-smoke-{os.getpid()}"
     used_ports: set[int] = set()
+    env = os.environ.copy()
+    env.setdefault("GOFLAGS", "-mod=mod")
 
     try:
         subprocess.run(
             ["go", "build", "-o", str(binary_path), "./services/api/cmd/api"],
             cwd=repo,
+            env=env,
             check=True,
         )
         run_case(repo, binary_path, used_ports, "postgres", "postgres")

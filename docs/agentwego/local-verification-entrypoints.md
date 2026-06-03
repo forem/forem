@@ -24,6 +24,7 @@ This document records the local-only verification tasks added for Noema M0 work.
 | `task search:manifest` | Render the native search index manifest to `/tmp/noema-search-index-manifest.json` and validate schema/family coverage. | Writes a local `/tmp` JSON artifact only; never contacts Elasticsearch. |
 | `task search:bootstrap-plan` | Render the native search bootstrap plan to `/tmp/noema-search-bootstrap-plan.json` and validate review-only step coverage. | Writes a local `/tmp` JSON artifact only; never contacts Elasticsearch or mutates aliases/indexes. |
 | `task search:rollback-plan` | Render the native search rollback plan to `/tmp/noema-search-rollback-plan.json` and validate reverse review-only step coverage. | Writes a local `/tmp` JSON artifact only; never contacts Elasticsearch or deletes/mutates aliases/indexes. |
+| `task persistence:test` | Run config and native persistence tests. Persistence integration tests are active only when `NOEMA_TEST_DATABASE_URL` points to a disposable local PostgreSQL database; otherwise they skip DB mutation. | Local Go test cache; optional disposable localhost DB only when explicitly supplied. |
 | `task verify:local` | Run the current low-risk local validation chain. | Formatting, local test cache, temporary local process, `/tmp` manifest/bootstrap-plan/rollback-plan/render output. |
 
 ## Verification Output
@@ -146,3 +147,20 @@ git diff --check
 ## Rollback
 
 Remove `Taskfile.yml`, this document, and the corresponding M0-T8/M0-T11/M0-T13/M0-T15/M0-T16/M0-T17/M0-T18/M0-T19/M0-T20/M0-T21/M0-T22/M0-T23/M0-T24/M0-T25 execution-board references. If only rolling back manifest export, remove `task search:manifest`, the `verify:local` manifest step, and the M0-T11 references. If only rolling back bootstrap-plan preview, remove `task search:bootstrap-plan`, the `verify:local` bootstrap-plan step, and the M0-T13 references. If only rolling back rollback-plan preview, remove `task search:rollback-plan`, the `verify:local` rollback-plan step, and the M0-T15 references. If only rolling back the local search HTTP contract, remove `/search` handling, the search smoke check, unknown-provider fallback smoke, local/test fallback boundary, empty-query rejection, unknown-route JSON 404 handling, `/healthz` unsupported-method JSON handling, and the M0-T17/M0-T18/M0-T19/M0-T20/M0-T21/M0-T22/M0-T23/M0-T24/M0-T25 references.
+
+## M0-T28 Persistence Seam Verification
+
+The native persistence slice adds `task persistence:test` and is included in `task verify:local`. The aggregate gate runs it without `NOEMA_TEST_DATABASE_URL`, so DB mutation is skipped by default. The targeted integration check uses only a disposable local PostgreSQL container:
+
+```bash
+docker run -d --name noema-t28-postgres -e POSTGRES_HOST_AUTH_METHOD=trust -e POSTGRES_USER=postgres -p 127.0.0.1:25433:5432 pgvector/pgvector:pg13
+for i in $(seq 1 90); do
+  docker exec noema-t28-postgres psql -U postgres -d postgres -c 'drop database if exists noema_t28_test' >/dev/null 2>&1 && \
+  docker exec noema-t28-postgres psql -U postgres -d postgres -c 'create database noema_t28_test' >/dev/null 2>&1 && break
+  sleep 1
+done
+NOEMA_TEST_DATABASE_URL='postgres://postgres@127.0.0.1:25433/noema_t28_test?sslmode=disable' GOFLAGS=-mod=mod go test ./services/api/internal/persistence -run 'TestGORMRepository' -count=1 -v
+docker rm -f noema-t28-postgres
+```
+
+This path does not contact production, read real Secrets, apply Kubernetes manifests, or mutate external DB/S3/Elasticsearch resources.

@@ -8,9 +8,10 @@ import (
 // Config is the native Noema API configuration boundary. Keep it explicit so
 // the Go service does not inherit Rails global runtime state by accident.
 type Config struct {
-	Env    string
-	HTTP   HTTPConfig
-	Search SearchConfig
+	Env      string
+	HTTP     HTTPConfig
+	Search   SearchConfig
+	Database DatabaseConfig
 }
 
 type HTTPConfig struct {
@@ -24,10 +25,14 @@ type SearchConfig struct {
 	RequestTimeout string
 }
 
-// Load reads only non-secret process settings for the local skeleton. Secret
-// bearing dependencies (database, Redis, Elasticsearch credentials, S3 keys)
-// are intentionally out of scope until their handoff docs and rollback gates
-// are complete.
+type DatabaseConfig struct {
+	URL string
+}
+
+// Load reads explicit process settings for the native skeleton. Secret-bearing
+// values such as database DSNs may be supplied by environment/Secret handoff at
+// runtime, but defaults remain empty so local verification never requires or
+// prints real credentials.
 func Load() Config {
 	return Config{
 		Env: envOr("NOEMA_ENV", "development"),
@@ -39,6 +44,9 @@ func Load() Config {
 			IndexPrefix:    envOr("ELASTICSEARCH_INDEX_PREFIX", "noema"),
 			BulkSize:       envIntOr("ELASTICSEARCH_BULK_SIZE", 500),
 			RequestTimeout: envOr("ELASTICSEARCH_REQUEST_TIMEOUT", "5s"),
+		},
+		Database: DatabaseConfig{
+			URL: envOr("NOEMA_DATABASE_URL", ""),
 		},
 	}
 }
