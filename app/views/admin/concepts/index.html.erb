@@ -1,7 +1,7 @@
 <header class="flex items-center mb-6">
   <div>
     <h1 class="crayons-title mb-0">Semantic Concepts</h1>
-    <p class="color-secondary">Manage registered semantic concepts and track their article membership counts.</p>
+    <p class="color-secondary">Manage registered semantic concepts and track their membership counts.</p>
   </div>
   <div class="justify-end ml-auto">
     <%= link_to "New Concept", new_admin_concept_path, class: "crayons-btn" %>
@@ -16,7 +16,7 @@
           <th scope="col">Name</th>
           <th scope="col">Slug</th>
           <th scope="col">Parent</th>
-          <th scope="col">Articles Mapped</th>
+          <th scope="col">Records Mapped</th>
           <th scope="col">Actions</th>
         </tr>
       </thead>
@@ -29,7 +29,7 @@
             </td>
             <td><code><%= concept.slug %></code></td>
             <td><%= concept.parent&.name || "-" %></td>
-            <td><%= concept.concept_memberships.count %></td>
+            <td><%= @membership_counts[concept.id] || 0 %></td>
             <td>
               <div class="flex gap-2">
                 <%= link_to "Edit", edit_admin_concept_path(concept), class: "crayons-btn crayons-btn--outlined crayons-btn--s" %>

@@ -233,3 +233,8 @@ en:
         ![WELCOME TO THE INTERNET](https://slack-imgs.com/?c=1&url=http%3A%2F%2Fmedia0.giphy.com%2Fmedia%2FzhbrTTpmSCYog%2Fgiphy-downsized.gif)
 
         Leave a comment below to introduce yourself to the community!✌️
+    concepts_controller:
+      created: Concept created successfully. Backfill classification has been enqueued.
+      updated: Concept updated successfully. Backfill classification has been enqueued.
+      deleted: Concept deleted successfully.
+      failed_deletion: Something went wrong with deleting the concept.

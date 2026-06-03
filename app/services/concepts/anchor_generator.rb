@@ -14,8 +14,10 @@ module Concepts
 
       return if @concept.description.blank?
 
-      @concept.anchor_embedding = generate_embedding
-      @concept.save!
+      embedding = generate_embedding
+      return if embedding.blank?
+
+      @concept.anchor_embedding = embedding
     end
 
     private

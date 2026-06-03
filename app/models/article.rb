@@ -342,7 +342,10 @@ class Article < ApplicationRecord
 
   after_update_commit :regenerate_summary_if_content_changed
 
-  after_commit :recompile_organization_pages, on: %i[create update destroy]
+  after_commit :recompile_organization_pages, on: %i[create destroy]
+  after_commit :recompile_organization_pages,
+               on: :update,
+               if: -> { saved_change_to_organization_id? || saved_change_to_published? || saved_change_to_published_at? }
 
   # The trigger `update_reading_list_document` is used to keep the `articles.reading_list_document` column updated.
   #
@@ -1729,9 +1732,7 @@ class Article < ApplicationRecord
   def recompile_organization_pages
     was_published = destroyed? ? published? : published_before_last_save
     is_published = published?
-    # `{% org_posts %}` only renders published articles, so skip recompilation when
-    # the article is (and was) unpublished.
-    return unless is_published || was_published || saved_change_to_published?
+    return unless is_published || was_published
 
     org_ids_to_recompile = []
     if destroyed?

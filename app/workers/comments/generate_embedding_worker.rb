@@ -9,6 +9,7 @@ module Comments
 
       # Only generate if score is still >= 3
       return unless comment.score >= 3
+      return if comment.semantic_embedding.present?
 
       # Represent comment content
       text_to_embed = comment.body_markdown

@@ -15,7 +15,7 @@ module Comments
       previous_score = comment.score.to_i
       comment.update_columns(score: score, updated_at: Time.current)
 
-      if score >= 3 && comment.semantic_embedding.nil?
+      if score >= 3 && comment.respond_to?(:semantic_embedding) && comment.semantic_embedding.nil?
         Comments::GenerateEmbeddingWorker.perform_async(comment.id)
       end
 

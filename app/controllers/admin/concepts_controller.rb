@@ -6,6 +6,7 @@ module Admin
 
     def index
       @concepts = Concept.includes(:parent).order(:name)
+      @membership_counts = ConceptMembership.group(:concept_id).count
     end
 
     def new
@@ -20,7 +21,7 @@ module Admin
 
       if @concept.save
         Concepts::BackfillClassifierWorker.perform_async(@concept.id)
-        flash[:success] = "Concept created successfully. Backfill classification has been enqueued."
+        flash[:success] = I18n.t("admin.concepts_controller.created")
         redirect_to admin_concepts_path
       else
         flash.now[:error] = @concept.errors_as_sentence
@@ -35,13 +36,13 @@ module Admin
       @concept.assign_attributes(concept_params)
 
       # Re-generate embedding if name or description changes
-      if @concept.name_changed? || @concept.description_changed?
+      if @concept.will_save_change_to_name? || @concept.will_save_change_to_description?
         Concepts::AnchorGenerator.new(@concept).call
       end
 
       if @concept.save
         Concepts::BackfillClassifierWorker.perform_async(@concept.id)
-        flash[:success] = "Concept updated successfully. Backfill classification has been enqueued."
+        flash[:success] = I18n.t("admin.concepts_controller.updated")
         redirect_to admin_concepts_path
       else
         flash.now[:error] = @concept.errors_as_sentence
@@ -51,9 +52,9 @@ module Admin
 
     def destroy
       if @concept.destroy
-        flash[:success] = "Concept deleted successfully."
+        flash[:success] = I18n.t("admin.concepts_controller.deleted")
       else
-        flash[:error] = @concept.errors_as_sentence
+        flash[:error] = I18n.t("admin.concepts_controller.failed_deletion")
       end
       redirect_to admin_concepts_path
     end

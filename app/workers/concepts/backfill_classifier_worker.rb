@@ -11,7 +11,7 @@ module Concepts
       quoted_vector = Concept.connection.quote(vector_literal)
 
       # 1. Clean up existing memberships for this concept
-      concept.concept_memberships.destroy_all
+      concept.concept_memberships.delete_all
 
       # 2. Query all matching published articles
       matching_articles = Article.published

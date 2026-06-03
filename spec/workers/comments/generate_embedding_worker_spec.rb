@@ -24,7 +24,14 @@ RSpec.describe Comments::GenerateEmbeddingWorker, type: :worker do
     it "does nothing if the comment score is less than 3" do
       comment.update_columns(score: 2)
       expect(Ai::Embedding).not_to receive(:new)
-      
+
+      described_class.new.perform(comment.id)
+    end
+
+    it "does nothing if the embedding is already present" do
+      comment.update_columns(semantic_embedding: Array.new(768, 0.1))
+      expect(Ai::Embedding).not_to receive(:new)
+
       described_class.new.perform(comment.id)
     end
   end
