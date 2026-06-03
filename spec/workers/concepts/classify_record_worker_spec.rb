@@ -26,4 +26,9 @@ RSpec.describe Concepts::ClassifyRecordWorker, type: :worker do
 
     described_class.new.perform("Article", unpublished_article.id)
   end
+
+  it "does not constantize or process unsupported class names" do
+    expect(Concepts::Classifier).not_to receive(:new)
+    described_class.new.perform("User", 1)
+  end
 end

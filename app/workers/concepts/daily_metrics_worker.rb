@@ -4,7 +4,17 @@ module Concepts
     sidekiq_options queue: :low_priority, lock: :until_executing, on_conflict: :replace
 
     def perform(date_str = nil)
-      date = date_str ? Date.parse(date_str) : Date.yesterday
+      date =
+        if date_str.present?
+          begin
+            Date.parse(date_str)
+          rescue Date::Error, ArgumentError
+            Rails.logger.error("Concepts::DailyMetricsWorker invalid date_str=#{date_str.inspect}")
+            return
+          end
+        else
+          Date.yesterday
+        end
       start_time = date.beginning_of_day
       end_time = date.end_of_day
 

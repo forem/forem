@@ -345,7 +345,7 @@ class Article < ApplicationRecord
   after_commit :recompile_organization_pages, on: %i[create destroy]
   after_commit :recompile_organization_pages,
                on: :update,
-               if: -> { saved_change_to_organization_id? || saved_change_to_published? || saved_change_to_published_at? }
+               if: -> { (previous_changes.keys - %w[updated_at semantic_embedding]).any? }
 
   # The trigger `update_reading_list_document` is used to keep the `articles.reading_list_document` column updated.
   #

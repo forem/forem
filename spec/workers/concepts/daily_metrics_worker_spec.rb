@@ -73,4 +73,13 @@ RSpec.describe Concepts::DailyMetricsWorker, type: :worker do
     expect(metric.articles_count).to eq(1)
     expect(metric.page_views).to eq(115) # 10 + 5 + 100
   end
+
+  it "bails out cleanly on an invalid date string format" do
+    allow(Rails.logger).to receive(:error)
+    expect {
+      described_class.new.perform("invalid-date-format")
+    }.not_to change(ConceptDailyMetric, :count)
+
+    expect(Rails.logger).to have_received(:error).with(/invalid date_str/)
+  end
 end

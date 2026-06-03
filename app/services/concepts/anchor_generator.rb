@@ -4,7 +4,7 @@ module Concepts
 
     def initialize(concept)
       @concept = concept
-      @ai_client = Ai::Base.new(wrapper: self)
+      @ai_client = Ai::Base.new(wrapper: self, affected_content: @concept)
     end
 
     def call
@@ -48,7 +48,7 @@ module Concepts
       TEXT
 
       begin
-        embedding_client = Ai::Embedding.new(wrapper: self)
+        embedding_client = Ai::Embedding.new(wrapper: self, affected_content: @concept)
         embedding_client.call(text_to_embed, task_type: "RETRIEVAL_DOCUMENT", output_dimensionality: 768)
       rescue StandardError => e
         Rails.logger.error("Concepts::AnchorGenerator failed to generate embedding for #{@concept.name}: #{e.message}")
