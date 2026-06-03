@@ -99,6 +99,14 @@ This intentionally excludes legacy OAuth tokens, secrets, encrypted passwords, D
 
 M0-T32 composes the article/user legacy import DTOs with this same Ory boundary through `BuildForemArticleUserIdentityBundle`. That bundle is still a local preview/spec object: it carries clean `UserDTO`, clean `ArticleDTO`, and `UserIdentityBoundary`, but it does not create Kratos identities, assert sessions, run self-service flows, or introduce a custom Noema auth store. M0-T33 keeps that identity posture while allowing the composed bundle to receive an explicit `ForemUser` for split article/user exports; the explicit user still maps through `MapForemUserIdentity` into Ory Kratos identity traits and metadata only.
 
+M0-T34 adds a `KratosTargetAdapter` interface and `NewLocalKratosAdapter` implementation as a target adapter spec, not a live client. The local adapter previews:
+
+- `KratosIdentityImport` with deterministic local ids;
+- `KratosSession` that references the preview identity id;
+- Ory-named self-service flow envelopes for login, registration, settings, recovery, and verification.
+
+This preserves the canonical posture: Ory Kratos native integration target for identity/session/self-service flows; local-only DTO/spec seams are allowed, but Noema must not build a long-lived custom auth system. The adapter rejects sensitive metadata keys such as tokens, secrets, passwords, cookies, CSRF material, and raw auth dumps so the import preview cannot accidentally become a credentials migration path.
+
 ## Inventory and edge evidence
 
 Relevant legacy sources from the AgentWeGo inventory:
@@ -119,6 +127,7 @@ Targeted local verification:
 ```bash
 task identity:test
 task legacyimport:test
+task import:preview-test
 ```
 
 Direct commands:
@@ -126,9 +135,10 @@ Direct commands:
 ```bash
 GOFLAGS=-mod=mod go test ./services/api/internal/identity -count=1 -v
 GOFLAGS=-mod=mod go test ./services/api/internal/legacyimport -run 'TestMapForemUserIdentityToKratosBoundary' -count=1 -v
+GOFLAGS=-mod=mod go test ./services/api/internal/identity ./services/api/internal/legacyimport ./services/api/internal/http -run 'TestLocalKratosAdapter|TestPreviewService|TestRouterLegacyImportPreview' -count=1 -v
 ```
 
-These tests use only checked-in fixtures and pure Go DTO mapping. They do not connect to Kratos, PostgreSQL, S3, Elasticsearch/OpenSearch, Kubernetes, or any external service.
+These tests use only checked-in fixtures and pure Go DTO/mock/spec mapping. They do not connect to Kratos, PostgreSQL, S3, Elasticsearch/OpenSearch, Kubernetes, or any external service.
 
 ## Deferred work
 

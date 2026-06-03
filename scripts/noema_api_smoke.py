@@ -2,8 +2,8 @@
 """Local-only smoke test for the Noema native API skeleton.
 
 Builds the stdlib-only Go API to /tmp, starts it on unused localhost ports,
-verifies /healthz, /healthz method errors, /search success, /search JSON error paths, unknown-route JSON 404,
-and unknown-provider fallback,
+verifies /healthz, /healthz method errors, /search success, /search JSON error paths,
+/legacy-import/preview local-only preview, unknown-route JSON 404, and unknown-provider fallback,
 and always tears down process groups and temp binaries.
 """
 
@@ -37,8 +37,13 @@ def choose_port(used: set[int]) -> int:
     raise RuntimeError("no free local smoke port found in 19091-19099")
 
 
-def fetch_json(url: str, *, method: str = "GET") -> tuple[int, dict]:
-    request = urllib.request.Request(url, method=method)
+def fetch_json(url: str, *, method: str = "GET", payload: dict | None = None) -> tuple[int, dict]:
+    data = None
+    headers = {}
+    if payload is not None:
+        data = json.dumps(payload).encode("utf-8")
+        headers["Content-Type"] = "application/json"
+    request = urllib.request.Request(url, data=data, headers=headers, method=method)
     try:
         with urllib.request.urlopen(request, timeout=1) as response:
             status = response.status
@@ -81,6 +86,7 @@ def verify_running_api(port: int, expected_provider: str) -> None:
     bad_limit_url = f"http://127.0.0.1:{port}/search?q=go&limit=not-a-number"
     missing_query_url = f"http://127.0.0.1:{port}/search?q=%20%20&limit=20"
     post_search_url = f"http://127.0.0.1:{port}/search"
+    import_preview_url = f"http://127.0.0.1:{port}/legacy-import/preview"
     not_found_url = f"http://127.0.0.1:{port}/does-not-exist"
 
     status, health = fetch_json(health_url)
@@ -118,6 +124,47 @@ def verify_running_api(port: int, expected_provider: str) -> None:
     print(json.dumps(method_error, indent=4, sort_keys=True))
     if status != 405 or method_error != {"error": "method not allowed"}:
         raise RuntimeError(f"unexpected method response: status={status} body={method_error!r}")
+
+    preview_payload = {
+        "article": {
+            "id": 123459,
+            "user_id": 42,
+            "title": "Composed Import Preview",
+            "body_markdown": "Preview body for the composed import bundle.",
+            "slug": "composed-import-preview",
+            "published": True,
+            "published_at": "2026-06-03T03:00:00Z",
+            "created_at": "2026-06-03T02:30:00Z",
+            "updated_at": "2026-06-03T03:05:00Z",
+            "cached_tag_list": "go, native",
+        },
+        "user": {
+            "id": 42,
+            "username": "alice",
+            "name": "Alice Example",
+            "profile_image": "https://example.com/avatar.png",
+            "created_at": "2026-06-03T00:00:00Z",
+            "updated_at": "2026-06-03T01:30:00Z",
+        },
+        "email": "alice@example.com",
+        "external_identities": [{"provider": "github", "uid": "alice-gh"}],
+    }
+    status, import_preview = fetch_json(import_preview_url, method="POST", payload=preview_payload)
+    print(json.dumps(import_preview, indent=4, sort_keys=True))
+    if (
+        status != 200
+        or import_preview.get("schema_version") != "noema.legacy-import.preview/v1"
+        or import_preview.get("side_effects") != "none-local-preview-only"
+        or import_preview.get("bundle", {}).get("article", {}).get("author_id") != "42"
+        or import_preview.get("kratos", {}).get("identity", {}).get("id") != "kratos-preview-identity-42"
+        or len(import_preview.get("kratos", {}).get("self_service_flows", [])) != 5
+    ):
+        raise RuntimeError(f"unexpected import preview response: status={status} body={import_preview!r}")
+
+    status, import_method_error = fetch_json(import_preview_url, method="GET")
+    print(json.dumps(import_method_error, indent=4, sort_keys=True))
+    if status != 405 or import_method_error != {"error": "method not allowed"}:
+        raise RuntimeError(f"unexpected import preview method response: status={status} body={import_method_error!r}")
 
     status, not_found = fetch_json(not_found_url)
     print(json.dumps(not_found, indent=4, sort_keys=True))

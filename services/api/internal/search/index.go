@@ -98,34 +98,34 @@ type Document interface {
 }
 
 type ArticleDocument struct {
-	ID    string
-	Title string
+	ID    string `json:"id"`
+	Title string `json:"title"`
 }
 
 func (d ArticleDocument) DocumentFamily() string { return DocumentFamilyArticles }
 func (d ArticleDocument) DocumentID() string     { return d.ID }
 
 type CommentDocument struct {
-	ID        string
-	ArticleID string
-	Body      string
+	ID        string `json:"id"`
+	ArticleID string `json:"article_id"`
+	Body      string `json:"body"`
 }
 
 func (d CommentDocument) DocumentFamily() string { return DocumentFamilyComments }
 func (d CommentDocument) DocumentID() string     { return d.ID }
 
 type UserDocument struct {
-	ID       string
-	Username string
-	Name     string
+	ID       string `json:"id"`
+	Username string `json:"username"`
+	Name     string `json:"name"`
 }
 
 func (d UserDocument) DocumentFamily() string { return DocumentFamilyUsers }
 func (d UserDocument) DocumentID() string     { return d.ID }
 
 type TagDocument struct {
-	ID   string
-	Name string
+	ID   string `json:"id"`
+	Name string `json:"name"`
 }
 
 func (d TagDocument) DocumentFamily() string { return DocumentFamilyTags }

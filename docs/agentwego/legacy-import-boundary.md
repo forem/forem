@@ -290,9 +290,70 @@ task agentwego:gates
 
 This remains local-only and fixture-only: no production DB, real Secret, S3, Elasticsearch/OpenSearch, Kratos API/admin/public/self-service call, deploy, or irreversible mutation.
 
+## M0-T34: Local import preview service/API with Kratos target adapter spec
+
+M0-T34 turns the previous bundle into a broader local feature batch without crossing provider boundaries. It adds a preview service and HTTP preview route that compose adjacent capabilities:
+
+- Forem article/user/identity DTO mapping via `BuildForemArticleUserIdentityBundle`;
+- Noema persistence projections via `UserDTO.ToPersistence()` and `ArticleDTO.ToPersistence()`;
+- Noema search projections via `UserDTO.ToSearchDocument()` and `ArticleDTO.ToSearchDocument()`;
+- Ory Kratos target adapter preview via `identity.NewLocalKratosAdapter`, including `KratosIdentityImport`, `KratosSession`, and self-service flow envelopes;
+- `POST /legacy-import/preview` as a local API/test entry returning `schema_version = noema.legacy-import.preview/v1` and `side_effects = none-local-preview-only`.
+
+### Local service/API contract
+
+Native service:
+
+```text
+legacyimport.NewPreviewService(...).PreviewForemArticleUserIdentity(ctx, input)
+```
+
+Native API route:
+
+```text
+POST /legacy-import/preview
+```
+
+The route accepts the same `ForemArticleUserIdentityImport` JSON shape used by the checked-in fixture `services/api/internal/legacyimport/testdata/forem_article_user_identity_preview.json`. It returns a local preview plan, not an import execution result:
+
+- `bundle`: clean `UserDTO`, clean `ArticleDTO`, and `UserIdentityBoundary`;
+- `persistence`: local native `persistence.User` and `persistence.Article` projections;
+- `search`: local native `search.UserDocument` and `search.ArticleDocument` projections;
+- `kratos`: local `KratosIdentityImport`, identity-referenced `KratosSession`, and Ory-named login/registration/settings/recovery/verification self-service flow previews;
+- `side_effects`: always `none-local-preview-only`.
+
+### Explicit exclusions
+
+M0-T34 still does not:
+
+- write PostgreSQL or replay import jobs;
+- index Elasticsearch/OpenSearch;
+- contact real Ory Kratos Admin/Public API;
+- run self-service flows or implement browser session cookies;
+- read/write S3, real Secrets, deploy manifests, or production data;
+- import OAuth tokens, secrets, password hashes, session cookies, CSRF tokens, raw OmniAuth dumps, or any long-lived custom auth state.
+
+### Verification
+
+```bash
+task import:preview-test
+task legacyimport:test
+task identity:test
+task api:smoke
+task agentwego:gates
+```
+
+Direct focused command:
+
+```bash
+GOFLAGS=-mod=mod go test ./services/api/internal/identity ./services/api/internal/legacyimport ./services/api/internal/http -run 'TestLocalKratosAdapter|TestPreviewService|TestRouterLegacyImportPreview' -count=1 -v
+```
+
+This remains local-only and fixture/mock/spec-only: no production DB, real Secret, S3, Elasticsearch/OpenSearch, live Kratos, deploy, or irreversible mutation.
+
 ## Boundaries deferred to later slices
 
-M0-T30 does not attempt to import or map:
+M0-T30/M0-T34 do not attempt to import or map:
 
 - legacy authentication fields, encrypted passwords, OAuth usernames, roles, or moderation flags;
 - real Kratos public/admin API calls, self-service flows, session cookies, or identity schema deployment;

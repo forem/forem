@@ -1,0 +1,41 @@
+{
+  "article": {
+    "id": 123459,
+    "user_id": 42,
+    "title": "Composed Import Preview",
+    "body_markdown": "Preview body for the composed import bundle.",
+    "slug": "composed-import-preview",
+    "published": true,
+    "published_at": "2026-06-03T03:00:00Z",
+    "created_at": "2026-06-03T02:30:00Z",
+    "updated_at": "2026-06-03T03:05:00Z",
+    "cached_tag_list": "go, native",
+    "user": {
+      "id": 0,
+      "username": "",
+      "name": "",
+      "profile_image": "",
+      "created_at": "0001-01-01T00:00:00Z",
+      "updated_at": "0001-01-01T00:00:00Z"
+    }
+  },
+  "user": {
+    "id": 42,
+    "username": "alice",
+    "name": "Alice Example",
+    "profile_image": "https://example.com/avatar.png",
+    "created_at": "2026-06-03T00:00:00Z",
+    "updated_at": "2026-06-03T01:30:00Z"
+  },
+  "email": "alice@example.com",
+  "external_identities": [
+    {
+      "provider": "github",
+      "uid": "alice-gh"
+    },
+    {
+      "provider": "twitter",
+      "uid": "alice-tw"
+    }
+  ]
+}

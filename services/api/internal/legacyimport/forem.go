@@ -52,26 +52,26 @@ type ForemArticle struct {
 
 // UserDTO is the clean Noema import DTO for legacy Forem users.
 type UserDTO struct {
-	ID           string
-	Username     string
-	DisplayName  string
-	ProfileImage string
-	CreatedAt    time.Time
-	UpdatedAt    time.Time
+	ID           string    `json:"id"`
+	Username     string    `json:"username"`
+	DisplayName  string    `json:"display_name"`
+	ProfileImage string    `json:"profile_image,omitempty"`
+	CreatedAt    time.Time `json:"created_at,omitempty"`
+	UpdatedAt    time.Time `json:"updated_at,omitempty"`
 }
 
 // ArticleDTO is the clean Noema import DTO for legacy Forem articles.
 type ArticleDTO struct {
-	ID           string
-	AuthorID     string
-	Slug         string
-	Title        string
-	BodyMarkdown string
-	Published    bool
-	PublishedAt  *time.Time
-	CreatedAt    time.Time
-	UpdatedAt    time.Time
-	Tags         []string
+	ID           string     `json:"id"`
+	AuthorID     string     `json:"author_id"`
+	Slug         string     `json:"slug"`
+	Title        string     `json:"title"`
+	BodyMarkdown string     `json:"body_markdown"`
+	Published    bool       `json:"published"`
+	PublishedAt  *time.Time `json:"published_at,omitempty"`
+	CreatedAt    time.Time  `json:"created_at,omitempty"`
+	UpdatedAt    time.Time  `json:"updated_at,omitempty"`
+	Tags         []string   `json:"tags"`
 }
 
 func MapForemUser(user ForemUser) (UserDTO, error) {

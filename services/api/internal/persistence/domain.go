@@ -12,26 +12,26 @@ var ErrAuthorNotFound = errors.New("article author not found")
 // persistence seam. It intentionally avoids line-porting Forem's large
 // ActiveRecord User model.
 type User struct {
-	ID          string
-	Username    string
-	DisplayName string
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	ID          string    `json:"id"`
+	Username    string    `json:"username"`
+	DisplayName string    `json:"display_name"`
+	CreatedAt   time.Time `json:"created_at,omitempty"`
+	UpdatedAt   time.Time `json:"updated_at,omitempty"`
 }
 
 // Article is the minimal Noema-native content record needed by the first
 // persistence seam. Search documents and feed semantics can derive from this
 // source-of-truth shape in later slices.
 type Article struct {
-	ID           string
-	AuthorID     string
-	Slug         string
-	Title        string
-	BodyMarkdown string
-	Published    bool
-	PublishedAt  *time.Time
-	CreatedAt    time.Time
-	UpdatedAt    time.Time
+	ID           string     `json:"id"`
+	AuthorID     string     `json:"author_id"`
+	Slug         string     `json:"slug"`
+	Title        string     `json:"title"`
+	BodyMarkdown string     `json:"body_markdown"`
+	Published    bool       `json:"published"`
+	PublishedAt  *time.Time `json:"published_at,omitempty"`
+	CreatedAt    time.Time  `json:"created_at,omitempty"`
+	UpdatedAt    time.Time  `json:"updated_at,omitempty"`
 }
 
 type ListOptions struct {

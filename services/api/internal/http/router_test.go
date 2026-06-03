@@ -183,6 +183,115 @@ func TestRouterSearchEndpointReturnsJSONForUnsupportedMethod(t *testing.T) {
 	}
 }
 
+func TestRouterLegacyImportPreviewBuildsLocalPlanWithoutExternalDependencies(t *testing.T) {
+	router := httpapi.NewRouter(config.Config{}, search.NewNoopProvider())
+	payload := `{
+		"article": {
+			"id": 123459,
+			"user_id": 42,
+			"title": "Composed Import Preview",
+			"body_markdown": "Preview body for the composed import bundle.",
+			"slug": "composed-import-preview",
+			"published": true,
+			"published_at": "2026-06-03T03:00:00Z",
+			"created_at": "2026-06-03T02:30:00Z",
+			"updated_at": "2026-06-03T03:05:00Z",
+			"cached_tag_list": "go, native"
+		},
+		"user": {
+			"id": 42,
+			"username": "alice",
+			"name": "Alice Example",
+			"profile_image": "https://example.com/avatar.png",
+			"created_at": "2026-06-03T00:00:00Z",
+			"updated_at": "2026-06-03T01:30:00Z"
+		},
+		"email": "alice@example.com",
+		"external_identities": [{"provider": "github", "uid": "alice-gh"}]
+	}`
+
+	req := httptest.NewRequest(http.MethodPost, "/legacy-import/preview", bytes.NewBufferString(payload))
+	res := httptest.NewRecorder()
+	router.ServeHTTP(res, req)
+
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want 200; body=%s", res.Code, res.Body.String())
+	}
+	if bytes.Contains(res.Body.Bytes(), []byte(`"ID"`)) || bytes.Contains(res.Body.Bytes(), []byte(`"SchemaVersion"`)) {
+		t.Fatalf("legacy import preview leaked Go exported JSON keys: %s", res.Body.String())
+	}
+
+	var body struct {
+		SchemaVersion string `json:"schema_version"`
+		Bundle        struct {
+			User struct {
+				ID       string `json:"id"`
+				Username string `json:"username"`
+			} `json:"user"`
+			Article struct {
+				ID       string   `json:"id"`
+				AuthorID string   `json:"author_id"`
+				Tags     []string `json:"tags"`
+			} `json:"article"`
+		} `json:"bundle"`
+		Kratos struct {
+			Identity struct {
+				ID             string            `json:"id"`
+				MetadataAdmin  map[string]string `json:"metadata_admin"`
+				MetadataPublic map[string]string `json:"metadata_public"`
+			} `json:"identity"`
+			Session struct {
+				Active     bool   `json:"active"`
+				IdentityID string `json:"identity_id"`
+			} `json:"session"`
+			SelfServiceFlows []struct {
+				Kind string `json:"type"`
+			} `json:"self_service_flows"`
+		} `json:"kratos"`
+		SideEffects string `json:"side_effects"`
+	}
+	if err := json.Unmarshal(res.Body.Bytes(), &body); err != nil {
+		t.Fatalf("preview response is not JSON: %v; body=%s", err, res.Body.String())
+	}
+	if body.SchemaVersion != "noema.legacy-import.preview/v1" || body.Bundle.User.ID != "42" || body.Bundle.Article.AuthorID != "42" {
+		t.Fatalf("unexpected preview body: %+v", body)
+	}
+	if body.Kratos.Identity.ID != "kratos-preview-identity-42" || body.Kratos.Identity.MetadataAdmin["legacy_identity_github"] != "github:alice-gh" {
+		t.Fatalf("unexpected Kratos identity preview: %+v", body.Kratos.Identity)
+	}
+	if !body.Kratos.Session.Active || body.Kratos.Session.IdentityID != body.Kratos.Identity.ID || len(body.Kratos.SelfServiceFlows) != 5 {
+		t.Fatalf("unexpected Kratos session/flow preview: %+v", body.Kratos)
+	}
+	if body.SideEffects != "none-local-preview-only" {
+		t.Fatalf("side_effects = %q", body.SideEffects)
+	}
+}
+
+func TestRouterLegacyImportPreviewReturnsJSONErrors(t *testing.T) {
+	router := httpapi.NewRouter(config.Config{}, search.NewNoopProvider())
+
+	badJSON := httptest.NewRequest(http.MethodPost, "/legacy-import/preview", bytes.NewBufferString(`{"article":`))
+	badJSONRes := httptest.NewRecorder()
+	router.ServeHTTP(badJSONRes, badJSON)
+	if badJSONRes.Code != http.StatusBadRequest {
+		t.Fatalf("malformed status = %d, want 400; body=%s", badJSONRes.Code, badJSONRes.Body.String())
+	}
+
+	invalid := httptest.NewRequest(http.MethodPost, "/legacy-import/preview", bytes.NewBufferString(`{"article":{}}`))
+	invalidRes := httptest.NewRecorder()
+	router.ServeHTTP(invalidRes, invalid)
+	if invalidRes.Code != http.StatusUnprocessableEntity {
+		t.Fatalf("invalid status = %d, want 422; body=%s", invalidRes.Code, invalidRes.Body.String())
+	}
+
+	method := httptest.NewRequest(http.MethodGet, "/legacy-import/preview", nil)
+	methodRes := httptest.NewRecorder()
+	router.ServeHTTP(methodRes, method)
+	if methodRes.Code != http.StatusMethodNotAllowed {
+		t.Fatalf("method status = %d, want 405; body=%s", methodRes.Code, methodRes.Body.String())
+	}
+}
+
 func TestRouterReturnsJSONNotFoundForUnknownRoute(t *testing.T) {
 	router := httpapi.NewRouter(config.Config{}, search.NewNoopProvider())
 
