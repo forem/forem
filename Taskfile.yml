@@ -106,6 +106,12 @@ tasks:
     cmds:
       - go test ./services/api/internal/config ./services/api/internal/persistence -count=1
 
+  legacyimport:test:
+    desc: Run local Forem article/user to Noema clean domain DTO mapping tests; never reads an external DB.
+    dir: .
+    cmds:
+      - go test ./services/api/internal/legacyimport -count=1
+
   agentwego:gates:
     desc: Run local agentwego control-plane gate checks without touching production.
     dir: .
@@ -153,6 +159,7 @@ tasks:
         grep -nE 'M0-T25|/healthz unsupported-method|health method|POST /healthz' docs/agentwego/execution-board.md docs/agentwego/search-architecture.md docs/agentwego/native-stack-skeleton.md docs/agentwego/local-verification-entrypoints.md scripts/noema_api_smoke.py services/api/internal/http/router_test.go
         grep -nE 'M0-T28|NOEMA_DATABASE_URL|persistence:test|GORMRepository|Article.*User|native persistence' docs/agentwego/execution-board.md docs/agentwego/native-stack-skeleton.md docs/agentwego/local-verification-entrypoints.md services/api/internal/config/config.go services/api/internal/persistence/repository_test.go
         grep -nE 'M0-T29|search:adapter-test|mockable transport|explicit transport|BulkIndex|EnsureIndexes|noema-articles-write' docs/agentwego/execution-board.md docs/agentwego/search-architecture.md docs/agentwego/search-index-spec.md docs/agentwego/local-verification-entrypoints.md services/api/internal/search/elastic/client.go services/api/internal/search/elastic/client_test.go
+        grep -nE 'M0-T30|legacyimport:test|Forem article/user|MapForemArticle|MapForemUser|clean domain DTO' docs/agentwego/execution-board.md docs/agentwego/legacy-import-boundary.md docs/agentwego/local-verification-entrypoints.md services/api/internal/legacyimport/forem.go services/api/internal/legacyimport/forem_test.go
 
   verify:local:
     desc: Run low-risk local verification for the current Noema M0 slices.
@@ -161,6 +168,7 @@ tasks:
       - task: go:test
       - task: search:adapter-test
       - task: persistence:test
+      - task: legacyimport:test
       - task: search:manifest
       - task: search:bootstrap-plan
       - task: search:rollback-plan
