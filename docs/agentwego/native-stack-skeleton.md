@@ -12,6 +12,7 @@ The skeleton is intentionally small:
 - `services/api/internal/http` exposes `/healthz` for local smoke checks and a minimal `/search` contract endpoint backed by the search provider seam. Health reports the actual injected provider identity via `Provider.Name()`, including local/test unknown-provider fallback to noop; non-local envs fail fast on unavailable providers. Unsupported `/healthz` methods return stable JSON `405 {"error":"method not allowed"}` and unknown API routes return stable JSON `404 {"error":"not found"}`.
 - `services/api/internal/search` defines the native search provider/index seam and a no-op provider for bootstrap tests; `services/api/internal/search/elastic` now includes a local mockable adapter/client boundary that requires an injected transport and has no default real cluster connection.
 - `services/api/internal/persistence` opens the first Noema-native PostgreSQL/GORM source-of-truth seam with minimal `User` and `Article` records plus a repository interface. The slice does not port Forem ActiveRecord callbacks; it only proves local persistence, author integrity, and list-by-author behavior against a disposable DB.
+- `services/api/internal/identity` reserves the Ory Kratos-native identity/session/self-service-flow boundary as local DTO/spec types only; it does not create a Kratos HTTP client, run self-service flows, or implement custom long-lived auth.
 
 ## Inventory Rows Covered
 
@@ -29,7 +30,10 @@ The skeleton is intentionally small:
 | `app/services/search/tag.rb` | search | `services/api/internal/search/{elastic,fallback}` | Establishes document-family/index naming for future provider work. |
 | `app/workers/algolia_search/search_index_worker.rb` | search | `services/api/internal/search/{elastic,fallback}` | Future async indexing belongs behind the provider seam. |
 | `app/models/article.rb` | articles/content | `services/api/internal/articles + search documents` | M0-T28 starts the native source-of-truth Article persistence shape without line-porting the 1852-line ActiveRecord model. |
-| `app/models/user.rb` | identity/profile | `services/api/internal/identity` | M0-T28 starts the native User identity persistence shape needed for article author ownership. |
+| `app/models/user.rb` | identity/profile | `services/api/internal/identity` | M0-T28 starts the native User identity persistence shape needed for article author ownership; M0-T31 reserves the Ory Kratos identity/session boundary without line-porting Devise. |
+| `app/models/identity.rb` | identity/profile | `services/api/internal/identity` | M0-T31 preserves legacy provider subjects as Kratos admin metadata while excluding tokens/secrets/auth dumps. |
+| `app/controllers/omniauth_callbacks_controller.rb` | web-rails-controller | `apps/web routes + services/api handlers` | Future target is Kratos self-service / identity-provider exchange rather than bespoke OAuth callbacks. |
+| `app/controllers/sessions_controller.rb` | web-rails-controller | `apps/web routes + services/api handlers` | Future target is Kratos session assertion/revocation rather than Devise/Warden session ownership. |
 | `app/controllers/articles_controller.rb` | web-rails-controller | `apps/web routes + services/api handlers` | Article persistence will be consumed by future API handlers rather than Rails controller globals. |
 | `app/controllers/users_controller.rb` | web-rails-controller | `apps/web routes + services/api handlers` | User persistence will be consumed by future identity/profile handlers rather than Rails controller globals. |
 

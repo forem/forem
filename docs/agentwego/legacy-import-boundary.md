@@ -139,11 +139,80 @@ This test suite covers:
 
 M0-T30 is also wired into `task verify:local`, but the M0-T30 acceptance step should prefer targeted verification unless broader local gates are needed for touched files.
 
+## M0-T31: Forem user identity → Ory Kratos boundary DTO
+
+M0-T31 extends the legacy import boundary just far enough to reserve the target auth/identity architecture. It does not implement a login system, Kratos client, session middleware, or data migration job.
+
+### Inventory evidence
+
+Relevant legacy auth/user files:
+
+| Legacy file | Boundary decision |
+| --- | --- |
+| `app/models/user.rb` | Treat as account/profile/business aggregate; import only clean user identity fields. |
+| `app/models/identity.rb` | Treat as legacy OmniAuth provider binding; preserve provider subjects as Kratos admin metadata, not credentials. |
+| `app/controllers/omniauth_callbacks_controller.rb` | Future replacement target for Kratos self-service / identity-provider exchange flows. |
+| `app/controllers/sessions_controller.rb` | Future replacement target for Kratos session assertion/revocation. |
+| `app/controllers/concerns/session_current_user.rb` | Current Warden session-key lookup; future target is Kratos `/sessions/whoami`. |
+| `app/models/settings/authentication.rb` | Auth policy/config; keep out of user import DTOs. |
+
+### Clean import contract
+
+New native package:
+
+```text
+services/api/internal/identity
+```
+
+It defines local-only Ory-named DTOs:
+
+- `KratosIdentityImport`
+- `KratosTraits`
+- `KratosSession`
+- `KratosSelfServiceFlowKind`
+
+The legacy import package adds:
+
+- `ForemExternalIdentity`
+- `ForemUserIdentity`
+- `UserIdentityBoundary`
+- `MapForemUserIdentity`
+
+Mapping rules:
+
+- `MapForemUserIdentity` reuses `MapForemUser` so user id/username/display-name validation remains single-source.
+- Email maps to `KratosIdentityImport.Traits.Email`.
+- Username maps to `KratosIdentityImport.Traits.Username`.
+- Display name maps to `KratosIdentityImport.Traits.Name`.
+- Profile image maps to `metadata_public.profile_image`.
+- Legacy Forem user id maps to `metadata_admin.legacy_forem_user_id`.
+- External provider subjects map to `metadata_admin.legacy_identity_<provider>` using `<provider>:<uid>`.
+- OAuth tokens, secrets, encrypted passwords, recovery/remember/lock fields, and raw auth dumps are intentionally excluded.
+
+### Verification
+
+Targeted local verification:
+
+```bash
+task identity:test
+task legacyimport:test
+```
+
+Direct commands:
+
+```bash
+GOFLAGS=-mod=mod go test ./services/api/internal/identity -count=1 -v
+GOFLAGS=-mod=mod go test ./services/api/internal/legacyimport -run 'TestMapForemUserIdentityToKratosBoundary' -count=1 -v
+```
+
+This remains fixture-only and local-only: no production DB, real Secret, S3, Elasticsearch/OpenSearch, Kratos, deploy, or irreversible mutation.
+
 ## Boundaries deferred to later slices
 
 M0-T30 does not attempt to import or map:
 
 - legacy authentication fields, encrypted passwords, OAuth usernames, roles, or moderation flags;
+- real Kratos public/admin API calls, self-service flows, session cookies, or identity schema deployment;
 - full Forem article counters/scoring/moderation fields;
 - comments, reactions, organizations, collections, tags as domain entities, media, or notifications;
 - real DB reads/writes or replay/import jobs;

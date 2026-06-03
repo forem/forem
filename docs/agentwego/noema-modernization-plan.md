@@ -71,9 +71,9 @@ These are not required to keep planning, but are required before public producti
    - no SMTP for PoC, or
    - SMTP credentials and sender domain for production invitations/password reset/notifications.
 5. Identity posture:
-   - keep local login first,
-   - add Discord OAuth directly,
-   - or implement OIDC via Hydra/Kratos bridge.
+   - use Ory Kratos as the native target for identity/session/self-service flow integration,
+   - keep local-only DTO/spec seams during M0,
+   - do not build a long-lived custom Noema authentication system.
 6. Search posture:
    - native Elasticsearch is the target backend search engine,
    - PostgreSQL search may remain as bootstrap/degraded fallback only,
@@ -337,13 +337,13 @@ grep -RInE 'Search::|Algolia|pg_search|ransack|elasticsearch|opensearch' app con
 
 ### Task 4.2: Evaluate Discord/OIDC options
 
-**Objective:** Decide whether to add direct Discord OAuth or a cleaner OIDC path through Hydra/Kratos.
+**Objective:** Converge identity/session work on Ory Kratos-native boundaries while preserving local verification and an admin recovery posture.
 
 **Options:**
 
-1. Direct Discord OAuth provider in Noema.
-2. OIDC provider integration if a real OIDC issuer is available.
-3. Kratos + Hydra bridge for identity/session policy.
+1. Ory Kratos identity traits, sessions, and self-service flows as the target integration boundary.
+2. Optional OIDC/Hydra or external identity providers behind Kratos-compatible flows.
+3. Local-only DTO/spec seams for early migration slices; no live Kratos client until explicitly planned and verified.
 
 **Expected doc:**
 
@@ -449,7 +449,7 @@ Each branch should contain one coherent artifact and verification output. Avoid 
 - Whether repo remains public fork or becomes private during deep rewrite.
 - S3 bucket/endpoint/region/credentials.
 - SMTP provider or no-SMTP PoC.
-- Whether first identity integration should be direct Discord OAuth or OIDC via Hydra.
+- Exact Ory Kratos deployment/runtime posture, identity schema, self-service UI handoff, and admin recovery bootstrap.
 - Whether Chinese search is a first production requirement or a post-PoC phase.
 
 ## Immediate Next Step

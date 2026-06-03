@@ -112,6 +112,12 @@ tasks:
     cmds:
       - go test ./services/api/internal/legacyimport -count=1
 
+  identity:test:
+    desc: Run local Ory Kratos identity/session boundary DTO tests; never contacts Kratos.
+    dir: .
+    cmds:
+      - go test ./services/api/internal/identity -count=1
+
   agentwego:gates:
     desc: Run local agentwego control-plane gate checks without touching production.
     dir: .
@@ -160,6 +166,7 @@ tasks:
         grep -nE 'M0-T28|NOEMA_DATABASE_URL|persistence:test|GORMRepository|Article.*User|native persistence' docs/agentwego/execution-board.md docs/agentwego/native-stack-skeleton.md docs/agentwego/local-verification-entrypoints.md services/api/internal/config/config.go services/api/internal/persistence/repository_test.go
         grep -nE 'M0-T29|search:adapter-test|mockable transport|explicit transport|BulkIndex|EnsureIndexes|noema-articles-write' docs/agentwego/execution-board.md docs/agentwego/search-architecture.md docs/agentwego/search-index-spec.md docs/agentwego/local-verification-entrypoints.md services/api/internal/search/elastic/client.go services/api/internal/search/elastic/client_test.go
         grep -nE 'M0-T30|legacyimport:test|Forem article/user|MapForemArticle|MapForemUser|clean domain DTO' docs/agentwego/execution-board.md docs/agentwego/legacy-import-boundary.md docs/agentwego/local-verification-entrypoints.md services/api/internal/legacyimport/forem.go services/api/internal/legacyimport/forem_test.go
+        grep -nE 'M0-T31|identity:test|Ory Kratos|KratosIdentityImport|MapForemUserIdentity|self-service flow' docs/agentwego/execution-board.md docs/agentwego/legacy-import-boundary.md docs/agentwego/identity-options.md docs/agentwego/local-verification-entrypoints.md services/api/internal/identity/kratos.go services/api/internal/legacyimport/identity.go
 
   verify:local:
     desc: Run low-risk local verification for the current Noema M0 slices.
@@ -169,6 +176,7 @@ tasks:
       - task: search:adapter-test
       - task: persistence:test
       - task: legacyimport:test
+      - task: identity:test
       - task: search:manifest
       - task: search:bootstrap-plan
       - task: search:rollback-plan

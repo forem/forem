@@ -27,6 +27,7 @@ This document records the local-only verification tasks added for Noema M0 work.
 | `task search:adapter-test` | Run the local fake-transport Elasticsearch adapter/client contract tests for `EnsureIndexes`, `BulkIndex`, and `Search`. | Go test cache only; never contacts Elasticsearch/OpenSearch or reads credentials. |
 | `task persistence:test` | Run config and native persistence tests. Persistence integration tests are active only when `NOEMA_TEST_DATABASE_URL` points to a disposable local PostgreSQL database; otherwise they skip DB mutation. | Local Go test cache; optional disposable localhost DB only when explicitly supplied. |
 | `task legacyimport:test` | Run local Forem article/user to Noema clean domain DTO mapping tests. | Local Go test cache and checked-in `testdata` fixture only; never reads an external DB/S3/Elasticsearch or credentials. |
+| `task identity:test` | Run local Ory Kratos identity/session boundary DTO tests. | Local Go test cache and checked-in `testdata` fixture only; never contacts Kratos or reads credentials. |
 | `task verify:local` | Run the current low-risk local validation chain. | Formatting, local test cache, temporary local process, `/tmp` manifest/bootstrap-plan/rollback-plan/render output. |
 
 ## Verification Output
@@ -38,6 +39,7 @@ This document records the local-only verification tasks added for Noema M0 work.
 * api:smoke
 * go:fmt
 * go:test
+* identity:test
 * k8s:render
 * legacyimport:test
 * persistence:test
@@ -224,3 +226,33 @@ ok github.com/agentwego/noema/services/api/internal/legacyimport
 ```
 
 The fixture path is `services/api/internal/legacyimport/testdata/forem_article_with_user.json`. This path uses checked-in local fixture data only; it does not read external DB/S3/Elasticsearch, open network connections, read real Secrets, deploy, or mutate external data.
+
+## M0-T31 Ory Kratos Identity Boundary Verification
+
+The identity boundary slice adds `task identity:test` and includes it in `task verify:local`:
+
+```bash
+task identity:test
+```
+
+Equivalent direct commands:
+
+```bash
+GOFLAGS=-mod=mod go test ./services/api/internal/identity -count=1 -v
+GOFLAGS=-mod=mod go test ./services/api/internal/legacyimport -run 'TestMapForemUserIdentityToKratosBoundary' -count=1 -v
+```
+
+Expected local-only output shape:
+
+```text
+=== RUN   TestKratosIdentityImportFromFixture
+--- PASS: TestKratosIdentityImportFromFixture
+=== RUN   TestKratosSessionBoundaryFromFixture
+--- PASS: TestKratosSessionBoundaryFromFixture
+=== RUN   TestSelfServiceFlowKindsAreOryNamed
+--- PASS: TestSelfServiceFlowKindsAreOryNamed
+PASS
+ok github.com/agentwego/noema/services/api/internal/identity
+```
+
+The fixture path is `services/api/internal/identity/testdata/kratos_identity_session.json`. This path is pure DTO/spec verification for Ory Kratos identity/session/self-service flow naming; it does not contact Kratos, run self-service flows, read real Secrets, deploy, or mutate identities/sessions.
