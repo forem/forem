@@ -2,13 +2,31 @@ module Admin
   class ConceptsController < Admin::ApplicationController
     layout "admin"
 
-    before_action :set_concept, only: %i[edit update destroy]
+    before_action :set_concept, only: %i[show edit update destroy]
 
     def index
       @concepts = Concept.includes(:parent).order(:name)
       @membership_counts = ConceptMembership.group(:concept_id).count
     end
 
+    def show
+      @memberships = @concept.concept_memberships
+                             .includes(record: :user)
+                             .order(created_at: :desc)
+                             .page(params[:page])
+                             .per(20)
+
+      @daily_metrics = @concept.concept_daily_metrics
+                               .order(date: :asc)
+                               .limit(30)
+
+      @chart_dates = @daily_metrics.map { |m| m.date.strftime("%Y-%m-%d") }
+      @chart_popularity = @daily_metrics.map(&:popularity_score)
+      @chart_views = @daily_metrics.map(&:page_views)
+      @chart_reactions = @daily_metrics.map(&:reactions_count)
+      @chart_articles = @daily_metrics.map(&:articles_count)
+      @chart_comments = @daily_metrics.map(&:comments_count)
+    end
     def new
       @concept = Concept.new
     end

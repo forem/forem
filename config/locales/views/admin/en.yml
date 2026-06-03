@@ -581,3 +581,21 @@ en:
           text_label: CTA Text
           url_label: CTA URL
           save: Save CTA Settings
+      concepts:
+        show:
+          back_to_concepts: "Back to Semantic Concepts"
+          edit_concept: "Edit Concept"
+          delete_concept: "Delete Concept"
+          delete_confirm: "Are you sure you want to delete this concept?"
+          details_title: "Concept Details"
+          parent: "Parent Concept"
+          total_records: "Total Records Mapped"
+          description: "Description"
+          created_at: "Created At"
+          metrics_title: "Daily Activity Metrics (Last 30 Days)"
+          recent_records_title: "Recent Records Mapped"
+          type: "Type"
+          record: "Record"
+          distance: "Distance"
+          mapped_at: "Mapped At"
+          no_records: "No records have been mapped to this concept yet."

@@ -1,0 +1,115 @@
+<header class="flex flex-col mb-6">
+  <div class="mb-2">
+    <%= link_to admin_concepts_path, class: "crayons-link flex items-center gap-1 fs-s" do %>
+      &larr; <%= t("views.admin.concepts.show.back_to_concepts") %>
+    <% end %>
+  </div>
+  <div class="flex items-center">
+    <div>
+      <h1 class="crayons-title mb-0"><%= @concept.name %></h1>
+      <p class="color-secondary mb-0"><code><%= @concept.slug %></code></p>
+    </div>
+    <div class="justify-end ml-auto flex gap-2">
+      <%= link_to t("views.admin.concepts.show.edit_concept"), edit_admin_concept_path(@concept), class: "crayons-btn crayons-btn--outlined" %>
+      <%= link_to t("views.admin.concepts.show.delete_concept"), admin_concept_path(@concept), data: { confirm: t("views.admin.concepts.show.delete_confirm") }, method: :delete, class: "crayons-btn crayons-btn--danger" %>
+    </div>
+  </div>
+</header>
+
+<div class="crayons-card p-6 mb-6">
+  <h2 class="crayons-subtitle-1 mb-4"><%= t("views.admin.concepts.show.details_title") %></h2>
+  <div class="grid gap-4 grid-cols-1 md:grid-cols-2">
+    <div>
+      <div class="mb-3">
+        <strong class="color-base-60 fs-xs uppercase block"><%= t("views.admin.concepts.show.parent") %></strong>
+        <span><%= @concept.parent&.name || "-" %></span>
+      </div>
+      <div class="mb-3">
+        <strong class="color-base-60 fs-xs uppercase block"><%= t("views.admin.concepts.show.total_records") %></strong>
+        <span class="fs-lg fw-bold"><%= @concept.concept_memberships.count %></span>
+      </div>
+    </div>
+    <div>
+      <div class="mb-3">
+        <strong class="color-base-60 fs-xs uppercase block"><%= t("views.admin.concepts.show.description") %></strong>
+        <span><%= @concept.description.presence || "-" %></span>
+      </div>
+      <div class="mb-3">
+        <strong class="color-base-60 fs-xs uppercase block"><%= t("views.admin.concepts.show.created_at") %></strong>
+        <span><%= l(@concept.created_at, format: :short) %></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="crayons-card p-6 mb-6">
+  <h2 class="crayons-subtitle-1 mb-4"><%= t("views.admin.concepts.show.metrics_title") %></h2>
+  <div data-controller="admin-concept-chart"
+       data-admin-concept-chart-dates-value="<%= @chart_dates.to_json %>"
+       data-admin-concept-chart-popularity-value="<%= @chart_popularity.to_json %>"
+       data-admin-concept-chart-views-value="<%= @chart_views.to_json %>"
+       data-admin-concept-chart-reactions-value="<%= @chart_reactions.to_json %>">
+  </div>
+</div>
+
+<div class="crayons-card p-6">
+  <h2 class="crayons-subtitle-1 mb-4"><%= t("views.admin.concepts.show.recent_records_title") %></h2>
+  
+  <% if @memberships.any? %>
+    <table class="crayons-table mb-4" width="100%">
+      <thead>
+        <tr>
+          <th scope="col" style="width: 15%;"><%= t("views.admin.concepts.show.type") %></th>
+          <th scope="col" style="width: 55%;"><%= t("views.admin.concepts.show.record") %></th>
+          <th scope="col" style="width: 15%;"><%= t("views.admin.concepts.show.distance") %></th>
+          <th scope="col" style="width: 15%;"><%= t("views.admin.concepts.show.mapped_at") %></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @memberships.each do |membership| %>
+          <% record = membership.record %>
+          <% next if record.nil? %>
+          <tr>
+            <td>
+              <% if membership.record_type == "Article" %>
+                <span class="crayons-badge crayons-badge--brand">Article</span>
+              <% elsif membership.record_type == "Comment" %>
+                <span class="crayons-badge crayons-badge--ghost">Comment</span>
+              <% else %>
+                <span class="crayons-badge crayons-badge--opacity"><%= membership.record_type %></span>
+              <% end %>
+            </td>
+            <td>
+              <% if membership.record_type == "Article" %>
+                <%= link_to record.title, admin_article_path(record.id), class: "fw-bold crayons-link" %>
+                <div class="fs-xs color-base-60">
+                  by @<%= record.user&.username || 'unknown' %>
+                </div>
+              <% elsif membership.record_type == "Comment" %>
+                <%= link_to record.body_markdown&.truncate(100) || "Comment ##{record.id}", admin_comment_path(record.id), class: "crayons-link" %>
+                <div class="fs-xs color-base-60">
+                  by @<%= record.user&.username || 'unknown' %> 
+                  on <%= record.commentable&.respond_to?(:title) ? record.commentable.title : 'post' %>
+                </div>
+              <% else %>
+                <span>ID: <%= record.id %></span>
+              <% end %>
+            </td>
+            <td>
+              <code><%= membership.distance.round(4) %></code>
+            </td>
+            <td>
+              <%= l(membership.created_at, format: :short) %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    
+    <%= paginate @memberships %>
+  <% else %>
+    <div class="crayons-notice p-4" aria-live="polite">
+      <%= t("views.admin.concepts.show.no_records") %>
+    </div>
+  <% end %>
+</div>

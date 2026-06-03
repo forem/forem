@@ -570,3 +570,21 @@ fr:
           text_label: Texte du CTA
           url_label: URL du CTA
           save: Enregistrer les paramètres du CTA
+      concepts:
+        show:
+          back_to_concepts: "Retour aux concepts sémantiques"
+          edit_concept: "Modifier le concept"
+          delete_concept: "Supprimer le concept"
+          delete_confirm: "Êtes-vous sûr de vouloir supprimer ce concept ?"
+          details_title: "Détails du concept"
+          parent: "Concept parent"
+          total_records: "Total des enregistrements associés"
+          description: "Description"
+          created_at: "Créé le"
+          metrics_title: "Indicateurs d'activité quotidienne (30 derniers jours)"
+          recent_records_title: "Enregistrements récents associés"
+          type: "Type"
+          record: "Enregistrement"
+          distance: "Distance"
+          mapped_at: "Associé le"
+          no_records: "Aucun enregistrement n'a encore été associé à ce concept."

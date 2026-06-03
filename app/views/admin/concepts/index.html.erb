@@ -24,7 +24,7 @@
         <% @concepts.each do |concept| %>
           <tr>
             <td>
-              <%= link_to concept.name, edit_admin_concept_path(concept), class: "fw-bold crayons-link" %>
+              <%= link_to concept.name, admin_concept_path(concept), class: "fw-bold crayons-link" %>
               <div class="fs-xs color-base-60"><%= concept.description&.truncate(80) %></div>
             </td>
             <td><code><%= concept.slug %></code></td>
