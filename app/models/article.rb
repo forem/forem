@@ -192,6 +192,9 @@ class Article < ApplicationRecord
   has_many :trend_memberships, dependent: :destroy
   has_many :trends, through: :trend_memberships
 
+  has_many :concept_memberships, as: :record, dependent: :destroy
+  has_many :concepts, through: :concept_memberships
+
   has_many :top_comments,
            lambda {
              where(comments: { score: 11.. }, ancestry: nil, hidden_by_commentable_user: false, deleted: false)
@@ -338,6 +341,8 @@ class Article < ApplicationRecord
   after_update_commit :update_dependent_embeds_if_key_info_changed
 
   after_update_commit :regenerate_summary_if_content_changed
+
+  after_commit :recompile_organization_pages, on: %i[create update destroy]
 
   # The trigger `update_reading_list_document` is used to keep the `articles.reading_list_document` column updated.
   #
@@ -1719,6 +1724,30 @@ class Article < ApplicationRecord
     return if published_at.blank?
 
     self.published_at = nil if published_at > 5.years.from_now
+  end
+
+  def recompile_organization_pages
+    was_published = destroyed? ? published? : published_before_last_save
+    is_published = published?
+    # `{% org_posts %}` only renders published articles, so skip recompilation when
+    # the article is (and was) unpublished.
+    return unless is_published || was_published || saved_change_to_published?
+
+    org_ids_to_recompile = []
+    if destroyed?
+      org_ids_to_recompile << organization_id
+    elsif saved_change_to_organization_id?
+      org_ids_to_recompile << organization_id_before_last_save
+      org_ids_to_recompile << organization_id
+    else
+      org_ids_to_recompile << organization_id
+    end
+
+    org_ids_to_recompile.compact.uniq.each do |org_id|
+      next unless FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[org_id])
+
+      Organizations::RecompilePagesWorker.perform_async(org_id)
+    end
   end
 
   private

@@ -1,0 +1,48 @@
+<header class="flex items-center mb-6">
+  <div>
+    <h1 class="crayons-title mb-0">Semantic Concepts</h1>
+    <p class="color-secondary">Manage registered semantic concepts and track their article membership counts.</p>
+  </div>
+  <div class="justify-end ml-auto">
+    <%= link_to "New Concept", new_admin_concept_path, class: "crayons-btn" %>
+  </div>
+</header>
+
+<div class="crayons-card p-6">
+  <% if @concepts.any? %>
+    <table class="crayons-table" width="100%">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Slug</th>
+          <th scope="col">Parent</th>
+          <th scope="col">Articles Mapped</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @concepts.each do |concept| %>
+          <tr>
+            <td>
+              <%= link_to concept.name, edit_admin_concept_path(concept), class: "fw-bold crayons-link" %>
+              <div class="fs-xs color-base-60"><%= concept.description&.truncate(80) %></div>
+            </td>
+            <td><code><%= concept.slug %></code></td>
+            <td><%= concept.parent&.name || "-" %></td>
+            <td><%= concept.concept_memberships.count %></td>
+            <td>
+              <div class="flex gap-2">
+                <%= link_to "Edit", edit_admin_concept_path(concept), class: "crayons-btn crayons-btn--outlined crayons-btn--s" %>
+                <%= link_to "Delete", admin_concept_path(concept), data: { confirm: "Are you sure you want to delete this concept?" }, method: :delete, class: "crayons-btn crayons-btn--danger crayons-btn--s" %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <div class="crayons-notice p-4" aria-live="polite">
+      No concepts have been registered yet. Click "New Concept" to create one.
+    </div>
+  <% end %>
+</div>

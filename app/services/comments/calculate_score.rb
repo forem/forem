@@ -15,6 +15,10 @@ module Comments
       previous_score = comment.score.to_i
       comment.update_columns(score: score, updated_at: Time.current)
 
+      if score >= 3 && comment.semantic_embedding.nil?
+        Comments::GenerateEmbeddingWorker.perform_async(comment.id)
+      end
+
       enqueue_article_activity_update(previous_score, score) if comment.commentable_type == "Article"
 
       comment.user&.touch(:last_comment_at)
