@@ -281,3 +281,24 @@ ok github.com/agentwego/noema/services/api/internal/legacyimport
 ```
 
 The bundle composes `UserDTO`, `ArticleDTO`, and the Ory Kratos `UserIdentityBoundary` from checked-in fixture data only. It does not contact Kratos, PostgreSQL, S3, Elasticsearch/OpenSearch, Kubernetes, or any external service.
+
+## M0-T33 Explicit Forem User Bundle Verification
+
+The legacy import boundary keeps using `task legacyimport:test`, with a focused guard for split article/user export inputs:
+
+```bash
+GOFLAGS=-mod=mod go test ./services/api/internal/legacyimport -run 'TestBuildForemArticleUserIdentityBundleAcceptsExplicitForemUser|TestBuildForemArticleUserIdentityBundleComposesCleanDTOsAndKratosBoundary' -count=1 -v
+```
+
+Expected local-only output shape:
+
+```text
+=== RUN   TestBuildForemArticleUserIdentityBundleComposesCleanDTOsAndKratosBoundary
+--- PASS: TestBuildForemArticleUserIdentityBundleComposesCleanDTOsAndKratosBoundary
+=== RUN   TestBuildForemArticleUserIdentityBundleAcceptsExplicitForemUser
+--- PASS: TestBuildForemArticleUserIdentityBundleAcceptsExplicitForemUser
+PASS
+ok github.com/agentwego/noema/services/api/internal/legacyimport
+```
+
+The M0-T33 guard verifies that `ForemArticleUserIdentityImport.User` can carry the Forem author/user input explicitly while the bundle still emits clean Noema domain DTOs and an Ory Kratos identity mapping boundary. It does not contact Kratos, PostgreSQL, S3, Elasticsearch/OpenSearch, Kubernetes, or any external service.

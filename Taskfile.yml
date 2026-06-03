@@ -168,6 +168,7 @@ tasks:
         grep -nE 'M0-T30|legacyimport:test|Forem article/user|MapForemArticle|MapForemUser|clean domain DTO' docs/agentwego/execution-board.md docs/agentwego/legacy-import-boundary.md docs/agentwego/local-verification-entrypoints.md services/api/internal/legacyimport/forem.go services/api/internal/legacyimport/forem_test.go
         grep -nE 'M0-T31|identity:test|Ory Kratos|KratosIdentityImport|MapForemUserIdentity|self-service flow' docs/agentwego/execution-board.md docs/agentwego/legacy-import-boundary.md docs/agentwego/identity-options.md docs/agentwego/local-verification-entrypoints.md services/api/internal/identity/kratos.go services/api/internal/legacyimport/identity.go
         grep -nE 'M0-T32|BuildForemArticleUserIdentityBundle|ArticleUserIdentityBundle|ForemArticleUserIdentityImport|Kratos boundary' docs/agentwego/execution-board.md docs/agentwego/legacy-import-boundary.md docs/agentwego/identity-options.md docs/agentwego/local-verification-entrypoints.md services/api/internal/legacyimport/bundle.go services/api/internal/legacyimport/bundle_test.go
+        grep -nE 'M0-T33|explicit Forem user|AcceptsExplicitForemUser|User.*ForemUser|Ory Kratos identity mapping' docs/agentwego/execution-board.md docs/agentwego/legacy-import-boundary.md docs/agentwego/identity-options.md docs/agentwego/local-verification-entrypoints.md services/api/internal/legacyimport/bundle.go services/api/internal/legacyimport/bundle_test.go
 
   verify:local:
     desc: Run low-risk local verification for the current Noema M0 slices.

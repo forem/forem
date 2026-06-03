@@ -97,7 +97,7 @@ M0-T31 adds `MapForemUserIdentity`, which combines:
 
 This intentionally excludes legacy OAuth tokens, secrets, encrypted passwords, Devise lock/remember/recover state, and raw OmniAuth dumps. Those fields are credentials or framework state; they should not enter the clean import DTO path.
 
-M0-T32 composes the article/user legacy import DTOs with this same Ory boundary through `BuildForemArticleUserIdentityBundle`. That bundle is still a local preview/spec object: it carries clean `UserDTO`, clean `ArticleDTO`, and `UserIdentityBoundary`, but it does not create Kratos identities, assert sessions, run self-service flows, or introduce a custom Noema auth store.
+M0-T32 composes the article/user legacy import DTOs with this same Ory boundary through `BuildForemArticleUserIdentityBundle`. That bundle is still a local preview/spec object: it carries clean `UserDTO`, clean `ArticleDTO`, and `UserIdentityBoundary`, but it does not create Kratos identities, assert sessions, run self-service flows, or introduce a custom Noema auth store. M0-T33 keeps that identity posture while allowing the composed bundle to receive an explicit `ForemUser` for split article/user exports; the explicit user still maps through `MapForemUserIdentity` into Ory Kratos identity traits and metadata only.
 
 ## Inventory and edge evidence
 

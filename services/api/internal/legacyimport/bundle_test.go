@@ -39,3 +39,26 @@ func TestBuildForemArticleUserIdentityBundleComposesCleanDTOsAndKratosBoundary(t
 		t.Fatalf("missing legacy provider subject in Kratos admin metadata: %+v", bundle.Identity.KratosIdentity.MetadataAdmin)
 	}
 }
+
+func TestBuildForemArticleUserIdentityBundleAcceptsExplicitForemUser(t *testing.T) {
+	payload := readFixture(t)
+	article := payload.Article
+	article.User = legacyimport.ForemUser{}
+	article.UserID = payload.Article.User.ID
+
+	bundle, err := legacyimport.BuildForemArticleUserIdentityBundle(legacyimport.ForemArticleUserIdentityImport{
+		Article: article,
+		User:    payload.Article.User,
+		Email:   "alice@example.com",
+	})
+	if err != nil {
+		t.Fatalf("BuildForemArticleUserIdentityBundle returned error: %v", err)
+	}
+
+	if bundle.User.ID != "42" || bundle.Article.AuthorID != "42" {
+		t.Fatalf("explicit user was not mapped into clean user/article DTOs: %+v", bundle)
+	}
+	if bundle.Identity.KratosIdentity.MetadataAdmin["legacy_forem_user_id"] != "42" {
+		t.Fatalf("explicit user was not reserved in Kratos admin metadata: %+v", bundle.Identity.KratosIdentity.MetadataAdmin)
+	}
+}

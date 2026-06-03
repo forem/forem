@@ -6,6 +6,7 @@ package legacyimport
 // sessions, cookies, and any external provider I/O.
 type ForemArticleUserIdentityImport struct {
 	Article            ForemArticle            `json:"article"`
+	User               ForemUser               `json:"user"`
 	Email              string                  `json:"email"`
 	ExternalIdentities []ForemExternalIdentity `json:"external_identities"`
 }
@@ -21,18 +22,27 @@ type ArticleUserIdentityBundle struct {
 }
 
 func BuildForemArticleUserIdentityBundle(input ForemArticleUserIdentityImport) (ArticleUserIdentityBundle, error) {
-	user, err := MapForemUser(input.Article.User)
+	legacyUser := input.User
+	if legacyUser.ID == 0 {
+		legacyUser = input.Article.User
+	}
+
+	user, err := MapForemUser(legacyUser)
 	if err != nil {
 		return ArticleUserIdentityBundle{}, err
 	}
 
-	article, err := MapForemArticle(input.Article)
+	articleInput := input.Article
+	if articleInput.User.ID == 0 {
+		articleInput.User = legacyUser
+	}
+	article, err := MapForemArticle(articleInput)
 	if err != nil {
 		return ArticleUserIdentityBundle{}, err
 	}
 
 	identityBoundary, err := MapForemUserIdentity(ForemUserIdentity{
-		User:               input.Article.User,
+		User:               legacyUser,
 		Email:              input.Email,
 		ExternalIdentities: input.ExternalIdentities,
 	})

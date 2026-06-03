@@ -228,7 +228,8 @@ Relevant legacy rows and edges remain the same high-coupling import surface from
 M0-T32 adds:
 
 - `ForemArticleUserIdentityImport`
-  - `Article` (`ForemArticle`, with embedded `ForemUser`);
+  - `Article` (`ForemArticle`, with embedded `ForemUser` for fixture-compatible exports);
+  - `User` (`ForemUser`, optional explicit author/user input for split article/user exports);
   - `Email`;
   - `ExternalIdentities` (`[]ForemExternalIdentity`).
 - `ArticleUserIdentityBundle`
@@ -262,6 +263,32 @@ GOFLAGS=-mod=mod go test ./services/api/internal/legacyimport -run 'TestBuildFor
 ```
 
 This remains fixture-only and local-only: no production DB, real Secret, S3, Elasticsearch/OpenSearch, Kratos, deploy, or irreversible mutation.
+
+## M0-T33: Explicit Forem user input for split article/user exports
+
+M0-T33 keeps the same legacy import boundary but removes an avoidable coupling in the composed bundle: callers may now pass the article and user as separate clean legacy inputs instead of requiring the article fixture to embed the full user. This better matches Forem article/user export inventory while preserving the target identity posture: auth/session/user identity still points at Ory Kratos identity/session/self-service flow boundaries, and this slice is only a local mock/spec seam.
+
+### Contract change
+
+`ForemArticleUserIdentityImport` now accepts:
+
+- `Article` (`ForemArticle`);
+- `User` (`ForemUser`, optional but preferred for split exports);
+- `Email`;
+- `ExternalIdentities`.
+
+`BuildForemArticleUserIdentityBundle` resolves the legacy user from explicit `User` first, then falls back to `Article.User` for existing fixture compatibility. The resolved user feeds both the clean `UserDTO` and `MapForemUserIdentity`, while `MapForemArticle` still owns article ID/slug/title/body/author validation. This preserves a single mapping source for Forem article/user -> Noema DTOs and a separate Ory Kratos identity mapping boundary.
+
+### Verification
+
+```bash
+GOFLAGS=-mod=mod go test ./services/api/internal/legacyimport -run 'TestBuildForemArticleUserIdentityBundleAcceptsExplicitForemUser|TestBuildForemArticleUserIdentityBundleComposesCleanDTOsAndKratosBoundary' -count=1 -v
+task legacyimport:test
+task identity:test
+task agentwego:gates
+```
+
+This remains local-only and fixture-only: no production DB, real Secret, S3, Elasticsearch/OpenSearch, Kratos API/admin/public/self-service call, deploy, or irreversible mutation.
 
 ## Boundaries deferred to later slices
 
