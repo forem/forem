@@ -2,6 +2,7 @@ package search_test
 
 import (
 	"context"
+	"errors"
 	"testing"
 
 	"github.com/agentwego/noema/services/api/internal/search"
@@ -45,10 +46,6 @@ func TestReadAliasesUsePrefixAndDocumentFamily(t *testing.T) {
 func TestNoopProviderIsBootstrapOnlyAndDoesNotTouchExternalSearch(t *testing.T) {
 	provider := search.NewNoopProvider()
 
-	if err := provider.EnsureIndexes(context.Background()); err != nil {
-		t.Fatalf("EnsureIndexes returned error: %v", err)
-	}
-
 	result, err := provider.Search(context.Background(), search.SearchRequest{Query: "中文 english", Limit: 10})
 	if err != nil {
 		t.Fatalf("Search returned error: %v", err)
@@ -58,6 +55,30 @@ func TestNoopProviderIsBootstrapOnlyAndDoesNotTouchExternalSearch(t *testing.T) 
 	}
 	if result.Provider != "noop" {
 		t.Fatalf("Provider = %q, want noop", result.Provider)
+	}
+}
+
+func TestNoopProviderRejectsIndexMutationMethods(t *testing.T) {
+	provider := search.NewNoopProvider()
+
+	mutationChecks := []struct {
+		name string
+		err  error
+	}{
+		{name: "EnsureIndexes", err: provider.EnsureIndexes(context.Background())},
+		{name: "UpsertArticle", err: provider.UpsertArticle(context.Background(), search.ArticleDocument{ID: "a1"})},
+		{name: "DeleteArticle", err: provider.DeleteArticle(context.Background(), "a1")},
+		{name: "UpsertComment", err: provider.UpsertComment(context.Background(), search.CommentDocument{ID: "c1"})},
+		{name: "DeleteComment", err: provider.DeleteComment(context.Background(), "c1")},
+		{name: "UpsertUser", err: provider.UpsertUser(context.Background(), search.UserDocument{ID: "u1"})},
+		{name: "UpsertTag", err: provider.UpsertTag(context.Background(), search.TagDocument{ID: "t1"})},
+		{name: "BulkIndex", err: provider.BulkIndex(context.Background(), []search.Document{search.ArticleDocument{ID: "a1"}})},
+	}
+
+	for _, check := range mutationChecks {
+		if !errors.Is(check.err, search.ErrNoopReadOnly) {
+			t.Fatalf("%s error = %v, want ErrNoopReadOnly", check.name, check.err)
+		}
 	}
 }
 
