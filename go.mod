@@ -1,6 +1,6 @@
 module github.com/agentwego/noema
 
-go 1.24
+go 1.26
 
 require (
 	gorm.io/driver/postgres v1.6.0

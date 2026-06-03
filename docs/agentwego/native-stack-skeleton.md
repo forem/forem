@@ -6,7 +6,7 @@ This artifact opens the first native Go API seam under `services/api` without to
 
 The skeleton is intentionally small:
 
-- `go.mod` at repo root with module `github.com/agentwego/noema`.
+- `go.mod` at repo root with module `github.com/agentwego/noema`; M0-T36 sets the native Go baseline to `go 1.26`.
 - `services/api/cmd/api` starts a local HTTP server.
 - `services/api/internal/config` reads explicit native runtime knobs. Database DSNs are empty by default and only come from environment/Secret handoff via `NOEMA_DATABASE_URL`; local tests use disposable placeholder DSNs only.
 - `services/api/internal/http` exposes `/healthz` for local smoke checks, a minimal `/search` contract endpoint backed by the search provider seam, `POST /legacy-import/preview` for the M0-T34 local import preview service/API entry, and `POST /legacy-import/batch-preview` for the M0-T35 mixed batch preview/API entry. Health reports the actual injected provider identity via `Provider.Name()`, including local/test unknown-provider fallback to noop; non-local envs fail fast on unavailable providers. Unsupported `/healthz`, `/legacy-import/preview`, and `/legacy-import/batch-preview` methods return stable JSON `405`, blank search queries return JSON `400`, and unknown routes return JSON `404`.
