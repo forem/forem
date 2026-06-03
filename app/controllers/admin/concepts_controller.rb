@@ -27,7 +27,6 @@ module Admin
       @chart_articles = @daily_metrics.map(&:articles_count)
       @chart_comments = @daily_metrics.map(&:comments_count)
     end
-
     def new
       @concept = Concept.new
     end

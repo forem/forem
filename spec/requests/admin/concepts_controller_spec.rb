@@ -33,7 +33,6 @@ RSpec.describe "Admin::ConceptsController", type: :request do
       expect(response.body).to include(membership.record.title)
     end
   end
-
   describe "POST /admin/content_manager/concepts" do
     before { sign_in admin }
 
