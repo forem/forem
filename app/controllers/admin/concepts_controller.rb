@@ -2,7 +2,7 @@ module Admin
   class ConceptsController < Admin::ApplicationController
     layout "admin"
 
-    before_action :set_concept, only: %i[show edit update destroy]
+    before_action :set_concept, only: %i[show edit update destroy trigger_lookback]
 
     def index
       @concepts = Concept.includes(:parent).order(:name)
@@ -75,6 +75,19 @@ module Admin
         flash[:error] = I18n.t("admin.concepts_controller.failed_deletion")
       end
       redirect_to admin_concepts_path
+    end
+
+    def trigger_lookback
+      days = params[:days].to_i
+
+      if days <= 0
+        flash[:error] = I18n.t("admin.concepts_controller.invalid_days")
+      else
+        Concepts::LookbackWorker.perform_async(@concept.id, days)
+        flash[:success] = I18n.t("admin.concepts_controller.lookback_triggered", days: days)
+      end
+
+      redirect_to admin_concept_path(@concept)
     end
 
     private

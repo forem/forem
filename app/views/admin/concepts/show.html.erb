@@ -28,6 +28,12 @@
         <strong class="color-base-60 fs-xs uppercase block"><%= t("views.admin.concepts.show.total_records") %></strong>
         <span class="fs-lg fw-bold"><%= @concept.concept_memberships.count %></span>
       </div>
+      <div class="mb-3">
+        <strong class="color-base-60 fs-xs uppercase block"><%= t("views.admin.concepts.show.max_lookback_days") %></strong>
+        <span>
+          <%= @concept.max_lookback_days > 0 ? "#{@concept.max_lookback_days} days" : t("views.admin.concepts.show.max_lookback_days_none") %>
+        </span>
+      </div>
     </div>
     <div>
       <div class="mb-3">
@@ -40,6 +46,19 @@
       </div>
     </div>
   </div>
+</div>
+
+<div class="crayons-card p-6 mb-6">
+  <h2 class="crayons-subtitle-1 mb-2"><%= t("views.admin.concepts.show.lookback_title") %></h2>
+  <p class="fs-sm color-secondary mb-4"><%= t("views.admin.concepts.show.lookback_desc") %></p>
+  
+  <%= form_with url: trigger_lookback_admin_concept_path(@concept), method: :post, local: true, class: "flex items-end gap-3" do |f| %>
+    <div class="crayons-field mb-0">
+      <%= f.label :days, t("views.admin.concepts.show.lookback_days"), class: "crayons-field__label block mb-1" %>
+      <%= f.number_field :days, value: 30, min: 1, class: "crayons-textfield", style: "max-width: 120px;", required: true %>
+    </div>
+    <%= f.submit t("views.admin.concepts.show.lookback_button"), class: "crayons-btn" %>
+  <% end %>
 </div>
 
 <div class="crayons-card p-6 mb-6">
