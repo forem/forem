@@ -59,6 +59,7 @@ RSpec.describe Trackers::CustomerioCdp do
     # Segment::Analytics implements #track via method_missing, so instance_double's
     # signature verification fails on it. Plain double is the correct fallback here.
     let(:client) { double(track: nil) } # rubocop:disable RSpec/VerifiedDoubles
+    let(:user) { create(:user) }
 
     before do
       allow(ApplicationConfig).to receive(:[]).and_call_original
@@ -67,53 +68,63 @@ RSpec.describe Trackers::CustomerioCdp do
       allow(Segment::Analytics).to receive(:new).and_return(client)
     end
 
-    it "constructs the client with the configured write key and default host" do
-      adapter.track(event_name: "x", user_ids: [1], properties: {})
+    it "constructs the client with the write key, default host, and the CDP batch path" do
+      adapter.track(event_name: "x", user_ids: [user.id], properties: {})
 
+      # Customer.io CDP does not implement analytics-ruby's default /v1/import path.
       expect(Segment::Analytics).to have_received(:new).with(
         write_key: "key123",
         host: "cdp.customer.io",
+        path: "/v1/batch",
       )
     end
 
     it "uses CUSTOMERIO_CDP_HOST override when set" do
       allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_CDP_HOST").and_return("cdp-eu.customer.io")
 
-      adapter.track(event_name: "x", user_ids: [1], properties: {})
+      adapter.track(event_name: "x", user_ids: [user.id], properties: {})
 
       expect(Segment::Analytics).to have_received(:new).with(
         write_key: "key123",
         host: "cdp-eu.customer.io",
+        path: "/v1/batch",
       )
     end
 
-    it "calls client.track once per user_id" do
-      adapter.track(event_name: "article_created", user_ids: [1, 2], properties: { "title" => "t" })
+    # DEV ids are not synced to Core yet, so people are identified by email.
+    it "identifies users by their current email, not their DEV id" do
+      adapter.track(event_name: "user_updated", user_ids: [user.id], properties: { "id" => user.id })
 
       expect(client).to have_received(:track).with(
-        user_id: "1", event: "article_created", properties: { "title" => "t" }, timestamp: nil,
+        user_id: user.email, event: "user_updated", properties: { "id" => user.id }, timestamp: nil,
       )
-      expect(client).to have_received(:track).with(
-        user_id: "2", event: "article_created", properties: { "title" => "t" }, timestamp: nil,
-      )
+    end
+
+    it "calls client.track once per user" do
+      other_user = create(:user)
+      adapter.track(event_name: "article_created", user_ids: [user.id, other_user.id],
+                    properties: { "title" => "t" })
+
+      expect(client).to have_received(:track).with(hash_including(user_id: user.email))
+      expect(client).to have_received(:track).with(hash_including(user_id: other_user.email))
     end
 
     it "passes timestamp through" do
       ts = Time.iso8601("2026-05-01T12:00:00Z")
-      adapter.track(event_name: "x", user_ids: [1], properties: {}, timestamp: ts)
+      adapter.track(event_name: "x", user_ids: [user.id], properties: {}, timestamp: ts)
 
       expect(client).to have_received(:track).with(hash_including(timestamp: ts))
     end
 
-    it "stringifies user ids" do
-      adapter.track(event_name: "x", user_ids: [42], properties: {})
+    it "skips ids that no longer resolve to a user" do
+      adapter.track(event_name: "x", user_ids: [User.maximum(:id).to_i + 1], properties: {})
 
-      expect(client).to have_received(:track).with(hash_including(user_id: "42"))
+      expect(client).not_to have_received(:track)
     end
 
     it "memoizes the client across multiple calls on the same instance" do
-      adapter.track(event_name: "x", user_ids: [1], properties: {})
-      adapter.track(event_name: "y", user_ids: [2], properties: {})
+      adapter.track(event_name: "x", user_ids: [user.id], properties: {})
+      adapter.track(event_name: "y", user_ids: [user.id], properties: {})
 
       expect(Segment::Analytics).to have_received(:new).once
     end
