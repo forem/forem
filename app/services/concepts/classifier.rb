@@ -1,6 +1,6 @@
 module Concepts
   class Classifier
-    DEFAULT_THRESHOLD = 0.14
+    DEFAULT_THRESHOLD = 0.23
 
     def initialize(record)
       @record = record

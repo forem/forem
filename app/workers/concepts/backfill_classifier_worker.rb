@@ -17,7 +17,7 @@ module Concepts
       matching_articles = Article.published
         .select("articles.id, (semantic_embedding <=> #{quoted_vector}) AS computed_distance")
         .where.not(semantic_embedding: nil)
-        .where("semantic_embedding <=> #{quoted_vector} <= ?", 0.14)
+        .where("semantic_embedding <=> #{quoted_vector} <= ?", Concepts::Classifier::DEFAULT_THRESHOLD)
         .to_a
 
       memberships = matching_articles.map do |art|
@@ -35,7 +35,7 @@ module Concepts
       matching_comments = Comment
         .select("comments.id, (semantic_embedding <=> #{quoted_vector}) AS computed_distance")
         .where.not(semantic_embedding: nil)
-        .where("semantic_embedding <=> #{quoted_vector} <= ?", 0.14)
+        .where("semantic_embedding <=> #{quoted_vector} <= ?", Concepts::Classifier::DEFAULT_THRESHOLD)
         .to_a
 
       matching_comments.each do |com|
