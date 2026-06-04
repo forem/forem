@@ -9,7 +9,8 @@ module Trackers
     DEFAULT_HOST = "cdp.customer.io".freeze
 
     def enabled?
-      ApplicationConfig["CUSTOMERIO_CDP_WRITE_KEY"].present?
+      ApplicationConfig["CUSTOMERIO_CDP_WRITE_KEY"].present? &&
+        Settings::General.customerio_cdp_enabled?
     end
 
     def track(event_name:, user_ids:, properties:, timestamp: nil)
