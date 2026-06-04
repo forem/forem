@@ -35,6 +35,21 @@ RSpec.describe Concepts::LookbackWorker, type: :worker do
         expect(concept.comments).to contain_exactly(com_within_range)
         expect(concept.reload.max_lookback_days).to eq(40)
       end
+
+      it "excludes records with embedding distance greater than 0.14" do
+        art_far = create(:article, published: true)
+        art_far.update_columns(semantic_embedding: embedding2, published_at: 10.days.ago)
+        
+        com_far = create(:comment)
+        com_far.update_columns(semantic_embedding: embedding2, created_at: 10.days.ago)
+
+        expect {
+          described_class.new.perform(concept.id, 40)
+        }.to change(ConceptMembership, :count).by(2)
+
+        expect(concept.articles).not_to include(art_far)
+        expect(concept.comments).not_to include(com_far)
+      end
     end
 
     context "when running subsequent lookbacks (e.g. from 40 to 70 days)" do
@@ -84,6 +99,26 @@ RSpec.describe Concepts::LookbackWorker, type: :worker do
         }.not_to change(ConceptMembership, :count)
 
         expect(concept.reload.max_lookback_days).to eq(40)
+      end
+    end
+
+    context "with invalid arguments" do
+      it "returns early when the concept does not exist" do
+        expect(Article).not_to receive(:published)
+        expect {
+          described_class.new.perform(-1, 40)
+        }.not_to change(ConceptMembership, :count)
+      end
+
+      it "returns early when days is less than or equal to 0" do
+        expect(Article).not_to receive(:published)
+        expect {
+          described_class.new.perform(concept.id, 0)
+        }.not_to change(ConceptMembership, :count)
+
+        expect {
+          described_class.new.perform(concept.id, -5)
+        }.not_to change(ConceptMembership, :count)
       end
     end
   end
