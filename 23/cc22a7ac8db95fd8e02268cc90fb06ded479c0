@@ -1,7 +1,21 @@
+spec/services/trackable/registry_spec.rb
+  s_0192b25a49feab::t_1d4f6f7d239b4c 86-106
+app/services/trackable/registry.rb
+  s_0192b25a49feab::t_4caf8224125891 29-32,34
 ---
 {
   "schema_version": "authorship/3.0.0",
-  "git_ai_version": "1.5.3",
+  "git_ai_version": "1.5.2",
   "base_commit_sha": "23cc22a7ac8db95fd8e02268cc90fb06ded479c0",
-  "prompts": {}
+  "prompts": {},
+  "sessions": {
+    "s_0192b25a49feab": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d9c11a62-ccb3-46a3-b898-39bcb6105a91",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Jon Gottfried <jon@majorleaguehacking.com>"
+    }
+  }
 }

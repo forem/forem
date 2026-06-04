@@ -1,7 +1,28 @@
+app/models/settings/general.rb
+  s_0192b25a49feab::t_fba39015792ab2 45-48
+config/locales/lib/en.yml
+  s_0192b25a49feab::t_601bbcac834716 110-111
+app/views/admin/settings/forms/_ahoy.html.erb
+  s_0192b25a49feab::t_02e89864de3603 17-21
+spec/models/settings/general_spec.rb
+  s_0192b25a49feab::t_c3a0d84aff978f 101,105-106
+  s_0192b25a49feab::t_734a6fc1004c59 99-100,102-104,107-109
+app/lib/constants/settings/general.rb
+  s_0192b25a49feab::t_ccd4fba232f33f 11-13
 ---
 {
   "schema_version": "authorship/3.0.0",
-  "git_ai_version": "1.5.3",
+  "git_ai_version": "1.5.2",
   "base_commit_sha": "a78dfefa639062174720e162a79b2092d975c831",
-  "prompts": {}
+  "prompts": {},
+  "sessions": {
+    "s_0192b25a49feab": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d9c11a62-ccb3-46a3-b898-39bcb6105a91",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Jon Gottfried <jon@majorleaguehacking.com>"
+    }
+  }
 }
