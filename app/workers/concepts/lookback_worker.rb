@@ -75,7 +75,12 @@ module Concepts
 
       # 3. Bulk upsert memberships
       if memberships.any?
-        ConceptMembership.upsert_all(memberships, unique_by: %i[concept_id record_type record_id])
+        ConceptMembership.upsert_all(
+          memberships,
+          unique_by: %i[concept_id record_type record_id],
+          update_only: %i[distance updated_at],
+          record_timestamps: false
+        )
       end
 
       # 4. Update max_lookback_days
