@@ -106,6 +106,17 @@ RSpec.describe "Admin::ConceptsController", type: :request do
         expect(flash[:error]).to be_present
         expect(Concepts::LookbackWorker).not_to have_received(:perform_async)
       end
+
+      it "does not enqueue when requested days is less than or equal to max_lookback_days" do
+        concept.update!(max_lookback_days: 40)
+        allow(Concepts::LookbackWorker).to receive(:perform_async)
+
+        post trigger_lookback_admin_concept_path(concept), params: { days: 30 }
+
+        expect(response).to redirect_to(admin_concept_path(concept))
+        expect(flash[:error]).to be_present
+        expect(Concepts::LookbackWorker).not_to have_received(:perform_async)
+      end
     end
   end
 end
