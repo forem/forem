@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_06_04_143500) do
+ActiveRecord::Schema[7.0].define(version: 2026_06_04_185727) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -255,6 +255,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_04_143500) do
     t.index ["published"], name: "index_articles_on_published"
     t.index ["published_at"], name: "index_articles_on_published_at"
     t.index ["reading_list_document"], name: "index_articles_on_reading_list_document", using: :gin
+    t.index ["semantic_embedding"], name: "index_articles_on_semantic_embedding", opclass: :vector_cosine_ops, using: :hnsw
     t.index ["semantic_interests"], name: "index_articles_on_semantic_interests", using: :gin
     t.index ["slug", "user_id"], name: "index_articles_on_slug_and_user_id", unique: true
     t.index ["subforem_id", "published", "score", "published_at"], name: "index_articles_on_subforem_published_score_published_at"
@@ -486,7 +487,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_04_143500) do
     t.integer "reactions_count", default: 0, null: false
     t.boolean "receive_notifications", default: true
     t.integer "score", default: 0
-    t.vector "semantic_embedding", limit: 768
     t.integer "spaminess_rating", default: 0
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
@@ -501,50 +501,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_04_143500) do
     t.index ["hidden_by_commentable_user"], name: "index_comments_on_hidden_by_commentable_user", where: "(hidden_by_commentable_user = false)"
     t.index ["id"], name: "index_comments_negative_public_reactions_count", where: "(public_reactions_count < 0)"
     t.index ["score"], name: "index_comments_on_score"
-    t.index ["semantic_embedding"], name: "index_comments_on_semantic_embedding", opclass: :vector_cosine_ops, using: :hnsw
     t.index ["user_id"], name: "index_comments_on_user_id"
     t.check_constraint "public_reactions_count >= 0", name: "check_comments_public_reactions_count_non_negative"
-  end
-
-  create_table "concept_daily_metrics", force: :cascade do |t|
-    t.integer "articles_count", default: 0, null: false
-    t.integer "comments_count", default: 0, null: false
-    t.bigint "concept_id", null: false
-    t.datetime "created_at", null: false
-    t.date "date", null: false
-    t.integer "page_views", default: 0, null: false
-    t.float "popularity_score", default: 0.0, null: false
-    t.integer "reactions_count", default: 0, null: false
-    t.datetime "updated_at", null: false
-    t.index ["concept_id", "date"], name: "index_concept_daily_metrics_uniqueness", unique: true
-    t.index ["concept_id"], name: "index_concept_daily_metrics_on_concept_id"
-    t.index ["date"], name: "index_concept_daily_metrics_on_date"
-  end
-
-  create_table "concept_memberships", force: :cascade do |t|
-    t.bigint "concept_id", null: false
-    t.datetime "created_at", null: false
-    t.float "distance", null: false
-    t.bigint "record_id", null: false
-    t.string "record_type", null: false
-    t.datetime "updated_at", null: false
-    t.index ["concept_id", "record_type", "record_id"], name: "index_concept_memberships_uniqueness", unique: true
-    t.index ["concept_id"], name: "index_concept_memberships_on_concept_id"
-    t.index ["record_type", "record_id"], name: "index_concept_memberships_on_record_type_and_record_id"
-  end
-
-  create_table "concepts", force: :cascade do |t|
-    t.vector "anchor_embedding", limit: 768, null: false
-    t.datetime "created_at", null: false
-    t.text "description"
-    t.integer "max_lookback_days", default: 0, null: false
-    t.string "name", null: false
-    t.bigint "parent_id"
-    t.string "slug", null: false
-    t.datetime "updated_at", null: false
-    t.index ["anchor_embedding"], name: "index_concepts_on_anchor_embedding", opclass: :vector_cosine_ops, using: :hnsw
-    t.index ["parent_id"], name: "index_concepts_on_parent_id"
-    t.index ["slug"], name: "index_concepts_on_slug", unique: true
   end
 
   create_table "consumer_apps", force: :cascade do |t|
@@ -1787,33 +1745,16 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_04_143500) do
     t.index ["taggings_count"], name: "index_tags_on_taggings_count"
   end
 
-  create_table "trend_memberships", force: :cascade do |t|
-    t.bigint "article_id", null: false
-    t.datetime "created_at", null: false
-    t.float "distance", null: false
-    t.bigint "trend_id", null: false
-    t.datetime "updated_at", null: false
-    t.index ["article_id"], name: "index_trend_memberships_on_article_id"
-    t.index ["trend_id", "article_id"], name: "index_trend_memberships_uniqueness", unique: true
-  end
-
   create_table "trends", force: :cascade do |t|
-    t.integer "articles_count", default: 0, null: false
-    t.vector "centroid_embedding", limit: 768, null: false
-    t.string "cover_image"
     t.datetime "created_at", null: false
-    t.text "description"
-    t.datetime "first_observed_at", null: false
-    t.text "key_questions", default: [], array: true
-    t.datetime "last_observed_at", null: false
-    t.string "name", null: false
-    t.float "score", default: 0.0, null: false
-    t.string "slug", null: false
-    t.bigint "tag_id"
+    t.datetime "expiry_date", null: false
+    t.text "full_content_description", null: false
+    t.text "public_description", null: false
+    t.string "short_title", null: false
+    t.bigint "subforem_id", null: false
     t.datetime "updated_at", null: false
-    t.index ["centroid_embedding"], name: "index_trends_on_centroid_embedding", opclass: :vector_cosine_ops, using: :hnsw
-    t.index ["slug"], name: "index_trends_on_slug", unique: true
-    t.index ["tag_id"], name: "index_trends_on_tag_id"
+    t.index ["expiry_date"], name: "index_trends_on_expiry_date"
+    t.index ["subforem_id"], name: "index_trends_on_subforem_id"
   end
 
   create_table "tweets", force: :cascade do |t|
@@ -1864,6 +1805,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_04_143500) do
     t.jsonb "recently_viewed_articles", default: []
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["interest_embedding"], name: "index_user_activities_on_interest_embedding", opclass: :vector_cosine_ops, using: :hnsw
     t.index ["user_id"], name: "index_user_activities_on_user_id"
   end
 
@@ -2165,8 +2107,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_04_143500) do
   add_foreign_key "collections", "organizations", on_delete: :nullify
   add_foreign_key "collections", "users", on_delete: :cascade
   add_foreign_key "comments", "users", on_delete: :cascade
-  add_foreign_key "concept_daily_metrics", "concepts", on_delete: :cascade
-  add_foreign_key "concept_memberships", "concepts", on_delete: :cascade
   add_foreign_key "context_notes", "articles"
   add_foreign_key "context_notes", "tags"
   add_foreign_key "credits", "organizations", on_delete: :restrict
@@ -2247,9 +2187,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_04_143500) do
   add_foreign_key "tag_subforem_relationships", "tags"
   add_foreign_key "taggings", "tags", on_delete: :cascade
   add_foreign_key "tags", "badges", on_delete: :nullify
-  add_foreign_key "trend_memberships", "articles"
-  add_foreign_key "trend_memberships", "trends"
-  add_foreign_key "trends", "tags", on_delete: :nullify
+  add_foreign_key "trends", "subforems"
   add_foreign_key "tweets", "users", on_delete: :nullify
   add_foreign_key "user_activities", "users"
   add_foreign_key "user_blocks", "users", column: "blocked_id"
