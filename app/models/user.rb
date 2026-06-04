@@ -822,8 +822,9 @@ class User < ApplicationRecord
   end
 
   # Curated payload — do NOT ship the full users row across the boundary.
+  # String keys keep the job arguments JSON-safe for Sidekiq.strict_args!.
   def trackable_payload
-    { id: id, username: username, email: email, name: name }
+    { "id" => id, "username" => username, "email" => email, "name" => name }
   end
 
   # Emit user_updated only on deliberate profile edits. Forem touches
@@ -835,9 +836,11 @@ class User < ApplicationRecord
     enqueue_trackable_event("user_updated")
   end
 
-  # Two gates: the global admin master switch, then the per-account rollout flag.
+  # Two gates: the admin master switch, then the per-account rollout flag.
+  # The setting is resolved via the default subforem (like mailers do) because the
+  # admin panel saves it subforem-scoped and callbacks may run without request context.
   def trackable_events_skipped?
-    return true unless Settings::General.customerio_cdp_enabled?
+    return true unless Settings::General.customerio_cdp_enabled(subforem_id: Subforem.cached_default_id)
     return true unless FeatureFlag.enabled_for_user?(:dev_core_user_sync, self)
 
     super
