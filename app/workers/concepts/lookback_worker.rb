@@ -29,7 +29,7 @@ module Concepts
       articles_query = Article.published
         .select("articles.id, (semantic_embedding <=> #{quoted_vector}) AS computed_distance")
         .where.not(semantic_embedding: nil)
-        .where("semantic_embedding <=> #{quoted_vector} <= ?", 0.14)
+        .where("semantic_embedding <=> #{quoted_vector} <= ?", Concepts::Classifier::DEFAULT_THRESHOLD)
         .where("published_at >= ?", start_time)
 
       if end_time
@@ -53,7 +53,7 @@ module Concepts
       comments_query = Comment
         .select("comments.id, (semantic_embedding <=> #{quoted_vector}) AS computed_distance")
         .where.not(semantic_embedding: nil)
-        .where("semantic_embedding <=> #{quoted_vector} <= ?", 0.14)
+        .where("semantic_embedding <=> #{quoted_vector} <= ?", Concepts::Classifier::DEFAULT_THRESHOLD)
         .where("created_at >= ?", start_time)
 
       if end_time
