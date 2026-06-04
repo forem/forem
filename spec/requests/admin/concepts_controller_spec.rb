@@ -80,4 +80,43 @@ RSpec.describe "Admin::ConceptsController", type: :request do
       expect(response).to redirect_to(admin_concepts_path)
     end
   end
+
+  describe "POST /admin/content_manager/concepts/:id/trigger_lookback" do
+    before { sign_in admin }
+
+    context "with valid days" do
+      it "enqueues the LookbackWorker and redirects to show" do
+        allow(Concepts::LookbackWorker).to receive(:perform_async)
+
+        post trigger_lookback_admin_concept_path(concept), params: { days: 40 }
+
+        expect(response).to redirect_to(admin_concept_path(concept))
+        expect(flash[:success]).to be_present
+        expect(Concepts::LookbackWorker).to have_received(:perform_async).with(concept.id, 40)
+      end
+    end
+
+    context "with invalid days" do
+      it "does not enqueue the worker and shows error" do
+        allow(Concepts::LookbackWorker).to receive(:perform_async)
+
+        post trigger_lookback_admin_concept_path(concept), params: { days: -10 }
+
+        expect(response).to redirect_to(admin_concept_path(concept))
+        expect(flash[:error]).to be_present
+        expect(Concepts::LookbackWorker).not_to have_received(:perform_async)
+      end
+
+      it "does not enqueue when requested days is less than or equal to max_lookback_days" do
+        concept.update!(max_lookback_days: 40)
+        allow(Concepts::LookbackWorker).to receive(:perform_async)
+
+        post trigger_lookback_admin_concept_path(concept), params: { days: 30 }
+
+        expect(response).to redirect_to(admin_concept_path(concept))
+        expect(flash[:error]).to be_present
+        expect(Concepts::LookbackWorker).not_to have_received(:perform_async)
+      end
+    end
+  end
 end

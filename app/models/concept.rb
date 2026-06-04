@@ -17,6 +17,7 @@ class Concept < ApplicationRecord
   validates :name, presence: true, length: { maximum: 100 }
   validates :slug, presence: true, uniqueness: true
   validates :anchor_embedding, presence: true
+  validates :max_lookback_days, presence: true, numericality: { greater_than_or_equal_to: 0, only_integer: true }
 
   private
 
