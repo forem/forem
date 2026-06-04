@@ -36,7 +36,7 @@ RSpec.describe Concepts::LookbackWorker, type: :worker do
         expect(concept.reload.max_lookback_days).to eq(40)
       end
 
-      it "excludes records with embedding distance greater than 0.14" do
+      it "excludes records with embedding distance greater than the default threshold" do
         art_far = create(:article, published: true)
         art_far.update_columns(semantic_embedding: embedding2, published_at: 10.days.ago)
         
