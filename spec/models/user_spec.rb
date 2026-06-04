@@ -69,7 +69,14 @@ RSpec.describe User do
 
     it "ships a curated payload of id, username, email, name" do
       user = create(:user)
-      expect(user.trackable_payload.keys).to contain_exactly(:id, :username, :email, :name)
+      expect(user.trackable_payload.keys).to contain_exactly("id", "username", "email", "name")
+    end
+
+    # Sidekiq.strict_args! (raise-mode outside production) rejects symbol keys in
+    # job arguments, so the payload must be JSON-safe.
+    it "uses JSON-safe string keys in the payload" do
+      user = create(:user)
+      expect(user.trackable_payload.keys).to all(be_a(String))
     end
 
     it "emits user_created on registration when sync is enabled" do

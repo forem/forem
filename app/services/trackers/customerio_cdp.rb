@@ -9,8 +9,11 @@ module Trackers
     DEFAULT_HOST = "cdp.customer.io".freeze
 
     def enabled?
+      # Resolve the setting via the default subforem (like mailers do): the admin
+      # panel saves settings scoped to the request's subforem, and outside a request
+      # (Sidekiq, console) a bare read would only see the global row.
       ApplicationConfig["CUSTOMERIO_CDP_WRITE_KEY"].present? &&
-        Settings::General.customerio_cdp_enabled?
+        Settings::General.customerio_cdp_enabled(subforem_id: Subforem.cached_default_id)
     end
 
     def track(event_name:, user_ids:, properties:, timestamp: nil)
