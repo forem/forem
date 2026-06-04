@@ -588,7 +588,7 @@ fr:
           distance: "Distance"
           mapped_at: "Associé le"
           no_records: "Aucun enregistrement n'a encore été associé à ce concept."
-          max_lookback_days: "Couverture de retour en arrière la plus ancienne"
+          max_lookback_days: "Couverture de retour en arrière la plus ancienne (jours)"
           max_lookback_days_none: "Aucune"
           lookback_title: "Déclencher le retour en arrière"
           lookback_desc: "Analyse les articles et commentaires passés. Si des retours en arrière précédents existent, il analyse uniquement la nouvelle période (par exemple de 40 à 70 jours auparavant) avec un léger chevauchement de fuseau horaire."

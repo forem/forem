@@ -599,7 +599,7 @@ en:
           distance: "Distance"
           mapped_at: "Mapped At"
           no_records: "No records have been mapped to this concept yet."
-          max_lookback_days: "Earliest Lookback Coverage"
+          max_lookback_days: "Earliest Lookback Coverage (Days)"
           max_lookback_days_none: "None"
           lookback_title: "Trigger Lookback"
           lookback_desc: "Scans past articles and comments. If previous lookbacks exist, it only scans the new period (e.g. from 40 to 70 days ago) with a bit of timezone overlap."

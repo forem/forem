@@ -485,7 +485,7 @@ pt:
           distance: "Distância"
           mapped_at: "Mapeado em"
           no_records: "Nenhum registro foi mapeado para este conceito ainda."
-          max_lookback_days: "Cobertura Retrospectiva Mais Antiga"
+          max_lookback_days: "Cobertura Retrospectiva Mais Antiga (Dias)"
           max_lookback_days_none: "Nenhuma"
           lookback_title: "Disparar Busca Retrospectiva"
           lookback_desc: "Analisa artigos e comentários passados. Se buscas anteriores existirem, analisa apenas o novo período (ex. de 40 a 70 dias atrás) com alguma sobreposição de fuso horário."

@@ -79,7 +79,7 @@ module Concepts
       end
 
       # 4. Update max_lookback_days
-      concept.update!(max_lookback_days: days)
+      concept.reload.update!(max_lookback_days: [concept.max_lookback_days, days].max)
     end
   end
 end

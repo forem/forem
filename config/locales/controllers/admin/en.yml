@@ -239,4 +239,4 @@ en:
       deleted: Concept deleted successfully.
       failed_deletion: Something went wrong with deleting the concept.
       lookback_triggered: "Concept lookback of %{days} days has been enqueued."
-      invalid_days: "Please provide a valid number of days greater than 0."
+      invalid_days: "Please provide a valid number of days greater than 0 and greater than the current lookback coverage."

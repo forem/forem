@@ -200,7 +200,7 @@ pt:
       deleted: Conceito excluído com sucesso.
       failed_deletion: Algo deu errado ao excluir o conceito.
       lookback_triggered: "A busca retrospectiva do conceito de %{days} dias foi enfileirada."
-      invalid_days: "Por favor, forneça um número válido de dias maior que 0."
+      invalid_days: "Por favor, forneça um número válido de dias maior que 0 e maior que a cobertura retrospectiva atual."
     secrets_controller:
       not_in_vault: Não está no cofre
       updated: 'Segredo %{key} foi atualizado com sucesso no Vault.'

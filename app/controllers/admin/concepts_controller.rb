@@ -17,15 +17,15 @@ module Admin
                              .per(20)
 
       @daily_metrics = @concept.concept_daily_metrics
-                               .order(date: :asc)
+                               .order(date: :desc)
                                .limit(30)
+                               .to_a
+                               .reverse
 
       @chart_dates = @daily_metrics.map { |m| m.date.strftime("%Y-%m-%d") }
       @chart_popularity = @daily_metrics.map(&:popularity_score)
       @chart_views = @daily_metrics.map(&:page_views)
       @chart_reactions = @daily_metrics.map(&:reactions_count)
-      @chart_articles = @daily_metrics.map(&:articles_count)
-      @chart_comments = @daily_metrics.map(&:comments_count)
     end
     def new
       @concept = Concept.new
@@ -80,7 +80,7 @@ module Admin
     def trigger_lookback
       days = params[:days].to_i
 
-      if days <= 0
+      if days <= 0 || days <= @concept.max_lookback_days
         flash[:error] = I18n.t("admin.concepts_controller.invalid_days")
       else
         Concepts::LookbackWorker.perform_async(@concept.id, days)
