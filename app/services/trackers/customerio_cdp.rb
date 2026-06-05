@@ -7,6 +7,9 @@ module Trackers
   #   CUSTOMERIO_CDP_HOST       optional override; defaults to cdp.customer.io
   class CustomerioCdp < Base
     DEFAULT_HOST = "cdp.customer.io".freeze
+    # Customer.io CDP does not implement analytics-ruby's default /v1/import
+    # path (404); its Segment-compatible batch endpoint is /v1/batch.
+    BATCH_PATH = "/v1/batch".freeze
 
     def enabled?
       # Resolve the setting via the default subforem (like mailers do): the admin
@@ -16,10 +19,17 @@ module Trackers
         Settings::General.customerio_cdp_enabled(subforem_id: Subforem.cached_default_id)
     end
 
+    # People are identified by email rather than DEV user id: ids are not synced
+    # to the Core consumer yet. Emails are resolved at send time so they are
+    # current; ids without a matching user (deleted in the interim) are skipped.
+    # The properties payload still carries the DEV id for future linking.
     def track(event_name:, user_ids:, properties:, timestamp: nil)
-      Array.wrap(user_ids).each do |user_id|
+      emails = User.where(id: Array.wrap(user_ids)).pluck(:email)
+      emails.each do |email|
+        next if email.blank?
+
         client.track(
-          user_id: user_id.to_s,
+          user_id: email,
           event: event_name,
           properties: properties,
           timestamp: timestamp,
@@ -33,6 +43,7 @@ module Trackers
       @client ||= Segment::Analytics.new(
         write_key: ApplicationConfig["CUSTOMERIO_CDP_WRITE_KEY"],
         host: ApplicationConfig["CUSTOMERIO_CDP_HOST"].presence || DEFAULT_HOST,
+        path: BATCH_PATH,
       )
     end
   end
