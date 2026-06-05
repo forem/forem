@@ -18,6 +18,7 @@ class Concept < ApplicationRecord
   validates :slug, presence: true, uniqueness: true
   validates :anchor_embedding, presence: true
   validates :max_lookback_days, presence: true, numericality: { greater_than_or_equal_to: 0, only_integer: true }
+  validates :similarity_threshold, numericality: { greater_than_or_equal_to: 0.0, less_than_or_equal_to: 1.0 }, allow_nil: true
 
   private
 

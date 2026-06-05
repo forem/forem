@@ -16,6 +16,7 @@
           <th scope="col">Name</th>
           <th scope="col">Slug</th>
           <th scope="col">Parent</th>
+          <th scope="col"><%= t("views.admin.concepts.index.threshold") %></th>
           <th scope="col">Records Mapped</th>
           <th scope="col">Actions</th>
         </tr>
@@ -29,6 +30,7 @@
             </td>
             <td><code><%= concept.slug %></code></td>
             <td><%= concept.parent&.name || "-" %></td>
+            <td><%= concept.similarity_threshold ? concept.similarity_threshold.to_s : "#{Concepts::Classifier::DEFAULT_THRESHOLD} (#{t('views.admin.concepts.index.default')})" %></td>
             <td><%= @membership_counts[concept.id] || 0 %></td>
             <td>
               <div class="flex gap-2">
