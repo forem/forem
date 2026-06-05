@@ -43,7 +43,7 @@ RSpec.describe Users::DeleteArticles, type: :service do
   end
 
   context "when pinned articles exist" do
-    let!(:profile_pin) { create(:profile_pin, profile: user, pinnable: article) }
+    before { create(:profile_pin, profile: user, pinnable: article) }
 
     it "deletes pinned article references with the article" do
       expect do
