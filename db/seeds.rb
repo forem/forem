@@ -362,6 +362,38 @@ seeder.create_if_none(Article, num_articles) do
 end
 
 ##############################################################################
+# A long series (8 parts) with long bodies, for manual QA of the series
+# switcher (issue #14280). Idempotent: keyed off the collection slug.
+
+seeder.create_if_doesnt_exist(Collection, "slug", "long-test-series") do
+  series_user = User.find_by(email: "admin@forem.local") ||
+    User.order(Arel.sql("RANDOM()")).first
+
+  # Long body that comfortably exceeds the long_markdown? threshold (900 chars).
+  long_body = (Faker::Hipster.paragraph(sentence_count: 12) + "\n\n") * 4
+
+  8.times do |i|
+    part_number = i + 1
+    markdown = <<~MARKDOWN
+      ---
+      title: Long Test Series — Part #{part_number}
+      published: true
+      tags: discuss
+      series: long-test-series
+      ---
+
+      #{long_body}
+    MARKDOWN
+
+    Article.create!(
+      body_markdown: markdown,
+      show_comments: true,
+      user_id: series_user.id,
+    )
+  end
+end
+
+##############################################################################
 
 num_comments = 30 * SEEDS_MULTIPLIER
 
