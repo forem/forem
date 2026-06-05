@@ -11,6 +11,6 @@ class RemoveOrphanedProfilePins < ActiveRecord::Migration[7.0]
   end
 
   def down
-    # Irreversible migration
+    raise ActiveRecord::IrreversibleMigration
   end
 end
