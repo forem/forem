@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Concepts::Classifier do
   let(:embedding1) { Array.new(768, 0.1) }
-  let(:embedding2) { Array.new(768, 0.11) }
+  let(:embedding2) { Array.new(768) { |i| i < 118 ? 0.0 : 0.1 } }
   let(:embedding3) { Array.new(768) { |i| i.even? ? 0.1 : -0.1 } } # orthogonal/far away
 
   let!(:concept1) { create(:concept, anchor_embedding: embedding1) }
@@ -66,6 +66,23 @@ RSpec.describe Concepts::Classifier do
         }.to change(ConceptMembership, :count).by(-2)
 
         expect(comment.concepts).to be_empty
+      end
+    end
+
+    context "with concept-specific thresholds" do
+      let!(:concept_with_custom) { create(:concept, anchor_embedding: embedding2, similarity_threshold: 0.005) }
+
+      it "respects the concept-specific threshold instead of default" do
+        # embedding1 and embedding2 are slightly different.
+        # concept_with_custom has custom threshold 0.005, which is too strict for embedding1.
+        # It should not match, while concept1 matches with distance 0.0.
+        article = create(:article, semantic_embedding: embedding1)
+        classifier = described_class.new(article)
+
+        classifier.call
+
+        expect(article.concepts).to include(concept1)
+        expect(article.concepts).not_to include(concept_with_custom)
       end
     end
   end
