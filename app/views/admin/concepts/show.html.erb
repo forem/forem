@@ -37,7 +37,7 @@
       <div class="mb-3">
         <strong class="color-base-60 fs-xs uppercase block"><%= t("views.admin.concepts.show.similarity_threshold") %></strong>
         <span>
-          <%= @concept.similarity_threshold ? @concept.similarity_threshold.to_s : "0.28 (#{t('views.admin.concepts.index.default')})" %>
+          <%= @concept.similarity_threshold ? @concept.similarity_threshold.to_s : "#{Concepts::Classifier::DEFAULT_THRESHOLD} (#{t('views.admin.concepts.index.default')})" %>
         </span>
       </div>
     </div>

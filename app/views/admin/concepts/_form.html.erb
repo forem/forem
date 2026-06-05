@@ -20,7 +20,7 @@
 
   <div class="crayons-field mt-3">
     <%= f.label :similarity_threshold, t("views.admin.concepts.form.similarity_threshold"), class: "crayons-field__label" %>
-    <%= f.number_field :similarity_threshold, step: 0.01, min: 0.0, max: 1.0, class: "crayons-textfield", placeholder: t("views.admin.concepts.form.similarity_threshold_placeholder") %>
+    <%= f.number_field :similarity_threshold, step: :any, min: 0.0, max: 1.0, class: "crayons-textfield", placeholder: t("views.admin.concepts.form.similarity_threshold_placeholder") %>
     <p class="fs-xs color-base-60 mt-1"><%= t("views.admin.concepts.form.similarity_threshold_help") %></p>
   </div>
 
