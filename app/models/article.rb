@@ -189,6 +189,12 @@ class Article < ApplicationRecord
   has_many :context_notes, dependent: :delete_all
   accepts_nested_attributes_for :context_notes
 
+  has_many :trend_memberships, dependent: :destroy
+  has_many :trends, through: :trend_memberships
+
+  has_many :concept_memberships, as: :record, dependent: :destroy
+  has_many :concepts, through: :concept_memberships
+
   has_many :top_comments,
            lambda {
              where(comments: { score: 11.. }, ancestry: nil, hidden_by_commentable_user: false, deleted: false)
@@ -319,12 +325,24 @@ class Article < ApplicationRecord
     article.saved_change_to_user_id?
   }
 
+  begin
+    has_neighbors :semantic_embedding if column_names.include?("semantic_embedding")
+  rescue StandardError
+    # db not available yet
+  end
+
+  after_commit :enqueue_generate_embedding,
+               on: %i[create update],
+               if: -> { published? && Ai::Base::DEFAULT_KEY.present? }
+
   after_commit :async_score_calc, :touch_collection, :enrich_image_attributes, :detect_code_block_languages,
                on: %i[create update]
 
   after_update_commit :update_dependent_embeds_if_key_info_changed
 
   after_update_commit :regenerate_summary_if_content_changed
+
+  after_commit :recompile_organization_pages, on: %i[create update destroy]
 
   # The trigger `update_reading_list_document` is used to keep the `articles.reading_list_document` column updated.
   #
@@ -611,16 +629,36 @@ class Article < ApplicationRecord
   end
 
   def processed_html_final
-    # This is a final non-database-driven step to adjust processed html
-    # It is sort of a hack to avoid having to reprocess all articles
-    # It is currently only for this one cloudflare domain change
-    # It is duplicated across article, bullboard and comment where it is most needed
-    # In the future this could be made more customizable. For now it's just this one thing.
+    processed_html = replace_legacy_code_html(self.processed_html)
+
     return processed_html if ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"].blank? || ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"].blank?
 
     processed_html.gsub(ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"],
                         ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
   end
+
+  def replace_legacy_code_html(html)
+    return html if html.blank?
+    return html unless html.include?("runkit-element")
+
+    fragment = Nokogiri::HTML.fragment(html)
+    fragment.css('.runkit-element').each do |element|
+      preamble = element.at_css('code:nth-of-type(1)')&.text.to_s
+      content = element.at_css('code:nth-of-type(2)')&.text.to_s
+
+      replacement_html = LegacyCodeTag.fallback_html(
+        preamble: preamble,
+        parsed_content: content,
+      )
+
+      element.replace(Nokogiri::HTML.fragment(replacement_html))
+    end
+
+    fragment.to_html
+  rescue StandardError
+    html
+  end
+  private :replace_legacy_code_html
 
   def scheduled?
     published_at? && published_at.future?
@@ -982,6 +1020,21 @@ class Article < ApplicationRecord
     trigger_linked_domain_score_updates if score_changed_flag
     trigger_freeform_context_note_generation
     trigger_summary_generation
+    trigger_semantic_embedding_generation if score_changed_flag
+  end
+
+  def eligible_for_semantic_embedding?
+    respond_to?(:semantic_embedding) &&
+      score >= Settings::UserExperience.home_feed_minimum_score &&
+      semantic_embedding.blank?
+  end
+  private :eligible_for_semantic_embedding?
+
+  def trigger_semantic_embedding_generation
+    return unless Ai::Base::DEFAULT_KEY.present?
+    return unless eligible_for_semantic_embedding?
+
+    GenerateArticleEmbeddingWorker.perform_async(id)
   end
 
   def trigger_freeform_context_note_generation
@@ -1673,6 +1726,33 @@ class Article < ApplicationRecord
     self.published_at = nil if published_at > 5.years.from_now
   end
 
+  def recompile_organization_pages
+    # Skip recompiling on updates if only updated_at or semantic_embedding changed
+    if !destroyed? && previous_changes.any? && (previous_changes.keys - %w[updated_at semantic_embedding]).empty?
+      return
+    end
+
+    was_published = destroyed? ? published? : published_before_last_save
+    is_published = published?
+    return unless is_published || was_published
+
+    org_ids_to_recompile = []
+    if destroyed?
+      org_ids_to_recompile << organization_id
+    elsif saved_change_to_organization_id?
+      org_ids_to_recompile << organization_id_before_last_save
+      org_ids_to_recompile << organization_id
+    else
+      org_ids_to_recompile << organization_id
+    end
+
+    org_ids_to_recompile.compact.uniq.each do |org_id|
+      next unless FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[org_id])
+
+      Organizations::RecompilePagesWorker.perform_async(org_id)
+    end
+  end
+
   private
 
   def admin_published_user?
@@ -1723,6 +1803,17 @@ class Article < ApplicationRecord
     urls = title.scan(url_regex).uniq
     # Remove trailing punctuation that might not be part of the URL
     urls.map { |url| url.sub(/[.,;:!?)]+$/, "") }
+  end
+
+  def enqueue_generate_embedding
+    return unless Ai::Base::DEFAULT_KEY.present?
+
+    content_changed = saved_change_to_title? || saved_change_to_body_markdown?
+    return unless content_changed
+    return unless respond_to?(:semantic_embedding)
+    return unless score >= Settings::UserExperience.home_feed_minimum_score
+
+    GenerateArticleEmbeddingWorker.perform_async(id)
   end
 
   def body_markdown_only_contains_embed_tags_from_title?

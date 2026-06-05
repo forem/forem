@@ -98,6 +98,17 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     expect(generate_and_parse_markdown(code_block)).to include("----")
   end
 
+  it "correctly renders escaped code blocks with more than 3 backticks" do
+    # This is the reproduction case from issue #17991
+    # Input: ```` ```javascript ````
+    # Expected: The inner ```javascript should be rendered as literal text
+    markdown_content = "````\n```javascript\n````"
+    output = generate_and_parse_markdown(markdown_content)
+    
+    expect(output).to include("```javascript")
+    expect(output).not_to include("Liquid syntax error")
+  end
+
   it "escapes the `raw` Liquid tag in codespans" do
     code_block = "``{% raw %}some text{% endraw %}``"
     expect(generate_and_parse_markdown(code_block)).to include("{% raw %}", "{% endraw %}")
@@ -812,7 +823,69 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       expect(output).to match(%r{<td[^>]*>\s*bar\s*</td>})
       expect(output).not_to include("&#124;")
     end
-
   end
 
+  context "when markdown tables use column alignment" do
+    it "centers a column declared with :---:" do
+      markdown = <<~MD
+        | h |
+        | :---: |
+        | c |
+      MD
+      output = generate_and_parse_markdown(markdown)
+
+      expect(output).to match(/<th[^>]*style="text-align: center"[^>]*>/)
+      expect(output).to match(/<td[^>]*style="text-align: center"[^>]*>/)
+    end
+
+    it "right-aligns a column declared with ---:" do
+      markdown = <<~MD
+        | h |
+        | ---: |
+        | c |
+      MD
+      output = generate_and_parse_markdown(markdown)
+
+      expect(output).to match(/<th[^>]*style="text-align: right"[^>]*>/)
+      expect(output).to match(/<td[^>]*style="text-align: right"[^>]*>/)
+    end
+
+    it "left-aligns a column declared with :---" do
+      markdown = <<~MD
+        | h |
+        | :--- |
+        | c |
+      MD
+      output = generate_and_parse_markdown(markdown)
+
+      expect(output).to match(/<th[^>]*style="text-align: left"[^>]*>/)
+      expect(output).to match(/<td[^>]*style="text-align: left"[^>]*>/)
+    end
+
+    it "applies per-column alignment in a mixed table" do
+      markdown = <<~MD
+        | left | center | right |
+        | :--- | :----: | ----: |
+        | a | b | c |
+      MD
+      output = generate_and_parse_markdown(markdown)
+
+      expect(output).to include('style="text-align: left"')
+      expect(output).to include('style="text-align: center"')
+      expect(output).to include('style="text-align: right"')
+    end
+
+    it "leaves cells unstyled when no alignment is declared" do
+      markdown = <<~MD
+        | h |
+        | --- |
+        | c |
+      MD
+      output = generate_and_parse_markdown(markdown)
+
+      expect(output).to include("<table")
+      expect(output).not_to include("text-align")
+      expect(output).not_to include("style=")
+    end
+  end
 end

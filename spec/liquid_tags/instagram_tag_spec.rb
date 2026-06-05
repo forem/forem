@@ -14,13 +14,35 @@ RSpec.describe InstagramTag, type: :liquid_tag do
       valid_id = "BXgGcAUjM39"
       liquid = generate_instagram_tag(valid_id)
 
-      # rubocop:disable Style/StringLiterals
-      expect(liquid.render).to include('<iframe')
-        .and include('id="instagram-liquid-tag"')
-        .and include("https://www.instagram.com/p/#{valid_id}/embed/captioned")
+      expect(liquid.render).to include("<blockquote")
+        .and include('class="instagram-media"')
+        .and include("https://www.instagram.com/p/#{valid_id}/")
         .and include('src="https://platform.instagram.com/en_US/embeds.js"')
         .and include('<div class="instagram-position">')
-      # rubocop:enable Style/StringLiterals
+    end
+
+    it "checks that a reel is properly parsed and rendered" do
+      reel_url = "https://www.instagram.com/reel/BXgGcAUjM39/"
+      liquid = generate_instagram_tag(reel_url)
+      expect(liquid.render).to include("<blockquote")
+        .and include('class="instagram-media"')
+        .and include("https://www.instagram.com/reel/BXgGcAUjM39/")
+    end
+
+    it "checks that a tv post is properly parsed and rendered" do
+      tv_url = "https://www.instagram.com/tv/BXgGcAUjM39/"
+      liquid = generate_instagram_tag(tv_url)
+      expect(liquid.render).to include("<blockquote")
+        .and include('class="instagram-media"')
+        .and include("https://www.instagram.com/tv/BXgGcAUjM39/")
+    end
+
+    it "checks that a profile is properly parsed and rendered" do
+      profile_url = "https://www.instagram.com/instagram/"
+      liquid = generate_instagram_tag(profile_url)
+      expect(liquid.render).to include("<blockquote")
+        .and include('class="instagram-media"')
+        .and include("https://www.instagram.com/instagram/")
     end
 
     it "rejects invalid ids" do

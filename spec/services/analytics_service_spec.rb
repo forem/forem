@@ -16,9 +16,19 @@ RSpec.describe AnalyticsService, type: :service do
     # and hence never be selected by the Analytics engine
     # In the meantime for a lack of a better solution, we force this tests to run at midday in UTC
     Timecop.freeze("2019-04-01T12:00:00Z")
+    # Pin Time.zone for the duration of the spec too: the service clamps
+    # start_date to the owner's `registered_at.beginning_of_day` evaluated in
+    # Time.zone, so a Zonebie-set zone ahead of UTC (e.g. Pacific/Apia at
+    # UTC+13) shifts the floor to the next calendar day and lops 2019-04-01
+    # off every bucketed assertion below.
+    @original_time_zone = Time.zone
+    Time.zone = "UTC"
   end
 
-  after { Timecop.return }
+  after do
+    Timecop.return
+    Time.zone = @original_time_zone if @original_time_zone
+  end
 
   def format_date(datetime)
     # PostgreSQL DATE(..) function uses UTC.
@@ -243,8 +253,9 @@ RSpec.describe AnalyticsService, type: :service do
         expect(stats.keys).to eq(%i[total average_read_time_in_seconds total_read_time_in_seconds])
       end
 
-      it "returns the total number of page views from page_views_count" do
-        article.update_columns(page_views_count: 1)
+      it "returns the total number of page views from ArticleActivity" do
+        create(:page_view, article: article, counts_for_number_of_views: 1)
+        ArticleActivity.find_or_create_by!(article_id: article.id).recompute_all!
         expect(analytics_service.totals[:page_views][:total]).to eq(1)
       end
 
@@ -263,11 +274,11 @@ RSpec.describe AnalyticsService, type: :service do
       end
 
       it "returns the total read time in seconds" do
-        article.update_columns(page_views_count: 1)
-        create(:page_view, user: user, article: article, time_tracked_in_seconds: 15)
-        create(:page_view, user: user, article: article, time_tracked_in_seconds: 45)
-        # average read time * total_views
-        expect(analytics_service.totals[:page_views][:total_read_time_in_seconds]).to eq(30)
+        create(:page_view, user: user, article: article, time_tracked_in_seconds: 15, counts_for_number_of_views: 1)
+        create(:page_view, user: user, article: article, time_tracked_in_seconds: 45, counts_for_number_of_views: 1)
+        ArticleActivity.find_or_create_by!(article_id: article.id).recompute_all!
+        # average read time * total_views = 30 * 2 = 60
+        expect(analytics_service.totals[:page_views][:total_read_time_in_seconds]).to eq(60)
       end
 
       it "returns zero as the total read time in seconds with no page views" do
@@ -433,6 +444,7 @@ RSpec.describe AnalyticsService, type: :service do
       it "returns the total number of page views from counts_for_number_of_views" do
         pv = create(:page_view, user: user, article: article, counts_for_number_of_views: 5)
         date = format_date(pv.created_at)
+        ArticleActivity.find_or_create_by!(article_id: article.id).recompute_all!
         analytics_service = described_class.new(user, start_date: date)
         expect(analytics_service.grouped_by_day[date][:page_views][:total]).to eq(5)
       end

@@ -396,8 +396,16 @@ module ApplicationHelper
     URL.url(uri, RequestStore.store[:subforem_domain])
   end
 
-  def article_url(article)
-    URL.article(article)
+  def article_url(article, **options)
+    base_url = URL.article(article)
+    return base_url if options.blank?
+
+    uri = Addressable::URI.parse(base_url)
+    query_values = (uri.query_values || {}).merge(options.transform_keys(&:to_s).compact)
+    uri.query_values = query_values.any? ? query_values : nil
+    uri.to_s
+  rescue StandardError
+    base_url
   end
 
   def comment_url(comment)
@@ -508,4 +516,21 @@ module ApplicationHelper
       FeatureFlag.all.select { |_, state| state == :on }.keys.join(" ")
     end
   end
+
+  def header_link(path)
+    if request.env["forem.custom_domain_org"].present?
+      URL.url(path)
+    else
+      path
+    end
+  end
+
+  def header_sign_up_link(path)
+    if request.env["forem.custom_domain_org"].present?
+      URL.url(path)
+    else
+      subforem_aware_sign_up_url(path)
+    end
+  end
 end
+
