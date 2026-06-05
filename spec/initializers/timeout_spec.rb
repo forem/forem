@@ -29,13 +29,17 @@ RSpec.describe Rack::Timeout, type: :initializer do
         env["rack-timeout.request_thread"] = mock_thread
       end
 
-      it "disconnects and releases the database connection for the tracked thread" do
+      it "closes the raw database connection socket for the tracked thread" do
         pool = ActiveRecord::Base.connection_pool
         mock_connection = double("ActiveRecord::ConnectionAdapters::PostgreSQLAdapter")
+        mock_raw_connection = double("PG::Connection")
         mock_tcc = { mock_thread => mock_connection }
 
         # Mock the connection pool internals
         allow(pool).to receive(:instance_variable_get).with(:@thread_cached_conns).and_return(mock_tcc)
+        allow(mock_connection).to receive(:raw_connection).and_return(mock_raw_connection)
+        allow(mock_raw_connection).to receive(:respond_to?).with(:close).and_return(true)
+        allow(mock_raw_connection).to receive(:close)
         allow(mock_connection).to receive(:disconnect!)
         allow(pool).to receive(:release_connection)
 
@@ -46,19 +50,24 @@ RSpec.describe Rack::Timeout, type: :initializer do
 
         observer_proc.call(env)
 
-        expect(mock_connection).to have_received(:disconnect!)
-        expect(pool).to have_received(:release_connection).with(mock_thread)
+        expect(mock_raw_connection).to have_received(:close)
+        expect(mock_connection).not_to have_received(:disconnect!)
+        expect(pool).not_to have_received(:release_connection)
       end
 
-      it "discards the connection if disconnect! raises an exception" do
+      it "falls back to calling finish if the raw connection does not respond to close but responds to finish" do
         pool = ActiveRecord::Base.connection_pool
         mock_connection = double("ActiveRecord::ConnectionAdapters::PostgreSQLAdapter")
+        mock_raw_connection = double("PG::Connection")
         mock_tcc = { mock_thread => mock_connection }
 
         # Mock the connection pool internals
         allow(pool).to receive(:instance_variable_get).with(:@thread_cached_conns).and_return(mock_tcc)
-        allow(mock_connection).to receive(:disconnect!).and_raise(StandardError.new("disconnect error"))
-        allow(mock_connection).to receive(:discard!)
+        allow(mock_connection).to receive(:raw_connection).and_return(mock_raw_connection)
+        allow(mock_raw_connection).to receive(:respond_to?).with(:close).and_return(false)
+        allow(mock_raw_connection).to receive(:respond_to?).with(:finish).and_return(true)
+        allow(mock_raw_connection).to receive(:finish)
+        allow(mock_connection).to receive(:disconnect!)
         allow(pool).to receive(:release_connection)
 
         # Retrieve the observer proc directly from the registry
@@ -68,9 +77,36 @@ RSpec.describe Rack::Timeout, type: :initializer do
 
         observer_proc.call(env)
 
-        expect(mock_connection).to have_received(:disconnect!)
-        expect(mock_connection).to have_received(:discard!)
-        expect(pool).to have_received(:release_connection).with(mock_thread)
+        expect(mock_raw_connection).to have_received(:finish)
+        expect(mock_connection).not_to have_received(:disconnect!)
+        expect(pool).not_to have_received(:release_connection)
+      end
+
+      it "rescues errors if closing the raw connection raises an exception" do
+        pool = ActiveRecord::Base.connection_pool
+        mock_connection = double("ActiveRecord::ConnectionAdapters::PostgreSQLAdapter")
+        mock_raw_connection = double("PG::Connection")
+        mock_tcc = { mock_thread => mock_connection }
+
+        # Mock the connection pool internals
+        allow(pool).to receive(:instance_variable_get).with(:@thread_cached_conns).and_return(mock_tcc)
+        allow(mock_connection).to receive(:raw_connection).and_return(mock_raw_connection)
+        allow(mock_raw_connection).to receive(:respond_to?).with(:close).and_return(true)
+        allow(mock_raw_connection).to receive(:close).and_raise(StandardError.new("close error"))
+        allow(mock_connection).to receive(:disconnect!)
+        allow(pool).to receive(:release_connection)
+
+        # Retrieve the observer proc directly from the registry
+        observers = described_class.instance_variable_get(:@state_change_observers)
+        observer_proc = observers[:clear_db_connections_on_timeout]
+        expect(observer_proc).not_to be_nil
+
+        # Verify it rescues the error and does not raise
+        expect { observer_proc.call(env) }.not_to raise_error
+
+        expect(mock_raw_connection).to have_received(:close)
+        expect(mock_connection).not_to have_received(:disconnect!)
+        expect(pool).not_to have_received(:release_connection)
       end
     end
 

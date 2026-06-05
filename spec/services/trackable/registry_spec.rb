@@ -83,6 +83,27 @@ RSpec.describe Trackable::Registry do
     end
   end
 
+  describe ".active_names" do
+    it "reflects adapter enablement changes at runtime (no stale memoization)" do
+      described_class.reset!
+
+      togglable = Class.new(Trackers::Base) do
+        class << self; attr_accessor :on; end
+        def enabled? = self.class.on
+      end
+      described_class.register(:togglable, togglable)
+      allow(described_class).to receive(:configured_adapter_names).and_return([:togglable])
+
+      togglable.on = false
+      expect(described_class.active_names).to eq([])
+
+      togglable.on = true
+      expect(described_class.active_names).to eq([:togglable])
+    ensure
+      described_class.reset!
+    end
+  end
+
   describe ".instance_for" do
     before { described_class.register(:dummy, dummy_adapter_class) }
 

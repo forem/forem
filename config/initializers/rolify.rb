@@ -7,3 +7,4 @@ Rolify.configure do |config|
 end
 
 Rolify.resource_types << "Space"
+Rolify.resource_types << "Concept"
