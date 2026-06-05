@@ -3934,4 +3934,53 @@ RSpec.describe Article do
       expect(GenerateArticleEmbeddingWorker).not_to have_received(:perform_async)
     end
   end
+
+  describe "recompiling organization pages" do
+    let(:organization) { create(:organization) }
+    let(:user) { create(:user) }
+
+    before do
+      allow(Organizations::RecompilePagesWorker).to receive(:perform_async)
+      allow(FeatureFlag).to receive(:enabled?).and_call_original
+      allow(FeatureFlag).to receive(:enabled?).with(:org_readme, anything).and_return(true)
+    end
+
+    it "enqueues recompilation on create when organization is present and published is true" do
+      create(:article, organization: organization, user: user, published: true)
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id)
+    end
+
+    it "does not enqueue recompilation on create when organization is nil" do
+      create(:article, organization: nil, user: user, published: true)
+      expect(Organizations::RecompilePagesWorker).not_to have_received(:perform_async)
+    end
+
+    it "enqueues recompilation on update when organization changes on a published article" do
+      article = create(:article, organization: nil, user: user, published: true)
+      article.update!(organization: organization)
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id)
+    end
+
+    it "enqueues recompilation on destroy when organization is present and article is published" do
+      article = create(:article, organization: organization, user: user, published: true)
+      article.destroy!
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id).twice
+    end
+
+    it "does not enqueue recompilation for draft articles on create or update" do
+      article = create(:unpublished_article, organization: organization, user: user)
+      expect(Organizations::RecompilePagesWorker).not_to have_received(:perform_async)
+
+      article.update!(title: "New Draft Title")
+      expect(Organizations::RecompilePagesWorker).not_to have_received(:perform_async)
+    end
+
+    it "enqueues recompilation when a draft article is published" do
+      article = create(:unpublished_article, organization: organization, user: user)
+      expect(Organizations::RecompilePagesWorker).not_to have_received(:perform_async)
+
+      article.update!(published: true)
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id)
+    end
+  end
 end

@@ -39,6 +39,91 @@ RSpec.describe User do
     allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
   end
 
+  describe "Trackable adoption for DEV → Core sync" do
+    before do
+      allow(Trackable::Registry).to receive(:active_names).and_return([:any])
+      allow(Trackable::DispatchWorker).to receive(:perform_async)
+    end
+
+    around { |ex| with_trackable_events { ex.run } }
+
+    after { FeatureFlag.remove(:dev_core_user_sync) }
+
+    def enable_sync(actor: nil)
+      Settings::General.customerio_cdp_enabled = true
+      if actor
+        FeatureFlag.enable(:dev_core_user_sync, FeatureFlag::Actor[actor])
+      else
+        FeatureFlag.enable(:dev_core_user_sync)
+      end
+    end
+
+    it "includes the Trackable concern" do
+      expect(described_class.included_modules).to include(Trackable)
+    end
+
+    it "tracks only its own user id" do
+      user = create(:user)
+      expect(user.trackable_user_ids).to eq([user.id])
+    end
+
+    it "ships a curated payload of id, username, email, name" do
+      user = create(:user)
+      expect(user.trackable_payload.keys).to contain_exactly("id", "username", "email", "name")
+    end
+
+    # Sidekiq.strict_args! (raise-mode outside production) rejects symbol keys in
+    # job arguments, so the payload must be JSON-safe.
+    it "uses JSON-safe string keys in the payload" do
+      user = create(:user)
+      expect(user.trackable_payload.keys).to all(be_a(String))
+    end
+
+    it "emits user_created on registration when sync is enabled" do
+      enable_sync
+      create(:user)
+      expect(Trackable::DispatchWorker).to have_received(:perform_async)
+        .with(anything, "user_created", anything, anything, anything)
+    end
+
+    it "does not emit when the admin setting is off" do
+      Settings::General.customerio_cdp_enabled = false
+      FeatureFlag.enable(:dev_core_user_sync)
+      create(:user)
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+    end
+
+    it "does not emit for a user without the feature flag" do
+      Settings::General.customerio_cdp_enabled = true
+      create(:user) # flag not enabled
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+    end
+
+    it "emits user_updated when profile_updated_at is touched" do
+      user = create(:user)
+      enable_sync(actor: user)
+      user.touch(:profile_updated_at)
+      expect(Trackable::DispatchWorker).to have_received(:perform_async)
+        .with(anything, "user_updated", anything, anything, anything)
+    end
+
+    it "does not emit user_updated for non-profile row changes" do
+      user = create(:user)
+      enable_sync(actor: user)
+      user.update!(last_comment_at: 1.day.ago)
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+        .with(anything, "user_updated", anything, anything, anything)
+    end
+
+    it "does not emit user_destroyed when a synced user is deleted (deletes are out of scope)" do
+      user = create(:user)
+      enable_sync(actor: user)
+      user.destroy!
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+        .with(anything, "user_destroyed", anything, anything, anything)
+    end
+  end
+
   describe "delegations" do
     it { is_expected.to delegate_method(:admin?).to(:authorizer) }
     it { is_expected.to delegate_method(:any_admin?).to(:authorizer) }
