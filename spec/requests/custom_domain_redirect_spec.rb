@@ -144,6 +144,15 @@ RSpec.describe "Custom Domain Redirects", type: :request do
       expect(response).to redirect_to("https://dev.to/my-new-post")
       expect(response).to have_http_status(:moved_permanently)
     end
+
+    it "does not raise a DoubleRenderError and redirects successfully when org_slug is mismatched on show path" do
+      host! "blog.example.com"
+      
+      get "/wrong-org/feed"
+      
+      expect(response).to redirect_to("http://forem.com/wrong-org/feed")
+      expect(response).to have_http_status(:moved_permanently)
+    end
   end
 
   context "when the custom domain feature flag is disabled" do

@@ -14,6 +14,11 @@
           <%= admin_config_label :ahoy_tracking %>
         </div>
         <%= admin_config_description Constants::Settings::General.details[:ahoy_tracking][:description] %>
+        <div class="crayons-field crayons-field--checkbox">
+          <%= f.check_box :customerio_cdp_enabled, checked: Settings::General.customerio_cdp_enabled, class: "crayons-checkbox" %>
+          <%= admin_config_label :customerio_cdp_enabled %>
+        </div>
+        <%= admin_config_description Constants::Settings::General.details[:customerio_cdp_enabled][:description] %>
       </fieldset>
       <%= render "update_setting_button", f: f %>
     </div>
