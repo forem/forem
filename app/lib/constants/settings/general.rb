@@ -8,6 +8,9 @@ module Constants
           ahoy_tracking: {
             description: I18n.t("lib.constants.settings.general.ahoy_tracking.description")
           },
+          customerio_cdp_enabled: {
+            description: I18n.t("lib.constants.settings.general.customerio_cdp_enabled.description")
+          },
           billboard_enabled_countries: {
             description: I18n.t("lib.constants.settings.general.billboard_enabled_countries.description")
           },

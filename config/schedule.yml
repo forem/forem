@@ -214,3 +214,9 @@ identify_trends:
   description: "Detects and labels timely semantic trends from recently published articles (runs every 6 hours)"
   cron: "0 */6 * * *"
   class: "IdentifyTrendsWorker"
+
+concept_daily_metrics:
+  description: "Aggregates and records daily popularity and engagement metrics for semantic concepts (runs daily at 02:00 UTC)"
+  cron: "0 2 * * *"
+  class: "Concepts::DailyMetricsWorker"
+
