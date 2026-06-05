@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_06_04_143500) do
+ActiveRecord::Schema[7.0].define(version: 2026_06_05_171500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -540,6 +540,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_04_143500) do
     t.integer "max_lookback_days", default: 0, null: false
     t.string "name", null: false
     t.bigint "parent_id"
+    t.float "similarity_threshold"
     t.string "slug", null: false
     t.datetime "updated_at", null: false
     t.index ["anchor_embedding"], name: "index_concepts_on_anchor_embedding", opclass: :vector_cosine_ops, using: :hnsw
