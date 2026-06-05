@@ -18,6 +18,12 @@
     <%= f.select :parent_id, options_from_collection_for_select(parent_options, :id, :name, concept.parent_id), { include_blank: "None" }, class: "crayons-select" %>
   </div>
 
+  <div class="crayons-field mt-3">
+    <%= f.label :similarity_threshold, t("views.admin.concepts.form.similarity_threshold"), class: "crayons-field__label" %>
+    <%= f.number_field :similarity_threshold, step: 0.01, min: 0.0, max: 1.0, class: "crayons-textfield", placeholder: t("views.admin.concepts.form.similarity_threshold_placeholder") %>
+    <p class="fs-xs color-base-60 mt-1"><%= t("views.admin.concepts.form.similarity_threshold_help") %></p>
+  </div>
+
   <div class="flex items-center gap-4 mt-6">
     <%= f.submit class: "crayons-btn" %>
     <%= link_to "Cancel", admin_concepts_path, class: "crayons-btn crayons-btn--outlined" %>
