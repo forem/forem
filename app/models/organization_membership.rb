@@ -18,6 +18,7 @@ class OrganizationMembership < ApplicationRecord
   after_destroy :update_user_organization_info_updated_at
 
   after_commit :bust_cache
+  after_commit :recompile_organization_pages
 
   scope :admin, -> { where(type_of_user: "admin") }
   scope :member, -> { where(type_of_user: %w[admin member]) }
@@ -45,7 +46,11 @@ class OrganizationMembership < ApplicationRecord
     user.touch(:organization_info_updated_at)
   end
 
-  private
+  def recompile_organization_pages
+    return unless FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[organization_id])
+
+    Organizations::RecompilePagesWorker.perform_async(organization_id)
+  end
 
   def bust_cache
     BustCachePathWorker.perform_async(organization.path.to_s)

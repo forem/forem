@@ -38,6 +38,16 @@ class Comment < ApplicationRecord
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :ai_audits, as: :affected_content, dependent: :nullify
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
+
+  has_many :concept_memberships, as: :record, dependent: :destroy
+  has_many :concepts, through: :concept_memberships
+
+  begin
+    has_neighbors :semantic_embedding if column_names.include?("semantic_embedding")
+  rescue StandardError
+    # DB not available yet
+  end
+
   before_validation :evaluate_markdown, if: -> { body_markdown }
   before_save :set_markdown_character_count, if: :body_markdown
   before_save :synchronous_spam_score_check

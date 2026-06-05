@@ -115,7 +115,7 @@ gem "strong_migrations", "~> 1.7" # Catch unsafe migrations
 gem "terser", "~> 1.1" # Terser is a Ruby wrapper for the terser JavaScript parser and minifier
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
-gem "vault", "~> 0.17" # Used to store secrets
+gem "vault", "~> 0.20" # Used to store secrets
 gem "warning", "~> 1.3" # Adds custom processing for warnings, including the ability to ignore specific warning messages
 gem "wcag_color_contrast", "~> 0.1" # Detect contrast of colors to determine readability and a11y.
 

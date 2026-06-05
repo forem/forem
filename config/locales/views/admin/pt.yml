@@ -467,3 +467,27 @@ pt:
           text_label: Texto do CTA
           url_label: URL do CTA
           save: Salvar configurações do CTA
+      concepts:
+        show:
+          back_to_concepts: "Voltar para Conceitos Semânticos"
+          edit_concept: "Editar Conceito"
+          delete_concept: "Excluir Conceito"
+          delete_confirm: "Tem certeza que deseja excluir este conceito?"
+          details_title: "Detalhes do Conceito"
+          parent: "Conceito Pai"
+          total_records: "Total de Registros Mapeados"
+          description: "Descrição"
+          created_at: "Criado em"
+          metrics_title: "Métricas de Atividade Diária (Últimos 30 Dias)"
+          recent_records_title: "Registros Mapeados Recentes"
+          type: "Tipo"
+          record: "Registro"
+          distance: "Distância"
+          mapped_at: "Mapeado em"
+          no_records: "Nenhum registro foi mapeado para este conceito ainda."
+          max_lookback_days: "Cobertura Retrospectiva Mais Antiga (Dias)"
+          max_lookback_days_none: "Nenhuma"
+          lookback_title: "Disparar Busca Retrospectiva"
+          lookback_desc: "Analisa artigos e comentários passados. Se buscas anteriores existirem, analisa apenas o novo período (ex. de 40 a 70 dias atrás) com alguma sobreposição de fuso horário."
+          lookback_days: "Dias para olhar para trás"
+          lookback_button: "Disparar Busca"

@@ -47,7 +47,7 @@ class LinkTag < LiquidTagBase
   end
 
   def find_article_by_org(hash)
-    org = Organization.find_by(slug: hash[:username])
+    org = Organization.find_by_slug_or_legacy(hash[:username])
     return unless org
 
     org.articles.where(slug: hash[:slug])&.first

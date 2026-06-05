@@ -19,6 +19,7 @@ class GenerateArticleEmbeddingWorker
     if embedding
       article.update_column(:semantic_embedding, embedding)
       UpdateUserInterestEmbeddingWorker.perform_async(article.user_id, article.id)
+      Concepts::ClassifyRecordWorker.perform_async("Article", article.id)
     end
   end
 end
