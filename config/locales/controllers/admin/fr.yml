@@ -233,3 +233,10 @@ fr:
         ![BIENVENUE SUR INTERNET](https://slack-imgs.com/?c=1&url=http%3A%2F%2Fmedia0.giphy.com%2Fmedia%2FzhbrTTpmSCYog%2Fgiphy-downsized.gif)
 
         Laissez un commentaire ci-dessous pour vous présenter à la communauté!✌️
+    concepts_controller:
+      created: Le concept a été créé avec succès. La classification de remplissage a été mise en attente.
+      updated: Le concept a été mis à jour avec succès. La classification de remplissage a été mise en attente.
+      deleted: Le concept a été supprimé avec succès.
+      failed_deletion: Quelque chose s'est mal passé lors de la suppression du concept.
+      lookback_triggered: "Le retour en arrière du concept de %{days} jours a été mis en file d'attente."
+      invalid_days: "Veuillez fournir un nombre de jours valide supérieur à 0 et supérieur à la couverture actuelle de retour en arrière."
