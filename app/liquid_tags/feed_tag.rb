@@ -52,7 +52,7 @@ class FeedTag < LiquidTagBase
 
   def parse_org(value)
     @org_slug = value
-    @organization = Organization.find_by(slug: @org_slug)
+    @organization = Organization.find_by_slug_or_legacy(@org_slug)
     raise StandardError, I18n.t("liquid_tags.feed_tag.invalid_org", slug: @org_slug) unless @organization
   end
 
