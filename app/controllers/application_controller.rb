@@ -1,4 +1,18 @@
 class ApplicationController < ActionController::Base
+  class RedirectRequired < StandardError
+    attr_reader :url, :status, :allow_other_host
+    def initialize(url, status: :moved_permanently, allow_other_host: true)
+      @url = url
+      @status = status
+      @allow_other_host = allow_other_host
+      super("Redirect to #{url} required")
+    end
+  end
+
+  rescue_from RedirectRequired do |exception|
+    redirect_to exception.url, allow_other_host: exception.allow_other_host, status: exception.status
+  end
+
   before_action :redirect_www_and_unregistred_subforems_to_root
   before_action :redirect_all_subforems_to_default
   before_action :configure_permitted_parameters, if: :devise_controller?
@@ -120,14 +134,12 @@ class ApplicationController < ActionController::Base
       )
       
       if redirect_rule
-        redirect_to redirect_rule.destination_url, allow_other_host: true, status: :moved_permanently
-        return
+        raise RedirectRequired.new(redirect_rule.destination_url, status: :moved_permanently)
       end
 
       main_app_domain = Settings::General.app_domain
       if main_app_domain.present? && request.host&.downcase != main_app_domain.downcase
-        redirect_to "#{request.protocol}#{main_app_domain}#{request.fullpath}", allow_other_host: true, status: :moved_permanently
-        return
+        raise RedirectRequired.new("#{request.protocol}#{main_app_domain}#{request.fullpath}", status: :moved_permanently)
       end
     end
 
