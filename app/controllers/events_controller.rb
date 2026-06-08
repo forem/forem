@@ -1,6 +1,6 @@
 class EventsController < ApplicationController
   def index
-    @events = Event.published.where('end_time >= ?', Time.current).order(start_time: :asc)
+    @events = Event.published.includes(:page).where('end_time >= ?', Time.current).order(start_time: :asc)
   end
 
   def show
@@ -14,11 +14,20 @@ class EventsController < ApplicationController
         raise ActionController::RoutingError.new('Not Found') unless current_user&.any_admin?
       end
 
+      if @event.delegate_to_page? && @event.page.present?
+        redirect_to @event.page.path
+        return
+      end
+
       tag_name = @event.tags.first&.name
       if tag_name.present?
         @articles = Article.published.cached_tagged_with(tag_name).order(hotness_score: :desc).limit(15)
       else
         @articles = Article.published.order(hotness_score: :desc).limit(15)
+      end
+
+      if @event.challenge?
+        render "challenge"
       end
     else
       check_for_page_fallback
