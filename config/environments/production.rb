@@ -11,6 +11,9 @@ Rails.application.configure do
     # it shouldn't need to be the proper value
     ENV["SECRET_KEY_BASE"] = "NOT_SET"
   end
+
+  # Configure secret_key_base directly from environment variable to support Rails 7.2 and 8.0
+  config.secret_key_base = ENV["SECRET_KEY_BASE"]
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
