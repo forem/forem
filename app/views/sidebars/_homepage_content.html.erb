@@ -34,7 +34,8 @@
       </header>
       <div>
         <% @upcoming_events.each do |event| %>
-          <a class="crayons-link crayons-link--contentful" href="<%= event_path(event.event_name_slug, event.event_variation_slug) %>">
+          <% link_target = (event.delegate_to_page? && event.page.present?) ? event.page.path : event_path(event.event_name_slug, event.event_variation_slug) %>
+          <a class="crayons-link crayons-link--contentful" href="<%= link_target %>">
             <%= truncate(event.title, length: 100) %>
             <div class="crayons-link__secondary">
               <% if event.start_time <= Time.current && event.end_time >= Time.current %>

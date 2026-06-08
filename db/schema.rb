@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_06_08_151500) do
+ActiveRecord::Schema[7.0].define(version: 2026_06_08_155600) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -734,6 +734,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_08_151500) do
     t.string "cached_tag_list"
     t.datetime "created_at", null: false
     t.jsonb "data", default: {}
+    t.boolean "delegate_to_page", default: false, null: false
     t.text "description"
     t.boolean "elevated", default: false, null: false
     t.datetime "end_time", null: false
@@ -741,6 +742,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_08_151500) do
     t.string "event_variation_slug", null: false
     t.boolean "manual_broadcast_end", default: false, null: false
     t.bigint "organization_id"
+    t.bigint "page_id"
     t.string "primary_stream_url"
     t.boolean "published", default: false
     t.datetime "start_time", null: false
@@ -752,6 +754,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_08_151500) do
     t.index ["end_time", "start_time"], name: "index_events_on_end_time_and_start_time_elevated_published", where: "((published = true) AND (elevated = true))"
     t.index ["event_name_slug", "event_variation_slug"], name: "index_events_on_event_name_slug_and_event_variation_slug", unique: true
     t.index ["organization_id"], name: "index_events_on_organization_id"
+    t.index ["page_id"], name: "index_events_on_page_id"
     t.index ["tags_array"], name: "index_events_on_tags_array", using: :gin
     t.index ["user_id"], name: "index_events_on_user_id"
     t.check_constraint "broadcast_config IS NOT NULL", name: "events_broadcast_config_null"
@@ -2171,6 +2174,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_08_151500) do
   add_foreign_key "emails", "audience_segments"
   add_foreign_key "emails", "user_queries"
   add_foreign_key "events", "organizations"
+  add_foreign_key "events", "pages", on_delete: :restrict
   add_foreign_key "events", "users"
   add_foreign_key "feed_events", "articles", on_delete: :cascade
   add_foreign_key "feed_events", "users", on_delete: :nullify
