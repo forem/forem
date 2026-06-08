@@ -50,5 +50,39 @@ RSpec.describe "NotificationCounts" do
       get "/notifications/counts"
       expect(response.body).to eq("0")
     end
+
+    context "when sign in is passed via token" do
+      it "returns count for the token user (plain mode)" do
+        payload = {
+          user_id: user.id,
+          exp: 5.minutes.from_now.to_i
+        }
+        token = JWT.encode(payload, Rails.application.secret_key_base)
+        
+        follow_instance = following_user.follow(user)
+        Notification.send_new_follower_notification_without_delay(follow_instance)
+
+        get "/notifications/counts", headers: { "Authorization" => "Bearer #{token}" }
+        expect(response.body).to eq("1")
+      end
+
+      it "returns detailed metadata for the token user (detailed mode)" do
+        payload = {
+          user_id: user.id,
+          exp: 5.minutes.from_now.to_i
+        }
+        token = JWT.encode(payload, Rails.application.secret_key_base)
+
+        new_notification = create(:notification, user: user, action: "New Follower", notified_at: 1.day.ago)
+
+        get "/notifications/counts", params: { mode: "detailed" }, headers: { "Authorization" => "Bearer #{token}" }
+        json_response = JSON.parse(response.body)
+        
+        expect(json_response["count"]).to eq(1)
+        expect(json_response["last_notification_id"]).to eq(new_notification.id)
+        expect(json_response["action"]).to eq("New Follower")
+      end
+    end
   end
 end
+
