@@ -19,6 +19,10 @@ require "sprockets/railtie"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+if defined?(Anyway)
+  Anyway.loaders.delete(:secrets)
+end
+
 if Rails.env.test? || Rails.env.development?
   if defined?(Dotenv::Rails)
     Dotenv::Rails.load
@@ -32,6 +36,11 @@ module PracticalDeveloper
     # Specify the default Rails settings version we're targetting
     # See: https://guides.rubyonrails.org/configuring.html#results-of-config-load-defaults
     config.load_defaults 7.0
+
+    # Set AhoyEmail secret token early to prevent it from accessing deprecated Rails.application.secrets
+    config.before_initialize do
+      AhoyEmail.secret_token = config.secret_key_base if defined?(AhoyEmail)
+    end
 
     # Keep using SHA1 for the key generator hash digest class to prevent invalidation
     # of existing user sessions and signed/encrypted cookies.
