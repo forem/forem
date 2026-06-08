@@ -1,5 +1,5 @@
 <main id="main-content">
-  <link data-no-instant="" id="pages-css" href="https://dev.to/page/assets_stylesheets_pages" rel="stylesheet">
+  <link data-no-instant="" id="pages-css" href="/page/assets_stylesheets_pages" rel="stylesheet">
   <script defer="" src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <style id="transition-reset">
     .notransition *,
@@ -54,7 +54,7 @@
     <div class="tw-bg-white dark:tw-bg-black">
       <div class="tw-container xl:tw-max-w-6xl tw-m-auto tw-space-y-6 tw-p-2 md:tw-p-5">
         <div>
-          <div x-data="challenge('<%= @event.end_time.utc.strftime("%a %b %d %Y %H:%M:%S GMT+0000 (Coordinated Universal Time)") %>', '<%= @event.end_time >= Time.current ? "Live" : "Ended" %>')" class="tw-space-y-8">
+          <div x-data="challenge(<%= @event.end_time.utc.iso8601.to_json.html_safe %>, <%= (@event.end_time >= Time.current ? 'Live' : 'Ended').to_json.html_safe %>)" class="tw-space-y-8">
             
             <section class="tw-bg-white dark:tw-bg-black tw-py-2">
               <nav aria-label="Breadcrumbs">
@@ -220,7 +220,7 @@
                     <% end %>
                     
                     <% if submission_template_prefill.present? %>
-                      <a href="https://dev.to/new?prefill=<%= CGI.escape(submission_template_prefill) %>" class="tw-font-semibold tw-text-dolphin hover:tw-text-dolphin-dark tw-ease-in-out tw-duration-300 tw-inline-block tw-mt-4 tw-border tw-border-solid tw-border-zinc-300 tw-px-4 tw-py-2 tw-rounded-md hover:tw-border-dolphin tw-transition-colors">
+                      <a href="/new?prefill=<%= CGI.escape(submission_template_prefill) %>" class="tw-font-semibold tw-text-dolphin hover:tw-text-dolphin-dark tw-ease-in-out tw-duration-300 tw-inline-block tw-mt-4 tw-border tw-border-solid tw-border-zinc-300 tw-px-4 tw-py-2 tw-rounded-md hover:tw-border-dolphin tw-transition-colors">
                         Submission Template
                         <svg class="tw-inline tw-w-4" viewBox="0 0 19 17" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <path d="M15.171 9.49897L0.498914 9.49891L0.500003 7.5L9.08455 7.49892L15.1703 7.49857L9.80686 2.13517L11.2211 0.720952L18.9992 8.49913L11.2211 16.2773L9.80686 14.8631L15.171 9.49897Z" fill="currentColor"></path>
@@ -381,22 +381,22 @@
         timeoutId: '',
         isError: false,
         show: function(message) {
-          clearTimeout(this.timeOutId);
+          clearTimeout(this.timeoutId);
           this.message = message;
           this.isError = false;
           this.trigger = true;
 
-          this.timeOutId = setTimeout(() => {
+          this.timeoutId = setTimeout(() => {
             this.trigger = false;
           }, 5000)
         },
         showError: function(message) {
-          clearTimeout(this.timeOutId);
+          clearTimeout(this.timeoutId);
           this.message = message;
           this.isError = true;
           this.trigger = true;
 
-          this.timeOutId = setTimeout(() => {
+          this.timeoutId = setTimeout(() => {
             this.trigger = false;
           }, 5000)
         }

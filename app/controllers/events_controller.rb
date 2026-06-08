@@ -19,15 +19,16 @@ class EventsController < ApplicationController
         return
       end
 
+      if @event.challenge?
+        render "challenge"
+        return
+      end
+
       tag_name = @event.tags.first&.name
       if tag_name.present?
         @articles = Article.published.cached_tagged_with(tag_name).order(hotness_score: :desc).limit(15)
       else
         @articles = Article.published.order(hotness_score: :desc).limit(15)
-      end
-
-      if @event.challenge?
-        render "challenge"
       end
     else
       check_for_page_fallback

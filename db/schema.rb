@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_06_08_155500) do
+ActiveRecord::Schema[7.0].define(version: 2026_06_08_155600) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -2174,6 +2174,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_08_155500) do
   add_foreign_key "emails", "audience_segments"
   add_foreign_key "emails", "user_queries"
   add_foreign_key "events", "organizations"
+  add_foreign_key "events", "pages", on_delete: :nullify
   add_foreign_key "events", "users"
   add_foreign_key "feed_events", "articles", on_delete: :cascade
   add_foreign_key "feed_events", "users", on_delete: :nullify

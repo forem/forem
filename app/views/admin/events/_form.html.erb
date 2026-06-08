@@ -172,7 +172,7 @@
           Delegated Page
           <p class="crayons-field__description">Select a Page if this event delegates to a page.</p>
         <% end %>
-        <%= form.select :page_id, Page.all.order(:title).map { |p| [p.title, p.id] }, { include_blank: "None (No page delegation)" }, class: "crayons-select" %>
+        <%= form.select :page_id, Page.order(:title).pluck(:title, :id), { include_blank: "None (No page delegation)" }, class: "crayons-select" %>
       </div>
 
       <div class="crayons-field crayons-field--checkbox mt-8">
