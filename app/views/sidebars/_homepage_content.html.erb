@@ -25,7 +25,7 @@
     <% end %>
   <% end %>
 
-  <% if @upcoming_events.any? %>
+  <% if @upcoming_events&.any? %>
     <section class="crayons-card crayons-card--secondary crayons-layout__content" id="upcoming-events">
       <header class="crayons-card__header">
         <h3 class="crayons-subtitle-2">
@@ -40,7 +40,7 @@
               <% if event.start_time <= Time.current && event.end_time >= Time.current %>
                 <span class="c-indicator c-indicator--error fw-bold">LIVE</span>
               <% else %>
-                <%= event.start_time.to_fs(:short) %>
+                <%= event.start_time.in_time_zone.strftime("%b %-d, %H:%M %Z") %>
               <% end %>
             </div>
           </a>
