@@ -31,7 +31,14 @@ module PracticalDeveloper
   class Application < Rails::Application
     # Specify the default Rails settings version we're targetting
     # See: https://guides.rubyonrails.org/configuring.html#results-of-config-load-defaults
-    config.load_defaults 6.1
+    config.load_defaults 7.0
+
+    # Keep using SHA1 for the key generator hash digest class to prevent invalidation
+    # of existing user sessions and signed/encrypted cookies.
+    config.active_support.key_generator_hash_digest_class = OpenSSL::Digest::SHA1
+
+    # Keep cache format version compatible with 6.1 during rolling deploy/rollback phase
+    config.active_support.cache_format_version = 6.1
 
     ### FRAMEWORK DEFAULT OVERRIDES
     # Override new framework defaults to keep existing behavior.
