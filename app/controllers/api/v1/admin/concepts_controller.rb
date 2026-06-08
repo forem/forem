@@ -5,7 +5,10 @@ class Api::V1::Admin::ConceptsController < Api::V1::Admin::BaseController
     page = [params.fetch(:page, 1).to_i, 1].max
     per_page = [params.fetch(:per_page, 50).to_i, 100].min
 
-    @concepts = Concept.order(:name).page(page).per(per_page)
+    @concepts = Concept.select(:id, :name, :slug, :description, :parent_id, :similarity_threshold, :max_lookback_days, :created_at, :updated_at)
+                       .order(:name)
+                       .page(page)
+                       .per(per_page)
     render json: @concepts
   end
 
@@ -17,7 +20,7 @@ class Api::V1::Admin::ConceptsController < Api::V1::Admin::BaseController
     @concept = Concept.new(concept_params)
 
     # Generate description and anchor embedding synchronously before saving
-    Concepts::AnchorGenerator.new(@concept).call
+    Concepts::AnchorGenerator.new(@concept).call if @concept.name.present?
 
     if @concept.save
       Concepts::BackfillClassifierWorker.perform_async(@concept.id)
@@ -32,7 +35,7 @@ class Api::V1::Admin::ConceptsController < Api::V1::Admin::BaseController
 
     # Re-generate embedding if name or description changes
     if @concept.will_save_change_to_name? || @concept.will_save_change_to_description?
-      Concepts::AnchorGenerator.new(@concept).call
+      Concepts::AnchorGenerator.new(@concept).call if @concept.name.present?
     end
 
     if @concept.save
@@ -69,6 +72,6 @@ class Api::V1::Admin::ConceptsController < Api::V1::Admin::BaseController
   end
 
   def concept_params
-    params.require(:concept).permit(:name, :description, :parent_id, :similarity_threshold, :max_lookback_days)
+    params.require(:concept).permit(:name, :description, :parent_id, :similarity_threshold)
   end
 end

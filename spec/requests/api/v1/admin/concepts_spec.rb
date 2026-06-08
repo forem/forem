@@ -76,6 +76,12 @@ RSpec.describe "Api::V1::Admin::Concepts", type: :request do
         new_concept = Concept.find_by(name: "New Concept")
         expect(Concepts::BackfillClassifierWorker).to have_received(:perform_async).with(new_concept.id)
       end
+
+      it "ignores max_lookback_days and sets it to default" do
+        post api_admin_concepts_path, params: { concept: { name: "Another Concept", max_lookback_days: 99 } }, headers: headers
+        new_concept = Concept.find_by(name: "Another Concept")
+        expect(new_concept.max_lookback_days).to eq(0)
+      end
     end
 
     context "with invalid parameters" do
@@ -101,6 +107,12 @@ RSpec.describe "Api::V1::Admin::Concepts", type: :request do
         expect(response).to be_successful
         expect(concept.reload.name).to eq("Updated Concept Name")
         expect(Concepts::BackfillClassifierWorker).to have_received(:perform_async).with(concept.id)
+      end
+
+      it "does not update max_lookback_days" do
+        expect {
+          patch api_admin_concept_path(concept), params: { concept: { max_lookback_days: 99 } }, headers: headers
+        }.not_to change { concept.reload.max_lookback_days }
       end
     end
 
@@ -138,6 +150,13 @@ RSpec.describe "Api::V1::Admin::Concepts", type: :request do
     context "with invalid days" do
       it "does not enqueue and returns 422" do
         post trigger_lookback_api_admin_concept_path(concept), params: { days: -10 }, headers: headers
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(Concepts::LookbackWorker).not_to have_received(:perform_async)
+      end
+
+      it "does not enqueue when requested days is less than or equal to max_lookback_days" do
+        concept.update!(max_lookback_days: 40)
+        post trigger_lookback_api_admin_concept_path(concept), params: { days: 30 }, headers: headers
         expect(response).to have_http_status(:unprocessable_entity)
         expect(Concepts::LookbackWorker).not_to have_received(:perform_async)
       end
