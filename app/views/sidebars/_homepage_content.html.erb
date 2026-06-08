@@ -25,6 +25,30 @@
     <% end %>
   <% end %>
 
+  <% if @upcoming_events.any? %>
+    <section class="crayons-card crayons-card--secondary crayons-layout__content" id="upcoming-events">
+      <header class="crayons-card__header">
+        <h3 class="crayons-subtitle-2">
+          <%= t("views.main.side.upcoming_events") %>
+        </h3>
+      </header>
+      <div>
+        <% @upcoming_events.each do |event| %>
+          <a class="crayons-link crayons-link--contentful" href="<%= event_path(event.event_name_slug, event.event_variation_slug) %>">
+            <%= truncate(event.title, length: 100) %>
+            <div class="crayons-link__secondary">
+              <% if event.start_time <= Time.current && event.end_time >= Time.current %>
+                <span class="c-indicator c-indicator--error fw-bold">LIVE</span>
+              <% else %>
+                <%= event.start_time.to_fs(:short) %>
+              <% end %>
+            </div>
+          </a>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+
   <% if @billboards.second %>
     <%= render partial: "shared/billboard", locals: { billboard: @billboards.second, data_context_type: BillboardEvent::CONTEXT_TYPE_HOME } %>
   <% end %>

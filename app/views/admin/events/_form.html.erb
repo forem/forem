@@ -158,6 +158,14 @@
       <% end %>
     </div>
 
+    <div class="crayons-field crayons-field--checkbox">
+      <%= form.check_box :elevated, class: "crayons-checkbox" %>
+      <%= form.label :elevated, class: "crayons-field__label" do %>
+        Elevated
+        <p class="crayons-field__description">Determines if the event is elevated and displayed in the homepage sidebar.</p>
+      <% end %>
+    </div>
+
     <div class="mt-4">
       <%= form.submit class: "c-btn c-btn--primary" %>
     </div>

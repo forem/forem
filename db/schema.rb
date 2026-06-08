@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_06_05_171500) do
+ActiveRecord::Schema[7.0].define(version: 2026_06_08_123500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -740,6 +740,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_05_171500) do
     t.datetime "created_at", null: false
     t.jsonb "data", default: {}
     t.text "description"
+    t.boolean "elevated", default: false, null: false
     t.datetime "end_time", null: false
     t.string "event_name_slug", null: false
     t.string "event_variation_slug", null: false
