@@ -22,4 +22,10 @@ describe "Framework Defaults 7.0 Upgrade Verification" do
     expect(val).to be(false).or be_nil
   end
 end
+
+describe "Framework Defaults 7.1 Upgrade Preparation" do
+  it "has the new_framework_defaults_7_1.rb initializer file" do
+    expect(File.exist?(Rails.root.join("config/initializers/new_framework_defaults_7_1.rb"))).to be(true)
+  end
+end
 # rubocop:enable RSpec/DescribeClass
