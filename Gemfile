@@ -56,6 +56,11 @@ gem "i18n-js", "~> 3.9.2" # Helps with internationalization in Rails.
 gem "imgproxy", "~> 2.1" # A gem that easily generates imgproxy URLs for your images
 gem "inline_svg", "~> 1.8" # Embed SVG documents in your Rails views and style them with CSS
 gem "jbuilder", "~> 2.11" # Create JSON structures via a Builder-style DSL
+# Pin Logger explicitly. Active Support 7.0 references the Logger constant
+# without requiring it; it relied on concurrent-ruby loading "logger" as a side
+# effect. concurrent-ruby 1.3.5 removed that require, which breaks Rails 7.0
+# boot with: uninitialized constant ActiveSupport::LoggerThreadSafeLevel::Logger
+gem "logger", "~> 1.6" # Required explicitly for Rails 7.0 + concurrent-ruby >= 1.3.5
 gem "js-routes", "~> 2.2" # Brings Rails named routes to javascript
 gem "jsbundling-rails", "~> 1.2" # A Rails plugin to bundle JavaScript
 gem "jsonapi-serializer", "~> 2.2" # Serializer for Ruby objects
