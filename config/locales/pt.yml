@@ -239,6 +239,7 @@ pt:
       greater_than: deve ser maior que %{count}
       greater_than_or_equal_to: deve ser maior ou igual a %{count}
       inclusion: não está incluído na lista
+      integer_only: Apenas inteiro. Nenhum sinal permitido.
       invalid: é inválido
       less_than: deve ser menor que %{count}
       less_than_or_equal_to: deve ser menor ou igual a %{count}
