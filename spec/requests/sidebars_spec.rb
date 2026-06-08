@@ -123,5 +123,40 @@ RSpec.describe "Sidebars" do
         expect(response.body).not_to include(CGI.escapeHTML(second_article.title))
       end
     end
+
+    context "when upcoming elevated events exist" do
+      let!(:elevated_upcoming_event) do
+        create(:event, title: "Elevated Upcoming Event", elevated: true, published: true, start_time: 1.hour.from_now, end_time: 2.hours.from_now)
+      end
+      let!(:non_elevated_upcoming_event) do
+        create(:event, title: "Non-Elevated Upcoming Event", elevated: false, published: true, start_time: 1.hour.from_now, end_time: 2.hours.from_now)
+      end
+      let!(:elevated_past_event) do
+        create(:event, title: "Elevated Past Event", elevated: true, published: true, start_time: 2.days.ago, end_time: 1.day.ago)
+      end
+      let!(:unpublished_elevated_event) do
+        create(:event, title: "Unpublished Elevated Event", elevated: true, published: false, start_time: 1.hour.from_now, end_time: 2.hours.from_now)
+      end
+
+      it "includes elevated upcoming event" do
+        get "/sidebars/home"
+        expect(response.body).to include("Elevated Upcoming Event")
+      end
+
+      it "does not include non-elevated upcoming event" do
+        get "/sidebars/home"
+        expect(response.body).not_to include("Non-Elevated Upcoming Event")
+      end
+
+      it "does not include elevated past event" do
+        get "/sidebars/home"
+        expect(response.body).not_to include("Elevated Past Event")
+      end
+
+      it "does not include unpublished elevated event" do
+        get "/sidebars/home"
+        expect(response.body).not_to include("Unpublished Elevated Event")
+      end
+    end
   end
 end
