@@ -33,7 +33,7 @@
           </div>
 
           <div class="mt-4 flex items-center gap-2">
-            <span class="fs-s color-base-60 font-bold">Status:</span>
+            <span class="fs-s color-base-60 font-bold">Challenge Status:</span>
             <% if @event.start_time <= Time.current && @event.end_time >= Time.current %>
               <span class="live-indicator inline-block px-2 py-0.5 rounded text-white font-bold fs-xs bg-error" style="background-color: var(--error); vertical-align: middle;">LIVE</span>
             <% else %>
