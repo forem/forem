@@ -66,43 +66,44 @@ describe "Framework Defaults 7.1 Upgrade Preparation" do
     controllers.each do |klass|
       begin
         controller = klass.new
-      rescue StandardError, ArgumentError
+      rescue StandardError
         controller = nil
       end
 
       klass._process_action_callbacks.each do |callback|
         conditions = (callback.instance_variable_get(:@if) || []) + (callback.instance_variable_get(:@unless) || [])
-        
+
         conditions.each do |cond|
           action_filter = nil
-          if cond.class.name == "AbstractController::Callbacks::ActionFilter"
+          if cond.is_a?(AbstractController::Callbacks::ActionFilter)
             action_filter = cond
-          elsif cond.respond_to?(:target) && cond.target.class.name == "AbstractController::Callbacks::ActionFilter"
+          elsif cond.respond_to?(:target) && cond.target.is_a?(AbstractController::Callbacks::ActionFilter)
             action_filter = cond.target
           elsif cond.respond_to?(:instance_variable_get)
             block = cond.instance_variable_get(:@block)
-            if block && block.class.name == "AbstractController::Callbacks::ActionFilter"
+            if block.is_a?(AbstractController::Callbacks::ActionFilter)
               action_filter = block
             end
           end
-          
+
           next unless action_filter
 
-          actions = action_filter.instance_variable_get(:@actions)
-          
-          actions.each do |action|
-            is_available = if controller
-                             controller.available_action?(action)
-                           else
-                             klass.action_methods.include?(action.to_s)
-                           end
-            
-            unless is_available
-              missing_callbacks << {
-                controller: klass.name,
-                filter: callback.filter,
-                action: action
-              }
+          if controller
+            begin
+              original_val = controller.raise_on_missing_callback_actions
+              controller.raise_on_missing_callback_actions = true
+              action_filter.match?(controller)
+            rescue AbstractController::ActionNotFound => e
+              missing_callbacks << e.message.strip
+            ensure
+              controller.raise_on_missing_callback_actions = original_val
+            end
+          else
+            actions = action_filter.instance_variable_get(:@actions) || []
+            actions.each do |action|
+              unless klass.action_methods.include?(action.to_s)
+                missing_callbacks << "The #{action} action could not be found for #{callback.filter} callback on #{klass.name}."
+              end
             end
           end
         end
@@ -110,8 +111,7 @@ describe "Framework Defaults 7.1 Upgrade Preparation" do
     end
 
     expect(missing_callbacks).to be_empty, -> {
-      "Found controllers with missing callback actions: " +
-        missing_callbacks.map { |mc| "#{mc[:controller]} has #{mc[:filter]} callback targeting missing action #{mc[:action].inspect}" }.join("; ")
+      "Found controllers with missing callback actions:\n" + missing_callbacks.join("\n")
     }
   end
 end
