@@ -25,4 +25,11 @@ RSpec.describe Articles::Suggest, type: :service do
     articles = create_list(:article, 3, featured: true, score: 8)
     expect(described_class.call(articles.first).size).to eq(2)
   end
+
+  it "does not return archived articles" do
+    create(:article, featured: true, tags: ["discuss"], score: 10, archived: true)
+    create(:article, featured: true, tags: [], with_tags: false, score: 10, archived: true)
+    article = create(:article, featured: true, tags: ["discuss"])
+    expect(described_class.call(article)).to be_empty
+  end
 end
