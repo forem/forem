@@ -1,5 +1,4 @@
-# frozen_string_literal: true
-
+# rubocop:disable RSpec/DescribeClass
 require "rails_helper"
 
 describe "Framework Defaults 7.0 Upgrade Verification" do
@@ -12,4 +11,15 @@ describe "Framework Defaults 7.0 Upgrade Verification" do
     # Verify key generator uses SHA1 for backward session/cookie compatibility
     expect(Rails.application.config.active_support.key_generator_hash_digest_class).to eq(OpenSSL::Digest::SHA1)
   end
+
+  it "does not enable obsolete default_enforce_utf8" do
+    expect(Rails.application.config.action_view.default_enforce_utf8).to be(false).or be_nil
+  end
+
+  it "does not enable obsolete read_encrypted_secrets" do
+    config = Rails.application.config
+    val = config.respond_to?(:read_encrypted_secrets) ? config.read_encrypted_secrets : nil
+    expect(val).to be(false).or be_nil
+  end
 end
+# rubocop:enable RSpec/DescribeClass
