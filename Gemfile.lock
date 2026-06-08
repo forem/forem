@@ -406,7 +406,8 @@ GEM
       ruby2ruby (~> 2.4)
       ruby_parser (~> 3.10)
     hashdiff (1.1.0)
-    hashie (5.0.0)
+    hashie (5.1.0)
+      logger
     heapy (0.2.0)
       thor
     highline (2.1.0)
@@ -641,8 +642,9 @@ GEM
       sawyer (~> 0.9)
     oj (3.16.3)
       bigdecimal (>= 3.0)
-    omniauth (2.1.2)
+    omniauth (2.1.4)
       hashie (>= 3.4.6)
+      logger
       rack (>= 2.2.3)
       rack-protection
     omniauth-apple (1.2.2)
