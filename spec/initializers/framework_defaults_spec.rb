@@ -49,7 +49,7 @@ describe "Framework Defaults 7.1 Upgrade Preparation" do
     expect(ActionView::Base.sanitizer_vendor).to eq(Rails::HTML::Sanitizer.best_supported_vendor)
     expect(config.action_dispatch.debug_exception_log_level).to eq(:error)
     expect(config.dom_testing_default_html_version).to eq(:html5)
-    expect(config.action_controller.raise_on_missing_callback_actions).to be(true)
+    expect(config.action_controller.raise_on_missing_callback_actions).to be_nil.or be(false) # reverted to 7.0 default
   end
 end
 # rubocop:enable RSpec/DescribeClass
