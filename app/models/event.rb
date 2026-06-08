@@ -23,6 +23,7 @@ class Event < ApplicationRecord
   after_commit :ensure_broadcast_billboards_and_workers, on: [:create, :update]
 
   scope :published, -> { where(published: true) }
+  scope :elevated, -> { where(elevated: true) }
 
   def self.active_broadcast_events
     Rails.cache.fetch("active_broadcast_events", expires_in: 30.seconds) do
