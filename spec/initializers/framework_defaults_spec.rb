@@ -37,8 +37,10 @@ describe "Framework Defaults 7.1 Upgrade Preparation" do
     expect(config.active_record.allow_deprecated_singular_associations_name).to be(false)
     expect(config.active_support.raise_on_invalid_cache_expiration_time).to be(true)
     expect(config.active_record.query_log_tags_format).to eq(:sqlcommenter)
-    expect(config.active_support.message_serializer).to be_nil.or eq(:marshal) # reverted to 7.0 default
-    expect(config.active_support.use_message_serializer_for_metadata).to be_nil.or be(false) # reverted to 7.0 default
+    expect(config.active_support.message_serializer).to eq(:json_allow_marshal)
+    expect(config.active_support.use_message_serializer_for_metadata).to be(true)
+    expect(config.active_record.encryption.hash_digest_class).to eq(OpenSSL::Digest::SHA256)
+    expect(config.active_record.encryption.support_sha1_for_non_deterministic_encryption).to be(false)
     expect(config.active_record.raise_on_assign_to_attr_readonly).to be(true)
     expect(config.active_record.belongs_to_required_validates_foreign_key).to be(true) # reverted to 7.0 default
     expect(config.precompile_filter_parameters).to be(true)
