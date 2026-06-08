@@ -65,7 +65,7 @@ Rails.application.config.action_controller.allow_deprecated_parameters_hash_equa
 # state which matches what was committed to the database, typically the last
 # instance to save.
 #++
-Rails.application.config.active_record.run_commit_callbacks_on_first_saved_instances_in_transaction = false
+# Rails.application.config.active_record.run_commit_callbacks_on_first_saved_instances_in_transaction = false
 
 ###
 # Configures SQLite with a strict strings mode, which disables double-quoted string literals.
@@ -138,7 +138,7 @@ Rails.application.config.active_record.query_log_tags_format = :sqlcommenter
 # servers, first deploy without changing the serializer, then set the serializer
 # in a subsequent deploy.
 #++
-Rails.application.config.active_support.message_serializer = :json_allow_marshal
+# Rails.application.config.active_support.message_serializer = :json_allow_marshal
 
 ###
 # Enable a performance optimization that serializes message data and metadata
@@ -151,7 +151,7 @@ Rails.application.config.active_support.message_serializer = :json_allow_marshal
 # leave this optimization off on the first deploy, then enable it on a
 # subsequent deploy.
 #++
-Rails.application.config.active_support.use_message_serializer_for_metadata = true
+# Rails.application.config.active_support.use_message_serializer_for_metadata = true
 
 ###
 # Set the maximum size for Rails log files.
@@ -175,7 +175,7 @@ Rails.application.config.active_record.raise_on_assign_to_attr_readonly = true
 # The previous behavior was to validate the presence of the parent record, which performed an extra query
 # to get the parent every time the child record was updated, even when parent has not changed.
 #++
-Rails.application.config.active_record.belongs_to_required_validates_foreign_key = false
+# Rails.application.config.active_record.belongs_to_required_validates_foreign_key = false
 
 ###
 # Enable precompilation of `config.filter_parameters`. Precompilation can
@@ -188,7 +188,7 @@ Rails.application.config.precompile_filter_parameters = true
 # The previous behavior was to only run the callbacks on the first copy of a record
 # if there were multiple copies of the same record enrolled in the transaction.
 #++
-Rails.application.config.active_record.before_committed_on_all_records = true
+# Rails.application.config.active_record.before_committed_on_all_records = true
 
 ###
 # Disable automatic column serialization into YAML.
@@ -214,12 +214,12 @@ Rails.application.config.active_record.before_committed_on_all_records = true
 # This matches the behaviour of all other callbacks.
 # In previous versions of Rails, they ran in the inverse order.
 #++
-Rails.application.config.active_record.run_after_transaction_callbacks_in_order_defined = true
+# Rails.application.config.active_record.run_after_transaction_callbacks_in_order_defined = true
 
 ###
 # Whether a `transaction` block is committed or rolled back when exited via `return`, `break` or `throw`.
 #++
-Rails.application.config.active_record.commit_transaction_on_non_local_return = true
+# Rails.application.config.active_record.commit_transaction_on_non_local_return = true
 
 ###
 # Controls when to generate a value for <tt>has_secure_token</tt> declarations.

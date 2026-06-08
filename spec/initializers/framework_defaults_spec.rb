@@ -33,18 +33,18 @@ describe "Framework Defaults 7.1 Upgrade Preparation" do
 
     expect(config.action_dispatch.default_headers).not_to have_key("X-Download-Options")
     expect(config.action_controller.allow_deprecated_parameters_hash_equality).to be(false)
-    expect(config.active_record.run_commit_callbacks_on_first_saved_instances_in_transaction).to be(false)
+    expect(config.active_record.run_commit_callbacks_on_first_saved_instances_in_transaction).to be_nil.or be(true) # reverted to 7.0 default
     expect(config.active_record.allow_deprecated_singular_associations_name).to be(false)
     expect(config.active_support.raise_on_invalid_cache_expiration_time).to be(true)
     expect(config.active_record.query_log_tags_format).to eq(:sqlcommenter)
-    expect(config.active_support.message_serializer).to eq(:json_allow_marshal)
-    expect(config.active_support.use_message_serializer_for_metadata).to be(true)
+    expect(config.active_support.message_serializer).to be_nil.or eq(:marshal) # reverted to 7.0 default
+    expect(config.active_support.use_message_serializer_for_metadata).to be_nil.or be(false) # reverted to 7.0 default
     expect(config.active_record.raise_on_assign_to_attr_readonly).to be(true)
-    expect(config.active_record.belongs_to_required_validates_foreign_key).to be(false)
+    expect(config.active_record.belongs_to_required_validates_foreign_key).to be(true) # reverted to 7.0 default
     expect(config.precompile_filter_parameters).to be(true)
-    expect(config.active_record.before_committed_on_all_records).to be(true)
-    expect(config.active_record.run_after_transaction_callbacks_in_order_defined).to be(true)
-    expect(config.active_record.commit_transaction_on_non_local_return).to be(true)
+    expect(config.active_record.before_committed_on_all_records).to be_nil.or be(false) # reverted to 7.0 default
+    expect(config.active_record.run_after_transaction_callbacks_in_order_defined).to be_nil.or be(false) # reverted to 7.0 default
+    expect(config.active_record.commit_transaction_on_non_local_return).to be_nil.or be(false) # reverted to 7.0 default
     expect(config.active_record.generate_secure_token_on).to eq(:initialize)
     expect(ActionView::Base.sanitizer_vendor).to eq(Rails::HTML::Sanitizer.best_supported_vendor)
     expect(config.action_dispatch.debug_exception_log_level).to eq(:error)
