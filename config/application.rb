@@ -37,8 +37,8 @@ module PracticalDeveloper
     # of existing user sessions and signed/encrypted cookies.
     config.active_support.key_generator_hash_digest_class = OpenSSL::Digest::SHA1
 
-    # Keep cache format version compatible with 6.1 during rolling deploy/rollback phase
-    config.active_support.cache_format_version = 6.1
+    # Keep cache format version compatible with 7.0 during rolling deploy/rollback phase
+    config.active_support.cache_format_version = 7.0
 
     ### FRAMEWORK DEFAULT OVERRIDES
     # Override new framework defaults to keep existing behavior.
