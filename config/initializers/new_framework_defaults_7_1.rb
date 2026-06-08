@@ -282,4 +282,4 @@ Rails.application.config.dom_testing_default_html_version = :html5
 ###
 # Raise ActionController::ActionNotFound when a callback references a missing action.
 #++
-# Rails.application.config.action_controller.raise_on_missing_callback_actions = true
+Rails.application.config.action_controller.raise_on_missing_callback_actions = true

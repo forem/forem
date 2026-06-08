@@ -49,7 +49,70 @@ describe "Framework Defaults 7.1 Upgrade Preparation" do
     expect(ActionView::Base.sanitizer_vendor).to eq(Rails::HTML::Sanitizer.best_supported_vendor)
     expect(config.action_dispatch.debug_exception_log_level).to eq(:error)
     expect(config.dom_testing_default_html_version).to eq(:html5)
-    expect(config.action_controller.raise_on_missing_callback_actions).to be_nil.or be(false) # reverted to 7.0 default
+    expect(config.action_controller.raise_on_missing_callback_actions).to be(true)
+  end
+
+  it "does not have any controllers with missing callback actions" do
+    # Eager load all classes
+    Rails.application.eager_load!
+
+    # Find all AbstractController::Base subclasses that respond to callback methods
+    controllers = ObjectSpace.each_object(Class).select do |klass|
+      klass < AbstractController::Base && klass.respond_to?(:_process_action_callbacks) && klass.name.present? && !klass.name.start_with?("HTML::")
+    end
+
+    missing_callbacks = []
+
+    controllers.each do |klass|
+      begin
+        controller = klass.new
+      rescue StandardError, ArgumentError
+        controller = nil
+      end
+
+      klass._process_action_callbacks.each do |callback|
+        conditions = (callback.instance_variable_get(:@if) || []) + (callback.instance_variable_get(:@unless) || [])
+        
+        conditions.each do |cond|
+          action_filter = nil
+          if cond.class.name == "AbstractController::Callbacks::ActionFilter"
+            action_filter = cond
+          elsif cond.respond_to?(:target) && cond.target.class.name == "AbstractController::Callbacks::ActionFilter"
+            action_filter = cond.target
+          elsif cond.respond_to?(:instance_variable_get)
+            block = cond.instance_variable_get(:@block)
+            if block && block.class.name == "AbstractController::Callbacks::ActionFilter"
+              action_filter = block
+            end
+          end
+          
+          next unless action_filter
+
+          actions = action_filter.instance_variable_get(:@actions)
+          
+          actions.each do |action|
+            is_available = if controller
+                             controller.available_action?(action)
+                           else
+                             klass.action_methods.include?(action.to_s)
+                           end
+            
+            unless is_available
+              missing_callbacks << {
+                controller: klass.name,
+                filter: callback.filter,
+                action: action
+              }
+            end
+          end
+        end
+      end
+    end
+
+    expect(missing_callbacks).to be_empty, -> {
+      "Found controllers with missing callback actions: " +
+        missing_callbacks.map { |mc| "#{mc[:controller]} has #{mc[:filter]} callback targeting missing action #{mc[:action].inspect}" }.join("; ")
+    }
   end
 end
 # rubocop:enable RSpec/DescribeClass
