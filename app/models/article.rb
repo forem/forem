@@ -1654,7 +1654,7 @@ class Article < ApplicationRecord
   end
 
   def touch_actor_latest_article_updated_at(destroying: false)
-    return unless destroying || saved_changes.keys.intersection(%w[title cached_tag_list]).present?
+    return unless destroying || saved_changes.keys.intersection(%w[title cached_tag_list published archived]).present?
 
     user.touch(:latest_article_updated_at)
     organization&.touch(:latest_article_updated_at)
