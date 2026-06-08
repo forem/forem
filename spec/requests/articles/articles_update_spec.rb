@@ -347,4 +347,107 @@ RSpec.describe "ArticlesUpdate" do
       expect(scheduled_article.published_at).to be_within(1.second).of(published_at_was)
     end
   end
+
+  context "when version detection is based on body_markdown content, not client flag" do
+    let(:v1_body) do
+      "---\ntitle: Frontmatter Title\npublished: false\ntags: ruby\n---\n\nBody content here."
+    end
+    let(:v2_body) { "Plain body content with no frontmatter." }
+
+    it "treats article as V1 when body_markdown has frontmatter with title:, even if client sends version:v2" do
+      original_title = article.title
+      put "/articles/#{article.id}", params: {
+        article: {
+          body_markdown: v1_body,
+          title: "Client V2 Title That Should Be Ignored",
+          tag_list: "ignored",
+          version: "v2"  # stale client flag claiming V2
+        }
+      }
+      article.reload
+      # Title comes from frontmatter, not the explicit title param
+      expect(article.title).to eq("Frontmatter Title")
+      expect(article.body_markdown).to include("---")
+    end
+
+    it "treats article as V2 when body_markdown has no frontmatter, even if client sends version:v1" do
+      v1_article = create(:article, user_id: user.id,
+                                    body_markdown: v1_body,
+                                    title: "Original V1 Title")
+      put "/articles/#{v1_article.id}", params: {
+        article: {
+          body_markdown: v2_body,
+          title: "New V2 Title",
+          tag_list: "rails",
+          version: "v1"  # stale client flag claiming V1
+        }
+      }
+      v1_article.reload
+      # V2 path: explicit title and tag_list accepted, not dropped
+      expect(v1_article.title).to eq("New V2 Title")
+      expect(v1_article.cached_tag_list).to include("rails")
+      expect(v1_article.body_markdown).to eq(v2_body)
+    end
+
+    it "treats series:-only frontmatter (no title: key) as V2, accepts explicit title and sets collection" do
+      series_only_body = "---\nseries: My Series\n---\n\nContent here."
+      put "/articles/#{article.id}", params: {
+        article: {
+          body_markdown: series_only_body,
+          title: "Explicit Title Preserved",
+          series: "My Series",
+          version: "v1"  # client says V1, but content has no title: key so detected as V2
+        }
+      }
+      article.reload
+      # Explicit title is accepted (V2 path)
+      expect(article.title).to eq("Explicit Title Preserved")
+    end
+
+    it "preserves title when transitioning V1 -> V2 (removing frontmatter)" do
+      v1_article = create(:article, user_id: user.id,
+                                    body_markdown: v1_body,
+                                    title: "Frontmatter Title")
+      original_title = v1_article.title
+
+      put "/articles/#{v1_article.id}", params: {
+        article: {
+          body_markdown: v2_body,
+          title: original_title,  # client sends the same title in state
+          version: "v1"           # stale client flag (page loaded as V1)
+        }
+      }
+      v1_article.reload
+      # V2 path detected from content: explicit title accepted, not dropped
+      expect(v1_article.title).to eq(original_title)
+      expect(v1_article.body_markdown).to eq(v2_body)
+    end
+
+    it "uses frontmatter title when transitioning V2 -> V1 (adding frontmatter)" do
+      put "/articles/#{article.id}", params: {
+        article: {
+          body_markdown: v1_body,            # frontmatter with title: "Frontmatter Title"
+          title: "Original V2 Title",        # explicit title from V2 field
+          version: "v2"                      # stale client flag (page loaded as V2)
+        }
+      }
+      article.reload
+      # V1 path detected from content: explicit title ignored, frontmatter title wins
+      expect(article.title).to eq("Frontmatter Title")
+    end
+
+    it "does not null published_at for V1 body even when client sends version:v2" do
+      scheduled_time = 2.days.from_now
+      article.update_columns(published: false, published_at: scheduled_time)
+      put "/articles/#{article.id}", params: {
+        article: {
+          body_markdown: v1_body,
+          version: "v2"  # stale client flag — must NOT trigger published_at = nil
+        }
+      }
+      article.reload
+      # published_at should not have been cleared
+      expect(article.published_at).to be_within(1.second).of(scheduled_time)
+    end
+  end
 end

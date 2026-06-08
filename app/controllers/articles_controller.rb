@@ -190,7 +190,9 @@ class ArticlesController < ApplicationController
 
       format.json do
         if updated.success
-          render json: @article.to_json(only: [:id], methods: [:current_state_path]), status: :ok
+          # Include updated_at so the client can use the server-confirmed save time
+          # as the source of truth when validating localStorage draft freshness.
+          render json: @article.to_json(only: %i[id updated_at], methods: [:current_state_path]), status: :ok
         else
           render json: @article.errors.to_json, status: :unprocessable_entity
         end
@@ -315,7 +317,20 @@ class ArticlesController < ApplicationController
 
     params["article"].transform_keys!(&:underscore)
 
-    allowed_params = if params["article"]["version"] == "v1"
+    # Determine V1/V2 from the submitted body_markdown content, not the client-sent version
+    # flag. The client flag is set at page load and never updates during a session, so it
+    # becomes stale whenever the user adds or removes frontmatter during editing.
+    # Using the content itself as the source of truth ensures the correct param allowlist
+    # is applied regardless of what the client claims its version is.
+    submitted_body = params["article"]["body_markdown"]
+    @is_v1 = if submitted_body.present?
+                body_markdown_has_frontmatter?(submitted_body)
+              else
+                # body_markdown not present in submission (unusual) — fall back to client flag
+                params["article"]["version"] == "v1"
+              end
+
+    allowed_params = if @is_v1
                        %i[body_markdown]
                      else
                        %i[
@@ -362,7 +377,7 @@ class ArticlesController < ApplicationController
       time_zone = Time.find_zone(time_zone_str)
       time_zone ||= Time.find_zone("UTC")
       params["article"]["published_at"] = time_zone.parse("#{date} #{time}")
-    elsif params["article"]["version"] != "v1" && !params["article"]["from_dashboard"]
+    elsif !@is_v1 && !params["article"]["from_dashboard"]
       params["article"]["published_at"] = nil
     end
   end
@@ -396,5 +411,18 @@ class ArticlesController < ApplicationController
 
   def requested_organization_id
     params["article"]["organization_id"].presence
+  end
+
+  # Detects whether submitted body_markdown contains valid V1 frontmatter (requires a title: key).
+  # Uses the same ContentRenderer#has_front_matter? logic as the edit page version detection,
+  # keeping both consistent. Note: series:-only or tags:-only frontmatter does NOT qualify as
+  # V1 — a title: key is required — matching the existing edit page behavior.
+  def body_markdown_has_frontmatter?(body_md)
+    renderer = ContentRenderer.new(body_md.to_s, source: Article.new)
+    renderer.has_front_matter?
+  rescue StandardError
+    # On any parsing error, default to false (V2 treatment) to avoid silently
+    # dropping explicit metadata params like title and tag_list.
+    false
   end
 end
