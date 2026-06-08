@@ -52,15 +52,10 @@ module PracticalDeveloper
     # Therefore we disable "per_form_csrf_tokens" for the time being.
     config.action_controller.per_form_csrf_tokens = false
 
-    ## Rails 6.0
-    # Determines whether forms are generated with a hidden tag that forces older versions of Internet
-    # Explorer to submit forms encoded in UTF-8
-    config.action_view.default_enforce_utf8 = true
-
     ## Rails 6.1
     # Make `form_with` generate non-remote forms by default. We want this to be true as it was the default in 5.2
     config.action_view.form_with_generates_remote_forms = true
-    
+
     # Disable partial writes to avoid issues with strong_migrations
     config.active_record.partial_inserts = false
 
