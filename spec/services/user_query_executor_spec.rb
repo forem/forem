@@ -179,6 +179,7 @@ RSpec.describe UserQueryExecutor do
       expect(ActiveRecord::Base.connection).to receive(:execute).with("SET row_security = on")
 
       allow(ActiveRecord::Base.connection).to receive(:execute).and_return(double("result", each: []))
+      allow(ReadOnlyDatabaseService).to receive(:with_connection).and_yield(ActiveRecord::Base.connection)
       executor.execute
     end
   end
@@ -313,6 +314,21 @@ RSpec.describe UserQueryExecutor do
       expect {
         executor.send(:execute_with_timeout, connection, "SELECT 1")
       }.to raise_error(ActiveRecord::QueryCanceled, /Query timed out/)
+    end
+  end
+
+  describe "connection setting cleanup" do
+    it "resets database session settings after execution" do
+      original_statement_timeout = ActiveRecord::Base.connection.execute("SHOW statement_timeout").first["statement_timeout"]
+      original_lock_timeout = ActiveRecord::Base.connection.execute("SHOW lock_timeout").first["lock_timeout"]
+      original_idle_timeout = ActiveRecord::Base.connection.execute("SHOW idle_in_transaction_session_timeout").first["idle_in_transaction_session_timeout"]
+
+      executor = UserQueryExecutor.new(user_query, timeout_ms: 12_345)
+      executor.execute
+
+      expect(ActiveRecord::Base.connection.execute("SHOW statement_timeout").first["statement_timeout"]).to eq(original_statement_timeout)
+      expect(ActiveRecord::Base.connection.execute("SHOW lock_timeout").first["lock_timeout"]).to eq(original_lock_timeout)
+      expect(ActiveRecord::Base.connection.execute("SHOW idle_in_transaction_session_timeout").first["idle_in_transaction_session_timeout"]).to eq(original_idle_timeout)
     end
   end
 end
