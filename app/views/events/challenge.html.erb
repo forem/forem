@@ -1,406 +1,181 @@
-<main id="main-content">
-  <link data-no-instant="" id="pages-css" href="/page/assets_stylesheets_pages" rel="stylesheet">
-  <script defer="" src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-  <style id="transition-reset">
-    .notransition *,
-    .notransition *:before,
-    .notransition *:after {
-      transition: none !important;
-      animation: none !important;
-    }
-  </style>
-  <div id="custom" class="twp tw-text-base tw-leading-normal tw-text-black dark:tw-text-zinc-50 tw-dark" data-no-instant="" style="visibility: visible;">
-    <script>
-      // set tw dark theme when DEV dark theme detected
-      if (document.body.classList.contains('dark-theme')) {
-        document.getElementById('custom').classList.add('tw-dark')
-      }
+<div class="crayons-layout event-show-layout container">
+  <!-- Banner Image -->
+  <% banner_image = @event.data&.dig('banner_image_url') %>
+  <% if banner_image.present? %>
+    <div class="crayons-card mb-6 overflow-hidden">
+      <img src="<%= banner_image %>" alt="<%= @event.title %>" class="w-100" style="max-height: 400px; object-fit: cover; display: block;">
+    </div>
+  <% end %>
 
-      function loadCss() {
-        const cssLink = document.getElementById('pages-css');
-        const customElement = document.getElementById('custom');
-        
-        // Hide the element initially
-        customElement.style.visibility = 'hidden';
-
-        // Check if the stylesheet is already loaded
-        if (cssLink.sheet) {
-          customElement.style.visibility = 'visible';
-          customElement.classList.remove('notransition');
-        } else {
-          // Add the load event listener
-          cssLink.addEventListener('load', function () {
-            customElement.style.visibility = 'visible';
-            customElement.classList.remove('notransition');
-          });
-
-          // Fallback to timeout
-          setTimeout(() => {
-            customElement.style.visibility = 'visible';
-            customElement.classList.remove('notransition');
-          }, 1000);
-        }
-      }
-
-      if (typeof InstantClick !== "undefined") {
-        InstantClick.on('change', () => {
-          loadCss();
-        });
-      } else {
-        loadCss();
-      }
-    </script>
-
-    <div class="tw-bg-white dark:tw-bg-black">
-      <div class="tw-container xl:tw-max-w-6xl tw-m-auto tw-space-y-6 tw-p-2 md:tw-p-5">
-        <div>
-          <div x-data="challenge(<%= @event.end_time.utc.iso8601.to_json.html_safe %>, <%= (@event.end_time >= Time.current ? 'Live' : 'Ended').to_json.html_safe %>)" class="tw-space-y-8">
+  <div class="flex flex-col m:flex-row gap-6">
+    <!-- Main Content Left Column -->
+    <main class="flex-1 min-w-0" id="main-content">
+      <article class="crayons-card p-6 mb-6">
+        <header class="mb-4">
+          <!-- Breadcrumbs -->
+          <nav aria-label="Breadcrumbs" class="mb-4 fs-s color-base-60">
+            <a href="/challenge" class="c-link c-link--branded font-bold">Challenges</a> &gt; <%= @event.title %>
+          </nav>
+          
+          <div class="flex justify-between items-center flex-wrap gap-4">
+            <h1 class="crayons-title text-3xl font-extrabold"><%= @event.title %></h1>
             
-            <section class="tw-bg-white dark:tw-bg-black tw-py-2">
-              <nav aria-label="Breadcrumbs">
-                <div class="tw-inline-flex tw-items-center tw-gap-2 tw-rounded-md tw-border tw-border-solid tw-border-zinc-300 tw-px-3 tw-py-1 tw-text-sm">
-                  <a href="/challenges" class="tw-inline-block tw-font-medium tw-text-gray-700 dark:tw-text-gray-300 hover:tw-text-blue-600 dark:hover:tw-text-blue-400">
-                    Challenges
-                  </a>
-                  <span class="tw-inline-block tw-font-medium tw-text-gray-500 dark:tw-text-gray-400"> &gt; </span>
-                  <span class="tw-inline-block tw-font-medium tw-text-blue-600 dark:tw-text-blue-400">
-                    <%= @event.title %>
-                  </span>
-                </div>
-              </nav>
-            </section>
-            
-            <section class="tw-bg-white dark:tw-bg-black tw-w-full tw-space-y-4">
-              <% banner_image = @event.data&.dig('banner_image_url') || "https://media2.dev.to/dynamic/image/width=1300/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/sivey92r7kgvbgxfgzjv.png" %>
-              <% banner_image_dark = @event.data&.dig('banner_image_dark_url') || banner_image %>
-              <img class="tw-w-full dark:tw-hidden tw-aspect-[512/215]" src="<%= banner_image %>" alt="<%= @event.title %>">
-              <img class="tw-w-full tw-hidden dark:tw-block tw-aspect-[512/215]" src="<%= banner_image_dark %>" alt="<%= @event.title %>">
-            </section>
-            
-            <section class="tw-bg-white dark:tw-bg-black tw-w-full tw-flex tw-flex-col lg:tw-flex-row tw-gap-12 tw-items-start">
-              <div class="tw-space-y-6 tw-w-full" x-data="following()">
-                <div class="tw-space-y-4">
-                  <div class="tw-flex tw-flex-col tw-gap-4 xl:tw-flex-row tw-justify-between tw-flex-wrap">
-                    <h1 class="tw-text-black dark:tw-text-zinc-50 tw-font-bold tw-text-4xl tw-leading-normal xl:tw-leading-normal tw-whitespace-normal">
-                      <%= @event.title %>
-                    </h1>
-                    <div class="tw-flex tw-gap-4 tw-items-center">
-                      <button type="button" :class="{'tw-border-dolphin tw-border tw-border-solid dark:tw-bg-transparent tw-text-dolphin hover:tw-bg-dolphin hover:dark:tw-bg-dolphin hover:tw-text-white tw-font-medium tw-text-md tw-p-3 tw-rounded-lg tw-ease-in-out tw-duration-300 tw-text-nowrap': isFollowing, 'tw-border tw-border-solid tw-border-dolphin tw-bg-dolphin hover:tw-bg-dolphin-dark tw-text-white tw-font-medium tw-text-md tw-p-3 tw-rounded-lg tw-ease-in-out tw-duration-300': !isFollowing }" class="tw-bg-dolphin hover:tw-bg-dolphin-dark tw-text-white tw-border tw-border-solid tw-border-dolphin tw-font-medium tw-text-md tw-p-3 tw-rounded-lg tw-ease-in-out tw-duration-300" x-text="isFollowing ? 'Signed up' : 'Sign up'" @click="toggleFollow()">Sign up</button>
-                      
-                      <% first_tag = @event.tags.first %>
-                      <% if first_tag %>
-                        <a href="/t/<%= first_tag.name %>" class="tw-font-semibold tw-text-dolphin hover:tw-text-dolphin-dark tw-ease-in-out tw-duration-300 ">
-                          View Entries
-                          <svg class="tw-inline tw-w-4" viewBox="0 0 19 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M15.171 9.49897L0.498914 9.49891L0.500003 7.5L9.08455 7.49892L15.1703 7.49857L9.80686 2.13517L11.2211 0.720952L18.9992 8.49913L11.2211 16.2773L9.80686 14.8631L15.171 9.49897Z" fill="currentColor"></path>
-                          </svg>
-                        </a>
-                      <% end %>
-                    </div>
-                  </div>
-                  
-                  <div x-show="showAuthError" x-transition="" class="tw-bg-zinc-100 tw-border tw-border-zinc-300 tw-text-zinc-800 dark:tw-bg-zinc-800 dark:tw-border-zinc-600 dark:tw-text-zinc-200 tw-px-4 tw-py-3 tw-rounded-md tw-flex tw-items-center tw-justify-between" style="display: none;">
-                    <div class="tw-flex tw-items-center tw-gap-2">
-                      <svg class="tw-w-5 tw-h-5 tw-flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-                      </svg>
-                      <span class="tw-text-sm tw-font-medium">
-                        Please <a href="/enter?state=new-user" class="tw-underline tw-font-semibold hover:tw-text-zinc-900 dark:hover:tw-text-zinc-100">sign in</a> to follow this challenge
-                      </span>
-                    </div>
-                    <button type="button" @click="showAuthError = false" class="tw-text-zinc-600 dark:tw-text-zinc-400 hover:tw-text-zinc-800 dark:hover:tw-text-zinc-200" aria-label="Close alert">
-                      <svg class="tw-w-4 tw-h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                      </svg>
-                    </button>
-                  </div>
-                  <p class="tw-text-black dark:tw-text-zinc-50 tw-italic"><%= @event.description %></p>
-                </div>
-                
-                <div class="tw-inline-flex tw-flex-wrap xl:tw-flex-row tw-items-center tw-gap-4">
-                  <div class="tw-bg-white dark:tw-bg-zinc-900 tw-border tw-border-zinc-300 tw-rounded-full tw-p-3 tw-px-6 tw-flex tw-items-center tw-flex-nowrap">
-                    <span class="tw-text-black dark:tw-text-zinc-50 tw-font-bold tw-mr-1 tw-text-nowrap">Challenge Status:</span>
-                    <svg x-show="!ended" class="tw-inline-block tw-w-2.5 tw-ml-1.5 tw-mr-1 tw-text-[#0eb302]" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                      <circle cx="50" cy="50" r="50" fill="currentColor"></circle>
-                    </svg>
-                    <svg x-show="ended" class="tw-inline-block tw-w-2.5 tw-ml-1.5 tw-mr-1 tw-text-[#0eb302]" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="display: none;">
-                      <circle cx="50" cy="50" r="50" fill="#b3b5b3"></circle>
-                    </svg>
-                    <span x-show="!ended" class="tw-text-black dark:tw-text-zinc-50 tw-italic">Live</span>
-                    <span x-show="ended" class="tw-text-black dark:tw-text-zinc-50 tw-italic" style="display: none;">Ended</span>
-                  </div>
-                </div>
-                
-                <div class="content tw-mt-6 tw-w-full">
-                  <% if @event.data&.dig('body_markdown').present? %>
-                    <%= MarkdownProcessor::Parser.new(@event.data['body_markdown']).finalize.html_safe %>
-                  <% else %>
-                    <%= simple_format(@event.description) %>
-                  <% end %>
+            <% first_tag = @event.tags.first %>
+            <% if first_tag %>
+              <div data-tag-id="<%= first_tag.id %>" data-tag-name="<%= first_tag.name %>" id="tag-<%= first_tag.id %>" class="js-tag-card">
+                <div id="tag-buttons-<%= first_tag.id %>">
+                  <button class="c-btn c-btn--primary js-follow-tag-button">
+                    <%= t("views.tags.follow") %>
+                  </button>
                 </div>
               </div>
-              
-              <div class="tw-bg-white dark:tw-bg-zinc-900 tw-border tw-border-zinc-300 tw-rounded-md tw-p-4 tw-flex-shrink-0 tw-w-[21rem] tw-space-y-8 tw-mx-auto">
-                <div class="tw-text-black dark:tw-text-zinc-50 tw-space-y-4">
-                  <h4 class="tw-text-black dark:tw-text-zinc-50 tw-font-bold tw-text-xl">Key Dates</h4>
-                  <ul class="tw-space-y-0.5">
-                    <li><span class="tw-text-black dark:tw-text-zinc-50 tw-font-bold">Contest start:</span>
-                      <span class="tw-italic">
-                        <%= @event.start_time.in_time_zone.strftime("%B %d, %Y") %>
-                      </span>
-                    </li>
-                    <li><span class="tw-text-black dark:tw-text-zinc-50 tw-font-bold">Submissions due:</span>
-                      <span class="tw-italic">
-                        <%= @event.end_time.in_time_zone.strftime("%B %d, %Y") %>
-                      </span>
-                    </li>
-                    
-                    <% winners_announced = @event.data&.dig('winners_announced_date') %>
-                    <% if winners_announced.present? %>
-                      <li><span class="tw-text-black dark:tw-text-zinc-50 tw-font-bold">Winners announced:</span>
-                        <span class="tw-italic"><%= winners_announced %></span>
-                      </li>
-                    <% end %>
-                  </ul>
-                </div>
-                
-                <% badges = @event.data&.dig('badge_rewards') %>
-                <% if badges.is_a?(Array) && badges.any? %>
-                  <h4 class="tw-text-black dark:tw-text-zinc-50 tw-font-bold tw-text-xl"> Badge Rewards </h4>
-                  <div class="tw-flex tw-flex-wrap tw-gap-4 tw-w-full tw-justify-evenly">
-                    <% badges.each do |badge| %>
-                      <figure class="tw-w-32 tw-flex tw-flex-col tw-justify-center tw-items-center tw-space-y-2">
-                        <img src="<%= badge['image_url'] %>" alt="<%= badge['name'] %>">
-                        <figcaption class="tw-text-black dark:tw-text-zinc-50 tw-text-wrap tw-text-sm tw-text-center">
-                          <%= badge['name'] %>
-                        </figcaption>
-                      </figure>
-                    <% end %>
-                  </div>
-                <% end %>
-                
-                <% launch_post_url = @event.data&.dig('launch_post_url') %>
-                <% if launch_post_url.present? %>
-                  <div class="tw-space-y-4">
-                    <h4 class="tw-text-black dark:tw-text-zinc-50 tw-font-bold tw-text-xl"> Find Out More </h4>
-                    <p class="tw-text-black dark:tw-text-zinc-50 tw-text-wrap">Ask questions and share your ideas on the Launch Post.</p>
-                    
-                    <a href="<%= launch_post_url %>" class="tw-font-semibold tw-text-dolphin hover:tw-text-dolphin-dark tw-ease-in-out tw-duration-300 tw-inline-block">
-                      View Launch Post
-                      <svg class="tw-inline tw-w-4" viewBox="0 0 19 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M15.171 9.49897L0.498914 9.49891L0.500003 7.5L9.08455 7.49892L15.1703 7.49857L9.80686 2.13517L11.2211 0.720952L18.9992 8.49913L11.2211 16.2773L9.80686 14.8631L15.171 9.49897Z" fill="currentColor"></path>
-                      </svg>
-                    </a>
-                  </div>
-                <% end %>
+            <% end %>
+          </div>
+
+          <div class="mt-4 flex items-center gap-2">
+            <span class="fs-s color-base-60 font-bold">Status:</span>
+            <% if @event.start_time <= Time.current && @event.end_time >= Time.current %>
+              <span class="live-indicator inline-block px-2 py-0.5 rounded text-white font-bold fs-xs bg-error" style="background-color: var(--error); vertical-align: middle;">LIVE</span>
+            <% else %>
+              <span class="inline-block px-2 py-0.5 rounded text-white font-bold fs-xs bg-base-40" style="background-color: var(--base-40); vertical-align: middle;">ENDED</span>
+            <% end %>
+          </div>
+        </header>
+
+        <div class="crayons-article__body text-lg">
+          <% if @event.data&.dig('body_markdown').present? %>
+            <%= MarkdownProcessor::Parser.new(@event.data['body_markdown']).finalize.html_safe %>
+          <% else %>
+            <%= simple_format(@event.description) %>
+          <% end %>
+        </div>
+      </article>
+
+      <!-- Challenge Prompt & Prefills -->
+      <% prompt_title = @event.data&.dig('prompt_title') || "Challenge Prompt" %>
+      <% prompt_markdown = @event.data&.dig('prompt_markdown') %>
+      <% submission_template_prefill = @event.data&.dig('submission_template_prefill') %>
+      <% judging_criteria = @event.data&.dig('judging_criteria') %>
+
+      <% if prompt_markdown.present? || judging_criteria.present? %>
+        <div class="crayons-card p-6 mb-6">
+          <h2 class="crayons-title mb-4"><%= prompt_title %></h2>
+          
+          <% if prompt_markdown.present? %>
+            <div class="crayons-article__body mb-4">
+              <%= MarkdownProcessor::Parser.new(prompt_markdown).finalize.html_safe %>
+            </div>
+          <% end %>
+
+          <div class="flex flex-col m:flex-row gap-6 mt-6 pt-6 border-t">
+            <% if submission_template_prefill.present? %>
+              <div class="flex-1">
+                <h3 class="font-bold mb-2">Submission Template</h3>
+                <p class="color-base-70 mb-4">Click below to start your submission draft with the prefilled template.</p>
+                <a href="/new?prefill=<%= CGI.escape(submission_template_prefill) %>" class="crayons-btn crayons-btn--outlined">
+                  Use Submission Template
+                </a>
               </div>
-            </section>
-            
-            <% prompt_title = @event.data&.dig('prompt_title') || "Challenge Prompt" %>
-            <% prompt_markdown = @event.data&.dig('prompt_markdown') %>
-            <% submission_template_prefill = @event.data&.dig('submission_template_prefill') %>
-            <% judging_criteria = @event.data&.dig('judging_criteria') %>
-            
-            <% if prompt_markdown.present? || judging_criteria.present? %>
-              <section id="prompts" class="tw-bg-white dark:tw-bg-black tw-w-full tw-space-y-6">
-                <h2 class="tw-text-black dark:tw-text-zinc-50 tw-font-bold tw-text-2xl tw-leading-normal xl:tw-leading-normal">
-                  Challenge Prompt
-                </h2>
-                
-                <div class="tw-border tw-border-zinc-300 tw-rounded-md tw-p-4 tw-flex tw-flex-wrap lg:tw-flex-nowrap tw-gap-6">
-                  <div class="tw-space-y-4 tw-w-full">
-                    <h3 class="tw-text-black dark:tw-text-zinc-50 tw-font-bold tw-text-xl tw-leading-normal xl:tw-leading-normal">
-                      <%= prompt_title %>
-                    </h3>
-                    
-                    <% if prompt_markdown.present? %>
-                      <div class="content">
-                        <%= MarkdownProcessor::Parser.new(prompt_markdown).finalize.html_safe %>
-                      </div>
-                    <% end %>
-                    
-                    <% if submission_template_prefill.present? %>
-                      <a href="/new?prefill=<%= CGI.escape(submission_template_prefill) %>" class="tw-font-semibold tw-text-dolphin hover:tw-text-dolphin-dark tw-ease-in-out tw-duration-300 tw-inline-block tw-mt-4 tw-border tw-border-solid tw-border-zinc-300 tw-px-4 tw-py-2 tw-rounded-md hover:tw-border-dolphin tw-transition-colors">
-                        Submission Template
-                        <svg class="tw-inline tw-w-4" viewBox="0 0 19 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M15.171 9.49897L0.498914 9.49891L0.500003 7.5L9.08455 7.49892L15.1703 7.49857L9.80686 2.13517L11.2211 0.720952L18.9992 8.49913L11.2211 16.2773L9.80686 14.8631L15.171 9.49897Z" fill="currentColor"></path>
-                        </svg>
-                      </a>
-                    <% end %>
-                  </div>
-                  
-                  <% if judging_criteria.is_a?(Array) && judging_criteria.any? %>
-                    <div class="tw-border-l tw-border-zinc-300"></div>
-                    <div class="tw-min-w-64 tw-space-y-6">
-                      <div>
-                        <h4 class="tw-text-black dark:tw-text-zinc-50 tw-font-bold tw-mb-2"> Judging Criteria: </h4>
-                        <ul class="tw-text-black dark:tw-text-zinc-50 tw-list-outside tw-list-disc tw-ml-2 tw-space-y-1">
-                          <% judging_criteria.each do |criterion| %>
-                            <li><%= criterion %></li>
-                          <% end %>
-                        </ul>
-                      </div>
-                    </div>
+            <% end %>
+
+            <% if judging_criteria.is_a?(Array) && judging_criteria.any? %>
+              <div class="flex-1">
+                <h3 class="font-bold mb-2">Judging Criteria</h3>
+                <ul class="list-disc pl-4 space-y-1 color-base-70">
+                  <% judging_criteria.each do |criterion| %>
+                    <li><%= criterion %></li>
                   <% end %>
-                </div>
-              </section>
-            <% end %>
-            
-            <% how_to_participate = @event.data&.dig('how_to_participate') %>
-            <% if how_to_participate.present? %>
-              <section class="tw-bg-white dark:tw-bg-black tw-w-full tw-space-y-6">
-                <h2 class="tw-text-black dark:tw-text-zinc-50 tw-font-bold tw-text-2xl tw-leading-normal xl:tw-leading-normal">
-                  How To Participate
-                </h2>
-                <div class="tw-border tw-border-zinc-300 tw-rounded-md tw-p-4 tw-flex tw-flex-wrap lg:tw-flex-nowrap tw-gap-6">
-                  <div class="tw-space-y-4 tw-w-full lg:tw-max-w-[calc(100%-20rem)]">
-                    <div class="content">
-                      <%= MarkdownProcessor::Parser.new(how_to_participate).finalize.html_safe %>
-                    </div>
-                  </div>
-                </div>
-              </section>
-            <% end %>
-            
-            <% faq_markdown = @event.data&.dig('faq_markdown') %>
-            <% if faq_markdown.present? %>
-              <section class="tw-bg-white dark:tw-bg-black tw-w-full">
-                <h2 class="tw-text-2xl tw-font-bold tw-mb-6 tw-text-black dark:tw-text-zinc-50">Frequently Asked Questions</h2>
-                <div class="content faq-content">
-                  <%= MarkdownProcessor::Parser.new(faq_markdown).finalize.html_safe %>
-                </div>
-              </section>
-            <% end %>
-            
-            <% rules_markdown = @event.data&.dig('rules_markdown') %>
-            <% if rules_markdown.present? %>
-              <section class="tw-bg-white dark:tw-bg-black tw-w-full">
-                <h2 class="tw-text-black dark:tw-text-zinc-50 tw-font-bold tw-text-2xl tw-mb-4">
-                  Rules
-                </h2>
-                <div class="content">
-                  <%= MarkdownProcessor::Parser.new(rules_markdown).finalize.html_safe %>
-                </div>
-              </section>
+                </ul>
+              </div>
             <% end %>
           </div>
         </div>
+      <% end %>
+
+      <!-- How To Participate -->
+      <% how_to_participate = @event.data&.dig('how_to_participate') %>
+      <% if how_to_participate.present? %>
+        <div class="crayons-card p-6 mb-6">
+          <h2 class="crayons-title mb-4">How To Participate</h2>
+          <div class="crayons-article__body">
+            <%= MarkdownProcessor::Parser.new(how_to_participate).finalize.html_safe %>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- Frequently Asked Questions -->
+      <% faq_markdown = @event.data&.dig('faq_markdown') %>
+      <% if faq_markdown.present? %>
+        <div class="crayons-card p-6 mb-6">
+          <h2 class="crayons-title mb-4">Frequently Asked Questions</h2>
+          <div class="crayons-article__body">
+            <%= MarkdownProcessor::Parser.new(faq_markdown).finalize.html_safe %>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- Rules -->
+      <% rules_markdown = @event.data&.dig('rules_markdown') %>
+      <% if rules_markdown.present? %>
+        <div class="crayons-card p-6 mb-6">
+          <h2 class="crayons-title mb-4">Rules</h2>
+          <div class="crayons-article__body">
+            <%= MarkdownProcessor::Parser.new(rules_markdown).finalize.html_safe %>
+          </div>
+        </div>
+      <% end %>
+    </main>
+
+    <!-- Sidebar Right Column -->
+    <aside class="w-100 m:w-80 flex-shrink-0">
+      <div class="crayons-card p-4 mb-6">
+        <h3 class="font-bold mb-4">Key Dates</h3>
+        <ul class="space-y-3 fs-s color-base-80">
+          <li>
+            <div class="font-bold">Contest Start</div>
+            <div><%= @event.start_time.in_time_zone.strftime("%B %d, %Y") %></div>
+          </li>
+          <li>
+            <div class="font-bold">Submissions Due</div>
+            <div><%= @event.end_time.in_time_zone.strftime("%B %d, %Y") %></div>
+          </li>
+          <% winners_announced = @event.data&.dig('winners_announced_date') %>
+          <% if winners_announced.present? %>
+            <li>
+              <div class="font-bold">Winners Announced</div>
+              <div><%= winners_announced %></div>
+            </li>
+          <% end %>
+        </ul>
       </div>
-    </div>
+
+      <% badges = @event.data&.dig('badge_rewards') %>
+      <% if badges.is_a?(Array) && badges.any? %>
+        <div class="crayons-card p-4 mb-6">
+          <h3 class="font-bold mb-4">Badge Rewards</h3>
+          <div class="grid grid-cols-2 gap-4">
+            <% badges.each do |badge| %>
+              <div class="text-center">
+                <img src="<%= badge['image_url'] %>" alt="<%= badge['name'] %>" style="width: 64px; height: 64px; object-fit: contain; margin: 0 auto 8px;">
+                <div class="fs-xs font-bold leading-tight"><%= badge['name'] %></div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+      <% launch_post_url = @event.data&.dig('launch_post_url') %>
+      <% if launch_post_url.present? && launch_post_url.to_s.start_with?("/", "http://", "https://") %>
+        <div class="crayons-card p-4 mb-6">
+          <h3 class="font-bold mb-2">Find Out More</h3>
+          <p class="fs-s color-base-70 mb-4">Ask questions and share your ideas on the Launch Post.</p>
+          <a href="<%= launch_post_url %>" class="crayons-btn crayons-btn--outlined w-100 text-center justify-center">
+            View Launch Post
+          </a>
+        </div>
+      <% end %>
+    </aside>
   </div>
+</div>
 
-  <script data-no-instant="">
-    function challenge(endDateString, calculatedStatus) {
-      const endDate = new Date(endDateString);
-      const difference = endDate - new Date();
-      const ended = (calculatedStatus === 'Ended' || difference <= 0);
-
-      return {
-        ended: ended,
-      }
-    }
-
-    const tagName = "<%= first_tag&.name || 'challenge' %>"
-    function following() {
-      return {
-        isFollowing: false,
-        tagId: <%= first_tag&.id || 0 %>,
-        showAuthError: false,
-
-        init() {
-          const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-              if (mutation.type === 'attributes' && mutation.attributeName === 'data-user') {
-                const newUserData = mutation.target.getAttribute('data-user');
-                const newUser = JSON.parse(newUserData);
-                const followedTags = JSON.parse(newUser.followed_tags);
-                const challengeTag = followedTags.find((tag) => {return (tag.name === tagName)});
-                this.isFollowing = !!challengeTag;
-              }
-            });
-          });
-
-          const config = { attributes: true, attributeFilter: ['data-user'] };
-          observer.observe(document.body, config);
-        },
-        
-        toggleFollow() {
-          if (this.tagId === 0) {
-            console.error('No tag configured for this challenge');
-            return;
-          }
-          const verb = this.isFollowing ? 'unfollow' : 'follow';
-          const data = {
-            explicit_points: 1,
-            followable_id: this.tagId,
-            followable_type: 'Tag',
-            verb: verb
-          };
-
-          fetch('/follows', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
-            },
-            body: JSON.stringify(data)
-          })
-          .then(response => {
-            if (response.ok) {
-              this.isFollowing = !this.isFollowing;
-              this.$dispatch('notify', this.isFollowing ? `Following #${tagName}` : `Unfollowing #${tagName}`)
-            } else if (response.status === 401) {
-              // User is not authenticated
-              this.showAuthError = true;
-            } else {
-              console.error('Failed to toggle follow state');
-              this.showAuthError = true;
-            }
-          })
-          .catch(error => {
-            console.error('Error:', error);
-            this.showAuthError = true;
-          });
-        }
-      };
-    }
-  </script>
-
-  <div x-data="snackbar()" x-transition="" x-show="trigger" @notify.window="show($event.detail)" @notify-error.window="showError($event.detail)" :class="isError ? 'tw-bg-red-600' : 'tw-bg-zinc-900'" class="tw-fixed tw-left-8 tw-bottom-8 tw-rounded-md tw-text-zinc-50 tw-py-2 tw-px-4 tw-bg-zinc-900" style="display: none;">
-    <span x-text="message"></span>
-    <button type="button" @click="trigger = false" class="tw-ml-2 tw-rounded-md tw-p-2 tw-font-semibold tw-text-zinc-50 hover:tw-bg-zinc-800">
-      Dismiss
-    </button>
-  </div>
-
-  <script>
-    function snackbar() {
-      return {
-        trigger: false,
-        message: '',
-        timeoutId: '',
-        isError: false,
-        show: function(message) {
-          clearTimeout(this.timeoutId);
-          this.message = message;
-          this.isError = false;
-          this.trigger = true;
-
-          this.timeoutId = setTimeout(() => {
-            this.trigger = false;
-          }, 5000)
-        },
-        showError: function(message) {
-          clearTimeout(this.timeoutId);
-          this.message = message;
-          this.isError = true;
-          this.trigger = true;
-
-          this.timeoutId = setTimeout(() => {
-            this.trigger = false;
-          }, 5000)
-        }
-      };
-    }
-  </script>
-</main>
+<%= javascript_include_tag "tagFollows", defer: true %>
