@@ -14,7 +14,7 @@ class SidebarsController < ApplicationController
   private
 
   def get_upcoming_events
-    @upcoming_events = Event.published.elevated.where("end_time >= ?", Time.current).order(start_time: :asc).limit(5).to_a
+    @upcoming_events = Event.published.elevated.includes(:page).where("end_time >= ?", Time.current).order(start_time: :asc).limit(5).to_a
   end
 
   def get_latest_campaign_articles
