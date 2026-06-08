@@ -34,6 +34,12 @@ RSpec.describe Articles::GetUserStickies, type: :service do
       expect(result.map(&:id)).not_to include(article.id)
     end
 
+    it "excludes archived articles" do
+      other_articles.first.update_column(:archived, true)
+      result = described_class.call(article, user)
+      expect(result.map(&:id)).not_to include(other_articles.first.id)
+    end
+
     it "does not load unnecessary columns" do
       result = described_class.call(article, user)
       sticky = result.first
