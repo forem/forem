@@ -103,7 +103,7 @@ gem "rouge", "~> 4.2" # A pure-ruby code highlighter
 gem "rss", "~> 0.2.9" # Ruby's standard library for RSS
 gem "rubyzip", "~> 2.4" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
-gem "sidekiq", "~> 6.5.3" # Sidekiq is used to process background jobs with the help of Redis
+gem "sidekiq", "~> 7.3.9" # Sidekiq is used to process background jobs with the help of Redis
 gem "sidekiq-throttled", "~> 1.5" # Concurrency control for Sidekiq
 gem "sidekiq-cron", "~> 1.7" # Allows execution of scheduled cron jobs as specific times
 gem "sidekiq-unique-jobs", "~> 7.1.27" # Ensures that Sidekiq jobs are unique when enqueued
