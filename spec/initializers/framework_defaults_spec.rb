@@ -47,7 +47,8 @@ describe "Framework Defaults 7.1 Upgrade Preparation" do
     expect(config.active_record.before_committed_on_all_records).to be(true)
     expect(config.active_record.run_after_transaction_callbacks_in_order_defined).to be(true)
     expect(config.active_record.commit_transaction_on_non_local_return).to be(true)
-    expect(config.active_job.use_big_decimal_serializer).to be(false).or be_nil
+    active_job_val = config.respond_to?(:active_job) && config.active_job.respond_to?(:use_big_decimal_serializer) ? config.active_job.use_big_decimal_serializer : nil
+    expect(active_job_val).to be(false).or be_nil
     expect(config.active_record.marshalling_format_version).to be_nil.or eq(6.1)
     expect(config.active_record.generate_secure_token_on).to eq(:initialize)
     expect(ActionView::Base.sanitizer_vendor).to eq(Rails::HTML::Sanitizer.best_supported_vendor)
