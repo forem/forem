@@ -30,7 +30,7 @@ module Api
       private
 
       def set_concept
-        @concept = Concept.find(params[:id])
+        @concept = Concept.select(:id, :name, :slug, :description, :parent_id, :similarity_threshold, :max_lookback_days, :created_at, :updated_at).find(params[:id])
       end
 
       def authorize_concept_access!

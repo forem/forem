@@ -3,7 +3,6 @@ require "rails_helper"
 RSpec.describe "Api::V1::Concepts", type: :request do
   let(:admin) { create(:user, :super_admin) }
   let(:user) { create(:user) }
-  let(:other_user) { create(:user) }
   let(:embedding) { Array.new(768, 0.1) }
   let!(:concept_1) { create(:concept, anchor_embedding: embedding) }
   let!(:concept_2) { create(:concept, anchor_embedding: embedding) }
@@ -35,13 +34,14 @@ RSpec.describe "Api::V1::Concepts", type: :request do
 
   describe "GET /api/concepts" do
     context "as a super admin" do
-      it "returns a list of all concepts" do
+      it "returns a list of all concepts without leaking anchor_embeddings" do
         get api_concepts_path, headers: admin_headers
         expect(response).to be_successful
         json = JSON.parse(response.body)
         expect(json.length).to eq(2)
         concept_ids = json.map { |c| c["id"] }
         expect(concept_ids).to include(concept_1.id, concept_2.id)
+        expect(json[0]).not_to have_key("anchor_embedding")
       end
     end
 
@@ -71,11 +71,12 @@ RSpec.describe "Api::V1::Concepts", type: :request do
 
   describe "GET /api/concepts/:id" do
     context "as a super admin" do
-      it "allows viewing any concept" do
+      it "allows viewing any concept without leaking anchor_embedding" do
         get api_concept_path(concept_1), headers: admin_headers
         expect(response).to be_successful
         json = JSON.parse(response.body)
         expect(json["id"]).to eq(concept_1.id)
+        expect(json).not_to have_key("anchor_embedding")
       end
     end
 
@@ -84,11 +85,12 @@ RSpec.describe "Api::V1::Concepts", type: :request do
         create(:concept_access, user: user, concept: concept_1)
       end
 
-      it "allows viewing the concept" do
+      it "allows viewing the concept without leaking anchor_embedding" do
         get api_concept_path(concept_1), headers: user_headers
         expect(response).to be_successful
         json = JSON.parse(response.body)
         expect(json["id"]).to eq(concept_1.id)
+        expect(json).not_to have_key("anchor_embedding")
       end
 
       it "denies viewing other concepts" do
