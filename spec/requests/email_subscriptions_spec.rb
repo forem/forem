@@ -10,8 +10,8 @@ RSpec.describe "EmailSubscriptions" do
   def generate_token(user_id)
     Rails.application.message_verifier(:unsubscribe).generate({
                                                                 user_id: user_id,
-                                                                email_type: :email_mention_notifications,
-                                                                expires_at: 31.days.from_now
+                                                                email_type: "email_mention_notifications",
+                                                                expires_at: 31.days.from_now.iso8601
                                                               })
   end
 

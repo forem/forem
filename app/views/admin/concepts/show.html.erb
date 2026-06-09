@@ -34,6 +34,12 @@
           <%= @concept.max_lookback_days.positive? ? @concept.max_lookback_days : t("views.admin.concepts.show.max_lookback_days_none") %>
         </span>
       </div>
+      <div class="mb-3">
+        <strong class="color-base-60 fs-xs uppercase block"><%= t("views.admin.concepts.show.similarity_threshold") %></strong>
+        <span>
+          <%= @concept.similarity_threshold ? @concept.similarity_threshold.to_s : "#{Concepts::Classifier::DEFAULT_THRESHOLD} (#{t('views.admin.concepts.index.default')})" %>
+        </span>
+      </div>
     </div>
     <div>
       <div class="mb-3">

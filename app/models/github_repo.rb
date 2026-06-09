@@ -1,7 +1,7 @@
 class GithubRepo < ApplicationRecord
   belongs_to :user
 
-  serialize :info_hash, Hash
+  serialize :info_hash, type: Hash
 
   validates :name, :url, :github_id_code, presence: true
   validates :url, url: true, uniqueness: true

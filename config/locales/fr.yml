@@ -242,6 +242,7 @@ fr:
       greater_than: doit être supérieur à %{count}
       greater_than_or_equal_to: doit être supérieur ou égal à %{count}
       inclusion: n'est pas inclus dans la liste
+      integer_only: Entier seulement. Aucun signe n'est autorisé.
       invalid: est invalide
       less_than: doit être inférieur à %{count}
       less_than_or_equal_to: doit être inférieur ou égal à %{count}
