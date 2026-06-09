@@ -25,11 +25,13 @@ module Concepts
       vector_literal = "[#{concept.anchor_embedding.to_a.join(',')}]"
       quoted_vector = Concept.connection.quote(vector_literal)
 
+      threshold = concept.similarity_threshold || Concepts::Classifier::DEFAULT_THRESHOLD
+
       # 1. Query matching published articles
       articles_query = Article.published
         .select("articles.id, (semantic_embedding <=> #{quoted_vector}) AS computed_distance")
         .where.not(semantic_embedding: nil)
-        .where("semantic_embedding <=> #{quoted_vector} <= ?", Concepts::Classifier::DEFAULT_THRESHOLD)
+        .where("semantic_embedding <=> #{quoted_vector} <= ?", threshold)
         .where("published_at >= ?", start_time)
 
       if end_time
@@ -53,7 +55,7 @@ module Concepts
       comments_query = Comment
         .select("comments.id, (semantic_embedding <=> #{quoted_vector}) AS computed_distance")
         .where.not(semantic_embedding: nil)
-        .where("semantic_embedding <=> #{quoted_vector} <= ?", Concepts::Classifier::DEFAULT_THRESHOLD)
+        .where("semantic_embedding <=> #{quoted_vector} <= ?", threshold)
         .where("created_at >= ?", start_time)
 
       if end_time

@@ -122,6 +122,14 @@ RSpec.describe "Admin::Events", type: :request do
         expect(Event.last.manual_broadcast_end).to eq(true)
       end
     end
+
+    context "with elevated config" do
+      let(:attributes_with_elevated) { valid_attributes.merge(elevated: true) }
+      it "permits and sets the elevated flag" do
+        post admin_events_path, params: { event: attributes_with_elevated }
+        expect(Event.last.elevated).to eq(true)
+      end
+    end
   end
 
   describe "PATCH /admin/content_manager/events/:id/end_broadcast" do

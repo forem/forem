@@ -51,6 +51,7 @@ pt:
         Videos: Vídeos
       side:
         active_discussions: "Discussões ativas"
+        upcoming_events: "Próximos eventos"
         listings:
           heading: Anúncios
           all: Ver todos

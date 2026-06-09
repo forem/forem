@@ -491,3 +491,11 @@ pt:
           lookback_desc: "Analisa artigos e comentários passados. Se buscas anteriores existirem, analisa apenas o novo período (ex. de 40 a 70 dias atrás) com alguma sobreposição de fuso horário."
           lookback_days: "Dias para olhar para trás"
           lookback_button: "Disparar Busca"
+          similarity_threshold: "Limiar de Similaridade"
+        form:
+          similarity_threshold: "Limiar de Similaridade"
+          similarity_threshold_placeholder: "ex. 0.25 (opcional)"
+          similarity_threshold_help: "Opcional. Float entre 0.0 e 1.0. Se deixado em branco, o padrão do sistema (0.28) será usado."
+        index:
+          threshold: "Limiar"
+          default: "padrão"

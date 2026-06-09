@@ -97,7 +97,7 @@ module Admin
     end
 
     def concept_params
-      params.require(:concept).permit(:name, :description, :parent_id)
+      params.require(:concept).permit(:name, :description, :parent_id, :similarity_threshold)
     end
   end
 end

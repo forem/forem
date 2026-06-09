@@ -52,6 +52,27 @@ RSpec.describe "Events", type: :request do
         end
       end
     end
+    context "when requesting an event that delegates to a page" do
+      let(:delegated_page) { create(:page, slug: "delegated-page") }
+      let!(:delegated_event) { create(:event, published: true, delegate_to_page: true, page: delegated_page) }
+
+      it "redirects to the delegated page's path" do
+        get event_path(delegated_event.event_name_slug, delegated_event.event_variation_slug)
+        expect(response).to redirect_to(delegated_page.path)
+      end
+    end
+
+    context "when requesting a challenge event" do
+      let!(:challenge_event) { create(:event, published: true, type_of: :challenge, title: "Game Jam Challenge") }
+
+      it "renders the challenge template" do
+        get event_path(challenge_event.event_name_slug, challenge_event.event_variation_slug)
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include("Challenges")
+        expect(response.body).to include(challenge_event.title)
+        expect(response.body).to include("Challenge Status:")
+      end
+    end
 
     context "when requesting a draft event" do
       context "as a logged out user" do
