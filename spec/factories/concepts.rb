@@ -21,4 +21,9 @@ FactoryBot.define do
     comments_count { 3 }
     popularity_score { 68.0 }
   end
+
+  factory :concept_access do
+    association :user
+    association :concept
+  end
 end
