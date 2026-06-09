@@ -74,6 +74,8 @@ class User < ApplicationRecord
                             inverse_of: :blocker, dependent: :delete_all
   has_many :collections, dependent: :destroy
   has_many :comments, dependent: :destroy
+  has_many :concept_accesses, dependent: :delete_all
+  has_many :accessible_concepts, through: :concept_accesses, source: :concept
   has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
   has_many :credits, dependent: :destroy
   has_many :discussion_locks, dependent: :delete_all, inverse_of: :locking_user, foreign_key: :locking_user_id
