@@ -93,7 +93,7 @@ Rails.application.config.active_record.allow_deprecated_singular_associations_na
 # serializer. Therefore, this setting should only be enabled after all replicas
 # have been successfully upgraded to Rails 7.1.
 #++
-Rails.application.config.active_job.use_big_decimal_serializer = true
+# Rails.application.config.active_job.use_big_decimal_serializer = true
 
 ###
 # Specify if an `ArgumentError` should be raised if `Rails.cache` `fetch` or
@@ -207,7 +207,7 @@ Rails.application.config.active_record.before_committed_on_all_records = true
 # leave this optimization off on the first deploy, then enable it on a
 # subsequent deploy.
 #++
-Rails.application.config.active_record.marshalling_format_version = 7.1
+# Rails.application.config.active_record.marshalling_format_version = 7.1
 
 ###
 # Run `after_commit` and `after_*_commit` callbacks in the order they are defined in a model.
