@@ -3,6 +3,8 @@ class Concept < ApplicationRecord
   has_many :articles, through: :concept_memberships, source: :record, source_type: "Article"
   has_many :comments, through: :concept_memberships, source: :record, source_type: "Comment"
   has_many :concept_daily_metrics, dependent: :destroy
+  has_many :concept_accesses, dependent: :destroy
+  has_many :authorized_users, through: :concept_accesses, source: :user
   belongs_to :parent, class_name: "Concept", optional: true
   has_many :children, class_name: "Concept", foreign_key: :parent_id, dependent: :nullify
 
