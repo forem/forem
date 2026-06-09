@@ -157,6 +157,10 @@ RSpec.describe "Dashboards" do
 
         expect(response.body).to include("Archived Post 0")
         expect(response.body).not_to include("Visible Post 0")
+
+        html = Nokogiri::HTML(response.body)
+        expect(html.css(".story-archived")).to be_present
+        expect(html.css(".story-archived.hidden")).to be_empty
       end
     end
 
@@ -242,6 +246,16 @@ RSpec.describe "Dashboards" do
         get "/dashboard/organization/#{organization.id}"
         expect(response.body).not_to include("Delete")
         expect(response.body).to include(ERB::Util.html_escape(unpublished_article.title))
+      end
+
+      it "renders archived organization articles with the hidden class" do
+        create(:organization_membership, user: user, organization: organization, type_of_user: "admin")
+        archived_article = create(:article, user: user, organization_id: organization.id, archived: true)
+        sign_in user
+        get "/dashboard/organization/#{organization.id}"
+
+        html = Nokogiri::HTML(response.body)
+        expect(html.css(".story-archived.hidden")).to be_present
       end
     end
 

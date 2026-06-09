@@ -13,11 +13,13 @@ module Concepts
       # 1. Clean up existing memberships for this concept
       concept.concept_memberships.delete_all
 
+      threshold = concept.similarity_threshold || Concepts::Classifier::DEFAULT_THRESHOLD
+
       # 2. Query all matching published articles
       matching_articles = Article.published
         .select("articles.id, (semantic_embedding <=> #{quoted_vector}) AS computed_distance")
         .where.not(semantic_embedding: nil)
-        .where("semantic_embedding <=> #{quoted_vector} <= ?", Concepts::Classifier::DEFAULT_THRESHOLD)
+        .where("semantic_embedding <=> #{quoted_vector} <= ?", threshold)
         .to_a
 
       memberships = matching_articles.map do |art|
@@ -35,7 +37,7 @@ module Concepts
       matching_comments = Comment
         .select("comments.id, (semantic_embedding <=> #{quoted_vector}) AS computed_distance")
         .where.not(semantic_embedding: nil)
-        .where("semantic_embedding <=> #{quoted_vector} <= ?", Concepts::Classifier::DEFAULT_THRESHOLD)
+        .where("semantic_embedding <=> #{quoted_vector} <= ?", threshold)
         .to_a
 
       matching_comments.each do |com|

@@ -8,9 +8,14 @@ class SidebarsController < ApplicationController
       get_active_discussions
       set_onboarding_checklist
     end
+    get_upcoming_events
   end
 
   private
+
+  def get_upcoming_events
+    @upcoming_events = Event.published.elevated.includes(:page).where("end_time >= ?", Time.current).order(start_time: :asc).limit(5).to_a
+  end
 
   def get_latest_campaign_articles
     @campaign_articles_count = Campaign.current.count

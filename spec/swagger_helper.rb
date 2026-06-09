@@ -31,7 +31,7 @@ RSpec.configure do |config|
       paths: {},
       servers: [
         {
-          url: "https://dev.to/api",
+          url: "https://dev.to",
           description: "Production server"
         },
       ],
