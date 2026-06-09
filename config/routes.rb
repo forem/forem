@@ -134,6 +134,9 @@ Rails.application.routes.draw do
           end
 
           resources :request_redirects, only: %i[index show create update destroy]
+          resources :concepts, only: %i[index show create update destroy] do
+            post :trigger_lookback, on: :member
+          end
         end
 
         draw :api

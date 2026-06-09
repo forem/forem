@@ -594,3 +594,11 @@ fr:
           lookback_desc: "Analyse les articles et commentaires passés. Si des retours en arrière précédents existent, il analyse uniquement la nouvelle période (par exemple de 40 à 70 jours auparavant) avec un léger chevauchement de fuseau horaire."
           lookback_days: "Jours à analyser en arrière"
           lookback_button: "Déclencher"
+          similarity_threshold: "Seuil de similitude"
+        form:
+          similarity_threshold: "Seuil de similitude"
+          similarity_threshold_placeholder: "ex. 0.25 (optionnel)"
+          similarity_threshold_help: "Optionnel. Nombre décimal entre 0,0 et 1,0. Si laissé vide, la valeur par défaut du système (0,28) est utilisée."
+        index:
+          threshold: "Seuil"
+          default: "défaut"

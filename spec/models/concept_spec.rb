@@ -29,5 +29,20 @@ RSpec.describe Concept, type: :model do
       concept = build(:concept, anchor_embedding: nil)
       expect(concept).not_to be_valid
     end
+
+    it "allows similarity_threshold to be nil" do
+      concept = build(:concept, similarity_threshold: nil)
+      expect(concept).to be_valid
+    end
+
+    it "requires similarity_threshold to be between 0.0 and 1.0" do
+      concept_valid = build(:concept, similarity_threshold: 0.5)
+      concept_low = build(:concept, similarity_threshold: -0.1)
+      concept_high = build(:concept, similarity_threshold: 1.1)
+
+      expect(concept_valid).to be_valid
+      expect(concept_low).not_to be_valid
+      expect(concept_high).not_to be_valid
+    end
   end
 end
