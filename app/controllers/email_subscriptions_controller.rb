@@ -1,11 +1,15 @@
 class EmailSubscriptionsController < ApplicationController
   def unsubscribe
-    verified_params = Rails.application.message_verifier(:unsubscribe).verify(params[:ut])
+    verified_params = Rails.application.message_verifier(:unsubscribe).verify(params[:ut]).with_indifferent_access
 
-    if verified_params[:expires_at] > Time.current
+    expires_at = verified_params[:expires_at]
+    expires_at = Time.zone.parse(expires_at) if expires_at.is_a?(String)
+
+    if expires_at && expires_at > Time.current
       user = User.find(verified_params[:user_id])
-      user.notification_setting.update(verified_params[:email_type] => false)
-      @email_type = preferred_email_name.fetch(verified_params[:email_type],
+      email_type = verified_params[:email_type]&.to_sym
+      user.notification_setting.update(email_type => false)
+      @email_type = preferred_email_name.fetch(email_type,
                                                I18n.t("email_subscriptions_controller.this_list")).call
     else
       render "invalid_token"

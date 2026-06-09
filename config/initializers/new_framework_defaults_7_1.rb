@@ -51,12 +51,12 @@ Rails.application.config.action_controller.allow_deprecated_parameters_hash_equa
 # 2. If you have +config.active_support.key_generator_hash_digest_class+ configured as SHA256 (the new default
 # in 7.0), then you need to configure SHA-256 for Active Record Encryption:
 #++
-# Rails.application.config.active_record.encryption.hash_digest_class = OpenSSL::Digest::SHA256
+Rails.application.config.active_record.encryption.hash_digest_class = OpenSSL::Digest::SHA256
 #
 # 3. If you don't currently have data encrypted with Active Record encryption, you can disable this setting to
 # configure the default behavior starting 7.1+:
 #++
-# Rails.application.config.active_record.encryption.support_sha1_for_non_deterministic_encryption = false
+Rails.application.config.active_record.encryption.support_sha1_for_non_deterministic_encryption = false
 
 ###
 # No longer run after_commit callbacks on the first of multiple Active Record
