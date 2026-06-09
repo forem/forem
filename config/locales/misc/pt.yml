@@ -19,6 +19,7 @@ pt:
       forem: "Você está no caminho certo! 🎉 Você tem uma conta Forem? Considere <a href='/settings'>conectá-la</a>."
       github: "Você está no caminho certo! 🎉 Você tem uma conta GitHub? Considere <a href='/settings'>conectá-la</a> para que você possa fixar qualquer um dos seus repositórios no seu perfil."
       google: "Você está no caminho certo! 🎉 Você tem uma conta Google? Considere <a href='/settings'>conectá-la</a>."
+      mlh: "Você está no caminho certo! 🎉  Você tem uma conta MyMLH? Considere <a href='/settings'>conectá-la</a>."
       twitter: "Você está no caminho certo! 🎉 Você tem uma conta Twitter? Considere <a href='/settings'>conectá-la</a> para que possamos @mencionar você se compartilharmos seu post via nossa conta Twitter <a href='https://twitter.com/thePracticalDev'>@thePracticalDev</a>."
   errors:
     authentication:

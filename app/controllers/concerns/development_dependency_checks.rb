@@ -4,7 +4,7 @@ module DevelopmentDependencyChecks
   extend ActiveSupport::Concern
 
   included do
-    before_action :verify_sidekiq_running, only: %i[index show], if: proc { Rails.env.development? }
+    before_action :verify_sidekiq_running, if: -> { Rails.env.development? && %w[index show].include?(action_name) }
   end
 
   private

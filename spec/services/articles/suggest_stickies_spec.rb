@@ -65,6 +65,14 @@ RSpec.describe Articles::SuggestStickies, type: :service do
       expect(result.map(&:user_id)).not_to include(article.user_id)
     end
 
+    it "does not include archived articles" do
+      career_articles.first.update_column(:archived, true)
+      discuss_articles.first.update_column(:archived, true)
+      result = described_class.call(article, sample_size: 10)
+      expect(result.map(&:id)).not_to include(career_articles.first.id)
+      expect(result.map(&:id)).not_to include(discuss_articles.first.id)
+    end
+
     it "does not load unnecessary columns (proves optimization)" do
       result = described_class.call(article)
       next if result.empty?
