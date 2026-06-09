@@ -1,6 +1,6 @@
 module Concepts
   class Classifier
-    DEFAULT_THRESHOLD = 0.23
+    DEFAULT_THRESHOLD = 0.28
 
     def initialize(record)
       @record = record
@@ -19,7 +19,7 @@ module Concepts
       # Query concepts that match within the threshold
       matching_concepts = Concept
         .select("concepts.*, (anchor_embedding <=> #{quoted_vector}) AS computed_distance")
-        .where("anchor_embedding <=> #{quoted_vector} <= ?", threshold)
+        .where("anchor_embedding <=> #{quoted_vector} <= COALESCE(concepts.similarity_threshold, ?)", threshold)
         .to_a
 
       active_concept_ids = matching_concepts.map(&:id)

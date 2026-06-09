@@ -1,6 +1,6 @@
 module Notifications
   class CountsController < ApplicationController
-    before_action :current_user_by_token, only: [:show]
+    before_action :current_user_by_token, only: [:index]
 
     def index
       notifications = current_user ? current_user.notifications.from_subforem : Notification.none
