@@ -8,6 +8,7 @@ RSpec.describe Event, type: :model do
   describe "associations" do
     it { is_expected.to belong_to(:user).optional }
     it { is_expected.to belong_to(:organization).optional }
+    it { is_expected.to belong_to(:page).optional }
   end
 
   describe "enums" do
@@ -15,7 +16,8 @@ RSpec.describe Event, type: :model do
       is_expected.to define_enum_for(:type_of).with_values(
         live_stream: 0,
         takeover: 1,
-        other: 2
+        other: 2,
+        challenge: 3
       )
     end
     it do
@@ -70,6 +72,23 @@ RSpec.describe Event, type: :model do
         expect(build(:event, primary_stream_url: "http://twitch.tv/test")).not_to be_valid
         expect(build(:event, primary_stream_url: "https://example.com")).not_to be_valid
         expect(build(:event, primary_stream_url: "javascript:alert(1)")).not_to be_valid
+      end
+    end
+
+    describe "page delegation validation" do
+      it "requires page when delegate_to_page is true" do
+        event = build(:event, delegate_to_page: true, page: nil)
+        expect(event).not_to be_valid
+        expect(event.errors[:page]).to include("can't be blank")
+
+        page = build(:page)
+        event.page = page
+        expect(event).to be_valid
+      end
+
+      it "does not require page when delegate_to_page is false" do
+        event = build(:event, delegate_to_page: false, page: nil)
+        expect(event).to be_valid
       end
     end
   end
