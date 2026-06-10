@@ -190,6 +190,7 @@ namespace :admin do
         post "send_email"
         post "create_note"
         post "save_status"
+        get "flag_reactions"
       end
     end
     resources :mods, only: %i[index update]
