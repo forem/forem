@@ -25,6 +25,27 @@ class FeedbackMessage < ApplicationRecord
       .or(user.affected_feedback_messages)
       .or(user.offender_feedback_messages)
   }
+  scope :with_valid_reported_score, lambda { |score_min|
+    joins(<<~SQL)
+      LEFT OUTER JOIN users AS reported_users 
+        ON feedback_messages.reported_type = 'User' 
+        AND reported_users.id = feedback_messages.reported_id
+      LEFT OUTER JOIN articles AS reported_articles 
+        ON feedback_messages.reported_type = 'Article' 
+        AND reported_articles.id = feedback_messages.reported_id
+      LEFT OUTER JOIN comments AS reported_comments 
+        ON feedback_messages.reported_type = 'Comment' 
+        AND reported_comments.id = feedback_messages.reported_id
+    SQL
+    .where(<<~SQL, score_min: score_min)
+      feedback_messages.reported_id IS NULL OR
+      feedback_messages.reported_type IS NULL OR
+      (feedback_messages.reported_type = 'User' AND (reported_users.score IS NULL OR reported_users.score > :score_min)) OR
+      (feedback_messages.reported_type = 'Article' AND (reported_articles.score IS NULL OR reported_articles.score > :score_min)) OR
+      (feedback_messages.reported_type = 'Comment' AND (reported_comments.score IS NULL OR reported_comments.score > :score_min)) OR
+      (feedback_messages.reported_type NOT IN ('User', 'Article', 'Comment'))
+    SQL
+  }
 
   validates :feedback_type, :message, presence: true
   validates :reported_url, :category, presence: { if: :abuse_report? }, length: { maximum: 250 }
