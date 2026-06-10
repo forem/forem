@@ -114,5 +114,19 @@ describe "Framework Defaults 7.1 Upgrade Verification" do
       "Found controllers with missing callback actions:\n" + missing_callbacks.join("\n")
     }
   end
+
+  describe "Framework Defaults 7.2 Upgrade Preparation" do
+    it "has the new_framework_defaults_7_2.rb initializer file present" do
+      expect(File.exist?(Rails.root.join("config/initializers/new_framework_defaults_7_2.rb"))).to be(true)
+    end
+
+    it "keeps new Rails 7.2 configurations unset/nil (preserving Rails 7.1 defaults) during preparation" do
+      config = Rails.application.config
+
+      expect(config.active_record.postgresql_adapter_decode_dates).to be_nil
+      expect(config.active_record.validate_migration_timestamps).to be_nil
+      expect(config.active_job.enqueue_after_transaction_commit).to be_nil
+    end
+  end
 end
 # rubocop:enable RSpec/DescribeClass
