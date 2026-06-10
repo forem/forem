@@ -22,7 +22,7 @@
 # Enable validation of migration timestamps. When set, an ActiveRecord::InvalidMigrationTimestampError
 # will be raised if the timestamp prefix for a migration is more than a day ahead of the timestamp
 # associated with the current time.
-# Rails.application.config.active_record.validate_migration_timestamps = true
+Rails.application.config.active_record.validate_migration_timestamps = true
 
 # Controls whether the PostgresqlAdapter should decode dates automatically with manual queries.
 # Rails.application.config.active_record.postgresql_adapter_decode_dates = true
