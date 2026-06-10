@@ -13,7 +13,7 @@
   </a>
   <img src="https://img.shields.io/github/commit-activity/w/forem/forem" alt="GitHub commit activity">
   <a href="https://github.com/forem/forem/issues?q=is%3Aissue+is%3Aopen+label%3A%22ready+for+dev%22">
-    <img src="https://img.shields.io/github/issues/forem/forem/ready for dev" alt="GitHub issues ready for dev">
+    <img src="https://img.shields.io/github/issues/forem/forem/ready%20for%20dev" alt="GitHub issues ready for dev">
   </a>
   <a href="https://gitpod.io/#https://github.com/forem/forem">
     <img src="https://img.shields.io/badge/setup-automated-blue?logo=gitpod" alt="GitPod badge">
@@ -48,6 +48,7 @@ within our community. ❤️
 - [Getting Started](#getting-started)
   - [Installation Documentation](#installation-documentation)
 - [Developer Documentation](#developer-documentation)
+- [Deployment with Kamal](#deployment-with-kamal)
 - [Vulnerability Disclosure](#vulnerability-disclosure)
 - [Acknowledgements](#acknowledgements)
 - [License](#license)
@@ -87,7 +88,7 @@ However, providing a Gemini API key (`GEMINI_API_KEY`) to actually generate the 
 A more complete overview of our stack is available in
 [our docs](https://developers.forem.com/technical-overview/stack).
 
-To **launch Forem in Gitpod**, navigate to
+To **launch Forem in Gitpod**, please navigate to
 [https://gitpod.io/#https://github.com/{your_github_username}/forem](https://gitpod.io/#https://github.com/{your_github_username}/forem).
 
 To **launch Forem in Ona** (formerly Gitpod), the project is fully configured for Ona development environments. Simply open the project in Ona and the environment will be automatically configured with all necessary services and dependencies.
@@ -96,12 +97,54 @@ To **launch Forem in Ona** (formerly Gitpod), the project is fully configured fo
 
 Please see our installation guides:
 
-- [MacOS, without containers](https://developers.forem.com/getting-started/installation/mac)
+- [macOS, without containers](https://developers.forem.com/getting-started/installation/mac)
 - [Linux, without containers](https://developers.forem.com/getting-started/installation/linux)
 
 ## Developer Documentation
 
 [Check out our dedicated docs page for more technical documentation](https://developers.forem.com). Please note that while the documentation is a great place to start, some parts may be out of date as the project evolves.
+
+## Deployment with Kamal (Beta)
+
+Forem is equipped with [Kamal 2](https://kamal-deploy.org/) to allow you to easily deploy the application to any cloud provider or bare metal server.
+
+For a comprehensive guide, including cloud provider setups (AWS, DigitalOcean, Hetzner, GCP), secrets management, and Forem-specific production gotchas, see the [Kamal Deployment Guide](docs/kamal-deployment.md).
+
+### Prerequisites
+
+Before deploying, ensure you have:
+1. SSH access to your target server(s).
+2. Docker installed on your local machine and target server(s).
+3. A Docker container registry account (e.g., GitHub Container Registry, Docker Hub).
+
+### Configuration
+
+1. **Deployment Configuration**: Open [config/deploy.yml](config/deploy.yml) and update:
+   - Your registry username/credentials.
+   - Your domain name in the `proxy` section.
+2. **Environment & Secrets Configuration**: Set the following environment variables on your local machine:
+   - `KAMAL_WEB_IP` / `KAMAL_JOB_IP` / `KAMAL_DB_IP` / `KAMAL_REDIS_IP`: The IP addresses of your servers (default to `192.168.0.1`).
+   - `KAMAL_REGISTRY_PASSWORD`: Access token for your Docker container registry.
+   - `RAILS_MASTER_KEY`: Your Rails master key.
+   - `DATABASE_URL`: Connection string for PostgreSQL. This is always required. If you are using the Kamal postgres accessory, set it to the accessory hostname (e.g. `postgresql://postgres:password@forem-postgres:5432/forem_production`).
+   - `POSTGRES_PASSWORD`: Root password for the PostgreSQL accessory (if using it).
+
+### Deploying the Application
+
+Run the following commands to set up and deploy the application:
+
+```bash
+# 1. Verify your configuration is valid
+bundle exec kamal config
+
+# 2. Boot accessories, build & push the docker image, and deploy the application
+bundle exec kamal setup
+
+# 3. Subsequent deploys (rolling updates)
+bundle exec kamal deploy
+```
+
+For more options, refer to the [Kamal documentation](https://kamal-deploy.org/docs/).
 
 
 ## Vulnerability Disclosure

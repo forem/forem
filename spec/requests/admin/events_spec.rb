@@ -24,6 +24,34 @@ RSpec.describe "Admin::Events", type: :request do
         }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
+
+    context "when logged in as a resource admin for Event" do
+      let(:event_admin) { create(:user) }
+      before do
+        event_admin.add_role(:single_resource_admin, Event)
+        login_as(event_admin)
+      end
+
+      it "renders the index template" do
+        create(:event)
+        get admin_events_path
+        expect(response).to have_http_status(:success)
+      end
+    end
+
+    context "when logged in as a resource admin for a different resource" do
+      let(:other_admin) { create(:user) }
+      before do
+        other_admin.add_role(:single_resource_admin, Article)
+        login_as(other_admin)
+      end
+
+      it "denies access" do
+        expect {
+          get admin_events_path
+        }.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
   end
 
   describe "GET /admin/content_manager/events/:id" do
@@ -92,6 +120,14 @@ RSpec.describe "Admin::Events", type: :request do
       it "permits and sets the manual_broadcast_end flag" do
         post admin_events_path, params: { event: attributes_with_manual }
         expect(Event.last.manual_broadcast_end).to eq(true)
+      end
+    end
+
+    context "with elevated config" do
+      let(:attributes_with_elevated) { valid_attributes.merge(elevated: true) }
+      it "permits and sets the elevated flag" do
+        post admin_events_path, params: { event: attributes_with_elevated }
+        expect(Event.last.elevated).to eq(true)
       end
     end
   end

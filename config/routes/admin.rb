@@ -141,6 +141,11 @@ namespace :admin do
     resources :tags, only: %i[index new create update edit] do
       resource :moderator, only: %i[create destroy], module: "tags"
     end
+    resources :concepts do
+      member do
+        post :trigger_lookback
+      end
+    end
     resources :surveys
     resources :events do
       member do

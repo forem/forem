@@ -31,7 +31,7 @@ RSpec.configure do |config|
       paths: {},
       servers: [
         {
-          url: "https://dev.to/api",
+          url: "https://dev.to",
           description: "Production server"
         },
       ],
@@ -638,6 +638,29 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               created_at: { type: :string, format: "date-time" }
             },
             required: %w[type_of id poll_id user_id user_email text_content session_start created_at]
+          },
+          Trend: {
+            description: "Representation of a trend",
+            type: :object,
+            properties: {
+              type_of: { type: :string },
+              id: { type: :integer, format: :int64 },
+              name: { type: :string },
+              slug: { type: :string },
+              description: { type: :string, nullable: true },
+              key_questions: {
+                type: :array,
+                items: { type: :string }
+              },
+              score: { type: :number, format: :float },
+              articles_count: { type: :integer, format: :int32 },
+              cover_image: { type: :string, format: :url, nullable: true },
+              first_observed_at: { type: :string, format: "date-time" },
+              last_observed_at: { type: :string, format: "date-time" },
+              created_at: { type: :string, format: "date-time" },
+              updated_at: { type: :string, format: "date-time" }
+            },
+            required: %w[type_of id name slug key_questions score articles_count first_observed_at last_observed_at created_at updated_at]
           }
         }
       }

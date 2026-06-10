@@ -12,6 +12,32 @@ pt:
         reports: Relatórios
         settings: Configurações
       users:
+        overview:
+          roles:
+            name:
+              resource_admin_event: "Event Admin"
+              resource_admin_survey: "Survey Admin"
+              resource_admin_organization: "Organization Admin"
+              resource_admin_podcast: "Podcast Admin"
+              resource_admin_navigation_link: "Navigation Link Admin"
+              resource_admin_request_redirect: "Request Redirect Admin"
+              resource_admin_response_template: "Response Template Admin"
+              resource_admin_subforem: "Subforem Admin"
+              resource_admin_space: "Space Admin"
+              resource_admin_profile_field: "Profile Field Admin"
+              resource_admin_profile_field_group: "Profile Field Group Admin"
+        roles:
+          "Resource Admin: Event": "Resource Admin: Event"
+          "Resource Admin: Survey": "Resource Admin: Survey"
+          "Resource Admin: Organization": "Resource Admin: Organization"
+          "Resource Admin: Podcast": "Resource Admin: Podcast"
+          "Resource Admin: NavigationLink": "Resource Admin: NavigationLink"
+          "Resource Admin: RequestRedirect": "Resource Admin: RequestRedirect"
+          "Resource Admin: ResponseTemplate": "Resource Admin: ResponseTemplate"
+          "Resource Admin: Subforem": "Resource Admin: Subforem"
+          "Resource Admin: Space": "Resource Admin: Space"
+          "Resource Admin: ProfileField": "Resource Admin: ProfileField"
+          "Resource Admin: ProfileFieldGroup": "Resource Admin: ProfileFieldGroup"
         title: Gerenciar Usuários
         search: Pesquisar usuários
         filter: Filtrar
@@ -441,3 +467,35 @@ pt:
           text_label: Texto do CTA
           url_label: URL do CTA
           save: Salvar configurações do CTA
+      concepts:
+        show:
+          back_to_concepts: "Voltar para Conceitos Semânticos"
+          edit_concept: "Editar Conceito"
+          delete_concept: "Excluir Conceito"
+          delete_confirm: "Tem certeza que deseja excluir este conceito?"
+          details_title: "Detalhes do Conceito"
+          parent: "Conceito Pai"
+          total_records: "Total de Registros Mapeados"
+          description: "Descrição"
+          created_at: "Criado em"
+          metrics_title: "Métricas de Atividade Diária (Últimos 30 Dias)"
+          recent_records_title: "Registros Mapeados Recentes"
+          type: "Tipo"
+          record: "Registro"
+          distance: "Distância"
+          mapped_at: "Mapeado em"
+          no_records: "Nenhum registro foi mapeado para este conceito ainda."
+          max_lookback_days: "Cobertura Retrospectiva Mais Antiga (Dias)"
+          max_lookback_days_none: "Nenhuma"
+          lookback_title: "Disparar Busca Retrospectiva"
+          lookback_desc: "Analisa artigos e comentários passados. Se buscas anteriores existirem, analisa apenas o novo período (ex. de 40 a 70 dias atrás) com alguma sobreposição de fuso horário."
+          lookback_days: "Dias para olhar para trás"
+          lookback_button: "Disparar Busca"
+          similarity_threshold: "Limiar de Similaridade"
+        form:
+          similarity_threshold: "Limiar de Similaridade"
+          similarity_threshold_placeholder: "ex. 0.25 (opcional)"
+          similarity_threshold_help: "Opcional. Float entre 0.0 e 1.0. Se deixado em branco, o padrão do sistema (0.28) será usado."
+        index:
+          threshold: "Limiar"
+          default: "padrão"

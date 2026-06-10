@@ -90,6 +90,24 @@ module Api
       render json: data.to_json
     end
 
+    # Rolling 365-day per-user activity counts for the GitHub-style heatmap
+    # rendered at the top of /dashboard/analytics. Always personal-scoped:
+    # ignores @org and @owner and uses the authenticated user so org tabs
+    # don't display the heatmap (out of scope for MVP).
+    #
+    # Accepts an optional `end` param (YYYY-MM-DD) to shift the 365-day
+    # window back in time so users can browse historical years. Future dates
+    # are clamped to today in the service. Cache-Control: no-store mirrors
+    # the dashboard endpoint so newly-recorded activity surfaces immediately
+    # for the rolling window; historical windows are still re-validatable
+    # but the underlying data fetch is cached for 24h server-side.
+    def heatmap
+      response.headers["Cache-Control"] = "no-store"
+      end_date = parse_heatmap_end_date(params[:end])
+      data = UserActivityHeatmapService.new(@user, end_date: end_date).call
+      render json: data.to_json
+    end
+
     private
 
     def authorize_user_organization
@@ -154,6 +172,18 @@ module Api
 
     def valid_end_param?
       (analytics_params[:end] =~ /\A\d{4}-\d{1,2}-\d{1,2}\Z/)&.zero?
+    end
+
+    # Parses the optional `end` param for the heatmap endpoint. Blank → today.
+    # Invalid format raises ArgumentError so error_unprocessable_entity returns
+    # a 422 instead of silently falling back (which would poison the cache).
+    def parse_heatmap_end_date(raw)
+      return Date.current if raw.blank?
+      unless raw.match?(/\A\d{4}-\d{1,2}-\d{1,2}\Z/)
+        raise ArgumentError, I18n.t("api.v0.analytics_controller.invalid_date_format")
+      end
+
+      Date.parse(raw)
     end
   end
 end

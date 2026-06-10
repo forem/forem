@@ -4,6 +4,10 @@ require "active_support/core_ext/integer/time"
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  # Use the same development secret key base as was in secrets.yml
+  config.secret_key_base = ENV.fetch("SECRET_KEY_BASE", "a60edc976c913b19fd9fc8118936fbe1df2b07f4eecc5ad32f975e33cd4ea36b150c1ce933b681b90874a46568041629003dcbfc07238f7dca91741bcd1ec870")
+
+
   # In the development environment your application's code is reloaded any time
   # it changes. This slows down response time but is perfect for development
   config.cache_classes = false
@@ -108,7 +112,7 @@ Rails.application.configure do
 
   config.hosts << /.+\.lvh\.me/
 
-  config.app_domain = ENV.fetch("APP_DOMAIN", "localhost:3000")
+  config.app_domain = ENV.fetch("APP_DOMAIN", "localhost:#{ENV.fetch('PORT', '3000')}")
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.perform_deliveries = true

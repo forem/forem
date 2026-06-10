@@ -15,6 +15,9 @@ resources :articles, only: %i[index show create update] do
 end
 
 resources :subforems, only: [:index]
+resources :trends, only: %i[index show], param: :id_or_slug do
+  resources :articles, only: [:index], to: "trends#articles"
+end
 resources :comments, only: %i[index show]
 resources :videos, only: [:index]
 resources :podcast_episodes, only: [:index]
@@ -42,6 +45,7 @@ get "/analytics/referrers", to: "analytics#referrers"
 get "/analytics/top_contributors", to: "analytics#top_contributors"
 get "/analytics/follower_engagement", to: "analytics#follower_engagement"
 get "/analytics/dashboard", to: "analytics#dashboard"
+get "/analytics/heatmap", to: "analytics#heatmap"
 
 resources :health_checks, only: [] do
   collection do
@@ -70,7 +74,6 @@ resources :surveys, only: %i[index show], param: :id_or_slug do
     get :poll_text_responses
   end
 end
-
 
 resource :instance, only: %i[show]
 
