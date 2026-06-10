@@ -1,9 +1,9 @@
 # rubocop:disable RSpec/DescribeClass
 require "rails_helper"
 
-describe "Framework Defaults 7.0 Upgrade Verification" do
-  it "uses load_defaults 7.0 but keeps key_generator_hash_digest_class as SHA1" do
-    # Verify load_defaults 7.0 properties are set, with cache format version updated to 7.1
+describe "Framework Defaults 7.1 Upgrade Verification" do
+  it "uses load_defaults 7.1 but keeps key_generator_hash_digest_class as SHA1" do
+    # Verify load_defaults 7.1 properties are set, with cache format version updated to 7.1
     expect(Rails.application.config.active_support.hash_digest_class).to eq(OpenSSL::Digest::SHA256)
     expect(ActionView::Helpers::UrlHelper.button_to_generates_button_tag).to be(true)
     expect(ActiveSupport.cache_format_version).to eq(7.1)
@@ -20,12 +20,6 @@ describe "Framework Defaults 7.0 Upgrade Verification" do
     config = Rails.application.config
     val = config.respond_to?(:read_encrypted_secrets) ? config.read_encrypted_secrets : nil
     expect(val).to be(false).or be_nil
-  end
-end
-
-describe "Framework Defaults 7.1 Upgrade Preparation" do
-  it "has the new_framework_defaults_7_1.rb initializer file" do
-    expect(File.exist?(Rails.root.join("config/initializers/new_framework_defaults_7_1.rb"))).to be(true)
   end
 
   it "enables key Rails 7.1 defaults to ease the upgrade path" do
@@ -47,8 +41,8 @@ describe "Framework Defaults 7.1 Upgrade Preparation" do
     expect(config.active_record.before_committed_on_all_records).to be(true)
     expect(config.active_record.run_after_transaction_callbacks_in_order_defined).to be(true)
     expect(config.active_record.commit_transaction_on_non_local_return).to be(true)
-    active_job_val = config.respond_to?(:active_job) && config.active_job.respond_to?(:use_big_decimal_serializer) ? config.active_job.use_big_decimal_serializer : nil
-    expect(active_job_val).to be(false).or be_nil
+    active_job_val = config.try(:active_job)&.use_big_decimal_serializer
+    expect(active_job_val).to be(true)
     expect(config.active_record.marshalling_format_version).to eq(7.1)
     expect(config.active_record.default_column_serializer).to be_nil
     expect(config.active_record.generate_secure_token_on).to eq(:initialize)
