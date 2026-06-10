@@ -3,12 +3,12 @@ class Tweet < ApplicationRecord
 
   belongs_to :user, optional: true
 
-  serialize :extended_entities_serialized
-  serialize :full_fetched_object_serialized
-  serialize :hashtags_serialized
-  serialize :media_serialized
-  serialize :mentioned_usernames_serialized
-  serialize :urls_serialized
+  serialize :extended_entities_serialized, coder: YAML
+  serialize :full_fetched_object_serialized, coder: YAML
+  serialize :hashtags_serialized, coder: YAML
+  serialize :media_serialized, coder: YAML
+  serialize :mentioned_usernames_serialized, coder: YAML
+  serialize :urls_serialized, coder: YAML
 
   validates :full_fetched_object_serialized, presence: true
   validates :twitter_id_code, presence: true

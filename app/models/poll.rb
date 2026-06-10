@@ -1,8 +1,6 @@
 class Poll < ApplicationRecord
   attr_accessor :poll_options_input_array, :poll_options_supplementary_text_array
 
-  serialize :voting_data
-
   # Poll types enum
   enum type_of: {
     single_choice: 0,    # Current behavior - only one option can be selected

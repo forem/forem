@@ -383,11 +383,11 @@ class Article < ApplicationRecord
 
   # @todo Enforce the serialization class (e.g., Articles::CachedEntity)
   # @see https://api.rubyonrails.org/classes/ActiveRecord/AttributeMethods/Serialization/ClassMethods.html#method-i-serialize
-  serialize :cached_user
+  serialize :cached_user, coder: YAML
 
   # @todo Enforce the serialization class (e.g., Articles::CachedEntity)
   # @see https://api.rubyonrails.org/classes/ActiveRecord/AttributeMethods/Serialization/ClassMethods.html#method-i-serialize
-  serialize :cached_organization
+  serialize :cached_organization, coder: YAML
 
   # TODO: [@rhymes] Rename the article column and the trigger name.
   # What was initially meant just for the reading list (filtered using the `reactions` table),

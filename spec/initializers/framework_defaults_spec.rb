@@ -50,6 +50,7 @@ describe "Framework Defaults 7.1 Upgrade Preparation" do
     active_job_val = config.respond_to?(:active_job) && config.active_job.respond_to?(:use_big_decimal_serializer) ? config.active_job.use_big_decimal_serializer : nil
     expect(active_job_val).to be(false).or be_nil
     expect(config.active_record.marshalling_format_version).to be_nil.or eq(6.1)
+    expect(config.active_record.default_column_serializer).to be_nil
     expect(config.active_record.generate_secure_token_on).to eq(:initialize)
     expect(ActionView::Base.sanitizer_vendor).to eq(Rails::HTML::Sanitizer.best_supported_vendor)
     expect(config.action_dispatch.debug_exception_log_level).to eq(:error)
