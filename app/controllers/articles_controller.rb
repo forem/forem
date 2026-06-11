@@ -414,15 +414,14 @@ class ArticlesController < ApplicationController
   end
 
   # Detects whether submitted body_markdown contains valid V1 frontmatter (requires a title: key).
-  # Uses the same ContentRenderer#has_front_matter? logic as the edit page version detection,
-  # keeping both consistent. Note: series:-only or tags:-only frontmatter does NOT qualify as
-  # V1 — a title: key is required — matching the existing edit page behavior.
+  # Uses the same underlying frontmatter parser as ContentRenderer, but treats parse errors as
+  # non-frontmatter so we don't silently drop explicit metadata params (e.g. title/tag_list).
   def body_markdown_has_frontmatter?(body_md)
-    renderer = ContentRenderer.new(body_md.to_s, source: Article.new)
-    renderer.has_front_matter?
-  rescue StandardError
-    # On any parsing error, default to false (V2 treatment) to avoid silently
-    # dropping explicit metadata params like title and tag_list.
+    fixed = MarkdownProcessor::Fixer::FixAll.call(body_md.to_s)
+    parsed = ContentRenderer.front_matter_parser.call(fixed)
+    front_matter = parsed.front_matter
+    front_matter.is_a?(Hash) && front_matter.any? && front_matter["title"].present?
+  rescue Psych::Exception, StandardError
     false
   end
 end
