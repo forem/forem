@@ -355,7 +355,6 @@ RSpec.describe "ArticlesUpdate" do
     let(:v2_body) { "Plain body content with no frontmatter." }
 
     it "treats article as V1 when body_markdown has frontmatter with title:, even if client sends version:v2" do
-      original_title = article.title
       put "/articles/#{article.id}", params: {
         article: {
           body_markdown: v1_body,

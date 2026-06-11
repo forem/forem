@@ -7,27 +7,6 @@
  *   2. Query params (e.g. ?preview=xyz) don't create different storage buckets.
  */
 
-// Helper: build a minimal article object matching what ArticleForm expects
-function makeArticle({ id = null, title = 'Test Article', updatedAt = '2024-01-01T00:00:00Z' } = {}) {
-  return {
-    id,
-    title,
-    body_markdown: '',
-    cached_tag_list: '',
-    canonical_url: '',
-    published: false,
-    main_image: null,
-    video_source_url: null,
-    organization_id: null,
-    user_id: 1,
-    co_author_ids_list: '',
-    co_authors_data: [],
-    series: '',
-    all_series: [],
-    updated_at: updatedAt,
-  };
-}
-
 // Helper: derive the storage key the same way articleForm.jsx does
 function storageKey(id, url) {
   return `editor-${id || 'new'}-${new URL(url).pathname}`;
