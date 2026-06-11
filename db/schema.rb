@@ -1205,6 +1205,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_09_194000) do
     t.integer "spent_credits_count", default: 0, null: false
     t.string "story"
     t.text "summary"
+    t.boolean "supported", default: false, null: false
     t.string "tag_line"
     t.string "tech_stack"
     t.string "text_color_hex"
@@ -1224,6 +1225,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_09_194000) do
     t.index ["ideal_daily_promoted_billboard_impressions"], name: "idx_orgs_on_ideal_daily_promoted_bb_impressions"
     t.index ["secret"], name: "index_organizations_on_secret", unique: true
     t.index ["slug"], name: "index_organizations_on_slug", unique: true
+    t.index ["supported"], name: "index_organizations_on_supported"
     t.index ["tls_subscription_id"], name: "index_organizations_on_tls_subscription_id", unique: true, where: "((tls_subscription_id IS NOT NULL) AND ((tls_subscription_id)::text <> ''::text))"
   end
 

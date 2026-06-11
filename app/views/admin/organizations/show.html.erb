@@ -245,6 +245,28 @@
   <% end %>
 </div>
 
+<div class="crayons-card p-6 mb-6">
+  <h3 class="crayons-subtitle-2 mb-4">Supported Organization</h3>
+  <div class="mb-6">
+    <div class="flex items-center justify-between mb-2">
+      <div>
+        <h4 class="fw-bold mb-1">Supported Status</h4>
+        <p class="fs-s color-base-60">Supported organizations have their post notifications sent to twice as many users (up to 20,000).</p>
+      </div>
+      <%= form_tag update_supported_admin_organization_path(@organization), method: :patch, class: "flex items-center gap-2" do %>
+        <%= hidden_field_tag :supported, !@organization.supported? %>
+        <%= submit_tag @organization.supported? ? "Disable Supported Status" : "Enable Supported Status",
+                       class: "crayons-btn #{@organization.supported? ? 'crayons-btn--danger' : 'crayons-btn--success'}" %>
+      <% end %>
+    </div>
+    <% if @organization.supported? %>
+      <div class="crayons-notice crayons-notice--success">
+        This organization is marked as supported. Post notifications are sent to up to 20,000 users.
+      </div>
+    <% end %>
+  </div>
+</div>
+
 <%= render "activity" %>
 
 <% error_message = deletion_modal_error_message(@organization) %>
