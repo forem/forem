@@ -6,6 +6,7 @@ class User < ApplicationRecord
 
   include Images::Profile.for(:profile_image_url)
   include AlgoliaSearchable
+  include Trackable
 
   # NOTE: we are using an inline module to keep profile related things together.
   concerning :Profiles do
@@ -73,6 +74,8 @@ class User < ApplicationRecord
                             inverse_of: :blocker, dependent: :delete_all
   has_many :collections, dependent: :destroy
   has_many :comments, dependent: :destroy
+  has_many :concept_accesses, dependent: :delete_all
+  has_many :accessible_concepts, through: :concept_accesses, source: :concept
   has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
   has_many :credits, dependent: :destroy
   has_many :discussion_locks, dependent: :delete_all, inverse_of: :locking_user, foreign_key: :locking_user_id
@@ -150,6 +153,7 @@ class User < ApplicationRecord
   validates :comments_count, presence: true
   validates :credits_count, presence: true
   validates :email, length: { maximum: 254 }, email: true, allow_nil: true
+  validate :reject_encoded_word_email, if: -> { email.present? }
   validates :email, uniqueness: { allow_nil: true, case_sensitive: false }, if: :email_changed?
   validates :following_orgs_count, presence: true
   validates :following_tags_count, presence: true
@@ -350,6 +354,16 @@ class User < ApplicationRecord
     elsif Settings::Authentication.limit_new_users?
       add_role(:limited)
       # Otherwise just leave the new user in good standing
+    end
+  end
+
+  def author_trust_score
+    case score.to_i
+    when -Float::INFINITY...25 then 0
+    when 25...75 then 1
+    when 75...175 then 2
+    when 175...300 then 3
+    else 4
     end
   end
 
@@ -801,6 +815,47 @@ class User < ApplicationRecord
     last_followed_at.respond_to?(:rfc3339) ? last_followed_at.rfc3339 : last_followed_at.to_s
   end
 
+  # === Trackable (DEV → MLH Core user sync) ===
+  # Emits user_created / user_updated to the Customer.io CDP so MLH Core can
+  # link the DEV account (SocialProfiles::Dev) and record engagement.
+
+  def trackable_user_ids
+    [id]
+  end
+
+  # Curated payload — do NOT ship the full users row across the boundary.
+  # String keys keep the job arguments JSON-safe for Sidekiq.strict_args!.
+  def trackable_payload
+    { "id" => id, "username" => username, "email" => email, "name" => name }
+  end
+
+  # Emit user_updated only on deliberate profile edits. Forem touches
+  # profile_updated_at on every profile-edit path (Users::Update, users#update),
+  # so unrelated row churn (sign-ins, counters, score recalcs) does not emit.
+  def enqueue_trackable_event_updated
+    return unless previous_changes.key?("profile_updated_at")
+
+    enqueue_trackable_event("user_updated")
+  end
+
+  # Two gates: the admin master switch, then the per-account rollout flag.
+  # The setting is resolved via the default subforem (like mailers do) because the
+  # admin panel saves it subforem-scoped and callbacks may run without request context.
+  def trackable_events_skipped?
+    return true unless Settings::General.customerio_cdp_enabled(subforem_id: Subforem.cached_default_id)
+    return true unless FeatureFlag.enabled_for_user?(:dev_core_user_sync, self)
+
+    super
+  end
+
+  # User deletion / unlink is intentionally out of scope for the DEV → Core sync
+  # (created + updated only), and the Core consumer does not handle deletes, so
+  # suppress the concern's default user_destroyed emission.
+  def enqueue_trackable_event_destroyed(*)
+    nil
+  end
+  private :enqueue_trackable_event_updated, :trackable_events_skipped?, :enqueue_trackable_event_destroyed
+
   protected
 
   # Send emails asynchronously
@@ -854,6 +909,12 @@ class User < ApplicationRecord
 
   def downcase_email
     self.email = email.downcase if email
+  end
+
+  def reject_encoded_word_email
+    encoded_word_regex = /=\?[^?]+\?[BbQq]\?[^?]+\?=/
+
+    errors.add(:email, :invalid) if email.match?(encoded_word_regex)
   end
 
   def bust_cache

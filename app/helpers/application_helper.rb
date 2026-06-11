@@ -396,8 +396,16 @@ module ApplicationHelper
     URL.url(uri, RequestStore.store[:subforem_domain])
   end
 
-  def article_url(article)
-    URL.article(article)
+  def article_url(article, **options)
+    base_url = URL.article(article)
+    return base_url if options.blank?
+
+    uri = Addressable::URI.parse(base_url)
+    query_values = (uri.query_values || {}).merge(options.transform_keys(&:to_s).compact)
+    uri.query_values = query_values.any? ? query_values : nil
+    uri.to_s
+  rescue StandardError
+    base_url
   end
 
   def comment_url(comment)
@@ -502,4 +510,27 @@ module ApplicationHelper
 
     content_tag(name, class: dom_class, **kwargs, &block)
   end
+
+  def enabled_global_feature_flags
+    RequestStore.store[:enabled_global_feature_flags] ||= MemoryFirstCache.fetch("enabled_global_feature_flags", redis_expires_in: 10.minutes) do
+      FeatureFlag.all.select { |_, state| state == :on }.keys.join(" ")
+    end
+  end
+
+  def header_link(path)
+    if request.env["forem.custom_domain_org"].present?
+      URL.url(path)
+    else
+      path
+    end
+  end
+
+  def header_sign_up_link(path)
+    if request.env["forem.custom_domain_org"].present?
+      URL.url(path)
+    else
+      subforem_aware_sign_up_url(path)
+    end
+  end
 end
+

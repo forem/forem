@@ -1,4 +1,5 @@
 class Organization < ApplicationRecord
+  resourcify
   include CloudinaryHelper
   include PgSearch::Model
   include AlgoliaSearchable
@@ -25,9 +26,12 @@ class Organization < ApplicationRecord
   VERIFICATION_STATUS_FAILED = "failed".freeze
   VERIFICATION_STATUS_ADMIN = "admin_verified".freeze
 
+  enum tls_status: { not_started: 0, pending: 1, issued: 2, failed: 3 }
+
   acts_as_followable
 
   before_validation :downcase_slug
+  before_validation :normalize_custom_domain
   before_validation :check_for_slug_change
   before_validation :evaluate_markdown
 
@@ -39,6 +43,8 @@ class Organization < ApplicationRecord
   after_save :generate_social_images
 
   after_update_commit :conditionally_update_articles
+  after_update_commit :recompile_pages, if: -> { saved_change_to_name? || saved_change_to_slug? || saved_change_to_summary? }
+  after_save_commit :manage_fastly_tls_subscription
   after_destroy_commit :bust_cache
 
   pg_search_scope :search_organizations, against: :name
@@ -81,10 +87,12 @@ class Organization < ApplicationRecord
   validates :twitter_username, length: { maximum: 15 }
   validates :unspent_credits_count, presence: true
   validates :url, length: { maximum: 200 }, url: { allow_blank: true, no_local: true }
+  validates :custom_domain, uniqueness: { allow_blank: true }, format: { with: /\A[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,}\z/ix, allow_blank: true }
   validates :verification_url, length: { maximum: 200 }, url: { allow_blank: true, no_local: true }
   validates :baseline_score, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validate :validate_social_links
   validate :validate_header_cta
+  validate :custom_domain_must_not_be_app_domain
 
   unique_across_models :slug, length: { in: 2..30 }
 
@@ -110,6 +118,10 @@ class Organization < ApplicationRecord
 
   def self.reserved_word
     I18n.t("models.organization.reserved_word")
+  end
+
+  def self.find_by_slug_or_legacy(slug)
+    find_by(slug: slug) || find_by(old_slug: slug) || find_by(old_old_slug: slug)
   end
 
   def check_for_slug_change
@@ -335,6 +347,39 @@ class Organization < ApplicationRecord
     self.slug = slug&.downcase
   end
 
+  def normalize_custom_domain
+    self.custom_domain = custom_domain.to_s.strip.presence&.downcase
+  end
+
+  def custom_domain_must_not_be_app_domain
+    return if custom_domain.blank?
+    
+    app_domain = Settings::General.app_domain
+    if custom_domain == app_domain || custom_domain.ends_with?(".#{app_domain}")
+      errors.add(:custom_domain, "cannot be the main application domain or a subdomain of it")
+    end
+  end
+
+  def manage_fastly_tls_subscription
+    return unless saved_change_to_custom_domain?
+
+    old_domain, new_domain = saved_change_to_custom_domain
+    fastly_api_key_present = ApplicationConfig["FASTLY_API_KEY"].present?
+
+    if old_domain.present? && tls_subscription_id.present?
+      previous_tls_subscription_id = tls_subscription_id
+      update_columns(tls_subscription_id: nil, tls_status: Organization.tls_statuses[:not_started])
+      
+      if fastly_api_key_present
+        Organizations::DeleteCustomDomainWorker.perform_async(previous_tls_subscription_id)
+      end
+    end
+
+    if new_domain.present? && fastly_api_key_present && tls_subscription_id.blank? && tls_status == "not_started"
+      Organizations::ProvisionCustomDomainWorker.perform_async(id)
+    end
+  end
+
   def conditionally_update_articles
     return unless Article::ATTRIBUTES_CACHED_FOR_RELATED_ENTITY.detect { |attr| saved_change_to_attribute?(attr) }
 
@@ -344,5 +389,11 @@ class Organization < ApplicationRecord
 
   def bust_cache
     Organizations::BustCacheWorker.perform_async(id, slug)
+  end
+
+  def recompile_pages
+    return unless FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[self])
+
+    Organizations::RecompilePagesWorker.perform_async(id)
   end
 end

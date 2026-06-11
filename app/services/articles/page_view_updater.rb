@@ -16,8 +16,8 @@ module Articles
     #       adds a complication in the testing logic
     #       (e.g., `expect { Articles::PageViewUpdater.call }.not_to change(PageView, :count) `
     def self.call(article_id:, user_id:)
-      # Don't record views to unpublished articles.
-      return false if Article.unpublished.exists?(id: article_id)
+      # Don't record views to non-existent or unpublished articles.
+      return false unless Article.published.exists?(id: article_id)
       # Don't record author's own views.
       return false if Article.published.from_subforem.exists?(id: article_id, user_id: user_id)
 
@@ -29,6 +29,7 @@ module Articles
       page_view.update_column(:time_tracked_in_seconds, new_time_mark)
       if new_time_mark == EXTENDED_PAGEVIEW_NUMBER
         FeedEvent.record_journey_for(page_view.user, article: page_view.article, category: :extended_pageview)
+        UpdateUserInterestEmbeddingWorker.perform_async(user_id, article_id, 0.05) if user_id
       end
 
       true

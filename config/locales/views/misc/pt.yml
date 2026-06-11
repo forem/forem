@@ -130,4 +130,5 @@ pt:
           description: All videos on %{community}
       heading: "%{community} on Video"
       beta_html: "<strong>Video is beta:</strong> %{contact}"
+      max_file_size: "Tamanho máximo do arquivo: %{size}."
       upload: "🎥 Upload Video File 🙌"

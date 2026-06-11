@@ -1,0 +1,61 @@
+<%# Hidden on org tabs for MVP — the endpoint is personal-scoped only. %>
+<% if params[:org_id].blank? %>
+  <% user_first_year = (current_user.registered_at || current_user.created_at).year
+     current_year = Date.current.year
+     available_years = (user_first_year..current_year).to_a.reverse
+     # Sentinel tokens (not %{...} style) so erb-lint's i18n autocorrect
+     # leaves the placeholders alone; the JS pack swaps them at render time.
+     rolling_template = t("views.dashboard.analytics.heatmap.subtitle", count: "__COUNT__")
+     year_template = t("views.dashboard.analytics.heatmap.subtitle_year", count: "__COUNT__", year: "__YEAR__") %>
+  <section class="dashboard-heatmap">
+    <header class="dashboard-heatmap__header">
+      <div class="dashboard-heatmap__heading">
+        <h2 class="dashboard-heatmap__title"><%= t("views.dashboard.analytics.heatmap.title") %></h2>
+        <p class="dashboard-heatmap__subtitle"
+           data-heatmap-subtitle
+           data-template-rolling="<%= rolling_template %>"
+           data-template-year="<%= year_template %>"><%= t("views.dashboard.analytics.heatmap.loading") %></p>
+      </div>
+
+      <% if available_years.length > 1 %>
+        <label class="dashboard-heatmap__year-picker">
+          <span class="dashboard-heatmap__year-picker-label"><%= t("views.dashboard.analytics.heatmap.year_picker_label") %></span>
+          <select data-heatmap-year>
+            <option value=""><%= t("views.dashboard.analytics.heatmap.last_year_option") %></option>
+            <% available_years.each do |year| %>
+              <option value="<%= year %>"><%= year %></option>
+            <% end %>
+          </select>
+        </label>
+      <% end %>
+    </header>
+
+    <div class="dashboard-heatmap__stats" data-heatmap-stats></div>
+
+    <div class="dashboard-heatmap__body">
+      <div class="dashboard-heatmap__chart-scroll">
+        <div id="dashboard-heatmap"
+             class="dashboard-heatmap__chart"
+             data-empty-label="<%= t("views.dashboard.analytics.heatmap.empty") %>"
+             data-error-label="<%= t("views.dashboard.analytics.heatmap.error") %>"
+             data-total-label="<%= t("views.dashboard.analytics.heatmap.stats.total") %>"
+             data-current-streak-label="<%= t("views.dashboard.analytics.heatmap.stats.current_streak") %>"
+             data-longest-streak-label="<%= t("views.dashboard.analytics.heatmap.stats.longest_streak") %>"
+             data-best-day-label="<%= t("views.dashboard.analytics.heatmap.stats.best_day") %>"
+             data-day-label="<%= t("views.dashboard.analytics.heatmap.day") %>"
+             data-days-label="<%= t("views.dashboard.analytics.heatmap.days") %>"
+             data-articles-label="<%= t("views.dashboard.analytics.heatmap.articles") %>"
+             data-comments-label="<%= t("views.dashboard.analytics.heatmap.comments") %>"
+             data-reactions-label="<%= t("views.dashboard.analytics.heatmap.reactions") %>"
+             data-contribution-label="<%= t("views.dashboard.analytics.heatmap.contribution") %>"
+             data-contributions-label="<%= t("views.dashboard.analytics.heatmap.contributions") %>"
+             data-no-activity-label="<%= t("views.dashboard.analytics.heatmap.no_activity") %>"
+             data-detail-hint-label="<%= t("views.dashboard.analytics.heatmap.detail_hint") %>"></div>
+      </div>
+
+      <aside class="dashboard-heatmap__detail" data-heatmap-detail aria-live="polite">
+        <p class="heatmap-detail__hint"><%= t("views.dashboard.analytics.heatmap.detail_hint") %></p>
+      </aside>
+    </div>
+  </section>
+<% end %>

@@ -5,6 +5,7 @@ require "sidekiq/worker_retries_exhausted_reporter"
 require "sidekiq/sidekiq_connection_cleanup"
 require "sidekiq/transaction_safe_rescue"
 require "sidekiq/throttled"
+require "sidekiq/memory_killer"
 
 module Sidekiq
   module Cron
@@ -21,6 +22,25 @@ module Sidekiq
         true
       end
     end
+  end
+end
+
+# In development, point Sidekiq at Redis db `/3` so its queues / locks /
+# scheduled set don't collide with other Redis-backed consumers in the default
+# `/0` (Rails.cache when configured with redis_cache_store, Rack::Attack, etc.).
+# Used by both `configure_server` and `configure_client` below — keep them in
+# sync via this single helper so the two never drift.
+SIDEKIQ_REDIS_URL = lambda do
+  url = ApplicationConfig["REDIS_SIDEKIQ_URL"] || ApplicationConfig["REDIS_URL"] || "redis://localhost:6379"
+  return url unless Rails.env.development?
+
+  begin
+    require "uri"
+    uri = URI.parse(url)
+    uri.path = "/3" if uri.path.nil? || uri.path == "" || uri.path == "/"
+    uri.to_s
+  rescue URI::InvalidURIError
+    url
   end
 end
 
@@ -55,19 +75,9 @@ Sidekiq.configure_server do |config|
   # every 30 seconds which the gem defaults to
   config[:poll_interval] = 10
 
-  sidekiq_url = ApplicationConfig["REDIS_SIDEKIQ_URL"] || ApplicationConfig["REDIS_URL"] || "redis://localhost:6379"
-  if Rails.env.development?
-    begin
-      require "uri"
-      uri = URI.parse(sidekiq_url)
-      uri.path = "/3" if uri.path.nil? || uri.path == "" || uri.path == "/"
-      sidekiq_url = uri.to_s
-    rescue URI::InvalidURIError
-    end
-  end
   # On Heroku this configuration is overridden and Sidekiq will point at the redis
   # instance given by the ENV variable REDIS_PROVIDER
-  config.redis = { url: sidekiq_url }
+  config.redis = { url: SIDEKIQ_REDIS_URL.call }
 
   config.server_middleware do |chain|
     # sidekiq-throttled wires itself up when `require "sidekiq/throttled"` is loaded:
@@ -78,6 +88,7 @@ Sidekiq.configure_server do |config|
     chain.add SidekiqUniqueJobs::Middleware::Client
     chain.add SidekiqUniqueJobs::Middleware::Server
     chain.add Sidekiq::SidekiqConnectionCleanup
+    chain.add Sidekiq::MemoryKiller
   end
 
   SidekiqUniqueJobs::Server.configure(config)
@@ -105,6 +116,12 @@ Sidekiq.configure_server do |config|
 end
 
 Sidekiq.configure_client do |config|
+  # Keep the client (Rails app / runner / specs) on the same Redis database the
+  # server consumes from — see SIDEKIQ_REDIS_URL above. Without this, dev
+  # enqueues silently land in `/0` while the worker daemon polls `/3` and jobs
+  # pile up forever.
+  config.redis = { url: SIDEKIQ_REDIS_URL.call }
+
   config.client_middleware do |chain|
     chain.add SidekiqUniqueJobs::Middleware::Client
   end

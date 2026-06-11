@@ -392,7 +392,7 @@ function insertArticles(articles) {
   });
 
   var singleArticles = document.querySelectorAll(
-    '.single-article, .crayons-story',
+    '.single-article:not(.ltag__link--embedded *), .crayons-story:not(.ltag__link--embedded *)',
   );
   var lastElement = singleArticles[singleArticles.length - 1];
   insertAfter(newNode, lastElement);
@@ -461,7 +461,10 @@ function paginate(tag, params, requiresApproval) {
   // And if we do, we need to change the URL and adjust some misalignment with the API
   // And the nextpage incrementing.
   let useStoriesFeed = (homeEl.dataset.feed === 'base-feed' || homeEl.dataset.feed === 'latest') && homeEl.dataset.feedContextType === 'home' && homeEl.dataset.feedUseStoriesEndpoint === 'true';
-  let feedTypeOf = localStorage?.getItem('current_feed') || 'discover';
+  let feedTypeOf = localStorage?.getItem('current_feed');
+  if (feedTypeOf !== 'discover' && feedTypeOf !== 'following') {
+    feedTypeOf = 'discover';
+  }
   let latestString = homeEl.dataset.feed === 'latest' ? '/latest' : '';
   let url = useStoriesFeed ? `/stories/feed${latestString}/?page=${nextPage + 2}&type_of=${feedTypeOf}` : `/search/feed_content?${searchParams.toString()}`;
   fetch(url, {

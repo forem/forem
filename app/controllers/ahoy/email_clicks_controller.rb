@@ -1,5 +1,7 @@
 module Ahoy
   class EmailClicksController < ApplicationController
+    EMAIL_CLICK_INTEREST_BLEND_FACTOR = 0.025
+
     skip_before_action :verify_authenticity_token # Signitures are used to verify requests here
     before_action :verify_signature
 
@@ -11,10 +13,15 @@ module Ahoy
         controller: self
       }
       AhoyEmail::Utils.publish(:click, data)
-      track_billboard if params[:bb].present?
-      record_feed_event if @url.present?
+      user = EmailMessage.find_by(token: @token)&.user
       
-      EmailMessage.find_by(token: @token)&.user&.update_presence!
+      track_billboard(user) if params[:bb].present?
+      record_feed_event(user) if @url.present?
+      
+      if user
+        user.update_presence!
+        Users::RecordFieldTestEventWorker.perform_async(user.id, AbExperiment::GoalConversionHandler::USER_CLICKS_EMAIL_LINK_GOAL)
+      end
 
       head :ok # Renders a blank response with a 200 OK status
     end
@@ -37,10 +44,10 @@ module Ahoy
       params.permit(:t, :c, :u, :s, :bb)
     end
 
-    def track_billboard
+    def track_billboard(user)
       BillboardEvent.create(billboard_id: ahoy_params[:bb].to_i,
                             category: "click",
-                            user_id: current_user&.id,
+                            user_id: user&.id || current_user&.id,
                             context_type: "email")
       update_billboard_counts
     rescue StandardError => e
@@ -61,16 +68,27 @@ module Ahoy
       )
     end
 
-    def record_feed_event
-      path = URI.parse(@url).path
+    def record_feed_event(user)
+      uri = URI.parse(@url)
+      path = uri.path
+      query_params = uri.query ? Rack::Utils.parse_query(uri.query) : {}
+      feed_config_id = Integer(query_params["fc"], exception: false)
+
       article = Article.find_by(path: path)
       return unless article
+      
+      user_id = user&.id || current_user&.id
 
       FeedEvent.create(article_id: article.id,
-                       user_id: current_user&.id,
+                       user_id: user_id,
                        article_position: 1,
                        category: "click",
-                       context_type: "email")
+                       context_type: "email",
+                       feed_config_id: feed_config_id)
+                       
+      if user_id
+        UpdateUserInterestEmbeddingWorker.perform_async(user_id, article.id, EMAIL_CLICK_INTEREST_BLEND_FACTOR)
+      end
     rescue StandardError => e
       Rails.logger.error "Error processing feed click: #{e.message}"
     end
