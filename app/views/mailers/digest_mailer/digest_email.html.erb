@@ -60,9 +60,9 @@
           <tr>
             <td bgcolor="#FFFFFF" style="padding: <%= i.zero? ? "24" : "16" %>px 0px 16px; text-align: left; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
               <div style="padding: 4px 8px;">
-                <a href="<%= article_url(article) %>?context=digest" style="text-decoration: none; font-weight: 600; color:#111111; font-size: 18px; line-height: 1.4; display:block; letter-spacing: -0.01em;"><%= article.title.strip %></a>
+                <a href="<%= article_url(article, context: "digest", fc: @feed_config_id.presence) %>" style="text-decoration: none; font-weight: 600; color:#111111; font-size: 18px; line-height: 1.4; display:block; letter-spacing: -0.01em;"><%= article.title.strip %></a>
                 <p style="margin-top: 8px; margin-bottom: 0px; font-size: 15px; color: #555555; line-height: 1.5;">
-                  <%= truncate(article.description, length: 180) %>
+                  <%= article.ai_summary.presence || truncate(article.description, length: 180) %>
                 </p>
               </div>
             </td>

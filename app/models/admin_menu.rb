@@ -22,6 +22,7 @@ class AdminMenu
       item(name: "organizations"),
       item(name: "podcasts"),
       item(name: "tags"),
+      item(name: "concepts", controller: "concepts"),
       item(name: "emails"),
       item(name: "surveys"),
       item(name: "events"),
@@ -35,6 +36,7 @@ class AdminMenu
       item(name: "profile fields"),
       item(name: "subforems"),
       item(name: "org features", controller: "org_features"),
+      item(name: "request redirects", controller: "request_redirects"),
     ]
 
     scope :admin_team, "user-line", [
@@ -47,6 +49,7 @@ class AdminMenu
       item(name: "moderator actions", controller: "moderator_actions"),
       item(name: "privileged reactions"),
       item(name: "blocked email domains", controller: "blocked_email_domains"),
+      item(name: "linked domains", controller: "linked_domains"),
     ]
 
     scope :advanced, "flashlight-line", [

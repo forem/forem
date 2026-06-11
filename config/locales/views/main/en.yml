@@ -47,10 +47,12 @@ en:
         Privacy Policy: Privacy Policy
         Reading List: Reading List
         Tags: Tags
+        trends: Trends
         Terms of use: Terms of Use
         Videos: Videos
       side:
         active_discussions: "Active discussions"
+        upcoming_events: "Upcoming events"
         listings:
           heading: Listings
           all: See all

@@ -2473,6 +2473,45 @@ RSpec.describe Article do
         expect(article.reload.comment_score).to eq(7)
       end
     end
+
+    context "triggering LinkedDomains::UpdateScoreWorker" do
+      before { Sidekiq::Testing.fake! }
+      let!(:domain) { LinkedDomain.create!(host: "example.com") }
+
+      before do
+        WebpageReference.create!(record: article, linked_domain: domain, url: "https://example.com/page")
+        allow(LinkedDomains::UpdateScoreWorker).to receive(:perform_async)
+      end
+
+      it "triggers the worker when score changes" do
+        article.update_score
+        expect(LinkedDomains::UpdateScoreWorker).to have_received(:perform_async).with(domain.id)
+      end
+
+      it "does not trigger the worker when score does not change" do
+        # Set the score to what update_score will calculate (10)
+        article.update_columns(score: 10, comment_score: 3)
+        article.clear_changes_information
+        
+        article.update_score # call should not change score
+        expect(LinkedDomains::UpdateScoreWorker).not_to have_received(:perform_async)
+      end
+    end
+
+    context "triggering LinkedDomains::UpdateScoreWorker on destroy" do
+      before { Sidekiq::Testing.fake! }
+      let!(:domain) { LinkedDomain.create!(host: "destroytest.com") }
+
+      before do
+        WebpageReference.create!(record: article, linked_domain: domain, url: "https://destroytest.com/page")
+        allow(LinkedDomains::UpdateScoreWorker).to receive(:perform_async)
+      end
+
+      it "triggers the worker when article is destroyed" do
+        article.destroy
+        expect(LinkedDomains::UpdateScoreWorker).to have_received(:perform_async).with(domain.id)
+      end
+    end
   end
 
   context "when the article has a context note" do
@@ -2623,6 +2662,53 @@ RSpec.describe Article do
       it "adds 5 to score" do
         article.update_score
         expect(article.reload.score).to eq(5)
+      end
+    end
+  end
+
+  describe "established_user_adjustment in update_score" do
+    before do
+      allow(article).to receive(:reactions).and_return(double(sum: 0, privileged_category: double(sum: 0)))
+      allow(article).to receive(:comments).and_return(double(sum: 0))
+      allow(BlackBox).to receive(:article_hotness_score).and_return(0)
+      allow(Settings::UserExperience).to receive(:index_minimum_score).and_return(12)
+    end
+
+    context "when user score is > 100" do
+      before do
+        article.user.update_column(:score, 101)
+      end
+
+      it "adds the index_minimum_score if article is not labeled as spam" do
+        article.update_column(:automod_label, "no_moderation_label")
+        article.update_score
+        expect(article.reload.score).to eq(12)
+      end
+
+      it "does not add the index_minimum_score if article is clear_and_obvious_spam" do
+        article.update_column(:automod_label, "clear_and_obvious_spam")
+        article.update_score
+        # Automod adjusts score by -10 for clear_and_obvious_spam
+        expect(article.reload.score).to eq(-10)
+      end
+
+      it "does not add the index_minimum_score if article is likely_spam" do
+        article.update_column(:automod_label, "likely_spam")
+        article.update_score
+        # Automod adjusts score by -5 for likely_spam
+        expect(article.reload.score).to eq(-5)
+      end
+    end
+
+    context "when user score is <= 100" do
+      before do
+        article.user.update_column(:score, 100)
+      end
+
+      it "does not add the index_minimum_score" do
+        article.update_column(:automod_label, "no_moderation_label")
+        article.update_score
+        expect(article.reload.score).to eq(0)
       end
     end
   end
@@ -3158,6 +3244,13 @@ RSpec.describe Article do
       article.body_markdown = "## Hello World!"
       article.evaluate_and_update_column_from_markdown
       expect(article.processed_html).to include("Hello World!")
+    end
+
+    it "does not raise an error when a ContentParsingError occurs and leaves processed_html unchanged" do
+      original_html = article.processed_html
+      allow_any_instance_of(ContentRenderer).to receive(:process_article).and_raise(ContentRenderer::ContentParsingError, "Parsing error")
+      expect { article.evaluate_and_update_column_from_markdown }.not_to raise_error
+      expect(article.reload.processed_html).to eq(original_html)
     end
   end
 
@@ -3790,6 +3883,91 @@ RSpec.describe Article do
       # Ensure reading `tags_array` doesn't inadvertently trigger sync_tags_array
       article.sync_tags_array
       expect(article.instance_variable_defined?(:@tag_list)).to be_falsey
+    end
+  end
+
+  describe "semantic embeddings" do
+    let(:article) { build(:article, score: Settings::UserExperience.home_feed_minimum_score) }
+
+    before do
+      stub_const("Ai::Base::DEFAULT_KEY", "test-key")
+    end
+
+    it "enqueues generate embedding when score is above threshold and content changes" do
+      allow(GenerateArticleEmbeddingWorker).to receive(:perform_async)
+      article.save!
+      expect(GenerateArticleEmbeddingWorker).to have_received(:perform_async).with(article.id)
+    end
+
+    it "does not enqueue generate embedding when score is below threshold" do
+      article.score = Settings::UserExperience.home_feed_minimum_score - 1
+      allow(GenerateArticleEmbeddingWorker).to receive(:perform_async)
+      article.save!
+      expect(GenerateArticleEmbeddingWorker).not_to have_received(:perform_async)
+    end
+
+    it "triggers semantic embedding generation manually if no embedding is present and score is high" do
+      article.save!
+      allow(GenerateArticleEmbeddingWorker).to receive(:perform_async)
+      article.trigger_semantic_embedding_generation
+      expect(GenerateArticleEmbeddingWorker).to have_received(:perform_async).with(article.id)
+    end
+
+    it "does not trigger semantic embedding generation manually if embedding is already present" do
+      article.save!
+      article.update_column(:semantic_embedding, Array.new(768, 0.1))
+      allow(GenerateArticleEmbeddingWorker).to receive(:perform_async)
+      article.trigger_semantic_embedding_generation
+      expect(GenerateArticleEmbeddingWorker).not_to have_received(:perform_async)
+    end
+  end
+
+  describe "recompiling organization pages" do
+    let(:organization) { create(:organization) }
+    let(:user) { create(:user) }
+
+    before do
+      allow(Organizations::RecompilePagesWorker).to receive(:perform_async)
+      allow(FeatureFlag).to receive(:enabled?).and_call_original
+      allow(FeatureFlag).to receive(:enabled?).with(:org_readme, anything).and_return(true)
+    end
+
+    it "enqueues recompilation on create when organization is present and published is true" do
+      create(:article, organization: organization, user: user, published: true)
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id)
+    end
+
+    it "does not enqueue recompilation on create when organization is nil" do
+      create(:article, organization: nil, user: user, published: true)
+      expect(Organizations::RecompilePagesWorker).not_to have_received(:perform_async)
+    end
+
+    it "enqueues recompilation on update when organization changes on a published article" do
+      article = create(:article, organization: nil, user: user, published: true)
+      article.update!(organization: organization)
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id)
+    end
+
+    it "enqueues recompilation on destroy when organization is present and article is published" do
+      article = create(:article, organization: organization, user: user, published: true)
+      article.destroy!
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id).twice
+    end
+
+    it "does not enqueue recompilation for draft articles on create or update" do
+      article = create(:unpublished_article, organization: organization, user: user)
+      expect(Organizations::RecompilePagesWorker).not_to have_received(:perform_async)
+
+      article.update!(title: "New Draft Title")
+      expect(Organizations::RecompilePagesWorker).not_to have_received(:perform_async)
+    end
+
+    it "enqueues recompilation when a draft article is published" do
+      article = create(:unpublished_article, organization: organization, user: user)
+      expect(Organizations::RecompilePagesWorker).not_to have_received(:perform_async)
+
+      article.update!(published: true)
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id)
     end
   end
 end

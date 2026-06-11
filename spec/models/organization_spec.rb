@@ -546,4 +546,34 @@ RSpec.describe Organization do
       expect(organization.active_users.pluck(:id)).not_to include(user3.id)
     end
   end
+
+  describe "recompiling organization pages on update" do
+    let(:organization) { create(:organization) }
+
+    before do
+      allow(Organizations::RecompilePagesWorker).to receive(:perform_async)
+      allow(FeatureFlag).to receive(:enabled?).and_call_original
+      allow(FeatureFlag).to receive(:enabled?).with(:org_readme, anything).and_return(true)
+    end
+
+    it "enqueues recompilation when name changes" do
+      organization.update!(name: "New Name")
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id)
+    end
+
+    it "enqueues recompilation when slug changes" do
+      organization.update!(slug: "new-slug")
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id)
+    end
+
+    it "enqueues recompilation when summary changes" do
+      organization.update!(summary: "New Summary")
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id)
+    end
+
+    it "does not enqueue recompilation when other attributes change" do
+      organization.update!(company_size: "50")
+      expect(Organizations::RecompilePagesWorker).not_to have_received(:perform_async)
+    end
+  end
 end

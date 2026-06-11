@@ -25,7 +25,12 @@ namespace :admin do
   end
 
   resources :organization_memberships, only: %i[update destroy create]
-  resources :permissions, only: %i[index]
+  resources :permissions, only: %i[index] do
+    collection do
+      post :grant
+      delete :revoke
+    end
+  end
   resources :reactions, only: %i[update]
   resources :creator_settings, only: %i[create new]
 
@@ -135,6 +140,11 @@ namespace :admin do
     resources :tags, only: %i[index new create update edit] do
       resource :moderator, only: %i[create destroy], module: "tags"
     end
+    resources :concepts do
+      member do
+        post :trigger_lookback
+      end
+    end
     resources :surveys
     resources :events do
       member do
@@ -170,6 +180,7 @@ namespace :admin do
         end
       end
     end
+    resources :request_redirects
   end
 
   scope :moderation do
@@ -179,12 +190,14 @@ namespace :admin do
         post "send_email"
         post "create_note"
         post "save_status"
+        get "flag_reactions"
       end
     end
     resources :mods, only: %i[index update]
     resources :moderator_actions, only: %i[index]
     resources :privileged_reactions, only: %i[index]
     resources :blocked_email_domains, only: %i[index new create destroy]
+    resources :linked_domains, only: %i[index edit update]
   end
 
   scope :advanced do

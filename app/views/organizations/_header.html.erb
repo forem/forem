@@ -10,7 +10,7 @@
 <% if @cover_image_url.present? %>
   /* === COVER IMAGE MODE === */
   .org-header-cover {
-    background-image: url('<%= @cover_image_url %>');
+    background-image: url('<%= optimized_image_url(@cover_image_url, width: 1000, random_fallback: false) %>');
     background-size: cover;
     background-position: center;
     aspect-ratio: 3 / 1;
