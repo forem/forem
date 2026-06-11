@@ -35,7 +35,7 @@ module PracticalDeveloper
   class Application < Rails::Application
     # Specify the default Rails settings version we're targetting
     # See: https://guides.rubyonrails.org/configuring.html#results-of-config-load-defaults
-    config.load_defaults 7.0
+    config.load_defaults 7.1
 
     # Set AhoyEmail secret token early to prevent it from accessing deprecated Rails.application.secrets
     config.before_initialize do
@@ -46,8 +46,14 @@ module PracticalDeveloper
     # of existing user sessions and signed/encrypted cookies.
     config.active_support.key_generator_hash_digest_class = OpenSSL::Digest::SHA1
 
-    # Keep cache format version compatible with 7.0 during rolling deploy/rollback phase
-    config.active_support.cache_format_version = 7.0
+    # Enable modern cache format version 7.1
+    config.active_support.cache_format_version = 7.1
+
+    # Enable validating only parent-related columns for presence when the parent is mandatory.
+    config.active_record.belongs_to_required_validates_foreign_key = true
+
+    # Raise ActionController::ActionNotFound when a callback references a missing action.
+    config.action_controller.raise_on_missing_callback_actions = true
 
     ### FRAMEWORK DEFAULT OVERRIDES
     # Override new framework defaults to keep existing behavior.
