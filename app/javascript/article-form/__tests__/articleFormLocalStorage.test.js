@@ -14,7 +14,6 @@ function storageKey(id, url) {
 
 describe('localStorage key format', () => {
   const editUrl = 'https://forem.local/username/slug-here/edit';
-  const previewUrl = 'https://forem.local/username/slug-here?preview=abc123';
   const articleId = 42;
 
   beforeEach(() => {

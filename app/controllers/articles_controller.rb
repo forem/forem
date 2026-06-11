@@ -427,3 +427,4 @@ class ArticlesController < ApplicationController
     Rails.logger.error("ArticlesController#body_markdown_has_frontmatter? fallback due to error: #{e.class}: #{e.message}")
     false
   end
+end
