@@ -125,12 +125,15 @@ describe "Framework Defaults 7.1 Upgrade Verification" do
 
       expect(config.active_record.validate_migration_timestamps).to be(true)
       expect(config.active_record.postgresql_adapter_decode_dates).to be(true)
+      expect(config.active_job.enqueue_after_transaction_commit).to eq(:default)
     end
 
     it "keeps remaining new Rails 7.2 configurations unset/nil (preserving Rails 7.1 defaults) during preparation" do
       config = Rails.application.config
 
-      expect(config.active_job.enqueue_after_transaction_commit).to be_nil
+      # active_storage and yjit are not loaded/supported in Rails 7.1, so they remain undefined
+      expect(config.respond_to?(:active_storage)).to be(false)
+      expect(config.respond_to?(:yjit)).to be(false)
     end
   end
 end
