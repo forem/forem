@@ -96,6 +96,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y imagemagick
       - name: Restore compiled assets
         uses: actions/cache/restore@v5
         with:
@@ -105,13 +111,6 @@ jobs:
             app/assets/builds
           key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v3-
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
-
-      - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y imagemagick
 
       - name: Wait for services
         run: |
