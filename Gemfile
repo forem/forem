@@ -86,15 +86,15 @@ gem "public_suffix", "~> 6.0" # Domain name parser based on the Public Suffix Li
 gem "rack-attack", "~> 6.8.0" # Used to throttle requests to prevent brute force attacks
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
 gem "rack-timeout", "~> 0.7.0" # Rack middleware which aborts requests that have been running for longer than a specified timeout
-gem "rails", "~> 7.1.0" # Ruby on Rails
-gem "ransack", "~> 3.2" # Searching and sorting
+gem "rails", "~> 7.2.0" # Ruby on Rails
+gem "ransack", "~> 4.2" # Searching and sorting
 gem "recaptcha", "~> 5.10", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 
 gem "redis", "~> 4.7.1" # Redis ruby client
 gem "redis-actionpack", "~> 5.4.0" # Redis session store for ActionPack. Used for storing the Rails session in Redis.
-gem "rpush", "~> 7.0" # Push Notification library for Rails
-gem "rpush-redis", "~> 1.1" # Redis module capability for rpush library
+gem "rpush", "~> 9.2" # Push Notification library for Rails
+gem "rpush-redis" # Redis module capability for rpush library
 
 gem "request_store", "~> 1.7" # RequestStore gives you per-request global storage
 gem "reverse_markdown", "~> 2.1" # Map simple html back into markdown

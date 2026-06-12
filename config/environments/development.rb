@@ -128,7 +128,11 @@ Rails.application.configure do
     domain: ENV["SMTP_DOMAIN"].presence || config.app_domain
   }
 
-  config.action_mailer.preview_path = Rails.root.join("spec/mailers/previews")
+  if config.action_mailer.respond_to?(:preview_paths)
+    config.action_mailer.preview_paths << Rails.root.join("spec/mailers/previews")
+  else
+    config.action_mailer.preview_path = Rails.root.join("spec/mailers/previews")
+  end
 
   config.public_file_server.enabled = true
 
