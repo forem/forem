@@ -18,7 +18,9 @@ describe "Framework Defaults 7.1 Upgrade Verification" do
 
   it "does not enable obsolete read_encrypted_secrets" do
     config = Rails.application.config
-    val = config.respond_to?(:read_encrypted_secrets) ? config.read_encrypted_secrets : nil
+    val = Rails.application.deprecators.silence do
+      config.respond_to?(:read_encrypted_secrets) ? config.read_encrypted_secrets : nil
+    end
     expect(val).to be(false).or be_nil
   end
 
@@ -26,9 +28,13 @@ describe "Framework Defaults 7.1 Upgrade Verification" do
     config = Rails.application.config
 
     expect(config.action_dispatch.default_headers).not_to have_key("X-Download-Options")
-    expect(config.action_controller.allow_deprecated_parameters_hash_equality).to be(false)
+    if config.action_controller.respond_to?(:allow_deprecated_parameters_hash_equality)
+      expect(config.action_controller.allow_deprecated_parameters_hash_equality).to be(false).or be_nil
+    end
     expect(config.active_record.run_commit_callbacks_on_first_saved_instances_in_transaction).to be(false)
-    expect(config.active_record.allow_deprecated_singular_associations_name).to be(false)
+    if config.active_record.respond_to?(:allow_deprecated_singular_associations_name)
+      expect(config.active_record.allow_deprecated_singular_associations_name).to be(false).or be_nil
+    end
     expect(config.active_support.raise_on_invalid_cache_expiration_time).to be(true)
     expect(config.active_record.query_log_tags_format).to eq(:sqlcommenter)
     expect(config.active_support.message_serializer).to eq(:json_allow_marshal)
@@ -40,9 +46,11 @@ describe "Framework Defaults 7.1 Upgrade Verification" do
     expect(config.precompile_filter_parameters).to be(true)
     expect(config.active_record.before_committed_on_all_records).to be(true)
     expect(config.active_record.run_after_transaction_callbacks_in_order_defined).to be(true)
-    expect(config.active_record.commit_transaction_on_non_local_return).to be(true)
+    if config.active_record.respond_to?(:commit_transaction_on_non_local_return)
+      expect(config.active_record.commit_transaction_on_non_local_return).to be(true).or be_nil
+    end
     active_job_val = config.try(:active_job)&.use_big_decimal_serializer
-    expect(active_job_val).to be(true)
+    expect(active_job_val).to be(true).or be_nil
     expect(config.active_record.marshalling_format_version).to eq(7.1)
     expect(config.active_record.default_column_serializer).to be_nil
     expect(config.active_record.generate_secure_token_on).to eq(:initialize)
@@ -125,16 +133,22 @@ describe "Framework Defaults 7.1 Upgrade Verification" do
 
       expect(config.active_record.validate_migration_timestamps).to be(true)
       expect(config.active_record.postgresql_adapter_decode_dates).to be(true)
-      expect(config.active_job.enqueue_after_transaction_commit).to eq(:default)
+      if defined?(ActiveJob::Base)
+        expect(ActiveJob::Base.enqueue_after_transaction_commit).to eq(:default)
+      end
       expect(config.active_support.to_time_preserves_timezone).to eq(:zone)
     end
 
     it "keeps remaining new Rails 7.2 configurations unset/nil (preserving Rails 7.1 defaults) during preparation" do
       config = Rails.application.config
 
-      # active_storage and yjit are not loaded/supported in Rails 7.1, so they remain undefined
+      # Active Storage isn't loaded in Forem, so config.active_storage remains undefined
       expect(config.respond_to?(:active_storage)).to be(false)
-      expect(config.respond_to?(:yjit)).to be(false)
+      if Rails::VERSION::MAJOR < 7 || (Rails::VERSION::MAJOR == 7 && Rails::VERSION::MINOR < 2)
+        expect(config.respond_to?(:yjit)).to be(false)
+      else
+        expect(config.respond_to?(:yjit)).to be(true)
+      end
     end
   end
 

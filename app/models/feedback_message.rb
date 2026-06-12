@@ -112,4 +112,11 @@ class FeedbackMessage < ApplicationRecord
     end
   end
 
+  def self.ransackable_attributes(auth_object = nil)
+    ["affected_id", "category", "created_at", "feedback_type", "id", "message", "offender_id", "reported_id", "reported_type", "reported_url", "reporter_id", "status", "updated_at"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["offender", "reporter", "affected", "reported"]
+  end
 end
