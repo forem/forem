@@ -6,7 +6,7 @@ jobs:
   add_ci_label:
     name: "Add CI label to pull request"
     if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/ci') && (github.event.comment.author_association == 'MEMBER' || github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'CONTRIBUTOR')
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     steps:
       - uses: actions/checkout@v6
       - uses: actions-ecosystem/action-add-labels@v1
@@ -17,7 +17,7 @@ jobs:
   build_containers:
     name: "Run forem/build-containers pipeline"
     if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/ci') && (github.event.comment.author_association == 'MEMBER' || github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'CONTRIBUTOR')
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     steps:
       - uses: actions/checkout@v6
       - run: ./scripts/create_buildkite_pr_build.sh

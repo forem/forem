@@ -24,7 +24,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     env:
       E2E: true
 
@@ -55,7 +55,7 @@ jobs:
         if: steps.assetscache.outputs.cache-hit != 'true'
 
   rspec:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     needs: [build]
     timeout-minutes: 20
     env:

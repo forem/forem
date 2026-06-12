@@ -6,7 +6,7 @@ jobs:
   pull_request_comment:
     name: Notify third-party contributor
     if: github.event.pull_request.head.repo.full_name != github.repository
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     steps:
       - name: Add comment to PR if coming from third-party fork
         uses: mshick/add-pr-comment@v3
