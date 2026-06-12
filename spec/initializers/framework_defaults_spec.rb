@@ -165,6 +165,10 @@ describe "Framework Defaults 7.2 Upgrade Verification" do
       expect(Rails.application.config.action_dispatch.strict_freshness).to be(true)
     end
 
+    it "enables reloading in test environment using config.enable_reloading" do
+      expect(Rails.application.config.enable_reloading).to be(true)
+    end
+
     describe "Regexp timeout parser logic" do
       after do
         # Restore the original timeout value
