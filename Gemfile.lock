@@ -90,8 +90,9 @@ GEM
       mutex_m
       securerandom (>= 0.3)
       tzinfo (~> 2.0)
-    acts-as-taggable-on (10.0.0)
-      activerecord (>= 6.1, < 7.2)
+    acts-as-taggable-on (12.0.0)
+      activerecord (>= 7.1, < 8.1)
+      zeitwerk (>= 2.4, < 3.0)
     addressable (2.9.0)
       public_suffix (>= 2.0.2, < 8.0)
     ahoy_email (2.2.0)
@@ -1087,7 +1088,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_record_union (~> 1.3)
-  acts-as-taggable-on (~> 10.0)
+  acts-as-taggable-on (~> 12.0)
   acts_as_follower!
   addressable (~> 2.8)
   ahoy_email (~> 2.2.0)
