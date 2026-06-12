@@ -137,5 +137,56 @@ describe "Framework Defaults 7.1 Upgrade Verification" do
       expect(config.respond_to?(:yjit)).to be(false)
     end
   end
+
+  describe "Framework Defaults 8.0 Upgrade Preparation" do
+    it "sets default Regexp timeout to protect against ReDoS" do
+      if Regexp.respond_to?(:timeout)
+        expected_timeout = ENV.fetch("REGEXP_TIMEOUT", "1.0")
+        if expected_timeout.blank? || %w[nil none false].include?(expected_timeout.downcase)
+          expect(Regexp.timeout).to be_nil
+        else
+          expect(Regexp.timeout).to eq(expected_timeout.to_f)
+        end
+      end
+    end
+
+    describe "Regexp timeout parser logic" do
+      after do
+        # Restore the original timeout value
+        if Regexp.respond_to?(:timeout=)
+          original_timeout = ENV.fetch("REGEXP_TIMEOUT", "1.0")
+          Regexp.timeout = if original_timeout.blank? || %w[nil none false].include?(original_timeout.downcase)
+                             nil
+                           else
+                             original_timeout.to_f
+                           end
+        end
+      end
+
+      it "correctly parses and applies Regexp timeouts" do
+        skip "Regexp.timeout not supported in this Ruby version" unless Regexp.respond_to?(:timeout=)
+
+        # Test setting a custom float value
+        stub_const("ENV", ENV.to_h.merge("REGEXP_TIMEOUT" => "2.5"))
+        load Rails.root.join("config/initializers/regexp_timeout.rb")
+        expect(Regexp.timeout).to eq(2.5)
+
+        # Test disabling the timeout with 'nil'
+        stub_const("ENV", ENV.to_h.merge("REGEXP_TIMEOUT" => "nil"))
+        load Rails.root.join("config/initializers/regexp_timeout.rb")
+        expect(Regexp.timeout).to be_nil
+
+        # Test disabling the timeout with 'none'
+        stub_const("ENV", ENV.to_h.merge("REGEXP_TIMEOUT" => "none"))
+        load Rails.root.join("config/initializers/regexp_timeout.rb")
+        expect(Regexp.timeout).to be_nil
+
+        # Test disabling the timeout with 'false'
+        stub_const("ENV", ENV.to_h.merge("REGEXP_TIMEOUT" => "false"))
+        load Rails.root.join("config/initializers/regexp_timeout.rb")
+        expect(Regexp.timeout).to be_nil
+      end
+    end
+  end
 end
 # rubocop:enable RSpec/DescribeClass
