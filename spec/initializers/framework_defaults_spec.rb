@@ -150,6 +150,10 @@ describe "Framework Defaults 7.1 Upgrade Verification" do
       end
     end
 
+    it "enables strict freshness to prioritize ETag over Last-Modified" do
+      expect(Rails.application.config.action_dispatch.strict_freshness).to be(true)
+    end
+
     describe "Regexp timeout parser logic" do
       after do
         # Restore the original timeout value
