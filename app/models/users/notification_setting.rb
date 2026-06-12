@@ -9,8 +9,8 @@ module Users
 
     validates :email_digest_periodic, inclusion: { in: [true, false] }
 
-    alias_attribute :subscribed_to_welcome_notifications?, :welcome_notifications
-    alias_attribute :subscribed_to_email_follower_notifications?, :email_follower_notifications
+    alias_attribute :subscribed_to_welcome_notifications, :welcome_notifications
+    alias_attribute :subscribed_to_email_follower_notifications, :email_follower_notifications
 
     after_commit :subscribe_to_mailchimp_newsletter
     after_save if: :saved_change_to_email_newsletter? do
