@@ -392,14 +392,19 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
     context "escape_for_draw" do
       let(:generator) { described_class.new(article) }
 
-      before { described_class.send(:public, :escape_for_draw) }
+      around do |example|
+        described_class.send(:public, :escape_for_draw)
+        example.run
+      ensure
+        described_class.send(:private, :escape_for_draw)
+      end
 
       it "escapes backslashes before other characters" do
         expect(generator.escape_for_draw('a\\b')).to eq('a\\\\b')
       end
 
       it "escapes double-quotes" do
-        expect(generator.escape_for_draw('say "hello"')).to eq('say \\"hello\\"')  
+        expect(generator.escape_for_draw('say "hello"')).to eq('say \\"hello\\"')
       end
 
       it "escapes @ to prevent ImageMagick indirect file reads" do

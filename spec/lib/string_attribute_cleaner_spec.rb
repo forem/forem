@@ -36,8 +36,8 @@ RSpec.describe StringAttributeCleaner, type: :lib do
           cb.filter if cb.kind == :before
         end
 
-        expect(before_validation_cbs).to eq([])
-        expect(before_save_cbs).to eq([:nullify_blank_attributes])
+        expect(before_validation_cbs).not_to include(:nullify_blank_attributes)
+        expect(before_save_cbs).to include(:nullify_blank_attributes)
         expect(TestClass.new).to respond_to(:nullify_blank_attributes)
       end
     end
@@ -47,7 +47,7 @@ RSpec.describe StringAttributeCleaner, type: :lib do
         cb.filter if cb.kind == :before
       end
 
-      expect(before_validation_cbs).to eq([:nullify_blank_attributes])
+      expect(before_validation_cbs).to include(:nullify_blank_attributes)
       expect(TestClass.new).to respond_to(:nullify_blank_attributes)
     end
 

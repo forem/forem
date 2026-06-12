@@ -9,7 +9,7 @@ module Feeds
     has_many :import_logs, class_name: "Feeds::ImportLog", foreign_key: :feed_source_id,
                            inverse_of: :feed_source, dependent: :nullify
 
-    enum status: { healthy: 0, degraded: 1, failing: 2, inactive: 3 }, _prefix: :feed
+    enum :status, { healthy: 0, degraded: 1, failing: 2, inactive: 3 }, prefix: :feed
 
     validates :feed_url, presence: true, length: { maximum: 500 }
     validates :feed_url, uniqueness: { scope: :user_id }
