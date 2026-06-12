@@ -94,7 +94,7 @@ gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML pars
 gem "redis", "~> 4.7.1" # Redis ruby client
 gem "redis-actionpack", "~> 5.4.0" # Redis session store for ActionPack. Used for storing the Rails session in Redis.
 gem "rpush", "~> 9.2" # Push Notification library for Rails
-gem "rpush-redis" # Redis module capability for rpush library
+gem "rpush-redis", "~> 1.2" # Redis module capability for rpush library
 
 gem "request_store", "~> 1.7" # RequestStore gives you per-request global storage
 gem "reverse_markdown", "~> 2.1" # Map simple html back into markdown

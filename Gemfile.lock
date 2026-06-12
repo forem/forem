@@ -1227,7 +1227,7 @@ DEPENDENCIES
   rolify (~> 6.0)
   rouge (~> 4.2)
   rpush (~> 9.2)
-  rpush-redis
+  rpush-redis (~> 1.2)
   rspec-rails (~> 6.0, >= 6.0.3)
   rspec-retry (~> 0.6)
   rspec_junit_formatter (~> 0.6)

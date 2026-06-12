@@ -133,8 +133,8 @@ describe "Framework Defaults 7.1 Upgrade Verification" do
 
       expect(config.active_record.validate_migration_timestamps).to be(true)
       expect(config.active_record.postgresql_adapter_decode_dates).to be(true)
-      if config.active_job.respond_to?(:enqueue_after_transaction_commit)
-        expect(config.active_job.enqueue_after_transaction_commit).to eq(:default).or be_nil
+      if defined?(ActiveJob::Base)
+        expect(ActiveJob::Base.enqueue_after_transaction_commit).to eq(:default)
       end
       expect(config.active_support.to_time_preserves_timezone).to eq(:zone)
     end
@@ -142,7 +142,7 @@ describe "Framework Defaults 7.1 Upgrade Verification" do
     it "keeps remaining new Rails 7.2 configurations unset/nil (preserving Rails 7.1 defaults) during preparation" do
       config = Rails.application.config
 
-      # active_storage is not loaded/supported in Rails, so it remains undefined
+      # Active Storage isn't loaded in Forem, so config.active_storage remains undefined
       expect(config.respond_to?(:active_storage)).to be(false)
       if Rails::VERSION::MAJOR < 7 || (Rails::VERSION::MAJOR == 7 && Rails::VERSION::MINOR < 2)
         expect(config.respond_to?(:yjit)).to be(false)
