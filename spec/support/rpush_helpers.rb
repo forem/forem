@@ -5,8 +5,8 @@ module RpushHelpers
   # Example: Rpush::Apns2::App.where(...).first => nil/app (empty true/false)
   def mock_rpush(consumer_app, empty: false)
     if consumer_app.android?
-      rpush_class = Rpush::Gcm::App
-      rpush_notification_class = Rpush::Gcm::Notification
+      rpush_class = Rpush::Fcm::App
+      rpush_notification_class = Rpush::Fcm::Notification
       auth_key = :auth_key
     elsif consumer_app.ios?
       rpush_class = Rpush::Apns2::App

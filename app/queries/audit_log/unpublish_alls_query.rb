@@ -14,13 +14,13 @@ class AuditLog
 
     def exists?
       exists = AuditLog.where(slug: %w[api_user_unpublish unpublish_all_articles])
-        .where("data @> '{\"target_user_id\": ?}'", user_id).present?
+        .where("data @> :target_int OR data @> :target_str", target_int: { target_user_id: user_id }.to_json, target_str: { target_user_id: user_id.to_s }.to_json).present?
       Result.new(exists?: exists)
     end
 
     def call
       audit_log = AuditLog.where(slug: %w[api_user_unpublish unpublish_all_articles])
-        .where("data @> '{\"target_user_id\": ?}'", user_id)
+        .where("data @> :target_int OR data @> :target_str", target_int: { target_user_id: user_id }.to_json, target_str: { target_user_id: user_id.to_s }.to_json)
         .includes(:user)
         .order("created_at DESC")
         .first

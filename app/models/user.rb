@@ -317,6 +317,14 @@ class User < ApplicationRecord
     find_by(id: Settings::General.mascot_user_id)
   end
 
+  def self.ransackable_attributes(auth_object = nil)
+    ["agent_sessions_count", "apple_username", "articles_count", "badge_achievements_count", "base_email_eligible", "blocked_by_count", "blocking_others_count", "checked_code_of_conduct", "checked_terms_and_conditions", "comments_count", "confirmation_sent_at", "confirmed_at", "created_at", "credits_count", "current_sign_in_at", "current_subscriber_status", "email", "export_requested", "exported_at", "facebook_username", "failed_attempts", "feed_fetched_at", "following_orgs_count", "following_tags_count", "following_users_count", "forem_username", "github_repos_updated_at", "github_username", "google_oauth2_created_at", "google_oauth2_username", "id", "id_value", "invitation_accepted_at", "invitation_created_at", "invitation_limit", "invitation_sent_at", "invitations_count", "invited_by_id", "invited_by_type", "last_article_at", "last_comment_at", "last_followed_at", "last_moderation_notification", "last_notification_activity", "last_onboarding_page", "last_presence_at", "last_reacted_at", "last_sign_in_at", "latest_article_updated_at", "locked_at", "max_score", "mlh_username", "name", "old_old_username", "old_username", "onboarding_package_requested", "onboarding_subforem_id", "organization_info_updated_at", "payment_pointer", "profile_image", "profile_updated_at", "public_reactions_count", "rating_votes_count", "reactions_count", "registered", "registered_at", "reputation_modifier", "reset_password_sent_at", "saw_onboarding", "score", "sign_in_count", "sign_in_token_sent_at", "signup_cta_variant", "spent_credits_count", "stripe_id_code", "subscribed_to_user_subscriptions_count", "twitter_username", "type_of", "unconfirmed_email", "unspent_credits_count", "updated_at", "username"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["roles", "profile", "setting", "notification_setting"]
+  end
+
   def good_standing_followers_count
     cache_key = "#{cache_key_with_version}/good_standing_followers_count"
     Rails.cache.fetch(cache_key, expires_in: 24.hours) do
