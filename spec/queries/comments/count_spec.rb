@@ -25,6 +25,24 @@ RSpec.describe Comments::Count do
     expect(count).to eq(2)
   end
 
+  # Regression tests for https://github.com/forem/forem/issues/23432
+  # Soft-deleted childless comments are invisible in the UI (no "[deleted]" placeholder shown),
+  # so they must not contribute to the displayed count.
+  it "doesn't include a childless soft-deleted comment" do
+    create(:comment, commentable: article, deleted: true)
+    article.reload
+    count = described_class.call(article, recalculate: true)
+    expect(count).to eq(2)
+  end
+
+  it "includes a soft-deleted comment that has children because it renders as '[deleted]'" do
+    parent = create(:comment, commentable: article, deleted: true)
+    create(:comment, commentable: article, parent: parent)
+    article.reload
+    count = described_class.call(article, recalculate: true)
+    expect(count).to eq(4)
+  end
+
   it "includes ok children of a low-score comment (but not low-score children)" do
     comment.update_column(:score, -500)
     create(:comment, commentable: article, parent: comment, score: 10)

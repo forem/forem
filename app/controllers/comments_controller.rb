@@ -180,13 +180,24 @@ class CommentsController < ApplicationController
   # DELETE /comments/1.json
   def destroy
     authorize @comment
+    # Capture commentable before destroy so we can still reference it after the record is gone.
+    commentable = @comment.commentable
     if @comment.is_childless?
+      # Hard delete: counter_culture decrements comments_count automatically, but
+      # displayed_comments_count is a cached column and must be refreshed explicitly.
       @comment.destroy
     else
+      # Soft delete: the row stays in the DB so counter_culture never fires.
+      # The comment renders as "[deleted]" and is still counted in displayed_comments_count,
+      # but we refresh anyway to keep the cache consistent.
       @comment.deleted = true
       @comment.save!
     end
-    redirect = @comment.commentable&.path || user_path(current_user)
+    # Recalculate displayed_comments_count so the article heading reflects the deletion
+    # on the next request. Without this, the cached count is stale until the next
+    # score recalculation triggers it. Fixes: https://github.com/forem/forem/issues/23432
+    Comments::Count.call(commentable, recalculate: true) if commentable.is_a?(Article)
+    redirect = commentable&.path || user_path(current_user)
     # NOTE: Brakeman doesn't like redirecting to a path, because of a "possible
     # unprotected redirect". Using URI.parse().path is the recommended workaround.
     redirect_to Addressable::URI.parse(redirect).path, notice: I18n.t("comments_controller.delete.notice")
@@ -259,9 +270,17 @@ class CommentsController < ApplicationController
   def admin_delete
     @comment = Comment.find(params[:comment_id])
     authorize @comment
+    # Soft-delete regardless of whether the comment has children (admin privilege).
+    # Unlike the user-facing destroy action, this always keeps the row in the DB,
+    # so counter_culture never fires — we must refresh displayed_comments_count manually.
     @comment.deleted = true
 
     if @comment.save
+      # Recalculate displayed_comments_count after admin soft-delete.
+      # A childless comment that is soft-deleted here is fully invisible in the UI
+      # but still counted by the raw comments_count column — this call corrects that.
+      # Fixes: https://github.com/forem/forem/issues/23432
+      Comments::Count.call(@comment.commentable, recalculate: true) if @comment.commentable.is_a?(Article)
       redirect_url = @comment.commentable&.path
       if redirect_url
         flash[:success] = I18n.t("comments_controller.delete.notice")

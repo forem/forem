@@ -57,7 +57,10 @@
       <% end %>
 
       <div class="comments" id="comment-trees-container">
-        <% if @article.comments_count > 0 %>
+        <%# Use @comments_count (= displayed_comments_count) rather than the raw comments_count
+            counter so the tree is only rendered when there are actually visible comments.
+            Fixes: https://github.com/forem/forem/issues/23432 %>
+        <% if @comments_count > 0 %>
           <% @current_comment_index = 0 %>
           <%= render partial: "articles/comment_tree",
                      collection: article_comment_tree(@article, @comments_to_show_count, @comments_order),

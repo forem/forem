@@ -51,5 +51,28 @@ RSpec.describe "CommentsDestroy" do
         expect(response.body).to include "[deleted]"
       end
     end
+
+    # Regression tests for https://github.com/forem/forem/issues/23432
+    # displayed_comments_count must be recalculated after any deletion so the
+    # article heading reflects the correct visible count immediately.
+    context "when recalculating displayed_comments_count after deletion" do
+      it "decrements displayed_comments_count when a childless comment is hard-deleted" do
+        comment = create(:comment, user_id: user.id, commentable: article)
+        Comments::Count.call(article, recalculate: true)
+        expect { delete "/comments/#{comment.id}" }
+          .to change { article.reload.displayed_comments_count }.by(-1)
+      end
+
+      it "keeps displayed_comments_count stable when a parent comment is soft-deleted" do
+        # Soft-deleted parents with children still render as "[deleted]", so they
+        # remain part of the visible thread and the count should not decrease.
+        parent = create(:comment, user_id: user.id, commentable: article)
+        create(:comment, user_id: user.id, commentable: article, parent_id: parent.id)
+        Comments::Count.call(article, recalculate: true)
+        initial_count = article.reload.displayed_comments_count
+        delete "/comments/#{parent.id}"
+        expect(article.reload.displayed_comments_count).to eq(initial_count)
+      end
+    end
   end
 end
