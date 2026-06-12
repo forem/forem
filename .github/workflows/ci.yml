@@ -111,6 +111,10 @@ jobs:
             app/assets/builds
           key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v3-
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
 
       - name: Wait for services
         run: |
@@ -133,6 +137,7 @@ jobs:
         run: |
           bin/rails db:create
           bin/rails db:schema:load
+          bin/rails javascript:build
 
       - name: RSpec
         run: bin/knapsack_pro_rspec
