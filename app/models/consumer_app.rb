@@ -54,7 +54,7 @@ class ConsumerApp < ApplicationRecord
     when Device::IOS
       Rpush::Apns2::App.where(name: app_name).first&.destroy
     when Device::ANDROID
-      Rpush::Gcm::App.where(name: app_name).first&.destroy
+      Rpush::Fcm::App.where(name: app_name).first&.destroy
     end
 
     # This prevents the `destroy` method to return true or false in a callback
