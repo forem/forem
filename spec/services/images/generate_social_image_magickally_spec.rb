@@ -389,6 +389,37 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
       end
     end
 
+    context "escape_for_draw" do
+      let(:generator) { described_class.new(article) }
+
+      before { described_class.send(:public, :escape_for_draw) }
+
+      it "escapes backslashes before other characters" do
+        expect(generator.escape_for_draw('a\\b')).to eq('a\\\\b')
+      end
+
+      it "escapes double-quotes" do
+        expect(generator.escape_for_draw('say "hello"')).to eq('say \\"hello\\"')  
+      end
+
+      it "escapes @ to prevent ImageMagick indirect file reads" do
+        expect(generator.escape_for_draw('user@example')).to eq('user\\@example')
+      end
+
+      it "escapes % to prevent ImageMagick format sequences" do
+        expect(generator.escape_for_draw('50%')).to eq('50\\%')
+      end
+
+      it "does not raise on CJK and Unicode characters" do
+        unicode_name = "FrancisTR\u1d05\u1d07\u1d20 (\u3063\u25d4\u25e1\u25d4)\u3063"
+        expect { generator.escape_for_draw(unicode_name) }.not_to raise_error
+      end
+
+      it "returns clean ASCII strings unchanged" do
+        expect(generator.escape_for_draw('Jane Doe')).to eq('Jane Doe')
+      end
+    end
+
     context "add_profile_image" do
       let(:user) { create(:user) }
       let(:article) { create(:article, user_id: user.id, with_main_image: false) }
