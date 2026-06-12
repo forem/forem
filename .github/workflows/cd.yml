@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: ubuntu-latest
     concurrency: ${{ matrix.environment }}
     environment: ${{ matrix.environment }}
 

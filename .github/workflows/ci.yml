@@ -42,6 +42,7 @@ jobs:
         with:
           path: |
             public/assets
+            app/assets/builds
           key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles( 'app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v3-
       - uses: actions/setup-node@v6
@@ -101,32 +102,27 @@ jobs:
           fail-on-cache-miss: true
           path: |
             public/assets
+            app/assets/builds
           key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v3-
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: '.nvmrc'
-          cache: yarn
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
 
-      # MODIFIED: Added postgresql-client and redis-tools for the wait step
       - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y imagemagick postgresql-client redis-tools
+        run: sudo apt-get update && sudo apt-get install -y imagemagick
 
-      # NEW: This is the fix. It waits until Postgres and Redis are fully ready
       - name: Wait for services
         run: |
           echo "Waiting for Postgres..."
-          until pg_isready -h localhost -p 5432 -U postgres; do
+          until timeout 1 bash -c 'cat < /dev/null > /dev/tcp/127.0.0.1/5432' 2>/dev/null; do
             sleep 2
           done
           echo "Postgres is ready."
 
           echo "Waiting for Redis..."
-          until redis-cli -h localhost -p 6379 ping; do
+          until timeout 1 bash -c 'cat < /dev/null > /dev/tcp/127.0.0.1/6379' 2>/dev/null; do
             sleep 2
           done
           echo "Redis is ready."
@@ -138,7 +134,6 @@ jobs:
         run: |
           bin/rails db:create
           bin/rails db:schema:load
-          bin/rails javascript:build
 
       - name: RSpec
         run: bin/knapsack_pro_rspec
