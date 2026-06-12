@@ -1,9 +1,9 @@
 # rubocop:disable RSpec/DescribeClass
 require "rails_helper"
 
-describe "Framework Defaults 7.1 Upgrade Verification" do
-  it "uses load_defaults 7.1 but keeps key_generator_hash_digest_class as SHA1" do
-    # Verify load_defaults 7.1 properties are set, with cache format version updated to 7.1
+describe "Framework Defaults 7.2 Upgrade Verification" do
+  it "uses load_defaults 7.2 but keeps key_generator_hash_digest_class as SHA1" do
+    # Verify load_defaults 7.2 properties are set, with cache format version updated to 7.1
     expect(Rails.application.config.active_support.hash_digest_class).to eq(OpenSSL::Digest::SHA256)
     expect(ActionView::Helpers::UrlHelper.button_to_generates_button_tag).to be(true)
     expect(ActiveSupport.cache_format_version).to eq(7.1)
@@ -123,9 +123,9 @@ describe "Framework Defaults 7.1 Upgrade Verification" do
     }
   end
 
-  describe "Framework Defaults 7.2 Upgrade Preparation" do
-    it "has the new_framework_defaults_7_2.rb initializer file present" do
-      expect(File.exist?(Rails.root.join("config/initializers/new_framework_defaults_7_2.rb"))).to be(true)
+  describe "Framework Defaults 7.2 Upgrade Verification" do
+    it "does not have the new_framework_defaults_7_2.rb initializer file present" do
+      expect(File.exist?(Rails.root.join("config/initializers/new_framework_defaults_7_2.rb"))).to be(false)
     end
 
     it "enables key Rails 7.2 defaults to ease the upgrade path" do
@@ -139,16 +139,13 @@ describe "Framework Defaults 7.1 Upgrade Verification" do
       expect(config.active_support.to_time_preserves_timezone).to eq(:zone)
     end
 
-    it "keeps remaining new Rails 7.2 configurations unset/nil (preserving Rails 7.1 defaults) during preparation" do
+    it "handles remaining Rails 7.2 configurations (preserving Rails 7.1 defaults where appropriate)" do
       config = Rails.application.config
 
       # Active Storage isn't loaded in Forem, so config.active_storage remains undefined
       expect(config.respond_to?(:active_storage)).to be(false)
-      if Rails::VERSION::MAJOR < 7 || (Rails::VERSION::MAJOR == 7 && Rails::VERSION::MINOR < 2)
-        expect(config.respond_to?(:yjit)).to be(false)
-      else
-        expect(config.respond_to?(:yjit)).to be(true)
-      end
+      expect(config.respond_to?(:yjit)).to be(true)
+      expect(config.yjit).to be(true)
     end
   end
 
