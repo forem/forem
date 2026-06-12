@@ -5,7 +5,7 @@ class ConsumerApp < ApplicationRecord
   FOREM_APP_PLATFORMS = %w[ios android].freeze
   FOREM_TEAM_ID = "R9SWHSQNV8".freeze
 
-  enum platform: { android: Device::ANDROID, ios: Device::IOS }
+  enum :platform, { android: Device::ANDROID, ios: Device::IOS }
 
   validates :app_bundle, presence: true, uniqueness: { scope: :platform }
   validates :platform, inclusion: { in: platforms.keys }

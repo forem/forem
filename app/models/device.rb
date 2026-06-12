@@ -5,7 +5,7 @@ class Device < ApplicationRecord
   IOS = "iOS".freeze
   ANDROID = "Android".freeze
 
-  enum platform: { android: ANDROID, ios: IOS }
+  enum :platform, { android: ANDROID, ios: IOS }
 
   validates :platform, inclusion: { in: platforms.keys }
   validates :token, presence: true

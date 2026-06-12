@@ -2,7 +2,7 @@ class Poll < ApplicationRecord
   attr_accessor :poll_options_input_array, :poll_options_supplementary_text_array
 
   # Poll types enum
-  enum type_of: {
+  enum :type_of, {
     single_choice: 0,    # Current behavior - only one option can be selected
     multiple_choice: 1,  # Multiple options can be selected
     scale: 2,           # Scale poll with numeric values

@@ -123,13 +123,13 @@ class Article < ApplicationRecord
     I18n.t("models.article.unique_url", email: ForemInstance.contact_email)
   end
 
-  enum type_of: {
+  enum :type_of, {
     full_post: 0,
     status: 1,
     fullscreen_embed: 2
   }
 
-  enum automod_label: {
+  enum :automod_label, {
     no_moderation_label: 0,
     clear_and_obvious_spam: 1,
     likely_spam: 2,
