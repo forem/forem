@@ -1,5 +1,5 @@
 class LinkedDomain < ApplicationRecord
-  enum manual_setting: {
+  enum :manual_setting, {
     not_set: 0,
     ignored: 1,
     basic_spam: 2,

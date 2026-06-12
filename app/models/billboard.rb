@@ -64,10 +64,10 @@ class Billboard < ApplicationRecord
   NEW_ONLY_RANGE_MAX_FALLBACK = 40
 
   attribute :target_geolocations, :geolocation_array
-  enum display_to: { all: 0, logged_in: 1, logged_out: 2 }, _prefix: true
-  enum type_of: { in_house: 0, community: 1, external: 2 }
-  enum render_mode: { forem_markdown: 0, raw: 1 }
-  enum template: { authorship_box: 0, plain: 1 }
+  enum :display_to, { all: 0, logged_in: 1, logged_out: 2 }, prefix: true
+  enum :type_of, { in_house: 0, community: 1, external: 2 }
+  enum :render_mode, { forem_markdown: 0, raw: 1 }
+  enum :template, { authorship_box: 0, plain: 1 }
   enum :special_behavior, { nothing: 0, delayed: 1 }
   enum :browser_context, { all_browsers: 0, desktop: 1, mobile_web: 2, mobile_in_app: 3 }
 

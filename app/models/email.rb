@@ -8,8 +8,8 @@ class Email < ApplicationRecord
   validates :subject, presence: true
   validates :body, presence: true
 
-  enum type_of: { one_off: 0, newsletter: 1, onboarding_drip: 2 }
-  enum status: { draft: 0, active: 1, delivered: 2 } # Not implemented yet anywhere
+  enum :type_of, { one_off: 0, newsletter: 1, onboarding_drip: 2 }
+  enum :status, { draft: 0, active: 1, delivered: 2 } # Not implemented yet anywhere
 
   attr_accessor :test_email_addresses
 
