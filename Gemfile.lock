@@ -198,7 +198,7 @@ GEM
     counter_culture (3.5.3)
       activerecord (>= 4.2)
       activesupport (>= 4.2)
-    countries (5.7.1)
+    countries (8.1.0)
       unaccent (~> 0.3)
     crack (1.0.0)
       bigdecimal
@@ -1130,7 +1130,7 @@ DEPENDENCIES
   cld3 (~> 3.5)
   cloudinary (~> 1.23)
   counter_culture (~> 3.2)
-  countries (~> 5.5)
+  countries (~> 8.1)
   cuprite (~> 0.13)
   cypress-rails (~> 0.5)
   ddtrace (~> 1.16.2)
