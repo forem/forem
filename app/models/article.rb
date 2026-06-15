@@ -123,13 +123,13 @@ class Article < ApplicationRecord
     I18n.t("models.article.unique_url", email: ForemInstance.contact_email)
   end
 
-  enum type_of: {
+  enum :type_of, {
     full_post: 0,
     status: 1,
     fullscreen_embed: 2
   }
 
-  enum automod_label: {
+  enum :automod_label, {
     no_moderation_label: 0,
     clear_and_obvious_spam: 1,
     likely_spam: 2,
@@ -383,11 +383,11 @@ class Article < ApplicationRecord
 
   # @todo Enforce the serialization class (e.g., Articles::CachedEntity)
   # @see https://api.rubyonrails.org/classes/ActiveRecord/AttributeMethods/Serialization/ClassMethods.html#method-i-serialize
-  serialize :cached_user
+  serialize :cached_user, coder: YAML
 
   # @todo Enforce the serialization class (e.g., Articles::CachedEntity)
   # @see https://api.rubyonrails.org/classes/ActiveRecord/AttributeMethods/Serialization/ClassMethods.html#method-i-serialize
-  serialize :cached_organization
+  serialize :cached_organization, coder: YAML
 
   # TODO: [@rhymes] Rename the article column and the trigger name.
   # What was initially meant just for the reading list (filtered using the `reactions` table),
@@ -568,7 +568,7 @@ class Article < ApplicationRecord
   scope :eager_load_serialized_data, -> { includes(:user, :organization, :tags) }
 
   scope :above_average, lambda {
-    order(:score).where("score >= ?", average_score)
+    order(:score).where(score: average_score.ceil..)
   }
 
   scope :followed_by, lambda { |user|

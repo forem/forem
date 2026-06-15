@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_06_08_155600) do
+ActiveRecord::Schema[7.0].define(version: 2026_06_09_194000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -501,6 +501,15 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_08_155600) do
     t.index ["semantic_embedding"], name: "index_comments_on_semantic_embedding", opclass: :vector_cosine_ops, using: :hnsw
     t.index ["user_id"], name: "index_comments_on_user_id"
     t.check_constraint "public_reactions_count >= 0", name: "check_comments_public_reactions_count_non_negative"
+  end
+
+  create_table "concept_accesses", force: :cascade do |t|
+    t.bigint "concept_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["concept_id"], name: "index_concept_accesses_on_concept_id"
+    t.index ["user_id", "concept_id"], name: "index_concept_accesses_on_user_id_and_concept_id", unique: true
   end
 
   create_table "concept_daily_metrics", force: :cascade do |t|
@@ -2156,6 +2165,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_08_155600) do
   add_foreign_key "collections", "organizations", on_delete: :nullify
   add_foreign_key "collections", "users", on_delete: :cascade
   add_foreign_key "comments", "users", on_delete: :cascade
+  add_foreign_key "concept_accesses", "concepts", on_delete: :cascade
+  add_foreign_key "concept_accesses", "users", on_delete: :cascade
   add_foreign_key "concept_daily_metrics", "concepts", on_delete: :cascade
   add_foreign_key "concept_memberships", "concepts", on_delete: :cascade
   add_foreign_key "context_notes", "articles"

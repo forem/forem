@@ -30,7 +30,7 @@ class Podcast < ApplicationRecord
   scope :eager_load_serialized_data, -> { includes(:user, :podcast, :tags) }
 
   alias_attribute :path, :slug
-  alias_attribute :profile_image_url, :image_url
+  alias_method :profile_image_url, :image_url
   alias_attribute :name, :title
 
   def existing_episode(item)
