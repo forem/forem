@@ -25,13 +25,18 @@ class Comment < ApplicationRecord
     \z
   }x
 
-  # The date that we began limiting the number of user mentions in a comment.
   MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 3, 12).freeze
 
   belongs_to :commentable, polymorphic: true, optional: true
   belongs_to :user
 
-  counter_culture :commentable
+  counter_culture :commentable,
+    column_name: :comments_count,
+    if: ->(comment) { !comment.deleted? },
+    column_names: {
+      ["comments.deleted = ?", false] => :comments_count
+    }
+
   counter_culture :user
 
   has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :delete_all
@@ -60,8 +65,8 @@ class Comment < ApplicationRecord
   after_destroy :after_destroy_actions
 
   after_save :create_conditional_autovomits
-  after_save :synchronous_bust
-  after_save :bust_cache
+  after_commit :synchronous_bust
+  after_commit :bust_cache
 
   validate :discussion_not_locked, if: :commentable, on: :create
   validate :published_article, if: :commentable
@@ -150,8 +155,6 @@ class Comment < ApplicationRecord
   end
 
   def id_code_generated
-    # 26 is the conversion base
-    # eg. 1000.to_s(26) would be "1cc"
     id.to_s(26)
   end
 
@@ -169,7 +172,7 @@ class Comment < ApplicationRecord
     return self.class.title_image_only if only_contains_image?(text)
 
     truncated_text = ActionController::Base.helpers.truncate(text, length: length).gsub("&#39;", "'").gsub("&amp;", "&")
-    Nokogiri::HTML.fragment(truncated_text).text # unescapes all HTML entities
+    Nokogiri::HTML.fragment(truncated_text).text
   end
 
   def video
@@ -189,7 +192,7 @@ class Comment < ApplicationRecord
   end
 
   def safe_processed_html
-    processed_html_final.html_safe # rubocop:disable Rails/OutputSafety
+    processed_html_final.html_safe
   end
 
   def root_exists?
@@ -255,10 +258,6 @@ class Comment < ApplicationRecord
   end
 
   def enqueue_article_activity_update
-    # Score-driven create/destroy enqueues are emitted from
-    # Comments::CalculateScore (which uses update_columns and therefore
-    # bypasses callbacks). This after_commit only handles the destroy case:
-    # if a counted (score > 0) comment is removed, decrement the cache.
     return unless destroyed?
     return unless score.to_i.positive?
 
@@ -323,7 +322,7 @@ class Comment < ApplicationRecord
       end
       anchor.inner_html = anchor.inner_html.sub(/#{Regexp.escape(anchor.content)}/, anchor_content)
     end
-    self.processed_html = doc.to_html.html_safe # rubocop:disable Rails/OutputSafety
+    self.processed_html = doc.to_html.html_safe
   end
 
   def after_create_checks
@@ -336,24 +335,32 @@ class Comment < ApplicationRecord
   end
 
   def touch_user
-    user&.touch(:updated_at, :last_comment_at)
+    user&.touch(:updated_at, :last_comment_at) if user&.persisted?
   end
 
   def expire_root_fragment
     if root_exists?
-      root.touch
+      root_record = root
+      root_record.touch if root_record&.persisted? && !root_record.destroyed?
     else
-      touch
+      touch if persisted? && !destroyed?
     end
+  end
+
+  def decrement_commentable_counter
+    return unless deleted?
+    commentable.decrement!(:comments_count) if commentable.respond_to?(:comments_count)
   end
 
   def after_destroy_actions
     Users::BustCacheWorker.perform_async(user_id)
-    user.touch(:last_comment_at)
+    user.touch(:last_comment_at) if user&.persisted?
   end
 
   def before_destroy_actions
-    commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
+    if commentable&.persisted? && commentable.respond_to?(:last_comment_at)
+      commentable.touch(:last_comment_at)
+    end
     ancestors.update_all(updated_at: Time.current)
     Comments::BustCacheWorker.new.perform(id)
   end
@@ -363,14 +370,16 @@ class Comment < ApplicationRecord
   end
 
   def synchronous_bust
-    commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
-    user.touch(:last_comment_at)
-    commentable.purge if commentable
+    if commentable&.persisted? && !commentable.destroyed?
+      commentable.reload
+      commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
+      commentable.purge
+    end
+    user.touch(:last_comment_at) if user&.persisted?
     expire_root_fragment
   end
 
   def create_conditional_autovomits
-    # return if nothing has changed in body markdown
     return unless saved_change_to_body_markdown? || created_at > 1.minute.ago
 
     Comments::HandleSpamWorker.perform_async(id)
@@ -404,7 +413,6 @@ class Comment < ApplicationRecord
   end
 
   def set_markdown_character_count
-    # body_markdown is actually markdown, but that's a separate issue to be fixed soon
     self.markdown_character_count = body_markdown.size
   end
 
@@ -423,7 +431,6 @@ class Comment < ApplicationRecord
   def user_mentions_in_markdown
     return if created_at.present? && created_at.before?(MAX_USER_MENTION_LIVE_AT)
 
-    # The "mentioned-user" css is added by Html::Parser#user_link_if_exists
     mentions_count = Nokogiri::HTML(processed_html).css(".mentioned-user").size
     return if mentions_count <= Settings::RateLimit.mention_creation
 
@@ -436,13 +443,10 @@ class Comment < ApplicationRecord
     return if body_markdown.blank?
     return if processed_html.blank?
 
-    # Allow comments with media content (images, videos, iframes, etc.)
-    # Note: hr (horizontal rule) is not included as it's not meaningful content
     media_tags = %w[img iframe video audio object embed script]
 
-    return if processed_html.match?(/<(#{media_tags.join('|')})(>|\s)/i)
+    return if processed_html.match?(/<(#{media_tags.join('|')})(>|\\s)/i)
 
-    # Strip HTML tags and unescape HTML entities to check for actual text content
     text_content = ActionController::Base.helpers.strip_tags(processed_html)
     text_content = CGI.unescapeHTML(text_content).strip
 
@@ -476,7 +480,6 @@ class Comment < ApplicationRecord
   end
 
   def only_contains_image?(stripped_text)
-    # If stripped text is blank and processed html has <img> tags, then it's an image-only comment
     stripped_text.blank? && processed_html.include?("<img")
   end
 end
