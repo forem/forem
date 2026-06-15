@@ -25,6 +25,7 @@ class Comment < ApplicationRecord
     \z
   }x
 
+  # The date that we began limiting the number of user mentions in a comment.
   MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 3, 12).freeze
 
   belongs_to :commentable, polymorphic: true, optional: true
@@ -155,6 +156,8 @@ class Comment < ApplicationRecord
   end
 
   def id_code_generated
+    # 26 is the conversion base
+    # eg. 1000.to_s(26) would be "1cc"
     id.to_s(26)
   end
 
@@ -172,7 +175,7 @@ class Comment < ApplicationRecord
     return self.class.title_image_only if only_contains_image?(text)
 
     truncated_text = ActionController::Base.helpers.truncate(text, length: length).gsub("&#39;", "'").gsub("&amp;", "&")
-    Nokogiri::HTML.fragment(truncated_text).text
+    Nokogiri::HTML.fragment(truncated_text).text # unescapes all HTML entities
   end
 
   def video
@@ -192,7 +195,7 @@ class Comment < ApplicationRecord
   end
 
   def safe_processed_html
-    processed_html_final.html_safe
+    processed_html_final.html_safe # rubocop:disable Rails/OutputSafety
   end
 
   def root_exists?
@@ -258,6 +261,10 @@ class Comment < ApplicationRecord
   end
 
   def enqueue_article_activity_update
+    # Score-driven create/destroy enqueues are emitted from
+    # Comments::CalculateScore (which uses update_columns and therefore
+    # bypasses callbacks). This after_commit only handles the destroy case:
+    # if a counted (score > 0) comment is removed, decrement the cache.
     return unless destroyed?
     return unless score.to_i.positive?
 
@@ -322,7 +329,7 @@ class Comment < ApplicationRecord
       end
       anchor.inner_html = anchor.inner_html.sub(/#{Regexp.escape(anchor.content)}/, anchor_content)
     end
-    self.processed_html = doc.to_html.html_safe
+    self.processed_html = doc.to_html.html_safe # rubocop:disable Rails/OutputSafety
   end
 
   def after_create_checks
@@ -380,6 +387,7 @@ class Comment < ApplicationRecord
   end
 
   def create_conditional_autovomits
+    # return if nothing has changed in body markdown
     return unless saved_change_to_body_markdown? || created_at > 1.minute.ago
 
     Comments::HandleSpamWorker.perform_async(id)
@@ -413,6 +421,7 @@ class Comment < ApplicationRecord
   end
 
   def set_markdown_character_count
+    # body_markdown is actually markdown, but that's a separate issue to be fixed soon
     self.markdown_character_count = body_markdown.size
   end
 
@@ -431,6 +440,7 @@ class Comment < ApplicationRecord
   def user_mentions_in_markdown
     return if created_at.present? && created_at.before?(MAX_USER_MENTION_LIVE_AT)
 
+    # The "mentioned-user" css is added by Html::Parser#user_link_if_exists
     mentions_count = Nokogiri::HTML(processed_html).css(".mentioned-user").size
     return if mentions_count <= Settings::RateLimit.mention_creation
 
@@ -443,10 +453,13 @@ class Comment < ApplicationRecord
     return if body_markdown.blank?
     return if processed_html.blank?
 
+    # Allow comments with media content (images, videos, iframes, etc.)
+    # Note: hr (horizontal rule) is not included as it's not meaningful content
     media_tags = %w[img iframe video audio object embed script]
 
     return if processed_html.match?(/<(#{media_tags.join('|')})(>|\\s)/i)
 
+    # Strip HTML tags and unescape HTML entities to check for actual text content
     text_content = ActionController::Base.helpers.strip_tags(processed_html)
     text_content = CGI.unescapeHTML(text_content).strip
 
@@ -480,6 +493,7 @@ class Comment < ApplicationRecord
   end
 
   def only_contains_image?(stripped_text)
+    # If stripped text is blank and processed html has <img> tags, then it's an image-only comment
     stripped_text.blank? && processed_html.include?("<img")
   end
 end
