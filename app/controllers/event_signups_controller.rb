@@ -6,9 +6,13 @@ class EventSignupsController < ApplicationController
     signup = current_user.event_signups.find_or_initialize_by(event: @event)
     authorize signup
 
-    if signup.save
+    begin
+      signup.save!
       flash[:notice] = "You've successfully signed up for this event!"
-    else
+    rescue ActiveRecord::RecordNotUnique
+      # Treat concurrent duplicate signup as success
+      flash[:notice] = "You've successfully signed up for this event!"
+    rescue ActiveRecord::RecordInvalid
       flash[:alert] = "Something went wrong. Please try again."
     end
     redirect_to event_path(@event.event_name_slug, @event.event_variation_slug)

@@ -11,14 +11,12 @@ class EventSignup < ApplicationRecord
   private
 
   def initialize_notification_flags
-    return unless event
+    return unless event&.start_time
 
-    if event.start_time <= Time.current + 24.hours
-      self.notified_1_day_before = true
-    end
+    # Skip the "1 day" reminder if we're already inside the last 23 hours.
+    self.notified_1_day_before = event.start_time < Time.current + 23.hours
 
-    if event.start_time <= Time.current + 1.hour
-      self.notified_1_hour_before = true
-    end
+    # Skip the "1 hour" reminder only once the event has started.
+    self.notified_1_hour_before = event.start_time <= Time.current
   end
 end

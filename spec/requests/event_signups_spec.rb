@@ -33,6 +33,17 @@ RSpec.describe "EventSignups", type: :request do
 
         expect(response).to redirect_to(event_path(event.event_name_slug, event.event_variation_slug))
       end
+
+      it "handles concurrent signups gracefully and treats it as success" do
+        allow_any_instance_of(EventSignup).to receive(:save!).and_raise(ActiveRecord::RecordNotUnique.new("duplicate key"))
+
+        expect {
+          post event_signup_path(event.event_name_slug, event.event_variation_slug)
+        }.not_to change(EventSignup, :count)
+
+        expect(response).to redirect_to(event_path(event.event_name_slug, event.event_variation_slug))
+        expect(flash[:notice]).to eq("You've successfully signed up for this event!")
+      end
     end
   end
 

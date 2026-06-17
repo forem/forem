@@ -6,7 +6,7 @@
     <header class="mb-2">
       <h2 class="fs-base fw-normal">
         <%= t("views.notifications.event.reminder_html", 
-              event_link: link_to(json_data["event"]["title"], "/events/#{json_data['event']['event_name_slug']}/#{json_data['event']['event_variation_slug']}", class: "crayons-link fw-bold"),
+              event_link: link_to(json_data.dig("event", "title"), event_path(json_data.dig("event", "event_name_slug"), json_data.dig("event", "event_variation_slug")), class: "crayons-link fw-bold"),
               time: json_data["time"]) %>
       </h2>
       <p class="lh-tight"><small class="fs-s color-base-60"><%= time_ago_in_words notification.created_at, scope: :"datetime.distance_in_words_ago" %></small></p>

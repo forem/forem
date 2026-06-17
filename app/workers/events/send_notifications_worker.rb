@@ -4,11 +4,13 @@ module Events
     sidekiq_options queue: :default, retry: 3, lock: :until_executing, on_conflict: :replace
 
     def perform
-      # Send 1-day-before notifications
+      now = Time.current
+
+      # Send 1-day-before notifications (window: 23 to 25 hours from now)
       signups_1_day = EventSignup.joins(:event)
                                  .where(notified_1_day_before: false)
-                                 .where("events.start_time <= ?", Time.current + 24.hours)
-                                 .where("events.start_time > ?", Time.current + 1.hour)
+                                 .where("events.start_time <= ?", now + 25.hours)
+                                 .where("events.start_time > ?", now + 23.hours)
 
       signups_1_day.find_each do |signup|
         ActiveRecord::Base.transaction do
@@ -17,11 +19,11 @@ module Events
         end
       end
 
-      # Send 1-hour-before notifications
+      # Send 1-hour-before notifications (window: 0 to 1 hour from now)
       signups_1_hour = EventSignup.joins(:event)
                                   .where(notified_1_hour_before: false)
-                                  .where("events.start_time <= ?", Time.current + 1.hour)
-                                  .where("events.start_time > ?", Time.current)
+                                  .where("events.start_time <= ?", now + 1.hour)
+                                  .where("events.start_time > ?", now)
 
       signups_1_hour.find_each do |signup|
         ActiveRecord::Base.transaction do

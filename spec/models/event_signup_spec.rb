@@ -33,15 +33,22 @@ RSpec.describe EventSignup, type: :model do
         expect(signup.notified_1_hour_before).to be(false)
       end
 
-      it "sets notified_1_day_before to true if event starts in less than 24 hours but more than 1 hour" do
+      it "sets notified_1_day_before to true if event starts in less than 23 hours but more than 1 hour" do
         event = create(:event, start_time: 12.hours.from_now)
         signup = create(:event_signup, user: user, event: event)
         expect(signup.notified_1_day_before).to be(true)
         expect(signup.notified_1_hour_before).to be(false)
       end
 
-      it "sets both flags to true if event starts in less than 1 hour" do
+      it "sets notified_1_day_before to true and notified_1_hour_before to false if event starts in less than 1 hour" do
         event = create(:event, start_time: 30.minutes.from_now)
+        signup = create(:event_signup, user: user, event: event)
+        expect(signup.notified_1_day_before).to be(true)
+        expect(signup.notified_1_hour_before).to be(false)
+      end
+
+      it "sets both flags to true if event has already started" do
+        event = create(:event, start_time: 5.minutes.ago)
         signup = create(:event_signup, user: user, event: event)
         expect(signup.notified_1_day_before).to be(true)
         expect(signup.notified_1_hour_before).to be(true)
