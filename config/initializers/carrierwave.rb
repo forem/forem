@@ -21,7 +21,6 @@ module CarrierWaveInitializer
     CarrierWave.configure do |config|
       config.storage = :fog
       config.fog_directory = ApplicationConfig["AWS_BUCKET_NAME"]
-      config.fog_provider = "fog/aws"
       config.fog_attributes = { cache_control: "public, max-age=#{365.days.to_i}" }
       config.fog_credentials = {
         provider: "AWS",
@@ -36,7 +35,6 @@ module CarrierWaveInitializer
     CarrierWave.configure do |config|
       config.storage = :fog
       config.fog_directory = ApplicationConfig["AWS_BUCKET_NAME"]
-      config.fog_provider = "fog/aws"
       config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/remoteimages"
       config.fog_public = false
       config.fog_credentials = {
