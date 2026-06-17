@@ -158,5 +158,35 @@ RSpec.describe "Sidebars" do
         expect(response.body).not_to include("Unpublished Elevated Event")
       end
     end
+
+    context "with query caching enabled" do
+      let(:memory_store) { ActiveSupport::Cache.lookup_store(:memory_store) }
+
+      before do
+        allow(Rails).to receive(:cache).and_return(memory_store)
+        allow(memory_store).to receive(:fetch).and_call_original
+        Rails.cache.clear
+      end
+
+      after do
+        Rails.cache.clear
+      end
+
+      it "caches upcoming elevated events and does not query database repeatedly" do
+        create(:event, title: "Cached Elevated Event", elevated: true, published: true, start_time: 1.hour.from_now, end_time: 2.hours.from_now)
+
+        # First hit should call the block and query DB
+        expect(Rails.cache).to receive(:fetch).with("upcoming_elevated_events", expires_in: 5.minutes).and_call_original
+        get "/sidebars/home"
+        expect(response.body).to include("Cached Elevated Event")
+
+        # Second hit should fetch from cache and avoid DB hit
+        expect(Rails.cache).to receive(:fetch).with("upcoming_elevated_events", expires_in: 5.minutes).and_call_original
+        # Spy on Event query to verify database is not queried
+        expect(Event).not_to receive(:published)
+        get "/sidebars/home"
+        expect(response.body).to include("Cached Elevated Event")
+      end
+    end
   end
 end

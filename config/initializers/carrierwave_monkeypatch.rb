@@ -8,7 +8,7 @@ module CarrierWave
     class Fog < Abstract
       class File
         include CarrierWave::Utilities::Uri
-        def url
+        def url(*args)
           public_url.gsub(ApplicationConfig["APP_DOMAIN"], Settings::General.app_domain)
         end
       end
