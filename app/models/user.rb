@@ -58,6 +58,8 @@ class User < ApplicationRecord
   has_many :api_secrets, dependent: :delete_all
   has_many :agent_sessions, dependent: :destroy
   has_many :articles, dependent: :destroy
+  has_many :event_signups, dependent: :destroy
+  has_many :signed_up_events, through: :event_signups, source: :event
   has_many :ai_audits, foreign_key: :affected_user_id, inverse_of: :affected_user, dependent: :nullify
   has_many :audit_logs, dependent: :nullify
   has_many :authored_notes, inverse_of: :author, class_name: "Note", foreign_key: :author_id, dependent: :delete_all
