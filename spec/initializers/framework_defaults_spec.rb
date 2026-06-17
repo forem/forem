@@ -37,7 +37,7 @@ describe "Framework Defaults 7.2 Upgrade Verification" do
     end
     expect(config.active_support.raise_on_invalid_cache_expiration_time).to be(true)
     expect(config.active_record.query_log_tags_format).to eq(:sqlcommenter)
-    expect(config.active_support.message_serializer).to eq(:json_allow_marshal)
+    expect(config.active_support.message_serializer).to eq(:json)
     expect(config.active_support.use_message_serializer_for_metadata).to be(true)
     expect(config.active_record.encryption.hash_digest_class).to eq(OpenSSL::Digest::SHA256)
     expect(config.active_record.encryption.support_sha1_for_non_deterministic_encryption).to be(false)
