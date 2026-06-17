@@ -25,6 +25,7 @@ class Event < ApplicationRecord
 
   before_save :format_stream_urls
   after_commit :ensure_broadcast_billboards_and_workers, on: [:create, :update]
+  after_commit :bust_upcoming_events_cache, on: [:create, :update, :destroy]
 
   scope :published, -> { where(published: true) }
   scope :elevated, -> { where(elevated: true) }
@@ -140,5 +141,9 @@ class Event < ApplicationRecord
       approved: post_bottom_bb.new_record? ? false : post_bottom_bb.approved,
       published: true
     )
+  end
+
+  def bust_upcoming_events_cache
+    Rails.cache.delete("upcoming_elevated_events")
   end
 end

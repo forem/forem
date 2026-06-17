@@ -172,4 +172,34 @@ RSpec.describe Event, type: :model do
       expect(post_bb.body_markdown).to include("id=\"event-takeover-image\"")
     end
   end
+
+  describe "caching" do
+    let(:memory_store) { ActiveSupport::Cache.lookup_store(:memory_store) }
+
+    before do
+      allow(Rails).to receive(:cache).and_return(memory_store)
+      Rails.cache.clear
+    end
+
+    after do
+      Rails.cache.clear
+    end
+
+    it "clears upcoming_elevated_events cache when created, updated, or destroyed" do
+      Rails.cache.write("upcoming_elevated_events", ["cached_data"])
+      expect(Rails.cache.read("upcoming_elevated_events")).to eq(["cached_data"])
+
+      event = create(:event)
+      expect(Rails.cache.read("upcoming_elevated_events")).to be_nil
+
+      Rails.cache.write("upcoming_elevated_events", ["cached_data"])
+      event.update!(title: "New Title")
+      expect(Rails.cache.read("upcoming_elevated_events")).to be_nil
+
+      Rails.cache.write("upcoming_elevated_events", ["cached_data"])
+      event.destroy
+      expect(Rails.cache.read("upcoming_elevated_events")).to be_nil
+    end
+  end
 end
+
