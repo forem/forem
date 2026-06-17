@@ -172,6 +172,8 @@ Rails.application.routes.draw do
     end
     resources :events, only: %i[index]
     get "events/:event_name_slug/:event_variation_slug", to: "events#show", as: :event
+    post "events/:event_name_slug/:event_variation_slug/signup", to: "event_signups#create", as: :event_signup
+    delete "events/:event_name_slug/:event_variation_slug/signup", to: "event_signups#destroy"
     resources :article_mutes, only: %i[update]
     resources :comments, only: %i[create update destroy] do
       patch "/hide", to: "comments#hide"

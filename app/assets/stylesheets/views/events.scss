@@ -25,6 +25,18 @@
       letter-spacing: 0.5px;
       animation: pulse 2s infinite;
     }
+
+    .event-signup-container {
+      margin-left: auto;
+    }
+
+    .event-signup-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--su-2) var(--su-4);
+      font-weight: 500;
+    }
   }
 
   .stream-grid {

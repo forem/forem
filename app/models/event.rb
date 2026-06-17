@@ -8,6 +8,8 @@ class Event < ApplicationRecord
   belongs_to :page, optional: true
 
   has_many :billboards, foreign_key: :event_id, dependent: :destroy
+  has_many :event_signups, dependent: :destroy
+  has_many :signed_up_users, through: :event_signups, source: :user
 
   enum :type_of, { live_stream: 0, takeover: 1, other: 2, challenge: 3 }
   enum :broadcast_config, { no_broadcast: 0, tagged_broadcast: 1, global_broadcast: 2 }
@@ -23,6 +25,7 @@ class Event < ApplicationRecord
 
   before_save :format_stream_urls
   after_commit :ensure_broadcast_billboards_and_workers, on: [:create, :update]
+  after_commit :bust_upcoming_events_cache, on: [:create, :update, :destroy]
 
   scope :published, -> { where(published: true) }
   scope :elevated, -> { where(elevated: true) }
@@ -138,5 +141,9 @@ class Event < ApplicationRecord
       approved: post_bottom_bb.new_record? ? false : post_bottom_bb.approved,
       published: true
     )
+  end
+
+  def bust_upcoming_events_cache
+    Rails.cache.delete("upcoming_elevated_events")
   end
 end
