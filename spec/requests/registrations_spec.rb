@@ -3,6 +3,14 @@ require "rails_helper"
 RSpec.describe "Registrations" do
   let(:user) { create(:user) }
 
+  around do |example|
+    old_secret = ENV["FOREM_OWNER_SECRET"]
+    ENV["FOREM_OWNER_SECRET"] = nil
+    example.run
+  ensure
+    ENV["FOREM_OWNER_SECRET"] = old_secret
+  end
+
   describe "Log In" do
     context "when not logged in" do
       it "shows the sign in page with single sign on options" do

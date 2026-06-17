@@ -39,6 +39,7 @@ class Tag < ActsAsTaggableOn::Tag
   has_many :articles, through: :taggings, source: :taggable, source_type: "Article"
   has_many :billboards, class_name: "Billboard", through: :taggings, source: :taggable, source_type: "Billboard"
   has_many :subforem_relationships, class_name: "TagSubforemRelationship", dependent: :destroy
+  has_many :trends, dependent: :nullify
 
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :social_image, ProfileImageUploader
@@ -331,5 +332,13 @@ class Tag < ActsAsTaggableOn::Tag
 
   def update_suggested_tags
     Settings::General.suggested_tags = Tag.suggested_for_onboarding.pluck(:name).join(",")
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["alias_for", "badge_id", "bg_color_hex", "category", "context_note_instructions", "created_at", "hotness_score", "id", "id_value", "keywords_for_search", "name", "pretty_name", "profile_image", "requires_approval", "rules_html", "rules_markdown", "short_summary", "social_image", "social_preview_template", "submission_template", "suggested", "supported", "taggings_count", "text_color_hex", "updated_at", "wiki_body_html", "wiki_body_markdown"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["badge", "articles", "billboards", "subforem_relationships", "trends"]
   end
 end

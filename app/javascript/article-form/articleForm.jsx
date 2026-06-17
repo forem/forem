@@ -17,8 +17,6 @@ import {
 } from '@utilities/markdown/markdownLintCustomRules';
 import { getOSKeyboardModifierKeyString } from '@utilities/runtime';
 
-/* global activateRunkitTags */
-
 /*
   Although the state fields: id, description, canonicalUrl, publishedAtDate, publishedAtTime, series, allSeries and
   editing are not used in this file, they are important to the
@@ -45,10 +43,6 @@ const LINT_OPTIONS = {
 };
 
 export class ArticleForm extends Component {
-  static handleRunkitPreview() {
-    activateRunkitTags();
-  }
-
   // Scripts inserted via innerHTML won't execute, so we use this handler to
   // make the Asciinema player work in previews.
   static handleAsciinemaPreview() {
@@ -211,7 +205,6 @@ export class ArticleForm extends Component {
 
     if (previewResponse?.processed_html) {
       embedGists(this.formElement);
-      this.constructor.handleRunkitPreview();
       this.constructor.handleAsciinemaPreview();
       this.constructor.handleAgentSessionPreview();
     }

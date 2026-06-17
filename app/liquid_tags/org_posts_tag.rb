@@ -12,7 +12,7 @@ class OrgPostsTag < LiquidTagBase
     super
     tokens = input.strip.split
     @org_slug = tokens.first
-    @organization = Organization.find_by(slug: @org_slug)
+    @organization = Organization.find_by_slug_or_legacy(@org_slug)
     raise StandardError, I18n.t("liquid_tags.org_posts_tag.invalid_slug") unless @organization
 
     parse_options(tokens.drop(1))
