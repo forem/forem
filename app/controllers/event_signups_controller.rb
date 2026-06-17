@@ -12,8 +12,13 @@ class EventSignupsController < ApplicationController
     rescue ActiveRecord::RecordNotUnique
       # Treat concurrent duplicate signup as success
       flash[:notice] = "You've successfully signed up for this event!"
-    rescue ActiveRecord::RecordInvalid
-      flash[:alert] = "Something went wrong. Please try again."
+    rescue ActiveRecord::RecordInvalid => e
+      if e.record.errors.details[:user_id].any? { |d| d[:error] == :taken }
+        # Treat concurrent duplicate validation failure as success
+        flash[:notice] = "You've successfully signed up for this event!"
+      else
+        flash[:alert] = "Something went wrong. Please try again."
+      end
     end
     redirect_to event_path(@event.event_name_slug, @event.event_variation_slug)
   end

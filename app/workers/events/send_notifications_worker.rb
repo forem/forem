@@ -8,6 +8,7 @@ module Events
 
       # Send 1-day-before notifications (window: 23 to 25 hours from now)
       signups_1_day = EventSignup.joins(:event)
+                                 .includes(event: :user)
                                  .where(notified_1_day_before: false)
                                  .where("events.start_time <= ?", now + 25.hours)
                                  .where("events.start_time > ?", now + 23.hours)
@@ -21,6 +22,7 @@ module Events
 
       # Send 1-hour-before notifications (window: 0 to 1 hour from now)
       signups_1_hour = EventSignup.joins(:event)
+                                  .includes(event: :user)
                                   .where(notified_1_hour_before: false)
                                   .where("events.start_time <= ?", now + 1.hour)
                                   .where("events.start_time > ?", now)

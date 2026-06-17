@@ -33,7 +33,7 @@ module Notifications
           user_id: signup.user_id,
           notifiable_id: event.id,
           notifiable_type: "Event",
-          action: "reminder",
+          action: "reminder_#{time_frame.tr(' ', '_')}",
           json_data: json_data
         )
       end
