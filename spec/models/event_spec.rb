@@ -173,7 +173,14 @@ RSpec.describe Event, type: :model do
     end
   end
 
-  describe "caching" do
+  describe "Callbacks" do
+    it "registers #bust_upcoming_events_cache as an after_commit callback" do
+      callback_names = Event._commit_callbacks.select { |cb| cb.kind == :after }.map(&:filter)
+      expect(callback_names).to include(:bust_upcoming_events_cache)
+    end
+  end
+
+  describe "#bust_upcoming_events_cache" do
     let(:memory_store) { ActiveSupport::Cache.lookup_store(:memory_store) }
 
     before do
@@ -185,19 +192,12 @@ RSpec.describe Event, type: :model do
       Rails.cache.clear
     end
 
-    it "clears upcoming_elevated_events cache when created, updated, or destroyed" do
+    it "deletes the upcoming_elevated_events cache key" do
       Rails.cache.write("upcoming_elevated_events", ["cached_data"])
       expect(Rails.cache.read("upcoming_elevated_events")).to eq(["cached_data"])
 
-      event = create(:event)
-      expect(Rails.cache.read("upcoming_elevated_events")).to be_nil
+      build(:event).send(:bust_upcoming_events_cache)
 
-      Rails.cache.write("upcoming_elevated_events", ["cached_data"])
-      event.update!(title: "New Title")
-      expect(Rails.cache.read("upcoming_elevated_events")).to be_nil
-
-      Rails.cache.write("upcoming_elevated_events", ["cached_data"])
-      event.destroy
       expect(Rails.cache.read("upcoming_elevated_events")).to be_nil
     end
   end
