@@ -4,9 +4,13 @@ require "active_support/core_ext/integer/time"
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  # Use the same development secret key base as was in secrets.yml
+  config.secret_key_base = ENV.fetch("SECRET_KEY_BASE", "a60edc976c913b19fd9fc8118936fbe1df2b07f4eecc5ad32f975e33cd4ea36b150c1ce933b681b90874a46568041629003dcbfc07238f7dca91741bcd1ec870")
+
+
   # In the development environment your application's code is reloaded any time
   # it changes. This slows down response time but is perfect for development
-  config.cache_classes = false
+  config.enable_reloading = true
 
   # Do not eager load code on boot.
   config.eager_load = false
@@ -69,7 +73,9 @@ Rails.application.configure do
   # Allows setting a warning threshold for query result size.
   # If the number of records returned by a query exceeds the threshold, a warning is logged.
   # This can be used to identify queries which might be causing a memory bloat.
-  config.active_record.warn_on_records_fetched_greater_than = 1500
+  if config.active_record.respond_to?(:warn_on_records_fetched_greater_than=)
+    config.active_record.warn_on_records_fetched_greater_than = 1500
+  end
 
   # Debug mode disables concatenation and preprocessing of assets.
   # This option may cause significant delays in view rendering with a large
@@ -122,7 +128,11 @@ Rails.application.configure do
     domain: ENV["SMTP_DOMAIN"].presence || config.app_domain
   }
 
-  config.action_mailer.preview_path = Rails.root.join("spec/mailers/previews")
+  if config.action_mailer.respond_to?(:preview_paths)
+    config.action_mailer.preview_paths << Rails.root.join("spec/mailers/previews")
+  else
+    config.action_mailer.preview_path = Rails.root.join("spec/mailers/previews")
+  end
 
   config.public_file_server.enabled = true
 

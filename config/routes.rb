@@ -121,6 +121,8 @@ Rails.application.routes.draw do
         # shared config/routes/api.rb) because Api::V0::Admin::* controllers do
         # not implement these actions; placing the routes here scopes them to
         # callers using the application/vnd.forem.api-v1+json Accept header.
+        resources :concepts, only: %i[index show]
+
         namespace :admin do
           resources :users, only: %i[index show update] do
             member do
@@ -134,6 +136,9 @@ Rails.application.routes.draw do
           end
 
           resources :request_redirects, only: %i[index show create update destroy]
+          resources :concepts, only: %i[index show create update destroy] do
+            post :trigger_lookback, on: :member
+          end
         end
 
         draw :api
@@ -167,6 +172,8 @@ Rails.application.routes.draw do
     end
     resources :events, only: %i[index]
     get "events/:event_name_slug/:event_variation_slug", to: "events#show", as: :event
+    post "events/:event_name_slug/:event_variation_slug/signup", to: "event_signups#create", as: :event_signup
+    delete "events/:event_name_slug/:event_variation_slug/signup", to: "event_signups#destroy"
     resources :article_mutes, only: %i[update]
     resources :comments, only: %i[create update destroy] do
       patch "/hide", to: "comments#hide"
