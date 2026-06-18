@@ -3,6 +3,8 @@ class Concept < ApplicationRecord
   has_many :articles, through: :concept_memberships, source: :record, source_type: "Article"
   has_many :comments, through: :concept_memberships, source: :record, source_type: "Comment"
   has_many :concept_daily_metrics, dependent: :destroy
+  has_many :concept_accesses, dependent: :delete_all
+  has_many :authorized_users, through: :concept_accesses, source: :user
   belongs_to :parent, class_name: "Concept", optional: true
   has_many :children, class_name: "Concept", foreign_key: :parent_id, dependent: :nullify
 
@@ -18,6 +20,7 @@ class Concept < ApplicationRecord
   validates :slug, presence: true, uniqueness: true
   validates :anchor_embedding, presence: true
   validates :max_lookback_days, presence: true, numericality: { greater_than_or_equal_to: 0, only_integer: true }
+  validates :similarity_threshold, numericality: { greater_than_or_equal_to: 0.0, less_than_or_equal_to: 1.0 }, allow_nil: true
 
   private
 
