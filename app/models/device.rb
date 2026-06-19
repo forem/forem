@@ -51,7 +51,7 @@ class Device < ApplicationRecord
   end
 
   def android_notification(title, body, payload)
-    n = Rpush::Gcm::Notification.new
+    n = Rpush::Fcm::Notification.new
     n.app = ConsumerApps::RpushAppQuery.call(
       app_bundle: consumer_app.app_bundle,
       platform: platform,
