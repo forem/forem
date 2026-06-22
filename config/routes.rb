@@ -295,6 +295,7 @@ Rails.application.routes.draw do
     resources :billboard_events, only: [:create]
     # Alias for reporting in case "events" triggers spam filters
     post "/bb_tabulations", to: "billboard_events#create", as: :bb_tabulations
+    patch "/bb_tabulations/:id", to: "billboard_events#update"
 
     resources :badges, only: [:index]
     resources :user_blocks, param: :blocked_id, only: %i[show create destroy]
