@@ -454,7 +454,7 @@ class Comment < ApplicationRecord
     # Note: hr (horizontal rule) is not included as it's not meaningful content
     media_tags = %w[img iframe video audio object embed script]
 
-    return if processed_html.match?(/<(#{media_tags.join('|')})(>|\\s)/i)
+    return if processed_html.match?(/\<(#{media_tags.join('|')})(\>|\s)/i)
 
     # Strip HTML tags and unescape HTML entities to check for actual text content
     text_content = ActionController::Base.helpers.strip_tags(processed_html)
