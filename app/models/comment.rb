@@ -66,8 +66,8 @@ class Comment < ApplicationRecord
   after_destroy :after_destroy_actions
 
   after_save :create_conditional_autovomits
-  after_commit :synchronous_bust
-  after_commit :bust_cache
+  after_save :synchronous_bust
+  after_save :bust_cache
 
   validate :discussion_not_locked, if: :commentable, on: :create
   validate :published_article, if: :commentable
@@ -354,10 +354,7 @@ class Comment < ApplicationRecord
     end
   end
 
-  def decrement_commentable_counter
-    return unless deleted?
-    commentable.decrement!(:comments_count) if commentable.respond_to?(:comments_count)
-  end
+
 
   def after_destroy_actions
     Users::BustCacheWorker.perform_async(user_id)
