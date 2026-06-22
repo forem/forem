@@ -47,9 +47,52 @@ function trackAdImpression(adBox) {
       body: JSON.stringify(dataBody),
       credentials: 'same-origin',
     })
+    .then((response) => {
+      if (response && response.ok && typeof response.json === 'function') {
+        return response.json();
+      }
+    })
+    .then((data) => {
+      if (data && data.id) {
+        adBox.dataset.eventId = data.id;
+      }
+    })
     .catch((error) => console.error(error));
 
   adBox.dataset.impressionRecorded = true;
+}
+
+function updateBillboardImpressionTime(adBox) {
+  var eventId = adBox.dataset.eventId;
+  if (!eventId) {
+    return;
+  }
+
+  var tokenMeta = document.querySelector("meta[name='csrf-token']");
+  var csrfToken = tokenMeta && tokenMeta.getAttribute('content');
+
+  window.fetch('/bb_tabulations/' + eventId, {
+    method: 'PATCH',
+    headers: {
+      'X-CSRF-Token': csrfToken,
+      'Content-Type': 'application/json',
+    },
+    credentials: 'same-origin',
+  }).catch((error) => console.error(error));
+}
+
+function startPollingBillboard(adBox) {
+  if (adBox.dataset.pollingIntervalId) {
+    return; // Already polling
+  }
+
+  var intervalId = setInterval(function () {
+    if (adBox.dataset.isBillboardVisible === 'true') {
+      updateBillboardImpressionTime(adBox);
+    }
+  }, 10000);
+
+  adBox.dataset.pollingIntervalId = intervalId;
 }
 
 function trackAdClick(adBox, event, currentPath) {
@@ -118,12 +161,21 @@ function observeBillboards() {
   let observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          let elem = entry.target;
-          if (entry.intersectionRatio >= 0.25) {
-            setTimeout(function () {
+        let elem = entry.target;
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.25) {
+          elem.dataset.isBillboardVisible = 'true';
+          setTimeout(function () {
+            if (elem.dataset.isBillboardVisible === 'true') {
               trackAdImpression(elem);
-            }, 200);
+              startPollingBillboard(elem);
+            }
+          }, 200);
+        } else {
+          elem.dataset.isBillboardVisible = 'false';
+          var intervalId = elem.dataset.pollingIntervalId;
+          if (intervalId) {
+            clearInterval(Number(intervalId));
+            elem.removeAttribute('data-polling-interval-id');
           }
         }
       });

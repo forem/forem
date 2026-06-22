@@ -19,6 +19,29 @@ class BillboardEventsController < ApplicationMetalController
       end
     end
 
+    if @billboard_event&.persisted?
+      self.status = 200
+      self.content_type = "application/json"
+      self.response_body = { id: @billboard_event.id }.to_json
+    else
+      head :ok
+    end
+  end
+
+  def update
+    @billboard_event = BillboardEvent.find_by(id: params[:id])
+    return head :not_found unless @billboard_event
+    return head :ok unless @billboard_event.category == BillboardEvent::CATEGORY_IMPRESSION
+
+    if @billboard_event.user_id && @billboard_event.user_id != session_current_user_id
+      return head :forbidden
+    end
+
+    new_seconds = @billboard_event.seconds_visible + 10
+    ApplicationRecord.with_synchronous_commit_off do
+      @billboard_event.update_column(:seconds_visible, new_seconds)
+    end
+
     head :ok
   end
 
