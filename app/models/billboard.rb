@@ -565,7 +565,10 @@ class Billboard < ApplicationRecord
   end
 
   def process_markdown
-    if body_markdown_changed?
+    reprocess_body = body_markdown_changed? || render_mode_changed? || placement_area_changed?
+    reprocess_minimized = minimized_body_markdown_changed? || render_mode_changed? || placement_area_changed?
+
+    if reprocess_body && body_markdown.present?
       if render_mode == "forem_markdown"
         self.processed_html = extracted_process_markdown(body_markdown)
       else # raw
@@ -574,7 +577,7 @@ class Billboard < ApplicationRecord
       end
     end
 
-    if minimized_body_markdown_changed?
+    if reprocess_minimized
       if minimized_body_markdown.present?
         if render_mode == "forem_markdown"
           self.minimized_processed_html = extracted_process_markdown(minimized_body_markdown)

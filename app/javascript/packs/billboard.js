@@ -112,6 +112,7 @@ async function generateBillboard(element) {
             if (template && sidebarContainer) {
               sidebarContainer.innerHTML = template.innerHTML;
               sidebarContainer.classList.remove('hidden');
+              executeBBScripts(sidebarContainer);
             }
           }
           element.style.display = 'none';

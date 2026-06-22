@@ -93,6 +93,7 @@
     <div class="popover-billboard__header flex">
       <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>
       <button id="sponsorship-close-trigger-<%= billboard.id %>" aria-controls="sponsorship-close-<%= billboard.id %>"
+        aria-label="<%= billboard.special_behavior == 'persistent' ? 'Minimize billboard' : 'Dismiss billboard' %>"
         class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon popover-billboard__close">
           <% if billboard.special_behavior == "persistent" %>
             <%= crayons_icon_tag("chevron-down", class: "pointer-events-none", title: "Minimize") %>

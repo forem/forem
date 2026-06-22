@@ -1,5 +1,5 @@
 import { initializeDropdown } from './dropdownUtils';
-import { observeBillboards } from '../packs/billboardAfterRenderActions';
+import { observeBillboards, executeBBScripts } from '../packs/billboardAfterRenderActions';
 
 
 export function setupBillboardInteractivity() {
@@ -74,6 +74,9 @@ function amendBillboardStyle(sponsorshipDropdownButton) {
 
 function dismissBillboard(sponsorshipCloseButton) {
   const billboardEl = sponsorshipCloseButton.closest('.js-billboard');
+  if (!billboardEl) {
+    return;
+  }
   const sku = billboardEl.dataset.dismissalSku;
   
   if (billboardEl.dataset.special === 'persistent') {
@@ -82,7 +85,9 @@ function dismissBillboard(sponsorshipCloseButton) {
     if (template && sidebarContainer) {
       sidebarContainer.innerHTML = template.innerHTML;
       sidebarContainer.classList.remove('hidden');
+      executeBBScripts(sidebarContainer);
       observeBillboards();
+      billboardEl.innerHTML = '';
     }
   }
 

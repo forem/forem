@@ -3,6 +3,7 @@ import { setupBillboardInteractivity } from '@utilities/billboardInteractivity';
 
 jest.mock('../../packs/billboardAfterRenderActions', () => ({
   observeBillboards: jest.fn(),
+  executeBBScripts: jest.fn(),
 }));
 
 describe('billboard close functionality', () => {
@@ -72,22 +73,24 @@ describe('persistent billboard close functionality', () => {
   });
 
   it('moves persistent billboard to sidebar container on close', () => {
-    const { observeBillboards } = require('../../packs/billboardAfterRenderActions');
+    const { observeBillboards, executeBBScripts } = require('../../packs/billboardAfterRenderActions');
     setupBillboardInteractivity();
 
     const closeButton = document.querySelector('#sponsorship-close-trigger-2');
     closeButton.click();
 
-    // Assert the bottom billboard is hidden
+    // Assert the bottom billboard is hidden and its contents cleared
     const billboard = document.querySelector('.js-billboard');
     expect(billboard.style.display).toBe('none');
+    expect(billboard.innerHTML).toBe('');
 
     // Assert the sidebar container has minimized content and is visible
     const sidebarContainer = document.getElementById('persistent-minimized-billboard-container');
     expect(sidebarContainer.classList.contains('hidden')).toBe(false);
     expect(sidebarContainer.innerHTML).toContain('Minimized content matches!');
 
-    // Assert observeBillboards was called
+    // Assert observeBillboards and executeBBScripts were called
     expect(observeBillboards).toHaveBeenCalled();
+    expect(executeBBScripts).toHaveBeenCalledWith(sidebarContainer);
   });
 });

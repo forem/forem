@@ -359,6 +359,16 @@ RSpec.describe Billboard do
       billboard.update(render_mode: "raw", minimized_body_markdown: "<div>Raw minimized</div>")
       expect(billboard.minimized_processed_html).to eq("<div>Raw minimized</div>")
     end
+
+    it "re-processes body_markdown and minimized_body_markdown when render_mode or placement_area changes" do
+      billboard = create(:billboard, render_mode: "forem_markdown", body_markdown: "**bold**", minimized_body_markdown: "Minimized **bold**")
+      expect(billboard.processed_html).to include("<strong>bold</strong>")
+      expect(billboard.minimized_processed_html).to include("<strong>bold</strong>")
+
+      billboard.update!(render_mode: "raw")
+      expect(billboard.processed_html).to eq("**bold**")
+      expect(billboard.minimized_processed_html).to eq("Minimized **bold**")
+    end
   end
 
   describe "after_save callbacks" do
