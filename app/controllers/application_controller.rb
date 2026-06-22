@@ -22,6 +22,7 @@ class ApplicationController < ActionController::Base
   before_action :verify_private_forem
   protect_from_forgery with: :exception, prepend: true
   before_action :set_devise_rememberable_options # Add this line
+  before_action :set_devguard_request_context
   before_action :remember_cookie_sync
   before_action :forward_to_app_config_domain
   before_action :redirect_custom_domain_non_profile_pages
@@ -607,5 +608,10 @@ class ApplicationController < ActionController::Base
   def clear_request_store
     # Clear RequestStore in development/test to avoid lingering. Not important in prod.
     RequestStore.clear! unless Rails.env.production?
+  end
+
+  def set_devguard_request_context
+    RequestStore.store[:client_ip] = request.env["HTTP_FASTLY_CLIENT_IP"] || request.remote_ip
+    RequestStore.store[:dg_session_id] = cookies[:dg_session_id]
   end
 end
