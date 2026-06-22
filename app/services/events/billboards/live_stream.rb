@@ -356,6 +356,56 @@ module Events
         escaped_link = ERB::Util.html_escape(link.to_s)
 
         <<~HTML
+          <style>
+            .media-wrapper-minimized {
+              position: relative;
+              width: 100%;
+              aspect-ratio: 16 / 9;
+              background: #000;
+              border-radius: 8px;
+              margin-top: 8px;
+              margin-bottom: 12px;
+              overflow: hidden;
+            }
+            .overlay-minimized {
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              color: #fff;
+              display: none;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              font-family: sans-serif;
+              font-size: var(--fs-s);
+              z-index: 2;
+              background: rgba(0, 0, 0, 0.7);
+            }
+            .overlay-minimized.active {
+              display: flex;
+            }
+            .player-container-minimized {
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              z-index: 1;
+            }
+            .player-container-minimized iframe {
+              width: 100%;
+              height: 100%;
+              border: none;
+            }
+            @keyframes pulse-live {
+              0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
+              70% { transform: scale(1); box-shadow: 0 0 0 4px rgba(255, 255, 255, 0); }
+              100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+            }
+          </style>
+
           <div class="live-stream-minimized" style="display: flex; flex-direction: column; gap: var(--su-2);">
             <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--su-2);">
               <h4 style="font-size: var(--fs-base); font-weight: bold; margin: 0; line-height: var(--lh-tight);">
@@ -367,9 +417,12 @@ module Events
               </div>
             </div>
 
-            <div id="countdown-container-minimized-#{event.id}" style="font-size: var(--fs-xs); color: var(--text-color); opacity: 0.8; display: flex; align-items: center; gap: 4px;">
-              <span>Starts in:</span>
-              <span id="countdown-minimized-#{event.id}" style="font-family: monospace; font-weight: bold;">--:--:--</span>
+            <div class="media-wrapper-minimized">
+              <div class="overlay-minimized" id="overlay-minimized-#{event.id}">
+                <div>Starts in…</div>
+                <div id="countdown-minimized-#{event.id}">--:--:--</div>
+              </div>
+              <div class="player-container-minimized" id="player-container-minimized-#{event.id}"></div>
             </div>
 
             <p style="font-size: var(--fs-s); opacity: 0.9; margin: 0; line-height: var(--lh-base);">
@@ -383,30 +436,51 @@ module Events
             </div>
           </div>
 
-          <style>
-            @keyframes pulse-live {
-              0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
-              70% { transform: scale(1); box-shadow: 0 0 0 4px rgba(255, 255, 255, 0); }
-              100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
-            }
-          </style>
-
           <script>
             (function() {
               const TARGET_TIME = new Date(#{event.start_time.iso8601.to_json}).getTime();
-              const liveIndicator = document.getElementById("live-indicator-minimized-#{event.id}");
-              const countdownContainer = document.getElementById("countdown-container-minimized-#{event.id}");
+              const IFRAME_SRC = #{event.primary_stream_url.to_json};
+
+              const overlay = document.getElementById("overlay-minimized-#{event.id}");
               const countdownEl = document.getElementById("countdown-minimized-#{event.id}");
+              const playerContainer = document.getElementById("player-container-minimized-#{event.id}");
+              const liveIndicator = document.getElementById("live-indicator-minimized-#{event.id}");
               let timerId;
 
               function update() {
                 const now = Date.now();
                 if (now >= TARGET_TIME) {
                   clearInterval(timerId);
-                  if (countdownContainer) countdownContainer.style.display = "none";
+                  if (overlay) overlay.classList.remove("active");
                   if (liveIndicator) liveIndicator.style.display = "inline-flex";
+
+                  if (playerContainer && !playerContainer.querySelector("iframe")) {
+                    const iframe = document.createElement("iframe");
+                    
+                    let finalSrc = IFRAME_SRC;
+                    try {
+                      const url = new URL(finalSrc);
+                      if (url.hostname.includes("youtube.com") || url.hostname.includes("youtu.be")) {
+                        url.searchParams.set("autoplay", "1");
+                        url.searchParams.set("mute", "1");
+                      } else if (url.hostname.includes("twitch.tv")) {
+                        url.searchParams.set("autoplay", "true");
+                        url.searchParams.set("muted", "true");
+                      }
+                      finalSrc = url.toString();
+                    } catch (e) {
+                      // ignore
+                    }
+
+                    iframe.src = finalSrc;
+                    iframe.allow = "autoplay; fullscreen";
+                    iframe.allowFullscreen = true;
+                    playerContainer.appendChild(iframe);
+                  }
                   return;
                 }
+
+                if (overlay) overlay.classList.add("active");
 
                 if (countdownEl) {
                   const diffSeconds = Math.max(0, Math.floor((TARGET_TIME - now) / 1000));

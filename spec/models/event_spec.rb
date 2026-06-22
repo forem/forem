@@ -195,6 +195,8 @@ RSpec.describe Event, type: :model do
       expect(post_bb.minimized_body_markdown).to include("Test Live Stream Event")
       expect(post_bb.minimized_body_markdown).to include("A live broadcast summary")
       expect(post_bb.minimized_body_markdown).to include("/events/test-live-stream/v1")
+      expect(post_bb.minimized_body_markdown).to include("media-wrapper-minimized")
+      expect(post_bb.minimized_body_markdown).to include("player-container-minimized")
       expect(post_bb.minimized_processed_html).to include("live-stream-minimized")
     end
   end
