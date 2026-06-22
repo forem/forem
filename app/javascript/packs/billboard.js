@@ -1,4 +1,4 @@
-import { setupBillboardInteractivity } from '../utilities/billboardInteractivity';
+import { setupBillboardInteractivity, ensurePersistentMinimizedBillboardContainer } from '../utilities/billboardInteractivity';
 import {
   observeBillboards,
   executeBBScripts,
@@ -99,16 +99,24 @@ async function generateBillboard(element) {
           this.style.display = 'none';
         };
       });
+
+      const billboardEl = element.querySelector('.js-billboard');
+      if (billboardEl && billboardEl.dataset.special === 'persistent') {
+        ensurePersistentMinimizedBillboardContainer();
+      }
+
       const dismissalSku =
         element.querySelector('.js-billboard')?.dataset.dismissalSku;
       if (localStorage && dismissalSku && dismissalSku.length > 0) {
         const skuArray =
           JSON.parse(localStorage.getItem('dismissal_skus_triggered')) || [];
         if (skuArray.includes(dismissalSku)) {
-          const billboardEl = element.querySelector('.js-billboard');
           if (billboardEl && billboardEl.dataset.special === 'persistent') {
             const template = billboardEl.querySelector('.js-minimized-template');
-            const sidebarContainer = document.getElementById('persistent-minimized-billboard-container');
+            let sidebarContainer = document.getElementById('persistent-minimized-billboard-container');
+            if (!sidebarContainer) {
+              sidebarContainer = ensurePersistentMinimizedBillboardContainer();
+            }
             if (template && sidebarContainer) {
               sidebarContainer.innerHTML = template.innerHTML;
               sidebarContainer.classList.remove('hidden');
