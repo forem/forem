@@ -1,4 +1,6 @@
 import { initializeDropdown } from './dropdownUtils';
+import { observeBillboards, executeBBScripts } from '../packs/billboardAfterRenderActions';
+
 
 export function setupBillboardInteractivity() {
   const sponsorshipDropdownButtons = document.querySelectorAll(
@@ -71,9 +73,25 @@ function amendBillboardStyle(sponsorshipDropdownButton) {
 }
 
 function dismissBillboard(sponsorshipCloseButton) {
-  const sku =
-    sponsorshipCloseButton.closest('.js-billboard').dataset.dismissalSku;
-  sponsorshipCloseButton.closest('.js-billboard').style.display = 'none';
+  const billboardEl = sponsorshipCloseButton.closest('.js-billboard');
+  if (!billboardEl) {
+    return;
+  }
+  const sku = billboardEl.dataset.dismissalSku;
+  
+  if (billboardEl.dataset.special === 'persistent') {
+    const template = billboardEl.querySelector('.js-minimized-template');
+    const sidebarContainer = document.getElementById('persistent-minimized-billboard-container');
+    if (template && sidebarContainer) {
+      sidebarContainer.innerHTML = template.innerHTML;
+      sidebarContainer.classList.remove('hidden');
+      executeBBScripts(sidebarContainer);
+      observeBillboards();
+      billboardEl.innerHTML = '';
+    }
+  }
+
+  billboardEl.style.display = 'none';
   if (localStorage && sku && sku.length > 0) {
     const skuArray =
       JSON.parse(localStorage.getItem('dismissal_skus_triggered')) || [];

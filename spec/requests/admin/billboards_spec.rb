@@ -87,6 +87,15 @@ RSpec.describe "/admin/customization/billboards" do
           post admin_billboards_path, params: params.merge(target_geolocations: nil)
         end.to change(Billboard, :count).by(1)
       end
+
+      it "creates a new billboard with special_behavior and minimized_body_markdown" do
+        expect do
+          post admin_billboards_path, params: params.merge(special_behavior: "persistent", minimized_body_markdown: "Minimized content")
+        end.to change(Billboard, :count).by(1)
+        expect(Billboard.last.special_behavior).to eq("persistent")
+        expect(Billboard.last.minimized_body_markdown).to eq("Minimized content")
+        expect(Billboard.last.minimized_processed_html).to include("Minimized content")
+      end
     end
 
     describe "PUT /admin/customization/billboards" do
@@ -106,6 +115,13 @@ RSpec.describe "/admin/customization/billboards" do
             put admin_billboard_path(billboard.id), params: params
           end.to change { billboard.reload.priority }.from(false).to(true)
         end
+      end
+
+      it "updates special_behavior and minimized_body_markdown" do
+        put admin_billboard_path(billboard.id), params: params.merge(special_behavior: "persistent", minimized_body_markdown: "Updated minimized content")
+        expect(billboard.reload.special_behavior).to eq("persistent")
+        expect(billboard.minimized_body_markdown).to eq("Updated minimized content")
+        expect(billboard.minimized_processed_html).to include("Updated minimized content")
       end
 
       it "redirects back to edit path" do

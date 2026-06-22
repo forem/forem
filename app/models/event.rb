@@ -128,7 +128,7 @@ class Event < ApplicationRecord
     )
 
     post_bottom_bb = billboards.find_or_initialize_by(placement_area: "post_fixed_bottom")
-    post_bottom_bb.update!(
+    post_bottom_attributes = {
       name: "#{base_name}_post",
       dismissal_sku: base_name,
       custom_display_label: custom_display_label,
@@ -140,7 +140,14 @@ class Event < ApplicationRecord
       template: "authorship_box",
       approved: post_bottom_bb.new_record? ? false : post_bottom_bb.approved,
       published: true
-    )
+    }
+
+    if live_stream?
+      post_bottom_attributes[:special_behavior] = "persistent"
+      post_bottom_attributes[:minimized_body_markdown] = generator.minimized_post_html
+    end
+
+    post_bottom_bb.update!(post_bottom_attributes)
   end
 
   def bust_upcoming_events_cache
