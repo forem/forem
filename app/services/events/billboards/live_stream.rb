@@ -350,6 +350,80 @@ module Events
         HTML
       end
 
+      def minimized_post_html
+        escaped_title = ERB::Util.html_escape(event.title.to_s)
+        escaped_description = ERB::Util.html_escape(event.description.to_s)
+        escaped_link = ERB::Util.html_escape(link.to_s)
+
+        <<~HTML
+          <div class="live-stream-minimized" style="display: flex; flex-direction: column; gap: var(--su-2);">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--su-2);">
+              <h4 style="font-size: var(--fs-base); font-weight: bold; margin: 0; line-height: var(--lh-tight);">
+                #{escaped_title}
+              </h4>
+              <div id="live-indicator-minimized-#{event.id}" style="display: none; align-items: center; gap: 6px; background: #dc2626; color: white; padding: 2px 8px; border-radius: 4px; font-size: var(--fs-xs); font-weight: bold; text-transform: uppercase;">
+                <span style="display: inline-block; width: 6px; height: 6px; background: white; border-radius: 50%; animation: pulse-live 1.5s infinite;"></span>
+                Live
+              </div>
+            </div>
+
+            <div id="countdown-container-minimized-#{event.id}" style="font-size: var(--fs-xs); color: var(--text-color); opacity: 0.8; display: flex; align-items: center; gap: 4px;">
+              <span>Starts in:</span>
+              <span id="countdown-minimized-#{event.id}" style="font-family: monospace; font-weight: bold;">--:--:--</span>
+            </div>
+
+            <p style="font-size: var(--fs-s); opacity: 0.9; margin: 0; line-height: var(--lh-base);">
+              #{escaped_description}
+            </p>
+
+            <div style="margin-top: 4px;">
+              <a href="#{escaped_link}" class="ltag_cta ltag_cta--branded" style="display: block; text-align: center; font-weight: bold; width: 100%; padding: var(--su-2) 0; font-size: var(--fs-s);">
+                Tune in to Stream
+              </a>
+            </div>
+          </div>
+
+          <style>
+            @keyframes pulse-live {
+              0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
+              70% { transform: scale(1); box-shadow: 0 0 0 4px rgba(255, 255, 255, 0); }
+              100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+            }
+          </style>
+
+          <script>
+            (function() {
+              const TARGET_TIME = new Date(#{event.start_time.iso8601.to_json}).getTime();
+              const liveIndicator = document.getElementById("live-indicator-minimized-#{event.id}");
+              const countdownContainer = document.getElementById("countdown-container-minimized-#{event.id}");
+              const countdownEl = document.getElementById("countdown-minimized-#{event.id}");
+              let timerId;
+
+              function update() {
+                const now = Date.now();
+                if (now >= TARGET_TIME) {
+                  clearInterval(timerId);
+                  if (countdownContainer) countdownContainer.style.display = "none";
+                  if (liveIndicator) liveIndicator.style.display = "inline-flex";
+                  return;
+                }
+
+                if (countdownEl) {
+                  const diffSeconds = Math.max(0, Math.floor((TARGET_TIME - now) / 1000));
+                  const hours = String(Math.floor(diffSeconds / 3600)).padStart(2, "0");
+                  const minutes = String(Math.floor((diffSeconds % 3600) / 60)).padStart(2, "0");
+                  const seconds = String(diffSeconds % 60).padStart(2, "0");
+                  countdownEl.textContent = `${hours}:${minutes}:${seconds}`;
+                }
+              }
+
+              timerId = setInterval(update, 1000);
+              update();
+            })();
+          </script>
+        HTML
+      end
+
       private
 
       def link
