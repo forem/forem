@@ -406,7 +406,7 @@ module Events
             }
           </style>
 
-          <div class="live-stream-minimized" style="display: flex; flex-direction: column; gap: var(--su-2);">
+          <div class="live-stream-minimized" style="min-width:60px;display: flex; flex-direction: column; gap: var(--su-2);">
             <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--su-2);">
               <h4 style="font-size: var(--fs-base); font-weight: bold; margin: 0; line-height: var(--lh-tight);">
                 #{escaped_title}
