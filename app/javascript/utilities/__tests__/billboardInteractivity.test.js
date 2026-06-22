@@ -59,7 +59,10 @@ describe('billboard close functionality', () => {
 
 describe('persistent billboard close functionality', () => {
   beforeEach(() => {
-    // Setup DOM with a persistent billboard, its minimized template, and the sidebar container
+    localStorage.clear();
+  });
+
+  it('moves persistent billboard to existing sidebar container on close', () => {
     document.body.innerHTML = `
       <div id="persistent-minimized-billboard-container" class="hidden"></div>
       <div class="js-billboard popover-billboard" style="display: block;" data-dismissal-sku="PERSISTENT_SKU" data-special="persistent">
@@ -69,10 +72,7 @@ describe('persistent billboard close functionality', () => {
         </template>
       </div>
     `;
-    localStorage.clear();
-  });
 
-  it('moves persistent billboard to sidebar container on close', () => {
     const { observeBillboards, executeBBScripts } = require('../../packs/billboardAfterRenderActions');
     setupBillboardInteractivity();
 
@@ -92,5 +92,59 @@ describe('persistent billboard close functionality', () => {
     // Assert observeBillboards and executeBBScripts were called
     expect(observeBillboards).toHaveBeenCalled();
     expect(executeBBScripts).toHaveBeenCalledWith(sidebarContainer);
+  });
+
+  it('creates the container dynamically and appends to body on close if not present and no sidebar', () => {
+    document.body.innerHTML = `
+      <div class="js-billboard popover-billboard" style="display: block;" data-dismissal-sku="PERSISTENT_SKU" data-special="persistent">
+        <button id="sponsorship-close-trigger-2"></button>
+        <template class="js-minimized-template">
+          <div class="minimized-content">Minimized content matches!</div>
+        </template>
+      </div>
+    `;
+
+    const { observeBillboards, executeBBScripts } = require('../../packs/billboardAfterRenderActions');
+    setupBillboardInteractivity();
+
+    expect(document.getElementById('persistent-minimized-billboard-container')).toBeNull();
+
+    const closeButton = document.querySelector('#sponsorship-close-trigger-2');
+    closeButton.click();
+
+    const sidebarContainer = document.getElementById('persistent-minimized-billboard-container');
+    expect(sidebarContainer).not.toBeNull();
+    expect(sidebarContainer.parentNode).toBe(document.body);
+    expect(sidebarContainer.classList.contains('hidden')).toBe(false);
+    expect(sidebarContainer.innerHTML).toContain('Minimized content matches!');
+  });
+
+  it('creates the container dynamically and inserts after sidebar-bb if sidebar is present', () => {
+    document.body.innerHTML = `
+      <div class="crayons-layout__sidebar-right">
+        <div class="sidebar-bb"></div>
+      </div>
+      <div class="js-billboard popover-billboard" style="display: block;" data-dismissal-sku="PERSISTENT_SKU" data-special="persistent">
+        <button id="sponsorship-close-trigger-2"></button>
+        <template class="js-minimized-template">
+          <div class="minimized-content">Minimized content matches!</div>
+        </template>
+      </div>
+    `;
+
+    const { observeBillboards, executeBBScripts } = require('../../packs/billboardAfterRenderActions');
+    setupBillboardInteractivity();
+
+    expect(document.getElementById('persistent-minimized-billboard-container')).toBeNull();
+
+    const closeButton = document.querySelector('#sponsorship-close-trigger-2');
+    closeButton.click();
+
+    const sidebarContainer = document.getElementById('persistent-minimized-billboard-container');
+    expect(sidebarContainer).not.toBeNull();
+    
+    const sidebarBb = document.querySelector('.sidebar-bb');
+    expect(sidebarBb.nextElementSibling).toBe(sidebarContainer);
+    expect(sidebarContainer.classList.contains('hidden')).toBe(false);
   });
 });
