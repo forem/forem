@@ -51,10 +51,17 @@ RSpec.describe "BillboardEvents", type: :request do
     context "when event exists and is an impression" do
       let!(:event) { create(:billboard_event, billboard: billboard, category: "impression", user: user, seconds_visible: 10) }
 
-      it "updates seconds_visible by 10" do
+      it "updates seconds_visible by 10 if not updated recently" do
+        event.update_column(:updated_at, 10.seconds.ago)
         patch "/bb_tabulations/#{event.id}"
         expect(response.status).to eq(200)
         expect(event.reload.seconds_visible).to eq(20)
+      end
+
+      it "returns too_many_requests if updated too recently" do
+        patch "/bb_tabulations/#{event.id}"
+        expect(response.status).to eq(429)
+        expect(event.reload.seconds_visible).to eq(10)
       end
     end
 
@@ -62,6 +69,7 @@ RSpec.describe "BillboardEvents", type: :request do
       let!(:event) { create(:billboard_event, billboard: billboard, category: "click", user: user, seconds_visible: 10) }
 
       it "does not update seconds_visible" do
+        event.update_column(:updated_at, 10.seconds.ago)
         patch "/bb_tabulations/#{event.id}"
         expect(response.status).to eq(200)
         expect(event.reload.seconds_visible).to eq(10)
@@ -73,6 +81,7 @@ RSpec.describe "BillboardEvents", type: :request do
       let!(:event) { create(:billboard_event, billboard: billboard, category: "impression", user: other_user, seconds_visible: 10) }
 
       it "returns forbidden status" do
+        event.update_column(:updated_at, 10.seconds.ago)
         patch "/bb_tabulations/#{event.id}"
         expect(response.status).to eq(403)
         expect(event.reload.seconds_visible).to eq(10)

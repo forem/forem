@@ -168,7 +168,7 @@ function startPollingBillboard(adBox) {
   }
 
   const intervalId = setInterval(() => {
-    if (adBox.dataset.isBillboardVisible === 'true') {
+    if (document.visibilityState === 'visible' && adBox.dataset.isBillboardVisible === 'true') {
       updateBillboardImpressionTime(adBox);
     }
   }, 10000);

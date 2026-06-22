@@ -37,9 +37,12 @@ class BillboardEventsController < ApplicationMetalController
       return head :forbidden
     end
 
-    new_seconds = @billboard_event.seconds_visible + 10
+    if @billboard_event.updated_at > 9.seconds.ago
+      return head :too_many_requests
+    end
+
     ApplicationRecord.with_synchronous_commit_off do
-      @billboard_event.update_column(:seconds_visible, new_seconds)
+      BillboardEvent.where(id: @billboard_event.id).update_all(["seconds_visible = seconds_visible + ?, updated_at = ?", 10, Time.current])
     end
 
     head :ok
