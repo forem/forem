@@ -32,11 +32,7 @@ class Comment < ApplicationRecord
   belongs_to :user
 
   counter_culture :commentable,
-    column_name: :comments_count,
-    if: ->(comment) { !comment.deleted? },
-    column_names: {
-      ["comments.deleted = ?", false] => :comments_count
-    }
+    column_name: proc { |comment| comment.deleted? ? nil : :comments_count }
 
   counter_culture :user
 

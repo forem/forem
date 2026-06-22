@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe Comment, type: :model do
   let(:user) { create(:user) }
   let(:article) { create(:article, user: user) }
-  let(:comment) { create(:comment, user: user, commentable: article) }
+  let!(:comment) { create(:comment, user: user, commentable: article) }
 
   describe "counter cache behavior" do
     it "decrements the commentable comments_count when a comment is destroyed" do
