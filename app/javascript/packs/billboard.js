@@ -105,6 +105,16 @@ async function generateBillboard(element) {
         const skuArray =
           JSON.parse(localStorage.getItem('dismissal_skus_triggered')) || [];
         if (skuArray.includes(dismissalSku)) {
+          const billboardEl = element.querySelector('.js-billboard');
+          if (billboardEl && billboardEl.dataset.special === 'persistent') {
+            const template = billboardEl.querySelector('.js-minimized-template');
+            const sidebarContainer = document.getElementById('persistent-minimized-billboard-container');
+            if (template && sidebarContainer) {
+              sidebarContainer.innerHTML = template.innerHTML;
+              sidebarContainer.classList.remove('hidden');
+              executeBBScripts(sidebarContainer);
+            }
+          }
           element.style.display = 'none';
           element.innerHTML = '';
         }
