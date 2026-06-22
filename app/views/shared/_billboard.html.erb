@@ -108,7 +108,7 @@
     <% if billboard.special_behavior == "persistent" && billboard.minimized_processed_html.present? %>
       <template class="js-minimized-template">
         <div class="crayons-card crayons-card--secondary crayons-bb bb-placement js-billboard"
-          style="<%= billboard.style_string %>"
+          style="<%= billboard.style_string.gsub('border-bottom: none;', '') %>"
           data-display-unit data-id="<%= billboard.id %>"
           data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
           data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
