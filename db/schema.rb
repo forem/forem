@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_06_11_190731) do
+ActiveRecord::Schema[7.0].define(version: 2026_06_22_143640) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -678,6 +678,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_11_190731) do
     t.bigint "prefer_paired_with_billboard_id"
     t.integer "preferred_article_ids", default: [], array: true
     t.boolean "priority", default: false
+    t.text "minimized_body_markdown"
+    t.text "minimized_processed_html"
     t.text "processed_html"
     t.boolean "published", default: false
     t.integer "render_mode", default: 0
