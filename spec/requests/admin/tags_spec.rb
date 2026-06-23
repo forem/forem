@@ -14,7 +14,8 @@ RSpec.describe "/admin/content_manager/tags" do
       submission_template: "# <TITLE>\n\n<ARTICLE_BODY>",
       pretty_name: "dubdubdub", bg_color_hex: "#333333",
       text_color_hex: "#ffffff", badge_id: badge.id,
-      social_preview_template: "article"
+      social_preview_template: "article",
+      moderation_instructions: "Custom moderation policy details"
     }
   end
   let(:post_resource) { post admin_tags_path, params: { tag: params } }
@@ -59,6 +60,7 @@ RSpec.describe "/admin/content_manager/tags" do
       expect(tag.pretty_name).to eq(params[:pretty_name])
       expect(tag.bg_color_hex).to eq(params[:bg_color_hex])
       expect(tag.text_color_hex).to eq(params[:text_color_hex])
+      expect(tag.moderation_instructions).to eq(params[:moderation_instructions])
     end
 
     it "updates posts when making a tag an alias for another tag" do

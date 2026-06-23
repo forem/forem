@@ -146,6 +146,9 @@ pt:
       created: '%{tag_name} foi criada!'
       updated: 'Tag %{tag_name} atualizada com sucesso!'
       update_fail: 'A atualização da tag falhou: %{errors}'
+      form:
+        moderation_instructions: "Instruções de moderação"
+        moderation_instructions_description: "Instruções personalizadas de moderação de IA para posts com esta tag. Se fornecidas, elas serão anexadas ao prompt de moderação de conteúdo de IA."
     surveys_controller:
       created: A pesquisa foi criada!
       updated: A pesquisa foi atualizada!

@@ -1780,6 +1780,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_22_172500) do
     t.datetime "created_at", precision: nil, null: false
     t.integer "hotness_score", default: 0
     t.string "keywords_for_search"
+    t.text "moderation_instructions"
     t.string "name"
     t.string "pretty_name"
     t.string "profile_image"
