@@ -31,7 +31,14 @@ async function generateBillboard(element) {
           "data-special",
           "data-article-id",
           "data-impression-recorded",
-          "data-type-of"
+          "data-type-of",
+          "data-dismissal-sku",
+          "data-browser-context",
+          "data-page-id",
+          "data-is-billboard-visible",
+          "data-event-id",
+          "data-polling-interval-id",
+          "data-click-recorded"
         ]);
         if (!allowedAttributes.has(attributeName)) {
           // Remove any attribute that isn't allowed
