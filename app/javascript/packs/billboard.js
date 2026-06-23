@@ -196,3 +196,23 @@ async function generateBillboard(element) {
 }
 
 getBillboard();
+
+if (window.InstantClick && !window._billboardChangeRegistered) {
+  window.InstantClick.on('change', () => {
+    if (window.liveStreamIntervals) {
+      Object.keys(window.liveStreamIntervals).forEach((key) => {
+        clearInterval(window.liveStreamIntervals[key]);
+      });
+      window.liveStreamIntervals = {};
+    }
+
+    const sidebarContainer = document.getElementById('persistent-minimized-billboard-container');
+    if (sidebarContainer) {
+      sidebarContainer.remove();
+    }
+
+    getBillboard();
+  });
+  window._billboardChangeRegistered = true;
+}
+

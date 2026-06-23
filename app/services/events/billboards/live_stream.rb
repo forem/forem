@@ -109,13 +109,14 @@ module Events
               const overlay = document.getElementById("overlay-feed-#{event.id}");
               const countdownEl = document.getElementById("countdown-feed-#{event.id}");
               const playerContainer = document.getElementById("player-container-feed-#{event.id}");
-              let timerId;
-
               function update() {
                 const now = Date.now();
 
                 if (now >= TARGET_TIME) {
-                  clearInterval(timerId);
+                  if (window.liveStreamIntervals && window.liveStreamIntervals["#{event.id}"]) {
+                    clearInterval(window.liveStreamIntervals["#{event.id}"]);
+                    delete window.liveStreamIntervals["#{event.id}"];
+                  }
                   if (overlay) overlay.classList.remove("active");
 
                   if (playerContainer && !playerContainer.querySelector("iframe")) {
@@ -155,7 +156,11 @@ module Events
                 }
               }
 
-              timerId = setInterval(update, 1000);
+              window.liveStreamIntervals = window.liveStreamIntervals || {};
+              if (window.liveStreamIntervals["#{event.id}"]) {
+                clearInterval(window.liveStreamIntervals["#{event.id}"]);
+              }
+              window.liveStreamIntervals["#{event.id}"] = setInterval(update, 1000);
               update();
             })();
           </script>
@@ -297,13 +302,14 @@ module Events
               const overlay = document.getElementById("overlay-post-#{event.id}");
               const countdownEl = document.getElementById("countdown-post-#{event.id}");
               const playerContainer = document.getElementById("player-container-post-#{event.id}");
-              let timerId;
-
               function update() {
                 const now = Date.now();
 
                 if (now >= TARGET_TIME) {
-                  clearInterval(timerId);
+                  if (window.liveStreamIntervals && window.liveStreamIntervals["#{event.id}"]) {
+                    clearInterval(window.liveStreamIntervals["#{event.id}"]);
+                    delete window.liveStreamIntervals["#{event.id}"];
+                  }
                   if (overlay) overlay.classList.remove("active");
 
                   if (playerContainer && !playerContainer.querySelector("iframe")) {
@@ -343,7 +349,11 @@ module Events
                 }
               }
 
-              timerId = setInterval(update, 1000);
+              window.liveStreamIntervals = window.liveStreamIntervals || {};
+              if (window.liveStreamIntervals["#{event.id}"]) {
+                clearInterval(window.liveStreamIntervals["#{event.id}"]);
+              }
+              window.liveStreamIntervals["#{event.id}"] = setInterval(update, 1000);
               update();
             })();
           </script>
@@ -445,12 +455,13 @@ module Events
               const countdownEl = document.getElementById("countdown-minimized-#{event.id}");
               const playerContainer = document.getElementById("player-container-minimized-#{event.id}");
               const liveIndicator = document.getElementById("live-indicator-minimized-#{event.id}");
-              let timerId;
-
               function update() {
                 const now = Date.now();
                 if (now >= TARGET_TIME) {
-                  clearInterval(timerId);
+                  if (window.liveStreamIntervals && window.liveStreamIntervals["#{event.id}"]) {
+                    clearInterval(window.liveStreamIntervals["#{event.id}"]);
+                    delete window.liveStreamIntervals["#{event.id}"];
+                  }
                   if (overlay) overlay.classList.remove("active");
                   if (liveIndicator) liveIndicator.style.display = "inline-flex";
 
@@ -491,7 +502,11 @@ module Events
                 }
               }
 
-              timerId = setInterval(update, 1000);
+              window.liveStreamIntervals = window.liveStreamIntervals || {};
+              if (window.liveStreamIntervals["#{event.id}"]) {
+                clearInterval(window.liveStreamIntervals["#{event.id}"]);
+              }
+              window.liveStreamIntervals["#{event.id}"] = setInterval(update, 1000);
               update();
             })();
           </script>
