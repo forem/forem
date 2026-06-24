@@ -38,10 +38,10 @@ gem "fastimage", "~> 2.2" # FastImage finds the size or type of an image given i
 gem "fastly", "~> 3.0" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.2" # A feed fetching and parsing library
 gem "field_test", "~> 0.5" # A/B testing
-gem "flipper", "~> 0.25.0" # Feature flipping / flags for Ruby
-gem "flipper-active_record", "~> 0.25.0" # Store Flipper flags in ActiveRecord
-gem "flipper-active_support_cache_store", "~> 0.25.0" # Cache feature flags for a short time
-gem "flipper-ui", "~> 0.25.0" # UI for the Flipper gem
+gem "flipper", "~> 1.4" # Feature flipping / flags for Ruby
+gem "flipper-active_record", "~> 1.4" # Store Flipper flags in ActiveRecord
+gem "flipper-active_support_cache_store", "~> 1.4" # Cache feature flags for a short time
+gem "flipper-ui", "~> 1.4" # UI for the Flipper gem
 gem "fog-aws", "~> 3.14" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 1.0" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.1.0" # Character information and metadata for standard and custom emoji
@@ -92,7 +92,7 @@ gem "recaptcha", "~> 5.10", require: "recaptcha/rails" # Helpers for the reCAPTC
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 
 gem "redis", "~> 4.7.1" # Redis ruby client
-gem "redis-actionpack", "~> 5.4.0" # Redis session store for ActionPack. Used for storing the Rails session in Redis.
+gem "redis-actionpack", "~> 5.5.0" # Redis session store for ActionPack. Used for storing the Rails session in Redis.
 gem "rpush", "~> 9.2" # Push Notification library for Rails
 gem "rpush-redis", "~> 1.2" # Redis module capability for rpush library
 
