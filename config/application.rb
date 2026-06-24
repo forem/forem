@@ -49,6 +49,9 @@ module PracticalDeveloper
     # Enable modern cache format version 7.1
     config.active_support.cache_format_version = 7.1
 
+    # Enable modern message serializer to prepare for Rails 8.0
+    config.active_support.message_serializer = :json
+
     # Preserve receiver timezone when calling to_time (preparing for Rails 8.0/8.1)
     config.active_support.to_time_preserves_timezone = :zone
 
