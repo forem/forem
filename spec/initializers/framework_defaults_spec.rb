@@ -169,6 +169,14 @@ describe "Framework Defaults 7.2 Upgrade Verification" do
       expect(Rails.application.config.enable_reloading).to be(true)
     end
 
+    it "uses Flipper versions compatible with Rails 8.0" do
+      expect(Gem::Version.new(Flipper::VERSION)).to be >= Gem::Version.new("1.4.0")
+    end
+
+    it "uses redis-actionpack version compatible with Rails 8.0" do
+      expect(Gem.loaded_specs["redis-actionpack"].version).to be >= Gem::Version.new("5.5.0")
+    end
+
     describe "Regexp timeout parser logic" do
       after do
         # Restore the original timeout value
