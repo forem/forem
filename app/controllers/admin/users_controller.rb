@@ -122,7 +122,7 @@ module Admin
     def update_email
       @user = User.find(params[:id])
       old_email = @user.email
-      new_email = user_params[:email]&.strip
+new_email = user_params[:email].to_s.strip.presence
 
       # Validate email using a temp User object to avoid rate limit checks and other model side-effects
       temp_user = User.new(email: new_email)
