@@ -9,9 +9,10 @@ xml.rss(:version => "2.0",
   xml.channel do
     if user
       xml.title "#{community_name}: #{user.name}"
-      xml.description "The latest articles on #{community_name} by #{user.name} (@#{user.username})."
+      user_handle = user.instance_of?(User) ? "@#{user.username}" : user.slug
+      xml.description "The latest articles on #{community_name} by #{user.name} (#{user_handle})."
       channel_link = if request.env["forem.custom_domain_org"].present?
-                       "#{request.protocol}#{request.host}"
+                       request.base_url
                      else
                        app_url(user.path)
                      end
@@ -48,7 +49,7 @@ xml.rss(:version => "2.0",
         xml.tag!("dc:creator", user.instance_of?(User) ? user.name : article.user.name)
         xml.pubDate article.published_at.to_fs(:rfc822) if article.published_at
         article_link = if request.env["forem.custom_domain_org"].present?
-                         "#{request.protocol}#{request.host}/#{article.path.split('/').last}"
+                         "#{request.base_url}/#{article.slug}"
                        else
                          app_url(article.path)
                        end
