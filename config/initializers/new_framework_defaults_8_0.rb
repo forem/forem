@@ -26,10 +26,15 @@ Rails.application.config.action_dispatch.strict_freshness = true
 # in production if a legitimate request experiences timeouts, avoiding emergency deployments.
 # If REGEXP_TIMEOUT is explicitly set to blank, "nil", or "none", we disable the timeout (set to nil).
 if Regexp.respond_to?(:timeout=)
-  timeout_val = ENV.fetch("REGEXP_TIMEOUT", "1.0")
+  timeout_val = ENV.fetch("REGEXP_TIMEOUT", "1.0").to_s
   Regexp.timeout = if timeout_val.blank? || %w[nil none false].include?(timeout_val.downcase)
                      nil
                    else
-                     timeout_val.to_f
+                     begin
+                       timeout = Float(timeout_val)
+                       timeout.positive? ? timeout : 1.0
+                     rescue ArgumentError, TypeError
+                       1.0
+                     end
                    end
 end
