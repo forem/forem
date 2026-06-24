@@ -133,13 +133,15 @@
           const overlay = document.getElementById("overlay-post-<%= @event.id %>");
           const countdownEl = document.getElementById("countdown-post-<%= @event.id %>");
           const playerContainer = document.getElementById("player-container-post-<%= @event.id %>");
-          let timerId;
 
           function update() {
             const now = Date.now();
 
             if (now >= TARGET_TIME || IS_FORCED_LIVE) {
-              clearInterval(timerId);
+              if (window.liveStreamIntervals && window.liveStreamIntervals["<%= @event.id %>"]) {
+                clearInterval(window.liveStreamIntervals["<%= @event.id %>"]);
+                delete window.liveStreamIntervals["<%= @event.id %>"];
+              }
               if (overlay) overlay.classList.add("hidden");
 
               if (playerContainer && !playerContainer.querySelector("iframe")) {
@@ -183,7 +185,11 @@
             }
           }
 
-          timerId = setInterval(update, 1000);
+          window.liveStreamIntervals = window.liveStreamIntervals || {};
+          if (window.liveStreamIntervals["<%= @event.id %>"]) {
+            clearInterval(window.liveStreamIntervals["<%= @event.id %>"]);
+          }
+          window.liveStreamIntervals["<%= @event.id %>"] = setInterval(update, 1000);
           update();
         })();
       </script>
