@@ -61,6 +61,28 @@ RSpec.describe "feedback_messages" do
           end
         end.not_to change { ActionMailer::Base.deliveries.count }
       end
+
+      it "ignores a submitted offender_id in favor of trusted derived data" do
+        offender = create(:user)
+        reported_user = create(:user)
+        params_with_offender_id = valid_abuse_report_params.deep_dup
+        params_with_offender_id[:feedback_message][:reported_url] = "/#{reported_user.username}"
+        params_with_offender_id[:feedback_message][:offender_id] = offender.id
+
+        post feedback_messages_path, params: params_with_offender_id, headers: headers
+
+        expect(FeedbackMessage.last.offender_id).to eq(reported_user.id)
+      end
+
+      it "assigns offender_id from a reported article" do
+        article = create(:article)
+        article_report_params = valid_abuse_report_params.deep_dup
+        article_report_params[:feedback_message][:reported_url] = article.path
+
+        post feedback_messages_path, params: article_report_params, headers: headers
+
+        expect(FeedbackMessage.last.offender_id).to eq(article.user_id)
+      end
     end
 
     context "with valid params and recaptcha not configured" do
