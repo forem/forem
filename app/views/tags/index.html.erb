@@ -59,7 +59,7 @@
               <h4 class="-ml-2">
                 <%= render_tag_link(tag) %>
               </h4>
-              <div class="fs-xs color-base-60"><%= t("views.tags.published", count: number_with_delimiter(tag.taggings_count, delimiter: ",")) %></div>
+              <div class="fs-xs color-base-60"><%= t("views.tags.published", count: number_with_delimiter(tag.published_articles_count, delimiter: ",")) %></div>
             </div>
             <% if tag.short_summary.present? %>
               <p class="mb-6 fs-s color-base-70 truncate-at-3"><%= sanitize tag.short_summary %></p>
