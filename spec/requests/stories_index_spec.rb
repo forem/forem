@@ -105,6 +105,29 @@ RSpec.describe "StoriesIndex" do
       end
     end
 
+    context "when General settings has a resized logo" do
+      before do
+        allow(Settings::General).to receive(:resized_logo).and_return("default.png")
+      end
+
+      it "renders the resized logo" do
+        get "/"
+        expect(response.body).to include("site-logo")
+        expect(response.body).to include("default.png")
+      end
+    end
+
+    context "when General settings does not have a resized logo" do
+      before do
+        allow(Settings::General).to receive(:resized_logo).and_return(nil)
+      end
+
+      it "renders the community name" do
+        get "/"
+        expect(response.body).to include("DEV(local)")
+      end
+    end
+
     it "renders topbar styles if Settings::UserExperience.accent_background_color_hex is set" do
       allow(Settings::UserExperience).to receive(:accent_background_color_hex).and_return("#000000")
       get "/"
