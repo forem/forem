@@ -13,7 +13,7 @@ class FeedbackMessage < ApplicationRecord
   CATEGORIES = ["spam", "other", "rude or vulgar", "harassment", "bug", "listings"].freeze
   STATUSES = %w[Open Invalid Resolved].freeze
 
-  before_save :determine_reported_from_url
+  before_save :determine_reported_from_url, :assign_offender_from_reported
 
   def self.reporter_uniqueness_msg
     I18n.t("models.feedback_message.reported")
@@ -86,6 +86,13 @@ class FeedbackMessage < ApplicationRecord
     nil
   end
 
+  def assign_offender_from_reported
+    return unless abuse_report?
+    return if offender.present?
+
+    self.offender = offender_from_reported
+  end
+
   def matched_to_entity(url)
     return unless url.present?
 
@@ -109,6 +116,15 @@ class FeedbackMessage < ApplicationRecord
       # User: /username
       username = path.split("/").last
       User.find_by(username: username)
+    end
+  end
+
+  def offender_from_reported
+    case reported
+    when User
+      reported
+    when Article, Comment
+      reported.user
     end
   end
 

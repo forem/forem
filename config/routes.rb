@@ -33,6 +33,8 @@ Rails.application.routes.draw do
 
   constraints OrgCustomDomainConstraint.new do
     get "/", to: "stories#custom_domain_index"
+    get "/feed", to: "articles#feed", as: nil, defaults: { format: "rss" }
+    get "/rss", to: "articles#feed", as: nil, defaults: { format: "rss" }
     get "/:org_slug/:slug",
         to: "stories#custom_domain_show",
         constraints: {
