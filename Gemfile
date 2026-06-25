@@ -86,7 +86,7 @@ gem "public_suffix", "~> 6.0" # Domain name parser based on the Public Suffix Li
 gem "rack-attack", "~> 6.8.0" # Used to throttle requests to prevent brute force attacks
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
 gem "rack-timeout", "~> 0.7.0" # Rack middleware which aborts requests that have been running for longer than a specified timeout
-gem "rails", "7.2.3.1" # Ruby on Rails
+gem "rails", "8.0.5" # Ruby on Rails
 gem "ransack", "~> 4.2" # Searching and sorting
 gem "recaptcha", "~> 5.10", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
@@ -143,7 +143,7 @@ end
 
 group :development, :test do
   gem "amazing_print", "~> 2.0" # Great Ruby debugging companion: pretty print Ruby objects to visualize their structure
-  gem "bullet", "~> 7.0" # help to kill N+1 queries and unused eager loading
+  gem "bullet", "~> 8.0" # help to kill N+1 queries and unused eager loading
   gem "capybara", "~> 3.37.1" # Capybara is an integration testing tool for rack based web applications
   gem "cypress-rails", "~> 0.5" # For end to end tests (E2E)
   gem "debug", ">= 1.0.0" # Provide a debug with step capabilities
