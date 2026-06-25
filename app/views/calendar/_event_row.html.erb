@@ -17,8 +17,8 @@
   </div>
   <div class="calendar__event-actions flex flex-col items-end gap-2 p-4">
     <% if attending %>
-      <span class="c-indicator c-indicator--success fw-bold">Attending</span>
+      <span class="c-indicator c-indicator--success fw-bold"><%= t("views.calendar.event.attending") %></span>
     <% end %>
-    <%= link_to "View event", event_link_target(event), class: "crayons-btn crayons-btn--outlined whitespace-nowrap" %>
+    <%= link_to t("views.calendar.event.view"), event_link_target(event), class: "crayons-btn crayons-btn--outlined whitespace-nowrap" %>
   </div>
 </div>

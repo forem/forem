@@ -5,9 +5,9 @@
     total = @events.total_pages
     window = ((current - 2)..(current + 2)).select { |p| p >= 1 && p <= total }
   %>
-  <nav class="calendar__pagination flex items-center justify-center gap-1 mt-4" aria-label="Events pages">
+  <nav class="calendar__pagination flex items-center justify-center gap-1 mt-4" aria-label="<%= t("views.calendar.pagination.label") %>">
     <% if @events.prev_page %>
-      <%= link_to "‹", calendar_path(base.merge(page: @events.prev_page)), class: "calendar__page-btn", "aria-label": "Previous page" %>
+      <%= link_to "‹", calendar_path(base.merge(page: @events.prev_page)), class: "calendar__page-btn", "aria-label": t("views.calendar.pagination.previous") %>
     <% else %>
       <span class="calendar__page-btn calendar__page-btn--disabled" aria-disabled="true">‹</span>
     <% end %>
@@ -31,7 +31,7 @@
     <% end %>
 
     <% if @events.next_page %>
-      <%= link_to "›", calendar_path(base.merge(page: @events.next_page)), class: "calendar__page-btn", "aria-label": "Next page" %>
+      <%= link_to "›", calendar_path(base.merge(page: @events.next_page)), class: "calendar__page-btn", "aria-label": t("views.calendar.pagination.next") %>
     <% else %>
       <span class="calendar__page-btn calendar__page-btn--disabled" aria-disabled="true">›</span>
     <% end %>

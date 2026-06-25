@@ -7,13 +7,13 @@
 %>
 <div class="crayons-card p-4">
   <div class="flex items-center justify-between mb-3">
-    <%= link_to "‹", calendar_path(month: prev_month.strftime("%Y-%m"), start: params[:start].presence, end: params[:end].presence, type_of: params[:type_of].presence), class: "calendar__nav-btn", "aria-label": "Previous month" %>
-    <span class="fw-bold"><%= @display_month.strftime("%B %Y") %></span>
-    <%= link_to "›", calendar_path(month: next_month.strftime("%Y-%m"), start: params[:start].presence, end: params[:end].presence, type_of: params[:type_of].presence), class: "calendar__nav-btn", "aria-label": "Next month" %>
+    <%= link_to "‹", calendar_path(month: prev_month.strftime("%Y-%m"), start: params[:start].presence, end: params[:end].presence, type_of: params[:type_of].presence), class: "calendar__nav-btn", "aria-label": t("views.calendar.nav.previous_month") %>
+    <span class="fw-bold"><%= l(@display_month, format: "%B %Y") %></span>
+    <%= link_to "›", calendar_path(month: next_month.strftime("%Y-%m"), start: params[:start].presence, end: params[:end].presence, type_of: params[:type_of].presence), class: "calendar__nav-btn", "aria-label": t("views.calendar.nav.next_month") %>
   </div>
 
   <div class="grid grid-cols-7 gap-1 align-center fs-s color-base-50 mb-1">
-    <% %w[Su Mo Tu We Th Fr Sa].each do |label| %>
+    <% t("views.calendar.weekdays").each do |label| %>
       <span class="text-center"><%= label %></span>
     <% end %>
   </div>
@@ -34,17 +34,17 @@
     <% end %>
   </div>
 
-  <p class="fs-s color-base-50 mt-3 mb-2">Click a start day, then an end day to set a range.</p>
+  <p class="fs-s color-base-50 mt-3 mb-2"><%= t("views.calendar.hint") %></p>
 
   <ul class="calendar__legend list-none p-0 m-0 flex flex-wrap gap-3 fs-s color-base-60">
     <li class="flex items-center gap-1">
-      <span class="calendar__legend-swatch calendar__legend-swatch--range" aria-hidden="true"></span>Selected
+      <span class="calendar__legend-swatch calendar__legend-swatch--range" aria-hidden="true"></span><%= t("views.calendar.legend.selected") %>
     </li>
     <li class="flex items-center gap-1">
-      <span class="calendar__legend-swatch calendar__legend-swatch--today" aria-hidden="true"></span>Today
+      <span class="calendar__legend-swatch calendar__legend-swatch--today" aria-hidden="true"></span><%= t("views.calendar.legend.today") %>
     </li>
     <li class="flex items-center gap-1">
-      <span class="calendar__legend-dot" aria-hidden="true"></span>Has events
+      <span class="calendar__legend-dot" aria-hidden="true"></span><%= t("views.calendar.legend.has_events") %>
     </li>
   </ul>
 </div>

@@ -15,15 +15,15 @@ module EventsHelper
   end
 
   def calendar_range_header(range_start, range_end)
-    return "Today" if range_start == range_end && range_start == Time.zone.today
-    return range_start.strftime("%a, %b %-d") if range_start == range_end
+    return t("views.calendar.today") if range_start == range_end && range_start == Time.zone.today
+    return l(range_start, format: "%a, %b %-d") if range_start == range_end
 
     if range_start.year == range_end.year && range_start.month == range_end.month
-      "#{range_start.strftime('%b %-d')} – #{range_end.strftime('%-d')}"
+      "#{l(range_start, format: '%b %-d')} – #{l(range_end, format: '%-d')}"
     elsif range_start.year == range_end.year
-      "#{range_start.strftime('%b %-d')} – #{range_end.strftime('%b %-d')}"
+      "#{l(range_start, format: '%b %-d')} – #{l(range_end, format: '%b %-d')}"
     else
-      "#{range_start.strftime('%b %-d, %Y')} – #{range_end.strftime('%b %-d, %Y')}"
+      "#{l(range_start, format: '%b %-d, %Y')} – #{l(range_end, format: '%b %-d, %Y')}"
     end
   end
 

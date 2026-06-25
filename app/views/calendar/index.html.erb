@@ -1,21 +1,22 @@
+<% title(t("views.calendar.meta.title")) %>
 <%= javascript_include_tag "calendarRangeSelect", defer: true %>
 <main id="main-content" class="crayons-layout crayons-layout--header-inside">
   <header class="crayons-page-header flex items-center justify-between flex-wrap gap-3">
-    <h1 class="crayons-title">Calendar</h1>
+    <h1 class="crayons-title"><%= t("views.calendar.heading") %></h1>
 
     <%= form_with url: calendar_path, method: :get, class: "calendar__range-picker flex items-end gap-2" do |f| %>
       <% if params[:type_of].present? %>
         <%= hidden_field_tag :type_of, params[:type_of] %>
       <% end %>
       <div>
-        <label class="crayons-field__label fs-s" for="calendar-start">From</label>
+        <label class="crayons-field__label fs-s" for="calendar-start"><%= t("views.calendar.range.from") %></label>
         <%= date_field_tag :start, @range_start.iso8601, id: "calendar-start", class: "crayons-textfield" %>
       </div>
       <div>
-        <label class="crayons-field__label fs-s" for="calendar-end">To</label>
+        <label class="crayons-field__label fs-s" for="calendar-end"><%= t("views.calendar.range.to") %></label>
         <%= date_field_tag :end, @range_end.iso8601, id: "calendar-end", class: "crayons-textfield" %>
       </div>
-      <%= f.submit "Apply", class: "crayons-btn crayons-btn--secondary" %>
+      <%= f.submit t("views.calendar.range.apply"), class: "crayons-btn crayons-btn--secondary" %>
     <% end %>
   </header>
 
@@ -30,7 +31,7 @@
       <% if @events_by_day.any? %>
         <% @events_by_day.each do |day, events| %>
           <h3 class="crayons-subtitle-3 color-base-60 mb-2 mt-4">
-            <%= day == Time.zone.today ? "Today" : day.strftime("%a, %b %-d") %>
+            <%= day == Time.zone.today ? t("views.calendar.today") : l(day, format: "%a, %b %-d") %>
           </h3>
           <% events.each do |event| %>
             <%= render "event_row", event: event %>
@@ -39,7 +40,7 @@
         <%= render "pagination" %>
       <% else %>
         <div class="p-9 align-center crayons-card">
-          <p class="text-center color-base-60 py-8">No events in this range. Try another month!</p>
+          <p class="text-center color-base-60 py-8"><%= t("views.calendar.empty") %></p>
         </div>
       <% end %>
     </section>
