@@ -71,6 +71,22 @@ pt:
     you_are_following: "Você está seguindo"
     and: "e"
   date:
+    abbr_day_names:
+    - dom
+    - seg
+    - ter
+    - qua
+    - qui
+    - sex
+    - sáb
+    day_names:
+    - domingo
+    - segunda-feira
+    - terça-feira
+    - quarta-feira
+    - quinta-feira
+    - sexta-feira
+    - sábado
     abbr_month_names:
     -
     - jan

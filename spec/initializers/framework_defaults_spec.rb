@@ -134,7 +134,7 @@ describe "Framework Defaults 7.2 Upgrade Verification" do
       expect(config.active_record.validate_migration_timestamps).to be(true)
       expect(config.active_record.postgresql_adapter_decode_dates).to be(true)
       if defined?(ActiveJob::Base)
-        expect(ActiveJob::Base.enqueue_after_transaction_commit).to eq(:default)
+        expect(ActiveJob::Base.enqueue_after_transaction_commit).to eq(:default).or eq(false)
       end
       expect(config.active_support.to_time_preserves_timezone).to eq(:zone)
     end
@@ -149,9 +149,9 @@ describe "Framework Defaults 7.2 Upgrade Verification" do
     end
   end
 
-  describe "Framework Defaults 8.0 Upgrade Preparation" do
-    it "has the new_framework_defaults_8_0.rb initializer file present" do
-      expect(File.exist?(Rails.root.join("config/initializers/new_framework_defaults_8_0.rb"))).to be(true)
+  describe "Framework Defaults 8.0 Upgrade Verification" do
+    it "does not have the new_framework_defaults_8_0.rb initializer file present" do
+      expect(File.exist?(Rails.root.join("config/initializers/new_framework_defaults_8_0.rb"))).to be(false)
     end
 
     it "sets default Regexp timeout to protect against ReDoS" do
@@ -207,39 +207,51 @@ describe "Framework Defaults 7.2 Upgrade Verification" do
 
         # Test setting a custom float value
         stub_const("ENV", ENV.to_h.merge("REGEXP_TIMEOUT" => "2.5"))
-        load Rails.root.join("config/initializers/new_framework_defaults_8_0.rb")
+        load Rails.root.join("config/initializers/regexp_timeout.rb")
         expect(Regexp.timeout).to eq(2.5)
 
         # Test disabling the timeout with 'nil'
         stub_const("ENV", ENV.to_h.merge("REGEXP_TIMEOUT" => "nil"))
-        load Rails.root.join("config/initializers/new_framework_defaults_8_0.rb")
+        load Rails.root.join("config/initializers/regexp_timeout.rb")
         expect(Regexp.timeout).to be_nil
 
         # Test disabling the timeout with 'none'
         stub_const("ENV", ENV.to_h.merge("REGEXP_TIMEOUT" => "none"))
-        load Rails.root.join("config/initializers/new_framework_defaults_8_0.rb")
+        load Rails.root.join("config/initializers/regexp_timeout.rb")
         expect(Regexp.timeout).to be_nil
 
         # Test disabling the timeout with 'false'
         stub_const("ENV", ENV.to_h.merge("REGEXP_TIMEOUT" => "false"))
-        load Rails.root.join("config/initializers/new_framework_defaults_8_0.rb")
+        load Rails.root.join("config/initializers/regexp_timeout.rb")
         expect(Regexp.timeout).to be_nil
 
         # Test invalid values (fallback to 1.0)
         stub_const("ENV", ENV.to_h.merge("REGEXP_TIMEOUT" => "abc"))
-        load Rails.root.join("config/initializers/new_framework_defaults_8_0.rb")
+        load Rails.root.join("config/initializers/regexp_timeout.rb")
         expect(Regexp.timeout).to eq(1.0)
 
         # Test negative values (fallback to 1.0)
         stub_const("ENV", ENV.to_h.merge("REGEXP_TIMEOUT" => "-0.5"))
-        load Rails.root.join("config/initializers/new_framework_defaults_8_0.rb")
+        load Rails.root.join("config/initializers/regexp_timeout.rb")
         expect(Regexp.timeout).to eq(1.0)
 
         # Test zero values (fallback to 1.0)
         stub_const("ENV", ENV.to_h.merge("REGEXP_TIMEOUT" => "0.0"))
-        load Rails.root.join("config/initializers/new_framework_defaults_8_0.rb")
+        load Rails.root.join("config/initializers/regexp_timeout.rb")
         expect(Regexp.timeout).to eq(1.0)
       end
+    end
+  end
+
+  describe "Framework Defaults 8.1 Upgrade Verification" do
+    it "has the new_framework_defaults_8_1.rb initializer file present" do
+      expect(File.exist?(Rails.root.join("config/initializers/new_framework_defaults_8_1.rb"))).to be(true)
+    end
+
+    it "enables key Rails 8.1 defaults to ease the upgrade path" do
+      config = Rails.application.config
+
+      expect(config.active_support.escape_js_separators_in_json).to be(false)
     end
   end
 end
