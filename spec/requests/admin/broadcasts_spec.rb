@@ -38,6 +38,18 @@ RSpec.describe "/admin/advanced/broadcasts" do
         get_resource
         expect(response).to have_http_status(:ok)
       end
+
+      it "renders sort links in table headers" do
+        create(:welcome_broadcast)
+        get admin_broadcasts_path
+        expect(response.body).to include("Sort by Title")
+      end
+
+      it "sorts by title descending when requested" do
+        create(:welcome_broadcast)
+        get admin_broadcasts_path, params: { q: { s: "title desc" } }
+        expect(response).to have_http_status(:ok)
+      end
     end
 
     describe "POST /admin/advanced/broadcasts" do

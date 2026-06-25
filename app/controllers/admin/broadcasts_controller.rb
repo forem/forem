@@ -3,11 +3,14 @@ module Admin
     layout "admin"
 
     def index
-      @broadcasts = if params[:type_of]
-                      Broadcast.where(type_of: params[:type_of].capitalize)
-                    else
-                      Broadcast.all
-                    end.order(title: :asc)
+      relation = if params[:type_of]
+                   Broadcast.where(type_of: params[:type_of].capitalize)
+                 else
+                   Broadcast.all
+                 end
+      @q = relation.ransack(params[:q])
+      @q.sorts = 'title asc' if @q.sorts.empty?
+      @broadcasts = @q.result
     end
 
     def show

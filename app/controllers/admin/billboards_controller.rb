@@ -3,12 +3,11 @@ module Admin
     layout "admin"
 
     def index
-      @billboards = Billboard.order(id: :desc)
-        .page(params[:page]).per(50)
-
-      return if params[:search].blank?
-
-      @billboards = @billboards.search_ads(params[:search])
+      @q = Billboard.ransack(params[:q])
+      @q.sorts = 'id desc' if @q.sorts.empty?
+      @billboards = @q.result
+      @billboards = @billboards.search_ads(params[:search]) if params[:search].present?
+      @billboards = @billboards.page(params[:page]).per(50)
     end
 
     def show
