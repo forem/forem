@@ -350,8 +350,6 @@ class Comment < ApplicationRecord
     end
   end
 
-
-
   def after_destroy_actions
     Users::BustCacheWorker.perform_async(user_id)
     user.touch(:last_comment_at) if user&.persisted?
