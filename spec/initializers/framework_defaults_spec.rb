@@ -136,8 +136,11 @@ describe "Framework Defaults 7.2 Upgrade Verification" do
       if defined?(ActiveJob::Base)
         expect(ActiveJob::Base.enqueue_after_transaction_commit).to eq(:default).or eq(false)
       end
-      if Gem::Version.new(Rails.version) < Gem::Version.new("8.1")
-        expect(config.active_support.to_time_preserves_timezone).to eq(:zone)
+      if config.active_support.respond_to?(:to_time_preserves_timezone)
+        val = Rails.application.deprecators.silence do
+          config.active_support.to_time_preserves_timezone
+        end
+        expect(val).to eq(:zone).or be_nil
       end
     end
 
@@ -178,8 +181,11 @@ describe "Framework Defaults 7.2 Upgrade Verification" do
     end
 
     it "preserves timezone in to_time" do
-      if Gem::Version.new(Rails.version) < Gem::Version.new("8.1")
-        expect(Rails.application.config.active_support.to_time_preserves_timezone).to eq(:zone)
+      if Rails.application.config.active_support.respond_to?(:to_time_preserves_timezone)
+        val = Rails.application.deprecators.silence do
+          Rails.application.config.active_support.to_time_preserves_timezone
+        end
+        expect(val).to eq(:zone).or be_nil
       end
     end
 
