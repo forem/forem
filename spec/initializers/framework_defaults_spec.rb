@@ -262,6 +262,7 @@ describe "Framework Defaults 7.2 Upgrade Verification" do
       config = Rails.application.config
 
       expect(config.active_support.escape_js_separators_in_json).to be(false)
+      expect(config.active_record.raise_on_missing_required_finder_order_columns).to be(true)
     end
   end
 end
