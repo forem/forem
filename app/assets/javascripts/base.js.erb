@@ -55,6 +55,35 @@ var instantClick
     return url.substr(0, index)
   }
 
+  function calculateOffsetTop(element) {
+    var offset = 0;
+    while (element.offsetParent) {
+      offset += element.offsetTop;
+      element = element.offsetParent;
+    }
+    return offset;
+  }
+
+  function findHashElement(hash) {
+    // Try to find element by ID first
+    var elem = document.getElementById(hash);
+    if (elem) {
+      return elem;
+    }
+    // Try to find element by name attribute with .anchor class
+    try {
+      // Use CSS.escape for proper escaping in modern browsers (supported in Chrome 46+, Firefox 31+, Safari 10+)
+      // Fallback provides basic escaping for older browsers, though not comprehensive for all CSS special characters
+      var escapedHash = typeof CSS !== 'undefined' && CSS.escape 
+        ? CSS.escape(hash) 
+        : hash.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+      return document.querySelector('[name="' + escapedHash + '"].anchor');
+    } catch(e) {
+      // Handle any selector parsing errors gracefully
+      return null;
+    }
+  }
+
   function getLinkTarget(target) {
     while (target && target.nodeName != 'A') {
       target = target.parentNode
@@ -136,6 +165,7 @@ var instantClick
     var prog = document.getElementById("navigation-progress");
     prog.classList.remove("showing");
 
+    var hashToScroll = null;
     if (newUrl) {
       const routeChangeTarget = document.getElementById('route-change-target');
       if(routeChangeTarget) {
@@ -145,22 +175,19 @@ var instantClick
       history.pushState(null, null, newUrl.replace("?samepage=true","").replace("&samepage=true",""))
 
       var hashIndex = newUrl.indexOf('#'),
-          hashElem = hashIndex > -1 && (
-            document.getElementById(newUrl.substr(hashIndex + 1)) ||
-            document.querySelector(`[name=${newUrl.substr(hashIndex + 1)}].anchor`)
-          ),
+          hashElem = hashIndex > -1 && findHashElement(newUrl.substr(hashIndex + 1)),
           offset = 0,
           samePage = newUrl.indexOf("samepage=true") > -1;
 
       if (hashElem) {
-        while (hashElem.offsetParent) {
-          offset += hashElem.offsetTop
-
-          hashElem = hashElem.offsetParent
-        }
+        offset = calculateOffsetTop(hashElem);
       }
       if (!samePage){
         scrollTo(0, offset)
+        // Store hash for re-scroll after change event handlers complete
+        if (hashIndex > -1) {
+          hashToScroll = newUrl.substr(hashIndex + 1);
+        }
       }
 
 
@@ -190,6 +217,19 @@ var instantClick
     }
     else {
       triggerPageEvent('change', false)
+      // Re-scroll to hash after change event handlers have completed
+      // This ensures the DOM is fully updated before calculating scroll position
+      // Using double requestAnimationFrame to ensure layout is complete
+      if (hashToScroll) {
+        requestAnimationFrame(function() {
+          requestAnimationFrame(function() {
+            var hashElem = findHashElement(hashToScroll);
+            if (hashElem) {
+              scrollTo(0, calculateOffsetTop(hashElem));
+            }
+          });
+        });
+      }
     }
   }
 
