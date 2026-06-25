@@ -103,7 +103,9 @@ async function generateBillboard(element) {
             sidebarContainer.innerHTML = template.innerHTML;
             sidebarContainer.classList.remove('hidden');
             executeBBScripts(sidebarContainer);
+            sidebarContainer.querySelectorAll('.js-billboard').forEach(observeThisBillboard);
             observeBillboards();
+            setupBillboardInteractivity();
           }
         }
         element.style.display = 'none';

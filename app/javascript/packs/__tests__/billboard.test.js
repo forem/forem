@@ -18,6 +18,8 @@ jest.mock('../billboardAfterRenderActions', () => ({
 
 describe('billboard.js - internal navigation behavior', () => {
   let mockFetch;
+  let originalFetch;
+  let originalHoneybadger;
 
   beforeEach(() => {
     // Reset mocks
@@ -25,16 +27,18 @@ describe('billboard.js - internal navigation behavior', () => {
     
     // Set up dummy elements and environment variables
     document.body.innerHTML = '';
+    originalHoneybadger = global.Honeybadger;
     global.Honeybadger = { notify: jest.fn() };
     
     // Mock window.fetch
+    originalFetch = global.fetch;
     mockFetch = jest.fn();
     global.fetch = mockFetch;
   });
 
   afterEach(() => {
-    delete global.fetch;
-    delete global.Honeybadger;
+    global.fetch = originalFetch;
+    global.Honeybadger = originalHoneybadger;
   });
 
   it('renders billboard normally when isInternalNav is false', async () => {
@@ -102,6 +106,7 @@ describe('billboard.js - internal navigation behavior', () => {
     // Verify appropriate rendering callbacks
     expect(executeBBScripts).toHaveBeenCalledWith(mockContainer);
     expect(observeBillboards).toHaveBeenCalled();
+    expect(setupBillboardInteractivity).toHaveBeenCalled();
   });
 
   it('hides main container and does not show minimized when isInternalNav is true and billboard is NOT persistent', async () => {
