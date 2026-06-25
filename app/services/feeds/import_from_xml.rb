@@ -21,16 +21,21 @@ module Feeds
       feed.entries.reverse_each do |item|
         next if Feeds::CheckItemPreviouslyImported.call(item, user)
 
-        markdown = Feeds::AssembleArticleMarkdown.call(item, user, feed, item.url)
+        normalized_url = item.url.to_s.strip.split("?source=")[0]
+
+        markdown = Feeds::AssembleArticleMarkdown.call(item, user, feed, normalized_url)
         Article.create!(
           user: user,
-          feed_source_url: item.url,
+          feed_source_url: normalized_url,
           published_from_feed: true,
           body_markdown: markdown,
         )
         imported += 1
       rescue StandardError => e
-        Rails.logger.error("Feeds::ImportFromXml item error: #{e.message}")
+        Rails.logger.error(
+          "Feeds::ImportFromXml item error: #{e.class} - #{e.message} " \
+          "for item: #{item.url}. Backtrace: #{e.backtrace&.first(5)&.join(' | ')}"
+        )
       end
 
       { imported: imported }

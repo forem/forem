@@ -73,7 +73,7 @@
             <%= render "feed_source_form", source: Feeds::Source.new %>
             <p class="fs-s color-base-60 mt-3">
               <%= t("views.dashboard.feed_imports.xml_import.url_blocked_hint_html",
-                    link: "<a href='#xml-import' class='crayons-link'>#{t("views.dashboard.feed_imports.xml_import.url_blocked_link")}</a>".html_safe) %>
+                    link: link_to(t("views.dashboard.feed_imports.xml_import.url_blocked_link"), "#xml-import", class: "crayons-link")) %>
             </p>
           </div>
         </details>
@@ -266,7 +266,7 @@
           <%= render "feed_source_form", source: Feeds::Source.new %>
           <p class="fs-s color-base-60 mt-3">
             <%= t("views.dashboard.feed_imports.xml_import.url_blocked_hint_html",
-                  link: "<a href='#xml-import' class='crayons-link'>#{t("views.dashboard.feed_imports.xml_import.url_blocked_link")}</a>".html_safe) %>
+                  link: link_to(t("views.dashboard.feed_imports.xml_import.url_blocked_link"), "#xml-import", class: "crayons-link")) %>
           </p>
         </div>
       <% end %>
