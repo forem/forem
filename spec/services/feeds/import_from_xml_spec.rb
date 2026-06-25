@@ -64,6 +64,25 @@ RSpec.describe Feeds::ImportFromXml, type: :service do
       expect(article.published_from_feed).to be(true)
     end
 
+    it "normalizes the feed_source_url by stripping query parameters" do
+      allow(item).to receive(:url).and_return("https://example.com/post-1?source=rss")
+      described_class.call(xml_content: valid_xml, user: user)
+
+      article = user.articles.last
+      expect(article.feed_source_url).to eq("https://example.com/post-1")
+    end
+
+    it "logs the exception class, item URL, and backtrace snippet on error" do
+      allow(Feeds::AssembleArticleMarkdown).to receive(:call).and_raise(StandardError, "parsing crash")
+      allow(Rails.logger).to receive(:error)
+
+      described_class.call(xml_content: valid_xml, user: user)
+
+      expect(Rails.logger).to have_received(:error).with(
+        a_string_including("StandardError", "parsing crash", item.url)
+      )
+    end
+
     it "continues importing remaining items when one fails" do
       item2 = instance_double(
         Feedjira::Parser::RSSEntry,
