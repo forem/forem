@@ -48,7 +48,7 @@
   color: var(--base-90);
   position: relative;
   user-select: none;
-  touch-action: none; // let pointer drag-select paint instead of scrolling on touch
+  touch-action: pan-y; // allow vertical touch scrolling
 
   &:hover {
     background: var(--base-5);
