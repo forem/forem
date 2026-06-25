@@ -28,4 +28,4 @@
 
 # Controls whether JS line/paragraph separators (U+2028 and U+2029) are escaped in JSON.
 # If set to `false`, escaping is bypassed since modern browsers support these in JSON.
-# Rails.application.config.active_support.escape_js_separators_in_json = false
+Rails.application.config.active_support.escape_js_separators_in_json = false
