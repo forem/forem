@@ -472,6 +472,27 @@ RSpec.describe Organization do
     end
   end
 
+  describe "#enqueue_profile_social_image_generation" do
+    before do
+      organization
+      allow(Images::ProfileSocialImageWorker).to receive(:perform_async)
+    end
+
+    context "when name, profile_image, tag_line, summary, or bg_color_hex changes" do
+      it "enqueues the profile social image generation worker" do
+        organization.update!(name: "New Org Name")
+        expect(Images::ProfileSocialImageWorker).to have_received(:perform_async).with(organization.id, "Organization")
+      end
+    end
+
+    context "when other fields change" do
+      it "does not enqueue the profile social image generation worker" do
+        organization.update!(twitter_username: "new_handle")
+        expect(Images::ProfileSocialImageWorker).not_to have_received(:perform_async)
+      end
+    end
+  end
+
   describe "#bust_cache" do
     context "when a new user is added to the organization" do
       let(:user) { create(:user) }

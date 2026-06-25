@@ -40,6 +40,7 @@ module Users
     before_update :update_content_preferences_updated_at_if_changed
     after_update :refresh_auto_audience_segments
     after_commit :bust_user_profile_details_cache, on: :update, if: :display_email_setting_changed_for_cache?
+    after_commit :enqueue_profile_social_image_generation, on: :update, if: :saved_change_to_brand_color1?
 
     def resolved_font_name
       config_font.gsub("default", Settings::UserExperience.default_font)
@@ -79,6 +80,10 @@ module Users
 
     def bust_user_profile_details_cache
       Users::BustProfileDetailsCacheWorker.perform_async(user_id)
+    end
+
+    def enqueue_profile_social_image_generation
+      Images::ProfileSocialImageWorker.perform_async(user_id, "User")
     end
 
     def display_email_setting_changed_for_cache?

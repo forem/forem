@@ -1248,6 +1248,27 @@ RSpec.describe User do
     end
   end
 
+  describe "#enqueue_profile_social_image_generation" do
+    before do
+      user
+      allow(Images::ProfileSocialImageWorker).to receive(:perform_async)
+    end
+
+    context "when name, profile_image, or username has changed" do
+      it "calls ProfileSocialImageWorker.perform_async" do
+        user.update!(name: "New Name")
+        expect(Images::ProfileSocialImageWorker).to have_received(:perform_async).with(user.id, "User")
+      end
+    end
+
+    context "when other fields change" do
+      it "does not call ProfileSocialImageWorker.perform_async" do
+        user.update!(email: "new_email@example.com")
+        expect(Images::ProfileSocialImageWorker).not_to have_received(:perform_async)
+      end
+    end
+  end
+
   describe "profile cache busting" do
     it "enqueues a profile identity cache bust when name changes" do
       sidekiq_assert_enqueued_with(job: Users::BustProfileIdentityCacheWorker, args: [user.id]) do

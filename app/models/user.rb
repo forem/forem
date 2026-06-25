@@ -298,6 +298,7 @@ class User < ApplicationRecord
   after_commit :bust_profile_details_cache, on: :update, if: :profile_details_changed_for_cache?
   after_commit :bust_profile_image_cache, on: :update, if: :profile_image_changed_for_cache?
   after_commit :enqueue_profile_spam_check, on: :update, if: :name_contains_spam_trigger_terms?
+  after_commit :enqueue_profile_social_image_generation, on: [:create, :update], if: :profile_social_image_attributes_changed?
 
   def self.average_articles_count
     Rails.cache.fetch("established_user_article_count", expires_in: 1.day) do
@@ -881,6 +882,14 @@ class User < ApplicationRecord
     return unless change && articles.published.from_subforem.size.positive?
 
     Images::SocialImageWorker.perform_async(id, self.class.name)
+  end
+
+  def profile_social_image_attributes_changed?
+    saved_change_to_name? || saved_change_to_profile_image? || saved_change_to_username?
+  end
+
+  def enqueue_profile_social_image_generation
+    Images::ProfileSocialImageWorker.perform_async(id, self.class.name)
   end
 
   def create_users_settings_and_notification_settings_records

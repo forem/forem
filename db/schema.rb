@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_06_25_160721) do
+ActiveRecord::Schema[7.2].define(version: 2026_06_25_200429) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1219,6 +1219,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_25_160721) do
     t.text "proof"
     t.string "secret"
     t.string "slug"
+    t.string "social_image"
     t.jsonb "social_links", default: {}, null: false
     t.integer "spent_credits_count", default: 0, null: false
     t.string "story"
