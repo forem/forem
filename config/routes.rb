@@ -173,6 +173,7 @@ Rails.application.routes.draw do
       patch "/admin_featured_toggle", to: "articles#admin_featured_toggle"
     end
     resources :events, only: %i[index]
+    get "/calendar", to: "calendar#index"
     get "events/:event_name_slug/:event_variation_slug", to: "events#show", as: :event
     post "events/:event_name_slug/:event_variation_slug/signup", to: "event_signups#create", as: :event_signup
     delete "events/:event_name_slug/:event_variation_slug/signup", to: "event_signups#destroy"

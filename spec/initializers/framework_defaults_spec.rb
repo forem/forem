@@ -150,19 +150,33 @@ describe "Framework Defaults 7.2 Upgrade Verification" do
   end
 
   describe "Framework Defaults 8.0 Upgrade Preparation" do
+    it "has the new_framework_defaults_8_0.rb initializer file present" do
+      expect(File.exist?(Rails.root.join("config/initializers/new_framework_defaults_8_0.rb"))).to be(true)
+    end
+
     it "sets default Regexp timeout to protect against ReDoS" do
-      if Regexp.respond_to?(:timeout)
-        expected_timeout = ENV.fetch("REGEXP_TIMEOUT", "1.0")
+      if Regexp.respond_to?(:timeout) && Regexp.respond_to?(:timeout=)
+        expected_timeout = ENV.fetch("REGEXP_TIMEOUT", "1.0").to_s
         if expected_timeout.blank? || %w[nil none false].include?(expected_timeout.downcase)
           expect(Regexp.timeout).to be_nil
         else
-          expect(Regexp.timeout).to eq(expected_timeout.to_f)
+          parsed_expected = begin
+                              timeout = Float(expected_timeout)
+                              timeout.positive? ? timeout : 1.0
+                            rescue ArgumentError, TypeError
+                              1.0
+                            end
+          expect(Regexp.timeout).to eq(parsed_expected)
         end
       end
     end
 
     it "enables strict freshness to prioritize ETag over Last-Modified" do
       expect(Rails.application.config.action_dispatch.strict_freshness).to be(true)
+    end
+
+    it "preserves timezone in to_time" do
+      expect(Rails.application.config.active_support.to_time_preserves_timezone).to eq(:zone)
     end
 
     it "enables reloading in test environment using config.enable_reloading" do
@@ -178,40 +192,53 @@ describe "Framework Defaults 7.2 Upgrade Verification" do
     end
 
     describe "Regexp timeout parser logic" do
+      before do
+        @original_timeout = Regexp.timeout if Regexp.respond_to?(:timeout)
+      end
+
       after do
-        # Restore the original timeout value
         if Regexp.respond_to?(:timeout=)
-          original_timeout = ENV.fetch("REGEXP_TIMEOUT", "1.0")
-          Regexp.timeout = if original_timeout.blank? || %w[nil none false].include?(original_timeout.downcase)
-                             nil
-                           else
-                             original_timeout.to_f
-                           end
+          Regexp.timeout = @original_timeout
         end
       end
 
       it "correctly parses and applies Regexp timeouts" do
-        skip "Regexp.timeout not supported in this Ruby version" unless Regexp.respond_to?(:timeout=)
+        skip "Regexp.timeout not supported in this Ruby version" unless Regexp.respond_to?(:timeout) && Regexp.respond_to?(:timeout=)
 
         # Test setting a custom float value
         stub_const("ENV", ENV.to_h.merge("REGEXP_TIMEOUT" => "2.5"))
-        load Rails.root.join("config/initializers/regexp_timeout.rb")
+        load Rails.root.join("config/initializers/new_framework_defaults_8_0.rb")
         expect(Regexp.timeout).to eq(2.5)
 
         # Test disabling the timeout with 'nil'
         stub_const("ENV", ENV.to_h.merge("REGEXP_TIMEOUT" => "nil"))
-        load Rails.root.join("config/initializers/regexp_timeout.rb")
+        load Rails.root.join("config/initializers/new_framework_defaults_8_0.rb")
         expect(Regexp.timeout).to be_nil
 
         # Test disabling the timeout with 'none'
         stub_const("ENV", ENV.to_h.merge("REGEXP_TIMEOUT" => "none"))
-        load Rails.root.join("config/initializers/regexp_timeout.rb")
+        load Rails.root.join("config/initializers/new_framework_defaults_8_0.rb")
         expect(Regexp.timeout).to be_nil
 
         # Test disabling the timeout with 'false'
         stub_const("ENV", ENV.to_h.merge("REGEXP_TIMEOUT" => "false"))
-        load Rails.root.join("config/initializers/regexp_timeout.rb")
+        load Rails.root.join("config/initializers/new_framework_defaults_8_0.rb")
         expect(Regexp.timeout).to be_nil
+
+        # Test invalid values (fallback to 1.0)
+        stub_const("ENV", ENV.to_h.merge("REGEXP_TIMEOUT" => "abc"))
+        load Rails.root.join("config/initializers/new_framework_defaults_8_0.rb")
+        expect(Regexp.timeout).to eq(1.0)
+
+        # Test negative values (fallback to 1.0)
+        stub_const("ENV", ENV.to_h.merge("REGEXP_TIMEOUT" => "-0.5"))
+        load Rails.root.join("config/initializers/new_framework_defaults_8_0.rb")
+        expect(Regexp.timeout).to eq(1.0)
+
+        # Test zero values (fallback to 1.0)
+        stub_const("ENV", ENV.to_h.merge("REGEXP_TIMEOUT" => "0.0"))
+        load Rails.root.join("config/initializers/new_framework_defaults_8_0.rb")
+        expect(Regexp.timeout).to eq(1.0)
       end
     end
   end
