@@ -266,6 +266,35 @@ RSpec.describe "Stories::Feeds" do
           expect(response.headers["Cache-Control"]).not_to include("public, no-cache")
         end
       end
+
+      context "with blocked users" do
+        let(:blocked_user) { create(:user) }
+        let!(:blocked_article) do
+          create(:article, :past, hotness_score: 1000, score: 1000, past_published_at: 3.hours.ago, user_id: blocked_user.id)
+        end
+
+        before do
+          UserBlock.find_or_create_by!(blocker: user, blocked: blocked_user, config: "default")
+        end
+
+        it "excludes blocked users' articles when feed_strategy is basic" do
+          allow(Settings::UserExperience).to receive(:feed_strategy).and_return("basic")
+
+          get stories_feed_path
+
+          article_ids = response.parsed_body.map { |item| item["id"] }
+          expect(article_ids).not_to include(blocked_article.id)
+        end
+
+        it "excludes blocked users' articles when feed_strategy is large_forem_experimental" do
+          allow(Settings::UserExperience).to receive(:feed_strategy).and_return("large_forem_experimental")
+
+          get stories_feed_path
+
+          article_ids = response.parsed_body.map { |item| item["id"] }
+          expect(article_ids).not_to include(blocked_article.id)
+        end
+      end
     end
 
     context "when there are highly rated comments" do
