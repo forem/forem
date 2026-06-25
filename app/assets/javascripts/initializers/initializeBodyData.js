@@ -11,7 +11,12 @@ function removeExistingCSRF() {
 
 function fetchBaseData() {
   fetch('/async_info/base_data')
-    .then((response) => response.json())
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
     .then(
       ({
         token,
@@ -97,7 +102,10 @@ function fetchBaseData() {
           browserStoreCache('remove');
         }
       },
-    );
+    )
+    .catch((error) => {
+      console.error('Error fetching base data:', error);
+    });
 }
 
 function initializeBodyData() {
