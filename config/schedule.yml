@@ -1,3 +1,7 @@
+events_send_notifications:
+  description: "Sends automated on-site notifications to users signed up for events (runs every hour)"
+  cron: "0 * * * *"
+  class: "Events::SendNotificationsWorker"
 feeds_import:
   description: "Imports feed items as articles (runs hourly on the 20th minute after the hour)"
   cron: "20 * * * *"
@@ -210,3 +214,13 @@ events_manage_broadcast_billboards:
   description: "Manages automatic Billboard deployments natively toggling configurations depending on Event start/end boundaries (runs every 5 minutes)"
   cron: "*/5 * * * *"
   class: "Events::ManageBroadcastBillboardsWorker"
+identify_trends:
+  description: "Detects and labels timely semantic trends from recently published articles (runs every 6 hours)"
+  cron: "0 */6 * * *"
+  class: "IdentifyTrendsWorker"
+
+concept_daily_metrics:
+  description: "Aggregates and records daily popularity and engagement metrics for semantic concepts (runs daily at 02:00 UTC)"
+  cron: "0 2 * * *"
+  class: "Concepts::DailyMetricsWorker"
+

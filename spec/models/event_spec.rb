@@ -8,6 +8,7 @@ RSpec.describe Event, type: :model do
   describe "associations" do
     it { is_expected.to belong_to(:user).optional }
     it { is_expected.to belong_to(:organization).optional }
+    it { is_expected.to belong_to(:page).optional }
   end
 
   describe "enums" do
@@ -15,7 +16,8 @@ RSpec.describe Event, type: :model do
       is_expected.to define_enum_for(:type_of).with_values(
         live_stream: 0,
         takeover: 1,
-        other: 2
+        other: 2,
+        challenge: 3
       )
     end
     it do
@@ -60,15 +62,33 @@ RSpec.describe Event, type: :model do
     end
 
     describe "primary_stream_url format" do
-      it "allows valid youtube or twitch https URLs" do
+      it "allows valid youtube, twitch, or streamyard https URLs" do
         expect(build(:event, primary_stream_url: "https://www.youtube.com/watch?v=1234567890a")).to be_valid
         expect(build(:event, primary_stream_url: "https://twitch.tv/ThePracticalDev")).to be_valid
+        expect(build(:event, primary_stream_url: "https://streamyard.com/watch/12345")).to be_valid
       end
 
       it "rejects non-https, XSS, or unknown URLs" do
         expect(build(:event, primary_stream_url: "http://twitch.tv/test")).not_to be_valid
         expect(build(:event, primary_stream_url: "https://example.com")).not_to be_valid
         expect(build(:event, primary_stream_url: "javascript:alert(1)")).not_to be_valid
+      end
+    end
+
+    describe "page delegation validation" do
+      it "requires page when delegate_to_page is true" do
+        event = build(:event, delegate_to_page: true, page: nil)
+        expect(event).not_to be_valid
+        expect(event.errors[:page]).to include("can't be blank")
+
+        page = build(:page)
+        event.page = page
+        expect(event).to be_valid
+      end
+
+      it "does not require page when delegate_to_page is false" do
+        event = build(:event, delegate_to_page: false, page: nil)
+        expect(event).to be_valid
       end
     end
   end
@@ -84,6 +104,18 @@ RSpec.describe Event, type: :model do
       event = create(:event, primary_stream_url: "https://youtu.be/abcdefghijk")
       expect(event.primary_stream_url).to include("youtube.com/embed/abcdefghijk?autoplay=1")
       expect(event.data["chat_url"]).to include("youtube.com/live_chat?v=abcdefghijk")
+    end
+
+    it "automatically embeds URLs for Streamyard and does not set chat_url" do
+      event1 = create(:event, primary_stream_url: "https://streamyard.com/watch/12345")
+      expect(event1.primary_stream_url).to eq("https://streamyard.com/e/12345")
+      expect(event1.data["chat_url"]).to be_nil
+
+      event2 = create(:event, primary_stream_url: "https://streamyard.com/e/12345")
+      expect(event2.primary_stream_url).to eq("https://streamyard.com/e/12345")
+      
+      event3 = create(:event, primary_stream_url: "https://streamyard.com/12345")
+      expect(event3.primary_stream_url).to eq("https://streamyard.com/e/12345")
     end
   end
 
@@ -139,5 +171,63 @@ RSpec.describe Event, type: :model do
 
       expect(post_bb.body_markdown).to include("id=\"event-takeover-image\"")
     end
+
+    it "generates persistent on-post billboard with minimized HTML for a live_stream event" do
+      user = create(:user)
+      event = create(:event, 
+                     broadcast_config: "global_broadcast", 
+                     type_of: "live_stream",
+                     title: "Test Live Stream Event", 
+                     description: "A live broadcast summary",
+                     event_name_slug: "test-live-stream", 
+                     event_variation_slug: "v1",
+                     user: user)
+
+      expect(event.billboards.count).to eq(2)
+      
+      feed_bb = event.billboards.find_by(placement_area: "feed_first")
+      post_bb = event.billboards.find_by(placement_area: "post_fixed_bottom")
+
+      expect(feed_bb.custom_display_label).to eq("#{Settings::Community.community_name} Live Events")
+      
+      expect(post_bb.special_behavior).to eq("persistent")
+      expect(post_bb.minimized_body_markdown).to include("live-stream-minimized")
+      expect(post_bb.minimized_body_markdown).to include("Test Live Stream Event")
+      expect(post_bb.minimized_body_markdown).to include("A live broadcast summary")
+      expect(post_bb.minimized_body_markdown).to include("/events/test-live-stream/v1")
+      expect(post_bb.minimized_body_markdown).to include("media-wrapper-minimized")
+      expect(post_bb.minimized_body_markdown).to include("player-container-minimized")
+      expect(post_bb.minimized_processed_html).to include("live-stream-minimized")
+    end
+  end
+
+  describe "Callbacks" do
+    it "registers #bust_upcoming_events_cache as an after_commit callback" do
+      callback_names = Event._commit_callbacks.select { |cb| cb.kind == :after }.map(&:filter)
+      expect(callback_names).to include(:bust_upcoming_events_cache)
+    end
+  end
+
+  describe "#bust_upcoming_events_cache" do
+    let(:memory_store) { ActiveSupport::Cache.lookup_store(:memory_store) }
+
+    before do
+      allow(Rails).to receive(:cache).and_return(memory_store)
+      Rails.cache.clear
+    end
+
+    after do
+      Rails.cache.clear
+    end
+
+    it "deletes the upcoming_elevated_events cache key" do
+      Rails.cache.write("upcoming_elevated_events", ["cached_data"])
+      expect(Rails.cache.read("upcoming_elevated_events")).to eq(["cached_data"])
+
+      build(:event).send(:bust_upcoming_events_cache)
+
+      expect(Rails.cache.read("upcoming_elevated_events")).to be_nil
+    end
   end
 end
+

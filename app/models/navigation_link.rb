@@ -1,4 +1,5 @@
 class NavigationLink < ApplicationRecord
+  resourcify
   SVG_REGEXP = /\A<svg .*>[\s]*\z/im
 
   belongs_to :subforem, optional: true
@@ -8,8 +9,8 @@ class NavigationLink < ApplicationRecord
   before_validation :set_default_icon_if_blank
   before_save :strip_local_hostname, if: :url?
 
-  enum section: { default: 0, other: 1 }, _suffix: true
-  enum display_to: { all: 0, logged_in: 1, logged_out: 2 }, _prefix: true
+  enum :section, { default: 0, other: 1 }, suffix: true
+  enum :display_to, { all: 0, logged_in: 1, logged_out: 2 }, prefix: true
 
   validates :name, :url, presence: true
   validates :url, url: { schemes: %w[https http] }, uniqueness: { scope: :name }

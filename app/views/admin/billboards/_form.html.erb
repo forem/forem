@@ -28,6 +28,16 @@
     </div>
 
     <div class="crayons-field">
+      <%= label_tag :special_behavior, "Special Behavior:", class: "crayons-field__label" %>
+      <%= select_tag :special_behavior, options_for_select([["None", "nothing"], ["Delayed (10s delay)", "delayed"], ["Persistent (Minimizes to sidebar)", "persistent"]], selected: @billboard.special_behavior), class: "crayons-select" %>
+    </div>
+
+    <div class="crayons-field">
+      <%= label_tag :minimized_body_markdown, "Minimized Body Content (required for Persistent billboards):", class: "crayons-field__label" %>
+      <%= text_area_tag :minimized_body_markdown, @billboard.minimized_body_markdown, size: "100x5", class: "crayons-textfield" %>
+    </div>
+
+    <div class="crayons-field">
       <%= label_tag :render_mode, "Render Mode:", class: "crayons-field__label" %>
       <%= select_tag :render_mode, options_for_select([["Forem Markdown", "forem_markdown"], ["Raw", "raw"]], selected: @billboard.render_mode), class: "crayons-select" %>
     </div>

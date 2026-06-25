@@ -57,7 +57,7 @@
     <div class="crayons-field">
       <%= form.label :primary_stream_url, "Primary Stream URL", class: "crayons-field__label" do %>
         Primary Stream URL
-        <p class="crayons-field__description">The streaming embed URL (e.g., Twitch, YouTube player src)</p>
+        <p class="crayons-field__description">The streaming embed URL (e.g., Twitch, YouTube, or Streamyard player src)</p>
       <% end %>
       <%= form.text_area :primary_stream_url, class: "crayons-textfield", rows: 2 %>
     </div>
@@ -156,6 +156,32 @@
         Published
         <p class="crayons-field__description">Determines if the event is publicly accessible.</p>
       <% end %>
+    </div>
+
+    <div class="crayons-field crayons-field--checkbox">
+      <%= form.check_box :elevated, class: "crayons-checkbox" %>
+      <%= form.label :elevated, class: "crayons-field__label" do %>
+        Elevated
+        <p class="crayons-field__description">Determines if the event is elevated and displayed in the homepage sidebar.</p>
+      <% end %>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="crayons-field">
+        <%= form.label :page_id, "Delegated Page", class: "crayons-field__label" do %>
+          Delegated Page
+          <p class="crayons-field__description">Select a Page if this event delegates to a page.</p>
+        <% end %>
+        <%= form.select :page_id, Page.order(:title).pluck(:title, :id), { include_blank: "None (No page delegation)" }, class: "crayons-select" %>
+      </div>
+
+      <div class="crayons-field crayons-field--checkbox mt-8">
+        <%= form.check_box :delegate_to_page, class: "crayons-checkbox" %>
+        <%= form.label :delegate_to_page, class: "crayons-field__label" do %>
+          Delegate to Page
+          <p class="crayons-field__description">If checked, links to this event will redirect or point directly to the delegated page.</p>
+        <% end %>
+      </div>
     </div>
 
     <div class="mt-4">

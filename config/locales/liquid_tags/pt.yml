@@ -44,6 +44,7 @@ pt:
       invalid_url: URL do Hugging Face Space inválida
     instagram_tag:
       invalid_instagram_id: ID do Instagram inválido
+      view_post: Ver essa publicação no Instagram
     js_fiddle_tag:
       invalid_jsfiddle_url: URL do JSFiddle inválida
       invalid_options: Opções inválidas
@@ -82,8 +83,8 @@ pt:
       invalid_reddit_link: 'Link do Reddit inválido: %{url}'
     replit_tag:
       invalid_replit_id: URL do Replit inválida ou @user/slug
-    runkit_tag:
-      runkit_tag_is_invalid: Tag do Runkit é inválida
+    legacy_code_tag:
+      invalid_tag: Tag de código legado inválida
     slideshare_tag:
       invalid_slideshare_key: Chave do Slideshare inválida
     soundcloud_tag:

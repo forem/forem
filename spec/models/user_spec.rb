@@ -39,6 +39,91 @@ RSpec.describe User do
     allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
   end
 
+  describe "Trackable adoption for DEV → Core sync" do
+    before do
+      allow(Trackable::Registry).to receive(:active_names).and_return([:any])
+      allow(Trackable::DispatchWorker).to receive(:perform_async)
+    end
+
+    around { |ex| with_trackable_events { ex.run } }
+
+    after { FeatureFlag.remove(:dev_core_user_sync) }
+
+    def enable_sync(actor: nil)
+      Settings::General.customerio_cdp_enabled = true
+      if actor
+        FeatureFlag.enable(:dev_core_user_sync, FeatureFlag::Actor[actor])
+      else
+        FeatureFlag.enable(:dev_core_user_sync)
+      end
+    end
+
+    it "includes the Trackable concern" do
+      expect(described_class.included_modules).to include(Trackable)
+    end
+
+    it "tracks only its own user id" do
+      user = create(:user)
+      expect(user.trackable_user_ids).to eq([user.id])
+    end
+
+    it "ships a curated payload of id, username, email, name" do
+      user = create(:user)
+      expect(user.trackable_payload.keys).to contain_exactly("id", "username", "email", "name")
+    end
+
+    # Sidekiq.strict_args! (raise-mode outside production) rejects symbol keys in
+    # job arguments, so the payload must be JSON-safe.
+    it "uses JSON-safe string keys in the payload" do
+      user = create(:user)
+      expect(user.trackable_payload.keys).to all(be_a(String))
+    end
+
+    it "emits user_created on registration when sync is enabled" do
+      enable_sync
+      create(:user)
+      expect(Trackable::DispatchWorker).to have_received(:perform_async)
+        .with(anything, "user_created", anything, anything, anything)
+    end
+
+    it "does not emit when the admin setting is off" do
+      Settings::General.customerio_cdp_enabled = false
+      FeatureFlag.enable(:dev_core_user_sync)
+      create(:user)
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+    end
+
+    it "does not emit for a user without the feature flag" do
+      Settings::General.customerio_cdp_enabled = true
+      create(:user) # flag not enabled
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+    end
+
+    it "emits user_updated when profile_updated_at is touched" do
+      user = create(:user)
+      enable_sync(actor: user)
+      user.touch(:profile_updated_at)
+      expect(Trackable::DispatchWorker).to have_received(:perform_async)
+        .with(anything, "user_updated", anything, anything, anything)
+    end
+
+    it "does not emit user_updated for non-profile row changes" do
+      user = create(:user)
+      enable_sync(actor: user)
+      user.update!(last_comment_at: 1.day.ago)
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+        .with(anything, "user_updated", anything, anything, anything)
+    end
+
+    it "does not emit user_destroyed when a synced user is deleted (deletes are out of scope)" do
+      user = create(:user)
+      enable_sync(actor: user)
+      user.destroy!
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+        .with(anything, "user_destroyed", anything, anything, anything)
+    end
+  end
+
   describe "delegations" do
     it { is_expected.to delegate_method(:admin?).to(:authorizer) }
     it { is_expected.to delegate_method(:any_admin?).to(:authorizer) }
@@ -191,6 +276,54 @@ RSpec.describe User do
       it { is_expected.to validate_length_of(:name).is_at_most(100).is_at_least(1) }
       it { is_expected.to validate_length_of(:password).is_at_most(100).is_at_least(8) }
       it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
+
+      it "rejects RFC2047 encoded-words in email with a generic invalid error" do
+        invalid_emails = [
+          "=?utf-8?q?test=40attacker.com=3e?=@company.com",
+          "=?utf-8?q?test=40attacker.com=3e=00?=test@company.com",
+          "=?utf-8?q?test=40attacker.com=3e=0A=0D?=test@company.com",
+          "=?utf-8?q?test=40attacker.com=3e=3c?=test@company.com",
+          "=?utf-8?q?test=40attacker.com=3e=0A=0D?=RCPTTO:test@company.com",
+          "user=?utf-8?q?x?=@company.com",
+          "user@=?utf-8?q?company.com?=",
+          "=?utf-8?Q?test=40attacker.com=3e?=@company.com",
+          "=?utf-8?B?dGVzdEBhdHRhY2tlci5jb20+?=@company.com",
+        ]
+
+        invalid_emails.each do |email|
+          user = build(:user, email: email)
+
+          expect(user).not_to be_valid
+          expect(user.errors[:email]).to include("is invalid")
+        end
+      end
+
+      it "documents that mail decoding changes the recipient shape locally" do
+        encoded_word_email = "=?utf-8?q?test=40attacker.com=3e?=@company.com"
+
+        expect(Mail::Encodings.value_decode(encoded_word_email)).to eq("test@attacker.com>@company.com")
+      end
+
+      it "preserves nil email behavior" do
+        user = build(:user, email: nil)
+
+        expect(user).to be_valid
+      end
+
+      it "keeps normal and non-encoded-word email addresses valid" do
+        valid_emails = [
+          "user@example.com",
+          "first.last+tag@example.co.uk",
+          "user=?not-complete@example.com",
+          "user?utf-8?q?x@example.com",
+        ]
+
+        valid_emails.each do |email|
+          user = build(:user, email: email)
+
+          expect(user).to be_valid
+        end
+      end
 
       it { is_expected.not_to allow_value("  ").for(:name) }
 
@@ -737,6 +870,33 @@ RSpec.describe User do
       expect(UserRole.count).to eq(0)
 
       expect { user.set_initial_roles! }.not_to change(UserRole, :count)
+    end
+  end
+
+  describe "#author_trust_score" do
+    it "returns 0 for score < 25" do
+      user.update_column(:score, 10)
+      expect(user.author_trust_score).to eq(0)
+    end
+
+    it "returns 1 for score between 25 and 74" do
+      user.update_column(:score, 50)
+      expect(user.author_trust_score).to eq(1)
+    end
+
+    it "returns 2 for score between 75 and 174" do
+      user.update_column(:score, 100)
+      expect(user.author_trust_score).to eq(2)
+    end
+
+    it "returns 3 for score between 175 and 299" do
+      user.update_column(:score, 200)
+      expect(user.author_trust_score).to eq(3)
+    end
+
+    it "returns 4 for score >= 300" do
+      user.update_column(:score, 350)
+      expect(user.author_trust_score).to eq(4)
     end
   end
 

@@ -38,6 +38,16 @@ class Comment < ApplicationRecord
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :ai_audits, as: :affected_content, dependent: :nullify
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
+
+  has_many :concept_memberships, as: :record, dependent: :destroy
+  has_many :concepts, through: :concept_memberships
+
+  begin
+    has_neighbors :semantic_embedding if column_names.include?("semantic_embedding")
+  rescue StandardError
+    # DB not available yet
+  end
+
   before_validation :evaluate_markdown, if: -> { body_markdown }
   before_save :set_markdown_character_count, if: :body_markdown
   before_save :synchronous_spam_score_check
@@ -74,8 +84,10 @@ class Comment < ApplicationRecord
   after_create_commit :record_field_test_event
   after_create_commit :complete_onboarding_welcome_item
   after_create_commit :send_email_notification, if: :should_send_email_notification?
+  after_create_commit :enqueue_update_user_interest_embedding, if: :commentable_is_article?
 
   after_commit :calculate_score, on: %i[create update]
+  after_commit :enqueue_article_activity_update, on: :destroy, if: :commentable_is_article?
 
   after_update_commit :update_notifications, if: proc { |comment| comment.saved_changes.include? "body_markdown" }
 
@@ -197,22 +209,62 @@ class Comment < ApplicationRecord
   end
 
   def processed_html_final
-    # This is a final non-database-driven step to adjust processed html
-    # It is sort of a hack to avoid having to reprocess all articles
-    # It is currently only for this one cloudflare domain change
-    # It is duplicated across article, bullboard and comment where it is most needed
-    # In the future this could be made more customizable. For now it's just this one thing.
+    processed_html = replace_legacy_code_html(self.processed_html)
+
     return processed_html if ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"].blank? || ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"].blank?
 
     processed_html.gsub(ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"],
                         ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
   end
 
+  def replace_legacy_code_html(html)
+    return html if html.blank?
+    return html unless html.include?("runkit-element")
+
+    fragment = Nokogiri::HTML.fragment(html)
+    fragment.css('.runkit-element').each do |element|
+      preamble = element.at_css('code:nth-of-type(1)')&.text.to_s
+      content = element.at_css('code:nth-of-type(2)')&.text.to_s
+
+      replacement_html = LegacyCodeTag.fallback_html(
+        preamble: preamble,
+        parsed_content: content,
+      )
+
+      element.replace(Nokogiri::HTML.fragment(replacement_html))
+    end
+
+    fragment.to_html
+  rescue StandardError
+    html
+  end
+  private :replace_legacy_code_html
+
   def subforem_id
     commentable&.subforem_id
   end
 
   private
+
+  def commentable_is_article?
+    commentable_type == "Article"
+  end
+
+  def enqueue_update_user_interest_embedding
+    UpdateUserInterestEmbeddingWorker.perform_async(user_id, commentable_id, 0.3)
+  end
+
+  def enqueue_article_activity_update
+    # Score-driven create/destroy enqueues are emitted from
+    # Comments::CalculateScore (which uses update_columns and therefore
+    # bypasses callbacks). This after_commit only handles the destroy case:
+    # if a counted (score > 0) comment is removed, decrement the cache.
+    return unless destroyed?
+    return unless score.to_i.positive?
+
+    payload = { "iso" => created_at.to_date.iso8601 }
+    Articles::UpdateArticleActivityWorker.perform_async(commentable_id, "comment", "destroy", payload)
+  end
 
   def remove_notifications?
     deleted? || hidden_by_commentable_user?

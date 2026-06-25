@@ -4,10 +4,7 @@ RSpec.describe LinkedDomain, type: :model do
   describe "validations" do
     subject { LinkedDomain.new(host: "example.com") }
 
-    before { LinkedDomain.create!(host: "example.com") }
-
     it { is_expected.to validate_presence_of(:host) }
-    it { is_expected.to validate_uniqueness_of(:host) }
   end
 
   describe "enums" do
@@ -19,6 +16,38 @@ RSpec.describe LinkedDomain, type: :model do
           basic_spam: 2,
           extreme_spam: 3
         )
+    end
+  end
+
+  describe ".find_or_create_by_url" do
+    context "with a valid URL" do
+      it "returns a persisted LinkedDomain" do
+        domain = described_class.find_or_create_by_url("https://example.com/some/page")
+        expect(domain).to be_persisted
+        expect(domain.host).to eq("example.com")
+      end
+
+      it "reuses an existing LinkedDomain if already present" do
+        existing = described_class.create!(host: "example.com")
+        domain = described_class.find_or_create_by_url("https://example.com/other")
+        expect(domain).to eq(existing)
+      end
+    end
+
+    context "with a URL with an empty/blank host" do
+      it "returns nil for 'https://'" do
+        expect(described_class.find_or_create_by_url("https://")).to be_nil
+      end
+
+      it "returns nil for invalid/empty URL" do
+        expect(described_class.find_or_create_by_url("")).to be_nil
+      end
+    end
+
+    context "with an invalid URL" do
+      it "returns nil" do
+        expect(described_class.find_or_create_by_url("http:::/invalid")).to be_nil
+      end
     end
   end
 

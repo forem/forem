@@ -1,4 +1,5 @@
 /* global userData */
+import { isBotUserAgent } from '@utilities/isBot';
 // This is currently a duplicate of app/assets/javascript/initializers/initializeBillboardVisibility.
 export function initializeBillboardVisibility() {
   const billboards = document.querySelectorAll('[data-display-unit]');
@@ -58,12 +59,21 @@ export function observeBillboards() {
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const elem = entry.target;
-          if (entry.intersectionRatio >= 0.25) {
-            setTimeout(() => {
+        const elem = entry.target;
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.25) {
+          elem.dataset.isBillboardVisible = 'true';
+          setTimeout(() => {
+            if (elem.dataset.isBillboardVisible === 'true') {
               trackAdImpression(elem);
-            }, 200);
+              startPollingBillboard(elem);
+            }
+          }, 200);
+        } else {
+          elem.dataset.isBillboardVisible = 'false';
+          const intervalId = elem.dataset.pollingIntervalId;
+          if (intervalId) {
+            clearInterval(Number(intervalId));
+            elem.removeAttribute('data-polling-interval-id');
           }
         }
       });
@@ -90,10 +100,7 @@ function showDelayed() {
 }
 
 function trackAdImpression(adBox) {
-  const isBot =
-    /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(
-      navigator.userAgent,
-    ); // is crawler
+  const isBot = isBotUserAgent(navigator.userAgent);
   const adSeen = adBox.dataset.impressionRecorded;
   if (isBot || adSeen) {
     return;
@@ -121,9 +128,52 @@ function trackAdImpression(adBox) {
       body: JSON.stringify(dataBody),
       credentials: 'same-origin',
     })
+    .then((response) => {
+      if (response && response.ok && typeof response.json === 'function') {
+        return response.json();
+      }
+    })
+    .then((data) => {
+      if (data && data.id) {
+        adBox.dataset.eventId = data.id;
+      }
+    })
     .catch((error) => console.error(error));
 
   adBox.dataset.impressionRecorded = true;
+}
+
+function updateBillboardImpressionTime(adBox) {
+  const eventId = adBox.dataset.eventId;
+  if (!eventId) {
+    return;
+  }
+
+  const tokenMeta = document.querySelector("meta[name='csrf-token']");
+  const csrfToken = tokenMeta && tokenMeta.getAttribute('content');
+
+  window.fetch(`/bb_tabulations/${eventId}`, {
+    method: 'PATCH',
+    headers: {
+      'X-CSRF-Token': csrfToken,
+      'Content-Type': 'application/json',
+    },
+    credentials: 'same-origin',
+  }).catch((error) => console.error(error));
+}
+
+function startPollingBillboard(adBox) {
+  if (adBox.dataset.pollingIntervalId) {
+    return; // Already polling
+  }
+
+  const intervalId = setInterval(() => {
+    if (document.visibilityState === 'visible' && adBox.dataset.isBillboardVisible === 'true') {
+      updateBillboardImpressionTime(adBox);
+    }
+  }, 10000);
+
+  adBox.dataset.pollingIntervalId = intervalId;
 }
 
 function trackAdClick(adBox, event, currentPath) {
@@ -164,9 +214,7 @@ function trackAdClick(adBox, event, currentPath) {
     localStorage.setItem("last_interacted_billboard", JSON.stringify(dataBody));
   }
 
-  const isBot = /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(
-    navigator.userAgent
-  );
+  const isBot = isBotUserAgent(navigator.userAgent);
   const adClicked = adBox.dataset.clickRecorded;
   if (isBot || adClicked) {
     return;

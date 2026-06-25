@@ -1,5 +1,9 @@
 /*eslint-disable prefer-rest-params*/
 /* global isTouchDevice */
+import { isBotUserAgent } from '@utilities/isBot';
+
+let currentReferrer = document.referrer;
+let currentUrl = window.location.href;
 
 function initializeBaseTracking() {
   showCookieConsentBanner();
@@ -97,7 +101,7 @@ function fallbackActivityRecording() {
   const dataBody = {
     path: location.pathname + location.search,
     user_language: navigator.language,
-    referrer: document.referrer,
+    referrer: currentReferrer,
     user_agent: navigator.userAgent,
     viewport_size: `${h}x${w}`,
     screen_resolution: `${screenH}x${screenW}`,
@@ -147,7 +151,7 @@ function checkUserLoggedIn() {
 function trackCustomImpressions() {
   setTimeout(()=> {
     const tokenMeta = document.querySelector("meta[name='csrf-token']")
-    const isBot = /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(navigator.userAgent) // is crawler
+    const isBot = isBotUserAgent(navigator.userAgent);
     // eslint-disable-next-line no-unused-vars
     const windowBigEnough =  window.innerWidth > 1023
 
@@ -169,7 +173,7 @@ function trackCustomImpressions() {
 
       const dataBody = {
         article_id: articleId,
-        referrer: document.referrer,
+        referrer: currentReferrer,
         user_agent: navigator.userAgent,
       };
       if (viewableType && viewableId) {
@@ -341,6 +345,8 @@ function trackFifteenSecondsOnPage(articleId, csrfToken) {
 }
 
 window.InstantClick.on('change', () => {
+  currentReferrer = currentUrl;
+  currentUrl = window.location.href;
   initializeBaseTracking();
 });
 initializeBaseTracking();

@@ -65,6 +65,8 @@ class Reaction < ApplicationRecord
   after_commit :bust_reactable_cache, :update_reactable, :bust_reaction_counts_cache, on: %i[create update]
   after_commit :record_field_test_event, on: %i[create]
   after_commit :check_for_reaction_ring, on: :create
+  after_commit :enqueue_article_activity_update, on: %i[create destroy], if: :reactable_is_article?
+  after_commit :enqueue_update_user_interest_embedding, on: :create, if: :reactable_is_article_and_public?
 
   class << self
     def count_for_article(id)
@@ -72,8 +74,8 @@ class Reaction < ApplicationRecord
         reactions = Reaction.where(reactable_id: id, reactable_type: "Article")
         counts = reactions.group(:category).count
 
-        reaction_types = public_reaction_types
-        reaction_types << "readinglist" unless public_reaction_types.include?("readinglist")
+        reaction_types = public_reaction_types.dup
+        reaction_types << "readinglist" unless reaction_types.include?("readinglist")
 
         reaction_types.map do |type|
           { category: type, count: counts.fetch(type, 0) }
@@ -103,8 +105,8 @@ class Reaction < ApplicationRecord
     end
 
     def for_analytics
-      reaction_types = public_reaction_types
-      reaction_types << "readinglist" unless public_reaction_types.include?("readinglist")
+      reaction_types = public_reaction_types.dup
+      reaction_types << "readinglist" unless reaction_types.include?("readinglist")
       where(category: reaction_types)
     end
 
@@ -156,6 +158,14 @@ class Reaction < ApplicationRecord
     end
   end
 
+  def self.ransackable_attributes(auth_object = nil)
+    ["category", "created_at", "id", "id_value", "points", "reactable_id", "reactable_type", "status", "updated_at", "user_id"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["user", "reactable"]
+  end
+
   # no need to send notification if:
   # - reaction is negative
   # - receiver is the same user as the one who reacted
@@ -195,6 +205,28 @@ class Reaction < ApplicationRecord
   end
 
   private
+
+  def reactable_is_article?
+    reactable_type == "Article"
+  end
+
+  def reactable_is_article_and_public?
+    reactable_is_article? && visible_to_public?
+  end
+
+  def enqueue_update_user_interest_embedding
+    UpdateUserInterestEmbeddingWorker.perform_async(user_id, reactable_id, 0.2)
+  end
+
+  def enqueue_article_activity_update
+    action = destroyed? ? "destroy" : "create"
+    payload = {
+      "iso" => created_at.to_date.iso8601,
+      "category" => category,
+      "user_id" => user_id
+    }
+    Articles::UpdateArticleActivityWorker.perform_async(reactable_id, "reaction", action, payload)
+  end
 
   def update_reactable
     Reactions::UpdateRelevantScoresWorker.perform_async(id)

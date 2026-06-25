@@ -31,6 +31,23 @@ Rails.application.routes.draw do
   get "/r/mobile", to: "deep_links#mobile"
   get "/.well-known/apple-app-site-association", to: "deep_links#aasa"
 
+  constraints OrgCustomDomainConstraint.new do
+    get "/", to: "stories#custom_domain_index"
+    get "/feed", to: "articles#feed", as: nil, defaults: { format: "rss" }
+    get "/rss", to: "articles#feed", as: nil, defaults: { format: "rss" }
+    get "/:org_slug/:slug",
+        to: "stories#custom_domain_show",
+        constraints: {
+          org_slug: /(?!(?:api|assets|packs|rails|r|ahoy|enter|users)\z)[^\/.]+/,
+          slug: /[^\/.]+/
+        }
+    get "/:slug",
+        to: "stories#custom_domain_show",
+        constraints: {
+          slug: /(?!(?:api|assets|packs|rails|r|ahoy|enter|users)\z)[^\/.]+/
+        }
+  end
+
   # [@forem/delightful] - all routes are nested under this optional scope to
   # begin supporting i18n.
   scope "(/locale/:locale)", defaults: { locale: nil } do
@@ -102,6 +119,30 @@ Rails.application.routes.draw do
           end
         end
 
+        # V1-only admin user management API. Lives in the V1 block (not in the
+        # shared config/routes/api.rb) because Api::V0::Admin::* controllers do
+        # not implement these actions; placing the routes here scopes them to
+        # callers using the application/vnd.forem.api-v1+json Accept header.
+        resources :concepts, only: %i[index show]
+
+        namespace :admin do
+          resources :users, only: %i[index show update] do
+            member do
+              put :email, action: :update_email
+              put :status, action: :update_status
+              post :merge
+            end
+
+            resources :notes, only: %i[index create], controller: "user_notes"
+            resources :identities, only: %i[index create destroy], controller: "user_identities"
+          end
+
+          resources :request_redirects, only: %i[index show create update destroy]
+          resources :concepts, only: %i[index show create update destroy] do
+            post :trigger_lookback, on: :member
+          end
+        end
+
         draw :api
       end
 
@@ -132,7 +173,10 @@ Rails.application.routes.draw do
       patch "/admin_featured_toggle", to: "articles#admin_featured_toggle"
     end
     resources :events, only: %i[index]
+    get "/calendar", to: "calendar#index"
     get "events/:event_name_slug/:event_variation_slug", to: "events#show", as: :event
+    post "events/:event_name_slug/:event_variation_slug/signup", to: "event_signups#create", as: :event_signup
+    delete "events/:event_name_slug/:event_variation_slug/signup", to: "event_signups#destroy"
     resources :article_mutes, only: %i[update]
     resources :comments, only: %i[create update destroy] do
       patch "/hide", to: "comments#hide"
@@ -189,6 +233,16 @@ Rails.application.routes.draw do
         get "/bulk", to: "tags#bulk", defaults: { format: :json }
       end
     end
+    resources :trending, param: :slug, only: %i[index show], controller: :trends
+    get "/trends", to: redirect { |path_params, req|
+      locale = path_params[:locale]
+      locale ? "/locale/#{locale}/trending" : "/trending"
+    }
+    get "/trends/:slug", to: redirect { |path_params, req|
+      locale = path_params[:locale]
+      slug = path_params[:slug]
+      locale ? "/locale/#{locale}/trending/#{slug}" : "/trending/#{slug}"
+    }
     resources :stripe_active_cards, only: %i[create update destroy]
     resources :stripe_subscriptions, only: %i[new edit destroy]
     resources :github_repos, only: %i[index] do
@@ -245,6 +299,7 @@ Rails.application.routes.draw do
     resources :billboard_events, only: [:create]
     # Alias for reporting in case "events" triggers spam filters
     post "/bb_tabulations", to: "billboard_events#create", as: :bb_tabulations
+    patch "/bb_tabulations/:id", to: "billboard_events#update"
 
     resources :badges, only: [:index]
     resources :user_blocks, param: :blocked_id, only: %i[show create destroy]
