@@ -82,8 +82,8 @@ GEM
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
       uri (>= 0.13.1)
-    acts-as-taggable-on (12.0.0)
-      activerecord (>= 7.1, < 8.1)
+    acts-as-taggable-on (13.0.0)
+      activerecord (>= 7.1, < 8.2)
       zeitwerk (>= 2.4, < 3.0)
     addressable (2.9.0)
       public_suffix (>= 2.0.2, < 8.0)
@@ -200,7 +200,7 @@ GEM
     crack (1.0.0)
       bigdecimal
       rexml
-    crass (1.0.6)
+    crass (1.0.7)
     cuprite (0.15)
       capybara (~> 3.0)
       ferrum (~> 0.14.0)
@@ -682,7 +682,7 @@ GEM
     omniauth-oauth2 (1.8.0)
       oauth2 (>= 1.4, < 3)
       omniauth (~> 2.0)
-    omniauth-rails_csrf_protection (1.0.2)
+    omniauth-rails_csrf_protection (2.0.1)
       actionpack (>= 4.2)
       omniauth (~> 2.0)
     omniauth-twitter (1.4.0)
@@ -1113,7 +1113,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_record_union (~> 1.4)
-  acts-as-taggable-on (~> 12.0)
+  acts-as-taggable-on (~> 13.0)
   acts_as_follower!
   addressable (~> 2.8)
   ahoy_email (~> 2.2.0)
@@ -1203,7 +1203,7 @@ DEPENDENCIES
   omniauth-github (~> 2.0)
   omniauth-google-oauth2 (~> 1.0)
   omniauth-mlh (~> 4.1)
-  omniauth-rails_csrf_protection (~> 1.0)
+  omniauth-rails_csrf_protection (~> 2.0)
   omniauth-twitter (~> 1.4)
   parallel (~> 1.22)
   pg (~> 1.6)
