@@ -242,5 +242,11 @@ describe "Framework Defaults 7.2 Upgrade Verification" do
       end
     end
   end
+
+  describe "Framework Defaults 8.1 Upgrade Verification" do
+    it "has the new_framework_defaults_8_1.rb initializer file present" do
+      expect(File.exist?(Rails.root.join("config/initializers/new_framework_defaults_8_1.rb"))).to be(true)
+    end
+  end
 end
 # rubocop:enable RSpec/DescribeClass
