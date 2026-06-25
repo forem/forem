@@ -134,4 +134,16 @@ RSpec.describe BillboardEventRollup, type: :service do
     expect(results.count).to eq(1)
     expect(results.first.counts_for).to eq(28)
   end
+
+  # sums seconds_visible
+  it "sums seconds_visible of compacted events" do
+    create(:billboard_event, billboard: billboard1, seconds_visible: 20, user_id: nil)
+    create(:billboard_event, billboard: billboard1, seconds_visible: 30, user_id: nil)
+    create(:billboard_event, billboard: billboard1, seconds_visible: 10, user_id: nil)
+
+    described_class.rollup(Date.current)
+    results = BillboardEvent.where(created_at: Date.current.all_day)
+    expect(results.count).to eq(1)
+    expect(results.first.seconds_visible).to eq(60)
+  end
 end

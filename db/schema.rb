@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_06_11_190731) do
+ActiveRecord::Schema[7.2].define(version: 2026_06_22_172500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -641,6 +641,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_11_190731) do
     t.datetime "created_at", precision: nil, null: false
     t.bigint "display_ad_id"
     t.string "geolocation"
+    t.integer "seconds_visible", default: 10, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
     t.index ["created_at"], name: "index_display_ad_events_on_created_at_brin", using: :brin
@@ -678,6 +679,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_11_190731) do
     t.bigint "prefer_paired_with_billboard_id"
     t.integer "preferred_article_ids", default: [], array: true
     t.boolean "priority", default: false
+    t.text "minimized_body_markdown"
+    t.text "minimized_processed_html"
     t.text "processed_html"
     t.boolean "published", default: false
     t.integer "render_mode", default: 0
@@ -1777,6 +1780,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_11_190731) do
     t.datetime "created_at", precision: nil, null: false
     t.integer "hotness_score", default: 0
     t.string "keywords_for_search"
+    t.text "moderation_instructions"
     t.string "name"
     t.string "pretty_name"
     t.string "profile_image"

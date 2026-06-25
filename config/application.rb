@@ -49,11 +49,9 @@ module PracticalDeveloper
     # Enable modern cache format version 7.1
     config.active_support.cache_format_version = 7.1
 
-    # Preserve receiver timezone when calling to_time (preparing for Rails 8.0/8.1)
-    config.active_support.to_time_preserves_timezone = :zone
+    # Enable modern message serializer to prepare for Rails 8.0
+    config.active_support.message_serializer = :json
 
-    # Enable strict freshness to prioritize ETag over Last-Modified (preparing for Rails 8.0)
-    config.action_dispatch.strict_freshness = true
 
     # Enable validating only parent-related columns for presence when the parent is mandatory.
     config.active_record.belongs_to_required_validates_foreign_key = true
