@@ -16,7 +16,8 @@
 # Controls whether Active Record raises an error when order-dependent finder methods
 # (such as `first` or `last`) are called without an explicit order on relations that
 # lack a fallback order column.
-# Rails.application.config.active_record.raise_on_missing_required_finder_order_columns = true
+Rails.application.config.active_record.raise_on_missing_required_finder_order_columns = true
+
 
 # Controls whether Action Controller relative redirects (e.g. `redirect_to "/path"`)
 # raise an error, warn, or are allowed.
