@@ -298,6 +298,22 @@ RSpec.describe "Calendar" do
       end
     end
 
+    context "with a very long duration event" do
+      let!(:long_event) do
+        create(:event, title: "Year Long Event", published: true,
+                       start_time: Date.new(2025, 1, 1).in_time_zone,
+                       end_time: Date.new(2027, 1, 1).in_time_zone)
+      end
+
+      it "is clamped to the grid month and dots the visible days safely" do
+        get calendar_path(start: "2026-03-01", end: "2026-03-31")
+
+        expect(response.body).to include("Year Long Event")
+        # Ensure it dots days in March 2026 safely
+        expect(response.body).to match(/calendar__day--has-event[^"]*"[^>]*>15</)
+      end
+    end
+
     context "with the date-range picker" do
       it "renders start and end date inputs prefilled with the range" do
         get calendar_path(start: "2026-03-10", end: "2026-03-12")

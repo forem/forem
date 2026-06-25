@@ -43,6 +43,7 @@ export function initCalendarDragSelect(grid) {
 
   grid.addEventListener('pointerdown', (event) => {
     if (!event.isPrimary) return; // ignore secondary touches / non-primary buttons
+    if (event.pointerType === 'touch') return; // let touch devices scroll normally
     const day = dayFromElement(event.target, grid);
     if (!day) return;
     event.preventDefault(); // suppress the link nav + native scroll; pointerup drives nav
