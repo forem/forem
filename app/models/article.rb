@@ -123,13 +123,13 @@ class Article < ApplicationRecord
     I18n.t("models.article.unique_url", email: ForemInstance.contact_email)
   end
 
-  enum type_of: {
+  enum :type_of, {
     full_post: 0,
     status: 1,
     fullscreen_embed: 2
   }
 
-  enum automod_label: {
+  enum :automod_label, {
     no_moderation_label: 0,
     clear_and_obvious_spam: 1,
     likely_spam: 2,
@@ -555,7 +555,7 @@ class Article < ApplicationRecord
   scope :feed, lambda {
                  published.includes(:taggings)
                    .select(
-                     :id, :published_at, :processed_html, :user_id, :organization_id, :title, :path, :cached_tag_list
+                     :id, :published_at, :processed_html, :user_id, :organization_id, :title, :path, :cached_tag_list, :slug
                    )
                }
 
@@ -568,7 +568,7 @@ class Article < ApplicationRecord
   scope :eager_load_serialized_data, -> { includes(:user, :organization, :tags) }
 
   scope :above_average, lambda {
-    order(:score).where("score >= ?", average_score)
+    order(:score).where(score: average_score.ceil..)
   }
 
   scope :followed_by, lambda { |user|

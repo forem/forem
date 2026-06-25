@@ -1,0 +1,36 @@
+---
+en:
+  views:
+    calendar:
+      meta:
+        title: Calendar
+      heading: Calendar
+      range:
+        from: From
+        to: To
+        apply: Apply
+      nav:
+        previous_month: Previous month
+        next_month: Next month
+      weekdays:
+        - Su
+        - Mo
+        - Tu
+        - We
+        - Th
+        - Fr
+        - Sa
+      hint: Click a start day, then an end day to set a range.
+      legend:
+        selected: Selected
+        today: Today
+        has_events: Has events
+      today: Today
+      empty: No events in this range. Try another month!
+      event:
+        attending: Attending
+        view: View event
+      pagination:
+        label: Events pages
+        previous: Previous page
+        next: Next page

@@ -1,0 +1,173 @@
+.calendar__layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--su-4);
+
+  @media (min-width: 760px) {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+.calendar__sidebar {
+  @media (min-width: 760px) {
+    position: sticky;
+    top: var(--su-4);
+    flex: 0 0 380px;
+  }
+}
+
+.calendar__agenda {
+  flex: 1;
+  min-width: 0;
+}
+
+.calendar__nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--base-20);
+  border-radius: var(--radius);
+  color: var(--base-70);
+  text-decoration: none;
+  line-height: 1;
+
+  &:hover {
+    background: var(--base-5);
+  }
+}
+
+.calendar__day {
+  display: block;
+  text-align: center;
+  padding: var(--su-1) var(--su-1) var(--su-6); // extra bottom room for the event dot
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: var(--base-90);
+  position: relative;
+  user-select: none;
+  touch-action: none; // let pointer drag-select paint instead of scrolling on touch
+
+  &:hover {
+    background: var(--base-5);
+  }
+
+  &--has-event::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent-brand);
+  }
+
+  &--selected,
+  &--in-range {
+    background: var(--accent-brand);
+    color: var(--base-0);
+
+    &:hover {
+      background: var(--accent-brand);
+    }
+
+    &.calendar__day--has-event::after {
+      background: var(--base-0);
+    }
+  }
+
+  &--today {
+    box-shadow: inset 0 0 0 1.5px rgba(var(--accent-brand-lighter-rgb), 0.55);
+    font-weight: var(--fw-bold);
+  }
+}
+
+.calendar__legend-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  flex: 0 0 14px;
+
+  &--range {
+    background: var(--accent-brand);
+  }
+
+  &--today {
+    box-shadow: inset 0 0 0 1.5px rgba(var(--accent-brand-lighter-rgb), 0.55);
+  }
+}
+
+.calendar__legend-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-brand);
+  flex: 0 0 6px;
+}
+
+.calendar__event-card {
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+}
+
+.calendar__event-body {
+  flex: 1;
+}
+
+.calendar__accent {
+  width: 4px;
+  align-self: stretch;
+  flex: 0 0 4px;
+  background: var(--base-30);
+
+  &--live_stream { background: var(--accent-brand); }
+  &--takeover    { background: var(--accent-success, #2bb673); }
+  &--challenge   { background: var(--accent-warning, #f5a623); }
+  &--other       { background: var(--base-30); }
+}
+
+.calendar__page-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 var(--su-1);
+  border: 1px solid var(--base-20);
+  border-radius: var(--radius);
+  color: var(--base-70);
+  text-decoration: none;
+  line-height: 1;
+
+  &:hover {
+    background: var(--base-5);
+  }
+
+  &--current {
+    background: var(--accent-brand);
+    border-color: var(--accent-brand);
+    color: var(--base-0);
+
+    &:hover {
+      background: var(--accent-brand);
+    }
+  }
+
+  &--disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+.calendar__page-ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  color: var(--base-50);
+}

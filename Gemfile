@@ -10,8 +10,8 @@ group :production do
   gem "rack-host-redirect", "~> 1.3" # Lean and simple host redirection via Rack middleware
 end
 
-gem "active_record_union", "~> 1.3" # Adds proper union and union_all methods to ActiveRecord::Relation
-gem "acts-as-taggable-on", "~> 10.0" # A tagging plugin for Rails applications that allows for custom tagging along dynamic contexts
+gem "active_record_union", "~> 1.4" # Adds proper union and union_all methods to ActiveRecord::Relation
+gem "acts-as-taggable-on", "~> 12.0" # A tagging plugin for Rails applications that allows for custom tagging along dynamic contexts
 gem "acts_as_follower", github: "forem/acts_as_follower", branch: "master" # Allow any model to follow any other model
 gem "addressable", "~> 2.8" # A replacement for the URI implementation that is part of Ruby's standard library
 gem "ahoy_email", "~> 2.2.0" # Email analytics for Rails
@@ -21,7 +21,7 @@ gem "analytics-ruby", "~> 2.5" # Segment-compatible analytics client; used by Tr
 gem "ancestry", "~> 4.2" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
 gem "blazer", "~> 2.6" # Allows admins to query data
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
-gem "carrierwave", "~> 2.2" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
+gem "carrierwave", "~> 3.1" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
 gem "cgi", "~> 0.3.6" # Support for the Common Gateway Interface protocol.
 gem "cld3", "~> 3.5" # Ruby interface for Compact Language Detector v3
@@ -38,20 +38,20 @@ gem "fastimage", "~> 2.2" # FastImage finds the size or type of an image given i
 gem "fastly", "~> 3.0" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.2" # A feed fetching and parsing library
 gem "field_test", "~> 0.5" # A/B testing
-gem "flipper", "~> 0.25.0" # Feature flipping / flags for Ruby
-gem "flipper-active_record", "~> 0.25.0" # Store Flipper flags in ActiveRecord
-gem "flipper-active_support_cache_store", "~> 0.25.0" # Cache feature flags for a short time
-gem "flipper-ui", "~> 0.25.0" # UI for the Flipper gem
+gem "flipper", "~> 1.4" # Feature flipping / flags for Ruby
+gem "flipper-active_record", "~> 1.4" # Store Flipper flags in ActiveRecord
+gem "flipper-active_support_cache_store", "~> 1.4" # Cache feature flags for a short time
+gem "flipper-ui", "~> 1.4" # UI for the Flipper gem
 gem "fog-aws", "~> 3.14" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 1.0" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.1.0" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.4" # API wrapper for MailChimp's API
-gem "hairtrigger", "~> 1.1.1" # HairTrigger lets you create and manage database triggers in a concise, db-agnostic, Rails-y way.
+gem "hairtrigger", "~> 1.3.1" # HairTrigger lets you create and manage database triggers in a concise, db-agnostic, Rails-y way.
 gem "honeybadger", "~> 5.1" # Used for tracking application errors
 gem "honeycomb-beeline", "~> 2.11.0" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "httparty", "~> 0.20" # Makes http fun! Also, makes consuming restful web services dead easy
-gem "httpclient", "~> 2.8.3" # Gives something like the functionality of libwww-perl (LWP) in Ruby
+gem "httpclient", "~> 2.9.0" # Gives something like the functionality of libwww-perl (LWP) in Ruby
 gem "i18n-js", "~> 3.9.2" # Helps with internationalization in Rails.
 gem "imgproxy", "~> 2.1" # A gem that easily generates imgproxy URLs for your images
 gem "inline_svg", "~> 1.8" # Embed SVG documents in your Rails views and style them with CSS
@@ -86,15 +86,15 @@ gem "public_suffix", "~> 6.0" # Domain name parser based on the Public Suffix Li
 gem "rack-attack", "~> 6.8.0" # Used to throttle requests to prevent brute force attacks
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
 gem "rack-timeout", "~> 0.7.0" # Rack middleware which aborts requests that have been running for longer than a specified timeout
-gem "rails", "~> 7.1.0" # Ruby on Rails
-gem "ransack", "~> 3.2" # Searching and sorting
+gem "rails", "7.2.3.1" # Ruby on Rails
+gem "ransack", "~> 4.2" # Searching and sorting
 gem "recaptcha", "~> 5.10", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 
 gem "redis", "~> 4.7.1" # Redis ruby client
-gem "redis-actionpack", "~> 5.4.0" # Redis session store for ActionPack. Used for storing the Rails session in Redis.
-gem "rpush", "~> 7.0" # Push Notification library for Rails
-gem "rpush-redis", "~> 1.1" # Redis module capability for rpush library
+gem "redis-actionpack", "~> 5.5.0" # Redis session store for ActionPack. Used for storing the Rails session in Redis.
+gem "rpush", "~> 9.2" # Push Notification library for Rails
+gem "rpush-redis", "~> 1.2" # Redis module capability for rpush library
 
 gem "request_store", "~> 1.7" # RequestStore gives you per-request global storage
 gem "reverse_markdown", "~> 2.1" # Map simple html back into markdown

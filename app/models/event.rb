@@ -8,9 +8,11 @@ class Event < ApplicationRecord
   belongs_to :page, optional: true
 
   has_many :billboards, foreign_key: :event_id, dependent: :destroy
+  has_many :event_signups, dependent: :destroy
+  has_many :signed_up_users, through: :event_signups, source: :user
 
-  enum type_of: { live_stream: 0, takeover: 1, other: 2, challenge: 3 }
-  enum broadcast_config: { no_broadcast: 0, tagged_broadcast: 1, global_broadcast: 2 }
+  enum :type_of, { live_stream: 0, takeover: 1, other: 2, challenge: 3 }
+  enum :broadcast_config, { no_broadcast: 0, tagged_broadcast: 1, global_broadcast: 2 }
 
   validates :title, presence: true
   validates :start_time, presence: true
@@ -23,6 +25,7 @@ class Event < ApplicationRecord
 
   before_save :format_stream_urls
   after_commit :ensure_broadcast_billboards_and_workers, on: [:create, :update]
+  after_commit :bust_upcoming_events_cache, on: [:create, :update, :destroy]
 
   scope :published, -> { where(published: true) }
   scope :elevated, -> { where(elevated: true) }
@@ -125,7 +128,7 @@ class Event < ApplicationRecord
     )
 
     post_bottom_bb = billboards.find_or_initialize_by(placement_area: "post_fixed_bottom")
-    post_bottom_bb.update!(
+    post_bottom_attributes = {
       name: "#{base_name}_post",
       dismissal_sku: base_name,
       custom_display_label: custom_display_label,
@@ -137,6 +140,17 @@ class Event < ApplicationRecord
       template: "authorship_box",
       approved: post_bottom_bb.new_record? ? false : post_bottom_bb.approved,
       published: true
-    )
+    }
+
+    if live_stream?
+      post_bottom_attributes[:special_behavior] = "persistent"
+      post_bottom_attributes[:minimized_body_markdown] = generator.minimized_post_html
+    end
+
+    post_bottom_bb.update!(post_bottom_attributes)
+  end
+
+  def bust_upcoming_events_cache
+    Rails.cache.delete("upcoming_elevated_events")
   end
 end

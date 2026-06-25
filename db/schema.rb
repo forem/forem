@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_06_09_194000) do
+ActiveRecord::Schema[7.2].define(version: 2026_06_22_172500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -641,6 +641,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_09_194000) do
     t.datetime "created_at", precision: nil, null: false
     t.bigint "display_ad_id"
     t.string "geolocation"
+    t.integer "seconds_visible", default: 10, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
     t.index ["created_at"], name: "index_display_ad_events_on_created_at_brin", using: :brin
@@ -678,6 +679,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_09_194000) do
     t.bigint "prefer_paired_with_billboard_id"
     t.integer "preferred_article_ids", default: [], array: true
     t.boolean "priority", default: false
+    t.text "minimized_body_markdown"
+    t.text "minimized_processed_html"
     t.text "processed_html"
     t.boolean "published", default: false
     t.integer "render_mode", default: 0
@@ -735,6 +738,20 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_09_194000) do
     t.index ["audience_segment_id"], name: "index_emails_on_audience_segment_id"
     t.index ["onboarding_subforem_id"], name: "index_emails_on_onboarding_subforem_id"
     t.index ["user_query_id"], name: "index_emails_on_user_query_id"
+  end
+
+  create_table "event_signups", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "event_id", null: false
+    t.boolean "notified_1_day_before", default: false, null: false
+    t.boolean "notified_1_hour_before", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_event_signups_on_event_id"
+    t.index ["notified_1_day_before"], name: "index_event_signups_on_notified_1_day_before"
+    t.index ["notified_1_hour_before"], name: "index_event_signups_on_notified_1_hour_before"
+    t.index ["user_id", "event_id"], name: "index_event_signups_on_user_id_and_event_id", unique: true
+    t.index ["user_id"], name: "index_event_signups_on_user_id"
   end
 
   create_table "events", force: :cascade do |t|
@@ -1763,6 +1780,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_09_194000) do
     t.datetime "created_at", precision: nil, null: false
     t.integer "hotness_score", default: 0
     t.string "keywords_for_search"
+    t.text "moderation_instructions"
     t.string "name"
     t.string "pretty_name"
     t.string "profile_image"
@@ -2184,6 +2202,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_09_194000) do
   add_foreign_key "email_authorizations", "users", on_delete: :cascade
   add_foreign_key "emails", "audience_segments"
   add_foreign_key "emails", "user_queries"
+  add_foreign_key "event_signups", "events"
+  add_foreign_key "event_signups", "users"
   add_foreign_key "events", "organizations"
   add_foreign_key "events", "pages", on_delete: :restrict
   add_foreign_key "events", "users"
