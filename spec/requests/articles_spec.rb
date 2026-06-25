@@ -1,6 +1,19 @@
 require "rails_helper"
 
 RSpec.describe "Articles", type: :request do
+  describe "GET /new" do
+    context "when user is suspended" do
+      let(:suspended_user) { create(:user, :suspended) }
+
+      before { sign_in suspended_user }
+
+      it "returns a 403 Forbidden status" do
+        get "/new"
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+  end
+
   describe "default subforem_id assignment" do
     let(:user) { create(:user) }
     let(:default_subforem) { create(:subforem, domain: "default.com") }
