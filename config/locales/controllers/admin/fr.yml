@@ -197,6 +197,8 @@ fr:
       article_busted: "L'article #%{article} a été bloqué avec succès."
       user_busted: "L'utilisateur #%{user} a été arrêté avec succès."
       link_busted: "%{link} a été cassé avec succès"
+      image_host_enqueued: "Tâche de retraitement pour l'hôte d'image « %{host} » mise en file d'attente"
+      image_host_missing: "Un hôte d'image est requis"
     users_controller:
       exported: Données exportées vers le %{receiver}. Le travail sera terminé dans un instant.
       email_fail: L'envoi de l'e-mail a échoué !

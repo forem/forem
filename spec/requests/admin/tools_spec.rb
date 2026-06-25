@@ -54,4 +54,41 @@ RSpec.describe "/admin/advanced/tools" do
       end.to raise_error(Pundit::NotAuthorizedError)
     end
   end
+
+  describe "POST /admin/advanced/tools/reprocess_image_host" do
+    let(:super_admin) { create(:user, :super_admin) }
+
+    before { sign_in super_admin }
+
+    it "enqueues the worker and redirects with a success flash" do
+      allow(Articles::ReprocessByImageHostWorker).to receive(:perform_async)
+
+      post reprocess_image_host_admin_tools_path, params: {
+        image_host: "cdn.hashnode.com",
+        image_host_limit: "10",
+        image_host_since: "2026-01-01"
+      }
+
+      expect(Articles::ReprocessByImageHostWorker).to have_received(:perform_async)
+        .with("cdn.hashnode.com", 10, "2026-01-01")
+      expect(response).to redirect_to(admin_tools_path)
+      expect(flash[:success]).to include("cdn.hashnode.com")
+    end
+
+    it "passes nil when image_host_since is blank" do
+      allow(Articles::ReprocessByImageHostWorker).to receive(:perform_async)
+
+      post reprocess_image_host_admin_tools_path, params: { image_host: "cdn.hashnode.com", image_host_limit: "10" }
+
+      expect(Articles::ReprocessByImageHostWorker).to have_received(:perform_async)
+        .with("cdn.hashnode.com", 10, nil)
+    end
+
+    it "flashes danger when image_host is blank" do
+      post reprocess_image_host_admin_tools_path, params: { image_host: "" }
+
+      expect(response).to redirect_to(admin_tools_path)
+      expect(flash[:danger]).to be_present
+    end
+  end
 end
