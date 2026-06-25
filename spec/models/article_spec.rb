@@ -2079,7 +2079,7 @@ RSpec.describe Article do
     it "returns records with a subset of attributes" do
       feed_article = described_class.feed.first
 
-      fields = %w[id tag_list published_at processed_html user_id organization_id title path cached_tag_list]
+      fields = %w[id tag_list published_at processed_html user_id organization_id title path cached_tag_list slug]
       expect(feed_article.attributes.keys).to match_array(fields)
     end
   end

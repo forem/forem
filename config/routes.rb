@@ -33,6 +33,8 @@ Rails.application.routes.draw do
 
   constraints OrgCustomDomainConstraint.new do
     get "/", to: "stories#custom_domain_index"
+    get "/feed", to: "articles#feed", as: nil, defaults: { format: "rss" }
+    get "/rss", to: "articles#feed", as: nil, defaults: { format: "rss" }
     get "/:org_slug/:slug",
         to: "stories#custom_domain_show",
         constraints: {
@@ -171,6 +173,7 @@ Rails.application.routes.draw do
       patch "/admin_featured_toggle", to: "articles#admin_featured_toggle"
     end
     resources :events, only: %i[index]
+    get "/calendar", to: "calendar#index"
     get "events/:event_name_slug/:event_variation_slug", to: "events#show", as: :event
     post "events/:event_name_slug/:event_variation_slug/signup", to: "event_signups#create", as: :event_signup
     delete "events/:event_name_slug/:event_variation_slug/signup", to: "event_signups#destroy"
@@ -295,6 +298,7 @@ Rails.application.routes.draw do
     resources :billboard_events, only: [:create]
     # Alias for reporting in case "events" triggers spam filters
     post "/bb_tabulations", to: "billboard_events#create", as: :bb_tabulations
+    patch "/bb_tabulations/:id", to: "billboard_events#update"
 
     resources :badges, only: [:index]
     resources :user_blocks, param: :blocked_id, only: %i[show create destroy]
