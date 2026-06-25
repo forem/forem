@@ -399,6 +399,30 @@ new_email = user_params[:email].to_s.strip.presence
       end
     end
 
+    def ghostify
+      target_user = User.find(params[:id].to_i)
+      
+      ghost_user_id = ::Settings::Community.ghost_user_id
+      unless ghost_user_id.present?
+        flash[:danger] = "Ghost user is not configured in community settings."
+        return redirect_to admin_user_path(params[:id])
+      end
+      
+      if target_user.id == ghost_user_id
+        flash[:danger] = "Cannot ghostify the ghost account."
+        return redirect_to admin_user_path(params[:id])
+      end
+
+      Moderator::GhostifyUserWorker.perform_async(target_user.id, current_user.id)
+
+      note_content = "#{current_user.username} ghostified this user's content"
+      Note.create(noteable: target_user, reason: "ghostify_user",
+                  content: note_content, author: current_user)
+
+      flash[:success] = "Ghostify job has been triggered. Content is being moved to the Ghost account."
+      redirect_to admin_user_path(params[:id])
+    end
+
     def merge
       @user = User.find(params[:id])
       begin

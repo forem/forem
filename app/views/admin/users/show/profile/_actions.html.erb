@@ -33,6 +33,17 @@
         <% end %>
         <li><button type="button" class="c-btn w-100 align-left" data-modal-title="<%= t("views.admin.users.reputation.heading") %>" data-modal-size="medium" data-modal-content-selector="#change-reputation"><%= t("views.admin.users.reputation.change") %></button></li>
         <li><button type="button" class="c-btn w-100 align-left" data-modal-title="<%= t("views.admin.users.max_score.heading") %>" data-modal-size="medium" data-modal-content-selector="#change-max-score"><%= t("views.admin.users.max_score.change") %></button></li>
+        <% if Settings::Community.ghost_user_id.present? && Settings::Community.ghost_user_id != @user.id %>
+          <li>
+            <button type="button"
+              class="c-btn c-btn--destructive w-100 align-left"
+              data-modal-title="Ghostify User"
+              data-modal-size="small"
+              data-modal-content-selector="#ghostify-user"
+              data-form-action="<%= ghostify_admin_user_path(@user) %>"
+              data-user-name="<%= @user.name %>">Ghostify User</button>
+          </li>
+        <% end %>
         <li>
           <button type="button"
             class="c-btn c-btn--destructive w-100 align-left"
@@ -59,6 +70,7 @@
   <%= render "admin/users/show/profile/actions/social_accounts" %>
   <%= render "admin/users/show/profile/actions/change_reputation" %>
   <%= render "admin/users/show/profile/actions/change_max_score" %>
+  <%= render "admin/users/modals/ghostify_modal" %>
   <%= render "admin/users/modals/banish_modal" %>
   <%= render "admin/users/show/profile/actions/delete" %>
 </div>
