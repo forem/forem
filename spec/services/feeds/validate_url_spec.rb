@@ -32,10 +32,19 @@ RSpec.describe Feeds::ValidateUrl, :vcr, type: :service do
       .to raise_error(StandardError, /could not be retrieved — it may be protected/)
   end
 
-  it "returns false for other non-2xx responses" do
+  it "raises with a descriptive message for a 404 response" do
     stub_request(:get, "https://example.com/feed.xml")
       .to_return(status: 404, body: "", headers: {})
 
-    expect(described_class.call("https://example.com/feed.xml")).to be(false)
+    expect { described_class.call("https://example.com/feed.xml") }
+      .to raise_error(StandardError, /could not be retrieved — the server returned a 404/)
+  end
+
+  it "raises with a descriptive message for a 500 response" do
+    stub_request(:get, "https://example.com/feed.xml")
+      .to_return(status: 500, body: "", headers: {})
+
+    expect { described_class.call("https://example.com/feed.xml") }
+      .to raise_error(StandardError, /could not be retrieved — the server returned a 500/)
   end
 end

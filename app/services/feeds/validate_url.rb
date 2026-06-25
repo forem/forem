@@ -15,12 +15,19 @@ module Feeds
                              timeout: 20,
                              headers: { "User-Agent" => Feeds::Import::FEED_USER_AGENT })
 
-      if [401, 403, 429].include?(response.code)
-        raise StandardError,
-              "Feed URL could not be retrieved — it may be protected by bot detection or temporarily unavailable"
+      unless response.success?
+        message = case response.code
+                  when 401, 403, 429
+                    "Feed URL could not be retrieved — it may be protected by bot detection or temporarily unavailable"
+                  when 404
+                    "Feed URL could not be retrieved — the server returned a 404 (Not Found)"
+                  when 500
+                    "Feed URL could not be retrieved — the server returned a 500 (Internal Server Error)"
+                  else
+                    "Feed URL could not be retrieved — the server returned status code #{response.code}"
+                  end
+        raise StandardError, message
       end
-
-      return false unless response.success?
 
       Feedjira.parse(response.body)
 
