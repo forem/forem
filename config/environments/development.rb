@@ -70,12 +70,7 @@ Rails.application.configure do
   # Highlight code that triggered database queries in logs.
   config.active_record.verbose_query_logs = true
 
-  # Allows setting a warning threshold for query result size.
-  # If the number of records returned by a query exceeds the threshold, a warning is logged.
-  # This can be used to identify queries which might be causing a memory bloat.
-  if config.active_record.respond_to?(:warn_on_records_fetched_greater_than=)
-    config.active_record.warn_on_records_fetched_greater_than = 1500
-  end
+
 
   # Debug mode disables concatenation and preprocessing of assets.
   # This option may cause significant delays in view rendering with a large
