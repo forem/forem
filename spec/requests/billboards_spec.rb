@@ -30,7 +30,7 @@ RSpec.describe "Billboards" do
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
 
         expect(response).to have_http_status(:ok)
-        expect(response.parsed_body).to include(targeted_billboard.processed_html)
+        expect(response.body).to include(targeted_billboard.processed_html)
       end
     end
 
@@ -41,7 +41,7 @@ RSpec.describe "Billboards" do
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
 
         expect(response).to have_http_status(:ok)
-        expect(response.parsed_body).not_to include(excluded_billboard.processed_html)
+        expect(response.body).not_to include(excluded_billboard.processed_html)
       end
     end
 
@@ -57,7 +57,7 @@ RSpec.describe "Billboards" do
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
 
         expect(response).to have_http_status(:ok)
-        expect(response.parsed_body).not_to include(non_targeted_billboard.processed_html)
+        expect(response.body).not_to include(non_targeted_billboard.processed_html)
       end
     end
 
@@ -68,7 +68,7 @@ RSpec.describe "Billboards" do
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
 
         expect(response).to have_http_status(:ok)
-        expect(response.parsed_body).to include(non_excluded_billboard.processed_html)
+        expect(response.body).to include(non_excluded_billboard.processed_html)
       end
     end
 
@@ -79,7 +79,7 @@ RSpec.describe "Billboards" do
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
 
         expect(response).to have_http_status(:ok)
-        expect(response.parsed_body).to include(open_billboard.processed_html)
+        expect(response.body).to include(open_billboard.processed_html)
       end
     end
   end
@@ -92,7 +92,7 @@ RSpec.describe "Billboards" do
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_fixed_bottom")
 
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include("border: 5px solid #{billboard.color};border-bottom: none")
+        expect(response.body).to include("border: 1px solid #{billboard.color}; border-bottom: none")
       end
     end
 
@@ -103,7 +103,7 @@ RSpec.describe "Billboards" do
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
 
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include("border: 5px solid #{billboard.color}")
+        expect(response.body).to include("border: 1px solid #{billboard.color}")
       end
     end
 
@@ -115,7 +115,7 @@ RSpec.describe "Billboards" do
 
         expect(response).to have_http_status(:ok)
         expect(response.body).not_to include("border-top: calc(9px + 0.5vw) solid")
-        expect(response.body).not_to include("border: 5px solid")
+        expect(response.body).not_to include("border: 1px solid")
       end
     end
   end
@@ -127,7 +127,7 @@ RSpec.describe "Billboards" do
       get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
 
       expect(response).to have_http_status(:ok)
-      expect(response.parsed_body).to include(billboard.processed_html)
+      expect(response.body).to include(billboard.processed_html)
     end
 
     # rubocop:disable RSpec/NestedGroups
@@ -152,8 +152,8 @@ RSpec.describe "Billboards" do
               headers: client_in_alberta_canada
 
           expect(response).to have_http_status(:ok)
-          expect(response.parsed_body).to include(canada_billboard.processed_html)
-          expect(response.parsed_body).not_to include(california_billboard.processed_html)
+          expect(response.body).to include(canada_billboard.processed_html)
+          expect(response.body).not_to include(california_billboard.processed_html)
         end
 
         it "is accurate for more precise locations" do
@@ -161,8 +161,8 @@ RSpec.describe "Billboards" do
               headers: client_in_california_usa
 
           expect(response).to have_http_status(:ok)
-          expect(response.parsed_body).to include(california_billboard.processed_html)
-          expect(response.parsed_body).not_to include(canada_billboard.processed_html)
+          expect(response.body).to include(california_billboard.processed_html)
+          expect(response.body).not_to include(canada_billboard.processed_html)
         end
 
         it "does not set Vary header" do
@@ -181,7 +181,7 @@ RSpec.describe "Billboards" do
 
           expect(response).to have_http_status(:ok)
           # X-Cacheable-Client-Geo is set to all of the US, so billboards targeted at a single state are filtered out
-          expect(response.parsed_body).to be_empty
+          expect(response.body).to be_empty
         end
 
         it "is accurate for more precise locations" do
@@ -189,8 +189,8 @@ RSpec.describe "Billboards" do
               headers: { "X-Client-Geo" => "US-CA", "X-Cacheable-Client-Geo" => "US-CA" }
 
           expect(response).to have_http_status(:ok)
-          expect(response.parsed_body).to include(california_billboard.processed_html)
-          expect(response.parsed_body).not_to include(canada_billboard.processed_html)
+          expect(response.body).to include(california_billboard.processed_html)
+          expect(response.body).not_to include(canada_billboard.processed_html)
         end
 
         it "sets Vary header" do

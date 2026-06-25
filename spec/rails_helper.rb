@@ -1,6 +1,7 @@
 ENV["RAILS_ENV"] = "test"
 # Temporary workaround for Ruby 3.0.6 / CGI udpate
 ENV["APP_DOMAIN"] = "forem.test"
+ENV["APP_PROTOCOL"] ||= "http://"
 require "knapsack_pro"
 require "simplecov"
 require "simplecov_json_formatter"
@@ -113,7 +114,7 @@ RSpec.configure do |config|
   end
 
   config.use_transactional_fixtures = true
-  config.fixture_path = Rails.root.join("spec/fixtures")
+  config.fixture_paths = [Rails.root.join("spec/fixtures")]
 
   config.include ActionMailer::TestHelper
   config.include ApplicationHelper
@@ -167,6 +168,9 @@ RSpec.configure do |config|
   end
 
   config.before(:suite) do
+    # Ensure ESBuild assets are present for system specs locally
+    system("bin/rails javascript:build") unless ENV["CI"] || ENV["SKIP_JS_BUILD"]
+
     # Set the TZ ENV variable with the current random timezone from zonebie
     # which we can then use to properly set the browser time for Capybara specs
     ENV["TZ"] = Time.zone.tzinfo.name
@@ -250,7 +254,7 @@ RSpec.configure do |config|
       .to_return(status: 200, body: "", headers: {})
 
     stub_request(:post, /generativelanguage.googleapis.com/)
-      .to_return(status: 200, body: "", headers: {})
+      .to_return(status: 200, body: { "embedding" => { "values" => Array.new(768, 0.0) }, "candidates" => [ { "content" => { "parts" => [ { "text" => "mocked text" } ] } } ] }.to_json, headers: { "Content-Type" => "application/json" })
 
     stub_request(:any, /robohash.org/)
       .with(headers:
@@ -277,7 +281,7 @@ RSpec.configure do |config|
     if AbExperiment::CURRENT_FEED_STRATEGY_EXPERIMENT.blank?
       config = { "experiments" =>
                 { "wut" =>
-                 { "start_date" => 30.days.ago,
+                 { "started_at" => 30.days.ago,
                    "variants" => %w[base var_1],
                    "weights" => [50, 50],
                    "goals" => %w[user_creates_comment
@@ -322,3 +326,4 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 end
+

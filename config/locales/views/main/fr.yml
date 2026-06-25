@@ -46,9 +46,11 @@ fr:
         Privacy Policy: Privacy Policy
         Reading List: Reading List
         Tags: Tags
+        trends: Tendances
         Terms of use: Terms of Use
         Videos: Videos
       side:
+        upcoming_events: "Événements à venir"
         listings:
           heading: Listings
           all: Tout voir

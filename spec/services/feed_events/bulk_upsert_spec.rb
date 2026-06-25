@@ -135,6 +135,54 @@ RSpec.describe FeedEvents::BulkUpsert, type: :service do
     end
   end
 
+  context "when events reference deleted articles or users" do
+    let(:article) { create(:article) }
+    let(:deleted_article) { create(:article) }
+    let(:deleted_user) { create(:user) }
+
+    let(:feed_events_data) do
+      [
+        feed_event(article_id: article.id, user_id: user.id, category: :impression),
+        feed_event(article_id: deleted_article.id, user_id: user.id, category: :impression),
+        feed_event(article_id: article.id, user_id: deleted_user.id, category: :impression)
+      ]
+    end
+
+    before do
+      deleted_article.destroy
+      deleted_user.destroy
+    end
+
+    it "filters them out to prevent foreign key violations" do
+      expect { described_class.call(feed_events_data, timebox: nil) }.to change(FeedEvent, :count).by(1)
+      expect(FeedEvent.pluck(:article_id, :user_id, :category)).to contain_exactly(
+        [article.id, user.id, "impression"]
+      )
+    end
+  end
+
+  context "when there is only one valid item but its article gets concurrently deleted" do
+    let(:article) { create(:article) }
+    let(:feed_event_data) do
+      [
+        feed_event(article_id: article.id, user_id: user.id, category: :impression)
+      ]
+    end
+
+    it "safely ignores the foreign key violation in the single-event path" do
+      # Simulate a concurrent delete exactly as find_or_create_by runs by stubbing the relation chain
+      relation = instance_double(ActiveRecord::Relation)
+      where_chain = instance_double(ActiveRecord::QueryMethods::WhereChain)
+      allow(FeedEvent).to receive(:where).and_return(where_chain)
+      allow(where_chain).to receive(:not).and_return(relation)
+      allow(relation).to receive(:create_with).and_return(relation)
+      allow(relation).to receive(:find_or_create_by).and_raise(ActiveRecord::InvalidForeignKey)
+      
+      expect { described_class.call(feed_event_data) }.not_to raise_error
+      expect(relation).to have_received(:find_or_create_by)
+    end
+  end
+
   context "when there are already existing events with the same article, user and category" do
     let(:article) { create(:article) }
     let(:second_article) { create(:article) }

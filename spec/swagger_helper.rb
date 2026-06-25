@@ -4,17 +4,17 @@ require "rails_helper"
 
 RSpec.configure do |config|
   # Specify a root folder where Swagger JSON files are generated
-  # NOTE: If you"re using the rswag-api to serve API descriptions, you"ll need
-  # to ensure that it"s configured to serve Swagger from the same folder
-  config.swagger_root = Rails.root.join("swagger").to_s
+  # NOTE: If you're using the rswag-api to serve API descriptions, you'll need
+  # to ensure that it's configured to serve Swagger from the same folder
+  config.openapi_root = Rails.root.join("swagger").to_s
 
   # Define one or more Swagger documents and provide global metadata for each one
   # When you run the "rswag:specs:swaggerize" rake task, the complete Swagger will
-  # be generated at the provided relative path under swagger_root
+  # be generated at the provided relative path under openapi_root
   # By default, the operations defined in spec files are added to the first
-  # document below. You can override this behavior by adding a swagger_doc tag to the
-  # the root example_group in your specs, e.g. describe "...", swagger_doc: "v2/swagger.json"
-  config.swagger_docs = {
+  # document below. You can override this behavior by adding an openapi_spec tag to the
+  # the root example_group in your specs, e.g. describe "...", openapi_spec: "v2/swagger.json"
+  config.openapi_specs = {
     "v1/api_v1.json" => {
       openapi: "3.0.3",
       info: {
@@ -31,7 +31,7 @@ RSpec.configure do |config|
       paths: {},
       servers: [
         {
-          url: "https://dev.to/api",
+          url: "https://dev.to",
           description: "Production server"
         },
       ],
@@ -448,10 +448,10 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               id: { type: :integer, description: "The ID of the Billboard" },
               name: { type: :string, description: "For internal use, helps distinguish ads from one another" },
               body_markdown: { type: :string, description: "The text (in markdown) of the ad (required)" },
-                        approved: { type: :boolean, description: "Ad must be both published and approved to be in rotation" },
-          published: { type: :boolean, description: "Ad must be both published and approved to be in rotation" },
-          expires_at: { type: :string, format: :"date-time", nullable: true,
-                        description: "Timestamp when the billboard expires. After this time, the billboard will automatically be marked as not approved." },
+              approved: { type: :boolean, description: "Ad must be both published and approved to be in rotation" },
+              published: { type: :boolean, description: "Ad must be both published and approved to be in rotation" },
+              expires_at: { type: :string, format: :"date-time", nullable: true,
+                            description: "Timestamp when the billboard expires. After this time, the billboard will automatically be marked as not approved." },
               organization_id: { type: :integer, description: "Identifies the organization to which the ad belongs", nullable: true },
               creator_id: { type: :integer, description: "Identifies the user who created the ad.", nullable: true },
               placement_area: { type: :string, enum: Billboard::ALLOWED_PLACEMENT_AREAS,
@@ -535,6 +535,132 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               url: { type: :string, format: :url }
             },
             required: %w[id slug title tool_name total_messages curated_count published messages slices created_at updated_at url]
+          },
+          PollOption: {
+            description: "A single option within a poll",
+            type: :object,
+            properties: {
+              type_of: { type: :string, enum: ["poll_option"], description: "Resource discriminator" },
+              id: { type: :integer, format: :int64 },
+              markdown: { type: :string, nullable: true, description: "Option text in markdown" },
+              processed_html: { type: :string, nullable: true, description: "Option text rendered as HTML" },
+              position: { type: :integer, format: :int32, description: "Display order within the poll" },
+              poll_votes_count: { type: :integer, format: :int32, description: "Number of votes for this option" },
+              supplementary_text: { type: :string, nullable: true, description: "Additional descriptive text for the option" }
+            },
+            required: %w[type_of id markdown processed_html position poll_votes_count]
+          },
+          Poll: {
+            description: "A poll (question) belonging to a survey or article",
+            type: :object,
+            properties: {
+              type_of: { type: :string, enum: ["poll"], description: "Resource discriminator" },
+              id: { type: :integer, format: :int64 },
+              prompt_markdown: { type: :string, nullable: true, description: "Question text in markdown" },
+              prompt_html: { type: :string, nullable: true, description: "Question text rendered as HTML" },
+              poll_type_of: { type: :string, enum: Poll.type_ofs.keys, description: "Poll question type: single_choice, multiple_choice, scale, or text_input" },
+              position: { type: :integer, format: :int32, description: "Display order within the survey" },
+              poll_votes_count: { type: :integer, format: :int32, description: "Total number of votes across all options" },
+              poll_skips_count: { type: :integer, format: :int32, description: "Number of users who skipped this poll" },
+              poll_options_count: { type: :integer, format: :int32, description: "Number of options in this poll" },
+              scale_min: { type: :integer, format: :int32, nullable: true, description: "Minimum value for scale polls" },
+              scale_max: { type: :integer, format: :int32, nullable: true, description: "Maximum value for scale polls" },
+              created_at: { type: :string, format: "date-time" },
+              updated_at: { type: :string, format: "date-time" },
+              poll_options: {
+                type: :array,
+                items: { "$ref": "#/components/schemas/PollOption" },
+                description: "The available options for this poll"
+              }
+            },
+            required: %w[type_of id prompt_markdown prompt_html poll_type_of position poll_votes_count poll_skips_count poll_options_count created_at updated_at poll_options]
+          },
+          Survey: {
+            description: "Representation of a survey",
+            type: :object,
+            properties: {
+              type_of: { type: :string, enum: ["survey"], description: "Resource discriminator" },
+              id: { type: :integer, format: :int64 },
+              title: { type: :string },
+              slug: { type: :string },
+              survey_type_of: { type: :string, enum: Survey.type_ofs.keys, description: "Survey category" },
+              active: { type: :boolean, nullable: true, description: "Whether the survey is currently active" },
+              display_title: { type: :boolean, description: "Whether to show the title to respondents" },
+              allow_resubmission: { type: :boolean, description: "Whether users can submit multiple times" },
+              created_at: { type: :string, format: "date-time" },
+              updated_at: { type: :string, format: "date-time" }
+            },
+            required: %w[type_of id title slug survey_type_of display_title allow_resubmission created_at updated_at]
+          },
+          SurveyWithPolls: {
+            description: "Representation of a survey including its polls and poll options",
+            allOf: [
+              { "$ref": "#/components/schemas/Survey" },
+              {
+                type: :object,
+                properties: {
+                  polls: {
+                    type: :array,
+                    items: { "$ref": "#/components/schemas/Poll" },
+                    description: "All polls in the survey, ordered by position"
+                  }
+                },
+                required: %w[polls]
+              },
+            ]
+          },
+          PollVote: {
+            description: "Representation of a single poll vote cast by a user",
+            type: :object,
+            properties: {
+              type_of: { type: :string, enum: ["poll_vote"], description: "Resource discriminator" },
+              id: { type: :integer, format: :int64 },
+              poll_id: { type: :integer, format: :int64 },
+              poll_option_id: { type: :integer, format: :int64 },
+              user_id: { type: :integer, format: :int64 },
+              user_email: { type: :string, format: :email },
+              session_start: { type: :integer, format: :int32 },
+              created_at: { type: :string, format: "date-time" }
+            },
+            required: %w[type_of id poll_id poll_option_id user_id user_email session_start created_at]
+          },
+          PollTextResponse: {
+            description: "Representation of a free-text response to a text-input poll",
+            type: :object,
+            properties: {
+              type_of: { type: :string, enum: ["poll_text_response"], description: "Resource discriminator" },
+              id: { type: :integer, format: :int64 },
+              poll_id: { type: :integer, format: :int64 },
+              user_id: { type: :integer, format: :int64 },
+              user_email: { type: :string, format: :email },
+              text_content: { type: :string },
+              session_start: { type: :integer, format: :int32 },
+              created_at: { type: :string, format: "date-time" }
+            },
+            required: %w[type_of id poll_id user_id user_email text_content session_start created_at]
+          },
+          Trend: {
+            description: "Representation of a trend",
+            type: :object,
+            properties: {
+              type_of: { type: :string },
+              id: { type: :integer, format: :int64 },
+              name: { type: :string },
+              slug: { type: :string },
+              description: { type: :string, nullable: true },
+              key_questions: {
+                type: :array,
+                items: { type: :string }
+              },
+              score: { type: :number, format: :float },
+              articles_count: { type: :integer, format: :int32 },
+              cover_image: { type: :string, format: :url, nullable: true },
+              first_observed_at: { type: :string, format: "date-time" },
+              last_observed_at: { type: :string, format: "date-time" },
+              created_at: { type: :string, format: "date-time" },
+              updated_at: { type: :string, format: "date-time" }
+            },
+            required: %w[type_of id name slug key_questions score articles_count first_observed_at last_observed_at created_at updated_at]
           }
         }
       }
@@ -542,10 +668,10 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
   }
 
   # Specify the format of the output Swagger file when running "rswag:specs:swaggerize".
-  # The swagger_docs configuration option has the filename including format in
+  # The openapi_specs configuration option has the filename including format in
   # the key, this may want to be changed to avoid putting yaml in json files.
   # Defaults to json. Accepts ":json" and ":yaml".
-  config.swagger_format = :json
+  config.openapi_format = :json
 end
 
 # Convenience method for creating an example section for a response section

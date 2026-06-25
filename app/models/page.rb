@@ -1,4 +1,5 @@
 class Page < ApplicationRecord
+  include LiquidEmbeddable
   extend UniqueAcrossModels
   TEMPLATE_OPTIONS = %w[contained full_within_layout nav_bar_included json css txt].freeze
 
@@ -10,6 +11,7 @@ class Page < ApplicationRecord
   has_many :billboards, dependent: :nullify
   belongs_to :subforem, optional: true
   belongs_to :page_template, optional: true
+  belongs_to :organization, optional: true
 
   validates :title, presence: true
   validates :description, presence: true
@@ -89,15 +91,28 @@ class Page < ApplicationRecord
     save!
   end
 
+  # Force evaluation of markdown (via before_save) and persist any resulting changes
+  def recompile!
+    save!
+  end
+
   private
 
   def evaluate_markdown
     if body_markdown.present?
-      parsed_markdown = MarkdownProcessor::Parser.new(body_markdown)
-      self.processed_html = parsed_markdown.finalize
+      source = organization || nil
+      parsed_markdown = MarkdownProcessor::Parser.new(body_markdown, source: source)
+      self.processed_html = parsed_markdown.finalize(link_attributes: link_attributes_for_org)
     else
       self.processed_html = body_html
     end
+  end
+
+  def link_attributes_for_org
+    return {} unless organization
+    return {} if FeatureFlag.enabled?(:org_dofollow_links, FeatureFlag::Actor[organization])
+
+    { rel: "nofollow ugc" }
   end
 
   def set_default_template

@@ -35,19 +35,29 @@ class ArticlesController < ApplicationController
 
     @articles = Article.feed.order(published_at: :desc).page(params[:page].to_i).per(12)
     @latest = request.path == latest_feed_path
-    @articles = if params[:username]
-                  handle_user_or_organization_feed
-                elsif params[:tag]
-                  handle_tag_feed
-                elsif @latest
-                  @articles
-                    .where("score > ?", Articles::Feeds::Latest::MINIMUM_SCORE)
-                    .includes(:user)
-                else
-                  @articles
-                    .with_at_least_home_feed_minimum_score
-                    .includes(:user)
-                end
+
+    @organization = custom_domain_org
+    if @organization
+      @user = @organization
+      @articles = @articles.where(organization_id: @organization.id).includes(:user)
+      if params[:tag]
+        handle_tag_feed
+      end
+    else
+      @articles = if params[:username]
+                    handle_user_or_organization_feed
+                  elsif params[:tag]
+                    handle_tag_feed
+                  elsif @latest
+                    @articles
+                      .where("score > ?", Articles::Feeds::Latest::MINIMUM_SCORE)
+                      .includes(:user)
+                  else
+                    @articles
+                      .with_at_least_home_feed_minimum_score
+                      .includes(:user)
+                  end
+    end
 
     not_found unless @articles&.any?
 
@@ -338,11 +348,14 @@ class ArticlesController < ApplicationController
     # fix the bug <https://github.com/forem/forem/issues/2871>
     if org_admin_user_change_privilege
       allowed_params << :user_id
-      allowed_params << :co_author_ids_list
-    elsif params["article"]["organization_id"] && allowed_to_change_org_id?
+    end
+
+    if params["article"].key?("organization_id") && allowed_to_change_org_id?
       # change the organization of the article only if explicitly asked to do so
       allowed_params << :organization_id
     end
+
+    allowed_params << :co_author_ids_list if allowed_to_manage_org_co_authors?
 
     manage_published_at_params
 
@@ -366,7 +379,7 @@ class ArticlesController < ApplicationController
 
   def allowed_to_change_org_id?
     potential_user = @article&.user || current_user
-    potential_org_id = params["article"]["organization_id"].presence || @article&.organization_id
+    potential_org_id = requested_organization_id || @article&.organization_id
     OrganizationMembership.exists?(user: potential_user, organization_id: potential_org_id) ||
       current_user.any_admin?
   end
@@ -377,5 +390,21 @@ class ArticlesController < ApplicationController
       current_user.org_admin?(@article.organization_id) &&
       # and if the author being changed to belongs to the article's org
       OrganizationMembership.exists?(user_id: params[:article][:user_id], organization_id: @article.organization_id)
+  end
+
+  def allowed_to_manage_org_co_authors?
+    organization_id = effective_organization_id
+
+    organization_id.present? && current_user.org_admin?(organization_id)
+  end
+
+  def effective_organization_id
+    return requested_organization_id if params["article"].key?("organization_id") && allowed_to_change_org_id?
+
+    @article&.organization_id
+  end
+
+  def requested_organization_id
+    params["article"]["organization_id"].presence
   end
 end

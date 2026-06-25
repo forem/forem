@@ -10,17 +10,18 @@ group :production do
   gem "rack-host-redirect", "~> 1.3" # Lean and simple host redirection via Rack middleware
 end
 
-gem "active_record_union", "~> 1.3" # Adds proper union and union_all methods to ActiveRecord::Relation
-gem "acts-as-taggable-on", "~> 10.0" # A tagging plugin for Rails applications that allows for custom tagging along dynamic contexts
+gem "active_record_union", "~> 1.4" # Adds proper union and union_all methods to ActiveRecord::Relation
+gem "acts-as-taggable-on", "~> 12.0" # A tagging plugin for Rails applications that allows for custom tagging along dynamic contexts
 gem "acts_as_follower", github: "forem/acts_as_follower", branch: "master" # Allow any model to follow any other model
 gem "addressable", "~> 2.8" # A replacement for the URI implementation that is part of Ruby's standard library
 gem "ahoy_email", "~> 2.2.0" # Email analytics for Rails
 gem "ahoy_matey", "~> 5.0.2" # Tracking analytics for Rails
 gem "algoliasearch-rails", "~> 2.3" # Algolia Search API Client
+gem "analytics-ruby", "~> 2.5" # Segment-compatible analytics client; used by Trackers::CustomerioCdp pointed at cdp.customer.io
 gem "ancestry", "~> 4.2" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
 gem "blazer", "~> 2.6" # Allows admins to query data
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
-gem "carrierwave", "~> 2.2" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
+gem "carrierwave", "~> 3.1" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
 gem "cgi", "~> 0.3.6" # Support for the Common Gateway Interface protocol.
 gem "cld3", "~> 3.5" # Ruby interface for Compact Language Detector v3
@@ -37,20 +38,20 @@ gem "fastimage", "~> 2.2" # FastImage finds the size or type of an image given i
 gem "fastly", "~> 3.0" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.2" # A feed fetching and parsing library
 gem "field_test", "~> 0.5" # A/B testing
-gem "flipper", "~> 0.25.0" # Feature flipping / flags for Ruby
-gem "flipper-active_record", "~> 0.25.0" # Store Flipper flags in ActiveRecord
-gem "flipper-active_support_cache_store", "~> 0.25.0" # Cache feature flags for a short time
-gem "flipper-ui", "~> 0.25.0" # UI for the Flipper gem
+gem "flipper", "~> 1.4" # Feature flipping / flags for Ruby
+gem "flipper-active_record", "~> 1.4" # Store Flipper flags in ActiveRecord
+gem "flipper-active_support_cache_store", "~> 1.4" # Cache feature flags for a short time
+gem "flipper-ui", "~> 1.4" # UI for the Flipper gem
 gem "fog-aws", "~> 3.14" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 1.0" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.1.0" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.4" # API wrapper for MailChimp's API
-gem "hairtrigger", "~> 1.1.1" # HairTrigger lets you create and manage database triggers in a concise, db-agnostic, Rails-y way.
-gem "honeybadger", "~> 4.12" # Used for tracking application errors
+gem "hairtrigger", "~> 1.3.1" # HairTrigger lets you create and manage database triggers in a concise, db-agnostic, Rails-y way.
+gem "honeybadger", "~> 5.1" # Used for tracking application errors
 gem "honeycomb-beeline", "~> 2.11.0" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "httparty", "~> 0.20" # Makes http fun! Also, makes consuming restful web services dead easy
-gem "httpclient", "~> 2.8.3" # Gives something like the functionality of libwww-perl (LWP) in Ruby
+gem "httpclient", "~> 2.9.0" # Gives something like the functionality of libwww-perl (LWP) in Ruby
 gem "i18n-js", "~> 3.9.2" # Helps with internationalization in Rails.
 gem "imgproxy", "~> 2.1" # A gem that easily generates imgproxy URLs for your images
 gem "inline_svg", "~> 1.8" # Embed SVG documents in your Rails views and style them with CSS
@@ -75,32 +76,32 @@ gem "omniauth-mlh", "~> 4.1"
 gem "omniauth-rails_csrf_protection", "~> 1.0" # Provides CSRF protection on OmniAuth request endpoint on Rails application.
 gem "omniauth-twitter", "~> 1.4" # OmniAuth strategy for Twitter
 gem "parallel", "~> 1.22" # Run any kind of code in parallel processes
-gem "pg", "~> 1.4" # Pg is the Ruby interface to the PostgreSQL RDBMS
+gem "pg", "~> 1.6" # Pg is the Ruby interface to the PostgreSQL RDBMS
 gem "pg_query", ">= 6.0.0" # Allows PGHero to analyze queries
 gem "pg_search", "~> 2.3.6" # PgSearch builds Active Record named scopes that take advantage of PostgreSQL's full text search
 gem "pghero", "~> 3.6" # Dashboard for Postgres
 gem "puma", "~> 5.6.4" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
 gem "pundit", "~> 2.2" # Object oriented authorization for Rails applications
 gem "public_suffix", "~> 6.0" # Domain name parser based on the Public Suffix List
-gem "rack-attack", "~> 6.7.0" # Used to throttle requests to prevent brute force attacks
+gem "rack-attack", "~> 6.8.0" # Used to throttle requests to prevent brute force attacks
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
-gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
-gem "rails", "~> 7.0.8.4" # Ruby on Rails
-gem "ransack", "~> 3.2" # Searching and sorting
+gem "rack-timeout", "~> 0.7.0" # Rack middleware which aborts requests that have been running for longer than a specified timeout
+gem "rails", "7.2.3.1" # Ruby on Rails
+gem "ransack", "~> 4.2" # Searching and sorting
 gem "recaptcha", "~> 5.10", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 
 gem "redis", "~> 4.7.1" # Redis ruby client
-gem "redis-actionpack", "~> 5.4.0" # Redis session store for ActionPack. Used for storing the Rails session in Redis.
-gem "rpush", "~> 7.0" # Push Notification library for Rails
-gem "rpush-redis", "~> 1.1" # Redis module capability for rpush library
+gem "redis-actionpack", "~> 5.5.0" # Redis session store for ActionPack. Used for storing the Rails session in Redis.
+gem "rpush", "~> 9.2" # Push Notification library for Rails
+gem "rpush-redis", "~> 1.2" # Redis module capability for rpush library
 
-gem "request_store", "~> 1.5" # RequestStore gives you per-request global storage
+gem "request_store", "~> 1.7" # RequestStore gives you per-request global storage
 gem "reverse_markdown", "~> 2.1" # Map simple html back into markdown
 gem "rolify", "~> 6.0" # Very simple Roles library
 gem "rouge", "~> 4.2" # A pure-ruby code highlighter
 gem "rss", "~> 0.2.9" # Ruby's standard library for RSS
-gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip files
+gem "rubyzip", "~> 2.4" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sidekiq", "~> 6.5.3" # Sidekiq is used to process background jobs with the help of Redis
 gem "sidekiq-throttled", "~> 1.5" # Concurrency control for Sidekiq
@@ -114,7 +115,7 @@ gem "strong_migrations", "~> 1.7" # Catch unsafe migrations
 gem "terser", "~> 1.1" # Terser is a Ruby wrapper for the terser JavaScript parser and minifier
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
-gem "vault", "~> 0.17" # Used to store secrets
+gem "vault", "~> 0.20" # Used to store secrets
 gem "warning", "~> 1.3" # Adds custom processing for warnings, including the ability to ignore specific warning messages
 gem "wcag_color_contrast", "~> 0.1" # Detect contrast of colors to determine readability and a11y.
 
@@ -137,22 +138,23 @@ group :development do
   gem "yard", "~> 0.9" # Documentation format
   gem "yard-activerecord", "~> 0.0" # Yard extension for ActiveRecord
   gem "yard-activesupport-concern", "~> 0.0" # Yard extension for ActiveRecord::Concern
+  gem "kamal", "~> 2.3"
 end
 
 group :development, :test do
-  gem "amazing_print", "~> 1.4" # Great Ruby debugging companion: pretty print Ruby objects to visualize their structure
+  gem "amazing_print", "~> 2.0" # Great Ruby debugging companion: pretty print Ruby objects to visualize their structure
   gem "bullet", "~> 7.0" # help to kill N+1 queries and unused eager loading
   gem "capybara", "~> 3.37.1" # Capybara is an integration testing tool for rack based web applications
   gem "cypress-rails", "~> 0.5" # For end to end tests (E2E)
   gem "debug", ">= 1.0.0" # Provide a debug with step capabilities
-  gem "dotenv-rails", "~> 2.8.1" # For loading ENV variables locally
+  gem "dotenv-rails", "~> 3.2" # For loading ENV variables locally
   gem "faker", "~> 3.5" # A library for generating fake data such as names, addresses, and phone numbers
   gem "knapsack_pro", "~> 5.1" # Help parallelize Ruby spec builds
   gem "pry", "~> 0.14" # An IRB alternative and runtime developer console
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
   gem "rspec-rails", "~> 6.0", ">= 6.0.3" # rspec-rails is a testing framework for Rails 3+
   gem "rspec_junit_formatter", "~> 0.6" # RSpec formatter for JUnit XML output
-  gem "rswag-specs", "~> 2.5.1" # RSwag - Swagger-based DSL for rspec & accompanying rake task for generating Swagger files
+  gem "rswag-specs", "~> 2.11" # RSwag - Swagger-based DSL for rspec & accompanying rake task for generating Swagger files
   gem "rubocop", "~> 1.42", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.14", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.15", require: false # Automatic Rails code style checking tool
@@ -182,3 +184,4 @@ group :test do
   gem "zonebie", "~> 0.6.1" # Runs your tests in a random timezone
 end
 
+gem "neighbor", "~> 0.5.2"

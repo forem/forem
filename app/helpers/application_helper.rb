@@ -69,6 +69,8 @@ module ApplicationHelper
                      "stories stories-show podcast_episodes-show"
                    elsif @story_show
                      "stories stories-show"
+                   elsif @org_readme_show
+                     "stories organizations-show-readme"
                    else
                      "#{controller_name} #{current_page}"
                    end
@@ -166,11 +168,16 @@ module ApplicationHelper
   end
 
   def tag_colors(tag)
-    Rails.cache.fetch("view-helper-#{tag}/tag_colors", expires_in: 5.hours) do
-      if (found_tag = Tag.select(%i[bg_color_hex text_color_hex]).find_by(name: tag))
-        { background: found_tag.bg_color_hex, color: found_tag.text_color_hex }
-      else
-        { background: "#d6d9e0", color: "#606570" }
+    if tag.respond_to?(:bg_color_hex) && tag.respond_to?(:text_color_hex)
+      { background: tag.bg_color_hex, color: tag.text_color_hex }
+    else
+      tag_name = tag.respond_to?(:name) ? tag.name : tag.to_s
+      Rails.cache.fetch("view-helper-#{tag_name}/tag_colors", expires_in: 5.hours) do
+        if (found_tag = Tag.select(%i[bg_color_hex text_color_hex]).find_by(name: tag_name))
+          { background: found_tag.bg_color_hex, color: found_tag.text_color_hex }
+        else
+          { background: "#d6d9e0", color: "#606570" }
+        end
       end
     end
   end
@@ -187,6 +194,20 @@ module ApplicationHelper
 
   def org_bg_or_white(org)
     org&.bg_color_hex ? org.bg_color_hex : "#ffffff"
+  end
+
+  def org_brand_style(user)
+    hex = Color::CompareHex.new([user_colors(user)[:bg]])
+    "--accent-brand: #{hex.brightness(1)}; " \
+    "--accent-brand-darker: #{hex.brightness(0.8)}; " \
+    "--accent-brand-lighter: #{hex.brightness(1.35)}; " \
+    "--accent-brand-rgb: #{hex.brightness(1, only_values: true)}; " \
+    "--accent-brand-darker-rgb: #{hex.brightness(0.8, only_values: true)}; " \
+    "--accent-brand-lighter-rgb: #{hex.brightness(1.35, only_values: true)}; " \
+    "--button-primary-bg: #{hex.brightness(1)}; " \
+    "--button-primary-bg-hover: #{hex.brightness(0.8)}; " \
+    "--link-branded-color: #{hex.brightness(1)}; " \
+    "--link-branded-color-hover: #{hex.brightness(0.8)};"
   end
 
   def sanitize_rendered_markdown(processed_html)
@@ -375,8 +396,16 @@ module ApplicationHelper
     URL.url(uri, RequestStore.store[:subforem_domain])
   end
 
-  def article_url(article)
-    URL.article(article)
+  def article_url(article, **options)
+    base_url = URL.article(article)
+    return base_url if options.blank?
+
+    uri = Addressable::URI.parse(base_url)
+    query_values = (uri.query_values || {}).merge(options.transform_keys(&:to_s).compact)
+    uri.query_values = query_values.any? ? query_values : nil
+    uri.to_s
+  rescue StandardError
+    base_url
   end
 
   def comment_url(comment)
@@ -423,9 +452,23 @@ module ApplicationHelper
   end
 
   def render_tag_link(tag, filled: false, monochrome: false, classes: "", path_suffix: nil)
+    tag_name =
+      if tag.respond_to?(:accessible_name)
+        tag.accessible_name
+      elsif tag.respond_to?(:name)
+        tag.name
+      else
+        tag.to_s
+      end
+    tag_route =
+      if tag.respond_to?(:name)
+        tag.name
+      else
+        tag.to_s
+      end
     color = tag_colors(tag)[:background].presence || Settings::UserExperience.primary_brand_color_hex
     color_faded = Color::CompareHex.new([color]).opacity(0.1)
-    label = safe_join([content_tag(:span, "#", class: "crayons-tag__prefix"), tag])
+    label = safe_join([content_tag(:span, "#", class: "crayons-tag__prefix"), tag_name])
 
     options = {
       class: "crayons-tag #{'crayons-tag--filled' if filled} #{'crayons-tag--monochrome' if monochrome} #{classes}",
@@ -437,7 +480,7 @@ module ApplicationHelper
       "
     }
 
-    link_to(label, tag_path(tag) + path_suffix.to_s, options)
+    link_to(label, tag_path(tag_route) + path_suffix.to_s, options)
   end
 
   def creator_settings_form?
@@ -467,4 +510,27 @@ module ApplicationHelper
 
     content_tag(name, class: dom_class, **kwargs, &block)
   end
+
+  def enabled_global_feature_flags
+    RequestStore.store[:enabled_global_feature_flags] ||= MemoryFirstCache.fetch("enabled_global_feature_flags", redis_expires_in: 10.minutes) do
+      FeatureFlag.all.select { |_, state| state == :on }.keys.join(" ")
+    end
+  end
+
+  def header_link(path)
+    if request.env["forem.custom_domain_org"].present?
+      URL.url(path)
+    else
+      path
+    end
+  end
+
+  def header_sign_up_link(path)
+    if request.env["forem.custom_domain_org"].present?
+      URL.url(path)
+    else
+      subforem_aware_sign_up_url(path)
+    end
+  end
 end
+

@@ -6,6 +6,12 @@ RSpec.describe CodepenTag, type: :liquid_tag do
     let(:codepen_link) { "https://codepen.io/twhite96/pen/XKqrJX" }
     let(:codepen_team_private_link) { "https://codepen.io/team/codepen/pen/fb02c34281cb08966ec44b4e1ae22bc3" }
     let(:codepen_team_link) { "https://codepen.io/team/keyframers/pen/ZMRMEw" }
+    let(:codepen_editor_link) do
+      "https://codepen.io/editor/alvaromontoro/pen/019d657e-d7bc-746a-9bc3-4df2244c97cc/24ac30a5aad27b2b927702d3557c6e70"
+    end
+    let(:codepen_editor_link_single_uuid) do
+      "https://codepen.io/editor/Vaniel-John-Cornelio/pen/019dc28a-3250-7767-85c2-98e0573b8629"
+    end
     let(:codepen_link_with_default_tab) { "https://codepen.io/twhite96/pen/XKqrJX default-tab=js,result" }
     let(:codepen_link_with_theme_id) { "https://codepen.io/propjockey/pen/dyVMgBg theme-id=40148" }
     let(:codepen_link_with_preview_indicator) { "https://codepen.io/propjockey/pen/preview/dyVMgBg" }
@@ -71,6 +77,24 @@ RSpec.describe CodepenTag, type: :liquid_tag do
       expect do
         generate_new_liquid(codepen_link)
       end.not_to raise_error
+    end
+
+    it "accepts CodePen 2.0 editor link" do
+      liquid = generate_new_liquid(codepen_editor_link)
+
+      expect(liquid.render).to include("<iframe")
+        .and include(
+          'src="https://codepen.io/editor/alvaromontoro/embed/019d657e-d7bc-746a-9bc3-4df2244c97cc/24ac30a5aad27b2b927702d3557c6e70?height=600&default-tab=result&embed-version=2"',
+        )
+    end
+
+    it "accepts CodePen 2.0 editor link with single UUID (no appended hash)" do
+      liquid = generate_new_liquid(codepen_editor_link_single_uuid)
+
+      expect(liquid.render).to include("<iframe")
+        .and include(
+          'src="https://codepen.io/editor/Vaniel-John-Cornelio/embed/019dc28a-3250-7767-85c2-98e0573b8629?height=600&default-tab=result&embed-version=2"',
+        )
     end
 
     it "accepts codepen link with an underscore in the username" do

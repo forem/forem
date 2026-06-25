@@ -1,12 +1,13 @@
 class ProfileField < ApplicationRecord
+  resourcify
   WORD_REGEX = /\b\w+\b/
 
   HEADER_FIELD_LIMIT = 3
   HEADER_LIMIT_MESSAGE = "maximum number of header fields (#{HEADER_FIELD_LIMIT}) exceeded".freeze
 
   # Key names follow the Rails form helpers
-  enum input_type: { text_field: 0, text_area: 1 }
-  enum display_area: { header: 0, left_sidebar: 1 }
+  enum :input_type, { text_field: 0, text_area: 1 }
+  enum :display_area, { header: 0, left_sidebar: 1 }
 
   belongs_to :profile_field_group
 

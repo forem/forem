@@ -173,8 +173,8 @@ en:
             input:
               aria_label: Organization secret (to be rotated regularly)
             text: Copied to clipboard!
-          cta: Call-to-action box
-          cta_desc: Customizable text that appears to the right of every post for your organization.
+          cta: Post CTA
+          cta_desc: A call-to-action box shown beside every post published by your organization.
           delete:
             heading: Delete Organization
             confirm: 'Are you absolutely sure you want to delete your organization: %{name}?'
@@ -259,6 +259,10 @@ en:
             text: Revoke admin status
           secret_code: 'Your secret code is:'
           you: You
+        list:
+          heading: Your Organizations
+          manage: Settings
+          view_page: View Page
         create:
           heading: Create An Organization
           notice: You must have your organization's permission to submit this form. Dishonesty may result in a permanent suspension.

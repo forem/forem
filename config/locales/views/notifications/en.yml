@@ -25,6 +25,8 @@ en:
       broadcast:
         visit_html: Visit %{settings} to manage your notifications.
         settings: Settings
+      event:
+        reminder_html: "Reminder: %{event_link} starts in %{time}!"
       comment:
         commented_html: "%{user} commented on %{title}"
         first_html: "%{user} wrote their first comment on %{title}"
@@ -85,6 +87,10 @@ en:
           article: your article
           comment: your comment
           unknown: you
+      organization:
+        deverification_heading: Verification revoked
+        deverification_html: "The verification for %{org} has been revoked because we could no longer find a link back to your organization page on the previously verified URL."
+        reverify: Re-verify your organization
       settings: Settings
       tag:
         heading: "Hey there 👋"

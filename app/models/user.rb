@@ -6,6 +6,7 @@ class User < ApplicationRecord
 
   include Images::Profile.for(:profile_image_url)
   include AlgoliaSearchable
+  include Trackable
 
   # NOTE: we are using an inline module to keep profile related things together.
   concerning :Profiles do
@@ -34,10 +35,9 @@ class User < ApplicationRecord
 
   RECENTLY_ACTIVE_LIMIT = 10_000
 
-  # User types enum
-  enum type_of: { member: 0, community_bot: 1, member_bot: 2 }
-  enum current_subscriber_status: { not_subscribed: 0, free_subscription: 1, trial_subscription: 2,
-                                    paying_subscription: 3 }
+  enum :type_of, { member: 0, community_bot: 1, member_bot: 2 }
+  enum :current_subscriber_status, { not_subscribed: 0, free_subscription: 1, trial_subscription: 2,
+                                     paying_subscription: 3 }
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
@@ -47,6 +47,7 @@ class User < ApplicationRecord
   acts_as_follower
 
   has_one :notification_setting, class_name: "Users::NotificationSetting", dependent: :delete
+  has_one :onboarding_checklist, dependent: :delete
   has_one :setting, class_name: "Users::Setting", dependent: :delete
 
   has_many :affected_feedback_messages, class_name: "FeedbackMessage",
@@ -57,6 +58,8 @@ class User < ApplicationRecord
   has_many :api_secrets, dependent: :delete_all
   has_many :agent_sessions, dependent: :destroy
   has_many :articles, dependent: :destroy
+  has_many :event_signups, dependent: :destroy
+  has_many :signed_up_events, through: :event_signups, source: :event
   has_many :ai_audits, foreign_key: :affected_user_id, inverse_of: :affected_user, dependent: :nullify
   has_many :audit_logs, dependent: :nullify
   has_many :authored_notes, inverse_of: :author, class_name: "Note", foreign_key: :author_id, dependent: :delete_all
@@ -72,6 +75,8 @@ class User < ApplicationRecord
                             inverse_of: :blocker, dependent: :delete_all
   has_many :collections, dependent: :destroy
   has_many :comments, dependent: :destroy
+  has_many :concept_accesses, dependent: :delete_all
+  has_many :accessible_concepts, through: :concept_accesses, source: :concept
   has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
   has_many :credits, dependent: :destroy
   has_many :discussion_locks, dependent: :delete_all, inverse_of: :locking_user, foreign_key: :locking_user_id
@@ -81,6 +86,7 @@ class User < ApplicationRecord
   has_many :feed_events, dependent: :nullify
   has_many :feed_import_logs, class_name: "Feeds::ImportLog", dependent: :delete_all
   has_many :feed_sources, class_name: "Feeds::Source", dependent: :delete_all
+  has_many :lead_submissions, dependent: :destroy
   has_many :field_test_memberships, class_name: "FieldTest::Membership", as: :participant, dependent: :destroy
   # Consider that we might be able to use dependent: :delete_all as the GithubRepo busts the user cache
   has_many :github_repos, dependent: :destroy
@@ -130,6 +136,12 @@ class User < ApplicationRecord
   has_many :user_visit_contexts, dependent: :delete_all
   has_one :user_activity, dependent: :delete
 
+  def cached_recent_user_ids
+    Rails.cache.fetch("user-#{id}/recent_users", expires_in: 5.minutes) do
+      user_activity&.recent_users || []
+    end
+  end
+
   mount_uploader :profile_image, ProfileImageUploader
 
   devise :invitable, :omniauthable, :registerable, :database_authenticatable, :confirmable, :rememberable,
@@ -142,6 +154,7 @@ class User < ApplicationRecord
   validates :comments_count, presence: true
   validates :credits_count, presence: true
   validates :email, length: { maximum: 254 }, email: true, allow_nil: true
+  validate :reject_encoded_word_email, if: -> { email.present? }
   validates :email, uniqueness: { allow_nil: true, case_sensitive: false }, if: :email_changed?
   validates :following_orgs_count, presence: true
   validates :following_tags_count, presence: true
@@ -273,6 +286,7 @@ class User < ApplicationRecord
   before_destroy :destroy_follows, prepend: true
 
   after_create_commit :send_welcome_notification
+  after_create_commit :create_onboarding_checklist
 
   after_save :sync_base_email_eligible!, if: lambda {
                                                saved_changes.key?(:email) || saved_changes.key?(:registered) || saved_changes.key?(:score)
@@ -303,6 +317,14 @@ class User < ApplicationRecord
 
   def self.mascot_account
     find_by(id: Settings::General.mascot_user_id)
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["agent_sessions_count", "apple_username", "articles_count", "badge_achievements_count", "base_email_eligible", "blocked_by_count", "blocking_others_count", "checked_code_of_conduct", "checked_terms_and_conditions", "comments_count", "confirmation_sent_at", "confirmed_at", "created_at", "credits_count", "current_sign_in_at", "current_subscriber_status", "email", "export_requested", "exported_at", "facebook_username", "failed_attempts", "feed_fetched_at", "following_orgs_count", "following_tags_count", "following_users_count", "forem_username", "github_repos_updated_at", "github_username", "google_oauth2_created_at", "google_oauth2_username", "id", "id_value", "invitation_accepted_at", "invitation_created_at", "invitation_limit", "invitation_sent_at", "invitations_count", "invited_by_id", "invited_by_type", "last_article_at", "last_comment_at", "last_followed_at", "last_moderation_notification", "last_notification_activity", "last_onboarding_page", "last_presence_at", "last_reacted_at", "last_sign_in_at", "latest_article_updated_at", "locked_at", "max_score", "mlh_username", "name", "old_old_username", "old_username", "onboarding_package_requested", "onboarding_subforem_id", "organization_info_updated_at", "payment_pointer", "profile_image", "profile_updated_at", "public_reactions_count", "rating_votes_count", "reactions_count", "registered", "registered_at", "reputation_modifier", "reset_password_sent_at", "saw_onboarding", "score", "sign_in_count", "sign_in_token_sent_at", "signup_cta_variant", "spent_credits_count", "stripe_id_code", "subscribed_to_user_subscriptions_count", "twitter_username", "type_of", "unconfirmed_email", "unspent_credits_count", "updated_at", "username"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["roles", "profile", "setting", "notification_setting"]
   end
 
   def good_standing_followers_count
@@ -341,6 +363,16 @@ class User < ApplicationRecord
     elsif Settings::Authentication.limit_new_users?
       add_role(:limited)
       # Otherwise just leave the new user in good standing
+    end
+  end
+
+  def author_trust_score
+    case score.to_i
+    when -Float::INFINITY...25 then 0
+    when 25...75 then 1
+    when 75...175 then 2
+    when 175...300 then 3
+    else 4
     end
   end
 
@@ -476,7 +508,9 @@ class User < ApplicationRecord
   end
 
   def refresh_auto_audience_segments
-    SegmentedUserRefreshWorker.perform_async(id)
+    if ENV["ENABLE_REFRESH_SEGMENT_WORKERS"]  == "true"
+      SegmentedUserRefreshWorker.perform_async(id)
+    end
   end
 
   ##############################################################################
@@ -790,6 +824,47 @@ class User < ApplicationRecord
     last_followed_at.respond_to?(:rfc3339) ? last_followed_at.rfc3339 : last_followed_at.to_s
   end
 
+  # === Trackable (DEV → MLH Core user sync) ===
+  # Emits user_created / user_updated to the Customer.io CDP so MLH Core can
+  # link the DEV account (SocialProfiles::Dev) and record engagement.
+
+  def trackable_user_ids
+    [id]
+  end
+
+  # Curated payload — do NOT ship the full users row across the boundary.
+  # String keys keep the job arguments JSON-safe for Sidekiq.strict_args!.
+  def trackable_payload
+    { "id" => id, "username" => username, "email" => email, "name" => name }
+  end
+
+  # Emit user_updated only on deliberate profile edits. Forem touches
+  # profile_updated_at on every profile-edit path (Users::Update, users#update),
+  # so unrelated row churn (sign-ins, counters, score recalcs) does not emit.
+  def enqueue_trackable_event_updated
+    return unless previous_changes.key?("profile_updated_at")
+
+    enqueue_trackable_event("user_updated")
+  end
+
+  # Two gates: the admin master switch, then the per-account rollout flag.
+  # The setting is resolved via the default subforem (like mailers do) because the
+  # admin panel saves it subforem-scoped and callbacks may run without request context.
+  def trackable_events_skipped?
+    return true unless Settings::General.customerio_cdp_enabled(subforem_id: Subforem.cached_default_id)
+    return true unless FeatureFlag.enabled_for_user?(:dev_core_user_sync, self)
+
+    super
+  end
+
+  # User deletion / unlink is intentionally out of scope for the DEV → Core sync
+  # (created + updated only), and the Core consumer does not handle deletes, so
+  # suppress the concern's default user_destroyed emission.
+  def enqueue_trackable_event_destroyed(*)
+    nil
+  end
+  private :enqueue_trackable_event_updated, :trackable_events_skipped?, :enqueue_trackable_event_destroyed
+
   protected
 
   # Send emails asynchronously
@@ -819,6 +894,12 @@ class User < ApplicationRecord
     Notification.send_welcome_notification(id, set_up_profile_broadcast.id)
   end
 
+  def create_onboarding_checklist
+    return unless Settings::General.display_sidebar_onboarding_checklist
+
+    OnboardingChecklist.find_or_create_by(user: self)
+  end
+
   def set_username
     self.username = username&.downcase.presence || generate_username
   end
@@ -837,6 +918,12 @@ class User < ApplicationRecord
 
   def downcase_email
     self.email = email.downcase if email
+  end
+
+  def reject_encoded_word_email
+    encoded_word_regex = /=\?[^?]+\?[BbQq]\?[^?]+\?=/
+
+    errors.add(:email, :invalid) if email.match?(encoded_word_regex)
   end
 
   def bust_cache

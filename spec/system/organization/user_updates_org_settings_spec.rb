@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Organization setting page(/settings/organization)", js: true do
+RSpec.describe "Organization setting page(/settings/organization)", type: :system do
   def fill_in_org_form
     fill_in "organization[name]", with: "Organization Name"
     fill_in "organization[slug]", with: "Organization"
@@ -8,8 +8,6 @@ RSpec.describe "Organization setting page(/settings/organization)", js: true do
       "organization_profile_image",
       Rails.root.join("app/assets/images/android-icon-36x36.png"),
     )
-    fill_in "organization_bg_color_hex", with: "#000000"
-    fill_in "organization_text_color_hex", with: "#ffffff"
     fill_in "organization[url]", with: "http://company.com"
     fill_in "organization[summary]", with: "Summary"
     fill_in "organization[proof]", with: "Proof"
@@ -44,7 +42,7 @@ RSpec.describe "Organization setting page(/settings/organization)", js: true do
     join_org(user, organization, :admin)
     join_org(user2, organization, :member)
 
-    visit "/settings/organization"
+    visit "/#{organization.slug}/settings"
     click_button("Make admin")
 
     expect(page).to have_text("#{user2.name} is now an admin.")
@@ -54,7 +52,7 @@ RSpec.describe "Organization setting page(/settings/organization)", js: true do
     join_org(user, organization, :admin)
     join_org(user2, organization, :admin)
 
-    visit "/settings/organization"
+    visit "/#{organization.slug}/settings"
     click_button("Revoke admin status")
     expect(page).to have_text("#{user2.name} is no longer an admin.")
   end
@@ -63,7 +61,7 @@ RSpec.describe "Organization setting page(/settings/organization)", js: true do
     join_org(user, organization, :admin)
     join_org(user2, organization, :member)
 
-    visit "/settings/organization"
+    visit "/#{organization.slug}/settings"
     click_button("Remove from org")
     expect(page).to have_text("#{user2.name} is no longer part of your organization.")
   end
@@ -71,9 +69,9 @@ RSpec.describe "Organization setting page(/settings/organization)", js: true do
   it "uses the update page when an update error occurs" do
     join_org(user, organization, :admin)
 
-    visit "/settings/organization"
-    fill_in "organization[name]", with: user.name
-    click_button("Save")
+    visit "/#{organization.slug}/settings"
+    fill_in "organization[name]", with: ""
+    click_button("Save page")
     expect(page).to have_text("Organization details")
   end
 end

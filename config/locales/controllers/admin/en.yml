@@ -117,6 +117,16 @@ en:
       fully_trusted_enabled: Fully trusted status has been enabled for this organization.
       fully_trusted_disabled: Fully trusted status has been disabled for this organization.
       baseline_score_updated: Baseline score updated!
+      verified_enabled: This organization has been verified.
+      verified_disabled: Verification has been revoked for this organization.
+      org_feature_enabled: "%{feature} has been enabled for this organization."
+      org_feature_disabled: "%{feature} has been disabled for this organization."
+      org_feature_invalid: "Invalid org feature specified."
+    org_features_controller:
+      invalid_feature: "Invalid feature specified."
+      global_enabled: "%{feature} has been enabled for all organizations."
+      global_disabled: "%{feature} global access has been disabled. Only individually enabled organizations retain access."
+      cta_updated: "Upgrade CTA settings have been updated."
     pages_controller:
       updated: Page has been successfully updated.
       created: Page has been successfully created.
@@ -175,6 +185,9 @@ en:
       created: '%{tag_name} has been created!'
       updated: '%{tag_name} tag successfully updated!'
       update_fail: 'The tag update failed: %{errors}'
+      form:
+        moderation_instructions: "Moderation instructions"
+        moderation_instructions_description: "Custom AI moderation instructions for posts tagged with this tag. If provided, they will be appended to the AI content moderation prompt."
     surveys_controller:
       created: Survey has been created!
       updated: Survey has been updated!
@@ -223,3 +236,10 @@ en:
         ![WELCOME TO THE INTERNET](https://slack-imgs.com/?c=1&url=http%3A%2F%2Fmedia0.giphy.com%2Fmedia%2FzhbrTTpmSCYog%2Fgiphy-downsized.gif)
 
         Leave a comment below to introduce yourself to the community!✌️
+    concepts_controller:
+      created: Concept created successfully. Backfill classification has been enqueued.
+      updated: Concept updated successfully. Backfill classification has been enqueued.
+      deleted: Concept deleted successfully.
+      failed_deletion: Something went wrong with deleting the concept.
+      lookback_triggered: "Concept lookback of %{days} days has been enqueued."
+      invalid_days: "Please provide a valid number of days greater than 0 and greater than the current lookback coverage."

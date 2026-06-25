@@ -17,7 +17,7 @@ module EmbedsHelpers
         headers: {
           Accept: "*/*",
           "Accept-Encoding": "identity",
-          "User-Agent": "MetaInspector/5.12.0 (+https://github.com/jaimeiniesta/metainspector)"
+          "User-Agent": "MetaInspector/5.17.2 (+https://github.com/jaimeiniesta/metainspector)"
         },
       ).to_return(status: status_code, body: "", headers: {})
   end

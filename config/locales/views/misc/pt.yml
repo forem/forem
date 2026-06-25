@@ -101,16 +101,19 @@ pt:
         week: Week
         month: Month
         infinity: Infinity
-      readers: Readers Summary
-      followers: New Followers Summary
-      reactions: "Reactions Summary"
-      comments: "Comments Summary"
+      readers: Leitores
+      readers_description: "Visualizações de todos os visitantes (visualizações anônimas são estimadas). O tempo de leitura é rastreado apenas para leitores conectados."
+      followers: Novos seguidores
+      reactions: "Reações"
+      comments: "Comentários"
       traffic:
-        text: "Traffic Source Summary"
+        text: "Fontes de tráfego"
         source: Source
         views: Views
       reactions_history: "Histórico de Reações"
       by: por
+      top_contributors:
+        heading: Principais Engajadores
     sticky:
       joined: Joined
       default_cta: Learn more
@@ -127,4 +130,5 @@ pt:
           description: All videos on %{community}
       heading: "%{community} on Video"
       beta_html: "<strong>Video is beta:</strong> %{contact}"
+      max_file_size: "Tamanho máximo do arquivo: %{size}."
       upload: "🎥 Upload Video File 🙌"

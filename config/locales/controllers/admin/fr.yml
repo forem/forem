@@ -117,6 +117,16 @@ fr:
       fully_trusted_enabled: Le statut de confiance totale a été activé pour cette organisation.
       fully_trusted_disabled: Le statut de confiance totale a été désactivé pour cette organisation.
       baseline_score_updated: Le score de base a été mis à jour !
+      verified_enabled: Cette organisation a été vérifiée.
+      verified_disabled: La vérification a été révoquée pour cette organisation.
+      org_feature_enabled: "%{feature} a été activé pour cette organisation."
+      org_feature_disabled: "%{feature} a été désactivé pour cette organisation."
+      org_feature_invalid: "Fonctionnalité d'organisation spécifiée invalide."
+    org_features_controller:
+      invalid_feature: "Fonctionnalité spécifiée invalide."
+      global_enabled: "%{feature} a été activé pour toutes les organisations."
+      global_disabled: "L'accès global à %{feature} a été désactivé. Seules les organisations activées individuellement conservent l'accès."
+      cta_updated: "Les paramètres du CTA ont été mis à jour."
     pages_controller:
       updated: La page a été mise à jour avec succès.
       created: La page a été créée avec succès.
@@ -175,6 +185,9 @@ fr:
       created: '%{tag_name} a été créé !'
       updated: '%{tag_name} tag mis à jour avec succès !'
       update_fail: 'La mise à jour de la balise a échoué : %{errors}'
+      form:
+        moderation_instructions: "Instructions de modération"
+        moderation_instructions_description: "Instructions de modération IA personnalisées pour les articles avec cette balise. Si fournies, elles seront ajoutées à l'invite de modération de contenu IA."
     surveys_controller:
       created: Le sondage a été créé !
       updated: Le sondage a été mis à jour !
@@ -223,3 +236,10 @@ fr:
         ![BIENVENUE SUR INTERNET](https://slack-imgs.com/?c=1&url=http%3A%2F%2Fmedia0.giphy.com%2Fmedia%2FzhbrTTpmSCYog%2Fgiphy-downsized.gif)
 
         Laissez un commentaire ci-dessous pour vous présenter à la communauté!✌️
+    concepts_controller:
+      created: Le concept a été créé avec succès. La classification de remplissage a été mise en attente.
+      updated: Le concept a été mis à jour avec succès. La classification de remplissage a été mise en attente.
+      deleted: Le concept a été supprimé avec succès.
+      failed_deletion: Quelque chose s'est mal passé lors de la suppression du concept.
+      lookback_triggered: "Le retour en arrière du concept de %{days} jours a été mis en file d'attente."
+      invalid_days: "Veuillez fournir un nombre de jours valide supérieur à 0 et supérieur à la couverture actuelle de retour en arrière."

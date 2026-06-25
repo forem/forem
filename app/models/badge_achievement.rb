@@ -19,11 +19,24 @@ class BadgeAchievement < ApplicationRecord
   before_validation :render_rewarding_context_message_html
   after_create :award_credits
   after_create :apply_top_seven_reputation_modifier_changes
+  after_create :calculate_user_score
   after_create_commit :notify_recipient
   after_create_commit :send_email_notification
   after_commit :bust_user_cache, on: %i[create destroy]
 
+  def self.ransackable_attributes(auth_object = nil)
+    ["badge_id", "created_at", "id", "include_default_description", "rewarder_id", "rewarding_context_message", "rewarding_context_message_markdown", "updated_at", "user_id"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["user", "badge", "rewarder"]
+  end
+
   private
+
+  def calculate_user_score
+    user.calculate_score
+  end
 
   def bust_user_cache
     return unless user_id
