@@ -3,7 +3,7 @@
 module Spam
   # Background worker to detect reaction rings and adjust reputation modifiers
   class ReactionRingDetectionWorker
-    include Sidekiq::Worker
+    include Sidekiq::Job
 
     sidekiq_options queue: :default, retry: 3, lock: :until_and_while_executing
 
