@@ -161,4 +161,25 @@ text of the printing and typesetting industry\r\nLorem Ipsum is simply dummy tex
       end
     end
   end
+
+  describe "enqueue_profile_social_image_generation" do
+    before do
+      profile
+      allow(Images::ProfileSocialImageWorker).to receive(:perform_async)
+    end
+
+    context "when summary changes" do
+      it "enqueues the profile social image generation worker" do
+        profile.update!(summary: "Updated bio")
+        expect(Images::ProfileSocialImageWorker).to have_received(:perform_async).with(user.id, "User")
+      end
+    end
+
+    context "when other fields change" do
+      it "does not enqueue the profile social image generation worker" do
+        profile.update!(location: "New Location")
+        expect(Images::ProfileSocialImageWorker).not_to have_received(:perform_async)
+      end
+    end
+  end
 end

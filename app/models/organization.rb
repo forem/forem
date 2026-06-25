@@ -44,6 +44,7 @@ class Organization < ApplicationRecord
 
   after_update_commit :conditionally_update_articles
   after_update_commit :recompile_pages, if: -> { saved_change_to_name? || saved_change_to_slug? || saved_change_to_summary? }
+  after_commit :enqueue_profile_social_image_generation, on: [:create, :update], if: :profile_social_image_attributes_changed?
   after_save_commit :manage_fastly_tls_subscription
   after_destroy_commit :bust_cache
 
@@ -313,6 +314,18 @@ class Organization < ApplicationRecord
     return unless change && articles.published.from_subforem.size.positive?
 
     Images::SocialImageWorker.perform_async(id, self.class.name)
+  end
+
+  def profile_social_image_attributes_changed?
+    saved_change_to_name? ||
+      saved_change_to_profile_image? ||
+      saved_change_to_tag_line? ||
+      saved_change_to_summary? ||
+      saved_change_to_bg_color_hex?
+  end
+
+  def enqueue_profile_social_image_generation
+    Images::ProfileSocialImageWorker.perform_async(id, self.class.name)
   end
 
   def evaluate_markdown

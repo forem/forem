@@ -232,5 +232,26 @@ RSpec.describe Users::Setting do
       end
     end
   end
+
+  describe "enqueue_profile_social_image_generation" do
+    before do
+      setting
+      allow(Images::ProfileSocialImageWorker).to receive(:perform_async)
+    end
+
+    context "when brand_color1 changes" do
+      it "enqueues the profile social image generation worker" do
+        setting.update!(brand_color1: "#123456")
+        expect(Images::ProfileSocialImageWorker).to have_received(:perform_async).with(user.id, "User")
+      end
+    end
+
+    context "when other fields change" do
+      it "does not enqueue the profile social image generation worker" do
+        setting.update!(experience_level: 5)
+        expect(Images::ProfileSocialImageWorker).not_to have_received(:perform_async)
+      end
+    end
+  end
 end
 # rubocop:enable Layout/LineLength

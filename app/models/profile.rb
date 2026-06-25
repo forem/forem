@@ -9,6 +9,7 @@ class Profile < ApplicationRecord
   after_commit :bust_user_profile_details_cache, on: :update, if: :profile_details_changed_for_cache?
   after_commit :complete_onboarding_profile_item, on: :update, if: :profile_details_changed_for_cache?
   after_commit :enqueue_profile_spam_check, on: :update, if: :profile_spam_check_triggered?
+  after_commit :enqueue_profile_social_image_generation, on: [:create, :update], if: :saved_change_to_summary?
 
   validates :user_id, uniqueness: true
   validates :location, :website_url, length: { maximum: 100 }
@@ -96,5 +97,9 @@ class Profile < ApplicationRecord
 
   def enqueue_profile_spam_check
     Users::HandleProfileSpamWorker.perform_async(user_id)
+  end
+
+  def enqueue_profile_social_image_generation
+    Images::ProfileSocialImageWorker.perform_async(user_id, "User")
   end
 end
