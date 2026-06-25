@@ -301,7 +301,7 @@ RSpec.describe "Calendar" do
     context "with a very long duration event" do
       let!(:long_event) do
         create(:event, title: "Year Long Event", published: true,
-                       start_time: Date.new(2025, 1, 1).in_time_zone,
+                       start_time: Date.new(2026, 1, 1).in_time_zone,
                        end_time: Date.new(2027, 1, 1).in_time_zone)
       end
 

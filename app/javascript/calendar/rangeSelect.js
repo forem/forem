@@ -35,9 +35,9 @@ export function initCalendarDragSelect(grid) {
   const typeOf = grid.dataset.typeOf || '';
   let anchor = null;
 
-  // Pointer events unify mouse, touch, and pen. On touch the move target stays
-  // the element the gesture started on, so resolve the cell under the pointer
-  // coordinates rather than trusting event.target.
+  // Resolves the day cell under the pointer coordinates. Touch drag-selection is
+  // skipped to allow vertical scrolling, but mouse/pen pointer types can drag-select.
+  // We resolve the cell under coordinates in case the pointer moves outside the target.
   const dayFromPoint = (event) =>
     dayFromElement(document.elementFromPoint(event.clientX, event.clientY), grid);
 
