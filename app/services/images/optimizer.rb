@@ -2,6 +2,7 @@ module Images
   module Optimizer
     def self.call(img_src, **kwargs)
       return img_src if img_src.blank? || img_src.starts_with?("/")
+      return img_src if img_src.match?(/\.svg(\?.*)?$/i)
 
       if imgproxy_enabled?
         imgproxy(img_src, **kwargs)
