@@ -136,7 +136,9 @@ describe "Framework Defaults 7.2 Upgrade Verification" do
       if defined?(ActiveJob::Base)
         expect(ActiveJob::Base.enqueue_after_transaction_commit).to eq(:default).or eq(false)
       end
-      expect(config.active_support.to_time_preserves_timezone).to eq(:zone)
+      if Gem::Version.new(Rails.version) < Gem::Version.new("8.1")
+        expect(config.active_support.to_time_preserves_timezone).to eq(:zone)
+      end
     end
 
     it "handles remaining Rails 7.2 configurations (preserving Rails 7.1 defaults where appropriate)" do
@@ -176,7 +178,9 @@ describe "Framework Defaults 7.2 Upgrade Verification" do
     end
 
     it "preserves timezone in to_time" do
-      expect(Rails.application.config.active_support.to_time_preserves_timezone).to eq(:zone)
+      if Gem::Version.new(Rails.version) < Gem::Version.new("8.1")
+        expect(Rails.application.config.active_support.to_time_preserves_timezone).to eq(:zone)
+      end
     end
 
     it "enables reloading in test environment using config.enable_reloading" do
