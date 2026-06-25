@@ -35,8 +35,11 @@ class CalendarController < ApplicationController
     scope.where("end_time >= ? AND start_time <= ?",
                 range_start.beginning_of_day, range_end.end_of_day)
       .pluck(:start_time, :end_time)
-      .flat_map { |start_time, end_time| (start_time.in_time_zone.to_date..end_time.in_time_zone.to_date).to_a }
-      .select { |date| date >= range_start && date <= range_end }
+      .flat_map do |start_time, end_time|
+        start_date = [start_time.in_time_zone.to_date, range_start].max
+        end_date = [end_time.in_time_zone.to_date, range_end].min
+        (start_date..end_date).to_a
+      end
       .to_set
   end
 
