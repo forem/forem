@@ -79,6 +79,7 @@ module Articles
           featured_story = featured_story_from(stories: hot_stories, must_have_main_image: must_have_main_image)
           new_stories = Article.published.from_subforem
             .where("score > ?", article_score_threshold)
+            .not_authored_by(UserBlock.cached_blocked_ids_for_blocker(@user.id))
             .limited_column_select.includes(top_comments: :user)
             .order(published_at: :desc)
             .includes(:distinct_reaction_categories, :subforem, :context_notes)

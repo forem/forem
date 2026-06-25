@@ -42,7 +42,8 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
 
       it "does not load blocked articles" do
         create(:user_block, blocker: user, blocked: second_user, config: "default")
-        expect(result).not_to include(hot_story)
+        expect(stories).not_to include(hot_story)
+        expect(featured_story).not_to eq(hot_story)
       end
     end
 

@@ -150,7 +150,7 @@ describe "Framework Defaults 7.2 Upgrade Verification" do
       # Active Storage isn't loaded in Forem, so config.active_storage remains undefined
       expect(config.respond_to?(:active_storage)).to be(false)
       expect(config.respond_to?(:yjit)).to be(true)
-      expect(config.yjit).to be(true)
+      expect(config.yjit).to be(!Rails.env.local?)
     end
   end
 
@@ -254,13 +254,16 @@ describe "Framework Defaults 7.2 Upgrade Verification" do
   end
 
   describe "Framework Defaults 8.1 Upgrade Verification" do
-    it "has the new_framework_defaults_8_1.rb initializer file present" do
-      expect(File.exist?(Rails.root.join("config/initializers/new_framework_defaults_8_1.rb"))).to be(true)
+    it "does not have the new_framework_defaults_8_1.rb initializer file present" do
+      expect(File.exist?(Rails.root.join("config/initializers/new_framework_defaults_8_1.rb"))).to be(false)
     end
 
-    it "enables key Rails 8.1 defaults to ease the upgrade path" do
+    it "loads all key Rails 8.1 framework defaults natively" do
       config = Rails.application.config
 
+      expect(config.action_view.remove_hidden_field_autocomplete).to be(true)
+      expect(config.action_controller.action_on_path_relative_redirect).to eq(:raise)
+      expect(config.action_controller.escape_json_responses).to be(false)
       expect(config.active_support.escape_js_separators_in_json).to be(false)
       expect(config.active_record.raise_on_missing_required_finder_order_columns).to be(true)
     end
