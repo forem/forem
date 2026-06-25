@@ -1,3 +1,4 @@
+import { showSnackbar } from '../utilities/showSnackbar';
 import {
   closeWindowModal,
   showWindowModal,
@@ -34,23 +35,14 @@ const suspendOrUnsuspendUser = async ({
     const outcome = await response.json();
 
     if (outcome.success) {
-      top.addSnackbarItem({
-        message: outcome.message,
-        addCloseButton: true,
-      });
+      showSnackbar(outcome.message);
 
       updateBtnFlow(btnAction, username);
     } else {
-      top.addSnackbarItem({
-        message: 'Error: something went wrong.',
-        addCloseButton: true,
-      });
+      showSnackbar('Error: something went wrong.');
     }
   } catch (error) {
-    top.addSnackbarItem({
-      message: `Error: ${error}`,
-      addCloseButton: true,
-    });
+    showSnackbar(`Error: ${error}`);
   }
 };
 
