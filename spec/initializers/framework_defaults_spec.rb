@@ -37,7 +37,7 @@ describe "Framework Defaults 7.2 Upgrade Verification" do
     end
     expect(config.active_support.raise_on_invalid_cache_expiration_time).to be(true)
     expect(config.active_record.query_log_tags_format).to eq(:sqlcommenter)
-    expect(config.active_support.message_serializer).to eq(:json_allow_marshal)
+    expect(config.active_support.message_serializer).to eq(:json)
     expect(config.active_support.use_message_serializer_for_metadata).to be(true)
     expect(config.active_record.encryption.hash_digest_class).to eq(OpenSSL::Digest::SHA256)
     expect(config.active_record.encryption.support_sha1_for_non_deterministic_encryption).to be(false)
@@ -167,6 +167,14 @@ describe "Framework Defaults 7.2 Upgrade Verification" do
 
     it "enables reloading in test environment using config.enable_reloading" do
       expect(Rails.application.config.enable_reloading).to be(true)
+    end
+
+    it "uses Flipper versions compatible with Rails 8.0" do
+      expect(Gem::Version.new(Flipper::VERSION)).to be >= Gem::Version.new("1.4.0")
+    end
+
+    it "uses redis-actionpack version compatible with Rails 8.0" do
+      expect(Gem.loaded_specs["redis-actionpack"].version).to be >= Gem::Version.new("5.5.0")
     end
 
     describe "Regexp timeout parser logic" do
