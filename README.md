@@ -171,9 +171,7 @@ Like many open source projects, we require that contributors provide us with a
 Contributor License Agreement (CLA). By submitting code to the Forem project,
 you are granting us a right to use that code under the terms of the CLA.
 
-Our version of the CLA was adapted from the Microsoft Contributor License
-Agreement, which they generously made available to the public domain under
-Creative Commons CC0 1.0 Universal.
+Our version of the CLA was adapted from the Microsoft Contributor License Agreement, which Microsoft generously released into the public domain under the Creative Commons CC0 1.0 Universal license.
 
 Any questions, please refer to our
 [license FAQ](https://developers.forem.com/licensing/) doc or email
