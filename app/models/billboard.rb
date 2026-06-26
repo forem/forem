@@ -68,7 +68,7 @@ class Billboard < ApplicationRecord
   enum :type_of, { in_house: 0, community: 1, external: 2 }
   enum :render_mode, { forem_markdown: 0, raw: 1 }
   enum :template, { authorship_box: 0, plain: 1 }
-  enum :special_behavior, { nothing: 0, delayed: 1 }
+  enum :special_behavior, { nothing: 0, delayed: 1, persistent: 2 }
   enum :browser_context, { all_browsers: 0, desktop: 1, mobile_web: 2, mobile_in_app: 3 }
 
   belongs_to :organization, optional: true
@@ -77,6 +77,7 @@ class Billboard < ApplicationRecord
   validates :placement_area, presence: true,
                              inclusion: { in: ALLOWED_PLACEMENT_AREAS }
   validates :body_markdown, presence: true
+  validates :minimized_body_markdown, presence: true, if: :persistent?
   validates :organization, presence: true, if: :community?
   validates :weight, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 10_000 }
   validates :audience_segment_type,
@@ -467,7 +468,7 @@ class Billboard < ApplicationRecord
 
   def update_content_updated_at_if_needed
     # Only update content_updated_at when content-related fields change
-    content_fields = %w[body_markdown name placement_area color template render_mode]
+    content_fields = %w[body_markdown minimized_body_markdown name placement_area color template render_mode]
     
     return unless content_fields.any? { |field| will_save_change_to_attribute?(field) }
     
@@ -534,7 +535,7 @@ class Billboard < ApplicationRecord
   def should_bust_home_page_cache?
     return false unless HOME_PAGE_PLACEMENTS.include?(placement_area) || HOME_PAGE_PLACEMENTS.include?(placement_area_before_last_save)
 
-    content_fields = %w[body_markdown name placement_area color template render_mode]
+    content_fields = %w[body_markdown minimized_body_markdown name placement_area color template render_mode]
 
     was_active = approved_before_last_save && published_before_last_save
     is_active = approved && published
@@ -564,22 +565,38 @@ class Billboard < ApplicationRecord
   end
 
   def process_markdown
-    return unless body_markdown_changed?
+    reprocess_body = body_markdown_changed? || render_mode_changed? || placement_area_changed?
+    reprocess_minimized = minimized_body_markdown_changed? || render_mode_changed? || placement_area_changed?
 
-    if render_mode == "forem_markdown"
-      extracted_process_markdown
-    else # raw
-      self.processed_html = Html::Parser.new(body_markdown)
-        .prefix_all_images(width: 880, quality: 100, synchronous_detail_detection: true).html
+    if reprocess_body && body_markdown.present?
+      if render_mode == "forem_markdown"
+        self.processed_html = extracted_process_markdown(body_markdown)
+      else # raw
+        self.processed_html = Html::Parser.new(body_markdown)
+          .prefix_all_images(width: 880, quality: 100, synchronous_detail_detection: true).html
+      end
+    end
+
+    if reprocess_minimized
+      if minimized_body_markdown.present?
+        if render_mode == "forem_markdown"
+          self.minimized_processed_html = extracted_process_markdown(minimized_body_markdown)
+        else # raw
+          self.minimized_processed_html = Html::Parser.new(minimized_body_markdown)
+            .prefix_all_images(width: 880, quality: 100, synchronous_detail_detection: true).html
+        end
+      else
+        self.minimized_processed_html = nil
+      end
     end
   end
 
-  def extracted_process_markdown
-    renderer = ContentRenderer.new(body_markdown || "", source: self, user: creator)
-    self.processed_html = renderer.process(prefix_images_options: { width: prefix_width,
-                                                                    quality: 100,
-                                                                    synchronous_detail_detection: true }).processed_html
-    self.processed_html = processed_html.delete("\n")
+  def extracted_process_markdown(markdown)
+    renderer = ContentRenderer.new(markdown || "", source: self, user: creator)
+    processed = renderer.process(prefix_images_options: { width: prefix_width,
+                                                           quality: 100,
+                                                           synchronous_detail_detection: true }).processed_html
+    processed.delete("\n")
   end
 
   def prefix_width

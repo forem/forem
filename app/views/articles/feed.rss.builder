@@ -9,12 +9,18 @@ xml.rss(:version => "2.0",
   xml.channel do
     if user
       xml.title "#{community_name}: #{user.name}"
-      xml.description "The latest articles on #{community_name} by #{user.name} (@#{user.username})."
-      xml.link app_url(user.path)
+      user_handle = user.instance_of?(User) ? "@#{user.username}" : user.slug
+      xml.description "The latest articles on #{community_name} by #{user.name} (#{user_handle})."
+      channel_link = if request.env["forem.custom_domain_org"].present?
+                       request.base_url
+                     else
+                       app_url(user.path)
+                     end
+      xml.link channel_link
       xml.image do
         xml.url app_url(user.profile_image_90)
         xml.title "#{community_name}: #{user.name}"
-        xml.link app_url(user.path)
+        xml.link channel_link
       end
     elsif tag
       xml.title "#{community_name}: #{tag.name}"
@@ -42,8 +48,13 @@ xml.rss(:version => "2.0",
         xml.title article.title
         xml.tag!("dc:creator", user.instance_of?(User) ? user.name : article.user.name)
         xml.pubDate article.published_at.to_fs(:rfc822) if article.published_at
-        xml.link app_url(article.path)
-        xml.guid app_url(article.path)
+        article_link = if request.env["forem.custom_domain_org"].present?
+                         "#{request.base_url}/#{article.slug}"
+                       else
+                         app_url(article.path)
+                       end
+        xml.link article_link
+        xml.guid article_link
         xml.description sanitize(article.plain_html,
                                  tags: allowed_tags, attributes: allowed_attributes, scrubber: scrubber)
         article.tag_list.each do |tag_name|
