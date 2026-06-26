@@ -1,7 +1,8 @@
 module Admin
   module GDPRDeleteRequestsQuery
     QUERY_CLAUSE = "#{GDPRDeleteRequest.table_name}.email ILIKE :search OR " \
-                   "#{GDPRDeleteRequest.table_name}.username ILIKE :search".freeze
+                   "#{GDPRDeleteRequest.table_name}.username ILIKE :search OR " \
+                   "#{GDPRDeleteRequest.table_name}.name ILIKE :search".freeze
 
     def self.call(relation: ::GDPRDeleteRequest.all, search: {})
       relation = search_relation(relation, search) if search.presence
