@@ -52,6 +52,21 @@ RSpec.describe Comments::Count do
     expect(count).to eq(4)
   end
 
+  it "excludes childless soft-deleted comments" do
+    comment.update!(deleted: true)
+    article.reload
+    count = described_class.new(article).call
+    expect(count).to eq(1) # Only comment2 is displayed
+  end
+
+  it "includes soft-deleted parent comments with active replies" do
+    comment.update!(deleted: true)
+    create(:comment, commentable: article, parent: comment, score: 10)
+    article.reload
+    count = described_class.new(article).call
+    expect(count).to eq(3) # comment, active reply, and comment2 are displayed
+  end
+
   context "with recalculate option" do
     # displayed comments count = 4
     # comments count = 5
