@@ -12,10 +12,10 @@ RSpec.describe "Leaderboards" do
       expect(response).to have_http_status(:ok)
     end
 
-    it "sets a 1-minute public cache header" do
+    it "sets 1-minute edge cache headers" do
       get "/leaderboard"
-      expect(response.headers["Cache-Control"]).to include("public")
-      expect(response.headers["Cache-Control"]).to include("max-age=60")
+      expect(response.headers["Cache-Control"]).to eq("public, no-cache")
+      expect(response.headers["Surrogate-Control"]).to include("max-age=60")
     end
 
     it "displays the user's recent badges" do

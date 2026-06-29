@@ -2,7 +2,7 @@ class LeaderboardsController < ApplicationController
   # No authorization required for entirely public controller
 
   def index
-    expires_in 1.minute, public: true
+    set_cache_control_headers(60)
     exclude_ids = [Settings::General.mascot_user_id, Settings::Community.staff_user_id].compact
     query = User.registered
                 .without_role(:suspended)
