@@ -20,7 +20,7 @@
           <% max_badges = @users.first&.badge_achievements_count || 1 %>
           <% @badges = @users.flat_map { |u| u.badge_achievements.sort_by(&:created_at).reverse.map(&:badge).uniq.take(20) }.compact.uniq %>
           <% @users.each_with_index do |user, index| %>
-            <% cache [user, "leaderboard-row-v1", user.badge_achievements_count, index] do %>
+            <% cache [user, "leaderboard-row-v1", user.badge_achievements_count, user.profile_updated_at, index] do %>
               <% percentage = max_badges > 0 ? (user.badge_achievements_count.to_f / max_badges * 100).round : 0 %>
               <tr class="leaderboard-row" style="--row-percentage: <%= percentage %>%;">
                 <td class="align-center fw-bold fs-l color-base-60 rank-column">
