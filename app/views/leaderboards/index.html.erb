@@ -18,53 +18,54 @@
         </thead>
         <tbody>
           <% max_badges = @users.first&.badge_achievements_count || 1 %>
-          <% all_badges = [] %>
+          <% @badges = @users.flat_map { |u| u.badge_achievements.sort_by(&:created_at).reverse.map(&:badge).uniq.take(20) }.compact.uniq %>
           <% @users.each_with_index do |user, index| %>
-            <% percentage = max_badges > 0 ? (user.badge_achievements_count.to_f / max_badges * 100).round : 0 %>
-            <tr class="leaderboard-row" style="--row-percentage: <%= percentage %>%;">
-              <td class="align-center fw-bold fs-l color-base-60 rank-column">
-                #<%= index + 1 %>
-              </td>
-              <td class="user-column">
-                <div class="flex items-center gap-3">
-                  <a href="<%= user.path %>" class="crayons-avatar crayons-avatar--l shrink-0">
-                    <% if user.profile_image_90.present? %>
-                      <img src="<%= user.profile_image_90 %>" alt="<%= user.name %> profile picture" class="crayons-avatar__image" loading="lazy">
-                    <% else %>
-                      <div class="crayons-avatar__image flex items-center justify-center color-base-30" style="background-color: var(--body-bg-darker); font-weight: bold; font-size: 1.25rem;">
-                        <%= user.name.to_s.first&.upcase || "U" %>
+            <% cache [user, "leaderboard-row-v1", user.badge_achievements_count, index] do %>
+              <% percentage = max_badges > 0 ? (user.badge_achievements_count.to_f / max_badges * 100).round : 0 %>
+              <tr class="leaderboard-row" style="--row-percentage: <%= percentage %>%;">
+                <td class="align-center fw-bold fs-l color-base-60 rank-column">
+                  #<%= index + 1 %>
+                </td>
+                <td class="user-column">
+                  <div class="flex items-center gap-3">
+                    <a href="<%= user.path %>" class="crayons-avatar crayons-avatar--l shrink-0">
+                      <% if user.profile_image_90.present? %>
+                        <img src="<%= user.profile_image_90 %>" alt="<%= user.name %> profile picture" class="crayons-avatar__image" loading="lazy">
+                      <% else %>
+                        <div class="crayons-avatar__image flex items-center justify-center color-base-30" style="background-color: var(--body-bg-darker); font-weight: bold; font-size: 1.25rem;">
+                          <%= user.name.to_s.first&.upcase || "U" %>
+                        </div>
+                      <% end %>
+                    </a>
+                    <div class="flex flex-col">
+                      <a href="<%= user.path %>" class="crayons-link fw-bold fs-base text-underline-hover">
+                        <%= user.name %>
+                      </a>
+                      <a href="<%= user.path %>" class="color-base-60 fs-s text-underline-hover">
+                        @<%= user.username %>
+                      </a>
+                    </div>
+                  </div>
+                </td>
+                <td class="recent-badges-column">
+                  <div class="recent-badges-container">
+                    <% user.badge_achievements.sort_by(&:created_at).reverse.map(&:badge).uniq.take(20).each do |badge| %>
+                      <div class="recent-badge-wrapper"
+                           role="button"
+                           onclick="window.Forem.showModal({size: 'medium', showHeader: false, contentSelector: '#badge-detail-modal-<%= badge.id %>', overlay: true, backdropDismissible: true})"
+                           title="<%= badge.title %>">
+                        <img src="<%= optimized_image_url(badge.badge_image_url, width: 64) %>" alt="<%= badge.title %>" class="recent-badge-img" loading="lazy" />
                       </div>
                     <% end %>
-                  </a>
-                  <div class="flex flex-col">
-                    <a href="<%= user.path %>" class="crayons-link fw-bold fs-base text-underline-hover">
-                      <%= user.name %>
-                    </a>
-                    <a href="<%= user.path %>" class="color-base-60 fs-s text-underline-hover">
-                      @<%= user.username %>
-                    </a>
                   </div>
-                </div>
-              </td>
-              <td class="recent-badges-column">
-                <div class="recent-badges-container">
-                  <% user.badge_achievements.sort_by(&:created_at).reverse.map(&:badge).uniq.take(20).each do |badge| %>
-                    <% all_badges << badge %>
-                    <div class="recent-badge-wrapper"
-                         role="button"
-                         onclick="window.Forem.showModal({size: 'medium', showHeader: false, contentSelector: '#badge-detail-modal-<%= badge.id %>', overlay: true, backdropDismissible: true})"
-                         title="<%= badge.title %>">
-                      <img src="<%= optimized_image_url(badge.badge_image_url, width: 64) %>" alt="<%= badge.title %>" class="recent-badge-img" loading="lazy" />
-                    </div>
-                  <% end %>
-                </div>
-              </td>
-              <td class="align-right badges-column">
-                <span class="badge-count-pill fw-bold">
-                  <%= user.badge_achievements_count %>
-                </span>
-              </td>
-            </tr>
+                </td>
+                <td class="align-right badges-column">
+                  <span class="badge-count-pill fw-bold">
+                    <%= user.badge_achievements_count %>
+                  </span>
+                </td>
+              </tr>
+            <% end %>
           <% end %>
         </tbody>
       </table>
@@ -75,7 +76,7 @@
     <% end %>
   </div>
 
-  <% all_badges.compact.uniq.each do |badge| %>
+  <% @badges.each do |badge| %>
     <template id="badge-detail-modal-<%= badge.id %>">
       <%= render partial: "badges/badge_detail", locals: { badge: badge } %>
     </template>
