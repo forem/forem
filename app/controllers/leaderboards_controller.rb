@@ -5,8 +5,7 @@ class LeaderboardsController < ApplicationController
     set_cache_control_headers(60)
     exclude_ids = [Settings::General.mascot_user_id, Settings::Community.staff_user_id].compact
     query = User.registered
-                .without_role(:suspended)
-                .without_role(:spam)
+                .where("score >= 0")
                 .where("badge_achievements_count > 0")
 
     query = query.where.not(id: exclude_ids) if exclude_ids.any?
