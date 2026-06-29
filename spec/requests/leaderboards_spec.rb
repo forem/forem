@@ -12,6 +12,12 @@ RSpec.describe "Leaderboards" do
       expect(response).to have_http_status(:ok)
     end
 
+    it "sets a 1-minute public cache header" do
+      get "/leaderboard"
+      expect(response.headers["Cache-Control"]).to include("public")
+      expect(response.headers["Cache-Control"]).to include("max-age=60")
+    end
+
     it "displays the user's recent badges" do
       badge = create(:badge, title: "Super Author", slug: "super-author")
       create(:badge_achievement, user: user_high, badge: badge)
