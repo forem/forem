@@ -35,7 +35,7 @@ module PracticalDeveloper
   class Application < Rails::Application
     # Specify the default Rails settings version we're targetting
     # See: https://guides.rubyonrails.org/configuring.html#results-of-config-load-defaults
-    config.load_defaults 7.2
+    config.load_defaults 8.0
 
     # Set AhoyEmail secret token early to prevent it from accessing deprecated Rails.application.secrets
     config.before_initialize do

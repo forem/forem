@@ -441,6 +441,7 @@ Rails.application.routes.draw do
     get "/faq", to: "pages#faq"
     get "/page/post-a-job", to: "pages#post_a_job"
     get "/tag-moderation", to: "pages#tag_moderation"
+    get "/leaderboard", to: "leaderboards#index", as: :leaderboard
 
     get "/mod", to: "moderations#index", as: :mod
     get "/mod/:tag", to: "moderations#index"
