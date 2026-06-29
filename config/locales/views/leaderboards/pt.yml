@@ -1,0 +1,13 @@
+---
+pt:
+  views:
+    leaderboards:
+      index:
+        title: "Tabela de Classificação"
+        heading: "Tabela de Classificação"
+        subtitle: "Top %{count} líderes de medalhas em %{community_name}"
+        rank: "Classificação"
+        user: "Usuário"
+        recent_badges: "Medalhas Recentes"
+        badges: "Medalhas"
+        no_users: "Nenhum usuário encontrado na tabela de classificação ainda."
