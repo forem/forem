@@ -86,6 +86,8 @@ class Tag < ActsAsTaggableOn::Tag
   scope :eager_load_serialized_data, -> {}
   scope :supported, -> { where(supported: true) }
   scope :from_subforem, lambda { |subforem_id = nil|
+    return where(supported: true) if ENV["NO_SUBFOREM_FILTER"] == "true"
+
     subforem_id ||= RequestStore.store[:subforem_id]
     # Include subforem_relationships and return tags that are in that relationship
     if subforem_id.present? && subforem_id == RequestStore.store[:root_subforem_id]

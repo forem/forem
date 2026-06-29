@@ -76,11 +76,11 @@ async function generateBillboard(element) {
       // When context is digest we don't show this billboard
       // This is a hardcoded feature which should become more dynamic later.
       const contentElement = document.getElementById('page-content-inner');
-      const isInternalNav = contentElement && contentElement.dataset.internalNav === 'true'
+      const isInternalNav = contentElement && contentElement.dataset.internalNav === 'true';
       const isNativeUserAgent = navigator.userAgent.includes('Forem');
       if (
         asyncUrl?.includes('post_fixed_bottom') &&
-        (currentParams?.includes('context=digest') || isInternalNav || isNativeUserAgent)
+        (currentParams?.includes('context=digest') || isNativeUserAgent)
       ) {
         return;
       }
@@ -89,6 +89,30 @@ async function generateBillboard(element) {
       const htmlContent = await response.text();
       const generatedElement = document.createElement('div');
       generatedElement.innerHTML = htmlContent;
+
+      const fetchedBillboardEl = generatedElement.querySelector('.js-billboard');
+
+      if (isInternalNav && asyncUrl?.includes('post_fixed_bottom')) {
+        if (fetchedBillboardEl && fetchedBillboardEl.dataset.special === 'persistent') {
+          const template = fetchedBillboardEl.querySelector('.js-minimized-template');
+          let sidebarContainer = document.getElementById('persistent-minimized-billboard-container');
+          if (!sidebarContainer) {
+            sidebarContainer = ensurePersistentMinimizedBillboardContainer();
+          }
+          if (template && sidebarContainer) {
+            sidebarContainer.innerHTML = template.innerHTML;
+            sidebarContainer.classList.remove('hidden');
+            executeBBScripts(sidebarContainer);
+            sidebarContainer.querySelectorAll('.js-billboard').forEach(observeThisBillboard);
+            observeBillboards();
+            setupBillboardInteractivity();
+          }
+        }
+        element.style.display = 'none';
+        element.innerHTML = '';
+        return;
+      }
+
       element.innerHTML = '';
       element.appendChild(generatedElement);
 
