@@ -184,6 +184,7 @@ class User < ApplicationRecord
   end
 
   validate :non_banished_username, :username_changed?
+  validate :check_devguard_reputation, on: :create
 
   unique_across_models :username, length: { in: 2..USERNAME_MAX_LENGTH }
 
@@ -1040,5 +1041,36 @@ class User < ApplicationRecord
     end
 
     sync_base_email_eligible! if role.name == "suspended" || role.name == "spam"
+  end
+
+  def check_devguard_reputation
+    return unless ENV["DEVGUARD_HOST"].present?
+
+    ip_address = RequestStore.store[:client_ip] || "unknown"
+    session_id = RequestStore.store[:dg_session_id]
+
+    begin
+      response = HTTParty.post(
+        "#{ENV['DEVGUARD_HOST']}/api/realtime/validate-user",
+        body: {
+          username: username,
+          name: name,
+          email: email,
+          ip_address: ip_address,
+          session_id: session_id
+        }.to_json,
+        headers: { "Content-Type" => "application/json" },
+        timeout: 1.5
+      )
+
+      if response.code == 200
+        result = JSON.parse(response.body)
+        if result["is_bot"]
+          errors.add(:username, "Your registration was flagged as automated by DevGuard.")
+        end
+      end
+    rescue => e
+      Rails.logger.warn("DevGuard user validation failed or timed out: #{e.message}")
+    end
   end
 end

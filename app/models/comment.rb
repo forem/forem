@@ -65,6 +65,7 @@ class Comment < ApplicationRecord
 
   validate :discussion_not_locked, if: :commentable, on: :create
   validate :published_article, if: :commentable
+  validate :check_devguard_reputation, on: :create
   validate :user_mentions_in_markdown
   validate :body_has_content
   validates :body_markdown, presence: true, length: { in: BODY_MARKDOWN_SIZE_RANGE }
@@ -378,6 +379,36 @@ class Comment < ApplicationRecord
 
   def send_email_notification
     Comments::SendEmailNotificationWorker.perform_in(120.seconds, id)
+  end
+
+  def check_devguard_reputation
+    return unless ENV["DEVGUARD_HOST"].present?
+
+    ip_address = RequestStore.store[:client_ip] || "unknown"
+    session_id = RequestStore.store[:dg_session_id]
+
+    begin
+      response = HTTParty.post(
+        "#{ENV['DEVGUARD_HOST']}/api/realtime/validate-comment",
+        body: {
+          username: user.username,
+          body: body_markdown,
+          ip_address: ip_address,
+          session_id: session_id
+        }.to_json,
+        headers: { "Content-Type" => "application/json" },
+        timeout: 1.5
+      )
+
+      if response.code == 200
+        result = JSON.parse(response.body)
+        if result["is_bot"]
+          errors.add(:base, "Your comment was flagged as automated spam by DevGuard.")
+        end
+      end
+    rescue => e
+      Rails.logger.warn("DevGuard comment validation failed or timed out: #{e.message}")
+    end
   end
 
   def synchronous_spam_score_check
