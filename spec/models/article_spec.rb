@@ -334,6 +334,22 @@ RSpec.describe Article do
           expect(described_class.from_subforem).not_to include(article_in_null_subforem)
         end
       end
+
+      context "when ENV['NO_SUBFOREM_FILTER'] is true" do
+        before do
+          @orig_val = ENV["NO_SUBFOREM_FILTER"]
+          ENV["NO_SUBFOREM_FILTER"] = "true"
+        end
+
+        after do
+          ENV["NO_SUBFOREM_FILTER"] = @orig_val
+        end
+
+        it "returns all articles without filtering by subforem" do
+          expect(described_class.from_subforem(subforem.id))
+            .to include(article_in_subforem, article_in_second_subforem, article_in_null_subforem, article_in_other_subforem)
+        end
+      end
     end
 
     describe "#body_markdown" do
