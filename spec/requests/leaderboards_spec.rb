@@ -89,5 +89,45 @@ RSpec.describe "Leaderboards" do
       row_count = response.body.scan(/leaderboard-row/).length
       expect(row_count).to eq(100)
     end
+
+    context "with fragment caching enabled" do
+      around do |example|
+        original_cache_store = ActionController::Base.cache_store
+        original_perform_caching = ActionController::Base.perform_caching
+
+        ActionController::Base.cache_store = ActiveSupport::Cache::MemoryStore.new
+        ActionController::Base.perform_caching = true
+
+        example.run
+      ensure
+        ActionController::Base.perform_caching = original_perform_caching
+        ActionController::Base.cache_store = original_cache_store
+      end
+
+      it "busts the cache and displays updated user name" do
+        get "/leaderboard"
+        expect(response.body).to include("Alice")
+
+        user_high.update!(name: "Alice Modified", profile_updated_at: Time.current)
+
+        get "/leaderboard"
+        expect(response.body).to include("Alice Modified")
+        expect(response.body).not_to include(">Alice</a>")
+      end
+
+      it "busts the cache and displays updated badge counts when a new badge is achieved" do
+        get "/leaderboard"
+        expect(response.body).to include("Alice")
+        expect(response.body).to include("5")
+
+        badge = create(:badge, title: "Super Author", slug: "super-author")
+        create(:badge_achievement, user: user_high, badge: badge)
+        user_high.reload
+
+        get "/leaderboard"
+        expect(response.body).to include("Super Author")
+        expect(response.body).to include("6")
+      end
+    end
   end
 end
