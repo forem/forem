@@ -16,10 +16,7 @@ class GooglebotVerifier
       return false
     end
 
-    prefixes = Rails.cache.fetch(CACHE_KEY, expires_in: CACHE_EXPIRY) do
-      fetched = fetch_googlebot_prefixes
-      fetched.presence
-    end
+    prefixes = Rails.cache.read(CACHE_KEY)
 
     if prefixes.nil?
       prefixes = fetch_googlebot_prefixes
