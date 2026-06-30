@@ -60,7 +60,7 @@ module Ahoy
 
       num_impressions = billboard.billboard_events.impressions.sum(:counts_for)
       num_clicks = billboard.billboard_events.clicks.sum(:counts_for)
-      num_seconds_visible = billboard.billboard_events.sum(:seconds_visible)
+      num_seconds_visible = billboard.billboard_events.impressions.sum(:seconds_visible)
       rate = num_impressions.positive? ? (num_clicks.to_f / num_impressions) : 0
       billboard.update_columns(
         success_rate: rate,

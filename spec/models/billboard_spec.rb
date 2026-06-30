@@ -1189,7 +1189,7 @@ RSpec.describe Billboard do
     it "does not update when seconds_visible changes" do
       original_time = billboard.content_updated_at
       Timecop.travel(1.hour.from_now) do
-        billboard.update_column(:seconds_visible, 1000)
+        billboard.update!(seconds_visible: 1000)
         billboard.reload
         expect(billboard.content_updated_at).to eq(original_time)
       end
