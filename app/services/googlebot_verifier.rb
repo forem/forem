@@ -18,15 +18,10 @@ class GooglebotVerifier
 
     prefixes = Rails.cache.read(CACHE_KEY)
 
-    if prefixes.nil?
+    unless prefixes.is_a?(Array)
       prefixes = fetch_googlebot_prefixes
-      if prefixes.present?
-        Rails.cache.write(CACHE_KEY, prefixes, expires_in: CACHE_EXPIRY)
-      else
-        # Cache empty result for a shorter duration (5 minutes) to avoid thrashing Google's servers
-        Rails.cache.write(CACHE_KEY, [], expires_in: 5.minutes)
-        prefixes = []
-      end
+      expires_in = prefixes.present? ? CACHE_EXPIRY : 5.minutes
+      Rails.cache.write(CACHE_KEY, prefixes, expires_in: expires_in)
     end
 
     prefixes.any? do |prefix|

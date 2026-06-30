@@ -80,8 +80,9 @@ module Rack
     end
 
     throttle("sitemap_throttle", limit: 10, period: 1.minute) do |request|
-      if request.path.starts_with?("/sitemap-") && !GooglebotVerifier.googlebot?(request.track_and_return_ip)
-        request.track_and_return_ip
+      if request.path.starts_with?("/sitemap-")
+        ip = request.track_and_return_ip
+        ip unless GooglebotVerifier.googlebot?(ip)
       end
     end
 

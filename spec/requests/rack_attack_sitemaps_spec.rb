@@ -21,6 +21,8 @@ RSpec.describe "Rack::Attack Sitemaps Throttling", type: :request do
     Rack::Attack.enabled = true
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
     Rack::Attack.reset!
+    allow(ApplicationConfig).to receive(:[]).and_call_original
+    allow(ApplicationConfig).to receive(:[]).with("FASTLY_API_KEY").and_return(nil)
     allow(Rails).to receive(:cache).and_return(memory_store)
     Rails.cache.clear
 

@@ -52,7 +52,7 @@ RSpec.describe GooglebotVerifier, type: :service do
 
       it "caches the prefixes for 24 hours and does not perform HTTP request on subsequent calls" do
         expect(described_class.googlebot?("66.249.64.1")).to be(true)
-        
+
         # Stub subsequent calls to fail/timeout to verify cache is hit
         stub_request(:get, googlebot_ip_ranges_url).to_timeout
 
