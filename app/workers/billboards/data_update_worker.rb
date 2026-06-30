@@ -41,20 +41,27 @@ module Billboards
                                      .where("created_at > ?", cutoff)
                                      .sum(:counts_for) * CONVERSION_SUCCESS_MODIFIER
 
+        num_seconds_visible = billboard.billboard_events
+                                       .where("created_at > ?", cutoff)
+                                       .sum(:seconds_visible)
+
         new_clicks      = billboard.clicks_count + num_clicks
         new_impressions = billboard.impressions_count + num_impressions
+        new_seconds_visible = billboard.seconds_visible + num_seconds_visible
         rate = (new_clicks + conversion_success).to_f / new_impressions
 
         billboard.update_columns(
           success_rate:        rate,
           clicks_count:        new_clicks,
           impressions_count:   new_impressions,
+          seconds_visible:     new_seconds_visible,
           counts_tabulated_at: timestamp
         )
       else
         num_impressions    = billboard.billboard_events.impressions.sum(:counts_for)
         num_clicks         = billboard.billboard_events.clicks.sum(:counts_for)
         conversion_success = billboard.billboard_events.all_conversion_types.sum(:counts_for) * CONVERSION_SUCCESS_MODIFIER
+        num_seconds_visible = billboard.billboard_events.sum(:seconds_visible)
 
         rate = (num_clicks + conversion_success).to_f / num_impressions
 
@@ -62,6 +69,7 @@ module Billboards
           success_rate:        rate,
           clicks_count:        num_clicks,
           impressions_count:   num_impressions,
+          seconds_visible:     num_seconds_visible,
           counts_tabulated_at: timestamp
         )
       end
