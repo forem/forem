@@ -79,6 +79,12 @@ module Rack
       end
     end
 
+    throttle("sitemap_throttle", limit: 10, period: 1.minute) do |request|
+      if request.path.starts_with?("/sitemap-") && !GooglebotVerifier.googlebot?(request.track_and_return_ip)
+        request.track_and_return_ip
+      end
+    end
+
     # Removed user_signed_in? helper method - no longer needed
     # since we removed authentication-based throttling rules
 
