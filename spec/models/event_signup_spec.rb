@@ -54,5 +54,57 @@ RSpec.describe EventSignup, type: :model do
         expect(signup.notified_1_hour_before).to be(true)
       end
     end
+
+    describe "auto_follow_challenge_tags" do
+      let(:user) { create(:user) }
+      let(:tag1) { create(:tag, name: "devchallenge") }
+      let(:tag2) { create(:tag, name: "writeathon") }
+
+      context "when the event is a challenge" do
+        it "auto-follows the tag configured in auto_follow_tag_names" do
+          event = create(:event, type_of: :challenge, data: { "auto_follow_tag_names" => "#{tag1.name}, #{tag2.name}" })
+          
+          expect {
+            create(:event_signup, user: user, event: event)
+          }.to change { user.reload.following_tags_count }.by(2)
+
+          expect(user.following?(tag1)).to be(true)
+          expect(user.following?(tag2)).to be(true)
+        end
+
+        it "falls back to following the event's first tag if auto_follow_tag_names is empty" do
+          event = create(:event, type_of: :challenge)
+          event.tags << tag1
+
+          expect {
+            create(:event_signup, user: user, event: event)
+          }.to change { user.reload.following_tags_count }.by(1)
+
+          expect(user.following?(tag1)).to be(true)
+        end
+
+        it "handles non-existent tags gracefully" do
+          event = create(:event, type_of: :challenge, data: { "auto_follow_tag_names" => "nonexistent_tag" })
+
+          expect {
+            create(:event_signup, user: user, event: event)
+          }.not_to change { user.following_tags_count }
+        end
+      end
+
+      context "when the event is not a challenge" do
+        it "does not auto-follow any tags even if configured" do
+          event = create(:event, type_of: :live_stream, data: { "auto_follow_tag_names" => "#{tag1.name}" })
+          event.tags << tag2
+
+          expect {
+            create(:event_signup, user: user, event: event)
+          }.not_to change { user.following_tags_count }
+
+          expect(user.following?(tag1)).to be(false)
+          expect(user.following?(tag2)).to be(false)
+        end
+      end
+    end
   end
 end
