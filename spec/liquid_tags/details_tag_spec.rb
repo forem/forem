@@ -96,9 +96,10 @@ RSpec.describe DetailsTag, type: :liquid_tag do
       let(:summary) { "Click to see the answer!" }
       let(:content) { '<div class="ltag__comment">foo</div>' }
 
-      it "preserves div tags so nested liquid embeds render correctly" do
+      it "preserves div tags and their class so nested liquid embeds render correctly" do
         rendered = generate_details_liquid(summary, content).render
         expect(rendered).to include("<div")
+        expect(rendered).to include("ltag__comment")
         expect(rendered).to include("foo")
         expect(rendered).to include("<summary>Click to see the answer!")
       end
@@ -110,13 +111,17 @@ RSpec.describe DetailsTag, type: :liquid_tag do
     context "when content has an iframe tag (e.g. a video embed)" do
       let(:summary) { "Watch this!" }
       let(:content) do
-        '<iframe src="https://www.youtube.com/embed/abc123" allowfullscreen="allowfullscreen" frameborder="0"></iframe>'
+        '<iframe src="https://www.youtube.com/embed/abc123" loading="lazy" ' \
+          'allowfullscreen="allowfullscreen" frameborder="0"></iframe>'
       end
 
-      it "preserves the iframe so nested video embeds render correctly" do
+      it "preserves the iframe and its allowed attributes while stripping disallowed ones" do
         rendered = generate_details_liquid(summary, content).render
         expect(rendered).to include("<iframe")
         expect(rendered).to include("youtube.com/embed/abc123")
+        expect(rendered).to include("allowfullscreen")
+        expect(rendered).to include("loading")
+        expect(rendered).not_to include("frameborder")
         expect(rendered).to include("<summary>Watch this!")
       end
     end
