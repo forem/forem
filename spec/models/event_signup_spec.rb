@@ -55,7 +55,14 @@ RSpec.describe EventSignup, type: :model do
       end
     end
 
-    describe "auto_follow_challenge_tags" do
+    describe "Callbacks" do
+      it "registers #auto_follow_challenge_tags as an after_commit callback" do
+        callback_names = EventSignup._commit_callbacks.select { |cb| cb.kind == :after }.map(&:filter)
+        expect(callback_names).to include(:auto_follow_challenge_tags)
+      end
+    end
+
+    describe "#auto_follow_challenge_tags" do
       let(:user) { create(:user) }
       let(:tag1) { create(:tag, name: "devchallenge") }
       let(:tag2) { create(:tag, name: "writeathon") }
@@ -63,9 +70,10 @@ RSpec.describe EventSignup, type: :model do
       context "when the event is a challenge" do
         it "auto-follows the tag configured in auto_follow_tag_names" do
           event = create(:event, type_of: :challenge, data: { "auto_follow_tag_names" => "#{tag1.name}, #{tag2.name}" })
+          signup = build(:event_signup, user: user, event: event)
           
           expect {
-            create(:event_signup, user: user, event: event)
+            signup.send(:auto_follow_challenge_tags)
           }.to change { user.reload.following_tags_count }.by(2)
 
           expect(user.following?(tag1)).to be(true)
@@ -75,9 +83,10 @@ RSpec.describe EventSignup, type: :model do
         it "falls back to following the event's first tag if auto_follow_tag_names is empty" do
           event = create(:event, type_of: :challenge)
           event.tags << tag1
+          signup = build(:event_signup, user: user, event: event)
 
           expect {
-            create(:event_signup, user: user, event: event)
+            signup.send(:auto_follow_challenge_tags)
           }.to change { user.reload.following_tags_count }.by(1)
 
           expect(user.following?(tag1)).to be(true)
@@ -85,10 +94,22 @@ RSpec.describe EventSignup, type: :model do
 
         it "handles non-existent tags gracefully" do
           event = create(:event, type_of: :challenge, data: { "auto_follow_tag_names" => "nonexistent_tag" })
+          signup = build(:event_signup, user: user, event: event)
 
           expect {
-            create(:event_signup, user: user, event: event)
-          }.not_to change { user.following_tags_count }
+            signup.send(:auto_follow_challenge_tags)
+          }.not_to change { user.reload.following_tags_count }
+        end
+
+        it "de-duplicates and rejects empty tags" do
+          event = create(:event, type_of: :challenge, data: { "auto_follow_tag_names" => "  , #{tag1.name}, , #{tag1.name} " })
+          signup = build(:event_signup, user: user, event: event)
+
+          expect {
+            signup.send(:auto_follow_challenge_tags)
+          }.to change { user.reload.following_tags_count }.by(1)
+
+          expect(user.following?(tag1)).to be(true)
         end
       end
 
@@ -96,10 +117,11 @@ RSpec.describe EventSignup, type: :model do
         it "does not auto-follow any tags even if configured" do
           event = create(:event, type_of: :live_stream, data: { "auto_follow_tag_names" => "#{tag1.name}" })
           event.tags << tag2
+          signup = build(:event_signup, user: user, event: event)
 
           expect {
-            create(:event_signup, user: user, event: event)
-          }.not_to change { user.following_tags_count }
+            signup.send(:auto_follow_challenge_tags)
+          }.not_to change { user.reload.following_tags_count }
 
           expect(user.following?(tag1)).to be(false)
           expect(user.following?(tag2)).to be(false)

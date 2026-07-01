@@ -12,9 +12,12 @@ class EventSignup < ApplicationRecord
   private
 
   def auto_follow_challenge_tags
+    return unless event&.challenge?
+
     tag_names = event.data&.dig("auto_follow_tag_names")
     tags = if tag_names.present?
-             Tag.where(name: tag_names.split(",").map(&:strip))
+             names = tag_names.split(",").map(&:strip).reject(&:blank?).uniq
+             Tag.where(name: names)
            else
              [event.tags.first].compact
            end
