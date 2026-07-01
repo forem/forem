@@ -1,6 +1,6 @@
 module Images
-  MEDIUM_FONT_PATH = "app/assets/fonts/Roboto-Medium.ttf".freeze
-  BOLD_FONT_PATH = "app/assets/fonts/Roboto-Bold.ttf".freeze
+  MEDIUM_FONT_PATH = "app/assets/fonts/NotoSans-Medium.ttf".freeze
+  BOLD_FONT_PATH = "app/assets/fonts/NotoSans-Bold.ttf".freeze
   TEMPLATE_PATH = "app/assets/images/social_template.png".freeze
   ROUNDED_MASK_PATH = "app/assets/images/rounded_mask.png".freeze
 
@@ -110,7 +110,7 @@ module Images
       font_size = calculate_font_size(title)
 
       result.combine_options do |c|
-        escaped_title = title.gsub('"', '\\"')
+        escaped_title = escape_for_draw(title)
         c.gravity "West" # Set the origin for the text at the top left corner
         c.pointsize font_size.to_s
         c.draw "text 96,-49 \"#{escaped_title}\"" # Start drawing text 90 from the left and slightly north, with double quotes around the title
@@ -119,7 +119,7 @@ module Images
       end
 
       result.combine_options do |c|
-        escaped_name = author_name.gsub('"', '\\"')
+        escaped_name = escape_for_draw(author_name)
         c.gravity "Southwest"
         c.pointsize "40"
         c.draw "text 187,110 \"#{escaped_name}\"" # adjust coordinates as needed
@@ -133,6 +133,14 @@ module Images
         c.draw "text 187,75 \"#{date}\"" # adjust coordinates as needed
         c.fill "#525252"
       end
+    end
+
+    def escape_for_draw(text)
+      text
+        .gsub("\\") { "\\\\" }  # backslash must come first to avoid double-escaping
+        .gsub('"', '\\"')          # double-quote
+        .gsub("@", "\\@")          # ImageMagick treats @ as an indirect file read
+        .gsub("%", "\\%")          # ImageMagick format escape sequence
     end
 
     def add_profile_image(result)

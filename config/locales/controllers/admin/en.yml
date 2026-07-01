@@ -197,6 +197,8 @@ en:
       article_busted: 'Article #%{article} was successfully busted'
       user_busted: 'User #%{user} was successfully busted'
       link_busted: '%{link} was successfully busted'
+      social_images_queued: 'Social image regeneration queued for @%{user}'
+      user_not_found: 'User not found'
     users_controller:
       exported: Data exported to the %{receiver}. The job will complete momentarily.
       email_fail: Email failed to send!
