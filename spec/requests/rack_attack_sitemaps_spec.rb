@@ -23,6 +23,7 @@ RSpec.describe "Rack::Attack Sitemaps Throttling", type: :request do
     Rack::Attack.reset!
     allow(ApplicationConfig).to receive(:[]).and_call_original
     allow(ApplicationConfig).to receive(:[]).with("FASTLY_API_KEY").and_return(nil)
+    stub_const("ENV", ENV.to_h.merge("SITEMAP_RATE_LIMIT_ENABLED" => "true"))
     allow(Rails).to receive(:cache).and_return(memory_store)
     Rails.cache.clear
 
@@ -88,6 +89,21 @@ RSpec.describe "Rack::Attack Sitemaps Throttling", type: :request do
 
         get "/sitemap-index.xml", headers: headers
         expect(response).to have_http_status(:too_many_requests)
+      end
+    end
+
+    context "when rate limit is disabled (SITEMAP_RATE_LIMIT_ENABLED != true)" do
+      let(:headers) { { "REMOTE_ADDR" => "1.2.3.4" } }
+
+      before do
+        stub_const("ENV", ENV.to_h.merge("SITEMAP_RATE_LIMIT_ENABLED" => "false"))
+      end
+
+      it "does not throttle sitemap requests even beyond 10 requests per minute" do
+        15.times do
+          get "/sitemap-index.xml", headers: headers
+          expect(response).not_to have_http_status(:too_many_requests)
+        end
       end
     end
   end
