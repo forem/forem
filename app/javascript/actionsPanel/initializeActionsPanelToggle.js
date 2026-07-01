@@ -1,23 +1,41 @@
 import { isModerationPage } from '@utilities/moderation';
 
 /** This initializes the mod actions button on the article show page (app/views/articles/show.html.erb). */
-export function initializeActionsPanel(user, path) {
-  const modActionsMenuHTML = `
-    <iframe id="mod-container" src=${path}/actions_panel title="Moderation panel actions">
-    </iframe>
-  `;
+export function initializeActionsPanel(user, path = '') {
+  function getOrCreateModActionsMenu() {
+    let modActionsMenu = document.getElementsByClassName('mod-actions-menu')[0];
 
-  function toggleModActionsMenu() {
-    document
-      .getElementById('mod-actions-menu-btn-area')
-      .classList.remove('hidden');
-    document
-      .getElementsByClassName('mod-actions-menu')[0]
-      .classList.toggle('showing');
+    if (!modActionsMenu) {
+      modActionsMenu = document.createElement('div');
+      modActionsMenu.className = 'mod-actions-menu print-hidden';
+      document.body.appendChild(modActionsMenu);
+    }
+
+    return modActionsMenu;
+  }
+
+  function toggleModActionsMenu(event) {
+    const targetButton =
+      event?.currentTarget || event?.target?.closest('.mod-actions-menu-btn');
+    const articlePath = targetButton?.dataset?.articlePath || path;
+    const modActionsMenu = getOrCreateModActionsMenu();
+
+    const modContainer = document.getElementById('mod-container');
+
+    if (
+      !modContainer ||
+      modContainer.getAttribute('src') !== `${articlePath}/actions_panel`
+    ) {
+      modActionsMenu.innerHTML = `
+        <iframe id="mod-container" src="${articlePath}/actions_panel" title="Moderation panel actions">
+        </iframe>
+      `;
+    }
+
+    modActionsMenu.classList.toggle('showing');
 
     // showing close icon in the mod panel if it is opened by clicking the button
-    const modContainer = document.getElementById('mod-container');
-    const panelDocument = modContainer.contentDocument;
+    const panelDocument = document.getElementById('mod-container')?.contentDocument;
 
     if (panelDocument) {
       const closePanel = panelDocument.getElementsByClassName(
@@ -28,18 +46,21 @@ export function initializeActionsPanel(user, path) {
     }
   }
 
-  document.getElementsByClassName('mod-actions-menu')[0].innerHTML =
-    modActionsMenuHTML;
-  // eslint-disable-next-line no-restricted-globals
-  if (!isModerationPage()) {
-    // don't show mod button in mod center page
+  function bindModActionsMenuButtons() {
+    if (isModerationPage()) {
+      return;
+    }
 
-    const modActionsMenuBtns = document.getElementsByClassName(
-      'mod-actions-menu-btn',
-    );
-    modActionsMenuBtns &&
-      Array.from(modActionsMenuBtns).forEach((btn) => {
-        btn.addEventListener('click', toggleModActionsMenu);
-      });
+    document.addEventListener('click', (event) => {
+      const button = event.target.closest('.mod-actions-menu-btn');
+      if (!button) {
+        return;
+      }
+
+      event.preventDefault();
+      toggleModActionsMenu({ currentTarget: button });
+    });
   }
+
+  bindModActionsMenuButtons();
 }
