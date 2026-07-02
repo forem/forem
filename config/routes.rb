@@ -123,7 +123,7 @@ Rails.application.routes.draw do
         # shared config/routes/api.rb) because Api::V0::Admin::* controllers do
         # not implement these actions; placing the routes here scopes them to
         # callers using the application/vnd.forem.api-v1+json Accept header.
-        resources :concepts, only: %i[index show]
+        resources :concepts, only: %i[index show update]
 
         namespace :admin do
           resources :users, only: %i[index show update] do
@@ -175,6 +175,7 @@ Rails.application.routes.draw do
     resources :events, only: %i[index]
     get "/calendar", to: "calendar#index"
     get "events/:event_name_slug/:event_variation_slug", to: "events#show", as: :event
+    get "events/:event_name_slug/:event_variation_slug/signup_status", to: "event_signups#status", as: :event_signup_status
     post "events/:event_name_slug/:event_variation_slug/signup", to: "event_signups#create", as: :event_signup
     delete "events/:event_name_slug/:event_variation_slug/signup", to: "event_signups#destroy"
     resources :article_mutes, only: %i[update]

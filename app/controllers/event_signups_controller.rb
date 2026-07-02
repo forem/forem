@@ -1,5 +1,5 @@
 class EventSignupsController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, except: %i[status]
   before_action :set_event
 
   def create
@@ -20,7 +20,11 @@ class EventSignupsController < ApplicationController
         flash[:alert] = "Something went wrong. Please try again."
       end
     end
-    redirect_to event_path(@event.event_name_slug, @event.event_variation_slug)
+
+    respond_to do |format|
+      format.html { redirect_to event_path(@event.event_name_slug, @event.event_variation_slug) }
+      format.json { render json: { signed_up: true, button_text: @event.signup_button_text(signed_up: true) } }
+    end
   end
 
   def destroy
@@ -32,7 +36,20 @@ class EventSignupsController < ApplicationController
     else
       skip_authorization
     end
-    redirect_to event_path(@event.event_name_slug, @event.event_variation_slug)
+
+    respond_to do |format|
+      format.html { redirect_to event_path(@event.event_name_slug, @event.event_variation_slug) }
+      format.json { render json: { signed_up: false, button_text: @event.signup_button_text(signed_up: false) } }
+    end
+  end
+
+  def status
+    authorize :event_signup, :status?
+    signed_up = current_user ? current_user.event_signups.exists?(event: @event) : false
+    render json: {
+      signed_up: signed_up,
+      button_text: @event.signup_button_text(signed_up: signed_up)
+    }
   end
 
   private
