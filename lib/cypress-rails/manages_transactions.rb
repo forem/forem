@@ -37,9 +37,12 @@ module CypressRails
     end
 
     def rollback_transaction
-      return if @connection_pools.blank?
+      if @connection_subscriber
+        ActiveSupport::Notifications.unsubscribe(@connection_subscriber)
+        @connection_subscriber = nil
+      end
 
-      ActiveSupport::Notifications.unsubscribe(@connection_subscriber) if @connection_subscriber
+      return if @connection_pools.blank?
 
       @connection_pools.each(&:unpin_connection!)
       @connection_pools.clear
