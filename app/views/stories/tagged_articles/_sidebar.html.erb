@@ -1,5 +1,5 @@
 <% cache "tag-sidebar-#{@tag.name}-#{@tag&.updated_at}-#{user_signed_in?}-#{@page}", expires_in: 72.hours do %>
-  <div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
+  <div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left crayons-layout__sidebar-left crayons-layout__content">
     <div class="sidebar-bg" id="sidebar-bg-left"></div>
     <aside class="side-bar fs-s">
       <% if @tag %>

@@ -1,5 +1,5 @@
 <% if @page == 1 %>
-  <div id="sidebar-wrapper-right" class="sidebar-wrapper sidebar-wrapper-right">
+  <div id="sidebar-wrapper-right" class="sidebar-wrapper sidebar-wrapper-right crayons-layout__sidebar-right crayons-layout__content">
     <div class="sidebar-bg" id="sidebar-bg-right"></div>
     <aside class="side-bar sidebar-additional showing fs-s" id="sidebar-additional">
       <% active_threads = active_threads(tags: [@tag.name, "discuss"], time_ago: Timeframe.datetime(params[:timeframe])) %>
