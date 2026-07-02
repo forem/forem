@@ -657,6 +657,10 @@ class User < ApplicationRecord
     organization_memberships.admin.exists?(organization: organization)
   end
 
+  def org_contributor?(organization)
+    organization_memberships.contributor.exists?(organization: organization)
+  end
+
   def block; end
 
   def all_blocked_by

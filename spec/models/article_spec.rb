@@ -3986,4 +3986,66 @@ RSpec.describe Article do
       expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id)
     end
   end
+
+  describe "contributor publishing restriction" do
+    let(:organization) { create(:organization) }
+    let(:contributor) { create(:user) }
+    let(:org_admin) { create(:user) }
+    let(:other_user) { create(:user) }
+
+    before do
+      create(:organization_membership, user: contributor, organization: organization, type_of_user: "contributor")
+      create(:organization_membership, user: org_admin, organization: organization, type_of_user: "admin")
+    end
+
+    context "when creating an article" do
+      it "allows contributor to save a draft under the organization" do
+        article = build(:article, user: contributor, organization: organization, published: false)
+        article.editing_user = contributor
+        expect(article.valid?).to be true
+      end
+
+      it "does not allow contributor to publish directly under the organization" do
+        article = build(:article, user: contributor, organization: organization, published: true)
+        article.editing_user = contributor
+        expect(article.valid?).to be false
+        expect(article.errors[:published]).to include("only organization admins can publish contributor posts")
+      end
+
+      it "allows organization admin to publish the article" do
+        article = build(:article, user: contributor, organization: organization, published: true)
+        article.editing_user = org_admin
+        expect(article.valid?).to be true
+      end
+
+      it "does not allow other users to publish the article" do
+        article = build(:article, user: contributor, organization: organization, published: true)
+        article.editing_user = other_user
+        expect(article.valid?).to be false
+      end
+    end
+
+    context "when updating an existing draft article" do
+      let!(:article) { create(:article, user: contributor, organization: organization, published: false) }
+
+      it "allows contributor to update draft details while remaining a draft" do
+        article.title = "Updated Title"
+        article.editing_user = contributor
+        expect(article.valid?).to be true
+      end
+
+      it "does not allow contributor to change published to true" do
+        article.published = true
+        article.editing_user = contributor
+        expect(article.valid?).to be false
+        expect(article.errors[:published]).to include("only organization admins can publish contributor posts")
+      end
+
+      it "allows organization admin to change published to true" do
+        article.published = true
+        article.editing_user = org_admin
+        expect(article.valid?).to be true
+      end
+    end
+  end
 end

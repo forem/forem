@@ -17,10 +17,13 @@ RSpec.describe OrganizationMembership do
     let(:user2) { create(:user) }
     let(:user3) { create(:user) }
 
+    let(:user4) { create(:user) }
+
     before do
       create(:organization_membership, organization: organization, user: user1, type_of_user: "admin")
       create(:organization_membership, organization: organization, user: user2, type_of_user: "member")
       create(:organization_membership, organization: organization, user: user3, type_of_user: "pending")
+      create(:organization_membership, organization: organization, user: user4, type_of_user: "contributor")
     end
 
     describe ".pending" do
@@ -32,8 +35,22 @@ RSpec.describe OrganizationMembership do
 
     describe ".active" do
       it "returns only non-pending memberships" do
-        expect(organization.organization_memberships.active.count).to eq(2)
-        expect(organization.organization_memberships.active.pluck(:user_id)).to contain_exactly(user1.id, user2.id)
+        expect(organization.organization_memberships.active.count).to eq(3)
+        expect(organization.organization_memberships.active.pluck(:user_id)).to contain_exactly(user1.id, user2.id, user4.id)
+      end
+    end
+
+    describe ".member" do
+      it "returns admins, members, and contributors" do
+        expect(organization.organization_memberships.member.count).to eq(3)
+        expect(organization.organization_memberships.member.pluck(:user_id)).to contain_exactly(user1.id, user2.id, user4.id)
+      end
+    end
+
+    describe ".contributor" do
+      it "returns only contributor memberships" do
+        expect(organization.organization_memberships.contributor.count).to eq(1)
+        expect(organization.organization_memberships.contributor.first.user).to eq(user4)
       end
     end
   end

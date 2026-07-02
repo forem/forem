@@ -70,12 +70,14 @@ module Articles
       begin
         @article = Article.new(article_params) do |article|
           article.user_id = user.id
+          article.editing_user = user
           article.show_comments = true
         end
       rescue ArgumentError => e
         if e.message.include?("is not a valid type_of")
           @article = Article.new(article_params.except(:type_of)) do |article|
             article.user_id = user.id
+            article.editing_user = user
           end
           @article.errors.add(:type_of, :invalid)
           return @article

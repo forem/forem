@@ -165,6 +165,7 @@ en:
       org:
         admin:
           admin: Admin
+          contributor: Contributor
           copy:
             button:
               aria_label: Copy organization secret code to clipboard

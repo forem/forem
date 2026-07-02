@@ -118,6 +118,8 @@ pt:
         confirm: Confirmar
       org:
         admin:
+          admin: Admin
+          contributor: Colaborador
           members: Membros da Organização
           active_members: Membros Ativos
           pending_members: Convites Pendentes

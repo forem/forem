@@ -22,6 +22,7 @@ fr:
       published: Publié
       unique_url: a déjà été pris. Envoyez un e-mail à %{email} pour plus de détails.
       future_or_current_published_at: seulement le futur ou le présent published_at autorisé lors de la publication d'un article
+      contributor_cannot_publish: seuls les administrateurs de l'organisation peuvent publier les articles des contributeurs
       immutable_published_at: la mise à jour de published_at pour les articles qui ont déjà été publiés n'est pas autorisée
       mention_too_many:
         one: Vous ne pouvez pas mentionner plus de %{count} utilisateurs dans un article !

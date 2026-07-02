@@ -156,6 +156,7 @@ en:
             other: "%{count} members"
       support: Support email
       team: Meet the team
+      contributors: Contributors
       all_members: See All Members
       twitter:
         icon: Twitter logo

@@ -129,9 +129,10 @@ en:
             edit: Edit %{user}'s role at an organization
             id: Organization ID
             role: Role
-            role_desc_html: You can assign %{user} to be an Admin or a regular member.
+            role_desc_html: You can assign %{user} to be an Admin, a regular member, or a contributor.
             admin: admin
             member: member
+            contributor: contributor
             submit: Add organization
           adjust_credit:
             text: Adjust credit balance
@@ -292,6 +293,7 @@ en:
               admin: Admin
               member: Member
               guest: Guest
+              contributor: Contributor
             revoke_confirm: Are your sure you want to remove %{user} from %{org}?
             submit: Submit
           roles:
