@@ -1,7 +1,8 @@
 require "rails_helper"
 
 RSpec.describe EventTag, type: :liquid_tag do
-  let(:event) { create(:event, title: "Google Cloud Live June", event_name_slug: "google-cloud-live", event_variation_slug: "june-30-2026", description: "Awesome Cloud Event", start_time: Time.zone.parse("2026-06-30 10:00:00")) }
+  let(:event_start_time) { Time.zone.parse("2026-06-30 10:00:00") }
+  let(:event) { create(:event, title: "Google Cloud Live June", event_name_slug: "google-cloud-live", event_variation_slug: "june-30-2026", description: "Awesome Cloud Event", start_time: event_start_time, end_time: event_start_time + 2.hours) }
 
   before do
     Liquid::Template.register_tag("event", described_class)
