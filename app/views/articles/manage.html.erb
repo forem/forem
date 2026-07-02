@@ -97,7 +97,13 @@
         <div class="grid gap-4" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
           <div class="crayons-card p-4" style="background: var(--card-secondary-bg);">
             <div class="color-base-60 fs-s mb-1">Page Views</div>
-            <div class="fs-3xl fw-bold"><%= number_with_delimiter(@article.page_views_count) %></div>
+            <div class="fs-3xl fw-bold">
+              <% if @article.page_views_count > 25 %>
+                <%= number_with_delimiter(@article.page_views_count) %>
+              <% else %>
+                <%= t("views.dashboard.article.views.lt_25") %>
+              <% end %>
+            </div>
           </div>
           
           <div class="crayons-card p-4" style="background: var(--card-secondary-bg);">
