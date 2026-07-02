@@ -8,7 +8,7 @@
      style="--tag-bg-color: <%= @tag.bg_color_hex %>; --tag-text-color: <%= @tag.text_color_hex %>;">
   <div class="tag-header-cover"></div>
   <div class="crayons-layout">
-    <div class="tag-header-main spec__tag-header">
+    <header class="tag-header-main spec__tag-header">
       <% if @tag.badge_id && @tag.badge %>
         <div class="tag-header-logo">
           <img src="<%= optimized_image_url(@tag.badge.badge_image_url, width: 90) %>" alt="" style="transform: rotate(<%= -25 + (@tag.id.digits.first * 5) %>deg);" />
@@ -44,7 +44,7 @@
           </div>
         </div>
       <% end %>
-    </div>
+    </header>
   </div>
 </div>
 
