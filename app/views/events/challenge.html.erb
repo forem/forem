@@ -128,6 +128,32 @@
 
     <!-- Sidebar Right Column -->
     <aside class="w-100 m:w-80 flex-shrink-0">
+      <% if @event.end_time > Time.current %>
+        <div class="crayons-card p-4 mb-6 text-center">
+          <h3 class="font-bold mb-2">Join the Challenge</h3>
+          <p class="fs-s color-base-70 mb-4">Express interest to receive challenge reminders and updates.</p>
+          <% if current_user %>
+            <% if current_user.event_signups.exists?(event: @event) %>
+              <%= button_to event_signup_path(@event.event_name_slug, @event.event_variation_slug), 
+                            method: :delete, 
+                            class: "crayons-btn crayons-btn--outlined w-100 text-center justify-center", 
+                            data: { confirm: "Are you sure you want to cancel your interest?" } do %>
+                <svg class="c-icon mr-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                Joined
+              <% end %>
+            <% else %>
+              <%= button_to event_signup_path(@event.event_name_slug, @event.event_variation_slug), 
+                            method: :post, 
+                            class: "crayons-btn crayons-btn--primary w-100 text-center justify-center" do %>
+                Join Challenge
+              <% end %>
+            <% end %>
+          <% else %>
+            <%= link_to "Join Challenge", sign_up_path(return_to: request.fullpath), class: "crayons-btn crayons-btn--primary w-100 text-center justify-center" %>
+          <% end %>
+        </div>
+      <% end %>
+
       <div class="crayons-card p-4 mb-6">
         <h3 class="font-bold mb-4">Key Dates</h3>
         <ul class="space-y-3 fs-s color-base-80">
