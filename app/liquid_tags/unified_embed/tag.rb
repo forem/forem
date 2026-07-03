@@ -37,8 +37,12 @@ module UnifiedEmbed
                 end
 
         # Reconstruct the input argument string for the child tag, replacing only the raw URL with the validated URL.
-        reconstructed_input = stripped_input.sub(url) { validated_link }
-        klass.__send__(:new, tag_name, reconstructed_input, parse_context)
+        if klass.name == "CloudRunTag"
+          reconstructed_input = stripped_input.sub(url) { validated_link }
+          klass.__send__(:new, tag_name, reconstructed_input, parse_context)
+        else
+          klass.__send__(:new, tag_name, validated_link, parse_context)
+        end
       rescue SocketError, Timeout::Error, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, OpenSSL::SSL::SSLError => e
         Rails.logger.warn("[UnifiedEmbed::Tag] Network/SSL error during validation for '#{url}': #{e.class} - #{e.message}")
         FallbackTag.__send__(:new, tag_name, url, parse_context)
