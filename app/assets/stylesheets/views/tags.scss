@@ -113,8 +113,8 @@
     justify-content: flex-start;
   }
   
-  // Custom button styling using the tag's color
-  .js-follow-tag-button {
+  .js-follow-tag-button,
+  .c-btn--primary:not(.c-btn--destructive) {
     background-color: var(--tag-bg-color, var(--accent-brand));
     border-color: var(--tag-bg-color, var(--accent-brand));
     color: var(--tag-text-color, #ffffff);
