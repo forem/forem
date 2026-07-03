@@ -231,7 +231,6 @@ module Articles
         unless @user.nil?
           @joins << "LEFT OUTER JOIN user_blocks
             ON user_blocks.blocked_id = articles.user_id
-              AND user_blocks.blocked_id IS NULL
               AND user_blocks.blocker_id = :user_id"
         end
 
@@ -286,6 +285,7 @@ module Articles
         where_clauses = "articles.published = true"
         where_clauses += " AND articles.published_at < :now"
         where_clauses += " AND articles.score >= 0"
+        where_clauses += " AND user_blocks.id IS NULL" if @user
         if @type_of == "discover"
           where_clauses += " AND ((articles.published_at > :oldest_published_at)
             OR (articles.published_at > :conditional_lookback
