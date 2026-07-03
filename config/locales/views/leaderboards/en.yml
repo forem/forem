@@ -1,0 +1,13 @@
+---
+en:
+  views:
+    leaderboards:
+      index:
+        title: "Leaderboard"
+        heading: "Leaderboard"
+        subtitle: "Top %{count} badge leaders on %{community_name}"
+        rank: "Rank"
+        user: "Member"
+        recent_badges: "Recent Badges"
+        badges: "Badges"
+        no_users: "No users found on the leaderboard yet."

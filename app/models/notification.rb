@@ -28,6 +28,8 @@ class Notification < ApplicationRecord
   scope :unread, -> { where(read: false) }
 
   scope :from_subforem, lambda { |subforem_id = nil|
+    return where(nil) if ENV["NO_SUBFOREM_FILTER"] == "true"
+
     subforem_id ||= RequestStore.store[:subforem_id]
     if subforem_id.present? && subforem_id == RequestStore.store[:root_subforem_id]
       # No additional conditions; just return the current scope

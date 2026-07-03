@@ -72,6 +72,30 @@ function amendBillboardStyle(sponsorshipDropdownButton) {
   }
 }
 
+export function ensurePersistentMinimizedBillboardContainer() {
+  let sidebarContainer = document.getElementById('persistent-minimized-billboard-container');
+  if (sidebarContainer) {
+    return sidebarContainer;
+  }
+
+  sidebarContainer = document.createElement('div');
+  sidebarContainer.id = 'persistent-minimized-billboard-container';
+  sidebarContainer.className = 'crayons-article-sticky grid gap-4 break-word hidden mt-4';
+
+  const sidebar = document.querySelector('.crayons-layout__sidebar-right');
+  if (sidebar) {
+    const sidebarBb = sidebar.querySelector('.sidebar-bb');
+    if (sidebarBb) {
+      sidebarBb.insertAdjacentElement('afterend', sidebarContainer);
+    } else {
+      sidebar.appendChild(sidebarContainer);
+    }
+  } else {
+    document.body.appendChild(sidebarContainer);
+  }
+  return sidebarContainer;
+}
+
 function dismissBillboard(sponsorshipCloseButton) {
   const billboardEl = sponsorshipCloseButton.closest('.js-billboard');
   if (!billboardEl) {
@@ -81,7 +105,10 @@ function dismissBillboard(sponsorshipCloseButton) {
   
   if (billboardEl.dataset.special === 'persistent') {
     const template = billboardEl.querySelector('.js-minimized-template');
-    const sidebarContainer = document.getElementById('persistent-minimized-billboard-container');
+    let sidebarContainer = document.getElementById('persistent-minimized-billboard-container');
+    if (!sidebarContainer) {
+      sidebarContainer = ensurePersistentMinimizedBillboardContainer();
+    }
     if (template && sidebarContainer) {
       sidebarContainer.innerHTML = template.innerHTML;
       sidebarContainer.classList.remove('hidden');

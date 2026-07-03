@@ -177,6 +177,33 @@ describe('getBillboard', () => {
       billboardContent.closest('.js-billboard-container').style.display,
     ).toBe(''); // Not marked as display none
   });
+
+  test('should allow specific data attributes but remove disallowed attributes', async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        text: () =>
+          Promise.resolve(
+            '<div class="js-billboard" data-id="123">Billboard Content</div>',
+          ),
+      }),
+    );
+
+    await getBillboard();
+
+    const billboard = document.querySelector('.js-billboard');
+    expect(billboard).not.toBeNull();
+
+    // 1. Mutate with an allowed attribute
+    billboard.setAttribute('data-is-billboard-visible', 'true');
+    // 2. Mutate with a disallowed attribute
+    billboard.setAttribute('data-evil-hack', 'hack');
+
+    // MutationObserver callback is asynchronous, so we wait for the next tick
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(billboard.getAttribute('data-is-billboard-visible')).toBe('true');
+    expect(billboard.getAttribute('data-evil-hack')).toBeNull();
+  });
 });
 
 describe('executeBBScripts', () => {

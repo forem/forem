@@ -21,19 +21,19 @@
                 <%= button_to event_signup_path(@event.event_name_slug, @event.event_variation_slug), 
                               method: :delete, 
                               class: "crayons-btn crayons-btn--outlined event-signup-btn", 
-                              data: { confirm: "Are you sure you want to cancel your interest?" } do %>
+                              data: { confirm: @event.signup_confirm_message } do %>
                   <svg class="c-icon mr-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                  Interested
+                  <%= @event.signup_button_text(signed_up: true) %>
                 <% end %>
               <% else %>
                 <%= button_to event_signup_path(@event.event_name_slug, @event.event_variation_slug), 
                               method: :post, 
                               class: "crayons-btn crayons-btn--primary event-signup-btn" do %>
-                  I'm Interested
+                  <%= @event.signup_button_text(signed_up: false) %>
                 <% end %>
               <% end %>
             <% else %>
-              <%= link_to "I'm Interested", sign_up_path(return_to: request.fullpath), class: "crayons-btn crayons-btn--primary event-signup-btn" %>
+              <%= link_to @event.signup_button_text(signed_up: false), sign_up_path(return_to: request.fullpath), class: "crayons-btn crayons-btn--primary event-signup-btn" %>
             <% end %>
           </div>
         <% end %>
@@ -133,13 +133,15 @@
           const overlay = document.getElementById("overlay-post-<%= @event.id %>");
           const countdownEl = document.getElementById("countdown-post-<%= @event.id %>");
           const playerContainer = document.getElementById("player-container-post-<%= @event.id %>");
-          let timerId;
 
           function update() {
             const now = Date.now();
 
             if (now >= TARGET_TIME || IS_FORCED_LIVE) {
-              clearInterval(timerId);
+              if (window.liveStreamIntervals && window.liveStreamIntervals["<%= @event.id %>"]) {
+                clearInterval(window.liveStreamIntervals["<%= @event.id %>"]);
+                delete window.liveStreamIntervals["<%= @event.id %>"];
+              }
               if (overlay) overlay.classList.add("hidden");
 
               if (playerContainer && !playerContainer.querySelector("iframe")) {
@@ -183,7 +185,11 @@
             }
           }
 
-          timerId = setInterval(update, 1000);
+          window.liveStreamIntervals = window.liveStreamIntervals || {};
+          if (window.liveStreamIntervals["<%= @event.id %>"]) {
+            clearInterval(window.liveStreamIntervals["<%= @event.id %>"]);
+          }
+          window.liveStreamIntervals["<%= @event.id %>"] = setInterval(update, 1000);
           update();
         })();
       </script>
