@@ -1,6 +1,6 @@
 module AlgoliaSearch
   class SearchIndexWorker
-    include Sidekiq::Worker
+    include Sidekiq::Job
     sidekiq_options queue: :medium_priority, retry: 5, tags: ["algolia"]
 
     def perform(klass, id, remove)

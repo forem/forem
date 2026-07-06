@@ -1,4 +1,4 @@
-import { setupBillboardInteractivity } from '../utilities/billboardInteractivity';
+import { setupBillboardInteractivity, ensurePersistentMinimizedBillboardContainer } from '../utilities/billboardInteractivity';
 import {
   observeBillboards,
   executeBBScripts,
@@ -31,7 +31,14 @@ async function generateBillboard(element) {
           "data-special",
           "data-article-id",
           "data-impression-recorded",
-          "data-type-of"
+          "data-type-of",
+          "data-dismissal-sku",
+          "data-browser-context",
+          "data-page-id",
+          "data-is-billboard-visible",
+          "data-event-id",
+          "data-polling-interval-id",
+          "data-click-recorded"
         ]);
         if (!allowedAttributes.has(attributeName)) {
           // Remove any attribute that isn't allowed
@@ -69,11 +76,11 @@ async function generateBillboard(element) {
       // When context is digest we don't show this billboard
       // This is a hardcoded feature which should become more dynamic later.
       const contentElement = document.getElementById('page-content-inner');
-      const isInternalNav = contentElement && contentElement.dataset.internalNav === 'true'
+      const isInternalNav = contentElement && contentElement.dataset.internalNav === 'true';
       const isNativeUserAgent = navigator.userAgent.includes('Forem');
       if (
         asyncUrl?.includes('post_fixed_bottom') &&
-        (currentParams?.includes('context=digest') || isInternalNav || isNativeUserAgent)
+        (currentParams?.includes('context=digest') || isNativeUserAgent)
       ) {
         return;
       }
@@ -82,6 +89,30 @@ async function generateBillboard(element) {
       const htmlContent = await response.text();
       const generatedElement = document.createElement('div');
       generatedElement.innerHTML = htmlContent;
+
+      const fetchedBillboardEl = generatedElement.querySelector('.js-billboard');
+
+      if (isInternalNav && asyncUrl?.includes('post_fixed_bottom')) {
+        if (fetchedBillboardEl && fetchedBillboardEl.dataset.special === 'persistent') {
+          const template = fetchedBillboardEl.querySelector('.js-minimized-template');
+          let sidebarContainer = document.getElementById('persistent-minimized-billboard-container');
+          if (!sidebarContainer) {
+            sidebarContainer = ensurePersistentMinimizedBillboardContainer();
+          }
+          if (template && sidebarContainer) {
+            sidebarContainer.innerHTML = template.innerHTML;
+            sidebarContainer.classList.remove('hidden');
+            executeBBScripts(sidebarContainer);
+            sidebarContainer.querySelectorAll('.js-billboard').forEach(observeThisBillboard);
+            observeBillboards();
+            setupBillboardInteractivity();
+          }
+        }
+        element.style.display = 'none';
+        element.innerHTML = '';
+        return;
+      }
+
       element.innerHTML = '';
       element.appendChild(generatedElement);
 
@@ -99,12 +130,30 @@ async function generateBillboard(element) {
           this.style.display = 'none';
         };
       });
+
+      const billboardEl = element.querySelector('.js-billboard');
+      if (billboardEl && billboardEl.dataset.special === 'persistent') {
+        ensurePersistentMinimizedBillboardContainer();
+      }
+
       const dismissalSku =
         element.querySelector('.js-billboard')?.dataset.dismissalSku;
       if (localStorage && dismissalSku && dismissalSku.length > 0) {
         const skuArray =
           JSON.parse(localStorage.getItem('dismissal_skus_triggered')) || [];
         if (skuArray.includes(dismissalSku)) {
+          if (billboardEl && billboardEl.dataset.special === 'persistent') {
+            const template = billboardEl.querySelector('.js-minimized-template');
+            let sidebarContainer = document.getElementById('persistent-minimized-billboard-container');
+            if (!sidebarContainer) {
+              sidebarContainer = ensurePersistentMinimizedBillboardContainer();
+            }
+            if (template && sidebarContainer) {
+              sidebarContainer.innerHTML = template.innerHTML;
+              sidebarContainer.classList.remove('hidden');
+              executeBBScripts(sidebarContainer);
+            }
+          }
           element.style.display = 'none';
           element.innerHTML = '';
         }
@@ -171,3 +220,23 @@ async function generateBillboard(element) {
 }
 
 getBillboard();
+
+if (window.InstantClick && !window._billboardChangeRegistered) {
+  window.InstantClick.on('change', () => {
+    if (window.liveStreamIntervals) {
+      Object.keys(window.liveStreamIntervals).forEach((key) => {
+        clearInterval(window.liveStreamIntervals[key]);
+      });
+      window.liveStreamIntervals = {};
+    }
+
+    const sidebarContainer = document.getElementById('persistent-minimized-billboard-container');
+    if (sidebarContainer) {
+      sidebarContainer.remove();
+    }
+
+    getBillboard();
+  });
+  window._billboardChangeRegistered = true;
+}
+
