@@ -14,12 +14,12 @@ module Sidekiq
           conn.rollback_db_transaction
         rescue StandardError => e
           # If rollback itself fails (rare), log and continue clearing connections
-          Rails.logger.warn "Sidekiq ConnectionCleanup: rollback failed: #{e.class}: #{e.message}"
+          ::Rails.logger.warn "Sidekiq ConnectionCleanup: rollback failed: #{e.class}: #{e.message}"
         end
       end
 
       # Now clear the connection so it's returned to the pool cleanly
-      ActiveRecord::Base.clear_active_connections!
+      ActiveRecord::Base.connection_handler.clear_active_connections!
     end
   end
 end

@@ -1,6 +1,6 @@
 module Subforems
   class CreateFromScratchWorker
-    include Sidekiq::Worker
+    include Sidekiq::Job
 
     sidekiq_options queue: :default, retry: 3
 
