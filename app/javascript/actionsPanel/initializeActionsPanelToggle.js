@@ -18,6 +18,9 @@ export function initializeActionsPanel(user, path = '') {
     const targetButton =
       event?.currentTarget || event?.target?.closest('.mod-actions-menu-btn');
     const articlePath = targetButton?.dataset?.articlePath || path;
+    if (!articlePath) {
+      return;
+    }
     const modActionsMenu = getOrCreateModActionsMenu();
 
     const modContainer = document.getElementById('mod-container');
@@ -47,9 +50,14 @@ export function initializeActionsPanel(user, path = '') {
   }
 
   function bindModActionsMenuButtons() {
-    if (isModerationPage()) {
+    if (
+      isModerationPage() ||
+      document.documentElement.dataset.modActionsMenuBound === 'true'
+    ) {
       return;
     }
+
+    document.documentElement.dataset.modActionsMenuBound = 'true';
 
     document.addEventListener('click', (event) => {
       const button = event.target.closest('.mod-actions-menu-btn');
