@@ -406,7 +406,7 @@ function buildArticleHTML(article, currentUserId = null) {
     if (article.class_name === 'Article' && currentUserId) {
       modButton = `
         <div class="only-sidebar-menu-item">
-          <div id="mod-actions-menu-btn-area" class="print-hidden trusted-visible-block align-center">
+          <div class="print-hidden trusted-visible-block align-center">
             <button class="crayons-btn crayons-btn--ghost crayons-btn--icon-rounded mod-actions-menu-btn" data-article-path="${article.path}">
               <svg width="24" height="24" class="crayons-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-labelledby="mod-actions-button-title-${article.id}">
                 <title id="mod-actions-button-title-${article.id}">Moderation</title>
