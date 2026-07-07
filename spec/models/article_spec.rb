@@ -334,6 +334,22 @@ RSpec.describe Article do
           expect(described_class.from_subforem).not_to include(article_in_null_subforem)
         end
       end
+
+      context "when ENV['NO_SUBFOREM_FILTER'] is true" do
+        before do
+          @orig_val = ENV["NO_SUBFOREM_FILTER"]
+          ENV["NO_SUBFOREM_FILTER"] = "true"
+        end
+
+        after do
+          ENV["NO_SUBFOREM_FILTER"] = @orig_val
+        end
+
+        it "returns all articles without filtering by subforem" do
+          expect(described_class.from_subforem(subforem.id))
+            .to include(article_in_subforem, article_in_second_subforem, article_in_null_subforem, article_in_other_subforem)
+        end
+      end
     end
 
     describe "#body_markdown" do
@@ -2129,7 +2145,7 @@ RSpec.describe Article do
     it "returns records with a subset of attributes" do
       feed_article = described_class.feed.first
 
-      fields = %w[id tag_list published_at processed_html user_id organization_id title path cached_tag_list]
+      fields = %w[id tag_list published_at processed_html user_id organization_id title path cached_tag_list slug]
       expect(feed_article.attributes.keys).to match_array(fields)
     end
   end

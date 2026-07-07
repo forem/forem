@@ -1,0 +1,84 @@
+<% title t("views.leaderboards.index.title") %>
+
+<div class="blank-space"></div>
+<main class="leaderboard-page crayons-layout px-4 m:px-9 gap-0">
+  <h1 class="crayons-title"><%= t("views.leaderboards.index.heading") %></h1>
+  <p class="crayons-subtitle-2 description"><%= t("views.leaderboards.index.subtitle", count: @users.size, community_name: community_name) %></p>
+
+  <div class="crayons-card mt-4 l:mt-7 p-3 s:p-3 m:p-6 l:p-6 xl:p-8 mb-6">
+    <% if @users.any? %>
+      <table class="crayons-table w-100">
+        <thead>
+          <tr>
+            <th class="align-center rank-column"><%= t("views.leaderboards.index.rank") %></th>
+            <th class="user-column"><%= t("views.leaderboards.index.user") %></th>
+            <th class="recent-badges-column"><%= t("views.leaderboards.index.recent_badges") %></th>
+            <th class="align-right badges-column"><%= t("views.leaderboards.index.badges") %></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% max_badges = @users.first&.badge_achievements_count || 1 %>
+          <% @badges = @users.flat_map { |u| u.badge_achievements.sort_by(&:created_at).reverse.map(&:badge).uniq.take(20) }.compact.uniq %>
+          <% @users.each_with_index do |user, index| %>
+            <% cache [user, "leaderboard-row-v1", user.badge_achievements_count, user.profile_updated_at, index] do %>
+              <% percentage = max_badges > 0 ? (user.badge_achievements_count.to_f / max_badges * 100).round : 0 %>
+              <tr class="leaderboard-row" style="--row-percentage: <%= percentage %>%;">
+                <td class="align-center fw-bold fs-l color-base-60 rank-column">
+                  #<%= index + 1 %>
+                </td>
+                <td class="user-column">
+                  <div class="flex items-center gap-3">
+                    <a href="<%= user.path %>" class="crayons-avatar crayons-avatar--l shrink-0">
+                      <% if user.profile_image_90.present? %>
+                        <img src="<%= user.profile_image_90 %>" alt="<%= user.name %> profile picture" class="crayons-avatar__image" loading="lazy">
+                      <% else %>
+                        <div class="crayons-avatar__image flex items-center justify-center color-base-30" style="background-color: var(--body-bg-darker); font-weight: bold; font-size: 1.25rem;">
+                          <%= user.name.to_s.first&.upcase || "U" %>
+                        </div>
+                      <% end %>
+                    </a>
+                    <div class="flex flex-col">
+                      <a href="<%= user.path %>" class="crayons-link fw-bold fs-base text-underline-hover">
+                        <%= user.name %>
+                      </a>
+                      <a href="<%= user.path %>" class="color-base-60 fs-s text-underline-hover">
+                        @<%= user.username %>
+                      </a>
+                    </div>
+                  </div>
+                </td>
+                <td class="recent-badges-column">
+                  <div class="recent-badges-container">
+                    <% user.badge_achievements.sort_by(&:created_at).reverse.map(&:badge).uniq.take(20).each do |badge| %>
+                      <div class="recent-badge-wrapper"
+                           role="button"
+                           onclick="window.Forem.showModal({size: 'medium', showHeader: false, contentSelector: '#badge-detail-modal-<%= badge.id %>', overlay: true, backdropDismissible: true})"
+                           title="<%= badge.title %>">
+                        <img src="<%= optimized_image_url(badge.badge_image_url, width: 64) %>" alt="<%= badge.title %>" class="recent-badge-img" loading="lazy" />
+                      </div>
+                    <% end %>
+                  </div>
+                </td>
+                <td class="align-right badges-column">
+                  <span class="badge-count-pill fw-bold">
+                    <%= user.badge_achievements_count %>
+                  </span>
+                </td>
+              </tr>
+            <% end %>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <div class="align-center p-6 color-base-60 fs-base">
+        <%= t("views.leaderboards.index.no_users") %>
+      </div>
+    <% end %>
+  </div>
+
+  <% @badges.each do |badge| %>
+    <template id="badge-detail-modal-<%= badge.id %>">
+      <%= render partial: "badges/badge_detail", locals: { badge: badge } %>
+    </template>
+  <% end %>
+</main>

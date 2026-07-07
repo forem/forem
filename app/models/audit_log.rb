@@ -20,4 +20,12 @@ class AuditLog < ApplicationRecord
           user_reactable_id_str: { reactable_id: uid.to_s }.to_json,
           user_reactable_id_int: { reactable_id: uid }.to_json)
   }
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["category", "created_at", "data", "id", "id_value", "roles", "slug", "updated_at", "user_id"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["user"]
+  end
 end
