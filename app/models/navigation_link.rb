@@ -9,8 +9,8 @@ class NavigationLink < ApplicationRecord
   before_validation :set_default_icon_if_blank
   before_save :strip_local_hostname, if: :url?
 
-  enum section: { default: 0, other: 1 }, _suffix: true
-  enum display_to: { all: 0, logged_in: 1, logged_out: 2 }, _prefix: true
+  enum :section, { default: 0, other: 1 }, suffix: true
+  enum :display_to, { all: 0, logged_in: 1, logged_out: 2 }, prefix: true
 
   validates :name, :url, presence: true
   validates :url, url: { schemes: %w[https http] }, uniqueness: { scope: :name }
@@ -48,6 +48,8 @@ class NavigationLink < ApplicationRecord
   scope :ordered, -> { order(position: :asc, name: :asc) }
 
   scope :from_subforem, lambda { |subforem_id = nil|
+    return where(nil) if ENV["NO_SUBFOREM_FILTER"] == "true"
+
     subforem_id ||= RequestStore.store[:subforem_id]
     where(subforem_id: [subforem_id, nil])
   }

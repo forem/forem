@@ -13,7 +13,7 @@ class FeedbackMessage < ApplicationRecord
   CATEGORIES = ["spam", "other", "rude or vulgar", "harassment", "bug", "listings"].freeze
   STATUSES = %w[Open Invalid Resolved].freeze
 
-  before_save :determine_reported_from_url
+  before_save :determine_reported_from_url, :assign_offender_from_reported
 
   def self.reporter_uniqueness_msg
     I18n.t("models.feedback_message.reported")
@@ -86,6 +86,13 @@ class FeedbackMessage < ApplicationRecord
     nil
   end
 
+  def assign_offender_from_reported
+    return unless abuse_report?
+    return if offender.present?
+
+    self.offender = offender_from_reported
+  end
+
   def matched_to_entity(url)
     return unless url.present?
 
@@ -112,4 +119,20 @@ class FeedbackMessage < ApplicationRecord
     end
   end
 
+  def offender_from_reported
+    case reported
+    when User
+      reported
+    when Article, Comment
+      reported.user
+    end
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["affected_id", "category", "created_at", "feedback_type", "id", "message", "offender_id", "reported_id", "reported_type", "reported_url", "reporter_id", "status", "updated_at"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["offender", "reporter", "affected", "reported"]
+  end
 end

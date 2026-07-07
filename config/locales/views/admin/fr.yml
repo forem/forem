@@ -602,3 +602,15 @@ fr:
         index:
           threshold: "Seuil"
           default: "défaut"
+      events:
+        show:
+          signups_title: "Inscriptions à l'événement"
+          no_signups: "Aucune inscription pour cet événement pour le moment."
+          headers:
+            user: "Utilisateur"
+            signed_up_at: "Inscrit le"
+            notifications: "Notifications envoyées"
+          notifications:
+            day_before: "1 jour avant"
+            hour_before: "1 heure avant"
+            none: "Aucune"

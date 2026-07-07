@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_06_09_194000) do
+ActiveRecord::Schema[7.2].define(version: 2026_06_30_143448) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -641,6 +641,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_09_194000) do
     t.datetime "created_at", precision: nil, null: false
     t.bigint "display_ad_id"
     t.string "geolocation"
+    t.integer "seconds_visible", default: 10, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
     t.index ["created_at"], name: "index_display_ad_events_on_created_at_brin", using: :brin
@@ -671,6 +672,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_09_194000) do
     t.datetime "expires_at"
     t.integer "impressions_count", default: 0
     t.integer "include_subforem_ids", default: [], array: true
+    t.text "minimized_body_markdown"
+    t.text "minimized_processed_html"
     t.string "name"
     t.bigint "organization_id"
     t.bigint "page_id"
@@ -682,6 +685,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_09_194000) do
     t.boolean "published", default: false
     t.integer "render_mode", default: 0
     t.boolean "requires_cookies", default: false
+    t.integer "seconds_visible", default: 0, null: false
     t.integer "special_behavior", default: 0, null: false
     t.float "success_rate", default: 0.0
     t.text "tags_array", default: [], array: true
@@ -737,6 +741,20 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_09_194000) do
     t.index ["user_query_id"], name: "index_emails_on_user_query_id"
   end
 
+  create_table "event_signups", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "event_id", null: false
+    t.boolean "notified_1_day_before", default: false, null: false
+    t.boolean "notified_1_hour_before", default: false, null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["event_id"], name: "index_event_signups_on_event_id"
+    t.index ["notified_1_day_before"], name: "index_event_signups_on_notified_1_day_before"
+    t.index ["notified_1_hour_before"], name: "index_event_signups_on_notified_1_hour_before"
+    t.index ["user_id", "event_id"], name: "index_event_signups_on_user_id_and_event_id", unique: true
+    t.index ["user_id"], name: "index_event_signups_on_user_id"
+  end
+
   create_table "events", force: :cascade do |t|
     t.integer "broadcast_config", default: 0
     t.datetime "broadcast_ended_at"
@@ -764,6 +782,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_09_194000) do
     t.index ["event_name_slug", "event_variation_slug"], name: "index_events_on_event_name_slug_and_event_variation_slug", unique: true
     t.index ["organization_id"], name: "index_events_on_organization_id"
     t.index ["page_id"], name: "index_events_on_page_id"
+    t.index ["start_time", "end_time"], name: "index_events_on_start_time_and_end_time_published", where: "(published = true)"
     t.index ["tags_array"], name: "index_events_on_tags_array", using: :gin
     t.index ["user_id"], name: "index_events_on_user_id"
     t.check_constraint "broadcast_config IS NOT NULL", name: "events_broadcast_config_null"
@@ -1763,6 +1782,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_09_194000) do
     t.datetime "created_at", precision: nil, null: false
     t.integer "hotness_score", default: 0
     t.string "keywords_for_search"
+    t.text "moderation_instructions"
     t.string "name"
     t.string "pretty_name"
     t.string "profile_image"
@@ -2025,6 +2045,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_09_194000) do
     t.index "to_tsvector('simple'::regconfig, COALESCE((name)::text, ''::text))", name: "index_users_on_name_as_tsvector", using: :gin
     t.index "to_tsvector('simple'::regconfig, COALESCE((username)::text, ''::text))", name: "index_users_on_username_as_tsvector", using: :gin
     t.index ["apple_username"], name: "index_users_on_apple_username"
+    t.index ["badge_achievements_count"], name: "index_users_on_badge_achievements_count_leaderboard", where: "((registered = true) AND (score >= 0) AND (badge_achievements_count > 0))"
     t.index ["base_email_eligible"], name: "index_users_on_base_email_eligible", where: "(base_email_eligible = true)"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["created_at"], name: "index_users_on_created_at"
@@ -2184,6 +2205,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_09_194000) do
   add_foreign_key "email_authorizations", "users", on_delete: :cascade
   add_foreign_key "emails", "audience_segments"
   add_foreign_key "emails", "user_queries"
+  add_foreign_key "event_signups", "events"
+  add_foreign_key "event_signups", "users"
   add_foreign_key "events", "organizations"
   add_foreign_key "events", "pages", on_delete: :restrict
   add_foreign_key "events", "users"

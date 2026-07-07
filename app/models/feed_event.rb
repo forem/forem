@@ -11,7 +11,7 @@ class FeedEvent < ApplicationRecord
   after_save :create_feed_config_offshoot
   after_create_commit :record_field_test_event
 
-  enum category: {
+  enum :category, {
     impression: 0,
     click: 1,
     reaction: 2,

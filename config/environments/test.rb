@@ -15,7 +15,7 @@ Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
   # https://guides.rubyonrails.org/configuring.html#config-cache-classes
-  config.cache_classes = false
+  config.enable_reloading = true
 
   # See https://github.com/rails/rails/issues/40613#issuecomment-727283155
   config.action_view.cache_template_loading = false
@@ -55,8 +55,8 @@ Rails.application.configure do
   # Randomize the order test cases are executed.
   config.active_support.test_order = :random
 
-  # Print deprecation notices to the stderr.
-  config.active_support.deprecation = :stderr
+  # Raise exceptions for deprecation warnings.
+  config.active_support.deprecation = :raise
 
   # Raise exceptions for disallowed deprecations.
   config.active_support.disallowed_deprecation = :raise

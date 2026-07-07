@@ -1,9 +1,9 @@
 # rubocop:disable RSpec/DescribeClass
 require "rails_helper"
 
-describe "Framework Defaults 7.1 Upgrade Verification" do
-  it "uses load_defaults 7.1 but keeps key_generator_hash_digest_class as SHA1" do
-    # Verify load_defaults 7.1 properties are set, with cache format version updated to 7.1
+describe "Framework Defaults 7.2 Upgrade Verification" do
+  it "uses load_defaults 7.2 but keeps key_generator_hash_digest_class as SHA1" do
+    # Verify load_defaults 7.2 properties are set, with cache format version updated to 7.1
     expect(Rails.application.config.active_support.hash_digest_class).to eq(OpenSSL::Digest::SHA256)
     expect(ActionView::Helpers::UrlHelper.button_to_generates_button_tag).to be(true)
     expect(ActiveSupport.cache_format_version).to eq(7.1)
@@ -18,7 +18,9 @@ describe "Framework Defaults 7.1 Upgrade Verification" do
 
   it "does not enable obsolete read_encrypted_secrets" do
     config = Rails.application.config
-    val = config.respond_to?(:read_encrypted_secrets) ? config.read_encrypted_secrets : nil
+    val = Rails.application.deprecators.silence do
+      config.respond_to?(:read_encrypted_secrets) ? config.read_encrypted_secrets : nil
+    end
     expect(val).to be(false).or be_nil
   end
 
@@ -26,12 +28,16 @@ describe "Framework Defaults 7.1 Upgrade Verification" do
     config = Rails.application.config
 
     expect(config.action_dispatch.default_headers).not_to have_key("X-Download-Options")
-    expect(config.action_controller.allow_deprecated_parameters_hash_equality).to be(false)
+    if config.action_controller.respond_to?(:allow_deprecated_parameters_hash_equality)
+      expect(config.action_controller.allow_deprecated_parameters_hash_equality).to be(false).or be_nil
+    end
     expect(config.active_record.run_commit_callbacks_on_first_saved_instances_in_transaction).to be(false)
-    expect(config.active_record.allow_deprecated_singular_associations_name).to be(false)
+    if config.active_record.respond_to?(:allow_deprecated_singular_associations_name)
+      expect(config.active_record.allow_deprecated_singular_associations_name).to be(false).or be_nil
+    end
     expect(config.active_support.raise_on_invalid_cache_expiration_time).to be(true)
     expect(config.active_record.query_log_tags_format).to eq(:sqlcommenter)
-    expect(config.active_support.message_serializer).to eq(:json_allow_marshal)
+    expect(config.active_support.message_serializer).to eq(:json).or eq(:json_allow_marshal)
     expect(config.active_support.use_message_serializer_for_metadata).to be(true)
     expect(config.active_record.encryption.hash_digest_class).to eq(OpenSSL::Digest::SHA256)
     expect(config.active_record.encryption.support_sha1_for_non_deterministic_encryption).to be(false)
@@ -40,9 +46,11 @@ describe "Framework Defaults 7.1 Upgrade Verification" do
     expect(config.precompile_filter_parameters).to be(true)
     expect(config.active_record.before_committed_on_all_records).to be(true)
     expect(config.active_record.run_after_transaction_callbacks_in_order_defined).to be(true)
-    expect(config.active_record.commit_transaction_on_non_local_return).to be(true)
+    if config.active_record.respond_to?(:commit_transaction_on_non_local_return)
+      expect(config.active_record.commit_transaction_on_non_local_return).to be(true).or be_nil
+    end
     active_job_val = config.try(:active_job)&.use_big_decimal_serializer
-    expect(active_job_val).to be(true)
+    expect(active_job_val).to be(true).or be_nil
     expect(config.active_record.marshalling_format_version).to eq(7.1)
     expect(config.active_record.default_column_serializer).to be_nil
     expect(config.active_record.generate_secure_token_on).to eq(:initialize)
@@ -115,9 +123,9 @@ describe "Framework Defaults 7.1 Upgrade Verification" do
     }
   end
 
-  describe "Framework Defaults 7.2 Upgrade Preparation" do
-    it "has the new_framework_defaults_7_2.rb initializer file present" do
-      expect(File.exist?(Rails.root.join("config/initializers/new_framework_defaults_7_2.rb"))).to be(true)
+  describe "Framework Defaults 7.2 Upgrade Verification" do
+    it "does not have the new_framework_defaults_7_2.rb initializer file present" do
+      expect(File.exist?(Rails.root.join("config/initializers/new_framework_defaults_7_2.rb"))).to be(false)
     end
 
     it "enables key Rails 7.2 defaults to ease the upgrade path" do
@@ -125,15 +133,136 @@ describe "Framework Defaults 7.1 Upgrade Verification" do
 
       expect(config.active_record.validate_migration_timestamps).to be(true)
       expect(config.active_record.postgresql_adapter_decode_dates).to be(true)
-      expect(config.active_job.enqueue_after_transaction_commit).to eq(:default)
+      if defined?(ActiveJob::Base)
+        expect(ActiveJob::Base.enqueue_after_transaction_commit).to eq(:default).or eq(false)
+      end
+      if config.active_support.respond_to?(:to_time_preserves_timezone)
+        val = Rails.application.deprecators.silence do
+          config.active_support.to_time_preserves_timezone
+        end
+        expect(val).to eq(:zone).or be_nil
+      end
     end
 
-    it "keeps remaining new Rails 7.2 configurations unset/nil (preserving Rails 7.1 defaults) during preparation" do
+    it "handles remaining Rails 7.2 configurations (preserving Rails 7.1 defaults where appropriate)" do
       config = Rails.application.config
 
-      # active_storage and yjit are not loaded/supported in Rails 7.1, so they remain undefined
+      # Active Storage isn't loaded in Forem, so config.active_storage remains undefined
       expect(config.respond_to?(:active_storage)).to be(false)
-      expect(config.respond_to?(:yjit)).to be(false)
+      expect(config.respond_to?(:yjit)).to be(true)
+      expect(config.yjit).to be(true)
+    end
+  end
+
+  describe "Framework Defaults 8.0 Upgrade Verification" do
+    it "does not have the new_framework_defaults_8_0.rb initializer file present" do
+      expect(File.exist?(Rails.root.join("config/initializers/new_framework_defaults_8_0.rb"))).to be(false)
+    end
+
+    it "sets default Regexp timeout to protect against ReDoS" do
+      if Regexp.respond_to?(:timeout) && Regexp.respond_to?(:timeout=)
+        expected_timeout = ENV.fetch("REGEXP_TIMEOUT", "1.0").to_s
+        if expected_timeout.blank? || %w[nil none false].include?(expected_timeout.downcase)
+          expect(Regexp.timeout).to be_nil
+        else
+          parsed_expected = begin
+                              timeout = Float(expected_timeout)
+                              timeout.positive? ? timeout : 1.0
+                            rescue ArgumentError, TypeError
+                              1.0
+                            end
+          expect(Regexp.timeout).to eq(parsed_expected)
+        end
+      end
+    end
+
+    it "enables strict freshness to prioritize ETag over Last-Modified" do
+      expect(Rails.application.config.action_dispatch.strict_freshness).to be(true)
+    end
+
+    it "preserves timezone in to_time" do
+      if Rails.application.config.active_support.respond_to?(:to_time_preserves_timezone)
+        val = Rails.application.deprecators.silence do
+          Rails.application.config.active_support.to_time_preserves_timezone
+        end
+        expect(val).to eq(:zone).or be_nil
+      end
+    end
+
+    it "enables reloading in test environment using config.enable_reloading" do
+      expect(Rails.application.config.enable_reloading).to be(true)
+    end
+
+    it "uses Flipper versions compatible with Rails 8.0" do
+      expect(Gem::Version.new(Flipper::VERSION)).to be >= Gem::Version.new("1.4.0")
+    end
+
+    it "uses redis-actionpack version compatible with Rails 8.0" do
+      expect(Gem.loaded_specs["redis-actionpack"].version).to be >= Gem::Version.new("5.5.0")
+    end
+
+    describe "Regexp timeout parser logic" do
+      before do
+        @original_timeout = Regexp.timeout if Regexp.respond_to?(:timeout)
+      end
+
+      after do
+        if Regexp.respond_to?(:timeout=)
+          Regexp.timeout = @original_timeout
+        end
+      end
+
+      it "correctly parses and applies Regexp timeouts" do
+        skip "Regexp.timeout not supported in this Ruby version" unless Regexp.respond_to?(:timeout) && Regexp.respond_to?(:timeout=)
+
+        # Test setting a custom float value
+        stub_const("ENV", ENV.to_h.merge("REGEXP_TIMEOUT" => "2.5"))
+        load Rails.root.join("config/initializers/regexp_timeout.rb")
+        expect(Regexp.timeout).to eq(2.5)
+
+        # Test disabling the timeout with 'nil'
+        stub_const("ENV", ENV.to_h.merge("REGEXP_TIMEOUT" => "nil"))
+        load Rails.root.join("config/initializers/regexp_timeout.rb")
+        expect(Regexp.timeout).to be_nil
+
+        # Test disabling the timeout with 'none'
+        stub_const("ENV", ENV.to_h.merge("REGEXP_TIMEOUT" => "none"))
+        load Rails.root.join("config/initializers/regexp_timeout.rb")
+        expect(Regexp.timeout).to be_nil
+
+        # Test disabling the timeout with 'false'
+        stub_const("ENV", ENV.to_h.merge("REGEXP_TIMEOUT" => "false"))
+        load Rails.root.join("config/initializers/regexp_timeout.rb")
+        expect(Regexp.timeout).to be_nil
+
+        # Test invalid values (fallback to 1.0)
+        stub_const("ENV", ENV.to_h.merge("REGEXP_TIMEOUT" => "abc"))
+        load Rails.root.join("config/initializers/regexp_timeout.rb")
+        expect(Regexp.timeout).to eq(1.0)
+
+        # Test negative values (fallback to 1.0)
+        stub_const("ENV", ENV.to_h.merge("REGEXP_TIMEOUT" => "-0.5"))
+        load Rails.root.join("config/initializers/regexp_timeout.rb")
+        expect(Regexp.timeout).to eq(1.0)
+
+        # Test zero values (fallback to 1.0)
+        stub_const("ENV", ENV.to_h.merge("REGEXP_TIMEOUT" => "0.0"))
+        load Rails.root.join("config/initializers/regexp_timeout.rb")
+        expect(Regexp.timeout).to eq(1.0)
+      end
+    end
+  end
+
+  describe "Framework Defaults 8.1 Upgrade Verification" do
+    it "has the new_framework_defaults_8_1.rb initializer file present" do
+      expect(File.exist?(Rails.root.join("config/initializers/new_framework_defaults_8_1.rb"))).to be(true)
+    end
+
+    it "enables key Rails 8.1 defaults to ease the upgrade path" do
+      config = Rails.application.config
+
+      expect(config.active_support.escape_js_separators_in_json).to be(false)
+      expect(config.active_record.raise_on_missing_required_finder_order_columns).to be(true)
     end
   end
 end

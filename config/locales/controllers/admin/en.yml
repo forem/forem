@@ -185,6 +185,9 @@ en:
       created: '%{tag_name} has been created!'
       updated: '%{tag_name} tag successfully updated!'
       update_fail: 'The tag update failed: %{errors}'
+      form:
+        moderation_instructions: "Moderation instructions"
+        moderation_instructions_description: "Custom AI moderation instructions for posts tagged with this tag. If provided, they will be appended to the AI content moderation prompt."
     surveys_controller:
       created: Survey has been created!
       updated: Survey has been updated!
