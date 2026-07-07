@@ -1,0 +1,26 @@
+spec/requests/admin/organizations_org_features_spec.rb
+  cdf961d01143ac46 11,17,69-88
+app/controllers/admin/organizations_controller.rb
+  cdf961d01143ac46 104
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "4195e0f7ddb4f399f730376c3106dafc2eabbf1a",
+  "prompts": {
+    "cdf961d01143ac46": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e69502a6-bdd0-4768-88a0-89870ff05e49",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Jonathan Gottfried",
+      "messages": [],
+      "total_additions": 23,
+      "total_deletions": 1,
+      "accepted_lines": 23,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/ed5d795b6b715ee3804fff692c195bb4f19cfde236b0da6049f1b136ddc2b34f"
+    }
+  }
+}
