@@ -4,7 +4,7 @@ class DataUpdateScript < ApplicationRecord
   STATUSES = { enqueued: 0, working: 1, succeeded: 2, failed: 3 }.freeze
   resourcify
 
-  enum status: STATUSES
+  enum :status, STATUSES
 
   validates :file_name, presence: true, uniqueness: true
   validates :status, presence: true

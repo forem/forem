@@ -25,6 +25,8 @@ pt:
       broadcast:
         visit_html: Visite %{settings} para gerenciar suas notificações.
         settings: Configurações
+      event:
+        reminder_html: "Lembrete: %{event_link} começa em %{time}!"
       comment:
         commented_html: "%{user} comentou em %{title}"
         first_html: "%{user} escreveu seu primeiro comentário em %{title}"

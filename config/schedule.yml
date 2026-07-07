@@ -1,3 +1,7 @@
+events_send_notifications:
+  description: "Sends automated on-site notifications to users signed up for events (runs every hour)"
+  cron: "0 * * * *"
+  class: "Events::SendNotificationsWorker"
 feeds_import:
   description: "Imports feed items as articles (runs hourly on the 20th minute after the hour)"
   cron: "20 * * * *"

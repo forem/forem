@@ -1,5 +1,5 @@
 class ReactionCounterSyncWorker
-  include Sidekiq::Worker
+  include Sidekiq::Job
 
   sidekiq_options queue: :low_priority, retry: 3, lock: :until_executed
 

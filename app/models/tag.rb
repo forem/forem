@@ -86,6 +86,8 @@ class Tag < ActsAsTaggableOn::Tag
   scope :eager_load_serialized_data, -> {}
   scope :supported, -> { where(supported: true) }
   scope :from_subforem, lambda { |subforem_id = nil|
+    return where(supported: true) if ENV["NO_SUBFOREM_FILTER"] == "true"
+
     subforem_id ||= RequestStore.store[:subforem_id]
     # Include subforem_relationships and return tags that are in that relationship
     if subforem_id.present? && subforem_id == RequestStore.store[:root_subforem_id]
@@ -332,5 +334,13 @@ class Tag < ActsAsTaggableOn::Tag
 
   def update_suggested_tags
     Settings::General.suggested_tags = Tag.suggested_for_onboarding.pluck(:name).join(",")
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["alias_for", "badge_id", "bg_color_hex", "category", "context_note_instructions", "created_at", "hotness_score", "id", "id_value", "keywords_for_search", "name", "pretty_name", "profile_image", "requires_approval", "rules_html", "rules_markdown", "short_summary", "social_image", "social_preview_template", "submission_template", "suggested", "supported", "taggings_count", "text_color_hex", "updated_at", "wiki_body_html", "wiki_body_markdown"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["badge", "articles", "billboards", "subforem_relationships", "trends"]
   end
 end

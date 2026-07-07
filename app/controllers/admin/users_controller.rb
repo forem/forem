@@ -122,25 +122,49 @@ module Admin
     def update_email
       @user = User.find(params[:id])
       old_email = @user.email
-      new_email = user_params[:email]
-      if @user.update_columns(email: new_email)
-        Note.create(
-          author_id: current_user.id,
-          noteable_id: @user.id,
-          noteable_type: "User",
-          reason: "Update Email",
-          content: "Updated email from #{old_email} to #{new_email}",
-        )
-        Audit::Logger.log(:moderator, current_user, {
-                            "action" => params[:action],
-                            "controller" => params[:controller],
-                            "target_user_id" => @user.id,
-                            "old_email" => old_email,
-                            "new_email" => new_email
-                          })
-        flash[:success] = I18n.t("views.admin.users.update_email.success")
-      else
-        flash[:error] = I18n.t("views.admin.users.update_email.error")
+new_email = user_params[:email].to_s.strip.presence
+
+      # Validate email using a temp User object to avoid rate limit checks and other model side-effects
+      temp_user = User.new(email: new_email)
+      temp_user.valid?
+
+      email_errors = temp_user.errors.where(:email)
+      if new_email.present? && old_email.present? && new_email.casecmp?(old_email)
+        email_errors = email_errors.reject { |e| e.type == :taken }
+      end
+
+      if email_errors.any?
+        flash[:error] = email_errors.map(&:full_message).to_sentence
+        redirect_to admin_user_path(@user)
+        return
+      end
+
+      begin
+        downcased_email = new_email&.downcase
+        # Bypassing validations/callbacks is intentional here to match the behavior of updating
+        # user emails via the admin UI directly and immediately without sending confirmation emails.
+        if @user.update_columns(email: downcased_email, unconfirmed_email: nil)
+          Note.create(
+            author_id: current_user.id,
+            noteable_id: @user.id,
+            noteable_type: "User",
+            reason: "Update Email",
+            content: "Updated email from #{old_email} to #{downcased_email}",
+          )
+          Audit::Logger.log(:moderator, current_user, {
+                              "action" => params[:action],
+                              "controller" => params[:controller],
+                              "target_user_id" => @user.id,
+                              "old_email" => old_email,
+                              "new_email" => downcased_email
+                            })
+          Users::BustCacheWorker.perform_async(@user.id)
+          flash[:success] = I18n.t("views.admin.users.update_email.success")
+        else
+          flash[:error] = I18n.t("views.admin.users.update_email.error")
+        end
+      rescue ActiveRecord::RecordNotUnique
+        flash[:error] = I18n.t("errors.messages.taken")
       end
       redirect_to admin_user_path(@user)
     end
