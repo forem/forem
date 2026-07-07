@@ -85,6 +85,16 @@ RSpec.describe Billboard do
       it { is_expected.to have_many(:tags) }
     end
 
+    it "requires minimized_body_markdown if special_behavior is persistent" do
+      billboard.special_behavior = "persistent"
+      billboard.minimized_body_markdown = nil
+      expect(billboard).not_to be_valid
+      expect(billboard.errors[:minimized_body_markdown]).to include("can't be blank")
+      
+      billboard.minimized_body_markdown = "minimized content"
+      expect(billboard).to be_valid
+    end
+
     it "allows sidebar_right" do
       billboard.placement_area = "sidebar_right"
       expect(billboard).to be_valid
@@ -340,6 +350,24 @@ RSpec.describe Billboard do
       billboard.update(name: "Sample billboard")
       billboard.reload
       expect(billboard.processed_html).to eq(html)
+    end
+
+    it "processes minimized_body_markdown using the same render_mode" do
+      billboard = create(:billboard, render_mode: "forem_markdown", minimized_body_markdown: "Minimized **bold**")
+      expect(billboard.minimized_processed_html).to include("<strong>bold</strong>")
+      
+      billboard.update(render_mode: "raw", minimized_body_markdown: "<div>Raw minimized</div>")
+      expect(billboard.minimized_processed_html).to eq("<div>Raw minimized</div>")
+    end
+
+    it "re-processes body_markdown and minimized_body_markdown when render_mode or placement_area changes" do
+      billboard = create(:billboard, render_mode: "forem_markdown", body_markdown: "**bold**", minimized_body_markdown: "Minimized **bold**")
+      expect(billboard.processed_html).to include("<strong>bold</strong>")
+      expect(billboard.minimized_processed_html).to include("<strong>bold</strong>")
+
+      billboard.update!(render_mode: "raw")
+      expect(billboard.processed_html).to eq("**bold**")
+      expect(billboard.minimized_processed_html).to eq("Minimized **bold**")
     end
   end
 
@@ -1153,6 +1181,15 @@ RSpec.describe Billboard do
       original_time = billboard.content_updated_at
       Timecop.travel(1.hour.from_now) do
         billboard.update_column(:impressions_count, 1000)
+        billboard.reload
+        expect(billboard.content_updated_at).to eq(original_time)
+      end
+    end
+
+    it "does not update when seconds_visible changes" do
+      original_time = billboard.content_updated_at
+      Timecop.travel(1.hour.from_now) do
+        billboard.update!(seconds_visible: 1000)
         billboard.reload
         expect(billboard.content_updated_at).to eq(original_time)
       end
