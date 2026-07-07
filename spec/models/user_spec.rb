@@ -122,6 +122,65 @@ RSpec.describe User do
       expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
         .with(anything, "user_destroyed", anything, anything, anything)
     end
+
+    describe "moderation role events" do
+      let(:user) { create(:user) }
+
+      before { enable_sync(actor: user) }
+
+      it "emits user_suspended when the suspended role is added" do
+        user.add_role(:suspended)
+        expect(Trackable::DispatchWorker).to have_received(:perform_async)
+          .with(anything, "user_suspended", [user.id], anything, anything)
+      end
+
+      it "emits user_spam_flagged when the spam role is added" do
+        user.add_role(:spam)
+        expect(Trackable::DispatchWorker).to have_received(:perform_async)
+          .with(anything, "user_spam_flagged", [user.id], anything, anything)
+      end
+
+      it "emits user_unsuspended when the suspended role is removed" do
+        user.add_role(:suspended)
+        user.remove_role(:suspended)
+        expect(Trackable::DispatchWorker).to have_received(:perform_async)
+          .with(anything, "user_unsuspended", [user.id], anything, anything)
+      end
+
+      it "emits user_spam_unflagged when the spam role is removed" do
+        user.add_role(:spam)
+        user.remove_role(:spam)
+        expect(Trackable::DispatchWorker).to have_received(:perform_async)
+          .with(anything, "user_spam_unflagged", [user.id], anything, anything)
+      end
+
+      it "does not emit when adding a role the user already has" do
+        user.add_role(:suspended)
+        user.add_role(:suspended)
+        expect(Trackable::DispatchWorker).to have_received(:perform_async)
+          .with(anything, "user_suspended", anything, anything, anything).once
+      end
+
+      it "does not emit when removing a role the user does not have" do
+        user.remove_role(:suspended)
+        expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+          .with(anything, "user_unsuspended", anything, anything, anything)
+      end
+
+      it "does not emit moderation events for non-moderation roles" do
+        user.add_role(:warned)
+        user.add_role(:trusted)
+        expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+          .with(anything, /user_suspended|user_spam/, anything, anything, anything)
+      end
+
+      it "does not emit when the sync gates are off" do
+        Settings::General.customerio_cdp_enabled = false
+        user.add_role(:suspended)
+        expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+          .with(anything, "user_suspended", anything, anything, anything)
+      end
+    end
   end
 
   describe "delegations" do
