@@ -48,12 +48,6 @@ class User < ApplicationRecord
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
                 :current_password, :custom_invite_subject, :custom_invite_message, :custom_invite_footnote
 
-  # Username seed for OAuth providers without a users.<provider>_username
-  # column (e.g. MLH): carries the provider nickname through signup so the
-  # generated username (and the banished-username guard) behave as if the
-  # column existed, without persisting it.
-  attr_accessor :provider_username_seed
-
   acts_as_followable
   acts_as_follower
 
@@ -916,11 +910,10 @@ class User < ApplicationRecord
   end
 
   def auth_provider_usernames
-    provider_usernames = attributes
+    attributes
       .with_indifferent_access
       .slice(*Authentication::Providers.username_fields)
-      .values
-    ([provider_username_seed] + provider_usernames).compact
+      .values.compact || []
   end
 
   def generate_username

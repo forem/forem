@@ -43,9 +43,9 @@ RSpec.describe Authentication::Providers::Mlh, type: :service do
   end
 
   describe "#new_user_data" do
-    it "maps the correct data for a new user, seeding the username from the nickname" do
+    it "maps the correct data for a new user" do
       data = provider.new_user_data
-      expect(data).to eq(email: "test@example.com", name: "MLH User", provider_username_seed: "mlhuser")
+      expect(data).to eq(email: "test@example.com", name: "MLH User")
     end
   end
 

@@ -28,8 +28,7 @@ module Authentication
       def new_user_data
         {
           email: info.email.to_s,
-          name: info.name,
-          provider_username_seed: info.nickname
+          name: info.name
         }
       end
 
