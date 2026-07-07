@@ -124,6 +124,38 @@ describe('formatDateTime', () => {
 
     expect(formatDateTime(options, value)).toEqual(expected);
   });
+
+  it('uses navigator.language for formatting', () => {
+    const options = { month: 'long' };
+    const value = new Date('2022-01-01T00:00:00Z');
+    
+    // Mock navigator.language
+    const originalLanguage = navigator.language;
+    
+    Object.defineProperty(navigator, 'language', {
+      value: 'fr-FR',
+      configurable: true
+    });
+    
+    const resultFr = formatDateTime(options, value);
+    
+    Object.defineProperty(navigator, 'language', {
+      value: 'en-US',
+      configurable: true
+    });
+    
+    const resultEn = formatDateTime(options, value);
+    
+    // Restore original language
+    Object.defineProperty(navigator, 'language', {
+      value: originalLanguage,
+      configurable: true
+    });
+
+    expect(resultFr).not.toEqual(resultEn);
+    expect(resultFr).toBe('janvier');
+    expect(resultEn).toBe('January');
+  });
 });
 
 describe('convertUtcTime', () => {

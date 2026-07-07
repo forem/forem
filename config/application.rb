@@ -49,11 +49,12 @@ module PracticalDeveloper
     # Enable modern cache format version 7.1
     config.active_support.cache_format_version = 7.1
 
-    # Enable modern message serializer to prepare for Rails 8.0
-    config.active_support.message_serializer = :json
+    # Enable modern message serializer with temporary Marshal fallback support for legacy unsubscribe links.
+    # TODO: Revert to :json after legacy links (valid for 31 days) have expired.
+    config.active_support.message_serializer = :json_allow_marshal
 
-    # Preserves the timezone of the receiver in `to_time` methods.
-    config.active_support.to_time_preserves_timezone = :zone
+    # Enable JSON message serializer for metadata to avoid legacy Marshal format dependency.
+    config.active_support.use_message_serializer_for_metadata = true
 
 
     # Enable validating only parent-related columns for presence when the parent is mandatory.

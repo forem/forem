@@ -40,6 +40,22 @@ class Event < ApplicationRecord
     end
   end
 
+  def signup_button_text(signed_up: false)
+    if challenge?
+      signed_up ? "Signed Up" : "Sign Up"
+    else
+      signed_up ? "Interested" : "I'm Interested"
+    end
+  end
+
+  def signup_confirm_message
+    if challenge?
+      "Are you sure you want to cancel your sign up?"
+    else
+      "Are you sure you want to cancel your interest?"
+    end
+  end
+
   private
 
   def end_time_after_start_time

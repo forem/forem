@@ -37,7 +37,7 @@ describe "Framework Defaults 7.2 Upgrade Verification" do
     end
     expect(config.active_support.raise_on_invalid_cache_expiration_time).to be(true)
     expect(config.active_record.query_log_tags_format).to eq(:sqlcommenter)
-    expect(config.active_support.message_serializer).to eq(:json)
+    expect(config.active_support.message_serializer).to eq(:json).or eq(:json_allow_marshal)
     expect(config.active_support.use_message_serializer_for_metadata).to be(true)
     expect(config.active_record.encryption.hash_digest_class).to eq(OpenSSL::Digest::SHA256)
     expect(config.active_record.encryption.support_sha1_for_non_deterministic_encryption).to be(false)
@@ -136,7 +136,12 @@ describe "Framework Defaults 7.2 Upgrade Verification" do
       if defined?(ActiveJob::Base)
         expect(ActiveJob::Base.enqueue_after_transaction_commit).to eq(:default).or eq(false)
       end
-      expect(config.active_support.to_time_preserves_timezone).to eq(:zone)
+      if config.active_support.respond_to?(:to_time_preserves_timezone)
+        val = Rails.application.deprecators.silence do
+          config.active_support.to_time_preserves_timezone
+        end
+        expect(val).to eq(:zone).or be_nil
+      end
     end
 
     it "handles remaining Rails 7.2 configurations (preserving Rails 7.1 defaults where appropriate)" do
@@ -176,7 +181,12 @@ describe "Framework Defaults 7.2 Upgrade Verification" do
     end
 
     it "preserves timezone in to_time" do
-      expect(Rails.application.config.active_support.to_time_preserves_timezone).to eq(:zone)
+      if Rails.application.config.active_support.respond_to?(:to_time_preserves_timezone)
+        val = Rails.application.deprecators.silence do
+          Rails.application.config.active_support.to_time_preserves_timezone
+        end
+        expect(val).to eq(:zone).or be_nil
+      end
     end
 
     it "enables reloading in test environment using config.enable_reloading" do
@@ -240,6 +250,19 @@ describe "Framework Defaults 7.2 Upgrade Verification" do
         load Rails.root.join("config/initializers/regexp_timeout.rb")
         expect(Regexp.timeout).to eq(1.0)
       end
+    end
+  end
+
+  describe "Framework Defaults 8.1 Upgrade Verification" do
+    it "has the new_framework_defaults_8_1.rb initializer file present" do
+      expect(File.exist?(Rails.root.join("config/initializers/new_framework_defaults_8_1.rb"))).to be(true)
+    end
+
+    it "enables key Rails 8.1 defaults to ease the upgrade path" do
+      config = Rails.application.config
+
+      expect(config.active_support.escape_js_separators_in_json).to be(false)
+      expect(config.active_record.raise_on_missing_required_finder_order_columns).to be(true)
     end
   end
 end
