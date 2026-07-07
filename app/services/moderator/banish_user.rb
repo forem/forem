@@ -25,6 +25,10 @@ module Moderator
       delete_user_podcasts
       reassign_and_bust_username
       delete_vomit_reactions
+      # Banish destroys the account's content and identity, so Core treats it
+      # like spam (prunes the Customer.io profile). The pre-banish username
+      # rides along because trackable_payload now carries the spam_ rename.
+      user.track!("user_banished", { "old_username" => user.old_username })
     end
 
     private

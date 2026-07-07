@@ -35,6 +35,15 @@ class User < ApplicationRecord
 
   RECENTLY_ACTIVE_LIMIT = 10_000
 
+  # Moderation role changes emit dedicated events so Core can scope the DEV
+  # newsletter and prune bot Customer.io profiles. Suspension is moderation,
+  # not consent withdrawal — Core never flips its global unsubscribe on these.
+  # See the add_role/remove_role overrides in the Trackable section below.
+  MODERATION_ROLE_EVENTS = {
+    added: { "suspended" => "user_suspended", "spam" => "user_spam_flagged" },
+    removed: { "suspended" => "user_unsuspended", "spam" => "user_spam_unflagged" }
+  }.freeze
+
   enum :type_of, { member: 0, community_bot: 1, member_bot: 2 }
   enum :current_subscriber_status, { not_subscribed: 0, free_subscription: 1, trial_subscription: 2,
                                      paying_subscription: 3 }
@@ -863,7 +872,31 @@ class User < ApplicationRecord
   def enqueue_trackable_event_destroyed(*)
     nil
   end
-  private :enqueue_trackable_event_updated, :trackable_events_skipped?, :enqueue_trackable_event_destroyed
+
+  def add_role(role_name, resource = nil)
+    event = moderation_role_event(role_name, :added, resource)
+    already_had_role = event && has_role?(role_name)
+    result = super
+    track!(event) if event && !already_had_role
+    result
+  end
+
+  def remove_role(role_name, resource = nil)
+    event = moderation_role_event(role_name, :removed, resource)
+    had_role = event && has_role?(role_name)
+    result = super
+    track!(event) if event && had_role
+    result
+  end
+
+  # Only global (non-resource-scoped) moderation roles emit.
+  def moderation_role_event(role_name, direction, resource)
+    return if resource.present? || !persisted?
+
+    MODERATION_ROLE_EVENTS[direction][role_name.to_s]
+  end
+  private :enqueue_trackable_event_updated, :trackable_events_skipped?, :enqueue_trackable_event_destroyed,
+          :moderation_role_event
 
   protected
 
