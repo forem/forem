@@ -613,3 +613,15 @@ en:
         index:
           threshold: "Threshold"
           default: "default"
+      events:
+        show:
+          signups_title: "Event Signups"
+          no_signups: "No signups for this event yet."
+          headers:
+            user: "User"
+            signed_up_at: "Signed Up At"
+            notifications: "Notifications Sent"
+          notifications:
+            day_before: "1 Day Before"
+            hour_before: "1 Hour Before"
+            none: "None"

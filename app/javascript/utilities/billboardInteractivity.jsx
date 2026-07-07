@@ -1,4 +1,6 @@
 import { initializeDropdown } from './dropdownUtils';
+import { observeBillboards, executeBBScripts } from '../packs/billboardAfterRenderActions';
+
 
 export function setupBillboardInteractivity() {
   const sponsorshipDropdownButtons = document.querySelectorAll(
@@ -70,10 +72,53 @@ function amendBillboardStyle(sponsorshipDropdownButton) {
   }
 }
 
+export function ensurePersistentMinimizedBillboardContainer() {
+  let sidebarContainer = document.getElementById('persistent-minimized-billboard-container');
+  if (sidebarContainer) {
+    return sidebarContainer;
+  }
+
+  sidebarContainer = document.createElement('div');
+  sidebarContainer.id = 'persistent-minimized-billboard-container';
+  sidebarContainer.className = 'crayons-article-sticky grid gap-4 break-word hidden mt-4';
+
+  const sidebar = document.querySelector('.crayons-layout__sidebar-right');
+  if (sidebar) {
+    const sidebarBb = sidebar.querySelector('.sidebar-bb');
+    if (sidebarBb) {
+      sidebarBb.insertAdjacentElement('afterend', sidebarContainer);
+    } else {
+      sidebar.appendChild(sidebarContainer);
+    }
+  } else {
+    document.body.appendChild(sidebarContainer);
+  }
+  return sidebarContainer;
+}
+
 function dismissBillboard(sponsorshipCloseButton) {
-  const sku =
-    sponsorshipCloseButton.closest('.js-billboard').dataset.dismissalSku;
-  sponsorshipCloseButton.closest('.js-billboard').style.display = 'none';
+  const billboardEl = sponsorshipCloseButton.closest('.js-billboard');
+  if (!billboardEl) {
+    return;
+  }
+  const sku = billboardEl.dataset.dismissalSku;
+  
+  if (billboardEl.dataset.special === 'persistent') {
+    const template = billboardEl.querySelector('.js-minimized-template');
+    let sidebarContainer = document.getElementById('persistent-minimized-billboard-container');
+    if (!sidebarContainer) {
+      sidebarContainer = ensurePersistentMinimizedBillboardContainer();
+    }
+    if (template && sidebarContainer) {
+      sidebarContainer.innerHTML = template.innerHTML;
+      sidebarContainer.classList.remove('hidden');
+      executeBBScripts(sidebarContainer);
+      observeBillboards();
+      billboardEl.innerHTML = '';
+    }
+  }
+
+  billboardEl.style.display = 'none';
   if (localStorage && sku && sku.length > 0) {
     const skuArray =
       JSON.parse(localStorage.getItem('dismissal_skus_triggered')) || [];
