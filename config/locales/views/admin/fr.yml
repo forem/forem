@@ -594,3 +594,23 @@ fr:
           lookback_desc: "Analyse les articles et commentaires passés. Si des retours en arrière précédents existent, il analyse uniquement la nouvelle période (par exemple de 40 à 70 jours auparavant) avec un léger chevauchement de fuseau horaire."
           lookback_days: "Jours à analyser en arrière"
           lookback_button: "Déclencher"
+          similarity_threshold: "Seuil de similitude"
+        form:
+          similarity_threshold: "Seuil de similitude"
+          similarity_threshold_placeholder: "ex. 0.25 (optionnel)"
+          similarity_threshold_help: "Optionnel. Nombre décimal entre 0,0 et 1,0. Si laissé vide, la valeur par défaut du système (0,28) est utilisée."
+        index:
+          threshold: "Seuil"
+          default: "défaut"
+      events:
+        show:
+          signups_title: "Inscriptions à l'événement"
+          no_signups: "Aucune inscription pour cet événement pour le moment."
+          headers:
+            user: "Utilisateur"
+            signed_up_at: "Inscrit le"
+            notifications: "Notifications envoyées"
+          notifications:
+            day_before: "1 jour avant"
+            hour_before: "1 heure avant"
+            none: "Aucune"

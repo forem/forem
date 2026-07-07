@@ -6,7 +6,9 @@ module Admin
       @events = Event.all.order(created_at: :desc)
     end
 
-    def show; end
+    def show
+      @event_signups = @event.event_signups.includes(:user).order(created_at: :desc).page(params[:page]).per(50)
+    end
 
     def new
       @event = Event.new
@@ -61,6 +63,7 @@ module Admin
         :description, 
         :primary_stream_url, 
         :published, 
+        :elevated,
         :start_time, 
         :end_time, 
         :type_of,
@@ -69,6 +72,8 @@ module Admin
         :user_id, 
         :organization_id, 
         :tag_list,
+        :page_id,
+        :delegate_to_page,
         data: {}
       )
     end

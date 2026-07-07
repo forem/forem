@@ -114,7 +114,7 @@ RSpec.configure do |config|
   end
 
   config.use_transactional_fixtures = true
-  config.fixture_path = Rails.root.join("spec/fixtures")
+  config.fixture_paths = [Rails.root.join("spec/fixtures")]
 
   config.include ActionMailer::TestHelper
   config.include ApplicationHelper
