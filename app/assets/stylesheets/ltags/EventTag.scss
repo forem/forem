@@ -1,0 +1,48 @@
+@import '../variables';
+
+.ltag__event {
+  font-family: var(--ff-sans-serif);
+  border: 1px solid var(--form-border);
+  box-shadow: var(--shadow-smooth);
+  border-radius: var(--radius-auto);
+  display: block;
+  margin: 0.95em 0 1.2em;
+  max-width: 100%;
+  background: var(--card-bg);
+  color: var(--card-color);
+  padding: var(--su-4);
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: var(--su-3);
+    margin-bottom: var(--su-2);
+  }
+
+  &__title {
+    margin: 0 !important;
+    padding: 0;
+    font-weight: var(--fw-bold);
+    font-size: calc(1.35em + 0.2vw);
+    line-height: var(--lh-tight);
+  }
+
+  &__date {
+    font-size: var(--fs-s);
+    color: var(--card-color-tertiary);
+    font-weight: var(--fw-medium);
+  }
+
+  &__description {
+    font-size: var(--fs-m);
+    color: var(--card-color-secondary);
+    margin: var(--su-2) 0 var(--su-4) !important;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-start;
+  }
+}
