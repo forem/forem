@@ -3,5 +3,6 @@ FactoryBot.define do
     user_id { rand(100) }
     sequence(:email) { |n| "person#{n}@example.com" }
     sequence(:username) { |n| "username#{n}" }
+    sequence(:name) { |n| "Person #{n}" }
   end
 end

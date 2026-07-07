@@ -7,7 +7,7 @@
         <div class="flex grow-1 justify-end">
           <%= paginate @gdpr_delete_requests, theme: "admin", scope: @gdpr_delete_requests, label: "Paginate GDPR actions", context: "top" %>
         </div>
-        <%= render "admin/users/controls/search_field", f: f, placeholder: "Search members...", aria_label: "Search members by email or username", context: "large" %>
+        <%= render "admin/users/controls/search_field", f: f, placeholder: "Search members...", aria_label: "Search members by name, email, or username", context: "large" %>
       </div>
     <% end %>
   </header>
@@ -23,14 +23,17 @@
         <li>
           <article class="fs-s py-4 flex justify-between align-items-start">
             <div class="flex flex-col gap-2">
-              <h3 class="fs-s color-base-60">@<%= r.username %></h3>
+              <% if r.name.present? %>
+                <h3 class="fs-s fw-bold"><%= r.name %></h3>
+              <% end %>
+              <span class="color-base-60">@<%= r.username %></span>
               <%= r.email %>
               <dl>
                 <dt class="color-base-60 fw-normal">Deleted on</dt>
                 <dd><%= r.created_at.strftime("%d %b, %Y") %></dd>
               </dl>
             </div>
-            <button aria-label="Confirm user <%= r.username %> deleted" data-username="<%= r.username %>" data-gdpr-form-action="<%= url_for(action: :destroy, id: r.id) %>" class="c-btn"> <%= crayons_icon_tag("checkmark", aria_hidden: true) %> Deleted</button>
+            <button aria-label="Confirm user <%= r.name.presence || r.username %> deleted" data-username="<%= r.username %>" data-name="<%= r.name %>" data-gdpr-form-action="<%= url_for(action: :destroy, id: r.id) %>" class="c-btn"> <%= crayons_icon_tag("checkmark", aria_hidden: true) %> Deleted</button>
           </article>
         </li>
       <% end %>
@@ -51,11 +54,16 @@
     <tbody class="fs-s">
       <% @gdpr_delete_requests.each do |r| %>
         <tr>
-          <td class="pl-7 color-base-60">@<%= r.username %></td>
+          <td class="pl-7">
+            <% if r.name.present? %>
+              <span class="fw-bold"><%= r.name %></span><br>
+            <% end %>
+            <span class="color-base-60">@<%= r.username %></span>
+          </td>
           <td><%= r.email %></td>
           <td><%= r.created_at.strftime("%d %b, %Y") %></td>
           <td class="align-center">
-            <button aria-label="Confirm user <%= r.username %> deleted" data-username="<%= r.username %>" data-gdpr-form-action="<%= url_for(action: :destroy, id: r.id) %>" class="c-btn"> <%= crayons_icon_tag("checkmark", aria_hidden: true) %> Deleted</button>
+            <button aria-label="Confirm user <%= r.name.presence || r.username %> deleted" data-username="<%= r.username %>" data-name="<%= r.name %>" data-gdpr-form-action="<%= url_for(action: :destroy, id: r.id) %>" class="c-btn"> <%= crayons_icon_tag("checkmark", aria_hidden: true) %> Deleted</button>
           </td>
         </tr>
       <% end %>

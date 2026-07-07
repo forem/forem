@@ -8,7 +8,7 @@ RSpec.describe "/admin/member_manager/gdpr_delete_requests" do
   end
 
   context "with gdpr request" do
-    let!(:gdr) { create(:gdpr_delete_request, email: "user@dev.to") }
+    let!(:gdr) { create(:gdpr_delete_request, email: "user@dev.to", name: "Test User") }
 
     it "renders successfully" do
       get admin_gdpr_delete_requests_path
@@ -18,6 +18,11 @@ RSpec.describe "/admin/member_manager/gdpr_delete_requests" do
     it "displays the gdpr delete requests" do
       get admin_gdpr_delete_requests_path
       expect(response.body).to include("user@dev.to")
+    end
+
+    it "displays the user's name when present" do
+      get admin_gdpr_delete_requests_path
+      expect(response.body).to include("Test User")
     end
 
     it "displays the number of existing requests" do
@@ -35,6 +40,20 @@ RSpec.describe "/admin/member_manager/gdpr_delete_requests" do
       expect do
         delete admin_gdpr_delete_request_path(gdr.id)
       end.to change(AuditLog, :count).by(1)
+    end
+  end
+
+  context "with gdpr request missing name (legacy)" do
+    let!(:gdr) { create(:gdpr_delete_request, email: "legacy@dev.to", username: "legacyuser", name: nil) }
+
+    it "renders successfully without name" do
+      get admin_gdpr_delete_requests_path
+      expect(response).to be_successful
+    end
+
+    it "displays the username when name is missing" do
+      get admin_gdpr_delete_requests_path
+      expect(response.body).to include("@legacyuser")
     end
   end
 
