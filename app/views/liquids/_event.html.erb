@@ -12,8 +12,8 @@
             data-event-variation-slug="<%= event.event_variation_slug %>"
             data-signed-up-class="crayons-btn--outlined"
             data-unsigned-up-class="crayons-btn--primary"
-            class="crayons-btn event-signup-btn <%= current_user && current_user.event_signups.exists?(event: event) ? 'crayons-btn--outlined' : 'crayons-btn--primary' %>"
-            data-signed-up="<%= current_user && current_user.event_signups.exists?(event: event) ? 'true' : 'false' %>">
+            class="crayons-btn event-signup-btn crayons-btn--primary"
+            data-signed-up="false">
       <template data-signed-up-html>
         <%= event.signup_button_text(signed_up: true) %>
       </template>
@@ -21,11 +21,7 @@
         <%= event.signup_button_text(signed_up: false) %>
       </template>
 
-      <% if current_user && current_user.event_signups.exists?(event: event) %>
-        <%= event.signup_button_text(signed_up: true) %>
-      <% else %>
-        <%= event.signup_button_text(signed_up: false) %>
-      <% end %>
+      <%= event.signup_button_text(signed_up: false) %>
     </button>
   </div>
 </div>

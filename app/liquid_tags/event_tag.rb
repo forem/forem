@@ -6,7 +6,7 @@ class EventTag < LiquidTagBase
   # Matches local event URL path: e.g. /events/event-name-slug/event-variation-slug
   REGISTRY_REGEXP = %r{^(?:https?://(?:[\w.-]+\.)*[\w.-]+(?::\d+)?)?/events/(?<event_name_slug>[a-z0-9-]+)/(?<event_variation_slug>[a-z0-9-]+)(?:[/?#]|\z)}
 
-  SCRIPT = "// Handled by eventSignupButtons.js pack".freeze
+  SCRIPT = "// Handled by eventSignupButtons.js pack for ltag__event (signup_status)".freeze
 
   def self.script
     SCRIPT
