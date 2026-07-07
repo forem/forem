@@ -909,37 +909,6 @@ end
 
 ##############################################################################
 
-seeder.create_if_none(ListingCategory) do
-  ListingCategory.create!(
-    slug: "cfp",
-    cost: 1,
-    name: "Conference CFP",
-    rules: "Currently open for proposals, with link to form.",
-  )
-end
-
-##############################################################################
-
-seeder.create_if_none(Listing) do
-  Credit.add_to(admin_user, rand(1..100))
-  Credit.add_to(admin_user.organizations.first, rand(1..100))
-
-  Listing.create!(
-    user: admin_user,
-    title: "Listing title",
-    body_markdown: Faker::Markdown.random.lines.take(10).join,
-    location: Faker::Address.city,
-    organization_id: admin_user.organizations.first&.id,
-    listing_category_id: ListingCategory.first.id,
-    published: true,
-    originally_published_at: Time.current,
-    bumped_at: Time.current,
-    tag_list: Tag.order(Arel.sql("RANDOM()")).first(2).pluck(:name),
-  )
-end
-
-##############################################################################
-
 seeder.create_if_none(Tag) do
   10.times do |i|
     tag = Tag.create!(
