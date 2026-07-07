@@ -171,5 +171,63 @@ RSpec.describe Event, type: :model do
 
       expect(post_bb.body_markdown).to include("id=\"event-takeover-image\"")
     end
+
+    it "generates persistent on-post billboard with minimized HTML for a live_stream event" do
+      user = create(:user)
+      event = create(:event, 
+                     broadcast_config: "global_broadcast", 
+                     type_of: "live_stream",
+                     title: "Test Live Stream Event", 
+                     description: "A live broadcast summary",
+                     event_name_slug: "test-live-stream", 
+                     event_variation_slug: "v1",
+                     user: user)
+
+      expect(event.billboards.count).to eq(2)
+      
+      feed_bb = event.billboards.find_by(placement_area: "feed_first")
+      post_bb = event.billboards.find_by(placement_area: "post_fixed_bottom")
+
+      expect(feed_bb.custom_display_label).to eq("#{Settings::Community.community_name} Live Events")
+      
+      expect(post_bb.special_behavior).to eq("persistent")
+      expect(post_bb.minimized_body_markdown).to include("live-stream-minimized")
+      expect(post_bb.minimized_body_markdown).to include("Test Live Stream Event")
+      expect(post_bb.minimized_body_markdown).to include("A live broadcast summary")
+      expect(post_bb.minimized_body_markdown).to include("/events/test-live-stream/v1")
+      expect(post_bb.minimized_body_markdown).to include("media-wrapper-minimized")
+      expect(post_bb.minimized_body_markdown).to include("player-container-minimized")
+      expect(post_bb.minimized_processed_html).to include("live-stream-minimized")
+    end
+  end
+
+  describe "Callbacks" do
+    it "registers #bust_upcoming_events_cache as an after_commit callback" do
+      callback_names = Event._commit_callbacks.select { |cb| cb.kind == :after }.map(&:filter)
+      expect(callback_names).to include(:bust_upcoming_events_cache)
+    end
+  end
+
+  describe "#bust_upcoming_events_cache" do
+    let(:memory_store) { ActiveSupport::Cache.lookup_store(:memory_store) }
+
+    before do
+      allow(Rails).to receive(:cache).and_return(memory_store)
+      Rails.cache.clear
+    end
+
+    after do
+      Rails.cache.clear
+    end
+
+    it "deletes the upcoming_elevated_events cache key" do
+      Rails.cache.write("upcoming_elevated_events", ["cached_data"])
+      expect(Rails.cache.read("upcoming_elevated_events")).to eq(["cached_data"])
+
+      build(:event).send(:bust_upcoming_events_cache)
+
+      expect(Rails.cache.read("upcoming_elevated_events")).to be_nil
+    end
   end
 end
+

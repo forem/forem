@@ -138,6 +138,10 @@
           <strong>Success Rate:</strong>
           <p><%= @billboard.success_rate %></p>
         </div>
+        <div class="crayons-field">
+          <strong>Seconds Visible:</strong>
+          <p><%= @billboard.seconds_visible %></p>
+        </div>
         <% @events.each do |event| %>
           <% next unless event.user %>
           <div class="crayonds-card fs-xs">

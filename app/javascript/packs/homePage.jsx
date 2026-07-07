@@ -138,7 +138,7 @@ if (document.getElementById('sidebar-nav-followed-tags')) {
             return;
           }
 
-          const url = new URL(window.location);
+          const url = new URL(window.location.href);
           const changedFeedTimeFrame = frontPageFeedPathNames.get(url.pathname);
 
           if (!frontPageFeedPathNames.has(url.pathname)) {
@@ -156,7 +156,7 @@ if (document.getElementById('sidebar-nav-followed-tags')) {
         });
 
         window.addEventListener('forem:feed:refresh', () => {
-          const url = new URL(window.location);
+          const url = new URL(window.location.href);
           const changedFeedTimeFrame = frontPageFeedPathNames.get(url.pathname);
 
           if (!frontPageFeedPathNames.has(url.pathname)) {

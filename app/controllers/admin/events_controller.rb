@@ -6,7 +6,9 @@ module Admin
       @events = Event.all.order(created_at: :desc)
     end
 
-    def show; end
+    def show
+      @event_signups = @event.event_signups.includes(:user).order(created_at: :desc).page(params[:page]).per(50)
+    end
 
     def new
       @event = Event.new

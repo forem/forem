@@ -499,3 +499,15 @@ pt:
         index:
           threshold: "Limiar"
           default: "padrão"
+      events:
+        show:
+          signups_title: "Inscrições no evento"
+          no_signups: "Nenhuma inscrição para este evento ainda."
+          headers:
+            user: "Usuário"
+            signed_up_at: "Inscrito em"
+            notifications: "Notificações enviadas"
+          notifications:
+            day_before: "1 dia antes"
+            hour_before: "1 hora antes"
+            none: "Nenhuma"
