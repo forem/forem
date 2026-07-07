@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_06_25_160721) do
+ActiveRecord::Schema[7.2].define(version: 2026_06_30_143448) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -685,6 +685,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_25_160721) do
     t.boolean "published", default: false
     t.integer "render_mode", default: 0
     t.boolean "requires_cookies", default: false
+    t.integer "seconds_visible", default: 0, null: false
     t.integer "special_behavior", default: 0, null: false
     t.float "success_rate", default: 0.0
     t.text "tags_array", default: [], array: true
@@ -2044,6 +2045,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_25_160721) do
     t.index "to_tsvector('simple'::regconfig, COALESCE((name)::text, ''::text))", name: "index_users_on_name_as_tsvector", using: :gin
     t.index "to_tsvector('simple'::regconfig, COALESCE((username)::text, ''::text))", name: "index_users_on_username_as_tsvector", using: :gin
     t.index ["apple_username"], name: "index_users_on_apple_username"
+    t.index ["badge_achievements_count"], name: "index_users_on_badge_achievements_count_leaderboard", where: "((registered = true) AND (score >= 0) AND (badge_achievements_count > 0))"
     t.index ["base_email_eligible"], name: "index_users_on_base_email_eligible", where: "(base_email_eligible = true)"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["created_at"], name: "index_users_on_created_at"

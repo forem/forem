@@ -16,7 +16,8 @@
 # Controls whether Active Record raises an error when order-dependent finder methods
 # (such as `first` or `last`) are called without an explicit order on relations that
 # lack a fallback order column.
-# Rails.application.config.active_record.raise_on_missing_required_finder_order_columns = true
+Rails.application.config.active_record.raise_on_missing_required_finder_order_columns = true
+
 
 # Controls whether Action Controller relative redirects (e.g. `redirect_to "/path"`)
 # raise an error, warn, or are allowed.
@@ -29,3 +30,7 @@
 # Controls whether JS line/paragraph separators (U+2028 and U+2029) are escaped in JSON.
 # If set to `false`, escaping is bypassed since modern browsers support these in JSON.
 Rails.application.config.active_support.escape_js_separators_in_json = false
+
+# Controls the serializer used for serializing signed/encrypted messages.
+# We explicitly allow Marshal fallback support to avoid breaking existing encrypted tokens.
+Rails.application.config.active_support.message_serializer = :json_allow_marshal

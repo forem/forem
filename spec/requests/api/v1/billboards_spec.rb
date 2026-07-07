@@ -57,7 +57,7 @@ RSpec.describe "Api::V1::Billboards" do
                           "custom_display_label", "template", "render_mode", "preferred_article_ids",
                           "priority", "weight", "target_geolocations", "requires_cookies", "special_behavior", "expires_at",
                           "exclude_survey_completions", "exclude_survey_ids", "content_updated_at", "tags_array", "event_id",
-                          "minimized_body_markdown", "minimized_processed_html")
+                          "minimized_body_markdown", "minimized_processed_html", "seconds_visible")
         expect(response.parsed_body["target_geolocations"]).to contain_exactly("US-WA", "CA-BC")
       end
 
@@ -80,7 +80,7 @@ RSpec.describe "Api::V1::Billboards" do
                           "custom_display_label", "template", "render_mode", "preferred_article_ids",
                           "priority", "weight", "target_geolocations", "requires_cookies", "special_behavior", "expires_at",
                           "exclude_survey_completions", "exclude_survey_ids", "content_updated_at", "tags_array", "event_id",
-                          "minimized_body_markdown", "minimized_processed_html")
+                          "minimized_body_markdown", "minimized_processed_html", "seconds_visible")
         expect(response.parsed_body["target_geolocations"]).to contain_exactly("US-WA", "CA-BC")
       end
 
@@ -149,7 +149,7 @@ RSpec.describe "Api::V1::Billboards" do
                           "custom_display_label", "template", "render_mode", "preferred_article_ids",
                           "priority", "weight", "target_geolocations", "prefer_paired_with_billboard_id", "expires_at",
                           "exclude_survey_completions", "exclude_survey_ids", "content_updated_at", "tags_array", "event_id",
-                          "minimized_body_markdown", "minimized_processed_html")
+                          "minimized_body_markdown", "minimized_processed_html", "seconds_visible")
       end
 
       it "also accepts target geolocations as an array" do
