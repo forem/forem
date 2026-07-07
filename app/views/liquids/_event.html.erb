@@ -7,7 +7,20 @@
   </div>
   <p class="ltag__event__description"><%= event.description %></p>
   <div class="ltag__event__actions">
-    <button class="crayons-btn crayons-btn--primary ltag__event__signup-btn" data-signup-url="<%= event_signup_path(event.event_name_slug, event.event_variation_slug) %>" data-event-type="<%= event.type_of %>">
+    <button data-event-signup-button="true"
+            data-event-name-slug="<%= event.event_name_slug %>"
+            data-event-variation-slug="<%= event.event_variation_slug %>"
+            data-signed-up-class="crayons-btn--outlined"
+            data-unsigned-up-class="crayons-btn--primary"
+            class="crayons-btn event-signup-btn crayons-btn--primary"
+            data-signed-up="false">
+      <template data-signed-up-html>
+        <%= event.signup_button_text(signed_up: true) %>
+      </template>
+      <template data-unsigned-up-html>
+        <%= event.signup_button_text(signed_up: false) %>
+      </template>
+
       <%= event.signup_button_text(signed_up: false) %>
     </button>
   </div>
