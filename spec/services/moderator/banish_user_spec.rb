@@ -28,6 +28,17 @@ RSpec.describe Moderator::BanishUser, type: :service do
         .with(anything, "user_banished", [user.id],
               hash_including("old_username" => original_username), anything)
     end
+
+    it "does not also emit user_suspended for the banish-internal role grant" do
+      with_trackable_events do
+        sidekiq_perform_enqueued_jobs do
+          described_class.call(user: user, admin: admin)
+        end
+      end
+
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+        .with(anything, "user_suspended", anything, anything, anything)
+    end
   end
 
   it "updates username, clears profile, and add BanishedUser record", :aggregate_failures do
