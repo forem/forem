@@ -56,9 +56,7 @@ RSpec.describe "Sidekiq Initializer" do
       our_block = startup_blocks.find { |b| b.source_location[0].include?("config/initializers/sidekiq.rb") }
       expect(our_block).not_to be_nil, "Expected config.on(:startup) loop to be defined"
 
-      pool_mock = double("ConnectionPool")
-      expect(pool_mock).to receive(:disconnect!)
-      allow(ActiveRecord::Base).to receive(:connection_pool).and_return(pool_mock)
+      expect(ActiveRecord::Base.connection_pool).to receive(:disconnect!).and_call_original
       
       expected_db_config = Rails.application.config.database_configuration[Rails.env].merge('pool' => 30)
       expect(ActiveRecord::Base).to receive(:establish_connection).with(expected_db_config)

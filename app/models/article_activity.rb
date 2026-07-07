@@ -344,7 +344,6 @@ class ArticleActivity < ApplicationRecord
 
   def build_referrers_from_raw
     PageView.where(article_id: article_id)
-      .where.not(domain: [nil, ""])
       .group("DATE(created_at)", :domain)
       .sum(:counts_for_number_of_views)
       .each_with_object({}) do |((date, domain), n), hash|

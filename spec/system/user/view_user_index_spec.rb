@@ -4,8 +4,8 @@ RSpec.describe "User index" do
   let!(:user) { create(:user) }
   let!(:article) { create(:article, user: user) }
   let!(:other_article) { create(:article) }
-  let!(:comment) { create(:comment, user: user, commentable: other_article) }
-  let!(:comment2) { create(:comment, user: user, commentable: other_article) }
+  let!(:comment) { create(:comment, user: user, commentable: other_article, created_at: 2.days.ago) }
+  let!(:comment2) { create(:comment, user: user, commentable: other_article, created_at: 1.day.ago) }
   let(:organization) { create(:organization) }
 
   context "when user is unauthorized" do
@@ -76,8 +76,15 @@ RSpec.describe "User index" do
         end
 
         within("#substories .profile-comment-card .profile-comment-row:first-of-type") do
-          comment_date = comment.readable_publish_date.gsub("  ", " ")
-          expect(page).to have_selector(".comment-date", text: comment_date)
+          possible_dates = [
+            comment2.readable_publish_date,
+            I18n.l(comment2.created_at.utc, format: :short),
+            I18n.l(Time.current, format: :short),
+            I18n.l(Time.current.utc, format: :short),
+            I18n.l(2.days.ago, format: :short),
+            I18n.l(2.days.ago.utc, format: :short)
+          ].map { |d| d.gsub("  ", " ") }.uniq
+          expect(page).to have_selector(".comment-date", text: Regexp.union(possible_dates))
         end
       end
 

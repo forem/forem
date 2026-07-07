@@ -26,7 +26,7 @@ class Organization < ApplicationRecord
   VERIFICATION_STATUS_FAILED = "failed".freeze
   VERIFICATION_STATUS_ADMIN = "admin_verified".freeze
 
-  enum tls_status: { not_started: 0, pending: 1, issued: 2, failed: 3 }
+  enum :tls_status, { not_started: 0, pending: 1, issued: 2, failed: 3 }
 
   acts_as_followable
 

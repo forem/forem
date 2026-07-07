@@ -20,6 +20,8 @@ en:
       invalid_comment: Invalid Comment ID or URL
     dotnet_fiddle_tag:
       invalid_dotnetfiddle_url: Invalid DotnetFiddle URL
+    event_tag:
+      not_found: Event not found
     descript_tag:
       invalid_descript_url: Invalid Descript URL.
     gist_tag:

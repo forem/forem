@@ -9,7 +9,7 @@ class Survey < ApplicationRecord
   has_many :poll_votes, through: :polls
   has_many :survey_completions, dependent: :destroy
   
-  enum type_of: { community_pulse: 0, industry: 1, fun: 2 }
+  enum :type_of, { community_pulse: 0, industry: 1, fun: 2 }
 
   accepts_nested_attributes_for :polls, allow_destroy: true
   validates_associated :polls

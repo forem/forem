@@ -61,7 +61,7 @@ RSpec.describe ConsumerApp do
       )
 
       # The Rpush App has the ConsumerApp's auth_credentials
-      expect(rpush_app).to be_instance_of(Rpush::Gcm::App)
+      expect(rpush_app).to be_instance_of(Rpush::Fcm::App)
       expect(rpush_app.auth_key).to eq(consumer_app_android.auth_credentials)
 
       consumer_app_android.auth_key = "new_auth_key"
@@ -74,7 +74,7 @@ RSpec.describe ConsumerApp do
       )
 
       # The Rpush App has the new ConsumerApp's auth_credentials
-      expect(rpush_app).to be_instance_of(Rpush::Gcm::App)
+      expect(rpush_app).to be_instance_of(Rpush::Fcm::App)
       expect(rpush_app.auth_key).to eq("new_auth_key")
     end
 

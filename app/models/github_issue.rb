@@ -7,7 +7,7 @@ class GithubIssue < ApplicationRecord
   PATH_PULL_REQUEST_REGEXP = %r{/pulls/}
   PATH_REPO_REGEXP = %r{.*github.com/repos/}
 
-  serialize :issue_serialized, Hash
+  serialize :issue_serialized, coder: YAML, type: Hash
 
   validates :category, inclusion: { in: CATEGORIES }
   validates :url, presence: true, length: { maximum: 400 }, format: API_URL_REGEXP
