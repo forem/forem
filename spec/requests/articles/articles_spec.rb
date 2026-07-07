@@ -308,6 +308,21 @@ RSpec.describe "Articles" do
       expect(response.body).to include("Manage Your Post")
     end
 
+    it "masks page views at or below 25, matching the dashboard" do
+      article = create(:article, user: user)
+      article.update_column(:page_views_count, 25)
+      get "#{article.path}/manage"
+      expect(response.body).to include(CGI.escapeHTML(I18n.t("views.dashboard.article.views.lt_25")))
+    end
+
+    it "shows the exact page views count above 25" do
+      article = create(:article, user: user)
+      article.update_column(:page_views_count, 1234)
+      get "#{article.path}/manage"
+      expect(response.body).to include("1,234")
+      expect(response.body).not_to include(CGI.escapeHTML(I18n.t("views.dashboard.article.views.lt_25")))
+    end
+
     it "returns unauthorized for a draft" do
       draft = create(:article, published: false, user: user)
       expect { get "#{draft.path}/manage" }.to raise_error(Pundit::NotAuthorizedError)
