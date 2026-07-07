@@ -67,7 +67,9 @@ module Authentication
     end
 
     def self.username_fields
-      Authentication::Providers::Provider.subclasses.map(&:user_username_field).sort
+      # filter_map: providers without a users.<provider>_username column
+      # (e.g. MLH, whose link is the identity uid) return nil.
+      Authentication::Providers::Provider.subclasses.filter_map(&:user_username_field).sort
     end
   end
 end

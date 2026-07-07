@@ -36,19 +36,22 @@ RSpec.describe Authentication::Providers::Mlh, type: :service do
     end
   end
 
+  describe ".user_username_field" do
+    it "is nil because the MLH link lives on the identity (uid = Core user id), not a users column" do
+      expect(described_class.user_username_field).to be_nil
+    end
+  end
+
   describe "#new_user_data" do
-    it "maps the correct data for a new user" do
+    it "maps the correct data for a new user, seeding the username from the nickname" do
       data = provider.new_user_data
-      expect(data[:email]).to eq("test@example.com")
-      expect(data[:mlh_username]).to eq("mlhuser")
-      expect(data[:name]).to eq("MLH User")
+      expect(data).to eq(email: "test@example.com", name: "MLH User", provider_username_seed: "mlhuser")
     end
   end
 
   describe "#existing_user_data" do
-    it "maps the correct data for an existing user" do
-      data = provider.existing_user_data
-      expect(data[:mlh_username]).to eq("mlhuser")
+    it "has no user columns to refresh" do
+      expect(provider.existing_user_data).to eq({})
     end
   end
 end

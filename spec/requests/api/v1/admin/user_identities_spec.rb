@@ -102,12 +102,22 @@ RSpec.describe "Api::V1::Admin::UserIdentities" do
     end
 
     it "sets user.<provider>_username when 'username' param is provided" do
+      omniauth_mock_github_payload if defined?(omniauth_mock_github_payload)
+      post "/api/admin/users/#{user.id}/identities",
+           params: { provider: "github", uid: "gh-12345", username: "jane_gh" },
+           headers: admin_api_headers
+
+      expect(user.reload.github_username).to eq("jane_gh")
+    end
+
+    it "ignores the 'username' param for providers without a username column (mlh)" do
       omniauth_mock_mlh_payload if defined?(omniauth_mock_mlh_payload)
       post "/api/admin/users/#{user.id}/identities",
            params: { provider: "mlh", uid: "core-12345", username: "jane_mlh" },
            headers: admin_api_headers
 
-      expect(user.reload.mlh_username).to eq("jane_mlh")
+      expect(response).to have_http_status(:created)
+      expect(user.identities.find_by(provider: "mlh").uid).to eq("core-12345")
     end
 
     it "audits the link" do
@@ -129,15 +139,22 @@ RSpec.describe "Api::V1::Admin::UserIdentities" do
       create(:identity, user: user, provider: "mlh", uid: "core-1")
     end
 
-    before { user.update_column(:mlh_username, "jane_mlh") }
-
-    it "destroys the identity and nulls user.<provider>_username" do
+    it "destroys the identity" do
       expect do
         delete "/api/admin/users/#{user.id}/identities/#{identity.id}", headers: admin_api_headers
       end.to change(Identity, :count).by(-1)
 
       expect(response).to have_http_status(:no_content)
-      expect(user.reload.mlh_username).to be_nil
+    end
+
+    it "nulls user.<provider>_username when unlinking a provider with a username column" do
+      omniauth_mock_github_payload if defined?(omniauth_mock_github_payload)
+      gh = create(:identity, user: user, provider: "github", uid: "gh-2")
+      user.update_column(:github_username, "jane_gh")
+
+      delete "/api/admin/users/#{user.id}/identities/#{gh.id}", headers: admin_api_headers
+
+      expect(user.reload.github_username).to be_nil
     end
 
     it "destroys github_repos when unlinking github" do

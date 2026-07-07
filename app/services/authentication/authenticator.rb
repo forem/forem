@@ -123,10 +123,12 @@ module Authentication
       suspended_user = Users::SuspendedUsername.previously_suspended?(username)
       raise ::Authentication::Errors::PreviouslySuspended if suspended_user
 
-      existing_user = User.find_by(
-        provider.user_username_field => username,
-      )
-      return existing_user if existing_user
+      if provider.user_username_field
+        existing_user = User.find_by(
+          provider.user_username_field => username,
+        )
+        return existing_user if existing_user
+      end
 
       User.new.tap do |user|
         user.assign_attributes(provider.new_user_data)
@@ -176,6 +178,8 @@ module Authentication
     end
 
     def update_profile_updated_at(user)
+      return unless provider.user_username_field
+
       field_name = "#{provider.user_username_field}_changed?"
       user.profile_updated_at = Time.current if user.public_send(field_name)
     end

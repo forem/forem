@@ -150,10 +150,11 @@ class UsersController < ApplicationController
     if identity && @user.identities.size > 1
       identity.destroy
 
-      @user.update(
-        provider.user_username_field => nil,
-        :profile_updated_at => Time.current,
-      )
+      unlink_attributes = { profile_updated_at: Time.current }
+      # Providers without a users.<provider>_username column (e.g. MLH) have
+      # nothing to null out besides the identity itself.
+      unlink_attributes[provider.user_username_field] = nil if provider.user_username_field
+      @user.update(unlink_attributes)
 
       # GitHub repositories are tied with the existence of the GitHub identity
       # as we use the user's GitHub token to fetch them from the API.

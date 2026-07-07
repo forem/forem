@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_06_30_143448) do
+ActiveRecord::Schema[7.2].define(version: 2026_07_07_153330) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -2006,7 +2006,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_30_143448) do
     t.datetime "latest_article_updated_at", precision: nil
     t.datetime "locked_at", precision: nil
     t.integer "max_score", default: 0
-    t.string "mlh_username"
     t.string "name"
     t.string "old_old_username"
     t.string "old_username"
@@ -2059,7 +2058,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_30_143448) do
     t.index ["invitations_count"], name: "index_users_on_invitations_count"
     t.index ["invited_by_id"], name: "index_users_on_invited_by_id"
     t.index ["invited_by_type", "invited_by_id"], name: "index_users_on_invited_by_type_and_invited_by_id"
-    t.index ["mlh_username"], name: "index_users_on_mlh_username"
     t.index ["old_old_username"], name: "index_users_on_old_old_username"
     t.index ["old_username"], name: "index_users_on_old_username"
     t.index ["onboarding_subforem_id"], name: "index_users_on_onboarding_subforem_id"

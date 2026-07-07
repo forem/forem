@@ -9,6 +9,12 @@ module Authentication
         OFFICIAL_NAME
       end
 
+      # MLH has no users.<provider>_username column: the link to the MLH Core
+      # account lives on the identity row, whose uid IS the Core user id.
+      def self.user_username_field
+        nil
+      end
+
       def self.settings_url
         SETTINGS_URL
       end
@@ -22,15 +28,13 @@ module Authentication
       def new_user_data
         {
           email: info.email.to_s,
-          mlh_username: info.nickname,
           name: info.name,
+          provider_username_seed: info.nickname
         }
       end
 
       def existing_user_data
-        {
-          mlh_username: info.nickname
-        }
+        {}
       end
 
       protected

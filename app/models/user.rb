@@ -35,6 +35,11 @@ class User < ApplicationRecord
 
   RECENTLY_ACTIVE_LIMIT = 10_000
 
+  # Dropped in favor of the MLH identity row (identities.uid = Core user id);
+  # ignored so in-flight code stops referencing it before the column removal
+  # migration runs.
+  self.ignored_columns += ["mlh_username"] # rubocop:disable Rails/UnusedIgnoredColumns
+
   enum :type_of, { member: 0, community_bot: 1, member_bot: 2 }
   enum :current_subscriber_status, { not_subscribed: 0, free_subscription: 1, trial_subscription: 2,
                                      paying_subscription: 3 }
@@ -42,6 +47,12 @@ class User < ApplicationRecord
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
                 :current_password, :custom_invite_subject, :custom_invite_message, :custom_invite_footnote
+
+  # Username seed for OAuth providers without a users.<provider>_username
+  # column (e.g. MLH): carries the provider nickname through signup so the
+  # generated username (and the banished-username guard) behave as if the
+  # column existed, without persisting it.
+  attr_accessor :provider_username_seed
 
   acts_as_followable
   acts_as_follower
@@ -320,7 +331,7 @@ class User < ApplicationRecord
   end
 
   def self.ransackable_attributes(auth_object = nil)
-    ["agent_sessions_count", "apple_username", "articles_count", "badge_achievements_count", "base_email_eligible", "blocked_by_count", "blocking_others_count", "checked_code_of_conduct", "checked_terms_and_conditions", "comments_count", "confirmation_sent_at", "confirmed_at", "created_at", "credits_count", "current_sign_in_at", "current_subscriber_status", "email", "export_requested", "exported_at", "facebook_username", "failed_attempts", "feed_fetched_at", "following_orgs_count", "following_tags_count", "following_users_count", "forem_username", "github_repos_updated_at", "github_username", "google_oauth2_created_at", "google_oauth2_username", "id", "id_value", "invitation_accepted_at", "invitation_created_at", "invitation_limit", "invitation_sent_at", "invitations_count", "invited_by_id", "invited_by_type", "last_article_at", "last_comment_at", "last_followed_at", "last_moderation_notification", "last_notification_activity", "last_onboarding_page", "last_presence_at", "last_reacted_at", "last_sign_in_at", "latest_article_updated_at", "locked_at", "max_score", "mlh_username", "name", "old_old_username", "old_username", "onboarding_package_requested", "onboarding_subforem_id", "organization_info_updated_at", "payment_pointer", "profile_image", "profile_updated_at", "public_reactions_count", "rating_votes_count", "reactions_count", "registered", "registered_at", "reputation_modifier", "reset_password_sent_at", "saw_onboarding", "score", "sign_in_count", "sign_in_token_sent_at", "signup_cta_variant", "spent_credits_count", "stripe_id_code", "subscribed_to_user_subscriptions_count", "twitter_username", "type_of", "unconfirmed_email", "unspent_credits_count", "updated_at", "username"]
+    ["agent_sessions_count", "apple_username", "articles_count", "badge_achievements_count", "base_email_eligible", "blocked_by_count", "blocking_others_count", "checked_code_of_conduct", "checked_terms_and_conditions", "comments_count", "confirmation_sent_at", "confirmed_at", "created_at", "credits_count", "current_sign_in_at", "current_subscriber_status", "email", "export_requested", "exported_at", "facebook_username", "failed_attempts", "feed_fetched_at", "following_orgs_count", "following_tags_count", "following_users_count", "forem_username", "github_repos_updated_at", "github_username", "google_oauth2_created_at", "google_oauth2_username", "id", "id_value", "invitation_accepted_at", "invitation_created_at", "invitation_limit", "invitation_sent_at", "invitations_count", "invited_by_id", "invited_by_type", "last_article_at", "last_comment_at", "last_followed_at", "last_moderation_notification", "last_notification_activity", "last_onboarding_page", "last_presence_at", "last_reacted_at", "last_sign_in_at", "latest_article_updated_at", "locked_at", "max_score", "name", "old_old_username", "old_username", "onboarding_package_requested", "onboarding_subforem_id", "organization_info_updated_at", "payment_pointer", "profile_image", "profile_updated_at", "public_reactions_count", "rating_votes_count", "reactions_count", "registered", "registered_at", "reputation_modifier", "reset_password_sent_at", "saw_onboarding", "score", "sign_in_count", "sign_in_token_sent_at", "signup_cta_variant", "spent_credits_count", "stripe_id_code", "subscribed_to_user_subscriptions_count", "twitter_username", "type_of", "unconfirmed_email", "unspent_credits_count", "updated_at", "username"]
   end
 
   def self.ransackable_associations(auth_object = nil)
@@ -905,10 +916,11 @@ class User < ApplicationRecord
   end
 
   def auth_provider_usernames
-    attributes
+    provider_usernames = attributes
       .with_indifferent_access
       .slice(*Authentication::Providers.username_fields)
-      .values.compact || []
+      .values
+    ([provider_username_seed] + provider_usernames).compact
   end
 
   def generate_username
