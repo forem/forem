@@ -1,0 +1,36 @@
+---
+fr:
+  views:
+    calendar:
+      meta:
+        title: Calendrier
+      heading: Calendrier
+      range:
+        from: Du
+        to: Au
+        apply: Appliquer
+      nav:
+        previous_month: Mois précédent
+        next_month: Mois suivant
+      weekdays:
+        - Dim
+        - Lun
+        - Mar
+        - Mer
+        - Jeu
+        - Ven
+        - Sam
+      hint: Cliquez sur un jour de début, puis sur un jour de fin pour définir une plage.
+      legend:
+        selected: Sélectionné
+        today: Aujourd'hui
+        has_events: Avec événements
+      today: Aujourd'hui
+      empty: Aucun événement sur cette période. Essayez un autre mois !
+      event:
+        attending: Inscrit
+        view: Voir l'événement
+      pagination:
+        label: Pages d'événements
+        previous: Page précédente
+        next: Page suivante

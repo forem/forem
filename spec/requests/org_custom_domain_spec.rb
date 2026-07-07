@@ -110,6 +110,37 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
       end
     end
 
+    describe "feed routing" do
+      let(:user) { create(:user) }
+      let!(:article) { create(:article, organization: organization, user: user, title: "Org Article Title") }
+      let!(:other_article) { create(:article, title: "Other Article Title") }
+
+      it "routes /feed to the organization's feed, returning only organization articles" do
+        get "http://custom.org/feed"
+
+        expect(response).to have_http_status(:success)
+        expect(response.content_type).to include("application/xml")
+        expect(response.body).to include("Org Article Title")
+        expect(response.body).not_to include("Other Article Title")
+
+        expect(response.body).to include("<link>http://custom.org</link>")
+        expect(response.body).to include("<link>http://custom.org/#{article.slug}</link>")
+        expect(response.body).to include("<guid>http://custom.org/#{article.slug}</guid>")
+      end
+
+      it "routes /rss to the organization's feed, returning only organization articles" do
+        get "http://custom.org/rss"
+
+        expect(response).to have_http_status(:success)
+        expect(response.content_type).to include("application/xml")
+        expect(response.body).to include("Org Article Title")
+        expect(response.body).not_to include("Other Article Title")
+
+        expect(response.body).to include("<link>http://custom.org</link>")
+        expect(response.body).to include("<link>http://custom.org/#{article.slug}</link>")
+      end
+    end
+
     describe "signed out redirection to custom domain" do
       let(:user) { create(:user) }
       let!(:article) { create(:article, organization: organization, user: user, title: "Test Article Content") }

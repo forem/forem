@@ -73,6 +73,16 @@
     </div>
 
     <div class="crayons-field">
+      <%= form.fields_for :data, event.data || {} do |data_form| %>
+        <%= data_form.label :auto_follow_tag_names, "Auto-Follow Tag Names on Signup (Challenges)", class: "crayons-field__label" do %>
+          Auto-Follow Tag Names on Signup (Challenges Only)
+          <p class="crayons-field__description">Optional. Comma-separated list of tag names (e.g., 'devchallenge, writeathon') that users will automatically follow when signing up for this challenge. Defaults to the event's first tag if left blank.</p>
+        <% end %>
+        <input type="text" name="event[data][auto_follow_tag_names]" id="event_data_auto_follow_tag_names" class="crayons-textfield" value="<%= event.data&.dig('auto_follow_tag_names') %>" placeholder="e.g., devchallenge, writeathon">
+      <% end %>
+    </div>
+
+    <div class="crayons-field">
       <%= form.label :tag_list, "Tags", class: "crayons-field__label" do %>
         Tags
         <p class="crayons-field__description">Comma separated tags. The first tag is used to fetch related articles.</p>

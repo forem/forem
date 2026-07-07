@@ -33,6 +33,8 @@ Rails.application.routes.draw do
 
   constraints OrgCustomDomainConstraint.new do
     get "/", to: "stories#custom_domain_index"
+    get "/feed", to: "articles#feed", as: nil, defaults: { format: "rss" }
+    get "/rss", to: "articles#feed", as: nil, defaults: { format: "rss" }
     get "/:org_slug/:slug",
         to: "stories#custom_domain_show",
         constraints: {
@@ -121,6 +123,8 @@ Rails.application.routes.draw do
         # shared config/routes/api.rb) because Api::V0::Admin::* controllers do
         # not implement these actions; placing the routes here scopes them to
         # callers using the application/vnd.forem.api-v1+json Accept header.
+        resources :concepts, only: %i[index show]
+
         namespace :admin do
           resources :users, only: %i[index show update] do
             member do
@@ -169,7 +173,11 @@ Rails.application.routes.draw do
       patch "/admin_featured_toggle", to: "articles#admin_featured_toggle"
     end
     resources :events, only: %i[index]
+    get "/calendar", to: "calendar#index"
     get "events/:event_name_slug/:event_variation_slug", to: "events#show", as: :event
+    get "events/:event_name_slug/:event_variation_slug/signup_status", to: "event_signups#status", as: :event_signup_status
+    post "events/:event_name_slug/:event_variation_slug/signup", to: "event_signups#create", as: :event_signup
+    delete "events/:event_name_slug/:event_variation_slug/signup", to: "event_signups#destroy"
     resources :article_mutes, only: %i[update]
     resources :comments, only: %i[create update destroy] do
       patch "/hide", to: "comments#hide"
@@ -291,6 +299,7 @@ Rails.application.routes.draw do
     resources :billboard_events, only: [:create]
     # Alias for reporting in case "events" triggers spam filters
     post "/bb_tabulations", to: "billboard_events#create", as: :bb_tabulations
+    patch "/bb_tabulations/:id", to: "billboard_events#update"
 
     resources :badges, only: [:index]
     resources :user_blocks, param: :blocked_id, only: %i[show create destroy]
@@ -433,6 +442,7 @@ Rails.application.routes.draw do
     get "/faq", to: "pages#faq"
     get "/page/post-a-job", to: "pages#post_a_job"
     get "/tag-moderation", to: "pages#tag_moderation"
+    get "/leaderboard", to: "leaderboards#index", as: :leaderboard
 
     get "/mod", to: "moderations#index", as: :mod
     get "/mod/:tag", to: "moderations#index"

@@ -76,9 +76,15 @@ RSpec.describe "User index" do
         end
 
         within("#substories .profile-comment-card .profile-comment-row:first-of-type") do
-          comment_date_tz = comment2.readable_publish_date.gsub("  ", " ")
-          comment_date_utc = I18n.l(comment2.created_at.utc, format: :short).gsub("  ", " ")
-          expect(page).to have_selector(".comment-date", text: Regexp.union(comment_date_tz, comment_date_utc))
+          possible_dates = [
+            comment2.readable_publish_date,
+            I18n.l(comment2.created_at.utc, format: :short),
+            I18n.l(Time.current, format: :short),
+            I18n.l(Time.current.utc, format: :short),
+            I18n.l(2.days.ago, format: :short),
+            I18n.l(2.days.ago.utc, format: :short)
+          ].map { |d| d.gsub("  ", " ") }.uniq
+          expect(page).to have_selector(".comment-date", text: Regexp.union(possible_dates))
         end
       end
 

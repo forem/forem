@@ -92,6 +92,7 @@ RUN echo 'httpTimeout: 300000' >> ~/.yarnrc.yml
 # layer space was done in a later step, which is invalid in at least some
 # Docker storage drivers (resulting in Directory Not Empty errors).
 RUN NODE_ENV=production yarn install && \
+    yarn build && \
     RAILS_ENV=production NODE_ENV=production bundle exec rake assets:precompile && \
     rm -rf node_modules
 

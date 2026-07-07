@@ -14,7 +14,7 @@ RSpec.describe Billboards::DataUpdateWorker, type: :worker do
 
   describe "#perform_update" do
     context "when the billboard has never been tabulated before" do
-      let!(:billboard) { create(:billboard, impressions_count: 0, clicks_count: 0, counts_tabulated_at: nil) }
+      let!(:billboard) { create(:billboard, impressions_count: 0, clicks_count: 0, seconds_visible: 0, counts_tabulated_at: nil) }
 
       before do
         # Create some events before now
@@ -22,18 +22,21 @@ RSpec.describe Billboards::DataUpdateWorker, type: :worker do
           billboard: billboard,
           category: "impression",
           counts_for: 5,
+          seconds_visible: 50,
           created_at: now - 2.hours
         )
         create(:billboard_event,
           billboard: billboard,
           category: "click",
           counts_for: 2,
+          seconds_visible: 0,
           created_at: now - 1.hour
         )
         create(:billboard_event,
           billboard: billboard,
           category: "conversion",
           counts_for: 1,
+          seconds_visible: 0,
           created_at: now - 30.minutes
         )
       end
@@ -52,6 +55,7 @@ RSpec.describe Billboards::DataUpdateWorker, type: :worker do
 
           expect(billboard.impressions_count).to eq(5)
           expect(billboard.clicks_count).to eq(2)
+          expect(billboard.seconds_visible).to eq(50)
           expect(billboard.success_rate).to eq(expected_rate)
           expect(billboard.counts_tabulated_at).to eq(now)
         end
@@ -64,6 +68,7 @@ RSpec.describe Billboards::DataUpdateWorker, type: :worker do
           :billboard,
           impressions_count: 10,
           clicks_count: 4,
+          seconds_visible: 120,
           counts_tabulated_at: now - 1.day
         )
       end
@@ -74,18 +79,21 @@ RSpec.describe Billboards::DataUpdateWorker, type: :worker do
           billboard: billboard,
           category: "impression",
           counts_for: 3,
+          seconds_visible: 30,
           created_at: (now - 2.days)
         )
         create(:billboard_event,
           billboard: billboard,
           category: "click",
           counts_for: 1,
+          seconds_visible: 0,
           created_at: (now - 2.days)
         )
         create(:billboard_event,
           billboard: billboard,
           category: "conversion",
           counts_for: 2,
+          seconds_visible: 0,
           created_at: (now - 2.days)
         )
 
@@ -94,18 +102,21 @@ RSpec.describe Billboards::DataUpdateWorker, type: :worker do
           billboard: billboard,
           category: "impression",
           counts_for: 7,
+          seconds_visible: 80,
           created_at: (now - 12.hours)
         )
         create(:billboard_event,
           billboard: billboard,
           category: "click",
           counts_for: 3,
+          seconds_visible: 0,
           created_at: (now - 6.hours)
         )
         create(:billboard_event,
           billboard: billboard,
           category: "conversion",
           counts_for: 1,
+          seconds_visible: 0,
           created_at: (now - 3.hours)
         )
       end
@@ -134,6 +145,7 @@ RSpec.describe Billboards::DataUpdateWorker, type: :worker do
 
           expect(billboard.impressions_count).to eq(17)
           expect(billboard.clicks_count).to eq(7)
+          expect(billboard.seconds_visible).to eq(200) # 120 + 80
           expect(billboard.success_rate).to eq(expected_new_rate)
           expect(billboard.counts_tabulated_at).to eq(now)
         end

@@ -9,7 +9,7 @@ module Feeds
     has_many :import_items, class_name: "Feeds::ImportItem", foreign_key: :feed_import_log_id,
                             inverse_of: :import_log, dependent: :delete_all
 
-    enum status: { pending: 0, fetching: 1, parsing: 2, importing: 3, completed: 4, failed: 5 }
+    enum :status, { pending: 0, fetching: 1, parsing: 2, importing: 3, completed: 4, failed: 5 }
 
     scope :recent, -> { order(created_at: :desc) }
     scope :for_cleanup, -> { where(created_at: ...30.days.ago) }

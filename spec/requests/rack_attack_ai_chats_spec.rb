@@ -9,6 +9,8 @@ RSpec.describe "Rack::Attack AI Chats Throttling", type: :request do
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
     Rack::Attack.reset!
     Rails.cache.clear
+    allow(ApplicationConfig).to receive(:[]).and_call_original
+    allow(ApplicationConfig).to receive(:[]).with("FASTLY_API_KEY").and_return(nil)
   end
 
   after do
