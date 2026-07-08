@@ -929,6 +929,9 @@ class User < ApplicationRecord
   # The setting is resolved via the default subforem (like mailers do) because the
   # admin panel saves it subforem-scoped and callbacks may run without request context.
   def trackable_events_skipped?
+    # Bots (community_bot / member_bot) are not people; the Core backfill
+    # excluded them and the live sync must too.
+    return true unless member?
     return true unless Settings::General.customerio_cdp_enabled(subforem_id: Subforem.cached_default_id)
     return true unless FeatureFlag.enabled_for_user?(:dev_core_user_sync, self)
 

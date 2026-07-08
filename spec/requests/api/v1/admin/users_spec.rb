@@ -268,6 +268,26 @@ RSpec.describe "/api/admin/users" do
       expect(ActionMailer::Base.deliveries).to be_empty
     end
 
+    # update_columns bypasses the Trackable after_commit, so the endpoint
+    # must emit explicitly or Core never learns the new address.
+    it "emits user_updated to the DEV -> Core sync" do
+      allow(Trackable::Registry).to receive(:active_names).and_return([:any])
+      allow(Trackable::DispatchWorker).to receive(:perform_async)
+      Settings::General.customerio_cdp_enabled = true
+      FeatureFlag.enable(:dev_core_user_sync, FeatureFlag::Actor[target])
+
+      with_trackable_events do
+        put "/api/admin/users/#{target.id}/email",
+            params: { email: "new@example.com" },
+            headers: admin_api_headers
+      end
+
+      expect(Trackable::DispatchWorker).to have_received(:perform_async)
+        .with(anything, "user_updated", [target.id], hash_including("email" => "new@example.com"), anything)
+    ensure
+      FeatureFlag.remove(:dev_core_user_sync)
+    end
+
     it "returns 409 email_taken on conflict" do
       create(:user, email: "taken@example.com")
 

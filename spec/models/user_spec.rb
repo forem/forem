@@ -246,6 +246,12 @@ RSpec.describe User do
       end
     end
 
+    it "does not emit any sync events for bot accounts" do
+      enable_sync
+      create(:user, type_of: :community_bot)
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+    end
+
     it "does not emit user_created for unregistered invited users" do
       enable_sync
       create(:user, registered: false, registered_at: nil)
