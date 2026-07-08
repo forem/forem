@@ -215,6 +215,35 @@ RSpec.describe User do
         expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
           .with(anything, "user_engaged", anything, anything, anything)
       end
+
+      # update_presence! writes via update_column, which bypasses callbacks, so
+      # the engagement event has to be emitted explicitly from that path.
+      it "emits user_engaged from a presence ping" do
+        user = create(:user)
+        enable_sync(actor: user)
+        user.update_presence!
+        expect(Trackable::DispatchWorker).to have_received(:perform_async)
+          .with(anything, "user_engaged", [user.id],
+                hash_including("engaged_at" => user.reload.last_presence_at.iso8601), anything)
+      end
+
+      it "throttles repeat presence pings inside the emit interval" do
+        user = create(:user)
+        enable_sync(actor: user)
+        user.update_presence!
+        Timecop.travel(2.hours.from_now) { user.update_presence! }
+        expect(Trackable::DispatchWorker).to have_received(:perform_async)
+          .with(anything, "user_engaged", anything, anything, anything).once
+      end
+
+      it "does not emit user_engaged from a presence ping for spam or suspended users" do
+        user = create(:user)
+        enable_sync(actor: user)
+        described_class.skip_trackable_events { user.add_role(:spam) }
+        user.update_presence!
+        expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+          .with(anything, "user_engaged", anything, anything, anything)
+      end
     end
 
     it "does not emit user_created for unregistered invited users" do

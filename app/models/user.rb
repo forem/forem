@@ -818,6 +818,9 @@ class User < ApplicationRecord
     return if last_presence_at.present? && last_presence_at > 1.hour.ago
 
     update_column(:last_presence_at, Time.current)
+    # update_column bypasses callbacks, so the throttled engagement event that
+    # enqueue_trackable_event_updated would fire has to be emitted explicitly.
+    track_engagement!(last_presence_at)
   end
 
   def sync_base_email_eligible!
@@ -898,19 +901,28 @@ class User < ApplicationRecord
   def track_engagement
     changed_activity = previous_changes.slice(*ACTIVITY_TIMESTAMP_KEYS)
     return if changed_activity.empty?
+
+    engaged_at = changed_activity.filter_map { |_key, (_old, new_value)| new_value }.max || Time.current
+    track_engagement!(engaged_at)
+  end
+
+  # Emit a throttled user_engaged for a known activity timestamp. Callable from
+  # paths that skip callbacks (e.g. update_presence!'s update_column write). The
+  # throttle slot is claimed before the spam/suspended role query so hot presence
+  # pings stay a single cache read.
+  def track_engagement!(engaged_at)
     return unless engagement_emission_due?
     return if spam_or_suspended?
 
-    engaged_at = changed_activity.filter_map { |_key, (_old, new_value)| new_value }.max || Time.current
     track!("user_engaged", { "engaged_at" => engaged_at.iso8601 })
   end
 
+  # Atomically claim the per-user throttle slot; the write only succeeds when no
+  # unexpired key exists, so its truthy return doubles as the "due" signal and
+  # concurrent writers cannot both emit inside the interval.
   def engagement_emission_due?
-    cache_key = "user_engaged_throttle:#{id}"
-    return false if Rails.cache.exist?(cache_key)
-
-    Rails.cache.write(cache_key, true, expires_in: ENGAGEMENT_EMIT_INTERVAL)
-    true
+    Rails.cache.write("user_engaged_throttle:#{id}", true,
+                      expires_in: ENGAGEMENT_EMIT_INTERVAL, unless_exist: true)
   end
 
   # Two gates: the admin master switch, then the per-account rollout flag.
@@ -953,7 +965,8 @@ class User < ApplicationRecord
     MODERATION_ROLE_EVENTS[direction][role_name.to_s]
   end
   private :enqueue_trackable_event_created, :enqueue_trackable_event_updated, :trackable_events_skipped?,
-          :enqueue_trackable_event_destroyed, :moderation_role_event, :track_engagement, :engagement_emission_due?
+          :enqueue_trackable_event_destroyed, :moderation_role_event, :track_engagement, :track_engagement!,
+          :engagement_emission_due?
 
   protected
 

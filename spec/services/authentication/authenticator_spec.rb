@@ -964,7 +964,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
 
       described_class.call(auth_payload, current_user: user)
 
-      expect(user.reload.profile_updated_at).to be > 1.minute.ago
+      expect(user.reload.profile_updated_at).to be_within(5.seconds).of(Time.current)
     end
 
     it "does not touch profile_updated_at when the mlh identity already exists" do
