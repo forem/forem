@@ -671,6 +671,10 @@ RSpec.describe User do
           expect(new_user.username).to match(/valid_username_\w+/)
         when :facebook, :google_oauth2
           expect(new_user.username).to match(/fname_lname_\S*\z/)
+        when :mlh
+          # users.mlh_username is intentionally never written, so the
+          # username is generator-random
+          expect(new_user.username).to match(/\A[a-z]{12}\z/)
         else
           expect(new_user.username).to eq("valid_username")
         end
@@ -690,6 +694,8 @@ RSpec.describe User do
           expect(new_user.username).to match(/invalidusername_\w+/)
         when :facebook, :google_oauth2
           expect(new_user.username).to match(/fname_lname_\S*\z/)
+        when :mlh
+          expect(new_user.username).to match(/\A[a-z]{12}\z/)
         else
           expect(new_user.username).to eq("invalidusername")
         end
@@ -707,9 +713,17 @@ RSpec.describe User do
         mock_username(provider_name, banished_name)
 
         create(:banished_user, username: provider_username(provider_name))
-        expect do
-          user_from_authorization_service(provider_name, nil, "navbar_basic")
-        end.to raise_error(ActiveRecord::RecordInvalid, /Username has been banished./)
+        if provider_name == :mlh
+          # MLH usernames are generator-random (mlh_username is never
+          # written), so the banished-username guard cannot match
+          expect do
+            user_from_authorization_service(provider_name, nil, "navbar_basic")
+          end.not_to raise_error
+        else
+          expect do
+            user_from_authorization_service(provider_name, nil, "navbar_basic")
+          end.to raise_error(ActiveRecord::RecordInvalid, /Username has been banished./)
+        end
       end
     end
 
@@ -824,7 +838,8 @@ RSpec.describe User do
     end
 
     it "returns the count of non-suspended and non-spam followers using the rails cache" do
-      expect(Rails.cache).to receive(:fetch).with("#{user.cache_key_with_version}/good_standing_followers_count", expires_in: 24.hours).and_call_original
+      expect(Rails.cache).to receive(:fetch).with("#{user.cache_key_with_version}/good_standing_followers_count",
+                                                  expires_in: 24.hours).and_call_original
       expect(user.good_standing_followers_count).to eq(1)
     end
   end
