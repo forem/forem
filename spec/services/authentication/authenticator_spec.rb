@@ -952,4 +952,29 @@ RSpec.describe Authentication::Authenticator, type: :service do
       end
     end
   end
+
+  context "when authenticating through MLH" do
+    let!(:auth_payload) { omniauth_mock_mlh_payload }
+
+    # The mlh identity carries the Core user id (uid), which rides along in
+    # User#trackable_payload — so linking it must surface a user_updated to the
+    # DEV → Core sync, which keys off profile_updated_at.
+    it "touches profile_updated_at when linking a new mlh identity to an existing account" do
+      user = create(:user, email: auth_payload.info.email, profile_updated_at: 2.years.ago)
+
+      described_class.call(auth_payload, current_user: user)
+
+      expect(user.reload.profile_updated_at).to be > 1.minute.ago
+    end
+
+    it "does not touch profile_updated_at when the mlh identity already exists" do
+      user = create(:user, email: auth_payload.info.email)
+      described_class.call(auth_payload, current_user: user)
+      user.update_column(:profile_updated_at, 2.years.ago)
+
+      described_class.call(auth_payload, current_user: user)
+
+      expect(user.reload.profile_updated_at).to be < 1.year.ago
+    end
+  end
 end
