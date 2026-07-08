@@ -1,0 +1,70 @@
+app/liquid_tags/feature_tag.rb
+  589592171ada3650 1-38
+app/assets/stylesheets/ltags/FeaturesTag.scss
+  589592171ada3650 1-33
+app/liquid_tags/features_tag.rb
+  589592171ada3650 1-19
+app/views/liquids/_slides.html.erb
+  589592171ada3650 1-5
+app/views/liquids/_quote.html.erb
+  589592171ada3650 1-30
+app/liquid_tags/offer_tag.rb
+  589592171ada3650 1-37
+app/views/liquids/_offer.html.erb
+  589592171ada3650 1-6
+app/assets/stylesheets/ltags/OfferTag.scss
+  589592171ada3650 1-21
+app/assets/stylesheets/ltags/LiquidTags.scss
+  589592171ada3650 16-19
+app/liquid_tags/slide_tag.rb
+  589592171ada3650 1-38
+spec/liquid_tags/slides_tag_spec.rb
+  589592171ada3650 1-60
+app/views/liquids/_feature.html.erb
+  589592171ada3650 1-7
+app/views/liquids/_features.html.erb
+  589592171ada3650 1-3
+app/liquid_tags/quote_tag.rb
+  589592171ada3650 1-56
+app/assets/stylesheets/ltags/SlidesTag.scss
+  589592171ada3650 1-59
+app/liquid_tags/slides_tag.rb
+  589592171ada3650 1-17
+config/locales/liquid_tags/fr.yml
+  589592171ada3650 155-163
+spec/liquid_tags/features_tag_spec.rb
+  589592171ada3650 1-62
+spec/liquid_tags/quote_tag_spec.rb
+  589592171ada3650 1-106
+config/locales/liquid_tags/pt.yml
+  589592171ada3650 155-163
+config/locales/liquid_tags/en.yml
+  589592171ada3650 155-163
+spec/liquid_tags/offer_tag_spec.rb
+  589592171ada3650 1-52
+app/assets/stylesheets/ltags/QuoteTag.scss
+  589592171ada3650 1-65
+app/views/liquids/_slide.html.erb
+  589592171ada3650 1-10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.8",
+  "base_commit_sha": "ee864681a596799c19a636253922f92c16c1de29",
+  "prompts": {
+    "589592171ada3650": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "598eacfd-fbaa-4c95-8016-1d4fa7a1051b",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Jon Gottfried <jonmarkgo@gmail.com>",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 755,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/5062982bc33749d8a37cbd48c4bc9c75339a2d82965ca233307db5026e93618a"
+    }
+  }
+}

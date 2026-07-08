@@ -1,0 +1,80 @@
+app/controllers/admin/response_templates_controller.rb
+  0b7024d90e1e090a 9,14-16
+app/controllers/admin/podcasts_controller.rb
+  0b7024d90e1e090a 26,29-31
+app/views/admin/organizations/index.html.erb
+  0b7024d90e1e090a 3-5,13-14
+spec/requests/admin/organizations_spec.rb
+  0b7024d90e1e090a 22,26-35
+spec/requests/admin/podcasts_spec.rb
+  0b7024d90e1e090a 30-47
+app/controllers/admin/organizations_controller.rb
+  0b7024d90e1e090a 12-14
+app/controllers/admin/badge_achievements_controller.rb
+  0b7024d90e1e090a 10
+app/controllers/admin/html_variants_controller.rb
+  0b7024d90e1e090a 17-19
+spec/requests/admin/broadcasts_spec.rb
+  0b7024d90e1e090a 41-42,44-48,50-52
+spec/requests/admin/billboards_spec.rb
+  0b7024d90e1e090a 47-61
+app/views/admin/badges/index.html.erb
+  0b7024d90e1e090a 11-12
+spec/requests/admin/badge_achievements_spec.rb
+  0b7024d90e1e090a 22-37
+app/views/admin/badge_achievements/index.html.erb
+  0b7024d90e1e090a 29
+app/views/admin/podcasts/index.html.erb
+  0b7024d90e1e090a 3-5,13-14,17-18
+app/controllers/admin/badges_controller.rb
+  0b7024d90e1e090a 6-8
+app/views/admin/billboards/index.html.erb
+  0b7024d90e1e090a 24-27
+app/controllers/admin/billboards_controller.rb
+  0b7024d90e1e090a 6-10
+spec/requests/admin/badges_spec.rb
+  0b7024d90e1e090a 23-37
+spec/requests/admin/html_variants_spec.rb
+  0b7024d90e1e090a 44-58
+spec/requests/admin/response_templates_spec.rb
+  0b7024d90e1e090a 14-26
+app/views/admin/broadcasts/index.html.erb
+  0b7024d90e1e090a 27
+app/views/admin/html_variants/index.html.erb
+  0b7024d90e1e090a 26,28-30
+app/controllers/admin/broadcasts_controller.rb
+  0b7024d90e1e090a 6,11-13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "02acb39045123f70001ccfd59af43383f0fa925d",
+  "prompts": {
+    "0b7024d90e1e090a": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "411ca823-242d-4b62-a2bb-4cbd7ed4c58e",
+        "model": "unknown"
+      },
+      "human_author": "Mikey Dorje <mikeydorje@gmail.com>",
+      "messages": [],
+      "total_additions": 176,
+      "total_deletions": 62,
+      "accepted_lines": 165,
+      "overriden_lines": 2
+    },
+    "d3a3c723dc97b952": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "38094813-f615-4c36-bae5-37a44c004db2",
+        "model": "unknown"
+      },
+      "human_author": "Mikey Dorje <mikeydorje@gmail.com>",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 95,
+      "overriden_lines": 0
+    }
+  }
+}
