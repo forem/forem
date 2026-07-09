@@ -8,16 +8,14 @@ module Api
         @identities = target.identities.order(created_at: :asc)
       end
 
+      BULK_IDENTITY_LIMIT = 1_000
+
       def create
         target = User.find(params[:user_id])
         provider = params.require(:provider)
         uid = params.require(:uid).to_s
 
-        unless Authentication::Providers.enabled?(provider)
-          raise Api::Admin::ApiError.new(:unknown_provider,
-                                         I18n.t("admin_api.errors.unknown_provider", provider: provider),
-                                         status: 422)
-        end
+        ensure_enabled_provider!(provider)
 
         already_linked = false
         ActiveRecord::Base.transaction do
@@ -67,7 +65,62 @@ module Api
         head :no_content
       end
 
+      # Links a batch of identities in one request (the Core -> DEV reverse-link
+      # seed is millions of accounts; one HTTP call per identity would take
+      # days against the API rate limits). Every entry gets a per-item result
+      # - created / already_linked / conflict / not_found / invalid - so one
+      # bad row never fails the batch, and the whole batch is audited once.
+      def bulk_create
+        provider = params.require(:provider)
+        ensure_enabled_provider!(provider)
+
+        entries = bulk_entries!
+        @results = entries.map { |entry| bulk_link_result(provider, entry) }
+
+        audit!(slug: "bulk_link_identities",
+               data: {
+                 "provider" => provider,
+                 "count" => entries.size,
+                 "statuses" => @results.pluck("status").tally
+               })
+        render :bulk_create, status: :ok
+      end
+
       private
+
+      def ensure_enabled_provider!(provider)
+        return if Authentication::Providers.enabled?(provider)
+
+        raise Api::Admin::ApiError.new(:unknown_provider,
+                                       I18n.t("admin_api.errors.unknown_provider", provider: provider),
+                                       status: 422)
+      end
+
+      def bulk_entries!
+        entries = params[:identities]
+        return entries if entries.is_a?(Array) && entries.size.between?(1, BULK_IDENTITY_LIMIT)
+
+        raise Api::Admin::ApiError.new(
+          :invalid_identities,
+          I18n.t("admin_api.errors.invalid_identities", limit: BULK_IDENTITY_LIMIT),
+          status: 422,
+        )
+      end
+
+      def bulk_link_result(provider, entry)
+        user_id = entry[:user_id]
+        uid = entry[:uid].to_s
+        return { "user_id" => user_id, "status" => "invalid" } if user_id.blank? || uid.blank?
+
+        target = User.find_by(id: user_id)
+        return { "user_id" => user_id.to_i, "status" => "not_found" } unless target
+
+        identity, already_linked = resolve_identity_for_link(target, provider, uid)
+        { "user_id" => target.id, "identity_id" => identity.id,
+          "status" => already_linked ? "already_linked" : "created" }
+      rescue Api::Admin::ApiError => e
+        { "user_id" => target.id, "status" => "conflict", "error_code" => e.error_code.to_s }
+      end
 
       # Returns [identity, already_linked]. Raises Api::Admin::ApiError for the
       # strict-fail-closed conflict states (user has different uid for provider,
