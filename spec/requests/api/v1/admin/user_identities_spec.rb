@@ -8,6 +8,9 @@ RSpec.describe "Api::V1::Admin::UserIdentities" do
     # the providers exercised below.
     allow(Settings::Authentication).to receive(:providers)
       .and_return(Authentication::Providers.available)
+    # The identity factory reads OmniAuth.config.mock_auth for its
+    # auth_data_dump — set it here so examples don't depend on spec order.
+    omniauth_mock_mlh_payload
   end
 
   after { Audit::Subscribe.forget :admin_api }
@@ -167,6 +170,125 @@ RSpec.describe "Api::V1::Admin::UserIdentities" do
       audit = AuditLog.last
       expect(audit.slug).to eq("unlink_identity")
       expect(audit.data).to include("provider" => "mlh", "uid" => "core-1", "identity_id" => identity.id)
+    end
+  end
+
+  describe "POST /api/admin/users/identities/bulk" do
+    def bulk_post(identities, provider: "mlh", headers: admin_api_headers)
+      post "/api/admin/users/identities/bulk",
+           params: { provider: provider, identities: identities }.to_json,
+           headers: headers.merge("Content-Type" => "application/json")
+    end
+
+    it "links every entry and returns per-item results" do
+      users = create_list(:user, 3)
+      entries = users.each_with_index.map { |u, i| { user_id: u.id, uid: (1000 + i).to_s } }
+
+      expect { bulk_post(entries) }.to change(Identity, :count).by(3)
+
+      expect(response).to have_http_status(:ok)
+      results = response.parsed_body["results"]
+      expect(results.pluck("status")).to all(eq("created"))
+      expect(results.pluck("user_id")).to match_array(users.map(&:id))
+      expect(users.first.identities.find_by(provider: "mlh").uid).to eq("1000")
+    end
+
+    it "reports already_linked for idempotent repeats" do
+      create(:identity, user: user, provider: "mlh", uid: "424242")
+
+      expect { bulk_post([{ user_id: user.id, uid: "424242" }]) }.not_to change(Identity, :count)
+
+      expect(response.parsed_body["results"].first["status"]).to eq("already_linked")
+    end
+
+    it "reports conflicts per item without failing the rest of the batch" do
+      conflicted = create(:user)
+      create(:identity, user: conflicted, provider: "mlh", uid: "111")
+      taken = create(:user)
+      create(:identity, user: create(:user), provider: "mlh", uid: "999")
+      fine = create(:user)
+
+      bulk_post([
+                  { user_id: conflicted.id, uid: "222" },
+                  { user_id: taken.id, uid: "999" },
+                  { user_id: fine.id, uid: "333" },
+                ])
+
+      expect(response).to have_http_status(:ok)
+      results = response.parsed_body["results"].index_by { |r| r["user_id"] }
+      expect(results[conflicted.id]["status"]).to eq("conflict")
+      expect(results[conflicted.id]["error_code"]).to eq("user_already_has_identity_for_provider")
+      expect(results[taken.id]["status"]).to eq("conflict")
+      expect(results[taken.id]["error_code"]).to eq("identity_uid_taken")
+      expect(results[fine.id]["status"]).to eq("created")
+    end
+
+    it "reports non-object entries as invalid without failing the batch" do
+      bulk_post(["not-a-hash", { user_id: user.id, uid: "55" }])
+
+      statuses = response.parsed_body["results"].pluck("status")
+      expect(statuses).to contain_exactly("invalid", "created")
+    end
+
+    it "reports a same-batch duplicate uid as a conflict" do
+      first = create(:user)
+      second = create(:user)
+
+      bulk_post([{ user_id: first.id, uid: "777" }, { user_id: second.id, uid: "777" }])
+
+      results = response.parsed_body["results"].index_by { |r| r["user_id"] }
+      expect(results[first.id]["status"]).to eq("created")
+      expect(results[second.id]["status"]).to eq("conflict")
+      expect(results[second.id]["error_code"]).to eq("identity_uid_taken")
+    end
+
+    it "reports not_found and invalid entries without failing the batch" do
+      bulk_post([{ user_id: 999_999, uid: "1" }, { user_id: user.id, uid: "" }])
+
+      statuses = response.parsed_body["results"].pluck("status")
+      expect(statuses).to contain_exactly("not_found", "invalid")
+    end
+
+    it "rejects unknown providers" do
+      bulk_post([{ user_id: user.id, uid: "1" }], provider: "carrier_pigeon")
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body["error_code"]).to eq("unknown_provider")
+    end
+
+    it "rejects an empty identities array" do
+      bulk_post([])
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body["error_code"]).to eq("invalid_identities")
+    end
+
+    it "rejects batches over the cap" do
+      entries = Array.new(1001) { |i| { user_id: i + 1, uid: i.to_s } }
+
+      bulk_post(entries)
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body["error_code"]).to eq("invalid_identities")
+    end
+
+    it "logs one audit entry for the batch" do
+      expect do
+        bulk_post([{ user_id: user.id, uid: "77" }])
+      end.to change(AuditLog, :count).by(1)
+
+      audit = AuditLog.last
+      expect(audit.slug).to eq("bulk_link_identities")
+      expect(audit.data["count"]).to eq(1)
+    end
+
+    it "requires an admin api key" do
+      post "/api/admin/users/identities/bulk",
+           params: { provider: "mlh", identities: [{ user_id: user.id, uid: "1" }] }.to_json,
+           headers: { "Content-Type" => "application/json",
+                      "Accept" => "application/vnd.forem.api-v1+json" }
+
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 end

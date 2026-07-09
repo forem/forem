@@ -202,6 +202,7 @@ en:
       user_already_has_identity_for_provider: "User already has an identity for provider '%{provider}'"
       identity_uid_taken: "Identity uid %{uid} (%{provider}) is already linked to another user"
       invalid_notification_settings: "notification_setting must include at least one supported key (email_newsletter)"
+      invalid_identities: "identities must be an array of 1 to %{limit} entries"
       cannot_merge_user_into_itself: "Cannot merge a user into itself"
       merge_identity_conflict: "Merge could not complete: %{reason}"
       unknown_provider: "Provider '%{provider}' is not configured"
