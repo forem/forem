@@ -1,0 +1,28 @@
+config/locales/views/admin/pt.yml
+  f844a57044c6d60d 353-359
+config/locales/views/admin/en.yml
+  f844a57044c6d60d 423-429
+app/views/admin/users/show/audit_log/_index.html.erb
+  f844a57044c6d60d 22-26
+config/locales/views/admin/fr.yml
+  f844a57044c6d60d 412-418
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.4",
+  "base_commit_sha": "5d12400fab86e341ec68ab22ad13fccd5bf62274",
+  "prompts": {
+    "f844a57044c6d60d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "42d235cf-30b6-4b32-8cf1-476755ed33d1",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Paolo Veñegas",
+      "total_additions": 26,
+      "total_deletions": 20,
+      "accepted_lines": 26,
+      "overriden_lines": 0
+    }
+  }
+}
