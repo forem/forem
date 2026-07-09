@@ -6,10 +6,7 @@
 
   <div class="lead-form-signed-in" style="display:none;">
     <div class="lead-form-actions">
-      <button type="button"
-              class="crayons-btn lead-form-submit-btn"
-              data-form-id="<%= form.id %>"
-              onclick="submitLeadForm(this)">
+      <button type="button" class="crayons-btn lead-form-submit-btn" data-form-id="<%= form.id %>" onclick="submitLeadForm(this)">
         <%= form.button_text %>
       </button>
       <span class="lead-form-status fs-s color-base-60 ml-2" style="display:none;"></span>
@@ -35,10 +32,7 @@
       <input type="text" id="lead_form_job_title_<%= form.id %>" name="job_title" class="crayons-textfield">
     </div>
     <div class="lead-form-actions">
-      <button type="button"
-              class="crayons-btn lead-form-submit-btn"
-              data-form-id="<%= form.id %>"
-              onclick="submitLeadFormAnonymous(this)">
+      <button type="button" class="crayons-btn lead-form-submit-btn" data-form-id="<%= form.id %>" onclick="submitLeadFormAnonymous(this)">
         <%= form.button_text %>
       </button>
       <span class="lead-form-status fs-s color-base-60 ml-2" style="display:none;"></span>
