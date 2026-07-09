@@ -154,7 +154,7 @@ export const Article = ({
                     <button
                       type="button"
                       className="crayons-btn crayons-btn--ghost crayons-btn--icon-rounded mod-actions-menu-btn"
-                      data-article-path={article.url}
+                      data-article-path={article.path}
                       aria-label="Moderation"
                     >
                       <svg width="24" height="24" className="crayons-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">

@@ -322,7 +322,7 @@ Object {
                       <button
                         aria-label="Moderation"
                         class="crayons-btn crayons-btn--ghost crayons-btn--icon-rounded mod-actions-menu-btn"
-                        data-article-path="http://example.com/some-post/path"
+                        data-article-path="/some-post/path"
                         type="button"
                       >
                         <svg
@@ -620,7 +620,7 @@ Object {
                     <button
                       aria-label="Moderation"
                       class="crayons-btn crayons-btn--ghost crayons-btn--icon-rounded mod-actions-menu-btn"
-                      data-article-path="http://example.com/some-post/path"
+                      data-article-path="/some-post/path"
                       type="button"
                     >
                       <svg

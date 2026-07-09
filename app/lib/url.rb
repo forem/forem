@@ -37,7 +37,7 @@ module URL
 
   def self.url(uri = nil, domain_or_subforem = nil)
     base_url = "#{protocol}#{domain(domain_or_subforem)}"
-    base_url += ":#{dev_port}" if Rails.env.development? && !base_url.include?(":#{dev_port}")
+    base_url += ":#{dev_port}" if Rails.env.development? && !base_url.include?(":#{dev_port}") && !base_url.match?(/:[0-9]+/)
     return base_url unless uri
     Addressable::URI.parse(base_url).join(uri).normalize.to_s
   end
