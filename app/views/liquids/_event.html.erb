@@ -5,7 +5,7 @@
     </h3>
     <span class="ltag__event__date"><%= event.start_time.strftime("%B %d, %Y") %></span>
   </div>
-  <p class="ltag__event__description"><%= event.description %></p>
+  <p class="ltag__event__description"><%= event.description&.rstrip %></p>
   <div class="ltag__event__actions">
     <button data-event-signup-button="true" data-event-name-slug="<%= event.event_name_slug %>" data-event-variation-slug="<%= event.event_variation_slug %>" data-signed-up-class="crayons-btn--outlined" data-unsigned-up-class="crayons-btn--primary" class="crayons-btn event-signup-btn crayons-btn--primary" data-signed-up="false">
       <template data-signed-up-html>
