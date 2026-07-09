@@ -1221,6 +1221,24 @@ RSpec.describe User do
     end
   end
 
+  describe "#org_contributor?" do
+    it "recognizes an org contributor" do
+      create(:organization_membership, user: user, organization: org, type_of_user: "contributor")
+      expect(user.org_contributor?(org)).to be(true)
+    end
+
+    it "forbids an incorrect org contributor" do
+      other_org = create(:organization)
+      create(:organization_membership, user: user, organization: org, type_of_user: "contributor")
+      expect(user.org_contributor?(other_org)).to be(false)
+      expect(other_user.org_contributor?(org)).to be(false)
+    end
+
+    it "returns false if nil is given" do
+      expect(user.org_contributor?(nil)).to be(false)
+    end
+  end
+
   describe "#enough_credits?" do
     it "returns false if the user has less unspent credits than neeed" do
       expect(user.enough_credits?(1)).to be(false)

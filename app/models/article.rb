@@ -32,7 +32,7 @@ class Article < ApplicationRecord
   # admin_update was added as a hack to bypass published_at validation when admin is updating
   # TODO: [@lightalloy] remove published_at validation from the model and
   # move it to the services where the create/update takes place to avoid using hacks
-  attr_accessor :publish_under_org, :admin_update
+  attr_accessor :publish_under_org, :admin_update, :editing_user
   attr_writer :series, :labels
   attr_accessor :body_url
 
@@ -281,6 +281,7 @@ class Article < ApplicationRecord
   validate :title_unique_for_user_past_five_minutes
   validate :restrict_attributes_with_status_types
   validate :restrict_type_based_on_role
+  validate :restrict_contributor_publishing
   validate :canonical_url_must_not_have_spaces
   validate :validate_collection_permission
   validate :validate_tag
@@ -1855,6 +1856,20 @@ class Article < ApplicationRecord
        saved_change_to_published_at? ||
        saved_change_to_main_image?
       Articles::UpdateDependentEmbedsWorker.perform_async(id)
+    end
+  end
+
+  def restrict_contributor_publishing
+    return unless organization_id
+    return unless user
+
+    if user.org_contributor?(organization)
+      if published?
+        editor = editing_user || user
+        unless editor.org_admin?(organization) || editor.any_admin?
+          errors.add(:published, I18n.t("models.article.contributor_cannot_publish"))
+        end
+      end
     end
   end
 end

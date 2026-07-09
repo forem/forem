@@ -14,6 +14,7 @@ module Articles
 
     def call
       user.rate_limiter.check_limit!(:article_update)
+      article.editing_user = user
       success = article.update(article_params)
 
       if success

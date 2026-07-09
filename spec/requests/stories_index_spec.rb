@@ -525,5 +525,20 @@ RSpec.describe "StoriesIndex" do
         expect(response.body).to include("sidebar-left")
       end
     end
+
+    context "when organization has contributors" do
+      let(:contributor) { create(:user) }
+
+      before do
+        create(:organization_membership, organization: organization, user: contributor, type_of_user: "contributor")
+      end
+
+      it "renders the contributor under Contributors" do
+        get "/#{organization.slug}"
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Contributors")
+        expect(response.body).to include(contributor.username)
+      end
+    end
   end
 end

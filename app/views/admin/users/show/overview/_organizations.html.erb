@@ -50,7 +50,7 @@
           <p class="crayons-field__description"><%= t("views.admin.users.actions.add_org.role_desc_html", user: @user.name) %></p>
           <%= f.select(:type_of_user,
                        options_for_select(
-                         { t("views.admin.users.actions.add_org.member") => "member", t("views.admin.users.actions.add_org.admin") => "admin" },
+                         { t("views.admin.users.actions.add_org.member") => "member", t("views.admin.users.actions.add_org.admin") => "admin", t("views.admin.users.actions.add_org.contributor") => "contributor" },
                          selected: org_membership.type_of_user,
                        ),
                        {},

@@ -1,0 +1,168 @@
+// Tag Landing Page Styles
+@import 'config/import';
+@import 'variables';
+@import '_mixins';
+
+.tag-header-wrapper {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: var(--su-4);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.tag-header-cover {
+  height: 24px;
+  background-color: var(--tag-bg-color, var(--accent-brand));
+  background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.08) 0%, transparent 100%);
+  transition: background-color 0.2s ease;
+
+  @media (min-width: 768px) {
+    height: 48px;
+  }
+}
+
+.tag-header-main {
+  display: flex;
+  flex-direction: column;
+  padding: var(--su-4);
+  gap: var(--su-4);
+  position: relative;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    align-items: flex-start;
+    padding: var(--su-4) var(--su-6) var(--su-5);
+    gap: var(--su-5);
+  }
+}
+
+.tag-header-logo {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius);
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: -24px; // Overlap cover banner
+  z-index: 2;
+  box-shadow: var(--shadow-sm);
+  padding: var(--su-2);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+
+  @media (min-width: 768px) {
+    width: 80px;
+    height: 80px;
+    margin-top: -48px;
+    padding: var(--su-3);
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    
+    &:hover {
+      transform: rotate(0deg) scale(1.1) !important;
+    }
+  }
+}
+
+.tag-header-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--su-1);
+
+  h1 {
+    font-size: var(--fs-xl);
+    font-weight: var(--fw-bold);
+    line-height: 1.2;
+    color: var(--card-color, inherit);
+    margin: 0;
+
+    @media (min-width: 768px) {
+      font-size: var(--fs-2xl);
+    }
+  }
+
+  p {
+    font-size: var(--fs-base);
+    color: var(--card-color-secondary, var(--color-base-70));
+    line-height: 1.5;
+    margin: 0;
+    max-width: 800px;
+  }
+}
+
+.tag-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--su-2);
+  flex-shrink: 0;
+
+  @media (max-width: 767px) {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  
+  // Custom button styling using the tag's color
+  .js-follow-tag-button {
+    background-color: var(--tag-bg-color, var(--accent-brand));
+    border-color: var(--tag-bg-color, var(--accent-brand));
+    color: var(--tag-text-color, #ffffff);
+    font-weight: var(--fw-medium);
+    
+    &:hover {
+      filter: brightness(0.9);
+    }
+  }
+}
+
+// Tag feed pills navigation
+.tag-feed-nav-capsule {
+  display: flex;
+  gap: var(--su-1);
+  padding: var(--su-1);
+  background: var(--body-bg);
+  border-radius: 9999px;
+  box-shadow: 0 0 0 1px var(--base-20), 0 2px 5px rgba(0, 0, 0, 0.05);
+  margin: 6px 0 3px;
+  list-style: none;
+
+  .crayons-navigation__item {
+    border-radius: 9999px;
+    padding: var(--su-1) var(--su-3);
+    font-size: var(--fs-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--su-2);
+    transition: all 0.2s ease;
+    color: var(--base-70);
+    border-bottom: none;
+
+    @media (min-width: 640px) {
+      padding: var(--su-1) var(--su-4);
+      font-size: var(--fs-base);
+    }
+
+    &:hover {
+      color: var(--base-90);
+      background: var(--base-5);
+    }
+
+    &.crayons-navigation__item--current {
+      background: var(--accent-brand, #3b49df) !important;
+      color: #ffffff !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15) !important;
+      font-weight: var(--fw-bold);
+    }
+  }
+}

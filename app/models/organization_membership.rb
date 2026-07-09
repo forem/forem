@@ -5,7 +5,7 @@ class OrganizationMembership < ApplicationRecord
   belongs_to :user
   belongs_to :organization
 
-  USER_TYPES = %w[admin member guest pending].freeze
+  USER_TYPES = %w[admin member guest pending contributor].freeze
 
   validates :type_of_user, presence: true
   validates :user_id, uniqueness: { scope: :organization_id }
@@ -21,7 +21,8 @@ class OrganizationMembership < ApplicationRecord
   after_commit :recompile_organization_pages
 
   scope :admin, -> { where(type_of_user: "admin") }
-  scope :member, -> { where(type_of_user: %w[admin member]) }
+  scope :member, -> { where(type_of_user: %w[admin member contributor]) }
+  scope :contributor, -> { where(type_of_user: "contributor") }
   scope :pending, -> { where(type_of_user: "pending") }
   scope :active, -> { where.not(type_of_user: "pending") }
 
