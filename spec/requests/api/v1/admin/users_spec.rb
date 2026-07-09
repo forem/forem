@@ -383,6 +383,28 @@ RSpec.describe "/api/admin/users" do
       expect(audit.data["changes"]).to eq("email_newsletter" => [true, false])
     end
 
+    # Core pushes ITS OWN consent state through this endpoint; if the write
+    # emitted the CDP newsletter events, Core would consume its own push as
+    # a user consent change (destroying the layered global-unsubscribe /
+    # list-preference distinction).
+    it "does not emit CDP newsletter events for admin-API writes" do
+      allow(Trackable::Registry).to receive(:active_names).and_return([:any])
+      allow(Trackable::DispatchWorker).to receive(:perform_async)
+      Settings::General.customerio_cdp_enabled = true
+      FeatureFlag.enable(:dev_core_user_sync, FeatureFlag::Actor[target])
+      target.notification_setting.update!(email_newsletter: true)
+
+      with_trackable_events do
+        put_settings({ notification_setting: { email_newsletter: false } })
+      end
+
+      expect(target.notification_setting.reload.email_newsletter).to be(false)
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+        .with(anything, /user_newsletter/, anything, anything, anything)
+    ensure
+      FeatureFlag.remove(:dev_core_user_sync)
+    end
+
     it "rejects a body missing the notification_setting wrapper with the admin error_code" do
       put_settings({ email_newsletter: false })
 
