@@ -8,6 +8,9 @@ RSpec.describe "Api::V1::Admin::UserIdentities" do
     # the providers exercised below.
     allow(Settings::Authentication).to receive(:providers)
       .and_return(Authentication::Providers.available)
+    # The identity factory reads OmniAuth.config.mock_auth for its
+    # auth_data_dump — set it here so examples don't depend on spec order.
+    omniauth_mock_mlh_payload
   end
 
   after { Audit::Subscribe.forget :admin_api }
@@ -218,6 +221,25 @@ RSpec.describe "Api::V1::Admin::UserIdentities" do
       expect(results[taken.id]["status"]).to eq("conflict")
       expect(results[taken.id]["error_code"]).to eq("identity_uid_taken")
       expect(results[fine.id]["status"]).to eq("created")
+    end
+
+    it "reports non-object entries as invalid without failing the batch" do
+      bulk_post(["not-a-hash", { user_id: user.id, uid: "55" }])
+
+      statuses = response.parsed_body["results"].pluck("status")
+      expect(statuses).to contain_exactly("invalid", "created")
+    end
+
+    it "reports a same-batch duplicate uid as a conflict" do
+      first = create(:user)
+      second = create(:user)
+
+      bulk_post([{ user_id: first.id, uid: "777" }, { user_id: second.id, uid: "777" }])
+
+      results = response.parsed_body["results"].index_by { |r| r["user_id"] }
+      expect(results[first.id]["status"]).to eq("created")
+      expect(results[second.id]["status"]).to eq("conflict")
+      expect(results[second.id]["error_code"]).to eq("identity_uid_taken")
     end
 
     it "reports not_found and invalid entries without failing the batch" do
