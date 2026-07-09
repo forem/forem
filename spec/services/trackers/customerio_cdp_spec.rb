@@ -106,6 +106,19 @@ RSpec.describe Trackers::CustomerioCdp do
       )
     end
 
+    # Only destructive events may use the payload email: a straggler
+    # user_updated for a just-deleted user must NOT deliver via a stale
+    # payload address (it could resurrect state after a GDPR erasure).
+    it "does not fall back for non-destructive events when the user row is gone" do
+      deleted_id = user.id
+      payload = { "id" => deleted_id, "email" => user.email }
+      user.destroy!
+
+      adapter.track(event_name: "user_updated", user_ids: [deleted_id], properties: payload)
+
+      expect(client).not_to have_received(:track)
+    end
+
     it "skips entirely when the user is gone and the payload has no email" do
       deleted_id = user.id
       user.destroy!

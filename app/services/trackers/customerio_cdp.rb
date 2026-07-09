@@ -19,15 +19,19 @@ module Trackers
         Settings::General.customerio_cdp_enabled(subforem_id: Subforem.cached_default_id)
     end
 
+    # Events that fire after the user row is destroyed — the only ones allowed
+    # to fall back to the payload's own email. Everything else must resolve a
+    # live row, so a straggler event for a just-deleted user is dropped rather
+    # than delivered via a stale address (which could resurrect state after a
+    # GDPR erasure).
+    DESTRUCTIVE_EVENTS = ["user_gdpr_deleted"].freeze
+
     # People are identified by email rather than DEV user id: ids are not synced
     # to the Core consumer yet. Emails are resolved at send time so they are
-    # current — but destructive events (user_gdpr_deleted) fire after the row
-    # is destroyed, so when no row matches we fall back to the payload's own
-    # email rather than silently dropping the one event whose point is that
-    # the user no longer exists.
+    # current; see DESTRUCTIVE_EVENTS for the deleted-row exception.
     def track(event_name:, user_ids:, properties:, timestamp: nil)
       emails = User.where(id: Array.wrap(user_ids)).pluck(:email)
-      emails = [properties["email"]] if emails.empty?
+      emails = [properties["email"]] if emails.empty? && DESTRUCTIVE_EVENTS.include?(event_name)
       emails.each do |email|
         next if email.blank?
 
