@@ -342,6 +342,61 @@ RSpec.describe "/api/admin/users" do
     end
   end
 
+  describe "PUT /api/admin/users/:id/notification_settings" do
+    before { Audit::Subscribe.listen :admin_api }
+    after  { Audit::Subscribe.forget :admin_api }
+
+    let!(:target) { create(:user) }
+
+    def put_settings(body, id: target.id)
+      put "/api/admin/users/#{id}/notification_settings",
+          params: body.to_json,
+          headers: admin_api_headers.merge("Content-Type" => "application/json")
+    end
+
+    it "updates email_newsletter through the model (callbacks fire)" do
+      target.notification_setting.update!(email_newsletter: true)
+
+      put_settings({ notification_setting: { email_newsletter: false } })
+
+      expect(response).to have_http_status(:ok)
+      expect(target.notification_setting.reload.email_newsletter).to be(false)
+      expect(response.parsed_body["notification_setting"]["email_newsletter"]).to be(false)
+    end
+
+    it "can also set email_newsletter true" do
+      put_settings({ notification_setting: { email_newsletter: true } })
+
+      expect(target.notification_setting.reload.email_newsletter).to be(true)
+    end
+
+    it "logs an audit entry with the change" do
+      target.notification_setting.update!(email_newsletter: true)
+
+      expect do
+        put_settings({ notification_setting: { email_newsletter: false } })
+      end.to change(AuditLog, :count).by(1)
+
+      audit = AuditLog.last
+      expect(audit.slug).to eq("update_notification_settings")
+      expect(audit.data["target_user_id"]).to eq(target.id)
+      expect(audit.data["changes"]).to eq("email_newsletter" => [true, false])
+    end
+
+    it "rejects a body with no permitted settings" do
+      put_settings({ notification_setting: { welcome_notifications: false } })
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body["error_code"]).to eq("invalid_notification_settings")
+    end
+
+    it "returns 404 for unknown users" do
+      put_settings({ notification_setting: { email_newsletter: false } }, id: 999_999)
+
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
   describe "PUT /api/admin/users/:id/status" do
     before { Audit::Subscribe.listen :admin_api }
     after  { Audit::Subscribe.forget :admin_api }
