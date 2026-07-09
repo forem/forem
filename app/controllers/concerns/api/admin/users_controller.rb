@@ -68,6 +68,9 @@ module Api
         # but explicitly bust the user cache that the after_commit hook would
         # otherwise refresh.
         @user_record.update_columns(email: new_email, unconfirmed_email: nil)
+        # ...and the Trackable after_commit, so tell the DEV -> Core sync
+        # about the new address explicitly.
+        @user_record.track!("user_updated")
         Users::BustCacheWorker.perform_async(@user_record.id)
         audit!(slug: "update_user_email",
                data: { "target_user_id" => @user_record.id, "old_email" => old_email, "new_email" => new_email })
