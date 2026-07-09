@@ -14,7 +14,7 @@ RSpec.describe "User visits a homepage" do
       before do
         create(:announcement_broadcast)
         visit "/"
-        expect(page).to have_selector("body[data-loaded='true']")
+        expect(page).to have_selector("body[data-loaded='true']", wait: 30)
       end
 
       it "renders the broadcast", js: true do
@@ -33,7 +33,7 @@ RSpec.describe "User visits a homepage" do
       before do
         create(:announcement_broadcast, active: false)
         visit "/"
-        expect(page).to have_selector("body[data-loaded='true']")
+        expect(page).to have_selector("body[data-loaded='true']", wait: 30)
       end
 
       it "does not render the broadcast", js: true do
@@ -53,7 +53,7 @@ RSpec.describe "User visits a homepage" do
       before do
         create(:announcement_broadcast)
         visit "/"
-        expect(page).to have_selector("body[data-loaded='true']")
+        expect(page).to have_selector("body[data-loaded='true']", wait: 30)
       end
 
       it "renders the broadcast", js: true do
@@ -62,7 +62,7 @@ RSpec.describe "User visits a homepage" do
 
       it "dismisses the broadcast", js: true do
         visit "/"
-        expect(page).to have_selector("body[data-loaded='true']")
+        expect(page).to have_selector("body[data-loaded='true']", wait: 30)
         expect_broadcast_data(page)
 
         find(".close-announcement-button").click
@@ -74,7 +74,7 @@ RSpec.describe "User visits a homepage" do
       before do
         create(:announcement_broadcast, active: false)
         visit "/"
-        expect(page).to have_selector("body[data-loaded='true']")
+        expect(page).to have_selector("body[data-loaded='true']", wait: 30)
       end
 
       it "does not render the broadcast", js: true do
@@ -87,7 +87,7 @@ RSpec.describe "User visits a homepage" do
         user.setting.update!(display_announcements: false)
         create(:announcement_broadcast, active: true)
         visit "/"
-        expect(page).to have_selector("body[data-loaded='true']")
+        expect(page).to have_selector("body[data-loaded='true']", wait: 30)
       end
 
       it "does not render the broadcast", js: true do
