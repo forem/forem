@@ -101,6 +101,37 @@ module Api
         render json: { id: @user_record.id, status: status }
       end
 
+      # Lets MLH Core push consent changes (its dev-newsletter opt-outs) back
+      # onto the DEV account's local notification settings, which DEV's own
+      # senders (digest, newsletter) key off. Writes through the model so the
+      # normal callbacks fire (Mailchimp sync, and the CDP newsletter events
+      # once enabled) - the resulting echo event is value-idempotent on the
+      # Core side.
+      def update_notification_settings
+        @user_record = User.find(params[:id])
+        # Handle the missing wrapper here rather than via params.require, so
+        # the caller gets the admin API error_code instead of a generic
+        # ParameterMissing 422.
+        wrapper = params[:notification_setting]
+        updates = wrapper.respond_to?(:permit) ? wrapper.permit(:email_newsletter) : {}
+        if updates.blank?
+          raise Api::Admin::ApiError.new(:invalid_notification_settings,
+                                         I18n.t("admin_api.errors.invalid_notification_settings"),
+                                         status: 422)
+        end
+
+        setting = @user_record.notification_setting
+        setting.update!(updates)
+
+        audit!(slug: "update_notification_settings",
+               data: {
+                 "target_user_id" => @user_record.id,
+                 "changes" => setting.saved_changes.slice("email_newsletter")
+               })
+        render json: { id: @user_record.id,
+                       notification_setting: { email_newsletter: setting.email_newsletter } }
+      end
+
       def merge
         @user_record = User.find(params[:id])
         delete_id = params.require(:merge_user_id).to_i
