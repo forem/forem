@@ -67,9 +67,33 @@ RSpec.describe User do
       expect(user.trackable_user_ids).to eq([user.id])
     end
 
-    it "ships a curated payload of id, username, email, name" do
+    it "ships a curated payload of identity, confirmation, newsletter, and Core-link state" do
       user = create(:user)
-      expect(user.trackable_payload.keys).to contain_exactly("id", "username", "email", "name")
+      expect(user.trackable_payload.keys).to contain_exactly(
+        "id", "username", "email", "name", "confirmed_at", "email_newsletter", "mlh_user_id"
+      )
+    end
+
+    it "reflects confirmation and newsletter state in the payload" do
+      user = create(:user)
+      user.notification_setting.update!(email_newsletter: true)
+      payload = user.reload.trackable_payload
+
+      expect(payload["confirmed_at"]).to eq(user.confirmed_at.iso8601)
+      expect(payload["email_newsletter"]).to be(true)
+    end
+
+    it "includes the Core user id from the mlh identity in the payload" do
+      omniauth_mock_mlh_payload
+      user = create(:user)
+      create(:identity, user: user, provider: "mlh", uid: "424242")
+
+      expect(user.trackable_payload["mlh_user_id"]).to eq("424242")
+    end
+
+    it "leaves mlh_user_id nil when the user has no mlh identity" do
+      user = create(:user)
+      expect(user.trackable_payload["mlh_user_id"]).to be_nil
     end
 
     # Sidekiq.strict_args! (raise-mode outside production) rejects symbol keys in
@@ -113,6 +137,133 @@ RSpec.describe User do
       user.update!(last_comment_at: 1.day.ago)
       expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
         .with(anything, "user_updated", anything, anything, anything)
+    end
+
+    it "emits user_updated when the email column actually changes" do
+      user = create(:user)
+      enable_sync(actor: user)
+      user.skip_reconfirmation!
+      user.update!(email: "new-address@example.com")
+      expect(Trackable::DispatchWorker).to have_received(:perform_async)
+        .with(anything, "user_updated", [user.id], hash_including("email" => "new-address@example.com"), anything)
+    end
+
+    # Devise reconfirmable parks the new address in unconfirmed_email; the
+    # users.email swap only lands when the user confirms, and that save does
+    # not touch profile_updated_at — so the email/confirmed_at keys must
+    # trigger user_updated on their own.
+    it "emits user_updated with the new email when a pending email change is confirmed" do
+      user = create(:user)
+      enable_sync(actor: user)
+      user.update!(email: "pending-address@example.com")
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+        .with(anything, "user_updated", anything, hash_including("email" => "pending-address@example.com"), anything)
+
+      user.confirm
+      expect(Trackable::DispatchWorker).to have_received(:perform_async)
+        .with(anything, "user_updated", [user.id], hash_including("email" => "pending-address@example.com"),
+              anything)
+    end
+
+    it "emits user_updated when an unconfirmed user confirms their email" do
+      user = create(:user, confirmed_at: nil)
+      enable_sync(actor: user)
+      user.confirm
+      expect(Trackable::DispatchWorker).to have_received(:perform_async)
+        .with(anything, "user_updated", [user.id], hash_including("confirmed_at" => user.confirmed_at.iso8601),
+              anything)
+    end
+
+    describe "engagement events" do
+      # The throttle needs a real cache; the suite default is :null_store.
+      before do
+        allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
+      end
+
+      it "emits user_engaged when an activity timestamp advances" do
+        user = create(:user)
+        enable_sync(actor: user)
+        user.touch(:last_comment_at)
+        expect(Trackable::DispatchWorker).to have_received(:perform_async)
+          .with(anything, "user_engaged", [user.id],
+                hash_including("engaged_at" => user.reload.last_comment_at.iso8601), anything)
+      end
+
+      it "throttles repeat activity inside the emit interval" do
+        user = create(:user)
+        enable_sync(actor: user)
+        user.touch(:last_comment_at)
+        user.touch(:last_comment_at)
+        user.update!(current_sign_in_at: Time.current)
+        expect(Trackable::DispatchWorker).to have_received(:perform_async)
+          .with(anything, "user_engaged", anything, anything, anything).once
+      end
+
+      it "does not emit user_engaged for spam or suspended users" do
+        user = create(:user)
+        enable_sync(actor: user)
+        described_class.skip_trackable_events { user.add_role(:spam) }
+        user.touch(:last_comment_at)
+        expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+          .with(anything, "user_engaged", anything, anything, anything)
+      end
+
+      it "does not emit user_engaged for non-activity changes" do
+        user = create(:user)
+        enable_sync(actor: user)
+        user.touch(:profile_updated_at)
+        expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+          .with(anything, "user_engaged", anything, anything, anything)
+      end
+
+      # update_presence! writes via update_column, which bypasses callbacks, so
+      # the engagement event has to be emitted explicitly from that path.
+      it "emits user_engaged from a presence ping" do
+        user = create(:user)
+        enable_sync(actor: user)
+        user.update_presence!
+        expect(Trackable::DispatchWorker).to have_received(:perform_async)
+          .with(anything, "user_engaged", [user.id],
+                hash_including("engaged_at" => user.reload.last_presence_at.iso8601), anything)
+      end
+
+      it "throttles repeat presence pings inside the emit interval" do
+        user = create(:user)
+        enable_sync(actor: user)
+        user.update_presence!
+        Timecop.travel(2.hours.from_now) { user.update_presence! }
+        expect(Trackable::DispatchWorker).to have_received(:perform_async)
+          .with(anything, "user_engaged", anything, anything, anything).once
+      end
+
+      it "does not emit user_engaged from a presence ping for spam or suspended users" do
+        user = create(:user)
+        enable_sync(actor: user)
+        described_class.skip_trackable_events { user.add_role(:spam) }
+        user.update_presence!
+        expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+          .with(anything, "user_engaged", anything, anything, anything)
+      end
+    end
+
+    it "does not emit any sync events for bot accounts" do
+      enable_sync
+      create(:user, type_of: :community_bot)
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+    end
+
+    it "does not emit user_created for unregistered invited users" do
+      enable_sync
+      create(:user, registered: false, registered_at: nil)
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+    end
+
+    it "emits user_created when an invited user completes registration" do
+      user = create(:user, registered: false, registered_at: nil)
+      enable_sync(actor: user)
+      user.update!(registered: true, registered_at: Time.current)
+      expect(Trackable::DispatchWorker).to have_received(:perform_async)
+        .with(anything, "user_created", [user.id], anything, anything)
     end
 
     it "does not emit user_destroyed when a synced user is deleted (deletes are out of scope)" do
