@@ -1,0 +1,24 @@
+app/assets/stylesheets/ltags/QuoteTag.scss
+  589592171ada3650 17-21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.8",
+  "base_commit_sha": "b0b3d6ed813b14142abab69b74268de1af87c19a",
+  "prompts": {
+    "589592171ada3650": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "598eacfd-fbaa-4c95-8016-1d4fa7a1051b",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Jon Gottfried <jonmarkgo@gmail.com>",
+      "messages": [],
+      "total_additions": 5,
+      "total_deletions": 3,
+      "accepted_lines": 5,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/790b512e52b19e31e5c7250fa273b61846cec79099b81ddf1996c28742d06158"
+    }
+  }
+}
