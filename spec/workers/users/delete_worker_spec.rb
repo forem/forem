@@ -72,6 +72,34 @@ RSpec.describe Users::DeleteWorker, type: :worker do
           worker.perform(user.id, true)
         end.to change(GDPRDeleteRequest, :count).by(1)
       end
+
+      # Merges delete the merged-away row through this worker, but nobody
+      # requested erasure - the person's content moved to the kept account.
+      it "does not create a gdpr-delete record for non-GDPR (merge) deletions" do
+        expect do
+          worker.perform(user.id, true, "merge")
+        end.not_to change(GDPRDeleteRequest, :count)
+      end
+
+      it "does not emit user_gdpr_deleted for non-GDPR (merge) deletions" do
+        allow(Trackable::Registry).to receive(:active_names).and_return([:any])
+        allow(Trackable::DispatchWorker).to receive(:perform_async)
+        Settings::General.customerio_cdp_enabled = true
+        FeatureFlag.enable(:dev_core_user_sync)
+
+        with_trackable_events { worker.perform(user.id, true, "merge") }
+
+        expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+          .with(anything, "user_gdpr_deleted", anything, anything, anything)
+      ensure
+        FeatureFlag.remove(:dev_core_user_sync)
+      end
+
+      it "still deletes the user on non-GDPR (merge) deletions" do
+        worker.perform(user.id, true, "merge")
+
+        expect(User.exists?(id: user.id)).to be(false)
+      end
     end
 
     context "when user is not found" do
