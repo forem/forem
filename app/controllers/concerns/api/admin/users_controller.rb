@@ -109,7 +109,11 @@ module Api
       # Core side.
       def update_notification_settings
         @user_record = User.find(params[:id])
-        updates = params.require(:notification_setting).permit(:email_newsletter)
+        # Handle the missing wrapper here rather than via params.require, so
+        # the caller gets the admin API error_code instead of a generic
+        # ParameterMissing 422.
+        wrapper = params[:notification_setting]
+        updates = wrapper.respond_to?(:permit) ? wrapper.permit(:email_newsletter) : {}
         if updates.blank?
           raise Api::Admin::ApiError.new(:invalid_notification_settings,
                                          I18n.t("admin_api.errors.invalid_notification_settings"),

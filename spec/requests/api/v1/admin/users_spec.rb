@@ -383,6 +383,13 @@ RSpec.describe "/api/admin/users" do
       expect(audit.data["changes"]).to eq("email_newsletter" => [true, false])
     end
 
+    it "rejects a body missing the notification_setting wrapper with the admin error_code" do
+      put_settings({ email_newsletter: false })
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body["error_code"]).to eq("invalid_notification_settings")
+    end
+
     it "rejects a body with no permitted settings" do
       put_settings({ notification_setting: { welcome_notifications: false } })
 
