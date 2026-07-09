@@ -75,7 +75,8 @@ module Api
         ensure_enabled_provider!(provider)
 
         entries = bulk_entries!
-        @results = entries.map { |entry| bulk_link_result(provider, entry) }
+        preload = bulk_preload(provider, entries)
+        @results = entries.map { |entry| bulk_link_result(provider, entry, preload) }
 
         audit!(slug: "bulk_link_identities",
                data: {
@@ -107,19 +108,59 @@ module Api
         )
       end
 
-      def bulk_link_result(provider, entry)
+      # Three queries for the whole batch instead of three per row — at 1,000
+      # rows per request and ~2M links total, per-row lookups would hammer
+      # the DB. The taken-uid set is mutated as rows link so same-batch
+      # duplicates conflict like pre-existing ones; the RecordNotUnique
+      # rescue still covers races with concurrent writers.
+      def bulk_preload(provider, entries)
+        objects = entries.select { |entry| bulk_entry_object?(entry) }
+        user_ids = objects.filter_map { |entry| entry[:user_id].presence }
+        uids = objects.filter_map { |entry| entry[:uid].presence&.to_s }
+        {
+          users: User.where(id: user_ids).index_by(&:id),
+          identities_by_user: Identity.where(provider: provider, user_id: user_ids).index_by(&:user_id),
+          taken_uids: Identity.where(provider: provider, uid: uids).pluck(:uid).to_set
+        }
+      end
+
+      # Strings also respond to #[], so require an actual object entry.
+      def bulk_entry_object?(entry)
+        entry.is_a?(ActionController::Parameters) || entry.is_a?(Hash)
+      end
+
+      def bulk_link_result(provider, entry, preload)
+        return { "user_id" => nil, "status" => "invalid" } unless bulk_entry_object?(entry)
+
         user_id = entry[:user_id]
         uid = entry[:uid].to_s
         return { "user_id" => user_id, "status" => "invalid" } if user_id.blank? || uid.blank?
 
-        target = User.find_by(id: user_id)
+        target = preload[:users][user_id.to_i]
         return { "user_id" => user_id.to_i, "status" => "not_found" } unless target
 
-        identity, already_linked = resolve_identity_for_link(target, provider, uid)
-        { "user_id" => target.id, "identity_id" => identity.id,
-          "status" => already_linked ? "already_linked" : "created" }
-      rescue Api::Admin::ApiError => e
-        { "user_id" => target.id, "status" => "conflict", "error_code" => e.error_code.to_s }
+        link_preloaded_identity(provider, target, uid, preload)
+      end
+
+      def link_preloaded_identity(provider, target, uid, preload)
+        existing = preload[:identities_by_user][target.id]
+        if existing
+          return { "user_id" => target.id, "identity_id" => existing.id, "status" => "already_linked" } if
+            existing.uid == uid
+
+          return { "user_id" => target.id, "status" => "conflict",
+                   "error_code" => "user_already_has_identity_for_provider" }
+        end
+
+        if preload[:taken_uids].include?(uid)
+          return { "user_id" => target.id, "status" => "conflict", "error_code" => "identity_uid_taken" }
+        end
+
+        identity = Identity.create!(user: target, provider: provider, uid: uid)
+        preload[:taken_uids] << uid
+        { "user_id" => target.id, "identity_id" => identity.id, "status" => "created" }
+      rescue ActiveRecord::RecordNotUnique
+        { "user_id" => target.id, "status" => "conflict", "error_code" => "identity_uid_taken" }
       end
 
       # Returns [identity, already_linked]. Raises Api::Admin::ApiError for the
