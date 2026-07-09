@@ -61,8 +61,6 @@ RSpec.describe "User visits a homepage" do
       end
 
       it "dismisses the broadcast", js: true do
-        visit "/"
-        expect(page).to have_selector("body[data-loaded='true']", wait: 30)
         expect_broadcast_data(page)
 
         find(".close-announcement-button").click
