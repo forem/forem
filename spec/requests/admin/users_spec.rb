@@ -590,6 +590,24 @@ RSpec.describe "/admin/member_manager/users" do
       expect(user.email).to eq("updated@example.com")
       expect(user.unconfirmed_email).to be_nil
     end
+
+    # update_columns bypasses the Trackable after_commit, so the controller
+    # must emit explicitly or Core never learns the new address.
+    it "emits user_updated to the DEV -> Core sync" do
+      allow(Trackable::Registry).to receive(:active_names).and_return([:any])
+      allow(Trackable::DispatchWorker).to receive(:perform_async)
+      Settings::General.customerio_cdp_enabled = true
+      FeatureFlag.enable(:dev_core_user_sync, FeatureFlag::Actor[user])
+
+      with_trackable_events do
+        patch update_email_admin_user_path(user), params: { user: { email: "updated@example.com" } }
+      end
+
+      expect(Trackable::DispatchWorker).to have_received(:perform_async)
+        .with(anything, "user_updated", [user.id], hash_including("email" => "updated@example.com"), anything)
+    ensure
+      FeatureFlag.remove(:dev_core_user_sync)
+    end
   end
 
   describe "DELETE /admin/member_manager/users/:id/remove_identity" do
@@ -737,6 +755,25 @@ RSpec.describe "/admin/member_manager/users" do
         expect(user_with_pending_email.confirmed_at).to be_present
         expect(response).to redirect_to(admin_user_path(user_with_pending_email))
         expect(flash[:success]).to be_present
+      end
+
+      # update_columns bypasses the Trackable after_commit, so the controller
+      # must emit explicitly or Core never learns the swapped address.
+      it "emits user_updated to the DEV -> Core sync" do
+        allow(Trackable::Registry).to receive(:active_names).and_return([:any])
+        allow(Trackable::DispatchWorker).to receive(:perform_async)
+        Settings::General.customerio_cdp_enabled = true
+        FeatureFlag.enable(:dev_core_user_sync, FeatureFlag::Actor[user_with_pending_email])
+
+        with_trackable_events do
+          post confirm_pending_email_admin_user_path(user_with_pending_email)
+        end
+
+        expect(Trackable::DispatchWorker).to have_received(:perform_async)
+          .with(anything, "user_updated", [user_with_pending_email.id],
+                hash_including("email" => "newemail@example.com"), anything)
+      ensure
+        FeatureFlag.remove(:dev_core_user_sync)
       end
 
       it "creates an audit note recording the email change" do
