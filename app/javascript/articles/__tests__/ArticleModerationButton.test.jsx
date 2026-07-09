@@ -25,7 +25,7 @@ describe('<Article /> moderation button', () => {
     const modButton = container.querySelector('.mod-actions-menu-btn');
 
     expect(modButton).toBeInTheDocument();
-    expect(modButton).toHaveAttribute('data-article-path', article.url);
+    expect(modButton).toHaveAttribute('data-article-path', article.path);
     expect(modButton).toHaveAttribute('aria-label', 'Moderation');
   });
 });

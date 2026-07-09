@@ -70,5 +70,15 @@ export function initializeActionsPanel(user, path = '') {
     });
   }
 
+  if (path) {
+    const modActionsMenu = getOrCreateModActionsMenu();
+    if (!document.getElementById('mod-container')) {
+      modActionsMenu.innerHTML = `
+        <iframe id="mod-container" src="${path}/actions_panel" title="Moderation panel actions">
+        </iframe>
+      `;
+    }
+  }
+
   bindModActionsMenuButtons();
 }
