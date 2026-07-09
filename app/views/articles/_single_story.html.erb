@@ -47,14 +47,14 @@
             <a href="/<%= story.cached_user.username %>" class="crayons-story__secondary fw-medium m:hidden">
               <%= story.cached_user.name %>
             </a>
-            <% if user_signed_in? %>
+            <div class="trusted-visible-block print-hidden">
               <button class="crayons-btn crayons-btn--ghost crayons-btn--icon-rounded mod-actions-menu-btn" data-article-path="<%= story.path %>">
                 <svg width="24" height="24" class="crayons-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <title>Moderation</title>
                   <path d="M3.783 2.826L12 1l8.217 1.826a1 1 0 01.783.976v9.987a6 6 0 01-2.672 4.992L12 23l-6.328-4.219A6 6 0 013 13.79V3.802a1 1 0 01.783-.976zM5 4.604v9.185a4 4 0 001.781 3.328L12 20.597l5.219-3.48A4 4 0 0019 13.79V4.604L12 3.05 5 4.604zM13 10h3l-5 7v-5H8l5-7v5z" />
                 </svg>
               </button>
-            <% end %>
+            </div>
           </div>
             <div class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:inline-block">
               <button id="story-author-preview-trigger-<%= story.id %>" aria-controls="story-author-preview-content-<%= story.id %>" class="profile-preview-card__trigger fs-s p-1 -ml-1 -my-2 crayons-btn crayons-btn--ghost" aria-label="<%= t("views.users.details",
@@ -201,14 +201,12 @@
           
           <div class="only-sidebar-menu-item">
             <div class="print-hidden trusted-visible-block align-center">
-              <% if user_signed_in? %>
                 <button class="crayons-btn crayons-btn--ghost crayons-btn--icon-rounded mod-actions-menu-btn" data-article-path="<%= story.path %>">
                     <svg width="24" height="24" class="crayons-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-labelledby="mod-actions-button-title-<%= story.id %>">
                      <title id="mod-actions-button-title-<%= story.id %>">Moderation</title>
                     <path d="M3.783 2.826L12 1l8.217 1.826a1 1 0 01.783.976v9.987a6 6 0 01-2.672 4.992L12 23l-6.328-4.219A6 6 0 013 13.79V3.802a1 1 0 01.783-.976zM5 4.604v9.185a4 4 0 001.781 3.328L12 20.597l5.219-3.48A4 4 0 0019 13.79V4.604L12 3.05 5 4.604zM13 10h3l-5 7v-5H8l5-7v5z" />
                   </svg>
                 </button>
-              <% end %>
             </div>
           </div>
 
