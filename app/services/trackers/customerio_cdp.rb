@@ -10,6 +10,12 @@ module Trackers
     # Customer.io CDP does not implement analytics-ruby's default /v1/import
     # path (404); its Segment-compatible batch endpoint is /v1/batch.
     BATCH_PATH = "/v1/batch".freeze
+    # Events that fire after the user row is destroyed — the only ones allowed
+    # to fall back to the payload's own email. Everything else must resolve a
+    # live row, so a straggler event for a just-deleted user is dropped rather
+    # than delivered via a stale address (which could resurrect state after a
+    # GDPR erasure).
+    DESTRUCTIVE_EVENTS = ["user_gdpr_deleted"].freeze
 
     def enabled?
       # Resolve the setting via the default subforem (like mailers do): the admin
@@ -21,10 +27,10 @@ module Trackers
 
     # People are identified by email rather than DEV user id: ids are not synced
     # to the Core consumer yet. Emails are resolved at send time so they are
-    # current; ids without a matching user (deleted in the interim) are skipped.
-    # The properties payload still carries the DEV id for future linking.
+    # current; see DESTRUCTIVE_EVENTS for the deleted-row exception.
     def track(event_name:, user_ids:, properties:, timestamp: nil)
       emails = User.where(id: Array.wrap(user_ids)).pluck(:email)
+      emails = [properties["email"]] if emails.empty? && DESTRUCTIVE_EVENTS.include?(event_name)
       emails.each do |email|
         next if email.blank?
 
