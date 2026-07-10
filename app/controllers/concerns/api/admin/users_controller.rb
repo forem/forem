@@ -121,7 +121,13 @@ module Api
         end
 
         setting = @user_record.notification_setting
-        setting.update!(updates)
+        # This endpoint carries MLH Core's OWN consent state (its dev
+        # newsletter opt-outs/opt-ins). Emitting the CDP newsletter events
+        # here would make Core consume its own push as a user consent
+        # change — destroying the layered global-unsubscribe vs
+        # list-preference distinction. Model callbacks that aren't CDP
+        # emission (Mailchimp sync, base_email_eligible) still run.
+        User.skip_trackable_events { setting.update!(updates) }
 
         audit!(slug: "update_notification_settings",
                data: {
