@@ -128,6 +128,36 @@
 
     <!-- Sidebar Right Column -->
     <aside class="w-100 m:w-80 flex-shrink-0">
+      <% if @event.end_time > Time.current %>
+        <div class="crayons-card p-4 mb-6 text-center">
+          <h3 class="font-bold mb-2">Join the Challenge</h3>
+          <p class="fs-s color-base-70 mb-4">Express interest to receive challenge reminders and updates.</p>
+          <button data-event-signup-button="true"
+                  data-event-name-slug="<%= @event.event_name_slug %>"
+                  data-event-variation-slug="<%= @event.event_variation_slug %>"
+                  data-signup-confirm-message="Are you sure you want to cancel your interest?"
+                  data-signed-up-class="crayons-btn--outlined"
+                  data-unsigned-up-class="crayons-btn--primary"
+                  class="crayons-btn w-100 text-center justify-center <%= current_user && current_user.event_signups.exists?(event: @event) ? 'crayons-btn--outlined' : 'crayons-btn--primary' %>"
+                  data-signed-up="<%= current_user && current_user.event_signups.exists?(event: @event) ? 'true' : 'false' %>">
+            <template data-signed-up-html>
+              <svg class="c-icon mr-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+              Joined
+            </template>
+            <template data-unsigned-up-html>
+              Join Challenge
+            </template>
+
+            <% if current_user && current_user.event_signups.exists?(event: @event) %>
+              <svg class="c-icon mr-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+              Joined
+            <% else %>
+              Join Challenge
+            <% end %>
+          </button>
+        </div>
+      <% end %>
+
       <div class="crayons-card p-4 mb-6">
         <h3 class="font-bold mb-4">Key Dates</h3>
         <ul class="space-y-3 fs-s color-base-80">

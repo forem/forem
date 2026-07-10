@@ -13,19 +13,26 @@ module Admin
       @feedback_messages = if params[:status] == "Resolved"
                              @feedback_messages.where(status: "Resolved")
                            elsif params[:status] == "Invalid"
-                             @feedback_messages = @feedback_messages.where(status: "Invalid")
+                             @feedback_messages.where(status: "Invalid")
                            else
-                             @feedback_messages = @feedback_messages.where(status: "Open")
+                             @feedback_messages.where(status: "Open")
                            end
-      @feedback_messages = @feedback_messages.select { |fm| fm.reported&.score.to_i > SCORE_MIN }
+      @feedback_messages = @feedback_messages.with_valid_reported_score(SCORE_MIN)
+      @feedback_messages = @feedback_messages.page(params[:page] || 1).per(25)
 
       @feedback_type = params[:state] || "abuse-reports"
       @status = params[:status].presence || "Open"
 
-      @email_messages = EmailMessage.find_for_reports(@feedback_messages)
-      @notes = Note.find_for_reports(@feedback_messages)
+      @email_messages = EmailMessage.find_for_reports(@feedback_messages.map(&:id))
+      @notes = Note.find_for_reports(@feedback_messages.map(&:id))
 
+      @vomits_count = get_vomits.count
+    end
+
+    def flag_reactions
       @vomits = get_vomits
+      @status = params[:status].presence || "Open"
+      render partial: "admin/feedback_messages/flag_reactions_list"
     end
 
     def save_status
@@ -89,23 +96,37 @@ module Admin
                         ["invalid", 10]
                       end
       q = Reaction.includes(:user, :reactable)
+        .joins(<<~SQL)
+          LEFT OUTER JOIN articles AS reactable_articles 
+            ON reactions.reactable_id = reactable_articles.id 
+            AND reactions.reactable_type = 'Article'
+          LEFT OUTER JOIN users AS reactable_users 
+            ON reactions.reactable_id = reactable_users.id 
+            AND reactions.reactable_type = 'User'
+          LEFT OUTER JOIN comments AS reactable_comments 
+            ON reactions.reactable_id = reactable_comments.id 
+            AND reactions.reactable_type = 'Comment'
+        SQL
         .where(category: "vomit", status: status)
-        .live_reactable
-        .select(:id, :user_id, :reactable_type, :reactable_id)
         .where("reactions.created_at > ?", 2.weeks.ago)
+        .where(<<~SQL, score_min: SCORE_MIN)
+          CASE
+            WHEN reactions.reactable_type = 'Article' THEN (reactable_articles.id IS NOT NULL AND reactable_articles.published = TRUE AND reactable_articles.score > :score_min)
+            WHEN reactions.reactable_type = 'User' THEN (reactable_users.id IS NOT NULL AND reactable_users.username NOT LIKE 'spam_%' AND reactable_users.score > :score_min)
+            WHEN reactions.reactable_type = 'Comment' THEN (reactable_comments.id IS NOT NULL AND reactable_comments.score > :score_min)
+            ELSE FALSE
+          END
+        SQL
         .order(Arel.sql("
-          CASE reactable_type
+          CASE reactions.reactable_type
             WHEN 'User' THEN 0
             WHEN 'Comment' THEN 1
             WHEN 'Article' THEN 2
             ELSE 3
           END,
           reactions.reactable_id ASC"))
-        .limit(limit)
-      # don't show reactions where the reactable was not found
-      q.select(&:reactable)
-      # Map over reactions and do not include reactions where the reactable's score is less than 150
-      q.select { |reaction| reaction.reactable && reaction.reactable.score > SCORE_MIN }
+
+      limit ? q.limit(limit) : q
     end
 
     def send_slack_message(params)

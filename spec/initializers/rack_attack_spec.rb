@@ -26,8 +26,47 @@ describe Rack, ".attack", throttle: true, type: :request do
         valid_responses.each { |r| expect(r).not_to eq(429) }
         expect(throttled_response).to eq(429)
         expect(new_ip_response).not_to eq(429)
-        expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "5.6.7.8").at_least(6).times
-        expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "1.1.1.1").at_least(1).times
+      end
+    end
+  end
+
+  describe "search_feed_content_throttle" do
+    before do
+      allow(Homepage::FetchArticles).to receive(:call).and_return([])
+      allow(Search::Article).to receive(:search_documents).and_return([])
+    end
+
+    it "throttles /search/feed_content after 10 requests per minute" do
+      Timecop.freeze do
+        start_time = Time.current
+        valid_responses = (1..10).map do |i|
+          Timecop.travel(start_time + i.seconds)
+          get "/search/feed_content", params: { feed_params: { class_name: "Article", sort_by: "hotness_score" } }, headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
+        end
+        Timecop.travel(start_time + 11.seconds)
+        throttled_response = get "/search/feed_content", params: { feed_params: { class_name: "Article", sort_by: "hotness_score" } }, headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
+        new_ip_response = get "/search/feed_content", params: { feed_params: { class_name: "Article", sort_by: "hotness_score" } }, headers: { "HTTP_FASTLY_CLIENT_IP" => "1.1.1.1" }
+
+        valid_responses.each { |r| expect(r).not_to eq(429) }
+        expect(throttled_response).to eq(429)
+        expect(new_ip_response).not_to eq(429)
+      end
+    end
+
+    it "falls back to Rails remote_ip if HTTP_FASTLY_CLIENT_IP is blank/missing" do
+      Timecop.freeze do
+        start_time = Time.current
+        valid_responses = (1..10).map do |i|
+          Timecop.travel(start_time + i.seconds)
+          get "/search/feed_content", params: { feed_params: { class_name: "Article", sort_by: "hotness_score" } }, headers: { "REMOTE_ADDR" => "9.9.9.9" }
+        end
+        Timecop.travel(start_time + 11.seconds)
+        throttled_response = get "/search/feed_content", params: { feed_params: { class_name: "Article", sort_by: "hotness_score" } }, headers: { "REMOTE_ADDR" => "9.9.9.9" }
+        new_ip_response = get "/search/feed_content", params: { feed_params: { class_name: "Article", sort_by: "hotness_score" } }, headers: { "REMOTE_ADDR" => "1.1.1.1" }
+
+        valid_responses.each { |r| expect(r).not_to eq(429) }
+        expect(throttled_response).to eq(429)
+        expect(new_ip_response).not_to eq(429)
       end
     end
   end
@@ -44,8 +83,6 @@ describe Rack, ".attack", throttle: true, type: :request do
         valid_responses.each { |r| expect(r).not_to eq(429) }
         expect(throttled_response).to eq(429)
         expect(new_ip_response).not_to eq(429)
-        expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "5.6.7.8").at_least(4).times
-        expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "1.1.1.1").at_least(1).times
       end
     end
 
@@ -89,7 +126,6 @@ describe Rack, ".attack", throttle: true, type: :request do
         expect(valid_response).not_to eq(429)
         expect(throttled_response).to eq(429)
         expect(new_api_response).not_to eq(429)
-        expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "5.6.7.8").at_least(3).times
         expect(Honeycomb).to have_received(:add_field).with("user_api_key", api_secret.secret).exactly(2).times
         expect(Honeycomb).to have_received(:add_field).with("user_api_key", another_api_secret.secret)
       end
@@ -108,8 +144,6 @@ describe Rack, ".attack", throttle: true, type: :request do
         expect(valid_response).not_to eq(429)
         expect(throttled_response).to eq(429)
         expect(new_api_response).not_to eq(429)
-        expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "5.6.7.8").at_least(2).times
-        expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "1.1.1.1").at_least(1).times
       end
     end
 

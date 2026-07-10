@@ -26,7 +26,7 @@ class NavigationLinkImageUploader < BaseUploader
   end
 
   def filename
-    "#{secure_token}.#{file.extension}" if original_filename.present?
+    "#{secure_token}.#{file.extension}" if file.present?
   end
 
   protected

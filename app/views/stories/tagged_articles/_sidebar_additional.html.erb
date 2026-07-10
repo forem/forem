@@ -1,19 +1,17 @@
 <% if @page == 1 %>
-  <div id="sidebar-wrapper-right" class="sidebar-wrapper sidebar-wrapper-right">
+  <div id="sidebar-wrapper-right" class="sidebar-wrapper sidebar-wrapper-right crayons-layout__sidebar-right crayons-layout__content">
     <div class="sidebar-bg" id="sidebar-bg-right"></div>
     <aside class="side-bar sidebar-additional showing fs-s" id="sidebar-additional">
       <% active_threads = active_threads(tags: [@tag.name, "discuss"], time_ago: Timeframe.datetime(params[:timeframe])) %>
       <% if user_signed_in? && active_threads.present? %>
-        <div class="widget">
-          <header>
-            <h4 class="fs-base fw-medium"><%= t("views.stories.discuss") %></h4>
+        <section class="crayons-card crayons-card--secondary crayons-layout__content mb-4">
+          <header class="crayons-card__header">
+            <h3 class="crayons-subtitle-3"><%= t("views.stories.discuss") %></h3>
           </header>
-          <div class="widget-body fs-s">
-            <div class="widget-link-list">
-              <%= render partial: "articles/widget_list_item", collection: active_threads, as: :plucked_article, locals: { show_comment_count: true } %>
-            </div>
+          <div>
+            <%= render partial: "articles/widget_list_item", collection: active_threads, as: :plucked_article, locals: { show_comment_count: true } %>
           </div>
-        </div>
+        </section>
       <% end %>
       <% if user_signed_in? %>
         <%= javascript_include_tag "sidebarWidget", defer: true %>
@@ -23,16 +21,14 @@
         <% cache("seo-boostable-posts-for-tag-#{@tag.name}-#{params[:timeframe]}-30-#{RequestStore.store[:subforem_id]}", expires_in: 18.hours) do %>
           <% boostable_posts = Article.from_subforem.seo_boostable(@tag.name, Timeframe.datetime(params[:timeframe]), limit: 25) %>
           <% if boostable_posts.present? %>
-            <div class="widget">
-              <header>
-                <h4 class="fs-base fw-medium"><%= t("views.main.side.trend") %></h4>
+            <section class="crayons-card crayons-card--secondary crayons-layout__content mb-4">
+              <header class="crayons-card__header">
+                <h3 class="crayons-subtitle-3"><%= t("views.main.side.trend") %></h3>
               </header>
-              <div class="widget-body fs-s">
-                <div class="widget-link-list">
-                  <%= render partial: "articles/widget_list_item", collection: boostable_posts, as: :plucked_article, locals: { show_comment_count: false } %>
-                </div>
+              <div>
+                <%= render partial: "articles/widget_list_item", collection: boostable_posts, as: :plucked_article, locals: { show_comment_count: false } %>
               </div>
-            </div>
+            </section>
           <% end %>
         <% end %>
       <% end %>
