@@ -17,7 +17,13 @@ module Moderator
       BanishedUser.create(username: user.username, banished_by: admin)
       user.remove_from_mailchimp_newsletters if user.email?
       remove_profile_info
-      handle_user_status("Suspended", I18n.t("services.moderator.banish_user.spam_account"))
+      # The role grant inside handle_user_status would emit user_suspended;
+      # suppress it so banish reaches Core as a single user_banished event
+      # (the two would race through the CDP and could downgrade Core's
+      # moderation marker after the banish was already applied).
+      User.skip_trackable_events do
+        handle_user_status("Suspended", I18n.t("services.moderator.banish_user.spam_account"))
+      end
       delete_organization
       delete_user_activity
       delete_comments
@@ -25,6 +31,10 @@ module Moderator
       delete_user_podcasts
       reassign_and_bust_username
       delete_vomit_reactions
+      # Banish destroys the account's content and identity, so Core treats it
+      # like spam (prunes the Customer.io profile). The pre-banish username
+      # rides along because trackable_payload now carries the spam_ rename.
+      user.track!("user_banished", { "old_username" => user.old_username })
     end
 
     private

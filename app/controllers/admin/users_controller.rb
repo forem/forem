@@ -144,6 +144,9 @@ new_email = user_params[:email].to_s.strip.presence
         # Bypassing validations/callbacks is intentional here to match the behavior of updating
         # user emails via the admin UI directly and immediately without sending confirmation emails.
         if @user.update_columns(email: downcased_email, unconfirmed_email: nil)
+          # update_columns bypasses the Trackable after_commit, so tell the
+          # DEV -> Core sync about the new address explicitly.
+          @user.track!("user_updated")
           Note.create(
             author_id: current_user.id,
             noteable_id: @user.id,
@@ -582,6 +585,9 @@ new_email = user_params[:email].to_s.strip.presence
       new_email = @user.unconfirmed_email
 
       if new_email.present? && @user.update_columns(email: new_email, unconfirmed_email: nil, confirmed_at: Time.current)
+        # update_columns bypasses the Trackable after_commit, so tell the
+        # DEV -> Core sync about the swapped address explicitly.
+        @user.track!("user_updated")
         Note.create(
           author_id: current_user.id,
           noteable_id: @user.id,
