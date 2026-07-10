@@ -16,25 +16,29 @@
         
         <% if @event.start_time > Time.current %>
           <div class="event-signup-container ml-auto">
-            <% if current_user %>
-              <% if current_user.event_signups.exists?(event: @event) %>
-                <%= button_to event_signup_path(@event.event_name_slug, @event.event_variation_slug), 
-                              method: :delete, 
-                              class: "crayons-btn crayons-btn--outlined event-signup-btn", 
-                              data: { confirm: @event.signup_confirm_message } do %>
-                  <svg class="c-icon mr-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                  <%= @event.signup_button_text(signed_up: true) %>
-                <% end %>
+            <button data-event-signup-button="true"
+                    data-event-name-slug="<%= @event.event_name_slug %>"
+                    data-event-variation-slug="<%= @event.event_variation_slug %>"
+                    data-signup-confirm-message="<%= @event.signup_confirm_message %>"
+                    data-signed-up-class="crayons-btn--outlined"
+                    data-unsigned-up-class="crayons-btn--primary"
+                    class="crayons-btn event-signup-btn <%= current_user && current_user.event_signups.exists?(event: @event) ? 'crayons-btn--outlined' : 'crayons-btn--primary' %>"
+                    data-signed-up="<%= current_user && current_user.event_signups.exists?(event: @event) ? 'true' : 'false' %>">
+              <template data-signed-up-html>
+                <svg class="c-icon mr-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                <%= @event.signup_button_text(signed_up: true) %>
+              </template>
+              <template data-unsigned-up-html>
+                <%= @event.signup_button_text(signed_up: false) %>
+              </template>
+
+              <% if current_user && current_user.event_signups.exists?(event: @event) %>
+                <svg class="c-icon mr-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                <%= @event.signup_button_text(signed_up: true) %>
               <% else %>
-                <%= button_to event_signup_path(@event.event_name_slug, @event.event_variation_slug), 
-                              method: :post, 
-                              class: "crayons-btn crayons-btn--primary event-signup-btn" do %>
-                  <%= @event.signup_button_text(signed_up: false) %>
-                <% end %>
+                <%= @event.signup_button_text(signed_up: false) %>
               <% end %>
-            <% else %>
-              <%= link_to @event.signup_button_text(signed_up: false), sign_up_path(return_to: request.fullpath), class: "crayons-btn crayons-btn--primary event-signup-btn" %>
-            <% end %>
+            </button>
           </div>
         <% end %>
     </div>
