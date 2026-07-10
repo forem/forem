@@ -47,7 +47,7 @@ module Trackers
         }
         mlh_uid = linked_uids[id] || (properties["mlh_user_id"].presence if destructive)
         attributes[:user_id] = mlh_uid if mlh_uid
-        client.track(**attributes)
+        client.track(attributes)
       end
     end
 
