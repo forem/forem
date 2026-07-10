@@ -1,0 +1,24 @@
+app/views/organizations/_header.html.erb
+  cdf961d01143ac46 179
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "2cac5ba6ba7f01edfdbab3045395efa1a80c31de",
+  "prompts": {
+    "cdf961d01143ac46": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e69502a6-bdd0-4768-88a0-89870ff05e49",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Jonathan Gottfried",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 1,
+      "accepted_lines": 1,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/c440a2f282b1f6fd6dc6fa0320c6dec227883b2502a1043140788cfc54600ff3"
+    }
+  }
+}
