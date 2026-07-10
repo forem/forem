@@ -24,9 +24,9 @@ module Rack
 
     class Request < ::Rack::Request
       def track_and_return_ip
-        if ApplicationConfig["FASTLY_API_KEY"].present?
-          Honeycomb.add_field("fastly_client_ip", env["HTTP_FASTLY_CLIENT_IP"])
-          env["HTTP_FASTLY_CLIENT_IP"]
+        fastly_ip = env["HTTP_FASTLY_CLIENT_IP"]
+        if ApplicationConfig["FASTLY_API_KEY"].present? && fastly_ip.present?
+          fastly_ip
         else
           ActionDispatch::Request.new(env).remote_ip
         end
@@ -83,6 +83,12 @@ module Rack
       if ENV["SITEMAP_RATE_LIMIT_ENABLED"] == "true" && request.path.starts_with?("/sitemap-")
         ip = request.track_and_return_ip
         ip unless GooglebotVerifier.googlebot?(ip)
+      end
+    end
+
+    throttle("search_feed_content_throttle", limit: 10, period: 1.minute) do |request|
+      if request.path == "/search/feed_content"
+        request.track_and_return_ip
       end
     end
 

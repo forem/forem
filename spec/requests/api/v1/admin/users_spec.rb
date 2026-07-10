@@ -268,6 +268,26 @@ RSpec.describe "/api/admin/users" do
       expect(ActionMailer::Base.deliveries).to be_empty
     end
 
+    # update_columns bypasses the Trackable after_commit, so the endpoint
+    # must emit explicitly or Core never learns the new address.
+    it "emits user_updated to the DEV -> Core sync" do
+      allow(Trackable::Registry).to receive(:active_names).and_return([:any])
+      allow(Trackable::DispatchWorker).to receive(:perform_async)
+      Settings::General.customerio_cdp_enabled = true
+      FeatureFlag.enable(:dev_core_user_sync, FeatureFlag::Actor[target])
+
+      with_trackable_events do
+        put "/api/admin/users/#{target.id}/email",
+            params: { email: "new@example.com" },
+            headers: admin_api_headers
+      end
+
+      expect(Trackable::DispatchWorker).to have_received(:perform_async)
+        .with(anything, "user_updated", [target.id], hash_including("email" => "new@example.com"), anything)
+    ensure
+      FeatureFlag.remove(:dev_core_user_sync)
+    end
+
     it "returns 409 email_taken on conflict" do
       create(:user, email: "taken@example.com")
 
@@ -319,6 +339,90 @@ RSpec.describe "/api/admin/users" do
             params: { email: "bust@example.com" },
             headers: admin_api_headers
       end
+    end
+  end
+
+  describe "PUT /api/admin/users/:id/notification_settings" do
+    before { Audit::Subscribe.listen :admin_api }
+    after  { Audit::Subscribe.forget :admin_api }
+
+    let!(:target) { create(:user) }
+
+    def put_settings(body, id: target.id)
+      put "/api/admin/users/#{id}/notification_settings",
+          params: body.to_json,
+          headers: admin_api_headers.merge("Content-Type" => "application/json")
+    end
+
+    it "updates email_newsletter through the model (callbacks fire)" do
+      target.notification_setting.update!(email_newsletter: true)
+
+      put_settings({ notification_setting: { email_newsletter: false } })
+
+      expect(response).to have_http_status(:ok)
+      expect(target.notification_setting.reload.email_newsletter).to be(false)
+      expect(response.parsed_body["notification_setting"]["email_newsletter"]).to be(false)
+    end
+
+    it "can also set email_newsletter true" do
+      put_settings({ notification_setting: { email_newsletter: true } })
+
+      expect(target.notification_setting.reload.email_newsletter).to be(true)
+    end
+
+    it "logs an audit entry with the change" do
+      target.notification_setting.update!(email_newsletter: true)
+
+      expect do
+        put_settings({ notification_setting: { email_newsletter: false } })
+      end.to change(AuditLog, :count).by(1)
+
+      audit = AuditLog.last
+      expect(audit.slug).to eq("update_notification_settings")
+      expect(audit.data["target_user_id"]).to eq(target.id)
+      expect(audit.data["changes"]).to eq("email_newsletter" => [true, false])
+    end
+
+    # Core pushes ITS OWN consent state through this endpoint; if the write
+    # emitted the CDP newsletter events, Core would consume its own push as
+    # a user consent change (destroying the layered global-unsubscribe /
+    # list-preference distinction).
+    it "does not emit CDP newsletter events for admin-API writes" do
+      allow(Trackable::Registry).to receive(:active_names).and_return([:any])
+      allow(Trackable::DispatchWorker).to receive(:perform_async)
+      Settings::General.customerio_cdp_enabled = true
+      FeatureFlag.enable(:dev_core_user_sync, FeatureFlag::Actor[target])
+      target.notification_setting.update!(email_newsletter: true)
+
+      with_trackable_events do
+        put_settings({ notification_setting: { email_newsletter: false } })
+      end
+
+      expect(target.notification_setting.reload.email_newsletter).to be(false)
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+        .with(anything, /user_newsletter/, anything, anything, anything)
+    ensure
+      FeatureFlag.remove(:dev_core_user_sync)
+    end
+
+    it "rejects a body missing the notification_setting wrapper with the admin error_code" do
+      put_settings({ email_newsletter: false })
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body["error_code"]).to eq("invalid_notification_settings")
+    end
+
+    it "rejects a body with no permitted settings" do
+      put_settings({ notification_setting: { welcome_notifications: false } })
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body["error_code"]).to eq("invalid_notification_settings")
+    end
+
+    it "returns 404 for unknown users" do
+      put_settings({ notification_setting: { email_newsletter: false } }, id: 999_999)
+
+      expect(response).to have_http_status(:not_found)
     end
   end
 
