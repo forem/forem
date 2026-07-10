@@ -60,6 +60,18 @@ RSpec.describe "/admin/moderation/reports" do
       end
     end
 
+    it "escapes offender report messages in the admin view" do
+      offender = create(:user)
+      payload = %(<img src=x onerror="alert('xss-proof')">)
+      create(:feedback_message, :abuse_report, offender: offender, message: payload)
+
+      sign_in admin
+      get admin_reports_path
+
+      expect(response.body).to include(CGI.escapeHTML(payload))
+      expect(response.body).not_to include(payload)
+    end
+
     context "when there are more than 25 reports" do
       it "paginates the reports" do
         create_list(:feedback_message, 30, :abuse_report, status: "Open")

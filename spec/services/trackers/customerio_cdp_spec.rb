@@ -91,6 +91,43 @@ RSpec.describe Trackers::CustomerioCdp do
       )
     end
 
+    # user_gdpr_deleted fires after the row is destroyed; resolving the email
+    # by DB lookup alone would silently drop exactly the event whose point is
+    # that the user no longer exists.
+    it "falls back to the payload email when the user row is already gone" do
+      deleted_id = user.id
+      payload = { "id" => deleted_id, "email" => user.email }
+      user.destroy!
+
+      adapter.track(event_name: "user_gdpr_deleted", user_ids: [deleted_id], properties: payload)
+
+      expect(client).to have_received(:track).with(
+        user_id: payload["email"], event: "user_gdpr_deleted", properties: payload, timestamp: nil,
+      )
+    end
+
+    # Only destructive events may use the payload email: a straggler
+    # user_updated for a just-deleted user must NOT deliver via a stale
+    # payload address (it could resurrect state after a GDPR erasure).
+    it "does not fall back for non-destructive events when the user row is gone" do
+      deleted_id = user.id
+      payload = { "id" => deleted_id, "email" => user.email }
+      user.destroy!
+
+      adapter.track(event_name: "user_updated", user_ids: [deleted_id], properties: payload)
+
+      expect(client).not_to have_received(:track)
+    end
+
+    it "skips entirely when the user is gone and the payload has no email" do
+      deleted_id = user.id
+      user.destroy!
+
+      adapter.track(event_name: "user_gdpr_deleted", user_ids: [deleted_id], properties: { "id" => deleted_id })
+
+      expect(client).not_to have_received(:track)
+    end
+
     # DEV ids are not synced to Core yet, so people are identified by email.
     it "identifies users by their current email, not their DEV id" do
       adapter.track(event_name: "user_updated", user_ids: [user.id], properties: { "id" => user.id })

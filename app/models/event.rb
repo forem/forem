@@ -40,6 +40,22 @@ class Event < ApplicationRecord
     end
   end
 
+  def signup_button_text(signed_up: false)
+    if challenge?
+      signed_up ? "Signed Up" : "Sign Up"
+    else
+      signed_up ? "Interested" : "I'm Interested"
+    end
+  end
+
+  def signup_confirm_message
+    if challenge?
+      "Are you sure you want to cancel your sign up?"
+    else
+      "Are you sure you want to cancel your interest?"
+    end
+  end
+
   private
 
   def end_time_after_start_time
@@ -128,7 +144,7 @@ class Event < ApplicationRecord
     )
 
     post_bottom_bb = billboards.find_or_initialize_by(placement_area: "post_fixed_bottom")
-    post_bottom_bb.update!(
+    post_bottom_attributes = {
       name: "#{base_name}_post",
       dismissal_sku: base_name,
       custom_display_label: custom_display_label,
@@ -140,7 +156,14 @@ class Event < ApplicationRecord
       template: "authorship_box",
       approved: post_bottom_bb.new_record? ? false : post_bottom_bb.approved,
       published: true
-    )
+    }
+
+    if live_stream?
+      post_bottom_attributes[:special_behavior] = "persistent"
+      post_bottom_attributes[:minimized_body_markdown] = generator.minimized_post_html
+    end
+
+    post_bottom_bb.update!(post_bottom_attributes)
   end
 
   def bust_upcoming_events_cache

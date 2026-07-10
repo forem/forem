@@ -35,19 +35,29 @@ class ArticlesController < ApplicationController
 
     @articles = Article.feed.order(published_at: :desc).page(params[:page].to_i).per(12)
     @latest = request.path == latest_feed_path
-    @articles = if params[:username]
-                  handle_user_or_organization_feed
-                elsif params[:tag]
-                  handle_tag_feed
-                elsif @latest
-                  @articles
-                    .where("score > ?", Articles::Feeds::Latest::MINIMUM_SCORE)
-                    .includes(:user)
-                else
-                  @articles
-                    .with_at_least_home_feed_minimum_score
-                    .includes(:user)
-                end
+
+    @organization = custom_domain_org
+    if @organization
+      @user = @organization
+      @articles = @articles.where(organization_id: @organization.id).includes(:user)
+      if params[:tag]
+        handle_tag_feed
+      end
+    else
+      @articles = if params[:username]
+                    handle_user_or_organization_feed
+                  elsif params[:tag]
+                    handle_tag_feed
+                  elsif @latest
+                    @articles
+                      .where("score > ?", Articles::Feeds::Latest::MINIMUM_SCORE)
+                      .includes(:user)
+                  else
+                    @articles
+                      .with_at_least_home_feed_minimum_score
+                      .includes(:user)
+                  end
+    end
 
     not_found unless @articles&.any?
 

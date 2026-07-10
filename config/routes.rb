@@ -33,16 +33,18 @@ Rails.application.routes.draw do
 
   constraints OrgCustomDomainConstraint.new do
     get "/", to: "stories#custom_domain_index"
+    get "/feed", to: "articles#feed", as: nil, defaults: { format: "rss" }
+    get "/rss", to: "articles#feed", as: nil, defaults: { format: "rss" }
     get "/:org_slug/:slug",
         to: "stories#custom_domain_show",
         constraints: {
-          org_slug: /(?!(?:api|assets|packs|rails|r|ahoy|enter|users)\z)[^\/.]+/,
-          slug: /[^\/.]+/
+          org_slug: %r{(?!(?:api|assets|packs|rails|r|ahoy|enter|users)\z)[^/.]+},
+          slug: %r{[^/.]+}
         }
     get "/:slug",
         to: "stories#custom_domain_show",
         constraints: {
-          slug: /(?!(?:api|assets|packs|rails|r|ahoy|enter|users)\z)[^\/.]+/
+          slug: %r{(?!(?:api|assets|packs|rails|r|ahoy|enter|users)\z)[^/.]+}
         }
   end
 
@@ -125,9 +127,14 @@ Rails.application.routes.draw do
 
         namespace :admin do
           resources :users, only: %i[index show update] do
+            collection do
+              post "identities/bulk", to: "user_identities#bulk_create"
+            end
+
             member do
               put :email, action: :update_email
               put :status, action: :update_status
+              put :notification_settings, action: :update_notification_settings
               post :merge
             end
 
@@ -171,7 +178,10 @@ Rails.application.routes.draw do
       patch "/admin_featured_toggle", to: "articles#admin_featured_toggle"
     end
     resources :events, only: %i[index]
+    get "/calendar", to: "calendar#index"
     get "events/:event_name_slug/:event_variation_slug", to: "events#show", as: :event
+    get "events/:event_name_slug/:event_variation_slug/signup_status", to: "event_signups#status",
+                                                                       as: :event_signup_status
     post "events/:event_name_slug/:event_variation_slug/signup", to: "event_signups#create", as: :event_signup
     delete "events/:event_name_slug/:event_variation_slug/signup", to: "event_signups#destroy"
     resources :article_mutes, only: %i[update]
@@ -230,11 +240,11 @@ Rails.application.routes.draw do
       end
     end
     resources :trending, param: :slug, only: %i[index show], controller: :trends
-    get "/trends", to: redirect { |path_params, req|
+    get "/trends", to: redirect { |path_params, _req|
       locale = path_params[:locale]
       locale ? "/locale/#{locale}/trending" : "/trending"
     }
-    get "/trends/:slug", to: redirect { |path_params, req|
+    get "/trends/:slug", to: redirect { |path_params, _req|
       locale = path_params[:locale]
       slug = path_params[:slug]
       locale ? "/locale/#{locale}/trending/#{slug}" : "/trending/#{slug}"
@@ -295,6 +305,7 @@ Rails.application.routes.draw do
     resources :billboard_events, only: [:create]
     # Alias for reporting in case "events" triggers spam filters
     post "/bb_tabulations", to: "billboard_events#create", as: :bb_tabulations
+    patch "/bb_tabulations/:id", to: "billboard_events#update"
 
     resources :badges, only: [:index]
     resources :user_blocks, param: :blocked_id, only: %i[show create destroy]
@@ -414,15 +425,18 @@ Rails.application.routes.draw do
     get "/:slug/members", to: "organizations#members", as: :organization_members
     get "/:slug/settings", to: "organization_settings#edit", as: :organization_settings
     patch "/:slug/settings", to: "organization_settings#update"
-    post "/:slug/settings/verify", to: "organization_settings#request_verification", as: :organization_request_verification
+    post "/:slug/settings/verify", to: "organization_settings#request_verification",
+                                   as: :organization_request_verification
     post "/:slug/settings/preview", to: "organization_settings#preview", as: :organization_settings_preview
     get "/:slug/settings/lead_forms", to: "organization_lead_forms#index", as: :organization_lead_forms
     post "/:slug/settings/lead_forms", to: "organization_lead_forms#create"
     get "/:slug/settings/lead_forms/:id/edit", to: "organization_lead_forms#edit", as: :edit_organization_lead_form
     patch "/:slug/settings/lead_forms/:id", to: "organization_lead_forms#update", as: :update_organization_lead_form
     delete "/:slug/settings/lead_forms/:id", to: "organization_lead_forms#destroy", as: :organization_lead_form
-    patch "/:slug/settings/lead_forms/:id/toggle", to: "organization_lead_forms#toggle", as: :organization_lead_form_toggle
-    get "/:slug/settings/lead_forms/:id/submissions", to: "organization_lead_forms#submissions", as: :organization_lead_form_submissions
+    patch "/:slug/settings/lead_forms/:id/toggle", to: "organization_lead_forms#toggle",
+                                                   as: :organization_lead_form_toggle
+    get "/:slug/settings/lead_forms/:id/submissions", to: "organization_lead_forms#submissions",
+                                                      as: :organization_lead_form_submissions
     post "/lead_submissions", to: "lead_submissions#create"
     get "/lead_submissions/check", to: "lead_submissions#check"
     post "articles/preview", to: "articles#preview"
@@ -437,6 +451,7 @@ Rails.application.routes.draw do
     get "/faq", to: "pages#faq"
     get "/page/post-a-job", to: "pages#post_a_job"
     get "/tag-moderation", to: "pages#tag_moderation"
+    get "/leaderboard", to: "leaderboards#index", as: :leaderboard
 
     get "/mod", to: "moderations#index", as: :mod
     get "/mod/:tag", to: "moderations#index"
@@ -528,7 +543,8 @@ Rails.application.routes.draw do
 
     get "/top/:timeframe", to: "stories#index"
 
-    get "/:feed_type/:timeframe", to: "stories#index", constraints: { feed_type: /following/, timeframe: /latest|latest_less_filtered/ }
+    get "/:feed_type/:timeframe", to: "stories#index",
+                                  constraints: { feed_type: /following/, timeframe: /latest|latest_less_filtered/ }
 
     get "/:timeframe", to: "stories#index", constraints: { timeframe: /latest|latest_less_filtered/ }
     get "/:feed_type", to: "stories#index", constraints: { feed_type: /discover|following/ }
