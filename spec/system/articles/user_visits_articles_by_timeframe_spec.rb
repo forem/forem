@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "User visits articles by timeframe", js: true do
+RSpec.describe "User visits articles by timeframe" do
   let(:author) { create(:user) }
   let(:minimum_score) { Settings::UserExperience.home_feed_minimum_score + 1 }
   let!(:article) { create(:article, score: minimum_score, user: author) }
@@ -89,9 +89,10 @@ RSpec.describe "User visits articles by timeframe", js: true do
     end
   end
 
-  it "shows correct articles for signed_in user", :aggregate_failures do
+  it "shows correct articles for signed_in user", :js, :aggregate_failures do
     sign_in create(:user)
     visit "/top/week"
+    expect(page).to have_selector("body[data-loaded='true']", wait: 30)
 
     shows_correct_articles_count(2)
     shows_main_article
@@ -101,6 +102,7 @@ RSpec.describe "User visits articles by timeframe", js: true do
     end
 
     visit "/top/month"
+    expect(page).to have_selector("body[data-loaded='true']", wait: 30)
 
     shows_correct_articles_count(3)
     shows_main_article
@@ -111,6 +113,7 @@ RSpec.describe "User visits articles by timeframe", js: true do
     end
 
     visit "/top/year"
+    expect(page).to have_selector("body[data-loaded='true']", wait: 30)
 
     shows_correct_articles_count(4)
     shows_main_article
@@ -122,6 +125,7 @@ RSpec.describe "User visits articles by timeframe", js: true do
     end
 
     visit "/top/infinity"
+    expect(page).to have_selector("body[data-loaded='true']", wait: 30)
 
     shows_correct_articles_count(5)
     shows_main_article
@@ -134,6 +138,7 @@ RSpec.describe "User visits articles by timeframe", js: true do
     end
 
     visit "/latest"
+    expect(page).to have_selector("body[data-loaded='true']", wait: 30)
 
     shows_correct_articles_count(5)
     shows_main_article
