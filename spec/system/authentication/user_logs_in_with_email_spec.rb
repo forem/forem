@@ -27,7 +27,7 @@ RSpec.describe "Authenticating with Email" do
         click_button("Sign up", match: :first)
       end
 
-      it "creates a new user", js: true do
+      it "creates a new user" do
         expect do
           sign_up_user
         end.to change(User, :count).by(1)

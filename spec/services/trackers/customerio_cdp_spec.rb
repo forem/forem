@@ -91,13 +91,68 @@ RSpec.describe Trackers::CustomerioCdp do
       )
     end
 
-    # DEV ids are not synced to Core yet, so people are identified by email.
-    it "identifies users by their current email, not their DEV id" do
+    # Identity follows the Segment spec: a stable dev-scoped anonymous_id on
+    # every call; email is never an identity field (it travels in properties).
+    it "identifies users by a stable dev-scoped anonymous id, never email" do
       adapter.track(event_name: "user_updated", user_ids: [user.id], properties: { "id" => user.id })
 
       expect(client).to have_received(:track).with(
-        user_id: user.email, event: "user_updated", properties: { "id" => user.id }, timestamp: nil,
+        anonymous_id: "dev:#{user.id}", event: "user_updated",
+        properties: { "id" => user.id }, timestamp: nil
       )
+    end
+
+    it "adds the canonical MLH user id as user_id once the account is linked" do
+      # The identity factory reads OmniAuth.config.mock_auth for auth_data_dump.
+      omniauth_mock_mlh_payload
+      create(:identity, user: user, provider: "mlh", uid: "01JZFAKEULID0000000000USER")
+
+      adapter.track(event_name: "user_updated", user_ids: [user.id], properties: { "id" => user.id })
+
+      expect(client).to have_received(:track).with(
+        hash_including(anonymous_id: "dev:#{user.id}", user_id: "01JZFAKEULID0000000000USER"),
+      )
+    end
+
+    # user_gdpr_deleted fires after the row is destroyed; the stable anonymous
+    # id keeps it deliverable without any DB row, and the payload's
+    # mlh_user_id (captured before destruction) preserves the person link.
+    it "delivers destructive events for a destroyed user via the anonymous id" do
+      deleted_id = user.id
+      payload = { "id" => deleted_id, "email" => user.email, "mlh_user_id" => "01JZFAKEULID0000000000USER" }
+      user.destroy!
+
+      adapter.track(event_name: "user_gdpr_deleted", user_ids: [deleted_id], properties: payload)
+
+      expect(client).to have_received(:track).with(
+        anonymous_id: "dev:#{deleted_id}", user_id: "01JZFAKEULID0000000000USER",
+        event: "user_gdpr_deleted", properties: payload, timestamp: nil
+      )
+    end
+
+    it "delivers destructive events anonymously when the payload has no mlh_user_id" do
+      deleted_id = user.id
+      user.destroy!
+
+      adapter.track(event_name: "user_gdpr_deleted", user_ids: [deleted_id], properties: { "id" => deleted_id })
+
+      expect(client).to have_received(:track).with(
+        anonymous_id: "dev:#{deleted_id}", event: "user_gdpr_deleted",
+        properties: { "id" => deleted_id }, timestamp: nil
+      )
+    end
+
+    # A straggler user_updated for a just-deleted user must NOT deliver — it
+    # could resurrect state after a GDPR erasure. Only destructive events may
+    # deliver without a live row.
+    it "drops non-destructive events when the user row is gone" do
+      deleted_id = user.id
+      payload = { "id" => deleted_id, "email" => user.email }
+      user.destroy!
+
+      adapter.track(event_name: "user_updated", user_ids: [deleted_id], properties: payload)
+
+      expect(client).not_to have_received(:track)
     end
 
     it "calls client.track once per user" do
@@ -105,8 +160,8 @@ RSpec.describe Trackers::CustomerioCdp do
       adapter.track(event_name: "article_created", user_ids: [user.id, other_user.id],
                     properties: { "title" => "t" })
 
-      expect(client).to have_received(:track).with(hash_including(user_id: user.email))
-      expect(client).to have_received(:track).with(hash_including(user_id: other_user.email))
+      expect(client).to have_received(:track).with(hash_including(anonymous_id: "dev:#{user.id}"))
+      expect(client).to have_received(:track).with(hash_including(anonymous_id: "dev:#{other_user.id}"))
     end
 
     it "passes timestamp through" do

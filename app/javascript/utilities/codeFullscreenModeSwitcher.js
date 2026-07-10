@@ -1,17 +1,20 @@
-let isFullScreenModeCodeOn = false;
 let screenScroll = 0;
-const { body } = document;
+
+function getFullScreenWindow() {
+  return document.getElementsByClassName('js-fullscreen-code')[0];
+}
 
 export function getFullScreenModeStatus() {
-  return isFullScreenModeCodeOn;
+  // derive from the DOM so state can never desync from a stale module flag
+  return Boolean(getFullScreenWindow()?.classList.contains('is-open'));
 }
 
 function setAfterFullScreenScrollPosition() {
-  window.scrollTo(0, screenScroll);
+  globalThis.scrollTo(0, screenScroll);
 }
 
 function getBeforeFullScreenScrollPosition() {
-  screenScroll = window.scrollY;
+  screenScroll = globalThis.scrollY;
 }
 
 export function onPressEscape(event) {
@@ -34,18 +37,15 @@ export function onPopstate() {
 
 function listenToWindowForPopstate(listen) {
   if (listen) {
-    window.addEventListener('popstate', onPopstate);
+    globalThis.addEventListener('popstate', onPopstate);
   } else {
-    window.removeEventListener('popstate', onPopstate);
+    globalThis.removeEventListener('popstate', onPopstate);
   }
 }
 
 function toggleOverflowForDocument(overflow) {
-  if (overflow) {
-    body.style.overflow = 'hidden';
-  } else {
-    body.style.overflow = '';
-  }
+  // read document.body live; a cached reference goes stale after a soft navigation
+  document.body.style.overflow = overflow ? 'hidden' : '';
 }
 
 export function addFullScreenModeControl(elements) {
@@ -65,8 +65,7 @@ function removeFullScreenModeControl(elements) {
 }
 
 function fullScreenModeControl(event) {
-  const fullScreenWindow =
-    document.getElementsByClassName('js-fullscreen-code')[0];
+  const fullScreenWindow = getFullScreenWindow();
   const codeBlock = event?.currentTarget.closest('.js-code-highlight')
     ? event.currentTarget.closest('.js-code-highlight').cloneNode(true)
     : null;
@@ -74,7 +73,7 @@ function fullScreenModeControl(event) {
     ? codeBlock.getElementsByClassName('js-fullscreen-code-action')
     : null;
 
-  if (isFullScreenModeCodeOn) {
+  if (getFullScreenModeStatus()) {
     toggleOverflowForDocument(false);
     setAfterFullScreenScrollPosition();
     listenToKeyboardForEscape(false);
@@ -82,10 +81,18 @@ function fullScreenModeControl(event) {
     removeFullScreenModeControl(codeBlockControls);
 
     fullScreenWindow.classList.remove('is-open');
-    fullScreenWindow.removeChild(fullScreenWindow.childNodes[0]);
-
-    isFullScreenModeCodeOn = false;
+    // clears an already-emptied container and any stale leftovers alike
+    fullScreenWindow.replaceChildren();
   } else {
+    if (!codeBlock || !fullScreenWindow) {
+      // popstate/escape fire with no event; an interrupted session must still
+      // release the scroll lock and its listeners (all idempotent)
+      toggleOverflowForDocument(false);
+      listenToKeyboardForEscape(false);
+      listenToWindowForPopstate(false);
+      return;
+    }
+
     toggleOverflowForDocument(true);
     getBeforeFullScreenScrollPosition();
     listenToKeyboardForEscape(true);
@@ -96,7 +103,5 @@ function fullScreenModeControl(event) {
     fullScreenWindow.classList.add('is-open');
 
     addFullScreenModeControl(codeBlockControls);
-
-    isFullScreenModeCodeOn = true;
   }
 }

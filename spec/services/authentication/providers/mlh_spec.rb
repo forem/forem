@@ -12,7 +12,7 @@ RSpec.describe Authentication::Providers::Mlh, type: :service do
       },
       extra: {
         raw_info: {}
-      }
+      },
     )
   end
   let(:provider) { described_class.new(auth_payload) }
@@ -37,18 +37,15 @@ RSpec.describe Authentication::Providers::Mlh, type: :service do
   end
 
   describe "#new_user_data" do
-    it "maps the correct data for a new user" do
+    it "maps email and name, leaving users.mlh_username untouched" do
       data = provider.new_user_data
-      expect(data[:email]).to eq("test@example.com")
-      expect(data[:mlh_username]).to eq("mlhuser")
-      expect(data[:name]).to eq("MLH User")
+      expect(data).to eq(email: "test@example.com", name: "MLH User")
     end
   end
 
   describe "#existing_user_data" do
-    it "maps the correct data for an existing user" do
-      data = provider.existing_user_data
-      expect(data[:mlh_username]).to eq("mlhuser")
+    it "updates nothing, leaving users.mlh_username untouched" do
+      expect(provider.existing_user_data).to eq({})
     end
   end
 end

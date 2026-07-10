@@ -7,6 +7,7 @@ RSpec.describe "User visits podcast show page", js: true do
 
   it "doesn't detect native capabilities from a non-mobile web browser" do
     visit podcast_episode.path.to_s
+    expect(page).to have_selector("body[data-loaded='true']", wait: 30)
 
     result = evaluate_script("window.Forem.Runtime.isNativeIOS('podcast')")
     expect(result).to be false

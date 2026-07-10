@@ -19,18 +19,18 @@ module Authentication
         ::Authentication::Paths.authentication_path(provider_name, **kwargs)
       end
 
+      # users.mlh_username is intentionally never written: the MLH ↔ Core
+      # link lives on the identity row (uid = Core user id), so the column
+      # stays nil rather than mirroring the OAuth nickname.
       def new_user_data
         {
           email: info.email.to_s,
-          mlh_username: info.nickname,
-          name: info.name,
+          name: info.name
         }
       end
 
       def existing_user_data
-        {
-          mlh_username: info.nickname
-        }
+        {}
       end
 
       protected

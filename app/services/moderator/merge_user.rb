@@ -21,8 +21,11 @@ module Moderator
       merge_mentions
       merge_profile
       update_social
-      Users::DeleteWorker.new.perform(@delete_user.id, true)
+      # The merged-away row is deleted, but this is a merge, not a GDPR
+      # erasure — MLH Core merges the two accounts instead of erasing one.
+      Users::DeleteWorker.new.perform(@delete_user.id, true, "merge")
       @keep_user.touch(:profile_updated_at)
+      @keep_user.track!("user_merged", { "merged_forem_user_id" => @delete_user.id })
       Users::MergeSyncWorker.perform_async(@keep_user.id)
 
       EdgeCache::Bust.call("/#{@keep_user.username}")
