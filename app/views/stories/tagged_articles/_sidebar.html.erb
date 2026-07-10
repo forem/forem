@@ -3,74 +3,71 @@
     <div class="sidebar-bg" id="sidebar-bg-left"></div>
     <aside class="side-bar fs-s">
       <% if @tag %>
-        <%= application_policy_content_tag("div", record: Article, query: :create?, class: "widget") do %>
-          <a class="crayons-btn crayons-btn--s" href="/new/<%= @tag.name %>">
+        <%= application_policy_content_tag("div", record: Article, query: :create?, class: "mb-4") do %>
+          <a class="crayons-btn crayons-btn--primary w-100" href="/new/<%= @tag.name %>">
             <%= t("views.tags.sidebar.new") %>
           </a>
         <% end %>
         <% if @tag.rules_html.present? %>
-          <div class="widget">
-            <header>
-              <h4 class="fs-base fw-medium"><%= t("views.tags.sidebar.guidelines") %></h4>
+          <section class="crayons-card crayons-card--secondary crayons-layout__content mb-4">
+            <header class="crayons-card__header">
+              <h3 class="crayons-subtitle-3"><%= t("views.tags.sidebar.guidelines") %></h3>
             </header>
-            <div class="widget-body fs-s">
+            <div class="crayons-card__body fs-s">
               <%= sanitize @tag.rules_html %>
             </div>
-          </div>
+          </section>
         <% end %>
         <% if @tag.wiki_body_html.present? %>
-          <div class="widget">
-            <header>
-              <h4 class="fs-base fw-medium"><%= t("views.tags.sidebar.about", tag: @tag.name) %></h4>
+          <section class="crayons-card crayons-card--secondary crayons-layout__content mb-4">
+            <header class="crayons-card__header">
+              <h3 class="crayons-subtitle-3"><%= t("views.tags.sidebar.about", tag: @tag.name) %></h3>
             </header>
-            <div class="widget-body fs-s">
+            <div class="crayons-card__body fs-s">
               <%= sanitize @tag.wiki_body_html %>
             </div>
-          </div>
+          </section>
         <% end %>
       <% end %>
       <% if user_signed_in? && @moderators.present? %>
-        <div class="widget">
-          <header>
-            <h4 class="fs-base fw-medium"><%= t("views.tags.sidebar.mods") %></h4>
+        <section class="crayons-card crayons-card--secondary crayons-layout__content org-sidebar-widget mb-4">
+          <header class="crayons-card__header">
+            <h3 class="crayons-subtitle-3"><%= t("views.tags.sidebar.mods") %></h3>
           </header>
-          <div class="widget-body fs-s">
+          <div class="org-sidebar-widget-body">
             <% @moderators.each do |user| %>
-              <div class="widget-user-pic">
+              <div class="org-sidebar-widget-user-pic">
                 <a href="/<%= user.username %>" title="<%= user.username %>">
-                  <img src="<%= user.profile_image_url_for(length: 90) %>" alt="<%= user.username %> profile image">
+                  <img src="<%= user.profile_image_url_for(length: 90) %>" alt="<%= user.username %> profile image" loading="lazy" />
                 </a>
               </div>
             <% end %>
           </div>
-        </div>
+        </section>
       <% end %>
       <div class="sidebar-data">
         <% if user_signed_in? %>
           <div class="crayons-btn-group mt-3">
-            <a style="display:none;"
-                id="tag-edit-button"
-                data-tag="<%= @tag.name %>"
-                class="crayons-btn crayons-btn--outlined mod-action-button fs-s"
-                href="<%= tag_url(@tag, @page) %>/edit"
-                style="color:<%= @tag.text_color_hex %>;background-color:<%= @tag.bg_color_hex %>">
+            <a id="tag-edit-button"
+               data-tag="<%= @tag.name %>"
+               class="crayons-btn crayons-btn--outlined mod-action-button fs-s"
+               href="<%= tag_url(@tag, @page) %>/edit"
+               style="display: none; color: <%= @tag.text_color_hex %>; background-color: <%= @tag.bg_color_hex %>;">
               <%= t("views.tags.sidebar.edit") %>
             </a>
-            <a style="display:none;"
-               id="tag-admin-button"
+            <a id="tag-admin-button"
                data-tag="<%= @tag.name %>"
                class="crayons-btn crayons-btn--outlined mod-action-button fs-s"
                href="<%= edit_admin_tag_path(@tag.id) %>"
-               style="color:<%= @tag.text_color_hex %>;background-color:<%= @tag.bg_color_hex %>"
+               style="display: none; color: <%= @tag.text_color_hex %>; background-color: <%= @tag.bg_color_hex %>;"
                data-no-instant>
               <%= t("views.tags.sidebar.admin") %>
             </a>
-            <a style="display:none;"
-               id="tag-mod-button"
+            <a id="tag-mod-button"
                data-tag="<%= @tag.name %>"
                class="crayons-btn crayons-btn--outlined mod-action-button fs-s"
                href="/mod/<%= @tag.name %>"
-               style="color:<%= @tag.text_color_hex %>;background-color:<%= @tag.bg_color_hex %>">
+               style="display: none; color: <%= @tag.text_color_hex %>; background-color: <%= @tag.bg_color_hex %>;">
               <%= t("views.tags.sidebar.moderate") %>
             </a>
           </div>

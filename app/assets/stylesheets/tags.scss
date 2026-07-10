@@ -112,18 +112,6 @@
     width: 100%;
     justify-content: flex-start;
   }
-  
-  .js-follow-tag-button,
-  .c-btn--primary:not(.c-btn--destructive) {
-    background-color: var(--tag-bg-color, var(--accent-brand));
-    border-color: var(--tag-bg-color, var(--accent-brand));
-    color: var(--tag-text-color, #ffffff);
-    font-weight: var(--fw-medium);
-    
-    &:hover {
-      filter: brightness(0.9);
-    }
-  }
 }
 
 // Tag feed pills navigation

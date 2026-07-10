@@ -1,13 +1,14 @@
 <%= content_for :page_meta do %>
   <%= render "stories/tagged_articles/meta" %>
+  <%= stylesheet_link_tag "tags", media: "all" %>
 <% end %>
-<div data-tag-id="<%= @tag.id %>"
-     data-tag-name="<%= @tag.name %>"
-     id="tag-<%= @tag.id %>"
-     class="js-tag-card tag-header-wrapper"
-     style="--tag-bg-color: <%= @tag.bg_color_hex %>; --tag-text-color: <%= @tag.text_color_hex %>;">
-  <div class="tag-header-cover"></div>
-  <div class="crayons-layout">
+<div class="crayons-layout">
+  <div data-tag-id="<%= @tag.id %>"
+       data-tag-name="<%= @tag.name %>"
+       id="tag-<%= @tag.id %>"
+       class="js-tag-card tag-header-wrapper"
+       style="--tag-bg-color: <%= @tag.bg_color_hex %>; --tag-text-color: <%= @tag.text_color_hex %>;">
+    <div class="tag-header-cover"></div>
     <header class="tag-header-main spec__tag-header">
       <% if @tag.badge_id && @tag.badge %>
         <div class="tag-header-logo">
