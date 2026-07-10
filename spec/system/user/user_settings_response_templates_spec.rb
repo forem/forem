@@ -13,6 +13,7 @@ RSpec.describe "User uses response templates settings" do
     context "when user has a response template already" do
       it "can go to the edit page of the response template", js: true do
         visit "/settings/response-templates"
+        expect(page).to have_selector("body[data-loaded='true']", wait: 30)
         click_link "Edit"
 
         expect(page).to have_current_path "/settings/response-templates/#{response_template.id}", ignore_query: true
@@ -20,6 +21,7 @@ RSpec.describe "User uses response templates settings" do
 
       it "shows the proper message when deleting a response template", js: true do
         visit "/settings/extensions"
+        expect(page).to have_selector("body[data-loaded='true']", wait: 30)
         expect(page).to have_text(response_template.title)
 
         expect(page).to have_css(".flex-1", text: response_template.title)
