@@ -13,6 +13,16 @@ HTMLDocument.prototype.ready = new Promise((resolve) => {
 });
 
 function loadForm() {
+  const root = document.querySelector('main');
+  if (!root) {
+    return;
+  }
+
+  if (root.dataset.formInitialized) {
+    return;
+  }
+  root.dataset.formInitialized = 'true';
+
   // The Snackbar for the article page
   const snackZone = document.getElementById('snack-zone');
 
@@ -20,27 +30,31 @@ function loadForm() {
     render(<Snackbar lifespan={3} />, snackZone);
   }
 
-  getUserDataAndCsrfToken().then(({ currentUser, csrfToken }) => {
-    window.currentUser = currentUser;
-    window.csrfToken = csrfToken;
+  getUserDataAndCsrfToken()
+    .then(({ currentUser, csrfToken }) => {
+      window.currentUser = currentUser;
+      window.csrfToken = csrfToken;
 
-    const root = document.querySelector('main');
-    const { article, organizations, version, siteLogo, schedulingEnabled, coverImageHeight, coverImageCrop, aiAvailable } =
-      root.dataset;
-    render(
-      <ArticleForm
-        article={article}
-        organizations={organizations}
-        version={version}
-        siteLogo={siteLogo}
-        coverImageHeight={coverImageHeight}
-        coverImageCrop={coverImageCrop}
-        schedulingEnabled={schedulingEnabled == 'true'}
-        aiAvailable={aiAvailable === 'true'}
-      />,
-      createRootFragment(root, root.firstElementChild),
-    );
-  });
+      const { article, organizations, version, siteLogo, schedulingEnabled, coverImageHeight, coverImageCrop, aiAvailable } =
+        root.dataset;
+      render(
+        <ArticleForm
+          article={article}
+          organizations={organizations}
+          version={version}
+          siteLogo={siteLogo}
+          coverImageHeight={coverImageHeight}
+          coverImageCrop={coverImageCrop}
+          schedulingEnabled={schedulingEnabled == 'true'}
+          aiAvailable={aiAvailable === 'true'}
+        />,
+        createRootFragment(root, root.firstElementChild),
+      );
+    })
+    .catch((error) => {
+      delete root.dataset.formInitialized;
+      console.error('Failed to load article form:', error);
+    });
 }
 
 document.ready.then(() => {

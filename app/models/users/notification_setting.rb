@@ -13,6 +13,7 @@ module Users
     alias_attribute :subscribed_to_email_follower_notifications, :email_follower_notifications
 
     after_commit :subscribe_to_mailchimp_newsletter
+    after_commit :track_newsletter_change, on: :update
     after_save if: :saved_change_to_email_newsletter? do
       user&.sync_base_email_eligible!
     end
@@ -23,6 +24,19 @@ module Users
       return if user.email.blank?
 
       Users::SubscribeToMailchimpNewsletterWorker.perform_async(user.id)
+    end
+
+    private
+
+    # Newsletter consent changes must reach MLH Core (source of truth for
+    # email subscriptions), which cannot see this table otherwise. Fires on
+    # every toggle path: settings page, one-click unsubscribe links,
+    # onboarding, and the Mailchimp unsubscribe webhook.
+    def track_newsletter_change
+      return unless saved_change_to_email_newsletter?
+
+      event = email_newsletter? ? "user_newsletter_subscribed" : "user_newsletter_unsubscribed"
+      user&.track!(event)
     end
   end
 end

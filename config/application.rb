@@ -53,6 +53,9 @@ module PracticalDeveloper
     # TODO: Revert to :json after legacy links (valid for 31 days) have expired.
     config.active_support.message_serializer = :json_allow_marshal
 
+    # Enable JSON message serializer for metadata to avoid legacy Marshal format dependency.
+    config.active_support.use_message_serializer_for_metadata = true
+
 
     # Enable validating only parent-related columns for presence when the parent is mandatory.
     config.active_record.belongs_to_required_validates_foreign_key = true

@@ -91,7 +91,8 @@ div.highlight {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: var(--z-modal);
+  // placed above the fixed header (#topbar, z-index: 10000) so the exit control is reachable;
+  z-index: 10001;
   width: 100%;
   height: 100vh;
   background: var(--syntax-background-color);
@@ -109,6 +110,8 @@ div.highlight {
 
   .highlight__panel {
     position: fixed;
+    // exit affordance must stay visible without hover (touch/non-hover devices)
+    visibility: visible;
   }
 
   .highlight-action--fullscreen-on {
