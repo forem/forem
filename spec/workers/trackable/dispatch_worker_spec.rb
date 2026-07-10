@@ -68,4 +68,16 @@ RSpec.describe Trackable::DispatchWorker, type: :worker do
       expect(Rails.logger).to have_received(:error).with(a_string_including("dummy")).at_least(:once)
     end
   end
+
+  describe ".sidekiq_retries_exhausted" do
+    # A dead-lettered event is silent DEV -> Core drift; make it page.
+    it "notifies Honeybadger when an event exhausts its retries" do
+      allow(Honeybadger).to receive(:notify)
+      job = { "args" => ["customerio_cdp", "user_updated", [1], {}, nil], "error_message" => "boom" }
+
+      described_class.sidekiq_retries_exhausted_block.call(job, StandardError.new("boom"))
+
+      expect(Honeybadger).to have_received(:notify)
+    end
+  end
 end
