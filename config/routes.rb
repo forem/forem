@@ -127,6 +127,10 @@ Rails.application.routes.draw do
 
         namespace :admin do
           resources :users, only: %i[index show update] do
+            collection do
+              post "identities/bulk", to: "user_identities#bulk_create"
+            end
+
             member do
               put :email, action: :update_email
               put :status, action: :update_status
