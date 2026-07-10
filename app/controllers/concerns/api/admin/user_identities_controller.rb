@@ -110,9 +110,9 @@ module Api
 
       # Three queries for the whole batch instead of three per row — at 1,000
       # rows per request and ~2M links total, per-row lookups would hammer
-      # the DB. The taken-uid set is mutated as rows link so same-batch
-      # duplicates conflict like pre-existing ones; the RecordNotUnique
-      # rescue still covers races with concurrent writers.
+      # the DB. Both preloaded indexes are mutated as rows link so same-batch
+      # duplicates (by uid or by user) resolve like pre-existing ones; the
+      # RecordNotUnique rescue still covers races with concurrent writers.
       def bulk_preload(provider, entries)
         objects = entries.select { |entry| bulk_entry_object?(entry) }
         user_ids = objects.filter_map { |entry| entry[:user_id].presence }
@@ -158,6 +158,7 @@ module Api
 
         identity = Identity.create!(user: target, provider: provider, uid: uid)
         preload[:taken_uids] << uid
+        preload[:identities_by_user][target.id] = identity
         { "user_id" => target.id, "identity_id" => identity.id, "status" => "created" }
       rescue ActiveRecord::RecordNotUnique
         { "user_id" => target.id, "status" => "conflict", "error_code" => "identity_uid_taken" }

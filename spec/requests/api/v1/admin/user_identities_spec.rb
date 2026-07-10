@@ -242,6 +242,29 @@ RSpec.describe "Api::V1::Admin::UserIdentities" do
       expect(results[second.id]["error_code"]).to eq("identity_uid_taken")
     end
 
+    it "reports a same-batch repeat of the same user and uid as already_linked" do
+      repeated = create(:user)
+
+      bulk_post([{ user_id: repeated.id, uid: "888" }, { user_id: repeated.id, uid: "888" }])
+
+      expect(response).to have_http_status(:ok)
+      statuses = response.parsed_body["results"].pluck("status")
+      expect(statuses).to eq(%w[created already_linked])
+      expect(repeated.identities.where(provider: "mlh").count).to eq(1)
+    end
+
+    it "reports a same-batch same user with a different uid as a per-item conflict" do
+      repeated = create(:user)
+
+      bulk_post([{ user_id: repeated.id, uid: "888" }, { user_id: repeated.id, uid: "999" }])
+
+      expect(response).to have_http_status(:ok)
+      results = response.parsed_body["results"]
+      expect(results.pluck("status")).to eq(%w[created conflict])
+      expect(results.last["error_code"]).to eq("user_already_has_identity_for_provider")
+      expect(repeated.identities.where(provider: "mlh").pluck(:uid)).to eq(["888"])
+    end
+
     it "reports not_found and invalid entries without failing the batch" do
       bulk_post([{ user_id: 999_999, uid: "1" }, { user_id: user.id, uid: "" }])
 
