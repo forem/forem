@@ -59,6 +59,22 @@ RSpec.describe "Custom Domain Redirects", type: :request do
       expect(response).to have_http_status(:moved_permanently)
     end
 
+    it "redirects non-profile and non-article pages (like /enter) to the main app domain" do
+      host! "blog.example.com"
+      get "/enter"
+      
+      expect(response).to redirect_to("http://forem.com/enter")
+      expect(response).to have_http_status(:moved_permanently)
+    end
+
+    it "redirects other valid global HTML pages (like /search) to the main app domain" do
+      host! "blog.example.com"
+      get "/search"
+      
+      expect(response).to redirect_to("http://forem.com/search")
+      expect(response).to have_http_status(:moved_permanently)
+    end
+
     it "does not redirect if the domain does not match even if the path exists" do
       host! "other.example.com"
       
@@ -126,6 +142,15 @@ RSpec.describe "Custom Domain Redirects", type: :request do
       get "/my-old-post", params: { i: "i" }, xhr: true
       
       expect(response).to redirect_to("https://dev.to/my-new-post")
+      expect(response).to have_http_status(:moved_permanently)
+    end
+
+    it "does not raise a DoubleRenderError and redirects successfully when org_slug is mismatched on show path" do
+      host! "blog.example.com"
+      
+      get "/wrong-org/feed"
+      
+      expect(response).to redirect_to("http://forem.com/wrong-org/feed")
       expect(response).to have_http_status(:moved_permanently)
     end
   end

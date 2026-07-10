@@ -6,6 +6,7 @@ class User < ApplicationRecord
 
   include Images::Profile.for(:profile_image_url)
   include AlgoliaSearchable
+  include Trackable
 
   # NOTE: we are using an inline module to keep profile related things together.
   concerning :Profiles do
@@ -34,10 +35,30 @@ class User < ApplicationRecord
 
   RECENTLY_ACTIVE_LIMIT = 10_000
 
-  # User types enum
-  enum type_of: { member: 0, community_bot: 1, member_bot: 2 }
-  enum current_subscriber_status: { not_subscribed: 0, free_subscription: 1, trial_subscription: 2,
-                                    paying_subscription: 3 }
+  # Moderation role changes emit dedicated events so Core can scope the DEV
+  # newsletter and prune bot Customer.io profiles. Suspension is moderation,
+  # not consent withdrawal — Core never flips its global unsubscribe on these.
+  # See the add_role/remove_role overrides in the Trackable section below.
+  MODERATION_ROLE_EVENTS = {
+    added: { "suspended" => "user_suspended", "spam" => "user_spam_flagged" },
+    removed: { "suspended" => "user_unsuspended", "spam" => "user_spam_unflagged" }
+  }.freeze
+
+  # Column changes that must reach MLH Core: deliberate profile edits, the
+  # actual email swap (Devise reconfirmable lands it outside any profile
+  # edit), email confirmation, and invited accounts completing registration.
+  SYNC_TRIGGER_KEYS = %w[profile_updated_at email confirmed_at registered].freeze
+
+  # Activity timestamps that mean "this person used DEV" — advancing any of
+  # them emits a throttled user_engaged so Core keeps engaged_at fresh for
+  # accounts that never edit their profile.
+  ACTIVITY_TIMESTAMP_KEYS = %w[current_sign_in_at last_sign_in_at last_presence_at last_reacted_at
+                               last_followed_at last_comment_at last_article_at].freeze
+  ENGAGEMENT_EMIT_INTERVAL = 1.week
+
+  enum :type_of, { member: 0, community_bot: 1, member_bot: 2 }
+  enum :current_subscriber_status, { not_subscribed: 0, free_subscription: 1, trial_subscription: 2,
+                                     paying_subscription: 3 }
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
@@ -58,6 +79,8 @@ class User < ApplicationRecord
   has_many :api_secrets, dependent: :delete_all
   has_many :agent_sessions, dependent: :destroy
   has_many :articles, dependent: :destroy
+  has_many :event_signups, dependent: :destroy
+  has_many :signed_up_events, through: :event_signups, source: :event
   has_many :ai_audits, foreign_key: :affected_user_id, inverse_of: :affected_user, dependent: :nullify
   has_many :audit_logs, dependent: :nullify
   has_many :authored_notes, inverse_of: :author, class_name: "Note", foreign_key: :author_id, dependent: :delete_all
@@ -73,6 +96,8 @@ class User < ApplicationRecord
                             inverse_of: :blocker, dependent: :delete_all
   has_many :collections, dependent: :destroy
   has_many :comments, dependent: :destroy
+  has_many :concept_accesses, dependent: :delete_all
+  has_many :accessible_concepts, through: :concept_accesses, source: :concept
   has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
   has_many :credits, dependent: :destroy
   has_many :discussion_locks, dependent: :delete_all, inverse_of: :locking_user, foreign_key: :locking_user_id
@@ -313,6 +338,14 @@ class User < ApplicationRecord
 
   def self.mascot_account
     find_by(id: Settings::General.mascot_user_id)
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["agent_sessions_count", "apple_username", "articles_count", "badge_achievements_count", "base_email_eligible", "blocked_by_count", "blocking_others_count", "checked_code_of_conduct", "checked_terms_and_conditions", "comments_count", "confirmation_sent_at", "confirmed_at", "created_at", "credits_count", "current_sign_in_at", "current_subscriber_status", "email", "export_requested", "exported_at", "facebook_username", "failed_attempts", "feed_fetched_at", "following_orgs_count", "following_tags_count", "following_users_count", "forem_username", "github_repos_updated_at", "github_username", "google_oauth2_created_at", "google_oauth2_username", "id", "id_value", "invitation_accepted_at", "invitation_created_at", "invitation_limit", "invitation_sent_at", "invitations_count", "invited_by_id", "invited_by_type", "last_article_at", "last_comment_at", "last_followed_at", "last_moderation_notification", "last_notification_activity", "last_onboarding_page", "last_presence_at", "last_reacted_at", "last_sign_in_at", "latest_article_updated_at", "locked_at", "max_score", "mlh_username", "name", "old_old_username", "old_username", "onboarding_package_requested", "onboarding_subforem_id", "organization_info_updated_at", "payment_pointer", "profile_image", "profile_updated_at", "public_reactions_count", "rating_votes_count", "reactions_count", "registered", "registered_at", "reputation_modifier", "reset_password_sent_at", "saw_onboarding", "score", "sign_in_count", "sign_in_token_sent_at", "signup_cta_variant", "spent_credits_count", "stripe_id_code", "subscribed_to_user_subscriptions_count", "twitter_username", "type_of", "unconfirmed_email", "unspent_credits_count", "updated_at", "username"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["roles", "profile", "setting", "notification_setting"]
   end
 
   def good_standing_followers_count
@@ -785,6 +818,9 @@ class User < ApplicationRecord
     return if last_presence_at.present? && last_presence_at > 1.hour.ago
 
     update_column(:last_presence_at, Time.current)
+    # update_column bypasses callbacks, so the throttled engagement event that
+    # enqueue_trackable_event_updated would fire has to be emitted explicitly.
+    track_engagement!(last_presence_at)
   end
 
   def sync_base_email_eligible!
@@ -811,6 +847,129 @@ class User < ApplicationRecord
 
     last_followed_at.respond_to?(:rfc3339) ? last_followed_at.rfc3339 : last_followed_at.to_s
   end
+
+  # === Trackable (DEV → MLH Core user sync) ===
+  # Emits user_created / user_updated to the Customer.io CDP so MLH Core can
+  # link the DEV account (SocialProfiles::Dev) and record engagement.
+
+  def trackable_user_ids
+    [id]
+  end
+
+  # Curated payload — do NOT ship the full users row across the boundary.
+  # String keys keep the job arguments JSON-safe for Sidekiq.strict_args!.
+  # mlh_user_id is the Core user id from the mlh OAuth identity, letting Core
+  # resolve deterministically instead of by email match.
+  def trackable_payload
+    {
+      "id" => id, "username" => username, "email" => email, "name" => name,
+      "confirmed_at" => confirmed_at&.iso8601,
+      "email_newsletter" => notification_setting&.email_newsletter,
+      "mlh_user_id" => identities.where(provider: "mlh").pick(:uid)
+    }
+  end
+
+  # Invited accounts (registered: false) have not consented to anything yet,
+  # so their creation stays out of the sync; user_created fires from the
+  # update path when registration completes.
+  def enqueue_trackable_event_created
+    return unless registered?
+
+    enqueue_trackable_event("user_created")
+  end
+
+  # Emit only for changes Core consumes (SYNC_TRIGGER_KEYS): profile edits
+  # touch profile_updated_at on every edit path (Users::Update, users#update),
+  # so unrelated row churn (counters, score recalcs) does not emit. Activity
+  # timestamp changes emit a throttled user_engaged instead.
+  def enqueue_trackable_event_updated
+    track_engagement
+    return unless previous_changes.keys.intersect?(SYNC_TRIGGER_KEYS)
+
+    if previous_changes.key?("registered")
+      enqueue_trackable_event("user_created") if registered?
+    else
+      enqueue_trackable_event("user_updated")
+    end
+  end
+
+  # At most one user_engaged per user per ENGAGEMENT_EMIT_INTERVAL — the
+  # cache key throttles the frequent writers (presence pings, sign-ins) down
+  # to what Core actually needs to keep engaged_at inside its activity
+  # window. Moderated accounts stay silent so a pruned Customer.io profile
+  # is not resurrected by their activity.
+  def track_engagement
+    changed_activity = previous_changes.slice(*ACTIVITY_TIMESTAMP_KEYS)
+    return if changed_activity.empty?
+
+    engaged_at = changed_activity.filter_map { |_key, (_old, new_value)| new_value }.max || Time.current
+    track_engagement!(engaged_at)
+  end
+
+  # Emit a throttled user_engaged for a known activity timestamp. Callable from
+  # paths that skip callbacks (e.g. update_presence!'s update_column write). The
+  # throttle slot is claimed before the spam/suspended role query so hot presence
+  # pings stay a single cache read.
+  def track_engagement!(engaged_at)
+    return unless engagement_emission_due?
+    return if spam_or_suspended?
+
+    track!("user_engaged", { "engaged_at" => engaged_at.iso8601 })
+  end
+
+  # Atomically claim the per-user throttle slot; the write only succeeds when no
+  # unexpired key exists, so its truthy return doubles as the "due" signal and
+  # concurrent writers cannot both emit inside the interval.
+  def engagement_emission_due?
+    Rails.cache.write("user_engaged_throttle:#{id}", true,
+                      expires_in: ENGAGEMENT_EMIT_INTERVAL, unless_exist: true)
+  end
+
+  # Two gates: the admin master switch, then the per-account rollout flag.
+  # The setting is resolved via the default subforem (like mailers do) because the
+  # admin panel saves it subforem-scoped and callbacks may run without request context.
+  def trackable_events_skipped?
+    # Bots (community_bot / member_bot) are not people; the Core backfill
+    # excluded them and the live sync must too.
+    return true unless member?
+    return true unless Settings::General.customerio_cdp_enabled(subforem_id: Subforem.cached_default_id)
+    return true unless FeatureFlag.enabled_for_user?(:dev_core_user_sync, self)
+
+    super
+  end
+
+  # User deletion / unlink is intentionally out of scope for the DEV → Core sync
+  # (created + updated only), and the Core consumer does not handle deletes, so
+  # suppress the concern's default user_destroyed emission.
+  def enqueue_trackable_event_destroyed(*)
+    nil
+  end
+
+  def add_role(role_name, resource = nil)
+    event = moderation_role_event(role_name, :added, resource)
+    already_had_role = event && has_role?(role_name)
+    result = super
+    track!(event) if event && !already_had_role
+    result
+  end
+
+  def remove_role(role_name, resource = nil)
+    event = moderation_role_event(role_name, :removed, resource)
+    had_role = event && has_role?(role_name)
+    result = super
+    track!(event) if event && had_role
+    result
+  end
+
+  # Only global (non-resource-scoped) moderation roles emit.
+  def moderation_role_event(role_name, direction, resource)
+    return if resource.present? || !persisted?
+
+    MODERATION_ROLE_EVENTS[direction][role_name.to_s]
+  end
+  private :enqueue_trackable_event_created, :enqueue_trackable_event_updated, :trackable_events_skipped?,
+          :enqueue_trackable_event_destroyed, :moderation_role_event, :track_engagement, :track_engagement!,
+          :engagement_emission_due?
 
   protected
 

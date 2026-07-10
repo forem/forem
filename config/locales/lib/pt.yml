@@ -107,6 +107,8 @@ pt:
         general:
           ahoy_tracking:
             description: Enable Ahoy tracking
+          customerio_cdp_enabled:
+            description: Master switch for sending user registration and profile-update events to the Customer.io CDP (DEV to MLH Core sync). Per-account rollout is controlled separately by the dev_core_user_sync feature flag.
           billboard_enabled_countries:
             description: Countries where billboards are enabled
           contact_email:

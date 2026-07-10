@@ -71,6 +71,22 @@ fr:
     you_are_following: "Vous suivez"
     and: "et"
   date:
+    abbr_day_names:
+    - dim.
+    - lun.
+    - mar.
+    - mer.
+    - jeu.
+    - ven.
+    - sam.
+    day_names:
+    - dimanche
+    - lundi
+    - mardi
+    - mercredi
+    - jeudi
+    - vendredi
+    - samedi
     abbr_month_names:
     -
     - janv
@@ -216,6 +232,8 @@ fr:
       identity_not_found: "Identité introuvable pour cet utilisateur"
       user_already_has_identity_for_provider: "L'utilisateur a déjà une identité pour le fournisseur « %{provider} »"
       identity_uid_taken: "L'uid %{uid} (%{provider}) est déjà lié à un autre utilisateur"
+      invalid_notification_settings: "notification_setting doit inclure au moins une clé prise en charge (email_newsletter)"
+      invalid_identities: "identities doit être un tableau de 1 à %{limit} entrées"
       cannot_merge_user_into_itself: "Impossible de fusionner un utilisateur avec lui-même"
       merge_identity_conflict: "La fusion n'a pas pu être effectuée : %{reason}"
       unknown_provider: "Le fournisseur « %{provider} » n'est pas configuré"
@@ -242,6 +260,7 @@ fr:
       greater_than: doit être supérieur à %{count}
       greater_than_or_equal_to: doit être supérieur ou égal à %{count}
       inclusion: n'est pas inclus dans la liste
+      integer_only: Entier seulement. Aucun signe n'est autorisé.
       invalid: est invalide
       less_than: doit être inférieur à %{count}
       less_than_or_equal_to: doit être inférieur ou égal à %{count}

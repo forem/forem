@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Trends", type: :request do
+RSpec.describe "Trends" do
   describe "GET /trending" do
     it "renders the trends list" do
       allow(Images::Optimizer).to receive(:call).and_call_original
@@ -9,7 +9,7 @@ RSpec.describe "Trends", type: :request do
         .and_return("https://optimized.example.com/ruby34_750.png")
 
       trend1 = create(:trend, name: "Ruby 3.4 release", score: 10, cover_image: "https://example.com/ruby34.png")
-      trend2 = create(:trend, name: "AI Agent Revolution", score: 5)
+      create(:trend, name: "AI Agent Revolution", score: 5)
 
       get trending_index_path
       expect(response).to have_http_status(:ok)
@@ -20,7 +20,36 @@ RSpec.describe "Trends", type: :request do
       # Assert surrogate keys
       expect(response.headers["Surrogate-Key"]).to include("trends")
       expect(response.headers["Surrogate-Key"]).to include(trend1.record_key)
-      expect(response.headers["Surrogate-Key"]).to include(trend2.record_key)
+    end
+  end
+
+  describe "GET /trending with tag filtering" do
+    let(:tag_ruby) { create(:tag, name: "ruby") }
+    let(:tag_python) { create(:tag, name: "python") }
+
+    before do
+      create(:trend, name: "Ruby 3.4 release", tag: tag_ruby, last_observed_at: 1.day.ago)
+      create(:trend, name: "Python 3.13 release", tag: tag_python, last_observed_at: 1.day.ago)
+      create(:trend, name: "AI Agent Revolution", tag: nil, last_observed_at: 1.day.ago)
+    end
+
+    it "renders all trends when no tag filter is specified" do
+      get trending_index_path
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Ruby 3.4 release", "Python 3.13 release", "AI Agent Revolution")
+      expect(response.body).to include("#ruby", "#python")
+
+      # Assert active trend tag surrogate keys
+      expect(response.headers["Surrogate-Key"]).to include(tag_ruby.record_key)
+      expect(response.headers["Surrogate-Key"]).to include(tag_python.record_key)
+    end
+
+    it "filters trends by tag when tag param is provided" do
+      get trending_index_path, params: { tag: "ruby" }
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Ruby 3.4 release")
+      expect(response.body).not_to include("Python 3.13 release")
+      expect(response.body).not_to include("AI Agent Revolution")
     end
   end
 
@@ -34,7 +63,8 @@ RSpec.describe "Trends", type: :request do
         .with("https://example.com/ruby34_large.png", hash_including(width: 1200))
         .and_return("https://optimized.example.com/ruby34_1200.png")
 
-      trend = create(:trend, name: "Ruby 3.4 release", description: "Awesome discussions about Ruby 3.4 features", cover_image: "https://example.com/ruby34_large.png")
+      trend = create(:trend, name: "Ruby 3.4 release", description: "Awesome discussions about Ruby 3.4 features",
+                             cover_image: "https://example.com/ruby34_large.png")
       article1 = create(:article, published: true, title: "Ruby 3.4 features deep dive")
       article2 = create(:article, published: true, title: "Why I love Ruby 3.4")
 
@@ -48,7 +78,7 @@ RSpec.describe "Trends", type: :request do
       expect(response.body).to include("Ruby 3.4 features deep dive", "Why I love Ruby 3.4")
       expect(response.body).to include("About this trend")
       expect(response.body).to include("This trend groups posts from the last 7 days that discuss similar concepts, technologies, or ideas.")
-      
+
       # Assert cover image and OG/Twitter tags
       expect(response.body).to include("https://optimized.example.com/ruby34_500.png")
       expect(response.body).to include('property="og:image" content="https://optimized.example.com/ruby34_1200.png"')

@@ -26,7 +26,7 @@ class Organization < ApplicationRecord
   VERIFICATION_STATUS_FAILED = "failed".freeze
   VERIFICATION_STATUS_ADMIN = "admin_verified".freeze
 
-  enum tls_status: { not_started: 0, pending: 1, issued: 2, failed: 3 }
+  enum :tls_status, { not_started: 0, pending: 1, issued: 2, failed: 3 }
 
   acts_as_followable
 
@@ -43,6 +43,7 @@ class Organization < ApplicationRecord
   after_save :generate_social_images
 
   after_update_commit :conditionally_update_articles
+  after_update_commit :recompile_pages, if: -> { saved_change_to_name? || saved_change_to_slug? || saved_change_to_summary? }
   after_save_commit :manage_fastly_tls_subscription
   after_destroy_commit :bust_cache
 
@@ -117,6 +118,10 @@ class Organization < ApplicationRecord
 
   def self.reserved_word
     I18n.t("models.organization.reserved_word")
+  end
+
+  def self.find_by_slug_or_legacy(slug)
+    find_by(slug: slug) || find_by(old_slug: slug) || find_by(old_old_slug: slug)
   end
 
   def check_for_slug_change
@@ -384,5 +389,11 @@ class Organization < ApplicationRecord
 
   def bust_cache
     Organizations::BustCacheWorker.perform_async(id, slug)
+  end
+
+  def recompile_pages
+    return unless FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[self])
+
+    Organizations::RecompilePagesWorker.perform_async(id)
   end
 end

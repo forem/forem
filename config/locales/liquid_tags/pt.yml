@@ -20,6 +20,8 @@ pt:
       invalid_comment: ID ou URL do comentário inválido
     dotnet_fiddle_tag:
       invalid_dotnetfiddle_url: URL do DotnetFiddle inválida
+    event_tag:
+      not_found: Evento não encontrado
     descript_tag:
       invalid_descript_url: URL do Descript inválida.
     gist_tag:
@@ -44,6 +46,7 @@ pt:
       invalid_url: URL do Hugging Face Space inválida
     instagram_tag:
       invalid_instagram_id: ID do Instagram inválido
+      view_post: Ver essa publicação no Instagram
     js_fiddle_tag:
       invalid_jsfiddle_url: URL do JSFiddle inválida
       invalid_options: Opções inválidas

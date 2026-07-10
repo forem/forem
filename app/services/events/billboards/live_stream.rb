@@ -109,13 +109,14 @@ module Events
               const overlay = document.getElementById("overlay-feed-#{event.id}");
               const countdownEl = document.getElementById("countdown-feed-#{event.id}");
               const playerContainer = document.getElementById("player-container-feed-#{event.id}");
-              let timerId;
-
               function update() {
                 const now = Date.now();
 
                 if (now >= TARGET_TIME) {
-                  clearInterval(timerId);
+                  if (window.liveStreamIntervals && window.liveStreamIntervals["#{event.id}"]) {
+                    clearInterval(window.liveStreamIntervals["#{event.id}"]);
+                    delete window.liveStreamIntervals["#{event.id}"];
+                  }
                   if (overlay) overlay.classList.remove("active");
 
                   if (playerContainer && !playerContainer.querySelector("iframe")) {
@@ -155,7 +156,11 @@ module Events
                 }
               }
 
-              timerId = setInterval(update, 1000);
+              window.liveStreamIntervals = window.liveStreamIntervals || {};
+              if (window.liveStreamIntervals["#{event.id}"]) {
+                clearInterval(window.liveStreamIntervals["#{event.id}"]);
+              }
+              window.liveStreamIntervals["#{event.id}"] = setInterval(update, 1000);
               update();
             })();
           </script>
@@ -297,13 +302,14 @@ module Events
               const overlay = document.getElementById("overlay-post-#{event.id}");
               const countdownEl = document.getElementById("countdown-post-#{event.id}");
               const playerContainer = document.getElementById("player-container-post-#{event.id}");
-              let timerId;
-
               function update() {
                 const now = Date.now();
 
                 if (now >= TARGET_TIME) {
-                  clearInterval(timerId);
+                  if (window.liveStreamIntervals && window.liveStreamIntervals["#{event.id}"]) {
+                    clearInterval(window.liveStreamIntervals["#{event.id}"]);
+                    delete window.liveStreamIntervals["#{event.id}"];
+                  }
                   if (overlay) overlay.classList.remove("active");
 
                   if (playerContainer && !playerContainer.querySelector("iframe")) {
@@ -343,7 +349,164 @@ module Events
                 }
               }
 
-              timerId = setInterval(update, 1000);
+              window.liveStreamIntervals = window.liveStreamIntervals || {};
+              if (window.liveStreamIntervals["#{event.id}"]) {
+                clearInterval(window.liveStreamIntervals["#{event.id}"]);
+              }
+              window.liveStreamIntervals["#{event.id}"] = setInterval(update, 1000);
+              update();
+            })();
+          </script>
+        HTML
+      end
+
+      def minimized_post_html
+        escaped_title = ERB::Util.html_escape(event.title.to_s)
+        escaped_description = ERB::Util.html_escape(event.description.to_s)
+        escaped_link = ERB::Util.html_escape(link.to_s)
+
+        <<~HTML
+          <style>
+            .media-wrapper-minimized {
+              position: relative;
+              width: 100%;
+              aspect-ratio: 16 / 9;
+              background: #000;
+              border-radius: 8px;
+              margin-top: 8px;
+              margin-bottom: 12px;
+              overflow: hidden;
+            }
+            .overlay-minimized {
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              color: #fff;
+              display: none;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              font-family: sans-serif;
+              font-size: var(--fs-s);
+              z-index: 2;
+              background: rgba(0, 0, 0, 0.7);
+            }
+            .overlay-minimized.active {
+              display: flex;
+            }
+            .player-container-minimized {
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              z-index: 1;
+            }
+            .player-container-minimized iframe {
+              width: 100%;
+              height: 100%;
+              border: none;
+            }
+            @keyframes pulse-live {
+              0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
+              70% { transform: scale(1); box-shadow: 0 0 0 4px rgba(255, 255, 255, 0); }
+              100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+            }
+          </style>
+
+          <div class="live-stream-minimized" style="min-width:60px;display: flex; flex-direction: column; gap: var(--su-2);">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--su-2);">
+              <h4 style="font-size: var(--fs-base); font-weight: bold; margin: 0; line-height: var(--lh-tight);">
+                #{escaped_title}
+              </h4>
+              <div id="live-indicator-minimized-#{event.id}" style="display: none; align-items: center; gap: 6px; background: #dc2626; color: white; padding: 2px 8px; border-radius: 4px; font-size: var(--fs-xs); font-weight: bold; text-transform: uppercase;">
+                <span style="display: inline-block; width: 6px; height: 6px; background: white; border-radius: 50%; animation: pulse-live 1.5s infinite;"></span>
+                Live
+              </div>
+            </div>
+
+            <div class="media-wrapper-minimized">
+              <div class="overlay-minimized" id="overlay-minimized-#{event.id}">
+                <div>Starts in…</div>
+                <div id="countdown-minimized-#{event.id}">--:--:--</div>
+              </div>
+              <div class="player-container-minimized" id="player-container-minimized-#{event.id}"></div>
+            </div>
+
+            <p style="font-size: var(--fs-s); opacity: 0.9; margin: 0; line-height: var(--lh-base);">
+              #{escaped_description}
+            </p>
+
+            <div style="margin-top: 4px;">
+              <a href="#{escaped_link}" class="ltag_cta ltag_cta--branded" style="display: block; text-align: center; font-weight: bold; width: 100%; padding: var(--su-2) 0; font-size: var(--fs-s);">
+                Tune in to Stream
+              </a>
+            </div>
+          </div>
+
+          <script>
+            (function() {
+              const TARGET_TIME = new Date(#{event.start_time.iso8601.to_json}).getTime();
+              const IFRAME_SRC = #{event.primary_stream_url.to_json};
+
+              const overlay = document.getElementById("overlay-minimized-#{event.id}");
+              const countdownEl = document.getElementById("countdown-minimized-#{event.id}");
+              const playerContainer = document.getElementById("player-container-minimized-#{event.id}");
+              const liveIndicator = document.getElementById("live-indicator-minimized-#{event.id}");
+              function update() {
+                const now = Date.now();
+                if (now >= TARGET_TIME) {
+                  if (window.liveStreamIntervals && window.liveStreamIntervals["#{event.id}"]) {
+                    clearInterval(window.liveStreamIntervals["#{event.id}"]);
+                    delete window.liveStreamIntervals["#{event.id}"];
+                  }
+                  if (overlay) overlay.classList.remove("active");
+                  if (liveIndicator) liveIndicator.style.display = "inline-flex";
+
+                  if (playerContainer && !playerContainer.querySelector("iframe")) {
+                    const iframe = document.createElement("iframe");
+                    
+                    let finalSrc = IFRAME_SRC;
+                    try {
+                      const url = new URL(finalSrc);
+                      if (url.hostname.includes("youtube.com") || url.hostname.includes("youtu.be")) {
+                        url.searchParams.set("autoplay", "1");
+                        url.searchParams.set("mute", "1");
+                      } else if (url.hostname.includes("twitch.tv")) {
+                        url.searchParams.set("autoplay", "true");
+                        url.searchParams.set("muted", "true");
+                      }
+                      finalSrc = url.toString();
+                    } catch (e) {
+                      // ignore
+                    }
+
+                    iframe.src = finalSrc;
+                    iframe.allow = "autoplay; fullscreen";
+                    iframe.allowFullscreen = true;
+                    playerContainer.appendChild(iframe);
+                  }
+                  return;
+                }
+
+                if (overlay) overlay.classList.add("active");
+
+                if (countdownEl) {
+                  const diffSeconds = Math.max(0, Math.floor((TARGET_TIME - now) / 1000));
+                  const hours = String(Math.floor(diffSeconds / 3600)).padStart(2, "0");
+                  const minutes = String(Math.floor((diffSeconds % 3600) / 60)).padStart(2, "0");
+                  const seconds = String(diffSeconds % 60).padStart(2, "0");
+                  countdownEl.textContent = `${hours}:${minutes}:${seconds}`;
+                }
+              }
+
+              window.liveStreamIntervals = window.liveStreamIntervals || {};
+              if (window.liveStreamIntervals["#{event.id}"]) {
+                clearInterval(window.liveStreamIntervals["#{event.id}"]);
+              }
+              window.liveStreamIntervals["#{event.id}"] = setInterval(update, 1000);
               update();
             })();
           </script>

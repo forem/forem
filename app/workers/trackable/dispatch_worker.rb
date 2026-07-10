@@ -6,6 +6,15 @@ module Trackable
 
     sidekiq_options queue: :low_priority, retry: 5
 
+    # A dead-lettered event is silent DEV -> Core drift: the event is gone
+    # and nothing downstream will notice. Page instead of dropping quietly.
+    sidekiq_retries_exhausted do |job, exception|
+      Honeybadger.notify(
+        exception,
+        context: { adapter: job["args"]&.first, event: job["args"]&.second, trackable_dead_letter: true },
+      )
+    end
+
     def perform(adapter_name, event_name, user_ids, properties, timestamp_iso)
       adapter = Trackable::Registry.instance_for(adapter_name)
       return if adapter.nil? || !adapter.enabled?

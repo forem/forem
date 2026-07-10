@@ -49,5 +49,41 @@ RSpec.describe "/admin/member_manager/users" do
 
       expect(response).to redirect_to(admin_user_path(user))
     end
+
+    context "when the new email is already taken by another user" do
+      let!(:other_user) { create(:user, email: "taken@example.com") }
+
+      it "does not update the email and sets an error flash message" do
+        old_email = user.email
+
+        patch update_email_admin_user_path(user.id), params: {
+          user: {
+            email: "taken@example.com"
+          }
+        }
+
+        user.reload
+        expect(user.email).to eq(old_email)
+        expect(flash[:error]).to include("Email has already been taken")
+        expect(response).to redirect_to(admin_user_path(user))
+      end
+    end
+
+    context "when the new email format is invalid" do
+      it "does not update the email and sets an error flash message" do
+        old_email = user.email
+
+        patch update_email_admin_user_path(user.id), params: {
+          user: {
+            email: "invalid-email-format"
+          }
+        }
+
+        user.reload
+        expect(user.email).to eq(old_email)
+        expect(flash[:error]).to include("Email is invalid")
+        expect(response).to redirect_to(admin_user_path(user))
+      end
+    end
   end
 end

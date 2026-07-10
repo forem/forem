@@ -15,6 +15,25 @@ RSpec.describe "ReadingListItems" do
     it "returns reading list page" do
       get "/readinglist"
       expect(response.body).to include("Reading List")
+      expect(response.body).to include('id="reading-list"')
+      expect(response.body).to include('data-view="valid,confirmed"')
+    end
+
+    context "when viewing archived items" do
+      it "sets the correct archive view parameter" do
+        get "/readinglist/archive"
+        expect(response.body).to include('data-view="archived"')
+      end
+    end
+
+    context "with many reading reactions" do
+      before { create_list(:reading_reaction, 46, user: user) }
+
+      it "renders successfully" do
+        get "/readinglist"
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include('id="reading-list"')
+      end
     end
   end
 
