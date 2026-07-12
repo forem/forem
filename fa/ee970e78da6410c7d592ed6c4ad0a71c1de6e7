@@ -1,0 +1,36 @@
+spec/services/articles/feeds/custom_spec.rb
+  3decdbcb5d168a3c 294-359
+app/workers/emails/send_user_digest_worker.rb
+  3decdbcb5d168a3c 15,60-80
+app/services/email_digest_article_collector.rb
+  3decdbcb5d168a3c 8-14,22,25,27-28,35,50-103,106-148
+app/services/articles/feeds/custom.rb
+  3decdbcb5d168a3c 17-20,24,26,29-45,47,57-58,64,66
+spec/services/email_digest_feed_article_collector_spec.rb
+  3decdbcb5d168a3c 1-274
+app/services/email_digest_feed_article_collector.rb
+  3decdbcb5d168a3c 1-84
+spec/workers/emails/send_user_digest_worker_spec.rb
+  3decdbcb5d168a3c 221-282
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.0",
+  "base_commit_sha": "faee970e78da6410c7d592ed6c4ad0a71c1de6e7",
+  "prompts": {
+    "3decdbcb5d168a3c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "60c932df-46f9-439e-96fb-f365b952d01e",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Paolo Veñegas",
+      "messages": [],
+      "total_additions": 764,
+      "total_deletions": 253,
+      "accepted_lines": 709,
+      "overriden_lines": 1,
+      "messages_url": "https://usegitai.com/cas/72d873375b073c023baa7d2925f387937c037f007717e8af8d6f53646eaf8dbb"
+    }
+  }
+}

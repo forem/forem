@@ -1,0 +1,40 @@
+app/models/page_template.rb
+  0b7024d90e1e090a 28,32
+app/controllers/admin/page_templates_controller.rb
+  0b7024d90e1e090a 13-16
+app/views/admin/page_templates/index.html.erb
+  0b7024d90e1e090a 35,45-46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "838b2fa45e0e84110451fe3ba6d106ee0b36e79b",
+  "prompts": {
+    "0b7024d90e1e090a": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "411ca823-242d-4b62-a2bb-4cbd7ed4c58e",
+        "model": "unknown"
+      },
+      "human_author": "Mikey Dorje <mikeydorje@gmail.com>",
+      "messages": [],
+      "total_additions": 11,
+      "total_deletions": 6,
+      "accepted_lines": 9,
+      "overriden_lines": 0
+    },
+    "d3a3c723dc97b952": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "38094813-f615-4c36-bae5-37a44c004db2",
+        "model": "unknown"
+      },
+      "human_author": "Mikey Dorje <mikeydorje@gmail.com>",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 95,
+      "overriden_lines": 0
+    }
+  }
+}
