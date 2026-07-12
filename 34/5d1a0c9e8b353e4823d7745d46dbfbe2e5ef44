@@ -1,0 +1,22 @@
+spec/models/user_spec.rb
+  s_0192b25a49feab::t_ea587662ef7c0f 42-111
+app/models/user.rb
+  s_0192b25a49feab::t_ca81ade6052d6d 9
+  s_0192b25a49feab::t_2a562d71acfac3 816-846
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "345d1a0c9e8b353e4823d7745d46dbfbe2e5ef44",
+  "prompts": {},
+  "sessions": {
+    "s_0192b25a49feab": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d9c11a62-ccb3-46a3-b898-39bcb6105a91",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Jon Gottfried <jon@majorleaguehacking.com>"
+    }
+  }
+}
