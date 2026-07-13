@@ -4,6 +4,14 @@ RSpec.describe ApplicationMailer do
   let(:user) { create(:user) }
   let(:email) { VerificationMailer.with(user_id: user.id).account_ownership_verification_email }
 
+  it "generates a verifiable retain token" do
+    token = Class.new(ApplicationMailer).new.send(:generate_retain_token, 42, "camp1")
+    payload = Rails.application.message_verifier(:email_retain).verify(token).with_indifferent_access
+    expect(payload[:user_id]).to eq(42)
+    expect(payload[:campaign_key]).to eq("camp1")
+    expect(Time.zone.parse(payload[:expires_at])).to be > Time.current
+  end
+
   describe "#set_perform_deliveries" do
     it "changes perform_deliveries from true to false if smtp is not enabled" do
       expect { email.deliver_now }.to change(described_class, :perform_deliveries).from(true).to(false)

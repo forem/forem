@@ -34,6 +34,14 @@ class ApplicationMailer < ActionMailer::Base
                                                               })
   end
 
+  def generate_retain_token(id, campaign_key)
+    Rails.application.message_verifier(:email_retain).generate({
+                                                                 user_id: id,
+                                                                 campaign_key: campaign_key.to_s,
+                                                                 expires_at: 60.days.from_now.iso8601
+                                                               })
+  end
+
   def setup_subforem_context
     # Determine subforem from user's onboarding_subforem_id or fall back to default
     user = find_user_for_email

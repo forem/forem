@@ -2,6 +2,20 @@
 require "rails_helper"
 
 RSpec.describe Email, type: :model do
+  describe ".replace_merge_tags with stay_url" do
+    let(:user) { create(:user, name: "Ada") }
+
+    it "substitutes the stay link when provided" do
+      out = described_class.replace_merge_tags("Hi *|name|* *|stay_subscribed_url|*", user, stay_url: "https://x/stay?rt=abc")
+      expect(out).to eq("Hi Ada https://x/stay?rt=abc")
+    end
+
+    it "leaves the tag literal when no stay_url is given" do
+      out = described_class.replace_merge_tags("*|stay_subscribed_url|*", user)
+      expect(out).to eq("*|stay_subscribed_url|*")
+    end
+  end
+
   describe "Associations" do
     it { is_expected.to belong_to(:audience_segment).optional }
   end

@@ -13,14 +13,15 @@ class Email < ApplicationRecord
 
   attr_accessor :test_email_addresses
 
-  def self.replace_merge_tags(content, user)
+  def self.replace_merge_tags(content, user, stay_url: nil)
     return content unless user
 
     # Define the mapping of merge tags to user attributes
     merge_tags = {
       "name" => user.name,
       "username" => user.username,
-      "email" => user.email
+      "email" => user.email,
+      "stay_subscribed_url" => stay_url
     }
 
     # Replace merge tags in the content

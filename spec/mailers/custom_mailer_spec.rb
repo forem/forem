@@ -99,8 +99,10 @@ RSpec.describe CustomMailer, type: :mailer do
         allow(Settings::Community).to receive(:community_name).and_return("MyCommunity")
       end
 
-      it "uses the from_name param instead of querying the Email record" do
-        expect(Email).not_to receive(:find_by)
+      it "uses the from_name param instead of the Email record's default_from_name_based_on_type" do
+        # Email.find_by is still used to resolve the campaign_key for the stay-subscribed link,
+        # but its #default_from_name_based_on_type must not be consulted when from_name is given.
+        expect_any_instance_of(Email).not_to receive(:default_from_name_based_on_type)
 
         described_class.with(
           user: user, content: content, subject: subject,
