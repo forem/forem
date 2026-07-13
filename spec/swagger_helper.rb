@@ -678,6 +678,19 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               daily_metrics: {
                 type: :array,
                 items: { "$ref": "#/components/schemas/ConceptDailyMetric" }
+              },
+              top_articles: {
+                type: :array,
+                items: {
+                  type: :object,
+                  properties: {
+                    id: { type: :integer, format: :int64 },
+                    title: { type: :string },
+                    slug: { type: :string },
+                    score: { type: :number, format: :float },
+                    published_at: { type: :string, format: "date-time" }
+                  }
+                }
               }
             },
             required: %w[id name slug created_at updated_at]
@@ -749,7 +762,7 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
             type: :object,
             properties: {
               id: { type: :integer, format: :int64 },
-              name: { type: :string, nullable: true },
+              name: { type: :string },
               placement_area: { type: :string },
               expires_at: { type: :string, format: "date-time", nullable: true },
               user_id: { type: :integer, format: :int64 },
@@ -760,7 +773,7 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               created_at: { type: :string, format: "date-time" },
               updated_at: { type: :string, format: "date-time" }
             },
-            required: %w[id placement_area user_id article_ids created_at updated_at]
+            required: %w[id name placement_area user_id article_ids created_at updated_at]
           },
           Subforem: {
             description: "Representation of a subforem",

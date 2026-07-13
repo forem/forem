@@ -47,13 +47,13 @@ RSpec.describe "Api::V1::Docs::Users" do
     path "/api/users/{id}" do
       get "A User" do
         tags "users"
+        security []
         description "This endpoint allows the client to retrieve a single user, either by id or by the user's username."
         operationId "getUser"
         produces "application/json"
         parameter name: :id, in: :path, required: true, schema: { type: :string }
 
         response(200, "successful") do
-          let(:"api-key") { api_secret.secret }
           let(:id) { user.id }
           schema type: :object,
                  items: { "$ref": "#/components/schemas/ExtendedUser" }

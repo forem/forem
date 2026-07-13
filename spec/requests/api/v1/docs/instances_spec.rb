@@ -16,9 +16,9 @@ RSpec.describe "Api::V1::Docs::Instances" do
         produces "application/json"
 
         response "200", "successful" do
-          # Stub to avoid missing .release-version file error in some environments
           before do
-            allow(Rails.root.join(".release-version")).to receive(:read).and_return("v1.0.0")
+            allow(Rails.root).to receive(:join).and_call_original
+            allow(Rails.root).to receive(:join).with(".release-version").and_return(instance_double(Pathname, read: "v1.0.0"))
           end
 
           add_examples
