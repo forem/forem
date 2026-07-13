@@ -158,6 +158,29 @@ belonging to the requested collection, ordered by ascending publication date.",
     end
   end
 
+  describe "GET /api/articles/search" do
+    path "/api/articles/search" do
+      get "Search for articles" do
+        security []
+        tags "articles"
+        description "This endpoint allows the client to search for articles. It supports query params like `q` for search terms and `top` for filtering articles published in the last N days."
+        operationId "searchArticles"
+        produces "application/json"
+        parameter name: :q, in: :query, required: false, schema: { type: :string }
+        parameter name: :top, in: :query, required: false, schema: { type: :integer }
+        parameter name: :page, in: :query, required: false, schema: { type: :integer }
+        parameter name: :per_page, in: :query, required: false, schema: { type: :integer }
+
+        response "200", "A List of Articles" do
+          let(:q) { "Rails" }
+          schema type: :array, items: { "$ref": "#/components/schemas/ArticleIndex" }
+          add_examples
+          run_test!
+        end
+      end
+    end
+  end
+
   describe "/api/articles/latest" do
     before { create_list(:article, 3) }
 
