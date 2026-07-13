@@ -12,6 +12,11 @@ RSpec.describe "Api::V1::Docs::Instances" do
     path "/api/instance" do
       get "Retrieve instance configuration details" do
         tags "instance"
+        description "Retrieve configuration details for the current Forem instance.
+
+### Instance Metadata:
+- Bypasses authentication.
+- Returns public Forem version, branding parameters, community guidelines references, and supported features configurations."
         security []
         produces "application/json"
 

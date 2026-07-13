@@ -15,21 +15,31 @@ RSpec.describe "Api::V1::Docs::FeedbackMessages" do
     path "/api/feedback_messages/{id}" do
       patch "Update a feedback message's status (Admin)" do
         tags "feedback_messages", "admin"
+        description "Update the status of a user feedback message or report.
+
+### Feedback Messages Overview:
+- Feedback messages are submitted by users via support forms or content abuse reporting modals.
+- Requires Administrator privileges.
+- Used to track moderation/resolution workflows (e.g. marking a spam report as `Resolved`, `Spam`, or `Ignored`)."
         consumes "application/json"
         produces "application/json"
-        parameter name: :id, in: :path, required: true, schema: { type: :integer }
-        parameter name: :feedback_params, in: :body, schema: {
-          type: :object,
-          properties: {
-            feedback_message: {
-              type: :object,
-              properties: {
-                status: { type: :string }
-              },
-              required: [:status]
-            }
-          }
-        }
+        parameter name: :id, in: :path, required: true,
+                  description: "Unique feedback message ID.",
+                  schema: { type: :integer }
+        parameter name: :feedback_params, in: :body,
+                  description: "Feedback parameters containing the status updates.",
+                  schema: {
+                    type: :object,
+                    properties: {
+                      feedback_message: {
+                        type: :object,
+                        properties: {
+                          status: { type: :string }
+                        },
+                        required: [:status]
+                      }
+                    }
+                  }
 
         response "200", "successful" do
           let(:"api-key") { admin_api_secret.secret }

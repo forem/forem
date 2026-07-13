@@ -22,7 +22,11 @@ RSpec.describe "Api::V1::Docs::Users" do
     path "/api/users/me" do
       get "The authenticated user" do
         tags "users"
-        description "This endpoint allows the client to retrieve information about the authenticated user"
+        description "This endpoint allows the client to retrieve information about the authenticated user.
+
+### Usage Tips:
+- Requires a valid `api-key` header to identify the user.
+- Useful for checking permissions, verifying linking state, or retrieving user-specific profile settings."
         operationId "getUserMe"
         produces "application/json"
 
@@ -48,10 +52,16 @@ RSpec.describe "Api::V1::Docs::Users" do
       get "A User" do
         tags "users"
         security []
-        description "This endpoint allows the client to retrieve a single user, either by id or by the user's username."
+        description "This endpoint allows the client to retrieve a single user, either by id or by the user's username.
+
+### Path Parameter Options:
+- **id**: Can be either the user's unique numerical ID (e.g. `123`) OR the user's string username (e.g. `ben`).
+- Note that the returned user object schema (`ExtendedUser`) includes extended profile statistics and social link details."
         operationId "getUser"
         produces "application/json"
-        parameter name: :id, in: :path, required: true, schema: { type: :string }
+        parameter name: :id, in: :path, required: true,
+                  description: "The user's unique numerical ID or string username.",
+                  schema: { type: :string }
 
         response(200, "successful") do
           let(:id) { user.id }
@@ -68,10 +78,16 @@ RSpec.describe "Api::V1::Docs::Users" do
     path "/api/users/search" do
       get "Search for users" do
         tags "users"
-        description "Search for users by email."
+        description "Search for a user by email address.
+
+### Permissions & Context:
+- Requires administrative privileges (`api-key` of an administrator).
+- Used to verify account existence or map email addresses to platform usernames."
         operationId "searchUsers"
         produces "application/json"
-        parameter name: :email, in: :query, required: true, schema: { type: :string }
+        parameter name: :email, in: :query, required: true,
+                  description: "The exact email address of the user to search for.",
+                  schema: { type: :string }
 
         response(200, "successful") do
           let(:"api-key") { api_secret.secret }
@@ -92,11 +108,16 @@ RSpec.describe "Api::V1::Docs::Users" do
     path "/api/users/{id}/unpublish" do
       put "Unpublish a User's Articles and Comments" do
         tags "users"
-        description "This endpoint allows the client to unpublish all of the articles and comments created by a user."
+        description "This endpoint allows the client to unpublish all of the articles and comments created by a user.
+
+### Administrative Action:
+- Requires the authenticated user to be an Administrator.
+- This is a destructive administrative action that immediately unpublishes all posts/comments from public feeds.
+- Ideal for handling spam accounts or cleanup operations."
         operationId "unpublishUser"
         produces "application/json"
         parameter name: :id, in: :path, required: true,
-                  description: "The ID of the user to unpublish.",
+                  description: "The unique numerical ID of the user whose content will be unpublished.",
                   schema: {
                     type: :integer,
                     format: :int32,
