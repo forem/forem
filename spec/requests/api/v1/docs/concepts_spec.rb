@@ -135,13 +135,13 @@ RSpec.describe "Api::V1::Docs::Concepts" do
         description "Retrieve articles classified under this concept.
 
 ### Parameter Guidelines:
-- **sort**: Set to `-similarity` to sort articles by cosine similarity (most relevant first), or `-published_at` to sort chronologically."
+- **sort**: Set to `score` to sort articles by article popularity score descending. If omitted or set to any other value, sorting defaults to cosine similarity (closest first) secondary sorted by article score."
         produces "application/json"
         parameter name: :id, in: :path, required: true,
                   description: "Unique concept numerical ID.",
                   schema: { type: :integer }
         parameter name: :sort, in: :query, required: false,
-                  description: "Sorting criteria: `-similarity` or `-published_at`.",
+                  description: "Sorting criteria: `score` or default.",
                   schema: { type: :string }
         parameter name: :page, in: :query, required: false,
                   description: "Pagination page index.",
@@ -331,6 +331,73 @@ RSpec.describe "Api::V1::Docs::Concepts" do
           let(:"api-key") { admin_api_secret.secret }
           let(:id) { concept.id }
           let(:lookback_params) { { days: 10 } }
+          add_examples
+          run_test!
+        end
+      end
+    end
+  end
+
+  describe "GET /api/concepts/search" do
+    path "/api/concepts/search" do
+      get "Perform a semantic fuzzy search on concepts" do
+        tags "concepts"
+        description "Allows authenticated clients to search concepts using Forem's semantic embeddings database."
+        produces "application/json"
+        parameter name: :q, in: :query, required: true,
+                  description: "The search query term to match semantically.",
+                  schema: { type: :string }
+        parameter name: :per_page, in: :query, required: false,
+                  description: "Limit of concepts returned (default 10, max 50).",
+                  schema: { type: :integer }
+        parameter name: :threshold, in: :query, required: false,
+                  description: "Optional cosine distance threshold (between 0.0 and 2.0) to filter results.",
+                  schema: { type: :number }
+
+        before do
+          allow_any_instance_of(Ai::Embedding).to receive(:call).and_return(Array.new(768, 0.1))
+        end
+
+        response "200", "successful" do
+          let(:"api-key") { admin_api_secret.secret }
+          let(:q) { "databases" }
+          let(:per_page) { 5 }
+          let(:threshold) { 0.5 }
+          schema type: :array, items: {
+            type: :object,
+            properties: {
+              id: { type: :integer },
+              name: { type: :string },
+              slug: { type: :string },
+              description: { type: :string, nullable: true },
+              parent_id: { type: :integer, nullable: true },
+              score: { type: :number },
+              similarity_threshold: { type: :number, nullable: true },
+              created_at: { type: :string },
+              updated_at: { type: :string },
+              distance: { type: :number },
+              similarity: { type: :number }
+            }
+          }
+          add_examples
+          run_test!
+        end
+
+        response "400", "bad request" do
+          let(:"api-key") { admin_api_secret.secret }
+          let(:q) { "" }
+          let(:per_page) { nil }
+          let(:threshold) { nil }
+          add_examples
+          run_test!
+        end
+
+        # Wait, the authenticate_with_api_key! action will return 401
+        response "401", "unauthorized" do
+          let(:"api-key") { nil }
+          let(:q) { "databases" }
+          let(:per_page) { nil }
+          let(:threshold) { nil }
           add_examples
           run_test!
         end

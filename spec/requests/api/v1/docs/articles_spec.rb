@@ -583,6 +583,79 @@ will remain."
       end
     end
   end
+  describe "GET /api/articles/semantic_search" do
+    path "/api/articles/semantic_search" do
+      get "Perform a semantic fuzzy search on articles" do
+        tags "articles"
+        description "Allows authenticated clients to search articles using Forem's semantic embeddings database."
+        produces "application/json"
+        parameter name: :q, in: :query, required: true,
+                  description: "The search query term to match semantically.",
+                  schema: { type: :string }
+        parameter name: :per_page, in: :query, required: false,
+                  description: "Limit of articles returned (default 10, max 50).",
+                  schema: { type: :integer }
+        parameter name: :page, in: :query, required: false,
+                  description: "Pagination page index.",
+                  schema: { type: :integer }
+        parameter name: :threshold, in: :query, required: false,
+                  description: "Optional cosine distance threshold (between 0.0 and 2.0) to filter results.",
+                  schema: { type: :number }
+
+        before do
+          allow_any_instance_of(Ai::Embedding).to receive(:call).and_return(Array.new(768, 0.1))
+          published_article.update_column(:semantic_embedding, Array.new(768, 0.1))
+        end
+
+        response "200", "successful" do
+          let(:"api-key") { api_secret.secret }
+          let(:q) { "databases" }
+          let(:per_page) { 5 }
+          let(:page) { 1 }
+          let(:threshold) { 0.5 }
+          schema type: :array, items: {
+            type: :object,
+            properties: {
+              id: { type: :integer },
+              title: { type: :string },
+              description: { type: :string, nullable: true },
+              cover_image: { type: :string, nullable: true },
+              slug: { type: :string },
+              path: { type: :string },
+              url: { type: :string },
+              comments_count: { type: :integer },
+              public_reactions_count: { type: :integer },
+              published_at: { type: :string },
+              distance: { type: :number },
+              similarity: { type: :number }
+            }
+          }
+          add_examples
+          run_test!
+        end
+
+        response "400", "bad request" do
+          let(:"api-key") { api_secret.secret }
+          let(:q) { "" }
+          let(:per_page) { nil }
+          let(:page) { nil }
+          let(:threshold) { nil }
+          add_examples
+          run_test!
+        end
+
+        response "401", "unauthorized" do
+          let(:"api-key") { nil }
+          let(:q) { "databases" }
+          let(:per_page) { nil }
+          let(:page) { nil }
+          let(:threshold) { nil }
+          add_examples
+          run_test!
+        end
+      end
+    end
+  end
   # rubocop:enable RSpec/VariableName
   # rubocop:enable RSpec/EmptyExampleGroup
   # rubocop:enable Layout/LineLength

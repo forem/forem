@@ -263,4 +263,55 @@ RSpec.describe "Api::V1::Concepts", type: :request do
       expect(trend.reload.articles_count).to eq(0)
     end
   end
+
+  describe "GET /api/concepts/search" do
+    let(:query_embedding) { [1.0] + Array.new(767, 0.0) }
+
+    before do
+      allow_any_instance_of(Ai::Embedding).to receive(:call).and_return(query_embedding)
+    end
+
+    it "requires api-key" do
+      get search_api_concepts_path, headers: guest_headers
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "requires q parameter" do
+      get search_api_concepts_path, headers: admin_headers
+      expect(response).to have_http_status(:bad_request)
+      expect(JSON.parse(response.body)["error"]).to eq("q parameter is required")
+    end
+
+    context "as a super admin" do
+      it "returns matching concepts with distance and similarity metrics" do
+        get search_api_concepts_path(q: "databases"), headers: admin_headers
+        expect(response).to be_successful
+        json = JSON.parse(response.body)
+        expect(json.length).to eq(2)
+        expect(json[0]).to have_key("distance")
+        expect(json[0]).to have_key("similarity")
+      end
+    end
+
+    context "as a regular user with access to one concept" do
+      before do
+        create(:concept_access, user: user, concept: concept_1)
+      end
+
+      it "returns only accessible matching concepts" do
+        get search_api_concepts_path(q: "databases"), headers: user_headers
+        expect(response).to be_successful
+        json = JSON.parse(response.body)
+        expect(json.length).to eq(1)
+        expect(json[0]["id"]).to eq(concept_1.id)
+      end
+
+      it "respects similarity threshold param" do
+        get search_api_concepts_path(q: "databases", threshold: 0.001), headers: user_headers
+        expect(response).to be_successful
+        json = JSON.parse(response.body)
+        expect(json).to eq([])
+      end
+    end
+  end
 end

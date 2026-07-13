@@ -1051,6 +1051,114 @@
         }
       }
     },
+    "/api/articles/semantic_search": {
+      "get": {
+        "summary": "Perform a semantic fuzzy search on articles",
+        "tags": [
+          "articles"
+        ],
+        "description": "Allows authenticated clients to search articles using Forem's semantic embeddings database.",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "description": "The search query term to match semantically.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "description": "Limit of articles returned (default 10, max 50).",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Pagination page index.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "threshold",
+            "in": "query",
+            "required": false,
+            "description": "Optional cosine distance threshold (between 0.0 and 2.0) to filter results.",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "cover_image": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "slug": {
+                        "type": "string"
+                      },
+                      "path": {
+                        "type": "string"
+                      },
+                      "url": {
+                        "type": "string"
+                      },
+                      "comments_count": {
+                        "type": "integer"
+                      },
+                      "public_reactions_count": {
+                        "type": "integer"
+                      },
+                      "published_at": {
+                        "type": "string"
+                      },
+                      "distance": {
+                        "type": "number"
+                      },
+                      "similarity": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "401": {
+            "description": "unauthorized"
+          }
+        }
+      }
+    },
     "/api/segments": {
       "get": {
         "summary": "Manually managed audience segments",
@@ -2130,7 +2238,7 @@
         "tags": [
           "concepts"
         ],
-        "description": "Retrieve articles classified under this concept.\n\n### Parameter Guidelines:\n- **sort**: Set to `-similarity` to sort articles by cosine similarity (most relevant first), or `-published_at` to sort chronologically.",
+        "description": "Retrieve articles classified under this concept.\n\n### Parameter Guidelines:\n- **sort**: Set to `score` to sort articles by article popularity score descending. If omitted or set to any other value, sorting defaults to cosine similarity (closest first) secondary sorted by article score.",
         "parameters": [
           {
             "name": "id",
@@ -2145,7 +2253,7 @@
             "name": "sort",
             "in": "query",
             "required": false,
-            "description": "Sorting criteria: `-similarity` or `-published_at`.",
+            "description": "Sorting criteria: `score` or default.",
             "schema": {
               "type": "string"
             }
@@ -2442,6 +2550,103 @@
                 ]
               }
             }
+          }
+        }
+      }
+    },
+    "/api/concepts/search": {
+      "get": {
+        "summary": "Perform a semantic fuzzy search on concepts",
+        "tags": [
+          "concepts"
+        ],
+        "description": "Allows authenticated clients to search concepts using Forem's semantic embeddings database.",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "description": "The search query term to match semantically.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "description": "Limit of concepts returned (default 10, max 50).",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "threshold",
+            "in": "query",
+            "required": false,
+            "description": "Optional cosine distance threshold (between 0.0 and 2.0) to filter results.",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "slug": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "parent_id": {
+                        "type": "integer",
+                        "nullable": true
+                      },
+                      "score": {
+                        "type": "number"
+                      },
+                      "similarity_threshold": {
+                        "type": "number",
+                        "nullable": true
+                      },
+                      "created_at": {
+                        "type": "string"
+                      },
+                      "updated_at": {
+                        "type": "string"
+                      },
+                      "distance": {
+                        "type": "number"
+                      },
+                      "similarity": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "401": {
+            "description": "unauthorized"
           }
         }
       }
