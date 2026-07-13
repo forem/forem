@@ -15,9 +15,15 @@ module Emails
         next if setting.email_reengagement_confirmed_at.present? || setting.email_reengagement_pruned_at.present?
         next if last_activity_at(user) >= cutoff # re-engaged since the ask — spare them
 
-        setting.update!(email_digest_periodic: false,
-                        email_newsletter: false,
-                        email_reengagement_pruned_at: Time.current)
+        # Re-check under a row lock so a stay-subscribed click landing between
+        # the batch load and this update is never pruned.
+        setting.with_lock do
+          next if setting.email_reengagement_confirmed_at.present? || setting.email_reengagement_pruned_at.present?
+
+          setting.update!(email_digest_periodic: false,
+                          email_newsletter: false,
+                          email_reengagement_pruned_at: Time.current)
+        end
       end
     end
 
