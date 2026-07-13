@@ -23,7 +23,7 @@ RSpec.describe "Api::V1::Trends" do
       trend_json = response.parsed_body.first
       expect(trend_json.keys).to match_array(%w[
         type_of id name slug description key_questions score articles_count
-        cover_image first_observed_at last_observed_at created_at updated_at
+        cover_image first_observed_at last_observed_at created_at updated_at top_articles
       ])
       expect(trend_json["type_of"]).to eq("trend")
       expect(trend_json["name"]).to eq("AI Agents")
@@ -110,6 +110,17 @@ RSpec.describe "Api::V1::Trends" do
 
       expected_keys = [trend2.record_key, article1.record_key, article2.record_key].to_set
       expect(response.headers["surrogate-key"].split.to_set).to eq(expected_keys)
+    end
+
+    it "orders articles by score DESC when sort=score is specified" do
+      # Let's make the high distance one have a higher score, and low distance have a lower score to differentiate
+      # distance order (article1 = 0.1, score = 100 vs article2 = 0.2, score = 50)
+      # Let's adjust article2 score to 150
+      article2.update!(score: 150)
+      get "/api/trends/#{trend2.slug}/articles", params: { sort: "score" }, headers: headers
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body.first["title"]).to eq("Building my first AI agent") # score 150
+      expect(response.parsed_body.last["title"]).to eq("AI agents are taking over")    # score 100
     end
 
     it "returns 404 if trend is not found" do

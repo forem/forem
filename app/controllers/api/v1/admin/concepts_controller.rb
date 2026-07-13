@@ -72,6 +72,6 @@ class Api::V1::Admin::ConceptsController < Api::V1::Admin::BaseController
   end
 
   def concept_params
-    params.require(:concept).permit(:name, :description, :parent_id, :similarity_threshold)
+    params.require(:concept).permit(:name, :description, :parent_id, :similarity_threshold, :score)
   end
 end

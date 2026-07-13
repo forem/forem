@@ -22,7 +22,7 @@ RSpec.describe "Api::V0::Trends" do
       trend_json = response.parsed_body.first
       expect(trend_json.keys).to match_array(%w[
         type_of id name slug description key_questions score articles_count
-        cover_image first_observed_at last_observed_at created_at updated_at
+        cover_image first_observed_at last_observed_at created_at updated_at top_articles
       ])
       expect(trend_json["type_of"]).to eq("trend")
       expect(trend_json["name"]).to eq("AI Agents")

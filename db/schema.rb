@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_06_30_143448) do
+ActiveRecord::Schema[7.2].define(version: 2026_07_13_121240) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -546,6 +546,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_30_143448) do
     t.integer "max_lookback_days", default: 0, null: false
     t.string "name", null: false
     t.bigint "parent_id"
+    t.float "score", default: 0.0, null: false
     t.float "similarity_threshold"
     t.string "slug", null: false
     t.datetime "updated_at", null: false
