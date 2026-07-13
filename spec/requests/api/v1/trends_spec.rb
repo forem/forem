@@ -23,7 +23,7 @@ RSpec.describe "Api::V1::Trends" do
       trend_json = response.parsed_body.first
       expect(trend_json.keys).to match_array(%w[
         type_of id name slug description key_questions score articles_count
-        cover_image first_observed_at last_observed_at created_at updated_at top_articles
+        cover_image first_observed_at last_observed_at created_at updated_at
       ])
       expect(trend_json["type_of"]).to eq("trend")
       expect(trend_json["name"]).to eq("AI Agents")
@@ -57,11 +57,12 @@ RSpec.describe "Api::V1::Trends" do
       expect(response.headers["surrogate-key"]).to eq(trend1.record_key)
     end
 
-    it "finds trend by Slug" do
+    it "finds trend by Slug and returns top_articles" do
       get "/api/trends/#{trend2.slug}", headers: headers
 
       expect(response).to have_http_status(:ok)
       expect(response.parsed_body["name"]).to eq("AI Agents")
+      expect(response.parsed_body).to have_key("top_articles")
     end
 
     it "returns 404 for non-existent trend" do

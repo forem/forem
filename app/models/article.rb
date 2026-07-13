@@ -345,7 +345,7 @@ class Article < ApplicationRecord
   after_commit :recompile_organization_pages, on: %i[create update destroy]
 
   after_save :cleanup_memberships_if_unpublished,
-             if: -> { saved_change_to_published? && !published? }
+             if: -> { saved_change_to_published? && published_before_last_save && !published? }
 
   # The trigger `update_reading_list_document` is used to keep the `articles.reading_list_document` column updated.
   #
