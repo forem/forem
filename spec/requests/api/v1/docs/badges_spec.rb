@@ -18,8 +18,15 @@ RSpec.describe "Api::V1::Docs::Badges" do
     path "/api/badges" do
       get "Retrieve all badges" do
         tags "badges"
+        description "Retrieve a list of all badges available on the platform.
+
+### Badges Overview:
+- Badges recognize achievements (e.g., \"Top Writer\", \"Beloved Community Member\", or anniversary milestones).
+- Publicly visible on user profiles."
         produces "application/json"
-        parameter name: :page, in: :query, required: false, schema: { type: :integer }
+        parameter name: :page, in: :query, required: false,
+                  description: "Pagination page index.",
+                  schema: { type: :integer }
 
         response "200", "successful" do
           let(:"api-key") { admin_api_secret.secret }
@@ -35,24 +42,33 @@ RSpec.describe "Api::V1::Docs::Badges" do
     path "/api/badges" do
       post "Create a badge" do
         tags "badges"
+        description "Create a new badge. Requires administrator privileges.
+
+### Body Parameter Guidelines:
+- **title**: Unique name for the badge.
+- **description**: Text explanation of the achievement.
+- **remote_badge_image_url**: Public URL to an image asset (PNG, GIF, or SVG) representing the badge icon.
+- **allow_multiple_awards**: Set to `true` if a user can earn the same badge multiple times (e.g. weekly challenges)."
         consumes "application/json"
         produces "application/json"
-        parameter name: :badge_params, in: :body, schema: {
-          type: :object,
-          properties: {
-            badge: {
-              type: :object,
-              properties: {
-                title: { type: :string },
-                description: { type: :string },
-                remote_badge_image_url: { type: :string },
-                credits_awarded: { type: :integer },
-                allow_multiple_awards: { type: :boolean }
-              },
-              required: %w[title description remote_badge_image_url]
-            }
-          }
-        }
+        parameter name: :badge_params, in: :body,
+                  description: "Badge properties to create.",
+                  schema: {
+                    type: :object,
+                    properties: {
+                      badge: {
+                        type: :object,
+                        properties: {
+                          title: { type: :string },
+                          description: { type: :string },
+                          remote_badge_image_url: { type: :string },
+                          credits_awarded: { type: :integer },
+                          allow_multiple_awards: { type: :boolean }
+                        },
+                        required: %w[title description remote_badge_image_url]
+                      }
+                    }
+                  }
 
         before do
           stub_request(:get, "https://example.com/image.png").to_return(status: 200, body: tiny_gif_data)
@@ -73,8 +89,11 @@ RSpec.describe "Api::V1::Docs::Badges" do
     path "/api/badges/{id}" do
       get "Retrieve a badge's details" do
         tags "badges"
+        description "Retrieve details of a single badge by unique numeric ID."
         produces "application/json"
-        parameter name: :id, in: :path, required: true, schema: { type: :integer }
+        parameter name: :id, in: :path, required: true,
+                  description: "Unique badge ID.",
+                  schema: { type: :integer }
 
         response "200", "successful" do
           let(:"api-key") { admin_api_secret.secret }
@@ -91,23 +110,28 @@ RSpec.describe "Api::V1::Docs::Badges" do
     path "/api/badges/{id}" do
       patch "Update a badge" do
         tags "badges"
+        description "Update badge details (title, description, credits awarded, etc.) by unique ID. Requires administrator privileges."
         consumes "application/json"
         produces "application/json"
-        parameter name: :id, in: :path, required: true, schema: { type: :integer }
-        parameter name: :badge_params, in: :body, schema: {
-          type: :object,
-          properties: {
-            badge: {
-              type: :object,
-              properties: {
-                title: { type: :string },
-                description: { type: :string },
-                credits_awarded: { type: :integer },
-                allow_multiple_awards: { type: :boolean }
-              }
-            }
-          }
-        }
+        parameter name: :id, in: :path, required: true,
+                  description: "Unique badge ID to update.",
+                  schema: { type: :integer }
+        parameter name: :badge_params, in: :body,
+                  description: "Badge properties to update.",
+                  schema: {
+                    type: :object,
+                    properties: {
+                      badge: {
+                        type: :object,
+                        properties: {
+                          title: { type: :string },
+                          description: { type: :string },
+                          credits_awarded: { type: :integer },
+                          allow_multiple_awards: { type: :boolean }
+                        }
+                      }
+                    }
+                  }
 
         response "200", "successful" do
           let(:"api-key") { admin_api_secret.secret }
@@ -125,8 +149,11 @@ RSpec.describe "Api::V1::Docs::Badges" do
     path "/api/badges/{id}" do
       delete "Delete a badge" do
         tags "badges"
+        description "Delete a badge configuration from the system by ID. Requires administrator privileges."
         produces "application/json"
-        parameter name: :id, in: :path, required: true, schema: { type: :integer }
+        parameter name: :id, in: :path, required: true,
+                  description: "Unique badge ID to delete.",
+                  schema: { type: :integer }
 
         response "204", "no content" do
           let(:"api-key") { admin_api_secret.secret }

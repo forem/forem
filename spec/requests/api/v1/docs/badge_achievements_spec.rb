@@ -15,8 +15,11 @@ RSpec.describe "Api::V1::Docs::BadgeAchievements" do
     path "/api/badge_achievements" do
       get "Retrieve all badge achievements" do
         tags "badge_achievements"
+        description "Retrieve a list of all badge achievements (awarded badges) in the system. Requires administrator privileges."
         produces "application/json"
-        parameter name: :page, in: :query, required: false, schema: { type: :integer }
+        parameter name: :page, in: :query, required: false,
+                  description: "Pagination page index.",
+                  schema: { type: :integer }
 
         response "200", "successful" do
           let(:"api-key") { admin_api_secret.secret }
@@ -32,23 +35,31 @@ RSpec.describe "Api::V1::Docs::BadgeAchievements" do
     path "/api/badge_achievements" do
       post "Create a badge achievement" do
         tags "badge_achievements"
+        description "Award a badge to a user. Requires administrator privileges.
+
+### Integration Tips:
+- **user_id**: The numeric ID of the user receiving the badge.
+- **badge_id**: The numeric ID of the badge being awarded.
+- **rewarding_context_message_markdown**: Optional personalized message shown in the notification or profile feed to explain why the user was awarded the badge."
         consumes "application/json"
         produces "application/json"
-        parameter name: :achievement_params, in: :body, schema: {
-          type: :object,
-          properties: {
-            badge_achievement: {
-              type: :object,
-              properties: {
-                user_id: { type: :integer },
-                badge_id: { type: :integer },
-                rewarding_context_message_markdown: { type: :string },
-                include_default_description: { type: :boolean }
-              },
-              required: %w[user_id badge_id]
-            }
-          }
-        }
+        parameter name: :achievement_params, in: :body,
+                  description: "Badge achievement details.",
+                  schema: {
+                    type: :object,
+                    properties: {
+                      badge_achievement: {
+                        type: :object,
+                        properties: {
+                          user_id: { type: :integer },
+                          badge_id: { type: :integer },
+                          rewarding_context_message_markdown: { type: :string },
+                          include_default_description: { type: :boolean }
+                        },
+                        required: %w[user_id badge_id]
+                      }
+                    }
+                  }
 
         response "201", "created" do
           let(:"api-key") { admin_api_secret.secret }
@@ -67,8 +78,11 @@ RSpec.describe "Api::V1::Docs::BadgeAchievements" do
     path "/api/badge_achievements/{id}" do
       get "Retrieve a badge achievement's details" do
         tags "badge_achievements"
+        description "Retrieve details of a specific badge award/achievement by ID."
         produces "application/json"
-        parameter name: :id, in: :path, required: true, schema: { type: :integer }
+        parameter name: :id, in: :path, required: true,
+                  description: "Badge achievement unique ID.",
+                  schema: { type: :integer }
 
         response "200", "successful" do
           let(:"api-key") { admin_api_secret.secret }
@@ -85,8 +99,11 @@ RSpec.describe "Api::V1::Docs::BadgeAchievements" do
     path "/api/badge_achievements/{id}" do
       delete "Delete a badge achievement" do
         tags "badge_achievements"
+        description "Revoke a badge award by deleting the badge achievement. Requires administrator privileges."
         produces "application/json"
-        parameter name: :id, in: :path, required: true, schema: { type: :integer }
+        parameter name: :id, in: :path, required: true,
+                  description: "Badge achievement unique ID to delete.",
+                  schema: { type: :integer }
 
         response "204", "no content" do
           let(:"api-key") { admin_api_secret.secret }

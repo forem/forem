@@ -23,8 +23,11 @@ RSpec.describe "Api::V1::Docs::Followers" do
         tags "followers"
         description(<<-DESCRIBE.strip)
         This endpoint allows the client to retrieve a list of the followers they have.
-        "Followers" are users that are following other users on the website.
-        It supports pagination, each page will contain 80 followers by default.
+
+        ### Integration & Pagination Guidance:
+        - "Followers" are other users registered on the platform who follow the authenticated user.
+        - Supports pagination, defaulting to 80 followers per page.
+        - The `sort` query parameter determines the sorting order based on when the follow relationship was established.
         DESCRIBE
         operationId "getFollowers"
         produces "application/json"
@@ -32,9 +35,7 @@ RSpec.describe "Api::V1::Docs::Followers" do
         parameter "$ref": "#/components/parameters/pageParam"
         parameter "$ref": "#/components/parameters/perPageParam30to1000"
         parameter name: :sort, in: :query, required: false,
-                  description: "Default is 'created_at'. Specifies the sort order for the created_at param of the follow
-                                relationship. To sort by newest followers first (descending order) specify
-                                ?sort=-created_at.",
+                  description: "Specifies the sort order for the follow relationship created_at field. Use `created_at` for chronological (oldest first) or `-created_at` for reverse chronological (newest first).",
                   schema: { type: :string },
                   example: "created_at"
 
