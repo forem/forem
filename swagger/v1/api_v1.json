@@ -2130,7 +2130,7 @@
         "tags": [
           "concepts"
         ],
-        "description": "Retrieve articles classified under this concept.\n\n### Parameter Guidelines:\n- **sort**: Set to `-similarity` to sort articles by cosine similarity (most relevant first), or `-published_at` to sort chronologically.",
+        "description": "Retrieve articles classified under this concept.\n\n### Parameter Guidelines:\n- **sort**: Set to `score` to sort articles by article popularity score descending. If omitted or set to any other value, sorting defaults to cosine similarity (closest first) secondary sorted by article score.",
         "parameters": [
           {
             "name": "id",
@@ -2145,7 +2145,7 @@
             "name": "sort",
             "in": "query",
             "required": false,
-            "description": "Sorting criteria: `-similarity` or `-published_at`.",
+            "description": "Sorting criteria: `score` or default.",
             "schema": {
               "type": "string"
             }

@@ -135,13 +135,13 @@ RSpec.describe "Api::V1::Docs::Concepts" do
         description "Retrieve articles classified under this concept.
 
 ### Parameter Guidelines:
-- **sort**: Set to `-similarity` to sort articles by cosine similarity (most relevant first), or `-published_at` to sort chronologically."
+- **sort**: Set to `score` to sort articles by article popularity score descending. If omitted or set to any other value, sorting defaults to cosine similarity (closest first) secondary sorted by article score."
         produces "application/json"
         parameter name: :id, in: :path, required: true,
                   description: "Unique concept numerical ID.",
                   schema: { type: :integer }
         parameter name: :sort, in: :query, required: false,
-                  description: "Sorting criteria: `-similarity` or `-published_at`.",
+                  description: "Sorting criteria: `score` or default.",
                   schema: { type: :string }
         parameter name: :page, in: :query, required: false,
                   description: "Pagination page index.",
