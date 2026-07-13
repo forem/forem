@@ -3547,11 +3547,13 @@
         "tags": [
           "recommended_articles_lists"
         ],
+        "description": "Retrieve a list of all recommended articles lists configured in the system.\n\n### Overview:\n- Recommended Articles Lists are curated selections of articles pinned or recommended in layout regions (e.g. `main_feed` or `sidebar`).\n- Supports search by list name and standard query pagination.\n- Requires Administrator privileges.",
         "parameters": [
           {
             "name": "page",
             "in": "query",
             "required": false,
+            "description": "Pagination page index.",
             "schema": {
               "type": "integer"
             }
@@ -3560,6 +3562,7 @@
             "name": "search",
             "in": "query",
             "required": false,
+            "description": "Search term to match against recommended list names.",
             "schema": {
               "type": "string"
             }
@@ -3586,6 +3589,7 @@
         "tags": [
           "recommended_articles_lists"
         ],
+        "description": "Create a new recommended articles list or update an existing one. Requires Administrator privileges.\n\n### Body Parameter Guidelines:\n- **name**: Curated list title or label (e.g. \"Editor's Choice\").\n- **placement_area**: Target UI layout region (e.g. `main_feed`, `sidebar_top`, `onboarding`).\n- **expires_at**: ISO 8601 timestamp after which the list recommendation automatically expires.\n- **user_id**: Owner/curator numeric user ID.\n- **article_ids**: Staged array of numeric article IDs to include in the recommendation sequence.",
         "parameters": [
 
         ],
@@ -3633,7 +3637,8 @@
                 ]
               }
             }
-          }
+          },
+          "description": "Curated recommended list details."
         }
       }
     },
@@ -3643,11 +3648,13 @@
         "tags": [
           "recommended_articles_lists"
         ],
+        "description": "Retrieve full details and nested article lists for a specific recommended articles list by ID. Requires Admin credentials.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "Unique list numeric ID.",
             "schema": {
               "type": "integer"
             }
@@ -3671,11 +3678,13 @@
         "tags": [
           "recommended_articles_lists"
         ],
+        "description": "Update an existing recommended articles list by ID. Requires Admin credentials.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "Unique list numeric ID.",
             "schema": {
               "type": "integer"
             }
@@ -3721,7 +3730,8 @@
                 }
               }
             }
-          }
+          },
+          "description": "Updated list parameters."
         }
       }
     },
@@ -4699,7 +4709,7 @@
           "users",
           "admin"
         ],
-        "description": "This endpoint allows the client to trigger an invitation to the provided email address.",
+        "description": "Invite a new user to join the platform by email.\n\n### Super Admin Action:\n- Requires Super Admin privileges.\n- Triggers a system invitation flow and sends an invitation email containing a sign-up link.\n- Handy for invite-only platforms or private enterprise instances.",
         "operationId": "postAdminUsersCreate",
         "parameters": [
 
@@ -4726,11 +4736,13 @@
           "users",
           "admin"
         ],
+        "description": "Retrieve a list of all users registered on the platform.\n\n### Permissions & Filters:\n- Requires Super Admin privileges.\n- Allows filtering by exact `email` or `username`.\n- Returns paginated list of extended user objects containing email addresses, registration dates, roles, and administrative statuses.",
         "parameters": [
           {
             "name": "page",
             "in": "query",
             "required": false,
+            "description": "Pagination page index.",
             "schema": {
               "type": "integer"
             }
@@ -4739,6 +4751,7 @@
             "name": "per_page",
             "in": "query",
             "required": false,
+            "description": "Number of items to return per page.",
             "schema": {
               "type": "integer"
             }
@@ -4747,6 +4760,7 @@
             "name": "email",
             "in": "query",
             "required": false,
+            "description": "Optional email search filter.",
             "schema": {
               "type": "string"
             }
@@ -4755,6 +4769,7 @@
             "name": "username",
             "in": "query",
             "required": false,
+            "description": "Optional username search filter.",
             "schema": {
               "type": "string"
             }
@@ -4774,11 +4789,13 @@
           "users",
           "admin"
         ],
+        "description": "Retrieve details of a single user by numerical ID.\n\n### Super Admin Action:\n- Requires Super Admin privileges.\n- Includes administrative settings, audit notes, email newsletter preferences, and OAuth login identity states.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "Unique user numeric ID.",
             "schema": {
               "type": "integer"
             }
@@ -4796,11 +4813,13 @@
           "users",
           "admin"
         ],
+        "description": "Update a user's public profile fields (name, location, bio summary, website) on their behalf. Requires Super Admin credentials.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "Unique user ID to update.",
             "schema": {
               "type": "integer"
             }
@@ -4835,7 +4854,8 @@
                 }
               }
             }
-          }
+          },
+          "description": "User profile updated fields."
         }
       }
     },
@@ -4846,11 +4866,13 @@
           "users",
           "admin"
         ],
+        "description": "Update a user's primary registration email address. Requires Super Admin credentials.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "Unique user ID to update email for.",
             "schema": {
               "type": "integer"
             }
@@ -4876,7 +4898,8 @@
                 ]
               }
             }
-          }
+          },
+          "description": "Email parameters."
         }
       }
     },
@@ -4887,11 +4910,13 @@
           "users",
           "admin"
         ],
+        "description": "Manually update a user's moderation status.\n\n### Status Details:\n- **status**: Allowed target states (e.g. `active`, `suspended`, `banned`).\n- **note**: Required reason text recorded in the user's moderation log audit history.\n- Requires Super Admin privileges.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "Unique user ID.",
             "schema": {
               "type": "integer"
             }
@@ -4920,7 +4945,8 @@
                 ]
               }
             }
-          }
+          },
+          "description": "Status parameters."
         }
       }
     },
@@ -4931,11 +4957,13 @@
           "users",
           "admin"
         ],
+        "description": "Update a user's email notification preferences (e.g., unsubscribing them from the system newsletter). Requires Super Admin credentials.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "Unique user ID.",
             "schema": {
               "type": "integer"
             }
@@ -4966,7 +4994,8 @@
                 ]
               }
             }
-          }
+          },
+          "description": "Settings parameters."
         }
       }
     },
@@ -4977,11 +5006,13 @@
           "users",
           "admin"
         ],
+        "description": "Merge a duplicate user account into a target main account.\n\n### Account Merging Behavior:\n- Transfers all comments, articles, reactions, and follows to the target user (`merge_user_id`).\n- Deletes/destroys the source user account once the merge completes successfully.\n- High risk! Action is permanent and irreversible.\n- Requires Super Admin credentials.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "The duplicate user ID that will be deleted after contents merge.",
             "schema": {
               "type": "integer"
             }
@@ -5007,7 +5038,8 @@
                 ]
               }
             }
-          }
+          },
+          "description": "Merge parameters containing the target account ID."
         }
       }
     },
@@ -5018,11 +5050,13 @@
           "users",
           "admin"
         ],
+        "description": "Retrieve all moderator/administrator audit log notes appended to a user. Requires Super Admin credentials.",
         "parameters": [
           {
             "name": "user_id",
             "in": "path",
             "required": true,
+            "description": "User ID to fetch notes for.",
             "schema": {
               "type": "integer"
             }
@@ -5040,11 +5074,13 @@
           "users",
           "admin"
         ],
+        "description": "Add a new moderation/audit note to a user.\n\n### Audit Logging Guidelines:\n- **content**: Plaintext description of behavior, infraction, or actions taken.\n- **reason**: Categorized classification (e.g. `spam`, `abuse`, `harassment`, `administrative`).\n- Requires Super Admin credentials.",
         "parameters": [
           {
             "name": "user_id",
             "in": "path",
             "required": true,
+            "description": "User ID to append the note to.",
             "schema": {
               "type": "integer"
             }
@@ -5073,7 +5109,8 @@
                 ]
               }
             }
-          }
+          },
+          "description": "Note attributes."
         }
       }
     },
@@ -5084,11 +5121,13 @@
           "users",
           "admin"
         ],
+        "description": "Retrieve all linked OAuth identities (e.g., GitHub, Twitter, Apple) for a user. Requires Super Admin credentials.",
         "parameters": [
           {
             "name": "user_id",
             "in": "path",
             "required": true,
+            "description": "User ID to fetch linked identities for.",
             "schema": {
               "type": "integer"
             }
@@ -5106,11 +5145,13 @@
           "users",
           "admin"
         ],
+        "description": "Manually link an OAuth provider identity to a user. Requires Super Admin credentials.\n\n### Identity Binding:\n- **provider**: The login provider name (e.g. `github`, `twitter`).\n- **uid**: The provider's unique user identifier.\n- **username**: The user's username on the provider's service.",
         "parameters": [
           {
             "name": "user_id",
             "in": "path",
             "required": true,
+            "description": "User ID to bind identity to.",
             "schema": {
               "type": "integer"
             }
@@ -5143,7 +5184,8 @@
                 ]
               }
             }
-          }
+          },
+          "description": "OAuth credentials and identities."
         }
       }
     },
@@ -5154,11 +5196,13 @@
           "users",
           "admin"
         ],
+        "description": "Unlink a specific OAuth login provider identity from a user by identity ID. Requires Super Admin credentials.",
         "parameters": [
           {
             "name": "user_id",
             "in": "path",
             "required": true,
+            "description": "User ID.",
             "schema": {
               "type": "integer"
             }
@@ -5167,6 +5211,7 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "Identity ID to unlink.",
             "schema": {
               "type": "integer"
             }
@@ -5186,6 +5231,7 @@
           "users",
           "admin"
         ],
+        "description": "Bulk link OAuth identities across multiple users. Requires Super Admin credentials.",
         "parameters": [
 
         ],
@@ -5228,7 +5274,8 @@
                 ]
               }
             }
-          }
+          },
+          "description": "Bulk identity params."
         }
       }
     },
@@ -5242,7 +5289,7 @@
         "security": [
 
         ],
-        "description": "This endpoint allows the client to retrieve a list of articles that are uploaded with a video.\n\nIt will only return published video articles ordered by descending popularity.\n\nIt supports pagination, each page will contain 24 articles by default.",
+        "description": "Retrieve a list of articles that contain uploaded videos.\n\n### Videos Overview:\n- Bypasses authentication (can be accessed publicly).\n- Returns articles that are published and include a video asset.\n- Articles are ordered by descending popularity (views, watch time, and reactions).\n- By default, returns 24 video articles per page.",
         "operationId": "videos",
         "parameters": [
           {
