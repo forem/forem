@@ -123,7 +123,9 @@ Rails.application.routes.draw do
         # shared config/routes/api.rb) because Api::V0::Admin::* controllers do
         # not implement these actions; placing the routes here scopes them to
         # callers using the application/vnd.forem.api-v1+json Accept header.
-        resources :concepts, only: %i[index show]
+        resources :concepts, only: %i[index show update] do
+          get :articles, on: :member
+        end
 
         namespace :admin do
           resources :users, only: %i[index show update] do
