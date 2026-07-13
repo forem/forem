@@ -4,4 +4,10 @@ namespace :reengagement do
     count = Reengagement.build_cohort(campaign_key: args.fetch(:campaign_key))
     puts "Cohort #{args[:campaign_key]}: #{count} recipients"
   end
+
+  desc "Send campaign. Usage: rake reengagement:send[EMAIL_ID,campaign_key]"
+  task :send, %i[email_id campaign_key] => :environment do |_t, args|
+    Reengagement.enqueue_send(email_id: args.fetch(:email_id).to_i, campaign_key: args.fetch(:campaign_key))
+    puts "Enqueued sends for #{args[:campaign_key]}"
+  end
 end

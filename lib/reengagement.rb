@@ -31,4 +31,12 @@ module Reengagement
     ActiveRecord::Base.connection.exec_update(bind)
     EmailReengagementRecipient.for_campaign(campaign_key).count
   end
+
+  # Fan out the campaign send across not-yet-pruned recipients in batches.
+  def enqueue_send(email_id:, campaign_key:, batch_size: 1000)
+    EmailReengagementRecipient.for_campaign(campaign_key).not_pruned
+      .in_batches(of: batch_size) do |batch|
+        Emails::ReengagementSendWorker.perform_async(email_id, campaign_key, batch.pluck(:user_id))
+      end
+  end
 end
