@@ -344,6 +344,9 @@ class Article < ApplicationRecord
 
   after_commit :recompile_organization_pages, on: %i[create update destroy]
 
+  after_save :cleanup_memberships_if_unpublished,
+             if: -> { saved_change_to_published? && published_before_last_save && !published? }
+
   # The trigger `update_reading_list_document` is used to keep the `articles.reading_list_document` column updated.
   #
   # Its body is inserted in a PostgreSQL trigger function and that joins the columns values
@@ -1856,5 +1859,10 @@ class Article < ApplicationRecord
        saved_change_to_main_image?
       Articles::UpdateDependentEmbedsWorker.perform_async(id)
     end
+  end
+
+  def cleanup_memberships_if_unpublished
+    concept_memberships.destroy_all
+    trend_memberships.destroy_all
   end
 end
