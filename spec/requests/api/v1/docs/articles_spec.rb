@@ -595,6 +595,9 @@ will remain."
         parameter name: :per_page, in: :query, required: false,
                   description: "Limit of articles returned (default 10, max 50).",
                   schema: { type: :integer }
+        parameter name: :page, in: :query, required: false,
+                  description: "Pagination page index.",
+                  schema: { type: :integer }
         parameter name: :threshold, in: :query, required: false,
                   description: "Optional cosine distance threshold (between 0.0 and 2.0) to filter results.",
                   schema: { type: :number }
@@ -608,6 +611,7 @@ will remain."
           let(:"api-key") { api_secret.secret }
           let(:q) { "databases" }
           let(:per_page) { 5 }
+          let(:page) { 1 }
           let(:threshold) { 0.5 }
           schema type: :array, items: {
             type: :object,
@@ -634,6 +638,7 @@ will remain."
           let(:"api-key") { api_secret.secret }
           let(:q) { "" }
           let(:per_page) { nil }
+          let(:page) { nil }
           let(:threshold) { nil }
           add_examples
           run_test!
@@ -643,6 +648,7 @@ will remain."
           let(:"api-key") { nil }
           let(:q) { "databases" }
           let(:per_page) { nil }
+          let(:page) { nil }
           let(:threshold) { nil }
           add_examples
           run_test!
@@ -650,4 +656,7 @@ will remain."
       end
     end
   end
+  # rubocop:enable RSpec/VariableName
+  # rubocop:enable RSpec/EmptyExampleGroup
+  # rubocop:enable Layout/LineLength
 end

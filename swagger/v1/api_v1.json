@@ -1078,6 +1078,15 @@
             }
           },
           {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Pagination page index.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
             "name": "threshold",
             "in": "query",
             "required": false,
