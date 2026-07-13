@@ -35,4 +35,24 @@ RSpec.describe Emails::ReengagementPruneWorker do
     expect(user.notification_setting.reload.email_digest_periodic).to be(true)
     expect(rec.reload.pruned_at).to be_nil
   end
+
+  it "does not raise and continues the batch when a recipient has no notification_setting" do
+    nil_setting_user = dormant_user
+    nil_setting_user.notification_setting.destroy!
+    nil_setting_user.reload
+    nil_setting_rec = EmailReengagementRecipient.create!(
+      user: nil_setting_user, campaign_key: "c1", sent_at: 30.days.ago,
+    )
+
+    normal_user = dormant_user
+    normal_rec = EmailReengagementRecipient.create!(user: normal_user, campaign_key: "c1", sent_at: 30.days.ago)
+
+    expect do
+      described_class.new.perform("c1", [nil_setting_user.id, normal_user.id])
+    end.not_to raise_error
+
+    expect(nil_setting_rec.reload.pruned_at).to be_nil
+    expect(normal_rec.reload.pruned_at).to be_present
+    expect(normal_user.notification_setting.reload.email_digest_periodic).to be(false)
+  end
 end

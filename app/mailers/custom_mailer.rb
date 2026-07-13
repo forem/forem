@@ -10,6 +10,7 @@ class CustomMailer < ApplicationMailer
 
   def custom_email
     @user = params[:user]
+    # Eager lookup: needed even when from_name is present, since it's also used below to resolve campaign_key.
     email_record = params[:email_id] && Email.find_by(id: params[:email_id])
     campaign_key = params[:campaign_key].presence || (email_record&.parsed_variables || {})["campaign_key"]
     stay_url =

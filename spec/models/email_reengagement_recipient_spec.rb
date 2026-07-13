@@ -11,9 +11,11 @@ RSpec.describe EmailReengagementRecipient do
   end
 
   it "filters unconfirmed, not-pruned, sent recipients for a campaign" do
-    confirmed = described_class.create!(user: create(:user), campaign_key: "c1", sent_at: Time.current, confirmed_at: Time.current)
+    confirmed = described_class.create!(user: create(:user), campaign_key: "c1", sent_at: Time.current,
+                                        confirmed_at: Time.current)
     silent    = described_class.create!(user: create(:user), campaign_key: "c1", sent_at: Time.current)
-    pruned    = described_class.create!(user: create(:user), campaign_key: "c1", sent_at: Time.current, pruned_at: Time.current)
+    pruned    = described_class.create!(user: create(:user), campaign_key: "c1", sent_at: Time.current,
+                                        pruned_at: Time.current)
     _other    = described_class.create!(user: create(:user), campaign_key: "c2", sent_at: Time.current)
 
     scope = described_class.for_campaign("c1").sent.unconfirmed.not_pruned

@@ -1,9 +1,6 @@
 <meta name="robots" content="noindex" />
 <div class="unsubscribed unsubscribed--red">
-  <div class="unsubscribed__title">
-    <%= t("views.email_subscriptions.invalid.heading") %>
-  </div>
-  <h1><%= t("email_subscriptions_controller.invalid_token_heading") %></h1>
+  <h1 class="unsubscribed__title"><%= t("email_subscriptions_controller.invalid_token_heading") %></h1>
   <br />
   <div class="unsubscribed__message">
     <%= t("views.email_subscriptions.invalid.description_html", signin: tag.a(t("views.email_subscriptions.invalid.signin"), href: app_url(user_settings_path(:notifications)))) %>

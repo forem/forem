@@ -19,7 +19,10 @@ module Emails
         next unless user
         next if last_activity_at(user) >= cutoff # re-engaged since send — spare them
 
-        user.notification_setting.update!(email_digest_periodic: false, email_newsletter: false)
+        setting = user.notification_setting
+        next unless setting # no setting means they aren't receiving these emails anyway
+
+        setting.update!(email_digest_periodic: false, email_newsletter: false)
         recipient.update!(pruned_at: Time.current)
       end
     end

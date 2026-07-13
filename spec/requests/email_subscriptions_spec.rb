@@ -52,7 +52,7 @@ RSpec.describe "EmailSubscriptions" do
       token = generate_token(user.id)
       Timecop.freeze(32.days.from_now) do
         get email_subscriptions_unsubscribe_url(ut: token)
-        expect(response.body).to include("Token expired or invalid")
+        expect(response.body).to include(I18n.t("email_subscriptions_controller.invalid_token_heading"))
       end
     end
   end
