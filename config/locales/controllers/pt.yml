@@ -37,7 +37,10 @@ pt:
     comment_notifications: notificações de comentários
     digest_emails: "e-mails de resumo do %{community}"
     follower_notifications: notificações de seguidores
+    invalid_token_heading: Este link expirou
     mention_notifications: notificações de menções
+    stay_subscribed_body: "Obrigado por confirmar — você continuará recebendo nossos e-mails."
+    stay_subscribed_heading: Você ainda está inscrito
     this_list: esta lista
     unread_notifications: notificações não lidas
     newsletter: newsletter

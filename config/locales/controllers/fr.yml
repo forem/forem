@@ -37,7 +37,10 @@ fr:
     comment_notifications: notifications de commentaires
     digest_emails: "%{community} e-mails récapitulatifs"
     follower_notifications: notifications de followers
+    invalid_token_heading: Ce lien a expiré
     mention_notifications: notifications de mentions
+    stay_subscribed_body: "Merci d'avoir confirmé — vous continuerez à recevoir nos e-mails."
+    stay_subscribed_heading: Vous êtes toujours abonné(e)
     this_list: cette liste
     unread_notifications: notifications non lues
     newsletter: bulletin d'information

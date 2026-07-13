@@ -37,7 +37,10 @@ en:
     comment_notifications: comment notifications
     digest_emails: "%{community} digest emails"
     follower_notifications: follower notifications
+    invalid_token_heading: This link has expired
     mention_notifications: mention notifications
+    stay_subscribed_body: "Thanks for confirming — you'll keep receiving our emails."
+    stay_subscribed_heading: You're still subscribed
     this_list: this list
     unread_notifications: unread notifications
     newsletter: newsletter

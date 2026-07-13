@@ -18,6 +18,22 @@ class EmailSubscriptionsController < ApplicationController
     not_found
   end
 
+  def stay_subscribed
+    verified = Rails.application.message_verifier(:email_retain).verify(params[:rt]).with_indifferent_access
+    expires_at = verified[:expires_at]
+    expires_at = Time.zone.parse(expires_at) if expires_at.is_a?(String)
+
+    if expires_at && expires_at > Time.current
+      recipient = EmailReengagementRecipient.find_by(user_id: verified[:user_id], campaign_key: verified[:campaign_key])
+      recipient&.update!(confirmed_at: Time.current) if recipient && recipient.confirmed_at.nil?
+      render "stay_subscribed"
+    else
+      render "invalid_token"
+    end
+  rescue ActiveSupport::MessageVerifier::InvalidSignature
+    not_found
+  end
+
   def preferred_email_name
     {
       email_digest_periodic: lambda {
