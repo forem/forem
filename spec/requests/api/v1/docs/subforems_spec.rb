@@ -15,6 +15,12 @@ RSpec.describe "Api::V1::Docs::Subforems" do
     path "/api/subforems" do
       get "Retrieve all discoverable subforems" do
         tags "subforems"
+        description "Retrieve a list of all discoverable subforems/communities.
+
+### Subforems Overview:
+- Subforems represent distinct sub-communities or specialized sections hosted within the Forem instance.
+- Bypasses authentication (can be accessed publicly).
+- Returns list of names, slugs, color schemes, and target interests."
         security []
         produces "application/json"
 

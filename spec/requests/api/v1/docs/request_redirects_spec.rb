@@ -15,9 +15,19 @@ RSpec.describe "Api::V1::Docs::RequestRedirects" do
     path "/api/admin/request_redirects" do
       get "Retrieve all request redirects (Admin)" do
         tags "request_redirects", "admin"
+        description "Retrieve a list of all request redirects configured on the platform.
+
+### Redirects Overview:
+- Redirects map incoming HTTP request paths or domains to specific target destination URLs (301 or 302 redirects).
+- Primarily used for managing vanity URLs, legacy path support, or domain migrations.
+- Requires Administrator privileges."
         produces "application/json"
-        parameter name: :page, in: :query, required: false, schema: { type: :integer }
-        parameter name: :per_page, in: :query, required: false, schema: { type: :integer }
+        parameter name: :page, in: :query, required: false,
+                  description: "Pagination page index.",
+                  schema: { type: :integer }
+        parameter name: :per_page, in: :query, required: false,
+                  description: "Number of items to return per page.",
+                  schema: { type: :integer }
 
         response "200", "successful" do
           let(:"api-key") { admin_api_secret.secret }
@@ -33,22 +43,30 @@ RSpec.describe "Api::V1::Docs::RequestRedirects" do
     path "/api/admin/request_redirects" do
       post "Create a request redirect (Admin)" do
         tags "request_redirects", "admin"
+        description "Create a new request redirect route. Requires Administrator privileges.
+
+### Body Parameter Guidelines:
+- **original_url**: The source path (e.g. `/old-page`) to intercept.
+- **destination_url**: The target destination (e.g. `https://myforem.com/new-page`) to redirect users to.
+- **request_domain**: The domain scope (e.g. `dev.to`) where this redirect rule applies."
         consumes "application/json"
         produces "application/json"
-        parameter name: :redirect_params, in: :body, schema: {
-          type: :object,
-          properties: {
-            request_redirect: {
-              type: :object,
-              properties: {
-                original_url: { type: :string },
-                destination_url: { type: :string },
-                request_domain: { type: :string }
-              },
-              required: %w[original_url destination_url request_domain]
-            }
-          }
-        }
+        parameter name: :redirect_params, in: :body,
+                  description: "Redirect routing parameters.",
+                  schema: {
+                    type: :object,
+                    properties: {
+                      request_redirect: {
+                        type: :object,
+                        properties: {
+                          original_url: { type: :string },
+                          destination_url: { type: :string },
+                          request_domain: { type: :string }
+                        },
+                        required: %w[original_url destination_url request_domain]
+                      }
+                    }
+                  }
 
         response "201", "created" do
           let(:"api-key") { admin_api_secret.secret }
@@ -65,8 +83,11 @@ RSpec.describe "Api::V1::Docs::RequestRedirects" do
     path "/api/admin/request_redirects/{id}" do
       get "Retrieve a request redirect's details (Admin)" do
         tags "request_redirects", "admin"
+        description "Retrieve details of a single request redirect route by ID. Requires Admin credentials."
         produces "application/json"
-        parameter name: :id, in: :path, required: true, schema: { type: :integer }
+        parameter name: :id, in: :path, required: true,
+                  description: "Unique redirect ID.",
+                  schema: { type: :integer }
 
         response "200", "successful" do
           let(:"api-key") { admin_api_secret.secret }
@@ -83,22 +104,27 @@ RSpec.describe "Api::V1::Docs::RequestRedirects" do
     path "/api/admin/request_redirects/{id}" do
       patch "Update a request redirect (Admin)" do
         tags "request_redirects", "admin"
+        description "Update details (paths or domain scope) of an existing redirect route by ID. Requires Admin credentials."
         consumes "application/json"
         produces "application/json"
-        parameter name: :id, in: :path, required: true, schema: { type: :integer }
-        parameter name: :redirect_params, in: :body, schema: {
-          type: :object,
-          properties: {
-            request_redirect: {
-              type: :object,
-              properties: {
-                original_url: { type: :string },
-                destination_url: { type: :string },
-                request_domain: { type: :string }
-              }
-            }
-          }
-        }
+        parameter name: :id, in: :path, required: true,
+                  description: "Unique redirect ID to update.",
+                  schema: { type: :integer }
+        parameter name: :redirect_params, in: :body,
+                  description: "Updated redirect routing parameters.",
+                  schema: {
+                    type: :object,
+                    properties: {
+                      request_redirect: {
+                        type: :object,
+                        properties: {
+                          original_url: { type: :string },
+                          destination_url: { type: :string },
+                          request_domain: { type: :string }
+                        }
+                      }
+                    }
+                  }
 
         response "200", "successful" do
           let(:"api-key") { admin_api_secret.secret }
@@ -116,8 +142,11 @@ RSpec.describe "Api::V1::Docs::RequestRedirects" do
     path "/api/admin/request_redirects/{id}" do
       delete "Delete a request redirect (Admin)" do
         tags "request_redirects", "admin"
+        description "Delete a request redirect route, disabling the routing intercept immediately. Requires Admin credentials."
         produces "application/json"
-        parameter name: :id, in: :path, required: true, schema: { type: :integer }
+        parameter name: :id, in: :path, required: true,
+                  description: "Unique redirect ID to delete.",
+                  schema: { type: :integer }
 
         response "204", "no content" do
           let(:"api-key") { admin_api_secret.secret }
