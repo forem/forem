@@ -1,7 +1,8 @@
 module Api
   module V1
     class ConceptsController < Api::V1::ApiController
-      before_action :authenticate_with_api_key_or_current_user!
+      before_action :authenticate_with_api_key!, only: %i[search]
+      before_action :authenticate_with_api_key_or_current_user!, except: %i[search]
       before_action :set_concept, only: %i[show update articles]
       before_action :authorize_concept_access!, only: %i[show update articles]
 
@@ -82,6 +83,61 @@ module Api
 
         set_surrogate_key_header @concept.record_key, *@articles.map(&:record_key)
         render "api/v0/articles/index", formats: :json
+      end
+
+      def search
+        query_text = params[:q]
+        if query_text.blank?
+          render json: { error: "q parameter is required" }, status: :bad_request
+          return
+        end
+
+        per_page = [params.fetch(:per_page, 10).to_i, 50].min
+        per_page = [per_page, 1].max
+
+        begin
+          embedding = Ai::Embedding.new(wrapper: self).call(
+            query_text,
+            task_type: "RETRIEVAL_QUERY",
+            output_dimensionality: 768
+          )
+        rescue StandardError => e
+          Rails.logger.error("Failed to generate embedding for concept search: #{e.message}")
+          render json: { error: "Failed to generate search embedding" }, status: :service_unavailable
+          return
+        end
+
+        concepts_scope = if current_user.super_admin?
+                           Concept.all
+                         else
+                           current_user.accessible_concepts
+                         end
+
+        vector_literal = "[#{embedding.to_a.join(',')}]"
+        quoted_vector = Concept.connection.quote(vector_literal)
+
+        @concepts = concepts_scope
+          .select("concepts.*, (anchor_embedding <=> #{quoted_vector}) AS distance")
+          .where.not(anchor_embedding: nil)
+
+        if params[:threshold].present?
+          threshold_val = params[:threshold].to_f
+          @concepts = @concepts.where("anchor_embedding <=> #{quoted_vector} <= ?", threshold_val)
+        end
+
+        @concepts = @concepts
+          .order(Arel.sql("anchor_embedding <=> #{quoted_vector}"))
+          .limit(per_page)
+
+        serialized_concepts = @concepts.map do |concept|
+          distance = concept.distance.to_f
+          concept.as_json(only: %i[id name slug description parent_id score similarity_threshold created_at updated_at]).merge(
+            "distance" => distance,
+            "similarity" => (1.0 - distance).round(6)
+          )
+        end
+
+        render json: serialized_concepts
       end
 
       private

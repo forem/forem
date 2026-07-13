@@ -125,6 +125,11 @@ Rails.application.routes.draw do
         # callers using the application/vnd.forem.api-v1+json Accept header.
         resources :concepts, only: %i[index show update] do
           get :articles, on: :member
+          get :search, on: :collection
+        end
+
+        resources :articles, only: [] do
+          get :semantic_search, on: :collection
         end
 
         namespace :admin do
