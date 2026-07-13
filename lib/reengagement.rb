@@ -39,4 +39,12 @@ module Reengagement
         Emails::ReengagementSendWorker.perform_async(email_id, campaign_key, batch.pluck(:user_id))
       end
   end
+
+  # Fan out the prune across silent (sent, unconfirmed, not-yet-pruned) recipients in batches.
+  def enqueue_prune(campaign_key:, batch_size: 1000)
+    EmailReengagementRecipient.for_campaign(campaign_key).sent.unconfirmed.not_pruned
+      .in_batches(of: batch_size) do |batch|
+        Emails::ReengagementPruneWorker.perform_async(campaign_key, batch.pluck(:user_id))
+      end
+  end
 end

@@ -10,4 +10,12 @@ namespace :reengagement do
     Reengagement.enqueue_send(email_id: args.fetch(:email_id).to_i, campaign_key: args.fetch(:campaign_key))
     puts "Enqueued sends for #{args[:campaign_key]}"
   end
+
+  desc "Prune non-responders. Usage: rake reengagement:prune[campaign_key] CONFIRM=YES"
+  task :prune, [:campaign_key] => :environment do |_t, args|
+    abort "Refusing to prune without CONFIRM=YES" unless ENV["CONFIRM"] == "YES"
+
+    Reengagement.enqueue_prune(campaign_key: args.fetch(:campaign_key))
+    puts "Enqueued prune for #{args[:campaign_key]}"
+  end
 end
