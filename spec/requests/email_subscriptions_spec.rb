@@ -52,37 +52,35 @@ RSpec.describe "EmailSubscriptions" do
       token = generate_token(user.id)
       Timecop.freeze(32.days.from_now) do
         get email_subscriptions_unsubscribe_url(ut: token)
-        expect(response.body).to include(I18n.t("email_subscriptions_controller.invalid_token_heading"))
+        expect(response.body).to include(I18n.t("views.email_subscriptions.invalid.heading"))
       end
     end
   end
 
   describe "GET /email_subscriptions/stay_subscribed", :proper_status do
-    let!(:recipient) { EmailReengagementRecipient.create!(user: user, campaign_key: "c1", sent_at: Time.current) }
-
-    def token_for(id, key, expires_at: 60.days.from_now)
+    def token_for(id, expires_at: 60.days.from_now)
       Rails.application.message_verifier(:email_retain).generate(
-        { user_id: id, campaign_key: key, expires_at: expires_at.iso8601 },
+        { user_id: id, expires_at: expires_at.iso8601 },
       )
     end
 
     it "records confirmation for a valid token" do
-      get stay_subscribed_email_subscriptions_path(rt: token_for(user.id, "c1"))
+      get stay_subscribed_email_subscriptions_path(rt: token_for(user.id))
       expect(response).to have_http_status(:ok)
-      expect(recipient.reload.confirmed_at).to be_present
+      expect(user.notification_setting.reload.email_reengagement_confirmed_at).to be_present
     end
 
     it "is idempotent (second hit keeps original confirmation)" do
-      get stay_subscribed_email_subscriptions_path(rt: token_for(user.id, "c1"))
-      first = recipient.reload.confirmed_at
-      get stay_subscribed_email_subscriptions_path(rt: token_for(user.id, "c1"))
-      expect(recipient.reload.confirmed_at).to eq(first)
+      get stay_subscribed_email_subscriptions_path(rt: token_for(user.id))
+      first = user.notification_setting.reload.email_reengagement_confirmed_at
+      get stay_subscribed_email_subscriptions_path(rt: token_for(user.id))
+      expect(user.notification_setting.reload.email_reengagement_confirmed_at).to eq(first)
     end
 
     it "rejects an expired token" do
-      get stay_subscribed_email_subscriptions_path(rt: token_for(user.id, "c1", expires_at: 1.day.ago))
-      expect(recipient.reload.confirmed_at).to be_nil
-      expect(response.body).to include(I18n.t("email_subscriptions_controller.invalid_token_heading"))
+      get stay_subscribed_email_subscriptions_path(rt: token_for(user.id, expires_at: 1.day.ago))
+      expect(user.notification_setting.reload.email_reengagement_confirmed_at).to be_nil
+      expect(response.body).to include(I18n.t("views.email_subscriptions.invalid.heading"))
     end
 
     it "returns not_found for a tampered token" do

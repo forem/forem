@@ -24,8 +24,10 @@ class EmailSubscriptionsController < ApplicationController
     expires_at = Time.zone.parse(expires_at) if expires_at.is_a?(String)
 
     if expires_at && expires_at > Time.current
-      recipient = EmailReengagementRecipient.find_by(user_id: verified[:user_id], campaign_key: verified[:campaign_key])
-      recipient&.update!(confirmed_at: Time.current) if recipient && recipient.confirmed_at.nil?
+      setting = User.find(verified[:user_id]).notification_setting
+      if setting && setting.email_reengagement_confirmed_at.nil?
+        setting.update(email_reengagement_confirmed_at: Time.current)
+      end
       render "stay_subscribed"
     else
       render "invalid_token"

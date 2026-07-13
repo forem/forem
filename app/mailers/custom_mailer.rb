@@ -10,18 +10,15 @@ class CustomMailer < ApplicationMailer
 
   def custom_email
     @user = params[:user]
-    # Eager lookup: needed even when from_name is present, since it's also used below to resolve campaign_key.
-    email_record = params[:email_id] && Email.find_by(id: params[:email_id])
-    campaign_key = params[:campaign_key].presence || (email_record&.parsed_variables || {})["campaign_key"]
-    stay_url =
-      if campaign_key.present?
-        token = generate_retain_token(@user.id, campaign_key)
-        stay_subscribed_email_subscriptions_url(rt: token, host: ActionMailer::Base.default_url_options[:host])
-      end
+    # *|stay_subscribed_url|* is a per-user merge tag like *|name|*; the signed
+    # token is generated locally (no DB cost) and only renders where an email's
+    # author placed the tag in the body.
+    stay_url = stay_subscribed_email_subscriptions_url(rt: generate_retain_token(@user.id),
+                                                       host: ActionMailer::Base.default_url_options[:host])
     @content = Email.replace_merge_tags(params[:content], @user, stay_url: stay_url)
     @subject = Email.replace_merge_tags(params[:subject], @user)
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_newsletter)
-    @from_topic = params[:from_name] || email_record&.default_from_name_based_on_type
+    @from_topic = params[:from_name] || Email.find_by(id: params[:email_id])&.default_from_name_based_on_type
 
     # set sendgrid category in the header using smtp api
     # https://docs.sendgrid.com/for-developers/sending-email/building-an-x-smtpapi-header

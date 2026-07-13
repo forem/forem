@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_07_13_130001) do
+ActiveRecord::Schema[7.2].define(version: 2026_07_13_150001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -722,19 +722,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_13_130001) do
     t.bigint "user_id"
     t.datetime "verified_at", precision: nil
     t.index ["user_id"], name: "index_email_authorizations_on_user_id"
-  end
-
-  create_table "email_reengagement_recipients", force: :cascade do |t|
-    t.string "campaign_key", null: false
-    t.datetime "confirmed_at"
-    t.datetime "created_at", null: false
-    t.bigint "email_id"
-    t.datetime "pruned_at"
-    t.datetime "sent_at"
-    t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.index ["campaign_key"], name: "index_email_reengagement_recipients_on_campaign_key"
-    t.index ["user_id", "campaign_key"], name: "index_reengagement_recipients_on_user_and_campaign", unique: true
   end
 
   create_table "emails", force: :cascade do |t|
@@ -2104,6 +2091,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_13_130001) do
     t.boolean "email_membership_newsletter", default: false, null: false
     t.boolean "email_mention_notifications", default: true, null: false
     t.boolean "email_newsletter", default: false, null: false
+    t.datetime "email_reengagement_confirmed_at"
+    t.datetime "email_reengagement_pruned_at"
     t.boolean "email_tag_mod_newsletter", default: false, null: false
     t.boolean "email_unread_notifications", default: true, null: false
     t.boolean "mobile_comment_notifications", default: true, null: false

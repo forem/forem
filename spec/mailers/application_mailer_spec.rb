@@ -5,10 +5,9 @@ RSpec.describe ApplicationMailer do
   let(:email) { VerificationMailer.with(user_id: user.id).account_ownership_verification_email }
 
   it "generates a verifiable retain token" do
-    token = Class.new(ApplicationMailer).new.send(:generate_retain_token, 42, "camp1")
+    token = Class.new(ApplicationMailer).new.send(:generate_retain_token, 42)
     payload = Rails.application.message_verifier(:email_retain).verify(token).with_indifferent_access
     expect(payload[:user_id]).to eq(42)
-    expect(payload[:campaign_key]).to eq("camp1")
     expect(Time.zone.parse(payload[:expires_at])).to be > Time.current
   end
 
