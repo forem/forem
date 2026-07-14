@@ -22,6 +22,7 @@ RSpec.describe "Creating an article with the editor" do
 
   it "creates a new article", :flaky, js: true do
     visit new_path
+    expect(page).to have_selector("body[data-loaded='true']")
     fill_in "article_body_markdown", with: template
     click_button "Save changes"
     expect(page).to have_selector("header h1", text: "Sample Article")
@@ -91,6 +92,7 @@ RSpec.describe "Creating an article with the editor" do
 
     it "displays a rate limit warning", :flaky, js: true do
       visit new_path
+      expect(page).to have_selector("body[data-loaded='true']")
       fill_in "article_body_markdown", with: template
       click_button "Save changes"
       expect(page).to have_text("Rate limit reached")

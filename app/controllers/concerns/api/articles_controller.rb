@@ -2,6 +2,10 @@ module Api
   module ArticlesController
     extend ActiveSupport::Concern
 
+    included do
+      before_action :validate_page_limit, only: %i[index search]
+    end
+
     INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[
       id user_id organization_id collection_id
       title description main_image published_at crossposted_at social_image
@@ -208,6 +212,14 @@ module Api
         labels = labels.is_a?(String) ? labels.gsub(" ", "").split(",") : labels
         params[:article][:labels] = labels
       end
+    end
+
+    def validate_page_limit
+      return if params[:page].to_i <= 1000
+      return if authenticate_with_api_key
+
+      message = I18n.t("api.v0.articles_controller.page_limit_exceeded")
+      render json: { error: message, status: 401 }, status: :unauthorized
     end
   end
 end

@@ -27,7 +27,17 @@ RSpec.describe "Api::V1::Docs::Articles" do
         tags "articles"
         description "This endpoint allows the client to create a new article.
 
-\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code."
+\"Articles\" are all the posts that users create on DEV/Forem that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but are referred to as articles within the code.
+
+### Body Parameter Tips:
+- **title**: A compelling and descriptive title for the article.
+- **body_markdown**: The main text of the article in Markdown format. You can use standard Markdown as well as Forem-specific Liquid tags (e.g., `{% embed ... %}`). You can also include YAML front matter at the very beginning of the markdown to specify metadata such as tags, series, and cover image.
+- **published**: Set to `true` to immediately publish the article and make it visible in feeds. Set to `false` (default) to save it as a draft.
+- **tags**: A comma-separated list of tags (up to 4 tags). Tags help categorize your post and improve discoverability.
+- **series**: Group articles together by specifying a series name. If the series does not exist, it will be created.
+- **main_image**: Absolute URL of the cover image for the article.
+- **canonical_url**: If this post was originally published elsewhere, specify the canonical URL to maintain SEO integrity.
+- **description**: A short summary of the article used for previews and SEO meta description."
         operationId "createArticle"
         produces "application/json"
         consumes "application/json"
@@ -82,14 +92,27 @@ RSpec.describe "Api::V1::Docs::Articles" do
         tags "articles"
         description "This endpoint allows the client to retrieve a list of articles.
 
-\"Articles\" are all the posts that users create on DEV that typically
-show up in the feed. They can be a blog post, a discussion question,
-a help thread etc. but is referred to as article within the code.
+\"Articles\" are all the posts that users create on DEV/Forem that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but are referred to as articles within the code.
 
-By default it will return featured, published articles ordered
-by descending popularity.
+By default it will return featured, published articles ordered by descending popularity.
 
-It supports pagination, each page will contain `30` articles by default."
+It supports pagination, each page will contain `30` articles by default.
+
+### Query Parameter Usage Tips:
+- **Filtering by Tags**:
+  - Use `tag` to filter articles containing a single exact tag (e.g. `tag=discuss`).
+  - Use `tags` to retrieve articles containing *any* of the comma-separated list of tags (e.g. `tags=javascript,css`).
+  - Use `tags_exclude` to filter out articles containing any of the comma-separated list of tags (e.g. `tags_exclude=node,java`).
+- **Filtering by User / Organization**:
+  - Use `username` to retrieve articles belonging to a specific User or Organization. Articles are returned in reverse chronological publication order.
+- **State Options**:
+  - Use `state=fresh` to fetch fresh articles.
+  - Use `state=rising` to fetch rising/trending articles.
+  - Combine `state=all` with `username` to fetch up to `1000` articles (both published and unpublished) from that user/organization in a single page.
+- **Top / Popularity**:
+  - Use `top=N` to return the most popular articles published in the last `N` days (e.g. `top=7` for top articles of the week, `top=30` for top of the month). This parameter can be combined with `tag` to find top articles in a specific niche.
+- **Collections**:
+  - Use `collection_id` to retrieve articles belonging to a specific collection/series, sorted chronologically."
         operationId "getArticles"
         produces "application/json"
         parameter "$ref": "#/components/parameters/pageParam"
@@ -158,6 +181,42 @@ belonging to the requested collection, ordered by ascending publication date.",
     end
   end
 
+  describe "GET /api/articles/search" do
+    path "/api/articles/search" do
+      get "Search for articles" do
+        security []
+        tags "articles"
+        description "This endpoint allows the client to search for articles.
+
+### Search Guidance:
+- **q**: The search query term. Matches against article titles, tags, and body content.
+- **top**: Restricts search results to articles published within the last `N` days.
+- **page** & **per_page**: Standard pagination support. Use this to display results sequentially on a search results page."
+        operationId "searchArticles"
+        produces "application/json"
+        parameter name: :q, in: :query, required: false,
+                  description: "The search query term. Matches against article titles, tags, and body content.",
+                  schema: { type: :string }
+        parameter name: :top, in: :query, required: false,
+                  description: "Restricts search results to articles published within the last `N` days.",
+                  schema: { type: :integer }
+        parameter name: :page, in: :query, required: false,
+                  description: "Pagination page index.",
+                  schema: { type: :integer }
+        parameter name: :per_page, in: :query, required: false,
+                  description: "The number of items to return per page.",
+                  schema: { type: :integer }
+
+        response "200", "A List of Articles" do
+          let(:q) { "Rails" }
+          schema type: :array, items: { "$ref": "#/components/schemas/ArticleIndex" }
+          add_examples
+          run_test!
+        end
+      end
+    end
+  end
+
   describe "/api/articles/latest" do
     before { create_list(:article, 3) }
 
@@ -165,9 +224,12 @@ belonging to the requested collection, ordered by ascending publication date.",
       get "Published articles sorted by published date" do
         security []
         tags "articles"
-        description "This endpoint allows the client to retrieve a list of articles. ordered by descending publish date.
+        description "This endpoint allows the client to retrieve a list of articles ordered strictly by descending publication date.
 
-It supports pagination, each page will contain 30 articles by default."
+### Usage Tips:
+- Bypasses all Forem/DEV feed personalization and popularity algorithms.
+- Ideal for building RSS feeds, chronological timelines, or \"latest posts\" widgets.
+- Supports standard `page` and `per_page` query parameters."
         operationId "getLatestArticles"
         produces "application/json"
 
@@ -190,10 +252,15 @@ It supports pagination, each page will contain 30 articles by default."
       get "Published article by id" do
         security []
         tags "articles"
-        description "This endpoint allows the client to retrieve a single published article given its `id`."
+        description "This endpoint allows the client to retrieve a single published article given its unique numerical `id`.
+
+### Integration Tip:
+- Returns the complete serialized article object including its HTML/markdown representation, tags, and author profile details.
+- To retrieve an article using its URL path structure instead of its numeric ID, use the `/api/articles/{username}/{slug}` endpoint."
         operationId "getArticleById"
         produces "application/json"
-        parameter name: :id, in: :path, type: :integer, required: true
+        parameter name: :id, in: :path, type: :integer, required: true,
+                  description: "The unique numerical ID of the published article."
 
         response "200", "An Article" do
           let(:id) { published_article.id }
@@ -214,16 +281,19 @@ It supports pagination, each page will contain 30 articles by default."
 
       put "Update an article by id" do
         tags "articles"
-        description "This endpoint allows the client to update an existing article.
+        description "This endpoint allows the client to update an existing article by its unique numerical `id`.
 
-\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code."
+### Authorization Constraints:
+- The API key provided must belong to the author of the article.
+- Supports updating individual fields such as `title`, `body_markdown`, `published`, `tags`, etc.
+- Setting `published: false` on an already published article will revert it to draft status."
         operationId "updateArticle"
         produces "application/json"
         consumes "application/json"
         parameter name: :id,
                   in: :path,
                   required: true,
-                  description: "The ID of the user to unpublish.",
+                  description: "The unique numerical ID of the article to update.",
                   schema: {
                     type: :integer,
                     format: :int32,
@@ -278,11 +348,16 @@ It supports pagination, each page will contain 30 articles by default."
     get "Published article by path" do
       security []
       tags "articles"
-      description "This endpoint allows the client to retrieve a single published article given its `path`."
+      description "This endpoint allows the client to retrieve a single published article given its `username` and `slug` (the URL-friendly path identifier).
+
+### Usage Tip:
+- Handy for resolving absolute Forem/DEV article URLs (e.g., `https://dev.to/username/slug`) into their corresponding API data models."
       operationId "getArticleByPath"
       produces "application/json"
-      parameter name: :username, in: :path, type: :string, required: true
-      parameter name: :slug, in: :path, type: :string, required: true
+      parameter name: :username, in: :path, type: :string, required: true,
+                description: "The username of the article's author or organization."
+      parameter name: :slug, in: :path, type: :string, required: true,
+                description: "The URL-friendly slug of the article (e.g. `my-first-post-1234`)."
 
       response "200", "An Article" do
         let(:username) { published_article.username }
@@ -503,6 +578,79 @@ will remain."
           let(:id) { 0 }
           add_examples
 
+          run_test!
+        end
+      end
+    end
+  end
+  describe "GET /api/articles/semantic_search" do
+    path "/api/articles/semantic_search" do
+      get "Perform a semantic fuzzy search on articles" do
+        tags "articles"
+        description "Allows authenticated clients to search articles using Forem's semantic embeddings database."
+        produces "application/json"
+        parameter name: :q, in: :query, required: true,
+                  description: "The search query term to match semantically.",
+                  schema: { type: :string }
+        parameter name: :per_page, in: :query, required: false,
+                  description: "Limit of articles returned (default 10, max 50).",
+                  schema: { type: :integer }
+        parameter name: :page, in: :query, required: false,
+                  description: "Pagination page index.",
+                  schema: { type: :integer }
+        parameter name: :threshold, in: :query, required: false,
+                  description: "Optional cosine distance threshold (between 0.0 and 2.0) to filter results.",
+                  schema: { type: :number }
+
+        before do
+          allow_any_instance_of(Ai::Embedding).to receive(:call).and_return(Array.new(768, 0.1))
+          published_article.update_column(:semantic_embedding, Array.new(768, 0.1))
+        end
+
+        response "200", "successful" do
+          let(:"api-key") { api_secret.secret }
+          let(:q) { "databases" }
+          let(:per_page) { 5 }
+          let(:page) { 1 }
+          let(:threshold) { 0.5 }
+          schema type: :array, items: {
+            type: :object,
+            properties: {
+              id: { type: :integer },
+              title: { type: :string },
+              description: { type: :string, nullable: true },
+              cover_image: { type: :string, nullable: true },
+              slug: { type: :string },
+              path: { type: :string },
+              url: { type: :string },
+              comments_count: { type: :integer },
+              public_reactions_count: { type: :integer },
+              published_at: { type: :string },
+              distance: { type: :number },
+              similarity: { type: :number }
+            }
+          }
+          add_examples
+          run_test!
+        end
+
+        response "400", "bad request" do
+          let(:"api-key") { api_secret.secret }
+          let(:q) { "" }
+          let(:per_page) { nil }
+          let(:page) { nil }
+          let(:threshold) { nil }
+          add_examples
+          run_test!
+        end
+
+        response "401", "unauthorized" do
+          let(:"api-key") { nil }
+          let(:q) { "databases" }
+          let(:per_page) { nil }
+          let(:page) { nil }
+          let(:threshold) { nil }
+          add_examples
           run_test!
         end
       end

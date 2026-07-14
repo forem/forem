@@ -33,6 +33,10 @@ class Trend < ApplicationRecord
     self.class.purge_all
   end
 
+  def top_articles(limit = 3)
+    articles.published.order(score: :desc).limit(limit)
+  end
+
   private
 
   def generate_slug

@@ -1,5 +1,5 @@
 ---
-en:
+pt:
   views:
     moderations:
       heading: Mod Center
@@ -155,6 +155,9 @@ en:
         co_author_ids: Co-Author IDs
         max_score: Max score
         no_max_if_zero: No max if set to zero
+        baseline_score: Pontuação de referência
+        no_baseline_if_zero: Sem pontuação de referência se definido para zero
+        set_to_min_indexing: Definir para a indexação mínima
         edit: Edit
         featured: Featured
         likes: likes

@@ -18,11 +18,12 @@ RSpec.describe "Api::V1::Docs::Surveys" do
       get "List surveys" do
         tags "surveys"
         description(<<~DESCRIBE.strip)
-          This endpoint allows the client to retrieve a list of surveys.
+          Retrieve a list of surveys configured on the platform.
 
-          It supports pagination and optional filtering by active status.
-
-          Internal only. Admin authorization is required to access this endpoint.
+          ### Surveys Overview:
+          - Surveys are admin-defined questionnaires consisting of multiple choice or text polls.
+          - Requires Administrator authorization.
+          - Supports standard pagination controls and active status filtering.
         DESCRIBE
         operationId "getSurveys"
         produces "application/json"
@@ -65,10 +66,11 @@ RSpec.describe "Api::V1::Docs::Surveys" do
       get "A survey with polls" do
         tags "surveys"
         description(<<~DESCRIBE.strip)
-          This endpoint allows the client to retrieve a single survey by ID or slug,
-          including its nested polls and poll options.
+          Retrieve a single survey (by ID or slug) with its nested structure.
 
-          Internal only. Admin authorization is required to access this endpoint.
+          ### Nested Format Details:
+          - Returns the target Survey object including all associated Polls, multiple choice options, and configuration states.
+          - Requires Administrator authorization.
         DESCRIBE
         operationId "getSurveyByIdOrSlug"
         produces "application/json"
@@ -121,11 +123,12 @@ RSpec.describe "Api::V1::Docs::Surveys" do
       get "Survey poll votes" do
         tags "surveys"
         description(<<~DESCRIBE.strip)
-          This endpoint allows the client to retrieve poll votes for a given survey.
-          Results are paginated. Use the `after` parameter with the last seen vote ID
-          for cursor-based pagination.
+          Retrieve multiple-choice poll votes for a specific survey.
 
-          Internal only. Admin authorization is required to access this endpoint.
+          ### Cursor Pagination Tip:
+          - Uses cursor-based pagination to safely stream high volumes of voting records.
+          - Specify the `after` query parameter with the last retrieved record ID to get the next page.
+          - Requires Administrator authorization.
         DESCRIBE
         operationId "getSurveyPollVotes"
         produces "application/json"
@@ -183,11 +186,12 @@ RSpec.describe "Api::V1::Docs::Surveys" do
       get "Survey poll text responses" do
         tags "surveys"
         description(<<~DESCRIBE.strip)
-          This endpoint allows the client to retrieve text responses for a given survey.
-          Results are paginated. Use the `after` parameter with the last seen response ID
-          for cursor-based pagination.
+          Retrieve free-text poll responses for a specific survey.
 
-          Internal only. Admin authorization is required to access this endpoint.
+          ### Integration & Cursor Tip:
+          - Fetches written user answers for text-input questions.
+          - Uses cursor-based pagination (`after` query param) to stream responses.
+          - Requires Administrator authorization.
         DESCRIBE
         operationId "getSurveyPollTextResponses"
         produces "application/json"
