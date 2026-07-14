@@ -7,6 +7,7 @@ pt:
         start_missing: Parâmetro obrigatório 'start' está ausente
       articles_controller:
         must_be_json: parâmetro article deve ser um objeto JSON. Você forneceu article como um %{type}
+        page_limit_exceeded: A profundidade da página é limitada a 1000 sem uma chave de API
       follows_controller:
         followed:
           one: seguido %{count} usuário
