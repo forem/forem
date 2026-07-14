@@ -7,6 +7,7 @@ fr:
         start_missing: Le paramètre 'début' requis est manquant
       articles_controller:
         must_be_json: Le paramètre article doit être un objet JSON. Vous avez fourni l'article comme %{type}
+        page_limit_exceeded: La profondeur de page est limitée à 1000 sans clé API
       follows_controller:
         followed:
           one: a suivi %{count} utilisateur
