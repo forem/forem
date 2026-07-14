@@ -607,9 +607,24 @@ en:
           lookback_button: "Trigger Lookback"
           similarity_threshold: "Similarity Threshold"
         form:
+          score: "Concept Score"
+          score_placeholder: "e.g. 1.0 (optional)"
+          score_help: "Manual score/weight adjustment used for ranking."
           similarity_threshold: "Similarity Threshold"
           similarity_threshold_placeholder: "e.g. 0.25 (optional)"
           similarity_threshold_help: "Optional. Float between 0.0 and 1.0. If left blank, the system default (0.28) is used."
         index:
           threshold: "Threshold"
           default: "default"
+      events:
+        show:
+          signups_title: "Event Signups"
+          no_signups: "No signups for this event yet."
+          headers:
+            user: "User"
+            signed_up_at: "Signed Up At"
+            notifications: "Notifications Sent"
+          notifications:
+            day_before: "1 Day Before"
+            hour_before: "1 Hour Before"
+            none: "None"

@@ -493,9 +493,24 @@ pt:
           lookback_button: "Disparar Busca"
           similarity_threshold: "Limiar de Similaridade"
         form:
+          score: "Pontuação do Conceito"
+          score_placeholder: "ex. 1.0 (opcional)"
+          score_help: "Ajuste manual da pontuação/peso usado para classificação."
           similarity_threshold: "Limiar de Similaridade"
           similarity_threshold_placeholder: "ex. 0.25 (opcional)"
           similarity_threshold_help: "Opcional. Float entre 0.0 e 1.0. Se deixado em branco, o padrão do sistema (0.28) será usado."
         index:
           threshold: "Limiar"
           default: "padrão"
+      events:
+        show:
+          signups_title: "Inscrições no evento"
+          no_signups: "Nenhuma inscrição para este evento ainda."
+          headers:
+            user: "Usuário"
+            signed_up_at: "Inscrito em"
+            notifications: "Notificações enviadas"
+          notifications:
+            day_before: "1 dia antes"
+            hour_before: "1 hora antes"
+            none: "Nenhuma"

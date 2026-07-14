@@ -596,9 +596,24 @@ fr:
           lookback_button: "Déclencher"
           similarity_threshold: "Seuil de similitude"
         form:
+          score: "Score du concept"
+          score_placeholder: "ex. 1.0 (optionnel)"
+          score_help: "Ajustement manuel du score/poids utilisé pour le classement."
           similarity_threshold: "Seuil de similitude"
           similarity_threshold_placeholder: "ex. 0.25 (optionnel)"
           similarity_threshold_help: "Optionnel. Nombre décimal entre 0,0 et 1,0. Si laissé vide, la valeur par défaut du système (0,28) est utilisée."
         index:
           threshold: "Seuil"
           default: "défaut"
+      events:
+        show:
+          signups_title: "Inscriptions à l'événement"
+          no_signups: "Aucune inscription pour cet événement pour le moment."
+          headers:
+            user: "Utilisateur"
+            signed_up_at: "Inscrit le"
+            notifications: "Notifications envoyées"
+          notifications:
+            day_before: "1 jour avant"
+            hour_before: "1 heure avant"
+            none: "Aucune"

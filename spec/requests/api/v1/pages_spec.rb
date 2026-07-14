@@ -68,7 +68,9 @@ RSpec.describe "Api::V1::Pages" do
     include_context "when user is authorized"
 
     let(:post_params) do
-      attributes_for(:page)
+      # Fixed title so find_by(title:) can never collide with the let!(:page)
+      # record — Faker::Book.title draws from a small pool and duplicates.
+      attributes_for(:page, title: "Api V1 Pages Spec Page")
     end
     let(:body_html) { "<div>hi, folks</div>" }
     let(:body_css) { "h1 {font-size: 120px}" }
