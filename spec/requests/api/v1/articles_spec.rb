@@ -81,6 +81,17 @@ RSpec.describe "Api::V1::Articles" do
         expect(response.parsed_body.length).to eq(1)
       end
 
+      it "rejects requests with page greater than 1000 without an API key" do
+        get api_articles_path, params: { page: 1001 }, headers: headers
+        expect(response).to have_http_status(:unauthorized)
+        expect(response.parsed_body["error"]).to eq("Page depth limited to 1000 without an API key")
+      end
+
+      it "allows requests with page greater than 1000 with a valid API key" do
+        get api_articles_path, params: { page: 1001 }, headers: auth_headers
+        expect(response).to have_http_status(:ok)
+      end
+
       it "returns flare tag in the response" do
         get api_articles_path, headers: headers
         response_article = response.parsed_body.first
@@ -1601,6 +1612,17 @@ RSpec.describe "Api::V1::Articles" do
       expect(response.parsed_body.length).to eq(1)
     end
 
+    it "rejects requests with page greater than 1000 without an API key" do
+      get "/api/articles/search", params: { page: 1001 }, headers: headers
+      expect(response).to have_http_status(:unauthorized)
+      expect(response.parsed_body["error"]).to eq("Page depth limited to 1000 without an API key")
+    end
+
+    it "allows requests with page greater than 1000 with a valid API key" do
+      get "/api/articles/search", params: { page: 1001 }, headers: auth_headers
+      expect(response).to have_http_status(:ok)
+    end
+
     it "returns flare tag in the response" do
       get "/api/articles/search"
       response_article = response.parsed_body.first
@@ -1626,6 +1648,44 @@ RSpec.describe "Api::V1::Articles" do
         get "/api/articles/search", params: { per_page: 10 }
         expect(response.parsed_body.count).to eq(2)
       end
+    end
+  end
+
+  describe "GET /api/articles/semantic_search" do
+    let(:query_embedding) { [1.0] + Array.new(767, 0.0) }
+
+    before do
+      allow_any_instance_of(Ai::Embedding).to receive(:call).and_return(query_embedding)
+      article.update_column(:semantic_embedding, Array.new(768, 0.1))
+      article.update_column(:published, true)
+    end
+
+    it "requires api-key" do
+      get "/api/articles/semantic_search", headers: headers
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "requires q parameter" do
+      get "/api/articles/semantic_search", headers: auth_headers
+      expect(response).to have_http_status(:bad_request)
+      expect(JSON.parse(response.body)["error"]).to eq("q parameter is required")
+    end
+
+    it "returns semantically matching articles with distance and similarity metrics" do
+      get "/api/articles/semantic_search", params: { q: "testing query" }, headers: auth_headers
+      expect(response).to be_successful
+      json = JSON.parse(response.body)
+      expect(json.length).to eq(1)
+      expect(json[0]["id"]).to eq(article.id)
+      expect(json[0]).to have_key("distance")
+      expect(json[0]).to have_key("similarity")
+    end
+
+    it "respects similarity threshold param" do
+      get "/api/articles/semantic_search", params: { q: "testing query", threshold: 0.001 }, headers: auth_headers
+      expect(response).to be_successful
+      json = JSON.parse(response.body)
+      expect(json).to eq([])
     end
   end
 end
