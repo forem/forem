@@ -81,6 +81,17 @@ RSpec.describe "Api::V1::Articles" do
         expect(response.parsed_body.length).to eq(1)
       end
 
+      it "rejects requests with page greater than 1000 without an API key" do
+        get api_articles_path, params: { page: 1001 }, headers: headers
+        expect(response).to have_http_status(:unauthorized)
+        expect(response.parsed_body["error"]).to eq("Page depth limited to 1000 without an API key")
+      end
+
+      it "allows requests with page greater than 1000 with a valid API key" do
+        get api_articles_path, params: { page: 1001 }, headers: auth_headers
+        expect(response).to have_http_status(:ok)
+      end
+
       it "returns flare tag in the response" do
         get api_articles_path, headers: headers
         response_article = response.parsed_body.first
@@ -1599,6 +1610,17 @@ RSpec.describe "Api::V1::Articles" do
       expect(response.parsed_body.length).to eq(2)
       get "/api/articles/search", params: { page: 2, per_page: 2 }
       expect(response.parsed_body.length).to eq(1)
+    end
+
+    it "rejects requests with page greater than 1000 without an API key" do
+      get "/api/articles/search", params: { page: 1001 }, headers: headers
+      expect(response).to have_http_status(:unauthorized)
+      expect(response.parsed_body["error"]).to eq("Page depth limited to 1000 without an API key")
+    end
+
+    it "allows requests with page greater than 1000 with a valid API key" do
+      get "/api/articles/search", params: { page: 1001 }, headers: auth_headers
+      expect(response).to have_http_status(:ok)
     end
 
     it "returns flare tag in the response" do

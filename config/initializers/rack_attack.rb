@@ -46,6 +46,13 @@ module Rack
       end
     end
 
+    throttle("api_key_throttle", limit: 3, period: 1) do |request|
+      api_endpoint = request.path.starts_with?("/api/")
+      if api_endpoint && request.get? && !admin_api_key?(request)
+        request.env["HTTP_API_KEY"] if request.env["HTTP_API_KEY"].present?
+      end
+    end
+
     throttle("forgot_password_throttle", limit: 3, period: 1) do |request|
       if request.path.starts_with?("/users/password") && request.post?
         request.track_and_return_ip
@@ -57,12 +64,16 @@ module Rack
       if api_endpoint && (request.put? || request.post? || request.delete?)
         Honeycomb.add_field("user_api_key", request.env["HTTP_API_KEY"])
         unless admin_api_key?(request)
-          ip_address = request.track_and_return_ip
-          if request.env["HTTP_API_KEY"].present?
-            "#{ip_address}-#{request.env['HTTP_API_KEY']}"
-          elsif ip_address.present?
-            ip_address
-          end
+          request.track_and_return_ip
+        end
+      end
+    end
+
+    throttle("api_write_key_throttle", limit: 1, period: 1) do |request|
+      api_endpoint = request.path.starts_with?("/api/")
+      if api_endpoint && (request.put? || request.post? || request.delete?)
+        unless admin_api_key?(request)
+          request.env["HTTP_API_KEY"] if request.env["HTTP_API_KEY"].present?
         end
       end
     end
