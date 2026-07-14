@@ -88,6 +88,25 @@ describe Rack, ".attack", throttle: true, type: :request do
       end
     end
 
+    it "throttles api get endpoints based on IP and API key when key is present" do
+      api_secret = create(:api_secret)
+      another_api_secret = create(:api_secret)
+      headers = { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8", "api-key" => api_secret.secret }
+      dif_headers = { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8", "api-key" => another_api_secret.secret }
+
+      Timecop.freeze do
+        valid_responses = Array.new(3).map do
+          get api_articles_path, headers: headers
+        end
+        throttled_response = get api_articles_path, headers: headers
+        new_key_response = get api_articles_path, headers: dif_headers
+
+        valid_responses.each { |r| expect(r).not_to eq(429) }
+        expect(throttled_response).to eq(429)
+        expect(new_key_response).not_to eq(429)
+      end
+    end
+
     it "doesn't throttle when API key provided belongs to admin" do
       admin_api_key = create(:api_secret, user: create(:user, :admin))
 

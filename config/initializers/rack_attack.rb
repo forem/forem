@@ -42,7 +42,12 @@ module Rack
     throttle("api_throttle", limit: 3, period: 1) do |request|
       api_endpoint = request.path.starts_with?("/api/")
       if api_endpoint && request.get? && !admin_api_key?(request)
-        request.track_and_return_ip
+        ip_address = request.track_and_return_ip
+        if request.env["HTTP_API_KEY"].present?
+          "#{ip_address}-#{request.env['HTTP_API_KEY']}"
+        elsif ip_address.present?
+          ip_address
+        end
       end
     end
 
