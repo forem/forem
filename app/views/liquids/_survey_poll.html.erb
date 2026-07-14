@@ -83,6 +83,14 @@
     <% end %>
   <% end %>
   
+  <% if poll.optional? %>
+    <div class="survey-poll-skip mt-4">
+      <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--s survey-skip-btn">
+        Skip Question
+      </button>
+    </div>
+  <% end %>
+  
   <div class="survey-poll-feedback" style="display: none;">
     ✓ <%= t("views.survey.thank_you_response") %>
   </div>
