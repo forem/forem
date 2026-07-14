@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_07_13_121240) do
+ActiveRecord::Schema[7.2].define(version: 2026_07_14_173500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -148,6 +148,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_13_121240) do
     t.boolean "approved", default: false
     t.boolean "archived", default: false
     t.integer "automod_label", default: 0, null: false
+    t.integer "baseline_score", default: 0, null: false
     t.text "body_html"
     t.text "body_markdown"
     t.string "cached_label_list", default: [], array: true

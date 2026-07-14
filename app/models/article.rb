@@ -274,6 +274,7 @@ class Article < ApplicationRecord
   validates :clickbait_score, numericality: { greater_than_or_equal_to: 0.0, less_than_or_equal_to: 1.0 }
   validates :compellingness_score, numericality: { greater_than_or_equal_to: 0.0, less_than_or_equal_to: 1.0 }
   validates :max_score, numericality: { greater_than_or_equal_to: 0 }
+  validates :baseline_score, numericality: { greater_than_or_equal_to: 0 }
   validate :future_or_current_published_at, on: :create
   validate :correct_published_at?, on: :update, unless: :admin_update
 
@@ -515,7 +516,7 @@ class Article < ApplicationRecord
   scope :limited_columns_internal_select, lambda {
     select(:path, :title, :id, :featured, :approved, :published,
            :comments_count, :public_reactions_count, :cached_tag_list,
-           :main_image, :main_image_background_hex_color, :updated_at, :max_score,
+           :main_image, :main_image_background_hex_color, :updated_at, :max_score, :baseline_score,
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
            :published_from_feed, :crossposted_at, :published_at, :created_at, :edited_at,
@@ -1004,7 +1005,8 @@ class Article < ApplicationRecord
     self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment + user_featured_count_adjustment + user_negative_count_adjustment + context_note_adjustment + automod_label_adjustment + badge_reputation_bonus + organization_baseline_score + established_user_adjustment
     accepted_max = [max_score, user&.max_score.to_i].min
     accepted_max = [max_score, user&.max_score.to_i].max if accepted_max.zero?
-    self.score = accepted_max if accepted_max.positive? && accepted_max < score
+    self.score = baseline_score if baseline_score.positive? && score < baseline_score
+    self.score = accepted_max if accepted_max.positive? && score > accepted_max
 
     # Calculate comment_score and apply max_score limits
     # Each comment can contribute a minimum of -1 to the total score

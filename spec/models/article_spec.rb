@@ -52,6 +52,8 @@ RSpec.describe Article do
     # Regression test for Issue #22803: Prevent negative reaction counts
     it { is_expected.to validate_numericality_of(:public_reactions_count).is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:previous_public_reactions_count).is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:max_score).is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:baseline_score).is_greater_than_or_equal_to(0) }
 
     it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:user_id) }
 
@@ -2352,6 +2354,36 @@ RSpec.describe Article do
 
         article.update_score
         expect(article.reload.score).to eq(10)
+      end
+    end
+
+    context "when baseline_score is set" do
+      it "uses the baseline score if the natural score is lower than baseline_score" do
+        article.update_column(:baseline_score, 15)
+
+        article.update_score
+        expect(article.reload.score).to eq(15)
+      end
+
+      it "uses the natural score if it is higher than baseline_score" do
+        article.update_column(:baseline_score, 5)
+
+        article.update_score
+        expect(article.reload.score).to eq(10)
+      end
+
+      it "uses the natural score if baseline_score is 0" do
+        article.update_column(:baseline_score, 0)
+
+        article.update_score
+        expect(article.reload.score).to eq(10)
+      end
+
+      it "still respects max_score when baseline_score is higher" do
+        article.update_columns(max_score: 12, baseline_score: 15)
+
+        article.update_score
+        expect(article.reload.score).to eq(12)
       end
     end
 
