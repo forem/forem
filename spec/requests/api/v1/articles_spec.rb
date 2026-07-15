@@ -1767,5 +1767,95 @@ RSpec.describe "Api::V1::Articles" do
       json = JSON.parse(response.body)
       expect(json).to eq([])
     end
+
+    context "when Algolia is available" do
+      before do
+        allow(ApplicationConfig).to receive(:[]).and_call_original
+        allow(ApplicationConfig).to receive(:[]).with("ALGOLIA_APPLICATION_ID").and_return("test_app_id")
+        allow(ApplicationConfig).to receive(:[]).with("ALGOLIA_API_KEY").and_return("test_api_key")
+        allow(Settings::General).to receive(:algolia_search_enabled?).and_return(true)
+      end
+
+      it "routes the query through Algolia and validates results against the database" do
+        algolia_article = create(:article, title: "Algolia Match Title", published: true)
+        algolia_article.update_columns(score: 100, semantic_embedding: Array.new(768, 0.1))
+
+        expect(Article).to receive(:raw_search)
+          .with("fable", hash_including(hitsPerPage: 100))
+          .and_return({ "hits" => [{ "objectID" => algolia_article.id.to_s }] })
+
+        get "/api/articles/semantic_search", params: { q: "fable" }, headers: auth_headers
+        expect(response).to be_successful
+        json = JSON.parse(response.body)
+        expect(json.length).to eq(1)
+        expect(json[0]["id"]).to eq(algolia_article.id)
+      end
+
+      it "filters out unpublished or low-score articles returned by Algolia" do
+        draft_article = create(:article, title: "Algolia Draft", published: false)
+        low_score_article = create(:article, title: "Algolia Low Score", published: true)
+        low_score_article.update_columns(score: -10)
+
+        expect(Article).to receive(:raw_search)
+          .and_return({ "hits" => [
+            { "objectID" => draft_article.id.to_s },
+            { "objectID" => low_score_article.id.to_s }
+          ] })
+
+        get "/api/articles/semantic_search", params: { q: "fable" }, headers: auth_headers
+        expect(response).to be_successful
+        json = JSON.parse(response.body)
+        expect(json).to eq([])
+      end
+
+      it "falls back to DB hybrid search if Algolia search fails" do
+        db_article = create(:article, title: "Database Match Fable", published: true)
+        db_article.update_columns(score: 100, semantic_embedding: nil)
+
+        expect(Article).to receive(:raw_search).and_raise(StandardError.new("Algolia Error"))
+
+        get "/api/articles/semantic_search", params: { q: "fable" }, headers: auth_headers
+        expect(response).to be_successful
+        json = JSON.parse(response.body)
+        expect(json.find { |item| item["id"] == db_article.id }).to be_present
+      end
+    end
+
+    it "caches the embedding API call for identical queries" do
+      memory_store = ActiveSupport::Cache.lookup_store(:memory_store)
+      allow(Rails).to receive(:cache).and_return(memory_store)
+
+      embedding_mock = instance_double(Ai::Embedding)
+      expect(Ai::Embedding).to receive(:new).once.and_return(embedding_mock)
+      expect(embedding_mock).to receive(:call).once.and_return(query_embedding)
+
+      # First request: should call the service
+      get "/api/articles/semantic_search", params: { q: "cache query" }, headers: auth_headers
+      expect(response).to be_successful
+
+      # Second request: should read from cache and not call the service again
+      get "/api/articles/semantic_search", params: { q: "cache query" }, headers: auth_headers
+      expect(response).to be_successful
+    end
+
+    it "strips stop words and contractions from database keyword query" do
+      allow(Settings::General).to receive(:algolia_search_enabled?).and_return(false)
+
+      embedding_mock = instance_double(Ai::Embedding)
+      allow(Ai::Embedding).to receive(:new).and_return(embedding_mock)
+      expect(embedding_mock).to receive(:call)
+        .with("what's the latest with anthropic fable", task_type: "RETRIEVAL_QUERY", output_dimensionality: 768)
+        .and_return(query_embedding)
+
+      keyword_article = create(:article, title: "An amazing latest news fable by anthropic", published: true)
+      keyword_article.update_columns(score: 100, semantic_embedding: nil)
+
+      get "/api/articles/semantic_search", params: { q: "what's the latest with anthropic fable" }, headers: auth_headers
+      expect(response).to be_successful
+      json = JSON.parse(response.body)
+
+      matching_item = json.find { |item| item["id"] == keyword_article.id }
+      expect(matching_item).to be_present
+    end
   end
 end
