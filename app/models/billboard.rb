@@ -498,7 +498,6 @@ class Billboard < ApplicationRecord
     doc = Nokogiri::HTML("<html><body>#{html}</body></html>")
     
     internal_hosts = [
-      nil,
       ApplicationConfig["APP_DOMAIN"],
       Settings::General.app_domain,
       URI.parse(URL.url).host
@@ -513,7 +512,7 @@ class Billboard < ApplicationRecord
       begin
         uri = URI.parse(href)
         host = uri.host&.downcase&.delete_prefix("www.")
-        next unless internal_hosts.include?(host)
+        next unless host.nil? || internal_hosts.include?(host)
 
         path = uri.path
         paths << path.chomp("/").downcase if path.present? && path != "/"

@@ -626,6 +626,12 @@ RSpec.describe Billboard do
       expect { billboard.save! }.to change { billboard.exclude_article_ids }.from([]).to([article.id])
     end
 
+    it "automatically extracts article IDs from true relative links (host is nil) when render_mode is raw" do
+      billboard = build(:billboard, render_mode: "raw", body_markdown: "<a href=\"#{article.path}\">link</a>")
+      
+      expect { billboard.save! }.to change { billboard.exclude_article_ids }.from([]).to([article.id])
+    end
+
     it "automatically extracts article IDs from absolute links matching the app domain" do
       app_url = URI.parse(URL.url)
       billboard = build(:billboard, body_markdown: "Check out this great post: [link](#{app_url}#{article.path})")
