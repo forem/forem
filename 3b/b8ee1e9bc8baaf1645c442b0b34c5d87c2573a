@@ -1,0 +1,24 @@
+docs/plans/2026-03-09-org-page-wizard-implementation.md
+  3b300d9ee498e98c 1-1899
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.9",
+  "base_commit_sha": "3bb8ee1e9bc8baaf1645c442b0b34c5d87c2573a",
+  "prompts": {
+    "3b300d9ee498e98c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4faf6d65-e132-4d85-b2c8-b4fb1568fd1a",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Jon Gottfried <jonmarkgo@gmail.com>",
+      "messages": [],
+      "total_additions": 1899,
+      "total_deletions": 0,
+      "accepted_lines": 1899,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/067f56f91c09c93bea786f68402ad0750728520d114d9c3b2aeff4ba82fc40e2"
+    }
+  }
+}
