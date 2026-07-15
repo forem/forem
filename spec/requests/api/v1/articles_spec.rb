@@ -1720,6 +1720,47 @@ RSpec.describe "Api::V1::Articles" do
       expect(json.first["id"]).to eq(both_match_article.id)
     end
 
+    it "ranks more recent articles higher than older articles, all else being equal" do
+      # Create two keyword-matching articles with the same score
+      older_article = create(:article, title: "RecencyMatch Older", published: true)
+      older_article.update_columns(score: 100, semantic_embedding: nil, published_at: 10.days.ago)
+
+      newer_article = create(:article, title: "RecencyMatch Newer", published: true)
+      newer_article.update_columns(score: 100, semantic_embedding: nil, published_at: 1.day.ago)
+
+      get "/api/articles/semantic_search", params: { q: "RecencyMatch" }, headers: auth_headers
+      expect(response).to be_successful
+      json = JSON.parse(response.body)
+
+      # The newer article should be ranked before the older article
+      newer_index = json.index { |item| item["id"] == newer_article.id }
+      older_index = json.index { |item| item["id"] == older_article.id }
+      expect(newer_index).to be_present
+      expect(older_index).to be_present
+      expect(newer_index).to be < older_index
+    end
+
+    it "ranks articles with higher quality scores higher, all else being equal" do
+      # Create two keyword-matching articles published at the same time
+      common_time = 2.days.ago
+      lower_score_article = create(:article, title: "QualityMatch Lower", published: true)
+      lower_score_article.update_columns(score: 10, semantic_embedding: nil, published_at: common_time)
+
+      higher_score_article = create(:article, title: "QualityMatch Higher", published: true)
+      higher_score_article.update_columns(score: 500, semantic_embedding: nil, published_at: common_time)
+
+      get "/api/articles/semantic_search", params: { q: "QualityMatch" }, headers: auth_headers
+      expect(response).to be_successful
+      json = JSON.parse(response.body)
+
+      # The higher score article should be ranked before the lower score article
+      higher_index = json.index { |item| item["id"] == higher_score_article.id }
+      lower_index = json.index { |item| item["id"] == lower_score_article.id }
+      expect(higher_index).to be_present
+      expect(lower_index).to be_present
+      expect(higher_index).to be < lower_index
+    end
+
     it "respects similarity threshold param" do
       get "/api/articles/semantic_search", params: { q: "testing query", threshold: 0.001 }, headers: auth_headers
       expect(response).to be_successful

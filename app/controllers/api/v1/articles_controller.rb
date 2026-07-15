@@ -36,22 +36,35 @@ module Api
         vector_literal = "[#{embedding.to_a.join(',')}]"
         quoted_vector = Article.connection.quote(vector_literal)
 
-        # 1. Retrieve top 100 keyword search candidate IDs
+        # 1. Retrieve top 100 keyword search candidate metadata
         keyword_relation = Article.published.from_subforem
           .where("score >= ?", Settings::UserExperience.index_minimum_score)
           .search_articles(query_text)
           .limit(100)
-        keyword_ids = keyword_relation.pluck(:id)
+        keyword_data = keyword_relation.pluck(:id, :score, :published_at)
 
-        # 2. Retrieve top 100 semantic search candidate IDs
+        # 2. Retrieve top 100 semantic search candidate metadata
         semantic_relation = Article.published.from_subforem
           .where.not(semantic_embedding: nil)
           .where("score >= ?", Settings::UserExperience.index_minimum_score)
           .order(Arel.sql("semantic_embedding <=> #{quoted_vector}"))
           .limit(100)
-        semantic_ids = semantic_relation.pluck(:id)
+        semantic_data = semantic_relation.pluck(:id, :score, :published_at)
 
-        # 3. Combine rankings using Reciprocal Rank Fusion (RRF)
+        # 3. Combine rankings using Reciprocal Rank Fusion (RRF) and apply boosts
+        keyword_ids = []
+        article_metadata = {}
+        keyword_data.each_with_index do |(id, score, published_at), index|
+          keyword_ids << id
+          article_metadata[id] = { score: score, published_at: published_at }
+        end
+
+        semantic_ids = []
+        semantic_data.each_with_index do |(id, score, published_at), index|
+          semantic_ids << id
+          article_metadata[id] ||= { score: score, published_at: published_at }
+        end
+
         k = 60
         scores = Hash.new(0.0)
 
@@ -63,7 +76,28 @@ module Api
           scores[id] += 1.0 / (k + index + 1)
         end
 
-        sorted_ids = scores.keys.sort_by { |id| -scores[id] }
+        # Apply quality & recency boost
+        now = Time.current
+        boosted_scores = {}
+        scores.each do |id, rrf_score|
+          meta = article_metadata[id]
+          next unless meta
+
+          # Recency Boost (reciprocal decay over time)
+          published_at = meta[:published_at] || now
+          days_ago = [ (now - published_at) / 1.day, 0.0 ].max
+          recency_score = 1.0 / (days_ago + 1.0)
+          recency_multiplier = 1.0 + 1.0 * recency_score
+
+          # Quality Boost (logarithmic scale)
+          score_val = [ meta[:score].to_f, 0.0 ].max
+          quality_score = Math.log(score_val + 1.0)
+          quality_multiplier = 1.0 + 0.1 * quality_score
+
+          boosted_scores[id] = rrf_score * recency_multiplier * quality_multiplier
+        end
+
+        sorted_ids = boosted_scores.keys.sort_by { |id| -boosted_scores[id] }
 
         # 4. Paginate IDs
         paginated_ids = sorted_ids[((page - 1) * per_page)...(page * per_page)] || []
