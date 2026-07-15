@@ -633,6 +633,29 @@ RSpec.describe Billboard do
       expect { billboard.save! }.to change { billboard.exclude_article_ids }.from([]).to([article.id])
     end
 
+    it "automatically extracts article IDs from absolute links matching the app domain with www prefix" do
+      app_url = URI.parse(URL.url)
+      www_url = "#{app_url.scheme}://www.#{app_url.host}"
+      billboard = build(:billboard, body_markdown: "Check out this great post: [link](#{www_url}#{article.path})")
+      
+      expect { billboard.save! }.to change { billboard.exclude_article_ids }.from([]).to([article.id])
+    end
+
+    it "automatically extracts article IDs from absolute links matching Settings::General.app_domain" do
+      allow(Settings::General).to receive(:app_domain).and_return("customdomain.com")
+      billboard = build(:billboard, body_markdown: "Check out this great post: [link](https://customdomain.com#{article.path})")
+      
+      expect { billboard.save! }.to change { billboard.exclude_article_ids }.from([]).to([article.id])
+    end
+
+    it "automatically extracts article IDs from absolute links matching subforem domains" do
+      subforem_domain = "subforem.customdomain.com"
+      allow(Subforem).to receive(:cached_domains).and_return([subforem_domain])
+      billboard = build(:billboard, body_markdown: "Check out this great post: [link](https://#{subforem_domain}#{article.path})")
+      
+      expect { billboard.save! }.to change { billboard.exclude_article_ids }.from([]).to([article.id])
+    end
+
     it "does not parse links from external domains" do
       billboard = build(:billboard, body_markdown: "Check out this great post: [link](https://external-domain.com#{article.path})")
       
