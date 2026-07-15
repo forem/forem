@@ -161,6 +161,8 @@ fr:
       cover_image_alt: "Image de couverture de %{org}"
       settings_link: Paramètres de l'organisation
       admin_link: Admin
+      showcase: Showcase
+      all_posts: Tous les articles
       confirm_invitation:
         title: Confirmer l'invitation à l'organisation
         greeting: "Bonjour %{name} !"
