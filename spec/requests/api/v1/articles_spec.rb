@@ -1681,6 +1681,45 @@ RSpec.describe "Api::V1::Articles" do
       expect(json[0]).to have_key("similarity")
     end
 
+    it "returns keyword-matching articles even if they have no semantic embedding" do
+      keyword_article = create(:article, title: "An amazing fable of anthropic fable", published: true)
+      # Ensure it matches the index minimum score check if necessary
+      keyword_article.update_column(:score, 100)
+      keyword_article.update_column(:semantic_embedding, nil)
+      
+      # The search query has "fable" which matches keyword_article
+      get "/api/articles/semantic_search", params: { q: "fable" }, headers: auth_headers
+      expect(response).to be_successful
+      json = JSON.parse(response.body)
+      
+      # The keyword match should be present
+      matching_item = json.find { |item| item["id"] == keyword_article.id }
+      expect(matching_item).to be_present
+      expect(matching_item["distance"]).to be_nil
+      expect(matching_item["similarity"]).to be_nil
+    end
+
+    it "ranks articles matching both keyword and semantic criteria higher using RRF" do
+      # Create one pure keyword match
+      keyword_article = create(:article, title: "UniqueKeywordMatch", published: true)
+      keyword_article.update_column(:score, 100)
+      keyword_article.update_column(:semantic_embedding, nil)
+
+      # Create one article that is both keyword and semantic match
+      both_match_article = create(:article, title: "UniqueKeywordMatch and semantic", published: true)
+      both_match_article.update_column(:score, 100)
+      both_match_article.update_column(:semantic_embedding, Array.new(768, 0.1))
+
+      # The current stub returns query_embedding for any query.
+      # both_match_article will be at the top of semantic search, and also present in keyword search.
+      get "/api/articles/semantic_search", params: { q: "UniqueKeywordMatch" }, headers: auth_headers
+      expect(response).to be_successful
+      json = JSON.parse(response.body)
+      
+      # both_match_article should be ranked first (since it appears in both lists)
+      expect(json.first["id"]).to eq(both_match_article.id)
+    end
+
     it "respects similarity threshold param" do
       get "/api/articles/semantic_search", params: { q: "testing query", threshold: 0.001 }, headers: auth_headers
       expect(response).to be_successful
