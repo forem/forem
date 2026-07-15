@@ -1,5 +1,5 @@
 class SitemapsController < ApplicationController
-  before_action :set_cache_control_headers, only: %i[show]
+  before_action :set_cache_control_headers, only: %i[show custom_domain_show]
 
   SITEMAP_REGEX = /\Asitemap-(?<date_string>[A-Z][a-z][a-z]-\d{4})\.xml\z/
   RESULTS_LIMIT = Rails.env.production? ? 750 : 5
@@ -13,6 +13,23 @@ class SitemapsController < ApplicationController
     else
       monthly_sitemap
     end
+    set_cache_control_headers(@max_age,
+                              stale_while_revalidate: @stale_while_revalidate,
+                              stale_if_error: @stale_if_error)
+    render @view_template, layout: false
+  end
+
+  def custom_domain_show
+    @organization = custom_domain_org
+    return not_found unless @organization
+
+    @articles = @organization.articles.published.from_subforem
+      .order(published_at: :desc)
+      .limit(50_000)
+      .pluck(:slug, :last_comment_at)
+
+    set_surrogate_controls(Time.current)
+    @view_template = "custom_domain"
     set_cache_control_headers(@max_age,
                               stale_while_revalidate: @stale_while_revalidate,
                               stale_if_error: @stale_if_error)

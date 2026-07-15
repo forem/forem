@@ -36,6 +36,7 @@ Rails.application.routes.draw do
     get "/", to: "stories#custom_domain_index"
     get "/feed", to: "articles#feed", as: nil, defaults: { format: "rss" }
     get "/rss", to: "articles#feed", as: nil, defaults: { format: "rss" }
+    get "/sitemap", to: "sitemaps#custom_domain_show", constraints: { format: /xml/ }, defaults: { format: "xml" }
     get "/:org_slug/:slug",
         to: "stories#custom_domain_show",
         constraints: {

@@ -191,6 +191,7 @@ class ReservedWords
     security
     sedaily
     settings
+    sitemap
     shoutouts
     signout_confirm
     social

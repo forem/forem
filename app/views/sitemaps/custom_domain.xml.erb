@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc><%= URL.url(nil, @organization.custom_domain) %></loc>
+    <lastmod><%= (@organization.articles.published.maximum(:updated_at) || Time.current).strftime("%F") %></lastmod>
+  </url>
+  <% @articles.each do |slug, last_comment_at| %>
+    <url>
+        <loc><%= URL.url("/#{slug}", @organization.custom_domain) %></loc>
+        <lastmod><%= (last_comment_at || Time.current).strftime("%F") %></lastmod>
+    </url>
+  <% end %>
+</urlset>

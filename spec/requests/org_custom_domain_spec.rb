@@ -141,6 +141,22 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
       end
     end
 
+    describe "sitemap routing" do
+      let(:user) { create(:user) }
+      let!(:article) { create(:article, organization: organization, user: user, title: "Org Article Title") }
+      let!(:other_article) { create(:article, title: "Other Article Title") }
+
+      it "routes /sitemap.xml to the organization's sitemap, returning only organization articles" do
+        get "http://custom.org/sitemap.xml"
+
+        expect(response).to have_http_status(:success)
+        expect(response.content_type).to include("application/xml")
+        expect(response.body).to include("<loc>http://custom.org</loc>")
+        expect(response.body).to include("<loc>http://custom.org/#{article.slug}</loc>")
+        expect(response.body).not_to include("<loc>http://custom.org/#{other_article.slug}</loc>")
+      end
+    end
+
     describe "signed out redirection to custom domain" do
       let(:user) { create(:user) }
       let!(:article) { create(:article, organization: organization, user: user, title: "Test Article Content") }
