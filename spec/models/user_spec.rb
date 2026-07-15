@@ -67,19 +67,18 @@ RSpec.describe User do
       expect(user.trackable_user_ids).to eq([user.id])
     end
 
-    it "ships a curated payload of identity, registration, confirmation, newsletter, and Core-link state" do
+    it "ships a curated payload of identity, confirmation, newsletter, and Core-link state" do
       user = create(:user)
       expect(user.trackable_payload.keys).to contain_exactly(
-        "id", "username", "email", "name", "created_at", "confirmed_at", "email_newsletter", "mlh_user_id"
+        "id", "username", "email", "name", "confirmed_at", "email_newsletter", "mlh_user_id"
       )
     end
 
-    it "reflects registration, confirmation, and newsletter state in the payload" do
+    it "reflects confirmation and newsletter state in the payload" do
       user = create(:user)
       user.notification_setting.update!(email_newsletter: true)
       payload = user.reload.trackable_payload
 
-      expect(payload["created_at"]).to eq(user.created_at.iso8601)
       expect(payload["confirmed_at"]).to eq(user.confirmed_at.iso8601)
       expect(payload["email_newsletter"]).to be(true)
     end
