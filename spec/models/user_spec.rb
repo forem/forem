@@ -67,21 +67,35 @@ RSpec.describe User do
       expect(user.trackable_user_ids).to eq([user.id])
     end
 
-    it "ships a curated payload of identity, registration, confirmation, newsletter, and Core-link state" do
+    it "ships a curated payload of identity, registration, confirmation, email consent, and Core-link state" do
       user = create(:user)
       expect(user.trackable_payload.keys).to contain_exactly(
-        "id", "username", "email", "name", "registered_at", "confirmed_at", "email_newsletter", "mlh_user_id"
+        "id", "username", "email", "name", "registered_at", "confirmed_at", "email_newsletter",
+        "email_digest_periodic", "mlh_user_id"
       )
     end
 
-    it "reflects registration, confirmation, and newsletter state in the payload" do
+    it "reflects registration, confirmation, and email consent state in the payload" do
       user = create(:user)
-      user.notification_setting.update!(email_newsletter: true)
+      user.notification_setting.update!(email_newsletter: true, email_digest_periodic: true)
       payload = user.reload.trackable_payload
 
       expect(payload["registered_at"]).to eq(user.registered_at.iso8601)
       expect(payload["confirmed_at"]).to eq(user.confirmed_at.iso8601)
       expect(payload["email_newsletter"]).to be(true)
+      expect(payload["email_digest_periodic"]).to be(true)
+    end
+
+    # The two consents are independent: EmailDigest selects on
+    # email_digest_periodic alone, so the payload must carry them separately.
+    it "carries digest consent independently of newsletter consent" do
+      user = create(:user)
+      user.notification_setting.update!(email_newsletter: false, email_digest_periodic: true)
+
+      payload = user.reload.trackable_payload
+
+      expect(payload["email_newsletter"]).to be(false)
+      expect(payload["email_digest_periodic"]).to be(true)
     end
 
     it "includes the Core user id from the mlh identity in the payload" do
