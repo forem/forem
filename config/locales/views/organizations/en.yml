@@ -162,6 +162,8 @@ en:
       cover_image_alt: "%{org} cover image"
       settings_link: Organization Settings
       admin_link: Admin
+      showcase: Showcase
+      all_posts: All Posts
       confirm_invitation:
         title: Confirm Organization Invitation
         greeting: "Hi %{name}!"
