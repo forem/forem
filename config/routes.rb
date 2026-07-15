@@ -30,6 +30,7 @@ Rails.application.routes.draw do
 
   get "/r/mobile", to: "deep_links#mobile"
   get "/.well-known/apple-app-site-association", to: "deep_links#aasa"
+  get "/a/:code", to: "articles#short_link", as: :article_short, constraints: { code: /[0-9a-pA-P]+/ }
 
   constraints OrgCustomDomainConstraint.new do
     get "/", to: "stories#custom_domain_index"
