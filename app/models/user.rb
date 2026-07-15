@@ -866,6 +866,7 @@ class User < ApplicationRecord
       "registered_at" => registered_at&.iso8601,
       "confirmed_at" => confirmed_at&.iso8601,
       "email_newsletter" => notification_setting&.email_newsletter,
+      "email_digest_periodic" => notification_setting&.email_digest_periodic,
       "mlh_user_id" => identities.where(provider: "mlh").pick(:uid)
     }
   end
