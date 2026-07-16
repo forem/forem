@@ -131,16 +131,15 @@ module CommentsHelper
 
   def nested_comments(tree:, commentable:, is_view_root: false, is_admin: false)
     comments = tree.filter_map do |comment, sub_comments|
-      is_childless = sub_comments.empty?
-      # hide childless comments with score below hide threshold (but show for admins)
-      hide = comment.decorate.super_low_quality && is_childless
+      subtree_html = nested_comments(tree: sub_comments, commentable: commentable, is_admin: is_admin)
+      is_childless = subtree_html.blank?
+      # hide childless comments if they are low quality or soft-deleted (but show for admins)
+      hide = is_childless && (comment.decorate.super_low_quality || comment.deleted?)
       if is_admin || !hide
         render("comments/comment", comment: comment, commentable: commentable,
                                    is_view_root: is_view_root, is_childless: is_childless,
                                    is_admin: is_admin,
-                                   subtree_html: nested_comments(tree: sub_comments,
-                                                                 commentable: commentable,
-                                                                 is_admin: is_admin))
+                                   subtree_html: subtree_html)
       end
     end
     safe_join(comments)
