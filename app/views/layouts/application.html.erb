@@ -166,7 +166,7 @@
             "crayons": "<%= stylesheet_path('crayons') %>"
           };
           var qualifiers = ["main", "secondary"];
-          for (var name in expectedStyles) {
+          Object.keys(expectedStyles).forEach(function(name) {
             var expectedHref = expectedStyles[name];
             for (var i = 0; i < qualifiers.length; i++) {
               var id = qualifiers[i] + "-" + name + "-stylesheet";
@@ -178,7 +178,7 @@
                 }
               }
             }
-          }
+          });
         })();
       </script>
     <% end %>
