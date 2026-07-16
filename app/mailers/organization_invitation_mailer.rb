@@ -13,6 +13,17 @@ class OrganizationInvitationMailer < ApplicationMailer
     )
 
     community_name = Settings::Community.community_name(subforem_id: @subforem_id)
+
+    customerio_delivery_options(
+      transactional_message_id: "dev_org_invitation",
+      message_data: {
+        "org_name" => @organization.name,
+        "inviter_name" => @inviter&.name,
+        "confirmation_url" => @confirmation_url,
+        "community_name" => community_name
+      },
+    )
+
     mail(
       to: @user.email,
       subject: I18n.t("mailers.organization_invitation_mailer.subject",
