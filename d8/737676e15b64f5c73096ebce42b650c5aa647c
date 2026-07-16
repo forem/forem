@@ -1,0 +1,122 @@
+Gemfile
+  s_0cd64231ee5515::t_080f519953e35d 31
+Gemfile.lock
+  s_0cd64231ee5515::t_f0fb9dc949ae9b 207-209,1143
+spec/models/forem_instance_spec.rb
+  s_0cd64231ee5515::t_583e7d3b79d2b7 98-111
+app/models/forem_instance.rb
+  s_0cd64231ee5515::t_11a383117ecf1a 52-55
+config/initializers/customerio.rb
+  s_0cd64231ee5515::t_a8d404096ed61e 1-4
+spec/services/delivery_methods/customer_io_spec.rb
+  s_0cd64231ee5515::t_b19256dfcecb88 1-46,48-52,67-79
+  s_0cd64231ee5515::t_b7ddf8a7eac7f1 47,53-66
+app/services/delivery_methods/customer_io.rb
+  s_0cd64231ee5515::t_99b4d4868bef38 1-40,44,47-49
+  s_0cd64231ee5515::t_c9a18663c7c3f3 41-43,45-46
+spec/mailers/concerns/deliverable_spec.rb
+  s_0cd64231ee5515::t_bc6ea44990866b 8,10
+  s_0cd64231ee5515::t_dd65fcd14d752a 1-7,9,11-47,52-97,110-111
+  s_0cd64231ee5515::t_25a93731598ea5 48-51
+  s_0cd64231ee5515::t_442a8fc866c02b 98-109
+app/mailers/concerns/deliverable.rb
+  s_0cd64231ee5515::t_f6cb4ca4eb53de 4-5,11-16,25-30,33-52,55-68
+  s_0cd64231ee5515::t_9d26b43aa27ef6 18-19
+  s_0cd64231ee5515::t_00d8743ffab9fc 53-54
+  s_0cd64231ee5515::t_f642b8e972fc97 31-32
+  s_0cd64231ee5515::t_ad12073a2604d8 17
+.env_sample
+  s_0cd64231ee5515::t_4da074a874b837 171-174
+spec/mailers/devise_mailer_spec.rb
+  s_0cd64231ee5515::t_c3dce09f666363 240-256
+  s_0cd64231ee5515::t_fe2b6f9fe7d5fe 266-274,277-285,288-296,299-324
+  s_0cd64231ee5515::t_b418ccf8516153 258-265,275-276,286-287,297-298,325-327
+  s_0cd64231ee5515::t_e30ce5e4e41b52 257
+  s_0cd64231ee5515::t_2c7a0dd5d70efd 344-374
+app/mailers/devise_mailer.rb
+  s_0cd64231ee5515::t_528acd22b49147 15-18
+  s_0cd64231ee5515::t_209bc2198f637b 63
+  s_0cd64231ee5515::t_8165f071361bb1 31-34,36-41,49,52,55,59-62,64-72,81-85,87-95,99-103,105-109
+  s_0cd64231ee5515::t_71b887a89d9f1c 35
+  s_0cd64231ee5515::t_d1b158890bb8c2 104
+  s_0cd64231ee5515::t_20d7e067028a62 86
+  s_0cd64231ee5515::t_723f7508c6e1f6 96-98
+  s_0cd64231ee5515::t_dc14676475cb97 73-80
+app/mailers/verification_mailer.rb
+  s_0cd64231ee5515::t_9edbdafd527bbc 9-12
+  s_0cd64231ee5515::t_7b3e4e278b3fc9 2-3,18-31,34,39-50,53-54
+spec/mailers/verification_mailer_spec.rb
+  s_0cd64231ee5515::t_bc285383d8534e 54-70,95-96
+  s_0cd64231ee5515::t_c9d14a240e4ad3 71-94
+spec/mailers/notify_mailer_spec.rb
+  s_0cd64231ee5515::t_f5a771ac6178ff 267-288
+  s_0cd64231ee5515::t_f432d37df51404 105-106
+  s_0cd64231ee5515::t_4e9f3c82553460 31-54
+  s_0cd64231ee5515::t_ea7d7db741001c 71-91
+  s_0cd64231ee5515::t_1122adb0eb2973 120-143
+  s_0cd64231ee5515::t_dbbd7a9624c53d 3-8
+  s_0cd64231ee5515::t_946c35a63ae370 159-181
+  s_0cd64231ee5515::t_f7dc9c9fea2159 829-847,849,857,859,864-865,899-915
+  s_0cd64231ee5515::t_b5a7762501e4fc 568-587,600-620,641-660
+  s_0cd64231ee5515::t_3d0a62527a4c79 848,850-856,858,860-863
+  s_0cd64231ee5515::t_56ad0c183ed645 217-236
+  s_0cd64231ee5515::t_cc61336e097ea3 525,661,761-764,787,916-917
+  s_0cd64231ee5515::t_781ed00261a71a 430-448,467-485,507-524
+  s_0cd64231ee5515::t_b458888464323a 685-709,727-760,765-786
+app/mailers/notify_mailer.rb
+  s_0cd64231ee5515::t_b1dd51c76828db 78-87
+  s_0cd64231ee5515::t_012afd7f001790 28-39
+  s_0cd64231ee5515::t_667e5aa332122b 55-63
+  s_0cd64231ee5515::t_a4779325312617 2-3
+  s_0cd64231ee5515::t_63aafde7200718 98,100-111
+  s_0cd64231ee5515::t_1ce6dc86ddaa12 135-145
+  s_0cd64231ee5515::t_cc61336e097ea3 348
+  s_0cd64231ee5515::t_7fd0d6a47485fd 188,221,240
+  s_0cd64231ee5515::t_a806cfeab6a125 118-126,151-159,161,168-174,182-187,194-202,204,211,213-220,222,230,232-239,241,247,251-258,266-276,285-295,303-311,313,319,321-328,338-347
+app/mailers/digest_mailer.rb
+  s_0cd64231ee5515::t_c5bbc9d38fd705 54-61,64-67,74,79-80
+  s_0cd64231ee5515::t_0fcc652f4eb0d9 62-63
+  s_0cd64231ee5515::t_52812c582c6c59 2-3,17-21,24-30
+  s_0cd64231ee5515::t_7183f0db93cdac 31
+  s_0cd64231ee5515::t_354df74cd079b1 22-23
+  s_0cd64231ee5515::t_58c2e67a8a26cf 68-73,75-78
+spec/mailers/digest_mailer_spec.rb
+  s_0cd64231ee5515::t_531c3b9f156086 119
+  s_0cd64231ee5515::t_9be7368dacf090 134-135
+  s_0cd64231ee5515::t_ccecc7d6dab01b 94
+  s_0cd64231ee5515::t_1b27583e7b058b 72,75-93,95-118,120-133,136-140,142-147,149-150,152-154,174-175
+  s_0cd64231ee5515::t_977d8a69510bbc 141,148,151,155-173
+app/mailers/organization_invitation_mailer.rb
+  s_0cd64231ee5515::t_a806cfeab6a125 16-26
+spec/mailers/survey_mailer_spec.rb
+  s_0cd64231ee5515::t_cc61336e097ea3 111-112
+  s_0cd64231ee5515::t_0da9fc9521c4b7 23-26,85-86,104,106,109
+  s_0cd64231ee5515::t_d32b130dc68ad5 56-84,87-103,105,107-108,110
+spec/mailers/organization_membership_notification_mailer_spec.rb
+  s_0cd64231ee5515::t_359a68815fbe54 44-66,68,76,78,83-84
+  s_0cd64231ee5515::t_8737fee7ff7416 67,69-75,77,79-82
+spec/mailers/organization_invitation_mailer_spec.rb
+  s_0cd64231ee5515::t_6760163de6b612 63,65-71,73,75-78
+  s_0cd64231ee5515::t_967992e22e2e79 40-62,64,72,74,79-80
+app/mailers/survey_mailer.rb
+  s_0cd64231ee5515::t_cc61336e097ea3 29
+  s_0cd64231ee5515::t_a806cfeab6a125 2-3,11,14,17,20-28
+app/mailers/organization_membership_notification_mailer.rb
+  s_0cd64231ee5515::t_a806cfeab6a125 13-24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "d8737676e15b64f5c73096ebce42b650c5aa647c",
+  "prompts": {},
+  "sessions": {
+    "s_0cd64231ee5515": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b2d035f1-b022-48fc-b793-32eaadb3e1ad",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}
