@@ -98,6 +98,7 @@ $exclude-embeds: ':not(.crayons-btn):not([class*="ltag"] *):not(.crayons-story *
   // default margins.
   .ltag-features,
   .ltag-row,
+  .ltag-quotes,
   .ltag-quote,
   .ltag-offer,
   .ltag-slides,
@@ -159,6 +160,11 @@ $exclude-embeds: ':not(.crayons-btn):not([class*="ltag"] *):not(.crayons-story *
     padding: var(--su-6);
     border-radius: var(--radius-lg, var(--radius));
     box-shadow: var(--shadow-smooth);
+  }
+
+  .ltag-quotes .ltag-quote {
+    margin-bottom: var(--su-4);
+    padding: var(--su-5);
   }
 
   .ltag-offer {
@@ -301,6 +307,7 @@ $exclude-embeds: ':not(.crayons-btn):not([class*="ltag"] *):not(.crayons-story *
 
     .ltag-features,
     .ltag-row,
+    .ltag-quotes,
     .ltag-quote,
     .ltag-offer,
     .ltag-slides,

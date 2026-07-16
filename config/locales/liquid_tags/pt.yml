@@ -168,6 +168,8 @@ pt:
       missing_author: "A tag quote requer uma opção author"
       invalid_rating: "A avaliação deve estar entre 1 e 5"
       learn_more: "Saiba mais"
+    quotes_tag:
+      no_args: "A tag quotes não aceita argumentos"
     slide_tag:
       missing_image: "A tag slide requer uma opção image"
       missing_content: "A tag slide requer pelo menos um dos seguintes: image, video ou link"

@@ -27,12 +27,14 @@ RSpec.describe "Quote liquid tag", type: :liquid_tag do
     it "renders author with avatar image" do
       result = parse('{% quote author="Jane" image="https://example.com/avatar.png" %}Text{% endquote %}').render
       expect(result).to include("ltag-quote__avatar")
+      expect(result).to include("ltag-quote--with-avatar")
       expect(result).to include("https://example.com/avatar.png")
     end
 
     it "renders learn more link" do
       result = parse('{% quote author="Jane" link="https://example.com" %}Text{% endquote %}').render
       expect(result).to include("ltag-quote__link")
+      expect(result).to include("ltag-quote--with-source")
       expect(result).to include('href="https://example.com"')
       expect(result).to include("Learn more")
     end
@@ -50,6 +52,7 @@ RSpec.describe "Quote liquid tag", type: :liquid_tag do
     it "renders star rating" do
       result = parse('{% quote author="Jane" rating=4 %}Good product{% endquote %}').render
       expect(result).to include("ltag-quote__rating")
+      expect(result).to include("ltag-quote--with-rating")
       expect(result).to include("4 out of 5 stars")
       filled_count = result.scan("ltag-quote__star--filled").size
       expect(filled_count).to eq(4)
@@ -73,6 +76,16 @@ RSpec.describe "Quote liquid tag", type: :liquid_tag do
       expect(result).to include("Product Hunt")
     end
 
+    it "uses the source as the external link label" do
+      template = '{% quote author="Jane" source="Customer story" link="https://example.com" %}Nice{% endquote %}'
+      result = parse(template).render
+      link = Nokogiri::HTML.fragment(result).at_css(".ltag-quote__link")
+
+      expect(link.text).to include("Customer story")
+      expect(link["target"]).to eq("_blank")
+      expect(link["rel"]).to eq("noopener noreferrer")
+    end
+
     it "raises error for rating=0" do
       expect do
         parse('{% quote author="Jane" rating=0 %}Bad{% endquote %}')
@@ -92,11 +105,29 @@ RSpec.describe "Quote liquid tag", type: :liquid_tag do
         parse('{% quote role="CTO" %}No author{% endquote %}')
       end.to raise_error(StandardError, /requires an author/)
     end
+
+    it "rejects an invalid avatar URL" do
+      expect do
+        parse('{% quote author="Jane" image="javascript:alert(1)" %}Nope{% endquote %}')
+      end.to raise_error(StandardError, /Invalid URL for 'image'/)
+    end
+
+    it "rejects an invalid external link URL" do
+      expect do
+        parse('{% quote author="Jane" link="javascript:alert(1)" %}Nope{% endquote %}')
+      end.to raise_error(StandardError, /Invalid URL for 'link'/)
+    end
   end
 
   describe "combined options" do
     it "renders a full review with all options" do
-      result = parse('{% quote author="Jane Doe" role="Verified Buyer" image="https://example.com/jane.jpg" rating=5 source="App Store" link="https://example.com" %}Amazing product, 10/10 would recommend!{% endquote %}').render
+      template = <<~LIQUID.squish
+        {% quote author="Jane Doe" role="Verified Buyer" image="https://example.com/jane.jpg"
+          rating=5 source="App Store" link="https://example.com" %}
+          Amazing product, 10/10 would recommend!
+        {% endquote %}
+      LIQUID
+      result = parse(template).render
       expect(result).to include("Jane Doe")
       expect(result).to include("Verified Buyer")
       expect(result).to include("https://example.com/jane.jpg")

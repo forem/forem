@@ -168,6 +168,8 @@ en:
       missing_author: "Quote tag requires an author option"
       invalid_rating: "Rating must be between 1 and 5"
       learn_more: "Learn more"
+    quotes_tag:
+      no_args: "The quotes tag does not accept any arguments"
     slide_tag:
       missing_image: "Slide tag requires an image option"
       missing_content: "Slide tag requires at least one of: image, video, or link"
