@@ -2,7 +2,12 @@ class MagicLinksController < ApplicationController
   def show
     user = User.find_by(sign_in_token: params[:id])
     if user && user.sign_in_token_sent_at > 20.minutes.ago
-      user.update_column(:confirmed_at, Time.current) if user.confirmed_at.blank?
+      if user.confirmed_at.blank?
+        user.update_column(:confirmed_at, Time.current)
+        # update_column bypasses the Trackable after_commit, so tell the
+        # DEV -> Core sync the email is now verified.
+        user.track!("user_updated")
+      end
       sign_in(user)
       redirect_to root_path
     else
@@ -51,7 +56,10 @@ class MagicLinksController < ApplicationController
       domain = @user.email.split("@").last
       if Settings::Authentication.acceptable_domain?(domain: domain) && @user.save
         @user.send_magic_link!
-        Users::GenerateAiProfileImageWorker.perform_async(@user.id)
+        
+        if FeatureFlag.enabled?(:auto_generated_profile_pics)
+          Users::GenerateAiProfileImageWorker.perform_async(@user.id)
+        end
       else
         flash[:alert] = @user.errors.full_messages.join(", ")
         redirect_to new_user_session_path and return

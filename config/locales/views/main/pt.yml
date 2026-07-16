@@ -46,10 +46,12 @@ pt:
         Privacy Policy: Política de Privacidade
         Reading List: Lista de Leitura
         Tags: Tags
+        trends: Tendências
         Terms of use: Termos de Uso
         Videos: Vídeos
       side:
         active_discussions: "Discussões ativas"
+        upcoming_events: "Próximos eventos"
         listings:
           heading: Anúncios
           all: Ver todos

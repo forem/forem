@@ -25,6 +25,8 @@ pt:
       broadcast:
         visit_html: Visite %{settings} para gerenciar suas notificações.
         settings: Configurações
+      event:
+        reminder_html: "Lembrete: %{event_link} começa em %{time}!"
       comment:
         commented_html: "%{user} comentou em %{title}"
         first_html: "%{user} escreveu seu primeiro comentário em %{title}"
@@ -85,6 +87,10 @@ pt:
           article: seu artigo
           comment: seu comentário
           unknown: você
+      organization:
+        deverification_heading: Verificação revogada
+        deverification_html: "A verificação de %{org} foi revogada porque não encontramos mais um link para sua página de organização na URL verificada anteriormente."
+        reverify: Re-verificar sua organização
       settings: Configurações
       tag:
         heading: "Olá 👋"

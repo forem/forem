@@ -8,6 +8,9 @@ module Constants
           ahoy_tracking: {
             description: I18n.t("lib.constants.settings.general.ahoy_tracking.description")
           },
+          customerio_cdp_enabled: {
+            description: I18n.t("lib.constants.settings.general.customerio_cdp_enabled.description")
+          },
           billboard_enabled_countries: {
             description: I18n.t("lib.constants.settings.general.billboard_enabled_countries.description")
           },
@@ -140,6 +143,9 @@ module Constants
           video_encoder_key: {
             description: I18n.t("lib.constants.settings.general.video.description"),
             placeholder: ""
+          },
+          display_sidebar_onboarding_checklist: {
+            description: I18n.t("lib.constants.settings.general.display_sidebar_onboarding_checklist.description")
           },
           enable_agent_sessions: {
             description: I18n.t("lib.constants.settings.general.enable_agent_sessions.description",

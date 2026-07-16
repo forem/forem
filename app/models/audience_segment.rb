@@ -1,6 +1,6 @@
 class AudienceSegment < ApplicationRecord
   # enum does not like names that start with "not_"
-  enum type_of: {
+  enum :type_of, {
     manual: 0, # never matches anyone, used in test factory
     trusted: 1,
     posted: 2,

@@ -40,4 +40,72 @@ RSpec.describe Users::NotificationSetting do
       end
     end
   end
+
+  describe "newsletter events for the DEV → Core sync" do
+    before do
+      allow(Trackable::Registry).to receive(:active_names).and_return([:any])
+      allow(Trackable::DispatchWorker).to receive(:perform_async)
+      Settings::General.customerio_cdp_enabled = true
+      FeatureFlag.enable(:dev_core_user_sync, FeatureFlag::Actor[user])
+    end
+
+    after { FeatureFlag.remove(:dev_core_user_sync) }
+
+    around { |ex| with_trackable_events { ex.run } }
+
+    it "emits user_newsletter_subscribed when email_newsletter flips on" do
+      notification_setting.update!(email_newsletter: true)
+      expect(Trackable::DispatchWorker).to have_received(:perform_async)
+        .with(anything, "user_newsletter_subscribed", [user.id], anything, anything)
+    end
+
+    it "emits user_newsletter_unsubscribed when email_newsletter flips off" do
+      notification_setting.update!(email_newsletter: true)
+      notification_setting.update!(email_newsletter: false)
+      expect(Trackable::DispatchWorker).to have_received(:perform_async)
+        .with(anything, "user_newsletter_unsubscribed", [user.id], anything, anything)
+    end
+
+    it "does not emit for other notification setting changes" do
+      notification_setting.update!(email_badge_notifications: !notification_setting.email_badge_notifications)
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+        .with(anything, /user_newsletter/, anything, anything, anything)
+    end
+
+    # The digest is a separate consent from the newsletter: EmailDigest selects
+    # on email_digest_periodic alone, so Core needs its own signal for it.
+    it "emits user_digest_subscribed when email_digest_periodic flips on" do
+      notification_setting.update!(email_digest_periodic: true)
+      expect(Trackable::DispatchWorker).to have_received(:perform_async)
+        .with(anything, "user_digest_subscribed", [user.id], anything, anything)
+    end
+
+    it "emits user_digest_unsubscribed when email_digest_periodic flips off" do
+      notification_setting.update!(email_digest_periodic: true)
+      notification_setting.update!(email_digest_periodic: false)
+      expect(Trackable::DispatchWorker).to have_received(:perform_async)
+        .with(anything, "user_digest_unsubscribed", [user.id], anything, anything)
+    end
+
+    it "does not emit a digest event when only the newsletter changes" do
+      notification_setting.update!(email_newsletter: true)
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+        .with(anything, /user_digest/, anything, anything, anything)
+    end
+
+    it "emits both events when one save flips newsletter and digest together" do
+      notification_setting.update!(email_newsletter: true, email_digest_periodic: true)
+
+      expect(Trackable::DispatchWorker).to have_received(:perform_async)
+        .with(anything, "user_newsletter_subscribed", [user.id], anything, anything)
+      expect(Trackable::DispatchWorker).to have_received(:perform_async)
+        .with(anything, "user_digest_subscribed", [user.id], anything, anything)
+    end
+
+    it "does not emit when the sync gates are off" do
+      Settings::General.customerio_cdp_enabled = false
+      notification_setting.update!(email_newsletter: true)
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+    end
+  end
 end

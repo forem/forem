@@ -1,13 +1,30 @@
 class ApplicationController < ActionController::Base
+  class RedirectRequired < StandardError
+    attr_reader :url, :status, :allow_other_host
+    def initialize(url, status: :moved_permanently, allow_other_host: true)
+      @url = url
+      @status = status
+      @allow_other_host = allow_other_host
+      super("Redirect to #{url} required")
+    end
+  end
+
+  rescue_from RedirectRequired do |exception|
+    redirect_to exception.url, allow_other_host: exception.allow_other_host, status: exception.status
+  end
+
   before_action :redirect_www_and_unregistred_subforems_to_root
+  before_action :redirect_all_subforems_to_default
   before_action :configure_permitted_parameters, if: :devise_controller?
   skip_before_action :track_ahoy_visit
   before_action :set_session_domain
+  after_action :set_unauthenticated_session_expiry
   before_action :verify_private_forem
   protect_from_forgery with: :exception, prepend: true
   before_action :set_devise_rememberable_options # Add this line
   before_action :remember_cookie_sync
   before_action :forward_to_app_config_domain
+  before_action :redirect_custom_domain_non_profile_pages
   before_action :determine_locale
   after_action  :clear_request_store
 
@@ -34,11 +51,17 @@ class ApplicationController < ActionController::Base
       "users.invalid_authenticity_token",
       tags: ["controller_name:#{controller_name}", "path:#{request.fullpath}"],
     )
+    respond_to do |format|
+      format.html { render plain: I18n.t("application_controller.invalid_authenticity_token"), status: :unprocessable_entity }
+      format.json { render json: { error: I18n.t("application_controller.invalid_authenticity_token") }, status: :unprocessable_entity }
+    end
   end
 
   rescue_from ApplicationPolicy::UserSuspendedError, with: :respond_with_user_suspended
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+
+  around_action :handle_argument_error
 
   PUBLIC_CONTROLLERS = %w[async_info
                           confirmations
@@ -99,6 +122,27 @@ class ApplicationController < ActionController::Base
   #
   # @raise [ActiveRecord::RecordNotFound] when called
   def not_found
+    if request.env["forem.custom_domain_org"].present?
+      redirect_rule = RequestRedirect.find_by(
+        request_domain: request.host&.downcase,
+        original_url: request.fullpath
+      )
+      
+      redirect_rule ||= RequestRedirect.find_by(
+        request_domain: request.host&.downcase,
+        original_url: request.path
+      )
+      
+      if redirect_rule
+        raise RedirectRequired.new(redirect_rule.destination_url, status: :moved_permanently)
+      end
+
+      main_app_domain = Settings::General.app_domain
+      if main_app_domain.present? && request.host&.downcase != main_app_domain.downcase
+        raise RedirectRequired.new("#{request.protocol}#{main_app_domain}#{request.fullpath}", status: :moved_permanently)
+      end
+    end
+
     raise ActiveRecord::RecordNotFound, "Not Found"
   end
 
@@ -133,6 +177,19 @@ class ApplicationController < ActionController::Base
       format.json do
         render json: { error: I18n.t("application_controller.bad_request") }, status: :bad_request
       end
+      format.any do
+        render plain: "The request could not be understood (400).", status: :bad_request
+      end
+    end
+  end
+
+  def handle_argument_error
+    yield
+  rescue ArgumentError => exception
+    if exception.message.include?("string contains null byte") || exception.message.include?("invalid byte sequence")
+      bad_request
+    else
+      raise exception
     end
   end
 
@@ -231,6 +288,11 @@ class ApplicationController < ActionController::Base
       signin_param = { "signin" => "true" } # the "signin" param is used by the service worker
 
       uri = Addressable::URI.parse(path)
+      uri.scheme = nil
+      uri.host = nil
+      uri.port = nil
+      uri.path = "/" if uri.path.blank?
+      uri.path = "/#{uri.path}" unless uri.path.start_with?("/")
       uri.query_values = if uri.query_values
                            # Ignore i=i (internal navigation) param
                            uri.query_values.except("i").merge(signin_param)
@@ -414,24 +476,101 @@ class ApplicationController < ActionController::Base
 
   private
 
+  def redirect_custom_domain_non_profile_pages
+    org = custom_domain_org
+    return unless org.present?
+    return unless request.get? || request.head?
+    return unless request.format.html?
+
+    if controller_name == "stories" && action_name.in?(%w[custom_domain_index custom_domain_show])
+      return
+    end
+
+    main_app_domain = Settings::General.app_domain
+    if main_app_domain.present? && request.host&.downcase != main_app_domain.downcase
+      redirect_to "#{request.protocol}#{main_app_domain}#{request.fullpath}", allow_other_host: true, status: :moved_permanently
+    end
+  end
+
+  def custom_domain_org
+    OrgCustomDomainConstraint.custom_domain_org(request)
+  end
+
   def redirect_www_and_unregistred_subforems_to_root
     # This redirect should ideally be done at the edge, but if that is not possible, we can do it here.
     return unless ApplicationConfig["REDIRECT_WWW_TO_ROOT"] == "true"
 
-    if request.host.start_with?("www.")
-      new_host = request.host.sub(/^www\./i, "")
+    host = request.host&.downcase
+    if host.start_with?("www.")
+      new_host = host.sub(/^www\./i, "")
       redirect_to("#{request.protocol}#{new_host}#{request.fullpath}", allow_other_host: true,
                                                                        status: :moved_permanently)
-    elsif request.host.end_with?(".#{RequestStore.store[:root_subforem_domain]}") && RequestStore.store[:subforem_id].blank?
+    elsif host.end_with?(".#{RequestStore.store[:root_subforem_domain]}") &&
+        RequestStore.store[:subforem_id].blank?
+      # Check memory-first cache to avoid redirecting custom organization domains
+      cache_key = "org_custom_domain_id:#{host}"
+      org_id = MemoryFirstCache.fetch(cache_key) do
+        org = Organization.find_by(custom_domain: host)
+        org ? org.id : "not_found"
+      end
+
+      is_custom_org_domain = org_id.present? && org_id != "not_found"
+      return if is_custom_org_domain
+
       new_host = RequestStore.store[:root_subforem_domain]
       redirect_to("#{request.protocol}#{new_host}#{request.fullpath}", allow_other_host: true,
                                                                        status: :moved_permanently)
     end
   end
 
+  def redirect_all_subforems_to_default
+    return unless ENV["REDIRECT_ALL_SUBFOREMS_TO_DEFAULT"] == "true"
+    return if RequestStore.store[:default_subforem_domain].blank?
+
+    host = request.host&.downcase
+
+    # Do not redirect the default subforem domain itself
+    return if host == RequestStore.store[:default_subforem_domain]&.downcase
+
+    # Check memory-first cache
+    cache_key = "org_custom_domain_id:#{host}"
+    org_id = MemoryFirstCache.fetch(cache_key) do
+      org = Organization.find_by(custom_domain: host)
+      org ? org.id : "not_found"
+    end
+
+    is_custom_org_domain = org_id.present? && org_id != "not_found"
+    return if is_custom_org_domain
+
+    is_subforem_subdomain = host.end_with?(".#{RequestStore.store[:root_subforem_domain]}")
+    is_registered_subforem = RequestStore.store[:subforem_id].present? &&
+      RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id]
+
+    return unless is_subforem_subdomain || is_registered_subforem
+
+    new_host = RequestStore.store[:default_subforem_domain]
+    redirect_to("#{request.protocol}#{new_host}#{request.fullpath}", allow_other_host: true,
+                                                                     status: :moved_permanently)
+  end
+
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[username name profile_image profile_image_url])
     devise_parameter_sanitizer.permit(:accept_invitation, keys: %i[name])
+  end
+
+  def set_unauthenticated_session_expiry
+    # If the user is unauthenticated, expire their session quickly to save Redis memory.
+    # Authenticated users use the default `expire_after` defined in config/initializers/session_store.rb
+    return if user_signed_in?
+
+    configured_ttl = ApplicationConfig["ANONYMOUS_SESSION_EXPIRY_SECONDS"]
+    ttl_seconds = if configured_ttl.present?
+                    configured_ttl.to_i
+                  else
+                    2.days.to_i
+                  end
+
+    request.session_options[:expire_after] = ttl_seconds
   end
 
   def set_session_domain

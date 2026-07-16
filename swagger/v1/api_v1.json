@@ -12,7 +12,7 @@
         "tags": [
           "agent_sessions"
         ],
-        "description": "This endpoint allows the client to list their own agent sessions.\n\nAgent sessions are coding conversation transcripts uploaded from CLI tools like\n[Claude Code](https://github.com/anthropics/claude-code). Use the\n[Forem CLI plugin](https://github.com/forem/forem-cli-plugin) to upload sessions\nfrom the command line.",
+        "description": "Retrieve a list of the authenticated user's agent sessions.\n\n### Agent Sessions Overview:\n- Agent sessions represent coding conversation transcripts uploaded from CLI tools (like Claude Code).\n- Used by the developer portal to render interactive walkthroughs or session summaries.\n- Requires authentication.",
         "operationId": "getAgentSessions",
         "responses": {
           "200": {
@@ -38,7 +38,7 @@
         "tags": [
           "agent_sessions"
         ],
-        "description": "This endpoint allows the client to upload a new agent session transcript.\n\nAccepts raw session content (JSONL from Claude Code, JSON from other tools) via\nthe `body` parameter or as a `session_file` upload. The tool format is auto-detected\nunless `tool_name` is explicitly provided.\n\nUse the [Forem CLI plugin](https://github.com/forem/forem-cli-plugin) to upload\nsessions directly from the command line.",
+        "description": "Upload a new agent session.\n\n### S3 Upload Workflow:\n1. Call the S3 presign endpoint to obtain a direct upload URL for the raw session transcript file.\n2. Upload the raw transcript to S3.\n3. Send a POST request to this endpoint with the S3 key (`s3_key`) and the pre-parsed, curated JSON payload (`curated_data`).",
         "operationId": "createAgentSession",
         "parameters": [
 
@@ -71,29 +71,34 @@
                     "type": "string",
                     "description": "Title for the session (auto-generated if omitted)"
                   },
-                  "body": {
+                  "curated_data": {
                     "type": "string",
-                    "description": "Raw session content (JSONL or JSON). Provide this or session_file."
+                    "description": "JSON string of curated session data with messages array and metadata."
+                  },
+                  "s3_key": {
+                    "type": "string",
+                    "description": "S3 object key from presign endpoint (optional)."
                   },
                   "tool_name": {
                     "type": "string",
-                    "description": "Tool that produced the session (e.g. claude_code, codex). Defaults to auto-detect.",
+                    "description": "Tool that produced the session (e.g. claude_code, codex).",
                     "enum": [
                       "claude_code",
                       "codex",
-                      "copilot_chat",
                       "gemini_cli",
-                      "aider",
-                      "auto"
+                      "github_copilot",
+                      "opencode",
+                      "pi"
                     ]
                   }
                 },
                 "required": [
-                  "body"
+                  "curated_data"
                 ]
               }
             }
-          }
+          },
+          "description": "Agent session upload parameters."
         }
       }
     },
@@ -103,14 +108,14 @@
         "tags": [
           "agent_sessions"
         ],
-        "description": "This endpoint allows the client to retrieve a single agent session by slug or ID.\nReturns the full session including messages, curated selections, and slices.",
+        "description": "Retrieve details for a single agent session by unique slug or ID.\n\n### Integration Tip:\n- Returns the complete session structure including parsed message logs, token counts, slices, and tool execution metadata.",
         "operationId": "getAgentSessionById",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "The slug or ID of the agent session.",
+            "description": "The unique slug or ID of the agent session.",
             "schema": {
               "type": "string"
             },
@@ -137,13 +142,342 @@
         }
       }
     },
+    "/api/analytics/totals": {
+      "get": {
+        "summary": "Retrieve analytics totals",
+        "tags": [
+          "analytics"
+        ],
+        "description": "Retrieve aggregated lifetime stats (views, reactions, comments) for articles.\n\n### Scope Control:\n- Specify `article_id` to query a single post's metrics.\n- Specify `organization_id` to retrieve metrics across all articles owned by the target organization.",
+        "parameters": [
+          {
+            "name": "article_id",
+            "in": "query",
+            "required": false,
+            "description": "Optional ID to limit totals to a single article.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "organization_id",
+            "in": "query",
+            "required": false,
+            "description": "Optional ID to limit totals to an organization's articles.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
+          }
+        }
+      }
+    },
+    "/api/analytics/historical": {
+      "get": {
+        "summary": "Retrieve historical analytics",
+        "tags": [
+          "analytics"
+        ],
+        "description": "Retrieve historical analytics data graphed over a time range.\n\n### Time Range Formats:\n- **start**: Start date (e.g. `2024-01-01`). Required.\n- **end**: End date (e.g. `2024-01-31`). Defaults to current date if omitted.",
+        "parameters": [
+          {
+            "name": "start",
+            "in": "query",
+            "required": true,
+            "description": "Start date (YYYY-MM-DD format).",
+            "schema": {
+              "type": "string"
+            },
+            "example": "2024-01-01"
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": false,
+            "description": "End date (YYYY-MM-DD format).",
+            "schema": {
+              "type": "string"
+            },
+            "example": "2024-01-31"
+          },
+          {
+            "name": "article_id",
+            "in": "query",
+            "required": false,
+            "description": "Limit stats to a single article.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "organization_id",
+            "in": "query",
+            "required": false,
+            "description": "Limit stats to an organization's articles.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
+          }
+        }
+      }
+    },
+    "/api/analytics/past_day": {
+      "get": {
+        "summary": "Retrieve analytics for the past day",
+        "tags": [
+          "analytics"
+        ],
+        "description": "Retrieve real-time hourly analytics statistics for the last 24 hours. Used for live graphs.",
+        "parameters": [
+          {
+            "name": "article_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "organization_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
+          }
+        }
+      }
+    },
+    "/api/analytics/referrers": {
+      "get": {
+        "summary": "Retrieve referrer analytics",
+        "tags": [
+          "analytics"
+        ],
+        "description": "Retrieve traffic referring domains and URL source tracking metrics for articles.",
+        "parameters": [
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "2024-01-01"
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "2024-01-31"
+          },
+          {
+            "name": "article_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "organization_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
+          }
+        }
+      }
+    },
+    "/api/analytics/top_contributors": {
+      "get": {
+        "summary": "Retrieve top contributors analytics",
+        "tags": [
+          "analytics"
+        ],
+        "description": "Retrieve top organization contributors ordered by article engagement scores.",
+        "parameters": [
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "2024-01-01"
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "2024-01-31"
+          },
+          {
+            "name": "article_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "organization_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
+          }
+        }
+      }
+    },
+    "/api/analytics/follower_engagement": {
+      "get": {
+        "summary": "Retrieve follower engagement analytics",
+        "tags": [
+          "analytics"
+        ],
+        "description": "Retrieve stats detailing new follower growth and engagement over time.",
+        "parameters": [
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "2024-01-01"
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "2024-01-31"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
+          }
+        }
+      }
+    },
+    "/api/analytics/dashboard": {
+      "get": {
+        "summary": "Retrieve dashboard analytics bundle",
+        "tags": [
+          "analytics"
+        ],
+        "description": "Retrieve a complete bundled metrics package (totals, history, top posts) for rendering dashboard landing pages.",
+        "parameters": [
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "2024-01-01"
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "2024-01-31"
+          },
+          {
+            "name": "article_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "organization_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
+          }
+        }
+      }
+    },
+    "/api/analytics/heatmap": {
+      "get": {
+        "summary": "Retrieve heatmap activity",
+        "tags": [
+          "analytics"
+        ],
+        "description": "Retrieve user activity heatmap metrics (commits, posts, reactions) grouped by weekdays and hours.",
+        "parameters": [
+          {
+            "name": "end",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "2024-12-31"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
+          }
+        }
+      }
+    },
     "/api/articles": {
       "post": {
         "summary": "Publish article",
         "tags": [
           "articles"
         ],
-        "description": "This endpoint allows the client to create a new article.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.",
+        "description": "This endpoint allows the client to create a new article.\n\n\"Articles\" are all the posts that users create on DEV/Forem that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but are referred to as articles within the code.\n\n### Body Parameter Tips:\n- **title**: A compelling and descriptive title for the article.\n- **body_markdown**: The main text of the article in Markdown format. You can use standard Markdown as well as Forem-specific Liquid tags (e.g., `{% embed ... %}`). You can also include YAML front matter at the very beginning of the markdown to specify metadata such as tags, series, and cover image.\n- **published**: Set to `true` to immediately publish the article and make it visible in feeds. Set to `false` (default) to save it as a draft.\n- **tags**: A comma-separated list of tags (up to 4 tags). Tags help categorize your post and improve discoverability.\n- **series**: Group articles together by specifying a series name. If the series does not exist, it will be created.\n- **main_image**: Absolute URL of the cover image for the article.\n- **canonical_url**: If this post was originally published elsewhere, specify the canonical URL to maintain SEO integrity.\n- **description**: A short summary of the article used for previews and SEO meta description.",
         "operationId": "createArticle",
         "parameters": [
 
@@ -166,7 +500,8 @@
                 "$ref": "#/components/schemas/Article"
               }
             }
-          }
+          },
+          "description": "Representation of Article to be created"
         }
       },
       "get": {
@@ -177,7 +512,7 @@
         "tags": [
           "articles"
         ],
-        "description": "This endpoint allows the client to retrieve a list of articles.\n\n\"Articles\" are all the posts that users create on DEV that typically\nshow up in the feed. They can be a blog post, a discussion question,\na help thread etc. but is referred to as article within the code.\n\nBy default it will return featured, published articles ordered\nby descending popularity.\n\nIt supports pagination, each page will contain `30` articles by default.",
+        "description": "This endpoint allows the client to retrieve a list of articles.\n\n\"Articles\" are all the posts that users create on DEV/Forem that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but are referred to as articles within the code.\n\nBy default it will return featured, published articles ordered by descending popularity.\n\nIt supports pagination, each page will contain `30` articles by default.\n\n### Query Parameter Usage Tips:\n- **Filtering by Tags**:\n  - Use `tag` to filter articles containing a single exact tag (e.g. `tag=discuss`).\n  - Use `tags` to retrieve articles containing *any* of the comma-separated list of tags (e.g. `tags=javascript,css`).\n  - Use `tags_exclude` to filter out articles containing any of the comma-separated list of tags (e.g. `tags_exclude=node,java`).\n- **Filtering by User / Organization**:\n  - Use `username` to retrieve articles belonging to a specific User or Organization. Articles are returned in reverse chronological publication order.\n- **State Options**:\n  - Use `state=fresh` to fetch fresh articles.\n  - Use `state=rising` to fetch rising/trending articles.\n  - Combine `state=all` with `username` to fetch up to `1000` articles (both published and unpublished) from that user/organization in a single page.\n- **Top / Popularity**:\n  - Use `top=N` to return the most popular articles published in the last `N` days (e.g. `top=7` for top articles of the week, `top=30` for top of the month). This parameter can be combined with `tag` to find top articles in a specific niche.\n- **Collections**:\n  - Use `collection_id` to retrieve articles belonging to a specific collection/series, sorted chronologically.",
         "operationId": "getArticles",
         "parameters": [
           {
@@ -282,6 +617,72 @@
         }
       }
     },
+    "/api/articles/search": {
+      "get": {
+        "summary": "Search for articles",
+        "security": [
+
+        ],
+        "tags": [
+          "articles"
+        ],
+        "description": "This endpoint allows the client to search for articles.\n\n### Search Guidance:\n- **q**: The search query term. Matches against article titles, tags, and body content.\n- **top**: Restricts search results to articles published within the last `N` days.\n- **page** & **per_page**: Standard pagination support. Use this to display results sequentially on a search results page.",
+        "operationId": "searchArticles",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "description": "The search query term. Matches against article titles, tags, and body content.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "top",
+            "in": "query",
+            "required": false,
+            "description": "Restricts search results to articles published within the last `N` days.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Pagination page index.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A List of Articles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/articles/latest": {
       "get": {
         "summary": "Published articles sorted by published date",
@@ -291,7 +692,7 @@
         "tags": [
           "articles"
         ],
-        "description": "This endpoint allows the client to retrieve a list of articles. ordered by descending publish date.\n\nIt supports pagination, each page will contain 30 articles by default.",
+        "description": "This endpoint allows the client to retrieve a list of articles ordered strictly by descending publication date.\n\n### Usage Tips:\n- Bypasses all Forem/DEV feed personalization and popularity algorithms.\n- Ideal for building RSS feeds, chronological timelines, or \"latest posts\" widgets.\n- Supports standard `page` and `per_page` query parameters.",
         "operationId": "getLatestArticles",
         "parameters": [
           {
@@ -327,13 +728,14 @@
         "tags": [
           "articles"
         ],
-        "description": "This endpoint allows the client to retrieve a single published article given its `id`.",
+        "description": "This endpoint allows the client to retrieve a single published article given its unique numerical `id`.\n\n### Integration Tip:\n- Returns the complete serialized article object including its HTML/markdown representation, tags, and author profile details.\n- To retrieve an article using its URL path structure instead of its numeric ID, use the `/api/articles/{username}/{slug}` endpoint.",
         "operationId": "getArticleById",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "The unique numerical ID of the published article.",
             "schema": {
               "type": "integer"
             }
@@ -363,14 +765,14 @@
         "tags": [
           "articles"
         ],
-        "description": "This endpoint allows the client to update an existing article.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.",
+        "description": "This endpoint allows the client to update an existing article by its unique numerical `id`.\n\n### Authorization Constraints:\n- The API key provided must belong to the author of the article.\n- Supports updating individual fields such as `title`, `body_markdown`, `published`, `tags`, etc.\n- Setting `published: false` on an already published article will revert it to draft status.",
         "operationId": "updateArticle",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "The ID of the user to unpublish.",
+            "description": "The unique numerical ID of the article to update.",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -400,7 +802,8 @@
                 "$ref": "#/components/schemas/Article"
               }
             }
-          }
+          },
+          "description": "Representation of Article to be updated"
         }
       }
     },
@@ -413,13 +816,14 @@
         "tags": [
           "articles"
         ],
-        "description": "This endpoint allows the client to retrieve a single published article given its `path`.",
+        "description": "This endpoint allows the client to retrieve a single published article given its `username` and `slug` (the URL-friendly path identifier).\n\n### Usage Tip:\n- Handy for resolving absolute Forem/DEV article URLs (e.g., `https://dev.to/username/slug`) into their corresponding API data models.",
         "operationId": "getArticleByPath",
         "parameters": [
           {
             "name": "username",
             "in": "path",
             "required": true,
+            "description": "The username of the article's author or organization.",
             "schema": {
               "type": "string"
             }
@@ -428,6 +832,7 @@
             "name": "slug",
             "in": "path",
             "required": true,
+            "description": "The URL-friendly slug of the article (e.g. `my-first-post-1234`).",
             "schema": {
               "type": "string"
             }
@@ -646,13 +1051,121 @@
         }
       }
     },
+    "/api/articles/semantic_search": {
+      "get": {
+        "summary": "Perform a semantic fuzzy search on articles",
+        "tags": [
+          "articles"
+        ],
+        "description": "Allows authenticated clients to search articles using Forem's semantic embeddings database.",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "description": "The search query term to match semantically.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "description": "Limit of articles returned (default 10, max 50).",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Pagination page index.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "threshold",
+            "in": "query",
+            "required": false,
+            "description": "Optional cosine distance threshold (between 0.0 and 2.0) to filter results.",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "cover_image": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "slug": {
+                        "type": "string"
+                      },
+                      "path": {
+                        "type": "string"
+                      },
+                      "url": {
+                        "type": "string"
+                      },
+                      "comments_count": {
+                        "type": "integer"
+                      },
+                      "public_reactions_count": {
+                        "type": "integer"
+                      },
+                      "published_at": {
+                        "type": "string"
+                      },
+                      "distance": {
+                        "type": "number"
+                      },
+                      "similarity": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "401": {
+            "description": "unauthorized"
+          }
+        }
+      }
+    },
     "/api/segments": {
       "get": {
         "summary": "Manually managed audience segments",
         "tags": [
           "segments"
         ],
-        "description": "This endpoint allows the client to retrieve a list of audience segments.\n\nAn audience segment is a group of users that can be targeted by a Billboard. This API only permits managing segments you create and maintain yourself.\n\nThe endpoint supports pagination, and each page will contain `30` segments by default.",
+        "description": "Retrieve a list of manually managed audience segments.\n\n### Audience Segments Overview:\n- Audience Segments are cohorts of users grouped together for targeting announcements, features, or promotional campaign banners (Billboards).\n- This endpoint lists manual cohorts created and maintained by site administrators.\n- Requires administrator privileges.\n\nThe endpoint supports pagination, and each page will contain `30` segments by default.",
         "operationId": "getSegments",
         "parameters": [
           {
@@ -683,7 +1196,7 @@
         "tags": [
           "segments"
         ],
-        "description": "This endpoint allows the client to create a new audience segment.\n\nAn audience segment is a group of users that can be targeted by a Billboard. This API only permits managing segments you create and maintain yourself.",
+        "description": "Create a new manually managed audience segment.\n\n### Usage Guidance:\n- Used by administrators to define a new target cohort group.\n- Users can be added or removed in bulk later via segment member endpoints.",
         "operationId": "createSegment",
         "responses": {
           "201": {
@@ -701,13 +1214,14 @@
         "tags": [
           "segments"
         ],
-        "description": "This endpoint allows the client to retrieve a single manually-managed audience segment specified by ID.",
+        "description": "Retrieve details of a single manually-managed audience segment specified by ID.\n\n### Integration Tip:\n- Includes segment type (`manual`), configuration, and metadata.\n- Automatic/system-generated segments cannot be queried or updated via this endpoint.",
         "operationId": "getSegment",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "Unique segment numerical ID.",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -742,13 +1256,14 @@
         "tags": [
           "segments"
         ],
-        "description": "This endpoint allows the client to delete an audience segment specified by ID.\n\nAudience segments cannot be deleted if there are still any Billboards using them.",
+        "description": "Delete an audience segment specified by ID.\n\n### Constraints:\n- Audience segments cannot be deleted if they are currently assigned to any active or pending Billboards.",
         "operationId": "deleteSegment",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "Unique segment numerical ID.",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -778,13 +1293,14 @@
         "tags": [
           "segments"
         ],
-        "description": "This endpoint allows the client to retrieve a list of the users in an audience segment specified by ID. The endpoint supports pagination, and each page will contain `30` users by default.",
+        "description": "Retrieve a paginated list of users enrolled in the specified manual audience segment.\n\n### Pagination Guidance:\n- Supports standard `page` and `per_page` controls, returning 30 users per page by default.",
         "operationId": "getUsersInSegment",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "Unique segment numerical ID.",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -824,13 +1340,14 @@
         "tags": [
           "segments"
         ],
-        "description": "This endpoint allows the client to add users in bulk to an audience segment specified by ID.\n\nSuccesses are users that were included in the segment (even if they were already in it), and failures are users that could not be added to the segment.",
+        "description": "Add users in bulk to the specified manual audience segment.\n\n### Bulk Update Behavior:\n- Accepts a JSON array of `user_ids` in the request body.\n- Returns a list of successes and failures. Successful additions include users already present in the segment.",
         "operationId": "addUsersToSegment",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "Unique segment numerical ID.",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -859,7 +1376,8 @@
                 "$ref": "#/components/schemas/SegmentUserIds"
               }
             }
-          }
+          },
+          "description": "Map containing user IDs to enroll in the segment."
         }
       }
     },
@@ -869,13 +1387,14 @@
         "tags": [
           "segments"
         ],
-        "description": "This endpoint allows the client to remove users in bulk from an audience segment specified by ID.\n\nSuccesses are users that were removed; failures are users that weren't a part of the segment.",
+        "description": "Remove users in bulk from the specified manual audience segment.\n\n### Bulk Update Behavior:\n- Accepts a JSON array of `user_ids` in the request body.\n- Returns successes (users successfully removed) and failures (users who were not members of the segment).",
         "operationId": "removeUsersFromSegment",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "Unique segment numerical ID.",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -904,6 +1423,360 @@
                 "$ref": "#/components/schemas/SegmentUserIds"
               }
             }
+          },
+          "description": "Map containing user IDs to remove from the segment."
+        }
+      }
+    },
+    "/api/badge_achievements": {
+      "get": {
+        "summary": "Retrieve all badge achievements",
+        "tags": [
+          "badge_achievements"
+        ],
+        "description": "Retrieve a list of all badge achievements (awarded badges) in the system. Requires administrator privileges.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Pagination page index.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BadgeAchievement"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a badge achievement",
+        "tags": [
+          "badge_achievements"
+        ],
+        "description": "Award a badge to a user. Requires administrator privileges.\n\n### Integration Tips:\n- **user_id**: The numeric ID of the user receiving the badge.\n- **badge_id**: The numeric ID of the badge being awarded.\n- **rewarding_context_message_markdown**: Optional personalized message shown in the notification or profile feed to explain why the user was awarded the badge.",
+        "parameters": [
+
+        ],
+        "responses": {
+          "201": {
+            "description": "created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadgeAchievement"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "badge_achievement": {
+                    "type": "object",
+                    "properties": {
+                      "user_id": {
+                        "type": "integer"
+                      },
+                      "badge_id": {
+                        "type": "integer"
+                      },
+                      "rewarding_context_message_markdown": {
+                        "type": "string"
+                      },
+                      "include_default_description": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "user_id",
+                      "badge_id"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "description": "Badge achievement details."
+        }
+      }
+    },
+    "/api/badge_achievements/{id}": {
+      "get": {
+        "summary": "Retrieve a badge achievement's details",
+        "tags": [
+          "badge_achievements"
+        ],
+        "description": "Retrieve details of a specific badge award/achievement by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Badge achievement unique ID.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadgeAchievement"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a badge achievement",
+        "tags": [
+          "badge_achievements"
+        ],
+        "description": "Revoke a badge award by deleting the badge achievement. Requires administrator privileges.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Badge achievement unique ID to delete.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "no content"
+          }
+        }
+      }
+    },
+    "/api/badges": {
+      "get": {
+        "summary": "Retrieve all badges",
+        "tags": [
+          "badges"
+        ],
+        "description": "Retrieve a list of all badges available on the platform.\n\n### Badges Overview:\n- Badges recognize achievements (e.g., \"Top Writer\", \"Beloved Community Member\", or anniversary milestones).\n- Publicly visible on user profiles.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Pagination page index.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Badge"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a badge",
+        "tags": [
+          "badges"
+        ],
+        "description": "Create a new badge. Requires administrator privileges.\n\n### Body Parameter Guidelines:\n- **title**: Unique name for the badge.\n- **description**: Text explanation of the achievement.\n- **remote_badge_image_url**: Public URL to an image asset (PNG, GIF, or SVG) representing the badge icon.\n- **allow_multiple_awards**: Set to `true` if a user can earn the same badge multiple times (e.g. weekly challenges).",
+        "parameters": [
+
+        ],
+        "responses": {
+          "201": {
+            "description": "created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Badge"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "badge": {
+                    "type": "object",
+                    "properties": {
+                      "title": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "remote_badge_image_url": {
+                        "type": "string"
+                      },
+                      "credits_awarded": {
+                        "type": "integer"
+                      },
+                      "allow_multiple_awards": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "title",
+                      "description",
+                      "remote_badge_image_url"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "description": "Badge properties to create."
+        }
+      }
+    },
+    "/api/badges/{id}": {
+      "get": {
+        "summary": "Retrieve a badge's details",
+        "tags": [
+          "badges"
+        ],
+        "description": "Retrieve details of a single badge by unique numeric ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Unique badge ID.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Badge"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update a badge",
+        "tags": [
+          "badges"
+        ],
+        "description": "Update badge details (title, description, credits awarded, etc.) by unique ID. Requires administrator privileges.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Unique badge ID to update.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Badge"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "badge": {
+                    "type": "object",
+                    "properties": {
+                      "title": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "credits_awarded": {
+                        "type": "integer"
+                      },
+                      "allow_multiple_awards": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "description": "Badge properties to update."
+        }
+      },
+      "delete": {
+        "summary": "Delete a badge",
+        "tags": [
+          "badges"
+        ],
+        "description": "Delete a badge configuration from the system by ID. Requires administrator privileges.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Unique badge ID to delete.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "no content"
           }
         }
       }
@@ -914,7 +1787,7 @@
         "tags": [
           "billboards"
         ],
-        "description": "This endpoint allows the client to retrieve a list of all billboards.",
+        "description": "Retrieve a list of all billboards configured in the system.\n\n        ### Billboards Overview:\n        - Billboards are custom promotional ads, notification banners, or call-to-actions shown on the Forem website.\n        - Requires administrative privileges.\n        - Returned objects include layout code, scheduling parameters, geo-targeting configurations, and custom target audience segment associations.",
         "responses": {
           "200": {
             "description": "successful",
@@ -939,7 +1812,7 @@
         "tags": [
           "billboards"
         ],
-        "description": "This endpoint allows the client to create a new billboard.",
+        "description": "Create a new billboard.\n\n        ### Parameter Options & Tips:\n        - **body_markdown**: The HTML/Markdown advertisement copy.\n        - **placement_area**: Target region in layouts (e.g. `post_comments` below comments, `sidebar` in sidebars, `home_feed` between posts).\n        - **display_to**: Cohort target rules (e.g. `all` for everyone, `logged_in`, `guests`, or customized segments).\n        - **target_geolocations**: Comma-separated ISO codes for country/region targeting.\n        - **approved** & **published**: Set to `true` to activate billboard rotation instantly.",
         "parameters": [
 
         ],
@@ -974,7 +1847,8 @@
                 }
               }
             }
-          }
+          },
+          "description": "Billboard parameters."
         }
       }
     },
@@ -984,7 +1858,7 @@
         "tags": [
           "billboards"
         ],
-        "description": "This endpoint allows the client to retrieve a single billboard, via its id.",
+        "description": "Retrieve full configurations of a single billboard by ID. Requires admin credentials.",
         "parameters": [
           {
             "name": "id",
@@ -1016,13 +1890,13 @@
         "tags": [
           "billboards"
         ],
-        "description": "This endpoint allows the client to update the attributes of a single billboard, via its id.",
+        "description": "Update an existing billboard's configurations.\n\n        ### Integration Guidance:\n        - Allows changing placement area, geolocations, target segments, or text copy.\n        - Updating an active billboard takes effect instantly in the layout delivery cache.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "The ID of the billboard.",
+            "description": "The ID of the billboard to update.",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -1062,7 +1936,8 @@
                 }
               }
             }
-          }
+          },
+          "description": "Billboard updated attributes."
         }
       }
     },
@@ -1072,7 +1947,7 @@
         "tags": [
           "billboards"
         ],
-        "description": "This endpoint allows the client to remove a billboard from rotation by un-publishing it.",
+        "description": "Remove a billboard from active rotation by unpublishing it.\n\n        ### Usage:\n        - Instantly disables display across all pages while keeping the configuration stored in the database for later reactivations or historical reporting.",
         "parameters": [
           {
             "name": "id",
@@ -1109,7 +1984,7 @@
         "tags": [
           "comments"
         ],
-        "description": "This endpoint allows the client to retrieve all comments belonging to an article or podcast episode as threaded conversations.\n\nIt will return the all top level comments with their nested comments as threads. See the format specification for further details.\n\nIt supports pagination, each page will contain `50` top level comments (and as many child comments they have) by default.\n\nIf the page parameter is not passed, all comments of an article or podcast will be returned.\n",
+        "description": "This endpoint allows the client to retrieve all comments belonging to an article or podcast episode as threaded conversations.\n\n### Threaded Structure & Pagination Tips:\n- **Threaded Format**: Comments are returned as a tree structure (nested arrays of replies). Each top-level comment contains its nested child comments recursively.\n- **Query Constraints**: You must provide either `a_id` (Article ID) OR `p_id` (Podcast Episode ID) to fetch comments. Specifying both is not supported.\n- **Pagination**: When paginating, the `page` parameter filters the *top-level* comments only. All replies to those top-level comments are returned nested inline, regardless of page index.\n- If the `page` parameter is omitted, the response returns the full comment tree in a single payload.",
         "operationId": "getCommentsByArticleId",
         "parameters": [
           {
@@ -1122,7 +1997,7 @@
             "name": "a_id",
             "in": "query",
             "required": false,
-            "description": "Article identifier.",
+            "description": "Article identifier. Provide this to fetch comments belonging to a specific article.",
             "schema": {
               "type": "string"
             },
@@ -1132,7 +2007,7 @@
             "name": "p_id",
             "in": "query",
             "required": false,
-            "description": "Podcast Episode identifier.",
+            "description": "Podcast Episode identifier. Provide this to fetch comments belonging to a specific podcast episode.",
             "schema": {
               "type": "string"
             },
@@ -1142,7 +2017,7 @@
             "name": "page",
             "in": "query",
             "required": false,
-            "description": "Page",
+            "description": "Pagination page index for top-level comments.",
             "schema": {
               "type": "string"
             },
@@ -1178,16 +2053,16 @@
         "tags": [
           "comments"
         ],
-        "description": "This endpoint allows the client to retrieve a comment as well as his descendants comments.\n\n  It will return the required comment (the root) with its nested descendants as a thread.\n\n  See the format specification for further details.",
+        "description": "This endpoint allows the client to retrieve a specific comment and all of its nested descendant replies.\n\n### Integration Tip:\n- Handy for linking directly to a deep comment thread or loading individual comment replies on demand.",
         "operationId": "getCommentById",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "Comment identifier.",
+            "description": "Comment identifier (the unique alpha-numeric `id_code` of the comment).",
             "schema": {
-              "type": "integer"
+              "type": "string"
             },
             "example": "321"
           }
@@ -1202,6 +2077,629 @@
         }
       }
     },
+    "/api/concepts": {
+      "get": {
+        "summary": "Retrieve all accessible concepts",
+        "tags": [
+          "concepts"
+        ],
+        "description": "Retrieve all accessible concepts in the system.\n\n### Concepts Overview:\n- Concepts are semantic tags generated automatically by analyzing article text using ML embeddings (`gemini-embedding-2`), rather than explicit user tags.\n- Primarily used for advanced semantic categorization, automated feeds, and interest mapping.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Pagination page index.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "description": "Number of days of activity to aggregate for computing the concept popularity/trend score (default is 7 days).",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Concept"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          }
+        }
+      }
+    },
+    "/api/concepts/{id}": {
+      "get": {
+        "summary": "Retrieve details of a concept",
+        "tags": [
+          "concepts"
+        ],
+        "description": "Retrieve details, settings, and popularity metrics of a single concept by ID.\n\n### Integration Tip:\n- Includes the semantic description, similarity thresholds, parent concept mappings, and scores.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Unique concept numerical ID.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "description": "Number of days of activity to aggregate for the concept popularity/trend score.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Concept"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update a concept's metadata",
+        "tags": [
+          "concepts"
+        ],
+        "description": "Update concept metadata such as description, similarity threshold, and custom score.\n\n### Parameter Guidelines:\n- **similarity_threshold**: Cosine distance threshold (range 0.0 to 1.0) determining how closely an article's embedding must align with the concept's anchor embedding to be classified under it.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Unique concept numerical ID.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Concept"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "concept": {
+                    "type": "object",
+                    "properties": {
+                      "score": {
+                        "type": "number"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "similarity_threshold": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/concepts/{id}/articles": {
+      "get": {
+        "summary": "Retrieve articles mapped to a concept",
+        "tags": [
+          "concepts"
+        ],
+        "description": "Retrieve articles classified under this concept.\n\n### Parameter Guidelines:\n- **sort**: Set to `score` to sort articles by article popularity score descending. If omitted or set to any other value, sorting defaults to cosine similarity (closest first) secondary sorted by article score.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Unique concept numerical ID.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "description": "Sorting criteria: `score` or default.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Pagination page index.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/concepts": {
+      "get": {
+        "summary": "Retrieve all concepts (Admin)",
+        "tags": [
+          "concepts",
+          "admin"
+        ],
+        "description": "Retrieve all concepts in the system including system and draft concepts. Admin credentials required.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Concept"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a concept (Admin)",
+        "tags": [
+          "concepts",
+          "admin"
+        ],
+        "description": "Create a new Concept.\n\n### Parameters:\n- **name**: Human readable label for the concept.\n- **description**: Detailed semantic definition used to generate the anchor embedding.\n- **similarity_threshold**: Target similarity threshold for categorizing articles under this concept.\n- **parent_id**: ID of parent concept, if establishing a hierarchy.",
+        "parameters": [
+
+        ],
+        "responses": {
+          "201": {
+            "description": "created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Concept"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "concept": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "parent_id": {
+                        "type": "integer",
+                        "nullable": true
+                      },
+                      "similarity_threshold": {
+                        "type": "number"
+                      },
+                      "score": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/concepts/{id}": {
+      "get": {
+        "summary": "Retrieve concept detail (Admin)",
+        "tags": [
+          "concepts",
+          "admin"
+        ],
+        "description": "Retrieve full details of a specific concept by ID. Admin credentials required.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Concept"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update a concept (Admin)",
+        "tags": [
+          "concepts",
+          "admin"
+        ],
+        "description": "Update concept properties. Admin credentials required.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Concept"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "concept": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "parent_id": {
+                        "type": "integer",
+                        "nullable": true
+                      },
+                      "similarity_threshold": {
+                        "type": "number"
+                      },
+                      "score": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a concept (Admin)",
+        "tags": [
+          "concepts",
+          "admin"
+        ],
+        "description": "Permanently delete a concept by ID. Admin credentials required.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "no content"
+          }
+        }
+      }
+    },
+    "/api/admin/concepts/{id}/trigger_lookback": {
+      "post": {
+        "summary": "Trigger concept lookback backfill (Admin)",
+        "tags": [
+          "concepts",
+          "admin"
+        ],
+        "description": "Trigger a background backfill worker to scan historical articles published in the last `N` days and evaluate them against this concept.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "days": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "days"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/concepts/search": {
+      "get": {
+        "summary": "Perform a semantic fuzzy search on concepts",
+        "tags": [
+          "concepts"
+        ],
+        "description": "Allows authenticated clients to search concepts using Forem's semantic embeddings database.",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "description": "The search query term to match semantically.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "description": "Limit of concepts returned (default 10, max 50).",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "threshold",
+            "in": "query",
+            "required": false,
+            "description": "Optional cosine distance threshold (between 0.0 and 2.0) to filter results.",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "slug": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "parent_id": {
+                        "type": "integer",
+                        "nullable": true
+                      },
+                      "score": {
+                        "type": "number"
+                      },
+                      "similarity_threshold": {
+                        "type": "number",
+                        "nullable": true
+                      },
+                      "created_at": {
+                        "type": "string"
+                      },
+                      "updated_at": {
+                        "type": "string"
+                      },
+                      "distance": {
+                        "type": "number"
+                      },
+                      "similarity": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "401": {
+            "description": "unauthorized"
+          }
+        }
+      }
+    },
+    "/api/feedback_messages/{id}": {
+      "patch": {
+        "summary": "Update a feedback message's status (Admin)",
+        "tags": [
+          "feedback_messages",
+          "admin"
+        ],
+        "description": "Update the status of a user feedback message or report.\n\n### Feedback Messages Overview:\n- Feedback messages are submitted by users via support forms or content abuse reporting modals.\n- Requires Administrator privileges.\n- Used to track moderation/resolution workflows (e.g. marking a spam report as `Resolved`, `Spam`, or `Ignored`).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Unique feedback message ID.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "feedback_message": {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "status"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "description": "Feedback parameters containing the status updates."
+        }
+      }
+    },
     "/api/follows/tags": {
       "get": {
         "summary": "Followed Tags",
@@ -1209,7 +2707,7 @@
           "followed_tags",
           "tags"
         ],
-        "description": "This endpoint allows the client to retrieve a list of the tags they follow.",
+        "description": "Retrieve the list of tags followed by the authenticated user.\n\n        ### Integration & Personalization Guidance:\n        - Requires authentication.\n        - Returns tags in ascending/popularity order based on user interactions.\n        - Useful for customizing the home feed interface, constructing personalized sidebar navigation, or displaying a user's customized topic preferences in a dashboard.",
         "operationId": "getFollowedTags",
         "responses": {
           "401": {
@@ -1237,7 +2735,7 @@
         "tags": [
           "followers"
         ],
-        "description": "This endpoint allows the client to retrieve a list of the followers they have.\n        \"Followers\" are users that are following other users on the website.\n        It supports pagination, each page will contain 80 followers by default.",
+        "description": "This endpoint allows the client to retrieve a list of the followers they have.\n\n        ### Integration & Pagination Guidance:\n        - \"Followers\" are other users registered on the platform who follow the authenticated user.\n        - Supports pagination, defaulting to 80 followers per page.\n        - The `sort` query parameter determines the sorting order based on when the follow relationship was established.",
         "operationId": "getFollowers",
         "parameters": [
           {
@@ -1250,7 +2748,7 @@
             "name": "sort",
             "in": "query",
             "required": false,
-            "description": "Default is 'created_at'. Specifies the sort order for the created_at param of the follow\n                                relationship. To sort by newest followers first (descending order) specify\n                                ?sort=-created_at.",
+            "description": "Specifies the sort order for the follow relationship created_at field. Use `created_at` for chronological (oldest first) or `-created_at` for reverse chronological (newest first).",
             "schema": {
               "type": "string"
             },
@@ -1305,6 +2803,160 @@
         }
       }
     },
+    "/api/follows": {
+      "post": {
+        "summary": "Follow users or organizations",
+        "tags": [
+          "follows"
+        ],
+        "description": "Follow users or organizations in bulk on behalf of the authenticated user.\n\n### Bulk Update Behavior:\n- Accepts arrays of `user_ids` and `organization_ids` in the request body.\n- Performs follow actions for all provided identifiers.\n- Highly efficient for onboarding flows or importing social connections.",
+        "parameters": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "outcome": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "organization_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "description": "Map containing lists of user and organization IDs to follow."
+        }
+      }
+    },
+    "/api/health_checks/app": {
+      "get": {
+        "summary": "Check app health",
+        "tags": [
+          "health_checks"
+        ],
+        "security": [
+
+        ],
+        "description": "Basic application liveness check.\n\n### Usage Guidance:\n- Verifies that the Rails application process is running and responding to requests.\n- Does not check database or cache connectivity.\n- Typically used by load balancers, container orchestrators (like Kubernetes), or uptime checkers to verify container health.",
+        "parameters": [
+          {
+            "name": "health-check-token",
+            "in": "header",
+            "required": false,
+            "description": "Access token required if token-based security is enabled in settings for health checks.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
+          }
+        }
+      }
+    },
+    "/api/health_checks/database": {
+      "get": {
+        "summary": "Check database connection",
+        "tags": [
+          "health_checks"
+        ],
+        "security": [
+
+        ],
+        "description": "Database connection health check.\n\n### Usage Guidance:\n- Verifies that the application can successfully query the primary PostgreSQL database.\n- Used to monitor database pool status and connection health.",
+        "parameters": [
+          {
+            "name": "health-check-token",
+            "in": "header",
+            "required": false,
+            "description": "Access token required if token-based security is enabled in settings for health checks.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
+          }
+        }
+      }
+    },
+    "/api/health_checks/cache": {
+      "get": {
+        "summary": "Check cache connection",
+        "tags": [
+          "health_checks"
+        ],
+        "security": [
+
+        ],
+        "description": "Cache connection health check.\n\n### Usage Guidance:\n- Verifies that the application can successfully ping the Redis cache instance.\n- Used to monitor cache and background worker queue connection health.",
+        "parameters": [
+          {
+            "name": "health-check-token",
+            "in": "header",
+            "required": false,
+            "description": "Access token required if token-based security is enabled in settings for health checks.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
+          }
+        }
+      }
+    },
+    "/api/instance": {
+      "get": {
+        "summary": "Retrieve instance configuration details",
+        "tags": [
+          "instance"
+        ],
+        "description": "Retrieve configuration details for the current Forem instance.\n\n### Instance Metadata:\n- Bypasses authentication.\n- Returns public Forem version, branding parameters, community guidelines references, and supported features configurations.",
+        "security": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
+          }
+        }
+      }
+    },
     "/api/organizations/{username}": {
       "get": {
         "summary": "An organization (by username)",
@@ -1314,13 +2966,14 @@
         "security": [
 
         ],
-        "description": "This endpoint allows the client to retrieve a single organization by their username",
+        "description": "Retrieve public profile information for a single organization by its username.\n\n### Integration Tip:\n- Bypasses authentication.\n- Returns details like Tech Stack, Tagline, Story, website URLs, and joined date.",
         "operationId": "getOrganization",
         "parameters": [
           {
             "name": "username",
             "in": "path",
             "required": true,
+            "description": "The unique slugified username of the organization (e.g. `github`).",
             "schema": {
               "type": "string"
             }
@@ -1356,13 +3009,14 @@
         "security": [
 
         ],
-        "description": "This endpoint allows the client to retrieve a list of users belonging to the organization\n\nIt supports pagination, each page will contain `30` users by default.",
+        "description": "Retrieve a list of public user profiles associated with the organization.\n\n### Path Parameter Options:\n- **organization_id_or_username**: Supports either the organization's unique numerical ID OR its string username (slug).\n- Ideal for displaying team member directory lists on organization/brand pages.",
         "operationId": "getOrgUsers",
         "parameters": [
           {
             "name": "organization_id_or_username",
             "in": "path",
             "required": true,
+            "description": "The organization's numerical ID or string username.",
             "schema": {
               "type": "string"
             }
@@ -1404,13 +3058,14 @@
         "security": [
 
         ],
-        "description": "This endpoint allows the client to retrieve a list of Articles belonging to the organization\n\nIt supports pagination, each page will contain `30` users by default.",
+        "description": "Retrieve a list of articles published by the organization.\n\n### Path Parameter Options:\n- **organization_id_or_username**: Supports either the organization's unique numerical ID OR its string username (slug).\n- Returns articles in reverse chronological publication order.\n- Ideal for populating an organization's custom blog feed or publication listing.",
         "operationId": "getOrgArticles",
         "parameters": [
           {
             "name": "organization_id_or_username",
             "in": "path",
             "required": true,
+            "description": "The organization's numerical ID or string username.",
             "schema": {
               "type": "string"
             }
@@ -1505,7 +3160,8 @@
                 "$ref": "#/components/schemas/Organization"
               }
             }
-          }
+          },
+          "description": "Representation of Organization to be created"
         }
       }
     },
@@ -1590,7 +3246,8 @@
                 "$ref": "#/components/schemas/Organization"
               }
             }
-          }
+          },
+          "description": "Representation of Organization to be updated"
         }
       },
       "delete": {
@@ -1632,7 +3289,7 @@
         "tags": [
           "pages"
         ],
-        "description": "This endpoint allows the client to retrieve details for all Page objects.",
+        "description": "Retrieve details for all Page objects in the system.\n\n        ### Pages Overview:\n        - Pages are custom static or dynamic views hosted on the Forem instance.\n        - Publicly visible unless restricted.\n        - Helpful for building custom menus, rendering site policies, or embedding custom forms.",
         "responses": {
           "200": {
             "description": "successful",
@@ -1654,7 +3311,7 @@
         "tags": [
           "pages"
         ],
-        "description": "This endpoint allows the client to create a new page.",
+        "description": "Create a new custom page. Requires administrative privileges.\n\n        ### Body Parameter Guidelines:\n        - **title**: Heading displayed at the top of the page.\n        - **slug**: URL path identifier. Must be unique and URL-safe.\n        - **body_markdown**: Content written in Markdown format.\n        - **body_json**: Optional JSON payload for API-consumed/structured data pages.\n        - **is_top_level_path**: Set to `true` to serve the page directly at the root (e.g. `/{slug}`) instead of under the default namespace `/page/{slug}`. Use with caution to avoid namespace collisions with core Forem paths.\n        - **template**: Layout styling options (`contained` or custom layouts).",
         "parameters": [
 
         ],
@@ -1689,7 +3346,7 @@
                   },
                   "body_markdown": {
                     "type": "string",
-                    "description": "The text (in markdown) of the ad (required)"
+                    "description": "The text (in markdown) of the page (required)"
                   },
                   "body_json": {
                     "type": "string",
@@ -1715,7 +3372,8 @@
                 }
               }
             }
-          }
+          },
+          "description": "Page parameters."
         }
       }
     },
@@ -1728,13 +3386,13 @@
         "tags": [
           "pages"
         ],
-        "description": "This endpoint allows the client to retrieve details for a single Page object, specified by ID.",
+        "description": "Retrieve details for a single Page object specified by ID.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "The ID of the page.",
+            "description": "The unique ID of the page.",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -1761,13 +3419,13 @@
         "tags": [
           "pages"
         ],
-        "description": "This endpoint allows the client to retrieve details for a single Page object, specified by ID.",
+        "description": "Update an existing page's details by ID. Requires administrative privileges.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "The ID of the page.",
+            "description": "The ID of the page to update.",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -1801,7 +3459,8 @@
                 "$ref": "#/components/schemas/Page"
               }
             }
-          }
+          },
+          "description": "Representation of Page to be updated"
         }
       },
       "delete": {
@@ -1809,13 +3468,13 @@
         "tags": [
           "pages"
         ],
-        "description": "This endpoint allows the client to delete a single Page object, specified by ID.",
+        "description": "Delete a custom page from the system by ID. Requires administrative privileges.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "The ID of the page.",
+            "description": "The ID of the page to delete.",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -1853,7 +3512,7 @@
         "tags": [
           "podcast_episodes"
         ],
-        "description": "This endpoint allows the client to retrieve a list of podcast episodes.\n        \"Podcast episodes\" are episodes belonging to podcasts.\n        It will only return active (reachable) podcast episodes that belong to published podcasts available on the platform, ordered by descending publication date.\n        It supports pagination, each page will contain 30 articles by default.",
+        "description": "Retrieve a list of podcast episodes published on the platform.\n\n        ### Integration Guidance:\n        - Bypasses authentication (can be accessed publicly).\n        - Only returns active episodes belonging to published/reachable podcasts.\n        - Episodes are returned in reverse chronological order based on their publication date.\n        - The `username` query parameter is the unique slug of the podcast channel (e.g. `codenewbie`).\n\n        It supports pagination, each page will contain 30 episodes by default.",
         "operationId": "getPodcastEpisodes",
         "parameters": [
           {
@@ -1866,7 +3525,7 @@
             "name": "username",
             "in": "query",
             "required": false,
-            "description": "Using this parameter will retrieve episodes belonging to a specific podcast.",
+            "description": "Filters episodes by the unique slug (username) of the podcast (e.g. 'codenewbie').",
             "schema": {
               "type": "string"
             },
@@ -1899,14 +3558,14 @@
         "tags": [
           "profile images"
         ],
-        "description": "This endpoint allows the client to retrieve a user or organization profile image information by its\n        corresponding username.",
+        "description": "Retrieve the profile image URL and configuration for a user or organization by username.\n\n        ### Integration Details:\n        - Bypasses authentication.\n        - Convenient for quickly displaying avatars/icons in comments lists, headers, or sidebar elements without requesting the full user profile model.",
         "operationId": "getProfileImage",
         "parameters": [
           {
             "name": "username",
             "in": "path",
             "required": true,
-            "description": "The parameter is the username of the user or the username of the organization.",
+            "description": "The unique username of the target user or organization.",
             "schema": {
               "type": "string"
             },
@@ -1939,12 +3598,13 @@
         "tags": [
           "reactions"
         ],
-        "description": "This endpoint allows the client to toggle the user's reaction to a specified reactable (eg, Article, Comment, or User). For examples:\n        * \"Like\"ing an Article will create a new \"like\" Reaction from the user for that Articles\n        * \"Like\"ing that Article a second time will remove the \"like\" from the user",
+        "description": "Toggle a reaction on a target resource (Article, Comment, or User) on behalf of the authenticated user.\n\n        ### Toggle Logic:\n        - **First Request**: Creates a new reaction of the specified category on the reactable target.\n        - **Second Request (with same parameters)**: Deletes the existing reaction.\n        - Particularly useful for simple, interactive UI buttons like \"Like\", \"Unicorn\", or \"Save\" where clicking toggles the active state.",
         "parameters": [
           {
             "name": "category",
             "in": "query",
             "required": true,
+            "description": "The type of reaction (e.g. `like` for standard likes, `unicorn` for outstanding posts, `save` for bookmarking to the reading list).",
             "schema": {
               "type": "string",
               "enum": [
@@ -1960,6 +3620,7 @@
             "name": "reactable_id",
             "in": "query",
             "required": true,
+            "description": "The unique numerical ID of the target resource (Article, Comment, or User) being reacted to.",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -1969,6 +3630,7 @@
             "name": "reactable_type",
             "in": "query",
             "required": true,
+            "description": "The class name of the target resource being reacted to (e.g. `Article`, `Comment`, `User`).",
             "schema": {
               "type": "string",
               "enum": [
@@ -1995,12 +3657,13 @@
         "tags": [
           "reactions"
         ],
-        "description": "This endpoint allows the client to create a reaction to a specified reactable (eg, Article, Comment, or User). For examples:\n        * \"Like\"ing an Article will create a new \"like\" Reaction from the user for that Articles\n        * \"Like\"ing that Article a second time will return the previous \"like\"",
+        "description": "Create a reaction on a target resource (Article, Comment, or User) on behalf of the authenticated user.\n\n        ### Usage Details:\n        - Unlike the toggle endpoint, this endpoint is idempotent: multiple requests to react with the same category to the same target will return the existing reaction without deleting it.",
         "parameters": [
           {
             "name": "category",
             "in": "query",
             "required": true,
+            "description": "The type of reaction (e.g. `like` for standard likes, `unicorn` for outstanding posts, `save` for bookmarking to the reading list).",
             "schema": {
               "type": "string",
               "enum": [
@@ -2016,6 +3679,7 @@
             "name": "reactable_id",
             "in": "query",
             "required": true,
+            "description": "The unique numerical ID of the target resource (Article, Comment, or User) being reacted to.",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -2025,6 +3689,7 @@
             "name": "reactable_type",
             "in": "query",
             "required": true,
+            "description": "The class name of the target resource being reacted to (e.g. `Article`, `Comment`, `User`).",
             "schema": {
               "type": "string",
               "enum": [
@@ -2051,7 +3716,7 @@
         "tags": [
           "readinglist"
         ],
-        "description": "This endpoint allows the client to retrieve a list of articles that were saved to a Users readinglist.\n        It supports pagination, each page will contain `30` articles by default",
+        "description": "Retrieve the list of articles saved to the authenticated user's reading list.\n\n        ### Integration Guidance:\n        - Requires authentication.\n        - Under the hood, this endpoint retrieves articles that the user has reacted to with the `\"save\"` reaction category.\n        - Supports pagination, defaulting to 30 articles per page.\n        - Returned objects conform to the standard `ArticleIndex` schema.",
         "operationId": "getReadinglist",
         "parameters": [
           {
@@ -2081,6 +3746,635 @@
         }
       }
     },
+    "/api/recommended_articles_lists": {
+      "get": {
+        "summary": "Retrieve all recommended articles lists",
+        "tags": [
+          "recommended_articles_lists"
+        ],
+        "description": "Retrieve a list of all recommended articles lists configured in the system.\n\n### Overview:\n- Recommended Articles Lists are curated selections of articles pinned or recommended in layout regions (e.g. `main_feed` or `sidebar`).\n- Supports search by list name and standard query pagination.\n- Requires Administrator privileges.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Pagination page index.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "description": "Search term to match against recommended list names.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RecommendedArticlesList"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create or update a recommended articles list",
+        "tags": [
+          "recommended_articles_lists"
+        ],
+        "description": "Create a new recommended articles list or update an existing one. Requires Administrator privileges.\n\n### Body Parameter Guidelines:\n- **name**: Curated list title or label (e.g. \"Editor's Choice\").\n- **placement_area**: Target UI layout region (e.g. `main_feed`, `sidebar_top`, `onboarding`).\n- **expires_at**: ISO 8601 timestamp after which the list recommendation automatically expires.\n- **user_id**: Owner/curator numeric user ID.\n- **article_ids**: Staged array of numeric article IDs to include in the recommendation sequence.",
+        "parameters": [
+
+        ],
+        "responses": {
+          "201": {
+            "description": "created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecommendedArticlesList"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "placement_area": {
+                    "type": "string"
+                  },
+                  "expires_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "user_id": {
+                    "type": "integer"
+                  },
+                  "article_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "required": [
+                  "user_id",
+                  "placement_area"
+                ]
+              }
+            }
+          },
+          "description": "Curated recommended list details."
+        }
+      }
+    },
+    "/api/recommended_articles_lists/{id}": {
+      "get": {
+        "summary": "Retrieve details of a recommended articles list",
+        "tags": [
+          "recommended_articles_lists"
+        ],
+        "description": "Retrieve full details and nested article lists for a specific recommended articles list by ID. Requires Admin credentials.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Unique list numeric ID.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecommendedArticlesList"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update a recommended articles list",
+        "tags": [
+          "recommended_articles_lists"
+        ],
+        "description": "Update an existing recommended articles list by ID. Requires Admin credentials.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Unique list numeric ID.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecommendedArticlesList"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "placement_area": {
+                    "type": "string"
+                  },
+                  "expires_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "user_id": {
+                    "type": "integer"
+                  },
+                  "article_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "description": "Updated list parameters."
+        }
+      }
+    },
+    "/api/admin/request_redirects": {
+      "get": {
+        "summary": "Retrieve all request redirects (Admin)",
+        "tags": [
+          "request_redirects",
+          "admin"
+        ],
+        "description": "Retrieve a list of all request redirects configured on the platform.\n\n### Redirects Overview:\n- Redirects map incoming HTTP request paths or domains to specific target destination URLs (301 or 302 redirects).\n- Primarily used for managing vanity URLs, legacy path support, or domain migrations.\n- Requires Administrator privileges.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Pagination page index.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RequestRedirect"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a request redirect (Admin)",
+        "tags": [
+          "request_redirects",
+          "admin"
+        ],
+        "description": "Create a new request redirect route. Requires Administrator privileges.\n\n### Body Parameter Guidelines:\n- **original_url**: The source path (e.g. `/old-page`) to intercept.\n- **destination_url**: The target destination (e.g. `https://myforem.com/new-page`) to redirect users to.\n- **request_domain**: The domain scope (e.g. `dev.to`) where this redirect rule applies.",
+        "parameters": [
+
+        ],
+        "responses": {
+          "201": {
+            "description": "created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestRedirect"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "request_redirect": {
+                    "type": "object",
+                    "properties": {
+                      "original_url": {
+                        "type": "string"
+                      },
+                      "destination_url": {
+                        "type": "string"
+                      },
+                      "request_domain": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "original_url",
+                      "destination_url",
+                      "request_domain"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "description": "Redirect routing parameters."
+        }
+      }
+    },
+    "/api/admin/request_redirects/{id}": {
+      "get": {
+        "summary": "Retrieve a request redirect's details (Admin)",
+        "tags": [
+          "request_redirects",
+          "admin"
+        ],
+        "description": "Retrieve details of a single request redirect route by ID. Requires Admin credentials.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Unique redirect ID.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestRedirect"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update a request redirect (Admin)",
+        "tags": [
+          "request_redirects",
+          "admin"
+        ],
+        "description": "Update details (paths or domain scope) of an existing redirect route by ID. Requires Admin credentials.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Unique redirect ID to update.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestRedirect"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "request_redirect": {
+                    "type": "object",
+                    "properties": {
+                      "original_url": {
+                        "type": "string"
+                      },
+                      "destination_url": {
+                        "type": "string"
+                      },
+                      "request_domain": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "description": "Updated redirect routing parameters."
+        }
+      },
+      "delete": {
+        "summary": "Delete a request redirect (Admin)",
+        "tags": [
+          "request_redirects",
+          "admin"
+        ],
+        "description": "Delete a request redirect route, disabling the routing intercept immediately. Requires Admin credentials.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Unique redirect ID to delete.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "no content"
+          }
+        }
+      }
+    },
+    "/api/subforems": {
+      "get": {
+        "summary": "Retrieve all discoverable subforems",
+        "tags": [
+          "subforems"
+        ],
+        "description": "Retrieve a list of all discoverable subforems/communities.\n\n### Subforems Overview:\n- Subforems represent distinct sub-communities or specialized sections hosted within the Forem instance.\n- Bypasses authentication (can be accessed publicly).\n- Returns list of names, slugs, color schemes, and target interests.",
+        "security": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Subforem"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/surveys": {
+      "get": {
+        "summary": "List surveys",
+        "tags": [
+          "surveys"
+        ],
+        "description": "Retrieve a list of surveys configured on the platform.\n\n### Surveys Overview:\n- Surveys are admin-defined questionnaires consisting of multiple choice or text polls.\n- Requires Administrator authorization.\n- Supports standard pagination controls and active status filtering.",
+        "operationId": "getSurveys",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          },
+          {
+            "name": "active",
+            "in": "query",
+            "required": false,
+            "description": "Filter by active status. Omit to return all surveys.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of surveys",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Survey"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/surveys/{id_or_slug}": {
+      "get": {
+        "summary": "A survey with polls",
+        "tags": [
+          "surveys"
+        ],
+        "description": "Retrieve a single survey (by ID or slug) with its nested structure.\n\n### Nested Format Details:\n- Returns the target Survey object including all associated Polls, multiple choice options, and configuration states.\n- Requires Administrator authorization.",
+        "operationId": "getSurveyByIdOrSlug",
+        "parameters": [
+          {
+            "name": "id_or_slug",
+            "in": "path",
+            "required": true,
+            "description": "The ID or slug of the survey.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "community-pulse-2026"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A survey with nested polls and options",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SurveyWithPolls"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/api/surveys/{id_or_slug}/poll_votes": {
+      "get": {
+        "summary": "Survey poll votes",
+        "tags": [
+          "surveys"
+        ],
+        "description": "Retrieve multiple-choice poll votes for a specific survey.\n\n### Cursor Pagination Tip:\n- Uses cursor-based pagination to safely stream high volumes of voting records.\n- Specify the `after` query parameter with the last retrieved record ID to get the next page.\n- Requires Administrator authorization.",
+        "operationId": "getSurveyPollVotes",
+        "parameters": [
+          {
+            "name": "id_or_slug",
+            "in": "path",
+            "required": true,
+            "description": "The ID or slug of the survey.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "description": "Return only votes with an ID greater than this value.",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 42
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Poll votes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PollVote"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/api/surveys/{id_or_slug}/poll_text_responses": {
+      "get": {
+        "summary": "Survey poll text responses",
+        "tags": [
+          "surveys"
+        ],
+        "description": "Retrieve free-text poll responses for a specific survey.\n\n### Integration & Cursor Tip:\n- Fetches written user answers for text-input questions.\n- Uses cursor-based pagination (`after` query param) to stream responses.\n- Requires Administrator authorization.",
+        "operationId": "getSurveyPollTextResponses",
+        "parameters": [
+          {
+            "name": "id_or_slug",
+            "in": "path",
+            "required": true,
+            "description": "The ID or slug of the survey.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "description": "Return only text responses with an ID greater than this value.",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 42
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Poll text responses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PollTextResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
     "/api/tags": {
       "get": {
         "summary": "Tags",
@@ -2090,7 +4384,7 @@
         "security": [
 
         ],
-        "description": "This endpoint allows the client to retrieve a list of tags that can be used to tag articles.\n\nIt will return tags ordered by popularity.\n\nIt supports pagination, each page will contain 10 tags by default.",
+        "description": "Retrieve a list of tags used on the platform, ordered by popularity.\n\n### Integration Tips:\n- Bypasses authentication (can be accessed publicly).\n- Ordered by overall popularity/usage metrics on the platform.\n- Useful for autocomplete inputs in article editors, tag selection screens in settings, or rendering global navigation/explore lists.\n\nIt supports pagination, each page will contain 10 tags by default.",
         "operationId": "getTags",
         "parameters": [
           {
@@ -2117,20 +4411,148 @@
         }
       }
     },
+    "/api/trends": {
+      "get": {
+        "summary": "Trends",
+        "security": [
+
+        ],
+        "tags": [
+          "trends"
+        ],
+        "description": "Retrieve a list of active trends.\n\n### Trends Overview & Score Calculation:\n- Trends represent hot topics or semantic themes currently being heavily discussed in the community.\n- They are computed by clustering semantic concept embeddings of recently published articles.\n- The `score` reflects the volume and engagement (views, comments, reactions) of articles associated with the trend.\n- Returned trends are ordered by score and recency.\n- Publicly accessible without authentication.\n\nIt supports pagination, each page will contain 10 trends by default.",
+        "operationId": "getTrends",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam10to1000"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A List of Trends",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Trend"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trends/{id_or_slug}": {
+      "get": {
+        "summary": "A Trend",
+        "security": [
+
+        ],
+        "tags": [
+          "trends"
+        ],
+        "description": "Retrieve details of a single trend using either its numeric ID or unique slug.\n\n### Usage Guidance:\n- Useful for loading details of a trending topic (description, score, and slug details) to render header sections on trending tag or topic pages.",
+        "operationId": "getTrend",
+        "parameters": [
+          {
+            "name": "id_or_slug",
+            "in": "path",
+            "required": true,
+            "description": "The ID or slug of the trend to retrieve.",
+            "example": "ruby-3-4-release",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A Trend",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "$ref": "#/components/schemas/Trend"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Trend Not Found"
+          }
+        }
+      }
+    },
+    "/api/trends/{trend_id_or_slug}/articles": {
+      "get": {
+        "summary": "Articles in a Trend",
+        "security": [
+
+        ],
+        "tags": [
+          "trends"
+        ],
+        "description": "Retrieve a list of published articles belonging to a trend.\n\n### Article Ordering & Proximity:\n- Articles are mapped to trends based on their embedding distance to the trend's centroid.\n- Returned articles are ordered by proximity/similarity (distance) first (most relevant posts first), and then by overall article engagement score.\n- Supports pagination, each page will contain 10 articles by default.",
+        "operationId": "getTrendArticles",
+        "parameters": [
+          {
+            "name": "trend_id_or_slug",
+            "in": "path",
+            "required": true,
+            "description": "The ID or slug of the trend to retrieve articles for.",
+            "example": "ruby-3-4-release",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam10to1000"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A List of Articles in the Trend",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Trend Not Found"
+          }
+        }
+      }
+    },
     "/api/users/{id}/suspend": {
       "put": {
         "summary": "Suspend a User",
         "tags": [
           "users"
         ],
-        "description": "This endpoint allows the client to suspend a user.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThis specified user will be assigned the 'suspended' role. Suspending a user will stop the\nuser from posting new posts and comments. It doesn't delete any of the user's content, just\nprevents them from creating new content while suspended. Users are not notified of their suspension\nin the UI, so if you want them to know about this, you must notify them.",
+        "description": "Suspend a user's account.\n\n### Suspension Details:\n- The user associated with the API key must have an `admin` or `moderator` role.\n- Assigns the `suspended` role to the user, preventing them from posting new content (articles or comments) while suspended.\n- Existing content is not deleted.\n- Suspended users are not notified in the UI; if you want them to know, you must notify them explicitly.",
         "operationId": "suspendUser",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "The ID of the user to suspend.",
+            "description": "The unique ID of the user to suspend.",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -2158,7 +4580,7 @@
         "tags": [
           "users"
         ],
-        "description": "This endpoint allows the client to limit a user.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThis specified user will be assigned the 'limited' role. Limiting a user will limit notifications\ngenerated from new posts and comments. It doesn't delete any of the user's content or prevent them\nfrom generating new content while limited. Users are not notified of their limits\nin the UI, so if you want them to know about this, you must notify them.",
+        "description": "Limit a user's account permissions.\n\n### Limited Details:\n- Requires `admin` or `moderator` privileges.\n- Assigns the `limited` role, which rate-limits notifications generated by their actions (such as publishing new posts or comments).\n- Does not restrict content creation or delete content.",
         "operationId": "limitUser",
         "parameters": [
           {
@@ -2191,7 +4613,7 @@
         "tags": [
           "users"
         ],
-        "description": "This endpoint allows the client to remove limits for a user.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThis specified user will be restored to 'general' status. Users are not notified\nof limits in the UI, so if you want them to know about this, you must\nnotify them.",
+        "description": "Remove the limited role, restoring the user to general privileges. Requires `admin` or `moderator` role.",
         "operationId": "unLimitUser",
         "parameters": [
           {
@@ -2226,7 +4648,7 @@
         "tags": [
           "users"
         ],
-        "description": "This endpoint allows the client to add the spam role to a user.\n\n          The user associated with the API key must have any 'admin' or 'moderator' role.\n\n          This specified user will be assigned the 'spam' role. Addding the spam role to a user will stop the\n          user from posting new posts and comments. It doesn't delete any of the user's content, just\n          prevents them from creating new content while having the spam role. Users are not notified of their spaminess\n          in the UI, so if you want them to know about this, you must notify them",
+        "description": "Flag a user as spammer.\n\n### Spam Role Details:\n- Requires `admin` or `moderator` privileges.\n- Stops the user from creating new posts or comments, acting as a shadowban or block on activity.\n- Existing content remains but is hidden from search/feeds.",
         "operationId": "spamUser",
         "parameters": [
           {
@@ -2259,7 +4681,7 @@
         "tags": [
           "users"
         ],
-        "description": "This endpoint allows the client to remove the spam role for a user.\n\n          The user associated with the API key must have any 'admin' or 'moderator' role.\n\n          This specified user will be restored to 'general' status. Users are not notified\n          of removing their spam role in the UI, so if you want them to know about this, you must\n          notify them.",
+        "description": "Unflag a user as spammer, restoring general permissions. Requires `admin` or `moderator` role.",
         "operationId": "unSpamUser",
         "parameters": [
           {
@@ -2294,7 +4716,7 @@
         "tags": [
           "users"
         ],
-        "description": "This endpoint allows the client to add the trusted role to a user.\n          The user associated with the API key must have an 'admin' or 'moderator' role.\n          The specified user will be assigned the 'trusted' role. Adding the trusted role to a user\n          allows them to upvote and downvote posts and flag content that needs investigating by admins.\n          Users are notified of this change in the UI, and by email.",
+        "description": "Assign the trusted role to a user.\n\n### Trusted Role Details:\n- Requires `admin` or `moderator` privileges.\n- Trusted users gain privileges like casting flag votes on inappropriate content or participating in priority review queues.\n- Triggers a system notification and an email to the user.",
         "operationId": "trustUser",
         "parameters": [
           {
@@ -2327,7 +4749,7 @@
         "tags": [
           "users"
         ],
-        "description": "This endpoint allows the client to remove the trusted role for a user.\n          The user associated with the API key must have an 'admin' or 'moderator' role.\n          The specified user will be restored to 'general' status. Users are not notified\n          of removing their trusted role in the UI, so if you want them to know about this, you must\n          notify them.",
+        "description": "Revoke the trusted role, returning the user to general status. Requires `admin` or `moderator` role.",
         "operationId": "unTrustUser",
         "parameters": [
           {
@@ -2362,7 +4784,7 @@
         "tags": [
           "users"
         ],
-        "description": "This endpoint allows the client to retrieve information about the authenticated user",
+        "description": "This endpoint allows the client to retrieve information about the authenticated user.\n\n### Usage Tips:\n- Requires a valid `api-key` header to identify the user.\n- Useful for checking permissions, verifying linking state, or retrieving user-specific profile settings.",
         "operationId": "getUserMe",
         "responses": {
           "200": {
@@ -2390,13 +4812,17 @@
         "tags": [
           "users"
         ],
-        "description": "This endpoint allows the client to retrieve a single user, either by id\nor by the user's username.\n\nFor complete documentation, see the v0 API docs: https://developers.forem.com/api/v0#tag/users/operation/getUser",
+        "security": [
+
+        ],
+        "description": "This endpoint allows the client to retrieve a single user, either by id or by the user's username.\n\n### Path Parameter Options:\n- **id**: Can be either the user's unique numerical ID (e.g. `123`) OR the user's string username (e.g. `ben`).\n- Note that the returned user object schema (`ExtendedUser`) includes extended profile statistics and social link details.",
         "operationId": "getUser",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "The user's unique numerical ID or string username.",
             "schema": {
               "type": "string"
             }
@@ -2419,20 +4845,53 @@
         }
       }
     },
+    "/api/users/search": {
+      "get": {
+        "summary": "Search for users",
+        "tags": [
+          "users"
+        ],
+        "description": "Search for a user by email address.\n\n### Permissions & Context:\n- Requires administrative privileges (`api-key` of an administrator).\n- Used to verify account existence or map email addresses to platform usernames.",
+        "operationId": "searchUsers",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "required": true,
+            "description": "The exact email address of the user to search for.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExtendedUser"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/users/{id}/unpublish": {
       "put": {
         "summary": "Unpublish a User's Articles and Comments",
         "tags": [
           "users"
         ],
-        "description": "This endpoint allows the client to unpublish all of the articles and\ncomments created by a user.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThis specified user's articles and comments will be unpublished and will no longer be\nvisible to the public. They will remain in the database and will set back to draft status\non the specified user's  dashboard. Any notifications associated with the specified user's\narticles and comments will be deleted.\n\nNote this endpoint unpublishes articles and comments asychronously: it will return a 204 NO CONTENT\nstatus code immediately, but the articles and comments will not be unpublished until the\nrequest is completed on the server.",
+        "description": "This endpoint allows the client to unpublish all of the articles and comments created by a user.\n\n### Administrative Action:\n- Requires the authenticated user to be an Administrator.\n- This is a destructive administrative action that immediately unpublishes all posts/comments from public feeds.\n- Ideal for handling spam accounts or cleanup operations.",
         "operationId": "unpublishUser",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "The ID of the user to unpublish.",
+            "description": "The unique numerical ID of the user whose content will be unpublished.",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -2444,12 +4903,6 @@
         "responses": {
           "204": {
             "description": "User's articles and comments successfully unpublished"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Unknown User ID (still accepted for async processing)"
           }
         }
       }
@@ -2458,9 +4911,10 @@
       "post": {
         "summary": "Invite a User",
         "tags": [
-          "users"
+          "users",
+          "admin"
         ],
-        "description": "This endpoint allows the client to trigger an invitation to the provided email address.\n\n        It requires a token from a user with `super_admin` privileges.",
+        "description": "Invite a new user to join the platform by email.\n\n### Super Admin Action:\n- Requires Super Admin privileges.\n- Triggers a system invitation flow and sends an invitation email containing a sign-up link.\n- Handy for invite-only platforms or private enterprise instances.",
         "operationId": "postAdminUsersCreate",
         "parameters": [
 
@@ -2468,12 +4922,6 @@
         "responses": {
           "200": {
             "description": "Successful"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "422": {
-            "description": "Unprocessable Entity"
           }
         },
         "requestBody": {
@@ -2483,7 +4931,556 @@
                 "$ref": "#/components/schemas/UserInviteParam"
               }
             }
+          },
+          "description": "User invite params"
+        }
+      },
+      "get": {
+        "summary": "List all users (Admin)",
+        "tags": [
+          "users",
+          "admin"
+        ],
+        "description": "Retrieve a list of all users registered on the platform.\n\n### Permissions & Filters:\n- Requires Super Admin privileges.\n- Allows filtering by exact `email` or `username`.\n- Returns paginated list of extended user objects containing email addresses, registration dates, roles, and administrative statuses.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Pagination page index.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "required": false,
+            "description": "Optional email search filter.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "username",
+            "in": "query",
+            "required": false,
+            "description": "Optional username search filter.",
+            "schema": {
+              "type": "string"
+            }
           }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
+          }
+        }
+      }
+    },
+    "/api/admin/users/{id}": {
+      "get": {
+        "summary": "Get user detail (Admin)",
+        "tags": [
+          "users",
+          "admin"
+        ],
+        "description": "Retrieve details of a single user by numerical ID.\n\n### Super Admin Action:\n- Requires Super Admin privileges.\n- Includes administrative settings, audit notes, email newsletter preferences, and OAuth login identity states.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Unique user numeric ID.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update user profile (Admin)",
+        "tags": [
+          "users",
+          "admin"
+        ],
+        "description": "Update a user's public profile fields (name, location, bio summary, website) on their behalf. Requires Super Admin credentials.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Unique user ID to update.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "username": {
+                    "type": "string"
+                  },
+                  "summary": {
+                    "type": "string"
+                  },
+                  "location": {
+                    "type": "string"
+                  },
+                  "website_url": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "description": "User profile updated fields."
+        }
+      }
+    },
+    "/api/admin/users/{id}/email": {
+      "put": {
+        "summary": "Update user email (Admin)",
+        "tags": [
+          "users",
+          "admin"
+        ],
+        "description": "Update a user's primary registration email address. Requires Super Admin credentials.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Unique user ID to update email for.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email"
+                ]
+              }
+            }
+          },
+          "description": "Email parameters."
+        }
+      }
+    },
+    "/api/admin/users/{id}/status": {
+      "put": {
+        "summary": "Update user moderation status (Admin)",
+        "tags": [
+          "users",
+          "admin"
+        ],
+        "description": "Manually update a user's moderation status.\n\n### Status Details:\n- **status**: Allowed target states (e.g. `active`, `suspended`, `banned`).\n- **note**: Required reason text recorded in the user's moderation log audit history.\n- Requires Super Admin privileges.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Unique user ID.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  },
+                  "note": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              }
+            }
+          },
+          "description": "Status parameters."
+        }
+      }
+    },
+    "/api/admin/users/{id}/notification_settings": {
+      "put": {
+        "summary": "Update user notification settings (Admin)",
+        "tags": [
+          "users",
+          "admin"
+        ],
+        "description": "Update a user's email notification preferences (e.g., unsubscribing them from the system newsletter). Requires Super Admin credentials.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Unique user ID.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "notification_setting": {
+                    "type": "object",
+                    "properties": {
+                      "email_newsletter": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "notification_setting"
+                ]
+              }
+            }
+          },
+          "description": "Settings parameters."
+        }
+      }
+    },
+    "/api/admin/users/{id}/merge": {
+      "post": {
+        "summary": "Merge user into another (Admin)",
+        "tags": [
+          "users",
+          "admin"
+        ],
+        "description": "Merge a duplicate user account into a target main account.\n\n### Account Merging Behavior:\n- Transfers all comments, articles, reactions, and follows to the target user (`merge_user_id`).\n- Deletes/destroys the source user account once the merge completes successfully.\n- High risk! Action is permanent and irreversible.\n- Requires Super Admin credentials.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The duplicate user ID that will be deleted after contents merge.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "merge_user_id": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "merge_user_id"
+                ]
+              }
+            }
+          },
+          "description": "Merge parameters containing the target account ID."
+        }
+      }
+    },
+    "/api/admin/users/{user_id}/notes": {
+      "get": {
+        "summary": "List notes for a user (Admin)",
+        "tags": [
+          "users",
+          "admin"
+        ],
+        "description": "Retrieve all moderator/administrator audit log notes appended to a user. Requires Super Admin credentials.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "description": "User ID to fetch notes for.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
+          }
+        }
+      },
+      "post": {
+        "summary": "Add a note to a user (Admin)",
+        "tags": [
+          "users",
+          "admin"
+        ],
+        "description": "Add a new moderation/audit note to a user.\n\n### Audit Logging Guidelines:\n- **content**: Plaintext description of behavior, infraction, or actions taken.\n- **reason**: Categorized classification (e.g. `spam`, `abuse`, `harassment`, `administrative`).\n- Requires Super Admin credentials.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "description": "User ID to append the note to.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "created"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string"
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "content"
+                ]
+              }
+            }
+          },
+          "description": "Note attributes."
+        }
+      }
+    },
+    "/api/admin/users/{user_id}/identities": {
+      "get": {
+        "summary": "List identities for a user (Admin)",
+        "tags": [
+          "users",
+          "admin"
+        ],
+        "description": "Retrieve all linked OAuth identities (e.g., GitHub, Twitter, Apple) for a user. Requires Super Admin credentials.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "description": "User ID to fetch linked identities for.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
+          }
+        }
+      },
+      "post": {
+        "summary": "Link an identity to a user (Admin)",
+        "tags": [
+          "users",
+          "admin"
+        ],
+        "description": "Manually link an OAuth provider identity to a user. Requires Super Admin credentials.\n\n### Identity Binding:\n- **provider**: The login provider name (e.g. `github`, `twitter`).\n- **uid**: The provider's unique user identifier.\n- **username**: The user's username on the provider's service.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "description": "User ID to bind identity to.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "created"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "provider": {
+                    "type": "string"
+                  },
+                  "uid": {
+                    "type": "string"
+                  },
+                  "username": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "provider",
+                  "uid"
+                ]
+              }
+            }
+          },
+          "description": "OAuth credentials and identities."
+        }
+      }
+    },
+    "/api/admin/users/{user_id}/identities/{id}": {
+      "delete": {
+        "summary": "Unlink an identity from a user (Admin)",
+        "tags": [
+          "users",
+          "admin"
+        ],
+        "description": "Unlink a specific OAuth login provider identity from a user by identity ID. Requires Super Admin credentials.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "description": "User ID.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Identity ID to unlink.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "no content"
+          }
+        }
+      }
+    },
+    "/api/admin/users/identities/bulk": {
+      "post": {
+        "summary": "Bulk link identities (Admin)",
+        "tags": [
+          "users",
+          "admin"
+        ],
+        "description": "Bulk link OAuth identities across multiple users. Requires Super Admin credentials.",
+        "parameters": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "provider": {
+                    "type": "string"
+                  },
+                  "identities": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "user_id": {
+                          "type": "integer"
+                        },
+                        "uid": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "user_id",
+                        "uid"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "provider",
+                  "identities"
+                ]
+              }
+            }
+          },
+          "description": "Bulk identity params."
         }
       }
     },
@@ -2497,7 +5494,7 @@
         "security": [
 
         ],
-        "description": "This endpoint allows the client to retrieve a list of articles that are uploaded with a video.\n\nIt will only return published video articles ordered by descending popularity.\n\nIt supports pagination, each page will contain 24 articles by default.",
+        "description": "Retrieve a list of articles that contain uploaded videos.\n\n### Videos Overview:\n- Bypasses authentication (can be accessed publicly).\n- Returns articles that are published and include a video asset.\n- Articles are ordered by descending popularity (views, watch time, and reactions).\n- By default, returns 24 video articles per page.",
         "operationId": "videos",
         "parameters": [
           {
@@ -2527,7 +5524,7 @@
   },
   "servers": [
     {
-      "url": "https://dev.to/api",
+      "url": "https://dev.to",
       "description": "Production server"
     }
   ],
@@ -3594,13 +6591,6 @@
             },
             "description": "All normalized messages in the session"
           },
-          "curated_selections": {
-            "type": "array",
-            "items": {
-              "type": "object"
-            },
-            "description": "Ranges of curated message selections"
-          },
           "slices": {
             "type": "array",
             "items": {
@@ -3630,11 +6620,742 @@
           "curated_count",
           "published",
           "messages",
-          "curated_selections",
           "slices",
           "created_at",
           "updated_at",
           "url"
+        ]
+      },
+      "PollOption": {
+        "description": "A single option within a poll",
+        "type": "object",
+        "properties": {
+          "type_of": {
+            "type": "string",
+            "enum": [
+              "poll_option"
+            ],
+            "description": "Resource discriminator"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "markdown": {
+            "type": "string",
+            "nullable": true,
+            "description": "Option text in markdown"
+          },
+          "processed_html": {
+            "type": "string",
+            "nullable": true,
+            "description": "Option text rendered as HTML"
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Display order within the poll"
+          },
+          "poll_votes_count": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Number of votes for this option"
+          },
+          "supplementary_text": {
+            "type": "string",
+            "nullable": true,
+            "description": "Additional descriptive text for the option"
+          }
+        },
+        "required": [
+          "type_of",
+          "id",
+          "markdown",
+          "processed_html",
+          "position",
+          "poll_votes_count"
+        ]
+      },
+      "Poll": {
+        "description": "A poll (question) belonging to a survey or article",
+        "type": "object",
+        "properties": {
+          "type_of": {
+            "type": "string",
+            "enum": [
+              "poll"
+            ],
+            "description": "Resource discriminator"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "prompt_markdown": {
+            "type": "string",
+            "nullable": true,
+            "description": "Question text in markdown"
+          },
+          "prompt_html": {
+            "type": "string",
+            "nullable": true,
+            "description": "Question text rendered as HTML"
+          },
+          "poll_type_of": {
+            "type": "string",
+            "enum": [
+              "single_choice",
+              "multiple_choice",
+              "scale",
+              "text_input"
+            ],
+            "description": "Poll question type: single_choice, multiple_choice, scale, or text_input"
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Display order within the survey"
+          },
+          "poll_votes_count": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Total number of votes across all options"
+          },
+          "poll_skips_count": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Number of users who skipped this poll"
+          },
+          "poll_options_count": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Number of options in this poll"
+          },
+          "scale_min": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true,
+            "description": "Minimum value for scale polls"
+          },
+          "scale_max": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true,
+            "description": "Maximum value for scale polls"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "poll_options": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PollOption"
+            },
+            "description": "The available options for this poll"
+          }
+        },
+        "required": [
+          "type_of",
+          "id",
+          "prompt_markdown",
+          "prompt_html",
+          "poll_type_of",
+          "position",
+          "poll_votes_count",
+          "poll_skips_count",
+          "poll_options_count",
+          "created_at",
+          "updated_at",
+          "poll_options"
+        ]
+      },
+      "Survey": {
+        "description": "Representation of a survey",
+        "type": "object",
+        "properties": {
+          "type_of": {
+            "type": "string",
+            "enum": [
+              "survey"
+            ],
+            "description": "Resource discriminator"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "survey_type_of": {
+            "type": "string",
+            "enum": [
+              "community_pulse",
+              "industry",
+              "fun"
+            ],
+            "description": "Survey category"
+          },
+          "active": {
+            "type": "boolean",
+            "nullable": true,
+            "description": "Whether the survey is currently active"
+          },
+          "display_title": {
+            "type": "boolean",
+            "description": "Whether to show the title to respondents"
+          },
+          "allow_resubmission": {
+            "type": "boolean",
+            "description": "Whether users can submit multiple times"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "type_of",
+          "id",
+          "title",
+          "slug",
+          "survey_type_of",
+          "display_title",
+          "allow_resubmission",
+          "created_at",
+          "updated_at"
+        ]
+      },
+      "SurveyWithPolls": {
+        "description": "Representation of a survey including its polls and poll options",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Survey"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "polls": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Poll"
+                },
+                "description": "All polls in the survey, ordered by position"
+              }
+            },
+            "required": [
+              "polls"
+            ]
+          }
+        ]
+      },
+      "PollVote": {
+        "description": "Representation of a single poll vote cast by a user",
+        "type": "object",
+        "properties": {
+          "type_of": {
+            "type": "string",
+            "enum": [
+              "poll_vote"
+            ],
+            "description": "Resource discriminator"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "poll_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "poll_option_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "user_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "user_email": {
+            "type": "string",
+            "format": "email"
+          },
+          "session_start": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "type_of",
+          "id",
+          "poll_id",
+          "poll_option_id",
+          "user_id",
+          "user_email",
+          "session_start",
+          "created_at"
+        ]
+      },
+      "PollTextResponse": {
+        "description": "Representation of a free-text response to a text-input poll",
+        "type": "object",
+        "properties": {
+          "type_of": {
+            "type": "string",
+            "enum": [
+              "poll_text_response"
+            ],
+            "description": "Resource discriminator"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "poll_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "user_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "user_email": {
+            "type": "string",
+            "format": "email"
+          },
+          "text_content": {
+            "type": "string"
+          },
+          "session_start": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "type_of",
+          "id",
+          "poll_id",
+          "user_id",
+          "user_email",
+          "text_content",
+          "session_start",
+          "created_at"
+        ]
+      },
+      "Trend": {
+        "description": "Representation of a trend",
+        "type": "object",
+        "properties": {
+          "type_of": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "key_questions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "score": {
+            "type": "number",
+            "format": "float"
+          },
+          "articles_count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cover_image": {
+            "type": "string",
+            "format": "url",
+            "nullable": true
+          },
+          "first_observed_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "last_observed_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "type_of",
+          "id",
+          "name",
+          "slug",
+          "key_questions",
+          "score",
+          "articles_count",
+          "first_observed_at",
+          "last_observed_at",
+          "created_at",
+          "updated_at"
+        ]
+      },
+      "Concept": {
+        "description": "Representation of a concept",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "parent_id": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "score": {
+            "type": "number",
+            "format": "float"
+          },
+          "similarity_threshold": {
+            "type": "number",
+            "format": "float",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "daily_metrics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ConceptDailyMetric"
+            }
+          },
+          "top_articles": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "slug": {
+                  "type": "string"
+                },
+                "score": {
+                  "type": "number",
+                  "format": "float"
+                },
+                "published_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "created_at",
+          "updated_at"
+        ]
+      },
+      "ConceptDailyMetric": {
+        "description": "Representation of daily metrics for a concept",
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "articles_count": {
+            "type": "integer"
+          },
+          "comments_count": {
+            "type": "integer"
+          },
+          "page_views": {
+            "type": "integer"
+          },
+          "reactions_count": {
+            "type": "integer"
+          },
+          "popularity_score": {
+            "type": "number",
+            "format": "float"
+          }
+        },
+        "required": [
+          "date",
+          "articles_count",
+          "comments_count",
+          "page_views",
+          "reactions_count",
+          "popularity_score"
+        ]
+      },
+      "RequestRedirect": {
+        "description": "Representation of a request redirect",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "original_url": {
+            "type": "string"
+          },
+          "destination_url": {
+            "type": "string"
+          },
+          "request_domain": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "original_url",
+          "destination_url",
+          "request_domain",
+          "created_at",
+          "updated_at"
+        ]
+      },
+      "Badge": {
+        "description": "Representation of a badge",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "badge_image": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string"
+              }
+            },
+            "nullable": true
+          },
+          "credits_awarded": {
+            "type": "integer"
+          },
+          "allow_multiple_awards": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "slug",
+          "description",
+          "created_at",
+          "updated_at"
+        ]
+      },
+      "BadgeAchievement": {
+        "description": "Representation of a badge achievement",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "user_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "badge_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "rewarding_context_message_markdown": {
+            "type": "string",
+            "nullable": true
+          },
+          "include_default_description": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "user_id",
+          "badge_id",
+          "created_at",
+          "updated_at"
+        ]
+      },
+      "RecommendedArticlesList": {
+        "description": "Representation of a recommended articles list",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "placement_area": {
+            "type": "string"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "user_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "article_ids": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "placement_area",
+          "user_id",
+          "article_ids",
+          "created_at",
+          "updated_at"
+        ]
+      },
+      "Subforem": {
+        "description": "Representation of a subforem",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "root": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "logo_image_url": {
+            "type": "string"
+          },
+          "cover_image_url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "domain",
+          "root",
+          "name",
+          "description",
+          "logo_image_url",
+          "cover_image_url"
         ]
       }
     }

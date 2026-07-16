@@ -32,14 +32,29 @@ en:
     article_form_publish: Publish
     article_form_loading_preview: Loading preview
     article_form_preview_loaded: Preview loaded
+    article_form_co_authors: Co-authors
+    article_form_co_authors_description: Add up to 4 co-authors from %{org_name}.
+    article_form_co_authors_placeholder: Add up to 4...
     comments_preview: Preview
     comments_continue_editing: Continue editing
     survey_enter_response: Enter your response here...
     survey_thank_you_response: Thank you for your response.
     survey_thank_you_completing: Thank you for completing the survey!
     dashboard_analytics_readers: Readers
+    dashboard_analytics_avg_read_time: avg. read time %{seconds}s
     dashboard_analytics_comments: Comments
     dashboard_analytics_reactions: Reactions
+    dashboard_analytics_unique_reactors: from %{count} unique users
+    dashboard_analytics_bookmarks: Bookmarks
+    dashboard_analytics_followers: New Followers
+    top_contributors_empty: No engagers found for this period.
+    top_contributors_reactions: reactions
+    top_contributors_comments: comments
+    top_contributors_weight_note: Comments carry more weight
+    follower_engagement_ratio: "%{ratio}% of followers engaged"
+    follower_engagement_detail: "(%{engaged} of %{total})"
+    dashboard_analytics_no_data: No data available for this period
+    dashboard_analytics_no_referrers: No traffic sources yet
     stats_by: by
     editor_new_title: New post title here...
     editor_body_placeholder: Write your post content here...
@@ -180,6 +195,21 @@ en:
       what_is_a_billboard: What's a billboard?
       report_billboard: Report billboard
       edit_billboard: Edit billboard
+  admin_api:
+    errors:
+      user_not_found: "User not found"
+      identity_not_found: "Identity not found for user"
+      user_already_has_identity_for_provider: "User already has an identity for provider '%{provider}'"
+      identity_uid_taken: "Identity uid %{uid} (%{provider}) is already linked to another user"
+      invalid_notification_settings: "notification_setting must include at least one supported key (email_newsletter)"
+      invalid_identities: "identities must be an array of 1 to %{limit} entries"
+      cannot_merge_user_into_itself: "Cannot merge a user into itself"
+      merge_identity_conflict: "Merge could not complete: %{reason}"
+      unknown_provider: "Provider '%{provider}' is not configured"
+      invalid_status: "Status not allowed"
+      email_taken: "Email already in use"
+      email_invalid: "Email is invalid"
+      validation_failed: "Validation failed"
   errors:
     messages:
       accepted: must be accepted
@@ -196,6 +226,7 @@ en:
       greater_than: must be greater than %{count}
       greater_than_or_equal_to: must be greater than or equal to %{count}
       inclusion: is not included in the list
+      integer_only: Integer only. No sign allowed.
       invalid: is invalid
       less_than: must be less than %{count}
       less_than_or_equal_to: must be less than or equal to %{count}

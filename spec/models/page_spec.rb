@@ -34,6 +34,22 @@ RSpec.describe Page do
         expect(described_class.from_subforem).to contain_exactly(page_no_subforem)
       end
     end
+
+    context "when ENV['NO_SUBFOREM_FILTER'] is true" do
+      before do
+        @orig_val = ENV["NO_SUBFOREM_FILTER"]
+        ENV["NO_SUBFOREM_FILTER"] = "true"
+      end
+
+      after do
+        ENV["NO_SUBFOREM_FILTER"] = @orig_val
+      end
+
+      it "returns all records, including those with subforem_id present and nil" do
+        expect(described_class.from_subforem(1))
+          .to contain_exactly(page_subforem_1, page_subforem_2, page_no_subforem)
+      end
+    end
   end
 
   describe ".render_safe_html_for" do
@@ -74,6 +90,42 @@ RSpec.describe Page do
       page.body_json = nil
       page.body_css = nil
       expect(page).not_to be_valid
+    end
+
+    it "does not require body when redirect_to_url is set" do
+      page = build(:page, redirect_to_url: "https://example.com", body_html: nil, body_markdown: nil,
+                          body_json: nil, body_css: nil)
+      expect(page).to be_valid
+    end
+
+    describe "redirect_to_url" do
+      it "allows a full https URL" do
+        page = build(:page, redirect_to_url: "https://example.com/path")
+        expect(page).to be_valid
+      end
+
+      it "allows a full http URL" do
+        page = build(:page, redirect_to_url: "http://example.com")
+        expect(page).to be_valid
+      end
+
+      it "allows a valid app path" do
+        page = build(:page, redirect_to_url: "/about")
+        expect(page).to be_valid
+      end
+
+      it "rejects a value that is neither a URL nor a path" do
+        page = build(:page, redirect_to_url: "not-a-url-or-path")
+        expect(page).not_to be_valid
+        expect(page.errors[:redirect_to_url]).to be_present
+      end
+
+
+
+      it "is valid when blank" do
+        page = build(:page, redirect_to_url: "")
+        expect(page).to be_valid
+      end
     end
 
     it "takes organization slug into account" do

@@ -1,4 +1,5 @@
 class ApiSecretsController < ApplicationController
+  before_action :authenticate_user!
   before_action :load_api_secret, only: :destroy
   after_action :verify_authorized
 

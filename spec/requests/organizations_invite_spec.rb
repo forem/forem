@@ -36,7 +36,7 @@ RSpec.describe "Organizations Invite" do
 
       it "redirects with success message" do
         post organization_invite_path(organization.id), params: { username: invited_user.username }
-        expect(response).to redirect_to(user_settings_path(:organization, org_id: organization.id))
+        expect(response).to redirect_to(organization_settings_path(organization.slug, anchor: "section-invitations"))
         expect(flash[:settings_notice]).to include("Successfully invited")
       end
 
@@ -92,7 +92,7 @@ RSpec.describe "Organizations Invite" do
 
       it "redirects with success message" do
         post organization_invite_path(organization.id), params: { username: invited_user.username }
-        expect(response).to redirect_to(user_settings_path(:organization, org_id: organization.id))
+        expect(response).to redirect_to(organization_settings_path(organization.slug, anchor: "section-invitations"))
         expect(flash[:settings_notice]).to include("Successfully added")
       end
     end
@@ -100,7 +100,7 @@ RSpec.describe "Organizations Invite" do
     context "when user is not found" do
       it "redirects with error message" do
         post organization_invite_path(organization.id), params: { username: "nonexistent" }
-        expect(response).to redirect_to(user_settings_path(:organization, org_id: organization.id))
+        expect(response).to redirect_to(organization_settings_path(organization.slug, anchor: "section-invitations"))
         expect(flash[:error]).to include("not found")
       end
     end
@@ -175,7 +175,7 @@ RSpec.describe "Organizations Invite" do
 
       it "redirects with rate limit error message" do
         post organization_invite_path(organization.id), params: { username: invited_user.username }
-        expect(response).to redirect_to(user_settings_path(:organization, org_id: organization.id))
+        expect(response).to redirect_to(organization_settings_path(organization.slug, anchor: "section-invitations"))
         expect(flash[:error]).to include("daily invitation limit")
         expect(flash[:error]).to include("3")
       end
@@ -213,7 +213,7 @@ RSpec.describe "Organizations Invite" do
 
       it "redirects with max outstanding error message" do
         post organization_invite_path(organization.id), params: { username: invited_user.username }
-        expect(response).to redirect_to(user_settings_path(:organization, org_id: organization.id))
+        expect(response).to redirect_to(organization_settings_path(organization.slug, anchor: "section-invitations"))
         expect(flash[:error]).to include("maximum outstanding invitations")
         expect(flash[:error]).to include("10")
       end
@@ -241,7 +241,7 @@ RSpec.describe "Organizations Invite" do
 
       it "redirects with max outstanding error message (not daily limit)" do
         post organization_invite_path(organization.id), params: { username: invited_user.username }
-        expect(response).to redirect_to(user_settings_path(:organization, org_id: organization.id))
+        expect(response).to redirect_to(organization_settings_path(organization.slug, anchor: "section-invitations"))
         expect(flash[:error]).to include("maximum outstanding invitations")
         expect(flash[:error]).not_to include("daily invitation limit")
       end
@@ -270,7 +270,7 @@ RSpec.describe "Organizations Invite" do
 
       it "redirects with daily limit error message" do
         post organization_invite_path(organization.id), params: { username: invited_user.username }
-        expect(response).to redirect_to(user_settings_path(:organization, org_id: organization.id))
+        expect(response).to redirect_to(organization_settings_path(organization.slug, anchor: "section-invitations"))
         expect(flash[:error]).to include("daily invitation limit")
       end
     end
@@ -306,7 +306,7 @@ RSpec.describe "Organizations Invite" do
 
       it "does not redirect with error message" do
         post organization_invite_path(organization.id), params: { username: invited_user.username }
-        expect(response).to redirect_to(user_settings_path(:organization, org_id: organization.id))
+        expect(response).to redirect_to(organization_settings_path(organization.slug, anchor: "section-invitations"))
         expect(flash[:error]).to be_nil
         expect(flash[:settings_notice]).to include("Successfully added")
       end
@@ -381,7 +381,7 @@ RSpec.describe "Organizations Invite" do
 
     it "redirects to organization settings" do
       post organization_confirm_invitation_path(token: pending_membership.invitation_token)
-      expect(response).to redirect_to(user_settings_path(:organization, org_id: organization.id))
+      expect(response).to redirect_to(user_settings_path(:organization))
       expect(flash[:settings_notice]).to include("Successfully joined")
     end
 

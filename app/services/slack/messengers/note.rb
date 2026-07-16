@@ -1,6 +1,6 @@
 module Slack
   module Messengers
-    class Note
+    class Note < Base
       MESSAGE_TEMPLATE = <<~TEXT.chomp.freeze
         *New note from %<name>s:*
         *Report status: %<status>s*
@@ -9,9 +9,7 @@ module Slack
         Message: %<message>s
       TEXT
 
-      def self.call(...)
-        new(...).call
-      end
+
 
       def initialize(author_name:, status:, type:, report_id:, message:)
         @author_name = author_name
@@ -34,7 +32,7 @@ module Slack
           message: message,
         )
 
-        Slack::Messengers::Worker.perform_async(
+        enqueue_slack_message(
           "message" => final_message,
           "channel" => type,
           "username" => "new_note_bot",

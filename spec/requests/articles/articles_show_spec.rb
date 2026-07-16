@@ -61,6 +61,12 @@ RSpec.describe "ArticlesShow" do
       )
     end
 
+    it "renders the proper author-trust meta tag" do
+      user.update_column(:score, 200)
+      get article.path
+      expect(response.body).to include('<meta name="author-trust" content="3">')
+    end
+
     it "renders DiscussionForumPosting structured data when article has comments" do
       comment = create(:comment, commentable: article, user: user)
       article.update_column(:comments_count, 1)

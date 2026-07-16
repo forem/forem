@@ -55,7 +55,7 @@ module Api
           params[:remote_social_image_url] = params[:social_image][:url]
         end
         params.permit(*%i[title slug description is_top_level_path subforem_id
-                            body_json body_markdown body_html body_css remote_social_image_url template])
+                            body_json body_markdown body_html body_css remote_social_image_url template redirect_to_url])
       end
     end
   end

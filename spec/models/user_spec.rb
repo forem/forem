@@ -33,8 +33,320 @@ RSpec.describe User do
 
   before do
     omniauth_mock_providers_payload
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with("ENABLE_REFRESH_SEGMENT_WORKERS").and_return("true")
     allow(SegmentedUserRefreshWorker).to receive(:perform_async)
     allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
+  end
+
+  describe "Trackable adoption for DEV → Core sync" do
+    before do
+      allow(Trackable::Registry).to receive(:active_names).and_return([:any])
+      allow(Trackable::DispatchWorker).to receive(:perform_async)
+    end
+
+    around { |ex| with_trackable_events { ex.run } }
+
+    after { FeatureFlag.remove(:dev_core_user_sync) }
+
+    def enable_sync(actor: nil)
+      Settings::General.customerio_cdp_enabled = true
+      if actor
+        FeatureFlag.enable(:dev_core_user_sync, FeatureFlag::Actor[actor])
+      else
+        FeatureFlag.enable(:dev_core_user_sync)
+      end
+    end
+
+    it "includes the Trackable concern" do
+      expect(described_class.included_modules).to include(Trackable)
+    end
+
+    it "tracks only its own user id" do
+      user = create(:user)
+      expect(user.trackable_user_ids).to eq([user.id])
+    end
+
+    it "ships a curated payload of identity, registration, confirmation, email consent, and Core-link state" do
+      user = create(:user)
+      expect(user.trackable_payload.keys).to contain_exactly(
+        "id", "username", "email", "name", "registered_at", "confirmed_at", "email_newsletter",
+        "email_digest_periodic", "mlh_user_id"
+      )
+    end
+
+    it "reflects registration, confirmation, and email consent state in the payload" do
+      user = create(:user)
+      user.notification_setting.update!(email_newsletter: true, email_digest_periodic: true)
+      payload = user.reload.trackable_payload
+
+      expect(payload["registered_at"]).to eq(user.registered_at.iso8601)
+      expect(payload["confirmed_at"]).to eq(user.confirmed_at.iso8601)
+      expect(payload["email_newsletter"]).to be(true)
+      expect(payload["email_digest_periodic"]).to be(true)
+    end
+
+    # The two consents are independent: EmailDigest selects on
+    # email_digest_periodic alone, so the payload must carry them separately.
+    it "carries digest consent independently of newsletter consent" do
+      user = create(:user)
+      user.notification_setting.update!(email_newsletter: false, email_digest_periodic: true)
+
+      payload = user.reload.trackable_payload
+
+      expect(payload["email_newsletter"]).to be(false)
+      expect(payload["email_digest_periodic"]).to be(true)
+    end
+
+    it "includes the Core user id from the mlh identity in the payload" do
+      omniauth_mock_mlh_payload
+      user = create(:user)
+      create(:identity, user: user, provider: "mlh", uid: "424242")
+
+      expect(user.trackable_payload["mlh_user_id"]).to eq("424242")
+    end
+
+    it "leaves mlh_user_id nil when the user has no mlh identity" do
+      user = create(:user)
+      expect(user.trackable_payload["mlh_user_id"]).to be_nil
+    end
+
+    # Sidekiq.strict_args! (raise-mode outside production) rejects symbol keys in
+    # job arguments, so the payload must be JSON-safe.
+    it "uses JSON-safe string keys in the payload" do
+      user = create(:user)
+      expect(user.trackable_payload.keys).to all(be_a(String))
+    end
+
+    it "emits user_created on registration when sync is enabled" do
+      enable_sync
+      create(:user)
+      expect(Trackable::DispatchWorker).to have_received(:perform_async)
+        .with(anything, "user_created", anything, anything, anything)
+    end
+
+    it "does not emit when the admin setting is off" do
+      Settings::General.customerio_cdp_enabled = false
+      FeatureFlag.enable(:dev_core_user_sync)
+      create(:user)
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+    end
+
+    it "does not emit for a user without the feature flag" do
+      Settings::General.customerio_cdp_enabled = true
+      create(:user) # flag not enabled
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+    end
+
+    it "emits user_updated when profile_updated_at is touched" do
+      user = create(:user)
+      enable_sync(actor: user)
+      user.touch(:profile_updated_at)
+      expect(Trackable::DispatchWorker).to have_received(:perform_async)
+        .with(anything, "user_updated", anything, anything, anything)
+    end
+
+    it "does not emit user_updated for non-profile row changes" do
+      user = create(:user)
+      enable_sync(actor: user)
+      user.update!(last_comment_at: 1.day.ago)
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+        .with(anything, "user_updated", anything, anything, anything)
+    end
+
+    it "emits user_updated when the email column actually changes" do
+      user = create(:user)
+      enable_sync(actor: user)
+      user.skip_reconfirmation!
+      user.update!(email: "new-address@example.com")
+      expect(Trackable::DispatchWorker).to have_received(:perform_async)
+        .with(anything, "user_updated", [user.id], hash_including("email" => "new-address@example.com"), anything)
+    end
+
+    # Devise reconfirmable parks the new address in unconfirmed_email; the
+    # users.email swap only lands when the user confirms, and that save does
+    # not touch profile_updated_at — so the email/confirmed_at keys must
+    # trigger user_updated on their own.
+    it "emits user_updated with the new email when a pending email change is confirmed" do
+      user = create(:user)
+      enable_sync(actor: user)
+      user.update!(email: "pending-address@example.com")
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+        .with(anything, "user_updated", anything, hash_including("email" => "pending-address@example.com"), anything)
+
+      user.confirm
+      expect(Trackable::DispatchWorker).to have_received(:perform_async)
+        .with(anything, "user_updated", [user.id], hash_including("email" => "pending-address@example.com"),
+              anything)
+    end
+
+    it "emits user_updated when an unconfirmed user confirms their email" do
+      user = create(:user, confirmed_at: nil)
+      enable_sync(actor: user)
+      user.confirm
+      expect(Trackable::DispatchWorker).to have_received(:perform_async)
+        .with(anything, "user_updated", [user.id], hash_including("confirmed_at" => user.confirmed_at.iso8601),
+              anything)
+    end
+
+    describe "engagement events" do
+      # The throttle needs a real cache; the suite default is :null_store.
+      before do
+        allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
+      end
+
+      it "emits user_engaged when an activity timestamp advances" do
+        user = create(:user)
+        enable_sync(actor: user)
+        user.touch(:last_comment_at)
+        expect(Trackable::DispatchWorker).to have_received(:perform_async)
+          .with(anything, "user_engaged", [user.id],
+                hash_including("engaged_at" => user.reload.last_comment_at.iso8601), anything)
+      end
+
+      it "throttles repeat activity inside the emit interval" do
+        user = create(:user)
+        enable_sync(actor: user)
+        user.touch(:last_comment_at)
+        user.touch(:last_comment_at)
+        user.update!(current_sign_in_at: Time.current)
+        expect(Trackable::DispatchWorker).to have_received(:perform_async)
+          .with(anything, "user_engaged", anything, anything, anything).once
+      end
+
+      it "does not emit user_engaged for spam or suspended users" do
+        user = create(:user)
+        enable_sync(actor: user)
+        described_class.skip_trackable_events { user.add_role(:spam) }
+        user.touch(:last_comment_at)
+        expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+          .with(anything, "user_engaged", anything, anything, anything)
+      end
+
+      it "does not emit user_engaged for non-activity changes" do
+        user = create(:user)
+        enable_sync(actor: user)
+        user.touch(:profile_updated_at)
+        expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+          .with(anything, "user_engaged", anything, anything, anything)
+      end
+
+      # update_presence! writes via update_column, which bypasses callbacks, so
+      # the engagement event has to be emitted explicitly from that path.
+      it "emits user_engaged from a presence ping" do
+        user = create(:user)
+        enable_sync(actor: user)
+        user.update_presence!
+        expect(Trackable::DispatchWorker).to have_received(:perform_async)
+          .with(anything, "user_engaged", [user.id],
+                hash_including("engaged_at" => user.reload.last_presence_at.iso8601), anything)
+      end
+
+      it "throttles repeat presence pings inside the emit interval" do
+        user = create(:user)
+        enable_sync(actor: user)
+        user.update_presence!
+        Timecop.travel(2.hours.from_now) { user.update_presence! }
+        expect(Trackable::DispatchWorker).to have_received(:perform_async)
+          .with(anything, "user_engaged", anything, anything, anything).once
+      end
+
+      it "does not emit user_engaged from a presence ping for spam or suspended users" do
+        user = create(:user)
+        enable_sync(actor: user)
+        described_class.skip_trackable_events { user.add_role(:spam) }
+        user.update_presence!
+        expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+          .with(anything, "user_engaged", anything, anything, anything)
+      end
+    end
+
+    it "does not emit any sync events for bot accounts" do
+      enable_sync
+      create(:user, type_of: :community_bot)
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+    end
+
+    it "does not emit user_created for unregistered invited users" do
+      enable_sync
+      create(:user, registered: false, registered_at: nil)
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+    end
+
+    it "emits user_created when an invited user completes registration" do
+      user = create(:user, registered: false, registered_at: nil)
+      enable_sync(actor: user)
+      user.update!(registered: true, registered_at: Time.current)
+      expect(Trackable::DispatchWorker).to have_received(:perform_async)
+        .with(anything, "user_created", [user.id], anything, anything)
+    end
+
+    it "does not emit user_destroyed when a synced user is deleted (deletes are out of scope)" do
+      user = create(:user)
+      enable_sync(actor: user)
+      user.destroy!
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+        .with(anything, "user_destroyed", anything, anything, anything)
+    end
+
+    describe "moderation role events" do
+      let(:user) { create(:user) }
+
+      before { enable_sync(actor: user) }
+
+      it "emits user_suspended when the suspended role is added" do
+        user.add_role(:suspended)
+        expect(Trackable::DispatchWorker).to have_received(:perform_async)
+          .with(anything, "user_suspended", [user.id], anything, anything)
+      end
+
+      it "emits user_spam_flagged when the spam role is added" do
+        user.add_role(:spam)
+        expect(Trackable::DispatchWorker).to have_received(:perform_async)
+          .with(anything, "user_spam_flagged", [user.id], anything, anything)
+      end
+
+      it "emits user_unsuspended when the suspended role is removed" do
+        user.add_role(:suspended)
+        user.remove_role(:suspended)
+        expect(Trackable::DispatchWorker).to have_received(:perform_async)
+          .with(anything, "user_unsuspended", [user.id], anything, anything)
+      end
+
+      it "emits user_spam_unflagged when the spam role is removed" do
+        user.add_role(:spam)
+        user.remove_role(:spam)
+        expect(Trackable::DispatchWorker).to have_received(:perform_async)
+          .with(anything, "user_spam_unflagged", [user.id], anything, anything)
+      end
+
+      it "does not emit when adding a role the user already has" do
+        user.add_role(:suspended)
+        user.add_role(:suspended)
+        expect(Trackable::DispatchWorker).to have_received(:perform_async)
+          .with(anything, "user_suspended", anything, anything, anything).once
+      end
+
+      it "does not emit when removing a role the user does not have" do
+        user.remove_role(:suspended)
+        expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+          .with(anything, "user_unsuspended", anything, anything, anything)
+      end
+
+      it "does not emit moderation events for non-moderation roles" do
+        user.add_role(:warned)
+        user.add_role(:trusted)
+        expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+          .with(anything, /user_suspended|user_spam/, anything, anything, anything)
+      end
+
+      it "does not emit when the sync gates are off" do
+        Settings::General.customerio_cdp_enabled = false
+        user.add_role(:suspended)
+        expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+          .with(anything, "user_suspended", anything, anything, anything)
+      end
+    end
   end
 
   describe "delegations" do
@@ -189,6 +501,54 @@ RSpec.describe User do
       it { is_expected.to validate_length_of(:name).is_at_most(100).is_at_least(1) }
       it { is_expected.to validate_length_of(:password).is_at_most(100).is_at_least(8) }
       it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
+
+      it "rejects RFC2047 encoded-words in email with a generic invalid error" do
+        invalid_emails = [
+          "=?utf-8?q?test=40attacker.com=3e?=@company.com",
+          "=?utf-8?q?test=40attacker.com=3e=00?=test@company.com",
+          "=?utf-8?q?test=40attacker.com=3e=0A=0D?=test@company.com",
+          "=?utf-8?q?test=40attacker.com=3e=3c?=test@company.com",
+          "=?utf-8?q?test=40attacker.com=3e=0A=0D?=RCPTTO:test@company.com",
+          "user=?utf-8?q?x?=@company.com",
+          "user@=?utf-8?q?company.com?=",
+          "=?utf-8?Q?test=40attacker.com=3e?=@company.com",
+          "=?utf-8?B?dGVzdEBhdHRhY2tlci5jb20+?=@company.com",
+        ]
+
+        invalid_emails.each do |email|
+          user = build(:user, email: email)
+
+          expect(user).not_to be_valid
+          expect(user.errors[:email]).to include("is invalid")
+        end
+      end
+
+      it "documents that mail decoding changes the recipient shape locally" do
+        encoded_word_email = "=?utf-8?q?test=40attacker.com=3e?=@company.com"
+
+        expect(Mail::Encodings.value_decode(encoded_word_email)).to eq("test@attacker.com>@company.com")
+      end
+
+      it "preserves nil email behavior" do
+        user = build(:user, email: nil)
+
+        expect(user).to be_valid
+      end
+
+      it "keeps normal and non-encoded-word email addresses valid" do
+        valid_emails = [
+          "user@example.com",
+          "first.last+tag@example.co.uk",
+          "user=?not-complete@example.com",
+          "user?utf-8?q?x@example.com",
+        ]
+
+        valid_emails.each do |email|
+          user = build(:user, email: email)
+
+          expect(user).to be_valid
+        end
+      end
 
       it { is_expected.not_to allow_value("  ").for(:name) }
 
@@ -477,6 +837,10 @@ RSpec.describe User do
           expect(new_user.username).to match(/valid_username_\w+/)
         when :facebook, :google_oauth2
           expect(new_user.username).to match(/fname_lname_\S*\z/)
+        when :mlh
+          # users.mlh_username is intentionally never written, so the
+          # username is generator-random
+          expect(new_user.username).to match(/\A[a-z]{12}\z/)
         else
           expect(new_user.username).to eq("valid_username")
         end
@@ -496,6 +860,8 @@ RSpec.describe User do
           expect(new_user.username).to match(/invalidusername_\w+/)
         when :facebook, :google_oauth2
           expect(new_user.username).to match(/fname_lname_\S*\z/)
+        when :mlh
+          expect(new_user.username).to match(/\A[a-z]{12}\z/)
         else
           expect(new_user.username).to eq("invalidusername")
         end
@@ -513,9 +879,17 @@ RSpec.describe User do
         mock_username(provider_name, banished_name)
 
         create(:banished_user, username: provider_username(provider_name))
-        expect do
-          user_from_authorization_service(provider_name, nil, "navbar_basic")
-        end.to raise_error(ActiveRecord::RecordInvalid, /Username has been banished./)
+        if provider_name == :mlh
+          # MLH usernames are generator-random (mlh_username is never
+          # written), so the banished-username guard cannot match
+          expect do
+            user_from_authorization_service(provider_name, nil, "navbar_basic")
+          end.not_to raise_error
+        else
+          expect do
+            user_from_authorization_service(provider_name, nil, "navbar_basic")
+          end.to raise_error(ActiveRecord::RecordInvalid, /Username has been banished./)
+        end
       end
     end
 
@@ -630,7 +1004,8 @@ RSpec.describe User do
     end
 
     it "returns the count of non-suspended and non-spam followers using the rails cache" do
-      expect(Rails.cache).to receive(:fetch).with("#{user.cache_key_with_version}/good_standing_followers_count", expires_in: 24.hours).and_call_original
+      expect(Rails.cache).to receive(:fetch).with("#{user.cache_key_with_version}/good_standing_followers_count",
+                                                  expires_in: 24.hours).and_call_original
       expect(user.good_standing_followers_count).to eq(1)
     end
   end
@@ -735,6 +1110,33 @@ RSpec.describe User do
       expect(UserRole.count).to eq(0)
 
       expect { user.set_initial_roles! }.not_to change(UserRole, :count)
+    end
+  end
+
+  describe "#author_trust_score" do
+    it "returns 0 for score < 25" do
+      user.update_column(:score, 10)
+      expect(user.author_trust_score).to eq(0)
+    end
+
+    it "returns 1 for score between 25 and 74" do
+      user.update_column(:score, 50)
+      expect(user.author_trust_score).to eq(1)
+    end
+
+    it "returns 2 for score between 75 and 174" do
+      user.update_column(:score, 100)
+      expect(user.author_trust_score).to eq(2)
+    end
+
+    it "returns 3 for score between 175 and 299" do
+      user.update_column(:score, 200)
+      expect(user.author_trust_score).to eq(3)
+    end
+
+    it "returns 4 for score >= 300" do
+      user.update_column(:score, 350)
+      expect(user.author_trust_score).to eq(4)
     end
   end
 
@@ -1241,6 +1643,40 @@ RSpec.describe User do
       it "returns false for bot?" do
         expect(user.bot?).to be false
       end
+    end
+  end
+
+  describe "#create_email_change_note" do
+    it "creates a note when unconfirmed_email is set" do
+      expect do
+        user.update(email: "changed@example.com")
+      end.to change(Note, :count).by(1)
+
+      note = user.notes.last
+      expect(note.reason).to eq("email_change_requested")
+      expect(note.content).to include("changed@example.com")
+      expect(note.author_id).to be_nil
+    end
+
+    it "does not create a note when unconfirmed_email is cleared" do
+      user.update_columns(unconfirmed_email: "old@example.com")
+
+      expect do
+        user.update_columns(unconfirmed_email: nil)
+      end.not_to change(Note, :count)
+    end
+  end
+
+  describe "#create_password_change_note" do
+    it "creates a note when password is changed" do
+      expect do
+        user.update(password: "newpassword123", password_confirmation: "newpassword123")
+      end.to change(Note, :count).by(1)
+
+      note = user.notes.last
+      expect(note.reason).to eq("password_changed")
+      expect(note.content).to eq("User changed their password")
+      expect(note.author_id).to be_nil
     end
   end
 

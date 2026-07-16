@@ -1,0 +1,201 @@
+<%= form_with model: [:admin, event], local: true do |form| %>
+  <% if event.errors.any? %>
+    <div class="crayons-notice crayons-notice--danger mb-4">
+      <h4><%= pluralize(event.errors.count, "error") %> prohibited this event from being saved:</h4>
+      <ul class="list-disc list-inside mt-2">
+        <% event.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="flex flex-col gap-4">
+    <div class="crayons-field">
+      <%= form.label :title, class: "crayons-field__label" %>
+      <%= form.text_field :title, class: "crayons-textfield", required: true %>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="crayons-field">
+        <%= form.label :event_name_slug, "Event Name Slug", class: "crayons-field__label" do %>
+          Event Name Slug *
+          <p class="crayons-field__description">The root name grouping of the event. Requires lowercase alphanumerical and dashes (e.g., 'aws-industries').</p>
+        <% end %>
+        <%= form.text_field :event_name_slug, class: "crayons-textfield", required: true, pattern: "[a-z0-9-]+" %>
+      </div>
+
+      <div class="crayons-field">
+        <%= form.label :event_variation_slug, "Event Variation Slug", class: "crayons-field__label" do %>
+          Event Variation Slug *
+          <p class="crayons-field__description">The unique date or subtitle identifier for this iteration. Requires lowercase alphanumerical and dashes (e.g., 'march-31-2026').</p>
+        <% end %>
+        <%= form.text_field :event_variation_slug, class: "crayons-textfield", required: true, pattern: "[a-z0-9-]+" %>
+      </div>
+    </div>
+
+    <div class="crayons-field">
+      <%= form.label :description, class: "crayons-field__label" %>
+      <%= form.text_area :description, class: "crayons-textfield", rows: 3 %>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="crayons-field">
+        <%= form.label :type_of, "Event Type", class: "crayons-field__label" %>
+        <%= form.select :type_of, Event.type_ofs.keys.map { |type| [type.titleize, type] }, {}, class: "crayons-select" %>
+      </div>
+
+      <div class="crayons-field">
+        <%= form.label :broadcast_config, "Billboard Broadcast Config", class: "crayons-field__label" do %>
+          Billboard Broadcast Config
+          <p class="crayons-field__description">Controls billboard auto-generation. No Broadcast = Billboards disabled. Tagged = Billboards target relevant tags only. Global = Billboards show to all users everywhere.</p>
+        <% end %>
+        <%= form.select :broadcast_config, Event.broadcast_configs.keys.map { |cfg| [cfg.titleize, cfg] }, {}, class: "crayons-select" %>
+      </div>
+    </div>
+
+    <div class="crayons-field">
+      <%= form.label :primary_stream_url, "Primary Stream URL", class: "crayons-field__label" do %>
+        Primary Stream URL
+        <p class="crayons-field__description">The streaming embed URL (e.g., Twitch, YouTube, or Streamyard player src)</p>
+      <% end %>
+      <%= form.text_area :primary_stream_url, class: "crayons-textfield", rows: 2 %>
+    </div>
+
+    <div class="crayons-field">
+      <%= form.fields_for :data, event.data || {} do |data_form| %>
+        <%= data_form.label :chat_url, "Chat Embed URL", class: "crayons-field__label" do %>
+          Chat Embed URL
+          <p class="crayons-field__description">Optional. The chat embed URL (e.g., Twitch Chat src)</p>
+        <% end %>
+        <input type="text" name="event[data][chat_url]" id="event_data_chat_url" class="crayons-textfield" value="<%= event.data&.dig('chat_url') || event.data&.dig(:chat_url) %>">
+      <% end %>
+    </div>
+
+    <div class="crayons-field">
+      <%= form.fields_for :data, event.data || {} do |data_form| %>
+        <%= data_form.label :auto_follow_tag_names, "Auto-Follow Tag Names on Signup (Challenges)", class: "crayons-field__label" do %>
+          Auto-Follow Tag Names on Signup (Challenges Only)
+          <p class="crayons-field__description">Optional. Comma-separated list of tag names (e.g., 'devchallenge, writeathon') that users will automatically follow when signing up for this challenge. Defaults to the event's first tag if left blank.</p>
+        <% end %>
+        <input type="text" name="event[data][auto_follow_tag_names]" id="event_data_auto_follow_tag_names" class="crayons-textfield" value="<%= event.data&.dig('auto_follow_tag_names') %>" placeholder="e.g., devchallenge, writeathon">
+      <% end %>
+    </div>
+
+    <div class="crayons-field">
+      <%= form.label :tag_list, "Tags", class: "crayons-field__label" do %>
+        Tags
+        <p class="crayons-field__description">Comma separated tags. The first tag is used to fetch related articles.</p>
+      <% end %>
+      <%= form.text_field :tag_list, value: event.tag_list.join(", "), class: "crayons-textfield", placeholder: "aws, ai, streaming" %>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="crayons-field">
+        <%= form.label :start_time, class: "crayons-field__label" do %>
+          Start Time <span style="color:var(--brand-primary);">(Expected in UTC)</span>
+        <% end %>
+        <%= form.datetime_field :start_time, class: "crayons-textfield", required: true %>
+        <div id="start_time_info"></div>
+      </div>
+
+      <div class="crayons-field">
+        <%= form.label :end_time, class: "crayons-field__label" do %>
+          End Time <span style="color:var(--brand-primary);">(Expected in UTC)</span>
+        <% end %>
+        <%= form.datetime_field :end_time, class: "crayons-textfield", required: true %>
+        <div id="end_time_info"></div>
+      </div>
+    </div>
+
+    <script>
+      (function() {
+        const startInput = document.getElementById('event_start_time');
+        const endInput = document.getElementById('event_end_time');
+        
+        function updateTimeInfo(inputEl, displayElId) {
+          const displayEl = document.getElementById(displayElId);
+          if(!inputEl.value) {
+            displayEl.innerHTML = "";
+            return;
+          }
+          // The database expects UTC. Rails renders the UTC string into the datetime-local value.
+          // By appending "Z", we force JS to parse this input explicitly as a UTC timestamp.
+          const utcTime = new Date(inputEl.value + "Z");
+          
+          if(isNaN(utcTime)) return;
+          
+          const localString = utcTime.toLocaleString(undefined, { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' });
+          const utcString = utcTime.toUTCString();
+          
+          const diffMs = utcTime - new Date();
+          const diffHours = (diffMs / (1000 * 60 * 60)).toFixed(1);
+          const relativeInfo = diffHours >= 0 ? `in ${diffHours} hours` : `${Math.abs(diffHours)} hours ago`;
+          
+          displayEl.innerHTML = `
+            <div style="background-color: var(--card-bg); border: 2px solid var(--brand-primary); border-radius: 6px; padding: 12px; margin-top: 8px; font-size: var(--fs-xs);">
+              <div style="margin-bottom: 4px;"><strong>You are inputting:</strong> ${utcString}</div>
+              <div style="margin-bottom: 4px; color: var(--brand-primary);"><strong>Translates to your local time:</strong> ${localString}</div>
+              <div class="opacity-75"><em>${relativeInfo}</em></div>
+            </div>
+          `;
+        }
+
+        if (startInput) {
+          startInput.addEventListener('input', () => updateTimeInfo(startInput, 'start_time_info'));
+          updateTimeInfo(startInput, 'start_time_info');
+        }
+        if (endInput) {
+          endInput.addEventListener('input', () => updateTimeInfo(endInput, 'end_time_info'));
+          updateTimeInfo(endInput, 'end_time_info');
+        }
+      })();
+    </script>
+
+    <div class="crayons-field crayons-field--checkbox mt-4">
+      <%= form.check_box :manual_broadcast_end, class: "crayons-checkbox" %>
+      <%= form.label :manual_broadcast_end, class: "crayons-field__label" do %>
+        Manually End Broadcast (Overrides End Time)
+        <p class="crayons-field__description">If checked, the background worker will NOT tear down the billboards when End Time is reached. You must manually press "End Broadcast" on the details page.</p>
+      <% end %>
+    </div>
+
+    <div class="crayons-field crayons-field--checkbox">
+      <%= form.check_box :published, class: "crayons-checkbox" %>
+      <%= form.label :published, class: "crayons-field__label" do %>
+        Published
+        <p class="crayons-field__description">Determines if the event is publicly accessible.</p>
+      <% end %>
+    </div>
+
+    <div class="crayons-field crayons-field--checkbox">
+      <%= form.check_box :elevated, class: "crayons-checkbox" %>
+      <%= form.label :elevated, class: "crayons-field__label" do %>
+        Elevated
+        <p class="crayons-field__description">Determines if the event is elevated and displayed in the homepage sidebar.</p>
+      <% end %>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="crayons-field">
+        <%= form.label :page_id, "Delegated Page", class: "crayons-field__label" do %>
+          Delegated Page
+          <p class="crayons-field__description">Select a Page if this event delegates to a page.</p>
+        <% end %>
+        <%= form.select :page_id, Page.order(:title).pluck(:title, :id), { include_blank: "None (No page delegation)" }, class: "crayons-select" %>
+      </div>
+
+      <div class="crayons-field crayons-field--checkbox mt-8">
+        <%= form.check_box :delegate_to_page, class: "crayons-checkbox" %>
+        <%= form.label :delegate_to_page, class: "crayons-field__label" do %>
+          Delegate to Page
+          <p class="crayons-field__description">If checked, links to this event will redirect or point directly to the delegated page.</p>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <%= form.submit class: "c-btn c-btn--primary" %>
+    </div>
+  </div>
+<% end %>

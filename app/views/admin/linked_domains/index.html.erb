@@ -1,0 +1,42 @@
+<% content_for :page_title, "Linked Domains" %>
+
+<div class="crayons-card p-4">
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="crayons-title">Linked Domains</h1>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="crayons-table">
+      <thead>
+        <tr>
+          <th>Host</th>
+          <th>Net Score</th>
+          <th>Manual Setting</th>
+          <th>Created At</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @linked_domains.each do |domain| %>
+          <tr>
+            <td><%= domain.host %></td>
+            <td><%= domain.net_score || 0 %></td>
+            <td>
+              <span class="crayons-indicator crayons-indicator--<%= domain.ignored? || domain.not_set? ? 'base' : 'danger' %>">
+                <%= domain.manual_setting.titleize %>
+              </span>
+            </td>
+            <td><%= domain.created_at.strftime("%b %d, %Y") %></td>
+            <td>
+              <%= link_to "Edit", edit_admin_linked_domain_path(domain), class: "crayons-btn crayons-btn--s crayons-btn--ghost" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mt-4 flex justify-center">
+    <%= paginate @linked_domains %>
+  </div>
+</div>

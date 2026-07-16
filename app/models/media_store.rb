@@ -1,6 +1,6 @@
 class MediaStore < ApplicationRecord
   # media_type enum
-  enum media_type: { image: 0, video: 1, audio: 2 }
+  enum :media_type, { image: 0, video: 1, audio: 2 }
 
   before_validation :set_output_url_if_needed
 

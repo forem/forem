@@ -33,6 +33,9 @@ module Billboards
     def call
       @filtered_billboards = approved_and_published_ads
       @filtered_billboards = placement_area_ads
+
+      apply_event_broadcast_overrides!
+
       @filtered_billboards = included_subforem_ads # if @subforem_id.present?
       @filtered_billboards = browser_context_ads if @user_agent.present?
       @filtered_billboards = page_ads if @page_id.present?
@@ -92,6 +95,34 @@ module Billboards
 
     private
 
+    def apply_event_broadcast_overrides!
+      if @area.in?(%w[feed_first post_fixed_bottom])
+        active_events = Event.active_broadcast_events
+
+        verified_event_ids = []
+        active_events.each do |active_event|
+          if active_event.global_broadcast? || (active_event.tagged_broadcast? && event_matches_tags?(active_event))
+            verified_event_ids << active_event.id
+          end
+        end
+
+        if verified_event_ids.any?
+          @filtered_billboards = @filtered_billboards.where(event_id: verified_event_ids)
+          return
+        end
+      end
+      
+      # For untouched configurations OR silent areas, strip any billboards intrinsically attached to Events so they don't organically leak across default displays!
+      @filtered_billboards = @filtered_billboards.where(event_id: nil)
+    end
+
+    def event_matches_tags?(event)
+      event_tags = event.tags_array || []
+      return false if event_tags.empty?
+      
+      (@article_tags & event_tags).any? || (@user_tags.to_a & event_tags).any?
+    end
+
     def approved_and_published_ads
       @filtered_billboards.approved_and_published
     end
@@ -139,12 +170,17 @@ module Billboards
     end
 
     def unexcluded_article_ads
-      @filtered_billboards.where("NOT (:id = ANY(exclude_article_ids))", id: @article_id)
+      @filtered_billboards.where(
+        "exclude_article_ids IS NULL OR cardinality(exclude_article_ids) = 0 OR NOT (:id = ANY(exclude_article_ids))",
+        id: @article_id
+      )
     end
 
     def included_subforem_ads
-      @filtered_billboards.where("cardinality(include_subforem_ids) = 0 OR :subforem_id = ANY(include_subforem_ids)",
-                                 subforem_id: @subforem_id)
+      @filtered_billboards.where(
+        "include_subforem_ids IS NULL OR cardinality(include_subforem_ids) = 0 OR :subforem_id = ANY(include_subforem_ids)",
+        subforem_id: @subforem_id
+      )
     end
 
     def authenticated_ads(display_auth_audience)
@@ -166,14 +202,14 @@ module Billboards
 
     def role_filtered_ads
       @filtered_billboards.where(
-        "(cardinality(target_role_names) = 0 OR target_role_names && ARRAY[:role_names]::varchar[])
-        AND (cardinality(exclude_role_names) = 0 OR NOT exclude_role_names && ARRAY[:role_names]::varchar[])",
+        "(target_role_names IS NULL OR cardinality(target_role_names) = 0 OR target_role_names && ARRAY[:role_names]::varchar[])
+        AND (exclude_role_names IS NULL OR cardinality(exclude_role_names) = 0 OR NOT exclude_role_names && ARRAY[:role_names]::varchar[])",
         role_names: @role_names,
       )
     end
 
     def location_targeted_ads
-      geo_query = "cardinality(target_geolocations) = 0" # Empty array
+      geo_query = "target_geolocations IS NULL OR cardinality(target_geolocations) = 0" # Empty array
       if @location&.valid?
         geo_query += " OR (#{@location.to_sql_query_clause})"
       end

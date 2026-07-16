@@ -111,6 +111,10 @@
     font-size: calc(var(--fs-base) - 1px);
     line-height: 1.5;
     display: inline-block;
+
+    p {
+      margin-bottom: 0 !important;
+    }
   }
 
   &__context-note__feed {
@@ -243,8 +247,9 @@ html.is-twitter-in-app {
     color: var(--base-70);
     font-size: var(--fs-s);
     display: inline-flex;
+    align-items: center;
     margin-left: 0px;
-    padding-right: var(--su-1);
+    // padding-right: var(--su-1);
     min-width: var(--su-6);
 
     @media (min-width: $breakpoint-m) {

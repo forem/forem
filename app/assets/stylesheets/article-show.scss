@@ -80,6 +80,7 @@ article {
       font-size: calc(2vw + 26px);
       word-break: break-word;
       line-height: 1.28em;
+
       @media screen and (min-width: 1600px) {
         font-size: 57px;
       }
@@ -90,6 +91,7 @@ article {
 
       &.medium {
         font-size: calc(1.82vw + 25px);
+
         @media screen and (min-width: 1600px) {
           font-size: 47px;
         }
@@ -174,6 +176,7 @@ article {
         padding: 0 0 0 0;
         display: inline-flex;
         min-width: 44px;
+
         a {
           display: inline-block;
           background: $green;
@@ -184,6 +187,7 @@ article {
           font-family: $helvetica-condensed;
           font-stretch: condensed;
           margin-right: 4px;
+
           @media screen and (max-width: 376px) {
             padding: 2px 6px 3px;
             margin-left: 3px;
@@ -346,7 +350,7 @@ article {
       display: block;
     }
 
-    p + figcaption {
+    p+figcaption {
       margin-top: -0.8em;
     }
 
@@ -617,9 +621,95 @@ center .ff-container {
 }
 
 
-body.user-role--admin, .user-role--super_admin, .current-user-is-article-author {
+body.user-role--admin,
+.user-role--super_admin,
+.current-user-is-article-author {
   .crayons-article__actions {
     display: block !important;
     min-height: 42px !important;
+  }
+}
+
+// Prevents background scroll while the lightbox overlay is active (toggled by JS).
+html.image-lightbox-open {
+  overflow: hidden;
+}
+
+#image-lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+
+  &.image-lightbox--visible {
+    opacity: 1;
+    pointer-events: auto;
+
+    .image-lightbox__img {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+}
+
+.image-lightbox__close {
+  position: fixed;
+  top: 0.4vw;
+  right: 0.4vw;
+  z-index: 10001;
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: transparent;
+  color: #fff;
+  font-size: 32px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease;
+
+  &:hover,
+  &:focus-visible {
+    transform: scale(1.1);
+    outline: none;
+  }
+}
+
+.image-lightbox__img-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: calc(100vw - 48px);
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  padding: 8px;
+}
+
+.image-lightbox__img {
+  display: block;
+  max-width: 100%;
+  max-height: calc(100vh - 64px);
+  width: auto;
+  height: auto;
+  border-radius: 6px;
+  object-fit: contain;
+  transform: scale(0.92);
+  opacity: 0;
+  transition:
+    transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.22s ease;
+
+  @media screen and (min-width: 1200px) {
+    max-width: 90vw;
   }
 }

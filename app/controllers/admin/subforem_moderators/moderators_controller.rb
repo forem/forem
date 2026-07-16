@@ -19,6 +19,12 @@ module Admin
         else
           result = ::SubforemModerators::Add.call(user.id, @subforem.id)
           if result.success?
+            Audit::Logger.log(:moderator, current_user, {
+                                "action" => params[:action],
+                                "controller" => params[:controller],
+                                "target_user_id" => user.id,
+                                "subforem_id" => @subforem.id
+                              })
             flash[:success] = "#{username} was added as a subforem moderator!"
           else
             flash[:error] = "Failed to add moderator: #{result.errors}"
@@ -31,6 +37,12 @@ module Admin
       def destroy
         user = User.find(params[:user_id])
         ::SubforemModerators::Remove.call(user, @subforem)
+        Audit::Logger.log(:moderator, current_user, {
+                            "action" => params[:action],
+                            "controller" => params[:controller],
+                            "target_user_id" => user.id,
+                            "subforem_id" => @subforem.id
+                          })
         flash[:success] = "#{user.username} was removed as a subforem moderator"
         redirect_to admin_subforem_path(@subforem)
       rescue ActiveRecord::RecordNotFound

@@ -44,6 +44,17 @@ RSpec.describe "StoriesIndex" do
       expect(response).to redirect_to("http://example.com/")
     end
 
+    it "does not redirect an unfound subforem if it is a custom organization domain" do
+      ENV["REDIRECT_WWW_TO_ROOT"] = "true"
+      create(:organization, custom_domain: "mlh.example.com")
+      allow(Subforem).to receive(:cached_id_by_domain).and_return(nil)
+      allow(Subforem).to receive(:cached_root_domain).and_return("example.com")
+      
+      get "http://mlh.example.com"
+      expect(response).not_to redirect_to("http://example.com/")
+      ENV["REDIRECT_WWW_TO_ROOT"] = nil
+    end
+
     it "does not redirect found subforem to root if ENV var set" do
       ENV["REDIRECT_WWW_TO_ROOT"] = "true" # stubbing doesn't work properly here
       allow(Subforem).to receive(:cached_id_by_domain).and_return(1)
@@ -52,6 +63,69 @@ RSpec.describe "StoriesIndex" do
       expect(response).to have_http_status(:ok)
       expect(response).not_to redirect_to("http://example.com/")
       ENV["REDIRECT_WWW_TO_ROOT"] = nil
+    end
+
+    context "with REDIRECT_ALL_SUBFOREMS_TO_DEFAULT enabled" do
+      before do
+        stub_const("ENV", ENV.to_h.merge("REDIRECT_ALL_SUBFOREMS_TO_DEFAULT" => "true"))
+        allow(Subforem).to receive_messages(
+          cached_root_domain: "example.com",
+          cached_root_id: 1,
+          cached_default_domain: "default.example.com",
+          cached_default_id: 3
+        )
+      end
+
+      it "redirects a registered subforem to the default domain" do
+        allow(Subforem).to receive(:cached_id_by_domain).with("found.example.com").and_return(2)
+        get "http://found.example.com"
+        expect(response).to have_http_status(:moved_permanently)
+        expect(response).to redirect_to("http://default.example.com/")
+      end
+
+      it "redirects an unregistered subforem to the default domain" do
+        allow(Subforem).to receive(:cached_id_by_domain).with("not-found.example.com").and_return(nil)
+        get "http://not-found.example.com"
+        expect(response).to have_http_status(:moved_permanently)
+        expect(response).to redirect_to("http://default.example.com/")
+      end
+
+      it "does not redirect a custom organization domain" do
+        create(:organization, custom_domain: "mlh.forem.wtf")
+        allow(Subforem).to receive(:cached_id_by_domain).with("mlh.forem.wtf").and_return(nil)
+        get "http://mlh.forem.wtf"
+        expect(response).not_to redirect_to("http://default.example.com/")
+      end
+
+      it "does not redirect the default subforem domain itself" do
+        allow(Subforem).to receive(:cached_id_by_domain).with("default.example.com").and_return(3)
+        get "http://default.example.com"
+        expect(response).to have_http_status(:ok)
+        expect(response).not_to redirect_to("http://default.example.com/")
+      end
+    end
+
+    context "when General settings has a resized logo" do
+      before do
+        allow(Settings::General).to receive(:resized_logo).and_return("default.png")
+      end
+
+      it "renders the resized logo" do
+        get "/"
+        expect(response.body).to include("site-logo")
+        expect(response.body).to include("default.png")
+      end
+    end
+
+    context "when General settings does not have a resized logo" do
+      before do
+        allow(Settings::General).to receive(:resized_logo).and_return(nil)
+      end
+
+      it "renders the community name" do
+        get "/"
+        expect(response.body).to include("DEV(local)")
+      end
     end
 
     it "renders topbar styles if Settings::UserExperience.accent_background_color_hex is set" do
@@ -397,6 +471,88 @@ RSpec.describe "StoriesIndex" do
         # or you might see a blank or partial string. Let's just confirm it's not present:
         expect(response.headers["Set-Cookie"].to_s).not_to include(ENV["SESSION_KEY"])
         expect(response.headers["Set-Cookie"].to_s).not_to include("remember_user_token")
+      end
+    end
+  end
+
+  describe "GET /:slug (organization page)" do
+    let(:organization) { create(:organization) }
+    let(:user) { create(:user) }
+
+    before do
+      create(:organization_membership, organization: organization, user: user, type_of_user: "member")
+      create(:article, organization: organization, user: user, published: true)
+    end
+
+    context "when organization has no readme page" do
+      it "renders the classic show template" do
+        get "/#{organization.slug}"
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("sidebar-left")
+      end
+
+      it "does not render showcase/all posts tabs" do
+        get "/#{organization.slug}"
+        expect(response.body).not_to include("Organization Profile Navigation")
+        expect(response.body).not_to include("Showcase")
+        expect(response.body).not_to include("All Posts")
+      end
+    end
+
+    context "when organization has a readme page and org_readme flag is enabled" do
+      before do
+        create(:page, organization: organization, body_markdown: "**Welcome to our org!**",
+               title: organization.name, description: "desc", slug: "#{organization.slug}-page",
+               template: "full_within_layout")
+        FeatureFlag.add(:org_readme)
+        FeatureFlag.enable(:org_readme, FeatureFlag::Actor[organization])
+      end
+
+      after { FeatureFlag.disable(:org_readme) }
+
+      it "renders the readme show template with showcase tab active" do
+        get "/#{organization.slug}"
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("<strong>Welcome to our org!</strong>")
+        expect(response.body).not_to include("sidebar-left")
+        
+        # Tabs should be present
+        expect(response.body).to include("Organization Profile Navigation")
+        expect(response.body).to include("crayons-tabs__item crayons-tabs__item--current")
+        expect(response.body).to include("Showcase")
+        expect(response.body).to include("All Posts")
+      end
+
+      it "renders the classic feed template with all posts tab active when mode is all-posts" do
+        get "/#{organization.slug}", params: { mode: "all-posts" }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).not_to include("<strong>Welcome to our org!</strong>")
+        expect(response.body).to include("sidebar-left")
+
+        # Tabs should be present
+        expect(response.body).to include("Organization Profile Navigation")
+        expect(response.body).to include("Showcase")
+        expect(response.body).to include("All Posts")
+      end
+    end
+
+    context "when organization has a readme page but org_readme flag is disabled" do
+      before do
+        create(:page, organization: organization, body_markdown: "**Welcome to our org!**",
+               title: organization.name, description: "desc", slug: "#{organization.slug}-page",
+               template: "full_within_layout")
+        FeatureFlag.add(:org_readme)
+      end
+
+      it "shows classic feed view instead of readme" do
+        get "/#{organization.slug}"
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("sidebar-left")
+      end
+
+      it "does not render showcase/all posts tabs" do
+        get "/#{organization.slug}"
+        expect(response.body).not_to include("Organization Profile Navigation")
       end
     end
   end

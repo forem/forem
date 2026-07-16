@@ -5,6 +5,8 @@ RSpec.describe Users::Setting do
   let(:setting) { described_class.find_by(user_id: user.id) }
 
   before do
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with("ENABLE_REFRESH_SEGMENT_WORKERS").and_return("true")
     allow(SegmentedUserRefreshWorker).to receive(:perform_async)
   end
 

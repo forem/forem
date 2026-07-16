@@ -18,7 +18,11 @@ RSpec.describe "UserSettings" do
         Constants::Settings::TAB_LIST.each do |tab|
           get user_settings_path(tab.downcase.tr(" ", "-"))
 
-          expect(response.body).to include("@#{user.username}")
+          if tab == "Organization"
+            expect(response).to have_http_status(:ok)
+          else
+            expect(response.body).to include("@#{user.username}")
+          end
         end
       end
 

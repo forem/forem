@@ -82,6 +82,16 @@ pt:
       fully_trusted_enabled: O status totalmente confiável foi habilitado para esta organização.
       fully_trusted_disabled: O status totalmente confiável foi desabilitado para esta organização.
       baseline_score_updated: A pontuação base foi atualizada!
+      verified_enabled: Esta organização foi verificada.
+      verified_disabled: A verificação foi revogada para esta organização.
+      org_feature_enabled: "%{feature} foi habilitado para esta organização."
+      org_feature_disabled: "%{feature} foi desabilitado para esta organização."
+      org_feature_invalid: "Funcionalidade de organização especificada inválida."
+    org_features_controller:
+      invalid_feature: "Funcionalidade especificada inválida."
+      global_enabled: "%{feature} foi habilitado para todas as organizações."
+      global_disabled: "O acesso global a %{feature} foi desabilitado. Apenas organizações habilitadas individualmente mantêm o acesso."
+      cta_updated: "As configurações do CTA foram atualizadas."
     pages_controller:
       updated: Página foi atualizada com sucesso.
       created: Página foi criada com sucesso.
@@ -136,6 +146,9 @@ pt:
       created: '%{tag_name} foi criada!'
       updated: 'Tag %{tag_name} atualizada com sucesso!'
       update_fail: 'A atualização da tag falhou: %{errors}'
+      form:
+        moderation_instructions: "Instruções de moderação"
+        moderation_instructions_description: "Instruções personalizadas de moderação de IA para posts com esta tag. Se fornecidas, elas serão anexadas ao prompt de moderação de conteúdo de IA."
     surveys_controller:
       created: A pesquisa foi criada!
       updated: A pesquisa foi atualizada!
@@ -168,6 +181,8 @@ pt:
       manual_verification_sent: E-mail verificado manualmente!
       email_confirmed: E-mail confirmado!
       email_confirm_fail: A confirmação do e-mail falhou.
+      pending_email_confirmed: Mudança de e-mail pendente confirmada!
+      pending_email_confirm_fail: Nenhuma mudança de e-mail pendente para confirmar.
     welcome_controller:
       thread_content: |
         ---
@@ -182,6 +197,13 @@ pt:
         ![BEM-VINDO À INTERNET](https://slack-imgs.com/?c=1&url=http%3A%2F%2Fmedia0.giphy.com%2Fmedia%2FzhbrTTpmSCYog%2Fgiphy-downsized.gif)
 
         Deixe um comentário abaixo para se apresentar à comunidade!✌️
+    concepts_controller:
+      created: Conceito criado com sucesso. A classificação de backfill foi enfileirada.
+      updated: Conceito atualizado com sucesso. A classificação de backfill foi enfileirada.
+      deleted: Conceito excluído com sucesso.
+      failed_deletion: Algo deu errado ao excluir o conceito.
+      lookback_triggered: "A busca retrospectiva do conceito de %{days} dias foi enfileirada."
+      invalid_days: "Por favor, forneça um número válido de dias maior que 0 e maior que a cobertura retrospectiva atual."
     secrets_controller:
       not_in_vault: Não está no cofre
       updated: 'Segredo %{key} foi atualizado com sucesso no Vault.'

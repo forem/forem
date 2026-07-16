@@ -68,7 +68,9 @@ RSpec.describe "Api::V1::Pages" do
     include_context "when user is authorized"
 
     let(:post_params) do
-      attributes_for(:page)
+      # Fixed title so find_by(title:) can never collide with the let!(:page)
+      # record — Faker::Book.title draws from a small pool and duplicates.
+      attributes_for(:page, title: "Api V1 Pages Spec Page")
     end
     let(:body_html) { "<div>hi, folks</div>" }
     let(:body_css) { "h1 {font-size: 120px}" }
@@ -217,7 +219,7 @@ RSpec.describe "Api::V1::Pages" do
       match_array(%w[id title slug description is_top_level_path
                      landing_page body_html body_json body_markdown
                      processed_html social_image template subforem_id
-                     page_template_id template_data])
+                     page_template_id template_data redirect_to_url])
   end
 
   it "retrieves a page and renders it as json" do
@@ -227,6 +229,6 @@ RSpec.describe "Api::V1::Pages" do
       match_array(%w[id title slug description is_top_level_path
                      landing_page body_html body_json body_markdown
                      processed_html social_image template subforem_id
-                     page_template_id template_data])
+                     page_template_id template_data redirect_to_url])
   end
 end

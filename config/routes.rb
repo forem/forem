@@ -30,6 +30,24 @@ Rails.application.routes.draw do
 
   get "/r/mobile", to: "deep_links#mobile"
   get "/.well-known/apple-app-site-association", to: "deep_links#aasa"
+  get "/a/:code", to: "articles#short_link", as: :article_short, constraints: { code: /[0-9a-pA-P]+/ }
+
+  constraints OrgCustomDomainConstraint.new do
+    get "/", to: "stories#custom_domain_index"
+    get "/feed", to: "articles#feed", as: nil, defaults: { format: "rss" }
+    get "/rss", to: "articles#feed", as: nil, defaults: { format: "rss" }
+    get "/:org_slug/:slug",
+        to: "stories#custom_domain_show",
+        constraints: {
+          org_slug: %r{(?!(?:api|assets|packs|rails|r|ahoy|enter|users)\z)[^/.]+},
+          slug: %r{[^/.]+}
+        }
+    get "/:slug",
+        to: "stories#custom_domain_show",
+        constraints: {
+          slug: %r{(?!(?:api|assets|packs|rails|r|ahoy|enter|users)\z)[^/.]+}
+        }
+  end
 
   # [@forem/delightful] - all routes are nested under this optional scope to
   # begin supporting i18n.
@@ -102,10 +120,48 @@ Rails.application.routes.draw do
           end
         end
 
+        # V1-only admin user management API. Lives in the V1 block (not in the
+        # shared config/routes/api.rb) because Api::V0::Admin::* controllers do
+        # not implement these actions; placing the routes here scopes them to
+        # callers using the application/vnd.forem.api-v1+json Accept header.
+        resources :concepts, only: %i[index show update] do
+          get :articles, on: :member
+          get :search, on: :collection
+        end
+
+        resources :articles, only: [] do
+          get :semantic_search, on: :collection
+        end
+
+        namespace :admin do
+          resources :users, only: %i[index show update] do
+            collection do
+              post "identities/bulk", to: "user_identities#bulk_create"
+            end
+
+            member do
+              put :email, action: :update_email
+              put :status, action: :update_status
+              put :notification_settings, action: :update_notification_settings
+              post :merge
+            end
+
+            resources :notes, only: %i[index create], controller: "user_notes"
+            resources :identities, only: %i[index create destroy], controller: "user_identities"
+          end
+
+          resources :request_redirects, only: %i[index show create update destroy]
+          resources :concepts, only: %i[index show create update destroy] do
+            post :trigger_lookback, on: :member
+          end
+        end
+
         draw :api
       end
 
       scope module: :v0, constraints: ApiConstraints.new(version: 0, default: true) do
+        post "/auth/mobile_exchange", to: "mobile_auth#create"
+        resources :events, only: %i[index show create update destroy]
         draw :api
       end
     end
@@ -129,6 +185,13 @@ Rails.application.routes.draw do
       patch "/admin_unpublish", to: "articles#admin_unpublish"
       patch "/admin_featured_toggle", to: "articles#admin_featured_toggle"
     end
+    resources :events, only: %i[index]
+    get "/calendar", to: "calendar#index"
+    get "events/:event_name_slug/:event_variation_slug", to: "events#show", as: :event
+    get "events/:event_name_slug/:event_variation_slug/signup_status", to: "event_signups#status",
+                                                                       as: :event_signup_status
+    post "events/:event_name_slug/:event_variation_slug/signup", to: "event_signups#create", as: :event_signup
+    delete "events/:event_name_slug/:event_variation_slug/signup", to: "event_signups#destroy"
     resources :article_mutes, only: %i[update]
     resources :comments, only: %i[create update destroy] do
       patch "/hide", to: "comments#hide"
@@ -184,6 +247,16 @@ Rails.application.routes.draw do
         get "/bulk", to: "tags#bulk", defaults: { format: :json }
       end
     end
+    resources :trending, param: :slug, only: %i[index show], controller: :trends
+    get "/trends", to: redirect { |path_params, _req|
+      locale = path_params[:locale]
+      locale ? "/locale/#{locale}/trending" : "/trending"
+    }
+    get "/trends/:slug", to: redirect { |path_params, _req|
+      locale = path_params[:locale]
+      slug = path_params[:slug]
+      locale ? "/locale/#{locale}/trending/#{slug}" : "/trending/#{slug}"
+    }
     resources :stripe_active_cards, only: %i[create update destroy]
     resources :stripe_subscriptions, only: %i[new edit destroy]
     resources :github_repos, only: %i[index] do
@@ -240,6 +313,7 @@ Rails.application.routes.draw do
     resources :billboard_events, only: [:create]
     # Alias for reporting in case "events" triggers spam filters
     post "/bb_tabulations", to: "billboard_events#create", as: :bb_tabulations
+    patch "/bb_tabulations/:id", to: "billboard_events#update"
 
     resources :badges, only: [:index]
     resources :user_blocks, param: :blocked_id, only: %i[show create destroy]
@@ -357,6 +431,22 @@ Rails.application.routes.draw do
     get "/search", to: "stories/articles_search#index"
     get "/community", to: "community#index", as: :community
     get "/:slug/members", to: "organizations#members", as: :organization_members
+    get "/:slug/settings", to: "organization_settings#edit", as: :organization_settings
+    patch "/:slug/settings", to: "organization_settings#update"
+    post "/:slug/settings/verify", to: "organization_settings#request_verification",
+                                   as: :organization_request_verification
+    post "/:slug/settings/preview", to: "organization_settings#preview", as: :organization_settings_preview
+    get "/:slug/settings/lead_forms", to: "organization_lead_forms#index", as: :organization_lead_forms
+    post "/:slug/settings/lead_forms", to: "organization_lead_forms#create"
+    get "/:slug/settings/lead_forms/:id/edit", to: "organization_lead_forms#edit", as: :edit_organization_lead_form
+    patch "/:slug/settings/lead_forms/:id", to: "organization_lead_forms#update", as: :update_organization_lead_form
+    delete "/:slug/settings/lead_forms/:id", to: "organization_lead_forms#destroy", as: :organization_lead_form
+    patch "/:slug/settings/lead_forms/:id/toggle", to: "organization_lead_forms#toggle",
+                                                   as: :organization_lead_form_toggle
+    get "/:slug/settings/lead_forms/:id/submissions", to: "organization_lead_forms#submissions",
+                                                      as: :organization_lead_form_submissions
+    post "/lead_submissions", to: "lead_submissions#create"
+    get "/lead_submissions/check", to: "lead_submissions#check"
     post "articles/preview", to: "articles#preview"
     post "comments/preview", to: "comments#preview"
     post "comments/subscribe", to: "notification_subscriptions#create"
@@ -369,6 +459,7 @@ Rails.application.routes.draw do
     get "/faq", to: "pages#faq"
     get "/page/post-a-job", to: "pages#post_a_job"
     get "/tag-moderation", to: "pages#tag_moderation"
+    get "/leaderboard", to: "leaderboards#index", as: :leaderboard
 
     get "/mod", to: "moderations#index", as: :mod
     get "/mod/:tag", to: "moderations#index"
@@ -414,10 +505,12 @@ Rails.application.routes.draw do
                                      }
     get "/dashboard/:username", to: "dashboards#show", as: :dashboard_show_user
 
-    # for testing rails mailers
     unless Rails.env.production?
       get "/rails/mailers", to: "rails/mailers#index"
       get "/rails/mailers/*path", to: "rails/mailers#preview"
+
+      get "dev_tools", to: "dev_tools#index"
+      post "dev_tools/sign_in_as", to: "dev_tools#sign_in_as"
     end
 
     get "/embed/:embeddable", to: "liquid_embeds#show", as: "liquid_embed"
@@ -458,9 +551,10 @@ Rails.application.routes.draw do
 
     get "/top/:timeframe", to: "stories#index"
 
-    get "/:feed_type/:timeframe", to: "stories#index", constraints: { feed_type: /following/, timeframe: /latest/ }
+    get "/:feed_type/:timeframe", to: "stories#index",
+                                  constraints: { feed_type: /following/, timeframe: /latest|latest_less_filtered/ }
 
-    get "/:timeframe", to: "stories#index", constraints: { timeframe: /latest/ }
+    get "/:timeframe", to: "stories#index", constraints: { timeframe: /latest|latest_less_filtered/ }
     get "/:feed_type", to: "stories#index", constraints: { feed_type: /discover|following/ }
 
     get "/:username/series", to: "collections#index", as: "user_series"

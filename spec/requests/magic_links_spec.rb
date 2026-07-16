@@ -85,6 +85,7 @@ RSpec.describe "MagicLinks", type: :request do
           allow(ForemInstance).to receive(:invitation_only?).and_return(false)
           allow(Settings::Authentication).to receive(:acceptable_domain?).with(domain: "example.com").and_return(true)
           allow(Users::GenerateAiProfileImageWorker).to receive(:perform_async)
+          FeatureFlag.enable(:auto_generated_profile_pics)
 
           post "/magic_links", params: { email: email }, headers: { "Host" => subforem.domain }
 
@@ -122,6 +123,30 @@ RSpec.describe "MagicLinks", type: :request do
           expect(response).to redirect_to(new_user_session_path)
         end
       end
+
+      it "does not create a user or send a magic link when encoded-word email domain is acceptable" do
+        encoded_word_email = "=?utf-8?q?test=40attacker.com=3e?=@company.com"
+        built_user = nil
+
+        allow(ForemInstance).to receive(:invitation_only?).and_return(false)
+        allow(Settings::Authentication).to receive(:acceptable_domain?).with(domain: "company.com").and_return(true)
+        allow(User).to receive(:find_by).and_call_original
+        allow(User).to receive(:find_by).with(email: encoded_word_email).and_return(nil)
+        allow(User).to receive(:new).and_wrap_original do |method, *args, **kwargs|
+          built_user = method.call(*args, **kwargs)
+          allow(built_user).to receive(:send_magic_link!).and_call_original
+          built_user
+        end
+
+        expect do
+          post "/magic_links", params: { email: encoded_word_email }
+        end.not_to change(User, :count)
+
+        expect(built_user).not_to be_persisted
+        expect(built_user).not_to have_received(:send_magic_link!)
+        expect(controller.current_user).to be_nil
+        expect(response).to redirect_to(new_user_session_path)
+      end
     end
 
     context "when no email is provided" do
@@ -133,6 +158,44 @@ RSpec.describe "MagicLinks", type: :request do
 
   describe "GET /magic_links/:id" do
     let(:token) { "valid_token" }
+
+    # The magic-link sign-in confirms the email via update_column, which
+    # bypasses the Trackable after_commit - it must emit explicitly so Core
+    # learns the address is verified.
+    it "emits user_updated to the DEV -> Core sync when it confirms the email" do
+      user = create(:user, confirmed_at: nil)
+      user.update_columns(sign_in_token: "tok-sync-123", sign_in_token_sent_at: Time.current)
+      allow(Trackable::Registry).to receive(:active_names).and_return([:any])
+      allow(Trackable::DispatchWorker).to receive(:perform_async)
+      Settings::General.customerio_cdp_enabled = true
+      FeatureFlag.enable(:dev_core_user_sync, FeatureFlag::Actor[user])
+
+      with_trackable_events { get "/magic_links/tok-sync-123" }
+
+      expect(user.reload.confirmed_at).to be_present
+      expect(Trackable::DispatchWorker).to have_received(:perform_async)
+        .with(anything, "user_updated", [user.id],
+              hash_including("confirmed_at" => user.confirmed_at.iso8601), anything)
+    ensure
+      FeatureFlag.remove(:dev_core_user_sync)
+    end
+
+    it "does not emit user_updated when the email was already confirmed" do
+      user = create(:user, confirmed_at: 1.week.ago)
+      user.update_columns(sign_in_token: "tok-sync-456", sign_in_token_sent_at: Time.current)
+      allow(Trackable::Registry).to receive(:active_names).and_return([:any])
+      allow(Trackable::DispatchWorker).to receive(:perform_async)
+      Settings::General.customerio_cdp_enabled = true
+      FeatureFlag.enable(:dev_core_user_sync, FeatureFlag::Actor[user])
+
+      with_trackable_events { get "/magic_links/tok-sync-456" }
+
+      # (the sign-in itself legitimately emits a throttled user_engaged)
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+        .with(anything, "user_updated", anything, anything, anything)
+    ensure
+      FeatureFlag.remove(:dev_core_user_sync)
+    end
 
     context "when the token matches a user and is not expired" do
       it "confirms the user and redirects to root_path" do

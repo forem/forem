@@ -12,6 +12,7 @@ RSpec.describe Reactions::BustReactableCacheWorker, type: :worker do
     before do
       allow(EdgeCache::BustArticle).to receive(:call)
       allow(EdgeCache::PurgeByKey).to receive(:call)
+      allow(Articles::UpdateDependentEmbedsWorker).to receive(:perform_async)
     end
 
     it "busts the reactable article cache" do
@@ -24,6 +25,7 @@ RSpec.describe Reactions::BustReactableCacheWorker, type: :worker do
         Reaction.surrogate_key_for_article(article.id),
         fallback_paths: "/reactions?article_id=#{article.id}",
       )
+      expect(Articles::UpdateDependentEmbedsWorker).to have_received(:perform_async).with(article.id)
     end
 
     it "busts the article if there were previously no reactions" do
