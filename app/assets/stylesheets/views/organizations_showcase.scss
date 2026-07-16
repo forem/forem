@@ -1,13 +1,13 @@
 // ==========================================================================
 // Custom premium styling for the organization's custom README/Showcase page
 // ==========================================================================
-$exclude-embeds: ':not([class*="ltag"] *):not(.crayons-story *):not(.bluesky-embed *)';
+$exclude-embeds: ':not(.crayons-btn):not([class*="ltag"] *):not(.crayons-story *):not(.bluesky-embed *)';
 
 .org-header-cover ~ #index-container .crayons-article__body {
   font-family: var(--ff-sans-serif, -apple-system, BlinkMacSystemFont, sans-serif);
   color: var(--body-color);
-  line-height: 1.7;
-  font-size: 1.05rem;
+  font-size: 1rem;
+  line-height: 1.65;
 
   h1#{$exclude-embeds},
   h2#{$exclude-embeds},
@@ -17,31 +17,42 @@ $exclude-embeds: ':not([class*="ltag"] *):not(.crayons-story *):not(.bluesky-emb
   h6#{$exclude-embeds} {
     color: var(--body-color);
     font-weight: var(--fw-bold, 700);
-    margin-top: 1.8em;
-    margin-bottom: 0.8em;
-    line-height: 1.3;
+    line-height: 1.25;
   }
 
   h1#{$exclude-embeds} {
-    font-size: 2rem;
+    margin: 0 0 var(--su-6);
+    padding-bottom: var(--su-4);
     border-bottom: 1px solid var(--form-border);
-    padding-bottom: 0.3em;
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    font-weight: var(--fw-heavy, 800);
+    letter-spacing: -0.03em;
   }
 
   h2#{$exclude-embeds} {
-    font-size: 1.5rem;
+    margin: var(--su-9) 0 var(--su-5);
+    padding-bottom: var(--su-3);
     border-bottom: 1px solid var(--form-border);
-    padding-bottom: 0.3em;
+    font-size: clamp(1.35rem, 2.5vw, 1.6rem);
+    font-weight: var(--fw-heavy, 800);
+    letter-spacing: -0.02em;
   }
 
   h3#{$exclude-embeds} {
-    font-size: 1.25rem;
+    margin: var(--su-7) 0 var(--su-3);
+    font-size: 1.15rem;
+    font-weight: var(--fw-bold, 700);
+    letter-spacing: -0.01em;
   }
 
   p#{$exclude-embeds},
   li#{$exclude-embeds} {
-    margin-bottom: 1.2em;
     color: var(--card-color-secondary);
+  }
+
+  > p#{$exclude-embeds} {
+    max-width: 72ch;
+    margin: 0 0 var(--su-5);
   }
 
   a#{$exclude-embeds} {
@@ -53,6 +64,153 @@ $exclude-embeds: ':not([class*="ltag"] *):not(.crayons-story *):not(.bluesky-emb
     &:hover {
       color: var(--link-branded-color-hover);
     }
+  }
+
+  // Nested Liquid content is rendered with hard wrapping before the
+  // surrounding README, turning a source newline into a doubled break. Keep
+  // the intentional line break while removing the resulting blank line.
+  .ltag-feature__body > p > br + br,
+  .ltag-col > p > br + br {
+    display: none;
+  }
+
+  // The page-level showcase card should follow the same rhythm as the richer
+  // blocks below it without changing the shared embed component.
+  > .c-embed {
+    margin: var(--su-6) 0;
+    padding: var(--su-6);
+    border-color: var(--card-border);
+    border-radius: var(--radius-lg, var(--radius));
+    box-shadow: var(--shadow-smooth);
+    line-height: 1.6;
+
+    > br:first-child,
+    > br:last-child {
+      display: none;
+    }
+  }
+
+  > p > .crayons-btn {
+    margin-top: var(--su-1);
+  }
+
+  // Normalize the larger showcase blocks so headings and content have a
+  // predictable cadence even though the underlying Liquid tags use different
+  // default margins.
+  .ltag-features,
+  .ltag-row,
+  .ltag-quote,
+  .ltag-offer,
+  .ltag-slides,
+  .ltag-org-posts,
+  .ltag-feed,
+  .ltag-org-team,
+  .ltag-org-lead-form {
+    margin-top: 0;
+    margin-bottom: var(--su-8);
+  }
+
+  .ltag-features {
+    gap: var(--su-5);
+  }
+
+  .ltag-feature {
+    align-items: flex-start;
+    padding: var(--su-5);
+    border-radius: var(--radius-lg, var(--radius));
+  }
+
+  .ltag-feature__content {
+    gap: var(--su-2);
+  }
+
+  .ltag-feature__title {
+    font-weight: var(--fw-heavy, 800);
+    line-height: 1.35;
+  }
+
+  .ltag-feature__body {
+    line-height: 1.55;
+  }
+
+  .ltag-row {
+    gap: var(--su-5);
+  }
+
+  .ltag-col {
+    padding: var(--su-5);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg, var(--radius));
+    background: var(--card-secondary-bg);
+    line-height: 1.55;
+
+    > p {
+      margin-bottom: var(--su-3);
+    }
+
+    > p:first-of-type {
+      font-weight: var(--fw-bold, 700);
+      color: var(--body-color);
+    }
+  }
+
+  .ltag-quote,
+  .ltag-offer,
+  .ltag-org-lead-form {
+    padding: var(--su-6);
+    border-radius: var(--radius-lg, var(--radius));
+    box-shadow: var(--shadow-smooth);
+  }
+
+  .ltag-offer {
+    justify-content: space-between;
+  }
+
+  details {
+    padding: var(--su-2) 0;
+    border-bottom: 1px solid var(--card-border);
+
+    summary {
+      padding: var(--su-2) 0;
+      font-weight: var(--fw-medium, 500);
+      cursor: pointer;
+    }
+
+    > :not(summary) {
+      margin-left: var(--su-5);
+    }
+  }
+
+  .ltag-org-posts,
+  .ltag-feed {
+    display: grid;
+    gap: var(--su-5);
+  }
+
+  .ltag-org-posts .crayons-story,
+  .ltag-feed .crayons-story {
+    --story-padding: var(--su-5);
+    --title-font-size: var(--fs-xl);
+
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    box-shadow: var(--shadow-smooth);
+  }
+
+  .ltag-org-team .org-sidebar-widget-body {
+    gap: var(--su-4);
+    padding: var(--su-6);
+  }
+
+  .ltag__link--embedded,
+  .ltag__user,
+  .liquid-comment,
+  .ltag__event,
+  .ltag-agent-session,
+  .ltag-github-readme-tag {
+    margin-top: 0;
+    margin-bottom: var(--su-6);
   }
 
   ul#{$exclude-embeds},
@@ -121,6 +279,37 @@ $exclude-embeds: ':not([class*="ltag"] *):not(.crayons-story *):not(.bluesky-emb
       color: var(--body-color);
       padding: 0;
       font-size: 90%;
+    }
+  }
+
+  @media (max-width: 767px) {
+    h1#{$exclude-embeds} {
+      padding-bottom: var(--su-3);
+    }
+
+    h2#{$exclude-embeds} {
+      margin-top: var(--su-8);
+    }
+
+    > .c-embed,
+    .ltag-feature,
+    .ltag-col,
+    .ltag-quote,
+    .ltag-offer,
+    .ltag-org-lead-form {
+      padding: var(--su-4);
+    }
+
+    .ltag-features,
+    .ltag-row,
+    .ltag-quote,
+    .ltag-offer,
+    .ltag-slides,
+    .ltag-org-posts,
+    .ltag-feed,
+    .ltag-org-team,
+    .ltag-org-lead-form {
+      margin-bottom: var(--su-7);
     }
   }
 }
