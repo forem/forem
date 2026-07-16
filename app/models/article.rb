@@ -977,6 +977,7 @@ class Article < ApplicationRecord
 
   def update_score
     base_subscriber_adjustment = user.base_subscriber? ? Settings::UserExperience.index_minimum_score : 0
+    verified_organization_adjustment = organization&.verified? ? Settings::UserExperience.index_minimum_score : 0
     spam_adjustment = user.spam? ? -500 : 0
     negative_reaction_adjustment = Reaction.where(reactable_id: user_id, reactable_type: "User").sum(:points)
 
@@ -1002,7 +1003,7 @@ class Article < ApplicationRecord
 
     established_user_adjustment = (user.score.to_i > 100 && !clear_and_obvious_spam? && !likely_spam?) ? Settings::UserExperience.index_minimum_score.to_i : 0
 
-    self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment + user_featured_count_adjustment + user_negative_count_adjustment + context_note_adjustment + automod_label_adjustment + badge_reputation_bonus + organization_baseline_score + established_user_adjustment
+    self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment + verified_organization_adjustment + user_featured_count_adjustment + user_negative_count_adjustment + context_note_adjustment + automod_label_adjustment + badge_reputation_bonus + organization_baseline_score + established_user_adjustment
     accepted_max = [max_score, user&.max_score.to_i].min
     accepted_max = [max_score, user&.max_score.to_i].max if accepted_max.zero?
     self.score = baseline_score if baseline_score.positive? && score < baseline_score
