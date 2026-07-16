@@ -1,5 +1,11 @@
 require "rails_helper"
 
+RSpec.shared_examples "#delivers_via_smtp_by_default" do
+  it "uses SMTP delivery when Customer.io is not configured" do
+    expect(email.message.delivery_method).not_to be_a(DeliveryMethods::CustomerIo)
+  end
+end
+
 RSpec.describe NotifyMailer do
   let(:user)      { create(:user) }
   let(:user2)     { create(:user) }
@@ -22,6 +28,30 @@ RSpec.describe NotifyMailer do
     it "renders proper receiver" do
       expect(email.to).to eq([comment.user.email])
     end
+
+    include_examples "#delivers_via_smtp_by_default"
+
+    context "when routed through Customer.io" do
+      before do
+        allow(ApplicationConfig).to receive(:[]).and_call_original
+        allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
+        FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[comment.user])
+      end
+
+      after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
+
+      it "routes through the Customer.io new reply template", :aggregate_failures do
+        settings = email.message.delivery_method.settings
+
+        expect(settings[:transactional_message_id]).to eq("dev_new_reply_email")
+        expect(settings[:message_data]["commenter_name"]).to eq(comment.user.name)
+        expect(settings[:message_data]["parent_type"]).to eq(comment.parent_type)
+        expect(settings[:message_data]["comment_html"]).to be_present
+        expect(settings[:message_data]["comment_url"]).to eq(URL.comment(comment))
+        expect(settings[:message_data]["article_or_parent_title"]).to eq(article.title)
+        expect(settings[:message_data]["unsubscribe_url"]).to include("ut=")
+      end
+    end
   end
 
   describe "#new_follower_email" do
@@ -38,6 +68,27 @@ RSpec.describe NotifyMailer do
     it "renders proper receiver" do
       expect(email.to).to eq([user.email])
     end
+
+    include_examples "#delivers_via_smtp_by_default"
+
+    context "when routed through Customer.io" do
+      before do
+        allow(ApplicationConfig).to receive(:[]).and_call_original
+        allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
+        FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+      end
+
+      after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
+
+      it "routes through the Customer.io new follower template", :aggregate_failures do
+        settings = email.message.delivery_method.settings
+
+        expect(settings[:transactional_message_id]).to eq("dev_new_follower_email")
+        expect(settings[:message_data]["follower_name"]).to eq(user2.name)
+        expect(settings[:message_data]["follower_profile_url"]).to eq(URL.user(user2))
+        expect(settings[:message_data]["unsubscribe_url"]).to include("ut=")
+      end
+    end
   end
 
   describe "#new_mention_email" do
@@ -51,6 +102,8 @@ RSpec.describe NotifyMailer do
         expect(email.subject).to eq("#{comment.user.name} just mentioned you in their comment")
         expect(email.to).to eq([user2.email])
       end
+
+      include_examples "#delivers_via_smtp_by_default"
     end
 
     context "when mentioning in an article" do
@@ -62,6 +115,30 @@ RSpec.describe NotifyMailer do
       it "renders proper subject and receiver", :aggregate_failures do
         expect(email.subject).to eq("#{article.user.name} just mentioned you in their post")
         expect(email.to).to eq([user2.email])
+      end
+    end
+
+    context "when routed through Customer.io" do
+      let(:comment_mention) { create(:mention, user: user2, mentionable: comment) }
+      let(:email) { described_class.with(mention: comment_mention).new_mention_email }
+
+      before do
+        allow(ApplicationConfig).to receive(:[]).and_call_original
+        allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
+        FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user2])
+      end
+
+      after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
+
+      it "routes through the Customer.io new mention template", :aggregate_failures do
+        settings = email.message.delivery_method.settings
+
+        expect(settings[:transactional_message_id]).to eq("dev_new_mention_email")
+        expect(settings[:message_data]["mentioner_name"]).to eq(comment.user.name)
+        expect(settings[:message_data]["mentionable_type"]).to eq(comment_mention.decorate.formatted_mentionable_type)
+        expected_mention_url = URL.url(comment_mention.mentionable.path, RequestStore.store[:subforem_domain])
+        expect(settings[:message_data]["mention_url"]).to eq(expected_mention_url)
+        expect(settings[:message_data]["unsubscribe_url"]).to include("ut=")
       end
     end
   end
@@ -77,6 +154,29 @@ RSpec.describe NotifyMailer do
 
     it "renders proper receiver" do
       expect(email.to).to eq([user.email])
+    end
+
+    include_examples "#delivers_via_smtp_by_default"
+
+    context "when routed through Customer.io" do
+      before do
+        allow(ApplicationConfig).to receive(:[]).and_call_original
+        allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
+        FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+      end
+
+      after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
+
+      it "routes through the Customer.io unread notifications template", :aggregate_failures do
+        settings = email.message.delivery_method.settings
+
+        expect(settings[:transactional_message_id]).to eq("dev_unread_notifications_email")
+        expect(settings[:message_data]["unread_count"]).to eq(0)
+        expected_notifications_url = URL.url("/notifications", RequestStore.store[:subforem_domain])
+        expect(settings[:message_data]["notifications_url"]).to eq(expected_notifications_url)
+        expect(settings[:message_data]["community_name"]).to eq(Settings::Community.community_name)
+        expect(settings[:message_data]["unsubscribe_url"]).to include("ut=")
+      end
     end
 
     context "with subforem-specific user" do
@@ -142,6 +242,28 @@ RSpec.describe NotifyMailer do
 
     it "renders proper receiver" do
       expect(email.to).to eq([user.email])
+    end
+
+    include_examples "#delivers_via_smtp_by_default"
+
+    context "when routed through Customer.io" do
+      before do
+        allow(ApplicationConfig).to receive(:[]).and_call_original
+        allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
+        FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+      end
+
+      after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
+
+      it "routes through the Customer.io new badge template", :aggregate_failures do
+        settings = email.message.delivery_method.settings
+
+        expect(settings[:transactional_message_id]).to eq("dev_new_badge_email")
+        expect(settings[:message_data]["badge_name"]).to eq(badge.title)
+        expect(settings[:message_data]["badge_description"]).to eq(badge.description)
+        expect(settings[:message_data]["badge_image_url"]).to eq(badge.badge_image_url)
+        expect(settings[:message_data]["unsubscribe_url"]).to include("ut=")
+      end
     end
 
     context "when rendering the HTML email for badge w/o credits" do
