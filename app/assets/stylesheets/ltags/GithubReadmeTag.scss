@@ -1,81 +1,254 @@
 @import '../variables';
+
 .ltag-github-readme-tag {
   position: relative;
   border: 1px solid var(--form-border);
   box-shadow: var(--shadow-smooth);
-  border-radius: var(--radius-auto);
-  margin: 1.1em auto 1.3em;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial,
-    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol' !important;
+  border-radius: var(--radius-lg, 8px);
+  margin: 1.5em auto;
+  font-family: var(--ff-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif) !important;
   overflow: hidden;
+  background-color: var(--card-bg);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-1);
+  }
+
   a {
     color: var(--link-branded-color) !important;
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
   }
+
   .readme-overview {
-    padding: 0.8em calc(0.5em + 0.25vw);
-    border-bottom: 1px solid $light-medium-gray;
+    padding: var(--su-4);
+    border-bottom: 1px solid var(--form-border);
+    background-color: var(--card-secondary-bg, var(--base-0));
+
     h2 {
-      font-weight: 400 !important;
-      font-size: 1.2em !important;
-      line-height: 1.3em !important;
-      margin: 0em 0px 0.5em !important;
+      font-weight: var(--fw-bold, 700) !important;
+      font-size: var(--fs-lg, 1.15em) !important;
+      line-height: var(--lh-tight, 1.3) !important;
+      margin: 0 0 var(--su-2) !important;
+      
       img {
         width: 1.15em !important;
         max-width: 1.1em !important;
         display: inline-block;
         left: 0px;
-        margin: 0;
-        vertical-align: -0.18em;
-        filter: invert(0);
+        margin: 0 var(--su-2) 0 0;
+        vertical-align: -0.15em;
         filter: var(--theme-social-icon-invert, invert(0));
       }
     }
+
     h3 {
-      font-weight: 400 !important;
+      font-weight: var(--fw-normal, 400) !important;
       margin: 0;
-      margin-left: 0.15em;
-      font-size: 0.75em !important;
-      line-height: 1.05em !important;
+      font-size: var(--fs-s, 0.85em) !important;
+      line-height: var(--lh-base, 1.4) !important;
+      color: var(--card-color-secondary);
     }
   }
 
   .ltag-github-body {
-    font-size: 0.72em;
-    line-height: 1.12em;
+    padding: var(--su-4) var(--su-4) 0;
+    font-size: var(--fs-m, 0.95em);
+    line-height: var(--lh-base, 1.5);
     text-align: left;
     min-height: 100px;
+    color: var(--card-color-secondary);
   }
 
   .gh-btn-container {
-    padding: 0.1em 0 1.15em;
+    padding: var(--su-3) 0 var(--su-4);
+    text-align: center;
+    background: linear-gradient(to top, var(--card-bg) 60%, transparent);
+    position: relative;
+    margin-top: calc(-1 * var(--su-3));
   }
 
   .gh-btn {
-    padding: 0.28em 1.2em;
-    font-size: 0.75em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--su-2) var(--su-5);
+    font-size: var(--fs-s);
+    font-weight: var(--fw-medium);
+    border-radius: var(--radius);
+    color: var(--button-ghost-color);
+    background-color: var(--button-ghost-bg);
+    border: 1px solid var(--button-outlined-border, var(--form-border));
+    transition: all 0.2s ease;
+    text-decoration: none !important;
+
+    &:hover {
+      background-color: var(--button-ghost-bg-hover);
+      border-color: var(--button-outlined-border-hover, var(--form-border-hover));
+      color: var(--button-ghost-color-hover);
+    }
   }
 
   .markdown-body {
-    padding: 0em calc(0.5em + 0.2vw);
+    padding: 0;
+
     table {
-      max-width: 80%;
-      margin-left: 10%;
+      max-width: 100%;
+      margin: var(--su-3) 0;
+      border-collapse: collapse;
+      
+      th, td {
+        border: 1px solid var(--form-border);
+        padding: var(--su-2) var(--su-3);
+      }
     }
 
     img {
       display: inline-block;
-      left: 0px;
+      max-width: 100%;
+      height: auto;
     }
+
     .highlight {
-      background: white;
+      background: var(--card-secondary-bg);
+      border-radius: var(--radius);
+      padding: var(--su-3);
+      overflow-x: auto;
     }
+
     pre {
       max-width: 100%;
-      margin-left: 10%;
+      margin: var(--su-3) 0;
+      background: var(--card-secondary-bg);
+      border-radius: var(--radius);
+      padding: var(--su-3);
+      overflow-x: auto;
     }
 
     .anchor {
       display: none;
+    }
+  }
+}
+
+// ==========================================================================
+// Custom premium styling for the organization's README page
+// ==========================================================================
+.org-header-cover ~ #index-container .crayons-article__body {
+  font-family: var(--ff-sans-serif, -apple-system, BlinkMacSystemFont, sans-serif);
+  color: var(--body-color);
+  line-height: 1.7;
+  font-size: 1.05rem;
+
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--body-color);
+    font-weight: var(--fw-bold, 700);
+    margin-top: 1.8em;
+    margin-bottom: 0.8em;
+    line-height: 1.3;
+  }
+
+  h1 {
+    font-size: 2rem;
+    border-bottom: 1px solid var(--form-border);
+    padding-bottom: 0.3em;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    border-bottom: 1px solid var(--form-border);
+    padding-bottom: 0.3em;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+  }
+
+  p, li {
+    margin-bottom: 1.2em;
+    color: var(--card-color-secondary);
+  }
+
+  a {
+    color: var(--link-branded-color);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: var(--link-branded-color-hover);
+    }
+  }
+
+  ul, ol {
+    padding-left: 2em;
+    margin-bottom: 1.5em;
+  }
+
+  blockquote {
+    border-left: 4px solid var(--accent-brand);
+    background-color: var(--card-secondary-bg);
+    padding: var(--su-4) var(--su-5);
+    margin: 1.5em 0;
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-style: italic;
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5em 0;
+    font-size: 0.95rem;
+
+    th, td {
+      border: 1px solid var(--form-border);
+      padding: var(--su-3) var(--su-4);
+      text-align: left;
+    }
+
+    th {
+      background-color: var(--card-secondary-bg);
+      font-weight: var(--fw-bold);
+    }
+
+    tr:nth-child(even) {
+      background-color: var(--card-secondary-bg);
+    }
+  }
+
+  pre, code {
+    font-family: var(--ff-monospace, monospace);
+    border-radius: var(--radius);
+  }
+
+  code {
+    background-color: var(--card-secondary-bg);
+    color: var(--accent-brand);
+    padding: 0.2em 0.4em;
+    font-size: 85%;
+  }
+
+  pre {
+    background-color: var(--card-secondary-bg);
+    border: 1px solid var(--form-border);
+    padding: var(--su-4);
+    overflow-x: auto;
+    margin: 1.5em 0;
+
+    code {
+      background-color: transparent;
+      color: var(--body-color);
+      padding: 0;
+      font-size: 90%;
     }
   }
 }
