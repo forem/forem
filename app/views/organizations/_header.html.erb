@@ -81,6 +81,9 @@
     height: 3px;
     background: var(--profile-brand-color);
   }
+  .org-header-tabs .crayons-tabs__item {
+    width: auto;
+  }
 </style>
 
 <div class="org-header-cover"></div>
@@ -241,6 +244,23 @@
         <% end %>
       </div>
     </div>
+  <% end %>
+
+  <%# Render Showcase and All Posts tabs if organization has custom readme page feature enabled %>
+  <% if @organization.main_page.present? && FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization]) %>
+    <%
+      is_custom_domain = request.env["forem.custom_domain_org"].present?
+      showcase_path = is_custom_domain ? "/" : "/#{@organization.slug}"
+      all_posts_path = is_custom_domain ? "/?mode=all-posts" : "/#{@organization.slug}?mode=all-posts"
+    %>
+    <nav class="crayons-tabs org-header-tabs" aria-label="Organization Profile Navigation">
+      <a href="<%= showcase_path %>" class="crayons-tabs__item <%= 'crayons-tabs__item--current' if params[:mode] != 'all-posts' %>" <%= 'aria-current="page"' if params[:mode] != 'all-posts' %> data-text="<%= t('views.organizations.showcase') %>">
+        <%= t('views.organizations.showcase') %>
+      </a>
+      <a href="<%= all_posts_path %>" class="crayons-tabs__item <%= 'crayons-tabs__item--current' if params[:mode] == 'all-posts' %>" <%= 'aria-current="page"' if params[:mode] == 'all-posts' %> data-text="<%= t('views.organizations.all_posts') %>">
+        <%= t('views.organizations.all_posts') %>
+      </a>
+    </nav>
   <% end %>
 </div>
 

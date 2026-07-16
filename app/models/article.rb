@@ -274,6 +274,7 @@ class Article < ApplicationRecord
   validates :clickbait_score, numericality: { greater_than_or_equal_to: 0.0, less_than_or_equal_to: 1.0 }
   validates :compellingness_score, numericality: { greater_than_or_equal_to: 0.0, less_than_or_equal_to: 1.0 }
   validates :max_score, numericality: { greater_than_or_equal_to: 0 }
+  validates :baseline_score, numericality: { greater_than_or_equal_to: 0 }
   validate :future_or_current_published_at, on: :create
   validate :correct_published_at?, on: :update, unless: :admin_update
 
@@ -343,6 +344,9 @@ class Article < ApplicationRecord
   after_update_commit :regenerate_summary_if_content_changed
 
   after_commit :recompile_organization_pages, on: %i[create update destroy]
+
+  after_save :cleanup_memberships_if_unpublished,
+             if: -> { saved_change_to_published? && published_before_last_save && !published? }
 
   # The trigger `update_reading_list_document` is used to keep the `articles.reading_list_document` column updated.
   #
@@ -512,7 +516,7 @@ class Article < ApplicationRecord
   scope :limited_columns_internal_select, lambda {
     select(:path, :title, :id, :featured, :approved, :published,
            :comments_count, :public_reactions_count, :cached_tag_list,
-           :main_image, :main_image_background_hex_color, :updated_at, :max_score,
+           :main_image, :main_image_background_hex_color, :updated_at, :max_score, :baseline_score,
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
            :published_from_feed, :crossposted_at, :published_at, :created_at, :edited_at,
@@ -973,6 +977,7 @@ class Article < ApplicationRecord
 
   def update_score
     base_subscriber_adjustment = user.base_subscriber? ? Settings::UserExperience.index_minimum_score : 0
+    verified_organization_adjustment = organization&.verified? ? Settings::UserExperience.index_minimum_score : 0
     spam_adjustment = user.spam? ? -500 : 0
     negative_reaction_adjustment = Reaction.where(reactable_id: user_id, reactable_type: "User").sum(:points)
 
@@ -998,10 +1003,11 @@ class Article < ApplicationRecord
 
     established_user_adjustment = (user.score.to_i > 100 && !clear_and_obvious_spam? && !likely_spam?) ? Settings::UserExperience.index_minimum_score.to_i : 0
 
-    self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment + user_featured_count_adjustment + user_negative_count_adjustment + context_note_adjustment + automod_label_adjustment + badge_reputation_bonus + organization_baseline_score + established_user_adjustment
+    self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment + verified_organization_adjustment + user_featured_count_adjustment + user_negative_count_adjustment + context_note_adjustment + automod_label_adjustment + badge_reputation_bonus + organization_baseline_score + established_user_adjustment
     accepted_max = [max_score, user&.max_score.to_i].min
     accepted_max = [max_score, user&.max_score.to_i].max if accepted_max.zero?
-    self.score = accepted_max if accepted_max.positive? && accepted_max < score
+    self.score = baseline_score if baseline_score.positive? && score < baseline_score
+    self.score = accepted_max if accepted_max.positive? && score > accepted_max
 
     # Calculate comment_score and apply max_score limits
     # Each comment can contribute a minimum of -1 to the total score
@@ -1856,5 +1862,10 @@ class Article < ApplicationRecord
        saved_change_to_main_image?
       Articles::UpdateDependentEmbedsWorker.perform_async(id)
     end
+  end
+
+  def cleanup_memberships_if_unpublished
+    concept_memberships.destroy_all
+    trend_memberships.destroy_all
   end
 end
