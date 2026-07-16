@@ -162,6 +162,8 @@ pt:
       cover_image_alt: "Imagem de capa de %{org}"
       settings_link: Configurações da Organização
       admin_link: Admin
+      showcase: Showcase
+      all_posts: Todos os posts
       confirm_invitation:
         title: Confirmar Convite da Organização
         greeting: "Olá %{name}!"

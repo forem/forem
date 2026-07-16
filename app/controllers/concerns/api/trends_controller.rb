@@ -21,12 +21,14 @@ module Api
       num = [per_page, per_page_max].min
       page = params[:page] || 1
 
+      sort_by = params[:sort] == "score" ? "articles.score DESC" : "trend_memberships.distance ASC, articles.score DESC"
+
       @articles = Article.published
                          .joins(:trend_memberships)
                          .where(trend_memberships: { trend_id: @trend.id })
                          .select(Api::ArticlesController::INDEX_ATTRIBUTES_FOR_SERIALIZATION)
                          .includes(user: :profile)
-                         .order("trend_memberships.distance ASC, articles.score DESC")
+                         .order(sort_by)
                          .page(page)
                          .per(num)
                          .decorate
