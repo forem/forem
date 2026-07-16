@@ -4,6 +4,10 @@ class VerificationMailer < ApplicationMailer
                                                email: ForemInstance.from_email_address)
   }
 
+  # Security emails must not get link tracking (see save_ahoy_options no-op /
+  # spam-filter risk); the same applies on the Customer.io route.
+  before_action { customerio_delivery_options(tracked: false) }
+
   def account_ownership_verification_email
     @user = User.find(params[:user_id])
     email_authorization = EmailAuthorization.create!(user: @user, type_of: "account_ownership")
