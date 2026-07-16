@@ -6,7 +6,7 @@ RSpec.describe "Viewing a comment", js: true do
   let(:comment) { create(:comment, commentable: article, user: user) }
 
   before do
-    Timecop.freeze
+    Timecop.freeze(Time.current.change(usec: 0))
     ENV["DESYNC_TIMEZONE"] = "true"
     mock_user_tz = ActiveSupport::TimeZone[Zonebie.random_timezone].tzinfo.name
     ENV["TZ"] = mock_user_tz
@@ -23,6 +23,7 @@ RSpec.describe "Viewing a comment", js: true do
     it "contains a time tag with the correct value for the datetime attribute" do
       sign_in user
       visit comment.path
+      comment.reload
       timestamp = comment.decorate.published_timestamp
 
       expect(page).to have_selector(".comment-date time[datetime='#{timestamp}']")
@@ -31,6 +32,7 @@ RSpec.describe "Viewing a comment", js: true do
     it "shows the published date in the user's local time zone" do
       sign_in user
       visit comment.path
+      comment.reload
       date = comment.created_at.getlocal.strftime("%b %-d")
 
       expect(page).to have_selector(".comment-date time", text: date)
@@ -40,12 +42,13 @@ RSpec.describe "Viewing a comment", js: true do
   context "when a year has passed" do
     before do
       comment
-      Timecop.freeze(1.year.from_now)
+      Timecop.freeze(1.year.from_now.change(usec: 0))
     end
 
     it "shows the published date in the correct format" do
       sign_in user
       visit comment.path
+      comment.reload
       date = comment.created_at.getlocal.strftime("%b %-d '%y")
 
       expect(page).to have_selector(".comment-date time", text: date)
@@ -54,13 +57,14 @@ RSpec.describe "Viewing a comment", js: true do
 
   context "when the comment is edited and a year has passed" do
     before do
-      comment.update(body_markdown: "This message is edited.", edited_at: 1.day.from_now)
-      Timecop.freeze(1.year.from_now)
+      comment.update(body_markdown: "This message is edited.", edited_at: 1.day.from_now.change(usec: 0))
+      Timecop.freeze(1.year.from_now.change(usec: 0))
     end
 
     it "shows the edited date in the correct format" do
       sign_in user
       visit comment.path
+      comment.reload
       date = comment.edited_at.getlocal.strftime("%b %-d")
 
       expect(page).to have_content("Edited on #{date}")
