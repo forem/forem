@@ -68,6 +68,8 @@ fr:
       deleted: L'annonce a été supprimée !
       updated: L'annonce publicitaire a été mise à jour !
       wrong: Quelque chose s'est mal passé avec la suppression de l'annonce publicitaire.
+    emails:
+      customerio_cutover_notice: L'envoi d'e-mails a été transféré à Customer.io. Les enregistrements ci-dessous sont historiques ; composez les nouvelles diffusions et infolettres dans l'espace de travail Customer.io.
     emails_controller:
       created: Emails are being sent!
       drafted: Email has been drafted!
