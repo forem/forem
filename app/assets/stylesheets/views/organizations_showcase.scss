@@ -146,11 +146,6 @@ $exclude-embeds: ':not(.crayons-btn):not([class*="ltag"] *):not(.crayons-story *
     > p {
       margin-bottom: var(--su-3);
     }
-
-    > p:first-of-type {
-      font-weight: var(--fw-bold, 700);
-      color: var(--body-color);
-    }
   }
 
   .ltag-quote,
