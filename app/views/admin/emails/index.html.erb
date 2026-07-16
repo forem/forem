@@ -37,11 +37,13 @@
       
       <%= submit_tag("Filter", class: "crayons-btn") %>
     <% end %>
-    <div class="ml-auto">
-      <div class="justify-end">
-        <%= link_to "Compose New Email", new_admin_email_path, class: "crayons-btn" %>
+    <% unless ForemInstance.customerio_email_cutover? %>
+      <div class="ml-auto">
+        <div class="justify-end">
+          <%= link_to "Compose New Email", new_admin_email_path, class: "crayons-btn" %>
+        </div>
       </div>
-    </div>
+    <% end %>
   </nav>
 
   <%= paginate @emails %>
