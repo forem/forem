@@ -93,3 +93,56 @@ module AhoyEmail
     end
   end
 end
+
+# Capture Customer.io's delivery id onto the EmailMessage (Ahoy::Message)
+# row so clicks reported by CIO's webhook can be backfilled onto
+# clicked_at (see IncomingWebhooks::CustomerioEventsController).
+#
+# Investigated first: the EmailMessage row is created by
+# AhoyEmail.track_method, invoked from AhoyEmail::Tracker#perform, which
+# only runs *after* delivery -- as a Mail delivery observer
+# (AhoyEmail::Observer.delivered_email, registered via
+# ActionMailer's register_observer, itself calling Mail.register_observer).
+# Mail::Message#deliver! calls delivery_method.deliver!(self) and then
+# informs observers with that same `self` (see mail gem's message.rb and
+# mail.rb#inform_observers) -- so a header written onto the mail object by
+# DeliveryMethods::CustomerIo#deliver! (after the CIO API call, once the
+# delivery_id is known) is still present on that identical object when
+# track_method builds the Ahoy row from it. That is the only point in the
+# pipeline where the delivery_id (known only post-API-call) and the
+# to-be-persisted row (known only post-delivery) coexist, so wrapping
+# track_method is the correct hook -- there's no earlier, cleaner
+# extension point: Processor#track_message (which seeds ahoy_data) runs
+# pre-delivery, before the CIO response exists.
+#
+# We wrap rather than replace track_method so upstream ahoy_email content
+# handling (message.encoded, click token, utm params, etc.) keeps working
+# unmodified across gem upgrades. The header is stripped before the
+# original method runs so it never leaks into the stored `content` column
+# (content is message.encoded -- the raw, header-included source).
+original_ahoy_track_method = AhoyEmail.track_method
+
+AhoyEmail.track_method = lambda do |data|
+  mail_message = data[:message]
+  delivery_id = nil
+
+  begin
+    header = mail_message[DeliveryMethods::CustomerIo::DELIVERY_ID_HEADER]
+    delivery_id = header&.value
+    mail_message[DeliveryMethods::CustomerIo::DELIVERY_ID_HEADER] = nil if delivery_id
+  rescue StandardError => e
+    Honeybadger.notify(e, context: { source: "ahoy_email delivery id capture" })
+  end
+
+  ahoy_message = original_ahoy_track_method.call(data)
+
+  if delivery_id.present? && ahoy_message.respond_to?(:cio_delivery_id=)
+    begin
+      ahoy_message.update_column(:cio_delivery_id, delivery_id)
+    rescue StandardError => e
+      Honeybadger.notify(e, context: { source: "ahoy_email delivery id capture", ahoy_message_id: ahoy_message.id })
+    end
+  end
+
+  ahoy_message
+end

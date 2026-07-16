@@ -10,6 +10,13 @@ module DeliveryMethods
       tracked: true
     }.freeze
 
+    # Header used to smuggle the Customer.io delivery id from this
+    # delivery method's API response through to ahoy_email's post-delivery
+    # save hook, which only ever sees the Mail::Message (not this return
+    # value). See config/initializers/ahoy_email.rb, which reads this
+    # header off the same mail object and strips it before persisting.
+    DELIVERY_ID_HEADER = "X-CIO-Delivery-ID".freeze
+
     def initialize(delivery_method_options = {})
       self.settings = DEFAULTS.merge(delivery_method_options)
     end
@@ -20,10 +27,21 @@ module DeliveryMethods
         request.attach(attachment.filename, attachment.body.to_s)
       end
 
-      CUSTOMERIO_API.send_email(request)
+      response = CUSTOMERIO_API.send_email(request)
+      stash_delivery_id(mail, response)
+      response
     end
 
     private
+
+    # Capturing the delivery id is purely for the click-backfill webhook;
+    # a failure here must never take down the send itself.
+    def stash_delivery_id(mail, response)
+      delivery_id = response["delivery_id"] if response.is_a?(Hash)
+      mail[DELIVERY_ID_HEADER] = delivery_id if delivery_id.present?
+    rescue StandardError => e
+      Honeybadger.notify(e, context: { source: "DeliveryMethods::CustomerIo#stash_delivery_id" })
+    end
 
     def build_message(mail)
       {}.tap do |message|

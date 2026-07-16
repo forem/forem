@@ -175,6 +175,7 @@ Rails.application.routes.draw do
       get "/mailchimp/:secret/unsubscribe", to: "mailchimp_unsubscribes#index", as: :mailchimp_unsubscribe_check
       post "/mailchimp/:secret/unsubscribe", to: "mailchimp_unsubscribes#create", as: :mailchimp_unsubscribe
       resources :stripe_events, only: [:create]
+      post "/customerio/events", to: "customerio_events#create", as: :customerio_events
     end
 
     resources :magic_links, only: %i[show create new]

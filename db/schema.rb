@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_07_14_173500) do
+ActiveRecord::Schema[7.2].define(version: 2026_07_15_180500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -51,6 +51,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_14_173500) do
   end
 
   create_table "ahoy_messages", force: :cascade do |t|
+    t.string "cio_delivery_id"
     t.datetime "clicked_at", precision: nil
     t.text "content"
     t.bigint "email_id"
@@ -67,6 +68,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_14_173500) do
     t.string "utm_medium"
     t.string "utm_source"
     t.string "utm_term"
+    t.index ["cio_delivery_id"], name: "index_ahoy_messages_on_cio_delivery_id"
     t.index ["email_id"], name: "index_ahoy_messages_on_email_id"
     t.index ["feedback_message_id"], name: "index_ahoy_messages_on_feedback_message_id"
     t.index ["to"], name: "index_ahoy_messages_on_to"

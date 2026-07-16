@@ -22,6 +22,14 @@ RSpec.describe Deliverable do
       expect(message.delivery_method).not_to be_a(DeliveryMethods::CustomerIo)
       expect(message.delivery_method.settings).to include(Settings::SMTP.settings)
     end
+
+    it "records a nil cio_delivery_id on the EmailMessage row for SMTP-mode deliveries" do
+      expect do
+        DeliverableTestMailer.with(to: "anyone@example.com").test_email.deliver_now
+      end.to change(EmailMessage, :count).by(1)
+
+      expect(EmailMessage.last.cio_delivery_id).to be_nil
+    end
   end
 
   context "when CUSTOMERIO_APP_KEY is configured" do
@@ -106,6 +114,19 @@ RSpec.describe Deliverable do
       end.to change(EmailMessage, :count).by(1)
 
       expect(api_client).to have_received(:send_email)
+      expect(EmailMessage.last.cio_delivery_id).to eq("x")
+    end
+
+    it "records a nil cio_delivery_id when the Customer.io response omits a delivery_id" do
+      FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+      api_client = instance_double(Customerio::APIClient, send_email: { "meta" => {} })
+      stub_const("CUSTOMERIO_API", api_client)
+
+      expect do
+        DeliverableTestMailer.with(to: user.email).test_email.deliver_now
+      end.to change(EmailMessage, :count).by(1)
+
+      expect(EmailMessage.last.cio_delivery_id).to be_nil
     end
   end
 end
