@@ -51,6 +51,14 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
           end
         end
 
+        it "renders the tags stylesheet under both standard and internal navigation" do
+          get "/t/#{tag.name}"
+          expect(response.body).to include('href="/assets/tags')
+
+          get "/t/#{tag.name}", params: { i: "i" }
+          expect(response.body).to include('href="/assets/tags')
+        end
+
         it "renders page when tag is not supported but has at least one approved article" do
           create(:article, :past, published: true, approved: true, tags: unsupported_tag,
                                   past_published_at: 5.years.ago)
