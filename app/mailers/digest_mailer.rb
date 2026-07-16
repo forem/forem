@@ -19,6 +19,8 @@ class DigestMailer < ApplicationMailer
       message_data: {
         "subject" => subject,
         "articles" => @articles.map { |article| digest_article_payload(article) },
+        # Raw Markdown -- the SMTP view runs this through ContentRenderer before
+        # display, so the CIO template needs to render it too.
         "smart_summary" => @smart_summary,
         "billboards_html" => digest_billboards_html,
         "email_end_phrase" => email_end_phrase,
@@ -63,11 +65,17 @@ class DigestMailer < ApplicationMailer
   end
 
   # The view only ever renders @billboards.first and @billboards.second
-  # (as raw processed_html, not a partial); mirror that exactly rather than
-  # rendering the whole array, so the payload matches what the SMTP path
-  # actually shows.
+  # (as raw processed_html, not a partial) in two different markup contexts
+  # (digest_email.html.erb:40-56 vs. :95-100); mirror that exactly rather
+  # than rendering the whole array. Keyed by slot (not a plain array) so
+  # that when only one of the two is selected -- a normal state, since the
+  # worker resolves digest_first and digest_second independently -- the CIO
+  # template can still tell which slot the surviving HTML belongs to.
   def digest_billboards_html
-    [@billboards&.first, @billboards&.second].compact.map(&:processed_html)
+    {
+      "first" => @billboards&.first&.processed_html,
+      "second" => @billboards&.second&.processed_html
+    }
   end
 
   def generate_title

@@ -138,21 +138,39 @@ RSpec.describe DigestMailer do
         expect(data["smart_summary"]).to eq("Digest overview text")
       end
 
-      it "includes billboards_html for each rendered billboard, in order" do
+      it "keys billboards_html by slot so the CIO template can tell first from second" do
         bb_1 = create(:billboard, placement_area: "digest_first", published: true, approved: true)
         bb_2 = create(:billboard, placement_area: "digest_second", published: true, approved: true)
 
         email = described_class.with(user: user, articles: [article], billboards: [bb_1, bb_2]).digest_email
 
         data = email.message.delivery_method.settings[:message_data]
-        expect(data["billboards_html"]).to eq([bb_1.processed_html, bb_2.processed_html])
+        expect(data["billboards_html"]).to eq({ "first" => bb_1.processed_html, "second" => bb_2.processed_html })
       end
 
-      it "omits billboards_html entries when no billboards are given" do
+      it "sets both slots nil when no billboards are given" do
         email = described_class.with(user: user, articles: [article]).digest_email
 
         data = email.message.delivery_method.settings[:message_data]
-        expect(data["billboards_html"]).to eq([])
+        expect(data["billboards_html"]).to eq({ "first" => nil, "second" => nil })
+      end
+
+      it "preserves slot identity when only the second billboard is present" do
+        bb_2 = create(:billboard, placement_area: "digest_second", published: true, approved: true)
+
+        email = described_class.with(user: user, articles: [article], billboards: [nil, bb_2]).digest_email
+
+        data = email.message.delivery_method.settings[:message_data]
+        expect(data["billboards_html"]).to eq({ "first" => nil, "second" => bb_2.processed_html })
+      end
+
+      it "preserves slot identity when only the first billboard is present" do
+        bb_1 = create(:billboard, placement_area: "digest_first", published: true, approved: true)
+
+        email = described_class.with(user: user, articles: [article], billboards: [bb_1, nil]).digest_email
+
+        data = email.message.delivery_method.settings[:message_data]
+        expect(data["billboards_html"]).to eq({ "first" => bb_1.processed_html, "second" => nil })
       end
     end
   end
