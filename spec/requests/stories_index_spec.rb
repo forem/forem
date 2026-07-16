@@ -556,4 +556,25 @@ RSpec.describe "StoriesIndex" do
       end
     end
   end
+
+  describe "InstantClick stylesheet alignment" do
+    it "does not render the alignment script under normal navigation" do
+      get "/"
+      expect(response).to have_http_status(:ok)
+      expect(response.body).not_to include("expectedStyles")
+      # Expect outer shell link tags
+      expect(response.body).to include('id="main-minimal-stylesheet"')
+    end
+
+    it "renders the alignment script with correct asset paths under internal navigation" do
+      get "/", params: { i: "i" }
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("expectedStyles")
+      expect(response.body).to include("minimal")
+      expect(response.body).to include("views")
+      expect(response.body).to include("crayons")
+      # Internal navigation excludes the outer layout, so the outer shell links should not be rendered
+      expect(response.body).not_to include('id="main-minimal-stylesheet"')
+    end
+  end
 end
