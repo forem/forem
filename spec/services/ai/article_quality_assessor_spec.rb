@@ -193,6 +193,111 @@ RSpec.describe Ai::ArticleQualityAssessor, type: :service do
           expect(Rails.logger).to have_received(:error).with(/Article Quality Assessment failed/)
         end
       end
+
+      context "when articles have trustworthiness credentials" do
+        let(:verified_org) { create(:organization, verified: true) }
+        let(:premium_user) { create(:user) }
+        let!(:trusted_article) do
+          allow(premium_user).to receive(:base_subscriber?).and_return(true)
+          create(:article, user: premium_user, organization: verified_org, title: "Highly Trustworthy Article")
+        end
+        let(:articles) { [trusted_article, low_quality_article] }
+
+        before do
+          allow(ai_client).to receive(:call).and_return("1,2")
+        end
+
+        it "includes the author trustworthiness profile in the prompt text" do
+          expect(ai_client).to receive(:call) do |prompt|
+            expect(prompt).to include("Author/Publisher Background:")
+            expect(prompt).to include("published by a verified organization")
+            expect(prompt).to include("written by a DEV++ subscriber")
+            "1,2"
+          end
+
+          described_class.new(articles).assess
+        end
+      end
+    end
+  end
+
+  describe "#author_trustworthiness_profile" do
+    let(:assessor) { described_class.new([]) }
+
+    context "when user is nil" do
+      it "returns nil" do
+        article = instance_double(Article, user: nil)
+        expect(assessor.send(:author_trustworthiness_profile, article)).to be_nil
+      end
+    end
+
+    context "when user has no trustworthiness credentials" do
+      it "returns nil" do
+        regular_user = instance_double(User, base_subscriber?: false, trusted?: false, score: 0)
+        article = instance_double(Article, user: regular_user, organization: nil)
+        expect(assessor.send(:author_trustworthiness_profile, article)).to be_nil
+      end
+    end
+
+    context "when article is from a verified organization" do
+      it "includes the verified organization factor in the profile" do
+        org = instance_double(Organization, verified?: true)
+        regular_user = instance_double(User, base_subscriber?: false, trusted?: false, score: 0)
+        article = instance_double(Article, user: regular_user, organization: org)
+
+        profile = assessor.send(:author_trustworthiness_profile, article)
+        expect(profile).to include("published by a verified organization")
+        expect(profile).to include("err on the side of treating this article as good quality")
+      end
+    end
+
+    context "when user is a DEV++ subscriber" do
+      it "includes the DEV++ subscriber factor in the profile" do
+        dev_user = instance_double(User, base_subscriber?: true, trusted?: false, score: 0)
+        article = instance_double(Article, user: dev_user, organization: nil)
+
+        profile = assessor.send(:author_trustworthiness_profile, article)
+        expect(profile).to include("written by a DEV++ subscriber")
+      end
+    end
+
+    context "when user is a trusted member" do
+      it "includes the trusted member factor in the profile" do
+        trusted_user = instance_double(User, base_subscriber?: false, trusted?: true, score: 0)
+        article = instance_double(Article, user: trusted_user, organization: nil)
+
+        profile = assessor.send(:author_trustworthiness_profile, article)
+        expect(profile).to include("written by a trusted member of the community")
+      end
+    end
+
+    context "when user has high scores" do
+      it "handles established user score (>100)" do
+        reputable_user = instance_double(User, base_subscriber?: false, trusted?: false, score: 150)
+        article = instance_double(Article, user: reputable_user, organization: nil)
+
+        profile = assessor.send(:author_trustworthiness_profile, article)
+        expect(profile).to include("written by an established user with a solid reputation (user score: 150)")
+      end
+
+      it "handles exceptionally reputable user score (>500)" do
+        super_user = instance_double(User, base_subscriber?: false, trusted?: false, score: 600)
+        article = instance_double(Article, user: super_user, organization: nil)
+
+        profile = assessor.send(:author_trustworthiness_profile, article)
+        expect(profile).to include("written by an exceptionally reputable user (user score: 600)")
+      end
+    end
+
+    context "when multiple criteria are met" do
+      it "combines them into a sentence" do
+        org = instance_double(Organization, verified?: true)
+        super_user = instance_double(User, base_subscriber?: true, trusted?: true, score: 600)
+        article = instance_double(Article, user: super_user, organization: org)
+
+        profile = assessor.send(:author_trustworthiness_profile, article)
+        expect(profile).to include("published by a verified organization, written by a DEV++ subscriber, written by a trusted member of the community, and written by an exceptionally reputable user (user score: 600)")
+      end
     end
   end
 end

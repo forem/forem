@@ -216,7 +216,8 @@ class StoriesController < ApplicationController
     return if performed?
 
     main_page = @organization.main_page
-    is_readme = main_page.present? && FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization])
+    has_readme = main_page.present? && FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization])
+    is_readme = has_readme && params[:mode] != "all-posts"
     @stories = ArticleDecorator.decorate_collection(@organization.articles.published.from_subforem
       .includes(:distinct_reaction_categories, :subforem)
       .limited_column_select

@@ -2,14 +2,16 @@ require "rails_helper"
 
 describe Rack, ".attack", throttle: true, type: :request do
   before do
-    allow(Rails).to receive(:cache) { ActiveSupport::Cache.lookup_store(:redis_cache_store) }
+    @old_store = Rack::Attack.cache.store
+    Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
     allow(Honeycomb).to receive(:add_field)
     ENV["FASTLY_API_KEY"] = "12345"
   end
 
   after do
     ENV["FASTLY_API_KEY"] = nil
-    Rails.cache.clear
+    Rack::Attack.cache.store.clear
+    Rack::Attack.cache.store = @old_store
   end
 
   describe "search_throttle" do
@@ -38,7 +40,7 @@ describe Rack, ".attack", throttle: true, type: :request do
 
     it "throttles /search/feed_content after 10 requests per minute" do
       Timecop.freeze do
-        start_time = Time.current
+        start_time = Time.current.beginning_of_minute
         valid_responses = (1..10).map do |i|
           Timecop.travel(start_time + i.seconds)
           get "/search/feed_content", params: { feed_params: { class_name: "Article", sort_by: "hotness_score" } }, headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
@@ -55,7 +57,7 @@ describe Rack, ".attack", throttle: true, type: :request do
 
     it "falls back to Rails remote_ip if HTTP_FASTLY_CLIENT_IP is blank/missing" do
       Timecop.freeze do
-        start_time = Time.current
+        start_time = Time.current.beginning_of_minute
         valid_responses = (1..10).map do |i|
           Timecop.travel(start_time + i.seconds)
           get "/search/feed_content", params: { feed_params: { class_name: "Article", sort_by: "hotness_score" } }, headers: { "REMOTE_ADDR" => "9.9.9.9" }
@@ -83,6 +85,60 @@ describe Rack, ".attack", throttle: true, type: :request do
         valid_responses.each { |r| expect(r).not_to eq(429) }
         expect(throttled_response).to eq(429)
         expect(new_ip_response).not_to eq(429)
+      end
+    end
+
+    it "throttles api get endpoints based on IP and API key when key is present" do
+      api_secret = create(:api_secret)
+      another_api_secret = create(:api_secret)
+      headers = { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8", "api-key" => api_secret.secret }
+      dif_headers = { "HTTP_FASTLY_CLIENT_IP" => "1.1.1.1", "api-key" => another_api_secret.secret }
+
+      Timecop.freeze do
+        valid_responses = Array.new(3).map do
+          get api_articles_path, headers: headers
+        end
+        throttled_response = get api_articles_path, headers: headers
+        new_key_response = get api_articles_path, headers: dif_headers
+
+        valid_responses.each { |r| expect(r).not_to eq(429) }
+        expect(throttled_response).to eq(429)
+        expect(new_key_response).not_to eq(429)
+      end
+    end
+
+    it "throttles api get endpoints based strictly on API key across different IPs" do
+      api_secret = create(:api_secret)
+      headers_ip_1 = { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8", "api-key" => api_secret.secret }
+      headers_ip_2 = { "HTTP_FASTLY_CLIENT_IP" => "1.1.1.1", "api-key" => api_secret.secret }
+
+      Timecop.freeze do
+        valid_responses = Array.new(3).map do
+          get api_articles_path, headers: headers_ip_1
+        end
+        # 4th request from a different IP but with the same API key should be throttled
+        throttled_response = get api_articles_path, headers: headers_ip_2
+
+        valid_responses.each { |r| expect(r).not_to eq(429) }
+        expect(throttled_response).to eq(429)
+      end
+    end
+
+    it "throttles when multiple API keys are used from the same IP" do
+      api_secret = create(:api_secret)
+      another_api_secret = create(:api_secret)
+      third_api_secret = create(:api_secret)
+      fourth_api_secret = create(:api_secret)
+
+      Timecop.freeze do
+        # 3 allowed requests from same IP with different API keys
+        get api_articles_path, headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8", "api-key" => api_secret.secret }
+        get api_articles_path, headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8", "api-key" => another_api_secret.secret }
+        get api_articles_path, headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8", "api-key" => third_api_secret.secret }
+
+        # 4th request from same IP with a different API key should get throttled by IP limit
+        throttled_response = get api_articles_path, headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8", "api-key" => fourth_api_secret.secret }
+        expect(throttled_response).to eq(429)
       end
     end
 
@@ -115,19 +171,36 @@ describe Rack, ".attack", throttle: true, type: :request do
       }
     end
 
-    it "throttles api write endpoints based on IP and API key" do
+    it "throttles api write endpoints based strictly on API key across different IPs" do
       params = { article: { body_markdown: "", title: Faker::Book.title } }.to_json
+      headers_ip_2 = headers.merge("HTTP_FASTLY_CLIENT_IP" => "1.1.1.1")
+      dif_headers_new_ip = dif_headers.merge("HTTP_FASTLY_CLIENT_IP" => "2.2.2.2")
 
       Timecop.freeze do
         valid_response = post api_articles_path, params: params, headers: headers
-        throttled_response = post api_articles_path, params: params, headers: headers
-        new_api_response = post api_articles_path, params: params, headers: dif_headers
+        throttled_response = post api_articles_path, params: params, headers: headers_ip_2
+        new_api_response = post api_articles_path, params: params, headers: dif_headers_new_ip
 
         expect(valid_response).not_to eq(429)
         expect(throttled_response).to eq(429)
         expect(new_api_response).not_to eq(429)
         expect(Honeycomb).to have_received(:add_field).with("user_api_key", api_secret.secret).exactly(2).times
         expect(Honeycomb).to have_received(:add_field).with("user_api_key", another_api_secret.secret)
+      end
+    end
+
+    it "throttles api write endpoints when multiple API keys are used from the same IP" do
+      api_secret_1 = create(:api_secret)
+      api_secret_2 = create(:api_secret)
+      params = { article: { body_markdown: "", title: Faker::Book.title } }.to_json
+
+      Timecop.freeze do
+        valid_response = post api_articles_path, params: params, headers: { "api-key" => api_secret_1.secret, "content-type" => "application/json", "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
+        # Same IP, different API key - should be throttled by IP limit
+        throttled_response = post api_articles_path, params: params, headers: { "api-key" => api_secret_2.secret, "content-type" => "application/json", "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
+
+        expect(valid_response).not_to eq(429)
+        expect(throttled_response).to eq(429)
       end
     end
 

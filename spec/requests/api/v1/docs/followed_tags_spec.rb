@@ -23,7 +23,12 @@ RSpec.describe "Api::V1::Docs::FollowedTags" do
       get "Followed Tags" do
         tags "followed_tags", "tags"
         description(<<-DESCRIBE.strip)
-        This endpoint allows the client to retrieve a list of the tags they follow.
+        Retrieve the list of tags followed by the authenticated user.
+
+        ### Integration & Personalization Guidance:
+        - Requires authentication.
+        - Returns tags in ascending/popularity order based on user interactions.
+        - Useful for customizing the home feed interface, constructing personalized sidebar navigation, or displaying a user's customized topic preferences in a dashboard.
         DESCRIBE
         operationId "getFollowedTags"
         produces "application/json"

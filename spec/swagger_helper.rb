@@ -661,6 +661,133 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               updated_at: { type: :string, format: "date-time" }
             },
             required: %w[type_of id name slug key_questions score articles_count first_observed_at last_observed_at created_at updated_at]
+          },
+          Concept: {
+            description: "Representation of a concept",
+            type: :object,
+            properties: {
+              id: { type: :integer, format: :int64 },
+              name: { type: :string },
+              slug: { type: :string },
+              description: { type: :string, nullable: true },
+              parent_id: { type: :integer, format: :int64, nullable: true },
+              score: { type: :number, format: :float },
+              similarity_threshold: { type: :number, format: :float, nullable: true },
+              created_at: { type: :string, format: "date-time" },
+              updated_at: { type: :string, format: "date-time" },
+              daily_metrics: {
+                type: :array,
+                items: { "$ref": "#/components/schemas/ConceptDailyMetric" }
+              },
+              top_articles: {
+                type: :array,
+                items: {
+                  type: :object,
+                  properties: {
+                    id: { type: :integer, format: :int64 },
+                    title: { type: :string },
+                    slug: { type: :string },
+                    score: { type: :number, format: :float },
+                    published_at: { type: :string, format: "date-time" }
+                  }
+                }
+              }
+            },
+            required: %w[id name slug created_at updated_at]
+          },
+          ConceptDailyMetric: {
+            description: "Representation of daily metrics for a concept",
+            type: :object,
+            properties: {
+              date: { type: :string, format: :date },
+              articles_count: { type: :integer },
+              comments_count: { type: :integer },
+              page_views: { type: :integer },
+              reactions_count: { type: :integer },
+              popularity_score: { type: :number, format: :float }
+            },
+            required: %w[date articles_count comments_count page_views reactions_count popularity_score]
+          },
+          RequestRedirect: {
+            description: "Representation of a request redirect",
+            type: :object,
+            properties: {
+              id: { type: :integer, format: :int64 },
+              original_url: { type: :string },
+              destination_url: { type: :string },
+              request_domain: { type: :string },
+              created_at: { type: :string, format: "date-time" },
+              updated_at: { type: :string, format: "date-time" }
+            },
+            required: %w[id original_url destination_url request_domain created_at updated_at]
+          },
+          Badge: {
+            description: "Representation of a badge",
+            type: :object,
+            properties: {
+              id: { type: :integer, format: :int64 },
+              title: { type: :string },
+              slug: { type: :string },
+              description: { type: :string },
+              badge_image: {
+                type: :object,
+                properties: {
+                  url: { type: :string }
+                },
+                nullable: true
+              },
+              credits_awarded: { type: :integer },
+              allow_multiple_awards: { type: :boolean },
+              created_at: { type: :string, format: "date-time" },
+              updated_at: { type: :string, format: "date-time" }
+            },
+            required: %w[id title slug description created_at updated_at]
+          },
+          BadgeAchievement: {
+            description: "Representation of a badge achievement",
+            type: :object,
+            properties: {
+              id: { type: :integer, format: :int64 },
+              user_id: { type: :integer, format: :int64 },
+              badge_id: { type: :integer, format: :int64 },
+              rewarding_context_message_markdown: { type: :string, nullable: true },
+              include_default_description: { type: :boolean },
+              created_at: { type: :string, format: "date-time" },
+              updated_at: { type: :string, format: "date-time" }
+            },
+            required: %w[id user_id badge_id created_at updated_at]
+          },
+          RecommendedArticlesList: {
+            description: "Representation of a recommended articles list",
+            type: :object,
+            properties: {
+              id: { type: :integer, format: :int64 },
+              name: { type: :string },
+              placement_area: { type: :string },
+              expires_at: { type: :string, format: "date-time", nullable: true },
+              user_id: { type: :integer, format: :int64 },
+              article_ids: {
+                type: :array,
+                items: { type: :integer }
+              },
+              created_at: { type: :string, format: "date-time" },
+              updated_at: { type: :string, format: "date-time" }
+            },
+            required: %w[id name placement_area user_id article_ids created_at updated_at]
+          },
+          Subforem: {
+            description: "Representation of a subforem",
+            type: :object,
+            properties: {
+              id: { type: :integer, format: :int64 },
+              domain: { type: :string },
+              root: { type: :boolean },
+              name: { type: :string },
+              description: { type: :string },
+              logo_image_url: { type: :string },
+              cover_image_url: { type: :string }
+            },
+            required: %w[id domain root name description logo_image_url cover_image_url]
           }
         }
       }

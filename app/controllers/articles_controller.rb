@@ -2,7 +2,7 @@ class ArticlesController < ApplicationController
   include ApplicationHelper
 
   # NOTE: It seems quite odd to not authenticate the user for the :new action.
-  before_action :authenticate_user!, except: %i[feed new]
+  before_action :authenticate_user!, except: %i[feed new short_link]
   before_action :set_article, only: %i[edit manage update destroy stats admin_unpublish admin_featured_toggle]
   # NOTE: Consider pushing this check into the associated Policy.  We could choose to raise a
   #       different error which we could then rescue as part of our exception handling.
@@ -78,6 +78,21 @@ class ArticlesController < ApplicationController
       allowed_attributes: MarkdownProcessor::AllowedAttributes::FEED,
       scrubber: FeedMarkdownScrubber.new
     }
+  end
+
+  def short_link
+    skip_authorization
+    code = params[:code].to_s.downcase
+    id = code.reverse.to_i(26)
+    @article = Article.published.find_by(id: id)
+
+    if @article
+      set_surrogate_key_header("articles/#{@article.id}")
+      set_cache_control_headers(1.hour.to_i)
+      redirect_to @article.path
+    else
+      not_found
+    end
   end
 
   # @note The /new path is a unique creature.  We want to ensure that folks coming to the /new with

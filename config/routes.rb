@@ -30,6 +30,7 @@ Rails.application.routes.draw do
 
   get "/r/mobile", to: "deep_links#mobile"
   get "/.well-known/apple-app-site-association", to: "deep_links#aasa"
+  get "/a/:code", to: "articles#short_link", as: :article_short, constraints: { code: /[0-9a-pA-P]+/ }
 
   constraints OrgCustomDomainConstraint.new do
     get "/", to: "stories#custom_domain_index"
@@ -123,7 +124,14 @@ Rails.application.routes.draw do
         # shared config/routes/api.rb) because Api::V0::Admin::* controllers do
         # not implement these actions; placing the routes here scopes them to
         # callers using the application/vnd.forem.api-v1+json Accept header.
-        resources :concepts, only: %i[index show]
+        resources :concepts, only: %i[index show update] do
+          get :articles, on: :member
+          get :search, on: :collection
+        end
+
+        resources :articles, only: [] do
+          get :semantic_search, on: :collection
+        end
 
         namespace :admin do
           resources :users, only: %i[index show update] do
