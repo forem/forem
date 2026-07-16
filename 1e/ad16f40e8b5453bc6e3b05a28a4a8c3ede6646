@@ -1,0 +1,35 @@
+app/mailers/concerns/deliverable.rb
+  s_0cd64231ee5515::t_00d8743ffab9fc 53-54
+  s_0cd64231ee5515::t_f642b8e972fc97 31-32
+  s_0cd64231ee5515::t_ad12073a2604d8 17
+spec/mailers/devise_mailer_spec.rb
+  s_0cd64231ee5515::t_c3dce09f666363 240-256
+app/services/delivery_methods/customer_io.rb
+  s_0cd64231ee5515::t_c9a18663c7c3f3 41-43,45-46
+spec/services/delivery_methods/customer_io_spec.rb
+  s_0cd64231ee5515::t_b7ddf8a7eac7f1 47,53-66
+app/mailers/devise_mailer.rb
+  s_0cd64231ee5515::t_528acd22b49147 15-18
+spec/mailers/concerns/deliverable_spec.rb
+  s_0cd64231ee5515::t_442a8fc866c02b 98-109
+app/mailers/verification_mailer.rb
+  s_0cd64231ee5515::t_9edbdafd527bbc 7-10
+spec/mailers/verification_mailer_spec.rb
+  s_0cd64231ee5515::t_bc285383d8534e 54-72
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "1ead16f40e8b5453bc6e3b05a28a4a8c3ede6646",
+  "prompts": {},
+  "sessions": {
+    "s_0cd64231ee5515": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b2d035f1-b022-48fc-b793-32eaadb3e1ad",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}
