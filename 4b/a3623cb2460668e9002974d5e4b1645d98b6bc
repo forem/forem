@@ -1,0 +1,41 @@
+app/models/forem_instance.rb
+  s_0cd64231ee5515::t_d433d2edf776be 56-62
+spec/models/forem_instance_spec.rb
+  s_0cd64231ee5515::t_79252d8155649b 112-139
+spec/models/email_spec.rb
+  s_0cd64231ee5515::t_e1e04ce9a8dae6 99-128
+  s_0cd64231ee5515::t_519bdffe12a674 189-191,193-222
+  s_0cd64231ee5515::t_fb5a2488af700b 192
+app/workers/emails/drip_email_worker.rb
+  s_0cd64231ee5515::t_bb37500dc7e849 11-12
+spec/workers/emails/drip_email_worker_spec.rb
+  s_0cd64231ee5515::t_3549edcf2b1feb 191-192
+  s_0cd64231ee5515::t_260e95b3cc139b 170-190,193-194
+config/locales/controllers/admin/fr.yml
+  s_0cd64231ee5515::t_78acf99845ba5b 71-72
+config/locales/controllers/admin/pt.yml
+  s_0cd64231ee5515::t_de1bc535ed88c6 36-37
+config/locales/controllers/admin/en.yml
+  s_0cd64231ee5515::t_238cfaad134e41 71-72
+app/models/email.rb
+  s_0cd64231ee5515::t_bb56fff8ba2e62 97-98
+  s_0cd64231ee5515::t_f4d7e4de6658ba 82-84
+app/views/admin/emails/index.html.erb
+  s_0cd64231ee5515::t_dd9daf4c5541ae 3-8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "4ba3623cb2460668e9002974d5e4b1645d98b6bc",
+  "prompts": {},
+  "sessions": {
+    "s_0cd64231ee5515": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b2d035f1-b022-48fc-b793-32eaadb3e1ad",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}
