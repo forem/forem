@@ -1,0 +1,28 @@
+app/models/audit_log.rb
+  f844a57044c6d60d 12,16,20-21
+app/views/admin/users/show/_tabs.html.erb
+  f844a57044c6d60d 5-9
+spec/models/audit_log_spec.rb
+  f844a57044c6d60d 30,37-40
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "4162d904c435ff1c118cd314b5b36f2105d42f24",
+  "prompts": {
+    "f844a57044c6d60d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "42d235cf-30b6-4b32-8cf1-476755ed33d1",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Paolo Veñegas",
+      "messages": [],
+      "total_additions": 17,
+      "total_deletions": 9,
+      "accepted_lines": 17,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/1baee5f411bde1a728e6bdaa934b9930c7f2014728f0d4898e79a22cca79727a"
+    }
+  }
+}
