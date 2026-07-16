@@ -48,11 +48,12 @@ module Ai
                               end
 
       articles_text = @articles.map.with_index(1) do |article, index|
+        bg_context = author_trustworthiness_profile(article)
         <<~ARTICLE
           Article #{index}:
           Tags: #{article.cached_tag_list}
           Title: #{article.title}
-          Body: #{article.body_markdown.truncate(10_000)} #{'(Truncated)' if article.body_markdown.length > 10_000}
+          #{"#{bg_context}\n" if bg_context}Body: #{article.body_markdown.truncate(10_000)} #{'(Truncated)' if article.body_markdown.length > 10_000}
           #{"Top Comments: #{article.comments.order(score: :desc).limit(3).pluck(:body_markdown).map { |content| content.truncate(750) }.join("\n")}" if article.comments.any?}
           ---
         ARTICLE
@@ -113,6 +114,26 @@ module Ai
 
         Respond with only the two numbers separated by a comma:
       PROMPT
+    end
+
+    def author_trustworthiness_profile(article)
+      return nil if article.user.nil?
+
+      trust_factors = []
+      trust_factors << "published by a verified organization" if article.organization&.verified?
+      trust_factors << "written by a DEV++ subscriber" if article.user.base_subscriber?
+      trust_factors << "written by a trusted member of the community" if article.user.trusted?
+
+      score = article.user.score.to_i
+      if score > 500
+        trust_factors << "written by an exceptionally reputable user (user score: #{score})"
+      elsif score > 100
+        trust_factors << "written by an established user with a solid reputation (user score: #{score})"
+      end
+
+      return nil if trust_factors.empty?
+
+      "Author/Publisher Background: This article is #{trust_factors.to_sentence}. Given these credentials, err on the side of treating this article as good quality unless there is clear evidence of low-effort spam."
     end
 
     ##

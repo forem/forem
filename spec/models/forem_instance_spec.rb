@@ -95,6 +95,20 @@ RSpec.describe ForemInstance do
     end
   end
 
+  describe ".customerio_enabled?" do
+    it "is true when CUSTOMERIO_APP_KEY is present" do
+      allow(ApplicationConfig).to receive(:[]).and_call_original
+      allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
+      expect(described_class.customerio_enabled?).to be(true)
+    end
+
+    it "is false when CUSTOMERIO_APP_KEY is absent" do
+      allow(ApplicationConfig).to receive(:[]).and_call_original
+      allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return(nil)
+      expect(described_class.customerio_enabled?).to be(false)
+    end
+  end
+
   describe ".contact_email" do
     let(:email) { "contact@dev.to" }
 
