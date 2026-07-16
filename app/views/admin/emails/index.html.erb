@@ -1,5 +1,11 @@
 <h1 class="crayons-title mb-3">Emails</h1>
 
+<% if ForemInstance.customerio_email_cutover? %>
+  <div class="crayons-notice crayons-notice--warning mb-4" role="alert">
+    <%= t("admin.emails.customerio_cutover_notice") %>
+  </div>
+<% end %>
+
 <div
   data-controller="confirmation-modal"
   data-confirmation-modal-root-selector-value="#confirmation-modal-root"
