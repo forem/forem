@@ -83,13 +83,13 @@
     border-radius: var(--radius);
     color: var(--button-ghost-color);
     background-color: var(--button-ghost-bg);
-    border: 1px solid var(--button-ghost-border);
+    border: 1px solid var(--button-outlined-border, var(--form-border));
     transition: all 0.2s ease;
     text-decoration: none !important;
 
     &:hover {
       background-color: var(--button-ghost-bg-hover);
-      border-color: var(--button-ghost-border-hover);
+      border-color: var(--button-outlined-border-hover, var(--form-border-hover));
       color: var(--button-ghost-color-hover);
     }
   }
