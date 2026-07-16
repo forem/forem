@@ -25,6 +25,11 @@
     align-items: center;
     gap: var(--su-3);
     min-width: 0;
+    color: inherit;
+    font-size: 1em;
+    font-style: normal;
+    text-align: left;
+    opacity: 1;
   }
 
   .ltag-quote__avatar {
@@ -87,7 +92,7 @@
     color: var(--card-color);
   }
 
-  .ltag-quote__mark {
+  .ltag-quote__body .ltag-quote__mark {
     flex: 0 0 auto;
     color: var(--card-color-tertiary);
     font-family: Georgia, serif;
@@ -96,8 +101,13 @@
     user-select: none;
   }
 
+  .ltag-quote__body .ltag-quote__mark--end {
+    align-self: flex-end;
+  }
+
   .ltag-quote__text {
     min-width: 0;
+    flex: 1 1 auto;
     font-size: var(--fs-l);
     line-height: 1.55;
 
