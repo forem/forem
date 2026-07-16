@@ -84,6 +84,14 @@ RSpec.describe Comments::Count do
       expect(cnt).to eq(3)
     end
 
+    it "does not recalculate or write to database when displayed_comments_count is 0" do
+      article.update_column(:displayed_comments_count, 0)
+      allow(article).to receive(:update_column).and_call_original
+      cnt = described_class.call(article, recalculate: false)
+      expect(cnt).to eq(0)
+      expect(article).not_to have_received(:update_column)
+    end
+
     it "recalculates if recalculate is passed", :aggregate_failures do
       article.update_column(:displayed_comments_count, 3)
       cnt = described_class.call(article, recalculate: true)
