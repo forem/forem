@@ -1,26 +1,26 @@
 .ltag-quote {
-  padding: var(--su-3) var(--su-4);
+  width: 100%;
+  max-width: 48rem;
+  margin: 0 auto var(--su-4);
+  padding: var(--su-5);
   border: 1px solid var(--card-border);
   border-radius: var(--radius);
   background: var(--card-bg);
-  margin-bottom: var(--su-4);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
   box-sizing: border-box;
-  gap: 0;
+  gap: var(--su-4);
 
   .ltag-quote__body {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--su-1);
+    gap: var(--su-2);
     padding: 0;
   }
 
   .ltag-quote__mark {
-    color: var(--card-color);
+    color: var(--card-color-tertiary);
     user-select: none;
 
     svg {
@@ -40,7 +40,8 @@
   }
 
   .ltag-quote__text {
-    font-size: var(--fs-l);
+    font-size: var(--fs-xl);
+    line-height: 1.5;
     color: var(--card-color);
     width: 100%;
     flex-grow: 1;
@@ -52,9 +53,8 @@
 
   .ltag-quote__rating {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 2px;
-    margin-top: var(--su-2);
   }
 
   .ltag-quote__star {
@@ -69,7 +69,7 @@
   .ltag-quote__divider {
     border: none;
     border-top: 1px solid var(--card-border);
-    margin: var(--su-1) 0;
+    margin: 0;
     width: 100%;
     opacity: 1;
     border-radius: 0;
@@ -79,7 +79,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: var(--su-2);
+    flex-wrap: wrap;
+    gap: var(--su-4);
   }
 
   .ltag-quote__author-info {
@@ -114,6 +115,7 @@
   }
 
   .ltag-quote__link {
+    margin-left: auto;
     font-weight: var(--fw-medium);
     color: var(--accent-brand);
     text-decoration: none;
@@ -124,6 +126,22 @@
 
     &:hover {
       text-decoration: underline;
+    }
+  }
+
+  @media (max-width: 767px) {
+    padding: var(--su-4);
+
+    .ltag-quote__text {
+      font-size: var(--fs-l);
+    }
+
+    .ltag-quote__footer {
+      align-items: flex-start;
+    }
+
+    .ltag-quote__link {
+      margin-left: 0;
     }
   }
 }
