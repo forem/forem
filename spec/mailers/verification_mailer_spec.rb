@@ -68,6 +68,29 @@ RSpec.describe VerificationMailer do
       expect(email.message.delivery_method).to be_a(DeliveryMethods::CustomerIo)
       expect(email.message.delivery_method.settings[:tracked]).to be(false)
     end
+    it "routes through the Customer.io account ownership verification template", :aggregate_failures do
+      email = described_class.with(user_id: user.id).account_ownership_verification_email
+      settings = email.message.delivery_method.settings
+
+      expect(settings[:transactional_message_id]).to eq("dev_account_ownership_verification")
+      expect(settings[:message_data]["verification_url"]).to include("verify_email_ownership")
+      expect(settings[:message_data]["verification_url"]).to include(user.username)
+      expect(settings[:message_data]["username"]).to eq(user.username)
+      expect(settings[:message_data]["community_name"]).to eq(community_name)
+    end
+
+    it "routes magic_link through its Customer.io template", :aggregate_failures do
+      user.update_columns(sign_in_token: "valid_token", sign_in_token_sent_at: Time.current)
+      email = described_class.with(user_id: user.id).magic_link
+      settings = email.message.delivery_method.settings
+
+      expect(email.message.delivery_method).to be_a(DeliveryMethods::CustomerIo)
+      expect(settings[:transactional_message_id]).to eq("dev_magic_link")
+      expect(settings[:tracked]).to be(false)
+      expect(settings[:message_data]["sign_in_token"]).to eq("valid_token")
+      expect(settings[:message_data]["magic_link_url"]).to include("valid_token")
+      expect(settings[:message_data]["community_name"]).to eq(community_name)
+    end
   end
 
   describe "#magic_link" do
