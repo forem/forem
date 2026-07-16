@@ -254,6 +254,77 @@ RSpec.describe DeviseMailer, type: :mailer do
       end
     end
 
+    context "when routed through Customer.io transactional templates" do
+      before do
+        allow(ApplicationConfig).to receive(:[]).and_call_original
+        allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
+        FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+      end
+
+      after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
+
+      it "routes #confirmation_instructions through the Customer.io confirmation template", :aggregate_failures do
+        email = described_class.confirmation_instructions(user, "faketoken")
+        settings = email.message.delivery_method.settings
+
+        expect(settings[:transactional_message_id]).to eq("dev_confirmation_instructions")
+        expect(settings[:tracked]).to be(false)
+        expect(settings[:message_data]["confirmation_url"]).to include("confirmation_token=faketoken")
+        expect(settings[:message_data]["name"]).to eq(user.name)
+        expect(settings[:message_data]["community_name"]).to eq(community_name)
+      end
+
+      it "routes #reset_password_instructions through the Customer.io reset password template", :aggregate_failures do
+        email = described_class.reset_password_instructions(user, "resettoken")
+        settings = email.message.delivery_method.settings
+
+        expect(settings[:transactional_message_id]).to eq("dev_reset_password_instructions")
+        expect(settings[:tracked]).to be(false)
+        expect(settings[:message_data]["reset_url"]).to include("reset_password_token=resettoken")
+        expect(settings[:message_data]["name"]).to eq(user.name)
+        expect(settings[:message_data]["community_name"]).to eq(community_name)
+      end
+
+      it "routes #unlock_instructions through the Customer.io unlock template", :aggregate_failures do
+        email = described_class.unlock_instructions(user, "unlocktoken")
+        settings = email.message.delivery_method.settings
+
+        expect(settings[:transactional_message_id]).to eq("dev_unlock_instructions")
+        expect(settings[:tracked]).to be(false)
+        expect(settings[:message_data]["unlock_url"]).to include("unlock_token=unlocktoken")
+        expect(settings[:message_data]["name"]).to eq(user.name)
+        expect(settings[:message_data]["community_name"]).to eq(community_name)
+      end
+
+      it "routes #invitation_instructions through the Customer.io invitation template", :aggregate_failures do
+        email = described_class.invitation_instructions(user, "invitetoken", {})
+        settings = email.message.delivery_method.settings
+
+        expect(settings[:transactional_message_id]).to eq("dev_invitation_instructions")
+        expect(settings[:tracked]).to be(false)
+        expect(settings[:message_data]["invite_url"]).to include("invitation_token=invitetoken")
+        expect(settings[:message_data]["community_name"]).to eq(community_name)
+      end
+
+      it "includes the custom invite message and footnote in message_data when provided" do
+        opts = { custom_invite_message: "Join our community!!",
+                 custom_invite_footnote: "Looking forward to seeing you!!" }
+        email = described_class.invitation_instructions(user, "invitetoken", opts)
+        settings = email.message.delivery_method.settings
+
+        expect(settings[:message_data]["custom_message"]).to eq("Join our community!!")
+        expect(settings[:message_data]["custom_footnote"]).to eq("Looking forward to seeing you!!")
+      end
+
+      it "omits the custom message and footnote from message_data when absent" do
+        email = described_class.invitation_instructions(user, "invitetoken", {})
+        settings = email.message.delivery_method.settings
+
+        expect(settings[:message_data]["custom_message"]).to be_nil
+        expect(settings[:message_data]["custom_footnote"]).to be_nil
+      end
+    end
+
     context "reset_password_instructions with subforem" do
       let!(:subforem) { create(:subforem, domain: "reset.example.com") }
       let(:user_with_subforem) { create(:user, onboarding_subforem_id: subforem.id) }

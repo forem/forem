@@ -28,6 +28,17 @@ class DeviseMailer < Devise::Mailer
     @message = opts[:custom_invite_message]
     @footnote = opts[:custom_invite_footnote]
     headers = { subject: opts[:custom_invite_subject].presence || "Invitation Instructions" }
+
+    customerio_delivery_options(
+      transactional_message_id: "dev_invitation_instructions",
+      message_data: {
+        "invite_url" => accept_user_invitation_url(invitation_token: token),
+        "custom_message" => @message.presence,
+        "custom_footnote" => @footnote.presence,
+        "community_name" => Settings::Community.community_name
+      },
+    )
+
     super(record, token, opts.merge(headers))
   end
   # rubocop:enable Style/OptionHash
@@ -35,17 +46,66 @@ class DeviseMailer < Devise::Mailer
   def confirmation_instructions(record, token, opts = {})
     @name = record.name
     @resource = record
-    
+
     # Re-setup subforem context now that we have the user
     setup_subforem_context
-    
+
     # Get the community name for this subforem
     community_name = Settings::Community.community_name(subforem_id: @subforem_id)
-    
+
     # Customize the sender and subject
     Devise.mailer_sender = "#{community_name} <#{ForemInstance.from_email_address}>"
     opts[:subject] = "#{@name}, confirm your #{community_name} account"
-    
+
+    customerio_delivery_options(
+      transactional_message_id: "dev_confirmation_instructions",
+      message_data: {
+        "confirmation_url" => user_confirmation_url(confirmation_token: token, host: @subforem_domain),
+        "name" => @name,
+        "community_name" => community_name
+      },
+    )
+
+    super
+  end
+
+  def reset_password_instructions(record, token, opts = {})
+    @resource = record
+
+    # Re-setup subforem context now that we have the user
+    setup_subforem_context
+
+    community_name = Settings::Community.community_name(subforem_id: @subforem_id)
+
+    customerio_delivery_options(
+      transactional_message_id: "dev_reset_password_instructions",
+      message_data: {
+        "reset_url" => edit_user_password_url(reset_password_token: token),
+        "name" => record.name,
+        "community_name" => community_name
+      },
+    )
+
+    super
+  end
+
+  def unlock_instructions(record, token, opts = {})
+    @resource = record
+
+    # Re-setup subforem context now that we have the user
+    setup_subforem_context
+
+    community_name = Settings::Community.community_name(subforem_id: @subforem_id)
+
+    customerio_delivery_options(
+      transactional_message_id: "dev_unlock_instructions",
+      message_data: {
+        "unlock_url" => user_unlock_url(unlock_token: token),
+        "name" => record.name,
+        "community_name" => community_name
+      },
+    )
+
     super
   end
 
