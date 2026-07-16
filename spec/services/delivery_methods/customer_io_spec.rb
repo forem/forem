@@ -76,4 +76,34 @@ RSpec.describe DeliveryMethods::CustomerIo do
     expect(request_double).to have_received(:attach).with("export.zip", "zipbytes")
     expect(api_client).to have_received(:send_email).with(request_double)
   end
+
+  describe "delivery id capture" do
+    it "stashes the Customer.io delivery id on the mail object for ahoy_email to pick up" do
+      described_class.new({}).deliver!(mail)
+
+      expect(mail[described_class::DELIVERY_ID_HEADER].value).to eq("dev-123")
+    end
+
+    it "does not stash a header when the response has no delivery_id" do
+      allow(api_client).to receive(:send_email).and_return({})
+
+      described_class.new({}).deliver!(mail)
+
+      expect(mail[described_class::DELIVERY_ID_HEADER]).to be_nil
+    end
+
+    it "returns the Customer.io response unchanged" do
+      response = described_class.new({}).deliver!(mail)
+
+      expect(response).to eq("delivery_id" => "dev-123")
+    end
+
+    it "reports and swallows errors while stashing so the send never fails" do
+      allow(mail).to receive(:[]=).and_raise(StandardError, "header boom")
+      allow(Honeybadger).to receive(:notify)
+
+      expect { described_class.new({}).deliver!(mail) }.not_to raise_error
+      expect(Honeybadger).to have_received(:notify)
+    end
+  end
 end
