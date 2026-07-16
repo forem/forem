@@ -12,6 +12,10 @@ class DeviseMailer < Devise::Mailer
   # Prevent Ahoy from adding click tracking to security emails (causes spam filtering)
   def save_ahoy_options; end
 
+  # Security emails must not get link tracking (see save_ahoy_options no-op /
+  # spam-filter risk); the same applies on the Customer.io route.
+  before_action { customerio_delivery_options(tracked: false) }
+
   def use_settings_general_values
     Devise.mailer_sender =
       "#{Settings::Community.community_name} <#{ForemInstance.from_email_address}>"

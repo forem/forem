@@ -237,6 +237,23 @@ RSpec.describe DeviseMailer, type: :mailer do
       end
     end
 
+    context "when routed through Customer.io" do
+      before do
+        allow(ApplicationConfig).to receive(:[]).and_call_original
+        allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
+        FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+      end
+
+      after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
+
+      it "disables Customer.io link tracking on security emails" do
+        email = described_class.reset_password_instructions(user, "test")
+
+        expect(email.message.delivery_method).to be_a(DeliveryMethods::CustomerIo)
+        expect(email.message.delivery_method.settings[:tracked]).to be(false)
+      end
+    end
+
     context "reset_password_instructions with subforem" do
       let!(:subforem) { create(:subforem, domain: "reset.example.com") }
       let(:user_with_subforem) { create(:user, onboarding_subforem_id: subforem.id) }
