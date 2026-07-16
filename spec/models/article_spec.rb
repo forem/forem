@@ -2334,6 +2334,14 @@ RSpec.describe Article do
       expect(article.reload.score).to eq(22)
     end
 
+    it "includes the verified organization baseline bonus" do
+      allow(Settings::UserExperience).to receive(:index_minimum_score).and_return(12)
+      org = create(:organization, verified: true)
+      article.update_column(:organization_id, org.id)
+      article.update_score
+      expect(article.reload.score).to eq(22)
+    end
+
     context "when max_score is set" do
       it "uses the max score if the natural score exceeds max_score" do
         article.update_column(:max_score, 2)
