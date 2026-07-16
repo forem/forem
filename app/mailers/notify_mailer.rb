@@ -115,6 +115,15 @@ class NotifyMailer < ApplicationMailer
   def video_upload_complete_email
     @article = params[:article]
     @user = @article.user
+
+    customerio_delivery_options(
+      transactional_message_id: "dev_video_upload_complete",
+      message_data: {
+        "article_title" => @article.title,
+        "article_url" => "#{ApplicationController.helpers.article_url(@article)}/edit"
+      },
+    )
+
     mail(to: @user.email, subject: I18n.t("mailers.notify_mailer.video_upload"))
   end
 
@@ -139,14 +148,29 @@ class NotifyMailer < ApplicationMailer
   end
 
   def feedback_response_email
+    community_name = Settings::Community.community_name(subforem_id: @subforem_id)
+
+    customerio_delivery_options(
+      transactional_message_id: "dev_feedback_response",
+      message_data: {
+        "community_name" => community_name
+      },
+    )
+
     mail(to: params[:email_to],
-         subject: I18n.t("mailers.notify_mailer.feedback",
-                         community: Settings::Community.community_name(subforem_id: @subforem_id)))
+         subject: I18n.t("mailers.notify_mailer.feedback", community: community_name))
   end
 
   def feedback_message_resolution_email
     @user = User.find_by(email: params[:email_to])
     @email_body = params[:email_body]
+
+    customerio_delivery_options(
+      transactional_message_id: "dev_feedback_resolution",
+      message_data: {
+        "email_body" => @email_body
+      },
+    )
 
     mail(to: params[:email_to], subject: params[:email_subject])
   end
@@ -155,21 +179,47 @@ class NotifyMailer < ApplicationMailer
     @user = User.find(params[:user_id])
     @email_body = params[:email_body]
 
+    customerio_delivery_options(
+      transactional_message_id: "dev_user_contact",
+      message_data: {
+        "email_body" => @email_body
+      },
+    )
+
     mail(to: @user.email, subject: params[:email_subject])
   end
 
   def account_deleted_email
     @name = params[:name]
+    community_name = Settings::Community.community_name(subforem_id: @subforem_id)
 
-    subject = I18n.t("mailers.notify_mailer.account_deleted", community: Settings::Community.community_name(subforem_id: @subforem_id))
+    customerio_delivery_options(
+      transactional_message_id: "dev_account_deleted",
+      message_data: {
+        "name" => @name,
+        "community_name" => community_name
+      },
+    )
+
+    subject = I18n.t("mailers.notify_mailer.account_deleted", community: community_name)
     mail(to: params[:email], subject: subject)
   end
 
   def organization_deleted_email
     @name = params[:name]
     @org_name = params[:org_name]
+    community_name = Settings::Community.community_name(subforem_id: @subforem_id)
 
-    subject = I18n.t("mailers.notify_mailer.org_deleted", community: Settings::Community.community_name(subforem_id: @subforem_id))
+    customerio_delivery_options(
+      transactional_message_id: "dev_organization_deleted",
+      message_data: {
+        "name" => @name,
+        "org_name" => @org_name,
+        "community_name" => community_name
+      },
+    )
+
+    subject = I18n.t("mailers.notify_mailer.org_deleted", community: community_name)
     mail(to: params[:email], subject: subject)
   end
 
@@ -177,16 +227,35 @@ class NotifyMailer < ApplicationMailer
     user = params[:user]
     @name = user.name
     @token = params[:token]
+    community_name = Settings::Community.community_name(subforem_id: @subforem_id)
 
-    subject = I18n.t("mailers.notify_mailer.deletion_requested", community: Settings::Community.community_name(subforem_id: @subforem_id))
+    customerio_delivery_options(
+      transactional_message_id: "dev_account_deletion_requested",
+      message_data: {
+        "name" => @name,
+        "confirmation_url" => user_confirm_destroy_url(@token),
+        "community_name" => community_name
+      },
+    )
+
+    subject = I18n.t("mailers.notify_mailer.deletion_requested", community: community_name)
     mail(to: user.email, subject: subject)
   end
 
   def export_email
     attachment = params[:attachment]
+    community_name = Settings::Community.community_name(subforem_id: @subforem_id)
 
     export_filename = "devto-export-#{Date.current.iso8601}.zip"
     attachments[export_filename] = attachment
+
+    customerio_delivery_options(
+      transactional_message_id: "dev_export_email",
+      message_data: {
+        "community_name" => community_name
+      },
+    )
+
     mail(to: params[:email], subject: I18n.t("mailers.notify_mailer.export"))
   end
 
@@ -194,6 +263,17 @@ class NotifyMailer < ApplicationMailer
     @user = params[:user]
     @tag = params[:tag]
     @channel_slug = params[:channel_slug]
+    community_name = Settings::Community.community_name(subforem_id: @subforem_id)
+
+    customerio_delivery_options(
+      transactional_message_id: "dev_tag_mod_confirmation",
+      message_data: {
+        "tag_name" => @tag.name,
+        "tag_url" => URL.tag(@tag),
+        "community_moderation_url" => community_moderation_url,
+        "community_name" => community_name
+      },
+    )
 
     subject = I18n.t("mailers.notify_mailer.moderator", tag_name: @tag.name)
     mail(to: @user.email, subject: subject)
@@ -202,6 +282,17 @@ class NotifyMailer < ApplicationMailer
   def subforem_moderator_confirmation_email
     @user = params[:user]
     @subforem = params[:subforem]
+    community_name = Settings::Community.community_name(subforem_id: @subforem_id)
+
+    customerio_delivery_options(
+      transactional_message_id: "dev_subforem_mod_confirmation",
+      message_data: {
+        "subforem_domain" => @subforem.domain,
+        "subforem_url" => "https://#{@subforem.domain}",
+        "community_moderation_url" => community_moderation_url,
+        "community_name" => community_name
+      },
+    )
 
     subject = I18n.t("mailers.notify_mailer.subforem_moderator", subforem_name: @subforem.domain)
     mail(to: @user.email, subject: subject)
@@ -209,17 +300,32 @@ class NotifyMailer < ApplicationMailer
 
   def trusted_role_email
     @user = params[:user]
+    community_name = Settings::Community.community_name(subforem_id: @subforem_id)
 
-    subject = I18n.t("mailers.notify_mailer.trusted",
-                     community: Settings::Community.community_name(subforem_id: @subforem_id))
+    customerio_delivery_options(
+      transactional_message_id: "dev_trusted_role",
+      message_data: {
+        "community_name" => community_name,
+        "trusted_member_guide_url" => trusted_member_guide_url
+      },
+    )
+
+    subject = I18n.t("mailers.notify_mailer.trusted", community: community_name)
     mail(to: @user.email, subject: subject)
   end
 
   def base_subscriber_role_email
     @user = params[:user]
+    community_name = Settings::Community.community_name(subforem_id: @subforem_id)
 
-    subject = I18n.t("mailers.notify_mailer.base_subscriber",
-                     community: Settings::Community.community_name(subforem_id: @subforem_id))
+    customerio_delivery_options(
+      transactional_message_id: "dev_base_subscriber_role",
+      message_data: {
+        "community_name" => community_name
+      },
+    )
+
+    subject = I18n.t("mailers.notify_mailer.base_subscriber", community: community_name)
     mail(to: @user.email, subject: subject)
   end
 
@@ -228,5 +334,16 @@ class NotifyMailer < ApplicationMailer
       new_follower_email: I18n.t("mailers.notify_mailer.new_follower",
                                  community: Settings::Community.community_name(subforem_id: @subforem_id)).freeze
     }.freeze
+  end
+
+  private
+
+  # Mirrors the conditional "Trusted Member Guide" link rendered by
+  # trusted_role_email.html.erb -- only present when a "trusted-member" Page
+  # exists -- so the Customer.io template can reproduce the same condition.
+  def trusted_member_guide_url
+    return unless Page.find_by(slug: "trusted-member")
+
+    ApplicationController.helpers.app_url("trusted-member")
   end
 end
