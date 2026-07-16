@@ -1,4 +1,6 @@
 class NotifyMailer < ApplicationMailer
+  include Rails.application.routes.url_helpers
+
   has_history extra: lambda {
     {
       feedback_message_id: params[:feedback_message_id],
@@ -23,6 +25,18 @@ class NotifyMailer < ApplicationMailer
     # Placed here to allow the preview to continue to work
     return if @truncated_comment.blank?
 
+    customerio_delivery_options(
+      transactional_message_id: "dev_new_reply_email",
+      message_data: {
+        "commenter_name" => @comment.user.name,
+        "parent_type" => @comment.parent_type,
+        "comment_html" => @truncated_comment,
+        "comment_url" => URL.comment(@comment),
+        "article_or_parent_title" => @comment.commentable&.title || "Content No Longer Available",
+        "unsubscribe_url" => email_subscriptions_unsubscribe_url(ut: @unsubscribe)
+      },
+    )
+
     mail(to: @user.email,
          subject: I18n.t("mailers.notify_mailer.new_reply", name: @comment.user.name, type: @comment.parent_type))
   rescue StandardError => e
@@ -38,6 +52,15 @@ class NotifyMailer < ApplicationMailer
     @follower = follow.follower
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_follower_notifications)
 
+    customerio_delivery_options(
+      transactional_message_id: "dev_new_follower_email",
+      message_data: {
+        "follower_name" => @follower.name,
+        "follower_profile_url" => URL.user(@follower),
+        "unsubscribe_url" => email_subscriptions_unsubscribe_url(ut: @unsubscribe)
+      },
+    )
+
     mail(to: @user.email, subject: "#{@follower.name} #{subjects[__method__]}")
   end
 
@@ -52,6 +75,16 @@ class NotifyMailer < ApplicationMailer
 
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_mention_notifications)
 
+    customerio_delivery_options(
+      transactional_message_id: "dev_new_mention_email",
+      message_data: {
+        "mentioner_name" => @mentioner.name,
+        "mentionable_type" => @mentionable_type,
+        "mention_url" => URL.url(@mention.mentionable.path, RequestStore.store[:subforem_domain]),
+        "unsubscribe_url" => email_subscriptions_unsubscribe_url(ut: @unsubscribe)
+      },
+    )
+
     mail(to: @user.email,
          subject: I18n.t("mailers.notify_mailer.new_mention", name: @mentioner.name, type: @mentionable_type))
   end
@@ -62,8 +95,20 @@ class NotifyMailer < ApplicationMailer
 
     @unread_notifications_count = @user.notifications.unread.count
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_unread_notifications)
+    community_name = Settings::Community.community_name(subforem_id: @subforem_id)
     subject = I18n.t("mailers.notify_mailer.unread_notifications", count: @unread_notifications_count,
-                                                                   community: Settings::Community.community_name(subforem_id: @subforem_id))
+                                                                   community: community_name)
+
+    customerio_delivery_options(
+      transactional_message_id: "dev_unread_notifications_email",
+      message_data: {
+        "unread_count" => @unread_notifications_count,
+        "notifications_url" => URL.url("/notifications", RequestStore.store[:subforem_domain]),
+        "community_name" => community_name,
+        "unsubscribe_url" => email_subscriptions_unsubscribe_url(ut: @unsubscribe)
+      },
+    )
+
     mail(to: @user.email, subject: subject)
   end
 
@@ -78,6 +123,17 @@ class NotifyMailer < ApplicationMailer
     @user = @badge_achievement.user
     @badge = @badge_achievement.badge
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_badge_notifications)
+    badge_description = @badge.description if @badge_achievement.include_default_description
+
+    customerio_delivery_options(
+      transactional_message_id: "dev_new_badge_email",
+      message_data: {
+        "badge_name" => @badge.title,
+        "badge_description" => badge_description,
+        "badge_image_url" => @badge.badge_image_url,
+        "unsubscribe_url" => email_subscriptions_unsubscribe_url(ut: @unsubscribe)
+      },
+    )
 
     mail(to: @user.email, subject: I18n.t("mailers.notify_mailer.new_badge"))
   end
