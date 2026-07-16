@@ -15,6 +15,7 @@ module Admin
       :main_image_background_hex_color,
       :user_id,
       :max_score,
+      :baseline_score,
       :co_author_ids_list,
       :published_at,
       { context_notes_attributes: %i[id body_markdown] }
