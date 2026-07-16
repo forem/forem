@@ -157,6 +157,31 @@
     <%= yield %>
     <div id="runtime-banner-container"></div>
     <div id="i18n-translations" data-translations="<%= i18n_translations_for_javascript.to_json %>"></div>
+    <% if internal_navigation? %>
+      <script>
+        (function() {
+          var expectedStyles = {
+            "minimal": "<%= stylesheet_path('minimal') %>",
+            "views": "<%= stylesheet_path('views') %>",
+            "crayons": "<%= stylesheet_path('crayons') %>"
+          };
+          var qualifiers = ["main", "secondary"];
+          Object.keys(expectedStyles).forEach(function(name) {
+            var expectedHref = expectedStyles[name];
+            for (var i = 0; i < qualifiers.length; i++) {
+              var id = qualifiers[i] + "-" + name + "-stylesheet";
+              var link = document.getElementById(id);
+              if (link) {
+                var currentHref = link.getAttribute('href');
+                if (currentHref && currentHref !== expectedHref) {
+                  link.setAttribute('href', expectedHref);
+                }
+              }
+            }
+          });
+        })();
+      </script>
+    <% end %>
   </div>
 </div>
 <% unless internal_navigation? %>
