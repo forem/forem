@@ -454,4 +454,26 @@ RSpec.describe "Billboards" do
       end
     end
   end
+
+  describe "GET /:username/:slug/billboards/:placement_area with article exclusion" do
+    let(:article2) { create(:article, user: create(:user), slug: article.slug) }
+
+    context "when billboard excludes the current article" do
+      let!(:billboard) { create_billboard(placement_area: "post_comments", exclude_article_ids: [article.id]) }
+
+      it "excludes the billboard when requesting for the excluded article" do
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to be_empty
+      end
+
+      it "does not exclude the billboard when requesting for the non-excluded article with the same slug" do
+        get article_billboard_path(username: article2.username, slug: article2.slug, placement_area: "post_comments")
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(billboard.processed_html)
+      end
+    end
+  end
 end
