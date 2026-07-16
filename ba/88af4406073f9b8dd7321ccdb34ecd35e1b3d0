@@ -1,0 +1,48 @@
+spec/workers/emails/send_user_digest_worker_spec.rb
+  3decdbcb5d168a3c 200-281
+app/services/email_digest_feed_article_collector.rb
+  3decdbcb5d168a3c 1-173
+db/migrate/20260417112909_add_digest_variant_to_ahoy_messages.rb
+  3decdbcb5d168a3c 1-5
+spec/services/email_digest_feed_article_collector_spec.rb
+  3decdbcb5d168a3c 1-276
+db/schema.rb
+  3decdbcb5d168a3c 13,55
+app/workers/emails/send_user_digest_worker.rb
+  3decdbcb5d168a3c 15,46-51,66-81
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.0",
+  "base_commit_sha": "ba88af4406073f9b8dd7321ccdb34ecd35e1b3d0",
+  "prompts": {
+    "17b54431fe08affa": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "34105f37-5171-419d-8120-489d80e9bece",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Paolo Veñegas",
+      "messages": [],
+      "total_additions": 31,
+      "total_deletions": 0,
+      "accepted_lines": 0,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/62502dcdcba2dca0f03d565d07a3754f4604962d6a2de025570de1aad5cb5d73"
+    },
+    "3decdbcb5d168a3c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "60c932df-46f9-439e-96fb-f365b952d01e",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Paolo Veñegas",
+      "messages": [],
+      "total_additions": 642,
+      "total_deletions": 31,
+      "accepted_lines": 626,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/0208ee2db54bede0c9b18a364fe2dfb671fa95ab4b3eef723d8068a8c9fd2d36"
+    }
+  }
+}
