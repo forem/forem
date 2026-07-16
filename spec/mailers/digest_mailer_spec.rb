@@ -69,8 +69,91 @@ RSpec.describe DigestMailer do
 
     it "does not include fc parameter in email links when feed_config_id is nil" do
       email = described_class.with(user: user, articles: [article], feed_config_id: nil).digest_email
-      
+
       expect(email.body.encoded).not_to include("fc=")
+    end
+
+    it "does not use Customer.io delivery when Customer.io is not configured" do
+      email = described_class.with(user: user, articles: [article]).digest_email
+
+      expect(email.message.delivery_method).not_to be_a(DeliveryMethods::CustomerIo)
+    end
+
+    context "when routed through Customer.io" do
+      let(:article2) { create(:article, title: "Second Article Title") }
+
+      before do
+        allow(ApplicationConfig).to receive(:[]).and_call_original
+        allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
+        FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+      end
+
+      after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
+
+      it "still sets the X-SMTPAPI header for SendGrid alongside the Customer.io payload", :aggregate_failures do
+        email = described_class.with(user: user, articles: [article]).digest_email
+
+        expect(email.header["X-SMTPAPI"]).not_to be_nil
+        expect(email.message.delivery_method).to be_a(DeliveryMethods::CustomerIo)
+      end
+
+      it "routes through the Customer.io digest template with the full payload", :aggregate_failures do
+        article.update_columns(ai_summary: "An AI generated summary.", description: "Original description.")
+
+        email = described_class.with(user: user, articles: [article, article2], feed_config_id: 12_345).digest_email
+
+        settings = email.message.delivery_method.settings
+        expect(settings[:transactional_message_id]).to eq("dev_digest_email")
+
+        data = settings[:message_data]
+        expect(data["subject"]).to eq(email.subject)
+        expect(data["articles"].size).to eq(2)
+
+        expected_url = ApplicationController.helpers.article_url(article, context: "digest", fc: 12_345)
+        expect(data["articles"].first["title"]).to eq(article.title.strip)
+        expect(data["articles"].first["url"]).to eq(expected_url)
+        expect(data["articles"].first["summary"]).to eq("An AI generated summary.")
+        expect(data["articles"].second["title"]).to eq(article2.title.strip)
+
+        expect(data["unsubscribe_url"]).to include("ut=")
+        expect(data["user_follows_any_subforems"]).to be(false)
+        expect(data).to have_key("smart_summary")
+        expect(data["email_end_phrase"]).to be_present
+      end
+
+      it "falls back to the truncated description in the payload when ai_summary is blank" do
+        article.update_columns(ai_summary: nil, description: "Fallback description text.")
+
+        email = described_class.with(user: user, articles: [article]).digest_email
+
+        data = email.message.delivery_method.settings[:message_data]
+        expect(data["articles"].first["summary"]).to eq("Fallback description text.")
+      end
+
+      it "passes the smart_summary through untouched" do
+        email = described_class.with(user: user, articles: [article],
+                                     smart_summary: "Digest overview text").digest_email
+
+        data = email.message.delivery_method.settings[:message_data]
+        expect(data["smart_summary"]).to eq("Digest overview text")
+      end
+
+      it "includes billboards_html for each rendered billboard, in order" do
+        bb_1 = create(:billboard, placement_area: "digest_first", published: true, approved: true)
+        bb_2 = create(:billboard, placement_area: "digest_second", published: true, approved: true)
+
+        email = described_class.with(user: user, articles: [article], billboards: [bb_1, bb_2]).digest_email
+
+        data = email.message.delivery_method.settings[:message_data]
+        expect(data["billboards_html"]).to eq([bb_1.processed_html, bb_2.processed_html])
+      end
+
+      it "omits billboards_html entries when no billboards are given" do
+        email = described_class.with(user: user, articles: [article]).digest_email
+
+        data = email.message.delivery_method.settings[:message_data]
+        expect(data["billboards_html"]).to eq([])
+      end
     end
   end
 

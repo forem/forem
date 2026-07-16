@@ -1,4 +1,6 @@
 class DigestMailer < ApplicationMailer
+  include Rails.application.routes.url_helpers
+
   default from: -> { email_from(I18n.t("mailers.digest_mailer.from")) }
 
   def digest_email
@@ -11,6 +13,19 @@ class DigestMailer < ApplicationMailer
     @user_follows_any_subforems = user_follows_any_subforems?
 
     subject = generate_title
+
+    customerio_delivery_options(
+      transactional_message_id: "dev_digest_email",
+      message_data: {
+        "subject" => subject,
+        "articles" => @articles.map { |article| digest_article_payload(article) },
+        "smart_summary" => @smart_summary,
+        "billboards_html" => digest_billboards_html,
+        "email_end_phrase" => email_end_phrase,
+        "unsubscribe_url" => email_subscriptions_unsubscribe_url(ut: @unsubscribe),
+        "user_follows_any_subforems" => @user_follows_any_subforems
+      },
+    )
 
     # set sendgrid category in the header using smtp api
     # https://docs.sendgrid.com/for-developers/sending-email/building-an-x-smtpapi-header
@@ -33,6 +48,27 @@ class DigestMailer < ApplicationMailer
   end
 
   private
+
+  # Mirrors the article fields rendered by digest_email.html.erb (title,
+  # article_url with the same context/fc params, and the same ai_summary /
+  # truncated-description fallback), so the Customer.io template can
+  # reproduce the article list without duplicating selection logic.
+  def digest_article_payload(article)
+    {
+      "title" => article.title.strip,
+      "url" => ApplicationController.helpers.article_url(article, context: "digest", fc: @feed_config_id.presence),
+      "summary" => article.ai_summary.presence ||
+        ApplicationController.helpers.truncate(article.description, length: 180)
+    }
+  end
+
+  # The view only ever renders @billboards.first and @billboards.second
+  # (as raw processed_html, not a partial); mirror that exactly rather than
+  # rendering the whole array, so the payload matches what the SMTP path
+  # actually shows.
+  def digest_billboards_html
+    [@billboards&.first, @billboards&.second].compact.map(&:processed_html)
+  end
 
   def generate_title
     # Winner of digest_title_03_11
