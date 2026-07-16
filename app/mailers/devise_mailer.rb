@@ -70,11 +70,14 @@ class DeviseMailer < Devise::Mailer
   end
 
   def reset_password_instructions(record, token, opts = {})
-    @resource = record
-
-    # Re-setup subforem context now that we have the user
-    setup_subforem_context
-
+    # Intentionally does NOT set @resource/re-run setup_subforem_context here
+    # (unlike confirmation_instructions/invitation_instructions): pre-PR, this
+    # action had no override, so @subforem_id/@subforem_domain and the global
+    # ActionMailer::Base.default_url_options[:host] are whatever the
+    # class-level before_action :setup_subforem_context already resolved
+    # (the DEFAULT subforem, since no user is known at that point). Mutating
+    # them here would change the SMTP-mode link host on multi-subforem
+    # instances, which must stay byte-for-byte identical to before this PR.
     community_name = Settings::Community.community_name(subforem_id: @subforem_id)
 
     customerio_delivery_options(
@@ -90,11 +93,9 @@ class DeviseMailer < Devise::Mailer
   end
 
   def unlock_instructions(record, token, opts = {})
-    @resource = record
-
-    # Re-setup subforem context now that we have the user
-    setup_subforem_context
-
+    # See the comment in reset_password_instructions above: no @resource /
+    # setup_subforem_context re-invocation here, to keep SMTP-mode link host
+    # resolution (default subforem) identical to pre-PR behavior.
     community_name = Settings::Community.community_name(subforem_id: @subforem_id)
 
     customerio_delivery_options(

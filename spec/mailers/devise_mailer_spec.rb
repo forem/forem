@@ -341,5 +341,36 @@ RSpec.describe DeviseMailer, type: :mailer do
         expect(email.body.to_s).to include(subforem.domain)
       end
     end
+
+    context "when the recipient's own subforem differs from the default subforem" do
+      let!(:default_subforem) { create(:subforem, domain: "default-instance.example.com") }
+      let!(:user_subforem) { create(:subforem, domain: "user-specific.example.com") }
+      let(:user_with_subforem) { create(:user, onboarding_subforem_id: user_subforem.id) }
+
+      before do
+        allow(Subforem).to receive_messages(
+          cached_default_id: default_subforem.id,
+          cached_default_domain: default_subforem.domain,
+          cached_id_to_domain_hash: {
+            default_subforem.id => default_subforem.domain,
+            user_subforem.id => user_subforem.domain
+          },
+        )
+      end
+
+      it "uses the default subforem's domain (not the recipient's) in the reset password link" do
+        email = described_class.reset_password_instructions(user_with_subforem, "reset_token")
+
+        expect(email.body.to_s).to include(default_subforem.domain)
+        expect(email.body.to_s).not_to include(user_subforem.domain)
+      end
+
+      it "uses the default subforem's domain (not the recipient's) in the unlock link" do
+        email = described_class.unlock_instructions(user_with_subforem, "unlock_token")
+
+        expect(email.body.to_s).to include(default_subforem.domain)
+        expect(email.body.to_s).not_to include(user_subforem.domain)
+      end
+    end
   end
 end
