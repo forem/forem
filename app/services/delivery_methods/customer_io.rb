@@ -38,12 +38,12 @@ module DeliveryMethods
       end.merge(settings)
     end
 
+    # Customer.io's body field is HTML. Prefer the html_part (Mail searches
+    # nested multipart structures recursively), falling back to the text part
+    # or the raw body for single-part mail.
     def build_body(mail)
-      if mail.body.parts.length > 1
-        mail.body.parts.first.body.to_s
-      else
-        mail.body.to_s
-      end
+      part = mail.html_part || mail.text_part
+      (part || mail).body.to_s
     end
   end
 end

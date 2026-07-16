@@ -14,7 +14,7 @@ module Deliverable
   #                               message_data: { "comment" => ... })
   # Ignored unless the message routes through Customer.io.
   def customerio_delivery_options(options)
-    @customerio_delivery_options = options
+    @customerio_delivery_options = (@customerio_delivery_options || {}).merge(options)
   end
 
   def set_perform_deliveries
@@ -28,6 +28,8 @@ module Deliverable
       message.perform_deliveries = true
       message.delivery_method(
         DeliveryMethods::CustomerIo,
+        # identifiers are always controller-resolved and intentionally override
+        # anything passed via customerio_delivery_options.
         (@customerio_delivery_options || {}).merge(identifiers: customerio_identifiers),
       )
     else
@@ -48,6 +50,8 @@ module Deliverable
     end
   end
 
+  # The flag check and Customer.io identifiers both key off mail.to.first:
+  # all Forem mailers are single-recipient today.
   def customerio_recipient
     return @customerio_recipient if defined?(@customerio_recipient)
 

@@ -44,13 +44,26 @@ RSpec.describe DeliveryMethods::CustomerIo do
     expect(message[:identifiers]).to eq(id: "42")
   end
 
-  it "uses the first part of a multipart body" do
+  it "prefers the html part of a multipart body" do
     multipart = Mail.new(from: "hello@dev.to", to: "member@example.com", subject: "Hi") do
       text_part { body "plain text" }
       html_part { body "<p>html</p>" }
     end
     message = delivered_message({}, multipart)
-    expect(message[:body]).to eq("plain text")
+    expect(message[:body]).to eq("<p>html</p>")
+  end
+
+  it "prefers the html part when the mail is multipart/mixed with an attachment" do
+    # e.g. the export-email flow: an alternative (text+html) part plus a file
+    # attachment. Mail nests the alternative part inside the mixed part, so
+    # html_part must be found recursively rather than assuming it's top-level.
+    mixed = Mail.new(from: "hello@dev.to", to: "member@example.com", subject: "Export") do
+      text_part { body "plain export" }
+      html_part { body "<p>html export</p>" }
+      add_file(filename: "export.csv", content: "a,b,c")
+    end
+    message = delivered_message({}, mixed)
+    expect(message[:body]).to eq("<p>html export</p>")
   end
 
   it "attaches mail attachments to the request" do

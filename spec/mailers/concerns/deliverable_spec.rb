@@ -95,5 +95,17 @@ RSpec.describe Deliverable do
 
       expect(message.delivery_method).to be_a(DeliveryMethods::CustomerIo)
     end
+
+    it "still records Ahoy delivery tracking (EmailMessage) when routed through Customer.io" do
+      FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+      api_client = instance_double(Customerio::APIClient, send_email: { "delivery_id" => "x" })
+      stub_const("CUSTOMERIO_API", api_client)
+
+      expect do
+        DeliverableTestMailer.with(to: user.email).test_email.deliver_now
+      end.to change(EmailMessage, :count).by(1)
+
+      expect(api_client).to have_received(:send_email)
+    end
   end
 end

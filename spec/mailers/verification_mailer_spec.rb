@@ -51,6 +51,25 @@ RSpec.describe VerificationMailer do
     end
   end
 
+  describe "Customer.io delivery" do
+    before do
+      allow(Settings::SMTP).to receive(:provided_minimum_settings?).and_return(true)
+      allow(Settings::Community).to receive(:community_name).and_return(community_name)
+      allow(ApplicationConfig).to receive(:[]).and_call_original
+      allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
+      FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+    end
+
+    after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
+
+    it "disables Customer.io link tracking on security emails" do
+      email = described_class.with(user_id: user.id).account_ownership_verification_email
+
+      expect(email.message.delivery_method).to be_a(DeliveryMethods::CustomerIo)
+      expect(email.message.delivery_method.settings[:tracked]).to be(false)
+    end
+  end
+
   describe "#magic_link" do
     before do
       allow(Settings::SMTP).to receive(:provided_minimum_settings?).and_return(true)
