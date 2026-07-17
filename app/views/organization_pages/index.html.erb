@@ -11,7 +11,7 @@
 
   <% if @pages.any? %>
     <div class="crayons-card crayons-card--content-rows">
-      <h2>Your Pages</h2>
+      <h2><%= t("views.organization_settings.pages.your_pages") %></h2>
       <div class="grid gap-4 mt-4">
         <% @pages.each do |page| %>
           <% 

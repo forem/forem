@@ -1,7 +1,7 @@
 class OrganizationPagesController < ApplicationController
   include OrganizationAdminScoped
-  before_action :set_page, only: %i[edit update destroy]
   before_action :check_pages_feature
+  before_action :set_page, only: %i[edit update destroy]
 
   def index
     @pages = @organization.pages.order(:created_at)
@@ -19,8 +19,12 @@ class OrganizationPagesController < ApplicationController
     if is_first_page
       @page.slug = "#{@organization.slug}/readme"
       @page.title = @organization.name if @page.title.blank?
-    elsif params.dig(:page, :slug_suffix).present?
-      suffix = params[:page][:slug_suffix].to_s.strip.downcase.gsub(/[^a-z0-9\-]/, "-").gsub(/-+/, "-").strip
+    else
+      suffix = params.dig(:page, :slug_suffix).to_s.strip.downcase.gsub(/[^a-z0-9\-]/, "-").gsub(/-+/, "-").gsub(/\A-+|-+\z/, "")
+      if suffix.blank?
+        @page.errors.add(:slug, "suffix is required and must contain alphanumeric characters or hyphens")
+        return render :new, status: :unprocessable_entity
+      end
       @page.slug = "#{@organization.slug}/#{suffix}"
     end
 
@@ -30,7 +34,7 @@ class OrganizationPagesController < ApplicationController
       flash[:settings_notice] = I18n.t("views.organization_settings.pages.created")
       redirect_to organization_pages_path(@organization.slug)
     else
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 
@@ -42,8 +46,12 @@ class OrganizationPagesController < ApplicationController
     
     if @page.slug.end_with?("/readme")
       @page.slug = "#{@organization.slug}/readme"
-    elsif params.dig(:page, :slug_suffix).present?
-      suffix = params[:page][:slug_suffix].to_s.strip.downcase.gsub(/[^a-z0-9\-]/, "-").gsub(/-+/, "-").strip
+    else
+      suffix = params.dig(:page, :slug_suffix).to_s.strip.downcase.gsub(/[^a-z0-9\-]/, "-").gsub(/-+/, "-").gsub(/\A-+|-+\z/, "")
+      if suffix.blank?
+        @page.errors.add(:slug, "suffix is required and must contain alphanumeric characters or hyphens")
+        return render :edit, status: :unprocessable_entity
+      end
       @page.slug = "#{@organization.slug}/#{suffix}"
     end
 
@@ -51,7 +59,7 @@ class OrganizationPagesController < ApplicationController
       flash[:settings_notice] = I18n.t("views.organization_settings.pages.updated")
       redirect_to organization_pages_path(@organization.slug)
     else
-      render :edit
+      render :edit, status: :unprocessable_entity
     end
   end
 

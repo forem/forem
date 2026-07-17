@@ -296,11 +296,11 @@
           <header class="flex items-center justify-between flex-wrap gap-2">
             <div>
               <h2 class="mb-2"><%= t("views.organization_settings.pages.heading") %></h2>
-              <p class="color-base-70">Manage the pages of your organization, including the default Showcase page.</p>
+              <p class="color-base-70"><%= t("views.organization_settings.pages.description_help") %></p>
             </div>
             <div class="flex gap-2">
               <%= link_to t("views.organization_settings.pages.new_page"), new_organization_page_path(@organization.slug), class: "crayons-btn crayons-btn--secondary crayons-btn--s" %>
-              <%= link_to "Manage Pages", organization_pages_path(@organization.slug), class: "crayons-btn crayons-btn--secondary crayons-btn--s" %>
+              <%= link_to t("views.organization_settings.pages.manage_pages"), organization_pages_path(@organization.slug), class: "crayons-btn crayons-btn--secondary crayons-btn--s" %>
             </div>
           </header>
 
@@ -319,16 +319,16 @@
                       page_url = is_showcase ? (is_custom_domain ? "/" : "/#{@organization.slug}") : (is_custom_domain ? "/p/#{suffix}" : "/#{@organization.slug}/p/#{suffix}")
                     %>
                     <% if is_showcase %>
-                      <%= link_to "Showcase", page_url, target: "_blank", class: "crayons-tag crayons-tag--monochrome", style: "background: var(--accent-brand-a10); color: var(--accent-brand); text-decoration: none;" %>
+                      <%= link_to t("views.organization_settings.pages.showcase"), page_url, target: "_blank", class: "crayons-tag crayons-tag--monochrome", style: "background: var(--accent-brand-a10); color: var(--accent-brand); text-decoration: none;" %>
                     <% else %>
                       <%= link_to "/#{suffix}", page_url, target: "_blank", class: "crayons-tag crayons-tag--monochrome", style: "font-family: var(--ff-monospace); text-decoration: none;" %>
                     <% end %>
                   </div>
-                  <%= link_to "Edit", edit_organization_page_path(@organization.slug, page), class: "crayons-link fw-medium fs-s" %>
+                  <%= link_to t("views.organization_settings.pages.edit"), edit_organization_page_path(@organization.slug, page), class: "crayons-link fw-medium fs-s" %>
                 </div>
               <% end %>
             <% else %>
-              <p class="color-base-60 fs-s mb-0">No custom pages created yet. Click "Create new page" to get started.</p>
+              <p class="color-base-60 fs-s mb-0"><%= t("views.organization_settings.pages.no_pages") %></p>
             <% end %>
           </div>
         </div>

@@ -482,7 +482,7 @@ class ApplicationController < ActionController::Base
     return unless request.get? || request.head?
     return unless request.format.html?
 
-    if controller_name == "stories" && (action_name.in?(%w[custom_domain_index custom_domain_show]) || params[:page_suffix].present?)
+    if controller_name == "stories" && (action_name.in?(%w[custom_domain_index custom_domain_show]) || (action_name == "index" && params[:page_suffix].present?))
       return
     end
 

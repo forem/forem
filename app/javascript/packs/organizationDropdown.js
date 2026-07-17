@@ -24,10 +24,34 @@ function initDropdown() {
   profileDropdownDiv.dataset.dropdownInitialized = true;
 }
 
+function handleCtaOutsideClick(e) {
+  const toggle = document.getElementById('header-cta-toggle');
+  const menu = document.getElementById('header-cta-menu');
+  if (!toggle || !menu || menu.style.display === 'none') return;
+
+  if (!toggle.contains(e.target) && !menu.contains(e.target)) {
+    menu.style.display = 'none';
+    toggle.setAttribute('aria-expanded', 'false');
+  }
+}
+
+function handleCtaEscapeKey(e) {
+  if (e.key === 'Escape') {
+    const toggle = document.getElementById('header-cta-toggle');
+    const menu = document.getElementById('header-cta-menu');
+    if (!toggle || !menu || menu.style.display === 'none') return;
+
+    menu.style.display = 'none';
+    toggle.setAttribute('aria-expanded', 'false');
+  }
+}
+
 function initHeaderCtaDropdown() {
   const toggle = document.getElementById('header-cta-toggle');
   const menu = document.getElementById('header-cta-menu');
   if (!toggle || !menu) return;
+
+  if (toggle.dataset.ctaInitialized === 'true') return;
 
   toggle.addEventListener('click', () => {
     const isOpen = menu.style.display !== 'none';
@@ -35,19 +59,13 @@ function initHeaderCtaDropdown() {
     toggle.setAttribute('aria-expanded', String(!isOpen));
   });
 
-  document.addEventListener('click', (e) => {
-    if (!toggle.contains(e.target) && !menu.contains(e.target)) {
-      menu.style.display = 'none';
-      toggle.setAttribute('aria-expanded', 'false');
-    }
-  });
+  if (!window._headerCtaListenersRegistered) {
+    document.addEventListener('click', handleCtaOutsideClick);
+    document.addEventListener('keydown', handleCtaEscapeKey);
+    window._headerCtaListenersRegistered = true;
+  }
 
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      menu.style.display = 'none';
-      toggle.setAttribute('aria-expanded', 'false');
-    }
-  });
+  toggle.dataset.ctaInitialized = 'true';
 }
 
 function initTabsMoreDropdown() {
@@ -118,9 +136,13 @@ if (document.readyState !== 'loading') {
 }
 
 // Recalculate on resize
-window.addEventListener('resize', handleTabsOverflow);
+if (!window._orgTabsResizeRegistered) {
+  window.addEventListener('resize', handleTabsOverflow);
+  window._orgTabsResizeRegistered = true;
+}
 
 // Handle InstantClick page transition
-if (window.InstantClick) {
+if (window.InstantClick && !window._orgDropdownChangeRegistered) {
   window.InstantClick.on('change', run);
+  window._orgDropdownChangeRegistered = true;
 }

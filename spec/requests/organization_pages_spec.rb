@@ -8,6 +8,10 @@ RSpec.describe "Organization Pages Controller Backend Protection" do
     sign_in admin_user
   end
 
+  after do
+    FeatureFlag.disable(:org_readme, FeatureFlag::Actor[organization])
+  end
+
   describe "GET /:slug/settings/pages" do
     context "when feature flag is disabled" do
       before { FeatureFlag.disable(:org_readme) }
@@ -62,6 +66,15 @@ RSpec.describe "Organization Pages Controller Backend Protection" do
         page = organization.pages.last
         expect(page.slug).to eq("#{organization.slug}/about")
       end
+
+      it "fails and returns 422 if the slug suffix is invalid" do
+        expect {
+          post organization_pages_path(organization.slug), params: {
+            page: { title: "About Us", body_markdown: "# Custom about page", slug_suffix: "!!!" }
+          }
+        }.not_to change(Page, :count)
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
     end
   end
 
@@ -69,6 +82,7 @@ RSpec.describe "Organization Pages Controller Backend Protection" do
     before { FeatureFlag.enable(:org_readme, FeatureFlag::Actor[organization]) }
 
     let!(:readme_page) { create(:page, organization: organization, slug: "#{organization.slug}/readme", template: "full_within_layout") }
+    let!(:custom_page) { create(:page, organization: organization, slug: "#{organization.slug}/about", template: "full_within_layout") }
 
     it "updates details and prevents readme slug suffix change" do
       patch update_organization_page_path(organization.slug, readme_page), params: {
@@ -76,6 +90,14 @@ RSpec.describe "Organization Pages Controller Backend Protection" do
       }
       expect(readme_page.reload.title).to eq("Updated Showcase Title")
       expect(readme_page.slug).to eq("#{organization.slug}/readme")
+    end
+
+    it "fails and returns 422 if the updated slug suffix is invalid" do
+      patch update_organization_page_path(organization.slug, custom_page), params: {
+        page: { title: "New Title", slug_suffix: "!!!" }
+      }
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(custom_page.reload.title).not_to eq("New Title")
     end
   end
 

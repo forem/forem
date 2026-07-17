@@ -27,8 +27,18 @@ fr:
         confirm_delete: Êtes-vous sûr de vouloir supprimer cette page ?
         showcase: Showcase
         showcase_hint: Il s'agit de la page d'accueil Showcase par défaut.
-        no_pages: Aucune page personnalisée créée pour le moment.
+        no_pages: Aucune page personnalisée créée pour le moment. Cliquez sur "Créer une nouvelle page" pour commencer.
         edit: Modifier
+        manage_pages: Gérer les pages
+        description_help: Gérez les pages de votre organisation, y compris la page Showcase par défaut.
+        create_heading: Créer une nouvelle page
+        edit_heading: Modifier la page
+        slug_help: Uniquement des lettres minuscules, des chiffres et des traits d'union (par ex. "a-propos"). Accessible via l'onglet de profil.
+        showcase_slug_help: Il s'agit de la page Showcase (par défaut), le suffixe du slug est donc fixé à "readme".
+        content_label: Contenu de la page (Markdown)
+        description_placeholder: Courte description pour le référencement (SEO) et le partage...
+        cancel: Annuler
+        your_pages: Vos pages
       header_cta:
         heading: Bouton CTA de l'en-tête
         description: "Ajoutez un bouton d'appel à l'action dans l'en-tête de la page de votre organisation. Vous pouvez créer un bouton simple ou un menu déroulant avec plusieurs liens."

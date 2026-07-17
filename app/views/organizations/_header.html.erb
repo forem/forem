@@ -251,8 +251,8 @@
     <%
       is_custom_domain = request.env["forem.custom_domain_org"].present?
       org_pages = @organization.pages.order(:created_at).to_a
-      showcase_page = org_pages.first
-      custom_pages = org_pages[1..] || []
+      showcase_page = org_pages.find { |page| page.slug&.end_with?("/readme") } || org_pages.first
+      custom_pages = org_pages.reject { |page| page == showcase_page }
       
       showcase_path = is_custom_domain ? "/" : "/#{@organization.slug}"
       all_posts_path = is_custom_domain ? "/?mode=all-posts" : "/#{@organization.slug}?mode=all-posts"
