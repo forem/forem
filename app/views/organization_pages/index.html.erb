@@ -1,0 +1,51 @@
+<% title t("views.organization_settings.pages.heading") %>
+
+<div class="crayons-layout crayons-layout--limited-l pt-7">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="crayons-title"><%= t("views.organization_settings.pages.heading") %></h1>
+    <div class="flex gap-2">
+      <%= link_to "&larr; #{t("views.organization_settings.lead_forms.back_to_settings")}".html_safe, organization_settings_path(@organization.slug), class: "crayons-btn crayons-btn--secondary" %>
+      <%= link_to t("views.organization_settings.pages.new_page"), new_organization_page_path(@organization.slug), class: "crayons-btn" %>
+    </div>
+  </div>
+
+  <% if @pages.any? %>
+    <div class="crayons-card crayons-card--content-rows">
+      <h2><%= t("views.organization_settings.pages.your_pages") %></h2>
+      <div class="grid gap-4 mt-4">
+        <% @pages.each do |page| %>
+          <% 
+            is_showcase = page.slug.end_with?("/readme")
+            suffix = page.slug.split("/").last
+          %>
+          <div class="crayons-card crayons-card--secondary p-4 flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <div class="flex items-center gap-2 mb-1">
+                <h3 class="crayons-subtitle-2"><%= page.title %></h3>
+                <%
+                  is_custom_domain = request.env["forem.custom_domain_org"].present?
+                  page_url = is_showcase ? (is_custom_domain ? "/" : "/#{@organization.slug}") : (is_custom_domain ? "/p/#{suffix}" : "/#{@organization.slug}/p/#{suffix}")
+                %>
+                <% if is_showcase %>
+                  <%= link_to t("views.organization_settings.pages.showcase"), page_url, target: "_blank", class: "crayons-tag crayons-tag--monochrome", style: "background: var(--accent-brand-a10); color: var(--accent-brand); text-decoration: none;" %>
+                <% else %>
+                  <%= link_to "/#{suffix}", page_url, target: "_blank", class: "crayons-tag crayons-tag--monochrome", style: "font-family: var(--ff-monospace); text-decoration: none;" %>
+                <% end %>
+              </div>
+              <p class="fs-s color-base-60 mb-0"><%= page.description %></p>
+            </div>
+            <div class="flex gap-2 shrink-0">
+              <%= link_to t("views.organization_settings.pages.edit"), edit_organization_page_path(@organization.slug, page), class: "crayons-btn crayons-btn--secondary crayons-btn--xs" %>
+              <%= button_to t("views.organization_settings.lead_forms.delete"), organization_page_path(@organization.slug, page), method: :delete, data: { confirm: t("views.organization_settings.pages.confirm_delete") }, class: "crayons-btn crayons-btn--danger crayons-btn--xs" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <div class="crayons-card p-8 text-center color-base-60">
+      <p><%= t("views.organization_settings.pages.no_pages") %></p>
+      <%= link_to t("views.organization_settings.pages.new_page"), new_organization_page_path(@organization.slug), class: "crayons-btn mt-4" %>
+    </div>
+  <% end %>
+</div>

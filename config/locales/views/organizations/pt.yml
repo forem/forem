@@ -14,6 +14,31 @@ pt:
         default_example: "## Conheça a equipe\n{%% org_team %{slug} %%}\n\n## Últimas publicações\n{%% org_posts %{slug} %%}"
         save: Salvar página
         preview: Visualizar
+      pages:
+        heading: Páginas da organização
+        new_page: Criar nova página
+        edit_page: Editar página
+        title: Título
+        slug: Sufixo do slug
+        description: Descrição
+        created: Página criada com sucesso.
+        updated: Página atualizada com sucesso.
+        deleted: Página excluída com sucesso.
+        confirm_delete: Tem certeza que deseja excluir esta página?
+        showcase: Showcase
+        showcase_hint: Esta é a página Showcase padrão.
+        no_pages: Nenhuma página personalizada criada ainda. Clique em "Criar nova página" para começar.
+        edit: Editar
+        manage_pages: Gerenciar páginas
+        description_help: Gerencie as páginas da sua organização, incluindo a página Showcase padrão.
+        create_heading: Criar nova página
+        edit_heading: Editar página
+        slug_help: Apenas letras minúsculas, números e hifens (ex. "sobre-nos"). Acessível através da guia do perfil.
+        showcase_slug_help: Esta é a página Showcase (padrão), então o sufixo do slug é fixado em "readme".
+        content_label: Conteúdo da página (Markdown)
+        description_placeholder: Breve descrição para SEO e compartilhamento...
+        cancel: Cancelar
+        your_pages: Suas páginas
       header_cta:
         heading: Botão CTA do Cabeçalho
         description: "Adicione um botão de chamada para ação no cabeçalho da página da sua organização. Você pode criar um botão simples ou um menu suspenso com vários links."
