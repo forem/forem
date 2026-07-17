@@ -51,7 +51,6 @@ $exclude-embeds: ':not(.crayons-btn):not([class*="ltag"] *):not(.crayons-story *
   }
 
   > p#{$exclude-embeds} {
-    max-width: 72ch;
     margin: 0 0 var(--su-5);
   }
 
