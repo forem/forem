@@ -534,6 +534,57 @@ RSpec.describe "StoriesIndex" do
         expect(response.body).to include("Showcase")
         expect(response.body).to include("All Posts")
       end
+
+      it "renders the custom page via clean permalink" do
+        create(:page, organization: organization, body_markdown: "**Custom About Us**",
+               title: "About Us", description: "desc", slug: "#{organization.slug}/about",
+               template: "full_within_layout")
+        get "/#{organization.slug}/p/about"
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("<strong>Custom About Us</strong>")
+        expect(response.body).to include("Organization Profile Navigation")
+        expect(response.body).to include("About Us")
+      end
+
+      it "returns 404 for nonexistent custom page permalink" do
+        expect {
+          get "/#{organization.slug}/p/nonexistent"
+        }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      context "under a custom domain" do
+        before do
+          FeatureFlag.add(:org_custom_domain)
+          FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor[organization])
+          organization.update!(custom_domain: "custom.example.com")
+          allow(Subforem).to receive(:cached_id_by_domain).with("custom.example.com").and_return(nil)
+          create(:page, organization: organization, body_markdown: "**Custom About Us**",
+                 title: "About Us", description: "desc", slug: "#{organization.slug}/about",
+                 template: "full_within_layout")
+        end
+
+        after do
+          FeatureFlag.disable(:org_custom_domain)
+        end
+
+        it "renders the custom page via /about permalink" do
+          get "http://custom.example.com/about"
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include("<strong>Custom About Us</strong>")
+        end
+
+        it "renders the custom page via /p/about permalink" do
+          get "http://custom.example.com/p/about"
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include("<strong>Custom About Us</strong>")
+        end
+
+        it "renders the custom page via /orgname/p/about permalink" do
+          get "http://custom.example.com/#{organization.slug}/p/about"
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include("<strong>Custom About Us</strong>")
+        end
+      end
     end
 
     context "when organization has a readme page but org_readme flag is disabled" do

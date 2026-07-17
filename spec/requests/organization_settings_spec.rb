@@ -11,7 +11,27 @@ RSpec.describe "OrganizationSettings" do
       it "renders the settings page" do
         get "/#{organization.slug}/settings"
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include("Page")
+        expect(response.body).to include("Organization details")
+      end
+
+      context "when org_readme is enabled" do
+        before do
+          FeatureFlag.add(:org_readme)
+          FeatureFlag.enable(:org_readme, FeatureFlag::Actor[organization])
+        end
+
+        it "renders the organization pages section link and list block" do
+          get "/#{organization.slug}/settings"
+          expect(response.body).to include("section-pages-list")
+          expect(response.body).to include("No custom pages created yet.")
+        end
+
+        it "renders the list of pages if pages exist" do
+          create(:page, organization: organization, title: "Our Custom Page Title", slug: "#{organization.slug}/readme", template: "full_within_layout")
+          get "/#{organization.slug}/settings"
+          expect(response.body).to include("Our Custom Page Title")
+          expect(response.body).to include("Showcase")
+        end
       end
     end
 
@@ -40,92 +60,6 @@ RSpec.describe "OrganizationSettings" do
 
   describe "PATCH /:slug/settings" do
     before { sign_in user }
-
-    context "when org_readme is enabled" do
-      before do
-        allow(FeatureFlag).to receive(:enabled?).and_return(false) # Default
-        allow(FeatureFlag).to receive(:enabled?).with(:org_readme, anything).and_return(true)
-      end
-
-      it "creates a Page record when submitting page_markdown" do
-        expect {
-          patch "/#{organization.slug}/settings", params: {
-            organization: { page_markdown: "# Welcome to our org" }
-          }
-        }.to change(Page, :count).by(1)
-
-        page = organization.pages.first
-        expect(page.body_markdown).to eq("# Welcome to our org")
-        expect(page.title).to eq(organization.name)
-        expect(page.slug).to eq("#{organization.slug}/readme")
-      end
-
-      it "processes page_markdown into HTML via Page record" do
-        patch "/#{organization.slug}/settings", params: {
-          organization: { page_markdown: "**bold**" }
-        }
-        page = organization.pages.first
-        expect(page.processed_html).to include("<strong>bold</strong>")
-      end
-
-      it "ignores organization_id spoofing via parameters" do
-        other_org = create(:organization)
-        expect {
-          patch "/#{organization.slug}/settings", params: {
-            organization: { 
-              page_markdown: "# Welcome to our org",
-              organization_id: other_org.id
-            }
-          }
-        }.to change(Page, :count).by(1)
-
-        page = organization.pages.last
-        expect(page.organization_id).to eq(organization.id)
-        expect(page.organization_id).not_to eq(other_org.id)
-      end
-
-      it "updates existing Page record on subsequent edits" do
-        patch "/#{organization.slug}/settings", params: {
-          organization: { page_markdown: "# First" }
-        }
-        expect {
-          patch "/#{organization.slug}/settings", params: {
-            organization: { page_markdown: "# Updated" }
-          }
-        }.not_to change(Page, :count)
-        expect(organization.pages.first.body_markdown).to eq("# Updated")
-      end
-
-      it "destroys Page record when page_markdown is cleared" do
-        patch "/#{organization.slug}/settings", params: {
-          organization: { page_markdown: "# Hello" }
-        }
-        expect {
-          patch "/#{organization.slug}/settings", params: {
-            organization: { page_markdown: "" }
-          }
-        }.to change(Page, :count).by(-1)
-      end
-    end
-
-    context "when org_readme is disabled" do
-      before do
-        allow(FeatureFlag).to receive(:enabled?).and_return(false)
-        allow(FeatureFlag).to receive(:enabled?).with(:org_readme, anything).and_return(false)
-      end
-
-      it "does not process page_markdown" do
-        expect {
-          patch "/#{organization.slug}/settings", params: {
-            organization: { 
-              page_markdown: "# Attempted page update"
-            }
-          }
-        }.not_to change(Page, :count)
-
-        organization.reload
-      end
-    end
 
     it "updates organization profile fields" do
       patch "/#{organization.slug}/settings", params: {
