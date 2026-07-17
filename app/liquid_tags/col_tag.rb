@@ -1,5 +1,5 @@
 class ColTag < Liquid::Block
-  include ActionView::Helpers::SanitizeHelper
+  include LiquidTagHelpers
 
   PARTIAL = "liquids/col".freeze
   VALID_SPANS = (1..4).to_a.freeze
@@ -16,9 +16,11 @@ class ColTag < Liquid::Block
 
   def render(context)
     content = super
-    renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
-    markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
-    parsed_content = sanitize(markdown.render(content), tags: ALLOWED_TAGS, attributes: ALLOWED_ATTRIBUTES)
+    parsed_content = render_nested_markdown(
+      content,
+      allowed_tags: ALLOWED_TAGS,
+      allowed_attributes: ALLOWED_ATTRIBUTES,
+    )
     ApplicationController.render(
       partial: PARTIAL,
       locals: { content: parsed_content, span: @span },

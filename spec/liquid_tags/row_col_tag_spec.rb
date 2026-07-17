@@ -92,6 +92,25 @@ RSpec.describe "Row and Col liquid tags", type: :liquid_tag do
       expect(result).to include("Welcome to Forem")
       expect(result).to include("<p>Software that powers millions.</p>")
     end
+
+    it "evaluates Markdown headings in documented indented syntax" do
+      markdown = <<~LIQUID
+        {% row %}
+          {% col %}
+          ### Predictable
+
+          Body copy.
+          {% endcol %}
+        {% endrow %}
+      LIQUID
+
+      result = MarkdownProcessor::Parser.new(markdown).finalize
+      column = Nokogiri::HTML.fragment(result).at_css(".ltag-col")
+
+      expect(column.at_css("h3").text.strip).to eq("Predictable")
+      expect(column.at_css("p").text).to eq("Body copy.")
+      expect(column.text).not_to include("###")
+    end
   end
 
   describe "content filtering" do
