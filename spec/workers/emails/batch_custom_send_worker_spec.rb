@@ -17,6 +17,17 @@ RSpec.describe Emails::BatchCustomSendWorker, type: :worker do
       allow(Rails.logger).to receive(:error)
     end
 
+    context "when Customer.io email cutover is active" do
+      before do
+        allow(ForemInstance).to receive(:customerio_email_cutover?).and_return(true)
+      end
+
+      it "does not send any emails and no-ops" do
+        worker.perform(user_ids, subject_line, content, type_of, email_id)
+        expect(CustomMailer).not_to have_received(:with)
+      end
+    end
+
     context "when testing the async call" do
       it "queues the job with the correct arguments regardless of user ID order" do
         # Stub the class method perform_async

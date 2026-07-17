@@ -98,9 +98,17 @@
     flex-shrink: 0;
     opacity: 0.7;
     transition: opacity 0.15s ease;
+    @media (min-width: $breakpoint-xl) {
+      margin-right: var(--su-4);
+    }
 
     &:hover {
       opacity: 1;
+    }
+    svg {
+      width: 20px;
+      height: 20px;
+      margin-bottom:2px;
     }
   }
 

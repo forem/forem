@@ -280,18 +280,54 @@ RSpec.describe "Stories::Feeds" do
       end
     end
 
-    context "when there are low-scoring articles" do
-      let!(:article) { create(:article, featured: false) }
+    context "when testing the latest feeds filtering logic" do
+      let!(:user) { create(:user) }
+      let!(:high_score_article) { create(:article, score: 10, title: "High Score Article", user: user) }
+      let!(:low_score_article)  { create(:article, score: -15, title: "Low Score Article", user: user) }
 
-      it "excludes low-score article but not mid-score" do
-        article_with_mid_score = create(:article, score: Settings::UserExperience.home_feed_minimum_score)
-        article_with_low_score = create(:article, score: Articles::Feeds::Latest::MINIMUM_SCORE)
+      before do
+        allow(Settings::UserExperience).to receive(:index_minimum_score).and_return(-10)
+      end
 
-        get timeframe_stories_feed_path(:latest)
+      context "when requesting the normally filtered /latest feed" do
+        it "excludes low-score articles for logged out users" do
+          get timeframe_stories_feed_path(:latest)
 
-        response_array = response.parsed_body.pluck("title")
-        expect(response_array).to contain_exactly(article.title, article_with_mid_score.title)
-        expect(response_array).not_to include(article_with_low_score.title)
+          response_array = response.parsed_body.pluck("title")
+          expect(response_array).to include(high_score_article.title)
+          expect(response_array).not_to include(low_score_article.title)
+        end
+
+        it "includes low-score articles ONLY if the author is the currently signed-in user" do
+          sign_in user
+          get timeframe_stories_feed_path(:latest)
+
+          response_array = response.parsed_body.pluck("title")
+          expect(response_array).to include(high_score_article.title)
+          expect(response_array).to include(low_score_article.title)
+        end
+
+        it "excludes low-score articles if the author is NOT the currently signed-in user" do
+          other_user = create(:user)
+          sign_in other_user
+          get timeframe_stories_feed_path(:latest)
+
+          response_array = response.parsed_body.pluck("title")
+          expect(response_array).to include(high_score_article.title)
+          expect(response_array).not_to include(low_score_article.title)
+        end
+      end
+
+      context "when requesting the /latest_less_filtered feed" do
+        it "includes low-score articles regardless of score filtering" do
+          expect(Articles::Feeds::Latest).to receive(:call).and_call_original
+
+          get timeframe_stories_feed_path(:latest_less_filtered)
+
+          response_array = response.parsed_body.pluck("title")
+          expect(response_array).to include(high_score_article.title)
+          expect(response_array).to include(low_score_article.title)
+        end
       end
     end
 
@@ -821,6 +857,44 @@ RSpec.describe "Stories::Feeds" do
       get stories_feed_path
       response_article = response.parsed_body.find { |item| item["id"] == article.id }
       expect(response_article["public_reaction_categories"].map { |cat| cat["slug"] }).to match_array(%w[like unicorn fire])
+    end
+  end
+
+  describe "type_of validation" do
+    before do
+      allow(Settings::UserExperience).to receive(:feed_strategy).and_return("weighted")
+    end
+
+    context "when type_of param is invalid/random" do
+      it "defaults to discover feed" do
+        sign_in user
+        expect(Articles::Feeds).to receive(:feed_for).with(
+          hash_including(type_of: "discover")
+        ).and_call_original
+
+        get stories_feed_path(type_of: "invalid_random_feed")
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "when type_of param is valid" do
+      it "routes to following feed query when user is signed in" do
+        sign_in user
+        expect(Articles::Feeds).not_to receive(:feed_for)
+
+        get stories_feed_path(type_of: "following")
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "uses discover type_of when user is signed in" do
+        sign_in user
+        expect(Articles::Feeds).to receive(:feed_for).with(
+          hash_including(type_of: "discover")
+        ).and_call_original
+
+        get stories_feed_path(type_of: "discover")
+        expect(response).to have_http_status(:ok)
+      end
     end
   end
 end

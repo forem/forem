@@ -1,4 +1,6 @@
 class DigestMailer < ApplicationMailer
+  include Rails.application.routes.url_helpers
+
   default from: -> { email_from(I18n.t("mailers.digest_mailer.from")) }
 
   def digest_email
@@ -6,10 +8,26 @@ class DigestMailer < ApplicationMailer
     @articles = params[:articles]
     @billboards = params[:billboards]
     @smart_summary = params[:smart_summary]
+    @feed_config_id = params[:feed_config_id]
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_digest_periodic)
     @user_follows_any_subforems = user_follows_any_subforems?
 
     subject = generate_title
+
+    customerio_delivery_options(
+      transactional_message_id: "dev_digest_email",
+      message_data: {
+        "subject" => subject,
+        "articles" => @articles.map { |article| digest_article_payload(article) },
+        # Raw Markdown -- the SMTP view runs this through ContentRenderer before
+        # display, so the CIO template needs to render it too.
+        "smart_summary" => @smart_summary,
+        "billboards_html" => digest_billboards_html,
+        "email_end_phrase" => email_end_phrase,
+        "unsubscribe_url" => email_subscriptions_unsubscribe_url(ut: @unsubscribe),
+        "user_follows_any_subforems" => @user_follows_any_subforems
+      },
+    )
 
     # set sendgrid category in the header using smtp api
     # https://docs.sendgrid.com/for-developers/sending-email/building-an-x-smtpapi-header
@@ -32,6 +50,33 @@ class DigestMailer < ApplicationMailer
   end
 
   private
+
+  # Mirrors the article fields rendered by digest_email.html.erb (title,
+  # article_url with the same context/fc params, and the same ai_summary /
+  # truncated-description fallback), so the Customer.io template can
+  # reproduce the article list without duplicating selection logic.
+  def digest_article_payload(article)
+    {
+      "title" => article.title.strip,
+      "url" => ApplicationController.helpers.article_url(article, context: "digest", fc: @feed_config_id.presence),
+      "summary" => article.ai_summary.presence ||
+        ApplicationController.helpers.truncate(article.description, length: 180)
+    }
+  end
+
+  # The view only ever renders @billboards.first and @billboards.second
+  # (as raw processed_html, not a partial) in two different markup contexts
+  # (digest_email.html.erb:40-56 vs. :95-100); mirror that exactly rather
+  # than rendering the whole array. Keyed by slot (not a plain array) so
+  # that when only one of the two is selected -- a normal state, since the
+  # worker resolves digest_first and digest_second independently -- the CIO
+  # template can still tell which slot the surviving HTML belongs to.
+  def digest_billboards_html
+    {
+      "first" => @billboards&.first&.processed_html,
+      "second" => @billboards&.second&.processed_html
+    }
+  end
 
   def generate_title
     # Winner of digest_title_03_11

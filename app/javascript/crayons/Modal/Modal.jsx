@@ -70,6 +70,7 @@ export const Modal = ({
           <div
             data-testid="modal-overlay"
             className="crayons-modal__backdrop"
+            onClick={backdropDismissible ? onClose : undefined}
           />
         )}
       </div>

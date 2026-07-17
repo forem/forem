@@ -9,6 +9,45 @@ RSpec.describe "Sidebars" do
       expect(response.body).to include("rubymagoo")
     end
 
+    context "when onboarding progress is shown" do
+      let(:user) { create(:user) }
+
+      before { allow(Settings::General).to receive(:display_sidebar_onboarding_checklist).and_return(true) }
+
+      it "shows onboarding progress card for new signed-in user" do
+        sign_in user
+        get "/sidebars/home"
+        expect(response.body).to include("onboarding-progress-card")
+      end
+
+      it "does not show onboarding progress card for signed-out user" do
+        get "/sidebars/home"
+        expect(response.body).not_to include("onboarding-progress-card")
+      end
+
+      it "does not show onboarding progress card when all items are completed" do
+        checklist = user.onboarding_checklist
+        OnboardingChecklist::ITEM_KEYS.each { |key| checklist.complete_item!(key) }
+        sign_in user
+        get "/sidebars/home"
+        expect(response.body).not_to include("onboarding-progress-card")
+      end
+
+      it "does not show onboarding progress card for users registered more than 28 days ago" do
+        user.update_column(:registered_at, 29.days.ago)
+        sign_in user
+        get "/sidebars/home"
+        expect(response.body).not_to include("onboarding-progress-card")
+      end
+
+      it "does not show onboarding progress card when setting is disabled" do
+        allow(Settings::General).to receive(:display_sidebar_onboarding_checklist).and_return(false)
+        sign_in user
+        get "/sidebars/home"
+        expect(response.body).not_to include("onboarding-progress-card")
+      end
+    end
+
     context "when active discussions exist" do
       let(:tag) { create(:tag, name: "testmagoo") }
       let(:user) { create(:user) }
@@ -82,6 +121,71 @@ RSpec.describe "Sidebars" do
         sign_in user
         get "/sidebars/home"
         expect(response.body).not_to include(CGI.escapeHTML(second_article.title))
+      end
+    end
+
+    context "when upcoming elevated events exist" do
+      let!(:elevated_upcoming_event) do
+        create(:event, title: "Elevated Upcoming Event", elevated: true, published: true, start_time: 1.hour.from_now, end_time: 2.hours.from_now)
+      end
+      let!(:non_elevated_upcoming_event) do
+        create(:event, title: "Non-Elevated Upcoming Event", elevated: false, published: true, start_time: 1.hour.from_now, end_time: 2.hours.from_now)
+      end
+      let!(:elevated_past_event) do
+        create(:event, title: "Elevated Past Event", elevated: true, published: true, start_time: 2.days.ago, end_time: 1.day.ago)
+      end
+      let!(:unpublished_elevated_event) do
+        create(:event, title: "Unpublished Elevated Event", elevated: true, published: false, start_time: 1.hour.from_now, end_time: 2.hours.from_now)
+      end
+
+      it "includes elevated upcoming event" do
+        get "/sidebars/home"
+        expect(response.body).to include("Elevated Upcoming Event")
+      end
+
+      it "does not include non-elevated upcoming event" do
+        get "/sidebars/home"
+        expect(response.body).not_to include("Non-Elevated Upcoming Event")
+      end
+
+      it "does not include elevated past event" do
+        get "/sidebars/home"
+        expect(response.body).not_to include("Elevated Past Event")
+      end
+
+      it "does not include unpublished elevated event" do
+        get "/sidebars/home"
+        expect(response.body).not_to include("Unpublished Elevated Event")
+      end
+    end
+
+    context "with query caching enabled" do
+      let(:memory_store) { ActiveSupport::Cache.lookup_store(:memory_store) }
+
+      before do
+        allow(Rails).to receive(:cache).and_return(memory_store)
+        allow(memory_store).to receive(:fetch).and_call_original
+        Rails.cache.clear
+      end
+
+      after do
+        Rails.cache.clear
+      end
+
+      it "caches upcoming elevated events and does not query database repeatedly" do
+        create(:event, title: "Cached Elevated Event", elevated: true, published: true, start_time: 1.hour.from_now, end_time: 2.hours.from_now)
+
+        # First hit should call the block and query DB
+        expect(Rails.cache).to receive(:fetch).with("upcoming_elevated_events", expires_in: 5.minutes).and_call_original
+        get "/sidebars/home"
+        expect(response.body).to include("Cached Elevated Event")
+
+        # Second hit should fetch from cache and avoid DB hit
+        expect(Rails.cache).to receive(:fetch).with("upcoming_elevated_events", expires_in: 5.minutes).and_call_original
+        # Spy on Event query to verify database is not queried
+        expect(Event).not_to receive(:published)
+        get "/sidebars/home"
+        expect(response.body).to include("Cached Elevated Event")
       end
     end
   end

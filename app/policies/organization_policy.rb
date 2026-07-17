@@ -4,7 +4,7 @@ class OrganizationPolicy < ApplicationPolicy
   end
 
   def update?
-    user.org_admin?(record)
+    user.any_admin? || user.org_admin?(record)
   end
 
   def destroy?

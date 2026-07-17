@@ -45,12 +45,12 @@ class LiquidEmbedExtractor
     when "podcast"
       podcast = Podcast.find_by(slug: identifier)
       [podcast&.class&.name, podcast&.id]
-    when "organization"
+    when "organization", "org_posts"
       org = Organization.find_by(slug: identifier)
       [org&.class&.name, org&.id]
     when "embed"
       # If tag is explicitly embed, map internal Article urls without running ActionDispatch logic natively.
-      app_domain = Settings::General.app_domain || "localhost:3000"
+      app_domain = Settings::General.app_domain || "localhost:#{URL.dev_port}"
       if identifier.include?(app_domain)
         begin
           path = URI.parse(identifier).path

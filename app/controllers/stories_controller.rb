@@ -17,9 +17,9 @@ class StoriesController < ApplicationController
   SIGNED_OUT_RECORD_COUNT = 60
   REDIRECT_VIEW_PARAMS = %w[moderate admin].freeze
 
-  before_action :authenticate_user!, except: %i[index show]
-  before_action :set_cache_control_headers, only: %i[index show]
-  before_action :set_user_limit, only: %i[index show]
+  before_action :authenticate_user!, except: %i[index show custom_domain_index custom_domain_show]
+  before_action :set_cache_control_headers, only: %i[index show custom_domain_index custom_domain_show]
+  before_action :set_user_limit, only: %i[index show custom_domain_index custom_domain_show]
   before_action :redirect_to_lowercase_username, only: %i[index]
 
   rescue_from ArgumentError, with: :bad_request
@@ -29,6 +29,34 @@ class StoriesController < ApplicationController
     return handle_user_or_organization_or_podcast_or_page_index if params[:username]
 
     handle_base_index
+  end
+
+  def custom_domain_index
+    @page = (params[:page] || 1).to_i
+    @organization = request.env["forem.custom_domain_org"] || Organization.find_by(custom_domain: request.host&.downcase)
+    not_found unless @organization
+
+    handle_organization_index
+  end
+
+  def custom_domain_show
+    @story_show = true
+    @organization = request.env["forem.custom_domain_org"] || Organization.find_by(custom_domain: request.host&.downcase)
+    not_found unless @organization
+    not_found if params[:org_slug].present? && params[:org_slug] != @organization.slug
+
+    @article = Article.includes(:user).find_by(slug: params[:slug], organization_id: @organization.id)&.decorate
+    if @article
+      previous_subforem_id = RequestStore.store[:subforem_id]
+      RequestStore.store[:subforem_id] = @article.subforem_id if @article.subforem_id.present?
+      begin
+        handle_article_show
+      ensure
+        RequestStore.store[:subforem_id] = previous_subforem_id
+      end
+    else
+      not_found
+    end
   end
 
   def show
@@ -184,8 +212,12 @@ class StoriesController < ApplicationController
     redirect_if_organization_view_param
     return if performed?
 
+    redirect_organization_to_custom_domain_if_needed
+    return if performed?
+
     main_page = @organization.main_page
-    is_readme = main_page.present? && FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization])
+    has_readme = main_page.present? && FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization])
+    is_readme = has_readme && params[:mode] != "all-posts"
     @stories = ArticleDecorator.decorate_collection(@organization.articles.published.from_subforem
       .includes(:distinct_reaction_categories, :subforem)
       .limited_column_select
@@ -308,6 +340,7 @@ class StoriesController < ApplicationController
   end
 
   def redirect_if_inactive_in_subforem_for_organization
+    return if request.env["forem.custom_domain_org"].present?
     return unless @stories.none? &&
       RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id]
 
@@ -329,14 +362,22 @@ class StoriesController < ApplicationController
     redirect_if_appropriate
     return if performed?
 
+    redirect_article_to_custom_domain_if_needed
+    return if performed?
+
     render template: "articles/show"
   end
 
   def assign_feed_stories
     if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
       @stories = Articles::Feeds::Timeframe.call(params[:timeframe])
+    elsif params[:timeframe] == "latest_less_filtered"
+      @stories = Articles::Feeds::Latest.call(page: @page)
     elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
-      @stories = Articles::Feeds::Latest.call(minimum_score: Settings::UserExperience.home_feed_minimum_score)
+      base_relation = Articles::Feeds::Latest.call(minimum_score: Settings::UserExperience.home_feed_minimum_score, page: @page)
+      score_minimum = Settings::UserExperience.index_minimum_score
+      author_id = current_user&.id || -1
+      @stories = base_relation.where("articles.score >= ? OR articles.user_id = ?", score_minimum, author_id)
     else
       @default_home_feed = true
       feed = Articles::Feeds::LargeForemExperimental.new(page: @page, tag: params[:tag])
@@ -668,5 +709,30 @@ class StoriesController < ApplicationController
     end
 
     comment_data
+  end
+
+  def redirect_organization_to_custom_domain_if_needed
+    return if user_signed_in?
+    return if @organization.custom_domain.blank?
+    return if request.host&.downcase == @organization.custom_domain&.downcase
+    return unless FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(@organization))
+
+    query_string = request.query_string.present? ? "?#{request.query_string}" : ""
+    redirect_to "#{request.protocol}#{@organization.custom_domain}/#{query_string}",
+                allow_other_host: true,
+                status: :found
+  end
+
+  def redirect_article_to_custom_domain_if_needed
+    return if user_signed_in?
+    return unless @organization
+    return if @organization.custom_domain.blank?
+    return if request.host&.downcase == @organization.custom_domain&.downcase
+    return unless FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(@organization))
+
+    query_string = request.query_string.present? ? "?#{request.query_string}" : ""
+    redirect_to "#{request.protocol}#{@organization.custom_domain}/#{@article.slug}#{query_string}",
+                allow_other_host: true,
+                status: :found
   end
 end

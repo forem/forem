@@ -66,6 +66,7 @@ module Admin
       set_banishable_user
       set_feedback_messages
       set_related_reactions
+      set_audit_logs
       @articles = @user.articles.order(created_at: :desc)
       # Remove the .includes(:commentable)
       @comments = @user.comments.order(created_at: :desc)
@@ -105,6 +106,12 @@ module Admin
           reason: "reputation_modifier_change",
           content: note_content,
         )
+        Audit::Logger.log(:moderator, current_user, {
+                            "action" => params[:action],
+                            "controller" => params[:controller],
+                            "target_user_id" => @user.id,
+                            "reputation_modifier" => @user.reputation_modifier
+                          })
         flash[:success] = I18n.t("views.admin.users.reputation.success", reputation_modifier: reputation_modifier_value)
       else
         flash[:error] = I18n.t("views.admin.users.reputation.error")
@@ -115,18 +122,52 @@ module Admin
     def update_email
       @user = User.find(params[:id])
       old_email = @user.email
-      new_email = user_params[:email]
-      if @user.update_columns(email: new_email)
-        Note.create(
-          author_id: current_user.id,
-          noteable_id: @user.id,
-          noteable_type: "User",
-          reason: "Update Email",
-          content: "Updated email from #{old_email} to #{new_email}",
-        )
-        flash[:success] = I18n.t("views.admin.users.update_email.success")
-      else
-        flash[:error] = I18n.t("views.admin.users.update_email.error")
+new_email = user_params[:email].to_s.strip.presence
+
+      # Validate email using a temp User object to avoid rate limit checks and other model side-effects
+      temp_user = User.new(email: new_email)
+      temp_user.valid?
+
+      email_errors = temp_user.errors.where(:email)
+      if new_email.present? && old_email.present? && new_email.casecmp?(old_email)
+        email_errors = email_errors.reject { |e| e.type == :taken }
+      end
+
+      if email_errors.any?
+        flash[:error] = email_errors.map(&:full_message).to_sentence
+        redirect_to admin_user_path(@user)
+        return
+      end
+
+      begin
+        downcased_email = new_email&.downcase
+        # Bypassing validations/callbacks is intentional here to match the behavior of updating
+        # user emails via the admin UI directly and immediately without sending confirmation emails.
+        if @user.update_columns(email: downcased_email, unconfirmed_email: nil)
+          # update_columns bypasses the Trackable after_commit, so tell the
+          # DEV -> Core sync about the new address explicitly.
+          @user.track!("user_updated")
+          Note.create(
+            author_id: current_user.id,
+            noteable_id: @user.id,
+            noteable_type: "User",
+            reason: "Update Email",
+            content: "Updated email from #{old_email} to #{downcased_email}",
+          )
+          Audit::Logger.log(:moderator, current_user, {
+                              "action" => params[:action],
+                              "controller" => params[:controller],
+                              "target_user_id" => @user.id,
+                              "old_email" => old_email,
+                              "new_email" => downcased_email
+                            })
+          Users::BustCacheWorker.perform_async(@user.id)
+          flash[:success] = I18n.t("views.admin.users.update_email.success")
+        else
+          flash[:error] = I18n.t("views.admin.users.update_email.error")
+        end
+      rescue ActiveRecord::RecordNotUnique
+        flash[:error] = I18n.t("errors.messages.taken")
       end
       redirect_to admin_user_path(@user)
     end
@@ -141,13 +182,20 @@ module Admin
                                          profile: admin_profile_params)
 
       if update_result.success?
+        note_content = profile_update_note(previous_user_values, previous_profile_values)
         Note.create(
           author_id: current_user.id,
           noteable_id: @user.id,
           noteable_type: "User",
           reason: "admin_profile_update",
-          content: profile_update_note(previous_user_values, previous_profile_values),
+          content: note_content,
         )
+        Audit::Logger.log(:moderator, current_user, {
+                            "action" => params[:action],
+                            "controller" => params[:controller],
+                            "target_user_id" => @user.id,
+                            "changes" => note_content
+                          })
         flash[:success] = I18n.t("views.admin.users.edit_profile.success")
       else
         flash[:error] = update_result.errors_as_sentence
@@ -173,6 +221,12 @@ module Admin
           reason: "max_score_change",
           content: note_content,
         )
+        Audit::Logger.log(:moderator, current_user, {
+                            "action" => params[:action],
+                            "controller" => params[:controller],
+                            "target_user_id" => @user.id,
+                            "max_score" => @user.max_score
+                          })
         flash[:success] = I18n.t("views.admin.users.max_score.success", max_score: max_score_value)
       else
         flash[:error] = I18n.t("views.admin.users.max_score.error")
@@ -194,6 +248,14 @@ module Admin
       )
 
       if response.success
+        Audit::Logger.log(:moderator, current_user, {
+                            "action" => "remove_role",
+                            "controller" => params[:controller],
+                            "target_user_id" => @user.id,
+                            "role" => role.name,
+                            "resource_type" => params[:resource_type],
+                            "resource_id" => params[:resource_id]
+                          })
         flash[:success] =
           I18n.t("admin.users_controller.role_removed",
                  role: I18n.t("views.admin.users.overview.roles.name.#{
@@ -263,6 +325,13 @@ module Admin
 
       result = TagModerators::Add.call(user.id, tag.id)
       if result.success?
+        Audit::Logger.log(:moderator, current_user, {
+                            "action" => params[:action],
+                            "controller" => params[:controller],
+                            "target_user_id" => user.id,
+                            "tag_id" => tag.id,
+                            "tag_name" => tag.name
+                          })
         flash[:success] = I18n.t("admin.tags.moderators_controller.added", username: user.username)
       else
         flash[:error] = I18n.t("errors.messages.general", errors:
@@ -358,6 +427,12 @@ module Admin
         # We should delete them when a user unlinks their GitHub account.
         @user.github_repos.destroy_all if identity.provider.to_sym == :github
 
+        Audit::Logger.log(:moderator, current_user, {
+                            "action" => params[:action],
+                            "controller" => params[:controller],
+                            "target_user_id" => @user.id,
+                            "provider" => identity.provider
+                          })
         flash[:success] =
           I18n.t("admin.users_controller.identity_removed",
                  provider: identity.provider.capitalize)
@@ -474,7 +549,12 @@ module Admin
           reason: "email_confirmed",
           content: "Email manually confirmed by #{current_user.username}",
         )
-        
+        Audit::Logger.log(:moderator, current_user, {
+                            "action" => params[:action],
+                            "controller" => params[:controller],
+                            "target_user_id" => @user.id
+                          })
+
         respond_to do |format|
           message = I18n.t("admin.users_controller.email_confirmed")
 
@@ -505,6 +585,9 @@ module Admin
       new_email = @user.unconfirmed_email
 
       if new_email.present? && @user.update_columns(email: new_email, unconfirmed_email: nil, confirmed_at: Time.current)
+        # update_columns bypasses the Trackable after_commit, so tell the
+        # DEV -> Core sync about the swapped address explicitly.
+        @user.track!("user_updated")
         Note.create(
           author_id: current_user.id,
           noteable_id: @user.id,
@@ -512,6 +595,13 @@ module Admin
           reason: "pending_email_confirmed",
           content: "Pending email change confirmed by #{current_user.username}. Email changed from #{old_email} to #{new_email}",
         )
+        Audit::Logger.log(:moderator, current_user, {
+                            "action" => params[:action],
+                            "controller" => params[:controller],
+                            "target_user_id" => @user.id,
+                            "old_email" => old_email,
+                            "new_email" => new_email
+                          })
 
         respond_to do |format|
           message = I18n.t("admin.users_controller.pending_email_confirmed")
@@ -577,7 +667,7 @@ module Admin
 
     def set_user_details
       @organizations = @user.organizations.order(:name)
-      @notes = @user.notes.order(created_at: :desc).limit(10)
+      @notes = @user.notes.includes(:author).order(created_at: :desc).limit(10)
       @organization_memberships = @user.organization_memberships
         .joins(:organization)
         .order("organizations.name" => :asc)
@@ -693,6 +783,23 @@ module Admin
     def set_banishable_user
       @banishable_user = (@user.comments.where("created_at < ?", 100.days.ago).empty? &&
         @user.created_at < 100.days.ago) || current_user.super_admin? || current_user.support_admin?
+    end
+
+    def set_audit_logs
+      return unless @current_tab == "audit_log"
+
+      @audit_log_filter = %w[by_user on_user].include?(params[:filter]) ? params[:filter] : "by_user"
+      scope = case @audit_log_filter
+              when "on_user"
+                AuditLog.on_user(@user)
+              else
+                AuditLog.where(user: @user)
+              end
+      @audit_logs = scope
+        .includes(:user)
+        .order(created_at: :desc)
+        .page(params[:page])
+        .per(25)
     end
 
     def set_unpublish_all_log

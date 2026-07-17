@@ -186,6 +186,13 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
 
   User.order(Arel.sql("RANDOM()"))
 end
+
+# create_if_none returns nil when records already exist (the block is skipped),
+# so users_in_random_order is nil on a re-run with users present. The badge
+# section below calls .limit(10) on it, which crashes. Resolve to a live
+# relation so subsequent sections work regardless of which path ran.
+users_in_random_order ||= User.order(Arel.sql("RANDOM()"))
+
 seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   user = User.create!(
     name: "Admin \"The \\:/ Administrator\" McAdmin",
@@ -206,6 +213,70 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   user.add_role(:super_admin)
   user.add_role(:trusted)
   user.add_role(:tech_admin)
+end
+
+admin_user = User.find_by(email: "admin@forem.local")
+if admin_user
+  Organization.find_each do |organization|
+    membership = OrganizationMembership.find_or_initialize_by(
+      user_id: admin_user.id,
+      organization_id: organization.id
+    )
+    membership.update!(type_of_user: "admin")
+
+    user_ids = organization.user_ids
+    if user_ids.size < 3
+      User.where.not(id: user_ids).limit(2).each do |other_user|
+        OrganizationMembership.find_or_create_by!(
+          user_id: other_user.id,
+          organization_id: organization.id
+        ) do |m|
+          m.type_of_user = "member"
+        end
+      end
+    end
+  end
+end
+
+seeder.create_if_doesnt_exist(User, "email", "org_admin@forem.local") do
+  user = User.create!(
+    name: "Org Admin",
+    email: "org_admin@forem.local",
+    username: "org_admin_local",
+    profile_image: Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+  )
+  OrganizationMembership.create!(user: user, organization: Organization.first, type_of_user: "admin") if Organization.any?
+end
+
+seeder.create_if_doesnt_exist(User, "email", "org_member@forem.local") do
+  user = User.create!(
+    name: "Org Member",
+    email: "org_member@forem.local",
+    username: "org_member_local",
+    profile_image: Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+  )
+  OrganizationMembership.create!(user: user, organization: Organization.first, type_of_user: "member") if Organization.any?
+end
+
+seeder.create_if_doesnt_exist(User, "email", "no_org@forem.local") do
+  User.create!(
+    name: "Independent User",
+    email: "no_org@forem.local",
+    username: "independent_local",
+    profile_image: Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+  )
 end
 
 Users::CreateMascotAccount.call unless Settings::General.mascot_user_id
@@ -291,19 +362,52 @@ seeder.create_if_none(Article, num_articles) do
 end
 
 ##############################################################################
+# A long series (8 parts) with long bodies, for manual QA of the series
+# switcher (issue #14280). Idempotent: keyed off the collection slug.
+
+seeder.create_if_doesnt_exist(Collection, "slug", "long-test-series") do
+  series_user = User.find_by(email: "admin@forem.local") ||
+    User.order(Arel.sql("RANDOM()")).first
+
+  # Long body that comfortably exceeds the long_markdown? threshold (900 chars).
+  long_body = (Faker::Hipster.paragraph(sentence_count: 12) + "\n\n") * 4
+
+  8.times do |i|
+    part_number = i + 1
+    markdown = <<~MARKDOWN
+      ---
+      title: Long Test Series — Part #{part_number}
+      published: true
+      tags: discuss
+      series: long-test-series
+      ---
+
+      #{long_body}
+    MARKDOWN
+
+    Article.create!(
+      body_markdown: markdown,
+      show_comments: true,
+      user_id: series_user.id,
+    )
+  end
+end
+
+##############################################################################
 
 num_comments = 30 * SEEDS_MULTIPLIER
 
 seeder.create_if_none(Comment, num_comments) do
   num_comments.times do
-    attributes = {
+    article = Article.published.order(Arel.sql("RANDOM()")).first
+    next unless article
+
+    Comment.create!(
       body_markdown: Faker::Hipster.paragraph(sentence_count: 1),
       user_id: User.order(Arel.sql("RANDOM()")).first.id,
-      commentable_id: Article.order(Arel.sql("RANDOM()")).first.id,
+      commentable_id: article.id,
       commentable_type: "Article"
-    }
-
-    Comment.create!(attributes)
+    )
   end
 end
 
@@ -468,16 +572,16 @@ seeder.create_if_none(FeedbackMessage) do
   )
 
   3.times do
-    article_id = Article
+    article = Article
       .left_joins(:reactions)
       .where.not(articles: { id: Reaction.article_vomits.pluck(:reactable_id) })
       .order(Arel.sql("RANDOM()"))
       .first
-      .id
+    next unless article
 
     Reaction.create!(
       category: "vomit",
-      reactable_id: article_id,
+      reactable_id: article.id,
       reactable_type: "Article",
       user_id: mod.id,
     )
@@ -507,6 +611,17 @@ seeder.create_if_none(Billboard) do
     approved: true,
     placement_area: Billboard::ALLOWED_PLACEMENT_AREAS.sample,
     audience_segment: segment,
+  )
+
+  Billboard.create!(
+    name: "Seeded Persistent Billboard",
+    body_markdown: "<div style='padding: 12px; background: #18181A; color: #F9F9F9; border-radius: 4px;'><strong>Persistent Billboard:</strong> This is a persistent billboard. Click the down chevron to minimize it to the sidebar!</div>",
+    minimized_body_markdown: "<div style='padding: 12px; background: #18181A; color: #F9F9F9; border-radius: 4px; border: 1px solid #3F3F46;'><strong>Minimized:</strong> The persistent billboard is now docked in the sidebar.</div>",
+    published: true,
+    approved: true,
+    placement_area: "post_fixed_bottom",
+    special_behavior: "persistent",
+    render_mode: "raw"
   )
 end
 
@@ -951,6 +1066,141 @@ seeder.create_if_none(NavigationLink) do
 end
 
 ##############################################################################
+
+##############################################################################
+
+seeder.create_if_none(Collection) do
+  # The Series Graph
+  # The Series Graph
+  User.order(Arel.sql("RANDOM()")).limit(3).each do |user|
+    collection = Collection.create!(
+      title: "#{Faker::Hacker.verb.capitalize} #{Faker::Hacker.noun.capitalize}",
+      slug: "series-#{SecureRandom.hex(4)}",
+      user_id: user.id,
+      description: Faker::Lorem.paragraph,
+    )
+    user.articles.limit(3).update_all(collection_id: collection.id)
+  end
+end
+
+##############################################################################
+
+seeder.create_if_none(Follow) do
+  # The Social Graph
+  User.order(Arel.sql("RANDOM()")).limit(10).each do |user|
+    # Follow random users
+    User.where.not(id: user.id).order(Arel.sql("RANDOM()")).limit(3).each do |followed_user|
+      Follow.find_or_create_by!(follower_id: user.id, follower_type: "User", followable_id: followed_user.id, followable_type: "User")
+    end
+    # Follow random tags
+    Tag.order(Arel.sql("RANDOM()")).limit(3).each do |tag|
+      Follow.find_or_create_by!(follower_id: user.id, follower_type: "User", followable_id: tag.id, followable_type: "Tag")
+    end
+  end
+end
+
+##############################################################################
+
+seeder.create_if_none(Notification) do
+  # Populating the bell for the admin
+  admin = User.find_by(email: "admin@forem.local")
+  if admin
+    # Iterate over distinct articles (not users — the original `random_user`
+    # was unused inside the block) so the uniqueness validation on
+    # (user_id, notifiable_id, notifiable_type, action) is respected even when
+    # fewer than 5 articles exist. find_or_create_by! makes the block safe to
+    # re-enter if it ever runs partially.
+    Article.order(Arel.sql("RANDOM()")).limit(5).each do |article|
+      Notification.find_or_create_by!(
+        user_id: admin.id,
+        notifiable_id: article.id,
+        notifiable_type: "Article",
+        action: "Published"
+      )
+    end
+  end
+end
+
+##############################################################################
+
+seeder.create_if_none(ContextNote) do
+  # Add Automated AI Context Notes to popular articles
+  Article.order(Arel.sql("RANDOM()")).limit(5).each do |article|
+    begin
+      ContextNote.create!(
+        article_id: article.id,
+        body_markdown: "This article exhibits highly engaging and constructive patterns.",
+        processed_html: "<p>This article exhibits highly engaging and constructive patterns.</p>"
+      )
+    rescue ActiveRecord::RecordInvalid
+      # Already exists or validation fails
+    end
+  end
+end
+
+##############################################################################
+
+seeder.create_if_none(AiAudit) do
+  # AI Moderation Audits representing Forem's updated moderation flows
+  Article.order(Arel.sql("RANDOM()")).limit(10).each do |article|
+    AiAudit.create!(
+      affected_user_id: article.user_id,
+      affected_content_type: "Article",
+      affected_content_id: article.id,
+      ai_model: "gemini-1.5-pro",
+      wrapper_object_class: "Ai::ContentModerationLabeler",
+      request_body: { text: "evaluate this article" },
+      response_body: { label: "safe", score: 0.9 },
+      status_code: 200
+    )
+  end
+end
+
+##############################################################################
+
+# Pin an article for dynamic feed representation
+first_article = Article.order(Arel.sql("RANDOM()")).first
+PinnedArticle.set(first_article) if first_article.present?
+##############################################################################
+
+seeder.create_if_none(Event) do
+  user_ids = User.pluck(:id)
+  
+  aws_event = Event.create!(
+    title: "AWS Industries LIVE!",
+    event_name_slug: "aws-industries-live",
+    event_variation_slug: "v1",
+    description: "AWS Industries LIVE! features AWS Partners discussing various topics related to their industry, their solutions, and how they can help customers.",
+    primary_stream_url: "https://player.twitch.tv/?channel=aws&parent=#{Settings::General.app_domain.split(':').first}",
+    data: { chat_url: "https://www.twitch.tv/embed/aws/chat?parent=#{Settings::General.app_domain.split(':').first}" },
+    published: true,
+    start_time: 1.day.ago,
+    end_time: 1.week.from_now,
+    type_of: :live_stream,
+    user_id: user_ids.sample,
+    tag_list: "aws"
+  )
+  
+  forem_event = Event.create!(
+    title: "Forem Walkthrough with Ben Halpern",
+    event_name_slug: "forem-walkthrough-with-ben-halpern",
+    event_variation_slug: "v1",
+    description: "Join us for a walkthrough of the newest Forem features.",
+    primary_stream_url: "https://player.twitch.tv/?channel=ThePracticalDev&parent=#{Settings::General.app_domain.split(':').first}",
+    data: {},
+    published: true,
+    start_time: 2.days.from_now,
+    end_time: 2.days.from_now + 2.hours,
+    type_of: :live_stream,
+    user_id: user_ids.sample,
+    tag_list: "forem, updates"
+  )
+
+  # Automatically approve the billboards generated by the callbacks for these events
+  [aws_event, forem_event].each do |event|
+    event.billboards.update_all(approved: true)
+  end
+end
 
 puts <<-ASCII
 

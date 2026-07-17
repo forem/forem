@@ -318,6 +318,19 @@ fr:
               resource_admin_feedback_message: Feedback Message Admin
               resource_admin_html_variant: HTML Variant Admin
               resource_admin_listing_category: Listing Category Admin
+              resource_admin_page: Page Admin
+              resource_admin_tag: Tag Admin
+              resource_admin_event: Event Admin
+              resource_admin_survey: Survey Admin
+              resource_admin_organization: Organization Admin
+              resource_admin_podcast: Podcast Admin
+              resource_admin_navigation_link: Navigation Link Admin
+              resource_admin_request_redirect: Request Redirect Admin
+              resource_admin_response_template: Response Template Admin
+              resource_admin_subforem: Subforem Admin
+              resource_admin_space: Space Admin
+              resource_admin_profile_field: Profile Field Admin
+              resource_admin_profile_field_group: Profile Field Group Admin
               super_admin: Super Admin
               support_admin: Support Admin
               suspended: Suspended
@@ -404,6 +417,18 @@ fr:
           submit: Changer le score maximum
           success: Modification réussie du score maximum de l'utilisateur en %{max_score}.
           error: Échec de la modification du score maximum de l'utilisateur (sélectionnez entre 0 et 100)
+        audit_log:
+          title: Journal d'audit
+          filter_by_user: Actions par l'utilisateur
+          filter_on_user: Actions sur l'utilisateur
+          empty: Aucune entrée de journal d'audit trouvée pour cet utilisateur.
+          table:
+            heading:
+              id: ID
+              user: Utilisateur
+              action: Action
+              data: Données
+              date: Date
         unpublish_logs:
           subtitle_html: Unpublished by %{user} on %{time}
           posts: "Posts:"
@@ -418,6 +443,7 @@ fr:
           emails: Emails
           reports: Reports
           flags: Flags
+          audit_log: Journal d'audit
           unpublish_logs: Unpublish All History
         status_title: Current status
         status_reader: "Current status:"
@@ -442,6 +468,17 @@ fr:
           "Resource Admin: ListingCategory": "Resource Admin: ListingCategory"
           "Resource Admin: Page": "Resource Admin: Page"
           "Resource Admin: Tag": "Resource Admin: Tag"
+          "Resource Admin: Event": "Resource Admin: Event"
+          "Resource Admin: Survey": "Resource Admin: Survey"
+          "Resource Admin: Organization": "Resource Admin: Organization"
+          "Resource Admin: Podcast": "Resource Admin: Podcast"
+          "Resource Admin: NavigationLink": "Resource Admin: NavigationLink"
+          "Resource Admin: RequestRedirect": "Resource Admin: RequestRedirect"
+          "Resource Admin: ResponseTemplate": "Resource Admin: ResponseTemplate"
+          "Resource Admin: Subforem": "Resource Admin: Subforem"
+          "Resource Admin: Space": "Resource Admin: Space"
+          "Resource Admin: ProfileField": "Resource Admin: ProfileField"
+          "Resource Admin: ProfileFieldGroup": "Resource Admin: ProfileFieldGroup"
           Super Moderator: Super Moderator
         statuses:
           Warned: Warned
@@ -533,3 +570,50 @@ fr:
           text_label: Texte du CTA
           url_label: URL du CTA
           save: Enregistrer les paramètres du CTA
+      concepts:
+        show:
+          back_to_concepts: "Retour aux concepts sémantiques"
+          edit_concept: "Modifier le concept"
+          delete_concept: "Supprimer le concept"
+          delete_confirm: "Êtes-vous sûr de vouloir supprimer ce concept ?"
+          details_title: "Détails du concept"
+          parent: "Concept parent"
+          total_records: "Total des enregistrements associés"
+          description: "Description"
+          created_at: "Créé le"
+          metrics_title: "Indicateurs d'activité quotidienne (30 derniers jours)"
+          recent_records_title: "Enregistrements récents associés"
+          type: "Type"
+          record: "Enregistrement"
+          distance: "Distance"
+          mapped_at: "Associé le"
+          no_records: "Aucun enregistrement n'a encore été associé à ce concept."
+          max_lookback_days: "Couverture de retour en arrière la plus ancienne (jours)"
+          max_lookback_days_none: "Aucune"
+          lookback_title: "Déclencher le retour en arrière"
+          lookback_desc: "Analyse les articles et commentaires passés. Si des retours en arrière précédents existent, il analyse uniquement la nouvelle période (par exemple de 40 à 70 jours auparavant) avec un léger chevauchement de fuseau horaire."
+          lookback_days: "Jours à analyser en arrière"
+          lookback_button: "Déclencher"
+          similarity_threshold: "Seuil de similitude"
+        form:
+          score: "Score du concept"
+          score_placeholder: "ex. 1.0 (optionnel)"
+          score_help: "Ajustement manuel du score/poids utilisé pour le classement."
+          similarity_threshold: "Seuil de similitude"
+          similarity_threshold_placeholder: "ex. 0.25 (optionnel)"
+          similarity_threshold_help: "Optionnel. Nombre décimal entre 0,0 et 1,0. Si laissé vide, la valeur par défaut du système (0,28) est utilisée."
+        index:
+          threshold: "Seuil"
+          default: "défaut"
+      events:
+        show:
+          signups_title: "Inscriptions à l'événement"
+          no_signups: "Aucune inscription pour cet événement pour le moment."
+          headers:
+            user: "Utilisateur"
+            signed_up_at: "Inscrit le"
+            notifications: "Notifications envoyées"
+          notifications:
+            day_before: "1 jour avant"
+            hour_before: "1 heure avant"
+            none: "Aucune"

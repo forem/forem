@@ -1,6 +1,8 @@
 module CommentsHelper
   MAX_COMMENTS_TO_RENDER = 250
   MIN_COMMENTS_TO_RENDER = 8
+  MAX_TOP_LEVEL_COMMENTS_UNAUTHENTICATED = 75
+  MAX_DESCENDANT_COMMENTS_UNAUTHENTICATED = 5
 
   def any_negative_comments?(commentable)
     commentable.comments.where("score < 0").any?
@@ -113,18 +115,31 @@ module CommentsHelper
 
   private
 
+  def limit_descendants(sub_hash, limit)
+    count = 0
+    traverse = ->(hash) do
+      new_hash = {}
+      hash.each do |c, children|
+        break if count >= limit
+        count += 1
+        new_hash[c] = traverse.call(children)
+      end
+      new_hash
+    end
+    traverse.call(sub_hash)
+  end
+
   def nested_comments(tree:, commentable:, is_view_root: false, is_admin: false)
     comments = tree.filter_map do |comment, sub_comments|
-      is_childless = sub_comments.empty?
-      # hide childless comments with score below hide threshold (but show for admins)
-      hide = comment.decorate.super_low_quality && is_childless
+      subtree_html = nested_comments(tree: sub_comments, commentable: commentable, is_admin: is_admin)
+      is_childless = subtree_html.blank?
+      # hide childless comments if they are low quality or soft-deleted (but show for admins)
+      hide = is_childless && (comment.decorate.super_low_quality || comment.deleted?)
       if is_admin || !hide
         render("comments/comment", comment: comment, commentable: commentable,
                                    is_view_root: is_view_root, is_childless: is_childless,
                                    is_admin: is_admin,
-                                   subtree_html: nested_comments(tree: sub_comments,
-                                                                 commentable: commentable,
-                                                                 is_admin: is_admin))
+                                   subtree_html: subtree_html)
       end
     end
     safe_join(comments)

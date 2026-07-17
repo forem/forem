@@ -1,7 +1,13 @@
 class ColTag < Liquid::Block
+  include ActionView::Helpers::SanitizeHelper
+
   PARTIAL = "liquids/col".freeze
   VALID_SPANS = (1..4).to_a.freeze
   OPTION_REGEXP = /\Aspan=(\d+)\z/
+
+  # Extends RENDERED_MARKDOWN_SCRUBBER tags with block-level elements produced by liquid tags
+  ALLOWED_TAGS = (MarkdownProcessor::AllowedTags::RENDERED_MARKDOWN_SCRUBBER + %w[div footer]).freeze
+  ALLOWED_ATTRIBUTES = (MarkdownProcessor::AllowedAttributes::RENDERED_MARKDOWN_SCRUBBER + %w[class loading]).freeze
 
   def initialize(tag_name, markup, parse_context)
     super
@@ -10,7 +16,9 @@ class ColTag < Liquid::Block
 
   def render(context)
     content = super
-    parsed_content = MarkdownProcessor::Parser.new(content).evaluate_markdown
+    renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
+    markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
+    parsed_content = sanitize(markdown.render(content), tags: ALLOWED_TAGS, attributes: ALLOWED_ATTRIBUTES)
     ApplicationController.render(
       partial: PARTIAL,
       locals: { content: parsed_content, span: @span },

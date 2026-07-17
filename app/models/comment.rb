@@ -1,5 +1,6 @@
 class Comment < ApplicationRecord
   include LiquidEmbeddable
+  include WebpageTrackable
   has_ancestry
   resourcify
 
@@ -30,13 +31,25 @@ class Comment < ApplicationRecord
   belongs_to :commentable, polymorphic: true, optional: true
   belongs_to :user
 
-  counter_culture :commentable
+  counter_culture :commentable,
+                  column_name: proc { |comment| comment.deleted? ? nil : :comments_count }
+
   counter_culture :user
 
   has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :delete_all
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :ai_audits, as: :affected_content, dependent: :nullify
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
+
+  has_many :concept_memberships, as: :record, dependent: :destroy
+  has_many :concepts, through: :concept_memberships
+
+  begin
+    has_neighbors :semantic_embedding if column_names.include?("semantic_embedding")
+  rescue StandardError
+    # DB not available yet
+  end
+
   before_validation :evaluate_markdown, if: -> { body_markdown }
   before_save :set_markdown_character_count, if: :body_markdown
   before_save :synchronous_spam_score_check
@@ -71,9 +84,12 @@ class Comment < ApplicationRecord
   }
 
   after_create_commit :record_field_test_event
+  after_create_commit :complete_onboarding_welcome_item
   after_create_commit :send_email_notification, if: :should_send_email_notification?
+  after_create_commit :enqueue_update_user_interest_embedding, if: :commentable_is_article?
 
   after_commit :calculate_score, on: %i[create update]
+  after_commit :enqueue_article_activity_update, on: :destroy, if: :commentable_is_article?
 
   after_update_commit :update_notifications, if: proc { |comment| comment.saved_changes.include? "body_markdown" }
 
@@ -195,22 +211,62 @@ class Comment < ApplicationRecord
   end
 
   def processed_html_final
-    # This is a final non-database-driven step to adjust processed html
-    # It is sort of a hack to avoid having to reprocess all articles
-    # It is currently only for this one cloudflare domain change
-    # It is duplicated across article, bullboard and comment where it is most needed
-    # In the future this could be made more customizable. For now it's just this one thing.
+    processed_html = replace_legacy_code_html(self.processed_html)
+
     return processed_html if ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"].blank? || ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"].blank?
 
     processed_html.gsub(ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"],
                         ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
   end
 
+  def replace_legacy_code_html(html)
+    return html if html.blank?
+    return html unless html.include?("runkit-element")
+
+    fragment = Nokogiri::HTML.fragment(html)
+    fragment.css('.runkit-element').each do |element|
+      preamble = element.at_css('code:nth-of-type(1)')&.text.to_s
+      content = element.at_css('code:nth-of-type(2)')&.text.to_s
+
+      replacement_html = LegacyCodeTag.fallback_html(
+        preamble: preamble,
+        parsed_content: content,
+      )
+
+      element.replace(Nokogiri::HTML.fragment(replacement_html))
+    end
+
+    fragment.to_html
+  rescue StandardError
+    html
+  end
+  private :replace_legacy_code_html
+
   def subforem_id
     commentable&.subforem_id
   end
 
   private
+
+  def commentable_is_article?
+    commentable_type == "Article"
+  end
+
+  def enqueue_update_user_interest_embedding
+    UpdateUserInterestEmbeddingWorker.perform_async(user_id, commentable_id, 0.3)
+  end
+
+  def enqueue_article_activity_update
+    # Score-driven create/destroy enqueues are emitted from
+    # Comments::CalculateScore (which uses update_columns and therefore
+    # bypasses callbacks). This after_commit only handles the destroy case:
+    # if a counted (score > 0) comment is removed, decrement the cache.
+    return unless destroyed?
+    return unless score.to_i.positive?
+
+    payload = { "iso" => created_at.to_date.iso8601 }
+    Articles::UpdateArticleActivityWorker.perform_async(commentable_id, "comment", "destroy", payload)
+  end
 
   def remove_notifications?
     deleted? || hidden_by_commentable_user?
@@ -282,24 +338,27 @@ class Comment < ApplicationRecord
   end
 
   def touch_user
-    user&.touch(:updated_at, :last_comment_at)
+    user&.touch(:updated_at, :last_comment_at) if user&.persisted?
   end
 
   def expire_root_fragment
     if root_exists?
-      root.touch
+      root_record = root
+      root_record.touch if root_record&.persisted? && !root_record.destroyed?
     else
-      touch
+      touch if persisted? && !destroyed?
     end
   end
 
   def after_destroy_actions
     Users::BustCacheWorker.perform_async(user_id)
-    user.touch(:last_comment_at)
+    user.touch(:last_comment_at) if user&.persisted?
   end
 
   def before_destroy_actions
-    commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
+    if commentable&.persisted? && commentable.respond_to?(:last_comment_at)
+      commentable.touch(:last_comment_at)
+    end
     ancestors.update_all(updated_at: Time.current)
     Comments::BustCacheWorker.new.perform(id)
   end
@@ -309,9 +368,12 @@ class Comment < ApplicationRecord
   end
 
   def synchronous_bust
-    commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
-    user.touch(:last_comment_at)
-    commentable.purge if commentable
+    if commentable&.persisted? && !commentable.destroyed?
+      commentable.reload
+      commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
+      commentable.purge
+    end
+    user.touch(:last_comment_at) if user&.persisted?
     expire_root_fragment
   end
 
@@ -402,6 +464,15 @@ class Comment < ApplicationRecord
 
     Users::RecordFieldTestEventWorker
       .perform_async(user_id, AbExperiment::GoalConversionHandler::USER_CREATES_COMMENT_GOAL)
+  end
+
+  def complete_onboarding_welcome_item
+    return unless commentable_type == "Article"
+
+    welcome = Article.cached_admin_published_with("welcome")
+    return unless welcome && commentable_id == welcome.id
+
+    user.onboarding_checklist&.complete_item!("comment_in_welcome")
   end
 
   def notify_slack_channel_about_warned_users

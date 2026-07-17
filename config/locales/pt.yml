@@ -32,14 +32,29 @@ pt:
     article_form_publish: Publicar
     article_form_loading_preview: Carregando visualização
     article_form_preview_loaded: Visualização carregada
+    article_form_co_authors: Co-autores
+    article_form_co_authors_description: Adicione até 4 co-autores da %{org_name}.
+    article_form_co_authors_placeholder: Adicionar até 4...
     comments_preview: Visualizar
     comments_continue_editing: Continuar editando
     survey_enter_response: Digite sua resposta aqui...
     survey_thank_you_response: Obrigado pela sua resposta.
     survey_thank_you_completing: Obrigado por completar a pesquisa!
     dashboard_analytics_readers: Leitores
+    dashboard_analytics_avg_read_time: tempo médio de leitura %{seconds}s
     dashboard_analytics_comments: Comentários
     dashboard_analytics_reactions: Reações
+    dashboard_analytics_unique_reactors: de %{count} usuários únicos
+    dashboard_analytics_bookmarks: Favoritos
+    dashboard_analytics_followers: Novos Seguidores
+    top_contributors_empty: Nenhum contribuidor encontrado para este período.
+    top_contributors_reactions: reações
+    top_contributors_comments: comentários
+    top_contributors_weight_note: Comentários têm mais peso
+    follower_engagement_ratio: "%{ratio}% dos seguidores engajados"
+    follower_engagement_detail: "(%{engaged} de %{total})"
+    dashboard_analytics_no_data: Nenhum dado disponível para este período
+    dashboard_analytics_no_referrers: Ainda sem fontes de tráfego
     stats_by: por
     editor_new_title: Novo título do post aqui...
     editor_body_placeholder: Escreva o conteúdo do seu post aqui...
@@ -56,6 +71,22 @@ pt:
     you_are_following: "Você está seguindo"
     and: "e"
   date:
+    abbr_day_names:
+    - dom
+    - seg
+    - ter
+    - qua
+    - qui
+    - sex
+    - sáb
+    day_names:
+    - domingo
+    - segunda-feira
+    - terça-feira
+    - quarta-feira
+    - quinta-feira
+    - sexta-feira
+    - sábado
     abbr_month_names:
     -
     - jan
@@ -195,6 +226,21 @@ pt:
       what_is_a_billboard: O que é um painel publicitário?
       report_billboard: Reportar painel publicitário
       edit_billboard: Editar painel publicitário
+  admin_api:
+    errors:
+      user_not_found: "Usuário não encontrado"
+      identity_not_found: "Identidade não encontrada para o usuário"
+      user_already_has_identity_for_provider: "O usuário já possui uma identidade para o provedor '%{provider}'"
+      identity_uid_taken: "O uid %{uid} (%{provider}) já está vinculado a outro usuário"
+      invalid_notification_settings: "notification_setting deve incluir pelo menos uma chave suportada (email_newsletter)"
+      invalid_identities: "identities deve ser uma lista de 1 a %{limit} itens"
+      cannot_merge_user_into_itself: "Não é possível mesclar um usuário consigo mesmo"
+      merge_identity_conflict: "A mesclagem não pôde ser concluída: %{reason}"
+      unknown_provider: "O provedor '%{provider}' não está configurado"
+      invalid_status: "Status não permitido"
+      email_taken: "E-mail já utilizado"
+      email_invalid: "E-mail inválido"
+      validation_failed: "A validação falhou"
   errors:
     messages:
       accepted: deve ser aceito
@@ -211,6 +257,7 @@ pt:
       greater_than: deve ser maior que %{count}
       greater_than_or_equal_to: deve ser maior ou igual a %{count}
       inclusion: não está incluído na lista
+      integer_only: Apenas inteiro. Nenhum sinal permitido.
       invalid: é inválido
       less_than: deve ser menor que %{count}
       less_than_or_equal_to: deve ser menor ou igual a %{count}

@@ -33,6 +33,8 @@ class Page < ApplicationRecord
   resourcify
 
   scope :from_subforem, lambda { |subforem_id = nil|
+    return where(nil) if ENV["NO_SUBFOREM_FILTER"] == "true"
+
     subforem_id ||= RequestStore.store[:subforem_id]
     where(subforem_id: [subforem_id, nil])
   }
@@ -88,6 +90,11 @@ class Page < ApplicationRecord
     return unless uses_page_template?
 
     render_from_page_template
+    save!
+  end
+
+  # Force evaluation of markdown (via before_save) and persist any resulting changes
+  def recompile!
     save!
   end
 

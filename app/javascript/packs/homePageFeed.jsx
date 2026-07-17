@@ -135,7 +135,18 @@ PodcastEpisodes.propTypes = {
  * Renders the main feed.
  */
 export const renderFeed = async (timeFrame, afterRender) => {
-  const feedContainer = document.getElementById('homepage-feed');
+  let feedContainer = document.getElementById('homepage-feed');
+  let replaceNode = feedContainer ? feedContainer.firstElementChild : undefined;
+
+  if (!feedContainer) {
+    const renderedFeed = document.getElementById('rendered-article-feed');
+    if (renderedFeed) {
+      feedContainer = renderedFeed.parentNode;
+      replaceNode = renderedFeed;
+    } else {
+      return;
+    }
+  }
 
   const { currentUser } = await getUserDataAndCsrfTokenSafely();
   const currentUserId = currentUser && currentUser.id;
@@ -160,7 +171,10 @@ export const renderFeed = async (timeFrame, afterRender) => {
 
     if (feedItems.length === 0 || !hasActualContent) {
       // Determine feed type from localStorage or URL
-      const feedTypeOf = localStorage?.getItem('current_feed') || 'discover';
+      let feedTypeOf = localStorage?.getItem('current_feed');
+      if (feedTypeOf !== 'discover' && feedTypeOf !== 'following') {
+        feedTypeOf = 'discover';
+      }
       const feedType = feedTypeOf === 'following' ? 'following' : 'discover';
 
       return (
@@ -186,10 +200,11 @@ export const renderFeed = async (timeFrame, afterRender) => {
 
   render(
     <Feed
+      key={window.location.pathname}
       timeFrame={timeFrame}
       renderFeed={callback}
       afterRender={afterRender}
     />,
-    createRootFragment(feedContainer, feedContainer.firstElementChild),
+    createRootFragment(feedContainer, replaceNode),
   );
 };

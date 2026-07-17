@@ -21,7 +21,7 @@ class QuoteTag < Liquid::Block
 
   def render(context)
     content = super
-    ApplicationController.render(
+    html = ApplicationController.render(
       partial: PARTIAL,
       locals: {
         author: @author,
@@ -33,6 +33,12 @@ class QuoteTag < Liquid::Block
         content: content,
       },
     )
+    # Collapse whitespace between HTML tags so the second Redcarpet pass in
+    # MarkdownProcessor::Parser#finalize treats the output as one HTML block
+    # instead of interpreting indented SVG paths as code blocks and blank
+    # lines from ERB conditionals as block breaks. Only collapses whitespace
+    # between tags (template-introduced), preserving newlines within text content.
+    html.gsub(/>\s*\n\s*</, "> <").gsub(/\A\s+/, "").gsub(/\s+\z/, "")
   end
 
   private

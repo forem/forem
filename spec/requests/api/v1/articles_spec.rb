@@ -81,6 +81,17 @@ RSpec.describe "Api::V1::Articles" do
         expect(response.parsed_body.length).to eq(1)
       end
 
+      it "rejects requests with page greater than 1000 without an API key" do
+        get api_articles_path, params: { page: 1001 }, headers: headers
+        expect(response).to have_http_status(:unauthorized)
+        expect(response.parsed_body["error"]).to eq("Page depth limited to 1000 without an API key")
+      end
+
+      it "allows requests with page greater than 1000 with a valid API key" do
+        get api_articles_path, params: { page: 1001 }, headers: auth_headers
+        expect(response).to have_http_status(:ok)
+      end
+
       it "returns flare tag in the response" do
         get api_articles_path, headers: headers
         response_article = response.parsed_body.first
@@ -1601,6 +1612,17 @@ RSpec.describe "Api::V1::Articles" do
       expect(response.parsed_body.length).to eq(1)
     end
 
+    it "rejects requests with page greater than 1000 without an API key" do
+      get "/api/articles/search", params: { page: 1001 }, headers: headers
+      expect(response).to have_http_status(:unauthorized)
+      expect(response.parsed_body["error"]).to eq("Page depth limited to 1000 without an API key")
+    end
+
+    it "allows requests with page greater than 1000 with a valid API key" do
+      get "/api/articles/search", params: { page: 1001 }, headers: auth_headers
+      expect(response).to have_http_status(:ok)
+    end
+
     it "returns flare tag in the response" do
       get "/api/articles/search"
       response_article = response.parsed_body.first
@@ -1626,6 +1648,214 @@ RSpec.describe "Api::V1::Articles" do
         get "/api/articles/search", params: { per_page: 10 }
         expect(response.parsed_body.count).to eq(2)
       end
+    end
+  end
+
+  describe "GET /api/articles/semantic_search" do
+    let(:query_embedding) { [1.0] + Array.new(767, 0.0) }
+
+    before do
+      allow_any_instance_of(Ai::Embedding).to receive(:call).and_return(query_embedding)
+      article.update_column(:semantic_embedding, Array.new(768, 0.1))
+      article.update_column(:published, true)
+    end
+
+    it "requires api-key" do
+      get "/api/articles/semantic_search", headers: headers
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "requires q parameter" do
+      get "/api/articles/semantic_search", headers: auth_headers
+      expect(response).to have_http_status(:bad_request)
+      expect(JSON.parse(response.body)["error"]).to eq("q parameter is required")
+    end
+
+    it "returns semantically matching articles with distance and similarity metrics" do
+      get "/api/articles/semantic_search", params: { q: "testing query" }, headers: auth_headers
+      expect(response).to be_successful
+      json = JSON.parse(response.body)
+      expect(json.length).to eq(1)
+      expect(json[0]["id"]).to eq(article.id)
+      expect(json[0]).to have_key("distance")
+      expect(json[0]).to have_key("similarity")
+    end
+
+    it "returns keyword-matching articles even if they have no semantic embedding" do
+      keyword_article = create(:article, title: "An amazing fable of anthropic fable", published: true)
+      # Ensure it matches the index minimum score check if necessary
+      keyword_article.update_column(:score, 100)
+      keyword_article.update_column(:semantic_embedding, nil)
+      
+      # The search query has "fable" which matches keyword_article
+      get "/api/articles/semantic_search", params: { q: "fable" }, headers: auth_headers
+      expect(response).to be_successful
+      json = JSON.parse(response.body)
+      
+      # The keyword match should be present
+      matching_item = json.find { |item| item["id"] == keyword_article.id }
+      expect(matching_item).to be_present
+      expect(matching_item["distance"]).to be_nil
+      expect(matching_item["similarity"]).to be_nil
+    end
+
+    it "ranks articles matching both keyword and semantic criteria higher using RRF" do
+      # Create one pure keyword match
+      keyword_article = create(:article, title: "UniqueKeywordMatch", published: true)
+      keyword_article.update_column(:score, 100)
+      keyword_article.update_column(:semantic_embedding, nil)
+
+      # Create one article that is both keyword and semantic match
+      both_match_article = create(:article, title: "UniqueKeywordMatch and semantic", published: true)
+      both_match_article.update_column(:score, 100)
+      both_match_article.update_column(:semantic_embedding, Array.new(768, 0.1))
+
+      # The current stub returns query_embedding for any query.
+      # both_match_article will be at the top of semantic search, and also present in keyword search.
+      get "/api/articles/semantic_search", params: { q: "UniqueKeywordMatch" }, headers: auth_headers
+      expect(response).to be_successful
+      json = JSON.parse(response.body)
+      
+      # both_match_article should be ranked first (since it appears in both lists)
+      expect(json.first["id"]).to eq(both_match_article.id)
+    end
+
+    it "ranks more recent articles higher than older articles, all else being equal" do
+      # Create two keyword-matching articles with the same score
+      older_article = create(:article, title: "RecencyMatch Older", published: true)
+      older_article.update_columns(score: 100, semantic_embedding: nil, published_at: 10.days.ago)
+
+      newer_article = create(:article, title: "RecencyMatch Newer", published: true)
+      newer_article.update_columns(score: 100, semantic_embedding: nil, published_at: 1.day.ago)
+
+      get "/api/articles/semantic_search", params: { q: "RecencyMatch" }, headers: auth_headers
+      expect(response).to be_successful
+      json = JSON.parse(response.body)
+
+      # The newer article should be ranked before the older article
+      newer_index = json.index { |item| item["id"] == newer_article.id }
+      older_index = json.index { |item| item["id"] == older_article.id }
+      expect(newer_index).to be_present
+      expect(older_index).to be_present
+      expect(newer_index).to be < older_index
+    end
+
+    it "ranks articles with higher quality scores higher, all else being equal" do
+      # Create two keyword-matching articles published at the same time
+      common_time = 2.days.ago
+      lower_score_article = create(:article, title: "QualityMatch Lower", published: true)
+      lower_score_article.update_columns(score: 10, semantic_embedding: nil, published_at: common_time)
+
+      higher_score_article = create(:article, title: "QualityMatch Higher", published: true)
+      higher_score_article.update_columns(score: 500, semantic_embedding: nil, published_at: common_time)
+
+      get "/api/articles/semantic_search", params: { q: "QualityMatch" }, headers: auth_headers
+      expect(response).to be_successful
+      json = JSON.parse(response.body)
+
+      # The higher score article should be ranked before the lower score article
+      higher_index = json.index { |item| item["id"] == higher_score_article.id }
+      lower_index = json.index { |item| item["id"] == lower_score_article.id }
+      expect(higher_index).to be_present
+      expect(lower_index).to be_present
+      expect(higher_index).to be < lower_index
+    end
+
+    it "respects similarity threshold param" do
+      get "/api/articles/semantic_search", params: { q: "testing query", threshold: 0.001 }, headers: auth_headers
+      expect(response).to be_successful
+      json = JSON.parse(response.body)
+      expect(json).to eq([])
+    end
+
+    context "when Algolia is available" do
+      before do
+        allow(ApplicationConfig).to receive(:[]).and_call_original
+        allow(ApplicationConfig).to receive(:[]).with("ALGOLIA_APPLICATION_ID").and_return("test_app_id")
+        allow(ApplicationConfig).to receive(:[]).with("ALGOLIA_API_KEY").and_return("test_api_key")
+        allow(Settings::General).to receive(:algolia_search_enabled?).and_return(true)
+      end
+
+      it "routes the query through Algolia and validates results against the database" do
+        algolia_article = create(:article, title: "Algolia Match Title", published: true)
+        algolia_article.update_columns(score: 100, semantic_embedding: Array.new(768, 0.1))
+
+        expect(Article).to receive(:raw_search)
+          .with("fable", hash_including(hitsPerPage: 100))
+          .and_return({ "hits" => [{ "objectID" => algolia_article.id.to_s }] })
+
+        get "/api/articles/semantic_search", params: { q: "fable" }, headers: auth_headers
+        expect(response).to be_successful
+        json = JSON.parse(response.body)
+        expect(json.length).to eq(1)
+        expect(json[0]["id"]).to eq(algolia_article.id)
+      end
+
+      it "filters out unpublished or low-score articles returned by Algolia" do
+        draft_article = create(:article, title: "Algolia Draft", published: false)
+        low_score_article = create(:article, title: "Algolia Low Score", published: true)
+        low_score_article.update_columns(score: -10)
+
+        expect(Article).to receive(:raw_search)
+          .and_return({ "hits" => [
+            { "objectID" => draft_article.id.to_s },
+            { "objectID" => low_score_article.id.to_s }
+          ] })
+
+        get "/api/articles/semantic_search", params: { q: "fable" }, headers: auth_headers
+        expect(response).to be_successful
+        json = JSON.parse(response.body)
+        expect(json).to eq([])
+      end
+
+      it "falls back to DB hybrid search if Algolia search fails" do
+        db_article = create(:article, title: "Database Match Fable", published: true)
+        db_article.update_columns(score: 100, semantic_embedding: nil)
+
+        expect(Article).to receive(:raw_search).and_raise(StandardError.new("Algolia Error"))
+
+        get "/api/articles/semantic_search", params: { q: "fable" }, headers: auth_headers
+        expect(response).to be_successful
+        json = JSON.parse(response.body)
+        expect(json.find { |item| item["id"] == db_article.id }).to be_present
+      end
+    end
+
+    it "caches the embedding API call for identical queries" do
+      memory_store = ActiveSupport::Cache.lookup_store(:memory_store)
+      allow(Rails).to receive(:cache).and_return(memory_store)
+
+      embedding_mock = instance_double(Ai::Embedding)
+      expect(Ai::Embedding).to receive(:new).once.and_return(embedding_mock)
+      expect(embedding_mock).to receive(:call).once.and_return(query_embedding)
+
+      # First request: should call the service
+      get "/api/articles/semantic_search", params: { q: "cache query" }, headers: auth_headers
+      expect(response).to be_successful
+
+      # Second request: should read from cache and not call the service again
+      get "/api/articles/semantic_search", params: { q: "cache query" }, headers: auth_headers
+      expect(response).to be_successful
+    end
+
+    it "strips stop words and contractions from database keyword query" do
+      allow(Settings::General).to receive(:algolia_search_enabled?).and_return(false)
+
+      embedding_mock = instance_double(Ai::Embedding)
+      allow(Ai::Embedding).to receive(:new).and_return(embedding_mock)
+      expect(embedding_mock).to receive(:call)
+        .with("what's the latest with anthropic fable", task_type: "RETRIEVAL_QUERY", output_dimensionality: 768)
+        .and_return(query_embedding)
+
+      keyword_article = create(:article, title: "An amazing latest news fable by anthropic", published: true)
+      keyword_article.update_columns(score: 100, semantic_embedding: nil)
+
+      get "/api/articles/semantic_search", params: { q: "what's the latest with anthropic fable" }, headers: auth_headers
+      expect(response).to be_successful
+      json = JSON.parse(response.body)
+
+      matching_item = json.find { |item| item["id"] == keyword_article.id }
+      expect(matching_item).to be_present
     end
   end
 end

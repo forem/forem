@@ -9,7 +9,9 @@ module Ai
     # @param article [Article] The article to be labeled.
     def initialize(article)
       @article = article
-      @ai_client = Ai::Base.new(wrapper: self, affected_content: article, affected_user: article.user)
+      @is_negative = @article.score.to_i.negative?
+      model = @is_negative ? Ai::Base::DEFAULT_LITE_MODEL : Ai::Base::DEFAULT_MODEL
+      @ai_client = Ai::Base.new(model: model, wrapper: self, affected_content: article, affected_user: article.user)
     end
 
     ##
@@ -32,13 +34,15 @@ module Ai
         attempt += 1
         prompt = build_prompt
         # Pass json format request if the wrapper supports it, though explicit instructions might suffice.
-        response = @ai_client.call(prompt)
+        response = @ai_client.call(prompt, retry_count: attempt - 1, response_mime_type: "application/json")
         parse_response(response)
       rescue StandardError => e
         Rails.logger.error("Content Moderation Labeling failed (attempt #{attempt}/#{max_retries + 1}): #{e}")
 
         if attempt <= max_retries
-          Rails.logger.info("Retrying content moderation labeling (attempt #{attempt + 1}/#{max_retries + 1})")
+          sleep_duration = attempt * 2
+          Rails.logger.info("Retrying content moderation labeling (attempt #{attempt + 1}/#{max_retries + 1}) after #{sleep_duration}s")
+          sleep(sleep_duration) unless Rails.env.test?
           retry
         else
           Rails.logger.error("Content Moderation Labeling failed after #{max_retries + 1} attempts, falling back to default")
@@ -69,17 +73,31 @@ module Ai
       # Gather article context
       article_context = build_article_context
 
+      # Gather custom tag moderation instructions
+      tag_instructions_context = build_tag_instructions_context
+
+      quickie_context = if @article.status?
+                          <<~QUICKIE
+
+                            **Important Context:**
+                            Note: This article is a "status" post (a quick update or thought). These are shorter, more casual posts that we encourage for community engagement. Please err on the side of higher quality labels and higher compellingness scores, provided it is not clear spam or completely low quality.
+                          QUICKIE
+                        else
+                          ""
+                        end
+
       <<~PROMPT
         Analyze the following article and assign it a content moderation label based on quality, relevance, and community standards.
 
         **Community Context:**
         #{community_description.presence || 'No specific community description provided.'}
+        #{tag_instructions_context}
 
         **User Context:**
         #{user_context}
 
         **Article Content:**
-        #{article_context}
+        #{article_context}#{quickie_context}
 
         **Assessment Criteria:**
 
@@ -110,10 +128,13 @@ module Ai
         **Relevance Labels:**
         - `ok_but_offtopic_for_subforem`: Decent content but not relevant to this community
         - `okay_and_on_topic`: Acceptable content that fits the community
+        #{ @is_negative ? "" : <<~EXTRA_LABELS
         - `very_good_but_offtopic_for_subforem`: High-quality content but not relevant to this community
         - `very_good_and_on_topic`: High-quality content that fits the community well
         - `great_and_on_topic`: Exceptional content that perfectly fits the community
         - `great_but_off_topic_for_subforem`: Exceptional content but not relevant to this community
+        EXTRA_LABELS
+        }
 
         **Compellingness Score Requirements:**
         In addition to the moderation label, assess the "compellingness" of the article on a scale from 0.0 to 1.0. 
@@ -170,14 +191,31 @@ module Ai
     # Builds context about the article content.
     # @return [String] Article context information.
     def build_article_context
+      limit = @is_negative ? 2000 : 5000
       <<~ARTICLE_CONTEXT
         Title: #{@article.title}
         Tags: #{@article.cached_tag_list}
-        Body: #{@article.body_markdown.truncate(5000)} #{'(Truncated)' if @article.body_markdown.length > 5000}
+        Body: #{@article.body_markdown.truncate(limit)} #{'(Truncated)' if @article.body_markdown.length > limit}
         Published: #{@article.published_at&.strftime('%B %d, %Y') || 'Not published'}
         Reading time: #{@article.reading_time} minutes
         Word count: #{@article.body_markdown.split.size} words
       ARTICLE_CONTEXT
+    end
+
+    def build_tag_instructions_context
+      tag_instructions = @article.tags.where.not(moderation_instructions: [nil, ""]).pluck(:name, :moderation_instructions)
+      return "" if tag_instructions.empty?
+
+      instructions_list = tag_instructions.map do |name, inst|
+        "- ##{name}: #{inst}"
+      end.join("\n")
+
+      <<~CONTEXT
+
+        **Custom Tag Moderation Instructions:**
+        The article is tagged with the following tags, which have custom moderation instructions that you must follow during your assessment:
+        #{instructions_list}
+      CONTEXT
     end
 
     ##

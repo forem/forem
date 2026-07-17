@@ -21,7 +21,12 @@ RSpec.describe "api/v1/pages" do
         security []
         tags "pages"
         description(<<-DESCRIBE.strip)
-        This endpoint allows the client to retrieve details for all Page objects.
+        Retrieve details for all Page objects in the system.
+
+        ### Pages Overview:
+        - Pages are custom static or dynamic views hosted on the Forem instance.
+        - Publicly visible unless restricted.
+        - Helpful for building custom menus, rendering site policies, or embedding custom forms.
         DESCRIBE
 
         produces "application/json"
@@ -40,28 +45,38 @@ RSpec.describe "api/v1/pages" do
       post("pages") do
         tags "pages"
         description(<<-DESCRIBE.strip)
-        This endpoint allows the client to create a new page.
+        Create a new custom page. Requires administrative privileges.
+
+        ### Body Parameter Guidelines:
+        - **title**: Heading displayed at the top of the page.
+        - **slug**: URL path identifier. Must be unique and URL-safe.
+        - **body_markdown**: Content written in Markdown format.
+        - **body_json**: Optional JSON payload for API-consumed/structured data pages.
+        - **is_top_level_path**: Set to `true` to serve the page directly at the root (e.g. `/{slug}`) instead of under the default namespace `/page/{slug}`. Use with caution to avoid namespace collisions with core Forem paths.
+        - **template**: Layout styling options (`contained` or custom layouts).
         DESCRIBE
 
         produces "application/json"
         consumes "application/json"
 
-        parameter name: :page, in: :body, schema: {
-          type: :object,
-          properties: {
-            title: { type: :string, description: "Title of the page" },
-            slug: { type: :string, description: "Used to link to this page in URLs, must be unique and URL-safe" },
-            description: { type: :string, description: "For internal use, helps similar pages from one another" },
-            body_markdown: { type: :string, description: "The text (in markdown) of the ad (required)" },
-            body_json: { type: :string, description: "For JSON pages, the JSON body" },
-            is_top_level_path: { type: :boolean,
-                                 description: "If true, the page is available at '/{slug}' instead of '/page/{slug}', use with caution" },
-            template: {
-              type: :string, enum: Page::TEMPLATE_OPTIONS, default: "contained",
-              description: "Controls what kind of layout the page is rendered in"
-            }
-          }
-        }
+        parameter name: :page, in: :body,
+                  description: "Page parameters.",
+                  schema: {
+                    type: :object,
+                    properties: {
+                      title: { type: :string, description: "Title of the page" },
+                      slug: { type: :string, description: "Used to link to this page in URLs, must be unique and URL-safe" },
+                      description: { type: :string, description: "For internal use, helps similar pages from one another" },
+                      body_markdown: { type: :string, description: "The text (in markdown) of the page (required)" },
+                      body_json: { type: :string, description: "For JSON pages, the JSON body" },
+                      is_top_level_path: { type: :boolean,
+                                           description: "If true, the page is available at '/{slug}' instead of '/page/{slug}', use with caution" },
+                      template: {
+                        type: :string, enum: Page::TEMPLATE_OPTIONS, default: "contained",
+                        description: "Controls what kind of layout the page is rendered in"
+                      }
+                    }
+                  }
         let(:page) do
           {
             title: "Example Page",
@@ -104,12 +119,12 @@ RSpec.describe "api/v1/pages" do
         security []
         tags "pages"
         description(<<-DESCRIBE.strip)
-        This endpoint allows the client to retrieve details for a single Page object, specified by ID.
+        Retrieve details for a single Page object specified by ID.
         DESCRIBE
 
         produces "application/json"
         parameter name: :id, in: :path, required: true,
-                  description: "The ID of the page.",
+                  description: "The unique ID of the page.",
                   schema: {
                     type: :integer,
                     format: :int32,
@@ -132,13 +147,13 @@ RSpec.describe "api/v1/pages" do
       put("update details for a page") do
         tags "pages"
         description(<<-DESCRIBE.strip)
-        This endpoint allows the client to retrieve details for a single Page object, specified by ID.
+        Update an existing page's details by ID. Requires administrative privileges.
         DESCRIBE
 
         produces "application/json"
         consumes "application/json"
         parameter name: :id, in: :path, required: true,
-                  description: "The ID of the page.",
+                  description: "The ID of the page to update.",
                   schema: {
                     type: :integer,
                     format: :int32,
@@ -183,12 +198,12 @@ RSpec.describe "api/v1/pages" do
       delete("remove a page") do
         tags "pages"
         description(<<-DESCRIBE.strip)
-        This endpoint allows the client to delete a single Page object, specified by ID.
+        Delete a custom page from the system by ID. Requires administrative privileges.
         DESCRIBE
 
         produces "application/json"
         parameter name: :id, in: :path, required: true,
-                  description: "The ID of the page.",
+                  description: "The ID of the page to delete.",
                   schema: {
                     type: :integer,
                     format: :int32,

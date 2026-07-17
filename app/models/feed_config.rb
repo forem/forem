@@ -30,13 +30,21 @@ class FeedConfig < ApplicationRecord
     terms << "(articles.score * #{score_weight})" if score_weight.positive?
 
     if organization_follow_weight.positive?
-      org_ids = organization_follow_ids.empty? ? "-1" : organization_follow_ids.join(',')
-      terms << "(CASE WHEN articles.organization_id IN (#{org_ids}) THEN #{organization_follow_weight} ELSE 0 END)"
+      org_ids = organization_follow_ids.compact_blank
+      org_ids_str = org_ids.empty? ? "-1" : org_ids.join(',')
+      terms << "(CASE WHEN articles.organization_id IN (#{org_ids_str}) THEN #{organization_follow_weight} ELSE 0 END)"
     end
 
     if user_follow_weight.positive?
-      user_ids = user_follow_ids.empty? ? "-1" : user_follow_ids.join(',')
-      terms << "(CASE WHEN articles.user_id IN (#{user_ids}) THEN #{user_follow_weight} ELSE 0 END)"
+      user_ids = user_follow_ids.compact_blank
+      user_ids_str = user_ids.empty? ? "-1" : user_ids.join(',')
+      terms << "(CASE WHEN articles.user_id IN (#{user_ids_str}) THEN #{user_follow_weight} ELSE 0 END)"
+    end
+
+    if follow_status_weight.positive?
+      user_ids = user_follow_ids.compact_blank
+      user_ids_str = user_ids.empty? ? "-1" : user_ids.join(',')
+      terms << "(CASE WHEN articles.type_of = 1 AND articles.user_id IN (#{user_ids_str}) THEN #{follow_status_weight} ELSE 0 END)"
     end
 
     if tag_follow_weight.positive? && tag_names.present?
@@ -54,8 +62,9 @@ class FeedConfig < ApplicationRecord
     if subforem_follow_weight.positive? &&
       RequestStore.store[:subforem_id].present? &&
       RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
-      subforem_ids = subforem_follow_ids.empty? ? "-1" : subforem_follow_ids.join(',')
-      terms << "(CASE WHEN articles.subforem_id IN (#{subforem_ids}) THEN #{subforem_follow_weight} ELSE 0 END)"
+      subforem_ids = subforem_follow_ids.compact_blank
+      subforem_ids_str = subforem_ids.empty? ? "-1" : subforem_ids.join(',')
+      terms << "(CASE WHEN articles.subforem_id IN (#{subforem_ids_str}) THEN #{subforem_follow_weight} ELSE 0 END)"
     end
 
     ## Labels slightly different because we can use native Postgres array operators
@@ -73,12 +82,15 @@ class FeedConfig < ApplicationRecord
     end
 
     if precomputed_selections_weight.positive? && precomputed_selections.present?
-      terms << "(CASE WHEN articles.id IN (#{precomputed_selections.join(',')}) THEN #{precomputed_selections_weight} ELSE 0 END)"
+      selections = precomputed_selections.compact_blank
+      if selections.any?
+        terms << "(CASE WHEN articles.id IN (#{selections.join(',')}) THEN #{precomputed_selections_weight} ELSE 0 END)"
+      end
     end
 
     if recent_article_suppression_rate.positive? && activity_store
       # Compute recently viewed article IDs using the page_views table.
-      recent_ids = activity_store.recently_viewed_articles.map(&:first)
+      recent_ids = activity_store.recently_viewed_articles.map(&:first).compact_blank
       recent_ids_str = recent_ids.any? ? recent_ids.join(',') : "-1"
       terms << "(CASE WHEN articles.id IN (#{recent_ids_str}) THEN -#{recent_article_suppression_rate} ELSE 0 END)"
     end
@@ -103,27 +115,46 @@ class FeedConfig < ApplicationRecord
       activity_store&.recent_subforems&.any? &&
       RequestStore.store[:root_subforem_id].present? &&
       RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
-      ids     = activity_store.recent_subforems.compact
-      arr_sql = "ARRAY[#{ids.join(',')}]::bigint[]"
+      ids     = activity_store.recent_subforems.compact_blank
+      if ids.any?
+        arr_sql = "ARRAY[#{ids.join(',')}]::bigint[]"
 
+        terms << <<~SQL.squish
+          (
+            CASE
+              WHEN articles.subforem_id = ANY(#{arr_sql})
+              THEN #{recent_subforem_weight}
+                   * COALESCE(
+                       cardinality(
+                         array_positions(#{arr_sql}, articles.subforem_id)
+                       ),
+                       0
+                     )
+              ELSE 0
+            END
+          )
+        SQL
+      end
+    end
+
+    # Additional weights
+    if semantic_similarity_weight.positive? && activity_store&.respond_to?(:interest_embedding) && activity_store&.interest_embedding.present?
+      embedding_values = activity_store.interest_embedding.to_a
+      embedding_literal = "[#{embedding_values.join(',')}]"
+      embedding_sql = self.class.connection.quote(embedding_literal)
+      semantic_similarity_published_since = self.class.connection.quote(30.days.ago.utc.to_fs(:db))
       terms << <<~SQL.squish
         (
           CASE
-            WHEN articles.subforem_id = ANY(#{arr_sql})
-            THEN #{recent_subforem_weight}
-                 * COALESCE(
-                     cardinality(
-                       array_positions(#{arr_sql}, articles.subforem_id)
-                     ),
-                     0
-                   )
+            WHEN articles.semantic_embedding IS NOT NULL
+              AND articles.published_at >= #{semantic_similarity_published_since}
+            THEN (1 - (articles.semantic_embedding <=> #{embedding_sql})) * #{semantic_similarity_weight}
             ELSE 0
           END
         )
       SQL
     end
 
-    # Additional weights
     terms << "(CASE WHEN articles.featured = TRUE THEN #{featured_weight} ELSE 0 END)" if featured_weight.positive?
     terms << "(CASE WHEN articles.type_of = 1 THEN #{status_weight} ELSE 0 END)" if status_weight.positive?
     terms << "(- (articles.clickbait_score * #{clickbait_score_weight}))" if clickbait_score_weight.positive?
@@ -147,6 +178,7 @@ class FeedConfig < ApplicationRecord
     clone.comment_score_weight = comment_score_weight * rand(0.9..1.1)
     clone.feed_success_weight = feed_success_weight * rand(0.9..1.1)
     clone.label_match_weight = label_match_weight * rand(0.9..1.1)
+    clone.semantic_similarity_weight = semantic_similarity_weight * rand(0.9..1.1)
     clone.lookback_window_weight = lookback_window_weight * rand(0.9..1.1)
     clone.organization_follow_weight = organization_follow_weight * rand(0.9..1.1)
     clone.precomputed_selections_weight = precomputed_selections_weight * rand(0.9..1.1)
@@ -161,6 +193,7 @@ class FeedConfig < ApplicationRecord
     clone.recently_active_past_day_bonus_weight = recently_active_past_day_bonus_weight * rand(0.9..1.1)
     clone.featured_weight = featured_weight * rand(0.9..1.1)
     clone.status_weight = status_weight * rand(0.9..1.1)
+    clone.follow_status_weight = follow_status_weight * rand(0.9..1.1)
     clone.clickbait_score_weight = clickbait_score_weight * rand(0.9..1.1)
     clone.compellingness_score_weight = compellingness_score_weight * rand(0.9..1.1)
     clone.language_match_weight = language_match_weight * rand(0.9..1.1)

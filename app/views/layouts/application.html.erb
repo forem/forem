@@ -22,7 +22,7 @@
       <meta name="head-cached-at" content="<%= Time.current.to_i %>">
       <meta name="environment" content="<%= Rails.env %>">
       <%= render "layouts/styles", qualifier: "main" %>
-      <%= javascript_include_tag "base", "application", "baseInitializers", "baseTracking", "followButtons", defer: true %>
+      <%= javascript_include_tag "base", "application", "baseInitializers", "baseTracking", "followButtons", "eventSignupButtons", defer: true %>
 
       <%# This Rails.env.test? introduces some test-specific behavior, but that is much easier to verify without the specific loading code. We should ensure search still works as expected manually as well. %>
       <% if controller_name == "articles_search" || Rails.env.test? %>
@@ -57,6 +57,13 @@
     <%= Settings::UserExperience.head_content.html_safe %>
   </head>
   <% unless internal_navigation? %>
+    <%
+      @viewable_for_tracking = [@article, @podcast_episode, @episode, @page, @organization, @feed_config].find do |viewable_candidate|
+        viewable_record = viewable_candidate.respond_to?(:object) ? viewable_candidate.object : viewable_candidate
+        viewable_record.respond_to?(:persisted?) && viewable_record.persisted?
+      end
+      @viewable_for_tracking = @viewable_for_tracking.object if @viewable_for_tracking.respond_to?(:object)
+    %>
     <body
       class="<%= Settings::UserExperience.default_font.tr("_", "-") %>-article-body default-header"
       data-user-status="<%= j(user_logged_in_status) %>"
@@ -78,7 +85,8 @@
       data-algolia-search-key="<%= j(Settings::General.algolia_search_only_api_key) if feature_flag_enabled?(:algolia_frontend) %>"
       data-algolia-display="<%= j(Settings::General.display_algolia_branding) %>"
       data-dynamic-url-component="<%= ENV.fetch("BILLBOARD_URL_COMPONENT", "bb") %>"
-      data-ga4-tracking-id="<%= j(Settings::General.ga_analytics_4_id) %>">
+      data-ga4-tracking-id="<%= j(Settings::General.ga_analytics_4_id) %>"
+      data-global-feature-flags-enabled="<%= j(enabled_global_feature_flags) %>">
       <%# Repeat of stylesheets in <head> to fix rendering glitch: https://github.com/forem/forem/issues/12377 %>
       
       <%# First script to run no matter what %>
@@ -132,7 +140,7 @@
       <%== flash[:global_notice] %>
     </div>
   <% end %>
-  <div id="page-content-inner" data-internal-nav="<%= internal_navigation? %>">
+  <div id="page-content-inner" data-internal-nav="<%= internal_navigation? %>" data-viewable-id="<%= @viewable_for_tracking&.id %>" data-viewable-type="<%= @viewable_for_tracking&.class&.name %>">
     <div id="page-route-change" class="screen-reader-only" aria-live="polite" aria-atomic="true"></div>
 
     <% if @hero_html && @hero_billboard.blank? %>
@@ -149,6 +157,31 @@
     <%= yield %>
     <div id="runtime-banner-container"></div>
     <div id="i18n-translations" data-translations="<%= i18n_translations_for_javascript.to_json %>"></div>
+    <% if internal_navigation? %>
+      <script>
+        (function() {
+          var expectedStyles = {
+            "minimal": "<%= stylesheet_path('minimal') %>",
+            "views": "<%= stylesheet_path('views') %>",
+            "crayons": "<%= stylesheet_path('crayons') %>"
+          };
+          var qualifiers = ["main", "secondary"];
+          Object.keys(expectedStyles).forEach(function(name) {
+            var expectedHref = expectedStyles[name];
+            for (var i = 0; i < qualifiers.length; i++) {
+              var id = qualifiers[i] + "-" + name + "-stylesheet";
+              var link = document.getElementById(id);
+              if (link) {
+                var currentHref = link.getAttribute('href');
+                if (currentHref && currentHref !== expectedHref) {
+                  link.setAttribute('href', expectedHref);
+                }
+              }
+            }
+          });
+        })();
+      </script>
+    <% end %>
   </div>
 </div>
 <% unless internal_navigation? %>

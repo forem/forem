@@ -35,6 +35,10 @@ pt:
             description: A parte "Client ID" da página OAuth 2.0 no portal Google Cloud Platform
           google_secret:
             description: A parte "Client Secret" da página OAuth 2.0 no portal Google Cloud Platform
+          google_ios_key:
+            description: O Client ID nativo para iOS configurado no portal Google Cloud Platform
+          google_android_key:
+            description: O Client ID nativo para Android configurado no portal Google Cloud Platform
           invite_only:
             description: Apenas usuários convidados por e-mail podem entrar nesta comunidade.
           new_user_status:
@@ -103,6 +107,8 @@ pt:
         general:
           ahoy_tracking:
             description: Enable Ahoy tracking
+          customerio_cdp_enabled:
+            description: Master switch for sending user registration and profile-update events to the Customer.io CDP (DEV to MLH Core sync). Per-account rollout is controlled separately by the dev_core_user_sync feature flag.
           billboard_enabled_countries:
             description: Countries where billboards are enabled
           contact_email:
@@ -176,6 +182,8 @@ pt:
           hashtag:
             description: Default hashtag for the community
             placeholder: Default hashtag for the community
+          display_sidebar_onboarding_checklist:
+            description: Exibir a lista de primeiros passos na barra lateral direita para novos usuários.
           enable_agent_sessions:
             description: Enable the Agent Sessions feature for uploading and embedding coding agent session transcripts.
           video:
@@ -191,6 +199,9 @@ pt:
           content_spec:
             description: Content specification rate limit settings
             placeholder: Content specification rate limit settings
+          expanded_advisement_spec:
+            description: Detailed guidelines and advice given to the AI Editor
+            placeholder: Detailed guidelines and advice given to the AI Editor
         smtp:
           address:
             description: SMTP server address

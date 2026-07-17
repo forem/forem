@@ -44,6 +44,17 @@ RSpec.describe "StoriesIndex" do
       expect(response).to redirect_to("http://example.com/")
     end
 
+    it "does not redirect an unfound subforem if it is a custom organization domain" do
+      ENV["REDIRECT_WWW_TO_ROOT"] = "true"
+      create(:organization, custom_domain: "mlh.example.com")
+      allow(Subforem).to receive(:cached_id_by_domain).and_return(nil)
+      allow(Subforem).to receive(:cached_root_domain).and_return("example.com")
+      
+      get "http://mlh.example.com"
+      expect(response).not_to redirect_to("http://example.com/")
+      ENV["REDIRECT_WWW_TO_ROOT"] = nil
+    end
+
     it "does not redirect found subforem to root if ENV var set" do
       ENV["REDIRECT_WWW_TO_ROOT"] = "true" # stubbing doesn't work properly here
       allow(Subforem).to receive(:cached_id_by_domain).and_return(1)
@@ -52,6 +63,69 @@ RSpec.describe "StoriesIndex" do
       expect(response).to have_http_status(:ok)
       expect(response).not_to redirect_to("http://example.com/")
       ENV["REDIRECT_WWW_TO_ROOT"] = nil
+    end
+
+    context "with REDIRECT_ALL_SUBFOREMS_TO_DEFAULT enabled" do
+      before do
+        stub_const("ENV", ENV.to_h.merge("REDIRECT_ALL_SUBFOREMS_TO_DEFAULT" => "true"))
+        allow(Subforem).to receive_messages(
+          cached_root_domain: "example.com",
+          cached_root_id: 1,
+          cached_default_domain: "default.example.com",
+          cached_default_id: 3
+        )
+      end
+
+      it "redirects a registered subforem to the default domain" do
+        allow(Subforem).to receive(:cached_id_by_domain).with("found.example.com").and_return(2)
+        get "http://found.example.com"
+        expect(response).to have_http_status(:moved_permanently)
+        expect(response).to redirect_to("http://default.example.com/")
+      end
+
+      it "redirects an unregistered subforem to the default domain" do
+        allow(Subforem).to receive(:cached_id_by_domain).with("not-found.example.com").and_return(nil)
+        get "http://not-found.example.com"
+        expect(response).to have_http_status(:moved_permanently)
+        expect(response).to redirect_to("http://default.example.com/")
+      end
+
+      it "does not redirect a custom organization domain" do
+        create(:organization, custom_domain: "mlh.forem.wtf")
+        allow(Subforem).to receive(:cached_id_by_domain).with("mlh.forem.wtf").and_return(nil)
+        get "http://mlh.forem.wtf"
+        expect(response).not_to redirect_to("http://default.example.com/")
+      end
+
+      it "does not redirect the default subforem domain itself" do
+        allow(Subforem).to receive(:cached_id_by_domain).with("default.example.com").and_return(3)
+        get "http://default.example.com"
+        expect(response).to have_http_status(:ok)
+        expect(response).not_to redirect_to("http://default.example.com/")
+      end
+    end
+
+    context "when General settings has a resized logo" do
+      before do
+        allow(Settings::General).to receive(:resized_logo).and_return("default.png")
+      end
+
+      it "renders the resized logo" do
+        get "/"
+        expect(response.body).to include("site-logo")
+        expect(response.body).to include("default.png")
+      end
+    end
+
+    context "when General settings does not have a resized logo" do
+      before do
+        allow(Settings::General).to receive(:resized_logo).and_return(nil)
+      end
+
+      it "renders the community name" do
+        get "/"
+        expect(response.body).to include("DEV(local)")
+      end
     end
 
     it "renders topbar styles if Settings::UserExperience.accent_background_color_hex is set" do
@@ -416,6 +490,13 @@ RSpec.describe "StoriesIndex" do
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("sidebar-left")
       end
+
+      it "does not render showcase/all posts tabs" do
+        get "/#{organization.slug}"
+        expect(response.body).not_to include("Organization Profile Navigation")
+        expect(response.body).not_to include("Showcase")
+        expect(response.body).not_to include("All Posts")
+      end
     end
 
     context "when organization has a readme page and org_readme flag is enabled" do
@@ -429,11 +510,29 @@ RSpec.describe "StoriesIndex" do
 
       after { FeatureFlag.disable(:org_readme) }
 
-      it "renders the readme show template" do
+      it "renders the readme show template with showcase tab active" do
         get "/#{organization.slug}"
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("<strong>Welcome to our org!</strong>")
         expect(response.body).not_to include("sidebar-left")
+        
+        # Tabs should be present
+        expect(response.body).to include("Organization Profile Navigation")
+        expect(response.body).to include("crayons-tabs__item crayons-tabs__item--current")
+        expect(response.body).to include("Showcase")
+        expect(response.body).to include("All Posts")
+      end
+
+      it "renders the classic feed template with all posts tab active when mode is all-posts" do
+        get "/#{organization.slug}", params: { mode: "all-posts" }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).not_to include("<strong>Welcome to our org!</strong>")
+        expect(response.body).to include("sidebar-left")
+
+        # Tabs should be present
+        expect(response.body).to include("Organization Profile Navigation")
+        expect(response.body).to include("Showcase")
+        expect(response.body).to include("All Posts")
       end
     end
 
@@ -450,6 +549,35 @@ RSpec.describe "StoriesIndex" do
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("sidebar-left")
       end
+
+      it "does not render showcase/all posts tabs" do
+        get "/#{organization.slug}"
+        expect(response.body).not_to include("Organization Profile Navigation")
+      end
+    end
+  end
+
+  describe "InstantClick stylesheet alignment" do
+    it "does not render the alignment script under normal navigation" do
+      get "/"
+      expect(response).to have_http_status(:ok)
+      expect(response.body).not_to include("expectedStyles")
+      # Expect outer shell link tags
+      expect(response.body).to include('id="main-minimal-stylesheet"')
+    end
+
+    it "renders the alignment script with correct asset paths under internal navigation" do
+      get "/", params: { i: "i" }
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("expectedStyles")
+      expected_minimal = ActionController::Base.helpers.stylesheet_path("minimal")
+      expected_views = ActionController::Base.helpers.stylesheet_path("views")
+      expected_crayons = ActionController::Base.helpers.stylesheet_path("crayons")
+      expect(response.body).to include(%("minimal": "#{expected_minimal}"))
+      expect(response.body).to include(%("views": "#{expected_views}"))
+      expect(response.body).to include(%("crayons": "#{expected_crayons}"))
+      # Internal navigation excludes the outer layout, so the outer shell links should not be rendered
+      expect(response.body).not_to include('id="main-minimal-stylesheet"')
     end
   end
 end

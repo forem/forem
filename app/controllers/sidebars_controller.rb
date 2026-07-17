@@ -4,10 +4,20 @@ class SidebarsController < ApplicationController
 
   def show
     get_latest_campaign_articles
-    get_active_discussions if user_signed_in?
+    if user_signed_in?
+      get_active_discussions
+      set_onboarding_checklist
+    end
+    get_upcoming_events
   end
 
   private
+
+  def get_upcoming_events
+    @upcoming_events = Rails.cache.fetch("upcoming_elevated_events", expires_in: 5.minutes) do
+      Event.published.elevated.includes(:page).where("end_time >= ?", Time.current).order(start_time: :asc).limit(5).to_a
+    end
+  end
 
   def get_latest_campaign_articles
     @campaign_articles_count = Campaign.current.count
@@ -39,6 +49,16 @@ class SidebarsController < ApplicationController
       .order(order)
       .limit(ACTIVE_DISCUSSION_LIMIT)
       .pluck(:path, :title, :comments_count, :created_at, :subforem_id)
+  end
+
+  def set_onboarding_checklist
+    return unless Settings::General.display_sidebar_onboarding_checklist
+    return if current_user.registered_at&.before?(28.days.ago)
+
+    checklist = current_user.onboarding_checklist
+    return unless checklist && !checklist.completed?
+
+    @onboarding_checklist = checklist
   end
 
   def cached_recent_pageview_article_ids

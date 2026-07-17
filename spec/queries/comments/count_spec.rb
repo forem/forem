@@ -52,6 +52,21 @@ RSpec.describe Comments::Count do
     expect(count).to eq(4)
   end
 
+  it "excludes childless soft-deleted comments" do
+    comment.update!(deleted: true)
+    article.reload
+    count = described_class.new(article).call
+    expect(count).to eq(1) # Only comment2 is displayed
+  end
+
+  it "includes soft-deleted parent comments with active replies" do
+    comment.update!(deleted: true)
+    create(:comment, commentable: article, parent: comment, score: 10)
+    article.reload
+    count = described_class.new(article).call
+    expect(count).to eq(3) # comment, active reply, and comment2 are displayed
+  end
+
   context "with recalculate option" do
     # displayed comments count = 4
     # comments count = 5
@@ -67,6 +82,14 @@ RSpec.describe Comments::Count do
       article.update_column(:displayed_comments_count, 3)
       cnt = described_class.call(article, recalculate: false)
       expect(cnt).to eq(3)
+    end
+
+    it "does not recalculate or write to database when displayed_comments_count is 0" do
+      article.update_column(:displayed_comments_count, 0)
+      allow(article).to receive(:update_column).and_call_original
+      cnt = described_class.call(article, recalculate: false)
+      expect(cnt).to eq(0)
+      expect(article).not_to have_received(:update_column)
     end
 
     it "recalculates if recalculate is passed", :aggregate_failures do

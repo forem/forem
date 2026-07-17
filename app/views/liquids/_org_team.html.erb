@@ -6,7 +6,7 @@
     <% users.each do |user| %>
       <div class="org-sidebar-widget-user-pic">
         <a href="/<%= user.username %>">
-          <img src="<%= user.profile_image_url_for(length: 90) %>" alt="<%= user.username %> profile image" loading="lazy" />
+          <img src="<%= user.profile_image_url_for(length: 90) %>" alt="<%= user.username %> profile image" loading="lazy" data-ignore-prefix="true" />
         </a>
       </div>
     <% end %>

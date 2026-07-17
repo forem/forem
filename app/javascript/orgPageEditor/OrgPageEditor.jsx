@@ -120,10 +120,15 @@ export const OrgPageEditor = ({ defaultValue, textAreaName, previewUrl }) => {
             </div>
           )}
           {!previewLoading && !previewError && (
-            <div
-              className="crayons-article__body text-styles p-4"
-              dangerouslySetInnerHTML={{ __html: previewHTML }}
-            />
+            <div>
+              <p className="fs-s color-base-60 px-4 pt-3 pb-0" style={{ fontStyle: 'italic' }}>
+                Preview may differ slightly from the published page.
+              </p>
+              <div
+                className="crayons-article__body text-styles p-4"
+                dangerouslySetInnerHTML={{ __html: previewHTML }}
+              />
+            </div>
           )}
         </div>
       ) : (

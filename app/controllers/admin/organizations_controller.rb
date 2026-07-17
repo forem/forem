@@ -28,6 +28,13 @@ module Admin
 
       Credit.public_send(update_action, org, amount)
       add_note(org)
+      Audit::Logger.log(:moderator, current_user, {
+                          "action" => params[:action],
+                          "controller" => params[:controller],
+                          "target_organization_id" => org.id,
+                          "credit_action" => params[:credit_action],
+                          "credits" => amount
+                        })
 
       flash[:notice] = I18n.t("admin.organizations_controller.credit_updated")
       redirect_to admin_organization_path(org)
@@ -46,6 +53,12 @@ module Admin
           reason: "misc_note",
           content: "Fully trusted status #{org.fully_trusted? ? 'enabled' : 'disabled'}",
         )
+        Audit::Logger.log(:moderator, current_user, {
+                            "action" => params[:action],
+                            "controller" => params[:controller],
+                            "target_organization_id" => org.id,
+                            "fully_trusted" => org.fully_trusted?
+                          })
       end
 
       status = org.fully_trusted? ? "enabled" : "disabled"
@@ -68,6 +81,13 @@ module Admin
           reason: "misc_note",
           content: "Baseline score changed from #{old_score} to #{new_score}",
         )
+        Audit::Logger.log(:moderator, current_user, {
+                            "action" => params[:action],
+                            "controller" => params[:controller],
+                            "target_organization_id" => org.id,
+                            "old_baseline_score" => old_score,
+                            "new_baseline_score" => org.baseline_score
+                          })
       end
 
       flash[:notice] = I18n.t("admin.organizations_controller.baseline_score_updated")
@@ -94,6 +114,12 @@ module Admin
           reason: "misc_note",
           content: "Verified status #{org.verified? ? 'enabled (manually)' : 'disabled'}",
         )
+        Audit::Logger.log(:moderator, current_user, {
+                            "action" => params[:action],
+                            "controller" => params[:controller],
+                            "target_organization_id" => org.id,
+                            "verified" => org.verified?
+                          })
       end
 
       status = org.verified? ? "enabled" : "disabled"
@@ -101,7 +127,7 @@ module Admin
       redirect_to admin_organization_path(org)
     end
 
-    ORG_FEATURES = %w[org_readme org_lead_forms org_dofollow_links].freeze
+    ORG_FEATURES = %w[org_readme org_lead_forms org_dofollow_links org_verification].freeze
 
     def update_org_feature
       org = Organization.find(params[:id])
@@ -127,6 +153,13 @@ module Admin
         reason: "misc_note",
         content: "Org feature '#{feature}' #{status}",
       )
+      Audit::Logger.log(:moderator, current_user, {
+                          "action" => params[:action],
+                          "controller" => params[:controller],
+                          "target_organization_id" => org.id,
+                          "feature" => feature,
+                          "enabled" => params[:enabled] == "true"
+                        })
 
       # Reprocess org pages when dofollow flag changes so link attributes are updated
       if feature == "org_dofollow_links"

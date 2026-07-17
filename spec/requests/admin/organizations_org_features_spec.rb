@@ -8,11 +8,13 @@ RSpec.describe "/admin/content_manager/organizations org features" do
     sign_in(admin)
     FeatureFlag.add(:org_readme)
     FeatureFlag.add(:org_lead_forms)
+    FeatureFlag.add(:org_verification)
   end
 
   after do
     FeatureFlag.disable(:org_readme)
     FeatureFlag.disable(:org_lead_forms)
+    FeatureFlag.disable(:org_verification)
   end
 
   describe "PATCH /admin/organizations/:id/update_org_feature" do
@@ -64,12 +66,52 @@ RSpec.describe "/admin/content_manager/organizations org features" do
       expect(note.content).to include("org_readme")
     end
 
+    it "enables org_verification for an organization" do
+      patch update_org_feature_admin_organization_path(organization),
+            params: { feature: "org_verification", enabled: "true" }
+
+      expect(FeatureFlag.enabled?(:org_verification, FeatureFlag::Actor[organization])).to be(true)
+      expect(response).to redirect_to(admin_organization_path(organization))
+      expect(flash[:notice]).to include("enabled")
+    end
+
+    it "disables org_verification for an organization" do
+      FeatureFlag.enable(:org_verification, FeatureFlag::Actor[organization])
+
+      patch update_org_feature_admin_organization_path(organization),
+            params: { feature: "org_verification", enabled: "false" }
+
+      expect(FeatureFlag.enabled?(:org_verification, FeatureFlag::Actor[organization])).to be(false)
+      expect(response).to redirect_to(admin_organization_path(organization))
+      expect(flash[:notice]).to include("disabled")
+    end
+
     it "rejects unknown feature names" do
       patch update_org_feature_admin_organization_path(organization),
             params: { feature: "org_evil_feature", enabled: "true" }
 
       expect(response).to redirect_to(admin_organization_path(organization))
       expect(flash[:error]).to be_present
+    end
+
+    context "with audit logging" do
+      before { Audit::Subscribe.listen :moderator }
+
+      after { Audit::Subscribe.forget :moderator }
+
+      it "creates an audit log record" do
+        expect do
+          patch update_org_feature_admin_organization_path(organization),
+                params: { feature: "org_readme", enabled: "true" }
+        end.to change(AuditLog, :count).by(1)
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
+        expect(log.user_id).to eq(admin.id)
+        expect(log.data["action"]).to eq("update_org_feature")
+        expect(log.data["target_organization_id"]).to eq(organization.id)
+        expect(log.data["feature"]).to eq("org_readme")
+      end
     end
   end
 end
