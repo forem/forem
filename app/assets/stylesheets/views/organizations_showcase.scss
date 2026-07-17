@@ -140,11 +140,19 @@ $exclude-embeds: ':not(.crayons-btn):not([class*="ltag"] *):not(.crayons-story *
     padding: var(--su-5);
     border: 1px solid var(--card-border);
     border-radius: var(--radius-lg, var(--radius));
-    background: var(--card-secondary-bg);
+    background: var(--ltag-col-background, var(--card-secondary-bg));
     line-height: 1.55;
 
     > p {
       margin-bottom: var(--su-3);
+    }
+
+    > p:first-child img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      border-radius: var(--radius);
     }
   }
 

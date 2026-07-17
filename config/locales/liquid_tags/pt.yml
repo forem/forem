@@ -144,6 +144,8 @@ pt:
     row_tag:
       no_args: "A tag row não aceita argumentos"
     col_tag:
+      invalid_background: "O plano de fundo deve ser um dos seguintes: default, subtle"
+      invalid_option: "Opção '%{option}' inválida para a tag col"
       invalid_span: "O span deve estar entre 1 e 4"
     org_posts_tag:
       invalid_slug: Slug da organização inválido
