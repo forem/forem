@@ -12,6 +12,8 @@ module Concepts
 
       # For Articles, only classify if they are published
       if record.is_a?(Article) && !record.published?
+        record.concept_memberships.destroy_all
+        record.trend_memberships.destroy_all if record.respond_to?(:trend_memberships)
         return
       end
 

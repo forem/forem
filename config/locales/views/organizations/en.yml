@@ -14,6 +14,31 @@ en:
         default_example: "## Meet the team\n{%% org_team %{slug} %%}\n\n## Latest posts\n{%% org_posts %{slug} %%}"
         save: Save page
         preview: Preview
+      pages:
+        heading: Custom Pages
+        new_page: Create new page
+        edit_page: Edit page
+        title: Title
+        slug: Slug suffix
+        description: Description
+        created: Page created successfully.
+        updated: Page updated successfully.
+        deleted: Page deleted successfully.
+        confirm_delete: Are you sure you want to delete this page?
+        showcase: Showcase
+        showcase_hint: This is the default Showcase landing page.
+        no_pages: No custom pages created yet. Click "Create new page" to get started.
+        edit: Edit
+        manage_pages: Manage Pages
+        description_help: Manage the pages of your organization, including the default Showcase page.
+        create_heading: Create a new page
+        edit_heading: Edit page
+        slug_help: Only lowercase letters, numbers, and hyphens (e.g. "about-us"). Accessible via the profile tab.
+        showcase_slug_help: This is the Showcase (default) page, so the slug suffix is fixed to "readme".
+        content_label: Page Content (Markdown)
+        description_placeholder: Short description for SEO and sharing...
+        cancel: Cancel
+        your_pages: Your Pages
       header_cta:
         heading: Header CTA Button
         description: Add a call-to-action button to your organization's page header. You can create a simple button or a dropdown with multiple links.
@@ -162,6 +187,8 @@ en:
       cover_image_alt: "%{org} cover image"
       settings_link: Organization Settings
       admin_link: Admin
+      showcase: Showcase
+      all_posts: All Posts
       confirm_invitation:
         title: Confirm Organization Invitation
         greeting: "Hi %{name}!"

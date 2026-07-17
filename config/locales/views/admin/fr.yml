@@ -596,6 +596,9 @@ fr:
           lookback_button: "Déclencher"
           similarity_threshold: "Seuil de similitude"
         form:
+          score: "Score du concept"
+          score_placeholder: "ex. 1.0 (optionnel)"
+          score_help: "Ajustement manuel du score/poids utilisé pour le classement."
           similarity_threshold: "Seuil de similitude"
           similarity_threshold_placeholder: "ex. 0.25 (optionnel)"
           similarity_threshold_help: "Optionnel. Nombre décimal entre 0,0 et 1,0. Si laissé vide, la valeur par défaut du système (0,28) est utilisée."

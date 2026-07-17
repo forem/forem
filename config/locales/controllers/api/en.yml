@@ -7,6 +7,7 @@ en:
         start_missing: Required 'start' parameter is missing
       articles_controller:
         must_be_json: article param must be a JSON object. You provided article as a %{type}
+        page_limit_exceeded: Page depth limited to 1000 without an API key
       follows_controller:
         followed:
           one: followed %{count} user

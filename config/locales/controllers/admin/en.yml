@@ -68,6 +68,8 @@ en:
       deleted: Billboard has been deleted!
       updated: Billboard has been updated!
       wrong: Something went wrong with deleting the Billboard.
+    emails:
+      customerio_cutover_notice: Email sending has moved to Customer.io. Records below are historical; compose new broadcasts and newsletters in the Customer.io workspace.
     emails_controller:
       created: Emails has been created!
       drafted: Email has been drafted!

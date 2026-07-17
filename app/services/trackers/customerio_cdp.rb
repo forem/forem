@@ -10,12 +10,15 @@ module Trackers
     # Customer.io CDP does not implement analytics-ruby's default /v1/import
     # path (404); its Segment-compatible batch endpoint is /v1/batch.
     BATCH_PATH = "/v1/batch".freeze
-    # Events that fire after the user row is destroyed — the only ones allowed
-    # to fall back to the payload's own email. Everything else must resolve a
-    # live row, so a straggler event for a just-deleted user is dropped rather
-    # than delivered via a stale address (which could resurrect state after a
-    # GDPR erasure).
+    # Events that fire after the user row is destroyed. Straggler events for
+    # deleted users are otherwise dropped (they could resurrect state after a
+    # GDPR erasure), so these are the only ones that deliver without a live
+    # row — possible because identity comes from the stable anonymous id and
+    # the payload's own mlh_user_id, both knowable post-destruction.
     DESTRUCTIVE_EVENTS = ["user_gdpr_deleted"].freeze
+    # Fallback event-name namespace when APP_NAME is unset (see
+    # #prefixed_event_name): "forem_user_updated".
+    DEFAULT_APP_NAME = "forem".freeze
 
     def enabled?
       # Resolve the setting via the default subforem (like mailers do): the admin
@@ -25,25 +28,50 @@ module Trackers
         Settings::General.customerio_cdp_enabled(subforem_id: Subforem.cached_default_id)
     end
 
-    # People are identified by email rather than DEV user id: ids are not synced
-    # to the Core consumer yet. Emails are resolved at send time so they are
-    # current; see DESTRUCTIVE_EVENTS for the deleted-row exception.
+    # Identity follows the Segment spec: every call carries a stable
+    # anonymous_id ("dev:<DEV user id>"), plus user_id set to the canonical
+    # MLH (Core) user id once the account is linked — sending both stitches
+    # the pre-link anonymous history onto the person downstream. Email is
+    # never an identity field; it travels in properties only.
     def track(event_name:, user_ids:, properties:, timestamp: nil)
-      emails = User.where(id: Array.wrap(user_ids)).pluck(:email)
-      emails = [properties["email"]] if emails.empty? && DESTRUCTIVE_EVENTS.include?(event_name)
-      emails.each do |email|
-        next if email.blank?
+      destructive = DESTRUCTIVE_EVENTS.include?(event_name)
+      ids = deliverable_ids(Array.wrap(user_ids), destructive)
+      # Send-time lookup so the link is current; for destructive events the
+      # identity row died with the user, so the payload's pre-destruction
+      # capture is the fallback.
+      linked_uids = Identity.where(provider: "mlh", user_id: ids).pluck(:user_id, :uid).to_h
 
-        client.track(
-          user_id: email,
-          event: event_name,
+      event = prefixed_event_name(event_name)
+
+      ids.each do |id|
+        attributes = {
+          anonymous_id: "dev:#{id}",
+          event: event,
           properties: properties,
-          timestamp: timestamp,
-        )
+          timestamp: timestamp
+        }
+        mlh_uid = linked_uids[id] || (properties["mlh_user_id"].presence if destructive)
+        attributes[:user_id] = mlh_uid if mlh_uid
+        client.track(attributes)
       end
     end
 
     private
+
+    # Namespace every CDP event with the deploy's APP_NAME (e.g. "dev_prod")
+    # so events from different environments/instances writing to the same
+    # Customer.io workspace stay distinct: "dev_prod_user_updated". When
+    # APP_NAME is unset the prefix falls back to "forem": "forem_user_updated".
+    def prefixed_event_name(event_name)
+      prefix = ApplicationConfig["APP_NAME"].presence || DEFAULT_APP_NAME
+      "#{prefix}_#{event_name}"
+    end
+
+    def deliverable_ids(ids, destructive)
+      return ids if destructive
+
+      User.where(id: ids).ids
+    end
 
     def client
       @client ||= Segment::Analytics.new(

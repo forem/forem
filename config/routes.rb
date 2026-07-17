@@ -30,6 +30,7 @@ Rails.application.routes.draw do
 
   get "/r/mobile", to: "deep_links#mobile"
   get "/.well-known/apple-app-site-association", to: "deep_links#aasa"
+  get "/a/:code", to: "articles#short_link", as: :article_short, constraints: { code: /[0-9a-pA-P]+/ }
 
   constraints OrgCustomDomainConstraint.new do
     get "/", to: "stories#custom_domain_index"
@@ -38,14 +39,16 @@ Rails.application.routes.draw do
     get "/:org_slug/:slug",
         to: "stories#custom_domain_show",
         constraints: {
-          org_slug: %r{(?!(?:api|assets|packs|rails|r|ahoy|enter|users)\z)[^/.]+},
+          org_slug: %r{(?!(?:api|assets|packs|rails|r|ahoy|enter|users|p)\z)[^/.]+},
           slug: %r{[^/.]+}
         }
     get "/:slug",
         to: "stories#custom_domain_show",
         constraints: {
-          slug: %r{(?!(?:api|assets|packs|rails|r|ahoy|enter|users)\z)[^/.]+}
+          slug: %r{(?!(?:api|assets|packs|rails|r|ahoy|enter|users|p)\z)[^/.]+}
         }
+    get "/p/:page_suffix", to: "stories#custom_domain_index", as: "custom_domain_organization_custom_page",
+                           constraints: { format: /html/ }
   end
 
   # [@forem/delightful] - all routes are nested under this optional scope to
@@ -123,7 +126,14 @@ Rails.application.routes.draw do
         # shared config/routes/api.rb) because Api::V0::Admin::* controllers do
         # not implement these actions; placing the routes here scopes them to
         # callers using the application/vnd.forem.api-v1+json Accept header.
-        resources :concepts, only: %i[index show]
+        resources :concepts, only: %i[index show update] do
+          get :articles, on: :member
+          get :search, on: :collection
+        end
+
+        resources :articles, only: [] do
+          get :semantic_search, on: :collection
+        end
 
         namespace :admin do
           resources :users, only: %i[index show update] do
@@ -428,6 +438,13 @@ Rails.application.routes.draw do
     post "/:slug/settings/verify", to: "organization_settings#request_verification",
                                    as: :organization_request_verification
     post "/:slug/settings/preview", to: "organization_settings#preview", as: :organization_settings_preview
+    get "/:slug/settings/pages", to: "organization_pages#index", as: :organization_pages
+    get "/:slug/settings/pages/new", to: "organization_pages#new", as: :new_organization_page
+    post "/:slug/settings/pages", to: "organization_pages#create"
+    get "/:slug/settings/pages/:id/edit", to: "organization_pages#edit", as: :edit_organization_page
+    patch "/:slug/settings/pages/:id", to: "organization_pages#update", as: :update_organization_page
+    delete "/:slug/settings/pages/:id", to: "organization_pages#destroy", as: :organization_page
+    post "/:slug/settings/pages/preview", to: "organization_pages#preview", as: :organization_pages_preview
     get "/:slug/settings/lead_forms", to: "organization_lead_forms#index", as: :organization_lead_forms
     post "/:slug/settings/lead_forms", to: "organization_lead_forms#create"
     get "/:slug/settings/lead_forms/:id/edit", to: "organization_lead_forms#edit", as: :edit_organization_lead_form
@@ -580,6 +597,8 @@ Rails.application.routes.draw do
     get "/:username/:slug", to: "stories#show"
     get "/:sitemap", to: "sitemaps#show",
                      constraints: { format: /xml/, sitemap: /sitemap-.+/ }
+    get "/:username/p/:page_suffix", to: "stories#index", as: "organization_custom_page",
+                                     constraints: { format: /html/ }
     get "/:username", to: "stories#index", as: "user_profile", # No txt format
                       constraints: { format: /html/ }
     get "/:slug", to: "pages#show",

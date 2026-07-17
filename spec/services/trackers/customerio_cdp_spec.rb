@@ -91,25 +91,61 @@ RSpec.describe Trackers::CustomerioCdp do
       )
     end
 
-    # user_gdpr_deleted fires after the row is destroyed; resolving the email
-    # by DB lookup alone would silently drop exactly the event whose point is
-    # that the user no longer exists.
-    it "falls back to the payload email when the user row is already gone" do
+    # Identity follows the Segment spec: a stable dev-scoped anonymous_id on
+    # every call; email is never an identity field (it travels in properties).
+    it "identifies users by a stable dev-scoped anonymous id, never email" do
+      adapter.track(event_name: "user_updated", user_ids: [user.id], properties: { "id" => user.id })
+
+      expect(client).to have_received(:track).with(
+        anonymous_id: "dev:#{user.id}", event: "forem_user_updated",
+        properties: { "id" => user.id }, timestamp: nil
+      )
+    end
+
+    it "adds the canonical MLH user id as user_id once the account is linked" do
+      # The identity factory reads OmniAuth.config.mock_auth for auth_data_dump.
+      omniauth_mock_mlh_payload
+      create(:identity, user: user, provider: "mlh", uid: "01JZFAKEULID0000000000USER")
+
+      adapter.track(event_name: "user_updated", user_ids: [user.id], properties: { "id" => user.id })
+
+      expect(client).to have_received(:track).with(
+        hash_including(anonymous_id: "dev:#{user.id}", user_id: "01JZFAKEULID0000000000USER"),
+      )
+    end
+
+    # user_gdpr_deleted fires after the row is destroyed; the stable anonymous
+    # id keeps it deliverable without any DB row, and the payload's
+    # mlh_user_id (captured before destruction) preserves the person link.
+    it "delivers destructive events for a destroyed user via the anonymous id" do
       deleted_id = user.id
-      payload = { "id" => deleted_id, "email" => user.email }
+      payload = { "id" => deleted_id, "email" => user.email, "mlh_user_id" => "01JZFAKEULID0000000000USER" }
       user.destroy!
 
       adapter.track(event_name: "user_gdpr_deleted", user_ids: [deleted_id], properties: payload)
 
       expect(client).to have_received(:track).with(
-        user_id: payload["email"], event: "user_gdpr_deleted", properties: payload, timestamp: nil,
+        anonymous_id: "dev:#{deleted_id}", user_id: "01JZFAKEULID0000000000USER",
+        event: "forem_user_gdpr_deleted", properties: payload, timestamp: nil
       )
     end
 
-    # Only destructive events may use the payload email: a straggler
-    # user_updated for a just-deleted user must NOT deliver via a stale
-    # payload address (it could resurrect state after a GDPR erasure).
-    it "does not fall back for non-destructive events when the user row is gone" do
+    it "delivers destructive events anonymously when the payload has no mlh_user_id" do
+      deleted_id = user.id
+      user.destroy!
+
+      adapter.track(event_name: "user_gdpr_deleted", user_ids: [deleted_id], properties: { "id" => deleted_id })
+
+      expect(client).to have_received(:track).with(
+        anonymous_id: "dev:#{deleted_id}", event: "forem_user_gdpr_deleted",
+        properties: { "id" => deleted_id }, timestamp: nil
+      )
+    end
+
+    # A straggler user_updated for a just-deleted user must NOT deliver — it
+    # could resurrect state after a GDPR erasure. Only destructive events may
+    # deliver without a live row.
+    it "drops non-destructive events when the user row is gone" do
       deleted_id = user.id
       payload = { "id" => deleted_id, "email" => user.email }
       user.destroy!
@@ -119,31 +155,13 @@ RSpec.describe Trackers::CustomerioCdp do
       expect(client).not_to have_received(:track)
     end
 
-    it "skips entirely when the user is gone and the payload has no email" do
-      deleted_id = user.id
-      user.destroy!
-
-      adapter.track(event_name: "user_gdpr_deleted", user_ids: [deleted_id], properties: { "id" => deleted_id })
-
-      expect(client).not_to have_received(:track)
-    end
-
-    # DEV ids are not synced to Core yet, so people are identified by email.
-    it "identifies users by their current email, not their DEV id" do
-      adapter.track(event_name: "user_updated", user_ids: [user.id], properties: { "id" => user.id })
-
-      expect(client).to have_received(:track).with(
-        user_id: user.email, event: "user_updated", properties: { "id" => user.id }, timestamp: nil,
-      )
-    end
-
     it "calls client.track once per user" do
       other_user = create(:user)
       adapter.track(event_name: "article_created", user_ids: [user.id, other_user.id],
                     properties: { "title" => "t" })
 
-      expect(client).to have_received(:track).with(hash_including(user_id: user.email))
-      expect(client).to have_received(:track).with(hash_including(user_id: other_user.email))
+      expect(client).to have_received(:track).with(hash_including(anonymous_id: "dev:#{user.id}"))
+      expect(client).to have_received(:track).with(hash_including(anonymous_id: "dev:#{other_user.id}"))
     end
 
     it "passes timestamp through" do
@@ -164,6 +182,46 @@ RSpec.describe Trackers::CustomerioCdp do
       adapter.track(event_name: "y", user_ids: [user.id], properties: {})
 
       expect(Segment::Analytics).to have_received(:new).once
+    end
+
+    # Events from different environments/instances share one Customer.io
+    # workspace, so APP_NAME namespaces them: "dev_prod_user_updated".
+    describe "APP_NAME event prefixing" do
+      it "prefixes the event name with APP_NAME when set" do
+        allow(ApplicationConfig).to receive(:[]).with("APP_NAME").and_return("dev_prod")
+
+        adapter.track(event_name: "user_updated", user_ids: [user.id], properties: { "id" => user.id })
+
+        expect(client).to have_received(:track).with(hash_including(event: "dev_prod_user_updated"))
+      end
+
+      it "falls back to the 'forem' prefix when APP_NAME is unset" do
+        allow(ApplicationConfig).to receive(:[]).with("APP_NAME").and_return(nil)
+
+        adapter.track(event_name: "user_updated", user_ids: [user.id], properties: { "id" => user.id })
+
+        expect(client).to have_received(:track).with(hash_including(event: "forem_user_updated"))
+      end
+
+      it "falls back to the 'forem' prefix when APP_NAME is blank" do
+        allow(ApplicationConfig).to receive(:[]).with("APP_NAME").and_return("")
+
+        adapter.track(event_name: "user_updated", user_ids: [user.id], properties: { "id" => user.id })
+
+        expect(client).to have_received(:track).with(hash_including(event: "forem_user_updated"))
+      end
+
+      # DESTRUCTIVE_EVENTS matches on the raw event name (before prefixing), so
+      # a destroyed user's event still delivers — just under the namespaced name.
+      it "prefixes destructive events while still delivering them" do
+        allow(ApplicationConfig).to receive(:[]).with("APP_NAME").and_return("dev_prod")
+        deleted_id = user.id
+        user.destroy!
+
+        adapter.track(event_name: "user_gdpr_deleted", user_ids: [deleted_id], properties: { "id" => deleted_id })
+
+        expect(client).to have_received(:track).with(hash_including(event: "dev_prod_user_gdpr_deleted"))
+      end
     end
   end
 
