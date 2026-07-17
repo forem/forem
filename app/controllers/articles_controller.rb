@@ -1,4 +1,10 @@
 class ArticlesController < ApplicationController
+  ALLOWED_VIDEO_PROVIDERS = Regexp.union(
+    /\Ahttps?:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)/,
+    /\Ahttps?:\/\/player\.mux\.com\//,
+    /\Ahttps?:\/\/(www\.)?twitch\.tv\/videos\//
+  ).freeze
+
   include ApplicationHelper
 
   # NOTE: It seems quite odd to not authenticate the user for the :new action.
@@ -380,19 +386,11 @@ class ArticlesController < ApplicationController
                      end
 
     # Allow video_source_url if it's a valid YouTube, Mux, or Twitch URL
-    # Define validation patterns
-    youtube_pattern = /\Ahttps?:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)/
-    mux_pattern = /\Ahttps?:\/\/player\.mux\.com\//
-    twitch_pattern = /\Ahttps?:\/\/(www\.)?twitch\.tv\/videos\//
-
     # Logic: Explicitly allow video_source_url if it's being cleared (blank?)
     # OR if it matches one of the approved provider patterns.
     video_url = params.dig("article", "video_source_url")
 
-    if video_url.blank? ||
-       video_url.match?(youtube_pattern) ||
-       video_url.match?(mux_pattern) ||
-       video_url.match?(twitch_pattern)
+    if video_url.blank? || video_url.match?(ALLOWED_VIDEO_PROVIDERS)
       allowed_params << :video_source_url
     end
 
