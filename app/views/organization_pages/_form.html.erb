@@ -1,0 +1,142 @@
+<style>
+  #org-page-editor-root .crayons-article-form__content {
+    border: 1px solid var(--base-20);
+    border-radius: var(--radius);
+    min-height: 480px;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  #org-page-editor-root .crayons-article-form__header {
+    border-bottom: 1px solid var(--base-20);
+    padding: var(--su-1) var(--su-2);
+    background: var(--card-bg);
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+  #org-page-editor-root .crayons-article-form__header--fixed {
+    z-index: 100;
+    border-radius: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  #org-page-editor-root .crayons-article-form__header--placeholder {
+    height: 44px;
+  }
+  #org-page-editor-root .crayons-tabs {
+    margin-left: 0;
+  }
+  #org-page-editor-root .crayons-tabs__list {
+    width: auto;
+  }
+  #org-page-editor-root .crayons-tabs__list li {
+    width: auto;
+  }
+  #org-page-editor-root .crayons-tabs__item {
+    width: auto;
+    white-space: nowrap;
+  }
+  #org-page-editor-root .crayons-article-form__body {
+    flex: 1;
+  }
+  #org-page-editor-root #org_page_markdown {
+    min-height: 400px;
+  }
+  #org-page-editor-root .crayons-article__body .crayons-textfield {
+    min-height: 0;
+    font-size: var(--fs-base);
+  }
+  #org-page-editor-root .ltag-quote {
+    min-width: 0;
+  }
+</style>
+
+<%= form_for @page, url: url, method: method, html: { class: "grid gap-6" } do |f| %>
+  <% if @page.errors.any? %>
+    <div class="crayons-notice crayons-notice--danger">
+      <% @page.errors.full_messages.each do |msg| %>
+        <p><%= msg %></p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="crayons-card crayons-card--content-rows">
+    <h2><%= is_new ? "Create a new page" : "Edit page" %></h2>
+
+    <div class="crayons-field">
+      <%= f.label :title, class: "crayons-field__label" %>
+      <%= f.text_field :title, class: "crayons-textfield", required: true, placeholder: "e.g. About Us" %>
+    </div>
+
+    <% if @page.slug.blank? || !@page.slug.end_with?("/readme") %>
+      <div class="crayons-field">
+        <%= label_tag "page[slug_suffix]", "Slug suffix", class: "crayons-field__label" %>
+        <div class="flex items-center">
+          <span class="fs-base color-base-60 mr-2"><%= request.host %>/<%= @organization.slug %>/p/</span>
+          <%= text_field_tag "page[slug_suffix]", @page.slug&.sub(%r{\A#{@organization.slug}/}, ""), class: "crayons-textfield", required: true, pattern: "[a-z0-9\\-]+", placeholder: "e.g. about" %>
+        </div>
+        <p class="crayons-field__description">Only lowercase letters, numbers, and hyphens (e.g. "about-us"). Accessible via the profile tab.</p>
+      </div>
+    <% else %>
+      <div class="crayons-field">
+        <label class="crayons-field__label">Slug suffix</label>
+        <div class="flex items-center">
+          <span class="fs-base color-base-60 mr-2"><%= request.host %>/<%= @organization.slug %>/</span>
+          <input type="text" class="crayons-textfield" value="readme" disabled />
+        </div>
+        <p class="crayons-field__description">This is the Showcase (default) page, so the slug suffix is fixed to "readme".</p>
+      </div>
+    <% end %>
+
+    <div class="crayons-field">
+      <%= f.label :description, class: "crayons-field__label" %>
+      <%= f.text_field :description, class: "crayons-textfield", placeholder: "Short description for SEO and sharing..." %>
+    </div>
+
+    <div class="crayons-field">
+      <%= f.label :body_markdown, "Page Content (Markdown)", class: "crayons-field__label" %>
+
+      <% if @page.slug.blank? || @page.slug.end_with?("/readme") %>
+        <div class="crayons-notice crayons-notice--info mb-4">
+          <p class="fw-medium mb-1"><%= t("views.organization_settings.page.default_notice") %></p>
+          <p class="fs-s color-base-70 mb-2"><%= t("views.organization_settings.page.default_explanation") %></p>
+          <details>
+            <summary class="cursor-pointer fw-medium fs-s crayons-link"><%= t("views.organization_settings.page.default_example_toggle") %></summary>
+            <pre class="crayons-card crayons-card--secondary p-3 mt-2 ff-monospace fs-s" style="white-space: pre-wrap;"><%= t("views.organization_settings.page.default_example", slug: @organization.slug) %></pre>
+          </details>
+        </div>
+      <% end %>
+
+      <div id="org-page-editor-root"
+           data-default-value="<%= @page.body_markdown %>"
+           data-textarea-name="page[body_markdown]"
+           data-preview-url="<%= organization_pages_preview_path(@organization.slug) %>">
+        <%# Fallback layout mimicking the JS component to prevent FOUC %>
+        <div class="crayons-article-form__content">
+          <div class="crayons-article-form__header">
+            <nav class="crayons-article-form__tabs crayons-tabs ml-auto" aria-label="View post modes">
+              <ul class="crayons-tabs__list">
+                <li>
+                  <button data-text="Edit" class="crayons-tabs__item crayons-tabs__item--current" type="button" aria-current="page">Edit</button>
+                </li>
+                <li>
+                  <button data-text="Preview" class="crayons-tabs__item" type="button">Preview</button>
+                </li>
+              </ul>
+            </nav>
+          </div>
+          <div class="crayons-article-form__body drop-area text-padding">
+            <div class="crayons-article-form__cover" role="presentation"></div>
+            <div class="crayons-article-form__title"></div>
+            <%= f.text_area :body_markdown, id: "org_page_markdown", class: "crayons-textfield crayons-textfield--ghost crayons-article-form__body__field ff-monospace fs-l h-100", style: "min-height: 400px;", placeholder: t("views.organization_settings.page.readme_placeholder") %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex gap-2 mt-4">
+      <button type="submit" class="crayons-btn"><%= t("views.organization_settings.page.save") %></button>
+      <%= link_to "Cancel", organization_pages_path(@organization.slug), class: "crayons-btn crayons-btn--secondary" %>
+    </div>
+  </div>
+<% end %>
+
+<%= javascript_include_tag "orgPageEditor", defer: true %>

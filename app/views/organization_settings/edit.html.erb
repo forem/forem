@@ -76,59 +76,9 @@
     min-width: min(100%, 200px);
   }
 
-  #org-page-editor-root .crayons-article-form__content {
-    border: 1px solid var(--base-20);
-    border-radius: var(--radius);
-    min-height: 480px;
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-  }
-  #org-page-editor-root .crayons-article-form__header {
-    border-bottom: 1px solid var(--base-20);
-    padding: var(--su-1) var(--su-2);
-    background: var(--card-bg);
-    border-radius: var(--radius) var(--radius) 0 0;
-  }
-  #org-page-editor-root .crayons-article-form__header--fixed {
-    z-index: 100;
-    border-radius: 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  #org-page-editor-root .crayons-article-form__header--placeholder {
-    height: 44px;
-  }
-  #org-page-editor-root .crayons-tabs {
-    margin-left: 0;
-  }
-  #org-page-editor-root .crayons-tabs__list {
-    width: auto;
-  }
-  #org-page-editor-root .crayons-tabs__list li {
-    width: auto;
-  }
-  #org-page-editor-root .crayons-tabs__item {
-    width: auto;
-    white-space: nowrap;
-  }
-  #org-page-editor-root .crayons-article-form__body {
-    flex: 1;
-  }
-  #org-page-editor-root #org_page_markdown {
-    min-height: 400px;
-  }
-  /* Reset lead form inputs inside the preview so they don't inherit the editor textarea sizing */
-  #org-page-editor-root .crayons-article__body .crayons-textfield {
-    min-height: 0;
-    font-size: var(--fs-base);
-  }
-  /* Give quote cards room to breathe in the narrow preview context */
-  #org-page-editor-root .ltag-quote {
-    min-width: 0;
-  }
-  #section-page,
   #section-profile,
   #section-social,
+  #section-pages-list,
   #section-header-cta,
   #section-sidebar-cta,
   #section-members,
@@ -171,11 +121,11 @@
     <%# ── Sidebar Navigation ── %>
     <aside class="org-settings-sidebar">
       <nav id="org-settings-nav">
-        <% if FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization]) %>
-          <a href="#section-page"><%= t("views.organization_settings.page.heading") %></a>
-        <% end %>
         <a href="#section-profile"><%= t("views.settings.org.admin.details") %></a>
         <a href="#section-social"><%= t("views.organization_settings.social_links.heading") %></a>
+        <% if FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization]) %>
+          <a href="#section-pages-list"><%= t("views.organization_settings.pages.heading") %></a>
+        <% end %>
         <a href="#section-header-cta"><%= t("views.organization_settings.header_cta.heading") %></a>
         <a href="#section-sidebar-cta"><%= t("views.settings.org.admin.cta") %></a>
         <a href="#section-members"><%= t("views.settings.org.admin.members") %></a>
@@ -202,67 +152,7 @@
     <div class="grid gap-6">
 
       <%= form_for @organization, url: organization_settings_path(@organization.slug), method: :patch, html: { id: "org-settings-form", class: "grid gap-6", multipart: true } do |f| %>
-      <%# ── Page: Cover image + README editor ── %>
-      <% if FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization]) %>
-        <div id="section-page" class="crayons-card crayons-card--content-rows">
-          <h2><%= t("views.organization_settings.page.heading") %></h2>
 
-          <div class="crayons-field">
-            <%= f.label :cover_image, t("views.organization_settings.page.cover_image"), class: "crayons-field__label" %>
-            <% if @organization.cover_image_url.present? %>
-              <div class="mb-2">
-                <img src="<%= @organization.cover_image_url %>" alt="<%= t("views.organizations.cover_image_alt", org: @organization.name) %>" style="max-width: 100%; max-height: 150px; object-fit: cover;" class="radius-default" />
-              </div>
-            <% end %>
-            <%= f.file_field :cover_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
-            <p class="crayons-field__description"><%= t("views.organization_settings.page.cover_image_hint") %></p>
-          </div>
-
-          <div class="crayons-field">
-            <label for="org_page_markdown" class="crayons-field__label"><%= t("views.organization_settings.page.readme") %></label>
-
-            <% page_markdown = @organization.main_page&.body_markdown %>
-            <% if page_markdown.blank? %>
-              <div class="crayons-notice crayons-notice--info mb-4">
-                <p class="fw-medium mb-1"><%= t("views.organization_settings.page.default_notice") %></p>
-                <p class="fs-s color-base-70 mb-2"><%= t("views.organization_settings.page.default_explanation") %></p>
-                <details>
-                  <summary class="cursor-pointer fw-medium fs-s crayons-link"><%= t("views.organization_settings.page.default_example_toggle") %></summary>
-                  <pre class="crayons-card crayons-card--secondary p-3 mt-2 ff-monospace fs-s" style="white-space: pre-wrap;"><%= t("views.organization_settings.page.default_example", slug: @organization.slug) %></pre>
-                </details>
-              </div>
-            <% end %>
-
-            <div id="org-page-editor-root"
-                 data-default-value="<%= page_markdown %>"
-                 data-textarea-name="organization[page_markdown]"
-                 data-preview-url="<%= organization_settings_preview_path(@organization.slug) %>">
-              <%# Fallback layout mimicking the JS component to prevent FOUC %>
-              <div class="crayons-article-form__content">
-                <div class="crayons-article-form__header">
-                  <nav class="crayons-article-form__tabs crayons-tabs ml-auto" aria-label="View post modes">
-                    <ul class="crayons-tabs__list">
-                      <li>
-                        <button data-text="Edit" class="crayons-tabs__item crayons-tabs__item--current" type="button" aria-current="page">Edit</button>
-                      </li>
-                      <li>
-                        <button data-text="Preview" class="crayons-tabs__item" type="button">Preview</button>
-                      </li>
-                    </ul>
-                  </nav>
-                </div>
-                <div class="crayons-article-form__body drop-area text-padding">
-                  <textarea name="organization[page_markdown]"
-                            id="org_page_markdown"
-                            rows="20"
-                            class="crayons-textfield crayons-textfield--ghost crayons-article-form__body__field ff-monospace fs-l h-100"
-                            placeholder="<%= t("views.organization_settings.page.readme_placeholder") %>"><%= page_markdown %></textarea>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      <% end %>
 
       <%# ── Profile details ── %>
       <div id="section-profile" class="crayons-card crayons-card--content-rows">
@@ -289,6 +179,19 @@
               <%= f.file_field :profile_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
             </div>
           </div>
+
+          <% if FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization]) %>
+            <div class="crayons-field">
+              <%= f.label :cover_image, t("views.organization_settings.page.cover_image"), class: "crayons-field__label" %>
+              <% if @organization.cover_image_url.present? %>
+                <div class="mb-2">
+                  <img src="<%= @organization.cover_image_url %>" alt="<%= t("views.organizations.cover_image_alt", org: @organization.name) %>" style="max-width: 100%; max-height: 150px; object-fit: cover;" class="radius-default" />
+                </div>
+              <% end %>
+              <%= f.file_field :cover_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
+              <p class="crayons-field__description"><%= t("views.organization_settings.page.cover_image_hint") %></p>
+            </div>
+          <% end %>
 
           <div class="crayons-field">
             <%= f.label :url, "Website url", class: "crayons-field__label" %>
@@ -386,6 +289,50 @@
           </div>
 
       </div>
+
+      <%# ── Organization Pages List ── %>
+      <% if FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization]) %>
+        <div id="section-pages-list" class="crayons-card crayons-card--content-rows">
+          <header class="flex items-center justify-between flex-wrap gap-2">
+            <div>
+              <h2 class="mb-2"><%= t("views.organization_settings.pages.heading") %></h2>
+              <p class="color-base-70">Manage the pages of your organization, including the default Showcase page.</p>
+            </div>
+            <div class="flex gap-2">
+              <%= link_to t("views.organization_settings.pages.new_page"), new_organization_page_path(@organization.slug), class: "crayons-btn crayons-btn--secondary crayons-btn--s" %>
+              <%= link_to "Manage Pages", organization_pages_path(@organization.slug), class: "crayons-btn crayons-btn--secondary crayons-btn--s" %>
+            </div>
+          </header>
+
+          <div class="grid gap-3 mt-4">
+            <% if @organization.pages.any? %>
+              <% @organization.pages.order(:created_at).each do |page| %>
+                <% 
+                  is_showcase = page.slug.end_with?("/readme")
+                  suffix = page.slug.split("/").last
+                %>
+                <div class="crayons-card crayons-card--secondary p-3 flex items-center justify-between gap-3">
+                  <div class="flex items-center gap-2">
+                    <span class="fw-medium color-base-90"><%= page.title %></span>
+                    <%
+                      is_custom_domain = request.env["forem.custom_domain_org"].present?
+                      page_url = is_showcase ? (is_custom_domain ? "/" : "/#{@organization.slug}") : (is_custom_domain ? "/p/#{suffix}" : "/#{@organization.slug}/p/#{suffix}")
+                    %>
+                    <% if is_showcase %>
+                      <%= link_to "Showcase", page_url, target: "_blank", class: "crayons-tag crayons-tag--monochrome", style: "background: var(--accent-brand-a10); color: var(--accent-brand); text-decoration: none;" %>
+                    <% else %>
+                      <%= link_to "/#{suffix}", page_url, target: "_blank", class: "crayons-tag crayons-tag--monochrome", style: "font-family: var(--ff-monospace); text-decoration: none;" %>
+                    <% end %>
+                  </div>
+                  <%= link_to "Edit", edit_organization_page_path(@organization.slug, page), class: "crayons-link fw-medium fs-s" %>
+                </div>
+              <% end %>
+            <% else %>
+              <p class="color-base-60 fs-s mb-0">No custom pages created yet. Click "Create new page" to get started.</p>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
 
       <%# ── Header CTA Button ── %>
       <div id="section-header-cta" class="crayons-card crayons-card--content-rows">
@@ -947,4 +894,3 @@
 </script>
 
 <div id="snack-zone"></div>
-<%= javascript_include_tag "orgPageEditor", defer: true %>
