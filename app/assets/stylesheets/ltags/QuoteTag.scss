@@ -82,9 +82,6 @@
   }
 
   .ltag-quote__body {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--su-2);
     margin: 0;
     padding: 0;
     border: 0;
@@ -92,23 +89,10 @@
     color: var(--card-color);
   }
 
-  .ltag-quote__body .ltag-quote__mark {
-    flex: 0 0 auto;
-    color: var(--card-color-tertiary);
-    font-family: Georgia, serif;
-    font-size: 2.25rem;
-    line-height: 0.8;
-    user-select: none;
-  }
-
-  .ltag-quote__body .ltag-quote__mark--end {
-    align-self: flex-end;
-  }
-
-  .ltag-quote__text {
+  .ltag-quote__body .ltag-quote__text {
     min-width: 0;
-    flex: 1 1 auto;
     font-size: var(--fs-l);
+    font-style: italic;
     line-height: 1.55;
 
     > br {

@@ -12,13 +12,11 @@ RSpec.describe "Quote liquid tag", type: :liquid_tag do
   describe "basic rendering" do
     it "renders a quote with author" do
       result = parse('{% quote author="Jane Doe" %}Great platform!{% endquote %}').render
-      fragment = Nokogiri::HTML.fragment(result)
 
       expect(result).to include('class="ltag-quote"')
       expect(result).to include("ltag-quote__body")
       expect(result).to include("Great platform!")
       expect(result).to include("Jane Doe")
-      expect(fragment.css(".ltag-quote__mark").map(&:text)).to eq(%w[“ ”])
     end
 
     it "renders author with role" do
