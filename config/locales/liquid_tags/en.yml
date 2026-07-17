@@ -173,6 +173,9 @@ en:
       missing_content: "Slide tag requires at least one of: image, video, or link"
     slides_tag:
       invalid_mode: "Slides mode must be 'default' or 'carousel'"
+      gallery_label: Media gallery
+      previous: Previous slide
+      next: Next slide
     org_lead_form_tag:
       not_found: Lead form not found
       inactive: This lead form is no longer active
