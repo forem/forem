@@ -134,12 +134,12 @@
     color: var(--card-bg);
   }
 
-  &:disabled {
+  &[aria-disabled='true'] {
     cursor: default;
     opacity: 0.35;
   }
 
-  &:disabled:hover {
+  &[aria-disabled='true']:hover {
     background: var(--card-bg);
     color: var(--card-color);
   }

@@ -55,9 +55,9 @@ RSpec.describe "Slides and Slide liquid tags", type: :liquid_tag do
       next_button = fragment.at_css(".ltag-slides__nav--next")
 
       expect(previous_button.name).to eq("button")
-      expect(previous_button["disabled"]).not_to be_nil
+      expect(previous_button["aria-disabled"]).to eq("true")
       expect(next_button.name).to eq("button")
-      expect(next_button["disabled"]).not_to be_nil
+      expect(next_button["aria-disabled"]).to eq("true")
     end
 
     it "renders a progress rail without index dots or inline scripting" do

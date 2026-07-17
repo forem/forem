@@ -10,6 +10,8 @@ function initializeCarousel(container) {
   const progressThumb = container.querySelector(
     '.ltag-slides__progress-thumb',
   );
+  let requestedScrollPosition = null;
+  let requestedScrollReset;
 
   if (
     !track ||
@@ -20,6 +22,12 @@ function initializeCarousel(container) {
   ) {
     return;
   }
+
+  // Existing pages may contain carousel HTML rendered before controls used
+  // aria-disabled. Remove the native attribute so initialization can preserve
+  // focus at either endpoint.
+  previousButton.disabled = false;
+  nextButton.disabled = false;
 
   container.dataset.slidesInitialized = 'true';
   slides.forEach((slide, index) => {
@@ -36,8 +44,11 @@ function initializeCarousel(container) {
       : 1;
     const progress = maximumScroll ? scrollPosition / maximumScroll : 0;
 
-    previousButton.disabled = scrollPosition <= 1;
-    nextButton.disabled = scrollPosition >= maximumScroll - 1;
+    previousButton.setAttribute('aria-disabled', scrollPosition <= 1);
+    nextButton.setAttribute(
+      'aria-disabled',
+      scrollPosition >= maximumScroll - 1,
+    );
     progressThumb.style.width = `${visibleRatio * 100}%`;
     progressThumb.style.left = `${progress * (1 - visibleRatio) * 100}%`;
   };
@@ -49,17 +60,38 @@ function initializeCarousel(container) {
   };
 
   const scrollOneCard = (direction) => {
+    const maximumScroll = Math.max(track.scrollWidth - track.clientWidth, 0);
+    const startingPosition =
+      requestedScrollPosition ??
+      Math.min(Math.max(track.scrollLeft, 0), maximumScroll);
+    requestedScrollPosition = Math.min(
+      Math.max(startingPosition + direction * cardStep(), 0),
+      maximumScroll,
+    );
     const reduceMotion = window.matchMedia?.(
       '(prefers-reduced-motion: reduce)',
     ).matches;
     track.scrollTo({
-      left: track.scrollLeft + direction * cardStep(),
+      left: requestedScrollPosition,
       behavior: reduceMotion ? 'auto' : 'smooth',
     });
+
+    window.clearTimeout(requestedScrollReset);
+    requestedScrollReset = window.setTimeout(() => {
+      requestedScrollPosition = null;
+    }, 1000);
   };
 
-  previousButton.addEventListener('click', () => scrollOneCard(-1));
-  nextButton.addEventListener('click', () => scrollOneCard(1));
+  previousButton.addEventListener('click', () => {
+    if (previousButton.getAttribute('aria-disabled') !== 'true') {
+      scrollOneCard(-1);
+    }
+  });
+  nextButton.addEventListener('click', () => {
+    if (nextButton.getAttribute('aria-disabled') !== 'true') {
+      scrollOneCard(1);
+    }
+  });
   container.addEventListener('keydown', (event) => {
     if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
 

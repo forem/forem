@@ -54,8 +54,18 @@ describe('initializeSlides', () => {
     expect(slides[1].getAttribute('role')).toBe('group');
     expect(slides[1].getAttribute('aria-posinset')).toBe('2');
     expect(slides[1].getAttribute('aria-setsize')).toBe('3');
+    expect(
+      container
+        .querySelector('.ltag-slides__nav--prev')
+        .getAttribute('aria-disabled'),
+    ).toBe('true');
+    expect(
+      container
+        .querySelector('.ltag-slides__nav--next')
+        .getAttribute('aria-disabled'),
+    ).toBe('false');
     expect(container.querySelector('.ltag-slides__nav--prev').disabled).toBe(
-      true,
+      false,
     );
     expect(container.querySelector('.ltag-slides__nav--next').disabled).toBe(
       false,
@@ -85,12 +95,16 @@ describe('initializeSlides', () => {
 
     track.dispatchEvent(new Event('scroll'));
 
-    expect(container.querySelector('.ltag-slides__nav--prev').disabled).toBe(
-      false,
-    );
-    expect(container.querySelector('.ltag-slides__nav--next').disabled).toBe(
-      true,
-    );
+    expect(
+      container
+        .querySelector('.ltag-slides__nav--prev')
+        .getAttribute('aria-disabled'),
+    ).toBe('false');
+    expect(
+      container
+        .querySelector('.ltag-slides__nav--next')
+        .getAttribute('aria-disabled'),
+    ).toBe('true');
     expect(
       container.querySelector('.ltag-slides__progress-thumb').style.left,
     ).toBe('66.66666666666667%');
@@ -129,9 +143,50 @@ describe('initializeSlides', () => {
       behavior: 'smooth',
     });
     expect(track.scrollTo).toHaveBeenNthCalledWith(2, {
-      left: -256,
+      left: 0,
       behavior: 'smooth',
     });
+  });
+
+  it('keeps a disabled end control focused so arrow keys can reverse', () => {
+    const { container, track } = renderCarousel();
+    initializeSlides();
+    const nextButton = container.querySelector('.ltag-slides__nav--next');
+    nextButton.focus();
+    track.scrollLeft = 600;
+
+    track.dispatchEvent(new Event('scroll'));
+
+    expect(nextButton.getAttribute('aria-disabled')).toBe('true');
+    expect(document.activeElement).toBe(nextButton);
+
+    nextButton.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }),
+    );
+    expect(track.scrollTo).toHaveBeenLastCalledWith({
+      left: 344,
+      behavior: 'smooth',
+    });
+  });
+
+  it('accumulates rapid key presses against a bounded pending target', () => {
+    const { container, track } = renderCarousel();
+    initializeSlides();
+    const nextButton = container.querySelector('.ltag-slides__nav--next');
+    nextButton.focus();
+
+    ['ArrowRight', 'ArrowRight', 'ArrowRight', 'ArrowLeft', 'ArrowLeft'].forEach(
+      (key) => {
+        nextButton.dispatchEvent(
+          new KeyboardEvent('keydown', { key, bubbles: true }),
+        );
+      },
+    );
+
+    expect(track.scrollTo.mock.calls.map(([options]) => options.left)).toEqual([
+      256, 512, 600, 344, 88,
+    ]);
+    expect(document.activeElement).toBe(nextButton);
   });
 
   it('does not attach duplicate controls when initialized again', () => {
