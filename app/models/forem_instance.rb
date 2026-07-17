@@ -53,6 +53,13 @@ class ForemInstance
     ApplicationConfig["CUSTOMERIO_APP_KEY"].present?
   end
 
+  # Full cutover: Customer.io handles campaign/broadcast email (drip, admin
+  # one-offs/newsletters) only when the integration is on AND the delivery
+  # flag is enabled globally, not just for rollout batches.
+  def self.customerio_email_cutover?
+    customerio_enabled? && FeatureFlag.enabled?(Deliverable::CUSTOMERIO_FLAG)
+  end
+
   def self.sendgrid_enabled?
     ENV["SENDGRID_API_KEY"].present?
   end

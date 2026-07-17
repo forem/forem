@@ -2,6 +2,8 @@ module Admin
   class EmailsController < Admin::ApplicationController
     layout "admin"
 
+    before_action :ensure_no_customerio_cutover, only: %i[new edit create update]
+
     def index
       @emails = Email.includes([:audience_segment]).order("id DESC")
 
@@ -61,6 +63,13 @@ module Admin
     end
 
     private
+
+    def ensure_no_customerio_cutover
+      if ForemInstance.customerio_email_cutover?
+        flash[:danger] = I18n.t("admin.emails.customerio_cutover_notice")
+        redirect_to admin_emails_path
+      end
+    end
 
     def email_params
       params.require(:email).permit(:subject, :body, :user_query_id, :variables, :type_of, :drip_day, :status,

@@ -13,6 +13,8 @@ module Emails
     BATCH_SIZE = Rails.env.production? ? 1000 : 10
 
     def perform(email_id, min_id = nil, max_id = nil)
+      return if ForemInstance.customerio_email_cutover?
+
       email = Email.find_by(id: email_id)
       return unless email
 

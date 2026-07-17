@@ -109,6 +109,34 @@ RSpec.describe ForemInstance do
     end
   end
 
+  describe ".customerio_email_cutover?" do
+    after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
+
+    it "is true when CUSTOMERIO_APP_KEY is present and the flag is enabled globally" do
+      allow(ApplicationConfig).to receive(:[]).and_call_original
+      allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
+      FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG)
+
+      expect(described_class.customerio_email_cutover?).to be(true)
+    end
+
+    it "is false when CUSTOMERIO_APP_KEY is present but the flag is only enabled for an actor" do
+      allow(ApplicationConfig).to receive(:[]).and_call_original
+      allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
+      FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[create(:user)])
+
+      expect(described_class.customerio_email_cutover?).to be(false)
+    end
+
+    it "is false when CUSTOMERIO_APP_KEY is absent even if the flag is enabled globally" do
+      allow(ApplicationConfig).to receive(:[]).and_call_original
+      allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return(nil)
+      FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG)
+
+      expect(described_class.customerio_email_cutover?).to be(false)
+    end
+  end
+
   describe ".contact_email" do
     let(:email) { "contact@dev.to" }
 

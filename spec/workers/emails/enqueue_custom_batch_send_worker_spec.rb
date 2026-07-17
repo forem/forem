@@ -9,6 +9,17 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
       allow(Emails::BatchCustomSendWorker).to receive(:perform_async).and_return(true)
     end
 
+    context "when Customer.io email cutover is active" do
+      before do
+        allow(ForemInstance).to receive(:customerio_email_cutover?).and_return(true)
+      end
+
+      it "does not process the email or enqueue any BatchCustomSendWorker jobs" do
+        described_class.new.perform(email.id)
+        expect(Emails::BatchCustomSendWorker).not_to have_received(:perform_async)
+      end
+    end
+
     context "when email has an audience segment" do
       let!(:audience_segment) { create(:audience_segment) }
       let!(:email) { create(:email, subject: "Segmented", audience_segment: audience_segment) }
