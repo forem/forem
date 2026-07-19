@@ -120,6 +120,8 @@ RSpec.describe Email, type: :model do
       end
 
       it "enqueues a job to EnqueueCustomBatchSendWorker as before" do
+        allow(User).to receive(:maximum).with(:id).and_return(5000)
+
         email.update(status: "active")
         email.deliver_to_users
 

@@ -1,6 +1,14 @@
 require "rails_helper"
 
 RSpec.describe "Notifications page", js: true do
+  # Ahoy persists the click event asynchronously to the navigation Capybara
+  # waits on, so poll for it before asserting; on timeout the count
+  # expectation below reports the miss.
+  def wait_for_ahoy_event
+    deadline = Capybara::Helpers.monotonic_time + Capybara.default_max_wait_time
+    sleep 0.05 until Ahoy::Event.exists? || Capybara::Helpers.monotonic_time >= deadline
+  end
+
   let(:alex) { create(:user) }
   let(:leslie) { create(:user) }
 
@@ -102,6 +110,7 @@ RSpec.describe "Notifications page", js: true do
         click_link("the welcome thread")
 
         expect(page).to have_current_path("/welcome")
+        wait_for_ahoy_event
         expect(Ahoy::Event.count).to eq(1)
       end
     end
