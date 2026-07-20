@@ -170,6 +170,8 @@ fr:
       missing_author: "La balise quote nécessite une option author"
       invalid_rating: "La note doit être comprise entre 1 et 5"
       learn_more: "En savoir plus"
+    quotes_tag:
+      no_args: "La balise quotes n'accepte aucun argument"
     slide_tag:
       missing_image: "La balise slide nécessite une option image"
       missing_content: "La balise slide nécessite au moins l'un des éléments suivants : image, video ou link"
