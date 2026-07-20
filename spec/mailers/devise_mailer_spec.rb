@@ -219,7 +219,7 @@ RSpec.describe DeviseMailer, type: :mailer do
     end
 
     context "when domain already includes port number" do
-      let!(:subforem) { create(:subforem, domain: "dev.example.com:3000") }
+      let!(:subforem) { create(:subforem, domain: "dev.example.com:#{URL.dev_port}") }
       let(:user_with_subforem) { create(:user, onboarding_subforem_id: subforem.id) }
 
       before do
@@ -229,11 +229,10 @@ RSpec.describe DeviseMailer, type: :mailer do
         allow(Rails.env).to receive(:development?).and_return(true)
       end
 
-      it "doesn't add :3000 port twice" do
+      it "doesn't add the development port twice" do
         email = described_class.confirmation_instructions(user_with_subforem, "token")
-        # Should not have :3000:3000 in the body
-        expect(email.body.to_s).not_to include(":3000:3000")
-        expect(email.body.to_s).to include("dev.example.com:3000")
+        expect(email.body.to_s).not_to include(":#{URL.dev_port}:#{URL.dev_port}")
+        expect(email.body.to_s).to include("dev.example.com:#{URL.dev_port}")
       end
     end
 
