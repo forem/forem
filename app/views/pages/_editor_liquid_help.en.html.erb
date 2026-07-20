@@ -86,10 +86,10 @@
     <h4>Layout (Row &amp; Col)</h4>
     <p>Create responsive grid layouts:</p>
     <pre>{% row %}
-  {% col %}Column 1{% endcol %}
-  {% col span=2 %}Wide column{% endcol %}
+  {% col background=default %}Column 1{% endcol %}
+  {% col span=2 background=subtle %}Wide column{% endcol %}
 {% endrow %}</pre>
-    <p class="fs-s"><code>span</code> sets column width (1-4, default 1).</p>
+    <p class="fs-s"><code>span</code> sets column width (1-4, default 1). <code>background</code> accepts <code>default</code> or <code>subtle</code>.</p>
 
     <h4>Features</h4>
     <p>Display a grid of feature cards:</p>
@@ -120,6 +120,7 @@
   {% slide video="https://youtube.com/watch?v=abc123" %}
 {% endslides %}</pre>
     <p class="fs-s">Each slide needs at least one of: <code>image</code>, <code>video</code>, or <code>link</code>. Optional: <code>title</code>, <code>alt</code>.</p>
+    <p class="fs-s"><code>mode="carousel"</code> presents cards in a swipeable, scroll-snapping strip with optional desktop controls.</p>
 
     <% if @user_approved_liquid_tags.include? UserSubscriptionTag %>
       <h4><%= community_name %> User Subscriptions</h4>
