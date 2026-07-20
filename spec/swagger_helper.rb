@@ -587,6 +587,10 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               active: { type: :boolean, nullable: true, description: "Whether the survey is currently active" },
               display_title: { type: :boolean, description: "Whether to show the title to respondents" },
               allow_resubmission: { type: :boolean, description: "Whether users can submit multiple times" },
+              daily_email_distributions: { type: :integer, format: :int32, description: "Daily emails distributions limit" },
+              extra_email_context_paragraph: { type: :string, nullable: true, description: "Optional context paragraph for emails" },
+              target_response_count: { type: :integer, format: :int32, description: "Target response count" },
+              target_completion_date: { type: :string, format: "date-time", nullable: true, description: "Target completion date in future" },
               created_at: { type: :string, format: "date-time" },
               updated_at: { type: :string, format: "date-time" }
             },
@@ -608,6 +612,60 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
                 required: %w[polls]
               },
             ]
+          },
+          SurveyInput: {
+            description: "Parameters for creating or updating a survey",
+            type: :object,
+            properties: {
+              survey: {
+                type: :object,
+                properties: {
+                  title: { type: :string, description: "Title of the survey" },
+                  survey_type_of: { type: :string, enum: Survey.type_ofs.keys, description: "Survey category" },
+                  type_of: { type: :string, enum: Survey.type_ofs.keys, description: "Survey category (alias of survey_type_of)" },
+                  active: { type: :boolean, description: "Whether the survey is active" },
+                  display_title: { type: :boolean, description: "Whether to show the title to respondents" },
+                  allow_resubmission: { type: :boolean, description: "Whether users can submit multiple times" },
+                  daily_email_distributions: { type: :integer, format: :int32, description: "Daily emails distributions limit" },
+                  extra_email_context_paragraph: { type: :string, description: "Optional context paragraph for emails" },
+                  target_response_count: { type: :integer, format: :int32, description: "Target response count" },
+                  target_completion_date: { type: :string, format: "date-time", description: "Target completion date in future" },
+                  polls: {
+                    type: :array,
+                    items: {
+                      type: :object,
+                      properties: {
+                        id: { type: :integer, format: :int64, description: "ID of the poll to update, omit for new polls" },
+                        prompt_markdown: { type: :string, description: "Question text in markdown" },
+                        poll_type_of: { type: :string, enum: Poll.type_ofs.keys, description: "Poll type" },
+                        type_of: { type: :string, enum: Poll.type_ofs.keys, description: "Poll type (alias of poll_type_of)" },
+                        position: { type: :integer, format: :int32, description: "Display order within survey" },
+                        scale_min: { type: :integer, format: :int32, description: "Minimum value for scale polls" },
+                        scale_max: { type: :integer, format: :int32, description: "Maximum value for scale polls" },
+                        _destroy: { type: :boolean, description: "Set to true to destroy this poll" },
+                        poll_options: {
+                          type: :array,
+                          items: {
+                            type: :object,
+                            properties: {
+                              id: { type: :integer, format: :int64, description: "ID of the option to update, omit for new options" },
+                              markdown: { type: :string, description: "Option markdown text" },
+                              supplementary_text: { type: :string, description: "Optional supplementary text" },
+                              position: { type: :integer, format: :int32, description: "Display order within poll" },
+                              _destroy: { type: :boolean, description: "Set to true to destroy this option" }
+                            },
+                            required: %w[markdown]
+                          }
+                        }
+                      },
+                      required: %w[prompt_markdown]
+                    }
+                  }
+                },
+                required: %w[title]
+              }
+            },
+            required: %w[survey]
           },
           PollVote: {
             description: "Representation of a single poll vote cast by a user",
