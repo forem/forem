@@ -121,7 +121,7 @@ module Api
       if polls.is_a?(Array)
         survey_hash["polls_attributes"] = polls.map do |poll|
           poll_hash = poll.respond_to?(:to_unsafe_h) ? poll.to_unsafe_h : poll.to_h
-          
+
           poll_type = poll_hash.delete("poll_type_of") || poll_hash.delete(:poll_type_of)
           poll_hash["type_of"] ||= poll_type if poll_type
 

@@ -4246,6 +4246,9 @@
           },
           "422": {
             "description": "Unprocessable Entity"
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         },
         "requestBody": {
@@ -4329,6 +4332,12 @@
           },
           "404": {
             "description": "Not Found"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
           }
         },
         "requestBody": {
@@ -4365,6 +4374,12 @@
           },
           "404": {
             "description": "Not Found"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
           }
         }
       }
@@ -7034,6 +7049,7 @@
               },
               "extra_email_context_paragraph": {
                 "type": "string",
+                "nullable": true,
                 "description": "Optional context paragraph for emails"
               },
               "target_response_count": {
@@ -7044,6 +7060,7 @@
               "target_completion_date": {
                 "type": "string",
                 "format": "date-time",
+                "nullable": true,
                 "description": "Target completion date in future"
               },
               "polls": {
@@ -7126,22 +7143,13 @@
                             "type": "boolean",
                             "description": "Set to true to destroy this option"
                           }
-                        },
-                        "required": [
-                          "markdown"
-                        ]
+                        }
                       }
                     }
-                  },
-                  "required": [
-                    "prompt_markdown"
-                  ]
+                  }
                 }
               }
-            },
-            "required": [
-              "title"
-            ]
+            }
           }
         },
         "required": [

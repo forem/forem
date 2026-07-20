@@ -627,9 +627,9 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
                   display_title: { type: :boolean, description: "Whether to show the title to respondents" },
                   allow_resubmission: { type: :boolean, description: "Whether users can submit multiple times" },
                   daily_email_distributions: { type: :integer, format: :int32, description: "Daily emails distributions limit" },
-                  extra_email_context_paragraph: { type: :string, description: "Optional context paragraph for emails" },
+                  extra_email_context_paragraph: { type: :string, nullable: true, description: "Optional context paragraph for emails" },
                   target_response_count: { type: :integer, format: :int32, description: "Target response count" },
-                  target_completion_date: { type: :string, format: "date-time", description: "Target completion date in future" },
+                  target_completion_date: { type: :string, format: "date-time", nullable: true, description: "Target completion date in future" },
                   polls: {
                     type: :array,
                     items: {
@@ -653,16 +653,13 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
                               supplementary_text: { type: :string, description: "Optional supplementary text" },
                               position: { type: :integer, format: :int32, description: "Display order within poll" },
                               _destroy: { type: :boolean, description: "Set to true to destroy this option" }
-                            },
-                            required: %w[markdown]
+                            }
                           }
                         }
-                      },
-                      required: %w[prompt_markdown]
+                      }
                     }
                   }
-                },
-                required: %w[title]
+                }
               }
             },
             required: %w[survey]

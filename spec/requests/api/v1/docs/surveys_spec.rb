@@ -279,6 +279,13 @@ RSpec.describe "Api::V1::Docs::Surveys" do
           add_examples
           run_test!
         end
+
+        response "401", "Unauthorized" do
+          let(:"api-key") { "invalid" }
+          let(:survey_input) { { survey: { title: "RSWAG Survey" } } }
+          add_examples
+          run_test!
+        end
       end
     end
   end
@@ -316,6 +323,22 @@ RSpec.describe "Api::V1::Docs::Surveys" do
           add_examples
           run_test!
         end
+
+        response "401", "Unauthorized" do
+          let(:"api-key") { "invalid" }
+          let(:id_or_slug) { survey.id }
+          let(:survey_input) { { survey: { title: "Updated RSWAG Survey" } } }
+          add_examples
+          run_test!
+        end
+
+        response "422", "Unprocessable Entity" do
+          let(:"api-key") { api_secret.secret }
+          let(:id_or_slug) { survey.id }
+          let(:survey_input) { { survey: { title: "" } } }
+          add_examples
+          run_test!
+        end
       end
     end
   end
@@ -341,6 +364,24 @@ RSpec.describe "Api::V1::Docs::Surveys" do
         response "404", "Not Found" do
           let(:"api-key") { api_secret.secret }
           let(:id_or_slug) { "nonexistent" }
+          run_test!
+        end
+
+        response "401", "Unauthorized" do
+          let(:"api-key") { "invalid" }
+          let(:id_or_slug) { survey.id }
+          run_test!
+        end
+
+        response "422", "Unprocessable Entity" do
+          let(:"api-key") { api_secret.secret }
+          let(:id_or_slug) { survey.id }
+          before do
+            allow_any_instance_of(Survey).to receive(:destroy) do |s|
+              s.errors.add(:base, "Could not delete")
+              false
+            end
+          end
           run_test!
         end
       end
