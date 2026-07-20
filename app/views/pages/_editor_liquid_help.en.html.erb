@@ -86,10 +86,10 @@
     <h4>Layout (Row &amp; Col)</h4>
     <p>Create responsive grid layouts:</p>
     <pre>{% row %}
-  {% col %}Column 1{% endcol %}
-  {% col span=2 %}Wide column{% endcol %}
+  {% col background=default %}Column 1{% endcol %}
+  {% col span=2 background=subtle %}Wide column{% endcol %}
 {% endrow %}</pre>
-    <p class="fs-s"><code>span</code> sets column width (1-4, default 1).</p>
+    <p class="fs-s"><code>span</code> sets column width (1-4, default 1). <code>background</code> accepts <code>default</code> or <code>subtle</code>.</p>
 
     <h4>Features</h4>
     <p>Display a grid of feature cards:</p>

@@ -144,6 +144,8 @@ fr:
     row_tag:
       no_args: "La balise row n'accepte aucun argument"
     col_tag:
+      invalid_background: "L’arrière-plan doit être l’un des suivants : default, subtle"
+      invalid_option: "Option '%{option}' non valide pour la balise col"
       invalid_span: "Le span doit être compris entre 1 et 4"
     org_posts_tag:
       invalid_slug: Slug de l'organisation non valide
