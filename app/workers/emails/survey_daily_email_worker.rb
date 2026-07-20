@@ -37,6 +37,7 @@ module Emails
     def adjust_send_rate(survey)
       completions_count = survey.survey_completions.count
       completions_needed = survey.target_response_count - completions_count
+      return survey.update!(active: false) if completions_needed <= 0
       
       days_remaining = (survey.target_completion_date - Time.current).to_f / 1.day
       days_remaining = [days_remaining, 0.01].max

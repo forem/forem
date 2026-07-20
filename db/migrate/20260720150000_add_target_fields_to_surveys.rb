@@ -1,4 +1,4 @@
-class AddTargetFieldsToSurveys < ActiveRecord::Migration[7.2]
+class AddTargetFieldsToSurveys < ActiveRecord::Migration[8.0]
   def change
     add_column :surveys, :target_response_count, :integer, default: 0, null: false
     add_column :surveys, :target_completion_date, :datetime
