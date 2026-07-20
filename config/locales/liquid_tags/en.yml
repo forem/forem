@@ -144,6 +144,8 @@ en:
     row_tag:
       no_args: "The row tag does not accept any arguments"
     col_tag:
+      invalid_background: "Background must be one of: default, subtle"
+      invalid_option: "Invalid option '%{option}' for col tag"
       invalid_span: "Span must be between 1 and 4"
     org_posts_tag:
       invalid_slug: Invalid organization slug

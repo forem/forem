@@ -67,7 +67,41 @@ RSpec.describe "Row and Col liquid tags", type: :liquid_tag do
     it "raises an error for invalid span option" do
       expect do
         parse("{% row %}{% col foo=bar %}Content{% endcol %}{% endrow %}")
-      end.to raise_error(StandardError, /Span must be between 1 and 4/)
+      end.to raise_error(StandardError, /Invalid option 'foo=bar' for col tag/)
+    end
+  end
+
+  describe "col background option" do
+    it "adds the default background class" do
+      result = parse("{% row %}{% col background=default %}Content{% endcol %}{% endrow %}").render
+
+      expect(result).to include("ltag-col-background-default")
+    end
+
+    it "adds the subtle background class" do
+      result = parse("{% row %}{% col background=subtle %}Content{% endcol %}{% endrow %}").render
+
+      expect(result).to include("ltag-col-background-subtle")
+    end
+
+    it "combines background and span options in either order" do
+      first = parse("{% row %}{% col span=2 background=default %}Content{% endcol %}{% endrow %}").render
+      second = parse("{% row %}{% col background=subtle span=3 %}Content{% endcol %}{% endrow %}").render
+
+      expect(first).to include("ltag-col-span-2", "ltag-col-background-default")
+      expect(second).to include("ltag-col-span-3", "ltag-col-background-subtle")
+    end
+
+    it "raises an error for an unsupported background" do
+      expect do
+        parse("{% row %}{% col background=blue %}Content{% endcol %}{% endrow %}")
+      end.to raise_error(StandardError, /Background must be one of: default, subtle/)
+    end
+
+    it "raises an error for a duplicate option" do
+      expect do
+        parse("{% row %}{% col background=default background=subtle %}Content{% endcol %}{% endrow %}")
+      end.to raise_error(StandardError, /Invalid option 'background=subtle' for col tag/)
     end
   end
 
@@ -91,6 +125,27 @@ RSpec.describe "Row and Col liquid tags", type: :liquid_tag do
       expect(result).to match(/<h4[^>]*>/)
       expect(result).to include("Welcome to Forem")
       expect(result).to include("<p>Software that powers millions.</p>")
+    end
+
+    it "renders Markdown images inside columns" do
+      template = <<~LIQUID
+        {% row %}
+          {% col background=default %}
+          ![Cloud infrastructure](https://example.com/cloud.jpg)
+
+          ### Build on reliable infrastructure
+          {% endcol %}
+        {% endrow %}
+      LIQUID
+      result = MarkdownProcessor::Parser.new(template).finalize
+      column = Nokogiri::HTML.fragment(result).at_css(".ltag-col")
+
+      expect(column["class"]).to include("ltag-col-background-default")
+      expect(column.at_css("img").attributes.slice("src", "alt").transform_values(&:value)).to eq(
+        "src" => "https://example.com/cloud.jpg",
+        "alt" => "Cloud infrastructure",
+      )
+      expect(column.at_css("h3").text.squish).to eq("Build on reliable infrastructure")
     end
 
     it "evaluates Markdown headings in documented indented syntax" do
