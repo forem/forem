@@ -209,4 +209,59 @@ RSpec.describe Survey, type: :model do
       end
     end
   end
+
+  describe "target features" do
+    describe "#target_based?" do
+      it "returns true if both target response count and completion date are present" do
+        survey = build(:survey, target_response_count: 100, target_completion_date: 5.days.from_now)
+        expect(survey.target_based?).to be true
+      end
+
+      it "returns false if target response count is zero/nil or completion date is nil" do
+        survey1 = build(:survey, target_response_count: 0, target_completion_date: 5.days.from_now)
+        survey2 = build(:survey, target_response_count: 100, target_completion_date: nil)
+        expect(survey1.target_based?).to be false
+        expect(survey2.target_based?).to be false
+      end
+    end
+
+    describe "validations" do
+      it "validates target_response_count is a non-negative integer" do
+        survey = build(:survey, target_response_count: -5)
+        expect(survey).not_to be_valid
+        expect(survey.errors[:target_response_count]).to include("must be greater than or equal to 0")
+
+        survey.target_response_count = 5.5
+        expect(survey).not_to be_valid
+
+        survey.target_response_count = 5
+        expect(survey).to be_valid
+      end
+
+      it "validates target_completion_date is in the future on create/update if changed" do
+        survey = build(:survey, target_completion_date: 1.day.ago)
+        expect(survey).not_to be_valid
+        expect(survey.errors[:target_completion_date]).to include("must be in the future")
+
+        survey = create(:survey, target_completion_date: 2.days.from_now)
+        # updating without changing date is valid
+        survey.title = "Updated Title"
+        expect(survey).to be_valid
+      end
+    end
+
+    describe "default send rate calculation" do
+      it "sets default daily_email_distributions based on target and time remaining" do
+        # 100 completions needed over 5 days = 20 completions/day.
+        # At 1 completion per 200 sends, rate should be 20 * 200 = 4000.
+        survey = create(:survey, target_response_count: 100, target_completion_date: 5.days.from_now, daily_email_distributions: 0)
+        expect(survey.daily_email_distributions).to eq(4000)
+      end
+
+      it "does not overwrite non-zero daily_email_distributions" do
+        survey = create(:survey, target_response_count: 100, target_completion_date: 5.days.from_now, daily_email_distributions: 15)
+        expect(survey.daily_email_distributions).to eq(15)
+      end
+    end
+  end
 end

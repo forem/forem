@@ -8,27 +8,69 @@ module Emails
     sidekiq_options queue: :low_priority, retry: 5, lock: :until_and_while_executing
 
     def perform
-      Survey.where(active: true).where("daily_email_distributions > 0").find_each do |survey|
-        send_daily_emails(survey)
+      Survey.where(active: true).find_each do |survey|
+        process_survey(survey)
       end
     end
 
     private
 
-    def send_daily_emails(survey)
+    def process_survey(survey)
+      if survey.target_based?
+        # Check if target is already hit or time has passed
+        if survey.survey_completions.count >= survey.target_response_count || Time.current >= survey.target_completion_date
+          survey.update!(active: false)
+          return
+        end
+
+        # Adjust send rate if we have been sending for at least 24 hours
+        if survey.sending_started_at.present? && Time.current - survey.sending_started_at >= 24.hours
+          adjust_send_rate(survey)
+        end
+      end
+
       return unless survey.daily_email_distributions.to_i > 0
+
+      send_hourly_emails(survey)
+    end
+
+    def adjust_send_rate(survey)
+      completions_count = survey.survey_completions.count
+      completions_needed = survey.target_response_count - completions_count
+      
+      days_remaining = (survey.target_completion_date - Time.current).to_f / 1.day
+      days_remaining = [days_remaining, 0.01].max
+
+      required_daily_completion_rate = completions_needed.to_f / days_remaining
+
+      conversion_rate = completions_count.to_f / [survey.emails_sent_count, 1].max
+      if conversion_rate == 0
+        conversion_rate = 0.005 # Assume 1 completion per 200 sends (1/200)
+      else
+        conversion_rate = [conversion_rate, 0.0001].max
+        conversion_rate = [conversion_rate, 1.0].min
+      end
+
+      new_daily_send_rate = (required_daily_completion_rate / conversion_rate).round
+      new_daily_send_rate = [new_daily_send_rate, 1].max
+
+      survey.update!(daily_email_distributions: new_daily_send_rate)
+    end
+
+    def hourly_send_limit(survey)
+      hour_of_day = Time.current.hour
+      ((hour_of_day + 1) * survey.daily_email_distributions) / 24 - (hour_of_day * survey.daily_email_distributions) / 24
+    end
+
+    def send_hourly_emails(survey)
+      hourly_to_send = hourly_send_limit(survey)
+
+      return unless hourly_to_send > 0
 
       eligible_users = User.email_eligible
                            .where("last_presence_at >= ?", 3.months.ago)
 
-      # Determine if we should filter out users who have completed this survey
       unless survey.allow_resubmission?
-        # A user has completed the survey if they have a survey_completion record
-        # OR if they have voted/skipped/responded to all polls in their latest session.
-        # Since 'completed_by_user?' is a Ruby method with complex session logic, the simplest fully accurate DB approach
-        # is to filter out anyone who has a SurveyCompletion OR has at least one poll interaction 
-        # (meaning they've started or finished it before). If we want to strictly reach only people who 
-        # haven't interacted with it at all yet, we exclude those with any poll votes/skips/text responses for this survey.
         poll_ids = survey.polls.select(:id)
         
         users_with_completions = SurveyCompletion.where(survey: survey).select(:user_id)
@@ -42,12 +84,19 @@ module Emails
                                        .where.not(id: users_with_text_responses)
       end
 
-      # Randomly sample the desired number of users via DB
       sampled_users = eligible_users.order(Arel.sql("RANDOM()"))
-                                    .limit(survey.daily_email_distributions)
+                                    .limit(hourly_to_send)
 
+      actual_sent_count = 0
       sampled_users.each do |user|
         SurveyMailer.with(user: user, survey: survey).pulse_survey.deliver_later
+        actual_sent_count += 1
+      end
+
+      if actual_sent_count > 0
+        updates = { emails_sent_count: survey.emails_sent_count + actual_sent_count }
+        updates[:sending_started_at] = Time.current if survey.sending_started_at.nil?
+        survey.update!(updates)
       end
     end
   end

@@ -199,8 +199,8 @@ feed_import_log_cleanup:
   cron: "0 4 * * *"
   class: "Feeds::ImportLogCleanupWorker"
 survey_daily_email:
-  description: "Send DEV Pulse Survey emails to eligible users for active surveys (runs daily at 18:15 UTC)"
-  cron: "15 18 * * *"
+  description: "Send DEV Pulse Survey emails to eligible users for active surveys (runs hourly at minute 15)"
+  cron: "15 * * * *"
   class: "Emails::SurveyDailyEmailWorker"
 agent_session_raw_file_cleanup:
   description: "Deletes expired raw agent session files from S3 (runs daily at 04:15 UTC)"
