@@ -136,11 +136,7 @@ module Images
     end
 
     def escape_for_draw(text)
-      text
-        .gsub("\\") { "\\\\" }  # backslash must come first to avoid double-escaping
-        .gsub('"', '\\"')          # double-quote
-        .gsub("@", "\\@")          # ImageMagick treats @ as an indirect file read
-        .gsub("%", "\\%")          # ImageMagick format escape sequence
+      text.to_s.gsub(/[\\\"@%]/, '\\' => '\\\\', '"' => '\\"', '@' => '\\@', '%' => '\\%')
     end
 
     def add_profile_image(result)

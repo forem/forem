@@ -399,7 +399,7 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
       end
 
       it "escapes double-quotes" do
-        expect(generator.escape_for_draw('say "hello"')).to eq('say \\"hello\\"')  
+        expect(generator.escape_for_draw('say "hello"')).to eq('say \\"hello\\"')
       end
 
       it "escapes @ to prevent ImageMagick indirect file reads" do
