@@ -186,6 +186,19 @@ RSpec.describe Page do
         page.update(body_html: html, body_markdown: "")
         expect(page.processed_html).to eq(html)
       end
+
+      it "adds a validation error when Liquid content cannot be rendered" do
+        organization = create(:organization)
+        other_form = create(:organization_lead_form)
+        page = build(
+          :page,
+          organization: organization,
+          body_markdown: "{% org_lead_form #{other_form.id} %}",
+        )
+
+        expect(page).not_to be_valid
+        expect(page.errors[:base]).to include(I18n.t("liquid_tags.org_lead_form_tag.wrong_organization"))
+      end
     end
   end
 
