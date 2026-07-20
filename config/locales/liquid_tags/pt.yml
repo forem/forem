@@ -173,6 +173,9 @@ pt:
       missing_content: "A tag slide requer pelo menos um dos seguintes: image, video ou link"
     slides_tag:
       invalid_mode: "O modo slides deve ser 'default' ou 'carousel'"
+      gallery_label: Galeria de mídia
+      previous: Slide anterior
+      next: Próximo slide
     org_lead_form_tag:
       not_found: Formulário de leads não encontrado
       inactive: Este formulário de leads não está mais ativo
