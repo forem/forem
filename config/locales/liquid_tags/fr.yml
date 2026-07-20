@@ -173,6 +173,9 @@ fr:
       missing_content: "La balise slide nécessite au moins l'un des éléments suivants : image, video ou link"
     slides_tag:
       invalid_mode: "Le mode slides doit être 'default' ou 'carousel'"
+      gallery_label: Galerie multimédia
+      previous: Diapositive précédente
+      next: Diapositive suivante
     org_lead_form_tag:
       not_found: Formulaire de leads non trouvé
       inactive: Ce formulaire de leads n'est plus actif
