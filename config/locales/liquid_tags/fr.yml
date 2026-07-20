@@ -144,6 +144,8 @@ fr:
     row_tag:
       no_args: "La balise row n'accepte aucun argument"
     col_tag:
+      invalid_background: "L’arrière-plan doit être l’un des suivants : default, subtle"
+      invalid_option: "Option '%{option}' non valide pour la balise col"
       invalid_span: "Le span doit être compris entre 1 et 4"
     org_posts_tag:
       invalid_slug: Slug de l'organisation non valide
@@ -168,11 +170,16 @@ fr:
       missing_author: "La balise quote nécessite une option author"
       invalid_rating: "La note doit être comprise entre 1 et 5"
       learn_more: "En savoir plus"
+    quotes_tag:
+      no_args: "La balise quotes n'accepte aucun argument"
     slide_tag:
       missing_image: "La balise slide nécessite une option image"
       missing_content: "La balise slide nécessite au moins l'un des éléments suivants : image, video ou link"
     slides_tag:
       invalid_mode: "Le mode slides doit être 'default' ou 'carousel'"
+      gallery_label: Galerie multimédia
+      previous: Diapositive précédente
+      next: Diapositive suivante
     org_lead_form_tag:
       not_found: Formulaire de leads non trouvé
       inactive: Ce formulaire de leads n'est plus actif
