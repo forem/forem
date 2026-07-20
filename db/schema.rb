@@ -10,13 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_07_14_173500) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_20_150000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
+  enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
-  enable_extension "plpgsql"
   enable_extension "unaccent"
   enable_extension "vector"
 
@@ -199,6 +199,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_14_173500) do
     t.integer "positive_reactions_count", default: 0, null: false
     t.integer "previous_positive_reactions_count", default: 0
     t.integer "previous_public_reactions_count", default: 0, null: false
+    t.jsonb "private_submission_data", default: {}, null: false
     t.integer "privileged_users_reaction_points_sum", default: 0
     t.text "processed_html"
     t.integer "public_reactions_count", default: 0, null: false
@@ -1276,6 +1277,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_14_173500) do
     t.bigint "user_id"
     t.bigint "viewable_id"
     t.string "viewable_type"
+    t.index ["article_id", "created_at"], name: "index_page_views_on_article_id_and_created_at"
     t.index ["article_id"], name: "index_page_views_on_article_id"
     t.index ["created_at"], name: "index_page_views_on_created_at"
     t.index ["user_id"], name: "index_page_views_on_user_id"
@@ -1722,10 +1724,14 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_14_173500) do
     t.datetime "created_at", null: false
     t.integer "daily_email_distributions", default: 0
     t.boolean "display_title", default: true
+    t.integer "emails_sent_count", default: 0, null: false
     t.text "extra_email_context_paragraph"
     t.string "old_old_slug"
     t.string "old_slug"
+    t.datetime "sending_started_at"
     t.string "slug"
+    t.datetime "target_completion_date"
+    t.integer "target_response_count", default: 0, null: false
     t.string "title", null: false
     t.integer "type_of", default: 0, null: false
     t.datetime "updated_at", null: false
@@ -1776,6 +1782,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_14_173500) do
   end
 
   create_table "tags", force: :cascade do |t|
+    t.jsonb "additional_questions", default: [], null: false
     t.string "alias_for"
     t.bigint "badge_id"
     t.string "bg_color_hex"
