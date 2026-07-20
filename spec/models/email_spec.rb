@@ -96,10 +96,40 @@ RSpec.describe Email, type: :model do
       email.deliver_to_users
       expect(email.reload.status).to eq("delivered")
     end
+
+    context "when Customer.io cutover is active" do
+      let(:email) { create(:email, status: "draft") }
+
+      before do
+        allow(ForemInstance).to receive(:customerio_email_cutover?).and_return(true)
+      end
+
+      it "does not enqueue any jobs to EnqueueCustomBatchSendWorker" do
+        email.update(status: "active")
+        email.deliver_to_users
+
+        expect(Emails::EnqueueCustomBatchSendWorker).not_to have_received(:perform_async)
+      end
+    end
+
+    context "when Customer.io cutover is not active" do
+      let(:email) { create(:email, status: "draft") }
+
+      before do
+        allow(ForemInstance).to receive(:customerio_email_cutover?).and_return(false)
+      end
+
+      it "enqueues a job to EnqueueCustomBatchSendWorker as before" do
+        allow(User).to receive(:maximum).with(:id).and_return(5000)
+
+        email.update(status: "active")
+        email.deliver_to_users
+
+        expect(Emails::EnqueueCustomBatchSendWorker).to have_received(:perform_async).once.with(email.id)
+      end
+    end
   end
 
-  # The `#deliver_to_test_emails` method is unchanged
-  # because it still calls `Emails::BatchCustomSendWorker`.
   describe "#deliver_to_test_emails" do
     let(:email) { create(:email, subject: "Test Subject", body: "Test Body", type_of: "newsletter") }
 
@@ -156,6 +186,40 @@ RSpec.describe Email, type: :model do
       it "does not enqueue any jobs" do
         expect(Emails::BatchCustomSendWorker).not_to receive(:perform_async)
         email.deliver_to_test_emails("")
+      end
+    end
+
+    context "when Customer.io cutover is active" do
+      before do
+        create(:user, email: "test1@example.com")
+        allow(ForemInstance).to receive(:customerio_email_cutover?).and_return(true)
+      end
+
+      it "does not enqueue any jobs to BatchCustomSendWorker" do
+        email.deliver_to_test_emails("test1@example.com")
+
+        expect(Emails::BatchCustomSendWorker).not_to have_received(:perform_async)
+      end
+    end
+
+    context "when Customer.io cutover is not active" do
+      let!(:user_1) { create(:user, email: "test1@example.com") }
+
+      before do
+        allow(ForemInstance).to receive(:customerio_email_cutover?).and_return(false)
+      end
+
+      it "enqueues a job to BatchCustomSendWorker as before" do
+        email.deliver_to_test_emails("test1@example.com")
+
+        expect(Emails::BatchCustomSendWorker).to have_received(:perform_async).with(
+          contain_exactly(user_1.id),
+          "[TEST] #{email.subject}",
+          email.body,
+          email.type_of,
+          email.id,
+          email.default_from_name_based_on_type,
+        )
       end
     end
   end

@@ -33,6 +33,8 @@ pt:
       deleted: Painel publicitário foi excluído!
       updated: Painel publicitário foi atualizado!
       wrong: Algo deu errado ao excluir o painel publicitário.
+    emails:
+      customerio_cutover_notice: O envio de e-mails foi transferido para o Customer.io. Os registros abaixo são históricos; crie novas transmissões e newsletters no workspace do Customer.io.
     emails_controller:
       created: E-mails foram criados!
       drafted: E-mail foi rascunhado!

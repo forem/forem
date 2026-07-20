@@ -27,16 +27,18 @@ RSpec.describe "Rack::Attack AI Chats Throttling", type: :request do
     end
 
     it "throttles POST requests to /ai_chats to 10 per minute per IP" do
-      # Make 10 successful requests
-      10.times do
-        post "/ai_chats", params: { message: "hello", chat_context: "editor" }, headers: headers
-        expect(response).not_to have_http_status(:too_many_requests)
-      end
+      freeze_time do
+        # Make 10 successful requests
+        10.times do
+          post "/ai_chats", params: { message: "hello", chat_context: "editor" }, headers: headers
+          expect(response).not_to have_http_status(:too_many_requests)
+        end
 
-      # The 11th request should be throttled
-      post "/ai_chats", params: { message: "hello", chat_context: "editor" }, headers: headers
-      expect(response).to have_http_status(:too_many_requests)
-      expect(response.body).to include("Retry later")
+        # The 11th request should be throttled
+        post "/ai_chats", params: { message: "hello", chat_context: "editor" }, headers: headers
+        expect(response).to have_http_status(:too_many_requests)
+        expect(response.body).to include("Retry later")
+      end
 
       # Advance time to allow requests again
       travel 1.minute + 1.second do
