@@ -23,6 +23,19 @@ RSpec.describe "/admin/content_manager/organizations" do
       expect(response.body).to include(CGI.escapeHTML(organization.name))
       expect(response.body).not_to include(CGI.escapeHTML(another_organization.name))
     end
+
+    it "allows filtering by supported status" do
+      supported_org = create(:organization, name: "Terminator", supported: true)
+      non_supported_org = create(:organization, name: "John Connor", supported: false)
+
+      get "#{admin_organizations_path}?supported=true"
+      expect(response.body).to include(CGI.escapeHTML(supported_org.name))
+      expect(response.body).not_to include(CGI.escapeHTML(non_supported_org.name))
+
+      get "#{admin_organizations_path}?supported=false"
+      expect(response.body).to include(CGI.escapeHTML(non_supported_org.name))
+      expect(response.body).not_to include(CGI.escapeHTML(supported_org.name))
+    end
   end
 
   describe "GET /admin/organizations/:id" do

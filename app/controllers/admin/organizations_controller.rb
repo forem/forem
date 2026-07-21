@@ -10,6 +10,9 @@ module Admin
 
     def index
       @organizations = Organization.page(params[:page]).per(PER_PAGE_MAX)
+      if params[:supported].present?
+        @organizations = @organizations.where(supported: params[:supported] == "true")
+      end
       @organizations = if params[:search].present?
                          @organizations.simple_name_match(params[:search].presence)
                        else
@@ -124,6 +127,32 @@ module Admin
 
       status = org.verified? ? "enabled" : "disabled"
       flash[:notice] = I18n.t("admin.organizations_controller.verified_#{status}")
+      redirect_to admin_organization_path(org)
+    end
+
+    def update_supported
+      org = Organization.find(params[:id])
+      old_status = org.supported?
+      org.update!(supported: params[:supported] == "true")
+
+      if old_status != org.supported?
+        Note.create(
+          author_id: current_user.id,
+          noteable_id: org.id,
+          noteable_type: "Organization",
+          reason: "misc_note",
+          content: "Supported status #{org.supported? ? 'enabled' : 'disabled'}",
+        )
+        Audit::Logger.log(:moderator, current_user, {
+                            "action" => params[:action],
+                            "controller" => params[:controller],
+                            "target_organization_id" => org.id,
+                            "supported" => org.supported?
+                          })
+      end
+
+      status = org.supported? ? "enabled" : "disabled"
+      flash[:notice] = I18n.t("admin.organizations_controller.supported_#{status}", default: "Supported status #{status}")
       redirect_to admin_organization_path(org)
     end
 
