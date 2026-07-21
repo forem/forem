@@ -77,19 +77,21 @@ class OrganizationSettingsController < ApplicationController
     )
   end
 
-
   def organization_params
     permitted = params.require(:organization).permit(
       :name, :summary, :tag_line, :slug, :url, :proof, :profile_image,
       :location, :company_size, :tech_stack, :email, :story,
       :bg_color_hex, :text_color_hex, :twitter_username, :github_username,
       :cta_button_text, :cta_button_url, :cta_body_markdown,
-      :cover_image,
+      :cover_image, :remove_cover_image,
       social_links: Organization::SOCIAL_LINK_PLATFORMS,
       header_cta: [:text, :url, links: [:text, :url, :logo_url]],
     )
 
-    permitted.delete(:cover_image) unless FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization])
+    unless FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization])
+      permitted.delete(:cover_image)
+      permitted.delete(:remove_cover_image)
+    end
 
     result = permitted.to_h
     result.transform_values! do |value|
