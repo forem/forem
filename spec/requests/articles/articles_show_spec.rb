@@ -151,6 +151,24 @@ RSpec.describe "ArticlesShow" do
       )
     end
 
+    it "uses displayed comment count when it differs from the stored article counter", :aggregate_failures do
+      comment = create(:comment, commentable: article, user: user)
+      comment.update_column(:score, 0)
+      article.update_columns(comments_count: 0, displayed_comments_count: 1)
+
+      get article.path
+
+      expect(response.body).to include('data-comments-count="1"')
+      expect(response.body).to include(%(id="comment-node-#{comment.id}"))
+      expect(response_json.dig("mainEntity", "interactionStatistic")).to include(
+        {
+          "@type" => "InteractionCounter",
+          "interactionType" => "https://schema.org/CommentAction",
+          "userInteractionCount" => 1
+        },
+      )
+    end
+
     it "caches JSON-LD at view level based on last_comment_at" do
       comment = create(:comment, commentable: article, user: user)
       article.update_column(:comments_count, 1)
