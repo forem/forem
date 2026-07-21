@@ -1483,6 +1483,8 @@ RSpec.describe Article do
 
     it "is not valid if the user is too recent" do
       user.created_at = Time.current
+      article.video = "https://example.com/video.mp4"
+      article.video_source_url = "https://unknown-source.com/video.mp4"
       expect(article).not_to be_valid
     end
 
@@ -1564,7 +1566,7 @@ RSpec.describe Article do
     it "returns early for YouTube videos without fetching duration" do
       article.video_source_url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
       article.video_duration_in_seconds = 0
-      article.fetch_video_duration
+      article.send(:fetch_video_duration)
       # Should not have changed duration (still 0) because it returns early
       expect(article.video_duration_in_seconds).to eq(0)
     end
@@ -1572,7 +1574,7 @@ RSpec.describe Article do
     it "returns early for Mux videos without fetching duration" do
       article.video_source_url = "https://player.mux.com/nw5QrgIQS02FEx5BJEQH8CdcLmXXRvCNACZKQ01kLoKEI"
       article.video_duration_in_seconds = 0
-      article.fetch_video_duration
+      article.send(:fetch_video_duration)
       # Should not have changed duration (still 0) because it returns early
       expect(article.video_duration_in_seconds).to eq(0)
     end
@@ -1590,6 +1592,54 @@ RSpec.describe Article do
     it "returns nil for blank video_id" do
       expect(article.mux_thumbnail_url(nil)).to be_nil
       expect(article.mux_thumbnail_url("")).to be_nil
+    end
+  end
+
+  describe "video_source_url blank string handling" do
+    let(:user) { create(:user, created_at: 3.weeks.ago) }
+    let(:article) { create(:article, user: user, video_source_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ") }
+
+    it "converts empty string to nil when saving" do
+      article.update(video_source_url: "")
+      article.reload
+      expect(article.video_source_url).to be_nil
+    end
+
+    it "converts whitespace-only string to nil when saving" do
+      article.update(video_source_url: "   ")
+      article.reload
+      expect(article.video_source_url).to be_nil
+    end
+
+    it "clears video_code and video_thumbnail_url when video_source_url is cleared" do
+      article.update(video_source_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+      article.update(video_code: "dQw4w9WgXcQ", video_thumbnail_url: "https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg")
+
+      article.update(video_source_url: "")
+      article.reload
+
+      expect(article.video_source_url).to be_nil
+      expect(article.video).to be_nil
+      expect(article.video_code).to be_nil
+      expect(article.video_thumbnail_url).to be_nil
+    end
+
+    it "preserves video_source_url when it's a valid URL" do
+      valid_url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+      article.update(video_source_url: valid_url)
+      article.reload
+      expect(article.video_source_url).to eq(valid_url)
+    end
+
+    it "clears the video embed URL (video field) when video_source_url is removed" do
+      # This is critical: the video field contains the embed URL that renders in the UI
+      article.update(video_source_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+      article.reload
+      expect(article.video).not_to be_nil # Embed URL should be generated
+
+      article.update(video_source_url: "")
+      article.reload
+      expect(article.video).to be_nil # Embed URL must be cleared so UI doesn't render the video
     end
   end
 
