@@ -138,5 +138,5 @@
   }
 }
 
-@include avatar-logo('avatar', 100%, var(--card-color-tertiary));
+@include avatar-logo('avatar', 100%, var(--profile-brand-color, var(--card-color-tertiary)));
 @include avatar-logo('logo', var(--radius), var(--body-color-inverted));

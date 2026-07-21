@@ -158,6 +158,30 @@ RSpec.describe Images::Optimizer, type: :service do
                              fetch_format: "jpg")
       expect(described_class.call(image_url, crop: "crop", fetch_format: "jpg", never_imagga: true)).to eq(cl_url)
     end
+
+    it "generates correct options for animated GIF" do
+      gif_url = "https://i.imgur.com/animated.gif"
+      cloudinary_url = cl_image_path(gif_url,
+                                     type: "fetch",
+                                     quality: 66,
+                                     crop: "limit",
+                                     sign_url: true,
+                                     flags: "animated",
+                                     fetch_format: nil)
+      expect(described_class.call(gif_url)).to eq(cloudinary_url)
+    end
+
+    it "generates correct options for animated WebP" do
+      webp_url = "https://i.imgur.com/animated.webp"
+      cloudinary_url = cl_image_path(webp_url,
+                                     type: "fetch",
+                                     quality: 66,
+                                     crop: "limit",
+                                     sign_url: true,
+                                     flags: "animated",
+                                     fetch_format: nil)
+      expect(described_class.call(webp_url)).to eq(cloudinary_url)
+    end
   end
 
   describe "#imgproxy" do
