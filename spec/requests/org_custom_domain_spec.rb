@@ -27,9 +27,11 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
       let(:user) { create(:user) }
       let!(:article) { create(:article, organization: organization, user: user, title: "Test Article Content") }
 
-      it "does not redirect organization profile page requests" do
+      it "does not redirect organization profile page requests and uses the default canonical link" do
         get "http://forem.com/#{organization.slug}"
         expect(response).to have_http_status(:success)
+        expect(response.body).to include("<link rel=\"canonical\" href=\"http://forem.com/#{organization.slug}\" />")
+        expect(response.body).to include("<meta property=\"og:url\" content=\"http://forem.com/#{organization.slug}\" />")
       end
 
       it "does not redirect organization article requests" do
@@ -44,12 +46,14 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
       FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor.new(organization))
     end
 
-    it "routes root path to the organization profile" do
+    it "routes root path to the organization profile and uses the custom domain as the canonical link" do
       get "http://custom.org/"
 
       expect(response).to have_http_status(:success)
       # The organization show page should be rendered
       expect(response.body).to include(organization.name)
+      expect(response.body).to include('<link rel="canonical" href="http://custom.org" />')
+      expect(response.body).to include('<meta property="og:url" content="http://custom.org" />')
     end
 
     it "redirects header links to the main app domain and styles the topbar with the organization brand color" do
@@ -178,9 +182,11 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
           sign_in logged_in_user
         end
 
-        it "does not redirect organization profile page requests" do
+        it "does not redirect organization profile page requests and uses the custom domain as the canonical link" do
           get "http://forem.com/#{organization.slug}"
           expect(response).to have_http_status(:success)
+          expect(response.body).to include('<link rel="canonical" href="http://custom.org" />')
+          expect(response.body).to include('<meta property="og:url" content="http://custom.org" />')
         end
 
         it "does not redirect organization article requests" do
