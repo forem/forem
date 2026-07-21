@@ -393,6 +393,13 @@ module ApplicationHelper
   end
 
   def app_url(uri = nil)
+    custom_org = (defined?(request) && request&.respond_to?(:env) ? request.env["forem.custom_domain_org"] : nil)
+    if custom_org
+      URL.url(uri, custom_org.custom_domain)
+    else
+      URL.url(uri, RequestStore.store[:subforem_domain])
+    end
+  rescue StandardError
     URL.url(uri, RequestStore.store[:subforem_domain])
   end
 
