@@ -552,6 +552,48 @@ RSpec.describe "/admin/member_manager/users" do
     end
   end
 
+  describe "POST /admin/member_manager/users/:id/ghostify" do
+    let(:target_user) { create(:user) }
+    let(:ghost_user) { create(:user) }
+
+    before do
+      ::Settings::Community.ghost_user_id = ghost_user.id
+      allow(Moderator::GhostifyUserWorker).to receive(:perform_async)
+    end
+
+    it "redirects with danger flash if ghost user is not configured" do
+      ::Settings::Community.ghost_user_id = nil
+      post ghostify_admin_user_path(target_user.id)
+      
+      expect(response).to redirect_to(admin_user_path(target_user.id))
+      expect(flash[:danger]).to include("Ghost user is not configured")
+      expect(Moderator::GhostifyUserWorker).not_to have_received(:perform_async)
+    end
+
+    it "redirects with danger flash if trying to ghostify the ghost account" do
+      post ghostify_admin_user_path(ghost_user.id)
+      
+      expect(response).to redirect_to(admin_user_path(ghost_user.id))
+      expect(flash[:danger]).to include("Cannot ghostify the ghost account")
+      expect(Moderator::GhostifyUserWorker).not_to have_received(:perform_async)
+    end
+
+    it "enqueues the ghostify worker, creates a note, and flashes success" do
+      expect {
+        post ghostify_admin_user_path(target_user.id)
+      }.to change(Note, :count).by(1)
+
+      expect(Moderator::GhostifyUserWorker).to have_received(:perform_async).with(target_user.id, admin.id)
+      
+      note = target_user.notes.last
+      expect(note.reason).to eq("ghostify_user")
+      expect(note.author_id).to eq(admin.id)
+      
+      expect(response).to redirect_to(admin_user_path(target_user.id))
+      expect(flash[:success]).to include("Ghostify job has been triggered")
+    end
+  end
+
   describe "PATCH /admin/member_manager/users/:id/update_email" do
     it "returns not found for non-existing users" do
       expect do
