@@ -153,7 +153,6 @@
 
       <%= form_for @organization, url: organization_settings_path(@organization.slug), method: :patch, html: { id: "org-settings-form", class: "grid gap-6", multipart: true } do |f| %>
 
-
       <%# ── Profile details ── %>
       <div id="section-profile" class="crayons-card crayons-card--content-rows">
         <h2><%= t("views.settings.org.admin.details") %></h2>
@@ -186,6 +185,10 @@
               <% if @organization.cover_image_url.present? %>
                 <div class="mb-2">
                   <img src="<%= @organization.cover_image_url %>" alt="<%= t("views.organizations.cover_image_alt", org: @organization.name) %>" style="max-width: 100%; max-height: 150px; object-fit: cover;" class="radius-default" />
+                </div>
+                <div class="crayons-field crayons-field--checkbox mb-2">
+                  <%= f.check_box :remove_cover_image, class: "crayons-checkbox" %>
+                  <%= f.label :remove_cover_image, t("views.organization_settings.page.remove_cover_image"), class: "crayons-field__label" %>
                 </div>
               <% end %>
               <%= f.file_field :cover_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
