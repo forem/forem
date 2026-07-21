@@ -160,6 +160,8 @@ pt:
       link_busted: '%{link} foi quebrado com sucesso'
       user_busted: 'Usuário #%{user} foi quebrado com sucesso'
       article_busted: 'Artigo #%{article} foi quebrado com sucesso'
+      image_host_enqueued: 'Tarefa de reprocessamento para o host de imagem "%{host}" foi enfileirada'
+      image_host_missing: 'É necessário um host de imagem'
     users_controller:
       role_removed: 'Função: %{role} foi removida com sucesso do usuário!'
       updated: Usuário foi atualizado

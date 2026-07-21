@@ -199,6 +199,8 @@ en:
       article_busted: 'Article #%{article} was successfully busted'
       user_busted: 'User #%{user} was successfully busted'
       link_busted: '%{link} was successfully busted'
+      image_host_enqueued: 'Reprocess job for image host "%{host}" was enqueued'
+      image_host_missing: 'An image host is required'
     users_controller:
       exported: Data exported to the %{receiver}. The job will complete momentarily.
       email_fail: Email failed to send!

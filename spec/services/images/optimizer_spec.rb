@@ -347,6 +347,7 @@ RSpec.describe Images::Optimizer, type: :service do
     before do
       allow(ApplicationConfig).to receive(:[]).with("AWS_BUCKET_NAME").and_return(aws_bucket_name)
       allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return("cloudflareimage.com")
+      allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_PREFERRED_IMAGE_HOSTS").and_return(nil)
     end
 
     context "when cloudflare is enabled and feature flag is on" do
@@ -384,6 +385,30 @@ RSpec.describe Images::Optimizer, type: :service do
       it "returns false regardless of image source" do
         expect(described_class.cloudflare_contextually_preferred?(hosted_image_url)).to be(false)
         expect(described_class.cloudflare_contextually_preferred?(non_hosted_image_url)).to be(false)
+      end
+    end
+
+    context "when CLOUDFLARE_PREFERRED_IMAGE_HOSTS lists the source host" do
+      let(:preferred_host_url) { "https://cdn.hashnode.com/res/hashnode/image/upload/abc.png" }
+
+      before do
+        allow(described_class).to receive(:cloudflare_enabled?).and_return(true)
+        allow(FeatureFlag).to receive(:enabled?).with(:cloudflare_preferred_for_hosted_images).and_return(true)
+        allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_PREFERRED_IMAGE_HOSTS")
+          .and_return("cdn.hashnode.com, example-cdn.net")
+      end
+
+      it "returns true for an exact host match" do
+        expect(described_class.cloudflare_contextually_preferred?(preferred_host_url)).to be(true)
+      end
+
+      it "returns false for an unrelated host" do
+        expect(described_class.cloudflare_contextually_preferred?(non_hosted_image_url)).to be(false)
+      end
+
+      it "returns false for a blank img_src" do
+        expect(described_class.cloudflare_contextually_preferred?(nil)).to be(false)
+        expect(described_class.cloudflare_contextually_preferred?("")).to be(false)
       end
     end
   end
