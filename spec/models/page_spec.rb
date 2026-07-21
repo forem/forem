@@ -193,7 +193,7 @@ RSpec.describe Page do
     let(:page) { create(:page) }
 
     it "triggers cache busting on save" do
-      sidekiq_assert_enqueued_with(job: Pages::BustCacheWorker, args: [page.slug, nil]) do
+      sidekiq_assert_enqueued_with(job: Pages::BustCacheWorker, args: [page.slug]) do
         page.save
       end
     end
