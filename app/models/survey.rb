@@ -8,6 +8,7 @@ class Survey < ApplicationRecord
   before_validation :generate_slug, on: :create
   before_validation :set_default_daily_email_distributions
   before_save :check_for_slug_change
+  after_commit :trigger_extra_email_context_generation, on: [:create, :update], if: -> { extra_email_context_paragraph.blank? && Ai::Base::DEFAULT_KEY.present? }
   has_many :polls, -> { order(:position) }, dependent: :nullify, inverse_of: :survey
   has_many :poll_votes, through: :polls
   has_many :survey_completions, dependent: :destroy
@@ -116,5 +117,12 @@ class Survey < ApplicationRecord
 
     self.old_old_slug = old_slug
     self.old_slug = slug_was
+  end
+
+  def trigger_extra_email_context_generation
+    return if title.blank?
+    return if polls.reject(&:marked_for_destruction?).empty?
+
+    Surveys::GenerateEmailContextWorker.perform_async(id)
   end
 end

@@ -263,5 +263,64 @@ RSpec.describe Survey, type: :model do
         expect(survey.daily_email_distributions).to eq(15)
       end
     end
+
+    describe "AI context generation callback" do
+      before do
+        allow(Surveys::GenerateEmailContextWorker).to receive(:perform_async)
+      end
+
+      context "when extra_email_context_paragraph is blank" do
+        let(:survey) { build(:survey, extra_email_context_paragraph: nil) }
+
+        context "when Ai::Base::DEFAULT_KEY is present and polls are present" do
+          before do
+            stub_const("Ai::Base::DEFAULT_KEY", "dummy-key")
+            survey.polls.build(prompt_markdown: "Question 1", type_of: :text_input)
+          end
+
+          it "enqueues the background context generator worker" do
+            survey.save!
+            expect(Surveys::GenerateEmailContextWorker).to have_received(:perform_async).with(survey.id)
+          end
+        end
+
+        context "when Ai::Base::DEFAULT_KEY is nil" do
+          before do
+            stub_const("Ai::Base::DEFAULT_KEY", nil)
+            survey.polls.build(prompt_markdown: "Question 1", type_of: :text_input)
+          end
+
+          it "does not enqueue the context generator worker" do
+            survey.save!
+            expect(Surveys::GenerateEmailContextWorker).not_to have_received(:perform_async)
+          end
+        end
+
+        context "when polls are empty" do
+          before do
+            stub_const("Ai::Base::DEFAULT_KEY", "dummy-key")
+          end
+
+          it "does not enqueue the context generator worker" do
+            survey.save!
+            expect(Surveys::GenerateEmailContextWorker).not_to have_received(:perform_async)
+          end
+        end
+      end
+
+      context "when extra_email_context_paragraph is not blank" do
+        let(:survey) { build(:survey, extra_email_context_paragraph: "Existing context") }
+
+        before do
+          stub_const("Ai::Base::DEFAULT_KEY", "dummy-key")
+          survey.polls.build(prompt_markdown: "Question 1", type_of: :text_input)
+        end
+
+        it "does not enqueue the context generator worker" do
+          survey.save!
+          expect(Surveys::GenerateEmailContextWorker).not_to have_received(:perform_async)
+        end
+      end
+    end
   end
 end
