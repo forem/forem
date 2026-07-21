@@ -121,7 +121,9 @@ export class ArticleForm extends Component {
 
     const previousContent =
       JSON.parse(
-        localStorage.getItem(`editor-${version}-${window.location.href}`),
+        localStorage.getItem(
+          `editor-${this.article.id || 'new'}-${new URL(window.location.href).pathname}`,
+        ),
       ) || {};
     const isLocalstorageNewer =
       new Date(previousContent.updatedAt) > new Date(this.article.updated_at);
@@ -194,11 +196,24 @@ export class ArticleForm extends Component {
 
   componentDidMount() {
     window.addEventListener('beforeunload', this.localStoreContent);
+    // Detect when the browser restores this page from the back-forward cache (bfcache).
+    // In that case, this.article is a stale in-memory snapshot from before the last
+    // navigation. Reloading ensures the editor always reflects the server's saved state.
+    window.addEventListener('pageshow', this.handlePageShow);
   }
 
   componentWillUnmount() {
     window.removeEventListener('beforeunload', this.localStoreContent);
+    window.removeEventListener('pageshow', this.handlePageShow);
   }
+
+  // Force a full reload when the browser restores this page from bfcache.
+  // e.persisted === true means the page was served from the cache, not the network.
+  handlePageShow = (e) => {
+    if (e.persisted) {
+      window.location.reload();
+    }
+  };
 
   componentDidUpdate() {
     const { previewResponse } = this.state;
@@ -216,10 +231,10 @@ export class ArticleForm extends Component {
       return;
     }
 
-    const { version, title, tagList, mainImage, bodyMarkdown, videoSourceUrl } = this.state;
+    const { id, title, tagList, mainImage, bodyMarkdown, videoSourceUrl } = this.state;
     const updatedAt = new Date();
     localStorage.setItem(
-      `editor-${version}-${this.url}`,
+      `editor-${id || 'new'}-${new URL(this.url).pathname}`,
       JSON.stringify({
         title,
         tagList,
@@ -365,8 +380,8 @@ export class ArticleForm extends Component {
   };
 
   removeLocalStorage = () => {
-    const { version } = this.state;
-    localStorage.removeItem(`editor-${version}-${this.url}`);
+    const { id } = this.state;
+    localStorage.removeItem(`editor-${id || 'new'}-${new URL(this.url).pathname}`);
     window.removeEventListener('beforeunload', this.localStoreContent);
   };
 
@@ -380,7 +395,13 @@ export class ArticleForm extends Component {
 
     submitArticle({
       payload,
-      onSuccess: () => {
+      onSuccess: (serverResponse) => {
+        // Anchor this.article.updated_at to the server-confirmed save time.
+        // This ensures the localStorage draft-freshness check always uses an
+        // accurate baseline — even if the redirect is delayed or bfcache fires.
+        if (serverResponse?.updated_at) {
+          this.article.updated_at = serverResponse.updated_at;
+        }
         this.removeLocalStorage();
         this.setState({ published: true, submitting: false });
       },
@@ -398,7 +419,11 @@ export class ArticleForm extends Component {
 
     submitArticle({
       payload,
-      onSuccess: () => {
+      onSuccess: (serverResponse) => {
+        // Anchor this.article.updated_at to the server-confirmed save time.
+        if (serverResponse?.updated_at) {
+          this.article.updated_at = serverResponse.updated_at;
+        }
         this.removeLocalStorage();
         this.setState({ published: false, submitting: false });
       },
