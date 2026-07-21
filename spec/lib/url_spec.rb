@@ -165,13 +165,53 @@ RSpec.describe URL, type: :lib do
         expect(described_class.user(user)).to eq("https://community.example.com/#{user.username}")
       end
     end
+
+    context "when an organization is passed" do
+      let(:organization) { create(:organization, custom_domain: "blog.example.com") }
+
+      context "when the org_custom_domain feature flag is enabled" do
+        before do
+          FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor.new(organization))
+        end
+
+        it "returns the custom domain URL" do
+          expect(described_class.user(organization)).to eq("https://blog.example.com")
+        end
+      end
+
+      context "when the org_custom_domain feature flag is disabled" do
+        before do
+          FeatureFlag.disable(:org_custom_domain, FeatureFlag::Actor.new(organization))
+        end
+
+        it "returns the default app domain URL" do
+          expect(described_class.user(organization)).to eq("https://dev.to/#{organization.slug}")
+        end
+      end
+    end
   end
 
   describe ".organization" do
-    let(:organization) { build(:organization) }
+    let(:organization) { create(:organization, custom_domain: "blog.example.com") }
 
-    it "returns the correct URL for a user" do
-      expect(described_class.user(organization)).to eq("https://dev.to/#{organization.slug}")
+    context "when the org_custom_domain feature flag is enabled" do
+      before do
+        FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor.new(organization))
+      end
+
+      it "returns the custom domain URL" do
+        expect(described_class.organization(organization)).to eq("https://blog.example.com")
+      end
+    end
+
+    context "when the org_custom_domain feature flag is disabled" do
+      before do
+        FeatureFlag.disable(:org_custom_domain, FeatureFlag::Actor.new(organization))
+      end
+
+      it "returns the default app domain URL" do
+        expect(described_class.organization(organization)).to eq("https://dev.to/#{organization.slug}")
+      end
     end
   end
 

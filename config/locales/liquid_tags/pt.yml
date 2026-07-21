@@ -144,6 +144,8 @@ pt:
     row_tag:
       no_args: "A tag row não aceita argumentos"
     col_tag:
+      invalid_background: "O plano de fundo deve ser um dos seguintes: default, subtle"
+      invalid_option: "Opção '%{option}' inválida para a tag col"
       invalid_span: "O span deve estar entre 1 e 4"
     org_posts_tag:
       invalid_slug: Slug da organização inválido
@@ -168,11 +170,16 @@ pt:
       missing_author: "A tag quote requer uma opção author"
       invalid_rating: "A avaliação deve estar entre 1 e 5"
       learn_more: "Saiba mais"
+    quotes_tag:
+      no_args: "A tag quotes não aceita argumentos"
     slide_tag:
       missing_image: "A tag slide requer uma opção image"
       missing_content: "A tag slide requer pelo menos um dos seguintes: image, video ou link"
     slides_tag:
       invalid_mode: "O modo slides deve ser 'default' ou 'carousel'"
+      gallery_label: Galeria de mídia
+      previous: Slide anterior
+      next: Próximo slide
     org_lead_form_tag:
       not_found: Formulário de leads não encontrado
       inactive: Este formulário de leads não está mais ativo

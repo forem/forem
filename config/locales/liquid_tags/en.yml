@@ -144,6 +144,8 @@ en:
     row_tag:
       no_args: "The row tag does not accept any arguments"
     col_tag:
+      invalid_background: "Background must be one of: default, subtle"
+      invalid_option: "Invalid option '%{option}' for col tag"
       invalid_span: "Span must be between 1 and 4"
     org_posts_tag:
       invalid_slug: Invalid organization slug
@@ -168,11 +170,16 @@ en:
       missing_author: "Quote tag requires an author option"
       invalid_rating: "Rating must be between 1 and 5"
       learn_more: "Learn more"
+    quotes_tag:
+      no_args: "The quotes tag does not accept any arguments"
     slide_tag:
       missing_image: "Slide tag requires an image option"
       missing_content: "Slide tag requires at least one of: image, video, or link"
     slides_tag:
       invalid_mode: "Slides mode must be 'default' or 'carousel'"
+      gallery_label: Media gallery
+      previous: Previous slide
+      next: Next slide
     org_lead_form_tag:
       not_found: Lead form not found
       inactive: This lead form is no longer active

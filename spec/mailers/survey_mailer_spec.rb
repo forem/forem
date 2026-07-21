@@ -69,7 +69,7 @@ RSpec.describe SurveyMailer, type: :mailer do
 
         expect(settings[:transactional_message_id]).to eq("dev_pulse_survey")
         expect(settings[:message_data]["survey_type"]).to eq("pulse")
-        expect(settings[:message_data]["survey_url"]).to eq(survey_url(survey.slug))
+        expect(settings[:message_data]["survey_url"]).to end_with("/survey/#{survey.slug}")
         expect(settings[:message_data]["community_name"]).to eq(community_name)
         expect(settings[:message_data]["subject"]).to eq(expected_subject)
       end

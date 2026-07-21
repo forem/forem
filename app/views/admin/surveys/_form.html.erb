@@ -37,6 +37,22 @@
       </div>
     </div>
 
+    <div class="crayons-field mb-4 mt-4">
+      <%= f.label :target_response_count, "Target Response Count (Optional)", class: "crayons-field__label" %>
+      <%= f.number_field :target_response_count, class: "crayons-textfield w-100", min: 0, placeholder: "0" %>
+      <div class="color-base-60 fs-s mt-1">
+        Number of completed responses after which the survey will automatically stop gathering (deactivate). Set to 0 or leave blank to disable.
+      </div>
+    </div>
+
+    <div class="crayons-field mb-4 mt-4">
+      <%= f.label :target_completion_date, "Target Completion Date (Optional)", class: "crayons-field__label" %>
+      <%= f.datetime_field :target_completion_date, class: "crayons-textfield w-100" %>
+      <div class="color-base-60 fs-s mt-1">
+        Date and time by which the target response count should be reached. The send volume will be optimized and adjusted over time to try and hit this target.
+      </div>
+    </div>
+
     <div class="crayons-field mb-4 mt-2">
       <%= f.label :extra_email_context_paragraph, "Extra Email Context (Optional)", class: "crayons-field__label" %>
       <%= f.text_area :extra_email_context_paragraph, class: "crayons-textfield w-100", rows: 3, placeholder: "e.g. This is a survey to find out which editor tools the community is using..." %>

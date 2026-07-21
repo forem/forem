@@ -2,9 +2,13 @@ class Survey < ApplicationRecord
   resourcify
   validates :title, presence: true
   validates :slug, uniqueness: true, allow_nil: true
+  validates :target_response_count, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, allow_nil: true
+  validate :target_completion_date_in_future, if: -> { target_completion_date.present? && target_completion_date_changed? }
 
   before_validation :generate_slug, on: :create
+  before_validation :set_default_daily_email_distributions
   before_save :check_for_slug_change
+  after_commit :trigger_extra_email_context_generation, on: [:create, :update], if: -> { extra_email_context_paragraph.blank? && Ai::Base::DEFAULT_KEY.present? }
   has_many :polls, -> { order(:position) }, dependent: :nullify, inverse_of: :survey
   has_many :poll_votes, through: :polls
   has_many :survey_completions, dependent: :destroy
@@ -76,7 +80,30 @@ class Survey < ApplicationRecord
     survey_completions.exists?(user: user)
   end
 
+  def target_based?
+    target_response_count.to_i > 0 && target_completion_date.present?
+  end
+
   private
+
+  def target_completion_date_in_future
+    if target_completion_date < Time.current
+      errors.add(:target_completion_date, "must be in the future")
+    end
+  end
+
+  def set_default_daily_email_distributions
+    if target_based? && daily_email_distributions.to_i == 0
+      days_remaining = (target_completion_date.to_time - Time.current).to_f / 1.day
+      if days_remaining > 0
+        completions_needed = target_response_count - survey_completions.count
+        if completions_needed > 0
+          daily_rate = completions_needed.to_f / days_remaining
+          self.daily_email_distributions = [(daily_rate * 200).round, 1].max
+        end
+      end
+    end
+  end
 
   def generate_slug
     return if title.blank?
@@ -90,5 +117,12 @@ class Survey < ApplicationRecord
 
     self.old_old_slug = old_slug
     self.old_slug = slug_was
+  end
+
+  def trigger_extra_email_context_generation
+    return if title.blank?
+    return if polls.reject(&:marked_for_destruction?).empty?
+
+    Surveys::GenerateEmailContextWorker.perform_async(id)
   end
 end
