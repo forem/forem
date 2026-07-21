@@ -118,6 +118,31 @@ RSpec.describe URL, type: :lib do
     it "returns the correct URL for an article" do
       expect(described_class.article(article)).to eq("https://dev.to#{article.path}")
     end
+
+    context "when article belongs to an organization with a custom domain" do
+      let(:organization) { create(:organization, custom_domain: "blog.example.com") }
+      let(:article) { create(:article, organization: organization) }
+
+      context "when the org_custom_domain feature flag is enabled" do
+        before do
+          FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor.new(organization))
+        end
+
+        it "returns the custom domain URL" do
+          expect(described_class.article(article)).to eq("https://blog.example.com/#{article.slug}")
+        end
+      end
+
+      context "when the org_custom_domain feature flag is disabled" do
+        before do
+          FeatureFlag.disable(:org_custom_domain, FeatureFlag::Actor.new(organization))
+        end
+
+        it "returns the default app domain URL" do
+          expect(described_class.article(article)).to eq("https://dev.to#{article.path}")
+        end
+      end
+    end
   end
 
   describe ".comment" do
