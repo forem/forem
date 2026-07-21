@@ -6,6 +6,7 @@ fr:
         heading: Page d'organisation entièrement personnalisable
         cover_image: Image de couverture
         cover_image_hint: "Format recommandé : 8:1 (par ex. 1600×200 ou 2400×300)"
+        remove_cover_image: Supprimer l’image de couverture
         readme: Contenu de la page (Markdown)
         readme_placeholder: "Utilisez Markdown et les balises Liquid pour personnaliser votre page d'organisation.\n\nExemple :\n{% org_team votre-slug-org %}\n{% org_team votre-slug-org role=admins limit=5 %}\n{% org_posts votre-slug-org %}\n{% org_posts votre-slug-org limit=5 sort=reactions min_reactions=10 since=30d %}\n{% org_lead_form 42 %}"
         default_notice: "Votre page utilise actuellement la mise en page par défaut."

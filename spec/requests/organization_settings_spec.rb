@@ -33,6 +33,16 @@ RSpec.describe "OrganizationSettings" do
           expect(response.body).to include("Showcase")
         end
       end
+
+      it "shows the remove cover image control when a cover image exists" do
+        FeatureFlag.add(:org_readme)
+        FeatureFlag.enable(:org_readme, FeatureFlag::Actor[organization])
+        organization.update!(cover_image: fixture_file_upload("800x600.png", "image/png"))
+
+        get "/#{organization.slug}/settings"
+
+        expect(response.body).to include("organization_remove_cover_image")
+      end
     end
 
     context "when signed in as non-admin member" do
@@ -60,6 +70,40 @@ RSpec.describe "OrganizationSettings" do
 
   describe "PATCH /:slug/settings" do
     before { sign_in user }
+
+    context "when org_readme is enabled" do
+      before do
+        FeatureFlag.add(:org_readme)
+        FeatureFlag.enable(:org_readme, FeatureFlag::Actor[organization])
+      end
+
+      it "removes an existing cover image" do
+        organization.update!(cover_image: fixture_file_upload("800x600.png", "image/png"))
+
+        patch "/#{organization.slug}/settings", params: {
+          organization: { remove_cover_image: "1" }
+        }
+
+        expect(organization.reload.cover_image).to be_blank
+      end
+    end
+
+    context "when org_readme is disabled" do
+      before do
+        FeatureFlag.add(:org_readme)
+        FeatureFlag.disable(:org_readme, FeatureFlag::Actor[organization])
+      end
+
+      it "does not remove a cover image" do
+        organization.update!(cover_image: fixture_file_upload("800x600.png", "image/png"))
+
+        patch "/#{organization.slug}/settings", params: {
+          organization: { remove_cover_image: "1" }
+        }
+
+        expect(organization.reload.cover_image).to be_present
+      end
+    end
 
     it "updates organization profile fields" do
       patch "/#{organization.slug}/settings", params: {
