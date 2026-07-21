@@ -6939,7 +6939,7 @@
           "daily_email_distributions": {
             "type": "integer",
             "format": "int32",
-            "description": "Daily emails distributions limit"
+            "description": "Daily email distributions count"
           },
           "extra_email_context_paragraph": {
             "type": "string",
@@ -6955,7 +6955,7 @@
             "type": "string",
             "format": "date-time",
             "nullable": true,
-            "description": "Target completion date in future"
+            "description": "Target completion date in the future"
           },
           "created_at": {
             "type": "string",
@@ -7045,7 +7045,7 @@
               "daily_email_distributions": {
                 "type": "integer",
                 "format": "int32",
-                "description": "Daily emails distributions limit"
+                "description": "Daily email distributions count"
               },
               "extra_email_context_paragraph": {
                 "type": "string",
@@ -7061,7 +7061,7 @@
                 "type": "string",
                 "format": "date-time",
                 "nullable": true,
-                "description": "Target completion date in future"
+                "description": "Target completion date in the future"
               },
               "polls": {
                 "type": "array",
