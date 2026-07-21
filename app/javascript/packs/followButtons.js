@@ -129,7 +129,16 @@ function optimisticallyUpdateButtonUI(button) {
     switch (newState) {
       case 'follow':
       case 'follow-back':
-        updateFollowButton(matchingButton, newState, buttonInfo);
+        // Clicking when verb is follow/follow-back means we will end up FOLLOWING
+        updateFollowingButton(matchingButton, style);
+        if (newState === 'follow-back') {
+          matchingButton.dataset.wasFollowBack = 'true';
+        }
+        break;
+      case 'unfollow':
+        // end up in a FOLLOW or FOLLOW BACK state
+        const prev = matchingButton.dataset.wasFollowBack === 'true' ? 'follow-back' : 'follow';
+        updateFollowButton(matchingButton, prev, buttonInfo);
         break;
       case 'login':
         addButtonFollowText(matchingButton, style);
@@ -151,7 +160,8 @@ function optimisticallyUpdateButtonUI(button) {
  */
 function updateFollowingButton(button, style) {
   const { name, className } = JSON.parse(button.dataset.info);
-  button.dataset.verb = 'follow';
+  // When UI shows "Following", the next click should UNFOLLOW
+  button.dataset.verb = 'unfollow';
   addButtonFollowingText(button, style);
   button.classList.remove('crayons-btn--primary');
   button.classList.remove('crayons-btn--secondary');
@@ -184,7 +194,7 @@ function updateUserOwnFollowButton(button) {
  * Update the UI of the given button to the 'follow' or 'follow-back' state
  *
  * @param {HTMLElement} button The Follow button to be updated
- * @param {string} newState The new follow state of the button
+ * @param {string} newState The new follow state of the button ('follow' or 'follow-back')
  * @param {Object} buttonInfo The parsed info object obtained from the button's dataset
  * @param {string} buttonInfo.style The style of the follow button (e.g 'small')
  * @param {string} buttonInfo.followStyle The crayons button variant (e.g 'primary')
@@ -192,13 +202,21 @@ function updateUserOwnFollowButton(button) {
 function updateFollowButton(button, newState, buttonInfo) {
   const { style, followStyle } = buttonInfo;
 
-  button.dataset.verb = 'unfollow';
+  // When UI shows "Follow" / "Follow Back", the next click should FOLLOW
+  button.dataset.verb = 'follow';
   button.classList.remove('crayons-btn--outlined');
 
-  if (followStyle === 'primary') {
-    button.classList.add('crayons-btn--primary');
-  } else if (followStyle === 'secondary') {
-    button.classList.add('crayons-btn--secondary');
+  // Only adjust primary/secondary variant if followStyle is explicitly provided.
+  if (followStyle) {
+    // Normalize by clearing existing variants, then apply the requested one.
+    button.classList.remove('crayons-btn--primary');
+    button.classList.remove('crayons-btn--secondary');
+
+    if (followStyle === 'primary') {
+      button.classList.add('crayons-btn--primary');
+    } else if (followStyle === 'secondary') {
+      button.classList.add('crayons-btn--secondary');
+    }
   }
 
   const nextButtonStyle = newState === 'follow-back' ? newState : style;
@@ -210,7 +228,7 @@ function updateFollowButton(button, newState, buttonInfo) {
  *
  * @param {HTMLElement} target The target of the click event
  */
-function handleFollowButtonClick({ target }) {
+function handleFollowButtonClick({ target }, verb) {
   if (
     target.classList.contains('follow-action-button') ||
     target.classList.contains('follow-user') ||
@@ -228,14 +246,12 @@ function handleFollowButtonClick({ target }) {
       showLoginModal(trackingData);
       return;
     }
+    optimisticallyUpdateButtonUI(target, verb);
 
     const buttonInfo = JSON.parse(target.dataset.info);
     removeCachedFollowButtonStatus(buttonInfo);
     optimisticallyUpdateButtonUI(target);
     browserStoreCache('remove');
-
-    const { verb } = target.dataset;
-
     if (verb === 'self') {
       window.location.href = '/settings';
       return;
@@ -298,20 +314,24 @@ function updateInitialButtonUI(followStatus, button) {
 
   switch (followStatus) {
     case 'true':
-    case 'mutual':
+    case 'mutual': // Already following
       updateFollowingButton(button, style);
       break;
-    case 'follow-back':
+    case 'follow-back': // They follow you, you don't follow them yet
       addButtonFollowText(button, followStatus);
+      // Ensure the next click performs FOLLOW and remember follow-back context
+      button.dataset.verb = 'follow';
+      button.dataset.wasFollowBack = 'true';
       break;
-    case 'false':
+    case 'false': // Neither side follows. show Follow
       updateFollowButton(button, 'follow', buttonInfo);
       break;
     case 'self':
       updateUserOwnFollowButton(button);
       break;
     default:
-      addButtonFollowText(button, style);
+      addButtonFollowText(button, style); // Default to follow on click
+      button.dataset.verb = 'follow';
   }
 }
 
