@@ -587,10 +587,10 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               active: { type: :boolean, nullable: true, description: "Whether the survey is currently active" },
               display_title: { type: :boolean, description: "Whether to show the title to respondents" },
               allow_resubmission: { type: :boolean, description: "Whether users can submit multiple times" },
-              daily_email_distributions: { type: :integer, format: :int32, description: "Daily emails distributions limit" },
+              daily_email_distributions: { type: :integer, format: :int32, description: "Daily email distributions count" },
               extra_email_context_paragraph: { type: :string, nullable: true, description: "Optional context paragraph for emails" },
               target_response_count: { type: :integer, format: :int32, description: "Target response count" },
-              target_completion_date: { type: :string, format: "date-time", nullable: true, description: "Target completion date in future" },
+              target_completion_date: { type: :string, format: "date-time", nullable: true, description: "Target completion date in the future" },
               created_at: { type: :string, format: "date-time" },
               updated_at: { type: :string, format: "date-time" }
             },
@@ -626,10 +626,10 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
                   active: { type: :boolean, description: "Whether the survey is active" },
                   display_title: { type: :boolean, description: "Whether to show the title to respondents" },
                   allow_resubmission: { type: :boolean, description: "Whether users can submit multiple times" },
-                  daily_email_distributions: { type: :integer, format: :int32, description: "Daily emails distributions limit" },
+                  daily_email_distributions: { type: :integer, format: :int32, description: "Daily email distributions count" },
                   extra_email_context_paragraph: { type: :string, nullable: true, description: "Optional context paragraph for emails" },
                   target_response_count: { type: :integer, format: :int32, description: "Target response count" },
-                  target_completion_date: { type: :string, format: "date-time", nullable: true, description: "Target completion date in future" },
+                  target_completion_date: { type: :string, format: "date-time", nullable: true, description: "Target completion date in the future" },
                   polls: {
                     type: :array,
                     items: {
