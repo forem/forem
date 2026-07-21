@@ -19,6 +19,22 @@ RSpec.describe "/admin/content_manager/badge_achievements" do
     let(:request) { get admin_badges_path }
   end
 
+  describe "GET /admin/content_manager/badge_achievements" do
+    before { sign_in admin }
+
+    it "renders sort links in table headers" do
+      create(:badge_achievement, badge: badge)
+      get admin_badge_achievements_path
+      expect(response.body).to include("Sort by User ID")
+    end
+
+    it "sorts by user_id ascending when requested" do
+      create(:badge_achievement, badge: badge)
+      get admin_badge_achievements_path, params: { q: { s: "user_id asc" } }
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
   describe "POST /admin/content_manager/badge_achievements/award_badges" do
     let(:user) { create(:user) }
     let(:user2) { create(:user) }

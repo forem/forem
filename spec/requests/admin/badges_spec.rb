@@ -20,6 +20,21 @@ RSpec.describe "/admin/content_manager/badge_achievements" do
     let(:request) { get admin_badges_path }
   end
 
+  describe "GET /admin/content_manager/badges" do
+    before { sign_in admin }
+
+    it "renders sort links in table headers" do
+      get admin_badges_path
+      expect(response.body).to include("Sort by Title")
+      expect(response.body).to include("Sort by Slug")
+    end
+
+    it "sorts by title descending when requested" do
+      get admin_badges_path, params: { q: { s: "title desc" } }
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
   describe "POST /admin/content_manager/badge_achievements" do
     let(:post_resource) { post admin_badges_path, params: params }
 

@@ -27,6 +27,24 @@ RSpec.describe "/admin/content_manager/podcasts" do
       expect(response.body).to include(CGI.escapeHTML(no_eps_podcast.title))
       expect(response.body).to include(CGI.escapeHTML(podcast.title))
     end
+
+    it "renders sort links in table headers" do
+      get admin_podcasts_path
+      expect(response.body).to include("Sort by ID")
+      expect(response.body).to include("Sort by Title")
+      expect(response.body).to include("Sort by Reachable")
+      expect(response.body).to include("Sort by Published")
+    end
+
+    it "sorts by title ascending when requested" do
+      get admin_podcasts_path, params: { q: { s: "title asc" } }
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "filters by title using ransack search" do
+      get admin_podcasts_path, params: { q: { title_cont: podcast.title } }
+      expect(response.body).to include(CGI.escapeHTML(podcast.title))
+    end
   end
 
   describe "Adding owner" do
