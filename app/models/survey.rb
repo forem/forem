@@ -8,7 +8,7 @@ class Survey < ApplicationRecord
   before_validation :generate_slug, on: :create
   before_validation :set_default_daily_email_distributions
   before_save :check_for_slug_change
-  before_save :generate_extra_email_context, if: -> { extra_email_context_paragraph.blank? && Ai::Base::DEFAULT_KEY.present? }
+  after_commit :trigger_extra_email_context_generation, on: [:create, :update], if: -> { extra_email_context_paragraph.blank? && Ai::Base::DEFAULT_KEY.present? }
   has_many :polls, -> { order(:position) }, dependent: :nullify, inverse_of: :survey
   has_many :poll_votes, through: :polls
   has_many :survey_completions, dependent: :destroy
@@ -119,17 +119,10 @@ class Survey < ApplicationRecord
     self.old_slug = slug_was
   end
 
-  def generate_extra_email_context
-    return if @generating_extra_email_context
+  def trigger_extra_email_context_generation
     return if title.blank?
     return if polls.reject(&:marked_for_destruction?).empty?
 
-    @generating_extra_email_context = true
-    generated_context = Ai::SurveyContextGenerator.new(self).call
-    self.extra_email_context_paragraph = generated_context if generated_context.present?
-  rescue StandardError => e
-    Rails.logger.error("Failed to generate AI survey email context: #{e.message}")
-  ensure
-    @generating_extra_email_context = false
+    Surveys::GenerateEmailContextWorker.perform_async(id)
   end
 end

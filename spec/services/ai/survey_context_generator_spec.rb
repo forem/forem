@@ -4,7 +4,7 @@ RSpec.describe Ai::SurveyContextGenerator, type: :service do
   let(:survey) { create(:survey, title: "App Performance Monitoring Survey") }
   let!(:poll1) { create(:poll, survey: survey, prompt_markdown: "What is your main APM tool?") }
   let!(:poll2) { create(:poll, survey: survey, prompt_markdown: "How satisfied are you with its latency tracking?") }
-  
+
   let(:ai_client) { instance_double(Ai::Base) }
 
   before do
