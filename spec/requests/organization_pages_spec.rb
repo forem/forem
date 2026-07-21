@@ -92,6 +92,14 @@ RSpec.describe "Organization Pages Controller Backend Protection" do
       expect(readme_page.slug).to eq("#{organization.slug}/readme")
     end
 
+    it "enqueues an edge cache bust for the page and its organization" do
+      sidekiq_assert_enqueued_with(job: Pages::BustCacheWorker, args: [readme_page.slug, organization.id]) do
+        patch update_organization_page_path(organization.slug, readme_page), params: {
+          page: { title: "Updated Showcase Title" }
+        }
+      end
+    end
+
     it "fails and returns 422 if the updated slug suffix is invalid" do
       patch update_organization_page_path(organization.slug, custom_page), params: {
         page: { title: "New Title", slug_suffix: "!!!" }
