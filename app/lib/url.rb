@@ -46,6 +46,13 @@ module URL
   #
   # @param article [Article] the article to create the URL for
   def self.article(article)
+    if article.respond_to?(:organization_id) && article.organization_id.present? && article.respond_to?(:organization)
+      org = article.organization
+      if org&.custom_domain.present? && FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
+        return url("/#{article.slug}", org.custom_domain)
+      end
+    end
+
     return url(article.path) unless article.respond_to?(:subforem_id)
     
     # Use cached lookup to avoid N+1 queries
