@@ -122,6 +122,7 @@ class Survey < ApplicationRecord
   def generate_extra_email_context
     return if @generating_extra_email_context
     return if title.blank?
+    return if polls.reject(&:marked_for_destruction?).empty?
 
     @generating_extra_email_context = true
     generated_context = Ai::SurveyContextGenerator.new(self).call
