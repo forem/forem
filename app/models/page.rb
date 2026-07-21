@@ -158,7 +158,13 @@ class Page < ApplicationRecord
   end
 
   def bust_cache
-    Pages::BustCacheWorker.perform_async(slug)
+    # Keep the historical single-arg form for non-org pages so the
+    # until_executing unique-job lock digest stays stable and jobs coalesce.
+    if organization_id
+      Pages::BustCacheWorker.perform_async(slug, organization_id)
+    else
+      Pages::BustCacheWorker.perform_async(slug)
+    end
   end
 
   def validate_redirect_to_url
