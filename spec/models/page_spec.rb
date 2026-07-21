@@ -199,6 +199,26 @@ RSpec.describe Page do
         expect(page).not_to be_valid
         expect(page.errors[:base]).to include(I18n.t("liquid_tags.org_lead_form_tag.wrong_organization"))
       end
+
+      it "preserves descriptive errors from invalid Liquid tag references" do
+        organization = create(:organization)
+        invalid_tags = {
+          "{% podcast /missing-podcast/missing-episode %}" =>
+            I18n.t("liquid_tags.podcast_tag.invalid_podcast_link"),
+          "{% agent_session missing-session %}" =>
+            I18n.t("liquid_tags.agent_session_tag.not_found"),
+          "{% event 999999999 %}" => I18n.t("liquid_tags.event_tag.not_found")
+        }
+
+        aggregate_failures do
+          invalid_tags.each do |body_markdown, error_message|
+            page = build(:page, organization: organization, body_markdown: body_markdown)
+
+            expect(page).not_to be_valid
+            expect(page.errors[:base]).to include(error_message)
+          end
+        end
+      end
     end
   end
 
