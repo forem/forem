@@ -193,8 +193,17 @@ RSpec.describe Page do
     let(:page) { create(:page) }
 
     it "triggers cache busting on save" do
-      sidekiq_assert_enqueued_with(job: Pages::BustCacheWorker, args: [page.slug]) do
+      sidekiq_assert_enqueued_with(job: Pages::BustCacheWorker, args: [page.slug, nil]) do
         page.save
+      end
+    end
+
+    it "passes the organization id to the cache bust worker for organization pages" do
+      organization = create(:organization)
+      org_page = create(:page, organization: organization, slug: "#{organization.slug}/readme")
+
+      sidekiq_assert_enqueued_with(job: Pages::BustCacheWorker, args: [org_page.slug, organization.id]) do
+        org_page.save
       end
     end
 

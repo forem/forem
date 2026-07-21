@@ -158,7 +158,7 @@ class Page < ApplicationRecord
   end
 
   def bust_cache
-    Pages::BustCacheWorker.perform_async(slug)
+    Pages::BustCacheWorker.perform_async(slug, organization_id)
   end
 
   def validate_redirect_to_url
