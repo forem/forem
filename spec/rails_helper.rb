@@ -38,6 +38,7 @@ require "fakeredis/rspec"
 require "pundit/matchers"
 require "pundit/rspec"
 require "sidekiq/testing"
+require_relative "support/rspec_retry_policy"
 require "test_prof/factory_prof/nate_heckler"
 require "validate_url/rspec_matcher"
 require "webmock/rspec"
@@ -104,14 +105,15 @@ RSpec.configure do |config|
   config.default_retry_count = 3
   config.exceptions_to_retry = [PGConnectionBadMatcher]
 
-  # To solve cascading failures across the whole file after a DB connection drop, 
+  # To solve cascading failures across the whole file after a DB connection drop,
   # we force a reconnection on exception.
-  config.retry_callback = proc do |ex|
-    if ex.exception && PGConnectionBadMatcher === ex.exception
-      puts "Retrying due to PG::ConnectionBad. Reconnecting to the database."
-      ActiveRecord::Base.connection_pool.disconnect!
-    end
+  reconnect_database = proc do |ex|
+    next unless ex.exception && (PGConnectionBadMatcher === ex.exception) # rubocop:disable Style/CaseEquality
+
+    puts "Retrying due to PG::ConnectionBad. Reconnecting to the database."
+    ActiveRecord::Base.connection_pool.disconnect!
   end
+  config.retry_callback = RSpecRetryPolicy.compose_callbacks(config.retry_callback, reconnect_database)
 
   config.use_transactional_fixtures = true
   config.fixture_paths = [Rails.root.join("spec/fixtures")]
@@ -192,7 +194,7 @@ RSpec.configure do |config|
   end
 
   config.around(:each, :flaky) do |ex|
-    ex.run_with_retry retry: 5
+    ex.run_with_retry(**RSpecRetryPolicy::FLAKY_OPTIONS)
   end
 
   config.around(:each, :throttle) do |example|
@@ -326,4 +328,3 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 end
-

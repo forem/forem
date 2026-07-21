@@ -365,6 +365,21 @@ RSpec.describe "Pages" do
       text = "Sitemap: #{URL.url('sitemap-index.xml')}"
       expect(response.body).to include(text)
     end
+
+    context "when requested on a custom domain organization" do
+      let(:organization) { create(:organization, custom_domain: "blog.mlh.com") }
+
+      before do
+        allow(Settings::General).to receive(:app_domain).and_return("forem.com")
+        FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor.new(organization))
+      end
+
+      it "points the sitemap to the custom domain sitemap-index.xml" do
+        get "http://blog.mlh.com/robots.txt"
+
+        expect(response.body).to include("Sitemap: http://blog.mlh.com/sitemap-index.xml")
+      end
+    end
   end
 
   describe "GET /report-abuse" do
