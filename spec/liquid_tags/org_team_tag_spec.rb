@@ -107,28 +107,14 @@ RSpec.describe OrgTeamTag, type: :liquid_tag do
       user
     end
 
-    it "shows only admins with role=admins" do
-      liquid = parse_tag("#{organization.slug} role=admins")
-      rendered = liquid.render
-      expect(rendered).to include(admin_user.username)
-      expect(rendered).not_to include(member_user.username)
-      expect(rendered).not_to include(guest_user.username)
-    end
+    it "does not expose membership roles through filtering" do
+      %w[admins members all].each do |role|
+        rendered = parse_tag("#{organization.slug} role=#{role}").render
 
-    it "shows only members (non-admin, non-guest) with role=members" do
-      liquid = parse_tag("#{organization.slug} role=members")
-      rendered = liquid.render
-      expect(rendered).to include(member_user.username)
-      expect(rendered).not_to include(admin_user.username)
-      expect(rendered).not_to include(guest_user.username)
-    end
-
-    it "shows all active users with role=all" do
-      liquid = parse_tag("#{organization.slug} role=all")
-      rendered = liquid.render
-      expect(rendered).to include(admin_user.username)
-      expect(rendered).to include(member_user.username)
-      expect(rendered).to include(guest_user.username)
+        expect(rendered).to include(admin_user.username)
+        expect(rendered).to include(member_user.username)
+        expect(rendered).to include(guest_user.username)
+      end
     end
 
     it "defaults to all active users" do
