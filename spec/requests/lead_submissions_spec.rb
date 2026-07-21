@@ -21,16 +21,20 @@ RSpec.describe "LeadSubmissions" do
         expect(submission.name).to eq(user.name)
         expect(submission.email).to eq(user.email)
         expect(submission.username).to eq(user.username)
+        expect(parsed["submitted_at"]).to eq(submission.created_at.iso8601)
       end
 
-      it "prevents duplicate submissions" do
-        create(:lead_submission, organization_lead_form: lead_form, user: user)
+      it "treats duplicate submissions as successful" do
+        existing_submission = create(:lead_submission, organization_lead_form: lead_form, user: user)
 
-        post "/lead_submissions", params: { organization_lead_form_id: lead_form.id }, as: :json
+        expect do
+          post "/lead_submissions", params: { organization_lead_form_id: lead_form.id }, as: :json
+        end.not_to change(LeadSubmission, :count)
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:ok)
         parsed = response.parsed_body
-        expect(parsed["success"]).to be false
+        expect(parsed["success"]).to be true
+        expect(parsed["submitted_at"]).to eq(existing_submission.created_at.iso8601)
       end
 
       it "rejects submissions to inactive forms" do
