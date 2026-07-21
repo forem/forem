@@ -46,19 +46,6 @@ module URL
   #
   # @param article [Article] the article to create the URL for
   def self.article(article)
-    org_id = article.respond_to?(:organization_id) ? article.organization_id : nil
-    if org_id.present?
-      custom_domain = MemoryFirstCache.fetch("org_custom_domain:#{org_id}", redis_expires_in: 12.hours, return_type: :string) do
-        Organization.where(id: org_id).pick(:custom_domain).to_s
-      end
-      if custom_domain.present?
-        org = article.organization
-        if org && FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
-          return url("/#{article.slug}", custom_domain)
-        end
-      end
-    end
-
     return url(article.path) unless article.respond_to?(:subforem_id)
     
     # Use cached lookup to avoid N+1 queries
@@ -134,6 +121,13 @@ module URL
   #
   # @param user [User] the user to create the URL for
   def self.user(user)
+    if user.respond_to?(:custom_domain) && user.custom_domain.present?
+      org = user.respond_to?(:to_model) ? user.to_model : user
+      if FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
+        return url(nil, user.custom_domain)
+      end
+    end
+
     # Use cached lookup to avoid N+1 queries
     subforem_id = RequestStore.store[:subforem_id]
     
@@ -167,6 +161,12 @@ module URL
   end
 
   def self.organization(organization)
+    if organization.respond_to?(:custom_domain) && organization.custom_domain.present?
+      org = organization.respond_to?(:to_model) ? organization.to_model : organization
+      if FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
+        return url(nil, organization.custom_domain)
+      end
+    end
     url(organization.slug)
   end
 end
