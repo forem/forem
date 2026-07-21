@@ -263,5 +263,53 @@ RSpec.describe Survey, type: :model do
         expect(survey.daily_email_distributions).to eq(15)
       end
     end
+
+    describe "AI context generation callback" do
+      context "when extra_email_context_paragraph is blank" do
+        let(:survey) { build(:survey, extra_email_context_paragraph: nil) }
+
+        context "when Ai::Base::DEFAULT_KEY is present" do
+          let(:generator) { instance_double(Ai::SurveyContextGenerator, call: "Generated context paragraph") }
+
+          before do
+            stub_const("Ai::Base::DEFAULT_KEY", "dummy-key")
+            allow(Ai::SurveyContextGenerator).to receive(:new).with(survey).and_return(generator)
+          end
+
+          it "calls the context generator and sets the paragraph" do
+            survey.save!
+            expect(survey.extra_email_context_paragraph).to eq("Generated context paragraph")
+          end
+        end
+
+        context "when Ai::Base::DEFAULT_KEY is nil" do
+          before do
+            stub_const("Ai::Base::DEFAULT_KEY", nil)
+            allow(Ai::SurveyContextGenerator).to receive(:new)
+          end
+
+          it "does not call the context generator and keeps the paragraph blank" do
+            survey.save!
+            expect(survey.extra_email_context_paragraph).to be_nil
+            expect(Ai::SurveyContextGenerator).not_to have_received(:new)
+          end
+        end
+      end
+
+      context "when extra_email_context_paragraph is not blank" do
+        let(:survey) { build(:survey, extra_email_context_paragraph: "Existing context") }
+
+        before do
+          stub_const("Ai::Base::DEFAULT_KEY", "dummy-key")
+          allow(Ai::SurveyContextGenerator).to receive(:new)
+        end
+
+        it "does not overwrite the existing paragraph" do
+          survey.save!
+          expect(survey.extra_email_context_paragraph).to eq("Existing context")
+          expect(Ai::SurveyContextGenerator).not_to have_received(:new)
+        end
+      end
+    end
   end
 end
