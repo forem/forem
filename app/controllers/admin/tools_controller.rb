@@ -22,6 +22,16 @@ module Admin
       redirect_to admin_tools_path
     end
 
+    def regenerate_social_images
+      user = User.find(params[:user_id].to_i)
+      Images::SocialImageWorker.perform_async(user.id, "User")
+      flash[:success] = I18n.t("admin.tools_controller.social_images_queued", user: user.username)
+      redirect_to admin_tools_path
+    rescue ActiveRecord::RecordNotFound
+      flash[:danger] = I18n.t("admin.tools_controller.user_not_found")
+      redirect_to admin_tools_path
+    end
+
     def feed_playground
       return if params[:config].blank?
 
