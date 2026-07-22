@@ -76,6 +76,21 @@ gem "omniauth-google-oauth2", "~> 1.0" # OmniAuth strategy for Google OAuth2
 gem "omniauth-mlh", "~> 4.1"
 gem "omniauth-rails_csrf_protection", "~> 2.0" # Provides CSRF protection on OmniAuth request endpoint on Rails application.
 gem "omniauth-twitter", "~> 1.4" # OmniAuth strategy for Twitter
+# Pilot (2026-07): OpenTelemetry tracing to Better Stack, alongside ddtrace (Datadog).
+# See config/initializers/opentelemetry.rb. require: false keeps these inert at
+# boot; the initializer requires them only when BETTER_STACK_OTLP_TOKEN is set.
+gem "opentelemetry-exporter-otlp", "~> 0.30", require: false
+gem "opentelemetry-instrumentation-active_record", "~> 0.9", require: false
+gem "opentelemetry-instrumentation-concurrent_ruby", "~> 0.22", require: false
+gem "opentelemetry-instrumentation-excon", "~> 0.23", require: false
+gem "opentelemetry-instrumentation-faraday", "~> 0.26", require: false
+gem "opentelemetry-instrumentation-http", "~> 0.25", require: false
+gem "opentelemetry-instrumentation-net_http", "~> 0.23", require: false
+gem "opentelemetry-instrumentation-pg", "~> 0.30", require: false
+gem "opentelemetry-instrumentation-rails", "~> 0.36", require: false
+gem "opentelemetry-instrumentation-redis", "~> 0.26", require: false
+gem "opentelemetry-instrumentation-sidekiq", "~> 0.26", require: false
+gem "opentelemetry-sdk", "~> 1.8", require: false
 gem "parallel", "~> 1.22" # Run any kind of code in parallel processes
 gem "pg", "~> 1.6" # Pg is the Ruby interface to the PostgreSQL RDBMS
 gem "pg_query", ">= 6.0.0" # Allows PGHero to analyze queries
@@ -104,6 +119,8 @@ gem "rouge", "~> 4.2" # A pure-ruby code highlighter
 gem "rss", "~> 0.2.9" # Ruby's standard library for RSS
 gem "rubyzip", "~> 2.4" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
+gem "sentry-rails", "~> 5.19" # Pilot: ships errors to Better Stack (Sentry-protocol compatible)
+gem "sentry-ruby", "~> 5.19" # Pilot: see config/initializers/sentry.rb, runs alongside Honeybadger
 gem "sidekiq", "~> 6.5.3" # Sidekiq is used to process background jobs with the help of Redis
 gem "sidekiq-throttled", "~> 1.5" # Concurrency control for Sidekiq
 gem "sidekiq-cron", "~> 1.7" # Allows execution of scheduled cron jobs as specific times
