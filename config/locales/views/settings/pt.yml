@@ -134,6 +134,7 @@ pt:
             title: Cancelar convite
             text: Cancelar Convite
           you: Você
+          sole_admin: Único administrador
           grow: Expandir a equipe
           grow_description: Convide novos membros para sua organização usando um dos métodos abaixo.
           secret_instructions: "Compartilhe estas instruções com seus colegas de equipe:"

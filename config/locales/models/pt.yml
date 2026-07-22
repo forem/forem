@@ -90,6 +90,8 @@ pt:
       header_cta_url_invalid: "O link deve ser uma URL HTTP, HTTPS ou Mailto válida"
       social_link_invalid: "deve ser URLs HTTP ou HTTPS válidas"
       social_link_domain_mismatch: "O domínio da URL deve corresponder à plataforma selecionada (%{platform})"
+    organization_membership:
+      last_admin: "A organização deve ter pelo menos um administrador."
     lead_submission:
       already_submitted: Você já enviou este formulário.
     page:
