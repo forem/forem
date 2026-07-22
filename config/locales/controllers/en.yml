@@ -46,6 +46,11 @@ en:
       created: Your feed source has been added and an import has been triggered.
       updated: Your feed source has been updated.
       deleted: Your feed source has been removed.
+    xml_imports:
+      success: "Imported %{count} article(s) from pasted XML."
+      blank: "XML content cannot be blank."
+      too_large: "XML content is too large (max 500KB)."
+      invalid_xml: "Could not parse XML — ensure it is a valid RSS or Atom feed."
   feedback_messages_controller:
     error_fill: "Make sure the forms are filled. 🤖 Other possible errors: %{errors}"
     n_a: N/A
