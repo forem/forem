@@ -26,7 +26,7 @@ export const SidebarUser = ({ followUser, user }) => {
         </h5>
         <button
           data-testid="widget-follow-button"
-          className="widget-list-item__follow-button"
+          className={`crayons-btn ${user.following ? 'crayons-btn--outlined' : 'crayons-btn--secondary'} fs-s`}
           type="button"
           onClick={onClick}
           id={`widget-list-item__follow-button-${user.username}`}

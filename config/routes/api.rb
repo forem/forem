@@ -15,6 +15,9 @@ resources :articles, only: %i[index show create update] do
 end
 
 resources :subforems, only: [:index]
+resources :trends, only: %i[index show], param: :id_or_slug do
+  resources :articles, only: [:index], to: "trends#articles"
+end
 resources :comments, only: %i[index show]
 resources :videos, only: [:index]
 resources :podcast_episodes, only: [:index]
@@ -65,7 +68,7 @@ resources :organizations, only: [:show], param: :id_or_slug do
   resources :articles, only: [:index], to: "organizations#articles"
 end
 
-resources :surveys, only: %i[index show], param: :id_or_slug do
+resources :surveys, only: %i[index show create update destroy], param: :id_or_slug do
   member do
     get :poll_votes
     get :poll_text_responses

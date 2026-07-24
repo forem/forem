@@ -19,6 +19,38 @@ RSpec.describe LinkedDomain, type: :model do
     end
   end
 
+  describe ".find_or_create_by_url" do
+    context "with a valid URL" do
+      it "returns a persisted LinkedDomain" do
+        domain = described_class.find_or_create_by_url("https://example.com/some/page")
+        expect(domain).to be_persisted
+        expect(domain.host).to eq("example.com")
+      end
+
+      it "reuses an existing LinkedDomain if already present" do
+        existing = described_class.create!(host: "example.com")
+        domain = described_class.find_or_create_by_url("https://example.com/other")
+        expect(domain).to eq(existing)
+      end
+    end
+
+    context "with a URL with an empty/blank host" do
+      it "returns nil for 'https://'" do
+        expect(described_class.find_or_create_by_url("https://")).to be_nil
+      end
+
+      it "returns nil for invalid/empty URL" do
+        expect(described_class.find_or_create_by_url("")).to be_nil
+      end
+    end
+
+    context "with an invalid URL" do
+      it "returns nil" do
+        expect(described_class.find_or_create_by_url("http:::/invalid")).to be_nil
+      end
+    end
+  end
+
   describe "manual_setting limits on net_score" do
     let(:domain) { LinkedDomain.create!(host: "example.com") }
 

@@ -110,6 +110,65 @@
     <p class="opacity-75 italic">No billboards generated for this event. (Check the broadcast config or wait for the background worker to execute).</p>
   <% end %>
 
+  <hr class="my-8" />
+
+  <h2 class="text-2xl font-bold mb-4"><%= t("views.admin.events.show.signups_title") %></h2>
+
+  <% if @event_signups.any? %>
+    <div class="mb-4">
+      <%= paginate @event_signups %>
+    </div>
+    <table class="crayons-table w-full">
+      <thead>
+        <tr>
+          <th><%= t("views.admin.events.show.headers.user") %></th>
+          <th><%= t("views.admin.events.show.headers.signed_up_at") %></th>
+          <th><%= t("views.admin.events.show.headers.notifications") %></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @event_signups.each do |signup| %>
+          <tr>
+            <td>
+              <% if signup.user %>
+                <%= link_to admin_user_path(signup.user_id), class: "c-link flex items-center gap-2" do %>
+                  <img class="radius-full align-middle mr-2" src="<%= signup.user.profile_image_url_for(length: 50) %>" width="30" height="30" alt="" />
+                  <div>
+                    <span class="font-bold"><%= signup.user.name %></span>
+                    <span class="opacity-75 text-sm block">@<%= signup.user.username %></span>
+                  </div>
+                <% end %>
+              <% else %>
+                <span class="opacity-50 italic">Deleted User</span>
+              <% end %>
+            </td>
+            <td>
+              <%= signup.created_at.to_fs(:short) %>
+            </td>
+            <td>
+              <div class="flex flex-wrap gap-2">
+                <% if signup.notified_1_day_before %>
+                  <span class="c-indicator c-indicator--success"><%= t("views.admin.events.show.notifications.day_before") %></span>
+                <% end %>
+                <% if signup.notified_1_hour_before %>
+                  <span class="c-indicator c-indicator--success"><%= t("views.admin.events.show.notifications.hour_before") %></span>
+                <% end %>
+                <% unless signup.notified_1_day_before || signup.notified_1_hour_before %>
+                  <span class="opacity-75"><%= t("views.admin.events.show.notifications.none") %></span>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <div class="mt-4">
+      <%= paginate @event_signups %>
+    </div>
+  <% else %>
+    <p class="opacity-75 italic"><%= t("views.admin.events.show.no_signups") %></p>
+  <% end %>
+
   <% if @event.live_stream? %>
     <script>
       (function () {

@@ -8,7 +8,7 @@
     <% @badges.each do |badge| %>
     <div
       role="button"
-      onclick="window.Forem.showModal({size: 'medium', showHeader: false, contentSelector: '#badge-<%= badge.id %>', overlay: true})"
+      onclick="window.Forem.showModal({size: 'medium', showHeader: false, contentSelector: '#badge-<%= badge.id %>', overlay: true, backdropDismissible: true})"
       class="badge-container crayons-card media-card">
       <div class="badge-image-container p-3">
         <img

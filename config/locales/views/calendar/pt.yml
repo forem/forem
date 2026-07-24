@@ -1,0 +1,36 @@
+---
+pt:
+  views:
+    calendar:
+      meta:
+        title: Calendário
+      heading: Calendário
+      range:
+        from: De
+        to: Até
+        apply: Aplicar
+      nav:
+        previous_month: Mês anterior
+        next_month: Próximo mês
+      weekdays:
+        - Dom
+        - Seg
+        - Ter
+        - Qua
+        - Qui
+        - Sex
+        - Sáb
+      hint: Clique em um dia de início e depois em um dia de fim para definir um período.
+      legend:
+        selected: Selecionado
+        today: Hoje
+        has_events: Com eventos
+      today: Hoje
+      empty: Nenhum evento neste período. Tente outro mês!
+      event:
+        attending: Inscrito
+        view: Ver evento
+      pagination:
+        label: Páginas de eventos
+        previous: Página anterior
+        next: Próxima página

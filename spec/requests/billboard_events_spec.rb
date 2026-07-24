@@ -28,7 +28,7 @@ RSpec.describe "BillboardEvents", type: :request do
       }
     end
   
-    it "creates a BillboardEvent and enqueues the worker" do
+    it "creates a BillboardEvent, enqueues the worker, and returns the ID as JSON" do
       expect {
         post billboard_events_path, params: { billboard_event: base_params }
       }.to change(BillboardEvent, :count).by(1)
@@ -40,6 +40,59 @@ RSpec.describe "BillboardEvents", type: :request do
       expect(event.billboard_id).to eq(billboard.id)
       expect(event.article_id).to eq(article.id)
       expect(event.user_id).to eq(user.id)
+
+      expect(response.status).to eq(200)
+      json = JSON.parse(response.body)
+      expect(json["id"]).to eq(event.id)
+    end
+  end
+
+  describe "PATCH /bb_tabulations/:id" do
+    context "when event exists and is an impression" do
+      let!(:event) { create(:billboard_event, billboard: billboard, category: "impression", user: user, seconds_visible: 10) }
+
+      it "updates seconds_visible by 10 if not updated recently" do
+        event.update_column(:updated_at, 10.seconds.ago)
+        patch "/bb_tabulations/#{event.id}"
+        expect(response.status).to eq(200)
+        expect(event.reload.seconds_visible).to eq(20)
+      end
+
+      it "returns too_many_requests if updated too recently" do
+        patch "/bb_tabulations/#{event.id}"
+        expect(response.status).to eq(429)
+        expect(event.reload.seconds_visible).to eq(10)
+      end
+    end
+
+    context "when event category is not impression" do
+      let!(:event) { create(:billboard_event, billboard: billboard, category: "click", user: user, seconds_visible: 10) }
+
+      it "does not update seconds_visible" do
+        event.update_column(:updated_at, 10.seconds.ago)
+        patch "/bb_tabulations/#{event.id}"
+        expect(response.status).to eq(200)
+        expect(event.reload.seconds_visible).to eq(10)
+      end
+    end
+
+    context "when event is for another user" do
+      let(:other_user) { create(:user) }
+      let!(:event) { create(:billboard_event, billboard: billboard, category: "impression", user: other_user, seconds_visible: 10) }
+
+      it "returns forbidden status" do
+        event.update_column(:updated_at, 10.seconds.ago)
+        patch "/bb_tabulations/#{event.id}"
+        expect(response.status).to eq(403)
+        expect(event.reload.seconds_visible).to eq(10)
+      end
+    end
+
+    context "when event does not exist" do
+      it "returns not found status" do
+        patch "/bb_tabulations/999999"
+        expect(response.status).to eq(404)
+      end
     end
   end
 end

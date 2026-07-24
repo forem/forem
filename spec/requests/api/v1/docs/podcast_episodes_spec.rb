@@ -16,17 +16,22 @@ RSpec.describe "Api::V1::Docs::PodcastEpisodes" do
         security []
         tags "podcast_episodes"
         description(<<-DESCRIBE.strip)
-        This endpoint allows the client to retrieve a list of podcast episodes.
-        "Podcast episodes" are episodes belonging to podcasts.
-        It will only return active (reachable) podcast episodes that belong to published podcasts available on the platform, ordered by descending publication date.
-        It supports pagination, each page will contain 30 articles by default.
+        Retrieve a list of podcast episodes published on the platform.
+
+        ### Integration Guidance:
+        - Bypasses authentication (can be accessed publicly).
+        - Only returns active episodes belonging to published/reachable podcasts.
+        - Episodes are returned in reverse chronological order based on their publication date.
+        - The `username` query parameter is the unique slug of the podcast channel (e.g. `codenewbie`).
+
+        It supports pagination, each page will contain 30 episodes by default.
         DESCRIBE
         operationId "getPodcastEpisodes"
         produces "application/json"
         parameter "$ref": "#/components/parameters/pageParam"
         parameter "$ref": "#/components/parameters/perPageParam30to1000"
         parameter name: :username, in: :query, required: false,
-                  description: "Using this parameter will retrieve episodes belonging to a specific podcast.",
+                  description: "Filters episodes by the unique slug (username) of the podcast (e.g. 'codenewbie').",
                   schema: { type: :string },
                   example: "codenewbie"
 

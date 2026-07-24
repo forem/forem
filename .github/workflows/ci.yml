@@ -147,7 +147,10 @@ jobs:
         if: failure()
         with:
           name: rspec-artifacts-${{ matrix.ci_node_index }}
-          path: tmp/capybara
+          path: |
+            tmp/capybara
+            tmp/csvs
+            tmp/rspec*.xml
       - name: Rename folder
         run: if [ -d "coverage/simplecov" ]; then mv coverage/simplecov coverage/simplecov-${{ matrix.ci_node_index }}; fi
       - name: Upload test coverage result

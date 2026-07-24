@@ -33,6 +33,8 @@ class Page < ApplicationRecord
   resourcify
 
   scope :from_subforem, lambda { |subforem_id = nil|
+    return where(nil) if ENV["NO_SUBFOREM_FILTER"] == "true"
+
     subforem_id ||= RequestStore.store[:subforem_id]
     where(subforem_id: [subforem_id, nil])
   }
@@ -88,6 +90,11 @@ class Page < ApplicationRecord
     return unless uses_page_template?
 
     render_from_page_template
+    save!
+  end
+
+  # Force evaluation of markdown (via before_save) and persist any resulting changes
+  def recompile!
     save!
   end
 
@@ -151,7 +158,13 @@ class Page < ApplicationRecord
   end
 
   def bust_cache
-    Pages::BustCacheWorker.perform_async(slug)
+    # Keep the historical single-arg form for non-org pages so the
+    # until_executing unique-job lock digest stays stable and jobs coalesce.
+    if organization_id
+      Pages::BustCacheWorker.perform_async(slug, organization_id)
+    else
+      Pages::BustCacheWorker.perform_async(slug)
+    end
   end
 
   def validate_redirect_to_url
@@ -179,6 +192,7 @@ class Page < ApplicationRecord
   end
 
   def validate_slug_uniqueness
+    return if slug.blank?
     # Custom cross-model validation to allow for the same slug in different subforems for pages
     return if Page.where(slug: slug).exists? && Page.where(slug: slug, subforem_id: subforem_id).where.not(id: id).none?
 

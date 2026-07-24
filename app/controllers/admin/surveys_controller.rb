@@ -44,7 +44,7 @@ module Admin
         if poll.text_input?
           text_responses = poll.poll_text_responses.where(created_at: @start_date..@end_date).order(created_at: :desc).limit(100)
           data[:total_responses] = poll_text_response_counts[poll.id] || 0
-          data[:text_responses] = text_responses.pluck(:text_response, :created_at)
+          data[:text_responses] = text_responses.pluck(:text_content, :created_at)
         else
           poll_votes_subset = poll_vote_counts.select { |(p_id, _), _| p_id == poll.id }
           data[:total_responses] = poll_votes_subset.values.sum
@@ -110,6 +110,7 @@ module Admin
     def survey_params
       params.require(:survey).permit(
         :title, :type_of, :active, :display_title, :allow_resubmission, :daily_email_distributions, :extra_email_context_paragraph,
+        :target_response_count, :target_completion_date,
         polls_attributes: [
           :id, :prompt_markdown, :type_of, :position, :scale_min, :scale_max, :_destroy,
           poll_options_attributes: %i[id markdown supplementary_text position _destroy]

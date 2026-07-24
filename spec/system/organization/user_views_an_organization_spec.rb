@@ -11,7 +11,7 @@ RSpec.describe "Organization index" do
         visit "/#{organization.slug}"
       end
 
-      it "shows the header", js: true do
+      it "shows the header" do
         within("h1.crayons-title") { expect(page).to have_content(organization.name) }
         within("div.org-header-actions") do
           expect(page).to have_button(I18n.t("core.follow"))
@@ -39,7 +39,7 @@ RSpec.describe "Organization index" do
     end
 
     context "when more articles" do
-      it "visits ok", js: true do
+      it "visits ok" do
         create_list(:article, 3, organization: organization)
         visit "/#{organization.slug}"
       end

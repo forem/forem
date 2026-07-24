@@ -1,0 +1,211 @@
+<div class="crayons-layout event-show-layout container">
+  <!-- Banner Image -->
+  <% banner_image = @event.data&.dig('banner_image_url') %>
+  <% if banner_image.present? %>
+    <div class="crayons-card mb-6 overflow-hidden">
+      <img src="<%= banner_image %>" alt="<%= @event.title %>" class="w-100" style="max-height: 400px; object-fit: cover; display: block;">
+    </div>
+  <% end %>
+
+  <div class="flex flex-col m:flex-row gap-6">
+    <!-- Main Content Left Column -->
+    <main class="flex-1 min-w-0" id="main-content">
+      <article class="crayons-card p-6 mb-6">
+        <header class="mb-4">
+          <!-- Breadcrumbs -->
+          <nav aria-label="Breadcrumbs" class="mb-4 fs-s color-base-60">
+            <a href="/challenge" class="c-link c-link--branded font-bold">Challenges</a> &gt; <%= @event.title %>
+          </nav>
+          
+          <div class="flex justify-between items-center flex-wrap gap-4">
+            <h1 class="crayons-title text-3xl font-extrabold"><%= @event.title %></h1>
+            
+            <% first_tag = @event.tags.first %>
+            <% if first_tag %>
+              <div data-tag-id="<%= first_tag.id %>" data-tag-name="<%= first_tag.name %>" id="tag-<%= first_tag.id %>" class="js-tag-card">
+                <div id="tag-buttons-<%= first_tag.id %>">
+                  <button class="c-btn c-btn--primary js-follow-tag-button">
+                    <%= t("views.tags.follow") %>
+                  </button>
+                </div>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="mt-4 flex items-center gap-2">
+            <span class="fs-s color-base-60 font-bold">Challenge Status:</span>
+            <% if @event.start_time <= Time.current && @event.end_time >= Time.current %>
+              <span class="live-indicator inline-block px-2 py-0.5 rounded text-white font-bold fs-xs bg-error" style="background-color: var(--error); vertical-align: middle;">LIVE</span>
+            <% else %>
+              <span class="inline-block px-2 py-0.5 rounded text-white font-bold fs-xs bg-base-40" style="background-color: var(--base-40); vertical-align: middle;">ENDED</span>
+            <% end %>
+          </div>
+        </header>
+
+        <div class="crayons-article__body text-lg">
+          <% if @event.data&.dig('body_markdown').present? %>
+            <%= MarkdownProcessor::Parser.new(@event.data['body_markdown']).finalize.html_safe %>
+          <% else %>
+            <%= simple_format(@event.description) %>
+          <% end %>
+        </div>
+      </article>
+
+      <!-- Challenge Prompt & Prefills -->
+      <% prompt_title = @event.data&.dig('prompt_title') || "Challenge Prompt" %>
+      <% prompt_markdown = @event.data&.dig('prompt_markdown') %>
+      <% submission_template_prefill = @event.data&.dig('submission_template_prefill') %>
+      <% judging_criteria = @event.data&.dig('judging_criteria') %>
+
+      <% if prompt_markdown.present? || judging_criteria.present? %>
+        <div class="crayons-card p-6 mb-6">
+          <h2 class="crayons-title mb-4"><%= prompt_title %></h2>
+          
+          <% if prompt_markdown.present? %>
+            <div class="crayons-article__body mb-4">
+              <%= MarkdownProcessor::Parser.new(prompt_markdown).finalize.html_safe %>
+            </div>
+          <% end %>
+
+          <div class="flex flex-col m:flex-row gap-6 mt-6 pt-6 border-t">
+            <% if submission_template_prefill.present? %>
+              <div class="flex-1">
+                <h3 class="font-bold mb-2">Submission Template</h3>
+                <p class="color-base-70 mb-4">Click below to start your submission draft with the prefilled template.</p>
+                <a href="/new?prefill=<%= CGI.escape(submission_template_prefill) %>" class="crayons-btn crayons-btn--outlined">
+                  Use Submission Template
+                </a>
+              </div>
+            <% end %>
+
+            <% if judging_criteria.is_a?(Array) && judging_criteria.any? %>
+              <div class="flex-1">
+                <h3 class="font-bold mb-2">Judging Criteria</h3>
+                <ul class="list-disc pl-4 space-y-1 color-base-70">
+                  <% judging_criteria.each do |criterion| %>
+                    <li><%= criterion %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- How To Participate -->
+      <% how_to_participate = @event.data&.dig('how_to_participate') %>
+      <% if how_to_participate.present? %>
+        <div class="crayons-card p-6 mb-6">
+          <h2 class="crayons-title mb-4">How To Participate</h2>
+          <div class="crayons-article__body">
+            <%= MarkdownProcessor::Parser.new(how_to_participate).finalize.html_safe %>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- Frequently Asked Questions -->
+      <% faq_markdown = @event.data&.dig('faq_markdown') %>
+      <% if faq_markdown.present? %>
+        <div class="crayons-card p-6 mb-6">
+          <h2 class="crayons-title mb-4">Frequently Asked Questions</h2>
+          <div class="crayons-article__body">
+            <%= MarkdownProcessor::Parser.new(faq_markdown).finalize.html_safe %>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- Rules -->
+      <% rules_markdown = @event.data&.dig('rules_markdown') %>
+      <% if rules_markdown.present? %>
+        <div class="crayons-card p-6 mb-6">
+          <h2 class="crayons-title mb-4">Rules</h2>
+          <div class="crayons-article__body">
+            <%= MarkdownProcessor::Parser.new(rules_markdown).finalize.html_safe %>
+          </div>
+        </div>
+      <% end %>
+    </main>
+
+    <!-- Sidebar Right Column -->
+    <aside class="w-100 m:w-80 flex-shrink-0">
+      <% if @event.end_time > Time.current %>
+        <div class="crayons-card p-4 mb-6 text-center">
+          <h3 class="font-bold mb-2">Join the Challenge</h3>
+          <p class="fs-s color-base-70 mb-4">Express interest to receive challenge reminders and updates.</p>
+          <button data-event-signup-button="true"
+                  data-event-name-slug="<%= @event.event_name_slug %>"
+                  data-event-variation-slug="<%= @event.event_variation_slug %>"
+                  data-signup-confirm-message="Are you sure you want to cancel your interest?"
+                  data-signed-up-class="crayons-btn--outlined"
+                  data-unsigned-up-class="crayons-btn--primary"
+                  class="crayons-btn w-100 text-center justify-center <%= current_user && current_user.event_signups.exists?(event: @event) ? 'crayons-btn--outlined' : 'crayons-btn--primary' %>"
+                  data-signed-up="<%= current_user && current_user.event_signups.exists?(event: @event) ? 'true' : 'false' %>">
+            <template data-signed-up-html>
+              <svg class="c-icon mr-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+              Joined
+            </template>
+            <template data-unsigned-up-html>
+              Join Challenge
+            </template>
+
+            <% if current_user && current_user.event_signups.exists?(event: @event) %>
+              <svg class="c-icon mr-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+              Joined
+            <% else %>
+              Join Challenge
+            <% end %>
+          </button>
+        </div>
+      <% end %>
+
+      <div class="crayons-card p-4 mb-6">
+        <h3 class="font-bold mb-4">Key Dates</h3>
+        <ul class="space-y-3 fs-s color-base-80">
+          <li>
+            <div class="font-bold">Contest Start</div>
+            <div><%= @event.start_time.in_time_zone.strftime("%B %d, %Y") %></div>
+          </li>
+          <li>
+            <div class="font-bold">Submissions Due</div>
+            <div><%= @event.end_time.in_time_zone.strftime("%B %d, %Y") %></div>
+          </li>
+          <% winners_announced = @event.data&.dig('winners_announced_date') %>
+          <% if winners_announced.present? %>
+            <li>
+              <div class="font-bold">Winners Announced</div>
+              <div><%= winners_announced %></div>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+
+      <% badges = @event.data&.dig('badge_rewards') %>
+      <% if badges.is_a?(Array) && badges.any? %>
+        <div class="crayons-card p-4 mb-6">
+          <h3 class="font-bold mb-4">Badge Rewards</h3>
+          <div class="grid grid-cols-2 gap-4">
+            <% badges.each do |badge| %>
+              <div class="text-center">
+                <img src="<%= badge['image_url'] %>" alt="<%= badge['name'] %>" style="width: 64px; height: 64px; object-fit: contain; margin: 0 auto 8px;">
+                <div class="fs-xs font-bold leading-tight"><%= badge['name'] %></div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+      <% launch_post_url = @event.data&.dig('launch_post_url') %>
+      <% if launch_post_url.present? && launch_post_url.to_s.start_with?("/", "http://", "https://") %>
+        <div class="crayons-card p-4 mb-6">
+          <h3 class="font-bold mb-2">Find Out More</h3>
+          <p class="fs-s color-base-70 mb-4">Ask questions and share your ideas on the Launch Post.</p>
+          <a href="<%= launch_post_url %>" class="crayons-btn crayons-btn--outlined w-100 text-center justify-center">
+            View Launch Post
+          </a>
+        </div>
+      <% end %>
+    </aside>
+  </div>
+</div>
+
+<%= javascript_include_tag "tagFollows", defer: true %>

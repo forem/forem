@@ -81,6 +81,9 @@
     height: 3px;
     background: var(--profile-brand-color);
   }
+  .org-header-tabs .crayons-tabs__item {
+    width: auto;
+  }
 </style>
 
 <div class="org-header-cover"></div>
@@ -241,6 +244,59 @@
         <% end %>
       </div>
     </div>
+  <% end %>
+
+  <%# Render Showcase, custom pages and All Posts tabs if organization has custom readme page feature enabled %>
+  <% if @organization.main_page.present? && FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization]) %>
+    <%
+      is_custom_domain = request.env["forem.custom_domain_org"].present?
+      org_pages = @organization.pages.order(:created_at).to_a
+      showcase_page = org_pages.find { |page| page.slug&.end_with?("/readme") } || org_pages.first
+      custom_pages = org_pages.reject { |page| page == showcase_page }
+      
+      showcase_path = is_custom_domain ? "/" : "/#{@organization.slug}"
+      all_posts_path = is_custom_domain ? "/?mode=all-posts" : "/#{@organization.slug}?mode=all-posts"
+    %>
+    <style>
+      .org-header-tabs .crayons-tabs__item--current {
+        font-weight: var(--fw-bold, bold) !important;
+      }
+    </style>
+    <nav class="crayons-tabs org-header-tabs flex items-center" aria-label="Organization Profile Navigation" id="org-tab-nav" style="width: 100%; display: flex; align-items: center;">
+      <div class="org-custom-tabs-container flex items-center flex-grow" style="overflow: hidden; white-space: nowrap; display: flex; align-items: center; min-width: 0;">
+        <!-- Showcase (first page) -->
+        <a href="<%= showcase_path %>" data-instant-keep-scroll="true" class="crayons-tabs__item <%= 'crayons-tabs__item--current' if params[:page_suffix].blank? && params[:mode] != 'all-posts' %>" <%= 'aria-current="page"' if params[:page_suffix].blank? && params[:mode] != 'all-posts' %> data-text="<%= t('views.organizations.showcase') %>">
+          <%= t('views.organizations.showcase') %>
+        </a>
+        
+        <!-- Custom Pages -->
+        <% custom_pages.each do |page| %>
+          <% 
+            suffix = page.slug.split("/").last
+            page_path = is_custom_domain ? "/p/#{suffix}" : "/#{@organization.slug}/p/#{suffix}"
+            is_current = params[:page_suffix] == suffix
+          %>
+          <a href="<%= page_path %>" data-instant-keep-scroll="true" class="crayons-tabs__item <%= 'crayons-tabs__item--current' if is_current %>" <%= 'aria-current="page"' if is_current %> data-text="<%= page.title %>">
+            <%= page.title %>
+          </a>
+        <% end %>
+      </div>
+
+      <!-- More dropdown trigger (three dots), initially hidden -->
+      <div class="org-tabs-more-dropdown relative ml-1" style="display: none;">
+        <button id="org-tabs-more-trigger" aria-expanded="false" aria-controls="org-tabs-more-menu" aria-haspopup="true" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon" style="padding: 0 var(--su-2);">
+          <%= crayons_icon_tag("overflow-horizontal", class: "dropdown-icon", title: "More pages") %>
+        </button>
+        <div id="org-tabs-more-menu" class="crayons-dropdown right-0 top-100 mt-1" style="display: none; min-width: 180px;">
+          <!-- Overflowing tabs will be dynamically moved here by Javascript -->
+        </div>
+      </div>
+
+      <!-- All Posts -->
+      <a href="<%= all_posts_path %>" data-instant-keep-scroll="true" class="crayons-tabs__item org-tab-all-posts <%= 'crayons-tabs__item--current' if params[:mode] == 'all-posts' %>" <%= 'aria-current="page"' if params[:mode] == 'all-posts' %> data-text="<%= t('views.organizations.all_posts') %>" style="<%= custom_pages.any? ? 'margin-left: auto;' : '' %>">
+        <%= t('views.organizations.all_posts') %>
+      </a>
+    </nav>
   <% end %>
 </div>
 

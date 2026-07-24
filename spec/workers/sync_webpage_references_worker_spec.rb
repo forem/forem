@@ -44,6 +44,18 @@ RSpec.describe SyncWebpageReferencesWorker do
       expect(LinkedDomains::UpdateScoreWorker).to have_received(:perform_async).with(domain_new2.id)
     end
 
+    it "skips invalid or blank URLs without failing" do
+      allow(WebpageExtractor).to receive(:extract).and_return(["https://", "https://example.com/page"])
+
+      expect {
+        subject.perform("Article", article.id)
+      }.to change(LinkedDomain, :count).by(1)
+       .and change(WebpageReference, :count).by(1)
+
+      expect(LinkedDomain.pluck(:host)).to include("example.com")
+      expect(LinkedDomain.pluck(:host)).not_to include("")
+    end
+
     it "does nothing if the record does not exist" do
       expect {
         subject.perform("Article", -1)

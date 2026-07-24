@@ -28,6 +28,30 @@ RSpec.describe Users::DeleteArticles, type: :service do
     end.to change(ContextNote, :count).from(1).to(0)
   end
 
+  it "deletes the articles' article activities before deleting the article" do
+    ArticleActivity.create!(article: article)
+    expect do
+      described_class.call(user)
+    end.to change(ArticleActivity, :count).from(1).to(0)
+  end
+
+  it "deletes the articles' trend memberships before deleting the article" do
+    create(:trend_membership, article: article)
+    expect do
+      described_class.call(user)
+    end.to change(TrendMembership, :count).from(1).to(0)
+  end
+
+  context "when pinned articles exist" do
+    before { create(:profile_pin, profile: user, pinnable: article) }
+
+    it "deletes pinned article references with the article" do
+      expect do
+        described_class.call(user)
+      end.to change(ProfilePin, :count).from(1).to(0)
+    end
+  end
+
   context "with comments" do
     before do
       allow(EdgeCache::BustComment).to receive(:call)

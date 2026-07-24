@@ -62,6 +62,11 @@ module Authentication
 
         flag_spam_user(user) if account_less_than_a_week_old?(user, identity)
 
+        # A newly linked mlh identity puts the MLH Core user id (its uid) into
+        # User#trackable_payload, so surface a user_updated to the DEV → Core
+        # sync — which keys off profile_updated_at.
+        user.profile_updated_at = Time.current if new_identity && identity.provider == "mlh"
+
         user.save!
         authed_user = user
       end

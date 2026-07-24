@@ -67,9 +67,6 @@
     </div>
   </main>
   <%= javascript_include_tag "subscribeButton", defer: true %>
-  <script>
-    <%== RunkitTag.script %>
-  </script>
 <% else %>
   <%= render "devise/registrations/registration_form" %>
 <% end %>

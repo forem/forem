@@ -15,14 +15,14 @@ RSpec.describe "/admin/content_manager/articles" do
     end
 
     it "allows an Admin to add a co-author to an individual article" do
-      get request
+      get admin_articles_path
       expect do
         article.update_columns(co_author_ids: [1])
       end.to change(article, :co_author_ids).from([]).to([1])
     end
 
     it "allows an Admin to add co-authors to an individual article" do
-      get request
+      get admin_articles_path
       article.update_columns(co_author_ids: [2, 3])
       expect(article.co_author_ids).to eq([2, 3])
     end
@@ -30,7 +30,7 @@ RSpec.describe "/admin/content_manager/articles" do
     it "allows an Admin to update the author" do
       allow(NotificationSubscriptions::UpdateWorker).to receive(:perform_async)
       new_author = create(:user)
-      get request
+      get admin_articles_path
 
       patch admin_article_path(article.id), params: { article: { user_id: new_author.id } }
       expect(article.reload.user_id).to eq(new_author.id)

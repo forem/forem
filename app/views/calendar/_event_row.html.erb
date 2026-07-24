@@ -1,0 +1,24 @@
+<%
+  attending = @user_signup_event_ids.include?(event.id)
+%>
+<div class="crayons-card calendar__event-card mb-4 flex justify-between items-center">
+  <span class="calendar__accent <%= event_type_accent_class(event) %>" aria-hidden="true"></span>
+  <div class="calendar__event-body p-4">
+    <div class="flex items-center mb-1">
+      <span class="fs-s fw-bold color-base-50"><%= event.type_of.to_s.titleize %></span>
+      <span class="fs-s color-base-40 ml-2"><%= event_datetime_range(event) %></span>
+    </div>
+    <h4 class="crayons-subtitle-3 mb-1"><%= event.title %></h4>
+    <% if event.organization.present? %>
+      <p class="fs-s color-base-60"><%= event.organization.name %></p>
+    <% elsif event.user.present? %>
+      <p class="fs-s color-base-60"><%= event.user.name %></p>
+    <% end %>
+  </div>
+  <div class="calendar__event-actions flex flex-col items-end gap-2 p-4">
+    <% if attending %>
+      <span class="c-indicator c-indicator--success fw-bold"><%= t("views.calendar.event.attending") %></span>
+    <% end %>
+    <%= link_to t("views.calendar.event.view"), event_link_target(event), class: "crayons-btn crayons-btn--outlined whitespace-nowrap" %>
+  </div>
+</div>

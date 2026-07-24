@@ -78,6 +78,8 @@ class UserQueryExecutor
         yield current_batch if current_batch.any?
 
         update_execution_tracking
+      rescue PG::QueryCanceled, ActiveRecord::QueryCanceled => e
+        handle_timeout_error(e)
       rescue StandardError => e
         handle_execution_error(e)
       end
@@ -160,7 +162,7 @@ class UserQueryExecutor
 
         # Return User objects for the found IDs (this still uses the main database)
         User.where(id: user_ids)
-      rescue PG::QueryCanceled => e
+      rescue PG::QueryCanceled, ActiveRecord::QueryCanceled => e
         handle_timeout_error(e)
         []
       rescue PG::SyntaxError => e
@@ -207,27 +209,7 @@ class UserQueryExecutor
   end
 
   def execute_with_timeout(connection, query)
-    # Use a separate thread with timeout to execute the query
-    result = nil
-    error = nil
-
-    thread = Thread.new do
-      result = connection.execute(query)
-    rescue StandardError => e
-      error = e
-    end
-
-    # Wait for the thread to complete or timeout
-    unless thread.join(timeout_ms / 1000.0)
-      thread.kill
-      raise PG::QueryCanceled, "Query execution exceeded timeout of #{timeout_ms}ms"
-    end
-
-    if error
-      raise error
-    end
-
-    result
+    connection.execute(query)
   end
 
   def execute_explain_query(explain_query)

@@ -131,3 +131,4 @@ en:
       heading: "%{community} on Video"
       beta_html: "<strong>Video is beta:</strong> %{contact}"
       upload: "🎥 Upload Video File 🙌"
+      max_file_size: "Maximum file size: %{size}."

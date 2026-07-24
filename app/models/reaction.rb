@@ -158,6 +158,14 @@ class Reaction < ApplicationRecord
     end
   end
 
+  def self.ransackable_attributes(auth_object = nil)
+    ["category", "created_at", "id", "id_value", "points", "reactable_id", "reactable_type", "status", "updated_at", "user_id"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["user", "reactable"]
+  end
+
   # no need to send notification if:
   # - reaction is negative
   # - receiver is the same user as the one who reacted

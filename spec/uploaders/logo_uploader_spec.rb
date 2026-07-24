@@ -76,6 +76,12 @@ describe LogoUploader, type: :uploader do
     end
   end
 
+  describe "filename" do
+    it "defaults to nil" do
+      expect(uploader.filename).to be_nil
+    end
+  end
+
   describe "resize_image" do
     it "creates versions of the image with different filenames", :aggregate_failures do
       uploader.store!(image_jpg)

@@ -19,6 +19,7 @@ fr:
       forem: "Vous êtes sur une lancée ! 🎉  Avez-vous un compte Forem ? Pensez à <a href='/settings'>le connecter</a>."
       github: "Vous êtes sur une lancée ! 🎉  Avez-vous un compte GitHub ? Pensez à <a href='/settings'>le connecter</a> afin que vous puissiez épingler n'importe lequel de vos dépôts à votre profil."
       google: "Vous êtes sur une lancée ! 🎉  Avez-vous un compte google ? Pensez à <a href='/settings'>le connecter</a>."
+      mlh: "Vous êtes sur une lancée ! 🎉  Avez-vous un compte MyMLH ? Pensez à <a href='/settings'>le connecter</a>."
       twitter: "Vous êtes sur une lancée ! 🎉 Avez-vous un compte Twitter ? Pensez à <a href='/settings'>le connecter</a> pour que nous puissions vous @mentionner si nous partageons votre article via notre compte Twitter. <a href='https://twitter.com/thePracticalDev'>@thePracticalDev</a>."
   errors:
     authentication:

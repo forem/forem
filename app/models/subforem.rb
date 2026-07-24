@@ -81,7 +81,7 @@ class Subforem < ApplicationRecord
       domain = Subforem.find_by(root: true)&.domain
       return unless domain
 
-      domain += ":3000" if Rails.env.development? && !domain.include?(":3000")
+      domain += ":#{URL.dev_port}" if Rails.env.development? && !domain.include?(":#{URL.dev_port}")
       domain
     end
   end

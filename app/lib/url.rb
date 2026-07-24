@@ -4,6 +4,14 @@ module URL
     ApplicationConfig["APP_PROTOCOL"]
   end
 
+  # Port appended to URLs in the development environment. Defaults to "3000"
+  # to preserve historical behavior, but can be overridden by setting the
+  # PORT environment variable to match the actual server port (useful when
+  # Forem runs alongside other Rails apps that also default to 3000).
+  def self.dev_port
+    ENV.fetch("PORT", "3000")
+  end
+
   def self.database_available?
     ActiveRecord::Base.connected? && has_site_configs?
   end
@@ -29,7 +37,7 @@ module URL
 
   def self.url(uri = nil, domain_or_subforem = nil)
     base_url = "#{protocol}#{domain(domain_or_subforem)}"
-    base_url += ":3000" if Rails.env.development? && !base_url.include?(":3000")
+    base_url += ":#{dev_port}" if Rails.env.development? && !base_url.include?(":#{dev_port}")
     return base_url unless uri
     Addressable::URI.parse(base_url).join(uri).normalize.to_s
   end
@@ -38,6 +46,23 @@ module URL
   #
   # @param article [Article] the article to create the URL for
   def self.article(article)
+    if article.respond_to?(:organization) && (org = article.organization)
+      if org.custom_domain.present? && FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
+        return url("/#{article.slug}", org.custom_domain)
+      end
+    elsif article.respond_to?(:organization_id) && article.organization_id.present?
+      org_id = article.organization_id
+      custom_domain = MemoryFirstCache.fetch("org_custom_domain:#{org_id}", redis_expires_in: 12.hours, return_type: :string) do
+        Organization.where(id: org_id).pick(:custom_domain).to_s
+      end
+      if custom_domain.present?
+        org = Organization.find_by(id: org_id)
+        if org && FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
+          return url("/#{article.slug}", custom_domain)
+        end
+      end
+    end
+
     return url(article.path) unless article.respond_to?(:subforem_id)
     
     # Use cached lookup to avoid N+1 queries
@@ -113,6 +138,13 @@ module URL
   #
   # @param user [User] the user to create the URL for
   def self.user(user)
+    if user.respond_to?(:custom_domain) && user.custom_domain.present?
+      org = user.respond_to?(:to_model) ? user.to_model : user
+      if FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
+        return url(nil, user.custom_domain)
+      end
+    end
+
     # Use cached lookup to avoid N+1 queries
     subforem_id = RequestStore.store[:subforem_id]
     
@@ -146,6 +178,12 @@ module URL
   end
 
   def self.organization(organization)
+    if organization.respond_to?(:custom_domain) && organization.custom_domain.present?
+      org = organization.respond_to?(:to_model) ? organization.to_model : organization
+      if FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
+        return url(nil, organization.custom_domain)
+      end
+    end
     url(organization.slug)
   end
 end

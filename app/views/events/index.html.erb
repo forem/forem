@@ -17,11 +17,12 @@
               <% end %>
             </div>
             <h2 class="crayons-subtitle-2 mb-2">
-              <%= link_to event.title, event_path(event.event_name_slug, event.event_variation_slug), class: "crayons-link" %>
+              <% link_target = (event.delegate_to_page? && event.page.present?) ? event.page.path : event_path(event.event_name_slug, event.event_variation_slug) %>
+              <%= link_to event.title, link_target, class: "crayons-link" %>
             </h2>
             <p class="fs-s color-base-70 mb-4"><%= event.description %></p>
           </div>
-          <%= link_to "View Event", event_path(event.event_name_slug, event.event_variation_slug), class: "c-btn w-100 text-center" %>
+          <%= link_to "View Event", link_target, class: "c-btn w-100 text-center" %>
         </div>
       <% end %>
     </div>

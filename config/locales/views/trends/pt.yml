@@ -9,6 +9,8 @@ pt:
       explore_trend: "Explorar Tendência →"
       active_ago: "Ativo há %{time}"
       active_recently: "Ativo recentemente"
+      all_trends: "Todas as tendências"
+      tag_filters_nav_label: "Filtrar tendências por tag"
       posts_count:
         one: "1 publicação nos últimos 7 dias"
         other: "%{count} publicações nos últimos 7 dias"

@@ -71,6 +71,22 @@ pt:
     you_are_following: "Você está seguindo"
     and: "e"
   date:
+    abbr_day_names:
+    - dom
+    - seg
+    - ter
+    - qua
+    - qui
+    - sex
+    - sáb
+    day_names:
+    - domingo
+    - segunda-feira
+    - terça-feira
+    - quarta-feira
+    - quinta-feira
+    - sexta-feira
+    - sábado
     abbr_month_names:
     -
     - jan
@@ -216,6 +232,8 @@ pt:
       identity_not_found: "Identidade não encontrada para o usuário"
       user_already_has_identity_for_provider: "O usuário já possui uma identidade para o provedor '%{provider}'"
       identity_uid_taken: "O uid %{uid} (%{provider}) já está vinculado a outro usuário"
+      invalid_notification_settings: "notification_setting deve incluir pelo menos uma chave suportada (email_newsletter)"
+      invalid_identities: "identities deve ser uma lista de 1 a %{limit} itens"
       cannot_merge_user_into_itself: "Não é possível mesclar um usuário consigo mesmo"
       merge_identity_conflict: "A mesclagem não pôde ser concluída: %{reason}"
       unknown_provider: "O provedor '%{provider}' não está configurado"
@@ -239,6 +257,7 @@ pt:
       greater_than: deve ser maior que %{count}
       greater_than_or_equal_to: deve ser maior ou igual a %{count}
       inclusion: não está incluído na lista
+      integer_only: Apenas inteiro. Nenhum sinal permitido.
       invalid: é inválido
       less_than: deve ser menor que %{count}
       less_than_or_equal_to: deve ser menor ou igual a %{count}

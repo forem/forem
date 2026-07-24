@@ -204,27 +204,33 @@ const reactToArticle = (articleId, reaction) => {
 };
 
 const setCollectionFunctionality = () => {
-  if (document.getElementById('collection-link-inbetween')) {
-    const inbetweenLinks = document.getElementsByClassName(
-      'series-switcher__link--inbetween',
-    );
-    const inbetweenLinksLength = inbetweenLinks.length;
-    for (let i = 0; i < inbetweenLinks.length; i += 1) {
-      inbetweenLinks[i].onclick = (e) => {
-        e.preventDefault();
-        const els = document.getElementsByClassName(
-          'series-switcher__link--hidden',
-        );
-        const elsLength = els.length;
-        for (let j = 0; j < elsLength; j += 1) {
-          els[0].classList.remove('series-switcher__link--hidden');
-        }
-        for (let k = 0; k < inbetweenLinksLength; k += 1) {
-          inbetweenLinks[0].className = 'series-switcher__link--hidden';
-        }
-      };
-    }
-  }
+  const inbetweenLinks = document.querySelectorAll(
+    '.series-switcher__link--inbetween',
+  );
+  if (inbetweenLinks.length === 0) return;
+
+  inbetweenLinks.forEach((link) => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      // Scope to the switcher block that was clicked so that, on long posts
+      // where the partial is rendered twice, expanding one block doesn't
+      // grow the other and push the viewport around.
+      const switcher = e.currentTarget.closest('.series-switcher');
+      if (!switcher) return;
+
+      switcher
+        .querySelectorAll('.series-switcher__link--hidden')
+        .forEach((hiddenLink) => {
+          hiddenLink.classList.remove('series-switcher__link--hidden');
+        });
+
+      switcher
+        .querySelectorAll('.series-switcher__link--inbetween')
+        .forEach((inbetweenLink) => {
+          inbetweenLink.classList.add('series-switcher__link--hidden');
+        });
+    });
+  });
 };
 
 const requestReactionCounts = (articleId) => {

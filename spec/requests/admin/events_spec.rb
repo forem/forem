@@ -24,6 +24,34 @@ RSpec.describe "Admin::Events", type: :request do
         }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
+
+    context "when logged in as a resource admin for Event" do
+      let(:event_admin) { create(:user) }
+      before do
+        event_admin.add_role(:single_resource_admin, Event)
+        login_as(event_admin)
+      end
+
+      it "renders the index template" do
+        create(:event)
+        get admin_events_path
+        expect(response).to have_http_status(:success)
+      end
+    end
+
+    context "when logged in as a resource admin for a different resource" do
+      let(:other_admin) { create(:user) }
+      before do
+        other_admin.add_role(:single_resource_admin, Article)
+        login_as(other_admin)
+      end
+
+      it "denies access" do
+        expect {
+          get admin_events_path
+        }.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
   end
 
   describe "GET /admin/content_manager/events/:id" do
@@ -32,10 +60,30 @@ RSpec.describe "Admin::Events", type: :request do
     context "when logged in as an admin" do
       before { login_as(super_admin) }
 
-      it "renders the show template" do
+      it "renders the show template and details when there are signups" do
+        user1 = create(:user, name: "Alice Smith", username: "alicesmith")
+        user2 = create(:user, name: "Bob Jones", username: "bobjones")
+        signup1 = create(:event_signup, event: event, user: user1)
+        signup1.update_columns(notified_1_day_before: true, notified_1_hour_before: false)
+        signup2 = create(:event_signup, event: event, user: user2)
+        signup2.update_columns(notified_1_day_before: false, notified_1_hour_before: true)
+
         get admin_event_path(event)
         expect(response).to have_http_status(:success)
         expect(response.body).to include(event.title)
+        expect(response.body).to include("Alice Smith")
+        expect(response.body).to include("@alicesmith")
+        expect(response.body).to include("Bob Jones")
+        expect(response.body).to include("@bobjones")
+        expect(response.body).to include("1 Day Before")
+        expect(response.body).to include("1 Hour Before")
+      end
+
+      it "renders the show template with fallback message when there are no signups" do
+        get admin_event_path(event)
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include(event.title)
+        expect(response.body).to include("No signups for this event yet.")
       end
     end
 
@@ -92,6 +140,14 @@ RSpec.describe "Admin::Events", type: :request do
       it "permits and sets the manual_broadcast_end flag" do
         post admin_events_path, params: { event: attributes_with_manual }
         expect(Event.last.manual_broadcast_end).to eq(true)
+      end
+    end
+
+    context "with elevated config" do
+      let(:attributes_with_elevated) { valid_attributes.merge(elevated: true) }
+      it "permits and sets the elevated flag" do
+        post admin_events_path, params: { event: attributes_with_elevated }
+        expect(Event.last.elevated).to eq(true)
       end
     end
   end

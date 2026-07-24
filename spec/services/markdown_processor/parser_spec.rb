@@ -540,18 +540,18 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
   end
 
   context "when rendering a quote liquid tag through the full pipeline" do
-    it "preserves quote tag HTML structure without converting SVG to code blocks" do
+    it "preserves the quote tag HTML structure" do
       markdown = '{% quote author="Jane Doe" role="CTO" link="https://example.com" %}Great platform!{% endquote %}'
       result = generate_and_parse_markdown(markdown)
+      quote = Nokogiri::HTML.fragment(result).at_css(".ltag-quote")
 
-      expect(result).to include('class="ltag-quote"')
+      expect(quote).to be_present
+      expect(quote["class"].split).to include("ltag-quote--with-source")
       expect(result).to include("ltag-quote__body")
       expect(result).to include("ltag-quote__footer")
       expect(result).to include("Jane Doe")
       expect(result).to include("Great platform!")
-      # SVG quote marks must render as actual SVG, not as escaped code blocks
       expect(result).not_to include("<pre><code>")
-      expect(result).not_to include("&lt;svg")
     end
   end
 
@@ -823,7 +823,69 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       expect(output).to match(%r{<td[^>]*>\s*bar\s*</td>})
       expect(output).not_to include("&#124;")
     end
-
   end
 
+  context "when markdown tables use column alignment" do
+    it "centers a column declared with :---:" do
+      markdown = <<~MD
+        | h |
+        | :---: |
+        | c |
+      MD
+      output = generate_and_parse_markdown(markdown)
+
+      expect(output).to match(/<th[^>]*style="text-align: center"[^>]*>/)
+      expect(output).to match(/<td[^>]*style="text-align: center"[^>]*>/)
+    end
+
+    it "right-aligns a column declared with ---:" do
+      markdown = <<~MD
+        | h |
+        | ---: |
+        | c |
+      MD
+      output = generate_and_parse_markdown(markdown)
+
+      expect(output).to match(/<th[^>]*style="text-align: right"[^>]*>/)
+      expect(output).to match(/<td[^>]*style="text-align: right"[^>]*>/)
+    end
+
+    it "left-aligns a column declared with :---" do
+      markdown = <<~MD
+        | h |
+        | :--- |
+        | c |
+      MD
+      output = generate_and_parse_markdown(markdown)
+
+      expect(output).to match(/<th[^>]*style="text-align: left"[^>]*>/)
+      expect(output).to match(/<td[^>]*style="text-align: left"[^>]*>/)
+    end
+
+    it "applies per-column alignment in a mixed table" do
+      markdown = <<~MD
+        | left | center | right |
+        | :--- | :----: | ----: |
+        | a | b | c |
+      MD
+      output = generate_and_parse_markdown(markdown)
+
+      expect(output).to include('style="text-align: left"')
+      expect(output).to include('style="text-align: center"')
+      expect(output).to include('style="text-align: right"')
+    end
+
+    it "leaves cells unstyled when no alignment is declared" do
+      markdown = <<~MD
+        | h |
+        | --- |
+        | c |
+      MD
+      output = generate_and_parse_markdown(markdown)
+
+      expect(output).to include("<table")
+      expect(output).not_to include("text-align")
+      expect(output).not_to include("style=")
+    end
+  end
 end

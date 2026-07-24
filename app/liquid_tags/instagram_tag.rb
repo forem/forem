@@ -1,7 +1,7 @@
 class InstagramTag < LiquidTagBase
   PARTIAL = "liquids/instagram".freeze
   # rubocop:disable Layout/LineLength
-  REGISTRY_REGEXP = %r{(?:https?://)?(?:www\.)?instagram\.com/(?:(?:(?:p/)(?<post_id>[\w-]{11}))|(?<handle>[\w.]{,30}))/?(?:\?.*)?}
+  REGISTRY_REGEXP = %r{(?:https?://)?(?:www\.)?instagram\.com/(?:(?:(?:(?<type>p|reel|tv)/)(?<post_id>[\w-]{11}))|(?<handle>[\w.]{,30}))/?(?:\?.*)?}
   # rubocop:enable Layout/LineLength
   VALID_ID_REGEXP = /\A(?<post_id>[\w-]{11})\Z/
   REGEXP_OPTIONS = [REGISTRY_REGEXP, VALID_ID_REGEXP].freeze
@@ -28,10 +28,11 @@ class InstagramTag < LiquidTagBase
     raise StandardError, I18n.t("liquid_tags.instagram_tag.invalid_instagram_id") unless match
 
     if match_has_named_capture_group?(match, "handle") && match[:handle].present?
-      return "#{match[:handle]}/embed/"
+      return "#{match[:handle]}/"
     end
 
-    "p/#{match[:post_id]}/embed/captioned/"
+    type = match_has_named_capture_group?(match, "type") && match[:type].present? ? match[:type] : "p"
+    "#{type}/#{match[:post_id]}/"
   end
 end
 

@@ -38,7 +38,7 @@ class ArticleDecorator < ApplicationDecorator
   end
 
   def url
-    URL.url(path)
+    URL.article(object)
   end
 
   def title_length_classification

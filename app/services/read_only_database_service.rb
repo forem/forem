@@ -33,14 +33,28 @@ class ReadOnlyDatabaseService
       @@read_only_connection_pool
     end
 
-    def with_connection(&block)
+    def with_connection
       if available?
         Rails.logger.debug("Using read-only database for user query execution")
-        connection_pool.with_connection(&block)
+        connection_pool.with_connection do |conn|
+          original_settings = fetch_session_settings(conn)
+          begin
+            yield conn
+          ensure
+            restore_session_settings(conn, original_settings)
+          end
+        end
       else
         Rails.logger.debug("Read-only database not configured, using main database for user query execution")
         # Fall back to main database if read-only is not configured
-        ActiveRecord::Base.connection_pool.with_connection(&block)
+        ActiveRecord::Base.connection_pool.with_connection do |conn|
+          original_settings = fetch_session_settings(conn)
+          begin
+            yield conn
+          ensure
+            restore_session_settings(conn, original_settings)
+          end
+        end
       end
     end
 
@@ -93,6 +107,31 @@ class ReadOnlyDatabaseService
       ActiveRecord::ConnectionAdapters::ConnectionPool.new(
         ActiveRecord::Base.configurations.resolve(config)
       )
+    end
+
+    def fetch_session_settings(connection)
+      {
+        statement_timeout: connection.execute("SHOW statement_timeout").first["statement_timeout"],
+        lock_timeout: connection.execute("SHOW lock_timeout").first["lock_timeout"],
+        idle_in_transaction_session_timeout: connection.execute("SHOW idle_in_transaction_session_timeout").first["idle_in_transaction_session_timeout"],
+        row_security: connection.execute("SHOW row_security").first["row_security"]
+      }
+    rescue => e
+      Rails.logger.warn("Failed to fetch session settings: #{e.message}")
+      nil
+    end
+
+    def restore_session_settings(connection, original_settings)
+      return unless original_settings
+
+      connection.execute(
+        "SET statement_timeout = '#{original_settings[:statement_timeout]}'; " \
+        "SET lock_timeout = '#{original_settings[:lock_timeout]}'; " \
+        "SET idle_in_transaction_session_timeout = '#{original_settings[:idle_in_transaction_session_timeout]}'; " \
+        "SET row_security = '#{original_settings[:row_security]}';"
+      )
+    rescue => e
+      Rails.logger.warn("Failed to restore session settings: #{e.message}")
     end
   end
 end

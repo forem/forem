@@ -9,7 +9,7 @@ class DevToolsController < ApplicationController
 
   def sign_in_as
     user = User.find(params[:user_id])
-    sign_in(user, bypass: true)
+    bypass_sign_in(user)
     redirect_to "/", notice: "Successfully assumed identity of #{user.username} (Development Mode)"
   end
 

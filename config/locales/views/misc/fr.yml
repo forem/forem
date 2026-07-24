@@ -130,4 +130,5 @@ fr:
           description: All videos on %{community}
       heading: "%{community} en Vidéo"
       beta_html: "<strong>Vidéo est en bêta:</strong> %{contact}"
+      max_file_size: "Taille maximale du fichier : %{size}."
       upload: "🎥 Télécharger un fichier vidéo 🙌"

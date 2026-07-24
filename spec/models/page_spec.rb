@@ -34,6 +34,22 @@ RSpec.describe Page do
         expect(described_class.from_subforem).to contain_exactly(page_no_subforem)
       end
     end
+
+    context "when ENV['NO_SUBFOREM_FILTER'] is true" do
+      before do
+        @orig_val = ENV["NO_SUBFOREM_FILTER"]
+        ENV["NO_SUBFOREM_FILTER"] = "true"
+      end
+
+      after do
+        ENV["NO_SUBFOREM_FILTER"] = @orig_val
+      end
+
+      it "returns all records, including those with subforem_id present and nil" do
+        expect(described_class.from_subforem(1))
+          .to contain_exactly(page_subforem_1, page_subforem_2, page_no_subforem)
+      end
+    end
   end
 
   describe ".render_safe_html_for" do
@@ -179,6 +195,15 @@ RSpec.describe Page do
     it "triggers cache busting on save" do
       sidekiq_assert_enqueued_with(job: Pages::BustCacheWorker, args: [page.slug]) do
         page.save
+      end
+    end
+
+    it "passes the organization id to the cache bust worker for organization pages" do
+      organization = create(:organization)
+      org_page = create(:page, organization: organization, slug: "#{organization.slug}/readme")
+
+      sidekiq_assert_enqueued_with(job: Pages::BustCacheWorker, args: [org_page.slug, organization.id]) do
+        org_page.save
       end
     end
 

@@ -155,4 +155,39 @@ RSpec.describe "/admin/emails" do
       end
     end
   end
+
+  describe "when Customer.io email cutover is active" do
+    before do
+      allow(ForemInstance).to receive(:customerio_email_cutover?).and_return(true)
+    end
+
+    it "redirects GET /admin/emails/new to the index page" do
+      get new_admin_email_path
+      expect(response).to redirect_to(admin_emails_path)
+      expect(flash[:danger]).to eq(I18n.t("admin.emails.customerio_cutover_notice"))
+    end
+
+    it "redirects GET /admin/emails/:id/edit to the index page" do
+      email = create(:email)
+      get edit_admin_email_path(email)
+      expect(response).to redirect_to(admin_emails_path)
+      expect(flash[:danger]).to eq(I18n.t("admin.emails.customerio_cutover_notice"))
+    end
+
+    it "redirects POST /admin/emails to the index page without creating one" do
+      expect do
+        post admin_emails_path, params: { email: { subject: "Test", body: "Test" } }
+      end.not_to change(Email, :count)
+      expect(response).to redirect_to(admin_emails_path)
+      expect(flash[:danger]).to eq(I18n.t("admin.emails.customerio_cutover_notice"))
+    end
+
+    it "redirects PATCH /admin/emails/:id to the index page without updating one" do
+      email = create(:email, subject: "Original")
+      patch admin_email_path(email), params: { email: { subject: "Changed" } }
+      expect(response).to redirect_to(admin_emails_path)
+      expect(flash[:danger]).to eq(I18n.t("admin.emails.customerio_cutover_notice"))
+      expect(email.reload.subject).to eq("Original")
+    end
+  end
 end

@@ -52,6 +52,8 @@ RSpec.describe Article do
     # Regression test for Issue #22803: Prevent negative reaction counts
     it { is_expected.to validate_numericality_of(:public_reactions_count).is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:previous_public_reactions_count).is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:max_score).is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:baseline_score).is_greater_than_or_equal_to(0) }
 
     it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:user_id) }
 
@@ -332,6 +334,22 @@ RSpec.describe Article do
           expect(described_class.from_subforem).not_to include(article_in_subforem)
           expect(described_class.from_subforem).not_to include(article_in_other_subforem)
           expect(described_class.from_subforem).not_to include(article_in_null_subforem)
+        end
+      end
+
+      context "when ENV['NO_SUBFOREM_FILTER'] is true" do
+        before do
+          @orig_val = ENV["NO_SUBFOREM_FILTER"]
+          ENV["NO_SUBFOREM_FILTER"] = "true"
+        end
+
+        after do
+          ENV["NO_SUBFOREM_FILTER"] = @orig_val
+        end
+
+        it "returns all articles without filtering by subforem" do
+          expect(described_class.from_subforem(subforem.id))
+            .to include(article_in_subforem, article_in_second_subforem, article_in_null_subforem, article_in_other_subforem)
         end
       end
     end
@@ -2079,7 +2097,7 @@ RSpec.describe Article do
     it "returns records with a subset of attributes" do
       feed_article = described_class.feed.first
 
-      fields = %w[id tag_list published_at processed_html user_id organization_id title path cached_tag_list]
+      fields = %w[id tag_list published_at processed_html user_id organization_id title path cached_tag_list slug]
       expect(feed_article.attributes.keys).to match_array(fields)
     end
   end
@@ -2316,6 +2334,14 @@ RSpec.describe Article do
       expect(article.reload.score).to eq(22)
     end
 
+    it "includes the verified organization baseline bonus" do
+      allow(Settings::UserExperience).to receive(:index_minimum_score).and_return(12)
+      org = create(:organization, verified: true)
+      article.update_column(:organization_id, org.id)
+      article.update_score
+      expect(article.reload.score).to eq(22)
+    end
+
     context "when max_score is set" do
       it "uses the max score if the natural score exceeds max_score" do
         article.update_column(:max_score, 2)
@@ -2336,6 +2362,36 @@ RSpec.describe Article do
 
         article.update_score
         expect(article.reload.score).to eq(10)
+      end
+    end
+
+    context "when baseline_score is set" do
+      it "uses the baseline score if the natural score is lower than baseline_score" do
+        article.update_column(:baseline_score, 15)
+
+        article.update_score
+        expect(article.reload.score).to eq(15)
+      end
+
+      it "uses the natural score if it is higher than baseline_score" do
+        article.update_column(:baseline_score, 5)
+
+        article.update_score
+        expect(article.reload.score).to eq(10)
+      end
+
+      it "uses the natural score if baseline_score is 0" do
+        article.update_column(:baseline_score, 0)
+
+        article.update_score
+        expect(article.reload.score).to eq(10)
+      end
+
+      it "still respects max_score when baseline_score is higher" do
+        article.update_columns(max_score: 12, baseline_score: 15)
+
+        article.update_score
+        expect(article.reload.score).to eq(12)
       end
     end
 
@@ -3919,6 +3975,55 @@ RSpec.describe Article do
       allow(GenerateArticleEmbeddingWorker).to receive(:perform_async)
       article.trigger_semantic_embedding_generation
       expect(GenerateArticleEmbeddingWorker).not_to have_received(:perform_async)
+    end
+  end
+
+  describe "recompiling organization pages" do
+    let(:organization) { create(:organization) }
+    let(:user) { create(:user) }
+
+    before do
+      allow(Organizations::RecompilePagesWorker).to receive(:perform_async)
+      allow(FeatureFlag).to receive(:enabled?).and_call_original
+      allow(FeatureFlag).to receive(:enabled?).with(:org_readme, anything).and_return(true)
+    end
+
+    it "enqueues recompilation on create when organization is present and published is true" do
+      create(:article, organization: organization, user: user, published: true)
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id)
+    end
+
+    it "does not enqueue recompilation on create when organization is nil" do
+      create(:article, organization: nil, user: user, published: true)
+      expect(Organizations::RecompilePagesWorker).not_to have_received(:perform_async)
+    end
+
+    it "enqueues recompilation on update when organization changes on a published article" do
+      article = create(:article, organization: nil, user: user, published: true)
+      article.update!(organization: organization)
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id)
+    end
+
+    it "enqueues recompilation on destroy when organization is present and article is published" do
+      article = create(:article, organization: organization, user: user, published: true)
+      article.destroy!
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id).twice
+    end
+
+    it "does not enqueue recompilation for draft articles on create or update" do
+      article = create(:unpublished_article, organization: organization, user: user)
+      expect(Organizations::RecompilePagesWorker).not_to have_received(:perform_async)
+
+      article.update!(title: "New Draft Title")
+      expect(Organizations::RecompilePagesWorker).not_to have_received(:perform_async)
+    end
+
+    it "enqueues recompilation when a draft article is published" do
+      article = create(:unpublished_article, organization: organization, user: user)
+      expect(Organizations::RecompilePagesWorker).not_to have_received(:perform_async)
+
+      article.update!(published: true)
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id)
     end
   end
 end
