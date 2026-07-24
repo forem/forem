@@ -389,6 +389,7 @@ class Organization < ApplicationRecord
 
   def bust_cache
     Organizations::BustCacheWorker.perform_async(id, slug)
+    MemoryFirstCache.delete("org_custom_domain:#{id}")
   end
 
   def recompile_pages

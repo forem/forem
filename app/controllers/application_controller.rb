@@ -486,6 +486,10 @@ class ApplicationController < ActionController::Base
       return
     end
 
+    if (controller_name == "pages" && action_name == "robots") || controller_name == "sitemaps"
+      return
+    end
+
     main_app_domain = Settings::General.app_domain
     if main_app_domain.present? && request.host&.downcase != main_app_domain.downcase
       redirect_to "#{request.protocol}#{main_app_domain}#{request.fullpath}", allow_other_host: true, status: :moved_permanently
