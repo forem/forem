@@ -89,7 +89,7 @@ RSpec.configure do |config|
   config.verbose_retry = true
   config.display_try_failure_messages = true
   config.around :each, :js do |ex|
-    ex.run_with_retry retry: 3
+    ex.run_with_retry(**RSpecRetryPolicy::JS_OPTIONS)
   end
 
   # None of the rspec formatter hooks are invoked in the case of a retry, so the only way to get data
