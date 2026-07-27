@@ -46,11 +46,11 @@ module URL
   #
   # @param article [Article] the article to create the URL for
   def self.article(article)
-    if article.has_attribute?(:organization) && (org = article.organization)
-      if org.custom_domain.present? && FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
+    if article.respond_to?(:organization) && (org = article.try(:organization))
+      if org && org.respond_to?(:custom_domain) && org.custom_domain.present? && FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
         return url("/#{article.slug}", org.custom_domain)
       end
-    elsif article.has_attribute?(:organization_id) && article.organization_id.present?
+    elsif (article.is_a?(ActiveRecord::Base) ? article.has_attribute?(:organization_id) : article.respond_to?(:organization_id)) && article.organization_id.present?
       org_id = article.organization_id
       custom_domain = MemoryFirstCache.fetch("org_custom_domain:#{org_id}", redis_expires_in: 12.hours, return_type: :string) do
         Organization.where(id: org_id).pick(:custom_domain).to_s
@@ -63,7 +63,8 @@ module URL
       end
     end
 
-    return url(article.path) unless article.has_attribute?(:subforem_id)
+    has_subforem_attr = article.is_a?(ActiveRecord::Base) ? article.has_attribute?(:subforem_id) : article.respond_to?(:subforem_id)
+    return url(article.path) unless has_subforem_attr
     
     # Use cached lookup to avoid N+1 queries
     subforem_id = article.subforem_id || RequestStore.store[:default_subforem_id]
