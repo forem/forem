@@ -80,6 +80,24 @@ RSpec.describe DigestMailer do
       expect(email.body.encoded).to include("href=\"#{URL.article(article)}?context=digest")
     end
 
+    it "renders valid href URLs for organization articles in digest email" do
+      org = create(:organization)
+      org_article = create(:article, organization: org, title: "Org Article Title")
+      email = described_class.with(user: user, articles: [org_article]).digest_email
+
+      expect(email.body.encoded).to include("href=\"#{URL.article(org_article)}?context=digest")
+    end
+
+    it "does not raise error or produce blank href when articles are selected without organization_id" do
+      created_article = create(:article, title: "No Org ID Selected")
+      partial = Article.select(:id, :title, :description, :path).find(created_article.id)
+
+      expect {
+        email = described_class.with(user: user, articles: [partial]).digest_email
+        expect(email.body.encoded).to include("href=\"#{URL.article(created_article)}?context=digest")
+      }.not_to raise_error
+    end
+
     it "does not use Customer.io delivery when Customer.io is not configured" do
       email = described_class.with(user: user, articles: [article]).digest_email
 

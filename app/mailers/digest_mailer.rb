@@ -58,6 +58,9 @@ class DigestMailer < ApplicationMailer
   def digest_article_payload(article)
     article_url = ApplicationController.helpers.article_url(article, context: "digest", fc: @feed_config_id.presence)
     article_url = URL.article(article) if article_url.blank?
+    ai_summary_text = article.has_attribute?(:ai_summary) ? article.ai_summary : nil
+    description_text = article.has_attribute?(:description) ? article.description : nil
+
     {
       "title" => article.title.strip,
       "url" => article_url,
@@ -65,8 +68,8 @@ class DigestMailer < ApplicationMailer
       "link" => article_url,
       "article_url" => article_url,
       "canonical_url" => article_url,
-      "summary" => article.ai_summary.presence ||
-        ApplicationController.helpers.truncate(article.description, length: 180)
+      "summary" => ai_summary_text.presence ||
+        ApplicationController.helpers.truncate(description_text, length: 180)
     }
   end
 
