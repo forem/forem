@@ -73,6 +73,31 @@ RSpec.describe DigestMailer do
       expect(email.body.encoded).not_to include("fc=")
     end
 
+    it "renders valid href URLs on article links when articles are queried via DIGEST_ARTICLE_COLUMNS select" do
+      partial_article = Article.select(EmailDigestArticleCollector::DIGEST_ARTICLE_COLUMNS).find(article.id)
+      email = described_class.with(user: user, articles: [partial_article]).digest_email
+
+      expect(email.body.encoded).to include("href=\"#{URL.article(article)}?context=digest")
+    end
+
+    it "renders valid href URLs for organization articles in digest email" do
+      org = create(:organization)
+      org_article = create(:article, organization: org, title: "Org Article Title")
+      email = described_class.with(user: user, articles: [org_article]).digest_email
+
+      expect(email.body.encoded).to include("href=\"#{URL.article(org_article)}?context=digest")
+    end
+
+    it "does not raise error or produce blank href when articles are selected without organization_id" do
+      created_article = create(:article, title: "No Org ID Selected")
+      partial = Article.select(:id, :title, :description, :path).find(created_article.id)
+
+      expect {
+        email = described_class.with(user: user, articles: [partial]).digest_email
+        expect(email.body.encoded).to include("href=\"#{URL.article(created_article)}?context=digest")
+      }.not_to raise_error
+    end
+
     it "does not use Customer.io delivery when Customer.io is not configured" do
       email = described_class.with(user: user, articles: [article]).digest_email
 
@@ -110,9 +135,14 @@ RSpec.describe DigestMailer do
         expect(data["articles"].size).to eq(2)
 
         expected_url = ApplicationController.helpers.article_url(article, context: "digest", fc: 12_345)
-        expect(data["articles"].first["title"]).to eq(article.title.strip)
-        expect(data["articles"].first["url"]).to eq(expected_url)
-        expect(data["articles"].first["summary"]).to eq("An AI generated summary.")
+        first_article = data["articles"].first
+        expect(first_article["title"]).to eq(article.title.strip)
+        expect(first_article["url"]).to eq(expected_url)
+        expect(first_article["path"]).to eq(expected_url)
+        expect(first_article["link"]).to eq(expected_url)
+        expect(first_article["article_url"]).to eq(expected_url)
+        expect(first_article["canonical_url"]).to eq(expected_url)
+        expect(first_article["summary"]).to eq("An AI generated summary.")
         expect(data["articles"].second["title"]).to eq(article2.title.strip)
 
         expect(data["unsubscribe_url"]).to include("ut=")
@@ -130,12 +160,12 @@ RSpec.describe DigestMailer do
         expect(data["articles"].first["summary"]).to eq("Fallback description text.")
       end
 
-      it "passes the smart_summary through untouched" do
+      it "renders the smart_summary markdown as html in the payload" do
         email = described_class.with(user: user, articles: [article],
-                                     smart_summary: "Digest overview text").digest_email
+                                     smart_summary: "[Digest overview](https://dev.to/test)").digest_email
 
         data = email.message.delivery_method.settings[:message_data]
-        expect(data["smart_summary"]).to eq("Digest overview text")
+        expect(data["smart_summary"]).to include('<a href="https://dev.to/test"')
       end
 
       it "keys billboards_html by slot so the CIO template can tell first from second" do
