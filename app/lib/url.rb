@@ -46,7 +46,8 @@ module URL
   #
   # @param article [Article] the article to create the URL for
   def self.article(article)
-    if article.respond_to?(:organization) && (org = article.try(:organization))
+    has_org_attr = article.is_a?(ActiveRecord::Base) ? article.has_attribute?(:organization_id) : article.respond_to?(:organization)
+    if has_org_attr && (org = article.try(:organization))
       if org && org.respond_to?(:custom_domain) && org.custom_domain.present? && FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
         return url("/#{article.slug}", org.custom_domain)
       end
