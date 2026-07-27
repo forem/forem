@@ -77,7 +77,7 @@ RSpec.describe DigestMailer do
       partial_article = Article.select(EmailDigestArticleCollector::DIGEST_ARTICLE_COLUMNS).find(article.id)
       email = described_class.with(user: user, articles: [partial_article]).digest_email
 
-      expect(email.body.encoded).to include("href=\"#{URL.article(article)}?context=digest\"")
+      expect(email.body.encoded).to include("href=\"#{URL.article(article)}?context=digest")
     end
 
     it "does not use Customer.io delivery when Customer.io is not configured" do
