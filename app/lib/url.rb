@@ -46,7 +46,20 @@ module URL
   #
   # @param article [Article] the article to create the URL for
   def self.article(article)
-    return url(article.path) unless article.respond_to?(:subforem_id)
+    org_id = article.has_attribute?(:organization_id) ? article.organization_id : nil
+    if org_id.present?
+      custom_domain = MemoryFirstCache.fetch("org_custom_domain:#{org_id}", redis_expires_in: 12.hours, return_type: :string) do
+        Organization.where(id: org_id).pick(:custom_domain).to_s
+      end
+      if custom_domain.present?
+        org = article.organization
+        if org && FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
+          return url("/#{article.slug}", custom_domain)
+        end
+      end
+    end
+
+    return url(article.path) unless article.has_attribute?(:subforem_id)
     
     # Use cached lookup to avoid N+1 queries
     subforem_id = article.subforem_id || RequestStore.store[:default_subforem_id]
