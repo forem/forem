@@ -11,7 +11,18 @@ module Admin
     end
 
     def new
-      @event = Event.new
+      fork_id = params[:fork_from_id] || params[:fork_from] || params[:fork_id]
+      if fork_id.present?
+        original_event = Event.find(fork_id)
+        @event = original_event.dup
+        @event.tag_list = original_event.tag_list
+      else
+        @event = Event.new
+      end
+    end
+
+    def fork
+      redirect_to new_admin_event_path(fork_from_id: params[:id])
     end
 
     def create

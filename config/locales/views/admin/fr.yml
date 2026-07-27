@@ -606,6 +606,8 @@ fr:
           threshold: "Seuil"
           default: "défaut"
       events:
+        fork: "Dupliquer"
+        fork_event: "Dupliquer l'événement"
         show:
           signups_title: "Inscriptions à l'événement"
           no_signups: "Aucune inscription pour cet événement pour le moment."

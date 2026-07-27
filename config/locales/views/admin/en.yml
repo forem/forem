@@ -617,6 +617,8 @@ en:
           threshold: "Threshold"
           default: "default"
       events:
+        fork: "Fork"
+        fork_event: "Fork Event"
         show:
           signups_title: "Event Signups"
           no_signups: "No signups for this event yet."

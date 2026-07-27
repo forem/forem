@@ -503,6 +503,8 @@ pt:
           threshold: "Limiar"
           default: "padrão"
       events:
+        fork: "Duplicar"
+        fork_event: "Duplicar Evento"
         show:
           signups_title: "Inscrições no evento"
           no_signups: "Nenhuma inscrição para este evento ainda."

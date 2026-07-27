@@ -3,6 +3,7 @@
     <h1 class="crayons-title">Event Configuration: <%= @event.title %></h1>
     <div class="flex gap-2">
       <%= link_to "Edit Event", edit_admin_event_path(@event), class: "c-btn c-btn--primary" %>
+      <%= link_to t("views.admin.events.fork_event"), new_admin_event_path(fork_from_id: @event.id), class: "c-btn c-btn--secondary" %>
       <%= link_to "Public View", event_path(@event.event_name_slug, @event.event_variation_slug), target: "_blank", class: "c-btn c-btn--secondary" %>
     </div>
   </div>
