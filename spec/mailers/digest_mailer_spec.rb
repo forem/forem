@@ -110,9 +110,14 @@ RSpec.describe DigestMailer do
         expect(data["articles"].size).to eq(2)
 
         expected_url = ApplicationController.helpers.article_url(article, context: "digest", fc: 12_345)
-        expect(data["articles"].first["title"]).to eq(article.title.strip)
-        expect(data["articles"].first["url"]).to eq(expected_url)
-        expect(data["articles"].first["summary"]).to eq("An AI generated summary.")
+        first_article = data["articles"].first
+        expect(first_article["title"]).to eq(article.title.strip)
+        expect(first_article["url"]).to eq(expected_url)
+        expect(first_article["path"]).to eq(expected_url)
+        expect(first_article["link"]).to eq(expected_url)
+        expect(first_article["article_url"]).to eq(expected_url)
+        expect(first_article["canonical_url"]).to eq(expected_url)
+        expect(first_article["summary"]).to eq("An AI generated summary.")
         expect(data["articles"].second["title"]).to eq(article2.title.strip)
 
         expect(data["unsubscribe_url"]).to include("ut=")

@@ -56,9 +56,15 @@ class DigestMailer < ApplicationMailer
   # truncated-description fallback), so the Customer.io template can
   # reproduce the article list without duplicating selection logic.
   def digest_article_payload(article)
+    article_url = ApplicationController.helpers.article_url(article, context: "digest", fc: @feed_config_id.presence)
+    article_url = URL.article(article) if article_url.blank?
     {
       "title" => article.title.strip,
-      "url" => ApplicationController.helpers.article_url(article, context: "digest", fc: @feed_config_id.presence),
+      "url" => article_url,
+      "path" => article_url,
+      "link" => article_url,
+      "article_url" => article_url,
+      "canonical_url" => article_url,
       "summary" => article.ai_summary.presence ||
         ApplicationController.helpers.truncate(article.description, length: 180)
     }
