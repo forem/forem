@@ -198,6 +198,15 @@ RSpec.describe Page do
       end
     end
 
+    it "passes the organization id to the cache bust worker for organization pages" do
+      organization = create(:organization)
+      org_page = create(:page, organization: organization, slug: "#{organization.slug}/readme")
+
+      sidekiq_assert_enqueued_with(job: Pages::BustCacheWorker, args: [org_page.slug, organization.id]) do
+        org_page.save
+      end
+    end
+
     it "ensures only one page can be a landing page on create" do
       p1 = create(:page, landing_page: true)
       create(:page, landing_page: true)
