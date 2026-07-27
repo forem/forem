@@ -8,6 +8,7 @@ class DigestMailer < ApplicationMailer
     @articles = params[:articles]
     @billboards = params[:billboards]
     @smart_summary = params[:smart_summary]
+    @smart_summary_html = ContentRenderer.new(@smart_summary).process.processed_html if @smart_summary.present?
     @feed_config_id = params[:feed_config_id]
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_digest_periodic)
     @user_follows_any_subforems = user_follows_any_subforems?
@@ -19,9 +20,8 @@ class DigestMailer < ApplicationMailer
       message_data: {
         "subject" => subject,
         "articles" => @articles.map { |article| digest_article_payload(article) },
-        # Raw Markdown -- the SMTP view runs this through ContentRenderer before
-        # display, so the CIO template needs to render it too.
-        "smart_summary" => @smart_summary,
+        # Rendered HTML so Customer.io templates output clickable <a> links instead of unparsed Markdown text
+        "smart_summary" => @smart_summary_html,
         "billboards_html" => digest_billboards_html,
         "email_end_phrase" => email_end_phrase,
         "unsubscribe_url" => email_subscriptions_unsubscribe_url(ut: @unsubscribe),

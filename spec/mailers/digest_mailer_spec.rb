@@ -130,12 +130,12 @@ RSpec.describe DigestMailer do
         expect(data["articles"].first["summary"]).to eq("Fallback description text.")
       end
 
-      it "passes the smart_summary through untouched" do
+      it "renders the smart_summary markdown as html in the payload" do
         email = described_class.with(user: user, articles: [article],
-                                     smart_summary: "Digest overview text").digest_email
+                                     smart_summary: "[Digest overview](https://dev.to/test)").digest_email
 
         data = email.message.delivery_method.settings[:message_data]
-        expect(data["smart_summary"]).to eq("Digest overview text")
+        expect(data["smart_summary"]).to include('<a href="https://dev.to/test"')
       end
 
       it "keys billboards_html by slot so the CIO template can tell first from second" do
