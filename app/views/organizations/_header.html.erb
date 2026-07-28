@@ -250,7 +250,7 @@
   <% if @organization.main_page.present? && FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization]) %>
     <%
       is_custom_domain = request.env["forem.custom_domain_org"].present?
-      org_pages = @organization.pages.order(:created_at).to_a
+      org_pages = @organization.ordered_pages.to_a
       showcase_page = org_pages.find { |page| page.slug&.end_with?("/readme") } || org_pages.first
       custom_pages = org_pages.reject { |page| page == showcase_page }
       

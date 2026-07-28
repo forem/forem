@@ -186,8 +186,12 @@ class Organization < ApplicationRecord
     main_page.present?
   end
 
+  def ordered_pages
+    pages.order(:position, :created_at, :id)
+  end
+
   def main_page
-    pages.order(:created_at).first
+    ordered_pages.first
   end
 
   def social_link(platform)

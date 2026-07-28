@@ -507,6 +507,16 @@ RSpec.describe Organization do
     end
   end
 
+  describe "#ordered_pages" do
+    it "orders pages by position and uses creation order as a stable fallback" do
+      first_page = create(:page, organization: organization, position: 1)
+      second_page = create(:page, organization: organization, position: 2)
+      moved_page = create(:page, organization: organization, position: 0)
+
+      expect(organization.ordered_pages).to eq([moved_page, first_page, second_page])
+    end
+  end
+
   describe "#flipper_id" do
     it "returns a string with Organization prefix and id" do
       expect(organization.flipper_id).to eq("Organization;#{organization.id}")
