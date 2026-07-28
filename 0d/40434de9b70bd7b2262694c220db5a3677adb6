@@ -1,0 +1,46 @@
+app/mailers/organization_invitation_mailer.rb
+  s_0cd64231ee5515::t_a806cfeab6a125 16-26
+spec/mailers/notify_mailer_spec.rb
+  s_0cd64231ee5515::t_f7dc9c9fea2159 829-847,849,857,859,864-865,899-915
+  s_0cd64231ee5515::t_b5a7762501e4fc 568-587,600-620,641-660
+  s_0cd64231ee5515::t_3d0a62527a4c79 848,850-856,858,860-863
+  s_0cd64231ee5515::t_56ad0c183ed645 217-236
+  s_0cd64231ee5515::t_cc61336e097ea3 525,661,761-764,787,916-917
+  s_0cd64231ee5515::t_781ed00261a71a 430-448,467-485,507-524
+  s_0cd64231ee5515::t_b458888464323a 685-709,727-760,765-786
+spec/mailers/survey_mailer_spec.rb
+  s_0cd64231ee5515::t_cc61336e097ea3 111-112
+  s_0cd64231ee5515::t_0da9fc9521c4b7 23-26,85-86,104,106,109
+  s_0cd64231ee5515::t_d32b130dc68ad5 56-84,87-103,105,107-108,110
+spec/mailers/organization_membership_notification_mailer_spec.rb
+  s_0cd64231ee5515::t_359a68815fbe54 44-66,68,76,78,83-84
+  s_0cd64231ee5515::t_8737fee7ff7416 67,69-75,77,79-82
+spec/mailers/organization_invitation_mailer_spec.rb
+  s_0cd64231ee5515::t_6760163de6b612 63,65-71,73,75-78
+  s_0cd64231ee5515::t_967992e22e2e79 40-62,64,72,74,79-80
+app/mailers/survey_mailer.rb
+  s_0cd64231ee5515::t_cc61336e097ea3 29
+  s_0cd64231ee5515::t_a806cfeab6a125 2-3,11,14,17,20-28
+app/mailers/organization_membership_notification_mailer.rb
+  s_0cd64231ee5515::t_a806cfeab6a125 13-24
+app/mailers/notify_mailer.rb
+  s_0cd64231ee5515::t_cc61336e097ea3 348
+  s_0cd64231ee5515::t_7fd0d6a47485fd 188,221,240
+  s_0cd64231ee5515::t_a806cfeab6a125 118-126,151-159,161,168-174,182-187,194-202,204,211,213-220,222,230,232-239,241,247,251-258,266-276,285-295,303-311,313,319,321-328,338-347
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "0d40434de9b70bd7b2262694c220db5a3677adb6",
+  "prompts": {},
+  "sessions": {
+    "s_0cd64231ee5515": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b2d035f1-b022-48fc-b793-32eaadb3e1ad",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}
