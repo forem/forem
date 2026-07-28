@@ -38,6 +38,8 @@ class Organization < ApplicationRecord
   before_save :remove_at_from_usernames
   before_save :generate_secret
   before_save :reset_verification_on_domain_change
+  before_save :set_baseline_score_on_verification_change
+
 
   after_save :bust_cache
   after_save :generate_social_images
@@ -336,6 +338,16 @@ class Organization < ApplicationRecord
     self.verification_status = nil
     self.verification_error = nil
     self.verification_url = nil
+  end
+
+  def set_baseline_score_on_verification_change
+    return unless will_save_change_to_verified?
+
+    if verified?
+      self.baseline_score = Settings::UserExperience.index_minimum_score.to_i
+    else
+      self.baseline_score = 0
+    end
   end
 
   def remove_at_from_usernames
