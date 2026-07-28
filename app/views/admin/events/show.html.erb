@@ -113,7 +113,12 @@
 
   <hr class="my-8" />
 
-  <h2 class="text-2xl font-bold mb-4"><%= t("views.admin.events.show.signups_title") %></h2>
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-2xl font-bold"><%= t("views.admin.events.show.signups_title") %></h2>
+    <% unless ForemInstance.customerio_email_cutover? %>
+      <%= link_to "Email All Signups", new_admin_email_path(event_id: @event.id), class: "c-btn c-btn--secondary c-btn--sm" %>
+    <% end %>
+  </div>
 
   <% if @event_signups.any? %>
     <div class="mb-4">
