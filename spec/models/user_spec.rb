@@ -838,9 +838,7 @@ RSpec.describe User do
         when :facebook, :google_oauth2
           expect(new_user.username).to match(/fname_lname_\S*\z/)
         when :mlh
-          # users.mlh_username is intentionally never written, so the
-          # username is generator-random
-          expect(new_user.username).to match(/\A[a-z]{12}\z/)
+          expect(new_user.username).to eq("mlh")
         else
           expect(new_user.username).to eq("valid_username")
         end
@@ -861,7 +859,7 @@ RSpec.describe User do
         when :facebook, :google_oauth2
           expect(new_user.username).to match(/fname_lname_\S*\z/)
         when :mlh
-          expect(new_user.username).to match(/\A[a-z]{12}\z/)
+          expect(new_user.username).to eq("mlh")
         else
           expect(new_user.username).to eq("invalidusername")
         end
@@ -879,17 +877,9 @@ RSpec.describe User do
         mock_username(provider_name, banished_name)
 
         create(:banished_user, username: provider_username(provider_name))
-        if provider_name == :mlh
-          # MLH usernames are generator-random (mlh_username is never
-          # written), so the banished-username guard cannot match
-          expect do
-            user_from_authorization_service(provider_name, nil, "navbar_basic")
-          end.not_to raise_error
-        else
-          expect do
-            user_from_authorization_service(provider_name, nil, "navbar_basic")
-          end.to raise_error(ActiveRecord::RecordInvalid, /Username has been banished./)
-        end
+        expect do
+          user_from_authorization_service(provider_name, nil, "navbar_basic")
+        end.to raise_error(ActiveRecord::RecordInvalid, /Username has been banished./)
       end
     end
 

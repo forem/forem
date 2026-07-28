@@ -7,7 +7,6 @@ RSpec.describe Authentication::Providers::Mlh, type: :service do
       uid: "123456",
       info: {
         email: "test@example.com",
-        nickname: "mlhuser",
         name: "MLH User"
       },
       extra: {
@@ -37,9 +36,24 @@ RSpec.describe Authentication::Providers::Mlh, type: :service do
   end
 
   describe "#new_user_data" do
-    it "maps email and name, leaving users.mlh_username untouched" do
+    it "maps email, name, and username, leaving users.mlh_username untouched" do
       data = provider.new_user_data
-      expect(data).to eq(email: "test@example.com", name: "MLH User")
+      expect(data).to eq(email: "test@example.com", name: "MLH User", username: "test")
+    end
+
+    it "generates a unique username" do
+      create(:user, username: "test")
+
+      expect(provider.new_user_data[:username]).not_to eq("test")
+      expect(provider.new_user_data[:username]).to start_with("test")
+    end
+  end
+
+  describe "#user_nickname" do
+    it "derives the nickname from the email" do
+      auth_payload.info.nickname = nil
+
+      expect(provider.user_nickname).to eq("test")
     end
   end
 
