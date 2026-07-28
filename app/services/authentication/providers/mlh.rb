@@ -25,12 +25,19 @@ module Authentication
       def new_user_data
         {
           email: info.email.to_s,
-          name: info.name
+          name: info.name,
+          username: Users::UsernameGenerator.call([user_nickname])
         }
       end
 
       def existing_user_data
         {}
+      end
+
+      # MLH has no nickname, so seed username generation from the email
+      # local-name so we don't end up with a random string
+      def user_nickname
+        info.email.to_s.split("@").first.to_s
       end
 
       protected
