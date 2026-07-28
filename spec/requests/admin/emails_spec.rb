@@ -23,7 +23,18 @@ RSpec.describe "/admin/emails" do
   describe "GET /admin/emails/new" do
     it "renders the new template with a form" do
       get new_admin_email_path
-      expect(response.body).to include('name="email[subject]"', 'name="email[body]"', 'name="email[user_query_id]"')
+      expect(response.body).to include(
+        'name="email[subject]"',
+        'name="email[body]"',
+        'name="email[user_query_id]"',
+        'name="email[event_id]"',
+      )
+    end
+
+    it "pre-populates event_id when event_id param is provided" do
+      event = create(:event)
+      get new_admin_email_path(event_id: event.id)
+      expect(response.body).to include("selected=\"selected\" value=\"#{event.id}\">#{event.title}</option>")
     end
   end
 
@@ -43,6 +54,21 @@ RSpec.describe "/admin/emails" do
         expect(response).to redirect_to(admin_email_path(Email.last))
         follow_redirect!
         expect(flash[:success]).to eq(I18n.t("admin.emails_controller.drafted"))
+      end
+
+      it "creates a new email targeting an event" do
+        event = create(:event)
+        valid_attributes = {
+          email: {
+            subject: "Event Email Subject",
+            body: "Event Email Body",
+            event_id: event.id
+          }
+        }
+        expect do
+          post admin_emails_path, params: valid_attributes
+        end.to change(Email, :count).by(1)
+        expect(Email.last.event_id).to eq(event.id)
       end
     end
 

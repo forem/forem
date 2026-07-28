@@ -72,7 +72,7 @@
           </td>
           <td><%= link_to email.subject, admin_email_path(email) %></td>
           <td><%= email.created_at.strftime("%Y-%m-%d %H:%M") %></td>
-          <td><%= email.audience_segment&.name || email.audience_segment&.type_of || "All" %></td>
+          <td><%= email.audience_segment&.name || email.user_query&.name || (email.event ? "Event: #{email.event.title}" : nil) || "All" %></td>
           <td><%= truncate(email.body, length: 100) %></td>
           <td>
             <div class="flex gap-1">
