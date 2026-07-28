@@ -34,7 +34,9 @@ RSpec.describe "/admin/emails" do
     it "pre-populates event_id when event_id param is provided" do
       event = create(:event)
       get new_admin_email_path(event_id: event.id)
-      expect(response.body).to include("selected=\"selected\" value=\"#{event.id}\">#{event.title}</option>")
+      doc = Nokogiri::HTML(response.body)
+      selected_option = doc.at_css("select#event_select option[selected][value='#{event.id}']")
+      expect(selected_option&.text).to eq(event.title)
     end
   end
 

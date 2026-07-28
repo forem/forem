@@ -4,5 +4,6 @@ class AddEventIdToEmails < ActiveRecord::Migration[8.0]
   def change
     add_column :emails, :event_id, :bigint
     add_index :emails, :event_id, algorithm: :concurrently
+    add_foreign_key :emails, :events, validate: false
   end
 end
