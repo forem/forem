@@ -29,7 +29,9 @@ module Emails
         # It automatically resets when the transaction commits/rollbacks.
         User.connection.execute("SET LOCAL statement_timeout TO #{batch_timeout_ms}")
 
-        if email.user_query.present?
+        if email.event.present?
+          process_event_signups(email, min_id, max_id)
+        elsif email.user_query.present?
           process_custom_query(email, min_id, max_id)
         else
           process_standard_scope(email, min_id, max_id)
@@ -38,6 +40,20 @@ module Emails
     end
 
     private
+
+    def process_event_signups(email, min_id = nil, max_id = nil)
+      base_scope = User.email_eligible
+                       .joins(:event_signups)
+                       .where(event_signups: { event_id: email.event_id })
+
+      base_scope = base_scope.where("users.id >= ?", min_id) if min_id
+      base_scope = base_scope.where("users.id <= ?", max_id) if max_id
+
+      base_scope.in_batches(of: BATCH_SIZE) do |relation|
+        user_ids = relation.ids
+        enqueue_batch(email, user_ids, "Event Signups")
+      end
+    end
 
     def process_custom_query(email, min_id = nil, max_id = nil)
       variables = extract_email_variables(email)
