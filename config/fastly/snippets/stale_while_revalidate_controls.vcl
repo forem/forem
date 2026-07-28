@@ -1,6 +1,6 @@
 sub vcl_fetch {
   if (req.url == "/" || req.url == "/?i=i") {
-    set beresp.stale_while_revalidate = 15s;
+    set beresp.stale_while_revalidate = 60s;
   }
 
   if (beresp.status >= 400) {

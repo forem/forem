@@ -295,10 +295,11 @@ RSpec.describe "StoriesIndex" do
     def sets_fastly_headers
       expected_surrogate_key_headers = %w[main_app_home_page]
       expect(response.headers["Surrogate-Key"].split(", ")).to match_array(expected_surrogate_key_headers)
+      expect(response.headers["Surrogate-Control"]).to eq("max-age=60, stale-while-revalidate=60, stale-if-error=86400")
     end
 
     def sets_nginx_headers
-      expect(response.headers["X-Accel-Expires"]).to eq("600")
+      expect(response.headers["X-Accel-Expires"]).to eq("60")
     end
 
     it "shows default meta keywords if set" do
