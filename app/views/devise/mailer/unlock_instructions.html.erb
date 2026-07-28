@@ -8,6 +8,6 @@
   <p style="margin: 24px 0;">
     <%= link_to "Unlock my account",
                 unlock_url(@resource, unlock_token: @token),
-                style: "display: inline-block; background: #{Settings::UserExperience.primary_brand_color_hex}; color: #ffffff; padding: 12px 24px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 16px;" %>
+                style: "display: inline-block; background: #{Settings::UserExperience.primary_brand_color_hex(subforem_id: @subforem_id)}; color: #ffffff; padding: 12px 24px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 16px;" %>
   </p>
 </div>
