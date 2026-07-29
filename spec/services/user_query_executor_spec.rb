@@ -137,7 +137,6 @@ RSpec.describe UserQueryExecutor do
 
   describe "error handling" do
     it "handles timeout errors" do
-      user_query.update!(max_execution_time_ms: 1)
       allow_any_instance_of(UserQueryExecutor).to receive(:execute_with_timeout).and_raise(PG::QueryCanceled.new("timeout"))
 
       executor = UserQueryExecutor.new(user_query)
