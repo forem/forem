@@ -309,9 +309,9 @@
 
           <div class="grid gap-3 mt-4">
             <% if @organization.pages.any? %>
-              <% @organization.pages.order(:created_at).each do |page| %>
+              <% @organization.ordered_pages.each do |page| %>
                 <% 
-                  is_showcase = page.slug.end_with?("/readme")
+                  is_showcase = page == @organization.main_page
                   suffix = page.slug.split("/").last
                 %>
                 <div class="crayons-card crayons-card--secondary p-3 flex items-center justify-between gap-3">

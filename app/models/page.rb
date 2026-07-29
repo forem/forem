@@ -23,7 +23,7 @@ class Page < ApplicationRecord
   validate :validate_slug_uniqueness
 
   before_validation :set_default_template
-  before_save :evaluate_markdown
+  before_validation :evaluate_markdown
   before_save :render_from_page_template, if: :uses_page_template?
 
   after_commit :ensure_uniqueness_of_landinge_page
@@ -102,12 +102,13 @@ class Page < ApplicationRecord
 
   def evaluate_markdown
     if body_markdown.present?
-      source = organization || nil
-      parsed_markdown = MarkdownProcessor::Parser.new(body_markdown, source: source)
-      self.processed_html = parsed_markdown.finalize(link_attributes: link_attributes_for_org)
+      renderer = ContentRenderer.new(body_markdown, source: organization)
+      self.processed_html = renderer.process(link_attributes: link_attributes_for_org).processed_html
     else
       self.processed_html = body_html
     end
+  rescue ContentRenderer::ContentParsingError => e
+    errors.add(:base, ErrorMessages::Clean.call(e.message))
   end
 
   def link_attributes_for_org
