@@ -102,6 +102,37 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
       end
     end
 
+    context "when email has an event target" do
+      let!(:event) { create(:event) }
+      let!(:signed_up_user) { create(:user, :with_newsletters) }
+      let!(:non_signed_up_user) { create(:user, :with_newsletters) }
+      let!(:email) { create(:email, subject: "Event Email", event: event) }
+
+      before do
+        create(:event_signup, event: event, user: signed_up_user)
+      end
+
+      it "enqueues BatchCustomSendWorker for users who signed up for the event" do
+        described_class.new.perform(email.id)
+        expect(Emails::BatchCustomSendWorker).to have_received(:perform_async).with(
+          [signed_up_user.id],
+          email.subject,
+          email.body,
+          email.type_of,
+          email.id,
+          email.default_from_name_based_on_type,
+        )
+        expect(Emails::BatchCustomSendWorker).not_to have_received(:perform_async).with(
+          include(non_signed_up_user.id),
+          anything,
+          anything,
+          anything,
+          anything,
+          anything,
+        )
+      end
+    end
+
     context "when there are more users than BATCH_SIZE" do
       before do
         # Suppose it's non-production environment => BATCH_SIZE = 10

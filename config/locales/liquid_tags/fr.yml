@@ -62,6 +62,9 @@ fr:
       no_source_found: Aucune source trouvée
     listing_tag:
       invalid_url_or_slug: URL ou slug non valide. Liste non trouvée.
+    livecodes_tag:
+      invalid_livecodes_url: URL LiveCodes non valide
+      invalid_option: "Option non valide : %{option}. Options prises en charge : height (ex. height=500)"
     lovable_tag:
       invalid_url: URL Lovable non valide
     loom_tag:

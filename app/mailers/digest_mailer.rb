@@ -8,6 +8,7 @@ class DigestMailer < ApplicationMailer
     @articles = params[:articles]
     @billboards = params[:billboards]
     @smart_summary = params[:smart_summary]
+    @smart_summary_html = ContentRenderer.new(@smart_summary).process.processed_html if @smart_summary.present?
     @feed_config_id = params[:feed_config_id]
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_digest_periodic)
     @user_follows_any_subforems = user_follows_any_subforems?
@@ -19,9 +20,8 @@ class DigestMailer < ApplicationMailer
       message_data: {
         "subject" => subject,
         "articles" => @articles.map { |article| digest_article_payload(article) },
-        # Raw Markdown -- the SMTP view runs this through ContentRenderer before
-        # display, so the CIO template needs to render it too.
-        "smart_summary" => @smart_summary,
+        # Rendered HTML so Customer.io templates output clickable <a> links instead of unparsed Markdown text
+        "smart_summary" => @smart_summary_html,
         "billboards_html" => digest_billboards_html,
         "email_end_phrase" => email_end_phrase,
         "unsubscribe_url" => email_subscriptions_unsubscribe_url(ut: @unsubscribe),
@@ -56,11 +56,20 @@ class DigestMailer < ApplicationMailer
   # truncated-description fallback), so the Customer.io template can
   # reproduce the article list without duplicating selection logic.
   def digest_article_payload(article)
+    article_url = ApplicationController.helpers.article_url(article, context: "digest", fc: @feed_config_id.presence)
+    article_url = URL.article(article) if article_url.blank?
+    ai_summary_text = article.has_attribute?(:ai_summary) ? article.ai_summary : nil
+    description_text = article.has_attribute?(:description) ? article.description : nil
+
     {
       "title" => article.title.strip,
-      "url" => ApplicationController.helpers.article_url(article, context: "digest", fc: @feed_config_id.presence),
-      "summary" => article.ai_summary.presence ||
-        ApplicationController.helpers.truncate(article.description, length: 180)
+      "url" => article_url,
+      "path" => article_url,
+      "link" => article_url,
+      "article_url" => article_url,
+      "canonical_url" => article_url,
+      "summary" => ai_summary_text.presence ||
+        ApplicationController.helpers.truncate(description_text, length: 180)
     }
   end
 

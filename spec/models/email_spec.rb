@@ -4,6 +4,7 @@ require "rails_helper"
 RSpec.describe Email, type: :model do
   describe "Associations" do
     it { is_expected.to belong_to(:audience_segment).optional }
+    it { is_expected.to belong_to(:event).optional }
   end
 
   describe "Callbacks" do
