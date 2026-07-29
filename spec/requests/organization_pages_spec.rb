@@ -154,7 +154,7 @@ RSpec.describe "Organization Pages Controller Backend Protection" do
     end
 
     it "moves a custom page up while keeping Showcase first" do
-      sidekiq_assert_enqueued_with(job: Pages::BustCacheWorker, args: [second_page.slug, organization.id]) do
+      sidekiq_assert_enqueued_with(job: Pages::BustCacheWorker, args: [second_page.slug]) do
         patch reorder_organization_page_path(organization.slug, second_page), params: { direction: "up" }
       end
 

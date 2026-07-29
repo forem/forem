@@ -59,6 +59,7 @@ class OrganizationPagesController < ApplicationController
     end
 
     if @page.save
+      Pages::BustCacheWorker.perform_async(@page.slug)
       flash[:settings_notice] = I18n.t("views.organization_settings.pages.updated")
       redirect_to organization_pages_path(@organization.slug)
     else
@@ -74,7 +75,7 @@ class OrganizationPagesController < ApplicationController
 
   def reorder
     if reorder_page(params[:direction].to_s)
-      Pages::BustCacheWorker.perform_async(@page.slug, @organization.id)
+      Pages::BustCacheWorker.perform_async(@page.slug)
       flash[:settings_notice] = I18n.t("views.organization_settings.pages.reordered")
     end
 
