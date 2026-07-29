@@ -37,8 +37,16 @@ class LeadSubmissionsController < ApplicationController
 
     if submission.save
       render_success(submission)
+    elsif current_user && (existing_submission = form.lead_submissions.find_by(user: current_user))
+      render_success(existing_submission)
     else
       render json: { success: false, error: submission.errors.full_messages.first }, status: :unprocessable_entity
+    end
+  rescue ActiveRecord::RecordNotUnique
+    if current_user && (existing_submission = form.lead_submissions.find_by(user: current_user))
+      render_success(existing_submission)
+    else
+      raise
     end
   rescue ActiveRecord::RecordNotFound
     render json: { success: false, error: I18n.t("lead_submissions.not_found") }, status: :not_found

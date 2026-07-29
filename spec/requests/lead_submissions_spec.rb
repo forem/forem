@@ -37,6 +37,35 @@ RSpec.describe "LeadSubmissions" do
         expect(parsed["submitted_at"]).to eq(existing_submission.created_at.iso8601)
       end
 
+      it "treats duplicate submissions as successful when save returns false due to uniqueness validation" do
+        existing_submission = create(:lead_submission, organization_lead_form: lead_form, user: user)
+
+        allow_any_instance_of(LeadSubmission).to receive(:save) do |instance|
+          instance.errors.add(:user_id, "has already been taken")
+          false
+        end
+
+        post "/lead_submissions", params: { organization_lead_form_id: lead_form.id }, as: :json
+
+        expect(response).to have_http_status(:ok)
+        parsed = response.parsed_body
+        expect(parsed["success"]).to be true
+        expect(parsed["submitted_at"]).to eq(existing_submission.created_at.iso8601)
+      end
+
+      it "treats duplicate submissions as successful when ActiveRecord::RecordNotUnique is raised" do
+        existing_submission = create(:lead_submission, organization_lead_form: lead_form, user: user)
+
+        allow_any_instance_of(LeadSubmission).to receive(:save).and_raise(ActiveRecord::RecordNotUnique.new("Duplicate entry"))
+
+        post "/lead_submissions", params: { organization_lead_form_id: lead_form.id }, as: :json
+
+        expect(response).to have_http_status(:ok)
+        parsed = response.parsed_body
+        expect(parsed["success"]).to be true
+        expect(parsed["submitted_at"]).to eq(existing_submission.created_at.iso8601)
+      end
+
       it "rejects submissions to inactive forms" do
         lead_form.update!(active: false)
 
