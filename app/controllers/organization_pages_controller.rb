@@ -1,10 +1,12 @@
 class OrganizationPagesController < ApplicationController
   include OrganizationAdminScoped
   before_action :check_pages_feature
-  before_action :set_page, only: %i[edit update destroy]
+  before_action :set_page, only: %i[edit update destroy reorder]
+  before_action :validate_reorder_direction, only: :reorder
 
   def index
-    @pages = @organization.pages.order(:created_at)
+    @pages = @organization.ordered_pages
+    @showcase_page = @pages.first
   end
 
   def new
@@ -15,6 +17,7 @@ class OrganizationPagesController < ApplicationController
     is_first_page = !@organization.pages.exists?
     @page = @organization.pages.build(page_params)
     @page.template = "full_within_layout"
+    @page.position = (@organization.pages.maximum(:position) || -1) + 1
     
     if is_first_page
       @page.slug = "#{@organization.slug}/readme"
@@ -56,6 +59,7 @@ class OrganizationPagesController < ApplicationController
     end
 
     if @page.save
+      Pages::BustCacheWorker.perform_async(@page.slug)
       flash[:settings_notice] = I18n.t("views.organization_settings.pages.updated")
       redirect_to organization_pages_path(@organization.slug)
     else
@@ -66,6 +70,15 @@ class OrganizationPagesController < ApplicationController
   def destroy
     @page.destroy
     flash[:settings_notice] = I18n.t("views.organization_settings.pages.deleted")
+    redirect_to organization_pages_path(@organization.slug)
+  end
+
+  def reorder
+    if reorder_page(params[:direction].to_s)
+      Pages::BustCacheWorker.perform_async(@page.slug)
+      flash[:settings_notice] = I18n.t("views.organization_settings.pages.reordered")
+    end
+
     redirect_to organization_pages_path(@organization.slug)
   end
 
@@ -89,5 +102,52 @@ class OrganizationPagesController < ApplicationController
 
   def page_params
     params.require(:page).permit(:title, :body_markdown, :description)
+  end
+
+  def showcase_page?(page)
+    page == @organization.main_page
+  end
+
+  def reorder_page(direction)
+    return false if showcase_page?(@page)
+
+    Page.transaction do
+      pages = ordered_custom_pages
+      current_index = pages.index { |page| page.id == @page.id }
+      adjacent_index = adjacent_index_for(current_index, direction)
+      next false unless adjacent_index&.between?(0, pages.length - 1)
+
+      normalize_positions(pages)
+      swap_positions(pages, current_index, adjacent_index)
+      true
+    end
+  end
+
+  def ordered_custom_pages
+    @organization.ordered_pages.where.not(id: @organization.main_page.id).lock.to_a
+  end
+
+  def adjacent_index_for(current_index, direction)
+    current_index && (current_index + (direction == "up" ? -1 : 1))
+  end
+
+  def normalize_positions(pages)
+    pages.each_with_index do |page, index|
+      update_position(page, index + 1) unless page.position == index + 1
+    end
+  end
+
+  def swap_positions(pages, current_index, adjacent_index)
+    update_position(pages.fetch(current_index), adjacent_index + 1)
+    update_position(pages.fetch(adjacent_index), current_index + 1)
+  end
+
+  def update_position(page, position)
+    # Ordering does not affect page validity or rendered Markdown, so avoid recompiling page content.
+    page.update_columns(position: position, updated_at: Time.current)
+  end
+
+  def validate_reorder_direction
+    head :unprocessable_entity unless %w[up down].include?(params[:direction].to_s)
   end
 end

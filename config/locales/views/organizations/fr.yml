@@ -25,6 +25,7 @@ fr:
         created: Page créée avec succès.
         updated: Page mise à jour avec succès.
         deleted: Page supprimée avec succès.
+        reordered: Ordre des pages mis à jour.
         confirm_delete: Êtes-vous sûr de vouloir supprimer cette page ?
         showcase: Showcase
         showcase_hint: Il s'agit de la page d'accueil Showcase par défaut.
@@ -40,6 +41,13 @@ fr:
         description_placeholder: Courte description pour le référencement (SEO) et le partage...
         cancel: Annuler
         your_pages: Vos pages
+        order_help: Utilisez les flèches pour définir l'ordre des onglets personnalisés. Showcase reste toujours en premier.
+        pinned_first: Épinglé en premier
+        reorder: "Réorganiser %{title}"
+        move_up: Déplacer vers le haut
+        move_down: Déplacer vers le bas
+        move_up_title: "Déplacer %{title} vers le haut"
+        move_down_title: "Déplacer %{title} vers le bas"
       header_cta:
         heading: Bouton CTA de l'en-tête
         description: "Ajoutez un bouton d'appel à l'action dans l'en-tête de la page de votre organisation. Vous pouvez créer un bouton simple ou un menu déroulant avec plusieurs liens."

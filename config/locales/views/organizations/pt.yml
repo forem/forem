@@ -25,6 +25,7 @@ pt:
         created: Página criada com sucesso.
         updated: Página atualizada com sucesso.
         deleted: Página excluída com sucesso.
+        reordered: Ordem das páginas atualizada.
         confirm_delete: Tem certeza que deseja excluir esta página?
         showcase: Showcase
         showcase_hint: Esta é a página Showcase padrão.
@@ -40,6 +41,13 @@ pt:
         description_placeholder: Breve descrição para SEO e compartilhamento...
         cancel: Cancelar
         your_pages: Suas páginas
+        order_help: Use as setas para definir a ordem das guias personalizadas. Showcase permanece sempre em primeiro lugar.
+        pinned_first: Fixado em primeiro
+        reorder: "Reordenar %{title}"
+        move_up: Mover para cima
+        move_down: Mover para baixo
+        move_up_title: "Mover %{title} para cima"
+        move_down_title: "Mover %{title} para baixo"
       header_cta:
         heading: Botão CTA do Cabeçalho
         description: "Adicione um botão de chamada para ação no cabeçalho da página da sua organização. Você pode criar um botão simples ou um menu suspenso com vários links."
