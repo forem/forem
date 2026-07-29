@@ -561,7 +561,7 @@ class StoriesController < ApplicationController
     }
 
     # Add discussion forum structured data if article has comments
-    return json_ld unless @article.comments_count.positive?
+    return json_ld unless @comments_count.positive?
 
     # Add main discussion forum posting for the article
     json_ld[:mainEntity] = {
@@ -581,7 +581,7 @@ class StoriesController < ApplicationController
         {
           "@type": "InteractionCounter",
           interactionType: "https://schema.org/CommentAction",
-          userInteractionCount: @article.comments_count
+          userInteractionCount: @comments_count
         },
         {
           "@type": "InteractionCounter",
