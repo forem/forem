@@ -48,6 +48,22 @@ RSpec.describe "Organization Pages Controller Backend Protection" do
         expect(page.slug).to eq("#{organization.slug}/readme")
         expect(page.title).to eq("Welcome")
       end
+
+      it "returns a validation error when a lead form belongs to another organization" do
+        other_form = create(:organization_lead_form)
+
+        expect do
+          post organization_pages_path(organization.slug), params: {
+            page: {
+              title: "Welcome",
+              body_markdown: "{% org_lead_form #{other_form.id} %}"
+            }
+          }
+        end.not_to change(Page, :count)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body).to include(I18n.t("liquid_tags.org_lead_form_tag.wrong_organization"))
+      end
     end
 
     context "when creating subsequent pages" do
