@@ -2337,7 +2337,7 @@ RSpec.describe Article do
     it "includes the verified organization baseline bonus" do
       allow(Settings::UserExperience).to receive(:index_minimum_score).and_return(12)
       org = create(:organization, verified: true)
-      article.update_column(:organization_id, org.id)
+      article.organization = org
       article.update_score
       expect(article.reload.score).to eq(22)
     end
