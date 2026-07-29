@@ -57,7 +57,7 @@
       return response.json();
     }).then(function(data) {
       if (data.success) {
-        markFormSubmitted(button, new Date().toISOString());
+        markFormSubmitted(button, data.submitted_at);
       } else {
         button.textContent = data.error || '<%= I18n.t("liquid_tags.org_lead_form_tag.error") %>';
         button.disabled = false;
