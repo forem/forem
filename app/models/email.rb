@@ -1,6 +1,7 @@
 class Email < ApplicationRecord
   belongs_to :audience_segment, optional: true
   belongs_to :user_query, optional: true
+  belongs_to :event, optional: true
   has_many :email_messages
 
   after_commit :deliver_to_users, on: %i[create update]
