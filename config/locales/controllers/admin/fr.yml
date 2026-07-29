@@ -199,6 +199,8 @@ fr:
       article_busted: "L'article #%{article} a été bloqué avec succès."
       user_busted: "L'utilisateur #%{user} a été arrêté avec succès."
       link_busted: "%{link} a été cassé avec succès"
+      social_images_queued: "Régénération des images sociales mise en file d'attente pour @%{user}"
+      user_not_found: 'Utilisateur introuvable'
     users_controller:
       exported: Données exportées vers le %{receiver}. Le travail sera terminé dans un instant.
       email_fail: L'envoi de l'e-mail a échoué !

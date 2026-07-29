@@ -160,6 +160,8 @@ pt:
       link_busted: '%{link} foi quebrado com sucesso'
       user_busted: 'Usuário #%{user} foi quebrado com sucesso'
       article_busted: 'Artigo #%{article} foi quebrado com sucesso'
+      social_images_queued: 'Regeneração de imagens sociais em fila para @%{user}'
+      user_not_found: 'Usuário não encontrado'
     users_controller:
       role_removed: 'Função: %{role} foi removida com sucesso do usuário!'
       updated: Usuário foi atualizado
