@@ -142,7 +142,14 @@ jobs:
           bin/rails javascript:build
 
       - name: RSpec
+        id: rspec
         run: bin/knapsack_pro_rspec
+      - name: Upload recovered RSpec retries
+        uses: actions/upload-artifact@v4
+        if: ${{ steps.rspec.outcome == 'success' && hashFiles('tmp/rspec-retries/*.csv') != '' }}
+        with:
+          name: rspec-retries-${{ matrix.ci_node_index }}
+          path: tmp/rspec-retries
       - name: Upload RSpec artifacts
         uses: actions/upload-artifact@v4
         if: failure()
