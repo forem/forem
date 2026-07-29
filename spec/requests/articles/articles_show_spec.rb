@@ -68,8 +68,8 @@ RSpec.describe "ArticlesShow" do
     end
 
     it "renders DiscussionForumPosting structured data when article has comments" do
-      comment = create(:comment, commentable: article, user: user)
-      article.update_column(:comments_count, 1)
+      create(:comment, commentable: article, user: user)
+      article.update_columns(comments_count: 1, displayed_comments_count: 1)
 
       get article.path
 
@@ -104,7 +104,7 @@ RSpec.describe "ArticlesShow" do
 
     it "renders Comment structured data for article comments" do
       comment = create(:comment, commentable: article, user: user)
-      article.update_column(:comments_count, 1)
+      article.update_columns(comments_count: 1, displayed_comments_count: 1)
 
       get article.path
 
@@ -134,7 +134,7 @@ RSpec.describe "ArticlesShow" do
     it "renders nested comment structure for replies" do
       root_comment = create(:comment, commentable: article, user: user)
       reply_comment = create(:comment, commentable: article, user: user, ancestry: root_comment.id.to_s)
-      article.update_column(:comments_count, 2)
+      article.update_columns(comments_count: 2, displayed_comments_count: 2)
 
       get article.path
 
@@ -170,8 +170,8 @@ RSpec.describe "ArticlesShow" do
     end
 
     it "caches JSON-LD at view level based on last_comment_at" do
-      comment = create(:comment, commentable: article, user: user)
-      article.update_column(:comments_count, 1)
+      create(:comment, commentable: article, user: user)
+      article.update_columns(comments_count: 1, displayed_comments_count: 1)
 
       # First request should generate JSON-LD
       get article.path
