@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_20_150000) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_28_160000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -731,6 +731,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_20_150000) do
     t.text "body", null: false
     t.datetime "created_at", null: false
     t.integer "drip_day", default: 0
+    t.bigint "event_id"
     t.bigint "onboarding_subforem_id"
     t.integer "status", default: 0
     t.string "subject", null: false
@@ -740,6 +741,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_20_150000) do
     t.bigint "user_query_id"
     t.text "variables"
     t.index ["audience_segment_id"], name: "index_emails_on_audience_segment_id"
+    t.index ["event_id"], name: "index_emails_on_event_id"
     t.index ["onboarding_subforem_id"], name: "index_emails_on_onboarding_subforem_id"
     t.index ["user_query_id"], name: "index_emails_on_user_query_id"
   end
@@ -1295,6 +1297,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_20_150000) do
     t.boolean "landing_page", default: false, null: false
     t.bigint "organization_id"
     t.bigint "page_template_id"
+    t.integer "position", default: 0, null: false
     t.text "processed_html"
     t.string "redirect_to_url"
     t.string "slug"
