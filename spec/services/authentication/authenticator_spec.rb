@@ -976,5 +976,22 @@ RSpec.describe Authentication::Authenticator, type: :service do
 
       expect(user.reload.profile_updated_at).to be < 1.year.ago
     end
+
+    it "enqueues the profile prefill when a new mlh identity is linked" do
+      user = create(:user, email: auth_payload.info.email)
+
+      expect do
+        described_class.call(auth_payload, current_user: user)
+      end.to change(Users::PrefillMlhProfileWorker.jobs, :size).by(1)
+    end
+
+    it "does not enqueue the profile prefill when the mlh identity already exists" do
+      user = create(:user, email: auth_payload.info.email)
+      described_class.call(auth_payload, current_user: user)
+
+      expect do
+        described_class.call(auth_payload, current_user: user)
+      end.not_to change(Users::PrefillMlhProfileWorker.jobs, :size)
+    end
   end
 end

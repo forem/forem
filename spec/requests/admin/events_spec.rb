@@ -170,4 +170,40 @@ RSpec.describe "Admin::Events", type: :request do
       end
     end
   end
+
+  describe "GET /admin/content_manager/events/new" do
+    context "when logged in as an admin" do
+      before { login_as(super_admin) }
+
+      it "renders a blank new event form when no fork parameter is passed" do
+        get new_admin_event_path
+        expect(response).to have_http_status(:success)
+      end
+
+      it "pre-fills the form with attributes from the original event when fork_from_id is passed" do
+        original_event = create(:event, title: "Original Event Title", description: "Original Description", tag_list: ["ruby", "rails"])
+
+        get new_admin_event_path(fork_from_id: original_event.id)
+
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include("Original Event Title")
+        expect(response.body).to include("Original Description")
+        expect(response.body).to include("ruby, rails")
+      end
+    end
+  end
+
+  describe "GET /admin/content_manager/events/:id/fork" do
+    let(:event) { create(:event) }
+
+    context "when logged in as an admin" do
+      before { login_as(super_admin) }
+
+      it "redirects to the new event path with fork_from_id parameter" do
+        get fork_admin_event_path(event)
+
+        expect(response).to redirect_to(new_admin_event_path(fork_from_id: event.id))
+      end
+    end
+  end
 end
