@@ -137,6 +137,45 @@ RSpec.describe "Organization Pages Controller Backend Protection" do
     end
   end
 
+  describe "PATCH /:slug/settings/pages/:id/reorder" do
+    before { FeatureFlag.enable(:org_readme, FeatureFlag::Actor[organization]) }
+
+    let!(:readme_page) do
+      create(:page, organization: organization, slug: "#{organization.slug}/showcase",
+                    template: "full_within_layout")
+    end
+    let!(:first_page) do
+      create(:page, organization: organization, slug: "#{organization.slug}/first",
+                    template: "full_within_layout")
+    end
+    let!(:second_page) do
+      create(:page, organization: organization, slug: "#{organization.slug}/second",
+                    template: "full_within_layout")
+    end
+
+    it "moves a custom page up while keeping Showcase first" do
+      sidekiq_assert_enqueued_with(job: Pages::BustCacheWorker, args: [second_page.slug]) do
+        patch reorder_organization_page_path(organization.slug, second_page), params: { direction: "up" }
+      end
+
+      expect(response).to redirect_to(organization_pages_path(organization.slug))
+      expect(organization.ordered_pages.ids).to eq([readme_page.id, second_page.id, first_page.id])
+    end
+
+    it "does not move the Showcase page" do
+      patch reorder_organization_page_path(organization.slug, readme_page), params: { direction: "down" }
+
+      expect(response).to redirect_to(organization_pages_path(organization.slug))
+      expect(organization.ordered_pages.first).to eq(readme_page)
+    end
+
+    it "rejects an unsupported direction" do
+      patch reorder_organization_page_path(organization.slug, second_page), params: { direction: "sideways" }
+
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+  end
+
   describe "POST /:slug/settings/pages/preview" do
     before { FeatureFlag.enable(:org_readme, FeatureFlag::Actor[organization]) }
 
