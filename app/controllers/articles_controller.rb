@@ -1,4 +1,10 @@
 class ArticlesController < ApplicationController
+  ALLOWED_VIDEO_PROVIDERS = Regexp.union(
+    /\Ahttps?:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)/,
+    /\Ahttps?:\/\/player\.mux\.com\//,
+    /\Ahttps?:\/\/(www\.)?twitch\.tv\/videos\//
+  ).freeze
+
   include ApplicationHelper
 
   # NOTE: It seems quite odd to not authenticate the user for the :new action.
@@ -140,12 +146,13 @@ class ArticlesController < ApplicationController
     authorize Article
 
     begin
-      renderer = ContentRenderer.new(params[:article_body], source: Article.new, user: current_user)
+      body = preview_article_body
+      renderer = ContentRenderer.new(body, source: Article.new, user: current_user)
       result = renderer.process_article
       processed_html = result.processed_html
       front_matter = result.front_matter.to_h
     rescue StandardError => e
-      @article = Article.new(body_markdown: params[:article_body])
+      @article = Article.new(body_markdown: preview_article_body)
       @article.errors.add(:base, ErrorMessages::Clean.call(e.message))
     end
 
@@ -154,6 +161,9 @@ class ArticlesController < ApplicationController
         format.json { render json: @article.errors, status: :unprocessable_entity }
       else
         format.json do
+          tags = nil
+          cover_image = nil
+
           if front_matter["tags"]
             tags = Article.new.tag_list.add(front_matter["tags"], parser: ActsAsTaggableOn::TagParser)
           end
@@ -165,7 +175,7 @@ class ArticlesController < ApplicationController
             processed_html: processed_html,
             title: front_matter["title"],
             tags: tags,
-            cover_image: cover_image
+            cover_image: cover_image,
           }, status: :ok
         end
       end
@@ -197,8 +207,7 @@ class ArticlesController < ApplicationController
 
     respond_to do |format|
       format.html do
-        # TODO: JSON should probably not be returned in the format.html section
-        if article_params_json[:archived] && @article.archived # just to get archived working
+        if article_params_json[:archived] && @article.archived
           render json: @article.to_json(only: [:id], methods: [:current_state_path])
           return
         end
@@ -296,6 +305,20 @@ class ArticlesController < ApplicationController
 
   private
 
+  def preview_article_body
+    raw = params[:article_body]
+
+    if raw.is_a?(ActionController::Parameters)
+      raw = raw[:body_markdown] || raw[:markdown] || raw[:body] || ""
+    end
+
+    raw ||= params[:body_markdown]
+    raw ||= params.dig(:article, :body_markdown)
+    raw ||= params.dig(:article, :bodyMarkdown)
+
+    raw.to_s
+  end
+
   def base_editor_assignments
     @user = current_user
     @version = @user.setting.editor_version if @user
@@ -331,13 +354,25 @@ class ArticlesController < ApplicationController
     @article = found_article || not_found
   end
 
+  def article_params
+    params.require(:article).permit(
+      :title,
+      :body_markdown,
+      :main_image,
+      :tag_list,
+      :video_source_url,
+      :description,
+      :published,
+      :organization_id
+    )
+  end
+
   # TODO: refactor all of this update logic into the Articles::Updater possibly,
   # ideally there should only be one place to handle the update logic
   def article_params_json
     return @article_params_json if @article_params_json
 
-    params.require(:article) # to trigger the correct exception in case `:article` is missing
-
+    params.require(:article)
     params["article"].transform_keys!(&:underscore)
 
     allowed_params = if params["article"]["version"] == "v1"
@@ -346,17 +381,17 @@ class ArticlesController < ApplicationController
                        %i[
                          title body_markdown main_image published description video_thumbnail_url
                          tag_list canonical_url series collection_id archived published_at timezone
-                         published_at_date published_at_time type_of body_url subforem_id
+                         published_at_date published_at_time type_of body_url subforem_id video_source_url
                        ]
                      end
 
     # Allow video_source_url if it's a valid YouTube, Mux, or Twitch URL
+    # Logic: Explicitly allow video_source_url if it's being cleared (blank?)
+    # OR if it matches one of the approved provider patterns.
     video_url = params.dig("article", "video_source_url")
-    if video_url.present?
-      youtube_pattern = /\Ahttps?:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)/
-      mux_pattern = /\Ahttps?:\/\/player\.mux\.com\//
-      twitch_pattern = /\Ahttps?:\/\/(www\.)?twitch\.tv\/videos\//
-      allowed_params << :video_source_url if video_url.match?(youtube_pattern) || video_url.match?(mux_pattern) || video_url.match?(twitch_pattern)
+
+    if video_url.blank? || video_url.match?(ALLOWED_VIDEO_PROVIDERS)
+      allowed_params << :video_source_url
     end
 
     # NOTE: the organization logic is still a little counter intuitive but this should
