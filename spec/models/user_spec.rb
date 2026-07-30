@@ -1687,4 +1687,53 @@ RSpec.describe User do
       expect(result).not_to include(other_subforem_bot)
     end
   end
+
+  describe "#favorite_base_allowance" do
+    it "is 0 for a non-leader" do
+      expect(create(:user).favorite_base_allowance).to eq(0)
+    end
+
+    it "uses the level 1 setting for a level 1 leader" do
+      allow(Settings::UserExperience).to receive(:community_leader_l1_favorite_allowance).and_return(5)
+      expect(create(:user, :community_leader_level_1).favorite_base_allowance).to eq(5)
+    end
+
+    it "uses the level 2 setting for a level 2 leader" do
+      allow(Settings::UserExperience).to receive(:community_leader_l2_favorite_allowance).and_return(10)
+      expect(create(:user, :community_leader_level_2).favorite_base_allowance).to eq(10)
+    end
+  end
+
+  describe "#favorite_allowance" do
+    it "returns earned_favorites_count for a non-leader" do
+      user = create(:user)
+      user.update!(earned_favorites_count: 3)
+      expect(user.favorite_allowance).to eq(3)
+    end
+
+    it "is the base allowance for a fresh leader" do
+      allow(Settings::UserExperience).to receive(:community_leader_l1_favorite_allowance).and_return(5)
+      expect(create(:user, :community_leader_level_1).favorite_allowance).to eq(5)
+    end
+
+    it "decreases as the leader favorites within the refresh window" do
+      allow(Settings::UserExperience).to receive_messages(
+        community_leader_l1_favorite_allowance: 5, community_leader_favorite_refresh_hours: 24,
+      )
+      leader = create(:user, :community_leader_level_1)
+      create(:article, favorited_by_user: leader, favorited_at: 1.hour.ago)
+
+      expect(leader.favorite_allowance).to eq(4)
+    end
+
+    it "ignores favorites that have aged out of the refresh window" do
+      allow(Settings::UserExperience).to receive_messages(
+        community_leader_l1_favorite_allowance: 5, community_leader_favorite_refresh_hours: 24,
+      )
+      leader = create(:user, :community_leader_level_1)
+      create(:article, favorited_by_user: leader, favorited_at: 2.days.ago)
+
+      expect(leader.favorite_allowance).to eq(5)
+    end
+  end
 end
