@@ -101,6 +101,16 @@ RSpec.describe "Dashboards" do
         expect(response.body).to include("Analytics")
       end
 
+      it "assigns posts_count based on non-archived full posts only, ignoring statuses and archived posts" do
+        article
+        create(:article, user: user, type_of: "status")
+        create(:article, user: user, archived: true)
+
+        get dashboard_path
+
+        expect(assigns(:posts_count)).to eq(1)
+      end
+
       xit "renders a link to analytics for the org" do
         create(:organization_membership, type_of_user: :admin, organization: organization, user: user)
 
@@ -189,8 +199,19 @@ RSpec.describe "Dashboards" do
         user.reload.update!(agent_sessions_count: 5)
 
         get "/dashboard/sidebar", params: { state: "show" }, xhr: true
-        
+
         expect(assigns(:agent_sessions_count)).to eq(5)
+      end
+
+      it "assigns posts_count based on non-archived full posts only, ignoring statuses and archived posts" do
+        sign_in user
+        create(:article, user: user)
+        create(:article, user: user, type_of: "status")
+        create(:article, user: user, archived: true)
+
+        get "/dashboard/sidebar", params: { state: "show" }, xhr: true
+
+        expect(assigns(:posts_count)).to eq(1)
       end
     end
 
