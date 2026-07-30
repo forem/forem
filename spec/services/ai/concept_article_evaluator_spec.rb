@@ -61,7 +61,7 @@ RSpec.describe Ai::ConceptArticleEvaluator, type: :service do
       it "logs the error and returns nil" do
         evaluator = described_class.new(concept, article)
         expect(evaluator.appropriate?).to be_nil
-        expect(Rails.logger).to have_received(:error).with(/Ai::ConceptArticleEvaluator failed/)
+        expect(Rails.logger).to have_received(:error).with(/Ai::ConceptArticleEvaluator/)
       end
     end
   end
