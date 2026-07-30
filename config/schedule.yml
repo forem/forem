@@ -224,3 +224,9 @@ concept_daily_metrics:
   cron: "0 2 * * *"
   class: "Concepts::DailyMetricsWorker"
 
+evaluate_concept_thresholds:
+  description: "Evaluates recently attributed concept articles with AI to automatically tune concept similarity thresholds (runs every 3 hours)"
+  cron: "0 */3 * * *"
+  class: "Concepts::EvaluateThresholdsWorker"
+
+
