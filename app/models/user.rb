@@ -157,6 +157,11 @@ class User < ApplicationRecord
   has_many :user_visit_contexts, dependent: :delete_all
   has_one :user_activity, dependent: :delete
 
+  has_many :favorited_articles, class_name: "Article", foreign_key: :favorited_by_user_id,
+                                inverse_of: :favorited_by_user, dependent: :nullify
+  has_many :favorited_comments, class_name: "Comment", foreign_key: :favorited_by_user_id,
+                                inverse_of: :favorited_by_user, dependent: :nullify
+
   def cached_recent_user_ids
     Rails.cache.fetch("user-#{id}/recent_users", expires_in: 5.minutes) do
       user_activity&.recent_users || []
