@@ -94,12 +94,54 @@ RSpec.describe DetailsTag, type: :liquid_tag do
 
     context "when content has a div tag" do
       let(:summary) { "Click to see the answer!" }
-      let(:content) { "<div class=\"highlight\">foo<div>" }
+      let(:content) { '<div class="ltag__comment">foo</div>' }
 
-      it "removes a div tag" do
+      it "preserves div tags and their class so nested liquid embeds render correctly" do
         rendered = generate_details_liquid(summary, content).render
-        expect(rendered).not_to include("div")
+        expect(rendered).to include("<div")
+        expect(rendered).to include("ltag__comment")
+        expect(rendered).to include("foo")
         expect(rendered).to include("<summary>Click to see the answer!")
+      end
+    end
+
+    # Regression tests for https://github.com/forem/forem/issues/23489
+    # Nested liquid tags (embed, comment) produce div/iframe HTML which was
+    # being stripped by RenderedMarkdownScrubber, breaking their card layout.
+    context "when content has an iframe tag (e.g. a video embed)" do
+      let(:summary) { "Watch this!" }
+      let(:content) do
+        '<iframe src="https://www.youtube.com/embed/abc123" loading="lazy" ' \
+          'allowfullscreen="allowfullscreen" frameborder="0"></iframe>'
+      end
+
+      it "preserves the iframe and its allowed attributes while stripping disallowed ones" do
+        rendered = generate_details_liquid(summary, content).render
+        expect(rendered).to include("<iframe")
+        expect(rendered).to include("youtube.com/embed/abc123")
+        expect(rendered).to include("allowfullscreen")
+        expect(rendered).to include("loading")
+        expect(rendered).not_to include("frameborder")
+        expect(rendered).to include("<summary>Watch this!")
+      end
+    end
+
+    context "when a comment liquid tag is nested inside" do
+      let(:user)    { create(:user) }
+      let(:article) { create(:article, user: user) }
+      let(:comment) { create(:comment, commentable: article, user: user, body_markdown: "Hello from comment") }
+
+      before { Liquid::Template.register_tag("comment", CommentTag) }
+
+      it "renders the comment card structure without stripping its divs" do
+        template = Liquid::Template.parse(
+          "{% details Expand me %} {% comment #{comment.id_code_generated} %} {% enddetails %}",
+        )
+        rendered = template.render
+
+        expect(rendered).to include("ltag__comment")
+        expect(rendered).to include(user.name)
+        expect(rendered).to include("<details")
       end
     end
 
