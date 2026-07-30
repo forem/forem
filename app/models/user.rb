@@ -626,6 +626,27 @@ class User < ApplicationRecord
   #
   ##############################################################################
 
+  def favorite_base_allowance
+    return Settings::UserExperience.community_leader_l2_favorite_allowance if community_leader_level_2?
+    return Settings::UserExperience.community_leader_l1_favorite_allowance if community_leader_level_1?
+
+    0
+  end
+
+  # How many favorites the user can make.
+  #
+  # @return [Integer]
+  def favorite_allowance
+    return earned_favorites_count unless community_leader?
+
+    # Community leader allowances refresh over the configured period
+    window_start = Settings::UserExperience.community_leader_favorite_refresh_hours.hours.ago
+    spent_this_period = favorited_articles.where(favorited_at: window_start..).count +
+      favorited_comments.where(favorited_at: window_start..).count
+
+    favorite_base_allowance - spent_this_period
+  end
+
   # The name of the tags moderated by the user.
   #
   # @note This caches a relatively expensive query
