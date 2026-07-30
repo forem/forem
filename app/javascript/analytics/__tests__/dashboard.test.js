@@ -74,12 +74,19 @@ function bundle(overrides = {}) {
 
 function setupDOM() {
   document.body.innerHTML = `
-    <div class="crayons-tabs crayons-tabs--analytics">
-      <ul class="crayons-tabs__list">
-        <li><button class="crayons-tabs__item crayons-tabs__item--current" id="week-button" aria-current="page">Week</button></li>
-        <li><button class="crayons-tabs__item" id="month-button">Month</button></li>
-        <li><button class="crayons-tabs__item" id="infinity-button">Infinity</button></li>
-      </ul>
+    <div class="analytics-controls-container">
+      <div class="crayons-tabs crayons-tabs--analytics">
+        <ul class="crayons-tabs__list">
+          <li><button class="crayons-tabs__item crayons-tabs__item--current" id="week-button" aria-current="page">Week</button></li>
+          <li><button class="crayons-tabs__item" id="month-button">Month</button></li>
+          <li><button class="crayons-tabs__item" id="infinity-button">Infinity</button></li>
+        </ul>
+      </div>
+      <div class="analytics-date-picker" id="analytics-date-picker">
+        <input type="date" id="analytics-start-date">
+        <input type="date" id="analytics-end-date">
+        <button type="button" id="analytics-apply-date-button">Apply</button>
+      </div>
     </div>
     <div class="summary-stats">
       <div><div id="readers-card" class="py-3"><div class="analytics-loading crayons-scaffold-loading"></div></div></div>
@@ -434,5 +441,69 @@ describe('Analytics Dashboard – Bundled Endpoint Rendering', () => {
     expect(document.getElementById('readers-card').innerHTML).toContain('0');
     expect(document.getElementById('reactions-card').innerHTML).toContain('0');
     expect(document.getElementById('comments-card').innerHTML).toContain('0');
+  });
+});
+
+describe('Analytics Dashboard – Date Picker Controls', () => {
+  const { callDashboardAPI } = require('../client');
+
+  beforeEach(() => {
+    window._analyticsState = { activeCharts: {}, apiGeneration: 0 };
+    setupDOM();
+    MockApexCharts.mockClear();
+    callDashboardAPI.mockReset();
+    callDashboardAPI.mockResolvedValue(bundle());
+  });
+
+  test('populates start and end date inputs on initialization', async () => {
+    initCharts({});
+    await flushPromises();
+
+    const startInput = document.getElementById('analytics-start-date');
+    const endInput = document.getElementById('analytics-end-date');
+
+    expect(startInput.value).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(endInput.value).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  });
+
+  test('clicking Apply with custom dates triggers API request with start and end params', async () => {
+    initCharts({ organizationId: '42' });
+    await flushPromises();
+
+    const startInput = document.getElementById('analytics-start-date');
+    const endInput = document.getElementById('analytics-end-date');
+    const applyButton = document.getElementById('analytics-apply-date-button');
+
+    startInput.value = '2026-05-01';
+    endInput.value = '2026-05-15';
+
+    applyButton.click();
+    await flushPromises();
+
+    expect(callDashboardAPI).toHaveBeenCalledWith(
+      '2026-05-01',
+      '2026-05-15',
+      { organizationId: '42', articleId: undefined },
+    );
+  });
+
+  test('clicking Month populates date inputs and issues API call', async () => {
+    initCharts({});
+    await flushPromises();
+
+    document.getElementById('analytics-end-date').value = '2026-06-30';
+    document.getElementById('month-button').click();
+    await flushPromises();
+
+    const startInput = document.getElementById('analytics-start-date');
+    const endInput = document.getElementById('analytics-end-date');
+
+    expect(startInput.value).toBe('2026-05-30');
+    expect(endInput.value).toBe('2026-06-30');
+    expect(callDashboardAPI).toHaveBeenLastCalledWith(
+      new Date('2026-05-30'),
+      new Date('2026-06-30'),
+      { organizationId: undefined, articleId: undefined },
+    );
   });
 });

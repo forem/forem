@@ -1,16 +1,28 @@
-<nav class="crayons-tabs crayons-tabs--analytics" aria-label="<%= t("views.stats.period.aria_label") %>">
-  <ul class="crayons-tabs__list">
-    <li>
-      <button data-text="<%= t("views.stats.period.week") %>" class="crayons-tabs__item crayons-tabs__item--current" id="week-button" aria-current="page"><%= t("views.stats.period.week") %></button>
-    </li>
-    <li>
-      <button data-text="<%= t("views.stats.period.month") %>" class="crayons-tabs__item" id="month-button"><%= t("views.stats.period.month") %></button>
-    </li>
-    <li>
-      <button data-text="<%= t("views.stats.period.infinity") %>" class="crayons-tabs__item" id="infinity-button"><%= t("views.stats.period.infinity") %></button>
-    </li>
-  </ul>
-</nav>
+<div class="analytics-controls-container mx-5 mb-4 flex flex-wrap items-center justify-between gap-3">
+  <nav class="crayons-tabs crayons-tabs--analytics m-0" aria-label="<%= t("views.stats.period.aria_label") %>">
+    <ul class="crayons-tabs__list">
+      <li>
+        <button data-text="<%= t("views.stats.period.week") %>" class="crayons-tabs__item crayons-tabs__item--current" id="week-button" aria-current="page"><%= t("views.stats.period.week") %></button>
+      </li>
+      <li>
+        <button data-text="<%= t("views.stats.period.month") %>" class="crayons-tabs__item" id="month-button"><%= t("views.stats.period.month") %></button>
+      </li>
+      <li>
+        <button data-text="<%= t("views.stats.period.infinity") %>" class="crayons-tabs__item" id="infinity-button"><%= t("views.stats.period.infinity") %></button>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="analytics-date-picker flex flex-wrap items-center gap-2" id="analytics-date-picker">
+    <label for="analytics-start-date" class="fs-s fw-medium color-base-70 mb-0"><%= t("views.stats.period.start_date") %></label>
+    <input type="date" id="analytics-start-date" class="crayons-textfield p-1 fs-s" aria-label="<%= t("views.stats.period.start_date") %>">
+    
+    <label for="analytics-end-date" class="fs-s fw-medium color-base-70 mb-0 ml-1"><%= t("views.stats.period.end_date") %></label>
+    <input type="date" id="analytics-end-date" class="crayons-textfield p-1 fs-s" aria-label="<%= t("views.stats.period.end_date") %>">
+
+    <button type="button" id="analytics-apply-date-button" class="crayons-btn crayons-btn--secondary p-2 fs-s ml-1"><%= t("views.stats.period.apply") %></button>
+  </div>
+</div>
 
 <div class="summary-stats">
   <div class="summary-stats__col crayons-card mx-5">

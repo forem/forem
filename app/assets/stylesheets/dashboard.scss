@@ -247,12 +247,20 @@
   }
 }
 
+.analytics-controls-container {
+  margin-top: var(--su-1);
+}
+
+.analytics-date-picker {
+  input[type="date"] {
+    width: auto;
+    min-width: 135px;
+  }
+}
+
 .crayons-tabs--analytics {
   width: min-content;
-  margin: var(--su-1) auto var(--su-4);
-  @media screen and (min-width: 800px) {
-    margin: var(--su-1) var(--su-4) var(--su-4);
-  }
+  margin: 0;
 }
 
 $column-flex: 1;

@@ -101,6 +101,10 @@ fr:
         week: Week
         month: Month
         infinity: Infinity
+        custom: Plage personnalisée
+        start_date: Date de début
+        end_date: Date de fin
+        apply: Appliquer
       readers: Lecteurs
       readers_description: "Pages vues de tous les visiteurs (les vues anonymes sont estimées). Le temps de lecture est suivi uniquement pour les lecteurs connectés."
       followers: Nouveaux abonnés

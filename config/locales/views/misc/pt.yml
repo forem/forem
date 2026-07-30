@@ -101,6 +101,10 @@ pt:
         week: Week
         month: Month
         infinity: Infinity
+        custom: Intervalo personalizado
+        start_date: Data de início
+        end_date: Data de fim
+        apply: Aplicar
       readers: Leitores
       readers_description: "Visualizações de todos os visitantes (visualizações anônimas são estimadas). O tempo de leitura é rastreado apenas para leitores conectados."
       followers: Novos seguidores

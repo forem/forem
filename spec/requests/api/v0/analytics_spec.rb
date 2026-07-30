@@ -53,5 +53,16 @@ RSpec.describe "Api::V0::Analytics" do
 
   describe "GET /api/analytics/dashboard" do
     include_examples "GET /api/analytics/:endpoint authorization examples", "dashboard", "&start=2019-03-29"
+
+    context "when start and end date parameters are provided" do
+      let(:user) { create(:user) }
+      let(:api_secret) { create(:api_secret, user: user) }
+
+      it "returns a successful response with date-scoped data" do
+        get "/api/analytics/dashboard?start=2024-01-01&end=2024-01-10", headers: { "api-key" => api_secret.secret }
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body).to include("historical", "totals", "referrers", "top_contributors", "follower_engagement")
+      end
+    end
   end
 end

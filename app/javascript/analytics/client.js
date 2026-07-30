@@ -18,14 +18,46 @@ export function withRetry(fn, { maxRetries = 1, baseDelayMs = 300 } = {}) {
   return attempt(0);
 }
 
-function callAnalyticsAPI(path, date, { organizationId, articleId }) {
-  let url = `${path}?start=${date.toISOString().split('T')[0]}`;
-
-  if (organizationId) {
-    url = `${url}&organization_id=${organizationId}`;
+function formatDateParam(val) {
+  if (!val) return null;
+  if (val instanceof Date) {
+    return val.toISOString().split('T')[0];
   }
-  if (articleId) {
-    url = `${url}&article_id=${articleId}`;
+  return String(val);
+}
+
+function callAnalyticsAPI(path, dateOrOpts, endDateOrCtx, contextOpts = {}) {
+  let startDate = null;
+  let endDate = null;
+  let context = {};
+
+  if (dateOrOpts && typeof dateOrOpts === 'object' && !(dateOrOpts instanceof Date)) {
+    startDate = dateOrOpts.start || dateOrOpts.startDate;
+    endDate = dateOrOpts.end || dateOrOpts.endDate;
+    context = dateOrOpts;
+  } else {
+    startDate = dateOrOpts;
+    if (endDateOrCtx instanceof Date || typeof endDateOrCtx === 'string') {
+      endDate = endDateOrCtx;
+      context = contextOpts || {};
+    } else if (endDateOrCtx && typeof endDateOrCtx === 'object') {
+      context = endDateOrCtx;
+    }
+  }
+
+  const formattedStart = formatDateParam(startDate);
+  let url = `${path}?start=${formattedStart}`;
+
+  const formattedEnd = formatDateParam(endDate);
+  if (formattedEnd) {
+    url = `${url}&end=${formattedEnd}`;
+  }
+
+  if (context.organizationId) {
+    url = `${url}&organization_id=${context.organizationId}`;
+  }
+  if (context.articleId) {
+    url = `${url}&article_id=${context.articleId}`;
   }
 
   return withRetry(() =>
@@ -37,7 +69,7 @@ function callAnalyticsAPI(path, date, { organizationId, articleId }) {
 
 export function callHistoricalAPI(
   date,
-  { organizationId, articleId },
+  { organizationId, articleId } = {},
 ) {
   return callAnalyticsAPI(
     '/api/analytics/historical',
@@ -48,7 +80,7 @@ export function callHistoricalAPI(
 
 export function callReferrersAPI(
   date,
-  { organizationId, articleId },
+  { organizationId, articleId } = {},
 ) {
   return callAnalyticsAPI(
     '/api/analytics/referrers',
@@ -59,7 +91,7 @@ export function callReferrersAPI(
 
 export function callTotalsAPI(
   date,
-  { organizationId, articleId },
+  { organizationId, articleId } = {},
 ) {
   return callAnalyticsAPI(
     '/api/analytics/totals',
@@ -70,7 +102,7 @@ export function callTotalsAPI(
 
 export function callTopContributorsAPI(
   date,
-  { organizationId, articleId },
+  { organizationId, articleId } = {},
 ) {
   return callAnalyticsAPI(
     '/api/analytics/top_contributors',
@@ -81,7 +113,7 @@ export function callTopContributorsAPI(
 
 export function callFollowerEngagementAPI(
   date,
-  { organizationId },
+  { organizationId } = {},
 ) {
   return callAnalyticsAPI(
     '/api/analytics/follower_engagement',
@@ -96,12 +128,14 @@ export function callFollowerEngagementAPI(
 // tripped the Rack::Attack api_throttle of 3 requests/sec per IP and caused
 // "Failed to fetch chart data" errors in production).
 export function callDashboardAPI(
-  date,
-  { organizationId, articleId } = {},
+  dateOrOpts,
+  endDateOrCtx,
+  contextOpts,
 ) {
   return callAnalyticsAPI(
     '/api/analytics/dashboard',
-    date,
-    { organizationId, articleId },
+    dateOrOpts,
+    endDateOrCtx,
+    contextOpts,
   );
 }

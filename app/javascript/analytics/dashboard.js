@@ -25,8 +25,10 @@ function resetActive(activeButton) {
     button.removeAttribute('aria-current');
   }
 
-  activeButton.classList.add('crayons-tabs__item--current');
-  activeButton.setAttribute('aria-current', 'page');
+  if (activeButton) {
+    activeButton.classList.add('crayons-tabs__item--current');
+    activeButton.setAttribute('aria-current', 'page');
+  }
 }
 
 function sumAnalytics(data, key) {
@@ -666,7 +668,46 @@ function showErrorsOnReferrers() {
   bindRetryButtons();
 }
 
-function callAnalyticsAPI(date, timeRangeLabel, { organizationId, articleId }) {
+function toYMD(date) {
+  if (!date) return '';
+  if (typeof date === 'string') return date.split('T')[0];
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function updateDateInputs(startDate, endDate) {
+  const startInput = document.getElementById('analytics-start-date');
+  const endInput = document.getElementById('analytics-end-date');
+  if (startInput && startDate) startInput.value = toYMD(startDate);
+  if (endInput && endDate) endInput.value = toYMD(endDate);
+}
+
+function getEndDateFromInput() {
+  const endInput = document.getElementById('analytics-end-date');
+  if (endInput && endInput.value && /^\d{4}-\d{2}-\d{2}$/.test(endInput.value)) {
+    const [y, m, d] = endInput.value.split('-').map(Number);
+    return new Date(y, m - 1, d);
+  }
+  return new Date();
+}
+
+function callAnalyticsAPI(startDate, endDateOrLabel, labelOrContext, context) {
+  let startDateVal = startDate;
+  let endDateVal = null;
+  let timeRangeLabel = '';
+  let ctx = {};
+
+  if (typeof endDateOrLabel === 'string' && (typeof labelOrContext === 'object' || !labelOrContext)) {
+    timeRangeLabel = endDateOrLabel;
+    ctx = labelOrContext || {};
+  } else {
+    endDateVal = endDateOrLabel;
+    timeRangeLabel = labelOrContext || '';
+    ctx = context || {};
+  }
+
   const generation = ++_state.apiGeneration;
 
   // Destroy existing charts before showing placeholders to clean ApexCharts registry
@@ -683,7 +724,11 @@ function callAnalyticsAPI(date, timeRangeLabel, { organizationId, articleId }) {
   // one response. This replaces 5 parallel GETs that systematically tripped
   // the Rack::Attack api_throttle (3 GET/sec per IP) and caused "Failed to
   // fetch chart data" errors in production.
-  callDashboardAPI(date, { organizationId, articleId })
+  const apiPromise = endDateVal
+    ? callDashboardAPI(startDateVal, endDateVal, ctx)
+    : callDashboardAPI(startDateVal, ctx);
+
+  apiPromise
     .then((data) => {
       if (generation !== _state.apiGeneration) return;
 
@@ -715,18 +760,24 @@ function drawWeekCharts({ organizationId, articleId }) {
   _state.lastDraw = drawWeekCharts;
   _state.lastContext = { organizationId, articleId };
   resetActive(document.getElementById('week-button'));
-  const oneWeekAgo = new Date();
-  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-  callAnalyticsAPI(oneWeekAgo, 'this Week', { organizationId, articleId });
+  const endDate = getEndDateFromInput();
+  const startDate = new Date(endDate);
+  startDate.setDate(startDate.getDate() - 7);
+
+  updateDateInputs(startDate, endDate);
+  callAnalyticsAPI(startDate, endDate, 'this Week', { organizationId, articleId });
 }
 
 function drawMonthCharts({ organizationId, articleId }) {
   _state.lastDraw = drawMonthCharts;
   _state.lastContext = { organizationId, articleId };
   resetActive(document.getElementById('month-button'));
-  const oneMonthAgo = new Date();
-  oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-  callAnalyticsAPI(oneMonthAgo, 'this Month', { organizationId, articleId });
+  const endDate = getEndDateFromInput();
+  const startDate = new Date(endDate);
+  startDate.setMonth(startDate.getMonth() - 1);
+
+  updateDateInputs(startDate, endDate);
+  callAnalyticsAPI(startDate, endDate, 'this Month', { organizationId, articleId });
 }
 
 function drawInfinityCharts({ organizationId, articleId }) {
@@ -737,10 +788,34 @@ function drawInfinityCharts({ organizationId, articleId }) {
   // when we've seen one from a prior dashboard response. Fall back to the
   // historical 2019-04-01 anchor (when the analytics feature first shipped)
   // for the first render before the bundled API has responded.
-  const beginningOfTime = _state.startDateFloor
+  const endDate = new Date();
+  const startDate = _state.startDateFloor
     ? new Date(_state.startDateFloor)
     : new Date('2019-04-01');
-  callAnalyticsAPI(beginningOfTime, '', { organizationId, articleId });
+
+  updateDateInputs(startDate, endDate);
+  callAnalyticsAPI(startDate, '', { organizationId, articleId });
+}
+
+function drawCustomDateCharts({ organizationId, articleId }) {
+  _state.lastDraw = drawCustomDateCharts;
+  _state.lastContext = { organizationId, articleId };
+  resetActive(null);
+
+  const startInput = document.getElementById('analytics-start-date');
+  const endInput = document.getElementById('analytics-end-date');
+  if (!startInput || !endInput || !startInput.value || !endInput.value) return;
+
+  let startDate = startInput.value;
+  let endDate = endInput.value;
+
+  if (startDate > endDate) {
+    startDate = endDate;
+    startInput.value = startDate;
+  }
+
+  const customLabel = locale('views.stats.period.custom', { defaultValue: 'Custom Range' });
+  callAnalyticsAPI(startDate, endDate, customLabel, { organizationId, articleId });
 }
 
 export function destroyCharts() {
@@ -766,6 +841,7 @@ export function initCharts({ organizationId, articleId }) {
   const weekButton = document.getElementById('week-button');
   const monthButton = document.getElementById('month-button');
   const infinityButton = document.getElementById('infinity-button');
+  const applyButton = document.getElementById('analytics-apply-date-button');
 
   // Replace elements to remove all old event listeners cleanly
   const newWeek = weekButton.cloneNode(true);
@@ -774,6 +850,15 @@ export function initCharts({ organizationId, articleId }) {
   weekButton.replaceWith(newWeek);
   monthButton.replaceWith(newMonth);
   infinityButton.replaceWith(newInfinity);
+
+  if (applyButton) {
+    const newApply = applyButton.cloneNode(true);
+    applyButton.replaceWith(newApply);
+    newApply.addEventListener(
+      'click',
+      drawCustomDateCharts.bind(null, { organizationId, articleId }),
+    );
+  }
 
   newWeek.addEventListener(
     'click',

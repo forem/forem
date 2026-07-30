@@ -101,6 +101,10 @@ en:
         week: Week
         month: Month
         infinity: Infinity
+        custom: Custom Range
+        start_date: Start Date
+        end_date: End Date
+        apply: Apply
       readers: Readers
       readers_description: "Page views from all visitors (anonymous views are estimated). Read time is tracked for logged-in readers only."
       followers: New Followers

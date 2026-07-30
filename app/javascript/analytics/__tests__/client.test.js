@@ -119,6 +119,15 @@ describe('analytics/client', () => {
       );
     });
 
+    it('callDashboardAPI hits the dashboard endpoint with start and end date params', async () => {
+      const endDate = new Date('2024-05-15T12:00:00Z');
+      await callDashboardAPI(date, endDate, { organizationId: 42 });
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        '/api/analytics/dashboard?start=2024-05-01&end=2024-05-15&organization_id=42',
+      );
+    });
+
     it('callDashboardAPI works with no context args', async () => {
       await callDashboardAPI(date);
 
