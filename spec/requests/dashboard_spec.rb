@@ -103,7 +103,7 @@ RSpec.describe "Dashboards" do
 
       it "assigns posts_count based on non-archived full posts only, ignoring statuses and archived posts" do
         article
-        create(:article, user: user, type_of: "status")
+        create(:article, user: user, type_of: "status", body_markdown: "", main_image: nil)
         create(:article, user: user, archived: true)
 
         get dashboard_path
@@ -206,7 +206,7 @@ RSpec.describe "Dashboards" do
       it "assigns posts_count based on non-archived full posts only, ignoring statuses and archived posts" do
         sign_in user
         create(:article, user: user)
-        create(:article, user: user, type_of: "status")
+        create(:article, user: user, type_of: "status", body_markdown: "", main_image: nil)
         create(:article, user: user, archived: true)
 
         get "/dashboard/sidebar", params: { state: "show" }, xhr: true
