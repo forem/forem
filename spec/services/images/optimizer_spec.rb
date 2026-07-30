@@ -17,6 +17,24 @@ RSpec.describe Images::Optimizer, type: :service do
       expect(described_class.call(relative_asset_path)).to eq(relative_asset_path)
     end
 
+    it "does nothing when given an SVG url even when a CDN is enabled", :aggregate_failures do
+      allow(described_class).to receive_messages(cloudinary_enabled?: true, imgproxy_enabled?: false)
+      svg_url = "https://example.com/logo.svg"
+      expect(described_class.call(svg_url)).to eq(svg_url)
+      expect(described_class).not_to have_received(:cloudinary)
+      expect(described_class).not_to have_received(:cloudflare)
+      expect(described_class).not_to have_received(:imgproxy)
+    end
+
+    it "does nothing when given an SVG url with query params even when a CDN is enabled", :aggregate_failures do
+      allow(described_class).to receive_messages(cloudinary_enabled?: true, imgproxy_enabled?: false)
+      svg_url = "https://example.com/icon.svg?v=abc123"
+      expect(described_class.call(svg_url)).to eq(svg_url)
+      expect(described_class).not_to have_received(:cloudinary)
+      expect(described_class).not_to have_received(:cloudflare)
+      expect(described_class).not_to have_received(:imgproxy)
+    end
+
     it "does nothing when given nil" do
       expect(described_class.call(nil)).to be_nil
     end
