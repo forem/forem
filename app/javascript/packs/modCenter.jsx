@@ -2,8 +2,7 @@ import { h, render } from 'preact';
 import { ModerationArticles } from '../modCenter/moderationArticles';
 import { addSnackbarItem, Snackbar } from '../Snackbar';
 
-// eslint-disable-next-line no-restricted-globals
-top.addSnackbarItem = addSnackbarItem;
+window.addSnackbarItem = addSnackbarItem;
 
 
 let elementLoaded = false;

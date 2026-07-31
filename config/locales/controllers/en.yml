@@ -50,6 +50,8 @@ en:
     error_fill: "Make sure the forms are filled. 🤖 Other possible errors: %{errors}"
     n_a: N/A
     submitted: Your report is submitted
+  flag_appeals:
+    submitted_success: Your appeal has been submitted for review. Thank you!
   follows_controller:
     already_followed: already followed
     daily_limit: Daily account follow limit reached!

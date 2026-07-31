@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_28_160000) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_30_170000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -199,7 +199,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_28_160000) do
     t.integer "positive_reactions_count", default: 0, null: false
     t.integer "previous_positive_reactions_count", default: 0
     t.integer "previous_public_reactions_count", default: 0, null: false
-    t.jsonb "private_submission_data", default: {}, null: false
     t.integer "privileged_users_reaction_points_sum", default: 0
     t.text "processed_html"
     t.integer "public_reactions_count", default: 0, null: false
@@ -937,6 +936,24 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_28_160000) do
     t.string "variant"
     t.index ["experiment", "created_at"], name: "index_field_test_memberships_on_experiment_and_created_at"
     t.index ["participant_type", "participant_id", "experiment"], name: "index_field_test_memberships_on_participant", unique: true
+  end
+
+  create_table "flag_appeals", force: :cascade do |t|
+    t.float "ai_confidence_score"
+    t.integer "ai_recommendation", default: 1, null: false
+    t.text "ai_summary"
+    t.bigint "appealable_id", null: false
+    t.string "appealable_type", null: false
+    t.datetime "created_at", null: false
+    t.text "reason", null: false
+    t.bigint "resolved_by_id"
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["appealable_type", "appealable_id"], name: "index_flag_appeals_on_appealable"
+    t.index ["resolved_by_id"], name: "index_flag_appeals_on_resolved_by_id"
+    t.index ["status"], name: "index_flag_appeals_on_status"
+    t.index ["user_id"], name: "index_flag_appeals_on_user_id"
   end
 
   create_table "flipper_features", force: :cascade do |t|
@@ -1785,7 +1802,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_28_160000) do
   end
 
   create_table "tags", force: :cascade do |t|
-    t.jsonb "additional_questions", default: [], null: false
     t.string "alias_for"
     t.bigint "badge_id"
     t.string "bg_color_hex"
@@ -2216,6 +2232,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_28_160000) do
   add_foreign_key "display_ads", "organizations", on_delete: :cascade
   add_foreign_key "email_authorizations", "users", on_delete: :cascade
   add_foreign_key "emails", "audience_segments"
+  add_foreign_key "emails", "events", validate: false
   add_foreign_key "emails", "user_queries"
   add_foreign_key "event_signups", "events"
   add_foreign_key "event_signups", "users"
@@ -2234,6 +2251,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_28_160000) do
   add_foreign_key "feedback_messages", "users", column: "affected_id", on_delete: :nullify
   add_foreign_key "feedback_messages", "users", column: "offender_id", on_delete: :nullify
   add_foreign_key "feedback_messages", "users", column: "reporter_id", on_delete: :nullify
+  add_foreign_key "flag_appeals", "users"
+  add_foreign_key "flag_appeals", "users", column: "resolved_by_id"
   add_foreign_key "github_repos", "users", on_delete: :cascade
   add_foreign_key "html_variants", "users", on_delete: :cascade
   add_foreign_key "identities", "users", on_delete: :cascade

@@ -224,6 +224,9 @@ Rails.application.routes.draw do
     resources :reactions, only: %i[index create]
     resources :response_templates, only: %i[index create edit update destroy]
     resources :feedback_messages, only: %i[index create]
+    get "/appeal", to: "flag_appeals#new", as: :appeal
+    post "/appeal", to: "flag_appeals#create"
+    get "/appeal/success", to: "flag_appeals#show", as: :appeal_success
     resources :organizations, only: %i[update create destroy]
     resources :follows, only: %i[show create] do
       collection do
