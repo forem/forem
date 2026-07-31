@@ -121,6 +121,8 @@ en:
       baseline_score_updated: Baseline score updated!
       verified_enabled: This organization has been verified.
       verified_disabled: Verification has been revoked for this organization.
+      supported_enabled: "Supported status has been enabled for this organization."
+      supported_disabled: "Supported status has been disabled for this organization."
       org_feature_enabled: "%{feature} has been enabled for this organization."
       org_feature_disabled: "%{feature} has been disabled for this organization."
       org_feature_invalid: "Invalid org feature specified."

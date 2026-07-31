@@ -3,6 +3,7 @@
 <%= form_tag(admin_organizations_path, method: "get") do %>
   <div class="inline-flex">
     <%= search_field_tag(:search, params[:search], aria: { label: "Search" }, class: "crayons-textfield", autocomplete: "off") %>
+    <%= select_tag(:supported, options_for_select([["All", ""], ["Supported Only", "true"], ["Non-Supported Only", "false"]], params[:supported]), class: "crayons-select ml-2") %>
     <%= submit_tag("Search", class: "crayons-btn ml-2") %>
   </div>
 <% end %>

@@ -112,6 +112,7 @@ namespace :admin do
         patch "update_fully_trusted"
         patch "update_baseline_score"
         patch "update_verified"
+        patch "update_supported"
         patch "update_org_feature"
       end
     end

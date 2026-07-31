@@ -121,6 +121,8 @@ fr:
       baseline_score_updated: Le score de base a été mis à jour !
       verified_enabled: Cette organisation a été vérifiée.
       verified_disabled: La vérification a été révoquée pour cette organisation.
+      supported_enabled: "Le statut de soutien a été activé pour cette organisation."
+      supported_disabled: "Le statut de soutien a été désactivé pour cette organisation."
       org_feature_enabled: "%{feature} a été activé pour cette organisation."
       org_feature_disabled: "%{feature} a été désactivé pour cette organisation."
       org_feature_invalid: "Fonctionnalité d'organisation spécifiée invalide."
