@@ -1,0 +1,12 @@
+<% cache(release_adjusted_cache_key("feedback-messages-lander-styling")) do %>
+  <style>
+    <%= Rails.application.assets["feedback_messages.css"].to_s.html_safe %>
+  </style>
+<% end %>
+
+<div class="dialog">
+  <div>
+    <h2>Thank you for your appeal submission</h2>
+    <h3><a href="/"><%= community_name %> Home</a></h3>
+  </div>
+</div>

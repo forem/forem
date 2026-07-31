@@ -48,6 +48,7 @@ class AdminMenu
 
     scope :moderation, "mod", [
       item(name: "reports"),
+      item(name: "flag appeals", controller: "flag_appeals"),
       item(name: "mods"),
       item(name: "moderator actions", controller: "moderator_actions"),
       item(name: "privileged reactions"),
