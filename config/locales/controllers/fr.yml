@@ -46,6 +46,11 @@ fr:
       created: Votre source de flux a été ajoutée et un import a été déclenché.
       updated: Votre source de flux a été mise à jour.
       deleted: Votre source de flux a été supprimée.
+    xml_imports:
+      success: "%{count} article(s) importé(s) depuis le XML collé."
+      blank: "Le contenu XML ne peut pas être vide."
+      too_large: "Le contenu XML est trop volumineux (max 500 Ko)."
+      invalid_xml: "Impossible d'analyser le XML — assurez-vous qu'il s'agit d'un flux RSS ou Atom valide."
   feedback_messages_controller:
     error_fill: "Assurez-vous que les formulaires sont remplis. 🤖 Autres erreurs possibles : %{errors}"
     n_a: NON DISPONIBLE

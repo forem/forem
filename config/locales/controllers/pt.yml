@@ -46,6 +46,11 @@ pt:
       created: Sua fonte de feed foi adicionada e uma importação foi iniciada.
       updated: Sua fonte de feed foi atualizada.
       deleted: Sua fonte de feed foi removida.
+    xml_imports:
+      success: "%{count} artigo(s) importado(s) do XML colado."
+      blank: "O conteúdo XML não pode estar em branco."
+      too_large: "O conteúdo XML é muito grande (máx. 500 KB)."
+      invalid_xml: "Não foi possível analisar o XML — certifique-se de que é um feed RSS ou Atom válido."
   feedback_messages_controller:
     error_fill: "Certifique-se de que os formulários estão preenchidos. 🤖 Outros erros possíveis: %{errors}"
     n_a: N/A
