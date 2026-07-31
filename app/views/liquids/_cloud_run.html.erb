@@ -1,19 +1,54 @@
-<% 
-  height_px = case local_assigns[:ratio]
-              when "landscape"
-                "400px"
-              when "portrait"
-                "900px"
-              else
-                "600px"
-              end
+<%
+  # height_px: from explicit height= param or legacy ratio preset (integer, px)
+  # width_pct: wrapper width as % of article column (integer, default 100)
+  # scale_mode: "fit" | "stretch" | nil
+  # native_w / native_h: game's native resolution (integer | nil)
+  height_px  = local_assigns[:height]     || 600
+  width_pct  = local_assigns[:width]      || 100
+  scale_mode = local_assigns[:scale_mode]
+  native_w   = local_assigns[:native_w]
+  native_h   = local_assigns[:native_h]
+
+  use_scaling = scale_mode.present? && native_w.present? && native_h.present?
 %>
-<div class="ltag__cloud-run">
-  <iframe 
-    frameborder="0" 
-    height="<%= height_px %>" 
-    src="<%= url %>" 
+<div class="ltag__cloud-run"
+     style="width: <%= width_pct %>%; max-width: 100%; overflow: hidden; position: relative;"
+     <%= use_scaling ? "data-native-w=\"#{native_w}\" data-native-h=\"#{native_h}\" data-scale-mode=\"#{scale_mode}\"".html_safe : "" %>>
+  <iframe
+    frameborder="0"
+    src="<%= url %>"
     loading="lazy"
-    style="width: 100%; border: 1px solid #e1e5e9; border-radius: 4px;">
+    style="width: 100%; height: <%= height_px %>px; border: 1px solid #e1e5e9; border-radius: 4px; display: block;<%= use_scaling ? " transform-origin: top left;" : "" %>"
+    allowfullscreen>
   </iframe>
 </div>
+<% if use_scaling %>
+<script>
+(function () {
+  var wrapper = document.currentScript.previousElementSibling;
+  var iframe  = wrapper.querySelector('iframe');
+  var nw      = parseInt(wrapper.dataset.nativeW, 10);
+  var nh      = parseInt(wrapper.dataset.nativeH, 10);
+  var mode    = wrapper.dataset.scaleMode;
+  var bh      = parseInt(iframe.style.height, 10);
+
+  function applyScale() {
+    var bw    = wrapper.offsetWidth;
+    var scaleX = bw / nw;
+    var scaleY = bh / nh;
+    var scale  = (mode === 'fit') ? Math.min(scaleX, scaleY) : scaleX;
+
+    /* Render at native resolution, then scale the whole frame down */
+    iframe.style.width  = nw + 'px';
+    iframe.style.height = nh + 'px';
+    iframe.style.transform = 'scale(' + scale + ')';
+
+    /* Collapse the wrapper so blank space below the scaled iframe disappears */
+    wrapper.style.height = Math.round(nh * scale) + 'px';
+  }
+
+  applyScale();
+  window.addEventListener('resize', applyScale);
+})();
+</script>
+<% end %>
