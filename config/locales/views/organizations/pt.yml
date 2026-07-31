@@ -6,6 +6,7 @@ pt:
         heading: Página de organização totalmente personalizável
         cover_image: Imagem de capa
         cover_image_hint: "Proporção recomendada: 8:1 (ex. 1600×200 ou 2400×300)"
+        remove_cover_image: Remover imagem de capa
         readme: Conteúdo da página (Markdown)
         readme_placeholder: "Use Markdown e tags Liquid para personalizar a página da sua organização.\n\nExemplo:\n{% org_team slug-da-org %}\n{% org_team slug-da-org role=admins limit=5 %}\n{% org_posts slug-da-org %}\n{% org_posts slug-da-org limit=5 sort=reactions min_reactions=10 since=30d %}\n{% org_lead_form 42 %}"
         default_notice: "Sua página está usando o layout padrão."
@@ -24,6 +25,7 @@ pt:
         created: Página criada com sucesso.
         updated: Página atualizada com sucesso.
         deleted: Página excluída com sucesso.
+        reordered: Ordem das páginas atualizada.
         confirm_delete: Tem certeza que deseja excluir esta página?
         showcase: Showcase
         showcase_hint: Esta é a página Showcase padrão.
@@ -39,6 +41,13 @@ pt:
         description_placeholder: Breve descrição para SEO e compartilhamento...
         cancel: Cancelar
         your_pages: Suas páginas
+        order_help: Use as setas para definir a ordem das guias personalizadas. Showcase permanece sempre em primeiro lugar.
+        pinned_first: Fixado em primeiro
+        reorder: "Reordenar %{title}"
+        move_up: Mover para cima
+        move_down: Mover para baixo
+        move_up_title: "Mover %{title} para cima"
+        move_down_title: "Mover %{title} para baixo"
       header_cta:
         heading: Botão CTA do Cabeçalho
         description: "Adicione um botão de chamada para ação no cabeçalho da página da sua organização. Você pode criar um botão simples ou um menu suspenso com vários links."

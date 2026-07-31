@@ -4,6 +4,7 @@ require "rails_helper"
 RSpec.describe Email, type: :model do
   describe "Associations" do
     it { is_expected.to belong_to(:audience_segment).optional }
+    it { is_expected.to belong_to(:event).optional }
   end
 
   describe "Callbacks" do
@@ -120,6 +121,8 @@ RSpec.describe Email, type: :model do
       end
 
       it "enqueues a job to EnqueueCustomBatchSendWorker as before" do
+        allow(User).to receive(:maximum).with(:id).and_return(5000)
+
         email.update(status: "active")
         email.deliver_to_users
 

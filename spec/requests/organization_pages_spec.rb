@@ -48,6 +48,22 @@ RSpec.describe "Organization Pages Controller Backend Protection" do
         expect(page.slug).to eq("#{organization.slug}/readme")
         expect(page.title).to eq("Welcome")
       end
+
+      it "returns a validation error when a lead form belongs to another organization" do
+        other_form = create(:organization_lead_form)
+
+        expect do
+          post organization_pages_path(organization.slug), params: {
+            page: {
+              title: "Welcome",
+              body_markdown: "{% org_lead_form #{other_form.id} %}"
+            }
+          }
+        end.not_to change(Page, :count)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body).to include(I18n.t("liquid_tags.org_lead_form_tag.wrong_organization"))
+      end
     end
 
     context "when creating subsequent pages" do
@@ -92,6 +108,14 @@ RSpec.describe "Organization Pages Controller Backend Protection" do
       expect(readme_page.slug).to eq("#{organization.slug}/readme")
     end
 
+    it "enqueues an edge cache bust for the page and its organization" do
+      sidekiq_assert_enqueued_with(job: Pages::BustCacheWorker, args: [readme_page.slug, organization.id]) do
+        patch update_organization_page_path(organization.slug, readme_page), params: {
+          page: { title: "Updated Showcase Title" }
+        }
+      end
+    end
+
     it "fails and returns 422 if the updated slug suffix is invalid" do
       patch update_organization_page_path(organization.slug, custom_page), params: {
         page: { title: "New Title", slug_suffix: "!!!" }
@@ -110,6 +134,45 @@ RSpec.describe "Organization Pages Controller Backend Protection" do
       expect {
         delete organization_page_path(organization.slug, readme_page)
       }.to change(Page, :count).by(-1)
+    end
+  end
+
+  describe "PATCH /:slug/settings/pages/:id/reorder" do
+    before { FeatureFlag.enable(:org_readme, FeatureFlag::Actor[organization]) }
+
+    let!(:readme_page) do
+      create(:page, organization: organization, slug: "#{organization.slug}/showcase",
+                    template: "full_within_layout")
+    end
+    let!(:first_page) do
+      create(:page, organization: organization, slug: "#{organization.slug}/first",
+                    template: "full_within_layout")
+    end
+    let!(:second_page) do
+      create(:page, organization: organization, slug: "#{organization.slug}/second",
+                    template: "full_within_layout")
+    end
+
+    it "moves a custom page up while keeping Showcase first" do
+      sidekiq_assert_enqueued_with(job: Pages::BustCacheWorker, args: [second_page.slug]) do
+        patch reorder_organization_page_path(organization.slug, second_page), params: { direction: "up" }
+      end
+
+      expect(response).to redirect_to(organization_pages_path(organization.slug))
+      expect(organization.ordered_pages.ids).to eq([readme_page.id, second_page.id, first_page.id])
+    end
+
+    it "does not move the Showcase page" do
+      patch reorder_organization_page_path(organization.slug, readme_page), params: { direction: "down" }
+
+      expect(response).to redirect_to(organization_pages_path(organization.slug))
+      expect(organization.ordered_pages.first).to eq(readme_page)
+    end
+
+    it "rejects an unsupported direction" do
+      patch reorder_organization_page_path(organization.slug, second_page), params: { direction: "sideways" }
+
+      expect(response).to have_http_status(:unprocessable_entity)
     end
   end
 
