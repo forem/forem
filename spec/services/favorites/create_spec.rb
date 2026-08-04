@@ -6,7 +6,7 @@ RSpec.describe Favorites::Create, type: :service do
   let(:article) { create(:article, user: author) }
 
   it "favorites an article" do
-    result = described_class.call(user: leader, favoritable: article)
+    result = described_class.call(favoritable: article, user: leader)
 
     expect(result.success?).to be true
     expect(article.reload.favorited_by_user_id).to eq(leader.id)
@@ -16,7 +16,7 @@ RSpec.describe Favorites::Create, type: :service do
   it "creates an audit log entry" do
     allow(Audit::Logger).to receive(:log).and_call_original
 
-    described_class.call(user: leader, favoritable: article)
+    described_class.call(favoritable: article, user: leader)
 
     expect(Audit::Logger).to have_received(:log).with(
       :moderator, leader, hash_including("action" => "favorite", "target_user_id" => author.id)
@@ -25,14 +25,14 @@ RSpec.describe Favorites::Create, type: :service do
 
   it "favorites a comment" do
     comment = create(:comment, commentable: article, user: author)
-    result = described_class.call(user: leader, favoritable: comment)
+    result = described_class.call(favoritable: comment, user: leader)
 
     expect(result.success?).to be true
     expect(comment.reload.favorited_by_user_id).to eq(leader.id)
   end
 
   it "rejects a non-leader" do
-    result = described_class.call(user: author, favoritable: article)
+    result = described_class.call(favoritable: article, user: author)
 
     expect(result.success?).to be false
     expect(result.error).to eq(:not_a_leader)
@@ -43,7 +43,7 @@ RSpec.describe Favorites::Create, type: :service do
     other_leader = create(:user, :community_leader_level_2)
     article.update!(favorited_by_user_id: other_leader.id, favorited_at: Time.current)
 
-    result = described_class.call(user: leader, favoritable: article)
+    result = described_class.call(favoritable: article, user: leader)
 
     expect(result.error).to eq(:already_favorited)
     expect(article.reload.favorited_by_user_id).to eq(other_leader.id)
@@ -52,7 +52,7 @@ RSpec.describe Favorites::Create, type: :service do
   it "rejects a user favoriting their own content" do
     own_article = create(:article, user: leader)
 
-    result = described_class.call(user: leader, favoritable: own_article)
+    result = described_class.call(favoritable: own_article, user: leader)
 
     expect(result.error).to eq(:self_favorite)
   end
@@ -60,7 +60,7 @@ RSpec.describe Favorites::Create, type: :service do
   it "rejects an unpublished article" do
     draft = create(:article, user: author, published: false)
 
-    result = described_class.call(user: leader, favoritable: draft)
+    result = described_class.call(favoritable: draft, user: leader)
 
     expect(result.error).to eq(:ineligible)
   end
@@ -68,7 +68,7 @@ RSpec.describe Favorites::Create, type: :service do
   it "rejects a deleted comment" do
     comment = create(:comment, commentable: article, user: author, deleted: true)
 
-    result = described_class.call(user: leader, favoritable: comment)
+    result = described_class.call(favoritable: comment, user: leader)
 
     expect(result.error).to eq(:ineligible)
   end
@@ -76,7 +76,7 @@ RSpec.describe Favorites::Create, type: :service do
   it "rejects when the leader has no allowance remaining" do
     allow(Settings::UserExperience).to receive(:community_leader_l1_favorite_allowance).and_return(0)
 
-    result = described_class.call(user: leader, favoritable: article)
+    result = described_class.call(favoritable: article, user: leader)
 
     expect(result.error).to eq(:no_allowance)
     expect(article.reload.favorited_by_user_id).to be_nil

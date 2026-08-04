@@ -18,10 +18,16 @@ module CommunityLeaders
         return Result.new(success?: false, errors: "Invalid community leader role: #{role}")
       end
 
+      # Do nothing if the user already has the role
+      return Result.new(success?: true) if user.roles.exists?(name: role.to_s)
+
       swap_to(role)
 
       # TODO: send updated community-leader onboarding email
       user.add_role(:trusted) unless user.roles.exists?(name: "trusted")
+
+      # Bust user info cache
+      user.touch
 
       Result.new(success?: true)
     end

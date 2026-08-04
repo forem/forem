@@ -42,4 +42,24 @@ RSpec.describe CommunityLeaders::Add, type: :service do
     expect(result.errors).to include("Invalid community leader role")
     expect(user.community_leader?).to be false
   end
+
+  it "busts the user-info cache when a role is granted" do
+    allow(user).to receive(:touch)
+
+    described_class.call(user, :community_leader_level_1)
+
+    expect(user).to have_received(:touch)
+  end
+
+  it "does nothing when the user already has the role" do
+    described_class.call(user, :community_leader_level_1)
+
+    allow(user).to receive(:touch)
+    allow(user).to receive(:add_role)
+
+    described_class.call(user, :community_leader_level_1)
+
+    expect(user).not_to have_received(:touch)
+    expect(user).not_to have_received(:add_role)
+  end
 end

@@ -10,9 +10,9 @@ module Favorites
       new(...).call
     end
 
-    def initialize(user:, favoritable:)
-      @user = user
+    def initialize(favoritable:, user:)
       @favoritable = favoritable
+      @user = user
     end
 
     def call

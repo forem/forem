@@ -25,4 +25,22 @@ RSpec.describe CommunityLeaders::Remove, type: :service do
     expect(result.success?).to be true
     expect(user.community_leader?).to be false
   end
+
+  it "busts the user-info cache when a role is removed" do
+    user = create(:user, :community_leader_level_1)
+    allow(user).to receive(:touch)
+
+    described_class.call(user)
+
+    expect(user).to have_received(:touch)
+  end
+
+  it "does not bust the cache when there is nothing to remove" do
+    user = create(:user)
+    allow(user).to receive(:touch)
+
+    described_class.call(user)
+
+    expect(user).not_to have_received(:touch)
+  end
 end

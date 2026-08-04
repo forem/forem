@@ -12,9 +12,18 @@ module CommunityLeaders
     end
 
     def call
+      changed = false
+
       CommunityLeaders::ROLES.each do |role|
-        user.remove_role(role) if user.roles.exists?(name: role.to_s)
+        if user.roles.exists?(name: role.to_s)
+          user.remove_role(role)
+          changed = true
+        end
       end
+
+      # Bust user info cache if needed
+      user.touch if changed
+
       Result.new(success?: true)
     end
 
