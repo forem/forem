@@ -209,6 +209,29 @@ RSpec.describe "Admin::Users" do
       expect(user.credits.size).to eq(2)
     end
 
+    it "updates a user's password" do
+      patch update_password_admin_user_path(user.id), params: {
+        user: { password: "new-password-123", password_confirmation: "new-password-123" }
+      }
+
+      expect(response).to redirect_to(admin_user_path(user.id, tab: :security))
+      expect(user.reload.valid_password?("new-password-123")).to be(true)
+      expect(Note.last.reason).to eq("admin_password_update")
+    end
+
+    it "sends an admin-triggered password reset email", :aggregate_failures do
+      expect do
+        post send_password_reset_admin_user_path(user.id)
+      end.to change(ActionMailer::Base.deliveries, :count).by(1)
+
+      expect(response).to redirect_to(admin_user_path(user.id, tab: :security))
+      expect(Note.last.reason).to eq("admin_password_reset")
+
+      email = ActionMailer::Base.deliveries.last
+      expect(email.body.encoded).to include(super_admin.name)
+      expect(email.body.encoded).to include("help you regain access")
+    end
+
     it "removes non-admin roles from non-super_admin users", :aggregate_failures do
       role = user.add_role(:trusted)
 
