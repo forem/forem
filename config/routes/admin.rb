@@ -84,6 +84,8 @@ namespace :admin do
 
     resources :bulk_assign_role, only: %i[index]
     post "/bulk_assign_role", to: "bulk_assign_role#assign_role"
+
+    resources :favorites, only: %i[index]
   end
 
   scope :content_manager do
