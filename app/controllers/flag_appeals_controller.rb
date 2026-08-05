@@ -25,6 +25,13 @@ class FlagAppealsController < ApplicationController
     else
       render :new, status: :unprocessable_entity
     end
+  rescue ActiveRecord::RecordNotUnique
+    msg = I18n.t(
+      "flag_appeals.already_pending",
+      default: "You already have an open appeal pending review for this item.",
+    )
+    @flag_appeal.errors.add(:base, msg)
+    render :new, status: :unprocessable_entity
   end
 
   private

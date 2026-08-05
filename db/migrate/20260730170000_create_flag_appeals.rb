@@ -14,5 +14,9 @@ class CreateFlagAppeals < ActiveRecord::Migration[8.0]
     end
 
     add_index :flag_appeals, :status
+    add_index :flag_appeals, %i[user_id appealable_type appealable_id],
+              unique: true,
+              where: "status IN (0, 1)",
+              name: "index_flag_appeals_on_pending_user_target"
   end
 end
