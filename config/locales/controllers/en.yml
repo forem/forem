@@ -52,6 +52,7 @@ en:
     submitted: Your report is submitted
   flag_appeals:
     submitted_success: Your appeal has been submitted for review. Thank you!
+    already_pending: You already have an open appeal pending review for this item.
   follows_controller:
     already_followed: already followed
     daily_limit: Daily account follow limit reached!
