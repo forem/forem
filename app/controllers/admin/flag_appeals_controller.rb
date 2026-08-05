@@ -34,7 +34,8 @@ module Admin
         flash[:alert] = I18n.t("admin.flag_appeals_controller.invalid_action")
       end
 
-      redirect_to admin_flag_appeals_path(status: @appeal.status)
+      redirect_status = @appeal.pending_review? ? "pending" : @appeal.status
+      redirect_to admin_flag_appeals_path(status: redirect_status)
     end
 
     private

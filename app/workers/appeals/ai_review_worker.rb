@@ -11,6 +11,9 @@ module Appeals
 
       results = Ai::AppealAssessor.new(appeal).evaluate
 
+      # Ensure appeal status has not changed (e.g. resolved manually by an admin while AI evaluated)
+      return unless appeal.reload.open?
+
       appeal.update!(
         ai_summary: results[:summary],
         ai_confidence_score: results[:confidence_score],
@@ -18,12 +21,13 @@ module Appeals
         status: :ai_reviewed,
       )
 
-      # Optional auto-resolution for high-confidence false positives (> 0.90)
+      # Optional auto-resolution for high-confidence false positives (>= 0.90)
       if results[:recommendation] == "auto_unflag" && results[:confidence_score] >= 0.90
         Appeals::Resolver.approve(appeal: appeal)
       end
     rescue StandardError => e
       Rails.logger.error("Appeals::AiReviewWorker failed for appeal ##{appeal_id}: #{e}")
+      raise e
     end
   end
 end

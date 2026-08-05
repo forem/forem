@@ -13,6 +13,10 @@ class FlagAppeal < ApplicationRecord
   scope :pending_review, -> { where(status: %i[open ai_reviewed]) }
   scope :recent_first, -> { order(created_at: :desc) }
 
+  def pending_review?
+    open? || ai_reviewed?
+  end
+
   private
 
   def must_not_have_pending_appeal

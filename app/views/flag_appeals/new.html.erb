@@ -1,9 +1,9 @@
 <main id="main-content" class="crayons-layout crayons-layout--limited-l">
   <div class="crayons-card text-styles text-padding">
-    <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 mt-0">Submit a Moderation Appeal</h1>
+    <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 mt-0"><%= t("views.flag_appeals.heading") %></h1>
 
     <p class="mb-6">
-      If you believe your account or content was restricted or flagged by mistake, please explain below. Our automated safety checks and community moderation team will review your request.
+      <%= t("views.flag_appeals.intro") %>
     </p>
 
     <div class="crayons-card crayons-card--secondary p-4 m:p-6">
@@ -23,16 +23,16 @@
         <%= f.hidden_field :appealable_id %>
 
         <div class="crayons-field mb-4">
-          <%= f.label :reason, "Why do you believe this restriction or flag was a mistake?", class: "crayons-field__label font-bold mb-2 block" %>
+          <%= f.label :reason, t("views.flag_appeals.reason_label"), class: "crayons-field__label font-bold mb-2 block" %>
           <%= f.text_area :reason, rows: 6, required: true, maxlength: 3000,
-              placeholder: "Provide context on your activity, intentional use case, or restricted content...",
+              placeholder: t("views.flag_appeals.reason_placeholder"),
               class: "crayons-textfield" %>
-          <span class="fs-xs color-base-60 mt-1 block">Maximum 3,000 characters. Please be concise and accurate.</span>
+          <span class="fs-xs color-base-60 mt-1 block"><%= t("views.flag_appeals.reason_help") %></span>
         </div>
 
         <div class="flex items-center gap-3">
-          <%= f.submit "Submit Appeal", class: "crayons-btn crayons-btn--primary" %>
-          <%= link_to "Cancel", root_path, class: "crayons-btn crayons-btn--outlined" %>
+          <%= f.submit t("views.flag_appeals.submit"), class: "crayons-btn crayons-btn--primary" %>
+          <%= link_to t("views.flag_appeals.cancel"), root_path, class: "crayons-btn crayons-btn--outlined" %>
         </div>
       <% end %>
     </div>
