@@ -33,7 +33,7 @@ module Api
 
       def error_unauthorized
         payload = { error: "unauthorized", status: 401 }
-        payload[:appeal_url] = appeal_path if @user&.spam_or_suspended?
+        payload[:appeal_url] = "/appeal" if @user&.spam_or_suspended?
         render json: payload, status: :unauthorized
       end
 

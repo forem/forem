@@ -199,6 +199,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_30_170000) do
     t.integer "positive_reactions_count", default: 0, null: false
     t.integer "previous_positive_reactions_count", default: 0
     t.integer "previous_public_reactions_count", default: 0, null: false
+    t.jsonb "private_submission_data", default: {}, null: false
     t.integer "privileged_users_reaction_points_sum", default: 0
     t.text "processed_html"
     t.integer "public_reactions_count", default: 0, null: false
@@ -1802,6 +1803,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_30_170000) do
   end
 
   create_table "tags", force: :cascade do |t|
+    t.jsonb "additional_questions", default: [], null: false
     t.string "alias_for"
     t.bigint "badge_id"
     t.string "bg_color_hex"
@@ -2232,7 +2234,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_30_170000) do
   add_foreign_key "display_ads", "organizations", on_delete: :cascade
   add_foreign_key "email_authorizations", "users", on_delete: :cascade
   add_foreign_key "emails", "audience_segments"
-  add_foreign_key "emails", "events", validate: false
   add_foreign_key "emails", "user_queries"
   add_foreign_key "event_signups", "events"
   add_foreign_key "event_signups", "users"
