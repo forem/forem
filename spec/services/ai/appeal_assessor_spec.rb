@@ -37,5 +37,20 @@ RSpec.describe Ai::AppealAssessor do
       expect(result[:recommendation]).to eq("human_review")
       expect(result[:confidence_score]).to eq(0.5)
     end
+
+    it "evaluates appeal when target is a User profile" do
+      user_appeal = create(:flag_appeal, user: user, appealable: user, reason: "Account flagged in error.")
+      user_assessor = described_class.new(user_appeal)
+      response_json = {
+        recommendation: "human_review",
+        confidence_score: 0.70,
+        summary: "Profile context assessed."
+      }.to_json
+
+      allow(ai_client_double).to receive(:call).and_return(response_json)
+
+      result = user_assessor.evaluate
+      expect(result[:recommendation]).to eq("human_review")
+    end
   end
 end

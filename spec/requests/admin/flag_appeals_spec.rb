@@ -37,5 +37,18 @@ RSpec.describe "Admin::FlagAppeals", type: :request do
       expect(response).to redirect_to(admin_flag_appeals_path(status: "rejected"))
       expect(appeal.reload.rejected?).to be true
     end
+
+    it "blocks re-resolution when the appeal is already resolved" do
+      appeal.update!(status: :approved, resolved_by: admin)
+
+      expect(Appeals::Resolver).not_to receive(:approve)
+      expect(Appeals::Resolver).not_to receive(:reject)
+
+      patch admin_flag_appeal_path(appeal), params: { resolution: "reject" }
+
+      expect(response).to redirect_to(admin_flag_appeals_path(status: "approved"))
+      expect(flash[:alert]).to eq(I18n.t("admin.flag_appeals_controller.already_resolved"))
+      expect(appeal.reload.approved?).to be true
+    end
   end
 end

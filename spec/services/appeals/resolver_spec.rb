@@ -31,6 +31,17 @@ RSpec.describe Appeals::Resolver do
       expect(appeal.resolved_by).to eq(admin)
       expect(Reaction.exists?(user_id: Settings::General.mascot_user_id, reactable: article, category: "vomit")).to be false
     end
+
+    it "approves appeal when appealable target is a User profile" do
+      user_appeal = create(:flag_appeal, user: user, appealable: user)
+      described_class.approve(appeal: user_appeal, admin: admin)
+
+      user.reload
+      user_appeal.reload
+
+      expect(user.spam_or_suspended?).to be false
+      expect(user_appeal.status).to eq("approved")
+    end
   end
 
   describe ".reject" do

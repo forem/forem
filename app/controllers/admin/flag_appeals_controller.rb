@@ -22,6 +22,11 @@ module Admin
     def show; end
 
     def update
+      if @appeal.approved? || @appeal.rejected?
+        flash[:alert] = I18n.t("admin.flag_appeals_controller.already_resolved")
+        return redirect_to admin_flag_appeals_path(status: @appeal.status)
+      end
+
       resolution = params[:resolution]
 
       if resolution == "approve"
