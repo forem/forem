@@ -93,8 +93,8 @@
       <% reject_confirm = "This will reject Appeal ##{appeal.id} and maintain all active restrictions on @#{appeal.user.username}'s account. Are you sure you want to proceed?" %>
 
       <div class="flex items-center gap-3 pt-3 border-t border-border">
-        <%= button_to "Approve & Unflag", admin_flag_appeal_path(appeal, resolution: "approve"), method: :patch, data: { confirm: approve_confirm }, form: { data: { confirm: approve_confirm } }, class: "crayons-btn crayons-btn--primary crayons-btn--s" %>
-        <%= button_to "Reject Appeal", admin_flag_appeal_path(appeal, resolution: "reject"), method: :patch, data: { confirm: reject_confirm }, form: { data: { confirm: reject_confirm } }, class: "crayons-btn crayons-btn--secondary crayons-btn--s" %>
+        <%= button_to "Approve & Unflag", admin_flag_appeal_path(appeal, resolution: "approve"), method: :patch, data: { confirm: approve_confirm }, class: "crayons-btn crayons-btn--primary crayons-btn--s" %>
+        <%= button_to "Reject Appeal", admin_flag_appeal_path(appeal, resolution: "reject"), method: :patch, data: { confirm: reject_confirm }, class: "crayons-btn crayons-btn--secondary crayons-btn--s" %>
         <%= link_to "Full Details", admin_flag_appeal_path(appeal), class: "crayons-btn crayons-btn--outlined crayons-btn--s" %>
       </div>
     <% else %>
