@@ -1,0 +1,100 @@
+<% status_indicator = case appeal.status
+                      when "approved" then "c-indicator--success"
+                      when "rejected" then "c-indicator--danger"
+                      else "c-indicator--info"
+                      end %>
+
+<% rec_class = case appeal.ai_recommendation
+                when "auto_unflag" then "c-indicator--success"
+                when "confirm_flag" then "c-indicator--danger"
+                else "c-indicator--warning"
+                end %>
+
+<details class="crayons-card my-3" id="accordion-<%= appeal.id %>">
+  <summary class="p-4 cursor-pointer hover:bg-base-5">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <strong class="text-base color-base-100">Appeal #<%= appeal.id %></strong>
+        <span class="fs-xs color-base-60 ml-2">Submitted <%= time_ago_in_words(appeal.created_at) %> ago by <%= link_to appeal.user.name, admin_user_path(appeal.user), class: "c-link font-bold" %> (@<%= appeal.user.username %>)</span>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="c-indicator c-indicator--info fs-xs"><%= appeal.appealable_type %> #<%= appeal.appealable_id %></span>
+        <span class="c-indicator <%= rec_class %> fs-xs">AI: <%= appeal.ai_recommendation.humanize %> (<%= appeal.ai_confidence_score ? "#{(appeal.ai_confidence_score * 100).round}%" : "N/A" %>)</span>
+        <span class="c-indicator <%= status_indicator %> fs-xs uppercase font-bold"><%= appeal.status.humanize %></span>
+        <%= link_to "Direct Link", admin_flag_appeal_path(appeal), class: "c-link fs-xs ml-1" %>
+      </div>
+    </div>
+  </summary>
+
+  <div class="crayons-card__body p-4 border-t border-border flex flex-col gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="crayons-card crayons-card--secondary p-3 flex flex-col gap-1">
+        <h4 class="fs-xs font-bold uppercase color-base-60">Appealing User</h4>
+        <div>
+          <%= link_to appeal.user.name, admin_user_path(appeal.user), class: "c-link font-bold" %>
+          <span class="fs-xs color-base-60">@<%= appeal.user.username %> (ID: <%= appeal.user.id %>)</span>
+        </div>
+        <div>
+          <% role_badge = appeal.user.spam_or_suspended? ? "c-indicator--danger" : "c-indicator--success" %>
+          <span class="c-indicator <%= role_badge %> fs-xs">
+            <%= appeal.user.spam_or_suspended? ? "Suspended / Spam Flagged" : "Active" %>
+          </span>
+        </div>
+      </div>
+
+      <div class="crayons-card crayons-card--secondary p-3 flex flex-col gap-1">
+        <h4 class="fs-xs font-bold uppercase color-base-60">Target Entity</h4>
+        <div class="font-bold">
+          <span class="c-indicator c-indicator--info"><%= appeal.appealable_type %></span>
+          <span>#<%= appeal.appealable_id %></span>
+        </div>
+        <p class="fs-xs color-base-60">Restricted item tied to this appeal record</p>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <h4 class="fs-sm font-bold color-base-80">User's Appeal Statement</h4>
+      <div class="p-3 bg-base-5 rounded border border-border-tertiary whitespace-pre-wrap fs-sm">
+        <%= appeal.reason %>
+      </div>
+    </div>
+
+    <div class="p-4 rounded border border-accent-brand bg-accent-brand-tint flex flex-col gap-2">
+      <div class="flex items-center justify-between">
+        <h4 class="font-bold text-sm flex items-center gap-2">
+          <%= crayons_icon_tag("robot", class: "w-4 h-4") %>
+          AI Re-Assessment Evaluation
+        </h4>
+        <span class="c-indicator <%= rec_class %> fs-xs font-bold">
+          Recommendation: <%= appeal.ai_recommendation.humanize %>
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div>
+          <span class="fs-xs color-base-60 block">Confidence Score</span>
+          <strong><%= appeal.ai_confidence_score ? "#{(appeal.ai_confidence_score * 100).round}%" : "N/A" %></strong>
+        </div>
+
+        <div class="md:col-span-2">
+          <span class="fs-xs color-base-60 block">AI Summary</span>
+          <p class="fs-xs mt-1"><%= appeal.ai_summary.presence || "Pending AI background evaluation..." %></p>
+        </div>
+      </div>
+    </div>
+
+    <% if appeal.open? || appeal.ai_reviewed? %>
+      <div class="flex items-center gap-3 pt-3 border-t border-border">
+        <%= button_to "Approve & Unflag", admin_flag_appeal_path(appeal, resolution: "approve"), method: :patch, class: "crayons-btn crayons-btn--primary crayons-btn--s" %>
+        <%= button_to "Reject Appeal", admin_flag_appeal_path(appeal, resolution: "reject"), method: :patch, class: "crayons-btn crayons-btn--secondary crayons-btn--s" %>
+        <%= link_to "Full Details", admin_flag_appeal_path(appeal), class: "crayons-btn crayons-btn--outlined crayons-btn--s" %>
+      </div>
+    <% else %>
+      <div class="pt-3 border-t border-border color-base-60 fs-xs flex items-center justify-between">
+        <span>Resolved by: <strong><%= appeal.resolved_by&.name || "System" %></strong> on <%= appeal.updated_at.strftime("%B %d, %Y %H:%M") %></span>
+        <%= link_to "Full Details", admin_flag_appeal_path(appeal), class: "crayons-btn crayons-btn--outlined crayons-btn--s" %>
+      </div>
+    <% end %>
+  </div>
+</details>
