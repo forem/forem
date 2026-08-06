@@ -1,74 +1,27 @@
 <div class="crayons-card p-4">
-  <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+  <div class="flex flex-wrap items-center justify-between gap-4 mb-4 pb-3 border-b border-border">
     <h1 class="crayons-title text-xl">Flag Appeals Queue</h1>
 
-    <div class="crayons-navigation border-0 m-0">
-      <div class="crayons-navigation__content">
-        <%= link_to "Pending", admin_flag_appeals_path(status: "pending"), class: "crayons-navigation__item #{@status == 'pending' ? 'crayons-navigation__item--current' : ''}" %>
-        <%= link_to "Approved", admin_flag_appeals_path(status: "approved"), class: "crayons-navigation__item #{@status == 'approved' ? 'crayons-navigation__item--current' : ''}" %>
-        <%= link_to "Rejected", admin_flag_appeals_path(status: "rejected"), class: "crayons-navigation__item #{@status == 'rejected' ? 'crayons-navigation__item--current' : ''}" %>
+    <div class="flex items-center gap-3">
+      <div class="crayons-navigation border-0 m-0">
+        <div class="crayons-navigation__content">
+          <%= link_to "Pending", admin_flag_appeals_path(status: "pending"), class: "crayons-navigation__item #{@status == 'pending' ? 'crayons-navigation__item--current' : ''}" %>
+          <%= link_to "Approved", admin_flag_appeals_path(status: "approved"), class: "crayons-navigation__item #{@status == 'approved' ? 'crayons-navigation__item--current' : ''}" %>
+          <%= link_to "Rejected", admin_flag_appeals_path(status: "rejected"), class: "crayons-navigation__item #{@status == 'rejected' ? 'crayons-navigation__item--current' : ''}" %>
+        </div>
       </div>
+
+      <% if @flag_appeals.any? %>
+        <button id="toggleAllAppeals" class="crayons-btn crayons-btn--secondary crayons-btn--s">Expand All</button>
+      <% end %>
     </div>
   </div>
 
   <% if @flag_appeals.any? %>
-    <div class="overflow-x-auto">
-      <table class="crayons-table w-full">
-        <thead>
-          <tr>
-            <th scope="col">User</th>
-            <th scope="col">Target</th>
-            <th scope="col">AI Recommendation</th>
-            <th scope="col">AI Confidence</th>
-            <th scope="col">Status</th>
-            <th scope="col">Submitted</th>
-            <th scope="col" class="text-right">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @flag_appeals.each do |appeal| %>
-            <tr>
-              <td class="font-bold">
-                <%= link_to appeal.user.name, admin_user_path(appeal.user), class: "c-link" %>
-                <span class="block fs-xs color-base-60">@<%= appeal.user.username %></span>
-              </td>
-              <td>
-                <span class="c-indicator c-indicator--info"><%= appeal.appealable_type %></span>
-                <span class="fs-xs color-base-60 block">#<%= appeal.appealable_id %></span>
-              </td>
-              <td>
-                <% badge_class = case appeal.ai_recommendation
-                                 when "auto_unflag" then "c-indicator--success"
-                                 when "confirm_flag" then "c-indicator--danger"
-                                 else "c-indicator--warning"
-                                 end %>
-                <span class="c-indicator <%= badge_class %>">
-                  <%= appeal.ai_recommendation.humanize %>
-                </span>
-              </td>
-              <td>
-                <%= appeal.ai_confidence_score ? "#{(appeal.ai_confidence_score * 100).round}%" : "N/A" %>
-              </td>
-              <td>
-                <% status_class = case appeal.status
-                                  when "approved" then "c-indicator--success"
-                                  when "rejected" then "c-indicator--danger"
-                                  else "c-indicator--info"
-                                  end %>
-                <span class="c-indicator <%= status_class %>">
-                  <%= appeal.status.humanize %>
-                </span>
-              </td>
-              <td class="fs-xs color-base-60 whitespace-nowrap">
-                <%= time_ago_in_words(appeal.created_at) %> ago
-              </td>
-              <td class="text-right whitespace-nowrap">
-                <%= link_to "Review", admin_flag_appeal_path(appeal), class: "crayons-btn crayons-btn--secondary crayons-btn--s" %>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
+    <div class="grid gap-3">
+      <% @flag_appeals.each do |appeal| %>
+        <%= render "flag_appeal", appeal: appeal %>
+      <% end %>
     </div>
 
     <div class="my-4 flex justify-center">
@@ -78,3 +31,16 @@
     <p class="color-base-60 p-4 text-center">No flag appeals found matching this status.</p>
   <% end %>
 </div>
+
+<script>
+  document.getElementById('toggleAllAppeals')?.addEventListener('click', function() {
+    const detailsElements = document.querySelectorAll('details[id^="accordion-"]');
+    const shouldExpand = this.textContent.includes('Expand');
+
+    detailsElements.forEach(details => {
+      details.open = shouldExpand;
+    });
+
+    this.textContent = shouldExpand ? 'Collapse All' : 'Expand All';
+  });
+</script>
