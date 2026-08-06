@@ -109,6 +109,14 @@ body.subforem-moderator-status-true .subforem-moderator-visible-block {
   display: block !important;
 }
 
+.community-leader-visible-block {
+  display: none !important;
+}
+
+body.community-leader-status-true .community-leader-visible-block {
+  display: block !important;
+}
+
 // The .admin-help-button class is included in this file since it
 // is referenced in both the admin and application layout.
 
