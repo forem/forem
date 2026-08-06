@@ -166,6 +166,7 @@ pt:
       approved: "Recurso aprovado e usuário/conteúdo restabelecido com sucesso."
       rejected: "Recurso rejeitado."
       invalid_action: "Ação de resolução inválida."
+      already_resolved: "Este recurso já foi resolvido."
     users_controller:
       role_removed: 'Função: %{role} foi removida com sucesso do usuário!'
       updated: Usuário foi atualizado

@@ -30,6 +30,6 @@ class FlagAppeal < ApplicationRecord
 
     return unless pending_exists
 
-    errors.add(:base, "You already have an open appeal pending review for this item.")
+    errors.add(:base, I18n.t("flag_appeals.already_pending", default: "You already have an open appeal pending review for this item."))
   end
 end

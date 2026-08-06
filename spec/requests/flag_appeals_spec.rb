@@ -83,5 +83,11 @@ RSpec.describe "FlagAppeals", type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Thank you for your appeal submission")
     end
+
+    it "redirects to root when accessing another user's appeal" do
+      other_user_appeal = create(:flag_appeal)
+      get appeal_success_path(id: other_user_appeal.id)
+      expect(response).to redirect_to(root_path)
+    end
   end
 end

@@ -205,6 +205,7 @@ fr:
       approved: "Recours approuvé et utilisateur/contenu rétabli avec succès."
       rejected: "Recours rejeté."
       invalid_action: "Action de résolution invalide."
+      already_resolved: "Ce recours a déjà été traité."
     users_controller:
       exported: Données exportées vers le %{receiver}. Le travail sera terminé dans un instant.
       email_fail: L'envoi de l'e-mail a échoué !
