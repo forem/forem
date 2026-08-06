@@ -993,5 +993,64 @@ RSpec.describe Authentication::Authenticator, type: :service do
         described_class.call(auth_payload, current_user: user)
       end.not_to change(Users::PrefillMlhProfileWorker.jobs, :size)
     end
+
+    # Identities created through the admin API carry only a uid: no token, no
+    # payload. A completed re-auth is the only opportunity to backfill them.
+    describe "relinking a uid-only identity" do
+      let(:user) { create(:user, email: auth_payload.info.email) }
+
+      it "refreshes the stored payload, token and secret" do
+        identity = Identity.create!(user: user, provider: "mlh", uid: auth_payload.uid)
+
+        expect do
+          described_class.call(auth_payload, current_user: user)
+        end.not_to change(Identity, :count)
+
+        identity.reload
+        expect(identity.auth_data_dump.info.email).to eq(auth_payload.info.email)
+        expect(identity.token).to eq(auth_payload.credentials.token)
+      end
+
+      it "leaves the identity untouched when the incoming uid differs" do
+        identity = Identity.create!(user: user, provider: "mlh", uid: "a-different-core-id")
+
+        expect do
+          described_class.call(auth_payload, current_user: user)
+        end.not_to change(Identity, :count)
+
+        identity.reload
+        expect(identity.uid).to eq("a-different-core-id")
+        expect(identity.auth_data_dump).to be_nil
+        expect(identity.token).to be_nil
+      end
+
+      it "returns the current user in both cases" do
+        Identity.create!(user: user, provider: "mlh", uid: auth_payload.uid)
+
+        expect(described_class.call(auth_payload, current_user: user)).to eq(user)
+      end
+
+      it "does not repoint an identity belonging to another user" do
+        other_user = create(:user)
+        other_identity = Identity.create!(user: other_user, provider: "mlh", uid: auth_payload.uid)
+        Identity.create!(user: user, provider: "mlh", uid: "yet-another-core-id")
+
+        described_class.call(auth_payload, current_user: user)
+
+        other_identity.reload
+        expect(other_identity.user_id).to eq(other_user.id)
+        expect(other_identity.auth_data_dump).to be_nil
+      end
+
+      it "still links a brand new identity when the user has none" do
+        expect do
+          described_class.call(auth_payload, current_user: user)
+        end.to change(Identity, :count).by(1)
+
+        identity = user.identities.find_by(provider: "mlh")
+        expect(identity.uid).to eq(auth_payload.uid)
+        expect(identity.auth_data_dump.info.email).to eq(auth_payload.info.email)
+      end
+    end
   end
 end

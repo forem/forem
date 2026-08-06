@@ -36,7 +36,11 @@ module Authentication
     def call
       identity = Identity.build_from_omniauth(provider)
       guard_against_spam_from!(identity: identity)
-      return current_user if current_user_identity_exists?
+
+      if (linked_identity = current_user_identity)
+        refresh_identity(identity, linked_identity)
+        return current_user
+      end
 
       # These variables need to be set outside of the scope of the
       # transaction in order to be used after the transaction is completed.
@@ -109,8 +113,24 @@ module Authentication
       provider_class.new(auth_payload)
     end
 
-    def current_user_identity_exists?
-      current_user&.identities&.exists?(provider: provider.name)
+    def current_user_identity
+      current_user&.identities&.find_by(provider: provider.name)
+    end
+
+    # An identity created through the admin API rather than a completed OAuth
+    # flow has no token and no stored auth payload. A completed re-auth is the
+    # only chance we get to fill those in, so refresh the row in place.
+    #
+    # `incoming_identity` is built by `Identity.build_from_omniauth`, so it is
+    # only persisted when the payload's provider + uid already exist in the
+    # database. We refresh solely when that is the very same row the current
+    # user is linked through: a payload carrying a different uid must never
+    # silently repoint an existing identity.
+    def refresh_identity(incoming_identity, linked_identity)
+      return unless incoming_identity.persisted?
+      return unless incoming_identity.id == linked_identity.id
+
+      incoming_identity.save!
     end
 
     def proper_user(identity)
