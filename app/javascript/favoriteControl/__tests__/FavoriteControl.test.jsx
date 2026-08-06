@@ -39,7 +39,7 @@ afterEach(() => {
 });
 
 describe('<FavoriteControl />', () => {
-  describe('visibility gating', () => {
+  describe('visibility gating on unfavorited content', () => {
     it('renders nothing when the viewer is not a community leader', () => {
       const { container } = renderControl({
         currentUser: { id: CURRENT_USER_ID, community_leader: false },
@@ -157,13 +157,44 @@ describe('<FavoriteControl />', () => {
     });
 
     it('renders an indicator when favorited by someone else', () => {
-      const { getByLabelText, container } = renderControl({
+      const { getByLabelText } = renderControl({
         favorited: 'true',
         favoritedByUserId: '7',
       });
 
       const indicator = getByLabelText('Favorited');
       expect(indicator.tagName).toBe('SPAN');
+    });
+
+    it('renders an indicator for a viewer who is not a community leader', () => {
+      const { getByLabelText } = renderControl({
+        currentUser: { id: CURRENT_USER_ID, community_leader: false },
+        favorited: 'true',
+        favoritedByUserId: '7',
+      });
+
+      expect(getByLabelText('Favorited').tagName).toBe('SPAN');
+    });
+
+    it('renders an indicator for a signed-out visitor', () => {
+      const { getByLabelText } = renderControl({
+        currentUser: null,
+        favorited: 'true',
+        favoritedByUserId: '7',
+      });
+
+      expect(getByLabelText('Favorited').tagName).toBe('SPAN');
+    });
+
+    it('does not tell a signed-out visitor they favorited it', () => {
+      const { getByLabelText, queryByLabelText } = renderControl({
+        currentUser: null,
+        favorited: 'true',
+        favoritedByUserId: '',
+      });
+
+      expect(queryByLabelText('Favorited by you')).toBeNull();
+      expect(getByLabelText('Favorited').tagName).toBe('SPAN');
     });
   });
 });

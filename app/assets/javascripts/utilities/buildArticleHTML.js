@@ -173,7 +173,7 @@ function buildArticleHTML(article, currentUserId = null) {
         article.path +
         '#comments"' +
         commentsAriaLabelText +
-        'class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left "><svg class="crayons-icon" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M10.5 5h3a6 6 0 110 12v2.625c-3.75-1.5-9-3.75-9-8.625a6 6 0 016-6zM12 15.5h1.5a4.501 4.501 0 001.722-8.657A4.5 4.5 0 0013.5 6.5h-3A4.5 4.5 0 006 11c0 2.707 1.846 4.475 6 6.36V15.5z"/></svg>';
+        'class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left flex items-center"><svg class="crayons-icon" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M10.5 5h3a6 6 0 110 12v2.625c-3.75-1.5-9-3.75-9-8.625a6 6 0 016-6zM12 15.5h1.5a4.501 4.501 0 001.722-8.657A4.5 4.5 0 0013.5 6.5h-3A4.5 4.5 0 006 11c0 2.707 1.846 4.475 6 6.36V15.5z"/></svg>';
       if (commentsCount > 0) {
         commentsDisplay +=
           commentsCount +
@@ -182,6 +182,23 @@ function buildArticleHTML(article, currentUserId = null) {
         commentsDisplay +=
           '<span class="hidden s:inline">Add&nbsp;Comment</span></a>';
       }
+    }
+
+    var favoritedMarkerDisplay = '';
+    if (article.favorited_by_user_id && globalFeatureFlagEnabled('community_favorites')) {
+      favoritedMarkerDisplay = `<span
+              class="crayons-story__favorited"
+              data-favorited-marker
+              data-favorited-by-user-id="${article.favorited_by_user_id}">
+              <span class="favorited-marker">
+                <span data-favorited-icon="other" role="img" aria-label="Favorited">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="crayons-icon"><path d="M7.4 6 16.6 6 20.75 10.2 12 19 3.25 10.2Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                <span data-favorited-icon="self" class="hidden" role="img" aria-label="Favorited by you">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="crayons-icon"><path d="M7.4 6 16.6 6 20.75 10.2 12 19 3.25 10.2Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 11l1.3 1.3 2.6-2.9" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+              </span>
+            </span>`;
     }
 
     var reactionsCount = article.public_reactions_count;
@@ -232,6 +249,9 @@ function buildArticleHTML(article, currentUserId = null) {
       userName = filterXSS(article.user.name);
       if (article.user.cached_base_subscriber) {
         userName = userName + ' <img class="subscription-icon" src="' + document.body.dataset.subscriptionIcon + '" alt="Subscriber" />';
+      }
+      if (article.user.cached_community_leader && globalFeatureFlagEnabled('community_favorites')) {
+        userName = userName + ' <img class="community-leader-icon" src="' + document.body.dataset.communityLeaderIcon + '" alt="Community Leader" />';
       }
     }
     var orgHeadline = '';
@@ -467,7 +487,7 @@ function buildArticleHTML(article, currentUserId = null) {
               ${searchSnippetHTML}\
               <div class="crayons-story__bottom">\
                 <div class="crayons-story__details">
-                  ${reactionsDisplay} ${commentsDisplay}
+                  ${reactionsDisplay} ${favoritedMarkerDisplay} ${commentsDisplay}
                 </div>\
                 <div class="crayons-story__save">\
                   ${readingTimeHTML}\

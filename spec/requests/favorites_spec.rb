@@ -77,6 +77,13 @@ RSpec.describe "Favorites" do
   end
 
   describe "the favorite control mount node on the article page" do
+    before do
+      FeatureFlag.add(:community_favorites)
+      FeatureFlag.enable(:community_favorites)
+    end
+
+    after { FeatureFlag.remove(:community_favorites) }
+
     # Data is user-agnostic and cache-safe. The Preact component decides
     # client-side visibility.
     it "renders the mount node with the article's favoritable data" do
@@ -87,6 +94,16 @@ RSpec.describe "Favorites" do
       expect(response.body).to include("data-favorite-control")
       expect(response.body).to include("data-favoritable-type=\"Article\"")
       expect(response.body).to include("data-favoritable-id=\"#{article.id}\"")
+    end
+
+    it "renders no mount node when the feature flag is disabled" do
+      FeatureFlag.disable(:community_favorites)
+      sign_in create(:user)
+
+      get article.path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).not_to include("data-favorite-control")
     end
   end
 end

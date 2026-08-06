@@ -94,13 +94,9 @@ export const FavoriteControl = ({
   );
   const [submitting, setSubmitting] = useState(false);
 
-  // Only render for community leaders for now
-  if (!currentUser?.community_leader) {
-    return null;
-  }
-
-  const userId = currentUser.id ?? null;
-  const favoritedByCurrentUser = favorited && favoritedById === userId;
+  const userId = currentUser?.id ?? null;
+  const favoritedByCurrentUser =
+    favorited && userId != null && favoritedById === userId;
 
   if (favorited) {
     const label = favoritedByCurrentUser ? labelFavoritedByYou : labelFavorited;
@@ -114,6 +110,11 @@ export const FavoriteControl = ({
         <Tooltip label={label} />
       </span>
     );
+  }
+
+  // Only enable favoriting for community leaders for now
+  if (!currentUser?.community_leader) {
+    return null;
   }
 
   // A user can't favorite their own content
