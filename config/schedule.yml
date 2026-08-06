@@ -199,8 +199,8 @@ feed_import_log_cleanup:
   cron: "0 4 * * *"
   class: "Feeds::ImportLogCleanupWorker"
 survey_daily_email:
-  description: "Send DEV Pulse Survey emails to eligible users for active surveys (runs daily at 18:15 UTC)"
-  cron: "15 18 * * *"
+  description: "Send DEV Pulse Survey emails to eligible users for active surveys (runs hourly at minute 15)"
+  cron: "15 * * * *"
   class: "Emails::SurveyDailyEmailWorker"
 agent_session_raw_file_cleanup:
   description: "Deletes expired raw agent session files from S3 (runs daily at 04:15 UTC)"
@@ -223,4 +223,10 @@ concept_daily_metrics:
   description: "Aggregates and records daily popularity and engagement metrics for semantic concepts (runs daily at 02:00 UTC)"
   cron: "0 2 * * *"
   class: "Concepts::DailyMetricsWorker"
+
+evaluate_concept_thresholds:
+  description: "Evaluates recently attributed concept articles with AI to automatically tune concept similarity thresholds (runs every 3 hours)"
+  cron: "0 */3 * * *"
+  class: "Concepts::EvaluateThresholdsWorker"
+
 

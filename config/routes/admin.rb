@@ -149,6 +149,7 @@ namespace :admin do
     resources :events do
       member do
         patch :end_broadcast
+        get :fork
       end
     end
   end
@@ -206,6 +207,7 @@ namespace :admin do
     resources :tools, only: %i[index create] do
       collection do
         post "bust_cache"
+        post "regenerate_social_images"
         get "feed_playground"
         post "feed_playground"
       end

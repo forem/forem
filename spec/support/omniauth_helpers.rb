@@ -191,7 +191,6 @@ module OmniauthHelpers
       info: {
         email: "mlh@example.com",
         name: "MLH User",
-        nickname: "mlhuser",
         image: "https://dummyimage.com/400x400.jpg",
       },
       credentials: {

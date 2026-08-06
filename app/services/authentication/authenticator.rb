@@ -41,6 +41,7 @@ module Authentication
       # These variables need to be set outside of the scope of the
       # transaction in order to be used after the transaction is completed.
       log_to_datadog = false
+      new_mlh_identity = false
       id_provider, authed_user = nil
 
       ActiveRecord::Base.transaction do
@@ -65,11 +66,14 @@ module Authentication
         # A newly linked mlh identity puts the MLH Core user id (its uid) into
         # User#trackable_payload, so surface a user_updated to the DEV → Core
         # sync — which keys off profile_updated_at.
-        user.profile_updated_at = Time.current if new_identity && identity.provider == "mlh"
+        new_mlh_identity = new_identity && identity.provider == "mlh"
+        user.profile_updated_at = Time.current if new_mlh_identity
 
         user.save!
         authed_user = user
       end
+
+      Users::PrefillMlhProfileWorker.perform_async(authed_user.id) if new_mlh_identity
 
       if log_to_datadog
         # Notify DataDog if a new identity was successfully created.

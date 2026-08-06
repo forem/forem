@@ -12,6 +12,10 @@ class DeviseMailer < Devise::Mailer
   # Prevent Ahoy from adding click tracking to security emails (causes spam filtering)
   def save_ahoy_options; end
 
+  # Security emails must not get link tracking (see save_ahoy_options no-op /
+  # spam-filter risk); the same applies on the Customer.io route.
+  before_action { customerio_delivery_options(tracked: false) }
+
   def use_settings_general_values
     Devise.mailer_sender =
       "#{Settings::Community.community_name} <#{ForemInstance.from_email_address}>"
@@ -24,6 +28,17 @@ class DeviseMailer < Devise::Mailer
     @message = opts[:custom_invite_message]
     @footnote = opts[:custom_invite_footnote]
     headers = { subject: opts[:custom_invite_subject].presence || "Invitation Instructions" }
+
+    customerio_delivery_options(
+      transactional_message_id: "dev_invitation_instructions",
+      message_data: {
+        "invite_url" => accept_user_invitation_url(invitation_token: token),
+        "custom_message" => @message.presence,
+        "custom_footnote" => @footnote.presence,
+        "community_name" => Settings::Community.community_name
+      },
+    )
+
     super(record, token, opts.merge(headers))
   end
   # rubocop:enable Style/OptionHash
@@ -31,17 +46,67 @@ class DeviseMailer < Devise::Mailer
   def confirmation_instructions(record, token, opts = {})
     @name = record.name
     @resource = record
-    
+
     # Re-setup subforem context now that we have the user
     setup_subforem_context
-    
+
     # Get the community name for this subforem
     community_name = Settings::Community.community_name(subforem_id: @subforem_id)
-    
+
     # Customize the sender and subject
     Devise.mailer_sender = "#{community_name} <#{ForemInstance.from_email_address}>"
     opts[:subject] = "#{@name}, confirm your #{community_name} account"
-    
+
+    customerio_delivery_options(
+      transactional_message_id: "dev_confirmation_instructions",
+      message_data: {
+        "confirmation_url" => user_confirmation_url(confirmation_token: token, host: @subforem_domain),
+        "name" => @name,
+        "community_name" => community_name
+      },
+    )
+
+    super
+  end
+
+  def reset_password_instructions(record, token, opts = {})
+    # Intentionally does NOT set @resource/re-run setup_subforem_context here
+    # (unlike confirmation_instructions/invitation_instructions): pre-PR, this
+    # action had no override, so @subforem_id/@subforem_domain and the global
+    # ActionMailer::Base.default_url_options[:host] are whatever the
+    # class-level before_action :setup_subforem_context already resolved
+    # (the DEFAULT subforem, since no user is known at that point). Mutating
+    # them here would change the SMTP-mode link host on multi-subforem
+    # instances, which must stay byte-for-byte identical to before this PR.
+    community_name = Settings::Community.community_name(subforem_id: @subforem_id)
+
+    customerio_delivery_options(
+      transactional_message_id: "dev_reset_password_instructions",
+      message_data: {
+        "reset_url" => edit_user_password_url(reset_password_token: token),
+        "name" => record.name,
+        "community_name" => community_name
+      },
+    )
+
+    super
+  end
+
+  def unlock_instructions(record, token, opts = {})
+    # See the comment in reset_password_instructions above: no @resource /
+    # setup_subforem_context re-invocation here, to keep SMTP-mode link host
+    # resolution (default subforem) identical to pre-PR behavior.
+    community_name = Settings::Community.community_name(subforem_id: @subforem_id)
+
+    customerio_delivery_options(
+      transactional_message_id: "dev_unlock_instructions",
+      message_data: {
+        "unlock_url" => user_unlock_url(unlock_token: token),
+        "name" => record.name,
+        "community_name" => community_name
+      },
+    )
+
     super
   end
 
