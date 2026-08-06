@@ -10,13 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_06_30_143448) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_28_160000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
+  enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
-  enable_extension "plpgsql"
   enable_extension "unaccent"
   enable_extension "vector"
 
@@ -148,6 +148,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_30_143448) do
     t.boolean "approved", default: false
     t.boolean "archived", default: false
     t.integer "automod_label", default: 0, null: false
+    t.integer "baseline_score", default: 0, null: false
     t.text "body_html"
     t.text "body_markdown"
     t.string "cached_label_list", default: [], array: true
@@ -198,6 +199,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_30_143448) do
     t.integer "positive_reactions_count", default: 0, null: false
     t.integer "previous_positive_reactions_count", default: 0
     t.integer "previous_public_reactions_count", default: 0, null: false
+    t.jsonb "private_submission_data", default: {}, null: false
     t.integer "privileged_users_reaction_points_sum", default: 0
     t.text "processed_html"
     t.integer "public_reactions_count", default: 0, null: false
@@ -546,6 +548,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_30_143448) do
     t.integer "max_lookback_days", default: 0, null: false
     t.string "name", null: false
     t.bigint "parent_id"
+    t.float "score", default: 0.0, null: false
     t.float "similarity_threshold"
     t.string "slug", null: false
     t.datetime "updated_at", null: false
@@ -728,6 +731,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_30_143448) do
     t.text "body", null: false
     t.datetime "created_at", null: false
     t.integer "drip_day", default: 0
+    t.bigint "event_id"
     t.bigint "onboarding_subforem_id"
     t.integer "status", default: 0
     t.string "subject", null: false
@@ -737,6 +741,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_30_143448) do
     t.bigint "user_query_id"
     t.text "variables"
     t.index ["audience_segment_id"], name: "index_emails_on_audience_segment_id"
+    t.index ["event_id"], name: "index_emails_on_event_id"
     t.index ["onboarding_subforem_id"], name: "index_emails_on_onboarding_subforem_id"
     t.index ["user_query_id"], name: "index_emails_on_user_query_id"
   end
@@ -1274,6 +1279,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_30_143448) do
     t.bigint "user_id"
     t.bigint "viewable_id"
     t.string "viewable_type"
+    t.index ["article_id", "created_at"], name: "index_page_views_on_article_id_and_created_at"
     t.index ["article_id"], name: "index_page_views_on_article_id"
     t.index ["created_at"], name: "index_page_views_on_created_at"
     t.index ["user_id"], name: "index_page_views_on_user_id"
@@ -1291,6 +1297,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_30_143448) do
     t.boolean "landing_page", default: false, null: false
     t.bigint "organization_id"
     t.bigint "page_template_id"
+    t.integer "position", default: 0, null: false
     t.text "processed_html"
     t.string "redirect_to_url"
     t.string "slug"
@@ -1720,10 +1727,14 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_30_143448) do
     t.datetime "created_at", null: false
     t.integer "daily_email_distributions", default: 0
     t.boolean "display_title", default: true
+    t.integer "emails_sent_count", default: 0, null: false
     t.text "extra_email_context_paragraph"
     t.string "old_old_slug"
     t.string "old_slug"
+    t.datetime "sending_started_at"
     t.string "slug"
+    t.datetime "target_completion_date"
+    t.integer "target_response_count", default: 0, null: false
     t.string "title", null: false
     t.integer "type_of", default: 0, null: false
     t.datetime "updated_at", null: false
@@ -1774,6 +1785,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_30_143448) do
   end
 
   create_table "tags", force: :cascade do |t|
+    t.jsonb "additional_questions", default: [], null: false
     t.string "alias_for"
     t.bigint "badge_id"
     t.string "bg_color_hex"

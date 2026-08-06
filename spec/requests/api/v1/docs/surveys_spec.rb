@@ -18,11 +18,12 @@ RSpec.describe "Api::V1::Docs::Surveys" do
       get "List surveys" do
         tags "surveys"
         description(<<~DESCRIBE.strip)
-          This endpoint allows the client to retrieve a list of surveys.
+          Retrieve a list of surveys configured on the platform.
 
-          It supports pagination and optional filtering by active status.
-
-          Internal only. Admin authorization is required to access this endpoint.
+          ### Surveys Overview:
+          - Surveys are admin-defined questionnaires consisting of multiple choice or text polls.
+          - Requires Administrator authorization.
+          - Supports standard pagination controls and active status filtering.
         DESCRIBE
         operationId "getSurveys"
         produces "application/json"
@@ -65,10 +66,11 @@ RSpec.describe "Api::V1::Docs::Surveys" do
       get "A survey with polls" do
         tags "surveys"
         description(<<~DESCRIBE.strip)
-          This endpoint allows the client to retrieve a single survey by ID or slug,
-          including its nested polls and poll options.
+          Retrieve a single survey (by ID or slug) with its nested structure.
 
-          Internal only. Admin authorization is required to access this endpoint.
+          ### Nested Format Details:
+          - Returns the target Survey object including all associated Polls, multiple choice options, and configuration states.
+          - Requires Administrator authorization.
         DESCRIBE
         operationId "getSurveyByIdOrSlug"
         produces "application/json"
@@ -121,11 +123,12 @@ RSpec.describe "Api::V1::Docs::Surveys" do
       get "Survey poll votes" do
         tags "surveys"
         description(<<~DESCRIBE.strip)
-          This endpoint allows the client to retrieve poll votes for a given survey.
-          Results are paginated. Use the `after` parameter with the last seen vote ID
-          for cursor-based pagination.
+          Retrieve multiple-choice poll votes for a specific survey.
 
-          Internal only. Admin authorization is required to access this endpoint.
+          ### Cursor Pagination Tip:
+          - Uses cursor-based pagination to safely stream high volumes of voting records.
+          - Specify the `after` query parameter with the last retrieved record ID to get the next page.
+          - Requires Administrator authorization.
         DESCRIBE
         operationId "getSurveyPollVotes"
         produces "application/json"
@@ -183,11 +186,12 @@ RSpec.describe "Api::V1::Docs::Surveys" do
       get "Survey poll text responses" do
         tags "surveys"
         description(<<~DESCRIBE.strip)
-          This endpoint allows the client to retrieve text responses for a given survey.
-          Results are paginated. Use the `after` parameter with the last seen response ID
-          for cursor-based pagination.
+          Retrieve free-text poll responses for a specific survey.
 
-          Internal only. Admin authorization is required to access this endpoint.
+          ### Integration & Cursor Tip:
+          - Fetches written user answers for text-input questions.
+          - Uses cursor-based pagination (`after` query param) to stream responses.
+          - Requires Administrator authorization.
         DESCRIBE
         operationId "getSurveyPollTextResponses"
         produces "application/json"
@@ -226,6 +230,158 @@ RSpec.describe "Api::V1::Docs::Surveys" do
 
           add_examples
 
+          run_test!
+        end
+      end
+    end
+  end
+
+  describe "POST /api/surveys" do
+    path "/api/surveys" do
+      post "Create a survey" do
+        tags "surveys"
+        description "Create a new survey with optional nested polls and poll options. Requires Administrator privileges."
+        consumes "application/json"
+        produces "application/json"
+        parameter name: :survey_input, in: :body,
+                  description: "Survey properties to create.",
+                  schema: { "$ref": "#/components/schemas/SurveyInput" }
+
+        response "201", "Created" do
+          let(:"api-key") { api_secret.secret }
+          let(:survey_input) do
+            {
+              survey: {
+                title: "RSWAG Survey",
+                type_of: "fun",
+                polls: [
+                  {
+                    prompt_markdown: "What is your favorite pet?",
+                    type_of: "single_choice",
+                    poll_options: [
+                      { markdown: "Dog" },
+                      { markdown: "Cat" }
+                    ]
+                  }
+                ]
+              }
+            }
+          end
+
+          schema "$ref": "#/components/schemas/SurveyWithPolls"
+          add_examples
+          run_test!
+        end
+
+        response "422", "Unprocessable Entity" do
+          let(:"api-key") { api_secret.secret }
+          let(:survey_input) { { survey: { title: "" } } }
+          add_examples
+          run_test!
+        end
+
+        response "401", "Unauthorized" do
+          let(:"api-key") { "invalid" }
+          let(:survey_input) { { survey: { title: "RSWAG Survey" } } }
+          add_examples
+          run_test!
+        end
+      end
+    end
+  end
+
+  describe "PATCH /api/surveys/{id_or_slug}" do
+    let(:survey) { create(:survey) }
+
+    path "/api/surveys/{id_or_slug}" do
+      patch "Update a survey" do
+        tags "surveys"
+        description "Update an existing survey, including its polls and options. Requires Administrator privileges."
+        consumes "application/json"
+        produces "application/json"
+        parameter name: :id_or_slug, in: :path, required: true,
+                  description: "The ID or slug of the survey.",
+                  schema: { type: :string }
+        parameter name: :survey_input, in: :body,
+                  description: "Survey properties to update.",
+                  schema: { "$ref": "#/components/schemas/SurveyInput" }
+
+        response "200", "Successful" do
+          let(:"api-key") { api_secret.secret }
+          let(:id_or_slug) { survey.id }
+          let(:survey_input) { { survey: { title: "Updated RSWAG Survey" } } }
+
+          schema "$ref": "#/components/schemas/SurveyWithPolls"
+          add_examples
+          run_test!
+        end
+
+        response "404", "Not Found" do
+          let(:"api-key") { api_secret.secret }
+          let(:id_or_slug) { "nonexistent" }
+          let(:survey_input) { { survey: { title: "Update" } } }
+          add_examples
+          run_test!
+        end
+
+        response "401", "Unauthorized" do
+          let(:"api-key") { "invalid" }
+          let(:id_or_slug) { survey.id }
+          let(:survey_input) { { survey: { title: "Updated RSWAG Survey" } } }
+          add_examples
+          run_test!
+        end
+
+        response "422", "Unprocessable Entity" do
+          let(:"api-key") { api_secret.secret }
+          let(:id_or_slug) { survey.id }
+          let(:survey_input) { { survey: { title: "" } } }
+          add_examples
+          run_test!
+        end
+      end
+    end
+  end
+
+  describe "DELETE /api/surveys/{id_or_slug}" do
+    let!(:survey) { create(:survey) }
+
+    path "/api/surveys/{id_or_slug}" do
+      delete "Delete a survey" do
+        tags "surveys"
+        description "Delete an existing survey. Requires Administrator privileges."
+        produces "application/json"
+        parameter name: :id_or_slug, in: :path, required: true,
+                  description: "The ID or slug of the survey.",
+                  schema: { type: :string }
+
+        response "204", "No Content" do
+          let(:"api-key") { api_secret.secret }
+          let(:id_or_slug) { survey.id }
+          run_test!
+        end
+
+        response "404", "Not Found" do
+          let(:"api-key") { api_secret.secret }
+          let(:id_or_slug) { "nonexistent" }
+          run_test!
+        end
+
+        response "401", "Unauthorized" do
+          let(:"api-key") { "invalid" }
+          let(:id_or_slug) { survey.id }
+          run_test!
+        end
+
+        response "422", "Unprocessable Entity" do
+          let(:"api-key") { api_secret.secret }
+          let(:id_or_slug) { survey.id }
+          before do
+            allow_any_instance_of(Survey).to receive(:destroy) do |s|
+              s.errors.add(:base, "Could not delete")
+              false
+            end
+          end
           run_test!
         end
       end

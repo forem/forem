@@ -56,11 +56,12 @@ RSpec.describe "Api::V0::Trends" do
       expect(response.headers["surrogate-key"]).to eq(trend1.record_key)
     end
 
-    it "finds trend by Slug" do
+    it "finds trend by Slug and returns top_articles" do
       get "/api/trends/#{trend2.slug}"
 
       expect(response).to have_http_status(:ok)
       expect(response.parsed_body["name"]).to eq("AI Agents")
+      expect(response.parsed_body).to have_key("top_articles")
     end
 
     it "returns 404 for non-existent trend" do

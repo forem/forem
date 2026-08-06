@@ -69,11 +69,12 @@ RSpec.describe Organizations::VerifyLinkback, type: :service do
           .to_return(status: 200, body: html)
       end
 
-      it "returns success and marks the org as verified" do
+      it "returns success and marks the org as verified with baseline_score" do
         result = described_class.call(organization)
         expect(result.success?).to be true
         expect(organization.reload.verified?).to be true
         expect(organization.verified_at).to be_present
+        expect(organization.baseline_score).to eq(Settings::UserExperience.index_minimum_score.to_i)
       end
     end
 

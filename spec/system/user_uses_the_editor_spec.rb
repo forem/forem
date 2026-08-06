@@ -19,14 +19,14 @@ RSpec.describe "Using the editor" do
 
   def fill_markdown_with(content)
     visit "/new"
-    expect(page).to have_selector("body[data-loaded='true']", wait: 30)
+    expect(page).to have_selector("body[data-loaded='true']")
     within("#article-form") { fill_in "article_body_markdown", with: content }
   end
 
   describe "Viewing the editor", :js do
     it "renders the logo or Community name as expected" do
       visit "/new"
-      expect(page).to have_selector("body[data-loaded='true']", wait: 30)
+      expect(page).to have_selector("body[data-loaded='true']")
       expect(page).to have_css(".site-logo")
       within(".truncate-at-2") do
         expect(page).to have_text("DEV(local)")
@@ -36,7 +36,7 @@ RSpec.describe "Using the editor" do
     it "renders the AI Editor Buddy conditionally with dynamic community nomenclature" do
       stub_const("AI_AVAILABLE", true)
       visit "/new"
-      expect(page).to have_selector("body[data-loaded='true']", wait: 30)
+      expect(page).to have_selector("body[data-loaded='true']")
       
       expect(page).to have_css("#editor-ai-toggle-btn")
       find("#editor-ai-toggle-btn").click
@@ -114,6 +114,7 @@ RSpec.describe "Using the editor" do
   describe "using v2 editor", :js do
     it "fill out form with rich content and click publish" do
       visit "/new"
+      expect(page).to have_selector("body[data-loaded='true']")
       within "form#article-form" do
         fill_in "article-form-title", with: "This is a <span> test"
         find_by_id("tag-input").native.send_keys("what", :return)

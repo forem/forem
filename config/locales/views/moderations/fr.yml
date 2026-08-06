@@ -154,6 +154,9 @@ fr:
         co_author_ids: ID de co-auteur
         max_score: Score maximum
         no_max_if_zero: Pas de maximum si défini à zéro
+        baseline_score: Score de référence
+        no_baseline_if_zero: Pas de référence si défini à zéro
+        set_to_min_indexing: Définir sur l'indexation minimale
         edit: Modifier
         featured: Mis en exergue
         likes: aime

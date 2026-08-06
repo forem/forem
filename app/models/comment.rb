@@ -31,7 +31,9 @@ class Comment < ApplicationRecord
   belongs_to :commentable, polymorphic: true, optional: true
   belongs_to :user
 
-  counter_culture :commentable
+  counter_culture :commentable,
+                  column_name: proc { |comment| comment.deleted? ? nil : :comments_count }
+
   counter_culture :user
 
   has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :delete_all
@@ -336,24 +338,27 @@ class Comment < ApplicationRecord
   end
 
   def touch_user
-    user&.touch(:updated_at, :last_comment_at)
+    user&.touch(:updated_at, :last_comment_at) if user&.persisted?
   end
 
   def expire_root_fragment
     if root_exists?
-      root.touch
+      root_record = root
+      root_record.touch if root_record&.persisted? && !root_record.destroyed?
     else
-      touch
+      touch if persisted? && !destroyed?
     end
   end
 
   def after_destroy_actions
     Users::BustCacheWorker.perform_async(user_id)
-    user.touch(:last_comment_at)
+    user.touch(:last_comment_at) if user&.persisted?
   end
 
   def before_destroy_actions
-    commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
+    if commentable&.persisted? && commentable.respond_to?(:last_comment_at)
+      commentable.touch(:last_comment_at)
+    end
     ancestors.update_all(updated_at: Time.current)
     Comments::BustCacheWorker.new.perform(id)
   end
@@ -363,9 +368,12 @@ class Comment < ApplicationRecord
   end
 
   def synchronous_bust
-    commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
-    user.touch(:last_comment_at)
-    commentable.purge if commentable
+    if commentable&.persisted? && !commentable.destroyed?
+      commentable.reload
+      commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
+      commentable.purge
+    end
+    user.touch(:last_comment_at) if user&.persisted?
     expire_root_fragment
   end
 

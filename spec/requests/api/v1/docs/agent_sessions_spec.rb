@@ -25,12 +25,12 @@ RSpec.describe "api/v1/agent_sessions" do
       get("list the authenticated user's agent sessions") do
         tags "agent_sessions"
         description(<<~DESCRIBE.strip)
-          This endpoint allows the client to list their own agent sessions.
+          Retrieve a list of the authenticated user's agent sessions.
 
-          Agent sessions are coding conversation transcripts uploaded from CLI tools like
-          [Claude Code](https://github.com/anthropics/claude-code). Use the
-          [Forem CLI plugin](https://github.com/forem/forem-cli-plugin) to upload sessions
-          from the command line.
+          ### Agent Sessions Overview:
+          - Agent sessions represent coding conversation transcripts uploaded from CLI tools (like Claude Code).
+          - Used by the developer portal to render interactive walkthroughs or session summaries.
+          - Requires authentication.
         DESCRIBE
         operationId "getAgentSessions"
         produces "application/json"
@@ -62,30 +62,30 @@ RSpec.describe "api/v1/agent_sessions" do
       post("upload a new agent session") do
         tags "agent_sessions"
         description(<<~DESCRIBE.strip)
-          This endpoint allows the client to create a new agent session.
+          Upload a new agent session.
 
-          Sessions are created from pre-parsed and curated data (`curated_data` JSON) and
-          optionally linked to an S3-stored raw file via `s3_key`. Use the presign endpoint
-          to get an upload URL for the raw file first.
-
-          Use the [Forem CLI plugin](https://github.com/forem/forem-cli-plugin) to upload
-          sessions directly from the command line.
+          ### S3 Upload Workflow:
+          1. Call the S3 presign endpoint to obtain a direct upload URL for the raw session transcript file.
+          2. Upload the raw transcript to S3.
+          3. Send a POST request to this endpoint with the S3 key (`s3_key`) and the pre-parsed, curated JSON payload (`curated_data`).
         DESCRIBE
         operationId "createAgentSession"
         produces "application/json"
         consumes "application/json"
 
-        parameter name: :agent_session, in: :body, schema: {
-          type: :object,
-          properties: {
-            title: { type: :string, description: "Title for the session (auto-generated if omitted)" },
-            curated_data: { type: :string, description: "JSON string of curated session data with messages array and metadata." },
-            s3_key: { type: :string, description: "S3 object key from presign endpoint (optional)." },
-            tool_name: { type: :string, description: "Tool that produced the session (e.g. claude_code, codex).",
-                         enum: AgentSession::TOOL_NAMES }
-          },
-          required: %w[curated_data]
-        }
+        parameter name: :agent_session, in: :body,
+                  description: "Agent session upload parameters.",
+                  schema: {
+                    type: :object,
+                    properties: {
+                      title: { type: :string, description: "Title for the session (auto-generated if omitted)" },
+                      curated_data: { type: :string, description: "JSON string of curated session data with messages array and metadata." },
+                      s3_key: { type: :string, description: "S3 object key from presign endpoint (optional)." },
+                      tool_name: { type: :string, description: "Tool that produced the session (e.g. claude_code, codex).",
+                                   enum: AgentSession::TOOL_NAMES }
+                    },
+                    required: %w[curated_data]
+                  }
 
         let(:agent_session) do
           { title: "My Claude Session", curated_data: curated_data.to_json }
@@ -122,14 +122,16 @@ RSpec.describe "api/v1/agent_sessions" do
       get("show details for an agent session") do
         tags "agent_sessions"
         description(<<~DESCRIBE.strip)
-          This endpoint allows the client to retrieve a single agent session by slug or ID.
-          Returns the full session including messages, curated selections, and slices.
+          Retrieve details for a single agent session by unique slug or ID.
+
+          ### Integration Tip:
+          - Returns the complete session structure including parsed message logs, token counts, slices, and tool execution metadata.
         DESCRIBE
         operationId "getAgentSessionById"
         produces "application/json"
 
         parameter name: :id, in: :path, required: true,
-                  description: "The slug or ID of the agent session.",
+                  description: "The unique slug or ID of the agent session.",
                   schema: { type: :string },
                   example: "my-session-abc123"
 
