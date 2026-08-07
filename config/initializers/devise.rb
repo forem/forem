@@ -79,7 +79,6 @@ MLH_OMNIAUTH_SETUP = lambda do |env|
   env["omniauth.strategy"].options[:scope] = "user:read:email user:read:phone user:read:profile user:read:demographics user:read:education user:read:employment user:read:address public offline_access mlh:read:user"
   env["omniauth.strategy"].options[:client_id] = Settings::Authentication.mlh_key
   env["omniauth.strategy"].options[:client_secret] = Settings::Authentication.mlh_secret
-  env["omniauth.strategy"].options[:provider_ignores_state] = true
   # Note: redirect_uri is handled by the prepended MlhCallbackUrlOverride module
   # which overrides both callback_url and authorize_params to ensure no query parameters
 end
