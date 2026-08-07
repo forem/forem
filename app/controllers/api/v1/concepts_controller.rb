@@ -1,9 +1,10 @@
 module Api
   module V1
     class ConceptsController < Api::V1::ApiController
-      before_action :authenticate_with_api_key_or_current_user!
-      before_action :set_concept, only: [:show]
-      before_action :authorize_concept_access!, only: [:show]
+      before_action :authenticate_with_api_key!, only: %i[search]
+      before_action :authenticate_with_api_key_or_current_user!, except: %i[search]
+      before_action :set_concept, only: %i[show update articles]
+      before_action :authorize_concept_access!, only: %i[show update articles]
 
       def index
         page = [params.fetch(:page, 1).to_i, 1].max
@@ -17,7 +18,7 @@ module Api
                       current_user.accessible_concepts
                     end
 
-        @concepts = @concepts.select(:id, :name, :slug, :description, :parent_id, :created_at, :updated_at)
+        @concepts = @concepts.select(:id, :name, :slug, :description, :parent_id, :score, :similarity_threshold, :created_at, :updated_at)
                              .order(:name)
                              .page(page)
                              .per(per_page)
@@ -34,7 +35,7 @@ module Api
 
         serialized_concepts = @concepts.map do |concept|
           metrics = metrics_by_concept[concept.id] || []
-          concept.as_json(only: %i[id name slug description parent_id created_at updated_at]).merge(
+          concept.as_json(only: %i[id name slug description parent_id score similarity_threshold created_at updated_at]).merge(
             "daily_metrics" => metrics.map { |m| m.as_json(only: %i[date articles_count comments_count page_views reactions_count popularity_score]) }
           )
         end
@@ -43,24 +44,106 @@ module Api
       end
 
       def show
-        days = [params.fetch(:days, 7).to_i, 1].max
-        start_date = Date.today - days.days
+        render json: serialized_concept_response(@concept)
+      end
 
-        metrics = @concept.concept_daily_metrics
-                          .where("date >= ?", start_date)
-                          .order(date: :desc)
+      def update
+        @concept.assign_attributes(concept_update_params)
 
-        serialized_concept = @concept.as_json(only: %i[id name slug description parent_id created_at updated_at]).merge(
-          "daily_metrics" => metrics.map { |m| m.as_json(only: %i[date articles_count comments_count page_views reactions_count popularity_score]) }
-        )
+        if @concept.will_save_change_to_description?
+          Concepts::AnchorGenerator.new(@concept).call if @concept.name.present?
+        end
 
-        render json: serialized_concept
+        if @concept.save
+          if @concept.saved_change_to_description? || @concept.saved_change_to_similarity_threshold?
+            Concepts::BackfillClassifierWorker.perform_async(@concept.id)
+          end
+          render json: serialized_concept_response(@concept)
+        else
+          render json: { errors: @concept.errors.full_messages }, status: :unprocessable_entity
+        end
+      end
+
+      def articles
+        per_page = (params[:per_page] || 10).to_i
+        num = [per_page, per_page_max].min
+        page = params[:page] || 1
+
+        sort_by = params[:sort] == "score" ? "articles.score DESC" : "concept_memberships.distance ASC, articles.score DESC"
+
+        @articles = Article.published
+                           .joins(:concept_memberships)
+                           .where(concept_memberships: { concept_id: @concept.id })
+                           .select(Api::ArticlesController::INDEX_ATTRIBUTES_FOR_SERIALIZATION)
+                           .includes(user: :profile)
+                           .order(sort_by)
+                           .page(page)
+                           .per(num)
+                           .decorate
+
+        set_surrogate_key_header @concept.record_key, *@articles.map(&:record_key)
+        render "api/v0/articles/index", formats: :json
+      end
+
+      def search
+        query_text = params[:q]
+        if query_text.blank?
+          render json: { error: "q parameter is required" }, status: :bad_request
+          return
+        end
+
+        per_page = [params.fetch(:per_page, 10).to_i, 50].min
+        per_page = [per_page, 1].max
+
+        begin
+          embedding = Ai::Embedding.new(wrapper: self).call(
+            query_text,
+            task_type: "RETRIEVAL_QUERY",
+            output_dimensionality: 768
+          )
+        rescue StandardError => e
+          Rails.logger.error("Failed to generate embedding for concept search: #{e.message}")
+          render json: { error: "Failed to generate search embedding" }, status: :service_unavailable
+          return
+        end
+
+        concepts_scope = if current_user.super_admin?
+                           Concept.all
+                         else
+                           current_user.accessible_concepts
+                         end
+
+        vector_literal = "[#{embedding.to_a.join(',')}]"
+        quoted_vector = Concept.connection.quote(vector_literal)
+
+        @concepts = concepts_scope
+          .select("concepts.*, (anchor_embedding <=> #{quoted_vector}) AS distance")
+          .where.not(anchor_embedding: nil)
+
+        if params[:threshold].present?
+          threshold_val = params[:threshold].to_f
+          @concepts = @concepts.where("anchor_embedding <=> #{quoted_vector} <= ?", threshold_val)
+        end
+
+        @concepts = @concepts
+          .order(Arel.sql("anchor_embedding <=> #{quoted_vector}"))
+          .limit(per_page)
+
+        serialized_concepts = @concepts.map do |concept|
+          distance = concept.distance.to_f
+          concept.as_json(only: %i[id name slug description parent_id score similarity_threshold created_at updated_at]).merge(
+            "distance" => distance,
+            "similarity" => (1.0 - distance).round(6)
+          )
+        end
+
+        render json: serialized_concepts
       end
 
       private
 
       def set_concept
-        @concept = Concept.select(:id, :name, :slug, :description, :parent_id, :created_at, :updated_at).find(params[:id])
+        @concept = Concept.find(params[:id])
       end
 
       def authorize_concept_access!
@@ -72,6 +155,28 @@ module Api
 
       def current_user
         @user
+      end
+
+      def concept_update_params
+        params.require(:concept).permit(:score, :description, :similarity_threshold)
+      end
+
+      def per_page_max
+        (ApplicationConfig["API_PER_PAGE_MAX"] || 1000).to_i
+      end
+
+      def serialized_concept_response(concept)
+        days = [params.fetch(:days, 7).to_i, 1].max
+        start_date = Date.today - days.days
+
+        metrics = concept.concept_daily_metrics
+                         .where("date >= ?", start_date)
+                         .order(date: :desc)
+
+        concept.as_json(only: %i[id name slug description parent_id score similarity_threshold created_at updated_at]).merge(
+          "daily_metrics" => metrics.map { |m| m.as_json(only: %i[date articles_count comments_count page_views reactions_count popularity_score]) },
+          "top_articles" => concept.top_articles(3).map { |a| a.as_json(only: %i[id title slug score published_at]) }
+        )
       end
     end
   end

@@ -1,7 +1,7 @@
 <%= content_for :page_meta do %>
   <%= render "stories/tagged_articles/meta" %>
-  <%= stylesheet_link_tag "tags", media: "all" %>
 <% end %>
+<%= stylesheet_link_tag "tags", media: "all" %>
 <div class="crayons-layout">
   <div data-tag-id="<%= @tag.id %>"
        data-tag-name="<%= @tag.name %>"

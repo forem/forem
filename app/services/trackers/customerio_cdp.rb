@@ -16,6 +16,9 @@ module Trackers
     # row — possible because identity comes from the stable anonymous id and
     # the payload's own mlh_user_id, both knowable post-destruction.
     DESTRUCTIVE_EVENTS = ["user_gdpr_deleted"].freeze
+    # Fallback event-name namespace when APP_NAME is unset (see
+    # #prefixed_event_name): "forem_user_updated".
+    DEFAULT_APP_NAME = "forem".freeze
 
     def enabled?
       # Resolve the setting via the default subforem (like mailers do): the admin
@@ -38,10 +41,12 @@ module Trackers
       # capture is the fallback.
       linked_uids = Identity.where(provider: "mlh", user_id: ids).pluck(:user_id, :uid).to_h
 
+      event = prefixed_event_name(event_name)
+
       ids.each do |id|
         attributes = {
           anonymous_id: "dev:#{id}",
-          event: event_name,
+          event: event,
           properties: properties,
           timestamp: timestamp
         }
@@ -52,6 +57,15 @@ module Trackers
     end
 
     private
+
+    # Namespace every CDP event with the deploy's APP_NAME (e.g. "dev_prod")
+    # so events from different environments/instances writing to the same
+    # Customer.io workspace stay distinct: "dev_prod_user_updated". When
+    # APP_NAME is unset the prefix falls back to "forem": "forem_user_updated".
+    def prefixed_event_name(event_name)
+      prefix = ApplicationConfig["APP_NAME"].presence || DEFAULT_APP_NAME
+      "#{prefix}_#{event_name}"
+    end
 
     def deliverable_ids(ids, destructive)
       return ids if destructive

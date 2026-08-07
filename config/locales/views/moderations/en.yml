@@ -155,6 +155,9 @@ en:
         co_author_ids: Co-Author IDs
         max_score: Max score
         no_max_if_zero: No max if set to zero
+        baseline_score: Baseline score
+        no_baseline_if_zero: No baseline if set to zero
+        set_to_min_indexing: Set to min indexing
         edit: Edit
         featured: Featured
         likes: likes

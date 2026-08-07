@@ -3,95 +3,133 @@
 
 .ltag-poll {
   width: 600px;
-  max-width: 96%;
-  margin: auto;
-  border-radius: 3px;
-  border: 1px solid $light-medium-gray !important;
-  box-shadow: $shadow;
+  max-width: 100%;
+  margin: 1.8em auto !important;
+  border-radius: var(--radius-lg, 8px);
+  border: 1px solid var(--form-border) !important;
+  box-shadow: var(--shadow-smooth);
   box-sizing: border-box;
-  padding: 2px 15px 18px;
+  padding: var(--su-5);
   font-family: var(--ff-sans-serif);
-  margin: 1.6em auto !important;
+  background-color: var(--card-bg);
+
   h3 {
-    margin: 15px 0px;
+    margin: 0 0 var(--su-4);
+    font-size: var(--fs-lg, 1.2em);
+    font-weight: var(--fw-bold, 700);
+    color: var(--body-color);
   }
+
   .ltag-pollanswers {
     list-style-type: none !important;
-    margin: 0 !important; /* To remove default bottom margin */
+    margin: 0 !important;
     padding: 0 !important;
-    padding-bottom: 8px !important;
-    font-size: 0.9em !important;
+    display: flex;
+    flex-direction: column;
+    gap: var(--su-2);
+    font-size: var(--fs-m, 0.95em) !important;
+
     li {
-      padding-left: 8px;
-      border-radius: 3px;
-      width: 95%;
+      padding: var(--su-2) var(--su-3);
+      border-radius: var(--radius-md, 6px);
+      width: 100%;
       position: relative;
+      border: 1px solid var(--form-border);
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+
       &:hover {
-        @include themeable(
-          background,
-          theme-container-background-hover,
-          $light-gray
-        );
+        background-color: var(--card-secondary-bg);
+        border-color: var(--form-border-hover);
       }
-      &.ltag-polloption-justshowmetheresults:hover {
+
+      &.ltag-polloption-justshowmetheresults {
+        border-color: transparent;
         background: transparent;
+        justify-content: center;
+        
+        &:hover {
+          background: transparent;
+        }
       }
+
       &.already-voted {
         background: transparent;
+        border-color: var(--form-border);
       }
     }
-    input {
-      vertical-align: top;
-      margin-top: 1.05em;
-    }
-    label {
-      width: calc(100% - 40px);
-      padding: 2px 6px;
+
+    input[type="radio"],
+    input[type="checkbox"] {
+      margin: 0 var(--su-3) 0 0;
       cursor: pointer;
-      vertical-align: -3px;
+    }
+
+    label {
+      flex: 1;
+      padding: 0;
+      cursor: pointer;
       display: inline-block;
-      line-height: 1.25em;
+      line-height: 1.4;
+      color: var(--body-color);
     }
+
     .ltag-voting-results-count {
-      font-size: 0.7em;
-      color: $medium-gray;
+      font-size: var(--fs-xs, 0.75em);
+      color: var(--card-color-tertiary);
       text-align: left;
+      margin-top: var(--su-1);
     }
+
     button {
       width: 100%;
       background: transparent;
-      border: 0px;
-      font-size: 0.7em;
-      color: $medium-gray;
-      text-align: left;
-      padding-left: 20px;
+      border: 0;
+      font-size: var(--fs-s, 0.8em);
+      color: var(--link-branded-color);
+      text-align: center;
+      padding: var(--su-2) 0;
+      cursor: pointer;
+      font-weight: var(--fw-medium, 500);
+
+      &:hover {
+        text-decoration: underline;
+      }
     }
+
     .ltag-votepercent {
       display: inline-block;
       position: absolute;
       top: 0;
       left: 0;
       bottom: 0;
-      z-index: 3;
-      border-radius: 3px;
+      z-index: 1;
+      border-radius: var(--radius-md, 6px);
+      transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+
       &.ltag-optionvotedfor {
-        background: $green;
+        background: rgba(var(--accent-success-rgb), 0.15);
+        border-right: 3px solid var(--accent-success);
         font-weight: bold;
       }
+
       &.ltag-optionnotvotedfor {
-        @include themeable(
-          background,
-          theme-container-accent-background,
-          $light-medium-gray
-        );
+        background: var(--card-secondary-bg);
       }
     }
+
     .ltag-votepercenttext {
       position: relative;
-      z-index: 5;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      align-items: center;
     }
   }
-  
+
   // Scale poll specific styles
   &[data-poll-type="scale"] {
     .ltag-pollanswers {
@@ -99,39 +137,39 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 8px 12px;
-        margin-bottom: 4px;
-        border: 1px solid $light-medium-gray;
-        border-radius: 6px;
+        padding: var(--su-3) var(--su-4);
+        margin-bottom: 0;
+        border: 1px solid var(--form-border);
+        border-radius: var(--radius-lg, 8px);
         transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
 
         &:hover {
-          border-color: $green;
+          border-color: var(--accent-success);
         }
 
         &.already-voted {
-          border-color: $green;
-          background: rgba($green, 0.1);
-          box-shadow: 1px 1px 1px $green;
+          border-color: var(--accent-success);
+          background: rgba(var(--accent-success-rgb), 0.05);
+          box-shadow: 0 0 0 1px var(--accent-success);
         }
       }
-      
+
       .scale-value {
-        font-size: 1.2em;
+        font-size: 1.1em;
         font-weight: bold;
-        color: $green;
+        color: var(--accent-success-darker, var(--accent-success));
         min-width: 40px;
         text-align: center;
-        padding: 4px 8px;
-        background: rgba($green, 0.1);
-        border-radius: 4px;
-        margin-left: 10px;
+        padding: var(--su-1) var(--su-2);
+        background: rgba(var(--accent-success-rgb), 0.1);
+        border-radius: var(--radius-sm, 4px);
+        margin-left: var(--su-3);
       }
-      
+
       input[type="radio"] {
-        margin-right: 10px;
+        margin-right: var(--su-3);
       }
-      
+
       label {
         flex: 1;
         margin: 0;
@@ -140,7 +178,7 @@
       }
     }
   }
-  
+
   // Horizontal layout for 5 options (always horizontal)
   &.scale-5-options {
     .ltag-pollanswers {
@@ -148,33 +186,33 @@
       flex-direction: row;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 8px;
-      
+      gap: var(--su-2);
+
       li {
         flex: 0 0 auto;
-        min-width: 30px;
+        min-width: 40px;
         max-width: 80px;
-        padding: 4px 4px;
+        padding: var(--su-2);
         justify-content: center;
         text-align: center;
         margin-bottom: 0;
-        
+
         .scale-value {
-          font-size: 1.1em;
+          font-size: 1em;
           font-weight: bold;
-          color: $green;
-          min-width: 30px;
+          color: var(--accent-success-darker, var(--accent-success));
+          min-width: 32px;
           text-align: center;
-          padding: 2px 3px;
-          background: rgba($green, 0.1);
-          border-radius: 4px;
+          padding: 2px 4px;
+          background: rgba(var(--accent-success-rgb), 0.1);
+          border-radius: var(--radius-sm, 4px);
           margin: 0;
         }
-        
+
         input[type="radio"] {
           display: none; // Hide radio button for cleaner horizontal layout
         }
-        
+
         label {
           display: flex;
           justify-content: center;
@@ -183,51 +221,51 @@
           padding: 0;
         }
       }
-      
+
       // Keep the "show results" button in its own row
       .ltag-polloption-justshowmetheresults {
         flex-basis: 100%;
         text-align: center;
-        margin-top: 10px;
+        margin-top: var(--su-3);
       }
     }
   }
-  
+
   // Horizontal layout for more than 5 options (only at xl breakpoint)
   &.scale-many-options {
     .ltag-pollanswers {
-      @media (min-width: 1200px) { // xl breakpoint
+      @media (min-width: 1200px) {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 8px;
-        
+        gap: var(--su-2);
+
         li {
           flex: 0 0 auto;
-          min-width: 30px;
+          min-width: 40px;
           max-width: 80px;
-          padding: 4px 4px;
+          padding: var(--su-2);
           justify-content: center;
           text-align: center;
           margin-bottom: 0;
-          
+
           .scale-value {
-            font-size: 1.1em;
+            font-size: 1em;
             font-weight: bold;
-            color: $green;
-            min-width: 30px;
+            color: var(--accent-success-darker, var(--accent-success));
+            min-width: 32px;
             text-align: center;
-            padding: 2px 3px;
-            background: rgba($green, 0.1);
-            border-radius: 4px;
+            padding: 2px 4px;
+            background: rgba(var(--accent-success-rgb), 0.1);
+            border-radius: var(--radius-sm, 4px);
             margin: 0;
           }
-          
+
           input[type="radio"] {
             display: none; // Hide radio button for cleaner horizontal layout
           }
-          
+
           label {
             display: flex;
             justify-content: center;
@@ -236,12 +274,12 @@
             padding: 0;
           }
         }
-        
+
         // Keep the "show results" button in its own row
         .ltag-polloption-justshowmetheresults {
           flex-basis: 100%;
           text-align: center;
-          margin-top: 10px;
+          margin-top: var(--su-3);
         }
       }
     }

@@ -9,6 +9,7 @@ RSpec.describe Event, type: :model do
     it { is_expected.to belong_to(:user).optional }
     it { is_expected.to belong_to(:organization).optional }
     it { is_expected.to belong_to(:page).optional }
+    it { is_expected.to have_many(:emails).dependent(:nullify) }
   end
 
   describe "enums" do

@@ -976,5 +976,151 @@ RSpec.describe Authentication::Authenticator, type: :service do
 
       expect(user.reload.profile_updated_at).to be < 1.year.ago
     end
+
+    it "enqueues the profile prefill when a new mlh identity is linked" do
+      user = create(:user, email: auth_payload.info.email)
+
+      expect do
+        described_class.call(auth_payload, current_user: user)
+      end.to change(Users::PrefillMlhProfileWorker.jobs, :size).by(1)
+    end
+
+    it "does not enqueue the profile prefill when the mlh identity already exists" do
+      user = create(:user, email: auth_payload.info.email)
+      described_class.call(auth_payload, current_user: user)
+
+      expect do
+        described_class.call(auth_payload, current_user: user)
+      end.not_to change(Users::PrefillMlhProfileWorker.jobs, :size)
+    end
+
+    # Identities created through the admin API carry only a uid: no token, no
+    # payload. A completed re-auth is the only opportunity to backfill them.
+    describe "relinking a uid-only identity" do
+      let(:user) { create(:user, email: auth_payload.info.email) }
+
+      it "refreshes the stored payload and token" do
+        identity = Identity.create!(user: user, provider: "mlh", uid: auth_payload.uid)
+
+        expect do
+          described_class.call(auth_payload, current_user: user)
+        end.not_to change(Identity, :count)
+
+        identity.reload
+        expect(identity.auth_data_dump.info.email).to eq(auth_payload.info.email)
+        expect(identity.token).to eq(auth_payload.credentials.token)
+      end
+
+      # The seeded uid points at a placeholder account, so the person almost
+      # always authenticates as a different, real one. Completing OAuth proves
+      # they own the incoming uid, and the link being replaced was never
+      # established by a person, so the row moves onto the new uid.
+      it "repoints the link when the incoming uid is unclaimed" do
+        identity = Identity.create!(user: user, provider: "mlh", uid: "a-placeholder-id")
+
+        result = nil
+        expect do
+          result = described_class.call(auth_payload, current_user: user)
+        end.not_to change(Identity, :count)
+
+        expect(result).to eq(user)
+        identity.reload
+        expect(identity.uid).to eq(auth_payload.uid)
+        expect(identity.auth_data_dump.info.email).to eq(auth_payload.info.email)
+        expect(identity.token).to eq(auth_payload.credentials.token)
+      end
+
+      it "touches the user when the link is repointed so the sync sees the new uid" do
+        Identity.create!(user: user, provider: "mlh", uid: "a-placeholder-id")
+        user.update_column(:profile_updated_at, 2.years.ago)
+
+        expect do
+          described_class.call(auth_payload, current_user: user)
+        end.to change { user.reload.profile_updated_at }
+
+        expect(user.profile_updated_at).to be_within(5.seconds).of(Time.current)
+      end
+
+      it "emits user_updated carrying the new uid" do
+        Identity.create!(user: user, provider: "mlh", uid: "a-placeholder-id")
+        allow(Trackable::Registry).to receive(:active_names).and_return([:any])
+        allow(Trackable::DispatchWorker).to receive(:perform_async)
+        Settings::General.customerio_cdp_enabled = true
+        FeatureFlag.enable(:dev_core_user_sync, FeatureFlag::Actor[user])
+
+        with_trackable_events do
+          described_class.call(auth_payload, current_user: user)
+        end
+
+        expect(Trackable::DispatchWorker).to have_received(:perform_async)
+          .with(anything, "user_updated", [user.id], hash_including("mlh_user_id" => auth_payload.uid), anything)
+      ensure
+        FeatureFlag.remove(:dev_core_user_sync)
+      end
+
+      it "leaves the link alone when the uid is claimed concurrently" do
+        identity = Identity.create!(user: user, provider: "mlh", uid: "a-placeholder-id")
+        # rubocop:disable RSpec/AnyInstance
+        allow_any_instance_of(Identity).to receive(:update!).and_raise(ActiveRecord::RecordNotUnique)
+        # rubocop:enable RSpec/AnyInstance
+        allow(ForemStatsClient).to receive(:increment)
+
+        expect(described_class.call(auth_payload, current_user: user)).to eq(user)
+
+        identity.reload
+        expect(identity.uid).to eq("a-placeholder-id")
+        tags = hash_including(tags: array_including("error:ActiveRecord::RecordNotUnique"))
+        expect(ForemStatsClient).to have_received(:increment).with("identity.errors", tags)
+      end
+
+      it "does not repoint a link the user established themselves" do
+        established_payload = auth_payload.dup
+        established_payload.uid = "an-established-id"
+        identity = Identity.create!(user: user, provider: "mlh", uid: "an-established-id",
+                                    auth_data_dump: established_payload)
+
+        result = nil
+        expect do
+          result = described_class.call(auth_payload, current_user: user)
+        end.not_to change(Identity, :count)
+
+        expect(result).to eq(user)
+        identity.reload
+        expect(identity.uid).to eq("an-established-id")
+        expect(identity.auth_data_dump.uid).to eq("an-established-id")
+      end
+
+      it "returns the current user when the identity is refreshed" do
+        Identity.create!(user: user, provider: "mlh", uid: auth_payload.uid)
+
+        expect(described_class.call(auth_payload, current_user: user)).to eq(user)
+      end
+
+      it "leaves both rows alone when the incoming uid belongs to another user" do
+        other_user = create(:user)
+        other_identity = Identity.create!(user: other_user, provider: "mlh", uid: auth_payload.uid)
+        identity = Identity.create!(user: user, provider: "mlh", uid: "yet-another-placeholder-id")
+
+        described_class.call(auth_payload, current_user: user)
+
+        other_identity.reload
+        expect(other_identity.user_id).to eq(other_user.id)
+        expect(other_identity.auth_data_dump).to be_nil
+
+        identity.reload
+        expect(identity.uid).to eq("yet-another-placeholder-id")
+        expect(identity.auth_data_dump).to be_nil
+      end
+
+      it "still links a brand new identity when the user has none" do
+        expect do
+          described_class.call(auth_payload, current_user: user)
+        end.to change(Identity, :count).by(1)
+
+        identity = user.identities.find_by(provider: "mlh")
+        expect(identity.uid).to eq(auth_payload.uid)
+        expect(identity.auth_data_dump.info.email).to eq(auth_payload.info.email)
+      end
+    end
   end
 end
