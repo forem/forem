@@ -124,14 +124,46 @@ module Authentication
     #
     # `incoming_identity` is built by `Identity.build_from_omniauth`, so it is
     # only persisted when the payload's provider + uid already exist in the
-    # database. We refresh solely when that is the very same row the current
-    # user is linked through: a payload carrying a different uid must never
-    # silently repoint an existing identity.
+    # database. That gives three cases:
+    #
+    #   1. the payload is the row the user is already linked through: refresh
+    #      it in place.
+    #   2. the payload's uid is unclaimed and the linked row has no stored auth
+    #      payload: that link was machine-created, and completing OAuth as the
+    #      new uid proves the user owns it, so move the link onto it.
+    #   3. anything else: no-op. A uid held by some other identity is never
+    #      taken over, and a link the user established themselves is never
+    #      silently moved.
     def refresh_identity(incoming_identity, linked_identity)
-      return unless incoming_identity.persisted?
-      return unless incoming_identity.id == linked_identity.id
+      if incoming_identity.persisted?
+        return unless incoming_identity.id == linked_identity.id
 
-      incoming_identity.save!
+        incoming_identity.save!
+      elsif linked_identity.auth_data_dump.nil?
+        repoint_identity(incoming_identity, linked_identity)
+      end
+    end
+
+    # Moves a payload-less link onto the uid the user just authenticated as.
+    # Touching the user afterwards is what surfaces the new uid to the outbound
+    # sync, the same profile_updated_at signal a freshly linked identity sends.
+    def repoint_identity(incoming_identity, linked_identity)
+      ActiveRecord::Base.transaction do
+        linked_identity.update!(
+          uid: incoming_identity.uid,
+          token: incoming_identity.token,
+          secret: incoming_identity.secret,
+          auth_data_dump: incoming_identity.auth_data_dump,
+        )
+
+        current_user.profile_updated_at = Time.current
+        current_user.save!
+      end
+    rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid => e
+      # A concurrent request can claim the same provider + uid first. Leave the
+      # existing link as it was rather than failing the whole callback.
+      ForemStatsClient.increment("identity.errors", tags: ["error:#{e.class}", "message:#{e.message}"])
+      nil
     end
 
     def proper_user(identity)
