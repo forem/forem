@@ -6377,7 +6377,7 @@
           "email": {
             "type": "string",
             "nullable": true,
-            "description": "Email (requires authentication and if user allows displaying email on their profile) or nil"
+            "description": "Authenticated user's own email address, always returned regardless of display_email_on_profile setting"
           },
           "website_url": {
             "type": "string",

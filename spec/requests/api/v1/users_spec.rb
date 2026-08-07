@@ -67,6 +67,7 @@ RSpec.describe "Api::V1::Users" do
       user.setting.update_column(:display_email_on_profile, true)
       get api_user_path("by_username"), params: { url: user.username }, headers: headers
       response_user = response.parsed_body
+      expect(response_user).to have_key("email")
       expect(response_user["email"]).to be_nil
     end
 
