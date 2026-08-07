@@ -19,7 +19,7 @@ class OrgTeamTag < LiquidTagBase
   end
 
   def render(_context)
-    users = build_query
+    users = @organization.active_users
       .order(Arel.sql("users.badge_achievements_count DESC NULLS LAST, users.id ASC"))
       .limit(@limit)
 
@@ -33,7 +33,6 @@ class OrgTeamTag < LiquidTagBase
 
   def parse_options(option_tokens)
     @limit = DEFAULT_LIMIT
-    @role = "all"
 
     option_tokens.each do |token|
       match = token.match(OPTION_REGEXP)
@@ -54,23 +53,9 @@ class OrgTeamTag < LiquidTagBase
   end
 
   def parse_role(value)
+    # Keep accepting existing markup without exposing membership roles in public output.
     unless VALID_ROLES.include?(value)
       raise StandardError, I18n.t("liquid_tags.org_team_tag.invalid_role")
-    end
-
-    @role = value
-  end
-
-  def build_query
-    case @role
-    when "admins"
-      @organization.users.joins(:organization_memberships)
-        .where(organization_memberships: { organization_id: @organization.id, type_of_user: "admin" })
-    when "members"
-      @organization.users.joins(:organization_memberships)
-        .where(organization_memberships: { organization_id: @organization.id, type_of_user: "member" })
-    else
-      @organization.active_users
     end
   end
 end
