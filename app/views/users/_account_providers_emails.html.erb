@@ -12,13 +12,13 @@
       <li class="mb-2">
         <strong class="color-base-60"><%= t("views.settings.account.provider_email", provider: provider.official_name) %></strong>
         <%# An identity created through the admin API rather than a completed OAuth flow has no auth
-            payload, and therefore no email. For MLH, signing in at my.mlh.io with this address is what
+            payload, and therefore no email. For MLH, signing in at my.mlh.com with this address is what
             connects the two accounts, so link there instead of showing the generic "relink" error. %>
         <% if identity.provider == "mlh" && identity_email.blank? %>
           <span class="pl-2">
             <%= t(
                   "views.settings.account.mlh_sign_in_html",
-                  link: link_to(t("views.settings.account.mlh_sign_in_link"), "https://my.mlh.io/", class: "c-link", target: "_blank", rel: "noopener noreferrer"),
+                  link: link_to(t("views.settings.account.mlh_sign_in_link"), "https://my.mlh.com/", class: "c-link", target: "_blank", rel: "noopener noreferrer"),
                 ) %>
           </span>
         <% else %>
