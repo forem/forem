@@ -1,0 +1,14 @@
+---
+fr:
+  views:
+    flag_appeals:
+      heading: Soumettre un recours de modération
+      intro: Si vous pensez que votre compte ou votre contenu a été restreint ou signalé par erreur, veuillez vous expliquer ci-dessous. Nos contrôles de sécurité automatisés et notre équipe de modération examineront votre demande.
+      reason_label: Pourquoi pensez-vous que cette restriction ou ce signalement était une erreur ?
+      reason_placeholder: Fournissez du contexte sur votre activité, votre cas d'utilisation ou le contenu restreint...
+      reason_help: Maximum 3 000 caractères. Veuillez être concis et précis.
+      submit: Soumettre le recours
+      cancel: Annuler
+      submitted_heading: Merci pour la soumission de votre recours
+      home_link: Accueil %{community}
+      already_pending: Vous avez déjà un recours en attente d'examen pour cet élément.

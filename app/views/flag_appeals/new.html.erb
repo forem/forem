@@ -1,0 +1,40 @@
+<main id="main-content" class="crayons-layout crayons-layout--limited-l">
+  <div class="crayons-card text-styles text-padding">
+    <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 mt-0"><%= t("views.flag_appeals.heading") %></h1>
+
+    <p class="mb-6">
+      <%= t("views.flag_appeals.intro") %>
+    </p>
+
+    <div class="crayons-card crayons-card--secondary p-4 m:p-6">
+      <%= form_with(model: @flag_appeal, url: appeal_path, local: true, class: "flex flex-col gap-6") do |f| %>
+        <% if @flag_appeal.errors.any? %>
+          <div class="crayons-notice crayons-notice--danger mb-4" role="alert">
+            <h2 class="font-bold mb-1"><%= pluralize(@flag_appeal.errors.count, "error") %> prohibited this appeal from being submitted:</h2>
+            <ul class="list-disc pl-5">
+              <% @flag_appeal.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <%= f.hidden_field :appealable_type %>
+        <%= f.hidden_field :appealable_id %>
+
+        <div class="crayons-field mb-4">
+          <%= f.label :reason, t("views.flag_appeals.reason_label"), class: "crayons-field__label font-bold mb-2 block" %>
+          <%= f.text_area :reason, rows: 6, required: true, maxlength: 3000,
+              placeholder: t("views.flag_appeals.reason_placeholder"),
+              class: "crayons-textfield" %>
+          <span class="fs-xs color-base-60 mt-1 block"><%= t("views.flag_appeals.reason_help") %></span>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <%= f.submit t("views.flag_appeals.submit"), class: "crayons-btn crayons-btn--primary" %>
+          <%= link_to t("views.flag_appeals.cancel"), root_path, class: "crayons-btn crayons-btn--outlined" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</main>

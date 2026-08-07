@@ -11,6 +11,7 @@ module Settings
     # Forem Team
     # [forem-fix] Remove channel name from Settings::General
     setting :article_published_slack_channel, type: :string, default: "activity"
+    setting :appeal_auto_unflag_threshold, type: :float, default: 0.90
 
     # Meta
     setting :admin_action_taken_at, type: :datetime, default: Time.current

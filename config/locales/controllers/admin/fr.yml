@@ -201,6 +201,11 @@ fr:
       link_busted: "%{link} a été cassé avec succès"
       social_images_queued: "Régénération des images sociales mise en file d'attente pour @%{user}"
       user_not_found: 'Utilisateur introuvable'
+    flag_appeals_controller:
+      approved: "Recours approuvé et utilisateur/contenu rétabli avec succès."
+      rejected: "Recours rejeté."
+      invalid_action: "Action de résolution invalide."
+      already_resolved: "Ce recours a déjà été traité."
     users_controller:
       exported: Données exportées vers le %{receiver}. Le travail sera terminé dans un instant.
       email_fail: L'envoi de l'e-mail a échoué !
