@@ -449,4 +449,18 @@ RSpec.describe "ArticlesUpdate" do
       expect(article.published_at).to be_within(1.second).of(scheduled_time)
     end
   end
+
+  context "when requesting JSON format" do
+    it "includes id, updated_at, and current_state_path in response" do
+      put "/articles/#{article.id}", params: {
+        article: { title: "Updated Title", body_markdown: "Updated body content" },
+        format: :json
+      }
+      expect(response).to have_http_status(:ok)
+      parsed = response.parsed_body
+      expect(parsed["id"]).to eq(article.id)
+      expect(parsed["updated_at"]).to be_present
+      expect(parsed["current_state_path"]).to eq(article.reload.current_state_path)
+    end
+  end
 end

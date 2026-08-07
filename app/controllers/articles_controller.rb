@@ -439,17 +439,11 @@ class ArticlesController < ApplicationController
   end
 
   # Detects whether submitted body_markdown contains valid V1 frontmatter (requires a title: key).
-  # Uses the same underlying frontmatter parser as ContentRenderer, but treats parse errors as
-  # non-frontmatter so we don't silently drop explicit metadata params (e.g. title/tag_list).
+  # Delegates to ContentRenderer#has_front_matter? for single source of truth and consistent error handling.
   def body_markdown_has_frontmatter?(body_md)
-    fixed = MarkdownProcessor::Fixer::FixAll.call(body_md.to_s)
-    parsed = ContentRenderer.front_matter_parser.call(fixed)
-    front_matter = parsed.front_matter
-    front_matter.is_a?(Hash) && front_matter.any? && front_matter["title"].present?
-  rescue Psych::Exception
-    false
+    ContentRenderer.new(body_md.to_s).has_front_matter?
   rescue StandardError => e
-    Rails.logger.error("ArticlesController#body_markdown_has_frontmatter? fallback due to error: #{e.class}: #{e.message}")
+    Rails.logger.error("ArticlesController#body_markdown_has_frontmatter? error: #{e.class}: #{e.message}")
     false
   end
 end

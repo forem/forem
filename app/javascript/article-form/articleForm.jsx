@@ -122,7 +122,7 @@ export class ArticleForm extends Component {
     const previousContent =
       JSON.parse(
         localStorage.getItem(
-          `editor-${this.article.id || 'new'}-${new URL(window.location.href).pathname}`,
+          `editor-${this.article.id || 'new'}-${new URL(this.url).pathname}`,
         ),
       ) || {};
     const isLocalstorageNewer =
@@ -209,10 +209,13 @@ export class ArticleForm extends Component {
 
   // Force a full reload when the browser restores this page from bfcache.
   // e.persisted === true means the page was served from the cache, not the network.
+  // Uses a sessionStorage guard to prevent loop reloads if reload itself fails.
   handlePageShow = (e) => {
-    if (e.persisted) {
+    if (e.persisted && !sessionStorage.getItem('editor-bfcache-reloading')) {
+      sessionStorage.setItem('editor-bfcache-reloading', 'true');
       window.location.reload();
     }
+    sessionStorage.removeItem('editor-bfcache-reloading');
   };
 
   componentDidUpdate() {
