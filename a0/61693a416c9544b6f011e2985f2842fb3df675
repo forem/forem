@@ -1,0 +1,22 @@
+spec/mailers/digest_mailer_spec.rb
+  s_0cd64231ee5515::t_977d8a69510bbc 141,148,151,155-173
+app/mailers/digest_mailer.rb
+  s_0cd64231ee5515::t_354df74cd079b1 22-23
+  s_0cd64231ee5515::t_58c2e67a8a26cf 68-73,75-78
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "a061693a416c9544b6f011e2985f2842fb3df675",
+  "prompts": {},
+  "sessions": {
+    "s_0cd64231ee5515": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b2d035f1-b022-48fc-b793-32eaadb3e1ad",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}
