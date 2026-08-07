@@ -117,6 +117,8 @@ RSpec.describe Users::Delete, type: :service do
         banished_users
         billboard_events
         created_podcasts
+        favorited_articles
+        favorited_comments
         feed_events
         offender_feedback_messages
         page_views
