@@ -167,6 +167,12 @@ RSpec.describe "/admin/member_manager/users" do
       expect(response.body).to include("Previous emails")
     end
 
+    it "displays password management in the 'Security' tab" do
+      get "#{admin_user_path(user.id)}?tab=security"
+      expect(response.body).to include("Password access")
+      expect(response.body).to include("Send password reset email")
+    end
+
     it "displays a user's current flags in the 'Flags' tab" do
       get "#{admin_user_path(user.id)}?tab=flags"
       expect(response.body).to include("Flags received")

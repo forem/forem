@@ -13,6 +13,8 @@ module Admin
       max_score
       tag_name
       email
+      password
+      password_confirmation
     ].freeze
 
     ADMIN_PROFILE_USER_PARAMS = %i[name username].freeze
@@ -37,7 +39,7 @@ module Admin
       unpublish_all_articles: :unpublish_all_articles?
     }.freeze
 
-    after_action only: %i[update user_status banish full_delete merge] do
+    after_action only: %i[update user_status banish full_delete merge update_password send_password_reset] do
       Audit::Logger.log(:moderator, current_user, params.dup)
     end
 
@@ -484,6 +486,45 @@ new_email = user_params[:email].to_s.strip.presence
                  status: :unprocessable_entity
         end
       end
+
+      def update_password
+        @user = User.find(params[:id])
+
+        if @user.update(password_params)
+          Note.create(
+            author_id: current_user.id,
+            noteable_id: @user.id,
+            noteable_type: "User",
+            reason: "admin_password_update",
+            content: "Password manually updated by #{current_user.username}",
+          )
+          flash[:success] = I18n.t("views.admin.users.password.success")
+        else
+          flash[:error] = @user.errors.full_messages.to_sentence
+        end
+
+        redirect_to admin_user_path(@user, tab: :security)
+      end
+
+      def send_password_reset
+        @user = User.find(params[:id])
+        opts = { admin_triggered_by: current_user.name.presence || current_user.username }
+
+        if @user.send_reset_password_instructions(opts)
+          Note.create(
+            author_id: current_user.id,
+            noteable_id: @user.id,
+            noteable_type: "User",
+            reason: "admin_password_reset",
+            content: "Password reset email sent by #{current_user.username}",
+          )
+          flash[:success] = I18n.t("views.admin.users.password.reset_sent")
+        else
+          flash[:error] = I18n.t("views.admin.users.password.reset_error")
+        end
+
+        redirect_to admin_user_path(@user, tab: :security)
+      end
     end
 
     def send_email_confirmation
@@ -685,6 +726,10 @@ new_email = user_params[:email].to_s.strip.presence
         reason: "misc_note",
         content: user_params[:new_note],
       )
+    end
+
+    def password_params
+      user_params.slice(:password, :password_confirmation)
     end
 
     def set_feedback_messages
