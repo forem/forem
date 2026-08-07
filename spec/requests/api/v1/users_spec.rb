@@ -63,15 +63,22 @@ RSpec.describe "Api::V1::Users" do
       expect(response_user.key?("followers_count")).to be false
     end
 
-    it "includes email if display_email_on_profile is set to true" do
+    it "doesn't include email for unauthenticated requests even if display_email_on_profile is true" do
       user.setting.update_column(:display_email_on_profile, true)
       get api_user_path("by_username"), params: { url: user.username }, headers: headers
+      response_user = response.parsed_body
+      expect(response_user["email"]).to be_nil
+    end
+
+    it "includes email for authenticated requests if display_email_on_profile is set to true" do
+      user.setting.update_column(:display_email_on_profile, true)
+      get api_user_path("by_username"), params: { url: user.username }, headers: auth_headers
       response_user = response.parsed_body
       expect(response_user["email"]).to eq(user.email)
     end
 
     it "doesn't include email if display_email_on_profile is false" do
-      get api_user_path("by_username"), params: { url: user.username }, headers: headers
+      get api_user_path("by_username"), params: { url: user.username }, headers: auth_headers
       response_user = response.parsed_body
       expect(response_user.key?("email")).to be true
       expect(response_user["email"]).to be_nil

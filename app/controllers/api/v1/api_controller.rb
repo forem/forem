@@ -82,6 +82,11 @@ module Api
         @user = authenticate_with_api_key || current_user
       end
 
+      def authenticated_user
+        @authenticated_user ||= authenticate_with_api_key || current_user
+      end
+      helper_method :authenticated_user
+
       def authorize_super_admin
         error_unauthorized unless @user.super_admin?
       end
