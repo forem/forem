@@ -7,15 +7,16 @@ RSpec.describe Appeals::AiReviewWorker, type: :worker do
 
   before do
     allow(Ai::AppealAssessor).to receive(:new).with(appeal).and_return(assessor_double)
+    allow(Appeals::Resolver).to receive(:approve)
   end
 
   describe "#perform" do
     it "updates appeal with AI evaluation results when recommendation is human_review" do
-      allow(assessor_double).to receive(:evaluate).and_return({
+      allow(assessor_double).to receive(:evaluate).and_return(
         summary: "Needs human review.",
         confidence_score: 0.65,
-        recommendation: "human_review"
-      })
+        recommendation: "human_review",
+      )
 
       described_class.new.perform(appeal.id)
 
@@ -27,22 +28,21 @@ RSpec.describe Appeals::AiReviewWorker, type: :worker do
     end
 
     it "auto-resolves appeal when AI recommends auto_unflag with high confidence" do
-      allow(assessor_double).to receive(:evaluate).and_return({
+      allow(assessor_double).to receive(:evaluate).and_return(
         summary: "High confidence false positive.",
         confidence_score: 0.95,
-        recommendation: "auto_unflag"
-      })
-
-      expect(Appeals::Resolver).to receive(:approve).with(appeal: appeal)
+        recommendation: "auto_unflag",
+      )
 
       described_class.new.perform(appeal.id)
 
       appeal.reload
       expect(appeal.status).to eq("ai_reviewed")
+      expect(Appeals::Resolver).to have_received(:approve).with(appeal: appeal)
     end
 
     it "does not update or resolve if appeal is no longer open after evaluation (reload guard)" do
-      allow(assessor_double).to receive(:evaluate).and_wrap_original do |_m, *_args|
+      allow(assessor_double).to receive(:evaluate) do
         appeal.update!(status: :approved)
         {
           summary: "Late evaluation.",
@@ -51,20 +51,19 @@ RSpec.describe Appeals::AiReviewWorker, type: :worker do
         }
       end
 
-      expect(Appeals::Resolver).not_to receive(:approve)
-
       described_class.new.perform(appeal.id)
 
       appeal.reload
       expect(appeal.ai_summary).not_to eq("Late evaluation.")
+      expect(Appeals::Resolver).not_to have_received(:approve)
     end
 
     it "returns early if appeal is not found or not open initially" do
       appeal.update!(status: :rejected)
 
-      expect(Ai::AppealAssessor).not_to receive(:new)
-
       described_class.new.perform(appeal.id)
+
+      expect(Ai::AppealAssessor).not_to have_received(:new)
     end
   end
 end
