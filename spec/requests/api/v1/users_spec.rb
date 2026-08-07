@@ -136,6 +136,16 @@ RSpec.describe "Api::V1::Users" do
         expect(response_user["followers_count"]).to eq(user.followers_count)
       end
 
+      it "always includes the user's own email regardless of display_email_on_profile setting" do
+        user.setting.update_column(:display_email_on_profile, false)
+
+        get me_api_users_path, headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+        response_user = response.parsed_body
+        expect(response_user["email"]).to eq(user.email)
+      end
+
       it "returns 200 if no authentication and the Forem instance is set to private but user is authenticated" do
         allow(Settings::UserExperience).to receive(:public).and_return(false)
         get me_api_users_path, headers: auth_headers
