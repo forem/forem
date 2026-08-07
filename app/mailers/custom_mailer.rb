@@ -1,4 +1,6 @@
 class CustomMailer < ApplicationMailer
+  include Rails.application.routes.url_helpers
+
   default from: -> { email_from(I18n.t("mailers.custom_mailer.from")) }
 
   has_history extra: lambda {
@@ -13,6 +15,7 @@ class CustomMailer < ApplicationMailer
     @content = Email.replace_merge_tags(params[:content], @user)
     @subject = Email.replace_merge_tags(params[:subject], @user)
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_newsletter)
+    add_unsubscribe_headers(@unsubscribe)
     @from_topic = params[:from_name] || Email.find_by(id: params[:email_id])&.default_from_name_based_on_type
 
     # set sendgrid category in the header using smtp api

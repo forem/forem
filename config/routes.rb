@@ -364,6 +364,8 @@ Rails.application.routes.draw do
     get "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#show"
     post "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#upsert"
     get "email_subscriptions/unsubscribe"
+    # RFC 8058 one-click unsubscribe: mailbox providers POST to the same URL.
+    post "email_subscriptions/unsubscribe", to: "email_subscriptions#unsubscribe"
 
     get "/internal", to: redirect("/admin")
     get "/internal/:path", to: redirect("/admin/%{path}")
