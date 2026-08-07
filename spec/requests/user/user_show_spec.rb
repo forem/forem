@@ -44,7 +44,7 @@ RSpec.describe "UserShow" do
       )
     end
 
-    it "does not include email in JSON-LD structured data regardless of display_email_on_profile" do
+    it "does not include email in JSON-LD structured data even when display_email_on_profile is enabled" do
       user.setting.update(display_email_on_profile: true)
       get user.path
       text = Nokogiri::HTML(response.body).at('script[type="application/ld+json"]').text
