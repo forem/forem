@@ -955,6 +955,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_30_170000) do
     t.index ["resolved_by_id"], name: "index_flag_appeals_on_resolved_by_id"
     t.index ["status"], name: "index_flag_appeals_on_status"
     t.index ["user_id"], name: "index_flag_appeals_on_user_id"
+    t.index ["user_id", "appealable_type", "appealable_id"], name: "index_flag_appeals_on_pending_user_target", unique: true, where: "status IN (0, 1)"
   end
 
   create_table "flipper_features", force: :cascade do |t|
