@@ -18,7 +18,7 @@ module Ai
     # Asks the AI to re-assess the appeal and returns a structured result.
     # @return [Hash] Hash with :recommendation, :confidence_score, and :summary.
     def evaluate
-      model = ENV.fetch("GEMINI_API_MODEL", Ai::Base::DEFAULT_LITE_MODEL)
+      model = ENV.fetch("GEMINI_API_LITE_MODEL", Ai::Base::DEFAULT_LITE_MODEL)
       ai_client = Ai::Base.new(
         model: model,
         wrapper: self,
