@@ -515,7 +515,7 @@ class StoriesController < ApplicationController
       sameAs: user_same_as,
       image: @user.profile_image_url_for(length: 320),
       name: @user.name,
-      email: (decorated_user.profile_email if user_signed_in?),
+      email: decorated_user.profile_email,
       description: decorated_user.profile_summary
     }.compact_blank
   end
