@@ -6,11 +6,11 @@
     API rather than a completed OAuth flow has no auth payload, and therefore no
     email; a completed re-auth is what fills that in, so keep offering the button
     in that case, labelled as a reconnect. %>
-<% existing_identities = @user.identities_enabled.to_a
+<% identities_by_provider = @user.identities_enabled.index_by(&:provider)
    connectable_providers = authentication_enabled_providers.filter_map do |provider|
      next if provider.provider_name == :apple
 
-     identity = existing_identities.detect { |existing| existing.provider == provider.provider_name.to_s }
+     identity = identities_by_provider[provider.provider_name.to_s]
      next [provider, false] if identity.nil?
      next [provider, true] if identity.auth_data_dump&.info&.email.blank?
 

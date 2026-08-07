@@ -117,9 +117,10 @@ module Authentication
       current_user&.identities&.find_by(provider: provider.name)
     end
 
-    # An identity created through the admin API rather than a completed OAuth
-    # flow has no token and no stored auth payload. A completed re-auth is the
-    # only chance we get to fill those in, so refresh the row in place.
+    # A completed re-auth always refreshes the linked row's token and stored
+    # auth payload with the just-received data. This matters most for an
+    # identity created through the admin API rather than a completed OAuth
+    # flow, which starts with no token and no payload at all.
     #
     # `incoming_identity` is built by `Identity.build_from_omniauth`, so it is
     # only persisted when the payload's provider + uid already exist in the

@@ -999,7 +999,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
     describe "relinking a uid-only identity" do
       let(:user) { create(:user, email: auth_payload.info.email) }
 
-      it "refreshes the stored payload, token and secret" do
+      it "refreshes the stored payload and token" do
         identity = Identity.create!(user: user, provider: "mlh", uid: auth_payload.uid)
 
         expect do
@@ -1014,17 +1014,19 @@ RSpec.describe Authentication::Authenticator, type: :service do
       it "leaves the identity untouched when the incoming uid differs" do
         identity = Identity.create!(user: user, provider: "mlh", uid: "a-different-core-id")
 
+        result = nil
         expect do
-          described_class.call(auth_payload, current_user: user)
+          result = described_class.call(auth_payload, current_user: user)
         end.not_to change(Identity, :count)
 
+        expect(result).to eq(user)
         identity.reload
         expect(identity.uid).to eq("a-different-core-id")
         expect(identity.auth_data_dump).to be_nil
         expect(identity.token).to be_nil
       end
 
-      it "returns the current user in both cases" do
+      it "returns the current user when the identity is refreshed" do
         Identity.create!(user: user, provider: "mlh", uid: auth_payload.uid)
 
         expect(described_class.call(auth_payload, current_user: user)).to eq(user)
