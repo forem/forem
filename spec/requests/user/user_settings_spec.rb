@@ -217,7 +217,7 @@ RSpec.describe "UserSettings" do
         sign_in user
         get user_settings_path(tab: "account")
 
-        expect(response.body).to include("https://my.mlh.io/")
+        expect(response.body).to include("https://my.mlh.com/")
         expect(response.body).to include("Sign in to MLH")
         expect(response.body).not_to include("Please relink your")
       end
