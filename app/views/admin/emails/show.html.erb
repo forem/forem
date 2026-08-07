@@ -5,6 +5,7 @@
 <div class="crayons-card p-6 mb-4">
   <p>Type: <%= @email.type_of %></p>
   <p>User Query: <%= @email.user_query&.name || "No query selected" %></p>
+  <p>Event Target: <%= @email.event&.title || "No event selected" %></p>
   <% if @email.variables.present? %>
     <p>Variables: <code><%= @email.variables %></code></p>
   <% end %>

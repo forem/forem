@@ -17,26 +17,25 @@ RSpec.describe "Api::V1::Docs::Comments" do
         tags "comments"
         description "This endpoint allows the client to retrieve all comments belonging to an article or podcast episode as threaded conversations.
 
-It will return the all top level comments with their nested comments as threads. See the format specification for further details.
-
-It supports pagination, each page will contain `50` top level comments (and as many child comments they have) by default.
-
-If the page parameter is not passed, all comments of an article or podcast will be returned.
-"
+### Threaded Structure & Pagination Tips:
+- **Threaded Format**: Comments are returned as a tree structure (nested arrays of replies). Each top-level comment contains its nested child comments recursively.
+- **Query Constraints**: You must provide either `a_id` (Article ID) OR `p_id` (Podcast Episode ID) to fetch comments. Specifying both is not supported.
+- **Pagination**: When paginating, the `page` parameter filters the *top-level* comments only. All replies to those top-level comments are returned nested inline, regardless of page index.
+- If the `page` parameter is omitted, the response returns the full comment tree in a single payload."
         operationId "getCommentsByArticleId"
         produces "application/json"
         parameter "$ref": "#/components/parameters/pageParam"
         parameter "$ref": "#/components/parameters/perPageParam30to1000"
         parameter name: :a_id, in: :query, required: false,
-                  description: "Article identifier.",
+                  description: "Article identifier. Provide this to fetch comments belonging to a specific article.",
                   schema: { type: :string },
                   example: "321"
         parameter name: :p_id, in: :query, required: false,
-                  description: "Podcast Episode identifier.",
+                  description: "Podcast Episode identifier. Provide this to fetch comments belonging to a specific podcast episode.",
                   schema: { type: :string },
                   example: "321"
         parameter name: :page, in: :query, required: false,
-                  description: "Page",
+                  description: "Pagination page index for top-level comments.",
                   schema: { type: :string },
                   example: "321"
 
@@ -64,16 +63,15 @@ If the page parameter is not passed, all comments of an article or podcast will 
       get "Comment by id" do
         security []
         tags "comments"
-        description "This endpoint allows the client to retrieve a comment as well as his descendants comments.
+        description "This endpoint allows the client to retrieve a specific comment and all of its nested descendant replies.
 
-  It will return the required comment (the root) with its nested descendants as a thread.
-
-  See the format specification for further details."
+### Integration Tip:
+- Handy for linking directly to a deep comment thread or loading individual comment replies on demand."
         operationId "getCommentById"
         produces "application/json"
         parameter name: :id, in: :path, required: false,
-                  description: "Comment identifier.",
-                  schema: { type: :integer },
+                  description: "Comment identifier (the unique alpha-numeric `id_code` of the comment).",
+                  schema: { type: :string },
                   example: "321"
 
         response "200", "A List of the Comments" do

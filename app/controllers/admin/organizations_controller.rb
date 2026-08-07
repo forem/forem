@@ -101,9 +101,10 @@ module Admin
 
       if new_verified
         org.update_columns(verified: true, verified_at: Time.current,
-                           verification_status: Organization::VERIFICATION_STATUS_ADMIN)
+                           verification_status: Organization::VERIFICATION_STATUS_ADMIN,
+                           baseline_score: ::Settings::UserExperience.index_minimum_score.to_i)
       else
-        org.update_columns(verified: false, verified_at: nil, verification_url: nil)
+        org.update_columns(verified: false, verified_at: nil, verification_url: nil, baseline_score: 0)
       end
 
       if old_verified != org.verified?

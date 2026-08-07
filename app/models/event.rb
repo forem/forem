@@ -10,6 +10,7 @@ class Event < ApplicationRecord
   has_many :billboards, foreign_key: :event_id, dependent: :destroy
   has_many :event_signups, dependent: :destroy
   has_many :signed_up_users, through: :event_signups, source: :user
+  has_many :emails, dependent: :nullify
 
   enum :type_of, { live_stream: 0, takeover: 1, other: 2, challenge: 3 }
   enum :broadcast_config, { no_broadcast: 0, tagged_broadcast: 1, global_broadcast: 2 }

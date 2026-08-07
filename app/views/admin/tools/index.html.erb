@@ -30,4 +30,17 @@
   <% end %>
 </div>
 
+
+<div class="crayons-card p-6 mb-6">
+  <h2 class="crayons-subtitle-1 mb-4">Regenerate Social Images</h2>
+  <p class="mb-2">Re-generates article social card images for a given user (applies to published articles with no cover image only).</p>
+  <p class="mb-6">Use this to fix images broken by the Unicode display name rendering bug, or after any display name change.</p>
+  <%= form_tag regenerate_social_images_admin_tools_path do %>
+    <div class="crayons-field">
+      <%= label_tag :user_id, "User ID:", class: "crayons-field__label" %>
+      <%= text_field_tag :user_id, nil, placeholder: "12345", class: "crayons-textfield" %>
+      <%= submit_tag :"Regenerate Social Images", class: "crayons-btn mr-auto" %>
+    </div>
+  <% end %>
+</div>
 <%= render "admin/shared/image_uploader" %>

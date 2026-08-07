@@ -6,10 +6,13 @@ fr:
         title: Settings
       account:
         connect: Connect %{provider} Account
+        reconnect: Reconnecter le compte %{provider}
         emails: Account emails
         primary: Primary email
         provider_email: "%{provider} email"
         provider_profile: "%{provider} profile settings"
+        mlh_sign_in_link: Connectez-vous à MLH
+        mlh_sign_in_html: "%{link} avec cette adresse e-mail pour terminer la connexion de votre compte."
         delete:
           heading: Delete account
           desc1: 'Deleting your account will:'
