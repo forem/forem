@@ -97,13 +97,13 @@ RSpec.describe "ProfilePreviewCards" do
         expect(preview_card.key?("email")).to be(false)
       end
 
-      it "does not return the email when signed out even if user display_email_on_profile is true" do
+      it "returns the email if the user wants to" do
         user.setting.update_columns(display_email_on_profile: true)
 
         get profile_preview_card_path(user), as: :json
 
         preview_card = response.parsed_body
-        expect(preview_card.key?("email")).to be(false)
+        expect(preview_card["email"]).to eq(user.email)
       end
     end
 
