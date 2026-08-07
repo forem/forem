@@ -69,7 +69,7 @@ export function submitArticle({ payload, onSuccess, onError }) {
     .then((response) => response.json())
     .then((response) => {
       if (response.current_state_path) {
-        onSuccess();
+        onSuccess(response);
         window.location.replace(response.current_state_path);
       } else {
         onError(response);
