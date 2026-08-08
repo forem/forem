@@ -448,6 +448,17 @@ pt:
             enable: Habilitar Dofollow
             disable: Desabilitar Dofollow
             enabled_notice: Links dofollow estão habilitados para a página readme desta organização.
+      favorites:
+        leaderboard:
+          heading: Ranking de impacto
+          description: Classificação de usuários pelo engajamento gerado por seus conteúdos favoritados.
+          empty: Nenhum conteúdo favoritado ainda.
+          rank: Posição
+          leader: Líder
+          favorites: Favoritos
+          articles: Artigos
+          comments: Comentários
+          impact: Impacto
       org_features:
         heading: Funcionalidades Org
         description: Gerencie as funcionalidades das organizações globalmente ou por organização.
