@@ -57,7 +57,7 @@
       </div>
       <div class="flex items-center mb-4">
         <%= crayons_icon_tag(:comment, class: "mr-3 color-base-50", title: t("views.users.side.comment.icon")) %>
-        <%= t "views.users.side.comment.text", count: @user.comments.where(deleted: false).size %>
+        <%= t "views.users.side.comment.text", count: @user_profile_comments_count || @user.comments.where(deleted: false).size %>
       </div>
       <div class="flex items-center">
         <%= crayons_icon_tag(:tag, class: "mr-3 color-base-50", title: t("views.users.side.tag.icon")) %>
