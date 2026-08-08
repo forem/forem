@@ -212,6 +212,27 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
     expect(user.single_resource_admin_for?(Article)).to be true
   end
 
+  it "updates user to community leader level 1 and grants the trusted role" do
+    expect(user.community_leader?).to be false
+    expect(user.has_trusted_role?).to be false
+    manage_roles_for(user, user_status: "Community Leader Level 1")
+    expect(user.community_leader_level_1?).to be true
+    expect(user.has_trusted_role?).to be true
+  end
+
+  it "swaps community leader level when promoting from 1 to 2" do
+    manage_roles_for(user, user_status: "Community Leader Level 1")
+    manage_roles_for(user, user_status: "Community Leader Level 2")
+    expect(user.community_leader_level_2?).to be true
+    expect(user.community_leader_level_1?).to be false
+  end
+
+  it "allows a regular admin (not super admin) to assign a community leader role" do
+    regular_admin = create(:user, :admin)
+    manage_roles_for(user, user_status: "Community Leader Level 1", acting_as: regular_admin)
+    expect(user.community_leader_level_1?).to be true
+  end
+
   it "user in 'Good standing' has no negative or elevated roles" do
     user.add_role(:comment_suspended)
     user.add_role(:warned)
