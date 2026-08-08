@@ -140,13 +140,29 @@ export const Article = ({
 
               <div className="crayons-story__save">
                 <ReadingTime readingTime={article.reading_time} typeOf={article.type_of} />
-                { isRoot && (<small class="crayons-story__tertiary mr-2 fs-xs fw-bold">{domain}</small>)}
+                {isRoot && (
+                  <small class="crayons-story__tertiary mr-2 fs-xs fw-bold">{domain}</small>
+                )}
                 <SaveButton
                   article={article}
                   isBookmarked={isBookmarked}
                   onClick={bookmarkClick}
                   saveable={saveable}
                 />
+                <div className="only-sidebar-menu-item">
+                  <div className="trusted-visible-block align-center">
+                    <button
+                      type="button"
+                      className="crayons-btn crayons-btn--ghost crayons-btn--icon-rounded mod-actions-menu-btn"
+                      data-article-path={article.path}
+                      aria-label="Moderation"
+                    >
+                      <svg width="24" height="24" className="crayons-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M3.783 2.826L12 1l8.217 1.826a1 1 0 01.783.976v9.987a6 6 0 01-2.672 4.992L12 23l-6.328-4.219A6 6 0 013 13.79V3.802a1 1 0 01.783-.976zM5 4.604v9.185a4 4 0 001.781 3.328L12 20.597l5.219-3.48A4 4 0 0019 13.79V4.604L12 3.05 5 4.604zM13 10h3l-5 7v-5H8l5-7v5z" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
