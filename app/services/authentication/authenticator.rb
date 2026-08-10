@@ -162,7 +162,10 @@ module Authentication
     rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid => e
       # A concurrent request can claim the same provider + uid first. Leave the
       # existing link as it was rather than failing the whole callback.
-      ForemStatsClient.increment("identity.errors", tags: ["error:#{e.class}", "message:#{e.message}"])
+      ForemStatsClient.increment(
+        "identity.errors",
+        tags: ["error:#{e.class}", "provider:#{linked_identity.provider}"],
+      )
       nil
     end
 
