@@ -1,0 +1,29 @@
+app/services/markdown_processor/parser.rb
+  d3a3c723dc97b952 36,39-41,75-76,153-160,162
+spec/services/html/parser_spec.rb
+  d3a3c723dc97b952 31-45
+app/services/html/parser.rb
+  d3a3c723dc97b952 29-33,299-303
+spec/services/markdown_processor/parser_spec.rb
+  d3a3c723dc97b952 111-147,168-186
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.17",
+  "base_commit_sha": "c0d17d6e7c201c9859d5df28076fc558862cad75",
+  "prompts": {
+    "d3a3c723dc97b952": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "38094813-f615-4c36-bae5-37a44c004db2",
+        "model": "unknown"
+      },
+      "human_author": "Mikey Dorje <mikeydorje@gmail.com>",
+      "messages": [],
+      "total_additions": 164,
+      "total_deletions": 41,
+      "accepted_lines": 198,
+      "overriden_lines": 0
+    }
+  }
+}
