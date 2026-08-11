@@ -19,6 +19,7 @@ RSpec.describe NotifyMailer do
     let(:email) { described_class.with(comment: comment).new_reply_email }
 
     include_examples "#renders_proper_email_headers"
+    include_examples "#renders_one_click_unsubscribe_headers"
 
     it "renders proper subject" do
       expected_subject = "#{comment.user.name} replied to your #{comment.parent_type}"
@@ -60,6 +61,7 @@ RSpec.describe NotifyMailer do
     before { user2.follow(user) }
 
     include_examples "#renders_proper_email_headers"
+    include_examples "#renders_one_click_unsubscribe_headers"
 
     it "renders proper subject" do
       expect(email.subject).to eq("#{user2.name} just followed you on #{Settings::Community.community_name}")
@@ -97,6 +99,7 @@ RSpec.describe NotifyMailer do
       let(:email) { described_class.with(mention: comment_mention).new_mention_email }
 
       include_examples "#renders_proper_email_headers"
+      include_examples "#renders_one_click_unsubscribe_headers"
 
       it "renders proper subject and receiver", :aggregate_failures do
         expect(email.subject).to eq("#{comment.user.name} just mentioned you in their comment")
@@ -111,6 +114,7 @@ RSpec.describe NotifyMailer do
       let(:email) { described_class.with(mention: article_mention).new_mention_email }
 
       include_examples "#renders_proper_email_headers"
+      include_examples "#renders_one_click_unsubscribe_headers"
 
       it "renders proper subject and receiver", :aggregate_failures do
         expect(email.subject).to eq("#{article.user.name} just mentioned you in their post")
@@ -147,6 +151,7 @@ RSpec.describe NotifyMailer do
     let(:email) { described_class.with(user: user).unread_notifications_email }
 
     include_examples "#renders_proper_email_headers"
+    include_examples "#renders_one_click_unsubscribe_headers"
 
     it "renders proper subject" do
       expect(email.subject).to eq("🔥 You have 0 unread notifications on #{Settings::Community.community_name}")
@@ -255,6 +260,7 @@ RSpec.describe NotifyMailer do
     end
 
     include_examples "#renders_proper_email_headers"
+    include_examples "#renders_one_click_unsubscribe_headers"
 
     it "renders proper subject" do
       expect(email.subject).to eq("You just got a badge")
@@ -665,6 +671,11 @@ RSpec.describe NotifyMailer do
     let(:email) { described_class.with(email: user.email, attachment: "attachment").export_email }
 
     include_examples "#renders_proper_email_headers"
+
+    it "does not render one-click unsubscribe headers on transactional mail", :aggregate_failures do
+      expect(email["List-Unsubscribe"]).to be_nil
+      expect(email["List-Unsubscribe-Post"]).to be_nil
+    end
 
     it "renders proper subject" do
       expect(email.subject).to include("export of your content is ready")
