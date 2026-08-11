@@ -98,6 +98,12 @@ RSpec.describe DigestMailer do
       }.not_to raise_error
     end
 
+    context "with one-click unsubscribe" do
+      let(:email) { described_class.with(user: user, articles: [article]).digest_email }
+
+      include_examples "#renders_one_click_unsubscribe_headers"
+    end
+
     it "does not use Customer.io delivery when Customer.io is not configured" do
       email = described_class.with(user: user, articles: [article]).digest_email
 

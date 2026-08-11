@@ -10,6 +10,11 @@ module DeliveryMethods
       tracked: true
     }.freeze
 
+    # Customer.io renders the message itself, so headers set on the Mail object
+    # are not carried over unless we forward them explicitly. RFC 8058
+    # one-click unsubscribe only works if these reach the recipient.
+    FORWARDED_HEADERS = %w[List-Unsubscribe List-Unsubscribe-Post].freeze
+
     def initialize(delivery_method_options = {})
       self.settings = DEFAULTS.merge(delivery_method_options)
     end
@@ -35,7 +40,16 @@ module DeliveryMethods
         message[:identifiers] = { email: mail.to.first } if mail.to
         message[:reply_to] = mail.reply_to.first if mail.reply_to
         message[:to] = mail.to.join(",") if mail.to
+        forwarded = forwarded_headers(mail)
+        message[:headers] = forwarded if forwarded.any?
       end.merge(settings)
+    end
+
+    def forwarded_headers(mail)
+      FORWARDED_HEADERS.each_with_object({}) do |name, headers|
+        value = mail[name]&.value
+        headers[name] = value if value.present?
+      end
     end
 
     # Customer.io's body field is HTML. Prefer the html_part (Mail searches

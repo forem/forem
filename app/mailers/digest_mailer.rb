@@ -11,6 +11,7 @@ class DigestMailer < ApplicationMailer
     @smart_summary_html = ContentRenderer.new(@smart_summary).process.processed_html if @smart_summary.present?
     @feed_config_id = params[:feed_config_id]
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_digest_periodic)
+    add_unsubscribe_headers(@unsubscribe)
     @user_follows_any_subforems = user_follows_any_subforems?
 
     subject = generate_title
