@@ -169,7 +169,7 @@ Article.defaultProps = {
   isFeatured: false,
   isRoot: false,
   feedStyle: 'basic',
-  saveable: true,
+  saveable: false,
 };
 
 Article.propTypes = {
