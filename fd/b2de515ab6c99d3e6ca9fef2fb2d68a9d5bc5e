@@ -1,0 +1,24 @@
+spec/services/authentication/authenticator_spec.rb
+  s_ccc774f7c6a6f9::t_779f230038c1f5 1017,1019,1022,1029
+  s_ccc774f7c6a6f9::t_7acc82857e70e8 1002
+app/views/users/_additional_authentication.html.erb
+  s_ccc774f7c6a6f9::t_2c54e4e6d20e18 9,13
+app/services/authentication/authenticator.rb
+  s_ccc774f7c6a6f9::t_3dbedc92c27685 120-123
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "fdb2de515ab6c99d3e6ca9fef2fb2d68a9d5bc5e",
+  "prompts": {},
+  "sessions": {
+    "s_ccc774f7c6a6f9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5b589ed8-f2ba-45ae-b490-4338ce662be5",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}
