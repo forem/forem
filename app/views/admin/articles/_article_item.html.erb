@@ -188,7 +188,6 @@
             </button>
           </div>
         </div>
-        </div>
       </div>
       <% if article.context_notes.any? %>
         <div class="flex">
@@ -251,9 +250,9 @@
 
       <nav class="mt-4 pt-1 pb-2 px-3 member-data-heading" aria-label="Member details">
         <ul class="crayons-navigation crayons-navigation--horizontal">
-          <li><%= link_to "Flags", admin_article_path(tab: :flags), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if params[:tab] == 'flags' || params[:tab].blank?}", aria: @current_tab == "flags" ? { current: "" } : {} %></li></li>
+          <li><%= link_to "Flags", admin_article_path(tab: :flags), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if params[:tab] == 'flags' || params[:tab].blank?}", aria: @current_tab == "flags" ? { current: "" } : {} %></li>
           <li><%= link_to "Quality reactions", admin_article_path(tab: :quality_reactions), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if params[:tab] == 'quality_reactions'}",
-                                                                                            aria: @current_tab == "quality_reactions" ? { current: "" } : {} %></li></li>
+                                                                                            aria: @current_tab == "quality_reactions" ? { current: "" } : {} %></li>
         </ul>
       </nav>
 
@@ -280,7 +279,7 @@
             </div>
           <% end %>
         <% end %>
-      <div>
+      </div>
     </article>
   <% end %>
 </div>
