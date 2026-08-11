@@ -21,6 +21,7 @@ module Favorites
       favoritable.reload
       log_audit
       grant_earned_favorite
+      award_badge
       Result.new(success?: true, favoritable: favoritable)
     end
 
@@ -96,6 +97,12 @@ module Favorites
       when Comment then !favoritable.deleted?
       else false
       end
+    end
+
+    def award_badge
+      Badges::AwardCommunityFavorite.call(favoritable: favoritable, favoriter: user)
+    rescue StandardError => e
+      Honeybadger.notify(e)
     end
 
     def log_audit

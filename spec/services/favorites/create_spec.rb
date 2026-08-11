@@ -23,6 +23,15 @@ RSpec.describe Favorites::Create, type: :service do
     )
   end
 
+  it "awards the author the community favorite badge" do
+    allow(Badges::AwardCommunityFavorite).to receive(:call)
+
+    described_class.call(favoritable: article, user: leader)
+
+    expect(Badges::AwardCommunityFavorite)
+      .to have_received(:call).with(favoritable: article, favoriter: leader)
+  end
+
   it "favorites a comment" do
     comment = create(:comment, commentable: article, user: author)
     result = described_class.call(favoritable: comment, user: leader)
