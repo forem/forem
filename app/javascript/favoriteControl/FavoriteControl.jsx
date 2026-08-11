@@ -112,8 +112,9 @@ export const FavoriteControl = ({
     );
   }
 
-  // Only enable favoriting for community leaders for now
-  if (!currentUser?.community_leader) {
+  // Only users with favorites to spend get the control
+  const canFavorite = currentUser?.favorite_allowance > 0;
+  if (!canFavorite) {
     return null;
   }
 

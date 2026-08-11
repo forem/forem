@@ -10,10 +10,13 @@ jest.mock('../favoriteService', () => ({
 }));
 
 const CURRENT_USER_ID = 11;
-const leader = { id: CURRENT_USER_ID, community_leader: true };
+const user = {
+  id: CURRENT_USER_ID,
+  favorite_allowance: 5,
+};
 
 const defaultProps = {
-  currentUser: leader,
+  currentUser: user,
   variant: 'article',
   favoritableType: 'Article',
   favoritableId: '3',
@@ -40,13 +43,18 @@ afterEach(() => {
 
 describe('<FavoriteControl />', () => {
   describe('visibility gating on unfavorited content', () => {
-    it('renders nothing when the viewer is not a community leader', () => {
+    it('renders for a user with favorites to spend', () => {
+      const { getByRole } = renderControl();
+
+      expect(getByRole('button')).toBeInTheDocument();
+    });
+
+    it('renders nothing when the viewer has no favorites to spend', () => {
       const { container } = renderControl({
-        currentUser: { id: CURRENT_USER_ID, community_leader: false },
+        currentUser: { id: CURRENT_USER_ID, favorite_allowance: 0 },
       });
 
       expect(container).toBeEmptyDOMElement();
-      expect(makeFavorite).not.toHaveBeenCalled();
     });
 
     it('renders nothing when not logged in', () => {
@@ -58,6 +66,7 @@ describe('<FavoriteControl />', () => {
     it('renders nothing for the content author', () => {
       const { container } = renderControl({
         favoritableUserId: String(CURRENT_USER_ID),
+        currentUser: { id: CURRENT_USER_ID, favorite_allowance: 2 },
       });
 
       expect(container).toBeEmptyDOMElement();
@@ -103,7 +112,7 @@ describe('<FavoriteControl />', () => {
           code: 'cannot_favorite',
         }),
       });
-      const { getByLabelText, queryByLabelText } = renderControl();
+      const { getByLabelText } = renderControl();
 
       fireEvent.click(getByLabelText('Favorite'));
 
@@ -164,16 +173,6 @@ describe('<FavoriteControl />', () => {
 
       const indicator = getByLabelText('Favorited');
       expect(indicator.tagName).toBe('SPAN');
-    });
-
-    it('renders an indicator for a viewer who is not a community leader', () => {
-      const { getByLabelText } = renderControl({
-        currentUser: { id: CURRENT_USER_ID, community_leader: false },
-        favorited: 'true',
-        favoritedByUserId: '7',
-      });
-
-      expect(getByLabelText('Favorited').tagName).toBe('SPAN');
     });
 
     it('renders an indicator for a signed-out visitor', () => {

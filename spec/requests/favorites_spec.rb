@@ -54,15 +54,29 @@ RSpec.describe "Favorites" do
       end
     end
 
-    context "when signed in as a non-leader" do
-      before { sign_in author }
+    context "when signed in as a non-leader with no earned credits" do
+      before { sign_in create(:user) }
 
-      it "is not authorized and does not favorite" do
-        expect do
-          post favorites_path, params: { favoritable_type: "Article", favoritable_id: article.id }, as: :json
-        end.to raise_error(Pundit::NotAuthorizedError)
+      it "reports the exhausted allowance" do
+        post favorites_path, params: { favoritable_type: "Article", favoritable_id: article.id }, as: :json
 
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["code"]).to eq("no_allowance")
         expect(article.reload.favorited_by_user_id).to be_nil
+      end
+    end
+
+    context "when signed in as a non-leader holding earned credits" do
+      let(:spender) { create(:user, earned_favorites_count: 1) }
+
+      before { sign_in spender }
+
+      it "favorites and spends the credit" do
+        post favorites_path, params: { favoritable_type: "Article", favoritable_id: article.id }, as: :json
+
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.favorited_by_user_id).to eq(spender.id)
+        expect(spender.reload.earned_favorites_count).to eq(0)
       end
     end
 
