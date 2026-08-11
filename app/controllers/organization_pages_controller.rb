@@ -75,7 +75,7 @@ class OrganizationPagesController < ApplicationController
 
   def reorder
     if reorder_page(params[:direction].to_s)
-      Pages::BustCacheWorker.perform_async(@page.slug)
+      Pages::BustCacheWorker.perform_async(@page.slug, @organization.id)
       flash[:settings_notice] = I18n.t("views.organization_settings.pages.reordered")
     end
 
