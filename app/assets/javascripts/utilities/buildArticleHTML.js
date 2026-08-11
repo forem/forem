@@ -388,6 +388,7 @@ function buildArticleHTML(article, currentUserId = null) {
       '/latest_less_filtered',
       '/following',
       '/following/latest',
+      '/following/latest_less_filtered',
     ];
     const isHomeFeed = homeFeedPaths.includes(window.location.pathname);
 
