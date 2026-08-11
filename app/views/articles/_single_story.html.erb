@@ -172,7 +172,7 @@
           <small class="crayons-story__tertiary fs-xs mr-2">
             <%= t("views.articles.reading_time", count: [story.reading_time, 1].max) %>
           </small>
-          <% if user_signed_in? && local_assigns[:is_home_feed] && ((@user == nil) || (@user.id != story.user_id)) %>
+          <% if local_assigns[:is_home_feed] && (user_signed_in? rescue false) && ((@user == nil) || (@user.id != story.user_id)) %>
             <button
               type="button"
               id="article-save-button-<%= story.id %>"
