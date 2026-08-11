@@ -299,6 +299,9 @@ class User < ApplicationRecord
       comments_count: average_comments_count..,
     )
   }
+  scope :community_leaders, lambda {
+    joins(:roles).where(roles: { name: CommunityLeaders::ROLES.map(&:to_s) }).distinct
+  }
 
   before_validation :downcase_email
 
