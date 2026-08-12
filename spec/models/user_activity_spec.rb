@@ -246,6 +246,26 @@ RSpec.describe UserActivity, type: :model do
 
       expect(user_activity.reload.alltime_reading_list_articles).to contain_exactly(article1.id)
     end
+
+    it "stores all reading list article IDs without limit" do
+      user_activity = create(:user_activity, user: user, alltime_reading_list_articles: [])
+      reactions_data = (1..1005).map do |n|
+        {
+          user_id: user.id,
+          category: "readinglist",
+          reactable_type: "Article",
+          reactable_id: n,
+          status: "valid",
+          created_at: Time.current,
+          updated_at: Time.current
+        }
+      end
+      Reaction.insert_all(reactions_data)
+
+      described_class.update_reading_list_articles_for(user.id)
+
+      expect(user_activity.reload.alltime_reading_list_articles.length).to eq(1005)
+    end
   end
 
   describe "associations" do

@@ -1219,6 +1219,14 @@ RSpec.describe User do
       expect(user.cached_reading_list_article_ids).to contain_exactly(article1.id, article2.id)
     end
 
+    it "limits cached_reading_list_article_ids to at most 1000 items" do
+      large_id_list = (1..1005).to_a
+      create(:user_activity, user: user, alltime_reading_list_articles: large_id_list)
+
+      expect(user.cached_reading_list_article_ids.length).to eq(1000)
+      expect(user.cached_reading_list_article_ids).to eq((1..1000).to_a)
+    end
+
     it "has an accurate agent_sessions_count using counter cache" do
       expect(user.agent_sessions_count).to eq(0)
       create(:agent_session, user: user)
