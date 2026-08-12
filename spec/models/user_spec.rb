@@ -1209,6 +1209,16 @@ RSpec.describe User do
       expect(user.cached_reading_list_article_ids).to eq([article3.id, article.id])
     end
 
+    it "uses user_activity.alltime_reading_list_articles if present before falling back to Reaction query" do
+      article1 = create(:article)
+      article2 = create(:article)
+
+      create(:user_activity, user: user, alltime_reading_list_articles: [article1.id, article2.id])
+
+      expect(Reaction).not_to receive(:readinglist_for_user)
+      expect(user.cached_reading_list_article_ids).to contain_exactly(article1.id, article2.id)
+    end
+
     it "has an accurate agent_sessions_count using counter cache" do
       expect(user.agent_sessions_count).to eq(0)
       create(:agent_session, user: user)
