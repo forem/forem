@@ -84,6 +84,14 @@ module Api
         @user = authenticate_with_api_key || current_user
       end
 
+def authenticated_user
+  return @authenticated_user if defined?(@authenticated_user)
+
+  user = authenticate_with_api_key || current_user
+  @authenticated_user = user&.spam_or_suspended? ? nil : user
+end
+      helper_method :authenticated_user
+
       def authorize_super_admin
         error_unauthorized unless @user.super_admin?
       end
