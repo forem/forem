@@ -110,6 +110,14 @@ FactoryBot.define do
       after(:build) { |user| user.add_role(:trusted) }
     end
 
+    trait :community_leader_level_1 do
+      after(:build) { |user| user.add_role(:community_leader_level_1) }
+    end
+
+    trait :community_leader_level_2 do
+      after(:build) { |user| user.add_role(:community_leader_level_2) }
+    end
+
     trait :suspended do
       after(:build) { |user| user.add_role(:suspended) }
     end

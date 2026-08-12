@@ -45,6 +45,7 @@ class AsyncInfo
       display_sponsors: user.display_sponsors,
       display_announcements: user.display_announcements,
       trusted: user.trusted?,
+      community_leader: user.community_leader?,
       moderator_for_tags: user.moderator_for_tags,
       moderator_for_subforems: user.moderator_for_subforems,
       config_body_class: user.config_body_class,
