@@ -18,6 +18,7 @@ RSpec.describe Article do
     it { is_expected.to belong_to(:collection).optional }
     it { is_expected.to belong_to(:organization).optional }
     it { is_expected.to belong_to(:user) }
+    it { is_expected.to belong_to(:favorited_by_user).class_name("User").optional }
 
     it { is_expected.to have_one(:discussion_lock).dependent(:delete) }
 
@@ -1659,6 +1660,18 @@ RSpec.describe Article do
       articles = described_class.active_help
       expect(articles).to include(high_score_article)
       expect(articles).not_to include(low_score_article)
+    end
+  end
+
+  describe ".favorited" do
+    let(:leader) { create(:user, :community_leader_level_1) }
+
+    it "returns only articles that have been favorited" do
+      favorited = create(:article, favorited_by_user: leader, favorited_at: Time.current)
+      create(:article)
+
+      expect(described_class.favorited).to include(favorited)
+      expect(described_class.favorited.count).to eq(1)
     end
   end
 

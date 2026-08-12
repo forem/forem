@@ -41,6 +41,11 @@ fr:
     this_list: cette liste
     unread_notifications: notifications non lues
     newsletter: bulletin d'information
+  favorites_controller:
+    create:
+      already_favorited: Ceci a déjà été mis en favori.
+      no_allowance: Vous avez épuisé votre quota de favoris.
+      cannot_favorite: Impossible de mettre ceci en favori.
   feeds:
     sources:
       created: Votre source de flux a été ajoutée et un import a été déclenché.

@@ -491,6 +491,8 @@ en:
           "Resource Admin: ProfileField": "Resource Admin: ProfileField"
           "Resource Admin: ProfileFieldGroup": "Resource Admin: ProfileFieldGroup"
           Super Moderator: Super Moderator
+          Community Leader Level 1: Community Leader Level 1
+          Community Leader Level 2: Community Leader Level 2
         statuses:
           Warned: Warned
           Comment Suspended: Comment Suspended

@@ -15,6 +15,7 @@ RSpec.describe Comment do
 
       it { is_expected.to belong_to(:user) }
       # it { is_expected.to belong_to(:commentable).optional }
+      it { is_expected.to belong_to(:favorited_by_user).class_name("User").optional }
       it { is_expected.to have_many(:reactions).dependent(:destroy) }
       it { is_expected.to have_many(:mentions).dependent(:delete_all) }
       it { is_expected.to have_many(:notifications).dependent(:delete_all) }
@@ -309,6 +310,18 @@ RSpec.describe Comment do
   describe "#id_code_generated" do
     it "gets proper generated ID code" do
       expect(described_class.new(id: 1000).id_code_generated).to eq("1cc")
+    end
+  end
+
+  describe ".favorited" do
+    let(:leader) { create(:user, :community_leader_level_1) }
+
+    it "returns only comments that have been favorited" do
+      favorited = create(:comment, commentable: article, favorited_by_user: leader, favorited_at: Time.current)
+      create(:comment, commentable: article)
+
+      expect(described_class.favorited).to include(favorited)
+      expect(described_class.favorited.count).to eq(1)
     end
   end
 

@@ -47,6 +47,8 @@ class Article < ApplicationRecord
   belongs_to :user
   belongs_to :subforem, optional: true
 
+  belongs_to :favorited_by_user, class_name: "User", optional: true
+
   counter_culture :user
   counter_culture :organization
 
@@ -428,6 +430,8 @@ class Article < ApplicationRecord
   #            published?  Regardless, the scope helps us deal with
   #            that in the future.
   scope :approved, -> { where(approved: true) }
+
+  scope :favorited, -> { where.not(favorited_by_user_id: nil) }
 
   scope :from_subforem, lambda { |subforem_id = nil|
     return where(nil) if ENV["NO_SUBFOREM_FILTER"] == "true"

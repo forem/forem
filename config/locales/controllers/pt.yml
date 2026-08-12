@@ -41,6 +41,11 @@ pt:
     this_list: esta lista
     unread_notifications: notificações não lidas
     newsletter: newsletter
+  favorites_controller:
+    create:
+      already_favorited: Isto já foi adicionado aos favoritos.
+      no_allowance: Você esgotou sua cota de favoritos.
+      cannot_favorite: Não foi possível adicionar isto aos favoritos.
   feeds:
     sources:
       created: Sua fonte de feed foi adicionada e uma importação foi iniciada.

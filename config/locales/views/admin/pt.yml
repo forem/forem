@@ -38,6 +38,8 @@ pt:
           "Resource Admin: Space": "Resource Admin: Space"
           "Resource Admin: ProfileField": "Resource Admin: ProfileField"
           "Resource Admin: ProfileFieldGroup": "Resource Admin: ProfileFieldGroup"
+          Community Leader Level 1: Community Leader Level 1
+          Community Leader Level 2: Community Leader Level 2
         title: Gerenciar Usuários
         search: Pesquisar usuários
         filter: Filtrar
