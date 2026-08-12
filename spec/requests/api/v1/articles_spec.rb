@@ -594,6 +594,17 @@ RSpec.describe "Api::V1::Articles" do
         get "/api/articles/me", headers: { "Accept" => "application/vnd.forem.api-v1+json" }
         expect(response).to have_http_status(:unauthorized)
       end
+
+      # Regression test for https://github.com/forem/forem/issues/23675
+      # A 401 from an unauthenticated request must never be cached by Fastly or any
+      # intermediate proxy. Without no-store, the Fastly edge can serve a cached 401 to
+      # subsequent api-key-authenticated requests that share the same X-Loggedin cache bucket.
+      it "sets no-store cache headers on the 401 response" do
+        get "/api/articles/me", headers: { "Accept" => "application/vnd.forem.api-v1+json" }
+        expect(response).to have_http_status(:unauthorized)
+        expect(response.headers["Cache-Control"]).to eq("no-store")
+        expect(response.headers["Surrogate-Control"]).to eq("no-store")
+      end
     end
 
     context "when request is authenticated" do
