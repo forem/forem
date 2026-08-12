@@ -24,9 +24,6 @@
     <li>
       <a href="<%= header_link(mod_path) %>" class="c-link c-link--block trusted-visible-block"><%= t("views.main.nav.moderator_center") %></a>
     </li>
-    <li>
-      <a href="<%= header_link(leadership_path) %>" class="c-link c-link--block community-leader-visible-block"><%= t("views.main.nav.leadership") %></a>
-    </li>
     <% if ArticlePolicy.is_root_subforem? %>
       <li>
         <button 
