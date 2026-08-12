@@ -216,7 +216,11 @@ class Reaction < ApplicationRecord
   end
 
   def reading_list_article_reaction?
-    reactable_is_article? && (category == "readinglist" || (respond_to?(:saved_change_to_category?) && saved_change_to_category? && saved_change_to_category.first == "readinglist"))
+    return false unless reactable_is_article?
+    return true if destroyed?
+    return true if saved_change_to_category?(to: "readinglist") || saved_change_to_category?(from: "readinglist")
+
+    category == "readinglist" && saved_change_to_status?
   end
 
   def enqueue_user_reading_list_activity_update

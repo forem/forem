@@ -28,12 +28,12 @@ class UserActivity < ApplicationRecord
     self.alltime_users = Follow.follower_user(user_id).pluck(:followable_id)
     self.alltime_organizations = Follow.follower_organization(user_id).pluck(:followable_id)
     self.alltime_subforems = Follow.follower_subforem(user_id).pluck(:followable_id)
-    self.alltime_reading_list_articles = Reaction.readinglist.unarchived.only_articles.where(user_id: user_id).pluck(:reactable_id)
+    self.alltime_reading_list_articles = Reaction.readinglist.unarchived.only_articles.where(user_id: user_id).order(created_at: :desc).pluck(:reactable_id)
   end
 
   def self.update_reading_list_articles_for(user_id)
     activity = find_or_create_by(user_id: user_id)
-    reading_list_articles = Reaction.readinglist.unarchived.only_articles.where(user_id: user_id).pluck(:reactable_id)
+    reading_list_articles = Reaction.readinglist.unarchived.only_articles.where(user_id: user_id).order(created_at: :desc).pluck(:reactable_id)
     activity.update!(alltime_reading_list_articles: reading_list_articles)
   end
 

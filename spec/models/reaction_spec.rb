@@ -546,6 +546,20 @@ RSpec.describe Reaction do
       expect(Users::UpdateUserReadingListActivityWorker).to have_received(:perform_async).with(user.id)
     end
 
+    it "enqueues the worker when a readinglist reaction is archived" do
+      reading_reaction = create(:reaction, reactable: article, user: user, category: "readinglist")
+      allow(Users::UpdateUserReadingListActivityWorker).to receive(:perform_async)
+      reading_reaction.update!(status: "archived")
+      expect(Users::UpdateUserReadingListActivityWorker).to have_received(:perform_async).with(user.id)
+    end
+
+    it "enqueues the worker when a readinglist reaction changes category away from readinglist" do
+      reading_reaction = create(:reaction, reactable: article, user: user, category: "readinglist")
+      allow(Users::UpdateUserReadingListActivityWorker).to receive(:perform_async)
+      reading_reaction.update!(category: "like")
+      expect(Users::UpdateUserReadingListActivityWorker).to have_received(:perform_async).with(user.id)
+    end
+
     it "does not enqueue the worker for non-readinglist reactions" do
       allow(Users::UpdateUserReadingListActivityWorker).to receive(:perform_async)
       create(:reaction, reactable: article, user: user, category: "like")
