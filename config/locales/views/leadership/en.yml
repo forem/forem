@@ -1,0 +1,17 @@
+---
+en:
+  views:
+    leadership:
+      heading: Community Leadership
+      nav:
+        aria_label: Sections
+      curation:
+        heading: Curation
+        allowance: "You have %{remaining} favorites remaining."
+        comment_on: Comment on “%{title}”
+        empty: You haven't favorited any content yet.
+      discussion:
+        heading: Further the Discussion
+        subtitle: Spark engagement by joining the discussion.
+        cta: Comment
+        empty: No posts to recommend.
