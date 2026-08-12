@@ -494,11 +494,12 @@ class User < ApplicationRecord
 
   def cached_reading_list_article_ids
     Rails.cache.fetch("reading_list_ids_of_articles_#{id}_#{public_reactions_count}_#{last_reacted_at}_#{RequestStore.store[:subforem_id]}") do
-      user_activity&.alltime_reading_list_articles.presence || begin
-        readinglist = Reaction.readinglist_for_user(self).order("created_at DESC")
+      ids = user_activity&.alltime_reading_list_articles.presence || begin
+        readinglist = Reaction.readinglist_for_user(self).order("created_at DESC").limit(1000)
         published = Article.published.from_subforem.where(id: readinglist.pluck(:reactable_id)).ids
         readinglist.filter_map { |r| r.reactable_id if published.include? r.reactable_id }
       end
+      ids.first(1000)
     end
   end
 
