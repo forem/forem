@@ -173,6 +173,12 @@ RSpec.describe UserActivity, type: :model do
         expect(activity.alltime_subforems).to contain_exactly(followed_subforem.id)
       end
 
+      it "populates alltime_reading_list_articles from user's reading list reactions" do
+        create(:reaction, category: "readinglist", user: user, reactable: article1)
+        activity.set_activity!
+        expect(activity.alltime_reading_list_articles).to contain_exactly(article1.id)
+      end
+
       it "combines recent_tags and alltime_tags in #relevant_tags" do
         # default: returns first 5 of each
         expect(activity.relevant_tags).to eq(
@@ -212,6 +218,33 @@ RSpec.describe UserActivity, type: :model do
         expect(existing_activity.last_activity_at).to be_within(1.second)
           .of(Time.current)
       end
+    end
+  end
+
+  describe ".update_reading_list_articles_for" do
+    let(:user) { create(:user) }
+    let(:article1) { create(:article) }
+    let(:article2) { create(:article) }
+
+    it "creates user_activity if missing and updates alltime_reading_list_articles" do
+      create(:reaction, category: "readinglist", user: user, reactable: article1)
+      create(:reaction, category: "readinglist", user: user, reactable: article2)
+
+      expect {
+        described_class.update_reading_list_articles_for(user.id)
+      }.to change(described_class, :count).by(1)
+
+      user_activity = described_class.find_by(user_id: user.id)
+      expect(user_activity.alltime_reading_list_articles).to contain_exactly(article1.id, article2.id)
+    end
+
+    it "updates existing user_activity record's alltime_reading_list_articles" do
+      user_activity = create(:user_activity, user: user, alltime_reading_list_articles: [])
+      create(:reaction, category: "readinglist", user: user, reactable: article1)
+
+      described_class.update_reading_list_articles_for(user.id)
+
+      expect(user_activity.reload.alltime_reading_list_articles).to contain_exactly(article1.id)
     end
   end
 
