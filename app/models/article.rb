@@ -524,7 +524,8 @@ class Article < ApplicationRecord
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
            :published_from_feed, :crossposted_at, :published_at, :created_at, :edited_at,
-           :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids, :score, :type_of)
+           :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids, :score, :type_of,
+           :favorited_by_user_id)
   }
 
   scope :sorting, lambda { |value|

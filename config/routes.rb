@@ -519,6 +519,9 @@ Rails.application.routes.draw do
                                      }
     get "/dashboard/:username", to: "dashboards#show", as: :dashboard_show_user
 
+    get "/leadership", to: "leadership_dashboards#show", as: :leadership
+    get "/leadership/:section", to: "leadership_dashboards#show", as: :leadership_section
+
     unless Rails.env.production?
       get "/rails/mailers", to: "rails/mailers#index"
       get "/rails/mailers/*path", to: "rails/mailers#preview"

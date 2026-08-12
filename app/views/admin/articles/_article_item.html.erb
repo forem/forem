@@ -9,7 +9,7 @@
 
   <article class="js-individual-article crayons-card p-6 flex flex-col gap-4">
     <header>
-      <% if decorated_article.pinned? || article.featured || article.approved || (!article.published? && article.published_from_feed?) || article.video || article.user&.warned? %>
+      <% if decorated_article.pinned? || article.featured || article.approved || article.favorited_by_user_id? || (!article.published? && article.published_from_feed?) || article.video || article.user&.warned? %>
         <div class="flex gap-1 mb-1">
           <% if !article.published? && article.published_from_feed? %>
             <span class="c-indicator c-indicator--danger"><%= t("views.moderations.article.unplublished") %></span>
@@ -22,6 +22,12 @@
           <% end %>
           <% if article.approved %>
             <span class="c-indicator c-indicator--info"><%= t("views.moderations.article.approved") %></span>
+          <% end %>
+          <% if article.favorited_by_user_id? %>
+            <span class="c-indicator c-indicator--warning">
+              <%= t("views.moderations.article.favorited_by") %>
+              <a href="<%= article.favorited_by_user&.path %>" target="_blank" rel="noopener" class="shrink-0 c-link c-link--branded fw-bold"><%= article.favorited_by_user&.username %></a>
+            </span>
           <% end %>
           <% if article.video %>
             <span class="c-indicator"><%= t("views.moderations.article.contains_video") %></span>
@@ -122,6 +128,13 @@
               <button type="submit" class="c-btn">
                 <%= t("views.moderations.article.pin_post") %>
               </button>
+            </form>
+          <% end %>
+          <% if article.favorited_by_user_id? %>
+            <form method="post" action="<%= unfavorite_admin_article_path(article.id) %>" class="inline">
+              <input type="hidden" name="_method" value="delete" />
+              <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
+              <button type="submit" class="c-btn"><%= t("views.moderations.article.unfavorite") %></button>
             </form>
           <% end %>
           <a class="c-link c-link--block" href="<%= admin_user_path(article.user_id) %>" target="_blank" rel="noopener"><%= t("views.moderations.article.user") %></a>

@@ -1,0 +1,33 @@
+<% sections = [
+     ["curation", leadership_path],
+     ["discussion", leadership_section_path(:discussion)],
+   ] %>
+
+<nav class="hidden m:block" aria-label="<%= t("views.leadership.nav.aria_label") %>">
+  <% sections.each do |section, path| %>
+    <a
+      class="crayons-link crayons-link--block <%= "crayons-link--current" if @section == section %>"
+      href="<%= path %>"
+      aria-current="<%= "page" if @section == section %>">
+      <%= t("views.leadership.#{section}.heading") %>
+    </a>
+  <% end %>
+</nav>
+
+<nav class="block m:hidden px-3" aria-label="<%= t("views.leadership.nav.aria_label") %>">
+  <div class="crayons-tabs">
+    <ul class="crayons-tabs__list">
+      <% sections.each do |section, path| %>
+        <li>
+          <a
+            data-text="<%= t("views.leadership.#{section}.heading") %>"
+            class="crayons-tabs__item <%= "crayons-tabs__item--current" if @section == section %>"
+            href="<%= path %>"
+            aria-current="<%= "page" if @section == section %>">
+            <%= t("views.leadership.#{section}.heading") %>
+          </a>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</nav>
