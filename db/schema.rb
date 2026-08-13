@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_30_170000) do
+ActiveRecord::Schema[8.0].define(version: 2026_08_12_141500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -173,6 +173,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_30_170000) do
     t.boolean "email_digest_eligible", default: true
     t.float "experience_level_rating", default: 5.0
     t.float "experience_level_rating_distribution", default: 5.0
+    t.datetime "favorited_at"
+    t.bigint "favorited_by_user_id"
     t.boolean "featured", default: false
     t.integer "feed_clicks_count", default: 0
     t.integer "feed_impressions_count", default: 0
@@ -238,6 +240,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_30_170000) do
     t.index ["collection_id"], name: "index_articles_on_collection_id"
     t.index ["comment_score"], name: "index_articles_on_comment_score"
     t.index ["comments_count"], name: "index_articles_on_comments_count"
+    t.index ["favorited_by_user_id"], name: "index_articles_on_favorited_by_user_id"
     t.index ["featured", "published", "published_at"], name: "index_articles_on_featured_published_published_at", order: { published_at: :desc }, where: "(published = true)"
     t.index ["feed_source_url"], name: "index_articles_on_feed_source_url", unique: true, where: "(published IS TRUE)"
     t.index ["feed_source_url"], name: "index_articles_on_feed_source_url_unscoped"
@@ -476,6 +479,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_30_170000) do
     t.boolean "deleted", default: false
     t.boolean "edited", default: false
     t.datetime "edited_at", precision: nil
+    t.datetime "favorited_at"
+    t.bigint "favorited_by_user_id"
     t.boolean "hidden_by_commentable_user", default: false
     t.string "id_code"
     t.integer "markdown_character_count"
@@ -497,6 +502,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_30_170000) do
     t.index ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type"
     t.index ["created_at"], name: "index_comments_on_created_at"
     t.index ["deleted"], name: "index_comments_on_deleted", where: "(deleted = false)"
+    t.index ["favorited_by_user_id"], name: "index_comments_on_favorited_by_user_id"
     t.index ["hidden_by_commentable_user"], name: "index_comments_on_hidden_by_commentable_user", where: "(hidden_by_commentable_user = false)"
     t.index ["id"], name: "index_comments_negative_public_reactions_count", where: "(public_reactions_count < 0)"
     t.index ["score"], name: "index_comments_on_score"
@@ -1901,6 +1907,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_30_170000) do
   create_table "user_activities", force: :cascade do |t|
     t.jsonb "alltime_labels", default: []
     t.jsonb "alltime_organizations", default: []
+    t.jsonb "alltime_reading_list_articles", default: []
     t.jsonb "alltime_subforems", default: []
     t.jsonb "alltime_tags", default: []
     t.jsonb "alltime_users", default: []
@@ -2001,6 +2008,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_30_170000) do
     t.datetime "current_sign_in_at", precision: nil
     t.inet "current_sign_in_ip"
     t.integer "current_subscriber_status", default: 0, null: false
+    t.integer "earned_favorites_count", default: 0, null: false
     t.string "email"
     t.string "encrypted_password", default: "", null: false
     t.boolean "export_requested", default: false
@@ -2205,6 +2213,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_30_170000) do
   add_foreign_key "article_activities", "articles"
   add_foreign_key "articles", "collections", on_delete: :nullify
   add_foreign_key "articles", "organizations", on_delete: :nullify
+  add_foreign_key "articles", "users", column: "favorited_by_user_id", on_delete: :nullify
   add_foreign_key "articles", "users", on_delete: :cascade
   add_foreign_key "audit_logs", "users"
   add_foreign_key "badge_achievements", "badges"
@@ -2216,6 +2225,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_30_170000) do
   add_foreign_key "classified_listings", "users", on_delete: :cascade
   add_foreign_key "collections", "organizations", on_delete: :nullify
   add_foreign_key "collections", "users", on_delete: :cascade
+  add_foreign_key "comments", "users", column: "favorited_by_user_id", on_delete: :nullify
   add_foreign_key "comments", "users", on_delete: :cascade
   add_foreign_key "concept_accesses", "concepts", on_delete: :cascade
   add_foreign_key "concept_accesses", "users", on_delete: :cascade

@@ -492,6 +492,8 @@ en:
           "Resource Admin: ProfileField": "Resource Admin: ProfileField"
           "Resource Admin: ProfileFieldGroup": "Resource Admin: ProfileFieldGroup"
           Super Moderator: Super Moderator
+          Community Leader Level 1: Community Leader Level 1
+          Community Leader Level 2: Community Leader Level 2
         statuses:
           Warned: Warned
           Comment Suspended: Comment Suspended
@@ -561,6 +563,17 @@ en:
             enable: Enable Dofollow
             disable: Disable Dofollow
             enabled_notice: Dofollow links are enabled for this organization's readme page.
+      favorites:
+        leaderboard:
+          heading: Impact Leaderboard
+          description: User ranking by downstream engagement of their favorite content.
+          empty: No favorite content yet.
+          rank: Rank
+          leader: Leader
+          favorites: Favorites
+          articles: Articles
+          comments: Comments
+          impact: Impact
       org_features:
         heading: Org Features
         description: Manage organization feature flags globally or per-organization.

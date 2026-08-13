@@ -63,15 +63,23 @@ RSpec.describe "Api::V1::Users" do
       expect(response_user.key?("followers_count")).to be false
     end
 
-    it "includes email if display_email_on_profile is set to true" do
+    it "doesn't include email for unauthenticated requests even if display_email_on_profile is true" do
       user.setting.update_column(:display_email_on_profile, true)
       get api_user_path("by_username"), params: { url: user.username }, headers: headers
+      response_user = response.parsed_body
+      expect(response_user).to have_key("email")
+      expect(response_user["email"]).to be_nil
+    end
+
+    it "includes email for authenticated requests if display_email_on_profile is set to true" do
+      user.setting.update_column(:display_email_on_profile, true)
+      get api_user_path("by_username"), params: { url: user.username }, headers: auth_headers
       response_user = response.parsed_body
       expect(response_user["email"]).to eq(user.email)
     end
 
     it "doesn't include email if display_email_on_profile is false" do
-      get api_user_path("by_username"), params: { url: user.username }, headers: headers
+      get api_user_path("by_username"), params: { url: user.username }, headers: auth_headers
       response_user = response.parsed_body
       expect(response_user.key?("email")).to be true
       expect(response_user["email"]).to be_nil
@@ -127,6 +135,16 @@ RSpec.describe "Api::V1::Users" do
 
         expect(response_user["badge_ids"]).to eq(user.badge_ids)
         expect(response_user["followers_count"]).to eq(user.followers_count)
+      end
+
+      it "always includes the user's own email regardless of display_email_on_profile setting" do
+        user.setting.update_column(:display_email_on_profile, false)
+
+        get me_api_users_path, headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+        response_user = response.parsed_body
+        expect(response_user["email"]).to eq(user.email)
       end
 
       it "returns 200 if no authentication and the Forem instance is set to private but user is authenticated" do

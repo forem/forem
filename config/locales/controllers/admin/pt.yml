@@ -5,6 +5,9 @@ pt:
       saved: Artigo salvo!
       pinned: Artigo Fixado!
       unpinned: Artigo Desfixado!
+      favorite_removed: Favorito removido.
+    comments_controller:
+      favorite_removed: Favorito removido.
     badge_achievements_controller:
       deleted: Conquista de badge foi excluída!
       rewarded: Badges estão sendo recompensados. A tarefa terminará em breve.
