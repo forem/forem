@@ -43,7 +43,7 @@ sub vcl_recv {
   # return(pass) forces Fastly to bypass cache lookup entirely and proxy the request
   # directly to origin for every api-key-authenticated request, ensuring valid API
   # keys always reach the Rails authentication layer.
-  if (req.http.api-key) {
+  if (req.url ~ "^/api" && req.http.api-key) {
     return(pass);
   }
 }
