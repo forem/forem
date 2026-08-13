@@ -26,10 +26,12 @@ module Trackable
         active_names.map { |name| instance_for(name) }
       end
 
-      # Memoized: TRACKABLE_ADAPTERS and adapter `#enabled?` are both ENV-driven
-      # and effectively static after boot. Cleared by `reset!`.
+      # Recomputed per call: adapter `#enabled?` is now runtime-dynamic (e.g.
+      # Trackers::CustomerioCdp consults the customerio_cdp_enabled admin
+      # setting), so memoizing here would make the toggle require a restart.
+      # Cost is a cached Setting read plus the memoized adapter instance.
       def active_names
-        @active_names ||= configured_adapter_names.select { |name| instance_for(name)&.enabled? }
+        configured_adapter_names.select { |name| instance_for(name)&.enabled? }
       end
 
       def reset!

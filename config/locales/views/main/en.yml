@@ -33,6 +33,7 @@ en:
         placeholder: "..."
         list: Reading list
         moderator_center: Moderator Center
+        leadership: Community Leadership
         other: Other
         settings: Settings
         account: Account
@@ -52,6 +53,7 @@ en:
         Videos: Videos
       side:
         active_discussions: "Active discussions"
+        upcoming_events: "Upcoming events"
         listings:
           heading: Listings
           all: See all

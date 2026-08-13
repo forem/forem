@@ -7,19 +7,18 @@ RSpec.describe Authentication::Providers::Mlh, type: :service do
       uid: "123456",
       info: {
         email: "test@example.com",
-        nickname: "mlhuser",
         name: "MLH User"
       },
       extra: {
         raw_info: {}
-      }
+      },
     )
   end
   let(:provider) { described_class.new(auth_payload) }
 
   describe ".official_name" do
-    it "returns MyMLH" do
-      expect(described_class.official_name).to eq("MyMLH")
+    it "returns MLH" do
+      expect(described_class.official_name).to eq("MLH")
     end
   end
 
@@ -37,18 +36,30 @@ RSpec.describe Authentication::Providers::Mlh, type: :service do
   end
 
   describe "#new_user_data" do
-    it "maps the correct data for a new user" do
+    it "maps email, name, and username, leaving users.mlh_username untouched" do
       data = provider.new_user_data
-      expect(data[:email]).to eq("test@example.com")
-      expect(data[:mlh_username]).to eq("mlhuser")
-      expect(data[:name]).to eq("MLH User")
+      expect(data).to eq(email: "test@example.com", name: "MLH User", username: "test")
+    end
+
+    it "generates a unique username" do
+      create(:user, username: "test")
+
+      expect(provider.new_user_data[:username]).not_to eq("test")
+      expect(provider.new_user_data[:username]).to start_with("test")
+    end
+  end
+
+  describe "#user_nickname" do
+    it "derives the nickname from the email" do
+      auth_payload.info.nickname = nil
+
+      expect(provider.user_nickname).to eq("test")
     end
   end
 
   describe "#existing_user_data" do
-    it "maps the correct data for an existing user" do
-      data = provider.existing_user_data
-      expect(data[:mlh_username]).to eq("mlhuser")
+    it "updates nothing, leaving users.mlh_username untouched" do
+      expect(provider.existing_user_data).to eq({})
     end
   end
 end

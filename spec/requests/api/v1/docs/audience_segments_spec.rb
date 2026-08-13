@@ -29,9 +29,12 @@ RSpec.describe "Api::V1::Docs::AudienceSegments" do
     describe "GET /segments" do
       get "Manually managed audience segments" do
         tags "segments"
-        description "This endpoint allows the client to retrieve a list of audience segments.
+        description "Retrieve a list of manually managed audience segments.
 
-An audience segment is a group of users that can be targeted by a Billboard. This API only permits managing segments you create and maintain yourself.
+### Audience Segments Overview:
+- Audience Segments are cohorts of users grouped together for targeting announcements, features, or promotional campaign banners (Billboards).
+- This endpoint lists manual cohorts created and maintained by site administrators.
+- Requires administrator privileges.
 
 The endpoint supports pagination, and each page will contain `30` segments by default."
         operationId "getSegments"
@@ -77,7 +80,11 @@ The endpoint supports pagination, and each page will contain `30` segments by de
     describe "POST /segments" do
       post "Create a manually managed audience segment" do
         tags "segments"
-        description "This endpoint allows the client to create a new audience segment.\n\nAn audience segment is a group of users that can be targeted by a Billboard. This API only permits managing segments you create and maintain yourself."
+        description "Create a new manually managed audience segment.
+
+### Usage Guidance:
+- Used by administrators to define a new target cohort group.
+- Users can be added or removed in bulk later via segment member endpoints."
         operationId "createSegment"
         produces "application/json"
         consumes "application/json"
@@ -113,12 +120,18 @@ The endpoint supports pagination, and each page will contain `30` segments by de
     describe "GET /segments/:id" do
       get "A manually managed audience segment" do
         tags "segments"
-        description "This endpoint allows the client to retrieve a single manually-managed audience segment specified by ID."
+        description "Retrieve details of a single manually-managed audience segment specified by ID.
+
+### Integration Tip:
+- Includes segment type (`manual`), configuration, and metadata.
+- Automatic/system-generated segments cannot be queried or updated via this endpoint."
         operationId "getSegment"
         produces "application/json"
         consumes "application/json"
 
-        parameter name: :id, in: :path, required: true, schema: id_schema
+        parameter name: :id, in: :path, required: true,
+                  description: "Unique segment numerical ID.",
+                  schema: id_schema
 
         response "200", "The audience segment" do
           let(:"api-key") { admin_api_secret.secret }
@@ -167,12 +180,17 @@ The endpoint supports pagination, and each page will contain `30` segments by de
     describe "DELETE /segments/:id" do
       delete "Delete a manually managed audience segment" do
         tags "segments"
-        description "This endpoint allows the client to delete an audience segment specified by ID.\n\nAudience segments cannot be deleted if there are still any Billboards using them."
+        description "Delete an audience segment specified by ID.
+
+### Constraints:
+- Audience segments cannot be deleted if they are currently assigned to any active or pending Billboards."
         operationId "deleteSegment"
         produces "application/json"
         consumes "application/json"
 
-        parameter name: :id, in: :path, required: true, schema: id_schema
+        parameter name: :id, in: :path, required: true,
+                  description: "Unique segment numerical ID.",
+                  schema: id_schema
 
         response "200", "The deleted audience segment" do
           let(:"api-key") { admin_api_secret.secret }
@@ -231,12 +249,17 @@ The endpoint supports pagination, and each page will contain `30` segments by de
     path "/api/segments/{id}/users" do
       get "Users in a manually managed audience segment" do
         tags "segments"
-        description "This endpoint allows the client to retrieve a list of the users in an audience segment specified by ID. The endpoint supports pagination, and each page will contain `30` users by default."
+        description "Retrieve a paginated list of users enrolled in the specified manual audience segment.
+
+### Pagination Guidance:
+- Supports standard `page` and `per_page` controls, returning 30 users per page by default."
         operationId "getUsersInSegment"
         produces "application/json"
         consumes "application/json"
 
-        parameter name: :id, in: :path, required: true, schema: id_schema
+        parameter name: :id, in: :path, required: true,
+                  description: "Unique segment numerical ID.",
+                  schema: id_schema
         parameter "$ref": "#/components/parameters/perPageParam30to1000"
 
         response "200", "A List of users in the audience segment" do
@@ -288,14 +311,21 @@ The endpoint supports pagination, and each page will contain `30` segments by de
     path "/api/segments/{id}/add_users" do
       put "Add users to a manually managed audience segment" do
         tags "segments"
-        description "This endpoint allows the client to add users in bulk to an audience segment specified by ID.\n\nSuccesses are users that were included in the segment (even if they were already in it), and failures are users that could not be added to the segment."
+        description "Add users in bulk to the specified manual audience segment.
+
+### Bulk Update Behavior:
+- Accepts a JSON array of `user_ids` in the request body.
+- Returns a list of successes and failures. Successful additions include users already present in the segment."
         operationId "addUsersToSegment"
         produces "application/json"
         consumes "application/json"
 
-        parameter name: :id, in: :path, required: true, schema: id_schema
+        parameter name: :id, in: :path, required: true,
+                  description: "Unique segment numerical ID.",
+                  schema: id_schema
         parameter name: :user_ids,
                   in: :body,
+                  description: "Map containing user IDs to enroll in the segment.",
                   schema: { "$ref": "#/components/schemas/SegmentUserIds" }
 
         response "200", "Result of adding the users to the segment." do
@@ -365,14 +395,21 @@ The endpoint supports pagination, and each page will contain `30` segments by de
     path "/api/segments/{id}/remove_users" do
       put "Remove users from a manually managed audience segment" do
         tags "segments"
-        description "This endpoint allows the client to remove users in bulk from an audience segment specified by ID.\n\nSuccesses are users that were removed; failures are users that weren't a part of the segment."
+        description "Remove users in bulk from the specified manual audience segment.
+
+### Bulk Update Behavior:
+- Accepts a JSON array of `user_ids` in the request body.
+- Returns successes (users successfully removed) and failures (users who were not members of the segment)."
         operationId "removeUsersFromSegment"
         produces "application/json"
         consumes "application/json"
 
-        parameter name: :id, in: :path, required: true, schema: id_schema
+        parameter name: :id, in: :path, required: true,
+                  description: "Unique segment numerical ID.",
+                  schema: id_schema
         parameter name: :user_ids,
                   in: :body,
+                  description: "Map containing user IDs to remove from the segment.",
                   schema: { "$ref": "#/components/schemas/SegmentUserIds" }
 
         before do

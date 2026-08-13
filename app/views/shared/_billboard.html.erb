@@ -93,13 +93,36 @@
     <div class="popover-billboard__header flex">
       <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>
       <button id="sponsorship-close-trigger-<%= billboard.id %>" aria-controls="sponsorship-close-<%= billboard.id %>"
+        aria-label="<%= billboard.special_behavior == 'persistent' ? 'Minimize billboard' : 'Dismiss billboard' %>"
         class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon popover-billboard__close">
-          <%= crayons_icon_tag("x", class: "pointer-events-none", title: "x") %>
+          <% if billboard.special_behavior == "persistent" %>
+            <%= crayons_icon_tag("chevron-down", class: "pointer-events-none", title: "Minimize") %>
+          <% else %>
+            <%= crayons_icon_tag("x", class: "pointer-events-none", title: "x") %>
+          <% end %>
       </button>
     </div>
     <div class="popover-billboard__content text-styles text-styles--billboard">
       <%= billboard.processed_html_final.html_safe %>
     </div>
+    <% if billboard.special_behavior == "persistent" && billboard.minimized_processed_html.present? %>
+      <template class="js-minimized-template">
+        <div class="crayons-card crayons-card--secondary crayons-bb bb-placement js-billboard"
+          style="<%= billboard.style_string.gsub('border-bottom: none;', '') %>"
+          data-display-unit data-id="<%= billboard.id %>"
+          data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
+          data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
+          data-context-type="<%= data_context_type %>"
+          data-special="<%= billboard.special_behavior %>"
+          data-article-id="<%= @article&.id %>"
+          data-type-of="<%= billboard.type_of_display %>">
+          <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>
+          <div class="p-1 pt-3 text-styles text-styles--billboard">
+            <%= billboard.minimized_processed_html.html_safe %>
+          </div>
+        </div>
+      </template>
+    <% end %>
   </div>
 <% elsif billboard.placement_area == "post_body_bottom" %>
   <% long_bb = billboard.processed_html_final.size > 750 && billboard.processed_html_final.exclude?("ltag-survey") %>

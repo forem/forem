@@ -37,7 +37,16 @@ export const SidebarWidget = () => {
     const followBtn = document.getElementById(
       `widget-list-item__follow-button-${updatedUser.username}`,
     );
-    followBtn.innerText = updatedUser.following ? 'Follow' : 'Following';
+
+    if (updatedUser.following) {
+      followBtn.innerText = 'Follow';
+      followBtn.classList.remove('crayons-btn--outlined');
+      followBtn.classList.add('crayons-btn--secondary');
+    } else {
+      followBtn.innerText = 'Following';
+      followBtn.classList.remove('crayons-btn--secondary');
+      followBtn.classList.add('crayons-btn--outlined');
+    }
 
     const toggleFollowState = (newFollowState) => {
       updatedUser.following = newFollowState === 'followed';
@@ -52,17 +61,15 @@ export const SidebarWidget = () => {
   }
 
   return (
-    <div className="widget" id="widget-00001">
-      <div className="widget-suggested-follows-container">
-        <header>
-          <h4>who to follow</h4>
-        </header>
-        <div className="widget-body">
-          {suggestedUsers.map((user) => (
-            <SidebarUser key={user.id} user={user} followUser={followUser} />
-          ))}
-        </div>
+    <section className="crayons-card crayons-card--secondary crayons-layout__content mb-4" id="widget-00001">
+      <header className="crayons-card__header">
+        <h3 className="crayons-subtitle-3">who to follow</h3>
+      </header>
+      <div className="crayons-card__body">
+        {suggestedUsers.map((user) => (
+          <SidebarUser key={user.id} user={user} followUser={followUser} />
+        ))}
       </div>
-    </div>
+    </section>
   );
 };

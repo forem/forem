@@ -172,7 +172,7 @@
           <small class="crayons-story__tertiary fs-xs mr-2">
             <%= t("views.articles.reading_time", count: [story.reading_time, 1].max) %>
           </small>
-          <% if (@user == nil) || (@user.id != story.user_id) %>
+          <% if local_assigns[:is_home_feed] && (user_signed_in? rescue false) && ((@user == nil) || (@user.id != story.user_id)) %>
             <button
               type="button"
               id="article-save-button-<%= story.id %>"
@@ -181,10 +181,10 @@
               data-article-author-id="<%= story.user_id %>"
               aria-label="<%= t("views.articles.save.aria_label", title: story.type_of == "status" && story.title_finalized ? story.title_finalized : story.title) %>"
               title="<%= t("views.articles.save.title", title: story.type_of == "status" && story.title_finalized ? story.title_finalized : story.title) %>">
-              <span class="bm-initial">
+              <span class="bm-initial crayons-icon c-btn__icon">
                 <%= inline_svg_tag("small-save.svg", alt: "", aria_hidden: true) %>
               </span>
-              <span class="bm-success">
+              <span class="bm-success crayons-icon c-btn__icon">
                 <%= inline_svg_tag("small-save-filled.svg", alt: "", aria_hidden: true) %>
               </span>
             </button>

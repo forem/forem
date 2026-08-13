@@ -41,6 +41,11 @@ en:
     this_list: this list
     unread_notifications: unread notifications
     newsletter: newsletter
+  favorites_controller:
+    create:
+      already_favorited: This has already been made a favorite.
+      no_allowance: You have used up your favorite allowance.
+      cannot_favorite: Unable to make this a favorite.
   feeds:
     sources:
       created: Your feed source has been added and an import has been triggered.
@@ -97,7 +102,6 @@ en:
     not_found: Lead form not found.
     already_submitted: You have already submitted this form.
     name_and_email_required: Name and email are required.
-    recaptcha_failed: Please complete the CAPTCHA verification.
   podcasts_controller:
     podcast_suggested: Podcast suggested
   profiles_controller:

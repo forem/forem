@@ -34,13 +34,13 @@
   <!-- This is because of navigation via InstantClick, instantclick.io -->
   <!-- However, the crawled version of the page has the canonical in the head. -->
   <!-- This is confirmed by the canonical url inspector. See https://github.com/forem/forem/issues/9509#issuecomment-732259221. -->
-  <link rel="canonical" href="<%= @article.canonical_url.presence || app_url(@article.path) %>" />
+  <link rel="canonical" href="<%= @article.processed_canonical_url %>" />
   <meta name="description" content="<%= @article.description_and_tags %>">
   <%= meta_keywords_article(@article.cached_tag_list) %>
 <% else %>
   <%= content_for :page_meta do %>
     <link rel="preload" href="/reactions?article_id=<%= @article.id %>" as="fetch" crossorigin="same-origin">
-    <link rel="canonical" href="<%= @article.canonical_url.presence || app_url(@article.path) %>" />
+    <link rel="canonical" href="<%= @article.processed_canonical_url %>" />
     <meta name="description" content="<%= @article.description_and_tags %>">
     <%= meta_keywords_article(@article.cached_tag_list) %>
 
@@ -300,7 +300,7 @@
   <% end %>
 
   <div class="fullscreen-code js-fullscreen-code"></div>
-  <%= javascript_include_tag "billboard", "localizeArticleDates", "articleReactions", defer: true %>
+  <%= javascript_include_tag "billboard", "localizeArticleDates", "articleReactions", "favoriteControls", defer: true %>
 
   <script>
     <%# we consider these scripts safe for embedding as they come from our code %>
@@ -328,8 +328,9 @@
     <% if @article.processed_html.include?("ltag-agent-session") %>
       <%== AgentSessionTag.script %>
     <% end %>
-    <%# We should be able to make this conditional in future, but defines a global variable for now %>
-    <%== RunkitTag.script %>
+    <% if @article.processed_html.include?("ltag__event") %>
+      <%== EventTag.script %>
+    <% end %>
   </script>
   <div class="js-billboard-container pb-4 crayons-layout__comments-billboard" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_fixed_bottom) %>"></div>
 

@@ -96,6 +96,17 @@ RSpec.describe Settings::General do
       end
     end
 
+    describe ".customerio_cdp_enabled" do
+      it "defaults to false" do
+        expect(described_class.customerio_cdp_enabled).to be(false)
+      end
+
+      it "can be enabled" do
+        described_class.customerio_cdp_enabled = true
+        expect(described_class.customerio_cdp_enabled?).to be(true)
+      end
+    end
+
     describe "validating algolia settings" do
       it "only accepts strings" do
         expect(described_class.get_setting(:algolia_application_id)[:type]).to eq(:string)

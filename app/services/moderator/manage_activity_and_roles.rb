@@ -102,6 +102,10 @@ module Moderator
       when "Trusted"
         remove_negative_roles
         TagModerators::AddTrustedRole.call(user)
+      when "Community Leader Level 1"
+        assign_community_leader_role(:community_leader_level_1)
+      when "Community Leader Level 2"
+        assign_community_leader_role(:community_leader_level_2)
       when "Warned"
         warned
       when "Base Subscriber"
@@ -127,6 +131,11 @@ module Moderator
 
     def check_super_admin
       raise I18n.t("services.moderator.manage_activity_and_roles.need_super") unless @admin.super_admin?
+    end
+
+    def assign_community_leader_role(role)
+      remove_negative_roles
+      CommunityLeaders::Add.call(user, role)
     end
 
     def comment_suspended

@@ -18,6 +18,12 @@ class LeadSubmissionsController < ApplicationController
     end
 
     if current_user
+      existing_submission = form.lead_submissions.find_by(user: current_user)
+      if existing_submission
+        render_success(existing_submission)
+        return
+      end
+
       snapshot = LeadSubmission.snapshot_from_user(current_user)
       submission = form.lead_submissions.build(snapshot.merge(user: current_user))
     else
@@ -26,17 +32,21 @@ class LeadSubmissionsController < ApplicationController
         render json: { success: false, error: I18n.t("lead_submissions.name_and_email_required") }, status: :unprocessable_entity
         return
       end
-      unless recaptcha_passed?
-        render json: { success: false, error: I18n.t("lead_submissions.recaptcha_failed") }, status: :unprocessable_entity
-        return
-      end
       submission = form.lead_submissions.build(attrs)
     end
 
     if submission.save
-      render json: { success: true }
+      render_success(submission)
+    elsif current_user && (existing_submission = form.lead_submissions.find_by(user: current_user))
+      render_success(existing_submission)
     else
       render json: { success: false, error: submission.errors.full_messages.first }, status: :unprocessable_entity
+    end
+  rescue ActiveRecord::RecordNotUnique
+    if current_user && (existing_submission = form.lead_submissions.find_by(user: current_user))
+      render_success(existing_submission)
+    else
+      raise
     end
   rescue ActiveRecord::RecordNotFound
     render json: { success: false, error: I18n.t("lead_submissions.not_found") }, status: :not_found
@@ -48,10 +58,9 @@ class LeadSubmissionsController < ApplicationController
     params.permit(:name, :email, :company, :job_title)
   end
 
-  def recaptcha_passed?
-    return true unless ReCaptcha::CheckEnabled.call(nil)
-
-    recaptcha_params = { secret_key: Settings::Authentication.recaptcha_secret_key }
-    params["g-recaptcha-response"].present? && verify_recaptcha(recaptcha_params)
+  def render_success(submission)
+    response = { success: true }
+    response[:submitted_at] = submission.created_at.iso8601 if submission.user_id?
+    render json: response
   end
 end

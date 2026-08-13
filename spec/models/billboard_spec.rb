@@ -85,6 +85,16 @@ RSpec.describe Billboard do
       it { is_expected.to have_many(:tags) }
     end
 
+    it "requires minimized_body_markdown if special_behavior is persistent" do
+      billboard.special_behavior = "persistent"
+      billboard.minimized_body_markdown = nil
+      expect(billboard).not_to be_valid
+      expect(billboard.errors[:minimized_body_markdown]).to include("can't be blank")
+      
+      billboard.minimized_body_markdown = "minimized content"
+      expect(billboard).to be_valid
+    end
+
     it "allows sidebar_right" do
       billboard.placement_area = "sidebar_right"
       expect(billboard).to be_valid
@@ -340,6 +350,24 @@ RSpec.describe Billboard do
       billboard.update(name: "Sample billboard")
       billboard.reload
       expect(billboard.processed_html).to eq(html)
+    end
+
+    it "processes minimized_body_markdown using the same render_mode" do
+      billboard = create(:billboard, render_mode: "forem_markdown", minimized_body_markdown: "Minimized **bold**")
+      expect(billboard.minimized_processed_html).to include("<strong>bold</strong>")
+      
+      billboard.update(render_mode: "raw", minimized_body_markdown: "<div>Raw minimized</div>")
+      expect(billboard.minimized_processed_html).to eq("<div>Raw minimized</div>")
+    end
+
+    it "re-processes body_markdown and minimized_body_markdown when render_mode or placement_area changes" do
+      billboard = create(:billboard, render_mode: "forem_markdown", body_markdown: "**bold**", minimized_body_markdown: "Minimized **bold**")
+      expect(billboard.processed_html).to include("<strong>bold</strong>")
+      expect(billboard.minimized_processed_html).to include("<strong>bold</strong>")
+
+      billboard.update!(render_mode: "raw")
+      expect(billboard.processed_html).to eq("**bold**")
+      expect(billboard.minimized_processed_html).to eq("Minimized **bold**")
     end
   end
 
@@ -598,9 +626,38 @@ RSpec.describe Billboard do
       expect { billboard.save! }.to change { billboard.exclude_article_ids }.from([]).to([article.id])
     end
 
+    it "automatically extracts article IDs from true relative links (host is nil) when render_mode is raw" do
+      billboard = build(:billboard, render_mode: "raw", body_markdown: "<a href=\"#{article.path}\">link</a>")
+      
+      expect { billboard.save! }.to change { billboard.exclude_article_ids }.from([]).to([article.id])
+    end
+
     it "automatically extracts article IDs from absolute links matching the app domain" do
       app_url = URI.parse(URL.url)
       billboard = build(:billboard, body_markdown: "Check out this great post: [link](#{app_url}#{article.path})")
+      
+      expect { billboard.save! }.to change { billboard.exclude_article_ids }.from([]).to([article.id])
+    end
+
+    it "automatically extracts article IDs from absolute links matching the app domain with www prefix" do
+      app_url = URI.parse(URL.url)
+      www_url = "#{app_url.scheme}://www.#{app_url.host}"
+      billboard = build(:billboard, body_markdown: "Check out this great post: [link](#{www_url}#{article.path})")
+      
+      expect { billboard.save! }.to change { billboard.exclude_article_ids }.from([]).to([article.id])
+    end
+
+    it "automatically extracts article IDs from absolute links matching Settings::General.app_domain" do
+      allow(Settings::General).to receive(:app_domain).and_return("customdomain.com")
+      billboard = build(:billboard, body_markdown: "Check out this great post: [link](https://customdomain.com#{article.path})")
+      
+      expect { billboard.save! }.to change { billboard.exclude_article_ids }.from([]).to([article.id])
+    end
+
+    it "automatically extracts article IDs from absolute links matching subforem domains" do
+      subforem_domain = "subforem.customdomain.com"
+      allow(Subforem).to receive(:cached_domains).and_return([subforem_domain])
+      billboard = build(:billboard, body_markdown: "Check out this great post: [link](https://#{subforem_domain}#{article.path})")
       
       expect { billboard.save! }.to change { billboard.exclude_article_ids }.from([]).to([article.id])
     end
@@ -1153,6 +1210,15 @@ RSpec.describe Billboard do
       original_time = billboard.content_updated_at
       Timecop.travel(1.hour.from_now) do
         billboard.update_column(:impressions_count, 1000)
+        billboard.reload
+        expect(billboard.content_updated_at).to eq(original_time)
+      end
+    end
+
+    it "does not update when seconds_visible changes" do
+      original_time = billboard.content_updated_at
+      Timecop.travel(1.hour.from_now) do
+        billboard.update!(seconds_visible: 1000)
         billboard.reload
         expect(billboard.content_updated_at).to eq(original_time)
       end

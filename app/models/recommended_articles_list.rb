@@ -2,7 +2,7 @@ class RecommendedArticlesList < ApplicationRecord
   belongs_to :user
   validates :name, presence: true, length: { maximum: 120 }
 
-  enum placement_area: { main_feed: 0 } # Only main feed for now, could be used in Digest, trending, etc.
+  enum :placement_area, { main_feed: 0 } # Only main feed for now, could be used in Digest, trending, etc.
 
   scope :active, -> { where("expires_at > ?", Time.current) }
 

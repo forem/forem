@@ -133,4 +133,52 @@ RSpec.describe FeedbackMessage do
       end
     end
   end
+
+  describe "#assign_offender_from_reported" do
+    let(:reported_user) { create(:user) }
+    let(:article) { create(:article) }
+    let(:comment) { create(:comment) }
+    let(:billboard) { create(:billboard) }
+
+    it "assigns the offender when the reported entity is a user" do
+      feedback_message = build(:feedback_message, :abuse_report, reported: reported_user, offender: nil)
+
+      feedback_message.assign_offender_from_reported
+
+      expect(feedback_message.offender).to eq(reported_user)
+    end
+
+    it "assigns the offender to the article author" do
+      feedback_message = build(:feedback_message, :abuse_report, reported: article, offender: nil)
+
+      feedback_message.assign_offender_from_reported
+
+      expect(feedback_message.offender).to eq(article.user)
+    end
+
+    it "assigns the offender to the comment author" do
+      feedback_message = build(:feedback_message, :abuse_report, reported: comment, offender: nil)
+
+      feedback_message.assign_offender_from_reported
+
+      expect(feedback_message.offender).to eq(comment.user)
+    end
+
+    it "does not assign an offender for unsupported reported entities" do
+      feedback_message = build(:feedback_message, :abuse_report, reported: billboard, offender: nil)
+
+      feedback_message.assign_offender_from_reported
+
+      expect(feedback_message.offender).to be_nil
+    end
+
+    it "does not overwrite an existing offender" do
+      original_offender = create(:user)
+      feedback_message = build(:feedback_message, :abuse_report, reported: reported_user, offender: original_offender)
+
+      feedback_message.assign_offender_from_reported
+
+      expect(feedback_message.offender).to eq(original_offender)
+    end
+  end
 end

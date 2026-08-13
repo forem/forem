@@ -65,4 +65,31 @@ RSpec.describe Comments::CalculateScore, type: :service do
       expect(Articles::UpdateArticleActivityWorker).not_to have_received(:perform_async)
     end
   end
+
+  describe "embedding worker triggering" do
+    before do
+      allow(Comments::GenerateEmbeddingWorker).to receive(:perform_async)
+    end
+
+    it "enqueues embedding worker if score is >= 3 and semantic_embedding is nil" do
+      comment.update_columns(score: 0, semantic_embedding: nil)
+      allow(BlackBox).to receive(:comment_quality_score).and_return(3)
+      described_class.call(comment)
+      expect(Comments::GenerateEmbeddingWorker).to have_received(:perform_async).with(comment.id)
+    end
+
+    it "does not enqueue embedding worker if score is < 3" do
+      comment.update_columns(score: 0, semantic_embedding: nil)
+      allow(BlackBox).to receive(:comment_quality_score).and_return(2)
+      described_class.call(comment)
+      expect(Comments::GenerateEmbeddingWorker).not_to have_received(:perform_async)
+    end
+
+    it "does not enqueue embedding worker if embedding is already present" do
+      comment.update_columns(score: 0, semantic_embedding: Array.new(768, 0.1))
+      allow(BlackBox).to receive(:comment_quality_score).and_return(5)
+      described_class.call(comment)
+      expect(Comments::GenerateEmbeddingWorker).not_to have_received(:perform_async)
+    end
+  end
 end

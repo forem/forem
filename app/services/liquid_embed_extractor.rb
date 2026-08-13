@@ -50,7 +50,7 @@ class LiquidEmbedExtractor
       [org&.class&.name, org&.id]
     when "embed"
       # If tag is explicitly embed, map internal Article urls without running ActionDispatch logic natively.
-      app_domain = Settings::General.app_domain || "localhost:3000"
+      app_domain = Settings::General.app_domain || "localhost:#{URL.dev_port}"
       if identifier.include?(app_domain)
         begin
           path = URI.parse(identifier).path

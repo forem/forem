@@ -47,6 +47,8 @@ class Article < ApplicationRecord
   belongs_to :user
   belongs_to :subforem, optional: true
 
+  belongs_to :favorited_by_user, class_name: "User", optional: true
+
   counter_culture :user
   counter_culture :organization
 
@@ -123,13 +125,13 @@ class Article < ApplicationRecord
     I18n.t("models.article.unique_url", email: ForemInstance.contact_email)
   end
 
-  enum type_of: {
+  enum :type_of, {
     full_post: 0,
     status: 1,
     fullscreen_embed: 2
   }
 
-  enum automod_label: {
+  enum :automod_label, {
     no_moderation_label: 0,
     clear_and_obvious_spam: 1,
     likely_spam: 2,
@@ -191,6 +193,9 @@ class Article < ApplicationRecord
 
   has_many :trend_memberships, dependent: :destroy
   has_many :trends, through: :trend_memberships
+
+  has_many :concept_memberships, as: :record, dependent: :destroy
+  has_many :concepts, through: :concept_memberships
 
   has_many :top_comments,
            lambda {
@@ -271,6 +276,7 @@ class Article < ApplicationRecord
   validates :clickbait_score, numericality: { greater_than_or_equal_to: 0.0, less_than_or_equal_to: 1.0 }
   validates :compellingness_score, numericality: { greater_than_or_equal_to: 0.0, less_than_or_equal_to: 1.0 }
   validates :max_score, numericality: { greater_than_or_equal_to: 0 }
+  validates :baseline_score, numericality: { greater_than_or_equal_to: 0 }
   validate :future_or_current_published_at, on: :create
   validate :correct_published_at?, on: :update, unless: :admin_update
 
@@ -339,6 +345,11 @@ class Article < ApplicationRecord
 
   after_update_commit :regenerate_summary_if_content_changed
 
+  after_commit :recompile_organization_pages, on: %i[create update destroy]
+
+  after_save :cleanup_memberships_if_unpublished,
+             if: -> { saved_change_to_published? && published_before_last_save && !published? }
+
   # The trigger `update_reading_list_document` is used to keep the `articles.reading_list_document` column updated.
   #
   # Its body is inserted in a PostgreSQL trigger function and that joins the columns values
@@ -378,11 +389,11 @@ class Article < ApplicationRecord
 
   # @todo Enforce the serialization class (e.g., Articles::CachedEntity)
   # @see https://api.rubyonrails.org/classes/ActiveRecord/AttributeMethods/Serialization/ClassMethods.html#method-i-serialize
-  serialize :cached_user
+  serialize :cached_user, coder: YAML
 
   # @todo Enforce the serialization class (e.g., Articles::CachedEntity)
   # @see https://api.rubyonrails.org/classes/ActiveRecord/AttributeMethods/Serialization/ClassMethods.html#method-i-serialize
-  serialize :cached_organization
+  serialize :cached_organization, coder: YAML
 
   # TODO: [@rhymes] Rename the article column and the trigger name.
   # What was initially meant just for the reading list (filtered using the `reactions` table),
@@ -420,7 +431,11 @@ class Article < ApplicationRecord
   #            that in the future.
   scope :approved, -> { where(approved: true) }
 
+  scope :favorited, -> { where.not(favorited_by_user_id: nil) }
+
   scope :from_subforem, lambda { |subforem_id = nil|
+    return where(nil) if ENV["NO_SUBFOREM_FILTER"] == "true"
+
     subforem_id ||= RequestStore.store[:subforem_id]
     if subforem_id.present? && subforem_id == RequestStore.store[:root_subforem_id]
       # Includes articles with no subforem or subforem_id in Subforem.cached_discoverable_ids
@@ -505,11 +520,12 @@ class Article < ApplicationRecord
   scope :limited_columns_internal_select, lambda {
     select(:path, :title, :id, :featured, :approved, :published,
            :comments_count, :public_reactions_count, :cached_tag_list,
-           :main_image, :main_image_background_hex_color, :updated_at, :max_score,
+           :main_image, :main_image_background_hex_color, :updated_at, :max_score, :baseline_score,
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
            :published_from_feed, :crossposted_at, :published_at, :created_at, :edited_at,
-           :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids, :score, :type_of)
+           :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids, :score, :type_of,
+           :favorited_by_user_id)
   }
 
   scope :sorting, lambda { |value|
@@ -550,7 +566,7 @@ class Article < ApplicationRecord
   scope :feed, lambda {
                  published.includes(:taggings)
                    .select(
-                     :id, :published_at, :processed_html, :user_id, :organization_id, :title, :path, :cached_tag_list
+                     :id, :published_at, :processed_html, :user_id, :organization_id, :title, :path, :cached_tag_list, :slug
                    )
                }
 
@@ -563,7 +579,7 @@ class Article < ApplicationRecord
   scope :eager_load_serialized_data, -> { includes(:user, :organization, :tags) }
 
   scope :above_average, lambda {
-    order(:score).where("score >= ?", average_score)
+    order(:score).where(score: average_score.ceil..)
   }
 
   scope :followed_by, lambda { |user|
@@ -624,16 +640,36 @@ class Article < ApplicationRecord
   end
 
   def processed_html_final
-    # This is a final non-database-driven step to adjust processed html
-    # It is sort of a hack to avoid having to reprocess all articles
-    # It is currently only for this one cloudflare domain change
-    # It is duplicated across article, bullboard and comment where it is most needed
-    # In the future this could be made more customizable. For now it's just this one thing.
+    processed_html = replace_legacy_code_html(self.processed_html)
+
     return processed_html if ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"].blank? || ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"].blank?
 
     processed_html.gsub(ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"],
                         ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
   end
+
+  def replace_legacy_code_html(html)
+    return html if html.blank?
+    return html unless html.include?("runkit-element")
+
+    fragment = Nokogiri::HTML.fragment(html)
+    fragment.css('.runkit-element').each do |element|
+      preamble = element.at_css('code:nth-of-type(1)')&.text.to_s
+      content = element.at_css('code:nth-of-type(2)')&.text.to_s
+
+      replacement_html = LegacyCodeTag.fallback_html(
+        preamble: preamble,
+        parsed_content: content,
+      )
+
+      element.replace(Nokogiri::HTML.fragment(replacement_html))
+    end
+
+    fragment.to_html
+  rescue StandardError
+    html
+  end
+  private :replace_legacy_code_html
 
   def scheduled?
     published_at? && published_at.future?
@@ -974,7 +1010,8 @@ class Article < ApplicationRecord
     self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment + user_featured_count_adjustment + user_negative_count_adjustment + context_note_adjustment + automod_label_adjustment + badge_reputation_bonus + organization_baseline_score + established_user_adjustment
     accepted_max = [max_score, user&.max_score.to_i].min
     accepted_max = [max_score, user&.max_score.to_i].max if accepted_max.zero?
-    self.score = accepted_max if accepted_max.positive? && accepted_max < score
+    self.score = baseline_score if baseline_score.positive? && score < baseline_score
+    self.score = accepted_max if accepted_max.positive? && score > accepted_max
 
     # Calculate comment_score and apply max_score limits
     # Each comment can contribute a minimum of -1 to the total score
@@ -1629,7 +1666,7 @@ class Article < ApplicationRecord
   end
 
   def touch_actor_latest_article_updated_at(destroying: false)
-    return unless destroying || saved_changes.keys.intersection(%w[title cached_tag_list]).present?
+    return unless destroying || saved_changes.keys.intersection(%w[title cached_tag_list published archived]).present?
 
     user.touch(:latest_article_updated_at)
     organization&.touch(:latest_article_updated_at)
@@ -1699,6 +1736,33 @@ class Article < ApplicationRecord
     return if published_at.blank?
 
     self.published_at = nil if published_at > 5.years.from_now
+  end
+
+  def recompile_organization_pages
+    # Skip recompiling on updates if only updated_at or semantic_embedding changed
+    if !destroyed? && previous_changes.any? && (previous_changes.keys - %w[updated_at semantic_embedding]).empty?
+      return
+    end
+
+    was_published = destroyed? ? published? : published_before_last_save
+    is_published = published?
+    return unless is_published || was_published
+
+    org_ids_to_recompile = []
+    if destroyed?
+      org_ids_to_recompile << organization_id
+    elsif saved_change_to_organization_id?
+      org_ids_to_recompile << organization_id_before_last_save
+      org_ids_to_recompile << organization_id
+    else
+      org_ids_to_recompile << organization_id
+    end
+
+    org_ids_to_recompile.compact.uniq.each do |org_id|
+      next unless FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[org_id])
+
+      Organizations::RecompilePagesWorker.perform_async(org_id)
+    end
   end
 
   private
@@ -1802,5 +1866,10 @@ class Article < ApplicationRecord
        saved_change_to_main_image?
       Articles::UpdateDependentEmbedsWorker.perform_async(id)
     end
+  end
+
+  def cleanup_memberships_if_unpublished
+    concept_memberships.destroy_all
+    trend_memberships.destroy_all
   end
 end

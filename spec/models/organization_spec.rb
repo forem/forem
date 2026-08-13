@@ -507,6 +507,16 @@ RSpec.describe Organization do
     end
   end
 
+  describe "#ordered_pages" do
+    it "orders pages by position and uses creation order as a stable fallback when positions are equal" do
+      first_page = create(:page, organization: organization, position: 0, created_at: 2.hours.ago)
+      second_page = create(:page, organization: organization, position: 0, created_at: 1.hour.ago)
+      promoted_page = create(:page, organization: organization, position: -1, created_at: Time.current)
+
+      expect(organization.ordered_pages).to eq([promoted_page, first_page, second_page])
+    end
+  end
+
   describe "#flipper_id" do
     it "returns a string with Organization prefix and id" do
       expect(organization.flipper_id).to eq("Organization;#{organization.id}")
@@ -544,6 +554,68 @@ RSpec.describe Organization do
 
     it "excludes pending members" do
       expect(organization.active_users.pluck(:id)).not_to include(user3.id)
+    end
+  end
+
+  describe "recompiling organization pages on update" do
+    let(:organization) { create(:organization) }
+
+    before do
+      allow(Organizations::RecompilePagesWorker).to receive(:perform_async)
+      allow(FeatureFlag).to receive(:enabled?).and_call_original
+      allow(FeatureFlag).to receive(:enabled?).with(:org_readme, anything).and_return(true)
+    end
+
+    it "enqueues recompilation when name changes" do
+      organization.update!(name: "New Name")
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id)
+    end
+
+    it "enqueues recompilation when slug changes" do
+      organization.update!(slug: "new-slug")
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id)
+    end
+
+    it "enqueues recompilation when summary changes" do
+      organization.update!(summary: "New Summary")
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id)
+    end
+
+    it "does not enqueue recompilation when other attributes change" do
+      organization.update!(company_size: "50")
+      expect(Organizations::RecompilePagesWorker).not_to have_received(:perform_async)
+    end
+  end
+
+  describe "#set_baseline_score_on_verification_change" do
+    let(:organization) { create(:organization, verified: false, baseline_score: 0) }
+
+    before do
+      allow(Settings::UserExperience).to receive(:index_minimum_score).and_return(15)
+    end
+
+    it "sets baseline_score to index_minimum_score when becoming verified" do
+      organization.update!(verified: true)
+      expect(organization.baseline_score).to eq(15)
+    end
+
+    it "reverts baseline_score to 0 when losing verification" do
+      organization.update!(verified: true)
+      expect(organization.baseline_score).to eq(15)
+
+      organization.update!(verified: false)
+      expect(organization.baseline_score).to eq(0)
+    end
+
+    it "preserves manual baseline_score updates when verification status does not change" do
+      organization.update!(verified: true)
+      expect(organization.baseline_score).to eq(15)
+
+      organization.update!(baseline_score: 45)
+      expect(organization.baseline_score).to eq(45)
+
+      organization.update!(name: "Updated Org Name")
+      expect(organization.baseline_score).to eq(45)
     end
   end
 end

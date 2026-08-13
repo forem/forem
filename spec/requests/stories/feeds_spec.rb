@@ -859,4 +859,42 @@ RSpec.describe "Stories::Feeds" do
       expect(response_article["public_reaction_categories"].map { |cat| cat["slug"] }).to match_array(%w[like unicorn fire])
     end
   end
+
+  describe "type_of validation" do
+    before do
+      allow(Settings::UserExperience).to receive(:feed_strategy).and_return("weighted")
+    end
+
+    context "when type_of param is invalid/random" do
+      it "defaults to discover feed" do
+        sign_in user
+        expect(Articles::Feeds).to receive(:feed_for).with(
+          hash_including(type_of: "discover")
+        ).and_call_original
+
+        get stories_feed_path(type_of: "invalid_random_feed")
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "when type_of param is valid" do
+      it "routes to following feed query when user is signed in" do
+        sign_in user
+        expect(Articles::Feeds).not_to receive(:feed_for)
+
+        get stories_feed_path(type_of: "following")
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "uses discover type_of when user is signed in" do
+        sign_in user
+        expect(Articles::Feeds).to receive(:feed_for).with(
+          hash_including(type_of: "discover")
+        ).and_call_original
+
+        get stories_feed_path(type_of: "discover")
+        expect(response).to have_http_status(:ok)
+      end
+    end
+  end
 end

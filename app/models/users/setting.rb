@@ -13,16 +13,16 @@ module Users
         .or(where.not(feed_url: [nil, ""]))
     }
 
-    enum editor_version: { v2: 0, v1: 1 }, _suffix: :editor
-    enum config_font: { default: 0, comic_sans: 1, monospace: 2, open_dyslexic: 3, sans_serif: 4, serif: 5 },
-         _suffix: :font
-    enum inbox_type: { private: 0, open: 1 }, _suffix: :inbox
-    enum config_navbar: { default: 0, static: 1 }, _suffix: :navbar
+    enum :editor_version, { v2: 0, v1: 1 }, suffix: :editor
+    enum :config_font, { default: 0, comic_sans: 1, monospace: 2, open_dyslexic: 3, sans_serif: 4, serif: 5 },
+         suffix: :font
+    enum :inbox_type, { private: 0, open: 1 }, suffix: :inbox
+    enum :config_navbar, { default: 0, static: 1 }, suffix: :navbar
     # NOTE: We previously had a set of 5 themes with values from 0 to 4.
-    enum config_theme: { light_theme: 0, dark_theme: 2 }
-    enum config_homepage_feed: { default: 0, latest: 1, top_week: 2, top_month: 3, top_year: 4, top_infinity: 5 },
-         _suffix: :feed
-    enum feed_status: { healthy: 0, degraded: 1, failing: 2, inactive: 3 }, _prefix: :feed
+    enum :config_theme, { light_theme: 0, dark_theme: 2 }
+    enum :config_homepage_feed, { default: 0, latest: 1, top_week: 2, top_month: 3, top_year: 4, top_infinity: 5 },
+         suffix: :feed
+    enum :feed_status, { healthy: 0, degraded: 1, failing: 2, inactive: 3 }, prefix: :feed
 
     validates :brand_color1,
               format: { with: HEX_COLOR_REGEXP,

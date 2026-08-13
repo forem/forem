@@ -159,6 +159,44 @@ RSpec.describe "MagicLinks", type: :request do
   describe "GET /magic_links/:id" do
     let(:token) { "valid_token" }
 
+    # The magic-link sign-in confirms the email via update_column, which
+    # bypasses the Trackable after_commit - it must emit explicitly so Core
+    # learns the address is verified.
+    it "emits user_updated to the DEV -> Core sync when it confirms the email" do
+      user = create(:user, confirmed_at: nil)
+      user.update_columns(sign_in_token: "tok-sync-123", sign_in_token_sent_at: Time.current)
+      allow(Trackable::Registry).to receive(:active_names).and_return([:any])
+      allow(Trackable::DispatchWorker).to receive(:perform_async)
+      Settings::General.customerio_cdp_enabled = true
+      FeatureFlag.enable(:dev_core_user_sync, FeatureFlag::Actor[user])
+
+      with_trackable_events { get "/magic_links/tok-sync-123" }
+
+      expect(user.reload.confirmed_at).to be_present
+      expect(Trackable::DispatchWorker).to have_received(:perform_async)
+        .with(anything, "user_updated", [user.id],
+              hash_including("confirmed_at" => user.confirmed_at.iso8601), anything)
+    ensure
+      FeatureFlag.remove(:dev_core_user_sync)
+    end
+
+    it "does not emit user_updated when the email was already confirmed" do
+      user = create(:user, confirmed_at: 1.week.ago)
+      user.update_columns(sign_in_token: "tok-sync-456", sign_in_token_sent_at: Time.current)
+      allow(Trackable::Registry).to receive(:active_names).and_return([:any])
+      allow(Trackable::DispatchWorker).to receive(:perform_async)
+      Settings::General.customerio_cdp_enabled = true
+      FeatureFlag.enable(:dev_core_user_sync, FeatureFlag::Actor[user])
+
+      with_trackable_events { get "/magic_links/tok-sync-456" }
+
+      # (the sign-in itself legitimately emits a throttled user_engaged)
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+        .with(anything, "user_updated", anything, anything, anything)
+    ensure
+      FeatureFlag.remove(:dev_core_user_sync)
+    end
+
     context "when the token matches a user and is not expired" do
       it "confirms the user and redirects to root_path" do
         freeze_time do

@@ -253,21 +253,21 @@ RSpec.describe FeedConfig, type: :model do
 
       it "includes the published today weight" do
         sql = feed_config.score_sql(user)
-        published_since = 24.hours.ago.utc.to_s(:db)
+        published_since = 24.hours.ago.utc.to_fs(:db)
         expect(sql).to include("articles.published_at >= '#{published_since}'")
         expect(sql).to include("3.0")
       end
 
       it "includes the general past day bonus weight" do
         sql = feed_config.score_sql(user)
-        published_since = 24.hours.ago.utc.to_s(:db)
+        published_since = 24.hours.ago.utc.to_fs(:db)
         expect(sql).to include("articles.published_at >= '#{published_since}'")
         expect(sql).to include("THEN 9.0")
       end
 
       it "includes the recently active past day bonus weight" do
         sql = feed_config.score_sql(user)
-        published_since = 24.hours.ago.utc.to_s(:db)
+        published_since = 24.hours.ago.utc.to_fs(:db)
         # 2 recent pageviews in `let(:recently_viewed_articles)`
         bonus = 1.5 * 2
         expect(sql).to include("articles.published_at >= '#{published_since}'")

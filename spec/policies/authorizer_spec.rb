@@ -82,6 +82,64 @@ RSpec.describe Authorizer, type: :policy do
     end
   end
 
+  describe "#community_leader?" do
+    it "is false for a regular user" do
+      expect(authorizer.community_leader?).to be_falsey
+    end
+
+    it "is true for a level 1 leader" do
+      leader = described_class.for(user: create(:user, :community_leader_level_1))
+      expect(leader.community_leader?).to be_truthy
+    end
+
+    it "is true for a level 2 leader" do
+      leader = described_class.for(user: create(:user, :community_leader_level_2))
+      expect(leader.community_leader?).to be_truthy
+    end
+  end
+
+  describe "#tag_moderator?" do
+    let(:tag) { create(:tag) }
+
+    context "when the user is a regular user" do
+      it "is false without a tag" do
+        expect(authorizer.tag_moderator?).to be_falsey
+      end
+
+      it "is false for a specific tag" do
+        expect(authorizer.tag_moderator?(tag: tag)).to be_falsey
+      end
+    end
+
+    context "when the user moderates a specific tag" do
+      before { user.add_role(:tag_moderator, tag) }
+
+      it "is true without a tag (moderates at least one tag)" do
+        expect(authorizer.tag_moderator?).to be_truthy
+      end
+
+      it "is true for the tag they moderate" do
+        expect(authorizer.tag_moderator?(tag: tag)).to be_truthy
+      end
+
+      it "is false for a tag they do not moderate" do
+        expect(authorizer.tag_moderator?(tag: create(:tag))).to be_falsey
+      end
+    end
+
+    context "when the user is a community leader" do
+      let(:user) { create(:user, :community_leader_level_1) }
+
+      it "is true without a tag (global capability)" do
+        expect(authorizer.tag_moderator?).to be_truthy
+      end
+
+      it "is true for any specific tag" do
+        expect(authorizer.tag_moderator?(tag: tag)).to be_truthy
+      end
+    end
+  end
+
   describe "#vomited_on?" do
     subject(:method_call) { authorizer.vomited_on? }
 

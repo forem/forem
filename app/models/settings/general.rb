@@ -42,6 +42,11 @@ module Settings
     # Ahoy Tracking
     setting :ahoy_tracking, type: :boolean, default: false
 
+    # Master switch for emitting user lifecycle events to the Customer.io CDP
+    # (DEV -> MLH Core sync). Per-account rollout is gated separately by the
+    # :dev_core_user_sync feature flag.
+    setting :customerio_cdp_enabled, type: :boolean, default: false
+
     # Images
     setting :main_social_image,
             type: :string,

@@ -73,6 +73,9 @@ module Ai
       # Gather article context
       article_context = build_article_context
 
+      # Gather custom tag moderation instructions
+      tag_instructions_context = build_tag_instructions_context
+
       quickie_context = if @article.status?
                           <<~QUICKIE
 
@@ -88,6 +91,7 @@ module Ai
 
         **Community Context:**
         #{community_description.presence || 'No specific community description provided.'}
+        #{tag_instructions_context}
 
         **User Context:**
         #{user_context}
@@ -196,6 +200,22 @@ module Ai
         Reading time: #{@article.reading_time} minutes
         Word count: #{@article.body_markdown.split.size} words
       ARTICLE_CONTEXT
+    end
+
+    def build_tag_instructions_context
+      tag_instructions = @article.tags.where.not(moderation_instructions: [nil, ""]).pluck(:name, :moderation_instructions)
+      return "" if tag_instructions.empty?
+
+      instructions_list = tag_instructions.map do |name, inst|
+        "- ##{name}: #{inst}"
+      end.join("\n")
+
+      <<~CONTEXT
+
+        **Custom Tag Moderation Instructions:**
+        The article is tagged with the following tags, which have custom moderation instructions that you must follow during your assessment:
+        #{instructions_list}
+      CONTEXT
     end
 
     ##

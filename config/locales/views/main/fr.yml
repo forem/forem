@@ -32,6 +32,7 @@ fr:
         placeholder: "..."
         list: Liste de lecture
         moderator_center: Centre de modération
+        leadership: Leadership communautaire
         other: Other
         settings: Paramètres
         account: Compte
@@ -50,6 +51,7 @@ fr:
         Terms of use: Terms of Use
         Videos: Videos
       side:
+        upcoming_events: "Événements à venir"
         listings:
           heading: Listings
           all: Tout voir

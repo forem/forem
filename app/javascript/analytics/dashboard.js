@@ -493,7 +493,7 @@ function renderReferrers(data) {
   if (emptyDomainReferrer) {
     tableBody.push(`
       <tr>
-        <td class="align-left">All other external referrers</td>
+        <td class="align-left">Direct / Unknown</td>
         <td class="align-right">${emptyDomainReferrer.count}</td>
       </tr>
     `);

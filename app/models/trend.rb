@@ -1,7 +1,9 @@
 class Trend < ApplicationRecord
   has_many :trend_memberships, dependent: :destroy
   has_many :articles, through: :trend_memberships
+  belongs_to :tag, optional: true
 
+  before_validation :generate_slug
   after_commit :purge, on: %i[create update destroy]
   after_commit :purge_all, on: %i[create update destroy]
 
@@ -17,9 +19,11 @@ class Trend < ApplicationRecord
   validates :first_observed_at, presence: true
   validates :last_observed_at, presence: true
 
-  before_validation :generate_slug
-
   scope :hot_and_recent, -> { where("last_observed_at >= ?", 7.days.ago).order(score: :desc, last_observed_at: :desc) }
+
+  def self.purge_all
+    EdgeCache::PurgeByKey.call(table_key)
+  end
 
   def purge
     EdgeCache::PurgeByKey.call(record_key)
@@ -29,8 +33,8 @@ class Trend < ApplicationRecord
     self.class.purge_all
   end
 
-  def self.purge_all
-    EdgeCache::PurgeByKey.call(table_key)
+  def top_articles(limit = 3)
+    articles.published.order(score: :desc).limit(limit)
   end
 
   private

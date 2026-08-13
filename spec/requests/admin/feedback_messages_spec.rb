@@ -26,6 +26,10 @@ RSpec.describe "/admin/moderation/reports" do
         sign_in admin
         get admin_reports_path
         expect(response).to have_http_status :ok
+        expect(response.body).to include("(1)")
+
+        get flag_reactions_admin_reports_path, params: { status: "Open" }
+        expect(response).to have_http_status :ok
         expect(response.body).to include(user.username)
       end
 
@@ -35,6 +39,10 @@ RSpec.describe "/admin/moderation/reports" do
         create(:reaction, category: "vomit", reactable: user, user: trusted_user, created_at: 3.weeks.ago)
         sign_in admin
         get admin_reports_path
+        expect(response.body).to include("(0)")
+
+        get flag_reactions_admin_reports_path, params: { status: "Open" }
+        expect(response).to have_http_status :ok
         expect(response.body).not_to include(user.username)
       end
 
@@ -44,7 +52,56 @@ RSpec.describe "/admin/moderation/reports" do
         create(:reaction, category: "vomit", reactable: user, user: trusted_user, created_at: 1.week.ago)
         sign_in admin
         get admin_reports_path
+        expect(response.body).to include("(0)")
+
+        get flag_reactions_admin_reports_path, params: { status: "Open" }
+        expect(response).to have_http_status :ok
         expect(response.body).not_to include(user.username)
+      end
+    end
+
+    it "escapes offender report messages in the admin view" do
+      offender = create(:user)
+      payload = %(<img src=x onerror="alert('xss-proof')">)
+      create(:feedback_message, :abuse_report, offender: offender, message: payload)
+
+      sign_in admin
+      get admin_reports_path
+
+      expect(response.body).to include(CGI.escapeHTML(payload))
+      expect(response.body).not_to include(payload)
+    end
+
+    context "when there are more than 25 reports" do
+      it "paginates the reports" do
+        create_list(:feedback_message, 30, :abuse_report, status: "Open")
+        sign_in admin
+        get admin_reports_path
+        expect(response).to have_http_status :ok
+        expect(response.body.scan(/id="accordion-\d+/).length).to eq(25)
+      end
+    end
+  end
+
+  describe "GET /admin/moderation/reports/flag_reactions" do
+    let(:single_resource_admin) { create(:user, :single_resource_admin, resource: FeedbackMessage) }
+
+    before do
+      sign_in single_resource_admin
+    end
+
+    it "renders the flag reactions list template" do
+      get flag_reactions_admin_reports_path
+      expect(response).to have_http_status :ok
+      expect(response).to render_template(partial: "admin/feedback_messages/_flag_reactions_list")
+    end
+
+    context "when there is a vomit reaction on a user with score > -125" do
+      it "includes the reaction info" do
+        user.update!(score: 0)
+        create(:reaction, category: "vomit", reactable: user, user: trusted_user, created_at: 1.week.ago)
+        get flag_reactions_admin_reports_path, params: { status: "Open" }
+        expect(response.body).to include(user.username)
       end
     end
   end

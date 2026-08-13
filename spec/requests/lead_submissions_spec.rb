@@ -21,16 +21,49 @@ RSpec.describe "LeadSubmissions" do
         expect(submission.name).to eq(user.name)
         expect(submission.email).to eq(user.email)
         expect(submission.username).to eq(user.username)
+        expect(parsed["submitted_at"]).to eq(submission.created_at.iso8601)
       end
 
-      it "prevents duplicate submissions" do
-        create(:lead_submission, organization_lead_form: lead_form, user: user)
+      it "treats duplicate submissions as successful" do
+        existing_submission = create(:lead_submission, organization_lead_form: lead_form, user: user)
+
+        expect do
+          post "/lead_submissions", params: { organization_lead_form_id: lead_form.id }, as: :json
+        end.not_to change(LeadSubmission, :count)
+
+        expect(response).to have_http_status(:ok)
+        parsed = response.parsed_body
+        expect(parsed["success"]).to be true
+        expect(parsed["submitted_at"]).to eq(existing_submission.created_at.iso8601)
+      end
+
+      it "treats duplicate submissions as successful when save returns false due to uniqueness validation" do
+        existing_submission = create(:lead_submission, organization_lead_form: lead_form, user: user)
+
+        allow_any_instance_of(LeadSubmission).to receive(:save) do |instance|
+          instance.errors.add(:user_id, "has already been taken")
+          false
+        end
 
         post "/lead_submissions", params: { organization_lead_form_id: lead_form.id }, as: :json
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:ok)
         parsed = response.parsed_body
-        expect(parsed["success"]).to be false
+        expect(parsed["success"]).to be true
+        expect(parsed["submitted_at"]).to eq(existing_submission.created_at.iso8601)
+      end
+
+      it "treats duplicate submissions as successful when ActiveRecord::RecordNotUnique is raised" do
+        existing_submission = create(:lead_submission, organization_lead_form: lead_form, user: user)
+
+        allow_any_instance_of(LeadSubmission).to receive(:save).and_raise(ActiveRecord::RecordNotUnique.new("Duplicate entry"))
+
+        post "/lead_submissions", params: { organization_lead_form_id: lead_form.id }, as: :json
+
+        expect(response).to have_http_status(:ok)
+        parsed = response.parsed_body
+        expect(parsed["success"]).to be true
+        expect(parsed["submitted_at"]).to eq(existing_submission.created_at.iso8601)
       end
 
       it "rejects submissions to inactive forms" do
@@ -99,41 +132,6 @@ RSpec.describe "LeadSubmissions" do
         end
 
         expect(LeadSubmission.count).to eq(2)
-      end
-
-      it "rejects anonymous submission when recaptcha fails" do
-        allow(Settings::Authentication).to receive(:recaptcha_site_key).and_return("test-site-key")
-        allow(Settings::Authentication).to receive(:recaptcha_secret_key).and_return("test-secret-key")
-
-        post "/lead_submissions", params: {
-          organization_lead_form_id: lead_form.id,
-          name: "Bot User",
-          email: "bot@example.com",
-          company: "Bot Corp",
-          job_title: "Bot"
-        }, as: :json
-
-        expect(response).to have_http_status(:unprocessable_entity)
-        parsed = response.parsed_body
-        expect(parsed["success"]).to be false
-        expect(parsed["error"]).to eq(I18n.t("lead_submissions.recaptcha_failed"))
-      end
-
-      it "allows anonymous submission when recaptcha is not configured" do
-        allow(Settings::Authentication).to receive(:recaptcha_site_key).and_return(nil)
-        allow(Settings::Authentication).to receive(:recaptcha_secret_key).and_return(nil)
-
-        post "/lead_submissions", params: {
-          organization_lead_form_id: lead_form.id,
-          name: "Real User",
-          email: "real@example.com",
-          company: "Real Corp",
-          job_title: "Dev"
-        }, as: :json
-
-        expect(response).to have_http_status(:ok)
-        parsed = response.parsed_body
-        expect(parsed["success"]).to be true
       end
     end
   end

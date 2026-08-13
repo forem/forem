@@ -37,6 +37,22 @@ RSpec.describe NavigationLink do
           .to contain_exactly(link_no_subforem)
       end
     end
+
+    context "when ENV['NO_SUBFOREM_FILTER'] is true" do
+      before do
+        @orig_val = ENV["NO_SUBFOREM_FILTER"]
+        ENV["NO_SUBFOREM_FILTER"] = "true"
+      end
+
+      after do
+        ENV["NO_SUBFOREM_FILTER"] = @orig_val
+      end
+
+      it "returns all records, including those with subforem_id present and nil" do
+        expect(described_class.from_subforem(1))
+          .to contain_exactly(link_subforem_1, link_subforem_2, link_no_subforem)
+      end
+    end
   end
 
   describe ".create_or_update_by_identity" do

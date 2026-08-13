@@ -1,7 +1,7 @@
 class FeedbackMessagesController < ApplicationController
   # No authorization required for entirely public controller
   skip_before_action :verify_authenticity_token
-  FEEDBACK_ALLOWED_PARAMS = %i[message feedback_type category reported_url offender_id].freeze
+  FEEDBACK_ALLOWED_PARAMS = %i[message feedback_type category reported_url].freeze
 
   def create
     flash.clear

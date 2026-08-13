@@ -1,5 +1,5 @@
 class SyncLiquidEmbedReferencesWorker
-  include Sidekiq::Worker
+  include Sidekiq::Job
   sidekiq_options queue: :low_priority
 
   def perform(record_class_name, record_id)

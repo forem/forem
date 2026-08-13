@@ -32,6 +32,7 @@ pt:
         placeholder: "..."
         list: Lista de leitura
         moderator_center: Centro de Moderação
+        leadership: Liderança Comunitária
         other: Outros
         settings: Configurações
         account: Conta
@@ -51,6 +52,7 @@ pt:
         Videos: Vídeos
       side:
         active_discussions: "Discussões ativas"
+        upcoming_events: "Próximos eventos"
         listings:
           heading: Anúncios
           all: Ver todos

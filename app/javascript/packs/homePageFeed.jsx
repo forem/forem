@@ -94,7 +94,7 @@ function feedConstruct(
           isRoot={isRoot}
           feedStyle={feedStyle}
           isBookmarked={bookmarkedFeedItems.has(item.id)}
-          saveable={item.user_id != currentUserId}
+          saveable={Boolean(currentUserId) && item.user_id != currentUserId}
         // For "saveable" props, "!=" is used instead of "!==" to compare user_id
         // and currentUserId because currentUserId is a String while user_id is an Integer
         />
@@ -171,7 +171,10 @@ export const renderFeed = async (timeFrame, afterRender) => {
 
     if (feedItems.length === 0 || !hasActualContent) {
       // Determine feed type from localStorage or URL
-      const feedTypeOf = localStorage?.getItem('current_feed') || 'discover';
+      let feedTypeOf = localStorage?.getItem('current_feed');
+      if (feedTypeOf !== 'discover' && feedTypeOf !== 'following') {
+        feedTypeOf = 'discover';
+      }
       const feedType = feedTypeOf === 'following' ? 'following' : 'discover';
 
       return (

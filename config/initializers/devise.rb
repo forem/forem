@@ -76,10 +76,9 @@ MLH_OMNIAUTH_SETUP = lambda do |env|
     strategy_class.prepend(OmniAuth::Strategies::MlhCallbackUrlOverride)
   end
 
-  env["omniauth.strategy"].options[:scope] = "user:read:email user:read:phone user:read:profile user:read:demographics public offline_access mlh:read:user"
+  env["omniauth.strategy"].options[:scope] = "user:read:email user:read:phone user:read:profile user:read:demographics user:read:education user:read:employment user:read:address public offline_access mlh:read:user"
   env["omniauth.strategy"].options[:client_id] = Settings::Authentication.mlh_key
   env["omniauth.strategy"].options[:client_secret] = Settings::Authentication.mlh_secret
-  env["omniauth.strategy"].options[:provider_ignores_state] = true
   # Note: redirect_uri is handled by the prepended MlhCallbackUrlOverride module
   # which overrides both callback_url and authorize_params to ensure no query parameters
 end
@@ -90,6 +89,7 @@ Devise.setup do |config|
   # confirmation, reset password and unlock tokens in the database.
   # Devise will use the `secret_key_base` on Rails 4+ applications as its `secret_key`
   # by default. You can change it below and use your own secret key.
+  config.secret_key = Rails.application.secret_key_base
 
   # ==> Mailer Configuration
   # Configure the e-mail address which will be shown in Devise::Mailer,

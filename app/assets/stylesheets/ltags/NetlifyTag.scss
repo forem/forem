@@ -1,0 +1,14 @@
+.ltag-netlify {
+  max-width: 100%;
+  margin: 1.6em auto;
+
+  iframe {
+    display: block;
+    width: 100%;
+    height: clamp(24rem, 65vw, 42rem);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg, var(--radius));
+    background: #000;
+    box-shadow: var(--shadow-smooth);
+  }
+}

@@ -60,10 +60,30 @@ RSpec.describe "Admin::Events", type: :request do
     context "when logged in as an admin" do
       before { login_as(super_admin) }
 
-      it "renders the show template" do
+      it "renders the show template and details when there are signups" do
+        user1 = create(:user, name: "Alice Smith", username: "alicesmith")
+        user2 = create(:user, name: "Bob Jones", username: "bobjones")
+        signup1 = create(:event_signup, event: event, user: user1)
+        signup1.update_columns(notified_1_day_before: true, notified_1_hour_before: false)
+        signup2 = create(:event_signup, event: event, user: user2)
+        signup2.update_columns(notified_1_day_before: false, notified_1_hour_before: true)
+
         get admin_event_path(event)
         expect(response).to have_http_status(:success)
         expect(response.body).to include(event.title)
+        expect(response.body).to include("Alice Smith")
+        expect(response.body).to include("@alicesmith")
+        expect(response.body).to include("Bob Jones")
+        expect(response.body).to include("@bobjones")
+        expect(response.body).to include("1 Day Before")
+        expect(response.body).to include("1 Hour Before")
+      end
+
+      it "renders the show template with fallback message when there are no signups" do
+        get admin_event_path(event)
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include(event.title)
+        expect(response.body).to include("No signups for this event yet.")
       end
     end
 
@@ -122,6 +142,14 @@ RSpec.describe "Admin::Events", type: :request do
         expect(Event.last.manual_broadcast_end).to eq(true)
       end
     end
+
+    context "with elevated config" do
+      let(:attributes_with_elevated) { valid_attributes.merge(elevated: true) }
+      it "permits and sets the elevated flag" do
+        post admin_events_path, params: { event: attributes_with_elevated }
+        expect(Event.last.elevated).to eq(true)
+      end
+    end
   end
 
   describe "PATCH /admin/content_manager/events/:id/end_broadcast" do
@@ -139,6 +167,42 @@ RSpec.describe "Admin::Events", type: :request do
         expect(flash[:notice]).to include("Broadcast manually ended")
         expect(event.reload.broadcast_ended_at).to be_within(1.second).of(Time.current)
         expect(Events::ManageBroadcastBillboardsWorker).to have_received(:perform_async)
+      end
+    end
+  end
+
+  describe "GET /admin/content_manager/events/new" do
+    context "when logged in as an admin" do
+      before { login_as(super_admin) }
+
+      it "renders a blank new event form when no fork parameter is passed" do
+        get new_admin_event_path
+        expect(response).to have_http_status(:success)
+      end
+
+      it "pre-fills the form with attributes from the original event when fork_from_id is passed" do
+        original_event = create(:event, title: "Original Event Title", description: "Original Description", tag_list: ["ruby", "rails"])
+
+        get new_admin_event_path(fork_from_id: original_event.id)
+
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include("Original Event Title")
+        expect(response.body).to include("Original Description")
+        expect(response.body).to include("ruby, rails")
+      end
+    end
+  end
+
+  describe "GET /admin/content_manager/events/:id/fork" do
+    let(:event) { create(:event) }
+
+    context "when logged in as an admin" do
+      before { login_as(super_admin) }
+
+      it "redirects to the new event path with fork_from_id parameter" do
+        get fork_admin_event_path(event)
+
+        expect(response).to redirect_to(new_admin_event_path(fork_from_id: event.id))
       end
     end
   end

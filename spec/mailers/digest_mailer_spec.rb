@@ -69,8 +69,145 @@ RSpec.describe DigestMailer do
 
     it "does not include fc parameter in email links when feed_config_id is nil" do
       email = described_class.with(user: user, articles: [article], feed_config_id: nil).digest_email
-      
+
       expect(email.body.encoded).not_to include("fc=")
+    end
+
+    it "renders valid href URLs on article links when articles are queried via DIGEST_ARTICLE_COLUMNS select" do
+      partial_article = Article.select(EmailDigestArticleCollector::DIGEST_ARTICLE_COLUMNS).find(article.id)
+      email = described_class.with(user: user, articles: [partial_article]).digest_email
+
+      expect(email.body.encoded).to include("href=\"#{URL.article(article)}?context=digest")
+    end
+
+    it "renders valid href URLs for organization articles in digest email" do
+      org = create(:organization)
+      org_article = create(:article, organization: org, title: "Org Article Title")
+      email = described_class.with(user: user, articles: [org_article]).digest_email
+
+      expect(email.body.encoded).to include("href=\"#{URL.article(org_article)}?context=digest")
+    end
+
+    it "does not raise error or produce blank href when articles are selected without organization_id" do
+      created_article = create(:article, title: "No Org ID Selected")
+      partial = Article.select(:id, :title, :description, :path).find(created_article.id)
+
+      expect {
+        email = described_class.with(user: user, articles: [partial]).digest_email
+        expect(email.body.encoded).to include("href=\"#{URL.article(created_article)}?context=digest")
+      }.not_to raise_error
+    end
+
+    context "with one-click unsubscribe" do
+      let(:email) { described_class.with(user: user, articles: [article]).digest_email }
+
+      include_examples "#renders_one_click_unsubscribe_headers"
+    end
+
+    it "does not use Customer.io delivery when Customer.io is not configured" do
+      email = described_class.with(user: user, articles: [article]).digest_email
+
+      expect(email.message.delivery_method).not_to be_a(DeliveryMethods::CustomerIo)
+    end
+
+    context "when routed through Customer.io" do
+      let(:article2) { create(:article, title: "Second Article Title") }
+
+      before do
+        allow(ApplicationConfig).to receive(:[]).and_call_original
+        allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
+        FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+      end
+
+      after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
+
+      it "still sets the X-SMTPAPI header for SendGrid alongside the Customer.io payload", :aggregate_failures do
+        email = described_class.with(user: user, articles: [article]).digest_email
+
+        expect(email.header["X-SMTPAPI"]).not_to be_nil
+        expect(email.message.delivery_method).to be_a(DeliveryMethods::CustomerIo)
+      end
+
+      it "routes through the Customer.io digest template with the full payload", :aggregate_failures do
+        article.update_columns(ai_summary: "An AI generated summary.", description: "Original description.")
+
+        email = described_class.with(user: user, articles: [article, article2], feed_config_id: 12_345).digest_email
+
+        settings = email.message.delivery_method.settings
+        expect(settings[:transactional_message_id]).to eq("dev_digest_email")
+
+        data = settings[:message_data]
+        expect(data["subject"]).to eq(email.subject)
+        expect(data["articles"].size).to eq(2)
+
+        expected_url = ApplicationController.helpers.article_url(article, context: "digest", fc: 12_345)
+        first_article = data["articles"].first
+        expect(first_article["title"]).to eq(article.title.strip)
+        expect(first_article["url"]).to eq(expected_url)
+        expect(first_article["path"]).to eq(expected_url)
+        expect(first_article["link"]).to eq(expected_url)
+        expect(first_article["article_url"]).to eq(expected_url)
+        expect(first_article["canonical_url"]).to eq(expected_url)
+        expect(first_article["summary"]).to eq("An AI generated summary.")
+        expect(data["articles"].second["title"]).to eq(article2.title.strip)
+
+        expect(data["unsubscribe_url"]).to include("ut=")
+        expect(data["user_follows_any_subforems"]).to be(false)
+        expect(data).to have_key("smart_summary")
+        expect(data["email_end_phrase"]).to be_present
+      end
+
+      it "falls back to the truncated description in the payload when ai_summary is blank" do
+        article.update_columns(ai_summary: nil, description: "Fallback description text.")
+
+        email = described_class.with(user: user, articles: [article]).digest_email
+
+        data = email.message.delivery_method.settings[:message_data]
+        expect(data["articles"].first["summary"]).to eq("Fallback description text.")
+      end
+
+      it "renders the smart_summary markdown as html in the payload" do
+        email = described_class.with(user: user, articles: [article],
+                                     smart_summary: "[Digest overview](https://dev.to/test)").digest_email
+
+        data = email.message.delivery_method.settings[:message_data]
+        expect(data["smart_summary"]).to include('<a href="https://dev.to/test"')
+      end
+
+      it "keys billboards_html by slot so the CIO template can tell first from second" do
+        bb_1 = create(:billboard, placement_area: "digest_first", published: true, approved: true)
+        bb_2 = create(:billboard, placement_area: "digest_second", published: true, approved: true)
+
+        email = described_class.with(user: user, articles: [article], billboards: [bb_1, bb_2]).digest_email
+
+        data = email.message.delivery_method.settings[:message_data]
+        expect(data["billboards_html"]).to eq({ "first" => bb_1.processed_html, "second" => bb_2.processed_html })
+      end
+
+      it "sets both slots nil when no billboards are given" do
+        email = described_class.with(user: user, articles: [article]).digest_email
+
+        data = email.message.delivery_method.settings[:message_data]
+        expect(data["billboards_html"]).to eq({ "first" => nil, "second" => nil })
+      end
+
+      it "preserves slot identity when only the second billboard is present" do
+        bb_2 = create(:billboard, placement_area: "digest_second", published: true, approved: true)
+
+        email = described_class.with(user: user, articles: [article], billboards: [nil, bb_2]).digest_email
+
+        data = email.message.delivery_method.settings[:message_data]
+        expect(data["billboards_html"]).to eq({ "first" => nil, "second" => bb_2.processed_html })
+      end
+
+      it "preserves slot identity when only the first billboard is present" do
+        bb_1 = create(:billboard, placement_area: "digest_first", published: true, approved: true)
+
+        email = described_class.with(user: user, articles: [article], billboards: [bb_1, nil]).digest_email
+
+        data = email.message.delivery_method.settings[:message_data]
+        expect(data["billboards_html"]).to eq({ "first" => bb_1.processed_html, "second" => nil })
+      end
     end
   end
 

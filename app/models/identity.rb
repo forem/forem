@@ -20,7 +20,7 @@ class Identity < ApplicationRecord
                                                             }
 
   # TODO: [@forem/oss] should this be transitioned to JSON?
-  serialize :auth_data_dump
+  serialize :auth_data_dump, coder: YAML
 
   # Builds an identity from OmniAuth's authentication payload
   def self.build_from_omniauth(provider)

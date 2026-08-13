@@ -54,6 +54,12 @@ class StoriesController < ApplicationController
       ensure
         RequestStore.store[:subforem_id] = previous_subforem_id
       end
+    elsif FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization]) &&
+          (@org_page = @organization.pages.find_by(slug: "#{@organization.slug}/#{params[:slug]}"))
+      params[:page_suffix] = params[:slug]
+      handle_organization_index
+      return if performed?
+      render "stories/index"
     else
       not_found
     end
@@ -188,8 +194,8 @@ class StoriesController < ApplicationController
     get_latest_campaign_articles if Campaign.current.show_in_sidebar?
 
     set_surrogate_key_header "main_app_home_page"
-    set_cache_control_headers(600,
-                              stale_while_revalidate: 30,
+    set_cache_control_headers(60,
+                              stale_while_revalidate: 60,
                               stale_if_error: 86_400)
 
     render template: "articles/index"
@@ -217,8 +223,21 @@ class StoriesController < ApplicationController
     redirect_if_organization_view_param
     return if performed?
 
+    redirect_organization_to_custom_domain_if_needed
+    return if performed?
+
     main_page = @organization.main_page
-    is_readme = main_page.present? && FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization])
+    has_readme = main_page.present? && FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization])
+    @org_page = nil
+    if params[:page_suffix].present?
+      if FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization])
+        @org_page = @organization.pages.find_by(slug: "#{@organization.slug}/#{params[:page_suffix]}")
+      end
+      not_found if @org_page.nil?
+    elsif has_readme && params[:mode] != "all-posts"
+      @org_page = main_page
+    end
+    is_readme = @org_page.present?
     @stories = ArticleDecorator.decorate_collection(@organization.articles.published.from_subforem
       .includes(:distinct_reaction_categories, :subforem)
       .limited_column_select
@@ -267,9 +286,10 @@ class StoriesController < ApplicationController
     set_organization_json_ld
     set_surrogate_key_header @organization.record_key
 
+    @cover_image_url = @organization.cover_image_url if @organization.cover_image.present?
+
     if is_readme
-      @readme_html = main_page.processed_html
-      @cover_image_url = @organization.cover_image_url if @organization.cover_image.present?
+      @readme_html = @org_page.processed_html
       @org_readme_show = true
       render template: "organizations/show_readme"
     else
@@ -341,6 +361,7 @@ class StoriesController < ApplicationController
   end
 
   def redirect_if_inactive_in_subforem_for_organization
+    return if @org_page.present?
     return if request.env["forem.custom_domain_org"].present?
     return unless @stories.none? &&
       RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id]
@@ -361,6 +382,9 @@ class StoriesController < ApplicationController
     user_keys = @article.user&.profile_identity_cache_keys
     set_surrogate_key_header(*[@article.record_key, *user_keys].compact)
     redirect_if_appropriate
+    return if performed?
+
+    redirect_article_to_custom_domain_if_needed
     return if performed?
 
     render template: "articles/show"
@@ -496,7 +520,6 @@ class StoriesController < ApplicationController
       sameAs: user_same_as,
       image: @user.profile_image_url_for(length: 320),
       name: @user.name,
-      email: decorated_user.profile_email,
       description: decorated_user.profile_summary
     }.compact_blank
   end
@@ -542,7 +565,7 @@ class StoriesController < ApplicationController
     }
 
     # Add discussion forum structured data if article has comments
-    return json_ld unless @article.comments_count.positive?
+    return json_ld unless @comments_count.positive?
 
     # Add main discussion forum posting for the article
     json_ld[:mainEntity] = {
@@ -562,7 +585,7 @@ class StoriesController < ApplicationController
         {
           "@type": "InteractionCounter",
           interactionType: "https://schema.org/CommentAction",
-          userInteractionCount: @article.comments_count
+          userInteractionCount: @comments_count
         },
         {
           "@type": "InteractionCounter",
@@ -707,5 +730,30 @@ class StoriesController < ApplicationController
     end
 
     comment_data
+  end
+
+  def redirect_organization_to_custom_domain_if_needed
+    return if user_signed_in?
+    return if @organization.custom_domain.blank?
+    return if request.host&.downcase == @organization.custom_domain&.downcase
+    return unless FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(@organization))
+
+    query_string = request.query_string.present? ? "?#{request.query_string}" : ""
+    redirect_to "#{request.protocol}#{@organization.custom_domain}/#{query_string}",
+                allow_other_host: true,
+                status: :found
+  end
+
+  def redirect_article_to_custom_domain_if_needed
+    return if user_signed_in?
+    return unless @organization
+    return if @organization.custom_domain.blank?
+    return if request.host&.downcase == @organization.custom_domain&.downcase
+    return unless FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(@organization))
+
+    query_string = request.query_string.present? ? "?#{request.query_string}" : ""
+    redirect_to "#{request.protocol}#{@organization.custom_domain}/#{@article.slug}#{query_string}",
+                allow_other_host: true,
+                status: :found
   end
 end

@@ -7,6 +7,8 @@ module Emails
     sidekiq_throttle(concurrency: { limit: ENV.fetch("EMAIL_BATCH_CONCURRENCY_LIMIT", 5).to_i })
 
     def perform(user_ids, subject, content, type_of, email_id, from_name = nil)
+      return if ForemInstance.customerio_email_cutover?
+
       user_ids = user_ids.map(&:to_i)
 
       # Optimized: Load all users in one query instead of N queries (avoids N+1)

@@ -4,7 +4,7 @@ module Admin
     helper ScheduledAutomationsHelper
 
     before_action :set_badge
-    before_action :set_automation, only: %i[show edit update destroy toggle_enabled]
+    before_action :set_automation, only: %i[edit update destroy toggle_enabled]
     before_action :set_organizations
 
     def index
