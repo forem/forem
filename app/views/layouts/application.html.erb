@@ -180,23 +180,33 @@
                   newLink.rel = 'stylesheet';
                   newLink.media = link.media || 'all';
                   newLink.href = expectedHref;
-                  newLink.onload = (function(targetLink, replacementLink, targetId) {
+                  newLink.onload = (function(targetId, expectedUrl, replacementLink) {
                     return function() {
-                      replacementLink.id = targetId;
-                      delete targetLink.dataset.pendingHref;
-                      if (targetLink.parentNode) {
-                        targetLink.parentNode.replaceChild(replacementLink, targetLink);
+                      var currentTarget = document.getElementById(targetId);
+                      if (currentTarget && currentTarget.dataset.pendingHref === expectedUrl) {
+                        replacementLink.id = targetId;
+                        delete currentTarget.dataset.pendingHref;
+                        if (currentTarget.parentNode) {
+                          currentTarget.parentNode.replaceChild(replacementLink, currentTarget);
+                          return;
+                        }
                       }
-                    };
-                  })(link, newLink, id);
-                  newLink.onerror = (function(targetLink, replacementLink) {
-                    return function() {
-                      delete targetLink.dataset.pendingHref;
                       if (replacementLink.parentNode) {
                         replacementLink.parentNode.removeChild(replacementLink);
                       }
                     };
-                  })(link, newLink);
+                  })(id, expectedHref, newLink);
+                  newLink.onerror = (function(targetId, expectedUrl, replacementLink) {
+                    return function() {
+                      var currentTarget = document.getElementById(targetId);
+                      if (currentTarget && currentTarget.dataset.pendingHref === expectedUrl) {
+                        delete currentTarget.dataset.pendingHref;
+                      }
+                      if (replacementLink.parentNode) {
+                        replacementLink.parentNode.removeChild(replacementLink);
+                      }
+                    };
+                  })(id, expectedHref, newLink);
                   document.head.appendChild(newLink);
                 }
               }
