@@ -23,6 +23,7 @@
         </span>
       <% end %>
       <%= subscription_icon(comment.user) %>
+      <%= community_leader_icon(comment.user) %>
     </button>
     <%= render "/shared/profile_preview_card", actor: comment.user, id: "comment-profile-preview-content-#{comment.id}" %>
     <% if commentable_author_is_op?(commentable, comment) %>

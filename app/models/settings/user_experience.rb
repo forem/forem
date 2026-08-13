@@ -54,6 +54,7 @@ module Settings
     setting :community_leader_l1_favorite_allowance, type: :integer, default: 5
     setting :community_leader_l2_favorite_allowance, type: :integer, default: 10
     setting :community_leader_favorite_refresh_hours, type: :integer, default: 24
+    setting :community_leader_inactivity_days, type: :integer, default: 120
 
     # Mobile App
     setting :show_mobile_app_banner, type: :boolean, default: true

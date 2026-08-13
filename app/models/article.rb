@@ -503,7 +503,8 @@ class Article < ApplicationRecord
            :video_thumbnail_url, :video_closed_caption_track_url,
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
            :published_at, :crossposted_at, :description, :reading_time, :video_duration_in_seconds, :score,
-           :last_comment_at, :main_image_height, :type_of, :edited_at, :processed_html, :subforem_id)
+           :last_comment_at, :main_image_height, :type_of, :edited_at, :processed_html, :subforem_id,
+           :favorited_by_user_id)
   }
 
   scope :minimal_feed_column_select, lambda {
@@ -514,7 +515,8 @@ class Article < ApplicationRecord
            :video_thumbnail_url, :video_closed_caption_track_url,
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
            :published_at, :crossposted_at, :description, :reading_time, :video_duration_in_seconds, :score,
-           :last_comment_at, :main_image_height, :type_of, :edited_at, :subforem_id)
+           :last_comment_at, :main_image_height, :type_of, :edited_at, :subforem_id,
+           :favorited_by_user_id)
   }
 
   scope :limited_columns_internal_select, lambda {

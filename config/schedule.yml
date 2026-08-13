@@ -106,6 +106,10 @@ award_first_post_badges:
     - ""
     - award_first_post
     - ""
+prune_inactive_community_leaders:
+  description: "Revokes community leader roles from leaders inactive beyond the configured window (runs daily at 03:30 UTC)"
+  cron: "30 3 * * *"
+  class: "CommunityLeaders::PruneInactiveWorker"
 resave_supported_tags:
   description: "Resaves supported tags to recalculate scores (runs daily at 00:25 UTC)"
   cron: "25 0 * * *"

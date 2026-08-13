@@ -1,5 +1,7 @@
 import { h, render } from 'preact';
 import { getUserDataAndCsrfTokenSafely } from '@utilities/getUserDataAndCsrfToken';
+import { checkUserLoggedIn } from '@utilities/checkUserLoggedIn';
+import { globalFeatureFlagEnabled } from '@utilities/featureFlags';
 import { FavoriteControl } from '../favoriteControl/FavoriteControl';
 
 function initializeFavoriteControls(currentUser) {
@@ -43,6 +45,17 @@ function initializeFavoriteControls(currentUser) {
 }
 
 function mount() {
+  if (!globalFeatureFlagEnabled('community_favorites')) {
+    return;
+  }
+
+  // Visitors should still see the indicator on favorited content when not
+  // logged in. Mount straight away instead of waiting for user data.
+  if (!checkUserLoggedIn()) {
+    initializeFavoriteControls(null);
+    return;
+  }
+
   getUserDataAndCsrfTokenSafely().then(({ currentUser }) => {
     initializeFavoriteControls(currentUser);
   });

@@ -1,6 +1,8 @@
 module FavoritesHelper
   # Emits the mount node for the Preact FavoriteControl
   def favorite_control_tag(favoritable, variant: :article)
+    return unless FeatureFlag.enabled?(:community_favorites)
+
     favoritable = favoritable.object if favoritable.try(:decorated?)
 
     tag.span(
