@@ -176,6 +176,10 @@ class Organization < ApplicationRecord
     false
   end
 
+  def cached_community_leader?
+    false
+  end
+
   def fully_trusted?
     fully_trusted == true
   end

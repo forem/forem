@@ -67,6 +67,7 @@ export const Meta = ({ article, organization }) => {
             profileImage={article.user.profile_image_90}
             userId={article.user_id}
             subscriber={article.user.cached_base_subscriber ? 'true' : 'false'}
+            communityLeader={article.user.cached_community_leader ? 'true' : 'false'}
           />
           {organization &&
             !document.getElementById('organization-article-index') && (
