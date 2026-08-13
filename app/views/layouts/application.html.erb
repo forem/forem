@@ -174,8 +174,30 @@
               var link = document.getElementById(id);
               if (link) {
                 var currentHref = link.getAttribute('href');
-                if (currentHref && currentHref !== expectedHref) {
-                  link.setAttribute('href', expectedHref);
+                if (currentHref && currentHref !== expectedHref && link.dataset.pendingHref !== expectedHref) {
+                  link.dataset.pendingHref = expectedHref;
+                  var newLink = document.createElement('link');
+                  newLink.rel = 'stylesheet';
+                  newLink.media = link.media || 'all';
+                  newLink.href = expectedHref;
+                  newLink.onload = (function(targetLink, replacementLink, targetId) {
+                    return function() {
+                      replacementLink.id = targetId;
+                      delete targetLink.dataset.pendingHref;
+                      if (targetLink.parentNode) {
+                        targetLink.parentNode.replaceChild(replacementLink, targetLink);
+                      }
+                    };
+                  })(link, newLink, id);
+                  newLink.onerror = (function(targetLink, replacementLink) {
+                    return function() {
+                      delete targetLink.dataset.pendingHref;
+                      if (replacementLink.parentNode) {
+                        replacementLink.parentNode.removeChild(replacementLink);
+                      }
+                    };
+                  })(link, newLink);
+                  document.head.appendChild(newLink);
                 }
               }
             }

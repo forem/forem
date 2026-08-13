@@ -628,6 +628,8 @@ RSpec.describe "StoriesIndex" do
       expect(response.body).to include(%("minimal": "#{expected_minimal}"))
       expect(response.body).to include(%("views": "#{expected_views}"))
       expect(response.body).to include(%("crayons": "#{expected_crayons}"))
+      expect(response.body).to include("pendingHref")
+      expect(response.body).to include("replaceChild")
       # Internal navigation excludes the outer layout, so the outer shell links should not be rendered
       expect(response.body).not_to include('id="main-minimal-stylesheet"')
     end
