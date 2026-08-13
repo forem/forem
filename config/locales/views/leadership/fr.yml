@@ -3,6 +3,8 @@ fr:
   views:
     leadership:
       heading: Leadership communautaire
+      icon:
+        leader_alt: Leader communautaire
       nav:
         aria_label: Sections
       curation:

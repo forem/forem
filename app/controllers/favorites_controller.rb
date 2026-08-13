@@ -3,7 +3,7 @@ class FavoritesController < ApplicationController
   after_action :verify_authorized
 
   FAVORITABLE_TYPES = %w[Article Comment].freeze
-  INVALID_USE_ERRORS = %i[not_found not_a_leader self_favorite ineligible].freeze
+  INVALID_USE_ERRORS = %i[not_found self_favorite ineligible].freeze
 
   def create
     favoritable = find_favoritable

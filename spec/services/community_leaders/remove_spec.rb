@@ -43,4 +43,21 @@ RSpec.describe CommunityLeaders::Remove, type: :service do
 
     expect(user).not_to have_received(:touch)
   end
+
+  it "resaves the user's articles so feed cards drop the leader icon" do
+    user = create(:user, :community_leader_level_1)
+    allow(Users::ResaveArticlesWorker).to receive(:perform_async)
+
+    described_class.call(user)
+
+    expect(Users::ResaveArticlesWorker).to have_received(:perform_async).with(user.id)
+  end
+
+  it "does not resave articles when there is nothing to remove" do
+    allow(Users::ResaveArticlesWorker).to receive(:perform_async)
+
+    described_class.call(create(:user))
+
+    expect(Users::ResaveArticlesWorker).not_to have_received(:perform_async)
+  end
 end

@@ -28,6 +28,8 @@ module CommunityLeaders
 
       # Bust user info cache
       user.touch
+      # And ensure leader icon appears on user's articles
+      Users::ResaveArticlesWorker.perform_async(user.id)
 
       Result.new(success?: true)
     end

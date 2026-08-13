@@ -94,6 +94,7 @@ function feedConstruct(
           isRoot={isRoot}
           feedStyle={feedStyle}
           isBookmarked={bookmarkedFeedItems.has(item.id)}
+          currentUserId={currentUserId}
           saveable={Boolean(currentUserId) && item.user_id != currentUserId}
         // For "saveable" props, "!=" is used instead of "!==" to compare user_id
         // and currentUserId because currentUserId is a String while user_id is an Integer

@@ -3,6 +3,8 @@ en:
   views:
     leadership:
       heading: Community Leadership
+      icon:
+        leader_alt: Community Leader
       nav:
         aria_label: Sections
       curation:

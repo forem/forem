@@ -136,3 +136,19 @@ body.community-leader-status-true .community-leader-visible-block {
   max-height:22px;
   aspect-ratio: 166 / 102;
 }
+
+.community-leader-icon {
+  height: 0.95em;
+  display: inline-block;
+  vertical-align: middle;
+  margin-bottom: 0.05em;
+  max-height: 22px;
+  aspect-ratio: 1 / 1;
+}
+
+.favorited-marker {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  color: var(--reaction-favorite-color);
+}

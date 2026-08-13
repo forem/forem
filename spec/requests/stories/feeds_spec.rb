@@ -860,6 +860,64 @@ RSpec.describe "Stories::Feeds" do
     end
   end
 
+  describe "favorited_by_user_id cache invalidation" do
+    let(:user) { create(:user) }
+    let(:article) { create(:article, user: user) }
+    let(:leader) { create(:user) }
+
+    def make_favorite(favoritable, by:)
+      favoritable.update_columns(favorited_by_user_id: by.id, favorited_at: Time.current)
+    end
+
+    def response_article
+      response.parsed_body.detect { |item| item["id"] == article.id }
+    end
+
+    it "serializes favorited_by_user_id so the feed can mark the card" do
+      get stories_feed_path
+      expect(response_article).to include("favorited_by_user_id" => nil)
+
+      make_favorite(article, by: leader)
+
+      get stories_feed_path
+      expect(response_article).to include("favorited_by_user_id" => leader.id)
+    end
+
+    context "with fragment caching enabled" do
+      around do |example|
+        original_perform_caching = ActionController::Base.perform_caching
+        ActionController::Base.perform_caching = true
+
+        example.run
+      ensure
+        ActionController::Base.perform_caching = original_perform_caching
+      end
+
+      before { allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new) }
+
+      it "returns a fresh card after the article is favorited" do
+        get stories_feed_path
+        expect(response_article).to include("favorited_by_user_id" => nil)
+
+        make_favorite(article, by: leader)
+
+        get stories_feed_path
+        expect(response_article).to include("favorited_by_user_id" => leader.id)
+      end
+
+      it "returns a fresh card after the favorite is released" do
+        make_favorite(article, by: leader)
+        get stories_feed_path
+        expect(response_article).to include("favorited_by_user_id" => leader.id)
+
+        article.update_columns(favorited_by_user_id: nil, favorited_at: nil)
+
+        get stories_feed_path
+        expect(response_article).to include("favorited_by_user_id" => nil)
+      end
+    end
+  end
+
   describe "type_of validation" do
     before do
       allow(Settings::UserExperience).to receive(:feed_strategy).and_return("weighted")
