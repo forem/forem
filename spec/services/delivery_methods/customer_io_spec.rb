@@ -39,6 +39,22 @@ RSpec.describe DeliveryMethods::CustomerIo do
     expect(message[:message_data]).to eq("name" => "Sloan")
   end
 
+  it "forwards the one-click unsubscribe headers so RFC 8058 survives the Customer.io render" do
+    mail["List-Unsubscribe"] = "<https://dev.to/email_subscriptions/unsubscribe?ut=token>"
+    mail["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
+
+    message = delivered_message(transactional_message_id: "dev_test_template")
+
+    expect(message[:headers]).to eq(
+      "List-Unsubscribe" => "<https://dev.to/email_subscriptions/unsubscribe?ut=token>",
+      "List-Unsubscribe-Post" => "List-Unsubscribe=One-Click",
+    )
+  end
+
+  it "sends no custom headers when the mail carries no unsubscribe headers" do
+    expect(delivered_message[:headers]).to eq({})
+  end
+
   it "prefers identifiers passed in options over the recipient email" do
     message = delivered_message(identifiers: { id: "42" })
     expect(message[:identifiers]).to eq(id: "42")
