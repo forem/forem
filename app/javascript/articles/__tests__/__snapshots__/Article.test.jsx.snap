@@ -170,9 +170,7 @@ Object {
                               class="c-btn c-btn--primary follow-action-button follow-user w-100"
                               data-info="{\\"id\\":23289,\\"className\\":\\"User\\",\\"name\\":\\"Stella Macejkovic\\",\\"style\\":\\"full\\"}"
                               type="button"
-                            >
-                              Follow
-                            </button>
+                            />
                           </div>
                           <div
                             class="author-preview-metadata-container"
@@ -419,9 +417,7 @@ Object {
                             class="c-btn c-btn--primary follow-action-button follow-user w-100"
                             data-info="{\\"id\\":23289,\\"className\\":\\"User\\",\\"name\\":\\"Stella Macejkovic\\",\\"style\\":\\"full\\"}"
                             type="button"
-                          >
-                            Follow
-                          </button>
+                          />
                         </div>
                         <div
                           class="author-preview-metadata-container"
