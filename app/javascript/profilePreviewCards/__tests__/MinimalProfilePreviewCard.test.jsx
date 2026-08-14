@@ -37,6 +37,8 @@ describe('<MinimalProfilePreviewCard />', () => {
     const followButton = container.querySelector('.follow-action-button');
     expect(followButton).toBeInTheDocument();
     expect(followButton).toHaveClass('follow-user', 'w-100', 'c-btn--primary');
+    // No static text child — prevents "FollowFollow" duplication when followButtons.js
+    // sets button.textContent (issue #22701)
     expect(followButton.textContent).toBe('');
 
     const parsedInfo = JSON.parse(followButton.getAttribute('data-info'));
@@ -46,6 +48,17 @@ describe('<MinimalProfilePreviewCard />', () => {
       name: 'Jane Doe',
       style: 'full',
     });
+  });
+
+  it('has an accessible aria-label before followButtons.js initializes', () => {
+    const { container } = render(
+      <MinimalProfilePreviewCard {...defaultProps} />,
+    );
+
+    const followButton = container.querySelector('.follow-action-button');
+    // aria-label provides an accessible name without creating a text child node,
+    // so it does not conflict with followButtons.js textContent management
+    expect(followButton).toHaveAttribute('aria-label', 'Follow Jane Doe');
   });
 
   it('renders subscriber badge when subscriber is true', () => {

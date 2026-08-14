@@ -48,6 +48,7 @@ export const MinimalProfilePreviewCard = ({
           <Button
             variant="primary"
             className="follow-action-button follow-user w-100"
+            aria-label={`Follow ${name}`}
             data-info={JSON.stringify({
               id: userId,
               className: 'User',
