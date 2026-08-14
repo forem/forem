@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="format-detection" content="telephone=no,address=no,email=no,date=no">
+  <meta name="color-scheme" content="light">
+  <meta name="supported-color-schemes" content="light">
+  <title>{{message.subject}}</title>
+  <!--[if mso]>
+  <noscript><xml><o:OfficeDocumentSettings>
+    <o:AllowPNG/><o:PixelsPerInch>96</o:PixelsPerInch>
+  </o:OfficeDocumentSettings></xml></noscript>
+  <![endif]-->
+  <style type="text/css">
+    /* --- client resets --- */
+    #outlook a { padding: 0; }
+    body { margin: 0 !important; padding: 0 !important; width: 100% !important;
+           -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    img { border: 0; height: auto; line-height: 100%; outline: none;
+          text-decoration: none; -ms-interpolation-mode: bicubic; display: block; }
+    /* Gmail/Apple Mail auto-link colouring on dates, addresses, phone numbers */
+    a[x-apple-data-detectors], .unstyled-auto-detected a, u + #body a {
+      color: inherit !important; text-decoration: none !important; font-size: inherit !important;
+      font-family: inherit !important; font-weight: inherit !important; line-height: inherit !important;
+    }
+    /* --- content defaults: mailers emit bare <p>/<h1>/<ul>, style them here --- */
+    .dev-body p { margin: 0 0 16px 0; }
+    .dev-body h1 { margin: 0 0 16px 0; font-size: 24px; line-height: 32px; font-weight: 700; color: #08090a; }
+    .dev-body h2 { margin: 0 0 14px 0; font-size: 20px; line-height: 28px; font-weight: 700; color: #08090a; }
+    .dev-body h3 { margin: 0 0 12px 0; font-size: 17px; line-height: 24px; font-weight: 600; color: #08090a; }
+    .dev-body ul, .dev-body ol { margin: 0 0 16px 0; padding-left: 22px; }
+    .dev-body li { margin: 0 0 8px 0; }
+    .dev-body img { max-width: 100%; height: auto; }
+    .dev-body a { color: #3b49df; }
+    /* --- mobile --- */
+    @media only screen and (max-width: 620px) {
+      .dev-card { width: 100% !important; max-width: 100% !important; }
+      .dev-pad { padding-left: 20px !important; padding-right: 20px !important; }
+      .dev-body { font-size: 16px !important; line-height: 24px !important; }
+    }
+  </style>
+</head>
+<body id="body" style="margin:0;padding:0;background-color:#fcfcfc;">
+  <!-- preheader: mailers do not supply one today; render only if a template adds it -->
+  {% if trigger.preheader %}
+  <div style="display:none;font-size:1px;color:#fcfcfc;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;mso-hide:all;">
+    {{trigger.preheader}}
+  </div>
+  {% endif %}
+
+  <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#fcfcfc;">
+    <tr>
+      <td align="center" style="padding:16px 10px;">
+
+        <!--[if mso]>
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" align="center"><tr><td>
+        <![endif]-->
+
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" class="dev-card"
+               style="width:600px;max-width:600px;background-color:#ffffff;border:1px solid #e6e6e6;border-radius:12px;">
+
+          <!-- header -->
+          <tr>
+            <td class="dev-pad" align="left" style="padding:24px 28px 8px 28px;">
+              <a href="https://dev.to/" target="_blank" style="text-decoration:none;border:0;">
+                <!-- Customer.io asset (Assets > Logos > dev-logo-black.png); source is 100x80, served at 50x40 for 2x displays -->
+                <img src="https://userimg-assets.customeriomail.com/images/client-env-152482/01M00BZGX3AMWT0KG083N1VM70.png"
+                     width="50" height="40" alt="DEV"
+                     style="display:block;width:50px;height:40px;border:0;outline:none;text-decoration:none;">
+              </a>
+            </td>
+          </tr>
+
+          <!-- message body -->
+          <tr>
+            <td class="dev-body dev-pad" align="left"
+                style="padding:16px 28px 28px 28px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:16px;line-height:24px;color:#202121;">
+              {{content}}
+            </td>
+          </tr>
+
+          <!-- Footer. Mirrors layouts/mailer.html.erb: the auth reminder plus either
+               "Unsubscribe | Adjust your email settings" (when the mailer passes an
+               unsubscribe token) or the "Don't want to get emails like this?" line.
+               Both keys come from Deliverable#layout_message_data, which only emits
+               them for mailers that set @user -- so DeviseMailer security emails get
+               no footer, exactly as today. -->
+          {% if trigger.signed_up_with_html or trigger.unsubscribe_url %}
+          <tr>
+            <td class="dev-pad" align="left" style="padding:0 28px;">
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tr><td style="border-top:1px solid #e6e6e6;font-size:0;line-height:0;">&nbsp;</td></tr>
+              </table>
+            </td>
+          </tr>
+          {% if trigger.signed_up_with_html %}
+          <tr>
+            <td class="dev-pad" align="left"
+                style="padding:16px 28px 0 28px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:22px;color:#202121;">
+              {{trigger.signed_up_with_html}}
+            </td>
+          </tr>
+          {% endif %}
+          <tr>
+            <td class="dev-pad" align="left"
+                style="padding:12px 28px 24px 28px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:13px;line-height:20px;color:#7d7d7d;">
+              <!-- class="untracked" keeps Customer.io from rewriting preference links for click tracking.
+                   Note: this is Forem's own token-based unsubscribe (it flips users_notification_settings),
+                   NOT Customer.io's {% unsubscribe_url %}, which would only suppress at the CIO profile level
+                   and would leave Forem still generating the mail. -->
+              {% if trigger.unsubscribe_url %}
+              <a href="{{trigger.unsubscribe_url}}" target="_blank" class="untracked" style="color:#7d7d7d;text-decoration:underline;">Unsubscribe</a>
+              &nbsp;|&nbsp;
+              <a href="{{trigger.notification_settings_url}}" target="_blank" class="untracked" style="color:#7d7d7d;text-decoration:underline;">Adjust your email settings</a>
+              {% else %}
+              Don&rsquo;t want to get emails like this? Adjust your email settings at
+              <a href="{{trigger.notification_settings_url}}" target="_blank" class="untracked" style="color:#7d7d7d;text-decoration:underline;word-break:break-all;">{{trigger.notification_settings_url}}</a>
+              {% endif %}
+            </td>
+          </tr>
+          {% endif %}
+
+        </table>
+
+        <!--[if mso]>
+        </td></tr></table>
+        <![endif]-->
+
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

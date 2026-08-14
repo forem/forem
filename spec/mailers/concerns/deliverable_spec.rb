@@ -107,5 +107,71 @@ RSpec.describe Deliverable do
 
       expect(api_client).to have_received(:send_email)
     end
+
+    describe "layout message data" do
+      before do
+        stub_const("DeliverableLayoutTestMailer", Class.new(ApplicationMailer) do
+          def test_email
+            @user = params[:user]
+            customerio_delivery_options(
+              transactional_message_id: "dev_test",
+              message_data: params[:message_data] || {},
+            )
+            # rubocop:disable Rails/I18nLocaleTexts -- filler content for a test-only mailer, not user-facing copy
+            mail(to: @user.email, subject: "Test subject", body: "Test body")
+            # rubocop:enable Rails/I18nLocaleTexts
+          end
+        end)
+        FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+      end
+
+      def layout_data(message_data: nil)
+        DeliverableLayoutTestMailer
+          .with(user: user, message_data: message_data)
+          .test_email.message.delivery_method.settings[:message_data]
+      end
+
+      it "supplies the greeting and footer keys that the Customer.io layout renders" do
+        data = layout_data
+
+        expect(data["name"]).to eq(user.name)
+        expect(data["signed_up_with_html"]).to include("magic link")
+        expect(data["notification_settings_url"]).to include("/settings")
+      end
+
+      it "lets a mailer's own message_data win over the layout defaults" do
+        expect(layout_data(message_data: { "name" => "Override" })["name"]).to eq("Override")
+      end
+
+      it "omits layout data when the mailer does not set @user" do
+        settings = built_message(
+          to: user.email,
+          customerio_options: { transactional_message_id: "dev_test", message_data: { "a" => 1 } },
+        ).delivery_method.settings
+
+        expect(settings[:message_data]).to eq("a" => 1)
+      end
+
+      # DeviseMailer descends from Devise::Mailer, so it renders without
+      # layouts/mailer.html.erb and without AuthenticationHelper -- its security
+      # emails have never carried this footer. Note Devise's
+      # initialize_from_record still sets @user, so the ivar alone is not a
+      # reliable signal for the guard.
+      it "omits layout data for DeviseMailer" do
+        message = DeviseMailer.reset_password_instructions(user, "token").message
+
+        expect(message.delivery_method.settings[:message_data].keys)
+          .not_to include("signed_up_with_html")
+      end
+
+      it "omits the footer on magic_link, matching layouts/mailer.html.erb" do
+        user.update_columns(sign_in_token: "12345678", sign_in_token_sent_at: Time.current)
+
+        message = VerificationMailer.with(user_id: user.id).magic_link.message
+
+        expect(message.delivery_method.settings[:message_data].keys)
+          .not_to include("signed_up_with_html")
+      end
+    end
   end
 end
