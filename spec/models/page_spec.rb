@@ -34,6 +34,22 @@ RSpec.describe Page do
         expect(described_class.from_subforem).to contain_exactly(page_no_subforem)
       end
     end
+
+    context "when ENV['NO_SUBFOREM_FILTER'] is true" do
+      before do
+        @orig_val = ENV["NO_SUBFOREM_FILTER"]
+        ENV["NO_SUBFOREM_FILTER"] = "true"
+      end
+
+      after do
+        ENV["NO_SUBFOREM_FILTER"] = @orig_val
+      end
+
+      it "returns all records, including those with subforem_id present and nil" do
+        expect(described_class.from_subforem(1))
+          .to contain_exactly(page_subforem_1, page_subforem_2, page_no_subforem)
+      end
+    end
   end
 
   describe ".render_safe_html_for" do
@@ -74,6 +90,42 @@ RSpec.describe Page do
       page.body_json = nil
       page.body_css = nil
       expect(page).not_to be_valid
+    end
+
+    it "does not require body when redirect_to_url is set" do
+      page = build(:page, redirect_to_url: "https://example.com", body_html: nil, body_markdown: nil,
+                          body_json: nil, body_css: nil)
+      expect(page).to be_valid
+    end
+
+    describe "redirect_to_url" do
+      it "allows a full https URL" do
+        page = build(:page, redirect_to_url: "https://example.com/path")
+        expect(page).to be_valid
+      end
+
+      it "allows a full http URL" do
+        page = build(:page, redirect_to_url: "http://example.com")
+        expect(page).to be_valid
+      end
+
+      it "allows a valid app path" do
+        page = build(:page, redirect_to_url: "/about")
+        expect(page).to be_valid
+      end
+
+      it "rejects a value that is neither a URL nor a path" do
+        page = build(:page, redirect_to_url: "not-a-url-or-path")
+        expect(page).not_to be_valid
+        expect(page.errors[:redirect_to_url]).to be_present
+      end
+
+
+
+      it "is valid when blank" do
+        page = build(:page, redirect_to_url: "")
+        expect(page).to be_valid
+      end
     end
 
     it "takes organization slug into account" do
@@ -134,6 +186,39 @@ RSpec.describe Page do
         page.update(body_html: html, body_markdown: "")
         expect(page.processed_html).to eq(html)
       end
+
+      it "adds a validation error when Liquid content cannot be rendered" do
+        organization = create(:organization)
+        other_form = create(:organization_lead_form)
+        page = build(
+          :page,
+          organization: organization,
+          body_markdown: "{% org_lead_form #{other_form.id} %}",
+        )
+
+        expect(page).not_to be_valid
+        expect(page.errors[:base]).to include(I18n.t("liquid_tags.org_lead_form_tag.wrong_organization"))
+      end
+
+      it "preserves descriptive errors from invalid Liquid tag references" do
+        organization = create(:organization)
+        invalid_tags = {
+          "{% podcast /missing-podcast/missing-episode %}" =>
+            I18n.t("liquid_tags.podcast_tag.invalid_podcast_link"),
+          "{% agent_session missing-session %}" =>
+            I18n.t("liquid_tags.agent_session_tag.not_found"),
+          "{% event 999999999 %}" => I18n.t("liquid_tags.event_tag.not_found")
+        }
+
+        aggregate_failures do
+          invalid_tags.each do |body_markdown, error_message|
+            page = build(:page, organization: organization, body_markdown: body_markdown)
+
+            expect(page).not_to be_valid
+            expect(page.errors[:base]).to include(error_message)
+          end
+        end
+      end
     end
   end
 
@@ -143,6 +228,15 @@ RSpec.describe Page do
     it "triggers cache busting on save" do
       sidekiq_assert_enqueued_with(job: Pages::BustCacheWorker, args: [page.slug]) do
         page.save
+      end
+    end
+
+    it "passes the organization id to the cache bust worker for organization pages" do
+      organization = create(:organization)
+      org_page = create(:page, organization: organization, slug: "#{organization.slug}/readme")
+
+      sidekiq_assert_enqueued_with(job: Pages::BustCacheWorker, args: [org_page.slug, organization.id]) do
+        org_page.save
       end
     end
 

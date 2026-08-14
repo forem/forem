@@ -22,5 +22,30 @@ RSpec.describe AsyncInfo do
       expect(policies.map { |p| p.fetch(:dom_class) }.sort)
         .to eq(%w[js-policy-article-create js-policy-article-moderate])
     end
+
+    it "reflects the user's community leader status" do
+      expect(async_info[:community_leader]).to be(false)
+
+      user.add_role(:community_leader_level_1)
+
+      expect(described_class.to_hash(user: user, context: context)[:community_leader]).to be(true)
+    end
+
+    it "includes the user's remaining favorite allowance" do
+      expect(async_info[:favorite_allowance]).to eq(0)
+
+      user.update!(earned_favorites_count: 3)
+
+      expect(described_class.to_hash(user: user, context: context)[:favorite_allowance]).to eq(3)
+    end
+
+    it "includes a list of admin_organization_ids for the current user" do
+      org = create(:organization)
+      create(:organization_membership, user: user, organization: org, type_of_user: "admin")
+
+      payload = async_info
+      expect(payload).to have_key(:admin_organization_ids)
+      expect(payload[:admin_organization_ids]).to eq([org.id])
+    end
   end
 end

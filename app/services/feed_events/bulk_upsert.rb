@@ -58,8 +58,25 @@ module FeedEvents
 
       return if records_to_insert.blank?
 
-      FeedEvent.insert_all(records_to_insert)
-      FeedEvent.bulk_update_counters_by_article_id(records_to_insert.pluck(:article_id).sample(5))
+      article_ids = records_to_insert.pluck(:article_id).compact.uniq
+      valid_article_ids = Set.new(Article.where(id: article_ids).pluck(:id))
+      user_ids = records_to_insert.pluck(:user_id).compact.uniq
+      valid_user_ids = Set.new(User.where(id: user_ids).pluck(:id))
+
+      records_to_insert.select! do |r|
+        valid_article_ids.include?(r[:article_id]) &&
+          (r[:user_id].nil? || valid_user_ids.include?(r[:user_id]))
+      end
+
+      return if records_to_insert.blank?
+
+      begin
+        FeedEvent.insert_all(records_to_insert)
+        FeedEvent.bulk_update_counters_by_article_id(records_to_insert.pluck(:article_id).sample(5))
+      rescue ActiveRecord::InvalidForeignKey
+        # Race condition: article or user was deleted after our check but before insert_all.
+        # We can gracefully ignore this failure rather than throwing a 500 for an analytics payload.
+      end
     end
 
     private
@@ -81,6 +98,8 @@ module FeedEvents
         .where.not("created_at > ?", timebox.ago.utc) # Only proceed if
         .create_with(event.slice(:article_position, :context_type))
         .find_or_create_by(event.slice(:article_id, :user_id, :category))
+    rescue ActiveRecord::InvalidForeignKey
+      # Ignore if the article or user was deleted concurrently
     end
 
     def recent_events

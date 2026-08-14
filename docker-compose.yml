@@ -93,7 +93,7 @@ services:
     command: bundle exec sidekiq
 
   postgres:
-    image: postgres:13
+    image: pgvector/pgvector:pg13
     volumes:
       - ${LOCAL_WORKSPACE_FOLDER:-.}/.dockerdev/.psqlrc:/root/.psqlrc:ro
       - postgres:/var/lib/postgresql/data

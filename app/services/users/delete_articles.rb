@@ -15,6 +15,10 @@ module Users
           comment.delete
         end
         article.discussion_lock&.delete
+        article.context_notes.delete_all
+        article.article_activity&.delete
+        article.trend_memberships.delete_all
+        article.profile_pins.delete_all
         article.delete
         article.purge
       end

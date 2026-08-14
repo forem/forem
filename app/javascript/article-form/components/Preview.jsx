@@ -100,6 +100,16 @@ function titleArea({
         </h1>
 
         <div className="spec-article__tags color-base-60">{tags}</div>
+
+        {articleState.coAuthorsData?.length > 0 && (
+          <div className="spec-article__co_authors color-base-60 mt-2 text-sm">
+            Co-authored by: {articleState.coAuthorsData.map((u) => (
+              <span key={u.id} className="fw-bold mr-1">
+                {u.name} (@{u.username})
+              </span>
+            ))}
+          </div>
+        )}
       </div>
     </header>
   );

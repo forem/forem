@@ -9,9 +9,89 @@ RSpec.describe "Admin::Surveys", type: :request do
   end
 
   describe "GET /admin/content_manager/surveys" do
-    it "renders the index page" do
-      get admin_surveys_path
+    context "when logged in as a super admin" do
+      it "renders the index page" do
+        get admin_surveys_path
+        expect(response).to have_http_status(:success)
+      end
+    end
+
+    context "when logged in as a survey admin" do
+      let(:survey_admin) { create(:user) }
+      before do
+        survey_admin.add_role(:single_resource_admin, Survey)
+        login_as(survey_admin)
+      end
+
+      it "renders the index page" do
+        get admin_surveys_path
+        expect(response).to have_http_status(:success)
+      end
+    end
+
+    context "when logged in as an admin for a different resource" do
+      let(:other_admin) { create(:user) }
+      before do
+        other_admin.add_role(:single_resource_admin, Article)
+        login_as(other_admin)
+      end
+
+      it "denies access" do
+        expect {
+          get admin_surveys_path
+        }.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
+
+    context "when logged in as a normal user" do
+      let(:normal_user) { create(:user) }
+      before do
+        login_as(normal_user)
+      end
+
+      it "denies access" do
+        expect {
+          get admin_surveys_path
+        }.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
+  end
+
+  describe "GET /admin/content_manager/surveys/:id" do
+    let(:survey) { create(:survey) }
+    let(:poll) { create(:poll, survey: survey, type_of: :single_choice) }
+    let(:text_poll) { create(:poll, survey: survey, type_of: :text_input) }
+    let(:option1) { create(:poll_option, poll: poll, markdown: "Option 1") }
+    let(:option2) { create(:poll_option, poll: poll, markdown: "Option 2") }
+
+    before do
+      # Create votes outside the date range
+      create(:poll_vote, poll: poll, poll_option: option1, created_at: 2.weeks.ago)
+      create(:survey_completion, survey: survey, user: create(:user), completed_at: 2.weeks.ago)
+
+      # Create votes inside the date range
+      create(:poll_vote, poll: poll, poll_option: option1, created_at: Time.current)
+      create(:poll_vote, poll: poll, poll_option: option2, created_at: Time.current)
+      create(:poll_text_response, poll: text_poll, user: create(:user), text_content: "Great survey!", created_at: Time.current)
+      create(:survey_completion, survey: survey, user: create(:user), completed_at: Time.current)
+    end
+
+    it "renders the show page with visualizations" do
+      get admin_survey_path(survey)
       expect(response).to have_http_status(:success)
+      expect(response.body).to include(survey.title)
+      # Visualizer uses a Stimulus controller
+      expect(response.body).to include("admin-survey-chart")
+    end
+
+    it "applies date filters to the visualization data" do
+      start_date = 1.week.ago.to_date.to_s
+      end_date = Time.current.to_date.to_s
+
+      get admin_survey_path(survey), params: { start_date: start_date, end_date: end_date }
+      
+      expect(response).to have_http_status(:success)
+      expect(response.body).to include('Total completions')
     end
   end
 
@@ -22,6 +102,8 @@ RSpec.describe "Admin::Surveys", type: :request do
           survey: {
             title: "Test Survey",
             active: true,
+            daily_email_distributions: 50,
+            extra_email_context_paragraph: "Please tell us what you think!",
             polls_attributes: [
               {
                 prompt_markdown: "What is your favorite color?",
@@ -42,6 +124,10 @@ RSpec.describe "Admin::Surveys", type: :request do
           post admin_surveys_path, params: survey_params
         }.to change(Survey, :count).by(1).and change(Poll, :count).by(1).and change(PollOption, :count).by(2)
         
+        survey = Survey.last
+        expect(survey.daily_email_distributions).to eq(50)
+        expect(survey.extra_email_context_paragraph).to eq("Please tell us what you think!")
+
         expect(response).to redirect_to(admin_surveys_path)
         follow_redirect!
         expect(response.body).to include("Survey has been created!")

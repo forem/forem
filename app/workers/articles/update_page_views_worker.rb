@@ -6,17 +6,39 @@ module Articles
 
     GOOGLE_REFERRER = "https://www.google.com/".freeze
 
+    # Authoritative bot filter. The client gate in baseTracking.js can be
+    # bypassed by any non-browser client that POSTs to /page_views directly,
+    # so self-identified crawlers must also be dropped here before a row is
+    # written. Kept in parity with the client-side list.
+    BOT_USER_AGENT_REGEX = /
+  \b(bot|gptbot|crawl|spider)\b|
+  google|baidu|bing|msn|duckduckbot|teoma|slurp|
+  yandex|chatgpt|anthropic|cohere-ai|facebookexternalhit
+/ix
+
     sidekiq_options queue: :medium_priority,
                     lock: :until_executing,
                     on_conflict: :replace,
                     retry: false
 
     def perform(create_params)
-      article = Article.find_by(id: create_params["article_id"])
-      return unless article&.published?
-      return if create_params[:user_id] && article.user_id == create_params[:user_id]
+      create_params = create_params.with_indifferent_access
 
-      # --- START: MODIFIED CODE ---
+      return if bot_user_agent?(create_params[:user_agent])
+
+      has_viewable_id = create_params[:viewable_id].present?
+      has_viewable_type = create_params[:viewable_type].present?
+      create_params = create_params.except(:viewable_id, :viewable_type) if has_viewable_id != has_viewable_type
+      
+      return unless create_params[:article_id].present? ||
+                    (create_params[:viewable_id].present? && create_params[:viewable_type].present?)
+
+      if create_params[:article_id].present?
+        article = Article.find_by(id: create_params[:article_id])
+        return unless article&.published?
+        return if create_params[:user_id] && article.user_id == create_params[:user_id]
+      end
+
       begin
         PageView.create!(create_params)
       rescue ActiveRecord::RecordNotUnique
@@ -30,19 +52,26 @@ module Articles
         Rails.logger.error("Articles::UpdatePageViewsWorker validation failed: #{e.message} for params: #{create_params}")
         return
       end
-      # --- END: MODIFIED CODE ---
 
-      updated_count = article.page_views.sum(:counts_for_number_of_views)
-      if updated_count > article.page_views_count
-        article.update_column(:page_views_count, updated_count)
+      if article
+        updated_count = article.page_views.sum(:counts_for_number_of_views)
+        if updated_count > article.page_views_count
+          article.update_column(:page_views_count, updated_count)
+        end
+
+        return unless create_params[:referrer] == GOOGLE_REFERRER
+
+        Articles::UpdateOrganicPageViewsWorker.perform_at(
+          25.minutes.from_now,
+          article.id,
+        )
       end
+    end
 
-      return unless create_params["referrer"] == GOOGLE_REFERRER
+    private
 
-      Articles::UpdateOrganicPageViewsWorker.perform_at(
-        25.minutes.from_now,
-        article.id,
-      )
+    def bot_user_agent?(user_agent)
+      user_agent.present? && BOT_USER_AGENT_REGEX.match?(user_agent)
     end
   end
 end

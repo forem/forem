@@ -80,8 +80,22 @@ pt:
     organization:
       integer_only: Apenas inteiro. Nenhum sinal permitido.
       reserved_word: '%<value>s é uma palavra reservada. Entre em contato com os administradores do site para obter ajuda para registrar sua organização.'
+      unknown_platform: "contém plataforma desconhecida: %{platform}"
+      social_link_too_long: "URL para %{platform} é muito longa (máx 200 caracteres)"
+      header_cta_text_too_long: "o texto do botão é muito longo (máx %{max} caracteres)"
+      header_cta_url_too_long: "a URL é muito longa (máx %{max} caracteres)"
+      header_cta_links_invalid: "os links devem ser um array"
+      header_cta_too_many_links: "contém links demais (máx %{max})"
+      header_cta_link_missing_fields: "cada link deve ter texto e URL"
+      header_cta_url_invalid: "O link deve ser uma URL HTTP, HTTPS ou Mailto válida"
+      social_link_invalid: "deve ser URLs HTTP ou HTTPS válidas"
+      social_link_domain_mismatch: "O domínio da URL deve corresponder à plataforma selecionada (%{platform})"
+    lead_submission:
+      already_submitted: Você já enviou este formulário.
     page:
       body_must_exist: deve existir se body_html ou body_json não existir.
+      redirect_to_url_invalid: deve ser uma URL completa (começando com http:// ou https://) ou um caminho do aplicativo (começando com /).
+      redirect_to_url_invalid_path: não é um caminho reconhecido nesta aplicação.
     podcast_episode_appearance:
       provided_role_is_not_valid: papel fornecido não é válido
     poll_skip:

@@ -1,0 +1,40 @@
+<% content_for :page_title, "Edit Linked Domain" %>
+
+<div class="crayons-card p-4">
+  <div class="mb-4">
+    <%= link_to "← Back to Linked Domains", admin_linked_domains_path, class: "crayons-link" %>
+  </div>
+
+  <h1 class="crayons-title mb-4">Edit Linked Domain: <%= @linked_domain.host %></h1>
+
+  <div class="mb-4 p-4 bg-base-10 rounded">
+    <p class="mb-2"><strong>Current Net Score:</strong> <%= @linked_domain.net_score || 0 %></p>
+    <p class="text-sm color-base-60">Updating the manual setting will immediately apply strict thresholds to the net score.</p>
+  </div>
+
+  <%= form_with model: [:admin, @linked_domain], local: true do |form| %>
+    <% if @linked_domain.errors.any? %>
+      <div class="crayons-notice crayons-notice--danger mb-4">
+        <ul>
+          <% @linked_domain.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="crayons-field mb-4">
+      <%= form.label :manual_setting, "Manual Setting", class: "crayons-field__label" %>
+      <div class="crayons-select">
+        <%= form.select :manual_setting, 
+              LinkedDomain.manual_settings.keys.map { |k| [k.titleize, k] }, 
+              {}, 
+              { class: "crayons-select__input" } %>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <%= form.submit "Update Linked Domain", class: "crayons-btn crayons-btn--brand" %>
+    </div>
+  <% end %>
+</div>

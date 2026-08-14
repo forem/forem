@@ -2,6 +2,10 @@ module Api
   module ArticlesController
     extend ActiveSupport::Concern
 
+    included do
+      before_action :validate_page_limit, only: %i[index search]
+    end
+
     INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[
       id user_id organization_id collection_id
       title description main_image published_at crossposted_at social_image
@@ -29,6 +33,11 @@ module Api
     private_constant :ME_ATTRIBUTES_FOR_SERIALIZATION
 
     def index
+      if invalid_tags_present?
+        render json: { error: "Not Found", status: 404 }, status: :not_found
+        return
+      end
+
       @articles = ArticleApiIndexService.new(params).get
       @articles = @articles.select(INDEX_ATTRIBUTES_FOR_SERIALIZATION).decorate
 
@@ -140,6 +149,16 @@ module Api
 
     private
 
+    def invalid_tags_present?
+      tag_params = [params[:tag], params[:tags], params[:tags_exclude]].flatten.compact
+
+      return false if tag_params.empty?
+
+      all_tags = tag_params.flat_map { |t| t.to_s.split(",") }.map(&:strip).compact_blank
+
+      all_tags.any? { |t| !t.match?(/\A[[:alnum:]\-]+\z/i) }
+    end
+
     def per_page_max
       (ApplicationConfig["API_PER_PAGE_MAX"] || 1000).to_i
     end
@@ -193,6 +212,14 @@ module Api
         labels = labels.is_a?(String) ? labels.gsub(" ", "").split(",") : labels
         params[:article][:labels] = labels
       end
+    end
+
+    def validate_page_limit
+      return if params[:page].to_i <= 1000
+      return if authenticate_with_api_key
+
+      message = I18n.t("api.v0.articles_controller.page_limit_exceeded")
+      render json: { error: message, status: 401 }, status: :unauthorized
     end
   end
 end

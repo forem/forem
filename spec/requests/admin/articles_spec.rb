@@ -15,14 +15,14 @@ RSpec.describe "/admin/content_manager/articles" do
     end
 
     it "allows an Admin to add a co-author to an individual article" do
-      get request
+      get admin_articles_path
       expect do
         article.update_columns(co_author_ids: [1])
       end.to change(article, :co_author_ids).from([]).to([1])
     end
 
     it "allows an Admin to add co-authors to an individual article" do
-      get request
+      get admin_articles_path
       article.update_columns(co_author_ids: [2, 3])
       expect(article.co_author_ids).to eq([2, 3])
     end
@@ -30,7 +30,7 @@ RSpec.describe "/admin/content_manager/articles" do
     it "allows an Admin to update the author" do
       allow(NotificationSubscriptions::UpdateWorker).to receive(:perform_async)
       new_author = create(:user)
-      get request
+      get admin_articles_path
 
       patch admin_article_path(article.id), params: { article: { user_id: new_author.id } }
       expect(article.reload.user_id).to eq(new_author.id)
@@ -69,6 +69,14 @@ RSpec.describe "/admin/content_manager/articles" do
           "published_at(6i)": updated_published_at.sec
         } }
       end.to change { article.reload.published_at }.to(DateTime.parse(updated_published_at.to_s))
+    end
+
+    it "allows an Admin to update an article's context_notes" do
+      context_note = create(:context_note, article: article, body_markdown: "Original markdown note that is long enough")
+      
+      expect do
+        patch admin_article_path(article.id), params: { article: { context_notes_attributes: { "0" => { id: context_note.id, body_markdown: "Updated markdown note that is long enough" } } } }
+      end.to change { context_note.reload.body_markdown }.to("Updated markdown note that is long enough")
     end
 
     it "creates an audit log on update" do

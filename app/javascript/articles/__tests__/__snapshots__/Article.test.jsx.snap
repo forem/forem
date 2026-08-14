@@ -127,6 +127,7 @@ Object {
                         Stella Macejkovic
                          
                         
+                        
                       </button>
                       <div
                         class="profile-preview-card__content crayons-dropdown p-4 pt-0 branded-7"
@@ -256,7 +257,7 @@ Object {
                 >
                   <a
                     aria-label="Add a comment to post - Unbranded Home Loan Account"
-                    class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
+                    class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left flex items-center"
                     data-testid="add-a-comment"
                     href="http://example.com/some-post/path#comments"
                   >
@@ -290,29 +291,6 @@ Object {
                   >
                     1 min read
                   </small>
-                  <button
-                    aria-label="Save post Unbranded Home Loan Account to reading list"
-                    aria-pressed="false"
-                    class="c-btn c-btn--icon-alone"
-                    data-initial-feed="true"
-                    data-reactable-id="62407"
-                    id="article-save-button-62407"
-                    title="Save post Unbranded Home Loan Account to reading list"
-                    type="button"
-                  >
-                    <svg
-                      aria-hidden="true"
-                      class="crayons-icon c-btn__icon"
-                      focusable="false"
-                      height="24"
-                      width="24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M6.75 4.5h10.5a.75.75 0 0 1 .75.75v14.357a.375.375 0 0 1-.575.318L12 16.523l-5.426 3.401A.375.375 0 0 1 6 19.607V5.25a.75.75 0 0 1 .75-.75zM16.5 6h-9v11.574l4.5-2.82 4.5 2.82V6z"
-                      />
-                    </svg>
-                  </button>
                 </div>
               </div>
             </div>
@@ -397,6 +375,7 @@ Object {
                     >
                       Stella Macejkovic
                        
+                      
                       
                     </button>
                     <div
@@ -527,7 +506,7 @@ Object {
               >
                 <a
                   aria-label="Add a comment to post - Unbranded Home Loan Account"
-                  class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
+                  class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left flex items-center"
                   data-testid="add-a-comment"
                   href="http://example.com/some-post/path#comments"
                 >
@@ -561,29 +540,6 @@ Object {
                 >
                   1 min read
                 </small>
-                <button
-                  aria-label="Save post Unbranded Home Loan Account to reading list"
-                  aria-pressed="false"
-                  class="c-btn c-btn--icon-alone"
-                  data-initial-feed="true"
-                  data-reactable-id="62407"
-                  id="article-save-button-62407"
-                  title="Save post Unbranded Home Loan Account to reading list"
-                  type="button"
-                >
-                  <svg
-                    aria-hidden="true"
-                    class="crayons-icon c-btn__icon"
-                    focusable="false"
-                    height="24"
-                    width="24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M6.75 4.5h10.5a.75.75 0 0 1 .75.75v14.357a.375.375 0 0 1-.575.318L12 16.523l-5.426 3.401A.375.375 0 0 1 6 19.607V5.25a.75.75 0 0 1 .75-.75zM16.5 6h-9v11.574l4.5-2.82 4.5 2.82V6z"
-                    />
-                  </svg>
-                </button>
               </div>
             </div>
           </div>

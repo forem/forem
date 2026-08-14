@@ -6,6 +6,7 @@ class User < ApplicationRecord
 
   include Images::Profile.for(:profile_image_url)
   include AlgoliaSearchable
+  include Trackable
 
   # NOTE: we are using an inline module to keep profile related things together.
   concerning :Profiles do
@@ -34,9 +35,30 @@ class User < ApplicationRecord
 
   RECENTLY_ACTIVE_LIMIT = 10_000
 
-  # User types enum
-  enum type_of: { member: 0, community_bot: 1, member_bot: 2 }
-  enum current_subscriber_status: { not_subscribed: 0, free_subscription: 1, trial_subscription: 2, paying_subscription: 3 }
+  # Moderation role changes emit dedicated events so Core can scope the DEV
+  # newsletter and prune bot Customer.io profiles. Suspension is moderation,
+  # not consent withdrawal — Core never flips its global unsubscribe on these.
+  # See the add_role/remove_role overrides in the Trackable section below.
+  MODERATION_ROLE_EVENTS = {
+    added: { "suspended" => "user_suspended", "spam" => "user_spam_flagged" },
+    removed: { "suspended" => "user_unsuspended", "spam" => "user_spam_unflagged" }
+  }.freeze
+
+  # Column changes that must reach MLH Core: deliberate profile edits, the
+  # actual email swap (Devise reconfirmable lands it outside any profile
+  # edit), email confirmation, and invited accounts completing registration.
+  SYNC_TRIGGER_KEYS = %w[profile_updated_at email confirmed_at registered].freeze
+
+  # Activity timestamps that mean "this person used DEV" — advancing any of
+  # them emits a throttled user_engaged so Core keeps engaged_at fresh for
+  # accounts that never edit their profile.
+  ACTIVITY_TIMESTAMP_KEYS = %w[current_sign_in_at last_sign_in_at last_presence_at last_reacted_at
+                               last_followed_at last_comment_at last_article_at].freeze
+  ENGAGEMENT_EMIT_INTERVAL = 1.week
+
+  enum :type_of, { member: 0, community_bot: 1, member_bot: 2 }
+  enum :current_subscriber_status, { not_subscribed: 0, free_subscription: 1, trial_subscription: 2,
+                                     paying_subscription: 3 }
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
@@ -46,6 +68,7 @@ class User < ApplicationRecord
   acts_as_follower
 
   has_one :notification_setting, class_name: "Users::NotificationSetting", dependent: :delete
+  has_one :onboarding_checklist, dependent: :delete
   has_one :setting, class_name: "Users::Setting", dependent: :delete
 
   has_many :affected_feedback_messages, class_name: "FeedbackMessage",
@@ -54,7 +77,11 @@ class User < ApplicationRecord
   has_many :scheduled_automations, dependent: :destroy
   has_many :ahoy_visits, class_name: "Ahoy::Visit", dependent: :delete_all
   has_many :api_secrets, dependent: :delete_all
+  has_many :agent_sessions, dependent: :destroy
   has_many :articles, dependent: :destroy
+  has_many :event_signups, dependent: :destroy
+  has_many :signed_up_events, through: :event_signups, source: :event
+  has_many :ai_audits, foreign_key: :affected_user_id, inverse_of: :affected_user, dependent: :nullify
   has_many :audit_logs, dependent: :nullify
   has_many :authored_notes, inverse_of: :author, class_name: "Note", foreign_key: :author_id, dependent: :delete_all
   has_many :badge_achievements, dependent: :delete_all
@@ -69,6 +96,8 @@ class User < ApplicationRecord
                             inverse_of: :blocker, dependent: :delete_all
   has_many :collections, dependent: :destroy
   has_many :comments, dependent: :destroy
+  has_many :concept_accesses, dependent: :delete_all
+  has_many :accessible_concepts, through: :concept_accesses, source: :concept
   has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
   has_many :credits, dependent: :destroy
   has_many :discussion_locks, dependent: :delete_all, inverse_of: :locking_user, foreign_key: :locking_user_id
@@ -76,6 +105,9 @@ class User < ApplicationRecord
   has_many :email_authorizations, dependent: :delete_all
   has_many :email_messages, class_name: "Ahoy::Message", dependent: :destroy
   has_many :feed_events, dependent: :nullify
+  has_many :feed_import_logs, class_name: "Feeds::ImportLog", dependent: :delete_all
+  has_many :feed_sources, class_name: "Feeds::Source", dependent: :delete_all
+  has_many :lead_submissions, dependent: :destroy
   has_many :field_test_memberships, class_name: "FieldTest::Membership", as: :participant, dependent: :destroy
   # Consider that we might be able to use dependent: :delete_all as the GithubRepo busts the user cache
   has_many :github_repos, dependent: :destroy
@@ -125,6 +157,17 @@ class User < ApplicationRecord
   has_many :user_visit_contexts, dependent: :delete_all
   has_one :user_activity, dependent: :delete
 
+  has_many :favorited_articles, class_name: "Article", foreign_key: :favorited_by_user_id,
+                                inverse_of: :favorited_by_user, dependent: :nullify
+  has_many :favorited_comments, class_name: "Comment", foreign_key: :favorited_by_user_id,
+                                inverse_of: :favorited_by_user, dependent: :nullify
+
+  def cached_recent_user_ids
+    Rails.cache.fetch("user-#{id}/recent_users", expires_in: 5.minutes) do
+      user_activity&.recent_users || []
+    end
+  end
+
   mount_uploader :profile_image, ProfileImageUploader
 
   devise :invitable, :omniauthable, :registerable, :database_authenticatable, :confirmable, :rememberable,
@@ -136,7 +179,8 @@ class User < ApplicationRecord
   validates :blocking_others_count, presence: true
   validates :comments_count, presence: true
   validates :credits_count, presence: true
-  validates :email, length: { maximum: 50 }, email: true, allow_nil: true
+  validates :email, length: { maximum: 254 }, email: true, allow_nil: true
+  validate :reject_encoded_word_email, if: -> { email.present? }
   validates :email, uniqueness: { allow_nil: true, case_sensitive: false }, if: :email_changed?
   validates :following_orgs_count, presence: true
   validates :following_tags_count, presence: true
@@ -179,6 +223,19 @@ class User < ApplicationRecord
 
   scope :eager_load_serialized_data, -> { includes(:roles) }
   scope :registered, -> { where(registered: true) }
+  scope :email_eligible, lambda {
+    if ENV["USE_BASE_EMAIL_ELIGIBLE_COLUMN"] == "true"
+      where(base_email_eligible: true)
+    else
+      registered
+        .joins(:notification_setting)
+        .without_role(:suspended)
+        .without_role(:spam)
+        .where(notification_setting: { email_newsletter: true })
+        .where.not(email: ["", nil])
+        .where("users.score >= 0")
+    end
+  }
   scope :invited, -> { where(registered: false) }
   # Unfortunately pg_search's default SQL query is not performant enough in this
   # particular case (~ 500ms). There are multiple reasons:
@@ -242,6 +299,9 @@ class User < ApplicationRecord
       comments_count: average_comments_count..,
     )
   }
+  scope :community_leaders, lambda {
+    joins(:roles).where(roles: { name: CommunityLeaders::ROLES.map(&:to_s) }).distinct
+  }
 
   before_validation :downcase_email
 
@@ -249,11 +309,17 @@ class User < ApplicationRecord
   before_validation :set_username
   before_create :create_users_settings_and_notification_settings_records
   after_update :refresh_auto_audience_segments
+  after_update :create_email_change_note, if: :saved_change_to_unconfirmed_email?
+  after_update :create_password_change_note, if: :saved_change_to_encrypted_password?
   before_destroy :remove_from_mailchimp_newsletters, prepend: true
   before_destroy :destroy_follows, prepend: true
 
   after_create_commit :send_welcome_notification
+  after_create_commit :create_onboarding_checklist
 
+  after_save :sync_base_email_eligible!, if: lambda {
+                                               saved_changes.key?(:email) || saved_changes.key?(:registered) || saved_changes.key?(:score)
+                                             }
   after_save :create_conditional_autovomits
   after_save :generate_social_images
   after_commit :subscribe_to_mailchimp_newsletter
@@ -282,8 +348,19 @@ class User < ApplicationRecord
     find_by(id: Settings::General.mascot_user_id)
   end
 
+  def self.ransackable_attributes(auth_object = nil)
+    ["agent_sessions_count", "apple_username", "articles_count", "badge_achievements_count", "base_email_eligible", "blocked_by_count", "blocking_others_count", "checked_code_of_conduct", "checked_terms_and_conditions", "comments_count", "confirmation_sent_at", "confirmed_at", "created_at", "credits_count", "current_sign_in_at", "current_subscriber_status", "email", "export_requested", "exported_at", "facebook_username", "failed_attempts", "feed_fetched_at", "following_orgs_count", "following_tags_count", "following_users_count", "forem_username", "github_repos_updated_at", "github_username", "google_oauth2_created_at", "google_oauth2_username", "id", "id_value", "invitation_accepted_at", "invitation_created_at", "invitation_limit", "invitation_sent_at", "invitations_count", "invited_by_id", "invited_by_type", "last_article_at", "last_comment_at", "last_followed_at", "last_moderation_notification", "last_notification_activity", "last_onboarding_page", "last_presence_at", "last_reacted_at", "last_sign_in_at", "latest_article_updated_at", "locked_at", "max_score", "mlh_username", "name", "old_old_username", "old_username", "onboarding_package_requested", "onboarding_subforem_id", "organization_info_updated_at", "payment_pointer", "profile_image", "profile_updated_at", "public_reactions_count", "rating_votes_count", "reactions_count", "registered", "registered_at", "reputation_modifier", "reset_password_sent_at", "saw_onboarding", "score", "sign_in_count", "sign_in_token_sent_at", "signup_cta_variant", "spent_credits_count", "stripe_id_code", "subscribed_to_user_subscriptions_count", "twitter_username", "type_of", "unconfirmed_email", "unspent_credits_count", "updated_at", "username"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["roles", "profile", "setting", "notification_setting"]
+  end
+
   def good_standing_followers_count
-    Follow.non_suspended("User", id).count
+    cache_key = "#{cache_key_with_version}/good_standing_followers_count"
+    Rails.cache.fetch(cache_key, expires_in: 24.hours) do
+      Follow.non_suspended("User", id).count
+    end
   end
 
   def tag_line
@@ -318,6 +395,16 @@ class User < ApplicationRecord
     end
   end
 
+  def author_trust_score
+    case score.to_i
+    when -Float::INFINITY...25 then 0
+    when 25...75 then 1
+    when 75...175 then 2
+    when 175...300 then 3
+    else 4
+    end
+  end
+
   def calculate_score
     # User score is used to mitigate spam by reducing visibility of flagged users
     # It can generally be used as a baseline for affecting certain functionality which
@@ -329,11 +416,17 @@ class User < ApplicationRecord
     # It can be changed as frequently as needed to do a better job reflecting its purpose
     # Changes should generally keep the score within the same order of magnitude so that
     # mass re-calculation is needed.
-    user_reaction_points = Reaction.user_vomits.where(reactable_id: id).sum(:points)
+    user_reaction_points = new_record? ? 0 : Reaction.user_vomits.where(reactable_id: id).sum(:points)
     calculated_score = (badge_achievements_count * 10) + user_reaction_points
-    calculated_score -= 500 if spam?
-    update_column(:score, calculated_score)
-    AlgoliaSearch::SearchIndexWorker.perform_async(self.class.name, id, false)
+    calculated_score -= 500 if spam? || suspended?
+
+    if new_record?
+      self.score = calculated_score
+    else
+      update_column(:score, calculated_score)
+      sync_base_email_eligible!
+      AlgoliaSearch::SearchIndexWorker.perform_async(self.class.name, id, false)
+    end
   end
 
   def path
@@ -370,7 +463,7 @@ class User < ApplicationRecord
   end
 
   def cached_following_users_ids
-    cache_key = "user-#{id}-#{last_followed_at}-#{following_users_count}/following_users_ids"
+    cache_key = "user-#{id}-#{formatted_last_followed_at}-#{following_users_count}/following_users_ids"
     begin
       Timeout.timeout(0.05) do
         Rails.cache.fetch(cache_key, expires_in: 12.hours) do
@@ -383,7 +476,7 @@ class User < ApplicationRecord
   end
 
   def cached_following_organizations_ids
-    cache_key = "user-#{id}-#{last_followed_at}-#{following_orgs_count}/following_organizations_ids"
+    cache_key = "user-#{id}-#{formatted_last_followed_at}-#{following_orgs_count}/following_organizations_ids"
     begin
       Timeout.timeout(0.05) do
         Rails.cache.fetch(cache_key, expires_in: 12.hours) do
@@ -404,9 +497,12 @@ class User < ApplicationRecord
 
   def cached_reading_list_article_ids
     Rails.cache.fetch("reading_list_ids_of_articles_#{id}_#{public_reactions_count}_#{last_reacted_at}_#{RequestStore.store[:subforem_id]}") do
-      readinglist = Reaction.readinglist_for_user(self).order("created_at DESC")
-      published = Article.published.from_subforem.where(id: readinglist.pluck(:reactable_id)).ids
-      readinglist.filter_map { |r| r.reactable_id if published.include? r.reactable_id }
+      ids = user_activity&.alltime_reading_list_articles.presence || begin
+        readinglist = Reaction.readinglist_for_user(self).order("created_at DESC").limit(1000)
+        published = Article.published.from_subforem.where(id: readinglist.pluck(:reactable_id)).ids
+        readinglist.filter_map { |r| r.reactable_id if published.include? r.reactable_id }
+      end
+      ids.first(1000)
     end
   end
 
@@ -421,6 +517,10 @@ class User < ApplicationRecord
     cached_role_names.include?("base_subscriber")
   end
 
+  def cached_community_leader?
+    CommunityLeaders::ROLES.any? { |role| cached_role_names.include?(role.to_s) }
+  end
+
   def processed_website_url
     profile.website_url.to_s.strip if profile.website_url.present?
   end
@@ -430,21 +530,23 @@ class User < ApplicationRecord
   end
 
   def cached_followed_tag_names
-    cache_name = "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}-x/followed_tag_names"
+    cache_name = "user-#{id}-#{following_tags_count}-#{formatted_last_followed_at}-x/followed_tag_names"
     Rails.cache.fetch(cache_name, expires_in: 24.hours) do
       Tag.followed_by(self).pluck(:name)
     end
   end
 
   def cached_antifollowed_tag_names
-    cache_name = "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/antifollowed_tag_names"
+    cache_name = "user-#{id}-#{following_tags_count}-#{formatted_last_followed_at}/antifollowed_tag_names"
     Rails.cache.fetch(cache_name, expires_in: 24.hours) do
       Tag.antifollowed_by(self).pluck(:name)
     end
   end
 
   def refresh_auto_audience_segments
-    SegmentedUserRefreshWorker.perform_async(id)
+    if ENV["ENABLE_REFRESH_SEGMENT_WORKERS"]  == "true"
+      SegmentedUserRefreshWorker.perform_async(id)
+    end
   end
 
   ##############################################################################
@@ -500,6 +602,9 @@ class User < ApplicationRecord
     :auditable?,
     :banished?,
     :comment_suspended?,
+    :community_leader?,
+    :community_leader_level_1?,
+    :community_leader_level_2?,
     :limited?,
     :creator?,
     :has_trusted_role?,
@@ -530,6 +635,27 @@ class User < ApplicationRecord
   # End Authorization Refactor
   #
   ##############################################################################
+
+  def favorite_base_allowance
+    return Settings::UserExperience.community_leader_l2_favorite_allowance if community_leader_level_2?
+    return Settings::UserExperience.community_leader_l1_favorite_allowance if community_leader_level_1?
+
+    0
+  end
+
+  # How many favorites the user can make.
+  #
+  # @return [Integer]
+  def favorite_allowance
+    return earned_favorites_count unless community_leader?
+
+    # Community leader allowances refresh over the configured period
+    window_start = Settings::UserExperience.community_leader_favorite_refresh_hours.hours.ago
+    spent_this_period = favorited_articles.where(favorited_at: window_start..).count +
+      favorited_comments.where(favorited_at: window_start..).count
+
+    favorite_base_allowance - spent_this_period
+  end
 
   # The name of the tags moderated by the user.
   #
@@ -726,12 +852,165 @@ class User < ApplicationRecord
   def bot?
     community_bot? || member_bot?
   end
-  
+
   def update_presence!
     return if last_presence_at.present? && last_presence_at > 1.hour.ago
 
     update_column(:last_presence_at, Time.current)
+    # update_column bypasses callbacks, so the throttled engagement event that
+    # enqueue_trackable_event_updated would fire has to be emitted explicitly.
+    track_engagement!(last_presence_at)
   end
+
+  def sync_base_email_eligible!
+    # User is eligible if they are registered, have an email, are not suspended,
+    # not marked as spam, have email_newsletter set to true, and their score is not below zero.
+    is_eligible = registered? &&
+      email.present? &&
+      !has_role?(:suspended) &&
+      !has_role?(:spam) &&
+      notification_setting&.email_newsletter? &&
+      score.to_i >= 0
+
+    return unless has_attribute?(:base_email_eligible) && self[:base_email_eligible] != is_eligible
+
+    if new_record?
+      self.base_email_eligible = is_eligible
+    else
+      update_column(:base_email_eligible, is_eligible)
+    end
+  end
+
+  def formatted_last_followed_at
+    return unless last_followed_at
+
+    last_followed_at.respond_to?(:rfc3339) ? last_followed_at.rfc3339 : last_followed_at.to_s
+  end
+
+  # === Trackable (DEV → MLH Core user sync) ===
+  # Emits user_created / user_updated to the Customer.io CDP so MLH Core can
+  # link the DEV account (SocialProfiles::Dev) and record engagement.
+
+  def trackable_user_ids
+    [id]
+  end
+
+  # Curated payload — do NOT ship the full users row across the boundary.
+  # String keys keep the job arguments JSON-safe for Sidekiq.strict_args!.
+  # mlh_user_id is the Core user id from the mlh OAuth identity, letting Core
+  # resolve deterministically instead of by email match.
+  def trackable_payload
+    {
+      "id" => id, "username" => username, "email" => email, "name" => name,
+      "registered_at" => registered_at&.iso8601,
+      "confirmed_at" => confirmed_at&.iso8601,
+      "email_newsletter" => notification_setting&.email_newsletter,
+      "email_digest_periodic" => notification_setting&.email_digest_periodic,
+      "mlh_user_id" => identities.where(provider: "mlh").pick(:uid)
+    }
+  end
+
+  # Invited accounts (registered: false) have not consented to anything yet,
+  # so their creation stays out of the sync; user_created fires from the
+  # update path when registration completes.
+  def enqueue_trackable_event_created
+    return unless registered?
+
+    enqueue_trackable_event("user_created")
+  end
+
+  # Emit only for changes Core consumes (SYNC_TRIGGER_KEYS): profile edits
+  # touch profile_updated_at on every edit path (Users::Update, users#update),
+  # so unrelated row churn (counters, score recalcs) does not emit. Activity
+  # timestamp changes emit a throttled user_engaged instead.
+  def enqueue_trackable_event_updated
+    track_engagement
+    return unless previous_changes.keys.intersect?(SYNC_TRIGGER_KEYS)
+
+    if previous_changes.key?("registered")
+      enqueue_trackable_event("user_created") if registered?
+    else
+      enqueue_trackable_event("user_updated")
+    end
+  end
+
+  # At most one user_engaged per user per ENGAGEMENT_EMIT_INTERVAL — the
+  # cache key throttles the frequent writers (presence pings, sign-ins) down
+  # to what Core actually needs to keep engaged_at inside its activity
+  # window. Moderated accounts stay silent so a pruned Customer.io profile
+  # is not resurrected by their activity.
+  def track_engagement
+    changed_activity = previous_changes.slice(*ACTIVITY_TIMESTAMP_KEYS)
+    return if changed_activity.empty?
+
+    engaged_at = changed_activity.filter_map { |_key, (_old, new_value)| new_value }.max || Time.current
+    track_engagement!(engaged_at)
+  end
+
+  # Emit a throttled user_engaged for a known activity timestamp. Callable from
+  # paths that skip callbacks (e.g. update_presence!'s update_column write). The
+  # throttle slot is claimed before the spam/suspended role query so hot presence
+  # pings stay a single cache read.
+  def track_engagement!(engaged_at)
+    return unless engagement_emission_due?
+    return if spam_or_suspended?
+
+    track!("user_engaged", { "engaged_at" => engaged_at.iso8601 })
+  end
+
+  # Atomically claim the per-user throttle slot; the write only succeeds when no
+  # unexpired key exists, so its truthy return doubles as the "due" signal and
+  # concurrent writers cannot both emit inside the interval.
+  def engagement_emission_due?
+    Rails.cache.write("user_engaged_throttle:#{id}", true,
+                      expires_in: ENGAGEMENT_EMIT_INTERVAL, unless_exist: true)
+  end
+
+  # Two gates: the admin master switch, then the per-account rollout flag.
+  # The setting is resolved via the default subforem (like mailers do) because the
+  # admin panel saves it subforem-scoped and callbacks may run without request context.
+  def trackable_events_skipped?
+    # Bots (community_bot / member_bot) are not people; the Core backfill
+    # excluded them and the live sync must too.
+    return true unless member?
+    return true unless Settings::General.customerio_cdp_enabled(subforem_id: Subforem.cached_default_id)
+    return true unless FeatureFlag.enabled_for_user?(:dev_core_user_sync, self)
+
+    super
+  end
+
+  # User deletion / unlink is intentionally out of scope for the DEV → Core sync
+  # (created + updated only), and the Core consumer does not handle deletes, so
+  # suppress the concern's default user_destroyed emission.
+  def enqueue_trackable_event_destroyed(*)
+    nil
+  end
+
+  def add_role(role_name, resource = nil)
+    event = moderation_role_event(role_name, :added, resource)
+    already_had_role = event && has_role?(role_name)
+    result = super
+    track!(event) if event && !already_had_role
+    result
+  end
+
+  def remove_role(role_name, resource = nil)
+    event = moderation_role_event(role_name, :removed, resource)
+    had_role = event && has_role?(role_name)
+    result = super
+    track!(event) if event && had_role
+    result
+  end
+
+  # Only global (non-resource-scoped) moderation roles emit.
+  def moderation_role_event(role_name, direction, resource)
+    return if resource.present? || !persisted?
+
+    MODERATION_ROLE_EVENTS[direction][role_name.to_s]
+  end
+  private :enqueue_trackable_event_created, :enqueue_trackable_event_updated, :trackable_events_skipped?,
+          :enqueue_trackable_event_destroyed, :moderation_role_event, :track_engagement, :track_engagement!,
+          :engagement_emission_due?
 
   protected
 
@@ -762,6 +1041,12 @@ class User < ApplicationRecord
     Notification.send_welcome_notification(id, set_up_profile_broadcast.id)
   end
 
+  def create_onboarding_checklist
+    return unless Settings::General.display_sidebar_onboarding_checklist
+
+    OnboardingChecklist.find_or_create_by(user: self)
+  end
+
   def set_username
     self.username = username&.downcase.presence || generate_username
   end
@@ -780,6 +1065,12 @@ class User < ApplicationRecord
 
   def downcase_email
     self.email = email.downcase if email
+  end
+
+  def reject_encoded_word_email
+    encoded_word_regex = /=\?[^?]+\?[BbQq]\?[^?]+\?=/
+
+    errors.add(:email, :invalid) if email.match?(encoded_word_regex)
   end
 
   def bust_cache
@@ -858,6 +1149,24 @@ class User < ApplicationRecord
     errors.add(:password, I18n.t("models.user.password_not_matched"))
   end
 
+  def create_email_change_note
+    return unless unconfirmed_email.present?
+
+    Note.create(
+      noteable: self,
+      reason: "email_change_requested",
+      content: "User requested email change to #{unconfirmed_email}",
+    )
+  end
+
+  def create_password_change_note
+    Note.create(
+      noteable: self,
+      reason: "password_changed",
+      content: "User changed their password",
+    )
+  end
+
   def confirmation_required?
     ForemInstance.smtp_enabled?
   end
@@ -870,10 +1179,13 @@ class User < ApplicationRecord
     Rails.cache.delete("user-#{id}/moderator_for_subforems")
     refresh_auto_audience_segments
     trusted?
-    
+
     # Check for spam patterns when user gets spam or suspended role
     if role.name.in?(%w[spam suspended])
       Spam::DomainDetector.new(self).check_and_block_domain!
+      calculate_score
     end
+
+    sync_base_email_eligible! if role.name == "suspended" || role.name == "spam"
   end
 end

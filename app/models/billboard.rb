@@ -5,6 +5,7 @@ class Billboard < ApplicationRecord
   belongs_to :creator, class_name: "User", optional: true
   belongs_to :audience_segment, optional: true
   belongs_to :page, optional: true
+  belongs_to :event, optional: true
 
   ALLOWED_PLACEMENT_AREAS = %w[sidebar_left
                                sidebar_left_2
@@ -44,6 +45,13 @@ class Billboard < ApplicationRecord
                                             "Digest Email Second"].freeze
 
   HOME_FEED_PLACEMENTS = %w[feed_first feed_second feed_third].freeze
+  HOME_PAGE_PLACEMENTS = %w[feed_first
+                            feed_second
+                            feed_third
+                            home_hero
+                            sidebar_right
+                            sidebar_right_second
+                            sidebar_right_third].freeze
 
   COLOR_HEX_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
 
@@ -56,11 +64,11 @@ class Billboard < ApplicationRecord
   NEW_ONLY_RANGE_MAX_FALLBACK = 40
 
   attribute :target_geolocations, :geolocation_array
-  enum display_to: { all: 0, logged_in: 1, logged_out: 2 }, _prefix: true
-  enum type_of: { in_house: 0, community: 1, external: 2 }
-  enum render_mode: { forem_markdown: 0, raw: 1 }
-  enum template: { authorship_box: 0, plain: 1 }
-  enum :special_behavior, { nothing: 0, delayed: 1 }
+  enum :display_to, { all: 0, logged_in: 1, logged_out: 2 }, prefix: true
+  enum :type_of, { in_house: 0, community: 1, external: 2 }
+  enum :render_mode, { forem_markdown: 0, raw: 1 }
+  enum :template, { authorship_box: 0, plain: 1 }
+  enum :special_behavior, { nothing: 0, delayed: 1, persistent: 2 }
   enum :browser_context, { all_browsers: 0, desktop: 1, mobile_web: 2, mobile_in_app: 3 }
 
   belongs_to :organization, optional: true
@@ -69,6 +77,7 @@ class Billboard < ApplicationRecord
   validates :placement_area, presence: true,
                              inclusion: { in: ALLOWED_PLACEMENT_AREAS }
   validates :body_markdown, presence: true
+  validates :minimized_body_markdown, presence: true, if: :persistent?
   validates :organization, presence: true, if: :community?
   validates :weight, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 10_000 }
   validates :audience_segment_type,
@@ -83,13 +92,16 @@ class Billboard < ApplicationRecord
            :validate_expiration_approval
 
   before_save :process_markdown
+  before_save :update_exclude_article_ids
   before_save :update_content_updated_at_if_needed
   after_save :generate_billboard_name
   after_save :refresh_audience_segment, if: :should_refresh_audience_segment?
   after_save :update_links_with_bb_param
   after_save :update_event_counts_when_taking_down, if: -> { being_taken_down? }
   after_save :bust_billboard_cache, if: -> { being_taken_down? }
-  after_save :bust_home_page_cache, if: -> { home_feed_first_being_activated? }
+  after_save :bust_home_page_cache, if: -> { should_bust_home_page_cache? }
+  after_destroy :bust_billboard_cache, if: -> { approved && published }
+  after_destroy :bust_home_page_cache, if: -> { approved && published && HOME_PAGE_PLACEMENTS.include?(placement_area) }
 
   scope :approved_and_published, lambda {
                                    where(approved: true, published: true).where("expires_at IS NULL OR expires_at > ?", Time.current)
@@ -391,9 +403,9 @@ class Billboard < ApplicationRecord
     return "" if color.blank?
 
     if placement_area.include?("fixed_")
-      "border: 5px solid #{color};border-bottom: none"
+      "border: 1px solid #{color}; border-bottom: none;"
     else
-      "border: 5px solid #{color}"
+      "border: 1px solid #{color};"
     end
   end
 
@@ -439,6 +451,8 @@ class Billboard < ApplicationRecord
     return unless expires_at.present? && expires_at < Time.current && approved?
 
     update_column(:approved, false)
+    bust_billboard_cache if published
+    bust_home_page_cache if published && HOME_PAGE_PLACEMENTS.include?(placement_area)
   end
 
   # Check if a user should be excluded from seeing this billboard based on survey completion
@@ -454,11 +468,59 @@ class Billboard < ApplicationRecord
 
   def update_content_updated_at_if_needed
     # Only update content_updated_at when content-related fields change
-    content_fields = %w[body_markdown name placement_area color template render_mode]
+    content_fields = %w[body_markdown minimized_body_markdown name placement_area color template render_mode]
     
     return unless content_fields.any? { |field| will_save_change_to_attribute?(field) }
     
     self.content_updated_at = Time.current
+  end
+
+  def update_exclude_article_ids
+    return unless body_markdown_changed?
+
+    old_paths = extract_internal_article_paths(processed_html_was)
+    new_paths = extract_internal_article_paths(processed_html)
+
+    removed_paths = old_paths - new_paths
+    added_paths = new_paths - old_paths
+
+    removed_ids = removed_paths.any? ? Article.where(path: removed_paths).pluck(:id) : []
+    added_ids = added_paths.any? ? Article.where(path: added_paths).pluck(:id) : []
+
+    current_ids = self.exclude_article_ids.to_a
+    self.exclude_article_ids = ((current_ids - removed_ids) + added_ids).uniq
+  end
+
+  def extract_internal_article_paths(html)
+    return [] if html.blank?
+
+    paths = []
+    doc = Nokogiri::HTML("<html><body>#{html}</body></html>")
+    
+    internal_hosts = [
+      ApplicationConfig["APP_DOMAIN"],
+      Settings::General.app_domain,
+      URI.parse(URL.url).host
+    ]
+    internal_hosts += Subforem.cached_domains if defined?(Subforem)
+    internal_hosts = internal_hosts.compact.map { |h| h.downcase.delete_prefix("www.") }.uniq
+
+    doc.css("a").each do |link|
+      href = link["href"]
+      next unless href.present? && href.start_with?("http", "/")
+
+      begin
+        uri = URI.parse(href)
+        host = uri.host&.downcase&.delete_prefix("www.")
+        next unless host.nil? || internal_hosts.include?(host)
+
+        path = uri.path
+        paths << path.chomp("/").downcase if path.present? && path != "/"
+      rescue URI::InvalidURIError
+        next
+      end
+    end
+    paths.uniq
   end
 
   def update_event_counts_when_taking_down
@@ -473,13 +535,21 @@ class Billboard < ApplicationRecord
     (saved_change_to_approved? && !approved) || (saved_change_to_published? && !published)
   end
 
-  def home_feed_first_being_activated?
-    return false unless placement_area == "feed_first"
-    return false unless approved && published
+  def should_bust_home_page_cache?
+    return false unless HOME_PAGE_PLACEMENTS.include?(placement_area) || HOME_PAGE_PLACEMENTS.include?(placement_area_before_last_save)
 
-    # Trigger if either approved or published just changed to true (from a prior different state)
-    (saved_change_to_approved? && !approved_before_last_save) ||
-      (saved_change_to_published? && !published_before_last_save)
+    content_fields = %w[body_markdown minimized_body_markdown name placement_area color template render_mode]
+
+    was_active = approved_before_last_save && published_before_last_save
+    is_active = approved && published
+
+    # Bust if it is transitioning to active or inactive
+    return true if was_active != is_active
+
+    # Bust if it's currently active and content was updated
+    return true if is_active && content_fields.any? { |field| saved_change_to_attribute?(field) }
+
+    false
   end
 
   def bust_billboard_cache
@@ -498,22 +568,42 @@ class Billboard < ApplicationRecord
   end
 
   def process_markdown
-    return unless body_markdown_changed?
+    reprocess_body = body_markdown_changed? || render_mode_changed? || placement_area_changed?
+    reprocess_minimized = minimized_body_markdown_changed? || render_mode_changed? || placement_area_changed?
 
-    if render_mode == "forem_markdown"
-      extracted_process_markdown
-    else # raw
-      self.processed_html = Html::Parser.new(body_markdown)
-        .prefix_all_images(width: 880, quality: 100, synchronous_detail_detection: true).html
+    if reprocess_body
+      if body_markdown.present?
+        if render_mode == "forem_markdown"
+          self.processed_html = extracted_process_markdown(body_markdown)
+        else # raw
+          self.processed_html = Html::Parser.new(body_markdown)
+            .prefix_all_images(width: 880, quality: 100, synchronous_detail_detection: true).html
+        end
+      else
+        self.processed_html = nil
+      end
+    end
+
+    if reprocess_minimized
+      if minimized_body_markdown.present?
+        if render_mode == "forem_markdown"
+          self.minimized_processed_html = extracted_process_markdown(minimized_body_markdown)
+        else # raw
+          self.minimized_processed_html = Html::Parser.new(minimized_body_markdown)
+            .prefix_all_images(width: 880, quality: 100, synchronous_detail_detection: true).html
+        end
+      else
+        self.minimized_processed_html = nil
+      end
     end
   end
 
-  def extracted_process_markdown
-    renderer = ContentRenderer.new(body_markdown || "", source: self, user: creator)
-    self.processed_html = renderer.process(prefix_images_options: { width: prefix_width,
-                                                                    quality: 100,
-                                                                    synchronous_detail_detection: true }).processed_html
-    self.processed_html = processed_html.delete("\n")
+  def extracted_process_markdown(markdown)
+    renderer = ContentRenderer.new(markdown || "", source: self, user: creator)
+    processed = renderer.process(prefix_images_options: { width: prefix_width,
+                                                           quality: 100,
+                                                           synchronous_detail_detection: true }).processed_html
+    processed.delete("\n")
   end
 
   def prefix_width

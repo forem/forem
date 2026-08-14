@@ -411,6 +411,21 @@ RSpec.describe "/admin/customization/config" do
           }
           expect(Settings::General.suggested_tags).to eq(%w[hey haha hoho bobofofo])
         end
+
+        it "enables display_sidebar_onboarding_checklist" do
+          post admin_settings_general_settings_path, params: {
+            settings_general: { display_sidebar_onboarding_checklist: "1" }
+          }
+          expect(Settings::General.display_sidebar_onboarding_checklist).to be(true)
+        end
+
+        it "disables display_sidebar_onboarding_checklist" do
+          Settings::General.display_sidebar_onboarding_checklist = true
+          post admin_settings_general_settings_path, params: {
+            settings_general: { display_sidebar_onboarding_checklist: "0" }
+          }
+          expect(Settings::General.display_sidebar_onboarding_checklist).to be(false)
+        end
       end
 
       describe "Rate Limits and spam" do

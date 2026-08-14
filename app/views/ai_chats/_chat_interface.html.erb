@@ -1,0 +1,104 @@
+<div class="ai-chat-container">
+  <% unless local_assigns[:hide_header] %>
+    <div class="ai-chat-header">
+      <div class="bot-icon">🤖</div>
+      <h1><%= title || "AI Community Buddy" %> <span class="beta-badge">BETA</span></h1>
+    </div>
+  <% end %>
+
+  <div id="ai-chat-messages" class="ai-chat-messages">
+    <div class="message ai">
+      <%= greeting || "Hello! I'm your community buddy. I see you've been exploring some interesting topics lately. How can I help you today?" %>
+    </div>
+  </div>
+
+  <form id="ai-chat-form" class="ai-chat-input-area" data-chat-context="<%= chat_context || 'community' %>">
+    <input type="text" id="ai-chat-input" class="ai-chat-input" placeholder="Type your message..." autocomplete="off">
+    <button type="submit" id="ai-chat-send" class="ai-chat-send">Send</button>
+  </form>
+</div>
+
+<%= javascript_tag do %>
+  (function() {
+    const form = document.getElementById('ai-chat-form');
+    const input = document.getElementById('ai-chat-input');
+    const messagesContainer = document.getElementById('ai-chat-messages');
+    const sendButton = document.getElementById('ai-chat-send');
+    const chatContext = form.dataset.chatContext;
+    
+    let chatHistory = [];
+
+    function appendMessage(role, content) {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `message ${role}`;
+      
+      if (role === 'ai') {
+        msgDiv.innerHTML = content;
+      } else {
+        msgDiv.innerText = content;
+      }
+      
+      messagesContainer.appendChild(msgDiv);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      return msgDiv;
+    }
+
+    function showTypingIndicator() {
+      const indicator = document.createElement('div');
+      indicator.className = 'message ai typing';
+      indicator.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
+      messagesContainer.appendChild(indicator);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      return indicator;
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const message = input.value.trim();
+      if (!message) return;
+
+      input.value = '';
+      input.disabled = true;
+      sendButton.disabled = true;
+
+      appendMessage('user', message);
+      const indicator = showTypingIndicator();
+
+      try {
+        let payload = { message, history: chatHistory, chat_context: chatContext };
+        
+        if (chatContext === 'editor') {
+          const title = document.getElementById('article-form-title')?.value || '';
+          const body = document.getElementById('article_body_markdown')?.value || '';
+          payload.article_state = { title, body };
+        }
+
+        const response = await fetch('/ai_chats', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+        indicator.remove();
+
+        if (data.error) {
+          appendMessage('ai', 'Error: ' + data.error);
+        } else {
+          appendMessage('ai', data.message);
+          chatHistory = data.history;
+        }
+      } catch (err) {
+        indicator.remove();
+        appendMessage('ai', 'Error: Failed to connect to server.');
+      } finally {
+        input.disabled = false;
+        sendButton.disabled = false;
+        input.focus();
+      }
+    });
+  })();
+<% end %>

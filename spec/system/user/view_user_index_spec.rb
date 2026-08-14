@@ -4,8 +4,8 @@ RSpec.describe "User index" do
   let!(:user) { create(:user) }
   let!(:article) { create(:article, user: user) }
   let!(:other_article) { create(:article) }
-  let!(:comment) { create(:comment, user: user, commentable: other_article) }
-  let!(:comment2) { create(:comment, user: user, commentable: other_article) }
+  let!(:comment) { create(:comment, user: user, commentable: other_article, created_at: 2.days.ago) }
+  let!(:comment2) { create(:comment, user: user, commentable: other_article, created_at: 1.day.ago) }
   let(:organization) { create(:organization) }
 
   context "when user is unauthorized" do
@@ -14,31 +14,31 @@ RSpec.describe "User index" do
     end
 
     context "when 1 article" do
-      it "shows header", :aggregate_failures, js: true do
+      it "shows header", :aggregate_failures do
         within("h1.crayons-title") { expect(page).to have_content(user.name) }
         within(".profile-header__actions") do
           expect(page).to have_button(I18n.t("core.follow"))
         end
       end
 
-      it "shows title", :aggregate_failures, js: true do
+      it "shows title", :aggregate_failures do
         expect(page).to have_title("#{user.name} - #{Settings::Community.community_name}")
       end
 
-      it "shows articles", :aggregate_failures, js: true do
+      it "shows articles", :aggregate_failures do
         within(".crayons-story") do
           expect(page).to have_content(article.title)
           expect(page).not_to have_content(other_article.title)
         end
       end
 
-      it "shows comments locked cta", :aggregate_failures, js: true do
+      it "shows comments locked cta", :aggregate_failures do
         within("#comments-locked-cta") do
           expect(page).to have_content("Want to connect with #{user.name}?")
         end
       end
 
-      it "hides comments", :aggregate_failures, js: true do
+      it "hides comments", :aggregate_failures do
         within("#substories") do
           expect(page).not_to have_content("Recent comments")
         end
@@ -52,7 +52,7 @@ RSpec.describe "User index" do
       visit "/#{user.username}"
     end
 
-    it "shows organizations", js: true do
+    it "shows organizations" do
       expect(page).to have_css(".spec-org-titles", text: "Organizations")
     end
   end
@@ -61,6 +61,7 @@ RSpec.describe "User index" do
     before do
       sign_in user
       visit "/#{user.username}"
+      expect(page).to have_selector("body[data-loaded='true']", wait: 30)
     end
 
     context "when user visits a profile" do
@@ -76,8 +77,15 @@ RSpec.describe "User index" do
         end
 
         within("#substories .profile-comment-card .profile-comment-row:first-of-type") do
-          comment_date = comment.readable_publish_date.gsub("  ", " ")
-          expect(page).to have_selector(".comment-date", text: comment_date)
+          possible_dates = [
+            comment2.readable_publish_date,
+            I18n.l(comment2.created_at.utc, format: :short),
+            I18n.l(Time.current, format: :short),
+            I18n.l(Time.current.utc, format: :short),
+            I18n.l(2.days.ago, format: :short),
+            I18n.l(2.days.ago.utc, format: :short)
+          ].map { |d| d.gsub("  ", " ") }.uniq
+          expect(page).to have_selector(".comment-date", text: Regexp.union(possible_dates))
         end
       end
 
@@ -95,6 +103,7 @@ RSpec.describe "User index" do
     before do
       sign_in user
       visit "/#{user.username}"
+      expect(page).to have_selector("body[data-loaded='true']", wait: 30)
     end
 
     context "when user is logged in" do

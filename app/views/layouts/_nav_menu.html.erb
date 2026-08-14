@@ -10,16 +10,19 @@
     </li>
 
     <li class="js-header-menu-admin-link hidden">
-      <a href="<%= admin_path %>" class="c-link c-link--block" data-no-instant><%= t("views.main.nav.admin") %></a>
+      <a href="<%= header_link(admin_path) %>" class="c-link c-link--block" data-no-instant><%= t("views.main.nav.admin") %></a>
     </li>
     <li class="subforem-moderator-visible-block">
-      <a href="<%= manage_subforem_path %>" class="c-link c-link--block"><%= t("views.main.nav.manage_subforem") %></a>
+      <a href="<%= header_link(manage_subforem_path) %>" class="c-link c-link--block"><%= t("views.main.nav.manage_subforem") %></a>
     </li>
     <li>
-      <a href="<%= dashboard_path %>" class="c-link c-link--block"><%= t("views.main.nav.dashboard") %></a>
+      <a href="<%= header_link(dashboard_path) %>" class="c-link c-link--block"><%= t("views.main.nav.dashboard") %></a>
     </li>
     <li>
-      <a href="<%= mod_path %>" class="c-link c-link--block trusted-visible-block"><%= t("views.main.nav.moderator_center") %></a>
+      <a href="<%= header_link(agent_sessions_path) %>" class="c-link c-link--block"><%= t("views.main.nav.agent_sessions") %></a>
+    </li>
+    <li>
+      <a href="<%= header_link(mod_path) %>" class="c-link c-link--block trusted-visible-block"><%= t("views.main.nav.moderator_center") %></a>
     </li>
     <% if ArticlePolicy.is_root_subforem? %>
       <li>
@@ -31,18 +34,18 @@
       </li>
     <% else %>
       <%= application_policy_content_tag("li", record: Article, query: :create?) do %>
-        <a href="<%= new_path %>" class="c-link c-link--block"><%= t("views.main.create_post") %></a>
+        <a href="<%= header_link(new_path) %>" class="c-link c-link--block"><%= t("views.main.create_post") %></a>
       <% end %>
     <% end %>
     <li>
-      <a href="<%= readinglist_path %>" class="c-link c-link--block"><%= t("views.main.nav.list") %></a>
+      <a href="<%= header_link(readinglist_path) %>" class="c-link c-link--block"><%= t("views.main.nav.list") %></a>
     </li>
     <li class="border-0 border-b-1 border-solid border-base-20 pb-2">
-      <a href="<%= user_settings_path %>" class="c-link c-link--block" id="second-last-nav-link"><%= t("views.main.nav.settings") %></a>
+      <a href="<%= header_link(user_settings_path) %>" class="c-link c-link--block" id="second-last-nav-link"><%= t("views.main.nav.settings") %></a>
     </li>
 
     <li class="pt-2">
-      <a href="<%= signout_confirm_path %>" class="c-link c-link--block" id="last-nav-link"><%= t("views.main.signout") %></a>
+      <a href="<%= header_link(signout_confirm_path) %>" class="c-link c-link--block" id="last-nav-link"><%= t("views.main.signout") %></a>
     </li>
   </ul>
 </div>

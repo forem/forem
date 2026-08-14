@@ -96,6 +96,121 @@
 </div>
 
 <div class="crayons-card p-6 mb-6">
+  <h3 class="crayons-subtitle-2 mb-4"><%= t("views.admin.organizations.org_features.heading") %></h3>
+
+  <% org_actor = FeatureFlag::Actor[@organization] %>
+
+  <div class="mb-6">
+    <div class="flex items-center justify-between mb-2">
+      <div>
+        <h4 class="fw-bold mb-1"><%= t("views.admin.organizations.org_features.readme.label") %></h4>
+        <p class="fs-s color-base-60"><%= t("views.admin.organizations.org_features.readme.description") %></p>
+      </div>
+      <% readme_enabled = FeatureFlag.enabled?(:org_readme, org_actor) %>
+      <%= form_tag update_org_feature_admin_organization_path(@organization), method: :patch, class: "flex items-center gap-2" do %>
+        <%= hidden_field_tag :feature, "org_readme" %>
+        <%= hidden_field_tag :enabled, !readme_enabled %>
+        <%= submit_tag readme_enabled ? t("views.admin.organizations.org_features.readme.disable") : t("views.admin.organizations.org_features.readme.enable"),
+                       class: "crayons-btn #{readme_enabled ? 'crayons-btn--danger' : 'crayons-btn--success'}" %>
+      <% end %>
+    </div>
+    <% if readme_enabled %>
+      <div class="crayons-notice crayons-notice--success">
+        <%= t("views.admin.organizations.org_features.readme.enabled_notice") %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="mb-6">
+    <div class="flex items-center justify-between mb-2">
+      <div>
+        <h4 class="fw-bold mb-1"><%= t("views.admin.organizations.org_features.lead_forms.label") %></h4>
+        <p class="fs-s color-base-60"><%= t("views.admin.organizations.org_features.lead_forms.description") %></p>
+      </div>
+      <% lead_forms_enabled = FeatureFlag.enabled?(:org_lead_forms, org_actor) %>
+      <%= form_tag update_org_feature_admin_organization_path(@organization), method: :patch, class: "flex items-center gap-2" do %>
+        <%= hidden_field_tag :feature, "org_lead_forms" %>
+        <%= hidden_field_tag :enabled, !lead_forms_enabled %>
+        <%= submit_tag lead_forms_enabled ? t("views.admin.organizations.org_features.lead_forms.disable") : t("views.admin.organizations.org_features.lead_forms.enable"),
+                       class: "crayons-btn #{lead_forms_enabled ? 'crayons-btn--danger' : 'crayons-btn--success'}" %>
+      <% end %>
+    </div>
+    <% if lead_forms_enabled %>
+      <div class="crayons-notice crayons-notice--success">
+        <%= t("views.admin.organizations.org_features.lead_forms.enabled_notice") %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="mb-6">
+    <div class="flex items-center justify-between mb-2">
+      <div>
+        <h4 class="fw-bold mb-1"><%= t("views.admin.organizations.org_features.dofollow_links.label") %></h4>
+        <p class="fs-s color-base-60"><%= t("views.admin.organizations.org_features.dofollow_links.description") %></p>
+      </div>
+      <% dofollow_enabled = FeatureFlag.enabled?(:org_dofollow_links, org_actor) %>
+      <%= form_tag update_org_feature_admin_organization_path(@organization), method: :patch, class: "flex items-center gap-2" do %>
+        <%= hidden_field_tag :feature, "org_dofollow_links" %>
+        <%= hidden_field_tag :enabled, !dofollow_enabled %>
+        <%= submit_tag dofollow_enabled ? t("views.admin.organizations.org_features.dofollow_links.disable") : t("views.admin.organizations.org_features.dofollow_links.enable"),
+                       class: "crayons-btn #{dofollow_enabled ? 'crayons-btn--danger' : 'crayons-btn--success'}" %>
+      <% end %>
+    </div>
+    <% if dofollow_enabled %>
+      <div class="crayons-notice crayons-notice--success">
+        <%= t("views.admin.organizations.org_features.dofollow_links.enabled_notice") %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="mb-6">
+    <div class="flex items-center justify-between mb-2">
+      <div>
+        <h4 class="fw-bold mb-1"><%= t("views.admin.organizations.org_features.verification.label", default: "Organization Verification Access") %></h4>
+        <p class="fs-s color-base-60"><%= t("views.admin.organizations.org_features.verification.description", default: "Allow this organization to request and display a verified badge.") %></p>
+      </div>
+      <% verification_enabled = FeatureFlag.enabled?(:org_verification, org_actor) %>
+      <%= form_tag update_org_feature_admin_organization_path(@organization), method: :patch, class: "flex items-center gap-2" do %>
+        <%= hidden_field_tag :feature, "org_verification" %>
+        <%= hidden_field_tag :enabled, !verification_enabled %>
+        <%= submit_tag verification_enabled ? t("views.admin.organizations.org_features.verification.disable", default: "Disable Verification") : t("views.admin.organizations.org_features.verification.enable", default: "Enable Verification"),
+                       class: "crayons-btn #{verification_enabled ? 'crayons-btn--danger' : 'crayons-btn--success'}" %>
+      <% end %>
+    </div>
+    <% if verification_enabled %>
+      <div class="crayons-notice crayons-notice--success">
+        <%= t("views.admin.organizations.org_features.verification.enabled_notice", default: "The verification feature is active for this organization.") %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="crayons-card p-6 mb-6">
+  <h3 class="crayons-subtitle-2 mb-4"><%= t("views.admin.organizations.verified.heading") %></h3>
+  <div class="mb-6">
+    <div class="flex items-center justify-between mb-2">
+      <div>
+        <h4 class="fw-bold mb-1"><%= t("views.admin.organizations.verified.label") %></h4>
+        <p class="fs-s color-base-60"><%= t("views.admin.organizations.verified.description") %></p>
+      </div>
+      <%= form_tag update_verified_admin_organization_path(@organization), method: :patch, class: "flex items-center gap-2" do %>
+        <%= hidden_field_tag :verified, !@organization.verified? %>
+        <%= submit_tag @organization.verified? ? t("views.admin.organizations.verified.revoke") : t("views.admin.organizations.verified.verify"),
+                       class: "crayons-btn #{@organization.verified? ? 'crayons-btn--danger' : 'crayons-btn--success'}" %>
+      <% end %>
+    </div>
+    <% if @organization.verified? %>
+      <div class="crayons-notice crayons-notice--success">
+        <%= t("views.admin.organizations.verified.verified_notice", date: @organization.verified_at ? l(@organization.verified_at, format: :short) : "N/A") %>
+        <% if @organization.verification_url.present? %>
+          <br><span class="fs-s"><%= t("views.admin.organizations.verified.verification_url") %>: <a href="<%= @organization.verification_url %>" target="_blank" rel="noopener"><%= @organization.verification_url %></a></span>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="crayons-card p-6 mb-6">
   <% current_credits = @organization.unspent_credits_count %>
   <h3 class="crayons-subtitle-2 mb-4">Credits (current: <%= current_credits %>)</h3>
   <%= form_tag update_org_credits_admin_organization_path(@organization), method: :patch, class: "flex justify-between mb-2" do %>

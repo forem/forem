@@ -30,14 +30,15 @@
     <% end %>
     <div class="crayons-story__top">
       <div class="crayons-story__meta">
+        <% show_org = story.cached_organization && local_assigns.fetch(:show_organization, !@organization_article_index) %>
         <div class="crayons-story__author-pic">
-          <% if story.cached_organization && !@organization_article_index %>
+          <% if show_org %>
           <a class="crayons-logo crayons-logo--l" href="/<%= story.cached_organization.slug %>">
             <img alt="<%= story.cached_organization.name %> logo" src="<%= story.cached_organization.profile_image_90 %>" class="crayons-logo__image" loading="lazy" />
           </a>
           <% end %>
 
-          <a href="/<%= story.cached_user.username %>" class="crayons-avatar <% if story.cached_organization && !@organization_article_index %> crayons-avatar--s absolute -right-2 -bottom-2 border-solid border-2 border-base-inverted <% else %> crayons-avatar--l <% end %> ">
+          <a href="/<%= story.cached_user.username %>" class="crayons-avatar <% if show_org %> crayons-avatar--s absolute -right-2 -bottom-2 border-solid border-2 border-base-inverted <% else %> crayons-avatar--l <% end %> ">
             <img src="<%= story.cached_user.profile_image_90 %>" alt="<%= story.cached_user.username %> profile" class="crayons-avatar__image" loading="lazy" />
           </a>
         </div>
@@ -51,6 +52,7 @@
                                                                                                                                                                                                                                                  user: story.cached_user.name) %>">
                 <%= story.cached_user.name %>
                 <%= subscription_icon(story.cached_user) %>
+                <%= community_leader_icon(story.cached_user) %>
               </button>
               <div
                 id="story-author-preview-content-<%= story.id %>"
@@ -85,7 +87,7 @@
               </div>
             </div>
 
-            <% if story.cached_organization && !@organization_article_index %>
+            <% if show_org %>
             <span>
               <%= t("views.articles.for_org_html",
                     start: tag("span", { class: %w[crayons-story__tertiary fw-normal] }, true), # rubocop:disable Rails/ContentTag
@@ -152,6 +154,21 @@
             </div>
           </a>
           <% end %>
+          <% if should_render_favorited_marker?(story) %>
+            <span
+              class="crayons-story__favorited"
+              data-favorited-marker
+              data-favorited-by-user-id="<%= story.favorited_by_user_id %>">
+              <span class="favorited-marker">
+                <span data-favorited-icon="other">
+                  <%= crayons_icon_tag("small-favorite-filled", title: t("favorites.favorited")) %>
+                </span>
+                <span data-favorited-icon="self" class="hidden">
+                  <%= crayons_icon_tag("small-favorite-checked", title: t("favorites.favorited_by_you")) %>
+                </span>
+              </span>
+            </span>
+          <% end %>
           <% if story.comments_count > 0 %>
             <a href="<%= URL.article(story) %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left flex items-center" aria-label="<%= t("views.articles.comments.aria_label", title: story.type_of == "status" && story.title_finalized ? story.title_finalized : story.title) %>">
               <%= crayons_icon_tag("small-comment", title: t("views.comments.summary.title")) %>
@@ -171,7 +188,7 @@
           <small class="crayons-story__tertiary fs-xs mr-2">
             <%= t("views.articles.reading_time", count: [story.reading_time, 1].max) %>
           </small>
-          <% if (@user == nil) || (@user.id != story.user_id) %>
+          <% if local_assigns[:is_home_feed] && (user_signed_in? rescue false) && ((@user == nil) || (@user.id != story.user_id)) %>
             <button
               type="button"
               id="article-save-button-<%= story.id %>"
@@ -180,10 +197,10 @@
               data-article-author-id="<%= story.user_id %>"
               aria-label="<%= t("views.articles.save.aria_label", title: story.type_of == "status" && story.title_finalized ? story.title_finalized : story.title) %>"
               title="<%= t("views.articles.save.title", title: story.type_of == "status" && story.title_finalized ? story.title_finalized : story.title) %>">
-              <span class="bm-initial">
+              <span class="bm-initial crayons-icon c-btn__icon">
                 <%= inline_svg_tag("small-save.svg", alt: "", aria_hidden: true) %>
               </span>
-              <span class="bm-success">
+              <span class="bm-success crayons-icon c-btn__icon">
                 <%= inline_svg_tag("small-save-filled.svg", alt: "", aria_hidden: true) %>
               </span>
             </button>

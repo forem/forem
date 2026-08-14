@@ -3,6 +3,7 @@ class RateLimitChecker
 
   # retry_after values are the seconds until a user can retry an action
   ACTION_LIMITERS = {
+    agent_session_creation: { retry_after: 60 },
     ai_image_generation: { retry_after: 60 },
     article_update: { retry_after: 30 },
     feedback_message_creation: { retry_after: 300 },
@@ -69,7 +70,7 @@ class RateLimitChecker
   private
 
   ACTION_LIMITERS.each_key do |action|
-    define_method("check_#{action}_limit") do
+    define_method(:"check_#{action}_limit") do
       Rails.cache.read(limit_cache_key(action), raw: true).to_i > action_rate_limit(action)
     end
   end

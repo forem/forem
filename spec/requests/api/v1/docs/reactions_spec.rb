@@ -25,24 +25,33 @@ RSpec.describe "api/v1/reactions" do
       post("toggle reaction") do
         tags "reactions"
         description(<<-DESCRIBE.strip)
-        This endpoint allows the client to toggle the user's reaction to a specified reactable (eg, Article, Comment, or User). For examples:
-        * "Like"ing an Article will create a new "like" Reaction from the user for that Articles
-        * "Like"ing that Article a second time will remove the "like" from the user
+        Toggle a reaction on a target resource (Article, Comment, or User) on behalf of the authenticated user.
+
+        ### Toggle Logic:
+        - **First Request**: Creates a new reaction of the specified category on the reactable target.
+        - **Second Request (with same parameters)**: Deletes the existing reaction.
+        - Particularly useful for simple, interactive UI buttons like "Like", "Unicorn", or "Save" where clicking toggles the active state.
         DESCRIBE
 
         produces "application/json"
-        parameter name: :category, in: :query, required: true, schema: {
-          type: :string,
-          enum: ReactionCategory.public
-        }
-        parameter name: :reactable_id, in: :query, required: true, schema: {
-          type: :integer,
-          format: :int32
-        }
-        parameter name: :reactable_type, in: :query, required: true, schema: {
-          type: :string,
-          enum: Reaction::REACTABLE_TYPES
-        }
+        parameter name: :category, in: :query, required: true,
+                  description: "The type of reaction (e.g. `like` for standard likes, `unicorn` for outstanding posts, `save` for bookmarking to the reading list).",
+                  schema: {
+                    type: :string,
+                    enum: ReactionCategory.public
+                  }
+        parameter name: :reactable_id, in: :query, required: true,
+                  description: "The unique numerical ID of the target resource (Article, Comment, or User) being reacted to.",
+                  schema: {
+                    type: :integer,
+                    format: :int32
+                  }
+        parameter name: :reactable_type, in: :query, required: true,
+                  description: "The class name of the target resource being reacted to (e.g. `Article`, `Comment`, `User`).",
+                  schema: {
+                    type: :string,
+                    enum: Reaction::REACTABLE_TYPES
+                  }
 
         let(:reactable_id) { reactable.id }
         let(:reactable_type) { "Article" }
@@ -51,6 +60,7 @@ RSpec.describe "api/v1/reactions" do
           result.action = "create"
         end
 
+        # rubocop:disable RSpec/RepeatedExampleGroupDescription
         response(200, "successful") do
           let(:"api-key") { api_secret.secret }
           add_examples
@@ -73,24 +83,31 @@ RSpec.describe "api/v1/reactions" do
       post("create reaction") do
         tags "reactions"
         description(<<-DESCRIBE.strip)
-        This endpoint allows the client to create a reaction to a specified reactable (eg, Article, Comment, or User). For examples:
-        * "Like"ing an Article will create a new "like" Reaction from the user for that Articles
-        * "Like"ing that Article a second time will return the previous "like"
+        Create a reaction on a target resource (Article, Comment, or User) on behalf of the authenticated user.
+
+        ### Usage Details:
+        - Unlike the toggle endpoint, this endpoint is idempotent: multiple requests to react with the same category to the same target will return the existing reaction without deleting it.
         DESCRIBE
 
         produces "application/json"
-        parameter name: :category, in: :query, required: true, schema: {
-          type: :string,
-          enum: ReactionCategory.public
-        }
-        parameter name: :reactable_id, in: :query, required: true, schema: {
-          type: :integer,
-          format: :int32
-        }
-        parameter name: :reactable_type, in: :query, required: true, schema: {
-          type: :string,
-          enum: Reaction::REACTABLE_TYPES
-        }
+        parameter name: :category, in: :query, required: true,
+                  description: "The type of reaction (e.g. `like` for standard likes, `unicorn` for outstanding posts, `save` for bookmarking to the reading list).",
+                  schema: {
+                    type: :string,
+                    enum: ReactionCategory.public
+                  }
+        parameter name: :reactable_id, in: :query, required: true,
+                  description: "The unique numerical ID of the target resource (Article, Comment, or User) being reacted to.",
+                  schema: {
+                    type: :integer,
+                    format: :int32
+                  }
+        parameter name: :reactable_type, in: :query, required: true,
+                  description: "The class name of the target resource being reacted to (e.g. `Article`, `Comment`, `User`).",
+                  schema: {
+                    type: :string,
+                    enum: Reaction::REACTABLE_TYPES
+                  }
 
         let(:reactable_id) { reactable.id }
         let(:reactable_type) { "Article" }

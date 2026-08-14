@@ -19,13 +19,49 @@ require "sprockets/railtie"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-Dotenv::Railtie.load if Rails.env.test? || Rails.env.development?
+if defined?(Anyway)
+  Anyway.loaders.delete(:secrets)
+end
+
+if Rails.env.test? || Rails.env.development?
+  if defined?(Dotenv::Rails)
+    Dotenv::Rails.load
+  elsif defined?(Dotenv::Railtie)
+    Dotenv::Railtie.load
+  end
+end
 
 module PracticalDeveloper
   class Application < Rails::Application
     # Specify the default Rails settings version we're targetting
     # See: https://guides.rubyonrails.org/configuring.html#results-of-config-load-defaults
-    config.load_defaults 6.1
+    config.load_defaults 8.0
+
+    # Set AhoyEmail secret token early to prevent it from accessing deprecated Rails.application.secrets
+    config.before_initialize do
+      AhoyEmail.secret_token = config.secret_key_base if defined?(AhoyEmail)
+    end
+
+    # Keep using SHA1 for the key generator hash digest class to prevent invalidation
+    # of existing user sessions and signed/encrypted cookies.
+    config.active_support.key_generator_hash_digest_class = OpenSSL::Digest::SHA1
+
+    # Enable modern cache format version 7.1
+    config.active_support.cache_format_version = 7.1
+
+    # Enable modern message serializer with temporary Marshal fallback support for legacy unsubscribe links.
+    # TODO: Revert to :json after legacy links (valid for 31 days) have expired.
+    config.active_support.message_serializer = :json_allow_marshal
+
+    # Enable JSON message serializer for metadata to avoid legacy Marshal format dependency.
+    config.active_support.use_message_serializer_for_metadata = true
+
+
+    # Enable validating only parent-related columns for presence when the parent is mandatory.
+    config.active_record.belongs_to_required_validates_foreign_key = true
+
+    # Raise ActionController::ActionNotFound when a callback references a missing action.
+    config.action_controller.raise_on_missing_callback_actions = true
 
     ### FRAMEWORK DEFAULT OVERRIDES
     # Override new framework defaults to keep existing behavior.
@@ -39,15 +75,10 @@ module PracticalDeveloper
     # Therefore we disable "per_form_csrf_tokens" for the time being.
     config.action_controller.per_form_csrf_tokens = false
 
-    ## Rails 6.0
-    # Determines whether forms are generated with a hidden tag that forces older versions of Internet
-    # Explorer to submit forms encoded in UTF-8
-    config.action_view.default_enforce_utf8 = true
-
     ## Rails 6.1
     # Make `form_with` generate non-remote forms by default. We want this to be true as it was the default in 5.2
     config.action_view.form_with_generates_remote_forms = true
-    
+
     # Disable partial writes to avoid issues with strong_migrations
     config.active_record.partial_inserts = false
 
@@ -75,7 +106,7 @@ module PracticalDeveloper
     config.autoload_paths += Dir["#{config.root}/lib"]
     config.eager_load_paths += Dir["#{config.root}/lib"]
 
-    config.middleware.use Rack::Deflater
+    config.middleware.use Rack::Deflater unless Rails.env.development?
 
     config.i18n.load_path += Dir[Rails.root.join("config/locales/**/*.yml")]
 

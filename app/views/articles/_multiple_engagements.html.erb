@@ -1,8 +1,20 @@
 <div class="multiple_reactions_engagement">
-  <% ReactionCategory.for_view.each do |reaction_type| %>
-    <span class="reaction_engagement_<%= reaction_type.slug %> hidden">
-      <%= image_tag "#{reaction_type.icon}.svg", size: "24x24" %>
-      <span id="reaction_engagement_<%= reaction_type.slug %>_count">&nbsp;</span>
-    </span>
-  <% end %>
+  <%- ReactionCategory.for_view.each do |reaction_type| -%>
+    <button
+      class="reaction_engagement_<%= reaction_type.slug %> hidden crayons-reaction crayons-reaction--<%= reaction_type.slug %>"
+      data-category="<%= reaction_type.slug %>"
+      aria-label="<%= reaction_type.name %>"
+      type="button"
+    ><%-
+      -%><span class="crayons-reaction__icon crayons-reaction__icon--inactive p-1"><%-
+        -%><%= image_tag "#{reaction_type.icon}.svg", size: "24x24" %><%-
+      -%></span><%-
+      if user_signed_in? -%>
+        <span class="crayons-reaction__icon crayons-reaction__icon--active p-1"><%-
+          -%><%= image_tag "#{reaction_type.icon}.svg", size: "24x24" %><%-
+        -%></span><%-
+      end -%>
+      <span class="crayons-reaction__count" id="reaction_engagement_<%= reaction_type.slug %>_count">&nbsp;</span>
+    </button><%-
+  end -%>
 </div>

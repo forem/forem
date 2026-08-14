@@ -9,6 +9,17 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
       allow(Emails::BatchCustomSendWorker).to receive(:perform_async).and_return(true)
     end
 
+    context "when Customer.io email cutover is active" do
+      before do
+        allow(ForemInstance).to receive(:customerio_email_cutover?).and_return(true)
+      end
+
+      it "does not process the email or enqueue any BatchCustomSendWorker jobs" do
+        described_class.new.perform(email.id)
+        expect(Emails::BatchCustomSendWorker).not_to have_received(:perform_async)
+      end
+    end
+
     context "when email has an audience segment" do
       let!(:audience_segment) { create(:audience_segment) }
       let!(:email) { create(:email, subject: "Segmented", audience_segment: audience_segment) }
@@ -29,6 +40,7 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
           email.body,
           email.type_of,
           email.id,
+          email.default_from_name_based_on_type,
         )
         expect(Emails::BatchCustomSendWorker).not_to have_received(:perform_async).with(
           [user_outside_segment.id],
@@ -53,6 +65,7 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
           email.body,
           email.type_of,
           email.id,
+          email.default_from_name_based_on_type,
         )
         # user_without_notifications.id should not be in the arguments
       end
@@ -83,9 +96,40 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
         # Test that the worker calls the batch worker with correct arguments
         # Since the worker is working correctly, we'll just verify it doesn't raise an error
         expect { described_class.new.perform(email.id) }.not_to raise_error
-        
+
         # The worker should have called the batch worker (we can see from the output that it does)
         # This test verifies the worker executes successfully with user queries
+      end
+    end
+
+    context "when email has an event target" do
+      let!(:event) { create(:event) }
+      let!(:signed_up_user) { create(:user, :with_newsletters) }
+      let!(:non_signed_up_user) { create(:user, :with_newsletters) }
+      let!(:email) { create(:email, subject: "Event Email", event: event) }
+
+      before do
+        create(:event_signup, event: event, user: signed_up_user)
+      end
+
+      it "enqueues BatchCustomSendWorker for users who signed up for the event" do
+        described_class.new.perform(email.id)
+        expect(Emails::BatchCustomSendWorker).to have_received(:perform_async).with(
+          [signed_up_user.id],
+          email.subject,
+          email.body,
+          email.type_of,
+          email.id,
+          email.default_from_name_based_on_type,
+        )
+        expect(Emails::BatchCustomSendWorker).not_to have_received(:perform_async).with(
+          include(non_signed_up_user.id),
+          anything,
+          anything,
+          anything,
+          anything,
+          anything,
+        )
       end
     end
 
@@ -139,15 +183,79 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
           email.body,
           email.type_of,
           email.id,
+          email.default_from_name_based_on_type,
         )
 
         # Check that suspended or spam users were not passed
         expect(Emails::BatchCustomSendWorker).not_to have_received(:perform_async).with(
-          include(user_suspended.id), anything, anything, anything, anything
+          include(user_suspended.id), anything, anything, anything, anything, anything
         )
         expect(Emails::BatchCustomSendWorker).not_to have_received(:perform_async).with(
-          include(user_spam.id), anything, anything, anything, anything
+          include(user_spam.id), anything, anything, anything, anything, anything
         )
+      end
+    end
+
+    describe "ID range filtering" do
+      let!(:users) do
+        # Create users with specific IDs if possible, or just gather them
+        (1..5).map { create(:user, :with_newsletters) }.sort_by(&:id)
+      end
+      let(:user_ids) { users.map(&:id) }
+
+      context "with standard scope" do
+        it "filters users based on min_id" do
+          described_class.new.perform(email.id, user_ids[2]) # Start from 3rd user
+
+          expect(Emails::BatchCustomSendWorker).to have_received(:perform_async).with(
+            array_including(user_ids[2], user_ids[3], user_ids[4]),
+            anything, anything, anything, anything, anything
+          )
+          expect(Emails::BatchCustomSendWorker).not_to have_received(:perform_async).with(
+            include(user_ids[0]), anything, anything, anything, anything, anything
+          )
+        end
+
+        it "filters users based on max_id" do
+          described_class.new.perform(email.id, nil, user_ids[2]) # Up to 3rd user
+
+          expect(Emails::BatchCustomSendWorker).to have_received(:perform_async).with(
+            array_including(user_ids[0], user_ids[1], user_ids[2]),
+            anything, anything, anything, anything, anything
+          )
+        end
+
+        it "filters based on both min_id and max_id" do
+          described_class.new.perform(email.id, user_ids[1], user_ids[3])
+
+          # Should only include middle users
+          expect(Emails::BatchCustomSendWorker).to have_received(:perform_async).with(
+            contain_exactly(user_ids[1], user_ids[2], user_ids[3]),
+            anything, anything, anything, anything, anything
+          )
+        end
+      end
+
+      context "with custom query" do
+        let!(:query_creator) { create(:user) }
+        let!(:user_query) { create(:user_query, query: "SELECT id FROM users", created_by: query_creator) }
+        let!(:email_with_query) { create(:email, user_query: user_query) }
+
+        before do
+          # Mock the executor to avoid actual DB issues in tests
+          mock_executor = instance_double(UserQueryExecutor)
+          allow(UserQueryExecutor).to receive(:new).and_return(mock_executor)
+          allow(mock_executor).to receive(:each_id_batch).and_yield(user_ids)
+        end
+
+        it "filters custom query results in Ruby" do
+          described_class.new.perform(email_with_query.id, user_ids[2], user_ids[3])
+
+          expect(Emails::BatchCustomSendWorker).to have_received(:perform_async).with(
+            [user_ids[2], user_ids[3]],
+            anything, anything, anything, anything, anything
+          )
+        end
       end
     end
   end

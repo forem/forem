@@ -3,47 +3,69 @@
 
 .ltag__tag {
   font-family: var(--ff-sans-serif);
+  display: flex;
+  align-items: center;
+  padding: var(--su-4);
   border-left: 1px solid var(--form-border) !important;
   border-right: 1px solid var(--form-border) !important;
   border-bottom: 1px solid var(--form-border) !important;
-  border-top: 30px solid var(--form-border);
+  border-top: 6px solid var(--form-border) !important;
   box-shadow: var(--shadow-smooth) !important;
-  border-radius: var(--radius-auto) !important;
-  display: block;
-  margin: 0.95em 0 1.2em;
+  border-radius: var(--radius-lg, 8px) !important;
+  margin: 1.5em 0;
   position: relative;
   overflow: hidden;
   width: auto;
-  @media screen and (min-width: 760px) {
-    margin: 0.95em auto;
+  background-color: var(--card-bg);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-1) !important;
   }
+
+  @media screen and (min-width: 760px) {
+    margin: 1.5em auto;
+  }
+
   .ltag__tag__content {
+    flex: 1;
+    min-width: 0;
+    
     a {
       color: var(--card-color);
+      text-decoration: none;
+      
+      &:hover {
+        text-decoration: underline;
+      }
     }
-    width: 90%;
-    width: calc(100% - 36px);
-    padding: calc(0.5vw + 6px) 0px;
-    padding-left: 24px;
+
     h2 {
-      margin: 0;
+      margin: 0 0 var(--su-1);
       padding: 0;
       font-weight: var(--fw-bold);
+      font-size: var(--fs-lg, 1.15em);
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
+      gap: var(--su-2);
+
       .follow-action-button {
         visibility: hidden;
-        margin: 0.2em 0.5em;
+        margin: 0;
+        
         &.showing {
           visibility: visible;
         }
       }
     }
+
     .ltag__tag__summary {
-      padding-top: calc(0.5vw + 6px);
-      padding-bottom: calc(0.5vw + 6px);
-      font-size: 0.77em;
-      line-height: 1.1em;
+      padding: var(--su-1) 0 0;
+      font-size: var(--fs-s, 0.87em);
+      line-height: var(--lh-base, 1.4);
+      color: var(--card-color-secondary);
     }
   }
 }

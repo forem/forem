@@ -1,0 +1,7 @@
+<div class="crayons-card p-6">
+  <div class="flex items-center justify-between mb-4">
+    <h1 class="crayons-title">Edit Event</h1>
+    <%= link_to "View Event", event_path(@event.event_name_slug, @event.event_variation_slug), target: "_blank", class: "c-btn c-btn--secondary" %>
+  </div>
+  <%= render "form", event: @event %>
+</div>

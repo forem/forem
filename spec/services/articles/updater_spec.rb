@@ -7,6 +7,8 @@ RSpec.describe Articles::Updater, type: :service do
   let(:draft) { create(:article, user: user, published: false, published_at: nil) }
 
   before do
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with("ENABLE_REFRESH_SEGMENT_WORKERS").and_return("true")
     allow(SegmentedUserRefreshWorker).to receive(:perform_async)
   end
 
@@ -388,6 +390,31 @@ description:\ntags: heytag\n---\n\nHey this is the article"
     it "does not refresh user segments" do
       described_class.call(user, unpublished, attributes)
       expect(SegmentedUserRefreshWorker).not_to have_received(:perform_async)
+    end
+  end
+
+  describe "onboarding checklist" do
+    before { allow(Settings::General).to receive(:display_sidebar_onboarding_checklist).and_return(true) }
+
+    let(:checklist_user) { create(:user) }
+    let!(:draft) { create(:article, user: checklist_user, published: false, published_at: nil) }
+
+    it "completes made_first_post when a draft is published" do
+      described_class.call(checklist_user, draft, { body_markdown: "updated content", published: true })
+      expect(checklist_user.onboarding_checklist.reload.items["made_first_post"]).to be_present
+    end
+
+    it "does not complete made_first_post when a draft is updated but not published" do
+      described_class.call(checklist_user, draft, { body_markdown: "updated content" })
+      expect(checklist_user.onboarding_checklist.reload.items["made_first_post"]).to be_nil
+    end
+
+    it "does not query or complete made_first_post if the user registered more than 28 days ago" do
+      checklist_user.update_column(:registered_at, 29.days.ago)
+      # Assert database is not hit for checklist
+      expect(checklist_user).not_to receive(:onboarding_checklist)
+      
+      described_class.call(checklist_user, draft, { body_markdown: "updated content", published: true })
     end
   end
 end

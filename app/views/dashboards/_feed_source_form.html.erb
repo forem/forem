@@ -1,0 +1,71 @@
+<% url = source.new_record? ? feeds_sources_path : feeds_source_path(source) %>
+<% method = source.new_record? ? :post : :patch %>
+
+<%= form_with model: source, url: url, method: method, class: "grid gap-4" do |f| %>
+  <div class="crayons-field">
+    <%= f.label :feed_url, t("views.dashboard.feed_imports.sources.url_label"), class: "crayons-field__label" %>
+    <%= f.url_field :feed_url, placeholder: t("views.dashboard.feed_imports.sources.url_placeholder"), class: "crayons-textfield", required: source.new_record? %>
+  </div>
+
+  <div class="crayons-field">
+    <%= f.label :name, t("views.dashboard.feed_imports.sources.name_label"), class: "crayons-field__label" %>
+    <%= f.text_field :name, placeholder: t("views.dashboard.feed_imports.sources.name_placeholder"), class: "crayons-textfield" %>
+  </div>
+
+  <div class="crayons-field">
+    <%= f.label :organization_id, t("views.dashboard.feed_imports.sources.org_label"), class: "crayons-field__label" %>
+    <p class="crayons-field__description"><%= t("views.dashboard.feed_imports.sources.org_description") %></p>
+    <% if @user_organizations&.any? %>
+      <%= f.select :organization_id,
+            options_for_select(@user_organizations.map { |org| [org.name, org.id] }, source.organization_id),
+            { include_blank: t("views.dashboard.feed_imports.sources.org_none") },
+            class: "crayons-select" %>
+    <% else %>
+      <p class="fs-s color-base-60"><%= t("views.dashboard.feed_imports.sources.org_no_orgs") %></p>
+      <%= f.hidden_field :organization_id, value: "" %>
+    <% end %>
+  </div>
+
+  <div class="crayons-field">
+    <%= f.label :author_user_id, t("views.dashboard.feed_imports.sources.author_label"), class: "crayons-field__label" %>
+    <p class="crayons-field__description"><%= t("views.dashboard.feed_imports.sources.author_description") %></p>
+    <% author_options = [[t("views.dashboard.feed_imports.sources.author_self"), ""]] %>
+    <% if @org_members_by_org.present? %>
+      <% @org_members_by_org.each do |org_id, members| %>
+        <% org = @user_organizations.find { |o| o.id == org_id } %>
+        <% members.each do |member| %>
+          <% next if member.id == current_user.id %>
+          <% author_options << ["#{member.name} (@#{member.username}) — #{org.name}", member.id] %>
+        <% end %>
+      <% end %>
+    <% end %>
+    <%= f.select :author_user_id,
+          options_for_select(author_options, source.author_user_id),
+          {},
+          class: "crayons-select" %>
+  </div>
+
+  <div class="crayons-field crayons-field--checkbox">
+    <%= f.check_box :mark_canonical, class: "crayons-checkbox" %>
+    <%= f.label :mark_canonical, t("views.dashboard.feed_imports.sources.mark_canonical_html"), class: "crayons-field__label" %>
+  </div>
+
+  <div class="crayons-field crayons-field--checkbox">
+    <%= f.check_box :referential_link, class: "crayons-checkbox" %>
+    <%= f.label :referential_link, t("views.dashboard.feed_imports.sources.referential_html", community: community_name), class: "crayons-field__label" %>
+  </div>
+
+  <div class="flex gap-2">
+    <button class="crayons-btn <%= source.persisted? ? 'crayons-btn--s' : 'w-max' %>" type="submit">
+      <%= source.new_record? ? t("views.dashboard.feed_imports.sources.submit") : t("views.dashboard.feed_imports.sources.save") %>
+    </button>
+  </div>
+<% end %>
+
+<% if source.persisted? %>
+  <%= button_to t("views.dashboard.feed_imports.sources.delete"),
+        feeds_source_path(source),
+        method: :delete,
+        class: "crayons-btn crayons-btn--s crayons-btn--danger mt-2",
+        data: { confirm: t("views.dashboard.feed_imports.sources.delete_confirm") } %>
+<% end %>

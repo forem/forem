@@ -72,8 +72,9 @@ class ContentRenderer
     fixed = fixer.call(input)
     parsed = front_matter_parser.call(fixed)
     front_matter = parsed.front_matter
-    front_matter.any? && front_matter["title"].present?
-  rescue ContentRenderer::ContentParsingError
+    front_matter.is_a?(Hash) && front_matter.any? && front_matter["title"].present?
+  rescue Psych::Exception, ContentParsingError => e
+    Rails.logger.info("ContentRenderer#has_front_matter? fallback due to parse error: #{e.class}: #{e.message}")
     true
   end
 

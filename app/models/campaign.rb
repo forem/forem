@@ -58,7 +58,7 @@ class Campaign
   #       single location, so the scope is less necessary.
   def articles_scope
     articles_scope = Article
-      .tagged_with(featured_tags, any: true)
+      .cached_tagged_with_any(featured_tags)
       .where("published_at > ? AND score > ?", articles_expiry_time.weeks.ago, 0)
       .order(hotness_score: :desc)
     articles_scope = articles_scope.approved if articles_require_approval?

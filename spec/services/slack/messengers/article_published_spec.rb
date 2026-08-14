@@ -28,18 +28,20 @@ RSpec.describe Slack::Messengers::ArticlePublished, type: :service do
     end
   end
 
-  it "does not message slack if DISABLE_SLACK_NOTIFICATIONS is true" do
-    ENV["DISABLE_SLACK_NOTIFICATIONS"] = "true"
+  it "does not message slack if DISABLE_SLACK_NOTIFICATIONS is present" do
+    begin
+      ENV["DISABLE_SLACK_NOTIFICATIONS"] = "1"
 
-    sidekiq_assert_enqueued_jobs(0, only: Slack::Messengers::Worker) do
-      article = build(:article).tap do |art|
-        art.published = true
-        art.published_at = 5.minutes.ago
+      sidekiq_assert_enqueued_jobs(0, only: Slack::Messengers::Worker) do
+        article = build(:article).tap do |art|
+          art.published = true
+          art.published_at = 5.minutes.ago
+        end
+        described_class.call(article: article)
       end
-      described_class.call(article: article)
+    ensure
+      ENV.delete("DISABLE_SLACK_NOTIFICATIONS")
     end
-
-    ENV["DISABLE_SLACK_NOTIFICATIONS"] = nil
   end
 
   it "messages slack for an article that was published a few minutes ago" do

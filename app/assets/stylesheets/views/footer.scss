@@ -46,6 +46,12 @@
   }
 }
 
+.stories-show ~ .crayons-footer {
+  @media (max-width: $breakpoint-m - 1) {
+    padding-bottom: calc(var(--footer-padding) + 56px);
+  }
+}
+
 .sidebar-footer {
   color: var(--color-secondary);
 }

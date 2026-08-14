@@ -36,11 +36,16 @@ module Authentication
     def call
       identity = Identity.build_from_omniauth(provider)
       guard_against_spam_from!(identity: identity)
-      return current_user if current_user_identity_exists?
+
+      if (linked_identity = current_user_identity)
+        refresh_identity(identity, linked_identity)
+        return current_user
+      end
 
       # These variables need to be set outside of the scope of the
       # transaction in order to be used after the transaction is completed.
       log_to_datadog = false
+      new_mlh_identity = false
       id_provider, authed_user = nil
 
       ActiveRecord::Base.transaction do
@@ -62,9 +67,17 @@ module Authentication
 
         flag_spam_user(user) if account_less_than_a_week_old?(user, identity)
 
+        # A newly linked mlh identity puts the MLH Core user id (its uid) into
+        # User#trackable_payload, so surface a user_updated to the DEV → Core
+        # sync — which keys off profile_updated_at.
+        new_mlh_identity = new_identity && identity.provider == "mlh"
+        user.profile_updated_at = Time.current if new_mlh_identity
+
         user.save!
         authed_user = user
       end
+
+      Users::PrefillMlhProfileWorker.perform_async(authed_user.id) if new_mlh_identity
 
       if log_to_datadog
         # Notify DataDog if a new identity was successfully created.
@@ -100,8 +113,60 @@ module Authentication
       provider_class.new(auth_payload)
     end
 
-    def current_user_identity_exists?
-      current_user&.identities&.exists?(provider: provider.name)
+    def current_user_identity
+      current_user&.identities&.find_by(provider: provider.name)
+    end
+
+    # A completed re-auth always refreshes the linked row's token and stored
+    # auth payload with the just-received data. This matters most for an
+    # identity created through the admin API rather than a completed OAuth
+    # flow, which starts with no token and no payload at all.
+    #
+    # `incoming_identity` is built by `Identity.build_from_omniauth`, so it is
+    # only persisted when the payload's provider + uid already exist in the
+    # database. That gives three cases:
+    #
+    #   1. the payload is the row the user is already linked through: refresh
+    #      it in place.
+    #   2. the payload's uid is unclaimed and the linked row has no stored auth
+    #      payload: that link was machine-created, and completing OAuth as the
+    #      new uid proves the user owns it, so move the link onto it.
+    #   3. anything else: no-op. A uid held by some other identity is never
+    #      taken over, and a link the user established themselves is never
+    #      silently moved.
+    def refresh_identity(incoming_identity, linked_identity)
+      if incoming_identity.persisted?
+        return unless incoming_identity.id == linked_identity.id
+
+        incoming_identity.save!
+      elsif linked_identity.auth_data_dump.nil?
+        repoint_identity(incoming_identity, linked_identity)
+      end
+    end
+
+    # Moves a payload-less link onto the uid the user just authenticated as.
+    # Touching the user afterwards is what surfaces the new uid to the outbound
+    # sync, the same profile_updated_at signal a freshly linked identity sends.
+    def repoint_identity(incoming_identity, linked_identity)
+      ActiveRecord::Base.transaction do
+        linked_identity.update!(
+          uid: incoming_identity.uid,
+          token: incoming_identity.token,
+          secret: incoming_identity.secret,
+          auth_data_dump: incoming_identity.auth_data_dump,
+        )
+
+        current_user.profile_updated_at = Time.current
+        current_user.save!
+      end
+    rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid => e
+      # A concurrent request can claim the same provider + uid first. Leave the
+      # existing link as it was rather than failing the whole callback.
+      ForemStatsClient.increment(
+        "identity.errors",
+        tags: ["error:#{e.class}", "provider:#{linked_identity.provider}"],
+      )
+      nil
     end
 
     def proper_user(identity)
@@ -189,7 +254,13 @@ module Authentication
     end
 
     def extract_created_at_from_payload(logged_in_identity)
-      raw_info = logged_in_identity.auth_data_dump.extra.raw_info
+      # Safely extract raw_info, handling cases where auth_data_dump, extra, or raw_info may be nil
+      # This can happen with some OAuth providers like MLH that may not provide raw_info
+      auth_data = logged_in_identity.auth_data_dump
+      return Time.current if auth_data.nil? || auth_data.extra.nil?
+
+      raw_info = auth_data.extra.raw_info
+      return Time.current if raw_info.nil?
 
       if raw_info.created_at.present?
         Time.zone.parse(raw_info.created_at)

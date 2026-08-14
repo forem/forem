@@ -61,9 +61,15 @@ RSpec.describe "ArticlesShow" do
       )
     end
 
+    it "renders the proper author-trust meta tag" do
+      user.update_column(:score, 200)
+      get article.path
+      expect(response.body).to include('<meta name="author-trust" content="3">')
+    end
+
     it "renders DiscussionForumPosting structured data when article has comments" do
-      comment = create(:comment, commentable: article, user: user)
-      article.update_column(:comments_count, 1)
+      create(:comment, commentable: article, user: user)
+      article.update_columns(comments_count: 1, displayed_comments_count: 1)
 
       get article.path
 
@@ -98,7 +104,7 @@ RSpec.describe "ArticlesShow" do
 
     it "renders Comment structured data for article comments" do
       comment = create(:comment, commentable: article, user: user)
-      article.update_column(:comments_count, 1)
+      article.update_columns(comments_count: 1, displayed_comments_count: 1)
 
       get article.path
 
@@ -128,7 +134,7 @@ RSpec.describe "ArticlesShow" do
     it "renders nested comment structure for replies" do
       root_comment = create(:comment, commentable: article, user: user)
       reply_comment = create(:comment, commentable: article, user: user, ancestry: root_comment.id.to_s)
-      article.update_column(:comments_count, 2)
+      article.update_columns(comments_count: 2, displayed_comments_count: 2)
 
       get article.path
 
@@ -145,9 +151,27 @@ RSpec.describe "ArticlesShow" do
       )
     end
 
-    it "caches JSON-LD at view level based on last_comment_at" do
+    it "uses displayed comment count when it differs from the stored article counter", :aggregate_failures do
       comment = create(:comment, commentable: article, user: user)
-      article.update_column(:comments_count, 1)
+      comment.update_column(:score, 0)
+      article.update_columns(comments_count: 0, displayed_comments_count: 1)
+
+      get article.path
+
+      expect(response.body).to include('data-comments-count="1"')
+      expect(response.body).to include(%(id="comment-node-#{comment.id}"))
+      expect(response_json.dig("mainEntity", "interactionStatistic")).to include(
+        {
+          "@type" => "InteractionCounter",
+          "interactionType" => "https://schema.org/CommentAction",
+          "userInteractionCount" => 1
+        },
+      )
+    end
+
+    it "caches JSON-LD at view level based on last_comment_at" do
+      create(:comment, commentable: article, user: user)
+      article.update_columns(comments_count: 1, displayed_comments_count: 1)
 
       # First request should generate JSON-LD
       get article.path

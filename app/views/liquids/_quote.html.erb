@@ -1,0 +1,39 @@
+<% modifiers = ["ltag-quote"]
+   modifiers << "ltag-quote--with-avatar" if image.present?
+   modifiers << "ltag-quote--with-rating" if rating
+   modifiers << "ltag-quote--with-source" if source.present? || link.present? %>
+<figure class="<%= modifiers.join(' ') %>">
+  <figcaption class="ltag-quote__header">
+    <% if image.present? %>
+      <img class="ltag-quote__avatar" src="<%= image %>" alt="" loading="lazy" />
+    <% end %>
+    <span class="ltag-quote__identity">
+      <span class="ltag-quote__author"><%= author %></span>
+      <% if role.present? %>
+        <span class="ltag-quote__role"><%= role %></span>
+      <% end %>
+      <% if rating %>
+        <span class="ltag-quote__rating" aria-label="<%= rating %> out of 5 stars">
+          <% 5.times do |i| %>
+            <span class="ltag-quote__star<%= ' ltag-quote__star--filled' if i < rating %>" aria-hidden="true">★</span>
+          <% end %>
+        </span>
+      <% end %>
+    </span>
+  </figcaption>
+  <blockquote class="ltag-quote__body">
+    <div class="ltag-quote__text"><%= content.html_safe %></div>
+  </blockquote>
+  <% if source.present? || link.present? %>
+    <footer class="ltag-quote__footer">
+      <% if link.present? %>
+        <a href="<%= link %>" class="ltag-quote__link" target="_blank" rel="noopener noreferrer">
+          <%= source.presence || I18n.t("liquid_tags.quote_tag.learn_more") %>
+          <span aria-hidden="true">↗</span>
+        </a>
+      <% else %>
+        <cite class="ltag-quote__source"><%= source %></cite>
+      <% end %>
+    </footer>
+  <% end %>
+</figure>

@@ -309,7 +309,8 @@ class SubforemsController < ApplicationController
   def update_community_settings
     return unless params[:community_name].present? || params[:community_description].present? || 
                   params[:tagline].present? || params[:member_label].present? || 
-                  params[:internal_content_description_spec].present? || params[:sidebar_tags].present?
+                  params[:internal_content_description_spec].present? || 
+                  params[:expanded_content_advisement_spec].present? || params[:sidebar_tags].present?
 
     # Only admins can update community_name
     if params[:community_name].present? && current_user.any_admin?
@@ -332,6 +333,11 @@ class SubforemsController < ApplicationController
     if params[:internal_content_description_spec].present?
       Settings::RateLimit.set_internal_content_description_spec(params[:internal_content_description_spec],
                                                                 subforem_id: @subforem.id)
+    end
+    
+    if params[:expanded_content_advisement_spec].present?
+      Settings::RateLimit.set_expanded_content_advisement_spec(params[:expanded_content_advisement_spec],
+                                                               subforem_id: @subforem.id)
     end
 
     return unless params[:sidebar_tags].present?

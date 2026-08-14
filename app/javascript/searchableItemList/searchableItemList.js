@@ -145,7 +145,7 @@ export function loadNextPage() {
 
 export function checkForPersistedTag(availableTags) {
   // credit: https://stackoverflow.com/a/9870540
-  const params = (new URL(window.location)).searchParams
+  const params = (new URL(window.location.href)).searchParams
   const selectedTag = params.get('selectedTag');
 
   if (availableTags?.includes(selectedTag)) return selectedTag;

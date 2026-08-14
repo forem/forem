@@ -63,7 +63,7 @@ RSpec.describe "User visits a homepage" do
 
       it "shows expected number of links when signed out" do
         within("nav[data-testid='main-nav']", match: :first) do
-          expect(page).to have_selector(".sidebar-navigation-link", count: 1)
+          expect(page).to have_selector(".sidebar-navigation-link", count: 2)
         end
 
         within("nav[data-testid='other-nav']", match: :first) do
@@ -84,7 +84,7 @@ RSpec.describe "User visits a homepage" do
 
       it "hides link when display_to is set to logged in users only" do
         within("nav[data-testid='main-nav']", match: :first) do
-          expect(page).to have_selector(".default-navigation-links .sidebar-navigation-link", count: 1)
+          expect(page).to have_selector(".default-navigation-links .sidebar-navigation-link", count: 2)
         end
       end
 
@@ -115,18 +115,15 @@ RSpec.describe "User visits a homepage" do
       let!(:broadcast) { create(:announcement_broadcast) }
 
       it "renders the broadcast if active", js: true do
-        get "/async_info/base_data" # Explicitly ensure broadcast data is loaded before doing any checks
         visit "/"
-        within ".broadcast-wrapper" do
-          expect(page).to have_text("Hello, World!")
-        end
+        expect(page).to have_selector(".broadcast-wrapper", text: "Hello, World!")
       end
 
       it "does not render a broadcast if inactive", js: true do
         broadcast.update!(active: false)
-        get "/async_info/base_data" # Explicitly ensure broadcast data is loaded before doing any checks
         visit "/"
-        expect(page).not_to have_css(".broadcast-wrapper")
+        expect(page).to have_selector("body[data-loaded='true']")
+        expect(page).not_to have_css(".broadcast-wrapper .broadcast-data")
       end
     end
 
@@ -138,26 +135,17 @@ RSpec.describe "User visits a homepage" do
         user.update!(following_tags_count: 3)
 
         visit "/"
+        expect(page).to have_selector("body[data-loaded='true']")
       end
 
       it "shows the followed tags", js: true do
         expect(page).to have_text("My Tags")
-
-        # Need to ensure the user data is loaded before doing any checks
-        find("body")["data-user"]
-
-        within("#sidebar-nav-followed-tags") do
-          expect(page).to have_link("#ruby", href: "/t/ruby")
-        end
+        expect(page).to have_selector("#sidebar-nav-followed-tags a", text: "#ruby")
       end
 
       it "shows followed tags ordered by weight and name", js: true do
-        # Need to ensure the user data is loaded before doing any checks
-        find("body")["data-user"]
-
-        within("#sidebar-nav-followed-tags") do
-          expect(all(".c-link--block").map(&:text).sort).to eq(%w[#javascript #go #ruby].sort)
-        end
+        expect(page).to have_selector("#sidebar-nav-followed-tags .c-link--block", count: 3)
+        expect(all("#sidebar-nav-followed-tags .c-link--block").map(&:text).sort).to eq(%w[#javascript #go #ruby].sort)
       end
     end
 
@@ -214,7 +202,7 @@ RSpec.describe "User visits a homepage" do
 
       it "shows expected # of links when signed in" do
         within("nav[data-testid='main-nav']", match: :first) do
-          expect(page).to have_selector(".sidebar-navigation-link", count: 2) # it's count: 1 when signed out
+          expect(page).to have_selector(".sidebar-navigation-link", count: 3) # it's count: 2 when signed in
         end
       end
 

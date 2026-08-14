@@ -5,11 +5,13 @@ module Ai
   # This class gathers context from the comment, its parent post, and the
   # user's comment history to create a detailed prompt for the AI.
   class CommentCheck
+    VERSION = "1.0"
+
     # @param comment [Object] The comment object to be checked.
     #   It should respond to `body_markdown`, `commentable`, and `user`.
     def initialize(comment)
-      @ai_client = Ai::Base.new
       @comment = comment
+      @ai_client = Ai::Base.new(wrapper: self, affected_content: comment, affected_user: comment.user)
     end
 
     ##
@@ -51,7 +53,7 @@ module Ai
         1.  **The Parent Content Post** (The post the comment was left in reply to):
             ---
             Title: #{@comment.commentable.title}
-            Body#{ "(truncated)" if @comment.commentable.body_markdown.size > 1500}: #{@comment.commentable.body_markdown.first(1_500)}
+            Body#{'(truncated)' if @comment.commentable.body_markdown.size > 1500}: #{@comment.commentable.body_markdown.first(1_500)}
             ---
 
         2.  **The User's Recent Comment History**:
@@ -77,7 +79,7 @@ module Ai
     # @return [Boolean]
     def parse_response(response)
       # Check if the response contains "YES", ignoring case and leading/trailing whitespace.
-      !response.nil? && response.strip.upcase == 'YES'
+      !response.nil? && response.strip.upcase == "YES"
     end
   end
 end

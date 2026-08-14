@@ -25,7 +25,12 @@ namespace :admin do
   end
 
   resources :organization_memberships, only: %i[update destroy create]
-  resources :permissions, only: %i[index]
+  resources :permissions, only: %i[index] do
+    collection do
+      post :grant
+      delete :revoke
+    end
+  end
   resources :reactions, only: %i[update]
   resources :creator_settings, only: %i[create new]
 
@@ -63,6 +68,7 @@ namespace :admin do
         post "verify_email_ownership"
         post "send_email_confirmation"
         post "confirm_email"
+        post "confirm_pending_email"
         patch "unlock_access"
         post "unpublish_all_articles"
       end
@@ -78,6 +84,8 @@ namespace :admin do
 
     resources :bulk_assign_role, only: %i[index]
     post "/bulk_assign_role", to: "bulk_assign_role#assign_role"
+
+    resources :favorites, only: %i[index]
   end
 
   scope :content_manager do
@@ -86,6 +94,7 @@ namespace :admin do
       member do
         delete :unpin
         post :pin
+        delete :unfavorite
       end
     end
 
@@ -99,12 +108,18 @@ namespace :admin do
     resources :badge_achievements, only: %i[index destroy]
     get "/badge_achievements/award_badges", to: "badge_achievements#award"
     post "/badge_achievements/award_badges", to: "badge_achievements#award_badges"
-    resources :comments, only: %i[index show]
+    resources :comments, only: %i[index show] do
+      member do
+        delete :unfavorite
+      end
+    end
     resources :organizations, only: %i[index show destroy] do
       member do
         patch "update_org_credits"
         patch "update_fully_trusted"
         patch "update_baseline_score"
+        patch "update_verified"
+        patch "update_org_feature"
       end
     end
     resources :emails
@@ -132,12 +147,29 @@ namespace :admin do
     resources :tags, only: %i[index new create update edit] do
       resource :moderator, only: %i[create destroy], module: "tags"
     end
+    resources :concepts do
+      member do
+        post :trigger_lookback
+      end
+    end
     resources :surveys
+    resources :events do
+      member do
+        patch :end_broadcast
+        get :fork
+      end
+    end
   end
 
   scope :customization do
     # We renamed the controller but don't want to change the route (yet)
     resource :config, controller: "settings"
+    resources :org_features, only: [:index], controller: "org_features" do
+      collection do
+        patch :toggle_global
+        patch :update_cta
+      end
+    end
     resources :billboards
     resources :billboard_placement_area_configs, only: %i[index edit update]
     resources :html_variants, only: %i[index edit update new create show destroy]
@@ -156,6 +188,7 @@ namespace :admin do
         end
       end
     end
+    resources :request_redirects
   end
 
   scope :moderation do
@@ -165,12 +198,14 @@ namespace :admin do
         post "send_email"
         post "create_note"
         post "save_status"
+        get "flag_reactions"
       end
     end
     resources :mods, only: %i[index update]
     resources :moderator_actions, only: %i[index]
     resources :privileged_reactions, only: %i[index]
     resources :blocked_email_domains, only: %i[index new create destroy]
+    resources :linked_domains, only: %i[index edit update]
   end
 
   scope :advanced do
@@ -179,6 +214,7 @@ namespace :admin do
     resources :tools, only: %i[index create] do
       collection do
         post "bust_cache"
+        post "regenerate_social_images"
         get "feed_playground"
         post "feed_playground"
       end

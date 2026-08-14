@@ -1,6 +1,6 @@
 class BillboardEventRollup
   ATTRIBUTES_PRESERVED = %i[user_id display_ad_id category context_type created_at].freeze
-  ATTRIBUTES_DESTROYED = %i[id counts_for updated_at article_id geolocation].freeze
+  ATTRIBUTES_DESTROYED = %i[id counts_for updated_at article_id geolocation seconds_visible].freeze
   STATEMENT_TIMEOUT = ENV.fetch("STATEMENT_TIMEOUT_BULK_DELETE", 10_000).to_i.seconds / 1_000.to_f
 
   class EventAggregator
@@ -12,6 +12,7 @@ class BillboardEventRollup
           category: category,
           context_type: context_type,
           counts_for: events.sum(&:counts_for),
+          seconds_visible: events.sum(&:seconds_visible),
           created_at: events.first.created_at
         }
       end

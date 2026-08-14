@@ -47,7 +47,8 @@ class AiImageGenerationsController < ApplicationController
       result = Timeout.timeout(30) do
         generator = Ai::ImageGenerator.new(
           full_prompt,
-          aspect_ratio: aspect_ratio
+          aspect_ratio: aspect_ratio,
+          affected_user: current_user
         )
 
         generator.generate

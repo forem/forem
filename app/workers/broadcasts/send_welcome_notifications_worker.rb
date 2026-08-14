@@ -1,6 +1,9 @@
 module Broadcasts
   class SendWelcomeNotificationsWorker
     include Sidekiq::Job
+    include Sidekiq::Throttled::Job
+
+    sidekiq_throttle(concurrency: { limit: 1 })
 
     sidekiq_options queue: :medium_priority, retry: 15
 

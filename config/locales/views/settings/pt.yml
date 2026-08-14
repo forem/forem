@@ -5,6 +5,14 @@ pt:
       account:
         title: Configurações da Conta
         description: Gerencie suas configurações de conta
+        connect: Conectar conta %{provider}
+        reconnect: Reconectar conta %{provider}
+        emails: E-mails da conta
+        primary: E-mail principal
+        provider_email: "E-mail %{provider}"
+        provider_profile: "Configurações de perfil %{provider}"
+        mlh_sign_in_link: Entre no MLH
+        mlh_sign_in_html: "%{link} com este endereço de e-mail para concluir a conexão da sua conta."
         profile:
           title: Perfil
           name: Nome
@@ -170,3 +178,9 @@ pt:
             confirm: Tem certeza de que deseja gerar um novo segredo? Todos os segredos pendentes serão inválidos.
             text: Você deve rotacionar isso regularmente!
             submit: Gerar novo segredo
+      extensions:
+        rss_moved_html: 'As configurações de feed RSS foram movidas! Gerencie seus feeds no <a href="%{link}" class="crayons-link">painel de importações</a>.'
+        list:
+          heading: Suas organizações
+          manage: Configurações
+          view_page: Ver página

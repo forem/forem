@@ -33,6 +33,16 @@ RSpec.describe "Organizations Members" do
       expect(user_ids).to contain_exactly(active_user1.id, active_user2.id)
       expect(user_ids).not_to include(pending_user.id)
     end
+
+    it "returns 404 for non-existent organization slug" do
+      get organization_members_path(slug: "non-existent-org")
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "returns 404 for non-existent organization slug in JSON format" do
+      get organization_members_path(slug: "non-existent-org"), as: :json
+      expect(response).to have_http_status(:not_found)
+    end
   end
 end
 

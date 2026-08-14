@@ -9,7 +9,7 @@
             grid_class: "grid-cols-3 s:grid-cols-4 m:grid-cols-2"
           } %>
     <% end %>
-    <% if @user.organizations.present? %>
+    <% if @user.member_organizations.present? %>
       <div class="crayons-card crayons-card--secondary crayons-layout__content">
         <header class="crayons-card__header">
           <h3 class="crayons-subtitle-3 spec-org-titles"><%= t("views.users.side.org") %></h3>
@@ -17,7 +17,7 @@
         <div>
           <%# it's unlikely that a user will belong to enough organizations to cause a performance issue here %>
           <%# More info regarding the `.present?/.each` pattern: https://www.speedshop.co/2019/01/10/three-activerecord-mistakes.html %>
-          <% @user.organizations.each do |organization| %>
+          <% @user.member_organizations.each do |organization| %>
             <a href="/<%= organization.slug %>" class="flex items-center crayons-link crayons-link--contentful">
               <span class="crayons-logo crayons-logo--l mr-2 shrink-0">
                 <img src="<%= organization.profile_image_url_for(length: 90) %>" alt="<%= organization.name %> profile image" class="crayons-logo__image" loading="lazy" />
@@ -49,7 +49,7 @@
     <% end %>
   <% end %>
 
-  <% cache "user-profile-sidebar-stats-#{@user.id}-#{@user.last_article_at&.rfc3339}-#{@user.last_comment_at&.rfc3339}-#{@user.following_tags_count}-#{@user.last_followed_at&.rfc3339}-#{@user.articles.published.from_subforem.size}", expires_in: 10.days do %>
+  <% cache "user-profile-sidebar-stats-#{@user.id}-#{@user.last_article_at.respond_to?(:rfc3339) ? @user.last_article_at.rfc3339 : @user.last_article_at.to_s}-#{@user.last_comment_at.respond_to?(:rfc3339) ? @user.last_comment_at.rfc3339 : @user.last_comment_at.to_s}-#{@user.following_tags_count}-#{@user.formatted_last_followed_at}-#{@user.articles.published.from_subforem.size}", expires_in: 10.days do %>
     <div class="crayons-card crayons-card--secondary p-4">
       <div class="flex items-center mb-4">
         <%= crayons_icon_tag(:post, class: "mr-3 color-base-50", title: t("views.users.side.post.icon")) %>

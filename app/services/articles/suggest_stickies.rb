@@ -66,6 +66,7 @@ module Articles
     # A helper method to ensure a consistent lookup
     def apply_common_scope(scope:, tags:)
       scope.published.from_subforem
+        .where(archived: false)
         .cached_tagged_with_any(tags)
         .unscope(:select)
         .select(:id, :path, :title, :cached_tag_list, :cached_user, :organization_id, :user_id, :subforem_id) # Columns needed for _sticky_nav (includes cached_user for avatar)

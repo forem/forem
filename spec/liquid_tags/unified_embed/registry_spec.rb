@@ -24,6 +24,14 @@ RSpec.describe UnifiedEmbed::Registry do
       "https://app.codesandbox.io/embed/exciting-knuth-hywlv?file=/index.html&runonclick=0&view=editor",
     ]
 
+    valid_descript_url_formats = [
+      "https://share.descript.com/view/PnCDOfxkfnP",
+      "http://share.descript.com/view/PnCDOfxkfnP",
+      "https://www.share.descript.com/view/PnCDOfxkfnP",
+      "https://share.descript.com/view/PnCDOfxkfnP?utm_source=share",
+      "https://share.descript.com/view/PnCDOfxkfnP/",
+    ]
+
     valid_glitch_url_formats = [
       "https://zircon-quixotic-attraction.glitch.me",
       "https://glitch.com/edit/#!/zircon-quixotic-attraction",
@@ -139,9 +147,24 @@ RSpec.describe UnifiedEmbed::Registry do
         .to eq(CodepenTag)
     end
 
+    it "returns CodepenTag for a CodePen 2.0 editor url" do
+      expect(
+        described_class.find_liquid_tag_for(
+          link: "https://codepen.io/editor/alvaromontoro/pen/019d657e-d7bc-746a-9bc3-4df2244c97cc/24ac30a5aad27b2b927702d3557c6e70",
+        ),
+      ).to eq(CodepenTag)
+    end
+
     it "returns DotnetFiddleTag for a dotnetfiddle url" do
       expect(described_class.find_liquid_tag_for(link: "https://dotnetfiddle.net/PmoDip"))
         .to eq(DotnetFiddleTag)
+    end
+
+    it "returns DescriptTag for a valid descript url", :aggregate_failures do
+      valid_descript_url_formats.each do |url|
+        expect(described_class.find_liquid_tag_for(link: url))
+          .to eq(DescriptTag)
+      end
     end
 
     it "returns ForemTag for a Forem-specific url", :aggregate_failures do

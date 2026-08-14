@@ -5,7 +5,7 @@ import { Feed } from '../articles/Feed';
 import { TodaysPodcasts, PodcastEpisode } from '../podcasts';
 import { articlePropTypes } from '../common-prop-types';
 import { createRootFragment } from '../shared/preact/preact-root-fragment';
-import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
+import { getUserDataAndCsrfTokenSafely } from '@utilities/getUserDataAndCsrfToken';
 import { NoResults } from '../shared/components/NoResults';
 
 /**
@@ -94,9 +94,10 @@ function feedConstruct(
           isRoot={isRoot}
           feedStyle={feedStyle}
           isBookmarked={bookmarkedFeedItems.has(item.id)}
-          saveable={item.user_id != currentUserId}
-          // For "saveable" props, "!=" is used instead of "!==" to compare user_id
-          // and currentUserId because currentUserId is a String while user_id is an Integer
+          currentUserId={currentUserId}
+          saveable={Boolean(currentUserId) && item.user_id != currentUserId}
+        // For "saveable" props, "!=" is used instead of "!==" to compare user_id
+        // and currentUserId because currentUserId is a String while user_id is an Integer
         />
       );
     }
@@ -135,9 +136,20 @@ PodcastEpisodes.propTypes = {
  * Renders the main feed.
  */
 export const renderFeed = async (timeFrame, afterRender) => {
-  const feedContainer = document.getElementById('homepage-feed');
+  let feedContainer = document.getElementById('homepage-feed');
+  let replaceNode = feedContainer ? feedContainer.firstElementChild : undefined;
 
-  const { currentUser } = await getUserDataAndCsrfToken();
+  if (!feedContainer) {
+    const renderedFeed = document.getElementById('rendered-article-feed');
+    if (renderedFeed) {
+      feedContainer = renderedFeed.parentNode;
+      replaceNode = renderedFeed;
+    } else {
+      return;
+    }
+  }
+
+  const { currentUser } = await getUserDataAndCsrfTokenSafely();
   const currentUserId = currentUser && currentUser.id;
 
   const callback = ({
@@ -154,17 +166,20 @@ export const renderFeed = async (timeFrame, afterRender) => {
     }
 
     // Check if we have actual content (not just billboards)
-    const hasActualContent = feedItems.some(item => 
+    const hasActualContent = feedItems.some(item =>
       typeof item === 'object' && item.id && item.id !== 'dummy-story'
     );
 
     if (feedItems.length === 0 || !hasActualContent) {
       // Determine feed type from localStorage or URL
-      const feedTypeOf = localStorage?.getItem('current_feed') || 'discover';
+      let feedTypeOf = localStorage?.getItem('current_feed');
+      if (feedTypeOf !== 'discover' && feedTypeOf !== 'following') {
+        feedTypeOf = 'discover';
+      }
       const feedType = feedTypeOf === 'following' ? 'following' : 'discover';
-      
+
       return (
-        <NoResults 
+        <NoResults
           feedType={feedType}
         />
       );
@@ -186,10 +201,11 @@ export const renderFeed = async (timeFrame, afterRender) => {
 
   render(
     <Feed
+      key={window.location.pathname}
       timeFrame={timeFrame}
       renderFeed={callback}
       afterRender={afterRender}
     />,
-    createRootFragment(feedContainer, feedContainer.firstElementChild),
+    createRootFragment(feedContainer, replaceNode),
   );
 };

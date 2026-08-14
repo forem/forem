@@ -1,0 +1,28 @@
+<article class="flex p-4 m:p-6 pb-0 m:pb-2 pr-2 m:pr-6">
+  <a href="/<%= favoritable.user.username %>" class="crayons-avatar crayons-avatar--l shrink-0">
+    <img src="<%= favoritable.user.profile_image_90 %>" alt="<%= favoritable.user.name %> profile" class="crayons-avatar__image" loading="lazy" />
+  </a>
+
+  <div class="flex-1 pl-2 m:pl-4">
+    <a href="<%= favoritable.path %>" class="flex crayons-link">
+      <h2 class="fs-base lh-tight m:fs-l fw-bold break-word">
+        <% if favoritable.is_a?(Comment) %>
+          <%= t("views.leadership.curation.comment_on", title: favoritable.commentable&.title) %>
+        <% else %>
+          <%= favoritable.title %>
+        <% end %>
+      </h2>
+    </a>
+    <p class="fs-s">
+      <a href="/<%= favoritable.user.username %>" class="crayons-link fw-medium"><%= favoritable.user.name %></a>
+      <span class="color-base-30"> • </span>
+      <span class="color-base-60"><%= favoritable.readable_publish_date %></span>
+    </p>
+  </div>
+
+  <%# The icon keeps its own colours (native), and its gem is drawn in
+      currentColor, so the favorite colour is set here. %>
+  <div class="m:self-center" style="color: var(--reaction-favorite-color);">
+    <%= crayons_icon_tag("favorite-checked", native: true, title: t("favorites.favorited_by_you")) %>
+  </div>
+</article>

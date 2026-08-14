@@ -1,15 +1,16 @@
 class Email < ApplicationRecord
   belongs_to :audience_segment, optional: true
   belongs_to :user_query, optional: true
+  belongs_to :event, optional: true
   has_many :email_messages
 
-  after_save :deliver_to_users
+  after_commit :deliver_to_users, on: %i[create update]
 
   validates :subject, presence: true
   validates :body, presence: true
 
-  enum type_of: { one_off: 0, newsletter: 1, onboarding_drip: 2 }
-  enum status: { draft: 0, active: 1, delivered: 2 } # Not implemented yet anywhere
+  enum :type_of, { one_off: 0, newsletter: 1, onboarding_drip: 2 }
+  enum :status, { draft: 0, active: 1, delivered: 2 } # Not implemented yet anywhere
 
   attr_accessor :test_email_addresses
 
@@ -79,6 +80,9 @@ class Email < ApplicationRecord
   end
 
   def deliver_to_test_emails(addresses_string)
+    # Broadcasts/newsletters are authored in Customer.io after cutover.
+    return if ForemInstance.customerio_email_cutover?
+
     addresses_string ||= test_email_addresses
     return if addresses_string.blank?
 
@@ -86,14 +90,29 @@ class Email < ApplicationRecord
     users_batch = User.where(email: email_array)
     return if users_batch.empty?
 
-    Emails::BatchCustomSendWorker.perform_async(users_batch.map(&:id), "[TEST] #{subject}", body, type_of, id)
+    Emails::BatchCustomSendWorker.perform_async(users_batch.map(&:id), "[TEST] #{subject}", body, type_of, id,
+                                                default_from_name_based_on_type)
   end
 
   def deliver_to_users
+    # Broadcasts/newsletters are authored in Customer.io after cutover.
+    return if ForemInstance.customerio_email_cutover?
     return if type_of == "onboarding_drip"
-    return if status != "active"
+    return unless saved_change_to_status? && active?
 
-    Emails::EnqueueCustomBatchSendWorker.perform_async(id)
+    max_user_id = User.maximum(:id) || 0
+    if max_user_id > 5000
+      batch_size = (max_user_id / 24.0).ceil
+      24.times do |i|
+        min_id = (i * batch_size) + 1
+        max_id = (i + 1) * batch_size
+        max_id = max_user_id if i == 23
+        Emails::EnqueueCustomBatchSendWorker.perform_async(id, min_id, max_id)
+      end
+    else
+      Emails::EnqueueCustomBatchSendWorker.perform_async(id)
+    end
+
     update_columns(status: "delivered")
   end
 end

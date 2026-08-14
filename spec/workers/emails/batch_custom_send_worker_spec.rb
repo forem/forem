@@ -17,12 +17,41 @@ RSpec.describe Emails::BatchCustomSendWorker, type: :worker do
       allow(Rails.logger).to receive(:error)
     end
 
+    context "when Customer.io email cutover is active" do
+      before do
+        allow(ForemInstance).to receive(:customerio_email_cutover?).and_return(true)
+      end
+
+      it "does not send any emails and no-ops" do
+        worker.perform(user_ids, subject_line, content, type_of, email_id)
+        expect(CustomMailer).not_to have_received(:with)
+      end
+    end
+
     context "when testing the async call" do
       it "queues the job with the correct arguments regardless of user ID order" do
         # Stub the class method perform_async
         allow(described_class).to receive(:perform_async).with(match_array(user_ids), subject_line, content, type_of, email_id)
         described_class.perform_async(user_ids, subject_line, content, type_of, email_id)
         expect(described_class).to have_received(:perform_async).with(match_array(user_ids), subject_line, content, type_of, email_id)
+      end
+    end
+
+    context "when from_name is passed" do
+      it "passes from_name through to CustomMailer" do
+        worker.perform(user_ids, subject_line, content, type_of, email_id, "Newsletter")
+        expect(CustomMailer).to have_received(:with).with(
+          hash_including(from_name: "Newsletter"),
+        ).twice
+      end
+    end
+
+    context "when from_name is nil (backward compatibility)" do
+      it "passes nil from_name to CustomMailer" do
+        worker.perform(user_ids, subject_line, content, type_of, email_id)
+        expect(CustomMailer).to have_received(:with).with(
+          hash_including(from_name: nil),
+        ).twice
       end
     end
 
@@ -38,8 +67,8 @@ RSpec.describe Emails::BatchCustomSendWorker, type: :worker do
       end
 
       it "logs an error and continues if one user raises an exception" do
-        allow(User).to receive(:find_by).with(id: user.id).and_return(user)
-        allow(User).to receive(:find_by).with(id: user2.id).and_raise(StandardError.new("Boom!"))
+        allow(CustomMailer).to receive(:with).with(hash_including(user: user)).and_call_original
+        allow(CustomMailer).to receive(:with).with(hash_including(user: user2)).and_raise(StandardError.new("Boom!"))
 
         worker.perform(user_ids, subject_line, content, type_of, email_id)
         expect(Rails.logger).to have_received(:error).with(/Error sending email to user with id: #{user2.id}.*/)
@@ -73,7 +102,7 @@ RSpec.describe Emails::BatchCustomSendWorker, type: :worker do
       let(:subject_line) { "Live Subject" }
 
       context "and the user has no email messages" do
-        it "checks for last email and finds none, so #last_email_message is nil" do
+        it "checks for last email subject and finds none, so sends the email" do
           worker.perform([user.id], subject_line, content, type_of, email_id)
           expect(CustomMailer).to have_received(:with).once
         end
@@ -104,6 +133,44 @@ RSpec.describe Emails::BatchCustomSendWorker, type: :worker do
         it "skips sending a new email if last email subject does not start with [TEST]" do
           worker.perform([user.id], subject_line, content, type_of, email_id)
           expect(CustomMailer).not_to have_received(:with)
+        end
+      end
+
+      context "when multiple email messages exist for the same email_id" do
+        before do
+          # Create multiple email messages - the most recent one should be checked
+          user.email_messages.create!(
+            email_id: email_id,
+            subject: "[TEST] Old test subject"
+          )
+          user.email_messages.create!(
+            email_id: email_id,
+            subject: "Most recent production subject"
+          )
+        end
+
+        it "checks the most recent email message (by id) and skips if it doesn't start with [TEST]" do
+          worker.perform([user.id], subject_line, content, type_of, email_id)
+          expect(CustomMailer).not_to have_received(:with)
+        end
+      end
+
+      context "when multiple email messages exist and most recent is [TEST]" do
+        before do
+          # Create multiple email messages - the most recent one should be checked
+          user.email_messages.create!(
+            email_id: email_id,
+            subject: "Old production subject"
+          )
+          user.email_messages.create!(
+            email_id: email_id,
+            subject: "[TEST] Most recent test subject"
+          )
+        end
+
+        it "checks the most recent email message and sends if it starts with [TEST]" do
+          worker.perform([user.id], subject_line, content, type_of, email_id)
+          expect(CustomMailer).to have_received(:with).once
         end
       end
     end

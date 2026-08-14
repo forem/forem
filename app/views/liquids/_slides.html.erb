@@ -1,0 +1,38 @@
+<div class="ltag-slides<%= ' ltag-slides--carousel' if mode == 'carousel' %>">
+  <div class="ltag-slides__viewport">
+    <div
+      class="ltag-slides__track"
+      <% if mode == "carousel" %>
+        role="region"
+        aria-label="<%= I18n.t('liquid_tags.slides_tag.gallery_label') %>"
+        tabindex="0"
+      <% end %>>
+      <%= content.html_safe %>
+    </div>
+    <% if mode == "carousel" %>
+      <button
+        class="ltag-slides__nav ltag-slides__nav--prev"
+        type="button"
+        aria-label="<%= I18n.t('liquid_tags.slides_tag.previous') %>"
+        aria-disabled="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m15 18-6-6 6-6" />
+        </svg>
+      </button>
+      <button
+        class="ltag-slides__nav ltag-slides__nav--next"
+        type="button"
+        aria-label="<%= I18n.t('liquid_tags.slides_tag.next') %>"
+        aria-disabled="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m9 18 6-6-6-6" />
+        </svg>
+      </button>
+    <% end %>
+  </div>
+  <% if mode == "carousel" %>
+    <div class="ltag-slides__progress" aria-hidden="true">
+      <span class="ltag-slides__progress-thumb"></span>
+    </div>
+  <% end %>
+</div>

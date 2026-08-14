@@ -1,0 +1,16 @@
+module Organizations
+  class ReverifyAllWorker
+    include Sidekiq::Job
+
+    sidekiq_options queue: :low_priority, retry: 1
+
+    def perform
+      Organization.where(verified: true)
+        .where.not(verification_url: [nil, ""])
+        .where("verification_status IS NULL OR verification_status != ?", Organization::VERIFICATION_STATUS_ADMIN)
+        .find_each do |organization|
+        Organizations::ReverifyOneWorker.perform_async(organization.id)
+      end
+    end
+  end
+end

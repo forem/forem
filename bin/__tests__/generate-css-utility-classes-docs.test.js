@@ -27,7 +27,7 @@ describe('generateUtilityClassesDocumentation', () => {
     console.log = jest.fn();
   });
 
-  it('should generate a Storybook story file', () => {
+  it('should generate a Storybook story file', async () => {
     const expected = `  // This is an auto-generated file. DO NOT EDIT
     import { h } from 'preact';
     import '../../crayons/storybook-utilities/designSystem.scss';
@@ -71,12 +71,12 @@ describe('generateUtilityClassesDocumentation', () => {
     const { files, fileWriter } = createMockFileWriter();
     const filePath = getStorybookFilePath('color');
 
-    generateUtilityClassesDocumentation(styleSheet, fileWriter);
+    await generateUtilityClassesDocumentation(styleSheet, fileWriter);
 
     expect(files[filePath]).toEqual(expected);
   });
 
-  it('should generate a Storybook story file when a utility class has more than one property set', () => {
+  it('should generate a Storybook story file when a utility class has more than one property set', async () => {
     const expected = `  // This is an auto-generated file. DO NOT EDIT
     import { h } from 'preact';
     import '../../crayons/storybook-utilities/designSystem.scss';
@@ -129,12 +129,12 @@ describe('generateUtilityClassesDocumentation', () => {
     const { files, fileWriter } = createMockFileWriter();
     const filePath = getStorybookFilePath('color');
 
-    generateUtilityClassesDocumentation(styleSheet, fileWriter);
+    await generateUtilityClassesDocumentation(styleSheet, fileWriter);
 
     expect(files[filePath]).toEqual(expected);
   });
 
-  it('should generate a Storybook story file with CSS utility classes', () => {
+  it('should generate a Storybook story file with CSS utility classes', async () => {
     const expected = `  // This is an auto-generated file. DO NOT EDIT
     import { h } from 'preact';
     import '../../crayons/storybook-utilities/designSystem.scss';
@@ -178,12 +178,12 @@ describe('generateUtilityClassesDocumentation', () => {
     const { files, fileWriter } = createMockFileWriter();
     const filePath = getStorybookFilePath('color');
 
-    generateUtilityClassesDocumentation(styleSheet, fileWriter);
+    await generateUtilityClassesDocumentation(styleSheet, fileWriter);
 
     expect(files[filePath]).toEqual(expected);
   });
 
-  it('should generate a Storybook story file for only non-@media CSS rules', () => {
+  it('should generate a Storybook story file for only non-@media CSS rules', async () => {
     const expected = `  // This is an auto-generated file. DO NOT EDIT
     import { h } from 'preact';
     import '../../crayons/storybook-utilities/designSystem.scss';
@@ -233,7 +233,7 @@ describe('generateUtilityClassesDocumentation', () => {
 
     const { files, fileWriter } = createMockFileWriter();
 
-    generateUtilityClassesDocumentation(styleSheet, fileWriter);
+    await generateUtilityClassesDocumentation(styleSheet, fileWriter);
     const filePath = getStorybookFilePath('color');
     expect(files[filePath]).toEqual(expected);
   });

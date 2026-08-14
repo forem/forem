@@ -44,7 +44,8 @@ RSpec.describe "AhoyEmailClicks" do
 
       it "records feed event if article with url path exists" do
         article = create(:article)
-        url = URL.article(article)
+        feed_config = create(:feed_config)
+        url = "#{URL.article(article)}?context=digest&fc=#{feed_config.id}"
         signature = AhoyEmail::Utils.signature(token: token, campaign: campaign, url: url)
         controller = an_instance_of(Ahoy::EmailClicksController)
         allow(AhoyEmail::Utils).to receive(:publish).and_return(true)
@@ -55,7 +56,21 @@ RSpec.describe "AhoyEmailClicks" do
         expect(AhoyEmail::Utils).to have_received(:publish)
           .with(:click,
                 hash_including(token: token, campaign: campaign, url: url, controller: controller))
-        expect(FeedEvent.where(article_id: article.id, category: "click", context_type: "email").size).to be(1)
+        expect(FeedEvent.where(article_id: article.id, category: "click", context_type: "email", feed_config_id: feed_config.id).size).to be(1)
+      end
+      
+      it "enqueues UpdateUserInterestEmbeddingWorker with weight 0.025 if user and article are present" do
+        user = create(:user)
+        create(:email_message, user: user, token: token)
+        article = create(:article)
+        url = URL.article(article)
+        signature = AhoyEmail::Utils.signature(token: token, campaign: campaign, url: url)
+
+        allow(AhoyEmail::Utils).to receive(:publish).and_return(true)
+
+        sidekiq_assert_enqueued_with(job: UpdateUserInterestEmbeddingWorker, args: [user.id, article.id, Ahoy::EmailClicksController::EMAIL_CLICK_INTEREST_BLEND_FACTOR]) do
+          post ahoy_email_clicks_path, params: { t: token, c: campaign, u: url, s: signature }
+        end
       end
 
       it "updates the user's presence" do
@@ -64,6 +79,15 @@ RSpec.describe "AhoyEmailClicks" do
 
         expect { post ahoy_email_clicks_path, params: { t: token, c: campaign, u: url, s: signature } }
           .to change { user.reload.last_presence_at }
+      end
+
+      it "enqueues a Users::RecordFieldTestEventWorker" do
+        user = create(:user)
+        create(:email_message, user: user, token: token)
+
+        sidekiq_assert_enqueued_with(job: Users::RecordFieldTestEventWorker, args: [user.id, AbExperiment::GoalConversionHandler::USER_CLICKS_EMAIL_LINK_GOAL]) do
+          post ahoy_email_clicks_path, params: { t: token, c: campaign, u: url, s: signature }
+        end
       end
     end
 

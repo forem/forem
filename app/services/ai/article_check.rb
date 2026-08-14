@@ -6,11 +6,13 @@ module Ai
   # history, and the community it's posted in to create a detailed
   # prompt for the AI.
   class ArticleCheck
+    VERSION = "1.0"
+
     # @param article [Object] The article object to be checked.
     #   It should respond to `title`, `body_markdown`, `user`, and `subforem_id`.
     def initialize(article)
-      @ai_client = Ai::Base.new
       @article = article
+      @ai_client = Ai::Base.new(wrapper: self, affected_user: article.user, affected_content: article)
     end
 
     ##
@@ -40,6 +42,9 @@ module Ai
       # Fetch the description of the community the article is posted in.
       community_description = Settings::RateLimit.internal_content_description_spec(subforem_id: @article.subforem_id) || Settings::Community.community_description(subforem_id: @article.subforem_id)
 
+      # Gather custom tag moderation instructions
+      tag_instructions_text = build_tag_instructions_context
+
       <<~PROMPT
         Analyze the following article for spam. Your answer must be a single word: YES or NO.
 
@@ -58,7 +63,7 @@ module Ai
 
         1.  **Community Context** (The community this article was posted in):
             ---
-            #{community_description.present? ? community_description : 'No community description provided.'}
+            #{community_description.presence || 'No community description provided.'}#{tag_instructions_text}
             ---
 
         2.  **The Author's Recent Article History**:
@@ -87,7 +92,22 @@ module Ai
     # @return [Boolean]
     def parse_response(response)
       # Check if the response contains "YES", ignoring case and leading/trailing whitespace.
-      !response.nil? && response.strip.upcase == 'YES'
+      !response.nil? && response.strip.upcase == "YES"
+    end
+
+    def build_tag_instructions_context
+      tag_instructions = @article.tags.where.not(moderation_instructions: [nil, ""]).pluck(:name, :moderation_instructions)
+      return "" if tag_instructions.empty?
+
+      instructions_list = tag_instructions.map do |name, inst|
+        "- ##{name}: #{inst}"
+      end.join("\n")
+
+      <<~CONTEXT
+
+        Custom Tag Moderation Instructions:
+        #{instructions_list}
+      CONTEXT
     end
   end
 end

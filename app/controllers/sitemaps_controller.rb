@@ -2,9 +2,11 @@ class SitemapsController < ApplicationController
   before_action :set_cache_control_headers, only: %i[show]
 
   SITEMAP_REGEX = /\Asitemap-(?<date_string>[A-Z][a-z][a-z]-\d{4})\.xml\z/
-  RESULTS_LIMIT = Rails.env.production? ? 10_000 : 5
+  RESULTS_LIMIT = Rails.env.production? ? 750 : 5
+  MAX_OFFSET = 250 * RESULTS_LIMIT
 
   def show
+    @organization = custom_domain_org
     if params[:sitemap].start_with? "sitemap-index"
       sitemap_index
     elsif valid_resource_sitemap?
@@ -22,23 +24,44 @@ class SitemapsController < ApplicationController
 
   def sitemap_index
     set_surrogate_controls(Time.current)
-    @articles_count = Article.published.from_subforem
-      .where("score >= ?", Settings::UserExperience.index_minimum_score).size
+    articles_scope = if @organization
+                       @organization.articles.published.from_subforem
+                     else
+                       Article.published.from_subforem
+                         .where("score >= ?", Settings::UserExperience.index_minimum_score)
+                     end
+    @articles_count = articles_scope.size
+    @articles_count = MAX_OFFSET if @articles_count > MAX_OFFSET
     @page_limit = RESULTS_LIMIT
     @view_template = "index"
   end
 
   def resource_sitemap(resource)
+    return not_found if offset > MAX_OFFSET
+
     case resource
     when "users"
+      return not_found if @organization
       @users = User.order("comments_count DESC")
         .where("score > -1") # Spam mitigation
         .limit(RESULTS_LIMIT).offset(offset).pluck(:username, :profile_updated_at)
     when "posts"
-      @articles = Article.published.from_subforem.order("published_at DESC")
-        .where("score >= ?", Settings::UserExperience.index_minimum_score)
-        .limit(RESULTS_LIMIT).offset(offset).pluck(:path, :last_comment_at)
+      articles_scope = if @organization
+                         @organization.articles.published.from_subforem.order("published_at DESC")
+                       else
+                         Article.published.from_subforem.order("published_at DESC")
+                           .where("score >= ?", Settings::UserExperience.index_minimum_score)
+                       end
+      @articles = if @organization
+                    articles_scope
+                      .limit(RESULTS_LIMIT).offset(offset).pluck(:slug, :last_comment_at)
+                      .map { |slug, last_comment_at| ["/#{slug}", last_comment_at] }
+                  else
+                    articles_scope
+                      .limit(RESULTS_LIMIT).offset(offset).pluck(:path, :last_comment_at)
+                  end
     when "tags" # tags
+      return not_found if @organization
       @tags = Tag.order("hotness_score DESC")
         .where(supported: true)
         .limit(RESULTS_LIMIT).offset(offset).pluck(:name, :updated_at)
@@ -48,6 +71,8 @@ class SitemapsController < ApplicationController
   end
 
   def monthly_sitemap
+    return not_found if @organization
+
     match = params[:sitemap].match(SITEMAP_REGEX)
     not_found unless match && match[:date_string]
     begin

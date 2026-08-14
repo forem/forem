@@ -195,7 +195,7 @@
                     </button>
                 </div>
                 <div id="<%= provider.provider_name %>-auth-settings" class="config-authentication__item--body hidden">
-                  <% auth_partial = provider.provider_name == :apple ? "apple_auth_provider_settings" : "auth_provider_settings" %>
+                  <% auth_partial = %i[apple google_oauth2].include?(provider.provider_name) ? "#{provider.provider_name}_auth_provider_settings" : "auth_provider_settings" %>
                   <%= render partial: "forms/authentication/#{auth_partial}",
                              locals: {
                                f: f,

@@ -3,7 +3,6 @@ require "rails_helper"
 RSpec.describe UserQueryExecutor do
   let(:user) { create(:user) }
   let(:user_query) { create(:user_query, query: "SELECT id FROM users LIMIT 5", created_by: user) }
-  let!(:test_users) { create_list(:user, 10) }
 
   describe "#initialize" do
     it "sets up the executor with valid parameters" do
@@ -47,6 +46,8 @@ RSpec.describe UserQueryExecutor do
   end
 
   describe "#execute" do
+    let!(:test_users) { create_list(:user, 10) }
+
     it "executes the query and returns users" do
       executor = UserQueryExecutor.new(user_query)
       result = executor.execute
@@ -93,6 +94,8 @@ RSpec.describe UserQueryExecutor do
   end
 
   describe "#test_execute" do
+    let!(:test_users) { create_list(:user, 10) }
+
     it "executes with limited number of users" do
       executor = UserQueryExecutor.new(user_query)
       result = executor.test_execute(limit: 3)
@@ -134,7 +137,6 @@ RSpec.describe UserQueryExecutor do
 
   describe "error handling" do
     it "handles timeout errors" do
-      user_query.update!(max_execution_time_ms: 1)
       allow_any_instance_of(UserQueryExecutor).to receive(:execute_with_timeout).and_raise(PG::QueryCanceled.new("timeout"))
 
       executor = UserQueryExecutor.new(user_query)
@@ -176,6 +178,7 @@ RSpec.describe UserQueryExecutor do
       expect(ActiveRecord::Base.connection).to receive(:execute).with("SET row_security = on")
 
       allow(ActiveRecord::Base.connection).to receive(:execute).and_return(double("result", each: []))
+      allow(ReadOnlyDatabaseService).to receive(:with_connection).and_yield(ActiveRecord::Base.connection)
       executor.execute
     end
   end
@@ -235,6 +238,96 @@ RSpec.describe UserQueryExecutor do
 
       user_ids = executor.send(:extract_user_ids, mock_result)
       expect(user_ids).to eq([1, 2])
+    end
+  end
+
+  describe "#each_id_batch" do
+    let(:executor) { UserQueryExecutor.new(user_query) }
+
+    it "yields batches of user IDs" do
+      mock_result = double("result", is_a?: true)
+      allow(mock_result).to receive(:is_a?).with(PG::Result).and_return(true)
+      
+      # Mock 5 IDs
+      rows = (1..5).map { |n| { "id" => n.to_s } }
+      allow(mock_result).to receive(:each).and_yield(rows[0]).and_yield(rows[1]).and_yield(rows[2]).and_yield(rows[3]).and_yield(rows[4])
+      
+      allow(executor).to receive(:execute_with_timeout).and_return(mock_result)
+      allow(executor).to receive(:setup_execution_environment)
+      allow(executor).to receive(:update_execution_tracking)
+
+      batches = []
+      executor.each_id_batch(batch_size: 2) do |batch|
+        batches << batch
+      end
+
+      expect(batches).to eq([[1, 2], [3, 4], [5]])
+    end
+
+    it "handles different ID column names in batches" do
+      mock_result = double("result", is_a?: true)
+      allow(mock_result).to receive(:is_a?).with(PG::Result).and_return(true)
+      
+      allow(mock_result).to receive(:each).and_yield({ "user_id" => "10" }).and_yield({ "users.id" => "20" })
+      
+      allow(executor).to receive(:execute_with_timeout).and_return(mock_result)
+      allow(executor).to receive(:setup_execution_environment)
+      
+      yielded_ids = []
+      executor.each_id_batch do |batch|
+        yielded_ids.concat(batch)
+      end
+
+      expect(yielded_ids).to eq([10, 20])
+    end
+
+    it "skips rows with no ID columns" do
+      mock_result = double("result", is_a?: true)
+      allow(mock_result).to receive(:is_a?).with(PG::Result).and_return(true)
+      
+      allow(mock_result).to receive(:each).and_yield({ "no_id" => "1" }).and_yield({ "id" => "2" })
+      
+      allow(executor).to receive(:execute_with_timeout).and_return(mock_result)
+      allow(executor).to receive(:setup_execution_environment)
+      
+      yielded_ids = []
+      executor.each_id_batch do |batch|
+        yielded_ids.concat(batch)
+      end
+
+      expect(yielded_ids).to eq([2])
+    end
+  end
+
+  describe "#execute_with_timeout" do
+    let(:connection) { double("connection") }
+    let(:executor) { UserQueryExecutor.new(user_query) }
+
+    it "delegates query execution directly to the connection" do
+      expect(connection).to receive(:execute).with("SELECT 1").and_return("mock_result")
+      expect(executor.send(:execute_with_timeout, connection, "SELECT 1")).to eq("mock_result")
+    end
+
+    it "propagates exceptions raised by the connection" do
+      expect(connection).to receive(:execute).with("SELECT 1").and_raise(ActiveRecord::QueryCanceled.new("Query timed out"))
+      expect {
+        executor.send(:execute_with_timeout, connection, "SELECT 1")
+      }.to raise_error(ActiveRecord::QueryCanceled, /Query timed out/)
+    end
+  end
+
+  describe "connection setting cleanup" do
+    it "resets database session settings after execution" do
+      original_statement_timeout = ActiveRecord::Base.connection.execute("SHOW statement_timeout").first["statement_timeout"]
+      original_lock_timeout = ActiveRecord::Base.connection.execute("SHOW lock_timeout").first["lock_timeout"]
+      original_idle_timeout = ActiveRecord::Base.connection.execute("SHOW idle_in_transaction_session_timeout").first["idle_in_transaction_session_timeout"]
+
+      executor = UserQueryExecutor.new(user_query, timeout_ms: 12_345)
+      executor.execute
+
+      expect(ActiveRecord::Base.connection.execute("SHOW statement_timeout").first["statement_timeout"]).to eq(original_statement_timeout)
+      expect(ActiveRecord::Base.connection.execute("SHOW lock_timeout").first["lock_timeout"]).to eq(original_lock_timeout)
+      expect(ActiveRecord::Base.connection.execute("SHOW idle_in_transaction_session_timeout").first["idle_in_transaction_session_timeout"]).to eq(original_idle_timeout)
     end
   end
 end

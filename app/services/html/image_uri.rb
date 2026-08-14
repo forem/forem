@@ -21,7 +21,19 @@ module Html
     end
 
     def allowed?
-      github_camo_user_content? || github_badge?
+      github_camo_user_content? || github_badge? || first_party_asset?
+    end
+
+    def first_party_asset?
+      return true if host.nil? && path.to_s.start_with?("/")
+
+      app_domain = Settings::General.app_domain
+      return true if app_domain.present? && host == URI("https://#{app_domain}").host
+
+      asset_host = ActionController::Base.asset_host
+      return true if asset_host.present? && host == URI("https://#{asset_host.sub(%r{^https?://}, '')}").host
+
+      false
     end
 
     def github_badge?

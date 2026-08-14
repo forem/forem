@@ -2,6 +2,9 @@
 pt:
   views:
     comments:
+      limited_unauthenticated:
+        text_html: "Exibindo um subconjunto dos comentários. Por favor, %{sign_in} para ver todos os comentários."
+        sign_in: "faça login"
       add_comment: Adicionar comentário
       edit_comment: Editar comentário
       delete_comment: Excluir comentário

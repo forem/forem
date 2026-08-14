@@ -1,4 +1,4 @@
-import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
+import { getUserDataAndCsrfTokenSafely } from '@utilities/getUserDataAndCsrfToken';
 import {
   closeWindowModal,
   showWindowModal,
@@ -290,7 +290,8 @@ export async function initializeUserSubscriptionLiquidTagContent() {
     return;
   }
 
-  const { currentUser: user } = await getUserDataAndCsrfToken();
+  const { currentUser: user } = await getUserDataAndCsrfTokenSafely();
+  if (!user) return;
   const { apple_auth: isSubscriberAuthedWithApple } = user;
 
   // Setup the initial signed-in state without waiting on subscription status fetch

@@ -37,11 +37,13 @@ RSpec.describe Articles::PageViewUpdater do
         create(:feed_event, user: user, article: article, category: :click)
       end
 
-      it "sends a feed event journey when it receives a page view length of 60" do
+      it "sends a feed event journey and enqueues interest embedding when it receives a page view length of 60" do
+        allow(UpdateUserInterestEmbeddingWorker).to receive(:perform_async)
         4.times do
           described_class.call(article_id: article.id, user_id: user.id)
         end
         expect(FeedEvent.last.category).to eq("extended_pageview")
+        expect(UpdateUserInterestEmbeddingWorker).to have_received(:perform_async).with(user.id, article.id, 0.05)
       end
 
       it "does not send feed event journey when it receives a page view length of less than 60" do

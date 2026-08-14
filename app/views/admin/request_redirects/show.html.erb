@@ -1,0 +1,24 @@
+<% content_for :h1 do %>
+  Request Redirects &raquo; Show
+<% end %>
+
+<div class="crayons-card p-4">
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="fs-xl fw-bold">Request Redirect Details</h2>
+    <div>
+      <%= link_to "Edit", edit_admin_request_redirect_path(@request_redirect), class: "crayons-btn crayons-btn--s crayons-btn--ghost" %>
+      <%= link_to "Back", admin_request_redirects_path, class: "crayons-btn crayons-btn--s crayons-btn--ghost" %>
+    </div>
+  </div>
+
+  <dl class="mb-4">
+    <dt class="fw-bold mb-1">Request Domain:</dt>
+    <dd class="mb-3"><%= @request_redirect.request_domain %></dd>
+
+    <dt class="fw-bold mb-1">Original URL:</dt>
+    <dd class="mb-3"><%= @request_redirect.original_url %></dd>
+
+    <dt class="fw-bold mb-1">Destination URL:</dt>
+    <dd class="mb-3"><%= @request_redirect.destination_url %></dd>
+  </dl>
+</div>

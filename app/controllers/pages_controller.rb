@@ -6,7 +6,17 @@ class PagesController < ApplicationController
     params[:slug] = combined_fragmented_slug if params[:slug_0].present?
     @page = proper_page_by_slug
     redirect_page_if_different_subforem
+    return if performed?
+
     not_found_conditions
+
+    if @page.redirect_to_url.present?
+      redirect_options = { status: :moved_permanently }
+      redirect_options[:allow_other_host] = true if @page.redirect_to_url.start_with?("http://", "https://")
+      redirect_to @page.redirect_to_url, **redirect_options
+      return
+    end
+
     set_surrogate_key_header "show-page-#{params[:slug]}"
 
 
@@ -102,6 +112,7 @@ class PagesController < ApplicationController
 
   def robots
     # dynamically-generated static page
+    custom_domain_org
     respond_to :text
     set_surrogate_key_header "robots_page"
   end

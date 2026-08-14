@@ -19,4 +19,10 @@ RSpec.describe Articles::Feeds::Timeframe, type: :service do
     result = described_class.call("week", minimum_score: -1001)
     expect(result).to include(low_scoring_article)
   end
+
+  it "includes articles older than 5 years when timeframe is 'infinity'" do
+    ancient_article = create(:article, :past, score: 500, past_published_at: 6.years.ago)
+    result = described_class.call("infinity")
+    expect(result).to include(ancient_article)
+  end
 end

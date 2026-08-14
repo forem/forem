@@ -8,6 +8,7 @@ class BillboardsController < ApplicationController
     skip_authorization
 
     if ApplicationConfig["DISABLE_BILLBOARDS"] == "yes" # Turned on if needed
+      set_cache_control_headers(180)
       render plain: ""
       return
     end
@@ -28,7 +29,8 @@ class BillboardsController < ApplicationController
       end
 
       if params[:username].present? && params[:slug].present?
-        @article = Article.find_by(slug: params[:slug])
+        path = "/#{params[:username].downcase}/#{params[:slug].downcase}"
+        @article = Article.find_by(path: path) || Article.find_by(slug: params[:slug])
       end
 
       @billboard = Billboard.for_display(

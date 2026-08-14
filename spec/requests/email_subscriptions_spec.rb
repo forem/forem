@@ -10,8 +10,8 @@ RSpec.describe "EmailSubscriptions" do
   def generate_token(user_id)
     Rails.application.message_verifier(:unsubscribe).generate({
                                                                 user_id: user_id,
-                                                                email_type: :email_mention_notifications,
-                                                                expires_at: 31.days.from_now
+                                                                email_type: "email_mention_notifications",
+                                                                expires_at: 31.days.from_now.iso8601
                                                               })
   end
 
@@ -19,6 +19,22 @@ RSpec.describe "EmailSubscriptions" do
     it "returns 200 if valid" do
       get email_subscriptions_unsubscribe_url(ut: generate_token(user.id))
       expect(response).to have_http_status(:ok)
+    end
+
+    it "returns 200 if token is in legacy Marshal format" do
+      secret_generator = Rails.application.message_verifiers.instance_variable_get(:@secret_generator)
+      secret = secret_generator.call(:unsubscribe.to_s)
+      marshal_verifier = ActiveSupport::MessageVerifier.new(secret, digest: "SHA1", serializer: Marshal)
+      legacy_token = marshal_verifier.generate({
+                                                 user_id: user.id,
+                                                 email_type: "email_mention_notifications",
+                                                 expires_at: 31.days.from_now.iso8601
+                                               })
+
+      get email_subscriptions_unsubscribe_url(ut: legacy_token)
+      expect(response).to have_http_status(:ok)
+      user.reload
+      expect(user.notification_setting.email_mention_notifications).to be(false)
     end
 
     it "does unsubscribe the user" do
@@ -36,6 +52,36 @@ RSpec.describe "EmailSubscriptions" do
       token = generate_token(user.id)
       Timecop.freeze(32.days.from_now) do
         get email_subscriptions_unsubscribe_url(ut: token)
+        expect(response.body).to include("Token expired or invalid")
+      end
+    end
+  end
+
+  # RFC 8058: Gmail/Yahoo POST to the List-Unsubscribe URL with a
+  # "List-Unsubscribe=One-Click" body and no CSRF token.
+  describe "POST /email_subscriptions/unsubscribe" do
+    around do |example|
+      original = ActionController::Base.allow_forgery_protection
+      ActionController::Base.allow_forgery_protection = true
+      example.run
+    ensure
+      ActionController::Base.allow_forgery_protection = original
+    end
+
+    it "unsubscribes the user and returns 200 without a CSRF token", :aggregate_failures do
+      post email_subscriptions_unsubscribe_path(ut: generate_token(user.id)),
+           params: { "List-Unsubscribe" => "One-Click" }
+
+      expect(response).to have_http_status(:ok)
+      user.reload
+      expect(user.notification_setting.email_mention_notifications).to be(false)
+    end
+
+    it "renders the expired notice for a stale token" do
+      token = generate_token(user.id)
+      Timecop.freeze(32.days.from_now) do
+        post email_subscriptions_unsubscribe_path(ut: token),
+             params: { "List-Unsubscribe" => "One-Click" }
         expect(response.body).to include("Token expired or invalid")
       end
     end

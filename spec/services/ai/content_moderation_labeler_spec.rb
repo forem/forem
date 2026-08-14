@@ -11,15 +11,97 @@ RSpec.describe Ai::ContentModerationLabeler, type: :service do
     allow(Settings::Community).to receive(:community_description).and_return("A community for developers.")
   end
 
-  describe "#label" do
+  describe "#evaluate" do
     context "when AI responds successfully" do
       before do
-        allow(ai_client).to receive(:call).and_return("okay_and_on_topic")
+        allow(ai_client).to receive(:call).and_return('{"moderation_label": "okay_and_on_topic", "compellingness_score": 0.85}')
       end
 
-      it "returns the correct label" do
-        result = described_class.new(article).label
-        expect(result).to eq("okay_and_on_topic")
+      it "returns the correct label and score" do
+        result = described_class.new(article).evaluate
+        expect(result).to eq({ label: "okay_and_on_topic", compellingness_score: 0.85 })
+      end
+    end
+
+    context "when article has a negative score" do
+      before do
+        allow(article).to receive(:score).and_return(-10)
+        allow(ai_client).to receive(:call).and_return('{"moderation_label": "okay_and_on_topic", "compellingness_score": 0.85}')
+      end
+
+      it "uses the lite model" do
+        described_class.new(article).evaluate
+        expect(Ai::Base).to have_received(:new).with(
+          hash_including(model: Ai::Base::DEFAULT_LITE_MODEL)
+        )
+      end
+
+      it "truncates body_markdown to 2000 characters" do
+        allow(article).to receive(:body_markdown).and_return("a" * 3000)
+        labeler = described_class.new(article)
+        prompt = labeler.send(:build_prompt)
+        expect(prompt).to include("a" * 1997 + "...")
+        expect(prompt).not_to include("a" * 2000)
+      end
+
+      it "omits very_good and great labels from the prompt" do
+        labeler = described_class.new(article)
+        prompt = labeler.send(:build_prompt)
+        expect(prompt).not_to include("very_good_and_on_topic")
+        expect(prompt).not_to include("great_and_on_topic")
+      end
+    end
+
+    context "when article is a status" do
+      before do
+        allow(article).to receive(:status?).and_return(true)
+        allow(ai_client).to receive(:call).and_return('{"moderation_label": "okay_and_on_topic", "compellingness_score": 0.85}')
+      end
+
+      it "includes the quickie context in the prompt" do
+        labeler = described_class.new(article)
+        prompt = labeler.send(:build_prompt)
+        expect(prompt).to include("This article is a \"status\" post")
+      end
+    end
+
+    context "when article is not a status" do
+      before do
+        allow(article).to receive(:status?).and_return(false)
+        allow(ai_client).to receive(:call).and_return('{"moderation_label": "okay_and_on_topic", "compellingness_score": 0.85}')
+      end
+
+      it "does not include the quickie context in the prompt" do
+        labeler = described_class.new(article)
+        prompt = labeler.send(:build_prompt)
+        expect(prompt).not_to include("This article is a \"status\" post")
+      end
+    end
+
+    context "when article has tags with custom moderation instructions" do
+      let(:tag_with_instructions) { create(:tag, name: "testtag", moderation_instructions: "Assure it does not contain spoilers.") }
+
+      before do
+        article.tags << tag_with_instructions
+        allow(ai_client).to receive(:call).and_return('{"moderation_label": "okay_and_on_topic", "compellingness_score": 0.85}')
+      end
+
+      it "includes the custom moderation instructions in the prompt" do
+        labeler = described_class.new(article)
+        prompt = labeler.send(:build_prompt)
+        expect(prompt).to include("**Custom Tag Moderation Instructions:**")
+        expect(prompt).to include("- #testtag: Assure it does not contain spoilers.")
+      end
+    end
+
+    context "when AI responds with invalid JSON but valid text" do
+      before do
+        allow(ai_client).to receive(:call).and_return("I think it is very_good_and_on_topic")
+      end
+
+      it "rescues the error, extracts the label, and sets score to 0.0" do
+        result = described_class.new(article).evaluate
+        expect(result).to eq({ label: "very_good_and_on_topic", compellingness_score: 0.0 })
       end
     end
 
@@ -29,12 +111,12 @@ RSpec.describe Ai::ContentModerationLabeler, type: :service do
       end
 
       it "falls back to safe default after retries" do
-        result = described_class.new(article).label
-        expect(result).to eq("no_moderation_label")
+        result = described_class.new(article).evaluate
+        expect(result).to eq({ label: "no_moderation_label", compellingness_score: 0.0 })
       end
 
       it "retries exactly 2 times before falling back" do
-        described_class.new(article).label
+        described_class.new(article).evaluate
         expect(ai_client).to have_received(:call).exactly(3).times
       end
 
@@ -42,7 +124,7 @@ RSpec.describe Ai::ContentModerationLabeler, type: :service do
         allow(Rails.logger).to receive(:error)
         allow(Rails.logger).to receive(:info)
 
-        described_class.new(article).label
+        described_class.new(article).evaluate
 
         expect(Rails.logger).to have_received(:error).with(/Content Moderation Labeling failed \(attempt 1\/3\)/)
         expect(Rails.logger).to have_received(:info).with(/Retrying content moderation labeling \(attempt 2\/3\)/)
@@ -61,18 +143,18 @@ RSpec.describe Ai::ContentModerationLabeler, type: :service do
           if call_count < 3
             raise StandardError, "Temporary API Error"
           else
-            "okay_and_on_topic"
+            '{"moderation_label": "okay_and_on_topic", "compellingness_score": 0.99}'
           end
         end
       end
 
       it "returns the correct label after successful retry" do
-        result = described_class.new(article).label
-        expect(result).to eq("okay_and_on_topic")
+        result = described_class.new(article).evaluate
+        expect(result).to eq({ label: "okay_and_on_topic", compellingness_score: 0.99 })
       end
 
       it "makes exactly 3 attempts before succeeding" do
-        described_class.new(article).label
+        described_class.new(article).evaluate
         expect(ai_client).to have_received(:call).exactly(3).times
       end
 
@@ -80,7 +162,7 @@ RSpec.describe Ai::ContentModerationLabeler, type: :service do
         allow(Rails.logger).to receive(:error)
         allow(Rails.logger).to receive(:info)
 
-        described_class.new(article).label
+        described_class.new(article).evaluate
 
         expect(Rails.logger).to have_received(:error).with(/Content Moderation Labeling failed \(attempt 1\/3\)/)
         expect(Rails.logger).to have_received(:info).with(/Retrying content moderation labeling \(attempt 2\/3\)/)
@@ -98,18 +180,18 @@ RSpec.describe Ai::ContentModerationLabeler, type: :service do
           if call_count == 1
             raise StandardError, "Temporary API Error"
           else
-            "very_good_and_on_topic"
+            '{"moderation_label": "very_good_and_on_topic", "compellingness_score": 0.4}'
           end
         end
       end
 
       it "returns the correct label after first retry" do
-        result = described_class.new(article).label
-        expect(result).to eq("very_good_and_on_topic")
+        result = described_class.new(article).evaluate
+        expect(result).to eq({ label: "very_good_and_on_topic", compellingness_score: 0.4 })
       end
 
       it "makes exactly 2 attempts" do
-        described_class.new(article).label
+        described_class.new(article).evaluate
         expect(ai_client).to have_received(:call).exactly(2).times
       end
     end

@@ -32,7 +32,7 @@ RSpec.describe ConsumerApps::RpushAppQuery, type: :query do
 
     it "works when ConsumerApps have the same bundle but different platform" do
       # This is a regression test to avoid conflicting `name` in either
-      # Rpush::Apns2::App or Rpush::Gcm::App to break the app
+      # Rpush::Apns2::App or Rpush::Fcm::App to break the app
       allow(ApplicationConfig).to receive(:[]).with("RPUSH_IOS_PEM").and_return("asdf123")
       allow(ApplicationConfig).to receive(:[]).with("RPUSH_FCM_KEY").and_return("asdf123")
 
@@ -45,7 +45,7 @@ RSpec.describe ConsumerApps::RpushAppQuery, type: :query do
 
       # Fetch rpush app associated to the target
       android_rpush_app = described_class.call(app_bundle: android_consumer_app.app_bundle, platform: :android)
-      expect(android_rpush_app).to be_instance_of(Rpush::Gcm::App)
+      expect(android_rpush_app).to be_instance_of(Rpush::Fcm::App)
     end
   end
 end

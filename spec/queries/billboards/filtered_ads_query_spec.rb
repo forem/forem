@@ -523,4 +523,49 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
       end
     end
   end
+
+  context "when considering active event broadcasts" do
+    let(:memory_store) { ActiveSupport::Cache::MemoryStore.new }
+
+    before do
+      allow(Rails).to receive(:cache).and_return(memory_store)
+      memory_store.clear
+    end
+
+    let!(:standard_bb) { create_billboard(placement_area: "feed_first", event_id: nil) }
+    
+    context "with an active global broadcast" do
+      let(:event) { create(:event, start_time: 5.minutes.ago, end_time: 1.hour.from_now, broadcast_config: "global_broadcast", published: true) }
+      let!(:event_bb) { create_billboard(placement_area: "feed_first", event: event) }
+
+      it "overrides all feed_first placements bypassing standard billboards" do
+        filtered = filter_billboards(area: "feed_first")
+        expect(filtered).to include(event_bb)
+        expect(filtered).not_to include(standard_bb)
+      end
+
+      it "does not override sidebar placements" do
+        filtered = filter_billboards(area: "sidebar_left")
+        expect(filtered).not_to include(event_bb)
+      end
+    end
+
+    context "with an active tagged broadcast" do
+      let(:event) { create(:event, start_time: 5.minutes.ago, end_time: 1.hour.from_now, broadcast_config: "tagged_broadcast", published: true, tags_array: ["javascript"]) }
+      let!(:event_bb) { create_billboard(placement_area: "feed_first", event: event) }
+
+      it "overrides feed if user tags overlap the event tags" do
+        filtered = filter_billboards(area: "feed_first", user_tags: ["ruby", "javascript"])
+        expect(filtered).to include(event_bb)
+        expect(filtered).not_to include(standard_bb)
+      end
+
+      it "does not override feed if user tags do not overlap" do
+        filtered = filter_billboards(area: "feed_first", user_tags: ["ruby", "python"])
+        expect(filtered).not_to include(event_bb)
+        # Should render standard untagged boards if no mapping aligns securely:
+        expect(filtered).to include(standard_bb)
+      end
+    end
+  end
 end

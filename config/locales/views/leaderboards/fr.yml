@@ -1,0 +1,13 @@
+---
+fr:
+  views:
+    leaderboards:
+      index:
+        title: "Classement"
+        heading: "Classement"
+        subtitle: "Top %{count} leaders de badges sur %{community_name}"
+        rank: "Rang"
+        user: "Utilisateur"
+        recent_badges: "Badges Récents"
+        badges: "Badges"
+        no_users: "Aucun utilisateur trouvé dans le classement pour le moment."

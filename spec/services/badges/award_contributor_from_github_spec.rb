@@ -1,95 +1,72 @@
 require "rails_helper"
 
-RSpec.describe Badges::AwardContributorFromGithub, :vcr, type: :service do
-  let(:badge) { create(:badge, title: "DEV Contributor") }
+RSpec.describe Badges::AwardContributorFromGithub, type: :service do
+  let(:user) { create(:user) }
+  let(:identity) { create(:identity, user: user, provider: "github", uid: "123456") }
 
   before do
-    badge
-    omniauth_mock_github_payload
     allow(Settings::Authentication).to receive(:providers).and_return([:github])
-    stub_const("#{described_class}::REPOSITORIES", ["forem/DEV-Android"])
+    OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new({ provider: "github", uid: "123456" })
   end
 
-  it "won't work without Github oauth configured" do
-    allow(Settings::Authentication).to receive(:providers).and_return([])
-    user = create(:user, :with_identity, identities: ["github"], uid: "389169")
+  describe ".call" do
+    let(:commits) { [double(author: double(id: "123456")), double(author: nil)] }
+    let(:contributors) { [double(id: "123456", contributions: 50)] }
+    let(:github_client) { double("Github::OauthClient") }
 
-    expect { described_class.call }.not_to change(user.badge_achievements, :count)
-  end
-
-  it "awards contributor badge" do
-    user = create(:user, :with_identity, identities: ["github"], uid: "389169")
-
-    Timecop.freeze("2021-08-16T13:49:20Z") do
-      expect do
-        VCR.use_cassette("github_client_commits_contributor_badge") do
-          described_class.call
-        end
-      end.to change(user.badge_achievements, :count).by(1)
+    before do
+      identity
+      allow(Github::OauthClient).to receive(:new).and_return(github_client)
+      allow(github_client).to receive(:commits).and_return(commits)
+      allow(github_client).to receive(:contributors).and_return(contributors)
     end
-  end
 
-  it "awards contributor badge once" do
-    user = create(:user, :with_identity, identities: ["github"], uid: "389169")
-    Timecop.freeze("2021-08-16T13:49:20Z") do
-      expect do
-        VCR.use_cassette("github_client_commits_contributor_badge_twice") do
+    context "when badges do not exist in the database" do
+      it "does not raise an error due to nil badge IDs when creating badge achievements" do
+        expect {
           described_class.call
-          described_class.call
-        end
-      end.to change(user.badge_achievements, :count).by(1)
+        }.not_to raise_error
+      end
     end
-  end
 
-  it "awards bronze contributor badge" do
-    badge = create(:badge, title: "4x Commit Club")
-    user = create(:user, :with_identity, identities: ["github"], uid: "459464")
-    Timecop.freeze("2021-08-16T13:49:20Z") do
-      VCR.use_cassette("github_client_commits_contributor_badge") do
-        expect do
+    context "when some commits have nil authors" do
+      let!(:dev_contributor_badge) { create(:badge, title: "dev-contributor") }
+
+      it "safely ignores commits with nil authors without raising NoMethodError" do
+        expect {
           described_class.call
-        end.to change(user.badge_achievements.where(badge: badge), :count).by(1)
+        }.not_to raise_error
+      end
+    end
+
+    context "when badges exist in the database, and github provider is a symbol" do
+      let!(:dev_contributor_badge) { create(:badge, title: "dev-contributor") }
+      let!(:four_x_commit_badge) { create(:badge, title: "4x-commit-club") }
+
+      it "awards the expected badges" do
+        described_class.call
+
+        badge_ids = user.badge_achievements.pluck(:badge_id)
+        expect(badge_ids).to include(dev_contributor_badge.id)
+        expect(badge_ids).to include(four_x_commit_badge.id)
+      end
+    end
+
+    context "when badges exist in the database, and github provider is a string" do
+      let!(:dev_contributor_badge) { create(:badge, title: "dev-contributor") }
+      let!(:four_x_commit_badge) { create(:badge, title: "4x-commit-club") }
+
+      before do
+        allow(Settings::Authentication).to receive(:providers).and_return(["github"])
+      end
+
+      it "awards the expected badges" do
+        described_class.call
+
+        badge_ids = user.badge_achievements.pluck(:badge_id)
+        expect(badge_ids).to include(dev_contributor_badge.id)
+        expect(badge_ids).to include(four_x_commit_badge.id)
       end
     end
   end
-
-  it "awards silver contributor badge" do
-    badge = create(:badge, title: "8x Commit Club")
-    user = create(:user, :with_identity, identities: ["github"], uid: "6045239")
-    Timecop.freeze("2021-08-16T13:49:20Z") do
-      VCR.use_cassette("github_client_commits_contributor_badge") do
-        expect do
-          described_class.call
-        end.to change(user.badge_achievements.where(badge: badge), :count).by(1)
-      end
-    end
-  end
-
-  it "awards gold contributor badge" do
-    badge = create(:badge, title: "16x-commit-club")
-    user = create(:user, :with_identity, identities: ["github"], uid: "15793250")
-
-    Timecop.freeze("2021-08-16T13:49:20Z") do
-      VCR.use_cassette("github_client_commits_contributor_badge") do
-        expect do
-          described_class.call
-        end.to change(user.badge_achievements.where(badge: badge), :count).by(1)
-      end
-    end
-  end
-
-  # rubocop:disable RSpec/AnyInstance
-  it "awards single commit contributors" do
-    stub_const("#{described_class}::REPOSITORIES", ["forem/forem"])
-    user = create(:user, :with_identity, identities: ["github"], uid: "49699333")
-    Timecop.freeze("2021-08-16T13:49:20Z") do
-      VCR.use_cassette("awards_single_commit_contributors") do
-        allow_any_instance_of(described_class).to receive(:award_multi_commit_contributors)
-        expect do
-          described_class.call
-        end.to change(user.badge_achievements, :count).by(1)
-      end
-    end
-  end
-  # rubocop:enable RSpec/AnyInstance
 end

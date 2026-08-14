@@ -5,6 +5,9 @@ module ScheduledAutomations
   # that have a next_run_at time in the past 10 minutes.
   class ProcessWorker
     include Sidekiq::Job
+    include Sidekiq::Throttled::Job
+
+    sidekiq_throttle(concurrency: { limit: 1 })
 
     sidekiq_options queue: :default, retry: 3
 
@@ -16,12 +19,11 @@ module ScheduledAutomations
       ensure_warm_welcome_automation_exists
 
       # Find all automations due for execution
-      # We look for automations scheduled in the last 10 minutes to avoid missing any
-      # due to timing issues
+      # We look for all past-due automations to ensure we do not miss any
+      # that failed to run during their scheduled window.
       automations = ScheduledAutomation
-                      .due_for_execution
-                      .where("next_run_at >= ?", 10.minutes.ago)
-                      .order(next_run_at: :asc)
+        .due_for_execution
+        .order(next_run_at: :asc)
 
       if automations.empty?
         Rails.logger.info("ScheduledAutomations::ProcessWorker: No automations due for execution")
@@ -47,7 +49,7 @@ module ScheduledAutomations
       # Check if automation already exists
       existing = ScheduledAutomation.find_by(
         action: "award_warm_welcome_badge",
-        service_name: "warm_welcome_badge"
+        service_name: "warm_welcome_badge",
       )
       return if existing
 
@@ -64,13 +66,13 @@ module ScheduledAutomations
       day_of_week = 5 # Friday
       hour = 9
       minute = 0
-      
+
       # Calculate days until target day of week
       current_wday = now.wday
       days_ahead = (day_of_week - current_wday) % 7
-      
+
       next_friday = now.advance(days: days_ahead).change(hour: hour, min: minute, sec: 0)
-      
+
       # If we're on the same day but the time has passed, schedule for next week
       if days_ahead == 0 && next_friday <= now
         next_friday += 1.week
@@ -90,7 +92,7 @@ module ScheduledAutomations
         action_config: {},
         state: "active",
         enabled: true,
-        next_run_at: next_friday
+        next_run_at: next_friday,
       )
 
       Rails.logger.info("ScheduledAutomations::ProcessWorker: Created warm welcome badge automation ##{automation.id}")
@@ -106,24 +108,23 @@ module ScheduledAutomations
       if result.success?
         if result.article
           Rails.logger.info(
-            "ScheduledAutomation ##{automation.id} succeeded: Created article ##{result.article.id} - '#{result.article.title}'"
+            "ScheduledAutomation ##{automation.id} succeeded: Created article ##{result.article.id} - '#{result.article.title}'",
           )
         else
           Rails.logger.info(
-            "ScheduledAutomation ##{automation.id} completed: #{result.error_message}"
+            "ScheduledAutomation ##{automation.id} completed: #{result.error_message}",
           )
         end
       else
         Rails.logger.error(
-          "ScheduledAutomation ##{automation.id} failed: #{result.error_message}"
+          "ScheduledAutomation ##{automation.id} failed: #{result.error_message}",
         )
       end
     rescue StandardError => e
       Rails.logger.error(
-        "Unexpected error executing ScheduledAutomation ##{automation.id}: #{e.class} - #{e.message}"
+        "Unexpected error executing ScheduledAutomation ##{automation.id}: #{e.class} - #{e.message}",
       )
       Rails.logger.error(e.backtrace.join("\n"))
     end
   end
 end
-

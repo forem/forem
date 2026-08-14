@@ -29,6 +29,14 @@ RSpec.describe "ArticlesDestroy" do
       end.to change(Notification, :count).by(-1)
     end
 
+    it "busts the author profile cache" do
+      allow(EdgeCache::BustUser).to receive(:call)
+
+      delete "/articles/#{article.id}"
+
+      expect(EdgeCache::BustUser).to have_received(:call).with(user)
+    end
+
     it "doesn't destroy another person's article" do
       article2 = create(:article, user_id: create(:user).id)
       expect do

@@ -36,6 +36,13 @@
         <%= form.label :description, class: "crayons-field__label" %>
         <%= form.text_field :description, class: "crayons-textfield", required: true %>
       </div>
+      <div class="crayons-field">
+        <%= form.label :redirect_to_url, class: "crayons-field__label" do %>
+          Redirect to URL
+          <p class="crayons-field__description">Optional. If set, visitors will be redirected to this URL or path instead of viewing the page. Use a full URL (e.g. <code>https://example.com</code>) or an app path (e.g. <code>/about</code>).</p>
+        <% end %>
+        <%= form.text_field :redirect_to_url, class: "crayons-textfield", placeholder: "https://example.com or /about" %>
+      </div>
       
       <% if @page_template.present? && @page_template.schema_fields.any? %>
         <hr class="my-2">

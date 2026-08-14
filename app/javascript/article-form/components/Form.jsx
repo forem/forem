@@ -1,4 +1,5 @@
 import { h } from 'preact';
+import { useEffect, useRef } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { EditorBody } from './EditorBody';
 import { Meta } from './Meta';
@@ -22,9 +23,22 @@ export const Form = ({
   aiAvailable,
   videoSourceUrl,
   onVideoUrlChange,
+  coAuthorsData,
 }) => {
+  const contentRef = useRef(null);
+
+  useEffect(() => {
+    if (errors) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
+      if (contentRef.current && contentRef.current.scrollHeight > contentRef.current.clientHeight) {
+        contentRef.current.scrollTop = 0;
+      }
+    }
+  }, [errors]);
+
   return (
-    <div className="crayons-article-form__content crayons-card">
+    <div className="crayons-article-form__content crayons-card" id="CreatePost_Content" ref={contentRef}>
       {errors && <ErrorList errors={errors} />}
 
       {version === 'v2' && (
@@ -41,6 +55,7 @@ export const Form = ({
           aiAvailable={aiAvailable}
           videoSourceUrl={videoSourceUrl}
           onVideoUrlChange={onVideoUrlChange}
+          coAuthorsData={coAuthorsData}
         />
       )}
 
@@ -73,6 +88,7 @@ Form.propTypes = {
   aiAvailable: PropTypes.bool.isRequired,
   videoSourceUrl: PropTypes.string,
   onVideoUrlChange: PropTypes.func,
+  coAuthorsData: PropTypes.array,
 };
 
 Form.displayName = 'Form';

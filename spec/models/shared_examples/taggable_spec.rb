@@ -91,6 +91,16 @@ RSpec.shared_examples "Taggable" do
       expect(articles).not_to include(excluded_no_match)
       expect(articles.to_a).to eq(described_class.tagged_with(%i[includeme please]).to_a)
     end
+
+    it "uses native GIN bounds natively bridging array operations cleanly when OPTIMIZED_TAGGABLE_QUERY is enabled" do
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("OPTIMIZED_TAGGABLE_QUERY").and_return("true")
+      
+      sql = described_class.cached_tagged_with("ruby").to_sql
+      expect(sql).to include("tags_array @>")
+      expect(sql).to include("ruby")
+      expect(sql).not_to include("cached_tag_list ~")
+    end
   end
 
   describe ".cached_tagged_with_any" do
@@ -188,6 +198,16 @@ RSpec.shared_examples "Taggable" do
 
       expect(articles.to_a).to include(*expected)
     end
+
+    it "resolves multi-array matches via singular overlap interceptions unequivocally mapping organically when OPTIMIZED_TAGGABLE_QUERY is enabled" do
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("OPTIMIZED_TAGGABLE_QUERY").and_return("true")
+      
+      sql = described_class.cached_tagged_with_any(["ruby", "rails"]).to_sql
+      expect(sql).to include("tags_array &&")
+      %w[ruby rails].each { |tag| expect(sql).to include(tag) }
+      expect(sql).not_to include("cached_tag_list ~")
+    end
   end
 
   describe ".not_cached_tagged_with_any" do
@@ -203,6 +223,30 @@ RSpec.shared_examples "Taggable" do
       expect(articles).to include included
       expect(articles).not_to include excluded1
       expect(articles).not_to include excluded2
+    end
+  end
+
+  describe "before_save :sync_tags_array" do
+    it "syncs tags_array natively out of cached_tag_list if the array is unexpectedly blank or uninitialized" do
+      record = described_class.new
+      record.cached_tag_list = "ruby, rails"
+      record.tags_array = []
+      
+      record.sync_tags_array
+      expect(record.tags_array).to eq(%w[ruby rails])
+    end
+
+    it "skips expensive N+1 arrays if values are completely synchronized and untampered" do
+      record = described_class.new
+      record.cached_tag_list = "javascript"
+      record.tags_array = ["javascript"]
+      
+      record.clear_changes_information
+      
+      expect(record).not_to receive(:tag_list)
+      record.sync_tags_array
+      
+      expect(record.tags_array).to eq(["javascript"])
     end
   end
 end

@@ -1,6 +1,9 @@
 module Organizations
   class TrackPromotionalBillboardImpressionsWorker
     include Sidekiq::Job
+    include Sidekiq::Throttled::Job
+
+    sidekiq_throttle(concurrency: { limit: 1 })
 
     sidekiq_options queue: :low_priority, retry: 3
 

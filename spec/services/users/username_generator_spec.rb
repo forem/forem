@@ -30,6 +30,10 @@ RSpec.describe Users::UsernameGenerator, type: :service do
     expect(result_from(["user.name"])).to eq("username")
   end
 
+  it "ignores usernames that normalize to fewer than 2 characters" do
+    expect(result_from(["a", "-", ".a.", " a "])).to match(%([a-z]+{12}))
+  end
+
   context "when username already exists" do
     subject(:result) { described_class.call ["username"], detector: username_exists }
 

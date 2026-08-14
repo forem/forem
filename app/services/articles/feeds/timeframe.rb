@@ -5,9 +5,9 @@ module Articles
                     number_of_articles: Article::DEFAULT_FEED_PAGINATION_WINDOW_SIZE, page: 1)
         articles = ::Articles::Feeds::Tag.call(tag)
 
+        articles = articles.published.from_subforem
+        articles = articles.where("published_at > ?", ::Timeframe.datetime(timeframe)) if timeframe != "infinity"
         articles
-          .published.from_subforem
-          .where("published_at > ?", ::Timeframe.datetime(timeframe))
           .includes(:distinct_reaction_categories)
           .where("score > ?", minimum_score)
           .order(score: :desc)

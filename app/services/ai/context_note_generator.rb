@@ -1,14 +1,16 @@
 module Ai
   class ContextNoteGenerator
+    VERSION = "1.0"
 
     def initialize(article, tag)
       @article = article
       @tag = tag
-      @ai_client = Ai::Base.new
+      @ai_client = Ai::Base.new(wrapper: self, affected_content: article)
     end
 
     def call
       return unless @article && @tag && @tag.context_note_instructions.present?
+
       prompt = build_prompt
       response = @ai_client.call(prompt) if prompt.present?
 
@@ -18,7 +20,7 @@ module Ai
       context_note = ContextNote.create!(
         body_markdown: response.strip,
         article: @article,
-        tag: @tag
+        tag: @tag,
       )
     rescue StandardError => e
       Rails.logger.error("Context Note Generation failed: #{e}")

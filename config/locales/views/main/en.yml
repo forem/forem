@@ -28,10 +28,12 @@ en:
       nav:
         admin: Admin
         manage_subforem: Manage Subforem
+        agent_sessions: Agent Sessions
         dashboard: Dashboard
         placeholder: "..."
         list: Reading list
         moderator_center: Moderator Center
+        leadership: Community Leadership
         other: Other
         settings: Settings
         account: Account
@@ -46,10 +48,12 @@ en:
         Privacy Policy: Privacy Policy
         Reading List: Reading List
         Tags: Tags
+        trends: Trends
         Terms of use: Terms of Use
         Videos: Videos
       side:
         active_discussions: "Active discussions"
+        upcoming_events: "Upcoming events"
         listings:
           heading: Listings
           all: See all

@@ -21,6 +21,7 @@ RSpec.describe Organization do
       it { is_expected.to validate_length_of(:company_size).is_at_most(7) }
       it { is_expected.to validate_length_of(:cta_body_markdown).is_at_most(256) }
       it { is_expected.to validate_length_of(:cta_button_text).is_at_most(20) }
+      it { is_expected.to validate_length_of(:cta_button_url).is_at_most(255) }
       it { is_expected.to validate_length_of(:email).is_at_most(64) }
       it { is_expected.to validate_length_of(:github_username).is_at_most(50) }
       it { is_expected.to validate_length_of(:location).is_at_most(64) }
@@ -57,6 +58,51 @@ RSpec.describe Organization do
       it { is_expected.to allow_value("just_non_digit_characters").for(:slug) }
       it { is_expected.to allow_value("123_4").for(:slug) }
       it { is_expected.not_to allow_value("1234").for(:slug) }
+    end
+
+    describe "custom validations" do
+      describe "#validate_header_cta" do
+        it "allows valid HTTP and HTTPS urls" do
+          organization.header_cta = { "text" => "Click Here", "url" => "https://example.com" }
+          expect(organization).to be_valid
+        end
+
+        it "rejects javascript pseudo-protocols to prevent Stored XSS" do
+          organization.header_cta = { "text" => "Click Here", "url" => "javascript:alert(1)//" }
+          expect(organization).not_to be_valid
+          expect(organization.errors[:header_cta]).to include("Link must be a valid HTTP, HTTPS, or Mailto URL")
+        end
+
+        it "rejects javascript pseudo-protocols in dropdown links to prevent Stored XSS" do
+          organization.header_cta = { "text" => "Dropdown", "links" => [{ "text" => "Malicious", "url" => "javascript:alert(1)//" }] }
+          expect(organization).not_to be_valid
+          expect(organization.errors[:header_cta]).to include("Link must be a valid HTTP, HTTPS, or Mailto URL")
+        end
+      end
+
+      describe "#validate_social_links" do
+        it "allows valid domains matching the platform" do
+          organization.social_links = { "youtube" => "https://youtube.com/c/forem" }
+          expect(organization).to be_valid
+        end
+
+        it "allows valid alternate domains designed for the platform" do
+          organization.social_links = { "youtube" => "https://youtu.be/forem" }
+          expect(organization).to be_valid
+        end
+
+        it "rejects cross-platform domain spoofing" do
+          organization.social_links = { "youtube" => "https://evildomain.com/youtube" }
+          expect(organization).not_to be_valid
+          expect(organization.errors[:social_links]).to include("URL domain must match the selected platform (Youtube)")
+        end
+
+        it "rejects javascript pseudo-protocols to prevent XSS" do
+          organization.social_links = { "youtube" => "javascript:alert(1)//https://youtube.com" }
+          expect(organization).not_to be_valid
+          expect(organization.errors[:social_links]).to include("must be valid HTTP or HTTPS URLs")
+        end
+      end
     end
   end
 
@@ -449,6 +495,34 @@ RSpec.describe Organization do
     end
   end
 
+  describe "#readme_page?" do
+    it "returns true when organization has a page" do
+      create(:page, organization: organization, body_markdown: "# Hello",
+             title: organization.name, description: "desc", slug: "#{organization.slug}-page")
+      expect(organization.readme_page?).to be(true)
+    end
+
+    it "returns false when organization has no pages" do
+      expect(organization.readme_page?).to be(false)
+    end
+  end
+
+  describe "#ordered_pages" do
+    it "orders pages by position and uses creation order as a stable fallback when positions are equal" do
+      first_page = create(:page, organization: organization, position: 0, created_at: 2.hours.ago)
+      second_page = create(:page, organization: organization, position: 0, created_at: 1.hour.ago)
+      promoted_page = create(:page, organization: organization, position: -1, created_at: Time.current)
+
+      expect(organization.ordered_pages).to eq([promoted_page, first_page, second_page])
+    end
+  end
+
+  describe "#flipper_id" do
+    it "returns a string with Organization prefix and id" do
+      expect(organization.flipper_id).to eq("Organization;#{organization.id}")
+    end
+  end
+
   describe "#fully_trusted?" do
     it "returns true when fully_trusted is true" do
       organization.update(fully_trusted: true)
@@ -480,6 +554,68 @@ RSpec.describe Organization do
 
     it "excludes pending members" do
       expect(organization.active_users.pluck(:id)).not_to include(user3.id)
+    end
+  end
+
+  describe "recompiling organization pages on update" do
+    let(:organization) { create(:organization) }
+
+    before do
+      allow(Organizations::RecompilePagesWorker).to receive(:perform_async)
+      allow(FeatureFlag).to receive(:enabled?).and_call_original
+      allow(FeatureFlag).to receive(:enabled?).with(:org_readme, anything).and_return(true)
+    end
+
+    it "enqueues recompilation when name changes" do
+      organization.update!(name: "New Name")
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id)
+    end
+
+    it "enqueues recompilation when slug changes" do
+      organization.update!(slug: "new-slug")
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id)
+    end
+
+    it "enqueues recompilation when summary changes" do
+      organization.update!(summary: "New Summary")
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id)
+    end
+
+    it "does not enqueue recompilation when other attributes change" do
+      organization.update!(company_size: "50")
+      expect(Organizations::RecompilePagesWorker).not_to have_received(:perform_async)
+    end
+  end
+
+  describe "#set_baseline_score_on_verification_change" do
+    let(:organization) { create(:organization, verified: false, baseline_score: 0) }
+
+    before do
+      allow(Settings::UserExperience).to receive(:index_minimum_score).and_return(15)
+    end
+
+    it "sets baseline_score to index_minimum_score when becoming verified" do
+      organization.update!(verified: true)
+      expect(organization.baseline_score).to eq(15)
+    end
+
+    it "reverts baseline_score to 0 when losing verification" do
+      organization.update!(verified: true)
+      expect(organization.baseline_score).to eq(15)
+
+      organization.update!(verified: false)
+      expect(organization.baseline_score).to eq(0)
+    end
+
+    it "preserves manual baseline_score updates when verification status does not change" do
+      organization.update!(verified: true)
+      expect(organization.baseline_score).to eq(15)
+
+      organization.update!(baseline_score: 45)
+      expect(organization.baseline_score).to eq(45)
+
+      organization.update!(name: "Updated Org Name")
+      expect(organization.baseline_score).to eq(45)
     end
   end
 end

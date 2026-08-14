@@ -18,6 +18,8 @@ module Constants
       "Admin" => { name: "admin", resource_type: nil },
       "Tech Admin" => { name: "tech_admin", resource_type: nil },
       "Super Admin" => { name: "super_admin", resource_type: nil },
+      "Community Leader Level 1" => { name: "community_leader_level_1", resource_type: nil },
+      "Community Leader Level 2" => { name: "community_leader_level_2", resource_type: nil },
       "Resource Admin: Article" => { name: "single_resource_admin", resource_type: "Article" },
       "Resource Admin: Badge" => { name: "single_resource_admin", resource_type: "Badge" },
       "Resource Admin: BadgeAchievement" => { name: "single_resource_admin", resource_type: "BadgeAchievement" },
@@ -30,7 +32,18 @@ module Constants
       "Resource Admin: HtmlVariant" => { name: "single_resource_admin", resource_type: "HtmlVariant" },
       "Resource Admin: ListingCategory" => { name: "single_resource_admin", resource_type: "ListingCategory" },
       "Resource Admin: Page" => { name: "single_resource_admin", resource_type: "Page" },
-      "Resource Admin: Tag" => { name: "single_resource_admin", resource_type: "Tag" }
+      "Resource Admin: Tag" => { name: "single_resource_admin", resource_type: "Tag" },
+      "Resource Admin: Event" => { name: "single_resource_admin", resource_type: "Event" },
+      "Resource Admin: Survey" => { name: "single_resource_admin", resource_type: "Survey" },
+      "Resource Admin: Organization" => { name: "single_resource_admin", resource_type: "Organization" },
+      "Resource Admin: Podcast" => { name: "single_resource_admin", resource_type: "Podcast" },
+      "Resource Admin: NavigationLink" => { name: "single_resource_admin", resource_type: "NavigationLink" },
+      "Resource Admin: RequestRedirect" => { name: "single_resource_admin", resource_type: "RequestRedirect" },
+      "Resource Admin: ResponseTemplate" => { name: "single_resource_admin", resource_type: "ResponseTemplate" },
+      "Resource Admin: Subforem" => { name: "single_resource_admin", resource_type: "Subforem" },
+      "Resource Admin: Space" => { name: "single_resource_admin", resource_type: "Space" },
+      "Resource Admin: ProfileField" => { name: "single_resource_admin", resource_type: "ProfileField" },
+      "Resource Admin: ProfileFieldGroup" => { name: "single_resource_admin", resource_type: "ProfileFieldGroup" }
     }.freeze
 
     SPECIAL_ROLES = SPECIAL_ROLES_LABELS_TO_WHERE_CLAUSE.keys.freeze

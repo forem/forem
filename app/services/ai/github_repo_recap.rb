@@ -7,7 +7,7 @@ module Ai
   # @example Generate a weekly recap for a public repository
   #   recap = Ai::GithubRepoRecap.new("forem/forem", days_ago: 7)
   #   result = recap.generate
-  #   
+  #
   #   if result
   #     puts result.title  # => "Weekly Recap: Major Performance Improvements"
   #     puts result.body   # => "## Major Changes\n{% embed https://github.com/... %}"
@@ -21,6 +21,7 @@ module Ai
   #   recap = Ai::GithubRepoRecap.new("org/repo", days_ago: 30, github_client: client)
   #   result = recap.generate
   class GithubRepoRecap
+    VERSION = "1.0"
     RecapResult = Struct.new(:title, :body, keyword_init: true)
 
     # @param repo_name [String] The GitHub repository in "owner/name" format (e.g., "rails/rails")
@@ -32,7 +33,7 @@ module Ai
       @days_ago = days_ago
       @since = days_ago.days.ago
       @github_client = github_client || Github::OauthClient.new
-      @ai_client = ai_client || Ai::Base.new
+      @ai_client = ai_client || Ai::Base.new(wrapper: self)
     end
 
     ##
@@ -43,33 +44,33 @@ module Ai
     def generate
       puts "\n==== Starting GitHub Repo Recap for #{repo_name} ===="
       puts "Timeframe: Last #{days_ago} days (since #{since})"
-      
+
       puts "\n[1/4] Fetching GitHub activity..."
       activity_data = fetch_github_activity
-      
+
       puts "\n[2/4] Checking for activity..."
       puts "  - PRs found: #{activity_data[:total_prs]}"
       puts "  - Commits found: #{activity_data[:total_commits]}"
-      
+
       if no_activity?(activity_data)
         puts "  ✗ No activity found, returning nil"
-        return nil
+        return
       end
       puts "  ✓ Activity found!"
 
       puts "\n[3/4] Building AI prompt..."
       prompt = build_recap_prompt(activity_data)
       puts "  ✓ Prompt built (#{prompt.length} characters)"
-      
+
       puts "\n[4/4] Calling AI to generate recap..."
       response = @ai_client.call(prompt)
       puts "  ✓ AI response received (#{response.length} characters)"
-      
+
       puts "\nParsing response..."
       result = parse_recap_response(response)
       puts "  ✓ Successfully generated recap: #{result.title}"
       puts "\n==== Recap Complete ===="
-      
+
       result
     rescue StandardError => e
       puts "\n✗✗✗ ERROR: #{e.class} - #{e.message}"
@@ -91,11 +92,11 @@ module Ai
       puts "  → Fetching merged pull requests..."
       pull_requests = fetch_merged_pull_requests
       puts "  ✓ Found #{pull_requests.size} merged PRs"
-      
+
       puts "  → Fetching recent commits..."
       commits = fetch_recent_commits
       puts "  ✓ Found #{commits.size} commits"
-      
+
       {
         pull_requests: pull_requests,
         commits: commits,
@@ -114,13 +115,13 @@ module Ai
       page = 1
       per_page = 100
       max_pages = 5
-      
+
       # Fetch PRs in pages until we have enough that go back to our timeframe
       # or we've fetched a reasonable maximum
       loop do
         puts "    • Fetching page #{page} (per_page=#{per_page})..."
         start_time = Time.now
-        
+
         # Use paginate method with explicit break to avoid auto-pagination hanging
         prs = with_manual_pagination do
           github_client.pull_requests(
@@ -129,28 +130,28 @@ module Ai
             sort: "updated",
             direction: "desc",
             per_page: per_page,
-            page: page
+            page: page,
           )
         end
-        
+
         elapsed = (Time.now - start_time).round(2)
         puts "    • Page #{page} fetched in #{elapsed}s - got #{prs.size} PRs"
-        
+
         break if prs.empty?
-        
+
         # Filter for merged PRs
         batch_merged = prs.select { |pr| pr.merged_at }
         puts "    • #{batch_merged.size} of #{prs.size} PRs were merged"
-        
+
         # Separate into ones within timeframe and ones before
         within_timeframe, before_timeframe = batch_merged.partition do |pr|
           Time.parse(pr.merged_at.to_s) >= since
         end
-        
+
         puts "    • #{within_timeframe.size} within timeframe, #{before_timeframe.size} before"
-        
+
         merged_prs.concat(within_timeframe)
-        
+
         # Stop if:
         # - We found PRs before our timeframe (no need to look further back)
         # - We've reached max pages to avoid hanging
@@ -165,10 +166,10 @@ module Ai
           puts "    • Stopping: last page (got #{prs.size} < #{per_page})"
           break
         end
-        
+
         page += 1
       end
-      
+
       puts "    • Total merged PRs in timeframe: #{merged_prs.size}"
       merged_prs
     rescue Github::Errors::Error => e
@@ -188,28 +189,28 @@ module Ai
       per_page = 100
       # Limit to max 300 commits to avoid excessive API calls and token limits
       max_commits = 300
-      
+
       loop do
         puts "    • Fetching commits page #{page} (per_page=#{per_page}, since=#{since.iso8601})..."
         start_time = Time.now
-        
+
         commits = with_manual_pagination do
           github_client.commits(
             repo_name,
             since: since.iso8601,
             per_page: per_page,
-            page: page
+            page: page,
           )
         end
-        
+
         elapsed = (Time.now - start_time).round(2)
         puts "    • Page #{page} fetched in #{elapsed}s - got #{commits.size} commits"
-        
+
         break if commits.empty?
-        
+
         all_commits.concat(commits)
         puts "    • Total commits so far: #{all_commits.size}"
-        
+
         # Stop if we've reached our limit or there are no more pages
         if all_commits.size >= max_commits
           puts "    • Stopping: reached max commits (#{max_commits})"
@@ -218,10 +219,10 @@ module Ai
           puts "    • Stopping: last page (got #{commits.size} < #{per_page})"
           break
         end
-        
+
         page += 1
       end
-      
+
       # Return only up to max_commits
       result = all_commits.first(max_commits)
       puts "    • Returning #{result.size} commits"
@@ -241,29 +242,29 @@ module Ai
     # @return The result from the API call (single page only)
     def with_manual_pagination
       puts "      [DEBUG] Attempting to disable auto-pagination..."
-      
+
       # Save the current auto_paginate setting
       begin
         original_auto_paginate = github_client.auto_paginate
         puts "      [DEBUG] Original auto_paginate: #{original_auto_paginate.inspect}"
-      rescue => e
+      rescue StandardError => e
         puts "      [DEBUG] Cannot read auto_paginate (#{e.message}), proceeding without it"
         original_auto_paginate = nil
       end
-      
+
       # Disable auto-pagination for this call
       begin
         github_client.auto_paginate = false
         puts "      [DEBUG] Set auto_paginate to false"
-      rescue => e
+      rescue StandardError => e
         puts "      [DEBUG] Cannot set auto_paginate (#{e.message}), API call may auto-paginate"
       end
-      
+
       # Make the API call
       puts "      [DEBUG] Making API call..."
       result = yield
       puts "      [DEBUG] API call returned (result is a #{result.class} with #{result.respond_to?(:size) ? result.size : '?'} items)"
-      
+
       result
     ensure
       # Restore the original setting
@@ -271,7 +272,7 @@ module Ai
         begin
           github_client.auto_paginate = original_auto_paginate
           puts "      [DEBUG] Restored auto_paginate to #{original_auto_paginate}"
-        rescue => e
+        rescue StandardError => e
           puts "      [DEBUG] Could not restore auto_paginate: #{e.message}"
         end
       end
@@ -387,4 +388,3 @@ module Ai
     end
   end
 end
-

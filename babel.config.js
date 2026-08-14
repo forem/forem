@@ -37,6 +37,7 @@ module.exports = function (api) {
     plugins: [
       isEndToEnd && ['istanbul'],
       '@babel/plugin-syntax-dynamic-import',
+      isTestEnv && '@babel/plugin-transform-dynamic-import',
       isTestEnv && '@babel/plugin-transform-modules-commonjs',
       '@babel/plugin-transform-destructuring',
       [

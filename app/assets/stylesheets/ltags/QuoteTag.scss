@@ -1,0 +1,157 @@
+.ltag-quotes {
+  width: 100%;
+  max-width: 72rem;
+  margin: 0 auto var(--su-4);
+  columns: 2 24rem;
+  column-gap: var(--su-4);
+}
+
+.ltag-quote {
+  display: flex;
+  width: 100%;
+  max-width: 36rem;
+  margin: 0 auto var(--su-4);
+  padding: var(--su-5);
+  flex-direction: column;
+  gap: var(--su-4);
+  box-sizing: border-box;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg, var(--radius));
+  background: var(--card-bg);
+  box-shadow: var(--shadow-smooth);
+
+  .ltag-quote__header {
+    display: flex;
+    align-items: center;
+    gap: var(--su-3);
+    min-width: 0;
+    color: inherit;
+    font-size: 1em;
+    font-style: normal;
+    text-align: left;
+    opacity: 1;
+  }
+
+  .ltag-quote__avatar {
+    display: block;
+    width: 52px;
+    height: 52px;
+    max-height: none;
+    flex: 0 0 52px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 0 0 1px var(--card-border);
+  }
+
+  .ltag-quote__identity {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.3;
+  }
+
+  .ltag-quote__author {
+    max-width: 100%;
+    overflow: hidden;
+    font-size: var(--fs-l);
+    font-weight: var(--fw-bold);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ltag-quote__role {
+    color: var(--card-color-tertiary);
+    font-size: var(--fs-s);
+  }
+
+  .ltag-quote__rating {
+    display: flex;
+    gap: 1px;
+    margin-top: var(--su-1);
+    line-height: 1;
+  }
+
+  .ltag-quote__star {
+    color: var(--card-border);
+    font-size: var(--fs-l);
+  }
+
+  .ltag-quote__star--filled {
+    color: var(--accent-brand);
+  }
+
+  .ltag-quote__body {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--card-color);
+  }
+
+  .ltag-quote__body .ltag-quote__text {
+    min-width: 0;
+    font-size: var(--fs-l);
+    font-style: italic;
+    line-height: 1.55;
+
+    > br {
+      display: none;
+    }
+
+    > :first-child {
+      margin-top: 0;
+    }
+
+    > :last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .ltag-quote__footer {
+    display: flex;
+    padding-top: var(--su-3);
+    border-top: 1px solid var(--card-border);
+  }
+
+  .ltag-quote__source {
+    color: var(--card-color-tertiary);
+    font-size: var(--fs-s);
+    font-style: normal;
+  }
+
+  .ltag-quote__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--su-1);
+    color: var(--accent-brand);
+    font-size: var(--fs-s);
+    font-weight: var(--fw-medium);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.ltag-quotes .ltag-quote {
+  display: inline-flex;
+  max-width: none;
+  margin-bottom: var(--su-4);
+  break-inside: avoid;
+}
+
+@media (max-width: 767px) {
+  .ltag-quotes {
+    columns: 1;
+  }
+
+  .ltag-quote {
+    padding: var(--su-4);
+
+    .ltag-quote__text {
+      font-size: var(--fs-base);
+    }
+  }
+}

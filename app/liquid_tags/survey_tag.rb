@@ -142,51 +142,68 @@ class SurveyTag < LiquidTagBase
           poll.querySelectorAll('.survey-poll-option').forEach(opt => opt.classList.add('disabled'));
         }
 
-        function handleSelection(optionElement) {
+        function handleSelection(e, optionElement) {
+          // If the click is on the label or within it, let the browser fire the synthetic input click natively
+          if (e.target.closest('label')) {
+            return;
+          }
+
           const pollElement = optionElement.closest('.survey-poll');
           const pollType = pollElement.dataset.pollType;
           const pollId = pollElement.dataset.pollId;
           const optionId = optionElement.dataset.optionId;
-    #{'      '}
+          
+          const isInput = e.target.tagName === 'INPUT';
+    
           if (pollType === 'multiple_choice') {
             // Handle multiple choice selection
             const checkbox = optionElement.querySelector('input[type="checkbox"]');
             if (checkbox) {
-              checkbox.checked = !checkbox.checked;
+              if (!isInput) {
+                // The user clicked the empty space in the <li> container. Manually trigger the native checkbox.
+                checkbox.click();
+                return; // The synthetic click will bubble up and be handled below
+              }
+
+              // We only process the actual input click (which means the native state is already updated)
               if (checkbox.checked) {
                 optionElement.classList.add('user-selected');
               } else {
                 optionElement.classList.remove('user-selected');
               }
             }
-    #{'        '}
+    
             // Store pending votes for multiple choice
             if (!pendingVotes[pollId]) {
               pendingVotes[pollId] = [];
             }
-    #{'        '}
+    
             const selectedOptions = pollElement.querySelectorAll('input[type="checkbox"]:checked');
             pendingVotes[pollId] = Array.from(selectedOptions).map(opt => opt.closest('.survey-poll-option').dataset.optionId);
-    #{'        '}
+    
             // Check if any option is selected to enable next button
             const hasSelection = selectedOptions.length > 0;
             pollElement.classList.toggle('is-answered', hasSelection);
             updateUI();
           } else {
             // Handle single choice and scale selection
+            const radio = optionElement.querySelector('input[type="radio"]');
+            if (radio) {
+              if (!isInput) {
+                radio.click();
+                return;
+              }
+            }
+
             pollElement.querySelectorAll('.survey-poll-option').forEach(opt => {
               opt.classList.remove('user-selected');
-              const input = opt.querySelector('input[type="radio"]');
-              if (input) input.checked = false;
             });
-    #{'        '}
+    
             optionElement.classList.add('user-selected');
-            const radio = optionElement.querySelector('input[type="radio"]');
-            if (radio) radio.checked = true;
-    #{'        '}
+    
             // Store pending vote for single choice/scale
             pendingVotes[pollId] = optionId;
-    #{'        '}
+    
             pollElement.classList.add('is-answered');
             updateUI();
           }
@@ -317,7 +334,7 @@ class SurveyTag < LiquidTagBase
             }
           } else {
             poll.querySelectorAll('.survey-poll-option').forEach(option => {
-              option.addEventListener('click', () => handleSelection(option));
+              option.addEventListener('click', (e) => handleSelection(e, option));
             });
           }
         });
@@ -400,7 +417,7 @@ class SurveyTag < LiquidTagBase
                 }
               } else {
                 poll.querySelectorAll('.survey-poll-option').forEach(option => {
-                  option.addEventListener('click', () => handleSelection(option));
+                  option.addEventListener('click', (e) => handleSelection(e, option));
                 });
               }
             });

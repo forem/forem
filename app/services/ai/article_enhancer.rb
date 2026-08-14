@@ -4,11 +4,13 @@ module Ai
   # This service provides AI-powered analysis to improve article metadata
   # and content quality assessment.
   class ArticleEnhancer
+    VERSION = "1.0"
+
     # @param article [Article] The article to be enhanced.
     # @param ai_client [Ai::Base] Optional AI client for dependency injection (useful for testing).
     def initialize(article, ai_client: nil)
-      @ai_client = ai_client || Ai::Base.new
       @article = article
+      @ai_client = ai_client || Ai::Base.new(wrapper: self, affected_content: article, affected_user: article.user)
     end
 
     ##

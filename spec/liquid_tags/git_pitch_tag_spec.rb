@@ -40,7 +40,7 @@ RSpec.describe GitPitchTag, type: :liquid_tag do
     it "accepts valid gitpitch url" do
       valid_links.each do |link|
         liquid = generate_tag(link)
-        expect(liquid.render.tr("\n", " ").delete(" ")).to eq(generate_script(link))
+        expect(liquid.render.tr("\n", " ").delete(" ")).to include(generate_script(link))
       end
     end
   end

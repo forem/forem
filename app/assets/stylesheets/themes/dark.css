@@ -14,6 +14,11 @@
   --base: #f9f9f9;
   --base-inverted: #000;
 
+  /* Notion Grey Scale Overrides for Dark Mode */
+  --grey-900: 20, 19, 17;
+  --grey-800: 26, 25, 23;
+  --grey-700: 38, 36, 33;
+
   --base-100: var(--base);
   --base-90: #efefef;
   --base-80: #d6d6d7;
@@ -171,6 +176,8 @@
   --reaction-custom-bg: rgb(var(--green-600), 0.1);
   --reaction-save-color: rgb(var(--indigo-500));
   --reaction-save-bg: rgba(var(--indigo-500), 0.1);
+  --reaction-favorite-color: rgb(var(--yellow-400));
+  --reaction-favorite-bg: rgba(var(--yellow-400), 0.1);
   --reaction-comment-color: rgb(var(--yellow-500));
   --reaction-comment-bg: rgba(var(--yellow-500), 0.1);
 

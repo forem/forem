@@ -13,35 +13,39 @@ RSpec.describe "users/edit" do
 
     context "when the user is an org admin" do
       before do
-        org_membership = create(:organization_membership, user: user, organization: org, type_of_user: "admin")
+        create(:organization_membership, user: user, organization: org, type_of_user: "admin")
         assign(:organizations, user.organizations)
-        assign(:organization, org)
-        assign(:organization_membership, org_membership)
-        assign(:org_organization_memberships, org.organization_memberships)
+        assign(:organization, Organization.new)
       end
 
-      it "shows the org admin page" do
+      it "shows the org listing with settings link" do
         render
-        expect(rendered).to have_text("Grow the team")
+        expect(rendered).to have_text(I18n.t("views.settings.org.list.heading"))
+        expect(rendered).to have_link(I18n.t("views.settings.org.list.manage"))
       end
 
-      it "shows the destroy button if the org has one admin and no content" do
+      it "shows the create organization section" do
         render
-        expect(rendered).to have_css(".crayons-btn--danger")
+        expect(rendered).to have_text(I18n.t("views.settings.org.create.heading"))
       end
 
-      it "shows the proper message if the org has more than one member" do
-        second_user = create(:user)
-        create(:organization_membership, user: second_user, organization: org)
-        assign(:org_organization_memberships, org.organization_memberships)
+      it "shows the join organization section" do
         render
-        expect(rendered).to have_text("Your organization currently does not meet the above requirements.")
+        expect(rendered).to have_text(I18n.t("views.settings.org.join.heading"))
+      end
+    end
+
+    context "when the user is a non-admin member" do
+      before do
+        create(:organization_membership, user: user, organization: org, type_of_user: "member")
+        assign(:organizations, user.organizations)
+        assign(:organization, Organization.new)
       end
 
-      it "shows the proper message if the org has an article" do
-        allow(org).to receive(:articles_count).and_return(1)
+      it "shows the org listing with leave button" do
         render
-        expect(rendered).to have_text("Your organization currently does not meet the above requirements.")
+        expect(rendered).to have_text(I18n.t("views.settings.org.list.heading"))
+        expect(rendered).to have_button(I18n.t("views.settings.org.leave.submit"))
       end
     end
   end

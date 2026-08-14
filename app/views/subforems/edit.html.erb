@@ -139,6 +139,15 @@
             </div>
 
             <div class="crayons-field">
+              <%= label_tag :expanded_content_advisement_spec, t("views.subforems.edit.form.expanded_advisement_spec.label"), class: "crayons-field__label" %>
+              <%= text_area_tag :expanded_content_advisement_spec,
+                Settings::RateLimit.expanded_content_advisement_spec(subforem_id: @subforem.id),
+                class: "crayons-textfield", rows: 4,
+                placeholder: t("views.subforems.edit.form.expanded_advisement_spec.placeholder") %>
+              <p class="crayons-field__description"><%= t("views.subforems.edit.form.expanded_advisement_spec.description") %></p>
+            </div>
+
+            <div class="crayons-field">
               <%= label_tag :sidebar_tags, t("views.subforems.edit.form.sidebar_tags.label"), class: "crayons-field__label" %>
               <%= text_field_tag :sidebar_tags,
                 Settings::General.sidebar_tags(subforem_id: @subforem.id).join(","),

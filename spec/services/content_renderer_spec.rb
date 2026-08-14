@@ -86,6 +86,32 @@ RSpec.describe ContentRenderer do
     end
   end
 
+  describe "#has_front_matter?" do
+    it "returns true when valid front matter is present" do
+      markdown = "---\ntitle: Hello\npublished: false\n---\nContent here"
+      cr = described_class.new(markdown, source: nil, user: nil)
+      expect(cr.has_front_matter?).to be(true)
+    end
+
+    it "returns false when no front matter is present" do
+      markdown = "Just some regular content"
+      cr = described_class.new(markdown, source: nil, user: nil)
+      expect(cr.has_front_matter?).to be(false)
+    end
+
+    it "does not raise when body starts with --- but has no valid YAML front matter" do
+      markdown = "\n---\n\n## Introduction\n\nSome content here.\n\n---\n\n## Next Section\n"
+      cr = described_class.new(markdown, source: nil, user: nil)
+      expect { cr.has_front_matter? }.not_to raise_error
+    end
+
+    it "returns false when body starts with --- and parsed front matter is not a Hash" do
+      markdown = "\n---\n\n## Introduction\n\nSome content here.\n\n---\n\n## Next Section\n"
+      cr = described_class.new(markdown, source: nil, user: nil)
+      expect(cr.has_front_matter?).to be(false)
+    end
+  end
+
   context "when markdown is valid" do
     let(:markdown) { "# Hey\n\nI'm a markdown" }
     let(:expected_result) do

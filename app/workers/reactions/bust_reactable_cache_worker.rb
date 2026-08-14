@@ -26,6 +26,7 @@ module Reactions
         if Reaction.for_articles([reaction.reactable_id]).public_category.size == 1
           EdgeCache::BustArticle.call(article)
         end
+        Articles::UpdateDependentEmbedsWorker.perform_async(article.id)
       when "Comment"
         commentable = reaction.reactable.commentable
         if commentable

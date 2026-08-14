@@ -1,0 +1,39 @@
+<% if @events.total_pages > 1 %>
+  <%
+    base = { start: params[:start].presence, end: params[:end].presence, type_of: params[:type_of].presence }.compact
+    current = @events.current_page
+    total = @events.total_pages
+    window = ((current - 2)..(current + 2)).select { |p| p >= 1 && p <= total }
+  %>
+  <nav class="calendar__pagination flex items-center justify-center gap-1 mt-4" aria-label="<%= t("views.calendar.pagination.label") %>">
+    <% if @events.prev_page %>
+      <%= link_to "‹", calendar_path(base.merge(page: @events.prev_page)), class: "calendar__page-btn", "aria-label": t("views.calendar.pagination.previous") %>
+    <% else %>
+      <span class="calendar__page-btn calendar__page-btn--disabled" aria-disabled="true">‹</span>
+    <% end %>
+
+    <% if window.first > 1 %>
+      <%= link_to 1, calendar_path(base.merge(page: 1)), class: "calendar__page-btn" %>
+      <% if window.first > 2 %><span class="calendar__page-ellipsis">…</span><% end %>
+    <% end %>
+
+    <% window.each do |p| %>
+      <% if p == current %>
+        <span class="calendar__page-btn calendar__page-btn--current" aria-current="page"><%= p %></span>
+      <% else %>
+        <%= link_to p, calendar_path(base.merge(page: p)), class: "calendar__page-btn" %>
+      <% end %>
+    <% end %>
+
+    <% if window.last < total %>
+      <% if window.last < total - 1 %><span class="calendar__page-ellipsis">…</span><% end %>
+      <%= link_to total, calendar_path(base.merge(page: total)), class: "calendar__page-btn" %>
+    <% end %>
+
+    <% if @events.next_page %>
+      <%= link_to "›", calendar_path(base.merge(page: @events.next_page)), class: "calendar__page-btn", "aria-label": t("views.calendar.pagination.next") %>
+    <% else %>
+      <span class="calendar__page-btn calendar__page-btn--disabled" aria-disabled="true">›</span>
+    <% end %>
+  </nav>
+<% end %>

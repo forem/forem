@@ -39,7 +39,7 @@ module ForemTag
 
   def self.user_or_org(match)
     return UserTag if User.find_by(username: match[:name], registered: true)
-    return OrganizationTag if Organization.find_by(slug: match[:name])
+    return OrganizationTag if Organization.find_by_slug_or_legacy(match[:name])
   end
 
   def self.podcast_or_link(match)

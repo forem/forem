@@ -49,6 +49,43 @@ class UserQueryExecutor
     execute_safe_query
   end
 
+  def each_id_batch(batch_size: 1000)
+    return unless block_given?
+    return [] unless valid?
+
+    ReadOnlyDatabaseService.with_connection do |conn|
+      setup_execution_environment(conn)
+      final_query = user_query.substitute_variables(variables)
+      safe_query = build_safe_query(final_query)
+
+      begin
+        result = execute_with_timeout(conn, safe_query)
+        return unless result.is_a?(PG::Result)
+
+        current_batch = []
+        result.each do |row|
+          user_id = row["id"] || row["user_id"] || row["users.id"]
+          next unless user_id
+
+          current_batch << user_id.to_i
+
+          if current_batch.size >= batch_size
+            yield current_batch
+            current_batch = []
+          end
+        end
+
+        yield current_batch if current_batch.any?
+
+        update_execution_tracking
+      rescue PG::QueryCanceled, ActiveRecord::QueryCanceled => e
+        handle_timeout_error(e)
+      rescue StandardError => e
+        handle_execution_error(e)
+      end
+    end
+  end
+
   def test_execute(limit: MAX_TEST_USER_LIMIT)
     @limit = limit
     execute
@@ -125,7 +162,7 @@ class UserQueryExecutor
 
         # Return User objects for the found IDs (this still uses the main database)
         User.where(id: user_ids)
-      rescue PG::QueryCanceled => e
+      rescue PG::QueryCanceled, ActiveRecord::QueryCanceled => e
         handle_timeout_error(e)
         []
       rescue PG::SyntaxError => e
@@ -172,27 +209,7 @@ class UserQueryExecutor
   end
 
   def execute_with_timeout(connection, query)
-    # Use a separate thread with timeout to execute the query
-    result = nil
-    error = nil
-
-    thread = Thread.new do
-      result = connection.execute(query)
-    rescue StandardError => e
-      error = e
-    end
-
-    # Wait for the thread to complete or timeout
-    unless thread.join(timeout_ms / 1000.0)
-      thread.kill
-      raise PG::QueryCanceled, "Query execution exceeded timeout of #{timeout_ms}ms"
-    end
-
-    if error
-      raise error
-    end
-
-    result
+    connection.execute(query)
   end
 
   def execute_explain_query(explain_query)

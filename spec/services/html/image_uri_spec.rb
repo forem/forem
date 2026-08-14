@@ -33,4 +33,27 @@ RSpec.describe Html::ImageUri, type: :service do
     image = described_class.new(other)
     expect(image).not_to be_github_badge
   end
+
+  it "can detect first party assets" do
+    allow(Settings::General).to receive(:app_domain).and_return("dev.to")
+    allow(ActionController::Base).to receive(:asset_host).and_return("https://assets.dev.to")
+
+    app_svg = described_class.new("https://dev.to/some.svg")
+    expect(app_svg).to be_first_party_asset
+
+    asset_svg = described_class.new("https://assets.dev.to/assets/github-logo-123.svg")
+    expect(asset_svg).to be_first_party_asset
+
+    relative_svg = described_class.new("/assets/github-logo-123.svg")
+    expect(relative_svg).to be_first_party_asset
+
+    external_svg = described_class.new("https://example.com/some.svg")
+    expect(external_svg).not_to be_first_party_asset
+
+    app_png = described_class.new("https://dev.to/some.png")
+    expect(app_png).to be_first_party_asset
+
+    external_png = described_class.new("https://example.com/some.png")
+    expect(external_png).not_to be_first_party_asset
+  end
 end

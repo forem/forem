@@ -3,6 +3,14 @@ require "rails_helper"
 RSpec.describe "Registrations" do
   let(:user) { create(:user) }
 
+  around do |example|
+    old_secret = ENV["FOREM_OWNER_SECRET"]
+    ENV["FOREM_OWNER_SECRET"] = nil
+    example.run
+  ensure
+    ENV["FOREM_OWNER_SECRET"] = old_secret
+  end
+
   describe "Log In" do
     context "when not logged in" do
       it "shows the sign in page with single sign on options" do
@@ -425,6 +433,18 @@ RSpec.describe "Registrations" do
         { user: { name: "ronald #{rand(10)}",
                   username: "mcdonald_#{rand(10)}",
                   email: "ronald@mcdonald.com",
+                  password: "PaSSw0rd_yo000",
+                  password_confirmation: "PaSSw0rd_yo000" } }
+        expect(User.all.size).to be 0
+      end
+
+      it "does not create user when encoded-word email passes the raw domain allow list" do
+        allow(Settings::Authentication).to receive(:allowed_registration_email_domains).and_return(["company.com"])
+
+        post "/users", params:
+        { user: { name: "attacker #{rand(10)}",
+                  username: "attacker_#{rand(10)}",
+                  email: "=?utf-8?q?test=40attacker.com=3e?=@company.com",
                   password: "PaSSw0rd_yo000",
                   password_confirmation: "PaSSw0rd_yo000" } }
         expect(User.all.size).to be 0
