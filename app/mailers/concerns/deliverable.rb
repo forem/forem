@@ -45,15 +45,14 @@ module Deliverable
 
   private
 
-  # Footer data the Customer.io layout needs on every message, mirroring the
-  # block layouts/mailer.html.erb renders at the bottom of each email. The
-  # guard is the ERB layout's own condition (`@user && action_name !=
-  # "magic_link"`) so the Customer.io footer appears on exactly the messages
-  # that show it today: DeviseMailer sets @resource rather than @user, so its
-  # security emails have never rendered this block and still don't.
+  # Data the Customer.io layout needs on every message, mirroring the block
+  # layouts/mailer.html.erb renders at the bottom of each email. Resolved
+  # through view_context so signed_up_with/app_url pick up the same helpers
+  # and subforem-aware host the ERB layout uses.
   #
-  # Resolved through view_context so signed_up_with/app_url pick up the same
-  # helpers and subforem-aware host that the ERB layout uses.
+  # Emitted only where that block renders today, which takes all three guards
+  # below: a recipient in @user, an action the ERB layout does not exclude,
+  # and a view context that actually has AuthenticationHelper.
   def layout_message_data
     user = instance_variable_get(:@user)
     return {} if user.blank? || action_name == "magic_link"
