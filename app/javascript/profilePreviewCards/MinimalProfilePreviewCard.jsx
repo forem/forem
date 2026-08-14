@@ -54,6 +54,7 @@ export const MinimalProfilePreviewCard = ({
               name,
               style: 'full',
             })}
+          aria-label={`Follow ${name}`}
           >
             Follow
           </Button>
