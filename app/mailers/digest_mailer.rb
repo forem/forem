@@ -26,7 +26,10 @@ class DigestMailer < ApplicationMailer
         "billboards_html" => digest_billboards_html,
         "email_end_phrase" => email_end_phrase,
         "unsubscribe_url" => email_subscriptions_unsubscribe_url(ut: @unsubscribe),
-        "user_follows_any_subforems" => @user_follows_any_subforems
+        "user_follows_any_subforems" => @user_follows_any_subforems,
+        # digest_email.html.erb only offers the "update your experience level"
+        # tip to people who have not set one.
+        "experience_level_set" => @user.setting&.experience_level.present?
       },
     )
 

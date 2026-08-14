@@ -59,6 +59,11 @@ class NotifyMailer < ApplicationMailer
       message_data: {
         "follower_name" => @follower.name,
         "follower_profile_url" => URL.user(@follower),
+        # Mirrors the avatar and follower count new_follower_email.html.erb renders.
+        "follower_profile_image_url" => ApplicationController.helpers.optimized_image_url(
+          URL.local_image(@follower.profile_image), width: 150
+        ),
+        "followers_count" => @user.good_standing_followers_count,
         "unsubscribe_url" => email_subscriptions_unsubscribe_url(ut: @unsubscribe)
       },
     )
@@ -84,6 +89,10 @@ class NotifyMailer < ApplicationMailer
         "mentioner_name" => @mentioner.name,
         "mentionable_type" => @mentionable_type,
         "mention_url" => URL.url(@mention.mentionable.path, RequestStore.store[:subforem_domain]),
+        # new_mention_email.html.erb quotes the comment itself for comment
+        # mentions and links straight out for anything else; nil here is what
+        # tells the Customer.io template which of the two it is looking at.
+        "comment_html" => (@mentionable.processed_html if @mentionable.is_a?(Comment)),
         "unsubscribe_url" => email_subscriptions_unsubscribe_url(ut: @unsubscribe)
       },
     )
@@ -145,6 +154,9 @@ class NotifyMailer < ApplicationMailer
         "badge_name" => @badge.title,
         "badge_description" => badge_description,
         "badge_image_url" => @badge.badge_image_url,
+        # Already-rendered HTML (BadgeAchievement#render_rewarding_context_message_html),
+        # italicised by new_badge_email.html.erb when a rewarder left a note.
+        "rewarding_context_message_html" => @badge_achievement.rewarding_context_message.presence,
         "unsubscribe_url" => email_subscriptions_unsubscribe_url(ut: @unsubscribe)
       },
     )
