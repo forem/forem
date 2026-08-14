@@ -1,10 +1,9 @@
 module Favorites
   # Marks an Article or Comment as a favorite. A record can only be marked a
-  # favorite once.
+  # favorite once. Community leaders spend a time-bound allowance, and everyone
+  # else spends persisted credits earned by having their own content favorited.
   class Create
     Result = Struct.new(:success?, :favoritable, :error, keyword_init: true)
-
-    ELIGIBLE_ERRORS = %i[not_a_leader already_favorited self_favorite ineligible no_allowance].freeze
 
     def self.call(...)
       new(...).call
@@ -16,16 +15,13 @@ module Favorites
     end
 
     def call
-      error = precheck_error
+      error = precheck_error || claim
       return failure(error) if error
-
-      claimed = favoritable.class
-        .where(id: favoritable.id, favorited_by_user_id: nil)
-        .update_all(favorited_by_user_id: user.id, favorited_at: Time.current)
-      return failure(:already_favorited) if claimed.zero?
 
       favoritable.reload
       log_audit
+      grant_earned_favorite
+      award_badge
       Result.new(success?: true, favoritable: favoritable)
     end
 
@@ -34,15 +30,65 @@ module Favorites
     attr_reader :user, :favoritable
 
     def precheck_error
-      # Only community leader favorites are allowed for now.
-      # TODO: Implement user favorites in phase 3
-      return :not_a_leader unless user.community_leader?
       return :already_favorited if favoritable.favorited_by_user_id.present?
       return :self_favorite if favoritable.user_id == user.id
       return :ineligible unless eligible?
-      return :no_allowance unless user.favorite_allowance.positive?
 
       nil
+    end
+
+    # Claims a favorite against the user's allowance in one transaction.
+    # Update order avoids deadlocks with other transactions that also lock in
+    # this order (see counter_culture callbacks in Reaction and Comment).
+    def claim
+      error = nil
+
+      ActiveRecord::Base.transaction do
+        if claim_favoritable.zero?
+          error = :already_favorited
+          raise ActiveRecord::Rollback
+        end
+
+        unless can_afford_claim?
+          error = :no_allowance
+          raise ActiveRecord::Rollback
+        end
+      end
+
+      error
+    end
+
+    # Claims the favorite for the user if still unclaimed in one query.
+    # Returns 1 if successful or 0 otherwise.
+    def claim_favoritable
+      favoritable.class
+        .where(id: favoritable.id, favorited_by_user_id: nil)
+        .update_all(favorited_by_user_id: user.id, favorited_at: Time.current)
+    end
+
+    # Checks that the user's favorite allowance can cover the favorite just
+    # made, and updates it for regular users.
+    # Returns true on valid and successful spend, or false otherwise.
+    def can_afford_claim?
+      return spend_earned_favorite == 1 unless user.community_leader?
+
+      # For community leaders, lock to serialize the allowance check for the
+      # rest of the claim transaction.
+      user.lock!
+      !user.favorite_allowance.negative?
+    end
+
+    # Checks and decrements earned favorites safely in one query. Touches the
+    # row so the spender's cached payload reflects the new balance.
+    # Returns 1 if successful or 0 otherwise.
+    def spend_earned_favorite
+      User.where(id: user.id)
+        .where(earned_favorites_count: 1..)
+        .update_all("earned_favorites_count = earned_favorites_count - 1, updated_at = NOW()")
+    end
+
+    def grant_earned_favorite
+      User.update_counters(favoritable.user_id, earned_favorites_count: 1, touch: true)
     end
 
     def eligible?
@@ -51,6 +97,12 @@ module Favorites
       when Comment then !favoritable.deleted?
       else false
       end
+    end
+
+    def award_badge
+      Badges::AwardCommunityFavorite.call(favoritable: favoritable, favoriter: user)
+    rescue StandardError => e
+      Honeybadger.notify(e)
     end
 
     def log_audit

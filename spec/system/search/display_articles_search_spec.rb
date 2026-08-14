@@ -29,7 +29,7 @@ RSpec.describe "Display articles search spec", js: true do
     expect(page).to have_content("5 min read")
     expect(find_link("#ruby")["href"]).to include("/t/ruby")
     expect(page).to have_content("3 reactions")
-    expect(page).to have_content("2 comments")
+    expect(page).to have_content("2 comments", normalize_ws: true)
   end
 
   it "does not show reaction data if article has no reactions" do

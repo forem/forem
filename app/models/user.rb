@@ -299,6 +299,9 @@ class User < ApplicationRecord
       comments_count: average_comments_count..,
     )
   }
+  scope :community_leaders, lambda {
+    joins(:roles).where(roles: { name: CommunityLeaders::ROLES.map(&:to_s) }).distinct
+  }
 
   before_validation :downcase_email
 
@@ -512,6 +515,10 @@ class User < ApplicationRecord
 
   def cached_base_subscriber?
     cached_role_names.include?("base_subscriber")
+  end
+
+  def cached_community_leader?
+    CommunityLeaders::ROLES.any? { |role| cached_role_names.include?(role.to_s) }
   end
 
   def processed_website_url
