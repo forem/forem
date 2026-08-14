@@ -133,6 +133,12 @@ RSpec.describe CustomMailer, type: :mailer do
       end
     end
 
+    context "with one-click unsubscribe" do
+      let(:email) { mail }
+
+      include_examples "#renders_one_click_unsubscribe_headers"
+    end
+
     context "when SendGrid is disabled" do
       before do
         allow(ForemInstance).to receive(:sendgrid_enabled?).and_return(false)

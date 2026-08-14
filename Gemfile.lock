@@ -714,11 +714,12 @@ GEM
       prettyprint
     prettyprint (0.2.0)
     prism (1.9.0)
-    pry (0.14.2)
+    pry (0.16.0)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    pry-rails (0.3.9)
-      pry (>= 0.10.4)
+      reline (>= 0.6.0)
+    pry-rails (0.3.11)
+      pry (>= 0.13.0)
     pstore (0.2.1)
     psych (5.4.0)
       date

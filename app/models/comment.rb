@@ -36,6 +36,8 @@ class Comment < ApplicationRecord
 
   counter_culture :user
 
+  belongs_to :favorited_by_user, class_name: "User", optional: true
+
   has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :delete_all
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :ai_audits, as: :affected_content, dependent: :nullify
@@ -107,6 +109,7 @@ class Comment < ApplicationRecord
                   }
 
   scope :eager_load_serialized_data, -> { includes(:user, :commentable) }
+  scope :favorited, -> { where.not(favorited_by_user_id: nil) }
   scope :good_quality, -> { where("comments.score > ?", LOW_QUALITY_THRESHOLD) }
 
   alias touch_by_reaction save

@@ -26,11 +26,17 @@ module Deliverable
       # Deliverable on a Customer.io-only instance (no SMTP creds) must still
       # send, so the per-message flag overrides the SMTP-based default above.
       message.perform_deliveries = true
+      options = @customerio_delivery_options || {}
       message.delivery_method(
         DeliveryMethods::CustomerIo,
-        # identifiers are always controller-resolved and intentionally override
-        # anything passed via customerio_delivery_options.
-        (@customerio_delivery_options || {}).merge(identifiers: customerio_identifiers),
+        options.merge(
+          # identifiers are always controller-resolved and intentionally override
+          # anything passed via customerio_delivery_options.
+          identifiers: customerio_identifiers,
+          # layout data is a floor, not a ceiling: a mailer may override any of
+          # it by passing the same key through customerio_delivery_options.
+          message_data: layout_message_data.merge(options[:message_data] || {}),
+        ),
       )
     else
       mail.delivery_method.settings.merge!(Settings::SMTP.settings)
@@ -38,6 +44,35 @@ module Deliverable
   end
 
   private
+
+  # Data the Customer.io layout needs on every message, mirroring the block
+  # layouts/mailer.html.erb renders at the bottom of each email. Resolved
+  # through view_context so signed_up_with/app_url pick up the same helpers
+  # and subforem-aware host the ERB layout uses.
+  #
+  # Emitted only where that block renders today, which takes all three guards
+  # below: a recipient in @user, an action the ERB layout does not exclude,
+  # and a view context that actually has AuthenticationHelper.
+  def layout_message_data
+    user = instance_variable_get(:@user)
+    return {} if user.blank? || action_name == "magic_link"
+
+    # DeviseMailer inherits from Devise::Mailer rather than ApplicationMailer,
+    # so it renders without layouts/mailer.html.erb and without
+    # AuthenticationHelper. Its security emails have never carried this footer
+    # (note Devise's initialize_from_record still sets @user, so the ivar alone
+    # is not a reliable signal) -- keep them as they are.
+    context = view_context
+    return {} unless context.respond_to?(:signed_up_with)
+
+    {
+      # "name" is here rather than in each mailer because seven templates greet
+      # the recipient without otherwise needing a payload of their own.
+      "name" => user.name,
+      "signed_up_with_html" => context.signed_up_with(user),
+      "notification_settings_url" => context.app_url(context.user_settings_path(:notifications))
+    }
+  end
 
   def deliver_via_customerio?
     return false unless ForemInstance.customerio_enabled?
