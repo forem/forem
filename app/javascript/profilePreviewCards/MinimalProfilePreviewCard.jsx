@@ -52,7 +52,6 @@ export const MinimalProfilePreviewCard = ({
               style: 'full',
             })}
           />
-           
         </div>
         <div
           class="author-preview-metadata-container"
