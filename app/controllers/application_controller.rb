@@ -360,7 +360,7 @@ class ApplicationController < ActionController::Base
   end
 
   def determine_locale
-    I18n.locale = if %w[en fr pt].include?(params[:locale])
+    I18n.locale = if Constants::Settings::UserExperience::SUPPORTED_LOCALES.key?(params[:locale])
                     params[:locale]
                   else
                     Settings::UserExperience.default_locale
