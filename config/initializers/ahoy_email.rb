@@ -28,6 +28,11 @@ module AhoyEmail
 
     private
 
+    # The internal-link rules live in Emails::AhoyLinkTracking so that this
+    # (which rewrites the rendered body, for SMTP) and
+    # Emails::AhoyLinkDecorator (which rewrites the Customer.io message_data
+    # payload) cannot drift apart. Both have to produce URLs that
+    # Ahoy::EmailClicksController will verify.
     def process_link(link)
       uri = parse_uri(link["href"])
       return unless trackable?(uri)
@@ -36,12 +41,13 @@ module AhoyEmail
 
       return unless options[:click] && !skip_attribute?(link, "click")
 
-      signature = Utils.signature(token: token, campaign: campaign, url: link["href"])
-
-      if internal_link?(uri)
-        handle_internal_link(uri, link, signature)
+      if Emails::AhoyLinkTracking.internal?(uri)
+        link["href"] = Emails::AhoyLinkTracking.internal_url(
+          uri, link["href"], token: token, campaign: campaign
+        )
       else
-        handle_external_link(uri, link, signature)
+        signature = Utils.signature(token: token, campaign: campaign, url: link["href"])
+        handle_external_link(link, signature)
       end
     end
 
@@ -54,34 +60,14 @@ module AhoyEmail
       end
       uri.query_values = existing_params
 
-      # Update the href for external links after adding UTM parameters
-      link["href"] = uri.to_s unless internal_link?(uri)
+      # Written back for every link, not just external ones, so that
+      # process_link can re-read the href without losing the UTM params it just
+      # added. Internal links have their href rebuilt from the same uri
+      # immediately afterwards, so this is a no-op for them.
+      link["href"] = uri.to_s
     end
 
-    def internal_link?(uri)
-      uri.host == Settings::General.app_domain
-    end
-
-    def handle_internal_link(uri, link, signature)
-      tracking_params = {
-        "ahoy_click" => true,
-        "t" => token,
-        "s" => signature,
-        "u" => CGI.escape(link["href"]),
-        "c" => campaign
-      }.reject { |_k, v| v.nil? || v.to_s.empty? }
-
-      # Merge existing and tracking params
-      all_params = (uri.query_values(Array) || []) + tracking_params.to_a
-      uri.query_values = all_params
-
-      # Reconstruct the href with updated parameters
-      port_part = uri.port ? ":#{uri.port}" : ""
-      link["href"] = "#{uri.scheme}://#{uri.host}#{port_part}#{uri.path}"
-      link["href"] += "?#{uri.query}" unless uri.query.nil? || uri.query.empty?
-    end
-
-    def handle_external_link(uri, link, signature)
+    def handle_external_link(link, signature)
       link["href"] = url_for(
         controller: "ahoy/messages",
         action: "click",
