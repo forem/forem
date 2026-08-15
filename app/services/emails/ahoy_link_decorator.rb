@@ -81,25 +81,29 @@ module Emails
     end
 
     # Returns nil when the value should keep its original string.
-    #
-    # External links are deliberately left alone. On the SMTP path they redirect
-    # through the mounted AhoyEmail engine, but that URL is built from the
-    # mailer's default_url_options, which in production already includes the
-    # protocol in :host -- so the redirect target is malformed there and the
-    # route is, per config/routes.rb, "not currently where emails pass through".
-    # Reproducing it here would only produce broken links; external clicks would
-    # in any case set clicked_at and nothing else.
     def decorate_url(href)
       uri = AhoyLinkTracking.parse_uri(href)
       return unless AhoyLinkTracking.trackable?(uri)
-      return unless AhoyLinkTracking.internal?(uri)
-      return if AhoyLinkTracking.unsubscribe?(href)
+      return if AhoyLinkTracking.skip?(uri, href)
 
-      AhoyLinkTracking.internal_url(uri, href, token: @token, campaign: @campaign)
+      if AhoyLinkTracking.internal?(uri)
+        AhoyLinkTracking.internal_url(uri, href, token: @token, campaign: @campaign)
+      else
+        AhoyLinkTracking.external_url(
+          href, token: @token, campaign: @campaign, url_options: url_options
+        )
+      end
     rescue StandardError => e
       # One unparseable link must not cost the whole payload its tracking.
       Rails.logger.warn("[ahoy_link_decorator] link skipped: #{e.class}: #{e.message}")
       nil
+    end
+
+    # ApplicationMailer#setup_subforem_context sets this per message, so it
+    # carries the subforem-aware host the ERB layout used. Read at delivery
+    # time, same as the token.
+    def url_options
+      ActionMailer::Base.default_url_options || {}
     end
   end
 end

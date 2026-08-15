@@ -40,15 +40,22 @@ module AhoyEmail
       add_utm_params(uri, link) if options[:utm_params] && !skip_attribute?(link, "utm-params")
 
       return unless options[:click] && !skip_attribute?(link, "click")
+      return if Emails::AhoyLinkTracking.already_tracked?(uri, link["href"])
 
-      if Emails::AhoyLinkTracking.internal?(uri)
-        link["href"] = Emails::AhoyLinkTracking.internal_url(
-          uri, link["href"], token: token, campaign: campaign
-        )
-      else
-        signature = Utils.signature(token: token, campaign: campaign, url: link["href"])
-        handle_external_link(link, signature)
-      end
+      link["href"] =
+        if Emails::AhoyLinkTracking.internal?(uri)
+          Emails::AhoyLinkTracking.internal_url(
+            uri, link["href"], token: token, campaign: campaign
+          )
+        else
+          Emails::AhoyLinkTracking.external_url(
+            link["href"], token: token, campaign: campaign, url_options: link_url_options
+          )
+        end
+    end
+
+    def link_url_options
+      (mailer.default_url_options || {}).merge(options[:url_options] || {})
     end
 
     def add_utm_params(uri, link)
@@ -65,17 +72,6 @@ module AhoyEmail
       # added. Internal links have their href rebuilt from the same uri
       # immediately afterwards, so this is a no-op for them.
       link["href"] = uri.to_s
-    end
-
-    def handle_external_link(link, signature)
-      link["href"] = url_for(
-        controller: "ahoy/messages",
-        action: "click",
-        t: token,
-        c: campaign,
-        u: link["href"],
-        s: signature,
-      )
     end
   end
 end

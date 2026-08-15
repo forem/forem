@@ -11,9 +11,6 @@ module Emails
   #     payload, since Customer.io renders its own template and never sees that
   #     body
   #
-  # Only internal links are handled here. External links go through the mounted
-  # AhoyEmail engine's redirect, whose URL generation differs per caller, so the
-  # initializer keeps building those itself.
   module AhoyLinkTracking
     module_function
 
@@ -35,6 +32,22 @@ module Emails
     # unsubscribe links so a tracking failure can never block an opt-out.
     def unsubscribe?(href)
       href.to_s.match?(/unsubscribe/i)
+    end
+
+    # A tracked URL pasted back into stored content (a billboard, a survey body)
+    # arrives here looking like an ordinary internal link. Decorating it again
+    # appends a second t/s/u set, and because Rack resolves duplicate params to
+    # the last value, the engine redirect verifies the outer signature and
+    # forwards to itself -- a loop. Leave anything already carrying tracking
+    # alone.
+    def already_tracked?(uri, href)
+      return true if href.to_s.include?("ahoy_click=true")
+
+      internal?(uri) && uri.path.to_s.start_with?("/ahoy/")
+    end
+
+    def skip?(uri, href)
+      unsubscribe?(href) || already_tracked?(uri, href)
     end
 
     def signature(href, token:, campaign:)
@@ -65,6 +78,27 @@ module Emails
       url = "#{uri.scheme}://#{uri.host}#{port_part}#{uri.path}"
       url += "?#{uri.query}" if uri.query.present?
       url
+    end
+
+    # External links cannot carry our params to a page that would read them, so
+    # they redirect through the mounted AhoyEmail engine, which records the
+    # click and forwards. That only sets clicked_at -- the other five effects
+    # need the recipient to land on this Forem.
+    #
+    # url_options supplies the host. Note production sets it to
+    # protocol + APP_DOMAIN, e.g. "https://dev.to"; ActionDispatch normalizes a
+    # host carrying its own scheme, so this still builds a well-formed URL.
+    def external_url(href, token:, campaign:, url_options: {})
+      AhoyEmail::Engine.routes.url_helpers.url_for(
+        url_options.merge(
+          controller: "ahoy/messages",
+          action: "click",
+          t: token,
+          c: campaign,
+          u: href,
+          s: signature(href, token: token, campaign: campaign),
+        ),
+      )
     end
   end
 end

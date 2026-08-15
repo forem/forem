@@ -100,14 +100,28 @@ RSpec.describe Emails::AhoyLinkDecorator, type: :service do
     end
   end
 
-  # The SMTP path sends these through the mounted AhoyEmail engine, but that
-  # redirect URL is built from default_url_options, whose :host already carries
-  # the protocol in production. Reproducing it would emit broken links, and an
-  # external click only ever set clicked_at anyway.
   describe "external links" do
-    it "leaves them untouched" do
-      expect(decorate({ "url" => "https://example.com/post" })["url"])
-        .to eq("https://example.com/post")
+    it "routes them through the mounted Ahoy engine, as the SMTP path does" do
+      result = decorate({ "url" => "https://example.com/post" })
+
+      expect(result["url"]).to include("/ahoy/click?")
+      expect(params_from(result["url"])["u"]).to eq("https://example.com/post")
+    end
+  end
+
+  # A tracked URL pasted back into stored content arrives looking like an
+  # ordinary internal link. Decorating it again appends a second t/s/u set, and
+  # since Rack resolves duplicate params to the last value, the engine verifies
+  # the outer signature and redirects to itself.
+  describe "links that already carry tracking" do
+    it "leaves an ahoy_click URL alone" do
+      tracked = "https://#{domain}/post?ahoy_click=true&t=old&s=sig&u=x"
+      expect(decorate({ "url" => tracked })["url"]).to eq(tracked)
+    end
+
+    it "leaves an engine redirect URL alone" do
+      tracked = "https://#{domain}/ahoy/click?t=old&s=sig&u=https%3A%2F%2Fexample.com"
+      expect(decorate({ "url" => tracked })["url"]).to eq(tracked)
     end
   end
 
