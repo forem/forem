@@ -88,6 +88,8 @@ RSpec.describe NotifyMailer do
         expect(settings[:transactional_message_id]).to eq("dev_new_follower_email")
         expect(settings[:message_data]["follower_name"]).to eq(user2.name)
         expect(settings[:message_data]["follower_profile_url"]).to eq(URL.user(user2))
+        expect(settings[:message_data]["follower_profile_image_url"]).to be_present
+        expect(settings[:message_data]["followers_count"]).to eq(user.good_standing_followers_count)
         expect(settings[:message_data]["unsubscribe_url"]).to include("ut=")
       end
     end
@@ -142,6 +144,7 @@ RSpec.describe NotifyMailer do
         expect(settings[:message_data]["mentionable_type"]).to eq(comment_mention.decorate.formatted_mentionable_type)
         expected_mention_url = URL.url(comment_mention.mentionable.path, RequestStore.store[:subforem_domain])
         expect(settings[:message_data]["mention_url"]).to eq(expected_mention_url)
+        expect(settings[:message_data]["comment_html"]).to eq(comment.processed_html)
         expect(settings[:message_data]["unsubscribe_url"]).to include("ut=")
       end
     end
@@ -288,6 +291,8 @@ RSpec.describe NotifyMailer do
         expect(settings[:message_data]["badge_name"]).to eq(badge.title)
         expect(settings[:message_data]["badge_description"]).to eq(badge.description)
         expect(settings[:message_data]["badge_image_url"]).to eq(badge.badge_image_url)
+        expect(settings[:message_data]["rewarding_context_message_html"])
+          .to eq(badge_achievement.rewarding_context_message.presence)
         expect(settings[:message_data]["unsubscribe_url"]).to include("ut=")
       end
     end

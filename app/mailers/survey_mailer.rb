@@ -23,6 +23,8 @@ class SurveyMailer < ApplicationMailer
         "survey_type" => survey_type,
         "survey_url" => survey_url(@survey.slug),
         "community_name" => @community_name,
+        # Optional per-survey paragraph, rendered above the CTA when present.
+        "extra_email_context_paragraph" => @survey.extra_email_context_paragraph.presence,
         "subject" => subject
       },
     )
