@@ -114,27 +114,38 @@ RSpec.describe FeatureTag, type: :liquid_tag do
   end
 
   describe "article integration" do
+    def article_with_icon(icon)
+      body = <<~MARKDOWN
+        ---
+        title: Feature tag icons
+        published: false
+        tags: javascript
+        ---
+
+        {% features %}
+        {% feature title="Fast" icon="#{icon}" %}Speed{% endfeature %}
+        {% endfeatures %}
+      MARKDOWN
+
+      build(:article, body_markdown: body)
+    end
+
     it "is valid when a supported icon is used" do
-      body = "{% features %}\n{% feature title=\"Fast\" icon=\"lightning\" %}Speed{% endfeature %}\n{% endfeatures %}"
-      article = build(:article, body_markdown: body)
+      article = article_with_icon("lightning")
 
       expect(article).to be_valid
       expect(article.processed_html).to include("ltag-feature__icon")
     end
 
     it "surfaces an authoring error when an unsupported icon is used" do
-      body = "{% features %}\n{% feature title=\"Fast\" icon=\"rocketship\" %}Speed{% endfeature %}\n{% endfeatures %}"
-      article = build(:article, body_markdown: body)
+      article = article_with_icon("rocketship")
 
       expect(article).not_to be_valid
       expect(article.errors[:base].first).to match(/Invalid icon 'rocketship'/)
     end
 
     it "keeps previously published rocket markup saveable" do
-      body = "{% features %}\n{% feature title=\"Fast\" icon=\"rocket\" %}Speed{% endfeature %}\n{% endfeatures %}"
-      article = build(:article, body_markdown: body)
-
-      expect(article).to be_valid
+      expect(article_with_icon("rocket")).to be_valid
     end
   end
 
