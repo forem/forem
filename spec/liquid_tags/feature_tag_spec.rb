@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe FeatureTag, type: :liquid_tag do
   before do
     Liquid::Template.register_tag("features", FeaturesTag)
-    Liquid::Template.register_tag("feature", FeatureTag)
+    Liquid::Template.register_tag("feature", described_class)
   end
 
   def render_feature(options)

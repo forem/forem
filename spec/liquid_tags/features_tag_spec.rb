@@ -48,9 +48,11 @@ RSpec.describe "Features and Feature liquid tags", type: :liquid_tag do
     end
 
     it "raises a descriptive error for an unsupported icon name" do
-      expect do
-        parse('{% features %}{% feature icon="nonexistent-broken-icon-123" title="Broken" %}content{% endfeature %}{% endfeatures %}')
-      end.to raise_error(StandardError, /Invalid icon 'nonexistent-broken-icon-123'/)
+      template = '{% features %}{% feature icon="nonexistent-broken-icon-123" title="Broken" %}' \
+                 'content{% endfeature %}{% endfeatures %}'
+
+      expect { parse(template) }
+        .to raise_error(StandardError, /Invalid icon 'nonexistent-broken-icon-123'/)
     end
 
     it "preserves HTML content in body" do
