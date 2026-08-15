@@ -157,6 +157,19 @@ RSpec.describe DigestMailer do
         expect(data["email_end_phrase"]).to be_present
       end
 
+      it "reports whether the recipient has set an experience level", :aggregate_failures do
+        payload = lambda {
+          email = described_class.with(user: user, articles: [article]).digest_email
+          email.message.delivery_method.settings[:message_data]
+        }
+
+        user.setting.update!(experience_level: nil)
+        expect(payload.call["experience_level_set"]).to be(false)
+
+        user.setting.update!(experience_level: 5)
+        expect(payload.call["experience_level_set"]).to be(true)
+      end
+
       it "falls back to the truncated description in the payload when ai_summary is blank" do
         article.update_columns(ai_summary: nil, description: "Fallback description text.")
 
