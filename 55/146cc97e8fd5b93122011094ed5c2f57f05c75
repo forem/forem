@@ -1,0 +1,24 @@
+spec/mailers/concerns/deliverable_spec.rb
+  s_0cd64231ee5515::t_bc6ea44990866b 8,10
+  s_0cd64231ee5515::t_dd65fcd14d752a 1-7,9,11-47,52-99
+  s_0cd64231ee5515::t_25a93731598ea5 48-51
+app/mailers/concerns/deliverable.rb
+  s_0cd64231ee5515::t_f6cb4ca4eb53de 4-5,11-17,25-64
+  s_0cd64231ee5515::t_9d26b43aa27ef6 18-19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "55146cc97e8fd5b93122011094ed5c2f57f05c75",
+  "prompts": {},
+  "sessions": {
+    "s_0cd64231ee5515": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b2d035f1-b022-48fc-b793-32eaadb3e1ad",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

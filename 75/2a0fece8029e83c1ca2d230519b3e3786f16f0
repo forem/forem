@@ -1,0 +1,31 @@
+spec/requests/comments_destroy_spec.rb
+  a8d75fdefd51c402 59,68-101,104-105,110,113-118,120-135
+app/controllers/stories_controller.rb
+  a8d75fdefd51c402 548-549,623-624
+spec/services/users/delete_spec.rb
+  a8d75fdefd51c402 77-96,107
+spec/services/users/delete_comments_spec.rb
+  a8d75fdefd51c402 16,19-20,34-59
+app/views/comments/_comment.html.erb
+  a8d75fdefd51c402 1-2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.8",
+  "base_commit_sha": "752a0fece8029e83c1ca2d230519b3e3786f16f0",
+  "prompts": {
+    "a8d75fdefd51c402": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "1dc0fdac-d08c-4175-b74a-0772e9e89f70",
+        "model": "unknown"
+      },
+      "human_author": "Mikey Dorje <mikeydorje@gmail.com>",
+      "messages": [],
+      "total_additions": 253,
+      "total_deletions": 46,
+      "accepted_lines": 218,
+      "overriden_lines": 0
+    }
+  }
+}
