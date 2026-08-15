@@ -72,8 +72,18 @@ RSpec.describe SurveyMailer, type: :mailer do
         expect(settings[:message_data]["survey_url"]).to end_with("/survey/#{survey.slug}")
         expect(settings[:message_data]["community_name"]).to eq(community_name)
         expect(settings[:message_data]["extra_email_context_paragraph"])
-          .to eq(survey.extra_email_context_paragraph)
+          .to eq("This is a super important survey.")
         expect(settings[:message_data]["subject"]).to eq(expected_subject)
+      end
+
+      # The mailer sends the paragraph through .presence, so the template can
+      # gate on it with a plain {% if %} rather than testing for whitespace.
+      it "sends nil rather than a blank string when the survey has no extra paragraph" do
+        survey.update!(extra_email_context_paragraph: "")
+
+        settings = mail.message.delivery_method.settings
+
+        expect(settings[:message_data]["extra_email_context_paragraph"]).to be_nil
       end
     end
 
