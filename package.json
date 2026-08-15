@@ -141,6 +141,7 @@
     "jest-junit": "^16.0.0",
     "linkstate": "^2.0.1",
     "lodash.debounce": "4.0.8",
+    "mermaid": "^11.12.0",
     "moment": "^2.29.4",
     "picmo": "^5.8.5",
     "postcss": "^8.4.31",
