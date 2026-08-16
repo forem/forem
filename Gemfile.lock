@@ -832,7 +832,7 @@ GEM
     rexml (3.4.0)
     rice (4.1.0)
     rolify (6.0.1)
-    rouge (4.2.1)
+    rouge (4.7.0)
     rpush (9.2.0)
       activesupport (>= 6.0, != 7.2.1, != 7.2.0, != 7.1.4)
       googleauth
@@ -1235,7 +1235,7 @@ DEPENDENCIES
   request_store (~> 1.7)
   reverse_markdown (~> 2.1)
   rolify (~> 6.0)
-  rouge (~> 4.2)
+  rouge (~> 4.7)
   rpush (~> 9.2)
   rpush-redis (~> 1.2)
   rspec-rails (~> 6.0, >= 6.0.3)
