@@ -14,9 +14,7 @@ RSpec.describe ActivityTrackable do
 
   around { |ex| with_trackable_events { ex.run } }
 
-  # Setting up a subject usually emits events of its own (creating an article
-  # to comment on emits article_published), so discard whatever the arrangement
-  # produced and return only what the block itself emitted.
+  # Arrangement emits events of its own, so return only what the block emitted.
   def emitted
     events.clear
     yield
@@ -90,9 +88,8 @@ RSpec.describe ActivityTrackable do
       expect(result).to be_empty
     end
 
-    # published and title both come from the body_markdown front matter, which
-    # before_validation re-parses on every save, so assigning them directly is
-    # silently reverted. Edit the markdown the way the real editor does.
+    # published and title come from the front matter, which before_validation
+    # re-parses, so assigning them directly is silently reverted.
     it "emits article_published when a draft goes live" do
       article = create(:article, user: user, published: false)
 
@@ -185,8 +182,7 @@ RSpec.describe ActivityTrackable do
       )
     end
 
-    # A status with no body_url must have a blank (but non-nil) body_markdown:
-    # validate_status_post rejects a body, and the length validation rejects nil.
+    # A status without body_url needs a blank but non-nil body_markdown.
     it "emits article_published for a status that embeds nothing internal" do
       result = emitted do
         Article.create!(
@@ -224,8 +220,7 @@ RSpec.describe ActivityTrackable do
       expect(result).to be_empty
     end
 
-    # CommentsController#destroy soft deletes a comment with replies and hard
-    # destroys one without, so both paths have to report the removal.
+    # The controller soft deletes a comment with replies, hard destroys one without.
     it "emits comment_deleted when a comment is soft deleted" do
       comment = create(:comment, user: user, commentable: article)
 
@@ -286,8 +281,7 @@ RSpec.describe ActivityTrackable do
       expect(names(result)).to eq(["comment_reacted"])
     end
 
-    # vomit outnumbers every public reaction combined on a typical day, so this
-    # exclusion is what keeps the event stream affordable.
+    # vomit alone outnumbers every public reaction combined on a typical day.
     it "stays silent for privileged moderation reactions" do
       trusted = create(:user, :trusted)
 
@@ -333,9 +327,7 @@ RSpec.describe ActivityTrackable do
       expect(result).to be_empty
     end
 
-    # Reactable declares has_many :reactions, dependent: :destroy, so deleting
-    # an article withdraws every reader's reaction too. Those events are keyed
-    # to the reactors, not the author.
+    # Reactions are dependent: :destroy, and their events key to the reactors.
     it "emits removals for reactions cascaded by an article deletion" do
       reactor = create(:user)
       create(:reaction, user: reactor, reactable: article, category: "like")
@@ -359,10 +351,8 @@ RSpec.describe ActivityTrackable do
     end
   end
 
-  # Banishing an account and deleting one both remove content with .delete /
-  # .delete_all / update_all, which bypass callbacks entirely, so none of these
-  # events fire on those paths regardless of the gate. Locking that in: a change
-  # to destroy would otherwise silently turn one banish into thousands of events.
+  # These paths use .delete / .delete_all / update_all, so no callbacks run and
+  # nothing fires. Locked in: switching one to destroy would flood the CDP.
   describe "bulk moderation paths" do
     it "emits nothing when a user's articles and comments are bulk deleted" do
       article = create(:article, user: user)

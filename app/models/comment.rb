@@ -250,16 +250,15 @@ class Comment < ApplicationRecord
     commentable&.subforem_id
   end
 
-  # === ActivityTrackable (DEV → Customer.io CDP activity events) ===
-  # Emits comment_created / comment_updated. Comments have no draft state, so
-  # creation is publication. Deletions and hides stay silent.
+  # === ActivityTrackable (Customer.io CDP activity events) ===
+  # comment_created / _updated / _deleted. No draft state, so create publishes.
 
   def trackable_actor
     user
   end
 
-  # Curated payload with string keys, JSON-safe for Sidekiq.strict_args!. The
-  # comment body is deliberately absent — the CDP consumer keys off the ids.
+  # Curated, string keys for Sidekiq.strict_args!. The body is deliberately
+  # absent; the CDP consumer keys off the ids.
   def trackable_payload
     {
       "id" => id,
@@ -272,14 +271,12 @@ class Comment < ApplicationRecord
     }
   end
 
-  # Only a body edit counts. Comment rows churn on score, the three reaction
-  # counters, spaminess_rating and semantic_embedding, none of which are the
-  # author doing something.
+  # Only a body edit counts; rows churn on scores, counters and embeddings.
+  # CommentsController#destroy soft deletes a comment with replies and hard
+  # destroys one without, so removal is caught on both paths.
   def enqueue_trackable_event_updated
     changed_keys = trackable_changed_keys
 
-    # CommentsController#destroy soft deletes when the comment has replies and
-    # hard destroys when it does not, so removal has to be caught on both paths.
     if changed_keys.include?("deleted")
       enqueue_trackable_event("comment_deleted") if deleted?
       return

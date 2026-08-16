@@ -207,15 +207,14 @@ class Reaction < ApplicationRecord
     end
   end
 
-  # === ActivityTrackable (DEV → Customer.io CDP activity events) ===
-  # Emits article_reacted / article_saved / comment_reacted on create only.
-  # Toggling a reaction off destroys the row and emits nothing.
+  # === ActivityTrackable (Customer.io CDP activity events) ===
+  # article_reacted / _saved / comment_reacted, plus their un- counterparts.
 
   def trackable_actor
     user
   end
 
-  # Curated payload with string keys, JSON-safe for Sidekiq.strict_args!.
+  # Curated, string keys for Sidekiq.strict_args!.
   def trackable_payload
     {
       "id" => id,
@@ -234,14 +233,11 @@ class Reaction < ApplicationRecord
     enqueue_trackable_event(event)
   end
 
-  # Reactions are only ever created or destroyed, never meaningfully edited;
-  # status flips are moderation bookkeeping.
+  # Never meaningfully edited; status flips are moderation bookkeeping.
   def enqueue_trackable_event_updated
     nil
   end
 
-  # Toggling a reaction off destroys the row. Without this the CDP's "has
-  # saved" / "has reacted" sets would only ever grow.
   def enqueue_trackable_event_destroyed(*)
     event = trackable_event_name(removed: true)
     return unless event
@@ -249,12 +245,10 @@ class Reaction < ApplicationRecord
     enqueue_trackable_event(event, user_ids: @_trackable_destroyed_user_ids)
   end
 
-  # Privileged categories (vomit, thumbsup, thumbsdown) are moderation
-  # signals, not member activity, and they dominate raw reaction volume — on a
-  # typical day vomit alone outnumbers every public reaction combined. They
-  # never leave the box. readinglist is excluded from visible_to_public? too
-  # (published: false in reactions.yml, since saves are private), so the gate
-  # is privileged?, not visible_to_public?.
+  # Privileged categories (vomit, thumbsup, thumbsdown) are moderation, not
+  # member activity, and vomit alone outnumbers every public reaction combined.
+  # Gated on privileged? rather than visible_to_public? because readinglist is
+  # published: false in reactions.yml.
   def trackable_event_name(removed: false)
     return if reaction_category.nil? || reaction_category.privileged?
 

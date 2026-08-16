@@ -60,10 +60,8 @@ class Article < ApplicationRecord
 
   MAX_TAG_LIST_SIZE = 4
 
-  # Author-visible edits, for the article_updated CDP event. Article rows churn
-  # constantly on score recalcs, counter caches and last_comment_at; without
-  # this allowlist article_updated would fire orders of magnitude more often
-  # than real edits. Mirrors User::SYNC_TRIGGER_KEYS.
+  # Author-visible edits, for the article_updated CDP event. Rows churn on score
+  # recalcs, counter caches and last_comment_at. Mirrors User::SYNC_TRIGGER_KEYS.
   TRACKABLE_UPDATE_KEYS = %w[
     title body_markdown cached_tag_list main_image description canonical_url
     edited_at collection_id subforem_id
@@ -1777,17 +1775,16 @@ class Article < ApplicationRecord
     end
   end
 
-  # === ActivityTrackable (DEV → Customer.io CDP activity events) ===
-  # Emits article_published / article_boosted / article_updated. Drafts,
-  # unpublishes and deletions stay silent.
+  # === ActivityTrackable (Customer.io CDP activity events) ===
+  # article_published / _boosted / _updated / _unpublished / _deleted.
+  # Drafts stay silent until they go live.
 
   def trackable_actor
     user
   end
 
-  # Curated payload — the articles row is wide and body_markdown alone can be
-  # hundreds of KB, so never ship as_json across the boundary. String keys keep
-  # the job arguments JSON-safe for Sidekiq.strict_args!.
+  # Curated: the row is wide and body_markdown can be hundreds of KB. String
+  # keys keep the job arguments JSON-safe for Sidekiq.strict_args!.
   def trackable_payload
     {
       "id" => id,
@@ -1808,9 +1805,6 @@ class Article < ApplicationRecord
     enqueue_publication_event
   end
 
-  # Drafts emit nothing until they go live, so the publish event fires from the
-  # update path too. Edits to an already-published post emit article_updated,
-  # but only for the author-visible changes in TRACKABLE_UPDATE_KEYS.
   def enqueue_trackable_event_updated
     changed_keys = trackable_changed_keys
 
@@ -1825,18 +1819,15 @@ class Article < ApplicationRecord
     enqueue_trackable_event("article_updated")
   end
 
-  # Only a published article's removal tells the CDP anything: a draft was
-  # never announced, so its deletion would be noise. Uses the concern's
-  # before_destroy snapshot rather than re-reading the association.
+  # A draft was never announced, so its deletion is noise.
   def enqueue_trackable_event_destroyed(*)
     return unless published?
 
     enqueue_trackable_event("article_deleted", user_ids: @_trackable_destroyed_user_ids)
   end
 
-  # A boost is the quickie composer on an article page (see
-  # articleReactions.js) posting a status whose body embeds the boosted
-  # article, so it emits article_boosted instead of article_published.
+  # The quickie composer (articleReactions.js) posts a status embedding the
+  # boosted article, which emits article_boosted instead of article_published.
   def enqueue_publication_event
     boosted_id = boosted_article_id
     return enqueue_trackable_event("article_published") unless boosted_id
@@ -1850,11 +1841,8 @@ class Article < ApplicationRecord
     )
   end
 
-  # body_url is an attr_accessor populated during the create request, so this
-  # only resolves on the create path — a status published later (rare; the
-  # composer always posts published) falls back to article_published.
-  # LiquidEmbedExtractor maps an internal article URL to its record without
-  # rendering Liquid or making network calls.
+  # body_url is an attr_accessor set during the create request, so this only
+  # resolves on create; a status published later falls back to _published.
   def boosted_article_id
     return unless status? && body_url.present?
 
