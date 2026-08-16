@@ -82,6 +82,35 @@ RSpec.describe DeliveryMethods::CustomerIo do
     expect(message[:body]).to eq("<p>html export</p>")
   end
 
+  # Customer.io renders its own template, so Ahoy's rewriting of the
+  # ActionMailer body never reaches the recipient. The payload has to carry the
+  # tracking params instead or Ahoy::EmailClicksController is never called.
+  describe "click tracking in the payload" do
+    let(:article_url) { "https://#{Settings::General.app_domain}/ben/some-post" }
+
+    it "decorates message_data links using the token Ahoy set on the mail" do
+      mail.ahoy_data = { token: "tok123", campaign: nil }
+
+      message = delivered_message(
+        transactional_message_id: "dev_test_template",
+        message_data: { "url" => article_url },
+      )
+
+      params = Rack::Utils.parse_query(Addressable::URI.parse(message[:message_data]["url"]).query)
+      expect(params["ahoy_click"]).to eq("true")
+      expect(params["t"]).to eq("tok123")
+    end
+
+    it "leaves message_data alone when Ahoy did not set a token" do
+      message = delivered_message(
+        transactional_message_id: "dev_test_template",
+        message_data: { "url" => article_url },
+      )
+
+      expect(message[:message_data]["url"]).to eq(article_url)
+    end
+  end
+
   it "attaches mail attachments to the request" do
     mail.attachments["export.zip"] = "zipbytes"
     request_double = instance_double(Customerio::SendEmailRequest, attach: nil, message: {})
