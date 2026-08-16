@@ -8,6 +8,7 @@ class Article < ApplicationRecord
   include PgSearch::Model
   include AlgoliaSearchable
   include WebpageTrackable
+  include ActivityTrackable
 
   acts_as_taggable_on :tags
   resourcify
@@ -58,6 +59,15 @@ class Article < ApplicationRecord
   BIDI_CONTROL_CHARACTERS = /[\u061C\u200E\u200F\u202a-\u202e\u2066-\u2069]/
 
   MAX_TAG_LIST_SIZE = 4
+
+  # Author-visible edits, for the article_updated CDP event. Article rows churn
+  # constantly on score recalcs, counter caches and last_comment_at; without
+  # this allowlist article_updated would fire orders of magnitude more often
+  # than real edits. Mirrors User::SYNC_TRIGGER_KEYS.
+  TRACKABLE_UPDATE_KEYS = %w[
+    title body_markdown cached_tag_list main_image description canonical_url
+    edited_at collection_id subforem_id
+  ].freeze
 
   # Filter out anything that isn't a word, space, punctuation mark,
   # recognized emoji, and other auxiliary marks.
@@ -1766,6 +1776,90 @@ class Article < ApplicationRecord
       Organizations::RecompilePagesWorker.perform_async(org_id)
     end
   end
+
+  # === ActivityTrackable (DEV → Customer.io CDP activity events) ===
+  # Emits article_published / article_boosted / article_updated. Drafts,
+  # unpublishes and deletions stay silent.
+
+  def trackable_actor
+    user
+  end
+
+  # Curated payload — the articles row is wide and body_markdown alone can be
+  # hundreds of KB, so never ship as_json across the boundary. String keys keep
+  # the job arguments JSON-safe for Sidekiq.strict_args!.
+  def trackable_payload
+    {
+      "id" => id,
+      "title" => title,
+      "path" => path,
+      "type_of" => type_of,
+      "published_at" => published_at&.iso8601,
+      "tag_list" => cached_tag_list.to_s.split(", "),
+      "organization_id" => organization_id,
+      "subforem_id" => subforem_id,
+      "user_id" => user_id
+    }
+  end
+
+  def enqueue_trackable_event_created
+    return unless published?
+
+    enqueue_publication_event
+  end
+
+  # Drafts emit nothing until they go live, so the publish event fires from the
+  # update path too. Edits to an already-published post emit article_updated,
+  # but only for the author-visible changes in TRACKABLE_UPDATE_KEYS.
+  def enqueue_trackable_event_updated
+    changed_keys = trackable_changed_keys
+
+    if changed_keys.include?("published")
+      enqueue_publication_event if published?
+      return
+    end
+
+    return unless published?
+    return unless changed_keys.intersect?(TRACKABLE_UPDATE_KEYS)
+
+    enqueue_trackable_event("article_updated")
+  end
+
+  # Deletion is intentionally out of scope: the CDP consumer does not handle
+  # removals, so suppress the concern's default article_destroyed emission.
+  def enqueue_trackable_event_destroyed(*)
+    nil
+  end
+
+  # A boost is the quickie composer on an article page (see
+  # articleReactions.js) posting a status whose body embeds the boosted
+  # article, so it emits article_boosted instead of article_published.
+  def enqueue_publication_event
+    boosted_id = boosted_article_id
+    return enqueue_trackable_event("article_published") unless boosted_id
+
+    enqueue_trackable_event(
+      "article_boosted",
+      properties_override: {
+        "boosted_article_id" => boosted_id,
+        "boosted_article_user_id" => Article.where(id: boosted_id).pick(:user_id)
+      },
+    )
+  end
+
+  # body_url is an attr_accessor populated during the create request, so this
+  # only resolves on the create path — a status published later (rare; the
+  # composer always posts published) falls back to article_published.
+  # LiquidEmbedExtractor maps an internal article URL to its record without
+  # rendering Liquid or making network calls.
+  def boosted_article_id
+    return unless status? && body_url.present?
+
+    type, id = LiquidEmbedExtractor.derive_reference("embed", body_url)
+    id if type == "Article"
+  end
+  private :enqueue_trackable_event_created, :enqueue_trackable_event_updated,
+          :enqueue_trackable_event_destroyed, :enqueue_publication_event, :boosted_article_id
 
   private
 

@@ -7,6 +7,7 @@ class Comment < ApplicationRecord
   include PgSearch::Model
   include Reactable
   include AlgoliaSearchable
+  include ActivityTrackable
 
   BODY_MARKDOWN_SIZE_RANGE = (1..25_000)
 
@@ -248,6 +249,44 @@ class Comment < ApplicationRecord
   def subforem_id
     commentable&.subforem_id
   end
+
+  # === ActivityTrackable (DEV → Customer.io CDP activity events) ===
+  # Emits comment_created / comment_updated. Comments have no draft state, so
+  # creation is publication. Deletions and hides stay silent.
+
+  def trackable_actor
+    user
+  end
+
+  # Curated payload with string keys, JSON-safe for Sidekiq.strict_args!. The
+  # comment body is deliberately absent — the CDP consumer keys off the ids.
+  def trackable_payload
+    {
+      "id" => id,
+      "commentable_type" => commentable_type,
+      "commentable_id" => commentable_id,
+      "commentable_user_id" => commentable.try(:user_id),
+      "parent_id" => parent_id,
+      "path" => path,
+      "user_id" => user_id
+    }
+  end
+
+  # Only a body edit counts. Comment rows churn on score, the three reaction
+  # counters, spaminess_rating and semantic_embedding, none of which are the
+  # author doing something.
+  def enqueue_trackable_event_updated
+    return unless trackable_changed_keys.include?("body_markdown")
+
+    enqueue_trackable_event("comment_updated")
+  end
+
+  # Deletion is intentionally out of scope: the CDP consumer does not handle
+  # removals, so suppress the concern's default comment_destroyed emission.
+  def enqueue_trackable_event_destroyed(*)
+    nil
+  end
+  private :enqueue_trackable_event_updated, :enqueue_trackable_event_destroyed
 
   private
 

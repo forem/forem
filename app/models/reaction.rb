@@ -1,4 +1,6 @@
 class Reaction < ApplicationRecord
+  include ActivityTrackable
+
   REACTABLE_TYPES = %w[Comment Article User].freeze
   STATUSES = %w[valid invalid confirmed archived].freeze
 
@@ -204,6 +206,62 @@ class Reaction < ApplicationRecord
       I18n.l(created_at, format: :short_with_yy)
     end
   end
+
+  # === ActivityTrackable (DEV → Customer.io CDP activity events) ===
+  # Emits article_reacted / article_saved / comment_reacted on create only.
+  # Toggling a reaction off destroys the row and emits nothing.
+
+  def trackable_actor
+    user
+  end
+
+  # Curated payload with string keys, JSON-safe for Sidekiq.strict_args!.
+  def trackable_payload
+    {
+      "id" => id,
+      "category" => category,
+      "reactable_type" => reactable_type,
+      "reactable_id" => reactable_id,
+      "reactable_user_id" => reactable.try(:user_id),
+      "user_id" => user_id
+    }
+  end
+
+  def enqueue_trackable_event_created
+    event = trackable_event_name
+    return unless event
+
+    enqueue_trackable_event(event)
+  end
+
+  # Reactions are only ever created or destroyed, never meaningfully edited;
+  # status flips are moderation bookkeeping.
+  def enqueue_trackable_event_updated
+    nil
+  end
+
+  def enqueue_trackable_event_destroyed(*)
+    nil
+  end
+
+  # Privileged categories (vomit, thumbsup, thumbsdown) are moderation
+  # signals, not member activity, and they dominate raw reaction volume — on a
+  # typical day vomit alone outnumbers every public reaction combined. They
+  # never leave the box. readinglist is excluded from visible_to_public? too
+  # (published: false in reactions.yml, since saves are private), so the gate
+  # is privileged?, not visible_to_public?.
+  def trackable_event_name
+    return if reaction_category.nil? || reaction_category.privileged?
+
+    case reactable_type
+    when "Article"
+      category == "readinglist" ? "article_saved" : "article_reacted"
+    when "Comment"
+      "comment_reacted"
+    end
+  end
+  private :enqueue_trackable_event_created, :enqueue_trackable_event_updated,
+          :enqueue_trackable_event_destroyed, :trackable_event_name
 
   private
 
