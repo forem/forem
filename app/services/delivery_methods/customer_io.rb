@@ -42,7 +42,22 @@ module DeliveryMethods
         message[:to] = mail.to.join(",") if mail.to
         forwarded = forwarded_headers(mail)
         message[:headers] = forwarded if forwarded.any?
-      end.merge(settings)
+      end.merge(settings).merge(tracked_message_data(mail))
+    end
+
+    # Customer.io renders from message_data, so Ahoy's link rewriting -- which
+    # operates on the ActionMailer body -- never reaches the recipient. Re-apply
+    # it to the payload so clicks still reach Ahoy::EmailClicksController.
+    #
+    # mail.ahoy_data is set by AhoyEmail::Processor in an after_action. Rails
+    # runs after_actions in reverse registration order, so it lands *after*
+    # Deliverable#set_delivery_options picks this delivery method -- which is
+    # why the token is read here at delivery time rather than captured into
+    # settings when the delivery method was chosen.
+    def tracked_message_data(mail)
+      return {} if settings[:message_data].blank?
+
+      { message_data: Emails::AhoyLinkDecorator.call(settings[:message_data], ahoy_data: mail.ahoy_data) }
     end
 
     def forwarded_headers(mail)
