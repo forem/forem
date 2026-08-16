@@ -1779,23 +1779,16 @@ class Article < ApplicationRecord
   # article_published / _boosted / _updated / _unpublished / _deleted.
   # Drafts stay silent until they go live.
 
-  def trackable_actor
-    user
-  end
-
-  # Curated: the row is wide and body_markdown can be hundreds of KB. String
-  # keys keep the job arguments JSON-safe for Sidekiq.strict_args!.
-  def trackable_payload
+  # body_markdown is deliberately absent; it can run to hundreds of KB.
+  def trackable_activity_payload
     {
-      "id" => id,
       "title" => title,
       "path" => path,
       "type_of" => type_of,
       "published_at" => published_at&.iso8601,
       "tag_list" => cached_tag_list.to_s.split(", "),
       "organization_id" => organization_id,
-      "subforem_id" => subforem_id,
-      "user_id" => user_id
+      "subforem_id" => subforem_id
     }
   end
 
@@ -1836,7 +1829,8 @@ class Article < ApplicationRecord
     type, id = LiquidEmbedExtractor.derive_reference("embed", body_url)
     id if type == "Article"
   end
-  private :trackable_activity_event, :trackable_update_event, :publication_event, :boosted_article_id
+  private :trackable_activity_payload, :trackable_activity_event, :trackable_update_event,
+          :publication_event, :boosted_article_id
 
   private
 

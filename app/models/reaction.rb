@@ -210,19 +210,12 @@ class Reaction < ApplicationRecord
   # === ActivityTrackable (Customer.io CDP activity events) ===
   # article_reacted / _saved / comment_reacted, plus their un- counterparts.
 
-  def trackable_actor
-    user
-  end
-
-  # Curated, string keys for Sidekiq.strict_args!.
-  def trackable_payload
+  def trackable_activity_payload
     {
-      "id" => id,
       "category" => category,
       "reactable_type" => reactable_type,
       "reactable_id" => reactable_id,
-      "reactable_user_id" => reactable.try(:user_id),
-      "user_id" => user_id
+      "reactable_user_id" => reactable.try(:user_id)
     }
   end
 
@@ -253,7 +246,7 @@ class Reaction < ApplicationRecord
       removed ? "comment_unreacted" : "comment_reacted"
     end
   end
-  private :trackable_activity_event, :trackable_event_name
+  private :trackable_activity_payload, :trackable_activity_event, :trackable_event_name
 
   private
 

@@ -1,6 +1,6 @@
 # Shared gate for the Article/Comment/Reaction activity events sent to the
-# Customer.io CDP. Adopters implement #trackable_actor and
-# #trackable_activity_event, which names the event for a lifecycle phase.
+# Customer.io CDP. Adopters implement #trackable_activity_event, which names the
+# event for a lifecycle phase, and #trackable_activity_payload, its properties.
 module ActivityTrackable
   extend ActiveSupport::Concern
 
@@ -24,12 +24,23 @@ module ActivityTrackable
   end
 
   # Events are actor-keyed; the content's author rides along in properties.
+  # Every adopter so far acts as its own user — override if that changes.
   def trackable_actor
-    raise NotImplementedError, "#{self.class.name} must implement #trackable_actor"
+    user
   end
 
   def trackable_user_ids
     [trackable_actor&.id]
+  end
+
+  # Curated: these rows are wide and never shipped wholesale. String keys keep
+  # the job arguments JSON-safe for Sidekiq.strict_args!.
+  def trackable_payload
+    { "id" => id, "user_id" => user_id }.merge(trackable_activity_payload)
+  end
+
+  def trackable_activity_payload
+    raise NotImplementedError, "#{self.class.name} must implement #trackable_activity_payload"
   end
 
   # Returns an event name, a [name, properties] pair, or nil to stay silent.

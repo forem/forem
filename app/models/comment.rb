@@ -253,21 +253,14 @@ class Comment < ApplicationRecord
   # === ActivityTrackable (Customer.io CDP activity events) ===
   # comment_created / _updated / _deleted. No draft state, so create publishes.
 
-  def trackable_actor
-    user
-  end
-
-  # Curated, string keys for Sidekiq.strict_args!. The body is deliberately
-  # absent; the CDP consumer keys off the ids.
-  def trackable_payload
+  # The body is deliberately absent; the CDP consumer keys off the ids.
+  def trackable_activity_payload
     {
-      "id" => id,
       "commentable_type" => commentable_type,
       "commentable_id" => commentable_id,
       "commentable_user_id" => commentable.try(:user_id),
       "parent_id" => parent_id,
-      "path" => path,
-      "user_id" => user_id
+      "path" => path
     }
   end
 
@@ -288,7 +281,7 @@ class Comment < ApplicationRecord
 
     "comment_updated" if changed_keys.include?("body_markdown")
   end
-  private :trackable_activity_event, :trackable_update_event
+  private :trackable_activity_payload, :trackable_activity_event, :trackable_update_event
 
   private
 
