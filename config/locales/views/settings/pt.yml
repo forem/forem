@@ -124,6 +124,9 @@ pt:
         update: Atualizar
         delete: Excluir
         confirm: Confirmar
+      profile_image:
+        remove: Remover imagem do perfil
+        remove_description: Seu perfil voltará a usar o avatar padrão.
       org:
         admin:
           members: Membros da Organização

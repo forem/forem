@@ -35,6 +35,8 @@ export function fieldCharacterLimits() {
       '#user-profile-image-preview',
     );
 
+    if (!preview) return;
+
     fileReader.onload = function (event) {
       preview.setAttribute('src', event.target.result);
     };
