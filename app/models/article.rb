@@ -1786,7 +1786,7 @@ class Article < ApplicationRecord
       "path" => path,
       "type_of" => type_of,
       "published_at" => published_at&.iso8601,
-      "tag_list" => cached_tag_list.to_s.split(", "),
+      "tag_list" => cached_tag_list.to_s.split(",").map(&:strip).reject(&:blank?),
       "organization_id" => organization_id,
       "subforem_id" => subforem_id
     }

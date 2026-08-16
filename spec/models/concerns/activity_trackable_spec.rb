@@ -318,6 +318,25 @@ RSpec.describe ActivityTrackable do
       expect(names(result)).to eq(["comment_unreacted"])
     end
 
+    # Retired categories (published: false in reactions.yml, last created in
+    # 2018) are still reachable on the destroy path when an old article goes.
+    it "stays silent for retired reaction categories" do
+      result = emitted do
+        create(:reaction, user: user, reactable: article, category: "thinking")
+        create(:reaction, user: user, reactable: article, category: "hands")
+      end
+
+      expect(result).to be_empty
+    end
+
+    it "stays silent when a retired reaction is removed" do
+      reaction = create(:reaction, user: user, reactable: article, category: "thinking")
+
+      result = emitted { reaction.destroy }
+
+      expect(result).to be_empty
+    end
+
     it "stays silent when a privileged reaction is removed" do
       trusted = create(:user, :trusted)
       reaction = create(:vomit_reaction, user: trusted, reactable: article)

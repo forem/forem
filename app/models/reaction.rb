@@ -228,12 +228,13 @@ class Reaction < ApplicationRecord
     end
   end
 
-  # Privileged categories (vomit, thumbsup, thumbsdown) are moderation, not
-  # member activity, and vomit alone outnumbers every public reaction combined.
-  # Gated on privileged? rather than visible_to_public? because readinglist is
-  # published: false in reactions.yml.
+  # Public reactions plus readinglist, the same set as .for_analytics. Excludes
+  # privileged moderation categories (vomit alone outnumbers every public
+  # reaction combined) and retired ones (thinking, hands), which are all
+  # published: false in reactions.yml — as is readinglist, hence the explicit
+  # allowance for saves.
   def trackable_event_name(removed: false)
-    return if reaction_category.nil? || reaction_category.privileged?
+    return unless reaction_category&.visible_to_public? || category == "readinglist"
 
     case reactable_type
     when "Article"
