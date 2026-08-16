@@ -16,8 +16,14 @@ class DigestMailer < ApplicationMailer
 
     subject = generate_title
 
+    # The digest goes to an event-triggered campaign rather than a transactional
+    # message: campaigns are what carry conversion goals, and the digest is the
+    # one email whose own targeting depends on measuring engagement. With the
+    # Track-event flag off this payload still reaches Customer.io -- the App API
+    # renders the ActionMailer body instead, since no transactional message id
+    # is declared.
     customerio_delivery_options(
-      transactional_message_id: "dev_digest_email",
+      customerio_event_name: "dev_digest_ready",
       message_data: {
         "subject" => subject,
         "articles" => @articles.map { |article| digest_article_payload(article) },

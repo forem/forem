@@ -128,13 +128,13 @@ RSpec.describe DigestMailer do
         expect(email.message.delivery_method).to be_a(DeliveryMethods::CustomerIo)
       end
 
-      it "routes through the Customer.io digest template with the full payload", :aggregate_failures do
+      it "routes through the Customer.io digest campaign with the full payload", :aggregate_failures do
         article.update_columns(ai_summary: "An AI generated summary.", description: "Original description.")
 
         email = described_class.with(user: user, articles: [article, article2], feed_config_id: 12_345).digest_email
 
         settings = email.message.delivery_method.settings
-        expect(settings[:transactional_message_id]).to eq("dev_digest_email")
+        expect(settings[:customerio_event_name]).to eq("dev_digest_ready")
 
         data = settings[:message_data]
         expect(data["subject"]).to eq(email.subject)
