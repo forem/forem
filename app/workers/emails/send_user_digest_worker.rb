@@ -8,7 +8,15 @@ module Emails
       user = User.find_by(id: user_id)
       return unless user&.registered?
 
-      return if !force_send && !digest_eligible?(user)
+      # Mirrors EmailDigest#get_users. The cron already filters on both, but the
+      # worker is reachable directly -- perform_async on Forems that do not send
+      # the digest inline, and console sends -- so the guards belong here too.
+      #
+      # Moderation status is deliberately not overridable: force_send exists to
+      # bypass the digest consent check for manual and retry sends, not to email
+      # a suspended or spam-flagged account.
+      return if user.suspended? || user.spam?
+      return if !force_send && !user.notification_setting&.email_digest_periodic?
 
       collector = EmailDigestArticleCollector.new(user, force_send: force_send)
       articles = collector.articles_to_send
@@ -101,17 +109,6 @@ module Emails
         Honeybadger.context({ user_id: user.id, article_ids: articles.map(&:id) })
         Honeybadger.notify(e)
       end
-    end
-
-    private
-
-    # Mirrors EmailDigest#get_users. The cron already applies these, but the
-    # worker is also reachable directly -- perform_async on Forems that do not
-    # send the digest inline, and console sends -- so the guard belongs here too.
-    def digest_eligible?(user)
-      return false unless user.notification_setting&.email_digest_periodic?
-
-      !user.suspended? && !user.spam?
     end
   end
 end
