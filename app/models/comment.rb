@@ -276,15 +276,22 @@ class Comment < ApplicationRecord
   # counters, spaminess_rating and semantic_embedding, none of which are the
   # author doing something.
   def enqueue_trackable_event_updated
-    return unless trackable_changed_keys.include?("body_markdown")
+    changed_keys = trackable_changed_keys
+
+    # CommentsController#destroy soft deletes when the comment has replies and
+    # hard destroys when it does not, so removal has to be caught on both paths.
+    if changed_keys.include?("deleted")
+      enqueue_trackable_event("comment_deleted") if deleted?
+      return
+    end
+
+    return unless changed_keys.include?("body_markdown")
 
     enqueue_trackable_event("comment_updated")
   end
 
-  # Deletion is intentionally out of scope: the CDP consumer does not handle
-  # removals, so suppress the concern's default comment_destroyed emission.
   def enqueue_trackable_event_destroyed(*)
-    nil
+    enqueue_trackable_event("comment_deleted", user_ids: @_trackable_destroyed_user_ids)
   end
   private :enqueue_trackable_event_updated, :enqueue_trackable_event_destroyed
 

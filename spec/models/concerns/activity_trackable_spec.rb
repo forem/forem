@@ -131,18 +131,27 @@ RSpec.describe ActivityTrackable do
       expect(result).to be_empty
     end
 
-    it "stays silent when an article is unpublished" do
+    it "emits article_unpublished when an article goes back to draft" do
       article = create(:article, user: user)
 
       result = emitted do
         article.update!(body_markdown: article.body_markdown.sub("published: true", "published: false"))
       end
 
-      expect(result).to be_empty
+      expect(names(result)).to eq(["article_unpublished"])
     end
 
-    it "stays silent when an article is destroyed" do
+    it "emits article_deleted when a published article is destroyed" do
       article = create(:article, user: user)
+
+      result = emitted { article.destroy }
+
+      expect(names(result)).to eq(["article_deleted"])
+    end
+
+    # The CDP was never told the draft existed, so its removal is noise.
+    it "stays silent when a draft is destroyed" do
+      article = create(:article, user: user, published: false)
 
       result = emitted { article.destroy }
 
@@ -215,18 +224,29 @@ RSpec.describe ActivityTrackable do
       expect(result).to be_empty
     end
 
-    it "stays silent when a comment is soft deleted" do
+    # CommentsController#destroy soft deletes a comment with replies and hard
+    # destroys one without, so both paths have to report the removal.
+    it "emits comment_deleted when a comment is soft deleted" do
       comment = create(:comment, user: user, commentable: article)
 
       result = emitted { comment.update!(deleted: true) }
 
-      expect(result).to be_empty
+      expect(names(result)).to eq(["comment_deleted"])
     end
 
-    it "stays silent when a comment is destroyed" do
+    it "emits comment_deleted when a comment is destroyed" do
       comment = create(:comment, user: user, commentable: article)
 
       result = emitted { comment.destroy }
+
+      expect(names(result)).to eq(["comment_deleted"])
+    end
+
+    it "stays silent when a soft deleted comment is restored" do
+      comment = create(:comment, user: user, commentable: article)
+      comment.update!(deleted: true)
+
+      result = emitted { comment.update!(deleted: false) }
 
       expect(result).to be_empty
     end
@@ -279,12 +299,51 @@ RSpec.describe ActivityTrackable do
       expect(result).to be_empty
     end
 
-    it "stays silent when a reaction is toggled off" do
+    it "emits article_unreacted when a reaction is toggled off" do
       reaction = create(:reaction, user: user, reactable: article, category: "like")
 
       result = emitted { reaction.destroy }
 
+      expect(names(result)).to eq(["article_unreacted"])
+    end
+
+    it "emits article_unsaved when a readinglist reaction is removed" do
+      reaction = create(:reading_reaction, user: user, reactable: article)
+
+      result = emitted { reaction.destroy }
+
+      expect(names(result)).to eq(["article_unsaved"])
+    end
+
+    it "emits comment_unreacted when a comment reaction is removed" do
+      comment = create(:comment, commentable: article)
+      reaction = create(:reaction, user: user, reactable: comment, category: "like")
+
+      result = emitted { reaction.destroy }
+
+      expect(names(result)).to eq(["comment_unreacted"])
+    end
+
+    it "stays silent when a privileged reaction is removed" do
+      trusted = create(:user, :trusted)
+      reaction = create(:vomit_reaction, user: trusted, reactable: article)
+
+      result = emitted { reaction.destroy }
+
       expect(result).to be_empty
+    end
+
+    # Reactable declares has_many :reactions, dependent: :destroy, so deleting
+    # an article withdraws every reader's reaction too. Those events are keyed
+    # to the reactors, not the author.
+    it "emits removals for reactions cascaded by an article deletion" do
+      reactor = create(:user)
+      create(:reaction, user: reactor, reactable: article, category: "like")
+
+      result = emitted { article.destroy }
+
+      expect(names(result)).to include("article_unreacted")
+      expect(result.detect { |e| e[:name] == "article_unreacted" }[:user_ids]).to eq([reactor.id])
     end
 
     it "carries the reacted-on record and its author in the payload" do
@@ -297,6 +356,29 @@ RSpec.describe ActivityTrackable do
         "reactable_user_id" => article.user_id,
         "user_id" => user.id,
       )
+    end
+  end
+
+  # Banishing an account and deleting one both remove content with .delete /
+  # .delete_all / update_all, which bypass callbacks entirely, so none of these
+  # events fire on those paths regardless of the gate. Locking that in: a change
+  # to destroy would otherwise silently turn one banish into thousands of events.
+  describe "bulk moderation paths" do
+    it "emits nothing when a user's articles and comments are bulk deleted" do
+      article = create(:article, user: user)
+      create(:comment, user: user, commentable: article)
+
+      result = emitted { Users::DeleteArticles.call(user.reload) }
+
+      expect(result).to be_empty
+    end
+
+    it "emits nothing when auto-suspend unpublishes every post" do
+      create(:article, user: user)
+
+      result = emitted { user.articles.update_all(published: false) }
+
+      expect(result).to be_empty
     end
   end
 end

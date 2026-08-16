@@ -240,8 +240,13 @@ class Reaction < ApplicationRecord
     nil
   end
 
+  # Toggling a reaction off destroys the row. Without this the CDP's "has
+  # saved" / "has reacted" sets would only ever grow.
   def enqueue_trackable_event_destroyed(*)
-    nil
+    event = trackable_event_name(removed: true)
+    return unless event
+
+    enqueue_trackable_event(event, user_ids: @_trackable_destroyed_user_ids)
   end
 
   # Privileged categories (vomit, thumbsup, thumbsdown) are moderation
@@ -250,14 +255,18 @@ class Reaction < ApplicationRecord
   # never leave the box. readinglist is excluded from visible_to_public? too
   # (published: false in reactions.yml, since saves are private), so the gate
   # is privileged?, not visible_to_public?.
-  def trackable_event_name
+  def trackable_event_name(removed: false)
     return if reaction_category.nil? || reaction_category.privileged?
 
     case reactable_type
     when "Article"
-      category == "readinglist" ? "article_saved" : "article_reacted"
+      if category == "readinglist"
+        removed ? "article_unsaved" : "article_saved"
+      else
+        removed ? "article_unreacted" : "article_reacted"
+      end
     when "Comment"
-      "comment_reacted"
+      removed ? "comment_unreacted" : "comment_reacted"
     end
   end
   private :enqueue_trackable_event_created, :enqueue_trackable_event_updated,

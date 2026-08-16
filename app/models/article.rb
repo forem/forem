@@ -1815,7 +1815,7 @@ class Article < ApplicationRecord
     changed_keys = trackable_changed_keys
 
     if changed_keys.include?("published")
-      enqueue_publication_event if published?
+      published? ? enqueue_publication_event : enqueue_trackable_event("article_unpublished")
       return
     end
 
@@ -1825,10 +1825,13 @@ class Article < ApplicationRecord
     enqueue_trackable_event("article_updated")
   end
 
-  # Deletion is intentionally out of scope: the CDP consumer does not handle
-  # removals, so suppress the concern's default article_destroyed emission.
+  # Only a published article's removal tells the CDP anything: a draft was
+  # never announced, so its deletion would be noise. Uses the concern's
+  # before_destroy snapshot rather than re-reading the association.
   def enqueue_trackable_event_destroyed(*)
-    nil
+    return unless published?
+
+    enqueue_trackable_event("article_deleted", user_ids: @_trackable_destroyed_user_ids)
   end
 
   # A boost is the quickie composer on an article page (see
