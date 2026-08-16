@@ -1,0 +1,20 @@
+app/models/reaction.rb
+  h_f968154a99632d 219-223
+app/models/user_activity.rb
+  h_f968154a99632d 31,36
+db/migrate/20260812141500_add_alltime_reading_list_articles_to_user_activities.rb
+  h_f968154a99632d 1
+spec/models/reaction_spec.rb
+  h_f968154a99632d 549-562
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "5e8e87c0c9e558f13488ddce084d626c91fdbc64",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
