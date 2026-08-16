@@ -1,0 +1,25 @@
+spec/services/trackers/customerio_cdp_spec.rb
+  s_5b319532a74600::t_170d954ce75c89 94-97,99-105,108-110,113,117-120,122,125,127-130,133,139-142,145-151,153-155,163-164
+  s_5b319532a74600::t_c3f3fc55fb85eb 106-107
+app/services/trackers/customerio_cdp.rb
+  s_5b319532a74600::t_bdb6b24ff102d5 13-17
+  s_5b319532a74600::t_6f6e600398c017 28-32,34-39,41-43,46-49,56-60
+  s_5b319532a74600::t_c9a102ce381eec 61
+  s_5b319532a74600::t_078fbf1cb4cb49 50
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "856bc4f51ade7e3b52f6675c3043768a47ebdebb",
+  "prompts": {},
+  "sessions": {
+    "s_5b319532a74600": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4aaa04b8-231a-4a23-82ea-b602aa660d7f",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}
