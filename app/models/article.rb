@@ -1799,46 +1799,33 @@ class Article < ApplicationRecord
     }
   end
 
-  def enqueue_trackable_event_created
-    return unless published?
-
-    enqueue_publication_event
-  end
-
-  def enqueue_trackable_event_updated
-    changed_keys = trackable_changed_keys
-
-    if changed_keys.include?("published")
-      published? ? enqueue_publication_event : enqueue_trackable_event("article_unpublished")
-      return
+  # A draft was never announced, so neither its edits nor its deletion emit.
+  def trackable_activity_event(phase)
+    case phase
+    when :created then publication_event if published?
+    when :updated then trackable_update_event
+    when :destroyed then "article_deleted" if published?
     end
-
-    return unless published?
-    return unless changed_keys.intersect?(TRACKABLE_UPDATE_KEYS)
-
-    enqueue_trackable_event("article_updated")
   end
 
-  # A draft was never announced, so its deletion is noise.
-  def enqueue_trackable_event_destroyed(*)
+  def trackable_update_event
+    changed_keys = trackable_changed_keys
+    return (published? ? publication_event : "article_unpublished") if changed_keys.include?("published")
     return unless published?
 
-    enqueue_trackable_event("article_deleted", user_ids: @_trackable_destroyed_user_ids)
+    "article_updated" if changed_keys.intersect?(TRACKABLE_UPDATE_KEYS)
   end
 
   # The quickie composer (articleReactions.js) posts a status embedding the
   # boosted article, which emits article_boosted instead of article_published.
-  def enqueue_publication_event
+  def publication_event
     boosted_id = boosted_article_id
-    return enqueue_trackable_event("article_published") unless boosted_id
+    return "article_published" unless boosted_id
 
-    enqueue_trackable_event(
-      "article_boosted",
-      properties_override: {
-        "boosted_article_id" => boosted_id,
-        "boosted_article_user_id" => Article.where(id: boosted_id).pick(:user_id)
-      },
-    )
+    ["article_boosted", {
+      "boosted_article_id" => boosted_id,
+      "boosted_article_user_id" => Article.where(id: boosted_id).pick(:user_id)
+    }]
   end
 
   # body_url is an attr_accessor set during the create request, so this only
@@ -1849,8 +1836,7 @@ class Article < ApplicationRecord
     type, id = LiquidEmbedExtractor.derive_reference("embed", body_url)
     id if type == "Article"
   end
-  private :enqueue_trackable_event_created, :enqueue_trackable_event_updated,
-          :enqueue_trackable_event_destroyed, :enqueue_publication_event, :boosted_article_id
+  private :trackable_activity_event, :trackable_update_event, :publication_event, :boosted_article_id
 
   private
 

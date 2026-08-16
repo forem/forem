@@ -1,5 +1,6 @@
 # Shared gate for the Article/Comment/Reaction activity events sent to the
-# Customer.io CDP. Adopters must implement #trackable_actor.
+# Customer.io CDP. Adopters implement #trackable_actor and
+# #trackable_activity_event, which names the event for a lifecycle phase.
 module ActivityTrackable
   extend ActiveSupport::Concern
 
@@ -31,7 +32,33 @@ module ActivityTrackable
     [trackable_actor&.id]
   end
 
+  # Returns an event name, a [name, properties] pair, or nil to stay silent.
+  def trackable_activity_event(_phase)
+    raise NotImplementedError, "#{self.class.name} must implement #trackable_activity_event"
+  end
+
   private
+
+  def enqueue_trackable_event_created
+    emit_activity_event(:created)
+  end
+
+  def enqueue_trackable_event_updated
+    emit_activity_event(:updated)
+  end
+
+  # The concern snapshots user ids before_destroy, since the row is gone by the
+  # time the commit hook runs.
+  def enqueue_trackable_event_destroyed(*)
+    emit_activity_event(:destroyed, user_ids: @_trackable_destroyed_user_ids)
+  end
+
+  def emit_activity_event(phase, user_ids: nil)
+    name, properties = trackable_activity_event(phase)
+    return unless name
+
+    enqueue_trackable_event(name, user_ids: user_ids, properties_override: properties || {})
+  end
 
   def snapshot_trackable_changed_keys
     @trackable_changed_keys = saved_changes.keys

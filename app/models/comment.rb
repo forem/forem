@@ -271,26 +271,24 @@ class Comment < ApplicationRecord
     }
   end
 
-  # Only a body edit counts; rows churn on scores, counters and embeddings.
   # CommentsController#destroy soft deletes a comment with replies and hard
   # destroys one without, so removal is caught on both paths.
-  def enqueue_trackable_event_updated
-    changed_keys = trackable_changed_keys
-
-    if changed_keys.include?("deleted")
-      enqueue_trackable_event("comment_deleted") if deleted?
-      return
+  def trackable_activity_event(phase)
+    case phase
+    when :created then "comment_created"
+    when :updated then trackable_update_event
+    when :destroyed then "comment_deleted"
     end
-
-    return unless changed_keys.include?("body_markdown")
-
-    enqueue_trackable_event("comment_updated")
   end
 
-  def enqueue_trackable_event_destroyed(*)
-    enqueue_trackable_event("comment_deleted", user_ids: @_trackable_destroyed_user_ids)
+  # Only a body edit counts; rows churn on scores, counters and embeddings.
+  def trackable_update_event
+    changed_keys = trackable_changed_keys
+    return (deleted? ? "comment_deleted" : nil) if changed_keys.include?("deleted")
+
+    "comment_updated" if changed_keys.include?("body_markdown")
   end
-  private :enqueue_trackable_event_updated, :enqueue_trackable_event_destroyed
+  private :trackable_activity_event, :trackable_update_event
 
   private
 

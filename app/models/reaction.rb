@@ -226,23 +226,13 @@ class Reaction < ApplicationRecord
     }
   end
 
-  def enqueue_trackable_event_created
-    event = trackable_event_name
-    return unless event
-
-    enqueue_trackable_event(event)
-  end
-
-  # Never meaningfully edited; status flips are moderation bookkeeping.
-  def enqueue_trackable_event_updated
-    nil
-  end
-
-  def enqueue_trackable_event_destroyed(*)
-    event = trackable_event_name(removed: true)
-    return unless event
-
-    enqueue_trackable_event(event, user_ids: @_trackable_destroyed_user_ids)
+  # No :updated branch — reactions are created or destroyed, never edited;
+  # status flips are moderation bookkeeping.
+  def trackable_activity_event(phase)
+    case phase
+    when :created then trackable_event_name
+    when :destroyed then trackable_event_name(removed: true)
+    end
   end
 
   # Privileged categories (vomit, thumbsup, thumbsdown) are moderation, not
@@ -263,8 +253,7 @@ class Reaction < ApplicationRecord
       removed ? "comment_unreacted" : "comment_reacted"
     end
   end
-  private :enqueue_trackable_event_created, :enqueue_trackable_event_updated,
-          :enqueue_trackable_event_destroyed, :trackable_event_name
+  private :trackable_activity_event, :trackable_event_name
 
   private
 
