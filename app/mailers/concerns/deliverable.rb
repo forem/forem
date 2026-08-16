@@ -2,6 +2,7 @@ module Deliverable
   extend ActiveSupport::Concern
 
   CUSTOMERIO_FLAG = :customerio_email_delivery
+  CUSTOMERIO_TRACK_EVENT_FLAG = :customerio_track_event_delivery
 
   included do
     before_action :set_perform_deliveries
@@ -12,6 +13,10 @@ module Deliverable
   # transactional template id and its Liquid payload, e.g.
   #   customerio_delivery_options(transactional_message_id: "dev_new_reply_email",
   #                               message_data: { "comment" => ... })
+  # A mailer that belongs to an event-triggered campaign rather than a
+  # transactional message names the event instead, e.g.
+  #   customerio_delivery_options(customerio_event_name: "dev_digest_ready",
+  #                               message_data: { "articles" => [...] })
   # Ignored unless the message routes through Customer.io.
   def customerio_delivery_options(options)
     @customerio_delivery_options = (@customerio_delivery_options || {}).merge(options)
@@ -27,17 +32,20 @@ module Deliverable
       # send, so the per-message flag overrides the SMTP-based default above.
       message.perform_deliveries = true
       options = @customerio_delivery_options || {}
-      message.delivery_method(
-        DeliveryMethods::CustomerIo,
-        options.merge(
-          # identifiers are always controller-resolved and intentionally override
-          # anything passed via customerio_delivery_options.
-          identifiers: customerio_identifiers,
-          # layout data is a floor, not a ceiling: a mailer may override any of
-          # it by passing the same key through customerio_delivery_options.
-          message_data: layout_message_data.merge(options[:message_data] || {}),
-        ),
+      options = options.merge(
+        # identifiers are always controller-resolved and intentionally override
+        # anything passed via customerio_delivery_options.
+        identifiers: customerio_identifiers,
+        # layout data is a floor, not a ceiling: a mailer may override any of
+        # it by passing the same key through customerio_delivery_options.
+        message_data: layout_message_data.merge(options[:message_data] || {}),
       )
+
+      # Both methods receive the same options; each reads the keys it needs.
+      # customerio_event_name reaching the transactional path is harmless --
+      # Customerio::SendEmailRequest drops fields the App API does not define.
+      method = deliver_via_customerio_event? ? DeliveryMethods::CustomerIoEvent : DeliveryMethods::CustomerIo
+      message.delivery_method(method, options)
     else
       mail.delivery_method.settings.merge!(Settings::SMTP.settings)
     end
@@ -82,6 +90,25 @@ module Deliverable
       FeatureFlag.enabled_for_user?(CUSTOMERIO_FLAG, customerio_recipient)
     else
       FeatureFlag.enabled?(CUSTOMERIO_FLAG)
+    end
+  end
+
+  # Whether this message goes to a Customer.io campaign as a Track event rather
+  # than to a transactional message. Only reached once deliver_via_customerio?
+  # has already chosen Customer.io over SMTP: that flag picks the provider, this
+  # one picks which Customer.io product renders and sends.
+  #
+  # They are deliberately separate. The transactional flag can be widened per
+  # recipient at any time, whereas this one cannot be turned on before the
+  # campaign exists in the workspace and is subscribed to the right topic.
+  def deliver_via_customerio_event?
+    return false if @customerio_delivery_options&.dig(:customerio_event_name).blank?
+    return false unless ForemInstance.customerio_track_enabled?
+
+    if customerio_recipient
+      FeatureFlag.enabled_for_user?(CUSTOMERIO_TRACK_EVENT_FLAG, customerio_recipient)
+    else
+      FeatureFlag.enabled?(CUSTOMERIO_TRACK_EVENT_FLAG)
     end
   end
 

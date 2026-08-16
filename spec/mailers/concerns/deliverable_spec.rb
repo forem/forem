@@ -108,6 +108,95 @@ RSpec.describe Deliverable do
       expect(api_client).to have_received(:send_email)
     end
 
+    # A mailer that belongs to an event-triggered campaign names the event
+    # instead of a transactional message. Choosing Customer.io over SMTP and
+    # choosing an event over a transactional send are two separate decisions, so
+    # they are two separate flags.
+    describe "Track-event switching" do
+      let(:event_options) do
+        { customerio_event_name: "dev_digest_ready", message_data: { "a" => 1 } }
+      end
+
+      before do
+        FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+        allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_SITE_ID").and_return("site")
+        allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_TRACK_API_KEY").and_return("track-key")
+      end
+
+      after { FeatureFlag.remove(Deliverable::CUSTOMERIO_TRACK_EVENT_FLAG) }
+
+      it "routes to the event delivery method when the track flag is enabled for the recipient" do
+        FeatureFlag.enable(Deliverable::CUSTOMERIO_TRACK_EVENT_FLAG, FeatureFlag::Actor[user])
+
+        message = built_message(to: user.email, customerio_options: event_options)
+
+        expect(message.delivery_method).to be_a(DeliveryMethods::CustomerIoEvent)
+        expect(message.delivery_method.settings[:customerio_event_name]).to eq("dev_digest_ready")
+        expect(message.delivery_method.settings[:identifiers]).to eq(email: user.email)
+        expect(message.perform_deliveries).to be(true)
+      end
+
+      # The whole design rests on this: Rails keeps owning who/what/when
+      # because AhoyEmail::Observer writes its row after any delivery method
+      # returns, so send counts and the digest's suppression gate survive
+      # handing rendering to a campaign.
+      it "still records Ahoy delivery tracking (EmailMessage) on the event path" do
+        FeatureFlag.enable(Deliverable::CUSTOMERIO_TRACK_EVENT_FLAG, FeatureFlag::Actor[user])
+        track_client = instance_double(Customerio::Client, batch: nil)
+        stub_const("CUSTOMERIO_TRACK_API", track_client)
+
+        expect do
+          DeliverableTestMailer.with(to: user.email, customerio_options: event_options).test_email.deliver_now
+        end.to change(EmailMessage, :count).by(1)
+
+        expect(track_client).to have_received(:batch)
+      end
+
+      it "keeps a mailer that names no event on the transactional path" do
+        FeatureFlag.enable(Deliverable::CUSTOMERIO_TRACK_EVENT_FLAG, FeatureFlag::Actor[user])
+
+        message = built_message(
+          to: user.email,
+          customerio_options: { transactional_message_id: "dev_test" },
+        )
+
+        expect(message.delivery_method).to be_a(DeliveryMethods::CustomerIo)
+      end
+
+      it "falls back to the transactional path when the track flag is off for the recipient" do
+        FeatureFlag.enable(Deliverable::CUSTOMERIO_TRACK_EVENT_FLAG, FeatureFlag::Actor[create(:user)])
+
+        message = built_message(to: user.email, customerio_options: event_options)
+
+        expect(message.delivery_method).to be_a(DeliveryMethods::CustomerIo)
+      end
+
+      # DeliveryMethods::CustomerIo merges its settings straight into the
+      # send_email payload; the App API defines no such field, so the request
+      # must not carry it to Customer.io.
+      it "keeps customerio_event_name out of the transactional send_email payload" do
+        api_client = instance_double(Customerio::APIClient, send_email: { "delivery_id" => "x" })
+        stub_const("CUSTOMERIO_API", api_client)
+
+        DeliverableTestMailer.with(to: user.email, customerio_options: event_options).test_email.deliver_now
+
+        request = nil
+        expect(api_client).to have_received(:send_email) { |req| request = req }
+        expect(request.message).not_to have_key(:customerio_event_name)
+      end
+
+      # The flag can be enabled before the credentials are deployed; that must
+      # degrade to the transactional path rather than to a client with no auth.
+      it "stays on the transactional path when the Track API is not configured" do
+        allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_TRACK_API_KEY").and_return(nil)
+        FeatureFlag.enable(Deliverable::CUSTOMERIO_TRACK_EVENT_FLAG, FeatureFlag::Actor[user])
+
+        message = built_message(to: user.email, customerio_options: event_options)
+
+        expect(message.delivery_method).to be_a(DeliveryMethods::CustomerIo)
+      end
+    end
+
     describe "layout message data" do
       before do
         stub_const("DeliverableLayoutTestMailer", Class.new(ApplicationMailer) do
