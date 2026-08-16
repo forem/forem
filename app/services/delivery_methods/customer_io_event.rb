@@ -1,8 +1,9 @@
 module DeliveryMethods
   # ActionMailer delivery method that hands the message to a Customer.io
   # event-triggered campaign instead of sending it. Selected per message by the
-  # Deliverable concern when the mailer declares a customerio_event_name and the
-  # :customerio_track_event_delivery flag passes for the recipient.
+  # Deliverable concern when the mailer declares a customerio_event_name, the
+  # Track API credentials are configured, and the :customerio_email_delivery
+  # flag passes for the recipient.
   #
   # Rails still owns who, what and when; Customer.io owns rendering, sending and
   # conversion goals. Keeping ActionMailer in the loop is what makes that

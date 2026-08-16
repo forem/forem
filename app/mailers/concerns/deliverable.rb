@@ -2,7 +2,6 @@ module Deliverable
   extend ActiveSupport::Concern
 
   CUSTOMERIO_FLAG = :customerio_email_delivery
-  CUSTOMERIO_TRACK_EVENT_FLAG = :customerio_track_event_delivery
 
   included do
     before_action :set_perform_deliveries
@@ -95,21 +94,19 @@ module Deliverable
 
   # Whether this message goes to a Customer.io campaign as a Track event rather
   # than to a transactional message. Only reached once deliver_via_customerio?
-  # has already chosen Customer.io over SMTP: that flag picks the provider, this
-  # one picks which Customer.io product renders and sends.
+  # has already chosen Customer.io over SMTP: CUSTOMERIO_FLAG picks the
+  # provider, the mailer's own declaration picks which Customer.io product
+  # renders and sends. Both are per-message decisions the recipient's flag state
+  # does not need to distinguish.
   #
-  # They are deliberately separate. The transactional flag can be widened per
-  # recipient at any time, whereas this one cannot be turned on before the
-  # campaign exists in the workspace and is subscribed to the right topic.
+  # The Track API authenticates separately from the App API, so a Forem holding
+  # only the App key keeps every mailer on the transactional path -- which makes
+  # the credentials the deploy-time switch, and means the campaign can be built
+  # before anything is pointed at it.
   def deliver_via_customerio_event?
     return false if @customerio_delivery_options&.dig(:customerio_event_name).blank?
-    return false unless ForemInstance.customerio_track_enabled?
 
-    if customerio_recipient
-      FeatureFlag.enabled_for_user?(CUSTOMERIO_TRACK_EVENT_FLAG, customerio_recipient)
-    else
-      FeatureFlag.enabled?(CUSTOMERIO_TRACK_EVENT_FLAG)
-    end
+    ForemInstance.customerio_track_enabled?
   end
 
   # The flag check and Customer.io identifiers both key off mail.to.first:
