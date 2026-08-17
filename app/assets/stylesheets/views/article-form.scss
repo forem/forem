@@ -322,3 +322,49 @@
     }
   }
 }
+
+.crayons-ai-option {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--su-3);
+  padding: var(--su-3) var(--su-4);
+  border: 1px solid var(--base-20);
+  border-radius: var(--radius);
+  background-color: var(--card-bg, var(--base-0));
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 150ms ease, border-color 150ms ease, transform 100ms ease, box-shadow 150ms ease;
+
+  &:hover {
+    background-color: var(--base-5, rgba(0, 0, 0, 0.025));
+    border-color: var(--base-40);
+  }
+
+  &:active {
+    background-color: var(--base-10, rgba(0, 0, 0, 0.06));
+    border-color: var(--accent-brand);
+    transform: scale(0.99);
+  }
+
+  &--selected {
+    border-color: var(--accent-brand);
+    background-color: rgba(var(--accent-brand-rgb, 59, 73, 223), 0.05);
+    box-shadow: 0 0 0 1px var(--accent-brand);
+
+    &:hover {
+      background-color: rgba(var(--accent-brand-rgb, 59, 73, 223), 0.08);
+      border-color: var(--accent-brand);
+    }
+
+    &:active {
+      background-color: rgba(var(--accent-brand-rgb, 59, 73, 223), 0.12);
+      border-color: var(--accent-brand);
+      transform: scale(0.99);
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus, var(--accent-brand));
+    outline-offset: 2px;
+  }
+}

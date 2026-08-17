@@ -98,10 +98,8 @@ export const AiDisclosureModal = ({
                     handleSelect(opt.value);
                   }
                 }}
-                className={`p-3 radius-default border cursor-pointer transition-all flex items-start gap-3 ${
-                  isSelected
-                    ? 'border-accent-brand bg-base-subtle shadow-sm ring-1 ring-accent-brand'
-                    : 'border-base-20 hover:border-base-40 bg-base'
+                className={`crayons-ai-option ${
+                  isSelected ? 'crayons-ai-option--selected' : ''
                 }`}
               >
                 <input
