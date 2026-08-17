@@ -31,10 +31,11 @@ module Users
     TOKEN_TTL = 31.days
 
     def call(user)
-      host = Subforem.cached_id_to_domain_hash[user.onboarding_subforem_id]
+      subforem_id = user.onboarding_subforem_id
+      host = Subforem.cached_id_to_domain_hash[subforem_id]
 
       {
-        "signed_up_with_html" => view_context.signed_up_with(user),
+        "signed_up_with_html" => ViewContext.new(URL.domain(host), subforem_id).signed_up_with(user),
         "unsubscribe_url" => unsubscribe_url(user, host),
         "notification_settings_url" => URL.url("/settings/notifications", host)
       }
@@ -66,12 +67,33 @@ module Users
     # AuthenticationHelper#signed_up_with needs both the helper and the route
     # helpers; ApplicationController.helpers carries only the former, which is
     # why ApplicationMailer declares them together.
-    def view_context
-      @view_context ||= Class.new do
-        include Rails.application.routes.url_helpers
-        include ActionView::Helpers::TranslationHelper
-        include AuthenticationHelper
-      end.new
+    #
+    # The host must be passed in explicitly. Production sets
+    # Rails.application.routes.default_url_options to the protocol ALONE
+    # (config/environments/production.rb), so new_magic_link_url raises
+    # "Missing host to link to!" without it -- while the test and development
+    # envs both set a host there, which is exactly why a spec relying on the
+    # ambient default cannot catch this. See the spec that stubs the production
+    # shape.
+    class ViewContext
+      include Rails.application.routes.url_helpers
+      include ActionView::Helpers::TranslationHelper
+      include AuthenticationHelper
+
+      # signed_up_with resolves the community name from `try(:subforem_id)`, so
+      # this has to answer to it or the copy says "DEV Community" while the URLs
+      # beside it point at the user's own subforem. ApplicationMailer exposes the
+      # same reader as a helper_method for exactly this reason.
+      attr_reader :subforem_id
+
+      def initialize(host, subforem_id = nil)
+        @host = host
+        @subforem_id = subforem_id
+      end
+
+      def default_url_options
+        Rails.application.routes.default_url_options.merge(host: @host)
+      end
     end
   end
 end
