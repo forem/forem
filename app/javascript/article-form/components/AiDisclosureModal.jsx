@@ -5,12 +5,6 @@ import { Modal, ButtonNew as Button } from '@crayons';
 
 const OPTIONS = [
   {
-    value: 'not_disclosed',
-    title: 'Not Disclosed',
-    description: 'No disclosure specified. Use this if AI disclosure does not apply or is unstated.',
-    badge: 'Unstated',
-  },
-  {
     value: 'no_ai',
     title: 'No AI',
     description: 'Written entirely by a human without meaningful assistance from AI generation tools.',
@@ -56,6 +50,20 @@ export const AiDisclosureModal = ({
     }
   };
 
+  const handleClear = () => {
+    setSelected('not_disclosed');
+    if (typeof onChange === 'function') {
+      onChange({
+        preventDefault: () => {},
+        stopPropagation: () => {},
+        target: {
+          name: 'aiDisclosureLevel',
+          value: 'not_disclosed',
+        },
+      });
+    }
+  };
+
   const handleSave = () => {
     onClose();
   };
@@ -76,7 +84,7 @@ export const AiDisclosureModal = ({
 
         <div className="flex flex-col gap-3">
           {OPTIONS.map((opt) => {
-            const isSelected = (selected || 'not_disclosed') === opt.value;
+            const isSelected = selected === opt.value;
             return (
               <div
                 key={opt.value}
@@ -130,7 +138,14 @@ export const AiDisclosureModal = ({
           })}
         </div>
       </div>
-      <div className="flex justify-end gap-2 p-4 border-t border-base-20">
+      <div className="flex justify-between items-center gap-2 p-4 border-t border-base-20">
+        <div>
+          {selected && selected !== 'not_disclosed' && (
+            <Button variant="ghost" onClick={handleClear}>
+              Clear selection
+            </Button>
+          )}
+        </div>
         <Button variant="primary" onClick={handleSave}>
           Done
         </Button>
