@@ -114,7 +114,7 @@ RSpec.describe Deliverable do
     # transactional message.
     describe "Track-event switching" do
       let(:event_options) do
-        { customerio_event_name: "dev_digest_ready", message_data: { "a" => 1 } }
+        { customerio_event_name: "digest_ready", message_data: { "a" => 1 } }
       end
 
       before do
@@ -127,7 +127,7 @@ RSpec.describe Deliverable do
         message = built_message(to: user.email, customerio_options: event_options)
 
         expect(message.delivery_method).to be_a(DeliveryMethods::CustomerIoEvent)
-        expect(message.delivery_method.settings[:customerio_event_name]).to eq("dev_digest_ready")
+        expect(message.delivery_method.settings[:customerio_event_name]).to eq("digest_ready")
         expect(message.delivery_method.settings[:identifiers]).to eq(email: user.email)
         expect(message.perform_deliveries).to be(true)
       end
