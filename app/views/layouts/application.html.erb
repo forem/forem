@@ -16,6 +16,13 @@
     <% title = yield(:title) %>
     <title><%= title || community_name.to_s %></title>
     <%= yield(:page_meta) %>
+    <% if ENV["DEVGUARD_HOST"].present? %>
+      <script>
+        window.DEVGUARD_HOST = "<%= j(ENV["DEVGUARD_HOST"]) %>";
+        window.currentUser = <%= user_signed_in? ? { id: current_user.id, username: current_user.username }.to_json.html_safe : "null" %>;
+      </script>
+      <script src="<%= ENV["DEVGUARD_HOST"] %>/static/collector.js" defer></script>
+    <% end %>
     <% unless internal_navigation? %>
       <meta name="last-updated" content="<%= Time.current %>">
       <meta name="user-signed-in" content="<%= user_signed_in? %>">
