@@ -1,0 +1,31 @@
+spec/services/trackers/customerio_cdp_spec.rb
+  s_528e524afc5d88::t_3d56d2b6874b1a 100
+  s_528e524afc5d88::t_3b398cfec890eb 140
+  s_528e524afc5d88::t_709212c1bd2966 198,203,206,211
+  s_528e524afc5d88::t_4289edf253b23a 129
+  s_528e524afc5d88::t_aa701a6b1636a1 186-197,199-202,204-205,207-210,212-225
+app/services/trackers/customerio_cdp.rb
+  s_528e524afc5d88::t_3edbb476bf85c3 44-45,49
+  s_528e524afc5d88::t_9755e690c07a09 61-63,67-69
+  s_528e524afc5d88::t_6a981be57055d1 19-21
+  s_528e524afc5d88::t_9f3aba4dd3ac16 64-66
+.env_sample
+  s_528e524afc5d88::t_5f3e038b77c931 7-8
+  s_528e524afc5d88::t_53dc6d52e3882c 6,9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "3711247d8360c8d580f05ad73b364f1d4a2eb6ef",
+  "prompts": {},
+  "sessions": {
+    "s_528e524afc5d88": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b5367ae-d64c-420a-b8e3-6fa0c96d3de6",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}
