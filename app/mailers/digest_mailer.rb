@@ -23,7 +23,9 @@ class DigestMailer < ApplicationMailer
     # renders the ActionMailer body instead, since no transactional message id
     # is declared.
     customerio_delivery_options(
-      customerio_event_name: "dev_digest_ready",
+      # Bare name: DeliveryMethods::CustomerIoEvent namespaces it with APP_NAME
+      # at send time, so this reaches Customer.io as "dev_prod_digest_ready".
+      customerio_event_name: "digest_ready",
       message_data: {
         "subject" => subject,
         "articles" => @articles.map { |article| digest_article_payload(article) },

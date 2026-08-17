@@ -14,8 +14,10 @@ module Deliverable
   #                               message_data: { "comment" => ... })
   # A mailer that belongs to an event-triggered campaign rather than a
   # transactional message names the event instead, e.g.
-  #   customerio_delivery_options(customerio_event_name: "dev_digest_ready",
+  #   customerio_delivery_options(customerio_event_name: "digest_ready",
   #                               message_data: { "articles" => [...] })
+  # Name the event bare: DeliveryMethods::CustomerIoEvent splices in the
+  # deploy's APP_NAME before sending it.
   # Ignored unless the message routes through Customer.io.
   def customerio_delivery_options(options)
     @customerio_delivery_options = (@customerio_delivery_options || {}).merge(options)
