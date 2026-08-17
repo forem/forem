@@ -26,6 +26,12 @@ module Deliverable
   end
 
   def set_delivery_options
+    # A mailer action may decline to send by returning before mail() -- Rails
+    # then swaps in a NullMail. Every branch below touches mail(), which with
+    # @_mail_was_called still false would render the message the action
+    # deliberately skipped, and blow up on its unset ivars.
+    return unless @_mail_was_called
+
     if deliver_via_customerio?
       # Deliverable on a Customer.io-only instance (no SMTP creds) must still
       # send, so the per-message flag overrides the SMTP-based default above.
