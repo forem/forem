@@ -139,6 +139,30 @@ RSpec.describe CustomMailer, type: :mailer do
       include_examples "#renders_one_click_unsubscribe_headers"
     end
 
+    context "when the Customer.io cutover is complete" do
+      let(:email) { create(:email, type_of: "newsletter") }
+
+      before do
+        allow(ForemInstance).to receive_messages(smtp_enabled?: true, customerio_email_cutover?: true)
+      end
+
+      it "sends nothing -- broadcasts are authored in Customer.io" do
+        expect do
+          described_class.with(
+            user: user, content: content, subject: subject, email_id: email.id,
+          ).custom_email.deliver_now
+        end.not_to change(ActionMailer::Base.deliveries, :count)
+      end
+
+      it "does not record an ahoy message" do
+        expect do
+          described_class.with(
+            user: user, content: content, subject: subject, email_id: email.id,
+          ).custom_email.deliver_now
+        end.not_to change(EmailMessage, :count)
+      end
+    end
+
     context "when SendGrid is disabled" do
       before do
         allow(ForemInstance).to receive(:sendgrid_enabled?).and_return(false)
