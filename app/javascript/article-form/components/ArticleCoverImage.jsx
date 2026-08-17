@@ -23,7 +23,7 @@ const NativeIosImageUpload = ({
       <Button
         variant="outlined"
         className="mr-2 whitespace-nowrap"
-        style={{minHeight: '2.5rem', display: 'inline-flex', alignItems: 'center'}}
+        style={{ minHeight: '2.5rem', display: 'inline-flex', alignItems: 'center' }}
         {...extraProps}
       >
         {uploadLabel}
@@ -35,47 +35,47 @@ const NativeIosImageUpload = ({
 const ImageOptionsModal = ({ onClose, onUpload, onGenerate, aiAvailable }) => {
   return (
     <div className="crayons-modal crayons-modal--m" data-testid="image-options-modal">
-      <div 
-        className="crayons-modal__box" 
-        role="dialog" 
+      <div
+        className="crayons-modal__box"
+        role="dialog"
         aria-labelledby="image-options-modal-title"
       >
         <div className="crayons-modal__box__header">
           <h2 id="image-options-modal-title" className="crayons-subtitle-2">Add Cover Image</h2>
-          <button 
-            onClick={onClose} 
-            className="crayons-btn crayons-btn--ghost crayons-btn--icon" 
+          <button
+            onClick={onClose}
+            className="crayons-btn crayons-btn--ghost crayons-btn--icon"
             aria-label="Close"
-            style={{maxWidth: '60px'}}
+            style={{ maxWidth: '60px' }}
             type="button"
           >
             <svg width="24" height="24" viewBox="0 0 24 24" class="crayons-icon" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"/>
+              <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" />
             </svg>
           </button>
         </div>
         <div className="crayons-modal__box__body">
           <div className="flex flex-col gap-2">
-            <Button 
-              variant="outlined" 
+            <Button
+              variant="outlined"
               onClick={() => {
                 onUpload();
                 onClose();
               }}
               className="w-100"
-              style={{minHeight: '2.5rem'}}
+              style={{ minHeight: '2.5rem' }}
             >
               Upload Image
             </Button>
             {aiAvailable && (
-              <Button 
-                variant="outlined" 
+              <Button
+                variant="outlined"
                 onClick={() => {
                   onGenerate();
                   onClose();
                 }}
                 className="w-100"
-                style={{minHeight: '2.5rem'}}
+                style={{ minHeight: '2.5rem' }}
               >
                 🍌 Generate Image
               </Button>
@@ -110,7 +110,7 @@ const StandardImageUpload = ({
   onCloseImageOptionsModal,
 }) => {
   const showAiButton = aiAvailable;
-  
+
   if (isUploadingImage) return null;
 
   // Mobile layout: 2 buttons (Image and Video)
@@ -123,7 +123,7 @@ const StandardImageUpload = ({
             variant="outlined"
             onClick={onImageButtonClick}
             className="mr-2 whitespace-nowrap"
-            style={{minHeight: '2.5rem', display: 'inline-flex', alignItems: 'center'}}
+            style={{ minHeight: '2.5rem', display: 'inline-flex', alignItems: 'center' }}
             data-testid="mobile-cover-image-btn"
           >
             Add Cover Image
@@ -159,7 +159,7 @@ const StandardImageUpload = ({
       </Fragment>
     );
   }
-  
+
   // Desktop layout: 3 buttons (Upload, Generate, Video)
   // Hide image buttons if video is selected
   if (videoSourceUrl) {
@@ -175,7 +175,7 @@ const StandardImageUpload = ({
 
   return (
     <Fragment>
-      <label className="cursor-pointer crayons-btn crayons-btn--outlined crayons-tooltip__activator mr-2 whitespace-nowrap" style={{minHeight: '2.5rem', display: 'inline-flex', alignItems: 'center'}}>
+      <label className="cursor-pointer crayons-btn crayons-btn--outlined crayons-tooltip__activator mr-2 whitespace-nowrap" style={{ minHeight: '2.5rem', display: 'inline-flex', alignItems: 'center' }}>
         {uploadLabel}
         <input
           data-testid="cover-image-input"
@@ -186,18 +186,18 @@ const StandardImageUpload = ({
           className="screen-reader-only"
           data-max-file-size-mb="25"
         />
-        <span data-testid="tooltip" className="crayons-tooltip__content" style={{minWidth:'190px'}}>
-         {coverImageCrop === 'crop' ? `Use a ratio of 1000:${coverImageHeight} ` : 'Minimum 1000px wide '}
-         for best results. 
+        <span data-testid="tooltip" className="crayons-tooltip__content" style={{ minWidth: '190px' }}>
+          {coverImageCrop === 'crop' ? `Use a ratio of 1000:${coverImageHeight} ` : 'Minimum 1000px wide '}
+          for best results.
         </span>
       </label>
       {showAiButton && (
-        <Button 
-          variant="outlined" 
+        <Button
+          variant="outlined"
           onClick={onGenerateClick}
           className="mr-2 whitespace-nowrap"
           data-testid="generate-ai-image-btn"
-          style={{minHeight: '2.5rem', display: 'inline-flex', alignItems: 'center'}}
+          style={{ minHeight: '2.5rem', display: 'inline-flex', alignItems: 'center' }}
         >
           🍌 Generate Image
         </Button>
@@ -222,23 +222,23 @@ const AiImagePromptModal = ({ onClose, onGenerate, isGenerating }) => {
 
   return (
     <div className="crayons-modal crayons-modal--m" data-testid="ai-prompt-modal">
-      <div 
-        className="crayons-modal__box" 
-        role="dialog" 
+      <div
+        className="crayons-modal__box"
+        role="dialog"
         aria-labelledby="ai-modal-title"
         aria-describedby="ai-modal-desc"
       >
         <div className="crayons-modal__box__header">
           <h2 id="ai-modal-title" className="crayons-subtitle-2">Generate Cover Image with Instructions 🍌</h2>
           {!isGenerating && (
-            <button 
-              onClick={onClose} 
-              className="crayons-btn crayons-btn--ghost crayons-btn--icon" 
+            <button
+              onClick={onClose}
+              className="crayons-btn crayons-btn--ghost crayons-btn--icon"
               aria-label="Close"
               type="button"
             >
               <svg width="24" height="24" viewBox="0 0 24 24" class="crayons-icon" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"/>
+                <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" />
               </svg>
             </button>
           )}
@@ -265,8 +265,8 @@ const AiImagePromptModal = ({ onClose, onGenerate, isGenerating }) => {
               />
             </div>
             <div className="flex gap-2">
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 disabled={isGenerating || !prompt.trim()}
                 data-testid="generate-submit-btn"
               >
@@ -286,12 +286,12 @@ const AiImagePromptModal = ({ onClose, onGenerate, isGenerating }) => {
             </div>
           </form>
         </div>
-        <div className="crayons-modal__box__footer" style={{borderTop: '1px solid var(--base-20)', paddingTop: '1rem'}}>
-          <p className="color-base-60 fs-s pb-4" style={{paddingLeft: '5%'}}>
+        <div className="crayons-modal__box__footer" style={{ borderTop: '1px solid var(--base-20)', paddingTop: '1rem' }}>
+          <p className="color-base-60 fs-s pb-4" style={{ paddingLeft: '5%' }}>
             Curious how this works? The Forem codebase is{' '}
-            <a 
-              href="https://github.com/forem/forem/blob/main/app/services/ai/image_generator.rb" 
-              target="_blank" 
+            <a
+              href="https://github.com/forem/forem/blob/main/app/services/ai/image_generator.rb"
+              target="_blank"
               rel="noopener noreferrer"
               className="c-link"
             >
@@ -317,7 +317,7 @@ export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage, coverImageH
 
   // Parse video URL to get embed URL and thumbnail
   const videoInfo = useMemo(() => {
-    if (!videoSourceUrl) return null;
+    if (!videoSourceUrl || videoSourceUrl.trim() === "") return null; // Added trim check
     return parseVideoUrl(videoSourceUrl);
   }, [videoSourceUrl]);
 
@@ -474,9 +474,9 @@ export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage, coverImageH
   // The props are unwrapped (using spread operator) in the button below
   const extraProps = useNativeUpload()
     ? {
-        onClick: initNativeImagePicker,
-        'aria-label': 'Upload cover image',
-      }
+      onClick: initNativeImagePicker,
+      'aria-label': 'Upload cover image',
+    }
     : {};
 
   // Native Bridge messages come through ForemMobile events
@@ -505,9 +505,9 @@ export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage, coverImageH
                 <img
                   src={videoThumbnail}
                   alt="Video thumbnail"
-                  style={{ 
-                    width: '100%', 
-                    height: '100%', 
+                  style={{
+                    width: '100%',
+                    height: '100%',
                     objectFit: 'cover',
                     objectPosition: 'center',
                     marginRight: '10px',
@@ -556,21 +556,21 @@ export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage, coverImageH
               )}
 
               {mainImage && !uploadingImage && (
-                <Button 
-                  variant="ghost-danger" 
+                <Button
+                  variant="ghost-danger"
                   onClick={triggerMainImageRemoval}
                   className="whitespace-nowrap"
-                  style={{minHeight: '2.5rem', display: 'inline-flex', alignItems: 'center'}}
+                  style={{ minHeight: '2.5rem', display: 'inline-flex', alignItems: 'center' }}
                 >
                   Remove
                 </Button>
               )}
               {videoSourceUrl && !uploadingImage && !mainImage && (
-                <Button 
-                  variant="ghost-danger" 
+                <Button
+                  variant="ghost-danger"
                   onClick={triggerVideoRemoval}
                   className="whitespace-nowrap"
-                  style={{minHeight: '2.5rem', display: 'inline-flex', alignItems: 'center'}}
+                  style={{ minHeight: '2.5rem', display: 'inline-flex', alignItems: 'center' }}
                   data-testid="remove-video-cover-btn"
                 >
                   Remove
@@ -583,9 +583,9 @@ export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage, coverImageH
           )}
         </div>
       </DragAndDropZone>
-      
+
       {showAiPrompt && (
-        <AiImagePromptModal 
+        <AiImagePromptModal
           onClose={handleCloseAiPrompt}
           onGenerate={handleAiGenerate}
           isGenerating={generatingAiImage}

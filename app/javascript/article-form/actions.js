@@ -1,36 +1,48 @@
 import { validateFileInputs } from '../packs/validateFileInputs';
 
 function getCsrfToken() {
-  return document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || window.csrfToken;
+  return (
+    document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ||
+    window.csrfToken
+  );
 }
 
-export function previewArticle(payload, successCb, failureCb) {
+/**
+ * Preview an article body.
+ * IMPORTANT: The backend preview action expects params[:article_body] to be a STRING. [2](https://dev.to/devteam/documenting-the-forem-v1-api-15ck)
+ */
+export function previewArticle(bodyMarkdown, onSuccess, onFailure) {
+  const csrf = getCsrfToken();
+
   fetch('/articles/preview', {
     method: 'POST',
     headers: {
-      Accept: 'application/json',
-      'X-CSRF-Token': getCsrfToken(),
       'Content-Type': 'application/json',
+      ...(csrf ? { 'X-CSRF-Token': csrf } : {}),
     },
-    body: JSON.stringify({
-      article_body: payload,
-    }),
     credentials: 'same-origin',
+    body: JSON.stringify({
+      article_body: bodyMarkdown,
+    }),
   })
-    .then(async (response) => {
-      const payload = await response.json();
-
-      if (response.status !== 200) {
-        throw payload;
+    .then(async (res) => {
+      // Read as text first to avoid JSON parse exceptions when server responds with HTML.
+      const text = await res.text();
+      let data = {};
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch (_e) {
+        data = { base: ['Preview response was not valid JSON.'] };
       }
 
-      return payload;
+      if (!res.ok) throw data;
+      return data;
     })
-    .then(successCb)
-    .catch(failureCb);
+    .then((data) => onSuccess?.(data))
+    .catch((err) => onFailure?.(err));
 }
 
-export function getArticle() {}
+export function getArticle() { }
 
 export function processPayload(payload) {
   const {
@@ -100,7 +112,12 @@ export function generateMainImage({ payload, successCb, failureCb, signal }) {
     credentials: 'same-origin',
     signal,
   })
-    .then((response) => response.json())
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('An error occurred, please try again later');
+      }
+      return response.json();
+    })
     .then((json) => {
       if (json.error) {
         throw new Error(json.error);
@@ -160,17 +177,17 @@ export function generateAiImage({ prompt, successCb, failureCb, signal }) {
     })
     .catch((error) => {
       clearTimeout(timeoutId);
-      // Ensure the error message is a clean string, not HTML
-      const errorMessage = error.message && !error.message.includes('<html') 
-        ? error.message 
-        : 'An error occurred, please try again later';
+      const errorMessage =
+        error.message && !error.message.includes('<html')
+          ? error.message
+          : 'An error occurred, please try again later';
       failureCb(new Error(errorMessage));
     });
 }
 
 /**
  * Processes images for upload.
- *
+ * 
  * @param {FileList} images Images to be uploaded.
  * @param {Function} handleImageSuccess The handler that runs when the image is uploaded successfully.
  * @param {Function} handleImageFailure The handler that runs when the image upload fails.
