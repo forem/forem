@@ -71,8 +71,48 @@ RSpec.describe User do
       user = create(:user)
       expect(user.trackable_payload.keys).to contain_exactly(
         "id", "username", "email", "name", "registered_at", "confirmed_at", "email_newsletter",
-        "email_digest_periodic", "mlh_user_id"
+        "email_digest_periodic", "mlh_user_id",
+        "signed_up_with_html", "unsubscribe_url", "notification_settings_url"
       )
+    end
+
+    # Customer.io fails the ENTIRE body render of a template that references an
+    # event attribute the triggering event does not carry, and fails on the first
+    # such reference -- so these three must always be present, even when blank.
+    it "always carries the three email footer keys, whatever else is missing" do
+      user = create(:user)
+      allow(Users::EmailFooterPayload).to receive(:unsubscribe_token).and_raise(StandardError, "boom")
+
+      payload = user.trackable_payload
+
+      expect(payload).to include(
+        "signed_up_with_html" => "",
+        "unsubscribe_url" => "",
+        "notification_settings_url" => "",
+      )
+    end
+
+    it "carries a one-click unsubscribe url that the unsubscribe controller accepts" do
+      user = create(:user)
+
+      url = user.trackable_payload["unsubscribe_url"]
+      token = Rack::Utils.parse_query(URI.parse(url).query)["ut"]
+      verified = Rails.application.message_verifier(:unsubscribe).verify(token).with_indifferent_access
+
+      expect(URI.parse(url).path).to eq("/email_subscriptions/unsubscribe")
+      expect(verified[:user_id]).to eq(user.id)
+      expect(verified[:email_type]).to eq("email_newsletter")
+      expect(Time.zone.parse(verified[:expires_at])).to be > Time.current
+    end
+
+    it "points the footer at the user's onboarding subforem" do
+      subforem = create(:subforem, domain: "onboarding.example.com")
+      user = create(:user, onboarding_subforem_id: subforem.id)
+
+      payload = user.trackable_payload
+
+      expect(URI.parse(payload["unsubscribe_url"]).host).to eq("onboarding.example.com")
+      expect(payload["notification_settings_url"]).to end_with("/settings/notifications")
     end
 
     it "reflects registration, confirmation, and email consent state in the payload" do
@@ -1217,6 +1257,14 @@ RSpec.describe User do
 
       expect(Reaction).not_to receive(:readinglist_for_user)
       expect(user.cached_reading_list_article_ids).to contain_exactly(article1.id, article2.id)
+    end
+
+    it "limits cached_reading_list_article_ids to at most 1000 items" do
+      large_id_list = (1..1005).to_a
+      create(:user_activity, user: user, alltime_reading_list_articles: large_id_list)
+
+      expect(user.cached_reading_list_article_ids.length).to eq(1000)
+      expect(user.cached_reading_list_article_ids).to eq((1..1000).to_a)
     end
 
     it "has an accurate agent_sessions_count using counter cache" do

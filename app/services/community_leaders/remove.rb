@@ -21,8 +21,12 @@ module CommunityLeaders
         end
       end
 
-      # Bust user info cache if needed
-      user.touch if changed
+      if changed
+        # Bust user info cache
+        user.touch
+        # And remove leader icon from user's articles
+        Users::ResaveArticlesWorker.perform_async(user.id)
+      end
 
       Result.new(success?: true)
     end

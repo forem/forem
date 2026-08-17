@@ -11,6 +11,20 @@ module Api
         "Good standing", "Suspended", "Spam", "Warned",
         "Comment Suspended", "Trusted", "Limited"
       ].freeze
+      # Email notification columns writable through this endpoint. These are
+      # the user-consent settings an external system of record may push back
+      # onto the account. Mobile and in-app columns are excluded, as are the
+      # moderator newsletters, which are driven by role changes rather than by
+      # the user's own choice.
+      ALLOWED_NOTIFICATION_SETTINGS = %i[
+        email_newsletter
+        email_digest_periodic
+        email_comment_notifications
+        email_follower_notifications
+        email_mention_notifications
+        email_unread_notifications
+        email_badge_notifications
+      ].freeze
 
       def index
         users = filtered_users
@@ -101,19 +115,19 @@ module Api
         render json: { id: @user_record.id, status: status }
       end
 
-      # Lets MLH Core push consent changes (its dev-newsletter opt-outs) back
-      # onto the DEV account's local notification settings, which DEV's own
-      # senders (digest, newsletter) key off. Writes through the model so the
-      # normal callbacks fire (Mailchimp sync, and the CDP newsletter events
-      # once enabled) - the resulting echo event is value-idempotent on the
-      # Core side.
+      # Lets an external system of record push consent changes (its
+      # dev-newsletter opt-outs) back onto the DEV account's local
+      # notification settings, which DEV's own senders (digest, newsletter)
+      # key off. Writes through the model so the normal callbacks fire
+      # (Mailchimp sync, and the CDP newsletter events once enabled) - the
+      # resulting echo event is value-idempotent on that system's side.
       def update_notification_settings
         @user_record = User.find(params[:id])
         # Handle the missing wrapper here rather than via params.require, so
         # the caller gets the admin API error_code instead of a generic
         # ParameterMissing 422.
         wrapper = params[:notification_setting]
-        updates = wrapper.respond_to?(:permit) ? wrapper.permit(:email_newsletter) : {}
+        updates = wrapper.respond_to?(:permit) ? wrapper.permit(*ALLOWED_NOTIFICATION_SETTINGS) : {}
         if updates.blank?
           raise Api::Admin::ApiError.new(:invalid_notification_settings,
                                          I18n.t("admin_api.errors.invalid_notification_settings"),
@@ -121,21 +135,22 @@ module Api
         end
 
         setting = @user_record.notification_setting
-        # This endpoint carries MLH Core's OWN consent state (its dev
-        # newsletter opt-outs/opt-ins). Emitting the CDP newsletter events
-        # here would make Core consume its own push as a user consent
-        # change — destroying the layered global-unsubscribe vs
-        # list-preference distinction. Model callbacks that aren't CDP
-        # emission (Mailchimp sync, base_email_eligible) still run.
+        # This endpoint carries an external system of record's OWN consent
+        # state (its dev newsletter opt-outs/opt-ins). Emitting the CDP
+        # newsletter events here would make that system consume its own push
+        # as a user consent change — destroying the layered
+        # global-unsubscribe vs list-preference distinction. Model callbacks
+        # that aren't CDP emission (Mailchimp sync, base_email_eligible)
+        # still run.
         User.skip_trackable_events { setting.update!(updates) }
 
         audit!(slug: "update_notification_settings",
                data: {
                  "target_user_id" => @user_record.id,
-                 "changes" => setting.saved_changes.slice("email_newsletter")
+                 "changes" => setting.saved_changes.slice(*ALLOWED_NOTIFICATION_SETTINGS.map(&:to_s))
                })
         render json: { id: @user_record.id,
-                       notification_setting: { email_newsletter: setting.email_newsletter } }
+                       notification_setting: setting.slice(*ALLOWED_NOTIFICATION_SETTINGS) }
       end
 
       def merge

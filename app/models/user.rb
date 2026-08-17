@@ -299,6 +299,9 @@ class User < ApplicationRecord
       comments_count: average_comments_count..,
     )
   }
+  scope :community_leaders, lambda {
+    joins(:roles).where(roles: { name: CommunityLeaders::ROLES.map(&:to_s) }).distinct
+  }
 
   before_validation :downcase_email
 
@@ -494,11 +497,12 @@ class User < ApplicationRecord
 
   def cached_reading_list_article_ids
     Rails.cache.fetch("reading_list_ids_of_articles_#{id}_#{public_reactions_count}_#{last_reacted_at}_#{RequestStore.store[:subforem_id]}") do
-      user_activity&.alltime_reading_list_articles.presence || begin
-        readinglist = Reaction.readinglist_for_user(self).order("created_at DESC")
+      ids = user_activity&.alltime_reading_list_articles.presence || begin
+        readinglist = Reaction.readinglist_for_user(self).order("created_at DESC").limit(1000)
         published = Article.published.from_subforem.where(id: readinglist.pluck(:reactable_id)).ids
         readinglist.filter_map { |r| r.reactable_id if published.include? r.reactable_id }
       end
+      ids.first(1000)
     end
   end
 
@@ -511,6 +515,10 @@ class User < ApplicationRecord
 
   def cached_base_subscriber?
     cached_role_names.include?("base_subscriber")
+  end
+
+  def cached_community_leader?
+    CommunityLeaders::ROLES.any? { |role| cached_role_names.include?(role.to_s) }
   end
 
   def processed_website_url
@@ -899,7 +907,7 @@ class User < ApplicationRecord
       "email_newsletter" => notification_setting&.email_newsletter,
       "email_digest_periodic" => notification_setting&.email_digest_periodic,
       "mlh_user_id" => identities.where(provider: "mlh").pick(:uid)
-    }
+    }.merge(Users::EmailFooterPayload.call(self))
   end
 
   # Invited accounts (registered: false) have not consented to anything yet,

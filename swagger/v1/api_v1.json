@@ -5281,7 +5281,7 @@
           "users",
           "admin"
         ],
-        "description": "Update a user's email notification preferences (e.g., unsubscribing them from the system newsletter). Requires Super Admin credentials.",
+        "description": "Update a user's email notification preferences (e.g., unsubscribing them from the system newsletter or the periodic digest). Any subset of the listed properties may be supplied; at least one is required. Requires Super Admin credentials.",
         "parameters": [
           {
             "name": "id",
@@ -5308,6 +5308,24 @@
                     "type": "object",
                     "properties": {
                       "email_newsletter": {
+                        "type": "boolean"
+                      },
+                      "email_digest_periodic": {
+                        "type": "boolean"
+                      },
+                      "email_comment_notifications": {
+                        "type": "boolean"
+                      },
+                      "email_follower_notifications": {
+                        "type": "boolean"
+                      },
+                      "email_mention_notifications": {
+                        "type": "boolean"
+                      },
+                      "email_unread_notifications": {
+                        "type": "boolean"
+                      },
+                      "email_badge_notifications": {
                         "type": "boolean"
                       }
                     }
@@ -6346,7 +6364,7 @@
           "email": {
             "type": "string",
             "nullable": true,
-            "description": "Email (if user allows displaying email on their profile) or nil"
+            "description": "Email (requires authentication and if user allows displaying email on their profile) or nil"
           },
           "website_url": {
             "type": "string",
@@ -6401,7 +6419,7 @@
           "email": {
             "type": "string",
             "nullable": true,
-            "description": "Email (if user allows displaying email on their profile) or nil"
+            "description": "Authenticated user's own email address, always returned regardless of display_email_on_profile setting"
           },
           "website_url": {
             "type": "string",
