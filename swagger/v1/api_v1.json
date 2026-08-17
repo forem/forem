@@ -477,7 +477,7 @@
         "tags": [
           "articles"
         ],
-        "description": "This endpoint allows the client to create a new article.\n\n\"Articles\" are all the posts that users create on DEV/Forem that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but are referred to as articles within the code.\n\n### Body Parameter Tips:\n- **title**: A compelling and descriptive title for the article.\n- **body_markdown**: The main text of the article in Markdown format. You can use standard Markdown as well as Forem-specific Liquid tags (e.g., `{% embed ... %}`). You can also include YAML front matter at the very beginning of the markdown to specify metadata such as tags, series, and cover image.\n- **published**: Set to `true` to immediately publish the article and make it visible in feeds. Set to `false` (default) to save it as a draft.\n- **tags**: A comma-separated list of tags (up to 4 tags). Tags help categorize your post and improve discoverability.\n- **series**: Group articles together by specifying a series name. If the series does not exist, it will be created.\n- **main_image**: Absolute URL of the cover image for the article.\n- **canonical_url**: If this post was originally published elsewhere, specify the canonical URL to maintain SEO integrity.\n- **description**: A short summary of the article used for previews and SEO meta description.",
+        "description": "This endpoint allows the client to create a new article.\n\n\"Articles\" are all the posts that users create on DEV/Forem that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but are referred to as articles within the code.\n\n### Body Parameter Tips:\n- **title**: A compelling and descriptive title for the article.\n- **body_markdown**: The main text of the article in Markdown format. You can use standard Markdown as well as Forem-specific Liquid tags (e.g., `{% embed ... %}`). You can also include YAML front matter at the very beginning of the markdown to specify metadata such as tags, series, and cover image.\n- **published**: Set to `true` to immediately publish the article and make it visible in feeds. Set to `false` (default) to save it as a draft.\n- **tags**: A comma-separated list of tags (up to 4 tags). Tags help categorize your post and improve discoverability.\n- **series**: Group articles together by specifying a series name. If the series does not exist, it will be created.\n- **main_image**: Absolute URL of the cover image for the article.\n- **canonical_url**: If this post was originally published elsewhere, specify the canonical URL to maintain SEO integrity.\n- **description**: A short summary of the article used for previews and SEO meta description.\n- **ai_disclosure_level**: AI tooling usage disclosure (`not_disclosed`, `no_ai`, `some_ai`, `fully_autonomous`).",
         "operationId": "createArticle",
         "parameters": [
 
@@ -765,7 +765,7 @@
         "tags": [
           "articles"
         ],
-        "description": "This endpoint allows the client to update an existing article by its unique numerical `id`.\n\n### Authorization Constraints:\n- The API key provided must belong to the author of the article.\n- Supports updating individual fields such as `title`, `body_markdown`, `published`, `tags`, etc.\n- Setting `published: false` on an already published article will revert it to draft status.",
+        "description": "This endpoint allows the client to update an existing article by its unique numerical `id`.\n\n### Authorization Constraints:\n- The API key provided must belong to the author of the article.\n- Supports updating individual fields such as `title`, `body_markdown`, `published`, `tags`, `ai_disclosure_level`, etc.\n- Setting `published: false` on an already published article will revert it to draft status.",
         "operationId": "updateArticle",
         "parameters": [
           {
@@ -5882,6 +5882,20 @@
             "type": "integer",
             "format": "int32"
           },
+          "ai_disclosure_level": {
+            "type": "string",
+            "enum": [
+              "not_disclosed",
+              "no_ai",
+              "some_ai",
+              "fully_autonomous"
+            ],
+            "description": "Level of AI tooling usage disclosure"
+          },
+          "ai_disclosure_label": {
+            "type": "string",
+            "description": "Human-readable label of AI disclosure"
+          },
           "user": {
             "$ref": "#/components/schemas/SharedUser"
           },
@@ -5998,6 +6012,16 @@
               "organization_id": {
                 "type": "integer",
                 "nullable": true
+              },
+              "ai_disclosure_level": {
+                "type": "string",
+                "enum": [
+                  "not_disclosed",
+                  "no_ai",
+                  "some_ai",
+                  "fully_autonomous"
+                ],
+                "description": "Level of AI tooling usage disclosure"
               }
             }
           }
@@ -6458,6 +6482,20 @@
             "description": "Podcast image url",
             "type": "string",
             "format": "url"
+          },
+          "ai_disclosure_level": {
+            "type": "string",
+            "enum": [
+              "not_disclosed",
+              "no_ai",
+              "some_ai",
+              "fully_autonomous"
+            ],
+            "description": "Level of AI tooling usage disclosure"
+          },
+          "ai_disclosure_label": {
+            "type": "string",
+            "description": "Human-readable label of AI disclosure"
           }
         }
       },

@@ -59,14 +59,15 @@
   end
 %>
 <main id="main-content"
-  data-article="<%= article.to_json(only: %i[id user_id title cached_tag_list published published_at body_markdown main_image organization_id canonical_url updated_at video_source_url], methods: %i[series all_series co_author_ids_list co_authors_data]) %>"
+  data-article="<%= article.to_json(only: %i[id user_id title cached_tag_list published published_at body_markdown main_image organization_id canonical_url updated_at video_source_url ai_disclosure_level], methods: %i[series all_series co_author_ids_list co_authors_data]) %>"
   data-organizations="<%= serialized_organizations.to_json %>"
   data-version="<%= version %>"
   data-site-logo='<%= render "layouts/logo" %>'
   data-cover-image-height="<%= Settings::UserExperience.cover_image_height %>"
   data-cover-image-crop="<%= Settings::UserExperience.cover_image_fit %>"
   data-scheduling-enabled="true"
-  data-ai-available="<%= ::AI_AVAILABLE %>">
+  data-ai-available="<%= ::AI_AVAILABLE %>"
+  data-ai-disclosure-enabled="<%= Settings::General.enable_ai_disclosure %>">
   <form class="crayons-article-form crayons-article-form--<%= version %>">
 
     <div class="crayons-article-form__header">
