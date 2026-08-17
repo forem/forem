@@ -105,6 +105,21 @@ RSpec.describe User do
       expect(Time.zone.parse(verified[:expires_at])).to be > Time.current
     end
 
+    # Production sets Rails.application.routes.default_url_options to the
+    # protocol alone, while test and development both set a host there. Relying
+    # on the ambient default therefore passes locally and blanks every key in
+    # production, which is exactly what happened -- so pin the production shape.
+    it "still builds the footer when only a protocol is configured, as in production" do
+      user = create(:user)
+      allow(Rails.application.routes).to receive(:default_url_options).and_return({ protocol: "https" })
+
+      payload = user.trackable_payload
+
+      expect(payload["signed_up_with_html"]).to be_present
+      expect(payload["unsubscribe_url"]).to include("/email_subscriptions/unsubscribe?ut=")
+      expect(payload["notification_settings_url"]).to end_with("/settings/notifications")
+    end
+
     it "points the footer at the user's onboarding subforem" do
       subforem = create(:subforem, domain: "onboarding.example.com")
       user = create(:user, onboarding_subforem_id: subforem.id)
@@ -113,6 +128,18 @@ RSpec.describe User do
 
       expect(URI.parse(payload["unsubscribe_url"]).host).to eq("onboarding.example.com")
       expect(payload["notification_settings_url"]).to end_with("/settings/notifications")
+    end
+
+    # signed_up_with resolves the community name from try(:subforem_id), so the
+    # copy has to follow the same subforem as the URLs beside it rather than
+    # falling back to the default community.
+    it "names the user's own subforem community in the signed-up-with copy" do
+      subforem = create(:subforem, domain: "onboarding.example.com")
+      user = create(:user, onboarding_subforem_id: subforem.id)
+      allow(Settings::Community).to receive(:community_name)
+        .with(subforem_id: subforem.id).and_return("Onboarding Community")
+
+      expect(user.trackable_payload["signed_up_with_html"]).to include("Onboarding Community")
     end
 
     it "reflects registration, confirmation, and email consent state in the payload" do
