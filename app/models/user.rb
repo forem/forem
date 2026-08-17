@@ -1012,6 +1012,14 @@ class User < ApplicationRecord
           :enqueue_trackable_event_destroyed, :moderation_role_event, :track_engagement, :track_engagement!,
           :engagement_emission_due?
 
+  # rubocop:disable Style/OptionHash
+  def send_reset_password_instructions(opts = {})
+    token = set_reset_password_token
+    send_devise_notification(:reset_password_instructions, token, opts)
+    token
+  end
+  # rubocop:enable Style/OptionHash
+
   protected
 
   # Send emails asynchronously

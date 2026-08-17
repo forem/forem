@@ -86,7 +86,8 @@ class DeviseMailer < Devise::Mailer
       message_data: {
         "reset_url" => edit_user_password_url(reset_password_token: token),
         "name" => record.name,
-        "community_name" => community_name
+        "community_name" => community_name,
+        "admin_triggered_by" => @admin_triggered_by
       },
     )
 
