@@ -11,6 +11,14 @@ class CustomMailer < ApplicationMailer
 
 
   def custom_email
+    # Broadcasts, newsletters and the onboarding drip are authored in Customer.io
+    # after cutover -- this mailer is the one with no transactional template
+    # behind it, so a send that slipped past the guards in Email, the batch
+    # workers and Admin::EmailsController would go out as an unmanaged body
+    # passthrough. Returning before mail() yields a NullMail: nothing delivers
+    # and no ahoy_messages row is written.
+    return if ForemInstance.customerio_email_cutover?
+
     @user = params[:user]
     @content = Email.replace_merge_tags(params[:content], @user)
     @subject = Email.replace_merge_tags(params[:subject], @user)
