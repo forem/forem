@@ -78,6 +78,12 @@ fr:
         font: Base Reading Font
         level: What is your approximate experience level (1-5)?
         level_desc: This will not be displayed on your profile or anywhere publicly. It helps gently determine what content you are shown along with tags you follow etc.
+        feed_ai_preference: Contenu IA dans le flux
+        feed_ai_preference_desc: Choisissez la manière dont le contenu déclaré généré par IA apparaît dans votre flux personnalisé.
+        feed_ai_options:
+          show_all: Standard (afficher tout le contenu)
+          minimize_ai: Réduire le contenu assisté par IA et autonome
+          hide_fully_autonomous: Masquer le contenu IA entièrement autonome
         navbar: Site Navbar
         rich: Rich + markdown
         save: Save

@@ -92,6 +92,12 @@ pt:
           connected: Conectado
           not_connected: Não conectado
         custom:
+          feed_ai_preference: Conteúdo de IA no Feed
+          feed_ai_preference_desc: Escolha como o conteúdo divulgado por IA aparece no seu feed personalizado.
+          feed_ai_options:
+            show_all: Padrão (mostrar todo o conteúdo)
+            minimize_ai: Minimizar conteúdo assistido e autônomo por IA
+            hide_fully_autonomous: Ocultar conteúdo de IA totalmente autônomo
           subforem_reassignment: Realocação de Conteúdo
           subforem_reassignment_desc: Quando seu conteúdo é marcado como fora de tópico para seu subfórum atual, ele pode ser automaticamente movido para um subfórum mais apropriado. Você pode desativar essa realocação automática se preferir manter seu conteúdo em sua localização original.
           subforem_reassignment_field: Desativar a realocação automática do meu conteúdo para outros subfóruns

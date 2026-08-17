@@ -131,6 +131,13 @@ class Article < ApplicationRecord
     fullscreen_embed: 2
   }
 
+  enum :ai_disclosure_level, {
+    not_disclosed: 0,
+    no_ai: 1,
+    some_ai: 3,
+    fully_autonomous: 5
+  }
+
   enum :automod_label, {
     no_moderation_label: 0,
     clear_and_obvious_spam: 1,
@@ -503,7 +510,7 @@ class Article < ApplicationRecord
            :video_thumbnail_url, :video_closed_caption_track_url,
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
            :published_at, :crossposted_at, :description, :reading_time, :video_duration_in_seconds, :score,
-           :last_comment_at, :main_image_height, :type_of, :edited_at, :processed_html, :subforem_id)
+           :last_comment_at, :main_image_height, :type_of, :edited_at, :processed_html, :subforem_id, :ai_disclosure_level)
   }
 
   scope :minimal_feed_column_select, lambda {
@@ -514,7 +521,7 @@ class Article < ApplicationRecord
            :video_thumbnail_url, :video_closed_caption_track_url,
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
            :published_at, :crossposted_at, :description, :reading_time, :video_duration_in_seconds, :score,
-           :last_comment_at, :main_image_height, :type_of, :edited_at, :subforem_id)
+           :last_comment_at, :main_image_height, :type_of, :edited_at, :subforem_id, :ai_disclosure_level)
   }
 
   scope :limited_columns_internal_select, lambda {
@@ -525,7 +532,7 @@ class Article < ApplicationRecord
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
            :published_from_feed, :crossposted_at, :published_at, :created_at, :edited_at,
            :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids, :score, :type_of,
-           :favorited_by_user_id)
+           :favorited_by_user_id, :ai_disclosure_level)
   }
 
   scope :sorting, lambda { |value|
@@ -747,6 +754,23 @@ class Article < ApplicationRecord
       truncate_title_for_feed
     else
       title_finalized
+    end
+  end
+
+  def ai_disclosed?
+    some_ai? || fully_autonomous?
+  end
+
+  def ai_disclosure_label
+    case ai_disclosure_level
+    when "some_ai"
+      I18n.t("models.article.ai_disclosure.some_ai")
+    when "fully_autonomous"
+      I18n.t("models.article.ai_disclosure.fully_autonomous")
+    when "no_ai"
+      I18n.t("models.article.ai_disclosure.no_ai")
+    else
+      I18n.t("models.article.ai_disclosure.not_disclosed")
     end
   end
 
@@ -1440,6 +1464,7 @@ class Article < ApplicationRecord
     self.published_at ||= parse_date(hash["date"]) if published
 
     set_main_image(hash)
+    set_ai_disclosure_from_front_matter(hash)
     self.canonical_url = hash["canonical_url"] if hash["canonical_url"].present?
 
     update_description = hash["description"].present? || hash["title"].present?
@@ -1450,6 +1475,37 @@ class Article < ApplicationRecord
 
     collection = Collection.find_series(hash["series"], user, organization: organization)
     self.collection_id = collection.id
+  end
+
+  def set_ai_disclosure_from_front_matter(hash)
+    return unless Settings::General.enable_ai_disclosure
+
+    raw_val = hash["ai_disclosure_level"] || hash["ai_disclosure"]
+
+    if raw_val.nil?
+      if hash["ai_generated"] == true || hash["ai_generated"] == "true"
+        self.ai_disclosure_level = :fully_autonomous
+      elsif hash["ai_assisted"] == true || hash["ai_assisted"] == "true"
+        self.ai_disclosure_level = :some_ai
+      end
+      return
+    end
+
+    val_str = raw_val.to_s.strip.downcase.tr("-", "_")
+    level = case val_str
+            when "0", "not_disclosed", "unstated", "unknown", "false"
+              :not_disclosed
+            when "1", "no_ai", "no", "none", "human", "hand_written", "handwritten", "100%_human"
+              :no_ai
+            when "3", "some_ai", "some", "assisted", "ai_assisted", "ai_assist"
+              :some_ai
+            when "5", "fully_autonomous", "autonomous", "full", "ai_generated", "generated", "fully_ai"
+              :fully_autonomous
+            else
+              Article.ai_disclosure_levels.key?(val_str) ? val_str.to_sym : nil
+            end
+
+    self.ai_disclosure_level = level if level
   end
 
   def set_main_image(hash)

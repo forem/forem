@@ -107,6 +107,8 @@
 
     @media (min-width: $breakpoint-m) {
       padding: 0;
+      grid-column-start: 2;
+      grid-column-end: span 2;
     }
 
     @media (min-width: $breakpoint-l) {

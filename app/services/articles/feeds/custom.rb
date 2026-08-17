@@ -86,6 +86,10 @@ module Articles
         if user_data[:blocked_user_ids].any?
           articles = articles.where.not(user_id: user_data[:blocked_user_ids])
         end
+
+        if @user&.setting&.hide_fully_autonomous_feed_ai?
+          articles = articles.where.not(ai_disclosure_level: :fully_autonomous)
+        end
         
         if user_data[:hidden_tags].any?
           articles = if ENV["OPTIMIZED_FEED_TAGS_QUERY"] == "true"

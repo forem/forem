@@ -161,6 +161,10 @@ module Articles
           scope = scope.not_cached_tagged_with_any(hidden_tags)
         end
 
+        if @user&.setting&.hide_fully_autonomous_feed_ai?
+          scope = scope.where.not(ai_disclosure_level: :fully_autonomous)
+        end
+
         scope
       end
 

@@ -35,6 +35,14 @@
 
   <%= render "comments/comment_date", decorated_comment: decorated_comment %>
 
+  <% if comment.ai_disclosed? %>
+    <span class="crayons-hover-tooltip inline-flex items-center ai-disclosure-tag fs-xs color-base-60 ml-2" data-tooltip="<%= t("views.comments.ai_disclosure.#{comment.ai_disclosure_level}_description") %>">
+      <span class="c-indicator c-indicator--subtle c-indicator--round c-indicator--relaxed p-1 px-2">
+        <%= comment.ai_disclosure_label %>
+      </span>
+    </span>
+  <% end %>
+
   <div class="comment__dropdown" data-tracking-name="comment_dropdown">
     <button id="comment-dropdown-trigger-<%= comment.id %>" aria-controls="comment-dropdown-<%= comment.id %>" aria-expanded="false"
       class="dropbtn comment__dropdown-trigger crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon <%= should_be_hidden?(comment, @root_comment) ? "element-hidden-by-commentable-user" : "" %>"

@@ -3,7 +3,7 @@ module Api
     extend ActiveSupport::Concern
 
     ATTRIBUTES_FOR_SERIALIZATION = %i[
-      id processed_html user_id ancestry deleted hidden_by_commentable_user created_at
+      id processed_html user_id ancestry deleted hidden_by_commentable_user created_at ai_disclosure_level
     ].freeze
     private_constant :ATTRIBUTES_FOR_SERIALIZATION
 

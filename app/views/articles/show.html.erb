@@ -171,27 +171,37 @@
                             end: "</span>".html_safe,
                             org: tag.a(@organization.name, href: @organization.path, class: "crayons-link")) %>
                     <% end %>
-                    <p class="fs-xs color-base-60">
+                    <p class="fs-xs color-base-60 flex flex-wrap items-center gap-1">
                       <% if @article.published_timestamp.present? %>
-                        <%= t("views.articles.#{@article.current_state}_html", date: local_date(@article.published_timestamp, show_year: @article.displayable_published_at.year != Time.current.year)) %>
+                        <span><%= t("views.articles.#{@article.current_state}_html", date: local_date(@article.published_timestamp, show_year: @article.displayable_published_at.year != Time.current.year)) %></span>
                       <% end %>
                       <% if @article.co_author_ids.present? %>
-                        <%= t("views.articles.co_authors_html", names: @article.co_author_name_and_path.html_safe) %>
+                        <span><%= t("views.articles.co_authors_html", names: @article.co_author_name_and_path.html_safe) %></span>
                       <% end %>
 
                       <% if should_show_updated_on?(@article) %>
-                        &bull; <%= t("views.articles.edited_html", date: local_date(@article.edited_at, show_year: @article.edited_at.year != Time.current.year)) %>
+                        <span class="mx-0.5 opacity-60" aria-hidden="true">&bull;</span>
+                        <span><%= t("views.articles.edited_html", date: local_date(@article.edited_at, show_year: @article.edited_at.year != Time.current.year)) %></span>
                       <% end %>
 
                       <% if should_show_crossposted_on?(@article) %>
-                        &bull; <%= t("views.articles.crossposted.text_html",
+                        <span class="mx-0.5 opacity-60" aria-hidden="true">&bull;</span>
+                        <span><%= t("views.articles.crossposted.text_html",
                                     url: link_to(get_host_without_www(@article.canonical_url || @article.feed_source_url), @article.canonical_url || @article.feed_source_url, style: "color:#1395b8"),
                                     on: if @article.crossposted_at
                                           t("views.articles.crossposted.on_html",
                                             date: local_date(@article.originally_published_at || @article.published_at, show_year: (@article.originally_published_at || @article.published_at).year != Time.current.year))
                                         else
                                           ""
-                                        end) %>
+                                        end) %></span>
+                      <% end %>
+
+                      <% if @article.ai_disclosed? %>
+                        <span class="mx-0.5 opacity-60" aria-hidden="true">&bull;</span>
+                        <span class="crayons-hover-tooltip inline-flex items-center ai-disclosure-tag fs-xs color-base-60 cursor-help" data-tooltip="<%= t("views.articles.ai_disclosure.#{@article.ai_disclosure_level}_description") %>">
+                          <%= crayons_icon_tag "robot", width: 14, height: 14, class: "mr-1 shrink-0" %>
+                          <span><%= @article.ai_disclosure_label %></span>
+                        </span>
                       <% end %>
                     </p>
                   </div>

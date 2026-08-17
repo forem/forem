@@ -22,6 +22,9 @@ module Articles
         return articles unless @user
 
         articles = articles.where.not(user_id: UserBlock.cached_blocked_ids_for_blocker(@user.id))
+        if @user.setting&.hide_fully_autonomous_feed_ai?
+          articles = articles.where.not(ai_disclosure_level: :fully_autonomous)
+        end
         if (hidden_tags = @user.cached_antifollowed_tag_names).any?
           articles = articles.not_cached_tagged_with_any(hidden_tags)
         end

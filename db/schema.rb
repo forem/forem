@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_08_12_141500) do
+ActiveRecord::Schema[8.0].define(version: 2026_08_14_130200) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -141,6 +141,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_12_141500) do
   end
 
   create_table "articles", force: :cascade do |t|
+    t.integer "ai_disclosure", default: 0, null: false
+    t.integer "ai_disclosure_level", default: 0, null: false
     t.text "ai_summary"
     t.datetime "ai_summary_generated_at"
     t.string "ai_summary_prompt_version"
@@ -234,6 +236,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_12_141500) do
     t.string "video_source_url"
     t.string "video_state"
     t.string "video_thumbnail_url"
+    t.index ["ai_disclosure_level"], name: "index_articles_on_ai_disclosure_level"
     t.index ["cached_label_list"], name: "index_articles_on_cached_label_list", using: :gin
     t.index ["cached_tag_list"], name: "index_articles_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
     t.index ["canonical_url"], name: "index_articles_on_canonical_url", unique: true, where: "(published IS TRUE)"
@@ -470,6 +473,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_12_141500) do
   end
 
   create_table "comments", force: :cascade do |t|
+    t.integer "ai_disclosure_level", default: 0, null: false
     t.string "ancestry"
     t.text "body_html"
     t.text "body_markdown"
@@ -496,6 +500,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_12_141500) do
     t.bigint "user_id"
     t.index "digest(body_markdown, 'sha512'::text), user_id, ancestry, commentable_id, commentable_type", name: "index_comments_on_body_markdown_user_ancestry_commentable", unique: true
     t.index "to_tsvector('simple'::regconfig, COALESCE(body_markdown, ''::text))", name: "index_comments_on_body_markdown_as_tsvector", using: :gin
+    t.index ["ai_disclosure_level"], name: "index_comments_on_ai_disclosure_level"
     t.index ["ancestry"], name: "index_comments_on_ancestry"
     t.index ["ancestry"], name: "index_comments_on_ancestry_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["commentable_id", "commentable_type", "created_at"], name: "index_comments_on_commentable_and_created_at"
@@ -800,8 +805,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_12_141500) do
   end
 
   create_table "feed_configs", force: :cascade do |t|
+    t.float "ai_disclosure_matching_weight", default: 0.0, null: false
     t.integer "all_time_tag_count_max", default: 0
     t.integer "all_time_tag_count_min", default: 0
+    t.float "autonomous_ai_penalty_weight", default: 0.0, null: false
     t.float "clickbait_score_weight", default: 0.0, null: false
     t.float "comment_recency_weight", default: 1.0
     t.float "comment_score_weight", default: 1.0
@@ -2146,6 +2153,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_12_141500) do
     t.boolean "display_sponsors", default: true, null: false
     t.integer "editor_version", default: 0, null: false
     t.integer "experience_level"
+    t.integer "feed_ai_preference", default: 0, null: false
     t.boolean "feed_mark_canonical", default: false, null: false
     t.boolean "feed_referential_link", default: true, null: false
     t.integer "feed_status", default: 0, null: false

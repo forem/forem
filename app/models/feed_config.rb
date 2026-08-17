@@ -160,6 +160,19 @@ class FeedConfig < ApplicationRecord
     terms << "(- (articles.clickbait_score * #{clickbait_score_weight}))" if clickbait_score_weight.positive?
     terms << "(articles.compellingness_score * #{compellingness_score_weight})" if compellingness_score_weight.positive?
     terms << "(CASE WHEN articles.language IN ('#{languages.join("','")}') THEN #{language_match_weight} ELSE 0 END)" if language_match_weight.positive? && score_weight.positive?
+
+    if autonomous_ai_penalty_weight.positive?
+      terms << "(CASE WHEN articles.ai_disclosure_level = 5 THEN -#{autonomous_ai_penalty_weight} ELSE 0 END)"
+    end
+
+    if ai_disclosure_matching_weight.positive?
+      terms << "(CASE WHEN articles.ai_disclosure_level = 1 THEN #{ai_disclosure_matching_weight} WHEN articles.ai_disclosure_level = 3 THEN (#{ai_disclosure_matching_weight} * 0.5) ELSE 0 END)"
+    end
+
+    if user&.setting&.minimize_ai_feed_ai?
+      terms << "(CASE WHEN articles.ai_disclosure_level = 5 THEN -25.0 WHEN articles.ai_disclosure_level = 3 THEN -10.0 ELSE 0 END)"
+    end
+
     if randomness_weight.positive?
       # Injecting a dynamic Ruby scope guarantees row shuffling uniquely per-request without sacrificing query planners dynamically!
       terms << "((CASE WHEN articles.id IS NOT NULL THEN MOD((articles.id * 137 + #{rand(10000)}), 1000) / 1000.0 ELSE 0 END) * #{randomness_weight})"
@@ -200,6 +213,8 @@ class FeedConfig < ApplicationRecord
     clone.recent_subforem_weight = recent_subforem_weight * rand(0.9..1.1)
     clone.subforem_follow_weight = subforem_follow_weight * rand(0.9..1.1)
     clone.recent_page_views_shuffle_weight = recent_page_views_shuffle_weight * rand(0.9..1.1)
+    clone.ai_disclosure_matching_weight = ai_disclosure_matching_weight * rand(0.9..1.1)
+    clone.autonomous_ai_penalty_weight = autonomous_ai_penalty_weight * rand(0.9..1.1)
     clone.recent_tag_count_min = [recent_tag_count_min + rand(-1..1), 0].max if recent_tag_count_min.positive?
     clone.recent_tag_count_max = [recent_tag_count_max + rand(-1..1), 12].min if recent_tag_count_max.positive?
     clone.recent_tag_count_max = clone.recent_tag_count_min if clone.recent_tag_count_max < clone.recent_tag_count_min
