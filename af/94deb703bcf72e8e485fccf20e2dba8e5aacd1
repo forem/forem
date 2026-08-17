@@ -1,0 +1,14 @@
+app/javascript/packs/articleForm.jsx
+  h_f968154a99632d 38-48,59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "af94deb703bcf72e8e485fccf20e2dba8e5aacd1",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
