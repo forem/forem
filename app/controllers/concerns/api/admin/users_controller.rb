@@ -11,6 +11,18 @@ module Api
         "Good standing", "Suspended", "Spam", "Warned",
         "Comment Suspended", "Trusted", "Limited"
       ].freeze
+      # User-consent email columns Core may write through this endpoint. Mobile
+      # and in-app columns, and the role-driven mod newsletters, are deliberately
+      # excluded: they are not consent Core owns.
+      ALLOWED_NOTIFICATION_SETTINGS = %i[
+        email_newsletter
+        email_digest_periodic
+        email_comment_notifications
+        email_follower_notifications
+        email_mention_notifications
+        email_unread_notifications
+        email_badge_notifications
+      ].freeze
 
       def index
         users = filtered_users
@@ -113,7 +125,7 @@ module Api
         # the caller gets the admin API error_code instead of a generic
         # ParameterMissing 422.
         wrapper = params[:notification_setting]
-        updates = wrapper.respond_to?(:permit) ? wrapper.permit(:email_newsletter) : {}
+        updates = wrapper.respond_to?(:permit) ? wrapper.permit(*ALLOWED_NOTIFICATION_SETTINGS) : {}
         if updates.blank?
           raise Api::Admin::ApiError.new(:invalid_notification_settings,
                                          I18n.t("admin_api.errors.invalid_notification_settings"),
@@ -132,10 +144,10 @@ module Api
         audit!(slug: "update_notification_settings",
                data: {
                  "target_user_id" => @user_record.id,
-                 "changes" => setting.saved_changes.slice("email_newsletter")
+                 "changes" => setting.saved_changes.slice(*ALLOWED_NOTIFICATION_SETTINGS.map(&:to_s))
                })
         render json: { id: @user_record.id,
-                       notification_setting: { email_newsletter: setting.email_newsletter } }
+                       notification_setting: setting.slice(*ALLOWED_NOTIFICATION_SETTINGS) }
       end
 
       def merge

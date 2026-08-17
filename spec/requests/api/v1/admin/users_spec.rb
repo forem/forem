@@ -424,6 +424,53 @@ RSpec.describe "/api/admin/users" do
 
       expect(response).to have_http_status(:not_found)
     end
+
+    it "updates email_digest_periodic" do
+      target.notification_setting.update!(email_digest_periodic: true)
+
+      put_settings({ notification_setting: { email_digest_periodic: false } })
+
+      expect(response).to have_http_status(:ok)
+      expect(target.notification_setting.reload.email_digest_periodic).to be(false)
+    end
+
+    it "updates several allowlisted keys in one call" do
+      target.notification_setting.update!(email_newsletter: true, email_digest_periodic: true)
+
+      put_settings({ notification_setting: { email_newsletter: false,
+                                             email_digest_periodic: false } })
+
+      setting = target.notification_setting.reload
+      expect(setting.email_newsletter).to be(false)
+      expect(setting.email_digest_periodic).to be(false)
+    end
+
+    it "returns every allowlisted key in the response" do
+      put_settings({ notification_setting: { email_digest_periodic: true } })
+
+      body = response.parsed_body["notification_setting"]
+      expect(body.keys).to match_array(
+        Api::Admin::UsersController::ALLOWED_NOTIFICATION_SETTINGS.map(&:to_s),
+      )
+    end
+
+    it "rejects a payload of only unknown keys" do
+      put_settings({ notification_setting: { mobile_comment_notifications: false } })
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(target.notification_setting.reload.mobile_comment_notifications).to be(true)
+    end
+
+    it "audits digest changes too" do
+      target.notification_setting.update!(email_digest_periodic: true)
+
+      expect do
+        put_settings({ notification_setting: { email_digest_periodic: false } })
+      end.to change(AuditLog, :count).by(1)
+
+      audit = AuditLog.last
+      expect(audit.data["changes"]).to eq("email_digest_periodic" => [true, false])
+    end
   end
 
   describe "PUT /api/admin/users/:id/status" do
