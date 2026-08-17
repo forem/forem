@@ -11,9 +11,11 @@ module Api
         "Good standing", "Suspended", "Spam", "Warned",
         "Comment Suspended", "Trusted", "Limited"
       ].freeze
-      # User-consent email columns Core may write through this endpoint. Mobile
-      # and in-app columns, and the role-driven mod newsletters, are deliberately
-      # excluded: they are not consent Core owns.
+      # Email notification columns writable through this endpoint. These are
+      # the user-consent settings an external system of record may push back
+      # onto the account. Mobile and in-app columns are excluded, as are the
+      # moderator newsletters, which are driven by role changes rather than by
+      # the user's own choice.
       ALLOWED_NOTIFICATION_SETTINGS = %i[
         email_newsletter
         email_digest_periodic
