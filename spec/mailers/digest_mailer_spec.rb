@@ -134,7 +134,7 @@ RSpec.describe DigestMailer do
         email = described_class.with(user: user, articles: [article, article2], feed_config_id: 12_345).digest_email
 
         settings = email.message.delivery_method.settings
-        expect(settings[:customerio_event_name]).to eq("dev_digest_ready")
+        expect(settings[:customerio_event_name]).to eq("digest_ready")
 
         data = settings[:message_data]
         expect(data["subject"]).to eq(email.subject)

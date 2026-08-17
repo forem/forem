@@ -41,7 +41,10 @@ module DeliveryMethods
         # transactional path: the MLH Core uid where the account is linked,
         # falling back to email.
         identifiers: settings[:identifiers],
-        name: settings[:customerio_event_name],
+        # Mailers declare the bare event ("digest_ready"); the deploy's APP_NAME
+        # is spliced in here, at the boundary, exactly as the CDP adapter does.
+        # The campaign's trigger has to match the namespaced name.
+        name: Trackable::EventName.prefixed(settings[:customerio_event_name]),
         attributes: attributes(mail)
       }
     end

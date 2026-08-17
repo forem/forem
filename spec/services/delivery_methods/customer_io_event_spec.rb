@@ -11,7 +11,11 @@ RSpec.describe DeliveryMethods::CustomerIoEvent do
     )
   end
 
-  before { stub_const("CUSTOMERIO_TRACK_API", track_client) }
+  before do
+    stub_const("CUSTOMERIO_TRACK_API", track_client)
+    allow(ApplicationConfig).to receive(:[]).and_call_original
+    allow(ApplicationConfig).to receive(:[]).with("APP_NAME").and_return("dev_prod")
+  end
 
   def delivered_entity(options = {}, delivered_mail = mail)
     described_class.new(options).deliver!(delivered_mail)
@@ -23,14 +27,14 @@ RSpec.describe DeliveryMethods::CustomerIoEvent do
 
   it "emits a person event carrying the payload" do
     entity = delivered_entity(
-      customerio_event_name: "dev_digest_ready",
+      customerio_event_name: "digest_ready",
       identifiers: { id: "mlh-42" },
       message_data: { "articles" => [{ "title" => "A post" }] },
     )
 
     expect(entity[:type]).to eq("person")
     expect(entity[:action]).to eq("event")
-    expect(entity[:name]).to eq("dev_digest_ready")
+    expect(entity[:name]).to eq("dev_prod_digest_ready")
     expect(entity[:identifiers]).to eq(id: "mlh-42")
     expect(entity[:attributes]["articles"]).to eq([{ "title" => "A post" }])
   end
@@ -39,7 +43,7 @@ RSpec.describe DeliveryMethods::CustomerIoEvent do
   # not necessarily the DEV one, so the campaign cannot address the mail without
   # being told where it goes.
   it "sets recipient to the mail's own address, not the identifier" do
-    entity = delivered_entity(customerio_event_name: "dev_digest_ready", identifiers: { id: "mlh-42" })
+    entity = delivered_entity(customerio_event_name: "digest_ready", identifiers: { id: "mlh-42" })
 
     expect(entity[:attributes]["recipient"]).to eq("member@example.com")
     expect(entity[:attributes]["subject"]).to eq("Your digest")
@@ -47,11 +51,38 @@ RSpec.describe DeliveryMethods::CustomerIoEvent do
 
   it "lets message_data override the defaults" do
     entity = delivered_entity(
-      customerio_event_name: "dev_digest_ready",
+      customerio_event_name: "digest_ready",
       message_data: { "subject" => "Overridden" },
     )
 
     expect(entity[:attributes]["subject"]).to eq("Overridden")
+  end
+
+  # A Track event name is the campaign's trigger, so it carries the same
+  # APP_NAME namespace the CDP adapter applies -- one instance's digest must not
+  # trigger another's campaign in a shared workspace.
+  describe "APP_NAME event prefixing" do
+    it "namespaces the mailer's bare event name with APP_NAME" do
+      entity = delivered_entity(customerio_event_name: "digest_ready")
+
+      expect(entity[:name]).to eq("dev_prod_digest_ready")
+    end
+
+    it "falls back to the 'forem' prefix when APP_NAME is unset" do
+      allow(ApplicationConfig).to receive(:[]).with("APP_NAME").and_return(nil)
+
+      entity = delivered_entity(customerio_event_name: "digest_ready")
+
+      expect(entity[:name]).to eq("forem_digest_ready")
+    end
+
+    it "falls back to the 'forem' prefix when APP_NAME is blank" do
+      allow(ApplicationConfig).to receive(:[]).with("APP_NAME").and_return("")
+
+      entity = delivered_entity(customerio_event_name: "digest_ready")
+
+      expect(entity[:name]).to eq("forem_digest_ready")
+    end
   end
 
   it "raises when Customer.io rejects the event, so Ahoy records no send" do
@@ -70,7 +101,7 @@ RSpec.describe DeliveryMethods::CustomerIoEvent do
       mail.ahoy_data = { token: "tok123", campaign: nil }
 
       entity = delivered_entity(
-        customerio_event_name: "dev_digest_ready",
+        customerio_event_name: "digest_ready",
         message_data: { "url" => article_url },
       )
 
@@ -81,7 +112,7 @@ RSpec.describe DeliveryMethods::CustomerIoEvent do
 
     it "leaves message_data alone when Ahoy did not set a token" do
       entity = delivered_entity(
-        customerio_event_name: "dev_digest_ready",
+        customerio_event_name: "digest_ready",
         message_data: { "url" => article_url },
       )
 
