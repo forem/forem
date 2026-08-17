@@ -79,7 +79,7 @@ en:
         level: What is your approximate experience level (1-5)?
         level_desc: This will not be displayed on your profile or anywhere publicly. It helps gently determine what content you are shown along with tags you follow etc.
         feed_ai_preference: AI Content in Feed
-        feed_ai_preference_desc: Choose how AI-disclosed content appears in your personalized feed.
+        feed_ai_preference_desc: "Choose how AI-disclosed content appears in your feed (Note: Feed customization is coming soon and preferences will apply once fully rolled out)."
         feed_ai_options:
           show_all: Standard (show all content)
           minimize_ai: Minimize AI-assisted & autonomous content

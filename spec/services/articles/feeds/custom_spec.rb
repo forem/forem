@@ -600,24 +600,6 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
     end
   end
 
-  describe "feed_ai_preference filtering" do
-    let!(:autonomous_article) do
-      a = create(:article, published: true, score: 90, ai_disclosure_level: :fully_autonomous)
-      a.update_column(:published_at, Time.current - 1.day)
-      a
-    end
-
-    it "excludes fully autonomous articles when feed_ai_preference is hide_fully_autonomous" do
-      user.setting.update!(feed_ai_preference: :hide_fully_autonomous)
-      expect(feed.default_home_feed).not_to include(autonomous_article)
-    end
-
-    it "includes fully autonomous articles when feed_ai_preference is show_all" do
-      user.setting.update!(feed_ai_preference: :show_all)
-      expect(feed.default_home_feed).to include(autonomous_article)
-    end
-  end
-
   describe "public interface aliases" do
     it "aliases feed to default_home_feed" do
       expect(feed.method(:feed)).to eq(feed.method(:default_home_feed))

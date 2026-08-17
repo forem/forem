@@ -93,7 +93,7 @@ pt:
           not_connected: Não conectado
         custom:
           feed_ai_preference: Conteúdo de IA no Feed
-          feed_ai_preference_desc: Escolha como o conteúdo divulgado por IA aparece no seu feed personalizado.
+          feed_ai_preference_desc: "Escolha como o conteúdo divulgado por IA aparecerá no seu feed (Observação: a personalização do feed estará disponível em breve e as preferências serão aplicadas quando for totalmente lançada)."
           feed_ai_options:
             show_all: Padrão (mostrar todo o conteúdo)
             minimize_ai: Minimizar conteúdo assistido e autônomo por IA
