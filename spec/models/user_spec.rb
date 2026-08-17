@@ -105,6 +105,21 @@ RSpec.describe User do
       expect(Time.zone.parse(verified[:expires_at])).to be > Time.current
     end
 
+    # Production sets Rails.application.routes.default_url_options to the
+    # protocol alone, while test and development both set a host there. Relying
+    # on the ambient default therefore passes locally and blanks every key in
+    # production, which is exactly what happened -- so pin the production shape.
+    it "still builds the footer when only a protocol is configured, as in production" do
+      user = create(:user)
+      allow(Rails.application.routes).to receive(:default_url_options).and_return({ protocol: "https" })
+
+      payload = user.trackable_payload
+
+      expect(payload["signed_up_with_html"]).to be_present
+      expect(payload["unsubscribe_url"]).to include("/email_subscriptions/unsubscribe?ut=")
+      expect(payload["notification_settings_url"]).to end_with("/settings/notifications")
+    end
+
     it "points the footer at the user's onboarding subforem" do
       subforem = create(:subforem, domain: "onboarding.example.com")
       user = create(:user, onboarding_subforem_id: subforem.id)
