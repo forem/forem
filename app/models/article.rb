@@ -47,6 +47,8 @@ class Article < ApplicationRecord
   belongs_to :user
   belongs_to :subforem, optional: true
 
+  belongs_to :favorited_by_user, class_name: "User", optional: true
+
   counter_culture :user
   counter_culture :organization
 
@@ -429,6 +431,8 @@ class Article < ApplicationRecord
   #            that in the future.
   scope :approved, -> { where(approved: true) }
 
+  scope :favorited, -> { where.not(favorited_by_user_id: nil) }
+
   scope :from_subforem, lambda { |subforem_id = nil|
     return where(nil) if ENV["NO_SUBFOREM_FILTER"] == "true"
 
@@ -499,7 +503,8 @@ class Article < ApplicationRecord
            :video_thumbnail_url, :video_closed_caption_track_url,
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
            :published_at, :crossposted_at, :description, :reading_time, :video_duration_in_seconds, :score,
-           :last_comment_at, :main_image_height, :type_of, :edited_at, :processed_html, :subforem_id)
+           :last_comment_at, :main_image_height, :type_of, :edited_at, :processed_html, :subforem_id,
+           :favorited_by_user_id)
   }
 
   scope :minimal_feed_column_select, lambda {
@@ -510,7 +515,8 @@ class Article < ApplicationRecord
            :video_thumbnail_url, :video_closed_caption_track_url,
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
            :published_at, :crossposted_at, :description, :reading_time, :video_duration_in_seconds, :score,
-           :last_comment_at, :main_image_height, :type_of, :edited_at, :subforem_id)
+           :last_comment_at, :main_image_height, :type_of, :edited_at, :subforem_id,
+           :favorited_by_user_id)
   }
 
   scope :limited_columns_internal_select, lambda {
@@ -520,7 +526,8 @@ class Article < ApplicationRecord
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
            :published_from_feed, :crossposted_at, :published_at, :created_at, :edited_at,
-           :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids, :score, :type_of)
+           :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids, :score, :type_of,
+           :favorited_by_user_id)
   }
 
   scope :sorting, lambda { |value|

@@ -199,7 +199,7 @@ class ApplicationPolicy
 
   delegate :support_admin?, to: :user
 
-  delegate :super_moderator?, :super_admin?, :any_admin?, :suspended?, to: :user, prefix: true
+  delegate :super_moderator?, :super_admin?, :any_admin?, :suspended?, :community_leader?, to: :user, prefix: true
 
   def user_trusted?
     user.has_trusted_role?

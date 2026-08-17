@@ -11,12 +11,19 @@ class DigestMailer < ApplicationMailer
     @smart_summary_html = ContentRenderer.new(@smart_summary).process.processed_html if @smart_summary.present?
     @feed_config_id = params[:feed_config_id]
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_digest_periodic)
+    add_unsubscribe_headers(@unsubscribe)
     @user_follows_any_subforems = user_follows_any_subforems?
 
     subject = generate_title
 
+    # The digest goes to an event-triggered campaign rather than a transactional
+    # message: campaigns are what carry conversion goals, and the digest is the
+    # one email whose own targeting depends on measuring engagement. With the
+    # Track-event flag off this payload still reaches Customer.io -- the App API
+    # renders the ActionMailer body instead, since no transactional message id
+    # is declared.
     customerio_delivery_options(
-      transactional_message_id: "dev_digest_email",
+      customerio_event_name: "dev_digest_ready",
       message_data: {
         "subject" => subject,
         "articles" => @articles.map { |article| digest_article_payload(article) },
@@ -25,7 +32,10 @@ class DigestMailer < ApplicationMailer
         "billboards_html" => digest_billboards_html,
         "email_end_phrase" => email_end_phrase,
         "unsubscribe_url" => email_subscriptions_unsubscribe_url(ut: @unsubscribe),
-        "user_follows_any_subforems" => @user_follows_any_subforems
+        "user_follows_any_subforems" => @user_follows_any_subforems,
+        # digest_email.html.erb only offers the "update your experience level"
+        # tip to people who have not set one.
+        "experience_level_set" => @user.setting&.experience_level.present?
       },
     )
 

@@ -40,6 +40,9 @@ fr:
       saved: Article sauvegardé !
       pinned: Article épinglé !
       unpinned: Article désépinglé !
+      favorite_removed: Favori supprimé.
+    comments_controller:
+      favorite_removed: Favori supprimé.
     badge_achievements_controller:
       deleted: La réalisation du badge a été supprimée !
       rewarded: Les badges sont en train d'être récompensés. La tâche sera bientôt terminée.

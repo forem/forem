@@ -67,6 +67,7 @@ class Reaction < ApplicationRecord
   after_commit :check_for_reaction_ring, on: :create
   after_commit :enqueue_article_activity_update, on: %i[create destroy], if: :reactable_is_article?
   after_commit :enqueue_update_user_interest_embedding, on: :create, if: :reactable_is_article_and_public?
+  after_commit :enqueue_user_reading_list_activity_update, on: %i[create destroy update], if: :reading_list_article_reaction?
 
   class << self
     def count_for_article(id)
@@ -212,6 +213,18 @@ class Reaction < ApplicationRecord
 
   def reactable_is_article_and_public?
     reactable_is_article? && visible_to_public?
+  end
+
+  def reading_list_article_reaction?
+    return false unless reactable_is_article?
+    return true if destroyed?
+    return true if saved_change_to_category?(to: "readinglist") || saved_change_to_category?(from: "readinglist")
+
+    category == "readinglist" && saved_change_to_status?
+  end
+
+  def enqueue_user_reading_list_activity_update
+    Users::UpdateUserReadingListActivityWorker.perform_async(user_id)
   end
 
   def enqueue_update_user_interest_embedding
