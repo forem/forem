@@ -2,28 +2,26 @@ class AddIndexToArticlesAndCommentsAiDisclosureLevel < ActiveRecord::Migration[8
   disable_ddl_transaction!
 
   def up
-    safety_assured do
-      db_user = connection.query_value("SELECT current_user")
-      begin
-        execute "ALTER ROLE \"#{db_user}\" SET statement_timeout = 0;"
-        execute "SET statement_timeout = 0;"
-
-        # Drop in case a previous deploy timed out and left an invalid index
-        remove_index :articles, name: "index_articles_on_ai_disclosure_level", if_exists: true, algorithm: :concurrently
-        add_index :articles, :ai_disclosure_level, algorithm: :concurrently
-
-        remove_index :comments, name: "index_comments_on_ai_disclosure_level", if_exists: true, algorithm: :concurrently
-        add_index :comments, :ai_disclosure_level, algorithm: :concurrently
-      ensure
-        execute "ALTER ROLE \"#{db_user}\" RESET statement_timeout;"
-      end
+    # Drop leftover invalid indexes if a previous attempt was interrupted
+    if connection.select_value("SELECT 1 FROM pg_index i JOIN pg_class c ON c.oid = i.indexrelid WHERE c.relname = 'index_articles_on_ai_disclosure_level' AND NOT i.indisvalid")
+      connection.execute "SET statement_timeout = 0;"
+      connection.execute "DROP INDEX CONCURRENTLY IF EXISTS index_articles_on_ai_disclosure_level;"
     end
+
+    if connection.select_value("SELECT 1 FROM pg_index i JOIN pg_class c ON c.oid = i.indexrelid WHERE c.relname = 'index_comments_on_ai_disclosure_level' AND NOT i.indisvalid")
+      connection.execute "SET statement_timeout = 0;"
+      connection.execute "DROP INDEX CONCURRENTLY IF EXISTS index_comments_on_ai_disclosure_level;"
+    end
+
+    connection.execute "SET statement_timeout = 0;"
+    add_index :articles, :ai_disclosure_level, algorithm: :concurrently unless index_exists?(:articles, :ai_disclosure_level)
+
+    connection.execute "SET statement_timeout = 0;"
+    add_index :comments, :ai_disclosure_level, algorithm: :concurrently unless index_exists?(:comments, :ai_disclosure_level)
   end
 
   def down
-    safety_assured do
-      remove_index :articles, name: "index_articles_on_ai_disclosure_level", if_exists: true, algorithm: :concurrently
-      remove_index :comments, name: "index_comments_on_ai_disclosure_level", if_exists: true, algorithm: :concurrently
-    end
+    remove_index :articles, :ai_disclosure_level, algorithm: :concurrently if index_exists?(:articles, :ai_disclosure_level)
+    remove_index :comments, :ai_disclosure_level, algorithm: :concurrently if index_exists?(:comments, :ai_disclosure_level)
   end
 end
