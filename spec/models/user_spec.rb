@@ -130,6 +130,18 @@ RSpec.describe User do
       expect(payload["notification_settings_url"]).to end_with("/settings/notifications")
     end
 
+    # signed_up_with resolves the community name from try(:subforem_id), so the
+    # copy has to follow the same subforem as the URLs beside it rather than
+    # falling back to the default community.
+    it "names the user's own subforem community in the signed-up-with copy" do
+      subforem = create(:subforem, domain: "onboarding.example.com")
+      user = create(:user, onboarding_subforem_id: subforem.id)
+      allow(Settings::Community).to receive(:community_name)
+        .with(subforem_id: subforem.id).and_return("Onboarding Community")
+
+      expect(user.trackable_payload["signed_up_with_html"]).to include("Onboarding Community")
+    end
+
     it "reflects registration, confirmation, and email consent state in the payload" do
       user = create(:user)
       user.notification_setting.update!(email_newsletter: true, email_digest_periodic: true)

@@ -31,10 +31,11 @@ module Users
     TOKEN_TTL = 31.days
 
     def call(user)
-      host = Subforem.cached_id_to_domain_hash[user.onboarding_subforem_id]
+      subforem_id = user.onboarding_subforem_id
+      host = Subforem.cached_id_to_domain_hash[subforem_id]
 
       {
-        "signed_up_with_html" => ViewContext.new(URL.domain(host)).signed_up_with(user),
+        "signed_up_with_html" => ViewContext.new(URL.domain(host), subforem_id).signed_up_with(user),
         "unsubscribe_url" => unsubscribe_url(user, host),
         "notification_settings_url" => URL.url("/settings/notifications", host)
       }
@@ -79,8 +80,15 @@ module Users
       include ActionView::Helpers::TranslationHelper
       include AuthenticationHelper
 
-      def initialize(host)
+      # signed_up_with resolves the community name from `try(:subforem_id)`, so
+      # this has to answer to it or the copy says "DEV Community" while the URLs
+      # beside it point at the user's own subforem. ApplicationMailer exposes the
+      # same reader as a helper_method for exactly this reason.
+      attr_reader :subforem_id
+
+      def initialize(host, subforem_id = nil)
         @host = host
+        @subforem_id = subforem_id
       end
 
       def default_url_options
