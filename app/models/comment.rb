@@ -18,6 +18,30 @@ class Comment < ApplicationRecord
 
   VALID_SORT_OPTIONS = %w[top latest oldest].freeze
 
+  enum :ai_disclosure_level, {
+    not_disclosed: 0,
+    no_ai: 1,
+    some_ai: 3,
+    fully_autonomous: 5
+  }
+
+  def ai_disclosed?
+    some_ai? || fully_autonomous?
+  end
+
+  def ai_disclosure_label
+    case ai_disclosure_level
+    when "some_ai"
+      I18n.t("models.comment.ai_disclosure.some_ai")
+    when "fully_autonomous"
+      I18n.t("models.comment.ai_disclosure.fully_autonomous")
+    when "no_ai"
+      I18n.t("models.comment.ai_disclosure.no_ai")
+    else
+      I18n.t("models.comment.ai_disclosure.not_disclosed")
+    end
+  end
+
   URI_REGEXP = %r{
     \A
     (?:https?://)?  # optional scheme

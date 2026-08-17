@@ -196,6 +196,8 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               published_timestamp: { description: "Crossposting or published date time", type: :string,
                                      format: "date-time" },
               reading_time_minutes: { description: "Reading time, in minutes", type: :integer, format: :int32 },
+              ai_disclosure_level: { type: :string, enum: %w[not_disclosed no_ai some_ai fully_autonomous], description: "Level of AI tooling usage disclosure" },
+              ai_disclosure_label: { type: :string, description: "Human-readable label of AI disclosure" },
               user: { "$ref": "#/components/schemas/SharedUser" },
               flare_tag: { "$ref": "#/components/schemas/ArticleFlareTag" },
               organization: { "$ref": "#/components/schemas/SharedOrganization" }
@@ -242,7 +244,8 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
                   canonical_url: { type: :string, nullable: true },
                   description: { type: :string },
                   tags: { type: :string },
-                  organization_id: { type: :integer, nullable: true }
+                  organization_id: { type: :integer, nullable: true },
+                  ai_disclosure_level: { type: :string, enum: %w[not_disclosed no_ai some_ai fully_autonomous], description: "Level of AI tooling usage disclosure" }
                 }
               }
             }
@@ -430,7 +433,9 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               type_of: { type: :string },
               id_code: { type: :string },
               created_at: { type: :string, format: "date-time" },
-              image_url: { description: "Podcast image url", type: :string, format: :url }
+              image_url: { description: "Podcast image url", type: :string, format: :url },
+              ai_disclosure_level: { type: :string, enum: %w[not_disclosed no_ai some_ai fully_autonomous], description: "Level of AI tooling usage disclosure" },
+              ai_disclosure_label: { type: :string, description: "Human-readable label of AI disclosure" }
             }
           },
           UserInviteParam: {
