@@ -378,7 +378,7 @@ RSpec.describe "Api::V1::Docs::Users" do
           run_test!
         end
 
-        response "200", "successful (multiple settings)" do
+        response "200", "successful" do
           let(:"api-key") { api_secret.secret }
           let(:id) { banned_user.id }
           let(:settings_params) do

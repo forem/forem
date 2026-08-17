@@ -5295,7 +5295,7 @@
         ],
         "responses": {
           "200": {
-            "description": "successful (multiple settings)"
+            "description": "successful"
           }
         },
         "requestBody": {

@@ -115,12 +115,12 @@ module Api
         render json: { id: @user_record.id, status: status }
       end
 
-      # Lets MLH Core push consent changes (its dev-newsletter opt-outs) back
-      # onto the DEV account's local notification settings, which DEV's own
-      # senders (digest, newsletter) key off. Writes through the model so the
-      # normal callbacks fire (Mailchimp sync, and the CDP newsletter events
-      # once enabled) - the resulting echo event is value-idempotent on the
-      # Core side.
+      # Lets an external system of record push consent changes (its
+      # dev-newsletter opt-outs) back onto the DEV account's local
+      # notification settings, which DEV's own senders (digest, newsletter)
+      # key off. Writes through the model so the normal callbacks fire
+      # (Mailchimp sync, and the CDP newsletter events once enabled) - the
+      # resulting echo event is value-idempotent on that system's side.
       def update_notification_settings
         @user_record = User.find(params[:id])
         # Handle the missing wrapper here rather than via params.require, so
@@ -135,12 +135,13 @@ module Api
         end
 
         setting = @user_record.notification_setting
-        # This endpoint carries MLH Core's OWN consent state (its dev
-        # newsletter opt-outs/opt-ins). Emitting the CDP newsletter events
-        # here would make Core consume its own push as a user consent
-        # change — destroying the layered global-unsubscribe vs
-        # list-preference distinction. Model callbacks that aren't CDP
-        # emission (Mailchimp sync, base_email_eligible) still run.
+        # This endpoint carries an external system of record's OWN consent
+        # state (its dev newsletter opt-outs/opt-ins). Emitting the CDP
+        # newsletter events here would make that system consume its own push
+        # as a user consent change — destroying the layered
+        # global-unsubscribe vs list-preference distinction. Model callbacks
+        # that aren't CDP emission (Mailchimp sync, base_email_eligible)
+        # still run.
         User.skip_trackable_events { setting.update!(updates) }
 
         audit!(slug: "update_notification_settings",
