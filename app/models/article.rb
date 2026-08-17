@@ -517,6 +517,7 @@ class Article < ApplicationRecord
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url,
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
+           :published_at, :crossposted_at, :description, :reading_time, :video_duration_in_seconds, :score,
            :last_comment_at, :main_image_height, :type_of, :edited_at, :processed_html, :subforem_id,
            :favorited_by_user_id, :ai_disclosure_level)
   }
@@ -856,7 +857,7 @@ class Article < ApplicationRecord
 
   def published_timestamp
     return "" unless published
-    return "" unless crossposted_at || published_at
+    return "" unless (has_attribute?(:crossposted_at) ? crossposted_at : nil) || published_at
 
     displayable_published_at.utc.iso8601
   end
@@ -962,7 +963,7 @@ class Article < ApplicationRecord
   end
 
   def displayable_published_at
-    crossposted_at.presence || published_at
+    (has_attribute?(:crossposted_at) ? crossposted_at.presence : nil) || published_at
   end
 
   def title_for_metadata
