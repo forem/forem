@@ -141,7 +141,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_14_130200) do
   end
 
   create_table "articles", force: :cascade do |t|
-    t.integer "ai_disclosure", default: 0, null: false
     t.integer "ai_disclosure_level", default: 0, null: false
     t.text "ai_summary"
     t.datetime "ai_summary_generated_at"
