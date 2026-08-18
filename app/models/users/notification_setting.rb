@@ -20,6 +20,7 @@ module Users
       email_unread_notifications: "unread_notifications",
       email_badge_notifications: "badge_notifications"
     }.freeze
+    CORE_SYNCED_EMAIL_SETTINGS = EMAIL_CONSENT_EVENTS.keys.freeze
 
     belongs_to :user, touch: true
 
