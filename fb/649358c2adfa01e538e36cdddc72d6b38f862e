@@ -1,0 +1,276 @@
+.env_sample
+  h_f968154a99632d 179-186
+Gemfile.lock
+  h_f968154a99632d 717,720-722
+app/assets/images/community-leader-icon.svg
+  h_f968154a99632d 1-5
+app/assets/javascripts/.eslintrc.js
+  h_f968154a99632d 26,29
+app/assets/javascripts/initializePage.js
+  h_f968154a99632d 33
+app/assets/javascripts/initializers/initScrolling.js
+  h_f968154a99632d 359,400-405,494
+app/assets/javascripts/initializers/initializeFavoritedMarkers.js
+  h_f968154a99632d 1-28
+app/assets/javascripts/initializers/initializeLocalStorageRender.js
+  h_f968154a99632d 8
+app/assets/javascripts/utilities/buildArticleHTML.js
+  h_f968154a99632d 176,187-203,253-255,490
+app/assets/javascripts/utilities/buildCommentHTML.js.erb
+  h_f968154a99632d 17,36-38,63
+app/assets/javascripts/utilities/featureFlags.js
+  h_f968154a99632d 1-5
+app/assets/stylesheets/components/stories.scss
+  h_f968154a99632d 318-323
+app/assets/stylesheets/scaffolds.scss
+  h_f968154a99632d 138-153
+app/controllers/api/v1/api_controller.rb
+  h_f968154a99632d 85-92
+app/controllers/concerns/api/admin/users_controller.rb
+  h_f968154a99632d 14-27,118-123,130,138-144,150,153
+app/controllers/concerns/caching_headers.rb
+  h_f968154a99632d 29-33,66-69
+app/controllers/favorites_controller.rb
+  h_f968154a99632d 6
+app/helpers/application_helper.rb
+  h_f968154a99632d 261-276
+app/helpers/favorites_helper.rb
+  h_f968154a99632d 4-5
+app/javascript/articles/Article.jsx
+  h_f968154a99632d 9,22,49-50,53-55,95-104,106-108,133-135,137-144,152,155-158,168-176,210
+app/javascript/articles/__tests__/__snapshots__/Article.test.jsx.snap
+  h_f968154a99632d 130,170,174,259,378,418,422,507
+app/javascript/articles/components/CommentsCount.jsx
+  h_f968154a99632d 52
+app/javascript/articles/components/FavoritedMarker.jsx
+  h_f968154a99632d 1-39
+app/javascript/articles/components/Meta.jsx
+  h_f968154a99632d 72
+app/javascript/articles/components/PublishDate.jsx
+  h_f968154a99632d 3,25-29,32
+app/javascript/articles/components/__tests__/FavoritedMarker.test.jsx
+  h_f968154a99632d 1-72
+app/javascript/articles/components/__tests__/PublishDate.test.jsx
+  h_f968154a99632d 1-172
+app/javascript/articles/components/index.js
+  h_f968154a99632d 5
+app/javascript/favoriteControl/FavoriteControl.jsx
+  h_f968154a99632d 97-99,115-120
+app/javascript/favoriteControl/__tests__/FavoriteControl.test.jsx
+  h_f968154a99632d 13-16,19,45-52,54,69,115,169,177-197
+app/javascript/packs/articlePage.jsx
+  h_f968154a99632d 121-124
+app/javascript/packs/baseInitializers.js
+  h_f968154a99632d 26
+app/javascript/packs/favoriteControls.jsx
+  h_f968154a99632d 3-4,48-58
+app/javascript/packs/homePageFeed.jsx
+  h_f968154a99632d 97
+app/javascript/packs/initializers/__tests__/initializeDateTimeHelpers.test.js
+  h_f968154a99632d 1-229
+app/javascript/packs/initializers/initializeDateTimeHelpers.js
+  h_f968154a99632d 1,23-71,73-75
+app/javascript/packs/searchParams.js
+  h_f968154a99632d 218-219,221-227,229,259-260,262-268
+app/javascript/profilePreviewCards/MinimalProfilePreviewCard.jsx
+  h_f968154a99632d 3,13,23,51,58
+app/javascript/profilePreviewCards/__tests__/MinimalProfilePreviewCard.test.jsx
+  h_f968154a99632d 1-85
+app/javascript/utilities/__tests__/localDateTime.test.js
+  h_f968154a99632d 4-5,9-17,52-184
+app/javascript/utilities/featureFlags.js
+  h_f968154a99632d 1-4
+app/javascript/utilities/localDateTime.js
+  h_f968154a99632d 81,104-106
+app/mailers/concerns/deliverable.rb
+  h_f968154a99632d 15-20,31-36,41-42,45-48,50-55,63-91,103-119
+app/mailers/custom_mailer.rb
+  h_f968154a99632d 14-21
+app/mailers/digest_mailer.rb
+  h_f968154a99632d 19-24,26-28,37-40
+app/mailers/notify_mailer.rb
+  h_f968154a99632d 37,63-68,92-93,96-100,162-166
+app/mailers/survey_mailer.rb
+  h_f968154a99632d 26-27
+app/models/article.rb
+  h_f968154a99632d 11,63-69,520-521,532-533,1833-1889
+app/models/articles/cached_entity.rb
+  h_f968154a99632d 3-4,15
+app/models/async_info.rb
+  h_f968154a99632d 49
+app/models/comment.rb
+  h_f968154a99632d 10,277-309
+app/models/concerns/activity_trackable.rb
+  h_f968154a99632d 1-94
+app/models/forem_instance.rb
+  h_f968154a99632d 56-62
+app/models/organization.rb
+  h_f968154a99632d 179-182
+app/models/reaction.rb
+  h_f968154a99632d 2-3,210-251
+app/models/settings/user_experience.rb
+  h_f968154a99632d 57
+app/models/user.rb
+  h_f968154a99632d 302-304,500-501,505,520-523,910
+app/policies/favorite_policy.rb
+  h_f968154a99632d 5
+app/queries/homepage/articles_query.rb
+  h_f968154a99632d 8
+app/serializers/homepage/article_serializer.rb
+  h_f968154a99632d 23
+app/services/badges/award_community_favorite.rb
+  h_f968154a99632d 1-46
+app/services/community_leaders/add.rb
+  h_f968154a99632d 31-32
+app/services/community_leaders/prune_inactive.rb
+  h_f968154a99632d 1-65
+app/services/community_leaders/remove.rb
+  h_f968154a99632d 24-29
+app/services/delivery_methods/customer_io.rb
+  h_f968154a99632d 45-60
+app/services/delivery_methods/customer_io_event.rb
+  h_f968154a99632d 1-72
+app/services/email_digest.rb
+  h_f968154a99632d 29-36,41-42
+app/services/emails/ahoy_link_decorator.rb
+  h_f968154a99632d 1-109
+app/services/emails/ahoy_link_tracking.rb
+  h_f968154a99632d 1-104
+app/services/favorites/create.rb
+  h_f968154a99632d 3-4,18,23-24,40-93,102-107
+app/services/trackable/event_name.rb
+  h_f968154a99632d 1-20
+app/services/trackers/customerio_cdp.rb
+  h_f968154a99632d 41
+app/services/users/email_footer_payload.rb
+  h_f968154a99632d 1-77
+app/views/admin/emails/show.html.erb
+  h_f968154a99632d 3-5,7-12,38-51
+app/views/api/v1/shared/_user_show_extended.json.jbuilder
+  h_f968154a99632d 12-13
+app/views/articles/_single_story.html.erb
+  h_f968154a99632d 55,157-171
+app/views/articles/show.html.erb
+  h_f968154a99632d 165
+app/views/comments/_comment.json.jbuilder
+  h_f968154a99632d 20
+app/views/comments/_comment_header.html.erb
+  h_f968154a99632d 26
+app/views/layouts/application.html.erb
+  h_f968154a99632d 77,177-210
+app/views/shared/_profile_card_content.html.erb
+  h_f968154a99632d 9
+app/views/stories/feeds/show.json.jbuilder
+  h_f968154a99632d 6,27,41
+app/views/users/show.html.erb
+  h_f968154a99632d 71-74
+app/workers/community_leaders/prune_inactive_worker.rb
+  h_f968154a99632d 1-14
+app/workers/emails/send_user_digest_worker.rb
+  h_f968154a99632d 11-19
+config/initializers/ahoy_email.rb
+  h_f968154a99632d 31-35,43-55,57-58,70-74
+config/initializers/customerio.rb
+  h_f968154a99632d 5-14
+config/locales/services/en.yml
+  h_f968154a99632d 17-19
+config/locales/services/fr.yml
+  h_f968154a99632d 17-19
+config/locales/services/pt.yml
+  h_f968154a99632d 17-19
+config/locales/views/leadership/en.yml
+  h_f968154a99632d 6-7
+config/locales/views/leadership/fr.yml
+  h_f968154a99632d 6-7
+config/locales/views/leadership/pt.yml
+  h_f968154a99632d 6-7
+config/schedule.yml
+  h_f968154a99632d 109-112
+db/seeds.rb
+  h_f968154a99632d 302-310
+spec/helpers/application_helper_spec.rb
+  h_f968154a99632d 589-654,656
+spec/mailers/concerns/deliverable_spec.rb
+  h_f968154a99632d 110-250
+spec/mailers/custom_mailer_spec.rb
+  h_f968154a99632d 142-165
+spec/mailers/digest_mailer_spec.rb
+  h_f968154a99632d 131,137,160-172
+spec/mailers/notify_mailer_spec.rb
+  h_f968154a99632d 53,92-94,146,150-151,298-300
+spec/mailers/survey_mailer_spec.rb
+  h_f968154a99632d 74-75,78-87
+spec/models/async_info_spec.rb
+  h_f968154a99632d 34-41
+spec/models/concerns/activity_trackable_spec.rb
+  h_f968154a99632d 1-393
+spec/models/forem_instance_spec.rb
+  h_f968154a99632d 112-136
+spec/models/user_activity_spec.rb
+  h_f968154a99632d 249-268
+spec/models/user_spec.rb
+  h_f968154a99632d 74-75,79-117,1262-1269
+spec/policies/favorite_policy_spec.rb
+  h_f968154a99632d 20-21,40-47
+spec/requests/ahoy/email_clicks_spec.rb
+  h_f968154a99632d 59-60,62,72-74,91-93,99-163
+spec/requests/api/v1/admin/users_spec.rb
+  h_f968154a99632d 387-389,408-429,449-495
+spec/requests/api/v1/docs/users_spec.rb
+  h_f968154a99632d 346,360-366,380-389
+spec/requests/api/v1/users_spec.rb
+  h_f968154a99632d 66,70-77,82,140-149
+spec/requests/community_leader_indicators_spec.rb
+  h_f968154a99632d 1-76
+spec/requests/favorites_spec.rb
+  h_f968154a99632d 57-58,60-61,63-64,69-82,94-100,112-121
+spec/requests/stories/feeds_spec.rb
+  h_f968154a99632d 863-920
+spec/requests/stories_index_spec.rb
+  h_f968154a99632d 295-318,655-656
+spec/serializers/homepage/article_serializer_spec.rb
+  h_f968154a99632d 19-33
+spec/services/badges/award_community_favorite_spec.rb
+  h_f968154a99632d 1-61
+spec/services/community_leaders/add_spec.rb
+  h_f968154a99632d 54-61,67,73
+spec/services/community_leaders/prune_inactive_spec.rb
+  h_f968154a99632d 1-134
+spec/services/community_leaders/remove_spec.rb
+  h_f968154a99632d 46-62
+spec/services/delivery_methods/customer_io_event_spec.rb
+  h_f968154a99632d 1-122
+spec/services/delivery_methods/customer_io_spec.rb
+  h_f968154a99632d 85-113
+spec/services/email_digest_spec.rb
+  h_f968154a99632d 4-9,12,20,30-80
+spec/services/emails/ahoy_link_decorator_spec.rb
+  h_f968154a99632d 1-156
+spec/services/emails/ahoy_link_tracking_parity_spec.rb
+  h_f968154a99632d 1-60
+spec/services/favorites/create_spec.rb
+  h_f968154a99632d 26-34,77-81,83-154,156-158
+spec/services/homepage/fetch_articles_spec.rb
+  h_f968154a99632d 14-15
+spec/swagger_helper.rb
+  h_f968154a99632d 388,409
+spec/system/search/display_articles_search_spec.rb
+  h_f968154a99632d 32
+spec/workers/community_leaders/prune_inactive_worker_spec.rb
+  h_f968154a99632d 1-36
+spec/workers/emails/send_user_digest_worker_spec.rb
+  h_f968154a99632d 34-73
+swagger/v1/api_v1.json
+  h_f968154a99632d 5284,5312-5329,6367,6422
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "fb649358c2adfa01e538e36cdddc72d6b38f862e",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
