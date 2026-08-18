@@ -348,6 +348,11 @@ RSpec.describe "/api/admin/users" do
 
     let!(:target) { create(:user) }
 
+    it "uses the same Core-synced consent allowlist as the event emitter" do
+      expect(Api::Admin::UsersController::ALLOWED_NOTIFICATION_SETTINGS)
+        .to equal(Users::NotificationSetting::CORE_SYNCED_EMAIL_SETTINGS)
+    end
+
     def put_settings(body, id: target.id)
       put "/api/admin/users/#{id}/notification_settings",
           params: body.to_json,
