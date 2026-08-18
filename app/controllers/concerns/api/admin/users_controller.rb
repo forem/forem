@@ -14,8 +14,9 @@ module Api
       # Email notification columns writable through this endpoint. These are
       # the user-consent settings an external system of record may push back
       # onto the account. Mobile and in-app columns are excluded, as are the
-      # moderator newsletters, which are driven by role changes rather than by
-      # the user's own choice.
+      # moderator newsletters (Users::NotificationSetting::ROLE_DRIVEN_NEWSLETTER_SETTINGS),
+      # which are driven by role changes rather than by the user's own choice —
+      # Core still receives their state via EMAIL_CONSENT_EVENTS, one-way.
       ALLOWED_NOTIFICATION_SETTINGS = Users::NotificationSetting::CORE_SYNCED_EMAIL_SETTINGS
 
       def index
