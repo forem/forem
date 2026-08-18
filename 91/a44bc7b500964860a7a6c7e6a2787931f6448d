@@ -1,0 +1,24 @@
+app/views/liquids/_org_lead_form.html.erb
+  b172f74f607742a2 37,93-99,114-115,126-129,183-199
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.9",
+  "base_commit_sha": "91a44bc7b500964860a7a6c7e6a2787931f6448d",
+  "prompts": {
+    "b172f74f607742a2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c1a2e06b-87bc-4819-8425-5e24e6858795",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Jon Gottfried <jonmarkgo@gmail.com>",
+      "messages": [],
+      "total_additions": 31,
+      "total_deletions": 1,
+      "accepted_lines": 31,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/43bcbc78ccfd05076f86baf20463ec3d2235ec3fb49c843de9a696f9d0acb288"
+    }
+  }
+}
