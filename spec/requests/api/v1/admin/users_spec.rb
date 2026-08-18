@@ -427,6 +427,26 @@ RSpec.describe "/api/admin/users" do
       FeatureFlag.remove(:dev_core_user_sync)
     end
 
+    # Same suppression again, for the five per-notification consents. These now
+    # emit their own DEV → Core events, so an admin-API write of them must stay
+    # silent too or Core would consume its own push straight back.
+    it "does not emit CDP events for the per-notification consents on admin-API writes" do
+      allow(Trackable::Registry).to receive(:active_names).and_return([:any])
+      allow(Trackable::DispatchWorker).to receive(:perform_async)
+      Settings::General.customerio_cdp_enabled = true
+      FeatureFlag.enable(:dev_core_user_sync, FeatureFlag::Actor[target])
+
+      with_trackable_events do
+        put_settings({ notification_setting: { email_comment_notifications: false,
+                                               email_badge_notifications: false } })
+      end
+
+      expect(target.notification_setting.reload.email_comment_notifications).to be(false)
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+    ensure
+      FeatureFlag.remove(:dev_core_user_sync)
+    end
+
     it "rejects a body missing the notification_setting wrapper with the admin error_code" do
       put_settings({ email_newsletter: false })
 
