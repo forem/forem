@@ -5,8 +5,9 @@ module Users
   class NotificationSetting < ApplicationRecord
     self.table_name_prefix = "users_"
 
-    # Every email consent MLH Core mirrors onto a Customer.io subscription
-    # topic, mapped to the base name of the events Core matches on the wire.
+    # Every email consent MLH Core mirrors (onto a Customer.io subscription
+    # topic or a Core newsletter key), mapped to the base name of the events
+    # Core matches on the wire.
     #
     # The two original entries produce "user_newsletter_*" and "user_digest_*" —
     # NOT the column names. Core matches these strings exactly, so renaming one
@@ -18,9 +19,19 @@ module Users
       email_follower_notifications: "follower_notifications",
       email_mention_notifications: "mention_notifications",
       email_unread_notifications: "unread_notifications",
-      email_badge_notifications: "badge_notifications"
+      email_badge_notifications: "badge_notifications",
+      # Moderator newsletters land on Core's newsletter_subscriptions
+      # dev_tag_mod / dev_community_mod keys (which Customer.io sends from).
+      email_tag_mod_newsletter: "tag_mod_newsletter",
+      email_community_mod_newsletter: "community_mod_newsletter"
     }.freeze
-    CORE_SYNCED_EMAIL_SETTINGS = EMAIL_CONSENT_EVENTS.keys.freeze
+    # Emitted to Core but never written back by it: these follow the tag /
+    # subforem moderator role (TagModerators::Add, SubforemModerators::Add,
+    # Moderator::ManageActivityAndRoles), so DEV owns them one-way.
+    ROLE_DRIVEN_NEWSLETTER_SETTINGS = %i[email_tag_mod_newsletter email_community_mod_newsletter].freeze
+    # The user's own choices — the settings Core may push back through the
+    # admin API (Api::Admin::UsersController#update_notification_settings).
+    CORE_SYNCED_EMAIL_SETTINGS = (EMAIL_CONSENT_EVENTS.keys - ROLE_DRIVEN_NEWSLETTER_SETTINGS).freeze
 
     belongs_to :user, touch: true
 
