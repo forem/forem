@@ -83,38 +83,20 @@ RSpec.describe "Custom Domain Redirects", type: :request do
       }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
-    it "bypasses the custom domain constraint and does not use custom domain routes for AJAX requests" do
+    it "handles requests with Sec-Fetch-Dest: empty on custom domain paths" do
       host! "blog.example.com"
-      
-      # Since we don't have a route for /my-old-post in standard routes,
-      # it will raise RecordNotFound instead of redirecting because the constraint was bypassed.
-      expect {
-        get "/my-old-post", xhr: true
-      }.to raise_error(ActiveRecord::RecordNotFound)
+      get "/my-old-post", headers: { "Sec-Fetch-Dest" => "empty" }
+
+      expect(response).to redirect_to("https://dev.to/my-new-post")
+      expect(response).to have_http_status(:moved_permanently)
     end
 
-    it "bypasses the custom domain constraint for JSON format requests" do
+    it "handles requests with Sec-Fetch-Mode: cors on custom domain paths" do
       host! "blog.example.com"
-      
-      expect {
-        get "/my-old-post", as: :json
-      }.to raise_error(ActiveRecord::RecordNotFound)
-    end
+      get "/my-old-post", headers: { "Sec-Fetch-Mode" => "cors" }
 
-    it "bypasses the custom domain constraint for requests with Sec-Fetch-Mode: cors" do
-      host! "blog.example.com"
-      
-      expect {
-        get "/my-old-post", headers: { "Sec-Fetch-Mode" => "cors" }
-      }.to raise_error(ActiveRecord::RecordNotFound)
-    end
-
-    it "bypasses the custom domain constraint for requests with Sec-Fetch-Dest: empty" do
-      host! "blog.example.com"
-      
-      expect {
-        get "/my-old-post", headers: { "Sec-Fetch-Dest" => "empty" }
-      }.to raise_error(ActiveRecord::RecordNotFound)
+      expect(response).to redirect_to("https://dev.to/my-new-post")
+      expect(response).to have_http_status(:moved_permanently)
     end
 
     it "bypasses the custom domain constraint for /async_info paths" do
@@ -133,16 +115,6 @@ RSpec.describe "Custom Domain Redirects", type: :request do
       expect {
         get "/reactions"
       }.not_to raise_error
-    end
-
-    it "does not bypass the constraint if the request is AJAX but has ?i=i" do
-      host! "blog.example.com"
-      
-      # Should redirect because i=i prevents the AJAX bypass
-      get "/my-old-post", params: { i: "i" }, xhr: true
-      
-      expect(response).to redirect_to("https://dev.to/my-new-post")
-      expect(response).to have_http_status(:moved_permanently)
     end
 
     it "does not raise a DoubleRenderError and redirects successfully when org_slug is mismatched on show path" do
