@@ -155,6 +155,17 @@ class FeedConfig < ApplicationRecord
       SQL
     end
 
+    user_setting = user.respond_to?(:setting) ? user.setting : nil
+    if user_setting&.minimize_ai_feed_ai?
+      terms << "(CASE WHEN articles.ai_disclosure_level = 3 THEN -15.0 WHEN articles.ai_disclosure_level = 5 THEN -30.0 ELSE 0 END)"
+    elsif user_setting&.hide_fully_autonomous_feed_ai?
+      terms << "(CASE WHEN articles.ai_disclosure_level = 3 THEN -15.0 ELSE 0 END)"
+    end
+
+    if autonomous_ai_penalty_weight.positive?
+      terms << "(CASE WHEN articles.ai_disclosure_level = 5 THEN -#{autonomous_ai_penalty_weight} ELSE 0 END)"
+    end
+
     terms << "(CASE WHEN articles.featured = TRUE THEN #{featured_weight} ELSE 0 END)" if featured_weight.positive?
     terms << "(CASE WHEN articles.type_of = 1 THEN #{status_weight} ELSE 0 END)" if status_weight.positive?
     terms << "(- (articles.clickbait_score * #{clickbait_score_weight}))" if clickbait_score_weight.positive?

@@ -471,7 +471,7 @@ RSpec.describe FeedConfig, type: :model do
 
   describe "#score_sql" do
     let(:user) { create(:user) }
-    let(:feed_config) { FeedConfig.new(semantic_similarity_weight: 10.0) }
+    let(:feed_config) { described_class.new(semantic_similarity_weight: 10.0) }
     let(:interest_embedding) { [0.1, 0.2, 0.3] + Array.new(765, 0.0) }
 
     it "includes semantic embedding calculation when activity store has a vector" do
@@ -482,6 +482,42 @@ RSpec.describe FeedConfig, type: :model do
       sql = feed_config.score_sql(user)
       expect(sql).to include("articles.semantic_embedding <=> '[#{interest_embedding.join(',')}]'")
       expect(sql).to include("* 10.0")
+    end
+
+    context "when user has minimize_ai feed preference" do
+      before { user.setting.update(feed_ai_preference: :minimize_ai) }
+
+      it "includes AI disclosure penalties for some_ai and fully_autonomous" do
+        sql = feed_config.score_sql(user)
+        expect(sql).to include("CASE WHEN articles.ai_disclosure_level = 3 THEN -15.0 WHEN articles.ai_disclosure_level = 5 THEN -30.0 ELSE 0 END")
+      end
+    end
+
+    context "when user has hide_fully_autonomous feed preference" do
+      before { user.setting.update(feed_ai_preference: :hide_fully_autonomous) }
+
+      it "includes AI disclosure penalties for some_ai" do
+        sql = feed_config.score_sql(user)
+        expect(sql).to include("CASE WHEN articles.ai_disclosure_level = 3 THEN -15.0 ELSE 0 END")
+      end
+    end
+
+    context "when autonomous_ai_penalty_weight is positive" do
+      before { feed_config.autonomous_ai_penalty_weight = 25.0 }
+
+      it "includes the autonomous AI penalty weight term" do
+        sql = feed_config.score_sql(user)
+        expect(sql).to include("CASE WHEN articles.ai_disclosure_level = 5 THEN -25.0 ELSE 0 END")
+      end
+    end
+
+    context "when user has show_all feed preference" do
+      before { user.setting.update(feed_ai_preference: :show_all) }
+
+      it "does not include user AI disclosure penalty terms" do
+        sql = feed_config.score_sql(user)
+        expect(sql).not_to include("articles.ai_disclosure_level = 3 THEN -15.0")
+      end
     end
   end
 end
