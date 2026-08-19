@@ -1174,14 +1174,121 @@ PinnedArticle.set(first_article) if first_article.present?
 
 seeder.create_if_none(Event) do
   user_ids = User.pluck(:id)
+  app_host = Settings::General.app_domain.split(":").first
   
-  aws_event = Event.create!(
+  sample_events = []
+
+  # 1. Events with uploaded cover images
+  sample_events << Event.create!(
+    title: "Midnight Virtual Hackathon",
+    event_name_slug: "midnight-hackathon",
+    event_variation_slug: "aug-2026",
+    description: "36 hours of virtual hacking, community building, and shipping innovative apps.",
+    cover_image: Rails.root.join("app/assets/images/1.png").open,
+    primary_stream_url: "https://player.twitch.tv/?channel=ThePracticalDev&parent=#{app_host}",
+    data: { "location" => "Everywhere, Worldwide, US", "format" => "DIGITAL" },
+    published: true,
+    start_time: Time.zone.parse("2026-08-28 12:00:00"),
+    end_time: Time.zone.parse("2026-08-30 23:59:59"),
+    type_of: :live_stream,
+    user_id: user_ids.sample,
+    tag_list: "hackathon, javascript"
+  )
+
+  sample_events << Event.create!(
+    title: "Global Hack Week: Data",
+    event_name_slug: "ghw-data",
+    event_variation_slug: "sept-2026",
+    description: "A week-long celebration of data science, machine learning, and analytics.",
+    cover_image: Rails.root.join("app/assets/images/2.png").open,
+    primary_stream_url: "https://player.twitch.tv/?channel=ThePracticalDev&parent=#{app_host}",
+    data: { "location" => "Everywhere, Worldwide", "format" => "DIGITAL" },
+    published: true,
+    start_time: Time.zone.parse("2026-09-11 09:00:00"),
+    end_time: Time.zone.parse("2026-09-17 18:00:00"),
+    type_of: :live_stream,
+    user_id: user_ids.sample,
+    tag_list: "data, python"
+  )
+
+  # 2. Events with supported tag background colors (e.g. ruby, ai)
+  ruby_tag = Tag.find_or_create_by!(name: "ruby") do |t|
+    t.supported = true
+    t.bg_color_hex = "#CC342D"
+    t.text_color_hex = "#FFFFFF"
+  end
+  ruby_tag.update_columns(supported: true, bg_color_hex: "#CC342D")
+
+  sample_events << Event.create!(
+    title: "Ruby & Rails World Conference 2026",
+    event_name_slug: "ruby-rails-world-conf",
+    event_variation_slug: "2026",
+    description: "Deep dive into modern Rails 8, performance tuning, and full-stack Ruby architecture.",
+    data: { "location" => "Tokyo, Japan", "format" => "IN-PERSON" },
+    published: true,
+    start_time: Time.zone.parse("2026-08-29 08:00:00"),
+    end_time: Time.zone.parse("2026-08-30 19:00:00"),
+    type_of: :other,
+    user_id: user_ids.sample,
+    tag_list: "ruby"
+  )
+
+  ai_tag = Tag.find_or_create_by!(name: "ai") do |t|
+    t.supported = true
+    t.bg_color_hex = "#0D9488"
+    t.text_color_hex = "#FFFFFF"
+  end
+  ai_tag.update_columns(supported: true, bg_color_hex: "#0D9488")
+
+  sample_events << Event.create!(
+    title: "AI Developers & Agents Summit",
+    event_name_slug: "ai-developers-summit",
+    event_variation_slug: "fall-2026",
+    description: "Exploring the next generation of autonomous coding agents and LLM tooling.",
+    data: { "location" => "San Francisco, CA, US", "format" => "HYBRID" },
+    published: true,
+    start_time: Time.zone.parse("2026-09-05 10:00:00"),
+    end_time: Time.zone.parse("2026-09-07 17:00:00"),
+    type_of: :other,
+    user_id: user_ids.sample,
+    tag_list: "ai"
+  )
+
+  # 3. Events without images or tags (testing default 5-hex gradient palette)
+  sample_events << Event.create!(
+    title: "PEC HACKS 4.0",
+    event_name_slug: "pec-hacks",
+    event_variation_slug: "v4",
+    description: "Premier collegiate hackathon bringing student developers together for 36 hours.",
+    data: { "location" => "Chennai, Tamilnadu, IN", "format" => "IN-PERSON" },
+    published: true,
+    start_time: Time.zone.parse("2026-08-29 09:00:00"),
+    end_time: Time.zone.parse("2026-08-30 18:00:00"),
+    type_of: :other,
+    user_id: user_ids.sample
+  )
+
+  sample_events << Event.create!(
+    title: "HackRice XIII",
+    event_name_slug: "hackrice",
+    event_variation_slug: "13",
+    description: "Rice University's annual hackathon empowering creators to build the future.",
+    data: { "location" => "Houston, Texas, US", "format" => "IN-PERSON" },
+    published: true,
+    start_time: Time.zone.parse("2026-09-11 10:00:00"),
+    end_time: Time.zone.parse("2026-09-13 16:00:00"),
+    type_of: :other,
+    user_id: user_ids.sample
+  )
+
+  # 4. Standard live streams and challenges
+  sample_events << Event.create!(
     title: "AWS Industries LIVE!",
     event_name_slug: "aws-industries-live",
     event_variation_slug: "v1",
-    description: "AWS Industries LIVE! features AWS Partners discussing various topics related to their industry, their solutions, and how they can help customers.",
-    primary_stream_url: "https://player.twitch.tv/?channel=aws&parent=#{Settings::General.app_domain.split(':').first}",
-    data: { chat_url: "https://www.twitch.tv/embed/aws/chat?parent=#{Settings::General.app_domain.split(':').first}" },
+    description: "AWS Partners discussing various topics related to their industry and cloud solutions.",
+    primary_stream_url: "https://player.twitch.tv/?channel=aws&parent=#{app_host}",
+    data: { "chat_url" => "https://www.twitch.tv/embed/aws/chat?parent=#{app_host}", "location" => "Everywhere, Worldwide", "format" => "DIGITAL" },
     published: true,
     start_time: 1.day.ago,
     end_time: 1.week.from_now,
@@ -1189,24 +1296,8 @@ seeder.create_if_none(Event) do
     user_id: user_ids.sample,
     tag_list: "aws"
   )
-  
-  forem_event = Event.create!(
-    title: "Forem Walkthrough with Ben Halpern",
-    event_name_slug: "forem-walkthrough-with-ben-halpern",
-    event_variation_slug: "v1",
-    description: "Join us for a walkthrough of the newest Forem features.",
-    primary_stream_url: "https://player.twitch.tv/?channel=ThePracticalDev&parent=#{Settings::General.app_domain.split(':').first}",
-    data: {},
-    published: true,
-    start_time: 2.days.from_now,
-    end_time: 2.days.from_now + 2.hours,
-    type_of: :live_stream,
-    user_id: user_ids.sample,
-    tag_list: "forem, updates"
-  )
 
-  # Automatically approve the billboards generated by the callbacks for these events
-  [aws_event, forem_event].each do |event|
+  sample_events.each do |event|
     event.billboards.update_all(approved: true)
   end
 end
