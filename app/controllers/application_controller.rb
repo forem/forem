@@ -26,6 +26,7 @@ class ApplicationController < ActionController::Base
   before_action :forward_to_app_config_domain
   before_action :redirect_custom_domain_non_profile_pages
   before_action :determine_locale
+  before_action :set_request_signed_in_context
   after_action  :clear_request_store
 
   include SessionCurrentUser
@@ -398,6 +399,11 @@ class ApplicationController < ActionController::Base
       current_user.remember_me!
       remember_me(current_user)
     end
+  end
+
+  def set_request_signed_in_context
+    RequestStore.store[:user_signed_in] = user_signed_in?
+    RequestStore.store[:custom_domain_org] = request.env["forem.custom_domain_org"]
   end
 
   def after_sign_out_path_for(_resource_or_scope)

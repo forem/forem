@@ -14,8 +14,11 @@ json.extract!(
   :collection_id,
   :published_timestamp,
   :language,
-  :subforem_id
+  :subforem_id,
+  :ai_disclosure_level
 )
+
+json.ai_disclosure_label article.ai_disclosure_label
 
 json.positive_reactions_count article.public_reactions_count
 json.cover_image     cloud_cover_url(article.main_image)

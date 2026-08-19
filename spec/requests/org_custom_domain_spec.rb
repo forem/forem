@@ -98,6 +98,13 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
         expect(response.body).to include("Test Article Content")
       end
 
+      it "routes /:slug to the organization's article when requested via fetch / link preload" do
+        get "http://custom.org/#{article.slug}", headers: { "Sec-Fetch-Dest" => "empty", "Sec-Fetch-Mode" => "cors" }
+
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include("Test Article Content")
+      end
+
       it "routes /:username/:slug to the organization's article" do
         get "http://custom.org/#{organization.slug}/#{article.slug}"
 

@@ -1,0 +1,28 @@
+<header class="flex items-center mb-6">
+  <div>
+    <h1 class="crayons-title">Create Feed Configuration</h1>
+    <p class="color-base-60 text-sm">
+      <% if params[:clone_from_id].present? %>
+        Values pre-filled from Feed Config #<%= params[:clone_from_id] %>.
+      <% elsif @feed_config.persisted? || FeedConfig.exists? %>
+        Values pre-filled from the current <strong>best-performing</strong> feed config. Adjust any weights below to spin up a new configuration variant.
+      <% else %>
+        Enter the algorithmic weights for this new feed configuration.
+      <% end %>
+    </p>
+  </div>
+  <a href="<%= admin_feed_configs_path %>" class="crayons-btn crayons-btn--outlined ml-auto" role="button">
+    Back to Feed Configs
+  </a>
+</header>
+
+<div class="crayons-card p-6">
+  <%= form_with(model: [:admin, @feed_config], url: admin_feed_configs_path, method: :post, local: true) do |f| %>
+    <%= render "form", f: f %>
+
+    <div class="flex items-center gap-3 mt-6 pt-4 border-t">
+      <%= f.submit "Create Feed Config", class: "crayons-btn crayons-btn--primary" %>
+      <%= link_to "Cancel", admin_feed_configs_path, class: "crayons-btn crayons-btn--ghost" %>
+    </div>
+  <% end %>
+</div>
