@@ -1,34 +1,45 @@
 class OrgCustomDomainConstraint
-  CUSTOM_DOMAIN_ROOT_SEGMENTS = %w[p feed rss].to_set.freeze
+  PLATFORM_FIRST_SEGMENTS = %w[
+    ahoy
+    api
+    assets
+    async_info
+    auth_pass
+    badge_achievements
+    bb
+    bb_tabulations
+    billboard_events
+    billboards
+    display_ad_events
+    display_ads
+    enter
+    fallback_activity_recorder
+    feedback_messages
+    feed_events
+    followed_articles
+    packs
+    poll_votes
+    rails
+    reactions
+    reading_list_items
+    search
+    sign_out
+    signout_confirm
+    users
+  ].to_set.freeze
 
-  def self.platform_first_segments
-    @platform_first_segments ||= begin
-      segments = Set.new
-      Rails.application.routes.routes.each do |route|
-        path_spec = route.path.spec.to_s
-        # Remove optional leading scopes like (/locale/:locale) or (/:locale)
-        cleaned_path = path_spec.gsub(/\(\/?(?:locale\/)?:?[a-z0-9_]+\)/, "")
-        first_segment = cleaned_path.split("/").reject(&:blank?).first&.gsub(/[\(\.\:].*/, "")
-        next if first_segment.blank? || first_segment.start_with?(":", "*")
-        next if CUSTOM_DOMAIN_ROOT_SEGMENTS.include?(first_segment)
+  def self.platform_path?(first_segment, path)
+    return true if PLATFORM_FIRST_SEGMENTS.include?(first_segment)
+    return true if path.start_with?("/robots") || path.start_with?("/sitemap")
 
-        controller = route.defaults[:controller].to_s
-        action = route.defaults[:action].to_s
-
-        # Exclude custom domain routes themselves so custom domain routes are not treated as platform paths
-        next if controller == "stories" && action.in?(%w[custom_domain_index custom_domain_show])
-        next if controller == "articles" && action == "feed"
-
-        segments << first_segment
-      end
-      segments.freeze
-    end
+    false
   end
 
   def self.custom_domain_org(request)
-    first_segment = request.path.to_s.split("/")[1]
+    path = request.path.to_s
+    first_segment = path.split("/")[1]
 
-    if platform_first_segments.include?(first_segment) && request.params[:i] != "i"
+    if platform_path?(first_segment, path) && request.params[:i] != "i"
       return nil
     end
 
