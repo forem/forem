@@ -73,6 +73,7 @@ RSpec.describe User do
         "id", "username", "email", "name", "registered_at", "confirmed_at", "email_newsletter",
         "email_digest_periodic", "email_comment_notifications", "email_follower_notifications",
         "email_mention_notifications", "email_unread_notifications", "email_badge_notifications",
+        "email_tag_mod_newsletter", "email_community_mod_newsletter",
         "mlh_user_id",
         "signed_up_with_html", "unsubscribe_url", "notification_settings_url"
       )
@@ -80,7 +81,7 @@ RSpec.describe User do
 
     # Core maps each of these onto its own Customer.io subscription topic, and
     # can only learn the state of an account that never toggles anything from
-    # this payload, so all seven consents have to ride along.
+    # this payload, so all nine consents have to ride along.
     it "seeds every email consent Core mirrors, not just the newsletter and digest" do
       user = create(:user)
       user.notification_setting.update!(email_comment_notifications: false,
