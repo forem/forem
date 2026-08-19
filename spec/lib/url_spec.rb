@@ -127,12 +127,44 @@ RSpec.describe URL, type: :lib do
       expect(described_class.article(partial_article)).to eq("https://dev.to#{created_article.path}")
     end
 
-    it "handles organization custom domain when present" do
-      org = create(:organization, custom_domain: "org.custom.dev")
+    it "handles organization custom domain when present for anonymous users" do
+      org = create(:organization, custom_domain: "org.custom.dev", slug: "myorg")
       org_article = create(:article, organization: org, slug: "my-org-post")
       FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor[org])
 
+      expect(described_class.article(org_article, user_signed_in: false)).to eq("https://org.custom.dev/my-org-post")
+    end
+
+    it "returns the dev.to platform path for signed-in users" do
+      org = create(:organization, custom_domain: "org.custom.dev", slug: "myorg")
+      org_article = create(:article, organization: org, slug: "my-org-post")
+      FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor[org])
+
+      expect(described_class.article(org_article, user_signed_in: true)).to eq("https://dev.to/myorg/my-org-post")
+    end
+
+    it "returns the dev.to platform path when RequestStore indicates user is signed in" do
+      org = create(:organization, custom_domain: "org.custom.dev", slug: "myorg")
+      org_article = create(:article, organization: org, slug: "my-org-post")
+      FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor[org])
+
+      RequestStore.store[:user_signed_in] = true
+      expect(described_class.article(org_article)).to eq("https://dev.to/myorg/my-org-post")
+    ensure
+      RequestStore.store[:user_signed_in] = nil
+    end
+
+    it "returns the custom domain path when signed in but browsing directly on the custom domain" do
+      org = create(:organization, custom_domain: "org.custom.dev", slug: "myorg")
+      org_article = create(:article, organization: org, slug: "my-org-post")
+      FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor[org])
+
+      RequestStore.store[:user_signed_in] = true
+      RequestStore.store[:custom_domain_org] = org
       expect(described_class.article(org_article)).to eq("https://org.custom.dev/my-org-post")
+    ensure
+      RequestStore.store[:user_signed_in] = nil
+      RequestStore.store[:custom_domain_org] = nil
     end
   end
 

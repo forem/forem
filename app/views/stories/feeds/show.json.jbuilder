@@ -51,7 +51,6 @@ json.array!(@stories) do |article|
     # Optimize main_image - avoid cloud_cover_url call when not needed
     json.main_image article.main_image? ? cloud_cover_url(article.main_image, article.subforem_id) : nil
 
-    json.url URL.article(article)
     json.tag_list article.cached_tag_list_array
 
     # Only include body_preview for status articles
@@ -96,7 +95,8 @@ json.array!(@stories) do |article|
     json.context_note article.context_notes.first&.processed_html
   end
   
-  # These fields are added outside the cache so they don't fragment the cache
+  # These fields are added outside the cache so they don't fragment the cache and respect signed-in context
+  json.url URL.article(article)
   json.current_user_signed_in user_signed_in?
   json.feed_config @feed_config&.id
 end
