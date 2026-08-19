@@ -904,10 +904,20 @@ class User < ApplicationRecord
       "id" => id, "username" => username, "email" => email, "name" => name,
       "registered_at" => registered_at&.iso8601,
       "confirmed_at" => confirmed_at&.iso8601,
-      "email_newsletter" => notification_setting&.email_newsletter,
-      "email_digest_periodic" => notification_setting&.email_digest_periodic,
       "mlh_user_id" => identities.where(provider: "mlh").pick(:uid)
-    }.merge(Users::EmailFooterPayload.call(self))
+    }.merge(trackable_email_consents).merge(Users::EmailFooterPayload.call(self))
+  end
+
+  # Current state of every email consent Core mirrors onto a Customer.io
+  # subscription topic. The per-consent events on Users::NotificationSetting
+  # only fire when someone toggles a setting, so seeding the state here is what
+  # lets Core learn it for accounts that never touch their notification
+  # settings. Keyed off the same map the events use so the two cannot drift.
+  def trackable_email_consents
+    setting = notification_setting
+    Users::NotificationSetting::EMAIL_CONSENT_EVENTS.keys.to_h do |column|
+      [column.to_s, setting&.public_send(column)]
+    end
   end
 
   # Invited accounts (registered: false) have not consented to anything yet,

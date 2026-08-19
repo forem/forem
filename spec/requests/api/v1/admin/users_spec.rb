@@ -348,6 +348,11 @@ RSpec.describe "/api/admin/users" do
 
     let!(:target) { create(:user) }
 
+    it "uses the same Core-synced consent allowlist as the event emitter" do
+      expect(Api::Admin::UsersController::ALLOWED_NOTIFICATION_SETTINGS)
+        .to equal(Users::NotificationSetting::CORE_SYNCED_EMAIL_SETTINGS)
+    end
+
     def put_settings(body, id: target.id)
       put "/api/admin/users/#{id}/notification_settings",
           params: body.to_json,
@@ -423,6 +428,26 @@ RSpec.describe "/api/admin/users" do
       expect(target.notification_setting.reload.email_digest_periodic).to be(false)
       expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
         .with(anything, /user_digest/, anything, anything, anything)
+    ensure
+      FeatureFlag.remove(:dev_core_user_sync)
+    end
+
+    # Same suppression again, for the five per-notification consents. These now
+    # emit their own DEV → Core events, so an admin-API write of them must stay
+    # silent too or Core would consume its own push straight back.
+    it "does not emit CDP events for the per-notification consents on admin-API writes" do
+      allow(Trackable::Registry).to receive(:active_names).and_return([:any])
+      allow(Trackable::DispatchWorker).to receive(:perform_async)
+      Settings::General.customerio_cdp_enabled = true
+      FeatureFlag.enable(:dev_core_user_sync, FeatureFlag::Actor[target])
+
+      with_trackable_events do
+        put_settings({ notification_setting: { email_comment_notifications: false,
+                                               email_badge_notifications: false } })
+      end
+
+      expect(target.notification_setting.reload.email_comment_notifications).to be(false)
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
     ensure
       FeatureFlag.remove(:dev_core_user_sync)
     end

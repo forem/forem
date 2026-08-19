@@ -1,0 +1,86 @@
+<header class="flex items-center mb-6">
+  <div>
+    <h1 class="crayons-title">Feed Configurations</h1>
+    <p class="color-base-60 text-sm">Manage, inspect, and deploy algorithmic feed scoring models.</p>
+  </div>
+  <a href="<%= new_admin_feed_config_path %>" class="crayons-btn ml-auto" role="button">
+    <%= crayons_icon_tag(:plus, class: "mr-1") %> Create New Feed Config
+  </a>
+</header>
+
+<% if @best_feed_config.present? %>
+  <div class="crayons-card p-6 mb-6 border border-teal-500 bg-teal-50 dark:bg-teal-950">
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <span class="c-indicator c-indicator--success mr-2">Top Performer</span>
+        <h2 class="fs-l fw-bold inline-block">Feed Config #<%= @best_feed_config.id %></h2>
+      </div>
+      <div>
+        <%= link_to "Clone & Modify as New", new_admin_feed_config_path(clone_from_id: @best_feed_config.id), class: "crayons-btn crayons-btn--secondary mr-2" %>
+        <%= link_to "View Details", admin_feed_config_path(@best_feed_config), class: "crayons-btn crayons-btn--outlined" %>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 m:grid-cols-4 gap-4">
+      <div class="p-3 bg-white dark:bg-black rounded border">
+        <div class="color-base-60 fs-xs">Success Score</div>
+        <div class="fs-xl fw-bold color-base-90"><%= @best_feed_config.feed_success_score.round(4) %></div>
+      </div>
+      <div class="p-3 bg-white dark:bg-black rounded border">
+        <div class="color-base-60 fs-xs">Impressions Count</div>
+        <div class="fs-xl fw-bold color-base-90"><%= number_with_delimiter(@best_feed_config.feed_impressions_count) %></div>
+      </div>
+      <div class="p-3 bg-white dark:bg-black rounded border">
+        <div class="color-base-60 fs-xs">AI Disclosure Matching</div>
+        <div class="fs-xl fw-bold color-base-90"><%= @best_feed_config.ai_disclosure_matching_weight %></div>
+      </div>
+      <div class="p-3 bg-white dark:bg-black rounded border">
+        <div class="color-base-60 fs-xs">Autonomous AI Penalty</div>
+        <div class="fs-xl fw-bold color-base-90"><%= @best_feed_config.autonomous_ai_penalty_weight %></div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<div class="crayons-card p-6 grid gap-6">
+  <table class="crayons-table">
+    <thead>
+      <tr>
+        <th scope="col">Config ID</th>
+        <th scope="col">Success Score</th>
+        <th scope="col">Impressions</th>
+        <th scope="col">AI Weights (Matching / Penalty)</th>
+        <th scope="col">Created</th>
+        <th scope="col" class="text-right">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="crayons-card">
+      <% @feed_configs.each do |config| %>
+        <tr>
+          <td>
+            <strong><%= link_to "##{config.id}", admin_feed_config_path(config) %></strong>
+            <% if config.id == @best_feed_config&.id %>
+              <span class="c-indicator c-indicator--success ml-1">Best</span>
+            <% end %>
+          </td>
+          <td><%= config.feed_success_score.round(4) %></td>
+          <td><%= number_with_delimiter(config.feed_impressions_count) %></td>
+          <td>
+            <%= config.ai_disclosure_matching_weight %> / <%= config.autonomous_ai_penalty_weight %>
+          </td>
+          <td class="color-base-60 text-sm"><%= config.created_at.strftime("%b %d, %Y") %></td>
+          <td class="text-right">
+            <%= link_to "Clone", new_admin_feed_config_path(clone_from_id: config.id), class: "crayons-btn crayons-btn--ghost crayons-btn--s mr-1" %>
+            <%= link_to "View", admin_feed_config_path(config), class: "crayons-btn crayons-btn--outlined crayons-btn--s mr-1" %>
+            <%= link_to "Delete", admin_feed_config_path(config), data: { turbo_method: :delete, confirm: "Are you sure you want to delete Feed Config ##{config.id}?" }, class: "crayons-btn crayons-btn--danger crayons-btn--s" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <% if @feed_configs.respond_to?(:total_pages) %>
+    <div class="flex justify-center mt-4">
+      <%= paginate @feed_configs %>
+    </div>
+  <% end %>
+</div>
