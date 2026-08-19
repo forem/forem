@@ -503,7 +503,7 @@ class ApplicationController < ActionController::Base
   end
 
   def custom_domain_org
-    OrgCustomDomainConstraint.custom_domain_org(request)
+    request.env["forem.custom_domain_org"] || OrgCustomDomainConstraint.custom_domain_org_for_host(request.host)
   end
 
   def redirect_www_and_unregistred_subforems_to_root
