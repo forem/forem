@@ -38,6 +38,7 @@ module Moderator
     end
 
     def remove_mod_roles
+      Tag.with_role(:tag_moderator, @user).find_each(&:touch)
       @user.remove_role(:trusted)
       @user.remove_role(:tag_moderator)
       @user.notification_setting.update(email_tag_mod_newsletter: false)
@@ -47,6 +48,7 @@ module Moderator
     end
 
     def remove_tag_moderator_role
+      Tag.with_role(:tag_moderator, @user).find_each(&:touch)
       @user.remove_role(:tag_moderator)
       Mailchimp::Bot.new(user).manage_tag_moderator_list
     end
