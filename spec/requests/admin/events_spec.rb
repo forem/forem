@@ -164,6 +164,15 @@ RSpec.describe "Admin::Events" do
         expect(Event.last.cover_image).to be_present
       end
     end
+
+    context "with bg_color_hex" do
+      let(:attributes_with_hex) { valid_attributes.merge(bg_color_hex: "#7C3AED") }
+
+      it "permits and sets the bg_color_hex" do
+        post admin_events_path, params: { event: attributes_with_hex }
+        expect(Event.last.bg_color_hex).to eq("#7C3AED")
+      end
+    end
   end
 
   describe "PATCH /admin/content_manager/events/:id" do
@@ -172,13 +181,16 @@ RSpec.describe "Admin::Events" do
     context "when logged in as an admin" do
       before { login_as(super_admin) }
 
-      it "updates the event title and cover image" do
+      it "updates the event title, cover image, and bg_color_hex" do
         image_file = fixture_file_upload(Rails.root.join("spec/fixtures/files/800x600.png"), "image/png")
-        patch admin_event_path(event), params: { event: { title: "Updated Event Title", cover_image: image_file } }
+        patch admin_event_path(event), params: {
+          event: { title: "Updated Event Title", cover_image: image_file, bg_color_hex: "#0D9488" }
+        }
 
         expect(response).to redirect_to(admin_events_path)
         expect(event.reload.title).to eq("Updated Event Title")
         expect(event.cover_image).to be_present
+        expect(event.bg_color_hex).to eq("#0D9488")
       end
 
       it "removes the cover image when remove_cover_image is submitted" do

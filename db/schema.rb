@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_08_19_150645) do
+ActiveRecord::Schema[8.0].define(version: 2026_08_19_181500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -771,6 +771,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_19_150645) do
   end
 
   create_table "events", force: :cascade do |t|
+    t.string "bg_color_hex"
     t.integer "broadcast_config", default: 0
     t.datetime "broadcast_ended_at"
     t.string "cached_tag_list"

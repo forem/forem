@@ -228,24 +228,55 @@ RSpec.describe Event do
     end
   end
 
-  describe "#background_hex_color" do
-    let(:event) { create(:event, id: 1, title: "Special Community Event") }
+  describe "bg_color_hex validation" do
+    it "validates format of bg_color_hex when present" do
+      valid_event = build(:event, bg_color_hex: "#3B49DF")
+      invalid_event = build(:event, bg_color_hex: "invalid-hex")
+      short_event = build(:event, bg_color_hex: "#123")
 
-    it "returns the hex color of the first supported tag with bg_color_hex" do
+      expect(valid_event).to be_valid
+      expect(invalid_event).not_to be_valid
+      expect(short_event).not_to be_valid
+    end
+  end
+
+  describe "#set_default_bg_color_hex" do
+    it "preserves explicitly assigned bg_color_hex" do
       supported_tag = create(:tag, name: "ruby", supported: true, bg_color_hex: "#CC342D")
+      event = create(:event, bg_color_hex: "#7C3AED")
       event.tags << supported_tag
+      event.save!
 
-      expect(event.background_hex_color).to eq("#CC342D")
+      expect(event.reload.bg_color_hex).to eq("#7C3AED")
     end
 
-    it "ignores unsupported tags and picks from DEFAULT_HEX_COLORS" do
+    it "auto-populates bg_color_hex from the first supported tag on save when blank" do
+      supported_tag = create(:tag, name: "ruby", supported: true, bg_color_hex: "#CC342D")
+      event = build(:event, bg_color_hex: nil)
+      event.tags << supported_tag
+      event.save!
+
+      expect(event.reload.bg_color_hex).to eq("#CC342D")
+    end
+
+    it "leaves bg_color_hex nil when tags are unsupported or without color" do
       unsupported_tag = create(:tag, name: "customtag", supported: false, bg_color_hex: "#112233")
+      event = build(:event, bg_color_hex: nil)
       event.tags << unsupported_tag
+      event.save!
 
-      expect(Event::DEFAULT_HEX_COLORS).to include(event.background_hex_color)
+      expect(event.reload.bg_color_hex).to be_nil
+    end
+  end
+
+  describe "#background_hex_color" do
+    it "returns the stored bg_color_hex if present" do
+      event = build(:event, bg_color_hex: "#DB2777")
+      expect(event.background_hex_color).to eq("#DB2777")
     end
 
-    it "deterministically chooses from DEFAULT_HEX_COLORS when no tags exist" do
+    it "deterministically chooses from DEFAULT_HEX_COLORS when bg_color_hex is nil" do
+      event = build(:event, id: 1, bg_color_hex: nil)
       expected_color = Event::DEFAULT_HEX_COLORS[1 % Event::DEFAULT_HEX_COLORS.size]
       expect(event.background_hex_color).to eq(expected_color)
     end
@@ -253,10 +284,10 @@ RSpec.describe Event do
 
   describe "#gradient_background_css" do
     it "returns a linear gradient string with shaded tones" do
-      event = build(:event, id: 2)
+      event = build(:event, id: 2, bg_color_hex: "#0D9488")
       css = event.gradient_background_css
       expect(css).to start_with("linear-gradient(135deg,")
-      expect(css).to include(event.background_hex_color)
+      expect(css).to include("#0D9488")
     end
   end
 
@@ -278,17 +309,29 @@ RSpec.describe Event do
 
   describe "#formatted_date_range" do
     it "formats same-month date ranges as 'MMM D - D'" do
-      event = build(:event, start_time: Time.utc(2026, 8, 28, 10, 0), end_time: Time.utc(2026, 8, 30, 18, 0))
+      event = build(
+        :event,
+        start_time: Time.zone.local(2026, 8, 28, 10, 0),
+        end_time: Time.zone.local(2026, 8, 30, 18, 0),
+      )
       expect(event.formatted_date_range).to eq("AUG 28 - 30")
     end
 
     it "formats cross-month date ranges as 'MMM D - MMM D'" do
-      event = build(:event, start_time: Time.utc(2026, 8, 30, 10, 0), end_time: Time.utc(2026, 9, 2, 18, 0))
+      event = build(
+        :event,
+        start_time: Time.zone.local(2026, 8, 30, 10, 0),
+        end_time: Time.zone.local(2026, 9, 2, 18, 0),
+      )
       expect(event.formatted_date_range).to eq("AUG 30 - SEP 2")
     end
 
     it "formats single-day events as 'MMM D'" do
-      event = build(:event, start_time: Time.utc(2026, 8, 28, 10, 0), end_time: Time.utc(2026, 8, 28, 18, 0))
+      event = build(
+        :event,
+        start_time: Time.zone.local(2026, 8, 28, 10, 0),
+        end_time: Time.zone.local(2026, 8, 28, 18, 0),
+      )
       expect(event.formatted_date_range).to eq("AUG 28")
     end
   end

@@ -26,7 +26,11 @@ class Event < ApplicationRecord
   validates :primary_stream_url,
             format: { with: %r{\Ahttps://(www\.)?(youtube\.com|youtu\.be|twitch\.tv|player\.twitch\.tv|streamyard\.com)/.*\z}, message: "must be a valid HTTPS YouTube, Twitch, or Streamyard URL" }, allow_blank: true
   validates :page, presence: true, if: :delegate_to_page?
+  validates :bg_color_hex,
+            format: { with: /\A#[0-9a-fA-F]{6}\z/, message: "must be a valid 6-digit hex color (e.g. #3B49DF)" },
+            allow_blank: true
 
+  before_validation :set_default_bg_color_hex
   before_save :format_stream_urls
   after_commit :ensure_broadcast_billboards_and_workers, on: %i[create update]
   after_commit :bust_upcoming_events_cache, on: %i[create update destroy]
@@ -47,9 +51,15 @@ class Event < ApplicationRecord
 
   mount_uploader :cover_image, EventCoverImageUploader
 
-  def background_hex_color
+  def set_default_bg_color_hex
+    return if bg_color_hex.present?
+
     first_supported = tags.detect { |t| t.supported? && t.bg_color_hex.present? }
-    return first_supported.bg_color_hex if first_supported.present?
+    self.bg_color_hex = first_supported.bg_color_hex if first_supported.present?
+  end
+
+  def background_hex_color
+    return bg_color_hex if bg_color_hex.present?
 
     color_index = (id || title.to_s.bytes.sum) % DEFAULT_HEX_COLORS.size
     DEFAULT_HEX_COLORS[color_index]
@@ -87,8 +97,8 @@ class Event < ApplicationRecord
   def formatted_date_range
     return "" if start_time.blank?
 
-    start_date = start_time.utc.to_date
-    end_date = end_time&.utc&.to_date || start_date
+    start_date = start_time.to_date
+    end_date = (end_time || start_time).to_date
 
     if start_date == end_date
       start_date.strftime("%b %-d").upcase

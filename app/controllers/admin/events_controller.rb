@@ -88,6 +88,7 @@ module Admin
         :delegate_to_page,
         :cover_image,
         :remove_cover_image,
+        :bg_color_hex,
         data: {},
       )
     end

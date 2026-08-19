@@ -1254,12 +1254,13 @@ seeder.create_if_none(Event) do
     tag_list: "ai"
   )
 
-  # 3. Events without images or tags (testing default 5-hex gradient palette)
+  # 3. Events testing explicit bg_color_hex and default 5-hex gradient palette
   sample_events << Event.create!(
     title: "PEC HACKS 4.0",
     event_name_slug: "pec-hacks",
     event_variation_slug: "v4",
     description: "Premier collegiate hackathon bringing student developers together for 36 hours.",
+    bg_color_hex: "#7C3AED",
     data: { "location" => "Chennai, Tamilnadu, IN", "format" => "IN-PERSON" },
     published: true,
     start_time: Time.zone.parse("2026-08-29 09:00:00"),
@@ -1273,6 +1274,7 @@ seeder.create_if_none(Event) do
     event_name_slug: "hackrice",
     event_variation_slug: "13",
     description: "Rice University's annual hackathon empowering creators to build the future.",
+    bg_color_hex: nil,
     data: { "location" => "Houston, Texas, US", "format" => "IN-PERSON" },
     published: true,
     start_time: Time.zone.parse("2026-09-11 10:00:00"),

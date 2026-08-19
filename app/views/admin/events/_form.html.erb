@@ -129,6 +129,19 @@
       <%= form.text_field :tag_list, value: event.tag_list.join(", "), class: "crayons-textfield", placeholder: "aws, ai, streaming" %>
     </div>
 
+    <div class="crayons-field">
+      <%= form.label :bg_color_hex, "Background Hex Color", class: "crayons-field__label" do %>
+        Background Hex Color
+        <p class="crayons-field__description">Optional 6-digit hex color (e.g., '#3B49DF'). If left blank, automatically derived from the first supported tag or default palette fallback.</p>
+      <% end %>
+      <div class="flex items-center gap-2">
+        <%= form.text_field :bg_color_hex, class: "crayons-textfield", placeholder: "#3B49DF", style: "max-width: 240px;" %>
+        <% if event.bg_color_hex.present? %>
+          <span style="display:inline-block; width: 28px; height: 28px; border-radius: 4px; background: <%= event.bg_color_hex %>; border: 1px solid var(--card-border);"></span>
+        <% end %>
+      </div>
+    </div>
+
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="crayons-field">
         <%= form.label :start_time, class: "crayons-field__label" do %>
