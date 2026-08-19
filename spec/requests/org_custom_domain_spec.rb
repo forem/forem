@@ -160,6 +160,21 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
       end
     end
 
+    describe "custom page routing" do
+      let!(:custom_page) { create(:page, organization: organization, slug: "#{organization.slug}/about", body_markdown: "About Us Content") }
+
+      before do
+        FeatureFlag.enable(:org_readme, FeatureFlag::Actor.new(organization))
+      end
+
+      it "routes /p/:page_suffix to organization custom pages" do
+        get "http://custom.org/p/about"
+
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include("About Us Content")
+      end
+    end
+
     describe "signed out redirection to custom domain" do
       let(:user) { create(:user) }
       let!(:article) { create(:article, organization: organization, user: user, title: "Test Article Content") }

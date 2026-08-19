@@ -1,4 +1,6 @@
 class OrgCustomDomainConstraint
+  CUSTOM_DOMAIN_ROOT_SEGMENTS = %w[p feed rss].to_set.freeze
+
   def self.platform_first_segments
     @platform_first_segments ||= begin
       segments = Set.new
@@ -8,6 +10,7 @@ class OrgCustomDomainConstraint
         cleaned_path = path_spec.gsub(/\(\/?(?:locale\/)?:?[a-z0-9_]+\)/, "")
         first_segment = cleaned_path.split("/").reject(&:blank?).first&.gsub(/[\(\.\:].*/, "")
         next if first_segment.blank? || first_segment.start_with?(":", "*")
+        next if CUSTOM_DOMAIN_ROOT_SEGMENTS.include?(first_segment)
 
         controller = route.defaults[:controller].to_s
         action = route.defaults[:action].to_s

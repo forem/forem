@@ -36,6 +36,8 @@ Rails.application.routes.draw do
     get "/", to: "stories#custom_domain_index"
     get "/feed", to: "articles#feed", as: nil, defaults: { format: "rss" }
     get "/rss", to: "articles#feed", as: nil, defaults: { format: "rss" }
+    get "/p/:page_suffix", to: "stories#custom_domain_index", as: "custom_domain_organization_custom_page",
+                           constraints: { format: /html/ }
     get "/:org_slug/:slug",
         to: "stories#custom_domain_show",
         constraints: {
@@ -47,8 +49,6 @@ Rails.application.routes.draw do
         constraints: {
           slug: %r{[^/.]+}
         }
-    get "/p/:page_suffix", to: "stories#custom_domain_index", as: "custom_domain_organization_custom_page",
-                           constraints: { format: /html/ }
   end
 
   # [@forem/delightful] - all routes are nested under this optional scope to

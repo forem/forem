@@ -129,6 +129,22 @@ RSpec.describe OrgCustomDomainConstraint do
           expect(constraint.matches?(article_req)).to be(true), "Expected #{path} to match custom domain constraint"
         end
       end
+
+      it "returns true for custom domain endpoints like /p/about, /feed, /rss" do
+        %w[/p/about /feed /rss].each do |path|
+          custom_req = instance_double(
+            ActionDispatch::Request,
+            host: host,
+            env: env,
+            path: path,
+            accept: "text/html",
+            headers: {},
+            params: {},
+            xhr?: false
+          )
+          expect(constraint.matches?(custom_req)).to be(true), "Expected #{path} to match custom domain constraint"
+        end
+      end
     end
   end
 end
