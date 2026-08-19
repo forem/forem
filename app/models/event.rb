@@ -129,6 +129,18 @@ class Event < ApplicationRecord
     end
   end
 
+  def as_json(options = nil)
+    super(options).merge(
+      "background_hex_color" => background_hex_color,
+      "cover_image_url" => cover_image&.url,
+      "social_image_url" => social_image_url,
+      "formatted_date_range" => formatted_date_range,
+      "location" => location_display,
+      "format" => format_pill_label,
+      "tag_list" => tag_list,
+    )
+  end
+
   def signup_button_text(signed_up: false)
     if challenge?
       signed_up ? "Signed Up" : "Sign Up"
