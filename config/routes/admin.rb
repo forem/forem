@@ -211,6 +211,7 @@ namespace :admin do
   scope :advanced do
     resources :broadcasts
     resources :response_templates, only: %i[index new edit create update destroy]
+    resources :feed_configs, only: %i[index show new create destroy]
     resources :tools, only: %i[index create] do
       collection do
         post "bust_cache"
