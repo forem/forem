@@ -8,6 +8,7 @@ class Article < ApplicationRecord
   include PgSearch::Model
   include AlgoliaSearchable
   include WebpageTrackable
+  include ActivityTrackable
 
   acts_as_taggable_on :tags
   resourcify
@@ -47,6 +48,8 @@ class Article < ApplicationRecord
   belongs_to :user
   belongs_to :subforem, optional: true
 
+  belongs_to :favorited_by_user, class_name: "User", optional: true
+
   counter_culture :user
   counter_culture :organization
 
@@ -56,6 +59,13 @@ class Article < ApplicationRecord
   BIDI_CONTROL_CHARACTERS = /[\u061C\u200E\u200F\u202a-\u202e\u2066-\u2069]/
 
   MAX_TAG_LIST_SIZE = 4
+
+  # Author-visible edits, for the article_updated CDP event. Rows churn on score
+  # recalcs, counter caches and last_comment_at. Mirrors User::SYNC_TRIGGER_KEYS.
+  TRACKABLE_UPDATE_KEYS = %w[
+    title body_markdown cached_tag_list main_image description canonical_url
+    edited_at collection_id subforem_id
+  ].freeze
 
   # Filter out anything that isn't a word, space, punctuation mark,
   # recognized emoji, and other auxiliary marks.
@@ -127,6 +137,13 @@ class Article < ApplicationRecord
     full_post: 0,
     status: 1,
     fullscreen_embed: 2
+  }
+
+  enum :ai_disclosure_level, {
+    not_disclosed: 0,
+    no_ai: 1,
+    some_ai: 3,
+    fully_autonomous: 5
   }
 
   enum :automod_label, {
@@ -274,6 +291,7 @@ class Article < ApplicationRecord
   validates :clickbait_score, numericality: { greater_than_or_equal_to: 0.0, less_than_or_equal_to: 1.0 }
   validates :compellingness_score, numericality: { greater_than_or_equal_to: 0.0, less_than_or_equal_to: 1.0 }
   validates :max_score, numericality: { greater_than_or_equal_to: 0 }
+  validates :baseline_score, numericality: { greater_than_or_equal_to: 0 }
   validate :future_or_current_published_at, on: :create
   validate :correct_published_at?, on: :update, unless: :admin_update
 
@@ -343,6 +361,9 @@ class Article < ApplicationRecord
   after_update_commit :regenerate_summary_if_content_changed
 
   after_commit :recompile_organization_pages, on: %i[create update destroy]
+
+  after_save :cleanup_memberships_if_unpublished,
+             if: -> { saved_change_to_published? && published_before_last_save && !published? }
 
   # The trigger `update_reading_list_document` is used to keep the `articles.reading_list_document` column updated.
   #
@@ -425,6 +446,8 @@ class Article < ApplicationRecord
   #            that in the future.
   scope :approved, -> { where(approved: true) }
 
+  scope :favorited, -> { where.not(favorited_by_user_id: nil) }
+
   scope :from_subforem, lambda { |subforem_id = nil|
     return where(nil) if ENV["NO_SUBFOREM_FILTER"] == "true"
 
@@ -495,7 +518,8 @@ class Article < ApplicationRecord
            :video_thumbnail_url, :video_closed_caption_track_url,
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
            :published_at, :crossposted_at, :description, :reading_time, :video_duration_in_seconds, :score,
-           :last_comment_at, :main_image_height, :type_of, :edited_at, :processed_html, :subforem_id)
+           :last_comment_at, :main_image_height, :type_of, :edited_at, :processed_html, :subforem_id,
+           :favorited_by_user_id, :ai_disclosure_level)
   }
 
   scope :minimal_feed_column_select, lambda {
@@ -506,17 +530,19 @@ class Article < ApplicationRecord
            :video_thumbnail_url, :video_closed_caption_track_url,
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
            :published_at, :crossposted_at, :description, :reading_time, :video_duration_in_seconds, :score,
-           :last_comment_at, :main_image_height, :type_of, :edited_at, :subforem_id)
+           :last_comment_at, :main_image_height, :type_of, :edited_at, :subforem_id,
+           :favorited_by_user_id, :ai_disclosure_level)
   }
 
   scope :limited_columns_internal_select, lambda {
     select(:path, :title, :id, :featured, :approved, :published,
            :comments_count, :public_reactions_count, :cached_tag_list,
-           :main_image, :main_image_background_hex_color, :updated_at, :max_score,
+           :main_image, :main_image_background_hex_color, :updated_at, :max_score, :baseline_score,
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
            :published_from_feed, :crossposted_at, :published_at, :created_at, :edited_at,
-           :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids, :score, :type_of)
+           :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids, :score, :type_of,
+           :favorited_by_user_id, :ai_disclosure_level)
   }
 
   scope :sorting, lambda { |value|
@@ -741,6 +767,23 @@ class Article < ApplicationRecord
     end
   end
 
+  def ai_disclosed?
+    some_ai? || fully_autonomous?
+  end
+
+  def ai_disclosure_label
+    case ai_disclosure_level
+    when "some_ai"
+      I18n.t("models.article.ai_disclosure.some_ai")
+    when "fully_autonomous"
+      I18n.t("models.article.ai_disclosure.fully_autonomous")
+    when "no_ai"
+      I18n.t("models.article.ai_disclosure.no_ai")
+    else
+      I18n.t("models.article.ai_disclosure.not_disclosed")
+    end
+  end
+
   def truncate_title_for_feed
     return title_finalized unless title.present?
 
@@ -814,7 +857,7 @@ class Article < ApplicationRecord
 
   def published_timestamp
     return "" unless published
-    return "" unless crossposted_at || published_at
+    return "" unless (has_attribute?(:crossposted_at) ? crossposted_at : nil) || published_at
 
     displayable_published_at.utc.iso8601
   end
@@ -920,7 +963,7 @@ class Article < ApplicationRecord
   end
 
   def displayable_published_at
-    crossposted_at.presence || published_at
+    (has_attribute?(:crossposted_at) ? crossposted_at.presence : nil) || published_at
   end
 
   def title_for_metadata
@@ -1001,7 +1044,8 @@ class Article < ApplicationRecord
     self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment + user_featured_count_adjustment + user_negative_count_adjustment + context_note_adjustment + automod_label_adjustment + badge_reputation_bonus + organization_baseline_score + established_user_adjustment
     accepted_max = [max_score, user&.max_score.to_i].min
     accepted_max = [max_score, user&.max_score.to_i].max if accepted_max.zero?
-    self.score = accepted_max if accepted_max.positive? && accepted_max < score
+    self.score = baseline_score if baseline_score.positive? && score < baseline_score
+    self.score = accepted_max if accepted_max.positive? && score > accepted_max
 
     # Calculate comment_score and apply max_score limits
     # Each comment can contribute a minimum of -1 to the total score
@@ -1430,6 +1474,7 @@ class Article < ApplicationRecord
     self.published_at ||= parse_date(hash["date"]) if published
 
     set_main_image(hash)
+    set_ai_disclosure_from_front_matter(hash)
     self.canonical_url = hash["canonical_url"] if hash["canonical_url"].present?
 
     update_description = hash["description"].present? || hash["title"].present?
@@ -1440,6 +1485,37 @@ class Article < ApplicationRecord
 
     collection = Collection.find_series(hash["series"], user, organization: organization)
     self.collection_id = collection.id
+  end
+
+  def set_ai_disclosure_from_front_matter(hash)
+    return unless Settings::General.enable_ai_disclosure
+
+    raw_val = hash["ai_disclosure_level"] || hash["ai_disclosure"]
+
+    if raw_val.nil?
+      if hash["ai_generated"] == true || hash["ai_generated"] == "true"
+        self.ai_disclosure_level = :fully_autonomous
+      elsif hash["ai_assisted"] == true || hash["ai_assisted"] == "true"
+        self.ai_disclosure_level = :some_ai
+      end
+      return
+    end
+
+    val_str = raw_val.to_s.strip.downcase.tr("-", "_")
+    level = case val_str
+            when "0", "not_disclosed", "unstated", "unknown", "false"
+              :not_disclosed
+            when "1", "no_ai", "no", "none", "human", "hand_written", "handwritten", "100%_human"
+              :no_ai
+            when "3", "some_ai", "some", "assisted", "ai_assisted", "ai_assist"
+              :some_ai
+            when "5", "fully_autonomous", "autonomous", "full", "ai_generated", "generated", "fully_ai"
+              :fully_autonomous
+            else
+              Article.ai_disclosure_levels.key?(val_str) ? val_str.to_sym : nil
+            end
+
+    self.ai_disclosure_level = level if level
   end
 
   def set_main_image(hash)
@@ -1755,6 +1831,63 @@ class Article < ApplicationRecord
     end
   end
 
+  # === ActivityTrackable (Customer.io CDP activity events) ===
+  # article_published / _boosted / _updated / _unpublished / _deleted.
+  # Drafts stay silent until they go live.
+
+  # body_markdown is deliberately absent; it can run to hundreds of KB.
+  def trackable_activity_payload
+    {
+      "title" => title,
+      "path" => path,
+      "type_of" => type_of,
+      "published_at" => published_at&.iso8601,
+      "tag_list" => cached_tag_list.to_s.split(",").map(&:strip).reject(&:blank?),
+      "organization_id" => organization_id,
+      "subforem_id" => subforem_id
+    }
+  end
+
+  # A draft was never announced, so neither its edits nor its deletion emit.
+  def trackable_activity_event(phase)
+    case phase
+    when :created then publication_event if published?
+    when :updated then trackable_update_event
+    when :destroyed then "article_deleted" if published?
+    end
+  end
+
+  def trackable_update_event
+    changed_keys = trackable_changed_keys
+    return (published? ? publication_event : "article_unpublished") if changed_keys.include?("published")
+    return unless published?
+
+    "article_updated" if changed_keys.intersect?(TRACKABLE_UPDATE_KEYS)
+  end
+
+  # The quickie composer (articleReactions.js) posts a status embedding the
+  # boosted article, which emits article_boosted instead of article_published.
+  def publication_event
+    boosted_id = boosted_article_id
+    return "article_published" unless boosted_id
+
+    ["article_boosted", {
+      "boosted_article_id" => boosted_id,
+      "boosted_article_user_id" => Article.where(id: boosted_id).pick(:user_id)
+    }]
+  end
+
+  # body_url is an attr_accessor set during the create request, so this only
+  # resolves on create; a status published later falls back to _published.
+  def boosted_article_id
+    return unless status? && body_url.present?
+
+    type, id = LiquidEmbedExtractor.derive_reference("embed", body_url)
+    id if type == "Article"
+  end
+  private :trackable_activity_payload, :trackable_activity_event, :trackable_update_event,
+          :publication_event, :boosted_article_id
+
   private
 
   def admin_published_user?
@@ -1856,5 +1989,10 @@ class Article < ApplicationRecord
        saved_change_to_main_image?
       Articles::UpdateDependentEmbedsWorker.perform_async(id)
     end
+  end
+
+  def cleanup_memberships_if_unpublished
+    concept_memberships.destroy_all
+    trend_memberships.destroy_all
   end
 end

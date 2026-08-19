@@ -30,6 +30,7 @@ Rails.application.routes.draw do
 
   get "/r/mobile", to: "deep_links#mobile"
   get "/.well-known/apple-app-site-association", to: "deep_links#aasa"
+  get "/a/:code", to: "articles#short_link", as: :article_short, constraints: { code: /[0-9a-pA-P]+/ }
 
   constraints OrgCustomDomainConstraint.new do
     get "/", to: "stories#custom_domain_index"
@@ -38,14 +39,16 @@ Rails.application.routes.draw do
     get "/:org_slug/:slug",
         to: "stories#custom_domain_show",
         constraints: {
-          org_slug: %r{(?!(?:api|assets|packs|rails|r|ahoy|enter|users)\z)[^/.]+},
+          org_slug: %r{(?!(?:api|assets|packs|rails|r|ahoy|enter|users|p|robots|sitemap-.+|async_info|reactions|billboards|bb|display_ads|auth_pass|search|poll_votes|badge_achievements|billboard_events|reading_list_items|followed_articles|feedback_messages|feed_events)\z)[^/.]+},
           slug: %r{[^/.]+}
         }
     get "/:slug",
         to: "stories#custom_domain_show",
         constraints: {
-          slug: %r{(?!(?:api|assets|packs|rails|r|ahoy|enter|users)\z)[^/.]+}
+          slug: %r{(?!(?:api|assets|packs|rails|r|ahoy|enter|users|p|robots|sitemap-.+|async_info|reactions|billboards|bb|display_ads|auth_pass|search|poll_votes|badge_achievements|billboard_events|reading_list_items|followed_articles|feedback_messages|feed_events)\z)[^/.]+}
         }
+    get "/p/:page_suffix", to: "stories#custom_domain_index", as: "custom_domain_organization_custom_page",
+                           constraints: { format: /html/ }
   end
 
   # [@forem/delightful] - all routes are nested under this optional scope to
@@ -123,7 +126,14 @@ Rails.application.routes.draw do
         # shared config/routes/api.rb) because Api::V0::Admin::* controllers do
         # not implement these actions; placing the routes here scopes them to
         # callers using the application/vnd.forem.api-v1+json Accept header.
-        resources :concepts, only: %i[index show]
+        resources :concepts, only: %i[index show update] do
+          get :articles, on: :member
+          get :search, on: :collection
+        end
+
+        resources :articles, only: [] do
+          get :semantic_search, on: :collection
+        end
 
         namespace :admin do
           resources :users, only: %i[index show update] do
@@ -212,6 +222,7 @@ Rails.application.routes.draw do
     end
     resources :users, only: %i[update]
     resources :reactions, only: %i[index create]
+    resources :favorites, only: %i[create]
     resources :response_templates, only: %i[index create edit update destroy]
     resources :feedback_messages, only: %i[index create]
     resources :organizations, only: %i[update create destroy]
@@ -354,6 +365,8 @@ Rails.application.routes.draw do
     get "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#show"
     post "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#upsert"
     get "email_subscriptions/unsubscribe"
+    # RFC 8058 one-click unsubscribe: mailbox providers POST to the same URL.
+    post "email_subscriptions/unsubscribe", to: "email_subscriptions#unsubscribe"
 
     get "/internal", to: redirect("/admin")
     get "/internal/:path", to: redirect("/admin/%{path}")
@@ -428,6 +441,15 @@ Rails.application.routes.draw do
     post "/:slug/settings/verify", to: "organization_settings#request_verification",
                                    as: :organization_request_verification
     post "/:slug/settings/preview", to: "organization_settings#preview", as: :organization_settings_preview
+    get "/:slug/settings/pages", to: "organization_pages#index", as: :organization_pages
+    get "/:slug/settings/pages/new", to: "organization_pages#new", as: :new_organization_page
+    post "/:slug/settings/pages", to: "organization_pages#create"
+    get "/:slug/settings/pages/:id/edit", to: "organization_pages#edit", as: :edit_organization_page
+    patch "/:slug/settings/pages/:id", to: "organization_pages#update", as: :update_organization_page
+    patch "/:slug/settings/pages/:id/reorder", to: "organization_pages#reorder",
+                                                 as: :reorder_organization_page
+    delete "/:slug/settings/pages/:id", to: "organization_pages#destroy", as: :organization_page
+    post "/:slug/settings/pages/preview", to: "organization_pages#preview", as: :organization_pages_preview
     get "/:slug/settings/lead_forms", to: "organization_lead_forms#index", as: :organization_lead_forms
     post "/:slug/settings/lead_forms", to: "organization_lead_forms#create"
     get "/:slug/settings/lead_forms/:id/edit", to: "organization_lead_forms#edit", as: :edit_organization_lead_form
@@ -496,6 +518,9 @@ Rails.application.routes.draw do
                                        which: /organization/
                                      }
     get "/dashboard/:username", to: "dashboards#show", as: :dashboard_show_user
+
+    get "/leadership", to: "leadership_dashboards#show", as: :leadership
+    get "/leadership/:section", to: "leadership_dashboards#show", as: :leadership_section
 
     unless Rails.env.production?
       get "/rails/mailers", to: "rails/mailers#index"
@@ -580,6 +605,8 @@ Rails.application.routes.draw do
     get "/:username/:slug", to: "stories#show"
     get "/:sitemap", to: "sitemaps#show",
                      constraints: { format: /xml/, sitemap: /sitemap-.+/ }
+    get "/:username/p/:page_suffix", to: "stories#index", as: "organization_custom_page",
+                                     constraints: { format: /html/ }
     get "/:username", to: "stories#index", as: "user_profile", # No txt format
                       constraints: { format: /html/ }
     get "/:slug", to: "pages#show",

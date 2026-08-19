@@ -7,6 +7,7 @@ class Comment < ApplicationRecord
   include PgSearch::Model
   include Reactable
   include AlgoliaSearchable
+  include ActivityTrackable
 
   BODY_MARKDOWN_SIZE_RANGE = (1..25_000)
 
@@ -16,6 +17,30 @@ class Comment < ApplicationRecord
   HIDE_THRESHOLD = -400 # hide comments below this threshold
 
   VALID_SORT_OPTIONS = %w[top latest oldest].freeze
+
+  enum :ai_disclosure_level, {
+    not_disclosed: 0,
+    no_ai: 1,
+    some_ai: 3,
+    fully_autonomous: 5
+  }
+
+  def ai_disclosed?
+    some_ai? || fully_autonomous?
+  end
+
+  def ai_disclosure_label
+    case ai_disclosure_level
+    when "some_ai"
+      I18n.t("models.comment.ai_disclosure.some_ai")
+    when "fully_autonomous"
+      I18n.t("models.comment.ai_disclosure.fully_autonomous")
+    when "no_ai"
+      I18n.t("models.comment.ai_disclosure.no_ai")
+    else
+      I18n.t("models.comment.ai_disclosure.not_disclosed")
+    end
+  end
 
   URI_REGEXP = %r{
     \A
@@ -31,8 +56,12 @@ class Comment < ApplicationRecord
   belongs_to :commentable, polymorphic: true, optional: true
   belongs_to :user
 
-  counter_culture :commentable
+  counter_culture :commentable,
+                  column_name: proc { |comment| comment.deleted? ? nil : :comments_count }
+
   counter_culture :user
+
+  belongs_to :favorited_by_user, class_name: "User", optional: true
 
   has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :delete_all
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
@@ -105,6 +134,7 @@ class Comment < ApplicationRecord
                   }
 
   scope :eager_load_serialized_data, -> { includes(:user, :commentable) }
+  scope :favorited, -> { where.not(favorited_by_user_id: nil) }
   scope :good_quality, -> { where("comments.score > ?", LOW_QUALITY_THRESHOLD) }
 
   alias touch_by_reaction save
@@ -244,6 +274,39 @@ class Comment < ApplicationRecord
     commentable&.subforem_id
   end
 
+  # === ActivityTrackable (Customer.io CDP activity events) ===
+  # comment_created / _updated / _deleted. No draft state, so create publishes.
+
+  # The body is deliberately absent; the CDP consumer keys off the ids.
+  def trackable_activity_payload
+    {
+      "commentable_type" => commentable_type,
+      "commentable_id" => commentable_id,
+      "commentable_user_id" => commentable.try(:user_id),
+      "parent_id" => parent_id,
+      "path" => path
+    }
+  end
+
+  # CommentsController#destroy soft deletes a comment with replies and hard
+  # destroys one without, so removal is caught on both paths.
+  def trackable_activity_event(phase)
+    case phase
+    when :created then "comment_created"
+    when :updated then trackable_update_event
+    when :destroyed then "comment_deleted"
+    end
+  end
+
+  # Only a body edit counts; rows churn on scores, counters and embeddings.
+  def trackable_update_event
+    changed_keys = trackable_changed_keys
+    return (deleted? ? "comment_deleted" : nil) if changed_keys.include?("deleted")
+
+    "comment_updated" if changed_keys.include?("body_markdown")
+  end
+  private :trackable_activity_payload, :trackable_activity_event, :trackable_update_event
+
   private
 
   def commentable_is_article?
@@ -336,24 +399,27 @@ class Comment < ApplicationRecord
   end
 
   def touch_user
-    user&.touch(:updated_at, :last_comment_at)
+    user&.touch(:updated_at, :last_comment_at) if user&.persisted?
   end
 
   def expire_root_fragment
     if root_exists?
-      root.touch
+      root_record = root
+      root_record.touch if root_record&.persisted? && !root_record.destroyed?
     else
-      touch
+      touch if persisted? && !destroyed?
     end
   end
 
   def after_destroy_actions
     Users::BustCacheWorker.perform_async(user_id)
-    user.touch(:last_comment_at)
+    user.touch(:last_comment_at) if user&.persisted?
   end
 
   def before_destroy_actions
-    commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
+    if commentable&.persisted? && commentable.respond_to?(:last_comment_at)
+      commentable.touch(:last_comment_at)
+    end
     ancestors.update_all(updated_at: Time.current)
     Comments::BustCacheWorker.new.perform(id)
   end
@@ -363,9 +429,12 @@ class Comment < ApplicationRecord
   end
 
   def synchronous_bust
-    commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
-    user.touch(:last_comment_at)
-    commentable.purge if commentable
+    if commentable&.persisted? && !commentable.destroyed?
+      commentable.reload
+      commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
+      commentable.purge
+    end
+    user.touch(:last_comment_at) if user&.persisted?
     expire_root_fragment
   end
 

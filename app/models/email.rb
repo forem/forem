@@ -1,6 +1,7 @@
 class Email < ApplicationRecord
   belongs_to :audience_segment, optional: true
   belongs_to :user_query, optional: true
+  belongs_to :event, optional: true
   has_many :email_messages
 
   after_commit :deliver_to_users, on: %i[create update]
@@ -79,6 +80,9 @@ class Email < ApplicationRecord
   end
 
   def deliver_to_test_emails(addresses_string)
+    # Broadcasts/newsletters are authored in Customer.io after cutover.
+    return if ForemInstance.customerio_email_cutover?
+
     addresses_string ||= test_email_addresses
     return if addresses_string.blank?
 
@@ -91,6 +95,8 @@ class Email < ApplicationRecord
   end
 
   def deliver_to_users
+    # Broadcasts/newsletters are authored in Customer.io after cutover.
+    return if ForemInstance.customerio_email_cutover?
     return if type_of == "onboarding_drip"
     return unless saved_change_to_status? && active?
 

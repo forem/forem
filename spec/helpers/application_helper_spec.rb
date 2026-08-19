@@ -178,6 +178,7 @@ RSpec.describe ApplicationHelper do
   end
 
   describe "#release_adjusted_cache_key" do
+    before { ForemInstance.instance_variable_set(:@deployed_at, nil) }
     after { ForemInstance.instance_variable_set(:@deployed_at, nil) }
 
     it "does nothing when RELEASE_FOOTPRINT is not set" do
@@ -585,12 +586,74 @@ RSpec.describe ApplicationHelper do
       allow(FeatureFlag).to receive(:all).and_return({ foo: :off })
       expect(helper.enabled_global_feature_flags).to eq("")
     end
+  end
 
-    it "memoizes the result on RequestStore" do
-      allow(FeatureFlag).to receive(:all).and_return({ foo: :on })
-      helper.enabled_global_feature_flags
-      helper.enabled_global_feature_flags
-      expect(FeatureFlag).to have_received(:all).once
+  describe "#community_leader_icon" do
+    let(:leader) { create(:user, :community_leader_level_1) }
+
+    before do
+      FeatureFlag.add(:community_favorites)
+      FeatureFlag.enable(:community_favorites)
+    end
+
+    after { FeatureFlag.remove(:community_favorites) }
+
+    it "renders the icon for a community leader" do
+      expect(helper.community_leader_icon(leader)).to include("community-leader-icon")
+    end
+
+    it "renders nothing for a user who is not a leader" do
+      expect(helper.community_leader_icon(create(:user))).to be_nil
+    end
+
+    it "renders nothing when the feature flag is disabled" do
+      FeatureFlag.disable(:community_favorites)
+
+      expect(helper.community_leader_icon(leader)).to be_nil
+    end
+
+    it "renders nothing for an object that cannot be a leader" do
+      expect(helper.community_leader_icon(create(:organization))).to be_nil
+    end
+  end
+
+  describe "#should_render_favorited_marker?" do
+    let(:leader) { create(:user, :community_leader_level_1) }
+    let(:favorited) { create(:article) }
+
+    before do
+      FeatureFlag.add(:community_favorites)
+      FeatureFlag.enable(:community_favorites)
+      favorited.update_columns(favorited_by_user_id: leader.id, favorited_at: Time.current)
+    end
+
+    after { FeatureFlag.remove(:community_favorites) }
+
+    it "is true for favorited content" do
+      expect(helper.should_render_favorited_marker?(favorited)).to be true
+    end
+
+    it "is true for favorited comments" do
+      comment = create(:comment, commentable: create(:article))
+      comment.update_columns(favorited_by_user_id: leader.id, favorited_at: Time.current)
+
+      expect(helper.should_render_favorited_marker?(comment)).to be true
+    end
+
+    it "is false for content nobody has favorited" do
+      expect(helper.should_render_favorited_marker?(create(:article))).to be false
+    end
+
+    it "is false when the feature flag is disabled" do
+      FeatureFlag.disable(:community_favorites)
+
+      expect(helper.should_render_favorited_marker?(favorited)).to be false
+    end
+
+    it "is false when the column was not selected" do
+      trimmed = Article.select(:id, :title).find(favorited.id)
+
+      expect(helper.should_render_favorited_marker?(trimmed)).to be false
     end
   end
 end

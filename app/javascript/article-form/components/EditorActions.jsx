@@ -1,10 +1,12 @@
-import { h } from 'preact';
+import { h, Fragment } from 'preact';
 import { useState } from 'preact/hooks';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { Options } from './Options';
+import { AiDisclosureModal } from './AiDisclosureModal';
 import { ButtonNew as Button } from '@crayons';
 import { locale } from '@utilities/locale';
+import RobotIcon from '@images/robot.svg';
 
 export const EditorActions = ({
   onSaveDraft,
@@ -27,10 +29,9 @@ export const EditorActions = ({
 
   if (submitting) {
     return (
-      <div className="crayons-article-form__footer">
+      <div className="crayons-article-form__footer flex items-center">
         <Button
           variant="primary"
-          className="mr-2 whitespace-nowrap"
           onClick={onPublish}
           disabled
         >
@@ -53,10 +54,20 @@ export const EditorActions = ({
   const { canonicalUrl = '', series = '', publishedAtDate: scheduleDate = '', publishedAtTime: scheduleTime = '' } = passedData;
   const hasAdvancedOptions = canonicalUrl || series || (scheduleDate && scheduleTime && schedule);
   const [optionsModalSignal, setOptionsModalSignal] = useState(0);
+  const [isAiModalOpen, setIsAiModalOpen] = useState(false);
 
   const reopenOptionsModal = () => {
     setOptionsModalSignal((prev) => prev + 1);
   };
+
+  const aiDisclosureLabels = {
+    no_ai: 'No AI',
+    some_ai: 'Some AI',
+    fully_autonomous: 'Fully Autonomous',
+  };
+  const currentAiLevel = passedData.aiDisclosureLevel;
+  const hasAiDisclosure = currentAiLevel && currentAiLevel !== 'not_disclosed';
+  const aiLabel = aiDisclosureLabels[currentAiLevel];
 
   let saveButtonText;
   if (isVersion1) {
@@ -74,91 +85,115 @@ export const EditorActions = ({
   return (
     <div
       id="editor-actions"
-      className="crayons-article-form__footer"
+      className="crayons-article-form__footer flex items-center gap-2"
       onMouseEnter={switchHelpContext}
     >
-      <Button
-        variant="primary"
-        className="mr-2 whitespace-nowrap"
-        onClick={onPublish}
-        disabled={previewLoading}
-        onFocus={(event) => switchHelpContext(event, 'editor-actions')}
-      >
-        {saveButtonText}
-      </Button>
-
-      {!(published || isVersion1) && (
+      <div className="flex items-center flex-wrap gap-2">
         <Button
-          className="border border-base-20 mr-2 whitespace-nowrap"
-          onClick={onSaveDraft}
+          variant="primary"
+          onClick={onPublish}
           disabled={previewLoading}
           onFocus={(event) => switchHelpContext(event, 'editor-actions')}
         >
-          Save <span className="hidden s:inline">Draft</span>
+          {saveButtonText}
         </Button>
-      )}
 
-      {isVersion2 && (
-        <Options
-          passedData={passedData}
-          schedulingEnabled={schedulingEnabled}
-          onConfigChange={onConfigChange}
-          onSaveDraft={onSaveDraft}
-          previewLoading={previewLoading}
-          externalOpenSignal={optionsModalSignal}
-          onFocus={(event) => switchHelpContext(event, 'editor-actions')}
-        />
-      )}
+        {!(published || isVersion1) && (
+          <Button
+            variant="secondary"
+            onClick={onSaveDraft}
+            disabled={previewLoading}
+            onFocus={(event) => switchHelpContext(event, 'editor-actions')}
+          >
+            Save <span className="hidden s:inline">Draft</span>
+          </Button>
+        )}
 
-      {hasAdvancedOptions && isVersion2 && (
-        <div className="article-form-footer-pills hidden m:flex items-center gap-2">
-          {scheduleDate && scheduleTime && schedule && (
-            <button
-              type="button"
-              className="article-form-footer-pill"
-              title={publishedAtObj.format('MMMM D, YYYY [at] h:mm A')}
-              onClick={reopenOptionsModal}
+        {isVersion2 && passedData?.aiDisclosureEnabled && (
+          <>
+            <Button
+              id="post-ai-disclosure-btn"
+              icon={RobotIcon}
+              title="AI Disclosure options"
+              aria-label="AI Disclosure options"
+              disabled={previewLoading}
+              onClick={(e) => {
+                e.preventDefault();
+                setIsAiModalOpen(true);
+              }}
             >
-              ⏰ Scheduled
-            </button>
-          )}
-          {canonicalUrl && (
-            <button
-              type="button"
-              className="article-form-footer-pill"
-              title={canonicalUrl}
-              onClick={reopenOptionsModal}
-            >
-              🔗 Canonical
-            </button>
-          )}
-          {series && (
-            <button
-              type="button"
-              className="article-form-footer-pill"
-              title={`Series: ${series}`}
-              onClick={reopenOptionsModal}
-            >
-              📚 {series}
-            </button>
-          )}
-        </div>
-      )}
+              <span className="hidden xl:inline-block ml-1">
+                {hasAiDisclosure ? `AI: ${aiLabel}` : 'AI Disclosure'}
+              </span>
+            </Button>
 
-      {edited && (
-        <span className="hidden l:block mx-2 color-base-30" aria-hidden="true">|</span>
-      )}
+            <AiDisclosureModal
+              currentValue={currentAiLevel || 'not_disclosed'}
+              isOpen={isAiModalOpen}
+              onClose={() => setIsAiModalOpen(false)}
+              onChange={onConfigChange}
+            />
+          </>
+        )}
 
-      {edited && (
-        <Button
-          onClick={onClearChanges}
-          className="whitespace-nowrap fw-normal fs-xs"
-          disabled={previewLoading}
-          onFocus={(event) => switchHelpContext(event, 'editor-actions')}
-        >
-          Revert <span className="hidden s:inline">new changes</span>
-        </Button>
-      )}
+        {isVersion2 && (
+          <Options
+            passedData={passedData}
+            schedulingEnabled={schedulingEnabled}
+            onConfigChange={onConfigChange}
+            onSaveDraft={onSaveDraft}
+            previewLoading={previewLoading}
+            externalOpenSignal={optionsModalSignal}
+            onFocus={(event) => switchHelpContext(event, 'editor-actions')}
+          />
+        )}
+
+        {hasAdvancedOptions && isVersion2 && (
+          <div className="article-form-footer-pills hidden m:flex items-center gap-2">
+            {scheduleDate && scheduleTime && schedule && (
+              <button
+                type="button"
+                className="article-form-footer-pill cursor-pointer"
+                title={publishedAtObj.format('MMMM D, YYYY [at] h:mm A')}
+                onClick={reopenOptionsModal}
+              >
+                ⏰ Scheduled
+              </button>
+            )}
+            {canonicalUrl && (
+              <button
+                type="button"
+                className="article-form-footer-pill cursor-pointer"
+                title={canonicalUrl}
+                onClick={reopenOptionsModal}
+              >
+                🔗 Canonical
+              </button>
+            )}
+            {series && (
+              <button
+                type="button"
+                className="article-form-footer-pill cursor-pointer"
+                title={`Series: ${series}`}
+                onClick={reopenOptionsModal}
+              >
+                📚 {series}
+              </button>
+            )}
+          </div>
+        )}
+
+        {edited && (
+          <Button
+            onClick={onClearChanges}
+            className="whitespace-nowrap color-base-60 hover:color-accent-danger fs-xs"
+            disabled={previewLoading}
+            onFocus={(event) => switchHelpContext(event, 'editor-actions')}
+          >
+            Revert <span className="hidden s:inline">new changes</span>
+          </Button>
+        )}
+      </div>
     </div>
   );
 };

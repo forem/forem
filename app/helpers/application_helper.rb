@@ -258,6 +258,22 @@ module ApplicationHelper
             style: "display: inline;"
   end
 
+  def community_leader_icon(user)
+    return unless user.try(:cached_community_leader?)
+    return unless FeatureFlag.enabled?(:community_favorites)
+
+    image_tag("community-leader-icon.svg",
+              alt: t("views.leadership.icon.leader_alt"),
+              class: "community-leader-icon")
+  end
+
+  def should_render_favorited_marker?(favoritable)
+    return false unless favoritable.try(:favorited_by_user_id)
+    return false unless FeatureFlag.enabled?(:community_favorites)
+
+    true
+  end
+
   def user_colors_style(user)
     "border: 2px solid #{user.decorate.darker_color}; \
     box-shadow: 5px 6px 0px #{user.decorate.darker_color}"
@@ -393,6 +409,13 @@ module ApplicationHelper
   end
 
   def app_url(uri = nil)
+    custom_org = (defined?(request) && request&.respond_to?(:env) ? request.env["forem.custom_domain_org"] : nil)
+    if custom_org
+      URL.url(uri, custom_org.custom_domain)
+    else
+      URL.url(uri, RequestStore.store[:subforem_domain])
+    end
+  rescue StandardError
     URL.url(uri, RequestStore.store[:subforem_domain])
   end
 

@@ -480,6 +480,8 @@ fr:
           "Resource Admin: ProfileField": "Resource Admin: ProfileField"
           "Resource Admin: ProfileFieldGroup": "Resource Admin: ProfileFieldGroup"
           Super Moderator: Super Moderator
+          Community Leader Level 1: Community Leader Level 1
+          Community Leader Level 2: Community Leader Level 2
         statuses:
           Warned: Warned
           Comment Suspended: Comment Suspended
@@ -549,6 +551,17 @@ fr:
             enable: Activer Dofollow
             disable: Désactiver Dofollow
             enabled_notice: Les liens dofollow sont activés pour la page readme de cette organisation.
+      favorites:
+        leaderboard:
+          heading: Classement d'impact
+          description: Classement des utilisateurs selon l'engagement généré par leurs contenus mis en favori.
+          empty: Aucun contenu en favori pour le moment.
+          rank: Rang
+          leader: Leader
+          favorites: Favoris
+          articles: Articles
+          comments: Commentaires
+          impact: Impact
       org_features:
         heading: Fonctionnalités Org
         description: Gérer les fonctionnalités des organisations globalement ou par organisation.
@@ -596,6 +609,9 @@ fr:
           lookback_button: "Déclencher"
           similarity_threshold: "Seuil de similitude"
         form:
+          score: "Score du concept"
+          score_placeholder: "ex. 1.0 (optionnel)"
+          score_help: "Ajustement manuel du score/poids utilisé pour le classement."
           similarity_threshold: "Seuil de similitude"
           similarity_threshold_placeholder: "ex. 0.25 (optionnel)"
           similarity_threshold_help: "Optionnel. Nombre décimal entre 0,0 et 1,0. Si laissé vide, la valeur par défaut du système (0,28) est utilisée."
@@ -603,6 +619,8 @@ fr:
           threshold: "Seuil"
           default: "défaut"
       events:
+        fork: "Dupliquer"
+        fork_event: "Dupliquer l'événement"
         show:
           signups_title: "Inscriptions à l'événement"
           no_signups: "Aucune inscription pour cet événement pour le moment."

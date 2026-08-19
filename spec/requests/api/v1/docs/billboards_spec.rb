@@ -17,7 +17,12 @@ RSpec.describe "api/v1/billboards" do
       get("Billboards") do
         tags "billboards"
         description(<<-DESCRIBE.strip)
-        This endpoint allows the client to retrieve a list of all billboards.
+        Retrieve a list of all billboards configured in the system.
+
+        ### Billboards Overview:
+        - Billboards are custom promotional ads, notification banners, or call-to-actions shown on the Forem website.
+        - Requires administrative privileges.
+        - Returned objects include layout code, scheduling parameters, geo-targeting configurations, and custom target audience segment associations.
         DESCRIBE
 
         produces "application/json"
@@ -44,13 +49,21 @@ RSpec.describe "api/v1/billboards" do
       post "Create a billboard" do
         tags "billboards"
         description(<<-DESCRIBE.strip)
-        This endpoint allows the client to create a new billboard.
+        Create a new billboard.
+
+        ### Parameter Options & Tips:
+        - **body_markdown**: The HTML/Markdown advertisement copy.
+        - **placement_area**: Target region in layouts (e.g. `post_comments` below comments, `sidebar` in sidebars, `home_feed` between posts).
+        - **display_to**: Cohort target rules (e.g. `all` for everyone, `logged_in`, `guests`, or customized segments).
+        - **target_geolocations**: Comma-separated ISO codes for country/region targeting.
+        - **approved** & **published**: Set to `true` to activate billboard rotation instantly.
         DESCRIBE
 
         produces "application/json"
         consumes "application/json"
-        parameter name: :billboard, in: :body, schema: { type: :object,
-                                                         items: { "$ref": "#/components/schemas/Billboard" } }
+        parameter name: :billboard, in: :body,
+                  description: "Billboard parameters.",
+                  schema: { type: :object, items: { "$ref": "#/components/schemas/Billboard" } }
 
         let(:billboard) do
           {
@@ -82,6 +95,7 @@ RSpec.describe "api/v1/billboards" do
           run_test!
         end
 
+        # Clean up or handle unprocessable values
         response "422", "unprocessable" do
           let(:"api-key") { api_secret.secret }
           let(:placement_area) { "moon" }
@@ -98,7 +112,7 @@ RSpec.describe "api/v1/billboards" do
       get "A billboard (by id)" do
         tags "billboards"
         description(<<-DESCRIBE.strip)
-        This endpoint allows the client to retrieve a single billboard, via its id.
+        Retrieve full configurations of a single billboard by ID. Requires admin credentials.
         DESCRIBE
 
         produces "application/json"
@@ -143,7 +157,11 @@ RSpec.describe "api/v1/billboards" do
       put "Update a billboard by ID" do
         tags "billboards"
         description(<<-DESCRIBE.strip)
-        This endpoint allows the client to update the attributes of a single billboard, via its id.
+        Update an existing billboard's configurations.
+
+        ### Integration Guidance:
+        - Allows changing placement area, geolocations, target segments, or text copy.
+        - Updating an active billboard takes effect instantly in the layout delivery cache.
         DESCRIBE
 
         produces "application/json"
@@ -152,7 +170,7 @@ RSpec.describe "api/v1/billboards" do
         parameter name: :id,
                   in: :path,
                   required: true,
-                  description: "The ID of the billboard.",
+                  description: "The ID of the billboard to update.",
                   schema: {
                     type: :integer,
                     format: :int32,
@@ -160,8 +178,9 @@ RSpec.describe "api/v1/billboards" do
                   },
                   example: 123
 
-        parameter name: :billboard, in: :body, schema: { type: :object,
-                                                         items: { "$ref": "#/components/schemas/Billboard" } }
+        parameter name: :billboard, in: :body,
+                  description: "Billboard updated attributes.",
+                  schema: { type: :object, items: { "$ref": "#/components/schemas/Billboard" } }
 
         let(:placement_area) { "post_comments" }
 
@@ -199,7 +218,10 @@ RSpec.describe "api/v1/billboards" do
       put "Unpublish a billboard" do
         tags "billboards"
         description(<<-DESCRIBE.strip)
-        This endpoint allows the client to remove a billboard from rotation by un-publishing it.
+        Remove a billboard from active rotation by unpublishing it.
+
+        ### Usage:
+        - Instantly disables display across all pages while keeping the configuration stored in the database for later reactivations or historical reporting.
         DESCRIBE
 
         produces "application/json"
