@@ -15,8 +15,25 @@
         <li><strong>Title:</strong> <%= @event.title %></li>
         <li><strong>Event Name Slug:</strong> <%= @event.event_name_slug %></li>
         <li><strong>Event Variation Slug:</strong> <%= @event.event_variation_slug %></li>
-        <li><strong>Description:</strong> <%= @event.description %></li>
         <li><strong>Tags:</strong> <%= @event.tag_list.join(", ") %></li>
+        <li>
+          <strong>Background Color:</strong>
+          <span style="display:inline-block; width:16px; height:16px; background-color:<%= @event.background_hex_color %>; vertical-align:middle; border-radius:3px; margin-right:4px; border: 1px solid var(--card-border);"></span>
+          <%= @event.background_hex_color %>
+          <% if @event.bg_color_hex.present? %>
+            <span class="text-xs opacity-75">(stored)</span>
+          <% else %>
+            <span class="text-xs opacity-75">(dynamic fallback)</span>
+          <% end %>
+        </li>
+        <% if @event.cover_image.present? %>
+          <li>
+            <strong>Cover Image:</strong>
+            <div class="mt-2">
+              <img src="<%= @event.cover_image.url %>" alt="Cover Image" style="max-width: 320px; border-radius: var(--radius); border: 1px solid var(--card-border);" />
+            </div>
+          </li>
+        <% end %>
       </ul>
     </div>
     

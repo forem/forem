@@ -1,9 +1,9 @@
 require "rails_helper"
 
-RSpec.describe "Admin::Events", type: :request do
+RSpec.describe "Admin::Events" do
   let(:super_admin) { create(:user, :super_admin) }
   let(:regular_user) { create(:user) }
-  
+
   describe "GET /admin/content_manager/events" do
     context "when logged in as an admin" do
       before { login_as(super_admin) }
@@ -19,14 +19,15 @@ RSpec.describe "Admin::Events", type: :request do
       before { login_as(regular_user) }
 
       it "denies access" do
-        expect {
+        expect do
           get admin_events_path
-        }.to raise_error(Pundit::NotAuthorizedError)
+        end.to raise_error(Pundit::NotAuthorizedError)
       end
     end
 
     context "when logged in as a resource admin for Event" do
       let(:event_admin) { create(:user) }
+
       before do
         event_admin.add_role(:single_resource_admin, Event)
         login_as(event_admin)
@@ -41,15 +42,16 @@ RSpec.describe "Admin::Events", type: :request do
 
     context "when logged in as a resource admin for a different resource" do
       let(:other_admin) { create(:user) }
+
       before do
         other_admin.add_role(:single_resource_admin, Article)
         login_as(other_admin)
       end
 
       it "denies access" do
-        expect {
+        expect do
           get admin_events_path
-        }.to raise_error(Pundit::NotAuthorizedError)
+        end.to raise_error(Pundit::NotAuthorizedError)
       end
     end
   end
@@ -91,9 +93,9 @@ RSpec.describe "Admin::Events", type: :request do
       before { login_as(regular_user) }
 
       it "denies access" do
-        expect {
+        expect do
           get admin_event_path(event)
-        }.to raise_error(Pundit::NotAuthorizedError)
+        end.to raise_error(Pundit::NotAuthorizedError)
       end
     end
   end
@@ -114,10 +116,10 @@ RSpec.describe "Admin::Events", type: :request do
     end
 
     it "creates a new Event" do
-      expect {
+      expect do
         post admin_events_path, params: { event: valid_attributes }
-      }.to change(Event, :count).by(1)
-      
+      end.to change(Event, :count).by(1)
+
       expect(response).to redirect_to(admin_events_path)
       expect(Event.last.event_name_slug).to eq("test-admin")
     end
@@ -126,9 +128,9 @@ RSpec.describe "Admin::Events", type: :request do
       let(:invalid_attributes) { valid_attributes.merge(title: "") }
 
       it "does not create a new event and returns unprocessable_entity with an error message" do
-        expect {
+        expect do
           post admin_events_path, params: { event: invalid_attributes }
-        }.not_to change(Event, :count)
+        end.not_to change(Event, :count)
 
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.body).to include("prohibited this event from being saved")
@@ -137,17 +139,69 @@ RSpec.describe "Admin::Events", type: :request do
 
     context "with manual_broadcast_end config" do
       let(:attributes_with_manual) { valid_attributes.merge(manual_broadcast_end: true) }
+
       it "permits and sets the manual_broadcast_end flag" do
         post admin_events_path, params: { event: attributes_with_manual }
-        expect(Event.last.manual_broadcast_end).to eq(true)
+        expect(Event.last.manual_broadcast_end).to be(true)
       end
     end
 
     context "with elevated config" do
       let(:attributes_with_elevated) { valid_attributes.merge(elevated: true) }
+
       it "permits and sets the elevated flag" do
         post admin_events_path, params: { event: attributes_with_elevated }
-        expect(Event.last.elevated).to eq(true)
+        expect(Event.last.elevated).to be(true)
+      end
+    end
+
+    context "with cover_image" do
+      let(:image_file) { fixture_file_upload(Rails.root.join("spec/fixtures/files/800x600.png"), "image/png") }
+      let(:attributes_with_cover) { valid_attributes.merge(cover_image: image_file) }
+
+      it "permits and uploads the cover image" do
+        post admin_events_path, params: { event: attributes_with_cover }
+        expect(Event.last.cover_image).to be_present
+      end
+    end
+
+    context "with bg_color_hex" do
+      let(:attributes_with_hex) { valid_attributes.merge(bg_color_hex: "#7C3AED") }
+
+      it "permits and sets the bg_color_hex" do
+        post admin_events_path, params: { event: attributes_with_hex }
+        expect(Event.last.bg_color_hex).to eq("#7C3AED")
+      end
+    end
+  end
+
+  describe "PATCH /admin/content_manager/events/:id" do
+    let(:event) { create(:event) }
+
+    context "when logged in as an admin" do
+      before { login_as(super_admin) }
+
+      it "updates the event title, cover image, and bg_color_hex" do
+        image_file = fixture_file_upload(Rails.root.join("spec/fixtures/files/800x600.png"), "image/png")
+        patch admin_event_path(event), params: {
+          event: { title: "Updated Event Title", cover_image: image_file, bg_color_hex: "#0D9488" }
+        }
+
+        expect(response).to redirect_to(admin_events_path)
+        expect(event.reload.title).to eq("Updated Event Title")
+        expect(event.cover_image).to be_present
+        expect(event.bg_color_hex).to eq("#0D9488")
+      end
+
+      it "removes the cover image when remove_cover_image is submitted" do
+        image_file = fixture_file_upload(Rails.root.join("spec/fixtures/files/800x600.png"), "image/png")
+        event.update!(cover_image: image_file)
+        expect(event.reload.cover_image).to be_present
+
+        patch admin_event_path(event), params: { event: { remove_cover_image: "1" } }
+
+        expect(response).to redirect_to(admin_events_path)
+        expect(event.reload.cover_image.file).to be_nil
       end
     end
   end
@@ -160,9 +214,9 @@ RSpec.describe "Admin::Events", type: :request do
 
       it "updates broadcast_ended_at and enqueues the worker" do
         allow(Events::ManageBroadcastBillboardsWorker).to receive(:perform_async)
-        
+
         patch end_broadcast_admin_event_path(event)
-        
+
         expect(response).to redirect_to(admin_event_path(event))
         expect(flash[:notice]).to include("Broadcast manually ended")
         expect(event.reload.broadcast_ended_at).to be_within(1.second).of(Time.current)
@@ -181,7 +235,8 @@ RSpec.describe "Admin::Events", type: :request do
       end
 
       it "pre-fills the form with attributes from the original event when fork_from_id is passed" do
-        original_event = create(:event, title: "Original Event Title", description: "Original Description", tag_list: ["ruby", "rails"])
+        original_event = create(:event, title: "Original Event Title", description: "Original Description",
+                                        tag_list: %w[ruby rails])
 
         get new_admin_event_path(fork_from_id: original_event.id)
 
