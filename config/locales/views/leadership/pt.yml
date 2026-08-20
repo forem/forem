@@ -3,6 +3,8 @@ pt:
   views:
     leadership:
       heading: Liderança Comunitária
+      icon:
+        leader_alt: Líder Comunitário
       nav:
         aria_label: Seções
       curation:

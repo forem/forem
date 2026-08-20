@@ -39,6 +39,23 @@
       <%= form.text_area :description, class: "crayons-textfield", rows: 3 %>
     </div>
 
+    <div class="crayons-field">
+      <%= form.label :cover_image, "Cover Image", class: "crayons-field__label" do %>
+        Cover Image
+        <p class="crayons-field__description">Upload a cover image for this event. It will be used for social preview cards (og:image) and the events landing page.</p>
+      <% end %>
+      <% if event.cover_image.present? %>
+        <div class="mb-3">
+          <img src="<%= event.cover_image.url %>" alt="Cover Image Preview" style="max-width: 360px; height: auto; border-radius: var(--radius); display: block; margin-bottom: 8px; border: 1px solid var(--card-border);" />
+          <label class="crayons-field crayons-field--checkbox flex items-center gap-2">
+            <%= form.check_box :remove_cover_image, class: "crayons-checkbox" %>
+            <span class="fs-s">Remove cover image</span>
+          </label>
+        </div>
+      <% end %>
+      <%= form.file_field :cover_image, accept: "image/*", class: "crayons-file-field" %>
+    </div>
+
     <div class="grid grid-cols-2 gap-4">
       <div class="crayons-field">
         <%= form.label :type_of, "Event Type", class: "crayons-field__label" %>
@@ -82,12 +99,47 @@
       <% end %>
     </div>
 
+    <div class="grid grid-cols-2 gap-4">
+      <div class="crayons-field">
+        <%= form.fields_for :data, event.data || {} do |data_form| %>
+          <%= data_form.label :location, "Location Display", class: "crayons-field__label" do %>
+            Location Display
+            <p class="crayons-field__description">e.g. 'Everywhere, Worldwide, US' or 'Chennai, Tamilnadu, IN'</p>
+          <% end %>
+          <input type="text" name="event[data][location]" id="event_data_location" class="crayons-textfield" value="<%= event.data&.dig('location') || event.data&.dig(:location) %>" placeholder="Everywhere, Worldwide, US">
+        <% end %>
+      </div>
+
+      <div class="crayons-field">
+        <%= form.fields_for :data, event.data || {} do |data_form| %>
+          <%= data_form.label :format, "Event Format Badge", class: "crayons-field__label" do %>
+            Event Format Badge
+            <p class="crayons-field__description">e.g. 'DIGITAL', 'IN-PERSON', 'HYBRID' (defaults to type)</p>
+          <% end %>
+          <input type="text" name="event[data][format]" id="event_data_format" class="crayons-textfield" value="<%= event.data&.dig('format') || event.data&.dig(:format) %>" placeholder="DIGITAL">
+        <% end %>
+      </div>
+    </div>
+
     <div class="crayons-field">
       <%= form.label :tag_list, "Tags", class: "crayons-field__label" do %>
         Tags
         <p class="crayons-field__description">Comma separated tags. The first tag is used to fetch related articles.</p>
       <% end %>
       <%= form.text_field :tag_list, value: event.tag_list.join(", "), class: "crayons-textfield", placeholder: "aws, ai, streaming" %>
+    </div>
+
+    <div class="crayons-field">
+      <%= form.label :bg_color_hex, "Background Hex Color", class: "crayons-field__label" do %>
+        Background Hex Color
+        <p class="crayons-field__description">Optional 6-digit hex color (e.g., '#3B49DF'). If left blank, automatically derived from the first supported tag or default palette fallback.</p>
+      <% end %>
+      <div class="flex items-center gap-2">
+        <%= form.text_field :bg_color_hex, class: "crayons-textfield", placeholder: "#3B49DF", style: "max-width: 240px;" %>
+        <% if event.bg_color_hex.present? %>
+          <span style="display:inline-block; width: 28px; height: 28px; border-radius: 4px; background: <%= event.bg_color_hex %>; border: 1px solid var(--card-border);"></span>
+        <% end %>
+      </div>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

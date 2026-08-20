@@ -5,6 +5,12 @@ pt:
       limited_unauthenticated:
         text_html: "Exibindo um subconjunto dos comentários. Por favor, %{sign_in} para ver todos os comentários."
         sign_in: "faça login"
+      ai_disclosure:
+        no_ai_description: Escrito sem assistência de IA.
+        some_ai_description: O autor do comentário divulgou o uso de ferramentas de IA para este comentário.
+        fully_autonomous_description: O autor do comentário divulgou que este comentário foi gerado de forma autônoma por IA.
+      write:
+        ai_disclosure_title: Divulgar uso de ferramentas de IA
       add_comment: Adicionar comentário
       edit_comment: Editar comentário
       delete_comment: Excluir comentário

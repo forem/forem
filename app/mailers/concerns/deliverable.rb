@@ -12,6 +12,12 @@ module Deliverable
   # transactional template id and its Liquid payload, e.g.
   #   customerio_delivery_options(transactional_message_id: "dev_new_reply_email",
   #                               message_data: { "comment" => ... })
+  # A mailer that belongs to an event-triggered campaign rather than a
+  # transactional message names the event instead, e.g.
+  #   customerio_delivery_options(customerio_event_name: "digest_ready",
+  #                               message_data: { "articles" => [...] })
+  # Name the event bare: DeliveryMethods::CustomerIoEvent splices in the
+  # deploy's APP_NAME before sending it.
   # Ignored unless the message routes through Customer.io.
   def customerio_delivery_options(options)
     @customerio_delivery_options = (@customerio_delivery_options || {}).merge(options)
@@ -22,22 +28,66 @@ module Deliverable
   end
 
   def set_delivery_options
+    # A mailer action may decline to send by returning before mail() -- Rails
+    # then swaps in a NullMail. Every branch below touches mail(), which with
+    # @_mail_was_called still false would render the message the action
+    # deliberately skipped, and blow up on its unset ivars.
+    return unless @_mail_was_called
+
     if deliver_via_customerio?
       # Deliverable on a Customer.io-only instance (no SMTP creds) must still
       # send, so the per-message flag overrides the SMTP-based default above.
       message.perform_deliveries = true
-      message.delivery_method(
-        DeliveryMethods::CustomerIo,
+      options = @customerio_delivery_options || {}
+      options = options.merge(
         # identifiers are always controller-resolved and intentionally override
         # anything passed via customerio_delivery_options.
-        (@customerio_delivery_options || {}).merge(identifiers: customerio_identifiers),
+        identifiers: customerio_identifiers,
+        # layout data is a floor, not a ceiling: a mailer may override any of
+        # it by passing the same key through customerio_delivery_options.
+        message_data: layout_message_data.merge(options[:message_data] || {}),
       )
+
+      # Both methods receive the same options; each reads the keys it needs.
+      # customerio_event_name reaching the transactional path is harmless --
+      # Customerio::SendEmailRequest drops fields the App API does not define.
+      method = deliver_via_customerio_event? ? DeliveryMethods::CustomerIoEvent : DeliveryMethods::CustomerIo
+      message.delivery_method(method, options)
     else
       mail.delivery_method.settings.merge!(Settings::SMTP.settings)
     end
   end
 
   private
+
+  # Data the Customer.io layout needs on every message, mirroring the block
+  # layouts/mailer.html.erb renders at the bottom of each email. Resolved
+  # through view_context so signed_up_with/app_url pick up the same helpers
+  # and subforem-aware host the ERB layout uses.
+  #
+  # Emitted only where that block renders today, which takes all three guards
+  # below: a recipient in @user, an action the ERB layout does not exclude,
+  # and a view context that actually has AuthenticationHelper.
+  def layout_message_data
+    user = instance_variable_get(:@user)
+    return {} if user.blank? || action_name == "magic_link"
+
+    # DeviseMailer inherits from Devise::Mailer rather than ApplicationMailer,
+    # so it renders without layouts/mailer.html.erb and without
+    # AuthenticationHelper. Its security emails have never carried this footer
+    # (note Devise's initialize_from_record still sets @user, so the ivar alone
+    # is not a reliable signal) -- keep them as they are.
+    context = view_context
+    return {} unless context.respond_to?(:signed_up_with)
+
+    {
+      # "name" is here rather than in each mailer because seven templates greet
+      # the recipient without otherwise needing a payload of their own.
+      "name" => user.name,
+      "signed_up_with_html" => context.signed_up_with(user),
+      "notification_settings_url" => context.app_url(context.user_settings_path(:notifications))
+    }
+  end
 
   def deliver_via_customerio?
     return false unless ForemInstance.customerio_enabled?
@@ -48,6 +98,23 @@ module Deliverable
     else
       FeatureFlag.enabled?(CUSTOMERIO_FLAG)
     end
+  end
+
+  # Whether this message goes to a Customer.io campaign as a Track event rather
+  # than to a transactional message. Only reached once deliver_via_customerio?
+  # has already chosen Customer.io over SMTP: CUSTOMERIO_FLAG picks the
+  # provider, the mailer's own declaration picks which Customer.io product
+  # renders and sends. Both are per-message decisions the recipient's flag state
+  # does not need to distinguish.
+  #
+  # The Track API authenticates separately from the App API, so a Forem holding
+  # only the App key keeps every mailer on the transactional path -- which makes
+  # the credentials the deploy-time switch, and means the campaign can be built
+  # before anything is pointed at it.
+  def deliver_via_customerio_event?
+    return false if @customerio_delivery_options&.dig(:customerio_event_name).blank?
+
+    ForemInstance.customerio_track_enabled?
   end
 
   # The flag check and Customer.io identifiers both key off mail.to.first:

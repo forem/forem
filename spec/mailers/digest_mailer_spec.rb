@@ -128,13 +128,13 @@ RSpec.describe DigestMailer do
         expect(email.message.delivery_method).to be_a(DeliveryMethods::CustomerIo)
       end
 
-      it "routes through the Customer.io digest template with the full payload", :aggregate_failures do
+      it "routes through the Customer.io digest campaign with the full payload", :aggregate_failures do
         article.update_columns(ai_summary: "An AI generated summary.", description: "Original description.")
 
         email = described_class.with(user: user, articles: [article, article2], feed_config_id: 12_345).digest_email
 
         settings = email.message.delivery_method.settings
-        expect(settings[:transactional_message_id]).to eq("dev_digest_email")
+        expect(settings[:customerio_event_name]).to eq("digest_ready")
 
         data = settings[:message_data]
         expect(data["subject"]).to eq(email.subject)
@@ -155,6 +155,19 @@ RSpec.describe DigestMailer do
         expect(data["user_follows_any_subforems"]).to be(false)
         expect(data).to have_key("smart_summary")
         expect(data["email_end_phrase"]).to be_present
+      end
+
+      it "reports whether the recipient has set an experience level", :aggregate_failures do
+        payload = lambda {
+          email = described_class.with(user: user, articles: [article]).digest_email
+          email.message.delivery_method.settings[:message_data]
+        }
+
+        user.setting.update!(experience_level: nil)
+        expect(payload.call["experience_level_set"]).to be(false)
+
+        user.setting.update!(experience_level: 5)
+        expect(payload.call["experience_level_set"]).to be(true)
       end
 
       it "falls back to the truncated description in the payload when ai_summary is blank" do

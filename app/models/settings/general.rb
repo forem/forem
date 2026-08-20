@@ -66,6 +66,7 @@ module Settings
 
     setting :enable_video_upload, type: :boolean, default: false
     setting :enable_agent_sessions, type: :boolean, default: true
+    setting :enable_ai_disclosure, type: :boolean, default: false
 
     # Mascot
     setting :mascot_user_id, type: :integer, default: nil

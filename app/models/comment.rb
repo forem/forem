@@ -7,6 +7,7 @@ class Comment < ApplicationRecord
   include PgSearch::Model
   include Reactable
   include AlgoliaSearchable
+  include ActivityTrackable
 
   BODY_MARKDOWN_SIZE_RANGE = (1..25_000)
 
@@ -16,6 +17,30 @@ class Comment < ApplicationRecord
   HIDE_THRESHOLD = -400 # hide comments below this threshold
 
   VALID_SORT_OPTIONS = %w[top latest oldest].freeze
+
+  enum :ai_disclosure_level, {
+    not_disclosed: 0,
+    no_ai: 1,
+    some_ai: 3,
+    fully_autonomous: 5
+  }
+
+  def ai_disclosed?
+    some_ai? || fully_autonomous?
+  end
+
+  def ai_disclosure_label
+    case ai_disclosure_level
+    when "some_ai"
+      I18n.t("models.comment.ai_disclosure.some_ai")
+    when "fully_autonomous"
+      I18n.t("models.comment.ai_disclosure.fully_autonomous")
+    when "no_ai"
+      I18n.t("models.comment.ai_disclosure.no_ai")
+    else
+      I18n.t("models.comment.ai_disclosure.not_disclosed")
+    end
+  end
 
   URI_REGEXP = %r{
     \A
@@ -248,6 +273,39 @@ class Comment < ApplicationRecord
   def subforem_id
     commentable&.subforem_id
   end
+
+  # === ActivityTrackable (Customer.io CDP activity events) ===
+  # comment_created / _updated / _deleted. No draft state, so create publishes.
+
+  # The body is deliberately absent; the CDP consumer keys off the ids.
+  def trackable_activity_payload
+    {
+      "commentable_type" => commentable_type,
+      "commentable_id" => commentable_id,
+      "commentable_user_id" => commentable.try(:user_id),
+      "parent_id" => parent_id,
+      "path" => path
+    }
+  end
+
+  # CommentsController#destroy soft deletes a comment with replies and hard
+  # destroys one without, so removal is caught on both paths.
+  def trackable_activity_event(phase)
+    case phase
+    when :created then "comment_created"
+    when :updated then trackable_update_event
+    when :destroyed then "comment_deleted"
+    end
+  end
+
+  # Only a body edit counts; rows churn on scores, counters and embeddings.
+  def trackable_update_event
+    changed_keys = trackable_changed_keys
+    return (deleted? ? "comment_deleted" : nil) if changed_keys.include?("deleted")
+
+    "comment_updated" if changed_keys.include?("body_markdown")
+  end
+  private :trackable_activity_payload, :trackable_activity_event, :trackable_update_event
 
   private
 

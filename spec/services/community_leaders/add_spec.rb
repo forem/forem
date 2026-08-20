@@ -51,15 +51,25 @@ RSpec.describe CommunityLeaders::Add, type: :service do
     expect(user).to have_received(:touch)
   end
 
+  it "resaves the user's articles so feed cards pick up the leader icon" do
+    allow(Users::ResaveArticlesWorker).to receive(:perform_async)
+
+    described_class.call(user, :community_leader_level_1)
+
+    expect(Users::ResaveArticlesWorker).to have_received(:perform_async).with(user.id)
+  end
+
   it "does nothing when the user already has the role" do
     described_class.call(user, :community_leader_level_1)
 
     allow(user).to receive(:touch)
     allow(user).to receive(:add_role)
+    allow(Users::ResaveArticlesWorker).to receive(:perform_async)
 
     described_class.call(user, :community_leader_level_1)
 
     expect(user).not_to have_received(:touch)
     expect(user).not_to have_received(:add_role)
+    expect(Users::ResaveArticlesWorker).not_to have_received(:perform_async)
   end
 end

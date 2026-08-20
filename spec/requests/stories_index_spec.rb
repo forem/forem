@@ -292,6 +292,30 @@ RSpec.describe "StoriesIndex" do
       sets_nginx_headers
     end
 
+    context "when auth state is desynced with remember_user_token cookie" do
+      it "unsets surrogate control headers when remember_user_token is present but user is signed out" do
+        cookies["remember_user_token"] = "invalid_or_expired_token"
+        get "/"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.headers["Surrogate-Control"]).to be_nil
+        expect(response.headers["Cache-Control"]).not_to eq("public, no-cache")
+      end
+
+      it "unsets surrogate control headers when remember_user_token is absent but user is signed in" do
+        user = create(:user)
+        sign_in user
+        # Explicitly remove remember_user_token cookie to simulate session-only auth
+        cookies.delete("remember_user_token")
+
+        get "/"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.headers["Surrogate-Control"]).to be_nil
+        expect(response.headers["Cache-Control"]).not_to eq("public, no-cache")
+      end
+    end
+
     def sets_fastly_headers
       expected_surrogate_key_headers = %w[main_app_home_page]
       expect(response.headers["Surrogate-Key"].split(", ")).to match_array(expected_surrogate_key_headers)
@@ -628,6 +652,8 @@ RSpec.describe "StoriesIndex" do
       expect(response.body).to include(%("minimal": "#{expected_minimal}"))
       expect(response.body).to include(%("views": "#{expected_views}"))
       expect(response.body).to include(%("crayons": "#{expected_crayons}"))
+      expect(response.body).to include("pendingHref")
+      expect(response.body).to include("replaceChild")
       # Internal navigation excludes the outer layout, so the outer shell links should not be rendered
       expect(response.body).not_to include('id="main-minimal-stylesheet"')
     end
