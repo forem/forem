@@ -12,3 +12,5 @@ pt:
       submitted_heading: Obrigado pelo envio do seu recurso
       home_link: Início %{community}
       already_pending: Você já tem um recurso aberto pendente de análise para este item.
+      appealing_comment_heading: Recurso sobre a sinalização do seu comentário
+      appealing_article_heading: Recurso sobre a sinalização do seu artigo

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "FlagAppeals", type: :request do
+RSpec.describe "FlagAppeals" do
   let(:user) { create(:user) }
 
   describe "GET /appeal" do
@@ -42,13 +42,46 @@ RSpec.describe "FlagAppeals", type: :request do
         expect(flash[:notice]).to be_present
       end
 
-      it "sanitizes unauthorized appealable_id to current_user to prevent IDOR" do
+      it "creates a FlagAppeal for a Comment target" do
+        comment = create(:comment, user: user)
+        expect do
+          post appeal_path, params: {
+            flag_appeal: {
+              reason: "My comment code example was not spam.",
+              appealable_type: "Comment",
+              appealable_id: comment.id
+            }
+          }
+        end.to change(FlagAppeal, :count).by(1)
+
+        appeal = FlagAppeal.last
+        expect(appeal.appealable_type).to eq("Comment")
+        expect(appeal.appealable_id).to eq(comment.id)
+        expect(response).to redirect_to(appeal_success_path(id: appeal.id))
+      end
+
+      it "sanitizes unauthorized appealable_id to current_user to prevent IDOR on articles" do
         other_user_article = create(:article)
         post appeal_path, params: {
           flag_appeal: {
             reason: "Attempting to appeal another user's article",
             appealable_type: "Article",
             appealable_id: other_user_article.id
+          }
+        }
+
+        appeal = FlagAppeal.last
+        expect(appeal.appealable_type).to eq("User")
+        expect(appeal.appealable_id).to eq(user.id)
+      end
+
+      it "sanitizes unauthorized appealable_id to current_user to prevent IDOR on comments" do
+        other_user_comment = create(:comment)
+        post appeal_path, params: {
+          flag_appeal: {
+            reason: "Attempting to appeal another user's comment",
+            appealable_type: "Comment",
+            appealable_id: other_user_comment.id
           }
         }
 

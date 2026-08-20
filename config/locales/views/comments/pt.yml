@@ -11,6 +11,10 @@ pt:
         fully_autonomous_description: O autor do comentário divulgou que este comentário foi gerado de forma autônoma por IA.
       write:
         ai_disclosure_title: Divulgar uso de ferramentas de IA
+      hidden_by_moderation:
+        title: Seu comentário está oculto no momento
+        description: Este comentário foi sinalizado por verificações automáticas de moderação de qualidade ou spam.
+        appeal_link: Enviar um recurso para solicitar uma revisão
       add_comment: Adicionar comentário
       edit_comment: Editar comentário
       delete_comment: Excluir comentário

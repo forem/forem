@@ -87,14 +87,27 @@ module Ai
     end
 
     def build_target_context
-      if @target.is_a?(Article)
+      case @target
+      when Article
         <<~ARTICLE_CONTEXT
           Type: Article
           Title: #{@target.title}
           Automod Label: #{@target.automod_label || 'none'}
           Body Snippet: #{@target.body_markdown.to_s.truncate(1500)}
         ARTICLE_CONTEXT
-      elsif @target.is_a?(User)
+      when Comment
+        parent_title = if @target.commentable.respond_to?(:title)
+                         @target.commentable.title
+                       else
+                         "Item ##{@target.commentable_id}"
+                       end
+        <<~COMMENT_CONTEXT
+          Type: Comment
+          Parent Post/Article: #{parent_title}
+          Current Quality Score: #{@target.score}
+          Body Snippet: #{@target.body_markdown.to_s.truncate(1500)}
+        COMMENT_CONTEXT
+      when User
         <<~USER_TARGET
           Type: User Account Profile
           Username: #{@target.username}

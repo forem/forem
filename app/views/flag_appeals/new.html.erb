@@ -22,6 +22,21 @@
         <%= f.hidden_field :appealable_type %>
         <%= f.hidden_field :appealable_id %>
 
+        <% if @flag_appeal.appealable_type == "Comment" && (comment = current_user.comments.find_by(id: @flag_appeal.appealable_id)) %>
+          <div class="crayons-card p-3 bg-base-5 rounded border border-border-tertiary mb-4">
+            <span class="fs-xs font-bold uppercase color-base-60 block mb-1"><%= t("views.flag_appeals.appealing_comment_heading") %></span>
+            <p class="fs-sm italic mb-1">"<%= comment.body_markdown.truncate(200) %>"</p>
+            <% if comment.commentable.respond_to?(:title) %>
+              <span class="fs-xs color-base-60">On: <%= comment.commentable.title %></span>
+            <% end %>
+          </div>
+        <% elsif @flag_appeal.appealable_type == "Article" && (article = current_user.articles.find_by(id: @flag_appeal.appealable_id)) %>
+          <div class="crayons-card p-3 bg-base-5 rounded border border-border-tertiary mb-4">
+            <span class="fs-xs font-bold uppercase color-base-60 block mb-1"><%= t("views.flag_appeals.appealing_article_heading") %></span>
+            <p class="fs-sm font-bold"><%= article.title %></p>
+          </div>
+        <% end %>
+
         <div class="crayons-field mb-4">
           <%= f.label :reason, t("views.flag_appeals.reason_label"), class: "crayons-field__label font-bold mb-2 block" %>
           <%= f.text_area :reason, rows: 6, required: true, maxlength: 3000,

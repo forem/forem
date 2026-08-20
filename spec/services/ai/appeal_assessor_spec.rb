@@ -52,5 +52,22 @@ RSpec.describe Ai::AppealAssessor do
       result = user_assessor.evaluate
       expect(result[:recommendation]).to eq("human_review")
     end
+
+    it "evaluates appeal when target is a Comment" do
+      comment = create(:comment, user: user, commentable: article, body_markdown: "Technical answer with code.")
+      comment_appeal = create(:flag_appeal, user: user, appealable: comment, reason: "Valid comment flagged.")
+      comment_assessor = described_class.new(comment_appeal)
+      response_json = {
+        recommendation: "auto_unflag",
+        confidence_score: 0.92,
+        summary: "High quality technical comment."
+      }.to_json
+
+      allow(ai_client_double).to receive(:call).and_return(response_json)
+
+      result = comment_assessor.evaluate
+      expect(result[:recommendation]).to eq("auto_unflag")
+      expect(result[:confidence_score]).to eq(0.92)
+    end
   end
 end
