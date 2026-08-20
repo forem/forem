@@ -21,16 +21,18 @@ module Api
         unless @event.published? || @user&.administrative_access_to?(resource: Event)
           return render json: { error: "Event not found" }, status: :not_found
         end
+
         render json: @event
       end
 
       def create
         authorize Event
-        @event = Event.new(event_params.except(:user_id))
+        @event = find_or_initialize_event
+        @event.assign_attributes(event_params.except(:user_id))
         @event.user_id = @user.id if @event.user_id.blank?
 
         if @event.save
-          render json: @event, status: :created
+          render json: @event, status: @event.previously_new_record? ? :created : :ok
         else
           render json: { error: @event.errors.full_messages }, status: :unprocessable_entity
         end
@@ -57,32 +59,57 @@ module Api
       def evaluate_authentication
         # Forem's ApiController usually requires valid token if provided, but optional if omitted.
         # This safely tries to log them in if token is sent.
-        if request.headers["api-key"]
-          authenticate!
-        end
+        return unless request.headers["api-key"]
+
+        authenticate!
       end
 
       def set_event
-        @event = Event.find(params[:id])
-      rescue ActiveRecord::RecordNotFound
-        render json: { error: "Event not found" }, status: :not_found
+        @event = if params[:id].to_s.match?(/\A\d+\z/)
+                   Event.find_by(id: params[:id])
+                 else
+                   Event.find_by(event_name_slug: params[:id])
+                 end
+        render json: { error: "Event not found" }, status: :not_found unless @event
+      end
+
+      def find_or_initialize_event
+        if params[:id].present? && params[:id].to_s.match?(/\A\d+\z/)
+          Event.find_by(id: params[:id]) || Event.new
+        elsif event_params[:event_name_slug].present? && event_params[:event_variation_slug].present?
+          Event.find_by(
+            event_name_slug: event_params[:event_name_slug],
+            event_variation_slug: event_params[:event_variation_slug],
+          ) || Event.new
+        else
+          Event.new
+        end
       end
 
       def event_params
         params.require(:event).permit(
-          :title, 
+          :title,
           :event_name_slug,
           :event_variation_slug,
-          :description, 
-          :primary_stream_url, 
-          :published, 
-          :start_time, 
-          :end_time, 
-          :type_of, 
-          :user_id, 
-          :organization_id, 
+          :description,
+          :primary_stream_url,
+          :published,
+          :elevated,
+          :start_time,
+          :end_time,
+          :type_of,
+          :broadcast_config,
+          :manual_broadcast_end,
+          :user_id,
+          :organization_id,
           :tag_list,
-          data: {}
+          :page_id,
+          :delegate_to_page,
+          :cover_image,
+          :remove_cover_image,
+          :remote_cover_image_url,
+          :bg_color_hex,
+          data: {},
         )
       end
     end
