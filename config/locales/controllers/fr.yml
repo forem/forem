@@ -55,6 +55,9 @@ fr:
     error_fill: "Assurez-vous que les formulaires sont remplis. 🤖 Autres erreurs possibles : %{errors}"
     n_a: NON DISPONIBLE
     submitted: Votre rapport est soumis
+  flag_appeals:
+    submitted_success: Votre recours a été soumis pour examen. Merci !
+    already_pending: Vous avez déjà un recours en attente d'examen pour cet élément.
   follows_controller:
     already_followed: déjà suivi
     daily_limit: La limite de suivi quotidien des comptes est atteinte !

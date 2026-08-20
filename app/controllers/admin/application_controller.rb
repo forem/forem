@@ -10,6 +10,7 @@ module Admin
       badge_achievements: "https://admin.forem.com/docs/forem-basics/badges",
       billboards: "https://admin.forem.com/docs/advanced-customization/billboards",
       feedback_messages: "https://admin.forem.com/docs/advanced-customization/reports",
+      flag_appeals: "https://admin.forem.com/docs/advanced-customization/reports",
       html_variants: "https://admin.forem.com/docs/advanced-customization/html-variants",
       navigation_links: "https://admin.forem.com/docs/advanced-customization/navigation-links",
       organizations: "https://admin.forem.com/docs/managing-your-community/organization-pages",

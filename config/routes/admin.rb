@@ -192,6 +192,7 @@ namespace :admin do
   end
 
   scope :moderation do
+    resources :flag_appeals, only: %i[index show update]
     resources :feedback_messages, only: %i[index show]
     resources :reports, only: %i[index show], controller: "feedback_messages" do
       collection do
