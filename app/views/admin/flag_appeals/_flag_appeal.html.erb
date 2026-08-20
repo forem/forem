@@ -10,56 +10,119 @@
                 else "c-indicator--warning"
                 end %>
 
-<details class="crayons-card my-3" id="accordion-<%= appeal.id %>">
+<% target_label = case appeal.appealable_type
+                  when "Comment" then "Comment on \"#{appeal.appealable&.commentable&.respond_to?(:title) ? appeal.appealable.commentable.title.truncate(30) : 'Post'}\""
+                  when "Article" then "Article: \"#{appeal.appealable&.title&.truncate(30) || appeal.appealable_id}\""
+                  when "User" then "Account: @#{appeal.appealable&.username || appeal.appealable_id}"
+                  else "#{appeal.appealable_type} ##{appeal.appealable_id}"
+                  end %>
+
+<details <%= "open" if defined?(is_open) && is_open %> class="crayons-card my-3" id="accordion-<%= appeal.id %>">
   <summary class="p-4 cursor-pointer hover:bg-base-5">
     <div class="flex flex-wrap items-center justify-between gap-3">
       <div>
-        <strong class="text-base color-base-100">Appeal #<%= appeal.id %></strong>
-        <span class="fs-xs color-base-60 ml-2">Submitted <%= time_ago_in_words(appeal.created_at) %> ago by <%= link_to appeal.user.name, admin_user_path(appeal.user), class: "c-link font-bold" %> (@<%= appeal.user.username %>)</span>
+        <strong class="text-base color-base-100">Flag Appeal #<%= appeal.id %></strong>
+        <span class="fs-xs color-base-60 ml-2">
+          Submitted <%= time_ago_in_words(appeal.created_at) %> ago by
+          <%= link_to appeal.user.name, admin_user_path(appeal.user), class: "c-link font-bold" %>
+          (@<%= appeal.user.username %>)
+        </span>
       </div>
 
       <div class="flex flex-wrap items-center gap-2">
-        <span class="c-indicator c-indicator--info fs-xs"><%= appeal.appealable_type %> #<%= appeal.appealable_id %></span>
+        <span class="c-indicator c-indicator--info fs-xs"><%= target_label %></span>
         <span class="c-indicator <%= rec_class %> fs-xs">AI: <%= appeal.ai_recommendation.humanize %> (<%= appeal.ai_confidence_score ? "#{(appeal.ai_confidence_score * 100).round}%" : "N/A" %>)</span>
         <span class="c-indicator <%= status_indicator %> fs-xs uppercase font-bold"><%= appeal.status.humanize %></span>
-        <%= link_to "Direct Link", admin_flag_appeal_path(appeal), class: "c-link fs-xs ml-1" %>
+        <%= link_to "Link to Appeal", admin_flag_appeal_path(appeal), class: "c-link fs-xs ml-1" %>
       </div>
     </div>
   </summary>
 
   <div class="crayons-card__body p-4 border-t border-border flex flex-col gap-4">
+    <!-- User & Flagged Target Details Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Appealing User -->
       <div class="crayons-card crayons-card--secondary p-3 flex flex-col gap-1">
         <h4 class="fs-xs font-bold uppercase color-base-60">Appealing User</h4>
         <div>
-          <%= link_to appeal.user.name, admin_user_path(appeal.user), class: "c-link font-bold" %>
-          <span class="fs-xs color-base-60">@<%= appeal.user.username %> (ID: <%= appeal.user.id %>)</span>
+          <%= link_to appeal.user.name, admin_user_path(appeal.user), class: "c-link font-bold text-base" %>
+          <span class="fs-xs color-base-60">
+            (@<%= link_to appeal.user.username, appeal.user.path, target: "_blank", rel: "noopener", class: "c-link" %>)
+            • ID: <%= appeal.user.id %>
+          </span>
         </div>
-        <div>
+        <div class="flex items-center gap-2 mt-1">
           <% role_badge = appeal.user.spam_or_suspended? ? "c-indicator--danger" : "c-indicator--success" %>
           <span class="c-indicator <%= role_badge %> fs-xs">
             <%= appeal.user.spam_or_suspended? ? "Suspended / Spam Flagged" : "Active" %>
           </span>
+          <span class="fs-xs color-base-60">• User Score: <%= appeal.user.score %></span>
         </div>
       </div>
 
+      <!-- Target Entity (WHAT was flagged) -->
       <div class="crayons-card crayons-card--secondary p-3 flex flex-col gap-1">
-        <h4 class="fs-xs font-bold uppercase color-base-60">Target Entity</h4>
-        <div class="font-bold">
-          <span class="c-indicator c-indicator--info"><%= appeal.appealable_type %></span>
-          <span>#<%= appeal.appealable_id %></span>
-        </div>
-        <p class="fs-xs color-base-60">Restricted item tied to this appeal record</p>
+        <h4 class="fs-xs font-bold uppercase color-base-60">Flagged Item (<%= appeal.appealable_type %>)</h4>
+        <% if appeal.appealable.present? %>
+          <% if appeal.appealable.is_a?(Comment) %>
+            <div>
+              <span class="fs-xs color-base-60 font-bold">Comment on:</span>
+              <% parent = appeal.appealable.commentable %>
+              <% if parent.present? && parent.respond_to?(:path) %>
+                <%= link_to parent.title, parent.path, target: "_blank", rel: "noopener", class: "c-link font-bold" %>
+              <% else %>
+                <strong><%= parent.respond_to?(:title) ? parent.title : "Discussion" %></strong>
+              <% end %>
+            </div>
+            <div class="flex items-center gap-3 mt-1">
+              <% if appeal.appealable.path.present? %>
+                <%= link_to "Open Comment on Site ↗", appeal.appealable.path, target: "_blank", rel: "noopener", class: "c-link fs-xs font-bold" %>
+              <% end %>
+              <span class="fs-xs color-base-60">Comment Score: <strong><%= appeal.appealable.score %></strong></span>
+            </div>
+          <% elsif appeal.appealable.is_a?(Article) %>
+            <div>
+              <%= link_to appeal.appealable.title, appeal.appealable.path, target: "_blank", rel: "noopener", class: "c-link font-bold text-base" %>
+            </div>
+            <div class="mt-1">
+              <span class="fs-xs color-base-60">Article Score: <strong><%= appeal.appealable.score %></strong></span>
+            </div>
+          <% elsif appeal.appealable.is_a?(User) %>
+            <div>
+              <%= link_to "@#{appeal.appealable.username} (#{appeal.appealable.name})", admin_user_path(appeal.appealable), class: "c-link font-bold" %>
+            </div>
+          <% end %>
+        <% else %>
+          <p class="fs-xs color-base-60 italic"><%= appeal.appealable_type %> #<%= appeal.appealable_id %> (Deleted from database)</p>
+        <% end %>
       </div>
     </div>
 
+    <!-- Target Content Preview -->
+    <% if appeal.appealable.present? %>
+      <div class="flex flex-col gap-1">
+        <h4 class="fs-xs font-bold uppercase color-base-60">Flagged Content Text:</h4>
+        <div class="p-3 bg-base-5 rounded border border-border-tertiary fs-sm whitespace-pre-wrap font-mono max-h-48 overflow-y-auto">
+          <% if appeal.appealable.is_a?(Comment) %>
+            <%= appeal.appealable.body_markdown.presence || "(Empty comment)" %>
+          <% elsif appeal.appealable.is_a?(Article) %>
+            <%= appeal.appealable.body_markdown.truncate(500) %>
+          <% elsif appeal.appealable.is_a?(User) %>
+            Account moderation for @<%= appeal.appealable.username %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- User Statement -->
     <div class="flex flex-col gap-1">
-      <h4 class="fs-sm font-bold color-base-80">User's Appeal Statement</h4>
+      <h4 class="fs-sm font-bold color-base-80">User's Appeal Statement:</h4>
       <div class="p-3 bg-base-5 rounded border border-border-tertiary whitespace-pre-wrap fs-sm">
         <%= appeal.reason %>
       </div>
     </div>
 
+    <!-- AI Assessment Box -->
     <div class="p-4 rounded border border-accent-brand bg-accent-brand-tint flex flex-col gap-2">
       <div class="flex items-center justify-between">
         <h4 class="font-bold text-sm flex items-center gap-2">
@@ -84,6 +147,7 @@
       </div>
     </div>
 
+    <!-- Actions -->
     <% if appeal.open? || appeal.ai_reviewed? %>
       <% approve_confirm = if appeal.appealable_type == "Article"
                              "This will approve Appeal ##{appeal.id}, reinstate @#{appeal.user.username}'s account (removing suspended/spam status), clear automod flags on Article ##{appeal.appealable_id}, and remove spam mascot reactions. Are you sure you want to proceed?"
@@ -97,13 +161,12 @@
       <div class="flex items-center gap-3 pt-3 border-t border-border">
         <%= button_to "Approve & Unflag", admin_flag_appeal_path(appeal, resolution: "approve"), method: :patch, data: { confirm: approve_confirm }, class: "crayons-btn crayons-btn--primary crayons-btn--s" %>
         <%= button_to "Reject Appeal", admin_flag_appeal_path(appeal, resolution: "reject"), method: :patch, data: { confirm: reject_confirm }, class: "crayons-btn crayons-btn--secondary crayons-btn--s" %>
-        <%= link_to "Full Details", admin_flag_appeal_path(appeal), class: "crayons-btn crayons-btn--outlined crayons-btn--s" %>
       </div>
     <% else %>
       <div class="pt-3 border-t border-border color-base-60 fs-xs flex items-center justify-between">
         <span>Resolved by: <strong><%= appeal.resolved_by&.name || "System" %></strong> on <%= appeal.updated_at.strftime("%B %d, %Y %H:%M") %></span>
-        <%= link_to "Full Details", admin_flag_appeal_path(appeal), class: "crayons-btn crayons-btn--outlined crayons-btn--s" %>
       </div>
     <% end %>
   </div>
 </details>
+
