@@ -1,0 +1,16 @@
+app/services/users/email_footer_payload.rb
+  h_f968154a99632d 34-35,38,70-96
+spec/models/user_spec.rb
+  h_f968154a99632d 108-122,133-144
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "c2c84edbe008dac9c365052ad4d6b401cb7df3d5",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

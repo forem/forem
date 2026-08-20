@@ -1,0 +1,32 @@
+app/views/organization_settings/edit.html.erb
+  cdf961d01143ac46 210
+config/locales/views/organizations/fr.yml
+  cdf961d01143ac46 8
+app/views/organizations/_header.html.erb
+  cdf961d01143ac46 16
+config/locales/views/organizations/pt.yml
+  cdf961d01143ac46 8
+config/locales/views/organizations/en.yml
+  cdf961d01143ac46 8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "2ee7bc2cdcc48d51ecf339c04a8548d4df8b85b3",
+  "prompts": {
+    "cdf961d01143ac46": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e69502a6-bdd0-4768-88a0-89870ff05e49",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Jonathan Gottfried",
+      "messages": [],
+      "total_additions": 5,
+      "total_deletions": 1,
+      "accepted_lines": 5,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/ebcb03e3c6309e0f210d7f1ea86cab812c80b4fc228ceec67536f70073895351"
+    }
+  }
+}
