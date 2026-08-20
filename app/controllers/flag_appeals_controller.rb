@@ -7,9 +7,28 @@ class FlagAppealsController < ApplicationController
   end
 
   def new
+    appealable_type = params[:appealable_type].presence || "User"
+    appealable_id = params[:appealable_id].presence || current_user.id
+
+    case appealable_type
+    when "Article"
+      unless current_user.articles.exists?(id: appealable_id)
+        appealable_type = "User"
+        appealable_id = current_user.id
+      end
+    when "Comment"
+      unless current_user.comments.exists?(id: appealable_id)
+        appealable_type = "User"
+        appealable_id = current_user.id
+      end
+    else
+      appealable_type = "User"
+      appealable_id = current_user.id
+    end
+
     @flag_appeal = current_user.flag_appeals.build(
-      appealable_type: params[:appealable_type].presence || "User",
-      appealable_id: params[:appealable_id].presence || current_user.id,
+      appealable_type: appealable_type,
+      appealable_id: appealable_id,
     )
   end
 
@@ -45,6 +64,12 @@ class FlagAppealsController < ApplicationController
     when "Article"
       article = current_user.articles.find_by(id: @flag_appeal.appealable_id)
       unless article
+        @flag_appeal.appealable_type = "User"
+        @flag_appeal.appealable_id = current_user.id
+      end
+    when "Comment"
+      comment = current_user.comments.find_by(id: @flag_appeal.appealable_id)
+      unless comment
         @flag_appeal.appealable_type = "User"
         @flag_appeal.appealable_id = current_user.id
       end

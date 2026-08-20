@@ -81,6 +81,8 @@
     <% if @appeal.open? || @appeal.ai_reviewed? %>
       <% approve_confirm = if @appeal.appealable_type == "Article"
                              "This will approve Appeal ##{@appeal.id}, reinstate @#{@appeal.user.username}'s account (removing suspended/spam status), clear automod flags on Article ##{@appeal.appealable_id}, and remove spam mascot reactions. Are you sure you want to proceed?"
+                           elsif @appeal.appealable_type == "Comment"
+                             "This will approve Appeal ##{@appeal.id}, reinstate @#{@appeal.user.username}'s account, remove spam mascot reactions on Comment ##{@appeal.appealable_id}, and recalculate the comment score. Are you sure you want to proceed?"
                            else
                              "This will approve Appeal ##{@appeal.id} and reinstate @#{@appeal.user.username}'s account (removing suspended/spam status). Are you sure you want to proceed?"
                            end %>

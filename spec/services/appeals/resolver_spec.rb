@@ -29,7 +29,7 @@ RSpec.describe Appeals::Resolver do
       expect(article.automod_label).to eq("no_moderation_label")
       expect(appeal.status).to eq("approved")
       expect(appeal.resolved_by).to eq(admin)
-      expect(Reaction.exists?(user_id: Settings::General.mascot_user_id, reactable: article, category: "vomit")).to be false
+      expect(Reaction.exists?(user_id: mascot.id, reactable: article, category: "vomit")).to be false
     end
 
     it "approves appeal when appealable target is a User profile" do
@@ -41,6 +41,21 @@ RSpec.describe Appeals::Resolver do
 
       expect(user.spam_or_suspended?).to be false
       expect(user_appeal.status).to eq("approved")
+    end
+
+    it "approves appeal when appealable target is a Comment and cleans up vomit reactions" do
+      comment = create(:comment, user: user, score: -196)
+      Reaction.create!(user_id: mascot.id, reactable: comment, category: "vomit")
+      comment_appeal = create(:flag_appeal, user: user, appealable: comment)
+      allow(Comments::CalculateScoreWorker).to receive(:perform_async)
+
+      described_class.approve(appeal: comment_appeal, admin: admin)
+
+      comment_appeal.reload
+
+      expect(comment_appeal.status).to eq("approved")
+      expect(Reaction.exists?(user_id: mascot.id, reactable: comment, category: "vomit")).to be false
+      expect(Comments::CalculateScoreWorker).to have_received(:perform_async).with(comment.id)
     end
   end
 

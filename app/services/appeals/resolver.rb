@@ -40,6 +40,13 @@ module Appeals
         )
       end
 
+      # 5. Recalculate scores outside the transaction to prevent deadlocks with concurrent Sidekiq workers
+      if @target.is_a?(Comment)
+        Comments::CalculateScoreWorker.perform_async(@target.id)
+      elsif @target.is_a?(Article)
+        Articles::ScoreCalcWorker.perform_async(@target.id)
+      end
+
       true
     end
 

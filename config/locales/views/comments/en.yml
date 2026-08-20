@@ -45,6 +45,10 @@ en:
         text_html: Some comments have been hidden by the post's author - %{info}
         info: find out more
         comment_hidden: Comment hidden by post author
+      hidden_by_moderation:
+        title: Your comment is currently hidden
+        description: This comment was flagged by automated quality or spam moderation checks.
+        appeal_link: Submit an appeal to request a review
       hider:
         description_html: Are you sure you want to hide this comment? It will become hidden in your post, but will still be visible via the comment's %{permalink}.
         hide_child: Hide child comments as well

@@ -1,4 +1,5 @@
 module CommentsHelper
+  ORGANIZATION_ROLE_TYPES = %w[admin member].freeze
   MAX_COMMENTS_TO_RENDER = 250
   MIN_COMMENTS_TO_RENDER = 8
   MAX_TOP_LEVEL_COMMENTS_UNAUTHENTICATED = 75
@@ -94,19 +95,16 @@ module CommentsHelper
   end
 
   def commenter_organization_membership(comment, commentable)
-    return unless commentable&.respond_to?(:organization)
+    return unless commentable.respond_to?(:organization)
     return unless commentable.organization
 
     # Use preloaded organization_memberships if available to avoid N+1 queries
     if comment.user.organization_memberships.loaded?
-      if comment.user.organization_memberships.any? do |membership|
+      is_org_member = comment.user.organization_memberships.any? do |membership|
         membership.organization_id == commentable.organization.id &&
-            %w[admin member].include?(membership.type_of_user)
+          ORGANIZATION_ROLE_TYPES.include?(membership.type_of_user)
       end
-        commentable.organization.name
-      else
-        nil
-      end
+      is_org_member ? commentable.organization.name : nil
     else
       # Fallback to the original method if not preloaded
       comment.user.org_member?(commentable.organization) ? commentable.organization.name : nil
@@ -117,10 +115,11 @@ module CommentsHelper
 
   def limit_descendants(sub_hash, limit)
     count = 0
-    traverse = ->(hash) do
+    traverse = lambda do |hash|
       new_hash = {}
       hash.each do |c, children|
         break if count >= limit
+
         count += 1
         new_hash[c] = traverse.call(children)
       end
@@ -133,8 +132,10 @@ module CommentsHelper
     comments = tree.filter_map do |comment, sub_comments|
       subtree_html = nested_comments(tree: sub_comments, commentable: commentable, is_admin: is_admin)
       is_childless = subtree_html.blank?
-      # hide childless comments if they are low quality or soft-deleted (but show for admins)
-      hide = is_childless && (comment.decorate.super_low_quality || comment.deleted?)
+      is_author = user_signed_in? && current_user.id == comment.user_id
+      # hide childless comments if they are low quality or soft-deleted
+      # (but show for admins and the comment's author if not deleted)
+      hide = is_childless && (comment.deleted? || (comment.decorate.super_low_quality && !is_author))
       if is_admin || !hide
         render("comments/comment", comment: comment, commentable: commentable,
                                    is_view_root: is_view_root, is_childless: is_childless,
