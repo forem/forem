@@ -6,13 +6,13 @@
 
   <div class="inner-comment comment__details">
     <div class="comment__content crayons-card">
-      <% if comment.deleted || (decorated_comment.super_low_quality && !is_admin && !is_author) %>
+      <% if comment.deleted || (decorated_comment.super_low_quality && !is_admin && (!is_author || !is_childless)) %>
         <div class="p-6 align-center opacity-50 fs-s">
           <span class="js-comment-username">
             <%= t("views.comments.delete.comment_deleted") %>
           </span>
         </div>
-      <% elsif decorated_comment.super_low_quality && is_author %>
+      <% elsif decorated_comment.super_low_quality && is_author && is_childless %>
         <div class="p-4 rounded border border-danger-tint bg-danger-tint fs-s">
           <p class="font-bold mb-1"><%= t("views.comments.hidden_by_moderation.title") %></p>
           <p class="mb-2"><%= t("views.comments.hidden_by_moderation.description") %></p>
