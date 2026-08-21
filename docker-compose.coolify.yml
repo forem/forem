@@ -1,74 +1,93 @@
 services:
+
   postgres:
-    image: pgvector/pgvector:pg13
+    image: 'pgvector/pgvector:pg13'
     restart: unless-stopped
+
     environment:
       POSTGRES_DB: forem_production
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_PASSWORD: '${POSTGRES_PASSWORD}'
+
     volumes:
-      - forem-postgres:/var/lib/postgresql/data
+      - 'forem-postgres:/var/lib/postgresql/data'
+
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d forem_production"]
+      test:
+        - CMD-SHELL
+        - 'pg_isready -U postgres -d forem_production'
       interval: 5s
       timeout: 5s
       retries: 20
 
+
   redis:
-    image: redis:7.0-alpine
+    image: 'redis:7.0-alpine'
     restart: unless-stopped
+
     command:
       - redis-server
-      - --requirepass
-      - ${REDIS_PASSWORD}
+      - '--requirepass'
+      - '${REDIS_PASSWORD}'
+
     volumes:
-      - forem-redis:/data
+      - 'forem-redis:/data'
+
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      test:
+        - CMD
+        - redis-cli
+        - '-a'
+        - '${REDIS_PASSWORD}'
+        - ping
       interval: 5s
       timeout: 3s
       retries: 20
+
 
   web:
     build:
       context: .
       dockerfile: Containerfile
       target: production
+
     restart: unless-stopped
+
+    # TEMPORARY:
+    # Keep the Forem container alive while we restore
+    # the old database and uploads.
     command:
-      - bundle
-      - exec
-      - puma
-      - -C
-      - config/puma.rb
+      - sleep
+      - infinity
+
     environment:
       RAILS_ENV: production
       NODE_ENV: production
-      PORT: "3000"
-      RAILS_SERVE_STATIC_FILES: "true"
+      PORT: '3000'
+      RAILS_SERVE_STATIC_FILES: 'true'
 
-      APP_DOMAIN: ${APP_DOMAIN}
-      APP_PROTOCOL: ${APP_PROTOCOL}
-      COMMUNITY_NAME: ${COMMUNITY_NAME}
-      DEFAULT_EMAIL: ${DEFAULT_EMAIL}
+      APP_DOMAIN: '${APP_DOMAIN}'
+      APP_PROTOCOL: '${APP_PROTOCOL}'
+      COMMUNITY_NAME: '${COMMUNITY_NAME}'
+      DEFAULT_EMAIL: '${DEFAULT_EMAIL}'
 
-      FOREM_OWNER_SECRET: ${FOREM_OWNER_SECRET}
-      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      FOREM_OWNER_SECRET: '${FOREM_OWNER_SECRET}'
+      SECRET_KEY_BASE: '${SECRET_KEY_BASE}'
 
-      DATABASE_URL: ${DATABASE_URL}
-      DATABASE_POOL_SIZE: "5"
-      RAILS_MAX_THREADS: "5"
-      WEB_CONCURRENCY: "2"
+      DATABASE_URL: '${DATABASE_URL}'
+      DATABASE_POOL_SIZE: '5'
+      RAILS_MAX_THREADS: '5'
+      WEB_CONCURRENCY: '2'
 
-      REDIS_URL: ${REDIS_URL}
-      REDIS_SIDEKIQ_URL: ${REDIS_SIDEKIQ_URL}
-      REDIS_SESSIONS_URL: ${REDIS_SESSIONS_URL}
-      REDIS_RPUSH_URL: ${REDIS_RPUSH_URL}
+      REDIS_URL: '${REDIS_URL}'
+      REDIS_SIDEKIQ_URL: '${REDIS_SIDEKIQ_URL}'
+      REDIS_SESSIONS_URL: '${REDIS_SESSIONS_URL}'
+      REDIS_RPUSH_URL: '${REDIS_RPUSH_URL}'
 
-      SESSION_KEY: ${SESSION_KEY}
+      SESSION_KEY: '${SESSION_KEY}'
 
     volumes:
-      - forem-uploads:/opt/apps/forem/public/uploads
+      - 'forem-uploads:/opt/apps/forem/public/uploads'
 
     depends_on:
       postgres:
@@ -77,51 +96,56 @@ services:
         condition: service_healthy
 
     expose:
-      - "3000"
+      - '3000'
+
 
   sidekiq:
     build:
       context: .
       dockerfile: Containerfile
       target: production
+
     restart: unless-stopped
+
+    # TEMPORARY:
+    # Do not start Sidekiq until the old database has
+    # been restored and migrated.
     command:
-      - bundle
-      - exec
-      - sidekiq
-      - -t
-      - "25"
+      - sleep
+      - infinity
+
     environment:
       RAILS_ENV: production
       NODE_ENV: production
 
-      APP_DOMAIN: ${APP_DOMAIN}
-      APP_PROTOCOL: ${APP_PROTOCOL}
-      COMMUNITY_NAME: ${COMMUNITY_NAME}
-      DEFAULT_EMAIL: ${DEFAULT_EMAIL}
+      APP_DOMAIN: '${APP_DOMAIN}'
+      APP_PROTOCOL: '${APP_PROTOCOL}'
+      COMMUNITY_NAME: '${COMMUNITY_NAME}'
+      DEFAULT_EMAIL: '${DEFAULT_EMAIL}'
 
-      FOREM_OWNER_SECRET: ${FOREM_OWNER_SECRET}
-      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      FOREM_OWNER_SECRET: '${FOREM_OWNER_SECRET}'
+      SECRET_KEY_BASE: '${SECRET_KEY_BASE}'
 
-      DATABASE_URL: ${DATABASE_URL}
-      DATABASE_POOL_SIZE: "5"
-      RAILS_MAX_THREADS: "5"
+      DATABASE_URL: '${DATABASE_URL}'
+      DATABASE_POOL_SIZE: '5'
+      RAILS_MAX_THREADS: '5'
 
-      REDIS_URL: ${REDIS_URL}
-      REDIS_SIDEKIQ_URL: ${REDIS_SIDEKIQ_URL}
-      REDIS_SESSIONS_URL: ${REDIS_SESSIONS_URL}
-      REDIS_RPUSH_URL: ${REDIS_RPUSH_URL}
+      REDIS_URL: '${REDIS_URL}'
+      REDIS_SIDEKIQ_URL: '${REDIS_SIDEKIQ_URL}'
+      REDIS_SESSIONS_URL: '${REDIS_SESSIONS_URL}'
+      REDIS_RPUSH_URL: '${REDIS_RPUSH_URL}'
 
-      SESSION_KEY: ${SESSION_KEY}
+      SESSION_KEY: '${SESSION_KEY}'
 
     volumes:
-      - forem-uploads:/opt/apps/forem/public/uploads
+      - 'forem-uploads:/opt/apps/forem/public/uploads'
 
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
+
 
 volumes:
   forem-postgres:
