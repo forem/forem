@@ -64,6 +64,7 @@ services:
     environment:
       RAILS_ENV: production
       NODE_ENV: production
+      RAILS_SERVE_STATIC_FILES: "true"
 
       APP_DOMAIN: ${APP_DOMAIN}
       APP_PROTOCOL: ${APP_PROTOCOL}
