@@ -303,6 +303,9 @@ fr:
         new: Password
         submit: Set New Password
       previous: There is an existing account authorized with that social account.
+      profile_image:
+        remove: Supprimer l'image de profil
+        remove_description: Votre profil utilisera l'avatar par défaut.
       tab:
         Profile: Profil
         Customization: Personnalisation
