@@ -2,6 +2,8 @@
 
 set -e
 
+mkdir -p tmp/pids
+
 if [ -f tmp/pids/server.pid ]; then
   rm -f tmp/pids/server.pid
 fi
