@@ -139,7 +139,7 @@ group :development do
   gem "yard", "~> 0.9" # Documentation format
   gem "yard-activerecord", "~> 0.0" # Yard extension for ActiveRecord
   gem "yard-activesupport-concern", "~> 0.0" # Yard extension for ActiveRecord::Concern
-  gem "kamal", "~> 2.3"
+  gem "kamal", "~> 2.12"
 end
 
 group :development, :test do
