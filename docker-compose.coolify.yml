@@ -55,8 +55,11 @@ services:
     restart: unless-stopped
 
     command:
-      - sleep
-      - infinity
+       - bundle
+       - exec
+       - puma
+       - -C
+       - config/puma.rb
 
     environment:
       RAILS_ENV: production
@@ -100,8 +103,11 @@ services:
     restart: unless-stopped
 
     command:
-      - sleep
-      - infinity
+       - bundle
+       - exec
+       - sidekiq
+       - -t
+       - "25"
 
     environment:
       RAILS_ENV: production
