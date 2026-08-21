@@ -55,7 +55,7 @@ services:
 
     command:
       - sleep
-     - infinity
+      - infinity
 
     environment:
       RAILS_ENV: production
