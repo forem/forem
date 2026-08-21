@@ -50,6 +50,7 @@ services:
     build:
       context: .
       dockerfile: Containerfile
+      target: production
 
     restart: unless-stopped
 
@@ -94,6 +95,7 @@ services:
     build:
       context: .
       dockerfile: Containerfile
+      target: production
 
     restart: unless-stopped
 
