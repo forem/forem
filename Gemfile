@@ -100,7 +100,7 @@ gem "rpush-redis", "~> 1.2" # Redis module capability for rpush library
 gem "request_store", "~> 1.7" # RequestStore gives you per-request global storage
 gem "reverse_markdown", "~> 2.1" # Map simple html back into markdown
 gem "rolify", "~> 6.0" # Very simple Roles library
-gem "rouge", "~> 4.2" # A pure-ruby code highlighter
+gem "rouge", "~> 4.7" # A pure-ruby code highlighter
 gem "rss", "~> 0.2.9" # Ruby's standard library for RSS
 gem "rubyzip", "~> 2.4" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3

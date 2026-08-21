@@ -692,6 +692,27 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       code_block = "```ada\n with Ada.Directories;\n```"
       expect(generate_and_parse_markdown(code_block)).to include("highlight ada")
     end
+
+    %w[gjs gts].each do |hint|
+      it "adds #{hint} syntax highlighting to Ember template tag codeblocks" do
+        code_block = <<~MARKDOWN
+          ```#{hint}
+          import UiList from 'my-app/components/ui/list';
+
+          <template>
+            <UiList @items={{@items}} />
+          </template>
+          ```
+        MARKDOWN
+
+        output = generate_and_parse_markdown(code_block)
+
+        expect(output).to include("highlight #{hint}")
+        expect(output).to exclude("highlight plaintext")
+        expect(output).to include('<span class="k">import</span>')
+        expect(output).to include('<span class="k">template</span>')
+      end
+    end
   end
 
   context "when using a valid attribute" do
