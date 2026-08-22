@@ -1,16 +1,19 @@
 import mermaid from 'mermaid';
+import DOMPurify from 'dompurify';
 
 const DIAGRAM_SELECTOR = 'pre[data-lang="mermaid"]:not([data-mermaid-state])';
 const MAX_SOURCE_LENGTH = 20000;
 const MAX_LINES = 500;
 const MAX_EDGES = 500;
 const RENDER_TIMEOUT_MS = 8000;
+const SANITIZE_CONFIG = { USE_PROFILES: { svg: true, svgFilters: true } };
 
 let diagramCount = 0;
 
 mermaid.initialize({
   startOnLoad: false,
   securityLevel: 'strict',
+  htmlLabels: false,
   suppressErrorRendering: true,
   maxTextSize: MAX_SOURCE_LENGTH,
   maxEdges: MAX_EDGES,
@@ -59,7 +62,7 @@ async function renderDiagram(element) {
     const figure = document.createElement('figure');
     figure.className = 'mermaid-diagram';
     figure.setAttribute('data-mermaid-state', 'rendered');
-    figure.innerHTML = svg;
+    figure.innerHTML = DOMPurify.sanitize(svg, SANITIZE_CONFIG);
     element.replaceWith(figure);
   } catch (error) {
     element.setAttribute('data-mermaid-state', 'error');
