@@ -58,9 +58,81 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     redirect_to root_path(signin: "true")
   end
 
+  # Stages a pending account switch and renders the confirmation interstitial.
+  # Nothing is persisted: the identity stays unclaimed until the user
+  # explicitly confirms the switch.
+  def stage_account_switch(target_user, provider)
+    # Bearer material is stripped UNCONDITIONALLY (production included):
+    # confirm_account_switch re-resolves by provider/uid/email and never
+    # needs a token, so the session must not become a second credential
+    # store while the interstitial waits.
+    staged_payload = request.env["omniauth.auth"].to_hash
+    staged_payload["credentials"] = { "expires" => false }
+
+    session["pending_account_switch"] = {
+      "user_id" => target_user.id,
+      "provider" => provider.to_s,
+      "payload" => staged_payload,
+      "continuation" => request.env["omniauth.params"].to_h["continuation"],
+      "staged_at" => Time.current.iso8601,
+    }
+    @switch_target_username = target_user.username
+    render :account_switch
+  end
+
+  # Confirms a staged account switch: drops the current session, re-runs the
+  # standard (current_user-less) authentication flow so the identity attaches
+  # to its resolved owner, then signs in as that owner. Re-validates the
+  # staged state so a stale or since-suspended target fails closed.
+  def confirm_account_switch
+    pending = session.delete("pending_account_switch")
+    target = pending && User.find_by(id: pending["user_id"])
+
+    if pending.nil? || stale_switch?(pending) || target.nil? || target.spam_or_suspended?
+      flash[:alert] = I18n.t("omniauth_callbacks_controller.account_switch_expired")
+      return redirect_to root_path
+    end
+
+    sign_out(current_user) if current_user
+
+    # The confirmation interstitial is not an OmniAuth callback, so hand the
+    # continuation back to the post-auth redirect logic explicitly.
+    request.env["omniauth.params"] = { "continuation" => pending["continuation"] }.compact
+    @user = Authentication::Authenticator.call(OmniAuth::AuthHash.new(pending["payload"]))
+
+    set_flash_message(:notice, :success, kind: pending["provider"].to_s.titleize) if is_navigational_format?
+    @user.update_tracked_fields!(request)
+    remember_me(@user)
+
+    return_url = Authentication::ExternalReturn.redirect_url_for(request.env["omniauth.params"])
+    # Destination comes from the configured allowlist, not user input.
+    return redirect_to(return_url, allow_other_host: true) if return_url
+
+    sign_in_and_redirect(@user, event: :authentication)
+  rescue ::Authentication::Errors::Ineligible, ::Authentication::Errors::PreviouslySuspended => e
+    flash[:global_notice] = e.message
+    redirect_to root_path
+  end
+
+  # Cancels a staged account switch. No identity or session mutation: the
+  # signed-in user keeps their session exactly as it was.
+  def cancel_account_switch
+    session.delete("pending_account_switch")
+    redirect_to root_path
+  end
+
+  def stale_switch?(pending)
+    # A staged switch older than the confirmation window is unusable.
+    Time.zone.iso8601(pending["staged_at"].to_s) < 15.minutes.ago
+  rescue ArgumentError, TypeError
+    # An unreadable timestamp fails closed.
+    true
+  end
+
   private
 
   def callback_for(provider)
+    scrub_external_credentials!
     auth_payload = request.env["omniauth.auth"]
     cta_variant = request.env["omniauth.params"]["state"].to_s
   
@@ -84,7 +156,13 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
       user_agent = request.user_agent
 
-      if ApplicationConfig["AUTH_TEST_USER_IDS"].present? && ApplicationConfig["AUTH_TEST_USER_IDS"].split(",").include?(@user.id.to_s)
+      if (return_to_core = Authentication::ExternalReturn.redirect_url_for(request.env["omniauth.params"]))
+        # Allowlisted return-to-Core (e.g. MLH auth): sign in, then release
+        # the continuation token verbatim — before any onboarding interception.
+        sign_in(@user, event: :authentication)
+        # Destination comes from the configured allowlist, not user input.
+        redirect_to return_to_core, allow_other_host: true
+      elsif ApplicationConfig["AUTH_TEST_USER_IDS"].present? && ApplicationConfig["AUTH_TEST_USER_IDS"].split(",").include?(@user.id.to_s)
         token = generate_auth_token(@user)
         test_path = ApplicationConfig["AUTH_TEST_USER_REDIRECT_PATH"] || "/menu"
         redirect_to "#{test_path}?jwt=#{token}"
@@ -111,7 +189,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       # Handle error conditions.
       session["devise.#{provider}_data"] = request.env["omniauth.auth"]
       user_errors = @user.errors.full_messages
-  
+
       Honeybadger.context({
         username: @user.username,
         user_id: @user.id,
@@ -120,11 +198,15 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         user_errors: user_errors
       })
       Honeybadger.notify("Omniauth log in error")
-  
+
       flash[:alert] = user_errors
       redirect_to new_user_registration_url
     end
-  rescue ::Authentication::Errors::PreviouslySuspended, ::Authentication::Errors::SpammyEmailDomain => e
+  rescue ::Authentication::Errors::AccountSwitchConfirmation => e
+    # A different user is signed in and the incoming identity resolves to
+    # another eligible account: ask before touching anything.
+    stage_account_switch(e.target_user, provider)
+  rescue ::Authentication::Errors::Ineligible, ::Authentication::Errors::PreviouslySuspended, ::Authentication::Errors::SpammyEmailDomain => e
     flash[:global_notice] = e.message
 
     redirect_to root_path
@@ -136,7 +218,37 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     flash[:alert] = I18n.t("omniauth_callbacks_controller.log_in_error", e: e)
     redirect_to new_user_registration_url
   end
-  
+
+  def redirect_to_failure_page_for(provider)
+    redirect_to new_user_registration_url
+  end
+
+  # Local unified stacks (Core acting as the MyMLH stand-in) must not leave
+  # Core bearer material behind in Forem: not on the identity row, not in the
+  # account-switch session staging, and not in error-reporting contexts. The
+  # authentication hash keeps its shape; every credential value is dropped at
+  # callback ingress before anything downstream can persist or log it.
+  # Production (real MyMLH) keeps token persistence for profile prefill.
+  #
+  # Returns the (possibly scrubbed) auth hash so callers can stage a clean
+  # copy of it without re-deriving credentials handling.
+  # Local unified stacks (Core acting as the MyMLH stand-in) must not leave
+  # Core bearer material behind in Forem: not on the identity row, not in the
+  # account-switch session staging, and not in error-reporting contexts. The
+  # authentication hash keeps its shape; every credential value is dropped at
+  # callback ingress before anything downstream can persist or log it.
+  # Production (real MyMLH) keeps token persistence for profile prefill.
+  def scrub_external_credentials!
+    return if ENV["MLH_OAUTH_BASE_URL"].blank? && ENV["MLH_API_BASE_URL"].blank?
+
+    auth = request.env["omniauth.auth"]
+    return unless auth.respond_to?(:[]) && auth["provider"].to_s == "mlh"
+
+    auth["credentials"] = OmniAuth::AuthHash.new(
+      token: "", refresh_token: nil, secret: "", expires: false
+    )
+    request.env["omniauth.auth"] = auth
+  end
 
   def user_persisted_and_valid?
     @user.persisted? && @user.valid?
