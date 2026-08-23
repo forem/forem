@@ -79,6 +79,23 @@ MLH_OMNIAUTH_SETUP = lambda do |env|
   env["omniauth.strategy"].options[:scope] = "user:read:email user:read:phone user:read:profile user:read:demographics user:read:education user:read:employment user:read:address public offline_access mlh:read:user"
   env["omniauth.strategy"].options[:client_id] = Settings::Authentication.mlh_key
   env["omniauth.strategy"].options[:client_secret] = Settings::Authentication.mlh_secret
+
+  # Local/alternate deployments may host the MLH-compatible identity provider
+  # and its API on different origins (e.g. a unified local stack where Core is
+  # the MyMLH stand-in). Production leaves these unset and hits real MyMLH.
+  if ENV["MLH_OAUTH_BASE_URL"].present?
+    oauth_base = ENV["MLH_OAUTH_BASE_URL"].chomp("/")
+    env["omniauth.strategy"].options[:client_options][:site] = oauth_base
+    env["omniauth.strategy"].options[:client_options][:authorize_url] = "#{oauth_base}/oauth/authorize"
+    env["omniauth.strategy"].options[:client_options][:token_url] = "#{oauth_base}/oauth/token"
+    # Local unified stack: Core never mints a refresh credential for Forem,
+    # and the relying party only needs enough access to read the signed-in
+    # user's profile. Production keeps the full MyMLH scope set untouched.
+    env["omniauth.strategy"].options[:scope] = "public user:read:profile mlh:read:user"
+  end
+  if ENV["MLH_API_BASE_URL"].present?
+    env["omniauth.strategy"].options[:client_options][:api_site] = ENV["MLH_API_BASE_URL"].chomp("/")
+  end
   # Note: redirect_uri is handled by the prepended MlhCallbackUrlOverride module
   # which overrides both callback_url and authorize_params to ensure no query parameters
 end

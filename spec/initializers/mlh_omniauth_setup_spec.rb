@@ -42,4 +42,42 @@ RSpec.describe "MLH OmniAuth setup" do # rubocop:disable RSpec/DescribeClass
       instance_of(OmniAuth::Strategies::OAuth2::CallbackError),
     )
   end
+
+  describe "local endpoint overrides" do
+    around do |example|
+      old_oauth = ENV["MLH_OAUTH_BASE_URL"]
+      old_api = ENV["MLH_API_BASE_URL"]
+      example.run
+    ensure
+      ENV["MLH_OAUTH_BASE_URL"] = old_oauth
+      ENV["MLH_API_BASE_URL"] = old_api
+    end
+
+    let(:override_strategy) { OmniAuth::Strategies::MLH.new(app, "client-id", "client-secret") }
+
+    it "points authorize, token and API origins at the configured local stack" do
+      ENV["MLH_OAUTH_BASE_URL"] = "https://auth.mlh.test"
+      ENV["MLH_API_BASE_URL"] = "https://api.mlh.test"
+
+      MLH_OMNIAUTH_SETUP.call("omniauth.strategy" => override_strategy)
+
+      client_options = override_strategy.options.client_options
+      expect(client_options.site).to eq("https://auth.mlh.test")
+      expect(client_options.authorize_url).to eq("https://auth.mlh.test/oauth/authorize")
+      expect(client_options.token_url).to eq("https://auth.mlh.test/oauth/token")
+      expect(client_options.api_site).to eq("https://api.mlh.test")
+    end
+
+    it "keeps production MyMLH endpoints when the env vars are blank" do
+      ENV["MLH_OAUTH_BASE_URL"] = ""
+      ENV["MLH_API_BASE_URL"] = ""
+
+      MLH_OMNIAUTH_SETUP.call("omniauth.strategy" => override_strategy)
+
+      client_options = override_strategy.options.client_options
+      expect(client_options.site).to eq("https://www.mlh.com")
+      expect(client_options.token_url).to eq("https://api.mlh.com/v4/oauth/token")
+      expect(client_options.api_site).to eq("https://api.mlh.com")
+    end
+  end
 end
