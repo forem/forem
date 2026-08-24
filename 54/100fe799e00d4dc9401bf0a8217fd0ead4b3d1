@@ -1,0 +1,92 @@
+app/helpers/application_helper.rb
+  s_1e049bdc81f15e::t_bf71fe3573e62f 276-280,285-293
+  s_1e049bdc81f15e::t_35b40bc3f2d243 281-284
+  s_1e049bdc81f15e::t_22a330613a800c 261-275
+app/models/articles/cached_entity.rb
+  s_1e049bdc81f15e::t_942c9ee90b0432 3-4
+  s_1e049bdc81f15e::t_c48222ebf32ac2 15
+spec/services/community_leaders/remove_spec.rb
+  s_1e049bdc81f15e::t_aaa00c0951c405 46-62
+app/models/article.rb
+  s_1e049bdc81f15e::t_1c022df07ae6d4 506-507,518-519
+app/views/articles/show.html.erb
+  s_1e049bdc81f15e::t_7667f38d74d149 208
+  s_1e049bdc81f15e::t_4e1d50609b2c21 165
+app/views/shared/_profile_card_content.html.erb
+  s_1e049bdc81f15e::t_4e1d50609b2c21 9
+spec/helpers/application_helper_spec.rb
+  s_1e049bdc81f15e::t_1902fb34f5c3d2 597,632
+  s_1e049bdc81f15e::t_ef1fe158ffdfd2 633-684
+  s_1e049bdc81f15e::t_9196fd673a4616 598-631
+config/locales/views/leadership/pt.yml
+  s_1e049bdc81f15e::t_38b4794810909a 6-8
+app/javascript/profilePreviewCards/MinimalProfilePreviewCard.jsx
+  s_1e049bdc81f15e::t_4725bf99df8333 12,22-23
+spec/models/articles/cached_entity_spec.rb
+  s_1e049bdc81f15e::t_f010473c403812 9-40
+app/assets/images/community-leader-icon.svg
+  s_1e049bdc81f15e::t_730f946491c89c 2
+  s_1e049bdc81f15e::t_3c635567f39acf 1
+  s_1e049bdc81f15e::t_f39f69e3efef32 3-5
+  s_1e049bdc81f15e::t_9cfd1e9d592d16 6
+app/views/layouts/application.html.erb
+  s_1e049bdc81f15e::t_e9388abee6baa1 77-80
+app/services/community_leaders/add.rb
+  s_1e049bdc81f15e::t_32c63323eaa5a6 31
+  s_1e049bdc81f15e::t_ae5cd6993f006d 40-46
+app/javascript/articles/components/Meta.jsx
+  s_1e049bdc81f15e::t_4725bf99df8333 70-72
+app/assets/stylesheets/scaffolds.scss
+  s_1e049bdc81f15e::t_a9fb8f9fd10d13 138-153
+app/views/comments/_comment.json.jbuilder
+  s_1e049bdc81f15e::t_4df21be4547a6a 20
+config/locales/views/leadership/en.yml
+  s_1e049bdc81f15e::t_38b4794810909a 6-8
+app/assets/javascripts/utilities/buildArticleHTML.js
+  s_1e049bdc81f15e::t_98c8ae84f4bc0a 236-239
+app/views/articles/_single_story.html.erb
+  s_1e049bdc81f15e::t_4e1d50609b2c21 55
+  s_1e049bdc81f15e::t_7667f38d74d149 114
+spec/requests/community_leader_indicators_spec.rb
+  s_1e049bdc81f15e::t_4b3025fc44b64a 20,26,34,40,48,66,72,80
+  s_1e049bdc81f15e::t_44ae7a26ceed31 1-19,21-25,27-33,35-39,41-47,49-65,67-71,73-79,81-89
+app/views/stories/feeds/show.json.jbuilder
+  s_1e049bdc81f15e::t_e9388abee6baa1 39
+app/models/user.rb
+  s_1e049bdc81f15e::t_aab3cc1ee9eb0b 517
+  s_1e049bdc81f15e::t_456ae5d4e463a2 514-516,518-519
+app/views/users/show.html.erb
+  s_1e049bdc81f15e::t_4e1d50609b2c21 72
+app/views/comments/_comment_header.html.erb
+  s_1e049bdc81f15e::t_4e1d50609b2c21 26
+  s_1e049bdc81f15e::t_7667f38d74d149 39
+  s_1e049bdc81f15e::t_d9ef51d4ba99a5 38
+app/models/organization.rb
+  s_1e049bdc81f15e::t_394f2170aa123d 179-184
+app/assets/javascripts/utilities/buildCommentHTML.js.erb
+  s_1e049bdc81f15e::t_4df21be4547a6a 17,33-36,64
+spec/services/community_leaders/add_spec.rb
+  s_1e049bdc81f15e::t_aaa00c0951c405 54-61,67,73
+config/locales/views/leadership/fr.yml
+  s_1e049bdc81f15e::t_38b4794810909a 6-8
+app/services/community_leaders/remove.rb
+  s_1e049bdc81f15e::t_b3bdff34c7e9fe 24-30
+app/javascript/articles/__tests__/__snapshots__/Article.test.jsx.snap
+  s_1e049bdc81f15e::t_2643801730c614 130,402
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "54100fe799e00d4dc9401bf0a8217fd0ead4b3d1",
+  "prompts": {},
+  "sessions": {
+    "s_1e049bdc81f15e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23918fc8-b82e-4edd-9ebf-b02c000c31c4",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Paolo Veñegas <pvenegas@gmail.com>"
+    }
+  }
+}

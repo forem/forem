@@ -1,0 +1,31 @@
+spec/models/user_spec.rb
+  s_c992407d8e19e2::t_e860c45ac5167b 74-76,81-99
+  s_c992407d8e19e2::t_c94c230379ad89 100-102
+spec/models/users/notification_setting_spec.rb
+  s_c992407d8e19e2::t_0e2e60cd626ef3 69-70
+  s_c992407d8e19e2::t_23c7989523e5e0 104-161
+  s_c992407d8e19e2::t_ad0cdbb93eee07 44
+app/models/users/notification_setting.rb
+  s_c992407d8e19e2::t_089f2cc19a5bde 8-23
+  s_c992407d8e19e2::t_0e1cce9b7f0e97 52-55,57-58,60-61,63-65
+spec/requests/api/v1/admin/users_spec.rb
+  s_c992407d8e19e2::t_f3b4ad50a73fdd 430-449
+app/models/user.rb
+  s_c992407d8e19e2::t_a99016a9e91225 908-920
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "0c6075aa17becc25b06332af338989651d518b98",
+  "prompts": {},
+  "sessions": {
+    "s_c992407d8e19e2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "01db8475-3606-44d6-9a0b-b15801fa1f0e",
+        "model": "claude-opus-5"
+      },
+      "human_author": null
+    }
+  }
+}
