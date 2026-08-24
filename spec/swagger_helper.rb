@@ -812,6 +812,11 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               badge_id: { type: :integer, format: :int64 },
               rewarding_context_message_markdown: { type: :string, nullable: true },
               include_default_description: { type: :boolean },
+              metadata: {
+                type: :object,
+                description: "Key/value data supplied for context",
+                additionalProperties: true
+              },
               created_at: { type: :string, format: "date-time" },
               updated_at: { type: :string, format: "date-time" }
             },
