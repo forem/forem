@@ -555,5 +555,23 @@ module ApplicationHelper
       subforem_aware_sign_up_url(path)
     end
   end
+
+  def custom_domain_main_app_url(custom_org)
+    return unless custom_org.present?
+
+    path = request.path.to_s
+    query = request.query_string.present? ? "?#{request.query_string}" : ""
+    main_path = if path == "/" || path.blank?
+                  "/#{custom_org.slug}"
+                elsif path.start_with?("/p/")
+                  "/#{custom_org.slug}#{path}"
+                elsif path.start_with?("/#{custom_org.slug}/") || path == "/#{custom_org.slug}"
+                  path
+                else
+                  "/#{custom_org.slug}#{path.start_with?('/') ? path : "/#{path}"}"
+                end
+
+    URL.url("#{main_path}#{query}")
+  end
 end
 
