@@ -6835,43 +6835,53 @@
         }
       },
       "Event": {
-        "description": "Representation of an Event",
+        "description": "Representation of an Event (live streams, community challenges, takeovers, and digital meetups)",
         "type": "object",
         "properties": {
           "id": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "Unique identifier for the event"
           },
           "title": {
-            "type": "string"
+            "type": "string",
+            "description": "Title/headline of the event"
           },
           "event_name_slug": {
-            "type": "string"
+            "type": "string",
+            "description": "URL-friendly grouping identifier for the event series (e.g. `community-stream`)"
           },
           "event_variation_slug": {
-            "type": "string"
+            "type": "string",
+            "description": "URL-friendly unique variation key within the event name slug (e.g. `episode-1`, `2026`)"
           },
           "description": {
             "type": "string",
-            "nullable": true
+            "nullable": true,
+            "description": "Markdown or text overview of the event topics, schedule, and speaker details"
           },
           "primary_stream_url": {
             "type": "string",
-            "nullable": true
+            "nullable": true,
+            "description": "Direct live stream or video URL (YouTube, Twitch, Streamyard)"
           },
           "published": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Whether the event is publicly visible or saved as an internal draft"
           },
           "elevated": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "When true, highlights and pins the event in top-of-page announcement banners"
           },
           "start_time": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "ISO 8601 timestamp for when the event begins"
           },
           "end_time": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "ISO 8601 timestamp for when the event concludes"
           },
           "type_of": {
             "type": "string",
@@ -6880,7 +6890,8 @@
               "takeover",
               "other",
               "challenge"
-            ]
+            ],
+            "description": "Category of the event (`live_stream`, `takeover`, `challenge`, `other`)"
           },
           "broadcast_config": {
             "type": "string",
@@ -6888,52 +6899,63 @@
               "no_broadcast",
               "tagged_broadcast",
               "global_broadcast"
-            ]
+            ],
+            "description": "Billboard broadcast behavior across site feeds during the live window (`no_broadcast`, `tagged_broadcast`, `global_broadcast`)"
           },
           "manual_broadcast_end": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Indicates if active broadcasting was manually terminated before the scheduled end time"
           },
           "user_id": {
             "type": "integer",
             "format": "int64",
-            "nullable": true
+            "nullable": true,
+            "description": "User ID of the creator/host"
           },
           "organization_id": {
             "type": "integer",
             "format": "int64",
-            "nullable": true
+            "nullable": true,
+            "description": "Associated organization ID if hosted on behalf of an organization"
           },
           "cover_image_url": {
             "type": "string",
             "format": "url",
-            "nullable": true
+            "nullable": true,
+            "description": "Full URL to the uploaded cover banner image asset"
           },
           "social_image_url": {
             "type": "string",
             "format": "url",
-            "nullable": true
+            "nullable": true,
+            "description": "Optimized 1200x630 social preview image URL for OpenGraph and social card embeds"
           },
           "bg_color_hex": {
             "type": "string",
-            "nullable": true
+            "nullable": true,
+            "description": "6-digit hex color code used for dynamic themed background gradients and pill tags (e.g. `#3B49DF`)"
           },
           "tags_array": {
             "type": "array",
             "items": {
               "type": "string"
-            }
+            },
+            "description": "Array of associated community tag slugs"
           },
           "data": {
             "type": "object",
-            "nullable": true
+            "nullable": true,
+            "description": "Arbitrary metadata payload storing custom attributes (e.g. `location`, `chat_url`)"
           },
           "created_at": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "Timestamp when the event record was created"
           },
           "updated_at": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "Timestamp when the event record was last modified"
           }
         },
         "required": [
@@ -6956,45 +6978,45 @@
             "properties": {
               "title": {
                 "type": "string",
-                "description": "Title of the event"
+                "description": "Title/headline of the event"
               },
               "event_name_slug": {
                 "type": "string",
-                "description": "URL-friendly event group identifier"
+                "description": "URL-friendly grouping identifier for the event series (e.g. `community-stream`)"
               },
               "event_variation_slug": {
                 "type": "string",
-                "description": "Unique variation identifier within the event name slug"
+                "description": "URL-friendly unique variation key within the event name slug (e.g. `episode-1`, `2026`)"
               },
               "description": {
                 "type": "string",
                 "nullable": true,
-                "description": "Description or markdown overview of the event"
+                "description": "Markdown or text overview of the event topics, schedule, and speaker details"
               },
               "primary_stream_url": {
                 "type": "string",
                 "nullable": true,
-                "description": "Stream URL (YouTube, Twitch, Streamyard)"
+                "description": "Direct live stream URL (supports YouTube live/embeds, Twitch channels, and Streamyard)"
               },
               "published": {
                 "type": "boolean",
                 "default": false,
-                "description": "Whether the event is published and visible to the public"
+                "description": "Whether the event is published and visible to the public or saved as a draft"
               },
               "elevated": {
                 "type": "boolean",
                 "default": false,
-                "description": "Whether the event is pinned/elevated in upcoming banners"
+                "description": "When true, pins and elevates the event in top-of-page announcement banners"
               },
               "start_time": {
                 "type": "string",
                 "format": "date-time",
-                "description": "Start time of the event"
+                "description": "ISO 8601 timestamp for when the event begins"
               },
               "end_time": {
                 "type": "string",
                 "format": "date-time",
-                "description": "End time of the event"
+                "description": "ISO 8601 timestamp for when the event concludes"
               },
               "type_of": {
                 "type": "string",
@@ -7005,7 +7027,7 @@
                   "challenge"
                 ],
                 "default": "live_stream",
-                "description": "Type of event (live_stream, takeover, other, challenge)"
+                "description": "Type of event (`live_stream`, `takeover`, `challenge`, `other`)"
               },
               "broadcast_config": {
                 "type": "string",
@@ -7014,28 +7036,38 @@
                   "tagged_broadcast",
                   "global_broadcast"
                 ],
-                "default": "no_broadcast"
+                "default": "no_broadcast",
+                "description": "Site-wide billboard broadcast behavior during stream"
               },
               "organization_id": {
                 "type": "integer",
-                "nullable": true
+                "nullable": true,
+                "description": "Associated organization ID if hosted on behalf of an organization"
               },
               "tag_list": {
                 "type": "string",
-                "description": "Comma-separated tags"
+                "description": "Comma-separated list of community tags"
+              },
+              "cover_image": {
+                "type": "string",
+                "description": "Direct image asset upload (multipart file) or public image URL"
               },
               "cover_image_url": {
                 "type": "string",
                 "format": "url",
-                "description": "Direct URL to download the event cover image from"
+                "description": "Direct public URL to automatically download and process as the cover image"
+              },
+              "remove_cover_image": {
+                "type": "boolean",
+                "description": "Set to true to remove an existing cover image"
               },
               "bg_color_hex": {
                 "type": "string",
-                "description": "Hex background color code (e.g. #3B49DF)"
+                "description": "6-digit hex color code for dynamic themed styling (e.g. `#3B49DF`)"
               },
               "data": {
                 "type": "object",
-                "description": "Additional metadata payload (e.g. location, chat_url)"
+                "description": "Additional metadata payload (e.g. `location`, custom format tags)"
               }
             },
             "required": [
