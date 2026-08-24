@@ -142,6 +142,99 @@
         }
       }
     },
+    "/api/agent_sessions/presign": {
+      "post": {
+        "summary": "request a presigned S3 upload URL",
+        "tags": [
+          "agent_sessions"
+        ],
+        "description": "Generate a presigned S3 PUT URL to directly upload a raw agent session transcript file before creating the session record.\n\n### S3 Upload Workflow:\n1. Call this endpoint to receive a `presigned_url` and `s3_key`.\n2. Send an HTTP PUT request with the raw session payload directly to the `presigned_url`.\n3. Complete the creation by calling `POST /api/agent_sessions` with the `s3_key` and curated transcript data.",
+        "operationId": "presignAgentSessionUpload",
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "s3_key": {
+                      "type": "string",
+                      "description": "S3 object key under which the session file should be uploaded"
+                    },
+                    "presigned_url": {
+                      "type": "string",
+                      "format": "url",
+                      "description": "Direct S3 presigned PUT URL"
+                    }
+                  },
+                  "required": [
+                    "s3_key",
+                    "presigned_url"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          },
+          "503": {
+            "description": "service unavailable"
+          }
+        }
+      }
+    },
+    "/api/agent_sessions/{id}/raw_url": {
+      "get": {
+        "summary": "retrieve presigned raw transcript download URL",
+        "tags": [
+          "agent_sessions"
+        ],
+        "description": "Retrieve a presigned S3 GET URL to download the original raw transcript file for an agent session.\n\n### Notes:\n- Requires authentication and ownership of the session.\n- Returns 404 if no raw file was uploaded for the session.",
+        "operationId": "getAgentSessionRawUrl",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The unique slug or ID of the agent session.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-session-abc123"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "raw_url": {
+                      "type": "string",
+                      "format": "url",
+                      "description": "Presigned S3 GET URL for downloading the raw transcript"
+                    }
+                  },
+                  "required": [
+                    "raw_url"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          },
+          "404": {
+            "description": "not found"
+          }
+        }
+      }
+    },
     "/api/analytics/totals": {
       "get": {
         "summary": "Retrieve analytics totals",
@@ -2644,6 +2737,178 @@
           },
           "400": {
             "description": "bad request"
+          },
+          "401": {
+            "description": "unauthorized"
+          }
+        }
+      }
+    },
+    "/api/events": {
+      "get": {
+        "summary": "Retrieve all accessible events",
+        "tags": [
+          "events"
+        ],
+        "description": "Retrieve a list of events.\n\n### Events Overview:\n- Events represent community live streams, hackathons/challenges, takeovers, or digital gatherings.\n- Unauthenticated or non-admin requests only return published events ordered chronologically by start time.\n- Administrators can view all events including unpublished drafts.",
+        "responses": {
+          "200": {
+            "description": "A list of events",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Event"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new event",
+        "tags": [
+          "events"
+        ],
+        "description": "Create a new event. Requires administrator privileges.\n\n### Parameter Guidelines:\n- **title**: Heading or name of the event.\n- **event_name_slug**: URL grouping identifier (e.g. `community-stream`).\n- **event_variation_slug**: Variation key under the event name (e.g. `ep-1`, `2026`).\n- **start_time** & **end_time**: ISO 8601 timestamps defining the event timeframe.\n- **type_of**: Event category (`live_stream`, `takeover`, `challenge`, `other`).\n- **cover_image_url**: Direct image URL to automatically download and store as the event cover image.\n- **bg_color_hex**: 6-digit hex code for custom header/badge styling (e.g. `#3B49DF`).\n- **elevated**: Set to `true` to pin and highlight in upcoming events banners.",
+        "parameters": [
+
+        ],
+        "responses": {
+          "201": {
+            "description": "Event created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          },
+          "422": {
+            "description": "unprocessable entity"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventParam"
+              }
+            }
+          },
+          "description": "Event creation payload"
+        }
+      }
+    },
+    "/api/events/{id}": {
+      "get": {
+        "summary": "Retrieve a single event",
+        "tags": [
+          "events"
+        ],
+        "description": "Retrieve details for an event by ID.\n\n### Access Control:\n- Public users can view published events.\n- Viewing unpublished/draft events requires administrator privileges.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Unique event ID",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Event details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "event not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update an existing event",
+        "tags": [
+          "events"
+        ],
+        "description": "Update metadata, schedule, cover image, or styling for an event. Requires administrator privileges.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Unique event ID",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Event updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          },
+          "404": {
+            "description": "event not found"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventParam"
+              }
+            }
+          },
+          "description": "Event update payload"
+        }
+      },
+      "delete": {
+        "summary": "Delete an event",
+        "tags": [
+          "events"
+        ],
+        "description": "Delete an event. Requires administrator privileges.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Unique event ID",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "event deleted"
           },
           "401": {
             "description": "unauthorized"
@@ -6120,6 +6385,11 @@
         "description": "Representation of a page object",
         "type": "object",
         "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The ID of the page"
+          },
           "title": {
             "type": "string",
             "description": "Title of the page"
@@ -6134,7 +6404,12 @@
           },
           "body_markdown": {
             "type": "string",
-            "description": "The text (in markdown) of the ad (required)",
+            "description": "The text (in markdown) of the page (required)",
+            "nullable": true
+          },
+          "body_html": {
+            "type": "string",
+            "description": "Raw HTML body of the page",
             "nullable": true
           },
           "body_json": {
@@ -6142,9 +6417,19 @@
             "description": "For JSON pages, the JSON body",
             "nullable": true
           },
+          "processed_html": {
+            "type": "string",
+            "description": "Rendered HTML content of the page",
+            "nullable": true
+          },
           "is_top_level_path": {
             "type": "boolean",
             "description": "If true, the page is available at '/{slug}' instead of '/page/{slug}', use with caution"
+          },
+          "landing_page": {
+            "type": "boolean",
+            "description": "Whether this page is the landing page",
+            "nullable": true
           },
           "social_image": {
             "type": "object",
@@ -6162,6 +6447,26 @@
             ],
             "default": "contained",
             "description": "Controls what kind of layout the page is rendered in"
+          },
+          "subforem_id": {
+            "type": "integer",
+            "description": "Subforem association ID",
+            "nullable": true
+          },
+          "page_template_id": {
+            "type": "integer",
+            "description": "Page template association ID",
+            "nullable": true
+          },
+          "template_data": {
+            "type": "object",
+            "description": "Template data payload",
+            "nullable": true
+          },
+          "redirect_to_url": {
+            "type": "string",
+            "description": "Optional URL or path to redirect visitors to",
+            "nullable": true
           }
         },
         "required": [
@@ -6251,6 +6556,11 @@
             "type": "string",
             "nullable": true
           },
+          "user_id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The user's unique ID"
+          },
           "website_url": {
             "type": "string",
             "format": "url",
@@ -6281,13 +6591,11 @@
           },
           "profile_image": {
             "description": "Profile image (640x640)",
-            "type": "string",
-            "format": "url"
+            "type": "string"
           },
           "profile_image_90": {
             "description": "Profile image (90x90)",
-            "type": "string",
-            "format": "url"
+            "type": "string"
           }
         }
       },
@@ -6478,6 +6786,20 @@
             "type": "string",
             "format": "date-time"
           },
+          "body_html": {
+            "type": "string",
+            "description": "Rendered HTML content of the comment"
+          },
+          "user": {
+            "$ref": "#/components/schemas/SharedUser"
+          },
+          "children": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Comment"
+            },
+            "description": "Nested replies to the comment"
+          },
           "image_url": {
             "description": "Podcast image url",
             "type": "string",
@@ -6512,6 +6834,220 @@
           }
         }
       },
+      "Event": {
+        "description": "Representation of an Event",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": {
+            "type": "string"
+          },
+          "event_name_slug": {
+            "type": "string"
+          },
+          "event_variation_slug": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "primary_stream_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "published": {
+            "type": "boolean"
+          },
+          "elevated": {
+            "type": "boolean"
+          },
+          "start_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "end_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "type_of": {
+            "type": "string",
+            "enum": [
+              "live_stream",
+              "takeover",
+              "other",
+              "challenge"
+            ]
+          },
+          "broadcast_config": {
+            "type": "string",
+            "enum": [
+              "no_broadcast",
+              "tagged_broadcast",
+              "global_broadcast"
+            ]
+          },
+          "manual_broadcast_end": {
+            "type": "boolean"
+          },
+          "user_id": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "organization_id": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "cover_image_url": {
+            "type": "string",
+            "format": "url",
+            "nullable": true
+          },
+          "social_image_url": {
+            "type": "string",
+            "format": "url",
+            "nullable": true
+          },
+          "bg_color_hex": {
+            "type": "string",
+            "nullable": true
+          },
+          "tags_array": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "data": {
+            "type": "object",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "event_name_slug",
+          "event_variation_slug",
+          "start_time",
+          "end_time",
+          "type_of",
+          "published"
+        ]
+      },
+      "EventParam": {
+        "description": "Representation of an Event to be created or updated",
+        "type": "object",
+        "properties": {
+          "event": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "description": "Title of the event"
+              },
+              "event_name_slug": {
+                "type": "string",
+                "description": "URL-friendly event group identifier"
+              },
+              "event_variation_slug": {
+                "type": "string",
+                "description": "Unique variation identifier within the event name slug"
+              },
+              "description": {
+                "type": "string",
+                "nullable": true,
+                "description": "Description or markdown overview of the event"
+              },
+              "primary_stream_url": {
+                "type": "string",
+                "nullable": true,
+                "description": "Stream URL (YouTube, Twitch, Streamyard)"
+              },
+              "published": {
+                "type": "boolean",
+                "default": false,
+                "description": "Whether the event is published and visible to the public"
+              },
+              "elevated": {
+                "type": "boolean",
+                "default": false,
+                "description": "Whether the event is pinned/elevated in upcoming banners"
+              },
+              "start_time": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Start time of the event"
+              },
+              "end_time": {
+                "type": "string",
+                "format": "date-time",
+                "description": "End time of the event"
+              },
+              "type_of": {
+                "type": "string",
+                "enum": [
+                  "live_stream",
+                  "takeover",
+                  "other",
+                  "challenge"
+                ],
+                "default": "live_stream",
+                "description": "Type of event (live_stream, takeover, other, challenge)"
+              },
+              "broadcast_config": {
+                "type": "string",
+                "enum": [
+                  "no_broadcast",
+                  "tagged_broadcast",
+                  "global_broadcast"
+                ],
+                "default": "no_broadcast"
+              },
+              "organization_id": {
+                "type": "integer",
+                "nullable": true
+              },
+              "tag_list": {
+                "type": "string",
+                "description": "Comma-separated tags"
+              },
+              "cover_image_url": {
+                "type": "string",
+                "format": "url",
+                "description": "Direct URL to download the event cover image from"
+              },
+              "bg_color_hex": {
+                "type": "string",
+                "description": "Hex background color code (e.g. #3B49DF)"
+              },
+              "data": {
+                "type": "object",
+                "description": "Additional metadata payload (e.g. location, chat_url)"
+              }
+            },
+            "required": [
+              "title",
+              "event_name_slug",
+              "event_variation_slug",
+              "start_time",
+              "end_time"
+            ]
+          }
+        }
+      },
       "Billboard": {
         "description": "Billboard, aka Widget, ex. Display Ad",
         "type": "object",
@@ -6527,6 +7063,11 @@
           "body_markdown": {
             "type": "string",
             "description": "The text (in markdown) of the ad (required)"
+          },
+          "minimized_body_markdown": {
+            "type": "string",
+            "description": "Markdown text for minimized sidebar state (used by persistent bottom billboards)",
+            "nullable": true
           },
           "approved": {
             "type": "boolean",
@@ -6575,6 +7116,16 @@
               "digest_second"
             ],
             "description": "Identifies which area of site layout the ad can appear in"
+          },
+          "color": {
+            "type": "string",
+            "description": "Hex color code for styling the billboard",
+            "nullable": true
+          },
+          "prefer_paired_with_billboard_id": {
+            "type": "integer",
+            "description": "Preferred paired billboard ID",
+            "nullable": true
           },
           "tag_list": {
             "type": "string",

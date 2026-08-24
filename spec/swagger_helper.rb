@@ -292,19 +292,27 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
             description: "Representation of a page object",
             type: :object,
             properties: {
+              id: { type: :integer, format: :int64, description: "The ID of the page" },
               title: { type: :string, description: "Title of the page" },
               slug: { type: :string, description: "Used to link to this page in URLs, must be unique and URL-safe" },
               description: { type: :string, description: "For internal use, helps similar pages from one another" },
-              body_markdown: { type: :string, description: "The text (in markdown) of the ad (required)",
+              body_markdown: { type: :string, description: "The text (in markdown) of the page (required)",
                                nullable: true },
+              body_html: { type: :string, description: "Raw HTML body of the page", nullable: true },
               body_json: { type: :string, description: "For JSON pages, the JSON body", nullable: true },
+              processed_html: { type: :string, description: "Rendered HTML content of the page", nullable: true },
               is_top_level_path: { type: :boolean,
                                    description: "If true, the page is available at '/{slug}' instead of '/page/{slug}', use with caution" },
+              landing_page: { type: :boolean, description: "Whether this page is the landing page", nullable: true },
               social_image: { type: :object, nullable: true },
               template: {
                 type: :string, enum: Page::TEMPLATE_OPTIONS, default: "contained",
                 description: "Controls what kind of layout the page is rendered in"
-              }
+              },
+              subforem_id: { type: :integer, description: "Subforem association ID", nullable: true },
+              page_template_id: { type: :integer, description: "Page template association ID", nullable: true },
+              template_data: { type: :object, description: "Template data payload", nullable: true },
+              redirect_to_url: { type: :string, description: "Optional URL or path to redirect visitors to", nullable: true }
             },
             required: %w[title slug description template]
           },
@@ -341,6 +349,7 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               username: { type: :string },
               twitter_username: { type: :string, nullable: true },
               github_username: { type: :string, nullable: true },
+              user_id: { type: :integer, format: :int64, description: "The user's unique ID" },
               website_url: { type: :string, format: :url, nullable: true },
               profile_image: { description: "Profile image (640x640)", type: :string },
               profile_image_90: { description: "Profile image (90x90)", type: :string }
@@ -353,8 +362,8 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               name: { type: :string },
               username: { type: :string },
               slug: { type: :string },
-              profile_image: { description: "Profile image (640x640)", type: :string, format: :url },
-              profile_image_90: { description: "Profile image (90x90)", type: :string, format: :url }
+              profile_image: { description: "Profile image (640x640)", type: :string },
+              profile_image_90: { description: "Profile image (90x90)", type: :string }
             }
           },
           User: {
@@ -433,6 +442,13 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               type_of: { type: :string },
               id_code: { type: :string },
               created_at: { type: :string, format: "date-time" },
+              body_html: { type: :string, description: "Rendered HTML content of the comment" },
+              user: { "$ref": "#/components/schemas/SharedUser" },
+              children: {
+                type: :array,
+                items: { "$ref": "#/components/schemas/Comment" },
+                description: "Nested replies to the comment"
+              },
               image_url: { description: "Podcast image url", type: :string, format: :url },
               ai_disclosure_level: { type: :string, enum: %w[not_disclosed no_ai some_ai fully_autonomous], description: "Level of AI tooling usage disclosure" },
               ai_disclosure_label: { type: :string, description: "Human-readable label of AI disclosure" }
@@ -446,6 +462,63 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               name: { type: :string, nullable: true }
             }
           },
+          Event: {
+            description: "Representation of an Event",
+            type: :object,
+            properties: {
+              id: { type: :integer, format: :int64 },
+              title: { type: :string },
+              event_name_slug: { type: :string },
+              event_variation_slug: { type: :string },
+              description: { type: :string, nullable: true },
+              primary_stream_url: { type: :string, nullable: true },
+              published: { type: :boolean },
+              elevated: { type: :boolean },
+              start_time: { type: :string, format: "date-time" },
+              end_time: { type: :string, format: "date-time" },
+              type_of: { type: :string, enum: Event.type_ofs.keys },
+              broadcast_config: { type: :string, enum: Event.broadcast_configs.keys },
+              manual_broadcast_end: { type: :boolean },
+              user_id: { type: :integer, format: :int64, nullable: true },
+              organization_id: { type: :integer, format: :int64, nullable: true },
+              cover_image_url: { type: :string, format: :url, nullable: true },
+              social_image_url: { type: :string, format: :url, nullable: true },
+              bg_color_hex: { type: :string, nullable: true },
+              tags_array: { type: :array, items: { type: :string } },
+              data: { type: :object, nullable: true },
+              created_at: { type: :string, format: "date-time" },
+              updated_at: { type: :string, format: "date-time" }
+            },
+            required: %w[id title event_name_slug event_variation_slug start_time end_time type_of published]
+          },
+          EventParam: {
+            description: "Representation of an Event to be created or updated",
+            type: :object,
+            properties: {
+              event: {
+                type: :object,
+                properties: {
+                  title: { type: :string, description: "Title of the event" },
+                  event_name_slug: { type: :string, description: "URL-friendly event group identifier" },
+                  event_variation_slug: { type: :string, description: "Unique variation identifier within the event name slug" },
+                  description: { type: :string, nullable: true, description: "Description or markdown overview of the event" },
+                  primary_stream_url: { type: :string, nullable: true, description: "Stream URL (YouTube, Twitch, Streamyard)" },
+                  published: { type: :boolean, default: false, description: "Whether the event is published and visible to the public" },
+                  elevated: { type: :boolean, default: false, description: "Whether the event is pinned/elevated in upcoming banners" },
+                  start_time: { type: :string, format: "date-time", description: "Start time of the event" },
+                  end_time: { type: :string, format: "date-time", description: "End time of the event" },
+                  type_of: { type: :string, enum: Event.type_ofs.keys, default: "live_stream", description: "Type of event (live_stream, takeover, other, challenge)" },
+                  broadcast_config: { type: :string, enum: Event.broadcast_configs.keys, default: "no_broadcast" },
+                  organization_id: { type: :integer, nullable: true },
+                  tag_list: { type: :string, description: "Comma-separated tags" },
+                  cover_image_url: { type: :string, format: :url, description: "Direct URL to download the event cover image from" },
+                  bg_color_hex: { type: :string, description: "Hex background color code (e.g. #3B49DF)" },
+                  data: { type: :object, description: "Additional metadata payload (e.g. location, chat_url)" }
+                },
+                required: %w[title event_name_slug event_variation_slug start_time end_time]
+              }
+            }
+          },
           Billboard: {
             description: "Billboard, aka Widget, ex. Display Ad",
             type: :object,
@@ -453,6 +526,7 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               id: { type: :integer, description: "The ID of the Billboard" },
               name: { type: :string, description: "For internal use, helps distinguish ads from one another" },
               body_markdown: { type: :string, description: "The text (in markdown) of the ad (required)" },
+              minimized_body_markdown: { type: :string, description: "Markdown text for minimized sidebar state (used by persistent bottom billboards)", nullable: true },
               approved: { type: :boolean, description: "Ad must be both published and approved to be in rotation" },
               published: { type: :boolean, description: "Ad must be both published and approved to be in rotation" },
               expires_at: { type: :string, format: :"date-time", nullable: true,
@@ -461,6 +535,8 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               creator_id: { type: :integer, description: "Identifies the user who created the ad.", nullable: true },
               placement_area: { type: :string, enum: Billboard::ALLOWED_PLACEMENT_AREAS,
                                 description: "Identifies which area of site layout the ad can appear in" },
+              color: { type: :string, description: "Hex color code for styling the billboard", nullable: true },
+              prefer_paired_with_billboard_id: { type: :integer, description: "Preferred paired billboard ID", nullable: true },
               tag_list: { type: :string, description: "Tags on which this ad can be displayed (blank is all/any tags)" },
               exclude_article_ids: { type: :string,
                                      nullable: true,
