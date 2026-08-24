@@ -1467,7 +1467,7 @@
         "tags": [
           "badge_achievements"
         ],
-        "description": "Award a badge to a user. Requires administrator privileges.\n\n### Integration Tips:\n- **user_id**: The numeric ID of the user receiving the badge.\n- **badge_id**: The numeric ID of the badge being awarded.\n- **rewarding_context_message_markdown**: Optional personalized message shown in the notification or profile feed to explain why the user was awarded the badge.",
+        "description": "Award a badge to a user. Requires administrator privileges.\n\n### Integration Tips:\n- **user_id**: The numeric ID of the user receiving the badge.\n- **badge_id**: The numeric ID of the badge being awarded.\n- **rewarding_context_message_markdown**: Optional personalized message shown in the notification or profile feed to explain why the user was awarded the badge.\n- **metadata**: Optional key/value data stored with the achievement for context.\n- If the badge cannot be awarded more than once and the user already holds it, the request is rejected with `409 Conflict`, and the conflicting `achievement_id` is included in the response. A `422` is returned for other request errors.",
         "parameters": [
 
         ],
@@ -1481,6 +1481,35 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "achievement_id": {
+                      "type": "integer",
+                      "description": "ID of the conflicting achievement awarding the badge to the user."
+                    }
+                  },
+                  "required": [
+                    "errors",
+                    "achievement_id"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "unprocessable"
           }
         },
         "requestBody": {
@@ -1503,6 +1532,10 @@
                       },
                       "include_default_description": {
                         "type": "boolean"
+                      },
+                      "metadata": {
+                        "type": "object",
+                        "additionalProperties": true
                       }
                     },
                     "required": [
@@ -7606,6 +7639,11 @@
           },
           "include_default_description": {
             "type": "boolean"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Key/value data supplied for context",
+            "additionalProperties": true
           },
           "created_at": {
             "type": "string",
