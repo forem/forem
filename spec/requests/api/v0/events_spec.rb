@@ -9,7 +9,7 @@ RSpec.describe "Api::V0::Events" do
   let!(:user_api_secret) { create(:api_secret, user: user) }
   let!(:user_headers) { { "api-key" => user_api_secret.secret, "content-type" => "application/json" } }
 
-  let!(:published_event) { create(:event, published: true) }
+  let!(:published_event) { create(:event, published: true, bg_color_hex: "#3B49DF", elevated: true) }
   let!(:draft_event) { create(:event, published: false) }
 
   describe "GET /api/events" do
@@ -21,6 +21,8 @@ RSpec.describe "Api::V0::Events" do
         json = response.parsed_body
         expect(json.count).to eq(1)
         expect(json.first["id"]).to eq(published_event.id)
+        expect(json.first["bg_color_hex"]).to eq("#3B49DF")
+        expect(json.first["elevated"]).to be(true)
       end
     end
 
@@ -84,12 +86,14 @@ RSpec.describe "Api::V0::Events" do
     context "when requesting a published event with full_details" do
       let!(:detailed_event) { create(:event, published: true, full_details: "Detailed context notes for agent") }
 
-      it "returns the event including full_details" do
+      it "returns the event including full_details and social_image_url" do
         get "/api/events/#{detailed_event.id}"
         expect(response).to have_http_status(:success)
 
         json = response.parsed_body
+        expect(json["id"]).to eq(detailed_event.id)
         expect(json["full_details"]).to eq("Detailed context notes for agent")
+        expect(json["social_image_url"]).to be_present
       end
     end
 
@@ -123,6 +127,8 @@ RSpec.describe "Api::V0::Events" do
           end_time: 2.days.from_now,
           type_of: "live_stream",
           primary_stream_url: "https://twitch.tv/ThePracticalDev",
+          bg_color_hex: "#0D9488",
+          elevated: true,
           published: false
         }
       }.to_json
@@ -138,13 +144,16 @@ RSpec.describe "Api::V0::Events" do
       expect(response).to have_http_status(:unauthorized)
     end
 
-    it "allows administrators to create events with full_details" do
+    it "allows administrators to create events with full_details and visual configuration" do
       expect do
         post "/api/events", params: valid_params, headers: admin_headers
       end.to change(Event, :count).by(1)
       expect(response).to have_http_status(:created)
       expect(Event.last.full_details).to eq("Exhaustive event details and speaker roster")
-      expect(response.parsed_body["full_details"]).to eq("Exhaustive event details and speaker roster")
+      json = response.parsed_body
+      expect(json["full_details"]).to eq("Exhaustive event details and speaker roster")
+      expect(json["bg_color_hex"]).to eq("#0D9488")
+      expect(json["elevated"]).to be(true)
     end
   end
 
@@ -154,7 +163,8 @@ RSpec.describe "Api::V0::Events" do
       {
         event: {
           title: "Updated Stream Title",
-          full_details: "Updated comprehensive agenda and FAQ dump"
+          full_details: "Updated comprehensive agenda and FAQ dump",
+          bg_color_hex: "#7C3AED"
         }
       }.to_json
     end
@@ -174,7 +184,30 @@ RSpec.describe "Api::V0::Events" do
       expect(response).to have_http_status(:success)
       expect(event.reload.title).to eq("Updated Stream Title")
       expect(event.full_details).to eq("Updated comprehensive agenda and FAQ dump")
+      expect(event.bg_color_hex).to eq("#7C3AED")
       expect(response.parsed_body["full_details"]).to eq("Updated comprehensive agenda and FAQ dump")
+      expect(response.parsed_body["bg_color_hex"]).to eq("#7C3AED")
+    end
+  end
+
+  describe "PUT /api/events/:id" do
+    it "allows administrators to update events" do
+      put "/api/events/#{published_event.id}",
+          params: { event: { title: "Renamed Title", bg_color_hex: "#7C3AED" } }.to_json,
+          headers: admin_headers
+
+      expect(response).to have_http_status(:success)
+      expect(published_event.reload.title).to eq("Renamed Title")
+      expect(published_event.bg_color_hex).to eq("#7C3AED")
+    end
+  end
+
+  describe "DELETE /api/events/:id" do
+    it "allows administrators to delete events" do
+      expect do
+        delete "/api/events/#{draft_event.id}", headers: admin_headers
+      end.to change(Event, :count).by(-1)
+      expect(response).to have_http_status(:no_content)
     end
   end
 end

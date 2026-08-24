@@ -165,6 +165,129 @@ RSpec.describe "api/v1/agent_sessions" do
       end
     end
   end
+  path "/api/agent_sessions/presign" do
+    describe "presign an agent session upload" do
+      post("request a presigned S3 upload URL") do
+        tags "agent_sessions"
+        description(<<~DESCRIBE.strip)
+          Generate a presigned S3 PUT URL to directly upload a raw agent session transcript file before creating the session record.
+
+          ### S3 Upload Workflow:
+          1. Call this endpoint to receive a `presigned_url` and `s3_key`.
+          2. Send an HTTP PUT request with the raw session payload directly to the `presigned_url`.
+          3. Complete the creation by calling `POST /api/agent_sessions` with the `s3_key` and curated transcript data.
+        DESCRIBE
+        operationId "presignAgentSessionUpload"
+        produces "application/json"
+        consumes "application/json"
+
+        response(200, "successful") do
+          let(:"api-key") { api_secret.secret }
+
+          before do
+            allow(AgentSessions::S3Storage).to receive(:enabled?).and_return(true)
+            allow(AgentSessions::S3Storage).to receive(:generate_key).and_return("agent_sessions/#{user.id}/test.jsonl")
+            allow(AgentSessions::S3Storage).to receive(:presigned_put_url).and_return("https://s3.example.com/presigned")
+          end
+
+          schema type: :object,
+                 properties: {
+                   s3_key: { type: :string, description: "S3 object key under which the session file should be uploaded" },
+                   presigned_url: { type: :string, format: :url, description: "Direct S3 presigned PUT URL" }
+                 },
+                 required: %w[s3_key presigned_url]
+          add_examples
+
+          run_test!
+        end
+
+        response "401", "unauthorized" do
+          let(:"api-key") { "invalid" }
+          add_examples
+
+          run_test!
+        end
+
+        response "503", "service unavailable" do
+          let(:"api-key") { api_secret.secret }
+
+          before do
+            allow(AgentSessions::S3Storage).to receive(:enabled?).and_return(false)
+          end
+
+          add_examples
+
+          run_test!
+        end
+      end
+    end
+  end
+
+  path "/api/agent_sessions/{id}/raw_url" do
+    describe "get raw transcript download URL" do
+      get("retrieve presigned raw transcript download URL") do
+        tags "agent_sessions"
+        description(<<~DESCRIBE.strip)
+          Retrieve a presigned S3 GET URL to download the original raw transcript file for an agent session.
+
+          ### Notes:
+          - Requires authentication and ownership of the session.
+          - Returns 404 if no raw file was uploaded for the session.
+        DESCRIBE
+        operationId "getAgentSessionRawUrl"
+        produces "application/json"
+
+        parameter name: :id, in: :path, required: true,
+                  description: "The unique slug or ID of the agent session.",
+                  schema: { type: :string },
+                  example: "my-session-abc123"
+
+        let!(:agent_session) do
+          AgentSession.create!(
+            user: user,
+            title: "My Session with Raw Transcript",
+            tool_name: "claude_code",
+            curated_data: curated_data,
+            s3_key: "agent_sessions/#{user.id}/test.jsonl"
+          )
+        end
+        let(:id) { agent_session.slug }
+
+        response(200, "successful") do
+          let(:"api-key") { api_secret.secret }
+
+          before do
+            allow(AgentSessions::S3Storage).to receive(:enabled?).and_return(true)
+            allow(AgentSessions::S3Storage).to receive(:presigned_get_url).and_return("https://s3.example.com/get")
+          end
+
+          schema type: :object,
+                 properties: {
+                   raw_url: { type: :string, format: :url, description: "Presigned S3 GET URL for downloading the raw transcript" }
+                 },
+                 required: %w[raw_url]
+          add_examples
+
+          run_test!
+        end
+
+        response "401", "unauthorized" do
+          let(:"api-key") { "invalid" }
+          add_examples
+
+          run_test!
+        end
+
+        response "404", "not found" do
+          let(:"api-key") { api_secret.secret }
+          let(:id) { "nonexistent-session" }
+          add_examples
+
+          run_test!
+        end
+      end
+    end
+  end
 end
 
 # rubocop:enable Layout/LineLength
