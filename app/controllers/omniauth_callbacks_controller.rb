@@ -33,7 +33,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         "uri:#{error.try(:error_uri)}",
         "provider:#{request.env['omniauth.strategy'].name}",
         "origin:#{request.env['omniauth.strategy.origin']}",
-        "params:#{request.env['omniauth.params']}",
+        "params_keys:#{request.env['omniauth.params'].keys.join(',')}",
       ],
     )
 
@@ -66,8 +66,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     # confirm_account_switch re-resolves by provider/uid/email and never
     # needs a token, so the session must not become a second credential
     # store while the interstitial waits.
-    staged_payload = request.env["omniauth.auth"].to_hash
-    staged_payload["credentials"] = { "expires" => false }
+    staged_payload = request.env["omniauth.auth"].to_hash.tap do |hash|
+      # Bearer material must not rest in the session while the interstitial
+      # waits, in any environment. Confirm re-resolves by provider/uid/email
+      # and never needs credentials.
+      hash["credentials"] = { "expires" => false }
+    end
 
     session["pending_account_switch"] = {
       "user_id" => target_user.id,
@@ -132,7 +136,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   private
 
   def callback_for(provider)
-    scrub_external_credentials!
     auth_payload = request.env["omniauth.auth"]
     cta_variant = request.env["omniauth.params"]["state"].to_s
   
@@ -221,33 +224,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def redirect_to_failure_page_for(provider)
     redirect_to new_user_registration_url
-  end
-
-  # Local unified stacks (Core acting as the MyMLH stand-in) must not leave
-  # Core bearer material behind in Forem: not on the identity row, not in the
-  # account-switch session staging, and not in error-reporting contexts. The
-  # authentication hash keeps its shape; every credential value is dropped at
-  # callback ingress before anything downstream can persist or log it.
-  # Production (real MyMLH) keeps token persistence for profile prefill.
-  #
-  # Returns the (possibly scrubbed) auth hash so callers can stage a clean
-  # copy of it without re-deriving credentials handling.
-  # Local unified stacks (Core acting as the MyMLH stand-in) must not leave
-  # Core bearer material behind in Forem: not on the identity row, not in the
-  # account-switch session staging, and not in error-reporting contexts. The
-  # authentication hash keeps its shape; every credential value is dropped at
-  # callback ingress before anything downstream can persist or log it.
-  # Production (real MyMLH) keeps token persistence for profile prefill.
-  def scrub_external_credentials!
-    return if ENV["MLH_OAUTH_BASE_URL"].blank? && ENV["MLH_API_BASE_URL"].blank?
-
-    auth = request.env["omniauth.auth"]
-    return unless auth.respond_to?(:[]) && auth["provider"].to_s == "mlh"
-
-    auth["credentials"] = OmniAuth::AuthHash.new(
-      token: "", refresh_token: nil, secret: "", expires: false
-    )
-    request.env["omniauth.auth"] = auth
   end
 
   def user_persisted_and_valid?

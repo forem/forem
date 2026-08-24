@@ -8,6 +8,7 @@ en:
     authentication:
       authenticator:
         not_allowed: Sorry, but the domain for your email address is not allowed. This Forem may have limited signup to only specified email domains or blocked this specific domain from joining.
+        account_not_eligible: Sorry, this account is not eligible to sign in. Please contact the community staff if you believe this is a mistake.
       providers:
         apple:
           name: "%{first} %{last}"
