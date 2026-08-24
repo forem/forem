@@ -9,11 +9,15 @@ HTMLDocument.prototype.ready = new Promise((resolve) => {
 });
 
 function redirectableLocation() {
+  // The MLH auth server's return endpoint is exempt from onboarding
+  // interception. The check is path-based because this pack only ever
+  // inspects relative paths; the route only exists on external hosts.
   return ![
     '/onboarding',
     '/signout_confirm',
     '/privacy',
     '/admin/creator_settings/new',
+    '/web/auth/oauth/forem_returns',
   ].includes(window.location.pathname);
 }
 
