@@ -8,7 +8,7 @@ RSpec.describe "Custom Domain Iframe Auth Redirect", type: :request do
   before do
     allow(Settings::General).to receive(:app_domain).and_return("forem.com")
     FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor.new(organization))
-    MemoryFirstCache.delete("org_custom_domains")
+    MemoryFirstCache.delete("org_custom_domain_id:#{organization.custom_domain}")
   end
 
   describe "rendered auth iframe script on custom domains" do

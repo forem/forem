@@ -8,7 +8,9 @@ module Middlewares
     def call(env)
       request = Rack::Request.new(env)
 
-      domain = request.GET["passed_domain"].presence || request.host
+      raw_domain = request.GET["passed_domain"].presence || request.host
+      parsed_host = URI.parse(raw_domain).host rescue nil
+      domain = parsed_host.presence || raw_domain.gsub(%r{\Ahttps?://}, "").split("/").first&.split(":")&.first.presence || raw_domain
       RequestStore.store[:default_subforem_id]     = Subforem.cached_default_id
       RequestStore.store[:subforem_id]             = Subforem.cached_id_by_domain(domain)
       RequestStore.store[:root_subforem_id]        = Subforem.cached_root_id

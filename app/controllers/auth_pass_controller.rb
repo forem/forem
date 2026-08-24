@@ -106,9 +106,11 @@ class AuthPassController < ApplicationController
                  OrgCustomDomainConstraint.custom_domain_org_for_host(origin_host).present?
 
     if is_allowed
-      scheme = uri&.scheme || "https"
+      scheme = (uri&.scheme || "https").downcase
+      scheme = "https" unless %w[http https].include?(scheme)
+      host = (uri&.host || origin_host).downcase
       port_suffix = uri&.port && ![80, 443].include?(uri.port) ? ":#{uri.port}" : ""
-      normalized_origin = uri&.host ? "#{scheme}://#{uri.host}#{port_suffix}" : "#{scheme}://#{origin_host}"
+      normalized_origin = "#{scheme}://#{host}#{port_suffix}"
       response.headers["Content-Security-Policy"] = "frame-ancestors 'self' #{normalized_origin}"
     end
   end
