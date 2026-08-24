@@ -62,7 +62,18 @@ If you are modifying these agent instructions, you **MUST** replicate your chang
 - **Database Vector Indexes**: We use `pgvector` version `0.8.0+` to support HNSW (Hierarchical Navigable Small World) indexing for high-performance cosine distance queries (`<=>`).
 - **Data Integrity**: Vector columns (like `semantic_embedding`) are expensive to compute. Migrations that roll back or drop these columns must raise `ActiveRecord::IrreversibleMigration` to prevent destructive data loss.
 
-## API Changes & Specification Enforcement
-- **Document All API Changes**: Any time you modify or add any routes, controller actions, or parameters under `/api/*` (such as adding semantic or fuzzy search endpoints), you **MUST** update or create the corresponding RSWAG documentation specs in `spec/requests/api/v1/docs/*_spec.rb` (or matching version).
-- **Regenerate OpenAPI Schema**: After updating the swagger spec files, you **MUST** run the Swagger generation rake task (`bundle exec rake rswag:specs:swaggerize`) to regenerate the `swagger/v1/api_v1.json` file.
-- **Do Not Leave Specs Outdated**: Outdated API specifications cause integration failures for external services, gateway clients, and LLM MCP servers. Always treat specs as part of the core delivery.
+## API Changes, Schema Regeneration & Specification Enforcement
+- **Document All API Changes**: Any time you modify or add routes, controller actions, permitted parameters, or serializers under `/api/*` (such as adding semantic or fuzzy search endpoints, new resource CRUD, or field attributes), you **MUST** update or create the corresponding RSWAG documentation specs in `spec/requests/api/v1/docs/*_spec.rb` and component definitions in `spec/swagger_helper.rb`.
+- **Dual V0/V1 & Route Placement**: Standard REST API resources should reside in `config/routes/api.rb` to be accessible across both `v0` and `v1` namespaces, utilizing shared controller concerns in `app/controllers/concerns/api/` with thin `Api::V0` and `Api::V1` controller wrappers.
+- **Enrich OpenAPI Schema Descriptions**: In `spec/swagger_helper.rb`, provide detailed, context-rich `description` strings for every object schema and property (including parameter formats like 6-digit hex colors, URL formats, and enum constraints) so external SDKs and LLM agents can effectively use the endpoints.
+- **Mandatory Regeneration Step**: After updating swagger spec files or component schemas, you **MUST** execute the Swagger generation task:
+  ```bash
+  bundle exec rake rswag:specs:swaggerize
+  ```
+  Verify the changes with `git diff swagger/v1/api_v1.json`.
+- **Doc & Regression Verification**: Always run the documentation specs and functional request specs to ensure valid contracts:
+  ```bash
+  bin/rspec spec/requests/api/v1/docs
+  bin/rspec spec/requests/api/v0 spec/requests/api/v1
+  ```
+- **Never Leave Specs Outdated**: Outdated API specifications cause integration failures for external services, gateway clients, and LLM MCP servers. Always treat specs and generated OpenAPI JSON as core deliverables.
