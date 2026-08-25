@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_08_21_120000) do
+ActiveRecord::Schema[8.0].define(version: 2026_08_25_100500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -785,6 +785,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_21_120000) do
     t.datetime "end_time", null: false
     t.string "event_name_slug", null: false
     t.string "event_variation_slug", null: false
+    t.text "full_details"
     t.boolean "manual_broadcast_end", default: false, null: false
     t.bigint "organization_id"
     t.bigint "page_id"

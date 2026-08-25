@@ -40,6 +40,16 @@
     </div>
 
     <div class="crayons-field">
+      <%= form.label :full_details, "Full Details (API Only / Agent Context)", class: "crayons-field__label" do %>
+        Full Details (API Only / Agent Context)
+        <p class="crayons-field__description">
+          Please dump <strong>all</strong> comprehensive details, schedule, notes, speaker bios, submission guidelines, rules, FAQs, and background context here. This field is exposed exclusively in the API for AI agents and integrations, and will <strong>not</strong> be displayed on the public event page.
+        </p>
+      <% end %>
+      <%= form.text_area :full_details, class: "crayons-textfield", rows: 8, placeholder: "Provide comprehensive event details, full schedule, rules, speaker bios, FAQs, and agent context..." %>
+    </div>
+
+    <div class="crayons-field">
       <%= form.label :cover_image, "Cover Image", class: "crayons-field__label" do %>
         Cover Image
         <p class="crayons-field__description">Upload a cover image for this event. It will be used for social preview cards (og:image) and the events landing page.</p>

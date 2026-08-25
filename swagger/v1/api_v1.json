@@ -7947,6 +7947,11 @@
             "type": "string",
             "nullable": true
           },
+          "full_details": {
+            "type": "string",
+            "nullable": true,
+            "description": "Full text dump of all event details, intended for agent and API consumption."
+          },
           "type_of": {
             "type": "string",
             "enum": [
@@ -8058,6 +8063,11 @@
               "description": {
                 "type": "string",
                 "nullable": true
+              },
+              "full_details": {
+                "type": "string",
+                "nullable": true,
+                "description": "Full text dump of all event details."
               },
               "primary_stream_url": {
                 "type": "string",

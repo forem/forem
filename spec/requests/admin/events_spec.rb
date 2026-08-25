@@ -72,13 +72,16 @@ RSpec.describe "Admin::Events" do
 
         get admin_event_path(event)
         expect(response).to have_http_status(:success)
-        expect(response.body).to include(event.title)
-        expect(response.body).to include("Alice Smith")
-        expect(response.body).to include("@alicesmith")
-        expect(response.body).to include("Bob Jones")
-        expect(response.body).to include("@bobjones")
-        expect(response.body).to include("1 Day Before")
-        expect(response.body).to include("1 Hour Before")
+        expect(response.body).to include(event.title, "Alice Smith", "@alicesmith", "Bob Jones", "@bobjones")
+        expect(response.body).to include("1 Day Before", "1 Hour Before")
+      end
+
+      it "renders full_details when present on the event" do
+        event.update!(full_details: "Detailed breakdown of agenda, speakers, and schedule")
+
+        get admin_event_path(event)
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include("Detailed breakdown of agenda, speakers, and schedule")
       end
 
       it "renders the show template with fallback message when there are no signups" do
@@ -165,6 +168,17 @@ RSpec.describe "Admin::Events" do
       end
     end
 
+    context "with full_details config" do
+      let(:attributes_with_details) do
+        valid_attributes.merge(full_details: "Comprehensive agenda and agent context notes")
+      end
+
+      it "permits and sets the full_details attribute" do
+        post admin_events_path, params: { event: attributes_with_details }
+        expect(Event.last.full_details).to eq("Comprehensive agenda and agent context notes")
+      end
+    end
+
     context "with bg_color_hex" do
       let(:attributes_with_hex) { valid_attributes.merge(bg_color_hex: "#7C3AED") }
 
@@ -181,16 +195,22 @@ RSpec.describe "Admin::Events" do
     context "when logged in as an admin" do
       before { login_as(super_admin) }
 
-      it "updates the event title, cover image, and bg_color_hex" do
+      it "updates the event title, cover image, bg_color_hex, and full_details" do
         image_file = fixture_file_upload(Rails.root.join("spec/fixtures/files/800x600.png"), "image/png")
         patch admin_event_path(event), params: {
-          event: { title: "Updated Event Title", cover_image: image_file, bg_color_hex: "#0D9488" }
+          event: {
+            title: "Updated Event Title",
+            cover_image: image_file,
+            bg_color_hex: "#0D9488",
+            full_details: "Updated comprehensive agenda details"
+          }
         }
 
         expect(response).to redirect_to(admin_events_path)
         expect(event.reload.title).to eq("Updated Event Title")
         expect(event.cover_image).to be_present
         expect(event.bg_color_hex).to eq("#0D9488")
+        expect(event.full_details).to eq("Updated comprehensive agenda details")
       end
 
       it "removes the cover image when remove_cover_image is submitted" do
@@ -236,6 +256,7 @@ RSpec.describe "Admin::Events" do
 
       it "pre-fills the form with attributes from the original event when fork_from_id is passed" do
         original_event = create(:event, title: "Original Event Title", description: "Original Description",
+                                        full_details: "Original Full Details Dump",
                                         tag_list: %w[ruby rails])
 
         get new_admin_event_path(fork_from_id: original_event.id)
@@ -243,6 +264,7 @@ RSpec.describe "Admin::Events" do
         expect(response).to have_http_status(:success)
         expect(response.body).to include("Original Event Title")
         expect(response.body).to include("Original Description")
+        expect(response.body).to include("Original Full Details Dump")
         expect(response.body).to include("ruby, rails")
       end
     end
