@@ -81,10 +81,15 @@ RSpec.describe "Api::V0::Events" do
   end
 
   describe "GET /api/events/:id" do
-    context "when requesting a published event" do
-      it "returns the event" do
-        get "/api/events/#{published_event.id}"
+    context "when requesting a published event with full_details" do
+      let!(:detailed_event) { create(:event, published: true, full_details: "Detailed context notes for agent") }
+
+      it "returns the event including full_details" do
+        get "/api/events/#{detailed_event.id}"
         expect(response).to have_http_status(:success)
+
+        json = response.parsed_body
+        expect(json["full_details"]).to eq("Detailed context notes for agent")
       end
     end
 
@@ -113,6 +118,7 @@ RSpec.describe "Api::V0::Events" do
           title: "New Stream",
           event_name_slug: "new-stream",
           event_variation_slug: "v1",
+          full_details: "Exhaustive event details and speaker roster",
           start_time: 1.day.from_now,
           end_time: 2.days.from_now,
           type_of: "live_stream",
@@ -132,11 +138,43 @@ RSpec.describe "Api::V0::Events" do
       expect(response).to have_http_status(:unauthorized)
     end
 
-    it "allows administrators to create events" do
+    it "allows administrators to create events with full_details" do
       expect do
         post "/api/events", params: valid_params, headers: admin_headers
       end.to change(Event, :count).by(1)
       expect(response).to have_http_status(:created)
+      expect(Event.last.full_details).to eq("Exhaustive event details and speaker roster")
+      expect(response.parsed_body["full_details"]).to eq("Exhaustive event details and speaker roster")
+    end
+  end
+
+  describe "PATCH /api/events/:id" do
+    let(:event) { create(:event, published: true) }
+    let(:update_params) do
+      {
+        event: {
+          title: "Updated Stream Title",
+          full_details: "Updated comprehensive agenda and FAQ dump"
+        }
+      }.to_json
+    end
+
+    it "blocks unauthenticated requests" do
+      patch "/api/events/#{event.id}", params: update_params, headers: { "content-type" => "application/json" }
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "blocks basic users" do
+      patch "/api/events/#{event.id}", params: update_params, headers: user_headers
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "allows administrators to update events with full_details" do
+      patch "/api/events/#{event.id}", params: update_params, headers: admin_headers
+      expect(response).to have_http_status(:success)
+      expect(event.reload.title).to eq("Updated Stream Title")
+      expect(event.full_details).to eq("Updated comprehensive agenda and FAQ dump")
+      expect(response.parsed_body["full_details"]).to eq("Updated comprehensive agenda and FAQ dump")
     end
   end
 end
