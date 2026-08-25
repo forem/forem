@@ -28,6 +28,45 @@ RSpec.describe Emails::BatchCustomSendWorker, type: :worker do
       end
     end
 
+    # The cutover guard above is global, but the flag rolls out per actor: the
+    # enabled cohort already gets the broadcast from Customer.io, so sending it
+    # from here too would double-send to exactly those people.
+    context "when some recipients have the Customer.io delivery flag enabled" do
+      before do
+        allow(ForemInstance).to receive(:customerio_enabled?).and_return(true)
+        allow(FeatureFlag).to receive(:enabled_for_user?)
+          .with(Deliverable::CUSTOMERIO_FLAG, anything).and_return(false)
+        allow(FeatureFlag).to receive(:enabled_for_user?)
+          .with(Deliverable::CUSTOMERIO_FLAG, having_attributes(id: user.id)).and_return(true)
+      end
+
+      it "skips them and still sends to everyone else" do
+        worker.perform(user_ids, subject_line, content, type_of, email_id)
+
+        expect(CustomMailer).to have_received(:with).once
+        expect(CustomMailer).to have_received(:with).with(hash_including(user: user2))
+      end
+
+      it "still sends test emails so admins can preview during the rollout" do
+        worker.perform(user_ids, "[TEST] Subject", content, type_of, email_id)
+
+        expect(CustomMailer).to have_received(:with).twice
+      end
+    end
+
+    context "when Customer.io is not configured" do
+      before { allow(ForemInstance).to receive(:customerio_enabled?).and_return(false) }
+
+      it "does not consult the flag at all" do
+        allow(FeatureFlag).to receive(:enabled_for_user?)
+
+        worker.perform(user_ids, subject_line, content, type_of, email_id)
+
+        expect(FeatureFlag).not_to have_received(:enabled_for_user?)
+        expect(CustomMailer).to have_received(:with).twice
+      end
+    end
+
     context "when testing the async call" do
       it "queues the job with the correct arguments regardless of user ID order" do
         # Stub the class method perform_async
