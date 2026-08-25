@@ -167,6 +167,12 @@ RSpec.describe "/admin/member_manager/users" do
       expect(response.body).to include("Previous emails")
     end
 
+    it "displays password management in the 'Security' tab" do
+      get "#{admin_user_path(user.id)}?tab=security"
+      expect(response.body).to include("Password access")
+      expect(response.body).to include("Send password reset email")
+    end
+
     it "displays a user's current flags in the 'Flags' tab" do
       get "#{admin_user_path(user.id)}?tab=flags"
       expect(response.body).to include("Flags received")
@@ -943,6 +949,37 @@ RSpec.describe "/admin/member_manager/users" do
         expect(log.data["action"]).to eq("remove_identity")
         expect(log.data["target_user_id"]).to eq(identity_user.id)
         expect(log.data["provider"]).to eq(identity.provider)
+      end
+    end
+
+    describe "PATCH /admin/member_manager/users/:id/update_password" do
+      it "creates an audit log record without logging sensitive password parameters" do
+        expect do
+          patch update_password_admin_user_path(user.id), params: {
+            user: { password: "new-password-123", password_confirmation: "new-password-123" }
+          }
+        end.to change(AuditLog, :count).by(1)
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
+        expect(log.user_id).to eq(admin.id)
+        expect(log.data["action"]).to eq("update_password")
+        expect(log.data["target_user_id"]).to eq(user.id)
+        expect(log.data.to_s).not_to include("new-password-123")
+      end
+    end
+
+    describe "POST /admin/member_manager/users/:id/send_password_reset" do
+      it "creates an audit log record" do
+        expect do
+          post send_password_reset_admin_user_path(user.id)
+        end.to change(AuditLog, :count).by(1)
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
+        expect(log.user_id).to eq(admin.id)
+        expect(log.data["action"]).to eq("send_password_reset")
+        expect(log.data["target_user_id"]).to eq(user.id)
       end
     end
   end

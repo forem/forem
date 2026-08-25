@@ -46,6 +46,12 @@
       <%= render "admin/users/show/emails/index" %>
     </div>
   </section>
+<% elsif @current_tab == "security" %>
+  <section class="flex flex-col m:flex-row gap-4">
+    <div class="crayons-card p-3 s:p-4 m:p-7 flex-1">
+      <%= render "admin/users/show/security/password" %>
+    </div>
+  </section>
 <% elsif @current_tab == "reports" %>
   <section class="crayons-card p-3 s:p-4 m:p-7">
     <%= render "admin/users/show/reports/index" %>
