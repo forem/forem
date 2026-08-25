@@ -1,0 +1,22 @@
+app/services/articles/page_view_updater.rb
+  s_dc31a68aee381c::t_aaac0c89e4ef1f 32-35,40-65,67-70
+  s_dc31a68aee381c::t_baf09e13ef4f3a 66
+spec/services/articles/page_view_updater_spec.rb
+  s_dc31a68aee381c::t_3db873f0dc1fa7 63-121
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "f354c376a7c5d1330dc40d66f150be8d1289020d",
+  "prompts": {},
+  "sessions": {
+    "s_dc31a68aee381c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e621140a-f1c7-49b8-bcfe-5691a24d4768",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,34 @@
+app/controllers/api/v0/events_controller.rb
+  h_f968154a99632d 4
+app/controllers/api/v1/events_controller.rb
+  h_f968154a99632d 1-7
+app/controllers/concerns/api/events_controller.rb
+  h_f968154a99632d 1-98
+app/models/event.rb
+  h_f968154a99632d 97-104
+config/routes/api.rb
+  h_f968154a99632d 3
+spec/requests/api/v0/events_spec.rb
+  h_f968154a99632d 12,20,24-25,51-53,86-87,103,108-131
+spec/requests/api/v1/docs/agent_sessions_spec.rb
+  h_f968154a99632d 163-285
+spec/requests/api/v1/docs/events_spec.rb
+  h_f968154a99632d 1-229
+spec/requests/api/v1/events_spec.rb
+  h_f968154a99632d 1-102
+spec/swagger_helper.rb
+  h_f968154a99632d 295,299,301,303,306,311-315,352,365-366,445-451,465-521,529,538-539
+swagger/v1/api_v1.json
+  h_f968154a99632d 145-237,2747-2918,6388-6392,6407-6412,6420-6424,6429-6433,6450-6469,6559-6563,6594,6598,6789-6802,6837-7050,7067-7071,7120-7129
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "df8803b31e7a49573c93d2ed0fd40f89010e49d5",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
