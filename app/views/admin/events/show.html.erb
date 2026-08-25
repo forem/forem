@@ -85,6 +85,17 @@
     </ul>
   </div>
 
+  <div class="mb-8">
+    <h2 class="text-xl font-bold mb-4">Full Details (API Only / Agent Context)</h2>
+    <% if @event.full_details.present? %>
+      <div class="p-4 bg-base-10 rounded border border-base-20" style="white-space: pre-wrap; font-family: monospace; font-size: var(--fs-s); line-height: 1.6; max-height: 400px; overflow-y: auto;">
+        <%= @event.full_details %>
+      </div>
+    <% else %>
+      <p class="color-base-60 italic">No full details dump provided yet.</p>
+    <% end %>
+  </div>
+
   <hr class="my-8" />
 
   <div class="flex items-center justify-between mb-6">

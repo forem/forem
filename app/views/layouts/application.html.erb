@@ -225,7 +225,7 @@
     <div id="cookie-consent"></div>
   <% end %>
   <%= render "articles/reaction_category_resources" %>
-  <% if RequestStore.store[:subforem_id].present? %>
+  <% if RequestStore.store[:subforem_id].present? || request.env["forem.custom_domain_org"].present? %>
     <%= render "layouts/bottom_scripts"  %>
   <% end %>
   <%= Settings::UserExperience.bottom_of_body_content.html_safe %>

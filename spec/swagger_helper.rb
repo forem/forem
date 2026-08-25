@@ -812,6 +812,11 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               badge_id: { type: :integer, format: :int64 },
               rewarding_context_message_markdown: { type: :string, nullable: true },
               include_default_description: { type: :boolean },
+              metadata: {
+                type: :object,
+                description: "Key/value data supplied for context",
+                additionalProperties: true
+              },
               created_at: { type: :string, format: "date-time" },
               updated_at: { type: :string, format: "date-time" }
             },
@@ -848,6 +853,61 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               cover_image_url: { type: :string }
             },
             required: %w[id domain root name description logo_image_url cover_image_url]
+          },
+          Event: {
+            description: "Representation of an event",
+            type: :object,
+            properties: {
+              id: { type: :integer, format: :int64 },
+              title: { type: :string },
+              event_name_slug: { type: :string },
+              event_variation_slug: { type: :string },
+              description: { type: :string, nullable: true },
+              full_details: { type: :string, nullable: true, description: "Full text dump of all event details, intended for agent and API consumption." },
+              type_of: { type: :string, enum: %w[live_stream takeover other challenge] },
+              start_time: { type: :string, format: "date-time" },
+              end_time: { type: :string, format: "date-time" },
+              published: { type: :boolean },
+              primary_stream_url: { type: :string, nullable: true },
+              bg_color_hex: { type: :string, nullable: true },
+              broadcast_config: { type: :string, enum: %w[no_broadcast tagged_broadcast global_broadcast] },
+              broadcast_ended_at: { type: :string, format: "date-time", nullable: true },
+              user_id: { type: :integer, format: :int64, nullable: true },
+              organization_id: { type: :integer, format: :int64, nullable: true },
+              page_id: { type: :integer, format: :int64, nullable: true },
+              data: { type: :object, nullable: true },
+              tags_array: { type: :array, items: { type: :string } },
+              cached_tag_list: { type: :string, nullable: true },
+              created_at: { type: :string, format: "date-time" },
+              updated_at: { type: :string, format: "date-time" }
+            },
+            required: %w[id title event_name_slug event_variation_slug type_of start_time end_time published created_at updated_at]
+          },
+          EventInput: {
+            description: "Representation of an Event to be created/updated",
+            type: :object,
+            properties: {
+              event: {
+                type: :object,
+                properties: {
+                  title: { type: :string },
+                  event_name_slug: { type: :string },
+                  event_variation_slug: { type: :string },
+                  description: { type: :string, nullable: true },
+                  full_details: { type: :string, nullable: true, description: "Full text dump of all event details." },
+                  primary_stream_url: { type: :string, nullable: true },
+                  published: { type: :boolean, default: false },
+                  start_time: { type: :string, format: "date-time" },
+                  end_time: { type: :string, format: "date-time" },
+                  type_of: { type: :string, enum: %w[live_stream takeover other challenge] },
+                  organization_id: { type: :integer, nullable: true },
+                  tag_list: { type: :string, nullable: true },
+                  data: { type: :object, nullable: true }
+                },
+                required: %w[title event_name_slug event_variation_slug start_time end_time]
+              }
+            },
+            required: %w[event]
           }
         }
       }

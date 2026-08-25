@@ -8,7 +8,9 @@ module Middlewares
     def call(env)
       request = Rack::Request.new(env)
 
-      domain = request.GET["passed_domain"].presence || request.host
+      raw_domain = request.GET["passed_domain"].presence || request.host
+      parsed_host = URI.parse(raw_domain).host rescue nil
+      domain = parsed_host.presence || raw_domain.gsub(%r{\Ahttps?://}, "").split("/").first&.split(":")&.first.presence || raw_domain
       RequestStore.store[:default_subforem_id]     = Subforem.cached_default_id
       RequestStore.store[:subforem_id]             = Subforem.cached_id_by_domain(domain)
       RequestStore.store[:root_subforem_id]        = Subforem.cached_root_id
@@ -49,9 +51,11 @@ module Middlewares
 
         # Set Content-Security-Policy header to allow embedding in iframes for all subforems
         headers.delete("X-Frame-Options")
-        allowed_domains = Subforem.cached_all_domains + [Settings::General.app_domain]
-        csp_value = "frame-ancestors " + allowed_domains.map { |d| "https://#{d}" }.join(" ")
-        headers["Content-Security-Policy"] = csp_value
+        unless headers["Content-Security-Policy"]&.include?("frame-ancestors")
+          allowed_domains = (Subforem.cached_all_domains + [Settings::General.app_domain]).compact.uniq
+          csp_value = "frame-ancestors " + allowed_domains.map { |d| "https://#{d}" }.join(" ")
+          headers["Content-Security-Policy"] = csp_value
+        end
 
       rescue PublicSuffix::DomainInvalid
         Rails.logger.error("Invalid domain: #{request.host}")

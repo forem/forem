@@ -1467,7 +1467,7 @@
         "tags": [
           "badge_achievements"
         ],
-        "description": "Award a badge to a user. Requires administrator privileges.\n\n### Integration Tips:\n- **user_id**: The numeric ID of the user receiving the badge.\n- **badge_id**: The numeric ID of the badge being awarded.\n- **rewarding_context_message_markdown**: Optional personalized message shown in the notification or profile feed to explain why the user was awarded the badge.",
+        "description": "Award a badge to a user. Requires administrator privileges.\n\n### Integration Tips:\n- **user_id**: The numeric ID of the user receiving the badge.\n- **badge_id**: The numeric ID of the badge being awarded.\n- **rewarding_context_message_markdown**: Optional personalized message shown in the notification or profile feed to explain why the user was awarded the badge.\n- **metadata**: Optional key/value data stored with the achievement for context.\n- If the badge cannot be awarded more than once and the user already holds it, the request is rejected with `409 Conflict`, and the conflicting `achievement_id` is included in the response. A `422` is returned for other request errors.",
         "parameters": [
 
         ],
@@ -1481,6 +1481,35 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "achievement_id": {
+                      "type": "integer",
+                      "description": "ID of the conflicting achievement awarding the badge to the user."
+                    }
+                  },
+                  "required": [
+                    "errors",
+                    "achievement_id"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "unprocessable"
           }
         },
         "requestBody": {
@@ -1503,6 +1532,10 @@
                       },
                       "include_default_description": {
                         "type": "boolean"
+                      },
+                      "metadata": {
+                        "type": "object",
+                        "additionalProperties": true
                       }
                     },
                     "required": [
@@ -2647,6 +2680,185 @@
           },
           "401": {
             "description": "unauthorized"
+          }
+        }
+      }
+    },
+    "/api/events": {
+      "get": {
+        "summary": "Retrieve events",
+        "tags": [
+          "events"
+        ],
+        "security": [
+
+        ],
+        "description": "Retrieve a list of events on the platform.\n\n### Query Parameters:\n- **type_of**: Filter events by their type (`live_stream`, `takeover`, `other`, `challenge`).",
+        "operationId": "getEvents",
+        "parameters": [
+          {
+            "name": "type_of",
+            "in": "query",
+            "required": false,
+            "description": "Filter events by type.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "live_stream",
+                "takeover",
+                "other",
+                "challenge"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of events",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Event"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create an event",
+        "tags": [
+          "events"
+        ],
+        "description": "Create a new event. Requires administrator privileges.",
+        "operationId": "createEvent",
+        "parameters": [
+
+        ],
+        "responses": {
+          "201": {
+            "description": "Event created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventInput"
+              }
+            }
+          },
+          "description": "Event parameters to create."
+        }
+      }
+    },
+    "/api/events/{id}": {
+      "get": {
+        "summary": "Retrieve an event",
+        "tags": [
+          "events"
+        ],
+        "security": [
+
+        ],
+        "description": "Retrieve a single event by ID.",
+        "operationId": "getEventById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the event.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The requested event",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update an event",
+        "tags": [
+          "events"
+        ],
+        "description": "Update an existing event. Requires administrator privileges.",
+        "operationId": "updateEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the event to update.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Event updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventInput"
+              }
+            }
+          },
+          "description": "Event parameters to update."
+        }
+      },
+      "delete": {
+        "summary": "Delete an event",
+        "tags": [
+          "events"
+        ],
+        "description": "Delete an event. Requires administrator privileges.",
+        "operationId": "deleteEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the event to delete.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Event deleted"
           }
         }
       }
@@ -7607,6 +7819,11 @@
           "include_default_description": {
             "type": "boolean"
           },
+          "metadata": {
+            "type": "object",
+            "description": "Key/value data supplied for context",
+            "additionalProperties": true
+          },
           "created_at": {
             "type": "string",
             "format": "date-time"
@@ -7707,6 +7924,200 @@
           "description",
           "logo_image_url",
           "cover_image_url"
+        ]
+      },
+      "Event": {
+        "description": "Representation of an event",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": {
+            "type": "string"
+          },
+          "event_name_slug": {
+            "type": "string"
+          },
+          "event_variation_slug": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "full_details": {
+            "type": "string",
+            "nullable": true,
+            "description": "Full text dump of all event details, intended for agent and API consumption."
+          },
+          "type_of": {
+            "type": "string",
+            "enum": [
+              "live_stream",
+              "takeover",
+              "other",
+              "challenge"
+            ]
+          },
+          "start_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "end_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "published": {
+            "type": "boolean"
+          },
+          "primary_stream_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "bg_color_hex": {
+            "type": "string",
+            "nullable": true
+          },
+          "broadcast_config": {
+            "type": "string",
+            "enum": [
+              "no_broadcast",
+              "tagged_broadcast",
+              "global_broadcast"
+            ]
+          },
+          "broadcast_ended_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "user_id": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "organization_id": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "page_id": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "data": {
+            "type": "object",
+            "nullable": true
+          },
+          "tags_array": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "cached_tag_list": {
+            "type": "string",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "event_name_slug",
+          "event_variation_slug",
+          "type_of",
+          "start_time",
+          "end_time",
+          "published",
+          "created_at",
+          "updated_at"
+        ]
+      },
+      "EventInput": {
+        "description": "Representation of an Event to be created/updated",
+        "type": "object",
+        "properties": {
+          "event": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "event_name_slug": {
+                "type": "string"
+              },
+              "event_variation_slug": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string",
+                "nullable": true
+              },
+              "full_details": {
+                "type": "string",
+                "nullable": true,
+                "description": "Full text dump of all event details."
+              },
+              "primary_stream_url": {
+                "type": "string",
+                "nullable": true
+              },
+              "published": {
+                "type": "boolean",
+                "default": false
+              },
+              "start_time": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "end_time": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "type_of": {
+                "type": "string",
+                "enum": [
+                  "live_stream",
+                  "takeover",
+                  "other",
+                  "challenge"
+                ]
+              },
+              "organization_id": {
+                "type": "integer",
+                "nullable": true
+              },
+              "tag_list": {
+                "type": "string",
+                "nullable": true
+              },
+              "data": {
+                "type": "object",
+                "nullable": true
+              }
+            },
+            "required": [
+              "title",
+              "event_name_slug",
+              "event_variation_slug",
+              "start_time",
+              "end_time"
+            ]
+          }
+        },
+        "required": [
+          "event"
         ]
       }
     }
