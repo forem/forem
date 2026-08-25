@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V0::Events", type: :request do
+RSpec.describe "Api::V0::Events" do
   let!(:admin) { create(:user).tap { |u| u.add_role(:super_admin) } }
   let!(:admin_api_secret) { create(:api_secret, user: admin) }
   let!(:admin_headers) { { "api-key" => admin_api_secret.secret, "content-type" => "application/json" } }
@@ -17,8 +17,8 @@ RSpec.describe "Api::V0::Events", type: :request do
       it "returns only published events" do
         get "/api/events"
         expect(response).to have_http_status(:success)
-        
-        json = JSON.parse(response.body)
+
+        json = response.parsed_body
         expect(json.count).to eq(1)
         expect(json.first["id"]).to eq(published_event.id)
       end
@@ -27,7 +27,7 @@ RSpec.describe "Api::V0::Events", type: :request do
     context "when authenticated as basic user" do
       it "returns only published events" do
         get "/api/events", headers: user_headers
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json.count).to eq(1)
       end
     end
@@ -35,8 +35,47 @@ RSpec.describe "Api::V0::Events", type: :request do
     context "when authenticated as an administrator" do
       it "returns all events including drafts" do
         get "/api/events", headers: admin_headers
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json.count).to eq(2)
+      end
+    end
+
+    context "when filtering by type_of" do
+      let!(:challenge_event) { create(:event, published: true, type_of: :challenge) }
+      let!(:draft_challenge_event) { create(:event, published: false, type_of: :challenge) }
+      let!(:stream_event) { create(:event, published: true, type_of: :live_stream) }
+
+      it "returns only events matching the requested type_of when unauthenticated" do
+        get "/api/events", params: { type_of: "challenge" }
+        expect(response).to have_http_status(:success)
+
+        json = response.parsed_body
+        expect(json.pluck("id")).to contain_exactly(challenge_event.id)
+      end
+
+      it "returns only events matching the requested type_of for basic users" do
+        get "/api/events", params: { type_of: "live_stream" }, headers: user_headers
+        expect(response).to have_http_status(:success)
+
+        json = response.parsed_body
+        expect(json.pluck("id")).to include(stream_event.id)
+        expect(json.pluck("id")).not_to include(challenge_event.id)
+      end
+
+      it "returns matching events including drafts for administrators" do
+        get "/api/events", params: { type_of: "challenge" }, headers: admin_headers
+        expect(response).to have_http_status(:success)
+
+        json = response.parsed_body
+        expect(json.pluck("id")).to contain_exactly(challenge_event.id, draft_challenge_event.id)
+      end
+
+      it "ignores invalid type_of values" do
+        get "/api/events", params: { type_of: "nonexistent_type" }
+        expect(response).to have_http_status(:success)
+
+        json = response.parsed_body
+        expect(json.pluck("id")).to include(published_event.id, challenge_event.id, stream_event.id)
       end
     end
   end
@@ -94,9 +133,9 @@ RSpec.describe "Api::V0::Events", type: :request do
     end
 
     it "allows administrators to create events" do
-      expect {
+      expect do
         post "/api/events", params: valid_params, headers: admin_headers
-      }.to change(Event, :count).by(1)
+      end.to change(Event, :count).by(1)
       expect(response).to have_http_status(:created)
     end
   end
