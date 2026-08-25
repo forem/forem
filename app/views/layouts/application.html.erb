@@ -30,6 +30,7 @@
       <% else %>
         <meta name="search-script" content="<%= asset_path 'Search.js' %>">
       <% end %>
+      <meta name="mermaid-script" content="<%= asset_path 'mermaidRenderer.js' %>">
       <% if Settings::UserExperience.show_mobile_app_banner %>
         <%= javascript_include_tag "runtimeBanner", defer: true %>
       <% end %>
