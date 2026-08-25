@@ -1,0 +1,20 @@
+app/controllers/auth_pass_controller.rb
+  h_f968154a99632d 109-111,113
+app/lib/middlewares/set_subforem.rb
+  h_f968154a99632d 11-13
+spec/lib/middlewares/set_subforem_spec.rb
+  h_f968154a99632d 117-123
+spec/requests/custom_domain_auth_redirect_spec.rb
+  h_f968154a99632d 11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "f9c0100ffdc761c087ed0ec607607bb978fa002b",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
