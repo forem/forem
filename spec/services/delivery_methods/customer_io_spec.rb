@@ -39,6 +39,19 @@ RSpec.describe DeliveryMethods::CustomerIo do
     expect(message[:message_data]).to eq("name" => "Sloan")
   end
 
+  # The App API treats a from in the request as an override of the sender
+  # identity configured on the transactional message, so sending the Rails-side
+  # default would make every template send from ForemInstance.from_email_address.
+  it "omits the from when a transactional_message_id is present so the template's sender is used" do
+    message = delivered_message(transactional_message_id: "dev_test_template")
+    expect(message).not_to have_key(:from)
+  end
+
+  it "still lets a mailer override the sender explicitly through the delivery options" do
+    message = delivered_message(transactional_message_id: "dev_test_template", from: "custom@dev.to")
+    expect(message[:from]).to eq("custom@dev.to")
+  end
+
   it "forwards the one-click unsubscribe headers so RFC 8058 survives the Customer.io render" do
     mail["List-Unsubscribe"] = "<https://dev.to/email_subscriptions/unsubscribe?ut=token>"
     mail["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"

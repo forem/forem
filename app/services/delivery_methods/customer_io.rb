@@ -33,9 +33,14 @@ module DeliveryMethods
     def build_message(mail)
       {}.tap do |message|
         # With a transactional_message_id the Customer.io template renders the
-        # content; without one this is a body passthrough send.
-        message[:body] = build_body(mail) unless settings[:transactional_message_id]
-        message[:from] = mail.from.first if mail.from
+        # content; without one this is a body passthrough send. The App API
+        # treats body/from in the request as overrides of what the template
+        # already defines, so the template's own sender identity only survives
+        # if we leave both out.
+        unless settings[:transactional_message_id]
+          message[:body] = build_body(mail)
+          message[:from] = mail.from.first if mail.from
+        end
         message[:subject] = mail.subject if mail.subject
         message[:identifiers] = { email: mail.to.first } if mail.to
         message[:reply_to] = mail.reply_to.first if mail.reply_to
