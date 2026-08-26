@@ -65,6 +65,8 @@ namespace :admin do
         post "merge"
         delete "remove_identity"
         post "send_email"
+        patch "update_password"
+        post "send_password_reset"
         post "verify_email_ownership"
         post "send_email_confirmation"
         post "confirm_email"
@@ -211,6 +213,7 @@ namespace :admin do
   scope :advanced do
     resources :broadcasts
     resources :response_templates, only: %i[index new edit create update destroy]
+    resources :feed_configs, only: %i[index show new create destroy]
     resources :tools, only: %i[index create] do
       collection do
         post "bust_cache"

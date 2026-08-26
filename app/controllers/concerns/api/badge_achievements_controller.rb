@@ -17,6 +17,8 @@ module Api
 
       if achievement.save
         render json: achievement, status: :created
+      elsif (existing = existing_achievement_for(achievement))
+        render json: { errors: achievement.errors.full_messages, achievement_id: existing.id }, status: :conflict
       else
         render json: { errors: achievement.errors.full_messages }, status: :unprocessable_entity
       end
@@ -35,8 +37,15 @@ module Api
         :user_id,
         :badge_id,
         :rewarding_context_message_markdown,
-        :include_default_description
+        :include_default_description,
+        metadata: {},
       )
+    end
+
+    def existing_achievement_for(achievement)
+      return unless achievement.errors.of_kind?(:badge_id, :taken)
+
+      BadgeAchievement.find_by(user_id: achievement.user_id, badge_id: achievement.badge_id)
     end
 
     def require_admin

@@ -78,6 +78,12 @@ en:
         font: Base Reading Font
         level: What is your approximate experience level (1-5)?
         level_desc: This will not be displayed on your profile or anywhere publicly. It helps gently determine what content you are shown along with tags you follow etc.
+        feed_ai_preference: AI Content in Feed
+        feed_ai_preference_desc: "Choose how AI-disclosed content appears in your feed."
+        feed_ai_options:
+          show_all: Standard (show all content)
+          minimize_ai: Minimize AI-assisted & autonomous content
+          hide_fully_autonomous: Hide fully autonomous AI content
         navbar: Site Navbar
         rich: Rich + markdown
         save: Save

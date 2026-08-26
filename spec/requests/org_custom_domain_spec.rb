@@ -98,6 +98,21 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
         expect(response.body).to include("Test Article Content")
       end
 
+      it "routes /:slug to the organization's article when requested via fetch / link preload" do
+        get "http://custom.org/#{article.slug}", headers: { "Sec-Fetch-Dest" => "empty", "Sec-Fetch-Mode" => "cors" }
+
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include("Test Article Content")
+      end
+
+      it "routes /:slug to the organization's article when slug begins with a reserved word as a substring (e.g. api2)" do
+        api2_article = create(:article, slug: "api2-announcement", organization: organization, user: user, title: "API 2.0 Post")
+        get "http://custom.org/#{api2_article.slug}"
+
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include("API 2.0 Post")
+      end
+
       it "routes /:username/:slug to the organization's article" do
         get "http://custom.org/#{organization.slug}/#{article.slug}"
 
@@ -142,6 +157,21 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
 
         expect(response.body).to include("<link>http://custom.org</link>")
         expect(response.body).to include("<link>http://custom.org/#{article.slug}</link>")
+      end
+    end
+
+    describe "custom page routing" do
+      let!(:custom_page) { create(:page, organization: organization, slug: "#{organization.slug}/about", body_markdown: "About Us Content") }
+
+      before do
+        FeatureFlag.enable(:org_readme, FeatureFlag::Actor.new(organization))
+      end
+
+      it "routes /p/:page_suffix to organization custom pages" do
+        get "http://custom.org/p/about"
+
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include("About Us Content")
       end
     end
 

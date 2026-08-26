@@ -211,16 +211,16 @@ export const Options = ({
 
   return (
     <Fragment>
-      <span className="mx-2 color-base-30" aria-hidden="true">|</span>
       <Button
         id="post-options-btn"
+        variant="ghost"
         icon={CogIcon}
         title="Advanced Post options"
         aria-label="Advanced Post options"
         disabled={previewLoading}
         onClick={() => setIsOptionsModalOpen(true)}
       >
-        <span className="hidden l:inline-block ml-1">Advanced Options</span>
+        <span className="hidden xl:inline-block ml-1">Advanced Options</span>
       </Button>
       {isOptionsModalOpen && (
         <Modal
