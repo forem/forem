@@ -3,7 +3,6 @@ require "swagger_helper"
 
 # rubocop:disable RSpec/EmptyExampleGroup
 # rubocop:disable RSpec/VariableName
-# rubocop:disable Layout/LineLength
 
 RSpec.describe "Api::V1::Docs::Events" do
   let(:Accept) { "application/vnd.forem.api-v1+json" }
@@ -244,6 +243,5 @@ RSpec.describe "Api::V1::Docs::Events" do
   end
 end
 
-# rubocop:enable Layout/LineLength
 # rubocop:enable RSpec/VariableName
 # rubocop:enable RSpec/EmptyExampleGroup

@@ -4,6 +4,7 @@ require "swagger_helper"
 # rubocop:disable RSpec/EmptyExampleGroup
 # rubocop:disable RSpec/VariableName
 # rubocop:disable Layout/LineLength
+# rubocop:disable RSpec/ScatteredSetup
 
 RSpec.describe "api/v1/agent_sessions" do
   let(:Accept) { "application/vnd.forem.api-v1+json" }
@@ -185,9 +186,11 @@ RSpec.describe "api/v1/agent_sessions" do
           let(:"api-key") { api_secret.secret }
 
           before do
-            allow(AgentSessions::S3Storage).to receive(:enabled?).and_return(true)
-            allow(AgentSessions::S3Storage).to receive(:generate_key).and_return("agent_sessions/#{user.id}/test.jsonl")
-            allow(AgentSessions::S3Storage).to receive(:presigned_put_url).and_return("https://s3.example.com/presigned")
+            allow(AgentSessions::S3Storage).to receive_messages(
+              enabled?: true,
+              generate_key: "agent_sessions/#{user.id}/test.jsonl",
+              presigned_put_url: "https://s3.example.com/presigned",
+            )
           end
 
           schema type: :object,
@@ -248,7 +251,7 @@ RSpec.describe "api/v1/agent_sessions" do
             title: "My Session with Raw Transcript",
             tool_name: "claude_code",
             curated_data: curated_data,
-            s3_key: "agent_sessions/#{user.id}/test.jsonl"
+            s3_key: "agent_sessions/#{user.id}/test.jsonl",
           )
         end
         let(:id) { agent_session.slug }
@@ -257,8 +260,10 @@ RSpec.describe "api/v1/agent_sessions" do
           let(:"api-key") { api_secret.secret }
 
           before do
-            allow(AgentSessions::S3Storage).to receive(:enabled?).and_return(true)
-            allow(AgentSessions::S3Storage).to receive(:presigned_get_url).and_return("https://s3.example.com/get")
+            allow(AgentSessions::S3Storage).to receive_messages(
+              enabled?: true,
+              presigned_get_url: "https://s3.example.com/get",
+            )
           end
 
           schema type: :object,
@@ -293,3 +298,4 @@ end
 # rubocop:enable Layout/LineLength
 # rubocop:enable RSpec/VariableName
 # rubocop:enable RSpec/EmptyExampleGroup
+# rubocop:enable RSpec/ScatteredSetup

@@ -89,7 +89,7 @@ module Api
         :remote_cover_image_url,
         :remove_cover_image,
         :bg_color_hex,
-        data: {}
+        data: {},
       )
 
       if permitted[:cover_image_url].present?

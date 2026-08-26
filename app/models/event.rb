@@ -94,8 +94,8 @@ class Event < ApplicationRecord
     end
   end
 
-  def as_json(options = {})
-    json = super(options)
+  def as_json(...)
+    json = super(...)
     json["cover_image_url"] = cover_image.url if cover_image.present?
     json["social_image_url"] = social_image_url
     json["tag_list"] = tag_list.to_s
