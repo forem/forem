@@ -9,6 +9,13 @@
       </div>
       <div class="p-0">
         <p class="crayons-subtitle-3"><%= vomit_reaction.user.name %></p>
+        <% if local_assigns[:show_reactable] && vomit_reaction.reactable %>
+          <p class="fs-s">
+            <a href="<%= vomit_reaction.reactable.path %>" target="_blank" rel="noopener">
+              <%= flag_reaction_target_label(vomit_reaction) %>
+            </a>
+          </p>
+        <% end %>
         <time datetime="<%= vomit_reaction.updated_at&.strftime("%Y-%m-%dT%H:%M:%S%z") %>" class="color-secondary fs-s shrink-0" title="<%= l(vomit_reaction.updated_at, format: :admin_user) if vomit_reaction.created_at %>">
           <%= l(vomit_reaction.updated_at, format: :long) %>
         </time>

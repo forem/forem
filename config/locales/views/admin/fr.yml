@@ -350,6 +350,10 @@ fr:
           description: The user flags affect the scores of articles and comments. Each valid or open user flag further reduces the score of the article and comment.
           no_flags: No flags received against this user yet.
           title: Flags received
+        content_flags:
+          description: Signalements laissés sur les publications et commentaires de ce membre, y compris ceux émis automatiquement par la modération. Marquer un signalement comme invalide restaure le score du contenu.
+          no_flags: Aucun signalement reçu sur les publications ou commentaires de cet utilisateur pour le moment.
+          title: Signalements sur les publications et commentaires
         profile:
           locked:
             icon: Access locked

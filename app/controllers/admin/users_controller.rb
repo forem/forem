@@ -755,8 +755,7 @@ new_email = user_params[:email].to_s.strip.presence
       @related_vomit_reactions =
         Reaction.where(reactable_type: "Comment", reactable_id: user_comment_ids, category: "vomit")
           .or(Reaction.where(reactable_type: "Article", reactable_id: user_article_ids, category: "vomit"))
-          .or(Reaction.where(reactable_type: "User", reactable_id: @user.id, category: "vomit"))
-          .includes(:user)
+          .includes(:user, :reactable)
           .order(created_at: :desc).limit(15)
 
       @user_vomit_reactions =

@@ -12,6 +12,15 @@ pt:
         reports: Relatórios
         settings: Configurações
       users:
+        content_flags:
+          description: Sinalizações feitas nas publicações e comentários deste membro, incluindo as geradas automaticamente pela moderação. Marcar uma como inválida restaura a pontuação do conteúdo.
+          no_flags: Nenhuma sinalização recebida nas publicações ou comentários deste usuário até o momento.
+          title: Sinalizações em publicações e comentários
+        flags:
+          type:
+            article: Publicação "%{title}"
+            comment: Comentário em "%{title}"
+            profile: Perfil do usuário
         overview:
           roles:
             name:
