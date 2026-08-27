@@ -1,0 +1,44 @@
+spec/requests/admin/organizations_fully_trusted_spec.rb
+  f844a57044c6d60d 44-58,60-62
+spec/requests/admin/organizations_baseline_score_spec.rb
+  f844a57044c6d60d 47,51-69
+spec/models/audit_log_spec.rb
+  f844a57044c6d60d 15-58
+spec/requests/admin/users_spec.rb
+  f844a57044c6d60d 795-808,810-823,825-840,842-912
+app/controllers/users_controller.rb
+  f844a57044c6d60d 281,289
+spec/requests/admin/organizations_spec.rb
+  f844a57044c6d60d 56-70,72-74
+spec/requests/admin/organizations_org_features_spec.rb
+  f844a57044c6d60d 96-110,112-115
+app/controllers/admin/users_controller.rb
+  f844a57044c6d60d 109-114,134-140,158,164,166-171,197-202,224-231,301-307,403-408,525-530,568-574
+app/controllers/admin/subforem_moderators/moderators_controller.rb
+  f844a57044c6d60d 22-27,40-45
+spec/requests/admin/organizations_verified_spec.rb
+  f844a57044c6d60d 60-74,76-78
+app/controllers/admin/organizations_controller.rb
+  f844a57044c6d60d 31-37,56-61,84-90,117-122,156-162
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "09e4fb01151bbeb76ef2f487d485949fe355aef8",
+  "prompts": {
+    "f844a57044c6d60d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "42d235cf-30b6-4b32-8cf1-476755ed33d1",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Paolo Veñegas",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 443,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/e158ebef7f63ce7cd5b7f9ae172cb4315654291f318787a7da702d26dc3e1842"
+    }
+  }
+}
