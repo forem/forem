@@ -77,7 +77,8 @@ RSpec.describe UserDecorator, type: :decorator do
       expected_result = %W[
         light-theme sans-serif-article-body
         mod-status-#{user.admin? || !user.moderator_for_tags.empty?}
-        trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header
+        trusted-status-#{user.trusted?} community-leader-status-#{user.community_leader?}
+        #{user.setting.config_navbar}-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
     end
@@ -87,7 +88,8 @@ RSpec.describe UserDecorator, type: :decorator do
       expected_result = %W[
         light-theme sans-serif-article-body
         mod-status-#{user.admin? || !user.moderator_for_tags.empty?}
-        trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header
+        trusted-status-#{user.trusted?} community-leader-status-#{user.community_leader?}
+        #{user.setting.config_navbar}-header
         user-role--tag_moderator
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
@@ -98,7 +100,8 @@ RSpec.describe UserDecorator, type: :decorator do
       expected_result = %W[
         light-theme sans-serif-article-body
         mod-status-#{user.admin? || !user.moderator_for_tags.empty?}
-        trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header
+        trusted-status-#{user.trusted?} community-leader-status-#{user.community_leader?}
+        #{user.setting.config_navbar}-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
     end
@@ -108,7 +111,8 @@ RSpec.describe UserDecorator, type: :decorator do
       expected_result = %W[
         dark-theme sans-serif-article-body
         mod-status-#{user.admin? || !user.moderator_for_tags.empty?}
-        trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header
+        trusted-status-#{user.trusted?} community-leader-status-#{user.community_leader?}
+        #{user.setting.config_navbar}-header
         ten-x-hacker-theme
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
@@ -119,7 +123,8 @@ RSpec.describe UserDecorator, type: :decorator do
       expected_result = %W[
         light-theme sans-serif-article-body
         mod-status-#{user.admin? || !user.moderator_for_tags.empty?}
-        trusted-status-#{user.trusted?} static-header
+        trusted-status-#{user.trusted?} community-leader-status-#{user.community_leader?}
+        static-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
     end
@@ -132,7 +137,7 @@ RSpec.describe UserDecorator, type: :decorator do
 
         expected_result = %w[
           light-theme sans-serif-article-body mod-status-false
-          trusted-status-true default-header user-role--trusted
+          trusted-status-true community-leader-status-false default-header user-role--trusted
         ].join(" ")
         expect(user.decorate.config_body_class).to eq(expected_result)
       end

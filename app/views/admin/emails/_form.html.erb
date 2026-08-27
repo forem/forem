@@ -11,6 +11,12 @@
       <p class="crayons-field__description">Choose a user query to target specific users</p>
     </div>
 
+    <div class="crayons-field">
+      <%= form.label :event_id, "Event Target:", class: "crayons-field__label" %>
+      <%= form.select :event_id, options_for_select([["Select an event", nil]] + (@events || []).map { |e| [e.title, e.id] }, selected: @email.event_id), {}, { class: "crayons-textfield", autocomplete: "off", id: "event_select" } %>
+      <p class="crayons-field__description">Target users who signed up for a specific event</p>
+    </div>
+
     <div class="crayons-field" id="variables_section" style="display: none;">
       <%= form.label :variables, "Query Variables (JSON):", class: "crayons-field__label" %>
       <%= form.text_area :variables, rows: 4, class: "crayons-textfield font-mono", placeholder: '{"date_from": "2023-01-01", "status": "active"}' %>

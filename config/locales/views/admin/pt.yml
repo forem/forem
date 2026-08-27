@@ -38,6 +38,8 @@ pt:
           "Resource Admin: Space": "Resource Admin: Space"
           "Resource Admin: ProfileField": "Resource Admin: ProfileField"
           "Resource Admin: ProfileFieldGroup": "Resource Admin: ProfileFieldGroup"
+          Community Leader Level 1: Community Leader Level 1
+          Community Leader Level 2: Community Leader Level 2
         title: Gerenciar Usuários
         search: Pesquisar usuários
         filter: Filtrar
@@ -68,6 +70,19 @@ pt:
           oauth_email: "E-mail %{provider}"
           options:
             edit_profile: Editar perfil
+            update_email: Atualizar e-mail do usuário
+        password:
+          title: Acesso por senha
+          description: Defina uma nova senha diretamente ou envie ao usuário um e-mail de redefinição explicando que isso foi acionado por um administrador.
+          new_password: Nova senha
+          password_confirmation: Confirmar nova senha
+          submit: Atualizar senha
+          success: Senha atualizada com sucesso.
+          reset_title: Enviar e-mail de redefinição de senha
+          reset_description: Envie ao usuário um link de redefinição que explique que ele foi iniciado por um administrador para ajudar.
+          reset_submit: Enviar e-mail de redefinição de senha
+          reset_sent: E-mail de redefinição de senha enviado com sucesso.
+          reset_error: Falha ao enviar o e-mail de redefinição de senha.
           edit_profile:
             heading: Editar perfil de %{user}
             desc_html: As mudanças feitas aqui ficam imediatamente públicas no perfil do usuário.
@@ -387,6 +402,7 @@ pt:
           overview: Visão Geral
           notes: Notas
           emails: E-mails
+          security: Segurança
           reports: Relatórios
           flags: Sinalizações
           articles: Artigos
@@ -446,6 +462,17 @@ pt:
             enable: Habilitar Dofollow
             disable: Desabilitar Dofollow
             enabled_notice: Links dofollow estão habilitados para a página readme desta organização.
+      favorites:
+        leaderboard:
+          heading: Ranking de impacto
+          description: Classificação de usuários pelo engajamento gerado por seus conteúdos favoritados.
+          empty: Nenhum conteúdo favoritado ainda.
+          rank: Posição
+          leader: Líder
+          favorites: Favoritos
+          articles: Artigos
+          comments: Comentários
+          impact: Impacto
       org_features:
         heading: Funcionalidades Org
         description: Gerencie as funcionalidades das organizações globalmente ou por organização.
@@ -503,6 +530,8 @@ pt:
           threshold: "Limiar"
           default: "padrão"
       events:
+        fork: "Duplicar"
+        fork_event: "Duplicar Evento"
         show:
           signups_title: "Inscrições no evento"
           no_signups: "Nenhuma inscrição para este evento ainda."

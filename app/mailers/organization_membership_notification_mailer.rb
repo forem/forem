@@ -10,6 +10,18 @@ class OrganizationMembershipNotificationMailer < ApplicationMailer
                           .first&.user
 
     community_name = Settings::Community.community_name(subforem_id: @subforem_id)
+    org_url = ApplicationController.helpers.app_url("/#{@organization.slug}")
+
+    customerio_delivery_options(
+      transactional_message_id: "dev_org_member_added",
+      message_data: {
+        "org_name" => @organization.name,
+        "inviter_name" => @inviter&.name,
+        "org_url" => org_url,
+        "community_name" => community_name
+      },
+    )
+
     mail(
       to: @user.email,
       subject: I18n.t("mailers.organization_membership_notification_mailer.subject",

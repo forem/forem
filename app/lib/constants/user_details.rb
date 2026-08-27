@@ -4,6 +4,7 @@ module Constants
       Overview
       Notes
       Emails
+      Security
       Reports
       Flags
       Articles

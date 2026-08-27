@@ -198,4 +198,51 @@ RSpec.describe Articles::Feeds::ArticleScoreCalculatorForUser, type: :service do
       end
     end
   end
+
+  describe "#score_ai_disclosure" do
+    let(:not_disclosed_article) { create(:article, ai_disclosure_level: :not_disclosed) }
+    let(:no_ai_article) { create(:article, ai_disclosure_level: :no_ai) }
+    let(:some_ai_article) { create(:article, ai_disclosure_level: :some_ai) }
+    let(:fully_autonomous_article) { create(:article, ai_disclosure_level: :fully_autonomous) }
+
+    context "when user has show_all preference" do
+      before { user.setting.update(feed_ai_preference: :show_all) }
+
+      it "returns 0 for all articles" do
+        expect(applicator.score_ai_disclosure(not_disclosed_article)).to eq(0)
+        expect(applicator.score_ai_disclosure(no_ai_article)).to eq(0)
+        expect(applicator.score_ai_disclosure(some_ai_article)).to eq(0)
+        expect(applicator.score_ai_disclosure(fully_autonomous_article)).to eq(0)
+      end
+    end
+
+    context "when user has minimize_ai preference" do
+      before { user.setting.update(feed_ai_preference: :minimize_ai) }
+
+      it "penalizes some_ai and fully_autonomous articles" do
+        expect(applicator.score_ai_disclosure(not_disclosed_article)).to eq(0)
+        expect(applicator.score_ai_disclosure(no_ai_article)).to eq(0)
+        expect(applicator.score_ai_disclosure(some_ai_article)).to eq(-10)
+        expect(applicator.score_ai_disclosure(fully_autonomous_article)).to eq(-25)
+      end
+    end
+
+    context "when user has hide_fully_autonomous preference" do
+      before { user.setting.update(feed_ai_preference: :hide_fully_autonomous) }
+
+      it "penalizes some_ai articles" do
+        expect(applicator.score_ai_disclosure(not_disclosed_article)).to eq(0)
+        expect(applicator.score_ai_disclosure(no_ai_article)).to eq(0)
+        expect(applicator.score_ai_disclosure(some_ai_article)).to eq(-10)
+      end
+    end
+
+    context "when user is nil" do
+      let(:applicator) { described_class.new(user: nil) }
+
+      it "returns 0" do
+        expect(applicator.score_ai_disclosure(some_ai_article)).to eq(0)
+      end
+    end
+  end
 end

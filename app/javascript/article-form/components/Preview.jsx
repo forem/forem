@@ -5,6 +5,7 @@ import { ErrorList } from './ErrorList';
 import { AccessibilitySuggestions } from './AccessibilitySuggestions';
 import { LoadingPreview } from './LoadingPreview';
 import { parseVideoUrl } from '../utilities/videoParser';
+import { initializeMermaidDiagrams } from '@utilities/mermaidDiagrams';
 
 function titleArea({
   previewResponse,
@@ -133,6 +134,7 @@ export const Preview = ({
     if (previewResponse?.processed_html?.includes('twitter-timeline')) {
       attachTwitterTimelineScript();
     }
+    initializeMermaidDiagrams();
   }, [previewResponse]);
 
   if (previewLoading) {

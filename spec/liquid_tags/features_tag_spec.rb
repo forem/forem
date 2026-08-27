@@ -65,6 +65,24 @@ RSpec.describe "Features and Feature liquid tags", type: :liquid_tag do
       expect(result).to include("<strong>Bold</strong>")
     end
 
+    it "does not duplicate formatting breaks in indented multiline content" do
+      markdown = <<~LIQUID
+        {% features %}
+          {% feature title="Test" %}
+          First line
+          second line
+          {% endfeature %}
+        {% endfeatures %}
+      LIQUID
+
+      result = MarkdownProcessor::Parser.new(markdown).finalize
+      body = Nokogiri::HTML.fragment(result).at_css(".ltag-feature__body")
+
+      expect(body.css("p").length).to eq(1)
+      expect(body.css("br").length).to eq(1)
+      expect(body.text.split.join(" ")).to eq("First line second line")
+    end
+
     it "raises error when title is missing" do
       expect do
         parse('{% features %}{% feature icon="star-line" %}No title{% endfeature %}{% endfeatures %}')

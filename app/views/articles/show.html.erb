@@ -34,13 +34,13 @@
   <!-- This is because of navigation via InstantClick, instantclick.io -->
   <!-- However, the crawled version of the page has the canonical in the head. -->
   <!-- This is confirmed by the canonical url inspector. See https://github.com/forem/forem/issues/9509#issuecomment-732259221. -->
-  <link rel="canonical" href="<%= @article.canonical_url.presence || app_url(@article.path) %>" />
+  <link rel="canonical" href="<%= @article.processed_canonical_url %>" />
   <meta name="description" content="<%= @article.description_and_tags %>">
   <%= meta_keywords_article(@article.cached_tag_list) %>
 <% else %>
   <%= content_for :page_meta do %>
     <link rel="preload" href="/reactions?article_id=<%= @article.id %>" as="fetch" crossorigin="same-origin">
-    <link rel="canonical" href="<%= @article.canonical_url.presence || app_url(@article.path) %>" />
+    <link rel="canonical" href="<%= @article.processed_canonical_url %>" />
     <meta name="description" content="<%= @article.description_and_tags %>">
     <%= meta_keywords_article(@article.cached_tag_list) %>
 
@@ -162,6 +162,7 @@
                   <div class="pl-3 flex-1">
                     <a href="/<%= @user.username %>" class="crayons-link fw-bold"><%= @user.name %></a>
                     <%= subscription_icon(@user) %>
+                    <%= community_leader_icon(@user) %>
                     <% if @user.spam? %>
                       <span class="c-indicator c-indicator--danger">Spam</span>
                     <% end %>
@@ -171,27 +172,37 @@
                             end: "</span>".html_safe,
                             org: tag.a(@organization.name, href: @organization.path, class: "crayons-link")) %>
                     <% end %>
-                    <p class="fs-xs color-base-60">
+                    <p class="fs-xs color-base-60 flex flex-wrap items-center gap-1">
                       <% if @article.published_timestamp.present? %>
-                        <%= t("views.articles.#{@article.current_state}_html", date: local_date(@article.published_timestamp, show_year: @article.displayable_published_at.year != Time.current.year)) %>
+                        <span><%= t("views.articles.#{@article.current_state}_html", date: local_date(@article.published_timestamp, show_year: @article.displayable_published_at.year != Time.current.year)) %></span>
                       <% end %>
                       <% if @article.co_author_ids.present? %>
-                        <%= t("views.articles.co_authors_html", names: @article.co_author_name_and_path.html_safe) %>
+                        <span><%= t("views.articles.co_authors_html", names: @article.co_author_name_and_path.html_safe) %></span>
                       <% end %>
 
                       <% if should_show_updated_on?(@article) %>
-                        &bull; <%= t("views.articles.edited_html", date: local_date(@article.edited_at, show_year: @article.edited_at.year != Time.current.year)) %>
+                        <span class="mx-0.5 opacity-60" aria-hidden="true">&bull;</span>
+                        <span><%= t("views.articles.edited_html", date: local_date(@article.edited_at, show_year: @article.edited_at.year != Time.current.year)) %></span>
                       <% end %>
 
                       <% if should_show_crossposted_on?(@article) %>
-                        &bull; <%= t("views.articles.crossposted.text_html",
+                        <span class="mx-0.5 opacity-60" aria-hidden="true">&bull;</span>
+                        <span><%= t("views.articles.crossposted.text_html",
                                     url: link_to(get_host_without_www(@article.canonical_url || @article.feed_source_url), @article.canonical_url || @article.feed_source_url, style: "color:#1395b8"),
                                     on: if @article.crossposted_at
                                           t("views.articles.crossposted.on_html",
                                             date: local_date(@article.originally_published_at || @article.published_at, show_year: (@article.originally_published_at || @article.published_at).year != Time.current.year))
                                         else
                                           ""
-                                        end) %>
+                                        end) %></span>
+                      <% end %>
+
+                      <% if @article.ai_disclosed? %>
+                        <span class="mx-0.5 opacity-60" aria-hidden="true">&bull;</span>
+                        <span class="crayons-hover-tooltip inline-flex items-center ai-disclosure-tag fs-xs color-base-60 cursor-help" data-tooltip="<%= t("views.articles.ai_disclosure.#{@article.ai_disclosure_level}_description") %>">
+                          <%= crayons_icon_tag "robot", width: 14, height: 14, class: "mr-1 shrink-0" %>
+                          <span><%= @article.ai_disclosure_label %></span>
+                        </span>
                       <% end %>
                     </p>
                   </div>
@@ -300,7 +311,7 @@
   <% end %>
 
   <div class="fullscreen-code js-fullscreen-code"></div>
-  <%= javascript_include_tag "billboard", "localizeArticleDates", "articleReactions", defer: true %>
+  <%= javascript_include_tag "billboard", "localizeArticleDates", "articleReactions", "favoriteControls", defer: true %>
 
   <script>
     <%# we consider these scripts safe for embedding as they come from our code %>

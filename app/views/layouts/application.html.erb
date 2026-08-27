@@ -30,6 +30,7 @@
       <% else %>
         <meta name="search-script" content="<%= asset_path 'Search.js' %>">
       <% end %>
+      <meta name="mermaid-script" content="<%= asset_path 'mermaidRenderer.js' %>">
       <% if Settings::UserExperience.show_mobile_app_banner %>
         <%= javascript_include_tag "runtimeBanner", defer: true %>
       <% end %>
@@ -74,6 +75,7 @@
       data-side-nav-visible="<%= Subforem.cached_discoverable_ids.size > 1 %>"
       data-community-name="<%= j(community_name) %>"
       data-subscription-icon="<%= asset_path("subscription-icon.png") %>"
+      data-community-leader-icon="<%= asset_path("community-leader-icon.svg") %>"
       data-locale="<%= j(I18n.locale) %>"
       data-honeybadger-key="<%= j(ApplicationConfig["HONEYBADGER_JS_API_KEY"]) %>"
       data-deployed-at="<%= j(ForemInstance.deployed_at) %>"
@@ -157,6 +159,63 @@
     <%= yield %>
     <div id="runtime-banner-container"></div>
     <div id="i18n-translations" data-translations="<%= i18n_translations_for_javascript.to_json %>"></div>
+    <% if internal_navigation? %>
+      <script>
+        (function() {
+          var expectedStyles = {
+            "minimal": "<%= stylesheet_path('minimal') %>",
+            "views": "<%= stylesheet_path('views') %>",
+            "crayons": "<%= stylesheet_path('crayons') %>"
+          };
+          var qualifiers = ["main", "secondary"];
+          Object.keys(expectedStyles).forEach(function(name) {
+            var expectedHref = expectedStyles[name];
+            for (var i = 0; i < qualifiers.length; i++) {
+              var id = qualifiers[i] + "-" + name + "-stylesheet";
+              var link = document.getElementById(id);
+              if (link) {
+                var currentHref = link.getAttribute('href');
+                if (currentHref && currentHref !== expectedHref && link.dataset.pendingHref !== expectedHref) {
+                  link.dataset.pendingHref = expectedHref;
+                  var newLink = document.createElement('link');
+                  newLink.rel = 'stylesheet';
+                  newLink.media = link.media || 'all';
+                  newLink.href = expectedHref;
+                  newLink.onload = (function(targetId, expectedUrl, replacementLink) {
+                    return function() {
+                      var currentTarget = document.getElementById(targetId);
+                      if (currentTarget && currentTarget.dataset.pendingHref === expectedUrl) {
+                        replacementLink.id = targetId;
+                        delete currentTarget.dataset.pendingHref;
+                        if (currentTarget.parentNode) {
+                          currentTarget.parentNode.replaceChild(replacementLink, currentTarget);
+                          return;
+                        }
+                      }
+                      if (replacementLink.parentNode) {
+                        replacementLink.parentNode.removeChild(replacementLink);
+                      }
+                    };
+                  })(id, expectedHref, newLink);
+                  newLink.onerror = (function(targetId, expectedUrl, replacementLink) {
+                    return function() {
+                      var currentTarget = document.getElementById(targetId);
+                      if (currentTarget && currentTarget.dataset.pendingHref === expectedUrl) {
+                        delete currentTarget.dataset.pendingHref;
+                      }
+                      if (replacementLink.parentNode) {
+                        replacementLink.parentNode.removeChild(replacementLink);
+                      }
+                    };
+                  })(id, expectedHref, newLink);
+                  document.head.appendChild(newLink);
+                }
+              }
+            }
+          });
+        })();
+      </script>
+    <% end %>
   </div>
 </div>
 <% unless internal_navigation? %>
@@ -166,7 +225,7 @@
     <div id="cookie-consent"></div>
   <% end %>
   <%= render "articles/reaction_category_resources" %>
-  <% if RequestStore.store[:subforem_id].present? %>
+  <% if RequestStore.store[:subforem_id].present? || request.env["forem.custom_domain_org"].present? %>
     <%= render "layouts/bottom_scripts"  %>
   <% end %>
   <%= Settings::UserExperience.bottom_of_body_content.html_safe %>

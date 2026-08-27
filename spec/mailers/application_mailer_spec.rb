@@ -147,9 +147,9 @@ RSpec.describe ApplicationMailer do
         allow(Rails.env).to receive(:development?).and_return(true)
       end
 
-      it "adds :3000 port to domain" do
+      it "adds the development port to domain" do
         email.deliver_now
-        expect(email.body.encoded).to include("#{subforem.domain}:3000")
+        expect(email.body.encoded).to include("#{subforem.domain}:#{URL.dev_port}")
       end
     end
   end
