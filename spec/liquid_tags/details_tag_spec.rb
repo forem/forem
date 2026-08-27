@@ -145,6 +145,21 @@ RSpec.describe DetailsTag, type: :liquid_tag do
       end
     end
 
+    context "when a youtube liquid tag is nested inside" do
+      it "renders the youtube iframe preserving fallback width and height attributes" do
+        template = Liquid::Template.parse(
+          "{% details Watch video %} {% youtube vKeCr-MAyH4 %} {% enddetails %}",
+        )
+        rendered = template.render
+
+        expect(rendered).to include("<iframe")
+        expect(rendered).to include("https://www.youtube.com/embed/vKeCr-MAyH4")
+        expect(rendered).to include('width="100%"')
+        expect(rendered).to include('height="390"')
+        expect(rendered).to include("<details")
+      end
+    end
+
     context "when content has unpermitted tags" do
       let(:summary) { "Click to see the answer!" }
       let(:content) { "<script>alert(1)</script><object>foo</object>" }
