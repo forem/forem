@@ -67,7 +67,10 @@
   data-cover-image-crop="<%= Settings::UserExperience.cover_image_fit %>"
   data-scheduling-enabled="true"
   data-ai-available="<%= ::AI_AVAILABLE %>"
-  data-ai-disclosure-enabled="<%= Settings::General.enable_ai_disclosure %>">
+  data-ai-disclosure-enabled="<%= Settings::General.enable_ai_disclosure %>"
+  <%# Read by AI agents driving this editor; see /llms.txt for the full policy. %>
+  data-agent-instructions-url="<%= URL.url("llms.txt") %>"
+  data-agent-posting-policy="<%= Settings::General.enable_ai_disclosure ? "ai-disclosure-required" : "none" %>">
   <form class="crayons-article-form crayons-article-form--<%= version %>">
 
     <div class="crayons-article-form__header">

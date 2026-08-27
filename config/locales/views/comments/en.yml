@@ -84,6 +84,8 @@ en:
             visible_in_permalink: Comment hidden by post author - thread only visible in this permalink
             accessible_via_permalink: Comment hidden by post author - thread only accessible via permalink
       write:
+        ai_disclosure_notice_html: "Using an AI agent? %{link} before commenting."
+        ai_disclosure_notice_link: Review our AI disclosure policy
         errors:
           one: '1 error prohibited this comment from being saved:'
           other: "%{count} errors prohibited this comment from being saved:"

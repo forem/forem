@@ -422,6 +422,7 @@ Rails.application.routes.draw do
 
     # You can have the root of your site routed with "root
     get "/robots.:format", to: "pages#robots"
+    get "/llms.:format", to: "pages#llms"
     get "/api", to: redirect("https://developers.forem.com/api")
     get "/privacy", to: "pages#privacy"
     get "/terms", to: "pages#terms"

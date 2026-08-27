@@ -382,6 +382,39 @@ RSpec.describe "Pages" do
     end
   end
 
+  describe "GET /llms.txt" do
+    it "renders the agent guidance" do
+      get "/llms.txt"
+
+      expect(response).to have_http_status(:ok)
+      expect(response.media_type).to eq("text/plain")
+      expect(response.body).to include("Guidance for AI agents")
+      expect(response.body).to include(URL.url("robots.txt"))
+    end
+
+    context "when AI disclosure is enabled" do
+      before { allow(Settings::General).to receive(:enable_ai_disclosure).and_return(true) }
+
+      it "documents the required disclosure levels" do
+        get "/llms.txt"
+
+        expect(response.body).to include("AI usage disclosure (required)")
+        expect(response.body).to include("fully_autonomous")
+        expect(response.body).to include("ai_disclosure_level")
+      end
+    end
+
+    context "when AI disclosure is disabled" do
+      before { allow(Settings::General).to receive(:enable_ai_disclosure).and_return(false) }
+
+      it "omits the disclosure section" do
+        get "/llms.txt"
+
+        expect(response.body).not_to include("AI usage disclosure (required)")
+      end
+    end
+  end
+
   describe "GET /report-abuse" do
     context "when provided the referer" do
       it "prefills with the provided url" do

@@ -1,6 +1,6 @@
 class PagesController < ApplicationController
   # No authorization required for entirely public controller
-  before_action :set_cache_control_headers, only: %i[show badge bounty faq robots]
+  before_action :set_cache_control_headers, only: %i[show badge bounty faq robots llms]
 
   def show
     params[:slug] = combined_fragmented_slug if params[:slug_0].present?
@@ -115,6 +115,14 @@ class PagesController < ApplicationController
     custom_domain_org
     respond_to :text
     set_surrogate_key_header "robots_page"
+  end
+
+  def llms
+    # Machine-readable guidance for AI agents and other automated clients.
+    # Served at /llms.txt, mirroring the robots.txt convention.
+    custom_domain_org
+    respond_to :text
+    set_surrogate_key_header "llms_page"
   end
 
   def welcome

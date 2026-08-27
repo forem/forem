@@ -204,5 +204,7 @@ pt:
       custom_element: Elemento personalizado
       unknown: Desconhecido
       write:
+        ai_disclosure_notice_html: "Usando um agente de IA? %{link} antes de comentar."
+        ai_disclosure_notice_link: Consulte nossa política de divulgação de IA
         preview: Visualizar
         continue_editing: Continuar editando
