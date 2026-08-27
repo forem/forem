@@ -70,6 +70,7 @@ class DeviseMailer < Devise::Mailer
   end
 
   def reset_password_instructions(record, token, opts = {})
+    @admin_triggered_by = opts[:admin_triggered_by]
     # Intentionally does NOT set @resource/re-run setup_subforem_context here
     # (unlike confirmation_instructions/invitation_instructions): pre-PR, this
     # action had no override, so @subforem_id/@subforem_domain and the global
@@ -85,7 +86,8 @@ class DeviseMailer < Devise::Mailer
       message_data: {
         "reset_url" => edit_user_password_url(reset_password_token: token),
         "name" => record.name,
-        "community_name" => community_name
+        "community_name" => community_name,
+        "admin_triggered_by" => @admin_triggered_by
       },
     )
 

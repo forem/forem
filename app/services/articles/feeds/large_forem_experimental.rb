@@ -59,6 +59,7 @@ module Articles
         article_points += score_followed_tags(article)
         article_points += score_experience_level(article)
         article_points += score_comments(article)
+        article_points += score_ai_disclosure(article)
         article_points
       end
 
@@ -67,6 +68,7 @@ module Articles
                :score_followed_organization,
                :score_experience_level,
                :score_comments,
+               :score_ai_disclosure,
                to: :@article_score_applicator)
 
       # @api private
@@ -76,6 +78,9 @@ module Articles
         if user_signed_in
           hot_stories = experimental_hot_story_grab
           hot_stories = hot_stories.not_authored_by(UserBlock.cached_blocked_ids_for_blocker(@user.id))
+          if @user&.setting&.hide_fully_autonomous_feed_ai?
+            hot_stories = hot_stories.where.not(ai_disclosure_level: :fully_autonomous)
+          end
           featured_story = featured_story_from(stories: hot_stories, must_have_main_image: must_have_main_image)
           new_stories = Article.published.from_subforem
             .where("score > ?", article_score_threshold)
@@ -83,6 +88,9 @@ module Articles
             .order(published_at: :desc)
             .includes(:distinct_reaction_categories, :subforem, :context_notes)
             .limit(rand(min_rand_limit..max_rand_limit))
+          if @user&.setting&.hide_fully_autonomous_feed_ai?
+            new_stories = new_stories.where.not(ai_disclosure_level: :fully_autonomous)
+          end
           hot_stories = hot_stories.to_a + new_stories.to_a
         else
           hot_stories = Article.published.from_subforem.limited_column_select

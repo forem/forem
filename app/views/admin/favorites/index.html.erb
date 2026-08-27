@@ -1,0 +1,35 @@
+<header class="crayons-card p-6 mb-6">
+  <h1 class="crayons-title"><%= t("views.admin.favorites.leaderboard.heading") %></h1>
+  <p class="color-base-60 mt-1"><%= t("views.admin.favorites.leaderboard.description") %></p>
+</header>
+
+<% if @leaderboard.empty? %>
+  <div class="crayons-notice">
+    <%= t("views.admin.favorites.leaderboard.empty") %>
+  </div>
+<% else %>
+  <table class="crayons-table" width="100%">
+    <thead>
+      <tr>
+        <th scope="col"><%= t("views.admin.favorites.leaderboard.rank") %></th>
+        <th scope="col"><%= t("views.admin.favorites.leaderboard.leader") %></th>
+        <th scope="col"><%= t("views.admin.favorites.leaderboard.favorites") %></th>
+        <th scope="col"><%= t("views.admin.favorites.leaderboard.articles") %></th>
+        <th scope="col"><%= t("views.admin.favorites.leaderboard.comments") %></th>
+        <th scope="col"><%= t("views.admin.favorites.leaderboard.impact") %></th>
+      </tr>
+    </thead>
+    <tbody class="crayons-card">
+      <% @leaderboard.each_with_index do |row, index| %>
+        <tr data-row-id="<%= row.user.id %>">
+          <td class="whitespace-nowrap"><%= index + 1 %></td>
+          <td><%= link_to row.user.username, admin_user_path(row.user), class: "c-link c-link--branded fw-bold" %></td>
+          <td><%= row.favorites_count %></td>
+          <td><%= row.article_favorites_count %></td>
+          <td><%= row.comment_favorites_count %></td>
+          <td class="fw-bold"><%= row.impact_score %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
