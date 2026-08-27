@@ -189,6 +189,52 @@ RSpec.describe "/admin/member_manager/users" do
       expect(response.body).to include(vomit.reactable_type)
     end
 
+    it "displays a message when the user has no flags on their posts or comments" do
+      get "#{admin_user_path(user.id)}?tab=flags"
+      expect(response.body).to include("No flags received against this user&#39;s posts or comments yet.")
+    end
+
+    it "lists a flag left on the user's comment in the 'Flags' tab" do
+      article = create(:article)
+      comment = create(:comment, user: user, commentable: article)
+      create(:reaction, category: "vomit", reactable: comment, user: admin, status: "valid")
+
+      get "#{admin_user_path(user.id)}?tab=flags"
+
+      expect(response.body).to include("Flags on posts and comments")
+      expect(response.body).to include(CGI.escapeHTML("Comment on \"#{article.title}\""))
+      expect(response.body).to include(comment.path)
+    end
+
+    it "lists a flag left on the user's article in the 'Flags' tab" do
+      article = create(:article, user: user)
+      create(:reaction, category: "vomit", reactable: article, user: admin, status: "valid")
+
+      get "#{admin_user_path(user.id)}?tab=flags"
+
+      expect(response.body).to include(CGI.escapeHTML("Post \"#{article.title}\""))
+      expect(response.body).to include(article.path)
+    end
+
+    it "offers the mark-as-invalid action for a flag on the user's comment" do
+      comment = create(:comment, user: user, commentable: create(:article))
+      reaction = create(:reaction, category: "vomit", reactable: comment, user: admin, status: "valid")
+
+      get "#{admin_user_path(user.id)}?tab=flags"
+
+      expect(response.body).to include(admin_reaction_path(reaction.id))
+      expect(response.body).to include("Mark as Invalid")
+    end
+
+    it "does not list content flags in the account flags section" do
+      comment = create(:comment, user: user, commentable: create(:article))
+      create(:reaction, category: "vomit", reactable: comment, user: admin, status: "valid")
+
+      get "#{admin_user_path(user.id)}?tab=flags"
+
+      expect(response.body).to include("No flags received against this user yet.")
+    end
+
     it "displays a user's current reports in the 'Reports' tab" do
       get "#{admin_user_path(user.id)}?tab=reports"
       expect(response.body).to include("Reports submitted by")
