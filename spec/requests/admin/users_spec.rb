@@ -226,6 +226,15 @@ RSpec.describe "/admin/member_manager/users" do
       expect(response.body).to include("Mark as Invalid")
     end
 
+    it "includes the flag dropdown script only once when both flag lists render" do
+      comment = create(:comment, user: user, commentable: create(:article))
+      create(:reaction, category: "vomit", reactable: comment, user: admin, status: "valid")
+
+      get "#{admin_user_path(user.id)}?tab=flags"
+
+      expect(response.body.scan("flagReactionItemDropdownButton").size).to eq(1)
+    end
+
     it "does not list content flags in the account flags section" do
       comment = create(:comment, user: user, commentable: create(:article))
       create(:reaction, category: "vomit", reactable: comment, user: admin, status: "valid")

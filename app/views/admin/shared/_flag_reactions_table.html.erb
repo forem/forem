@@ -1,4 +1,12 @@
-<%= javascript_include_tag "admin/shared/flagReactionItemDropdownButton", defer: true %>
+<%# The dropdown script binds a single delegated click listener to #reaction-content.
+    This partial can be rendered more than once per page (a member's Flags tab lists
+    account flags and content flags separately), and including the script twice would
+    bind the listener twice, so every click would toggle a dropdown open and straight
+    back closed. Emit the tag only on the first render of the request. %>
+<% unless content_for?(:flag_reaction_dropdown_js) %>
+  <% content_for :flag_reaction_dropdown_js, javascript_include_tag("admin/shared/flagReactionItemDropdownButton", defer: true) %>
+  <%= yield :flag_reaction_dropdown_js %>
+<% end %>
 <% if vomit_reactions.present? %>
   <% vomit_reactions.each do |vomit_reaction| %>
     <%= render "admin/shared/flag_reaction_item",
