@@ -358,6 +358,10 @@ en:
           description: The user flags affect the scores of articles and comments. Each valid or open user flag further reduces the score of the article and comment.
           no_flags: No flags received against this user yet.
           title: Flags received
+        content_flags:
+          description: Flags left on this member's posts and comments, including flags raised automatically by moderation. Marking one invalid restores the content's score.
+          no_flags: No flags received against this user's posts or comments yet.
+          title: Flags on posts and comments
         profile:
           locked:
             icon: Access locked
