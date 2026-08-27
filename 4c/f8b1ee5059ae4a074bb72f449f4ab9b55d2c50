@@ -1,0 +1,24 @@
+docs/superpowers/specs/2026-08-15-digest-customerio-track-events-design.md
+  s_7d090fe663c96a::t_5a437094cec773 1-261,301,312,315,322-325,327-350
+  s_7d090fe663c96a::t_962703aec25b92 262-300,302-311,313-314,316-321,326
+  s_7d090fe663c96a::t_e2709701239ff9 351-355
+docs/superpowers/runbooks/customerio-digest-via-track-events.md
+  s_7d090fe663c96a::t_a1840299a6e9af 1-2,12-270
+  s_7d090fe663c96a::t_cc3fa278e8fccd 3-11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "4cf8b1ee5059ae4a074bb72f449f4ab9b55d2c50",
+  "prompts": {},
+  "sessions": {
+    "s_7d090fe663c96a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5b6eaee2-ac02-4908-babd-8881c6a6886f",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

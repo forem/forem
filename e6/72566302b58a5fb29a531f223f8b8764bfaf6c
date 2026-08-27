@@ -1,0 +1,48 @@
+app/assets/stylesheets/views/events.scss
+  h_f968154a99632d 239-374
+app/controllers/admin/events_controller.rb
+  h_f968154a99632d 6,28-29,54,57-58,72,75-77,79-80,84-85,89-91
+app/models/event.rb
+  h_f968154a99632d 10,21-24,26-27,31-32,37,42,48-121,143-145,155-156,162,164-171,175,178,203-204,221
+app/uploaders/event_cover_image_uploader.rb
+  h_f968154a99632d 1-26
+app/views/admin/events/_form.html.erb
+  h_f968154a99632d 42-58,102-123
+app/views/admin/events/show.html.erb
+  h_f968154a99632d 20-28
+app/views/events/challenge.html.erb
+  h_f968154a99632d 1-12,15
+app/views/events/index.html.erb
+  h_f968154a99632d 1-28,32,34-83,86,91
+app/views/events/show.html.erb
+  h_f968154a99632d 3-13
+config/locales/views/events/en.yml
+  h_f968154a99632d 1-9
+config/locales/views/events/fr.yml
+  h_f968154a99632d 1-9
+config/locales/views/events/pt.yml
+  h_f968154a99632d 1-9
+db/migrate/20260819150645_add_cover_image_to_events.rb
+  h_f968154a99632d 1-5
+db/schema.rb
+  h_f968154a99632d 13,777
+db/seeds.rb
+  h_f968154a99632d 1177,1179-1285,1289-1291,1300
+spec/models/event_spec.rb
+  h_f968154a99632d 3,13,17,20,22,25,38,114,128-129,131,133,140,146,151,155,160-161,175-176,178,180,185,190,204,231-312
+spec/requests/admin/events_spec.rb
+  h_f968154a99632d 3,6,22,24,30,45,52,54,96,98,119,121-122,131,133,142,145,151,154-192,205,207,226-227
+spec/requests/events_spec.rb
+  h_f968154a99632d 3,10,14-29,35,38,41-42,47-49,66,74,100,102,108,112,114,120,125,132,136,138,143-146,149
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "e672566302b58a5fb29a531f223f8b8764bfaf6c",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
