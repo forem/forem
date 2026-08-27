@@ -71,6 +71,19 @@
         <%= t("views.settings.custom.level_desc") %>
       </p>
     </div>
+
+    <div class="crayons-field mt-4">
+      <%= f.label :feed_ai_preference, t("views.settings.custom.feed_ai_preference"), class: "crayons-field__label" %>
+      <div class="crayons-select-wrapper">
+        <%= f.select :feed_ai_preference,
+                     Users::Setting.feed_ai_preferences.keys.map { |k| [t("views.settings.custom.feed_ai_options.#{k}"), k] },
+                     {},
+                     class: "crayons-select" %>
+      </div>
+      <p class="fs-xs color-base-60 mt-1">
+        <%= t("views.settings.custom.feed_ai_preference_desc") %>
+      </p>
+    </div>
   </div>
   <div id="sponsors" class="crayons-card crayons-card--content-rows">
     <header>

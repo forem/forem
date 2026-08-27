@@ -40,6 +40,9 @@ en:
       saved: Article saved!
       pinned: Article Pinned!
       unpinned: Article Unpinned!
+      favorite_removed: Favorite removed.
+    comments_controller:
+      favorite_removed: Favorite removed.
     badge_achievements_controller:
       deleted: Badge achievement has been deleted!
       rewarded: Badges are being rewarded. The task will finish shortly.

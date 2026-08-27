@@ -20,6 +20,8 @@ class Role < ApplicationRecord
     limited
     base_subscriber
     impending_base_subscriber_cancellation
+    community_leader_level_1
+    community_leader_level_2
   ].freeze
 
   ROLES.each do |role|

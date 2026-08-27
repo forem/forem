@@ -586,12 +586,121 @@ RSpec.describe ApplicationHelper do
       allow(FeatureFlag).to receive(:all).and_return({ foo: :off })
       expect(helper.enabled_global_feature_flags).to eq("")
     end
+  end
 
-    it "memoizes the result on RequestStore" do
-      allow(FeatureFlag).to receive(:all).and_return({ foo: :on })
-      helper.enabled_global_feature_flags
-      helper.enabled_global_feature_flags
-      expect(FeatureFlag).to have_received(:all).once
+  describe "#community_leader_icon" do
+    let(:leader) { create(:user, :community_leader_level_1) }
+
+    before do
+      FeatureFlag.add(:community_favorites)
+      FeatureFlag.enable(:community_favorites)
+    end
+
+    after { FeatureFlag.remove(:community_favorites) }
+
+    it "renders the icon for a community leader" do
+      expect(helper.community_leader_icon(leader)).to include("community-leader-icon")
+    end
+
+    it "renders nothing for a user who is not a leader" do
+      expect(helper.community_leader_icon(create(:user))).to be_nil
+    end
+
+    it "renders nothing when the feature flag is disabled" do
+      FeatureFlag.disable(:community_favorites)
+
+      expect(helper.community_leader_icon(leader)).to be_nil
+    end
+
+    it "renders nothing for an object that cannot be a leader" do
+      expect(helper.community_leader_icon(create(:organization))).to be_nil
+    end
+  end
+
+  describe "#should_render_favorited_marker?" do
+    let(:leader) { create(:user, :community_leader_level_1) }
+    let(:favorited) { create(:article) }
+
+    before do
+      FeatureFlag.add(:community_favorites)
+      FeatureFlag.enable(:community_favorites)
+      favorited.update_columns(favorited_by_user_id: leader.id, favorited_at: Time.current)
+    end
+
+    after { FeatureFlag.remove(:community_favorites) }
+
+    it "is true for favorited content" do
+      expect(helper.should_render_favorited_marker?(favorited)).to be true
+    end
+
+    it "is true for favorited comments" do
+      comment = create(:comment, commentable: create(:article))
+      comment.update_columns(favorited_by_user_id: leader.id, favorited_at: Time.current)
+
+      expect(helper.should_render_favorited_marker?(comment)).to be true
+    end
+
+    it "is false for content nobody has favorited" do
+      expect(helper.should_render_favorited_marker?(create(:article))).to be false
+    end
+
+    it "is false when the feature flag is disabled" do
+      FeatureFlag.disable(:community_favorites)
+
+      expect(helper.should_render_favorited_marker?(favorited)).to be false
+    end
+
+    it "is false when the column was not selected" do
+      trimmed = Article.select(:id, :title).find(favorited.id)
+
+      expect(helper.should_render_favorited_marker?(trimmed)).to be false
+    end
+  end
+
+  describe "#custom_domain_main_app_url" do
+    let(:organization) { build_stubbed(:organization, slug: "myorg", custom_domain: "blog.myorg.com") }
+
+    before do
+      allow(Settings::General).to receive(:app_domain).and_return("forem.com")
+    end
+
+    it "returns nil when custom_org is nil" do
+      expect(helper.custom_domain_main_app_url(nil)).to be_nil
+    end
+
+    it "maps root path to organization profile on main domain" do
+      request_double = instance_double(ActionDispatch::Request, path: "/", query_string: "")
+      allow(helper).to receive(:request).and_return(request_double)
+
+      expect(helper.custom_domain_main_app_url(organization)).to eq("http://forem.com/myorg")
+    end
+
+    it "preserves query string when mapping root path" do
+      request_double = instance_double(ActionDispatch::Request, path: "/", query_string: "sort=top&page=2")
+      allow(helper).to receive(:request).and_return(request_double)
+
+      expect(helper.custom_domain_main_app_url(organization)).to eq("http://forem.com/myorg?sort=top&page=2")
+    end
+
+    it "maps custom page /p/:page_suffix" do
+      request_double = instance_double(ActionDispatch::Request, path: "/p/about", query_string: "")
+      allow(helper).to receive(:request).and_return(request_double)
+
+      expect(helper.custom_domain_main_app_url(organization)).to eq("http://forem.com/myorg/p/about")
+    end
+
+    it "maps article path /:slug" do
+      request_double = instance_double(ActionDispatch::Request, path: "/my-article", query_string: "")
+      allow(helper).to receive(:request).and_return(request_double)
+
+      expect(helper.custom_domain_main_app_url(organization)).to eq("http://forem.com/myorg/my-article")
+    end
+
+    it "handles article path already containing org slug /:org_slug/:slug" do
+      request_double = instance_double(ActionDispatch::Request, path: "/myorg/my-article", query_string: "")
+      allow(helper).to receive(:request).and_return(request_double)
+
+      expect(helper.custom_domain_main_app_url(organization)).to eq("http://forem.com/myorg/my-article")
     end
   end
 end

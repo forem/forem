@@ -14,6 +14,9 @@ pt:
         not_available: Provedor %{name} não está disponível!
         not_enabled: Provedor %{name} não está habilitado!
     badges:
+      award_community_favorite:
+        article_message: "Muito bem! [A sua publicação](%{url}) é um favorito da comunidade!"
+        comment_message: "Muito bem! [O seu comentário](%{url}) é um favorito da comunidade!"
       award_beloved_comment:
         message: "Você é famoso! [Este é o comentário](%{comment}) pelo qual você está sendo reconhecido. 😄"
       award_streak:

@@ -26,10 +26,20 @@ class EmailDigest
 
   private
 
+  # Deliberately not User.email_eligible: that scope also requires
+  # email_newsletter, and the periodic digest is a separate consent (see
+  # Users::NotificationSetting#email_digest_periodic). We take its moderation
+  # filters without its newsletter filter.
+  #
+  # Banishing sets the Suspended role but does not clear email_digest_periodic,
+  # so without these filters banished and spam-flagged accounts keep receiving
+  # the digest.
   def get_users(starting_id, ending_id)
     User.registered.joins(:notification_setting)
       .where(notification_setting: { email_digest_periodic: true })
       .where.not(email: "")
+      .without_role(:suspended)
+      .without_role(:spam)
       .where("users.id >= ? AND users.id <= ?", starting_id, ending_id)
   end
 end

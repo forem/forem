@@ -109,6 +109,31 @@ RSpec.describe ForemInstance do
     end
   end
 
+  describe ".customerio_track_enabled?" do
+    before { allow(ApplicationConfig).to receive(:[]).and_call_original }
+
+    it "is true only when both Track API credentials are present" do
+      allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_SITE_ID").and_return("site")
+      allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_TRACK_API_KEY").and_return("track-key")
+      expect(described_class.customerio_track_enabled?).to be(true)
+    end
+
+    it "is false when only the site id is present" do
+      allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_SITE_ID").and_return("site")
+      allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_TRACK_API_KEY").and_return(nil)
+      expect(described_class.customerio_track_enabled?).to be(false)
+    end
+
+    # The App API key alone is not enough: the Track API authenticates
+    # separately, so customerio_enabled? cannot stand in for this.
+    it "is false when only the App API key is configured" do
+      allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
+      allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_SITE_ID").and_return(nil)
+      allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_TRACK_API_KEY").and_return(nil)
+      expect(described_class.customerio_track_enabled?).to be(false)
+    end
+  end
+
   describe ".customerio_email_cutover?" do
     after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
 

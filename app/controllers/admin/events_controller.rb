@@ -3,7 +3,7 @@ module Admin
     before_action :set_event, only: %i[show edit update destroy]
 
     def index
-      @events = Event.all.order(created_at: :desc)
+      @events = Event.order(created_at: :desc)
     end
 
     def show
@@ -25,6 +25,8 @@ module Admin
       redirect_to new_admin_event_path(fork_from_id: params[:id])
     end
 
+    def edit; end
+
     def create
       @event = Event.new(event_params)
       if @event.save
@@ -33,8 +35,6 @@ module Admin
         render :new, status: :unprocessable_entity
       end
     end
-
-    def edit; end
 
     def update
       if @event.update(event_params)
@@ -51,10 +51,11 @@ module Admin
 
     def end_broadcast
       @event = Event.find(params[:id])
-      
+
       if @event.update(broadcast_ended_at: Time.current)
         Events::ManageBroadcastBillboardsWorker.perform_async
-        redirect_to admin_event_path(@event), notice: "Broadcast manually ended. Billboards are being deactivated locally."
+        redirect_to admin_event_path(@event),
+                    notice: "Broadcast manually ended. Billboards are being deactivated locally."
       else
         redirect_to admin_event_path(@event), alert: "Failed to end broadcast."
       end
@@ -68,24 +69,28 @@ module Admin
 
     def event_params
       params.require(:event).permit(
-        :title, 
+        :title,
         :event_name_slug,
         :event_variation_slug,
-        :description, 
-        :primary_stream_url, 
-        :published, 
+        :description,
+        :full_details,
+        :primary_stream_url,
+        :published,
         :elevated,
-        :start_time, 
-        :end_time, 
+        :start_time,
+        :end_time,
         :type_of,
         :broadcast_config,
         :manual_broadcast_end,
-        :user_id, 
-        :organization_id, 
+        :user_id,
+        :organization_id,
         :tag_list,
         :page_id,
         :delegate_to_page,
-        data: {}
+        :cover_image,
+        :remove_cover_image,
+        :bg_color_hex,
+        data: {},
       )
     end
   end

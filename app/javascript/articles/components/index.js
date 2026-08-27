@@ -2,6 +2,7 @@ export * from './ArticleCoverImage';
 export * from './ContentTitle';
 export * from './CommentsCount';
 export * from './CommentsList';
+export * from './FavoritedMarker';
 export * from './Meta';
 export * from './PublishDate';
 export * from './ReactionsCount';

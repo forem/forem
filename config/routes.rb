@@ -36,19 +36,19 @@ Rails.application.routes.draw do
     get "/", to: "stories#custom_domain_index"
     get "/feed", to: "articles#feed", as: nil, defaults: { format: "rss" }
     get "/rss", to: "articles#feed", as: nil, defaults: { format: "rss" }
+    get "/p/:page_suffix", to: "stories#custom_domain_index", as: "custom_domain_organization_custom_page",
+                           constraints: { format: /html/ }
     get "/:org_slug/:slug",
         to: "stories#custom_domain_show",
         constraints: {
-          org_slug: %r{(?!(?:api|assets|packs|rails|r|ahoy|enter|users|p|robots|sitemap-.+)\z)[^/.]+},
+          org_slug: %r{[^/.]+},
           slug: %r{[^/.]+}
         }
     get "/:slug",
         to: "stories#custom_domain_show",
         constraints: {
-          slug: %r{(?!(?:api|assets|packs|rails|r|ahoy|enter|users|p|robots|sitemap-.+)\z)[^/.]+}
+          slug: %r{[^/.]+}
         }
-    get "/p/:page_suffix", to: "stories#custom_domain_index", as: "custom_domain_organization_custom_page",
-                           constraints: { format: /html/ }
   end
 
   # [@forem/delightful] - all routes are nested under this optional scope to
@@ -222,6 +222,7 @@ Rails.application.routes.draw do
     end
     resources :users, only: %i[update]
     resources :reactions, only: %i[index create]
+    resources :favorites, only: %i[create]
     resources :response_templates, only: %i[index create edit update destroy]
     resources :feedback_messages, only: %i[index create]
     resources :organizations, only: %i[update create destroy]
@@ -364,6 +365,8 @@ Rails.application.routes.draw do
     get "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#show"
     post "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#upsert"
     get "email_subscriptions/unsubscribe"
+    # RFC 8058 one-click unsubscribe: mailbox providers POST to the same URL.
+    post "email_subscriptions/unsubscribe", to: "email_subscriptions#unsubscribe"
 
     get "/internal", to: redirect("/admin")
     get "/internal/:path", to: redirect("/admin/%{path}")
@@ -515,6 +518,9 @@ Rails.application.routes.draw do
                                        which: /organization/
                                      }
     get "/dashboard/:username", to: "dashboards#show", as: :dashboard_show_user
+
+    get "/leadership", to: "leadership_dashboards#show", as: :leadership
+    get "/leadership/:section", to: "leadership_dashboards#show", as: :leadership_section
 
     unless Rails.env.production?
       get "/rails/mailers", to: "rails/mailers#index"

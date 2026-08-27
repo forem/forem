@@ -161,11 +161,14 @@ class ArticlesController < ApplicationController
             cover_image = ApplicationController.helpers.cloud_cover_url(front_matter["cover_image"])
           end
 
+          ai_disclosure_level = front_matter["ai_disclosure_level"] || front_matter["ai_disclosure"]
+
           render json: {
             processed_html: processed_html,
             title: front_matter["title"],
             tags: tags,
-            cover_image: cover_image
+            cover_image: cover_image,
+            ai_disclosure_level: ai_disclosure_level
           }, status: :ok
         end
       end
@@ -346,7 +349,7 @@ class ArticlesController < ApplicationController
                        %i[
                          title body_markdown main_image published description video_thumbnail_url
                          tag_list canonical_url series collection_id archived published_at timezone
-                         published_at_date published_at_time type_of body_url subforem_id
+                         published_at_date published_at_time type_of body_url subforem_id ai_disclosure_level
                        ]
                      end
 

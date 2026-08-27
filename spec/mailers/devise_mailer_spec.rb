@@ -39,6 +39,20 @@ RSpec.describe DeviseMailer, type: :mailer do
       expect(email.to_s).not_to include("ahoy_click=true")
       expect(email.to_s).not_to include("/ahoy/click")
     end
+
+    context "when triggered by an admin" do
+      let(:admin_email) { described_class.reset_password_instructions(user, "test", admin_triggered_by: "AdminUser") }
+
+      it "includes the admin-triggered explanation in the email body" do
+        expect(admin_email.body.encoded).to include("An admin (AdminUser) requested this password reset")
+      end
+    end
+
+    context "when not triggered by an admin" do
+      it "does not include the admin-triggered explanation" do
+        expect(email.body.encoded).not_to include("An admin (")
+      end
+    end
   end
 
   describe "#confirmation_instructions" do
@@ -274,7 +288,7 @@ RSpec.describe DeviseMailer, type: :mailer do
       end
 
       it "routes #reset_password_instructions through the Customer.io reset password template", :aggregate_failures do
-        email = described_class.reset_password_instructions(user, "resettoken")
+        email = described_class.reset_password_instructions(user, "resettoken", admin_triggered_by: "AdminUser")
         settings = email.message.delivery_method.settings
 
         expect(settings[:transactional_message_id]).to eq("dev_reset_password_instructions")
@@ -282,6 +296,7 @@ RSpec.describe DeviseMailer, type: :mailer do
         expect(settings[:message_data]["reset_url"]).to include("reset_password_token=resettoken")
         expect(settings[:message_data]["name"]).to eq(user.name)
         expect(settings[:message_data]["community_name"]).to eq(community_name)
+        expect(settings[:message_data]["admin_triggered_by"]).to eq("AdminUser")
       end
 
       it "routes #unlock_instructions through the Customer.io unlock template", :aggregate_failures do

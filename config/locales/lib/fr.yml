@@ -188,6 +188,8 @@ fr:
             description: "Afficher la liste des premiers pas dans la barre latérale droite pour les nouveaux utilisateurs."
           enable_agent_sessions:
             description: Enable the Agent Sessions feature for uploading and embedding coding agent session transcripts.
+          enable_ai_disclosure:
+            description: "Permettre aux auteurs de divulguer l'utilisation d'outils d'IA lors de la publication ou de l'édition d'articles."
           video:
             description: Secret key used to allow AWS video encoding through the VideoStatesController
         rate_limit:

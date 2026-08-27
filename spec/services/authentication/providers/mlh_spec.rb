@@ -17,8 +17,8 @@ RSpec.describe Authentication::Providers::Mlh, type: :service do
   let(:provider) { described_class.new(auth_payload) }
 
   describe ".official_name" do
-    it "returns MyMLH" do
-      expect(described_class.official_name).to eq("MyMLH")
+    it "returns MLH" do
+      expect(described_class.official_name).to eq("MLH")
     end
   end
 

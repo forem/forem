@@ -258,6 +258,22 @@ module ApplicationHelper
             style: "display: inline;"
   end
 
+  def community_leader_icon(user)
+    return unless user.try(:cached_community_leader?)
+    return unless FeatureFlag.enabled?(:community_favorites)
+
+    image_tag("community-leader-icon.svg",
+              alt: t("views.leadership.icon.leader_alt"),
+              class: "community-leader-icon")
+  end
+
+  def should_render_favorited_marker?(favoritable)
+    return false unless favoritable.try(:favorited_by_user_id)
+    return false unless FeatureFlag.enabled?(:community_favorites)
+
+    true
+  end
+
   def user_colors_style(user)
     "border: 2px solid #{user.decorate.darker_color}; \
     box-shadow: 5px 6px 0px #{user.decorate.darker_color}"
@@ -538,6 +554,24 @@ module ApplicationHelper
     else
       subforem_aware_sign_up_url(path)
     end
+  end
+
+  def custom_domain_main_app_url(custom_org)
+    return unless custom_org.present?
+
+    path = request.path.to_s
+    query = request.query_string.present? ? "?#{request.query_string}" : ""
+    main_path = if path == "/" || path.blank?
+                  "/#{custom_org.slug}"
+                elsif path.start_with?("/p/")
+                  "/#{custom_org.slug}#{path}"
+                elsif path.start_with?("/#{custom_org.slug}/") || path == "/#{custom_org.slug}"
+                  path
+                else
+                  "/#{custom_org.slug}#{path.start_with?('/') ? path : "/#{path}"}"
+                end
+
+    URL.url("#{main_path}#{query}")
   end
 end
 

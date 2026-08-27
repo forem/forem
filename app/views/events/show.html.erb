@@ -1,5 +1,16 @@
 <!-- Forem Event Show Page -->
 <% content_for :title, @event.title %>
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="<%= app_url(event_path(@event.event_name_slug, @event.event_variation_slug)) %>" />
+  <meta name="description" content="<%= @event.description %>">
+  <meta property="og:title" content="<%= @event.title %>" />
+  <meta property="og:description" content="<%= @event.description %>" />
+  <meta property="og:url" content="<%= app_url(event_path(@event.event_name_slug, @event.event_variation_slug)) %>" />
+  <meta property="og:type" content="event" />
+  <meta property="og:image" content="<%= @event.social_image_url %>" />
+  <meta name="twitter:image:src" content="<%= @event.social_image_url %>">
+  <meta name="twitter:card" content="summary_large_image">
+<% end %>
 <div class="container crayons-layout event-show-layout">
     <% if !@event.published? %>
       <div class="crayons-notice crayons-notice--warning mb-8 p-4 text-center">

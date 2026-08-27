@@ -356,6 +356,7 @@ function insertArticles(articles) {
       var newHTML = buildArticleHTML(article, currentUserId);
       newArticlesHTML += newHTML;
       initializeReadingListIcons();
+      initializeFavoritedMarkers();
     }
   });
   var distanceFromBottom =
@@ -396,6 +397,12 @@ function insertArticles(articles) {
   );
   var lastElement = singleArticles[singleArticles.length - 1];
   insertAfter(newNode, lastElement);
+
+  // Format dates in newly inserted articles using user's local timezone
+  if (typeof formatAllTimeElements === 'function') {
+    formatAllTimeElements(newNode);
+  }
+
   if (window.observeFeedElements && articles.length > 0) {
     window.observeFeedElements();
   }
@@ -484,6 +491,7 @@ function paginate(tag, params, requiresApproval) {
       const checkBlockedContentEvent = new CustomEvent('checkBlockedContent');
       window.dispatchEvent(checkBlockedContentEvent);
       initializeReadingListIcons();
+      initializeFavoritedMarkers();
       if (resultsCollection.length === 0) {
         const loadingElement = document.getElementById('loading-articles');
         if (loadingElement) {

@@ -38,6 +38,7 @@ module Moderator
     end
 
     def remove_mod_roles
+      Tag.with_role(:tag_moderator, @user).find_each(&:touch)
       @user.remove_role(:trusted)
       @user.remove_role(:tag_moderator)
       @user.notification_setting.update(email_tag_mod_newsletter: false)
@@ -47,6 +48,7 @@ module Moderator
     end
 
     def remove_tag_moderator_role
+      Tag.with_role(:tag_moderator, @user).find_each(&:touch)
       @user.remove_role(:tag_moderator)
       Mailchimp::Bot.new(user).manage_tag_moderator_list
     end
@@ -102,6 +104,10 @@ module Moderator
       when "Trusted"
         remove_negative_roles
         TagModerators::AddTrustedRole.call(user)
+      when "Community Leader Level 1"
+        assign_community_leader_role(:community_leader_level_1)
+      when "Community Leader Level 2"
+        assign_community_leader_role(:community_leader_level_2)
       when "Warned"
         warned
       when "Base Subscriber"
@@ -127,6 +133,11 @@ module Moderator
 
     def check_super_admin
       raise I18n.t("services.moderator.manage_activity_and_roles.need_super") unless @admin.super_admin?
+    end
+
+    def assign_community_leader_role(role)
+      remove_negative_roles
+      CommunityLeaders::Add.call(user, role)
     end
 
     def comment_suspended
