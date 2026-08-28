@@ -52,12 +52,7 @@
       <link rel="search" href="<%= URL.url("open-search.xml") %>" type="application/opensearchdescription+xml" title="<%= community_name %>" />
 
       <%# Machine-readable guidance for AI agents and other automated clients. %>
-      <link rel="llms" href="<%= URL.url("llms.txt") %>" type="text/plain" title="Guidance for AI agents" />
-      <% if Settings::General.enable_ai_disclosure %>
-        <meta name="ai-content-disclosure" content="required">
-        <meta name="ai-content-disclosure-levels" content="no_ai, some_ai, fully_autonomous">
-        <meta name="ai-content-disclosure-policy" content="<%= URL.url("llms.txt") %>">
-      <% end %>
+      <link rel="describedby" href="<%= app_url("llms.txt") %>" type="text/plain" title="Guidance for AI agents" />
 
       <meta property="forem:name" content="<%= community_name %>" />
       <meta property="forem:logo" content="<%= optimized_image_url(Settings::General.logo_png, width: 512, fetch_format: "png") %>" />

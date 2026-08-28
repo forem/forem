@@ -9,42 +9,17 @@ RSpec.describe "Comments" do
   let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
   let!(:comment) { create(:comment, commentable: article, user: user) }
 
-  describe "AI disclosure guidance for automated clients" do
+  describe "agent guidance discovery" do
     before { sign_in user }
 
-    context "when AI disclosure is enabled" do
-      before { allow(Settings::General).to receive(:enable_ai_disclosure).and_return(true) }
+    it "links to site guidance without advertising an unlaunched comment workflow" do
+      allow(Settings::General).to receive(:enable_ai_disclosure).and_return(true)
 
-      it "marks the comment form with the agent posting policy" do
-        get article.path
+      get article.path
 
-        expect(response.body).to include('data-agent-posting-policy="ai-disclosure-required"')
-        expect(response.body).to include("data-agent-instructions-url")
-      end
-
-      it "advertises the agent guidance document and disclosure policy in the head" do
-        get article.path
-
-        expect(response.body).to include('rel="llms"')
-        expect(response.body).to include('name="ai-content-disclosure" content="required"')
-      end
-
-      it "shows the disclosure notice above the comment buttons" do
-        get article.path
-
-        expect(response.body).to include("Review our AI disclosure policy")
-      end
-    end
-
-    context "when AI disclosure is disabled" do
-      before { allow(Settings::General).to receive(:enable_ai_disclosure).and_return(false) }
-
-      it "reports no policy and hides the notice" do
-        get article.path
-
-        expect(response.body).to include('data-agent-posting-policy="none"')
-        expect(response.body).not_to include("Review our AI disclosure policy")
-      end
+      expect(response.body).to include('rel="describedby"')
+      expect(response.body).not_to include("data-agent-posting-policy")
+      expect(response.body).not_to include("Review our AI disclosure policy")
     end
   end
 

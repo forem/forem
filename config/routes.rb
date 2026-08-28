@@ -423,7 +423,6 @@ Rails.application.routes.draw do
     # You can have the root of your site routed with "root
     get "/robots.:format", to: "pages#robots"
     get "/llms.:format", to: "pages#llms"
-    get "/.well-known/ai.txt", to: "pages#ai_txt", defaults: { format: "text" }
 
     # Canonical location of the generated OpenAPI description, plus redirects from the
     # paths automated clients commonly probe for a spec before falling back to guessing.

@@ -1,6 +1,6 @@
 class PagesController < ApplicationController
   # No authorization required for entirely public controller
-  before_action :set_cache_control_headers, only: %i[show badge bounty faq robots llms ai_txt openapi]
+  before_action :set_cache_control_headers, only: %i[show badge bounty faq robots llms openapi]
 
   def show
     params[:slug] = combined_fragmented_slug if params[:slug_0].present?
@@ -123,14 +123,6 @@ class PagesController < ApplicationController
     custom_domain_org
     respond_to :text
     set_surrogate_key_header "llms_page"
-  end
-
-  def ai_txt
-    # AI usage preferences, following the field vocabulary of the IETF ai.txt draft
-    # (draft-car-ai-txt-wellknown). Served at /.well-known/ai.txt.
-    custom_domain_org
-    respond_to :text
-    set_surrogate_key_header "ai_txt_page"
   end
 
   def openapi

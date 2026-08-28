@@ -364,8 +364,6 @@ RSpec.describe "Pages" do
 
       text = "Sitemap: #{URL.url('sitemap-index.xml')}"
       expect(response.body).to include(text)
-      expect(response.body).to include("Content-Signal: search=yes")
-      expect(response.body).to include(URL.url("llms.txt"))
     end
 
     context "when requested on a custom domain organization" do
@@ -373,6 +371,8 @@ RSpec.describe "Pages" do
 
       before do
         allow(Settings::General).to receive(:app_domain).and_return("forem.com")
+        allow(ApplicationConfig).to receive(:[]).and_call_original
+        allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("http://")
         FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor.new(organization))
       end
 
@@ -381,32 +381,20 @@ RSpec.describe "Pages" do
 
         expect(response.body).to include("Sitemap: http://blog.mlh.com/sitemap-index.xml")
       end
+
+      it "serves agent guidance with links on the requested domain" do
+        get "http://blog.mlh.com/llms.txt"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("http://blog.mlh.com/api/v1/openapi.json")
+        expect(response.body).to include("http://forem.com/code-of-conduct")
+      end
     end
   end
 
   describe "GET /.well-known/ai.txt" do
-    it "declares AI usage preferences" do
-      get "/.well-known/ai.txt"
-
-      expect(response).to have_http_status(:ok)
-      expect(response.media_type).to eq("text/plain")
-      expect(response.body).to include("Site-Name:")
-      expect(response.body).to include("Contact: #{URL.url('contact')}")
-    end
-
-    it "requires disclosure when the setting is enabled" do
-      allow(Settings::General).to receive(:enable_ai_disclosure).and_return(true)
-      get "/.well-known/ai.txt"
-
-      expect(response.body).to include("AI-Disclosure: required")
-      expect(response.body).to include("AI-Disclosure-Field: ai_disclosure_level")
-    end
-
-    it "omits the disclosure block when the setting is disabled" do
-      allow(Settings::General).to receive(:enable_ai_disclosure).and_return(false)
-      get "/.well-known/ai.txt"
-
-      expect(response.body).not_to include("AI-Disclosure: required")
+    it "does not publish an experimental policy document" do
+      expect { get "/.well-known/ai.txt" }.to raise_error(ActionController::RoutingError)
     end
   end
 
@@ -438,28 +426,35 @@ RSpec.describe "Pages" do
       expect(response.body).to include("# #{Settings::Community.community_name}")
       expect(response.body).to include("## API")
       expect(response.body).to include(URL.url("api/v1/openapi.json"))
-      expect(response.body).to include(URL.url(".well-known/ai.txt"))
+      expect(response.body).not_to include(".well-known/ai.txt")
     end
 
     context "when AI disclosure is enabled" do
       before { allow(Settings::General).to receive(:enable_ai_disclosure).and_return(true) }
 
-      it "documents the required disclosure levels" do
+      it "documents nuanced disclosure requirements before its file lists" do
         get "/llms.txt"
 
-        expect(response.body).to include("## AI disclosure")
+        disclosure_position = response.body.index("ai_disclosure_level")
+        api_position = response.body.index("## API")
+
+        expect(disclosure_position).to be < api_position
+        expect(response.body).not_to include("## AI disclosure")
+        expect(response.body).to include("AI-assisted and fully autonomous articles are allowed")
+        expect(response.body).to include("some_ai")
         expect(response.body).to include("fully_autonomous")
-        expect(response.body).to include("ai_disclosure_level")
+        expect(response.body).to include("human remains accountable")
+        expect(response.body).not_to include("comment[ai_disclosure_level]")
       end
     end
 
     context "when AI disclosure is disabled" do
       before { allow(Settings::General).to receive(:enable_ai_disclosure).and_return(false) }
 
-      it "omits the disclosure section" do
+      it "omits the disclosure instructions" do
         get "/llms.txt"
 
-        expect(response.body).not_to include("## AI disclosure")
+        expect(response.body).not_to include("ai_disclosure_level")
       end
     end
   end

@@ -3257,6 +3257,47 @@
         }
       }
     },
+    "/api/v1/openapi.json": {
+      "get": {
+        "summary": "OpenAPI description",
+        "tags": [
+          "openapi"
+        ],
+        "security": [
+
+        ],
+        "description": "Retrieve the machine-readable OpenAPI contract for this Forem instance.\n\nAutomated clients should use this document instead of inferring endpoint schemas from responses or errors.",
+        "operationId": "getOpenAPIDescription",
+        "responses": {
+          "200": {
+            "description": "The OpenAPI description",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "openapi",
+                    "info",
+                    "paths"
+                  ],
+                  "properties": {
+                    "openapi": {
+                      "type": "string"
+                    },
+                    "info": {
+                      "type": "object"
+                    },
+                    "paths": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/organizations/{username}": {
       "get": {
         "summary": "An organization (by username)",

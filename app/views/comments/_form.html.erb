@@ -14,7 +14,7 @@
   </div>
 <% end %>
 
-<%= form_for(@comment, authenticity_token: false, html: { class: "comment-form print-hidden", data: { agent_instructions_url: URL.url("llms.txt"), agent_posting_policy: Settings::General.enable_ai_disclosure ? "ai-disclosure-required" : "none" } }) do |f| %>
+<%= form_for(@comment, authenticity_token: false, html: { class: "comment-form print-hidden" }) do |f| %>
   <% if @article&.comment_template.present? && @comment.new_record? %>
     <div class="article-comment-form-preamble">
       <%= t("views.comments.write.template.article") %>
@@ -68,14 +68,6 @@
     </div>
 
     <div class="comment-form__preview text-styles text-styles--secondary" id="preview-div"></div>
-
-    <% if Settings::General.enable_ai_disclosure %>
-      <!-- Automated clients: this community requires AI usage to be disclosed. See /llms.txt -->
-      <p class="comment-form__ai-disclosure-notice fs-s color-base-60 mb-2">
-        <%= t("views.comments.write.ai_disclosure_notice_html",
-              link: link_to(t("views.comments.write.ai_disclosure_notice_link"), "/llms.txt", target: "_blank", rel: "noopener")) %>
-      </p>
-    <% end %>
 
     <div class="comment-form__buttons mb-4 flex items-center flex-wrap gap-2">
       <button type="submit" class="crayons-btn mr-2 js-btn-enable" onclick="validateField(event)" data-tracking-name="comment_submit_button" disabled><%= t("views.comments.write.submit") %></button>
