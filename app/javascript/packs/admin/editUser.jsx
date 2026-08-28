@@ -6,4 +6,9 @@ initializeDropdown({
   dropdownContentId: 'options-dropdown',
 });
 
+initializeDropdown({
+  triggerElementId: 'more-details-dropdown-trigger',
+  dropdownContentId: 'more-details-dropdown',
+});
+
 document.body.addEventListener('click', showUserModal);
