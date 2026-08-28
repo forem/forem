@@ -25,6 +25,7 @@ en:
         subject: "Password Changed"
       reset_password_instructions:
         subject: "Reset password instructions"
+        admin_triggered_html: "An admin (%{admin}) requested this password reset to help you regain access to your account."
       unlock_instructions:
         subject: "Unlock instructions"
       magic_link:

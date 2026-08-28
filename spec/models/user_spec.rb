@@ -71,8 +71,100 @@ RSpec.describe User do
       user = create(:user)
       expect(user.trackable_payload.keys).to contain_exactly(
         "id", "username", "email", "name", "registered_at", "confirmed_at", "email_newsletter",
-        "email_digest_periodic", "mlh_user_id"
+        "email_digest_periodic", "email_comment_notifications", "email_follower_notifications",
+        "email_mention_notifications", "email_unread_notifications", "email_badge_notifications",
+        "email_tag_mod_newsletter", "email_community_mod_newsletter",
+        "mlh_user_id",
+        "signed_up_with_html", "unsubscribe_url", "notification_settings_url"
       )
+    end
+
+    # Core maps each of these onto its own Customer.io subscription topic, and
+    # can only learn the state of an account that never toggles anything from
+    # this payload, so all nine consents have to ride along.
+    it "seeds every email consent Core mirrors, not just the newsletter and digest" do
+      user = create(:user)
+      user.notification_setting.update!(email_comment_notifications: false,
+                                        email_follower_notifications: false,
+                                        email_mention_notifications: true,
+                                        email_unread_notifications: false,
+                                        email_badge_notifications: true)
+
+      payload = user.reload.trackable_payload
+
+      expect(payload).to include(
+        "email_comment_notifications" => false,
+        "email_follower_notifications" => false,
+        "email_mention_notifications" => true,
+        "email_unread_notifications" => false,
+        "email_badge_notifications" => true,
+      )
+    end
+
+    # Customer.io fails the ENTIRE body render of a template that references an
+    # event attribute the triggering event does not carry, and fails on the first
+    # such reference -- so these three must always be present, even when blank.
+    it "always carries the three email footer keys, whatever else is missing" do
+      user = create(:user)
+      allow(Users::EmailFooterPayload).to receive(:unsubscribe_token).and_raise(StandardError, "boom")
+
+      payload = user.trackable_payload
+
+      expect(payload).to include(
+        "signed_up_with_html" => "",
+        "unsubscribe_url" => "",
+        "notification_settings_url" => "",
+      )
+    end
+
+    it "carries a one-click unsubscribe url that the unsubscribe controller accepts" do
+      user = create(:user)
+
+      url = user.trackable_payload["unsubscribe_url"]
+      token = Rack::Utils.parse_query(URI.parse(url).query)["ut"]
+      verified = Rails.application.message_verifier(:unsubscribe).verify(token).with_indifferent_access
+
+      expect(URI.parse(url).path).to eq("/email_subscriptions/unsubscribe")
+      expect(verified[:user_id]).to eq(user.id)
+      expect(verified[:email_type]).to eq("email_newsletter")
+      expect(Time.zone.parse(verified[:expires_at])).to be > Time.current
+    end
+
+    # Production sets Rails.application.routes.default_url_options to the
+    # protocol alone, while test and development both set a host there. Relying
+    # on the ambient default therefore passes locally and blanks every key in
+    # production, which is exactly what happened -- so pin the production shape.
+    it "still builds the footer when only a protocol is configured, as in production" do
+      user = create(:user)
+      allow(Rails.application.routes).to receive(:default_url_options).and_return({ protocol: "https" })
+
+      payload = user.trackable_payload
+
+      expect(payload["signed_up_with_html"]).to be_present
+      expect(payload["unsubscribe_url"]).to include("/email_subscriptions/unsubscribe?ut=")
+      expect(payload["notification_settings_url"]).to end_with("/settings/notifications")
+    end
+
+    it "points the footer at the user's onboarding subforem" do
+      subforem = create(:subforem, domain: "onboarding.example.com")
+      user = create(:user, onboarding_subforem_id: subforem.id)
+
+      payload = user.trackable_payload
+
+      expect(URI.parse(payload["unsubscribe_url"]).host).to eq("onboarding.example.com")
+      expect(payload["notification_settings_url"]).to end_with("/settings/notifications")
+    end
+
+    # signed_up_with resolves the community name from try(:subforem_id), so the
+    # copy has to follow the same subforem as the URLs beside it rather than
+    # falling back to the default community.
+    it "names the user's own subforem community in the signed-up-with copy" do
+      subforem = create(:subforem, domain: "onboarding.example.com")
+      user = create(:user, onboarding_subforem_id: subforem.id)
+      allow(Settings::Community).to receive(:community_name)
+        .with(subforem_id: subforem.id).and_return("Onboarding Community")
+
+      expect(user.trackable_payload["signed_up_with_html"]).to include("Onboarding Community")
     end
 
     it "reflects registration, confirmation, and email consent state in the payload" do

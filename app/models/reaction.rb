@@ -1,4 +1,6 @@
 class Reaction < ApplicationRecord
+  include ActivityTrackable
+
   REACTABLE_TYPES = %w[Comment Article User].freeze
   STATUSES = %w[valid invalid confirmed archived].freeze
 
@@ -204,6 +206,48 @@ class Reaction < ApplicationRecord
       I18n.l(created_at, format: :short_with_yy)
     end
   end
+
+  # === ActivityTrackable (Customer.io CDP activity events) ===
+  # article_reacted / _saved / comment_reacted, plus their un- counterparts.
+
+  def trackable_activity_payload
+    {
+      "category" => category,
+      "reactable_type" => reactable_type,
+      "reactable_id" => reactable_id,
+      "reactable_user_id" => reactable.try(:user_id)
+    }
+  end
+
+  # No :updated branch — reactions are created or destroyed, never edited;
+  # status flips are moderation bookkeeping.
+  def trackable_activity_event(phase)
+    case phase
+    when :created then trackable_event_name
+    when :destroyed then trackable_event_name(removed: true)
+    end
+  end
+
+  # Public reactions plus readinglist, the same set as .for_analytics. Excludes
+  # privileged moderation categories (vomit alone outnumbers every public
+  # reaction combined) and retired ones (thinking, hands), which are all
+  # published: false in reactions.yml — as is readinglist, hence the explicit
+  # allowance for saves.
+  def trackable_event_name(removed: false)
+    return unless reaction_category&.visible_to_public? || category == "readinglist"
+
+    case reactable_type
+    when "Article"
+      if category == "readinglist"
+        removed ? "article_unsaved" : "article_saved"
+      else
+        removed ? "article_unreacted" : "article_reacted"
+      end
+    when "Comment"
+      removed ? "comment_unreacted" : "comment_reacted"
+    end
+  end
+  private :trackable_activity_payload, :trackable_activity_event, :trackable_event_name
 
   private
 

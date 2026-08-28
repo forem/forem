@@ -30,6 +30,7 @@
       <% else %>
         <meta name="search-script" content="<%= asset_path 'Search.js' %>">
       <% end %>
+      <meta name="mermaid-script" content="<%= asset_path 'mermaidRenderer.js' %>">
       <% if Settings::UserExperience.show_mobile_app_banner %>
         <%= javascript_include_tag "runtimeBanner", defer: true %>
       <% end %>
@@ -224,7 +225,7 @@
     <div id="cookie-consent"></div>
   <% end %>
   <%= render "articles/reaction_category_resources" %>
-  <% if RequestStore.store[:subforem_id].present? %>
+  <% if RequestStore.store[:subforem_id].present? || request.env["forem.custom_domain_org"].present? %>
     <%= render "layouts/bottom_scripts"  %>
   <% end %>
   <%= Settings::UserExperience.bottom_of_body_content.html_safe %>

@@ -350,6 +350,10 @@ fr:
           description: The user flags affect the scores of articles and comments. Each valid or open user flag further reduces the score of the article and comment.
           no_flags: No flags received against this user yet.
           title: Flags received
+        content_flags:
+          description: Signalements laissés sur les publications et commentaires de ce membre, y compris ceux émis automatiquement par la modération. Marquer un signalement comme invalide restaure le score du contenu.
+          no_flags: Aucun signalement reçu sur les publications ou commentaires de cet utilisateur pour le moment.
+          title: Signalements sur les publications et commentaires
         profile:
           locked:
             icon: Access locked
@@ -373,6 +377,18 @@ fr:
             remove_social: Remove social accounts
             banish: Banish user
             delete: Delete user
+        password:
+          title: Accès au mot de passe
+          description: Définissez directement un nouveau mot de passe ou envoyez à l’utilisateur un e-mail de réinitialisation précisant qu’il a été déclenché par un administrateur.
+          new_password: Nouveau mot de passe
+          password_confirmation: Confirmer le nouveau mot de passe
+          submit: Mettre à jour le mot de passe
+          success: Mot de passe mis à jour avec succès.
+          reset_title: Envoyer un e-mail de réinitialisation du mot de passe
+          reset_description: Envoyez à l’utilisateur un lien de réinitialisation qui explique qu’il a été initié par un administrateur pour l’aider.
+          reset_submit: Envoyer l’e-mail de réinitialisation du mot de passe
+          reset_sent: E-mail de réinitialisation du mot de passe envoyé avec succès.
+          reset_error: Échec de l’envoi de l’e-mail de réinitialisation du mot de passe.
         edit_profile:
           heading: Modifier le profil de %{user}
           desc_html: Les changements faits ici sont immédiatement publics sur le profil de l'utilisateur.
@@ -441,6 +457,7 @@ fr:
           overview: Overview
           notes: Notes
           emails: Emails
+          security: Security
           reports: Reports
           flags: Flags
           audit_log: Journal d'audit

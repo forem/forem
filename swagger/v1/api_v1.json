@@ -142,6 +142,94 @@
         }
       }
     },
+    "/api/agent_sessions/presign": {
+      "post": {
+        "summary": "request a presigned URL to upload raw session transcript to S3",
+        "tags": [
+          "agent_sessions"
+        ],
+        "description": "Generate an S3 presigned PUT URL and object key for uploading raw session transcripts directly to S3.",
+        "operationId": "presignAgentSession",
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "s3_key": {
+                      "type": "string"
+                    },
+                    "presigned_url": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "s3_key",
+                    "presigned_url"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          },
+          "503": {
+            "description": "service unavailable"
+          }
+        }
+      }
+    },
+    "/api/agent_sessions/{id}/raw_url": {
+      "get": {
+        "summary": "request a presigned S3 GET URL to download the raw session transcript",
+        "tags": [
+          "agent_sessions"
+        ],
+        "description": "Retrieve a temporary presigned GET URL to download the original raw transcript file from S3.",
+        "operationId": "getAgentSessionRawUrl",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The unique slug or ID of the agent session.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-session-abc123"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "raw_url": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "raw_url"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          },
+          "404": {
+            "description": "not found"
+          }
+        }
+      }
+    },
     "/api/analytics/totals": {
       "get": {
         "summary": "Retrieve analytics totals",
@@ -477,7 +565,7 @@
         "tags": [
           "articles"
         ],
-        "description": "This endpoint allows the client to create a new article.\n\n\"Articles\" are all the posts that users create on DEV/Forem that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but are referred to as articles within the code.\n\n### Body Parameter Tips:\n- **title**: A compelling and descriptive title for the article.\n- **body_markdown**: The main text of the article in Markdown format. You can use standard Markdown as well as Forem-specific Liquid tags (e.g., `{% embed ... %}`). You can also include YAML front matter at the very beginning of the markdown to specify metadata such as tags, series, and cover image.\n- **published**: Set to `true` to immediately publish the article and make it visible in feeds. Set to `false` (default) to save it as a draft.\n- **tags**: A comma-separated list of tags (up to 4 tags). Tags help categorize your post and improve discoverability.\n- **series**: Group articles together by specifying a series name. If the series does not exist, it will be created.\n- **main_image**: Absolute URL of the cover image for the article.\n- **canonical_url**: If this post was originally published elsewhere, specify the canonical URL to maintain SEO integrity.\n- **description**: A short summary of the article used for previews and SEO meta description.",
+        "description": "This endpoint allows the client to create a new article.\n\n\"Articles\" are all the posts that users create on DEV/Forem that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but are referred to as articles within the code.\n\n### Body Parameter Tips:\n- **title**: A compelling and descriptive title for the article.\n- **body_markdown**: The main text of the article in Markdown format. You can use standard Markdown as well as Forem-specific Liquid tags (e.g., `{% embed ... %}`). You can also include YAML front matter at the very beginning of the markdown to specify metadata such as tags, series, and cover image.\n- **published**: Set to `true` to immediately publish the article and make it visible in feeds. Set to `false` (default) to save it as a draft.\n- **tags**: A comma-separated list of tags (up to 4 tags). Tags help categorize your post and improve discoverability.\n- **series**: Group articles together by specifying a series name. If the series does not exist, it will be created.\n- **main_image**: Absolute URL of the cover image for the article.\n- **canonical_url**: If this post was originally published elsewhere, specify the canonical URL to maintain SEO integrity.\n- **description**: A short summary of the article used for previews and SEO meta description.\n- **ai_disclosure_level**: AI tooling usage disclosure (`not_disclosed`, `no_ai`, `some_ai`, `fully_autonomous`).",
         "operationId": "createArticle",
         "parameters": [
 
@@ -765,7 +853,7 @@
         "tags": [
           "articles"
         ],
-        "description": "This endpoint allows the client to update an existing article by its unique numerical `id`.\n\n### Authorization Constraints:\n- The API key provided must belong to the author of the article.\n- Supports updating individual fields such as `title`, `body_markdown`, `published`, `tags`, etc.\n- Setting `published: false` on an already published article will revert it to draft status.",
+        "description": "This endpoint allows the client to update an existing article by its unique numerical `id`.\n\n### Authorization Constraints:\n- The API key provided must belong to the author of the article.\n- Supports updating individual fields such as `title`, `body_markdown`, `published`, `tags`, `ai_disclosure_level`, etc.\n- Setting `published: false` on an already published article will revert it to draft status.",
         "operationId": "updateArticle",
         "parameters": [
           {
@@ -1467,7 +1555,7 @@
         "tags": [
           "badge_achievements"
         ],
-        "description": "Award a badge to a user. Requires administrator privileges.\n\n### Integration Tips:\n- **user_id**: The numeric ID of the user receiving the badge.\n- **badge_id**: The numeric ID of the badge being awarded.\n- **rewarding_context_message_markdown**: Optional personalized message shown in the notification or profile feed to explain why the user was awarded the badge.",
+        "description": "Award a badge to a user. Requires administrator privileges.\n\n### Integration Tips:\n- **user_id**: The numeric ID of the user receiving the badge.\n- **badge_id**: The numeric ID of the badge being awarded.\n- **rewarding_context_message_markdown**: Optional personalized message shown in the notification or profile feed to explain why the user was awarded the badge.\n- **metadata**: Optional key/value data stored with the achievement for context.\n- If the badge cannot be awarded more than once and the user already holds it, the request is rejected with `409 Conflict`, and the conflicting `achievement_id` is included in the response. A `422` is returned for other request errors.",
         "parameters": [
 
         ],
@@ -1481,6 +1569,35 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "achievement_id": {
+                      "type": "integer",
+                      "description": "ID of the conflicting achievement awarding the badge to the user."
+                    }
+                  },
+                  "required": [
+                    "errors",
+                    "achievement_id"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "unprocessable"
           }
         },
         "requestBody": {
@@ -1503,6 +1620,10 @@
                       },
                       "include_default_description": {
                         "type": "boolean"
+                      },
+                      "metadata": {
+                        "type": "object",
+                        "additionalProperties": true
                       }
                     },
                     "required": [
@@ -2647,6 +2768,185 @@
           },
           "401": {
             "description": "unauthorized"
+          }
+        }
+      }
+    },
+    "/api/events": {
+      "get": {
+        "summary": "Retrieve events",
+        "tags": [
+          "events"
+        ],
+        "security": [
+
+        ],
+        "description": "Retrieve a list of events on the platform.\n\n### Query Parameters:\n- **type_of**: Filter events by their type (`live_stream`, `takeover`, `other`, `challenge`).",
+        "operationId": "getEvents",
+        "parameters": [
+          {
+            "name": "type_of",
+            "in": "query",
+            "required": false,
+            "description": "Filter events by type.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "live_stream",
+                "takeover",
+                "other",
+                "challenge"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of events",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Event"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create an event",
+        "tags": [
+          "events"
+        ],
+        "description": "Create a new event. Requires administrator privileges.",
+        "operationId": "createEvent",
+        "parameters": [
+
+        ],
+        "responses": {
+          "201": {
+            "description": "Event created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventInput"
+              }
+            }
+          },
+          "description": "Event parameters to create."
+        }
+      }
+    },
+    "/api/events/{id}": {
+      "get": {
+        "summary": "Retrieve an event",
+        "tags": [
+          "events"
+        ],
+        "security": [
+
+        ],
+        "description": "Retrieve a single event by ID.",
+        "operationId": "getEventById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the event.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The requested event",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update an event",
+        "tags": [
+          "events"
+        ],
+        "description": "Update an existing event. Requires administrator privileges.",
+        "operationId": "updateEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the event to update.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Event updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventInput"
+              }
+            }
+          },
+          "description": "Event parameters to update."
+        }
+      },
+      "delete": {
+        "summary": "Delete an event",
+        "tags": [
+          "events"
+        ],
+        "description": "Delete an event. Requires administrator privileges.",
+        "operationId": "deleteEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the event to delete.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Event deleted"
           }
         }
       }
@@ -5281,7 +5581,7 @@
           "users",
           "admin"
         ],
-        "description": "Update a user's email notification preferences (e.g., unsubscribing them from the system newsletter). Requires Super Admin credentials.",
+        "description": "Update a user's email notification preferences (e.g., unsubscribing them from the system newsletter or the periodic digest). Any subset of the listed properties may be supplied; at least one is required. Requires Super Admin credentials.",
         "parameters": [
           {
             "name": "id",
@@ -5308,6 +5608,24 @@
                     "type": "object",
                     "properties": {
                       "email_newsletter": {
+                        "type": "boolean"
+                      },
+                      "email_digest_periodic": {
+                        "type": "boolean"
+                      },
+                      "email_comment_notifications": {
+                        "type": "boolean"
+                      },
+                      "email_follower_notifications": {
+                        "type": "boolean"
+                      },
+                      "email_mention_notifications": {
+                        "type": "boolean"
+                      },
+                      "email_unread_notifications": {
+                        "type": "boolean"
+                      },
+                      "email_badge_notifications": {
                         "type": "boolean"
                       }
                     }
@@ -5864,6 +6182,20 @@
             "type": "integer",
             "format": "int32"
           },
+          "ai_disclosure_level": {
+            "type": "string",
+            "enum": [
+              "not_disclosed",
+              "no_ai",
+              "some_ai",
+              "fully_autonomous"
+            ],
+            "description": "Level of AI tooling usage disclosure"
+          },
+          "ai_disclosure_label": {
+            "type": "string",
+            "description": "Human-readable label of AI disclosure"
+          },
           "user": {
             "$ref": "#/components/schemas/SharedUser"
           },
@@ -5980,6 +6312,16 @@
               "organization_id": {
                 "type": "integer",
                 "nullable": true
+              },
+              "ai_disclosure_level": {
+                "type": "string",
+                "enum": [
+                  "not_disclosed",
+                  "no_ai",
+                  "some_ai",
+                  "fully_autonomous"
+                ],
+                "description": "Level of AI tooling usage disclosure"
               }
             }
           }
@@ -6440,6 +6782,20 @@
             "description": "Podcast image url",
             "type": "string",
             "format": "url"
+          },
+          "ai_disclosure_level": {
+            "type": "string",
+            "enum": [
+              "not_disclosed",
+              "no_ai",
+              "some_ai",
+              "fully_autonomous"
+            ],
+            "description": "Level of AI tooling usage disclosure"
+          },
+          "ai_disclosure_label": {
+            "type": "string",
+            "description": "Human-readable label of AI disclosure"
           }
         }
       },
@@ -7551,6 +7907,11 @@
           "include_default_description": {
             "type": "boolean"
           },
+          "metadata": {
+            "type": "object",
+            "description": "Key/value data supplied for context",
+            "additionalProperties": true
+          },
           "created_at": {
             "type": "string",
             "format": "date-time"
@@ -7651,6 +8012,200 @@
           "description",
           "logo_image_url",
           "cover_image_url"
+        ]
+      },
+      "Event": {
+        "description": "Representation of an event",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": {
+            "type": "string"
+          },
+          "event_name_slug": {
+            "type": "string"
+          },
+          "event_variation_slug": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "full_details": {
+            "type": "string",
+            "nullable": true,
+            "description": "Full text dump of all event details, intended for agent and API consumption."
+          },
+          "type_of": {
+            "type": "string",
+            "enum": [
+              "live_stream",
+              "takeover",
+              "other",
+              "challenge"
+            ]
+          },
+          "start_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "end_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "published": {
+            "type": "boolean"
+          },
+          "primary_stream_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "bg_color_hex": {
+            "type": "string",
+            "nullable": true
+          },
+          "broadcast_config": {
+            "type": "string",
+            "enum": [
+              "no_broadcast",
+              "tagged_broadcast",
+              "global_broadcast"
+            ]
+          },
+          "broadcast_ended_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "user_id": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "organization_id": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "page_id": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "data": {
+            "type": "object",
+            "nullable": true
+          },
+          "tags_array": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "cached_tag_list": {
+            "type": "string",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "event_name_slug",
+          "event_variation_slug",
+          "type_of",
+          "start_time",
+          "end_time",
+          "published",
+          "created_at",
+          "updated_at"
+        ]
+      },
+      "EventInput": {
+        "description": "Representation of an Event to be created/updated",
+        "type": "object",
+        "properties": {
+          "event": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "event_name_slug": {
+                "type": "string"
+              },
+              "event_variation_slug": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string",
+                "nullable": true
+              },
+              "full_details": {
+                "type": "string",
+                "nullable": true,
+                "description": "Full text dump of all event details."
+              },
+              "primary_stream_url": {
+                "type": "string",
+                "nullable": true
+              },
+              "published": {
+                "type": "boolean",
+                "default": false
+              },
+              "start_time": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "end_time": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "type_of": {
+                "type": "string",
+                "enum": [
+                  "live_stream",
+                  "takeover",
+                  "other",
+                  "challenge"
+                ]
+              },
+              "organization_id": {
+                "type": "integer",
+                "nullable": true
+              },
+              "tag_list": {
+                "type": "string",
+                "nullable": true
+              },
+              "data": {
+                "type": "object",
+                "nullable": true
+              }
+            },
+            "required": [
+              "title",
+              "event_name_slug",
+              "event_variation_slug",
+              "start_time",
+              "end_time"
+            ]
+          }
+        },
+        "required": [
+          "event"
         ]
       }
     }

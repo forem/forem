@@ -53,6 +53,13 @@ class ForemInstance
     ApplicationConfig["CUSTOMERIO_APP_KEY"].present?
   end
 
+  # The Track API (DeliveryMethods::CustomerIoEvent) authenticates with the site
+  # id and track api key, not the App API key customerio_enabled? checks.
+  def self.customerio_track_enabled?
+    ApplicationConfig["CUSTOMERIO_SITE_ID"].present? &&
+      ApplicationConfig["CUSTOMERIO_TRACK_API_KEY"].present?
+  end
+
   # Full cutover: Customer.io handles campaign/broadcast email (drip, admin
   # one-offs/newsletters) only when the integration is on AND the delivery
   # flag is enabled globally, not just for rollout batches.
