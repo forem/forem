@@ -45,16 +45,21 @@ module Images
     def self.cloudflare(img_src, **kwargs)
       template = Addressable::Template.new("https://{domain}/{directory}/image/{options*}/{src}")
       fit = kwargs[:crop] == "crop" ? "cover" : "scale-down"
+
+      options = {
+        width: kwargs[:width],
+        height: kwargs[:height],
+        fit: fit,
+        gravity: "auto"
+      }
+      # Preserve animation for GIFs and animated WebPs
+      is_animated = img_src&.match?(/\.(gif|webp)(\?.*)?$/i)
+      options[:format] = "auto" unless is_animated
+
       template.expand(
         domain: ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"],
         directory: CLOUDFLARE_DIRECTORY,
-        options: {
-          width: kwargs[:width],
-          height: kwargs[:height],
-          fit: fit,
-          gravity: "auto",
-          format: "auto"
-        },
+        options: options,
         src: extract_suffix_url(img_src),
       ).to_s
     end
@@ -69,8 +74,10 @@ module Images
                        else
                          "limit"
                        end
-      if img_src&.include?(".gif")
+      if img_src&.match?(/\.(gif|webp)(\?.*)?$/i)
         options[:quality] = 66
+        options[:fetch_format] = nil
+        options[:flags] = "animated"
       end
 
       ActionController::Base.helpers.cl_image_path(img_src, options)
