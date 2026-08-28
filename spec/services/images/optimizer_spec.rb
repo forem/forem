@@ -21,6 +21,14 @@ RSpec.describe Images::Optimizer, type: :service do
       expect(described_class.call(nil)).to be_nil
     end
 
+    it "does not optimize urls with agent_sessions path" do
+      session_url = "https://dev-to-uploads.s3.amazonaws.com/agent_sessions/1/abc-123.jsonl"
+      expect(described_class.call(session_url)).to eq(session_url)
+      expect(described_class).not_to have_received(:cloudinary)
+      expect(described_class).not_to have_received(:cloudflare)
+      expect(described_class).not_to have_received(:imgproxy)
+    end
+
     it "returns the image if neither cloudinary nor imgproxy are enabled", :aggregate_failures do
       allow(described_class).to receive_messages(cloudinary_enabled?: false, imgproxy_enabled?: false)
 
@@ -50,8 +58,7 @@ RSpec.describe Images::Optimizer, type: :service do
 
     context "when cloudflare is contextually preferred" do
       before do
-        allow(described_class).to receive(:cloudflare_contextually_preferred?).and_return(true)
-        allow(described_class).to receive(:cloudflare_enabled?).and_return(true)
+        allow(described_class).to receive_messages(cloudflare_contextually_preferred?: true, cloudflare_enabled?: true)
         allow(described_class).to receive(:cloudflare)
       end
 
@@ -65,7 +72,6 @@ RSpec.describe Images::Optimizer, type: :service do
   end
 
   describe "#cloudinary", :cloudinary do
-
     it "performs exactly like cl_image_path" do
       cloudinary_url = cl_image_path(image_url,
                                      type: "fetch",

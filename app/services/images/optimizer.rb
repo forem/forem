@@ -1,7 +1,12 @@
 module Images
   module Optimizer
+    DISALLOWED_PATH_PATTERNS = [
+      %r{/agent_sessions/},
+    ].freeze
+
     def self.call(img_src, **kwargs)
       return img_src if img_src.blank? || img_src.starts_with?("/")
+      return img_src if disallowed_image_source?(img_src)
 
       if imgproxy_enabled?
         imgproxy(img_src, **kwargs)
@@ -12,6 +17,10 @@ module Images
       else
         img_src
       end
+    end
+
+    def self.disallowed_image_source?(img_src)
+      DISALLOWED_PATH_PATTERNS.any? { |pattern| img_src.to_s.match?(pattern) }
     end
 
     # Each service has different ways of describing image cropping.
@@ -128,11 +137,12 @@ module Images
       return full_url unless full_url&.starts_with?(cloudflare_prefix)
 
       uri = URI.parse(full_url)
-      match = uri.path.match(%r{https?.+})
+      match = uri.path.match(/https?.+/)
       CGI.unescape(match[0]) if match
     end
 
-    # This is a feature-flagged Cloudflare preference for hosted images only — works specifically with S3-hosted image sources.
+    # This is a feature-flagged Cloudflare preference for hosted images only —
+    # works specifically with S3-hosted image sources.
     def self.cloudflare_contextually_preferred?(img_src)
       return false unless cloudflare_enabled?
       return false unless FeatureFlag.enabled?(:cloudflare_preferred_for_hosted_images)

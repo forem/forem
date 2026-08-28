@@ -142,6 +142,94 @@
         }
       }
     },
+    "/api/agent_sessions/presign": {
+      "post": {
+        "summary": "request a presigned URL to upload raw session transcript to S3",
+        "tags": [
+          "agent_sessions"
+        ],
+        "description": "Generate an S3 presigned PUT URL and object key for uploading raw session transcripts directly to S3.",
+        "operationId": "presignAgentSession",
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "s3_key": {
+                      "type": "string"
+                    },
+                    "presigned_url": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "s3_key",
+                    "presigned_url"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          },
+          "503": {
+            "description": "service unavailable"
+          }
+        }
+      }
+    },
+    "/api/agent_sessions/{id}/raw_url": {
+      "get": {
+        "summary": "request a presigned S3 GET URL to download the raw session transcript",
+        "tags": [
+          "agent_sessions"
+        ],
+        "description": "Retrieve a temporary presigned GET URL to download the original raw transcript file from S3.",
+        "operationId": "getAgentSessionRawUrl",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The unique slug or ID of the agent session.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-session-abc123"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "raw_url": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "raw_url"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          },
+          "404": {
+            "description": "not found"
+          }
+        }
+      }
+    },
     "/api/analytics/totals": {
       "get": {
         "summary": "Retrieve analytics totals",
