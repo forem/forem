@@ -133,6 +133,77 @@ RSpec.describe CustomMailer, type: :mailer do
       end
     end
 
+    context "with one-click unsubscribe" do
+      let(:email) { mail }
+
+      include_examples "#renders_one_click_unsubscribe_headers"
+    end
+
+    context "when the Customer.io cutover is complete" do
+      let(:email) { create(:email, type_of: "newsletter") }
+
+      before do
+        allow(ForemInstance).to receive_messages(smtp_enabled?: true, customerio_email_cutover?: true)
+      end
+
+      it "sends nothing -- broadcasts are authored in Customer.io" do
+        expect do
+          described_class.with(
+            user: user, content: content, subject: subject, email_id: email.id,
+          ).custom_email.deliver_now
+        end.not_to change(ActionMailer::Base.deliveries, :count)
+      end
+
+      it "does not record an ahoy message" do
+        expect do
+          described_class.with(
+            user: user, content: content, subject: subject, email_id: email.id,
+          ).custom_email.deliver_now
+        end.not_to change(EmailMessage, :count)
+      end
+    end
+
+    # Emails::BatchCustomSendWorker filters these recipients out first; this is
+    # the backstop for senders that build their own sends (the drip worker).
+    context "when the recipient has the Customer.io delivery flag enabled" do
+      let(:email) { create(:email, type_of: "newsletter") }
+
+      before do
+        allow(ForemInstance).to receive_messages(smtp_enabled?: true, customerio_enabled?: true)
+        allow(FeatureFlag).to receive(:enabled_for_user?)
+          .with(Deliverable::CUSTOMERIO_FLAG, having_attributes(id: user.id)).and_return(true)
+      end
+
+      it "sends nothing -- Customer.io is already sending this broadcast" do
+        expect do
+          described_class.with(
+            user: user, content: content, subject: subject, email_id: email.id,
+          ).custom_email.deliver_now
+        end.not_to change(ActionMailer::Base.deliveries, :count)
+      end
+
+      it "does not record an ahoy message" do
+        expect do
+          described_class.with(
+            user: user, content: content, subject: subject, email_id: email.id,
+          ).custom_email.deliver_now
+        end.not_to change(EmailMessage, :count)
+      end
+
+      it "still sends a test email so admins can preview during the rollout" do
+        # The recipient is flagged, so the send routes through Customer.io
+        # rather than landing in ActionMailer::Base.deliveries.
+        api_client = instance_double(Customerio::APIClient, send_email: { "delivery_id" => "dev-123" })
+        stub_const("CUSTOMERIO_API", api_client)
+
+        described_class.with(
+          user: user, content: content, subject: "[TEST] #{subject}", email_id: email.id,
+        ).custom_email.deliver_now
+
+        expect(api_client).to have_received(:send_email)
+      end
+    end
+
     context "when SendGrid is disabled" do
       before do
         allow(ForemInstance).to receive(:sendgrid_enabled?).and_return(false)

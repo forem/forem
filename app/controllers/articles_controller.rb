@@ -2,7 +2,7 @@ class ArticlesController < ApplicationController
   include ApplicationHelper
 
   # NOTE: It seems quite odd to not authenticate the user for the :new action.
-  before_action :authenticate_user!, except: %i[feed new]
+  before_action :authenticate_user!, except: %i[feed new short_link]
   before_action :set_article, only: %i[edit manage update destroy stats admin_unpublish admin_featured_toggle]
   # NOTE: Consider pushing this check into the associated Policy.  We could choose to raise a
   #       different error which we could then rescue as part of our exception handling.
@@ -80,6 +80,21 @@ class ArticlesController < ApplicationController
     }
   end
 
+  def short_link
+    skip_authorization
+    code = params[:code].to_s.downcase
+    id = code.reverse.to_i(26)
+    @article = Article.published.find_by(id: id)
+
+    if @article
+      set_surrogate_key_header("articles/#{@article.id}")
+      set_cache_control_headers(1.hour.to_i)
+      redirect_to @article.path
+    else
+      not_found
+    end
+  end
+
   # @note The /new path is a unique creature.  We want to ensure that folks coming to the /new with
   #       a prefill of information are first prompted to sign-in, and then given a form that
   #       prepopulates with that pre-fill information.  This is a feature that StackOverflow and
@@ -146,11 +161,14 @@ class ArticlesController < ApplicationController
             cover_image = ApplicationController.helpers.cloud_cover_url(front_matter["cover_image"])
           end
 
+          ai_disclosure_level = front_matter["ai_disclosure_level"] || front_matter["ai_disclosure"]
+
           render json: {
             processed_html: processed_html,
             title: front_matter["title"],
             tags: tags,
-            cover_image: cover_image
+            cover_image: cover_image,
+            ai_disclosure_level: ai_disclosure_level
           }, status: :ok
         end
       end
@@ -331,7 +349,7 @@ class ArticlesController < ApplicationController
                        %i[
                          title body_markdown main_image published description video_thumbnail_url
                          tag_list canonical_url series collection_id archived published_at timezone
-                         published_at_date published_at_time type_of body_url subforem_id
+                         published_at_date published_at_time type_of body_url subforem_id ai_disclosure_level
                        ]
                      end
 

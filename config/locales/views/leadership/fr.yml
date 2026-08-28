@@ -1,0 +1,19 @@
+---
+fr:
+  views:
+    leadership:
+      heading: Leadership communautaire
+      icon:
+        leader_alt: Leader communautaire
+      nav:
+        aria_label: Sections
+      curation:
+        heading: Curation
+        allowance: "Il vous reste %{remaining} favoris."
+        comment_on: Commentaire sur « %{title} »
+        empty: Vous n'avez encore mis aucun contenu en favori.
+      discussion:
+        heading: Approfondir la discussion
+        subtitle: Suscitez l'engagement en participant à la discussion.
+        cta: Commenter
+        empty: Aucun article à recommander.

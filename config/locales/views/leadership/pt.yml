@@ -1,0 +1,19 @@
+---
+pt:
+  views:
+    leadership:
+      heading: Liderança Comunitária
+      icon:
+        leader_alt: Líder Comunitário
+      nav:
+        aria_label: Seções
+      curation:
+        heading: Curadoria
+        allowance: "Você tem %{remaining} favoritos restantes."
+        comment_on: Comentário em “%{title}”
+        empty: Você ainda não favoritou nenhum conteúdo.
+      discussion:
+        heading: Aprofundar a Discussão
+        subtitle: Estimule o engajamento participando da discussão.
+        cta: Comentar
+        empty: Nenhum post para recomendar.

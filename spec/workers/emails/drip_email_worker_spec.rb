@@ -167,5 +167,30 @@ RSpec.describe Emails::DripEmailWorker, type: :worker do
       expect(CustomMailer).not_to have_received(:with).with(hash_including(user: unsub))
       expect(CustomMailer).not_to have_received(:with).with(hash_including(user: @user_recent_email))
     end
+
+    context "when Customer.io cutover is active" do
+      before do
+        allow(ForemInstance).to receive(:customerio_email_cutover?).and_return(true)
+      end
+
+      it "does not send any drip emails, even with a matching template and eligible user" do
+        worker.perform
+
+        expect(CustomMailer).not_to have_received(:with)
+      end
+    end
+
+    context "when Customer.io cutover is not active" do
+      before do
+        allow(ForemInstance).to receive(:customerio_email_cutover?).and_return(false)
+      end
+
+      it "sends drip emails as before" do
+        worker.perform
+
+        expect(CustomMailer)
+          .to have_received(:with).with(hash_including(subject: default_email_day_1.subject)).at_least(:once)
+      end
+    end
   end
 end

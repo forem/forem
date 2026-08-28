@@ -7,6 +7,10 @@ fr:
     if_any_questions_html: <a href="/contact">Contactez-nous</a> si vous avez des questions.
     if_continued_trouble_html: <a href="/contact">Contactez-nous</a> si vous continuez à avoir des problèmes.
     if_we_can_help_html: <a href="/contact">Contactez-nous</a> si nous pouvons vous aider.
+  favorites:
+    favorite: Mettre en favori
+    favorited: Mis en favori
+    favorited_by_you: Vous avez mis ceci en favori
   core:
     add_comment: Ajouter un commentaire
     beta: bêta

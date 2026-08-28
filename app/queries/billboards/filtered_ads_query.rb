@@ -170,12 +170,17 @@ module Billboards
     end
 
     def unexcluded_article_ads
-      @filtered_billboards.where("NOT (:id = ANY(exclude_article_ids))", id: @article_id)
+      @filtered_billboards.where(
+        "exclude_article_ids IS NULL OR cardinality(exclude_article_ids) = 0 OR NOT (:id = ANY(exclude_article_ids))",
+        id: @article_id
+      )
     end
 
     def included_subforem_ads
-      @filtered_billboards.where("cardinality(include_subforem_ids) = 0 OR :subforem_id = ANY(include_subforem_ids)",
-                                 subforem_id: @subforem_id)
+      @filtered_billboards.where(
+        "include_subforem_ids IS NULL OR cardinality(include_subforem_ids) = 0 OR :subforem_id = ANY(include_subforem_ids)",
+        subforem_id: @subforem_id
+      )
     end
 
     def authenticated_ads(display_auth_audience)
@@ -197,14 +202,14 @@ module Billboards
 
     def role_filtered_ads
       @filtered_billboards.where(
-        "(cardinality(target_role_names) = 0 OR target_role_names && ARRAY[:role_names]::varchar[])
-        AND (cardinality(exclude_role_names) = 0 OR NOT exclude_role_names && ARRAY[:role_names]::varchar[])",
+        "(target_role_names IS NULL OR cardinality(target_role_names) = 0 OR target_role_names && ARRAY[:role_names]::varchar[])
+        AND (exclude_role_names IS NULL OR cardinality(exclude_role_names) = 0 OR NOT exclude_role_names && ARRAY[:role_names]::varchar[])",
         role_names: @role_names,
       )
     end
 
     def location_targeted_ads
-      geo_query = "cardinality(target_geolocations) = 0" # Empty array
+      geo_query = "target_geolocations IS NULL OR cardinality(target_geolocations) = 0" # Empty array
       if @location&.valid?
         geo_query += " OR (#{@location.to_sql_query_clause})"
       end
