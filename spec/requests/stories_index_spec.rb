@@ -637,9 +637,11 @@ RSpec.describe "StoriesIndex" do
     it "renders stylesheet link tags with data-instant-track under normal navigation" do
       get "/"
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include('id="main-minimal-stylesheet"', 'data-instant-track="true"')
-      expect(response.body).to include('id="main-views-stylesheet"', 'data-instant-track="true"')
-      expect(response.body).to include('id="main-crayons-stylesheet"', 'data-instant-track="true"')
+      doc = Nokogiri::HTML(response.body)
+      %w[minimal views crayons].each do |name|
+        link = doc.at_css("link#main-#{name}-stylesheet")
+        expect(link["data-instant-track"]).to eq("true")
+      end
     end
 
     it "excludes the outer layout stylesheets under internal navigation" do

@@ -4,8 +4,10 @@ RSpec.describe "layouts/_styles" do
   it "renders all stylesheet link tags with data-instant-track attribute" do
     render partial: "layouts/styles", locals: { qualifier: "main" }
 
-    expect(rendered).to include('id="main-minimal-stylesheet"', 'data-instant-track="true"')
-    expect(rendered).to include('id="main-views-stylesheet"', 'data-instant-track="true"')
-    expect(rendered).to include('id="main-crayons-stylesheet"', 'data-instant-track="true"')
+    doc = Nokogiri::HTML.fragment(rendered)
+    %w[minimal views crayons].each do |name|
+      link = doc.at_css("link#main-#{name}-stylesheet")
+      expect(link["data-instant-track"]).to eq("true")
+    end
   end
 end
