@@ -1,4 +1,8 @@
+# Content usage signals (Cloudflare Content Signals Policy / IETF AIPREF).
+# search: building a search index. ai-input: retrieval into a model at inference.
+# ai-train: training or fine-tuning. Values are yes or no; advisory, not enforcement.
 User-agent: *
+Content-Signal: search=yes, ai-input=yes, ai-train=no
 Disallow: /*/actions_panel*
 Disallow: /users/auth/twitter*
 Disallow: /users/auth/github*
@@ -15,6 +19,11 @@ Disallow: /reactions?*
 Disallow: /async_info/base_data
 Disallow: /ahoy/*
 Disallow: /auth_pass/*
+
+# Guidance for automated clients, including bots publishing on behalf of a user:
+#   <%= URL.url("llms.txt") %>
+#   <%= URL.url(".well-known/ai.txt") %>
+#   <%= URL.url("api/v1/openapi.json") %>
 
 <% if (custom_org = request.env["forem.custom_domain_org"]) %>
 Sitemap: <%= URL.url("sitemap-index.xml", custom_org.custom_domain) %>

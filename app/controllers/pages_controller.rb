@@ -1,6 +1,6 @@
 class PagesController < ApplicationController
   # No authorization required for entirely public controller
-  before_action :set_cache_control_headers, only: %i[show badge bounty faq robots llms]
+  before_action :set_cache_control_headers, only: %i[show badge bounty faq robots llms ai_txt openapi]
 
   def show
     params[:slug] = combined_fragmented_slug if params[:slug_0].present?
@@ -123,6 +123,24 @@ class PagesController < ApplicationController
     custom_domain_org
     respond_to :text
     set_surrogate_key_header "llms_page"
+  end
+
+  def ai_txt
+    # AI usage preferences, following the field vocabulary of the IETF ai.txt draft
+    # (draft-car-ai-txt-wellknown). Served at /.well-known/ai.txt.
+    custom_domain_org
+    respond_to :text
+    set_surrogate_key_header "ai_txt_page"
+  end
+
+  def openapi
+    # The generated OpenAPI description of the public API. Served over HTTP so that
+    # automated clients can discover the contract instead of guessing at it.
+    spec = Rails.root.join("swagger/v1/api_v1.json")
+    return not_found unless spec.exist?
+
+    set_surrogate_key_header "openapi_spec"
+    render plain: spec.read, content_type: "application/json"
   end
 
   def welcome

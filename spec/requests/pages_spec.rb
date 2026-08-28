@@ -364,6 +364,8 @@ RSpec.describe "Pages" do
 
       text = "Sitemap: #{URL.url('sitemap-index.xml')}"
       expect(response.body).to include(text)
+      expect(response.body).to include("Content-Signal: search=yes")
+      expect(response.body).to include(URL.url("llms.txt"))
     end
 
     context "when requested on a custom domain organization" do
@@ -382,14 +384,61 @@ RSpec.describe "Pages" do
     end
   end
 
+  describe "GET /.well-known/ai.txt" do
+    it "declares AI usage preferences" do
+      get "/.well-known/ai.txt"
+
+      expect(response).to have_http_status(:ok)
+      expect(response.media_type).to eq("text/plain")
+      expect(response.body).to include("Site-Name:")
+      expect(response.body).to include("Contact: #{URL.url('contact')}")
+    end
+
+    it "requires disclosure when the setting is enabled" do
+      allow(Settings::General).to receive(:enable_ai_disclosure).and_return(true)
+      get "/.well-known/ai.txt"
+
+      expect(response.body).to include("AI-Disclosure: required")
+      expect(response.body).to include("AI-Disclosure-Field: ai_disclosure_level")
+    end
+
+    it "omits the disclosure block when the setting is disabled" do
+      allow(Settings::General).to receive(:enable_ai_disclosure).and_return(false)
+      get "/.well-known/ai.txt"
+
+      expect(response.body).not_to include("AI-Disclosure: required")
+    end
+  end
+
+  describe "GET /api/v1/openapi.json" do
+    it "serves the generated OpenAPI description" do
+      get "/api/v1/openapi.json"
+
+      expect(response).to have_http_status(:ok)
+      expect(response.media_type).to eq("application/json")
+      expect(response.parsed_body["paths"]).to be_present
+    end
+
+    it "redirects the paths automated clients probe for a spec" do
+      %w[/openapi.json /api-docs /api_docs /api/docs /api/v1/docs
+         /api/v1/docs/api_v1.json /api_docs/v1.json /swagger/v1/api_v1.json
+         /.well-known/openapi.json].each do |probe_path|
+        get probe_path
+        expect(response).to redirect_to("/api/v1/openapi.json")
+      end
+    end
+  end
+
   describe "GET /llms.txt" do
     it "renders the agent guidance" do
       get "/llms.txt"
 
       expect(response).to have_http_status(:ok)
       expect(response.media_type).to eq("text/plain")
-      expect(response.body).to include("Guidance for AI agents")
-      expect(response.body).to include(URL.url("robots.txt"))
+      expect(response.body).to include("# #{Settings::Community.community_name}")
+      expect(response.body).to include("## API")
+      expect(response.body).to include(URL.url("api/v1/openapi.json"))
+      expect(response.body).to include(URL.url(".well-known/ai.txt"))
     end
 
     context "when AI disclosure is enabled" do
@@ -398,7 +447,7 @@ RSpec.describe "Pages" do
       it "documents the required disclosure levels" do
         get "/llms.txt"
 
-        expect(response.body).to include("AI usage disclosure (required)")
+        expect(response.body).to include("## AI disclosure")
         expect(response.body).to include("fully_autonomous")
         expect(response.body).to include("ai_disclosure_level")
       end
@@ -410,7 +459,7 @@ RSpec.describe "Pages" do
       it "omits the disclosure section" do
         get "/llms.txt"
 
-        expect(response.body).not_to include("AI usage disclosure (required)")
+        expect(response.body).not_to include("## AI disclosure")
       end
     end
   end

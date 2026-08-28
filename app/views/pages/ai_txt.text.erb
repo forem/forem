@@ -1,0 +1,35 @@
+# AI usage preferences for <%= community_name %>
+# Field vocabulary follows the IETF ai.txt draft (draft-car-ai-txt-wellknown).
+# Advisory: this file declares preferences, it does not enforce them.
+
+Site-Name: <%= community_name %>
+Site-URL: <%= URL.url %>
+Contact: <%= URL.url("contact") %>
+Policy-URL: <%= URL.url("terms") %>
+Description: A Forem community. User-generated posts and comments.
+
+# Content consumption
+Training: conditional
+Scraping: conditional
+Indexing: yes
+Caching: yes
+Attribution: required
+Training-License: see <%= URL.url("terms") %>
+
+<% if Settings::General.enable_ai_disclosure %>
+# Content contribution
+# Unlike the fields above, this one governs content submitted TO this site rather
+# than content taken FROM it. Any automated client publishing here must declare the
+# extent of AI involvement, including a bot posting on behalf of a human account.
+AI-Disclosure: required
+AI-Disclosure-Field: ai_disclosure_level
+AI-Disclosure-Values: no_ai, some_ai, fully_autonomous
+AI-Disclosure-Policy: <%= URL.url("llms.txt") %>
+<% end %>
+
+# Agent identification
+# Send a User-Agent naming your tool and a contact address. Signed-request identity
+# (Web Bot Auth / RFC 9421 HTTP Message Signatures) is preferred where supported.
+User-Agent-Required: yes
+
+More-Information: <%= URL.url("llms.txt") %>
