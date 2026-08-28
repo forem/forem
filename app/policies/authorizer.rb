@@ -33,6 +33,7 @@ module Authorizer
   # @see https://github.com/forem/forem/issues/15624
   class RoleBasedQueries
     ANY_ADMIN_ROLES = %i[admin super_admin].freeze
+    COMMUNITY_LEADER_ROLES = %i[community_leader_level_1 community_leader_level_2].freeze
 
     def initialize(user:)
       @user = user
@@ -69,6 +70,18 @@ module Authorizer
 
     def comment_suspended?
       has_role?(:comment_suspended)
+    end
+
+    def community_leader?
+      has_any_role?(*COMMUNITY_LEADER_ROLES)
+    end
+
+    def community_leader_level_1?
+      has_role?(:community_leader_level_1)
+    end
+
+    def community_leader_level_2?
+      has_role?(:community_leader_level_2)
     end
 
     def limited?
@@ -150,6 +163,8 @@ module Authorizer
     end
 
     def tag_moderator?(tag: nil)
+      return true if community_leader?
+
       # Note a fan of "peeking" into the roles table, which in a way
       # circumvents the rolify gem.  But this was the past implementation.
       return user.roles.exists?(name: "tag_moderator") unless tag

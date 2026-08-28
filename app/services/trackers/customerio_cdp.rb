@@ -38,10 +38,12 @@ module Trackers
       # capture is the fallback.
       linked_uids = Identity.where(provider: "mlh", user_id: ids).pluck(:user_id, :uid).to_h
 
+      event = Trackable::EventName.prefixed(event_name)
+
       ids.each do |id|
         attributes = {
           anonymous_id: "dev:#{id}",
-          event: event_name,
+          event: event,
           properties: properties,
           timestamp: timestamp
         }

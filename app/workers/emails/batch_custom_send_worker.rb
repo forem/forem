@@ -7,6 +7,8 @@ module Emails
     sidekiq_throttle(concurrency: { limit: ENV.fetch("EMAIL_BATCH_CONCURRENCY_LIMIT", 5).to_i })
 
     def perform(user_ids, subject, content, type_of, email_id, from_name = nil)
+      return if ForemInstance.customerio_email_cutover?
+
       user_ids = user_ids.map(&:to_i)
 
       # Optimized: Load all users in one query instead of N queries (avoids N+1)
@@ -16,10 +18,15 @@ module Emails
                         .select(:id, :email, :name, :username)
                         .index_by(&:id)
 
+      test_send = subject.start_with?(Email::TEST_SUBJECT_PREFIX)
+
+      # Skip recipients Customer.io is already sending this broadcast to.
+      customerio_user_ids = test_send ? Set.new : customerio_managed_user_ids(users_by_id.values)
+
       # Bulk check: skip users who already received a non-test email for this email_id.
       # Uses a subquery with DISTINCT ON to get the most recent message per user,
       # then filters out [TEST] subjects — all in a single SQL round-trip.
-      already_sent_user_ids = if subject.start_with?("[TEST] ")
+      already_sent_user_ids = if test_send
                                 Set.new
                               else
                                 sql = Ahoy::Message.sanitize_sql_array([<<~SQL.squish, user_ids, email_id])
@@ -38,6 +45,7 @@ module Emails
         user = users_by_id[id]
         next unless user
         next if already_sent_user_ids.include?(id)
+        next if customerio_user_ids.include?(id)
 
         CustomMailer
           .with(
@@ -52,6 +60,24 @@ module Emails
           .deliver_now
       rescue StandardError => e
         Rails.logger.error("Error sending email to user with id: #{id}. Error: #{e.message}")
+      end
+    end
+
+    private
+
+    # The cutover guards in Email, this worker and Admin::EmailsController all
+    # key off the *global* flag state, but :customerio_email_delivery rolls out
+    # per actor. While it is partially on, the enabled cohort already receives
+    # broadcasts and newsletters from the Customer.io side, so sending from here
+    # too would deliver the same message twice to exactly those people.
+    #
+    # Test sends are exempt (see #perform): nothing on the Customer.io side
+    # duplicates them, and admins still need the preview during the rollout.
+    def customerio_managed_user_ids(users)
+      return Set.new unless ForemInstance.customerio_enabled?
+
+      users.each_with_object(Set.new) do |user, ids|
+        ids << user.id if FeatureFlag.enabled_for_user?(Deliverable::CUSTOMERIO_FLAG, user)
       end
     end
   end

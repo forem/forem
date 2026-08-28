@@ -53,7 +53,8 @@ module Articles
         {
           blocked_user_ids: UserBlock.cached_blocked_ids_for_blocker(@user.id),
           hidden_tags: @user.cached_antifollowed_tag_names,
-          user_activity: @user.user_activity
+          user_activity: @user.user_activity,
+          hide_fully_autonomous: @user.setting&.hide_fully_autonomous_feed_ai?
         }
       end
 
@@ -85,6 +86,10 @@ module Articles
         # Apply user-specific filters early to reduce dataset size
         if user_data[:blocked_user_ids].any?
           articles = articles.where.not(user_id: user_data[:blocked_user_ids])
+        end
+
+        if user_data[:hide_fully_autonomous]
+          articles = articles.where.not(ai_disclosure_level: :fully_autonomous)
         end
         
         if user_data[:hidden_tags].any?

@@ -67,20 +67,127 @@ RSpec.describe User do
       expect(user.trackable_user_ids).to eq([user.id])
     end
 
-    it "ships a curated payload of identity, confirmation, newsletter, and Core-link state" do
+    it "ships a curated payload of identity, registration, confirmation, email consent, and Core-link state" do
       user = create(:user)
       expect(user.trackable_payload.keys).to contain_exactly(
-        "id", "username", "email", "name", "confirmed_at", "email_newsletter", "mlh_user_id"
+        "id", "username", "email", "name", "registered_at", "confirmed_at", "email_newsletter",
+        "email_digest_periodic", "email_comment_notifications", "email_follower_notifications",
+        "email_mention_notifications", "email_unread_notifications", "email_badge_notifications",
+        "email_tag_mod_newsletter", "email_community_mod_newsletter",
+        "mlh_user_id",
+        "signed_up_with_html", "unsubscribe_url", "notification_settings_url"
       )
     end
 
-    it "reflects confirmation and newsletter state in the payload" do
+    # Core maps each of these onto its own Customer.io subscription topic, and
+    # can only learn the state of an account that never toggles anything from
+    # this payload, so all nine consents have to ride along.
+    it "seeds every email consent Core mirrors, not just the newsletter and digest" do
       user = create(:user)
-      user.notification_setting.update!(email_newsletter: true)
+      user.notification_setting.update!(email_comment_notifications: false,
+                                        email_follower_notifications: false,
+                                        email_mention_notifications: true,
+                                        email_unread_notifications: false,
+                                        email_badge_notifications: true)
+
       payload = user.reload.trackable_payload
 
+      expect(payload).to include(
+        "email_comment_notifications" => false,
+        "email_follower_notifications" => false,
+        "email_mention_notifications" => true,
+        "email_unread_notifications" => false,
+        "email_badge_notifications" => true,
+      )
+    end
+
+    # Customer.io fails the ENTIRE body render of a template that references an
+    # event attribute the triggering event does not carry, and fails on the first
+    # such reference -- so these three must always be present, even when blank.
+    it "always carries the three email footer keys, whatever else is missing" do
+      user = create(:user)
+      allow(Users::EmailFooterPayload).to receive(:unsubscribe_token).and_raise(StandardError, "boom")
+
+      payload = user.trackable_payload
+
+      expect(payload).to include(
+        "signed_up_with_html" => "",
+        "unsubscribe_url" => "",
+        "notification_settings_url" => "",
+      )
+    end
+
+    it "carries a one-click unsubscribe url that the unsubscribe controller accepts" do
+      user = create(:user)
+
+      url = user.trackable_payload["unsubscribe_url"]
+      token = Rack::Utils.parse_query(URI.parse(url).query)["ut"]
+      verified = Rails.application.message_verifier(:unsubscribe).verify(token).with_indifferent_access
+
+      expect(URI.parse(url).path).to eq("/email_subscriptions/unsubscribe")
+      expect(verified[:user_id]).to eq(user.id)
+      expect(verified[:email_type]).to eq("email_newsletter")
+      expect(Time.zone.parse(verified[:expires_at])).to be > Time.current
+    end
+
+    # Production sets Rails.application.routes.default_url_options to the
+    # protocol alone, while test and development both set a host there. Relying
+    # on the ambient default therefore passes locally and blanks every key in
+    # production, which is exactly what happened -- so pin the production shape.
+    it "still builds the footer when only a protocol is configured, as in production" do
+      user = create(:user)
+      allow(Rails.application.routes).to receive(:default_url_options).and_return({ protocol: "https" })
+
+      payload = user.trackable_payload
+
+      expect(payload["signed_up_with_html"]).to be_present
+      expect(payload["unsubscribe_url"]).to include("/email_subscriptions/unsubscribe?ut=")
+      expect(payload["notification_settings_url"]).to end_with("/settings/notifications")
+    end
+
+    it "points the footer at the user's onboarding subforem" do
+      subforem = create(:subforem, domain: "onboarding.example.com")
+      user = create(:user, onboarding_subforem_id: subforem.id)
+
+      payload = user.trackable_payload
+
+      expect(URI.parse(payload["unsubscribe_url"]).host).to eq("onboarding.example.com")
+      expect(payload["notification_settings_url"]).to end_with("/settings/notifications")
+    end
+
+    # signed_up_with resolves the community name from try(:subforem_id), so the
+    # copy has to follow the same subforem as the URLs beside it rather than
+    # falling back to the default community.
+    it "names the user's own subforem community in the signed-up-with copy" do
+      subforem = create(:subforem, domain: "onboarding.example.com")
+      user = create(:user, onboarding_subforem_id: subforem.id)
+      allow(Settings::Community).to receive(:community_name)
+        .with(subforem_id: subforem.id).and_return("Onboarding Community")
+
+      expect(user.trackable_payload["signed_up_with_html"]).to include("Onboarding Community")
+    end
+
+    it "reflects registration, confirmation, and email consent state in the payload" do
+      user = create(:user)
+      user.notification_setting.update!(email_newsletter: true, email_digest_periodic: true)
+      payload = user.reload.trackable_payload
+
+      expect(payload["registered_at"]).to eq(user.registered_at.iso8601)
       expect(payload["confirmed_at"]).to eq(user.confirmed_at.iso8601)
       expect(payload["email_newsletter"]).to be(true)
+      expect(payload["email_digest_periodic"]).to be(true)
+    end
+
+    # The two consents are independent: EmailDigest selects on
+    # email_digest_periodic alone, so the payload must carry them separately.
+    it "carries digest consent independently of newsletter consent" do
+      user = create(:user)
+      user.notification_setting.update!(email_newsletter: false, email_digest_periodic: true)
+
+      payload = user.reload.trackable_payload
+
+      expect(payload["email_newsletter"]).to be(false)
+      expect(payload["email_digest_periodic"]).to be(true)
     end
 
     it "includes the Core user id from the mlh identity in the payload" do
@@ -823,9 +930,7 @@ RSpec.describe User do
         when :facebook, :google_oauth2
           expect(new_user.username).to match(/fname_lname_\S*\z/)
         when :mlh
-          # users.mlh_username is intentionally never written, so the
-          # username is generator-random
-          expect(new_user.username).to match(/\A[a-z]{12}\z/)
+          expect(new_user.username).to eq("mlh")
         else
           expect(new_user.username).to eq("valid_username")
         end
@@ -846,7 +951,7 @@ RSpec.describe User do
         when :facebook, :google_oauth2
           expect(new_user.username).to match(/fname_lname_\S*\z/)
         when :mlh
-          expect(new_user.username).to match(/\A[a-z]{12}\z/)
+          expect(new_user.username).to eq("mlh")
         else
           expect(new_user.username).to eq("invalidusername")
         end
@@ -864,17 +969,9 @@ RSpec.describe User do
         mock_username(provider_name, banished_name)
 
         create(:banished_user, username: provider_username(provider_name))
-        if provider_name == :mlh
-          # MLH usernames are generator-random (mlh_username is never
-          # written), so the banished-username guard cannot match
-          expect do
-            user_from_authorization_service(provider_name, nil, "navbar_basic")
-          end.not_to raise_error
-        else
-          expect do
-            user_from_authorization_service(provider_name, nil, "navbar_basic")
-          end.to raise_error(ActiveRecord::RecordInvalid, /Username has been banished./)
-        end
+        expect do
+          user_from_authorization_service(provider_name, nil, "navbar_basic")
+        end.to raise_error(ActiveRecord::RecordInvalid, /Username has been banished./)
       end
     end
 
@@ -1001,36 +1098,48 @@ RSpec.describe User do
     end
 
     it "creates proper body class with defaults" do
-      # rubocop:disable Layout/LineLength
-      classes = "light-theme sans-serif-article-body mod-status-#{user.admin? || !user.moderator_for_tags.empty?} trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header"
-      # rubocop:enable Layout/LineLength
+      classes = %W[
+        light-theme sans-serif-article-body
+        mod-status-#{user.admin? || !user.moderator_for_tags.empty?}
+        trusted-status-#{user.trusted?} community-leader-status-#{user.community_leader?}
+        #{user.setting.config_navbar}-header
+      ].join(" ")
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with sans serif config" do
       user.setting.config_font = "sans_serif"
 
-      # rubocop:disable Layout/LineLength
-      classes = "light-theme sans-serif-article-body mod-status-#{user.admin? || !user.moderator_for_tags.empty?} trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header"
-      # rubocop:enable Layout/LineLength
+      classes = %W[
+        light-theme sans-serif-article-body
+        mod-status-#{user.admin? || !user.moderator_for_tags.empty?}
+        trusted-status-#{user.trusted?} community-leader-status-#{user.community_leader?}
+        #{user.setting.config_navbar}-header
+      ].join(" ")
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with open dyslexic config" do
       user.setting.config_font = "open_dyslexic"
 
-      # rubocop:disable Layout/LineLength
-      classes = "light-theme open-dyslexic-article-body mod-status-#{user.admin? || !user.moderator_for_tags.empty?} trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header"
-      # rubocop:enable Layout/LineLength
+      classes = %W[
+        light-theme open-dyslexic-article-body
+        mod-status-#{user.admin? || !user.moderator_for_tags.empty?}
+        trusted-status-#{user.trusted?} community-leader-status-#{user.community_leader?}
+        #{user.setting.config_navbar}-header
+      ].join(" ")
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with dark theme" do
       user.setting.config_theme = "dark_theme"
 
-      # rubocop:disable Layout/LineLength
-      classes = "dark-theme sans-serif-article-body mod-status-#{user.admin? || !user.moderator_for_tags.empty?} trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header ten-x-hacker-theme"
-      # rubocop:enable Layout/LineLength
+      classes = %W[
+        dark-theme sans-serif-article-body
+        mod-status-#{user.admin? || !user.moderator_for_tags.empty?}
+        trusted-status-#{user.trusted?} community-leader-status-#{user.community_leader?}
+        #{user.setting.config_navbar}-header ten-x-hacker-theme
+      ].join(" ")
       expect(user.decorate.config_body_class).to eq(classes)
     end
   end
@@ -1190,6 +1299,24 @@ RSpec.describe User do
       Articles::Unpublish.call(article2.user, article2)
 
       expect(user.cached_reading_list_article_ids).to eq([article3.id, article.id])
+    end
+
+    it "uses user_activity.alltime_reading_list_articles if present before falling back to Reaction query" do
+      article1 = create(:article)
+      article2 = create(:article)
+
+      create(:user_activity, user: user, alltime_reading_list_articles: [article1.id, article2.id])
+
+      expect(Reaction).not_to receive(:readinglist_for_user)
+      expect(user.cached_reading_list_article_ids).to contain_exactly(article1.id, article2.id)
+    end
+
+    it "limits cached_reading_list_article_ids to at most 1000 items" do
+      large_id_list = (1..1005).to_a
+      create(:user_activity, user: user, alltime_reading_list_articles: large_id_list)
+
+      expect(user.cached_reading_list_article_ids.length).to eq(1000)
+      expect(user.cached_reading_list_article_ids).to eq((1..1000).to_a)
     end
 
     it "has an accurate agent_sessions_count using counter cache" do
@@ -1680,6 +1807,55 @@ RSpec.describe User do
       expect(result).not_to include(member_bot)
       expect(result).not_to include(regular_user)
       expect(result).not_to include(other_subforem_bot)
+    end
+  end
+
+  describe "#favorite_base_allowance" do
+    it "is 0 for a non-leader" do
+      expect(create(:user).favorite_base_allowance).to eq(0)
+    end
+
+    it "uses the level 1 setting for a level 1 leader" do
+      allow(Settings::UserExperience).to receive(:community_leader_l1_favorite_allowance).and_return(5)
+      expect(create(:user, :community_leader_level_1).favorite_base_allowance).to eq(5)
+    end
+
+    it "uses the level 2 setting for a level 2 leader" do
+      allow(Settings::UserExperience).to receive(:community_leader_l2_favorite_allowance).and_return(10)
+      expect(create(:user, :community_leader_level_2).favorite_base_allowance).to eq(10)
+    end
+  end
+
+  describe "#favorite_allowance" do
+    it "returns earned_favorites_count for a non-leader" do
+      user = create(:user)
+      user.update!(earned_favorites_count: 3)
+      expect(user.favorite_allowance).to eq(3)
+    end
+
+    it "is the base allowance for a fresh leader" do
+      allow(Settings::UserExperience).to receive(:community_leader_l1_favorite_allowance).and_return(5)
+      expect(create(:user, :community_leader_level_1).favorite_allowance).to eq(5)
+    end
+
+    it "decreases as the leader favorites within the refresh window" do
+      allow(Settings::UserExperience).to receive_messages(
+        community_leader_l1_favorite_allowance: 5, community_leader_favorite_refresh_hours: 24,
+      )
+      leader = create(:user, :community_leader_level_1)
+      create(:article, favorited_by_user: leader, favorited_at: 1.hour.ago)
+
+      expect(leader.favorite_allowance).to eq(4)
+    end
+
+    it "ignores favorites that have aged out of the refresh window" do
+      allow(Settings::UserExperience).to receive_messages(
+        community_leader_l1_favorite_allowance: 5, community_leader_favorite_refresh_hours: 24,
+      )
+      leader = create(:user, :community_leader_level_1)
+      create(:article, favorited_by_user: leader, favorited_at: 2.days.ago)
+
+      expect(leader.favorite_allowance).to eq(5)
     end
   end
 end

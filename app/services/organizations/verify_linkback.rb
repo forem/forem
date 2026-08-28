@@ -43,7 +43,8 @@ module Organizations
 
       if found
         organization.update_columns(verified: true, verified_at: Time.current,
-                                    verification_status: Organization::VERIFICATION_STATUS_SUCCESS, verification_error: nil)
+                                    verification_status: Organization::VERIFICATION_STATUS_SUCCESS, verification_error: nil,
+                                    baseline_score: Settings::UserExperience.index_minimum_score.to_i)
         Result.new("success?": true, error: nil)
       else
         fail!("No link to your organization page was found on the verification URL")

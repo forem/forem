@@ -108,6 +108,11 @@ fr:
         preview: Aperçu
         continue_editing: Continuer l'édition
         cancel: Dismiss
+        ai_disclosure_title: Déclarer l'utilisation d'outils d'IA
+      ai_disclosure:
+        no_ai_description: Rédigé sans l'aide de l'IA.
+        some_ai_description: L'auteur du commentaire a déclaré avoir utilisé des outils d'IA pour ce commentaire.
+        fully_autonomous_description: L'auteur du commentaire a déclaré que ce commentaire a été généré de manière autonome par une IA.
       menu:
         aria_label: Toggle dropdown menu
         icon: Dropdown menu

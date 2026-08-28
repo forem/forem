@@ -2,8 +2,10 @@ module Admin
   class EmailsController < Admin::ApplicationController
     layout "admin"
 
+    before_action :ensure_no_customerio_cutover, only: %i[new edit create update]
+
     def index
-      @emails = Email.includes([:audience_segment]).order("id DESC")
+      @emails = Email.includes(%i[audience_segment user_query event]).order("id DESC")
 
       # Apply filters
       @emails = @emails.where(type_of: params[:type_of]) if params[:type_of].present?
@@ -22,11 +24,13 @@ module Admin
 
     def new
       @user_queries = UserQuery.active.order(:name)
-      @email = Email.new
+      @events = Event.order(start_time: :desc)
+      @email = Email.new(event_id: params[:event_id])
     end
 
     def edit
       @user_queries = UserQuery.active.order(:name)
+      @events = Event.order(start_time: :desc)
       @email = Email.find(params[:id])
     end
 
@@ -38,6 +42,7 @@ module Admin
         redirect_to admin_email_path(@email.id)
       else
         @user_queries = UserQuery.active.order(:name)
+        @events = Event.order(start_time: :desc)
         flash[:danger] = @email.errors_as_sentence
         render :new
       end
@@ -55,6 +60,7 @@ module Admin
         redirect_to admin_email_path(@email.id)
       else
         @user_queries = UserQuery.active.order(:name)
+        @events = Event.order(start_time: :desc)
         flash[:danger] = @email.errors_as_sentence
         render :edit
       end
@@ -62,8 +68,15 @@ module Admin
 
     private
 
+    def ensure_no_customerio_cutover
+      if ForemInstance.customerio_email_cutover?
+        flash[:danger] = I18n.t("admin.emails.customerio_cutover_notice")
+        redirect_to admin_emails_path
+      end
+    end
+
     def email_params
-      params.require(:email).permit(:subject, :body, :user_query_id, :variables, :type_of, :drip_day, :status,
+      params.require(:email).permit(:subject, :body, :user_query_id, :event_id, :variables, :type_of, :drip_day, :status,
                                     :test_email_addresses)
     end
   end

@@ -6,6 +6,7 @@ fr:
         heading: Page d'organisation entièrement personnalisable
         cover_image: Image de couverture
         cover_image_hint: "Format recommandé : 8:1 (par ex. 1600×200 ou 2400×300)"
+        remove_cover_image: Supprimer l’image de couverture
         readme: Contenu de la page (Markdown)
         readme_placeholder: "Utilisez Markdown et les balises Liquid pour personnaliser votre page d'organisation.\n\nExemple :\n{% org_team votre-slug-org %}\n{% org_team votre-slug-org role=admins limit=5 %}\n{% org_posts votre-slug-org %}\n{% org_posts votre-slug-org limit=5 sort=reactions min_reactions=10 since=30d %}\n{% org_lead_form 42 %}"
         default_notice: "Votre page utilise actuellement la mise en page par défaut."
@@ -14,6 +15,39 @@ fr:
         default_example: "## Rencontrez l'équipe\n{%% org_team %{slug} %%}\n\n## Dernières publications\n{%% org_posts %{slug} %%}"
         save: Enregistrer la page
         preview: Aperçu
+      pages:
+        heading: Pages d'organisation
+        new_page: Créer une nouvelle page
+        edit_page: Modifier la page
+        title: Titre
+        slug: Suffixe du slug
+        description: Description
+        created: Page créée avec succès.
+        updated: Page mise à jour avec succès.
+        deleted: Page supprimée avec succès.
+        reordered: Ordre des pages mis à jour.
+        confirm_delete: Êtes-vous sûr de vouloir supprimer cette page ?
+        showcase: Showcase
+        showcase_hint: Il s'agit de la page d'accueil Showcase par défaut.
+        no_pages: Aucune page personnalisée créée pour le moment. Cliquez sur "Créer une nouvelle page" pour commencer.
+        edit: Modifier
+        manage_pages: Gérer les pages
+        description_help: Gérez les pages de votre organisation, y compris la page Showcase par défaut.
+        create_heading: Créer une nouvelle page
+        edit_heading: Modifier la page
+        slug_help: Uniquement des lettres minuscules, des chiffres et des traits d'union (par ex. "a-propos"). Accessible via l'onglet de profil.
+        showcase_slug_help: Il s'agit de la page Showcase (par défaut), le suffixe du slug est donc fixé à "readme".
+        content_label: Contenu de la page (Markdown)
+        description_placeholder: Courte description pour le référencement (SEO) et le partage...
+        cancel: Annuler
+        your_pages: Vos pages
+        order_help: Utilisez les flèches pour définir l'ordre des onglets personnalisés. Showcase reste toujours en premier.
+        pinned_first: Épinglé en premier
+        reorder: "Réorganiser %{title}"
+        move_up: Déplacer vers le haut
+        move_down: Déplacer vers le bas
+        move_up_title: "Déplacer %{title} vers le haut"
+        move_down_title: "Déplacer %{title} vers le bas"
       header_cta:
         heading: Bouton CTA de l'en-tête
         description: "Ajoutez un bouton d'appel à l'action dans l'en-tête de la page de votre organisation. Vous pouvez créer un bouton simple ou un menu déroulant avec plusieurs liens."
@@ -161,6 +195,8 @@ fr:
       cover_image_alt: "Image de couverture de %{org}"
       settings_link: Paramètres de l'organisation
       admin_link: Admin
+      showcase: Showcase
+      all_posts: Tous les articles
       confirm_invitation:
         title: Confirmer l'invitation à l'organisation
         greeting: "Bonjour %{name} !"

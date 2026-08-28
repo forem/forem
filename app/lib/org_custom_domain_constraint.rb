@@ -1,46 +1,72 @@
 class OrgCustomDomainConstraint
+  PLATFORM_FIRST_SEGMENTS = %w[
+    ahoy
+    api
+    assets
+    async_info
+    auth_pass
+    badge_achievements
+    bb
+    bb_tabulations
+    billboard_events
+    billboards
+    display_ad_events
+    display_ads
+    enter
+    fallback_activity_recorder
+    feedback_messages
+    feed_events
+    followed_articles
+    packs
+    poll_votes
+    rails
+    reactions
+    reading_list_items
+    search
+    sign_out
+    signout_confirm
+    users
+  ].to_set.freeze
+
+  def self.platform_path?(first_segment, path)
+    return true if PLATFORM_FIRST_SEGMENTS.include?(first_segment)
+    return true if path.start_with?("/robots") || path.start_with?("/sitemap")
+
+    false
+  end
+
   def self.custom_domain_org(request)
-    is_ajax = request.respond_to?(:xhr?) && request.xhr?
-    is_json = request.path.to_s.end_with?(".json") || (request.respond_to?(:accept) && request.accept.to_s.include?("application/json"))
+    path = request.path.to_s
+    first_segment = path.split("/")[1]
 
-    fetch_mode, fetch_dest =
-      if request.respond_to?(:get_header)
-        [request.get_header("HTTP_SEC_FETCH_MODE"), request.get_header("HTTP_SEC_FETCH_DEST")]
-      elsif request.respond_to?(:headers)
-        [request.headers["Sec-Fetch-Mode"], request.headers["Sec-Fetch-Dest"]]
-      else
-        [nil, nil]
-      end
-
-    is_fetch = fetch_mode == "cors" || fetch_dest == "empty"
-    is_async_path = request.path.to_s.start_with?("/async_info", "/reactions")
-
-    if (is_ajax || is_json || is_fetch || is_async_path) && request.params[:i] != "i"
+    if platform_path?(first_segment, path) && request.params[:i] != "i"
       return nil
     end
 
-    host = request.host&.downcase
-    return nil if host.blank? || host == Settings::General.app_domain
-    return nil if Subforem.cached_domains.include?(host)
+    request.env["forem.custom_domain_org"] ||= custom_domain_org_for_host(request.host)
+  end
 
-    request.env["forem.custom_domain_org"] ||= begin
-      cache_key = "org_custom_domain_id:#{host}"
-      org_id = MemoryFirstCache.fetch(cache_key) do
-        org = Organization.find_by(custom_domain: host)
-        org ? org.id : "not_found"
-      end
+  def self.custom_domain_org_for_host(host)
+    normalized_host = host&.downcase
+    return nil if normalized_host.blank? || normalized_host == Settings::General.app_domain&.downcase
+    return nil if Subforem.cached_domains.include?(normalized_host)
 
-      if org_id.present? && org_id != "not_found"
-        org = Organization.find_by(id: org_id)
-        if org && org.custom_domain == host && FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
-          org
-        else
-          MemoryFirstCache.delete(cache_key) if org.nil? || org.custom_domain != host
-          nil
-        end
+    cache_key = "org_custom_domain_id:#{normalized_host}"
+    org_id = MemoryFirstCache.fetch(cache_key) do
+      org = Organization.find_by(custom_domain: normalized_host)
+      org ? org.id : "not_found"
+    end
+
+    if org_id.present? && org_id != "not_found"
+      org = Organization.find_by(id: org_id)
+      if org && org.custom_domain == normalized_host && FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
+        org
       else
+        MemoryFirstCache.delete(cache_key) if org.nil? || org.custom_domain != normalized_host
         nil
       end
+    else
+      nil
     end
   end
 

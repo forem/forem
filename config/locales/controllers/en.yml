@@ -41,6 +41,11 @@ en:
     this_list: this list
     unread_notifications: unread notifications
     newsletter: newsletter
+  favorites_controller:
+    create:
+      already_favorited: This has already been made a favorite.
+      no_allowance: You have used up your favorite allowance.
+      cannot_favorite: Unable to make this a favorite.
   feeds:
     sources:
       created: Your feed source has been added and an import has been triggered.

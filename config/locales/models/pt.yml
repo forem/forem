@@ -26,6 +26,11 @@ pt:
       mention_too_many:
         one: Você não pode mencionar mais de %{count} usuários em um post!
         other: Você não pode mencionar mais de %{count} usuários em um post!
+      ai_disclosure:
+        not_disclosed: Não divulgado
+        no_ai: Sem IA
+        some_ai: Assistido por IA
+        fully_autonomous: Totalmente Autônomo
     audience_segment:
       type_ofs:
         manual: Gerenciado em outro lugar
@@ -53,6 +58,11 @@ pt:
       is_not_valid: não é válido.
       locked: a discussão está bloqueada neste Post
       published_article: não é um artigo publicado
+      ai_disclosure:
+        not_disclosed: Não divulgado
+        no_ai: Sem IA
+        some_ai: Assistido por IA
+        fully_autonomous: Totalmente Autônomo
       type:
         Article: Artigo
         item: item

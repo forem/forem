@@ -292,13 +292,38 @@ RSpec.describe "StoriesIndex" do
       sets_nginx_headers
     end
 
+    context "when auth state is desynced with remember_user_token cookie" do
+      it "unsets surrogate control headers when remember_user_token is present but user is signed out" do
+        cookies["remember_user_token"] = "invalid_or_expired_token"
+        get "/"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.headers["Surrogate-Control"]).to be_nil
+        expect(response.headers["Cache-Control"]).not_to eq("public, no-cache")
+      end
+
+      it "unsets surrogate control headers when remember_user_token is absent but user is signed in" do
+        user = create(:user)
+        sign_in user
+        # Explicitly remove remember_user_token cookie to simulate session-only auth
+        cookies.delete("remember_user_token")
+
+        get "/"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.headers["Surrogate-Control"]).to be_nil
+        expect(response.headers["Cache-Control"]).not_to eq("public, no-cache")
+      end
+    end
+
     def sets_fastly_headers
       expected_surrogate_key_headers = %w[main_app_home_page]
       expect(response.headers["Surrogate-Key"].split(", ")).to match_array(expected_surrogate_key_headers)
+      expect(response.headers["Surrogate-Control"]).to eq("max-age=60, stale-while-revalidate=60, stale-if-error=86400")
     end
 
     def sets_nginx_headers
-      expect(response.headers["X-Accel-Expires"]).to eq("600")
+      expect(response.headers["X-Accel-Expires"]).to eq("60")
     end
 
     it "shows default meta keywords if set" do
@@ -490,6 +515,13 @@ RSpec.describe "StoriesIndex" do
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("sidebar-left")
       end
+
+      it "does not render showcase/all posts tabs" do
+        get "/#{organization.slug}"
+        expect(response.body).not_to include("Organization Profile Navigation")
+        expect(response.body).not_to include("Showcase")
+        expect(response.body).not_to include("All Posts")
+      end
     end
 
     context "when organization has a readme page and org_readme flag is enabled" do
@@ -503,11 +535,80 @@ RSpec.describe "StoriesIndex" do
 
       after { FeatureFlag.disable(:org_readme) }
 
-      it "renders the readme show template" do
+      it "renders the readme show template with showcase tab active" do
         get "/#{organization.slug}"
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("<strong>Welcome to our org!</strong>")
         expect(response.body).not_to include("sidebar-left")
+        
+        # Tabs should be present
+        expect(response.body).to include("Organization Profile Navigation")
+        expect(response.body).to include("crayons-tabs__item crayons-tabs__item--current")
+        expect(response.body).to include("Showcase")
+        expect(response.body).to include("All Posts")
+      end
+
+      it "renders the classic feed template with all posts tab active when mode is all-posts" do
+        get "/#{organization.slug}", params: { mode: "all-posts" }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).not_to include("<strong>Welcome to our org!</strong>")
+        expect(response.body).to include("sidebar-left")
+
+        # Tabs should be present
+        expect(response.body).to include("Organization Profile Navigation")
+        expect(response.body).to include("Showcase")
+        expect(response.body).to include("All Posts")
+      end
+
+      it "renders the custom page via clean permalink" do
+        create(:page, organization: organization, body_markdown: "**Custom About Us**",
+               title: "About Us", description: "desc", slug: "#{organization.slug}/about",
+               template: "full_within_layout")
+        get "/#{organization.slug}/p/about"
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("<strong>Custom About Us</strong>")
+        expect(response.body).to include("Organization Profile Navigation")
+        expect(response.body).to include("About Us")
+      end
+
+      it "returns 404 for nonexistent custom page permalink" do
+        expect {
+          get "/#{organization.slug}/p/nonexistent"
+        }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      context "under a custom domain" do
+        before do
+          FeatureFlag.add(:org_custom_domain)
+          FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor[organization])
+          organization.update!(custom_domain: "custom.example.com")
+          allow(Subforem).to receive(:cached_id_by_domain).with("custom.example.com").and_return(nil)
+          create(:page, organization: organization, body_markdown: "**Custom About Us**",
+                 title: "About Us", description: "desc", slug: "#{organization.slug}/about",
+                 template: "full_within_layout")
+        end
+
+        after do
+          FeatureFlag.disable(:org_custom_domain)
+        end
+
+        it "renders the custom page via /about permalink" do
+          get "http://custom.example.com/about"
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include("<strong>Custom About Us</strong>")
+        end
+
+        it "renders the custom page via /p/about permalink" do
+          get "http://custom.example.com/p/about"
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include("<strong>Custom About Us</strong>")
+        end
+
+        it "renders the custom page via /orgname/p/about permalink" do
+          get "http://custom.example.com/#{organization.slug}/p/about"
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include("<strong>Custom About Us</strong>")
+        end
       end
     end
 
@@ -524,6 +625,37 @@ RSpec.describe "StoriesIndex" do
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("sidebar-left")
       end
+
+      it "does not render showcase/all posts tabs" do
+        get "/#{organization.slug}"
+        expect(response.body).not_to include("Organization Profile Navigation")
+      end
+    end
+  end
+
+  describe "InstantClick stylesheet alignment" do
+    it "does not render the alignment script under normal navigation" do
+      get "/"
+      expect(response).to have_http_status(:ok)
+      expect(response.body).not_to include("expectedStyles")
+      # Expect outer shell link tags
+      expect(response.body).to include('id="main-minimal-stylesheet"')
+    end
+
+    it "renders the alignment script with correct asset paths under internal navigation" do
+      get "/", params: { i: "i" }
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("expectedStyles")
+      expected_minimal = ActionController::Base.helpers.stylesheet_path("minimal")
+      expected_views = ActionController::Base.helpers.stylesheet_path("views")
+      expected_crayons = ActionController::Base.helpers.stylesheet_path("crayons")
+      expect(response.body).to include(%("minimal": "#{expected_minimal}"))
+      expect(response.body).to include(%("views": "#{expected_views}"))
+      expect(response.body).to include(%("crayons": "#{expected_crayons}"))
+      expect(response.body).to include("pendingHref")
+      expect(response.body).to include("replaceChild")
+      # Internal navigation excludes the outer layout, so the outer shell links should not be rendered
+      expect(response.body).not_to include('id="main-minimal-stylesheet"')
     end
   end
 end

@@ -14,10 +14,48 @@ RSpec.describe Article do
   it_behaves_like "UserSubscriptionSourceable"
   it_behaves_like "Taggable"
 
+  describe "ai_disclosure_level" do
+    it "defines expected enum values" do
+      expect(Article.ai_disclosure_levels).to eq({
+        "not_disclosed" => 0,
+        "no_ai" => 1,
+        "some_ai" => 3,
+        "fully_autonomous" => 5
+      })
+    end
+
+    it "defaults to not_disclosed" do
+      new_article = build(:article)
+      expect(new_article.ai_disclosure_level).to eq("not_disclosed")
+      expect(new_article.ai_disclosed?).to be false
+    end
+
+    it "correctly identifies when AI usage is disclosed" do
+      some_ai_article = build(:article, ai_disclosure_level: :some_ai)
+      autonomous_article = build(:article, ai_disclosure_level: :fully_autonomous)
+
+      expect(some_ai_article.ai_disclosed?).to be true
+      expect(autonomous_article.ai_disclosed?).to be true
+    end
+
+    it "returns the proper human-readable label" do
+      not_disclosed_article = build(:article, ai_disclosure_level: :not_disclosed)
+      no_ai_article = build(:article, ai_disclosure_level: :no_ai)
+      some_ai_article = build(:article, ai_disclosure_level: :some_ai)
+      autonomous_article = build(:article, ai_disclosure_level: :fully_autonomous)
+
+      expect(not_disclosed_article.ai_disclosure_label).to eq("Not Disclosed")
+      expect(no_ai_article.ai_disclosure_label).to eq("No AI")
+      expect(some_ai_article.ai_disclosure_label).to eq("AI-assisted")
+      expect(autonomous_article.ai_disclosure_label).to eq("Fully Autonomous")
+    end
+  end
+
   describe "validations" do
     it { is_expected.to belong_to(:collection).optional }
     it { is_expected.to belong_to(:organization).optional }
     it { is_expected.to belong_to(:user) }
+    it { is_expected.to belong_to(:favorited_by_user).class_name("User").optional }
 
     it { is_expected.to have_one(:discussion_lock).dependent(:delete) }
 
@@ -981,6 +1019,59 @@ RSpec.describe Article do
       end
     end
 
+    describe "#ai_disclosure_level from front_matter" do
+      before { allow(Settings::General).to receive(:enable_ai_disclosure).and_return(true) }
+
+      it "parses ai_disclosure_level standard string values" do
+        article = build_and_validate_article(body_markdown: "---\ntitle: AI Post\nai_disclosure_level: some_ai\n---\nHello")
+        expect(article.ai_disclosure_level).to eq("some_ai")
+        expect(article.some_ai?).to be(true)
+      end
+
+      it "does not set ai_disclosure_level from front matter when enable_ai_disclosure is false" do
+        allow(Settings::General).to receive(:enable_ai_disclosure).and_return(false)
+        article = build_and_validate_article(body_markdown: "---\ntitle: AI Post\nai_disclosure_level: some_ai\n---\nHello")
+        expect(article.ai_disclosure_level).to eq("not_disclosed")
+      end
+
+      it "parses ai_disclosure key alias" do
+        article = build_and_validate_article(body_markdown: "---\ntitle: AI Post\nai_disclosure: fully_autonomous\n---\nHello")
+        expect(article.ai_disclosure_level).to eq("fully_autonomous")
+        expect(article.fully_autonomous?).to be(true)
+      end
+
+      it "parses numeric levels" do
+        article1 = build_and_validate_article(body_markdown: "---\ntitle: AI Post\nai_disclosure_level: 1\n---\nHello")
+        expect(article1.ai_disclosure_level).to eq("no_ai")
+
+        article3 = build_and_validate_article(body_markdown: "---\ntitle: AI Post\nai_disclosure_level: 3\n---\nHello")
+        expect(article3.ai_disclosure_level).to eq("some_ai")
+
+        article5 = build_and_validate_article(body_markdown: "---\ntitle: AI Post\nai_disclosure_level: 5\n---\nHello")
+        expect(article5.ai_disclosure_level).to eq("fully_autonomous")
+      end
+
+      it "parses user-friendly alias strings" do
+        expect(build_and_validate_article(body_markdown: "---\ntitle: Post\nai_disclosure: hand_written\n---\nHi").ai_disclosure_level).to eq("no_ai")
+        expect(build_and_validate_article(body_markdown: "---\ntitle: Post\nai_disclosure: assisted\n---\nHi").ai_disclosure_level).to eq("some_ai")
+        expect(build_and_validate_article(body_markdown: "---\ntitle: Post\nai_disclosure: autonomous\n---\nHi").ai_disclosure_level).to eq("fully_autonomous")
+      end
+
+      it "parses boolean flags ai_assisted and ai_generated" do
+        expect(build_and_validate_article(body_markdown: "---\ntitle: Post\nai_assisted: true\n---\nHi").ai_disclosure_level).to eq("some_ai")
+        expect(build_and_validate_article(body_markdown: "---\ntitle: Post\nai_generated: true\n---\nHi").ai_disclosure_level).to eq("fully_autonomous")
+      end
+
+      it "updates ai_disclosure_level when front matter changes" do
+        user = create(:user)
+        art = create(:article, user: user, body_markdown: "---\ntitle: Post\nai_disclosure_level: no_ai\n---\nOriginal")
+        expect(art.ai_disclosure_level).to eq("no_ai")
+
+        art.update(body_markdown: "---\ntitle: Post\nai_disclosure_level: some_ai\n---\nUpdated")
+        expect(art.reload.ai_disclosure_level).to eq("some_ai")
+      end
+    end
+
     describe "#reading_time" do
       it "produces a correct reading time" do
         expect(test_article.reading_time).to eq(1)
@@ -1662,6 +1753,18 @@ RSpec.describe Article do
     end
   end
 
+  describe ".favorited" do
+    let(:leader) { create(:user, :community_leader_level_1) }
+
+    it "returns only articles that have been favorited" do
+      favorited = create(:article, favorited_by_user: leader, favorited_at: Time.current)
+      create(:article)
+
+      expect(described_class.favorited).to include(favorited)
+      expect(described_class.favorited.count).to eq(1)
+    end
+  end
+
   describe ".cached_admin_published_with" do
     let(:admin) { create(:user, :admin) }
     let(:cache_store) { ActiveSupport::Cache::MemoryStore.new }
@@ -2330,6 +2433,14 @@ RSpec.describe Article do
     it "includes the user_subscriber? baseline bonus" do
       allow(Settings::UserExperience).to receive(:index_minimum_score).and_return(12)
       user.add_role(:base_subscriber)
+      article.update_score
+      expect(article.reload.score).to eq(22)
+    end
+
+    it "includes the verified organization baseline bonus" do
+      allow(Settings::UserExperience).to receive(:index_minimum_score).and_return(12)
+      org = create(:organization, verified: true)
+      article.organization = org
       article.update_score
       expect(article.reload.score).to eq(22)
     end
