@@ -14,6 +14,9 @@ fr:
         not_available: Le fournisseur %{name} n'est pas disponible !
         not_enabled: Le fournisseur %{name} n'est pas activé !
     badges:
+      award_community_favorite:
+        article_message: "Bravo ! [Votre publication](%{url}) est un favori de la communauté !"
+        comment_message: "Bravo ! [Votre commentaire](%{url}) est un favori de la communauté !"
       award_beloved_comment:
         message: "Vous êtes célèbre ! [C'est le commentaire](%{comment}) pour lequel vous êtes reconnu. 😄"
       award_streak:

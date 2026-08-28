@@ -6,10 +6,13 @@ en:
         title: Settings
       account:
         connect: Connect %{provider} Account
+        reconnect: Reconnect %{provider} Account
         emails: Account emails
         primary: Primary email
         provider_email: "%{provider} email"
         provider_profile: "%{provider} profile settings"
+        mlh_sign_in_link: Sign in to MLH
+        mlh_sign_in_html: "%{link} with this email address to finish connecting your account."
         delete:
           heading: Delete account
           desc1: 'Deleting your account will:'
@@ -75,6 +78,12 @@ en:
         font: Base Reading Font
         level: What is your approximate experience level (1-5)?
         level_desc: This will not be displayed on your profile or anywhere publicly. It helps gently determine what content you are shown along with tags you follow etc.
+        feed_ai_preference: AI Content in Feed
+        feed_ai_preference_desc: "Choose how AI-disclosed content appears in your feed."
+        feed_ai_options:
+          show_all: Standard (show all content)
+          minimize_ai: Minimize AI-assisted & autonomous content
+          hide_fully_autonomous: Hide fully autonomous AI content
         navbar: Site Navbar
         rich: Rich + markdown
         save: Save

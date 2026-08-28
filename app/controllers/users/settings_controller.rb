@@ -17,6 +17,7 @@ module Users
                         feed_mark_canonical
                         feed_referential_link
                         feed_url
+                        feed_ai_preference
                         inbox_guidelines
                         inbox_type
                         permit_adjacent_sponsors].freeze

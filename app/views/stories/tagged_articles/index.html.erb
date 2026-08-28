@@ -1,7 +1,7 @@
 <%= content_for :page_meta do %>
   <%= render "stories/tagged_articles/meta" %>
-  <%= stylesheet_link_tag "tags", media: "all" %>
 <% end %>
+<%= stylesheet_link_tag "tags", media: "all" %>
 <div class="crayons-layout">
   <div data-tag-id="<%= @tag.id %>"
        data-tag-name="<%= @tag.name %>"
@@ -160,4 +160,4 @@
   <%= render "stories/tagged_articles/sidebar_additional" %>
 </div>
 
-<%= javascript_include_tag "storiesList", "tagFollows", "feedPreviewCards", "hideBookmarkButtons", "drawerSliders", "localizeArticleDates", defer: true %>
+<%= javascript_include_tag "storiesList", "tagFollows", "feedPreviewCards", "drawerSliders", "localizeArticleDates", defer: true %>

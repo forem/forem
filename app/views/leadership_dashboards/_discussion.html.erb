@@ -1,0 +1,17 @@
+<section class="crayons-card pb-4">
+  <div class="p-4 m:p-6 pb-0 m:pb-2">
+    <p>
+      <%= t("views.leadership.discussion.subtitle") %>
+    </p>
+  </div>
+
+  <% if @discussion_feed.any? %>
+    <%= render partial: "discussion_row", collection: @discussion_feed, as: :article %>
+
+    <div class="p-4 m:p-6 pt-2 m:pt-2 pb-0 m:pb-0">
+      <%= paginate @discussion_feed %>
+    </div>
+  <% else %>
+    <p class="color-base-60 p-4 m:p-6 pt-2 m:pt-2 m-0"><%= t("views.leadership.discussion.empty") %></p>
+  <% end %>
+</section>

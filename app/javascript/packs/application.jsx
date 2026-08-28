@@ -10,6 +10,7 @@ import { createRootFragment } from '../shared/preact/preact-root-fragment';
 import { trackCreateAccountClicks } from '@utilities/ahoy/trackEvents';
 import { showWindowModal, closeWindowModal } from '@utilities/showModal';
 import * as Runtime from '@utilities/runtime';
+import { initializeSlides } from '../initializers/initializeSlides';
 
 Document.prototype.ready = new Promise((resolve) => {
   if (document.readyState !== 'loading') {
@@ -77,6 +78,9 @@ if (document.getElementById('video-player-source')) {
 }
 
 initializePodcastPlayback();
+document.ready.then(() => {
+  initializeSlides();
+});
 InstantClick.on('change', () => {
   if (document.location.pathname.startsWith('/dashboard')) {
     import('./initializers/initializeDashboardSort').then(({ initializeDashboardSort }) => {
@@ -91,6 +95,7 @@ InstantClick.on('change', () => {
   }
 
   initializePodcastPlayback();
+  initializeSlides();
 
   if (window.instgrm?.Embeds?.process) {
     window.instgrm.Embeds.process();

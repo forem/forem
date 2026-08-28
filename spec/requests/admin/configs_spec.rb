@@ -764,6 +764,19 @@ RSpec.describe "/admin/customization/config" do
           end
         end
       end
+
+      describe "AI Disclosure" do
+        it "defaults enable_ai_disclosure to false" do
+          expect(Settings::General.enable_ai_disclosure).to be(false)
+        end
+
+        it "updates enable_ai_disclosure to true" do
+          post admin_settings_general_settings_path, params: {
+            settings_general: { enable_ai_disclosure: "1" }
+          }
+          expect(Settings::General.enable_ai_disclosure).to be(true)
+        end
+      end
     end
   end
   # rubocop:enable RSpec/NestedGroups

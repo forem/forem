@@ -78,7 +78,7 @@ function timestampToLocalDateTimeLong(timestamp) {
   });
 }
 
-function timestampToLocalDateTimeShort(timestamp) {
+export function timestampToLocalDateTimeShort(timestamp) {
   // example: "10 Dec 2018" if it is not the current year
   // example: "6 Sep" if it is the current year
 
@@ -101,7 +101,6 @@ function timestampToLocalDateTimeShort(timestamp) {
   return '';
 }
 
-if (typeof globalThis !== 'undefined') {
-  globalThis.timestampToLocalDateTimeLong = timestampToLocalDateTimeLong; // eslint-disable-line no-undef
-  globalThis.timestampToLocalDateTimeShort = timestampToLocalDateTimeShort; // eslint-disable-line no-undef
-}
+// Make legacy Sprockets code accessible to these utilities
+globalThis.timestampToLocalDateTimeLong = timestampToLocalDateTimeLong; // eslint-disable-line no-undef
+globalThis.timestampToLocalDateTimeShort = timestampToLocalDateTimeShort; // eslint-disable-line no-undef

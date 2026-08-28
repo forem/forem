@@ -16,4 +16,8 @@ Disallow: /async_info/base_data
 Disallow: /ahoy/*
 Disallow: /auth_pass/*
 
+<% if (custom_org = request.env["forem.custom_domain_org"]) %>
+Sitemap: <%= URL.url("sitemap-index.xml", custom_org.custom_domain) %>
+<% else %>
 Sitemap: <%= URL.url("sitemap-index.xml") %>
+<% end %>

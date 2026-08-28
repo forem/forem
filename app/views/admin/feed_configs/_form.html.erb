@@ -1,0 +1,166 @@
+<div class="flex flex-col gap-6">
+  <fieldset class="border p-4 rounded-md">
+    <legend class="fw-bold px-2 text-base color-base-90">🤖 AI & Disclosure Controls</legend>
+    <div class="grid grid-cols-1 m:grid-cols-2 gap-4 mt-2">
+      <div class="crayons-field">
+        <%= f.label :ai_disclosure_matching_weight, "AI Disclosure Matching Weight", class: "crayons-field__label" %>
+        <p class="fs-xs color-base-60 mb-1">Governs user preferences for AI disclosed content (deducts 1x for some_ai, 2x for fully_autonomous when user chooses minimize_ai).</p>
+        <%= f.number_field :ai_disclosure_matching_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+
+      <div class="crayons-field">
+        <%= f.label :autonomous_ai_penalty_weight, "Autonomous AI Global Penalty Weight", class: "crayons-field__label" %>
+        <p class="fs-xs color-base-60 mb-1">Global score deduction applied to all fully autonomous AI content regardless of individual user preference.</p>
+        <%= f.number_field :autonomous_ai_penalty_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="border p-4 rounded-md">
+    <legend class="fw-bold px-2 text-base color-base-90">👥 Social & Follow Network Weights</legend>
+    <div class="grid grid-cols-1 m:grid-cols-2 gap-4 mt-2">
+      <div class="crayons-field">
+        <%= f.label :user_follow_weight, "User Follow Weight", class: "crayons-field__label" %>
+        <%= f.number_field :user_follow_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :organization_follow_weight, "Organization Follow Weight", class: "crayons-field__label" %>
+        <%= f.number_field :organization_follow_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :tag_follow_weight, "Tag Follow Weight", class: "crayons-field__label" %>
+        <%= f.number_field :tag_follow_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :subforem_follow_weight, "Subforem Follow Weight", class: "crayons-field__label" %>
+        <%= f.number_field :subforem_follow_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :follow_status_weight, "Follow Status Weight", class: "crayons-field__label" %>
+        <%= f.number_field :follow_status_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :label_match_weight, "Label Match Weight", class: "crayons-field__label" %>
+        <%= f.number_field :label_match_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="border p-4 rounded-md">
+    <legend class="fw-bold px-2 text-base color-base-90">⭐ Content Quality & Engagement Weights</legend>
+    <div class="grid grid-cols-1 m:grid-cols-3 gap-4 mt-2">
+      <div class="crayons-field">
+        <%= f.label :score_weight, "Score Weight", class: "crayons-field__label" %>
+        <%= f.number_field :score_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :feed_success_weight, "Feed Success Weight", class: "crayons-field__label" %>
+        <%= f.number_field :feed_success_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :comment_score_weight, "Comment Score Weight", class: "crayons-field__label" %>
+        <%= f.number_field :comment_score_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :comment_recency_weight, "Comment Recency Weight", class: "crayons-field__label" %>
+        <%= f.number_field :comment_recency_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :recency_weight, "Recency Weight", class: "crayons-field__label" %>
+        <%= f.number_field :recency_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :featured_weight, "Featured Weight", class: "crayons-field__label" %>
+        <%= f.number_field :featured_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :compellingness_score_weight, "Compellingness Score Weight", class: "crayons-field__label" %>
+        <%= f.number_field :compellingness_score_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :clickbait_score_weight, "Clickbait Penalty Weight", class: "crayons-field__label" %>
+        <%= f.number_field :clickbait_score_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :status_weight, "Status Weight", class: "crayons-field__label" %>
+        <%= f.number_field :status_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :language_match_weight, "Language Match Weight", class: "crayons-field__label" %>
+        <%= f.number_field :language_match_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="border p-4 rounded-md">
+    <legend class="fw-bold px-2 text-base color-base-90">🕒 Recency & Activity Bonuses</legend>
+    <div class="grid grid-cols-1 m:grid-cols-3 gap-4 mt-2">
+      <div class="crayons-field">
+        <%= f.label :published_today_weight, "Published Today Weight", class: "crayons-field__label" %>
+        <%= f.number_field :published_today_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :general_past_day_bonus_weight, "General Past Day Bonus", class: "crayons-field__label" %>
+        <%= f.number_field :general_past_day_bonus_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :recently_active_past_day_bonus_weight, "Recently Active Past Day Bonus", class: "crayons-field__label" %>
+        <%= f.number_field :recently_active_past_day_bonus_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :recent_subforem_weight, "Recent Subforem Weight", class: "crayons-field__label" %>
+        <%= f.number_field :recent_subforem_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :recent_article_suppression_rate, "Recent Article Suppression Rate", class: "crayons-field__label" %>
+        <%= f.number_field :recent_article_suppression_rate, step: "any", class: "crayons-textfield" %>
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="border p-4 rounded-md">
+    <legend class="fw-bold px-2 text-base color-base-90">🔮 Discovery & Algorithmic Controls</legend>
+    <div class="grid grid-cols-1 m:grid-cols-3 gap-4 mt-2">
+      <div class="crayons-field">
+        <%= f.label :semantic_similarity_weight, "Semantic Similarity Weight", class: "crayons-field__label" %>
+        <%= f.number_field :semantic_similarity_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :randomness_weight, "Randomness Weight", class: "crayons-field__label" %>
+        <%= f.number_field :randomness_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :shuffle_weight, "Shuffle Weight", class: "crayons-field__label" %>
+        <%= f.number_field :shuffle_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :recent_page_views_shuffle_weight, "Recent Views Shuffle Weight", class: "crayons-field__label" %>
+        <%= f.number_field :recent_page_views_shuffle_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :lookback_window_weight, "Lookback Window Weight", class: "crayons-field__label" %>
+        <%= f.number_field :lookback_window_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :precomputed_selections_weight, "Precomputed Selections Weight", class: "crayons-field__label" %>
+        <%= f.number_field :precomputed_selections_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :recent_tag_count_min, "Recent Tag Count Min", class: "crayons-field__label" %>
+        <%= f.number_field :recent_tag_count_min, class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :recent_tag_count_max, "Recent Tag Count Max", class: "crayons-field__label" %>
+        <%= f.number_field :recent_tag_count_max, class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :all_time_tag_count_min, "All-Time Tag Count Min", class: "crayons-field__label" %>
+        <%= f.number_field :all_time_tag_count_min, class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :all_time_tag_count_max, "All-Time Tag Count Max", class: "crayons-field__label" %>
+        <%= f.number_field :all_time_tag_count_max, class: "crayons-textfield" %>
+      </div>
+    </div>
+  </fieldset>
+</div>

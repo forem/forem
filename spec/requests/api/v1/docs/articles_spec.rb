@@ -37,7 +37,8 @@ RSpec.describe "Api::V1::Docs::Articles" do
 - **series**: Group articles together by specifying a series name. If the series does not exist, it will be created.
 - **main_image**: Absolute URL of the cover image for the article.
 - **canonical_url**: If this post was originally published elsewhere, specify the canonical URL to maintain SEO integrity.
-- **description**: A short summary of the article used for previews and SEO meta description."
+- **description**: A short summary of the article used for previews and SEO meta description.
+- **ai_disclosure_level**: AI tooling usage disclosure (`not_disclosed`, `no_ai`, `some_ai`, `fully_autonomous`)."
         operationId "createArticle"
         produces "application/json"
         consumes "application/json"
@@ -59,6 +60,7 @@ RSpec.describe "Api::V1::Docs::Articles" do
                 canonical_url: "https://dev.to/fdocr/headless-chrome-dual-mode-tests-for-ruby-on-rails-4p6g",
                 description: "New post example",
                 tags: "ruby selenium capybara rspec",
+                ai_disclosure_level: "some_ai",
                 organization_id: organization.id
               }
             }
@@ -285,7 +287,7 @@ belonging to the requested collection, ordered by ascending publication date.",
 
 ### Authorization Constraints:
 - The API key provided must belong to the author of the article.
-- Supports updating individual fields such as `title`, `body_markdown`, `published`, `tags`, etc.
+- Supports updating individual fields such as `title`, `body_markdown`, `published`, `tags`, `ai_disclosure_level`, etc.
 - Setting `published: false` on an already published article will revert it to draft status."
         operationId "updateArticle"
         produces "application/json"

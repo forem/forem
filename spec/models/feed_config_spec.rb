@@ -378,6 +378,8 @@ RSpec.describe FeedConfig, type: :model do
       feed_config.subforem_follow_weight        = 21.0 # Added new weight
       feed_config.recent_page_views_shuffle_weight = 22.0
       feed_config.follow_status_weight          = 23.0
+      feed_config.ai_disclosure_matching_weight = 24.0
+      feed_config.autonomous_ai_penalty_weight  = 25.0
       feed_config.recent_tag_count_min           = 2
       feed_config.recent_tag_count_max           = 5
       feed_config.all_time_tag_count_min         = 3
@@ -418,6 +420,8 @@ RSpec.describe FeedConfig, type: :model do
       expect(clone.subforem_follow_weight).to eq(21.0 * 1.1) # Added expectation
       expect(clone.recent_page_views_shuffle_weight).to eq(22.0 * 1.1)
       expect(clone.follow_status_weight).to eq(23.0 * 1.1)
+      expect(clone.ai_disclosure_matching_weight).to eq(24.0 * 1.1)
+      expect(clone.autonomous_ai_penalty_weight).to eq(25.0 * 1.1)
     end
 
     it "does not modify the original feed_config" do
@@ -446,6 +450,8 @@ RSpec.describe FeedConfig, type: :model do
         "subforem_follow_weight", # Added new weight to check
         "recent_page_views_shuffle_weight",
         "follow_status_weight",
+        "ai_disclosure_matching_weight",
+        "autonomous_ai_penalty_weight",
         "recent_tag_count_min",
         "recent_tag_count_max",
         "all_time_tag_count_min",
@@ -471,7 +477,7 @@ RSpec.describe FeedConfig, type: :model do
 
   describe "#score_sql" do
     let(:user) { create(:user) }
-    let(:feed_config) { FeedConfig.new(semantic_similarity_weight: 10.0) }
+    let(:feed_config) { described_class.new(semantic_similarity_weight: 10.0) }
     let(:interest_embedding) { [0.1, 0.2, 0.3] + Array.new(765, 0.0) }
 
     it "includes semantic embedding calculation when activity store has a vector" do
@@ -482,6 +488,58 @@ RSpec.describe FeedConfig, type: :model do
       sql = feed_config.score_sql(user)
       expect(sql).to include("articles.semantic_embedding <=> '[#{interest_embedding.join(',')}]'")
       expect(sql).to include("* 10.0")
+    end
+
+    context "when ai_disclosure_matching_weight is positive" do
+      before { feed_config.ai_disclosure_matching_weight = 12.0 }
+
+      context "when user has minimize_ai feed preference" do
+        before { user.setting.update(feed_ai_preference: :minimize_ai) }
+
+        it "scales AI disclosure penalties by ai_disclosure_matching_weight" do
+          sql = feed_config.score_sql(user)
+          expect(sql).to include("CASE WHEN articles.ai_disclosure_level = 3 THEN -12.0 WHEN articles.ai_disclosure_level = 5 THEN -24.0 ELSE 0 END")
+        end
+      end
+
+      context "when user has hide_fully_autonomous feed preference" do
+        before { user.setting.update(feed_ai_preference: :hide_fully_autonomous) }
+
+        it "scales some_ai penalties by ai_disclosure_matching_weight" do
+          sql = feed_config.score_sql(user)
+          expect(sql).to include("CASE WHEN articles.ai_disclosure_level = 3 THEN -12.0 ELSE 0 END")
+        end
+      end
+
+      context "when user has show_all feed preference" do
+        before { user.setting.update(feed_ai_preference: :show_all) }
+
+        it "does not include user AI disclosure penalty terms" do
+          sql = feed_config.score_sql(user)
+          expect(sql).not_to include("articles.ai_disclosure_level = 3")
+        end
+      end
+    end
+
+    context "when ai_disclosure_matching_weight is 0" do
+      before do
+        feed_config.ai_disclosure_matching_weight = 0.0
+        user.setting.update(feed_ai_preference: :minimize_ai)
+      end
+
+      it "does not include AI disclosure matching penalty terms" do
+        sql = feed_config.score_sql(user)
+        expect(sql).not_to include("articles.ai_disclosure_level = 3")
+      end
+    end
+
+    context "when autonomous_ai_penalty_weight is positive" do
+      before { feed_config.autonomous_ai_penalty_weight = 25.0 }
+
+      it "includes the autonomous AI penalty weight term" do
+        sql = feed_config.score_sql(user)
+        expect(sql).to include("CASE WHEN articles.ai_disclosure_level = 5 THEN -25.0 ELSE 0 END")
+      end
     end
   end
 end

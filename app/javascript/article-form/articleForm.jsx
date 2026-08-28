@@ -97,10 +97,12 @@ export class ArticleForm extends Component {
     coverImageHeight: PropTypes.string.isRequired,
     coverImageCrop: PropTypes.string.isRequired,
     aiAvailable: PropTypes.bool.isRequired,
+    aiDisclosureEnabled: PropTypes.bool,
   };
 
   static defaultProps = {
     organizations: '[]',
+    aiDisclosureEnabled: false,
   };
 
   constructor(props) {
@@ -113,6 +115,7 @@ export class ArticleForm extends Component {
       coverImageHeight,
       coverImageCrop,
       aiAvailable,
+      aiDisclosureEnabled,
     } = this.props;
     let { organizations } = this.props;
     this.article = JSON.parse(article);
@@ -176,6 +179,7 @@ export class ArticleForm extends Component {
       authorId: this.article.user_id,
       coAuthorIdsList: this.article.co_author_ids_list || '',
       coAuthorsData: this.article.co_authors_data || [],
+      aiDisclosureLevel: this.article.ai_disclosure_level || 'not_disclosed',
       errors: null,
       edited: false,
       updatedAt: this.article.updated_at,
@@ -184,6 +188,7 @@ export class ArticleForm extends Component {
       coverImageHeight,
       coverImageCrop,
       aiAvailable,
+      aiDisclosureEnabled: aiDisclosureEnabled === true || aiDisclosureEnabled === 'true',
       helpFor: null,
       helpPosition: null,
       isModalOpen: false,
@@ -341,10 +346,14 @@ export class ArticleForm extends Component {
   };
 
   handleConfigChange = (e) => {
-    e.preventDefault();
-    const newState = {};
-    newState[e.target.name] = e.target.value;
-    this.setState(newState);
+    if (e && typeof e.preventDefault === 'function') {
+      e.preventDefault();
+    }
+    const name = e?.target?.name || e?.name;
+    const value = e?.target !== undefined ? e.target.value : e?.value;
+    if (name) {
+      this.setState({ [name]: value, edited: true });
+    }
   };
 
   handleMainImageUrlChange = (payload) => {

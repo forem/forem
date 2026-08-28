@@ -31,6 +31,7 @@ var instantClick
     , $isPreloading = false
     , $isWaitingForCompletion = false
     , $trackedAssets = []
+    , $keepScrollPosition = false
 
   // Variables defined by public functions
     , $preloadOnMousedown
@@ -131,6 +132,8 @@ var instantClick
       document.getElementById('search-input').value = ''
       searchTypeahead.classList.add('hidden');
     }
+    var currentScrollY = window.pageYOffset
+
     document.body.replaceChild(body, pageContentDiv)
 
     var prog = document.getElementById("navigation-progress");
@@ -159,9 +162,13 @@ var instantClick
           hashElem = hashElem.offsetParent
         }
       }
-      if (!samePage){
+      if ($keepScrollPosition) {
+        scrollTo(0, currentScrollY)
+      }
+      else if (!samePage && !$keepScrollPosition){
         scrollTo(0, offset)
       }
+      $keepScrollPosition = false
 
 
       $currentLocationWithoutHash = removeHash(newUrl)
@@ -295,6 +302,7 @@ var instantClick
       if (e.which > 1 || e.metaKey || e.ctrlKey) { // Opening in new tab
         return
       }
+      $keepScrollPosition = a.hasAttribute('data-instant-keep-scroll')
       display(a.href);
       e.preventDefault();
     }

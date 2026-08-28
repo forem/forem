@@ -5,6 +5,14 @@ pt:
       account:
         title: Configurações da Conta
         description: Gerencie suas configurações de conta
+        connect: Conectar conta %{provider}
+        reconnect: Reconectar conta %{provider}
+        emails: E-mails da conta
+        primary: E-mail principal
+        provider_email: "E-mail %{provider}"
+        provider_profile: "Configurações de perfil %{provider}"
+        mlh_sign_in_link: Entre no MLH
+        mlh_sign_in_html: "%{link} com este endereço de e-mail para concluir a conexão da sua conta."
         profile:
           title: Perfil
           name: Nome
@@ -84,6 +92,12 @@ pt:
           connected: Conectado
           not_connected: Não conectado
         custom:
+          feed_ai_preference: Conteúdo de IA no Feed
+          feed_ai_preference_desc: "Escolha como o conteúdo divulgado por IA aparecerá no seu feed."
+          feed_ai_options:
+            show_all: Padrão (mostrar todo o conteúdo)
+            minimize_ai: Minimizar conteúdo assistido e autônomo por IA
+            hide_fully_autonomous: Ocultar conteúdo de IA totalmente autônomo
           subforem_reassignment: Realocação de Conteúdo
           subforem_reassignment_desc: Quando seu conteúdo é marcado como fora de tópico para seu subfórum atual, ele pode ser automaticamente movido para um subfórum mais apropriado. Você pode desativar essa realocação automática se preferir manter seu conteúdo em sua localização original.
           subforem_reassignment_field: Desativar a realocação automática do meu conteúdo para outros subfóruns

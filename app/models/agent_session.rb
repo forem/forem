@@ -11,6 +11,7 @@ class AgentSession < ApplicationRecord
 
   validate :data_has_messages
   validate :data_not_too_large
+  validate :s3_key_format_and_ownership
 
   before_validation :generate_slug
   after_destroy :delete_s3_object
@@ -92,23 +93,32 @@ class AgentSession < ApplicationRecord
     return if curated_data.blank? || curated_data == {}
 
     messages_data = curated_data["messages"]
-    unless messages_data.is_a?(Array)
-      errors.add(:curated_data, "must contain a messages array")
-    end
+    return if messages_data.is_a?(Array)
+
+    errors.add(:curated_data, "must contain a messages array")
+
     # Sessions with just s3_key and no curated_data yet (draft state) are valid
   end
 
   def data_not_too_large
     return if curated_data.blank? || curated_data == {}
 
-    if curated_data.to_json.bytesize > MAX_CURATED_DATA_SIZE
-      errors.add(:curated_data, "is too large (max #{MAX_CURATED_DATA_SIZE / 1.megabyte}MB)")
-    end
+    return unless curated_data.to_json.bytesize > MAX_CURATED_DATA_SIZE
+
+    errors.add(:curated_data, "is too large (max #{MAX_CURATED_DATA_SIZE / 1.megabyte}MB)")
   end
 
   def delete_s3_object
     return unless s3_key.present? && AgentSessions::S3Storage.enabled?
 
     AgentSessions::S3Storage.delete(s3_key)
+  end
+
+  def s3_key_format_and_ownership
+    return if s3_key.blank?
+
+    return if AgentSessions::S3Storage.valid_key_for_user?(s3_key, user_id)
+
+    errors.add(:s3_key, "is invalid or does not belong to this user")
   end
 end

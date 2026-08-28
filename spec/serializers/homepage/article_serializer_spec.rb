@@ -16,5 +16,20 @@ RSpec.describe Homepage::ArticleSerializer, type: :serializer do
       response = described_class.serialized_collection_from(relation: Article.all)
       expect(JSON.parse(response.to_json)[0].dig("user", "name")).to eq(user.name)
     end
+
+    it "includes who favorited the article" do
+      leader = create(:user)
+      article.update_columns(favorited_by_user_id: leader.id, favorited_at: Time.current)
+
+      response = described_class.serialized_collection_from(relation: Article.all)
+
+      expect(response.first[:favorited_by_user_id]).to eq(leader.id)
+    end
+
+    it "reports no favoriter for unfavorited articles" do
+      response = described_class.serialized_collection_from(relation: Article.all)
+
+      expect(response.first[:favorited_by_user_id]).to be_nil
+    end
   end
 end

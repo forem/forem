@@ -1,0 +1,22 @@
+<article class="flex p-4 m:p-6 pb-0 m:pb-2 pr-2 m:pr-6">
+  <a href="/<%= article.cached_user.username %>" class="crayons-avatar crayons-avatar--l shrink-0">
+    <img src="<%= article.cached_user.profile_image_90 %>" alt="<%= article.cached_user.name %> profile" class="crayons-avatar__image" loading="lazy" />
+  </a>
+
+  <div class="flex-1 pl-2 m:pl-4">
+    <a href="<%= article.path %>" class="flex crayons-link">
+      <h2 class="fs-base lh-tight m:fs-l fw-bold break-word"><%= article.title %></h2>
+    </a>
+    <p class="fs-s">
+      <a href="/<%= article.cached_user.username %>" class="crayons-link fw-medium"><%= article.cached_user.name %></a>
+      <span class="color-base-30"> • </span>
+      <span class="color-base-60"><%= article.readable_publish_date %></span>
+    </p>
+  </div>
+
+  <div class="m:self-center">
+    <a href="<%= article.path %>#comments" class="crayons-btn crayons-btn--ghost crayons-btn--s whitespace-nowrap">
+      <%= t("views.leadership.discussion.cta") %>
+    </a>
+  </div>
+</article>

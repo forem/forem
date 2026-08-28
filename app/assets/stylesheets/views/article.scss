@@ -308,6 +308,60 @@ html.is-twitter-in-app {
   }
 }
 
+.favorite-control-root {
+  display: contents;
+}
+
+// Article-bar favorite control made to look like .crayons-reaction without
+// sharing its behavior
+.favorite-reaction {
+  --reaction-color: var(--button-ghost-color);
+  --reaction-bg: transparent;
+
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  border: none;
+  background: transparent;
+  padding: 1px 6px;
+
+  @media (min-width: $breakpoint-m) {
+    flex-direction: column;
+  }
+
+  .js-focus-visible &.focus-visible:focus {
+    background-color: var(--button-ghost-bg-hover);
+    border-radius: 1000px;
+    box-shadow: none;
+    color: var(--button-ghost-color-hover);
+  }
+
+  &:hover {
+    --reaction-color: var(--reaction-favorite-color);
+    --reaction-bg: var(--reaction-favorite-bg);
+  }
+
+  .crayons-tooltip__content {
+    text-align: center;
+
+    @media (max-width: $breakpoint-m) {
+      top: -100%;
+    }
+  }
+
+  @media (hover: none) {
+    .crayons-tooltip__content {
+      display: none;
+    }
+  }
+}
+
+.favorite-control.favorite-control--favorited {
+  --reaction-color: var(--reaction-favorite-color);
+
+  color: var(--reaction-favorite-color);
+}
+
 .only-sidebar-menu-item {
   display: none !important;
 

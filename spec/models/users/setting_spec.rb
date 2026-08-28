@@ -22,6 +22,7 @@ RSpec.describe Users::Setting do
     it { is_expected.to define_enum_for(:config_theme).with_values(light_theme: 0, dark_theme: 2) }
     it { is_expected.to define_enum_for(:config_homepage_feed).with_values(default: 0, latest: 1, top_week: 2, top_month: 3, top_year: 4, top_infinity: 5).with_suffix(:feed) }
     it { is_expected.to define_enum_for(:feed_status).with_values(healthy: 0, degraded: 1, failing: 2, inactive: 3).with_prefix(:feed) }
+    it { is_expected.to define_enum_for(:feed_ai_preference).with_values(show_all: 0, minimize_ai: 1, hide_fully_autonomous: 2).with_suffix(:feed_ai) }
 
     describe "validating color fields" do
       it "is valid if the field is a correct hex color with leading #" do

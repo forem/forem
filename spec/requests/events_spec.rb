@@ -1,33 +1,52 @@
 require "rails_helper"
 
-RSpec.describe "Events", type: :request do
+RSpec.describe "Events" do
   let!(:published_event) { create(:event, title: "Super Cool Launch Event", published: true) }
   let!(:draft_event)     { create(:event, title: "Secret Internal Test", published: false) }
 
   describe "GET /events" do
     it "renders the index successfully, displaying only published events" do
       get events_path
-      
+
       expect(response).to have_http_status(:success)
       expect(response.body).to include(published_event.title)
       expect(response.body).not_to include(draft_event.title)
+      expect(response.body).to include("Upcoming Events")
+      expect(response.body).to include("View on Calendar")
+      expect(response.body).to include(calendar_path)
+    end
+
+    it "renders gradient background for events without cover image" do
+      get events_path
+      expect(response.body).to include("linear-gradient(135deg,")
+    end
+
+    it "renders cover image when an event has one attached" do
+      image_file = fixture_file_upload(Rails.root.join("spec/fixtures/files/800x600.png"), "image/png")
+      published_event.update!(cover_image: image_file)
+
+      get events_path
+      expect(response.body).to include(published_event.cover_image.url)
     end
   end
 
   describe "GET /events/:id" do
     context "when requesting a published event" do
-      it "renders the show view successfully" do
+      it "renders the show view successfully with og:image meta tags" do
         # `event_path` natively uses the overloaded `to_param` (slug) we built!
         get event_path(published_event.event_name_slug, published_event.event_variation_slug)
-        
+
         expect(response).to have_http_status(:success)
         expect(response.body).to include(published_event.title)
+        expect(response.body).to include("property=\"og:image\"")
+        expect(response.body).to include("name=\"twitter:image:src\"")
       end
 
       context "when forced_live state is passed" do
         it "renders the show view indicating that forced live mode is enabled" do
-          get event_path(published_event.event_name_slug, published_event.event_variation_slug), params: { state: "forced_live" }
-          
+          get event_path(published_event.event_name_slug, published_event.event_variation_slug),
+              params: { state: "forced_live" }
+
           expect(response).to have_http_status(:success)
           expect(response.body).to include("IS_FORCED_LIVE = true;")
         end
@@ -44,7 +63,7 @@ RSpec.describe "Events", type: :request do
 
         it "renders the articles with their tags successfully without throwing NoMethodError" do
           get event_path(published_event.event_name_slug, published_event.event_variation_slug)
-          
+
           expect(response).to have_http_status(:success)
           expect(response.body).to include("A Custom Event Article")
           expect(response.body).to include(article.path)
@@ -52,6 +71,7 @@ RSpec.describe "Events", type: :request do
         end
       end
     end
+
     context "when requesting an event that delegates to a page" do
       let(:delegated_page) { create(:page, slug: "delegated-page") }
       let!(:delegated_event) { create(:event, published: true, delegate_to_page: true, page: delegated_page) }
@@ -77,54 +97,56 @@ RSpec.describe "Events", type: :request do
     context "when requesting a draft event" do
       context "as a logged out user" do
         it "raises a 404 RoutingError as if it does not exist" do
-          expect {
+          expect do
             get event_path(draft_event.event_name_slug, draft_event.event_variation_slug)
-          }.to raise_error(ActionController::RoutingError, "Not Found")
+          end.to raise_error(ActionController::RoutingError, "Not Found")
         end
       end
 
       context "as a regular logged in user" do
         let(:regular_user) { create(:user) }
-        
+
         before { login_as(regular_user) }
 
         it "raises a 404 RoutingError to maintain draft secrecy" do
-          expect {
+          expect do
             get event_path(draft_event.event_name_slug, draft_event.event_variation_slug)
-          }.to raise_error(ActionController::RoutingError, "Not Found")
+          end.to raise_error(ActionController::RoutingError, "Not Found")
         end
       end
 
       context "as an admin" do
         let(:admin) { create(:user, :super_admin) }
-        
+
         before { login_as(admin) }
 
         it "renders the show view with an unpublished warning banner" do
           get event_path(draft_event.event_name_slug, draft_event.event_variation_slug)
-          
+
           expect(response).to have_http_status(:success)
           expect(response.body).to include("This event is not published!")
           expect(response.body).to include("Edit Event")
         end
       end
     end
-    
+
     context "when an event does not exist" do
       context "and a matching page does not exist" do
         it "raises an ActiveRecord::RecordNotFound implicitly handled as a 404" do
-          expect {
+          expect do
             get "/events/does-not-exist/version"
-          }.to raise_error(ActiveRecord::RecordNotFound)
+          end.to raise_error(ActiveRecord::RecordNotFound)
         end
       end
 
       context "and a matching page exists" do
-        let!(:fallback_page) { create(:page, slug: "events/midnight/april-2-2026", body_markdown: "This is the fallback midnight event page") }
-        
+        let!(:fallback_page) do
+          create(:page, slug: "events/midnight/april-2-2026", body_markdown: "This is the fallback midnight event page")
+        end
+
         it "renders the page instead of raising a 404" do
           get "/events/midnight/april-2-2026"
-          
+
           expect(response).to have_http_status(:success)
           expect(response.body).to include("This is the fallback midnight event page")
         end

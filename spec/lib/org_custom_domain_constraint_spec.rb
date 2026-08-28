@@ -57,6 +57,94 @@ RSpec.describe OrgCustomDomainConstraint do
         expect(constraint.matches?(request)).to be true
         expect(env["forem.custom_domain_org"]).to eq(organization)
       end
+
+      it "returns true for article paths requested via fetch/preload (even with fetch headers or xhr)" do
+        fetch_request = instance_double(
+          ActionDispatch::Request,
+          host: host,
+          env: env,
+          path: "/my-article-slug",
+          accept: "*/*",
+          headers: { "Sec-Fetch-Dest" => "empty", "Sec-Fetch-Mode" => "cors" },
+          params: {},
+          xhr?: false
+        )
+        expect(constraint.matches?(fetch_request)).to be true
+      end
+
+      it "returns false for platform async paths like /async_info" do
+        async_request = instance_double(
+          ActionDispatch::Request,
+          host: host,
+          env: env,
+          path: "/async_info/article",
+          accept: "application/json",
+          headers: {},
+          params: {},
+          xhr?: false
+        )
+        expect(constraint.matches?(async_request)).to be false
+      end
+
+      it "returns false for platform paths like /reactions" do
+        reactions_request = instance_double(
+          ActionDispatch::Request,
+          host: host,
+          env: env,
+          path: "/reactions",
+          accept: "application/json",
+          headers: {},
+          params: {},
+          xhr?: false
+        )
+        expect(constraint.matches?(reactions_request)).to be false
+      end
+
+      it "returns false for platform paths like /auth_pass" do
+        auth_request = instance_double(
+          ActionDispatch::Request,
+          host: host,
+          env: env,
+          path: "/auth_pass/iframe",
+          accept: "text/html",
+          headers: {},
+          params: {},
+          xhr?: false
+        )
+        expect(constraint.matches?(auth_request)).to be false
+      end
+
+      it "returns true for article slugs that start with a reserved word as a substring (e.g. /api2, /bball)" do
+        %w[/api2 /api-version-2 /bball /search-tools /reactions-guide].each do |path|
+          article_req = instance_double(
+            ActionDispatch::Request,
+            host: host,
+            env: env,
+            path: path,
+            accept: "text/html",
+            headers: {},
+            params: {},
+            xhr?: false
+          )
+          expect(constraint.matches?(article_req)).to be(true), "Expected #{path} to match custom domain constraint"
+        end
+      end
+
+      it "returns true for custom domain endpoints like /p/about, /feed, /rss" do
+        %w[/p/about /feed /rss].each do |path|
+          custom_req = instance_double(
+            ActionDispatch::Request,
+            host: host,
+            env: env,
+            path: path,
+            accept: "text/html",
+            headers: {},
+            params: {},
+            xhr?: false
+          )
+          expect(constraint.matches?(custom_req)).to be(true), "Expected #{path} to match custom domain constraint"
+        end
+      end
     end
   end
 end

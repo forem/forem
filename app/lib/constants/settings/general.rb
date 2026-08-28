@@ -150,6 +150,10 @@ module Constants
           enable_agent_sessions: {
             description: I18n.t("lib.constants.settings.general.enable_agent_sessions.description",
                                 default: "Enable the Agent Sessions feature for uploading and embedding coding agent session transcripts.")
+          },
+          enable_ai_disclosure: {
+            description: I18n.t("lib.constants.settings.general.enable_ai_disclosure.description",
+                                default: "Allow authors to disclose AI tooling usage when publishing or editing posts.")
           }
         }
       end

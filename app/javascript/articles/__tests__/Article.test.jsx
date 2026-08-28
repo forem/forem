@@ -300,9 +300,9 @@ describe('<Article /> component', () => {
     expect(queryByText('person', { selector: 'span' })).toExist();
   });
 
-  it('should show bookmark button when article is saveable (default)', () => {
+  it('should show bookmark button when article is saveable', () => {
     const { queryByTestId } = render(
-      <Article {...commonProps} isBookmarked={false} article={article} />,
+      <Article {...commonProps} isBookmarked={false} article={article} saveable={true} />,
     );
 
     expect(queryByTestId(`article-save-button-${article.id}`)).toBeDefined();

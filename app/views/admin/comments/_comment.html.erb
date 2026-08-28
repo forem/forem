@@ -1,39 +1,50 @@
 <div>
   <article class="crayons-card p-4 pt-3 pb-2 flex flex-col gap-3">
     <% if comment.commentable %>
-      <header class="flex justify-between gap-4 items-center border-b-1 border-base-10 border-solid border-0 pb-3 -mx-2 px-2">
-        <div class="flex gap-2 items-center">
-          <% if comment.user %>
-            <a href="<%= comment.user.path %>" target="_blank" rel="noopener" class="shrink-0 c-link">
-              <img width="32" height="32" class="radius-full block" src="<%= comment.user.profile_image_url_for(length: 64) %>" alt="<%= comment.user.username %> profile" loading="lazy" />
-            </a>
-          <% end %>
-          <p>
-            <a href="<%= comment.user.path %>" target="_blank" rel="noopener" class="c-link c-link--branded fw-bold"><%= comment.user.username %></a>
-            on:
-            <a href="<%= comment.commentable.path %>" class="c-link c-link--branded"><%= comment.commentable.title %></a>
-          </p>
-        </div>
-        <div class="flex items-center gap-1">
-          <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center" title="<%= t("views.moderations.actions.thumb_up") %>">
-            <%= crayons_icon_tag("twemoji/thumb-up", native: true, width: 16, height: 16) %>
-            <span class="fs-s fw-medium lh-base"><%= comment.privileged_reaction_counts["thumbsup"] || "0" %></span>
-          </span>
+      <header>
+        <% if comment.favorited_by_user_id? %>
+          <div class="flex gap-1 mb-1">
+            <span class="c-indicator c-indicator--warning">
+              <%= t("views.moderations.article.favorited_by") %>
+              <a href="<%= comment.favorited_by_user&.path %>" target="_blank" rel="noopener" class="shrink-0 c-link c-link--branded fw-bold"><%= comment.favorited_by_user&.username %></a>
+            </span>
+          </div>
+        <% end %>
 
-          <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center" title="<%= t("views.moderations.actions.thumb_down") %>">
-            <%= crayons_icon_tag("twemoji/thumb-down", native: true, width: 16, height: 16) %>
-            <span class="fs-s fw-medium lh-base"><%= comment.privileged_reaction_counts["thumbsdown"] || "0" %></span>
-          </span>
+        <div class="flex justify-between gap-4 items-center border-b-1 border-base-10 border-solid border-0 pb-3 -mx-2 px-2">
+          <div class="flex gap-2 items-center">
+            <% if comment.user %>
+              <a href="<%= comment.user.path %>" target="_blank" rel="noopener" class="shrink-0 c-link">
+                <img width="32" height="32" class="radius-full block" src="<%= comment.user.profile_image_url_for(length: 64) %>" alt="<%= comment.user.username %> profile" loading="lazy" />
+              </a>
+            <% end %>
+            <p>
+              <a href="<%= comment.user.path %>" target="_blank" rel="noopener" class="c-link c-link--branded fw-bold"><%= comment.user.username %></a>
+              on:
+              <a href="<%= comment.commentable.path %>" class="c-link c-link--branded"><%= comment.commentable.title %></a>
+            </p>
+          </div>
+          <div class="flex items-center gap-1">
+            <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center" title="<%= t("views.moderations.actions.thumb_up") %>">
+              <%= crayons_icon_tag("twemoji/thumb-up", native: true, width: 16, height: 16) %>
+              <span class="fs-s fw-medium lh-base"><%= comment.privileged_reaction_counts["thumbsup"] || "0" %></span>
+            </span>
 
-          <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center" title="<%= t("views.moderations.actions.vomit") %>">
-            <%= crayons_icon_tag("twemoji/flag", native: true, width: 16, height: 16) %>
-            <span class="fs-s fw-medium lh-base"><%= @countable_vomits&.dig(comment.id) || 0 %></span>
-          </span>
+            <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center" title="<%= t("views.moderations.actions.thumb_down") %>">
+              <%= crayons_icon_tag("twemoji/thumb-down", native: true, width: 16, height: 16) %>
+              <span class="fs-s fw-medium lh-base"><%= comment.privileged_reaction_counts["thumbsdown"] || "0" %></span>
+            </span>
 
-          <span class="crayons-card crayons-card--secondary px-3 py-1 ml-3 flex gap-2 items-center" title="<%= t("views.moderations.actions.score") %>">
-            <%= crayons_icon_tag("analytics", native: true, width: 16, height: 16) %>
-            <span class="fs-s fw-medium lh-base"><%= comment.score %></span>
-          </span>
+            <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center" title="<%= t("views.moderations.actions.vomit") %>">
+              <%= crayons_icon_tag("twemoji/flag", native: true, width: 16, height: 16) %>
+              <span class="fs-s fw-medium lh-base"><%= @countable_vomits&.dig(comment.id) || 0 %></span>
+            </span>
+
+            <span class="crayons-card crayons-card--secondary px-3 py-1 ml-3 flex gap-2 items-center" title="<%= t("views.moderations.actions.score") %>">
+              <%= crayons_icon_tag("analytics", native: true, width: 16, height: 16) %>
+              <span class="fs-s fw-medium lh-base"><%= comment.score %></span>
+            </span>
+          </div>
         </div>
       </header>
     <% end %>
@@ -53,6 +64,14 @@
         <a href="/admin/content_manager/comments/<%= comment.id %>" class="c-link c-link--block">
           <%= t("views.moderations.comments.view_details") %>
         </a>
+      <% end %>
+
+      <% if comment.favorited_by_user_id? %>
+        <form method="post" action="<%= unfavorite_admin_comment_path(comment.id) %>" class="inline">
+          <input type="hidden" name="_method" value="delete" />
+          <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
+          <button type="submit" class="c-btn"><%= t("views.moderations.article.unfavorite") %></button>
+        </form>
       <% end %>
     </footer>
   </article>

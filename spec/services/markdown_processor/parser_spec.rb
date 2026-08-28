@@ -540,18 +540,18 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
   end
 
   context "when rendering a quote liquid tag through the full pipeline" do
-    it "preserves quote tag HTML structure without converting SVG to code blocks" do
+    it "preserves the quote tag HTML structure" do
       markdown = '{% quote author="Jane Doe" role="CTO" link="https://example.com" %}Great platform!{% endquote %}'
       result = generate_and_parse_markdown(markdown)
+      quote = Nokogiri::HTML.fragment(result).at_css(".ltag-quote")
 
-      expect(result).to include('class="ltag-quote"')
+      expect(quote).to be_present
+      expect(quote["class"].split).to include("ltag-quote--with-source")
       expect(result).to include("ltag-quote__body")
       expect(result).to include("ltag-quote__footer")
       expect(result).to include("Jane Doe")
       expect(result).to include("Great platform!")
-      # SVG quote marks must render as actual SVG, not as escaped code blocks
       expect(result).not_to include("<pre><code>")
-      expect(result).not_to include("&lt;svg")
     end
   end
 
@@ -691,6 +691,64 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     it "adds correct syntax highlighting to codeblocks when the hint is lowercase" do
       code_block = "```ada\n with Ada.Directories;\n```"
       expect(generate_and_parse_markdown(code_block)).to include("highlight ada")
+    end
+  end
+
+  context "when rendering mermaid diagrams" do
+    let(:diagram) { "```mermaid\ngraph TD;\n    A-->B;\n    A-->C;\n```" }
+
+    it "keeps the data-lang hook through sanitization" do
+      output = generate_and_parse_markdown(diagram)
+
+      expect(output).to include('data-lang="mermaid"')
+      expect(output).to include("graph TD;")
+    end
+
+    it "does not syntax highlight the diagram source" do
+      output = generate_and_parse_markdown(diagram)
+
+      expect(output).not_to include("highlight")
+      expect(output).not_to include("js-actions-panel")
+    end
+
+    it "escapes HTML embedded in the diagram source" do
+      code_block = %(```mermaid\ngraph TD\nA["<img src=x onerror=alert(1)>"]-->B\n```)
+      output = generate_and_parse_markdown(code_block)
+
+      expect(output).to include('data-lang="mermaid"')
+      expect(output).not_to include("<img")
+      expect(output).not_to include("onerror=alert(1)>")
+    end
+
+    it "leaves emoji shortcodes in the diagram source untouched" do
+      code_block = "```mermaid\nsequenceDiagram\n    Alice->>John: Hello :smile:\n```"
+      output = generate_and_parse_markdown(code_block)
+
+      expect(output).to include(":smile:")
+    end
+
+    it "leaves mentions in the diagram source unlinked" do
+      user = create(:user)
+      code_block = "```mermaid\nsequenceDiagram\n    Alice->>John: ping @#{user.username}\n```"
+      output = generate_and_parse_markdown(code_block)
+
+      expect(output).to include("@#{user.username}")
+      expect(output).not_to include("mentioned-user")
+    end
+
+    it "leaves liquid syntax in the diagram source literal" do
+      code_block = "```mermaid\ngraph TD;\n    A[\"{% what %}\"]-->B;\n```"
+      output = generate_and_parse_markdown(code_block)
+
+      expect(output).to include("{% what %}")
+    end
+
+    it "falls back to a highlighted code block for an oversized diagram" do
+      source = "graph TD\n#{"A-->B\n" * 4000}"
+      output = generate_and_parse_markdown("```mermaid\n#{source}```")
+
+      expect(output).not_to include('data-lang="mermaid"')
+      expect(output).to include("highlight plaintext")
     end
   end
 

@@ -20,6 +20,7 @@ module Homepage
     attributes(
       :class_name,
       :cloudinary_video_url,
+      :favorited_by_user_id,
       :id,
       :path,
       :public_reactions_count,

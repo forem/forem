@@ -29,6 +29,15 @@ module Admin
       @countable_vomits[@comment.id] = calculate_flags_for_single_comment(@comment)
     end
 
+    def unfavorite
+      comment = Comment.find(params[:id])
+
+      Favorites::Remove.call(favoritable: comment, admin: current_user)
+
+      flash[:success] = I18n.t("admin.comments_controller.favorite_removed")
+      redirect_to admin_comment_path(comment.id)
+    end
+
     private
 
     def authorize_admin

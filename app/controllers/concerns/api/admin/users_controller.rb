@@ -11,6 +11,13 @@ module Api
         "Good standing", "Suspended", "Spam", "Warned",
         "Comment Suspended", "Trusted", "Limited"
       ].freeze
+      # Email notification columns writable through this endpoint. These are
+      # the user-consent settings an external system of record may push back
+      # onto the account. Mobile and in-app columns are excluded, as are the
+      # moderator newsletters (Users::NotificationSetting::ROLE_DRIVEN_NEWSLETTER_SETTINGS),
+      # which are driven by role changes rather than by the user's own choice —
+      # Core still receives their state via EMAIL_CONSENT_EVENTS, one-way.
+      ALLOWED_NOTIFICATION_SETTINGS = Users::NotificationSetting::CORE_SYNCED_EMAIL_SETTINGS
 
       def index
         users = filtered_users
@@ -101,19 +108,16 @@ module Api
         render json: { id: @user_record.id, status: status }
       end
 
-      # Lets MLH Core push consent changes (its dev-newsletter opt-outs) back
-      # onto the DEV account's local notification settings, which DEV's own
-      # senders (digest, newsletter) key off. Writes through the model so the
-      # normal callbacks fire (Mailchimp sync, and the CDP newsletter events
-      # once enabled) - the resulting echo event is value-idempotent on the
-      # Core side.
+      # Lets Core push all seven DEV email consents back onto the account's
+      # local notification settings, which DEV's own senders key off. Writes
+      # through the model so callbacks other than CDP event emission still run.
       def update_notification_settings
         @user_record = User.find(params[:id])
         # Handle the missing wrapper here rather than via params.require, so
         # the caller gets the admin API error_code instead of a generic
         # ParameterMissing 422.
         wrapper = params[:notification_setting]
-        updates = wrapper.respond_to?(:permit) ? wrapper.permit(:email_newsletter) : {}
+        updates = wrapper.respond_to?(:permit) ? wrapper.permit(*ALLOWED_NOTIFICATION_SETTINGS) : {}
         if updates.blank?
           raise Api::Admin::ApiError.new(:invalid_notification_settings,
                                          I18n.t("admin_api.errors.invalid_notification_settings"),
@@ -121,21 +125,19 @@ module Api
         end
 
         setting = @user_record.notification_setting
-        # This endpoint carries MLH Core's OWN consent state (its dev
-        # newsletter opt-outs/opt-ins). Emitting the CDP newsletter events
-        # here would make Core consume its own push as a user consent
-        # change — destroying the layered global-unsubscribe vs
-        # list-preference distinction. Model callbacks that aren't CDP
-        # emission (Mailchimp sync, base_email_eligible) still run.
+        # This endpoint carries Core's own consent state. Emitting the CDP
+        # consent events here would make Core consume its own push as a user
+        # change. Model callbacks that aren't CDP emission (Mailchimp sync,
+        # base_email_eligible) still run.
         User.skip_trackable_events { setting.update!(updates) }
 
         audit!(slug: "update_notification_settings",
                data: {
                  "target_user_id" => @user_record.id,
-                 "changes" => setting.saved_changes.slice("email_newsletter")
+                 "changes" => setting.saved_changes.slice(*ALLOWED_NOTIFICATION_SETTINGS.map(&:to_s))
                })
         render json: { id: @user_record.id,
-                       notification_setting: { email_newsletter: setting.email_newsletter } }
+                       notification_setting: setting.slice(*ALLOWED_NOTIFICATION_SETTINGS) }
       end
 
       def merge

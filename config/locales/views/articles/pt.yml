@@ -4,6 +4,10 @@ pt:
     articles:
       meta:
         description: Um artigo da comunidade
+      ai_disclosure:
+        no_ai_description: Escrito sem assistência de IA.
+        some_ai_description: O autor divulgou o uso de ferramentas de IA para auxiliar na escrita deste post.
+        fully_autonomous_description: O autor divulgou que este post foi gerado de forma autônoma por IA.
       actions:
         aria_label: Ações do artigo
       comments:

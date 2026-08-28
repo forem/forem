@@ -23,7 +23,20 @@ RSpec.describe "/admin/emails" do
   describe "GET /admin/emails/new" do
     it "renders the new template with a form" do
       get new_admin_email_path
-      expect(response.body).to include('name="email[subject]"', 'name="email[body]"', 'name="email[user_query_id]"')
+      expect(response.body).to include(
+        'name="email[subject]"',
+        'name="email[body]"',
+        'name="email[user_query_id]"',
+        'name="email[event_id]"',
+      )
+    end
+
+    it "pre-populates event_id when event_id param is provided" do
+      event = create(:event)
+      get new_admin_email_path(event_id: event.id)
+      doc = Nokogiri::HTML(response.body)
+      selected_option = doc.at_css("select#event_select option[selected][value='#{event.id}']")
+      expect(selected_option&.text).to eq(event.title)
     end
   end
 
@@ -43,6 +56,21 @@ RSpec.describe "/admin/emails" do
         expect(response).to redirect_to(admin_email_path(Email.last))
         follow_redirect!
         expect(flash[:success]).to eq(I18n.t("admin.emails_controller.drafted"))
+      end
+
+      it "creates a new email targeting an event" do
+        event = create(:event)
+        valid_attributes = {
+          email: {
+            subject: "Event Email Subject",
+            body: "Event Email Body",
+            event_id: event.id
+          }
+        }
+        expect do
+          post admin_emails_path, params: valid_attributes
+        end.to change(Email, :count).by(1)
+        expect(Email.last.event_id).to eq(event.id)
       end
     end
 
@@ -153,6 +181,41 @@ RSpec.describe "/admin/emails" do
         follow_redirect!
         expect(flash[:success]).to eq("Test email delivering to test@example.com,another@example.com")
       end
+    end
+  end
+
+  describe "when Customer.io email cutover is active" do
+    before do
+      allow(ForemInstance).to receive(:customerio_email_cutover?).and_return(true)
+    end
+
+    it "redirects GET /admin/emails/new to the index page" do
+      get new_admin_email_path
+      expect(response).to redirect_to(admin_emails_path)
+      expect(flash[:danger]).to eq(I18n.t("admin.emails.customerio_cutover_notice"))
+    end
+
+    it "redirects GET /admin/emails/:id/edit to the index page" do
+      email = create(:email)
+      get edit_admin_email_path(email)
+      expect(response).to redirect_to(admin_emails_path)
+      expect(flash[:danger]).to eq(I18n.t("admin.emails.customerio_cutover_notice"))
+    end
+
+    it "redirects POST /admin/emails to the index page without creating one" do
+      expect do
+        post admin_emails_path, params: { email: { subject: "Test", body: "Test" } }
+      end.not_to change(Email, :count)
+      expect(response).to redirect_to(admin_emails_path)
+      expect(flash[:danger]).to eq(I18n.t("admin.emails.customerio_cutover_notice"))
+    end
+
+    it "redirects PATCH /admin/emails/:id to the index page without updating one" do
+      email = create(:email, subject: "Original")
+      patch admin_email_path(email), params: { email: { subject: "Changed" } }
+      expect(response).to redirect_to(admin_emails_path)
+      expect(flash[:danger]).to eq(I18n.t("admin.emails.customerio_cutover_notice"))
+      expect(email.reload.subject).to eq("Original")
     end
   end
 end

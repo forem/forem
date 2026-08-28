@@ -343,7 +343,7 @@ RSpec.describe "Api::V1::Docs::Users" do
     path "/api/admin/users/{id}/notification_settings" do
       put "Update user notification settings (Admin)" do
         tags "users", "admin"
-        description "Update a user's email notification preferences (e.g., unsubscribing them from the system newsletter). Requires Super Admin credentials."
+        description "Update a user's email notification preferences (e.g., unsubscribing them from the system newsletter or the periodic digest). Any subset of the listed properties may be supplied; at least one is required. Requires Super Admin credentials."
         consumes "application/json"
         produces "application/json"
         parameter name: :id, in: :path, required: true,
@@ -357,7 +357,13 @@ RSpec.describe "Api::V1::Docs::Users" do
                       notification_setting: {
                         type: :object,
                         properties: {
-                          email_newsletter: { type: :boolean }
+                          email_newsletter: { type: :boolean },
+                          email_digest_periodic: { type: :boolean },
+                          email_comment_notifications: { type: :boolean },
+                          email_follower_notifications: { type: :boolean },
+                          email_mention_notifications: { type: :boolean },
+                          email_unread_notifications: { type: :boolean },
+                          email_badge_notifications: { type: :boolean }
                         }
                       }
                     },
@@ -368,6 +374,16 @@ RSpec.describe "Api::V1::Docs::Users" do
           let(:"api-key") { api_secret.secret }
           let(:id) { banned_user.id }
           let(:settings_params) { { notification_setting: { email_newsletter: false } } }
+          add_examples
+          run_test!
+        end
+
+        response "200", "successful" do
+          let(:"api-key") { api_secret.secret }
+          let(:id) { banned_user.id }
+          let(:settings_params) do
+            { notification_setting: { email_newsletter: false, email_digest_periodic: false } }
+          end
           add_examples
           run_test!
         end

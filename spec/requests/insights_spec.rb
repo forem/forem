@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "Insights", type: :request do
+  include ActiveSupport::Testing::TimeHelpers
+
   let(:user) { create(:user) }
   let(:algolia_service_instance) { instance_double(AlgoliaInsightsService) }
 
@@ -26,39 +28,43 @@ RSpec.describe "Insights", type: :request do
       before { sign_in user }
 
       it "processes the insight and tracks the event", :aggregate_failures do
-        post "/insights", params: valid_params
+        freeze_time do
+          post "/insights", params: valid_params
 
-        expect(response).to have_http_status(:ok)
-        expect(response.body).to include("Insight processed")
-        expect(algolia_service_instance).to have_received(:track_event).with(
-          "click",
-          "Result Clicked",
-          user.id.to_s, # Coerced to string
-          "12345",
-          "Article_production",
-          Time.current.to_i * 1000, # Converted to integer
-          "abcdef123456",
-          [1]
-        )
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include("Insight processed")
+          expect(algolia_service_instance).to have_received(:track_event).with(
+            "click",
+            "Result Clicked",
+            user.id.to_s, # Coerced to string
+            "12345",
+            "Article_production",
+            Time.current.to_i * 1000, # Converted to integer
+            "abcdef123456",
+            [1],
+          )
+        end
       end
     end
 
     context "when user is not signed in" do
       it "processes the insight without a user ID", :aggregate_failures do
-        post "/insights", params: valid_params
+        freeze_time do
+          post "/insights", params: valid_params
 
-        expect(response).to have_http_status(:ok)
-        expect(response.body).to include("Insight processed")
-        expect(algolia_service_instance).to have_received(:track_event).with(
-          "click",
-          "Result Clicked",
-          nil, # No user ID
-          "12345",
-          "Article_production",
-          Time.current.to_i * 1000, # Converted to integer
-          "abcdef123456",
-          [1]
-        )
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include("Insight processed")
+          expect(algolia_service_instance).to have_received(:track_event).with(
+            "click",
+            "Result Clicked",
+            nil, # No user ID
+            "12345",
+            "Article_production",
+            Time.current.to_i * 1000, # Converted to integer
+            "abcdef123456",
+            [1],
+          )
+        end
       end
     end
 

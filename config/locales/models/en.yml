@@ -27,6 +27,11 @@ en:
       mention_too_many:
         one: You cannot mention more than %{count} users in a post!
         other: You cannot mention more than %{count} users in a post!
+      ai_disclosure:
+        not_disclosed: Not Disclosed
+        no_ai: No AI
+        some_ai: AI-assisted
+        fully_autonomous: Fully Autonomous
     audience_segment:
       type_ofs:
         manual: Managed elsewhere
@@ -54,6 +59,11 @@ en:
       is_not_valid: is not valid.
       locked: the discussion is locked on this Post
       published_article: is not a published article
+      ai_disclosure:
+        not_disclosed: Not Disclosed
+        no_ai: No AI
+        some_ai: AI-assisted
+        fully_autonomous: Fully Autonomous
       type:
         Article: Article
         item: item

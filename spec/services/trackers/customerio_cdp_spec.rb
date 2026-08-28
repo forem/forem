@@ -97,7 +97,7 @@ RSpec.describe Trackers::CustomerioCdp do
       adapter.track(event_name: "user_updated", user_ids: [user.id], properties: { "id" => user.id })
 
       expect(client).to have_received(:track).with(
-        anonymous_id: "dev:#{user.id}", event: "user_updated",
+        anonymous_id: "dev:#{user.id}", event: "forem_user_updated",
         properties: { "id" => user.id }, timestamp: nil
       )
     end
@@ -126,7 +126,7 @@ RSpec.describe Trackers::CustomerioCdp do
 
       expect(client).to have_received(:track).with(
         anonymous_id: "dev:#{deleted_id}", user_id: "01JZFAKEULID0000000000USER",
-        event: "user_gdpr_deleted", properties: payload, timestamp: nil
+        event: "forem_user_gdpr_deleted", properties: payload, timestamp: nil
       )
     end
 
@@ -137,7 +137,7 @@ RSpec.describe Trackers::CustomerioCdp do
       adapter.track(event_name: "user_gdpr_deleted", user_ids: [deleted_id], properties: { "id" => deleted_id })
 
       expect(client).to have_received(:track).with(
-        anonymous_id: "dev:#{deleted_id}", event: "user_gdpr_deleted",
+        anonymous_id: "dev:#{deleted_id}", event: "forem_user_gdpr_deleted",
         properties: { "id" => deleted_id }, timestamp: nil
       )
     end
@@ -182,6 +182,46 @@ RSpec.describe Trackers::CustomerioCdp do
       adapter.track(event_name: "y", user_ids: [user.id], properties: {})
 
       expect(Segment::Analytics).to have_received(:new).once
+    end
+
+    # Events from different environments/instances share one Customer.io
+    # workspace, so APP_NAME namespaces them: "dev_prod_user_updated".
+    describe "APP_NAME event prefixing" do
+      it "prefixes the event name with APP_NAME when set" do
+        allow(ApplicationConfig).to receive(:[]).with("APP_NAME").and_return("dev_prod")
+
+        adapter.track(event_name: "user_updated", user_ids: [user.id], properties: { "id" => user.id })
+
+        expect(client).to have_received(:track).with(hash_including(event: "dev_prod_user_updated"))
+      end
+
+      it "falls back to the 'forem' prefix when APP_NAME is unset" do
+        allow(ApplicationConfig).to receive(:[]).with("APP_NAME").and_return(nil)
+
+        adapter.track(event_name: "user_updated", user_ids: [user.id], properties: { "id" => user.id })
+
+        expect(client).to have_received(:track).with(hash_including(event: "forem_user_updated"))
+      end
+
+      it "falls back to the 'forem' prefix when APP_NAME is blank" do
+        allow(ApplicationConfig).to receive(:[]).with("APP_NAME").and_return("")
+
+        adapter.track(event_name: "user_updated", user_ids: [user.id], properties: { "id" => user.id })
+
+        expect(client).to have_received(:track).with(hash_including(event: "forem_user_updated"))
+      end
+
+      # DESTRUCTIVE_EVENTS matches on the raw event name (before prefixing), so
+      # a destroyed user's event still delivers — just under the namespaced name.
+      it "prefixes destructive events while still delivering them" do
+        allow(ApplicationConfig).to receive(:[]).with("APP_NAME").and_return("dev_prod")
+        deleted_id = user.id
+        user.destroy!
+
+        adapter.track(event_name: "user_gdpr_deleted", user_ids: [deleted_id], properties: { "id" => deleted_id })
+
+        expect(client).to have_received(:track).with(hash_including(event: "dev_prod_user_gdpr_deleted"))
+      end
     end
   end
 

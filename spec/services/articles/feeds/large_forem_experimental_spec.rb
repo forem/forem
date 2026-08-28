@@ -187,4 +187,28 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
       end
     end
   end
+
+  describe "AI disclosure preferences" do
+    let!(:no_ai_article) { create(:article, :past, past_published_at: 1.hour.ago, ai_disclosure_level: :no_ai) }
+    let!(:autonomous_article) { create(:article, :past, past_published_at: 1.hour.ago, ai_disclosure_level: :fully_autonomous) }
+
+    context "when user has hide_fully_autonomous preference" do
+      before { user.setting.update(feed_ai_preference: :hide_fully_autonomous) }
+
+      it "filters out fully autonomous articles from globally_hot_articles" do
+        _featured, stories = feed.globally_hot_articles(true)
+        expect(stories).to include(no_ai_article)
+        expect(stories).not_to include(autonomous_article)
+      end
+    end
+
+    context "when user has show_all preference" do
+      before { user.setting.update(feed_ai_preference: :show_all) }
+
+      it "includes all AI disclosure levels in globally_hot_articles" do
+        _featured, stories = feed.globally_hot_articles(true)
+        expect(stories).to include(no_ai_article, autonomous_article)
+      end
+    end
+  end
 end

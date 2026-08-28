@@ -3,7 +3,11 @@ fr:
   views:
     articles:
       meta:
-        description: An article from the community
+        description: Un article de la communauté
+      ai_disclosure:
+        no_ai_description: Rédigé sans l'aide de l'IA.
+        some_ai_description: L'auteur a déclaré avoir utilisé des outils d'IA pour rédiger cet article.
+        fully_autonomous_description: L'auteur a déclaré que cet article a été généré de manière autonome par une IA.
       actions:
         aria_label: Article actions
       comments:

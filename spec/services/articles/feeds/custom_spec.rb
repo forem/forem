@@ -610,4 +610,43 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
         .to eq(feed.method(:default_home_feed))
     end
   end
+
+  describe "AI disclosure preferences" do
+    let!(:no_ai_article) do
+      a = create(:article, published: true, score: 90, ai_disclosure_level: :no_ai)
+      a.update_column(:published_at, Time.current - 1.day)
+      a
+    end
+
+    let!(:some_ai_article) do
+      a = create(:article, published: true, score: 85, ai_disclosure_level: :some_ai)
+      a.update_column(:published_at, Time.current - 1.day)
+      a
+    end
+
+    let!(:autonomous_article) do
+      a = create(:article, published: true, score: 80, ai_disclosure_level: :fully_autonomous)
+      a.update_column(:published_at, Time.current - 1.day)
+      a
+    end
+
+    context "when user has hide_fully_autonomous preference" do
+      before { user.setting.update(feed_ai_preference: :hide_fully_autonomous) }
+
+      it "filters out fully autonomous articles from the feed" do
+        result = feed.default_home_feed.to_a
+        expect(result).to include(no_ai_article, some_ai_article)
+        expect(result).not_to include(autonomous_article)
+      end
+    end
+
+    context "when user has show_all preference" do
+      before { user.setting.update(feed_ai_preference: :show_all) }
+
+      it "includes all AI disclosure levels in the feed" do
+        result = feed.default_home_feed.to_a
+        expect(result).to include(no_ai_article, some_ai_article, autonomous_article)
+      end
+    end
+  end
 end

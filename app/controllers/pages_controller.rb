@@ -112,6 +112,7 @@ class PagesController < ApplicationController
 
   def robots
     # dynamically-generated static page
+    custom_domain_org
     respond_to :text
     set_surrogate_key_header "robots_page"
   end

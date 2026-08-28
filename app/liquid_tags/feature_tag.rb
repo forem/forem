@@ -14,7 +14,7 @@ class FeatureTag < Liquid::Block
 
   def render(context)
     content = super
-    parsed_content = MarkdownProcessor::Parser.new(content).evaluate_markdown
+    parsed_content = render_nested_markdown(content)
     ApplicationController.render(
       partial: PARTIAL,
       locals: {

@@ -168,4 +168,53 @@ RSpec.describe "Sitemaps" do
       end
     end
   end
+
+  context "when requested on a custom domain organization" do
+    let(:organization) { create(:organization, custom_domain: "blog.mlh.com") }
+    let!(:org_article) { create(:article, organization: organization, score: 10) }
+    let!(:other_article) { create(:article, score: 10) }
+
+    before do
+      allow(Settings::General).to receive(:app_domain).and_return("forem.com")
+      FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor.new(organization))
+    end
+
+    describe "GET /sitemap-index.xml" do
+      it "renders the sitemap index with only the organization's posts sitemap and no users/tags sitemaps" do
+        get "http://blog.mlh.com/sitemap-index.xml"
+
+        expect(response.body).to include("<sitemapindex xmlns=")
+        expect(response.body).to include("http://blog.mlh.com/sitemap-posts.xml")
+        expect(response.body).not_to include("sitemap-users.xml")
+        expect(response.body).not_to include("sitemap-tags.xml")
+      end
+    end
+
+    describe "GET /sitemap-posts.xml" do
+      it "renders the posts sitemap with only the organization's articles using the custom domain paths" do
+        get "http://blog.mlh.com/sitemap-posts.xml"
+
+        expect(response.body).to include("http://blog.mlh.com/#{org_article.slug}")
+        expect(response.body).not_to include(org_article.path)
+        expect(response.body).not_to include(other_article.slug)
+      end
+    end
+
+    describe "GET other resource sitemaps" do
+      it "redirects users sitemap to the main domain" do
+        get "http://blog.mlh.com/sitemap-users.xml"
+        expect(response).to redirect_to("http://forem.com/sitemap-users.xml")
+      end
+
+      it "redirects tags sitemap to the main domain" do
+        get "http://blog.mlh.com/sitemap-tags.xml"
+        expect(response).to redirect_to("http://forem.com/sitemap-tags.xml")
+      end
+
+      it "redirects monthly sitemaps to the main domain" do
+        get "http://blog.mlh.com/sitemap-Mar-2020.xml"
+        expect(response).to redirect_to("http://forem.com/sitemap-Mar-2020.xml")
+      end
+    end
+  end
 end

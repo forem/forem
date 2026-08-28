@@ -188,6 +188,8 @@ en:
             description: Display the onboarding checklist in the right sidebar for new users who haven't completed all steps.
           enable_agent_sessions:
             description: Enable the Agent Sessions feature for uploading and embedding coding agent session transcripts.
+          enable_ai_disclosure:
+            description: Allow authors to disclose AI tooling usage when publishing or editing posts.
           video:
             description: Secret key used to allow AWS video encoding through the VideoStatesController
         rate_limit:

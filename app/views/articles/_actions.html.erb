@@ -10,6 +10,8 @@
 
       <%= render partial: "articles/multiple_reactions" %>
 
+      <%= favorite_control_tag(@article) %>
+
       <div class="only-sidebar-menu-item">
         <div id="mod-actions-menu-btn-area" class="print-hidden trusted-visible-block align-center">
           <% if user_signed_in? %>

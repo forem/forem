@@ -1,0 +1,10 @@
+<% title t("views.organization_settings.pages.edit_page") %>
+
+<div class="crayons-layout crayons-layout--limited-l pt-7">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="crayons-title"><%= t("views.organization_settings.pages.edit_page") %></h1>
+    <%= link_to "&larr; Back to pages".html_safe, organization_pages_path(@organization.slug), class: "crayons-btn crayons-btn--secondary" %>
+  </div>
+
+  <%= render "form", url: update_organization_page_path(@organization.slug, @page), method: :patch, is_new: false %>
+</div>

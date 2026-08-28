@@ -30,7 +30,7 @@
               <div style="background-color: #FAFAFA; border: 1px solid #EAEAEA; border-radius: 8px; padding: 24px; color: #333333; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
                 <h3 style="margin-top: 0; margin-bottom: 12px; font-size: 16px; font-weight: 600; color: <%= Settings::UserExperience.primary_brand_color_hex %>;">✨ Digest Overview</h3>
                 <div style="font-size: 15px; line-height: 1.6; color: #444444;">
-                  <%= ContentRenderer.new(@smart_summary).process.processed_html.html_safe %>
+                  <%= (@smart_summary_html || ContentRenderer.new(@smart_summary).process.processed_html).html_safe %>
                 </div>
               </div>
             </td>
@@ -62,7 +62,7 @@
               <div style="padding: 4px 8px;">
                 <a href="<%= article_url(article, context: "digest", fc: @feed_config_id.presence) %>" style="text-decoration: none; font-weight: 600; color:#111111; font-size: 18px; line-height: 1.4; display:block; letter-spacing: -0.01em;"><%= article.title.strip %></a>
                 <p style="margin-top: 8px; margin-bottom: 0px; font-size: 15px; color: #555555; line-height: 1.5;">
-                  <%= article.ai_summary.presence || truncate(article.description, length: 180) %>
+                  <%= (article.has_attribute?(:ai_summary) ? article.ai_summary : nil).presence || truncate(article.has_attribute?(:description) ? article.description : nil, length: 180) %>
                 </p>
               </div>
             </td>

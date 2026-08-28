@@ -30,6 +30,30 @@ RSpec.describe "Stories::Feeds" do
       )
     end
 
+    context "when article belongs to an organization with a custom domain" do
+      let(:custom_org) { create(:organization, name: "MLH", slug: "mlh", custom_domain: "blog.mlh.com") }
+      let!(:custom_org_article) { create(:article, title: "MLH Post", slug: "mlh-post", organization: custom_org, featured: true) }
+
+      before do
+        FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor.new(custom_org))
+      end
+
+      it "returns the custom domain url for anonymous users" do
+        get stories_feed_path
+
+        found = response_json.find { |a| a["id"] == custom_org_article.id }
+        expect(found["url"]).to eq(URL.url("/mlh-post", "blog.mlh.com"))
+      end
+
+      it "returns the platform dev.to url for signed-in users" do
+        sign_in user
+        get stories_feed_path
+
+        found = response_json.find { |a| a["id"] == custom_org_article.id }
+        expect(found["url"]).to eq("http://forem.test/mlh/mlh-post")
+      end
+    end
+
     context "when there are no params passed (base feed) and user is NOT signed in" do
       it "returns feed when feed_strategy is basic" do
         allow(Settings::UserExperience).to receive(:feed_strategy).and_return("basic")
@@ -857,6 +881,64 @@ RSpec.describe "Stories::Feeds" do
       get stories_feed_path
       response_article = response.parsed_body.find { |item| item["id"] == article.id }
       expect(response_article["public_reaction_categories"].map { |cat| cat["slug"] }).to match_array(%w[like unicorn fire])
+    end
+  end
+
+  describe "favorited_by_user_id cache invalidation" do
+    let(:user) { create(:user) }
+    let(:article) { create(:article, user: user) }
+    let(:leader) { create(:user) }
+
+    def make_favorite(favoritable, by:)
+      favoritable.update_columns(favorited_by_user_id: by.id, favorited_at: Time.current)
+    end
+
+    def response_article
+      response.parsed_body.detect { |item| item["id"] == article.id }
+    end
+
+    it "serializes favorited_by_user_id so the feed can mark the card" do
+      get stories_feed_path
+      expect(response_article).to include("favorited_by_user_id" => nil)
+
+      make_favorite(article, by: leader)
+
+      get stories_feed_path
+      expect(response_article).to include("favorited_by_user_id" => leader.id)
+    end
+
+    context "with fragment caching enabled" do
+      around do |example|
+        original_perform_caching = ActionController::Base.perform_caching
+        ActionController::Base.perform_caching = true
+
+        example.run
+      ensure
+        ActionController::Base.perform_caching = original_perform_caching
+      end
+
+      before { allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new) }
+
+      it "returns a fresh card after the article is favorited" do
+        get stories_feed_path
+        expect(response_article).to include("favorited_by_user_id" => nil)
+
+        make_favorite(article, by: leader)
+
+        get stories_feed_path
+        expect(response_article).to include("favorited_by_user_id" => leader.id)
+      end
+
+      it "returns a fresh card after the favorite is released" do
+        make_favorite(article, by: leader)
+        get stories_feed_path
+        expect(response_article).to include("favorited_by_user_id" => leader.id)
+
+        article.update_columns(favorited_by_user_id: nil, favorited_at: nil)
+
+        get stories_feed_path
+        expect(response_article).to include("favorited_by_user_id" => nil)
+      end
     end
   end
 

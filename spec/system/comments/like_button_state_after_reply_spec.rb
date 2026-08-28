@@ -15,10 +15,9 @@ RSpec.describe "Like button and tooltip after replying", js: true do
     # Open reply form on the parent comment and submit a reply
     within "#comment-node-#{parent_comment.id}" do
       find(".toggle-reply-form").click
+      find(".c-autocomplete textarea[id*='textarea-for']").set("Thanks!")
+      click_on("Submit")
     end
-
-    find(:xpath, "//textarea[contains(@id, 'textarea-for')]").set("Thanks!")
-    click_button("Submit")
 
     # Parent comment should no longer be in the `replying` state
     within "#comment-node-#{parent_comment.id}" do

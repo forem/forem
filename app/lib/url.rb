@@ -45,8 +45,33 @@ module URL
   # Creates an article URL
   #
   # @param article [Article] the article to create the URL for
-  def self.article(article)
-    return url(article.path) unless article.respond_to?(:subforem_id)
+  # @param user_signed_in [Boolean, nil] whether the viewer is signed in (defaults to checking RequestStore)
+  def self.article(article, user_signed_in: nil)
+    is_signed_in = user_signed_in.nil? ? RequestStore.store[:user_signed_in] : user_signed_in
+    is_on_custom_domain = RequestStore.store[:custom_domain_org].present?
+
+    unless is_signed_in && !is_on_custom_domain
+      has_org_attr = article.is_a?(ActiveRecord::Base) ? article.has_attribute?(:organization_id) : article.respond_to?(:organization)
+      if has_org_attr && (org = article.try(:organization))
+        if org && org.respond_to?(:custom_domain) && org.custom_domain.present? && FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
+          return url("/#{article.slug}", org.custom_domain)
+        end
+      elsif (article.is_a?(ActiveRecord::Base) ? article.has_attribute?(:organization_id) : article.respond_to?(:organization_id)) && article.organization_id.present?
+        org_id = article.organization_id
+        custom_domain = MemoryFirstCache.fetch("org_custom_domain:#{org_id}", redis_expires_in: 12.hours, return_type: :string) do
+          Organization.where(id: org_id).pick(:custom_domain).to_s
+        end
+        if custom_domain.present?
+          org = Organization.find_by(id: org_id)
+          if org && FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
+            return url("/#{article.slug}", custom_domain)
+          end
+        end
+      end
+    end
+
+    has_subforem_attr = article.is_a?(ActiveRecord::Base) ? article.has_attribute?(:subforem_id) : article.respond_to?(:subforem_id)
+    return url(article.path) unless has_subforem_attr
     
     # Use cached lookup to avoid N+1 queries
     subforem_id = article.subforem_id || RequestStore.store[:default_subforem_id]
@@ -121,6 +146,13 @@ module URL
   #
   # @param user [User] the user to create the URL for
   def self.user(user)
+    if user.respond_to?(:custom_domain) && user.custom_domain.present?
+      org = user.respond_to?(:to_model) ? user.to_model : user
+      if FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
+        return url(nil, user.custom_domain)
+      end
+    end
+
     # Use cached lookup to avoid N+1 queries
     subforem_id = RequestStore.store[:subforem_id]
     
@@ -154,6 +186,12 @@ module URL
   end
 
   def self.organization(organization)
+    if organization.respond_to?(:custom_domain) && organization.custom_domain.present?
+      org = organization.respond_to?(:to_model) ? organization.to_model : organization
+      if FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
+        return url(nil, organization.custom_domain)
+      end
+    end
     url(organization.slug)
   end
 end

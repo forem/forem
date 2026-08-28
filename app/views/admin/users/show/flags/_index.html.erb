@@ -21,4 +21,15 @@
              vomit_reactions: @user_vomit_reactions,
              text_section: "users",
              empty_text: t("views.admin.users.priviliged_actions.no_flags") %>
+
+  <h2 class="crayons-subtitle-2 px-1 pt-6"><%= t("views.admin.users.content_flags.title") %></h2>
+  <p class="crayons-subtitle-3 fw-normal color-secondary px-1 mt-1"><%= t("views.admin.users.content_flags.description") %></p>
+
+  <div id="content-reaction-content" class="flex flex-col gap-3 pt-3">
+    <%= render "admin/shared/flag_reactions_table",
+               vomit_reactions: @related_vomit_reactions,
+               text_section: "users",
+               show_reactable: true,
+               empty_text: t("views.admin.users.content_flags.no_flags") %>
+  </div>
 <div>

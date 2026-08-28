@@ -155,6 +155,19 @@ class FeedConfig < ApplicationRecord
       SQL
     end
 
+    if ai_disclosure_matching_weight.positive?
+      user_setting = user.respond_to?(:setting) ? user.setting : nil
+      if user_setting&.minimize_ai_feed_ai?
+        terms << "(CASE WHEN articles.ai_disclosure_level = 3 THEN -#{ai_disclosure_matching_weight} WHEN articles.ai_disclosure_level = 5 THEN -#{ai_disclosure_matching_weight * 2} ELSE 0 END)"
+      elsif user_setting&.hide_fully_autonomous_feed_ai?
+        terms << "(CASE WHEN articles.ai_disclosure_level = 3 THEN -#{ai_disclosure_matching_weight} ELSE 0 END)"
+      end
+    end
+
+    if autonomous_ai_penalty_weight.positive?
+      terms << "(CASE WHEN articles.ai_disclosure_level = 5 THEN -#{autonomous_ai_penalty_weight} ELSE 0 END)"
+    end
+
     terms << "(CASE WHEN articles.featured = TRUE THEN #{featured_weight} ELSE 0 END)" if featured_weight.positive?
     terms << "(CASE WHEN articles.type_of = 1 THEN #{status_weight} ELSE 0 END)" if status_weight.positive?
     terms << "(- (articles.clickbait_score * #{clickbait_score_weight}))" if clickbait_score_weight.positive?
@@ -200,6 +213,8 @@ class FeedConfig < ApplicationRecord
     clone.recent_subforem_weight = recent_subforem_weight * rand(0.9..1.1)
     clone.subforem_follow_weight = subforem_follow_weight * rand(0.9..1.1)
     clone.recent_page_views_shuffle_weight = recent_page_views_shuffle_weight * rand(0.9..1.1)
+    clone.ai_disclosure_matching_weight = ai_disclosure_matching_weight * rand(0.9..1.1)
+    clone.autonomous_ai_penalty_weight = autonomous_ai_penalty_weight * rand(0.9..1.1)
     clone.recent_tag_count_min = [recent_tag_count_min + rand(-1..1), 0].max if recent_tag_count_min.positive?
     clone.recent_tag_count_max = [recent_tag_count_max + rand(-1..1), 12].min if recent_tag_count_max.positive?
     clone.recent_tag_count_max = clone.recent_tag_count_min if clone.recent_tag_count_max < clone.recent_tag_count_min

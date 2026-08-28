@@ -236,3 +236,139 @@
   50% { opacity: 0.7; }
   100% { opacity: 1; }
 }
+
+.events-landing {
+  padding-bottom: var(--su-8);
+
+  .events-year-header {
+    font-size: var(--fs-2xl);
+    font-weight: 800;
+    color: var(--base-90);
+    margin-bottom: var(--su-4);
+  }
+
+  .events-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--su-4);
+
+    @media screen and (min-width: 640px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media screen and (min-width: 1024px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .event-card {
+    background: var(--card-bg, var(--base-0));
+    border: 1px solid var(--card-border, var(--base-20));
+    border-radius: var(--radius);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    text-decoration: none;
+    color: inherit;
+
+    &:hover {
+      box-shadow: var(--shadow-md, 0 4px 12px rgba(0, 0, 0, 0.08));
+      border-color: var(--base-30);
+    }
+
+    .event-card-banner {
+      width: 100%;
+      height: 160px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+    }
+
+    .event-card-body {
+      padding: var(--su-4);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--su-3);
+    }
+
+    .event-card-title {
+      font-size: var(--fs-l);
+      font-weight: 700;
+      line-height: var(--lh-tight);
+      color: var(--base-100);
+      margin: 0;
+    }
+
+    .event-card-meta {
+      display: flex;
+      flex-direction: column;
+      gap: var(--su-2);
+      font-size: var(--fs-s);
+      color: var(--base-70);
+
+      .meta-item {
+        display: flex;
+        align-items: center;
+        gap: var(--su-2);
+
+        svg {
+          flex-shrink: 0;
+          color: var(--base-60);
+        }
+      }
+    }
+
+    .event-card-footer {
+      margin-top: auto;
+      padding-top: var(--su-2);
+    }
+
+    .event-pill {
+      display: inline-block;
+      font-size: var(--fs-xs);
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+
+      &--digital {
+        background: #eef2ff;
+        color: #4338ca;
+      }
+
+      &--in-person {
+        background: #ecfdf5;
+        color: #047857;
+      }
+
+      &--challenge {
+        background: #fef3c7;
+        color: #b45309;
+      }
+
+      &--takeover {
+        background: #f3e8ff;
+        color: #6b21a8;
+      }
+
+      &--default {
+        background: var(--base-10);
+        color: var(--base-80);
+      }
+    }
+  }
+}

@@ -54,7 +54,7 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def permitted_attributes_for_update
-    %i[body_markdown receive_notifications]
+    %i[body_markdown receive_notifications ai_disclosure_level]
   end
 
   def permitted_attributes_for_preview
@@ -70,7 +70,7 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def permitted_attributes_for_create
-    %i[body_markdown commentable_id commentable_type parent_id]
+    %i[body_markdown commentable_id commentable_type parent_id ai_disclosure_level]
   end
 
   def permitted_attributes_for_moderator_create

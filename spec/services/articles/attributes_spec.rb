@@ -37,6 +37,23 @@ RSpec.describe Articles::Attributes, type: :service do
         expect(attrs.key?(:video_source_url)).to be true
         expect(attrs[:video_source_url]).to eq("https://youtube.com/watch?v=123")
       end
+
+      context "with ai_disclosure_level" do
+        it "allows ai_disclosure_level when enable_ai_disclosure is true" do
+          allow(Settings::General).to receive(:enable_ai_disclosure).and_return(true)
+          ai_attrs = few_attributes.merge(ai_disclosure_level: "some_ai")
+          attrs = described_class.new(ai_attrs, user).for_update
+          expect(attrs.key?(:ai_disclosure_level)).to be true
+          expect(attrs[:ai_disclosure_level]).to eq("some_ai")
+        end
+
+        it "strips ai_disclosure_level when enable_ai_disclosure is false" do
+          allow(Settings::General).to receive(:enable_ai_disclosure).and_return(false)
+          ai_attrs = few_attributes.merge(ai_disclosure_level: "some_ai")
+          attrs = described_class.new(ai_attrs, user).for_update
+          expect(attrs.key?(:ai_disclosure_level)).to be false
+        end
+      end
     end
 
     it "sets a collection when :series was passed" do
