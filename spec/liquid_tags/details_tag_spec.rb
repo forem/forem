@@ -154,8 +154,8 @@ RSpec.describe DetailsTag, type: :liquid_tag do
 
         expect(rendered).to include("<iframe")
         expect(rendered).to include("https://www.youtube.com/embed/vKeCr-MAyH4")
-        expect(rendered).to include('width="100%"')
-        expect(rendered).to include('height="390"')
+        expect(rendered).to include('width="710"')
+        expect(rendered).to include('height="399"')
         expect(rendered).to include("<details")
       end
     end

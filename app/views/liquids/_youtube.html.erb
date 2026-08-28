@@ -2,8 +2,8 @@
   <div style="max-width: 315px; margin: 0 auto;">
     <iframe
       src="https://www.youtube.com/embed/<%= id %>"
-      width="100%"
-      height="560"
+      width="<%= local_assigns[:width] || 315 %>"
+      height="<%= local_assigns[:height] || 560 %>"
       style="width: 100%; aspect-ratio: 9 / 16;"
       allowfullscreen
       loading="lazy">
@@ -12,8 +12,8 @@
 <% else %>
   <iframe
     src="https://www.youtube.com/embed/<%= id %>"
-    width="100%"
-    height="390"
+    width="<%= local_assigns[:width] || 710 %>"
+    height="<%= local_assigns[:height] || 399 %>"
     style="width: 100%; aspect-ratio: 16 / 9;"
     allowfullscreen
     loading="lazy">
