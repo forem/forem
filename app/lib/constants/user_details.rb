@@ -9,6 +9,13 @@ module Constants
       Flags
       Articles
       Comments
+      Identities
+      Badges
+      Reactions
+      AgentSessions
+      Collections
+      Follows
+      Blocks
       AuditLog
       UnpublishLogs
     ].freeze

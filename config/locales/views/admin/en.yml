@@ -358,6 +358,10 @@ en:
           description: The user flags affect the scores of articles and comments. Each valid or open user flag further reduces the score of the article and comment.
           no_flags: No flags received against this user yet.
           title: Flags received
+        content_flags:
+          description: Flags left on this member's posts and comments, including flags raised automatically by moderation. Marking one invalid restores the content's score.
+          no_flags: No flags received against this user's posts or comments yet.
+          title: Flags on posts and comments
         profile:
           locked:
             icon: Access locked
@@ -467,8 +471,16 @@ en:
           flags: Flags
           articles: Articles
           comments: Comments
+          identities: Auth Identities
+          badges: Badges
+          reactions: Reactions
+          agent_sessions: Agent Sessions
+          collections: Series
+          follows: Follows
+          blocks: Blocks
           audit_log: Audit Log
           unpublish_logs: Unpublish All History
+          more_details: More Details
         status_title: Current status
         status_reader: "Current status:"
         more_orgs:
@@ -522,6 +534,77 @@ en:
           facebook: Facebook
           github: GitHub
           twitter: Twitter
+        identities_tab:
+          title: Connected Auth Identities
+          empty: No auth identities associated with this user.
+          remove: Remove Auth Identity
+          table:
+            provider: Provider
+            uid: UID
+            username: Username / Name
+            email: Email
+            created_at: Linked At
+            actions: Actions
+        collections_tab:
+          title: Series & Collections
+          empty: No series or collections found for this user.
+          table:
+            title: Title
+            description: Description
+            articles_count: Articles
+            created_at: Created At
+        follows_tab:
+          title: Follows & Followers
+          followers: Followers
+          following: Following
+          empty: No follows found.
+          table:
+            user: User
+            username: Username
+            followed_at: Followed At
+        blocks_tab:
+          title: User Blocks
+          blocking: Blocking
+          blocked_by: Blocked By
+          empty: No user blocks found.
+          table:
+            user: User
+            username: Username
+            blocked_at: Blocked At
+        badges_tab:
+          title: Badges & Achievements
+          empty: No badges earned or awarded yet.
+          manage_badges: Manage Badges
+          system: System Awarded
+          table:
+            badge: Badge
+            description: Description
+            awarded_by: Awarded By
+            awarded_at: Awarded At
+        reactions_tab:
+          title: User Reactions
+          empty: No reactions found for this user.
+          deleted_target: Deleted Content
+          table:
+            category: Category
+            target_type: Type
+            target: Content
+            status: Status
+            created_at: Created At
+        agent_sessions_tab:
+          title: Agent Sessions
+          empty: No agent sessions found for this user.
+          published: Published
+          draft: Draft
+          view: View
+          curate: Curate
+          table:
+            title: Title
+            tool: Tool
+            status: Status
+            messages: Messages
+            created_at: Created At
+            actions: Actions
       organizations:
         profile:
           id: ID %{organizationid}

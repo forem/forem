@@ -69,6 +69,13 @@ module Admin
       set_feedback_messages
       set_related_reactions
       set_audit_logs
+      set_identities
+      set_badges
+      set_reactions
+      set_agent_sessions
+      set_collections
+      set_follows
+      set_blocks
       @articles = @user.articles.order(created_at: :desc)
       # Remove the .includes(:commentable)
       @comments = @user.comments.order(created_at: :desc)
@@ -755,8 +762,7 @@ new_email = user_params[:email].to_s.strip.presence
       @related_vomit_reactions =
         Reaction.where(reactable_type: "Comment", reactable_id: user_comment_ids, category: "vomit")
           .or(Reaction.where(reactable_type: "Article", reactable_id: user_article_ids, category: "vomit"))
-          .or(Reaction.where(reactable_type: "User", reactable_id: @user.id, category: "vomit"))
-          .includes(:user)
+          .includes(:user, :reactable)
           .order(created_at: :desc).limit(15)
 
       @user_vomit_reactions =
@@ -855,6 +861,74 @@ new_email = user_params[:email].to_s.strip.presence
         .order(created_at: :desc)
         .page(params[:page])
         .per(25)
+    end
+
+    def set_identities
+      return unless @current_tab == "identities"
+
+      @identities = @user.identities.order(created_at: :desc)
+    end
+
+    def set_badges
+      return unless @current_tab == "badges"
+
+      @badge_achievements = @user.badge_achievements
+        .includes(:badge, :rewarder)
+        .order(created_at: :desc)
+    end
+
+    def set_reactions
+      return unless @current_tab == "reactions"
+
+      @reactions = @user.reactions
+        .includes(:reactable)
+        .order(created_at: :desc)
+        .page(params[:page])
+        .per(25)
+    end
+
+    def set_agent_sessions
+      return unless @current_tab == "agent_sessions"
+
+      @agent_sessions = @user.agent_sessions
+        .order(created_at: :desc)
+        .page(params[:page])
+        .per(25)
+    end
+
+    def set_collections
+      return unless @current_tab == "collections"
+
+      @collections = @user.collections
+        .order(created_at: :desc)
+        .page(params[:page])
+        .per(25)
+    end
+
+    def set_follows
+      return unless @current_tab == "follows"
+
+      @follows_filter = %w[followers following].include?(params[:filter]) ? params[:filter] : "followers"
+      scope = case @follows_filter
+              when "following"
+                Follow.where(follower: @user, followable_type: "User").includes(:followable)
+              else
+                Follow.where(followable: @user, followable_type: "User").includes(:follower)
+              end
+      @follows = scope.order(created_at: :desc).page(params[:page]).per(25)
+    end
+
+    def set_blocks
+      return unless @current_tab == "blocks"
+
+      @blocks_filter = %w[blocked_by blocking].include?(params[:filter]) ? params[:filter] : "blocking"
+      scope = case @blocks_filter
+              when "blocked_by"
+                @user.blocked_blocks.includes(:blocker)
+              else
+                @user.blocker_blocks.includes(:blocked)
+              end
+      @blocks = scope.order(created_at: :desc).page(params[:page]).per(25)
     end
 
     def set_unpublish_all_log
