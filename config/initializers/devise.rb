@@ -82,9 +82,6 @@ MLH_OMNIAUTH_SETUP = lambda do |env|
   # Note: redirect_uri is handled by the prepended MlhCallbackUrlOverride module
   # which overrides both callback_url and authorize_params to ensure no query parameters
 
-  # Local unified stacks point the strategy at Core itself (Core-as-MyMLH) and
-  # narrow scopes to what linking actually needs; production leaves these unset
-  # and hits real MyMLH with the full scope set.
   if ENV["MLH_OAUTH_BASE_URL"].present?
     oauth_base = ENV["MLH_OAUTH_BASE_URL"].chomp("/")
     env["omniauth.strategy"].options[:client_options][:site] = oauth_base
@@ -93,8 +90,7 @@ MLH_OMNIAUTH_SETUP = lambda do |env|
     env["omniauth.strategy"].options[:scope] =
       env["omniauth.strategy"].options[:scope].split
         .intersection(%w[public user:read:profile mlh:read:user]).join(" ")
-    # Core proxies all DEV calls; Forem never calls the provider API on the
-    # user's behalf, so it must not receive or store bearer material.
+    # Core proxies provider API calls, so Forem must not persist bearer credentials.
     env["omniauth.strategy"].options[:persist_credentials] = false
   end
   if ENV["MLH_API_BASE_URL"].present?

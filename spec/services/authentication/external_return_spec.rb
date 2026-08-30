@@ -18,36 +18,26 @@ RSpec.describe Authentication::ExternalReturn, type: :service do
         expect(url).to eq("https://auth.mlh.test/web/auth/oauth/forem_returns?continuation=cont-token_1")
       end
     end
-    it "rejects allowlist entries whose scheme is not https" do
+
+    it "requires a configured HTTPS return endpoint", :aggregate_failures do
       with_origins("http://auth.mlh.test/web/auth/oauth/forem_returns") do
         expect(described_class.redirect_url_for(params)).to be_nil
       end
-    end
-
-    it "requires the configured origin's path to match exactly" do
       with_origins("https://auth.mlh.test/web/auth/oauth") do
         expect(described_class.redirect_url_for(params)).to be_nil
       end
       with_origins("https://auth.mlh.test/web/auth/oauth/forem_returns/extra") do
         expect(described_class.redirect_url_for(params)).to be_nil
       end
-    end
-
-    it "drops continuations outside the URL-safe token shape silently" do
-      with_origins("https://auth.mlh.test/web/auth/oauth/forem_returns") do
-        expect(described_class.redirect_url_for("continuation" => "bad token&evil=1")).to be_nil
-        expect(described_class.redirect_url_for("continuation" => "")).to be_nil
-      end
-    end
-
-    it "returns nil when no allowlist is configured" do
       with_origins("") do
         expect(described_class.redirect_url_for(params)).to be_nil
       end
     end
 
-    it "returns nil for missing omniauth params" do
+    it "rejects missing or malformed continuations", :aggregate_failures do
       with_origins("https://auth.mlh.test/web/auth/oauth/forem_returns") do
+        expect(described_class.redirect_url_for("continuation" => "bad token&evil=1")).to be_nil
+        expect(described_class.redirect_url_for("continuation" => "")).to be_nil
         expect(described_class.redirect_url_for(nil)).to be_nil
       end
     end
@@ -61,7 +51,7 @@ RSpec.describe Authentication::ExternalReturn, type: :service do
       end
     end
 
-    it "rejects wrong paths, wrong hosts, and relative values" do
+    it "rejects wrong paths, wrong hosts, and relative values", :aggregate_failures do
       with_origins("https://auth.mlh.test/web/auth/oauth/forem_returns") do
         expect(described_class.allowlisted_destination("https://auth.mlh.test/web/auth/other")).to be_nil
         expect(described_class.allowlisted_destination("https://evil.example.com/web/auth/oauth/forem_returns")).to be_nil
