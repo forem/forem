@@ -43,9 +43,9 @@ pt:
     newsletter: newsletter
   favorites_controller:
     create:
-      already_favorited: Isto já foi adicionado aos favoritos.
-      no_allowance: Você esgotou sua cota de favoritos.
-      cannot_favorite: Não foi possível adicionar isto aos favoritos.
+      already_favorited: Isto já foi escolhido como joia.
+      no_allowance: Você esgotou sua cota de joias.
+      cannot_favorite: Não foi possível escolher isto como joia.
   feeds:
     sources:
       created: Sua fonte de feed foi adicionada e uma importação foi iniciada.

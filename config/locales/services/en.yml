@@ -15,8 +15,8 @@ en:
         not_enabled: Provider %{name} is not enabled!
     badges:
       award_community_favorite:
-        article_message: "Well done! [Your post](%{url}) is a community favorite!"
-        comment_message: "Well done! [Your comment](%{url}) is a community favorite!"
+        article_message: "Well done! [Your post](%{url}) was picked as a community gem!"
+        comment_message: "Well done! [Your comment](%{url}) was picked as a community gem!"
       award_beloved_comment:
         message: "You're famous! [This is the comment](%{comment}) for which you're being recognized. 😄"
       award_streak:

@@ -23,9 +23,9 @@ const defaultProps = {
   favoritableUserId: '999',
   favorited: 'false',
   favoritedByUserId: '',
-  labelFavorite: 'Favorite',
-  labelFavorited: 'Favorited',
-  labelFavoritedByYou: 'Favorited by you',
+  labelFavorite: 'Pick as gem',
+  labelFavorited: 'Picked as gem',
+  labelFavoritedByYou: 'Picked as gem by you',
 };
 
 const renderControl = (overrides = {}) =>
@@ -76,10 +76,10 @@ describe('<FavoriteControl />', () => {
   describe('actionable state', () => {
     it('renders a button labelled for favoriting', () => {
       const { getByLabelText, getByTestId } = renderControl();
-      const button = getByLabelText('Favorite');
+      const button = getByLabelText('Pick as gem');
 
       expect(button.tagName).toBe('BUTTON');
-      expect(getByTestId('tooltip')).toHaveTextContent('Favorite');
+      expect(getByTestId('tooltip')).toHaveTextContent('Pick as gem');
     });
 
     it('has no a11y violations', async () => {
@@ -93,14 +93,14 @@ describe('<FavoriteControl />', () => {
     it('POSTs the favorite and switches to favorited state on click', async () => {
       const { getByLabelText, findByLabelText } = renderControl();
 
-      fireEvent.click(getByLabelText('Favorite'));
+      fireEvent.click(getByLabelText('Pick as gem'));
 
       expect(makeFavorite).toHaveBeenCalledWith({
         favoritableId: '3',
         favoritableType: 'Article',
       });
 
-      const indicator = await findByLabelText('Favorited by you');
+      const indicator = await findByLabelText('Picked as gem by you');
       expect(indicator.tagName).toBe('SPAN');
     });
 
@@ -108,17 +108,17 @@ describe('<FavoriteControl />', () => {
       makeFavorite.mockResolvedValue({
         ok: false,
         json: async () => ({
-          error: 'Unable to make this a favorite.',
+          error: 'Unable to pick this as a gem.',
           code: 'cannot_favorite',
         }),
       });
       const { getByLabelText } = renderControl();
 
-      fireEvent.click(getByLabelText('Favorite'));
+      fireEvent.click(getByLabelText('Pick as gem'));
 
       await waitFor(() =>
         expect(window.top.addSnackbarItem).toHaveBeenCalledWith({
-          message: 'Unable to make this a favorite.',
+          message: 'Unable to pick this as a gem.',
           addCloseButton: true,
         }),
       );
@@ -128,18 +128,18 @@ describe('<FavoriteControl />', () => {
       makeFavorite.mockResolvedValue({
         ok: false,
         json: async () => ({
-          error: 'This has already been made a favorite.',
+          error: 'This has already been picked as a gem.',
           code: 'already_favorited',
         }),
       });
       const { getByLabelText, findByLabelText } = renderControl();
 
-      fireEvent.click(getByLabelText('Favorite'));
+      fireEvent.click(getByLabelText('Pick as gem'));
 
-      const indicator = await findByLabelText('Favorited');
+      const indicator = await findByLabelText('Picked as gem');
       expect(indicator.tagName).toBe('SPAN');
       expect(window.top.addSnackbarItem).toHaveBeenCalledWith({
-        message: 'This has already been made a favorite.',
+        message: 'This has already been picked as a gem.',
         addCloseButton: true,
       });
     });
@@ -152,7 +152,7 @@ describe('<FavoriteControl />', () => {
         favoritedByUserId: String(CURRENT_USER_ID),
       });
 
-      const indicator = getByLabelText('Favorited by you');
+      const indicator = getByLabelText('Picked as gem by you');
       expect(indicator.tagName).toBe('SPAN');
     });
 
@@ -171,7 +171,7 @@ describe('<FavoriteControl />', () => {
         favoritedByUserId: '7',
       });
 
-      const indicator = getByLabelText('Favorited');
+      const indicator = getByLabelText('Picked as gem');
       expect(indicator.tagName).toBe('SPAN');
     });
 
@@ -182,7 +182,7 @@ describe('<FavoriteControl />', () => {
         favoritedByUserId: '7',
       });
 
-      expect(getByLabelText('Favorited').tagName).toBe('SPAN');
+      expect(getByLabelText('Picked as gem').tagName).toBe('SPAN');
     });
 
     it('does not tell a signed-out visitor they favorited it', () => {
@@ -192,8 +192,30 @@ describe('<FavoriteControl />', () => {
         favoritedByUserId: '',
       });
 
-      expect(queryByLabelText('Favorited by you')).toBeNull();
-      expect(getByLabelText('Favorited').tagName).toBe('SPAN');
+      expect(queryByLabelText('Picked as gem by you')).toBeNull();
+      expect(getByLabelText('Picked as gem').tagName).toBe('SPAN');
+    });
+  });
+
+  describe('dropdown variant', () => {
+    it('renders an actionable dropdown button with text and icon', () => {
+      const { getByRole, getByText } = renderControl({ variant: 'dropdown' });
+
+      const button = getByRole('button');
+      expect(button).toHaveClass('crayons-link');
+      expect(getByText('Pick as gem')).toHaveClass('fw-bold');
+    });
+
+    it('renders a favorited indicator in the dropdown', () => {
+      const { getByLabelText, getByText } = renderControl({
+        variant: 'dropdown',
+        favorited: 'true',
+        favoritedByUserId: String(CURRENT_USER_ID),
+      });
+
+      const indicator = getByLabelText('Picked as gem by you');
+      expect(indicator.tagName).toBe('SPAN');
+      expect(getByText('Picked as gem by you')).toHaveClass('fw-bold');
     });
   });
 });

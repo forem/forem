@@ -521,6 +521,8 @@ Rails.application.routes.draw do
 
     get "/leadership", to: "leadership_dashboards#show", as: :leadership
     get "/leadership/:section", to: "leadership_dashboards#show", as: :leadership_section
+    get "/curation", to: "leadership_dashboards#show", as: :curation
+    get "/curation/:section", to: "leadership_dashboards#show", as: :curation_section
 
     unless Rails.env.production?
       get "/rails/mailers", to: "rails/mailers#index"

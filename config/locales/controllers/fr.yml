@@ -43,9 +43,9 @@ fr:
     newsletter: bulletin d'information
   favorites_controller:
     create:
-      already_favorited: Ceci a déjà été mis en favori.
-      no_allowance: Vous avez épuisé votre quota de favoris.
-      cannot_favorite: Impossible de mettre ceci en favori.
+      already_favorited: Ceci a déjà été choisi comme pépite.
+      no_allowance: Vous avez épuisé votre quota de pépites.
+      cannot_favorite: Impossible de choisir ceci comme pépite.
   feeds:
     sources:
       created: Votre source de flux a été ajoutée et un import a été déclenché.

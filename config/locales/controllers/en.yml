@@ -43,9 +43,9 @@ en:
     newsletter: newsletter
   favorites_controller:
     create:
-      already_favorited: This has already been made a favorite.
-      no_allowance: You have used up your favorite allowance.
-      cannot_favorite: Unable to make this a favorite.
+      already_favorited: This has already been picked as a gem.
+      no_allowance: You have used up your gem allowance.
+      cannot_favorite: Unable to pick this as a gem.
   feeds:
     sources:
       created: Your feed source has been added and an import has been triggered.
