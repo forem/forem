@@ -516,8 +516,8 @@ en:
           "Resource Admin: ProfileField": "Resource Admin: ProfileField"
           "Resource Admin: ProfileFieldGroup": "Resource Admin: ProfileFieldGroup"
           Super Moderator: Super Moderator
-          Community Leader Level 1: Community Leader Level 1
-          Community Leader Level 2: Community Leader Level 2
+          Community Leader Level 1: Community Curator Level 1
+          Community Leader Level 2: Community Curator Level 2
         statuses:
           Warned: Warned
           Comment Suspended: Comment Suspended
@@ -661,11 +661,11 @@ en:
       favorites:
         leaderboard:
           heading: Impact Leaderboard
-          description: User ranking by downstream engagement of their favorite content.
-          empty: No favorite content yet.
+          description: User ranking by downstream engagement of their gem content.
+          empty: No gem content yet.
           rank: Rank
-          leader: Leader
-          favorites: Favorites
+          leader: Curator
+          favorites: Gems
           articles: Articles
           comments: Comments
           impact: Impact

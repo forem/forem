@@ -1,19 +1,37 @@
----
 fr:
   views:
     leadership:
-      heading: Leadership communautaire
+      heading: Curation communautaire
+      subtitle: Sélectionner des contenus de qualité, valoriser les contributeurs remarquables et susciter des discussions enrichissantes.
       icon:
-        leader_alt: Leader communautaire
+        leader_alt: Curateur communautaire
       nav:
         aria_label: Sections
-      curation:
-        heading: Curation
-        allowance: "Il vous reste %{remaining} favoris."
-        comment_on: Commentaire sur « %{title} »
-        empty: Vous n'avez encore mis aucun contenu en favori.
-      discussion:
-        heading: Approfondir la discussion
-        subtitle: Suscitez l'engagement en participant à la discussion.
-        cta: Commenter
-        empty: Aucun article à recommander.
+        community: Pépites de la communauté (24h)
+        yours: Vos sélections
+      allowance:
+        remaining_html: "Il vous reste <strong class=\"color-base-100\">%{count}</strong> pépites à attribuer."
+        replenish_note: "Vos pépites se renouvellent au fur et à mesure que vos sélections génèrent de l'engagement et des échanges de qualité."
+      explainer:
+        heading: Comment fonctionne la curation
+        human_touch_title: L'importance de la curation humaine
+        human_touch_body: "Les algorithmes mesurent les clics, mais seuls les humains savent reconnaître la pertinence, l'originalité et le travail bien fait. En tant que curateur, vos sélections mettent en valeur les publications à forte valeur ajoutée."
+        spark_discussions_title: Initier les discussions
+        spark_discussions_body: "Un excellent article n'attend souvent qu'un premier commentaire pour lancer le débat. Si un contenu sélectionné a peu de réponses, laissez un commentaire constructif."
+        principles_title: Principes de curation
+        principles_body: "Privilégiez la profondeur, l'utilité et les idées constructives. Mettez en lumière de nouveaux auteurs ainsi que des contributeurs réguliers."
+      sections:
+        community_heading: Pépites de la communauté (dernières 24h)
+        community_empty: Aucune pépite sélectionnée au cours des dernières 24 heures. Soyez le premier à en choisir une !
+        yours_heading: Pépites choisies par vous
+        yours_empty: Vous n'avez encore choisi aucune pépite. Parcourez la communauté et valorisez les articles et commentaires qui le méritent.
+      cards:
+        picked_by_you: Choisi par vous
+        picked_by_user: "Choisi comme pépite par @%{username}"
+        comments_count:
+          one: "%{count} commentaire"
+          other: "%{count} commentaires"
+        start_discussion: Démarrer la discussion
+        further_discussion: Approfondir la discussion
+        view_discussion: Voir la discussion
+        comment_on: "Commentaire sur « %{title} »"

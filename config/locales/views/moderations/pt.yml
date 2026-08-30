@@ -160,8 +160,8 @@ pt:
         set_to_min_indexing: Definir para a indexação mínima
         edit: Edit
         featured: Featured
-        favorited_by: Favoritado por
-        unfavorite: Desfavoritar
+        favorited_by: Escolhido como joia por
+        unfavorite: Remover joia
         likes: likes
         notes:
           user_notes: user notes

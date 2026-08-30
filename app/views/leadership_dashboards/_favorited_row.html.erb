@@ -1,28 +1,56 @@
-<article class="flex p-4 m:p-6 pb-0 m:pb-2 pr-2 m:pr-6">
-  <a href="/<%= favoritable.user.username %>" class="crayons-avatar crayons-avatar--l shrink-0">
-    <img src="<%= favoritable.user.profile_image_90 %>" alt="<%= favoritable.user.name %> profile" class="crayons-avatar__image" loading="lazy" />
-  </a>
+<% if favoritable.is_a?(Article) %>
+  <%= render partial: "articles/single_story", locals: { story: favoritable.decorate, curation_view: true, featured: false } %>
+<% elsif favoritable.is_a?(Comment) %>
+  <%
+    picker = favoritable.favorited_by_user
+    picked_by_current_user = favoritable.favorited_by_user_id == current_user.id
+  %>
+  <div class="crayons-story">
+    <div class="crayons-story__body">
+      <div class="crayons-story__top">
+        <div class="crayons-story__meta">
+          <div class="crayons-story__author-pic">
+            <a href="/<%= favoritable.user.username %>" class="crayons-avatar crayons-avatar--l">
+              <img src="<%= favoritable.user.profile_image_90 %>" alt="<%= favoritable.user.username %> profile" class="crayons-avatar__image" loading="lazy" />
+            </a>
+          </div>
+          <div>
+            <div>
+              <a href="/<%= favoritable.user.username %>" class="crayons-story__secondary fw-medium">
+                <%= favoritable.user.name %>
+              </a>
+            </div>
+            <a href="<%= favoritable.path %>" class="crayons-story__tertiary fs-xs">
+              <time datetime="<%= favoritable.created_at.iso8601 %>"><%= favoritable.readable_publish_date %></time>
+            </a>
+            <span class="inline-flex items-center fs-xs fw-medium ml-2" style="color: var(--reaction-favorite-color);">
+              <%= crayons_icon_tag("favorite-checked", native: true, width: 14, height: 14, class: "mr-1") %>
+              <% if picked_by_current_user %>
+                <%= t("views.leadership.cards.picked_by_you") %>
+              <% elsif picker.present? %>
+                <%= t("views.leadership.cards.picked_by_user", username: picker.username) %>
+              <% else %>
+                <%= t("favorites.favorited") %>
+              <% end %>
+            </span>
+          </div>
+        </div>
+      </div>
 
-  <div class="flex-1 pl-2 m:pl-4">
-    <a href="<%= favoritable.path %>" class="flex crayons-link">
-      <h2 class="fs-base lh-tight m:fs-l fw-bold break-word">
-        <% if favoritable.is_a?(Comment) %>
-          <%= t("views.leadership.curation.comment_on", title: favoritable.commentable&.title) %>
-        <% else %>
-          <%= favoritable.title %>
-        <% end %>
-      </h2>
-    </a>
-    <p class="fs-s">
-      <a href="/<%= favoritable.user.username %>" class="crayons-link fw-medium"><%= favoritable.user.name %></a>
-      <span class="color-base-30"> • </span>
-      <span class="color-base-60"><%= favoritable.readable_publish_date %></span>
-    </p>
+      <div class="crayons-story__indention">
+        <h2 class="crayons-story__title">
+          <a href="<%= favoritable.path %>">
+            <%= t("views.leadership.cards.comment_on", title: favoritable.commentable&.title) %>
+          </a>
+        </h2>
+        <div class="crayons-story__bottom mt-2">
+          <div class="crayons-story__details">
+            <a href="<%= favoritable.path %>" class="crayons-link color-base-70 fs-xs inline-flex items-center">
+              <%= t("views.leadership.cards.view_discussion") %> &rarr;
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-
-  <%# The icon keeps its own colours (native), and its gem is drawn in
-      currentColor, so the favorite colour is set here. %>
-  <div class="m:self-center" style="color: var(--reaction-favorite-color);">
-    <%= crayons_icon_tag("favorite-checked", native: true, title: t("favorites.favorited_by_you")) %>
-  </div>
-</article>
+<% end %>
