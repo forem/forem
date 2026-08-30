@@ -1,0 +1,37 @@
+<div class="space-y-4">
+  <%# Gem Allowance Card %>
+  <div class="crayons-card p-4">
+    <div class="flex items-center mb-2">
+      <span class="mr-2 inline-flex items-center" style="color: var(--reaction-favorite-color);">
+        <%= crayons_icon_tag("favorite-checked", native: true, title: t("views.leadership.icon.leader_alt")) %>
+      </span>
+      <h2 class="fs-base fw-bold m-0"><%= t("views.leadership.icon.leader_alt") %></h2>
+    </div>
+    <p class="fs-s mb-2">
+      <%= t("views.leadership.allowance.remaining_html", count: @favorite_allowance).html_safe %>
+    </p>
+    <p class="fs-xs color-base-60 m-0">
+      <%= t("views.leadership.allowance.replenish_note") %>
+    </p>
+  </div>
+
+  <%# Mission & Curation Explainer Card %>
+  <div class="crayons-card p-4">
+    <h2 class="fs-base fw-bold mb-3"><%= t("views.leadership.explainer.heading") %></h2>
+
+    <div class="mb-3">
+      <h3 class="fs-s fw-bold mb-1"><%= t("views.leadership.explainer.human_touch_title") %></h3>
+      <p class="fs-xs color-base-70 m-0"><%= t("views.leadership.explainer.human_touch_body") %></p>
+    </div>
+
+    <div class="mb-3">
+      <h3 class="fs-s fw-bold mb-1"><%= t("views.leadership.explainer.spark_discussions_title") %></h3>
+      <p class="fs-xs color-base-70 m-0"><%= t("views.leadership.explainer.spark_discussions_body") %></p>
+    </div>
+
+    <div>
+      <h3 class="fs-s fw-bold mb-1"><%= t("views.leadership.explainer.principles_title") %></h3>
+      <p class="fs-xs color-base-70 m-0"><%= t("views.leadership.explainer.principles_body") %></p>
+    </div>
+  </div>
+</div>

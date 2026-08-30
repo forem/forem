@@ -507,8 +507,8 @@ fr:
           "Resource Admin: ProfileField": "Resource Admin: ProfileField"
           "Resource Admin: ProfileFieldGroup": "Resource Admin: ProfileFieldGroup"
           Super Moderator: Super Moderator
-          Community Leader Level 1: Community Leader Level 1
-          Community Leader Level 2: Community Leader Level 2
+          Community Leader Level 1: Curateur communautaire niveau 1
+          Community Leader Level 2: Curateur communautaire niveau 2
         statuses:
           Warned: Warned
           Comment Suspended: Comment Suspended
@@ -652,11 +652,11 @@ fr:
       favorites:
         leaderboard:
           heading: Classement d'impact
-          description: Classement des utilisateurs selon l'engagement généré par leurs contenus mis en favori.
-          empty: Aucun contenu en favori pour le moment.
+          description: Classement des utilisateurs selon l'engagement généré par leurs pépites.
+          empty: Aucune pépite pour le moment.
           rank: Rang
-          leader: Leader
-          favorites: Favoris
+          leader: Curateur
+          favorites: Pépites
           articles: Articles
           comments: Commentaires
           impact: Impact
