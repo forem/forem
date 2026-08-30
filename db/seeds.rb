@@ -1304,13 +1304,6 @@ seeder.create_if_none(Event) do
   end
 end
 
-##############################################################################
-# DEV ↔ MLH Core link fixtures (DEV-3974). Pairs with Core's
-# db/seeds/12_devrelay_link_fixtures.rb: these are the DEV-side accounts the
-# unified-auth resolution flow matches against. Deliberately NO fixtures for
-# alice.devrelay@mlh.test or eve.devrelay@mlh.test — those emails must stay
-# unresolvable on the Forem side.
-
 seeder.create_if_doesnt_exist(User, "email", "bob.devrelay@mlh.test") do
   User.create!(
     name: "Bob Devrelay",
@@ -1340,7 +1333,6 @@ seeder.create_if_doesnt_exist(User, "email", "carol.devrelay@mlh.test") do
     password: "password",
     password_confirmation: "password",
   )
-  # Surfaces as status "Suspended" via user_moderation_status in the Admin API.
   carol.add_role(:suspended)
 end
 

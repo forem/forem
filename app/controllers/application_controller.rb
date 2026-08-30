@@ -279,14 +279,10 @@ class ApplicationController < ActionController::Base
   # This method is used by Devise to decide which is the path to redirect
   # the user to after a successful log in
   def after_sign_in_path_for(resource)
-    # Allowlisted external return (e.g. the MLH auth server's
-    # /web/auth/oauth/forem_returns endpoint): hand back the exact origin
-    # instead of stripping its host or intercepting for onboarding.
-    # Read Devise's stored location exactly once: stored_location_for is
-    # consuming, so a second call would always return nil.
+    # stored_location_for consumes the stored value.
     origin = request.env["omniauth.origin"]
     stored = origin.presence || stored_location_for(resource)
-    external_return = stored.present? && Authentication::ExternalReturn.allowlisted_destination(stored)
+    external_return = Authentication::ExternalReturn.allowlisted_destination(stored)
     return external_return if external_return
 
     if current_user.saw_onboarding

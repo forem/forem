@@ -58,18 +58,9 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     redirect_to root_path(signin: "true")
   end
 
-  # Stages a pending account switch and renders the confirmation interstitial.
-  # Nothing is persisted: the identity stays unclaimed until the user
-  # explicitly confirms the switch.
   def stage_account_switch(target_user, provider)
-    # Bearer material is stripped UNCONDITIONALLY (production included):
-    # confirm_account_switch re-resolves by provider/uid/email and never
-    # needs a token, so the session must not become a second credential
-    # store while the interstitial waits.
+    # Never store bearer credentials in the session.
     staged_payload = request.env["omniauth.auth"].to_hash.tap do |hash|
-      # Bearer material must not rest in the session while the interstitial
-      # waits, in any environment. Confirm re-resolves by provider/uid/email
-      # and never needs credentials.
       hash["credentials"] = { "expires" => false }
     end
 
@@ -84,10 +75,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     render :account_switch
   end
 
-  # Confirms a staged account switch: drops the current session, re-runs the
-  # standard (current_user-less) authentication flow so the identity attaches
-  # to its resolved owner, then signs in as that owner. Re-validates the
-  # staged state so a stale or since-suspended target fails closed.
   def confirm_account_switch
     pending = session.delete("pending_account_switch")
     target = pending && User.find_by(id: pending["user_id"])
@@ -99,8 +86,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
     sign_out(current_user) if current_user
 
-    # The confirmation interstitial is not an OmniAuth callback, so hand the
-    # continuation back to the post-auth redirect logic explicitly.
+    # The interstitial request has no OmniAuth environment.
     request.env["omniauth.params"] = { "continuation" => pending["continuation"] }.compact
     @user = Authentication::Authenticator.call(OmniAuth::AuthHash.new(pending["payload"]))
 
@@ -109,7 +95,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     remember_me(@user)
 
     return_url = Authentication::ExternalReturn.redirect_url_for(request.env["omniauth.params"])
-    # Destination comes from the configured allowlist, not user input.
     return redirect_to(return_url, allow_other_host: true) if return_url
 
     sign_in_and_redirect(@user, event: :authentication)
@@ -118,18 +103,14 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     redirect_to root_path
   end
 
-  # Cancels a staged account switch. No identity or session mutation: the
-  # signed-in user keeps their session exactly as it was.
   def cancel_account_switch
     session.delete("pending_account_switch")
     redirect_to root_path
   end
 
   def stale_switch?(pending)
-    # A staged switch older than the confirmation window is unusable.
     Time.zone.iso8601(pending["staged_at"].to_s) < 15.minutes.ago
   rescue ArgumentError, TypeError
-    # An unreadable timestamp fails closed.
     true
   end
 
@@ -160,10 +141,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       user_agent = request.user_agent
 
       if (return_to_core = Authentication::ExternalReturn.redirect_url_for(request.env["omniauth.params"]))
-        # Allowlisted return-to-Core (e.g. MLH auth): sign in, then release
-        # the continuation token verbatim — before any onboarding interception.
         sign_in(@user, event: :authentication)
-        # Destination comes from the configured allowlist, not user input.
         redirect_to return_to_core, allow_other_host: true
       elsif ApplicationConfig["AUTH_TEST_USER_IDS"].present? && ApplicationConfig["AUTH_TEST_USER_IDS"].split(",").include?(@user.id.to_s)
         token = generate_auth_token(@user)
@@ -206,8 +184,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       redirect_to new_user_registration_url
     end
   rescue ::Authentication::Errors::AccountSwitchConfirmation => e
-    # A different user is signed in and the incoming identity resolves to
-    # another eligible account: ask before touching anything.
     stage_account_switch(e.target_user, provider)
   rescue ::Authentication::Errors::Ineligible, ::Authentication::Errors::PreviouslySuspended, ::Authentication::Errors::SpammyEmailDomain => e
     flash[:global_notice] = e.message

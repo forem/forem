@@ -1,30 +1,13 @@
 module Authentication
-  # Provider-neutral, allowlisted return-to-Core redirect resolution.
-  #
-  # A Core-initiated OAuth sign-in travels with an opaque `continuation`
-  # parameter (OmniAuth request-phase params). After successful
-  # authentication the callback may redirect back to Core carrying that token
-  # verbatim — but only to a destination configured in
-  # ENV["FOREM_EXTERNAL_RETURN_ORIGINS"] (comma-separated origins whose
-  # scheme, host and path must exactly match a known return endpoint). The
-  # redirect URL is always rebuilt from the allowlisted entry itself, never
-  # from request input, so a crafted continuation can never cause an open
-  # redirect. Anything else resolves to nil and callers fall back to normal
-  # post-authentication behavior.
   class ExternalReturn
     RETURN_PATH = "/web/auth/oauth/forem_returns".freeze
 
-    # Continuation tokens are random URL-safe strings; anything outside this
-    # shape is dropped rather than echoed into a redirect target.
     CONTINUATION_PATTERN = /\A[A-Za-z0-9_\-]+\z/.freeze
 
     def self.redirect_url_for(omniauth_params)
       new(omniauth_params).redirect_url
     end
 
-    # Canonical allowlisted destination URL when the given value (e.g. an
-    # omniauth.origin or stored location) points at a configured return
-    # endpoint, nil otherwise. Query/fragment input is never carried over.
     def self.allowlisted_destination(url)
       new(nil).send(:allowlisted_url, url)
     end

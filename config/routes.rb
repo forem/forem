@@ -16,8 +16,6 @@ Rails.application.routes.draw do
     get "/enter", to: "registrations#new", as: :sign_up
     get "/confirm-email", to: "confirmations#new"
     delete "/sign_out", to: "devise/sessions#destroy"
-  # Account-switch confirmation (staged by OmniauthCallbacksController when a
-  # signed-in user's OAuth identity resolves to a different existing account).
   post "/users/auth/account_switch/confirm", to: "omniauth_callbacks#confirm_account_switch", as: :user_account_switch_confirm
   post "/users/auth/account_switch/cancel", to: "omniauth_callbacks#cancel_account_switch", as: :user_account_switch_cancel
   end
