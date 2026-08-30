@@ -121,4 +121,17 @@ RSpec.describe Notifications::NotifiableAction::Send, type: :service do
       end.not_to change(Notification, :count)
     end
   end
+
+  context "with follower send limits" do
+    it "uses the default follower send limit if organization is not supported" do
+      expect(User).to receive(:recently_active).with(10_000).and_call_original
+      described_class.call(article, "Published")
+    end
+
+    it "uses twice the follower send limit if organization is supported" do
+      organization.update!(supported: true)
+      expect(User).to receive(:recently_active).with(20_000).and_call_original
+      described_class.call(article, "Published")
+    end
+  end
 end
