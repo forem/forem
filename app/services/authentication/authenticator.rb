@@ -41,11 +41,6 @@ module Authentication
         refresh_identity(identity, linked_identity)
         return current_user
       end
-      # A different user is signed in. If the incoming identity resolves —
-      # through uid ownership or exact verified email — to some other
-      # eligible account, silently attaching it would hijack that account's
-      # link (or clobber its stored auth data), so surface a confirmation
-      # step instead.
       guard_account_switch!(identity) if current_user
 
       # These variables need to be set outside of the scope of the
@@ -175,17 +170,10 @@ module Authentication
       nil
     end
 
-    # When the incoming identity resolves — via uid ownership or exact
-    # verified email — to a different account: raises Errors::Ineligible if
-    # that target is suspended/spam (fail closed), otherwise raises Errors::
-    # AccountSwitchConfirmation so the controller can ask. Resolving to the
-    # current user or to nobody keeps the normal attach flow.
     def guard_account_switch!(identity)
       candidate = identity.user || verified_email_user
       return if candidate.nil? || candidate == current_user
 
-      # An ineligible resolution target fails closed: the identity attaches
-      # to nobody rather than silently landing on the signed-in user.
       raise ::Authentication::Errors::Ineligible if candidate.spam_or_suspended?
 
       raise ::Authentication::Errors::AccountSwitchConfirmation.new(candidate)
