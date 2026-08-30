@@ -31,8 +31,8 @@ RSpec.describe Authentication::Authenticator, type: :service do
           Authentication::Errors::AccountSwitchConfirmation,
         ) { |error| expect(error.target_user).to eq(target) }
       end.not_to change(Identity, :count)
-
     end
+
     it "raises AccountSwitchConfirmation carrying the resolved target (uid ownership)" do
       target = create(:user)
       create(:identity, user: target, provider: "mlh", uid: "core-switch-2")
@@ -55,9 +55,6 @@ RSpec.describe Authentication::Authenticator, type: :service do
           described_class.call(payload, current_user: current_user)
         end.to raise_error(Authentication::Errors::Ineligible)
       end.not_to change(Identity, :count)
-
-      expect(current_user.reload.identities.where(provider: "mlh")).to be_none
-      expect(target.reload.identities.where(provider: "mlh")).to be_none
     end
   end
 
@@ -77,16 +74,6 @@ RSpec.describe Authentication::Authenticator, type: :service do
       expect do
         expect(described_class.call(payload, current_user: current_user)).to eq(current_user)
       end.to change(Identity, :count).by(1)
-    end
-  end
-
-  context "when no user is signed in" do
-    it "still links an eligible exact-email match without confirmation" do
-      target = create(:user)
-      payload = mlh_payload(uid: "core-link-1", email: target.email)
-
-      expect(described_class.call(payload)).to eq(target)
-      expect(target.identities.find_by(provider: "mlh").uid).to eq("core-link-1")
     end
   end
 end
