@@ -122,6 +122,7 @@ namespace :admin do
         patch "update_baseline_score"
         patch "update_verified"
         patch "update_org_feature"
+        post "bulk_add_users"
       end
     end
     resources :emails

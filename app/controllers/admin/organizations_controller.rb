@@ -2,6 +2,7 @@ module Admin
   class OrganizationsController < Admin::ApplicationController
     layout "admin"
     PER_PAGE_MAX = 50
+    ORG_FEATURES = %w[org_readme org_lead_forms org_dofollow_links org_verification].freeze
 
     CREDIT_ACTIONS = {
       add: :add_to,
@@ -44,7 +45,7 @@ module Admin
       org = Organization.find(params[:id])
       old_status = org.fully_trusted?
       org.update!(fully_trusted: params[:fully_trusted] == "true")
-      
+
       if old_status != org.fully_trusted?
         Note.create(
           author_id: current_user.id,
@@ -70,7 +71,7 @@ module Admin
       org = Organization.find(params[:id])
       old_score = org.baseline_score
       new_score = params[:baseline_score].to_i
-      
+
       org.update!(baseline_score: new_score)
 
       if old_score != org.baseline_score
@@ -128,8 +129,6 @@ module Admin
       redirect_to admin_organization_path(org)
     end
 
-    ORG_FEATURES = %w[org_readme org_lead_forms org_dofollow_links org_verification].freeze
-
     def update_org_feature
       org = Organization.find(params[:id])
       feature = params[:feature]
@@ -171,6 +170,20 @@ module Admin
       redirect_to admin_organization_path(org)
     end
 
+    def bulk_add_users
+      org = Organization.find(params[:id])
+      result = Organizations::BulkAddUsers.call(
+        organization: org,
+        usernames: params[:usernames],
+        role: params[:role],
+      )
+
+      log_bulk_add_audit_and_notes(org, result)
+      set_bulk_add_flash_message(result)
+
+      redirect_to admin_organization_path(org)
+    end
+
     def destroy
       organization = Organization.find_by(id: params[:id])
       Organizations::DeleteWorker.perform_async(organization.id, current_user.id, false)
@@ -193,6 +206,64 @@ module Admin
         reason: "misc_note",
         content: params[:note],
       )
+    end
+
+    def log_bulk_add_audit_and_notes(org, result)
+      if result.added_users.any?
+        Note.create(
+          author_id: current_user.id,
+          noteable_id: org.id,
+          noteable_type: "Organization",
+          reason: "misc_note",
+          content: "Bulk added #{result.added_users.size} user(s) as #{result.role}: #{result.added_users.join(', ')}",
+        )
+      end
+
+      Audit::Logger.log(:moderator, current_user, {
+                          "action" => params[:action],
+                          "controller" => params[:controller],
+                          "target_organization_id" => org.id,
+                          "role" => result.role,
+                          "added_users" => result.added_users,
+                          "already_members" => result.already_members,
+                          "not_found" => result.not_found,
+                          "failed_users" => result.failed_users
+                        })
+    end
+
+    def set_bulk_add_flash_message(result)
+      if result.empty_input?
+        flash[:error] = I18n.t("admin.organizations_controller.bulk_add_users.empty_input")
+        return
+      end
+
+      messages = bulk_add_result_messages(result)
+      if result.added_users.any?
+        flash[:notice] = messages.join(" ")
+      else
+        flash[:error] = messages.join(" ")
+      end
+    end
+
+    def bulk_add_result_messages(result)
+      messages = []
+      if result.added_users.any?
+        messages << I18n.t("admin.organizations_controller.bulk_add_users.added",
+                           count: result.added_users.size, usernames: result.added_users.join(", "))
+      end
+      if result.already_members.any?
+        messages << I18n.t("admin.organizations_controller.bulk_add_users.already_members",
+                           count: result.already_members.size, usernames: result.already_members.join(", "))
+      end
+      if result.not_found.any?
+        messages << I18n.t("admin.organizations_controller.bulk_add_users.not_found",
+                           count: result.not_found.size, usernames: result.not_found.join(", "))
+      end
+      if result.failed_users.any?
+        messages << I18n.t("admin.organizations_controller.bulk_add_users.failed",
+                           count: result.failed_users.size, errors: result.failed_users.join(", "))
+      end
+      messages
     end
   end
 end
