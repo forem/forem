@@ -26,4 +26,10 @@ class ReactionPolicy < ApplicationPolicy
 
     false
   end
+
+  # Support staff can invalidate flags on comments (which restores the
+  # comment's score, un-hiding downvoted comments), but nothing else.
+  def admin_update?
+    user_any_admin? || (support_admin? && record.reactable_type == "Comment")
+  end
 end

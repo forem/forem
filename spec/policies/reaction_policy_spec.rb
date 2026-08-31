@@ -69,7 +69,25 @@ RSpec.describe ReactionPolicy do
     context "when user is admin" do
       let(:user) { create(:user, :admin) }
 
-      it { is_expected.to permit_actions(%i[index create privileged_create]) }
+      it { is_expected.to permit_actions(%i[index create privileged_create admin_update]) }
+    end
+
+    context "when user is a support admin and the reaction is on a comment" do
+      let(:user) { create(:user, :support_admin) }
+
+      it { is_expected.to permit_actions(%i[admin_update]) }
+      it { is_expected.to forbid_actions(%i[privileged_create]) }
+    end
+
+    context "when user is a support admin and the reaction is not on a comment" do
+      let(:user) { create(:user, :support_admin) }
+      let(:reaction) { create(:reaction, reactable: create(:article)) }
+
+      it { is_expected.to forbid_actions(%i[admin_update]) }
+    end
+
+    context "when user is unadorned with roles and the reaction is on a comment" do
+      it { is_expected.to forbid_actions(%i[admin_update]) }
     end
   end
 end
