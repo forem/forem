@@ -1,0 +1,23 @@
+spec/services/trackers/customerio_cdp_spec.rb
+  s_5b319532a74600::t_a7089e89173440 94-108,122-130
+  s_5b319532a74600::t_c540e5ef6a422c 109-121
+app/services/trackers/customerio_cdp.rb
+  s_5b319532a74600::t_362948b5574f9c 30,33
+  s_5b319532a74600::t_81c369aac11972 13-18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "b6851df051d62f1f9cb09c1281f9af0f111f9439",
+  "prompts": {},
+  "sessions": {
+    "s_5b319532a74600": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4aaa04b8-231a-4a23-82ea-b602aa660d7f",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

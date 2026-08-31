@@ -1,0 +1,30 @@
+app/controllers/admin/organizations_controller.rb
+  h_f968154a99632d 218
+app/services/organizations/bulk_add_users.rb
+  h_f968154a99632d 74-81
+app/views/admin/organizations/show.html.erb
+  h_f968154a99632d 246-247,256
+config/locales/views/admin/en.yml
+  h_f968154a99632d 569
+config/locales/views/admin/fr.yml
+  h_f968154a99632d 558
+config/locales/views/admin/pt.yml
+  h_f968154a99632d 455
+spec/requests/admin/organizations_bulk_add_users_spec.rb
+  h_f968154a99632d 91
+spec/services/organizations/bulk_add_users_spec.rb
+  h_f968154a99632d 110-120
+spec/system/admin/admin_manages_organizations_spec.rb
+  h_f968154a99632d 43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "91cd2a04f6559793ee34ddf19a5d590935ff8662",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

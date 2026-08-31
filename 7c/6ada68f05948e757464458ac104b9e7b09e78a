@@ -1,0 +1,26 @@
+app/assets/javascripts/base.js.erb
+  h_f968154a99632d 23,52-61,504,530,653
+app/controllers/application_controller.rb
+  h_f968154a99632d 328,612,614
+app/helpers/application_helper.rb
+  h_f968154a99632d 576-586
+app/lib/org_custom_domain_constraint.rb
+  h_f968154a99632d 42
+app/views/layouts/application.html.erb
+  h_f968154a99632d 90-91
+spec/helpers/application_helper_spec.rb
+  h_f968154a99632d 706-714
+spec/requests/stories_index_spec.rb
+  h_f968154a99632d 636-637,640,646,649-650,654-660
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "7c6ada68f05948e757464458ac104b9e7b09e78a",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
