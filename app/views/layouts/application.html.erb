@@ -51,6 +51,9 @@
       <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
       <link rel="search" href="<%= URL.url("open-search.xml") %>" type="application/opensearchdescription+xml" title="<%= community_name %>" />
 
+      <%# Machine-readable guidance for AI agents and other automated clients. %>
+      <link rel="describedby" href="<%= app_url("llms.txt") %>" type="text/plain" title="Guidance for AI agents" />
+
       <meta property="forem:name" content="<%= community_name %>" />
       <meta property="forem:logo" content="<%= optimized_image_url(Settings::General.logo_png, width: 512, fetch_format: "png") %>" />
       <meta property="forem:domain" content="<%= Settings::General.app_domain %>" />

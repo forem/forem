@@ -30,7 +30,7 @@ class OrgCustomDomainConstraint
 
   def self.platform_path?(first_segment, path)
     return true if PLATFORM_FIRST_SEGMENTS.include?(first_segment)
-    return true if path.start_with?("/robots") || path.start_with?("/sitemap")
+    return true if path.start_with?("/robots", "/sitemap", "/llms.")
 
     false
   end
