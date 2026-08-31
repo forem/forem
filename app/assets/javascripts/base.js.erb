@@ -20,6 +20,7 @@ var instantClick
     , $urlToPreload
     , $preloadTimer
     , $lastTouchTimestamp
+    , $styleFingerprint = false
 
   // Preloading-related variables
     , $history = {}
@@ -47,6 +48,17 @@ var instantClick
 
   ////////// HELPERS //////////
 
+
+  function getInternalUrl(url) {
+    url = removeHash(url)
+    var param = $styleFingerprint ? "i=" + $styleFingerprint : "i=i"
+    if (url.indexOf("?") == -1) {
+      return url + "?" + param
+    }
+    else {
+      return url + "&" + param
+    }
+  }
 
   function removeHash(url) {
     var index = url.indexOf('#')
@@ -490,12 +502,7 @@ var instantClick
     $timing = {
       start: +new Date
     }
-    if (url.indexOf("?") == -1) {
-      var internalUrl = url+"?i=i"
-    }
-    else {
-      var internalUrl = url+"&i=i"
-    }
+    var internalUrl = getInternalUrl(url)
     removeExpiredKeys()
     triggerPageEvent('fetch')
     if (!$fetchedBodies[url]){
@@ -521,12 +528,7 @@ var instantClick
 
   function getURLInfo(url, callback) {
     var xhr = new XMLHttpRequest();
-    if (url.indexOf("?") == -1) {
-      var internalUrl = url+"?i=i"
-    }
-    else {
-      var internalUrl = url+"&i=i"
-    }
+    var internalUrl = getInternalUrl(url)
     xhr.open (
       "GET",
       internalUrl,
@@ -649,6 +651,7 @@ var instantClick
     else if (typeof preloadingMode == 'number') {
       $delayBeforePreload = preloadingMode
     }
+    $styleFingerprint = (document.body && document.body.dataset && document.body.dataset.styleFingerprint) || false
     $currentLocationWithoutHash = removeHash(location.href)
     $history[$currentLocationWithoutHash] = {
       body: document.getElementById("page-content"),
