@@ -69,6 +69,8 @@ module Api
     def create
       authorize(Article)
 
+      return if render_missing_ai_disclosure
+
       @article = Articles::Creator.call(@user, article_params).decorate
 
       if @article.persisted?
@@ -164,6 +166,47 @@ module Api
 
     def per_page_max
       (ApplicationConfig["API_PER_PAGE_MAX"] || 1000).to_i
+    end
+
+    # Agents that never read /llms.txt otherwise publish with no disclosure at all,
+    # so creating over the API requires an explicit choice. Any of the four enum
+    # values is accepted, including `not_disclosed` — the point is a deliberate
+    # answer, not a particular one.
+    def render_missing_ai_disclosure
+      return false unless Settings::General.enable_ai_disclosure
+      return false if params.dig("article", :ai_disclosure_level).present?
+      return false if ai_disclosure_in_front_matter?
+
+      render json: {
+        error: "ai_disclosure_level is required when creating an article. " \
+               "Set it to one of: #{Article.ai_disclosure_levels.keys.join(', ')}.",
+        status: 422,
+        ai_disclosure_level: {
+          required: true,
+          allowed_values: Article.ai_disclosure_levels.keys,
+          policy_url: URL.url("llms.txt")
+        }
+      }, status: :unprocessable_entity
+      true
+    end
+
+    # /llms.txt offers front matter as an equally valid way to disclose, so a
+    # payload that discloses there must not be rejected. Mirrors the keys handled
+    # by Article#set_ai_disclosure_from_front_matter.
+    AI_DISCLOSURE_FRONT_MATTER_KEYS = %w[ai_disclosure_level ai_disclosure ai_generated ai_assisted].freeze
+
+    def ai_disclosure_in_front_matter?
+      body = params.dig("article", :body_markdown)
+      return false if body.blank?
+
+      front_matter = FrontMatterParser::Parser.new(:md).call(body).front_matter
+      return false unless front_matter.is_a?(Hash)
+
+      AI_DISCLOSURE_FRONT_MATTER_KEYS.any? { |key| front_matter[key].present? }
+    rescue StandardError
+      # Malformed front matter is the model's problem to report, not a reason to
+      # claim the article was undisclosed.
+      false
     end
 
     # Updates stay permissive: every article predating this feature is

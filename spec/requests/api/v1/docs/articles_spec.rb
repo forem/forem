@@ -38,7 +38,7 @@ RSpec.describe "Api::V1::Docs::Articles" do
 - **main_image**: Absolute URL of the cover image for the article.
 - **canonical_url**: If this post was originally published elsewhere, specify the canonical URL to maintain SEO integrity.
 - **description**: A short summary of the article used for previews and SEO meta description.
-- **ai_disclosure_level**: AI tooling usage disclosure (`not_disclosed`, `no_ai`, `some_ai`, `fully_autonomous`)."
+- **ai_disclosure_level**: AI tooling usage disclosure (`not_disclosed`, `no_ai`, `some_ai`, `fully_autonomous`). Required on create when the community has AI disclosure enabled; a create that omits it is rejected with 422."
         operationId "createArticle"
         produces "application/json"
         consumes "application/json"

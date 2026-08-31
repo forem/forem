@@ -180,6 +180,12 @@ export class ArticleForm extends Component {
       coAuthorIdsList: this.article.co_author_ids_list || '',
       coAuthorsData: this.article.co_authors_data || [],
       aiDisclosureLevel: this.article.ai_disclosure_level || 'not_disclosed',
+      // Distinguishes "author picked Not Disclosed" from "author never opened the
+      // modal". Both persist as not_disclosed, but only the first may publish.
+      aiDisclosureAnswered:
+        Boolean(this.article.ai_disclosure_level) &&
+        this.article.ai_disclosure_level !== 'not_disclosed',
+      aiDisclosureSignal: 0,
       errors: null,
       edited: false,
       updatedAt: this.article.updated_at,
@@ -353,6 +359,10 @@ export class ArticleForm extends Component {
     const value = e?.target !== undefined ? e.target.value : e?.value;
     if (name) {
       this.setState({ [name]: value, edited: true });
+      // Any choice counts as answered, including an explicit "Not Disclosed".
+      if (name === 'aiDisclosureLevel') {
+        this.setState({ aiDisclosureAnswered: true });
+      }
     }
   };
 
@@ -379,8 +389,24 @@ export class ArticleForm extends Component {
     window.removeEventListener('beforeunload', this.localStoreContent);
   };
 
+  // A browser agent driving this editor looks exactly like a human at the HTTP
+  // layer, so the only lever is to make the disclosure choice unskippable rather
+  // than default it to silence.
+  needsAiDisclosureAnswer = () => {
+    const { aiDisclosureEnabled, aiDisclosureAnswered } = this.state;
+    return Boolean(aiDisclosureEnabled) && !aiDisclosureAnswered;
+  };
+
   onPublish = (e) => {
     e.preventDefault();
+
+    if (this.needsAiDisclosureAnswer()) {
+      this.setState((prev) => ({
+        aiDisclosureSignal: prev.aiDisclosureSignal + 1,
+      }));
+      return;
+    }
+
     this.setState({ submitting: true });
     const payload = {
       ...this.state,
@@ -627,6 +653,7 @@ export class ArticleForm extends Component {
           edited={edited}
           passedData={this.state}
           onConfigChange={this.handleConfigChange}
+          aiDisclosureSignal={this.state.aiDisclosureSignal}
           submitting={submitting}
           previewLoading={previewLoading}
           switchHelpContext={this.switchHelpContext}
