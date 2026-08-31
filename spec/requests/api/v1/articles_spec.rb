@@ -1915,4 +1915,76 @@ RSpec.describe "Api::V1::Articles" do
       end
     end
   end
+
+  describe "AI disclosure requirement for automated clients" do
+    let(:api_secret) { create(:api_secret) }
+    let(:user) { api_secret.user }
+    let(:auth_headers) do
+      { "api-key" => api_secret.secret, "Accept" => "application/vnd.forem.api-v1+json",
+        "content-type" => "application/json" }
+    end
+    let(:valid_params) { { title: "A title", body_markdown: "Some body copy." } }
+
+    context "when ai disclosure is enabled" do
+      before { allow(Settings::General).to receive(:enable_ai_disclosure).and_return(true) }
+
+      it "rejects a create that omits ai_disclosure_level" do
+        expect do
+          post api_articles_path, params: { article: valid_params }.to_json, headers: auth_headers
+        end.not_to change(Article, :count)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "tells the client how to correct the rejected create" do
+        post api_articles_path, params: { article: valid_params }.to_json, headers: auth_headers
+
+        body = response.parsed_body
+        expect(body["error"]).to include("ai_disclosure_level is required")
+        expect(body.dig("ai_disclosure_level", "required")).to be(true)
+        expect(body.dig("ai_disclosure_level", "allowed_values"))
+          .to match_array(%w[not_disclosed no_ai some_ai fully_autonomous])
+        expect(body.dig("ai_disclosure_level", "policy_url")).to eq(URL.url("llms.txt"))
+      end
+
+      it "accepts a create that discloses a level" do
+        post api_articles_path,
+             params: { article: valid_params.merge(ai_disclosure_level: "fully_autonomous") }.to_json,
+             headers: auth_headers
+
+        expect(response).to have_http_status(:created)
+        expect(Article.last.ai_disclosure_level).to eq("fully_autonomous")
+      end
+
+      it "accepts an explicit not_disclosed, since the point is a deliberate answer" do
+        post api_articles_path,
+             params: { article: valid_params.merge(ai_disclosure_level: "not_disclosed") }.to_json,
+             headers: auth_headers
+
+        expect(response).to have_http_status(:created)
+        expect(Article.last.ai_disclosure_level).to eq("not_disclosed")
+      end
+
+      it "accepts disclosure supplied via body_markdown front matter" do
+        body = "---\ntitle: Front matter post\npublished: false\nai_disclosure_level: some_ai\n---\n\nBody copy."
+
+        expect do
+          post api_articles_path, params: { article: { body_markdown: body } }.to_json, headers: auth_headers
+        end.to change(Article, :count).by(1)
+
+        expect(response).to have_http_status(:created)
+        expect(Article.last.ai_disclosure_level).to eq("some_ai")
+      end
+    end
+
+    context "when ai disclosure is disabled" do
+      before { allow(Settings::General).to receive(:enable_ai_disclosure).and_return(false) }
+
+      it "still accepts a create that omits ai_disclosure_level" do
+        post api_articles_path, params: { article: valid_params }.to_json, headers: auth_headers
+
+        expect(response).to have_http_status(:created)
+      end
+    end
+  end
 end

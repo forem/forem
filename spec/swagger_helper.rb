@@ -245,7 +245,7 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
                   description: { type: :string },
                   tags: { type: :array, items: { type: :string }, description: "Up to 4 tags, as an array of strings" },
                   organization_id: { type: :integer, nullable: true },
-                  ai_disclosure_level: { type: :string, enum: %w[not_disclosed no_ai some_ai fully_autonomous], description: "Level of AI tooling usage disclosure" }
+                  ai_disclosure_level: { type: :string, enum: %w[not_disclosed no_ai some_ai fully_autonomous], description: "Level of AI tooling usage disclosure. Required on create when the community has AI disclosure enabled" }
                 }
               }
             }

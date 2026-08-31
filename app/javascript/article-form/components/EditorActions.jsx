@@ -1,5 +1,5 @@
 import { h, Fragment } from 'preact';
-import { useState } from 'preact/hooks';
+import { useState, useEffect } from 'preact/hooks';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { Options } from './Options';
@@ -23,6 +23,7 @@ export const EditorActions = ({
   submitting,
   previewLoading,
   switchHelpContext,
+  aiDisclosureSignal,
 }) => {
   const isVersion1 = version === 'v1';
   const isVersion2 = version === 'v2';
@@ -55,6 +56,15 @@ export const EditorActions = ({
   const hasAdvancedOptions = canonicalUrl || series || (scheduleDate && scheduleTime && schedule);
   const [optionsModalSignal, setOptionsModalSignal] = useState(0);
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
+  const [disclosureRequired, setDisclosureRequired] = useState(false);
+
+  // articleForm bumps this signal when a publish is blocked on disclosure.
+  useEffect(() => {
+    if (aiDisclosureSignal) {
+      setDisclosureRequired(true);
+      setIsAiModalOpen(true);
+    }
+  }, [aiDisclosureSignal]);
 
   const reopenOptionsModal = () => {
     setOptionsModalSignal((prev) => prev + 1);
@@ -130,6 +140,7 @@ export const EditorActions = ({
             <AiDisclosureModal
               currentValue={currentAiLevel || 'not_disclosed'}
               isOpen={isAiModalOpen}
+              required={disclosureRequired}
               onClose={() => setIsAiModalOpen(false)}
               onChange={onConfigChange}
             />
@@ -199,6 +210,7 @@ export const EditorActions = ({
 };
 
 EditorActions.propTypes = {
+  aiDisclosureSignal: PropTypes.number,
   onSaveDraft: PropTypes.func.isRequired,
   onPublish: PropTypes.func.isRequired,
   published: PropTypes.bool.isRequired,
