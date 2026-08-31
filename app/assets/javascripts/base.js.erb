@@ -50,6 +50,7 @@ var instantClick
 
 
   function getInternalUrl(url) {
+    url = removeHash(url)
     var param = $styleFingerprint ? "i=" + $styleFingerprint : "i=i"
     if (url.indexOf("?") == -1) {
       return url + "?" + param
