@@ -71,10 +71,14 @@ module Organizations
           already_members << user.username
         else
           membership = organization.organization_memberships.build(user: user, type_of_user: role)
-          if membership.save
-            added_users << user.username
-          else
-            failed_users << "#{user.username} (#{membership.errors_as_sentence})"
+          begin
+            if membership.save
+              added_users << user.username
+            else
+              failed_users << "#{user.username} (#{membership.errors_as_sentence})"
+            end
+          rescue ActiveRecord::RecordNotUnique
+            already_members << user.username
           end
         end
       end

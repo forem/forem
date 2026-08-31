@@ -452,6 +452,7 @@ pt:
           heading: Adicionar Membros em Massa
           description: "Adicione múltiplos usuários a esta organização de uma só vez. Digite uma lista de nomes de usuário separados por vírgula (com ou sem @ e espaços). Membros existentes serão ignorados."
           usernames_label: Nomes de Usuário
+          usernames_placeholder: "usuario1, @usuario2, usuario3"
           role_label: Função
           roles:
             member: Membro

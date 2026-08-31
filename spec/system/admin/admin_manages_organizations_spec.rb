@@ -40,7 +40,7 @@ RSpec.describe "Admin manages organizations" do
 
       expect(page).to have_content(user1.username)
       expect(page).to have_content(user2.username)
-      expect(organization.organization_memberships.pluck(:user_id)).to contain_exactly(user1.id, user2.id)
+      expect(organization.reload.organization_memberships.pluck(:user_id)).to contain_exactly(user1.id, user2.id)
     end
   end
 end

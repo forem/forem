@@ -88,7 +88,7 @@ RSpec.describe "Admin Bulk Add Users to Organization" do
         note = Note.last
         expect(note.noteable).to eq(organization)
         expect(note.author_id).to eq(admin.id)
-        expect(note.content).to include("Bulk added 2 member member(s)")
+        expect(note.content).to include("Bulk added 2 user(s) as member: #{user1.username}, #{user2.username}")
       ensure
         Audit::Subscribe.forget :moderator
       end

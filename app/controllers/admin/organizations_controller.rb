@@ -215,7 +215,7 @@ module Admin
           noteable_id: org.id,
           noteable_type: "Organization",
           reason: "misc_note",
-          content: "Bulk added #{result.added_users.size} #{result.role} member(s): #{result.added_users.join(', ')}",
+          content: "Bulk added #{result.added_users.size} user(s) as #{result.role}: #{result.added_users.join(', ')}",
         )
       end
 

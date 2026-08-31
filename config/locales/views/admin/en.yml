@@ -566,6 +566,7 @@ en:
           heading: Bulk Add Members
           description: "Add multiple users to this organization at once. Enter a comma-separated list of usernames (with or without @ and spaces). Existing members will be skipped."
           usernames_label: Usernames
+          usernames_placeholder: "username1, @username2, username3"
           role_label: Role
           roles:
             member: Member

@@ -107,5 +107,16 @@ RSpec.describe Organizations::BulkAddUsers do
         expect(result.not_found).to eq(["unknown_dev"])
       end
     end
+
+    context "when a race condition raises RecordNotUnique on membership save" do
+      it "handles the error gracefully and marks the user as already member", :aggregate_failures do
+        allow_any_instance_of(OrganizationMembership).to receive(:save) # rubocop:disable RSpec/AnyInstance
+          .and_raise(ActiveRecord::RecordNotUnique)
+
+        result = described_class.call(organization: organization, usernames: user1.username)
+        expect(result.added_users).to be_empty
+        expect(result.already_members).to eq([user1.username])
+      end
+    end
   end
 end

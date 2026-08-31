@@ -555,6 +555,7 @@ fr:
           heading: Ajouter des membres en bloc
           description: "Ajoutez plusieurs utilisateurs à cette organisation en une seule fois. Entrez une liste de noms d'utilisateur séparés par des virgules (avec ou sans @ et espaces). Les membres existants seront ignorés."
           usernames_label: Noms d'utilisateur
+          usernames_placeholder: "utilisateur1, @utilisateur2, utilisateur3"
           role_label: Rôle
           roles:
             member: Membre
