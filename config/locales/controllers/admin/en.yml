@@ -127,6 +127,12 @@ en:
       org_feature_enabled: "%{feature} has been enabled for this organization."
       org_feature_disabled: "%{feature} has been disabled for this organization."
       org_feature_invalid: "Invalid org feature specified."
+      bulk_add_users:
+        added: "Successfully added %{count} user(s) (%{usernames}) to the organization."
+        already_members: "Already member(s): %{usernames}."
+        not_found: "User(s) not found: %{usernames}."
+        failed: "Failed to add %{count} user(s): %{errors}."
+        empty_input: "Please provide at least one username."
     org_features_controller:
       invalid_feature: "Invalid feature specified."
       global_enabled: "%{feature} has been enabled for all organizations."
