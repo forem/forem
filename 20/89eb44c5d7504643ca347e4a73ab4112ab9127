@@ -1,0 +1,30 @@
+app/views/organization_settings/edit.html.erb
+  cdf961d01143ac46 117,120-127
+app/assets/stylesheets/ltags/QuoteTag.scss
+  cdf961d01143ac46 2,9,12-20,22-24,26-29,32-34,36-40,42-46,48-51,53-58,60-63,65-67,69-76,78-83,85-89,91-99,101-104,106-108,110-114,116-127
+app/liquid_tags/col_tag.rb
+  cdf961d01143ac46 13-15
+app/views/liquids/_quote.html.erb
+  cdf961d01143ac46 5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "2089eb44c5d7504643ca347e4a73ab4112ab9127",
+  "prompts": {
+    "cdf961d01143ac46": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e69502a6-bdd0-4768-88a0-89870ff05e49",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Jonathan Gottfried",
+      "messages": [],
+      "total_additions": 198,
+      "total_deletions": 160,
+      "accepted_lines": 133,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/021821a9a3c6282e137dc06197c88ff2f418585ab1973194109b4ea260306e12"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+spec/models/user_spec.rb
+  s_1e049bdc81f15e::t_2eb0ce1d484bc0 1010,1019,1028,1037
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "a3dccdd8febfcc96d7032c8c2aab7057c97fbf87",
+  "prompts": {},
+  "sessions": {
+    "s_1e049bdc81f15e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23918fc8-b82e-4edd-9ebf-b02c000c31c4",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Paolo Veñegas <pvenegas@gmail.com>"
+    }
+  }
+}
