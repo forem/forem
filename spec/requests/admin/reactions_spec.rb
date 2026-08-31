@@ -71,6 +71,16 @@ RSpec.describe "/admin/reactions" do
         expect(response).to have_http_status(:ok)
         expect(reaction.reload.status).to eq("invalid")
       end
+
+      # Confirmed comment vomits feed the repeat-offender check that can suspend
+      # the comment's author, so support admins must not be able to set them.
+      it "does not allow confirming the flag" do
+        expect do
+          put admin_reaction_path(reaction.id), params: { id: reaction.id, status: "confirmed" }
+        end.to raise_error(Pundit::NotAuthorizedError)
+
+        expect(reaction.reload.status).not_to eq("confirmed")
+      end
     end
 
     context "when the reaction is not on a comment" do

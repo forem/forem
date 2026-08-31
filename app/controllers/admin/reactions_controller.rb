@@ -25,7 +25,14 @@ module Admin
       return super unless current_user&.support_admin?
 
       @reaction = Reaction.find(params[:id])
-      authorize @reaction, :admin_update?, policy_class: ReactionPolicy
+      authorize @reaction, support_admin_policy_query, policy_class: ReactionPolicy
+    end
+
+    # Invalidating a flag is all a support admin needs in order to un-hide a
+    # downvoted comment. Any other status change falls through to a policy
+    # query only full admins satisfy.
+    def support_admin_policy_query
+      params[:status] == "invalid" ? :admin_invalidate? : :admin_update?
     end
 
     def vomit_user_reaction?
