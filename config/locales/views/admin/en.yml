@@ -562,6 +562,15 @@ en:
             enable: Enable Dofollow
             disable: Disable Dofollow
             enabled_notice: Dofollow links are enabled for this organization's readme page.
+        bulk_add_users:
+          heading: Bulk Add Members
+          description: "Add multiple users to this organization at once. Enter a comma-separated list of usernames (with or without @ and spaces). Existing members will be skipped."
+          usernames_label: Usernames
+          role_label: Role
+          roles:
+            member: Member
+            admin: Admin
+          submit: Bulk Add Members
       favorites:
         leaderboard:
           heading: Impact Leaderboard

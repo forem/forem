@@ -23,7 +23,24 @@ RSpec.describe "Admin manages organizations" do
 
     it "does not show the remove form when there are no credits" do
       expect(page).to have_button("Add Org Credits")
-      expect(page).not_to have_button("Remove Org Credits")
+      expect(page).to have_no_button("Remove Org Credits")
+    end
+  end
+
+  context "when bulk adding users to an organization" do
+    let!(:user1) { create(:user, username: "sys_alice") }
+    let!(:user2) { create(:user, username: "sys_bob") }
+
+    before { visit admin_organization_path(organization) }
+
+    it "adds users to the organization from the admin page", :aggregate_failures do
+      fill_in "Usernames", with: "@#{user1.username}, #{user2.username}"
+      select "Member", from: "Role"
+      click_on "Bulk Add Members"
+
+      expect(page).to have_content(user1.username)
+      expect(page).to have_content(user2.username)
+      expect(organization.organization_memberships.pluck(:user_id)).to contain_exactly(user1.id, user2.id)
     end
   end
 end

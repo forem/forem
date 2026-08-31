@@ -243,6 +243,26 @@
     <%= number_field_tag :baseline_score, @organization.baseline_score, class: "crayons-textfield w-25", min: 0 %>
     <%= submit_tag "Update Score", class: "crayons-btn" %>
   <% end %>
+<div class="crayons-card p-6 mb-6">
+  <h3 class="crayons-subtitle-2 mb-4"><%= t("views.admin.organizations.bulk_add_users.heading") %></h3>
+  <p class="fs-s color-base-60 mb-4">
+    <%= t("views.admin.organizations.bulk_add_users.description") %>
+  </p>
+  <%= form_tag bulk_add_users_admin_organization_path(@organization), method: :post, class: "flex flex-col gap-4" do %>
+    <div class="crayons-field">
+      <%= label_tag :usernames, t("views.admin.organizations.bulk_add_users.usernames_label"), class: "crayons-field__label" %>
+      <%= text_area_tag :usernames, nil, placeholder: "username1, @username2, username3", required: true, rows: 3, class: "crayons-textfield w-100", aria: { label: t("views.admin.organizations.bulk_add_users.usernames_label") } %>
+    </div>
+    <div class="flex items-center gap-4 flex-wrap">
+      <div class="crayons-field mb-0">
+        <%= label_tag :role, t("views.admin.organizations.bulk_add_users.role_label"), class: "crayons-field__label" %>
+        <%= select_tag :role, options_for_select([[t("views.admin.organizations.bulk_add_users.roles.member"), "member"], [t("views.admin.organizations.bulk_add_users.roles.admin"), "admin"]], "member"), class: "crayons-select" %>
+      </div>
+      <div class="self-end">
+        <%= submit_tag t("views.admin.organizations.bulk_add_users.submit"), class: "crayons-btn crayons-btn--primary" %>
+      </div>
+    </div>
+  <% end %>
 </div>
 
 <%= render "activity" %>
