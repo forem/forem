@@ -633,28 +633,29 @@ RSpec.describe "StoriesIndex" do
     end
   end
 
-  describe "InstantClick stylesheet alignment" do
-    it "does not render the alignment script under normal navigation" do
+  describe "InstantClick stylesheet fingerprinting and layout behavior" do
+    it "renders data-style-fingerprint and outer shell link tags under normal navigation" do
       get "/"
       expect(response).to have_http_status(:ok)
+      expect(response.body).to include("data-style-fingerprint=")
       expect(response.body).not_to include("expectedStyles")
       # Expect outer shell link tags
       expect(response.body).to include('id="main-minimal-stylesheet"')
     end
 
-    it "renders the alignment script with correct asset paths under internal navigation" do
+    it "renders internal navigation fragment without alignment script or outer shell links" do
       get "/", params: { i: "i" }
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("expectedStyles")
-      expected_minimal = ActionController::Base.helpers.stylesheet_path("minimal")
-      expected_views = ActionController::Base.helpers.stylesheet_path("views")
-      expected_crayons = ActionController::Base.helpers.stylesheet_path("crayons")
-      expect(response.body).to include(%("minimal": "#{expected_minimal}"))
-      expect(response.body).to include(%("views": "#{expected_views}"))
-      expect(response.body).to include(%("crayons": "#{expected_crayons}"))
-      expect(response.body).to include("pendingHref")
-      expect(response.body).to include("replaceChild")
+      expect(response.body).not_to include("expectedStyles")
+      expect(response.body).not_to include("pendingHref")
       # Internal navigation excludes the outer layout, so the outer shell links should not be rendered
+      expect(response.body).not_to include('id="main-minimal-stylesheet"')
+    end
+
+    it "supports fingerprinted internal navigation params" do
+      get "/", params: { i: "cc9ed033eb" }
+      expect(response).to have_http_status(:ok)
+      expect(response.body).not_to include("expectedStyles")
       expect(response.body).not_to include('id="main-minimal-stylesheet"')
     end
   end
