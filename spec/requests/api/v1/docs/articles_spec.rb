@@ -33,7 +33,7 @@ RSpec.describe "Api::V1::Docs::Articles" do
 - **title**: A compelling and descriptive title for the article.
 - **body_markdown**: The main text of the article in Markdown format. You can use standard Markdown as well as Forem-specific Liquid tags (e.g., `{% embed ... %}`). You can also include YAML front matter at the very beginning of the markdown to specify metadata such as tags, series, and cover image.
 - **published**: Set to `true` to immediately publish the article and make it visible in feeds. Set to `false` (default) to save it as a draft.
-- **tags**: A comma-separated list of tags (up to 4 tags). Tags help categorize your post and improve discoverability.
+- **tags**: An array of up to 4 tag strings, e.g. `['ruby', 'rails']`. Tags help categorize your post and improve discoverability.
 - **series**: Group articles together by specifying a series name. If the series does not exist, it will be created.
 - **main_image**: Absolute URL of the cover image for the article.
 - **canonical_url**: If this post was originally published elsewhere, specify the canonical URL to maintain SEO integrity.
@@ -59,7 +59,7 @@ RSpec.describe "Api::V1::Docs::Articles" do
                 main_image: "https://res.cloudinary.com/practicaldev/image/fetch/s--Jbk_rL1D--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://thepracticaldev.s3.amazonaws.com/i/5wfo25724gzgk5e5j50g.jpg",
                 canonical_url: "https://dev.to/fdocr/headless-chrome-dual-mode-tests-for-ruby-on-rails-4p6g",
                 description: "New post example",
-                tags: "ruby selenium capybara rspec",
+                tags: %w[ruby selenium capybara rspec],
                 ai_disclosure_level: "some_ai",
                 organization_id: organization.id
               }
