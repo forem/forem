@@ -39,7 +39,7 @@ class OrgCustomDomainConstraint
     path = request.path.to_s
     first_segment = path.split("/")[1]
 
-    if platform_path?(first_segment, path) && request.params[:i] != "i"
+    if platform_path?(first_segment, path) && (request.params[:i] != "i" && !request.params[:i].to_s.match?(/\A[a-f0-9]{8,12}\z/))
       return nil
     end
 
