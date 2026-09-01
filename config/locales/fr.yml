@@ -18,6 +18,10 @@ fr:
       remaining_one: Il vous reste 1 pépite à distribuer aujourd'hui.
       remaining_other: Il vous reste %{count} pépites à distribuer aujourd'hui.
       close: Compris
+    modal_exhausted:
+      title: Plus de pépites
+      body: Vous n'avez plus de pépites à distribuer aujourd'hui. Votre quota sera bientôt renouvelé !
+      close: Compris
   core:
     add_comment: Ajouter un commentaire
     beta: bêta

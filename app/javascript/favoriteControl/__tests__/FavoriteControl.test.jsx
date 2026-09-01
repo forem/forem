@@ -49,12 +49,20 @@ describe('<FavoriteControl />', () => {
       expect(getByRole('button')).toBeInTheDocument();
     });
 
-    it('renders nothing when the viewer has no favorites to spend', () => {
+    it('renders nothing when a non-leader has no favorites to spend', () => {
       const { container } = renderControl({
-        currentUser: { id: CURRENT_USER_ID, favorite_allowance: 0 },
+        currentUser: { id: CURRENT_USER_ID, favorite_allowance: 0, community_leader: false },
       });
 
       expect(container).toBeEmptyDOMElement();
+    });
+
+    it('renders the button for a community leader even when their allowance is 0', () => {
+      const { getByRole } = renderControl({
+        currentUser: { id: CURRENT_USER_ID, favorite_allowance: 0, community_leader: true },
+      });
+
+      expect(getByRole('button')).toBeInTheDocument();
     });
 
     it('renders nothing when not logged in', () => {
@@ -137,6 +145,38 @@ describe('<FavoriteControl />', () => {
       fireEvent.click(getByLabelText('Pick as gem'));
 
       expect(await findByText('You have no more gems left to give out today.')).toBeInTheDocument();
+    });
+
+    it('shows the out of gems modal when a community leader with 0 gems attempts to favorite', async () => {
+      const { getByLabelText, getByText, findByText, queryByText } = renderControl({
+        currentUser: { id: CURRENT_USER_ID, favorite_allowance: 0, community_leader: true },
+      });
+
+      fireEvent.click(getByLabelText('Pick as gem'));
+
+      expect(makeFavorite).not.toHaveBeenCalled();
+      expect(await findByText('Out of Gems')).toBeInTheDocument();
+      expect(
+        getByText('You have no more gems left to give out today. Your allowance will refresh soon!'),
+      ).toBeInTheDocument();
+
+      fireEvent.click(getByText('Got it'));
+      expect(queryByText('Out of Gems')).toBeNull();
+    });
+
+    it('shows the out of gems modal when the API returns no_allowance error code', async () => {
+      makeFavorite.mockResolvedValue({
+        ok: false,
+        json: async () => ({
+          error: 'You have no more gems.',
+          code: 'no_allowance',
+        }),
+      });
+      const { getByLabelText, findByText } = renderControl();
+
+      fireEvent.click(getByLabelText('Pick as gem'));
+
+      expect(await findByText('Out of Gems')).toBeInTheDocument();
     });
 
     it('shows an error message on failure', async () => {

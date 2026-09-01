@@ -18,6 +18,10 @@ pt:
       remaining_one: Você tem mais 1 joia para distribuir hoje.
       remaining_other: Você tem mais %{count} joias para distribuir hoje.
       close: Entendi
+    modal_exhausted:
+      title: Sem joias restantes
+      body: Você não tem mais joias para distribuir hoje. Seu limite será renovado em breve!
+      close: Entendi
   core:
     add_comment: Adicionar comentário
     beta: beta

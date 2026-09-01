@@ -98,6 +98,9 @@ export const FavoriteControl = ({
   modalRemainingOne = 'You have 1 more gem left to give out today.',
   modalRemainingOther = 'You have %{count} more gems left to give out today.',
   modalClose = 'Got it',
+  modalExhaustedTitle = 'Out of Gems',
+  modalExhaustedBody = 'You have no more gems left to give out today. Your allowance will refresh soon!',
+  modalExhaustedClose = 'Got it',
 }) => {
   const [favorited, setFavorited] = useState(
     initialFavorited === 'true' || initialFavorited === true,
@@ -106,15 +109,16 @@ export const FavoriteControl = ({
     initialFavoritedByUserId ? Number(initialFavoritedByUserId) : null,
   );
   const [submitting, setSubmitting] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showExhaustedModal, setShowExhaustedModal] = useState(false);
   const [remainingAllowance, setRemainingAllowance] = useState(null);
 
   const userId = currentUser?.id ?? null;
   const favoritedByCurrentUser =
     favorited && userId != null && favoritedById === userId;
 
-  const renderModal = () => {
-    if (!showModal) {
+  const renderSuccessModal = () => {
+    if (!showSuccessModal) {
       return null;
     }
 
@@ -131,7 +135,7 @@ export const FavoriteControl = ({
     return (
       <Modal
         title={modalTitle}
-        onClose={() => setShowModal(false)}
+        onClose={() => setShowSuccessModal(false)}
         backdropDismissible
         size="small"
       >
@@ -158,9 +162,53 @@ export const FavoriteControl = ({
             <Button
               variant="primary"
               size="large"
-              onClick={() => setShowModal(false)}
+              onClick={() => setShowSuccessModal(false)}
             >
               {modalClose}
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    );
+  };
+
+  const renderExhaustedModal = () => {
+    if (!showExhaustedModal) {
+      return null;
+    }
+
+    return (
+      <Modal
+        title={modalExhaustedTitle}
+        onClose={() => setShowExhaustedModal(false)}
+        backdropDismissible
+        size="small"
+      >
+        <div class="p-6 text-center grid gap-4" data-testid="gem-exhausted-modal-content">
+          <div
+            class="mx-auto flex items-center justify-center"
+            style={{
+              width: '96px',
+              height: '96px',
+              color: 'var(--base-60, #717171)',
+            }}
+          >
+            <FavoriteSVG
+              aria-hidden="true"
+              focusable="false"
+              width="96"
+              height="96"
+              style={{ width: '96px', height: '96px' }}
+            />
+          </div>
+          <p class="fs-base color-base-70 m-0">{modalExhaustedBody}</p>
+          <div class="mt-2">
+            <Button
+              variant="secondary"
+              size="large"
+              onClick={() => setShowExhaustedModal(false)}
+            >
+              {modalExhaustedClose}
             </Button>
           </div>
         </div>
@@ -185,7 +233,8 @@ export const FavoriteControl = ({
               checked={favoritedByCurrentUser}
             />
           </span>
-          {renderModal()}
+          {renderSuccessModal()}
+          {renderExhaustedModal()}
         </Fragment>
       );
     }
@@ -200,14 +249,18 @@ export const FavoriteControl = ({
           />
           <Tooltip label={label} />
         </span>
-        {renderModal()}
+        {renderSuccessModal()}
+        {renderExhaustedModal()}
       </Fragment>
     );
   }
 
-  // Only users with favorites to spend get the control
-  const canFavorite = currentUser?.favorite_allowance > 0;
-  if (!canFavorite) {
+  // Community leaders and users with favorite allowance get the control
+  const canSeeControl =
+    currentUser?.community_leader === true ||
+    (currentUser?.favorite_allowance != null && currentUser.favorite_allowance > 0);
+
+  if (!canSeeControl) {
     return null;
   }
 
@@ -218,6 +271,12 @@ export const FavoriteControl = ({
 
   const onClick = async () => {
     if (submitting) return;
+
+    if (currentUser?.favorite_allowance != null && currentUser.favorite_allowance <= 0) {
+      setShowExhaustedModal(true);
+      return;
+    }
+
     setSubmitting(true);
     try {
       const response = await makeFavorite({ favoritableId, favoritableType });
@@ -231,7 +290,7 @@ export const FavoriteControl = ({
         setFavorited(true);
         setFavoritedById(userId);
         setRemainingAllowance(remaining);
-        setShowModal(true);
+        setShowSuccessModal(true);
         return;
       }
 
@@ -240,6 +299,9 @@ export const FavoriteControl = ({
       if (code === 'already_favorited') {
         setFavorited(true);
         setFavoritedById(null);
+      } else if (code === 'no_allowance') {
+        setShowExhaustedModal(true);
+        return;
       }
 
       if (error && typeof window.top.addSnackbarItem === 'function') {
@@ -263,7 +325,8 @@ export const FavoriteControl = ({
           <span class="fw-bold">{labelFavorite}</span>
           <FavoriteIcon variant={variant} />
         </button>
-        {renderModal()}
+        {renderSuccessModal()}
+        {renderExhaustedModal()}
       </Fragment>
     );
   }
@@ -280,7 +343,8 @@ export const FavoriteControl = ({
         <FavoriteIcon variant={variant} />
         <Tooltip label={labelFavorite} />
       </button>
-      {renderModal()}
+      {renderSuccessModal()}
+      {renderExhaustedModal()}
     </Fragment>
   );
 };

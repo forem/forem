@@ -28,6 +28,9 @@ function initializeFavoriteControls(currentUser) {
       modalRemainingOne,
       modalRemainingOther,
       modalClose,
+      modalExhaustedTitle,
+      modalExhaustedBody,
+      modalExhaustedClose,
     } = node.dataset;
 
     render(
@@ -48,6 +51,9 @@ function initializeFavoriteControls(currentUser) {
         modalRemainingOne={modalRemainingOne}
         modalRemainingOther={modalRemainingOther}
         modalClose={modalClose}
+        modalExhaustedTitle={modalExhaustedTitle}
+        modalExhaustedBody={modalExhaustedBody}
+        modalExhaustedClose={modalExhaustedClose}
       />,
       node,
     );
