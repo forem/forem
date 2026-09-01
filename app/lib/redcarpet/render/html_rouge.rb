@@ -5,11 +5,18 @@ module Redcarpet
     class HTMLRouge < HTML
       include Rouge::Plugins::Redcarpet
 
+      MERMAID_LANGUAGE = "mermaid".freeze
+      MERMAID_MAX_SOURCE_BYTES = 20_000
+      MERMAID_MAX_LINES = 500
+
       # Rouge requires the hint language to be lower case, by overriding this
       # method we can allow the hint language to be specified with other casings
       # eg. `Ada` instead of `ada`
       def block_code(code, language)
-        super(code, language.to_s.downcase)
+        normalized_language = language.to_s.downcase
+        diagram = mermaid_block(code) if mermaid_language?(normalized_language)
+
+        diagram || super(code, normalized_language)
       end
 
       def image(link, title, alt_text)
@@ -69,6 +76,23 @@ module Redcarpet
       end
 
       private
+
+      def mermaid_language?(language)
+        language.split.first == MERMAID_LANGUAGE
+      end
+
+      # Returns nil so `block_code` falls back to the syntax highlighted code block.
+      def mermaid_block(code)
+        source = code.to_s.strip
+        return if source.empty?
+        return if source.bytesize > MERMAID_MAX_SOURCE_BYTES
+        return if source.count("\n") >= MERMAID_MAX_LINES
+
+        %(<pre data-lang="#{MERMAID_LANGUAGE}"><code>#{ERB::Util.html_escape(source)}</code></pre>\n)
+      rescue StandardError => e
+        Rails.logger.error("Mermaid block rendering failed: #{e.class}: #{e.message}")
+        nil
+      end
 
       def app_protocol
         ApplicationConfig["APP_PROTOCOL"]

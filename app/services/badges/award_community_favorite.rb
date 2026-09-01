@@ -29,7 +29,13 @@ module Badges
     attr_reader :favoritable, :favoriter
 
     def count_user_gems(user)
-      user.articles.favorited.count + user.comments.favorited.count
+      sql = <<~SQL.squish
+        SELECT (SELECT COUNT(*) FROM articles WHERE user_id = :user_id AND favorited_by_user_id IS NOT NULL) +
+               (SELECT COUNT(*) FROM comments WHERE user_id = :user_id AND favorited_by_user_id IS NOT NULL)
+      SQL
+      ActiveRecord::Base.connection.select_value(
+        ActiveRecord::Base.sanitize_sql([sql, { user_id: user.id }]),
+      ).to_i
     end
 
     def award_milestone_badge(user, count)

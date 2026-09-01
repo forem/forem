@@ -1,83 +1,70 @@
 require "rails_helper"
 
-RSpec.describe "Leadership dashboard" do
+RSpec.describe "Curation dashboard" do
   let(:leader) { create(:user, :community_leader_level_1) }
 
-  describe "GET /leadership" do
+  describe "GET /curation" do
     context "when signed in as a community leader" do
       before { sign_in leader }
 
-      it "defaults to the curation section and shows both section links" do
-        get leadership_path
+      it "defaults to the community picks section and displays allowance and explainer" do
+        get curation_path
 
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include(I18n.t("views.leadership.curation.heading"))
-        expect(response.body).to include(I18n.t("views.leadership.discussion.heading"))
+        expect(response.body).to include(I18n.t("views.leadership.heading"))
+        expect(response.body).to include(I18n.t("views.leadership.nav.community"))
+        expect(response.body).to include(I18n.t("views.leadership.explainer.heading"))
       end
 
-      it "renders the section nav for both viewports and marks the current section" do
-        get leadership_section_path("discussion")
+      it "shows gems picked in the past 24 hours by any curator" do
+        other_curator = create(:user, :community_leader_level_1)
+        recent_gem = create(:article, title: "Recent Gem Post")
+        recent_gem.update_columns(favorited_by_user_id: other_curator.id, favorited_at: 2.hours.ago)
 
-        page = Capybara.string(response.body)
+        old_gem = create(:article, title: "Old Gem Post")
+        old_gem.update_columns(favorited_by_user_id: other_curator.id, favorited_at: 2.days.ago)
 
-        # Stacked links on wide viewports, tabs on narrow ones.
-        expect(page).to have_css("nav.m\\:block a.crayons-link--block", count: 2)
-        expect(page).to have_css("nav.m\\:hidden a.crayons-tabs__item", count: 2)
+        get curation_path
 
-        current = page.all("[aria-current='page']").map { |link| link.text.strip }.uniq
-        expect(current).to eq([I18n.t("views.leadership.discussion.heading")])
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Recent Gem Post")
+        expect(response.body).not_to include("Old Gem Post")
       end
 
-      it "shows the leader's favorited content in the curation section" do
-        favorited = create(:article)
-        favorited.update_columns(favorited_by_user_id: leader.id, favorited_at: Time.current)
+      it "shows 'Start the discussion' CTA when a curated post has 0 comments" do
+        gem_post = create(:article, comments_count: 0)
+        gem_post.update_columns(favorited_by_user_id: leader.id, favorited_at: 1.hour.ago)
 
-        get leadership_path
+        get curation_path
 
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include(favorited.title)
-        expect(response.body).to include(CGI.escapeHTML(favorited.user.name))
+        expect(response.body).to include(I18n.t("views.leadership.cards.start_discussion"))
       end
 
-      it "shows favorited comments alongside favorited posts" do
-        commented_on = create(:article)
-        comment = create(:comment, commentable: commented_on)
-        comment.update_columns(favorited_by_user_id: leader.id, favorited_at: Time.current)
+      it "shows 'Further the discussion' CTA when a curated post has 1 or 2 comments" do
+        gem_post = create(:article, comments_count: 2)
+        gem_post.update_columns(favorited_by_user_id: leader.id, favorited_at: 1.hour.ago)
 
-        get leadership_path
+        get curation_path
 
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include(CGI.escapeHTML(comment.user.name))
+        expect(response.body).to include(I18n.t("views.leadership.cards.further_discussion"))
       end
 
-      it "renders the suggested discussion feed" do
-        surfaced = create(:article, user: create(:user))
-        surfaced.update_columns(score: 100, comments_count: 0)
+      it "shows your gems in the 'yours' section" do
+        my_gem = create(:article, title: "My Curated Article")
+        my_gem.update_columns(favorited_by_user_id: leader.id, favorited_at: 3.days.ago)
 
-        get leadership_section_path("discussion")
+        other_leader = create(:user, :community_leader_level_1)
+        other_gem = create(:article, title: "Other Curated Article")
+        other_gem.update_columns(favorited_by_user_id: other_leader.id, favorited_at: 3.days.ago)
 
-        expect(response).to have_http_status(:ok)
-        expect(response.body).to include(surfaced.title)
-        expect(response.body).to include(CGI.escapeHTML(surfaced.cached_user.name))
-        expect(response.body).to include(I18n.t("views.leadership.discussion.cta"))
-      end
-
-      it "excludes the leader's own posts from the discussion feed" do
-        own = create(:article, user: leader)
-        own.update_columns(score: 100, comments_count: 0)
-
-        get leadership_section_path("discussion")
+        get curation_section_path("yours")
 
         expect(response).to have_http_status(:ok)
-        expect(response.body).not_to include(own.title)
-      end
-
-      it "accepts pagination params on each section" do
-        get leadership_path(page: 2)
-        expect(response).to have_http_status(:ok)
-
-        get leadership_section_path("discussion", page: 2)
-        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(I18n.t("views.leadership.nav.yours"))
+        expect(response.body).to include("My Curated Article")
+        expect(response.body).not_to include("Other Curated Article")
       end
     end
 
@@ -85,7 +72,7 @@ RSpec.describe "Leadership dashboard" do
       it "returns 404" do
         sign_in create(:user)
 
-        get leadership_path
+        get curation_path
 
         expect(response).to have_http_status(:not_found)
       end
@@ -93,9 +80,22 @@ RSpec.describe "Leadership dashboard" do
 
     context "when signed out" do
       it "does not render the dashboard" do
-        get leadership_path
+        get curation_path
 
         expect(response).not_to have_http_status(:ok)
+      end
+    end
+  end
+
+  describe "GET /leadership" do
+    context "when signed in as a community leader" do
+      before { sign_in leader }
+
+      it "renders the curation dashboard identically" do
+        get leadership_path
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(I18n.t("views.leadership.heading"))
       end
     end
   end

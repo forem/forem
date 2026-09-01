@@ -65,6 +65,8 @@ namespace :admin do
         post "merge"
         delete "remove_identity"
         post "send_email"
+        patch "update_password"
+        post "send_password_reset"
         post "verify_email_ownership"
         post "send_email_confirmation"
         post "confirm_email"
@@ -120,6 +122,7 @@ namespace :admin do
         patch "update_baseline_score"
         patch "update_verified"
         patch "update_org_feature"
+        post "bulk_add_users"
       end
     end
     resources :emails

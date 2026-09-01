@@ -104,6 +104,26 @@ RSpec.describe Badges::AwardCommunityFavorite, type: :service do
       expect(achievement.rewarding_context_message_markdown).to include("16 times")
     end
 
+    it "awards 16 gems badge with copy indicating next is 32" do
+      15.times { create(:article, user: author, favorited_by_user_id: leader.id, favorited_at: Time.current) }
+
+      award
+      achievement = BadgeAchievement.last
+      expect(achievement.badge.slug).to eq("community-favorite-16-gems")
+      expect(achievement.rewarding_context_message_markdown).to include("16 Gems badge")
+      expect(achievement.rewarding_context_message_markdown).to include("32 times")
+    end
+
+    it "awards 32 gems badge with copy indicating next is 64" do
+      31.times { create(:article, user: author, favorited_by_user_id: leader.id, favorited_at: Time.current) }
+
+      award
+      achievement = BadgeAchievement.last
+      expect(achievement.badge.slug).to eq("community-favorite-32-gems")
+      expect(achievement.rewarding_context_message_markdown).to include("32 Gems badge")
+      expect(achievement.rewarding_context_message_markdown).to include("64 times")
+    end
+
     it "awards 64 gems badge with copy celebrating highest milestone" do
       63.times { create(:article, user: author, favorited_by_user_id: leader.id, favorited_at: Time.current) }
 
@@ -112,6 +132,18 @@ RSpec.describe Badges::AwardCommunityFavorite, type: :service do
       expect(achievement.badge.slug).to eq("community-favorite-64-gems")
       expect(achievement.rewarding_context_message_markdown).to include("64 Gems badge")
       expect(achievement.rewarding_context_message_markdown).to include("highest milestone")
+    end
+
+    it "awards milestone badge when reaching milestone via comment favorite" do
+      create(:article, user: author, favorited_by_user_id: leader.id, favorited_at: Time.current)
+      comment = create(:comment, commentable: create(:article), user: author,
+                                 favorited_by_user_id: leader.id, favorited_at: Time.current)
+
+      described_class.call(favoritable: comment, favoriter: leader)
+
+      achievement = BadgeAchievement.last
+      expect(achievement.badge.slug).to eq("community-favorite-2-gems")
+      expect(achievement.rewarding_context_message_markdown).to include(URL.comment(comment))
     end
   end
 

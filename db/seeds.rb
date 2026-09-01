@@ -305,6 +305,7 @@ Badges::AwardCommunityFavorite::MILESTONES.each do |milestone|
   unless Badge.exists?(slug: slug)
     Badge.create!(
       title: "Community Favorite - #{milestone} Gems",
+      slug: slug,
       description: "Awarded to authors whose posts or comments have been picked as gems #{milestone} times.",
       badge_image: Rails.root.join("app/assets/images/community-favorite-badge.png").open,
       allow_multiple_awards: false,

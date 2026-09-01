@@ -422,6 +422,24 @@ Rails.application.routes.draw do
 
     # You can have the root of your site routed with "root
     get "/robots.:format", to: "pages#robots"
+    get "/llms.:format", to: "pages#llms"
+
+    # Canonical location of the generated OpenAPI description, plus redirects from the
+    # paths automated clients commonly probe for a spec before falling back to guessing.
+    get "/api/v1/openapi.json", to: "pages#openapi", defaults: { format: "json" }
+    %w[
+      /openapi.json
+      /api-docs
+      /api_docs
+      /api/docs
+      /api/v1/docs
+      /api/v1/docs/api_v1.json
+      /api_docs/v1.json
+      /swagger/v1/api_v1.json
+      /.well-known/openapi.json
+    ].each do |probe_path|
+      get probe_path, to: redirect("/api/v1/openapi.json"), format: false
+    end
     get "/api", to: redirect("https://developers.forem.com/api")
     get "/privacy", to: "pages#privacy"
     get "/terms", to: "pages#terms"
@@ -521,6 +539,8 @@ Rails.application.routes.draw do
 
     get "/leadership", to: "leadership_dashboards#show", as: :leadership
     get "/leadership/:section", to: "leadership_dashboards#show", as: :leadership_section
+    get "/curation", to: "leadership_dashboards#show", as: :curation
+    get "/curation/:section", to: "leadership_dashboards#show", as: :curation_section
 
     unless Rails.env.production?
       get "/rails/mailers", to: "rails/mailers#index"

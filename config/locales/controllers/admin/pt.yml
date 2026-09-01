@@ -5,9 +5,9 @@ pt:
       saved: Artigo salvo!
       pinned: Artigo Fixado!
       unpinned: Artigo Desfixado!
-      favorite_removed: Favorito removido.
+      favorite_removed: Joia removida.
     comments_controller:
-      favorite_removed: Favorito removido.
+      favorite_removed: Joia removida.
     badge_achievements_controller:
       deleted: Conquista de badge foi excluída!
       rewarded: Badges estão sendo recompensados. A tarefa terminará em breve.
@@ -92,6 +92,12 @@ pt:
       org_feature_enabled: "%{feature} foi habilitado para esta organização."
       org_feature_disabled: "%{feature} foi desabilitado para esta organização."
       org_feature_invalid: "Funcionalidade de organização especificada inválida."
+      bulk_add_users:
+        added: "%{count} usuário(s) (%{usernames}) adicionado(s) com sucesso à organização."
+        already_members: "Já membro(s): %{usernames}."
+        not_found: "Usuário(s) não encontrado(s): %{usernames}."
+        failed: "Falha ao adicionar %{count} usuário(s): %{errors}."
+        empty_input: "Por favor, forneça pelo menos um nome de usuário."
     org_features_controller:
       invalid_feature: "Funcionalidade especificada inválida."
       global_enabled: "%{feature} foi habilitado para todas as organizações."

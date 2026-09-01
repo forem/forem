@@ -165,6 +165,121 @@ RSpec.describe "api/v1/agent_sessions" do
       end
     end
   end
+
+  path "/api/agent_sessions/presign" do
+    describe "obtain a presigned S3 upload URL" do
+      post("request a presigned URL to upload raw session transcript to S3") do
+        tags "agent_sessions"
+        description(<<~DESCRIBE.strip)
+          Generate an S3 presigned PUT URL and object key for uploading raw session transcripts directly to S3.
+        DESCRIBE
+        operationId "presignAgentSession"
+        produces "application/json"
+
+        response(200, "successful") do
+          let(:"api-key") { api_secret.secret }
+
+          before do
+            allow(AgentSessions::S3Storage).to receive_messages(
+              enabled?: true,
+              generate_key: "agent_sessions/#{user.id}/#{SecureRandom.uuid}.jsonl",
+              presigned_put_url: "https://s3.example.com/presigned",
+            )
+          end
+
+          schema type: :object,
+                 properties: {
+                   s3_key: { type: :string },
+                   presigned_url: { type: :string }
+                 },
+                 required: %w[s3_key presigned_url]
+          add_examples
+
+          run_test!
+        end
+
+        response "401", "unauthorized" do
+          let(:"api-key") { "invalid" }
+          add_examples
+
+          run_test!
+        end
+
+        response "503", "service unavailable" do
+          let(:"api-key") { api_secret.secret }
+
+          before do
+            allow(AgentSessions::S3Storage).to receive(:enabled?).and_return(false)
+          end
+
+          add_examples
+
+          run_test!
+        end
+      end
+    end
+  end
+
+  path "/api/agent_sessions/{id}/raw_url" do
+    describe "obtain presigned raw download URL" do
+      get("request a presigned S3 GET URL to download the raw session transcript") do
+        tags "agent_sessions"
+        description(<<~DESCRIBE.strip)
+          Retrieve a temporary presigned GET URL to download the original raw transcript file from S3.
+        DESCRIBE
+        operationId "getAgentSessionRawUrl"
+        produces "application/json"
+
+        parameter name: :id, in: :path, required: true,
+                  description: "The unique slug or ID of the agent session.",
+                  schema: { type: :string },
+                  example: "my-session-abc123"
+
+        let!(:agent_session) do
+          AgentSession.create!(
+            user: user,
+            title: "My Session",
+            tool_name: "claude_code",
+            curated_data: curated_data,
+            s3_key: "agent_sessions/#{user.id}/#{SecureRandom.uuid}.jsonl",
+          )
+        end
+        let(:id) { agent_session.slug }
+
+        response(200, "successful") do
+          let(:"api-key") { api_secret.secret }
+
+          before do
+            allow(AgentSessions::S3Storage).to receive_messages(enabled?: true, presigned_get_url: "https://s3.example.com/get")
+          end
+
+          schema type: :object,
+                 properties: {
+                   raw_url: { type: :string }
+                 },
+                 required: %w[raw_url]
+          add_examples
+
+          run_test!
+        end
+
+        response "401", "unauthorized" do
+          let(:"api-key") { "invalid" }
+          add_examples
+
+          run_test!
+        end
+
+        response "404", "not found" do
+          let(:"api-key") { api_secret.secret }
+          let(:id) { "nonexistent-slug" }
+          add_examples
+
+          run_test!
+        end
+      end
+    end
+  end
 end
 
 # rubocop:enable Layout/LineLength

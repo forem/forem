@@ -53,6 +53,13 @@ class CommentPolicy < ApplicationPolicy
     user_any_admin?
   end
 
+  # Support staff need to reach a comment's admin page in order to recover
+  # comments that community downvotes or flags have pushed below the hide
+  # threshold, so they're granted the same read access as any admin.
+  def admin_access?
+    user_any_admin? || support_admin?
+  end
+
   def permitted_attributes_for_update
     %i[body_markdown receive_notifications ai_disclosure_level]
   end

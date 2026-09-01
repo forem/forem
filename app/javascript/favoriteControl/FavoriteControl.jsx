@@ -9,7 +9,7 @@ import SmallFavoriteFilledSVG from '@images/small-favorite-filled.svg';
 import SmallFavoriteCheckedSVG from '@images/small-favorite-checked.svg';
 import { makeFavorite } from './favoriteService';
 
-// The article bar gets the full-size icon, comments the compact one.
+// The article bar gets the full-size icon, comments and dropdowns the compact one.
 const ICONS = {
   article: {
     outline: FavoriteSVG,
@@ -17,6 +17,11 @@ const ICONS = {
     checked: FavoriteCheckedSVG,
   },
   comment: {
+    outline: SmallFavoriteSVG,
+    filled: SmallFavoriteFilledSVG,
+    checked: SmallFavoriteCheckedSVG,
+  },
+  dropdown: {
     outline: SmallFavoriteSVG,
     filled: SmallFavoriteFilledSVG,
     checked: SmallFavoriteCheckedSVG,
@@ -34,6 +39,7 @@ const iconFor = (variant, filled, checked) => {
 const VARIANT_CLASS = {
   article: 'favorite-reaction',
   comment: 'crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon',
+  dropdown: 'flex justify-between crayons-link crayons-link--block w-100 bg-transparent border-0',
 };
 
 const controlClass = (variant, favorited) =>
@@ -41,7 +47,7 @@ const controlClass = (variant, favorited) =>
     VARIANT_CLASS[variant] || VARIANT_CLASS.article,
     'favorite-control',
     favorited && 'favorite-control--favorited',
-    'crayons-tooltip__activator relative',
+    variant !== 'dropdown' && 'crayons-tooltip__activator relative',
   ]
     .filter(Boolean)
     .join(' ');
@@ -53,9 +59,10 @@ const FavoriteIcon = ({ variant, filled = false, checked = false }) => {
       native
       aria-hidden="true"
       focusable="false"
+      class={variant === 'dropdown' ? 'mx-2 shrink-0' : undefined}
     />
   );
-  if (variant === 'comment') {
+  if (variant === 'comment' || variant === 'dropdown') {
     return gem;
   }
   return (
@@ -100,6 +107,23 @@ export const FavoriteControl = ({
 
   if (favorited) {
     const label = favoritedByCurrentUser ? labelFavoritedByYou : labelFavorited;
+    if (variant === 'dropdown') {
+      return (
+        <span
+          class={controlClass(variant, true)}
+          role="img"
+          aria-label={label}
+        >
+          <span class="fw-bold">{label}</span>
+          <FavoriteIcon
+            variant={variant}
+            filled
+            checked={favoritedByCurrentUser}
+          />
+        </span>
+      );
+    }
+
     return (
       <span class={controlClass(variant, true)} role="img" aria-label={label}>
         <FavoriteIcon
@@ -148,6 +172,21 @@ export const FavoriteControl = ({
       setSubmitting(false);
     }
   };
+
+  if (variant === 'dropdown') {
+    return (
+      <button
+        type="button"
+        class={controlClass(variant, false)}
+        aria-label={labelFavorite}
+        disabled={submitting}
+        onClick={onClick}
+      >
+        <span class="fw-bold">{labelFavorite}</span>
+        <FavoriteIcon variant={variant} />
+      </button>
+    );
+  }
 
   return (
     <button

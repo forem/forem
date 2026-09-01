@@ -20,6 +20,15 @@ class CustomMailer < ApplicationMailer
     return if ForemInstance.customerio_email_cutover?
 
     @user = params[:user]
+
+    # That guard is global, but :customerio_email_delivery rolls out per actor:
+    # while it is partially on, the enabled cohort is already receiving this
+    # broadcast/newsletter/drip from the Customer.io side. Sending it from here
+    # too would deliver it twice to exactly those people. Emails::BatchCustomSendWorker
+    # skips them before we get here; this backstop also covers the drip worker,
+    # which builds its sends itself.
+    return if customerio_managed_recipient?
+
     @content = Email.replace_merge_tags(params[:content], @user)
     @subject = Email.replace_merge_tags(params[:subject], @user)
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_newsletter)
@@ -40,5 +49,16 @@ class CustomMailer < ApplicationMailer
     end
 
     mail(to: @user.email, subject: @subject, from: email_from(@from_topic))
+  end
+
+  private
+
+  # Test sends are exempt: nothing on the Customer.io side duplicates them, and
+  # admins still need the preview while the flag is rolling out.
+  def customerio_managed_recipient?
+    return false unless ForemInstance.customerio_enabled?
+    return false if params[:subject].to_s.start_with?(Email::TEST_SUBJECT_PREFIX)
+
+    FeatureFlag.enabled_for_user?(Deliverable::CUSTOMERIO_FLAG, @user)
   end
 end
