@@ -448,6 +448,10 @@ class Article < ApplicationRecord
 
   scope :favorited, -> { where.not(favorited_by_user_id: nil) }
 
+  def favorited?
+    favorited_by_user_id.present?
+  end
+
   scope :from_subforem, lambda { |subforem_id = nil|
     return where(nil) if ENV["NO_SUBFOREM_FILTER"] == "true"
 
@@ -1042,6 +1046,7 @@ class Article < ApplicationRecord
     established_user_adjustment = (user.score.to_i > 100 && !clear_and_obvious_spam? && !likely_spam?) ? Settings::UserExperience.index_minimum_score.to_i : 0
 
     self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment + user_featured_count_adjustment + user_negative_count_adjustment + context_note_adjustment + automod_label_adjustment + badge_reputation_bonus + organization_baseline_score + established_user_adjustment
+    self.score = (score * 1.1).to_i + 10 if favorited?
     accepted_max = [max_score, user&.max_score.to_i].min
     accepted_max = [max_score, user&.max_score.to_i].max if accepted_max.zero?
     self.score = baseline_score if baseline_score.positive? && score < baseline_score
