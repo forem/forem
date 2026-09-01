@@ -5,50 +5,122 @@ RSpec.describe Badges::AwardCommunityFavorite, type: :service do
 
   let(:leader) { create(:user, :community_leader_level_1) }
   let(:author) { create(:user) }
-  let(:article) { create(:article, user: author) }
+  let(:article) { create(:article, user: author, favorited_by_user_id: leader.id, favorited_at: Time.current) }
 
   before do
-    create(:badge, title: "Community Favorite", slug: described_class::BADGE_SLUG,
-                   allow_multiple_awards: true)
+    described_class::MILESTONES.each do |milestone|
+      create(:badge,
+             title: "Community Favorite - #{milestone} Gems",
+             allow_multiple_awards: false)
+    end
   end
 
-  it "awards the badge to the author of the favorited article" do
-    expect { award }.to change(BadgeAchievement, :count).by(1)
-    expect(BadgeAchievement.last.user_id).to eq(author.id)
+  context "when author receives their 1st gem" do
+    it "does not award a BadgeAchievement" do
+      expect { award }.not_to change(BadgeAchievement, :count)
+    end
+
+    it "sends an in-app progress notification to the author" do
+      expect { award }.to change(Notification, :count).by(1)
+
+      notification = Notification.last
+      expect(notification.user_id).to eq(author.id)
+      expect(notification.action).to eq("Favorited")
+      expect(notification.json_data["message"]).to include("If you get two gems")
+      expect(notification.json_data["message"]).to include(URL.article(article))
+    end
+
+    it "sends progress notification when a comment is favorited" do
+      comment = create(:comment, commentable: create(:article), user: author,
+                                 favorited_by_user_id: leader.id, favorited_at: Time.current)
+
+      expect { described_class.call(favoritable: comment, favoriter: leader) }
+        .to change(Notification, :count).by(1)
+
+      notification = Notification.last
+      expect(notification.user_id).to eq(author.id)
+      expect(notification.json_data["message"]).to include(URL.comment(comment))
+    end
   end
 
-  it "awards the badge to the author of the favorited comment" do
-    comment = create(:comment, commentable: create(:article), user: author)
+  context "when author reaches the 2 gems milestone" do
+    before do
+      # 1 existing favorited post
+      create(:article, user: author, favorited_by_user_id: leader.id, favorited_at: Time.current)
+    end
 
-    expect { described_class.call(favoritable: comment, favoriter: leader) }
-      .to change(BadgeAchievement, :count).by(1)
-    expect(BadgeAchievement.last.user_id).to eq(author.id)
+    it "awards the 2 Gems milestone badge" do
+      expect { award }.to change(BadgeAchievement, :count).by(1)
+
+      achievement = BadgeAchievement.last
+      expect(achievement.user_id).to eq(author.id)
+      expect(achievement.badge.slug).to eq("community-favorite-2-gems")
+      expect(achievement.rewarder_id).to eq(leader.id)
+      expect(achievement.rewarding_context_message_markdown).to include("2 Gems badge")
+      expect(achievement.rewarding_context_message_markdown).to include("4 times")
+      expect(achievement.rewarding_context_message_markdown).to include(URL.article(article))
+    end
   end
 
-  it "records the favoriter as the rewarder" do
-    award
+  context "when author receives intermediate non-milestone gems (e.g. 3 gems)" do
+    before do
+      # 2 existing favorited posts (milestone 2 already reached)
+      2.times { create(:article, user: author, favorited_by_user_id: leader.id, favorited_at: Time.current) }
+    end
 
-    expect(BadgeAchievement.last.rewarder_id).to eq(leader.id)
+    it "does not award a new BadgeAchievement" do
+      expect { award }.not_to change(BadgeAchievement, :count)
+    end
+
+    it "sends an in-app progress notification informing them of next milestone at 4" do
+      expect { award }.to change(Notification, :count).by(1)
+
+      notification = Notification.last
+      expect(notification.user_id).to eq(author.id)
+      expect(notification.action).to eq("Favorited")
+      expect(notification.json_data["message"]).to include("3 times")
+      expect(notification.json_data["message"]).to include("4 times")
+    end
   end
 
-  it "links to the favorited article" do
-    award
+  context "when author reaches subsequent milestones (4, 8, 16, 32, 64)" do
+    it "awards 4 gems badge with copy indicating next is 8" do
+      3.times { create(:article, user: author, favorited_by_user_id: leader.id, favorited_at: Time.current) }
 
-    expect(BadgeAchievement.last.rewarding_context_message_markdown)
-      .to include(URL.article(article))
+      award
+      achievement = BadgeAchievement.last
+      expect(achievement.badge.slug).to eq("community-favorite-4-gems")
+      expect(achievement.rewarding_context_message_markdown).to include("4 Gems badge")
+      expect(achievement.rewarding_context_message_markdown).to include("8 times")
+    end
+
+    it "awards 8 gems badge with copy indicating next is 16" do
+      7.times { create(:article, user: author, favorited_by_user_id: leader.id, favorited_at: Time.current) }
+
+      award
+      achievement = BadgeAchievement.last
+      expect(achievement.badge.slug).to eq("community-favorite-8-gems")
+      expect(achievement.rewarding_context_message_markdown).to include("8 Gems badge")
+      expect(achievement.rewarding_context_message_markdown).to include("16 times")
+    end
+
+    it "awards 64 gems badge with copy celebrating highest milestone" do
+      63.times { create(:article, user: author, favorited_by_user_id: leader.id, favorited_at: Time.current) }
+
+      award
+      achievement = BadgeAchievement.last
+      expect(achievement.badge.slug).to eq("community-favorite-64-gems")
+      expect(achievement.rewarding_context_message_markdown).to include("64 Gems badge")
+      expect(achievement.rewarding_context_message_markdown).to include("highest milestone")
+    end
   end
 
-  it "links to the favorited comment" do
-    comment = create(:comment, commentable: article, user: author)
-
-    described_class.call(favoritable: comment, favoriter: leader)
-
-    expect(BadgeAchievement.last.rewarding_context_message_markdown)
-      .to include(URL.comment(comment))
-  end
-
-  context "when the instance does not have the badge" do
-    before { Badge.find_by(slug: described_class::BADGE_SLUG).destroy }
+  context "when the badge record does not exist in the database" do
+    before do
+      # 1 existing favorited post so this would be milestone 2
+      create(:article, user: author, favorited_by_user_id: leader.id, favorited_at: Time.current)
+      Badge.destroy_all
+    end
 
     it "does nothing without raising errors" do
       expect { award }.not_to change(BadgeAchievement, :count)

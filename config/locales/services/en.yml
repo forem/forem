@@ -15,8 +15,16 @@ en:
         not_enabled: Provider %{name} is not enabled!
     badges:
       award_community_favorite:
-        article_message: "Well done! [Your post](%{url}) is a community favorite!"
-        comment_message: "Well done! [Your comment](%{url}) is a community favorite!"
+        article_first_gem_notification: "Community curators have picked [your post](%{url}) as a gem! If you get two gems you will receive a new badge on your profile."
+        comment_first_gem_notification: "Community curators have picked [your comment](%{url}) as a gem! If you get two gems you will receive a new badge on your profile."
+        article_progress_notification: "Community curators have picked [your post](%{url}) as a gem! You've been picked %{count} times — the next eligible badge is when you get picked %{next_count} times."
+        comment_progress_notification: "Community curators have picked [your comment](%{url}) as a gem! You've been picked %{count} times — the next eligible badge is when you get picked %{next_count} times."
+        article_max_progress_notification: "Community curators have picked [your post](%{url}) as a gem! You've been picked %{count} times."
+        comment_max_progress_notification: "Community curators have picked [your comment](%{url}) as a gem! You've been picked %{count} times."
+        article_milestone_message: "Well done! Community curators picked [your post](%{url}) as a gem. You've earned the %{count} Gems badge! The next eligible badge is when you get picked %{next_count} times."
+        comment_milestone_message: "Well done! Community curators picked [your comment](%{url}) as a gem. You've earned the %{count} Gems badge! The next eligible badge is when you get picked %{next_count} times."
+        article_max_milestone_message: "Incredible! Community curators picked [your post](%{url}) as a gem. You've earned the %{count} Gems badge — the highest milestone!"
+        comment_max_milestone_message: "Incredible! Community curators picked [your comment](%{url}) as a gem. You've earned the %{count} Gems badge — the highest milestone!"
       award_beloved_comment:
         message: "You're famous! [This is the comment](%{comment}) for which you're being recognized. 😄"
       award_streak:
