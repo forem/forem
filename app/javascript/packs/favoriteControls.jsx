@@ -22,6 +22,12 @@ function initializeFavoriteControls(currentUser) {
       labelFavorite,
       labelFavorited,
       labelFavoritedByYou,
+      modalTitle,
+      modalBody,
+      modalRemainingZero,
+      modalRemainingOne,
+      modalRemainingOther,
+      modalClose,
     } = node.dataset;
 
     render(
@@ -36,6 +42,12 @@ function initializeFavoriteControls(currentUser) {
         labelFavorite={labelFavorite}
         labelFavorited={labelFavorited}
         labelFavoritedByYou={labelFavoritedByYou}
+        modalTitle={modalTitle}
+        modalBody={modalBody}
+        modalRemainingZero={modalRemainingZero}
+        modalRemainingOne={modalRemainingOne}
+        modalRemainingOther={modalRemainingOther}
+        modalClose={modalClose}
       />,
       node,
     );

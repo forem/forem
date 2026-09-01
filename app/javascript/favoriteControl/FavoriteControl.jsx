@@ -1,6 +1,6 @@
-import { h } from 'preact';
+import { h, Fragment } from 'preact';
 import { useState } from 'preact/hooks';
-import { Icon } from '@crayons';
+import { Icon, Modal, ButtonNew as Button } from '@crayons';
 import FavoriteSVG from '@images/favorite.svg';
 import FavoriteFilledSVG from '@images/favorite-filled.svg';
 import FavoriteCheckedSVG from '@images/favorite-checked.svg';
@@ -89,9 +89,15 @@ export const FavoriteControl = ({
   favoritableUserId,
   favorited: initialFavorited,
   favoritedByUserId: initialFavoritedByUserId,
-  labelFavorite,
-  labelFavorited,
-  labelFavoritedByYou,
+  labelFavorite = 'Pick as gem',
+  labelFavorited = 'Picked as gem',
+  labelFavoritedByYou = 'Picked as gem by you',
+  modalTitle = 'Gem Picked!',
+  modalBody = "You've picked this as a community gem!",
+  modalRemainingZero = 'You have no more gems left to give out today.',
+  modalRemainingOne = 'You have 1 more gem left to give out today.',
+  modalRemainingOther = 'You have %{count} more gems left to give out today.',
+  modalClose = 'Got it',
 }) => {
   const [favorited, setFavorited] = useState(
     initialFavorited === 'true' || initialFavorited === true,
@@ -100,39 +106,88 @@ export const FavoriteControl = ({
     initialFavoritedByUserId ? Number(initialFavoritedByUserId) : null,
   );
   const [submitting, setSubmitting] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [remainingAllowance, setRemainingAllowance] = useState(null);
 
   const userId = currentUser?.id ?? null;
   const favoritedByCurrentUser =
     favorited && userId != null && favoritedById === userId;
 
+  const renderModal = () => {
+    if (!showModal) {
+      return null;
+    }
+
+    let remainingText = modalRemainingOther.replace(
+      '%{count}',
+      String(remainingAllowance ?? 0),
+    );
+    if (remainingAllowance === 1) {
+      remainingText = modalRemainingOne;
+    } else if (remainingAllowance === 0) {
+      remainingText = modalRemainingZero;
+    }
+
+    return (
+      <Modal
+        title={modalTitle}
+        onClose={() => setShowModal(false)}
+        backdropDismissible
+        size="small"
+      >
+        <div class="p-4 text-center grid gap-3" data-testid="gem-modal-content">
+          <div class="mx-auto" style={{ width: '48px', height: '48px' }}>
+            <FavoriteIcon variant="article" filled checked />
+          </div>
+          <p class="fs-base fw-bold m-0">{modalBody}</p>
+          <p class="fs-s color-base-70 m-0">{remainingText}</p>
+          <div class="mt-2">
+            <Button
+              variant="primary"
+              onClick={() => setShowModal(false)}
+            >
+              {modalClose}
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    );
+  };
+
   if (favorited) {
     const label = favoritedByCurrentUser ? labelFavoritedByYou : labelFavorited;
     if (variant === 'dropdown') {
       return (
-        <span
-          class={controlClass(variant, true)}
-          role="img"
-          aria-label={label}
-        >
-          <span class="fw-bold">{label}</span>
+        <Fragment>
+          <span
+            class={controlClass(variant, true)}
+            role="img"
+            aria-label={label}
+          >
+            <span class="fw-bold">{label}</span>
+            <FavoriteIcon
+              variant={variant}
+              filled
+              checked={favoritedByCurrentUser}
+            />
+          </span>
+          {renderModal()}
+        </Fragment>
+      );
+    }
+
+    return (
+      <Fragment>
+        <span class={controlClass(variant, true)} role="img" aria-label={label}>
           <FavoriteIcon
             variant={variant}
             filled
             checked={favoritedByCurrentUser}
           />
+          <Tooltip label={label} />
         </span>
-      );
-    }
-
-    return (
-      <span class={controlClass(variant, true)} role="img" aria-label={label}>
-        <FavoriteIcon
-          variant={variant}
-          filled
-          checked={favoritedByCurrentUser}
-        />
-        <Tooltip label={label} />
-      </span>
+        {renderModal()}
+      </Fragment>
     );
   }
 
@@ -153,8 +208,16 @@ export const FavoriteControl = ({
     try {
       const response = await makeFavorite({ favoritableId, favoritableType });
       if (response.ok) {
+        const data = await response.json().catch(() => ({}));
+        const remaining =
+          data.remaining_allowance ??
+          (currentUser?.favorite_allowance != null
+            ? Math.max(0, currentUser.favorite_allowance - 1)
+            : 0);
         setFavorited(true);
         setFavoritedById(userId);
+        setRemainingAllowance(remaining);
+        setShowModal(true);
         return;
       }
 
@@ -175,6 +238,24 @@ export const FavoriteControl = ({
 
   if (variant === 'dropdown') {
     return (
+      <Fragment>
+        <button
+          type="button"
+          class={controlClass(variant, false)}
+          aria-label={labelFavorite}
+          disabled={submitting}
+          onClick={onClick}
+        >
+          <span class="fw-bold">{labelFavorite}</span>
+          <FavoriteIcon variant={variant} />
+        </button>
+        {renderModal()}
+      </Fragment>
+    );
+  }
+
+  return (
+    <Fragment>
       <button
         type="button"
         class={controlClass(variant, false)}
@@ -182,22 +263,10 @@ export const FavoriteControl = ({
         disabled={submitting}
         onClick={onClick}
       >
-        <span class="fw-bold">{labelFavorite}</span>
         <FavoriteIcon variant={variant} />
+        <Tooltip label={labelFavorite} />
       </button>
-    );
-  }
-
-  return (
-    <button
-      type="button"
-      class={controlClass(variant, false)}
-      aria-label={labelFavorite}
-      disabled={submitting}
-      onClick={onClick}
-    >
-      <FavoriteIcon variant={variant} />
-      <Tooltip label={labelFavorite} />
-    </button>
+      {renderModal()}
+    </Fragment>
   );
 };

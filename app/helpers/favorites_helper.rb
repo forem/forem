@@ -12,11 +12,15 @@ module FavoritesHelper
                     when :article
                       if favorited
                         tag.span(
-                          class: "favorite-reaction favorite-control favorite-control--favorited crayons-tooltip__activator relative",
+                          class: "favorite-reaction favorite-control favorite-control--favorited " \
+                                 "crayons-tooltip__activator relative",
                           role: "img",
                           aria: { label: label },
                         ) do
-                          concat tag.span(crayons_icon_tag("favorite-filled", native: true), class: "crayons-reaction__icon crayons-reaction__icon--borderless")
+                          concat tag.span(
+                            crayons_icon_tag("favorite-filled", native: true),
+                            class: "crayons-reaction__icon crayons-reaction__icon--borderless",
+                          )
                           concat tag.span(label, data: { testid: "tooltip" }, class: "crayons-tooltip__content")
                         end
                       else
@@ -25,14 +29,18 @@ module FavoritesHelper
                           class: "favorite-reaction favorite-control crayons-tooltip__activator relative",
                           aria: { label: label },
                         ) do
-                          concat tag.span(crayons_icon_tag("favorite", native: true), class: "crayons-reaction__icon crayons-reaction__icon--borderless")
+                          concat tag.span(
+                            crayons_icon_tag("favorite", native: true),
+                            class: "crayons-reaction__icon crayons-reaction__icon--borderless",
+                          )
                           concat tag.span(label, data: { testid: "tooltip" }, class: "crayons-tooltip__content")
                         end
                       end
                     when :dropdown
                       if favorited
                         tag.span(
-                          class: "flex justify-between crayons-link crayons-link--block w-100 bg-transparent border-0 favorite-control favorite-control--favorited",
+                          class: "flex justify-between crayons-link crayons-link--block w-100 bg-transparent " \
+                                 "border-0 favorite-control favorite-control--favorited",
                           role: "img",
                           aria: { label: label },
                         ) do
@@ -42,7 +50,8 @@ module FavoritesHelper
                       else
                         tag.button(
                           type: "button",
-                          class: "flex justify-between crayons-link crayons-link--block w-100 bg-transparent border-0 favorite-control",
+                          class: "flex justify-between crayons-link crayons-link--block w-100 bg-transparent " \
+                                 "border-0 favorite-control",
                           aria: { label: label },
                         ) do
                           concat tag.span(label, class: "fw-bold")
@@ -52,7 +61,8 @@ module FavoritesHelper
                     when :comment
                       if favorited
                         tag.span(
-                          class: "crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon favorite-control favorite-control--favorited crayons-tooltip__activator relative",
+                          class: "crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon " \
+                                 "favorite-control favorite-control--favorited crayons-tooltip__activator relative",
                           role: "img",
                           aria: { label: label },
                         ) do
@@ -74,7 +84,13 @@ module FavoritesHelper
         favorited_by_user_id: favoritable.favorited_by_user_id,
         label_favorite: t("favorites.favorite"),
         label_favorited: t("favorites.favorited"),
-        label_favorited_by_you: t("favorites.favorited_by_you")
+        label_favorited_by_you: t("favorites.favorited_by_you"),
+        modal_title: t("favorites.modal.title"),
+        modal_body: t("favorites.modal.body"),
+        modal_remaining_zero: t("favorites.modal.remaining_zero"),
+        modal_remaining_one: t("favorites.modal.remaining_one"),
+        modal_remaining_other: t("favorites.modal.remaining_other"),
+        modal_close: t("favorites.modal.close")
       },
     ) do
       inner_content

@@ -13,6 +13,8 @@ RSpec.describe "Favorites" do
         post favorites_path, params: { favoritable_type: "Article", favoritable_id: article.id }, as: :json
 
         expect(response).to have_http_status(:ok)
+        expect(response.parsed_body["success"]).to be(true)
+        expect(response.parsed_body["remaining_allowance"]).to be_a(Integer)
         expect(article.reload.favorited_by_user_id).to eq(leader.id)
       end
 

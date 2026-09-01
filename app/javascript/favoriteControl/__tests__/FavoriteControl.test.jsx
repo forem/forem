@@ -90,8 +90,12 @@ describe('<FavoriteControl />', () => {
   });
 
   describe('favoriting', () => {
-    it('POSTs the favorite and switches to favorited state on click', async () => {
-      const { getByLabelText, findByLabelText } = renderControl();
+    it('POSTs the favorite, switches to favorited state, and displays the confirmation modal', async () => {
+      makeFavorite.mockResolvedValue({
+        ok: true,
+        json: async () => ({ success: true, remaining_allowance: 4 }),
+      });
+      const { getByLabelText, findByLabelText, findByText, getByText, queryByText } = renderControl();
 
       fireEvent.click(getByLabelText('Pick as gem'));
 
@@ -102,6 +106,37 @@ describe('<FavoriteControl />', () => {
 
       const indicator = await findByLabelText('Picked as gem by you');
       expect(indicator.tagName).toBe('SPAN');
+
+      expect(await findByText('Gem Picked!')).toBeInTheDocument();
+      expect(getByText("You've picked this as a community gem!")).toBeInTheDocument();
+      expect(getByText('You have 4 more gems left to give out today.')).toBeInTheDocument();
+
+      fireEvent.click(getByText('Got it'));
+      expect(queryByText('Gem Picked!')).toBeNull();
+    });
+
+    it('shows singular remaining allowance when 1 gem left', async () => {
+      makeFavorite.mockResolvedValue({
+        ok: true,
+        json: async () => ({ success: true, remaining_allowance: 1 }),
+      });
+      const { getByLabelText, findByText } = renderControl();
+
+      fireEvent.click(getByLabelText('Pick as gem'));
+
+      expect(await findByText('You have 1 more gem left to give out today.')).toBeInTheDocument();
+    });
+
+    it('shows zero remaining allowance when 0 gems left', async () => {
+      makeFavorite.mockResolvedValue({
+        ok: true,
+        json: async () => ({ success: true, remaining_allowance: 0 }),
+      });
+      const { getByLabelText, findByText } = renderControl();
+
+      fireEvent.click(getByLabelText('Pick as gem'));
+
+      expect(await findByText('You have no more gems left to give out today.')).toBeInTheDocument();
     });
 
     it('shows an error message on failure', async () => {
