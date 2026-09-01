@@ -135,15 +135,29 @@ export const FavoriteControl = ({
         backdropDismissible
         size="small"
       >
-        <div class="p-4 text-center grid gap-3" data-testid="gem-modal-content">
-          <div class="mx-auto" style={{ width: '48px', height: '48px' }}>
-            <FavoriteIcon variant="article" filled checked />
+        <div class="p-6 text-center grid gap-4" data-testid="gem-modal-content">
+          <div
+            class="mx-auto flex items-center justify-center"
+            style={{
+              width: '96px',
+              height: '96px',
+              color: 'var(--reaction-favorite-color, #7026b8)',
+            }}
+          >
+            <FavoriteCheckedSVG
+              aria-hidden="true"
+              focusable="false"
+              width="96"
+              height="96"
+              style={{ width: '96px', height: '96px' }}
+            />
           </div>
-          <p class="fs-base fw-bold m-0">{modalBody}</p>
-          <p class="fs-s color-base-70 m-0">{remainingText}</p>
+          <p class="fs-l fw-bold m-0">{modalBody}</p>
+          <p class="fs-base color-base-70 m-0">{remainingText}</p>
           <div class="mt-2">
             <Button
               variant="primary"
+              size="large"
               onClick={() => setShowModal(false)}
             >
               {modalClose}
