@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_08_25_100500) do
+ActiveRecord::Schema[8.0].define(version: 2026_09_01_140000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -817,6 +817,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_25_100500) do
     t.float "comment_score_weight", default: 1.0
     t.float "compellingness_score_weight", default: 0.0, null: false
     t.datetime "created_at", null: false
+    t.float "favorited_weight", default: 0.0, null: false
     t.float "featured_weight", default: 0.0, null: false
     t.bigint "feed_impressions_count", default: 0
     t.float "feed_success_score", default: 0.0
