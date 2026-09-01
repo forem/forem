@@ -22,6 +22,15 @@ function initializeFavoriteControls(currentUser) {
       labelFavorite,
       labelFavorited,
       labelFavoritedByYou,
+      modalTitle,
+      modalBody,
+      modalRemainingZero,
+      modalRemainingOne,
+      modalRemainingOther,
+      modalClose,
+      modalExhaustedTitle,
+      modalExhaustedBody,
+      modalExhaustedClose,
     } = node.dataset;
 
     render(
@@ -36,6 +45,15 @@ function initializeFavoriteControls(currentUser) {
         labelFavorite={labelFavorite}
         labelFavorited={labelFavorited}
         labelFavoritedByYou={labelFavoritedByYou}
+        modalTitle={modalTitle}
+        modalBody={modalBody}
+        modalRemainingZero={modalRemainingZero}
+        modalRemainingOne={modalRemainingOne}
+        modalRemainingOther={modalRemainingOther}
+        modalClose={modalClose}
+        modalExhaustedTitle={modalExhaustedTitle}
+        modalExhaustedBody={modalExhaustedBody}
+        modalExhaustedClose={modalExhaustedClose}
       />,
       node,
     );

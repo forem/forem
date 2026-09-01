@@ -18,7 +18,11 @@ class FavoritesController < ApplicationController
     result = Favorites::Create.call(favoritable: favoritable, user: current_user)
 
     if result.success?
-      head :ok
+      current_user.reload
+      render json: {
+        success: true,
+        remaining_allowance: current_user.favorite_allowance
+      }, status: :ok
     else
       render_favorite_error(result.error)
     end

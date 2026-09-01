@@ -58,7 +58,7 @@ RSpec.describe Badges::AwardCommunityFavorite, type: :service do
       expect(achievement.rewarder_id).to eq(leader.id)
       expect(achievement.rewarding_context_message_markdown).to include("2 Gems badge")
       expect(achievement.rewarding_context_message_markdown).to include("4 times")
-      expect(achievement.rewarding_context_message_markdown).to include(URL.article(article))
+      expect(achievement.rewarding_context_message_markdown).to include("[#{article.title}](#{URL.article(article)})")
     end
   end
 
@@ -143,7 +143,21 @@ RSpec.describe Badges::AwardCommunityFavorite, type: :service do
 
       achievement = BadgeAchievement.last
       expect(achievement.badge.slug).to eq("community-favorite-2-gems")
-      expect(achievement.rewarding_context_message_markdown).to include(URL.comment(comment))
+      link_markdown = "[#{comment.commentable.title}](#{URL.comment(comment)})"
+      expect(achievement.rewarding_context_message_markdown).to include(link_markdown)
+    end
+  end
+
+  context "when badge has fallback slug without -gems (e.g. community-favorite-2)" do
+    before do
+      Badge.destroy_all
+      create(:badge, title: "Community Favorite 2", slug: "community-favorite-2")
+      create(:article, user: author, favorited_by_user_id: leader.id, favorited_at: Time.current)
+    end
+
+    it "finds and awards the badge using fallback slug" do
+      expect { award }.to change(BadgeAchievement, :count).by(1)
+      expect(BadgeAchievement.last.badge.slug).to eq("community-favorite-2")
     end
   end
 
