@@ -15,16 +15,16 @@ fr:
         not_enabled: Le fournisseur %{name} n'est pas activé !
     badges:
       award_community_favorite:
-        article_first_gem_notification: "Les modérateurs de la communauté ont sélectionné [votre publication](%{url}) comme un gem ! Si vous obtenez deux gems, vous recevrez un nouveau badge sur votre profil."
-        comment_first_gem_notification: "Les modérateurs de la communauté ont sélectionné [votre commentaire](%{url}) comme un gem ! Si vous obtenez deux gems, vous recevrez un nouveau badge sur votre profil."
-        article_progress_notification: "Les modérateurs de la communauté ont sélectionné [votre publication](%{url}) comme un gem ! Vous avez été sélectionné %{count} fois — le prochain badge est accessible à %{next_count} gems."
-        comment_progress_notification: "Les modérateurs de la communauté ont sélectionné [votre commentaire](%{url}) comme un gem ! Vous avez été sélectionné %{count} fois — le prochain badge est accessible à %{next_count} gems."
-        article_max_progress_notification: "Les modérateurs de la communauté ont sélectionné [votre publication](%{url}) comme un gem ! Vous avez été sélectionné %{count} fois."
-        comment_max_progress_notification: "Les modérateurs de la communauté ont sélectionné [votre commentaire](%{url}) comme un gem ! Vous avez été sélectionné %{count} fois."
-        article_milestone_message: "Bravo ! Les modérateurs de la communauté ont sélectionné [votre publication](%{url}) comme un gem. Vous avez remporté le badge %{count} Gems ! Le prochain badge sera disponible à %{next_count} gems."
-        comment_milestone_message: "Bravo ! Les modérateurs de la communauté ont sélectionné [votre commentaire](%{url}) comme un gem. Vous avez remporté le badge %{count} Gems ! Le prochain badge sera disponible à %{next_count} gems."
-        article_max_milestone_message: "Incroyable ! Les modérateurs de la communauté ont sélectionné [votre publication](%{url}) comme un gem. Vous avez remporté le badge %{count} Gems — le palier le plus élevé !"
-        comment_max_milestone_message: "Incroyable ! Les modérateurs de la communauté ont sélectionné [votre commentaire](%{url}) comme un gem. Vous avez remporté le badge %{count} Gems — le palier le plus élevé !"
+        article_first_gem_notification: "Les modérateurs de la communauté ont sélectionné votre publication, [%{title}](%{url}), comme un gem ! Si vous obtenez deux gems, vous recevrez un nouveau badge sur votre profil."
+        comment_first_gem_notification: "Les modérateurs de la communauté ont sélectionné votre commentaire sur [%{title}](%{url}) comme un gem ! Si vous obtenez deux gems, vous recevrez un nouveau badge sur votre profil."
+        article_progress_notification: "Les modérateurs de la communauté ont sélectionné votre publication, [%{title}](%{url}), comme un gem ! Vous avez été sélectionné %{count} fois — le prochain badge est accessible à %{next_count} gems."
+        comment_progress_notification: "Les modérateurs de la communauté ont sélectionné votre commentaire sur [%{title}](%{url}) comme un gem ! Vous avez été sélectionné %{count} fois — le prochain badge est accessible à %{next_count} gems."
+        article_max_progress_notification: "Les modérateurs de la communauté ont sélectionné votre publication, [%{title}](%{url}), comme un gem ! Vous avez été sélectionné %{count} fois."
+        comment_max_progress_notification: "Les modérateurs de la communauté ont sélectionné votre commentaire sur [%{title}](%{url}) comme un gem ! Vous avez été sélectionné %{count} fois."
+        article_milestone_message: "Bravo ! Les modérateurs de la communauté ont sélectionné votre publication, [%{title}](%{url}), comme un gem. Vous avez remporté le badge %{count} Gems ! Le prochain badge sera disponible à %{next_count} gems."
+        comment_milestone_message: "Bravo ! Les modérateurs de la communauté ont sélectionné votre commentaire sur [%{title}](%{url}) comme un gem. Vous avez remporté le badge %{count} Gems ! Le prochain badge sera disponible à %{next_count} gems."
+        article_max_milestone_message: "Incroyable ! Les modérateurs de la communauté ont sélectionné votre publication, [%{title}](%{url}), comme un gem. Vous avez remporté le badge %{count} Gems — le palier le plus élevé !"
+        comment_max_milestone_message: "Incroyable ! Les modérateurs de la communauté ont sélectionné votre commentaire sur [%{title}](%{url}) comme un gem. Vous avez remporté le badge %{count} Gems — le palier le plus élevé !"
       award_beloved_comment:
         message: "Vous êtes célèbre ! [C'est le commentaire](%{comment}) pour lequel vous êtes reconnu. 😄"
       award_streak:
