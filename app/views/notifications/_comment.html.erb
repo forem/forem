@@ -49,6 +49,16 @@
 
       <%= render "notifications/shared/comment_box", activity: activity, context: "moderation" %>
 
+    <% elsif notification.action == "Favorited" %>
+      <header class="mb-4">
+        <h2 class="fs-base fw-normal">
+          <%= json_data["message"].to_s.html_safe %>
+        </h2>
+        <p class="lh-tight"><small class="fs-s color-base-60"><%= time_ago_in_words notification.created_at, scope: :"datetime.distance_in_words_ago" %></small></p>
+      </header>
+
+      <%= render "notifications/shared/comment_box", json_data: json_data, notification: notification, context: "default" %>
+
     <% end %>
   </div>
 </div>

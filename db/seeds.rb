@@ -300,13 +300,17 @@ seeder.create_if_none(Badge) do
   end
 end
 
-unless Badge.exists?(slug: Badges::AwardCommunityFavorite::BADGE_SLUG)
-  Badge.create!(
-    title: "Community Favorite",
-    description: "Awarded to authors whose post or comment was made a favorite.",
-    badge_image: Rails.root.join("app/assets/images/community-favorite-badge.png").open,
-    allow_multiple_awards: true,
-  )
+Badges::AwardCommunityFavorite::MILESTONES.each do |milestone|
+  slug = "community-favorite-#{milestone}-gems"
+  unless Badge.exists?(slug: slug)
+    Badge.create!(
+      title: "Community Favorite - #{milestone} Gems",
+      slug: slug,
+      description: "Awarded to authors whose posts or comments have been picked as gems #{milestone} times.",
+      badge_image: Rails.root.join("app/assets/images/community-favorite-badge.png").open,
+      allow_multiple_awards: false,
+    )
+  end
 end
 ##############################################################################
 
