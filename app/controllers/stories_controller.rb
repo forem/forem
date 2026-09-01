@@ -421,9 +421,12 @@ class StoriesController < ApplicationController
 
   def assign_article_show_variables
     if permission_denied?
-      if can_edit_article?
-        redirect_to_preview
-        return
+      if user_signed_in?
+        unset_cache_control_headers
+        if can_edit_article?
+          redirect_to_preview
+          return
+        end
       end
       not_found
     end
