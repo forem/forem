@@ -35,6 +35,15 @@
         </a>
       </li>
       <li>
+        <a data-feed-nav="curated" href="/curated" class="crayons-navigation__item pill-nav-item px-2 s:px-4 text-sm s:text-base flex items-center gap-2 <%= "crayons-navigation__item--current" if params[:feed_type] == "curated" %>" style="border-radius: 9999px; transition: all 0.2s ease;">
+          <%= crayons_icon_tag("favorite", width: 18, height: 18, class: "hidden s:block") %>
+          <span style="display: grid; place-items: center start;">
+            <span aria-hidden="true" style="grid-area: 1/1; visibility: hidden; font-weight: bold;"><%= t("views.stories.feed.curated") %></span>
+            <span style="grid-area: 1/1;"><%= t("views.stories.feed.curated") %></span>
+          </span>
+        </a>
+      </li>
+      <li>
         <a data-feed-nav="latest" href="/latest" class="crayons-navigation__item pill-nav-item px-2 s:px-4 text-sm s:text-base flex items-center gap-2 <%= "crayons-navigation__item--current" if params[:timeframe].to_s.start_with?("latest") %>" style="border-radius: 9999px; transition: all 0.2s ease;">
           <%= crayons_icon_tag("latest", width: 18, height: 18, class: "hidden s:block") %>
           <span style="display: grid; place-items: center start;">
@@ -98,7 +107,7 @@
         var currentPath = window.location.pathname;
         var currentFeedNav = "";
 
-        if (currentPath === "/following" || currentPath === "/following/latest" || currentPath === "/discover" || currentPath === "/latest" || currentPath === "/latest_less_filtered") {
+        if (currentPath === "/following" || currentPath === "/following/latest" || currentPath === "/discover" || currentPath === "/curated" || currentPath === "/latest" || currentPath === "/latest_less_filtered") {
           if (currentPath === "/following/latest") {
             currentFeedNav = "following";
           } else {
@@ -107,13 +116,13 @@
           }
           
           var feedToCache = currentFeedNav === "latest" ? "discover" : currentFeedNav;
-          if (feedToCache !== "discover" && feedToCache !== "following") {
+          if (feedToCache !== "discover" && feedToCache !== "following" && feedToCache !== "curated") {
             feedToCache = "discover";
           }
           localStorage.setItem("current_feed", feedToCache);
         } else {
           currentFeedNav = localStorage.getItem("current_feed");
-          if (currentFeedNav !== "discover" && currentFeedNav !== "following") {
+          if (currentFeedNav !== "discover" && currentFeedNav !== "following" && currentFeedNav !== "curated") {
             currentFeedNav = "discover";
             localStorage.setItem("current_feed", "discover");
           }
@@ -163,7 +172,7 @@
         }
 
         var cacheTarget = newFeedNav === "latest" ? "discover" : newFeedNav;
-        if (cacheTarget === "discover" || cacheTarget === "following") {
+        if (cacheTarget === "discover" || cacheTarget === "following" || cacheTarget === "curated") {
           localStorage.setItem("current_feed", cacheTarget);
         }
 

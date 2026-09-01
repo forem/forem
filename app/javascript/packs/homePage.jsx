@@ -23,6 +23,7 @@ const frontPageFeedPathNames = new Map([
   ['/following', ''],
   ['/following/latest', 'latest'],
   ['/following/latest_less_filtered', 'latest_less_filtered'],
+  ['/curated', ''],
 ]);
 
 /**
