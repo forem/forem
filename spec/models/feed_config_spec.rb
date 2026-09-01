@@ -236,6 +236,7 @@ RSpec.describe FeedConfig, type: :model do
         feed_config.recent_article_suppression_rate = 2.0
         feed_config.published_today_weight         = 3.0
         feed_config.featured_weight                = 4.0
+        feed_config.favorited_weight               = 4.5
         feed_config.clickbait_score_weight         = 5.0
         feed_config.compellingness_score_weight    = 6.0
         feed_config.language_match_weight          = 7.0
@@ -277,6 +278,11 @@ RSpec.describe FeedConfig, type: :model do
       it "includes the featured weight" do
         sql = feed_config.score_sql(user)
         expect(sql).to include("CASE WHEN articles.featured = TRUE THEN 4.0")
+      end
+
+      it "includes the favorited weight" do
+        sql = feed_config.score_sql(user)
+        expect(sql).to include("CASE WHEN articles.favorited_by_user_id IS NOT NULL THEN 4.5")
       end
 
       it "includes the status weight" do
@@ -369,6 +375,7 @@ RSpec.describe FeedConfig, type: :model do
       feed_config.recent_article_suppression_rate = 13.0
       feed_config.published_today_weight         = 14.0
       feed_config.featured_weight                = 15.0
+      feed_config.favorited_weight               = 15.2
       feed_config.status_weight                  = 15.5
       feed_config.clickbait_score_weight         = 16.0
       feed_config.compellingness_score_weight    = 17.0
@@ -411,6 +418,7 @@ RSpec.describe FeedConfig, type: :model do
       expect(clone.recent_article_suppression_rate).to eq(13.0 * 1.1)
       expect(clone.published_today_weight).to eq(14.0 * 1.1)
       expect(clone.featured_weight).to eq(15.0 * 1.1)
+      expect(clone.favorited_weight).to eq(15.2 * 1.1)
       expect(clone.status_weight).to eq(15.5 * 1.1)
       expect(clone.clickbait_score_weight).to eq(16.0 * 1.1)
       expect(clone.compellingness_score_weight).to eq(17.0 * 1.1)
@@ -443,6 +451,7 @@ RSpec.describe FeedConfig, type: :model do
         "general_past_day_bonus_weight",
         "recently_active_past_day_bonus_weight",
         "featured_weight",
+        "favorited_weight",
         "status_weight",
         "clickbait_score_weight",
         "compellingness_score_weight",
