@@ -36,7 +36,7 @@
       </li>
       <li>
         <a data-feed-nav="curated" href="/curated" class="crayons-navigation__item pill-nav-item px-2 s:px-4 text-sm s:text-base flex items-center gap-2 <%= "crayons-navigation__item--current" if params[:feed_type] == "curated" %>" style="border-radius: 9999px; transition: all 0.2s ease;">
-          <%= crayons_icon_tag("favorite", width: 18, height: 18, class: "hidden s:block") %>
+          <%= crayons_icon_tag("gem", native: true, width: 18, height: 18, class: "hidden s:block") %>
           <span style="display: grid; place-items: center start;">
             <span aria-hidden="true" style="grid-area: 1/1; visibility: hidden; font-weight: bold;"><%= t("views.stories.feed.curated") %></span>
             <span style="grid-area: 1/1;"><%= t("views.stories.feed.curated") %></span>
