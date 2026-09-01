@@ -63,7 +63,7 @@ module Badges
 
       json_data = {
         message: html_message,
-        user: Notifications.user_data(favoriter),
+        user: Notifications.user_data(favoriter)
       }
       if comment?
         json_data[:comment] = Notifications.comment_data(favoritable)
@@ -89,7 +89,7 @@ module Badges
     end
 
     def next_milestone_for(count)
-      MILESTONES.find { |m| m > count }
+      MILESTONES.detect { |m| m > count }
     end
 
     def milestone_message(count)
@@ -102,12 +102,14 @@ module Badges
           count: count,
           next_count: next_milestone,
           url: favoritable_url,
+          title: favoritable_title,
         )
       else
         I18n.t(
           "services.badges.award_community_favorite.#{key_prefix}_max_milestone_message",
           count: count,
           url: favoritable_url,
+          title: favoritable_title,
         )
       end
     end
@@ -119,6 +121,7 @@ module Badges
         I18n.t(
           "services.badges.award_community_favorite.#{key_prefix}_first_gem_notification",
           url: favoritable_url,
+          title: favoritable_title,
         )
       else
         next_milestone = next_milestone_for(count)
@@ -128,15 +131,26 @@ module Badges
             count: count,
             next_count: next_milestone,
             url: favoritable_url,
+            title: favoritable_title,
           )
         else
           I18n.t(
             "services.badges.award_community_favorite.#{key_prefix}_max_progress_notification",
             count: count,
             url: favoritable_url,
+            title: favoritable_title,
           )
         end
       end
+    end
+
+    def favoritable_title
+      raw_title = if comment?
+                    favoritable.commentable.try(:title).presence || "post"
+                  else
+                    favoritable.title.presence || "post"
+                  end
+      raw_title.to_s.gsub("[", "\\[").gsub("]", "\\]")
     end
 
     def favoritable_url

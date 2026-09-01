@@ -11,6 +11,17 @@ pt:
     favorite: Escolher como joia
     favorited: Escolhido como joia
     favorited_by_you: Escolhido como joia por você
+    modal:
+      title: Joia Escolhida!
+      body: Você escolheu isto como uma joia da comunidade!
+      remaining_zero: Você não tem mais joias para distribuir hoje.
+      remaining_one: Você tem mais 1 joia para distribuir hoje.
+      remaining_other: Você tem mais %{count} joias para distribuir hoje.
+      close: Entendi
+    modal_exhausted:
+      title: Sem joias restantes
+      body: Você não tem mais joias para distribuir hoje. Seu limite será renovado em breve!
+      close: Entendi
   core:
     add_comment: Adicionar comentário
     beta: beta
