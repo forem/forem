@@ -10,15 +10,16 @@
       }
       .pill-nav-item {
         color: var(--base-70);
+        white-space: nowrap;
       }
       .pill-nav-item:hover {
         color: var(--base-90);
       }
     </style>
-    <div class="flex gap-1 p-1" style="background: var(--body-bg); border-radius: 9999px; box-shadow: 0 0 0 1px var(--base-20), 0 2px 5px rgba(0,0,0,0.05);margin: 6px 0 3px;">
+    <div class="flex gap-0.5 s:gap-1 p-0.5 s:p-1" style="background: var(--body-bg); border-radius: 9999px; box-shadow: 0 0 0 1px var(--base-20), 0 2px 5px rgba(0,0,0,0.05);margin: 6px 0 3px;">
       <li>
-        <a data-feed-nav="discover" href="/discover" class="crayons-navigation__item pill-nav-item px-2 s:px-4 text-sm s:text-base flex items-center gap-2 <%= "crayons-navigation__item--current" if params[:feed_type] == "discover" && !params[:timeframe].to_s.start_with?("latest") %>" style="border-radius: 9999px; transition: all 0.2s ease;">
-          <%= crayons_icon_tag("discover", width: 18, height: 18, class: "hidden s:block") %>
+        <a data-feed-nav="discover" href="/discover" class="crayons-navigation__item pill-nav-item px-2.5 s:px-3 l:px-4 py-1 text-sm l:text-base flex items-center gap-1.5 l:gap-2 <%= "crayons-navigation__item--current" if params[:feed_type] == "discover" && !params[:timeframe].to_s.start_with?("latest") %>" style="border-radius: 9999px; transition: all 0.2s ease;">
+          <%= crayons_icon_tag("discover", width: 16, height: 16, class: "hidden l:block") %>
           <span style="display: grid; place-items: center start;">
             <span aria-hidden="true" style="grid-area: 1/1; visibility: hidden; font-weight: bold;"><%= t("views.stories.feed.discover") %></span>
             <span style="grid-area: 1/1;"><%= t("views.stories.feed.discover") %></span>
@@ -26,8 +27,8 @@
         </a>
       </li>
       <li>
-        <a data-feed-nav="following" href="/following" class="crayons-navigation__item pill-nav-item px-2 s:px-4 text-sm s:text-base flex items-center gap-2 <%= "crayons-navigation__item--current" if params[:feed_type] == "following" %>" style="border-radius: 9999px; transition: all 0.2s ease;">
-          <%= crayons_icon_tag("people", width: 18, height: 18, class: "hidden s:block") %>
+        <a data-feed-nav="following" href="/following" class="crayons-navigation__item pill-nav-item px-2.5 s:px-3 l:px-4 py-1 text-sm l:text-base flex items-center gap-1.5 l:gap-2 <%= "crayons-navigation__item--current" if params[:feed_type] == "following" %>" style="border-radius: 9999px; transition: all 0.2s ease;">
+          <%= crayons_icon_tag("people", width: 16, height: 16, class: "hidden l:block") %>
           <span style="display: grid; place-items: center start;">
             <span aria-hidden="true" style="grid-area: 1/1; visibility: hidden; font-weight: bold;"><%= t("views.stories.feed.following") %></span>
             <span style="grid-area: 1/1;"><%= t("views.stories.feed.following") %></span>
@@ -35,8 +36,8 @@
         </a>
       </li>
       <li>
-        <a data-feed-nav="curated" href="/curated" class="crayons-navigation__item pill-nav-item px-2 s:px-4 text-sm s:text-base flex items-center gap-2 <%= "crayons-navigation__item--current" if params[:feed_type] == "curated" %>" style="border-radius: 9999px; transition: all 0.2s ease;">
-          <%= crayons_icon_tag("gem", native: true, width: 18, height: 18, class: "hidden s:block") %>
+        <a data-feed-nav="curated" href="/curated" class="crayons-navigation__item pill-nav-item px-2.5 s:px-3 l:px-4 py-1 text-sm l:text-base flex items-center gap-1.5 l:gap-2 <%= "crayons-navigation__item--current" if params[:feed_type] == "curated" %>" style="border-radius: 9999px; transition: all 0.2s ease;">
+          <%= crayons_icon_tag("gem", native: true, width: 16, height: 16, class: "hidden l:block") %>
           <span style="display: grid; place-items: center start;">
             <span aria-hidden="true" style="grid-area: 1/1; visibility: hidden; font-weight: bold;"><%= t("views.stories.feed.curated") %></span>
             <span style="grid-area: 1/1;"><%= t("views.stories.feed.curated") %></span>
@@ -44,8 +45,8 @@
         </a>
       </li>
       <li>
-        <a data-feed-nav="latest" href="/latest" class="crayons-navigation__item pill-nav-item px-2 s:px-4 text-sm s:text-base flex items-center gap-2 <%= "crayons-navigation__item--current" if params[:timeframe].to_s.start_with?("latest") %>" style="border-radius: 9999px; transition: all 0.2s ease;">
-          <%= crayons_icon_tag("latest", width: 18, height: 18, class: "hidden s:block") %>
+        <a data-feed-nav="latest" href="/latest" class="crayons-navigation__item pill-nav-item px-2.5 s:px-3 l:px-4 py-1 text-sm l:text-base flex items-center gap-1.5 l:gap-2 <%= "crayons-navigation__item--current" if params[:timeframe].to_s.start_with?("latest") %>" style="border-radius: 9999px; transition: all 0.2s ease;">
+          <%= crayons_icon_tag("latest", width: 16, height: 16, class: "hidden l:block") %>
           <span style="display: grid; place-items: center start;">
             <span aria-hidden="true" style="grid-area: 1/1; visibility: hidden; font-weight: bold;"><%= t("views.stories.sort.latest") %></span>
             <span style="grid-area: 1/1;"><%= t("views.stories.sort.latest") %></span>
