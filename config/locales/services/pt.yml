@@ -15,8 +15,16 @@ pt:
         not_enabled: Provedor %{name} não está habilitado!
     badges:
       award_community_favorite:
-        article_message: "Muito bem! [A sua publicação](%{url}) foi escolhida como uma joia da comunidade!"
-        comment_message: "Muito bem! [O seu comentário](%{url}) foi escolhido como uma joia da comunidade!"
+        article_first_gem_notification: "Os curadores da comunidade escolheram [sua publicação](%{url}) como uma joia! Se você receber duas joias, ganhará um novo badge no seu perfil."
+        comment_first_gem_notification: "Os curadores da comunidade escolheram [seu comentário](%{url}) como uma joia! Se você receber duas joias, ganhará um novo badge no seu perfil."
+        article_progress_notification: "Os curadores da comunidade escolheram [sua publicação](%{url}) como uma joia! Você foi escolhido %{count} vezes — o próximo badge elegível é com %{next_count} joias."
+        comment_progress_notification: "Os curadores da comunidade escolheram [seu comentário](%{url}) como uma joia! Você foi escolhido %{count} vezes — o próximo badge elegível é com %{next_count} joias."
+        article_max_progress_notification: "Os curadores da comunidade escolheram [sua publicação](%{url}) como uma joia! Você foi escolhido %{count} vezes."
+        comment_max_progress_notification: "Os curadores da comunidade escolheram [seu comentário](%{url}) como uma joia! Você foi escolhido %{count} vezes."
+        article_milestone_message: "Muito bem! Os curadores da comunidade escolheram [sua publicação](%{url}) como uma joia. Você ganhou o badge de %{count} Joias! O próximo badge elegível é quando for escolhido %{next_count} vezes."
+        comment_milestone_message: "Muito bem! Os curadores da comunidade escolheram [seu comentário](%{url}) como uma joia. Você ganhou o badge de %{count} Joias! O próximo badge elegível é quando for escolhido %{next_count} vezes."
+        article_max_milestone_message: "Incrível! Os curadores da comunidade escolheram [sua publicação](%{url}) como uma joia. Você ganhou o badge de %{count} Joias — o nível mais alto!"
+        comment_max_milestone_message: "Incrível! Os curadores da comunidade escolheram [seu comentário](%{url}) como uma joia. Você ganhou o badge de %{count} Joias — o nível mais alto!"
       award_beloved_comment:
         message: "Você é famoso! [Este é o comentário](%{comment}) pelo qual você está sendo reconhecido. 😄"
       award_streak:
