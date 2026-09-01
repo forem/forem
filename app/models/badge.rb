@@ -8,7 +8,7 @@ class Badge < ApplicationRecord
 
   validates :badge_image, presence: true
   validates :description, presence: true
-  validates :slug, presence: true
+  validates :slug, presence: true, uniqueness: true
   validates :title, presence: true, uniqueness: true
   validates :allow_multiple_awards, inclusion: { in: [true, false] }
   validates :bonus_weight, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
@@ -26,6 +26,10 @@ class Badge < ApplicationRecord
   private
 
   def generate_slug
-    self.slug = CGI.escape(title.to_s).parameterize
+    if slug.present?
+      self.slug = CGI.escape(slug.to_s).parameterize
+    elsif title.present?
+      self.slug = CGI.escape(title.to_s).parameterize
+    end
   end
 end
