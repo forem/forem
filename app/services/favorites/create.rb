@@ -22,6 +22,7 @@ module Favorites
       log_audit
       grant_earned_favorite
       award_badge
+      favoritable.async_score_calc if favoritable.respond_to?(:async_score_calc)
       Result.new(success?: true, favoritable: favoritable)
     end
 

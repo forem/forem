@@ -13,6 +13,14 @@ RSpec.describe Favorites::Create, type: :service do
     expect(article.favorited_at).to be_present
   end
 
+  it "triggers async_score_calc on the favorited article" do
+    allow(article).to receive(:async_score_calc)
+
+    described_class.call(favoritable: article, user: leader)
+
+    expect(article).to have_received(:async_score_calc)
+  end
+
   it "creates an audit log entry" do
     allow(Audit::Logger).to receive(:log).and_call_original
 
