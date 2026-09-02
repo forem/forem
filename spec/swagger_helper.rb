@@ -61,6 +61,12 @@ To obtain one, please follow these steps:
 
   - You'll see the newly generated key in the same view
     ![generated DEV API Key](https://user-images.githubusercontent.com/37842/172718151-e7fe26a0-9937-42e8-96c6-333acdab9e49.png)"
+          },
+          bearer_auth: {
+            type: :http,
+            scheme: :bearer,
+            bearerFormat: "JWT",
+            description: "Short-lived delegated access token issued by a trusted external service."
           }
         },
         parameters: {

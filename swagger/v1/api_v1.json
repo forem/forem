@@ -4903,7 +4903,19 @@
         "tags": [
           "users"
         ],
-        "description": "This endpoint allows the client to retrieve information about the authenticated user.\n\n### Usage Tips:\n- Requires a valid `api-key` header to identify the user.\n- Useful for checking permissions, verifying linking state, or retrieving user-specific profile settings.",
+        "description": "This endpoint allows the client to retrieve information about the authenticated user.\n\n### Usage Tips:\n- Requires a valid `api-key` header or a configured delegated Bearer token.\n- Useful for checking permissions, verifying linking state, or retrieving user-specific profile settings.",
+        "security": [
+          {
+            "api-key": [
+
+            ]
+          },
+          {
+            "bearer_auth": [
+
+            ]
+          }
+        ],
         "operationId": "getUserMe",
         "responses": {
           "200": {
@@ -5679,6 +5691,12 @@
         "name": "api-key",
         "in": "header",
         "description": "API Key authentication.\n\nAuthentication for some endpoints, like write operations on the\nArticles API require a DEV API key.\n\nAll authenticated endpoints are CORS disabled, the API key is intended for non-browser scripts.\n\n### Getting an API key\n\nTo obtain one, please follow these steps:\n\n  - visit https://dev.to/settings/extensions\n  - in the \"DEV API Keys\" section create a new key by adding a\n    description and clicking on \"Generate API Key\"\n\n    ![obtain a DEV API Key](https://user-images.githubusercontent.com/37842/172718105-bd93664e-76e0-477d-99c4-265dda0b06c5.png)\n\n  - You'll see the newly generated key in the same view\n    ![generated DEV API Key](https://user-images.githubusercontent.com/37842/172718151-e7fe26a0-9937-42e8-96c6-333acdab9e49.png)"
+      },
+      "bearer_auth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Short-lived delegated access token issued by a trusted external service."
       }
     },
     "parameters": {

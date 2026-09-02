@@ -25,8 +25,9 @@ RSpec.describe "Api::V1::Docs::Users" do
         description "This endpoint allows the client to retrieve information about the authenticated user.
 
 ### Usage Tips:
-- Requires a valid `api-key` header to identify the user.
+- Requires a valid `api-key` header or a configured delegated Bearer token.
 - Useful for checking permissions, verifying linking state, or retrieving user-specific profile settings."
+        security [{ "api-key": [] }, { bearer_auth: [] }]
         operationId "getUserMe"
         produces "application/json"
 
