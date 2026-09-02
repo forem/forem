@@ -33,6 +33,7 @@ var instantClick
     , $isWaitingForCompletion = false
     , $trackedAssets = []
     , $keepScrollPosition = false
+    , $isInternalNavigation = false
 
   // Variables defined by public functions
     , $preloadOnMousedown
@@ -157,7 +158,12 @@ var instantClick
         routeChangeTarget.focus();
       }
       document.getElementById('page-route-change').textContent = title;
-      history.pushState(null, null, newUrl.replace("?samepage=true","").replace("&samepage=true",""))
+      try {
+        $isInternalNavigation = true;
+        history.pushState(null, null, newUrl.replace("?samepage=true","").replace("&samepage=true",""))
+      } finally {
+        $isInternalNavigation = false;
+      }
 
       var hashIndex = newUrl.indexOf('#'),
           hashElem = hashIndex > -1 && (
@@ -676,12 +682,95 @@ var instantClick
     $xhr = new XMLHttpRequest()
     $xhr.addEventListener('readystatechange', readystatechangeListener)
 
+    hookHistory()
     instantanize(true)
 
     triggerPageEvent('change', true)
 
     addEventListener('popstate', popstateListener)
     addRefreshBehavior();
+  }
+
+  function hookHistory() {
+    if (!supported || window._instantClickHistoryHooked) {
+      return;
+    }
+    window._instantClickHistoryHooked = true;
+
+    var nativePushState = history.pushState;
+    history.pushState = function(state, title, url) {
+      var shouldTrack = !$isInternalNavigation && url && $currentLocationWithoutHash;
+      var newLoc = null;
+      var oldLoc = $currentLocationWithoutHash;
+      var pageContent = null;
+      var pageTitle = document.title;
+      var scrollY = pageYOffset;
+
+      if (shouldTrack) {
+        try {
+          newLoc = removeHash(new URL(url, location.href).href);
+          if (newLoc !== oldLoc) {
+            pageContent = document.getElementById("page-content");
+          }
+        } catch (e) {
+          shouldTrack = false;
+        }
+      }
+
+      var result = nativePushState.apply(history, arguments);
+
+      if (shouldTrack && newLoc && newLoc !== oldLoc) {
+        if (pageContent) {
+          $history[oldLoc] = {
+            body: pageContent,
+            title: pageTitle,
+            scrollY: scrollY
+          };
+        }
+        $currentLocationWithoutHash = newLoc;
+        if (pageContent) {
+          $history[newLoc] = {
+            body: pageContent,
+            title: title || document.title,
+            scrollY: 0
+          };
+        }
+      }
+
+      return result;
+    };
+
+    var nativeReplaceState = history.replaceState;
+    history.replaceState = function(state, title, url) {
+      var shouldTrack = !$isInternalNavigation && url && $currentLocationWithoutHash;
+      var newLoc = null;
+      var pageContent = null;
+      var scrollY = pageYOffset;
+
+      if (shouldTrack) {
+        try {
+          newLoc = removeHash(new URL(url, location.href).href);
+          pageContent = document.getElementById("page-content");
+        } catch (e) {
+          shouldTrack = false;
+        }
+      }
+
+      var result = nativeReplaceState.apply(history, arguments);
+
+      if (shouldTrack && newLoc) {
+        $currentLocationWithoutHash = newLoc;
+        if (pageContent) {
+          $history[newLoc] = {
+            body: pageContent,
+            title: title || document.title,
+            scrollY: scrollY
+          };
+        }
+      }
+
+      return result;
+    };
   }
 
   function on(eventType, callback) {
