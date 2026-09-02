@@ -33,3 +33,8 @@
     }
   }
 }
+@media (prefers-color-scheme: dark) {
+  .badges-page .badge-image {
+    filter: brightness(1.2) contrast(1.2);
+  }
+}
