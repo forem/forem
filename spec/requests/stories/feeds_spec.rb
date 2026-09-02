@@ -617,6 +617,20 @@ RSpec.describe "Stories::Feeds" do
       end
     end
 
+    context "when requesting 'curated' feed" do
+      let(:leader) { create(:user) }
+      let!(:favorited_article) { create(:article, favorited_by_user: leader, favorited_at: Time.current) }
+      let!(:unfavorited_article) { create(:article) }
+
+      it "returns only favorited articles" do
+        get stories_feed_path(type_of: "curated")
+
+        response_article_ids = response.parsed_body.map { |a| a["id"] }
+        expect(response_article_ids).to include(favorited_article.id)
+        expect(response_article_ids).not_to include(unfavorited_article.id)
+      end
+    end
+
     context "when user is not signed in and requests 'following' feed" do
       let(:followed_user) { create(:user) }
       let!(:followed_article) { create(:article, user: followed_user) }

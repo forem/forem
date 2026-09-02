@@ -398,6 +398,8 @@ class StoriesController < ApplicationController
   def assign_feed_stories
     if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
       @stories = Articles::Feeds::Timeframe.call(params[:timeframe])
+    elsif params[:feed_type] == "curated"
+      @stories = Articles::Feeds::Curated.call(page: @page)
     elsif params[:timeframe] == "latest_less_filtered"
       @stories = Articles::Feeds::Latest.call(page: @page)
     elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
