@@ -378,9 +378,10 @@ RSpec.describe Comment do
 
   describe "#async_score_calc" do
     it "calls calculate_score" do
+      target_comment = build_stubbed(:comment, id: 123)
       allow(Comments::CalculateScoreWorker).to receive(:perform_async)
-      comment.async_score_calc
-      expect(Comments::CalculateScoreWorker).to have_received(:perform_async).with(comment.id)
+      target_comment.async_score_calc
+      expect(Comments::CalculateScoreWorker).to have_received(:perform_async).with(123)
     end
   end
 
