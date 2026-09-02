@@ -1,6 +1,12 @@
 module Api
   module V1
     class ApiController < ApplicationController
+      DELEGATED_CLIENT_ID = "devrelay-native-v0".freeze
+      DELEGATED_KID = "core".freeze
+      DELEGATED_OWNER_CLAIM = "https://mlh.io/claims/forem_user_id".freeze
+      DELEGATED_SCOPE = "profile:read".freeze
+      private_constant :DELEGATED_CLIENT_ID, :DELEGATED_KID, :DELEGATED_OWNER_CLAIM, :DELEGATED_SCOPE
+
       # Custom MIME Type - /config/initializers/mime_types.rb
       respond_to :api_v1
 
@@ -43,6 +49,56 @@ module Api
       #       They're more verbose but they convey the auth method clearly.
       def authenticate!
         authenticate_with_api_key_or_current_user!
+      end
+
+      def authenticate_with_delegated_access!
+        token = delegated_bearer_token
+        return unless token
+
+        config = Rails.application.config.x.delegated_access
+        return error_unauthorized unless config.enabled
+
+        payload, header = JWT.decode(
+          token,
+          config.public_key,
+          true,
+          algorithms: ["RS256"],
+          iss: config.issuer,
+          aud: config.audience,
+          verify_iss: true,
+          verify_aud: true,
+          verify_expiration: true,
+          verify_not_before: true,
+          required_claims: ["sub", "exp", "scope", "client_id", DELEGATED_OWNER_CLAIM],
+        )
+        raise JWT::DecodeError unless header["kid"] == DELEGATED_KID &&
+          header["typ"] == "at+jwt" &&
+          payload["aud"] == config.audience &&
+          payload["client_id"] == DELEGATED_CLIENT_ID &&
+          payload["scope"] == DELEGATED_SCOPE
+
+        identity = Identity.includes(:user).where(
+          provider: "mlh",
+          uid: payload.fetch("sub"),
+          user_id: Integer(payload.fetch(DELEGATED_OWNER_CLAIM)),
+        ).sole
+        @user = @authenticated_user = identity.user
+        raise JWT::DecodeError unless @user && !@user.spam_or_suspended?
+
+        true
+      rescue JWT::DecodeError, KeyError, TypeError, ArgumentError, ActiveRecord::RecordNotFound,
+             ActiveRecord::SoleRecordExceeded
+        error_unauthorized
+      end
+
+      def delegated_bearer_token
+        authorization = request.authorization
+        return unless authorization&.match?(/\bBearer\b/i)
+
+        scheme, token = authorization.split(" ", 2)
+        raise JWT::DecodeError unless scheme.casecmp?("Bearer") && token.present? && token.exclude?(",")
+
+        token
       end
 
       # @note This method is performing both authentication and authorization.  The user suspended
