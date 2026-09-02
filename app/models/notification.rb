@@ -73,6 +73,16 @@ class Notification < ApplicationRecord
 
       # Kicks off a worker to send any notifications about the post being published, if necessary.
       Notification.send_to_followers(notifiable, "Published")
+
+      # Credited co-authors are notified separately from followers.
+      Notification.send_to_co_authors(notifiable)
+    end
+
+    def send_to_co_authors(notifiable, removed_user_ids = [])
+      return unless notifiable.is_a?(Article)
+      return if notifiable.co_author_ids.blank? && removed_user_ids.blank?
+
+      Notifications::CoAuthorWorker.perform_async(notifiable.id, removed_user_ids)
     end
 
     def send_to_followers(notifiable, action = nil)

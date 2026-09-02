@@ -32,12 +32,16 @@ module Notifications
         # have a mention in order to avoid sending a user multiple notifications for one article.
         user_ids_with_article_mentions = notifiable.mentions&.pluck(:user_id)
 
+        # Co-authors receive their own notification, so exclude them here for the
+        # same reason mentions are excluded: one notification per person per post.
+        co_author_ids = notifiable.co_author_ids.map(&:to_i)
+
         article_followers = User.joins("INNER JOIN follows ON follows.follower_id = users.id")
           .where("(follows.followable_id = ? AND follows.followable_type = ?)
                  OR (follows.followable_id = ? AND follows.followable_type = ?)",
                  notifiable&.user&.id, "User", notifiable&.organization&.id, "Organization")
           .where(follows: { subscription_status: "all_articles" })
-          .where.not(id: (user_ids_with_article_mentions + [notifiable.user]))
+          .where.not(id: (user_ids_with_article_mentions + co_author_ids + [notifiable.user]))
           .recently_active(FOLLOWER_SEND_LIMIT).distinct
 
         article_followers.find_each do |follower|

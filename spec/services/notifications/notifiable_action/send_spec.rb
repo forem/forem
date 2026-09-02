@@ -9,6 +9,21 @@ RSpec.describe Notifications::NotifiableAction::Send, type: :service do
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
 
+  context "when a follower is also a co-author" do
+    before do
+      user2.follow(user)
+      article.update_columns(co_author_ids: [user2.id])
+    end
+
+    it "does not send a follower notification, since the co-author gets their own" do
+      expect do
+        described_class.call(article.reload, "Published")
+      end.not_to change {
+        Notification.where(user_id: user2.id, notifiable_id: article.id, action: "Published").count
+      }
+    end
+  end
+
   context "when following a user or organization" do
     before do
       user2.follow(user)
