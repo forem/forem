@@ -48,6 +48,15 @@ RSpec.describe Favorites::Create, type: :service do
     expect(comment.reload.favorited_by_user_id).to eq(leader.id)
   end
 
+  it "triggers async_score_calc on the favorited comment" do
+    comment = create(:comment, commentable: article, user: author)
+    allow(comment).to receive(:async_score_calc)
+
+    described_class.call(favoritable: comment, user: leader)
+
+    expect(comment).to have_received(:async_score_calc)
+  end
+
   it "rejects an already-favorited record" do
     other_leader = create(:user, :community_leader_level_2)
     article.update!(favorited_by_user_id: other_leader.id, favorited_at: Time.current)

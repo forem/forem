@@ -445,6 +445,18 @@ RSpec.describe "StoriesIndex" do
         expect(response.body).to include(expected_tag)
       end
     end
+
+    describe "/curated" do
+      let(:leader) { create(:user) }
+      let!(:favorited_article) { create(:article, favorited_by_user: leader, favorited_at: Time.current) }
+
+      it "renders the curated feed with 200 OK" do
+        get "/curated"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(CGI.escapeHTML(favorited_article.title))
+      end
+    end
   end
 
   describe "GET locale index" do

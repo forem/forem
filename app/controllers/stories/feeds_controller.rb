@@ -38,7 +38,7 @@ module Stories
     end
 
     def assign_feed_stories
-      params[:type_of] = "discover" unless params[:type_of].in?(%w[discover following])
+      params[:type_of] = "discover" unless params[:type_of].in?(%w[discover following curated])
 
       stories = if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
                   timeframe_feed
@@ -46,6 +46,8 @@ module Stories
                   latest_following_feed
                 elsif params[:type_of] == "following" && user_signed_in?
                   relevant_following_feed
+                elsif params[:type_of] == "curated"
+                  curated_feed
                 elsif params[:timeframe] == "latest_less_filtered"
                   latest_less_filtered_feed
                 elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
@@ -136,6 +138,15 @@ module Stories
 
     def latest_less_filtered_feed
       Articles::Feeds::Latest.call(tag: params[:tag], page: @page)
+    end
+
+    def curated_feed
+      Articles::Feeds::Curated.call(
+        user: current_user,
+        tag: params[:tag],
+        page: @page,
+        number_of_articles: 25,
+      )
     end
 
     def latest_following_feed

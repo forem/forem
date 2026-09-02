@@ -592,7 +592,7 @@ Rails.application.routes.draw do
                                   constraints: { feed_type: /following/, timeframe: /latest|latest_less_filtered/ }
 
     get "/:timeframe", to: "stories#index", constraints: { timeframe: /latest|latest_less_filtered/ }
-    get "/:feed_type", to: "stories#index", constraints: { feed_type: /discover|following/ }
+    get "/:feed_type", to: "stories#index", constraints: { feed_type: /discover|following|curated/ }
 
     get "/:username/series", to: "collections#index", as: "user_series"
     get "/:username/series/:id", to: "collections#show"
