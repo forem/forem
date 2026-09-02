@@ -171,10 +171,8 @@
         });
       }
 
-      var lastFeedPath = window.location.pathname;
-
       function initializeFeedNavigation() {
-        lastFeedPath = window.location.pathname;
+        window._feedLastPath = window.location.pathname;
         updateFeedNavActiveState();
 
         // Setup soft navigations
@@ -186,7 +184,7 @@
             if (window.location.pathname === targetHref) return;
             
             e.preventDefault();
-            lastFeedPath = targetHref;
+            window._feedLastPath = targetHref;
             window.history.pushState({}, "", targetHref);
             handleFeedSoftNavigation(targetHref);
           });
@@ -195,13 +193,12 @@
         if (!window.feedPopstateHandler) {
           window.feedPopstateHandler = function() {
             var currentPath = window.location.pathname;
+            var lastPath = window._feedLastPath || currentPath;
+            window._feedLastPath = currentPath;
             updateFeedNavActiveState();
             // If navigating between different feed tabs via browser back/forward, soft navigate
-            if (lastFeedPath && currentPath !== lastFeedPath && (document.getElementById("homepage-feed") || document.getElementById("rendered-article-feed"))) {
-              lastFeedPath = currentPath;
+            if (currentPath !== lastPath && (document.getElementById("homepage-feed") || document.getElementById("rendered-article-feed"))) {
               handleFeedSoftNavigation(currentPath);
-            } else {
-              lastFeedPath = currentPath;
             }
           };
           window.addEventListener("popstate", window.feedPopstateHandler);

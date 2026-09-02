@@ -158,9 +158,12 @@ var instantClick
         routeChangeTarget.focus();
       }
       document.getElementById('page-route-change').textContent = title;
-      $isInternalNavigation = true;
-      history.pushState(null, null, newUrl.replace("?samepage=true","").replace("&samepage=true",""))
-      $isInternalNavigation = false;
+      try {
+        $isInternalNavigation = true;
+        history.pushState(null, null, newUrl.replace("?samepage=true","").replace("&samepage=true",""))
+      } finally {
+        $isInternalNavigation = false;
+      }
 
       var hashIndex = newUrl.indexOf('#'),
           hashElem = hashIndex > -1 && (
@@ -696,49 +699,77 @@ var instantClick
 
     var nativePushState = history.pushState;
     history.pushState = function(state, title, url) {
-      if (!$isInternalNavigation && url && $currentLocationWithoutHash) {
+      var shouldTrack = !$isInternalNavigation && url && $currentLocationWithoutHash;
+      var newLoc = null;
+      var oldLoc = $currentLocationWithoutHash;
+      var pageContent = null;
+      var pageTitle = document.title;
+      var scrollY = pageYOffset;
+
+      if (shouldTrack) {
         try {
-          var newLoc = removeHash(new URL(url, location.href).href);
-          if (newLoc !== $currentLocationWithoutHash) {
-            var pageContent = document.getElementById("page-content");
-            if (pageContent) {
-              $history[$currentLocationWithoutHash] = {
-                body: pageContent,
-                title: document.title,
-                scrollY: pageYOffset
-              };
-            }
-            $currentLocationWithoutHash = newLoc;
-            if (pageContent) {
-              $history[newLoc] = {
-                body: pageContent,
-                title: title || document.title,
-                scrollY: 0
-              };
-            }
+          newLoc = removeHash(new URL(url, location.href).href);
+          if (newLoc !== oldLoc) {
+            pageContent = document.getElementById("page-content");
           }
-        } catch (e) {}
+        } catch (e) {
+          shouldTrack = false;
+        }
       }
-      return nativePushState.apply(history, arguments);
+
+      var result = nativePushState.apply(history, arguments);
+
+      if (shouldTrack && newLoc && newLoc !== oldLoc) {
+        if (pageContent) {
+          $history[oldLoc] = {
+            body: pageContent,
+            title: pageTitle,
+            scrollY: scrollY
+          };
+        }
+        $currentLocationWithoutHash = newLoc;
+        if (pageContent) {
+          $history[newLoc] = {
+            body: pageContent,
+            title: title || document.title,
+            scrollY: 0
+          };
+        }
+      }
+
+      return result;
     };
 
     var nativeReplaceState = history.replaceState;
     history.replaceState = function(state, title, url) {
-      if (!$isInternalNavigation && url && $currentLocationWithoutHash) {
+      var shouldTrack = !$isInternalNavigation && url && $currentLocationWithoutHash;
+      var newLoc = null;
+      var pageContent = null;
+      var scrollY = pageYOffset;
+
+      if (shouldTrack) {
         try {
-          var newLoc = removeHash(new URL(url, location.href).href);
-          $currentLocationWithoutHash = newLoc;
-          var pageContent = document.getElementById("page-content");
-          if (pageContent) {
-            $history[newLoc] = {
-              body: pageContent,
-              title: title || document.title,
-              scrollY: pageYOffset
-            };
-          }
-        } catch (e) {}
+          newLoc = removeHash(new URL(url, location.href).href);
+          pageContent = document.getElementById("page-content");
+        } catch (e) {
+          shouldTrack = false;
+        }
       }
-      return nativeReplaceState.apply(history, arguments);
+
+      var result = nativeReplaceState.apply(history, arguments);
+
+      if (shouldTrack && newLoc) {
+        $currentLocationWithoutHash = newLoc;
+        if (pageContent) {
+          $history[newLoc] = {
+            body: pageContent,
+            title: title || document.title,
+            scrollY: scrollY
+          };
+        }
+      }
+
+      return result;
     };
   }
 
