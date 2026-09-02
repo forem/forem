@@ -129,12 +129,21 @@ const initializeBanishContent = ({ formAction, userName, banishableUser }) => {
     .forEach((span) => (span.innerText = userName));
 };
 
+const initializeGhostifyContent = ({ formAction, userName }) => {
+  const modalContent = getModalContent();
+  modalContent.querySelector('.js-ghostify-form').action = formAction;
+  modalContent
+    .querySelectorAll('.js-user-name')
+    .forEach((span) => (span.innerText = userName));
+};
+
 const modalContentInitializers = {
   '#add-organization': initializeAddOrganizationContent,
   '#add-role-modal': initializeAddRoleContent,
   '#adjust-balance': initializeAdjustCreditBalanceContent,
   '#unpublish-all-posts': initializeUnpublishAllPostsContent,
   '#banish-for-spam': initializeBanishContent,
+  '#ghostify-user': initializeGhostifyContent,
 };
 
 const modalContents = new Map();
