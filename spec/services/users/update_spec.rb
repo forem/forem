@@ -120,6 +120,30 @@ RSpec.describe Users::Update, type: :service do
       end
     end
 
+    it "enqueues notification path update job when changing username" do
+      sidekiq_assert_enqueued_with(
+        job: Notifications::UpdateJsonDataForUserWorker,
+        args: [user.id],
+        queue: "low_priority",
+      ) do
+        described_class.call(user, user: { username: "#{user.username}_changed" })
+      end
+    end
+
+    it "does not enqueue notification path update job for a suspended user" do
+      suspended_user = create(:user, :suspended)
+
+      expect do
+        described_class.call(suspended_user, user: { username: "#{suspended_user.username}_changed" })
+      end.not_to change(Notifications::UpdateJsonDataForUserWorker.jobs, :size)
+    end
+
+    it "does not enqueue notification path update job when changing non-username fields" do
+      expect do
+        described_class.call(user, user: { name: "#{user.name} changed" })
+      end.not_to change(Notifications::UpdateJsonDataForUserWorker.jobs, :size)
+    end
+
     it "enqueues resave articles job when changing profile_image" do
       profile_image = fixture_file_upload("800x600.jpg")
 
