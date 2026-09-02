@@ -362,6 +362,28 @@ RSpec.describe Comment do
     end
   end
 
+  describe "#favorited?" do
+    let(:leader) { create(:user, :community_leader_level_1) }
+
+    it "returns true when favorited_by_user_id is present" do
+      comment = build(:comment, favorited_by_user: leader)
+      expect(comment.favorited?).to be true
+    end
+
+    it "returns false when favorited_by_user_id is nil" do
+      comment = build(:comment, favorited_by_user_id: nil)
+      expect(comment.favorited?).to be false
+    end
+  end
+
+  describe "#async_score_calc" do
+    it "calls calculate_score" do
+      allow(Comments::CalculateScoreWorker).to receive(:perform_async)
+      comment.async_score_calc
+      expect(Comments::CalculateScoreWorker).to have_received(:perform_async).with(comment.id)
+    end
+  end
+
   describe "#readable_publish_date" do
     it "does not show year in readable time if not current year" do
       expect(comment.readable_publish_date).to eq(comment.created_at.strftime("%b %-e"))
