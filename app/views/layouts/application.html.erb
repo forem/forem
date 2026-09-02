@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <% if user_signed_in? && current_page?(root_path) %>
+    <% if user_signed_in? && (current_page?(root_path) || @home_page) %>
       <% if params[:feed_type] == "discover" || params[:feed_type].blank? %>
         <link rel="preload" href="/stories/feed/?page=1&type_of=discover" as="fetch" crossorigin="same-origin">
       <% elsif params[:feed_type] == "following" %>
         <link rel="preload" href="/stories/feed/?page=1&type_of=following" as="fetch" crossorigin="same-origin">
+      <% elsif params[:feed_type] == "curated" %>
+        <link rel="preload" href="/stories/feed/?page=1&type_of=curated" as="fetch" crossorigin="same-origin">
       <% end %>
       <link rel="preload" href="/<%= ENV.fetch("BILLBOARD_URL_COMPONENT", "bb") %>/feed_first" as="fetch" crossorigin="same-origin">
       <link rel="preload" href="/<%= ENV.fetch("BILLBOARD_URL_COMPONENT", "bb") %>/feed_second" as="fetch" crossorigin="same-origin">

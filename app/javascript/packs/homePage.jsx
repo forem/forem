@@ -95,7 +95,7 @@ function renderSidebar() {
   if (
     sidebarContainer &&
     screen.width >= 640 &&
-    (pathname === '/' || pathname === '/latest' || pathname.includes('/top/') || pathname.includes('/discover') || pathname.includes('/following'))
+    (pathname === '/' || pathname === '/latest' || pathname.includes('/top/') || pathname.includes('/discover') || pathname.includes('/following') || pathname.includes('/curated'))
   ) {
     window
       .fetch('/sidebars/home')
