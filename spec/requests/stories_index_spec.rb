@@ -450,11 +450,24 @@ RSpec.describe "StoriesIndex" do
       let(:leader) { create(:user) }
       let!(:favorited_article) { create(:article, favorited_by_user: leader, favorited_at: Time.current) }
 
-      it "renders the curated feed with 200 OK" do
+      it "renders the curated feed with 200 OK and sidebar containers" do
         get "/curated"
 
         expect(response).to have_http_status(:ok)
         expect(response.body).to include(CGI.escapeHTML(favorited_article.title))
+        expect(response.body).to include('id="sidebar-wrapper-left"')
+        expect(response.body).to include('id="sidebar-wrapper-right"')
+      end
+
+      it "renders preload tags for curated feed and sidebar when signed in" do
+        sign_in leader
+        get "/curated"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include('id="sidebar-wrapper-left"')
+        expect(response.body).to include('id="sidebar-wrapper-right"')
+        expect(response.body).to include('href="/stories/feed/?page=1&type_of=curated"')
+        expect(response.body).to include('href="/sidebars/home"')
       end
     end
   end
