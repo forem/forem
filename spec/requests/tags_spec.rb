@@ -32,6 +32,16 @@ RSpec.describe "Tags", :proper_status do
       get tags_path(q: "yeet")
       expect(response.body).to include("No results match that query")
     end
+
+    it "displays only published article count on the tag list page" do
+      create(:tag, name: "javascript")
+      create(:published_article, title: "My Published Article", tag_list: "javascript")
+      create(:unpublished_article, title: "My Unpublished Article", tag_list: "javascript")
+
+      get tags_path
+      expect(response.body).to include("1 post")
+      expect(response.body).not_to include("2 posts")
+    end
   end
 
   describe "GET /tags/bulk" do

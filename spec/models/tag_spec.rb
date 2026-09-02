@@ -290,6 +290,29 @@ RSpec.describe Tag do
     end
   end
 
+  describe "#published_articles_count" do
+    it "returns the correct count of published articles for a tag" do
+      tag = create(:tag)
+      create(:published_article, tag_list: tag.name)
+      create(:unpublished_article, tag_list: tag.name)
+
+      expect(tag.published_articles_count).to eq(1)
+    end
+
+    it "returns zero when there are no published articles for a tag" do
+      tag = create(:tag)
+      create(:unpublished_article, tag_list: tag.name)
+
+      expect(tag.published_articles_count).to eq(0)
+    end
+
+    it "returns zero when there are no articles for a tag" do
+      tag = create(:tag)
+
+      expect(tag.published_articles_count).to eq(0)
+    end
+  end
+
   context "when indexing with Algolia", :algolia do
     it "indexes on create" do
       allow(AlgoliaSearch::SearchIndexWorker).to receive(:perform_async)
