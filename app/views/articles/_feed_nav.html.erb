@@ -136,7 +136,7 @@
   </nav>
   <script>
     (function() {
-      function initializeFeedNavigation() {
+      function updateFeedNavActiveState() {
         var currentPath = window.location.pathname;
         var currentFeedNav = "";
 
@@ -169,6 +169,13 @@
             item.classList.remove("crayons-navigation__item--current");
           }
         });
+      }
+
+      var lastFeedPath = window.location.pathname;
+
+      function initializeFeedNavigation() {
+        lastFeedPath = window.location.pathname;
+        updateFeedNavActiveState();
 
         // Setup soft navigations
         var feedLinks = document.querySelectorAll(".pill-nav-item");
@@ -179,6 +186,7 @@
             if (window.location.pathname === targetHref) return;
             
             e.preventDefault();
+            lastFeedPath = targetHref;
             window.history.pushState({}, "", targetHref);
             handleFeedSoftNavigation(targetHref);
           });
@@ -186,13 +194,20 @@
 
         if (!window.feedPopstateHandler) {
           window.feedPopstateHandler = function() {
-            // Only fire soft SPA reloads if we are currently on the feed view layout.
-            // If popping back from an Article, the DOM is still Article markup, so we let InstantClick natively restore!
-            if (document.getElementById("homepage-feed") || document.getElementById("rendered-article-feed")) {
-              handleFeedSoftNavigation(window.location.pathname);
+            var currentPath = window.location.pathname;
+            updateFeedNavActiveState();
+            // If navigating between different feed tabs via browser back/forward, soft navigate
+            if (lastFeedPath && currentPath !== lastFeedPath && (document.getElementById("homepage-feed") || document.getElementById("rendered-article-feed"))) {
+              lastFeedPath = currentPath;
+              handleFeedSoftNavigation(currentPath);
+            } else {
+              lastFeedPath = currentPath;
             }
           };
           window.addEventListener("popstate", window.feedPopstateHandler);
+          if (window.InstantClick) {
+            window.InstantClick.on("restore", updateFeedNavActiveState);
+          }
         }
       }
 
