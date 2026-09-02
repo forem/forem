@@ -36,19 +36,19 @@ Rails.application.routes.draw do
     get "/", to: "stories#custom_domain_index"
     get "/feed", to: "articles#feed", as: nil, defaults: { format: "rss" }
     get "/rss", to: "articles#feed", as: nil, defaults: { format: "rss" }
+    get "/p/:page_suffix", to: "stories#custom_domain_index", as: "custom_domain_organization_custom_page",
+                           constraints: { format: /html/ }
     get "/:org_slug/:slug",
         to: "stories#custom_domain_show",
         constraints: {
-          org_slug: %r{(?!(?:api|assets|packs|rails|r|ahoy|enter|users|p|robots|sitemap-.+|async_info|reactions|billboards|bb|display_ads|auth_pass|search|poll_votes|badge_achievements|billboard_events|reading_list_items|followed_articles|feedback_messages|feed_events)\z)[^/.]+},
+          org_slug: %r{[^/.]+},
           slug: %r{[^/.]+}
         }
     get "/:slug",
         to: "stories#custom_domain_show",
         constraints: {
-          slug: %r{(?!(?:api|assets|packs|rails|r|ahoy|enter|users|p|robots|sitemap-.+|async_info|reactions|billboards|bb|display_ads|auth_pass|search|poll_votes|badge_achievements|billboard_events|reading_list_items|followed_articles|feedback_messages|feed_events)\z)[^/.]+}
+          slug: %r{[^/.]+}
         }
-    get "/p/:page_suffix", to: "stories#custom_domain_index", as: "custom_domain_organization_custom_page",
-                           constraints: { format: /html/ }
   end
 
   # [@forem/delightful] - all routes are nested under this optional scope to
@@ -422,6 +422,24 @@ Rails.application.routes.draw do
 
     # You can have the root of your site routed with "root
     get "/robots.:format", to: "pages#robots"
+    get "/llms.:format", to: "pages#llms"
+
+    # Canonical location of the generated OpenAPI description, plus redirects from the
+    # paths automated clients commonly probe for a spec before falling back to guessing.
+    get "/api/v1/openapi.json", to: "pages#openapi", defaults: { format: "json" }
+    %w[
+      /openapi.json
+      /api-docs
+      /api_docs
+      /api/docs
+      /api/v1/docs
+      /api/v1/docs/api_v1.json
+      /api_docs/v1.json
+      /swagger/v1/api_v1.json
+      /.well-known/openapi.json
+    ].each do |probe_path|
+      get probe_path, to: redirect("/api/v1/openapi.json"), format: false
+    end
     get "/api", to: redirect("https://developers.forem.com/api")
     get "/privacy", to: "pages#privacy"
     get "/terms", to: "pages#terms"
@@ -521,6 +539,8 @@ Rails.application.routes.draw do
 
     get "/leadership", to: "leadership_dashboards#show", as: :leadership
     get "/leadership/:section", to: "leadership_dashboards#show", as: :leadership_section
+    get "/curation", to: "leadership_dashboards#show", as: :curation
+    get "/curation/:section", to: "leadership_dashboards#show", as: :curation_section
 
     unless Rails.env.production?
       get "/rails/mailers", to: "rails/mailers#index"

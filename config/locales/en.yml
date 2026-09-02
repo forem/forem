@@ -8,9 +8,20 @@ en:
     if_continued_trouble_html: <a href="/contact">Contact us</a> if you continue having trouble.
     if_we_can_help_html: <a href="/contact">Contact us</a> if there is anything we can help with.
   favorites:
-    favorite: Favorite
-    favorited: Favorited
-    favorited_by_you: Favorited by you
+    favorite: Pick as gem
+    favorited: Picked as gem
+    favorited_by_you: Picked as gem by you
+    modal:
+      title: Gem Picked!
+      body: You've picked this as a community gem!
+      remaining_zero: You have no more gems left to give out today.
+      remaining_one: You have 1 more gem left to give out today.
+      remaining_other: You have %{count} more gems left to give out today.
+      close: Got it
+    modal_exhausted:
+      title: Out of Gems
+      body: You have no more gems left to give out today. Your allowance will refresh soon!
+      close: Got it
   core:
     add_comment: Add comment
     beta: beta

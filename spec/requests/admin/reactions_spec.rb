@@ -53,6 +53,49 @@ RSpec.describe "/admin/reactions" do
     end
   end
 
+  describe "PUT /admin/reactions as support admin" do
+    let(:support_admin) { create(:user, :support_admin) }
+    let(:comment)       { create(:comment, commentable: article) }
+
+    before do
+      user.add_role(:trusted)
+      sign_in support_admin
+    end
+
+    context "when the reaction is on a comment" do
+      let(:reaction) { create(:reaction, category: "vomit", user: user, reactable: comment) }
+
+      it "invalidates the flag so the comment's score can recover" do
+        put admin_reaction_path(reaction.id), params: { id: reaction.id, status: "invalid" }
+
+        expect(response).to have_http_status(:ok)
+        expect(reaction.reload.status).to eq("invalid")
+      end
+
+      # Confirmed comment vomits feed the repeat-offender check that can suspend
+      # the comment's author, so support admins must not be able to set them.
+      it "does not allow confirming the flag" do
+        expect do
+          put admin_reaction_path(reaction.id), params: { id: reaction.id, status: "confirmed" }
+        end.to raise_error(Pundit::NotAuthorizedError)
+
+        expect(reaction.reload.status).not_to eq("confirmed")
+      end
+    end
+
+    context "when the reaction is not on a comment" do
+      let(:reaction) { create(:reaction, category: "vomit", user: user, reactable: article) }
+
+      it "does not allow the update" do
+        expect do
+          put admin_reaction_path(reaction.id), params: { id: reaction.id, status: "invalid" }
+        end.to raise_error(Pundit::NotAuthorizedError)
+
+        expect(reaction.reload.status).not_to eq("invalid")
+      end
+    end
+  end
+
   describe "PUT /admin/reactions as non-admin" do
     before do
       user.add_role(:trusted)

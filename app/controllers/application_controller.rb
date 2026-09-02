@@ -325,7 +325,7 @@ class ApplicationController < ActionController::Base
   end
 
   def internal_navigation?
-    params[:i] == "i"
+    params[:i] == "i" || params[:i].to_s.match?(/\A[a-f0-9]{8,12}\z/)
   end
   helper_method :internal_navigation?
 
@@ -503,7 +503,7 @@ class ApplicationController < ActionController::Base
   end
 
   def custom_domain_org
-    OrgCustomDomainConstraint.custom_domain_org(request)
+    request.env["forem.custom_domain_org"] ||= OrgCustomDomainConstraint.custom_domain_org_for_host(request.host)
   end
 
   def redirect_www_and_unregistred_subforems_to_root
@@ -609,9 +609,9 @@ class ApplicationController < ActionController::Base
   end
 
   def internal_nav_param
-    return "" unless params[:i] == "i"
+    return "" unless internal_navigation?
 
-    "?i=i"
+    "?i=#{params[:i]}"
   end
 
   def clear_request_store

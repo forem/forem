@@ -1,54 +1,72 @@
 class OrgCustomDomainConstraint
-  PLATFORM_PATH_PREFIXES = %w[
-    /async_info
-    /reactions
-    /badge_achievements
-    /billboard_events
-    /billboards
-    /bb
-    /display_ads
-    /poll_votes
-    /reading_list_items
-    /followed_articles
-    /feedback_messages
-    /feed_events
-    /auth_pass
-    /api
-    /ahoy
-    /assets
-    /packs
-    /rails
-  ].freeze
+  PLATFORM_FIRST_SEGMENTS = %w[
+    ahoy
+    api
+    assets
+    async_info
+    auth_pass
+    badge_achievements
+    bb
+    bb_tabulations
+    billboard_events
+    billboards
+    display_ad_events
+    display_ads
+    enter
+    fallback_activity_recorder
+    feedback_messages
+    feed_events
+    followed_articles
+    packs
+    poll_votes
+    rails
+    reactions
+    reading_list_items
+    search
+    sign_out
+    signout_confirm
+    users
+  ].to_set.freeze
+
+  def self.platform_path?(first_segment, path)
+    return true if PLATFORM_FIRST_SEGMENTS.include?(first_segment)
+    return true if path.start_with?("/robots", "/sitemap", "/llms.")
+
+    false
+  end
 
   def self.custom_domain_org(request)
     path = request.path.to_s
+    first_segment = path.split("/")[1]
 
-    if PLATFORM_PATH_PREFIXES.any? { |prefix| path.start_with?(prefix) } && request.params[:i] != "i"
+    if platform_path?(first_segment, path) && (request.params[:i] != "i" && !request.params[:i].to_s.match?(/\A[a-f0-9]{8,12}\z/))
       return nil
     end
 
-    host = request.host&.downcase
-    return nil if host.blank? || host == Settings::General.app_domain
-    return nil if Subforem.cached_domains.include?(host)
+    request.env["forem.custom_domain_org"] ||= custom_domain_org_for_host(request.host)
+  end
 
-    request.env["forem.custom_domain_org"] ||= begin
-      cache_key = "org_custom_domain_id:#{host}"
-      org_id = MemoryFirstCache.fetch(cache_key) do
-        org = Organization.find_by(custom_domain: host)
-        org ? org.id : "not_found"
-      end
+  def self.custom_domain_org_for_host(host)
+    normalized_host = host&.downcase
+    return nil if normalized_host.blank? || normalized_host == Settings::General.app_domain&.downcase
+    return nil if Subforem.cached_domains.include?(normalized_host)
 
-      if org_id.present? && org_id != "not_found"
-        org = Organization.find_by(id: org_id)
-        if org && org.custom_domain == host && FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
-          org
-        else
-          MemoryFirstCache.delete(cache_key) if org.nil? || org.custom_domain != host
-          nil
-        end
+    cache_key = "org_custom_domain_id:#{normalized_host}"
+    org_id = MemoryFirstCache.fetch(cache_key) do
+      org = Organization.find_by(custom_domain: normalized_host)
+      org ? org.id : "not_found"
+    end
+
+    if org_id.present? && org_id != "not_found"
+      org = Organization.find_by(id: org_id)
+      if org && org.custom_domain == normalized_host && FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
+        org
       else
+        MemoryFirstCache.delete(cache_key) if org.nil? || org.custom_domain != normalized_host
         nil
       end
+    else
+      nil
     end
   end
 

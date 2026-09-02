@@ -40,9 +40,9 @@ fr:
       saved: Article sauvegardé !
       pinned: Article épinglé !
       unpinned: Article désépinglé !
-      favorite_removed: Favori supprimé.
+      favorite_removed: Pépite retirée.
     comments_controller:
-      favorite_removed: Favori supprimé.
+      favorite_removed: Pépite retirée.
     badge_achievements_controller:
       deleted: La réalisation du badge a été supprimée !
       rewarded: Les badges sont en train d'être récompensés. La tâche sera bientôt terminée.
@@ -127,6 +127,12 @@ fr:
       org_feature_enabled: "%{feature} a été activé pour cette organisation."
       org_feature_disabled: "%{feature} a été désactivé pour cette organisation."
       org_feature_invalid: "Fonctionnalité d'organisation spécifiée invalide."
+      bulk_add_users:
+        added: "%{count} utilisateur(s) (%{usernames}) ont été ajoutés avec succès à l'organisation."
+        already_members: "Déjà membre(s) : %{usernames}."
+        not_found: "Utilisateur(s) non trouvé(s) : %{usernames}."
+        failed: "Échec de l'ajout de %{count} utilisateur(s) : %{errors}."
+        empty_input: "Veuillez fournir au moins un nom d'utilisateur."
     org_features_controller:
       invalid_feature: "Fonctionnalité spécifiée invalide."
       global_enabled: "%{feature} a été activé pour toutes les organisations."

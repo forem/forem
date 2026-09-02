@@ -169,6 +169,7 @@ class FeedConfig < ApplicationRecord
     end
 
     terms << "(CASE WHEN articles.featured = TRUE THEN #{featured_weight} ELSE 0 END)" if featured_weight.positive?
+    terms << "(CASE WHEN articles.favorited_by_user_id IS NOT NULL THEN #{favorited_weight} ELSE 0 END)" if favorited_weight.positive?
     terms << "(CASE WHEN articles.type_of = 1 THEN #{status_weight} ELSE 0 END)" if status_weight.positive?
     terms << "(- (articles.clickbait_score * #{clickbait_score_weight}))" if clickbait_score_weight.positive?
     terms << "(articles.compellingness_score * #{compellingness_score_weight})" if compellingness_score_weight.positive?
@@ -205,6 +206,7 @@ class FeedConfig < ApplicationRecord
     clone.general_past_day_bonus_weight = general_past_day_bonus_weight * rand(0.9..1.1)
     clone.recently_active_past_day_bonus_weight = recently_active_past_day_bonus_weight * rand(0.9..1.1)
     clone.featured_weight = featured_weight * rand(0.9..1.1)
+    clone.favorited_weight = favorited_weight * rand(0.9..1.1)
     clone.status_weight = status_weight * rand(0.9..1.1)
     clone.follow_status_weight = follow_status_weight * rand(0.9..1.1)
     clone.clickbait_score_weight = clickbait_score_weight * rand(0.9..1.1)

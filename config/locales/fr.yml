@@ -8,9 +8,20 @@ fr:
     if_continued_trouble_html: <a href="/contact">Contactez-nous</a> si vous continuez à avoir des problèmes.
     if_we_can_help_html: <a href="/contact">Contactez-nous</a> si nous pouvons vous aider.
   favorites:
-    favorite: Mettre en favori
-    favorited: Mis en favori
-    favorited_by_you: Vous avez mis ceci en favori
+    favorite: Choisir comme pépite
+    favorited: Choisi comme pépite
+    favorited_by_you: Choisi comme pépite par vous
+    modal:
+      title: Pépite sélectionnée !
+      body: Vous avez sélectionné ceci comme pépite de la communauté !
+      remaining_zero: Vous n'avez plus de pépites à distribuer aujourd'hui.
+      remaining_one: Il vous reste 1 pépite à distribuer aujourd'hui.
+      remaining_other: Il vous reste %{count} pépites à distribuer aujourd'hui.
+      close: Compris
+    modal_exhausted:
+      title: Plus de pépites
+      body: Vous n'avez plus de pépites à distribuer aujourd'hui. Votre quota sera bientôt renouvelé !
+      close: Compris
   core:
     add_comment: Ajouter un commentaire
     beta: bêta

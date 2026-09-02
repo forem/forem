@@ -350,6 +350,10 @@ fr:
           description: The user flags affect the scores of articles and comments. Each valid or open user flag further reduces the score of the article and comment.
           no_flags: No flags received against this user yet.
           title: Flags received
+        content_flags:
+          description: Signalements laissés sur les publications et commentaires de ce membre, y compris ceux émis automatiquement par la modération. Marquer un signalement comme invalide restaure le score du contenu.
+          no_flags: Aucun signalement reçu sur les publications ou commentaires de cet utilisateur pour le moment.
+          title: Signalements sur les publications et commentaires
         profile:
           locked:
             icon: Access locked
@@ -373,6 +377,18 @@ fr:
             remove_social: Remove social accounts
             banish: Banish user
             delete: Delete user
+        password:
+          title: Accès au mot de passe
+          description: Définissez directement un nouveau mot de passe ou envoyez à l’utilisateur un e-mail de réinitialisation précisant qu’il a été déclenché par un administrateur.
+          new_password: Nouveau mot de passe
+          password_confirmation: Confirmer le nouveau mot de passe
+          submit: Mettre à jour le mot de passe
+          success: Mot de passe mis à jour avec succès.
+          reset_title: Envoyer un e-mail de réinitialisation du mot de passe
+          reset_description: Envoyez à l’utilisateur un lien de réinitialisation qui explique qu’il a été initié par un administrateur pour l’aider.
+          reset_submit: Envoyer l’e-mail de réinitialisation du mot de passe
+          reset_sent: E-mail de réinitialisation du mot de passe envoyé avec succès.
+          reset_error: Échec de l’envoi de l’e-mail de réinitialisation du mot de passe.
         edit_profile:
           heading: Modifier le profil de %{user}
           desc_html: Les changements faits ici sont immédiatement publics sur le profil de l'utilisateur.
@@ -438,13 +454,24 @@ fr:
           commentable: commentable
           created: "Created at: %{time}"
         tabs:
-          overview: Overview
+          overview: Aperçu
           notes: Notes
-          emails: Emails
-          reports: Reports
-          flags: Flags
+          emails: E-mails
+          security: Sécurité
+          reports: Signalements
+          flags: Drapeaux
+          articles: Articles
+          comments: Commentaires
+          identities: Identités d'authentification
+          badges: Badges
+          reactions: Réactions
+          agent_sessions: Sessions d'agent
+          collections: Séries
+          follows: Abonnements
+          blocks: Blocages
           audit_log: Journal d'audit
-          unpublish_logs: Unpublish All History
+          unpublish_logs: Historique de dépublication
+          more_details: Plus de détails
         status_title: Current status
         status_reader: "Current status:"
         more_orgs:
@@ -480,8 +507,8 @@ fr:
           "Resource Admin: ProfileField": "Resource Admin: ProfileField"
           "Resource Admin: ProfileFieldGroup": "Resource Admin: ProfileFieldGroup"
           Super Moderator: Super Moderator
-          Community Leader Level 1: Community Leader Level 1
-          Community Leader Level 2: Community Leader Level 2
+          Community Leader Level 1: Curateur communautaire niveau 1
+          Community Leader Level 2: Curateur communautaire niveau 2
         statuses:
           Warned: Warned
           Comment Suspended: Comment Suspended
@@ -498,6 +525,77 @@ fr:
           facebook: Facebook
           github: GitHub
           twitter: Twitter
+        identities_tab:
+          title: Identités d'authentification
+          empty: Aucune identité d'authentification associée à cet utilisateur.
+          remove: Supprimer l'identité
+          table:
+            provider: Fournisseur
+            uid: UID
+            username: Nom d'utilisateur / Nom
+            email: E-mail
+            created_at: Associé le
+            actions: Actions
+        collections_tab:
+          title: Séries et collections
+          empty: Aucune série ou collection trouvée pour cet utilisateur.
+          table:
+            title: Titre
+            description: Description
+            articles_count: Articles
+            created_at: Créé le
+        follows_tab:
+          title: Abonnements et abonnés
+          followers: Abonnés
+          following: Abonnements
+          empty: Aucun abonnement trouvé.
+          table:
+            user: Utilisateur
+            username: Nom d'utilisateur
+            followed_at: Suivi le
+        blocks_tab:
+          title: Blocages
+          blocking: Bloqués
+          blocked_by: Bloqué par
+          empty: Aucun blocage trouvé.
+          table:
+            user: Utilisateur
+            username: Nom d'utilisateur
+            blocked_at: Bloqué le
+        badges_tab:
+          title: Badges et accomplissements
+          empty: Aucun badge obtenu ou attribué pour le moment.
+          manage_badges: Gérer les badges
+          system: Attribué par le système
+          table:
+            badge: Badge
+            description: Description
+            awarded_by: Attribué par
+            awarded_at: Attribué le
+        reactions_tab:
+          title: Réactions de l'utilisateur
+          empty: Aucune réaction trouvée pour cet utilisateur.
+          deleted_target: Contenu supprimé
+          table:
+            category: Catégorie
+            target_type: Type
+            target: Contenu
+            status: Statut
+            created_at: Créé le
+        agent_sessions_tab:
+          title: Sessions d'agent
+          empty: Aucune session d'agent trouvée pour cet utilisateur.
+          published: Publié
+          draft: Brouillon
+          view: Voir
+          curate: Organiser
+          table:
+            title: Titre
+            tool: Outil
+            status: Statut
+            messages: Messages
+            created_at: Créé le
+            actions: Actions
       organizations:
         profile:
           id: ID %{organizationid}
@@ -551,14 +649,24 @@ fr:
             enable: Activer Dofollow
             disable: Désactiver Dofollow
             enabled_notice: Les liens dofollow sont activés pour la page readme de cette organisation.
+        bulk_add_users:
+          heading: Ajouter des membres en bloc
+          description: "Ajoutez plusieurs utilisateurs à cette organisation en une seule fois. Entrez une liste de noms d'utilisateur séparés par des virgules (avec ou sans @ et espaces). Les membres existants seront ignorés."
+          usernames_label: Noms d'utilisateur
+          usernames_placeholder: "utilisateur1, @utilisateur2, utilisateur3"
+          role_label: Rôle
+          roles:
+            member: Membre
+            admin: Administrateur
+          submit: Ajouter des membres en bloc
       favorites:
         leaderboard:
           heading: Classement d'impact
-          description: Classement des utilisateurs selon l'engagement généré par leurs contenus mis en favori.
-          empty: Aucun contenu en favori pour le moment.
+          description: Classement des utilisateurs selon l'engagement généré par leurs pépites.
+          empty: Aucune pépite pour le moment.
           rank: Rang
-          leader: Leader
-          favorites: Favoris
+          leader: Curateur
+          favorites: Pépites
           articles: Articles
           comments: Commentaires
           impact: Impact

@@ -656,4 +656,60 @@ RSpec.describe ApplicationHelper do
       expect(helper.should_render_favorited_marker?(trimmed)).to be false
     end
   end
+
+  describe "#custom_domain_main_app_url" do
+    let(:organization) { build_stubbed(:organization, slug: "myorg", custom_domain: "blog.myorg.com") }
+
+    before do
+      allow(Settings::General).to receive(:app_domain).and_return("forem.com")
+    end
+
+    it "returns nil when custom_org is nil" do
+      expect(helper.custom_domain_main_app_url(nil)).to be_nil
+    end
+
+    it "maps root path to organization profile on main domain" do
+      request_double = instance_double(ActionDispatch::Request, path: "/", query_string: "")
+      allow(helper).to receive(:request).and_return(request_double)
+
+      expect(helper.custom_domain_main_app_url(organization)).to eq("http://forem.com/myorg")
+    end
+
+    it "preserves query string when mapping root path" do
+      request_double = instance_double(ActionDispatch::Request, path: "/", query_string: "sort=top&page=2")
+      allow(helper).to receive(:request).and_return(request_double)
+
+      expect(helper.custom_domain_main_app_url(organization)).to eq("http://forem.com/myorg?sort=top&page=2")
+    end
+
+    it "maps custom page /p/:page_suffix" do
+      request_double = instance_double(ActionDispatch::Request, path: "/p/about", query_string: "")
+      allow(helper).to receive(:request).and_return(request_double)
+
+      expect(helper.custom_domain_main_app_url(organization)).to eq("http://forem.com/myorg/p/about")
+    end
+
+    it "maps article path /:slug" do
+      request_double = instance_double(ActionDispatch::Request, path: "/my-article", query_string: "")
+      allow(helper).to receive(:request).and_return(request_double)
+
+      expect(helper.custom_domain_main_app_url(organization)).to eq("http://forem.com/myorg/my-article")
+    end
+
+    it "handles article path already containing org slug /:org_slug/:slug" do
+      request_double = instance_double(ActionDispatch::Request, path: "/myorg/my-article", query_string: "")
+      allow(helper).to receive(:request).and_return(request_double)
+
+      expect(helper.custom_domain_main_app_url(organization)).to eq("http://forem.com/myorg/my-article")
+    end
+  end
+
+  describe "#main_stylesheets_fingerprint" do
+    it "returns a deterministic hash based on minimal, views, and crayons stylesheet paths" do
+      fingerprint = helper.main_stylesheets_fingerprint
+      expect(fingerprint).to be_a(String)
+      expect(fingerprint.length).to eq(10)
+      expect(fingerprint).to eq(helper.main_stylesheets_fingerprint)
+    end
+  end
 end

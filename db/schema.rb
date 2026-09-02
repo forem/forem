@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_08_14_130200) do
+ActiveRecord::Schema[8.0].define(version: 2026_09_01_140000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -298,6 +298,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_14_130200) do
     t.bigint "badge_id", null: false
     t.datetime "created_at", precision: nil, null: false
     t.boolean "include_default_description", default: true, null: false
+    t.jsonb "metadata", default: {}, null: false
     t.bigint "rewarder_id"
     t.text "rewarding_context_message"
     t.text "rewarding_context_message_markdown"
@@ -771,9 +772,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_14_130200) do
   end
 
   create_table "events", force: :cascade do |t|
+    t.string "bg_color_hex"
     t.integer "broadcast_config", default: 0
     t.datetime "broadcast_ended_at"
     t.string "cached_tag_list"
+    t.string "cover_image"
     t.datetime "created_at", null: false
     t.jsonb "data", default: {}
     t.boolean "delegate_to_page", default: false, null: false
@@ -782,6 +785,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_14_130200) do
     t.datetime "end_time", null: false
     t.string "event_name_slug", null: false
     t.string "event_variation_slug", null: false
+    t.text "full_details"
     t.boolean "manual_broadcast_end", default: false, null: false
     t.bigint "organization_id"
     t.bigint "page_id"
@@ -813,6 +817,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_14_130200) do
     t.float "comment_score_weight", default: 1.0
     t.float "compellingness_score_weight", default: 0.0, null: false
     t.datetime "created_at", null: false
+    t.float "favorited_weight", default: 0.0, null: false
     t.float "featured_weight", default: 0.0, null: false
     t.bigint "feed_impressions_count", default: 0
     t.float "feed_success_score", default: 0.0

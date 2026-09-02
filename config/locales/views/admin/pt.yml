@@ -12,6 +12,15 @@ pt:
         reports: Relatórios
         settings: Configurações
       users:
+        content_flags:
+          description: Sinalizações feitas nas publicações e comentários deste membro, incluindo as geradas automaticamente pela moderação. Marcar uma como inválida restaura a pontuação do conteúdo.
+          no_flags: Nenhuma sinalização recebida nas publicações ou comentários deste usuário até o momento.
+          title: Sinalizações em publicações e comentários
+        flags:
+          type:
+            article: Publicação "%{title}"
+            comment: Comentário em "%{title}"
+            profile: Perfil do usuário
         overview:
           roles:
             name:
@@ -38,8 +47,8 @@ pt:
           "Resource Admin: Space": "Resource Admin: Space"
           "Resource Admin: ProfileField": "Resource Admin: ProfileField"
           "Resource Admin: ProfileFieldGroup": "Resource Admin: ProfileFieldGroup"
-          Community Leader Level 1: Community Leader Level 1
-          Community Leader Level 2: Community Leader Level 2
+          Community Leader Level 1: Curador Comunitário Nível 1
+          Community Leader Level 2: Curador Comunitário Nível 2
         title: Gerenciar Usuários
         search: Pesquisar usuários
         filter: Filtrar
@@ -70,6 +79,19 @@ pt:
           oauth_email: "E-mail %{provider}"
           options:
             edit_profile: Editar perfil
+            update_email: Atualizar e-mail do usuário
+        password:
+          title: Acesso por senha
+          description: Defina uma nova senha diretamente ou envie ao usuário um e-mail de redefinição explicando que isso foi acionado por um administrador.
+          new_password: Nova senha
+          password_confirmation: Confirmar nova senha
+          submit: Atualizar senha
+          success: Senha atualizada com sucesso.
+          reset_title: Enviar e-mail de redefinição de senha
+          reset_description: Envie ao usuário um link de redefinição que explique que ele foi iniciado por um administrador para ajudar.
+          reset_submit: Enviar e-mail de redefinição de senha
+          reset_sent: E-mail de redefinição de senha enviado com sucesso.
+          reset_error: Falha ao enviar o e-mail de redefinição de senha.
           edit_profile:
             heading: Editar perfil de %{user}
             desc_html: As mudanças feitas aqui ficam imediatamente públicas no perfil do usuário.
@@ -389,12 +411,96 @@ pt:
           overview: Visão Geral
           notes: Notas
           emails: E-mails
+          security: Segurança
           reports: Relatórios
           flags: Sinalizações
           articles: Artigos
           comments: Comentários
+          identities: Identidades de Autenticação
+          badges: Emblemas
+          reactions: Reações
+          agent_sessions: Sessões de Agente
+          collections: Séries
+          follows: Seguidores
+          blocks: Bloqueios
           audit_log: Log de Auditoria
           unpublish_logs: Histórico de Despublicação
+          more_details: Mais detalhes
+        identities:
+          facebook: Facebook
+          github: GitHub
+          twitter: Twitter
+        identities_tab:
+          title: Identidades de Autenticação Conectadas
+          empty: Nenhuma identidade de autenticação associada a este usuário.
+          remove: Remover Identidade
+          table:
+            provider: Provedor
+            uid: UID
+            username: Nome de Usuário / Nome
+            email: E-mail
+            created_at: Vinculado Em
+            actions: Ações
+        collections_tab:
+          title: Séries e Coleções
+          empty: Nenhuma série ou coleção encontrada para este usuário.
+          table:
+            title: Título
+            description: Descrição
+            articles_count: Artigos
+            created_at: Criado Em
+        follows_tab:
+          title: Seguidores e Conexões
+          followers: Seguidores
+          following: Seguindo
+          empty: Nenhuma conexão encontrada.
+          table:
+            user: Usuário
+            username: Nome de Usuário
+            followed_at: Seguido Em
+        blocks_tab:
+          title: Bloqueios de Usuário
+          blocking: Bloqueando
+          blocked_by: Bloqueado Por
+          empty: Nenhum bloqueio encontrado.
+          table:
+            user: Usuário
+            username: Nome de Usuário
+            blocked_at: Bloqueado Em
+        badges_tab:
+          title: Emblemas e Conquistas
+          empty: Nenhum emblema obtido ou concedido ainda.
+          manage_badges: Gerenciar Emblemas
+          system: Concedido pelo Sistema
+          table:
+            badge: Emblema
+            description: Descrição
+            awarded_by: Concedido Por
+            awarded_at: Concedido Em
+        reactions_tab:
+          title: Reações do Usuário
+          empty: Nenhuma reação encontrada para este usuário.
+          deleted_target: Conteúdo Excluído
+          table:
+            category: Categoria
+            target_type: Tipo
+            target: Conteúdo
+            status: Status
+            created_at: Criado Em
+        agent_sessions_tab:
+          title: Sessões de Agente
+          empty: Nenhuma sessão de agente encontrada para este usuário.
+          published: Publicado
+          draft: Rascunho
+          view: Visualizar
+          curate: Curar
+          table:
+            title: Título
+            tool: Ferramenta
+            status: Status
+            messages: Mensagens
+            created_at: Criado Em
+            actions: Ações
       organizations:
         profile:
           id: ID %{organizationid}
@@ -448,14 +554,24 @@ pt:
             enable: Habilitar Dofollow
             disable: Desabilitar Dofollow
             enabled_notice: Links dofollow estão habilitados para a página readme desta organização.
+        bulk_add_users:
+          heading: Adicionar Membros em Massa
+          description: "Adicione múltiplos usuários a esta organização de uma só vez. Digite uma lista de nomes de usuário separados por vírgula (com ou sem @ e espaços). Membros existentes serão ignorados."
+          usernames_label: Nomes de Usuário
+          usernames_placeholder: "usuario1, @usuario2, usuario3"
+          role_label: Função
+          roles:
+            member: Membro
+            admin: Administrador
+          submit: Adicionar Membros em Massa
       favorites:
         leaderboard:
           heading: Ranking de impacto
-          description: Classificação de usuários pelo engajamento gerado por seus conteúdos favoritados.
-          empty: Nenhum conteúdo favoritado ainda.
+          description: Classificação de usuários pelo engajamento gerado por suas joias.
+          empty: Nenhuma joia ainda.
           rank: Posição
-          leader: Líder
-          favorites: Favoritos
+          leader: Curador
+          favorites: Joias
           articles: Artigos
           comments: Comentários
           impact: Impacto
