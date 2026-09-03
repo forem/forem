@@ -7320,7 +7320,8 @@
             "enum": [
               "community_pulse",
               "industry",
-              "fun"
+              "fun",
+              "beta_testing"
             ],
             "description": "Survey category"
           },
@@ -7418,7 +7419,8 @@
                 "enum": [
                   "community_pulse",
                   "industry",
-                  "fun"
+                  "fun",
+                  "beta_testing"
                 ],
                 "description": "Survey category"
               },
@@ -7427,7 +7429,8 @@
                 "enum": [
                   "community_pulse",
                   "industry",
-                  "fun"
+                  "fun",
+                  "beta_testing"
                 ],
                 "description": "Survey category (alias of survey_type_of)"
               },

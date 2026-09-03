@@ -4,6 +4,8 @@
   <p>We invite you to participate in a <%= @community_name %> Industry Survey.</p>
 <% elsif @survey.fun? %>
   <p>We invite you to participate in a quick, fun survey from <%= @community_name %>.</p>
+<% elsif @survey.beta_testing? %>
+  <p>You have been randomly selected to participate in a beta testing survey.</p>
 <% else %>
   <p>You have been randomly selected to participate in a <%= @community_name %> Pulse Survey.</p>
 <% end %>
@@ -19,6 +21,8 @@
                   "Take the #{@community_name} Industry Survey"
                 elsif @survey.fun?
                   "Take this quick #{@community_name} Survey"
+                elsif @survey.beta_testing?
+                  "Take the Beta Testing Survey"
                 else
                   "Take the #{@community_name} Pulse Survey"
                 end %>

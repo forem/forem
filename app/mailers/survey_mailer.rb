@@ -13,6 +13,9 @@ class SurveyMailer < ApplicationMailer
     elsif @survey.fun?
       subject = "A quick, fun survey from #{@community_name}!"
       survey_type = "fun"
+    elsif @survey.beta_testing?
+      subject = "You've been randomly selected for a beta testing survey"
+      survey_type = "beta_testing"
     else
       subject = "You've been randomly selected for a #{@community_name} Pulse Survey"
       survey_type = "pulse"
@@ -28,7 +31,7 @@ class SurveyMailer < ApplicationMailer
         "extra_email_context_paragraph" => @survey.extra_email_context_paragraph.presence,
         "extra_email_context_paragraph_html" => @extra_email_context_html,
         "extra_email_context_html" => @extra_email_context_html,
-        "subject" => subject,
+        "subject" => subject
       },
     )
 

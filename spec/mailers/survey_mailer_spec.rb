@@ -54,6 +54,22 @@ RSpec.describe SurveyMailer, type: :mailer do
       end
     end
 
+    context "when survey is beta_testing" do
+      let(:survey) do
+        create(:survey, title: "Beta Survey", type_of: :beta_testing, extra_email_context_paragraph: "Beta details.")
+      end
+
+      it "renders the headers" do
+        expect(mail.subject).to eq("You've been randomly selected for a beta testing survey")
+      end
+
+      it "renders the body with link to survey" do
+        expect(mail.body.encoded).to include("Take the Beta Testing Survey")
+        expect(mail.body.encoded).to include("Beta details.")
+        expect(mail.body.encoded).to include("randomly selected to participate in a beta testing survey.")
+      end
+    end
+
     context "when survey has HTML in extra_email_context_paragraph" do
       let(:survey) do
         create(:survey,
@@ -150,6 +166,25 @@ RSpec.describe SurveyMailer, type: :mailer do
         settings = mail.message.delivery_method.settings
 
         expect(settings[:message_data]["survey_type"]).to eq("fun")
+      end
+    end
+
+    context "when routed through Customer.io with a beta_testing survey" do
+      let(:survey) { create(:survey, title: "Beta Survey", type_of: :beta_testing) }
+
+      before do
+        allow(ApplicationConfig).to receive(:[]).and_call_original
+        allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
+        FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+      end
+
+      after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
+
+      it "sends the beta_testing survey type and subject" do
+        settings = mail.message.delivery_method.settings
+
+        expect(settings[:message_data]["survey_type"]).to eq("beta_testing")
+        expect(settings[:message_data]["subject"]).to eq("You've been randomly selected for a beta testing survey")
       end
     end
   end
