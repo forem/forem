@@ -1810,9 +1810,32 @@ RSpec.describe User do
     end
   end
 
+  describe "#unlimited_favorites?" do
+    it "is true for an admin who curates" do
+      expect(create(:user, :admin, :community_leader_level_1)).to be_unlimited_favorites
+    end
+
+    it "is true for a super admin who curates" do
+      expect(create(:user, :super_admin, :community_leader_level_2)).to be_unlimited_favorites
+    end
+
+    it "is false for an admin who does not curate" do
+      expect(create(:user, :admin)).not_to be_unlimited_favorites
+    end
+
+    it "is false for a curator who is not an admin" do
+      expect(create(:user, :community_leader_level_1)).not_to be_unlimited_favorites
+    end
+  end
+
   describe "#favorite_base_allowance" do
     it "is 0 for a non-leader" do
       expect(create(:user).favorite_base_allowance).to eq(0)
+    end
+
+    it "is infinite for an admin curator" do
+      expect(create(:user, :admin, :community_leader_level_1).favorite_base_allowance)
+        .to eq(Float::INFINITY)
     end
 
     it "uses the level 1 setting for a level 1 leader" do
@@ -1856,6 +1879,30 @@ RSpec.describe User do
       create(:article, favorited_by_user: leader, favorited_at: 2.days.ago)
 
       expect(leader.favorite_allowance).to eq(5)
+    end
+
+    it "is infinite for an admin curator, no matter what they have spent" do
+      allow(Settings::UserExperience).to receive_messages(
+        community_leader_l1_favorite_allowance: 1, community_leader_favorite_refresh_hours: 24,
+      )
+      admin_curator = create(:user, :admin, :community_leader_level_1)
+      create(:article, favorited_by_user: admin_curator, favorited_at: 1.hour.ago)
+
+      expect(admin_curator.favorite_allowance).to eq(Float::INFINITY)
+    end
+  end
+
+  describe "#favorite_allowance_for_client" do
+    it "returns the numeric allowance for a metered user" do
+      user = create(:user, earned_favorites_count: 2)
+
+      expect(user.favorite_allowance_for_client).to eq(2)
+    end
+
+    it "returns nil for an admin curator" do
+      admin_curator = create(:user, :admin, :community_leader_level_1)
+
+      expect(admin_curator.favorite_allowance_for_client).to be_nil
     end
   end
 end
