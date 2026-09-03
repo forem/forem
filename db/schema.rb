@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_08_25_100500) do
+ActiveRecord::Schema[8.0].define(version: 2026_09_03_120001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -259,6 +259,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_25_100500) do
     t.index ["published", "nth_published_by_author"], name: "index_articles_on_published_nth_published_by_author"
     t.index ["published", "score", "published_at"], name: "index_articles_on_published_score_published_at_for_moderation"
     t.index ["published"], name: "index_articles_on_published"
+    t.index ["published_at", "score"], name: "index_articles_on_published_at_and_score", order: { published_at: :desc }, where: "(published = true)"
     t.index ["published_at"], name: "index_articles_on_published_at"
     t.index ["reading_list_document"], name: "index_articles_on_reading_list_document", using: :gin
     t.index ["semantic_embedding"], name: "index_articles_on_semantic_embedding", opclass: :vector_cosine_ops, using: :hnsw
@@ -817,6 +818,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_25_100500) do
     t.float "comment_score_weight", default: 1.0
     t.float "compellingness_score_weight", default: 0.0, null: false
     t.datetime "created_at", null: false
+    t.float "favorited_weight", default: 0.0, null: false
     t.float "featured_weight", default: 0.0, null: false
     t.bigint "feed_impressions_count", default: 0
     t.float "feed_success_score", default: 0.0
@@ -1574,6 +1576,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_25_100500) do
     t.index ["article_ids"], name: "index_recommended_articles_lists_on_article_ids", using: :gin
     t.index ["expires_at"], name: "index_recommended_articles_lists_on_expires_at"
     t.index ["placement_area"], name: "index_recommended_articles_lists_on_placement_area"
+    t.index ["user_id", "expires_at"], name: "index_recommended_articles_lists_on_user_and_expires"
     t.index ["user_id"], name: "index_recommended_articles_lists_on_user_id"
   end
 

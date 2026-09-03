@@ -88,6 +88,7 @@ module Api
       @article = result.article
 
       if result.success
+        assign_ai_disclosure_warning
         render "show", status: :ok
       else
         message = @article.errors_as_sentence
@@ -163,6 +164,19 @@ module Api
 
     def per_page_max
       (ApplicationConfig["API_PER_PAGE_MAX"] || 1000).to_i
+    end
+
+    # Updates stay permissive: every article predating this feature is
+    # `not_disclosed`, so requiring a value here would break existing clients
+    # editing old posts. Warn instead.
+    def assign_ai_disclosure_warning
+      return unless Settings::General.enable_ai_disclosure
+      return unless @article.not_disclosed?
+
+      @warnings = [
+        "This article has ai_disclosure_level=not_disclosed. Set it to one of: " \
+        "#{Article.ai_disclosure_levels.keys.join(', ')}. See #{URL.url('llms.txt')}"
+      ]
     end
 
     def article_params

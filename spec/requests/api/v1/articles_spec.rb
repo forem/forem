@@ -39,6 +39,7 @@ RSpec.describe "Api::V1::Articles" do
         tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
         collection_id created_at edited_at crossposted_at published_at last_comment_at
         published_timestamp user organization flare_tag reading_time_minutes language subforem_id
+        ai_disclosure_level ai_disclosure_label
       ]
 
       expect(response.parsed_body.first.keys).to match_array index_keys
@@ -469,7 +470,7 @@ RSpec.describe "Api::V1::Articles" do
         tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
         collection_id created_at edited_at crossposted_at published_at last_comment_at
         published_timestamp body_html body_markdown user organization flare_tag reading_time_minutes
-        language subforem_id
+        language subforem_id ai_disclosure_level ai_disclosure_label
       ]
 
       expect(response.parsed_body.keys).to match_array show_keys
@@ -1857,6 +1858,61 @@ RSpec.describe "Api::V1::Articles" do
 
       matching_item = json.find { |item| item["id"] == keyword_article.id }
       expect(matching_item).to be_present
+    end
+  end
+
+  describe "AI disclosure visibility for automated clients" do
+    let(:api_secret) { create(:api_secret) }
+    let(:user) { api_secret.user }
+    let(:auth_headers) do
+      { "api-key" => api_secret.secret, "Accept" => "application/vnd.forem.api-v1+json",
+        "content-type" => "application/json" }
+    end
+
+    context "when ai disclosure is enabled" do
+      before { allow(Settings::General).to receive(:enable_ai_disclosure).and_return(true) }
+
+      it "returns the disclosure level and label so a client can verify it" do
+        article = create(:article, user: user, ai_disclosure_level: :some_ai)
+
+        get api_article_path(article.id), headers: auth_headers
+
+        expect(response.parsed_body["ai_disclosure_level"]).to eq("some_ai")
+        expect(response.parsed_body["ai_disclosure_label"]).to be_present
+      end
+
+      it "warns when updating an undisclosed article" do
+        article = create(:article, user: user, ai_disclosure_level: :not_disclosed)
+
+        put api_article_path(article.id), params: { article: { title: "An edited title" } }.to_json,
+                                          headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body["warnings"].first).to include("not_disclosed")
+      end
+
+      it "omits warnings when the article is already disclosed" do
+        article = create(:article, user: user, ai_disclosure_level: :some_ai)
+
+        put api_article_path(article.id), params: { article: { title: "An edited title" } }.to_json,
+                                          headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body).not_to have_key("warnings")
+      end
+    end
+
+    context "when ai disclosure is disabled" do
+      before { allow(Settings::General).to receive(:enable_ai_disclosure).and_return(false) }
+
+      it "does not attach warnings on update" do
+        article = create(:article, user: user, ai_disclosure_level: :not_disclosed)
+
+        put api_article_path(article.id), params: { article: { title: "An edited title" } }.to_json,
+                                          headers: auth_headers
+
+        expect(response.parsed_body).not_to have_key("warnings")
+      end
     end
   end
 end

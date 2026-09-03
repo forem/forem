@@ -13,6 +13,14 @@ RSpec.describe Favorites::Create, type: :service do
     expect(article.favorited_at).to be_present
   end
 
+  it "triggers async_score_calc on the favorited article" do
+    allow(article).to receive(:async_score_calc)
+
+    described_class.call(favoritable: article, user: leader)
+
+    expect(article).to have_received(:async_score_calc)
+  end
+
   it "creates an audit log entry" do
     allow(Audit::Logger).to receive(:log).and_call_original
 
@@ -38,6 +46,15 @@ RSpec.describe Favorites::Create, type: :service do
 
     expect(result.success?).to be true
     expect(comment.reload.favorited_by_user_id).to eq(leader.id)
+  end
+
+  it "triggers async_score_calc on the favorited comment" do
+    comment = create(:comment, commentable: article, user: author)
+    allow(comment).to receive(:async_score_calc)
+
+    described_class.call(favoritable: comment, user: leader)
+
+    expect(comment).to have_received(:async_score_calc)
   end
 
   it "rejects an already-favorited record" do

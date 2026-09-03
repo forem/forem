@@ -2,18 +2,37 @@
 pt:
   views:
     leadership:
-      heading: Liderança Comunitária
+      heading: Curadoria Comunitária
+      subtitle: Curadoria de conteúdo de qualidade, valorização de contribuidores notáveis e incentivo a discussões significativas.
       icon:
-        leader_alt: Líder Comunitário
+        leader_alt: Curador Comunitário
       nav:
         aria_label: Seções
-      curation:
-        heading: Curadoria
-        allowance: "Você tem %{remaining} favoritos restantes."
-        comment_on: Comentário em “%{title}”
-        empty: Você ainda não favoritou nenhum conteúdo.
-      discussion:
-        heading: Aprofundar a Discussão
-        subtitle: Estimule o engajamento participando da discussão.
-        cta: Comentar
-        empty: Nenhum post para recomendar.
+        community: Escolhas da comunidade (24h)
+        yours: Suas escolhas
+      allowance:
+        remaining_html: "Você tem <strong class=\"color-base-100\">%{count}</strong> joias restantes para escolher."
+        replenish_note: "Suas joias se renovam conforme suas escolhas geram impacto e discussões de qualidade na comunidade."
+      explainer:
+        heading: Como funciona a curadoria
+        human_touch_title: O poder da curadoria humana
+        human_touch_body: "Algoritmos medem cliques, mas apenas pessoas reconhecem o verdadeiro valor, a originalidade e o cuidado na escrita. Como curador comunitário, suas escolhas destacam publicações de alto valor."
+        spark_discussions_title: Estimule a discussão
+        spark_discussions_body: "Um excelente conteúdo muitas vezes só precisa de um pontapé inicial. Quando escolher uma publicação com poucos comentários, participe e inicie a conversa."
+        principles_title: Diretrizes de curadoria
+        principles_body: "Foque em profundidade, utilidade e ideias construtivas. Destaque novos autores promissores e contribuidores constantes."
+      sections:
+        community_heading: Joias da comunidade (últimas 24h)
+        community_empty: Nenhuma joia foi escolhida nas últimas 24 horas. Seja o primeiro a escolher uma!
+        yours_heading: Joias escolhidas por você
+        yours_empty: Você ainda não escolheu nenhuma joia. Explore a comunidade e destaque os artigos e comentários merecedores.
+      cards:
+        picked_by_you: Escolhido por você
+        picked_by_user: "Escolhido como joia por @%{username}"
+        comments_count:
+          one: "%{count} comentário"
+          other: "%{count} comentários"
+        start_discussion: Iniciar a discussão
+        further_discussion: Aprofundar a discussão
+        view_discussion: Ver a discussão
+        comment_on: "Comentário em “%{title}”"

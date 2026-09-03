@@ -1,19 +1,37 @@
----
 en:
   views:
     leadership:
-      heading: Community Leadership
+      heading: Community Curation
+      subtitle: Curating quality content, elevating outstanding contributors, and sparking meaningful discussions.
       icon:
-        leader_alt: Community Leader
+        leader_alt: Community Curator
       nav:
         aria_label: Sections
-      curation:
-        heading: Curation
-        allowance: "You have %{remaining} favorites remaining."
-        comment_on: Comment on “%{title}”
-        empty: You haven't favorited any content yet.
-      discussion:
-        heading: Further the Discussion
-        subtitle: Spark engagement by joining the discussion.
-        cta: Comment
-        empty: No posts to recommend.
+        community: Community Picks (24h)
+        yours: Your Picks
+      allowance:
+        remaining_html: "You have <strong class=\"color-base-100\">%{count}</strong> gem picks remaining."
+        replenish_note: "Gems replenish as your picks generate community impact and meaningful discussions."
+      explainer:
+        heading: How Curation Works
+        human_touch_title: The Power of Human Curation
+        human_touch_body: "Algorithms measure clicks, but only human readers recognize genuine insight, craftsmanship, and utility. As a Community Curator, your picks highlight high-value posts and help them bubble up across the platform."
+        spark_discussions_title: Spark the Discussion
+        spark_discussions_body: "Great writing often just needs a conversation starter. When you pick a post with few comments, leave a thoughtful response to get the dialogue rolling."
+        principles_title: Curator Guidelines
+        principles_body: "Focus on depth, usefulness, and constructive ideas. Look for promising new authors alongside established voices."
+      sections:
+        community_heading: Community Gems (Past 24 Hours)
+        community_empty: No gems have been picked in the past 24 hours. Be the first to pick one!
+        yours_heading: Gems Picked by You
+        yours_empty: You haven't picked any gems yet. Browse the community and pick articles or comments that deserve more spotlight.
+      cards:
+        picked_by_you: Picked by you
+        picked_by_user: "Picked by @%{username}"
+        comments_count:
+          one: "%{count} comment"
+          other: "%{count} comments"
+        start_discussion: Start the discussion
+        further_discussion: Further the discussion
+        view_discussion: View discussion
+        comment_on: "Comment on “%{title}”"

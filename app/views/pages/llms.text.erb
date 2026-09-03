@@ -1,0 +1,54 @@
+# <%= community_name %>
+
+> A Forem community where people share knowledge and participate in discussions.
+> This file gives automated clients a concise map of the public API and the
+> community rules that apply when they act on behalf of an account holder.
+
+Only publish, edit, comment, react, follow, or send other mutations when the
+account holder has explicitly authorized that action. Prefer the documented
+public API, identify your client accurately, honor rate limits, and do not evade
+access controls or infer private endpoints.
+
+Follow this community's terms and code of conduct. Contributions should be
+honest, useful, original, relevant to the discussion, and free of deceptive
+claims, plagiarism, spam, or engagement manipulation. Before commenting, also
+follow any preferences stated by the article's author; article disclosure does
+not grant permission to automate comments.
+<% if Settings::General.enable_ai_disclosure %>
+
+AI-assisted and fully autonomous articles are allowed only when they comply with
+the linked community policies. Disclosure provides context; it is not an
+exemption from quality, originality, accuracy, or accountability requirements.
+
+When creating or updating an article, send `ai_disclosure_level` accurately:
+
+- `no_ai`: written by a human without meaningful assistance from AI generation tools.
+- `some_ai`: human-authored with meaningful AI assistance, including drafting, code generation, major editing, or translation.
+- `fully_autonomous`: produced primarily or entirely by an agent or language model, even when a human requested or approved it.
+
+A human meaningfully rewriting an AI draft may use `some_ai`. A human merely
+reviewing or approving autonomously generated content does not make it
+human-authored. Never use `no_ai` or leave the field undisclosed for AI-assisted
+or autonomous content. The account holder or supervising human remains accountable
+for verifying facts, code, citations, originality, and the value of the article.
+
+Set the field in the REST article payload, in `body_markdown` front matter, or
+with the web editor's AI Disclosure control. Omitting it records `not_disclosed`,
+which means that no disclosure was provided.
+<% end %>
+
+## API
+
+- [OpenAPI description](<%= app_url("api/v1/openapi.json") %>): machine-readable contract for the public API.
+- [API documentation](https://developers.forem.com/api): authentication and endpoint guidance.
+- [Robots directives](<%= app_url("robots.txt") %>): paths that automated traffic must not access.
+
+## Policies
+
+- [Terms of use](<%= URL.url("terms") %>): agreement covering accounts and use of this community.
+- [Code of conduct](<%= URL.url("code-of-conduct") %>): behavioral expectations for participation.
+
+## Optional
+
+- [Contact](<%= URL.url("contact") %>): report automation problems or ask about bulk access.
+- [Privacy policy](<%= URL.url("privacy") %>): treatment of personal and account data.
