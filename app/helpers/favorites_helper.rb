@@ -90,6 +90,7 @@ module FavoritesHelper
         modal_remaining_zero: t("favorites.modal.remaining_zero"),
         modal_remaining_one: t("favorites.modal.remaining_one"),
         modal_remaining_other: t("favorites.modal.remaining_other"),
+        modal_remaining_unlimited: t("favorites.modal.remaining_unlimited"),
         modal_close: t("favorites.modal.close"),
         modal_exhausted_title: t("favorites.modal_exhausted.title"),
         modal_exhausted_body: t("favorites.modal_exhausted.body"),

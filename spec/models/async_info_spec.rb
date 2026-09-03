@@ -39,6 +39,13 @@ RSpec.describe AsyncInfo do
       expect(described_class.to_hash(user: user, context: context)[:favorite_allowance]).to eq(3)
     end
 
+    it "sends a nil favorite allowance for an admin curator" do
+      user.add_role(:admin)
+      user.add_role(:community_leader_level_1)
+
+      expect(described_class.to_hash(user: user, context: context)[:favorite_allowance]).to be_nil
+    end
+
     it "includes a list of admin_organization_ids for the current user" do
       org = create(:organization)
       create(:organization_membership, user: user, organization: org, type_of_user: "admin")
