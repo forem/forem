@@ -5,6 +5,7 @@ class SurveyMailer < ApplicationMailer
     @user = params[:user]
     @survey = params[:survey]
     @community_name = Settings::Community.community_name(subforem_id: subforem_id)
+    @extra_email_context_html = @survey.extra_email_context_html.presence
 
     if @survey.industry?
       subject = "You've been randomly selected for a very quick #{@community_name} Industry Survey"
@@ -25,13 +26,15 @@ class SurveyMailer < ApplicationMailer
         "community_name" => @community_name,
         # Optional per-survey paragraph, rendered above the CTA when present.
         "extra_email_context_paragraph" => @survey.extra_email_context_paragraph.presence,
-        "subject" => subject
+        "extra_email_context_paragraph_html" => @extra_email_context_html,
+        "extra_email_context_html" => @extra_email_context_html,
+        "subject" => subject,
       },
     )
 
     mail(
       to: @user.email,
-      subject: subject
+      subject: subject,
     )
   end
 end

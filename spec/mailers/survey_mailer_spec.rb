@@ -54,6 +54,30 @@ RSpec.describe SurveyMailer, type: :mailer do
       end
     end
 
+    context "when survey has HTML in extra_email_context_paragraph" do
+      let(:survey) do
+        create(:survey,
+               title: "HTML Survey",
+               extra_email_context_paragraph: '<p><a href="https://dev.to" target="_blank">our announcement</a> and ' \
+                                              "<strong>details</strong>.</p>")
+      end
+
+      it "renders unescaped safe HTML in the email body" do
+        expect(mail.body.encoded).to include('target="_blank">our announcement</a>')
+        expect(mail.body.encoded).to include("<strong>details</strong>")
+      end
+
+      it "sanitizes unsafe HTML tags and handlers" do
+        survey.update!(
+          extra_email_context_paragraph: 'Safe <script>alert(1)</script><a href="https://dev.to" onclick="h()">link</a>',
+        )
+        expect(mail.body.encoded).not_to include("<script>")
+        expect(mail.body.encoded).not_to include("onclick")
+        expect(mail.body.encoded).to include(">link</a>")
+        expect(mail.body.encoded).to include("https%3A%2F%2Fdev.to")
+      end
+    end
+
     context "when routed through Customer.io with the default (pulse) survey" do
       before do
         allow(ApplicationConfig).to receive(:[]).and_call_original
@@ -73,6 +97,10 @@ RSpec.describe SurveyMailer, type: :mailer do
         expect(settings[:message_data]["community_name"]).to eq(community_name)
         expect(settings[:message_data]["extra_email_context_paragraph"])
           .to eq("This is a super important survey.")
+        expect(settings[:message_data]["extra_email_context_paragraph_html"])
+          .to eq("<p>This is a super important survey.</p>")
+        expect(settings[:message_data]["extra_email_context_html"])
+          .to eq("<p>This is a super important survey.</p>")
         expect(settings[:message_data]["subject"]).to eq(expected_subject)
       end
 
@@ -84,6 +112,8 @@ RSpec.describe SurveyMailer, type: :mailer do
         settings = mail.message.delivery_method.settings
 
         expect(settings[:message_data]["extra_email_context_paragraph"]).to be_nil
+        expect(settings[:message_data]["extra_email_context_paragraph_html"]).to be_nil
+        expect(settings[:message_data]["extra_email_context_html"]).to be_nil
       end
     end
 
