@@ -8,8 +8,8 @@
   <p>You have been randomly selected to participate in a <%= @community_name %> Pulse Survey.</p>
 <% end %>
 
-<% if @survey.extra_email_context_paragraph.present? %>
-  <p><%= @survey.extra_email_context_paragraph %></p>
+<% if @survey.extra_email_context_html.present? %>
+  <%= @survey.extra_email_context_html.html_safe %>
 <% end %>
 
 <p>Please take a few minutes to complete the survey here:</p>

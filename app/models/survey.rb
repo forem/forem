@@ -84,6 +84,15 @@ class Survey < ApplicationRecord
     target_response_count.to_i > 0 && target_completion_date.present?
   end
 
+  def extra_email_context_html
+    return if extra_email_context_paragraph.blank?
+
+    MarkdownProcessor::Parser.new(extra_email_context_paragraph).evaluate_markdown(
+      allowed_tags: MarkdownProcessor::AllowedTags::EMAIL_SURVEY,
+      allowed_attributes: MarkdownProcessor::AllowedAttributes::EMAIL_SURVEY,
+    )&.strip
+  end
+
   private
 
   def target_completion_date_in_future

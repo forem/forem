@@ -25,13 +25,15 @@ class SurveyMailer < ApplicationMailer
         "community_name" => @community_name,
         # Optional per-survey paragraph, rendered above the CTA when present.
         "extra_email_context_paragraph" => @survey.extra_email_context_paragraph.presence,
+        "extra_email_context_paragraph_html" => @survey.extra_email_context_html.presence,
+        "extra_email_context_html" => @survey.extra_email_context_html.presence,
         "subject" => subject
       },
     )
 
     mail(
       to: @user.email,
-      subject: subject
+      subject: subject,
     )
   end
 end

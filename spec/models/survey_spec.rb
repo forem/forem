@@ -323,4 +323,36 @@ RSpec.describe Survey, type: :model do
       end
     end
   end
+
+  describe "#extra_email_context_html" do
+    it "returns nil when extra_email_context_paragraph is nil or blank" do
+      expect(build(:survey, extra_email_context_paragraph: nil).extra_email_context_html).to be_nil
+      expect(build(:survey, extra_email_context_paragraph: "").extra_email_context_html).to be_nil
+      expect(build(:survey, extra_email_context_paragraph: "   ").extra_email_context_html).to be_nil
+    end
+
+    it "formats plain text wrapped in a paragraph" do
+      survey = build(:survey, extra_email_context_paragraph: "This is a quick survey.")
+      expect(survey.extra_email_context_html).to eq("<p>This is a quick survey.</p>")
+    end
+
+    it "renders markdown formatting as HTML" do
+      survey = build(:survey, extra_email_context_paragraph: "This is *quick* with a [link](https://dev.to).")
+      expect(survey.extra_email_context_html).to eq('<p>This is <em>quick</em> with a <a href="https://dev.to">link</a>.</p>')
+    end
+
+    it "preserves safe HTML tags and attributes" do
+      context = '<p>Check out our <a href="https://dev.to" target="_blank"><strong>post</strong></a>.</p>'
+      survey = build(:survey, extra_email_context_paragraph: context)
+      expect(survey.extra_email_context_html).to eq(context)
+    end
+
+    it "strips unsafe tags and event handlers" do
+      context = '<p>Hello <script>alert("xss")</script><a href="https://dev.to" onclick="steal()">link</a></p>'
+      survey = build(:survey, extra_email_context_paragraph: context)
+      expect(survey.extra_email_context_html).not_to include("<script>")
+      expect(survey.extra_email_context_html).not_to include("onclick")
+      expect(survey.extra_email_context_html).to include('<a href="https://dev.to">link</a>')
+    end
+  end
 end
