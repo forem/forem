@@ -342,7 +342,7 @@ RSpec.describe Survey, type: :model do
     end
 
     it "preserves safe HTML tags and attributes" do
-      context = '<p>Check out our <a href="https://dev.to" target="_blank"><strong>post</strong></a>.</p>'
+      context = '<p><a href="https://dev.to" target="_blank" rel="noopener noreferrer"><strong>post</strong></a></p>'
       survey = build(:survey, extra_email_context_paragraph: context)
       expect(survey.extra_email_context_html).to eq(context)
     end

@@ -90,6 +90,6 @@ module MarkdownProcessor
 
     EMAIL_COMMENT = %w[href].freeze
 
-    EMAIL_SURVEY = %w[href target].freeze
+    EMAIL_SURVEY = %w[href rel target].freeze
   end
 end
