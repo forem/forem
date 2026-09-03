@@ -192,6 +192,17 @@ RSpec.describe FeedConfig, type: :model do
         expect(sql).not_to include("subforem_id IN") # Added expectation
         expect(sql).not_to include("articles.type_of = 1 AND articles.user_id IN")
       end
+
+      it "does not query RecommendedArticlesList when precomputed_selections_weight is zero" do
+        expect(RecommendedArticlesList).not_to receive(:where)
+        feed_config.score_sql(user)
+      end
+
+      it "does not query user languages when language_match_weight is zero" do
+        feed_config.language_match_weight = 0.0
+        expect(user).not_to receive(:languages)
+        feed_config.score_sql(user)
+      end
     end
 
     context "when all base weights are zero" do
