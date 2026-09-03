@@ -28,6 +28,7 @@ RSpec.describe UserLanguage do
       original_cache = Rails.cache
       Rails.cache = cache_store
       example.run
+    ensure
       Rails.cache = original_cache
     end
 

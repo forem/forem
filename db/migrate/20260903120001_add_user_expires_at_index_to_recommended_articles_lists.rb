@@ -17,17 +17,19 @@ class AddUserExpiresAtIndexToRecommendedArticlesLists < ActiveRecord::Migration[
 
   def down
     safety_assured do
-      execute "SET statement_timeout = 0;"
-      remove_index :recommended_articles_lists,
-                   name: "index_recommended_articles_lists_on_user_and_expires",
-                   if_exists: true,
-                   algorithm: :concurrently
+      with_statement_timeout_disabled do
+        remove_index :recommended_articles_lists,
+                     name: "index_recommended_articles_lists_on_user_and_expires",
+                     if_exists: true,
+                     algorithm: :concurrently
+      end
     end
   end
 
   private
 
   def with_statement_timeout_disabled
+    original_timeout = connection.query_value("SHOW statement_timeout")
     db_user = connection.query_value("SELECT current_user")
     begin
       execute "ALTER ROLE \"#{db_user}\" SET statement_timeout = 0;"
@@ -42,14 +44,20 @@ class AddUserExpiresAtIndexToRecommendedArticlesLists < ActiveRecord::Migration[
     rescue ActiveRecord::StatementInvalid => e
       Rails.logger.warn("Could not reset role statement_timeout: #{e.message}")
     end
+    if original_timeout.present?
+      execute "SET statement_timeout = #{connection.quote(original_timeout)};"
+    else
+      execute "RESET statement_timeout;"
+    end
   end
 
   def drop_invalid_index_if_exists!(index_name)
+    quoted_index_name = connection.quote(index_name)
     query = <<~SQL.squish
       SELECT 1 FROM pg_index i
       JOIN pg_class c ON c.oid = i.indexrelid
-      WHERE c.relname = '#{index_name}' AND NOT i.indisvalid
+      WHERE c.relname = #{quoted_index_name} AND NOT i.indisvalid
     SQL
-    execute "DROP INDEX CONCURRENTLY IF EXISTS #{index_name};" if select_value(query)
+    execute "DROP INDEX CONCURRENTLY IF EXISTS #{connection.quote_table_name(index_name)};" if select_value(query)
   end
 end
