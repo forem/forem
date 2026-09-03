@@ -500,14 +500,24 @@ class StoriesController < ApplicationController
   def assign_user_comments
     comment_count = helpers.comment_count(params[:view])
     @comments = []
-    return unless user_signed_in? && @user.comments_count.positive?
+    @user_profile_comments_count = 0
+    return unless @user.comments_count.positive?
 
-    @comments = @user.comments.good_quality.where(deleted: false)
-      .joins("INNER JOIN articles ON articles.id = comments.commentable_id AND comments.commentable_type = 'Article'")
-      .merge(Article.from_subforem)
+    @user_profile_comments = user_profile_comments
+    @user_profile_comments_count = @user_profile_comments.count
+    return unless user_signed_in?
+
+    @comments = @user_profile_comments
       .order(created_at: :desc)
       .includes(commentable: [:podcast])
       .limit(comment_count)
+  end
+
+  def user_profile_comments
+    @user.comments.good_quality.where(deleted: false)
+      .joins("INNER JOIN articles ON articles.id = comments.commentable_id AND comments.commentable_type = 'Article'")
+      .merge(Article.from_subforem)
+      .merge(Article.published)
   end
 
   def assign_user_stories

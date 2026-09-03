@@ -1458,7 +1458,8 @@ class Article < ApplicationRecord
 
   def before_destroy_actions
     bust_cache(destroying: true)
-    article_ids = user.article_ids.dup
+    user&.touch(:last_article_at)
+    article_ids = user ? user.article_ids.dup : []
     if organization
       organization.touch(:last_article_at)
       article_ids.concat organization.article_ids
@@ -1739,7 +1740,7 @@ class Article < ApplicationRecord
   def touch_actor_latest_article_updated_at(destroying: false)
     return unless destroying || saved_changes.keys.intersection(%w[title cached_tag_list published archived]).present?
 
-    user.touch(:latest_article_updated_at)
+    user&.touch(:latest_article_updated_at)
     organization&.touch(:latest_article_updated_at)
   end
 
