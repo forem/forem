@@ -21,7 +21,7 @@ class FavoritesController < ApplicationController
       current_user.reload
       render json: {
         success: true,
-        remaining_allowance: current_user.favorite_allowance
+        remaining_allowance: current_user.favorite_allowance_for_client
       }, status: :ok
     else
       render_favorite_error(result.error)

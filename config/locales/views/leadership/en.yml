@@ -12,6 +12,8 @@ en:
       allowance:
         remaining_html: "You have <strong class=\"color-base-100\">%{count}</strong> gem picks remaining."
         replenish_note: "Gems replenish as your picks generate community impact and meaningful discussions."
+        unlimited_html: "You have <strong class=\"color-base-100\">unlimited</strong> gem picks."
+        unlimited_note: "As an admin curator, your gem picks are never metered."
       explainer:
         heading: How Curation Works
         human_touch_title: The Power of Human Curation

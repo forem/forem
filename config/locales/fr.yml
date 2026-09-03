@@ -17,6 +17,7 @@ fr:
       remaining_zero: Vous n'avez plus de pépites à distribuer aujourd'hui.
       remaining_one: Il vous reste 1 pépite à distribuer aujourd'hui.
       remaining_other: Il vous reste %{count} pépites à distribuer aujourd'hui.
+      remaining_unlimited: Vous disposez de pépites illimitées à distribuer.
       close: Compris
     modal_exhausted:
       title: Plus de pépites

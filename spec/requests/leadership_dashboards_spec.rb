@@ -68,6 +68,20 @@ RSpec.describe "Curation dashboard" do
       end
     end
 
+    context "when signed in as an admin curator" do
+      let(:admin_curator) { create(:user, :admin, :community_leader_level_1) }
+
+      before { sign_in admin_curator }
+
+      it "renders unlimited gem picks allowance text" do
+        get curation_path
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(I18n.t("views.leadership.allowance.unlimited_html"))
+        expect(response.body).to include(I18n.t("views.leadership.allowance.unlimited_note"))
+      end
+    end
+
     context "when signed in as a non-leader" do
       it "returns 404" do
         sign_in create(:user)

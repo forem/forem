@@ -12,6 +12,8 @@ fr:
       allowance:
         remaining_html: "Il vous reste <strong class=\"color-base-100\">%{count}</strong> pépites à attribuer."
         replenish_note: "Vos pépites se renouvellent au fur et à mesure que vos sélections génèrent de l'engagement et des échanges de qualité."
+        unlimited_html: "Vous disposez de pépites <strong class=\"color-base-100\">illimitées</strong> à attribuer."
+        unlimited_note: "En tant qu'administrateur curateur, vos pépites ne sont jamais limitées."
       explainer:
         heading: Comment fonctionne la curation
         human_touch_title: L'importance de la curation humaine

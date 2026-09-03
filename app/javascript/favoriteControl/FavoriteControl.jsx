@@ -97,6 +97,7 @@ export const FavoriteControl = ({
   modalRemainingZero = 'You have no more gems left to give out today.',
   modalRemainingOne = 'You have 1 more gem left to give out today.',
   modalRemainingOther = 'You have %{count} more gems left to give out today.',
+  modalRemainingUnlimited = 'You have unlimited gems to give out.',
   modalClose = 'Got it',
   modalExhaustedTitle = 'Out of Gems',
   modalExhaustedBody = 'You have no more gems left to give out today. Your allowance will refresh soon!',
@@ -122,14 +123,17 @@ export const FavoriteControl = ({
       return null;
     }
 
-    let remainingText = modalRemainingOther.replace(
-      '%{count}',
-      String(remainingAllowance ?? 0),
-    );
+    // A null allowance means the curator is not metered.
+    let remainingText = modalRemainingUnlimited;
     if (remainingAllowance === 1) {
       remainingText = modalRemainingOne;
     } else if (remainingAllowance === 0) {
       remainingText = modalRemainingZero;
+    } else if (remainingAllowance != null) {
+      remainingText = modalRemainingOther.replace(
+        '%{count}',
+        String(remainingAllowance),
+      );
     }
 
     return (
@@ -283,10 +287,11 @@ export const FavoriteControl = ({
       if (response.ok) {
         const data = await response.json().catch(() => ({}));
         const remaining =
-          data.remaining_allowance ??
-          (currentUser?.favorite_allowance != null
-            ? Math.max(0, currentUser.favorite_allowance - 1)
-            : 0);
+          data.remaining_allowance !== undefined
+            ? data.remaining_allowance
+            : currentUser?.favorite_allowance != null
+              ? Math.max(0, currentUser.favorite_allowance - 1)
+              : null;
         setFavorited(true);
         setFavoritedById(userId);
         setRemainingAllowance(remaining);

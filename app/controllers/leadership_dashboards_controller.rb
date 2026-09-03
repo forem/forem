@@ -9,7 +9,8 @@ class LeadershipDashboardsController < ApplicationController
     return head :not_found unless current_user.community_leader?
 
     @section = SECTIONS.include?(params[:section]) ? params[:section] : "community"
-    @favorite_allowance = current_user.favorite_allowance
+    @unlimited_favorites = current_user.unlimited_favorites?
+    @favorite_allowance = current_user.favorite_allowance_for_client
 
     if @section == "yours"
       @favorited = Favorites::Fetch.call(user: current_user, page: params[:page])

@@ -56,6 +56,25 @@ RSpec.describe "Favorites" do
       end
     end
 
+    context "when signed in as an admin curator" do
+      let(:admin_curator) { create(:user, :admin, :community_leader_level_1) }
+
+      before do
+        allow(Settings::UserExperience)
+          .to receive(:community_leader_l1_favorite_allowance).and_return(0)
+        sign_in admin_curator
+      end
+
+      it "favorites past the leader allowance and reports an unlimited balance" do
+        post favorites_path, params: { favoritable_type: "Article", favoritable_id: article.id }, as: :json
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body["success"]).to be(true)
+        expect(response.parsed_body["remaining_allowance"]).to be_nil
+        expect(article.reload.favorited_by_user_id).to eq(admin_curator.id)
+      end
+    end
+
     context "when signed in as a non-leader with no earned credits" do
       before { sign_in create(:user) }
 
