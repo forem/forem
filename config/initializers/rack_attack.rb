@@ -112,7 +112,7 @@ module Rack
     end
 
     throttle("search_feed_content_throttle", limit: 10, period: 1.minute) do |request|
-      if request.path == "/search/feed_content"
+      if request.path.chomp("/") == "/search/feed_content"
         request.track_and_return_ip
       end
     end
