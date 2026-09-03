@@ -3,63 +3,29 @@ class AddFeedLookbackIndexToArticles < ActiveRecord::Migration[7.0]
 
   def up
     safety_assured do
-      with_statement_timeout_disabled do
-        drop_invalid_index_if_exists!("index_articles_on_published_at_and_score")
-
-        add_index :articles,
-                  %i[published_at score],
-                  name: "index_articles_on_published_at_and_score",
-                  where: "published = true",
-                  order: { published_at: :desc },
-                  algorithm: :concurrently,
-                  if_not_exists: true
+      # Drop leftover invalid indexes if a previous attempt was interrupted
+      invalid_query = <<~SQL.squish
+        SELECT 1 FROM pg_index i JOIN pg_class c ON c.oid = i.indexrelid
+        WHERE c.relname = 'index_articles_on_published_at_and_score' AND NOT i.indisvalid
+      SQL
+      if select_value(invalid_query)
+        execute "SET statement_timeout = 0;"
+        execute "DROP INDEX CONCURRENTLY IF EXISTS index_articles_on_published_at_and_score;"
       end
+
+      execute "SET statement_timeout = 0;"
+      execute <<~SQL.squish
+        CREATE INDEX CONCURRENTLY IF NOT EXISTS index_articles_on_published_at_and_score
+        ON articles (published_at DESC, score)
+        WHERE (published = true);
+      SQL
     end
   end
 
   def down
     safety_assured do
-      with_statement_timeout_disabled do
-        remove_index :articles,
-                     name: "index_articles_on_published_at_and_score",
-                     if_exists: true,
-                     algorithm: :concurrently
-      end
+      execute "SET statement_timeout = 0;"
+      execute "DROP INDEX CONCURRENTLY IF EXISTS index_articles_on_published_at_and_score;"
     end
-  end
-
-  private
-
-  def with_statement_timeout_disabled
-    original_timeout = connection.query_value("SHOW statement_timeout")
-    db_user = connection.query_value("SELECT current_user")
-    begin
-      execute "ALTER ROLE \"#{db_user}\" SET statement_timeout = 0;"
-    rescue ActiveRecord::StatementInvalid => e
-      Rails.logger.warn("Could not alter role statement_timeout: #{e.message}")
-    end
-    execute "SET statement_timeout = 0;"
-    yield
-  ensure
-    begin
-      execute "ALTER ROLE \"#{db_user}\" RESET statement_timeout;"
-    rescue ActiveRecord::StatementInvalid => e
-      Rails.logger.warn("Could not reset role statement_timeout: #{e.message}")
-    end
-    if original_timeout.present?
-      execute "SET statement_timeout = #{connection.quote(original_timeout)};"
-    else
-      execute "RESET statement_timeout;"
-    end
-  end
-
-  def drop_invalid_index_if_exists!(index_name)
-    quoted_index_name = connection.quote(index_name)
-    query = <<~SQL.squish
-      SELECT 1 FROM pg_index i
-      JOIN pg_class c ON c.oid = i.indexrelid
-      WHERE c.relname = #{quoted_index_name} AND NOT i.indisvalid
-    SQL
-    execute "DROP INDEX CONCURRENTLY IF EXISTS #{connection.quote_table_name(index_name)};" if select_value(query)
   end
 end
