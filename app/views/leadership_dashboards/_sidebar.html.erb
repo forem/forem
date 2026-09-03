@@ -8,10 +8,14 @@
       <h2 class="fs-base fw-bold m-0"><%= t("views.leadership.icon.leader_alt") %></h2>
     </div>
     <p class="fs-s mb-2">
-      <%= t("views.leadership.allowance.remaining_html", count: @favorite_allowance).html_safe %>
+      <% if @unlimited_favorites %>
+        <%= t("views.leadership.allowance.unlimited_html").html_safe %>
+      <% else %>
+        <%= t("views.leadership.allowance.remaining_html", count: @favorite_allowance).html_safe %>
+      <% end %>
     </p>
     <p class="fs-xs color-base-60 m-0">
-      <%= t("views.leadership.allowance.replenish_note") %>
+      <%= @unlimited_favorites ? t("views.leadership.allowance.unlimited_note") : t("views.leadership.allowance.replenish_note") %>
     </p>
   </div>
 

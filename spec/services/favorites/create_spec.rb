@@ -117,6 +117,33 @@ RSpec.describe Favorites::Create, type: :service do
     end
   end
 
+  describe "favoriting by admin curators" do
+    let(:admin_curator) { create(:user, :admin, :community_leader_level_1) }
+
+    before do
+      allow(Settings::UserExperience)
+        .to receive(:community_leader_l1_favorite_allowance).and_return(1)
+    end
+
+    it "keeps favoriting past the leader budget" do
+      described_class.call(favoritable: create(:article, user: author), user: admin_curator)
+
+      result = described_class.call(favoritable: article, user: admin_curator)
+
+      expect(result.success?).to be true
+      expect(article.reload.favorited_by_user_id).to eq(admin_curator.id)
+    end
+
+    it "leaves an admin who does not curate metered" do
+      admin = create(:user, :admin)
+
+      result = described_class.call(favoritable: article, user: admin)
+
+      expect(result.error).to eq(:no_allowance)
+      expect(article.reload.favorited_by_user_id).to be_nil
+    end
+  end
+
   describe "favoriting by regular users" do
     it "lets the user spend earned credits" do
       spender = create(:user, earned_favorites_count: 1)

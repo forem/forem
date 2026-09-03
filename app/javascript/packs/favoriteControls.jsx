@@ -27,6 +27,7 @@ function initializeFavoriteControls(currentUser) {
       modalRemainingZero,
       modalRemainingOne,
       modalRemainingOther,
+      modalRemainingUnlimited,
       modalClose,
       modalExhaustedTitle,
       modalExhaustedBody,
@@ -50,6 +51,7 @@ function initializeFavoriteControls(currentUser) {
         modalRemainingZero={modalRemainingZero}
         modalRemainingOne={modalRemainingOne}
         modalRemainingOther={modalRemainingOther}
+        modalRemainingUnlimited={modalRemainingUnlimited}
         modalClose={modalClose}
         modalExhaustedTitle={modalExhaustedTitle}
         modalExhaustedBody={modalExhaustedBody}

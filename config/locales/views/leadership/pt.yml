@@ -13,6 +13,8 @@ pt:
       allowance:
         remaining_html: "Você tem <strong class=\"color-base-100\">%{count}</strong> joias restantes para escolher."
         replenish_note: "Suas joias se renovam conforme suas escolhas geram impacto e discussões de qualidade na comunidade."
+        unlimited_html: "Você tem joias <strong class=\"color-base-100\">ilimitadas</strong> para escolher."
+        unlimited_note: "Como curador administrador, suas joias nunca são limitadas."
       explainer:
         heading: Como funciona a curadoria
         human_touch_title: O poder da curadoria humana
