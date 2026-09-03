@@ -1779,6 +1779,34 @@ RSpec.describe Article do
     end
   end
 
+  describe ".with_at_least_home_feed_minimum_score" do
+    let(:leader) { create(:user, :community_leader_level_1) }
+
+    before do
+      allow(Settings::UserExperience).to receive(:home_feed_minimum_score).and_return(10)
+    end
+
+    it "includes articles with score at or above the minimum score" do
+      article = create(:article, score: 10, featured: false, favorited_by_user: nil)
+      expect(described_class.with_at_least_home_feed_minimum_score).to include(article)
+    end
+
+    it "excludes articles with score below the minimum score when not featured or favorited" do
+      article = create(:article, score: 5, featured: false, favorited_by_user: nil)
+      expect(described_class.with_at_least_home_feed_minimum_score).not_to include(article)
+    end
+
+    it "includes featured articles even if score is below the minimum score" do
+      article = create(:article, score: -5, featured: true, favorited_by_user: nil)
+      expect(described_class.with_at_least_home_feed_minimum_score).to include(article)
+    end
+
+    it "includes favorited (gemmed) articles even if score is below the minimum score" do
+      article = create(:article, score: -5, featured: false, favorited_by_user: leader, favorited_at: Time.current)
+      expect(described_class.with_at_least_home_feed_minimum_score).to include(article)
+    end
+  end
+
   describe ".cached_admin_published_with" do
     let(:admin) { create(:user, :admin) }
     let(:cache_store) { ActiveSupport::Cache::MemoryStore.new }
