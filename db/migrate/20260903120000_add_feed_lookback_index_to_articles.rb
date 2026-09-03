@@ -38,11 +38,10 @@ class AddFeedLookbackIndexToArticles < ActiveRecord::Migration[7.0]
       host: direct_host,
       port: raw.port,
       user: raw.user,
-      dbname: raw.db,
-      options: "-c statement_timeout=0"
+      dbname: raw.db
     }
     conn_params[:password] = raw.pass if raw.pass.present?
-    conn_params[:sslmode] = "require" if raw.ssl_in_use?
+    conn_params[:sslmode] = "require" if direct_host.present? && !direct_host.start_with?("/")
 
     direct_conn = PG::Connection.connect(conn_params)
     begin
