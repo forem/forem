@@ -173,6 +173,17 @@ RSpec.describe "StoriesIndex" do
       expect(response.body).not_to include(CGI.escapeHTML(article.title))
     end
 
+    it "renders a favorited (gemmed) article even if below home feed minimum score" do
+      allow(Settings::UserExperience).to receive(:home_feed_minimum_score).and_return(50)
+      favorited_article = create(:article, score: 5, favorited_by_user: create(:user), favorited_at: Time.current)
+      unfavorited_low_score = create(:article, score: 5, featured: false, favorited_by_user: nil)
+
+      get "/"
+
+      expect(response.body).to include(CGI.escapeHTML(favorited_article.title))
+      expect(response.body).not_to include(CGI.escapeHTML(unfavorited_low_score.title))
+    end
+
     def renders_proper_description
       expect(response.body).to include(Settings::Community.community_description)
     end

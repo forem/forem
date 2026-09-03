@@ -572,12 +572,11 @@ class Article < ApplicationRecord
     end
   }
 
-  # @note This includes the `featured` scope, which may or may not be
-  #       something we expose going forward.  However, it was
-  #       something used in two of the three queries we had that
-  #       included the where `score > Settings::UserExperience.home_feed_minimum_score`
+  # @note This includes the `featured` and `favorited` scopes, which allows
+  #       featured and community favorite (gemmed) articles to bypass the
+  #       home feed minimum score threshold.
   scope :with_at_least_home_feed_minimum_score, lambda {
-    featured.or(
+    featured.or(favorited).or(
       where(score: Settings::UserExperience.home_feed_minimum_score..),
     )
   }
