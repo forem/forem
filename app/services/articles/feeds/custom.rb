@@ -11,15 +11,15 @@ module Articles
         @feed_config = feed_config
       end
 
-      def default_home_feed(**_kwargs)
+      def default_home_feed(comments_variant: "more_inclusive_recent_good_comments", **_kwargs)
         return [] if @feed_config.nil? || @user.nil?
         
-        execute_feed_query
+        execute_feed_query(comments_variant: comments_variant)
       end
 
       private
 
-      def execute_feed_query
+      def execute_feed_query(comments_variant: "more_inclusive_recent_good_comments")
         # Optimize lookback calculation - cache the result
         # Note: Partial indexes are optimized for 7-day lookback (covers 95%+ of queries)
         # If you change this, consider updating the partial indexes in the migration
@@ -29,8 +29,8 @@ module Articles
         # Pre-calculate user-specific data to avoid repeated database calls
         user_data = preload_user_data
         
-        # Build optimized base query with better index usage
-        articles = build_optimized_base_query(lookback, user_data)
+        # Build optimized base query with better index usage and preloaded associations
+        articles = build_optimized_base_query(lookback, user_data, comments_variant: comments_variant)
         
         # Apply user-specific filters early in the query
         articles = apply_user_filters(articles, user_data)
@@ -58,23 +58,34 @@ module Articles
         }
       end
 
-      def build_optimized_base_query(lookback, user_data)
-        # Use a more efficient query structure with better index hints
+      def build_optimized_base_query(lookback, user_data, comments_variant: "more_inclusive_recent_good_comments")
+        # Use limited_column_select with computed_score to avoid transferring heavy columns
+        # (e.g., body_markdown, body_html, 768-dimension semantic_embedding, tsvector).
         base_query = Article.published
           .with_at_least_home_feed_minimum_score
           .where("articles.published_at > ?", lookback)
-          .select("articles.*, (#{score_sql_method}) as computed_score")
+          .limited_column_select
+          .select("(#{score_sql_method}) as computed_score")
           .order(Arel.sql("computed_score DESC"))
           .limit(@number_of_articles)
           .offset((@page - 1) * @number_of_articles)
-          .limited_column_select
-          .includes(:subforem) # Only include essential associations
+          .includes(:subforem, :distinct_reaction_categories, :context_notes)
           .from_subforem
 
-        # Include necessary associations for performance
-        base_query = base_query.includes(:distinct_reaction_categories, :context_notes, top_comments: :user)
-        
-        base_query
+        comments_assoc = case comments_variant.to_s
+                         when "more_inclusive_recent_good_comments"
+                           { more_inclusive_recent_good_comments: :user }
+                         when "recent_good_comments"
+                           { recent_good_comments: :user }
+                         when "more_inclusive_top_comments"
+                           { more_inclusive_top_comments: :user }
+                         when "most_inclusive_recent_good_comments"
+                           { most_inclusive_recent_good_comments: :user }
+                         else
+                           { top_comments: :user }
+                         end
+
+        base_query.includes(comments_assoc)
       end
 
       def score_sql_method
@@ -93,7 +104,7 @@ module Articles
         end
         
         if user_data[:hidden_tags].any?
-          articles = if ENV["OPTIMIZED_FEED_TAGS_QUERY"] == "true"
+          articles = if Article.column_names.include?("tags_array") && ENV["OPTIMIZED_FEED_TAGS_QUERY"] != "false"
                        articles.where.not("articles.tags_array && ARRAY[?]::text[]", user_data[:hidden_tags].map(&:to_s))
                      else
                        articles.not_cached_tagged_with_any(user_data[:hidden_tags])
