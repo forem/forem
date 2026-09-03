@@ -192,6 +192,11 @@ RSpec.describe Article do
           expect { article.destroy }.to change { user.reload.last_article_at }.from(old_last_article_at)
         end
       end
+
+      it "does not raise an error when the article has no associated user" do
+        article.update_column(:user_id, nil)
+        expect { article.reload.destroy }.not_to raise_error
+      end
     end
 
     describe "#validate_video" do

@@ -500,6 +500,7 @@ class StoriesController < ApplicationController
   def assign_user_comments
     comment_count = helpers.comment_count(params[:view])
     @comments = []
+    @user_profile_comments_count = 0
     return unless @user.comments_count.positive?
 
     @user_profile_comments = user_profile_comments
