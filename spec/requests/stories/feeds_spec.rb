@@ -824,6 +824,31 @@ RSpec.describe "Stories::Feeds" do
       response_article = response.parsed_body.find { |item| item["id"] == article.id }
       expect(response_article["feed_config"]).to eq(feed_config.id)
     end
+
+    it "renders configured feed payload using limited_column_select with preloaded comments" do
+      feed_config = create(:feed_config)
+      sign_in user
+      create(:comment, commentable: article, user: user, score: 5)
+      article.update_columns(comments_count: 1)
+
+      allow(Settings::UserExperience).to receive(:feed_strategy).and_return("configured")
+      get stories_feed_path(page: 1, item: feed_config.id)
+
+      expect(response).to have_http_status(:ok)
+      response_article = response.parsed_body.find { |item| item["id"] == article.id }
+      expect(response_article).to include(
+        "id" => article.id,
+        "title" => article.title,
+        "path" => article.path,
+        "comments_count" => 1,
+        "feed_config" => feed_config.id,
+      )
+      expect(response_article["top_comments"]).not_to be_empty
+      expect(response_article["top_comments"].first).to include(
+        "user_id" => user.id,
+        "username" => user.username,
+      )
+    end
   end
 
   describe "public_reaction_categories cache invalidation" do

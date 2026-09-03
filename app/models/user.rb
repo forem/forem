@@ -543,6 +543,13 @@ class User < ApplicationRecord
     end
   end
 
+  def cached_languages
+    cache_name = "user-#{id}/languages"
+    Rails.cache.fetch(cache_name, expires_in: 24.hours) do
+      languages.pluck(:language)
+    end
+  end
+
   def refresh_auto_audience_segments
     if ENV["ENABLE_REFRESH_SEGMENT_WORKERS"]  == "true"
       SegmentedUserRefreshWorker.perform_async(id)
