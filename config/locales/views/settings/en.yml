@@ -303,6 +303,9 @@ en:
         new: Password
         submit: Set New Password
       previous: There is an existing account authorized with that social account.
+      profile_image:
+        remove: Remove profile image
+        remove_description: Your profile will fall back to the default avatar.
       tab:
         Profile: Profile
         Customization: Customization
