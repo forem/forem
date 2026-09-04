@@ -28,6 +28,22 @@
 ################################################################################
 
 experiments:
+  # Home feed for new / low-signal users: per-segment FeedConfig pool vs. the single shared pool.
+  # Enrollment happens in Stories::FeedsController behind the :segmented_feed_configs feature flag.
+  # Page view goals are converted nightly by Users::ConvertPageviewFieldTestGoalsWorker (see schedule.yml).
+  segmented_feed_configs_20260904:
+    started_at: 2026-09-04
+    variants:
+    - control
+    - segmented
+    weights:
+    - 50
+    - 50
+    goals:
+    - user_creates_comment
+    - user_creates_article_reaction
+    - user_views_pages_on_at_least_two_different_days_within_a_week
+    - user_views_pages_on_at_least_four_different_days_within_a_week
   personalized_email_digests_ab_test:
     started_at: 2026-05-19
     variants:

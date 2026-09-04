@@ -1,5 +1,14 @@
 <div class="flex flex-col gap-6">
   <fieldset class="border p-4 rounded-md">
+    <legend class="fw-bold px-2 text-base color-base-90">🎯 Segment</legend>
+    <div class="crayons-field mt-2">
+      <%= f.label :segment, "User Segment", class: "crayons-field__label" %>
+      <p class="fs-xs color-base-60 mb-1">Which pool this config is served from and scored in. "New user" configs only serve users registered in the last <%= FeedConfig::NEW_USER_TENURE.inspect %> or with no reading activity yet.</p>
+      <%= f.select :segment, FeedConfig.segments.keys.map { |s| [s.humanize, s] }, {}, class: "crayons-select" %>
+    </div>
+  </fieldset>
+
+  <fieldset class="border p-4 rounded-md">
     <legend class="fw-bold px-2 text-base color-base-90">🤖 AI & Disclosure Controls</legend>
     <div class="grid grid-cols-1 m:grid-cols-2 gap-4 mt-2">
       <div class="crayons-field">
