@@ -1,0 +1,16 @@
+---
+pt:
+  views:
+    flag_appeals:
+      heading: Enviar um recurso de moderação
+      intro: Se você acredita que sua conta ou conteúdo foi restrito ou sinalizado por engano, explique abaixo. Nossas verificações de segurança automatizadas e equipe de moderação revisarão sua solicitação.
+      reason_label: Por que você acredita que essa restrição ou sinalização foi um engano?
+      reason_placeholder: Forneça contexto sobre sua atividade, caso de uso ou conteúdo restrito...
+      reason_help: Máximo de 3.000 caracteres. Seja conciso e preciso.
+      submit: Enviar recurso
+      cancel: Cancelar
+      submitted_heading: Obrigado pelo envio do seu recurso
+      home_link: Início %{community}
+      already_pending: Você já tem um recurso aberto pendente de análise para este item.
+      appealing_comment_heading: Recurso sobre a sinalização do seu comentário
+      appealing_article_heading: Recurso sobre a sinalização do seu artigo
