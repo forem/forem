@@ -147,6 +147,46 @@ describe('<FavoriteControl />', () => {
       expect(await findByText('You have no more gems left to give out today.')).toBeInTheDocument();
     });
 
+    it('shows an unlimited allowance when the API reports a null remaining allowance', async () => {
+      makeFavorite.mockResolvedValue({
+        ok: true,
+        json: async () => ({ success: true, remaining_allowance: null }),
+      });
+      const { getByLabelText, findByText } = renderControl({
+        currentUser: {
+          id: CURRENT_USER_ID,
+          favorite_allowance: null,
+          community_leader: true,
+        },
+      });
+
+      fireEvent.click(getByLabelText('Pick as gem'));
+
+      expect(
+        await findByText('You have unlimited gems to give out.'),
+      ).toBeInTheDocument();
+    });
+
+    it('lets an unmetered curator favorite instead of showing the out of gems modal', async () => {
+      makeFavorite.mockResolvedValue({
+        ok: true,
+        json: async () => ({ success: true, remaining_allowance: null }),
+      });
+      const { getByLabelText, findByLabelText, queryByText } = renderControl({
+        currentUser: {
+          id: CURRENT_USER_ID,
+          favorite_allowance: null,
+          community_leader: true,
+        },
+      });
+
+      fireEvent.click(getByLabelText('Pick as gem'));
+
+      expect(makeFavorite).toHaveBeenCalled();
+      expect(await findByLabelText('Picked as gem by you')).toBeInTheDocument();
+      expect(queryByText('Out of Gems')).toBeNull();
+    });
+
     it('shows the out of gems modal when a community leader with 0 gems attempts to favorite', async () => {
       const { getByLabelText, getByText, findByText, queryByText } = renderControl({
         currentUser: { id: CURRENT_USER_ID, favorite_allowance: 0, community_leader: true },

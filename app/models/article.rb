@@ -576,12 +576,11 @@ class Article < ApplicationRecord
     end
   }
 
-  # @note This includes the `featured` scope, which may or may not be
-  #       something we expose going forward.  However, it was
-  #       something used in two of the three queries we had that
-  #       included the where `score > Settings::UserExperience.home_feed_minimum_score`
+  # @note This includes the `featured` and `favorited` scopes, which allows
+  #       featured and community favorite (gemmed) articles to bypass the
+  #       home feed minimum score threshold.
   scope :with_at_least_home_feed_minimum_score, lambda {
-    featured.or(
+    featured.or(favorited).or(
       where(score: Settings::UserExperience.home_feed_minimum_score..),
     )
   }
@@ -1462,7 +1461,8 @@ class Article < ApplicationRecord
 
   def before_destroy_actions
     bust_cache(destroying: true)
-    article_ids = user.article_ids.dup
+    user&.touch(:last_article_at)
+    article_ids = user ? user.article_ids.dup : []
     if organization
       organization.touch(:last_article_at)
       article_ids.concat organization.article_ids
@@ -1743,7 +1743,7 @@ class Article < ApplicationRecord
   def touch_actor_latest_article_updated_at(destroying: false)
     return unless destroying || saved_changes.keys.intersection(%w[title cached_tag_list published archived]).present?
 
-    user.touch(:latest_article_updated_at)
+    user&.touch(:latest_article_updated_at)
     organization&.touch(:latest_article_updated_at)
   end
 

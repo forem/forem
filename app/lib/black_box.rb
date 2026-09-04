@@ -12,7 +12,7 @@ class BlackBox
       today_bonus = usable_date > 26.hours.ago ? 795 : 0
       two_day_bonus = usable_date > 48.hours.ago ? 830 : 0
       four_day_bonus = usable_date > 96.hours.ago ? 930 : 0
-      featured_bonus = article.featured ? 200 : 0
+      curation_bonus = calculate_curation_bonus(article)
       if usable_date < 4.days.ago
         reaction_points /= 2 # Older posts should fade
       end
@@ -27,7 +27,7 @@ class BlackBox
 
       (
         article_hotness + reaction_points + recency_bonus + super_recent_bonus +
-        super_super_recent_bonus + today_bonus + two_day_bonus + four_day_bonus + featured_bonus
+        super_super_recent_bonus + today_bonus + two_day_bonus + four_day_bonus + curation_bonus
       )
     end
 
@@ -39,6 +39,12 @@ class BlackBox
     end
 
     private
+
+    def calculate_curation_bonus(article)
+      featured_bonus = article.featured ? 200 : 0
+      favorited_bonus = article.respond_to?(:favorited?) && article.favorited? ? 200 : 0
+      featured_bonus + favorited_bonus
+    end
 
     def calculate_bonus_score(body_markdown)
       size_bonus = body_markdown.size > 200 ? 2 : 0

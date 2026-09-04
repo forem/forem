@@ -4,12 +4,14 @@
   <p>We invite you to participate in a <%= @community_name %> Industry Survey.</p>
 <% elsif @survey.fun? %>
   <p>We invite you to participate in a quick, fun survey from <%= @community_name %>.</p>
+<% elsif @survey.beta_testing? %>
+  <p>You have been randomly selected to participate in a beta testing survey.</p>
 <% else %>
   <p>You have been randomly selected to participate in a <%= @community_name %> Pulse Survey.</p>
 <% end %>
 
-<% if @survey.extra_email_context_paragraph.present? %>
-  <p><%= @survey.extra_email_context_paragraph %></p>
+<% if (extra_context = @extra_email_context_html || @survey.extra_email_context_html.presence) %>
+  <%= extra_context.html_safe %>
 <% end %>
 
 <p>Please take a few minutes to complete the survey here:</p>
@@ -19,6 +21,8 @@
                   "Take the #{@community_name} Industry Survey"
                 elsif @survey.fun?
                   "Take this quick #{@community_name} Survey"
+                elsif @survey.beta_testing?
+                  "Take the Beta Testing Survey"
                 else
                   "Take the #{@community_name} Pulse Survey"
                 end %>
