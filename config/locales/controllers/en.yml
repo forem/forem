@@ -76,6 +76,11 @@ en:
   omniauth_callbacks_controller:
     log_in_error: 'Log in error: %{e}'
     username_taken: username has already been taken
+    account_switch_title: "Confirm account switch"
+    account_switch_body_html: "You are signed in as a different user. Continue to %{username}? This will end your current session and sign you in to that account."
+    account_switch_confirm: "Confirm switch"
+    account_switch_cancel: "Cancel"
+    account_switch_expired: "This sign-in attempt expired. Please try signing in again."
   organizations_controller:
     secret_updated: Your org secret was updated
     deletion_scheduled: 'Your organization: "%{organization_name}" deletion is scheduled. You''ll be notified when it''s deleted.'

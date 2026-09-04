@@ -1318,6 +1318,38 @@ seeder.create_if_none(Event) do
   end
 end
 
+seeder.create_if_doesnt_exist(User, "email", "bob.devrelay@mlh.test") do
+  User.create!(
+    name: "Bob Devrelay",
+    username: "bob_devrelay",
+    email: "bob.devrelay@mlh.test",
+    profile_image: Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    registered: true,
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+    password: "password",
+    password_confirmation: "password",
+  )
+end
+
+seeder.create_if_doesnt_exist(User, "email", "carol.devrelay@mlh.test") do
+  carol = User.create!(
+    name: "Carol Devrelay",
+    username: "carol_devrelay",
+    email: "carol.devrelay@mlh.test",
+    profile_image: Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    registered: true,
+    password: "password",
+    password_confirmation: "password",
+  )
+  carol.add_role(:suspended)
+end
+
 puts <<-ASCII
 
   ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

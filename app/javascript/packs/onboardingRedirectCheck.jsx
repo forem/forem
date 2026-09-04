@@ -14,6 +14,7 @@ function redirectableLocation() {
     '/signout_confirm',
     '/privacy',
     '/admin/creator_settings/new',
+    '/web/auth/oauth/forem_returns',
   ].includes(window.location.pathname);
 }
 

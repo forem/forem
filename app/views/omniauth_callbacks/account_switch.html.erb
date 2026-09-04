@@ -1,0 +1,18 @@
+<div class="crayons-layout crayons-layout--limited-l flex flex-col items-center pt-10">
+  <div class="crayons-card p-7 w-[540px] max-w-full">
+    <h1 class="crayons-subtitle-2 mb-2"><%= t("omniauth_callbacks_controller.account_switch_title") %></h1>
+    <p class="crayons-story__body color-base-70 mb-5">
+      <%= t("omniauth_callbacks_controller.account_switch_body_html", username: content_tag(:strong, @switch_target_username)) %>
+    </p>
+    <div class="flex gap-3">
+      <%= button_to t("omniauth_callbacks_controller.account_switch_confirm"),
+                    user_account_switch_confirm_path,
+                    method: :post,
+                    class: "crayons-btn" %>
+      <%= button_to t("omniauth_callbacks_controller.account_switch_cancel"),
+                    user_account_switch_cancel_path,
+                    method: :post,
+                    class: "crayons-btn crayons-btn--ghost" %>
+    </div>
+  </div>
+</div>
