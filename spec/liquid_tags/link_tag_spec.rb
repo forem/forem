@@ -117,4 +117,23 @@ RSpec.describe LinkTag, type: :liquid_tag do
     liquid = generate_new_liquid(slug: "/#{user.username}/#{escaped_article.slug}/")
     assert_link_tag_renders(liquid.render, escaped_article)
   end
+
+  context "when the article author is a community leader" do
+    let(:leader) { create(:user, :community_leader_level_2) }
+    let(:leader_article) { create(:article, user: leader) }
+
+    before do
+      FeatureFlag.add(:community_favorites)
+      FeatureFlag.enable(:community_favorites)
+    end
+
+    after do
+      FeatureFlag.remove(:community_favorites)
+    end
+
+    it "renders the community leader icon" do
+      liquid = generate_new_liquid(slug: "/#{leader.username}/#{leader_article.slug}")
+      expect(liquid.render).to include(%(class="community-leader-icon"))
+    end
+  end
 end
