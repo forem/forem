@@ -4197,4 +4197,35 @@ RSpec.describe Article do
       expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id)
     end
   end
+
+  describe "#notify_co_author_changes" do
+    let(:author) { create(:user) }
+    let(:co_author1) { create(:user) }
+    let(:co_author2) { create(:user) }
+
+    before do
+      allow(Notification).to receive(:send_to_co_authors)
+    end
+
+    it "notifies co-authors when co_author_ids changes on a published article" do
+      article = create(:article, user: author, published: true, co_author_ids: [co_author1.id])
+      article.update!(co_author_ids: [co_author1.id, co_author2.id])
+
+      expect(Notification).to have_received(:send_to_co_authors).with(article, [])
+    end
+
+    it "passes removed user ids when a co-author is dropped from a published article" do
+      article = create(:article, user: author, published: true, co_author_ids: [co_author1.id, co_author2.id])
+      article.update!(co_author_ids: [co_author1.id])
+
+      expect(Notification).to have_received(:send_to_co_authors).with(article, [co_author2.id])
+    end
+
+    it "does not notify when co_author_ids changes on an unpublished draft" do
+      article = create(:article, user: author, published: false, co_author_ids: [co_author1.id])
+      article.update!(co_author_ids: [co_author1.id, co_author2.id])
+
+      expect(Notification).not_to have_received(:send_to_co_authors)
+    end
+  end
 end

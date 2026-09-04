@@ -69,6 +69,23 @@ RSpec.describe Notifications::CoAuthor::Send, type: :service do
       .not_to change { co_author_notifications(article).count }
   end
 
+  it "sets notified_at on the created notification" do
+    article = co_authored_article
+    described_class.call(article)
+
+    notification = co_author_notifications(article).first
+    expect(notification.notified_at).to be_present
+    expect(notification.notified_at).to be_within(5.seconds).of(Time.current)
+  end
+
+  it "handles nil co_author_ids safely" do
+    article = create(:article, user: author, published: true)
+    article.update_columns(co_author_ids: nil)
+
+    expect { described_class.call(article.reload) }.not_to raise_error
+    expect(co_author_notifications(article)).to be_empty
+  end
+
   it "does nothing when there are no co-authors" do
     article = create(:article, user: author, published: true)
 

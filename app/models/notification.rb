@@ -13,7 +13,7 @@ class Notification < ApplicationRecord
   before_create :mark_notified_at_time
   after_commit :cleanup_old_notifications, on: :create
 
-  scope :for_published_articles, -> { where(notifiable_type: "Article", action: "Published") }
+  scope :for_published_articles, -> { where(notifiable_type: "Article", action: %w[Published CoAuthor]) }
   scope :for_comments, -> { where(notifiable_type: "Comment", action: nil) } # nil action means "not a reaction"
   scope :for_mentions, -> { where(notifiable_type: "Mention") }
 

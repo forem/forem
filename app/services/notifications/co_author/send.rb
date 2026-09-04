@@ -19,7 +19,7 @@ module Notifications
         return unless article.is_a?(Article)
         return unless article.published? && article.type_of == "full_post"
 
-        recipient_ids = article.co_author_ids.map(&:to_i) - [article.user_id]
+        recipient_ids = Array.wrap(article.co_author_ids).map(&:to_i) - [article.user_id]
         return if recipient_ids.empty?
 
         # Skip anyone already notified so re-publishing or an unrelated edit
@@ -44,6 +44,7 @@ module Notifications
             action: ACTION,
             json_data: json_data,
             created_at: now,
+            notified_at: now,
             updated_at: now
           }
         end

@@ -34,7 +34,7 @@ module Notifications
 
         # Co-authors receive their own notification, so exclude them here for the
         # same reason mentions are excluded: one notification per person per post.
-        co_author_ids = notifiable.co_author_ids.map(&:to_i)
+        co_author_ids = Array.wrap(notifiable.co_author_ids).map(&:to_i)
 
         article_followers = User.joins("INNER JOIN follows ON follows.follower_id = users.id")
           .where("(follows.followable_id = ? AND follows.followable_type = ?)

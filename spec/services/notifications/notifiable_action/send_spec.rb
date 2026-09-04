@@ -22,6 +22,12 @@ RSpec.describe Notifications::NotifiableAction::Send, type: :service do
         Notification.where(user_id: user2.id, notifiable_id: article.id, action: "Published").count
       }
     end
+
+    it "handles nil co_author_ids safely" do
+      article.update_columns(co_author_ids: nil)
+
+      expect { described_class.call(article.reload, "Published") }.not_to raise_error
+    end
   end
 
   context "when following a user or organization" do
