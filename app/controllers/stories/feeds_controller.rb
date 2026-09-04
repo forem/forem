@@ -67,13 +67,8 @@ module Stories
                Articles::Feeds::Basic.new(user: current_user, page: @page, tag: params[:tag])
              elsif feed_strategy == "configured" && params[:type_of] != "following"
 
-               @feed_config = if params[:item]
-                                FeedConfig.find_by(id: params[:item]) || FeedConfig.order("feed_success_score DESC").limit(rand(1..15)).sample || FeedConfig.first_or_create
-                              elsif rand(20) == 0 # 5% of the time, we'll just pick a random feed config
-                                FeedConfig.where("feed_impressions_count < 100").order("RANDOM()").limit(1).first || FeedConfig.order("feed_success_score DESC").limit(rand(1..15)).sample || FeedConfig.first_or_create
-                              else
-                                FeedConfig.order("feed_success_score DESC").limit(rand(1..15)).sample || FeedConfig.first_or_create
-                              end
+               @feed_config = FeedConfig.find_by(id: params[:item]) if params[:item]
+               @feed_config ||= FeedConfig.pick_for(current_user, segmented: segmented_feed_configs?)
                Articles::Feeds::Custom.new(user: current_user, page: @page, tag: params[:tag],
                                            feed_config: @feed_config)
              else
@@ -93,6 +88,15 @@ module Stories
       # ActiveRecord::Relation.  So this is a compromise.
 
       feed.more_comments_minimal_weight_randomized(comments_variant: @comments_variant)
+    end
+
+    # A/B test of per-segment FeedConfig pools. Only new / low-signal users are enrolled,
+    # since the general pool is the same in both arms for everyone else.
+    def segmented_feed_configs?
+      return false unless FeatureFlag.enabled?(:segmented_feed_configs)
+      return false unless FeedConfig.segment_for(current_user) == :new_user
+
+      field_test(:segmented_feed_configs_20260904, participant: current_user) == "segmented"
     end
 
     def signed_out_base_feed

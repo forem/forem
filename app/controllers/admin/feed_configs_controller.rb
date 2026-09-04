@@ -59,6 +59,7 @@ module Admin
 
     def feed_config_params
       params.require(:feed_config).permit(
+        :segment,
         :ai_disclosure_matching_weight,
         :autonomous_ai_penalty_weight,
         :clickbait_score_weight,
