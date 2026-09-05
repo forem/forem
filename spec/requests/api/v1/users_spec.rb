@@ -111,32 +111,35 @@ RSpec.describe "Api::V1::Users" do
 
     context "with delegated Bearer authentication" do
       let(:signing_key) { OpenSSL::PKey::RSA.generate(2048) }
-      let(:core_user_id) { SecureRandom.uuid }
+      let(:issuer_user_id) { SecureRandom.uuid }
       let(:delegated_user) { create(:user) }
       let(:delegated_config) do
         ActiveSupport::OrderedOptions.new.tap do |config|
           config.enabled = true
-          config.issuer = "https://core.example.test"
-          config.audience = "https://forem.example.test"
+          config.issuer = "https://issuer.example.test"
+          config.audience = "https://community.example.test"
           config.public_key = signing_key.public_key
-        end
+          config.key_id = "active-key"
+          config.client_id = "trusted-client"
+          config.identity_provider = Authentication::Providers.available.first.to_s
+          config.owner_claim = "https://issuer.example.test/claims/user_id"
+        end.freeze
       end
       let(:claims) do
         {
           "iss" => delegated_config.issuer,
           "aud" => delegated_config.audience,
-          "sub" => core_user_id,
-          "client_id" => "devrelay-native-v0",
-          "scope" => "profile:read",
+          "sub" => issuer_user_id,
+          "client_id" => delegated_config.client_id,
           "nbf" => 1.minute.ago.to_i,
           "exp" => 1.minute.from_now.to_i,
-          "https://mlh.io/claims/forem_user_id" => delegated_user.id.to_s
+          delegated_config.owner_claim => delegated_user.id.to_s
         }
       end
-      let(:token) { JWT.encode(claims, signing_key, "RS256", { kid: "core", typ: "at+jwt" }) }
+      let(:token) { JWT.encode(claims, signing_key, "RS256", { kid: delegated_config.key_id, typ: "at+jwt" }) }
 
       before do
-        Identity.create!(user: delegated_user, provider: "mlh", uid: core_user_id)
+        Identity.create!(user: delegated_user, provider: delegated_config.identity_provider, uid: issuer_user_id)
         allow(Rails.application.config.x).to receive(:delegated_access).and_return(delegated_config)
       end
 

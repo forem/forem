@@ -1,11 +1,8 @@
 module Api
   module V1
     class ApiController < ApplicationController
-      DELEGATED_CLIENT_ID = "devrelay-native-v0".freeze
-      DELEGATED_KID = "core".freeze
-      DELEGATED_OWNER_CLAIM = "https://mlh.io/claims/forem_user_id".freeze
-      DELEGATED_SCOPE = "profile:read".freeze
-      private_constant :DELEGATED_CLIENT_ID, :DELEGATED_KID, :DELEGATED_OWNER_CLAIM, :DELEGATED_SCOPE
+      InvalidDelegatedAccess = Class.new(StandardError)
+      private_constant :InvalidDelegatedAccess
 
       # Custom MIME Type - /config/initializers/mime_types.rb
       respond_to :api_v1
@@ -25,6 +22,7 @@ module Api
       rescue_from ActiveRecord::RecordNotFound, with: :error_not_found
 
       rescue_from Pundit::NotAuthorizedError, with: :error_unauthorized
+      rescue_from InvalidDelegatedAccess, with: :error_unauthorized
 
       protected
 
@@ -51,12 +49,12 @@ module Api
         authenticate_with_api_key_or_current_user!
       end
 
-      def authenticate_with_delegated_access!
+      def authenticate_with_delegated_access
         token = delegated_bearer_token
         return unless token
 
         config = Rails.application.config.x.delegated_access
-        return error_unauthorized unless config.enabled
+        raise InvalidDelegatedAccess unless config.enabled
 
         payload, header = JWT.decode(
           token,
@@ -69,26 +67,24 @@ module Api
           verify_aud: true,
           verify_expiration: true,
           verify_not_before: true,
-          required_claims: ["sub", "exp", "scope", "client_id", DELEGATED_OWNER_CLAIM],
+          required_claims: ["sub", "exp", "client_id", config.owner_claim],
         )
-        raise JWT::DecodeError unless header["kid"] == DELEGATED_KID &&
+        raise JWT::DecodeError unless header["kid"] == config.key_id &&
           header["typ"] == "at+jwt" &&
-          payload["aud"] == config.audience &&
-          payload["client_id"] == DELEGATED_CLIENT_ID &&
-          payload["scope"] == DELEGATED_SCOPE
+          payload["client_id"] == config.client_id
 
         identity = Identity.includes(:user).where(
-          provider: "mlh",
+          provider: config.identity_provider,
           uid: payload.fetch("sub"),
-          user_id: Integer(payload.fetch(DELEGATED_OWNER_CLAIM)),
+          user_id: Integer(payload.fetch(config.owner_claim)),
         ).sole
-        @user = @authenticated_user = identity.user
-        raise JWT::DecodeError unless @user && !@user.spam_or_suspended?
+        user = identity.user
+        raise JWT::DecodeError unless user && !user.spam_or_suspended?
 
-        true
+        @user = @authenticated_user = user
       rescue JWT::DecodeError, KeyError, TypeError, ArgumentError, ActiveRecord::RecordNotFound,
              ActiveRecord::SoleRecordExceeded
-        error_unauthorized
+        raise InvalidDelegatedAccess
       end
 
       def delegated_bearer_token
@@ -138,12 +134,12 @@ module Api
         @user = authenticate_with_api_key || current_user
       end
 
-def authenticated_user
-  return @authenticated_user if defined?(@authenticated_user)
+      def authenticated_user
+        return @authenticated_user if defined?(@authenticated_user)
 
-  user = authenticate_with_api_key || current_user
-  @authenticated_user = user&.spam_or_suspended? ? nil : user
-end
+        user = authenticate_with_api_key || current_user
+        @authenticated_user = user&.spam_or_suspended? ? nil : user
+      end
       helper_method :authenticated_user
 
       def authorize_super_admin
@@ -171,6 +167,9 @@ end
       end
 
       def authenticate_with_api_key
+        delegated_user = authenticate_with_delegated_access
+        return delegated_user if delegated_user
+
         api_key = request.headers["api-key"]
         return unless api_key
 
