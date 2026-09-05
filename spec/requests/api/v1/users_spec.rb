@@ -109,6 +109,54 @@ RSpec.describe "Api::V1::Users" do
       end
     end
 
+    context "with delegated Bearer authentication" do
+      let(:signing_key) { OpenSSL::PKey::RSA.generate(2048) }
+      let(:issuer_user_id) { SecureRandom.uuid }
+      let(:delegated_user) { create(:user) }
+      let(:delegated_config) do
+        ActiveSupport::OrderedOptions.new.tap do |config|
+          config.enabled = true
+          config.issuer = "https://issuer.example.test"
+          config.audience = "https://community.example.test"
+          config.public_key = signing_key.public_key
+          config.key_id = "active-key"
+          config.client_id = "trusted-client"
+          config.identity_provider = Authentication::Providers.available.first.to_s
+          config.owner_claim = "https://issuer.example.test/claims/user_id"
+        end.freeze
+      end
+      let(:claims) do
+        {
+          "iss" => delegated_config.issuer,
+          "aud" => delegated_config.audience,
+          "sub" => issuer_user_id,
+          "client_id" => delegated_config.client_id,
+          "nbf" => 1.minute.ago.to_i,
+          "exp" => 1.minute.from_now.to_i,
+          delegated_config.owner_claim => delegated_user.id.to_s
+        }
+      end
+      let(:token) { JWT.encode(claims, signing_key, "RS256", { kid: delegated_config.key_id, typ: "at+jwt" }) }
+
+      before do
+        Identity.create!(user: delegated_user, provider: delegated_config.identity_provider, uid: issuer_user_id)
+        allow(Rails.application.config.x).to receive(:delegated_access).and_return(delegated_config)
+      end
+
+      it "returns the delegated user" do
+        get me_api_users_path, headers: headers.merge("Authorization" => "Bearer #{token}")
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body["id"]).to eq(delegated_user.id)
+      end
+
+      it "does not fall back to a valid API key when Bearer appears in a malformed header" do
+        get me_api_users_path, headers: auth_headers.merge("Authorization" => "Basic ignored, Bearer invalid")
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
     context "when request is authenticated" do
       let(:user) { api_secret.user }
 
