@@ -13,6 +13,8 @@
 #   daily_comments[date]   = N            (count of scored comments)
 #   daily_referrers[date]  = { domain => N }
 class ArticleActivity < ApplicationRecord
+  include ArticleActivityBulkBackfillable
+
   belongs_to :article
 
   REACTION_CATEGORIES = %w[like readinglist unicorn exploding_head raised_hands fire].freeze
