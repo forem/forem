@@ -1,0 +1,16 @@
+app/assets/javascripts/base.js.erb
+  h_f968154a99632d 36,161,163,682,691-744
+app/views/articles/_feed_nav.html.erb
+  h_f968154a99632d 139,172-178,189,197-204,208-210
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "3b114846aedb16bb883c49c8036159e8b99a7334",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

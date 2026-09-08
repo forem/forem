@@ -1,0 +1,23 @@
+config/initializers/customerio.rb
+  s_0cd64231ee5515::t_a8d404096ed61e 1-4
+spec/services/delivery_methods/customer_io_spec.rb
+  s_0cd64231ee5515::t_b19256dfcecb88 1-66
+app/services/delivery_methods/customer_io.rb
+  s_0cd64231ee5515::t_99b4d4868bef38 1-49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "03f85619ca0f58a4eeebf1dd6e82f29811312e08",
+  "prompts": {},
+  "sessions": {
+    "s_0cd64231ee5515": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b2d035f1-b022-48fc-b793-32eaadb3e1ad",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

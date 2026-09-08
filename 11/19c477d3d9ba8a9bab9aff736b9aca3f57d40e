@@ -1,0 +1,25 @@
+app/models/user.rb
+  s_9311a40d9632b6::t_cb557ab862c4ce 869
+app/models/users/notification_setting.rb
+  s_9311a40d9632b6::t_c413e7290b6feb 16,31-43,50-56
+spec/models/user_spec.rb
+  s_9311a40d9632b6::t_ab613e007ab0a6 70,73-74,78,80,86-98
+spec/models/users/notification_setting_spec.rb
+  s_9311a40d9632b6::t_d665c0eb1ca814 75-104
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "1119c477d3d9ba8a9bab9aff736b9aca3f57d40e",
+  "prompts": {},
+  "sessions": {
+    "s_9311a40d9632b6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e1a617bc-c4dc-4df0-beb7-f5815b98bf9a",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

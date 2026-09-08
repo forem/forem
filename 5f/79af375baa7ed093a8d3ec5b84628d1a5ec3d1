@@ -1,0 +1,16 @@
+app/assets/stylesheets/base/typography.scss
+  h_f968154a99632d 155-156,199-208,425-443
+spec/liquid_tags/link_tag_spec.rb
+  h_f968154a99632d 120-138
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "5f79af375baa7ed093a8d3ec5b84628d1a5ec3d1",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

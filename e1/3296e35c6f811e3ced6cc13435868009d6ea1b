@@ -1,0 +1,18 @@
+app/javascript/packs/homePage.jsx
+  h_f968154a99632d 98
+app/views/layouts/application.html.erb
+  h_f968154a99632d 4,9-10
+spec/requests/stories_index_spec.rb
+  h_f968154a99632d 453,458-470
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "e13296e35c6f811e3ced6cc13435868009d6ea1b",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

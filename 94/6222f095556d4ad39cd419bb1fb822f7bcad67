@@ -1,0 +1,28 @@
+app/mailers/survey_mailer.rb
+  h_f968154a99632d 28-29,36
+app/models/survey.rb
+  h_f968154a99632d 87-95
+app/services/markdown_processor.rb
+  h_f968154a99632d 65-66,92-93
+app/services/markdown_processor/parser.rb
+  h_f968154a99632d 148-149,156
+app/views/admin/surveys/_form.html.erb
+  h_f968154a99632d 60
+app/views/mailers/survey_mailer/pulse_survey.html.erb
+  h_f968154a99632d 11-12
+spec/mailers/survey_mailer_spec.rb
+  h_f968154a99632d 57-80,100-103,115-116
+spec/models/survey_spec.rb
+  h_f968154a99632d 326-357
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "946222f095556d4ad39cd419bb1fb822f7bcad67",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

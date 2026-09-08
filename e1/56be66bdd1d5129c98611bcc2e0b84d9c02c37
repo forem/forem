@@ -1,0 +1,50 @@
+config/locales/lib/pt.yml
+  s_0192b25a49feab::t_14f5a6941b5918 110-111
+config/locales/lib/fr.yml
+  s_0192b25a49feab::t_63d3e966d9340c 110-111
+app/lib/constants/settings/general.rb
+  s_0192b25a49feab::t_ccd4fba232f33f 11-13
+spec/models/user_spec.rb
+  s_0192b25a49feab::t_ea587662ef7c0f 42-109,118-119
+  s_0192b25a49feab::t_f5cb557c924086 110-117
+spec/services/trackers/customerio_cdp_spec.rb
+  s_0192b25a49feab::t_c2631fb35cb868 6-10,35-54
+  s_0192b25a49feab::t_2cbc7ff71f4798 12,15
+  s_0192b25a49feab::t_e1f0023bf1d6a6 23,31
+spec/services/trackable/registry_spec.rb
+  s_0192b25a49feab::t_1d4f6f7d239b4c 86-106
+app/models/user.rb
+  s_0192b25a49feab::t_ca81ade6052d6d 9
+  s_0192b25a49feab::t_2a562d71acfac3 816-844,853
+  s_0192b25a49feab::t_af95a69ad08a7e 845
+  s_0192b25a49feab::t_2409d12b6121c2 846-852
+app/services/trackers/customerio_cdp.rb
+  s_0192b25a49feab::t_ec7e4b6dc64eda 12-13
+config/locales/lib/en.yml
+  s_0192b25a49feab::t_601bbcac834716 110-111
+app/models/settings/general.rb
+  s_0192b25a49feab::t_fba39015792ab2 45-48
+app/views/admin/settings/forms/_ahoy.html.erb
+  s_0192b25a49feab::t_02e89864de3603 17-21
+app/services/trackable/registry.rb
+  s_0192b25a49feab::t_4caf8224125891 29-32,34
+spec/models/settings/general_spec.rb
+  s_0192b25a49feab::t_734a6fc1004c59 99-100,102-104,107-109
+  s_0192b25a49feab::t_c3a0d84aff978f 101,105-106
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "e156be66bdd1d5129c98611bcc2e0b84d9c02c37",
+  "prompts": {},
+  "sessions": {
+    "s_0192b25a49feab": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d9c11a62-ccb3-46a3-b898-39bcb6105a91",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Jon Gottfried <jon@majorleaguehacking.com>"
+    }
+  }
+}

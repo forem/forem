@@ -1,0 +1,22 @@
+app/controllers/api/v0/events_controller.rb
+  h_f968154a99632d 17-19,27,64-66,77,80-87,89
+spec/requests/api/v0/events_spec.rb
+  h_f968154a99632d 3,20-21,30,38,42-80,136,138
+spec/requests/api/v1/docs/events_spec.rb
+  h_f968154a99632d 1-149
+spec/swagger_helper.rb
+  h_f968154a99632d 851-903
+swagger/v1/api_v1.json
+  h_f968154a99632d 2654-2832,7890-8073
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "e39b5fbadb13e440ff8abb7605c699ec996f8d2f",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

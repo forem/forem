@@ -1,0 +1,23 @@
+app/controllers/concerns/api/admin/users_controller.rb
+  s_89df72c2c8e15f::t_b0798d26960bef 17-19
+app/models/users/notification_setting.rb
+  s_89df72c2c8e15f::t_646e5f13d1136e 8-10,22-26,28-34
+spec/models/users/notification_setting_spec.rb
+  s_89df72c2c8e15f::t_8e342f057215ab 149-176
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "4d54b4f4951d700fe0558961bfd0e70a95361165",
+  "prompts": {},
+  "sessions": {
+    "s_89df72c2c8e15f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0abe0d99-7eeb-41b8-a823-d6a5247a3703",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

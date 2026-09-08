@@ -1,0 +1,28 @@
+spec/services/ai/liquid_tag_guide_spec.rb
+  3b300d9ee498e98c 1-41
+app/services/ai/editor_helper_service.rb
+  3b300d9ee498e98c 24
+app/services/ai/liquid_tag_guide.rb
+  3b300d9ee498e98c 1-67
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.9",
+  "base_commit_sha": "7fcb2e4ff4b1049e8303a2563806573fd9d8607c",
+  "prompts": {
+    "3b300d9ee498e98c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4faf6d65-e132-4d85-b2c8-b4fb1568fd1a",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Jon Gottfried <jonmarkgo@gmail.com>",
+      "messages": [],
+      "total_additions": 109,
+      "total_deletions": 50,
+      "accepted_lines": 109,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/3042cde1790b44a4bd144a6b055e866450cf47572ac6eb441e65fe926e0f7262"
+    }
+  }
+}

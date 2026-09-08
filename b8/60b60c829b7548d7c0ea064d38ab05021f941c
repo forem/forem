@@ -1,0 +1,26 @@
+app/liquid_tags/col_tag.rb
+  cdf961d01143ac46 2-3,8-10,21
+app/liquid_tags/quote_tag.rb
+  cdf961d01143ac46 36-41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "b860b60c829b7548d7c0ea064d38ab05021f941c",
+  "prompts": {
+    "cdf961d01143ac46": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e69502a6-bdd0-4768-88a0-89870ff05e49",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Jonathan Gottfried",
+      "messages": [],
+      "total_additions": 13,
+      "total_deletions": 6,
+      "accepted_lines": 13,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/cbe4d78f21bc050c8ca75d66cad13e61a6dc96c22f2ee537d04b408492f68891"
+    }
+  }
+}

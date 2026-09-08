@@ -1,0 +1,16 @@
+app/controllers/stories_controller.rb
+  h_f968154a99632d 424-429
+spec/system/articles/user_visits_an_article_spec.rb
+  h_f968154a99632d 220-232
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "f7e5b631f1b67f036ef6648cad47b894b2f3ba3d",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

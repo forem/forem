@@ -1,0 +1,14 @@
+spec/system/homepage/user_visits_homepage_articles_spec.rb
+  h_f968154a99632d 7-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "b0c50851715cb253248dd2db21ee3bd09d38666a",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

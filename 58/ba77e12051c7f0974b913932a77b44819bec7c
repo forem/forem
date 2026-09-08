@@ -1,0 +1,129 @@
+app/assets/stylesheets/views.scss
+  s_d068e28c689c9c::t_44ba3b720f6050 3
+app/assets/stylesheets/views/calendar.scss
+  s_72954a54bc37f9::t_b35e62a26c5c5b 84
+  s_72954a54bc37f9::t_432d3eeb08f855 45
+  s_72954a54bc37f9::t_4c71442236db37 100
+  s_72954a54bc37f9::t_56255a32de577e 25-41,69-70,83,85-96,98-99,101-106,108-109
+  s_72954a54bc37f9::t_aeff34c4291753 134-172
+  s_72954a54bc37f9::t_289d67f7efa42a 107
+  s_72954a54bc37f9::t_b0d8ddf0144e53 1-11,21-22
+  s_9dc877c613e8b8::t_4b2c2fb54b49f4 51
+  s_72954a54bc37f9::t_daf6e8d471b285 16
+  s_72954a54bc37f9::t_9634de9f00d33a 60
+  s_d068e28c689c9c::t_d130058d5e6fff 42-44,46-49,52-56,67-68,71-80,97,173
+  s_9dc877c613e8b8::t_be280960677b7a 12-15,17-20,23-24,50,57-59,61-64,66,81-82,110-133
+  s_72954a54bc37f9::t_9f364d7b8449d1 65
+spec/helpers/events_helper_spec.rb
+  s_9dc877c613e8b8::t_5cd227f772f727 1-25,42-54
+  s_9dc877c613e8b8::t_1bfa0df16daa0d 26-41
+app/views/calendar/index.html.erb
+  s_9dc877c613e8b8::t_4d84de3630aff8 2
+  s_72954a54bc37f9::t_b2279dd910e00b 23-24,28
+  s_9dc877c613e8b8::t_9ef9e3f222d319 29-30,33,35,40
+  s_9dc877c613e8b8::t_9167f444a55b4e 4,6-11,13-15,17-18,20
+  s_d068e28c689c9c::t_8c1798a5c2af6b 31
+  s_d068e28c689c9c::t_999b32dafff251 3,21-22,25-27,32,36-39,41-42,44-48
+app/javascript/packs/calendarRangeSelect.js
+  s_9dc877c613e8b8::t_f9769112b38c20 1-4
+app/helpers/events_helper.rb
+  s_9dc877c613e8b8::t_955f5d27a36a26 2-5,7-8,15-17,20-21,23,25,27-31
+  s_d068e28c689c9c::t_f36f5e7da834b6 1,9-14,32,47
+  s_72954a54bc37f9::t_2a9555d913f906 6
+  s_9dc877c613e8b8::t_7a13b11900d744 33-46
+app/views/calendar/_event_row.html.erb
+  s_72954a54bc37f9::t_6fd00086b56cd5 4
+  s_72954a54bc37f9::t_26e15dad46ea39 11,18-19,21,23
+  s_d068e28c689c9c::t_035661d25d92a0 1-3,7-8,10,12-17
+  s_9dc877c613e8b8::t_9c16792a87b76a 5-6
+  s_9dc877c613e8b8::t_4c80ef26928ef9 9
+  s_d068e28c689c9c::t_d352b4013370d4 24
+app/views/calendar/_pagination.html.erb
+  s_9dc877c613e8b8::t_b3dff7245bc008 1-3,7,9,11,13-14,32-33,35,37-39
+  s_72954a54bc37f9::t_eacb3ec096b938 4-6,12,15-31,36
+app/javascript/calendar/rangeSelect.js
+  s_9dc877c613e8b8::t_451f1f96a0f90a 1-10,18-37,43,47,49-52,54,56-58,60,62-65,74-75
+  s_9dc877c613e8b8::t_396da8acb0c77c 11-17,38-42,44-46,48,53,55,59,61,66-73
+spec/requests/calendar_spec.rb
+  s_d068e28c689c9c::t_cc8380f31061cf 39-40,49,70-71,86
+  s_9dc877c613e8b8::t_8bc35e1ea7a28e 218-241
+  s_9dc877c613e8b8::t_eba883a9d8aa35 270,301-310
+  s_9dc877c613e8b8::t_3a8de0d7055266 271-277,279-281,284-285,289,291,298-300
+  s_d068e28c689c9c::t_01cd2ebba1cc97 90
+  s_d068e28c689c9c::t_da586fffffc8e5 136,161,163-169,171-174,176-177,179
+  s_9dc877c613e8b8::t_c57992e6e705bd 278,282-283,286-288,290,292-297
+  s_72954a54bc37f9::t_b4ee0ef7abaa99 152
+  s_72954a54bc37f9::t_54fcb1e7b8e85d 148-151,153-154
+  s_d068e28c689c9c::t_52f9d2b1413313 182-216
+  s_72954a54bc37f9::t_ab9aeb5e2b40ce 95-115
+  s_d068e28c689c9c::t_58411f36f8588d 145
+  s_d068e28c689c9c::t_ebdf516d2cf1e6 1-2,4-19,22,311-312
+  s_9dc877c613e8b8::t_15dad699129631 217,254-269
+  s_9dc877c613e8b8::t_9340f63406e1af 242-253
+  s_d068e28c689c9c::t_cd74357ff1d903 23-38,41-43,47-48,52-62,65-69,72-85,87-88
+  s_d068e28c689c9c::t_73bc5cd7126aec 89,91-94,116-124,132-133
+  s_9dc877c613e8b8::t_693c9e93e2e3d3 142,146-147,155-159
+  s_d068e28c689c9c::t_639d799dc616ec 44,50-51
+  s_d068e28c689c9c::t_fad6b248f3534b 3,20-21
+  s_d068e28c689c9c::t_eb0fb52663354a 125-131
+  s_d068e28c689c9c::t_67e79647535594 134-135,137-141,143-144,160,162,170,175,178,180-181
+  s_d068e28c689c9c::t_4b4231c8d6db5d 63-64
+  s_d068e28c689c9c::t_34ab43599a9f4a 45-46
+app/views/calendar/_calendar_widget.html.erb
+  s_d068e28c689c9c::t_a154f4ccbc7e00 1-3,7-9,13-15,17-20,22-26,29-31,34-36,50
+  s_9dc877c613e8b8::t_e8ada5374c0bbb 4-5
+  s_72954a54bc37f9::t_9ba062c9a20a00 6,28,38-40,42-43,45-46,48-49
+  s_9dc877c613e8b8::t_12286a667a9ed6 21,32-33
+  s_d068e28c689c9c::t_3df7f07fd7ba6e 27
+config/routes.rb
+  s_d068e28c689c9c::t_1a0da8befe9c64 176
+app/controllers/calendar_controller.rb
+  s_9dc877c613e8b8::t_fd31726e4dcc18 30-32,35-36
+  s_72954a54bc37f9::t_5984a75df51792 6-8
+  s_72954a54bc37f9::t_340d8775b6ac3e 64-75
+  s_d068e28c689c9c::t_1f3884b6932f5e 1,4-5,11,13,18-22,42-63,76-82,84-85
+  s_9dc877c613e8b8::t_2afc5d0fbeab10 2-3,9-10,16-17,23-29,33-34,41,83
+  s_9dc877c613e8b8::t_555cd96c1b07b3 12,14-15
+  s_72954a54bc37f9::t_2a9555d913f906 37-40
+app/javascript/calendar/__tests__/rangeSelect.test.js
+  s_9dc877c613e8b8::t_50065a414b4d6b 1
+  s_9dc877c613e8b8::t_961fd6db2eafaa 2-31
+  s_9dc877c613e8b8::t_eeeab26e7f33aa 32-59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.5",
+  "base_commit_sha": "58ba77e12051c7f0974b913932a77b44819bec7c",
+  "prompts": {},
+  "humans": {
+    "h_0b73f7c5f53d97": {
+      "author": "rashikakarki <rashikakarki9841@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_72954a54bc37f9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8fa31ee1-721c-4bdd-9f9e-ba0721134161",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "rashikakarki <rashikakarki9841@gmail.com>"
+    },
+    "s_9dc877c613e8b8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "dbe928c2-51da-4717-936d-9098c4eba2d0",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "rashikakarki <rashikakarki9841@gmail.com>"
+    },
+    "s_d068e28c689c9c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "01153452-ccea-44ec-a0fa-8b4ac5f111e2",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "rashikakarki <rashikakarki9841@gmail.com>"
+    }
+  }
+}
