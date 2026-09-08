@@ -107,6 +107,78 @@ RSpec.describe ArticleActivity do
     end
   end
 
+  describe ".bulk_backfill!" do
+    it "rebuilds multiple article rows from batch aggregates" do
+      other_article = create(:article)
+      user = create(:user)
+      ts = Time.utc(day.year, day.month, day.day, 12, 0, 0)
+      page_view = create(
+        :page_view,
+        article: article,
+        user: user,
+        created_at: ts,
+        counts_for_number_of_views: 4,
+        time_tracked_in_seconds: 30,
+      )
+      page_view.update_column(:domain, "example.com")
+      create(:page_view, article: other_article, created_at: ts,
+                         counts_for_number_of_views: 2, domain: "forem.com")
+      create(:reaction, reactable: article, user: user, category: "fire", created_at: ts)
+      create(:comment, commentable: other_article, user: user, score: 5, created_at: ts)
+
+      sql_queries = []
+      callback = lambda do |*, payload|
+        sql_queries << payload[:sql] unless %w[SCHEMA TRANSACTION].include?(payload[:name])
+      end
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        described_class.bulk_backfill!([article.id, other_article.id])
+      end
+
+      first = described_class.find_by!(article: article)
+      second = described_class.find_by!(article: other_article)
+      expected_page_views = {
+        "total" => 4,
+        "sum_read_seconds" => 30,
+        "logged_in_count" => 1
+      }
+      expect(first).to have_attributes(
+        daily_page_views: hash_including(iso => expected_page_views),
+        daily_referrers: hash_including(iso => { "example.com" => 4 }),
+        total_page_views: 4,
+        total_reactions: 1,
+        last_aggregated_at: be_present,
+      )
+      expect(first.daily_reactions[iso]["fire"]).to eq(1)
+      expect(sql_queries.size).to eq(5)
+      expect(second).to have_attributes(
+        daily_page_views: hash_including(iso => hash_including("total" => 2)),
+        daily_comments: hash_including(iso => 1),
+        total_comments: 1,
+        last_aggregated_at: be_present,
+      )
+
+      columns = %w[daily_page_views daily_reactions daily_comments daily_referrers
+                   total_page_views total_reactions total_comments]
+      [first, second].each do |record|
+        bulk_values = record.attributes.slice(*columns)
+        record.recompute_all!
+        expect(record.reload.attributes.slice(*columns)).to eq(bulk_values)
+      end
+    end
+
+    it "preserves a row created after aggregation but before insertion" do
+      article_id = article.id
+      allow(described_class).to receive(:insert_all).and_wrap_original do |original, *args, **kwargs|
+        described_class.create!(article_id: article_id, total_page_views: 99)
+        original.call(*args, **kwargs)
+      end
+
+      described_class.bulk_backfill!([article_id])
+
+      expect(described_class.find_by!(article_id: article_id).total_page_views).to eq(99)
+    end
+  end
+
   describe "#referrer_totals" do
     it "sorts by count desc and limits" do
       activity.apply_page_view_delta!("iso" => iso, "total" => 1, "sum_read_seconds" => 0,
