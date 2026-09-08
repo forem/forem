@@ -8,7 +8,14 @@ module URL
   # to preserve historical behavior, but can be overridden by setting the
   # PORT environment variable to match the actual server port (useful when
   # Forem runs alongside other Rails apps that also default to 3000).
+  #
+  # URL_PORT, when set, wins over PORT: it names the port the public URL
+  # should carry rather than the one Puma listens on. Set it to an empty value
+  # when a TLS proxy such as Caddy fronts the app on the standard port, so
+  # OAuth callbacks and other absolute URLs carry no port at all.
   def self.dev_port
+    return ENV["URL_PORT"] if ENV.key?("URL_PORT")
+
     ENV.fetch("PORT", "3000")
   end
 
@@ -37,8 +44,10 @@ module URL
 
   def self.url(uri = nil, domain_or_subforem = nil)
     base_url = "#{protocol}#{domain(domain_or_subforem)}"
-    base_url += ":#{dev_port}" if Rails.env.development? && !base_url.include?(":#{dev_port}")
+    port = dev_port
+    base_url += ":#{port}" if Rails.env.development? && port.present? && base_url.exclude?(":#{port}")
     return base_url unless uri
+
     Addressable::URI.parse(base_url).join(uri).normalize.to_s
   end
 
