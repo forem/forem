@@ -73,8 +73,13 @@ module Emails
     #
     # Test sends are exempt (see #perform): nothing on the Customer.io side
     # duplicates them, and admins still need the preview during the rollout.
+    #
+    # Until Customer.io actually owns the campaign there is nothing to duplicate
+    # either, and skipping would just drop the broadcast. CUSTOMERIO_BROADCAST_
+    # PASSTHROUGH_FLAG turns the skip off for that window.
     def customerio_managed_user_ids(users)
       return Set.new unless ForemInstance.customerio_enabled?
+      return Set.new if ForemInstance.customerio_broadcast_passthrough?
 
       users.each_with_object(Set.new) do |user, ids|
         ids << user.id if FeatureFlag.enabled_for_user?(Deliverable::CUSTOMERIO_FLAG, user)

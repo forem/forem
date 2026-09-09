@@ -204,6 +204,53 @@ RSpec.describe CustomMailer, type: :mailer do
       end
     end
 
+    # Rollout window: nothing on the Customer.io side duplicates the broadcast
+    # yet, so the backstop stands down and the send goes out over the
+    # Customer.io body-passthrough path.
+    context "when the broadcast passthrough flag is enabled" do
+      let(:email) { create(:email, type_of: "newsletter") }
+      let(:broadcast_subject) { "Test Email Subject for *|name|*" }
+      let(:api_client) { instance_double(Customerio::APIClient, send_email: { "delivery_id" => "dev-123" }) }
+
+      before do
+        allow(ForemInstance).to receive_messages(
+          smtp_enabled?: true,
+          customerio_enabled?: true,
+          customerio_broadcast_passthrough?: true,
+        )
+        allow(FeatureFlag).to receive(:enabled_for_user?)
+          .with(Deliverable::CUSTOMERIO_FLAG, having_attributes(id: user.id)).and_return(true)
+        stub_const("CUSTOMERIO_API", api_client)
+      end
+
+      it "sends the broadcast through Customer.io rather than dropping it" do
+        described_class.with(
+          user: user, content: content, subject: broadcast_subject, email_id: email.id,
+        ).custom_email.deliver_now
+
+        expect(api_client).to have_received(:send_email)
+      end
+
+      it "records an ahoy message so the send is not invisible" do
+        expect do
+          described_class.with(
+            user: user, content: content, subject: broadcast_subject, email_id: email.id,
+          ).custom_email.deliver_now
+        end.to change(EmailMessage, :count).by(1)
+      end
+
+      it "sends a body passthrough, not a transactional template" do
+        described_class.with(
+          user: user, content: content, subject: broadcast_subject, email_id: email.id,
+        ).custom_email.deliver_now
+
+        expect(api_client).to have_received(:send_email) do |request|
+          expect(request.message[:transactional_message_id]).to be_nil
+          expect(request.message[:body]).to include(content.sub("*|name|*", user.name))
+        end
+      end
+    end
+
     context "when SendGrid is disabled" do
       before do
         allow(ForemInstance).to receive(:sendgrid_enabled?).and_return(false)
