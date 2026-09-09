@@ -1,0 +1,16 @@
+db/migrate/20260728100100_add_index_to_articles_favorited_by_user_id.rb
+  h_f968154a99632d 5-9,11-18,22-24
+db/migrate/20260728100400_add_index_to_comments_favorited_by_user_id.rb
+  h_f968154a99632d 5-9,11-18,22-24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "af3e66f01aef19b0e0ea949a32120c638e829f8f",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

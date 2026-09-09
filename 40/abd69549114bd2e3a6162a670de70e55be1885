@@ -1,0 +1,42 @@
+app/views/admin/users/show.html.erb
+  f844a57044c6d60d 61-64
+app/lib/constants/user_details.rb
+  f844a57044c6d60d 11
+spec/requests/admin/users_spec.rb
+  f844a57044c6d60d 794-848,851,853-856
+app/models/audit_log.rb
+  f844a57044c6d60d 8-9,14-21
+config/locales/views/admin/pt.yml
+  f844a57044c6d60d 348-362
+app/views/admin/users/show/audit_log/_index.html.erb
+  f844a57044c6d60d 1-45
+app/controllers/admin/users_controller.rb
+  f844a57044c6d60d 69,699-713
+config/locales/views/admin/en.yml
+  f844a57044c6d60d 418-422,439
+app/views/admin/users/show/_tabs.html.erb
+  f844a57044c6d60d 10
+config/locales/views/admin/fr.yml
+  f844a57044c6d60d 407-411,426
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "40abd69549114bd2e3a6162a670de70e55be1885",
+  "prompts": {
+    "f844a57044c6d60d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "42d235cf-30b6-4b32-8cf1-476755ed33d1",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Paolo Veñegas",
+      "messages": [],
+      "total_additions": 818,
+      "total_deletions": 268,
+      "accepted_lines": 528,
+      "overriden_lines": 15,
+      "messages_url": "https://usegitai.com/cas/e158ebef7f63ce7cd5b7f9ae172cb4315654291f318787a7da702d26dc3e1842"
+    }
+  }
+}

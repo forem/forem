@@ -1,0 +1,23 @@
+docs/superpowers/plans/2026-07-13-dev-reengagement-prune.md
+  s_14fb3b87418d89::t_d7d072f2257a5b 44
+  s_14fb3b87418d89::t_f2a007a6b67b4a 325,328
+  s_14fb3b87418d89::t_4eed7cc8d5567a 1-43,45-86,89-131,133-324,326-327,329-789
+  s_14fb3b87418d89::t_3f35acba49ac79 132
+  s_14fb3b87418d89::t_7cedb824cc2d3b 87-88
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "10de799200cadf64edadd4333e05669bfb825156",
+  "prompts": {},
+  "sessions": {
+    "s_14fb3b87418d89": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "248ae081-42f9-4561-80cf-a05803a765b5",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

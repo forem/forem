@@ -1,0 +1,41 @@
+config/fastly/snippets/safe_params_list.vcl
+  s_72954a54bc37f9::t_64262b57aceb78 5
+config/locales/views/calendar/pt.yml
+  s_72954a54bc37f9::t_7175e4beb4a817 1-36
+app/views/calendar/index.html.erb
+  s_72954a54bc37f9::t_cac127802bb480 43
+  s_72954a54bc37f9::t_b892d4dced836f 34
+  s_72954a54bc37f9::t_5f55fc748e75b9 12,16,19
+  s_72954a54bc37f9::t_d4ceb6aae48d20 1,5
+config/locales/views/calendar/en.yml
+  s_72954a54bc37f9::t_5ec2c50cf31a3c 1-36
+app/views/calendar/_calendar_widget.html.erb
+  s_72954a54bc37f9::t_397ea202e2da36 10-12
+  s_72954a54bc37f9::t_d5088300eb63a4 37,41,44,47
+  s_72954a54bc37f9::t_ee1289dc4baf70 16
+config/locales/views/calendar/fr.yml
+  s_72954a54bc37f9::t_1929c671410337 1-36
+app/views/calendar/_pagination.html.erb
+  s_72954a54bc37f9::t_41542eb627c1d5 8,10
+  s_72954a54bc37f9::t_1f0a9bf50bb9be 34
+app/views/calendar/_event_row.html.erb
+  s_72954a54bc37f9::t_fb94dea2d49fda 20,22
+app/helpers/events_helper.rb
+  s_72954a54bc37f9::t_fdcff466d988d2 18-19,22,24,26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.1",
+  "base_commit_sha": "37376176c2572df712de598596d3a6ffb6591a51",
+  "prompts": {},
+  "sessions": {
+    "s_72954a54bc37f9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8fa31ee1-721c-4bdd-9f9e-ba0721134161",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "rashikakarki <rashikakarki9841@gmail.com>"
+    }
+  }
+}

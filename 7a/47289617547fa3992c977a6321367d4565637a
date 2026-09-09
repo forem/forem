@@ -1,0 +1,148 @@
+app/assets/images/robot.svg
+  h_f968154a99632d 1-3
+app/assets/images/sparkles.svg
+  h_f968154a99632d 1-3
+app/assets/stylesheets/views/article-form.scss
+  h_f968154a99632d 110-111
+app/controllers/articles_controller.rb
+  h_f968154a99632d 164-165,170-171,352
+app/controllers/concerns/api/articles_controller.rb
+  h_f968154a99632d 15,33,175
+app/controllers/concerns/api/comments_controller.rb
+  h_f968154a99632d 6
+app/controllers/users/settings_controller.rb
+  h_f968154a99632d 20
+app/decorators/article_decorator.rb
+  h_f968154a99632d 153-154
+app/javascript/article-form/articleForm.jsx
+  h_f968154a99632d 100,105,118,182,191,349-356
+app/javascript/article-form/components/AiDisclosureModal.jsx
+  h_f968154a99632d 1-149
+app/javascript/article-form/components/EditorActions.jsx
+  h_f968154a99632d 1,6,9,32,57,63-71,88,91,93-94,98,100-123,125-128,130-137,139-196
+app/javascript/article-form/components/Options.jsx
+  h_f968154a99632d 216,223
+app/javascript/article-form/components/index.js
+  h_f968154a99632d 1
+app/javascript/articles/components/Meta.jsx
+  h_f968154a99632d 4,7,94-126
+app/lib/constants/settings/general.rb
+  h_f968154a99632d 153-156
+app/models/article.rb
+  h_f968154a99632d 134-140,513,524,535,760-776,1467,1480-1510
+app/models/comment.rb
+  h_f968154a99632d 20-43
+app/models/feed_config.rb
+  h_f968154a99632d 163-175,216-217
+app/models/settings/general.rb
+  h_f968154a99632d 68
+app/models/users/setting.rb
+  h_f968154a99632d 26
+app/policies/comment_policy.rb
+  h_f968154a99632d 57,73
+app/services/articles/attributes.rb
+  h_f968154a99632d 5-6,17-19
+app/services/articles/feeds/basic.rb
+  h_f968154a99632d 25-27
+app/services/articles/feeds/custom.rb
+  h_f968154a99632d 89-92
+app/services/articles/feeds/variant_query.rb
+  h_f968154a99632d 164-167
+app/views/admin/settings/forms/_ai_disclosure.html.erb
+  h_f968154a99632d 1-25
+app/views/admin/settings/show.html.erb
+  h_f968154a99632d 29
+app/views/api/v0/articles/_article.json.jbuilder
+  h_f968154a99632d 17-18,21-22
+app/views/api/v0/comments/_comment.json.jbuilder
+  h_f968154a99632d 4-5
+app/views/articles/_v2_form.html.erb
+  h_f968154a99632d 62,69-70
+app/views/articles/show.html.erb
+  h_f968154a99632d 174,176,179,183-184,188-189,196-204
+app/views/comments/_comment_header.html.erb
+  h_f968154a99632d 37-44
+app/views/comments/_form.html.erb
+  h_f968154a99632d 72
+app/views/pages/_editor_frontmatter_help.en.html.erb
+  h_f968154a99632d 25
+app/views/pages/_editor_frontmatter_help.fr.html.erb
+  h_f968154a99632d 25
+app/views/pages/_editor_frontmatter_help.pt.html.erb
+  h_f968154a99632d 25
+app/views/stories/feeds/show.json.jbuilder
+  h_f968154a99632d 6,14
+app/views/users/_customization.html.erb
+  h_f968154a99632d 74-86
+config/locales/lib/en.yml
+  h_f968154a99632d 191-192
+config/locales/lib/fr.yml
+  h_f968154a99632d 191-192
+config/locales/lib/pt.yml
+  h_f968154a99632d 189-190
+config/locales/models/en.yml
+  h_f968154a99632d 30-34,62-66
+config/locales/models/fr.yml
+  h_f968154a99632d 29-33,61-65
+config/locales/models/pt.yml
+  h_f968154a99632d 29-33,61-65
+config/locales/views/articles/en.yml
+  h_f968154a99632d 7-10
+config/locales/views/articles/fr.yml
+  h_f968154a99632d 6-10
+config/locales/views/articles/pt.yml
+  h_f968154a99632d 7-10
+config/locales/views/comments/en.yml
+  h_f968154a99632d 111-115
+config/locales/views/comments/fr.yml
+  h_f968154a99632d 111-115
+config/locales/views/comments/pt.yml
+  h_f968154a99632d 8-13
+config/locales/views/settings/en.yml
+  h_f968154a99632d 81-86
+config/locales/views/settings/fr.yml
+  h_f968154a99632d 81-86
+config/locales/views/settings/pt.yml
+  h_f968154a99632d 95-100
+db/migrate/20260814130000_add_ai_disclosure_level_to_articles_and_comments.rb
+  h_f968154a99632d 1-6
+db/migrate/20260814130100_add_index_to_articles_and_comments_ai_disclosure_level.rb
+  h_f968154a99632d 1-21
+db/migrate/20260814130200_add_feed_ai_preference_to_users_settings_and_feed_configs.rb
+  h_f968154a99632d 1-7
+db/schema.rb
+  h_f968154a99632d 13,144-145,239,476,503,808,811,2156
+spec/models/article_spec.rb
+  h_f968154a99632d 17-53,1022-1074
+spec/models/comment_spec.rb
+  h_f968154a99632d 10-46
+spec/models/users/setting_spec.rb
+  h_f968154a99632d 25
+spec/requests/admin/configs_spec.rb
+  h_f968154a99632d 767-779
+spec/requests/api/v0/articles_spec.rb
+  h_f968154a99632d 1015-1058,1326-1345
+spec/requests/api/v1/docs/articles_spec.rb
+  h_f968154a99632d 40-41,63,290
+spec/requests/comments_create_spec.rb
+  h_f968154a99632d 30-34
+spec/services/articles/attributes_spec.rb
+  h_f968154a99632d 40-56
+spec/services/articles/feeds/custom_spec.rb
+  h_f968154a99632d 603-620
+spec/swagger_helper.rb
+  h_f968154a99632d 199-200,247-248,436-438
+swagger/v1/api_v1.json
+  h_f968154a99632d 480,768,5867-5880,5997-6006,6467-6480
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "7a47289617547fa3992c977a6321367d4565637a",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

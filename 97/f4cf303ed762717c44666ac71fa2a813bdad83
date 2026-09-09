@@ -1,0 +1,26 @@
+app/services/feeds/assemble_article_markdown.rb
+  e40d71c6e5440a32 53-59,75,78-81
+spec/services/feeds/assemble_article_markdown_spec.rb
+  e40d71c6e5440a32 55-122
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.12",
+  "base_commit_sha": "97f4cf303ed762717c44666ac71fa2a813bdad83",
+  "prompts": {
+    "e40d71c6e5440a32": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "86ab88f2-824e-4189-a04c-a78b59ef9f57",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Jon Gottfried <jonmarkgo@gmail.com>",
+      "messages": [],
+      "total_additions": 83,
+      "total_deletions": 3,
+      "accepted_lines": 82,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/3f8a441812789a8bd97b2c2a86d650d48deda0929c8a93488e1c212d1c4dd3e1"
+    }
+  }
+}

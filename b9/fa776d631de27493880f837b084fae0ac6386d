@@ -1,0 +1,25 @@
+app/mailers/concerns/deliverable.rb
+  s_7d090fe663c96a::t_1b327b107297c3 97-100,102-105,109
+spec/mailers/concerns/deliverable_spec.rb
+  s_7d090fe663c96a::t_022f3a369c7272 111-114,126,159-163,174
+app/services/delivery_methods/customer_io_event.rb
+  s_7d090fe663c96a::t_ef95947817085c 4-6
+.env_sample
+  s_7d090fe663c96a::t_280da909a58e8d 180-183
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "b9fa776d631de27493880f837b084fae0ac6386d",
+  "prompts": {},
+  "sessions": {
+    "s_7d090fe663c96a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5b6eaee2-ac02-4908-babd-8881c6a6886f",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

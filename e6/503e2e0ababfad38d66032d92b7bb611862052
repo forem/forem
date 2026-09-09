@@ -1,0 +1,44 @@
+app/controllers/concerns/api/admin/users_controller.rb
+  s_89df72c2c8e15f::t_b0798d26960bef 17-19
+app/models/users/notification_setting.rb
+  s_89df72c2c8e15f::t_646e5f13d1136e 8-10,22-26,28-34
+spec/models/users/notification_setting_spec.rb
+  s_89df72c2c8e15f::t_8e342f057215ab 149-176
+app/services/moderator/manage_activity_and_roles.rb
+  h_f968154a99632d 41,51
+app/services/tag_moderators/add.rb
+  h_f968154a99632d 22
+app/services/tag_moderators/remove.rb
+  h_f968154a99632d 8
+app/services/users/remove_role.rb
+  h_f968154a99632d 21
+spec/requests/stories/tagged_articles_spec.rb
+  h_f968154a99632d 155-156,159-176,179-186,222,224,238,316
+spec/services/tag_moderators/add_spec.rb
+  h_f968154a99632d 29-35
+spec/services/tag_moderators/remove_spec.rb
+  h_f968154a99632d 13-20
+spec/services/users/remove_role_spec.rb
+  h_f968154a99632d 52-58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "e6503e2e0ababfad38d66032d92b7bb611862052",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_89df72c2c8e15f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0abe0d99-7eeb-41b8-a823-d6a5247a3703",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+Gemfile.lock
+  h_c527e33bbdbde8 717,720-722
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "f7664a43f953f6365b5113201524bfa12dc6a5ea",
+  "prompts": {},
+  "humans": {
+    "h_c527e33bbdbde8": {
+      "author": "Paolo Veñegas <pvenegas@gmail.com>"
+    }
+  }
+}

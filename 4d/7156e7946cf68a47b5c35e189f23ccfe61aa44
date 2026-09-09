@@ -1,0 +1,21 @@
+app/views/admin/shared/_flag_reactions_table.html.erb
+  s_7f1fb660a8893f::t_f1f581be9f9522 1-9
+spec/requests/admin/users_spec.rb
+  s_7f1fb660a8893f::t_9ebc408b091cd9 229-237
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "4d7156e7946cf68a47b5c35e189f23ccfe61aa44",
+  "prompts": {},
+  "sessions": {
+    "s_7f1fb660a8893f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "60306385-2944-4a8a-970a-2437bef87306",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+app/controllers/admin/feed_configs_controller.rb
+  h_f968154a99632d 1-98
+app/models/admin_menu.rb
+  h_f968154a99632d 59
+app/views/admin/feed_configs/_form.html.erb
+  h_f968154a99632d 1-166
+app/views/admin/feed_configs/index.html.erb
+  h_f968154a99632d 1-86
+app/views/admin/feed_configs/new.html.erb
+  h_f968154a99632d 1-28
+app/views/admin/feed_configs/show.html.erb
+  h_f968154a99632d 1-62
+config/routes/admin.rb
+  h_f968154a99632d 214
+spec/requests/admin/feed_configs_spec.rb
+  h_f968154a99632d 1-101
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "0445c8e47b5ffc97dbcc01db79076f0f7c77804b",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

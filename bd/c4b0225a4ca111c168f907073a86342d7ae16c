@@ -1,0 +1,22 @@
+app/models/comment.rb
+  h_f968154a99632d 138-142,245
+app/services/comments/calculate_score.rb
+  h_f968154a99632d 15
+spec/models/comment_spec.rb
+  h_f968154a99632d 365-386
+spec/services/comments/calculate_score_spec.rb
+  h_f968154a99632d 18-53
+spec/services/favorites/create_spec.rb
+  h_f968154a99632d 51-59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "bdc4b0225a4ca111c168f907073a86342d7ae16c",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

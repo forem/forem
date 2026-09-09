@@ -1,0 +1,37 @@
+spec/services/delivery_methods/customer_io_spec.rb
+  s_7d090fe663c96a::t_2b52668e3691f4 85-113
+config/initializers/ahoy_email.rb
+  s_7d090fe663c96a::t_e7e8064548216a 31-35,44-47,49
+  s_7d090fe663c96a::t_e60a71d977c5ab 50
+  s_7d090fe663c96a::t_2dd0b490e1dfa0 70
+  s_7d090fe663c96a::t_368bc9038f277e 63-67
+app/services/emails/ahoy_link_decorator.rb
+  s_7d090fe663c96a::t_24dcb7da0b50c7 1-12,15-82,92,102-105
+  s_7d090fe663c96a::t_9e07ab48093e9c 13-14,83-91,93-101
+app/services/emails/ahoy_link_tracking.rb
+  s_7d090fe663c96a::t_4c801d99e7b66e 21
+  s_7d090fe663c96a::t_24b5a0514a3921 1-20,22-65,67-70
+  s_7d090fe663c96a::t_a656a70e726cfc 66
+app/services/delivery_methods/customer_io.rb
+  s_7d090fe663c96a::t_0593902327b455 45-60
+spec/services/emails/ahoy_link_decorator_spec.rb
+  s_7d090fe663c96a::t_d95cd3066d7ce4 103-106,108-110
+  s_7d090fe663c96a::t_02dfe715e71acd 44
+  s_7d090fe663c96a::t_b80a2049816126 1-43,45-102,107,111-142
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "bc1b1675e71a91d3f627b30802e9a3ea8ca0b8ee",
+  "prompts": {},
+  "sessions": {
+    "s_7d090fe663c96a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5b6eaee2-ac02-4908-babd-8881c6a6886f",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

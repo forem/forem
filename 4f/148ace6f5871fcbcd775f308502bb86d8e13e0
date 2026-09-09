@@ -1,0 +1,16 @@
+app/views/layouts/application.html.erb
+  h_f968154a99632d 177-200
+spec/requests/stories_index_spec.rb
+  h_f968154a99632d 631-632
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "4f148ace6f5871fcbcd775f308502bb86d8e13e0",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
