@@ -165,17 +165,13 @@ module Authorizer
     def tag_moderator?(tag: nil)
       return true if community_leader?
 
-      # Note a fan of "peeking" into the roles table, which in a way
-      # circumvents the rolify gem.  But this was the past implementation.
-      return user.roles.exists?(name: "tag_moderator") unless tag
+      return has_role?(:tag_moderator, :any) unless tag
 
       has_role?(:tag_moderator, tag)
     end
 
     def subforem_moderator?(subforem: nil)
-      # Note a fan of "peeking" into the roles table, which in a way
-      # circumvents the rolify gem.  But this was the past implementation.
-      return user.roles.exists?(name: "subforem_moderator") unless subforem
+      return has_role?(:subforem_moderator, :any) unless subforem
 
       has_role?(:subforem_moderator, subforem)
     end
@@ -211,11 +207,25 @@ module Authorizer
     private
 
     def has_role?(*args)
+      return user.has_cached_role?(*args) if roles_loaded?
+
       user.__send__(:has_role?, *args)
     end
 
     def has_any_role?(*args)
-      user.__send__(:has_any_role?, *args)
+      return user.__send__(:has_any_role?, *args) unless roles_loaded?
+
+      args.any? do |role|
+        if role.is_a?(Hash)
+          user.has_cached_role?(role[:name], role[:resource])
+        else
+          user.has_cached_role?(role)
+        end
+      end
+    end
+
+    def roles_loaded?
+      user.association(:roles).loaded?
     end
   end
 end
