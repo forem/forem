@@ -199,5 +199,10 @@ en:
       field_job_title: Job Title
       name_email_required: Name and email are required.
       wrong_organization: This lead form does not belong to this organization.
+    org_lead_gate_tag:
+      invalid_id: "Invalid lead form ID. Use: {% org_lead_gate ID %}...{% endorg_lead_gate %}"
+      sign_in_required: Sign in with your %{community} account to submit this form and unlock the content.
+      sign_in: Sign in to unlock
+      data_shared: "Shares your name, email, username, company, and title with this organization."
     youtube_tag:
       invalid_youtube_id: Invalid YouTube ID or URL
