@@ -277,7 +277,8 @@ new_email = user_params[:email].to_s.strip.presence
     end
 
     def export
-      @users = User.registered.select(ATTRIBUTES_FOR_CSV + ATTRIBUTES_FOR_LAST_ACTIVITY).includes(:organizations)
+      @users = User.registered.select(ATTRIBUTES_FOR_CSV + ATTRIBUTES_FOR_LAST_ACTIVITY)
+        .preload(:organizations, :roles)
 
       respond_to do |format|
         format.csv do
@@ -705,7 +706,7 @@ new_email = user_params[:email].to_s.strip.presence
         joining_end: params[:joining_end],
         date_format: params[:date_format],
         organizations: params[:organizations],
-      ).page(params[:page]).per(50)
+      ).preload(:roles).page(params[:page]).per(50)
 
       @organization_limit = 3
       @organizations = Organization.order(name: :desc)
