@@ -92,8 +92,8 @@
             if (!response.ok || !data.success) throw new Error(data.error);
             unlock();
           });
-        }).catch(function(error) {
-          showError(error.message || '<%= j I18n.t("liquid_tags.org_lead_form_tag.error") %>', true);
+        }).catch(function() {
+          showError('<%= j I18n.t("liquid_tags.org_lead_form_tag.error") %>', true);
         });
       });
     });

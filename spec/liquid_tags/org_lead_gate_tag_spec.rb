@@ -44,6 +44,13 @@ RSpec.describe OrgLeadGateTag, type: :liquid_tag do
     expect(rendered).to include("showError('Something went wrong. Please try again.', false)")
   end
 
+  it "does not expose raw browser errors when submission fails" do
+    rendered = parse_tag.render
+
+    expect(rendered).to include("showError('Something went wrong. Please try again.', true)")
+    expect(rendered).not_to include("showError(error.message")
+  end
+
   it "preserves the deferred content through the Markdown renderer" do
     markdown = "{% org_lead_gate #{lead_form.id} %}**Gated recording**{% endorg_lead_gate %}"
     rendered = MarkdownProcessor::Parser.new(markdown, source: organization).finalize
