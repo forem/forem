@@ -54,6 +54,30 @@ RSpec.describe Emails::BatchCustomSendWorker, type: :worker do
       end
     end
 
+    # Rollout window: Customer.io does not own the campaign yet, so skipping the
+    # cohort would drop the broadcast rather than avoid a duplicate.
+    context "when the broadcast passthrough flag is enabled" do
+      before do
+        allow(ForemInstance).to receive_messages(
+          customerio_enabled?: true, customerio_broadcast_passthrough?: true,
+        )
+        allow(FeatureFlag).to receive(:enabled_for_user?)
+          .with(Deliverable::CUSTOMERIO_FLAG, anything).and_return(true)
+      end
+
+      it "sends to flag-enabled recipients instead of skipping them" do
+        worker.perform(user_ids, subject_line, content, type_of, email_id)
+
+        expect(CustomMailer).to have_received(:with).twice
+      end
+
+      it "does not consult the delivery flag at all" do
+        worker.perform(user_ids, subject_line, content, type_of, email_id)
+
+        expect(FeatureFlag).not_to have_received(:enabled_for_user?)
+      end
+    end
+
     context "when Customer.io is not configured" do
       before { allow(ForemInstance).to receive(:customerio_enabled?).and_return(false) }
 

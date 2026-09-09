@@ -3,6 +3,20 @@ module Deliverable
 
   CUSTOMERIO_FLAG = :customerio_email_delivery
 
+  # Temporary rollout switch, expected to be removed at full cutover.
+  #
+  # While CUSTOMERIO_FLAG is only partially on, the guards that skip broadcast
+  # email for the enabled cohort (CustomMailer, Emails::BatchCustomSendWorker)
+  # assume Customer.io is already sending that broadcast from a campaign of its
+  # own. Until it is, those recipients get nothing at all. Enabling this flag
+  # keeps Forem authoring the broadcast and lets it go out over the Customer.io
+  # body-passthrough path instead, so the cohort is never silently skipped.
+  #
+  # Turn it off once Customer.io owns the campaign, and delete it -- along with
+  # the two guards it gates -- at full cutover, when customerio_email_cutover?
+  # stops every Forem-side broadcast anyway.
+  CUSTOMERIO_BROADCAST_PASSTHROUGH_FLAG = :customerio_broadcast_passthrough
+
   included do
     before_action :set_perform_deliveries
     after_action  :set_delivery_options
