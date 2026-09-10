@@ -5,8 +5,13 @@ class CollectionsController < ApplicationController
   end
 
   def show
-    @collection = Collection.find(params[:id])
-    @user = @collection.user
-    @articles = @collection.articles.from_subforem.published.order(Arel.sql("COALESCE(crossposted_at, published_at) ASC"))
+  @collection = Collection.find_by(id: params[:id]) ||
+                Collection.find_by(slug: params[:id])
+
+  not_found unless @collection
+
+  # Redirect only if accessed via ID
+  if params[:id].to_i.to_s == params[:id]
+    return redirect_to "/#{params[:username]}/series/#{@collection.slug}", status: :moved_permanently
   end
 end
