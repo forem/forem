@@ -55,6 +55,9 @@ pt:
     error_fill: "Certifique-se de que os formulários estão preenchidos. 🤖 Outros erros possíveis: %{errors}"
     n_a: N/A
     submitted: Seu relatório foi enviado
+  flag_appeals:
+    submitted_success: Seu recurso foi enviado para análise. Obrigado!
+    already_pending: Você já tem um recurso aberto pendente de análise para este item.
   follows_controller:
     already_followed: já seguido
     daily_limit: Limite diário de seguidores de conta atingido!

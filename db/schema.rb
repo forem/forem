@@ -957,6 +957,25 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_03_120001) do
     t.index ["participant_type", "participant_id", "experiment"], name: "index_field_test_memberships_on_participant", unique: true
   end
 
+  create_table "flag_appeals", force: :cascade do |t|
+    t.float "ai_confidence_score"
+    t.integer "ai_recommendation", default: 1, null: false
+    t.text "ai_summary"
+    t.bigint "appealable_id", null: false
+    t.string "appealable_type", null: false
+    t.datetime "created_at", null: false
+    t.text "reason", null: false
+    t.bigint "resolved_by_id"
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["appealable_type", "appealable_id"], name: "index_flag_appeals_on_appealable"
+    t.index ["resolved_by_id"], name: "index_flag_appeals_on_resolved_by_id"
+    t.index ["status"], name: "index_flag_appeals_on_status"
+    t.index ["user_id"], name: "index_flag_appeals_on_user_id"
+    t.index ["user_id", "appealable_type", "appealable_id"], name: "index_flag_appeals_on_pending_user_target", unique: true, where: "status IN (0, 1)"
+  end
+
   create_table "flipper_features", force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
     t.string "key", null: false
@@ -2258,6 +2277,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_03_120001) do
   add_foreign_key "feedback_messages", "users", column: "affected_id", on_delete: :nullify
   add_foreign_key "feedback_messages", "users", column: "offender_id", on_delete: :nullify
   add_foreign_key "feedback_messages", "users", column: "reporter_id", on_delete: :nullify
+  add_foreign_key "flag_appeals", "users"
+  add_foreign_key "flag_appeals", "users", column: "resolved_by_id"
   add_foreign_key "github_repos", "users", on_delete: :cascade
   add_foreign_key "html_variants", "users", on_delete: :cascade
   add_foreign_key "identities", "users", on_delete: :cascade
