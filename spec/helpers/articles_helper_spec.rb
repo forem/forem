@@ -95,4 +95,41 @@ describe ArticlesHelper do
         .to eq(I18n.t("views.articles.comment_cue.zero"))
     end
   end
+
+  describe "#should_show_updated_on?" do
+    let(:article) { instance_double("Article", published: true, published_from_feed: false) }
+
+    it "returns false if edited_at is nil" do
+      allow(article).to receive(:edited_at).and_return(nil)
+      expect(helper.should_show_updated_on?(article)).to be false
+    end
+
+    it "returns false if not published" do
+      allow(article).to receive(:published).and_return(false)
+      allow(article).to receive(:edited_at).and_return(Time.current)
+      expect(helper.should_show_updated_on?(article)).to be false
+    end
+
+    it "returns false if published from feed" do
+      allow(article).to receive(:published_from_feed).and_return(true)
+      allow(article).to receive(:edited_at).and_return(Time.current)
+      expect(helper.should_show_updated_on?(article)).to be false
+    end
+
+    it "returns true if edited after publication on a different day" do
+      published_at = 2.days.ago
+      edited_at = Time.current
+      allow(article).to receive(:published_at).and_return(published_at)
+      allow(article).to receive(:edited_at).and_return(edited_at)
+      expect(helper.should_show_updated_on?(article)).to be true
+    end
+
+    it "returns true if edited on the same day as publication" do
+      published_at = Time.current.beginning_of_day
+      edited_at = Time.current
+      allow(article).to receive(:published_at).and_return(published_at)
+      allow(article).to receive(:edited_at).and_return(edited_at)
+      expect(helper.should_show_updated_on?(article)).to be true
+    end
+  end
 end
