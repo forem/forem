@@ -27,6 +27,25 @@ sub vcl_recv {
     # Rewrite the Host header to match the Heroku application domain
     set req.http.Host = "practicaldev.herokuapp.com";
   }
+
+  # 3. Bypass Fastly edge cache for all requests authenticated via the api-key header.
+  #
+  # The api-key request header is NOT part of Fastly's cache key. Fastly varies its
+  # cache on X-Loggedin (derived from the remember_user_token session cookie above).
+  # Because API key requests carry no session cookie, they always resolve to the
+  # "logged-out" cache bucket — the same bucket as unauthenticated requests.
+  #
+  # If a 401 Unauthorized response was previously cached for an unauthenticated
+  # request to /api/articles/me (or any other authenticated endpoint), Fastly would
+  # serve that cached 401 to a subsequent api-key-authenticated request for the same
+  # URL, because both share X-Loggedin: logged-out in the cache key.
+  #
+  # return(pass) forces Fastly to bypass cache lookup entirely and proxy the request
+  # directly to origin for every api-key-authenticated request, ensuring valid API
+  # keys always reach the Rails authentication layer.
+  if (req.url ~ "^/api" && req.http.api-key) {
+    return(pass);
+  }
 }
 
 sub vcl_fetch {
