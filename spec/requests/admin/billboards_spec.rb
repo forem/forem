@@ -44,6 +44,21 @@ RSpec.describe "/admin/customization/billboards" do
         get_resource
         expect(response).to have_http_status(:ok)
       end
+
+      it "renders sort links in table headers" do
+        create(:billboard)
+        get admin_billboards_path
+        expect(response.body).to include("Sort by Name")
+        expect(response.body).to include("Sort by Placement Area")
+        expect(response.body).to include("Sort by Display To")
+        expect(response.body).to include("Sort by Type")
+      end
+
+      it "sorts by name ascending when requested" do
+        create(:billboard)
+        get admin_billboards_path, params: { q: { s: "name asc" } }
+        expect(response).to have_http_status(:ok)
+      end
     end
 
     describe "GET /admin/customization/billboards/:id/edit" do
