@@ -118,6 +118,18 @@ RSpec.describe UserDecorator, type: :decorator do
       expect(user.decorate.config_body_class).to eq(expected_result)
     end
 
+    it "creates proper body class with system theme" do
+      user.setting.config_theme = "system_theme"
+      expected_result = %W[
+        system-theme sans-serif-article-body
+        mod-status-#{user.admin? || !user.moderator_for_tags.empty?}
+        trusted-status-#{user.trusted?} community-leader-status-#{user.community_leader?}
+        #{user.setting.config_navbar}-header
+      ].join(" ")
+      expect(user.decorate.config_body_class).to eq(expected_result)
+      expect(user.decorate.config_body_class).not_to include("ten-x-hacker-theme")
+    end
+
     it "works with static navbar" do
       user.setting.config_navbar = "static"
       expected_result = %W[

@@ -19,7 +19,7 @@ RSpec.describe Users::Setting do
     it { is_expected.to define_enum_for(:inbox_type).with_values(private: 0, open: 1).with_suffix(:inbox) }
     it { is_expected.to define_enum_for(:config_font).with_values(default: 0, comic_sans: 1, monospace: 2, open_dyslexic: 3, sans_serif: 4, serif: 5).with_suffix(:font) }
     it { is_expected.to define_enum_for(:config_navbar).with_values(default: 0, static: 1).with_suffix(:navbar) }
-    it { is_expected.to define_enum_for(:config_theme).with_values(light_theme: 0, dark_theme: 2) }
+    it { is_expected.to define_enum_for(:config_theme).with_values(light_theme: 0, system_theme: 1, dark_theme: 2) }
     it { is_expected.to define_enum_for(:config_homepage_feed).with_values(default: 0, latest: 1, top_week: 2, top_month: 3, top_year: 4, top_infinity: 5).with_suffix(:feed) }
     it { is_expected.to define_enum_for(:feed_status).with_values(healthy: 0, degraded: 1, failing: 2, inactive: 3).with_prefix(:feed) }
     it { is_expected.to define_enum_for(:feed_ai_preference).with_values(show_all: 0, minimize_ai: 1, hide_fully_autonomous: 2).with_suffix(:feed_ai) }
@@ -63,6 +63,13 @@ RSpec.describe Users::Setting do
         setting.config_theme = 2
         expect(setting).to be_valid
         expect(setting.dark_theme?).to be true
+      end
+
+      it "accepts the system theme" do
+        setting.config_theme = 1
+        expect(setting).to be_valid
+        expect(setting.system_theme?).to be true
+        expect(setting.dark_theme?).to be false
       end
 
       it "does not accept invalid theme" do

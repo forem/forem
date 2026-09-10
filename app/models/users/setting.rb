@@ -19,7 +19,7 @@ module Users
     enum :inbox_type, { private: 0, open: 1 }, suffix: :inbox
     enum :config_navbar, { default: 0, static: 1 }, suffix: :navbar
     # NOTE: We previously had a set of 5 themes with values from 0 to 4.
-    enum :config_theme, { light_theme: 0, dark_theme: 2 }
+    enum :config_theme, { light_theme: 0, system_theme: 1, dark_theme: 2 }
     enum :config_homepage_feed, { default: 0, latest: 1, top_week: 2, top_month: 3, top_year: 4, top_infinity: 5 },
          suffix: :feed
     enum :feed_status, { healthy: 0, degraded: 1, failing: 2, inactive: 3 }, prefix: :feed
