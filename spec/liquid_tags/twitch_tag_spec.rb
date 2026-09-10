@@ -39,4 +39,16 @@ RSpec.describe TwitchTag, type: :liquid_tag do
     assert_parses_clip clip_slug, "#{clip_slug}&autoplay=true"
     assert_parses_video video_id, "#{video_id}&muted=true"
   end
+
+  context "when Twitch player URL has reordered query params" do
+    it "accepts player url with parent param before video param" do
+      url = "https://player.twitch.tv/?parent=localhost&video=#{video_id}&autoplay=false"
+      assert_parses_video video_id, url
+    end
+
+    it "accepts player url with multiple params before video param" do
+      url = "https://player.twitch.tv/?autoplay=false&parent=localhost&video=#{video_id}"
+      assert_parses_video video_id, url
+    end
+  end
 end

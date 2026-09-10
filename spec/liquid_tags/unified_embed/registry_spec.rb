@@ -109,6 +109,8 @@ RSpec.describe UnifiedEmbed::Registry do
       "https://player.twitch.tv/?video=1222841752",
       "https://www.twitch.tv/videos/1250164963",
       "https://www.twitch.tv/monchi_tv/clip/CrepuscularSparklingGalagoBudBlast-ij3jvc4r437D4L4L",
+      "https://player.twitch.tv/?parent=www.example.com&video=1222841752",
+      "https://player.twitch.tv/?parent=www.example.com&video=1222841752&autoplay=false",
     ]
 
     valid_vimeo_url_formats = [
