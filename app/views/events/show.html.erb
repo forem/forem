@@ -138,7 +138,7 @@
           </a>
         <% elsif @event.user %>
           <a href="<%= user_path(@event.user) %>" class="profile-card">
-              <img src="<%= @event.user.profile_image_url %>" alt="<%= @event.user.name %> Silhouette">
+              <img src="<%= @event.user.profile_image_90 %>" alt="<%= @event.user.name %> Silhouette">
               <div>
                   <strong><%= @event.user.name %></strong>
                   <span>@<%= @event.user.username %></span>
@@ -164,7 +164,7 @@
           <% @articles.each do |article| %>
               <article class="article-card">
                   <div class="article-user">
-                      <img src="<%= article.user.profile_image_url %>" alt="<%= article.user.name %>" loading="lazy">
+                      <img src="<%= article.user.profile_image_90 %>" alt="<%= article.user.name %>" loading="lazy">
                       <span><%= article.user.name %></span>
                   </div>
                   <a href="<%= article.path %>" target="_blank" rel="noopener">

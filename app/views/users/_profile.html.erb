@@ -50,6 +50,14 @@
         <% end %>
         <%= f.file_field "user[profile_image]", accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
       </div>
+
+      <% if @user.profile_image_url.present? %>
+        <div class="crayons-field crayons-field--checkbox mt-2">
+          <%= f.check_box "user[remove_profile_image]", class: "crayons-checkbox" %>
+          <%= f.label :remove_profile_image, t("views.settings.profile_image.remove"), for: "user[remove_profile_image]", class: "crayons-field__label" %>
+          <p class="crayons-field__description"><%= t("views.settings.profile_image.remove_description") %></p>
+        </div>
+      <% end %>
     </div>
   </div>
 
