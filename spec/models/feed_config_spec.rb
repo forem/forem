@@ -493,6 +493,19 @@ RSpec.describe FeedConfig, type: :model do
       expect(clone.all_time_tag_count_max).to eq(9)
       expect(clone.feed_impressions_count).to eq(0)
     end
+
+    context "with a segment" do
+      it "places the clone in the given segment" do
+        config = described_class.create!(segment: :general)
+        expect { config.create_slightly_modified_clone!(segment: :new_user) }
+          .to change(described_class.new_user, :count).by(1)
+      end
+
+      it "keeps the parent's segment by default" do
+        config = described_class.create!(segment: :new_user)
+        expect { config.create_slightly_modified_clone! }.to change(described_class.new_user, :count).by(1)
+      end
+    end
   end
 
   describe "#score_sql" do
@@ -560,6 +573,48 @@ RSpec.describe FeedConfig, type: :model do
         sql = feed_config.score_sql(user)
         expect(sql).to include("CASE WHEN articles.ai_disclosure_level = 5 THEN -25.0 ELSE 0 END")
       end
+    end
+  end
+
+  describe ".segment_for" do
+    it "returns :general for nil" do
+      expect(described_class.segment_for(nil)).to eq(:general)
+    end
+
+    it "returns :new_user for recently registered users" do
+      expect(described_class.segment_for(create(:user, registered_at: 3.days.ago))).to eq(:new_user)
+    end
+
+    it "returns :new_user for older users with no reading activity" do
+      expect(described_class.segment_for(create(:user, registered_at: 60.days.ago))).to eq(:new_user)
+    end
+
+    it "returns :general for older users with reading activity" do
+      active = create(:user, registered_at: 60.days.ago)
+      create(:user_activity, user: active, recently_viewed_articles: [[1, Time.current.to_s, 30]])
+      expect(described_class.segment_for(active)).to eq(:general)
+    end
+  end
+
+  describe ".pick_for" do
+    let(:new_user) { create(:user, registered_at: 1.day.ago) }
+
+    it "picks from the user's segment pool even when a general config scores higher" do
+      described_class.create!(segment: :general, feed_success_score: 100)
+      new_user_config = described_class.create!(segment: :new_user, feed_success_score: 1)
+      expect(described_class.pick_for(new_user, explore: false)).to eq(new_user_config)
+    end
+
+    it "falls back to the general pool when the segment pool is empty" do
+      general = described_class.create!(segment: :general)
+      expect(described_class.pick_for(new_user, explore: false)).to eq(general)
+    end
+
+    it "treats every config as one pool when not segmented" do
+      described_class.create!(segment: :new_user, feed_success_score: 1)
+      general = described_class.create!(segment: :general, feed_success_score: 100)
+      allow(described_class).to receive(:rand).and_return(1)
+      expect(described_class.pick_for(new_user, explore: false, segmented: false)).to eq(general)
     end
   end
 end

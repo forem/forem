@@ -35,6 +35,12 @@ class FeedEvent < ApplicationRecord
 
   REACTION_SCORE_MULTIPLIER = 6
   COMMENT_SCORE_MULTIPLIER = 12
+  RETENTION_SCORE_MULTIPLIER = 3
+  # Feed configs are scored on a trailing window so the pool tracks current behavior
+  # rather than a config's lifetime.
+  FEED_CONFIG_SCORING_WINDOW = 7.days
+  # A user counts as retained by a config if they act again this long after first seeing it.
+  RETENTION_GAP = 24.hours
 
   validates :article_position, numericality: { only_integer: true, greater_than: 0 }
   validates :context_type, inclusion: { in: VALID_CONTEXT_TYPES }, presence: true
@@ -103,13 +109,15 @@ class FeedEvent < ApplicationRecord
 
   def self.update_single_feed_config_counters(feed_config_id)
     ThrottledCall.perform("feed_config_feed_success_score_#{feed_config_id}", throttle_for: 5.minutes) do
-      impressions = FeedEvent.where(feed_config_id: feed_config_id, category: "impression")
+      window_start = FEED_CONFIG_SCORING_WINDOW.ago
+      events = FeedEvent.where(feed_config_id: feed_config_id).where("created_at >= ?", window_start)
+      impressions = events.where(category: "impression")
       return if impressions.empty?
 
-      clicks = FeedEvent.where(feed_config_id: feed_config_id, category: "click")
-      reactions = FeedEvent.where(feed_config_id: feed_config_id, category: "reaction")
-      comments = FeedEvent.where(feed_config_id: feed_config_id, category: "comment")
-      pageviews = FeedEvent.where(feed_config_id: feed_config_id, category: "extended_pageview")
+      clicks = events.where(category: "click")
+      reactions = events.where(category: "reaction")
+      comments = events.where(category: "comment")
+      pageviews = events.where(category: "extended_pageview")
 
       # Count the distinct users for impressions and each event type
       distinct_impressions_users = impressions.distinct.pluck(:user_id)
@@ -123,12 +131,43 @@ class FeedEvent < ApplicationRecord
       clicks_score = clicks.sum("POWER(2.0/3, article_position - 1)")
       comments_score = distinct_comments_users.size * COMMENT_SCORE_MULTIPLIER * 2
       pageviews_score = distinct_pageviews_users.size # 1x multiplier for extended pageviews
+      retention_score = retained_user_count(feed_config_id, since: window_start) * RETENTION_SCORE_MULTIPLIER
 
-      score = (clicks_score + pageviews_score + reactions_score + comments_score).to_f / distinct_impressions_users.size
-      
+      total = clicks_score + pageviews_score + reactions_score + comments_score + retention_score
+      score = total.to_f / distinct_impressions_users.size
+
       # Update the feed config counters
       FeedConfig.find_by(id: feed_config_id)&.update_columns(feed_success_score: score, feed_impressions_count: impressions.size)
     end
+  end
+
+  # Distinct users who saw this config in the window and then came back and acted
+  # (click, reaction, comment, or extended pageview) at least RETENTION_GAP after their first impression.
+  def self.retained_user_count(feed_config_id, since:)
+    sql = <<~SQL.squish
+      SELECT COUNT(DISTINCT later.user_id)
+      FROM (
+        SELECT user_id, MIN(created_at) AS first_seen
+        FROM feed_events
+        WHERE feed_config_id = :feed_config_id
+          AND category = :impression
+          AND user_id IS NOT NULL
+          AND created_at >= :since
+        GROUP BY user_id
+      ) first_impressions
+      INNER JOIN feed_events later
+        ON later.user_id = first_impressions.user_id
+        AND later.category <> :impression
+        AND later.created_at >= :since
+        AND later.created_at >= first_impressions.first_seen + (:gap_seconds * INTERVAL '1 second')
+    SQL
+    binds = {
+      feed_config_id: feed_config_id,
+      impression: categories[:impression],
+      since: since,
+      gap_seconds: RETENTION_GAP.to_i
+    }
+    connection.select_value(sanitize_sql_array([sql, binds])).to_i
   end
 
   private
@@ -143,7 +182,10 @@ class FeedEvent < ApplicationRecord
     return unless feed_config
     return unless %w[reaction comment].include?(category)
 
-    feed_config.create_slightly_modified_clone!
+    # The clone joins the pool of the user who engaged, so a new user reacting under a
+    # general config seeds the new-user pool.
+    segment = user ? FeedConfig.segment_for(user) : nil
+    feed_config.create_slightly_modified_clone!(segment: segment)
   end
 
   # @see AbExperiment::GoalConversionHandler

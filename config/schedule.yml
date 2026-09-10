@@ -234,3 +234,9 @@ evaluate_concept_thresholds:
   class: "Concepts::EvaluateThresholdsWorker"
 
 
+convert_pageview_field_test_goals:
+  description: "Converts cumulative page view goals for the segmented feed config A/B test in one nightly batch (runs daily at 03:30 UTC)"
+  cron: "30 3 * * *"
+  class: "Users::ConvertPageviewFieldTestGoalsWorker"
+  args:
+    - segmented_feed_configs_20260904

@@ -1,6 +1,42 @@
 class FeedConfig < ApplicationRecord
   has_many :feed_events, dependent: :nullify
 
+  # Each config lives in a pool for one user segment. New and low-signal users have
+  # almost no history for the follow/activity-based weights to act on, so they get
+  # their own pool that is served to, and scored on, only their own behavior.
+  enum :segment, { general: 0, new_user: 1 }
+
+  NEW_USER_TENURE = 14.days
+  TOP_POOL_SIZE = 15
+  EXPLORATION_IMPRESSIONS_THRESHOLD = 100
+
+  def self.segment_for(user)
+    return :general if user.nil?
+    return :new_user if user.registered_at.present? && user.registered_at > NEW_USER_TENURE.ago
+    return :new_user if user.user_activity&.recently_viewed_articles.blank?
+
+    :general
+  end
+
+  # Picks a config from the user's segment pool, falling back to the general pool
+  # when the segment has no configs yet. With segmented: false, every config is one
+  # pool (the pre-segmentation behavior, used as the A/B control).
+  def self.pick_for(user, explore: true, segmented: true)
+    return pick_from(all, explore: explore) || first_or_create unless segmented
+
+    pick_from(where(segment: segment_for(user)), explore: explore) ||
+      pick_from(general, explore: explore) ||
+      first_or_create
+  end
+
+  def self.pick_from(scope, explore:)
+    top = -> { scope.order("feed_success_score DESC").limit(rand(1..TOP_POOL_SIZE)).sample }
+    # 5% of the time, try a config that hasn't had many impressions yet
+    return top.call unless explore && rand(20).zero?
+
+    scope.where("feed_impressions_count < ?", EXPLORATION_IMPRESSIONS_THRESHOLD).order("RANDOM()").first || top.call
+  end
+
   def score_sql(user)
     activity_store = user.user_activity
 
@@ -195,8 +231,9 @@ class FeedConfig < ApplicationRecord
     SQL
   end
 
-  def create_slightly_modified_clone!
+  def create_slightly_modified_clone!(segment: nil)
     clone = dup
+    clone.segment = segment if segment
     clone.comment_recency_weight = comment_recency_weight * rand(0.9..1.1)
     clone.comment_score_weight = comment_score_weight * rand(0.9..1.1)
     clone.feed_success_weight = feed_success_weight * rand(0.9..1.1)
