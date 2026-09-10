@@ -48,8 +48,15 @@ class SurveysController < ApplicationController
       .pluck(:poll_id, :text_content)
       .to_h
 
-    # Merge votes and text responses
-    all_responses = user_votes.merge(user_text_responses)
+    # Find all of the current user's skipped polls
+    user_skips = current_user.poll_skips
+      .where(poll_id: @survey.poll_ids, session_start: session_to_show)
+      .pluck(:poll_id)
+      .map { |poll_id| [poll_id, 'skipped'] }
+      .to_h
+
+    # Merge votes, text responses, and skips
+    all_responses = user_votes.merge(user_text_responses).merge(user_skips)
 
     render json: {
       votes: all_responses,

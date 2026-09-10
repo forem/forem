@@ -15,7 +15,7 @@
     <%= f.text_area :prompt_markdown, rows: 2, class: "crayons-textfield", required: true %>
   </div>
 
-  <div class="grid s:grid-cols-2 gap-4 mb-4">
+  <div class="grid s:grid-cols-3 gap-4 mb-4">
     <div class="crayons-field">
       <%= f.label :type_of, class: "crayons-field__label" %>
       <%= f.select :type_of, Poll.type_ofs.keys.map { |k| [k.humanize, k] }, {}, 
@@ -25,6 +25,10 @@
     <div class="crayons-field">
       <%= f.label :position, class: "crayons-field__label" %>
       <%= f.number_field :position, class: "crayons-textfield poll-position-field" %>
+    </div>
+    <div class="crayons-field crayons-field--checkbox mt-6">
+      <%= f.check_box :optional, class: "crayons-checkbox" %>
+      <%= f.label :optional, "Optional (Allow Skip)", class: "crayons-field__label pl-2" %>
     </div>
   </div>
 
