@@ -19,6 +19,10 @@ module Api
       rescue_from ActiveRecord::RecordNotFound, with: :error_not_found
 
       rescue_from Pundit::NotAuthorizedError, with: :error_unauthorized
+      rescue_from DelegatedAccess::Errors::InvalidToken, with: :error_unauthorized
+      # Only a trust-endpoint failure with no usable cached JWKS reaches this handler.
+      # Invalid tokens, including an unknown key with a fresh cache, remain unauthorized.
+      rescue_from DelegatedAccess::Errors::Unavailable, with: :error_delegated_access_unavailable
 
       protected
 
@@ -34,6 +38,10 @@ module Api
         render json: { error: "not found", status: 404 }, status: :not_found
       end
 
+      def error_delegated_access_unavailable
+        render json: { error: "delegated access unavailable", status: 503 }, status: :service_unavailable
+      end
+
       # @note This method is used in ApplicationController within the
       #       `verify_private_forem` method (read more in annotations there).
       #       It uses `authenticate_with_api_key_or_current_user!` under the
@@ -43,6 +51,42 @@ module Api
       #       They're more verbose but they convey the auth method clearly.
       def authenticate!
         authenticate_with_api_key_or_current_user!
+      end
+
+      def authenticate_with_delegated_access
+        token = delegated_bearer_token
+        return unless token
+
+        config = Rails.application.config.x.delegated_access
+        raise DelegatedAccess::Errors::InvalidToken unless config.enabled
+
+        claims = config.verifier.verify(token)
+
+        identity = Identity.includes(:user).where(
+          provider: config.identity_provider,
+          uid: claims.subject,
+          user_id: claims.owner_id,
+        ).sole
+        user = identity.user
+        if user&.spam_or_suspended? || !user&.registered?
+          raise DelegatedAccess::Errors::InvalidToken
+        end
+
+        @user = @authenticated_user = user
+      rescue ActiveRecord::RecordNotFound, ActiveRecord::SoleRecordExceeded
+        raise DelegatedAccess::Errors::InvalidToken
+      end
+
+      def delegated_bearer_token
+        authorization = request.authorization
+        return unless authorization&.match?(/\bBearer\b/i)
+
+        scheme, token = authorization.split(" ", 2)
+        unless scheme.casecmp?("Bearer") && token.present? && token.exclude?(",")
+          raise DelegatedAccess::Errors::InvalidToken
+        end
+
+        token
       end
 
       # @note This method is performing both authentication and authorization.  The user suspended
@@ -82,12 +126,12 @@ module Api
         @user = authenticate_with_api_key || current_user
       end
 
-def authenticated_user
-  return @authenticated_user if defined?(@authenticated_user)
+      def authenticated_user
+        return @authenticated_user if defined?(@authenticated_user)
 
-  user = authenticate_with_api_key || current_user
-  @authenticated_user = user&.spam_or_suspended? ? nil : user
-end
+        user = authenticate_with_api_key || current_user
+        @authenticated_user = user&.spam_or_suspended? ? nil : user
+      end
       helper_method :authenticated_user
 
       def authorize_super_admin
@@ -115,6 +159,9 @@ end
       end
 
       def authenticate_with_api_key
+        delegated_user = authenticate_with_delegated_access
+        return delegated_user if delegated_user
+
         api_key = request.headers["api-key"]
         return unless api_key
 

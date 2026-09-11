@@ -109,6 +109,116 @@ RSpec.describe "Api::V1::Users" do
       end
     end
 
+    context "with delegated Bearer authentication" do
+      let(:signing_key) { OpenSSL::PKey::RSA.generate(2048) }
+      let(:issuer_user_id) { SecureRandom.uuid }
+      let(:delegated_user) { create(:user) }
+      let(:key_id) { "active-key" }
+      let(:jwks_client) { instance_double(DelegatedAccess::JwksClient) }
+      let(:verifier) do
+        DelegatedAccess::Verifier.new(
+          issuer: "https://issuer.example.test",
+          audience: "https://community.example.test",
+          owner_claim: "https://issuer.example.test/claims/user_id",
+          jwks_client: jwks_client,
+          maximum_token_lifetime: 60,
+          jwks_cache_lifetime: 60,
+        )
+      end
+      let(:delegated_config) do
+        ActiveSupport::OrderedOptions.new.tap do |config|
+          config.enabled = true
+          config.issuer = "https://issuer.example.test"
+          config.audience = "https://community.example.test"
+          config.identity_provider = Authentication::Providers.available.first.to_s
+          config.owner_claim = "https://issuer.example.test/claims/user_id"
+          config.jwks_uri = "https://issuer.example.test/.well-known/jwks.json"
+          config.verifier = verifier
+        end.freeze
+      end
+      let(:claims) do
+        {
+          "iss" => delegated_config.issuer,
+          "aud" => delegated_config.audience,
+          "sub" => issuer_user_id,
+          "client_id" => "trusted-client",
+          "scope" => "profile:read",
+          "iat" => Time.current.to_i,
+          "nbf" => Time.current.to_i,
+          "exp" => 30.seconds.from_now.to_i,
+          "jti" => SecureRandom.uuid,
+          delegated_config.owner_claim => delegated_user.id.to_s
+        }
+      end
+      let(:token) { JWT.encode(claims, signing_key, "RS256", { kid: key_id, typ: "at+jwt" }) }
+      let(:jwk) do
+        JWT::JWK.new(signing_key.public_key, key_id).export.transform_keys(&:to_s).merge(
+          "use" => "sig",
+          "alg" => "RS256",
+        )
+      end
+
+      before do
+        Identity.create!(user: delegated_user, provider: delegated_config.identity_provider, uid: issuer_user_id)
+        allow(Rails.application.config.x).to receive(:delegated_access).and_return(delegated_config)
+        allow(jwks_client).to receive(:fetch).and_return({ "keys" => [jwk] }.to_json)
+      end
+
+      it "returns the delegated user" do
+        get me_api_users_path, headers: headers.merge("Authorization" => "Bearer #{token}")
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body["id"]).to eq(delegated_user.id)
+      end
+
+      it "leaves scope authorization to the trusted delegation service" do
+        claims["scope"] = "articles:read"
+
+        get me_api_users_path, headers: headers.merge("Authorization" => "Bearer #{token}")
+
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "rejects a token whose owner claim does not match the linked Forem user" do
+        claims[delegated_config.owner_claim] = create(:user).id.to_s
+
+        get me_api_users_path, headers: headers.merge("Authorization" => "Bearer #{token}")
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "rejects a suspended mapped user" do
+        delegated_user.add_role(:suspended)
+
+        get me_api_users_path, headers: headers.merge("Authorization" => "Bearer #{token}")
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "rejects an unregistered mapped user" do
+        delegated_user.update!(registered: false)
+
+        get me_api_users_path, headers: headers.merge("Authorization" => "Bearer #{token}")
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "returns service unavailable when no usable key set can be retrieved" do
+        allow(jwks_client).to receive(:fetch).and_raise(DelegatedAccess::JwksClient::Error)
+
+        get me_api_users_path, headers: headers.merge("Authorization" => "Bearer #{token}")
+
+        expect(response).to have_http_status(:service_unavailable)
+        expect(response.parsed_body).to eq("error" => "delegated access unavailable", "status" => 503)
+      end
+
+      it "does not fall back to a valid API key when Bearer appears in a malformed header" do
+        get me_api_users_path, headers: auth_headers.merge("Authorization" => "Basic ignored, Bearer invalid")
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
     context "when request is authenticated" do
       let(:user) { api_secret.user }
 
