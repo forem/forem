@@ -41,6 +41,7 @@ module Authentication
         refresh_identity(identity, linked_identity)
         return current_user
       end
+      guard_account_switch!(identity) if current_user
 
       # These variables need to be set outside of the scope of the
       # transaction in order to be used after the transaction is completed.
@@ -167,6 +168,23 @@ module Authentication
         tags: ["error:#{e.class}", "provider:#{linked_identity.provider}"],
       )
       nil
+    end
+
+    def guard_account_switch!(identity)
+      candidate = identity.user || verified_email_user
+      return if candidate.nil? || candidate == current_user
+
+      raise ::Authentication::Errors::Ineligible if candidate.spam_or_suspended?
+
+      raise ::Authentication::Errors::AccountSwitchConfirmation.new(candidate)
+    end
+
+    def verified_email_user
+      email = provider.user_email
+      return nil if email.blank?
+
+      user = User.find_by(email: email)
+      user&.confirmed? ? user : nil
     end
 
     def proper_user(identity)
