@@ -1,0 +1,54 @@
+app/services/community_leaders/add.rb
+  s_1e049bdc81f15e::t_09d3052d7bcc02 7-8
+  s_1e049bdc81f15e::t_93ffc9d44643e8 24-25
+  s_1e049bdc81f15e::t_34955707f1a9e9 1-6,9-10,12,14-16,20-22,26-30,32-43
+  s_1e049bdc81f15e::t_1027fd2ebf4fa8 23
+  s_1e049bdc81f15e::t_844f704daabe7a 13
+  s_1e049bdc81f15e::t_8dd67dabf5d590 11
+  s_1e049bdc81f15e::t_2d181087068b12 31
+  s_1e049bdc81f15e::t_a334d7c8390c7b 17-19
+app/services/community_leaders/remove.rb
+  s_1e049bdc81f15e::t_b212742cc56e6d 2
+  s_1e049bdc81f15e::t_23a61dea3f9e82 1,3-25
+app/services/community_leaders.rb
+  s_1e049bdc81f15e::t_f98dc55d077cab 1
+  s_1e049bdc81f15e::t_14d8e102b56708 2-3
+config/locales/views/admin/fr.yml
+  s_1e049bdc81f15e::t_eaea6905084385 483-484
+config/locales/views/admin/en.yml
+  s_1e049bdc81f15e::t_16a24ff52d9526 494-495
+spec/services/community_leaders/remove_spec.rb
+  s_1e049bdc81f15e::t_12c07bfda76ec7 16,19
+  s_1e049bdc81f15e::t_cf662ac877930b 1-15,17-18,20-28
+spec/services/moderator/manage_activity_and_roles_spec.rb
+  s_1e049bdc81f15e::t_4d77202f531387 215,228-233,235
+  s_1e049bdc81f15e::t_f50ca86bab79e5 216-227,234
+app/lib/constants/role.rb
+  s_1e049bdc81f15e::t_f749dd6cade57b 21-22
+config/locales/views/admin/pt.yml
+  s_1e049bdc81f15e::t_d0abca13b334fc 41-42
+app/services/moderator/manage_activity_and_roles.rb
+  s_1e049bdc81f15e::t_457a4601f2787c 136-139
+  s_1e049bdc81f15e::t_867759d646bdd2 140
+  s_1e049bdc81f15e::t_43e0fedc867f96 105-108
+spec/services/community_leaders/add_spec.rb
+  s_1e049bdc81f15e::t_54df1cd317f0d3 30-32,34-36,40
+  s_1e049bdc81f15e::t_06d3202a859f55 1-6,9-14,17-21,25-29,41,43-45
+  s_1e049bdc81f15e::t_0107eed3026e2d 7-8,15-16,22-24,33,37-39,42
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.17",
+  "base_commit_sha": "fe72a2313cd59cee5c8a0ebcecda8d6b7df0d271",
+  "prompts": {},
+  "sessions": {
+    "s_1e049bdc81f15e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23918fc8-b82e-4edd-9ebf-b02c000c31c4",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Paolo Veñegas <pvenegas@gmail.com>"
+    }
+  }
+}

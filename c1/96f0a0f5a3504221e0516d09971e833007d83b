@@ -1,0 +1,44 @@
+app/controllers/admin/users_controller.rb
+  h_f968154a99632d 72-78,866-933
+app/javascript/packs/admin/editUser.jsx
+  h_f968154a99632d 9-13
+app/lib/constants/user_details.rb
+  h_f968154a99632d 12-18
+app/views/admin/users/show.html.erb
+  h_f968154a99632d 79-106
+app/views/admin/users/show/_tabs.html.erb
+  h_f968154a99632d 1-6,8-12,16-17,20-51
+app/views/admin/users/show/agent_sessions/_index.html.erb
+  h_f968154a99632d 1-57
+app/views/admin/users/show/badges/_index.html.erb
+  h_f968154a99632d 1-56
+app/views/admin/users/show/blocks/_index.html.erb
+  h_f968154a99632d 1-62
+app/views/admin/users/show/collections/_index.html.erb
+  h_f968154a99632d 1-46
+app/views/admin/users/show/follows/_index.html.erb
+  h_f968154a99632d 1-62
+app/views/admin/users/show/identities/_index.html.erb
+  h_f968154a99632d 1-59
+app/views/admin/users/show/reactions/_index.html.erb
+  h_f968154a99632d 1-61
+config/locales/views/admin/en.yml
+  h_f968154a99632d 474-480,483,537-607
+config/locales/views/admin/fr.yml
+  h_f968154a99632d 457,459,461-471,473-474,528-598
+config/locales/views/admin/pt.yml
+  h_f968154a99632d 419-425,428-503
+spec/requests/admin/users_spec.rb
+  h_f968154a99632d 1104-1238
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "c196f0a0f5a3504221e0516d09971e833007d83b",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

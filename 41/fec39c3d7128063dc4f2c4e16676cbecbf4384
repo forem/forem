@@ -1,0 +1,160 @@
+spec/policies/favorite_policy_spec.rb
+  s_1e049bdc81f15e::t_346ea7da6b0fbe 1-41
+app/javascript/favoriteButton/favoriteService.js
+  s_1e049bdc81f15e::t_c00fc7fdb14315 1-3,5-7,9,11,13-20,22-24
+  s_1e049bdc81f15e::t_914f5270eab614 8,12,21
+  s_1e049bdc81f15e::t_854cf792ef08bb 4
+  s_1e049bdc81f15e::t_1683a87f2988b0 10
+app/controllers/favorites_controller.rb
+  s_1e049bdc81f15e::t_3ccf684c13a044 13,21,23,29,32-35
+  s_1e049bdc81f15e::t_4699cbf50bcf9a 18
+  s_1e049bdc81f15e::t_c327b5cd23ff93 28,36
+  s_1e049bdc81f15e::t_2552877c23b5c2 30-31
+  s_1e049bdc81f15e::t_e345ad003e3643 1-5,7-12,14-17,19-20,22,24-27,37-44
+  s_1e049bdc81f15e::t_a1134e99f37509 6
+app/views/comments/index.html.erb
+  s_1e049bdc81f15e::t_68cc8798884e68 91
+config/routes.rb
+  s_1e049bdc81f15e::t_225525596c291d 225
+config/locales/controllers/fr.yml
+  s_1e049bdc81f15e::t_e7d6705da692c0 44-45
+  s_1e049bdc81f15e::t_61066d51220176 47
+  s_1e049bdc81f15e::t_f2eb45255e8cb3 48
+  s_1e049bdc81f15e::t_5ee02b4aa41646 46
+spec/services/favorites/create_spec.rb
+  s_1e049bdc81f15e::t_dcba2541472273 63
+  s_1e049bdc81f15e::t_1f6946be54014a 28,71
+  s_1e049bdc81f15e::t_a0572995dc8335 35
+  s_1e049bdc81f15e::t_5683ade0a6de67 9,19,46,79
+  s_1e049bdc81f15e::t_99ac73afd6f1d8 55
+app/views/articles/show.html.erb
+  s_1e049bdc81f15e::t_e3ac4e439d5bda 303
+app/assets/stylesheets/themes/dark.css
+  s_1e049bdc81f15e::t_b7253d1f65908b 179-180
+config/locales/pt.yml
+  s_1e049bdc81f15e::t_378d4584bafe1d 12
+  s_1e049bdc81f15e::t_924b95fb559826 13
+  s_1e049bdc81f15e::t_f6f316eb0f454b 10-11
+app/services/favorites/create.rb
+  s_1e049bdc81f15e::t_13ee022551d441 13,15
+app/javascript/favoriteButton/__tests__/FavoriteButton.test.jsx
+  s_1e049bdc81f15e::t_6c5d3ce2a0bb58 2
+  s_1e049bdc81f15e::t_5e212716ac3285 93
+  s_1e049bdc81f15e::t_c5ad2315c2180f 34,40
+  s_1e049bdc81f15e::t_51a9c5472c4030 86
+  s_1e049bdc81f15e::t_7b031a7df4daac 79
+  s_1e049bdc81f15e::t_2f31e06f05dbe1 94-96,98-100,105-106,108-112,114-116,118-127,129-130
+  s_1e049bdc81f15e::t_de07af345de691 136,143-151
+  s_1e049bdc81f15e::t_b78a366449dd51 53
+  s_1e049bdc81f15e::t_ae4bde71cdb8fd 1,3-33,35-39,41-52,54-61,63-78,80-85,87-92,101-104,131-134,137-142,152-153,155-164
+  s_1e049bdc81f15e::t_9a5c7daa0876b9 97,107
+  s_1e049bdc81f15e::t_c3381023e095d0 113
+  s_1e049bdc81f15e::t_ba4e641c12b3f9 62
+  s_1e049bdc81f15e::t_52ded3abf64e7a 135
+  s_1e049bdc81f15e::t_b264fde8267e84 154
+  s_1e049bdc81f15e::t_6548a7ed8b08df 117,128
+app/views/comments/_comment_footer.html.erb
+  s_1e049bdc81f15e::t_41fd4a190b464e 18
+  s_1e049bdc81f15e::t_bb6ca43d257e22 19
+app/assets/stylesheets/views/article.scss
+  s_1e049bdc81f15e::t_0646d5ccc40220 345
+  s_1e049bdc81f15e::t_7e61d7f153de87 315-316
+  s_1e049bdc81f15e::t_e6f3a6d285d0f7 317-319,321-325,327-343,346-355
+  s_1e049bdc81f15e::t_b26a3e9ff17808 326
+  s_1e049bdc81f15e::t_4b693119eb3216 320,344,356
+  s_1e049bdc81f15e::t_ad020c73d2b4ca 359,361-362
+  s_1e049bdc81f15e::t_ca38bef76da19e 357-358
+  s_1e049bdc81f15e::t_c1aa784b97d29e 311-314
+  s_1e049bdc81f15e::t_da2a2a94d3b663 360,363-364,745
+config/locales/controllers/pt.yml
+  s_1e049bdc81f15e::t_d5284b2fe9b938 47
+  s_1e049bdc81f15e::t_651f504896d254 48
+  s_1e049bdc81f15e::t_c62a27d9e957f0 46
+  s_1e049bdc81f15e::t_113b94d77d0275 44-45
+config/locales/fr.yml
+  s_1e049bdc81f15e::t_968001508ee8de 11-12
+  s_1e049bdc81f15e::t_d48a121e60868c 10
+  s_1e049bdc81f15e::t_25df49690aae75 13
+config/locales/en.yml
+  s_1e049bdc81f15e::t_a1ebc5cb20ed68 10
+  s_1e049bdc81f15e::t_03588528ffb4d5 11-13
+spec/requests/favorites_spec.rb
+  s_1e049bdc81f15e::t_883d6c21b9550c 13,35,43,50
+  s_1e049bdc81f15e::t_1a8b49b9465abc 20-31,38,45-46,52-53
+  s_1e049bdc81f15e::t_4660d84a65797d 49
+  s_1e049bdc81f15e::t_0af7a97b923e96 62,71
+  s_1e049bdc81f15e::t_225891db949f30 78,83-86,90-91
+  s_1e049bdc81f15e::t_48cc7cd51d30a0 12
+  s_1e049bdc81f15e::t_8196bc4ecbec30 79,82,87-89
+  s_1e049bdc81f15e::t_9037a206847058 80-81
+  s_1e049bdc81f15e::t_e4bacfe02353e6 32
+  s_1e049bdc81f15e::t_d5609fcc00bb7e 19
+  s_1e049bdc81f15e::t_67f044c61b22fb 1-11,14-18,33-34,36-37,39-41,44,47-48,51,54-61,63-70,72-77,92
+  s_1e049bdc81f15e::t_ff2fd7de57a26c 42
+config/locales/controllers/en.yml
+  s_1e049bdc81f15e::t_60a297e80e86b8 44-45
+  s_1e049bdc81f15e::t_20f92cf3d09d93 46
+  s_1e049bdc81f15e::t_b074928a2c832f 47
+  s_1e049bdc81f15e::t_2ea40682a7e4de 48
+app/javascript/packs/favoriteButtons.jsx
+  s_1e049bdc81f15e::t_263ecf22ec3818 1-12,14-18,22-25,27-31,35-43
+  s_1e049bdc81f15e::t_5adf1aca6c1cb3 13,26
+  s_1e049bdc81f15e::t_6cadfa6a5a9547 44
+  s_1e049bdc81f15e::t_4b4278b2acad25 45-47
+  s_1e049bdc81f15e::t_7a4fb04efa3727 33
+  s_1e049bdc81f15e::t_a92cff1ccf34af 20
+  s_1e049bdc81f15e::t_9466b98fd7366c 19,21,32,34
+app/views/layouts/application.html.erb
+  s_1e049bdc81f15e::t_882dfb3ff3f75e 70
+app/helpers/favorites_helper.rb
+  s_1e049bdc81f15e::t_ee30607552a5ce 1-2,6-9,11-15,19-22
+  s_1e049bdc81f15e::t_b27ee4c4f757cb 4-5
+  s_1e049bdc81f15e::t_b52823da9ff40a 10
+  s_1e049bdc81f15e::t_ba424d20baa1dd 16
+  s_1e049bdc81f15e::t_00a5caa1397ae3 18
+  s_1e049bdc81f15e::t_1236934ccb90e0 3
+  s_1e049bdc81f15e::t_e84abbf607bbfe 17
+app/policies/favorite_policy.rb
+  s_1e049bdc81f15e::t_69c777402d7fbc 1-7
+app/assets/stylesheets/config/_colors.css
+  s_1e049bdc81f15e::t_8e58250c3ad79f 168-169
+app/javascript/favoriteButton/FavoriteButton.jsx
+  s_1e049bdc81f15e::t_12066ccbd65b1f 11
+  s_1e049bdc81f15e::t_0ff75d20f1f865 8
+  s_1e049bdc81f15e::t_5ab086aeb3c9b0 71-76
+  s_1e049bdc81f15e::t_b991ac9edafac0 1-2,4,6-7,43,77-86,88-89,91-95,99-107,109-116,118,123-125,127-134,136-138,151-159,162-164,167-169
+  s_1e049bdc81f15e::t_b0cd8e4da5ed7d 10,12-22,24,29-42
+  s_1e049bdc81f15e::t_4b24857d63a06d 160,165
+  s_1e049bdc81f15e::t_3d5552b04fa789 117,119
+  s_1e049bdc81f15e::t_11a21759fa58cd 44,46-50,52-59,61-70
+  s_1e049bdc81f15e::t_7680f82bfdb3c9 97
+  s_1e049bdc81f15e::t_926e27bc9c39bf 3,5,9,23,25-28,87,108,126
+  s_1e049bdc81f15e::t_7a13f92234f8c4 122
+  s_1e049bdc81f15e::t_e723bd8af57684 121
+  s_1e049bdc81f15e::t_1d3e918bc84639 135
+  s_1e049bdc81f15e::t_cc72c0b6c8bc6c 51
+  s_1e049bdc81f15e::t_45006037cca433 90
+  s_1e049bdc81f15e::t_54a085dbcf9eff 45
+  s_1e049bdc81f15e::t_3e4520e6a9459f 120
+  s_1e049bdc81f15e::t_ef399a115f083f 139-150
+  s_1e049bdc81f15e::t_83632b0d9705b2 161
+  s_1e049bdc81f15e::t_316713f4654e39 96,98
+  s_1e049bdc81f15e::t_d2839e55fc2e9e 166
+  s_1e049bdc81f15e::t_bc8b192cb0c0dd 60
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "41fec39c3d7128063dc4f2c4e16676cbecbf4384",
+  "prompts": {},
+  "sessions": {
+    "s_1e049bdc81f15e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23918fc8-b82e-4edd-9ebf-b02c000c31c4",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": null
+    }
+  }
+}
