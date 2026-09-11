@@ -9,12 +9,13 @@ HTMLDocument.prototype.ready = new Promise((resolve) => {
 });
 
 function redirectableLocation() {
+  if (document.querySelector('[data-account-switch-confirmation]')) return false;
+
   return ![
     '/onboarding',
     '/signout_confirm',
     '/privacy',
     '/admin/creator_settings/new',
-    '/web/auth/oauth/forem_returns',
   ].includes(window.location.pathname);
 }
 

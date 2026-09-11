@@ -7,6 +7,7 @@ pt:
       unpublished_video: Vídeo Não Publicado ~ %{rand}
     authentication:
       authenticator:
+        account_not_eligible: "Desculpe, esta conta não está autorizada a entrar. Entre em contato com a equipe da comunidade se você acredita que isso é um engano."
         not_allowed: Desculpe, mas o domínio do seu endereço de e-mail não é permitido. Este Forem pode ter limitado o cadastro apenas a domínios de e-mail específicos ou bloqueado este domínio específico de participar.
       providers:
         apple:

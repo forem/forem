@@ -59,17 +59,18 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def stage_account_switch(target_user, provider)
-    # Never store bearer credentials in the session.
+    # Core credentials are not persisted. Other providers need their credentials
+    # after confirmation; encrypt the staged payload rather than erasing them.
     staged_payload = request.env["omniauth.auth"].to_hash.tap do |hash|
-      hash["credentials"] = { "expires" => false }
+      hash["credentials"] = { "expires" => false } if provider.to_s == "mlh"
     end
 
     session["pending_account_switch"] = {
       "user_id" => target_user.id,
       "provider" => provider.to_s,
-      "payload" => staged_payload,
+      "payload" => account_switch_encryptor.encrypt_and_sign(staged_payload, expires_in: 15.minutes),
       "continuation" => request.env["omniauth.params"].to_h["continuation"],
-      "staged_at" => Time.current.iso8601,
+      "staged_at" => Time.current.iso8601
     }
     @switch_target_username = target_user.username
     render :account_switch
@@ -79,16 +80,21 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     pending = session.delete("pending_account_switch")
     target = pending && User.find_by(id: pending["user_id"])
 
-    if pending.nil? || stale_switch?(pending) || target.nil? || target.spam_or_suspended?
+    if invalid_pending_switch?(pending, target)
       flash[:alert] = I18n.t("omniauth_callbacks_controller.account_switch_expired")
       return redirect_to root_path
     end
 
-    sign_out(current_user) if current_user
+    payload = account_switch_encryptor.decrypt_and_verify(pending["payload"])
+    return redirect_to(root_path) unless payload&.fetch("provider", nil) == pending["provider"]
 
     # The interstitial request has no OmniAuth environment.
     request.env["omniauth.params"] = { "continuation" => pending["continuation"] }.compact
-    @user = Authentication::Authenticator.call(OmniAuth::AuthHash.new(pending["payload"]))
+    @user = Authentication::Authenticator.call(OmniAuth::AuthHash.new(payload), expected_user: target)
+    return redirect_to(root_path) unless user_persisted_and_valid? && @user.confirmed?
+
+    sign_out(current_user) if current_user
+    sign_in(@user, event: :authentication)
 
     set_flash_message(:notice, :success, kind: pending["provider"].to_s.titleize) if is_navigational_format?
     @user.update_tracked_fields!(request)
@@ -98,8 +104,11 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     return redirect_to(return_url, allow_other_host: true) if return_url
 
     sign_in_and_redirect(@user, event: :authentication)
-  rescue ::Authentication::Errors::Ineligible, ::Authentication::Errors::PreviouslySuspended => e
+  rescue ::Authentication::Errors::Ineligible, ::Authentication::Errors::PreviouslySuspended,
+         ::Authentication::Errors::SpammyEmailDomain => e
     flash[:global_notice] = e.message
+    redirect_to root_path
+  rescue ActiveSupport::MessageEncryptor::InvalidMessage
     redirect_to root_path
   end
 
@@ -115,6 +124,15 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   private
+
+  def invalid_pending_switch?(pending, target)
+    pending.nil? || stale_switch?(pending) || target.nil? || target.spam_or_suspended?
+  end
+
+  def account_switch_encryptor
+    key = Rails.application.key_generator.generate_key("account-switch-payload", 32)
+    ActiveSupport::MessageEncryptor.new(key, cipher: "aes-256-gcm", serializer: JSON)
+  end
 
   def callback_for(provider)
     auth_payload = request.env["omniauth.auth"]

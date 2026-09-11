@@ -1,15 +1,14 @@
 module Authentication
+  # Temporary bridge: remove with generic OIDC third-party initiated login (target_link_uri).
   class ExternalReturn
-    RETURN_PATH = "/web/auth/oauth/forem_returns".freeze
-
-    CONTINUATION_PATTERN = /\A[A-Za-z0-9_\-]+\z/.freeze
+    CONTINUATION_PATTERN = /\A[A-Za-z0-9_\-]+\z/
 
     def self.redirect_url_for(omniauth_params)
       new(omniauth_params).redirect_url
     end
 
     def self.allowlisted_destination(url)
-      new(nil).send(:allowlisted_url, url)
+      new(nil).__send__(:allowlisted_url, url)
     end
 
     def initialize(omniauth_params)
@@ -18,39 +17,46 @@ module Authentication
 
     def redirect_url
       continuation = @omniauth_params["continuation"].to_s
-      return nil unless continuation.match?(CONTINUATION_PATTERN)
+      return unless continuation.match?(CONTINUATION_PATTERN)
 
-      entry = allowed_uris.find { |uri| uri.path == RETURN_PATH }
-      return nil unless entry
+      entry = configured_uri
+      return unless entry
 
-      "#{origin_of(entry)}#{RETURN_PATH}?continuation=#{continuation}"
+      "#{origin_of(entry)}#{entry.path}?continuation=#{continuation}"
     end
 
     private
 
     def allowlisted_url(value)
-      return nil if value.blank?
+      return if value.blank?
 
       uri = Addressable::URI.parse(value.to_s.strip)
-      return nil unless uri.scheme && uri.host
+      return unless uri.scheme && uri.host
 
-      allowed_uris.find do |allowed|
-        allowed.scheme == uri.scheme &&
+      allowed = configured_uri
+      return unless allowed
+
+      if allowed.scheme == uri.scheme &&
           allowed.host == uri.host &&
           normalized_port(allowed) == normalized_port(uri) &&
-          uri.path == RETURN_PATH
-      end && "#{uri.scheme}://#{uri.host}#{port_suffix(uri)}#{RETURN_PATH}"
+          uri.path == allowed.path && uri.userinfo.nil?
+        "#{origin_of(allowed)}#{allowed.path}"
+      end
     rescue Addressable::URI::InvalidURIError
       nil
     end
 
-    def allowed_uris
-      @allowed_uris ||= ENV.fetch("FOREM_EXTERNAL_RETURN_ORIGINS", "")
-        .split(",")
-        .map { |entry| Addressable::URI.parse(entry.strip) }
-        .select { |uri| uri.scheme == "https" && uri.host.present? }
+    # The receiving application owns the path; Forem only trusts this configured endpoint.
+    def configured_uri
+      return unless ENV.fetch("FOREM_EXTERNAL_RETURN_ENABLED", "false") == "true"
+
+      uri = Addressable::URI.parse(ENV.fetch("FOREM_EXTERNAL_RETURN_URL", "").strip)
+      return unless uri.scheme == "https" && uri.host.present? && uri.path.start_with?("/")
+      return if uri.userinfo || uri.query || uri.fragment
+
+      uri
     rescue Addressable::URI::InvalidURIError
-      []
+      nil
     end
 
     def origin_of(uri)
