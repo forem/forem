@@ -21,6 +21,7 @@ RSpec.describe "Api::V1::Docs::Followers" do
     path "/api/followers/users" do
       get "Followers" do
         tags "followers"
+        security [{ "api-key": [] }, { bearer_auth: [] }]
         description(<<-DESCRIBE.strip)
         This endpoint allows the client to retrieve a list of the followers they have.
 
@@ -35,7 +36,9 @@ RSpec.describe "Api::V1::Docs::Followers" do
         parameter "$ref": "#/components/parameters/pageParam"
         parameter "$ref": "#/components/parameters/perPageParam30to1000"
         parameter name: :sort, in: :query, required: false,
-                  description: "Specifies the sort order for the follow relationship created_at field. Use `created_at` for chronological (oldest first) or `-created_at` for reverse chronological (newest first).",
+                  description: "Specifies the sort order for the follow relationship created_at field. " \
+                               "Use `created_at` for chronological (oldest first) or `-created_at` for reverse " \
+                               "chronological (newest first).",
                   schema: { type: :string },
                   example: "created_at"
 
