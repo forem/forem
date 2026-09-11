@@ -1,0 +1,64 @@
+spec/services/delegated_access/configuration_spec.rb
+  s_eb2685879a6b8a::t_1fb5358d0a8bd4 1-9,12-21,23-79
+  s_eb2685879a6b8a::t_2fec53d3f80559 11
+  s_e08e701c3762b3::t_6d1dd67964d81b 10
+  s_eb2685879a6b8a::t_8376bcef3a3fb1 22
+app/services/delegated_access/jwks_client.rb
+  s_eb2685879a6b8a::t_3362de72adda26 1-74
+app/services/delegated_access/configuration.rb
+  s_eb2685879a6b8a::t_6b12f14bd06507 11,47,49
+  s_eb2685879a6b8a::t_e14c027013a75d 1-10,12,14-16,20-46,48,50-62,64-116
+  s_eb2685879a6b8a::t_8376bcef3a3fb1 13,63
+  s_eb2685879a6b8a::t_2fec53d3f80559 17-19
+spec/services/delegated_access/jwks_client_spec.rb
+  s_eb2685879a6b8a::t_1fb5358d0a8bd4 1-4,6-9,11-14,17-18,22-23,26-30,32-33,35-36,38-57,64-72
+  s_eb2685879a6b8a::t_59979de00df560 58-63
+  s_eb2685879a6b8a::t_48ccab88097341 10,16,24-25,31,34,37
+  s_eb2685879a6b8a::t_2fec53d3f80559 19-21
+  s_eb2685879a6b8a::t_3c946e3de37592 5,15
+app/services/delegated_access/errors.rb
+  s_eb2685879a6b8a::t_a94f0be0b62d48 2-5
+  s_eb2685879a6b8a::t_e14c027013a75d 1,6
+app/services/delegated_access/verifier.rb
+  s_eb2685879a6b8a::t_3362de72adda26 1-193
+spec/services/delegated_access/verifier_spec.rb
+  s_eb2685879a6b8a::t_2fec53d3f80559 32
+  s_eb2685879a6b8a::t_5dbc515ddfe128 52,70-71,118-119,121-122,187-193,195-200,202,204-208,210-211
+  s_eb2685879a6b8a::t_3c946e3de37592 173
+  s_eb2685879a6b8a::t_46c188dc26cd21 201
+  s_eb2685879a6b8a::t_1fb5358d0a8bd4 1-8,11-18,20-31,33-42,45-51,58-59,62,64-66,68-69,72-73,75-76,79-80,85-89,91,93-95,98-99,101-105,107-109,111-112,116-117,123-124,130,134-145,149-156,159-160,162-172,174-184,212-215,217,219-222
+  s_eb2685879a6b8a::t_a74082c442d1fc 194,203
+  s_e08e701c3762b3::t_6d1dd67964d81b 9
+  s_eb2685879a6b8a::t_a093e6bf8257a1 10,19,43-44,53-57,74,77-78,82-84,90,100,113-115,125,133,209
+  s_eb2685879a6b8a::t_a94f0be0b62d48 97,132,146,148,158,186
+  s_eb2685879a6b8a::t_8376bcef3a3fb1 60-61,63,67,81,92,96,106,110,120,126-129,131,147,157,161,185,216,218
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "540a9866c889d29afee9659492211b16db511604",
+  "prompts": {},
+  "humans": {
+    "h_ce58fdd005af23": {
+      "author": "Erin Osher <4386583+erinosher@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_e08e701c3762b3": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a080a5-6b85-7480-8fd2-8f10b1c19e57",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Erin Osher <4386583+erinosher@users.noreply.github.com>"
+    },
+    "s_eb2685879a6b8a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0822e-e625-7990-a6af-8e45849e14e1",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Erin Osher <4386583+erinosher@users.noreply.github.com>"
+    }
+  }
+}
