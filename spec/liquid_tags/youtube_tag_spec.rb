@@ -50,14 +50,14 @@ RSpec.describe YoutubeTag, type: :liquid_tag do
 
     it "uses a vertical aspect ratio for YouTube Shorts" do
       result = generate_tag("https://www.youtube.com/shorts/#{valid_id}")
-      expect(result).to include("aspect-ratio: 9 / 16")
+      expect(result).to include("width: 100%; height: auto; aspect-ratio: 9 / 16")
       expect(result).to include('width="315"')
       expect(result).to include('height="560"')
     end
 
     it "uses a horizontal aspect ratio for regular videos" do
       result = generate_tag("https://www.youtube.com/watch?v=#{valid_id}")
-      expect(result).to include("aspect-ratio: 16 / 9")
+      expect(result).to include("width: 100%; height: auto; aspect-ratio: 16 / 9")
       expect(result).to include('width="710"')
       expect(result).to include('height="399"')
     end
