@@ -27,6 +27,9 @@ fr:
         settings: Settings
       event:
         reminder_html: "Rappel : %{event_link} commence dans %{time} !"
+      co_author:
+        if_org_html: " sous %{org}"
+        verb_html: "%{user} a publié un article dont vous êtes co-auteur%{if_org}"
       comment:
         commented_html: "%{user} commented on %{title}"
         first_html: "%{user} wrote their first comment on %{title}"

@@ -27,6 +27,9 @@ en:
         settings: Settings
       event:
         reminder_html: "Reminder: %{event_link} starts in %{time}!"
+      co_author:
+        if_org_html: " under %{org}"
+        verb_html: "%{user} published a post you are credited on%{if_org}"
       comment:
         commented_html: "%{user} commented on %{title}"
         first_html: "%{user} wrote their first comment on %{title}"
