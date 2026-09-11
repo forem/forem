@@ -385,6 +385,7 @@ belonging to the requested collection, ordered by ascending publication date.",
     path "/api/articles/me" do
       get "User's articles" do
         tags "articles", "users"
+        security [{ "api-key": [] }, { bearer_auth: [] }]
         description "This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.
 
 \"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.
@@ -418,6 +419,7 @@ It will return published articles with pagination. By default a page will contai
     path "/api/articles/me/published" do
       get "User's published articles" do
         tags "articles", "users"
+        security [{ "api-key": [] }, { bearer_auth: [] }]
         description "This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.
 
 \"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.
@@ -451,6 +453,7 @@ It will return published articles with pagination. By default a page will contai
     path "/api/articles/me/unpublished" do
       get "User's unpublished articles" do
         tags "articles", "users"
+        security [{ "api-key": [] }, { bearer_auth: [] }]
         description "This endpoint allows the client to retrieve a list of unpublished articles on behalf of an authenticated user.
 
 \"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.
@@ -484,6 +487,7 @@ It will return unpublished articles with pagination. By default a page will cont
     path "/api/articles/me/all" do
       get "User's all articles" do
         tags "articles", "users"
+        security [{ "api-key": [] }, { bearer_auth: [] }]
         description "This endpoint allows the client to retrieve a list of all articles on behalf of an authenticated user.
 
 \"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.
@@ -585,6 +589,7 @@ will remain."
       end
     end
   end
+
   describe "GET /api/articles/semantic_search" do
     path "/api/articles/semantic_search" do
       get "Perform a semantic fuzzy search on articles" do
@@ -605,7 +610,8 @@ will remain."
                   schema: { type: :number }
 
         before do
-          allow_any_instance_of(Ai::Embedding).to receive(:call).and_return(Array.new(768, 0.1))
+          embedding = instance_double(Ai::Embedding, call: Array.new(768, 0.1))
+          allow(Ai::Embedding).to receive(:new).and_return(embedding)
           published_article.update_column(:semantic_embedding, Array.new(768, 0.1))
         end
 

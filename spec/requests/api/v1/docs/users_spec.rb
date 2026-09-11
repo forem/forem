@@ -25,8 +25,9 @@ RSpec.describe "Api::V1::Docs::Users" do
         description "This endpoint allows the client to retrieve information about the authenticated user.
 
 ### Usage Tips:
-- Requires a valid `api-key` header to identify the user.
+- Requires a valid `api-key` header or a configured delegated Bearer token.
 - Useful for checking permissions, verifying linking state, or retrieving user-specific profile settings."
+        security [{ "api-key": [] }, { bearer_auth: [] }]
         operationId "getUserMe"
         produces "application/json"
 
@@ -392,7 +393,10 @@ RSpec.describe "Api::V1::Docs::Users" do
   end
 
   describe "POST /api/admin/users/{id}/merge" do
-    before { user.add_role(:super_admin) }
+    before do
+      user.add_role(:super_admin)
+      allow(Moderator::MergeUser).to receive(:call)
+    end
 
     path "/api/admin/users/{id}/merge" do
       post "Merge user into another (Admin)" do
@@ -424,10 +428,6 @@ RSpec.describe "Api::V1::Docs::Users" do
           let(:id) { user.id }
           let(:another_user) { create(:user) }
           let(:merge_params) { { merge_user_id: another_user.id } }
-
-          before do
-            allow(Moderator::MergeUser).to receive(:call)
-          end
 
           add_examples
           run_test!
@@ -520,7 +520,10 @@ RSpec.describe "Api::V1::Docs::Users" do
   end
 
   describe "POST /api/admin/users/{user_id}/identities" do
-    before { user.add_role(:super_admin) }
+    before do
+      user.add_role(:super_admin)
+      allow(Authentication::Providers).to receive(:enabled?).and_return(true)
+    end
 
     path "/api/admin/users/{user_id}/identities" do
       post "Link an identity to a user (Admin)" do
@@ -547,10 +550,6 @@ RSpec.describe "Api::V1::Docs::Users" do
                     },
                     required: %w[provider uid]
                   }
-
-        before do
-          allow(Authentication::Providers).to receive(:enabled?).and_return(true)
-        end
 
         response "201", "created" do
           let(:"api-key") { api_secret.secret }
@@ -591,7 +590,10 @@ RSpec.describe "Api::V1::Docs::Users" do
   end
 
   describe "POST /api/admin/users/identities/bulk" do
-    before { user.add_role(:super_admin) }
+    before do
+      user.add_role(:super_admin)
+      allow(Authentication::Providers).to receive(:enabled?).and_return(true)
+    end
 
     path "/api/admin/users/identities/bulk" do
       post "Bulk link identities (Admin)" do
@@ -619,10 +621,6 @@ RSpec.describe "Api::V1::Docs::Users" do
                     },
                     required: %w[provider identities]
                   }
-
-        before do
-          allow(Authentication::Providers).to receive(:enabled?).and_return(true)
-        end
 
         response "200", "successful" do
           let(:"api-key") { api_secret.secret }
