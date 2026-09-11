@@ -16,6 +16,8 @@ Rails.application.routes.draw do
     get "/enter", to: "registrations#new", as: :sign_up
     get "/confirm-email", to: "confirmations#new"
     delete "/sign_out", to: "devise/sessions#destroy"
+  post "/users/auth/account_switch/confirm", to: "omniauth_callbacks#confirm_account_switch", as: :user_account_switch_confirm
+  post "/users/auth/account_switch/cancel", to: "omniauth_callbacks#cancel_account_switch", as: :user_account_switch_cancel
   end
 
   # This route makes default Ahoy Email redirect URLs available to us
