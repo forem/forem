@@ -24,6 +24,7 @@ class AsyncInfo
 
   def initialize(user:, context:)
     @user = user.decorate
+    @user.roles.load
     @context = context
   end
 
@@ -50,7 +51,7 @@ class AsyncInfo
       moderator_for_tags: user.moderator_for_tags,
       moderator_for_subforems: user.moderator_for_subforems,
       config_body_class: user.config_body_class,
-      feed_style: feed_style_preference_variable(user),
+      feed_style: feed_style_preference_variable,
       created_at: user.created_at,
       admin: user.any_admin?,
       admin_organization_ids: user.organization_memberships.admin.pluck(:organization_id),
@@ -82,7 +83,7 @@ class AsyncInfo
     false
   end
 
-  def feed_style_preference_variable(user)
+  def feed_style_preference_variable
     # TODO: Let users set their own feed style preference
     # Currently only at app level
 

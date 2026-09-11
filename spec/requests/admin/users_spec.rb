@@ -17,6 +17,20 @@ RSpec.describe "/admin/member_manager/users" do
       expect(response.body).to include(user.username)
     end
 
+    it "does not query roles separately for each user displayed" do
+      create_list(:user, 2)
+      scoped_role_queries = []
+      subscriber = lambda do |_name, _started, _finished, _unique_id, payload|
+        sql = payload[:sql]
+        scoped_role_queries << sql if sql.match?(/FROM "roles".*"users_roles".*"users_roles"\."user_id" =/)
+      end
+
+      ActiveSupport::Notifications.subscribed(subscriber, "sql.active_record") { get admin_users_path }
+
+      expect(response).to have_http_status(:ok)
+      expect(scoped_role_queries).to be_empty
+    end
+
     context "when searching" do
       it "finds the proper user by GitHub username" do
         get "#{admin_users_path}?search=#{user.github_username}"

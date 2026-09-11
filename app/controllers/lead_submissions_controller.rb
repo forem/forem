@@ -6,7 +6,7 @@ class LeadSubmissionsController < ApplicationController
     submissions = current_user.lead_submissions.where(organization_lead_form_id: form_ids)
                               .pluck(:organization_lead_form_id, :created_at)
     result = submissions.to_h { |form_id, created_at| [form_id.to_s, created_at.iso8601] }
-    render json: result
+    render json: result.merge("csrf_token" => form_authenticity_token)
   end
 
   def create
