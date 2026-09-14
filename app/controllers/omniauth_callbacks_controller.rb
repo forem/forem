@@ -103,6 +103,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       "user_id" => target_user.id,
       "provider" => provider.to_s,
       "payload" => account_switch_encryptor.encrypt_and_sign(stageable_auth_payload(provider), expires_in: 15.minutes),
+      "return_context" => Authentication::ExternalReturn.capture(request.env["omniauth.params"]),
       "staged_at" => Time.current.iso8601
     }
     @switch_target_username = target_user.username
@@ -160,6 +161,9 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     @user.update_tracked_fields!(request)
     remember_me(@user)
 
+    return_url = Authentication::ExternalReturn.resolve(pending["return_context"])
+    return redirect_to(return_url, allow_other_host: true) if return_url
+
     sign_in_and_redirect(@user, event: :authentication)
   end
 
@@ -187,7 +191,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
       user_agent = request.user_agent
 
-      if ApplicationConfig["AUTH_TEST_USER_IDS"].present? && ApplicationConfig["AUTH_TEST_USER_IDS"].split(",").include?(@user.id.to_s)
+      if (external_return = Authentication::ExternalReturn.redirect_url_for(request.env["omniauth.params"]))
+        sign_in(@user, event: :authentication)
+        redirect_to external_return, allow_other_host: true
+      elsif ApplicationConfig["AUTH_TEST_USER_IDS"].present? && ApplicationConfig["AUTH_TEST_USER_IDS"].split(",").include?(@user.id.to_s)
         token = generate_auth_token(@user)
         test_path = ApplicationConfig["AUTH_TEST_USER_REDIRECT_PATH"] || "/menu"
         redirect_to "#{test_path}?jwt=#{token}"
