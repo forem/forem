@@ -1,0 +1,37 @@
+app/controllers/admin/users_controller.rb
+  s_5b319532a74600::t_fc903c3d39edb5 147-149,588-590
+app/controllers/concerns/api/admin/users_controller.rb
+  s_5b319532a74600::t_fb314a2fee0163 71-73
+app/controllers/magic_links_controller.rb
+  s_5b319532a74600::t_0955aca02fd48a 5-10
+app/models/user.rb
+  s_5b319532a74600::t_0b635897ad4618 932-934
+app/workers/trackable/dispatch_worker.rb
+  s_5b319532a74600::t_a6acbba025616a 9-17
+spec/models/user_spec.rb
+  s_5b319532a74600::t_2b608aa638197b 249-254
+spec/requests/admin/users_spec.rb
+  s_5b319532a74600::t_340384ff89e912 593-610,760-778
+spec/requests/api/v1/admin/users_spec.rb
+  s_5b319532a74600::t_ba9798b478b606 271-290
+spec/requests/magic_links_spec.rb
+  s_5b319532a74600::t_f3a41aad0e5d51 162-199
+spec/workers/trackable/dispatch_worker_spec.rb
+  s_5b319532a74600::t_6439ad5abdf2a7 71-82
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "eba89d900dcdb719221c1c743a89c0a8fddeeb61",
+  "prompts": {},
+  "sessions": {
+    "s_5b319532a74600": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4aaa04b8-231a-4a23-82ea-b602aa660d7f",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+app/controllers/stories_controller.rb
+  a8d75fdefd51c402 542-547,552
+app/services/users/delete_comments.rb
+  a8d75fdefd51c402 11
+spec/requests/comments_destroy_spec.rb
+  a8d75fdefd51c402 102
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.9",
+  "base_commit_sha": "d01ac92639b992567243af29d82535feeaddbe93",
+  "prompts": {
+    "a8d75fdefd51c402": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "1dc0fdac-d08c-4175-b74a-0772e9e89f70",
+        "model": "unknown"
+      },
+      "human_author": "Mikey Dorje <mikeydorje@gmail.com>",
+      "messages": [],
+      "total_additions": 29,
+      "total_deletions": 75,
+      "accepted_lines": 114,
+      "overriden_lines": 0
+    }
+  }
+}

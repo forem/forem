@@ -1,0 +1,26 @@
+app/javascript/orgPageEditor/OrgPageEditor.jsx
+  cdf961d01143ac46 123-131
+app/views/organizations/_header.html.erb
+  cdf961d01143ac46 63
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "cd4639d114c86578bf27a57557ecf31f6581d02c",
+  "prompts": {
+    "cdf961d01143ac46": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e69502a6-bdd0-4768-88a0-89870ff05e49",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Jonathan Gottfried",
+      "messages": [],
+      "total_additions": 10,
+      "total_deletions": 10,
+      "accepted_lines": 10,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/470ceef2d9aab24e575813321b3ea5f2b94a974f9c7dc1f98defa70b4855adb9"
+    }
+  }
+}
