@@ -1,0 +1,21 @@
+spec/services/moderator/merge_user_spec.rb
+  s_2717fea812dfa4::t_022b03f2bab387 35-65
+app/services/moderator/merge_user.rb
+  s_2717fea812dfa4::t_ad6bbe9eb6f861 24-29,31
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "77d8e1cc93911a8c857106df8b152f9f39fb6514",
+  "prompts": {},
+  "sessions": {
+    "s_2717fea812dfa4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a25794fd-067b-433e-9f08-fef975147a12",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,42 @@
+app/liquid_tags/slide_tag.rb
+  589592171ada3650 12,23
+spec/liquid_tags/slides_tag_spec.rb
+  589592171ada3650 48-53
+app/views/liquids/_slide.html.erb
+  589592171ada3650 1,10-15
+app/views/liquids/_quote.html.erb
+  589592171ada3650 1-6,12-14,16-18,20-23,25,27-28,30-32,34
+app/views/liquids/_feature.html.erb
+  589592171ada3650 5-7
+app/assets/stylesheets/ltags/FeaturesTag.scss
+  589592171ada3650 11-12,21-22,25-28,32
+app/assets/stylesheets/ltags/SlidesTag.scss
+  589592171ada3650 8,14,30,52-62
+app/assets/stylesheets/ltags/OfferTag.scss
+  589592171ada3650 2-6,8,14-15,17,26-27
+app/assets/stylesheets/ltags/QuoteTag.scss
+  589592171ada3650 3-4,6-9,13-26,28,34-51,55-62,91-95,97-99
+spec/liquid_tags/quote_tag_spec.rb
+  589592171ada3650 33,35-37
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.8",
+  "base_commit_sha": "92e27316830148844bc748089ed61b4f14421f67",
+  "prompts": {
+    "589592171ada3650": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "598eacfd-fbaa-4c95-8016-1d4fa7a1051b",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Jon Gottfried <jonmarkgo@gmail.com>",
+      "messages": [],
+      "total_additions": 149,
+      "total_deletions": 66,
+      "accepted_lines": 142,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/a432e80d4b2b38b4a95a377894d7216c4118ef99ba3769f54cc1b593fce85d9b"
+    }
+  }
+}
