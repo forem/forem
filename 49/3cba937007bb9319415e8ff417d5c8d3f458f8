@@ -1,0 +1,30 @@
+app/controllers/admin/events_controller.rb
+  h_f968154a99632d 91
+app/models/event.rb
+  h_f968154a99632d 29-31,33,54-56,58-62,100-101
+app/views/admin/events/_form.html.erb
+  h_f968154a99632d 132-144
+app/views/admin/events/show.html.erb
+  h_f968154a99632d 19-28
+db/migrate/20260819181500_add_bg_color_hex_to_events.rb
+  h_f968154a99632d 1-5
+db/schema.rb
+  h_f968154a99632d 13,774
+db/seeds.rb
+  h_f968154a99632d 1257,1263,1277
+spec/models/event_spec.rb
+  h_f968154a99632d 231-251,253,255,257,259,262,264,266,268-275,278-279,287,290,312-316,321-325,330-334
+spec/requests/admin/events_spec.rb
+  h_f968154a99632d 167-175,184,186-188,193
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "493cba937007bb9319415e8ff417d5c8d3f458f8",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
