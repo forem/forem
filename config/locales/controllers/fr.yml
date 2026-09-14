@@ -74,6 +74,11 @@ fr:
     deleted: L'inscription a été supprimée avec succès.
     no_credit: Pas assez de crédits disponibles
   omniauth_callbacks_controller:
+    account_switch_title: "Confirmer le changement de compte"
+    account_switch_body_html: "Vous êtes connecté avec un autre compte. Continuer avec %{username} ? Votre session actuelle sera fermée et vous serez connecté à ce compte."
+    account_switch_confirm: "Confirmer le changement"
+    account_switch_cancel: "Annuler"
+    account_switch_expired: "Cette tentative de connexion a expiré. Veuillez réessayer."
     log_in_error: 'Erreur de connexion: %{e}'
     username_taken: le nom d'utilisateur a déjà été pris
   organizations_controller:
