@@ -6,8 +6,8 @@ module Admin
       @q = BadgeAchievement
         .includes(:badge)
         .includes(:user)
-        .order(created_at: :desc)
         .ransack(params[:q])
+      @q.sorts = 'created_at desc' if @q.sorts.empty?
       @badge_achievements = @q.result.page(params[:page] || 1).per(15)
     end
 

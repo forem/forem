@@ -11,11 +11,11 @@
     <table class="crayons-table">
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Fields</th>
-          <th>Pages</th>
+          <th scope="col"><%= sort_link(@q, :name, { aria: { label: "Sort by Name" } }) %></th>
+          <th scope="col"><%= sort_link(@q, :fields_count, "Fields", { aria: { label: "Sort by Fields" } }) %></th>
+          <th scope="col"><%= sort_link(@q, :pages_count, "Pages", { aria: { label: "Sort by Pages" } }) %></th>
           <th>Forked From</th>
-          <th>Forks</th>
+          <th scope="col"><%= sort_link(@q, :forks_count, "Forks", { aria: { label: "Sort by Forks" } }) %></th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -32,7 +32,7 @@
               <%= template.schema_fields.count %> field(s)
             </td>
             <td>
-              <%= template.pages.count %> page(s)
+              <%= template.pages_count %> page(s)
             </td>
             <td>
               <% if template.forked_from.present? %>
@@ -42,8 +42,8 @@
               <% end %>
             </td>
             <td>
-              <% if template.forks.any? %>
-                <%= template.forks.count %> fork(s)
+              <% if template.forks_count > 0 %>
+                <%= template.forks_count %> fork(s)
               <% else %>
                 <span class="color-base-50">—</span>
               <% end %>
