@@ -16,7 +16,6 @@ RSpec.describe "Api::V1::Docs::Readinglist" do
     path "/api/readinglist" do
       get "Readinglist" do
         tags "readinglist"
-        security [{ "api-key": [] }, { bearer_auth: [] }]
         description(<<-DESCRIBE.strip)
         Retrieve the list of articles saved to the authenticated user's reading list.
 

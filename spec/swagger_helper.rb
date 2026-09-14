@@ -23,7 +23,10 @@ RSpec.configure do |config|
         description: "Access Forem articles, users and other resources via API.
         For a real-world example of Forem in action, check out [DEV](https://www.dev.to).
         All endpoints can be accessed with the 'api-key' header and a accept header, but
-        some of them are accessible publicly without authentication.
+        some of them are accessible publicly without authentication. Instances that
+        enable delegated access additionally accept an `Authorization: Bearer` token
+        issued by their configured delegation service on every endpoint that accepts
+        an api-key.
 
         Dates and date times, unless otherwise specified, must be in
         the [RFC 3339](https://tools.ietf.org/html/rfc3339) format."
@@ -35,7 +38,7 @@ RSpec.configure do |config|
           description: "Production server"
         },
       ],
-      security: [{ "api-key": [] }],
+      security: [{ "api-key": [] }, { bearer_auth: [] }],
       components: {
         securitySchemes: {
           "api-key": {

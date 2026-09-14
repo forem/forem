@@ -11,6 +11,14 @@ RSpec.describe "Api::V1::Docs::Users" do
   let(:user) { api_secret.user }
 
   let(:banned_user) { create(:user) }
+  let(:token) do
+    JWT.encode(
+      { "iss" => "https://issuer.example.test", "aud" => "https://community.example.test", "sub" => "core-1",
+        "iat" => Time.current.to_i, "nbf" => Time.current.to_i, "exp" => 30.seconds.from_now.to_i,
+        "jti" => SecureRandom.uuid, "https://issuer.example.test/claims/user_id" => user.id.to_s },
+      OpenSSL::PKey::RSA.generate(2048), "RS256", { kid: "k1", typ: "at+jwt" }
+    )
+  end
   let(:article) { create(:article, user: banned_user, published: true) }
   let(:comment) { create(:comment, user: banned_user, article: article) }
 
@@ -27,7 +35,6 @@ RSpec.describe "Api::V1::Docs::Users" do
 ### Usage Tips:
 - Requires a valid `api-key` header or a configured delegated Bearer token.
 - Useful for checking permissions, verifying linking state, or retrieving user-specific profile settings."
-        security [{ "api-key": [] }, { bearer_auth: [] }]
         operationId "getUserMe"
         produces "application/json"
 
@@ -41,6 +48,32 @@ RSpec.describe "Api::V1::Docs::Users" do
 
         response "401", "Unauthorized" do
           let(:"api-key") { "bad_api_secret" }
+          add_examples
+          run_test!
+        end
+
+        response "503", "Delegated access unavailable" do
+          description "Returned only for delegated Bearer tokens, on any Bearer-capable endpoint, when the " \
+                      "configured JWKS endpoint cannot be reached or returns an unusable key set and no cached " \
+                      "keys remain. Invalid tokens are 401, never 503."
+          let(:Authorization) { "Bearer #{token}" }
+
+          before do
+            jwks_client = instance_double(DelegatedAccess::JwksClient)
+            allow(jwks_client).to receive(:fetch).and_raise(DelegatedAccess::JwksClient::Error)
+            verifier = DelegatedAccess::Verifier.new(
+              issuer: "https://issuer.example.test", audience: "https://community.example.test",
+              owner_claim: "https://issuer.example.test/claims/user_id", jwks_client: jwks_client,
+              maximum_token_lifetime: 60, jwks_cache_lifetime: 60
+            )
+            config = ActiveSupport::OrderedOptions.new.tap do |c|
+              c.enabled = true
+              c.identity_provider = "github"
+              c.verifier = verifier
+            end.freeze
+            allow(Rails.application.config.x).to receive(:delegated_access).and_return(config)
+          end
+
           add_examples
           run_test!
         end

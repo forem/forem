@@ -21,7 +21,6 @@ RSpec.describe "Api::V1::Docs::Followers" do
     path "/api/followers/users" do
       get "Followers" do
         tags "followers"
-        security [{ "api-key": [] }, { bearer_auth: [] }]
         description(<<-DESCRIBE.strip)
         This endpoint allows the client to retrieve a list of the followers they have.
 

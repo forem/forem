@@ -31,7 +31,12 @@ DELEGATED_ACCESS_MAX_TOKEN_LIFETIME_SECONDS=60
 ```
 
 `DELEGATED_ACCESS_JWKS_MAX_AGE_SECONDS` is the lifetime of each Puma worker's
-in-process key cache. Forem never uses an expired entry if the next fetch fails.
+in-process key cache. When an entry expires, one request per process refreshes
+it while concurrent requests keep using the expired entry for a few seconds;
+beyond that grace window an expired entry is never used if the fetch fails.
+
+While `DELEGATED_ACCESS_ENABLED` is not `true`, the `Authorization` header is
+ignored by the API exactly as it was before this feature existed.
 
 ## Token and key contract
 
@@ -65,7 +70,8 @@ authorizes the requested operation.
 Malformed tokens, invalid claims or signatures, and unknown key IDs return `401
 Unauthorized`. When no usable cache entry exists and the configured trust
 endpoint is unavailable or invalid, Forem returns `503 Service Unavailable`.
-Neither case falls back from a presented Bearer token to API-key authentication.
+Neither case falls back from a presented Bearer token to API-key authentication
+while delegated access is enabled.
 
 Fresh known keys are used without a request. An unknown key ID does not
 invalidate the cache or contact the issuer, preventing attacker-selected IDs

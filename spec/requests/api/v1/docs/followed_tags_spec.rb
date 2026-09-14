@@ -22,7 +22,6 @@ RSpec.describe "Api::V1::Docs::FollowedTags" do
     path "/api/follows/tags" do
       get "Followed Tags" do
         tags "followed_tags", "tags"
-        security [{ "api-key": [] }, { bearer_auth: [] }]
         description(<<-DESCRIBE.strip)
         Retrieve the list of tags followed by the authenticated user.
 

@@ -3,7 +3,7 @@
   "info": {
     "title": "Forem API V1",
     "version": "1.0.0",
-    "description": "Access Forem articles, users and other resources via API.\n        For a real-world example of Forem in action, check out [DEV](https://www.dev.to).\n        All endpoints can be accessed with the 'api-key' header and a accept header, but\n        some of them are accessible publicly without authentication.\n\n        Dates and date times, unless otherwise specified, must be in\n        the [RFC 3339](https://tools.ietf.org/html/rfc3339) format."
+    "description": "Access Forem articles, users and other resources via API.\n        For a real-world example of Forem in action, check out [DEV](https://www.dev.to).\n        All endpoints can be accessed with the 'api-key' header and a accept header, but\n        some of them are accessible publicly without authentication. Instances that\n        enable delegated access additionally accept an `Authorization: Bearer` token\n        issued by their configured delegation service on every endpoint that accepts\n        an api-key.\n\n        Dates and date times, unless otherwise specified, must be in\n        the [RFC 3339](https://tools.ietf.org/html/rfc3339) format."
   },
   "paths": {
     "/api/agent_sessions": {
@@ -953,18 +953,6 @@
           "articles",
           "users"
         ],
-        "security": [
-          {
-            "api-key": [
-
-            ]
-          },
-          {
-            "bearer_auth": [
-
-            ]
-          }
-        ],
         "description": "This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nPublished articles will be in reverse chronological publication order.\n\nIt will return published articles with pagination. By default a page will contain 30 articles.",
         "operationId": "getUserArticles",
         "parameters": [
@@ -1001,18 +989,6 @@
         "tags": [
           "articles",
           "users"
-        ],
-        "security": [
-          {
-            "api-key": [
-
-            ]
-          },
-          {
-            "bearer_auth": [
-
-            ]
-          }
         ],
         "description": "This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nPublished articles will be in reverse chronological publication order.\n\nIt will return published articles with pagination. By default a page will contain 30 articles.",
         "operationId": "getUserPublishedArticles",
@@ -1051,18 +1027,6 @@
           "articles",
           "users"
         ],
-        "security": [
-          {
-            "api-key": [
-
-            ]
-          },
-          {
-            "bearer_auth": [
-
-            ]
-          }
-        ],
         "description": "This endpoint allows the client to retrieve a list of unpublished articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nUnpublished articles will be in reverse chronological creation order.\n\nIt will return unpublished articles with pagination. By default a page will contain 30 articles.",
         "operationId": "getUserUnpublishedArticles",
         "parameters": [
@@ -1099,18 +1063,6 @@
         "tags": [
           "articles",
           "users"
-        ],
-        "security": [
-          {
-            "api-key": [
-
-            ]
-          },
-          {
-            "bearer_auth": [
-
-            ]
-          }
         ],
         "description": "This endpoint allows the client to retrieve a list of all articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nIt will return both published and unpublished articles with pagination.\n\nUnpublished articles will be at the top of the list in reverse chronological creation order. Published articles will follow in reverse chronological publication order.\n\nBy default a page will contain 30 articles.",
         "operationId": "getUserAllArticles",
@@ -3055,18 +3007,6 @@
           "followed_tags",
           "tags"
         ],
-        "security": [
-          {
-            "api-key": [
-
-            ]
-          },
-          {
-            "bearer_auth": [
-
-            ]
-          }
-        ],
         "description": "Retrieve the list of tags followed by the authenticated user.\n\n        ### Integration & Personalization Guidance:\n        - Requires authentication.\n        - Returns tags in ascending/popularity order based on user interactions.\n        - Useful for customizing the home feed interface, constructing personalized sidebar navigation, or displaying a user's customized topic preferences in a dashboard.",
         "operationId": "getFollowedTags",
         "responses": {
@@ -3094,18 +3034,6 @@
         "summary": "Followers",
         "tags": [
           "followers"
-        ],
-        "security": [
-          {
-            "api-key": [
-
-            ]
-          },
-          {
-            "bearer_auth": [
-
-            ]
-          }
         ],
         "description": "This endpoint allows the client to retrieve a list of the followers they have.\n\n        ### Integration & Pagination Guidance:\n        - \"Followers\" are other users registered on the platform who follow the authenticated user.\n        - Supports pagination, defaulting to 80 followers per page.\n        - The `sort` query parameter determines the sorting order based on when the follow relationship was established.",
         "operationId": "getFollowers",
@@ -4128,18 +4056,6 @@
         "summary": "Readinglist",
         "tags": [
           "readinglist"
-        ],
-        "security": [
-          {
-            "api-key": [
-
-            ]
-          },
-          {
-            "bearer_auth": [
-
-            ]
-          }
         ],
         "description": "Retrieve the list of articles saved to the authenticated user's reading list.\n\n        ### Integration Guidance:\n        - Requires authentication.\n        - Under the hood, this endpoint retrieves articles that the user has reacted to with the `\"save\"` reaction category.\n        - Supports pagination, defaulting to 30 articles per page.\n        - Returned objects conform to the standard `ArticleIndex` schema.",
         "operationId": "getReadinglist",
@@ -5328,19 +5244,7 @@
         "tags": [
           "users"
         ],
-        "description": "This endpoint allows the client to retrieve information about the authenticated user.\n\n### Usage Tips:\n- Requires a valid `api-key` header or a configured delegated Bearer token.\n- Useful for checking permissions, verifying linking state, or retrieving user-specific profile settings.",
-        "security": [
-          {
-            "api-key": [
-
-            ]
-          },
-          {
-            "bearer_auth": [
-
-            ]
-          }
-        ],
+        "description": "Returned only for delegated Bearer tokens, on any Bearer-capable endpoint, when the configured JWKS endpoint cannot be reached or returns an unusable key set and no cached keys remain. Invalid tokens are 401, never 503.",
         "operationId": "getUserMe",
         "responses": {
           "200": {
@@ -5358,6 +5262,9 @@
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "503": {
+            "description": "Delegated access unavailable"
           }
         }
       }
@@ -6105,6 +6012,11 @@
   "security": [
     {
       "api-key": [
+
+      ]
+    },
+    {
+      "bearer_auth": [
 
       ]
     }
