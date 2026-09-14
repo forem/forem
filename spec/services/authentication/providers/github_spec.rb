@@ -13,6 +13,12 @@ RSpec.describe Authentication::Providers::Github, type: :service do
     end
   end
 
+  describe ".persist_credentials?" do
+    it "defaults to true" do
+      expect(described_class.persist_credentials?).to be(true)
+    end
+  end
+
   describe ".sign_in_path" do
     let(:expected_path) do
       expected_callback_url = CGI.escape(URL.url("/users/auth/github/callback"))
