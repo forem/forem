@@ -1,8 +1,3 @@
-require "uri"
-
-require_relative "jwks_client"
-require_relative "verifier"
-
 module DelegatedAccess
   class Configuration
     DEFAULT_JWKS_MAX_AGE_SECONDS = 300
@@ -79,8 +74,8 @@ module DelegatedAccess
       private
 
       def required(env, name)
-        value = env.fetch(name)
-        raise ArgumentError, "#{name} must not be blank" if value.blank?
+        value = env.fetch(name, nil)
+        raise ArgumentError, "#{name} must be set when delegated access is enabled" if value.blank?
 
         value.dup.freeze
       end

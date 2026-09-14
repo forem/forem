@@ -212,6 +212,20 @@ RSpec.describe DelegatedAccess::Verifier do
     end
   end
 
+  it "keeps serving the just-expired key set to other callers while a refresh fails" do
+    verifier.verify(token)
+    allow(jwks_client).to receive(:fetch).and_raise(DelegatedAccess::JwksClient::Error)
+
+    Timecop.travel(now + 2.seconds) do
+      # The caller that triggers the refresh sees the failure...
+      expect { verifier.verify(token) }.to raise_error(DelegatedAccess::Errors::Unavailable)
+      # ...but the stale entry was extended by race_condition_ttl, so the next
+      # caller inside the grace window is served instead of piling on the issuer.
+      expect(verifier.verify(token).owner_id).to eq(123)
+    end
+    expect(jwks_client).to have_received(:fetch).twice
+  end
+
   it "can invalidate cached public keys immediately" do
     verifier.verify(token)
     verifier.invalidate_cache!

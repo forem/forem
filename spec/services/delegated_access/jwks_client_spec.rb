@@ -27,17 +27,25 @@ RSpec.describe DelegatedAccess::JwksClient do
     expect(adapter).to have_received(:get).with(
       uri,
       headers: {
-        "Accept" => "application/json",
+        "Accept" => "application/jwk-set+json, application/json",
         "User-Agent" => "Forem delegated-access JWKS verifier"
       },
     )
     expect(result).to eq(response.body)
   end
 
+  it "accepts the registered JWK Set media type, case-insensitively" do
+    ["application/jwk-set+json", "Application/JWK-Set+JSON; charset=utf-8", "APPLICATION/JSON"].each do |type|
+      allow(adapter).to receive(:get).and_return(response.dup.tap { |v| v.headers = { "content-type" => type } })
+      expect(client.fetch).to eq(response.body)
+    end
+  end
+
   it "rejects redirects and non-JSON responses" do
     invalid_responses = [
       response.dup.tap { |value| value.status = 302 },
       response.dup.tap { |value| value.headers = value.headers.except("content-type") },
+      response.dup.tap { |value| value.headers = { "content-type" => "text/html" } },
     ]
 
     invalid_responses.each do |invalid_response|

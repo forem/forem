@@ -4,6 +4,10 @@ module DelegatedAccess
   class JwksClient
     Error = Class.new(StandardError)
 
+    # RFC 7517 registers application/jwk-set+json; plain JSON is common too.
+    JSON_MEDIA_TYPES = %w[application/json application/jwk-set+json].freeze
+    private_constant :JSON_MEDIA_TYPES
+
     class NetHttpAdapter
       Response = Struct.new(:status, :headers, :body, keyword_init: true)
 
@@ -51,14 +55,14 @@ module DelegatedAccess
       response = adapter.get(
         uri,
         headers: {
-          "Accept" => "application/json",
+          "Accept" => "application/jwk-set+json, application/json",
           "User-Agent" => "Forem delegated-access JWKS verifier"
         },
       )
       raise Error, "unexpected JWKS response status" unless response.status == 200
 
-      content_type = response.headers.fetch("content-type", "")
-      raise Error, "JWKS response is not JSON" unless content_type.split(";", 2).first == "application/json"
+      media_type = response.headers.fetch("content-type", "").split(";", 2).first.to_s.strip.downcase
+      raise Error, "JWKS response is not JSON" unless JSON_MEDIA_TYPES.include?(media_type)
 
       response.body
     rescue Error

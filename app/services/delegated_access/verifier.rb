@@ -1,9 +1,4 @@
-require "json"
 require "jwt"
-require "openssl"
-
-require_relative "errors"
-require_relative "jwks_client"
 
 module DelegatedAccess
   class Verifier
@@ -14,13 +9,17 @@ module DelegatedAccess
     MAX_KID_BYTES = 128
     MAX_STRING_CLAIM_BYTES = 256
     CLOCK_SKEW_SECONDS = 5
+    # When the cached key set expires, one caller per process refreshes it while
+    # the others keep using the just-expired set for this long, instead of every
+    # thread hitting the issuer at once.
+    JWKS_REFRESH_GRACE_SECONDS = 10
     REQUIRED_CLAIMS = %w[iss sub aud exp iat nbf jti].freeze
     FORBIDDEN_PURPOSE_CLAIMS = %w[nonce sid].freeze
     HEADER_MEMBERS = %w[alg kid typ].freeze
     PRIVATE_RSA_PARAMETERS = %w[d p q dp dq qi oth].freeze
     CACHE_KEY = :delegated_access_jwks
     private_constant :MAX_TOKEN_BYTES, :MAX_KEYS, :MAX_KID_BYTES, :MAX_STRING_CLAIM_BYTES,
-                     :CLOCK_SKEW_SECONDS, :REQUIRED_CLAIMS, :FORBIDDEN_PURPOSE_CLAIMS,
+                     :CLOCK_SKEW_SECONDS, :JWKS_REFRESH_GRACE_SECONDS, :REQUIRED_CLAIMS, :FORBIDDEN_PURPOSE_CLAIMS,
                      :HEADER_MEMBERS, :PRIVATE_RSA_PARAMETERS, :CACHE_KEY
 
     ClaimError = Class.new(StandardError)
@@ -90,7 +89,8 @@ module DelegatedAccess
 
     def load_jwks(_options)
       cache_hit = true
-      jwks = cache.fetch(CACHE_KEY, expires_in: jwks_cache_lifetime) do
+      jwks = cache.fetch(CACHE_KEY, expires_in: jwks_cache_lifetime,
+                                    race_condition_ttl: JWKS_REFRESH_GRACE_SECONDS) do
         cache_hit = false
         record(:refresh)
         parse_jwks(jwks_client.fetch)

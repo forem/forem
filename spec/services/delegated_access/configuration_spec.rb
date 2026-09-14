@@ -39,8 +39,8 @@ RSpec.describe DelegatedAccess::Configuration do
     required_names = environment.keys - ["DELEGATED_ACCESS_ENABLED"]
 
     required_names.each do |name|
-      expect { described_class.from_env(environment.except(name)) }.to raise_error(KeyError)
-      expect { described_class.from_env(environment.merge(name => "")) }.to raise_error(ArgumentError)
+      expect { described_class.from_env(environment.except(name)) }.to raise_error(ArgumentError, /#{name}/)
+      expect { described_class.from_env(environment.merge(name => "")) }.to raise_error(ArgumentError, /#{name}/)
     end
   end
 
