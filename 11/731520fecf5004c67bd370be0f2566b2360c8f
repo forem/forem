@@ -1,0 +1,43 @@
+.env_sample
+  s_7899be4d028552::t_25954ee54ee6a3 200,206,208
+app/controllers/omniauth_callbacks_controller.rb
+  s_7899be4d028552::t_5b07550805abd9 65,73-75,77-78,140-146
+app/javascript/packs/onboardingRedirectCheck.jsx
+  s_7899be4d028552::t_d4b8c549eb2d7b 12-13
+app/services/authentication/authenticator.rb
+  s_7899be4d028552::t_45a262abeb9f54 28,32,55,192-198
+app/services/authentication/external_return.rb
+  s_7899be4d028552::t_4f57cc55189e08 16,42,44-45,47,52-60,62
+app/views/omniauth_callbacks/account_switch.html.erb
+  s_7899be4d028552::t_3305abdabb2191 1
+config/locales/controllers/fr.yml
+  s_7899be4d028552::t_c394a88784d3ce 77-81
+config/locales/controllers/pt.yml
+  s_7899be4d028552::t_86051481da3848 77-81
+config/locales/services/fr.yml
+  s_7899be4d028552::t_f84d66c9853f0a 10
+config/locales/services/pt.yml
+  s_7899be4d028552::t_d8aab8fd96e880 10
+spec/initializers/mlh_omniauth_setup_spec.rb
+  s_7899be4d028552::t_ab3834ac4d30c5 11-32
+spec/requests/mlh_oauth_callbacks_spec.rb
+  s_7899be4d028552::t_60a75af678b963 63-64,68,71,74-75,80,82-84,87-88,106-107,109-112,115-117
+spec/services/authentication/external_return_spec.rb
+  s_7899be4d028552::t_d8ea85913a29af 4-6,9-17,33-35,38,40,47,54,58-60
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "11731520fecf5004c67bd370be0f2566b2360c8f",
+  "prompts": {},
+  "sessions": {
+    "s_7899be4d028552": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a09262-d70a-7662-af92-87c1b64fc6ef",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Erin Osher <4386583+erinosher@users.noreply.github.com>"
+    }
+  }
+}
