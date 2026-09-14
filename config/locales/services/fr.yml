@@ -7,6 +7,7 @@ fr:
       unpublished_video: Vidéo non publiée ~ %{rand}
     authentication:
       authenticator:
+        account_not_eligible: "Désolé, ce compte ne peut pas se connecter. Veuillez contacter l’équipe de la communauté si vous pensez qu’il s’agit d’une erreur."
         not_allowed: Désolé, mais le domaine de votre adresse e-mail n'est pas autorisé. Ce Forem a peut-être limité l'inscription à certains domaines de messagerie ou bloqué l'accès à ce domaine spécifique.
       providers:
         apple:
