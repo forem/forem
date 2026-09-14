@@ -74,6 +74,11 @@ pt:
     deleted: Anúncio foi excluído com sucesso.
     no_credit: Créditos disponíveis insuficientes
   omniauth_callbacks_controller:
+    account_switch_title: "Confirmar troca de conta"
+    account_switch_body_html: "Você está conectado com outra conta. Continuar como %{username}? Isso encerrará sua sessão atual e conectará você a essa conta."
+    account_switch_confirm: "Confirmar troca"
+    account_switch_cancel: "Cancelar"
+    account_switch_expired: "Esta tentativa de login expirou. Tente entrar novamente."
     log_in_error: 'Erro de login: %{e}'
     username_taken: nome de usuário já foi usado
   organizations_controller:
