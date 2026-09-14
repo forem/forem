@@ -219,6 +219,32 @@ RSpec.describe "Api::V1::Users" do
       end
     end
 
+    context "with a Bearer header while delegated access is disabled" do
+      before do
+        disabled = ActiveSupport::OrderedOptions.new.tap { |config| config.enabled = false }.freeze
+        allow(Rails.application.config.x).to receive(:delegated_access).and_return(disabled)
+      end
+
+      it "ignores the Bearer header and authenticates with the api-key as before" do
+        get me_api_users_path, headers: auth_headers.merge("Authorization" => "Bearer some.jwt.token")
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body["id"]).to eq(api_secret.user.id)
+      end
+
+      it "ignores a malformed Bearer header too" do
+        get me_api_users_path, headers: auth_headers.merge("Authorization" => "Basic ignored, Bearer invalid")
+
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "does not treat a Bearer token as a credential" do
+        get me_api_users_path, headers: headers.merge("Authorization" => "Bearer some.jwt.token")
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
     context "when request is authenticated" do
       let(:user) { api_secret.user }
 

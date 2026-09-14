@@ -53,12 +53,16 @@ module Api
         authenticate_with_api_key_or_current_user!
       end
 
+      # Bearer tokens are only interpreted when delegated access is enabled.
+      # Otherwise the Authorization header is ignored exactly as it was before
+      # this feature existed, so clients that send one alongside an api-key or
+      # session keep working on instances that never turn this on.
       def authenticate_with_delegated_access
+        config = Rails.application.config.x.delegated_access
+        return unless config.enabled
+
         token = delegated_bearer_token
         return unless token
-
-        config = Rails.application.config.x.delegated_access
-        raise DelegatedAccess::Errors::InvalidToken unless config.enabled
 
         claims = config.verifier.verify(token)
 
