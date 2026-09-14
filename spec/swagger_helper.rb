@@ -23,7 +23,10 @@ RSpec.configure do |config|
         description: "Access Forem articles, users and other resources via API.
         For a real-world example of Forem in action, check out [DEV](https://www.dev.to).
         All endpoints can be accessed with the 'api-key' header and a accept header, but
-        some of them are accessible publicly without authentication.
+        some of them are accessible publicly without authentication. Instances that
+        enable delegated access additionally accept an `Authorization: Bearer` token
+        issued by their configured delegation service on every endpoint that accepts
+        an api-key.
 
         Dates and date times, unless otherwise specified, must be in
         the [RFC 3339](https://tools.ietf.org/html/rfc3339) format."
@@ -35,7 +38,7 @@ RSpec.configure do |config|
           description: "Production server"
         },
       ],
-      security: [{ "api-key": [] }],
+      security: [{ "api-key": [] }, { bearer_auth: [] }],
       components: {
         securitySchemes: {
           "api-key": {
@@ -61,6 +64,12 @@ To obtain one, please follow these steps:
 
   - You'll see the newly generated key in the same view
     ![generated DEV API Key](https://user-images.githubusercontent.com/37842/172718151-e7fe26a0-9937-42e8-96c6-333acdab9e49.png)"
+          },
+          bearer_auth: {
+            type: :http,
+            scheme: :bearer,
+            bearerFormat: "JWT",
+            description: "Short-lived RS256 RFC 9068 access token issued by the configured delegation service and verified against its configured JWKS. The issuer authorizes the client and requested operation before minting the token; Forem validates the token and resolves its subject and owner to a local user. An invalid token returns 401; an unavailable trust dependency with no usable cached key returns 503."
           }
         },
         parameters: {
