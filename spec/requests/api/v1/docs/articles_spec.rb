@@ -585,6 +585,7 @@ will remain."
       end
     end
   end
+
   describe "GET /api/articles/semantic_search" do
     path "/api/articles/semantic_search" do
       get "Perform a semantic fuzzy search on articles" do
@@ -605,7 +606,8 @@ will remain."
                   schema: { type: :number }
 
         before do
-          allow_any_instance_of(Ai::Embedding).to receive(:call).and_return(Array.new(768, 0.1))
+          embedding = instance_double(Ai::Embedding, call: Array.new(768, 0.1))
+          allow(Ai::Embedding).to receive(:new).and_return(embedding)
           published_article.update_column(:semantic_embedding, Array.new(768, 0.1))
         end
 
