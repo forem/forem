@@ -15,6 +15,59 @@ RSpec.describe "Stories::Feeds" do
     let(:response_json) { response.parsed_body }
     let(:response_article) { response_json.first }
 
+    context "when the segmented feed config experiment is on" do
+      let(:experiment) { "segmented_feed_configs_20260904" }
+      let(:new_user) { create(:user, registered_at: 1.day.ago) }
+
+      before do
+        config = FieldTest.config.deep_dup
+        config["experiments"][experiment] = {
+          "started_at" => 1.day.ago.to_date, "variants" => %w[control segmented], "weights" => [50, 50],
+          "goals" => ["user_creates_comment"]
+        }
+        allow(FieldTest).to receive(:config).and_return(config)
+        allow(Settings::UserExperience).to receive(:feed_strategy).and_return("configured")
+        allow(FeedConfig).to receive(:pick_for).and_call_original
+        FeatureFlag.enable(:segmented_feed_configs)
+      end
+
+      after { FeatureFlag.disable(:segmented_feed_configs) }
+
+      def enroll(participant, variant)
+        FieldTest::Membership.create!(experiment: experiment, participant_type: "User",
+                                      participant_id: participant.id.to_s, variant: variant)
+      end
+
+      it "serves the segmented pool to the segmented variant" do
+        enroll(new_user, "segmented")
+        sign_in new_user
+
+        get stories_feed_path
+
+        expect(FeedConfig).to have_received(:pick_for).with(new_user, segmented: true)
+      end
+
+      it "serves the shared pool to the control variant" do
+        enroll(new_user, "control")
+        sign_in new_user
+
+        get stories_feed_path
+
+        expect(FeedConfig).to have_received(:pick_for).with(new_user, segmented: false)
+      end
+
+      it "does not enroll established users" do
+        established = create(:user, registered_at: 60.days.ago)
+        create(:user_activity, user: established, recently_viewed_articles: [[1, Time.current.to_s, 30]])
+        sign_in established
+
+        get stories_feed_path
+
+        expect(FieldTest::Membership.where(experiment: experiment)).to be_empty
+        expect(FeedConfig).to have_received(:pick_for).with(established, segmented: false)
+      end
+    end
+
     it "renders article list as json" do
       get stories_feed_path
 

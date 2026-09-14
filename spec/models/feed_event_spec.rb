@@ -265,6 +265,38 @@ RSpec.describe FeedEvent do
       end
     end
 
+    context "when events fall outside the scoring window" do
+      before do
+        create(:feed_event, category: "impression", feed_config: feed_config, user: user1, article_position: 1)
+        create(:feed_event, category: "comment", feed_config: feed_config, user: user1, article_position: 1,
+                            created_at: (FeedEvent::FEED_CONFIG_SCORING_WINDOW + 1.day).ago)
+      end
+
+      it "ignores them" do
+        described_class.update_single_feed_config_counters(feed_config.id)
+        expect(feed_config.reload.feed_success_score).to eq(0.0)
+      end
+    end
+
+    context "when a user comes back and acts a day after first seeing the config" do
+      before do
+        create(:feed_event, category: "impression", feed_config: feed_config, user: user1, article_position: 1,
+                            created_at: 3.days.ago)
+        create(:feed_event, category: "impression", feed_config: feed_config, user: user2, article_position: 1,
+                            created_at: 3.days.ago)
+        # user1 returns a day later; user2 acts within the same session. Neither click is attributed to this config.
+        create(:feed_event, category: "click", feed_config: nil, user: user1, article_position: 1,
+                            created_at: 1.day.ago)
+        create(:feed_event, category: "click", feed_config: nil, user: user2, article_position: 1,
+                            created_at: 3.days.ago + 1.hour)
+      end
+
+      it "counts only the returning user as retained" do
+        described_class.update_single_feed_config_counters(feed_config.id)
+        expect(feed_config.reload.feed_success_score).to eq(FeedEvent::RETENTION_SCORE_MULTIPLIER.to_f / 2)
+      end
+    end
+
     context "when no impression events exist for the feed config" do
       before do
         create(:feed_event, category: "click", feed_config: feed_config, user: user1, article_position: 1)
@@ -300,6 +332,14 @@ RSpec.describe FeedEvent do
       it "calls create_slightly_modified_clone! on the feed_config" do
         expect_any_instance_of(FeedConfig).to receive(:create_slightly_modified_clone!)
         create(:feed_event, feed_config: feed_config, article: article, user: user, category: "comment")
+      end
+    end
+
+    context "when the engaging user is in the new-user segment" do
+      it "clones into the new-user pool" do
+        new_user = create(:user, registered_at: 1.day.ago)
+        expect { create(:feed_event, feed_config: feed_config, article: article, user: new_user, category: "reaction") }
+          .to change(FeedConfig.new_user, :count).by(1)
       end
     end
 

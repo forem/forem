@@ -46,6 +46,7 @@
     <thead>
       <tr>
         <th scope="col">Config ID</th>
+        <th scope="col">Segment</th>
         <th scope="col">Success Score</th>
         <th scope="col">Impressions</th>
         <th scope="col">AI Weights (Matching / Penalty)</th>
@@ -62,6 +63,7 @@
               <span class="c-indicator c-indicator--success ml-1">Best</span>
             <% end %>
           </td>
+          <td><%= config.segment.humanize %></td>
           <td><%= config.feed_success_score.round(4) %></td>
           <td><%= number_with_delimiter(config.feed_impressions_count) %></td>
           <td>

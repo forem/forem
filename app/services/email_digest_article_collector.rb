@@ -153,7 +153,9 @@ class EmailDigestArticleCollector
   # rubocop:enable Metrics/PerceivedComplexity
 
   def personalized_articles
-    feed_config = FeedConfig.order(feed_success_score: :desc).limit(15).to_a.sample || FeedConfig.first_or_create
+    # Unsegmented until the segmented_feed_configs experiment concludes, so the digest
+    # doesn't leak the treatment into the control arm.
+    feed_config = FeedConfig.pick_for(@user, explore: false, segmented: false)
     return unless feed_config
 
     set_subforem_context
