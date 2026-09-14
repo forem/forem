@@ -74,8 +74,8 @@ RSpec.describe LiquidEmbedExtractor do
     end
 
     it "correctly resolves internal DEV Article links wrapped in general UnifiedEmbeds into native polymorphic relationships" do
-      dev_article = create(:article, title: "Test Article")
-      dev_article.user.update!(username: "testuser")
+      user = create(:user, username: "testuser")
+      dev_article = create(:article, user: user, title: "Test Article")
       
       domain = Settings::General.app_domain || "localhost:3000"
       article_url = "http://#{domain}/testuser/#{dev_article.slug}"
