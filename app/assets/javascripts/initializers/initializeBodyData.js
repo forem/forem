@@ -1,4 +1,4 @@
-/* global checkUserLoggedIn */
+/* global checkUserLoggedIn applyColorMode watchColorModeChanges */
 
 function removeExistingCSRF() {
   var csrfTokenMeta = document.querySelector("meta[name='csrf-token']");
@@ -51,12 +51,8 @@ function fetchBaseData() {
           const userJson = JSON.parse(user);
           browserStoreCache('set', user);
           document.body.className = userJson.config_body_class;
-
-          if (userJson.config_body_class && userJson.config_body_class.includes('dark-theme') && document.getElementById('dark-mode-style')) {
-            document.getElementById('body-styles').innerHTML = '<style>'+document.getElementById('dark-mode-style').innerHTML+'</style>'
-          } else {
-            document.getElementById('body-styles').innerHTML = '<style>'+document.getElementById('light-mode-style').innerHTML+'</style>'
-          }
+          applyColorMode(userJson.config_body_class);
+          watchColorModeChanges();
 
           if (window && window.ReactNativeWebView) {
             window.ReactNativeWebView.postMessage(JSON.stringify({
