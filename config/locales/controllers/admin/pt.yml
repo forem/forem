@@ -45,6 +45,12 @@ pt:
       deleted: E-mail foi excluído!
       updated: E-mail foi atualizado!
       wrong: Algo deu errado ao excluir o e-mail.
+    user_queries_controller:
+      created: A consulta de usuário foi criada com sucesso.
+      updated: A consulta de usuário foi atualizada com sucesso.
+      deleted: A consulta de usuário foi excluída com sucesso.
+      activated: A consulta de usuário foi ativada com sucesso.
+      deactivated: A consulta de usuário foi desativada com sucesso.
     gdpr_delete_requests_controller:
       deleted: Marcado como excluído com sucesso
     extensions_controller:

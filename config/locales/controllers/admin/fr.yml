@@ -80,6 +80,12 @@ fr:
       deleted: Email has been deleted!
       updated: Email has been updated!
       wrong: Something went wrong with deleting the Email.
+    user_queries_controller:
+      created: La requête utilisateur a été créée avec succès.
+      updated: La requête utilisateur a été mise à jour avec succès.
+      deleted: La requête utilisateur a été supprimée avec succès.
+      activated: La requête utilisateur a été activée avec succès.
+      deactivated: La requête utilisateur a été désactivée avec succès.
     extensions_controller:
       update_success: Les extensions ont été mises à jour.
     gdpr_delete_requests_controller:

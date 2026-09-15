@@ -3,7 +3,10 @@
 <div class="crayons-card p-6">
   <div class="flex justify-between items-center mb-6">
     <h1 class="crayons-title"><%= @user_query.name %></h1>
-    <div class="flex gap-2">
+    <div class="flex items-center gap-3">
+      <span class="text-sm <%= ReadOnlyDatabaseService.available? ? 'text-green-700 bg-green-50 border border-green-200' : 'text-gray-600 bg-gray-100' %> px-2 py-1 rounded">
+        <%= ReadOnlyDatabaseService.available? ? '⚡ Read-Only Replica Active' : 'Primary Database' %>
+      </span>
       <%= link_to "Edit", edit_admin_user_query_path(@user_query), class: "crayons-btn crayons-btn--secondary" %>
       <%= link_to @user_query.active? ? "Deactivate" : "Activate", 
           toggle_active_admin_user_query_path(@user_query), 
@@ -61,7 +64,7 @@
       <dl class="flex flex-col gap-2">
         <div class="flex justify-between">
           <dt class="font-medium">Estimated Users:</dt>
-          <dd><%= @estimated_count || "Unknown" %></dd>
+          <dd><%= @estimated_count ? number_with_delimiter(@estimated_count) : "Unknown" %></dd>
         </div>
         <div class="flex justify-between">
           <dt class="font-medium">Query Length:</dt>
