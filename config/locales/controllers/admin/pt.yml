@@ -63,6 +63,17 @@ pt:
       deleted: A consulta de usuário foi excluída com sucesso.
       activated: A consulta de usuário foi ativada com sucesso.
       deactivated: A consulta de usuário foi desativada com sucesso.
+    audience_segments_controller:
+      created: O segmento de público foi criado com sucesso.
+      updated: O segmento de público foi atualizado com sucesso.
+      deleted: O segmento de público foi excluído com sucesso.
+      cannot_delete_in_use: O segmento de público não pode ser excluído enquanto estiver em uso por e-mails ou outdoors.
+      users_added: "%{count} usuário(s) adicionado(s) com sucesso ao segmento."
+      user_removed: Usuário removido do segmento.
+      users_removed: "%{count} usuário(s) removido(s) do segmento."
+      system_segment_protected: Os segmentos de público do sistema não podem ser modificados.
+      no_valid_users_found: Nenhum usuário válido encontrado a partir das informações fornecidas.
+      no_users_selected: Nenhum usuário selecionado para remoção.
     gdpr_delete_requests_controller:
       deleted: Marcado como excluído com sucesso
     extensions_controller:

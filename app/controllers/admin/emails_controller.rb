@@ -23,12 +23,14 @@ module Admin
     end
 
     def new
+      @audience_segments = AudienceSegment.manual.order(:name, :id)
       @user_queries = UserQuery.active.order(:name)
       @events = Event.order(start_time: :desc)
-      @email = Email.new(event_id: params[:event_id])
+      @email = Email.new(event_id: params[:event_id], audience_segment_id: params[:audience_segment_id])
     end
 
     def edit
+      @audience_segments = AudienceSegment.manual.order(:name, :id)
       @user_queries = UserQuery.active.order(:name)
       @events = Event.order(start_time: :desc)
       @email = Email.find(params[:id])
@@ -41,6 +43,7 @@ module Admin
           @email.status == "active" ? I18n.t("admin.emails_controller.activated") : I18n.t("admin.emails_controller.drafted")
         redirect_to admin_email_path(@email.id)
       else
+        @audience_segments = AudienceSegment.manual.order(:name, :id)
         @user_queries = UserQuery.active.order(:name)
         @events = Event.order(start_time: :desc)
         flash[:danger] = @email.errors_as_sentence
@@ -59,6 +62,7 @@ module Admin
         flash[:success] = I18n.t("admin.emails_controller.updated")
         redirect_to admin_email_path(@email.id)
       else
+        @audience_segments = AudienceSegment.manual.order(:name, :id)
         @user_queries = UserQuery.active.order(:name)
         @events = Event.order(start_time: :desc)
         flash[:danger] = @email.errors_as_sentence
@@ -77,7 +81,7 @@ module Admin
 
     def email_params
       params.require(:email).permit(
-        :subject, :body, :user_query_id, :event_id, :variables, :type_of, :drip_day, :status,
+        :subject, :body, :audience_segment_id, :user_query_id, :event_id, :variables, :type_of, :drip_day, :status,
         :test_email_addresses, :override_footer_html, :custom_footer_html
       )
     end

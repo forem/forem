@@ -26,6 +26,7 @@ RSpec.describe "/admin/emails" do
       expect(response.body).to include(
         'name="email[subject]"',
         'name="email[body]"',
+        'name="email[audience_segment_id]"',
         'name="email[user_query_id]"',
         'name="email[event_id]"',
         'name="email[override_footer_html]"',
@@ -39,6 +40,14 @@ RSpec.describe "/admin/emails" do
       doc = Nokogiri::HTML(response.body)
       selected_option = doc.at_css("select#event_select option[selected][value='#{event.id}']")
       expect(selected_option&.text).to eq(event.title)
+    end
+
+    it "pre-populates audience_segment_id when audience_segment_id param is provided" do
+      segment = create(:audience_segment, name: "Early Adopters")
+      get new_admin_email_path(audience_segment_id: segment.id)
+      doc = Nokogiri::HTML(response.body)
+      selected_option = doc.at_css("select#audience_segment_select option[selected][value='#{segment.id}']")
+      expect(selected_option&.text).to include("Early Adopters")
     end
   end
 
@@ -56,6 +65,7 @@ RSpec.describe "/admin/emails" do
           post admin_emails_path, params: valid_attributes
         end.to change(Email, :count).by(1)
         expect(response).to redirect_to(admin_email_path(Email.last))
+        expect(Email.last.audience_segment_id).to eq(audience_segment.id)
         follow_redirect!
         expect(flash[:success]).to eq(I18n.t("admin.emails_controller.drafted"))
       end
@@ -122,6 +132,22 @@ RSpec.describe "/admin/emails" do
           post admin_emails_path, params: invalid_attributes
         end.not_to change(Email, :count)
         expect(flash[:danger]).to include("JavaScript")
+      end
+
+      it "rejects creating an email with conflicting targets" do
+        user_query = create(:user_query, created_by: admin_user)
+        invalid_attributes = {
+          email: {
+            subject: "Conflicting Email",
+            body: "Body",
+            audience_segment_id: audience_segment.id,
+            user_query_id: user_query.id
+          }
+        }
+        expect do
+          post admin_emails_path, params: invalid_attributes
+        end.not_to change(Email, :count)
+        expect(response.body).to include("Please select only one recipient target")
       end
     end
   end

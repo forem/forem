@@ -21,16 +21,14 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
     end
 
     context "when email has an audience segment" do
-      let!(:audience_segment) { create(:audience_segment) }
-      let!(:email) { create(:email, subject: "Segmented", audience_segment: audience_segment) }
       let!(:user_in_segment) { create(:user, :with_newsletters) }
       let!(:user_outside_segment) { create(:user, :with_newsletters) }
-
-      before do
-        audience_segment.segmented_users.create!(user: user_in_segment)
-        # Stub out the segment to return only user_in_segment
-        allow(audience_segment).to receive(:users).and_return(User.where(id: user_in_segment.id))
+      let!(:audience_segment) do
+        create(:audience_segment).tap do |segment|
+          segment.segmented_users.create!(user: user_in_segment)
+        end
       end
+      let!(:email) { create(:email, subject: "Segmented", audience_segment: audience_segment) }
 
       it "uses the segment scope and enqueues BatchCustomSendWorker for those users" do
         described_class.new.perform(email.id)
