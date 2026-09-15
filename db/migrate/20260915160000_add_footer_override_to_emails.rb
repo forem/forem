@@ -1,8 +1,6 @@
 class AddFooterOverrideToEmails < ActiveRecord::Migration[8.0]
   def change
-    change_table :emails, bulk: true do |t|
-      t.boolean :override_footer_html, default: false, null: false
-      t.text :custom_footer_html
-    end
+    add_column :emails, :override_footer_html, :boolean, default: false, null: false
+    add_column :emails, :custom_footer_html, :text
   end
 end
