@@ -38,6 +38,18 @@ pt:
       wrong: Algo deu errado ao excluir o painel publicitário.
     emails:
       customerio_cutover_notice: O envio de e-mails foi transferido para o Customer.io. Os registros abaixo são históricos; crie novas transmissões e newsletters no workspace do Customer.io.
+      override_footer_html: Substituir HTML do rodapé do e-mail
+      override_footer_description: Ative para substituir o rodapé de e-mail padrão para este e-mail.
+      custom_footer_html: "HTML do rodapé personalizado:"
+      custom_footer_placeholder: '<p style="text-align: center; color: #666;">Texto de rodapé personalizado aqui</p>'
+      custom_footer_description: Forneça HTML personalizado para o rodapé deste e-mail. Deixe em branco se não desejar rodapé.
+      footer: "Rodapé:"
+      no_footer: "(Sem rodapé)"
+      invalid_footer_preview: "(Não é possível visualizar rodapé inválido)"
+      override_footer_label: "Substituir rodapé:"
+      custom_footer_label: "HTML do rodapé personalizado:"
+      status_yes: "Sim"
+      status_no: "Não"
     emails_controller:
       created: E-mails foram criados!
       drafted: E-mail foi rascunhado!

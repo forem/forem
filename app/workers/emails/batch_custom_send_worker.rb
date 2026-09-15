@@ -41,6 +41,8 @@ module Emails
                                 Ahoy::Message.connection.select_values(sql).map(&:to_i).to_set
                               end
 
+      email = Email.find_by(id: email_id) if email_id.present?
+
       user_ids.each do |id|
         user = users_by_id[id]
         next unless user
@@ -54,7 +56,9 @@ module Emails
             content: content,
             type_of: type_of,
             email_id: email_id,
-            from_name: from_name
+            from_name: from_name,
+            override_footer_html: email&.override_footer_html?,
+            custom_email_footer: email&.custom_footer_html,
           )
           .custom_email
           .deliver_now

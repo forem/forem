@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_09_03_120001) do
+ActiveRecord::Schema[8.0].define(version: 2026_09_15_160000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -742,9 +742,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_03_120001) do
     t.bigint "audience_segment_id"
     t.text "body", null: false
     t.datetime "created_at", null: false
+    t.text "custom_footer_html"
     t.integer "drip_day", default: 0
     t.bigint "event_id"
     t.bigint "onboarding_subforem_id"
+    t.boolean "override_footer_html", default: false, null: false
     t.integer "status", default: 0
     t.string "subject", null: false
     t.string "targeted_tags", default: [], array: true

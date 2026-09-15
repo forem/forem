@@ -12,6 +12,15 @@ class Email < ApplicationRecord
 
   validates :subject, presence: true
   validates :body, presence: true
+  validates :custom_footer_html, email_safe_html: true, if: -> { custom_footer_html.present? }
+
+  def footer_html_to_render
+    if override_footer_html?
+      custom_footer_html.presence
+    else
+      Settings::General.custom_email_footer.presence
+    end
+  end
 
   enum :type_of, { one_off: 0, newsletter: 1, onboarding_drip: 2 }
   enum :status, { draft: 0, active: 1, delivered: 2 } # Not implemented yet anywhere
