@@ -1,0 +1,42 @@
+app/assets/stylesheets/base/typography.scss
+  36dd4faacfee16e8 100,131
+spec/liquid_tags/cta_tag_spec.rb
+  36dd4faacfee16e8 16
+app/views/liquids/_cta.html.erb
+  36dd4faacfee16e8 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.9",
+  "base_commit_sha": "5e404ea5e51ee2e616387e0c6530158ccf0eda23",
+  "prompts": {
+    "36dd4faacfee16e8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f02539d9-fd1d-4517-a180-2d0b9122a153",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Jon Gottfried <jonmarkgo@gmail.com>",
+      "messages": [],
+      "total_additions": 41,
+      "total_deletions": 9,
+      "accepted_lines": 39,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/955fe956f2f5a5db956a051ce919df9e8735881a883b0eb32be2566da3bde244"
+    },
+    "3b300d9ee498e98c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4faf6d65-e132-4d85-b2c8-b4fb1568fd1a",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Jon Gottfried <jonmarkgo@gmail.com>",
+      "messages": [],
+      "total_additions": 888,
+      "total_deletions": 417,
+      "accepted_lines": 564,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/1cb5133f04596544f42dc61493aa739683e0391a9438a22058b0bf0098e1ce82"
+    }
+  }
+}

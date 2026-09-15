@@ -1,0 +1,19 @@
+app/controllers/omniauth_callbacks_controller.rb
+  s_e2c0a862c0c53d::t_8bd9bb3b2d4021 36,121-130
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "5da969914ea848edc1ebac4b0b8862c90e78227b",
+  "prompts": {},
+  "sessions": {
+    "s_e2c0a862c0c53d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6161b263-7784-4d46-baae-d9ed58dc4c8d",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
