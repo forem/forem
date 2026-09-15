@@ -302,4 +302,85 @@ RSpec.describe Email, type: :model do
       end
     end
   end
+
+  describe "Targeting validations" do
+    let(:segment) { create(:audience_segment) }
+    let(:user_query) { create(:user_query, created_by: create(:user)) }
+    let(:event) { create(:event) }
+
+    it "is valid with only an audience segment" do
+      email = build(:email, status: "draft", audience_segment: segment)
+      expect(email).to be_valid
+    end
+
+    it "is valid with only a user query" do
+      email = build(:email, status: "draft", user_query: user_query)
+      expect(email).to be_valid
+    end
+
+    it "is valid with only an event target" do
+      email = build(:email, status: "draft", event: event)
+      expect(email).to be_valid
+    end
+
+    it "is valid with no target (all users broadcast)" do
+      email = build(:email, status: "draft", audience_segment: nil, user_query: nil, event: nil)
+      expect(email).to be_valid
+    end
+
+    it "is invalid if both an audience segment and a user query are specified" do
+      email = build(:email, status: "draft", audience_segment: segment, user_query: user_query)
+      expect(email).not_to be_valid
+      expect(email.errors[:base]).to include(
+        "Please select only one recipient target (Audience Segment, User Query, or Event).",
+      )
+    end
+
+    it "is invalid if both an audience segment and an event are specified" do
+      email = build(:email, status: "draft", audience_segment: segment, event: event)
+      expect(email).not_to be_valid
+      expect(email.errors[:base]).to include(
+        "Please select only one recipient target (Audience Segment, User Query, or Event).",
+      )
+    end
+
+    it "prevents activating an email when the audience segment is empty" do
+      empty_segment = create(:audience_segment)
+      email = build(:email, status: "active", audience_segment: empty_segment)
+      expect(email).not_to be_valid
+      expect(email.errors[:audience_segment_id]).to include("selected segment has no users")
+    end
+
+    it "allows activating an email when the audience segment has users" do
+      populated_segment = create(:audience_segment)
+      populated_segment.segmented_users.create!(user: create(:user))
+      email = build(:email, status: "active", audience_segment: populated_segment)
+      expect(email).to be_valid
+    end
+  end
+
+  describe "#target_type_label" do
+    it "returns the segment name when audience segment is present" do
+      segment = create(:audience_segment, name: "VIP Beta")
+      email = build(:email, status: "draft", audience_segment: segment)
+      expect(email.target_type_label).to eq("Audience Segment: VIP Beta")
+    end
+
+    it "returns the query name when user query is present" do
+      query = create(:user_query, name: "Top Writers", created_by: create(:user))
+      email = build(:email, status: "draft", user_query: query)
+      expect(email.target_type_label).to eq("User Query: Top Writers")
+    end
+
+    it "returns the event title when event is present" do
+      event = create(:event, title: "Forem Hackathon")
+      email = build(:email, status: "draft", event: event)
+      expect(email.target_type_label).to eq("Event: Forem Hackathon")
+    end
+
+    it "returns 'All Users (Broadcast)' when no target is set" do
+      email = build(:email, status: "draft", audience_segment: nil, user_query: nil, event: nil)
+      expect(email.target_type_label).to eq("All Users (Broadcast)")
+    end
+  end
 end

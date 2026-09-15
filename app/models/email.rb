@@ -13,6 +13,20 @@ class Email < ApplicationRecord
   validates :subject, presence: true
   validates :body, presence: true
   validates :custom_footer_html, email_safe_html: true, if: -> { custom_footer_html.present? }
+  validate :only_one_target_specified
+  validate :audience_segment_must_have_users, if: -> { active? && audience_segment_id.present? }
+
+  def target_type_label
+    if audience_segment.present?
+      "Audience Segment: #{audience_segment.display_name}"
+    elsif user_query.present?
+      "User Query: #{user_query.name}"
+    elsif event.present?
+      "Event: #{event.title}"
+    else
+      "All Users (Broadcast)"
+    end
+  end
 
   def footer_html_to_render
     if override_footer_html?
@@ -127,5 +141,20 @@ class Email < ApplicationRecord
     end
 
     update_columns(status: "delivered")
+  end
+
+  private
+
+  def only_one_target_specified
+    targets = [audience_segment_id.present?, user_query_id.present?, event_id.present?]
+    return unless targets.count(true) > 1
+
+    errors.add(:base, "Please select only one recipient target (Audience Segment, User Query, or Event).")
+  end
+
+  def audience_segment_must_have_users
+    return unless audience_segment&.manual? && audience_segment.segmented_users.none?
+
+    errors.add(:audience_segment_id, "selected segment has no users")
   end
 end

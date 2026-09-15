@@ -98,6 +98,23 @@ en:
       deleted: User query was successfully deleted.
       activated: User query was successfully activated.
       deactivated: User query was successfully deactivated.
+    audience_segments_controller:
+      created: Audience segment was successfully created.
+      updated: Audience segment was successfully updated.
+      deleted: Audience segment was successfully deleted.
+      cannot_delete_in_use: Audience segment cannot be deleted while in use by emails or billboards.
+      users_added: "%{count} user(s) successfully added to segment."
+      user_removed: User removed from segment.
+      users_removed: "%{count} user(s) removed from segment."
+      system_segment_protected: System audience segments cannot be modified.
+      no_valid_users_found: No valid users found from the provided input.
+      no_users_selected: No users selected for removal.
+      no_users_removed: No matching users found in this segment to remove.
+      user_not_in_segment: User could not be removed because they were not in this segment.
+      segment_created_with_users: "Segment created with %{count} user(s)."
+      could_not_resolve: "Could not resolve: %{unresolved}."
+      already_in_segment: "%{count} user(s) were already in this segment."
+      ineligible_users_warning: "Warning: %{count} user(s) in this segment are not currently email eligible."
     gdpr_delete_requests_controller:
       deleted: Successfully marked as deleted
     extensions_controller:
