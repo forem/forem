@@ -140,6 +140,7 @@ namespace :admin do
         post :add_users
         delete :remove_user
         post :remove_users
+        put :remove_users
       end
     end
     resources :read_only_database, only: [:show] do

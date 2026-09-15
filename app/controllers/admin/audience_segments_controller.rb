@@ -96,7 +96,9 @@ module Admin
         user_query: params[:user_query_id],
       )
 
-      if parse_result.valid_users.empty?
+      if parse_result.query_error.present?
+        flash[:danger] = parse_result.query_error
+      elsif parse_result.valid_users.empty?
         flash[:danger] = I18n.t("admin.audience_segments_controller.no_valid_users_found")
       else
         existing_user_ids = @audience_segment.segmented_users
@@ -110,14 +112,19 @@ module Admin
         end
 
         messages = []
-        messages << "#{users_to_add.size} user(s) successfully added to segment." if users_to_add.any?
-        messages << "#{existing_user_ids.size} user(s) were already in this segment." if existing_user_ids.any?
+        if users_to_add.any?
+          messages << I18n.t("admin.audience_segments_controller.users_added", count: users_to_add.size)
+        end
+        if existing_user_ids.any?
+          messages << I18n.t("admin.audience_segments_controller.already_in_segment", count: existing_user_ids.size)
+        end
         if parse_result.unresolved_identifiers.any?
-          messages << "Could not resolve: #{parse_result.unresolved_identifiers.join(', ')}."
+          messages << I18n.t("admin.audience_segments_controller.could_not_resolve",
+                             unresolved: parse_result.unresolved_identifiers.join(", "))
         end
         if parse_result.ineligible_users.any?
-          ineligible_count = parse_result.ineligible_users.size
-          messages << "Warning: #{ineligible_count} user(s) in this segment are not currently email eligible."
+          messages << I18n.t("admin.audience_segments_controller.ineligible_users_warning",
+                             count: parse_result.ineligible_users.size)
         end
 
         flash[:success] = messages.join(" ")
@@ -128,16 +135,25 @@ module Admin
 
     def remove_user
       user_id = params[:user_id]
-      SegmentedUsers::BulkDelete.call(@audience_segment, user_ids: [user_id])
-      flash[:success] = I18n.t("admin.audience_segments_controller.user_removed")
+      result = SegmentedUsers::BulkDelete.call(@audience_segment, user_ids: [user_id])
+      if result&.succeeded&.any?
+        flash[:success] = I18n.t("admin.audience_segments_controller.user_removed")
+      else
+        flash[:warning] = I18n.t("admin.audience_segments_controller.user_not_in_segment")
+      end
       redirect_to admin_audience_segment_path(@audience_segment)
     end
 
     def remove_users
-      user_ids = params[:user_ids]
+      user_ids = Array(params[:user_ids]).compact_blank
       if user_ids.present?
-        SegmentedUsers::BulkDelete.call(@audience_segment, user_ids: user_ids)
-        flash[:success] = I18n.t("admin.audience_segments_controller.users_removed", count: user_ids.size)
+        result = SegmentedUsers::BulkDelete.call(@audience_segment, user_ids: user_ids)
+        deleted_count = result&.succeeded&.size || 0
+        if deleted_count.positive?
+          flash[:success] = I18n.t("admin.audience_segments_controller.users_removed", count: deleted_count)
+        else
+          flash[:warning] = I18n.t("admin.audience_segments_controller.no_users_removed")
+        end
       else
         flash[:warning] = I18n.t("admin.audience_segments_controller.no_users_selected")
       end
@@ -167,12 +183,17 @@ module Admin
         user_query: params[:user_query_id],
       )
 
-      return if parse_result.valid_users.empty?
+      if parse_result.valid_users.empty?
+        flash[:warning] = I18n.t("admin.audience_segments_controller.no_valid_users_found")
+        return
+      end
 
       SegmentedUsers::BulkUpsert.call(@audience_segment, user_ids: parse_result.valid_user_ids)
-      messages = ["Segment created with #{parse_result.valid_user_ids.size} user(s)."]
+      messages = [I18n.t("admin.audience_segments_controller.segment_created_with_users",
+                         count: parse_result.valid_user_ids.size)]
       if parse_result.unresolved_identifiers.any?
-        messages << "Could not resolve: #{parse_result.unresolved_identifiers.join(', ')}."
+        messages << I18n.t("admin.audience_segments_controller.could_not_resolve",
+                           unresolved: parse_result.unresolved_identifiers.join(", "))
       end
       flash[:success] = messages.join(" ")
     end

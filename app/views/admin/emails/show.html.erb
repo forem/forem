@@ -15,7 +15,7 @@
   <p>
     Audience Target:
     <% if @email.audience_segment.present? %>
-      <%= link_to @email.audience_segment.name, admin_audience_segment_path(@email.audience_segment), class: "crayons-link font-medium" %>
+      <%= link_to @email.audience_segment.display_name, admin_audience_segment_path(@email.audience_segment), class: "crayons-link font-medium" %>
       <span class="text-xs text-gray-500">(<%= pluralize(@email.audience_segment.user_count, "user") %>)</span>
     <% elsif @email.user_query.present? %>
       <%= link_to @email.user_query.name, admin_user_query_path(@email.user_query), class: "crayons-link font-medium" %>

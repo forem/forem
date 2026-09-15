@@ -23,29 +23,26 @@ module Admin
     end
 
     def new
-      @audience_segments = AudienceSegment.manual.order(:name, :id)
-      @user_queries = UserQuery.active.order(:name)
-      @events = Event.order(start_time: :desc)
+      load_form_dependencies
       @email = Email.new(event_id: params[:event_id], audience_segment_id: params[:audience_segment_id])
     end
 
     def edit
-      @audience_segments = AudienceSegment.manual.order(:name, :id)
-      @user_queries = UserQuery.active.order(:name)
-      @events = Event.order(start_time: :desc)
+      load_form_dependencies
       @email = Email.find(params[:id])
     end
 
     def create
       @email = Email.new(email_params)
       if @email.save
-        flash[:success] =
-          @email.status == "active" ? I18n.t("admin.emails_controller.activated") : I18n.t("admin.emails_controller.drafted")
+        flash[:success] = if @email.status == "active"
+                            I18n.t("admin.emails_controller.activated")
+                          else
+                            I18n.t("admin.emails_controller.drafted")
+                          end
         redirect_to admin_email_path(@email.id)
       else
-        @audience_segments = AudienceSegment.manual.order(:name, :id)
-        @user_queries = UserQuery.active.order(:name)
-        @events = Event.order(start_time: :desc)
+        load_form_dependencies
         flash[:danger] = @email.errors_as_sentence
         render :new
       end
@@ -62,9 +59,7 @@ module Admin
         flash[:success] = I18n.t("admin.emails_controller.updated")
         redirect_to admin_email_path(@email.id)
       else
-        @audience_segments = AudienceSegment.manual.order(:name, :id)
-        @user_queries = UserQuery.active.order(:name)
-        @events = Event.order(start_time: :desc)
+        load_form_dependencies
         flash[:danger] = @email.errors_as_sentence
         render :edit
       end
@@ -72,11 +67,17 @@ module Admin
 
     private
 
+    def load_form_dependencies
+      @audience_segments = AudienceSegment.including_user_counts.order(:name, :type_of, :id)
+      @user_queries = UserQuery.active.order(:name)
+      @events = Event.order(start_time: :desc)
+    end
+
     def ensure_no_customerio_cutover
-      if ForemInstance.customerio_email_cutover?
-        flash[:danger] = I18n.t("admin.emails.customerio_cutover_notice")
-        redirect_to admin_emails_path
-      end
+      return unless ForemInstance.customerio_email_cutover?
+
+      flash[:danger] = I18n.t("admin.emails.customerio_cutover_notice")
+      redirect_to admin_emails_path
     end
 
     def email_params

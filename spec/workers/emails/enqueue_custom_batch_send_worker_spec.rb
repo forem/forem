@@ -50,6 +50,33 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
       end
     end
 
+    context "when email has an automatic audience segment" do
+      let!(:trusted_user) { create(:user, :with_newsletters).tap { |u| u.add_role(:trusted) } }
+      let!(:untrusted_user) { create(:user, :with_newsletters) }
+      let!(:audience_segment) { create(:audience_segment, type_of: :trusted) }
+      let!(:email) { create(:email, subject: "Trusted Segment", audience_segment: audience_segment) }
+
+      it "uses all_users_in_segment and enqueues BatchCustomSendWorker only for matching users" do
+        described_class.new.perform(email.id)
+        expect(Emails::BatchCustomSendWorker).to have_received(:perform_async).with(
+          [trusted_user.id],
+          email.subject,
+          email.body,
+          email.type_of,
+          email.id,
+          email.default_from_name_based_on_type,
+        )
+        expect(Emails::BatchCustomSendWorker).not_to have_received(:perform_async).with(
+          include(untrusted_user.id),
+          anything,
+          anything,
+          anything,
+          anything,
+          anything,
+        )
+      end
+    end
+
     context "when email does not have an audience segment" do
       let(:email) { create(:email, audience_segment: nil) }
       let!(:user_with_notifications) { create(:user, :with_newsletters) }

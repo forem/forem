@@ -105,7 +105,7 @@ class AudienceSegment < ApplicationRecord
       throw :abort
     end
 
-    if Billboard.exists?(audience_segment_id: id)
+    if Billboard.approved_and_published.exists?(audience_segment_id: id)
       errors.add(:base, "Cannot delete audience segment while in use by billboards.")
       throw :abort
     end

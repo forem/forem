@@ -74,6 +74,12 @@ pt:
       system_segment_protected: Os segmentos de público do sistema não podem ser modificados.
       no_valid_users_found: Nenhum usuário válido encontrado a partir das informações fornecidas.
       no_users_selected: Nenhum usuário selecionado para remoção.
+      no_users_removed: Nenhum usuário correspondente encontrado neste segmento para remover.
+      user_not_in_segment: O usuário não pôde ser removido porque não estava neste segmento.
+      segment_created_with_users: "Segmento criado com %{count} usuário(s)."
+      could_not_resolve: "Não foi possível resolver: %{unresolved}."
+      already_in_segment: "%{count} usuário(s) já estavam neste segmento."
+      ineligible_users_warning: "Aviso: %{count} usuário(s) neste segmento não são atualmente elegíveis para e-mail."
     gdpr_delete_requests_controller:
       deleted: Marcado como excluído com sucesso
     extensions_controller:

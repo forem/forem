@@ -63,6 +63,29 @@ RSpec.describe SegmentedUsers::UserIdentifierParser do
       expect(result.valid_users).to contain_exactly(user1)
     end
 
+    it "handles space-separated identifiers" do
+      result = described_class.call(raw_input: "alice bob charlie")
+      expect(result.valid_users).to contain_exactly(user1, user2, user3)
+      expect(result.unresolved_identifiers).to be_empty
+    end
+
+    it "captures query_error when user query execution fails" do
+      query_creator = create(:user)
+      user_query = create(
+        :user_query,
+        name: "Broken Query",
+        created_by: query_creator,
+        query: "SELECT id FROM users WHERE username = 'alice'",
+      )
+      executor = instance_double(UserQueryExecutor)
+      allow(UserQueryExecutor).to receive(:new).with(user_query).and_return(executor)
+      allow(executor).to receive(:each_id_batch).and_raise(StandardError.new("DB syntax error"))
+
+      result = described_class.call(user_query: user_query)
+      expect(result.valid_users).to be_empty
+      expect(result.query_error).to include("Failed to execute user query: DB syntax error")
+    end
+
     it "returns an empty result for empty or blank input" do
       result = described_class.call(raw_input: "   \n\t  ")
       expect(result.valid_users).to be_empty

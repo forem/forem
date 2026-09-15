@@ -49,6 +49,14 @@ RSpec.describe "/admin/emails" do
       selected_option = doc.at_css("select#audience_segment_select option[selected][value='#{segment.id}']")
       expect(selected_option&.text).to include("Early Adopters")
     end
+
+    it "includes automatic audience segments using display_name in the options" do
+      auto_segment = create(:audience_segment, type_of: :trusted, name: nil)
+      get new_admin_email_path
+      doc = Nokogiri::HTML(response.body)
+      option = doc.at_css("select#audience_segment_select option[value='#{auto_segment.id}']")
+      expect(option&.text).to include(auto_segment.display_name)
+    end
   end
 
   describe "POST /admin/emails" do
@@ -188,6 +196,13 @@ RSpec.describe "/admin/emails" do
       get admin_email_path(email)
       expect(response.body).to include("Override Footer: Yes")
       expect(response.body).to include("Unique footer for #{admin_user.name}")
+    end
+
+    it "displays audience segment display_name" do
+      auto_segment = create(:audience_segment, type_of: :trusted, name: nil)
+      email = create(:email, audience_segment: auto_segment)
+      get admin_email_path(email)
+      expect(response.body).to include(auto_segment.display_name)
     end
   end
 

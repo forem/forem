@@ -84,49 +84,61 @@
   </div>
 
   <% if @segmented_users.any? %>
-    <div class="overflow-x-auto">
-      <table class="crayons-table">
-        <thead>
-          <tr>
-            <th>User</th>
-            <th>Email</th>
-            <th>Email Eligible?</th>
-            <th>Added At</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @segmented_users.each do |su| %>
-            <% user = su.user %>
+    <%= form_with url: remove_users_admin_audience_segment_path(@audience_segment), method: :put, local: true, id: "bulk_remove_users_form" do %>
+      <div class="flex items-center gap-2 mb-3">
+        <%= submit_tag "Remove Selected", class: "crayons-btn crayons-btn--danger crayons-btn--s", data: { confirm: "Are you sure you want to remove the selected users from this segment?" } %>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="crayons-table">
+          <thead>
             <tr>
-              <td>
-                <div class="flex items-center gap-2">
-                  <% if user.profile_image.present? %>
-                    <img src="<%= user.profile_image %>" class="w-6 h-6 rounded-full" alt="" />
-                  <% end %>
-                  <div>
-                    <span class="font-medium"><%= user.name %></span>
-                    <span class="text-xs text-gray-500">(@<%= user.username %>)</span>
-                  </div>
-                </div>
-              </td>
-              <td><%= user.email %></td>
-              <td>
-                <% if user.respond_to?(:base_email_eligible?) && user.base_email_eligible? %>
-                  <span class="crayons-tag crayons-tag--success">Eligible</span>
-                <% else %>
-                  <span class="crayons-tag crayons-tag--danger">Ineligible</span>
-                <% end %>
-              </td>
-              <td><%= su.created_at.strftime("%Y-%m-%d %H:%M") %></td>
-              <td>
-                <%= link_to "Remove", remove_user_admin_audience_segment_path(@audience_segment, user_id: user.id), method: :delete, data: { confirm: "Remove @#{user.username} from this segment?" }, class: "crayons-btn crayons-btn--danger crayons-btn--s" %>
-              </td>
+              <th class="w-8">
+                <input type="checkbox" id="select_all_users" title="Select all on this page" aria-label="Select all on this page" />
+              </th>
+              <th>User</th>
+              <th>Email</th>
+              <th>Email Eligible?</th>
+              <th>Added At</th>
+              <th>Actions</th>
             </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            <% @segmented_users.each do |su| %>
+              <% user = su.user %>
+              <tr>
+                <td>
+                  <%= check_box_tag "user_ids[]", user.id, false, class: "user-select-checkbox", id: "user_ids_#{user.id}", aria: { label: "Select #{user.username}" } %>
+                </td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <% if user.profile_image.present? %>
+                      <img src="<%= user.profile_image %>" class="w-6 h-6 rounded-full" alt="" />
+                    <% end %>
+                    <div>
+                      <span class="font-medium"><%= user.name %></span>
+                      <span class="text-xs text-gray-500">(@<%= user.username %>)</span>
+                    </div>
+                  </div>
+                </td>
+                <td><%= user.email %></td>
+                <td>
+                  <% if user.respond_to?(:base_email_eligible?) && user.base_email_eligible? %>
+                    <span class="crayons-tag crayons-tag--success">Eligible</span>
+                  <% else %>
+                    <span class="crayons-tag crayons-tag--danger">Ineligible</span>
+                  <% end %>
+                </td>
+                <td><%= su.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+                <td>
+                  <%= link_to "Remove", remove_user_admin_audience_segment_path(@audience_segment, user_id: user.id), method: :delete, data: { confirm: "Remove @#{user.username} from this segment?" }, class: "crayons-btn crayons-btn--danger crayons-btn--s" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% end %>
 
     <%= paginate @segmented_users %>
   <% else %>
@@ -135,3 +147,18 @@
     </div>
   <% end %>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const selectAll = document.getElementById('select_all_users');
+  const userCheckboxes = document.querySelectorAll('.user-select-checkbox');
+
+  if (selectAll) {
+    selectAll.addEventListener('change', function() {
+      userCheckboxes.forEach(cb => {
+        cb.checked = selectAll.checked;
+      });
+    });
+  }
+});
+</script>

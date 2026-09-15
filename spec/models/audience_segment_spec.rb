@@ -135,10 +135,15 @@ RSpec.describe AudienceSegment do
       expect(segment.errors[:base]).to include("Cannot delete record because dependent emails exist")
     end
 
-    it "cannot be destroyed if associated with billboards" do
-      create(:billboard, audience_segment: segment)
+    it "cannot be destroyed if associated with approved and published billboards" do
+      create(:billboard, audience_segment: segment, approved: true, published: true)
       expect { segment.destroy }.not_to change(described_class, :count)
       expect(segment.errors[:base]).to include("Cannot delete audience segment while in use by billboards.")
+    end
+
+    it "can be destroyed if associated only with unpublished or unapproved billboards" do
+      create(:billboard, audience_segment: segment, approved: false, published: false)
+      expect { segment.destroy }.to change(described_class, :count).by(-1)
     end
 
     it "cannot destroy an automatic system segment" do

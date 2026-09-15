@@ -8,6 +8,7 @@ module SegmentedUsers
       :unresolved_identifiers,
       :ineligible_users,
       :duplicate_count,
+      :query_error,
       keyword_init: true,
     ) do
       def valid_user_ids
@@ -36,9 +37,10 @@ module SegmentedUsers
       resolved_users = []
       unresolved = []
       duplicates = 0
+      query_error = nil
 
       if user_query.present?
-        query_users = resolve_from_user_query(user_query)
+        query_users, query_error = resolve_from_user_query(user_query)
         resolved_users.concat(query_users)
       end
 
@@ -60,6 +62,7 @@ module SegmentedUsers
         unresolved_identifiers: unresolved.uniq,
         ineligible_users: ineligible,
         duplicate_count: duplicates,
+        query_error: query_error,
       )
     end
 
@@ -72,7 +75,7 @@ module SegmentedUsers
         input.map { |item| item.to_s.strip }.compact_blank
       else
         input.to_s
-          .split(/[\r\n,;\t]+/)
+          .split(/[\r\n,;\t\s]+/)
           .map(&:strip)
           .compact_blank
       end
@@ -140,7 +143,7 @@ module SegmentedUsers
 
     def resolve_from_user_query(query)
       query = UserQuery.find_by(id: query) unless query.is_a?(UserQuery)
-      return [] unless query&.active?
+      return [[], nil] unless query&.active?
 
       executor = UserQueryExecutor.new(query)
       user_ids = []
@@ -148,10 +151,12 @@ module SegmentedUsers
         user_ids.concat(batch)
       end
 
-      user_ids.any? ? User.where(id: user_ids).to_a : []
+      users = user_ids.any? ? User.where(id: user_ids).to_a : []
+      [users, nil]
     rescue StandardError => e
+      error_message = "Failed to execute user query: #{e.message}"
       Rails.logger.error("Failed to execute UserQuery #{query&.id} for segment: #{e.message}")
-      []
+      [[], error_message]
     end
 
     def user_email_eligible?(user)

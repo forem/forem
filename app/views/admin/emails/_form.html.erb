@@ -10,7 +10,7 @@
         <%= form.label :audience_segment_id, "Audience Segment:", class: "crayons-field__label mb-0" %>
         <%= link_to "Manage segments", admin_audience_segments_path, target: "_blank", class: "crayons-link text-xs" %>
       </div>
-      <%= form.select :audience_segment_id, options_for_select([["Select an audience segment", ""]] + (@audience_segments || []).map { |s| ["#{s.name} (#{pluralize(s.user_count, 'user')})", s.id] }, selected: @email.audience_segment_id), {}, { class: "crayons-textfield", autocomplete: "off", id: "audience_segment_select" } %>
+      <%= form.select :audience_segment_id, options_for_select([["Select an audience segment", ""]] + (@audience_segments || []).map { |s| ["#{s.display_name} (#{pluralize(s.user_count, 'user')})", s.id] }, selected: @email.audience_segment_id), {}, { class: "crayons-textfield", autocomplete: "off", id: "audience_segment_select" } %>
       <p class="crayons-field__description">Target a custom audience segment of users</p>
     </div>
 

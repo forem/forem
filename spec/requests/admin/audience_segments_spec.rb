@@ -84,6 +84,17 @@ RSpec.describe "/admin/audience_segments" do
         expect(flash[:success]).to include("Segment created with 2 user(s).")
       end
 
+      it "warns when initial user identifiers cannot be resolved" do
+        expect do
+          post admin_audience_segments_path, params: {
+            audience_segment: { name: "Segment with Bad Users" },
+            user_identifiers: "non_existent_username_123"
+          }
+        end.to change(AudienceSegment, :count).by(1)
+
+        expect(flash[:warning]).to eq(I18n.t("admin.audience_segments_controller.no_valid_users_found"))
+      end
+
       it "creates a new segment populated from a UserQuery" do
         query = create(:user_query, name: "Dev Users Query", created_by: admin_user,
                                     query: "SELECT id FROM users WHERE username = 'devuser1'")
@@ -181,6 +192,19 @@ RSpec.describe "/admin/audience_segments" do
         expect(flash[:success]).to include("1 user(s) were already in this segment.")
         expect(flash[:success]).to include("Could not resolve: missing_person_404.")
       end
+
+      it "surfaces query execution error when user query fails" do
+        broken_query = create(:user_query, name: "Broken Query", created_by: admin_user)
+        executor = instance_double(UserQueryExecutor)
+        allow(UserQueryExecutor).to receive(:new).with(broken_query).and_return(executor)
+        allow(executor).to receive(:each_id_batch).and_raise(StandardError.new("Execution failed"))
+
+        post add_users_admin_audience_segment_path(manual_segment), params: {
+          user_query_id: broken_query.id
+        }
+
+        expect(flash[:danger]).to include("Failed to execute user query: Execution failed")
+      end
     end
 
     describe "DELETE /admin/audience_segments/:id/remove_user" do
@@ -200,9 +224,19 @@ RSpec.describe "/admin/audience_segments" do
         expect(response).to redirect_to(admin_audience_segment_path(manual_segment))
         expect(flash[:success]).to eq(I18n.t("admin.audience_segments_controller.user_removed"))
       end
+
+      it "warns when removing a user that is not in the segment" do
+        non_member = create(:user)
+        delete remove_user_admin_audience_segment_path(manual_segment), params: {
+          user_id: non_member.id
+        }
+
+        expect(response).to redirect_to(admin_audience_segment_path(manual_segment))
+        expect(flash[:warning]).to eq(I18n.t("admin.audience_segments_controller.user_not_in_segment"))
+      end
     end
 
-    describe "POST /admin/audience_segments/:id/remove_users" do
+    describe "PUT /admin/audience_segments/:id/remove_users" do
       let!(:member1) { create(:user) }
       let!(:member2) { create(:user) }
 
@@ -213,12 +247,32 @@ RSpec.describe "/admin/audience_segments" do
 
       it "removes multiple users in bulk" do
         expect do
-          post remove_users_admin_audience_segment_path(manual_segment), params: {
+          put remove_users_admin_audience_segment_path(manual_segment), params: {
             user_ids: [member1.id, member2.id]
           }
         end.to change(manual_segment.segmented_users, :count).by(-2)
 
         expect(response).to redirect_to(admin_audience_segment_path(manual_segment))
+        expect(flash[:success]).to eq(I18n.t("admin.audience_segments_controller.users_removed", count: 2))
+      end
+
+      it "warns when no users are selected" do
+        put remove_users_admin_audience_segment_path(manual_segment), params: {
+          user_ids: []
+        }
+
+        expect(response).to redirect_to(admin_audience_segment_path(manual_segment))
+        expect(flash[:warning]).to eq(I18n.t("admin.audience_segments_controller.no_users_selected"))
+      end
+
+      it "warns when selected users are not in the segment" do
+        non_member = create(:user)
+        put remove_users_admin_audience_segment_path(manual_segment), params: {
+          user_ids: [non_member.id]
+        }
+
+        expect(response).to redirect_to(admin_audience_segment_path(manual_segment))
+        expect(flash[:warning]).to eq(I18n.t("admin.audience_segments_controller.no_users_removed"))
       end
     end
 
@@ -243,8 +297,8 @@ RSpec.describe "/admin/audience_segments" do
         expect(flash[:danger]).to be_present
       end
 
-      it "prevents deleting a segment associated with billboards" do
-        create(:billboard, audience_segment: manual_segment)
+      it "prevents deleting a segment associated with approved and published billboards" do
+        create(:billboard, audience_segment: manual_segment, approved: true, published: true)
 
         expect do
           delete admin_audience_segment_path(manual_segment)
@@ -252,6 +306,17 @@ RSpec.describe "/admin/audience_segments" do
 
         expect(response).to redirect_to(admin_audience_segment_path(manual_segment))
         expect(flash[:danger]).to be_present
+      end
+
+      it "allows deleting a segment associated only with unpublished billboards" do
+        create(:billboard, audience_segment: manual_segment, approved: false, published: false)
+
+        expect do
+          delete admin_audience_segment_path(manual_segment)
+        end.to change(AudienceSegment, :count).by(-1)
+
+        expect(response).to redirect_to(admin_audience_segments_path)
+        expect(flash[:success]).to eq(I18n.t("admin.audience_segments_controller.deleted"))
       end
 
       it "prevents deleting a system automatic segment" do
