@@ -221,6 +221,17 @@ RSpec.describe "/admin/emails" do
         expect(email.subject).to eq("Old Subject")
         expect(email.body).to eq("Old Body")
       end
+
+      it "safely handles invalid custom footer HTML without rendering raw script in preview" do
+        patch admin_email_path(email), params: {
+          email: {
+            override_footer_html: true,
+            custom_footer_html: "<script>alert('xss')</script>"
+          }
+        }
+        expect(response.body).not_to include("<script>alert('xss')</script>")
+        expect(response.body).to include(I18n.t("admin.emails.invalid_footer_preview"))
+      end
     end
 
     context "with test_email_addresses provided" do

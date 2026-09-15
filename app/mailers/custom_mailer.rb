@@ -68,7 +68,7 @@ class CustomMailer < ApplicationMailer
   end
 
   def resolve_from_topic(email)
-    if params[:from_name].present?
+    if !params[:from_name].nil?
       params[:from_name]
     elsif email.present?
       email.default_from_name_based_on_type
@@ -86,7 +86,7 @@ class CustomMailer < ApplicationMailer
         @override_footer_html = true
         @custom_email_footer = email.custom_footer_html
       end
-    elsif params[:email_id].present? && params[:from_name].blank?
+    elsif params[:email_id].present? && params[:from_name].nil?
       record = Email.find_by(id: params[:email_id])
       if record&.override_footer_html?
         @override_footer_html = true

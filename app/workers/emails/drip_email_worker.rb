@@ -53,11 +53,14 @@ module Emails
           next unless email_template
 
           CustomMailer.with(
-            user:       user,
-            subject:    email_template.subject,
-            content:    email_template.body,
-            type_of:    email_template.type_of,
-            email_id:   email_template.id
+            user:                 user,
+            subject:              email_template.subject,
+            content:              email_template.body,
+            type_of:              email_template.type_of,
+            email_id:             email_template.id,
+            from_name:            email_template.default_from_name_based_on_type,
+            override_footer_html: email_template.override_footer_html?,
+            custom_email_footer:  email_template.custom_footer_html,
           )
           .custom_email
           .deliver_now

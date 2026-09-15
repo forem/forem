@@ -316,6 +316,19 @@ RSpec.describe CustomMailer, type: :mailer do
         expect(mailer.body.encoded).not_to include(app_wide_footer)
         expect(mailer.body.encoded).to include("Param-based footer for #{user.name}")
       end
+
+      it "sanitizes disallowed HTML markup like iframes in the custom footer" do
+        mailer = described_class.with(
+          user: user,
+          content: content,
+          subject: subject,
+          override_footer_html: true,
+          custom_email_footer: '<p>Safe footer</p><iframe src="https://evil.example"></iframe>',
+        ).custom_email
+
+        expect(mailer.body.encoded).to include("<p>Safe footer</p>")
+        expect(mailer.body.encoded).not_to include("<iframe")
+      end
     end
   end
 end

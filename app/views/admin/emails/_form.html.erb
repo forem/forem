@@ -45,19 +45,19 @@
 
     <div class="crayons-field">
       <div class="flex items-center">
-        <%= form.check_box :override_footer_html, class: "crayons-checkbox", id: "override_footer_checkbox" %>
-        <%= form.label :override_footer_html, "Override email footer HTML", class: "crayons-field__label ml-2" %>
+        <%= form.check_box :override_footer_html, class: "crayons-checkbox", id: "email_override_footer_html" %>
+        <%= form.label :override_footer_html, t("admin.emails.override_footer_html"), class: "crayons-field__label ml-2" %>
       </div>
       <p class="crayons-field__description">
-        Enable to override the app-wide email footer for this email.
+        <%= t("admin.emails.override_footer_description") %>
       </p>
     </div>
 
     <div class="crayons-field" id="custom_footer_section" style="display: none;">
-      <%= form.label :custom_footer_html, "Custom Footer HTML:", class: "crayons-field__label" %>
-      <%= form.text_area :custom_footer_html, rows: 4, class: "crayons-textfield font-mono", placeholder: '<p style="text-align: center; color: #666;">Custom footer text for this email</p>' %>
+      <%= form.label :custom_footer_html, t("admin.emails.custom_footer_html"), class: "crayons-field__label" %>
+      <%= form.text_area :custom_footer_html, rows: 4, class: "crayons-textfield font-mono", placeholder: t("admin.emails.custom_footer_placeholder") %>
       <p class="crayons-field__description">
-        Provide custom HTML for this email's footer. Leave blank if you want no footer to appear.
+        <%= t("admin.emails.custom_footer_description") %>
       </p>
     </div>
   </div>
@@ -71,13 +71,17 @@
         <div class="crayons-article__body text-styles mb-4">
           <%= Email.replace_merge_tags(@email.body, current_user).html_safe %>
         </div>
-        <p><strong>Footer:</strong></p>
+        <p><strong><%= t("admin.emails.footer") %></strong></p>
         <div class="crayons-article__body text-styles">
-          <% preview_footer = @email.footer_html_to_render %>
-          <% if preview_footer.present? %>
-            <%= Email.replace_merge_tags(preview_footer, current_user).html_safe %>
+          <% if @email.errors[:custom_footer_html].present? %>
+            <span class="text-sm italic text-red-500"><%= t("admin.emails.invalid_footer_preview") %></span>
           <% else %>
-            <span class="text-sm italic text-gray-500">(No footer)</span>
+            <% preview_footer = @email.footer_html_to_render %>
+            <% if preview_footer.present? %>
+              <%= sanitize(Email.replace_merge_tags(preview_footer, current_user), tags: EmailSafeHtmlValidator::ALLOWED_TAGS, attributes: EmailSafeHtmlValidator::ALLOWED_ATTRIBUTES) %>
+            <% else %>
+              <span class="text-sm italic text-gray-500"><%= t("admin.emails.no_footer") %></span>
+            <% end %>
           <% end %>
         </div>
       <% else %>
@@ -121,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Initialize on page load
   toggleVariablesSection();
 
-  const overrideFooterCheckbox = document.getElementById('override_footer_checkbox');
+  const overrideFooterCheckbox = document.getElementById('email_override_footer_html');
   const customFooterSection = document.getElementById('custom_footer_section');
 
   function toggleCustomFooterSection() {

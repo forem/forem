@@ -24,7 +24,7 @@
         <% if @user && footer_html.present? %>
           <tr>
             <td style="padding:2%;font-size:18px;line-height:22px;color:#202121">
-              <%= footer_html.html_safe %>
+              <%= sanitize(footer_html, tags: EmailSafeHtmlValidator::ALLOWED_TAGS, attributes: EmailSafeHtmlValidator::ALLOWED_ATTRIBUTES) %>
             </td>
           </tr>
         <% end %>
