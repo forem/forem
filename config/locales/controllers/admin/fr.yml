@@ -73,6 +73,18 @@ fr:
       wrong: Quelque chose s'est mal passé avec la suppression de l'annonce publicitaire.
     emails:
       customerio_cutover_notice: L'envoi d'e-mails a été transféré à Customer.io. Les enregistrements ci-dessous sont historiques ; composez les nouvelles diffusions et infolettres dans l'espace de travail Customer.io.
+      override_footer_html: Remplacer le code HTML du pied de page de l'e-mail
+      override_footer_description: Activer pour remplacer le pied de page d'e-mail global pour cet e-mail.
+      custom_footer_html: "HTML du pied de page personnalisé :"
+      custom_footer_placeholder: '<p style="text-align: center; color: #666;">Texte de pied de page personnalisé ici</p>'
+      custom_footer_description: Fournissez du code HTML personnalisé pour le pied de page de cet e-mail. Laissez vide si vous ne souhaitez aucun pied de page.
+      footer: "Pied de page :"
+      no_footer: "(Aucun pied de page)"
+      invalid_footer_preview: "(Impossible de prévisualiser un pied de page invalide)"
+      override_footer_label: "Remplacement du pied de page :"
+      custom_footer_label: "HTML du pied de page personnalisé :"
+      status_yes: "Oui"
+      status_no: "Non"
     emails_controller:
       created: Emails are being sent!
       drafted: Email has been drafted!

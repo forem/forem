@@ -17,12 +17,23 @@
   <% if @email.variables.present? %>
     <p>Variables: <code><%= @email.variables %></code></p>
   <% end %>
+  <p><%= t("admin.emails.override_footer_label") %> <%= @email.override_footer_html? ? t("admin.emails.status_yes") : t("admin.emails.status_no") %></p>
+  <% if @email.override_footer_html? && @email.custom_footer_html.present? %>
+    <p><%= t("admin.emails.custom_footer_label") %> <code><%= @email.custom_footer_html %></code></p>
+  <% end %>
 </div>
 <div class="crayons-card p-6 mb-4">
   <h2 class="crayons-title mb-4">Rendered Email</h2>
-  <div>
+  <div class="mb-4">
     <%= Email.replace_merge_tags(@email.body, current_user).html_safe %>
   </div>
+  <% footer = @email.footer_html_to_render %>
+  <% if footer.present? %>
+    <hr class="my-4" />
+    <div class="text-styles">
+      <%= sanitize(Email.replace_merge_tags(footer, current_user), tags: EmailSafeHtmlValidator::ALLOWED_TAGS, attributes: EmailSafeHtmlValidator::ALLOWED_ATTRIBUTES) %>
+    </div>
+  <% end %>
 </div>
 
 <div class="crayons-card p-6">
