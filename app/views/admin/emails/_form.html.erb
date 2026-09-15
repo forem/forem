@@ -6,7 +6,10 @@
     </div>
 
     <div class="crayons-field">
-      <%= form.label :user_query_id, "User Query:", class: "crayons-field__label" %>
+      <div class="flex justify-between items-center mb-1">
+        <%= form.label :user_query_id, "User Query:", class: "crayons-field__label mb-0" %>
+        <%= link_to "Manage user queries", admin_user_queries_path, target: "_blank", class: "crayons-link text-xs" %>
+      </div>
       <%= form.select :user_query_id, options_for_select([["Select a user query", nil]] + @user_queries.map { |q| [q.name, q.id]}), {}, { class: "crayons-textfield", autocomplete: "off", id: "user_query_select" }  %>
       <p class="crayons-field__description">Choose a user query to target specific users</p>
     </div>
