@@ -140,6 +140,14 @@ RSpec.describe "/admin/audience_segments" do
         expect(manual_segment.reload.name).to eq("Updated Alpha")
       end
 
+      it "rejects update when name is blank" do
+        patch admin_audience_segment_path(manual_segment), params: {
+          audience_segment: { name: "" }
+        }
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(manual_segment.reload.name).to eq("Alpha Testers")
+      end
+
       it "prevents updating automatic system segments" do
         patch admin_audience_segment_path(system_segment), params: {
           audience_segment: { name: "Try to override" }

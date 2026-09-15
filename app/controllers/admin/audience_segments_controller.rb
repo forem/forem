@@ -45,6 +45,13 @@ module Admin
       @audience_segment = AudienceSegment.new(audience_segment_params)
       @audience_segment.type_of = :manual
 
+      if @audience_segment.name.blank?
+        @active_user_queries = UserQuery.active.order(:name)
+        @audience_segment.errors.add(:name, :blank)
+        flash.now[:danger] = @audience_segment.errors_as_sentence
+        return render :new, status: :unprocessable_entity
+      end
+
       if @audience_segment.save
         process_initial_users if params[:user_identifiers].present? || params[:user_query_id].present?
         flash[:success] = flash[:success].presence || I18n.t("admin.audience_segments_controller.created")
@@ -57,6 +64,12 @@ module Admin
     end
 
     def update
+      if audience_segment_params[:name].blank?
+        @audience_segment.errors.add(:name, :blank)
+        flash.now[:danger] = @audience_segment.errors_as_sentence
+        return render :edit, status: :unprocessable_entity
+      end
+
       if @audience_segment.update(audience_segment_params)
         flash[:success] = I18n.t("admin.audience_segments_controller.updated")
         redirect_to admin_audience_segment_path(@audience_segment)

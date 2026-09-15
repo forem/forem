@@ -19,10 +19,12 @@ class AudienceSegment < ApplicationRecord
   has_many :users, through: :segmented_users
   has_many :emails, dependent: :restrict_with_error
 
-  validates :name, presence: true, uniqueness: { case_sensitive: false }, length: { maximum: 255 }, if: :manual?
+  validates :name, length: { maximum: 255 }, allow_nil: true
+  validates :name, uniqueness: { case_sensitive: false }, allow_nil: true, if: -> { name.present? }
+  validate :name_cannot_be_cleared, if: -> { manual? && persisted? && name_was.present? }
 
-  before_destroy :ensure_not_in_use_and_destroyable
   after_validation :persist_recently_active_users, unless: :manual?
+  before_destroy :ensure_not_in_use_and_destroyable
 
   QUERIES = {
     manual: ->(scope = User) { scope.where(id: nil) },
@@ -103,14 +105,18 @@ class AudienceSegment < ApplicationRecord
       throw :abort
     end
 
-    if Billboard.where(audience_segment_id: id).exists?
+    if Billboard.exists?(audience_segment_id: id)
       errors.add(:base, "Cannot delete audience segment while in use by billboards.")
       throw :abort
     end
 
-    if emails.exists?
-      errors.add(:base, "Cannot delete audience segment while associated with emails.")
-      throw :abort
-    end
+    return unless emails.exists?
+
+    errors.add(:base, "Cannot delete audience segment while associated with emails.")
+    throw :abort
+  end
+
+  def name_cannot_be_cleared
+    errors.add(:name, :blank) if name.blank?
   end
 end
