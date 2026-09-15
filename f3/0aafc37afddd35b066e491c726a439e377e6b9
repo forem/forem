@@ -1,0 +1,51 @@
+app/controllers/email_subscriptions_controller.rb
+  s_c97d6b907c220d::t_f28bac82c67cea 2-6
+app/mailers/application_mailer.rb
+  s_c97d6b907c220d::t_92461adabefcf0 37-46
+app/mailers/custom_mailer.rb
+  s_c97d6b907c220d::t_1a2c810ccf5380 2-3,18
+app/mailers/digest_mailer.rb
+  s_c97d6b907c220d::t_7a349a93676d12 14
+app/mailers/notify_mailer.rb
+  s_c97d6b907c220d::t_a91e20ef67b952 23,55,79,101,139
+app/services/delivery_methods/customer_io.rb
+  s_c97d6b907c220d::t_c5abf4e18051ec 13-17,43-44,48-54
+config/routes.rb
+  s_c97d6b907c220d::t_809ee694df03b6 367-368
+spec/mailers/custom_mailer_spec.rb
+  s_c97d6b907c220d::t_6006cc268db536 136-141
+spec/mailers/digest_mailer_spec.rb
+  s_c97d6b907c220d::t_50d11afc84496f 101-106
+spec/mailers/notify_mailer_spec.rb
+  s_c97d6b907c220d::t_b83de97b1484c5 22,64,102,117,154,263,675-679
+spec/requests/email_subscriptions_spec.rb
+  s_c97d6b907c220d::t_776614f38d50f6 59-88
+spec/services/delivery_methods/customer_io_spec.rb
+  s_c97d6b907c220d::t_2fc497c2aee597 42-57
+spec/mailers/shared_examples/renders_one_click_unsubscribe_headers.rb
+  s_7902802778ff11::t_a5e1f5a0b55e62 1-13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "f30aafc37afddd35b066e491c726a439e377e6b9",
+  "prompts": {},
+  "sessions": {
+    "s_7902802778ff11": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-a830671aa4df77adc",
+        "model": "unknown"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    },
+    "s_c97d6b907c220d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "593c16c3-5aec-4bc0-8bcc-9ad23773e40b",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}
