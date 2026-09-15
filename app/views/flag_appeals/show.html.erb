@@ -1,0 +1,12 @@
+<% cache(release_adjusted_cache_key("feedback-messages-lander-styling")) do %>
+  <style>
+    <%= Rails.application.assets["feedback_messages.css"].to_s.html_safe %>
+  </style>
+<% end %>
+
+<div class="dialog">
+  <div>
+    <h2><%= t("views.flag_appeals.submitted_heading") %></h2>
+    <h3><%= link_to t("views.flag_appeals.home_link", community: community_name), root_path %></h3>
+  </div>
+</div>
