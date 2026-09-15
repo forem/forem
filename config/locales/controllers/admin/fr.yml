@@ -98,6 +98,23 @@ fr:
       deleted: La requête utilisateur a été supprimée avec succès.
       activated: La requête utilisateur a été activée avec succès.
       deactivated: La requête utilisateur a été désactivée avec succès.
+    audience_segments_controller:
+      created: Le segment d'audience a été créé avec succès.
+      updated: Le segment d'audience a été mis à jour avec succès.
+      deleted: Le segment d'audience a été supprimé avec succès.
+      cannot_delete_in_use: Le segment d'audience ne peut pas être supprimé lorsqu'il est utilisé par des emails ou des panneaux publicitaires.
+      users_added: "%{count} utilisateur(s) ajouté(s) avec succès au segment."
+      user_removed: Utilisateur retiré du segment.
+      users_removed: "%{count} utilisateur(s) retiré(s) du segment."
+      system_segment_protected: Les segments d'audience système ne peuvent pas être modifiés.
+      no_valid_users_found: Aucun utilisateur valide trouvé à partir des informations fournies.
+      no_users_selected: Aucun utilisateur sélectionné pour la suppression.
+      no_users_removed: Aucun utilisateur correspondant trouvé dans ce segment à retirer.
+      user_not_in_segment: L'utilisateur n'a pas pu être retiré car il ne faisait pas partie de ce segment.
+      segment_created_with_users: "Segment créé avec %{count} utilisateur(s)."
+      could_not_resolve: "Impossible de résoudre : %{unresolved}."
+      already_in_segment: "%{count} utilisateur(s) étaient déjà dans ce segment."
+      ineligible_users_warning: "Attention : %{count} utilisateur(s) de ce segment ne sont pas actuellement éligibles aux e-mails."
     extensions_controller:
       update_success: Les extensions ont été mises à jour.
     gdpr_delete_requests_controller:

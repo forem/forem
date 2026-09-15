@@ -17,9 +17,14 @@ class AudienceSegment < ApplicationRecord
 
   has_many :segmented_users, dependent: :destroy
   has_many :users, through: :segmented_users
-  has_many :emails, dependent: :nullify
+  has_many :emails, dependent: :restrict_with_error
+
+  validates :name, length: { maximum: 255 }, allow_nil: true
+  validates :name, uniqueness: { case_sensitive: false }, allow_nil: true, if: -> { name.present? }
+  validate :name_cannot_be_cleared, if: -> { manual? && persisted? && name_was.present? }
 
   after_validation :persist_recently_active_users, unless: :manual?
+  before_destroy :ensure_not_in_use_and_destroyable
 
   QUERIES = {
     manual: ->(scope = User) { scope.where(id: nil) },
@@ -78,5 +83,40 @@ class AudienceSegment < ApplicationRecord
     all_users_in_segment.exists?(user_id)
   end
 
+  def display_name
+    name.presence || self.class.human_readable_description_for(type_of)
+  end
+
+  def user_count
+    has_attribute?(:user_count) ? self[:user_count].to_i : segmented_users.count
+  end
+
+  def email_eligible_users
+    users.email_eligible
+  end
+
   alias refresh! save!
+
+  private
+
+  def ensure_not_in_use_and_destroyable
+    unless manual?
+      errors.add(:base, "System audience segments cannot be destroyed.")
+      throw :abort
+    end
+
+    if Billboard.approved_and_published.exists?(audience_segment_id: id)
+      errors.add(:base, "Cannot delete audience segment while in use by billboards.")
+      throw :abort
+    end
+
+    return unless emails.exists?
+
+    errors.add(:base, "Cannot delete audience segment while associated with emails.")
+    throw :abort
+  end
+
+  def name_cannot_be_cleared
+    errors.add(:name, :blank) if name.blank?
+  end
 end
