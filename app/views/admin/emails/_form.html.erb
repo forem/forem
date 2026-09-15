@@ -42,6 +42,24 @@
       <%= form.label :body, "Body Content:", class: "crayons-field__label" %>
       <%= form.text_area :body, size: "100x5", class: "crayons-textfield" %>
     </div>
+
+    <div class="crayons-field">
+      <div class="flex items-center">
+        <%= form.check_box :override_footer_html, class: "crayons-checkbox", id: "override_footer_checkbox" %>
+        <%= form.label :override_footer_html, "Override email footer HTML", class: "crayons-field__label ml-2" %>
+      </div>
+      <p class="crayons-field__description">
+        Enable to override the app-wide email footer for this email.
+      </p>
+    </div>
+
+    <div class="crayons-field" id="custom_footer_section" style="display: none;">
+      <%= form.label :custom_footer_html, "Custom Footer HTML:", class: "crayons-field__label" %>
+      <%= form.text_area :custom_footer_html, rows: 4, class: "crayons-textfield font-mono", placeholder: '<p style="text-align: center; color: #666;">Custom footer text for this email</p>' %>
+      <p class="crayons-field__description">
+        Provide custom HTML for this email's footer. Leave blank if you want no footer to appear.
+      </p>
+    </div>
   </div>
 
   <div>
@@ -50,8 +68,17 @@
         <h2 class="crayons-title mb-2">Preview</h2>
         <p><strong>Subject:</strong><%= Email.replace_merge_tags(@email.subject, current_user) %> </p>
         <p><strong>Body:</strong></p>
-        <div class="crayons-article__body text-styles">
+        <div class="crayons-article__body text-styles mb-4">
           <%= Email.replace_merge_tags(@email.body, current_user).html_safe %>
+        </div>
+        <p><strong>Footer:</strong></p>
+        <div class="crayons-article__body text-styles">
+          <% preview_footer = @email.footer_html_to_render %>
+          <% if preview_footer.present? %>
+            <%= Email.replace_merge_tags(preview_footer, current_user).html_safe %>
+          <% else %>
+            <span class="text-sm italic text-gray-500">(No footer)</span>
+          <% end %>
         </div>
       <% else %>
         <div class="flex flex-col gap-3">
@@ -93,5 +120,21 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Initialize on page load
   toggleVariablesSection();
+
+  const overrideFooterCheckbox = document.getElementById('override_footer_checkbox');
+  const customFooterSection = document.getElementById('custom_footer_section');
+
+  function toggleCustomFooterSection() {
+    if (overrideFooterCheckbox && overrideFooterCheckbox.checked) {
+      customFooterSection.style.display = 'block';
+    } else if (customFooterSection) {
+      customFooterSection.style.display = 'none';
+    }
+  }
+
+  if (overrideFooterCheckbox) {
+    overrideFooterCheckbox.addEventListener('change', toggleCustomFooterSection);
+    toggleCustomFooterSection();
+  }
 });
 </script>

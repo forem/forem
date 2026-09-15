@@ -28,6 +28,8 @@ RSpec.describe "/admin/emails" do
         'name="email[body]"',
         'name="email[user_query_id]"',
         'name="email[event_id]"',
+        'name="email[override_footer_html]"',
+        'name="email[custom_footer_html]"',
       )
     end
 
@@ -72,6 +74,23 @@ RSpec.describe "/admin/emails" do
         end.to change(Email, :count).by(1)
         expect(Email.last.event_id).to eq(event.id)
       end
+
+      it "creates a new email with custom footer override" do
+        valid_attributes = {
+          email: {
+            subject: "Custom Footer Email",
+            body: "Email body",
+            override_footer_html: true,
+            custom_footer_html: "<p>Special footer</p>"
+          }
+        }
+        expect do
+          post admin_emails_path, params: valid_attributes
+        end.to change(Email, :count).by(1)
+        created_email = Email.last
+        expect(created_email.override_footer_html).to be(true)
+        expect(created_email.custom_footer_html).to eq("<p>Special footer</p>")
+      end
     end
 
     context "with invalid parameters" do
@@ -88,6 +107,21 @@ RSpec.describe "/admin/emails" do
         end.not_to change(Email, :count)
         expect(response.body).to include(">Subject can&#39;t be blank")
         expect(flash[:danger]).to be_present
+      end
+
+      it "rejects custom footer with unsafe script tags" do
+        invalid_attributes = {
+          email: {
+            subject: "Bad Email",
+            body: "Email body",
+            override_footer_html: true,
+            custom_footer_html: "<script>alert('xss')</script>"
+          }
+        }
+        expect do
+          post admin_emails_path, params: invalid_attributes
+        end.not_to change(Email, :count)
+        expect(flash[:danger]).to include("JavaScript")
       end
     end
   end
@@ -116,6 +150,19 @@ RSpec.describe "/admin/emails" do
       expect(response.body).to include CGI.escapeHTML(email.subject)
       expect(response.body).to include CGI.escapeHTML(email.body)
     end
+
+    it "displays custom footer override details when enabled" do
+      email = create(
+        :email,
+        subject: "Footer Test",
+        body: "Body",
+        override_footer_html: true,
+        custom_footer_html: "<p>Unique footer for *|name|*</p>",
+      )
+      get admin_email_path(email)
+      expect(response.body).to include("Override Footer: Yes")
+      expect(response.body).to include("Unique footer for #{admin_user.name}")
+    end
   end
 
   describe "PATCH /admin/emails/:id" do
@@ -140,6 +187,19 @@ RSpec.describe "/admin/emails" do
         email.reload
         expect(email.subject).to eq("Updated Subject")
         expect(email.body).to eq("Updated Body")
+      end
+
+      it "updates the footer override settings" do
+        patch admin_email_path(email), params: {
+          email: {
+            override_footer_html: true,
+            custom_footer_html: "<p>Updated footer</p>"
+          }
+        }
+        expect(response).to redirect_to(admin_email_path(email))
+        email.reload
+        expect(email.override_footer_html).to be(true)
+        expect(email.custom_footer_html).to eq("<p>Updated footer</p>")
       end
     end
 

@@ -76,8 +76,10 @@ module Admin
     end
 
     def email_params
-      params.require(:email).permit(:subject, :body, :user_query_id, :event_id, :variables, :type_of, :drip_day, :status,
-                                    :test_email_addresses)
+      params.require(:email).permit(
+        :subject, :body, :user_query_id, :event_id, :variables, :type_of, :drip_day, :status,
+        :test_email_addresses, :override_footer_html, :custom_footer_html
+      )
     end
   end
 end

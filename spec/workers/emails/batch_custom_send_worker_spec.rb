@@ -237,5 +237,22 @@ RSpec.describe Emails::BatchCustomSendWorker, type: :worker do
         end
       end
     end
+
+    context "when email record has footer override settings" do
+      let(:email_with_override) do
+        create(:email, override_footer_html: true, custom_footer_html: "<p>Batch custom footer</p>")
+      end
+
+      it "passes override_footer_html and custom_email_footer to CustomMailer" do
+        worker.perform([user.id], subject_line, content, type_of, email_with_override.id)
+
+        expect(CustomMailer).to have_received(:with).with(
+          hash_including(
+            override_footer_html: true,
+            custom_email_footer: "<p>Batch custom footer</p>",
+          ),
+        )
+      end
+    end
   end
 end

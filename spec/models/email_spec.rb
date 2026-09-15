@@ -224,4 +224,82 @@ RSpec.describe Email, type: :model do
       end
     end
   end
+
+  describe "Validations" do
+    subject(:email) { build(:email) }
+
+    it { is_expected.to validate_presence_of(:subject) }
+    it { is_expected.to validate_presence_of(:body) }
+
+    describe "custom_footer_html validation" do
+      it "allows safe email HTML" do
+        email.custom_footer_html = '<p style="color: #666;">Custom footer content</p>'
+        expect(email).to be_valid
+      end
+
+      it "rejects unsafe HTML containing script tags" do
+        email.custom_footer_html = '<p>Bad</p><script>alert("xss")</script>'
+        expect(email).not_to be_valid
+        expect(email.errors[:custom_footer_html]).to be_present
+      end
+
+      it "rejects unsafe HTML with javascript event handlers" do
+        email.custom_footer_html = '<a href="#" onclick="alert(1)">Click</a>'
+        expect(email).not_to be_valid
+        expect(email.errors[:custom_footer_html]).to be_present
+      end
+
+      it "allows blank or nil custom_footer_html" do
+        email.custom_footer_html = nil
+        expect(email).to be_valid
+
+        email.custom_footer_html = ""
+        expect(email).to be_valid
+      end
+    end
+  end
+
+  describe "#footer_html_to_render" do
+    let(:email) { build(:email) }
+
+    context "when override_footer_html is false" do
+      before do
+        email.override_footer_html = false
+      end
+
+      it "returns the app-wide footer from Settings::General when set" do
+        allow(Settings::General).to receive(:custom_email_footer).and_return("<p>App-wide footer</p>")
+        expect(email.footer_html_to_render).to eq("<p>App-wide footer</p>")
+      end
+
+      it "returns nil when app-wide footer is blank" do
+        allow(Settings::General).to receive(:custom_email_footer).and_return("")
+        expect(email.footer_html_to_render).to be_nil
+      end
+    end
+
+    context "when override_footer_html is true" do
+      before do
+        email.override_footer_html = true
+      end
+
+      it "returns the custom footer HTML when present" do
+        email.custom_footer_html = "<p>Overridden footer</p>"
+        allow(Settings::General).to receive(:custom_email_footer).and_return("<p>App-wide footer</p>")
+        expect(email.footer_html_to_render).to eq("<p>Overridden footer</p>")
+      end
+
+      it "returns nil (suppressing the footer) when custom footer HTML is blank" do
+        email.custom_footer_html = ""
+        allow(Settings::General).to receive(:custom_email_footer).and_return("<p>App-wide footer</p>")
+        expect(email.footer_html_to_render).to be_nil
+      end
+
+      it "returns nil when custom footer HTML is nil" do
+        email.custom_footer_html = nil
+        allow(Settings::General).to receive(:custom_email_footer).and_return("<p>App-wide footer</p>")
+        expect(email.footer_html_to_render).to be_nil
+      end
+    end
+  end
 end
