@@ -25,6 +25,7 @@ class AdminMenu
       item(name: "tags"),
       item(name: "concepts", controller: "concepts"),
       item(name: "emails"),
+      item(name: "user queries", controller: "user_queries"),
       item(name: "surveys"),
       item(name: "events"),
     ]
