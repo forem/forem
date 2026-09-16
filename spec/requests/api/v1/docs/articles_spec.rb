@@ -595,7 +595,7 @@ will remain."
                   description: "The search query term to match semantically.",
                   schema: { type: :string }
         parameter name: :per_page, in: :query, required: false,
-                  description: "Limit of articles returned (default 10, max 50).",
+                  description: "Limit of articles returned (default 30, max 100).",
                   schema: { type: :integer }
         parameter name: :page, in: :query, required: false,
                   description: "Pagination page index.",
