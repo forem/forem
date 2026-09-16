@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'preact/hooks';
+import { useLayoutEffect, useRef, useState } from 'preact/hooks';
 import { calculateTextAreaHeight } from '@utilities/calculateTextAreaHeight';
 import { debounceAction } from '@utilities/debounceAction';
 
@@ -269,48 +269,103 @@ export const getSelectionData = ({ selectionStart, selectionEnd, value }) => ({
  */
 export const useTextAreaAutoResize = () => {
   const [textArea, setTextArea] = useState(null);
-  const [constrainToContentHeight, setConstrainToContentHeight] =
-    useState(false);
+  const [constrainToContentHeight, setConstrainToContentHeight] = useState(false);
   const [additionalElements, setAdditionalElements] = useState([]);
+  const rafIdRef = useRef(null);
+  const lastAppliedPxRef = useRef('');
 
-  useEffect(() => {
-    if (!textArea) {
-      return;
-    }
+  useLayoutEffect(() => {
+    if (!textArea) return;
 
+    const allElements = [textArea, ...additionalElements];
+
+    // Apply smoothing once to each element for less "jumpy" visuals.
+    allElements.forEach((el) => {
+      if (!el) return;
+      // Avoid duplicating transitions if already present.
+      const needsMinMax = !/min-height|max-height/.test(el.style.transition || '');
+      if (needsMinMax) {
+        const existing = el.style.transition ? el.style.transition + ', ' : '';
+        el.style.transition = `${existing}min-height 120ms ease, max-height 120ms ease`;
+      }
+      el.style.overflow = 'hidden'; // prevents scrollbar flicker while resizing
+      el.style.willChange = (el.style.willChange || '').includes('height') ? el.style.willChange : `${el.style.willChange ? el.style.willChange + ', ' : ''}height`;
+    });
+
+    // Measure function that defaults to placeholder height when empty.
+    const measureElementHeight = (el) => {
+      if (!el) return 0;
+
+      // Use placeholder as the content height when the field is empty so
+      // the default height equals what the user sees.
+      let height;
+      const isTextArea = el.tagName === 'TEXTAREA';
+      if (isTextArea && !el.value && el.placeholder) {
+        const original = el.value;
+        el.value = el.placeholder;
+        // Assumes your helper returns { height }
+        height = calculateTextAreaHeight(el).height;
+        el.value = original;
+      } else {
+        height = calculateTextAreaHeight(el).height;
+      }
+      return height;
+    };
+
+    const measureAll = () => {
+      const heights = allElements.map(measureElementHeight);
+      return Math.max(...heights, 0);
+    };
+
+    // Batch DOM writes to the next animation frame to avoid per-keystroke jitter.
     const resizeTextArea = () => {
-      const allElements = [textArea, ...additionalElements];
-      const allContentHeights = allElements.map(
-        (element) => calculateTextAreaHeight(element).height,
-      );
-      // Determine the dynamic height properly based on content.
-      // `calculateTextAreaHeight` already accounts for scrollHeight safely.
-      const height = Math.max(...allContentHeights);
-      const newHeight = `${height}px`;
+      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+      rafIdRef.current = requestAnimationFrame(() => {
+        const height = Math.ceil(measureAll()); // rounding mitigates +/-1px oscillation
+        const px = `${height}px`;
 
-      allElements.forEach((element) => {
-        element.style['min-height'] = newHeight;
-        if (constrainToContentHeight) {
-          // Don't allow the textarea to grow to a size larger than the content
-          element.style['max-height'] = newHeight;
-        }
+        // Avoid redundant writes—prevents transition restarts and "glitch".
+        if (lastAppliedPxRef.current === px) return;
+
+        allElements.forEach((el) => {
+          if (!el) return;
+          el.style.minHeight = px;
+          if (constrainToContentHeight) {
+            el.style.maxHeight = px;
+          } else {
+            el.style.removeProperty('max-height');
+          }
+        });
+
+        lastAppliedPxRef.current = px;
       });
     };
 
-    // Resize on first attach
+    // Initial measurement before paint (useLayoutEffect) for correct first frame.
     resizeTextArea();
 
-    // Resize on window size changes
-    const resizeCallback = debounceAction(() => resizeTextArea(), 300);
-    const resizeObserver = new ResizeObserver(resizeCallback);
+    // Smooth out on typing: tiny debounce so it doesn’t jump every single character,
+    // but still feels real-time.
+    const debouncedInput = debounceAction(resizeTextArea, 80);
+    textArea.addEventListener('input', debouncedInput);
+
+    // Recalculate on element resize/layout shifts
+    const resizeObserver = new ResizeObserver(debounceAction(resizeTextArea, 300));
     resizeObserver.observe(textArea);
 
-    // Resize on subsequent value changes
-    textArea.addEventListener('input', resizeTextArea);
+    // If fonts load async, recalc
+    try {
+      if (document?.fonts?.ready) {
+        document.fonts.ready.then(() => resizeTextArea());
+      }
+    } catch (_) {
+      // ignore
+    }
 
     return () => {
+      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
       resizeObserver.disconnect();
-      textArea.removeEventListener('input', resizeTextArea);
+      textArea.removeEventListener('input', debouncedInput);
     };
   }, [textArea, additionalElements, constrainToContentHeight]);
 
