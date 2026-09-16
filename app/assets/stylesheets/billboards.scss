@@ -61,6 +61,20 @@
   display: block;
 }
 
+// Guardrail for admin-authored markdown that uses tw-* badge classes.
+// Keeps badge text/border contrast-safe across themes without changing DB content.
+.text-styles [class*='tw-rounded-full'][class*='tw-border-zinc-300'][class*='tw-text-sm'] {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: calc(var(--su-1) - 1px) var(--su-3);
+  font-size: var(--fs-s);
+  line-height: var(--lh-tight);
+  color: var(--pill-color);
+  border: 1px solid var(--pill-border);
+  background: var(--pill-bg);
+}
+
 .long-bb-body {
   max-height: calc(100vh - 200px);
   overflow: hidden;
