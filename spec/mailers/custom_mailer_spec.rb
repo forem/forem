@@ -272,5 +272,63 @@ RSpec.describe CustomMailer, type: :mailer do
         expect(mail.body.encoded).to include(unsubscribe_token)
       end
     end
+
+    context "when footer override functionality is used" do
+      let(:app_wide_footer) { "<p>This is the app-wide footer</p>" }
+
+      before do
+        allow(Settings::General).to receive(:custom_email_footer).and_return(app_wide_footer)
+      end
+
+      it "renders the app-wide footer when override is not enabled" do
+        email = create(:email, override_footer_html: false, custom_footer_html: "<p>Custom footer</p>")
+        mailer = described_class.with(user: user, content: content, subject: subject, email_id: email.id).custom_email
+
+        expect(mailer.body.encoded).to include(app_wide_footer)
+        expect(mailer.body.encoded).not_to include("Custom footer")
+      end
+
+      it "renders the custom footer and replaces merge tags when override is enabled" do
+        custom_footer = "<p>Special footer for *|name|* (*|email|*)</p>"
+        email = create(:email, override_footer_html: true, custom_footer_html: custom_footer)
+        mailer = described_class.with(user: user, content: content, subject: subject, email_id: email.id).custom_email
+
+        expect(mailer.body.encoded).not_to include(app_wide_footer)
+        expect(mailer.body.encoded).to include("Special footer for #{user.name} (#{user.email})")
+      end
+
+      it "suppresses footer completely when override is enabled with blank custom footer" do
+        email = create(:email, override_footer_html: true, custom_footer_html: "")
+        mailer = described_class.with(user: user, content: content, subject: subject, email_id: email.id).custom_email
+
+        expect(mailer.body.encoded).not_to include(app_wide_footer)
+      end
+
+      it "respects footer override parameters passed directly via .with" do
+        mailer = described_class.with(
+          user: user,
+          content: content,
+          subject: subject,
+          override_footer_html: true,
+          custom_email_footer: "<p>Param-based footer for *|name|*</p>",
+        ).custom_email
+
+        expect(mailer.body.encoded).not_to include(app_wide_footer)
+        expect(mailer.body.encoded).to include("Param-based footer for #{user.name}")
+      end
+
+      it "sanitizes disallowed HTML markup like iframes in the custom footer" do
+        mailer = described_class.with(
+          user: user,
+          content: content,
+          subject: subject,
+          override_footer_html: true,
+          custom_email_footer: '<p>Safe footer</p><iframe src="https://evil.example"></iframe>',
+        ).custom_email
+
+        expect(mailer.body.encoded).to include("<p>Safe footer</p>")
+        expect(mailer.body.encoded).not_to include("<iframe")
+      end
+    end
   end
 end

@@ -22,6 +22,12 @@ RSpec.describe Authentication::Providers::Mlh, type: :service do
     end
   end
 
+  describe ".persist_credentials?" do
+    it "is false so bearer material never outlives the callback request" do
+      expect(described_class.persist_credentials?).to be(false)
+    end
+  end
+
   describe ".sign_in_path" do
     it "returns the correct sign in path without callback_url param" do
       path = described_class.sign_in_path

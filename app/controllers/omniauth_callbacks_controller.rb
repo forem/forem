@@ -33,7 +33,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         "uri:#{error.try(:error_uri)}",
         "provider:#{request.env['omniauth.strategy'].name}",
         "origin:#{request.env['omniauth.strategy.origin']}",
-        "params:#{request.env['omniauth.params']}",
+        "params:#{loggable_omniauth_params}",
       ],
     )
 
@@ -58,7 +58,114 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     redirect_to root_path(signin: "true")
   end
 
+  def confirm_account_switch
+    pending = session.delete("pending_account_switch")
+    target = pending && User.find_by(id: pending["user_id"])
+
+    if invalid_pending_switch?(pending, target)
+      flash[:alert] = I18n.t("omniauth_callbacks_controller.account_switch_expired")
+      return redirect_to root_path
+    end
+
+    payload = decrypt_pending_switch(pending)
+    return redirect_to(root_path) unless payload
+
+    @user = Authentication::Authenticator.call(OmniAuth::AuthHash.new(payload), expected_user: target)
+    return redirect_to(root_path) unless user_persisted_and_valid? && @user.confirmed?
+
+    complete_account_switch(pending)
+  rescue ::Authentication::Errors::Ineligible, ::Authentication::Errors::PreviouslySuspended,
+         ::Authentication::Errors::SpammyEmailDomain => e
+    flash[:global_notice] = e.message
+    redirect_to root_path
+  rescue ActiveRecord::RecordInvalid => e
+    flash[:alert] = e.record&.errors&.full_messages&.join(", ").presence ||
+      I18n.t("omniauth_callbacks_controller.log_in_error", e: e.message)
+    redirect_to new_user_registration_url
+  rescue StandardError => e
+    Honeybadger.notify(e)
+    flash[:alert] = I18n.t("omniauth_callbacks_controller.log_in_error", e: e)
+    redirect_to new_user_registration_url
+  end
+
+  def cancel_account_switch
+    session.delete("pending_account_switch")
+    redirect_to root_path
+  end
+
   private
+
+  # Cross-account sign-in: the caller is signed in as one user and the incoming
+  # identity resolves to another. Nothing is persisted until the person confirms
+  # on the interstitial; the OmniAuth payload is held encrypted in the session.
+  def stage_account_switch(target_user, provider)
+    session["pending_account_switch"] = {
+      "user_id" => target_user.id,
+      "provider" => provider.to_s,
+      "payload" => account_switch_encryptor.encrypt_and_sign(stageable_auth_payload(provider), expires_in: 15.minutes),
+      "return_context" => Authentication::ExternalReturn.capture(request.env["omniauth.params"]),
+      "staged_at" => Time.current.iso8601
+    }
+    @switch_target_username = target_user.username
+    render :account_switch
+  end
+
+  def invalid_pending_switch?(pending, target)
+    pending.nil? || stale_switch?(pending) || target.nil? || target.spam_or_suspended?
+  end
+
+  # OmniAuth request params can carry values we filter from logs (see
+  # config/initializers/filter_parameter_logging.rb); apply the same filter to
+  # telemetry tags. Non-Hash values are passed through untouched.
+  def loggable_omniauth_params
+    params = request.env["omniauth.params"]
+    return params unless params.is_a?(Hash)
+
+    ActiveSupport::ParameterFilter.new(Rails.application.config.filter_parameters).filter(params)
+  end
+
+  def stale_switch?(pending)
+    Time.zone.iso8601(pending["staged_at"].to_s) < 15.minutes.ago
+  rescue ArgumentError, TypeError
+    true
+  end
+
+  # Providers that must not hold OAuth credentials beyond the callback request
+  # get them blanked before staging; everyone else keeps them (encrypted) so the
+  # identity can be created with a token once the switch is confirmed.
+  def stageable_auth_payload(provider)
+    payload = request.env["omniauth.auth"].to_hash
+    payload["credentials"] = { "expires" => false } unless Authentication::Providers.get!(provider).persist_credentials?
+    payload
+  end
+
+  def account_switch_encryptor
+    key = Rails.application.key_generator.generate_key("account-switch-payload", 32)
+    ActiveSupport::MessageEncryptor.new(key, cipher: "aes-256-gcm", serializer: JSON)
+  end
+
+  # Returns the staged OmniAuth payload, or nil if it expired, was tampered
+  # with, or no longer matches the provider recorded at staging time.
+  def decrypt_pending_switch(pending)
+    payload = account_switch_encryptor.decrypt_and_verify(pending["payload"])
+    payload if payload&.fetch("provider", nil) == pending["provider"]
+  rescue ActiveSupport::MessageEncryptor::InvalidMessage
+    nil
+  end
+
+  def complete_account_switch(pending)
+    sign_out(current_user) if current_user
+    sign_in(@user, event: :authentication)
+
+    set_flash_message(:notice, :success, kind: pending["provider"].to_s.titleize) if is_navigational_format?
+    @user.update_tracked_fields!(request)
+    remember_me(@user)
+
+    return_url = Authentication::ExternalReturn.resolve(pending["return_context"])
+    return redirect_to(return_url, allow_other_host: true) if return_url
+
+    sign_in_and_redirect(@user, event: :authentication)
+  end
 
   def callback_for(provider)
     auth_payload = request.env["omniauth.auth"]
@@ -84,7 +191,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
       user_agent = request.user_agent
 
-      if ApplicationConfig["AUTH_TEST_USER_IDS"].present? && ApplicationConfig["AUTH_TEST_USER_IDS"].split(",").include?(@user.id.to_s)
+      if (external_return = Authentication::ExternalReturn.redirect_url_for(request.env["omniauth.params"]))
+        sign_in(@user, event: :authentication)
+        redirect_to external_return, allow_other_host: true
+      elsif ApplicationConfig["AUTH_TEST_USER_IDS"].present? && ApplicationConfig["AUTH_TEST_USER_IDS"].split(",").include?(@user.id.to_s)
         token = generate_auth_token(@user)
         test_path = ApplicationConfig["AUTH_TEST_USER_REDIRECT_PATH"] || "/menu"
         redirect_to "#{test_path}?jwt=#{token}"
@@ -111,7 +221,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       # Handle error conditions.
       session["devise.#{provider}_data"] = request.env["omniauth.auth"]
       user_errors = @user.errors.full_messages
-  
+
       Honeybadger.context({
         username: @user.username,
         user_id: @user.id,
@@ -120,11 +230,14 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         user_errors: user_errors
       })
       Honeybadger.notify("Omniauth log in error")
-  
+
       flash[:alert] = user_errors
       redirect_to new_user_registration_url
     end
-  rescue ::Authentication::Errors::PreviouslySuspended, ::Authentication::Errors::SpammyEmailDomain => e
+  rescue ::Authentication::Errors::AccountSwitchConfirmation => e
+    stage_account_switch(e.target_user, provider)
+  rescue ::Authentication::Errors::Ineligible, ::Authentication::Errors::PreviouslySuspended,
+         ::Authentication::Errors::SpammyEmailDomain => e
     flash[:global_notice] = e.message
 
     redirect_to root_path
@@ -136,7 +249,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     flash[:alert] = I18n.t("omniauth_callbacks_controller.log_in_error", e: e)
     redirect_to new_user_registration_url
   end
-  
 
   def user_persisted_and_valid?
     @user.persisted? && @user.valid?
