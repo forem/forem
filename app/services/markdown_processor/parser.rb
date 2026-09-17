@@ -230,6 +230,7 @@ module MarkdownProcessor
         .add_control_panel_to_codeblock
         .add_fullscreen_button_to_panel
         .wrap_all_tables
+        .transform_markdown_alerts
         .remove_empty_paragraphs
         .escape_colon_emojis_in_codeblock
         .unescape_raw_tag_in_codeblocks

@@ -53,6 +53,12 @@ pt:
         parse_error: Houve um problema analisando o YAML front-matter. Talvez você precise escapar uma aspas ou dois pontos ou algo assim. Envie um e-mail para %{email} se estiver tendo problemas.
     html:
       parser:
+        alerts:
+          caution: Cuidado
+          important: Importante
+          note: Nota
+          tip: Dica
+          warning: Aviso
         enter_fullscreen_mode: Entrar no modo tela cheia
         exit_fullscreen_mode: Sair do modo tela cheia
     markdown_processor:
