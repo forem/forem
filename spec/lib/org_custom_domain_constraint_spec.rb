@@ -114,6 +114,21 @@ RSpec.describe OrgCustomDomainConstraint do
         expect(constraint.matches?(auth_request)).to be false
       end
 
+      it "returns false for the platform agent-guidance path" do
+        llms_request = instance_double(
+          ActionDispatch::Request,
+          host: host,
+          env: env,
+          path: "/llms.txt",
+          accept: "text/plain",
+          headers: {},
+          params: {},
+          xhr?: false,
+        )
+
+        expect(constraint.matches?(llms_request)).to be false
+      end
+
       it "returns true for article slugs that start with a reserved word as a substring (e.g. /api2, /bball)" do
         %w[/api2 /api-version-2 /bball /search-tools /reactions-guide].each do |path|
           article_req = instance_double(

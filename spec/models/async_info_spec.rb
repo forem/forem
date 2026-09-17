@@ -39,6 +39,13 @@ RSpec.describe AsyncInfo do
       expect(described_class.to_hash(user: user, context: context)[:favorite_allowance]).to eq(3)
     end
 
+    it "sends a nil favorite allowance for an admin curator" do
+      user.add_role(:admin)
+      user.add_role(:community_leader_level_1)
+
+      expect(described_class.to_hash(user: user, context: context)[:favorite_allowance]).to be_nil
+    end
+
     it "includes a list of admin_organization_ids for the current user" do
       org = create(:organization)
       create(:organization_membership, user: user, organization: org, type_of_user: "admin")
@@ -46,6 +53,21 @@ RSpec.describe AsyncInfo do
       payload = async_info
       expect(payload).to have_key(:admin_organization_ids)
       expect(payload[:admin_organization_ids]).to eq([org.id])
+    end
+
+    it "loads roles once for all role-based values" do
+      user.add_role(:admin)
+      user.reload
+      role_queries = []
+      subscriber = lambda do |_name, _started, _finished, _unique_id, payload|
+        role_queries << payload[:sql] if payload[:sql].include?('FROM "roles"')
+      end
+
+      payload = nil
+      ActiveSupport::Notifications.subscribed(subscriber, "sql.active_record") { payload = async_info }
+
+      expect(payload[:admin]).to be(true)
+      expect(role_queries.size).to eq(3)
     end
   end
 end

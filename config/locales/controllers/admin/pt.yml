@@ -5,9 +5,9 @@ pt:
       saved: Artigo salvo!
       pinned: Artigo Fixado!
       unpinned: Artigo Desfixado!
-      favorite_removed: Favorito removido.
+      favorite_removed: Joia removida.
     comments_controller:
-      favorite_removed: Favorito removido.
+      favorite_removed: Joia removida.
     badge_achievements_controller:
       deleted: Conquista de badge foi excluída!
       rewarded: Badges estão sendo recompensados. A tarefa terminará em breve.
@@ -38,6 +38,18 @@ pt:
       wrong: Algo deu errado ao excluir o painel publicitário.
     emails:
       customerio_cutover_notice: O envio de e-mails foi transferido para o Customer.io. Os registros abaixo são históricos; crie novas transmissões e newsletters no workspace do Customer.io.
+      override_footer_html: Substituir HTML do rodapé do e-mail
+      override_footer_description: Ative para substituir o rodapé de e-mail padrão para este e-mail.
+      custom_footer_html: "HTML do rodapé personalizado:"
+      custom_footer_placeholder: '<p style="text-align: center; color: #666;">Texto de rodapé personalizado aqui</p>'
+      custom_footer_description: Forneça HTML personalizado para o rodapé deste e-mail. Deixe em branco se não desejar rodapé.
+      footer: "Rodapé:"
+      no_footer: "(Sem rodapé)"
+      invalid_footer_preview: "(Não é possível visualizar rodapé inválido)"
+      override_footer_label: "Substituir rodapé:"
+      custom_footer_label: "HTML do rodapé personalizado:"
+      status_yes: "Sim"
+      status_no: "Não"
     emails_controller:
       created: E-mails foram criados!
       drafted: E-mail foi rascunhado!
@@ -45,6 +57,29 @@ pt:
       deleted: E-mail foi excluído!
       updated: E-mail foi atualizado!
       wrong: Algo deu errado ao excluir o e-mail.
+    user_queries_controller:
+      created: A consulta de usuário foi criada com sucesso.
+      updated: A consulta de usuário foi atualizada com sucesso.
+      deleted: A consulta de usuário foi excluída com sucesso.
+      activated: A consulta de usuário foi ativada com sucesso.
+      deactivated: A consulta de usuário foi desativada com sucesso.
+    audience_segments_controller:
+      created: O segmento de público foi criado com sucesso.
+      updated: O segmento de público foi atualizado com sucesso.
+      deleted: O segmento de público foi excluído com sucesso.
+      cannot_delete_in_use: O segmento de público não pode ser excluído enquanto estiver em uso por e-mails ou outdoors.
+      users_added: "%{count} usuário(s) adicionado(s) com sucesso ao segmento."
+      user_removed: Usuário removido do segmento.
+      users_removed: "%{count} usuário(s) removido(s) do segmento."
+      system_segment_protected: Os segmentos de público do sistema não podem ser modificados.
+      no_valid_users_found: Nenhum usuário válido encontrado a partir das informações fornecidas.
+      no_users_selected: Nenhum usuário selecionado para remoção.
+      no_users_removed: Nenhum usuário correspondente encontrado neste segmento para remover.
+      user_not_in_segment: O usuário não pôde ser removido porque não estava neste segmento.
+      segment_created_with_users: "Segmento criado com %{count} usuário(s)."
+      could_not_resolve: "Não foi possível resolver: %{unresolved}."
+      already_in_segment: "%{count} usuário(s) já estavam neste segmento."
+      ineligible_users_warning: "Aviso: %{count} usuário(s) neste segmento não são atualmente elegíveis para e-mail."
     gdpr_delete_requests_controller:
       deleted: Marcado como excluído com sucesso
     extensions_controller:
@@ -92,6 +127,12 @@ pt:
       org_feature_enabled: "%{feature} foi habilitado para esta organização."
       org_feature_disabled: "%{feature} foi desabilitado para esta organização."
       org_feature_invalid: "Funcionalidade de organização especificada inválida."
+      bulk_add_users:
+        added: "%{count} usuário(s) (%{usernames}) adicionado(s) com sucesso à organização."
+        already_members: "Já membro(s): %{usernames}."
+        not_found: "Usuário(s) não encontrado(s): %{usernames}."
+        failed: "Falha ao adicionar %{count} usuário(s): %{errors}."
+        empty_input: "Por favor, forneça pelo menos um nome de usuário."
     org_features_controller:
       invalid_feature: "Funcionalidade especificada inválida."
       global_enabled: "%{feature} foi habilitado para todas as organizações."

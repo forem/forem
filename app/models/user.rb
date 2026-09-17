@@ -543,6 +543,13 @@ class User < ApplicationRecord
     end
   end
 
+  def cached_languages
+    cache_name = "user-#{id}/languages"
+    Rails.cache.fetch(cache_name, expires_in: 24.hours) do
+      languages.pluck(:language)
+    end
+  end
+
   def refresh_auto_audience_segments
     if ENV["ENABLE_REFRESH_SEGMENT_WORKERS"]  == "true"
       SegmentedUserRefreshWorker.perform_async(id)
@@ -636,7 +643,16 @@ class User < ApplicationRecord
   #
   ##############################################################################
 
+  # Admins who curate alongside the community are not metered, so they can keep
+  # picking gems past the community leader allowance.
+  #
+  # @return [Boolean]
+  def unlimited_favorites?
+    any_admin? && community_leader?
+  end
+
   def favorite_base_allowance
+    return Float::INFINITY if unlimited_favorites?
     return Settings::UserExperience.community_leader_l2_favorite_allowance if community_leader_level_2?
     return Settings::UserExperience.community_leader_l1_favorite_allowance if community_leader_level_1?
 
@@ -645,8 +661,9 @@ class User < ApplicationRecord
 
   # How many favorites the user can make.
   #
-  # @return [Integer]
+  # @return [Integer, Float] Float::INFINITY when the user is not metered
   def favorite_allowance
+    return Float::INFINITY if unlimited_favorites?
     return earned_favorites_count unless community_leader?
 
     # Community leader allowances refresh over the configured period
@@ -655,6 +672,15 @@ class User < ApplicationRecord
       favorited_comments.where(favorited_at: window_start..).count
 
     favorite_base_allowance - spent_this_period
+  end
+
+  # The remaining allowance as exposed to the client, where `nil` signals an
+  # unlimited allowance so the front end can skip the counter.
+  #
+  # @return [Integer, nil]
+  def favorite_allowance_for_client
+    allowance = favorite_allowance
+    allowance.finite? ? allowance : nil
   end
 
   # The name of the tags moderated by the user.

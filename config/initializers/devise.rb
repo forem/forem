@@ -81,6 +81,9 @@ MLH_OMNIAUTH_SETUP = lambda do |env|
   env["omniauth.strategy"].options[:client_secret] = Settings::Authentication.mlh_secret
   # Note: redirect_uri is handled by the prepended MlhCallbackUrlOverride module
   # which overrides both callback_url and authorize_params to ensure no query parameters
+
+  # TEMPORARY: MLH Core proxy endpoints; no-op unless MLH_OAUTH_BASE_URL / MLH_API_BASE_URL are set.
+  Authentication::MlhCoreBridge.apply!(env["omniauth.strategy"])
 end
 
 Devise.setup do |config|

@@ -152,7 +152,8 @@ body {
   }
 
   .ltag__link--embedded,
-  .ltag-org-posts {
+  .ltag-org-posts,
+  .ltag-feed {
     font-size: var(--fs-base);
     font-family: var(--ff-sans-serif);
 
@@ -193,6 +194,16 @@ body {
       max-width: 21px;
       display: inline-block;
       border-radius: 0;
+    }
+
+    img.community-leader-icon {
+      height: 0.95em;
+      max-height: 22px;
+      display: inline-block;
+      vertical-align: middle;
+      margin: 0 0 0.05em;
+      border-radius: 0;
+      aspect-ratio: 1 / 1;
     }
 
     h1,
@@ -421,6 +432,25 @@ body {
     max-width: 100%;
     max-height: calc(50vh + 180px);
     border-radius: var(--radius);
+  }
+
+  img.subscription-icon {
+    max-height: 13px;
+    max-width: 21px;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 0 0.05em;
+    border-radius: 0;
+  }
+
+  img.community-leader-icon {
+    height: 0.95em;
+    max-height: 22px;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 0 0.05em;
+    border-radius: 0;
+    aspect-ratio: 1 / 1;
   }
 
   .article-body-image-wrapper {

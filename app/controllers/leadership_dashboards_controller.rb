@@ -2,31 +2,20 @@ class LeadershipDashboardsController < ApplicationController
   before_action :set_no_cache_header
   before_action :authenticate_user!
 
-  SECTIONS = %w[curation discussion].freeze
+  SECTIONS = %w[community yours].freeze
 
   def show
     # Not discoverable by non-leaders
     return head :not_found unless current_user.community_leader?
 
-    @section = SECTIONS.include?(params[:section]) ? params[:section] : "curation"
+    @section = SECTIONS.include?(params[:section]) ? params[:section] : "community"
+    @unlimited_favorites = current_user.unlimited_favorites?
+    @favorite_allowance = current_user.favorite_allowance_for_client
 
-    if @section == "discussion"
-      setup_discussion
+    if @section == "yours"
+      @favorited = Favorites::Fetch.call(user: current_user, page: params[:page])
     else
-      setup_curation
+      @favorited = Favorites::Fetch.call(since: 24.hours.ago, page: params[:page])
     end
-  end
-
-  private
-
-  def setup_curation
-    @favorite_allowance = current_user.favorite_allowance
-    @favorited = Favorites::Fetch.call(user: current_user, page: params[:page])
-  end
-
-  def setup_discussion
-    @discussion_feed = Articles::Feeds::EngagementCandidates.call(
-      exclude_author: current_user, page: params[:page],
-    )
   end
 end

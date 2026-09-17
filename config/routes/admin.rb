@@ -122,6 +122,7 @@ namespace :admin do
         patch "update_baseline_score"
         patch "update_verified"
         patch "update_org_feature"
+        post "bulk_add_users"
       end
     end
     resources :emails
@@ -132,6 +133,14 @@ namespace :admin do
       end
       collection do
         post :validate
+      end
+    end
+    resources :audience_segments do
+      member do
+        post :add_users
+        delete :remove_user
+        post :remove_users
+        put :remove_users
       end
     end
     resources :read_only_database, only: [:show] do
