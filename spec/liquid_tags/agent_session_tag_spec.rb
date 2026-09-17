@@ -212,4 +212,57 @@ RSpec.describe AgentSessionTag, type: :liquid_tag do
     expect(html).to include("Read")
     expect(html).to include("/src/app.js")
   end
+
+  describe "heading anchors in rendered markdown" do
+    it "gives transcript headings scoped ids and rewrites table-of-contents links" do
+      toc_session = AgentSession.create!(
+        user: user,
+        title: "TOC Session",
+        tool_name: "claude_code",
+        published: true,
+        curated_data: {
+          "messages" => [
+            {
+              "index" => 0, "role" => "assistant",
+              "content" => [
+                {
+                  "type" => "text",
+                  "text" => "## Intro\n\n- [Intro](#intro)\n\nBody copy that is long enough to be its own paragraph."
+                },
+              ]
+            },
+          ],
+          "metadata" => {}
+        },
+      )
+
+      html = generate_tag(toc_session.id).render
+      expect(html).to include(%(id="agent-session-#{toc_session.id}-intro"))
+      expect(html).to include(%(href="#agent-session-#{toc_session.id}-intro"))
+    end
+
+    it "suffixes duplicate headings within one session embed" do
+      dup_session = AgentSession.create!(
+        user: user,
+        title: "Dup Session",
+        tool_name: "claude_code",
+        published: true,
+        curated_data: {
+          "messages" => [
+            {
+              "index" => 0, "role" => "assistant",
+              "content" => [
+                { "type" => "text", "text" => "## Same\n\nfirst\n\n## Same\n\nsecond" },
+              ]
+            },
+          ],
+          "metadata" => {}
+        },
+      )
+
+      html = generate_tag(dup_session.id).render
+      expect(html).to include(%(id="agent-session-#{dup_session.id}-same"))
+      expect(html).to include(%(id="agent-session-#{dup_session.id}-same-2"))
+    end
+  end
 end

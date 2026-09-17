@@ -8,7 +8,9 @@
      messages_to_show = agent_session.curated_messages
      active_slice = nil
    end
-   total_count = agent_session.total_messages %>
+   total_count = agent_session.total_messages
+   heading_scope = "agent-session-#{agent_session.id}"
+   used_ids = {} %>
 <div class="ltag-agent-session" data-session-id="<%= agent_session.id %>">
   <div class="agent-session-header">
     <svg class="agent-session-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -63,13 +65,13 @@
               <% if text.length > 600 %>
                 <div data-collapsible>
                   <div class="agent-session-text agent-session-text-collapse">
-                    <%= AgentSessionRenderers::MarkdownRenderer.render(text) %>
+                    <%= AgentSessionRenderers::MarkdownRenderer.render(text, scope: heading_scope, used_ids: used_ids) %>
                   </div>
                   <button class="agent-session-expand-btn" type="button">Show more</button>
                 </div>
               <% else %>
                 <div class="agent-session-text">
-                  <%= AgentSessionRenderers::MarkdownRenderer.render(text) %>
+                  <%= AgentSessionRenderers::MarkdownRenderer.render(text, scope: heading_scope, used_ids: used_ids) %>
                 </div>
               <% end %>
             <% when 'tool_call' %>

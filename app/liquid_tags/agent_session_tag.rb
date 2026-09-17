@@ -36,6 +36,44 @@ class AgentSessionTag < LiquidTagBase
           btn.textContent = expanded ? 'Show less' : 'Show more';
         });
       });
+
+      // Fragment links (e.g. a transcript table of contents): resolve the
+      // scoped heading id within this embed, expand collapsed text and scroll
+      // the embed's own scroll container instead of jumping the whole page.
+      embed.querySelectorAll('.agent-session-text a[href^="#"]').forEach(function(link) {
+        if (link.dataset.anchorBound) return;
+        link.dataset.anchorBound = '1';
+        link.addEventListener('click', function(e) {
+          var raw = decodeURIComponent(this.getAttribute('href').slice(1));
+          if (!raw) return;
+          var prefix = 'agent-session-' + embed.dataset.sessionId + '-';
+          var scopedId = raw.lastIndexOf(prefix, 0) === 0 ? raw : prefix + raw;
+          var headings = embed.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+          var target = null;
+          for (var i = 0; i < headings.length; i++) {
+            if (headings[i].id === scopedId) { target = headings[i]; break; }
+          }
+          if (!target) return; // unknown anchor: keep default behaviour
+          e.preventDefault();
+          var wrap = target.closest('[data-collapsible]');
+          if (wrap) {
+            var textEl = wrap.querySelector('.agent-session-text-collapse');
+            var btn = wrap.querySelector('.agent-session-expand-btn');
+            if (textEl && !textEl.classList.contains('expanded')) {
+              textEl.classList.add('expanded');
+              if (btn) btn.textContent = 'Show less';
+            }
+          }
+          var scroller = embed.querySelector('.agent-session-scroll');
+          if (scroller) {
+            scroller.scrollTop += target.getBoundingClientRect().top - scroller.getBoundingClientRect().top - 8;
+          } else {
+            target.scrollIntoView();
+          }
+          target.setAttribute('tabindex', '-1');
+          target.focus({ preventScroll: true });
+        });
+      });
     });
   JAVASCRIPT
 
