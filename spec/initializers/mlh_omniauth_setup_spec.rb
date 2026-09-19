@@ -30,6 +30,24 @@ RSpec.describe "MLH OmniAuth setup" do # rubocop:disable RSpec/DescribeClass
     end
   end
 
+  it "requests only the default scopes when MLH_OAUTH_SCOPES is unset" do
+    expect(strategy.options.scope).to eq(MLH_DEFAULT_SCOPES)
+  end
+
+  context "with MLH_OAUTH_SCOPES set" do
+    around do |example|
+      original = ENV.fetch("MLH_OAUTH_SCOPES", nil)
+      ENV["MLH_OAUTH_SCOPES"] = "public mlh:read:user user:read:address"
+      example.run
+    ensure
+      ENV["MLH_OAUTH_SCOPES"] = original
+    end
+
+    it "requests the configured scopes" do
+      expect(strategy.options.scope).to eq("public mlh:read:user user:read:address")
+    end
+  end
+
   it "keeps OAuth state verification enabled" do
     expect(strategy.options.provider_ignores_state).to be(false)
   end

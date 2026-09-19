@@ -68,6 +68,8 @@ module OmniAuth
   end
 end
 
+MLH_DEFAULT_SCOPES = "public offline_access mlh:read:user".freeze
+
 MLH_OMNIAUTH_SETUP = lambda do |env|
   # Prepend the callback URL override module to ensure redirect_uri never includes query parameters
   # This must be done here because the omniauth-mlh gem loads the strategy class at this point
@@ -79,7 +81,7 @@ MLH_OMNIAUTH_SETUP = lambda do |env|
   # mlh:read:user already covers email, profile, address, education and employment, which is
   # everything sign-in and PrefillMlhProfileWorker read. Each user:read:* scope makes MLH walk
   # the person through a profile-completion step (e.g. phone verification), so request none.
-  env["omniauth.strategy"].options[:scope] = "public offline_access mlh:read:user"
+  env["omniauth.strategy"].options[:scope] = ApplicationConfig["MLH_OAUTH_SCOPES"].presence || MLH_DEFAULT_SCOPES
   env["omniauth.strategy"].options[:client_id] = Settings::Authentication.mlh_key
   env["omniauth.strategy"].options[:client_secret] = Settings::Authentication.mlh_secret
   # Note: redirect_uri is handled by the prepended MlhCallbackUrlOverride module
