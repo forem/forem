@@ -76,7 +76,10 @@ MLH_OMNIAUTH_SETUP = lambda do |env|
     strategy_class.prepend(OmniAuth::Strategies::MlhCallbackUrlOverride)
   end
 
-  env["omniauth.strategy"].options[:scope] = "user:read:email user:read:phone user:read:profile user:read:demographics user:read:education user:read:employment user:read:address public offline_access mlh:read:user"
+  # mlh:read:user already covers email, profile, address, education and employment, which is
+  # everything sign-in and PrefillMlhProfileWorker read. Each user:read:* scope makes MLH walk
+  # the person through a profile-completion step (e.g. phone verification), so request none.
+  env["omniauth.strategy"].options[:scope] = "public offline_access mlh:read:user"
   env["omniauth.strategy"].options[:client_id] = Settings::Authentication.mlh_key
   env["omniauth.strategy"].options[:client_secret] = Settings::Authentication.mlh_secret
   # Note: redirect_uri is handled by the prepended MlhCallbackUrlOverride module

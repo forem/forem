@@ -25,7 +25,7 @@ RSpec.describe "MLH OmniAuth setup" do # rubocop:disable RSpec/DescribeClass
       expect(strategy.options.client_options.authorize_url).to eq("https://core.example/oauth/authorize")
       expect(strategy.options.client_options.token_url).to eq("https://core.example/oauth/token")
       expect(strategy.options.client_options.api_site).to eq("https://api.core.example")
-      expect(strategy.options.scope.split).to contain_exactly("public", "user:read:profile", "mlh:read:user")
+      expect(strategy.options.scope.split).to contain_exactly("public", "mlh:read:user")
       expect(strategy.options.persist_credentials).to be(false)
     end
   end
