@@ -1,0 +1,54 @@
+db/schema.rb
+  s_1e049bdc81f15e::t_4d1a5af06be60c 13,176-177,243,482-483,505,1988,2193,2205
+db/migrate/20260728100400_add_index_to_comments_favorited_by_user_id.rb
+  s_1e049bdc81f15e::t_59a0cc4456c6cc 2-15
+  s_1e049bdc81f15e::t_789d3356d68570 1
+db/migrate/20260728100200_validate_favorited_by_user_id_on_articles.rb
+  s_1e049bdc81f15e::t_15e156f7cceacc 2-5
+  s_1e049bdc81f15e::t_789d3356d68570 1
+db/migrate/20260728100100_add_index_to_articles_favorited_by_user_id.rb
+  s_1e049bdc81f15e::t_789d3356d68570 1
+  s_1e049bdc81f15e::t_0e3bc6cf81ee90 2-15
+db/migrate/20260728100600_add_earned_favorites_count_to_users.rb
+  s_1e049bdc81f15e::t_789d3356d68570 1
+  s_1e049bdc81f15e::t_049561588f9bc0 2-5
+app/models/article.rb
+  s_1e049bdc81f15e::t_53f883874d8943 50-51
+  s_1e049bdc81f15e::t_8757c1781eec85 434-435
+db/migrate/20260728100000_add_favorited_by_user_id_to_articles.rb
+  s_1e049bdc81f15e::t_789d3356d68570 1
+  s_1e049bdc81f15e::t_8e7ca5e823f133 2-4,6-15
+  s_1e049bdc81f15e::t_48a91e35e39a9e 5
+spec/models/article_spec.rb
+  s_1e049bdc81f15e::t_8b29783b941fa0 1666-1675
+  s_1e049bdc81f15e::t_6da7a3e904edb0 1664-1665
+app/models/comment.rb
+  s_1e049bdc81f15e::t_9b5bf885905d3e 39
+  s_1e049bdc81f15e::t_3122a38b8694cf 112
+  s_1e049bdc81f15e::t_66a2efea31e60a 40
+db/migrate/20260728100500_validate_favorited_by_user_id_on_comments.rb
+  s_1e049bdc81f15e::t_789d3356d68570 1
+  s_1e049bdc81f15e::t_00725bb0b9168a 2-5
+db/migrate/20260728100300_add_favorited_by_user_id_to_comments.rb
+  s_1e049bdc81f15e::t_789d3356d68570 1
+  s_1e049bdc81f15e::t_051b67a103c4b1 5
+  s_1e049bdc81f15e::t_f8b585092f15b3 2-4,6-15
+spec/models/comment_spec.rb
+  s_1e049bdc81f15e::t_4ff0bc4d93c730 316-327
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.17",
+  "base_commit_sha": "6784f7af3c5684e51b7bf0fd82c486525f2a7a67",
+  "prompts": {},
+  "sessions": {
+    "s_1e049bdc81f15e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23918fc8-b82e-4edd-9ebf-b02c000c31c4",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Paolo Veñegas <pvenegas@gmail.com>"
+    }
+  }
+}
