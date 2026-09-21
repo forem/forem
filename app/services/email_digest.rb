@@ -1,4 +1,6 @@
 class EmailDigest
+  STATEMENT_TIMEOUT = ENV.fetch("EMAIL_DIGEST_STATEMENT_TIMEOUT", 60).to_i.seconds
+
   def self.send_periodic_digest_email(users = [], starting_id = 1, ending_id = 50_000_000)
     new(users, starting_id, ending_id).send_periodic_digest_email
   end
@@ -8,18 +10,20 @@ class EmailDigest
   end
 
   def send_periodic_digest_email
-    @users.select(:id).in_batches do |batch|
-      batch.each do |user|
-        # Temporary
-        # @sre:mstruve This is temporary until we have an efficient way to handle this job
-        # for our large DEV community. Smaller Forems should be able to handle it no problem
-        if ForemInstance.dev_to?
-          Emails::SendUserDigestWorker.new.perform(user.id)
-        else
-          Emails::SendUserDigestWorker.perform_async(user.id)
+    ApplicationRecord.with_statement_timeout(STATEMENT_TIMEOUT) do
+      @users.select(:id).in_batches do |batch|
+        batch.each do |user|
+          # Temporary
+          # @sre:mstruve This is temporary until we have an efficient way to handle this job
+          # for our large DEV community. Smaller Forems should be able to handle it no problem
+          if ForemInstance.dev_to?
+            Emails::SendUserDigestWorker.new.perform(user.id)
+          else
+            Emails::SendUserDigestWorker.perform_async(user.id)
+          end
+        rescue StandardError => e
+          Honeybadger.notify(e)
         end
-      rescue StandardError => e
-        Honeybadger.notify(e)
       end
     end
   end
@@ -35,11 +39,14 @@ class EmailDigest
   # so without these filters banished and spam-flagged accounts keep receiving
   # the digest.
   def get_users(starting_id, ending_id)
+    excluded_role_user_ids = UserRole.joins(:role)
+      .where(roles: { name: %i[suspended spam] })
+      .select(:user_id)
+
     User.registered.joins(:notification_setting)
       .where(notification_setting: { email_digest_periodic: true })
       .where.not(email: "")
-      .without_role(:suspended)
-      .without_role(:spam)
+      .where.not(id: excluded_role_user_ids)
       .where("users.id >= ? AND users.id <= ?", starting_id, ending_id)
   end
 end
