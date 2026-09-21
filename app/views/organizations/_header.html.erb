@@ -252,6 +252,7 @@
       is_custom_domain = request.env["forem.custom_domain_org"].present?
       org_pages = @organization.ordered_pages.to_a
       showcase_page = @organization.main_page
+      showcase_title = showcase_page.title.presence || t("views.organizations.showcase")
       custom_pages = org_pages.reject { |page| page == showcase_page }
       
       showcase_path = is_custom_domain ? "/" : "/#{@organization.slug}"
@@ -265,8 +266,8 @@
     <nav class="crayons-tabs org-header-tabs flex items-center" aria-label="Organization Profile Navigation" id="org-tab-nav" style="width: 100%; display: flex; align-items: center;">
       <div class="org-custom-tabs-container flex items-center flex-grow" style="overflow: hidden; white-space: nowrap; display: flex; align-items: center; min-width: 0;">
         <!-- Showcase (first page) -->
-        <a href="<%= showcase_path %>" data-instant-keep-scroll="true" class="crayons-tabs__item <%= 'crayons-tabs__item--current' if params[:page_suffix].blank? && params[:mode] != 'all-posts' %>" <%= 'aria-current="page"' if params[:page_suffix].blank? && params[:mode] != 'all-posts' %> data-text="<%= showcase_page.title %>">
-          <%= showcase_page.title %>
+        <a href="<%= showcase_path %>" data-instant-keep-scroll="true" class="crayons-tabs__item <%= 'crayons-tabs__item--current' if params[:page_suffix].blank? && params[:mode] != 'all-posts' %>" <%= 'aria-current="page"' if params[:page_suffix].blank? && params[:mode] != 'all-posts' %> data-text="<%= showcase_title %>">
+          <%= showcase_title %>
         </a>
         
         <!-- Custom Pages -->

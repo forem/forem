@@ -597,6 +597,15 @@ RSpec.describe "StoriesIndex" do
         expect(showcase_tab.text.strip).to eq("✨ Showcase")
       end
 
+      it "falls back to the translated label for a legacy page without a title" do
+        organization.main_page.update_column(:title, nil)
+
+        get "/#{organization.slug}"
+        showcase_tab = Nokogiri::HTML(response.body).at_css("#org-tab-nav a[href='/#{organization.slug}']")
+        expect(showcase_tab.text.strip).to eq(I18n.t("views.organizations.showcase"))
+        expect(showcase_tab["data-text"]).to eq(I18n.t("views.organizations.showcase"))
+      end
+
       it "renders the classic feed template with all posts tab active when mode is all-posts" do
         get "/#{organization.slug}", params: { mode: "all-posts" }
         expect(response).to have_http_status(:ok)
