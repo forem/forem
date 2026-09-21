@@ -25,9 +25,13 @@ sub vcl_recv {
     # Org custom domains served through Cloudflare for SaaS arrive from a Cloudflare
     # Worker with Host set to the fallback origin and the customer's hostname in
     # X-Forem-Original-Host. Only trust that header when the shared secret matches
-    # the cloudflare_secret item in the forem_edge edge dictionary.
+    # the cloudflare_secret item in the forem_edge edge dictionary (compared in
+    # constant time) and the value is a plain lowercase hostname. Note that VCL
+    # strings have no backslash escapes, so "\." in a regex is a literal dot.
+    set req.http.X-Forem-Original-Host = std.tolower(req.http.X-Forem-Original-Host);
     if (std.strlen(req.http.X-Forem-Edge-Secret) > 0
-        && req.http.X-Forem-Edge-Secret == table.lookup(forem_edge, "cloudflare_secret", "")
+        && digest.secure_is_equal(req.http.X-Forem-Edge-Secret, table.lookup(forem_edge, "cloudflare_secret", ""))
+        && std.strlen(req.http.X-Forem-Original-Host) <= 253
         && req.http.X-Forem-Original-Host ~ "^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$") {
       set req.http.X-Req-Host = req.http.X-Forem-Original-Host;
     } else {
