@@ -1,0 +1,22 @@
+spec/services/trackers/customerio_cdp_spec.rb
+  s_0192b25a49feab::t_c2631fb35cb868 6-10,33-52
+  s_0192b25a49feab::t_2cbc7ff71f4798 12,15
+app/services/trackers/customerio_cdp.rb
+  s_0192b25a49feab::t_ec7e4b6dc64eda 12-13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "d09e229ca8640f0257296570ff5f260fc4941372",
+  "prompts": {},
+  "sessions": {
+    "s_0192b25a49feab": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d9c11a62-ccb3-46a3-b898-39bcb6105a91",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Jon Gottfried <jon@majorleaguehacking.com>"
+    }
+  }
+}
