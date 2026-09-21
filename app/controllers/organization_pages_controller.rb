@@ -21,7 +21,7 @@ class OrganizationPagesController < ApplicationController
     
     if is_first_page
       @page.slug = "#{@organization.slug}/readme"
-      @page.title = @organization.name if @page.title.blank?
+      @page.title = I18n.t("views.organizations.showcase") if @page.title.blank?
     else
       suffix = params.dig(:page, :slug_suffix).to_s.strip.downcase.gsub(/[^a-z0-9\-]/, "-").gsub(/-+/, "-").gsub(/\A-+|-+\z/, "")
       if suffix.blank?
