@@ -1,5 +1,5 @@
 class EmailDigest
-  STATEMENT_TIMEOUT = ENV.fetch("EMAIL_DIGEST_STATEMENT_TIMEOUT", 60).to_i.seconds
+  STATEMENT_TIMEOUT = ENV.fetch("EMAIL_DIGEST_STATEMENT_TIMEOUT", 60_000).to_i.seconds / 1_000.to_f
 
   def self.send_periodic_digest_email(users = [], starting_id = 1, ending_id = 50_000_000)
     new(users, starting_id, ending_id).send_periodic_digest_email
