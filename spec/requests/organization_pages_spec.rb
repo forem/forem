@@ -49,6 +49,15 @@ RSpec.describe "Organization Pages Controller Backend Protection" do
         expect(page.title).to eq("Welcome")
       end
 
+      it "defaults a blank first-page title to Showcase" do
+        post organization_pages_path(organization.slug), params: {
+          page: { title: " ", body_markdown: "# Hello showcase" }
+        }
+
+        expect(response).to redirect_to(organization_pages_path(organization.slug))
+        expect(organization.main_page.title).to eq(I18n.t("views.organizations.showcase"))
+      end
+
       it "returns a validation error when a lead form belongs to another organization" do
         other_form = create(:organization_lead_form)
 
