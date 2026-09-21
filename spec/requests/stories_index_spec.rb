@@ -563,7 +563,7 @@ RSpec.describe "StoriesIndex" do
     context "when organization has a readme page and org_readme flag is enabled" do
       before do
         create(:page, organization: organization, body_markdown: "**Welcome to our org!**",
-               title: organization.name, description: "desc", slug: "#{organization.slug}-page",
+               title: "Showcase", description: "desc", slug: "#{organization.slug}-page",
                template: "full_within_layout")
         FeatureFlag.add(:org_readme)
         FeatureFlag.enable(:org_readme, FeatureFlag::Actor[organization])
@@ -582,6 +582,28 @@ RSpec.describe "StoriesIndex" do
         expect(response.body).to include("crayons-tabs__item crayons-tabs__item--current")
         expect(response.body).to include("Showcase")
         expect(response.body).to include("All Posts")
+      end
+
+      it "uses the editable page title for the showcase tab" do
+        organization.main_page.update!(title: "✨ Showcase")
+
+        get "/#{organization.slug}"
+        showcase_tab = Nokogiri::HTML(response.body).at_css("#org-tab-nav a[href='/#{organization.slug}']")
+        expect(showcase_tab.text.strip).to eq("✨ Showcase")
+        expect(showcase_tab["data-text"]).to eq("✨ Showcase")
+
+        get "/#{organization.slug}", params: { mode: "all-posts" }
+        showcase_tab = Nokogiri::HTML(response.body).at_css("#org-tab-nav a[href='/#{organization.slug}']")
+        expect(showcase_tab.text.strip).to eq("✨ Showcase")
+      end
+
+      it "falls back to the translated label for a legacy page without a title" do
+        organization.main_page.update_column(:title, nil)
+
+        get "/#{organization.slug}"
+        showcase_tab = Nokogiri::HTML(response.body).at_css("#org-tab-nav a[href='/#{organization.slug}']")
+        expect(showcase_tab.text.strip).to eq(I18n.t("views.organizations.showcase"))
+        expect(showcase_tab["data-text"]).to eq(I18n.t("views.organizations.showcase"))
       end
 
       it "renders the classic feed template with all posts tab active when mode is all-posts" do
