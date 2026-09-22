@@ -1905,4 +1905,20 @@ RSpec.describe User do
       expect(admin_curator.favorite_allowance_for_client).to be_nil
     end
   end
+
+  describe "#confirmation_required?" do
+    before { allow(ForemInstance).to receive(:smtp_enabled?).and_return(true) }
+
+    it "sends no confirmation email to a user confirmed at creation (OAuth signup)" do
+      user = build(:user, confirmed_at: nil)
+      user.skip_confirmation!
+
+      expect { user.save! }.not_to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
+    end
+
+    it "sends a confirmation email to an unconfirmed signup" do
+      expect { create(:user, confirmed_at: nil) }
+        .to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
+    end
+  end
 end

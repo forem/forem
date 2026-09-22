@@ -30,6 +30,11 @@ RSpec.describe Deliverable do
     before do
       allow(ApplicationConfig).to receive(:[]).and_call_original
       allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
+      # The :identity factory's auth_data_dump reads OmniAuth.config.mock_auth,
+      # which has no built-in :mlh payload; register one (as other mlh-identity
+      # specs do) so the factory doesn't raise KeyError.
+      omniauth_mock_mlh_payload
+      create(:identity, provider: "mlh", user: user, uid: "core-99")
     end
 
     after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
@@ -40,21 +45,35 @@ RSpec.describe Deliverable do
       message = built_message(to: user.email)
 
       expect(message.delivery_method).to be_a(DeliveryMethods::CustomerIo)
-      expect(message.delivery_method.settings[:identifiers]).to eq(email: user.email)
+      expect(message.delivery_method.settings[:identifiers]).to eq(id: "core-99")
       expect(message.perform_deliveries).to be(true)
     end
 
-    it "identifies the recipient by MLH Core uid when an mlh identity exists" do
-      # The :identity factory's auth_data_dump reads OmniAuth.config.mock_auth,
-      # which has no built-in :mlh payload; register one (as other mlh-identity
-      # specs do) so the factory doesn't raise KeyError.
-      omniauth_mock_mlh_payload
-      create(:identity, provider: "mlh", user: user, uid: "core-99")
-      FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+    describe "a user recipient without an mlh identity yet" do
+      let(:unlinked) { create(:user) }
 
-      message = built_message(to: user.email)
+      before { FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[unlinked]) }
 
-      expect(message.delivery_method.settings[:identifiers]).to eq(id: "core-99")
+      it "is not sent now, so no email-keyed Customer.io person is minted" do
+        message = built_message(to: unlinked.email)
+
+        expect(message.perform_deliveries).to be(false)
+        expect(message.delivery_method).not_to be_a(DeliveryMethods::CustomerIo)
+      end
+
+      it "re-enqueues the same mailer call to retry once the link lands" do
+        expect { built_message(to: unlinked.email) }
+          .to have_enqueued_mail(DeliverableTestMailer, :test_email)
+          .with(params: { to: unlinked.email, customerio_options: nil, customerio_link_hold: 1 }, args: [])
+      end
+
+      it "drops the message once the hold attempts are exhausted" do
+        expect do
+          DeliverableTestMailer
+            .with(to: unlinked.email, customerio_link_hold: Deliverable::CUSTOMERIO_LINK_HOLD_ATTEMPTS)
+            .test_email.message
+        end.not_to have_enqueued_mail(DeliverableTestMailer, :test_email)
+      end
     end
 
     it "passes customerio_delivery_options through to the delivery method" do
@@ -128,7 +147,7 @@ RSpec.describe Deliverable do
 
         expect(message.delivery_method).to be_a(DeliveryMethods::CustomerIoEvent)
         expect(message.delivery_method.settings[:customerio_event_name]).to eq("digest_ready")
-        expect(message.delivery_method.settings[:identifiers]).to eq(email: user.email)
+        expect(message.delivery_method.settings[:identifiers]).to eq(id: "core-99")
         expect(message.perform_deliveries).to be(true)
       end
 

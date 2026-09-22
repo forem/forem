@@ -1211,8 +1211,10 @@ class User < ApplicationRecord
     )
   end
 
+  # super is Devise's !confirmed?: without it, users confirmed at creation
+  # (OAuth signups via skip_confirmation!) still get a confirmation email.
   def confirmation_required?
-    ForemInstance.smtp_enabled?
+    ForemInstance.smtp_enabled? && super
   end
 
   def update_user_roles_cache(role)
