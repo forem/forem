@@ -1,0 +1,126 @@
+<%# ── Custom domain ── %>
+<% domain = organization.custom_domain %>
+<% cname_target = CloudflareSaas.cname_target %>
+<div id="section-custom-domain" class="crayons-card crayons-card--content-rows">
+  <header>
+    <h2 class="mb-2"><%= t("views.organization_settings.custom_domain.heading") %></h2>
+    <p class="color-base-70"><%= t("views.organization_settings.custom_domain.description") %></p>
+  </header>
+
+  <% if flash[:custom_domain_notice] %>
+    <div class="crayons-notice crayons-notice--info" aria-live="polite">
+      <%= flash[:custom_domain_notice] %>
+    </div>
+  <% end %>
+  <% if flash[:custom_domain_error] %>
+    <div class="crayons-notice crayons-notice--error" role="alert">
+      <%= flash[:custom_domain_error] %>
+    </div>
+  <% end %>
+
+  <% if domain.present? %>
+    <% if organization.custom_domain_live? %>
+      <div class="crayons-notice crayons-notice--success" data-testid="custom-domain-status">
+        <p class="fw-bold mb-1"><%= t("views.organization_settings.custom_domain.status_live") %></p>
+        <p class="fs-s"><%= t("views.organization_settings.custom_domain.status_live_desc_html", url: "https://#{domain}") %></p>
+      </div>
+    <% elsif organization.failed? %>
+      <div class="crayons-notice crayons-notice--error" role="alert" data-testid="custom-domain-status">
+        <p class="fw-bold mb-1"><%= t("views.organization_settings.custom_domain.status_failed") %></p>
+        <p class="fs-s"><%= t("views.organization_settings.custom_domain.status_failed_desc") %></p>
+        <% if organization.custom_domain_error.present? %>
+          <p class="fs-s mt-1"><%= t("views.organization_settings.custom_domain.details", message: organization.custom_domain_error) %></p>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="crayons-notice crayons-notice--info" data-testid="custom-domain-status">
+        <p class="fw-bold mb-1"><%= t("views.organization_settings.custom_domain.status_pending") %></p>
+        <p class="fs-s"><%= t("views.organization_settings.custom_domain.status_pending_desc") %></p>
+        <% if organization.custom_domain_error.present? %>
+          <p class="fs-s mt-1"><%= t("views.organization_settings.custom_domain.details", message: organization.custom_domain_error) %></p>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% unless organization.custom_domain_live? %>
+      <div class="crayons-card crayons-card--secondary p-4">
+        <h3 class="fw-bold mb-2"><%= t("views.organization_settings.custom_domain.dns_heading") %></h3>
+        <p class="fs-s color-base-70 mb-3"><%= t("views.organization_settings.custom_domain.dns_intro_html", domain: domain) %></p>
+        <table class="crayons-table w-100 fs-s mb-3">
+          <thead>
+            <tr>
+              <th class="align-left"><%= t("views.organization_settings.custom_domain.dns_type") %></th>
+              <th class="align-left"><%= t("views.organization_settings.custom_domain.dns_name") %></th>
+              <th class="align-left"><%= t("views.organization_settings.custom_domain.dns_target") %></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>CNAME</code></td>
+              <td><code><%= custom_domain_dns_record_name(domain) %></code></td>
+              <td><code data-testid="custom-domain-cname-target"><%= cname_target %></code></td>
+            </tr>
+          </tbody>
+        </table>
+        <ul class="list-disc pl-6 fs-s color-base-70">
+          <li class="mb-1"><%= t("views.organization_settings.custom_domain.dns_cloudflare_tip") %></li>
+          <% if custom_domain_apex?(domain) %>
+            <li class="mb-1"><%= t("views.organization_settings.custom_domain.dns_apex_tip") %></li>
+          <% end %>
+          <li class="mb-1"><%= t("views.organization_settings.custom_domain.dns_conflict_tip") %></li>
+          <% unless organization.failed? %>
+            <li><%= t("views.organization_settings.custom_domain.dns_timing_tip") %></li>
+          <% end %>
+        </ul>
+      </div>
+
+      <%= form_tag organization_custom_domain_check_path(organization.slug), method: :post do %>
+        <button type="submit" class="crayons-btn crayons-btn--secondary w-max">
+          <%= organization.failed? ? t("views.organization_settings.custom_domain.retry") : t("views.organization_settings.custom_domain.check") %>
+        </button>
+      <% end %>
+    <% end %>
+
+    <details class="mt-2">
+      <summary class="fw-medium cursor-pointer"><%= t("views.organization_settings.custom_domain.change_heading") %></summary>
+      <div class="grid gap-4 mt-3">
+        <p class="fs-s color-base-70"><%= t("views.organization_settings.custom_domain.change_warning") %></p>
+        <%= form_tag organization_custom_domain_path(organization.slug), method: :patch, class: "grid gap-4" do %>
+          <div class="crayons-field">
+            <label for="organization_custom_domain" class="crayons-field__label"><%= t("views.organization_settings.custom_domain.label") %></label>
+            <input type="text" name="organization[custom_domain]" id="organization_custom_domain" value="<%= domain %>"
+                   class="crayons-textfield" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="253"
+                   placeholder="<%= t("views.organization_settings.custom_domain.placeholder") %>" />
+          </div>
+          <button type="submit" class="crayons-btn w-max"><%= t("views.organization_settings.custom_domain.update") %></button>
+        <% end %>
+        <% remove_confirm = t("views.organization_settings.custom_domain.remove_confirm", domain: domain) %>
+        <%= form_tag organization_custom_domain_path(organization.slug), method: :delete, onsubmit: "return confirm('#{j(remove_confirm)}');" do %>
+          <button type="submit" class="crayons-btn crayons-btn--danger crayons-btn--outlined w-max">
+            <%= t("views.organization_settings.custom_domain.remove") %>
+          </button>
+        <% end %>
+      </div>
+    </details>
+  <% else %>
+    <div class="crayons-card crayons-card--secondary p-4">
+      <h3 class="fw-bold mb-2"><%= t("views.organization_settings.custom_domain.how_it_works") %></h3>
+      <ol class="list-decimal pl-6 fs-s color-base-70">
+        <li class="mb-1"><%= t("views.organization_settings.custom_domain.step_1") %></li>
+        <li class="mb-1"><%= t("views.organization_settings.custom_domain.step_2_html", target: cname_target) %></li>
+        <li><%= t("views.organization_settings.custom_domain.step_3") %></li>
+      </ol>
+    </div>
+
+    <%= form_tag organization_custom_domain_path(organization.slug), method: :patch, class: "grid gap-4" do %>
+      <div class="crayons-field">
+        <label for="organization_custom_domain" class="crayons-field__label"><%= t("views.organization_settings.custom_domain.label") %></label>
+        <input type="text" name="organization[custom_domain]" id="organization_custom_domain" required
+               class="crayons-textfield" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="253"
+               placeholder="<%= t("views.organization_settings.custom_domain.placeholder") %>" />
+        <p class="crayons-field__description"><%= t("views.organization_settings.custom_domain.help") %></p>
+      </div>
+      <button type="submit" class="crayons-btn w-max"><%= t("views.organization_settings.custom_domain.submit") %></button>
+    <% end %>
+  <% end %>
+</div>

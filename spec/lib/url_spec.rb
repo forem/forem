@@ -160,6 +160,15 @@ RSpec.describe URL, type: :lib do
       expect(described_class.article(org_article, user_signed_in: false)).to eq("https://org.custom.dev/my-org-post")
     end
 
+    it "keeps the platform URL for anonymous users while the custom domain is still being provisioned" do
+      org = create(:organization, custom_domain: "org.custom.dev", slug: "myorg")
+      org.update_columns(tls_status: "pending")
+      org_article = create(:article, organization: org, slug: "my-org-post")
+      FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor[org])
+
+      expect(described_class.article(org_article, user_signed_in: false)).to eq("https://dev.to/myorg/my-org-post")
+    end
+
     it "returns the dev.to platform path for signed-in users" do
       org = create(:organization, custom_domain: "org.custom.dev", slug: "myorg")
       org_article = create(:article, organization: org, slug: "my-org-post")
@@ -284,6 +293,18 @@ RSpec.describe URL, type: :lib do
 
       it "returns the default app domain URL" do
         expect(described_class.organization(organization)).to eq("https://dev.to/#{organization.slug}")
+      end
+    end
+
+    context "when the custom domain is still being provisioned" do
+      before do
+        FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor.new(organization))
+        organization.update_columns(tls_status: "pending")
+      end
+
+      it "returns the default app domain URL" do
+        expect(described_class.organization(organization)).to eq("https://dev.to/#{organization.slug}")
+        expect(described_class.user(organization)).to eq("https://dev.to/#{organization.slug}")
       end
     end
   end

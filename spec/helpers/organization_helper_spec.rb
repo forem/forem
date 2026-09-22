@@ -10,4 +10,17 @@ describe OrganizationHelper do
     expect(options).to include("ACME (1)")
     expect(options).to include("Pied Piper (0)")
   end
+
+  describe "#custom_domain_dns_record_name" do
+    it "returns the subdomain part relative to the registrable domain" do
+      expect(helper.custom_domain_dns_record_name("blog.example.com")).to eq("blog")
+      expect(helper.custom_domain_dns_record_name("dev.blog.example.co.uk")).to eq("dev.blog")
+    end
+
+    it "returns @ for an apex domain" do
+      expect(helper.custom_domain_dns_record_name("example.com")).to eq("@")
+      expect(helper.custom_domain_apex?("example.com")).to be(true)
+      expect(helper.custom_domain_apex?("blog.example.com")).to be(false)
+    end
+  end
 end
