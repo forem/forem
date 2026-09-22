@@ -1,0 +1,21 @@
+config/locales/lib/pt.yml
+  s_0192b25a49feab::t_14f5a6941b5918 110-111
+config/locales/lib/fr.yml
+  s_0192b25a49feab::t_63d3e966d9340c 110-111
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.3",
+  "base_commit_sha": "b0207ea019d20b0dc994e30eaf29e9c3925be7c8",
+  "prompts": {},
+  "sessions": {
+    "s_0192b25a49feab": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d9c11a62-ccb3-46a3-b898-39bcb6105a91",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Jon Gottfried <jon@majorleaguehacking.com>"
+    }
+  }
+}
