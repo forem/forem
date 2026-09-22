@@ -1,0 +1,40 @@
+{
+  "cli_version": "0.10.6",
+  "checkpoint_id": "01M35QSR672XNCZS7AS5YJSBYF",
+  "strategy": "manual-commit",
+  "branch": "cio-dev-id-fallback",
+  "checkpoints_count": 10,
+  "files_touched": [
+    "app/mailers/concerns/deliverable.rb",
+    "app/models/user.rb",
+    "lib/data_update_scripts/20260922120000_merge_email_keyed_customerio_profiles.rb",
+    "spec/lib/data_update_scripts/merge_email_keyed_customerio_profiles_spec.rb",
+    "spec/mailers/concerns/deliverable_spec.rb",
+    "spec/mailers/custom_mailer_spec.rb",
+    "spec/mailers/devise_mailer_spec.rb",
+    "spec/mailers/digest_mailer_spec.rb",
+    "spec/mailers/notify_mailer_spec.rb",
+    "spec/mailers/organization_invitation_mailer_spec.rb",
+    "spec/mailers/organization_membership_notification_mailer_spec.rb",
+    "spec/mailers/survey_mailer_spec.rb",
+    "spec/mailers/verification_mailer_spec.rb",
+    "spec/models/user_spec.rb",
+    "spec/support/omniauth_helpers.rb"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 264,
+    "cache_creation_tokens": 200679,
+    "cache_read_tokens": 20031835,
+    "output_tokens": 69424,
+    "api_call_count": 132
+  }
+}
